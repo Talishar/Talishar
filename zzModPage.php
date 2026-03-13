@@ -94,6 +94,63 @@ while (!feof($banfileHandler)) {
 }
 fclose($banfileHandler);
 
+
+// SQL Query Runner
+echo ("<br><h1>Run SQL Query:</h1>");
+
+$queryExecuted = false;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sqlQuery'])) {
+  try {
+    $rawQuery = trim($_POST['sqlQuery']);
+    if ($rawQuery !== '') {
+      $queryExecuted = true;
+      $conn = GetDBConnection();
+      $result = mysqli_query($conn, $rawQuery);
+      if ($result === false) {
+        echo "<p style='color:red; margin-left:10px; padding:10px; background:rgba(255,0,0,0.2); border-radius:3px;'><strong>❌ Query Error:</strong> " . htmlspecialchars(mysqli_error($conn)) . "</p>";
+      } elseif ($result === true) {
+        $affected = mysqli_affected_rows($conn);
+        echo "<p style='color:#00ff00; margin-left:10px; padding:10px; background:rgba(0,255,0,0.1); border-radius:3px;'>✅ Query OK. Affected rows: " . intval($affected) . "</p>";
+      } else {
+        $rows = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+          $rows[] = $row;
+        }
+        mysqli_free_result($result);
+        echo "<p style='color:#00ff00; margin-left:10px;'>✅ Query returned " . count($rows) . " row(s).</p>";
+        if (count($rows) > 0) {
+          echo "<div style='overflow-x:auto; margin-left:10px;'><table border='1' cellpadding='4' style='border-collapse:collapse; font-size:12px;'>";
+          echo "<tr>";
+          foreach (array_keys($rows[0]) as $col) {
+            echo "<th>" . htmlspecialchars($col) . "</th>";
+          }
+          echo "</tr>";
+          foreach ($rows as $row) {
+            echo "<tr>";
+            foreach ($row as $val) {
+              echo "<td>" . htmlspecialchars((string)$val) . "</td>";
+            }
+            echo "</tr>";
+          }
+          echo "</table></div>";
+        }
+      }
+    }
+  } catch (Exception $e) {
+    echo "<p style='color:red; margin-left:10px; padding:10px; background:rgba(255,0,0,0.2); border-radius:3px;'><strong>❌ Error:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
+  }
+}
+
+echo "<form action='./zzModPage.php' method='POST'>";
+echo getCSRFTokenField();
+echo "<label for='sqlQuery' style='font-weight:bolder; margin-left:10px;'>SQL Query:</label><br>";
+echo "<textarea id='sqlQuery' name='sqlQuery' rows='5' style='width:480px; margin-left:10px; font-family:monospace; background:#2a2a2a; color:#fff; padding:5px; border:1px solid #666;'>";
+echo isset($_POST['sqlQuery']) ? htmlspecialchars($_POST['sqlQuery']) : '';
+echo "</textarea>";
+echo "<br>";
+echo "<input type='submit' value='Run Query' style='margin-left:10px; margin-top:5px; padding:8px 15px; background:#4CAF50; color:white; border:none; border-radius:3px; cursor:pointer;'>";
+echo "</form>";
+
 ?>
 
 </div>
