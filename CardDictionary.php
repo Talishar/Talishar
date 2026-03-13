@@ -4022,7 +4022,6 @@ function CharacterDefaultActiveState($cardID)
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
     case "storm_striders":
-    case "okana_scar_wraps":
     case "alluvion_constellas":
     case "compass_of_sunken_depths":
     case "pouncing_paws":
@@ -4057,6 +4056,7 @@ function CharacterDefaultActiveState($cardID)
     case "tearing_shuko":
     case "blood_scent":
       return 1;
+    case "okana_scar_wraps":
     case "verdance_thorn_of_the_rose":
     case "verdance":
     case "jarl_vetreidi":
