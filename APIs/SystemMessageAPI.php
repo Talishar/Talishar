@@ -13,6 +13,12 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 session_write_close();
 
+if (!isset($_SESSION["userid"])) {
+  if (isset($_COOKIE["rememberMeToken"])) {
+    loginFromCookie();
+  }
+}
+
 header('Content-Type: application/json');
 
 if (!isset($_SESSION["useruid"])) {
