@@ -579,7 +579,7 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
           AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Head_Jab,Surging_Strike,Twin_Twisters", 1);
           AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-          AddDecisionQueue("WRITELOG", $mainPlayer, "Attack renamed to <b>{0}</b>", 1);
+          AddDecisionQueue("WRITELOG", $mainPlayer, CardLink($cardID) . " gains the name <b>{0}</b>", 1);
           AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, $cardID . "-", 1);
           AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "<-", 1);
         }
