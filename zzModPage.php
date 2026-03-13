@@ -93,57 +93,6 @@ while (!feof($banfileHandler)) {
   echo ($bannedIP . "<BR>");
 }
 fclose($banfileHandler);
-
-// SQL Query Runner
-echo ("<br><h1>Run SQL Query:</h1>");
-?>
-<form action='./zzModPage.php' method="POST">
-  <?php echo getCSRFTokenField(); ?>
-  <label for="sqlQuery" style='font-weight:bolder; margin-left:10px;'>SQL Query:</label><br>
-  <textarea id="sqlQuery" name="sqlQuery" rows="5" style="width:480px; margin-left:10px; font-family:monospace;"><?php echo isset($_POST['sqlQuery']) ? htmlspecialchars($_POST['sqlQuery']) : ''; ?></textarea>
-  <br>
-  <input type="submit" value="Run Query" style="margin-left:10px; margin-top:5px;">
-</form>
-<?php
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sqlQuery'])) {
-  ValidateCSRFToken();
-  $rawQuery = trim($_POST['sqlQuery']);
-  if ($rawQuery !== '') {
-    $conn = GetDBConnection();
-    $result = mysqli_query($conn, $rawQuery);
-    if ($result === false) {
-      echo "<p style='color:red; margin-left:10px;'><strong>Error:</strong> " . htmlspecialchars(mysqli_error($conn)) . "</p>";
-    } elseif ($result === true) {
-      $affected = mysqli_affected_rows($conn);
-      echo "<p style='color:lightgreen; margin-left:10px;'>Query OK. Affected rows: " . intval($affected) . "</p>";
-    } else {
-      $rows = [];
-      while ($row = mysqli_fetch_assoc($result)) {
-        $rows[] = $row;
-      }
-      mysqli_free_result($result);
-      if (count($rows) === 0) {
-        echo "<p style='margin-left:10px;'>Query returned no rows.</p>";
-      } else {
-        echo "<div style='overflow-x:auto; margin-left:10px;'><table border='1' cellpadding='4' style='border-collapse:collapse; font-size:12px;'>";
-        echo "<tr>";
-        foreach (array_keys($rows[0]) as $col) {
-          echo "<th>" . htmlspecialchars($col) . "</th>";
-        }
-        echo "</tr>";
-        foreach ($rows as $row) {
-          echo "<tr>";
-          foreach ($row as $val) {
-            echo "<td>" . htmlspecialchars((string)$val) . "</td>";
-          }
-          echo "</tr>";
-        }
-        echo "</table></div>";
-      }
-    }
-  }
-}
 ?>
 
 </div>
