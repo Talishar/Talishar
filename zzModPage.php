@@ -101,7 +101,6 @@ echo ("<br><h1>Run SQL Query:</h1>");
 $queryExecuted = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sqlQuery'])) {
   try {
-    ValidateCSRFToken();
     $rawQuery = trim($_POST['sqlQuery']);
     if ($rawQuery !== '') {
       $queryExecuted = true;
