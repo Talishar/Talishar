@@ -47,8 +47,12 @@ class Deck {
         for($revealedCards = 0; $revealedCards < $revealCount && count($this->deck) > $revealedCards; $revealedCards++) {
           if (!$switched) WriteLog("👁️‍🗨️Player " . $this->playerID . " reveals " . CardLink($this->deck[$revealedCards], $this->deck[$revealedCards]));
           else WriteLog("👁️‍🗨️Player " . $otherPlayer . " reveals " . CardLink($this->deck[$revealedCards] , $this->deck[$revealedCards]) . " from their opponent's deck!");
-          if ($isClash) AddEvent("CLASH", $this->playerID . ":" . $this->deck[$revealedCards]);
-          else AddEvent("REVEAL", $this->deck[$revealedCards]);
+          if ($isClash) {
+            $char = &GetPlayerCharacter($this->playerID);
+            // CLASHDASH: Dash's own deck reveal skip animation for Dash IO since they already see the top of their decks.
+            $clashEvent = ($char[0] == "dash_database" || $char[0] == "dash_io") ? "CLASHDASH" : "CLASH";
+            AddEvent($clashEvent, $this->playerID . ":" . $this->deck[$revealedCards]);
+          } else AddEvent("REVEAL", $this->deck[$revealedCards]);
         }
         if(SearchLandmark("korshem_crossroad_of_elements")) KorshemRevealAbility($this->playerID);
         return true;

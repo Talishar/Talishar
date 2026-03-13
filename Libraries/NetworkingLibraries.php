@@ -4205,7 +4205,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     $Mechanoid->ToggleOnChain(1);
   }
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
-  if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
+  if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) || $cardID == "quickdodge_flexors") {
     if ($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains(CardSubType($cardID), "Item")) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
@@ -4222,10 +4222,10 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink($cardID, $cardID) . " fails to resolve because dominate is active and there is already a card defending from hand.");
       $skipDRResolution = true;
     }
-    if ($definedCardType == "DR" && SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2 && IsCombatEffectActive("confidence")) {
+    if (($definedCardType == "DR" || ($definedCardType == "E" && GetAbilityType($cardID) == "DR")) && SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2 && IsCombatEffectActive("confidence")) {
       $discard = new Discard($currentPlayer);
       $discard->Add($cardID, "LAYER");
-      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because confidence is active and there are already 2 non-block card defending.");
+      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because " . CardLink("confidence") . " is active and there are already 2 non-block card defending.");
       $skipDRResolution = true;
     }
     // dreacts that can only defend specific things
@@ -4341,15 +4341,17 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (ColorContains($cardID, 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
       }
     }
-    switch ($cardID) { //cards that add themselves as blocking
-      case "quickdodge_flexors":
-        if ($turn[0] != "B") {
-          OnBlockEffects($index, "EQUIP");
-          OnBlockResolveEffects($cardID);
-        }
-        break;
-      default:
-        break;
+    if (!$skipDRResolution) {
+      switch ($cardID) { //cards that add themselves as blocking
+        case "quickdodge_flexors":
+          if ($turn[0] != "B") {
+            OnBlockEffects($index, "EQUIP");
+            OnBlockResolveEffects($cardID);
+          }
+          break;
+        default:
+          break;
+      }
     }
     SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if ($from != "PLAY" && $from != "EQUIP" && $from != "COMBATCHAINATTACKS") {

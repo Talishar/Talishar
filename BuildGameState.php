@@ -1323,6 +1323,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $thisEvent = new stdClass();
       $thisEvent->eventType = $events[$i];
       $thisEvent->eventValue = $events[$i + 1] ?? null;
+      // CLASHDASH: Dash's own deck reveal skip animation for Dash IO since they already see the top of their decks.
+      if ($thisEvent->eventType == "CLASHDASH") {
+        $clashParts = explode(":", $thisEvent->eventValue ?? "");
+        if (intval($clashParts[0]) == intval($playerID)) continue;
+        $thisEvent->eventType = "CLASH";
+      }
       array_push($newEvents->eventArray, $thisEvent);
     }
   }
