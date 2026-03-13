@@ -1428,14 +1428,6 @@ function EquipPayAdditionalCosts($cardIndex)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "<-", 1);
-      // if ($charInd != "") {
-      //   $charInd = explode(",", $charInd)[0];
-      //   BanishCardForPlayer("edge_of_autumn", $currentPlayer, "EQUIP");
-      //   DestroyCharacter($currentPlayer, $charInd, true);
-      // }
-      // else {
-      //   WriteLog("Something funny happened when trying to banish an edge of autumn, please submit a bug report");
-      // }
       break;
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
