@@ -2194,11 +2194,15 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       IncrementClassState($currentPlayer, $CS_NumWeaponsActivated);
     if (HasWateryGrave($cardID) && $from == "GY") IncrementClassState($currentPlayer, $CS_NumWateryGrave);
     if (CardName($cardID) == "Nimblism") IncrementClassState($currentPlayer, $CS_PlayedNimblism);
-    //gone in a flash is the active chainlink
-    $goneActive = $CombatChain->HasCurrentLink() && $CombatChain->AttackCard()->ID() == "gone_in_a_flash_red";
-    if($goneActive && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
-      if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true)) {
-        AddLayer("TRIGGER", $mainPlayer, "gone_in_a_flash_red");
+    if ($CombatChain->HasCurrentLink()) {
+      $activeLinkID = $CombatChain->AttackCard()->ID();
+      $attackcard = GetClass($activeLinkID, $mainPlayer);
+      if ($attackcard != "-") $attackcard->ActiveLinkPlayTrigger($cardID, $currentPlayer, $from);
+
+      if($activeLinkID  == "gone_in_a_flash_red" && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
+        if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true)) {
+          AddLayer("TRIGGER", $mainPlayer, "gone_in_a_flash_red");
+        }
       }
     }
     if (SearchCurrentTurnEffects("lightning_greaves", $mainPlayer) && DelimStringContains(CardType($cardID), "I")) {

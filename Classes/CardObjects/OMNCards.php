@@ -915,3 +915,20 @@ class omens_of_arcana extends Card {
     $this->controller = $controller;
   }
 }
+
+class flowstate_embodiment_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "flowstate_embodiment_red";
+    $this->controller = $controller;
+  }
+  
+  function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    if (TypeContains($cardID, "I", $player, from:$from) && $player == $this->controller)
+      AddLayer("TRIGGER", $this->controller, $this->cardID); 
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Await($this->controller, "CardChoices", choices:"embodiment_of_lightning,lightning_flow", returnName:"cardID", subsequent:false);
+    Await($this->controller, "PlayAura", final:true);
+  }
+}

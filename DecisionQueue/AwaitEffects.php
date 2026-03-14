@@ -207,3 +207,8 @@ function PlayAuraAwait($player) {
   $effectSource = $dqVars["effectSource"] ?? "-";
   PlayAura($cardID, $player, $number, $isToken, $rogueHeronSpecial, $numPowerCounters, $from, $additionalCosts, $effectController, $effectSource);
 }
+
+function CardChoicesAwait($player) {
+  global $dqVars;
+  PrependDecisionQueue("BUTTONINPUT", $player, $dqVars["choices"], 1);
+}

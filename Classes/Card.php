@@ -618,4 +618,8 @@ class Card {
   function OnAttackEffect($cardID, $i) {
     return false;
   }
+
+  function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    return;
+  }
 }
