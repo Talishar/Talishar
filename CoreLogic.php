@@ -1349,8 +1349,10 @@ function ResolutionStepBlockTriggers() {
   global $defPlayer, $CombatChain;
   if ($CombatChain->HasCurrentLink()) {
     for ($i = $CombatChain->NumCardsActiveLink() - 1; $i > 0 ; --$i) {
-      $card = GetClass($CombatChain->Card($i, true)->ID(), $defPlayer);
-      if ($card != "-") return $card->ResolutionStepBlockTrigger($i);
+      $ChainCard = $CombatChain->Card($i, true);
+      if ($ChainCard->PlayerID() != $defPlayer) continue;
+      $card = GetClass($ChainCard->ID(), $defPlayer);
+      if ($card != "-") $card->ResolutionStepBlockTrigger($i);
     }
   }
 }
