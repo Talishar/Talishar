@@ -900,11 +900,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "ADDSUBCARD":
           $mzArr = explode("-", $lastResult);
           $character = &GetPlayerCharacter($player);
-          if ($character[$mzArr[1]] == "teklovossen_the_mechropotentb") {
+          if (str_contains($character[$mzArr[1]], "teklovossen_the_mechropotent")) {
             if ($character[10] != "-" && $character[10] != "") {
               $character[10] .= ",$paramArr[1]";
             } else $character[10] = $paramArr[1];
             ++$character[2]; // Update the counter
+            AddSoul($paramArr[1], $player, "-");
             break;
           } else if ($character[$mzArr[1] + 10] != "-") {
             $character[$mzArr[1] + 10] .= ",$paramArr[1]";
@@ -3145,7 +3146,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $cardID;
     case "REMOVESOUL":
       $char = &GetPlayerCharacter($player);
-      for ($i = 0; $i < count($lastResult); $i++) {
+      for ($i = count($lastResult) - 1; $i >= 0; $i--) {
         RemoveSoul($player, SearchSoulForIndex($lastResult[$i], $player));
       }
       return $lastResult;
