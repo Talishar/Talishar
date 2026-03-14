@@ -2718,11 +2718,12 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase
       switch ($effectID) {
         case "burdens_of_the_past_blue":
           // handle modal cards separately
+          $defenseReactionsInDiscard = explode(",", SearchDiscard($currentPlayer, "DR", getDistinctCardNames: true));
           if ($modalCheck || GetAbilityTypes($cardID) == "") {
-            if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
+            if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $defenseReactionsInDiscard) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
           }
           elseif(GetAbilityNames($cardID, from:$from) == "-,Defense Reaction" || GetAbilityNames($cardID, from:$from) == "Defense Reaction") {//if dreact is the only available mode
-            if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $effectArr) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
+            if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $defenseReactionsInDiscard) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
           }
           break;
         default:
