@@ -1330,7 +1330,7 @@ function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
   $cardName = $nameGiven ? $cardID : NameOverride($cardID);
   $foundNullTime = SearchItemForModalities(GamestateSanitize($cardName), $mainPlayer, "null_time_zone_blue") != -1;
   $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize($cardName), $defPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime && $from == "HAND";
+  $foundNullTime = $foundNullTime && ($from == "HAND" || $pitch);
 
   $foundSpeechless = SearchAuraForModalities(GamestateSanitize($cardName), $mainPlayer, "leave_em_speechless_blue") != -1;
   $foundSpeechless = $foundSpeechless || SearchAuraForModalities(GamestateSanitize($cardName), $defPlayer, "leave_em_speechless_blue") != -1;
