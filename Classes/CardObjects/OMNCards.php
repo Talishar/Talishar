@@ -923,7 +923,7 @@ class flowstate_embodiment_red extends Card {
   }
   
   function ActiveLinkPlayTrigger($cardID, $player, $from) {
-    if (TypeContains($cardID, "I", $player, from:$from) && $player == $this->controller)
+    if (TypeContains($cardID, "I", $player, from:$from) && !IsActivated($cardID, $from) && $player == $this->controller)
       AddLayer("TRIGGER", $this->controller, $this->cardID); 
   }
 
