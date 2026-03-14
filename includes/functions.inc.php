@@ -564,7 +564,7 @@ function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckb
 
 function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0)
 {
-	global $gameName, $p2IsAI, $deckHashSalt;
+	global $gameName, $p2IsAI, $deckHashSalt, $FaBBazaarKey;
 	if ($p2IsAI == "1") return;
 
 	$hashedP1Deck = HashPlayerName($p1DeckLink, $deckHashSalt);
@@ -590,7 +590,11 @@ function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbui
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, [
+		"Content-Type: application/json",
+		"x-api-key: " . $FaBBazaarKey,
+		"User-Agent: Talishar",
+	]);
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 	curl_exec($ch);
 	curl_close($ch);
