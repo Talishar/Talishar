@@ -269,6 +269,11 @@ function GetDeckBuilderId($uid, $decklink)
 	if (count($row) == 0) return "";
 	if (str_contains($decklink, "fabrary")) $dbId = $row[0];
 	else if (str_contains($decklink, "fabdb")) $dbId = $row[1];
+	else if (str_contains($decklink, "fabbazaar")) {
+		if (preg_match('/fabbazaar[^\/]*\/decks\/([a-zA-Z0-9_-]+)/', $decklink, $matches)) {
+			$dbId = $matches[1];
+		}
+	}
 	if ($dbId == "NULL") $dbId = "";
 	return $dbId;
 }
