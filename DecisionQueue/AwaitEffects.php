@@ -183,8 +183,10 @@ function DealDamageAwait($player) {
 Function YesNoAwait($player) {
   global $dqVars;
   $context = $dqVars["context"];
+  $message = $dqVars["message"];
   PrependDecisionQueue("NOPASS", $player, "-", 1);
-  PrependDecisionQueue("YESNO", $player, $context);
+  PrependDecisionQueue("YESNO", $player, $message, 1);
+  PrependDecisionQueue("SETDQCONTEXT", $player, $context, 1);
 }
 
 function PayResourcesAwait($player) {

@@ -6055,7 +6055,9 @@ class snarky_prick_red extends Card {
     $Deck = new Deck($defPlayer);
     $topDeck = $Deck->Top();
     if (ColorContains($topDeck, 1, $defPlayer)) {
-      Await($this->controller,  "YesNo", context:"if you want to destroy " . CardLink($topDeck) . " from your opponent's deck?", subsequent:false);
+      $message = "if_you_want_to_destroy_the_card";
+      $context = "Choose if you want to destroy " . CardLink($topDeck) . " from your opponent's deck";
+      Await($this->controller,  "YesNo", message:$message, context:$context, subsequent:false);
       Await($this->controller, $this->cardID);
     }
     else {
