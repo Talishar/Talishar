@@ -3480,6 +3480,10 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       return true;
     case "bunker_beard":
       return $phase == "B";
+    case "oldhim":
+    case "oldhim_grandfather_of_eternity":
+      // dreacts that don't go onto the chain
+      return false;
     default:
       break;
   }
