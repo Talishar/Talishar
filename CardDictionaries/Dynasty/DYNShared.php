@@ -633,6 +633,7 @@ function ContractCompleted($player, $cardID)
     case "sack_the_shifty_red": case "sack_the_shifty_yellow": case "sack_the_shifty_blue":
     case "slay_the_scholars_red": case "slay_the_scholars_yellow": case "slay_the_scholars_blue":
     case "already_dead_red":
+      $EffectContext = $cardID;
       PutItemIntoPlayForPlayer("silver", $player);
       break;
     case "defang_the_dragon_red": case "extinguish_the_flames_red":
