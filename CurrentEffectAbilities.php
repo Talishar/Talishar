@@ -1656,7 +1656,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       }
       break;
     case "sawbones_dock_hand_yellow":
-      $preventedDamage += 1;
+      if ($preventable) $preventedDamage += 1;
       RemoveCurrentTurnEffect($index);
       break;
     case "throw_caution_to_the_wind_blue":
