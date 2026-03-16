@@ -1211,7 +1211,7 @@ function PassInput($autopass = true, $doublePass = false)
   elseif ($turn[0] == "YESNO") {
     ContinueDecisionQueue("NO");
   }
-  elseif ($turn[0] == "CHOOSEARCANE") {
+  elseif ($turn[0] == "CHOOSEARCANE" || $turn[0] == "CHOOSENUMBER") {
     ContinueDecisionQueue("0");
   }
   elseif ($turn[0] == "ORDERTRIGGERS") {

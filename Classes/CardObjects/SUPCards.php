@@ -1323,10 +1323,14 @@ class cutting_retort_red extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
-    AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
-    AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
-    AddDecisionQueue("SPECIFICCARD", $this->controller, "CUTTING", 1);
+    $hand = GetHand($this->controller);
+    $resources = &GetResources($this->controller);
+    if(count($hand) > 0 || $resources[0] > 0) {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
+      AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
+      AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
+      AddDecisionQueue("SPECIFICCARD", $this->controller, "CUTTING", 1);
+    }
     return;
   }
 }
