@@ -2803,7 +2803,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
       $names[0] = "-";
     } elseif (
       // Main phase with available action point as the main player: always allow the Action half.
-      !($turn[0] == "M" && $actionPoints >= 1 && $currentPlayer == $mainPlayer)
+      !(($turn[0] == "M" && (!IsResolutionStep() || $from == "HAND")) && $actionPoints >= 1 && $currentPlayer == $mainPlayer)
       && (
         !IsInstantMod($mod)
         && $cardType != "I"
