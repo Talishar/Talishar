@@ -108,6 +108,8 @@ $gamestateLines = array_merge($gamestateLines, [
   $p1IsAI,
   $p2IsAI,
   $AIHasInfiniteHP == "1" ? "1" : "0",
+  json_encode($p1CardTurnLog),
+  json_encode($p2CardTurnLog),
 ]);
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
