@@ -603,6 +603,8 @@ function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbui
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 	curl_exec($ch);
 	curl_close($ch);
+
+	WriteLog("📊 Sending game stats to <b>FaB Bazaar</b>", highlight:true, highlightColor:"green");
 }
 
 function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnStats, $player, $useIntval = false)
