@@ -414,24 +414,26 @@ function logCompletedGameStats($conceded = false)
 			);
 		}
 		SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
-		//SendFaBBazaarResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
+		$wasFaBBazaarResultsSent = SendFaBBazaarResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
 
 		if (!$p1FabraryDisabled && !$p2FabraryDisabled)  $fabraryDesc = "<b>Fabrary</b>";
 		elseif (!$p1FabraryDisabled)                     $fabraryDesc = "<b>Fabrary</b> (Player 1 only)";
 		elseif (!$p2FabraryDisabled)                     $fabraryDesc = "<b>Fabrary</b> (Player 2 only)";
 		else                                             $fabraryDesc = null;
 
-		if (!$p1StatsDisabled && !$p2StatsDisabled)      $insightsDesc = "<b>FaBInsights</b>";
-		elseif (!$p1StatsDisabled)                       $insightsDesc = "<b>FaBInsights</b> (Player 1 only)";
-		elseif (!$p2StatsDisabled)                       $insightsDesc = "<b>FaBInsights</b> (Player 2 only)";
-		else                                             $insightsDesc = null;
+		$otherSites = "<b>FaB Insights</b>, ";
+		if ($wasFaBBazaarResultsSent) $otherSites .= " and <b>FaBBazaar</b>";
+		if (!$p1StatsDisabled && !$p2StatsDisabled);
+		elseif (!$p1StatsDisabled)                       $otherSites .= " (Player 1 only)";
+		elseif (!$p2StatsDisabled)                       $otherSites .= " (Player 2 only)";
+		else                                             $otherSites = null;
 
-		if ($fabraryDesc !== null && $insightsDesc !== null)
-			WriteLog("📊 Sending game result to $fabraryDesc and $insightsDesc", highlight:true, highlightColor:"green");
+		if ($fabraryDesc !== null && $otherSites !== null)
+			WriteLog("📊 Sending game result to $fabraryDesc and $otherSites", highlight:true, highlightColor:"green");
 		elseif ($fabraryDesc !== null)
 			WriteLog("📊 Sending game result to $fabraryDesc", highlight:true, highlightColor:"green");
-		elseif ($insightsDesc !== null)
-			WriteLog("📊 Sending game stats to $insightsDesc", highlight:true, highlightColor:"green");
+		elseif ($otherSites !== null)
+			WriteLog("📊 Sending game stats to $otherSites", highlight:true, highlightColor:"green");
 		else
 			WriteLog("No game stats sent as both players have disabled stats", highlight:true);
 		mysqli_close($conn);
@@ -449,39 +451,6 @@ function LogChallengeResult($conn, $gameResultID, $playerID, $result)
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
-}
-
-
-function SendFabDBResults($player, $decklink, $deck, $gameID, $opposingHero)
-{
-	global $fabDBToken, $fabDBSecret, $gameName, $p1deckbuilderID, $p2deckbuilderID;
-	if($decklink == null || !str_contains($decklink, "fabdb.net")) return;
-
-	$linkArr = explode("/", $decklink);
-	$slug = array_pop($linkArr);
-
-	$url = "https://api.fabdb.net/game/results/" . $slug;
-	$ch = curl_init($url);
-	$payload = SerializeGameResult($player, $decklink, $deck, $gameID, $opposingHero, $gameName);
-	$payloadArr = json_decode($payload, true);
-	$payloadArr["time"] = microtime();
-	$payloadArr["hash"] = hash("sha512", $fabDBSecret . $payloadArr["time"]);
-	$payloadArr["player"] = $player;
-	$payloadArr["user"] = ($player == 1 ? $p1deckbuilderID : $p2deckbuilderID);
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payloadArr));
-	curl_setopt($ch, CURLOPT_HEADER, 0);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-
-	$headers = [
-		"Authorization: Bearer " . $fabDBToken,
-	];
-
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-	curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-	$result = curl_exec($ch);
-	$information = curl_getinfo($ch);
-	curl_close($ch);
 }
 
 function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID = "", $conceded = false)
@@ -592,7 +561,7 @@ function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbui
 	$payloadArr['countLoserDeck'] = $countLoserDeck;
 
 	$deckId = $p1deckbuilderID ?: $p2deckbuilderID;
-	if (empty($deckId)) return;
+	if (empty($deckId)) return false;//We only send to FaBBazaar if the player is using a FaBBazaar deck
 
 	$url = "https://fabbazaar.app/api/decks/" . $deckId . "/talishar";
 
@@ -608,8 +577,7 @@ function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbui
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 	curl_exec($ch);
 	curl_close($ch);
-
-	WriteLog("📊 Sending game stats to <b>FaB Bazaar</b>", highlight:true, highlightColor:"green");
+	return true;
 }
 
 function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnStats, $player, $useIntval = false)
