@@ -67,7 +67,10 @@ function LogPlayCardStats($player, $cardID, $from, $type="")
 {
   global $turn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense;
   global $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $mainPlayer, $CardStats_TimesKatsuDiscard, $TurnStats_CardsDiscarded, $CardStats_TimesDiscarded;
+  global $currentTurn;
   if($type === "") $type = $turn[0];
+  $cardTurnLog = &GetCardTurnLog($player);
+  $cardTurnLog[] = [intval($currentTurn), $cardID, $type];
   $cardStats = &GetCardStats($player);
   $turnStats = &GetTurnStats($player);
   $turnStatPieces = TurnStatPieces();

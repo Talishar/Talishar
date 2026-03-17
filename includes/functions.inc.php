@@ -575,11 +575,16 @@ function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbui
 	$hashedP1Deck = HashPlayerName($p1DeckLink, $deckHashSalt);
 	$hashedP2Deck = HashPlayerName($p2DeckLink, $deckHashSalt);
 
+	$p1TurnLog = &GetCardTurnLog(1);
+	$p2TurnLog = &GetCardTurnLog(2);
+
 	$payloadArr = [];
 	$payloadArr['gameID'] = $gameID;
 	$payloadArr['gameName'] = $gameName;
 	$payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero, $p1StatsDisabled));
+	$payloadArr['deck1']->turnLog = $p1TurnLog;
 	$payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero, $p2StatsDisabled));
+	$payloadArr['deck2']->turnLog = $p2TurnLog;
 	$payloadArr['format'] = GetCachePiece(intval($gameName), 13);
 	$payloadArr['gameGUID'] = $gameGUID;
 	$payloadArr['conceded'] = $conceded;
