@@ -560,7 +560,8 @@ function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbui
 	$payloadArr['countWinnerDeck'] = $countWinnerDeck;
 	$payloadArr['countLoserDeck'] = $countLoserDeck;
 
-	$deckId = $p1deckbuilderID ?: $p2deckbuilderID;
+	$deckId = (str_contains($p1DeckLink, "fabbazaar") ? $p1deckbuilderID : null)
+		?: (str_contains($p2DeckLink, "fabbazaar") ? $p2deckbuilderID : null);
 	if (empty($deckId)) return false;//We only send to FaBBazaar if the player is using a FaBBazaar deck
 
 	$url = "https://fabbazaar.app/api/decks/" . $deckId . "/talishar";
