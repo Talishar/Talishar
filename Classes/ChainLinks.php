@@ -76,6 +76,7 @@ class ChainLink {
 	function FindCardUID($uid) {
 		if (count($this->link) == 0) return new LinkCard($this->linkNum, -1);
 		for ($i = 0; $i < count($this->link); $i += ChainLinksPieces()) {
+			if ($this->link[$i + 2] == 0) continue;
       if ($this->link[$i + 8] == $uid) return new LinkCard($this->linkNum, $i);
     }
     return new LinkCard($this->linkNum, -1);
