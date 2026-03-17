@@ -2,6 +2,10 @@
 
 error_reporting(E_ALL);
 
+// Limit script execution time to 1 second to avoid long-running requests
+@set_time_limit(1);
+@ini_set('max_execution_time', '1');
+
 include "WriteLog.php";
 include "GameLogic.php";
 include "GameTerms.php";
