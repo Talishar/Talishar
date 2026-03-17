@@ -163,6 +163,7 @@ try {
             $content = str_replace('<#865423689976774656>', '#bug-reports', $content);
             $content = str_replace('<#971928581267664936>', '#feature-requests', $content);
             $content = str_replace('<#865412150125789217>', '#general', $content);
+            $content = str_replace('<#1363088144139812935>', '#mobile-ui-bug-reports', $content);
 
             // Replace user mentions with usernames
             $content = str_replace('<@387720067640459275>', '@THESPIRITOFLIFE', $content);
