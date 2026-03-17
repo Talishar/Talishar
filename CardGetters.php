@@ -325,6 +325,20 @@ function &GetCardStats($player)
   }
 }
 
+function &GetCardTurnLog($player)
+{
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $myCardTurnLog, $theirCardTurnLog, $mainCardTurnLog, $defCardTurnLog;
+  global $myStateBuiltFor;
+  if ($mainPlayerGamestateStillBuilt) {
+    if ($player == $mainPlayer) return $mainCardTurnLog;
+    else return $defCardTurnLog;
+  } else {
+    if ($player == $myStateBuiltFor) return $myCardTurnLog;
+    else return $theirCardTurnLog;
+  }
+}
+
 function &GetTurnStats($player)
 {
   global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
