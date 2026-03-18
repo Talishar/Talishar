@@ -6462,12 +6462,11 @@ class pilfer_the_tomb_blue extends Card {
         default => "-"
       };
       if ($zone != "-") {
-        $index = SearchdiscardForUniqueID($targArray[1], $otherPlayer);
-        if ($index != -1) {
-          AddDecisionQueue("PASSPARAMETER", $this->controller, "THEIRDISCARD-" . $index, 1);
-          AddDecisionQueue("MZADDZONE", $this->controller, "THEIRBANISH,GY,-," . $this->cardID, 1);
-          AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
-        } 
+        $targetCard = $zone->FindCardUID($targArray[1]);
+        $targetCardID = $targetCard->ID();
+        if ($targetCardID != "-")
+          BanishCardForPlayer($targetCardID, $targetCard->Owner(), "DISCARD");
+        $targetCard->Remove();
       }
     }
     return "";

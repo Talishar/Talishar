@@ -102,6 +102,10 @@ class DiscardCard {
       $this->pieces = [];
   }
 
+  function Owner() {
+    return $this->controller;
+  }
+
   function ID() {
     return $this->pieces[$this->index] ?? "-";
   }
