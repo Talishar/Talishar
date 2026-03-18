@@ -5617,8 +5617,8 @@ class dramatic_pause_red extends Card {
       DestroyAuraUniqueID($this->controller, $target);
     }
     else {
-      $index = explode("-", $target)[1];
-      CombatChainDefenseModifier($index, 3);
+      $index = explode("-", $target)[1] ?? -1;
+      if ($index != -1) CombatChainDefenseModifier($index, 3);
     }
   }
 }

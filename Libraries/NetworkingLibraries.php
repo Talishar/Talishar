@@ -243,8 +243,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 19: //MULTICHOOSE X - multi choice CHOOSEMULTIZONE
       if ($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") {
         $options = explode(",", $turn[2]);
-        $limit1 = explode("-", $options[0]);
-        $limit2 = explode("-", $options[1]);
+        $limit1 = explode("-", $options[0] ?? "");
+        $limit2 = explode("-", $options[1] ?? "");
 
         // either or both limit options exists this is just a safe-guard way to handle it
         $maxSelect = 0;
