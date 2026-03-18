@@ -18,13 +18,41 @@ if (!$conn) {
 }
 */
 
+function retryConnectWithExponentialBackoff($servername, $dBUsername, $dBPassword, $dBName, $maxRetries = 5, $baseDelay = 100) {
+    $attempt = 0;
+    while ($attempt < $maxRetries) {
+        try {
+            return mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+        } catch (\Throwable $e) {
+            $attempt++;
+
+            // Bail immediately on client errors (e.g., 4xx status codes)
+            if ($e instanceof \HttpException && $e->getCode() >= 400 && $e->getCode() < 500) {
+                throw $e;
+            }
+
+            if ($attempt >= $maxRetries) {
+                throw $e; // Re-throw if max attempts reached
+            }
+
+            // Calculate exponential backoff with jitter (milliseconds)
+            $delayMs = $baseDelay * (2 ** ($attempt - 1));
+            // Add randomness (jitter)
+            $jitter = random_int($delayMs / 2, $delayMs);
+
+            // Convert milliseconds to microseconds for usleep()
+            usleep($jitter * 1000);
+        }
+    }
+}
+
 function GetDBConnection()
 {
 	global $servername, $dBUsername, $dBPassword, $dBName;
 	try {
-		$conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+		$conn = retryConnectWithExponentialBackoff($servername, $dBUsername, $dBPassword, $dBName);
 	} catch (\Exception $e) {
-		$conn = false;
+		return false;
 	}
 
 	return $conn;
