@@ -2031,7 +2031,7 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
   $cardName = NameOverride($cardID, $player);
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    $modName = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player);
+    $modName = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
     if ($partial) {
       $modName = explode(" ", $modName);
       $modName = implode(",", $modName);
@@ -3247,7 +3247,7 @@ function IsCardNamed($player, $cardID, $name)
   if (CardName($cardID) == $name) return true;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    $givenNames = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player);
+    $givenNames = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
     $givenNames = explode(",", $givenNames);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     foreach($givenNames as $givenName)
@@ -3265,7 +3265,7 @@ function GetCurrentAttackNames()
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($i = 0; $i < $currentTurnEffectsCount; $i += CurrentTurnEffectPieces()) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
-    $name = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $mainPlayer);
+    $name = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $mainPlayer, $combatChain[0]);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($name != "" && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
       if (str_contains($name, ","))

@@ -614,7 +614,8 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
   AddDecisionQueue("MZSETDQVAR", $player, "0", 1);
 
   if ($silent);
-  else if ($isReveal) AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+  else if ($isReveal)
+    AddDecisionQueue("REVEALCARDS", $player, "-", 1);
   else AddDecisionQueue("WRITELOG", $player, $logText, 1);
 
   //may need to set passSearch = false to make a banish not trigger contracts

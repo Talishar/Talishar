@@ -1,6 +1,6 @@
 <?php
 
-function TCCEffectPowerModifier($cardID): int|string
+function TCCEffectPowerModifier($cardID, $attached): int|string
 {
   $idArr = explode(",", $cardID);
   $cardID = $idArr[0];
@@ -9,7 +9,8 @@ function TCCEffectPowerModifier($cardID): int|string
     "earthlore_empowerment_red", "crash_down_yellow" => 5,
     "earthlore_empowerment_yellow" => 4,
     "final_act_red" => $idArr[1],
-    "bittering_thorns_red", "might", "evo_scatter_shot_blue_equip", "growl_red", "growl_yellow" => 1,
+    "bittering_thorns_red", "might", "evo_scatter_shot_blue_equip" => 1,
+    "growl_red", "growl_yellow" => $attached ? 1 : 0,
     default => 0
   };
 }
@@ -21,7 +22,7 @@ function TCCCombatEffectActive($cardID, $attackID): bool
   $cardID = $idArr[0];
   return match ($cardID) {
     "crash_down_red", "earthlore_empowerment_red", "crash_down_yellow", "earthlore_empowerment_yellow" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA",
-    "growl_red", "growl_yellow" => CardNameContains($attackID, "Crouching Tiger", $mainPlayer),
+    "growl_red", "growl_yellow" => CardNameContains($attackID, "Crouching Tiger", $mainPlayer) && TypeContains($attackID, "AA"),
     "lay_down_the_law_red", "final_act_red", "bittering_thorns_red", "might", "evo_scatter_shot_blue_equip" => true,
     default => false
   };

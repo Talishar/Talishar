@@ -3520,11 +3520,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $paramArr = explode(",", $parameter);
         $search = $paramArr[0] ?? "-";
         $dest = $paramArr[1] ?? "MYHAND";
-        $isReveal = isset($paramArr[2]) ? ($paramArr == 1) : true;
+        $isReveal = isset($paramArr[2]) ? ($paramArr[2] == 1) : true;
         $mod = $paramArr[3] ?? "-";
         switch($dest) {
           case "MYHAND":
-            $isReveal = isset($paramArr[2]) ? ($paramArr == 1) : true;
             MZMoveCard($player, "MYDECK:$search", $dest, may:true, isReveal:$isReveal);
             break;
           case "MYBANISH":

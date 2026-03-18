@@ -1179,6 +1179,8 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "fasting_carcass_red" => true,
     "fasting_carcass_yellow" => true,
     "fasting_carcass_blue" => true,
+    "growl_red" => true,
+    "growl_yellow" => true,
     default => false
   };
 }

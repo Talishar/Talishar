@@ -602,7 +602,7 @@ function EffectPowerModifier($cardID, $attached=false)
   else if ($set == "DYN") return DYNEffectPowerModifier($cardID);
   else if ($set == "OUT") return OUTEffectPowerModifier($cardID, $attached);
   else if ($set == "DTD") return DTDEffectPowerModifier($cardID);
-  else if ($set == "TCC") return TCCEffectPowerModifier($cardID);
+  else if ($set == "TCC") return TCCEffectPowerModifier($cardID, $attached);
   else if ($set == "EVO") return EVOEffectPowerModifier($cardID);
   else if ($set == "HVY") return HVYEffectPowerModifier($cardID);
   else if ($set == "MST") return MSTEffectPowerModifier($cardID, $attached);
@@ -2608,13 +2608,13 @@ function ActivateAbilityEffects()
   $currentTurnEffects = array_values($currentTurnEffects);
 }
 
-function CurrentEffectNameModifier($effectID, $effectParameter, $player)
+function CurrentEffectNameModifier($effectID, $effectParameter, $player, $cardID)
 {
   $name = "";
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return $name;
   switch ($effectID) {
     case "mask_of_many_faces":
-      $name = $effectParameter;
+      if (TypeContains($cardID, "AA")) $name = $effectParameter;
       break;
     case "be_like_water_red":
     case "be_like_water_yellow":
