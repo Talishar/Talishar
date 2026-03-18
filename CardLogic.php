@@ -3888,6 +3888,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PREPENDLASTRESULT", $player, "MYAURAS-", 1);
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
         AddDecisionQueue("DRAW", $player, "-", 1);
+        break;
       case "kabuto_of_imperial_authority":
         AddCurrentTurnEffect($parameter, $mainPlayer);
         break;
