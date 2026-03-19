@@ -79,10 +79,11 @@ function MultiRemoveDeckAwait($player) {
 function MultiAddHandAwait($player) {
   global $dqVars;
   $cards = explode(",", $dqVars["cardIDs"]);
+  $loud = $dqVars["log"] ?? "1";
   $hand = &GetHand($player);
   $log = "";
   for ($i = 0; $i < count($cards); ++$i) {
-    if ($parameter == "1") {
+    if ($loud == "1") {
       if ($log != "") $log .= ", ";
       if ($i != 0 && $i == count($cards) - 1) $log .= "and ";
       $log .= CardLink($cards[$i], $cards[$i]);
