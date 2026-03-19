@@ -573,10 +573,29 @@
 
 
 class fractal_replication_red extends Card {
+	private $addedAbilities;
 
   function __construct($controller) {
+		global $CurrentTurnEffects;
     $this->cardID = "fractal_replication_red";
     $this->controller = $controller;
+
+		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
+		$addedAbilityIDs = array_slice(explode(",", $Effect->EffectID()), 1);
+		$this->addedAbilities = [];
+		if ($Effect->Index() != -1) {
+			foreach ($addedAbilityIDs as $ability) {
+				$card = GetClass($ability, $this->controller);
+				if ($card != "-") $this->addedAbilities[] = $card;
+			}
+		}
+	}
+
+	function __call($method, $args) {
+		if (isset($this->$method)) {
+			$func = $this->$method;
+			return call_user_func_array($func, $args);
+		}
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
