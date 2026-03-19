@@ -1634,8 +1634,6 @@ function IsDominateActive()
       }
     }
   }
-  // $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  // $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
   $extraText = GetHorrorsBuff();
   $textBoxes = [$combatChain[0], $extraText];
   foreach ($textBoxes as $box) {
@@ -1680,17 +1678,6 @@ function IsDominateActive()
       case "drowning_dire_yellow":
       case "drowning_dire_blue":
         return GetClassState($mainPlayer, $CS_NumAuras) > 0;
-      case "fractal_replication_red":
-        $hasDominate = false;
-        for ($i = 0; $i < count($chainLinks); ++$i) {
-          for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
-            $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $mainPlayer) || ($j == 0 && DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST"));
-            if ($chainLinks[$i][$j + 2] == "1" && $chainLinks[$i][$j] != "fractal_replication_red" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA") {
-              if (!$hasDominate) $hasDominate = HasDominate($chainLinks[$i][$j]);
-            }
-          }
-        }
-        return $hasDominate;
       case "isolate_red":
       case "isolate_yellow":
       case "isolate_blue":
@@ -1699,9 +1686,10 @@ function IsDominateActive()
         break;
     }
   }
-  if ($combatChainState[$CCS_CachedDominateActive] == 1) {
+  if ($combatChainState[$CCS_CachedDominateActive] == 1)
     return true;
-  }
+  $card = GetClass($combatChain[0], $mainPlayer);
+  if ($card != "-") $card->HasDominate();
   return false;
 }
 

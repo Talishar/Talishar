@@ -828,7 +828,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "reek_of_corruption_red":
     case "reek_of_corruption_yellow":
     case "reek_of_corruption_blue":
-    case "fractal_replication_red":
     case "bingo_red":
     case "dustup_red":
     case "dustup_yellow":
@@ -4743,7 +4742,10 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
   if ($cardID == "") return 0;
   $power = PowerValue($cardID, $player, $from);
   if ($cardID == "mutated_mass_blue") $power = SearchPitchForNumCosts($player) * 2;
-  else if ($cardID == "fractal_replication_red") $power = FractalReplicationStats("Power");
+  else if ($cardID == "fractal_replication_red") {
+    $card = new fractal_replication_red($player);
+    return $card->SpecialPower();
+  }
   else if ($cardID == "spectral_procession_red") $power = CountAura("spectral_shield", $player);
   else if ($cardID == "diabolic_offering_blue") $power = GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
   else if ($cardID == "tough_as_a_rok_blue") $power = PlayerHasLessHealth($player) ? 6 : 0;

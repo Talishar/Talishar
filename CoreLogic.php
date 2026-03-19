@@ -2331,8 +2331,6 @@ function DoesAttackHaveGoAgain()
       return CachedTotalPower() > PowerValue($attackID, $mainPlayer, "CC");
     case "swarming_gloomveil_red":
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
-    case "fractal_replication_red":
-      return FractalReplicationStats("GoAgain");
     case "searing_emberblade":
       return NumDraconicChainLinks() >= 2;
     case "cinderskin_devotion_red":

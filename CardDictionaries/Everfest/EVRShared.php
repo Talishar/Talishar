@@ -424,9 +424,6 @@
         AddDecisionQueue("MULTIREMOVEHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
         return "";
-      case "fractal_replication_red":
-        FractalReplicationStats("Ability");
-        return "";
       case "veiled_intentions_red": case "veiled_intentions_yellow": case "veiled_intentions_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -667,9 +664,6 @@
       case "reek_of_corruption_red": case "reek_of_corruption_yellow": case "reek_of_corruption_blue":
         if(IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_NumAuras) > 0) PummelHit();
         break;
-      case "fractal_replication_red":
-        FractalReplicationStats("Hit");
-        break;
       case "bingo_red":
         if(IsHeroAttackTarget()) {
           AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
@@ -797,66 +791,6 @@
     AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYAURAS", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIZONETOKENCOPY", $mainPlayer, "-", 1);
-  }
-
-  function FractalReplicationStats($stat, $from="CC")
-  {
-    global $chainLinks, $CombatChain, $currentPlayer, $chainLinkSummary;
-    $highestAttack = 0;
-    $highestBlock = 0;
-    $hasPhantasm = false;
-    $hasGoAgain = false;
-    for($i=0; $i<count($chainLinks); ++$i) {
-      for($j=0; $j<count($chainLinks[$i]); $j+=ChainLinksPieces()) {
-        $isIllusionist = ClassContains($chainLinks[$i][$j], "ILLUSIONIST", $currentPlayer) || $j == 0 && DelimStringContains($chainLinkSummary[$i*ChainLinkSummaryPieces()+3], "ILLUSIONIST");
-        if($chainLinks[$i][$j+2] == "1" && $chainLinks[$i][$j] != "fractal_replication_red" && $isIllusionist && CardType($chainLinks[$i][$j]) == "AA")
-        {
-          if($stat == "Hit") ProcessHitEffect($chainLinks[$i][$j]);
-          elseif ($stat == "Ability") {
-            PlayAbility($chainLinks[$i][$j], "HAND", 0);
-            $modalAbilities = explode("-",  $chainLinkSummary[$i*ChainLinkSummaryPieces()+7]);
-            ModalAbilities($currentPlayer, $modalAbilities[0], $modalAbilities[1]);
-          }
-          else {
-            $power = ModifiedPowerValue($chainLinks[$i][$j], $currentPlayer, "CC", source:"fractal_replication_red");
-            if($power > $highestAttack) $highestAttack = $power;
-            $modifiedBaseAttack = $chainLinkSummary[$i*ChainLinkSummaryPieces()+6];
-            if($modifiedBaseAttack > $highestAttack) $highestAttack = $modifiedBaseAttack;
-            $block = BlockValue($chainLinks[$i][$j]);
-            if($block > $highestBlock) $highestBlock = $block;
-            if(!$hasPhantasm) $hasPhantasm = HasPhantasm($chainLinks[$i][$j]);
-            if(!$hasGoAgain) $hasGoAgain = HasGoAgain($chainLinks[$i][$j]);
-          }
-        }
-      }
-    }
-    for($i=0; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
-      $cardID = $CombatChain->Card($i, cardNumber:true)->ID();
-      if($cardID != "fractal_replication_red" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && CardType($cardID) == "AA")
-      {
-        if($stat == "Hit") ProcessHitEffect($cardID);
-        elseif ($stat == "Ability") {
-          PlayAbility($cardID, "HAND", 0);
-          $modalAbilities = explode("-",  $chainLinkSummary[$i*ChainLinkSummaryPieces()+7]);
-          ModalAbilities($currentPlayer, $modalAbilities[0], $modalAbilities[1]);
-        }
-        else {
-          $power = ModifiedPowerValue($cardID, $currentPlayer, "CC", source:"fractal_replication_red");
-          if($power > $highestAttack) $highestAttack = $power;
-          $block = BlockValue($cardID);
-          if($block > $highestBlock) $highestBlock = $block;
-          if(!$hasPhantasm) $hasPhantasm = HasPhantasm($cardID);
-          if(!$hasGoAgain) $hasGoAgain = HasGoAgain($cardID);
-        }
-      }
-    }
-    switch($stat) {
-      case "Power": return $highestAttack;
-      case "Block": return $highestBlock;
-      case "HasPhantasm": return $from == "CC" ? $hasPhantasm : 0;
-      case "GoAgain": return $from == "CC" ? $hasGoAgain : 0;
-      default: return 0;
-    }
   }
 
   function ShatterIndices($player, $pendingDamage)

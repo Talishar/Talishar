@@ -31,6 +31,7 @@ include "Classes/CardObjects/DBGCards.php"; //debug cards
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/ARCCards.php";
 include "Classes/CardObjects/MONCards.php";
+include "Classes/CardObjects/EVRCards.php";
 include "Classes/CardObjects/UPRCards.php";
 include "Classes/CardObjects/DYNCards.php";
 include "Classes/CardObjects/DTDCards.php";
