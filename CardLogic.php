@@ -3714,25 +3714,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           Draw($player);
         }
         break;
-      case "blast_to_oblivion_red":
-      case "blast_to_oblivion_yellow":
-      case "blast_to_oblivion_blue":
-        $otherPlayer = $player == 1 ? 2 : 1;
-        $targetedPlayer = intval(explode("-", $target)[0]);
-        $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
-        $uID = explode("-", $target)[1];
-        $auras = &GetAuras($targetedPlayer);
-        for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-          if ($auras[$i + 6] == $uID) {
-            $cardID = $auras[$i];
-            $cardOwner = substr($auras[$i+9], 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
-            $lastResult = RemoveAura($targetedPlayer, $i);
-            AddPlayerHand($cardID, $cardOwner, "-");
-            return $lastResult;
-          }
-        }
-        WriteLog("The target for " . CardLink($parameter, $parameter) . " has been removed, effect fizzling");
-        break;
       case "face_purgatory":
         if($CombatChain->HasCurrentLink()) PummelHit($otherPlayer);
         Draw($player);

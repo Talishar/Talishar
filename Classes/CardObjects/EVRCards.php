@@ -606,7 +606,7 @@ class fractal_replication_red extends Card {
 			for ($j = 0; $j < $Link->NumCards(); ++$j) {
 				$LinkCard = $Link->GetLinkCard($j, true);
 				$cardID = $LinkCard->ID();
-				$isIllusionist = ClassContains($cardID, "ILLUSIONIST", $LinkCard->PlayerID()) || $j == 0 && DelimStringContains($Link->Talents(), "ILLUSIONIST");
+				$isIllusionist = ClassContains($cardID, "ILLUSIONIST", $LinkCard->PlayerID()) || $j == 0 && DelimStringContains($Link->Class(), "ILLUSIONIST");
 				if (!$isIllusionist) continue;
 				if (!$LinkCard->StillOnChain()) continue;
 				if (!TypeContains($cardID, "AA", $LinkCard->PlayerID())) continue;
@@ -666,7 +666,7 @@ class fractal_replication_red extends Card {
 			for ($j = 0; $j < $Link->NumCards(); ++$j) {
 				$LinkCard = $Link->GetLinkCard($j, true);
 				$cardID = $LinkCard->ID();
-				$isIllusionist = ClassContains($cardID, "ILLUSIONIST", $LinkCard->PlayerID()) || $j == 0 && DelimStringContains($Link->Talents(), "ILLUSIONIST");
+				$isIllusionist = ClassContains($cardID, "ILLUSIONIST", $LinkCard->PlayerID()) || $j == 0 && DelimStringContains($Link->Class(), "ILLUSIONIST");
 				if (!$isIllusionist) continue;
 				if (!$LinkCard->StillOnChain()) continue;
 				if (!TypeContains($cardID, "AA", $LinkCard->PlayerID())) continue;
@@ -704,6 +704,12 @@ class fractal_replication_red extends Card {
 			if ($check && $availableOnhit) return true;
 		}
 		return false;
+	}
+
+	function ActiveLinkPlayTrigger($cardID, $player, $from) {
+		foreach($this->addedAbilities as $ability) {
+			$ability->ActiveLinkPlayTrigger($cardID, $player, $from);
+		}
 	}
 }
 

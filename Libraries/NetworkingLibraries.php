@@ -1949,7 +1949,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumBluePlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumLightningPlayed;
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
-  global $CCS_NextInstantBouncesAura, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
+  global $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
   global $CS_NumWeaponsActivated;
@@ -2356,22 +2356,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if (($CombatChain->HasCurrentLink() || IsLayerStep()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && !IsActivated($cardID, $from) && $mainPlayer == $currentPlayer) {
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
-      if ($combatChainState[$CCS_NextInstantBouncesAura] == 1) {
-        if (IsLayerStep()) {
-          if (count($chainLinks) > 0) $triggeredID = $chainLinks[count($chainLinks) - 1][0];
-          else $triggeredID = "-";
-        }
-        else $triggeredID = $CombatChain->AttackCard()->ID();
-        $combatChainState[$CCS_NextInstantBouncesAura] = 0;
-        if ($triggeredID != "-") {
-          $context = "Blast to Oblivion trigger: Choose an aura to return to its owner's hand (or pass)";
-          $search = "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T";
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $context);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("ADDTRIGGER", $currentPlayer, $triggeredID, 1);
-        }
-      }
     }
     AddCharacterPlayCardTrigger($cardID, $playType, $from);
     if (class_exists($cardID)) {
