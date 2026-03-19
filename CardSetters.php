@@ -885,6 +885,7 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
   global $layers;
   $params = explode("-", $MZIndex);
   $index = $params[1];
+  if (!is_numeric($index)) return;
   $cardID = $layers[$index];
   $player = $layers[$index + 1];
   $otherPlayer = $player == 1 ? 2 : 1;
