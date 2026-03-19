@@ -1343,17 +1343,49 @@ class electromagnetic_somersault_blue extends Card {
 // }
 
 
-// class gone_in_a_flash_red extends Card {
+class gone_in_a_flash_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "gone_in_a_flash_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "gone_in_a_flash_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CombatChain, $defPlayer, $mainPlayer;
+    if (!DoesAttackHaveGoAgain()) //lock in last known information
+      $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
+    CleanUpCombatEffects();
+    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+    $destPlayer = str_contains($CombatChain->AttackCard()->From(), "THEIR") ? $defPlayer : $mainPlayer;
+    AddPlayerHand($CombatChain->AttackCard()->ID(), $destPlayer, "CC");
+    if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
+      //only close the chain if removed before the damage step
+      CloseCombatChain();
+    }
+    return;
+  }
+
+  function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    global $mainPlayer;
+    if (TypeContains($cardID, "I") && $player == $this->controller && !IsActivated($cardID, $from)) {
+      if(SearchCurrentTurnEffects($this->cardID, $mainPlayer, true))
+        AddLayer("TRIGGER", $mainPlayer, $this->cardID);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    $message = "if_you_want_to_bounce_the_attack";
+    $context = "Choose if you want to return " . CardLink($CombatChain->AttackCard()->ID) . " to the owner's hand";
+    Await($this->controller,  "YesNo", message:$message, context:$context, subsequent:false);
+    Await($this->controller, $this->cardID, final:true);
+  }
+}
 
 
 // class gustwave_of_the_second_wind_red extends Card {

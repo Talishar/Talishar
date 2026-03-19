@@ -218,9 +218,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $combatChainState[$CCS_EclecticMag] = 1;
       return "";
-    case "gone_in_a_flash_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "high_voltage_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Amp 1";

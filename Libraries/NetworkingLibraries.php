@@ -2198,12 +2198,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $activeLinkID = $CombatChain->AttackCard()->ID();
       $attackcard = GetClass($activeLinkID, $mainPlayer);
       if ($attackcard != "-") $attackcard->ActiveLinkPlayTrigger($cardID, $currentPlayer, $from);
-
-      if($activeLinkID  == "gone_in_a_flash_red" && DelimStringContains(CardType($cardID), "I") && $currentPlayer == $mainPlayer) {
-        if(SearchCurrentTurnEffects("gone_in_a_flash_red", $mainPlayer, true)) {
-          AddLayer("TRIGGER", $mainPlayer, "gone_in_a_flash_red");
-        }
-      }
     }
     if (SearchCurrentTurnEffects("lightning_greaves", $mainPlayer) && DelimStringContains(CardType($cardID), "I")) {
       // check whether lightning greaves has been activated *before* the card is played

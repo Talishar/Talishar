@@ -3705,11 +3705,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           MZMoveCard($player, "MYAURAS", "MYHAND", logText:"Aura returned: <0>", isSubsequent:true);
         }
         break;
-      case "gone_in_a_flash_red":
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("gone_in_a_flash_red", "gone_in_a_flash_red")." to your hand?");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
-        break;
       case "channel_lightning_valley_yellow":
         if ($additionalCosts == "CHANNEL") {
           ChannelTalent($target, "LIGHTNING");
