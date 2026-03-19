@@ -541,8 +541,8 @@ function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbui
 	global $gameName, $p2IsAI, $deckHashSalt, $FaBBazaarKey;
 	if ($p2IsAI == "1") return;
 
-	$hashedP1Deck = HashPlayerName($p1DeckLink, $deckHashSalt);
-	$hashedP2Deck = HashPlayerName($p2DeckLink, $deckHashSalt);
+	$hashedP1Deck = "-";//HashPlayerName($p1DeckLink, $deckHashSalt);
+	$hashedP2Deck = "-";//HashPlayerName($p2DeckLink, $deckHashSalt);
 
 	$p1TurnLog = &GetCardTurnLog(1);
 	$p2TurnLog = &GetCardTurnLog(2);
