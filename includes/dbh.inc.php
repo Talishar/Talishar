@@ -49,8 +49,10 @@ function retryConnectWithExponentialBackoff($servername, $dBUsername, $dBPasswor
 function GetDBConnection()
 {
 	global $servername, $dBUsername, $dBPassword, $dBName;
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 	try {
-		$conn = retryConnectWithExponentialBackoff($servername, $dBUsername, $dBPassword, $dBName);
+		// $conn = retryConnectWithExponentialBackoff($servername, $dBUsername, $dBPassword, $dBName);
+        $conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
 	} catch (\Exception $e) {
 		error_log("DB connection failed: " . mysqli_connect_error() . " (errno: " . mysqli_connect_errno() . ")");
 		return false;
