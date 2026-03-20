@@ -725,8 +725,8 @@ class predatory_plating extends Card {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $CombatChain, $ChainLinks;
-    if (LayerStepPower($this->controller) >= 6) return false;
+    global $CombatChain, $ChainLinks, $mainPlayer;
+    if (LayerStepPower($this->controller) >= 6 && $this->controller == $mainPlayer) return false;
     for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
       $Card = $CombatChain->Card($i, true);
       if ($Card->PlayerID() == $this->controller && TypeContains($Card->ID(), "AA")) {
