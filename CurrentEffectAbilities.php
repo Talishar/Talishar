@@ -749,6 +749,9 @@ function RemoveThisLinkEffects($cardID="")
     else $searchedEffect = $cardID;
     switch ($searchedEffect) {
       case "gone_in_a_flash_red":
+      case "blast_to_oblivion_red":
+      case "blast_to_oblivion_yellow":
+      case "blast_to_oblivion_blue":
         $remove = 1;
         break;
       default:
