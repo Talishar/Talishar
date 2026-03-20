@@ -26,6 +26,7 @@ class Card {
     $this->cardID = $cardID;
     $this->controller = $controller;
     $this->baseCard = new BaseCard($cardID, $controller);
+    $this->addedAbilities = [];
   }
 
   function AddAbilities($cardIDs) {
