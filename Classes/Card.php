@@ -622,4 +622,12 @@ class Card {
   function ActiveLinkPlayTrigger($cardID, $player, $from) {
     return;
   }
+
+  function HasPhantasm() {
+    return GeneratedHasPhantasm($this->cardID);
+  }
+
+  function HasDominate() {
+    return GeneratedHasDominate($this->cardID);
+  }
 }

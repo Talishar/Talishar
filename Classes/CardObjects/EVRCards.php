@@ -572,17 +572,146 @@
 // }
 
 
-// class fractal_replication_red extends Card {
+class fractal_replication_red extends Card {
+	private $addedAbilities;
 
-//   function __construct($controller) {
-//     $this->cardID = "fractal_replication_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+		global $CurrentTurnEffects;
+    $this->cardID = "fractal_replication_red";
+    $this->controller = $controller;
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
+		$addedAbilityIDs = array_slice(explode(",", $Effect->EffectID()), 1);
+		$this->addedAbilities = [];
+		if ($Effect->Index() != -1) {
+			foreach ($addedAbilityIDs as $ability) {
+				$card = GetClass($ability, $this->controller);
+				if ($card != "-") $this->addedAbilities[] = $card;
+			}
+		}
+	}
+
+	function __call($method, $args) {
+		if (isset($this->$method)) {
+			$func = $this->$method;
+			return call_user_func_array($func, $args);
+		}
+	}
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $ChainLinks;
+		$addedAbilities = [];
+		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+			$Link = $ChainLinks->GetLink($i);
+			for ($j = 0; $j < $Link->NumCards(); ++$j) {
+				$LinkCard = $Link->GetLinkCard($j, true);
+				$cardID = $LinkCard->ID();
+				$isIllusionist = ClassContains($cardID, "ILLUSIONIST", $LinkCard->PlayerID()) || $j == 0 && DelimStringContains($Link->Class(), "ILLUSIONIST");
+				if (!$isIllusionist) continue;
+				if (!$LinkCard->StillOnChain()) continue;
+				if (!TypeContains($cardID, "AA", $LinkCard->PlayerID())) continue;
+				if ($cardID == $this->cardID) continue;
+				$addedAbilities[] = $cardID;
+			}
+		}
+		$addedAbilitiesStr = implode(",", $addedAbilities);
+		AddCurrentTurnEffect("$this->cardID,$addedAbilitiesStr", $this->controller);
+
+		foreach ($addedAbilities as $ability) {
+			PlayAbility($ability, $from, $resourcesPaid, $target, $additionalCosts);
+		}
+		return "";
+  }
+
+	function DoesAttackHaveGoAgain() {
+		global $CurrentTurnEffects;
+		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
+		$addedAbilities = explode(",", $Effect->EffectID());
+		for ($i = 1; $i < count($addedAbilities); ++$i) {
+			if (HasGoAgain($addedAbilities[$i])) return true;
+		}
+		return false;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function HasPhantasm() {
+		global $CurrentTurnEffects;
+		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
+		$addedAbilities = explode(",", $Effect->EffectID());
+		for ($i = 1; $i < count($addedAbilities); ++$i) {
+			if (HasPhantasm($addedAbilities[$i])) return true;
+		}
+		return false;
+	}
+
+	function HasDominate() {
+		global $CurrentTurnEffects;
+		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
+		$addedAbilities = explode(",", $Effect->EffectID());
+		for ($i = 1; $i < count($addedAbilities); ++$i) {
+			if (HasDominate($addedAbilities[$i])) return true;
+		}
+		return false;
+	}
+
+	function GetStats($stat) {
+		global $ChainLinks;
+		$highestAttack = 0;
+    $highestBlock = 0;
+		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+			$Link = $ChainLinks->GetLink($i);
+			for ($j = 0; $j < $Link->NumCards(); ++$j) {
+				$LinkCard = $Link->GetLinkCard($j, true);
+				$cardID = $LinkCard->ID();
+				$isIllusionist = ClassContains($cardID, "ILLUSIONIST", $LinkCard->PlayerID()) || $j == 0 && DelimStringContains($Link->Class(), "ILLUSIONIST");
+				if (!$isIllusionist) continue;
+				if (!$LinkCard->StillOnChain()) continue;
+				if (!TypeContains($cardID, "AA", $LinkCard->PlayerID())) continue;
+				if ($cardID == $this->cardID) continue;
+				if ($j != 0)
+					$power = ModifiedPowerValue($cardID, $LinkCard->PlayerID(), "CC", source:$this->cardID);
+				else
+					$power = $Link->ModifiedBaseAttack();
+				if($power > $highestAttack) $highestAttack = $power;
+				$block = BlockValue($cardID);
+				if($block > $highestBlock) $highestBlock = $block;
+			}
+		}
+		return match($stat) {
+			"block" => $highestBlock,
+			"power" => $highestAttack,
+			default => 0
+		};
+	}
+
+	function SpecialBlock() {
+		return $this->GetStats("block");
+	}
+
+	function SpecialPower() {
+		return $this->GetStats("power");
+	}
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		global $CurrentTurnEffects;
+		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
+		$addedAbilities = explode(",", $Effect->EffectID());
+		for ($i = 1; $i < count($addedAbilities); ++$i) {
+			$availableOnhit = AddOnHitTrigger($addedAbilities[$i], $uniqueID, $source, $targetPlayer, $check);
+			if ($check && $availableOnhit) return true;
+		}
+		return false;
+	}
+
+	function ActiveLinkPlayTrigger($cardID, $player, $from) {
+		foreach($this->addedAbilities as $ability) {
+			$ability->ActiveLinkPlayTrigger($cardID, $player, $from);
+		}
+	}
+}
 
 
 // class genis_wotchuneed extends Card {

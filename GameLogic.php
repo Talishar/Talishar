@@ -31,6 +31,7 @@ include "Classes/CardObjects/DBGCards.php"; //debug cards
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/ARCCards.php";
 include "Classes/CardObjects/MONCards.php";
+include "Classes/CardObjects/EVRCards.php";
 include "Classes/CardObjects/UPRCards.php";
 include "Classes/CardObjects/DYNCards.php";
 include "Classes/CardObjects/DTDCards.php";
@@ -3661,20 +3662,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lastResult = trim($lastResult, ",");
       $lastResult = rtrim($lastResult, ",");
       $lastResult = str_replace(",,", ",", $lastResult);
-      return $lastResult;
-    case "GONEINAFLASH":
-      if (!DoesAttackHaveGoAgain()) //lock in last known information
-        $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
-      CleanUpCombatEffects();
-      if (SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-      elseif ($chainLinks[count($chainLinks)-1][2] == 0) break;
-      else $chainLinks[count($chainLinks)-1][2] = 0;
-      $destPlayer = str_contains($CombatChain->AttackCard()->From(), "THEIR") ? $defPlayer : $mainPlayer;
-      AddPlayerHand("gone_in_a_flash_red", $destPlayer, "CC");
-      if (SearchLayersForPhase("FINALIZECHAINLINK") == -1 && SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) {
-        //only close the chain if removed before the resolution step
-        CloseCombatChain();
-      }
       return $lastResult;
     case "TRUCE":
       if (SearchCurrentTurnEffects("truce_blue", $defPlayer, remove: true)){

@@ -273,44 +273,111 @@ class barkskin_of_the_millennium_tree extends Card {
   }
 }
 
+class blast_to_oblivion extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
 
-// class blast_to_oblivion_red extends Card {
+  function ProcessTrigger($target) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $targetedPlayer = intval(explode("-", $target)[0]);
+    $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
+    $uID = explode("-", $target)[1];
+    $auras = &GetAuras($targetedPlayer);
+    for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+      if ($auras[$i + 6] == $uID) {
+        $cardID = $auras[$i];
+        $cardOwner = substr($auras[$i+9], 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
+        $lastResult = RemoveAura($targetedPlayer, $i);
+        AddPlayerHand($cardID, $cardOwner, "-");
+        return $lastResult;
+      }
+    }
+    WriteLog("The target for " . CardLink($this->cardID) . " has been removed, effect fizzling");
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "blast_to_oblivion_red";
-//     $this->controller = $controller;
-//     }
+  function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    global $mainPlayer;
+    if (TypeContains($cardID, "I") && $player == $this->controller && !IsActivated($cardID, $from)) {
+      if(SearchCurrentTurnEffects($this->cardID, $mainPlayer, true)) {
+        $context = "Choose an aura to return to its owner's hand (or pass)";
+        $search = "THEIRAURAS:minCost=0;maxCost=1&THEIRAURAS:type=T&MYAURAS:minCost=0;maxCost=1&MYAURAS:type=T";
+        AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+        AddDecisionQueue("SETDQCONTEXT", $this->controller, $context);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+        AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+      }
+    }
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class blast_to_oblivion_red extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "blast_to_oblivion_red";
+    $this->controller = $controller;
+    $this->baseCard = new blast_to_oblivion($this->cardID, $controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    $this->baseCard->ActiveLinkPlayTrigger($cardID, $player, $from);
+  }
+}
 
 
-// class blast_to_oblivion_yellow extends Card {
+class blast_to_oblivion_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "blast_to_oblivion_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "blast_to_oblivion_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new blast_to_oblivion($this->cardID, $controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    $this->baseCard->ActiveLinkPlayTrigger($cardID, $player, $from);
+  }
+}
 
 
-// class blast_to_oblivion_blue extends Card {
+class blast_to_oblivion_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "blast_to_oblivion_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "blast_to_oblivion_blue";
+    $this->controller = $controller;
+    $this->baseCard = new blast_to_oblivion($this->cardID, $controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    $this->baseCard->ActiveLinkPlayTrigger($cardID, $player, $from);
+  }
+}
 
 
 // class bloodtorn_bodice extends Card {
@@ -1343,17 +1410,49 @@ class electromagnetic_somersault_blue extends Card {
 // }
 
 
-// class gone_in_a_flash_red extends Card {
+class gone_in_a_flash_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "gone_in_a_flash_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "gone_in_a_flash_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CombatChain, $defPlayer, $mainPlayer;
+    if (!DoesAttackHaveGoAgain()) //lock in last known information
+      $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
+    CleanUpCombatEffects();
+    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+    $destPlayer = str_contains($CombatChain->AttackCard()->From(), "THEIR") ? $defPlayer : $mainPlayer;
+    AddPlayerHand($CombatChain->AttackCard()->ID(), $destPlayer, "CC");
+    if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
+      //only close the chain if removed before the damage step
+      CloseCombatChain();
+    }
+    return;
+  }
+
+  function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    global $mainPlayer;
+    if (TypeContains($cardID, "I") && $player == $this->controller && !IsActivated($cardID, $from)) {
+      if(SearchCurrentTurnEffects($this->cardID, $mainPlayer, true))
+        AddLayer("TRIGGER", $mainPlayer, $this->cardID);
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    $message = "if_you_want_to_bounce_the_attack";
+    $context = "Choose if you want to return " . CardLink($CombatChain->AttackCard()->ID) . " to the owner's hand";
+    Await($this->controller,  "YesNo", message:$message, context:$context, subsequent:false);
+    Await($this->controller, $this->cardID, final:true);
+  }
+}
 
 
 // class gustwave_of_the_second_wind_red extends Card {

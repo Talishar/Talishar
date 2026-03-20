@@ -29,6 +29,14 @@ class CurrentTurnEffects {
     return new CurrentEffect(-1);
   }
 
+  function FindPartialEffect($effectID) {
+    if (count($this->effects) == 0) return new CurrentEffect(-1);
+    for ($i = 0; $i < count($this->effects); $i += CurrentTurnEffectPieces()) {
+      if (ExtractCardID($this->effects[$i]) == $effectID) return new CurrentEffect($i);
+    }
+    return new CurrentEffect(-1);
+  }
+
   function FindEffectUID($uid) {
     if (count($this->effects) == 0) return new CurrentEffect(-1);
     for ($i = 0; $i < count($this->effects); $i += CurrentTurnEffectPieces()) {

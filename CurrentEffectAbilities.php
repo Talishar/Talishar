@@ -737,7 +737,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
 
 function RemoveThisLinkEffects($cardID="")
 {
-  global $currentTurnEffects, $combatChainState, $CCS_EclecticMag, $CCS_NextInstantBouncesAura;
+  global $currentTurnEffects, $combatChainState, $CCS_EclecticMag;
   $searchedEffect = "";
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
@@ -749,6 +749,9 @@ function RemoveThisLinkEffects($cardID="")
     else $searchedEffect = $cardID;
     switch ($searchedEffect) {
       case "gone_in_a_flash_red":
+      case "blast_to_oblivion_red":
+      case "blast_to_oblivion_yellow":
+      case "blast_to_oblivion_blue":
         $remove = 1;
         break;
       default:
@@ -756,7 +759,6 @@ function RemoveThisLinkEffects($cardID="")
     }
     if ($remove && SearchCurrentTurnEffectsForIndex($searchedEffect, $currentTurnEffects[$i + 1]) != -1) RemoveCurrentTurnEffect($i);
   }
-  $combatChainState[$CCS_NextInstantBouncesAura] = 0;
   $combatChainState[$CCS_EclecticMag] = 0;
 }
 
