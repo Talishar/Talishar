@@ -28,6 +28,7 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0)
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated, $CS_HoloAurasEntered;
+  global $CS_CreatedCardsThisTurn;
   if ($number == 0) return; //there is no event
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "-") $effectController = $player;
@@ -120,10 +121,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if ($cardID == "seismic_surge") IncrementClassState($player, $CS_SeismicSurgesCreated, $number);
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->EntersArenaAbility();
-  if ($isToken) {
-    $ClassState = new ClassState($effectController);
-    $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $number);
-  }
+  if ($isToken)
+    IncrementClassState($effectController, $CS_CreatedCardsThisTurn, $number);
 }
 
 function StealAura($srcPlayer, $index, $destPlayer, $from)
