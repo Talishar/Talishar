@@ -1448,7 +1448,7 @@ class gone_in_a_flash_red extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain;
     $message = "if_you_want_to_bounce_the_attack";
-    $context = "Choose if you want to return " . CardLink($CombatChain->AttackCard()->ID) . " to the owner's hand";
+    $context = "Choose if you want to return " . CardLink($CombatChain->AttackCard()->ID()) . " to the owner's hand";
     Await($this->controller,  "YesNo", message:$message, context:$context, subsequent:false);
     Await($this->controller, $this->cardID, final:true);
   }
