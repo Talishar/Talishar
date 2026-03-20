@@ -57,7 +57,7 @@ function GetDBConnection()
 		error_log("DB connection failed: " . mysqli_connect_error() . " (errno: " . mysqli_connect_errno() . ")");
 		return false;
 	}
-
+    if (!$conn) error_log("DB connection failed: " . mysqli_connect_error() . " (errno: " . mysqli_connect_errno() . ")");
 	return $conn;
 }
 

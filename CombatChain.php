@@ -706,9 +706,10 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
       }
     }
   }
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($combatChain[$i+1] == $defPlayer) {
-      switch ($combatChain[$i]) {
+  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $ChainCard = $CombatChain->Card($i, true);
+    if ($ChainCard->PlayerID() == $defPlayer) {
+      switch ($ChainCard->ID()) {
           case "captain_of_the_guard_blue":
             if ($blockCard != "-" && $blockCard->TotalPower() > $totalPower) {
               if (!$noGain) ++$blockModifier;
@@ -1401,7 +1402,7 @@ function BeginningReactionStepEffects()
 {
   global $combatChain, $mainPlayer, $CombatChain;
   if (!$CombatChain->HasCurrentLink()) return "";
-  switch ($combatChain[0]) {
+  switch ($CombatChain->AttackCard()->ID()) {
     case "cyclone_roundhouse_yellow":
       if (ComboActive()) {
         AddLayer("TRIGGER", $mainPlayer, "cyclone_roundhouse_yellow");
@@ -1613,7 +1614,7 @@ function CombatChainPlayAbility($cardID)
 function IsDominateActive()
 {
   global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_CachedDominateActive, $combatChainState;
-  global $CS_NumAuras, $CCS_NumBoosted, $chainLinks, $chainLinkSummary;
+  global $CS_NumAuras, $CCS_NumBoosted, $chainLinks, $chainLinkSummary, $CombatChain;
   if (count($combatChain) == 0) return false;
   if (SearchCurrentTurnEffectsForCycle("timidity_point_red", "timidity_point_yellow", "timidity_point_blue", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("fearless_confrontation_blue", $mainPlayer)) return false;
@@ -1635,7 +1636,7 @@ function IsDominateActive()
     }
   }
   $extraText = GetHorrorsBuff();
-  $textBoxes = [$combatChain[0], $extraText];
+  $textBoxes = [$CombatChain->AttackCard()->ID(), $extraText];
   foreach ($textBoxes as $box) {
     switch ($box) {
       case "open_the_center_red":
@@ -1688,14 +1689,14 @@ function IsDominateActive()
   }
   if ($combatChainState[$CCS_CachedDominateActive] == 1)
     return true;
-  $card = GetClass($combatChain[0], $mainPlayer);
+  $card = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
   if ($card != "-") $card->HasDominate();
   return false;
 }
 
 function IsOverpowerActive()
 {
-  global $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed, $CS_NumAuras;
+  global $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed, $CS_NumAuras, $CombatChain;
   if (count($combatChain) == 0) return false;
   if (SearchItemsForCard("overload_script_red", $mainPlayer) != "" && CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "MECHANOLOGIST", $mainPlayer)) {
     return true;
@@ -1705,7 +1706,7 @@ function IsOverpowerActive()
     if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red" && CachedWagerActive()) return true;
   }
   if (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer)) {
-    switch ($combatChain[0]) {
+    switch ($CombatChain->AttackCard()->ID()) {
     case "hms_barracuda_yellow":
     case "hms_kraken_yellow":
     case "hms_marlin_yellow":
@@ -1714,7 +1715,7 @@ function IsOverpowerActive()
         return false;
     }
   }
-  switch ($combatChain[0]) {
+  switch ($CombatChain->AttackCard()->ID()) {
     case "merciless_battleaxe":
       return SearchCurrentTurnEffects("merciless_battleaxe", $mainPlayer);
     case "hanabi_blaster":
@@ -1940,12 +1941,13 @@ function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
   global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
+  global $CombatChain;
   if (count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
   // hard code this exception to avoid circularity
-  $card = GetClass($combatChain[0], $mainPlayer);
+  $card = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
   if (is_a($card, "SUPDwarfCard") && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
     ++$combatChainState[$CCS_CachedTotalPower];
   }

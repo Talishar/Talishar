@@ -185,9 +185,9 @@ function BlockingCardDefense($index)
 {
   global $combatChain, $defPlayer, $currentTurnEffects, $CombatChain;
   $BlockCard = $CombatChain->Card($index);
-  $canGainBlock = CanGainBlock($combatChain[$index]);
-  $from = $BlockCard->From();
   $cardID = $BlockCard->ID();
+  $canGainBlock = CanGainBlock($cardID);
+  $from = $BlockCard->From();
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = $BlockCard->ResourcesPaid() + intval($baseCost);
   $uid = ($from == "EQUIP" || $from == "PLAY") ? $BlockCard->OriginUniqueID() : $BlockCard->UniqueID();

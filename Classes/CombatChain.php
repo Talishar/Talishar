@@ -145,6 +145,7 @@ class ChainCard {
     }
 
     function ModifyPower($amount) {
+      if (!isset($this->chain[$this->index+5])) return;
       $this->chain[$this->index+5] += $amount;
       CurrentEffectAfterPlayOrActivateAbility();
     }
