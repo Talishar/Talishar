@@ -407,10 +407,12 @@ function GetPreLayers() {
 
 function GetCombatChainAttacks()
 {
-  global $chainLinks;
+  global $chainLinks, $ChainLinks;
   $attacks = [];
-  foreach ($chainLinks as $link) {
-    if ($link[2] ?? 0 == 1 || $link[3] ?? "-" == "PLAY" || $link[3] ?? "-" == "EQUIP") {
+  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $LinkCard = $ChainLinks->GetLink($i)->AttackCard();
+    $link = $chainLinks[$i];
+    if ($LinkCard->StillOnChain() || $LinkCard->From() == "PLAY" || $LinkCard->From() == "EQUIP") {
       for ($j = 0; $j < ChainLinksPieces(); ++$j) {
         array_push($attacks, $link[$j]);
       }

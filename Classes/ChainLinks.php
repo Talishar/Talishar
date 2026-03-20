@@ -170,7 +170,7 @@ class LinkCard {
 	}
 
 	function StillOnChain() {
-		return $this->link[$this->index+2] ?? "-";
+		return $this->link[$this->index+2] ?? 0;
 	}
 
 	function From() {
