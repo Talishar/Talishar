@@ -421,9 +421,9 @@ function logCompletedGameStats($conceded = false)
 		elseif (!$p2FabraryDisabled)                     $fabraryDesc = "<b>Fabrary</b> (Player 2 only)";
 		else                                             $fabraryDesc = null;
 
-		$otherSites = "<b>FaB Insights</b>, ";
+		$otherSites = "<b>FaB Insights</b>";
 		if ($wasFaBBazaarResultsSent) $otherSites .= " and <b>FaBBazaar</b>";
-		if (!$p1StatsDisabled && !$p2StatsDisabled);
+		if (!$p1StatsDisabled && !$p2StatsDisabled)      $otherSites .= "";
 		elseif (!$p1StatsDisabled)                       $otherSites .= " (Player 1 only)";
 		elseif (!$p2StatsDisabled)                       $otherSites .= " (Player 2 only)";
 		else                                             $otherSites = null;
