@@ -19,12 +19,21 @@ class Card {
   public $cardID;
   public $controller;
   public $baseCard;
+  public $addedAbilities;
 
   // Constructor
   function __construct($cardID, $controller="-") {
     $this->cardID = $cardID;
     $this->controller = $controller;
     $this->baseCard = new BaseCard($cardID, $controller);
+  }
+
+  function AddAbilities($cardIDs) {
+    $addedAbilityIDs = explode(",", $cardIDs);
+    foreach ($addedAbilityIDs as $ability) {
+      $card = GetClass($ability, $this->controller);
+      if ($card != "-") $this->addedAbilities[] = $card;
+    }
   }
 
   function IsType($types) {
@@ -620,6 +629,20 @@ class Card {
   }
 
   function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    foreach ($this->addedAbilities as $ability) 
+      $ability->ActiveLinkPlayTrigger($cardID, $player, $from);
     return;
+  }
+
+  function HasPhantasm() {
+    return GeneratedHasPhantasm($this->cardID);
+  }
+
+  function HasDominate() {
+    return GeneratedHasDominate($this->cardID);
+  }
+
+  function AbilitiesToAdd() {
+    return "";
   }
 }

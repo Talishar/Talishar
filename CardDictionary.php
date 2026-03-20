@@ -820,9 +820,6 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
     case "mutated_mass_blue":
       $block = SearchPitchForNumCosts($defPlayer) * 2;
       break;
-    case "fractal_replication_red":
-      $block = FractalReplicationStats("Block");
-      break;
     case "arcanite_fortress":
       $block = SearchCount(SearchMultiZone($defPlayer, "MYCHAR:type=E;nameIncludes=Arcanite"));
       break;
@@ -953,9 +950,6 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   switch ($cardID) { // cards with * base power
     case "mutated_mass_blue":
       $basePower = SearchPitchForNumCosts($mainPlayer) * 2;
-      break;
-    case "fractal_replication_red":
-      $basePower = FractalReplicationStats("Power");
       break;
     case "spectral_procession_red":
       $basePower = CountAura("spectral_shield", $mainPlayer);
@@ -4651,6 +4645,8 @@ function HasDominate($cardID)
 {
   global $mainPlayer, $combatChainState, $CombatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
+  $card = GetClass($cardID, 0);
+  if ($card != "-") $card->HasDominate();
   switch ($cardID) {
     case "open_the_center_red":
     case "open_the_center_yellow":
@@ -4973,7 +4969,8 @@ function IsGold($cardID) {
   };
 }
 
-function GetClass($cardID, $player) {
+function GetClass($cardID, $player, $from="-", $uniqueID="-") {
+	global $CurrentTurnEffects;
   if ($cardID !== null && str_contains($cardID, "BLIND")) return "-";
   if ($cardID == "LAYER" || $cardID == "TRIGGER") return "-";
   $cardID = ExtractCardID($cardID);
@@ -4981,8 +4978,18 @@ function GetClass($cardID, $player) {
     "10000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
     default => $cardID
   };
-  if (class_exists($className)) return new $className($player);
+  if (class_exists($className)) $rv = new $className($player);
   else return "-";
+	if ($from == "CC") {
+		for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+			$Effect = $CurrentTurnEffects->Effect($i, true);
+			$effectID = ExtractCardID($Effect->EffectID());
+			if ($Effect->AppliestoUniqueID() != $uniqueID) continue;
+			$effect = GetClass($effectID, $Effect->PlayerID());
+			if ($effect != "-") $rv->AddAbilities($effect->AbilitiesToAdd());
+		}
+	}
+  return $rv;
 }
 
 function IsInstantMod($mod) {

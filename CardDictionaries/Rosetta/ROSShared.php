@@ -65,7 +65,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_NumLightningPlayed, $CCS_NextInstantBouncesAura, $CS_ArcaneDamageTaken;
+  global $currentPlayer, $CS_NumLightningPlayed, $CS_ArcaneDamageTaken;
   global $mainPlayer, $CCS_EclecticMag, $combatChainState, $CS_ActionsPlayed;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
@@ -218,17 +218,9 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $combatChainState[$CCS_EclecticMag] = 1;
       return "";
-    case "gone_in_a_flash_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "high_voltage_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "Amp 1";
-    case "blast_to_oblivion_red":
-    case "blast_to_oblivion_yellow":
-    case "blast_to_oblivion_blue":
-      $combatChainState[$CCS_NextInstantBouncesAura] = 1;
-      return "";
     case "second_strike_red":
     case "second_strike_yellow":
     case "second_strike_blue":

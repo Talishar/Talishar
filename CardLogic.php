@@ -230,7 +230,7 @@ function IsCombatEffectLimited($index)
     if ($allies[$combatChainState[$CCS_WeaponIndex] + 5] != $currentTurnEffects[$index + 2]) return true;
   } else {
     if ($CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID()) return false;
-    else return $combatChainState[$CCS_AttackUniqueID] != $currentTurnEffects[$index + 2];
+    else return $CombatChain->AttackCard()->UniqueID() != $Effect->AppliestoUniqueID();
   }
   return false;
 }
@@ -828,7 +828,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "reek_of_corruption_red":
     case "reek_of_corruption_yellow":
     case "reek_of_corruption_blue":
-    case "fractal_replication_red":
     case "bingo_red":
     case "dustup_red":
     case "dustup_yellow":
@@ -3706,11 +3705,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           MZMoveCard($player, "MYAURAS", "MYHAND", logText:"Aura returned: <0>", isSubsequent:true);
         }
         break;
-      case "gone_in_a_flash_red":
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to return ".CardLink("gone_in_a_flash_red", "gone_in_a_flash_red")." to your hand?");
-        AddDecisionQueue("NOPASS", $mainPlayer, "-");
-        AddDecisionQueue("GONEINAFLASH", $mainPlayer, "-", 1);
-        break;
       case "channel_lightning_valley_yellow":
         if ($additionalCosts == "CHANNEL") {
           ChannelTalent($target, "LIGHTNING");
@@ -3719,25 +3713,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           WriteLog(CardLink($parameter, $parameter) . " draws a card");
           Draw($player);
         }
-        break;
-      case "blast_to_oblivion_red":
-      case "blast_to_oblivion_yellow":
-      case "blast_to_oblivion_blue":
-        $otherPlayer = $player == 1 ? 2 : 1;
-        $targetedPlayer = intval(explode("-", $target)[0]);
-        $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
-        $uID = explode("-", $target)[1];
-        $auras = &GetAuras($targetedPlayer);
-        for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-          if ($auras[$i + 6] == $uID) {
-            $cardID = $auras[$i];
-            $cardOwner = substr($auras[$i+9], 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
-            $lastResult = RemoveAura($targetedPlayer, $i);
-            AddPlayerHand($cardID, $cardOwner, "-");
-            return $lastResult;
-          }
-        }
-        WriteLog("The target for " . CardLink($parameter, $parameter) . " has been removed, effect fizzling");
         break;
       case "face_purgatory":
         if($CombatChain->HasCurrentLink()) PummelHit($otherPlayer);
@@ -4743,7 +4718,10 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
   if ($cardID == "") return 0;
   $power = PowerValue($cardID, $player, $from);
   if ($cardID == "mutated_mass_blue") $power = SearchPitchForNumCosts($player) * 2;
-  else if ($cardID == "fractal_replication_red") $power = FractalReplicationStats("Power");
+  else if ($cardID == "fractal_replication_red") {
+    $card = new fractal_replication_red($player);
+    return $card->SpecialPower();
+  }
   else if ($cardID == "spectral_procession_red") $power = CountAura("spectral_shield", $player);
   else if ($cardID == "diabolic_offering_blue") $power = GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
   else if ($cardID == "tough_as_a_rok_blue") $power = PlayerHasLessHealth($player) ? 6 : 0;

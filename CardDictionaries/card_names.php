@@ -32,6 +32,8 @@ function CardName($cardID)
       case "nitro_mechanoidb":
       case "nitro_mechanoidc":
         return "Nitro Mechanoid";
+      case "fangs_a_lot_blue":
+        return "Fangs a Lot";
       default:
         break;
     }

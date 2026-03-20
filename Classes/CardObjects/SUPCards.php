@@ -2782,6 +2782,10 @@ class authority_of_ataya_blue extends Card {
   }
 
   function PitchAbility($from) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     AddCurrentTurnEffect($this->cardID, $otherPlayer);
   }
