@@ -19,14 +19,13 @@ class Card {
   public $cardID;
   public $controller;
   public $baseCard;
-  public $addedAbilities;
+  public $addedAbilities = [];
 
   // Constructor
   function __construct($cardID, $controller="-") {
     $this->cardID = $cardID;
     $this->controller = $controller;
     $this->baseCard = new BaseCard($cardID, $controller);
-    $this->addedAbilities = [];
   }
 
   function AddAbilities($cardIDs) {
