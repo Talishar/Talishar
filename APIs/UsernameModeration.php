@@ -78,25 +78,6 @@ function EnsureWhitelistTable($conn) {
     }
 }
 
-// Check if username is whitelisted
-function IsUsernameWhitelisted($conn, $username) {
-    EnsureWhitelistTable($conn);
-    $sql = "SELECT 1 FROM username_whitelist WHERE username = ?";
-    $stmt = mysqli_stmt_init($conn);
-    
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        return false;
-    }
-    
-    mysqli_stmt_bind_param($stmt, "s", $username);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $exists = mysqli_num_rows($result) > 0;
-    mysqli_stmt_close($stmt);
-    
-    return $exists;
-}
-
 if ($action === 'getOffensiveUsernames') {
     $conn = GetDBConnection();
     if (!$conn) {
@@ -106,6 +87,17 @@ if ($action === 'getOffensiveUsernames') {
     }
 
     EnsureWhitelistTable($conn);
+
+    // Load the entire whitelist into a set for O(1) in-memory lookups,
+    // avoiding an additional SELECT per user (N+1 query problem).
+    $whitelistSet = [];
+    $wlResult = mysqli_query($conn, "SELECT username FROM username_whitelist");
+    if ($wlResult) {
+        foreach (mysqli_fetch_all($wlResult, MYSQLI_ASSOC) as $wlRow) {
+            $whitelistSet[strtolower($wlRow['username'])] = true;
+        }
+        mysqli_free_result($wlResult);
+    }
 
     // Get all active (not banned) usernames
     $sql = "SELECT usersId, usersUid FROM users WHERE isBanned = 0 ORDER BY usersId DESC";
@@ -123,18 +115,15 @@ if ($action === 'getOffensiveUsernames') {
         return strtolower(str_replace(['-', '1', '0', '3', '5', '7', '!', '@'], '', $pattern));
     }, $offensivePatterns);
 
-    // CRITICAL FIX: Fetch all rows into memory FIRST, then free the result
-    // This prevents "Packets out of order" errors when calling nested queries on the same connection
     $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
     mysqli_free_result($result);
 
-    // Now process the rows - it's safe to execute additional queries
     foreach ($rows as $row) {
         $username = strtolower($row['usersUid']);
         $cleanUsername = str_replace(['-', '_', '1', '0', '3', '5', '7', '!', '@'], '', $username);
 
-        // Skip whitelisted usernames
-        if (IsUsernameWhitelisted($conn, $row['usersUid'])) {
+        // Skip whitelisted usernames (in-memory check, no extra DB query)
+        if (isset($whitelistSet[$username])) {
             continue;
         }
 
