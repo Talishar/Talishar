@@ -573,33 +573,20 @@
 
 
 class fractal_replication_red extends Card {
-	private $addedAbilities;
-
   function __construct($controller) {
-		global $CurrentTurnEffects;
     $this->cardID = "fractal_replication_red";
     $this->controller = $controller;
-
-		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
-		$addedAbilityIDs = array_slice(explode(",", $Effect->EffectID()), 1);
-		$this->addedAbilities = [];
-		if ($Effect->Index() != -1) {
-			foreach ($addedAbilityIDs as $ability) {
-				$card = GetClass($ability, $this->controller);
-				if ($card != "-") $this->addedAbilities[] = $card;
-			}
-		}
 	}
 
-	function __call($method, $args) {
-		if (isset($this->$method)) {
-			$func = $this->$method;
-			return call_user_func_array($func, $args);
-		}
+	function AbilitiesToAdd() {
+		global $CurrentTurnEffects;
+		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
+		$addedAbilityIDs = array_slice(explode(",", $Effect->EffectID()), 1);
+		return implode(",", $addedAbilityIDs);
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $ChainLinks;
+    global $ChainLinks, $CombatChain;
 		$addedAbilities = [];
 		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
 			$Link = $ChainLinks->GetLink($i);
@@ -615,7 +602,7 @@ class fractal_replication_red extends Card {
 			}
 		}
 		$addedAbilitiesStr = implode(",", $addedAbilities);
-		AddCurrentTurnEffect("$this->cardID,$addedAbilitiesStr", $this->controller);
+		AddCurrentTurnEffect("$this->cardID,$addedAbilitiesStr", $this->controller, "", $CombatChain->AttackCard()->UniqueID());
 
 		foreach ($addedAbilities as $ability) {
 			PlayAbility($ability, $from, $resourcesPaid, $target, $additionalCosts);
@@ -704,12 +691,6 @@ class fractal_replication_red extends Card {
 			if ($check && $availableOnhit) return true;
 		}
 		return false;
-	}
-
-	function ActiveLinkPlayTrigger($cardID, $player, $from) {
-		foreach($this->addedAbilities as $ability) {
-			$ability->ActiveLinkPlayTrigger($cardID, $player, $from);
-		}
 	}
 }
 

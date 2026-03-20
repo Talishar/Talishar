@@ -4969,7 +4969,8 @@ function IsGold($cardID) {
   };
 }
 
-function GetClass($cardID, $player) {
+function GetClass($cardID, $player, $from="-", $uniqueID="-") {
+	global $CurrentTurnEffects;
   if ($cardID !== null && str_contains($cardID, "BLIND")) return "-";
   if ($cardID == "LAYER" || $cardID == "TRIGGER") return "-";
   $cardID = ExtractCardID($cardID);
@@ -4977,8 +4978,18 @@ function GetClass($cardID, $player) {
     "10000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
     default => $cardID
   };
-  if (class_exists($className)) return new $className($player);
+  if (class_exists($className)) $rv = new $className($player);
   else return "-";
+	if ($from == "CC") {
+		for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+			$Effect = $CurrentTurnEffects->Effect($i, true);
+			$effectID = ExtractCardID($Effect->EffectID());
+			if ($Effect->AppliestoUniqueID() != $uniqueID) continue;
+			$effect = GetClass($effectID, $Effect->PlayerID());
+			if ($effect != "-") $rv->AddAbilities($effect->AbilitiesToAdd());
+		}
+	}
+  return $rv;
 }
 
 function IsInstantMod($mod) {

@@ -230,7 +230,7 @@ function IsCombatEffectLimited($index)
     if ($allies[$combatChainState[$CCS_WeaponIndex] + 5] != $currentTurnEffects[$index + 2]) return true;
   } else {
     if ($CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID()) return false;
-    else return $combatChainState[$CCS_AttackUniqueID] != $currentTurnEffects[$index + 2];
+    else return $CombatChain->AttackCard()->UniqueID() != $Effect->AppliestoUniqueID();
   }
   return false;
 }
