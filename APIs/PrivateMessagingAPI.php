@@ -16,6 +16,10 @@ include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 SetHeaders();
 
+  http_response_code(401);
+  echo json_encode(["error" => "Temporarily disabled"]);
+  exit;
+
 // Handle CORS preflight requests - exit early to avoid unnecessary processing
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   http_response_code(200);
