@@ -797,7 +797,7 @@ function OUTAbilityCost($cardID)
     return $combatChainState[$CCS_NumReactionPlayedActivated];
   }
 
-  function TrapTriggered($cardID)
+  function TrapTriggered($cardID) //deprecated
   {
     global $mainPlayer, $defPlayer;
     $char = &GetPlayerCharacter($defPlayer);
