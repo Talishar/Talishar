@@ -1,5 +1,8 @@
 <?php
 
+// Suppress PHP warnings/notices from corrupting JSON output
+ob_start();
+
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 SetHeaders();
@@ -10,7 +13,16 @@ include_once "../includes/dbh.inc.php";
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
+
+// Discard any buffered output from includes (PHP warnings etc.)
+$buffered = ob_get_clean();
+
 header('Content-Type: application/json');
+
+$debug_log = [];
+if (!empty($buffered)) {
+  $debug_log[] = "Buffered output from includes: " . substr($buffered, 0, 500);
+}
 
 if (!isset($_SESSION["useruid"])) {
   http_response_code(401);
@@ -41,6 +53,8 @@ $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
 $talishar_client_id = '4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI';
 $metafyApiKey = getenv('METAFY_API_KEY') ?: (defined('METAFY_API_KEY') ? METAFY_API_KEY : '');
 
+$debug_log[] = "Auth: using " . (!empty($metafyApiKey) ? "METAFY_API_KEY" : "talishar_client_id");
+
 $all_subscriber_ids = [];
 $api_source = '';
 $api_error = null;
@@ -65,6 +79,8 @@ while ($page <= $max_pages) {
   $curl_err = curl_error($ch);
   curl_close($ch);
 
+  $debug_log[] = "Primary API page $page: HTTP $http_code" . ($curl_err ? " err=$curl_err" : "") . " body=" . substr($raw ?: '(empty)', 0, 300);
+
   if ($http_code !== 200) {
     if ($page === 1) {
       $api_error = "dev.metafy.gg returned HTTP $http_code" . ($curl_err ? " ($curl_err)" : "");
@@ -73,8 +89,12 @@ while ($page <= $max_pages) {
   }
 
   $data = json_decode($raw, true);
-  $subscribers = $data['subscribers'] ?? [];
-  if (empty($subscribers)) break;
+  // Try multiple response shapes: {subscribers: [...]}, {data: [...]}, or top-level array
+  $subscribers = $data['subscribers'] ?? $data['data'] ?? (isset($data[0]) ? $data : []);
+  if (empty($subscribers)) {
+    $debug_log[] = "Primary: empty subscribers on page $page. Keys in response: " . implode(',', array_keys($data ?? []));
+    break;
+  }
 
   foreach ($subscribers as $sub) {
     $uid = $sub['user_id'] ?? $sub['id'] ?? null;
@@ -82,12 +102,14 @@ while ($page <= $max_pages) {
   }
 
   $api_source = 'dev.metafy.gg/v1/community/list-community-subscribers';
+  $debug_log[] = "Primary: got " . count($subscribers) . " subscribers on page $page";
   if (count($subscribers) < 100) break;
   $page++;
 }
 
 // --- Fallback: metafy.gg/irk/api/v1/me/community/subscribers ---
 if (empty($all_subscriber_ids)) {
+  $debug_log[] = "Primary returned 0 subscribers, trying fallback...";
   $fallback_error = null;
   $page = 1;
 
@@ -106,6 +128,8 @@ if (empty($all_subscriber_ids)) {
     $curl_err = curl_error($ch);
     curl_close($ch);
 
+    $debug_log[] = "Fallback API page $page: HTTP $http_code" . ($curl_err ? " err=$curl_err" : "") . " body=" . substr($raw ?: '(empty)', 0, 300);
+
     if ($http_code !== 200) {
       if ($page === 1) {
         $fallback_error = "metafy.gg/irk returned HTTP $http_code" . ($curl_err ? " ($curl_err)" : "");
@@ -114,8 +138,11 @@ if (empty($all_subscriber_ids)) {
     }
 
     $data = json_decode($raw, true);
-    $subscribers = $data['subscribers'] ?? [];
-    if (empty($subscribers)) break;
+    $subscribers = $data['subscribers'] ?? $data['data'] ?? (isset($data[0]) ? $data : []);
+    if (empty($subscribers)) {
+      $debug_log[] = "Fallback: empty subscribers on page $page. Keys in response: " . implode(',', array_keys($data ?? []));
+      break;
+    }
 
     foreach ($subscribers as $sub) {
       $uid = $sub['user_id'] ?? $sub['id'] ?? null;
@@ -123,23 +150,32 @@ if (empty($all_subscriber_ids)) {
     }
 
     $api_source = 'metafy.gg/irk/api/v1/me/community/subscribers (fallback)';
+    $debug_log[] = "Fallback: got " . count($subscribers) . " subscribers on page $page";
     if (count($subscribers) < 100) break;
     $page++;
   }
 
   if (empty($all_subscriber_ids) && $fallback_error) {
-    $api_error .= " | Fallback: $fallback_error";
+    $api_error = ($api_error ? $api_error . " | " : "") . "Fallback: $fallback_error";
   }
 }
 
-$all_subscriber_ids = array_unique($all_subscriber_ids);
+$all_subscriber_ids = array_values(array_unique($all_subscriber_ids));
+$debug_log[] = "Total unique subscriber IDs fetched: " . count($all_subscriber_ids);
 
 // Safety: abort if API returned zero subscribers to avoid clearing everyone
 if (empty($all_subscriber_ids)) {
-  http_response_code(502);
   echo json_encode([
     "error" => "Could not fetch any subscribers from Metafy. Sync aborted to avoid clearing valid supporters.",
-    "apiError" => $api_error ?? 'No subscribers returned.'
+    "apiError" => $api_error ?? 'No subscribers returned.',
+    "debug" => $debug_log,
+    "subscribersFetched" => 0,
+    "usersChecked" => 0,
+    "stillActive" => 0,
+    "cleared" => 0,
+    "skippedNoMetafyId" => 0,
+    "clearedUsers" => [],
+    "skippedUsers" => []
   ]);
   exit;
 }
@@ -147,13 +183,40 @@ if (empty($all_subscriber_ids)) {
 // Cross-reference DB
 $conn = GetDBConnection();
 if (!$conn) {
-  http_response_code(500);
-  echo json_encode(["error" => "DB connection failed"]);
+  echo json_encode([
+    "error" => "DB connection failed",
+    "debug" => $debug_log,
+    "subscribersFetched" => count($all_subscriber_ids),
+    "usersChecked" => 0,
+    "stillActive" => 0,
+    "cleared" => 0,
+    "skippedNoMetafyId" => 0,
+    "clearedUsers" => [],
+    "skippedUsers" => []
+  ]);
   exit;
 }
 
 $sql = "SELECT usersId, usersUid, metafyID, metafyCommunities FROM users WHERE metafyCommunities IS NOT NULL AND metafyCommunities != '' AND metafyCommunities != '[]'";
 $result = mysqli_query($conn, $sql);
+
+if ($result === false) {
+  $db_error = mysqli_error($conn);
+  $debug_log[] = "DB query failed: $db_error";
+  mysqli_close($conn);
+  echo json_encode([
+    "error" => "DB query failed: $db_error",
+    "debug" => $debug_log,
+    "subscribersFetched" => count($all_subscriber_ids),
+    "usersChecked" => 0,
+    "stillActive" => 0,
+    "cleared" => 0,
+    "skippedNoMetafyId" => 0,
+    "clearedUsers" => [],
+    "skippedUsers" => []
+  ]);
+  exit;
+}
 
 $checked = 0;
 $cleared = 0;
@@ -161,8 +224,10 @@ $still_active = 0;
 $no_metafy_id = 0;
 $cleared_users = [];
 $skipped_users = [];
+$total_rows = 0;
 
 while ($row = mysqli_fetch_assoc($result)) {
+  $total_rows++;
   $communities = json_decode($row['metafyCommunities'], true);
   if (!is_array($communities)) continue;
 
@@ -208,7 +273,11 @@ while ($row = mysqli_fetch_assoc($result)) {
 mysqli_free_result($result);
 mysqli_close($conn);
 
-$response = [
+$debug_log[] = "DB rows with metafyCommunities: $total_rows";
+$debug_log[] = "DB rows with Talishar community: $checked";
+$debug_log[] = "Sample subscriber IDs from API: " . implode(', ', array_slice($all_subscriber_ids, 0, 5));
+
+echo json_encode([
   "message" => "Sync complete",
   "apiSource" => $api_source,
   "subscribersFetched" => count($all_subscriber_ids),
@@ -217,11 +286,7 @@ $response = [
   "cleared" => $cleared,
   "skippedNoMetafyId" => $no_metafy_id,
   "clearedUsers" => $cleared_users,
-  "skippedUsers" => $skipped_users
-];
-
-if ($api_error) {
-  $response["apiWarning"] = $api_error;
-}
-
-echo json_encode($response);
+  "skippedUsers" => $skipped_users,
+  "debug" => $debug_log,
+  "apiWarning" => $api_error
+]);
