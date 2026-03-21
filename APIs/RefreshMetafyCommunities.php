@@ -267,10 +267,19 @@ if ($is_metafy_supporter) {
 // --- Persist refreshed data to DB ---
 $communities_json = json_encode($all_communities);
 $stmt_update = mysqli_stmt_init($conn);
-if (mysqli_stmt_prepare($stmt_update, 'UPDATE users SET metafyCommunities=? WHERE usersid=?')) {
-  mysqli_stmt_bind_param($stmt_update, 'ss', $communities_json, $userID);
-  mysqli_stmt_execute($stmt_update);
-  mysqli_stmt_close($stmt_update);
+// Always write metafyID alongside communities if we have it, to keep them in sync
+if (!empty($user_metafy_id)) {
+  if (mysqli_stmt_prepare($stmt_update, 'UPDATE users SET metafyCommunities=?, metafyID=? WHERE usersid=?')) {
+    mysqli_stmt_bind_param($stmt_update, 'sss', $communities_json, $user_metafy_id, $userID);
+    mysqli_stmt_execute($stmt_update);
+    mysqli_stmt_close($stmt_update);
+  }
+} else {
+  if (mysqli_stmt_prepare($stmt_update, 'UPDATE users SET metafyCommunities=? WHERE usersid=?')) {
+    mysqli_stmt_bind_param($stmt_update, 'ss', $communities_json, $userID);
+    mysqli_stmt_execute($stmt_update);
+    mysqli_stmt_close($stmt_update);
+  }
 }
 
 mysqli_close($conn);
