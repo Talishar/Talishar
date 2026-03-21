@@ -166,7 +166,13 @@ if (!empty($modMetafyToken)) {
 
     foreach ($subscribers as $sub) {
       $uid = $sub['user_id'] ?? $sub['id'] ?? null;
-      if ($uid) $all_subscriber_ids[] = $uid;
+      if ($uid) {
+        $all_subscriber_ids[] = $uid;
+        $uname = strtolower($sub['username'] ?? $sub['slug'] ?? $sub['name'] ?? '');
+        if (!empty($uname)) {
+          $subscriber_usernames[$uname] = $uid;
+        }
+      }
     }
 
     $api_source = 'metafy.gg/irk/api/v1/me/community/subscribers';
@@ -175,7 +181,8 @@ if (!empty($modMetafyToken)) {
   }
 }
 
-$all_subscriber_ids = array_unique($all_subscriber_ids);
+$all_subscriber_ids  = array_unique($all_subscriber_ids);
+$subscriber_usernames = $subscriber_usernames ?? [];
 
 // Safety: abort if API returned zero subscribers to avoid clearing everyone
 if (empty($all_subscriber_ids)) {
@@ -195,13 +202,14 @@ if (!$conn) {
   exit;
 }
 
-$sql = "SELECT usersId, usersUid, metafyID, metafyCommunities FROM users WHERE metafyCommunities IS NOT NULL AND metafyCommunities != '' AND metafyCommunities != '[]'";
+$sql = "SELECT usersId, usersUid, metafyID, metafyCommunities, metafyAccessToken FROM users WHERE metafyCommunities IS NOT NULL AND metafyCommunities != '' AND metafyCommunities != '[]'";
 $result = mysqli_query($conn, $sql);
 
 $checked = 0;
 $cleared = 0;
 $still_active = 0;
 $no_metafy_id = 0;
+$backfilled = 0;
 $cleared_users = [];
 $skipped_users = [];
 
@@ -222,9 +230,49 @@ while ($row = mysqli_fetch_assoc($result)) {
   $metafyID = $row['metafyID'] ?? null;
 
   if (empty($metafyID)) {
-    $no_metafy_id++;
-    $skipped_users[] = $row['usersUid'];
-    continue;
+    if (!empty($row['metafyAccessToken'])) {
+      $ch_me = curl_init('https://metafy.gg/irk/api/v1/me');
+      curl_setopt($ch_me, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch_me, CURLOPT_TIMEOUT, 5);
+      curl_setopt($ch_me, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $row['metafyAccessToken'], 'Content-Type: application/json']);
+      curl_setopt($ch_me, CURLOPT_USERAGENT, 'Talishar-App');
+      $me_raw  = curl_exec($ch_me);
+      $me_code = curl_getinfo($ch_me, CURLINFO_HTTP_CODE);
+      curl_close($ch_me);
+      if ($me_code === 200) {
+        $me_data  = json_decode($me_raw, true);
+        $metafyID = $me_data['user']['id'] ?? null;
+        if (!empty($metafyID)) {
+          $stmt_bf = mysqli_stmt_init($conn);
+          if (mysqli_stmt_prepare($stmt_bf, 'UPDATE users SET metafyID=? WHERE usersId=?')) {
+            mysqli_stmt_bind_param($stmt_bf, 'si', $metafyID, $row['usersId']);
+            mysqli_stmt_execute($stmt_bf);
+            mysqli_stmt_close($stmt_bf);
+            $backfilled++;
+          }
+        }
+      }
+    }
+
+    if (empty($metafyID) && !empty($subscriber_usernames)) {
+      $talishar_username_lower = strtolower($row['usersUid']);
+      if (isset($subscriber_usernames[$talishar_username_lower])) {
+        $metafyID = $subscriber_usernames[$talishar_username_lower];
+        $stmt_bf = mysqli_stmt_init($conn);
+        if (mysqli_stmt_prepare($stmt_bf, 'UPDATE users SET metafyID=? WHERE usersId=?')) {
+          mysqli_stmt_bind_param($stmt_bf, 'si', $metafyID, $row['usersId']);
+          mysqli_stmt_execute($stmt_bf);
+          mysqli_stmt_close($stmt_bf);
+          $backfilled++;
+        }
+      }
+    }
+
+    if (empty($metafyID)) {
+      $no_metafy_id++;
+      $skipped_users[] = $row['usersUid'];
+      continue;
+    }
   }
 
   if (in_array($metafyID, $all_subscriber_ids)) {
@@ -259,6 +307,7 @@ $response = [
   "stillActive" => $still_active,
   "cleared" => $cleared,
   "skippedNoMetafyId" => $no_metafy_id,
+  "backfilled" => $backfilled,
   "clearedUsers" => $cleared_users,
   "skippedUsers" => $skipped_users
 ];
