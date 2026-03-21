@@ -161,6 +161,7 @@ class LinkCard {
 	}
 
 	function ID() {
+		if (!isset($this->link)) return "-";
 		if (count($this->link) == 0) return "-";
 		return $this->link[$this->index] ?? "-";
 	}
