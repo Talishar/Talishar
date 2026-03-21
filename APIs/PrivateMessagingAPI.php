@@ -51,7 +51,7 @@ $userId = LoggedInUser();
 session_write_close();//Don't hold session lock and potentially get into deadlock situation
 
 global $conn;
-$conn = GetDBConnection();
+$conn = GetDBConnection(DBL_PRIVATE_MESSAGING_API);
 
 // Single, comprehensive connection check
 if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error) && $conn->connect_error)) {

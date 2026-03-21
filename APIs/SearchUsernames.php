@@ -35,7 +35,7 @@ $response = [
 ];
 
 if (strlen($searchQuery) > 0) {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_SEARCH_USERNAMES);
   if ($conn) {
     // Search for usernames containing the search query
     $sql = "SELECT usersUid, usersEmail FROM users WHERE usersUid LIKE ? LIMIT 20";
