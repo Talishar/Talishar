@@ -328,6 +328,8 @@ function logCompletedGameStats($conceded = false)
 		$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
 		$p2StatsDisabled = AreStatsDisabled(2) || AreGlobalStatsDisabled(2);
 
+		$gameResultID = 0;
+
 		if (!$p1FabraryDisabled || !$p2FabraryDisabled) {
 			SendFullFabraryResults(
 				$gameResultID,
@@ -361,7 +363,6 @@ function logCompletedGameStats($conceded = false)
 			WriteLog("📊 Sending game stats to $otherSites", highlight:true, highlightColor:"green");
 		else
 			WriteLog("No game stats sent as both players have disabled stats", highlight:true);
-		mysqli_close($conn);
 	}
 }
 
