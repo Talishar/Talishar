@@ -99,7 +99,7 @@ function emailExists($conn, $email)
 // Insert new user into database
 function createUser($conn, $username, $email, $pwd, $reportingServer = false)
 {
-	$conn = $reportingServer ? GetReportingDBConnection() : GetDBConnection();
+	$conn = GetDBConnection();
 	if (!$conn) {
 		header("location: ../Signup.php?error=db_unavailable");
 		exit();
