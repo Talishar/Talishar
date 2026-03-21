@@ -14,36 +14,6 @@ if (!function_exists('IsDevEnvironment')) {
   }
 }
 
-function GetUserMetafyCommunities($userName)
-{   
-  $conn = GetDBConnection();
-  $sql = "SELECT metafyAccessToken FROM users WHERE usersUid=?";
-  $stmt = mysqli_stmt_init($conn);
-  
-  if (!mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
-    return [];
-  }
-  
-  mysqli_stmt_bind_param($stmt, 's', $userName);
-  mysqli_stmt_execute($stmt);
-  $result = mysqli_stmt_get_result($stmt);
-  $row = mysqli_fetch_assoc($result);
-  mysqli_free_result($result);
-  mysqli_stmt_close($stmt);
-  mysqli_close($conn);
-  
-  if (!$row || empty($row['metafyAccessToken'])) {
-    return [];
-  }
-  
-  $accessToken = $row['metafyAccessToken'];
-  
-  // Fetch communities from Metafy API
-  return FetchMetafyCommunities($accessToken);
-}
-
 function FetchMetafyCommunities($accessToken)
 {
   $url = 'https://dev.metafy.gg/v1/community/list-joined-communities';
