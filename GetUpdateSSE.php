@@ -139,7 +139,7 @@ while (true) {
   }
 
   if ($playerID == 3 && $currentRealTime - $lastSpectatorRefresh >= $spectatorRefreshInterval) {
-    UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'anonymous');
+    UpdateSpectatorPresence($gameName);//, $sessionData['userName'] ?? 'anonymous');
     $lastSpectatorRefresh = $currentRealTime;
   }
 
