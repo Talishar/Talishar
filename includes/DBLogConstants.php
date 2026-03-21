@@ -38,9 +38,22 @@ const DBL_FUNCTIONS                    = 32;
 const DBL_RESET_REQUEST                = 33;
 const DBL_MOD_PAGE                     = 34;
 const DBL_PATREON_DEBUG                = 35;
+const DBL_UID_EXISTS                   = 36;
+const DBL_EMAIL_EXISTS                 = 37;
+const DBL_CREATE_USER_API              = 38;
+const DBL_LOGIN_FROM_COOKIE            = 39;
+const DBL_STORE_FABRARY_ID             = 40;
+const DBL_STORE_LAST_GAME_INFO         = 41;
+const DBL_GET_DECK_BUILDER_ID          = 42;
+const DBL_ADD_FAVORITE_DECK            = 43;
+const DBL_LOAD_FAVORITE_DECKS          = 44;
+const DBL_SAVE_PATREON_TOKENS          = 45;
+const DBL_SAVE_SETTING                 = 46;
+const DBL_LOAD_SAVED_SETTINGS          = 47;
+const DBL_BAN_PLAYER                   = 48;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 35;
+const DBL_MAX_KEY = 48;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -79,4 +92,17 @@ const DBL_LABELS = [
     33 => 'includes/reset-request.inc.php',
     34 => 'zzModPage.php',
     35 => 'zzPatreonDebug.php',
+    36 => 'includes/functions.inc.php::uidExists',
+    37 => 'includes/functions.inc.php::emailExists',
+    38 => 'includes/functions.inc.php::CreateUserAPI',
+    39 => 'includes/functions.inc.php::loginFromCookie',
+    40 => 'includes/functions.inc.php::storeFabraryId',
+    41 => 'includes/functions.inc.php::StoreLastGameInfo',
+    42 => 'includes/functions.inc.php::GetDeckBuilderId',
+    43 => 'includes/functions.inc.php::addFavoriteDeck',
+    44 => 'includes/functions.inc.php::LoadFavoriteDecks',
+    45 => 'includes/functions.inc.php::SavePatreonTokens',
+    46 => 'includes/functions.inc.php::SaveSetting',
+    47 => 'includes/functions.inc.php::LoadSavedSettings',
+    48 => 'includes/functions.inc.php::BanPlayer',
 ];
