@@ -67,7 +67,7 @@ $auth_token = !empty($modMetafyToken) ? $modMetafyToken : (!empty($metafyApiKey)
 $page = 1;
 
 while ($page <= $max_pages) {
-  $url = "https://dev.metafy.gg/v1/community/list-community-subscribers?per_page=100&page=" . intval($page);
+  $url = "https://dev.metafy.gg/v1/community/list-community-subscribers?community_id=" . urlencode($talishar_community_id) . "&per_page=100&page=" . intval($page);
   $ch = curl_init($url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 15);
@@ -89,10 +89,11 @@ while ($page <= $max_pages) {
   }
 
   $data = json_decode($raw, true);
-  $subscribers = $data['subscribers'] ?? [];
+  $subscribers = $data['subscribers'] ?? $data['data'] ?? $data['members'] ?? $data['users'] ?? [];
   if (empty($subscribers)) {
     if ($page === 1 && empty($all_subscriber_ids)) {
-      $api_error = "dev.metafy.gg returned 200 but zero subscribers (token may be invalid or not the community owner)";
+      $raw_preview = substr($raw, 0, 300);
+      $api_error = "dev.metafy.gg returned 200 but no subscribers found. Response keys: [" . implode(', ', array_keys($data ?? [])) . "] | Preview: $raw_preview";
     }
     break;
   }
