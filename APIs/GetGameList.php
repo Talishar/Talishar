@@ -1,6 +1,6 @@
 <?php
 
-include "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 include "../Libraries/HTTPLibraries.php";
 include "../HostFiles/Redirector.php";
 include "../CardDictionary.php";
@@ -18,7 +18,7 @@ $path = "../Games";
 
 session_start();
 SetHeaders();
-$conn = GetDBConnection();
+$conn = GetDBConnection(DBL_GET_GAME_LIST);
 
 if(!IsUserLoggedIn()) {
   if(isset($_COOKIE["rememberMeToken"])) {

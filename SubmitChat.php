@@ -20,7 +20,7 @@ $sessionIsPvtVoidPatron = isset($_SESSION["isPvtVoidPatron"]);
 session_write_close();
 
 include "Libraries/HTTPLibraries.php";
-include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/SHMOPLibraries.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
 SetHeaders();

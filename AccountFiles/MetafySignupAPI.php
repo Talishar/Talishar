@@ -151,7 +151,7 @@ function GetMetafyUserProfile($access_token)
  */
 function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
 {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
 
   // Try to find existing user by email
   $email = $user_profile['email'] ?? '';
@@ -240,7 +240,7 @@ function UsernameExists($username, $conn)
  */
 function UpdateMetafyTokens($userID, $access_token, $refresh_token, $metafy_id)
 {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
   $sql = "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=?, metafyID=? WHERE usersid=?";
   $stmt = mysqli_stmt_init($conn);
 
@@ -261,7 +261,7 @@ function FetchAndSaveMetafyCommunities($userID, $access_token)
   // Reuse the logic from MetafyLoginAPI.php
   include_once '../includes/dbh.inc.php';
 
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
   $all_communities = [];
 
   // 1. Fetch the authenticated user's owned community (if they are a coach/creator)
@@ -407,7 +407,7 @@ function FetchAndSaveMetafyCommunities($userID, $access_token)
  */
 function CheckIfMetafySupporter($userID)
 {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
   $sql = "SELECT metafyCommunities FROM users WHERE usersid=?";
   $stmt = mysqli_stmt_init($conn);
   
@@ -440,7 +440,7 @@ function CheckIfMetafySupporter($userID)
  */
 function GetExistingUsername($userID)
 {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
   $sql = "SELECT usersUid FROM users WHERE usersid=?";
   $stmt = mysqli_stmt_init($conn);
   

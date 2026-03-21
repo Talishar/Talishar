@@ -32,7 +32,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 // Attempt to restore session from lastAuthKey cookie if session is empty
 if (empty($_SESSION['useruid']) && isset($_COOKIE['lastAuthKey'])) {
   $authKey = $_COOKIE['lastAuthKey'];
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_BLOCKED_USERS_API);
   if ($conn) {
     $sql = "SELECT usersUid, usersId FROM users WHERE lastAuthKey = ?";
     $stmt = mysqli_stmt_init($conn);
@@ -65,7 +65,7 @@ if (!$_POST) {
 }
 
 $userId = LoggedInUser();
-$conn = GetDBConnection();
+$conn = GetDBConnection(DBL_BLOCKED_USERS_API);
 
 if (!$conn || $conn->connect_error) {
   http_response_code(500);

@@ -32,7 +32,7 @@ $userName = $_SESSION['userName'];
 $userID   = $_SESSION['userid'];
 
 // Fetch stored access token from DB
-$conn = GetDBConnection();
+$conn = GetDBConnection(DBL_REFRESH_METAFY_COMMUNITIES);
 $sql = "SELECT metafyAccessToken, metafyRefreshToken FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {

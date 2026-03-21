@@ -2,7 +2,7 @@
 
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
-include "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 include "../Libraries/NetworkingLibraries.php";
 include "../Libraries/CacheLibraries.php";
 include "../GameLogic.php";

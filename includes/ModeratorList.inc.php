@@ -39,5 +39,3 @@ function IsCardEditor($useruid) {
   return in_array($useruid, $editorList);
 }
 
-?>
-

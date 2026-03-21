@@ -16,7 +16,7 @@ if (isset($body['block-user-submit'])) {
 
     require 'dbh.inc.php';
 
-    $conn = GetDBConnection();
+    $conn = GetDBConnection(DBL_BLOCK_USER);
     $sql = "SELECT usersId FROM users WHERE usersUid=?";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
