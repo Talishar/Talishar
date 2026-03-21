@@ -707,7 +707,7 @@ function GetZoneObject($player,  $zone) {
 function MZIndexToObject($player, $MZIndex) {
   $zone = explode("-", $MZIndex)[0];
   $Zone = GetZoneObject($player, $zone);
-  return $Zone->Card(explode("-", $MZIndex)[1] ?? -1);
+  return $Zone == "" ? "" : $Zone->Card(explode("-", $MZIndex)[1] ?? -1);
 }
 
 function CleanTargetToObject($player, $cleanTarget) {
