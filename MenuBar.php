@@ -22,20 +22,7 @@ $isMobile = IsMobile();
 
 ?>
 
-<head>
-  <title>Talishar</title>
-  <link rel="shortcut icon" type="image/png" href="Images/TeenyCoin.png" />
-  <style>
-    body {
-      background-image: url('Images/outsiders-background.jpg');
-      background-position: top center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      overflow: hidden;
-      height: 100vh;
-      height: 100dvh;
-    }
-
+<style>
     li {
       display: inline;
       padding: 8px;
@@ -124,8 +111,7 @@ $isMobile = IsMobile();
       -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
       background-color: #555;
     }
-  </style>
-</head>
+</style>
 
 <body style="background-image: url('./Images/outsiders-background.jpg');">
 
