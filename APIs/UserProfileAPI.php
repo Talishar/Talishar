@@ -42,7 +42,7 @@ $response->isContributor = in_array($userName, $contributors);
 $response->isPvtVoidPatron = $userName == "PvtVoid" || isset($_SESSION["isPvtVoidPatron"]);
 
 // Get Metafy info from database
-$conn = GetDBConnection();
+$conn = GetDBConnection(DBL_USER_PROFILE_API);
 $sql = "SELECT metafyAccessToken, metafyCommunities, metafyID FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 

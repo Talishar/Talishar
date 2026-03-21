@@ -70,7 +70,7 @@ if (!function_exists('GetMetafyTiersFromDatabase')) {
   function GetMetafyTiersFromDatabase($userName)
   {
     if (IsDevEnvironment()) return [];
-    $conn = GetDBConnection();
+    $conn = GetDBConnection(DBL_METAFY_HELPER);
     if(!$conn) return [];
     $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
     $stmt = mysqli_stmt_init($conn);
@@ -132,7 +132,7 @@ if (!function_exists('GetMetafyCommunitiesFromDatabase')) {
   function GetMetafyCommunitiesFromDatabase($userName)
   {
     if (IsDevEnvironment()) return [];
-    $conn = GetDBConnection();
+    $conn = GetDBConnection(DBL_METAFY_HELPER);
     if (!$conn) return [];
     $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
     $stmt = mysqli_stmt_init($conn);

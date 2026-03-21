@@ -45,7 +45,7 @@ if (file_exists($bannedIPsFile)) {
   $response["bannedIPs"] = $bannedIPs ? array_values(array_filter($bannedIPs)) : [];
 }
 
-$conn = GetDBConnection();
+$conn = GetDBConnection(DBL_GET_MOD_PAGE_DATA);
 if ($conn) {
   $sql = "SELECT usersUid FROM users ORDER BY usersId DESC LIMIT 20";
   $stmt = mysqli_stmt_init($conn);

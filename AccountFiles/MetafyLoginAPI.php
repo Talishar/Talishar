@@ -99,7 +99,7 @@ function SaveMetafyTokensAndID($accessToken, $refreshToken)
     $metafyUserID = $profileData['user']['id'] ?? null;
   }
 
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_LOGIN_API);
   $sql = 'UPDATE users SET metafyAccessToken=?, metafyRefreshToken=?, metafyID=? WHERE usersid=?';
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -118,7 +118,7 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
   }
   
   $userID = $_SESSION['userid'];
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_LOGIN_API);
   
   $all_communities = [];
   
@@ -235,7 +235,7 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
 
   $metafyUserID = null;
   $row_id = null;
-  $conn2 = GetDBConnection();
+  $conn2 = GetDBConnection(DBL_METAFY_LOGIN_API);
   $stmt_chk = mysqli_stmt_init($conn2);
   if (mysqli_stmt_prepare($stmt_chk, "SELECT metafyID FROM users WHERE usersid=? LIMIT 1")) {
     mysqli_stmt_bind_param($stmt_chk, 'i', $userID);
