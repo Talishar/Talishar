@@ -59,7 +59,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
-  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain;
+  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -3416,6 +3416,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "TRIGGERTRIGGERS":
+      for ($i = 0; $i < $parameter; ++$i) {
+        $Layer = $Stack->Card($i, true);
+        $Hero = new CharacterCard(0, $player);
+        if ($Layer->ID() != "TRIGGER") continue;
+        if ($Layer->PlayerID() != $player) continue;
+        switch ($Hero->CardID()) {
+          case "riptide":
+          case "riptide_lurker_of_the_deep":
+            if (SubtypeContains($Layer->Parameter(), "Trap", $player))
+              AddLayer("TRIGGER", $player, $Hero->CardID(), "-", "DAMAGE");
+            break;
+          default:
+            break;
+        }
+      }
+      return $lastResult;
     case "TRIGGERORDERING":
       $firstPlayer = $lastResult == "Mine" ? $defPlayer : $mainPlayer;
       $secondPlayer = $firstPlayer == 1 ? 2 : 1;
@@ -3434,7 +3451,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if (!in_array($preLayers[$i+2], $secondUniquePreLayers)) array_push($secondUniquePreLayers, $preLayers[$i+2]);
         }
       }
-
+      PrependDecisionQueue("TRIGGERTRIGGERS", $mainPlayer, $firstPreLayers + $secondPreLayers, 1);
+      PrependDecisionQueue("TRIGGERTRIGGERS", $defPlayer, $firstPreLayers + $secondPreLayers, 1);
       if (count($secondUniquePreLayers) > 1 && HoldPrioritySetting($secondPlayer) != 4 && !IsPlayerAI($secondPlayer)) {
         PrependDecisionQueue("ORDERTRIGGERS", $secondPlayer, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $secondPlayer, "PRELAYERIDS", 1);

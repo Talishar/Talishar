@@ -2849,7 +2849,6 @@ class rainbow_goo_trap_red extends Card {
     $CombatChain->Card(0)->ModifyPower(-2);
     AddCurrentTurnEffect("rainbow_goo_trap_red", $mainPlayer);
     AddCurrentTurnEffect("rainbow_goo_trap_red-BLIND", $mainPlayer);
-    TrapTriggered($this->cardID);
     $combatChain[0] = BlindCard($combatChain[0]);
   }
 
@@ -2890,7 +2889,6 @@ class frail_swingline_blue extends Card {
   function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     if (HasDecreasedAttack()) {
       AddLayer("TRIGGER", $this->controller, $this->cardID);
-      TrapTriggered($this->cardID);
     }
   }
 
@@ -2931,7 +2929,6 @@ class quickening_sand_blue extends Card {
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
       //eventually will need to set this with unique ids
       AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
-      TrapTriggered($this->cardID);
     }
   }
 
@@ -2974,7 +2971,6 @@ class courageous_crossing_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    TrapTriggered($this->cardID);
     $targetPlayer = str_contains($target, "MY") ? $this->controller : ($this->controller == 1 ? 2 : 1);
     if (str_contains($target, "CHAR")) {
       $Character = new PlayerCharacter($targetPlayer);
@@ -3003,7 +2999,6 @@ class spellbane_trap extends BaseCard {
 
   function ProcessTrigger() {
     PlayAura("spellbane_aegis", $this->controller);
-    TrapTriggered($this->cardID);
   }
 
   function CombatEffectActive() {
@@ -3895,7 +3890,6 @@ class concealed_pathogen extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    TrapTriggered($this->cardID);
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
@@ -3927,7 +3921,6 @@ class concealed_sedative extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    TrapTriggered($this->cardID);
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
@@ -3959,7 +3952,6 @@ class concealed_nerve_gas extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    TrapTriggered($this->cardID);
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
@@ -7497,7 +7489,6 @@ class tiger_trap_red extends Card{
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    TrapTriggered($this->cardID);
     AddCurrentTurnEffect($this->cardID, $mainPlayer);
   }
 }
@@ -7616,7 +7607,6 @@ class rune_snare_red extends Card {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
-    TrapTriggered($this->cardID);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {

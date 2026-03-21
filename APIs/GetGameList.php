@@ -47,28 +47,29 @@ $bannedPlayers = GetBannedPlayers();
 
 // Get blocked users list for filtering
 $blockedUserNames = [];
-$usersWhoBlockedMe = [];
 $friendUserNames = [];
 if(IsUserLoggedIn()) {
   $userId = LoggedInUser();
-  $blockedUsers = GetBlockedUsers($userId);
-  $blockedUserNames = array_map(function($user) { return $user['username']; }, $blockedUsers);
-  
-  // Also get users who have blocked the current player
-  $query = "SELECT u.usersUid FROM blocked_users b JOIN users u ON b.userId = u.usersId WHERE b.blockedUserId = ?";
+
+  // Single query: users I blocked + users who blocked me
   if ($conn) {
+    $query = "SELECT u.usersUid FROM blocked_users b
+              JOIN users u ON b.blockedUserId = u.usersId WHERE b.userId = ?
+              UNION
+              SELECT u.usersUid FROM blocked_users b
+              JOIN users u ON b.userId = u.usersId WHERE b.blockedUserId = ?";
     $stmt = $conn->prepare($query);
     if ($stmt) {
-      $stmt->bind_param("i", $userId);
+      $stmt->bind_param("ii", $userId, $userId);
       $stmt->execute();
       $result = $stmt->get_result();
       while ($row = $result->fetch_assoc()) {
-        $usersWhoBlockedMe[] = $row['usersUid'];
+        $blockedUserNames[] = $row['usersUid'];
       }
       $stmt->close();
     }
   }
-  
+
   // Get friends list
   $friends = GetUserFriends($userId);
   $friendUserNames = array_map(function($friend) { return $friend['username']; }, $friends);
@@ -117,9 +118,11 @@ if ($handle = opendir($path)) {
       }
     }
     if (file_exists($gs)) {
-      $lastGamestateUpdate = intval(GetCachePiece($gameToken, 6));
+      // Single shared-memory read; all pieces available as 0-indexed array (piece N = index N-1)
+      $cacheArr = ReadCacheArray($gameToken);
+      $lastGamestateUpdate = ($cacheArr !== null) ? intval($cacheArr[5] ?? 0) : 0;
       if ($currentTime - $lastGamestateUpdate < 30000) {
-        $visibility = GetCachePiece($gameToken, 9);
+        $visibility = $cacheArr[8] ?? "";  // piece 9
         $gameInProgressCount += 1;
         
         // Get both player usernames from the GameFile.txt
@@ -127,12 +130,13 @@ if ($handle = opendir($path)) {
         $gameCreator = "";
         $p2Username = "";
         if (file_exists($gameFilePath)) {
-          $lines = file($gameFilePath);
-          if (count($lines) >= 11) {
-            // p1uid is on line 10 (0-indexed line 9)
-            $gameCreator = trim($lines[9]);
-            // p2uid is on line 11 (0-indexed line 10)
-            $p2Username = trim($lines[10]);
+          // Read only the two username lines instead of loading the whole file
+          $fh = fopen($gameFilePath, "r");
+          if ($fh) {
+            for ($i = 0; $i < 9; $i++) { if (fgets($fh) === false) break; }
+            $gameCreator = trim((string)fgets($fh));  // line 10: p1uid
+            $p2Username  = trim((string)fgets($fh));  // line 11: p2uid
+            fclose($fh);
           }
         }
         
@@ -161,17 +165,12 @@ if ($handle = opendir($path)) {
           continue;
         }
         
-        // Don't show games from users who have blocked me
-        if(in_array($gameCreator, $usersWhoBlockedMe) || in_array($p2Username, $usersWhoBlockedMe)) {
-          continue;
-        }
-        
         $gameInProgress = new stdClass();
-        $gameInProgress->p1Hero = GetCachePiece($gameToken, 7);
-        $gameInProgress->p2Hero = GetCachePiece($gameToken, 8);
+        $gameInProgress->p1Hero = $cacheArr[6] ?? "";   // piece 7
+        $gameInProgress->p2Hero = $cacheArr[7] ?? "";   // piece 8
         $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
         $gameInProgress->gameName = $gameToken;
-        $gameInProgress->format = GetCachePiece($gameToken, 13);
+        $gameInProgress->format = $cacheArr[12] ?? "";  // piece 13
         $gameInProgress->gameCreator = $gameCreator;
         $gameInProgress->p2Username = $p2Username;
         $gameInProgress->visibility = $visibility;
@@ -229,11 +228,6 @@ if ($handle = opendir($path)) {
         
         // Don't show open games from blocked users
         if(in_array($p1uid, $blockedUserNames)) {
-          continue;
-        }
-        
-        // Don't show open games from users who have blocked me
-        if(in_array($p1uid, $usersWhoBlockedMe)) {
           continue;
         }
         

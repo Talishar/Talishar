@@ -2335,7 +2335,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "tripwire_trap_red":
-        TrapTriggered($parameter);
         AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
         AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
@@ -2343,7 +2342,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
         break;
       case "pitfall_trap_yellow":
-        TrapTriggered($parameter);
         AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
         AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
@@ -2351,7 +2349,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         Await($player, "DealDamage", source:$parameter, damage:2, final:true);
         break;
       case "rockslide_trap_blue":
-        TrapTriggered($parameter);
         AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
         AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
@@ -2968,7 +2965,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "riptide_lurker_of_the_deep":
       case "riptide":
-        SuperReload();
+        if ($additionalCosts == "DAMAGE")
+          DamageTrigger($mainPlayer, 1, "DAMAGE", $parameter, $defPlayer);
+        else SuperReload();
         break;
       case "crows_nest":
         $arsenal = &GetArsenal($player);
@@ -2983,7 +2982,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "buzzsaw_trap_blue":
         AddCurrentTurnEffect($parameter, $mainPlayer);
-        TrapTriggered($parameter);
         break;
       case "collapsing_trap_blue":
         $hand = &GetHand($mainPlayer);
@@ -2992,7 +2990,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         Draw($mainPlayer, num:$numDraw);
         if ($numDraw > 0) WriteLog("Player $mainPlayer discarded their hand and drew $numDraw cards");
         else WriteLog("Player $mainPlayer discarded their hand.");
-        TrapTriggered($parameter);
         break;
       case "spike_pit_trap_blue":
         $deck = new Deck($mainPlayer);
@@ -3004,14 +3001,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           WriteLog(Cardlink($topDeck, $topDeck) . " was put in the graveyard. Player $mainPlayer lost $numName life");
         }
         else WriteLog("No card from deck to put into graveyayrd");
-        TrapTriggered($parameter);
         break;
       case "boulder_trap_yellow":
         AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
         AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "-1", 1);
         WriteLog(CardLink($parameter, $parameter) . " triggered and puts a -1 counter on an equipment");
-        TrapTriggered($parameter);
         break;
       case "pendulum_trap_yellow":
         $deck = new Deck($mainPlayer);
@@ -3023,11 +3018,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           else $rv .= " and " . Cardlink($cardRemoved, $cardRemoved) . " into the graveyard";
         }
         WriteLog($rv);
-        TrapTriggered($parameter);
         break;
       case "tarpit_trap_yellow":
         AddCurrentTurnEffect($parameter, $mainPlayer);
-        TrapTriggered($parameter);
         break;
       case "virulent_touch_red":
       case "virulent_touch_yellow":
@@ -3037,15 +3030,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "bloodrot_trap_red":
         PlayAura($CID_BloodRotPox, $mainPlayer, effectController: $defPlayer);
-        TrapTriggered($parameter);
         break;
       case "frailty_trap_red":
         PlayAura($CID_Frailty, $mainPlayer, effectController: $defPlayer);
-        TrapTriggered($parameter);
         break;
       case "inertia_trap_red":
         PlayAura($CID_Inertia, $mainPlayer, effectController: $defPlayer);
-        TrapTriggered($parameter);
         break;
       case "vambrace_of_determination":
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
@@ -3846,7 +3836,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "hunted_or_hunter_red":
         WriteLog("👹 The Hunter has become the hunted");
         LoseHealth(1, $mainPlayer);
-        TrapTriggered($parameter);
         break;
       case "blood_runs_deep_red":
         ThrowWeapon("Dagger", "blood_runs_deep_red");
@@ -3888,7 +3877,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "den_of_the_spider_red":
         WriteLog("The Hunter stumbles into the spider");
         MarkHero($mainPlayer);
-        TrapTriggered($parameter);
         break;
       case "thick_hide_hunter_yellow":
         DiscardRandom();
@@ -3904,7 +3892,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
             AddDecisionQueue("CHAINREACTION", $player, "-", 1);
           }
         }
-        TrapTriggered($parameter);
         break;
       case "war_cry_of_bellona_yellow":
         $attackGoAgain = DoesAttackHaveGoAgain() && HasWard($combatChain[0], $mainPlayer);
