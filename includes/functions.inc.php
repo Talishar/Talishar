@@ -96,32 +96,6 @@ function emailExists($conn, $email)
 	}
 }
 
-// Insert new user into database
-function createUser($conn, $username, $email, $pwd, $reportingServer = false)
-{
-	$conn = GetDBConnection();
-	if (!$conn) {
-		header("location: ../Signup.php?error=db_unavailable");
-		exit();
-	}
-	$sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
-
-	$stmt = mysqli_stmt_init($conn);
-	if (!mysqli_stmt_prepare($stmt, $sql)) {
-		header("location: ../Signup.php?error=stmtfailed");
-		exit();
-	}
-
-	$hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
-
-	mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashedPwd);
-	mysqli_stmt_execute($stmt);
-	mysqli_stmt_close($stmt);
-	mysqli_close($conn);
-	header("location: ../Signup.php?error=none");
-	exit();
-}
-
 function CreateUserAPI($conn, $username, $email, $pwd)
 {
 	$conn = GetDBConnection();
