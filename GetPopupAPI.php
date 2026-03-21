@@ -63,19 +63,6 @@ if ($playerID == 3) {
           exit;
       }
   }
-  //Now audit the spectate
-  $userID = LoggedInUser();
-  $conn = GetDBConnection();
-  if (!$conn || $conn->connect_error) {
-    $response->error = "Database connection failed: " . ($conn && $conn->connect_error ? $conn->connect_error : "unknown");
-    echo (json_encode($response));
-    exit;
-  }
-  $query = "UPDATE users SET numSpectates = numSpectates + 1 WHERE usersId = ?";
-  $stmt = $conn->prepare($query);
-  $stmt->bind_param("i", $userID);
-  $stmt->execute();
-  $stmt->close();
 }
 
 // CORS etc *must* be set for all endpoints
