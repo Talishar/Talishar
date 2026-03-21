@@ -5,7 +5,7 @@ include_once './includes/dbh.inc.php';
 include_once './includes/functions.inc.php';
 include_once './includes/ModeratorList.inc.php';
 include_once './Libraries/SHMOPLibraries.php';
-/*
+
 if (!isset($_SESSION["userid"])) {
     if (isset($_COOKIE["rememberMeToken"])) {
         loginFromCookie();
@@ -22,7 +22,7 @@ if (!IsUserModerator($useruid)) {
     echo "You must be a moderator to view this page.";
     exit;
 }
-*/
+
 $resetRequested = isset($_POST['reset']) && $_POST['reset'] === '1';
 if ($resetRequested) {
     for ($key = 1; $key <= DBL_MAX_KEY; $key++) {
