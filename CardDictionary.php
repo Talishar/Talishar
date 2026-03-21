@@ -4793,7 +4793,7 @@ function IsModular($cardID)
 function HasCloaked($cardID, $player = "", $hero = "")
 {
 	$HeroCard = new CharacterCard(0, $player);
-	$hero = $HeroCard->CardID();
+	$hero = $hero == "" ? $HeroCard->CardID() : $hero;
   if (TypeContains($cardID, "E", $player) && $hero == "enigma_new_moon") return "DOWN";
   if (GeneratedHasCloaked($cardID)) {
     return "DOWN";
