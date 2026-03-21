@@ -97,19 +97,7 @@ $contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "
 // List of mod usernames - should match frontend list
 $modUsernames = ["OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn", "Bluffkin"];
 
-// Get Metafy tiers for this player live from DB so stale game file values don't affect chat badges
-$metafyTiers = [];
-if ($uid !== '-') {
-  $liveTiers = GetMetafyTiersFromDatabase($uid);
-  if (!empty($liveTiers)) {
-    $metafyTiers = $liveTiers;
-  } else {
-    // Fallback to game file value (already loaded via ParseGamefile.php)
-    $metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
-  }
-} else {
-  $metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
-}
+$metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
 if (!is_array($metafyTiers)) $metafyTiers = [];
 
 // Check for Metafy badges first - if user has Metafy badges, only show those
