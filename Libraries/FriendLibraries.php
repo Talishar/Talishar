@@ -451,7 +451,7 @@ function FindUserByUsername($username) {
     return null;
   }
   
-  $query = "SELECT usersId, usersUid FROM users WHERE LOWER(usersUid) = LOWER(?) LIMIT 1";
+  $query = "SELECT usersId, usersUid FROM users WHERE usersUid = ? LIMIT 1";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
     return null;
@@ -606,7 +606,7 @@ function SearchUsers($searchTerm, $limit = 10) {
   $limit = max($limit, 1);
   
   $searchPattern = '%' . $searchTerm . '%';
-  $query = "SELECT usersId, usersUid FROM users WHERE LOWER(usersUid) LIKE LOWER(?) LIMIT ?";
+  $query = "SELECT usersId, usersUid FROM users WHERE usersUid LIKE ? LIMIT ?";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
     return [];
