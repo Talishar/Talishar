@@ -914,20 +914,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       WriteLog("🚩The opponent forfeit due to inactivity.");
       // }
       break;
-    case 100010: //Grant badge
-      if ($isSimulation)
-        return;
-      include "MenuFiles/ParseGamefile.php";
-      include_once "./includes/dbh.inc.php";
-      include_once "./includes/functions.inc.php";
-      $myName = ($playerID == 1 ? $p1uid : $p2uid);
-      $theirName = ($playerID == 1 ? $p2uid : $p1uid);
-      $userID = ($playerID == 1) ? $p1id : $p2id;
-      if ($userID != "") {
-        AwardBadge($userID, 3);
-        WriteLog($myName . " gave a badge to " . $theirName);
-      }
-      break;
     case 100011: //Resume adventure (roguelike)
       if ($roguelikeGameID == "")
         break;

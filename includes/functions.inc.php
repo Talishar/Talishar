@@ -986,20 +986,6 @@ function SavePatreonTokens($accessToken, $refreshToken)
 	mysqli_close($conn);
 }
 
-function AwardBadge($userID, $badgeID)
-{
-	if($userID == "") return "";
-	$conn = GetDBConnection();
-	$sql = "insert into playerbadge (playerId, badgeId, intVariable) values (?, ?, 1) ON DUPLICATE KEY UPDATE intVariable = intVariable + 1;";
-	$stmt = mysqli_stmt_init($conn);
-	if(mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ss", $userID, $badgeID);
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-	}
-	mysqli_close($conn);
-}
-
 function SaveSetting($playerId, $settingNumber, $value)
 {
 	if($playerId == "" || $playerId == "-" || !is_numeric($playerId)) return;
