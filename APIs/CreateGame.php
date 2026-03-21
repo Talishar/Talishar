@@ -2,7 +2,7 @@
 
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
-include "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 require_once '../Assets/patreon-php-master/src/API.php';

@@ -30,7 +30,7 @@ $popupType = isset($_GET["popupType"]) ? $_GET["popupType"] : "";
 $chainLinkIndex = TryGet("index", "");
 
 ob_start();
-include "./Libraries/SHMOPLibraries.php";
+include_once "./Libraries/SHMOPLibraries.php";
 
 // For profile settings, skip ParseGamestate
 if ($playerID != 0) {

@@ -20,7 +20,7 @@ include "WriteLog.php";
 include "GameLogic.php";
 include "GameTerms.php";
 include "HostFiles/Redirector.php";
-include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/SHMOPLibraries.php";
 include "Libraries/StatFunctions.php";
 include "Libraries/UILibraries.php";
 include "Libraries/PlayerSettings.php";
