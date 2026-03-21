@@ -38,7 +38,7 @@
     // Check if user is a Metafy Talishar supporter
     if(isset($_SESSION["useruid"])) {
       $userName = $_SESSION["useruid"];
-      $conn = GetDBConnection(DBL_ACCOUNT_SESSION_API);
+      $conn = GetDBConnection();
       if ($conn) {
         $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
         $stmt = mysqli_stmt_init($conn);
@@ -150,7 +150,7 @@
       return;
     }
     
-    $conn = GetDBConnection(DBL_ACCOUNT_SESSION_API);
+    $conn = GetDBConnection();
     if (!$conn) {
       return;
     }

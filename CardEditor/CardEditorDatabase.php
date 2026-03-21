@@ -3,7 +3,7 @@
 	function LoadDatabaseCards($set="")
 	{
 		$cards = [];
-		$conn = GetDBConnection(DBL_CARD_EDITOR_DATABASE);
+		$conn = GetDBConnection();
 		$setLike = $set . "%";
 		if($set != "") $sql = "SELECT * FROM carddefinition WHERE cardID LIKE ?";
 		else $sql = "SELECT * FROM carddefinition";
@@ -39,7 +39,7 @@
 		// Ensure hasGoAgain is a valid boolean/integer
 		$hasGoAgain = intval($hasGoAgain);
 		
-		$conn = GetDBConnection(DBL_CARD_EDITOR_DATABASE);
+		$conn = GetDBConnection();
 		$sql = "INSERT INTO carddefinition (cardID, hasGoAgain)
 		        VALUES (?, ?)
 		        ON DUPLICATE KEY UPDATE

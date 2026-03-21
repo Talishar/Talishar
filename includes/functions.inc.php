@@ -35,7 +35,7 @@ function pwdMatch($pwd, $pwdrepeat)
 // Check if username is in database, if so then return data
 function uidExists($conn, $username)
 {
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	if (!$conn) {
 		header("location: ../Signup.php?error=db_unavailable");
 		exit();
@@ -67,7 +67,7 @@ function uidExists($conn, $username)
 // Check if email is in database, if so then return data
 function emailExists($conn, $email)
 {
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	if (!$conn) {
 		header("location: ../Signup.php?error=db_unavailable");
 		exit();
@@ -98,7 +98,7 @@ function emailExists($conn, $email)
 
 function CreateUserAPI($conn, $username, $email, $pwd)
 {
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	if (!$conn) {
 		return false;
 	}
@@ -121,7 +121,7 @@ function loginFromCookie()
 {
     if (isset($_COOKIE["rememberMeToken"])) {
         $token = $_COOKIE["rememberMeToken"];
-        $conn = GetDBConnection(DBL_FUNCTIONS);
+        $conn = GetDBConnection();
         if (!$conn) {
             return; // Silently fail if database unavailable
         }
@@ -180,7 +180,7 @@ function loginFromCookie()
 
 function storeFabraryId($uid, $fabraryId)
 {
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	$sql = "UPDATE users SET fabraryId=? WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -192,7 +192,7 @@ function storeFabraryId($uid, $fabraryId)
 
 function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 {
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	$sql = "UPDATE users SET lastGameName=?, lastPlayerId=?, lastAuthKey=? WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -211,7 +211,7 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 
 function GetDeckBuilderId($uid, $decklink)
 {
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	if (!$conn) {
         echo json_encode(["error" => "Database connection failed in getting deckbuilder ID"]);
         return "";
@@ -242,7 +242,7 @@ function GetDeckBuilderId($uid, $decklink)
 
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format = "")
 {
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	$deckName = implode("", explode("\"", $deckName));
 	$deckName = implode("", explode("'", $deckName));
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "','" . $format . "'";
@@ -259,7 +259,7 @@ function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format = "")
 function LoadFavoriteDecks($userID)
 {
 	if ($userID == "") return [];
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	if (!$conn) return [];
 	$sql = "SELECT decklink, name, hero, format from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
@@ -976,7 +976,7 @@ function SavePatreonTokens($accessToken, $refreshToken)
 {
 	if(!isset($_SESSION["userid"])) return;
 	$userID = $_SESSION["userid"];
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	$sql = "UPDATE users SET patreonAccessToken=?, patreonRefreshToken=? WHERE usersid=?";
 	$stmt = mysqli_stmt_init($conn);
 	if(mysqli_stmt_prepare($stmt, $sql)) {
@@ -990,7 +990,7 @@ function SavePatreonTokens($accessToken, $refreshToken)
 function SaveSetting($playerId, $settingNumber, $value)
 {
 	if($playerId == "" || $playerId == "-" || !is_numeric($playerId)) return;
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	if (!$conn) {
 		return;
 	}
@@ -1010,7 +1010,7 @@ function LoadSavedSettings($playerId)
 		return [];
 	}
 	$output = [];
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	if (!$conn) return [];
 	$sql = "select settingNumber,settingValue from `savedsettings` where playerId=(?)";
 	$stmt = mysqli_stmt_init($conn);
@@ -1191,7 +1191,7 @@ function SendEmailAPICurlFallback($userEmail, $url, $email, $sendgridKey)
 
 function BanPlayer($uid)
 {
-	$conn = GetDBConnection(DBL_FUNCTIONS);
+	$conn = GetDBConnection();
 	$sql = "UPDATE users SET isBanned = true WHERE usersUid = ?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {

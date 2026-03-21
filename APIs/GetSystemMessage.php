@@ -22,7 +22,7 @@ if (!IsUserLoggedIn()) {
 
 $userName = LoggedInUserName();
 
-$conn = GetDBConnection(DBL_GET_SYSTEM_MESSAGE);
+$conn = GetDBConnection();
 if (!$conn) {
   http_response_code(500);
   echo json_encode(["error" => "Database connection failed"]);

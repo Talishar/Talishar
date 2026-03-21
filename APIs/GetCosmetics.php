@@ -59,7 +59,7 @@ if(IsUserLoggedIn()) {
   }
 
   // Add Metafy community benefits
-  $conn = GetDBConnection(DBL_GET_COSMETICS);
+  $conn = GetDBConnection();
   $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {

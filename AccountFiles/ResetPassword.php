@@ -29,7 +29,7 @@ else if ($password != $passwordRepeat) {
 $currentDate = date('U');
 
 
-  $conn = GetDBConnection(DBL_RESET_PASSWORD);
+  $conn = GetDBConnection();
   $sql = "SELECT * FROM pwdReset WHERE pwdResetSelector=? AND pwdResetExpires >= ?";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {

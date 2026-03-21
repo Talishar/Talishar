@@ -79,7 +79,7 @@ function EnsureWhitelistTable($conn) {
 }
 
 if ($action === 'getOffensiveUsernames') {
-    $conn = GetDBConnection(DBL_USERNAME_MODERATION);
+    $conn = GetDBConnection();
     if (!$conn) {
         http_response_code(500);
         echo json_encode(["error" => "Database connection failed"]);
@@ -160,7 +160,7 @@ if ($action === 'banOffensiveUsername') {
         exit;
     }
 
-    $conn = GetDBConnection(DBL_USERNAME_MODERATION);
+    $conn = GetDBConnection();
     if (!$conn) {
         http_response_code(500);
         echo json_encode(["error" => "Database connection failed"]);
@@ -217,7 +217,7 @@ if ($action === 'whitelistOffensiveUsername') {
         exit;
     }
 
-    $conn = GetDBConnection(DBL_USERNAME_MODERATION);
+    $conn = GetDBConnection();
     if (!$conn) {
         http_response_code(500);
         echo json_encode(["error" => "Database connection failed"]);

@@ -18,7 +18,7 @@ $path = "../Games";
 
 session_start();
 SetHeaders();
-$conn = GetDBConnection(DBL_GET_GAME_LIST);
+$conn = GetDBConnection();
 
 if(!IsUserLoggedIn()) {
   if(isset($_COOKIE["rememberMeToken"])) {

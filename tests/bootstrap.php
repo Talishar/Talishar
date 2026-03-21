@@ -32,7 +32,7 @@ function GetTestDBConnection() {
 
 // Override database functions for testing
 if (!function_exists('GetDBConnection')) {
-    function GetDBConnection($logKey = 0) {
+    function GetDBConnection() {
         return GetTestDBConnection();
     }
 }

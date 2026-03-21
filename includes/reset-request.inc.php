@@ -12,7 +12,7 @@ if (isset($_POST['reset-request-submit'])) {
 
   $expires = date("U") + 1800;
 
-  $conn = GetDBConnection(DBL_RESET_REQUEST);
+  $conn = GetDBConnection();
   if (!$conn) {
     die("Database connection failed.");
   }

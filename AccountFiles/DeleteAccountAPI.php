@@ -48,7 +48,7 @@ if ($isModerator && $confirmationUsername !== $loggedInUserName) {
 }
 
 try {
-  $conn = GetDBConnection(DBL_DELETE_ACCOUNT_API);
+  $conn = GetDBConnection();
   
   if (!$conn) {
     throw new Exception("Failed to connect to database.");

@@ -67,7 +67,7 @@ while (!feof($banfileHandler)) {
 fclose($banfileHandler);
 
 $sql = "SELECT usersUid FROM users ORDER BY usersId DESC LIMIT 20";
-$conn = GetDBConnection(DBL_MOD_PAGE);
+$conn = GetDBConnection();
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   //header("location: ../Signup.php?error=stmtfailed");
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sqlQuery'])) {
     $rawQuery = trim($_POST['sqlQuery']);
     if ($rawQuery !== '') {
       $queryExecuted = true;
-      $conn = GetDBConnection(DBL_MOD_PAGE);
+      $conn = GetDBConnection();
       $result = mysqli_query($conn, $rawQuery);
       if ($result === false) {
         echo "<p style='color:red; margin-left:10px; padding:10px; background:rgba(255,0,0,0.2); border-radius:3px;'><strong>❌ Query Error:</strong> " . htmlspecialchars(mysqli_error($conn)) . "</p>";

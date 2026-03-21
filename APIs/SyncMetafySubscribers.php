@@ -46,7 +46,7 @@ $oauthClientSecret = $metafyClientSecret ?? getenv('METAFY_CLIENT_SECRET') ?: ''
 $modMetafyToken        = '';
 $modMetafyRefreshToken = '';
 $modUserDbId           = null;
-$conn_mod = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+$conn_mod = GetDBConnection();
 if ($conn_mod) {
   $stmt_mod = mysqli_stmt_init($conn_mod);
   if (mysqli_stmt_prepare($stmt_mod, "SELECT usersid, metafyAccessToken, metafyRefreshToken FROM users WHERE usersUid=? LIMIT 1")) {
@@ -92,7 +92,7 @@ function RefreshMetafyAccessToken($refreshToken, $clientID, $clientSecret, $user
   $newRefresh = $tokens['refresh_token'] ?? $refreshToken;
 
   if (!empty($newAccess) && !empty($userDbId)) {
-    $conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+    $conn = GetDBConnection();
     $stmt = mysqli_stmt_init($conn);
     if (mysqli_stmt_prepare($stmt, "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=? WHERE usersid=?")) {
       mysqli_stmt_bind_param($stmt, 'ssi', $newAccess, $newRefresh, $userDbId);
@@ -195,7 +195,7 @@ if (empty($all_subscriber_ids)) {
 }
 
 // Cross-reference DB
-$conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+$conn = GetDBConnection();
 if (!$conn) {
   http_response_code(500);
   echo json_encode(["error" => "DB connection failed"]);

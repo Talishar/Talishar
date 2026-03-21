@@ -18,7 +18,7 @@ $response = new stdClass();
 $response->userName = LoggedInUserName();
 
 // Get Metafy info from database
-$conn = GetDBConnection(DBL_METAFY_API);
+$conn = GetDBConnection();
 $sql = "SELECT metafyAccessToken, metafyCommunities FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 

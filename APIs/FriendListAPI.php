@@ -34,7 +34,7 @@ if (!$_POST) {
 }
 
 $userId = LoggedInUser();
-$conn = GetDBConnection(DBL_FRIEND_LIST_API);
+$conn = GetDBConnection();
 
 // Single, comprehensive connection check
 if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error) && $conn->connect_error)) {

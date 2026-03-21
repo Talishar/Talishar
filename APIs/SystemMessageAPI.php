@@ -46,7 +46,7 @@ if (!IsUserModerator($useruid) && $action !== 'acknowledge') {
   exit;
 }
 
-$conn = GetDBConnection(DBL_SYSTEM_MESSAGE_API);
+$conn = GetDBConnection();
 if (!$conn) {
   http_response_code(500);
   echo json_encode(["error" => "Database connection failed"]);

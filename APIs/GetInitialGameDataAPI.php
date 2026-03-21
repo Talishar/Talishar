@@ -60,7 +60,7 @@ if(!AltArtsDisabled($playerID))
 
   // Add Metafy community alt arts
   if (IsUserLoggedIn()) {
-    $conn = GetDBConnection(DBL_GET_INITIAL_GAME_DATA_API);
+    $conn = GetDBConnection();
     $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
     $stmt = mysqli_stmt_init($conn);
     if (mysqli_stmt_prepare($stmt, $sql)) {

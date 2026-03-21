@@ -27,7 +27,7 @@ if (empty($userName) || !ctype_alnum($userName)) {
   exit();
 }
 
-$conn = GetDBConnection(DBL_PATREON_DEBUG);
+$conn = GetDBConnection();
 $sql = "SELECT * FROM users WHERE usersUid = ?";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {

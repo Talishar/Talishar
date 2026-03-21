@@ -41,7 +41,7 @@
     echo(json_encode($response));
     exit;
   }
-  $conn = GetDBConnection(DBL_SIGNUP_API);
+  $conn = GetDBConnection();
   // Is the username taken already
   if (uidExists($conn, $username) !== false) {
     $response->error = "The chosen username is taken.";

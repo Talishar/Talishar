@@ -6,7 +6,7 @@
 
 include_once 'includes/dbh.inc.php';
 
-$conn = GetDBConnection(DBL_SETUP_PRIVATE_MESSAGES_TABLE);
+$conn = GetDBConnection();
 
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
