@@ -185,20 +185,18 @@ function LogCacheStats() {
     round($stats['memory_available'] / 1024 / 1024, 2) . "MB");
 }
 
-function UpdateSpectatorPresence($gameName, $spectatorName) {
+function UpdateSpectatorPresence($gameName) {
   $now = time();
-  $spectatorName = trim($spectatorName);
-  if ($spectatorName === '') $spectatorName = 'anonymous';
 
   if (extension_loaded('apcu') && ini_get('apc.enabled')) {
     $key = 'spectators_' . $gameName;
     $spectators = @apcu_fetch($key);
     if (!is_array($spectators)) $spectators = [];
-    $spectators[$spectatorName] = $now;
-    foreach ($spectators as $name => $lastSeen) {
-      if ($now - $lastSeen > 60) unset($spectators[$name]);
+    $spectators[] = $now;
+    foreach ($spectators as $i => $lastSeen) {
+      if ($now - $lastSeen > 60) unset($spectators[$i]);
     }
-    @apcu_store($key, $spectators, 120);
+    @apcu_store($key, array_values($spectators), 120);
     return;
   }
 
@@ -206,20 +204,18 @@ function UpdateSpectatorPresence($gameName, $spectatorName) {
   $fh = @fopen($file, 'c+');
   if (!$fh) return;
   flock($fh, LOCK_EX);
-  $lines = [];
+  $timestamps = [];
   while (!feof($fh)) {
     $line = trim(fgets($fh));
-    if ($line === '') continue;
-    $parts = explode(':', $line, 2);
-    if (count($parts) === 2 && ($now - intval($parts[1])) < 60) {
-      $lines[$parts[0]] = intval($parts[1]);
+    if ($line !== '' && ($now - intval($line)) < 60) {
+      $timestamps[] = intval($line);
     }
   }
-  $lines[$spectatorName] = $now;
+  $timestamps[] = $now;
   ftruncate($fh, 0);
   rewind($fh);
-  foreach ($lines as $name => $ts) {
-    fwrite($fh, $name . ':' . $ts . "\n");
+  foreach ($timestamps as $ts) {
+    fwrite($fh, $ts . "\n");
   }
   flock($fh, LOCK_UN);
   fclose($fh);
@@ -232,24 +228,21 @@ function GetActiveSpectators($gameName) {
   if (extension_loaded('apcu') && ini_get('apc.enabled')) {
     $key = 'spectators_' . $gameName;
     $spectators = @apcu_fetch($key);
-    if (!is_array($spectators)) return ['count' => 0, 'names' => []];
-    $activeNames = [];
-    foreach ($spectators as $name => $lastSeen) {
-      if ($now - $lastSeen <= $threshold) $activeNames[] = $name;
+    if (!is_array($spectators)) return ['count' => 0];
+    $count = 0;
+    foreach ($spectators as $lastSeen) {
+      if ($now - $lastSeen <= $threshold) $count++;
     }
-    return ['count' => count($activeNames), 'names' => array_values($activeNames)];
+    return ['count' => $count];
   }
 
   $file = './Games/' . $gameName . '/spectators.txt';
-  if (!file_exists($file)) return ['count' => 0, 'names' => []];
+  if (!file_exists($file)) return ['count' => 0];
   $lines = @file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-  if (!is_array($lines)) return ['count' => 0, 'names' => []];
-  $activeNames = [];
+  if (!is_array($lines)) return ['count' => 0];
+  $count = 0;
   foreach ($lines as $line) {
-    $parts = explode(':', $line, 2);
-    if (count($parts) === 2 && ($now - intval($parts[1])) <= $threshold) {
-      $activeNames[] = $parts[0];
-    }
+    if (($now - intval($line)) <= $threshold) $count++;
   }
-  return ['count' => count($activeNames), 'names' => $activeNames];
+  return ['count' => $count];
 }
