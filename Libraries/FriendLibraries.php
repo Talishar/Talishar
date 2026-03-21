@@ -605,8 +605,8 @@ function SearchUsers($searchTerm, $limit = 10) {
   $limit = min((int)$limit, 100);
   $limit = max($limit, 1);
   
-  $searchPattern = '%' . $searchTerm . '%';
-  $query = "SELECT usersId, usersUid FROM users WHERE LOWER(usersUid) LIKE LOWER(?) LIMIT ?";
+  $searchPattern = $searchTerm . '%';
+  $query = "SELECT usersId, usersUid FROM users WHERE usersUid LIKE ? LIMIT ?";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
     return [];

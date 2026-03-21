@@ -42,7 +42,7 @@ if (strlen($searchQuery) > 0) {
     $stmt = mysqli_stmt_init($conn);
 
     if (mysqli_stmt_prepare($stmt, $sql)) {
-      $searchPattern = "%{$searchQuery}%";
+      $searchPattern = "{$searchQuery}%";
       mysqli_stmt_bind_param($stmt, "s", $searchPattern);
       mysqli_stmt_execute($stmt);
       $userData = mysqli_stmt_get_result($stmt);
