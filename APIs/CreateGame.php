@@ -69,7 +69,6 @@ if (isset($_SESSION["userid"])) {
   if($deckbuilderID != "")
   {
     if(str_contains($decklink, "fabrary")) storeFabraryId($_SESSION["userid"], $deckbuilderID);
-    else if(str_contains($decklink, "fabdb")) storeFabDBId($_SESSION["userid"], $deckbuilderID);
   }
 }
 

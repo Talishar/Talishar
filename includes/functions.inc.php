@@ -216,18 +216,6 @@ function storeFabraryId($uid, $fabraryId)
 	}
 }
 
-function storeFabDBId($uid, $fabdbId)
-{
-	$conn = GetDBConnection();
-	$sql = "UPDATE users SET fabdbId=? WHERE usersId=?";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ss", $fabdbId, $uid);
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-	}
-}
-
 function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 {
 	$conn = GetDBConnection();
