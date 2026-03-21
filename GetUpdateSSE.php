@@ -92,8 +92,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 }
 
 if ($playerID == 3) {
-  $spectatorName = $sessionData['userName'] ?? 'anonymous';
-  UpdateSpectatorPresence($gameName, $spectatorName);
+  UpdateSpectatorPresence($gameName);
 }
 
 header('Content-Type: text/event-stream');

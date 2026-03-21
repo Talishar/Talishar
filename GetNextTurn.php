@@ -103,8 +103,7 @@ if ($isGamePlayer) {
 }
 
 if ($playerID == 3) {
-  $spectatorName = $sessionData['userName'] ?? 'anonymous';
-  UpdateSpectatorPresence($gameName, $spectatorName);
+  UpdateSpectatorPresence($gameName);
 }
 
 // Check if game file exists
