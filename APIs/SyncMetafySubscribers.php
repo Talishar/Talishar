@@ -41,13 +41,29 @@ $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
 $talishar_client_id = '4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI';
 $metafyApiKey = getenv('METAFY_API_KEY') ?: (defined('METAFY_API_KEY') ? METAFY_API_KEY : '');
 
+$modMetafyToken = '';
+$conn_mod = GetDBConnection();
+if ($conn_mod) {
+  $stmt_mod = mysqli_stmt_init($conn_mod);
+  if (mysqli_stmt_prepare($stmt_mod, "SELECT metafyAccessToken FROM users WHERE usersUid=? AND metafyAccessToken IS NOT NULL AND metafyAccessToken != '' LIMIT 1")) {
+    mysqli_stmt_bind_param($stmt_mod, 's', $useruid);
+    mysqli_stmt_execute($stmt_mod);
+    $res_mod = mysqli_stmt_get_result($stmt_mod);
+    $row_mod = mysqli_fetch_assoc($res_mod);
+    mysqli_stmt_close($stmt_mod);
+    $modMetafyToken = $row_mod['metafyAccessToken'] ?? '';
+  }
+  mysqli_close($conn_mod);
+}
+
 $all_subscriber_ids = [];
 $api_source = '';
 $api_error = null;
 $max_pages = 50;
 
+$auth_token = !empty($modMetafyToken) ? $modMetafyToken : (!empty($metafyApiKey) ? $metafyApiKey : $talishar_client_id);
+
 // --- Primary: dev.metafy.gg/v1/community/list-community-subscribers ---
-$auth_token = !empty($metafyApiKey) ? $metafyApiKey : $talishar_client_id;
 $page = 1;
 
 while ($page <= $max_pages) {
@@ -74,7 +90,12 @@ while ($page <= $max_pages) {
 
   $data = json_decode($raw, true);
   $subscribers = $data['subscribers'] ?? [];
-  if (empty($subscribers)) break;
+  if (empty($subscribers)) {
+    if ($page === 1 && empty($all_subscriber_ids)) {
+      $api_error = "dev.metafy.gg returned 200 but zero subscribers (token may be invalid or not the community owner)";
+    }
+    break;
+  }
 
   foreach ($subscribers as $sub) {
     $uid = $sub['user_id'] ?? $sub['id'] ?? null;
@@ -97,7 +118,7 @@ if (empty($all_subscriber_ids)) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 15);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-      'Authorization: Bearer ' . $talishar_client_id,
+      'Authorization: Bearer ' . $auth_token,
       'Content-Type: application/json'
     ]);
     curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
@@ -136,10 +157,14 @@ $all_subscriber_ids = array_unique($all_subscriber_ids);
 
 // Safety: abort if API returned zero subscribers to avoid clearing everyone
 if (empty($all_subscriber_ids)) {
+  $token_source = !empty($modMetafyToken) ? 'moderator OAuth token' : (!empty($metafyApiKey) ? 'METAFY_API_KEY' : 'legacy client_id (invalid)');
   http_response_code(502);
   echo json_encode([
     "error" => "Could not fetch any subscribers from Metafy. Sync aborted to avoid clearing valid supporters.",
-    "apiError" => $api_error ?? 'No subscribers returned.'
+    "apiError" => ($api_error ?? 'No subscribers returned.') . " [auth: $token_source]",
+    "hint" => empty($modMetafyToken) && empty($metafyApiKey)
+      ? "No valid Metafy token found. Connect your Metafy account (as the Talishar community owner) or set the METAFY_API_KEY environment variable."
+      : "Check that the connected Metafy account is the Talishar community owner."
   ]);
   exit;
 }
