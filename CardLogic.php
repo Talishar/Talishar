@@ -5040,7 +5040,7 @@ function HasSteamCounter($array, $index, $player)
 {
   if (CardType($array[$index]) == 'E') return EquipmentsUsingSteamCounter($array[$index]);
   if (ClassContains($array[$index], "MECHANOLOGIST", $player)) {
-    if ($array[$index] == "nitro_mechanoida") return false;
+    if ($array[$index] == "nitro_mechanoidc") return false;
     if (CardType($array[$index]) == 'W') return $array[$index + 2] > 0;
     if (SubtypeContains($array[$index], "Item", $player)) return $array[$index + 1] > 0;
   }
