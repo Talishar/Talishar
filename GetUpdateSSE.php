@@ -129,6 +129,7 @@ $lastSpectatorRefresh = microtime(true);
 $spectatorRefreshInterval = 30.0;
 $rateLimitStartInterval = microtime(true);
 $rateLimitProcessCount = 0;
+$inactivityMessageSent = false;
 
 while (true) {
   $currentRealTime = microtime(true);
@@ -144,8 +145,9 @@ while (true) {
     $lastSpectatorRefresh = $currentRealTime;
   }
 
+  $lastUpdateTime = GetCachePiece($gameName, 6);
   // Check if game file still exists
-  if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
+  if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval || $lastUpdateTime == "") {
     if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
       SendContent(["error" => "Game no longer exists"]);
       exit;
@@ -185,14 +187,7 @@ while (true) {
     // Read cache values for opponent status
     $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
     $oppStatus = intval(GetCachePiece($gameName, $otherP + 3));
-    $lastUpdateTime = GetCachePiece($gameName, 6);
     $playerInactiveStatus = GetCachePiece($gameName, 12);
-
-    // Early exit if game no longer exists
-    if ($lastUpdateTime == "") {
-      SendContent(["error" => "The game no longer exists on the server."]);
-      exit;
-    }
 
     // Write current player status (required for opponent disconnect detection)
     SetCachePiece($gameName, $playerID + 1, $currentTime);
@@ -213,12 +208,15 @@ while (true) {
     } else if ($timeSinceOppLastConnection < 3000 && $oppStatus > 0) {
       // Opponent reconnected
       SetCachePiece($gameName, $otherP + 3, "0");
+      $inactivityMessageSent = false;
+      WriteLog("🔌Opponent has reconnected.");
     }
 
     // Handle server timeout (60 seconds of no game updates)
     $noUpdates = $currentTime - $lastUpdateTime;
-    if ($noUpdates > 60000 && $playerInactiveStatus != "1") {
+    if ($noUpdates > 60000 && $playerInactiveStatus != "1" && !$inactivityMessageSent) {
       SetCachePiece($gameName, 12, "1");
+      $inactivityMessageSent = true;
       // Trigger a game state update to reflect inactivity
       $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
       if (!is_string($gameState)) {
