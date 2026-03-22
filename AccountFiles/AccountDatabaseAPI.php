@@ -54,10 +54,14 @@ function PasswordLogin($username, $password, $rememberMe) {
 
 		if($rememberMe)
 		{
-			// Generate secure remember me token
-			$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
+			if (!empty($userData["rememberMeToken"])) {
+				$cookie = $userData["rememberMeToken"];
+			} else {
+				// Generate secure remember me token
+				$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
+				storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
+			}
 			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
-			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 		}
 		session_write_close();
 
