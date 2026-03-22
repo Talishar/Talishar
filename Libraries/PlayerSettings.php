@@ -845,6 +845,7 @@ function IsTeamPitchDevils($userName)
     case "TaddelDown":
     case "inama":
     case "Kanopterix":
+    case "PvtVoid":
       return true;
     default:
       break;

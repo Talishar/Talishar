@@ -70,7 +70,12 @@ CREATE TABLE `users` (
   `lastPlayerId` int(11) NOT NULL DEFAULT 0,
   `lastAuthKey` varchar(128) DEFAULT NULL,
   `numSpectates` int(11) NOT NULL DEFAULT 0,
-  `lastActivity` TIMESTAMP NULL DEFAULT NULL
+  `lastActivity` TIMESTAMP NULL DEFAULT NULL,
+  `systemMessage` TEXT DEFAULT NULL,
+  `metafyAccessToken` VARCHAR(500) DEFAULT NULL,
+  `metafyRefreshToken` VARCHAR(500) DEFAULT NULL,
+  `metafyCommunities` LONGTEXT DEFAULT NULL,
+  `metafyID` VARCHAR(128) DEFAULT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Indexes for dumped tables

@@ -228,6 +228,8 @@ function GetPlaymatName($id)
       return "Talishar Purple";
     case 42:
       return "Library of Solana";
+    case 43:
+      return "Taddle Down";
     default:
       return "N/A";
   }

@@ -134,6 +134,10 @@
       
       session_start();
       
+      if (empty($_SESSION['userid']) && isset($_COOKIE['rememberMeToken'])) {
+        RestoreRegularSession($_COOKIE['rememberMeToken']);
+      }
+      
       if (empty($_SESSION['userid']) && isset($_COOKIE['metafyRememberToken'])) {
         RestoreMetafySession($_COOKIE['metafyRememberToken']);
       }
@@ -142,6 +146,41 @@
       // not periodically here, to avoid losing the new ID when Set-Cookie is
       // stripped by a reverse proxy (Cloudflare, nginx, etc.).
     }
+  }
+  
+  function RestoreRegularSession($rememberToken)
+  {
+    if (empty($rememberToken)) {
+      return;
+    }
+    
+    $conn = GetDBConnection(DBL_ACCOUNT_SESSION_API);
+    if (!$conn) {
+      return;
+    }
+    
+    $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, isBanned FROM users WHERE rememberMeToken=?";
+    $stmt = mysqli_stmt_init($conn);
+    
+    if (mysqli_stmt_prepare($stmt, $sql)) {
+      mysqli_stmt_bind_param($stmt, 's', $rememberToken);
+      mysqli_stmt_execute($stmt);
+      $result = mysqli_stmt_get_result($stmt);
+      $row = mysqli_fetch_assoc($result);
+      mysqli_stmt_close($stmt);
+      
+      if ($row) {
+        $_SESSION['userid'] = $row['usersId'];
+        $_SESSION['useruid'] = $row['usersUid'];
+        $_SESSION['useremail'] = $row['usersEmail'];
+        $_SESSION['patreonEnum'] = $row['patreonEnum'];
+        $_SESSION['isBanned'] = $row['isBanned'];
+        $_SESSION['last_activity'] = time();
+        $_SESSION['last_regeneration'] = time();
+      }
+    }
+    
+    mysqli_close($conn);
   }
   
   function RestoreMetafySession($rememberToken)

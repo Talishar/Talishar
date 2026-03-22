@@ -779,6 +779,8 @@ enum PatreonCampaign : string
     {
       case "21": 
         return "27";
+      case "24":
+        return "43";
       case "11527692": 
         return "22";
       case "8955846": 
