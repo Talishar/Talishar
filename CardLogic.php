@@ -3464,7 +3464,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "run_into_trouble_red":
         if (CountAura("agility", $player) > 0) {
           WriteLog(CardLink($parameter, $parameter) . " deals 1 damage");
-          DealDamageAsync($otherPlayer, 1, "DAMAGE", $parameter, $player);
+          DamageTrigger($mainPlayer, 1, "DAMAGE", $parameter, $player);
         }
         break;
       case "hearty_block_red":
