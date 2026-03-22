@@ -3124,6 +3124,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $ItemCard = new ItemCard($parameter, $player);
       $subcards = explode(",", $ItemCard->SubCards());
       $subcardsCount = count($subcards);
+      $numToRemove = is_array($lastResult) ? count($lastResult) : 1;
       $cardID = "";
       for ($i = 0; $i < $subcardsCount; $i++) {
         if (is_array($lastResult)) {
@@ -3145,6 +3146,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $subcards = count($subcards) == 0 ? "-" : implode(",", $subcards);
       $ItemCard->SetSubcards($subcards);
+      if ($ItemCard->CardID() == "nitro_mechanoidc")
+        $ItemCard->AddCounters(-1 * $numToRemove);
       return $cardID;
     case "REMOVESOUL":
       $char = &GetPlayerCharacter($player);

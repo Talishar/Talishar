@@ -834,6 +834,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $ItemCard = new ItemCard($lastResult[$i], $player);
         $Mechanoid->AddSubcard($ItemCard->CardID());
       }
+      $numCounters = count(explode(",", $Mechanoid->SubCards()));
+      $Mechanoid->AddCounters($numCounters);
       for ($i = count($lastResult) - 1; $i >= 0; --$i) { // go through again to avoid re-indexing too early
         $ItemCard = new ItemCard($lastResult[$i], $player);
         $ItemCard->Destroy(true);
