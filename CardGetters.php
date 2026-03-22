@@ -137,11 +137,23 @@ function GetClassState($player, $piece)
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return $mainClassState[$piece];
-    else return $defClassState[$piece];
+    if ($player == $mainPlayer) {
+      if (!isset($mainClassState)) return "";
+      return $mainClassState[$piece];
+    }
+    else {
+      if (!isset($defClassState)) return "";
+      return $defClassState[$piece];
+    }
   } else {
-    if ($player == $myStateBuiltFor) return $myClassState[$piece];
-    else return $theirClassState[$piece];
+    if ($player == $myStateBuiltFor) {
+      if (!isset($myClassState)) return "";
+      return $myClassState[$piece];
+    }
+    else {
+      if (!isset($theirClassState)) return "";
+      return $theirClassState[$piece];
+    }
   }
 }
 
