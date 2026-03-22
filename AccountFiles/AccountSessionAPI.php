@@ -25,6 +25,12 @@
     return $_SESSION["useruid"] ?? "";
   }
 
+  function LoggedInMetafyID()
+  {
+    CheckSession();
+    return $_SESSION["metafyID"] ?? "";
+  }
+
   function IsLoggedInUserPatron()
   {
     if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk") return true;
