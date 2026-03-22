@@ -161,13 +161,13 @@ function parseQuickChat($inputEnum)
     case "7": return "No problem!";
     case "8": return "Thinking... Please bear with me!";
     case "9": return "Sorry!";
-    case "10": return "Do you want to undo?";
-    case "11": return "Good game!";
+    case "10": return "Refresh the page";
+    case "11": return "Good Game!";
     case "12": return "I have to go";
     case "13": return "I think there is a bug";
     case "14": return "No thanks";
     case "15": return "Okay!";
-    case "16": return "Refresh the page";
+    case "16": return "Do you want to undo?";
     case "17": return "Rematch?";
     case "18": return "Thanks!";
     case "19": return "That was really cool!";

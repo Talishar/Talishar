@@ -8,6 +8,7 @@ include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once '../Libraries/HTTPLibraries.php';
+include_once '../APIKeys/APIKeys.php';
 
 SetHeaders();
 
@@ -24,6 +25,9 @@ if($response->isUserLoggedIn) {
   $response->loggedInUserID = LoggedInUser();
   $response->loggedInUserName = LoggedInUserName();
   $response->isPatron = IsLoggedInUserPatron();
+  $response->timestamp = time();
+  $metafyID = LoggedInMetafyID();
+  $response->metafyHash = ($metafyID != "") ? hash('sha256', $metafyID . $FaBBazaarSalt . $response->timestamp) : "";
 }
 
 echo(json_encode($response));

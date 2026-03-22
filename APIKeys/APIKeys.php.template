@@ -29,3 +29,4 @@ $metafyClientSecret = "op://$APP_ENV/Metafy/credential";
 
 // FaB Bazaar
 $FaBBazaarKey = "op://$APP_ENV/FaBBazaar/credential";
+$FaBBazaarSalt = "op://$APP_ENV/FaBBazaarSalt/credential";

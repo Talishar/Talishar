@@ -6,6 +6,8 @@ function initializePlayerState($handler, $deckHandler, $player)
   global $SET_Mute, $SET_IsPatron, $p1Inventory, $p2Inventory;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
+  // Lines 3-11 are sideboard slots (headSB, chestSB, armsSB, legsSB, offhandSB,
+  for ($i = 0; $i < 9; $i++) GetArray($deckHandler);
   $inventory = GetArray($deckHandler);
   if($player == 1) $p1Inventory = $inventory;
   else $p2Inventory = $inventory;
