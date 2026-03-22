@@ -117,7 +117,6 @@ echo ("data: " . json_encode($initialState) . "\n\n");
 ob_flush();
 flush();
 
-$count = 0;
 $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
 $lastOppStatus = 0;
@@ -128,6 +127,8 @@ $lastConnectionCheck = microtime(true);
 $connectionCheckInterval = 2.0;
 $lastSpectatorRefresh = microtime(true);
 $spectatorRefreshInterval = 30.0;
+$rateLimitStartInterval = microtime(true);
+$rateLimitProcessCount = 0;
 
 while (true) {
   $currentRealTime = microtime(true);
@@ -146,9 +147,7 @@ while (true) {
   // Check if game file still exists
   if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval) {
     if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
-      echo ("data: " . json_encode(["error" => "Game no longer exists"]) . "\n\n");
-      ob_flush();
-      flush();
+      SendContent(["error" => "Game no longer exists"]);
       exit;
     }
     $lastFileCheckTime = $currentRealTime;
@@ -160,14 +159,10 @@ while (true) {
     // Send final state before exiting
     $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
     if (!is_string($finalState)) {
-      echo ("data: " . json_encode($finalState) . "\n\n");
-      ob_flush();
-      flush();
+      SendContent($finalState);
     }
     exit;
   }
-
-  ++$count;
 
   // Check for game state updates
   $cacheVal = intval(GetCachePiece($gameName, 1));
@@ -177,17 +172,11 @@ while (true) {
     // Build and send full game state
     $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
     if (is_string($gameState)) {
-      // Error occurred
-      echo ("data: " . json_encode(["error" => $gameState]) . "\n\n");
-      ob_flush();
-      flush();
+      SendContent(["error" => $gameState]);
       exit;
     }
-    echo ("data: " . json_encode($gameState) . "\n\n");
-    ob_flush();
-    flush();
+    SendContent($gameState);
     set_time_limit(120);
-    $sleepMs = 100;
   }
 
   if($isGamePlayer) {
@@ -201,9 +190,7 @@ while (true) {
 
     // Early exit if game no longer exists
     if ($lastUpdateTime == "") {
-      echo ("data: " . json_encode(["error" => "The game no longer exists on the server."]) . "\n\n");
-      ob_flush();
-      flush();
+      SendContent(["error" => "The game no longer exists on the server."]);
       exit;
     }
 
@@ -235,13 +222,29 @@ while (true) {
       // Trigger a game state update to reflect inactivity
       $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
       if (!is_string($gameState)) {
-        echo ("data: " . json_encode($gameState) . "\n\n");
-        ob_flush();
-        flush();
+        SendContent($gameState);
       }
     }
   }
 
-  // Wait with exponential backoff (50ms -> 500ms cap)
   usleep(intval($sleepMs * 1000));
+}
+
+function SendContent($jsonContent) {
+  global $rateLimitStartInterval, $rateLimitProcessCount;
+  $currentRealTime = microtime(true);
+  if($currentRealTime - $rateLimitStartInterval > 1.0) {
+    // Reset rate limit counters every second
+    $rateLimitStartInterval = $currentRealTime;
+    $rateLimitProcessCount = 0;
+  } else {
+    $rateLimitProcessCount++;
+    if($rateLimitProcessCount > 5) {
+      SendContent(["error" => "Too many game updates in last second. A likely logic error has occurred."]);
+      exit;
+    }
+  }
+  echo ("data: " . json_encode($jsonContent) . "\n\n");
+  ob_flush();
+  flush();
 }
