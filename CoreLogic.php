@@ -275,7 +275,8 @@ function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
 
 function StartTurnAbilities()
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $SET_ShortcutAttackThreshold;
+  ChangeSetting($mainPlayer, $SET_ShortcutAttackThreshold, "0");
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $defCharacter = &GetPlayerCharacter($defPlayer);
   if($mainCharacter[13]) AddCurrentTurnEffect("marked", $mainPlayer);  //Marked stays between turns

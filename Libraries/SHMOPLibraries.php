@@ -110,6 +110,13 @@ function GetCachePiece($name, $piece)
   return $cacheArray[$piece];
 }
 
+function ReadCacheArray($name)
+{
+  $cacheVal = ReadCache($name);
+  if (empty($cacheVal)) return null;
+  return explode("!", $cacheVal);
+}
+
 function IncrementCachePiece($gameName, $piece)
 {
   $oldVal = GetCachePiece($gameName, $piece);

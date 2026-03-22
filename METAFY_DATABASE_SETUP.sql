@@ -27,6 +27,11 @@ ALTER TABLE users
 ADD COLUMN metafyCommunities LONGTEXT DEFAULT NULL 
 COMMENT 'JSON-encoded array of communities the user supports';
 
+-- Add Metafy user ID column (cached from Metafy /me API)
+ALTER TABLE users 
+ADD COLUMN metafyID VARCHAR(128) DEFAULT NULL 
+COMMENT 'Cached Metafy user ID from the Metafy /me API';
+
 -- Add index for faster lookups if needed
 ALTER TABLE users 
 ADD INDEX idx_metafy_access_token (metafyAccessToken);
