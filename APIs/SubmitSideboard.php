@@ -107,11 +107,55 @@ if($deckCount > 40 && ($format == "blitz" || $format == "compblitz" || $format =
 
 $inventory = $submission->inventory ?? [];
 
+// Categorize inventory items into their proper sideboard slots so that
+// GetLobbyInfo.php can display them correctly on page refresh.
+$headSB = [];
+$chestSB = [];
+$armsSB = [];
+$legsSB = [];
+$offhandSB = [];
+$weaponSB = [];
+$cardsSB = [];
+$quiverSB = [];
+$modularSB = [];
+
+foreach ($inventory as $item) {
+  if (!$item || $item === '') continue;
+  $subtypeArr = array_map('trim', explode(",", CardSubtype($item)));
+  if (in_array("Head", $subtypeArr)) {
+    $headSB[] = $item;
+  } else if (in_array("Chest", $subtypeArr)) {
+    $chestSB[] = $item;
+  } else if (in_array("Arms", $subtypeArr)) {
+    $armsSB[] = $item;
+  } else if (in_array("Legs", $subtypeArr)) {
+    $legsSB[] = $item;
+  } else if (IsModular($item)) {
+    $modularSB[] = $item;
+  } else if (in_array("Quiver", $subtypeArr)) {
+    $quiverSB[] = $item;
+  } else if (in_array("Off-Hand", $subtypeArr) || HasPerched($item)) {
+    $offhandSB[] = $item;
+  } else if (CardType($item) === "W" || CardType($item) === "E") {
+    $weaponSB[] = $item;
+  } else {
+    $cardsSB[] = $item;
+  }
+}
+
 $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $deckFile = fopen($filename, "w");
 fwrite($deckFile, $character . "\r\n");
-
 fwrite($deckFile, $deck . "\r\n");
+fwrite($deckFile, implode(" ", $headSB) . "\r\n");
+fwrite($deckFile, implode(" ", $chestSB) . "\r\n");
+fwrite($deckFile, implode(" ", $armsSB) . "\r\n");
+fwrite($deckFile, implode(" ", $legsSB) . "\r\n");
+fwrite($deckFile, implode(" ", $offhandSB) . "\r\n");
+fwrite($deckFile, implode(" ", $weaponSB) . "\r\n");
+fwrite($deckFile, implode(" ", $cardsSB) . "\r\n");
+fwrite($deckFile, implode(" ", $quiverSB) . "\r\n");
+fwrite($deckFile, implode(" ", $modularSB) . "\r\n");
 fwrite($deckFile, implode(" ", $inventory));
 fclose($deckFile);
 
