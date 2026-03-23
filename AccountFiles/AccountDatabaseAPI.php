@@ -54,10 +54,14 @@ function PasswordLogin($username, $password, $rememberMe) {
 
 		if($rememberMe)
 		{
-			// Generate secure remember me token
-			$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
+			if (!empty($userData["rememberMeToken"])) {
+				$cookie = $userData["rememberMeToken"];
+			} else {
+				// Generate secure remember me token
+				$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
+				storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
+			}
 			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
-			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
 		}
 		session_write_close();
 
@@ -72,65 +76,6 @@ function IsBanned($username)
 	if (!isset($userData)) return false;
 	$_SESSION["isBanned"] = $userData["isBanned"];
 	return (intval($userData["isBanned"]) == 1 ? true : false);
-}
-
-function AttemptPasswordLogin($username, $password, $rememberMe) {
-	$conn = GetLocalMySQLConnection();
-	$userData = LoadUserData($username);
-
-  if($userData != NULL)
-  {
-
-  }
-  else {
-		header("location: ../LoginPage.php");
-		exit();
-  }
-
-
-  try {
-  	$passwordValid = password_verify($password, $userData["usersPwd"]);
-  }
-  catch (\Exception $e) { }
-
-  if($passwordValid)
-  {
-    session_start();
-    session_regenerate_id(true); // Regenerate session ID on login
-		$_SESSION["userid"] = $userData["usersId"];
-		$_SESSION["useruid"] = $userData["usersUid"];
-		$_SESSION["useremail"] = $userData["usersEmail"];
-		// Remove password from session for security
-		$patreonAccessToken = $userData["patreonAccessToken"];
-		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
-		$rememberMeToken = $userData["rememberMeToken"];
-		$_SESSION["isBanned"] = $userData["isBanned"];
-		$_SESSION["metafyID"] = $userData["metafyID"] ?? "";
-
-		try {
-			PatreonLogin($patreonAccessToken);
-		} catch (\Exception $e) { }
-
-		if($rememberMe)
-		{
-			if($rememberMeToken == "")
-			{
-				// Generate secure remember me token
-				$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
-				storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
-			}
-			else $cookie = $rememberMeToken;
-			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
-		}
-		session_write_close();
-
-		header("location: ../MainMenu.php");
-		exit();
-  }
-  else {
-    header("location: ../LoginPage.php");
-    exit();
-  }
 }
 
 function storeRememberMeCookie($conn, $uuid, $cookie)

@@ -3,8 +3,14 @@
 /**
  * GetUpdateSSE.php
  *
- * Server-Sent Events endpoint that pushes full game state updates directly to clients.
- * This eliminates the extra HTTP round-trip that was previously needed to GetNextTurn.php.
+ * Server-Sent Events endpoint that pushes game state updates to clients.
+ *
+ * Architecture note: game state is built by curling GetNextTurn.php via a loopback
+ * HTTP request (see FetchGameState). This keeps the SSE process lean — it only holds
+ * the lightweight cache/log libraries in memory. Each game state build happens in its
+ * own short-lived PHP process whose memory is fully reclaimed when the request ends,
+ * preventing the memory exhaustion that occurs when ParseGamestate() accumulates large
+ * global arrays repeatedly inside a single long-running process.
  */
 
 include 'Libraries/HTTPLibraries.php';
@@ -12,20 +18,6 @@ include "HostFiles/Redirector.php";
 include_once "Libraries/SHMOPLibraries.php";
 include "Libraries/CacheLibraries.php";
 include "WriteLog.php";
-include_once "./Assets/patreon-php-master/src/PatreonDictionary.php";
-include_once "./Assets/MetafyDictionary.php";
-include_once "./AccountFiles/AccountSessionAPI.php";
-include_once "includes/dbh.inc.php";
-include_once "includes/MetafyHelper.php";
-
-include_once 'GameLogic.php';
-include_once "GameTerms.php";
-include_once "Libraries/UILibraries.php";
-include_once "Libraries/StatFunctions.php";
-include_once "Libraries/PlayerSettings.php";
-
-include_once "BuildGameState.php";
-include_once "BuildPlayerInputPopup.php";
 
 // Close any buffers that php.ini may have opened (e.g. output_buffering=On).
 // Then immediately open our own buffer so every ob_flush() call below is safe.
@@ -58,38 +50,8 @@ if (($playerID == 1 || $playerID == 2) && $authKey == "") {
   if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
 }
 
-// Capture session data before setting SSE headers
-// This is critical - we must capture and close session BEFORE the long-running SSE loop
-$sessionData = [];
-if (session_status() !== PHP_SESSION_ACTIVE) {
-  session_start();
-}
-$sessionData['userLoggedIn'] = IsUserLoggedIn();
-$sessionData['userName'] = LoggedInUserName() ?: null;
-$sessionData['isPvtVoidPatron'] = isset($_SESSION["isPvtVoidPatron"]);
-
-// Capture all Patreon campaign session IDs
-$sessionData['patreonCampaigns'] = [];
-foreach(PatreonCampaign::cases() as $campaign) {
-  $sessionID = $campaign->SessionID();
-  $sessionData['patreonCampaigns'][$sessionID] = isset($_SESSION[$sessionID]);
-}
-
-// Load friend list if user is logged in (for friend hand visibility checks)
-$sessionData['friendList'] = [];
-$friendsListParam = TryGet("friendsList", "");
-if (!empty($friendsListParam)) {
-  try {
-    $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
-  } catch (Exception $e) {
-    // friendsList parameter parsing failed
-  }
-}
-
-// Release session lock BEFORE SSE loop to prevent deadlock
-if (session_status() === PHP_SESSION_ACTIVE) {
-  session_write_close();
-}
+// Session handling is delegated to GetNextTurn.php (called via FetchGameState).
+// The SSE process itself never needs to read the session, so no session_start() here.
 
 if ($playerID == 3) {
   UpdateSpectatorPresence($gameName);
@@ -105,10 +67,10 @@ $isGamePlayer = $playerID == 1 || $playerID == 2;
 $cacheVal = intval(GetCachePiece($gameName, 1));
 $lastUpdate = $cacheVal;
 
-$initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true);
-if (is_string($initialState)) {
-  // Error occurred
-  echo ("data: " . json_encode(["error" => $initialState]) . "\n\n");
+$initialState = FetchGameState($gameName, $playerID, $authKey);
+if ($initialState === null || isset($initialState['errorMessage'])) {
+  $errMsg = $initialState['errorMessage'] ?? "Failed to build initial game state";
+  echo ("data: " . json_encode(["error" => $errMsg]) . "\n\n");
   ob_flush();
   flush();
   exit;
@@ -159,8 +121,8 @@ while (true) {
   $gameStatus = intval(GetCachePiece($gameName, 14));
   if ($gameStatus == 99) {
     // Send final state before exiting
-    $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
-    if (!is_string($finalState)) {
+    $finalState = FetchGameState($gameName, $playerID, $authKey);
+    if ($finalState !== null && !isset($finalState['errorMessage'])) {
       SendContent($finalState);
     }
     exit;
@@ -172,13 +134,16 @@ while (true) {
     $lastUpdate = $cacheVal;
 
     // Build and send full game state
-    $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
-    if (is_string($gameState)) {
-      SendContent(["error" => $gameState]);
+    $gameState = FetchGameState($gameName, $playerID, $authKey);
+    if ($gameState === null) {
+      // Transient curl failure — skip this cycle and retry on next cache update
+    } elseif (isset($gameState['errorMessage'])) {
+      SendContent(["error" => $gameState['errorMessage']]);
       exit;
+    } else {
+      SendContent($gameState);
+      set_time_limit(120);
     }
-    SendContent($gameState);
-    set_time_limit(120);
   }
 
   if($isGamePlayer) {
@@ -218,14 +183,67 @@ while (true) {
       SetCachePiece($gameName, 12, "1");
       $inactivityMessageSent = true;
       // Trigger a game state update to reflect inactivity
-      $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
-      if (!is_string($gameState)) {
+      $gameState = FetchGameState($gameName, $playerID, $authKey);
+      if ($gameState !== null && !isset($gameState['errorMessage'])) {
         SendContent($gameState);
       }
     }
   }
 
   usleep(intval($sleepMs * 1000));
+}
+
+/**
+ * Fetch game state via an internal loopback curl to GetNextTurn.php.
+ *
+ * This keeps the long-lived SSE process lean: each game state build runs in its
+ * own short-lived PHP process whose memory is fully reclaimed after the request,
+ * eliminating the memory exhaustion caused by repeated ParseGamestate() calls
+ * accumulating global state inside a single long-running process.
+ *
+ * The browser's session cookie is forwarded so GetNextTurn.php can resolve
+ * patron status, alt arts, and other session-backed cosmetic data.
+ *
+ * Returns the decoded JSON array on success, or null on curl/HTTP failure.
+ * On a game-logic error the returned array will contain an 'errorMessage' key.
+ */
+function FetchGameState($gameName, $playerID, $authKey) {
+  // Derive the path prefix from the current script so subdirectory installs work.
+  $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+  $host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+  $params = http_build_query([
+    'gameName'    => $gameName,
+    'playerID'    => $playerID,
+    'authKey'     => $authKey,
+    'friendsList' => $_GET['friendsList'] ?? '',
+  ]);
+
+  // Use 127.0.0.1 + Host header: avoids DNS and TLS overhead.
+  // Apache always listens on plain HTTP internally even when the outer connection is HTTPS.
+  $url = "http://127.0.0.1{$basePath}/GetGamestateAPI.php?{$params}";
+
+  $ch = curl_init($url);
+  curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT        => 30,
+    CURLOPT_HTTPHEADER     => ["Host: {$host}"],
+  ]);
+
+  // Forward the browser's session cookie so GetNextTurn.php can read patron/alt-art data.
+  if (!empty($_SERVER['HTTP_COOKIE'])) {
+    curl_setopt($ch, CURLOPT_COOKIE, $_SERVER['HTTP_COOKIE']);
+  }
+
+  $result   = curl_exec($ch);
+  $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+
+  if ($result === false || $httpCode !== 200) {
+    return null;
+  }
+
+  return json_decode($result, true);
 }
 
 function SendContent($jsonContent) {
