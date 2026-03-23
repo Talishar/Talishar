@@ -685,6 +685,7 @@ function CheckHitContract($contractType, $otherPlayer)
 function CheckContracts($banishedBy, $cardBanished)
 {
   global $CombatChain, $chainLinks;
+  $chainLinks = $chainLinks ?? [];
   for($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if($chainCard->PlayerID() != $banishedBy) continue;
@@ -694,6 +695,7 @@ function CheckContracts($banishedBy, $cardBanished)
     if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
   for($i = 0; $i < count($chainLinks); ++$i) {
+    if(!is_array($chainLinks[$i])) continue;
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j+1] != $banishedBy) continue;
       if($chainLinks[$i][$j+2] == 0) continue;

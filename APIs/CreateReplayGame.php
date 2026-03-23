@@ -167,11 +167,23 @@ $p1StartingHealth = $startingHealth;
 
 $filename = "../Games/$gameName/GameFile.txt";
 $gameFileHandler = fopen($filename, "w");
+if ($gameFileHandler === false) {
+  $response->error = "Failed to create GameFile.txt in game directory: ../Games/$gameName/";
+  http_response_code(500);
+  echo json_encode($response);
+  exit;
+}
 include "../MenuFiles/WriteGamefile.php";
 WriteGameFile();
 
 $filename = "../Games/$gameName/gamelog.txt";
 $handler = fopen($filename, "w");
+if ($handler === false) {
+  $response->error = "Failed to create gamelog.txt in game directory: ../Games/$gameName/";
+  http_response_code(500);
+  echo json_encode($response);
+  exit;
+}
 fclose($handler);
 
 
