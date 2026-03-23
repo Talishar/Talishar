@@ -189,7 +189,8 @@ function BlockingCardDefense($index)
   $canGainBlock = CanGainBlock($cardID);
   $from = $BlockCard->From();
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
-  $resourcesPaid = $BlockCard->ResourcesPaid() + intval($baseCost);
+  $resourcesPaid = is_numeric($BlockCard->ResourcesPaid()) ? intval($BlockCard->ResourcesPaid()) : 0;
+  $resourcesPaid = $resourcesPaid + intval($baseCost);
   $uid = ($from == "EQUIP" || $from == "PLAY") ? $BlockCard->OriginUniqueID() : $BlockCard->UniqueID();
   $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC", "", $uid));
   if (!BlockCantBeModified($cardID)) {
