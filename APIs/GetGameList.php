@@ -50,30 +50,46 @@ $blockedUserNames = [];
 $friendUserNames = [];
 if(IsUserLoggedIn()) {
   $userId = LoggedInUser();
+  $now = time();
+  $cacheTTL = 300; // 5 minutes
 
-  // Single query: users I blocked + users who blocked me
-  if ($conn) {
-    $query = "SELECT u.usersUid FROM blocked_users b
-              JOIN users u ON b.blockedUserId = u.usersId WHERE b.userId = ?
-              UNION
-              SELECT u.usersUid FROM blocked_users b
-              JOIN users u ON b.userId = u.usersId WHERE b.blockedUserId = ?";
-    $stmt = $conn->prepare($query);
-    if ($stmt) {
-      $stmt->bind_param("ii", $userId, $userId);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      while ($row = $result->fetch_assoc()) {
-        $blockedUserNames[] = $row['usersUid'];
+  // Blocked users — refresh at most every 60 seconds per session
+  if (!isset($_SESSION['_blockedCache']) || ($now - ($_SESSION['_blockedCacheAt'] ?? 0)) > $cacheTTL) {
+    if ($conn) {
+      $query = "SELECT u.usersUid FROM blocked_users b
+                JOIN users u ON b.blockedUserId = u.usersId WHERE b.userId = ?
+                UNION
+                SELECT u.usersUid FROM blocked_users b
+                JOIN users u ON b.userId = u.usersId WHERE b.blockedUserId = ?";
+      $stmt = $conn->prepare($query);
+      if ($stmt) {
+        $stmt->bind_param("ii", $userId, $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+          $blockedUserNames[] = $row['usersUid'];
+        }
+        $stmt->close();
       }
-      $stmt->close();
     }
+    $_SESSION['_blockedCache'] = $blockedUserNames;
+    $_SESSION['_blockedCacheAt'] = $now;
+  } else {
+    $blockedUserNames = $_SESSION['_blockedCache'];
   }
 
-  // Get friends list
-  $friends = GetUserFriends($userId);
-  $friendUserNames = array_map(function($friend) { return $friend['username']; }, $friends);
+  // Friends list — refresh at most every 60 seconds per session
+  if (!isset($_SESSION['_friendNamesCache']) || ($now - ($_SESSION['_friendNamesCacheAt'] ?? 0)) > $cacheTTL) {
+    $friends = GetUserFriends($userId);
+    $friendUserNames = array_map(function($friend) { return $friend['username']; }, $friends);
+    $_SESSION['_friendNamesCache'] = $friendUserNames;
+    $_SESSION['_friendNamesCacheAt'] = $now;
+  } else {
+    $friendUserNames = $_SESSION['_friendNamesCache'];
+  }
 }
+// Release the session file lock before the filesystem loop
+session_write_close();
 
 if(IsUserLoggedIn()) {
   $lastGameName = SessionLastGameName();
