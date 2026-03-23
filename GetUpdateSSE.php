@@ -13,6 +13,8 @@
  * global arrays repeatedly inside a single long-running process.
  */
 
+ignore_user_abort(false);
+
 include 'Libraries/HTTPLibraries.php';
 include "HostFiles/Redirector.php";
 include_once "Libraries/SHMOPLibraries.php";
