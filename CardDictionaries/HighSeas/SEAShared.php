@@ -474,9 +474,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($from == "PLAY" && $abilityType == "I") {
         $targetPlayer = explode("-", $target)[0] == "MYALLY" ? $currentPlayer : $otherPlayer;
         $targetUid = explode("-", $target)[1];
-        $allyInd = SearchAlliesForUniqueID($targetUid, $targetPlayer);
-        $allies = &GetAllies($targetPlayer);
-        $allies[$allyInd + 9]++;
+        $Allies = new Allies($targetPlayer);
+        $Ally = $Allies->FindCardUID($targetUid);
+        $Ally->AddPowerCounters();
       }
       break;
     case "shelly_hardened_traveler_yellow":
