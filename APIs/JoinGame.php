@@ -820,9 +820,9 @@ function isBannedInFormat($cardID, $format) {
           "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
           "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
           "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
-          "count_your_blessings_red", "count_your_blessings_yellow", "scepter_of_pain", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
+          "count_your_blessings_red", "count_your_blessings_yellow", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
           "azalea_ace_in_the_hole", "death_dealer", "bonds_of_agony_blue", "golden_tipple_red", "golden_tipple_yellow",
-          "plume_of_evergrowth", "talk_a_big_game_blue", "rootbound_carapace_red", "rootbound_carapace_yellow", "rootbound_carapace_blue", "orb_weaver_spinneret_yellow", "orb_weaver_spinneret_blue",
+          "plume_of_evergrowth", "talk_a_big_game_blue", "orb_weaver_spinneret_yellow", "orb_weaver_spinneret_blue",
           "chart_the_high_seas_blue", "wrath_of_retribution_red", "brand_with_cinderclaw_red", "brand_with_cinderclaw_yellow", "brand_with_cinderclaw_blue",
           "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots"
       ], $livingLegends),

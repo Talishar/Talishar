@@ -519,7 +519,8 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       return 1;
     case "gold_baited_hook":
-      if (TypeContains($effectSource, "AA")) $EffectContext = $effectSource;
+      // if (TypeContains($effectSource, "AA")) $EffectContext = $effectSource;
+      $EffectContext = $effectSource; // ripple away always works on hook
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);

@@ -25,6 +25,12 @@ else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $targetAuthKey = $_SES
 if ($targetAuthKey != "" && $authKey !== $targetAuthKey) exit;
 
 // Write system message for inactivity - simple one-liner using WriteSystemMessage
+if (isset($_GET["reset"]) && $_GET["reset"] == "1") {
+  SetCachePiece($gameName, 12, "0");
+  GamestateUpdated($gameName);
+  exit;
+}
+
 WriteSystemMessage("⌛Player " . intval($inactivePlayer) . " is inactive.");
 
 // Do NOT call GamestateUpdated here as it resets the inactivity timer
