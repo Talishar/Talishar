@@ -1090,11 +1090,10 @@ function SearchItemsForUniqueID($uniqueID, $player)
 
 function SearchAlliesForUniqueID($uniqueID, $player)
 {
-  $allies = &GetAllies($player);
-  $count = count($allies);
-  $pieces = AllyPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($allies[$i + 5] == $uniqueID) return $i;
+  $Allies = new Allies($player);
+  for ($i = 0; $i < $Allies->NumAllies(); ++$i){
+    $AllyCard = $Allies->Card($i, true);
+    if ($AllyCard->UniqueID() == $uniqueID) return $AllyCard->Index();
   }
   return -1;
 }
