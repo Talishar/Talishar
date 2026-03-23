@@ -3025,14 +3025,14 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $mzIndices = CombineSearches($mzIndices, $indices);
 
   $ally = &GetAllies($player);
-  $indices = "";
-  for ($i = 0; $i < count($ally); $i += AllyPieces()) {
-    if ($ally[$i + 1] != 0 && WardAmount($ally[$i], $player) > 0) {
-      if ($indices != "") $indices .= ",";
-      $indices .= $i;
-    }
+  $Allies = new Allies($player);
+  $indices = [];
+  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+    $Ally = $Allies->Card($i, true);
+    if ($Ally->Status() != 0 && WardAmount($Ally->CardID(), $player) > 0)
+      $indices[] = $Ally->Index();
   }
-  $indices = SearchMultiZoneFormat($indices, "MYALLY");
+  $indices = SearchMultiZoneFormat(implode(",", $indices), "MYALLY");
   $mzIndices = CombineSearches($mzIndices, $indices);
 
   $indices = "";
