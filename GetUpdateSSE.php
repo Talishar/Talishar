@@ -107,9 +107,10 @@ while (true) {
     $lastSpectatorRefresh = $currentRealTime;
   }
 
+  $cacheStr = GetCachePiece($gameName, 1);
   $lastUpdateTime = GetCachePiece($gameName, 6);
   // Check if game file still exists
-  if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval || $lastUpdateTime == "") {
+  if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval || $lastUpdateTime == "" || $cacheStr === "") {
     if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
       SendContent(["error" => "Game no longer exists"]);
       exit;
@@ -129,7 +130,7 @@ while (true) {
   }
 
   // Check for game state updates
-  $cacheVal = intval(GetCachePiece($gameName, 1));
+  $cacheVal = intval($cacheStr);
   if ($cacheVal > $lastUpdate) {
     $lastUpdate = $cacheVal;
 
