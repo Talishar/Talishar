@@ -594,7 +594,7 @@
         AddNextTurnEffect("star_struck_yellow," . $damageDone, $defPlayer);
         break;
       case "boulder_drop_yellow": case "boulder_drop_blue": case "boulder_drop_red":
-        MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true);
+        MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true, DQContext: "Choose a card to put on top of your deck");
         break;
       case "put_em_in_their_place_red":
         $hand = &GetHand($defPlayer);

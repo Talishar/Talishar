@@ -67,7 +67,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
 $sessionData['userLoggedIn'] = IsUserLoggedIn();
-$sessionData['userName'] = LoggedInUserName() ?: null;
+$sessionData['userName'] = LoggedInUserName() ?: (TryGet('userName', '') ?: null);
 $sessionData['isPvtVoidPatron'] = isset($_SESSION["isPvtVoidPatron"]);
 
 // Capture all Patreon campaign session IDs
@@ -94,7 +94,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 }
 
 if ($playerID == 3) {
-  UpdateSpectatorPresence($gameName);
+  UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'Anonymous');
 }
 
 header('Content-Type: text/event-stream');
@@ -137,6 +137,7 @@ $spectatorRefreshInterval = 30.0;
 $rateLimitStartInterval = microtime(true);
 $rateLimitProcessCount = 0;
 $inactivityMessageSent = false;
+$loopStartTimeMs = round(microtime(true) * 1000);
 
 while (true) {
   $currentRealTime = microtime(true);
@@ -148,7 +149,7 @@ while (true) {
   }
 
   if ($playerID == 3 && $currentRealTime - $lastSpectatorRefresh >= $spectatorRefreshInterval) {
-    UpdateSpectatorPresence($gameName);//, $sessionData['userName'] ?? 'anonymous');
+    UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'Anonymous');
     $lastSpectatorRefresh = $currentRealTime;
   }
 
@@ -220,10 +221,11 @@ while (true) {
       WriteLog("🔌Opponent has reconnected.");
     }
 
-    // Handle server timeout (75 seconds of no game updates)
-    // Only trigger inactivity once the game has actually started (status 5+), not during lobby
-    $noUpdates = $currentTime - $lastUpdateTime;
-    if ($noUpdates > 75000 && $playerInactiveStatus != "1" && !$inactivityMessageSent && $gameStatus >= 5) {
+    // Handle server timeout (75 seconds of no game updates).
+    // Only trigger inactivity once the game has actually started (status 5+), not during lobby.
+    $effectiveLastUpdate = max(intval($lastUpdateTime), $loopStartTimeMs);
+    $noUpdates = $currentTime - $effectiveLastUpdate;
+    if ($playerID == 1 && $noUpdates > 75000 && $playerInactiveStatus != "1" && !$inactivityMessageSent && $gameStatus >= 5) {
       SetCachePiece($gameName, 12, "1");
       $inactivityMessageSent = true;
       WriteLog("⌛Player " . $otherP . " is inactive.");
