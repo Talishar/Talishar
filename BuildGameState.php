@@ -118,9 +118,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $response->lastUpdate = $cacheVal;
 
-  // Spectator count
-  $spectatorData = function_exists('GetActiveSpectators') ? GetActiveSpectators($gameName) : ['count' => 0];
+  // Spectator count and names
+  $spectatorData = function_exists('GetActiveSpectators') ? GetActiveSpectators($gameName) : ['count' => 0, 'names' => []];
   $response->spectatorCount = $spectatorData['count'];
+  $response->spectatorNames = $spectatorData['names'] ?? [];
 
   // send initial on-load information if requested
   if ($includeInitialLoad) {

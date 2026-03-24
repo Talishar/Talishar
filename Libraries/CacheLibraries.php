@@ -185,18 +185,22 @@ function LogCacheStats() {
     round($stats['memory_available'] / 1024 / 1024, 2) . "MB");
 }
 
-function UpdateSpectatorPresence($gameName) {
+function UpdateSpectatorPresence($gameName, $userName = 'Anonymous') {
   $now = time();
+  // Sanitize username: alphanumeric, underscores, hyphens, max 30 chars
+  $userName = preg_replace('/[^a-zA-Z0-9_\-]/', '', substr($userName, 0, 30));
+  if ($userName === '') $userName = 'Anonymous';
 
   if (extension_loaded('apcu') && ini_get('apc.enabled')) {
     $key = 'spectators_' . $gameName;
     $spectators = @apcu_fetch($key);
     if (!is_array($spectators)) $spectators = [];
-    $spectators[] = $now;
-    foreach ($spectators as $i => $lastSeen) {
-      if ($now - $lastSeen > 60) unset($spectators[$i]);
+    // Store as username => timestamp (latest timestamp per user)
+    $spectators[$userName] = $now;
+    foreach ($spectators as $name => $lastSeen) {
+      if ($now - $lastSeen > 60) unset($spectators[$name]);
     }
-    @apcu_store($key, array_values($spectators), 120);
+    @apcu_store($key, $spectators, 120);
     return;
   }
 
@@ -204,18 +208,23 @@ function UpdateSpectatorPresence($gameName) {
   $fh = @fopen($file, 'c+');
   if (!$fh) return;
   flock($fh, LOCK_EX);
-  $timestamps = [];
+  $entries = [];
   while (!feof($fh)) {
     $line = trim(fgets($fh));
-    if ($line !== '' && ($now - intval($line)) < 60) {
-      $timestamps[] = intval($line);
+    if ($line === '') continue;
+    $parts = explode(':', $line, 2);
+    if (count($parts) === 2 && ($now - intval($parts[1])) < 60) {
+      $entries[$parts[0]] = intval($parts[1]);
+    } elseif (count($parts) === 1 && ($now - intval($parts[0])) < 60) {
+      // Legacy format: bare timestamp
+      $entries['Anonymous'] = intval($parts[0]);
     }
   }
-  $timestamps[] = $now;
+  $entries[$userName] = $now;
   ftruncate($fh, 0);
   rewind($fh);
-  foreach ($timestamps as $ts) {
-    fwrite($fh, $ts . "\n");
+  foreach ($entries as $name => $ts) {
+    fwrite($fh, $name . ':' . $ts . "\n");
   }
   flock($fh, LOCK_UN);
   fclose($fh);
@@ -224,25 +233,31 @@ function UpdateSpectatorPresence($gameName) {
 function GetActiveSpectators($gameName) {
   $now = time();
   $threshold = 45;
+  $names = [];
 
   if (extension_loaded('apcu') && ini_get('apc.enabled')) {
     $key = 'spectators_' . $gameName;
     $spectators = @apcu_fetch($key);
-    if (!is_array($spectators)) return ['count' => 0];
-    $count = 0;
-    foreach ($spectators as $lastSeen) {
-      if ($now - $lastSeen <= $threshold) $count++;
+    if (!is_array($spectators)) return ['count' => 0, 'names' => []];
+    foreach ($spectators as $name => $lastSeen) {
+      if ($now - $lastSeen <= $threshold) {
+        $names[] = is_string($name) ? $name : 'Anonymous';
+      }
     }
-    return ['count' => $count];
+    return ['count' => count($names), 'names' => $names];
   }
 
   $file = './Games/' . $gameName . '/spectators.txt';
-  if (!file_exists($file)) return ['count' => 0];
+  if (!file_exists($file)) return ['count' => 0, 'names' => []];
   $lines = @file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-  if (!is_array($lines)) return ['count' => 0];
-  $count = 0;
+  if (!is_array($lines)) return ['count' => 0, 'names' => []];
   foreach ($lines as $line) {
-    if (($now - intval($line)) <= $threshold) $count++;
+    $parts = explode(':', $line, 2);
+    if (count($parts) === 2 && ($now - intval($parts[1])) <= $threshold) {
+      $names[] = $parts[0];
+    } elseif (count($parts) === 1 && ($now - intval($parts[0])) <= $threshold) {
+      $names[] = 'Anonymous';
+    }
   }
-  return ['count' => $count];
+  return ['count' => count($names), 'names' => $names];
 }

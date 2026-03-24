@@ -94,7 +94,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 }
 
 if ($playerID == 3) {
-  UpdateSpectatorPresence($gameName);
+  UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'Anonymous');
 }
 
 header('Content-Type: text/event-stream');
@@ -148,7 +148,7 @@ while (true) {
   }
 
   if ($playerID == 3 && $currentRealTime - $lastSpectatorRefresh >= $spectatorRefreshInterval) {
-    UpdateSpectatorPresence($gameName);//, $sessionData['userName'] ?? 'anonymous');
+    UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'Anonymous');
     $lastSpectatorRefresh = $currentRealTime;
   }
 
