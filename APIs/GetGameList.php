@@ -37,7 +37,6 @@ else if(IsUserLoggedIn()) $isShadowBanned = IsBannedPlayer(LoggedInUserName());
 
 // If player is actually banned, return empty game list
 if(IsUserLoggedIn() && IsBannedPlayer(LoggedInUserName())) {
-  closedir($handle);
   echo json_encode($response);
   exit;
 }
