@@ -320,6 +320,43 @@ function logCompletedGameStats($conceded = false)
 		$countWinnerDeck = count(GetDeck($winner));
 		$countLoserDeck = count(GetDeck($loser));
 
+		$conn = GetDBConnection();
+		if (!$conn) {
+			WriteLog("Something went wrong connecting to the database, failing to log stats", highlight:true);
+			return;
+		}
+
+		// Build parameterized query safely
+		$params = [$winHeroID, $loseHeroID, $currentTurn, $winIDDeck, $loseIDDeck, GetHealth($winner), $firstPlayer];
+		$paramTypes = "sssssss";
+		
+		if ($p1id != "" && $p1id != "-") {
+			$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
+			$values .= ", ?";
+			$params[] = $p1id;
+			$paramTypes .= "s";
+		}
+		if ($p2id != "" && $p2id != "-") {
+			$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
+			$values .= ", ?";
+			$params[] = $p2id;
+			$paramTypes .= "s";
+		}
+
+		$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
+		$stmt = mysqli_stmt_init($conn);
+		
+		$gameResultID = 0;
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_bind_param($stmt, $paramTypes, ...$params);
+			mysqli_stmt_execute($stmt);
+			$gameResultID = mysqli_insert_id($conn);
+			mysqli_stmt_close($stmt);
+		}
+
+		if ($p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, $winner == 1 ? 1 : 0);
+		if ($p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, $winner == 2 ? 1 : 0);
+
 		$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
 		$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
 		$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
@@ -364,6 +401,19 @@ function logCompletedGameStats($conceded = false)
 			WriteLog("📊 Sending game stats to $otherSites", highlight:true, highlightColor:"green");
 		else
 			WriteLog("No game stats sent as both players have disabled stats", highlight:true);
+	}
+}
+
+function LogChallengeResult($conn, $gameResultID, $playerID, $result)
+{
+	WriteLog("Writing challenge result for player " . $playerID);
+	$challengeId = 3;
+	$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ssss", $gameResultID, $challengeId, $playerID, $result); //Challenge ID 1 = sigil of solace blue
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
 	}
 }
 
