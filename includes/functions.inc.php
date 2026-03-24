@@ -329,7 +329,7 @@ function logCompletedGameStats($conceded = false)
 		$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
 		$p2StatsDisabled = AreStatsDisabled(2) || AreGlobalStatsDisabled(2);
 
-		$gameResultID = 0;
+		$gameResultID = $gameName;
 
 		if (!$p1FabraryDisabled || !$p2FabraryDisabled) {
 			SendFullFabraryResults(
