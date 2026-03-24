@@ -45,13 +45,6 @@ if (extension_loaded('apcu') && ini_get('apc.enabled')) {
   if (function_exists('apcu_fetch')) {
     $isOpponentTyping = @apcu_fetch($typingCacheKey) !== false;
   }
-} else {
-  // Fallback: check file-based cache
-  $typingFile = "../Games/" . $gameName . "/typing_p" . $opponentID . ".txt";
-  if (file_exists($typingFile)) {
-    $expiryTime = intval(file_get_contents($typingFile));
-    $isOpponentTyping = $expiryTime > time();
-  }
 }
 
 $response->opponentIsTyping = $isOpponentTyping;

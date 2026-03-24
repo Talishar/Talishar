@@ -72,119 +72,6 @@ function InvalidateGamestateCache($gameName) {
   }
 }
 
-/**
- * Buffer write operations instead of immediate writes
- * Reduces file I/O by batching operations
- */
-function BufferedWriteCommand($gameName, $command) {
-  if (!extension_loaded('apcu') || !ini_get('apc.enabled')) {
-    // Fall back to immediate write
-    $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
-    fwrite($commandFile, $command . "\r\n");
-    fclose($commandFile);
-    return;
-  }
-  
-  if (!function_exists('apcu_fetch') || !function_exists('apcu_store') || !function_exists('apcu_delete')) {
-    // Fall back to immediate write
-    $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
-    fwrite($commandFile, $command . "\r\n");
-    fclose($commandFile);
-    return;
-  }
-  
-  $memKey = "cmd_buffer_" . md5($gameName);
-  $buffer = @apcu_fetch($memKey) ?? [];
-  $buffer[] = $command;
-  
-  // Flush if buffer reaches 50 commands or every few seconds
-  if (count($buffer) >= 50) {
-    FlushCommandBuffer($gameName, $buffer);
-    @apcu_delete($memKey);
-  } else {
-    @apcu_store($memKey, $buffer, 5); // 5 second TTL
-  }
-}
-
-/**
- * Flush buffered commands to disk
- */
-function FlushCommandBuffer($gameName, $buffer) {
-  if (empty($buffer)) return;
-  
-  $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
-  foreach ($buffer as $command) {
-    fwrite($commandFile, $command . "\r\n");
-  }
-  fclose($commandFile);
-}
-
-/**
- * Pre-load frequently accessed data
- * Populate on server startup or periodically
- */
-function PreloadCardSet($setName) {
-  if (!extension_loaded('apcu') || !ini_get('apc.enabled')) {
-    return;
-  }
-  
-  if (!function_exists('apcu_exists') || !function_exists('apcu_store')) {
-    return;
-  }
-  
-  $cacheKey = "cards_" . md5($setName);
-  
-  // Check if already cached
-  if (@apcu_exists($cacheKey)) {
-    return;
-  }
-  
-  // Load card dictionary
-  $file = "CardDictionaries/$setName/CardDictionary.php";
-  if (file_exists($file)) {
-    include $file; // Loads card data
-    @apcu_store($cacheKey, $cards ?? [], 3600); // 1 hour TTL
-  }
-}
-
-/**
- * Get cache statistics for monitoring
- */
-function GetCacheStats() {
-  if (!extension_loaded('apcu') || !ini_get('apc.enabled')) {
-    return null;
-  }
-  
-  if (!function_exists('apcu_cache_info')) {
-    return null;
-  }
-  
-  $info = @apcu_cache_info();
-  return [
-    'hits' => $info['num_hits'] ?? 0,
-    'misses' => $info['num_misses'] ?? 0,
-    'memory_used' => $info['mem_size'] ?? 0,
-    'memory_available' => ini_get('apc.shm_size'),
-    'entries' => $info['num_entries'] ?? 0,
-  ];
-}
-
-/**
- * Log cache performance (call periodically)
- */
-function LogCacheStats() {
-  $stats = GetCacheStats();
-  if (!$stats) return;
-  
-  $hitRate = $stats['hits'] + $stats['misses'] > 0
-    ? round(100 * $stats['hits'] / ($stats['hits'] + $stats['misses']), 2)
-    : 0;
-  
-  error_log("[APCu Cache] Hits: {$stats['hits']}, Misses: {$stats['misses']}, Hit Rate: {$hitRate}%, Memory: " . 
-    round($stats['memory_used'] / 1024 / 1024, 2) . "MB / " .
-    round($stats['memory_available'] / 1024 / 1024, 2) . "MB");
-}
-
 function UpdateSpectatorPresence($gameName, $userName = 'Anonymous') {
   $now = time();
   // Sanitize username: alphanumeric, underscores, hyphens, max 30 chars
@@ -203,31 +90,6 @@ function UpdateSpectatorPresence($gameName, $userName = 'Anonymous') {
     @apcu_store($key, $spectators, 120);
     return;
   }
-
-  $file = './Games/' . $gameName . '/spectators.txt';
-  $fh = @fopen($file, 'c+');
-  if (!$fh) return;
-  flock($fh, LOCK_EX);
-  $entries = [];
-  while (!feof($fh)) {
-    $line = trim(fgets($fh));
-    if ($line === '') continue;
-    $parts = explode(':', $line, 2);
-    if (count($parts) === 2 && ($now - intval($parts[1])) < 60) {
-      $entries[$parts[0]] = intval($parts[1]);
-    } elseif (count($parts) === 1 && ($now - intval($parts[0])) < 60) {
-      // Legacy format: bare timestamp
-      $entries['Anonymous'] = intval($parts[0]);
-    }
-  }
-  $entries[$userName] = $now;
-  ftruncate($fh, 0);
-  rewind($fh);
-  foreach ($entries as $name => $ts) {
-    fwrite($fh, $name . ':' . $ts . "\n");
-  }
-  flock($fh, LOCK_UN);
-  fclose($fh);
 }
 
 function GetActiveSpectators($gameName) {
@@ -246,18 +108,4 @@ function GetActiveSpectators($gameName) {
     }
     return ['count' => count($names), 'names' => $names];
   }
-
-  $file = './Games/' . $gameName . '/spectators.txt';
-  if (!file_exists($file)) return ['count' => 0, 'names' => []];
-  $lines = @file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-  if (!is_array($lines)) return ['count' => 0, 'names' => []];
-  foreach ($lines as $line) {
-    $parts = explode(':', $line, 2);
-    if (count($parts) === 2 && ($now - intval($parts[1])) <= $threshold) {
-      $names[] = $parts[0];
-    } elseif (count($parts) === 1 && ($now - intval($parts[0])) <= $threshold) {
-      $names[] = 'Anonymous';
-    }
-  }
-  return ['count' => count($names), 'names' => $names];
 }

@@ -41,20 +41,6 @@ if (extension_loaded('apcu') && ini_get('apc.enabled')) {
       @apcu_delete($cacheKey);
     }
   }
-} else {
-  // Fallback: file-based cache
-  $gameDir = "../Games/" . $gameName;
-  if (!is_dir($gameDir)) {
-    @mkdir($gameDir, 0755, true);
-  }
-
-  $typingFile = $gameDir . "/typing_p" . $playerID . ".txt";
-  if ($isTyping) {
-    $expiryTime = time() + 5;
-    file_put_contents($typingFile, $expiryTime);
-  } else {
-    @unlink($typingFile);
-  }
 }
 
 $response->success = true;

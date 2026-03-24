@@ -247,11 +247,6 @@ while (true) {
 
     if (extension_loaded('apcu') && ini_get('apc.enabled')) {
       $opponentIsTyping = @apcu_fetch($typingCacheKey) !== false;
-    } else {
-      $typingFile = "./Games/" . $gameName . "/typing_p" . $otherP . ".txt";
-      if (file_exists($typingFile)) {
-        $opponentIsTyping = intval(file_get_contents($typingFile)) > time();
-      }
     }
 
     if ($opponentIsTyping !== $lastTypingState) {
