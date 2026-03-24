@@ -115,6 +115,9 @@ if ($kickPlayerTwo) {
 $response = new stdClass();
 
 if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
+  // Stale-state: cache hasn't advanced beyond what client already has.
+  // Sleep briefly so clients don't tight-loop polling the server.
+  usleep(500000); // 500ms
   $response->lastUpdate = GetCachePiece($gameName, 1);
   echo json_encode($response);
   exit;
