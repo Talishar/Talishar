@@ -64,7 +64,7 @@ class zenith_blade extends Card {
 		$ClassState = new ClassState($this->controller);
 		$originUID = $CombatChain->AttackCard()->OriginUniqueID();
 		$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
-		return $foundSharpen != "" && $ClassState->AttacksWithWeapon() < 1;
+		return $foundSharpen->Index() != -1 && $ClassState->AttacksWithWeapon() < 1;
 	}
 
 	function AbilityCost() {
@@ -126,7 +126,7 @@ class flurry extends Card {
 		$targetWep = $Char->FindCardUID($target);
 		// has flurry already been applied to the weapon?
 		$otherFlurry = $CurrentTurnEffects->FindSpecificEffect($this->cardID, $target);
-		if ($targetWep != "" && $otherFlurry == "") {
+		if ($targetWep != "" && $otherFlurry->Index() == -1) {
 			AddCurrentTurnEffect($this->cardID, $this->controller, "", $target);
 			$targetWep->SetUsed(2);
 			$targetWep->AddUse();

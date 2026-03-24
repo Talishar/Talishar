@@ -813,7 +813,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($character[$lrArr[1] + 5] < 2 && SearchCurrentTurnEffects("blood_on_her_hands_yellow", $player, returnUniqueID: true) != $character[$lrArr[1] + 11]) {
             $uniqueID = $character[$lrArr[1] + 11];
             $otherFlurry = $CurrentTurnEffects->FindSpecificEffect("flurry", $uniqueID);
-            if ($otherFlurry == "") {
+            if ($otherFlurry->Index() == -1) {
               AddCurrentTurnEffect("blood_on_her_hands_yellow", $player, uniqueID: $uniqueID);
               AddCharacterUses($player, $lrArr[1], $parameter);
               AddCurrentTurnEffect("flurry", $player, "", $character[$lrArr[1] + 11]); // marks the effect as a "you may swing twice" effect

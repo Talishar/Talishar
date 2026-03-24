@@ -2165,7 +2165,7 @@ function DoesAttackHaveGoAgain()
   global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks, $combatChain;
-  global $CS_ArcaneDamageDealt;
+  global $CS_ArcaneDamageDealt, $CurrentTurnEffects;
   $attackID = $CombatChain->AttackCard()->ID();
   $from = $combatChain[2] ?? "CC";
   $attackType = CardType($attackID);
@@ -2363,8 +2363,9 @@ function DoesAttackHaveGoAgain()
     case "soup_up_blue":
       return GetClassState($mainPlayer, $CS_NumItemsDestroyed) > 0;
     case "hot_streak":
-      $character = &GetPlayerCharacter($mainPlayer);
-      return SearchCurrentTurnEffectsForUniqueID($character[$combatChainState[$CCS_WeaponIndex] + 11]) != -1 && SearchCurrentTurnEffects($attackID, $mainPlayer);
+      $attackUID = $CombatChain->AttackCard()->OriginUniqueID();
+      $FoundEffect = $CurrentTurnEffects->FindSpecificEffect($attackID, $attackUID);
+      return $FoundEffect->Index() != -1;
     case "cintari_sellsword":
       return true;
     case "second_tenet_of_chi_wind_blue":
