@@ -203,6 +203,25 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   if($playerID == 1) $response->chatInvited = ($p1ChatStatus == 0 && $p2ChatStatus == 1);
   else if($playerID == 2) $response->chatInvited = ($p2ChatStatus == 0 && $p1ChatStatus == 1);
 
+  // Typing indicator — same APCu key used by ChatTyping.php / CheckOpponentTyping.php.
+  // Piggybacking on the existing lobby poll costs zero extra requests.
+  if ($response->chatEnabled && ($playerID == 1 || $playerID == 2)) {
+    $otherP = $playerID == 1 ? 2 : 1;
+    $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;
+    $opponentIsTyping = false;
+    if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+      $opponentIsTyping = @apcu_fetch($typingCacheKey) !== false;
+    } else {
+      $typingFile = "../Games/" . $gameName . "/typing_p" . $otherP . ".txt";
+      if (file_exists($typingFile)) {
+        $opponentIsTyping = intval(file_get_contents($typingFile)) > time();
+      }
+    }
+    $response->opponentIsTyping = $opponentIsTyping;
+  } else {
+    $response->opponentIsTyping = false;
+  }
+
   echo json_encode($response);
   exit;
 }

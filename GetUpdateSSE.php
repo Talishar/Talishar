@@ -103,6 +103,11 @@ header('Cache-Control: no-cache');
 $lastUpdate = 0;
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 
+// Typing state tracking — pushed via named SSE event, no polling needed
+$lastTypingCheckTime = 0.0;
+$typingCheckInterval = 1.5; // seconds between checks
+$lastTypingState = false;
+
 // Send initial full game state
 $cacheVal = intval(GetCachePiece($gameName, 1));
 $lastUpdate = $cacheVal;
@@ -225,6 +230,32 @@ while (true) {
       if (!is_string($gameState)) {
         SendContent($gameState);
       }
+    }
+  }
+
+  // Push typing state as a named SSE event so the frontend can update without
+  // any polling. Checks every $typingCheckInterval seconds; only emits when
+  // the state actually changes — zero cost for games where nobody is typing.
+  if ($isGamePlayer && ($currentRealTime - $lastTypingCheckTime >= $typingCheckInterval)) {
+    $lastTypingCheckTime = $currentRealTime;
+    $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;
+    $opponentIsTyping = false;
+
+    if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+      $opponentIsTyping = @apcu_fetch($typingCacheKey) !== false;
+    } else {
+      $typingFile = "./Games/" . $gameName . "/typing_p" . $otherP . ".txt";
+      if (file_exists($typingFile)) {
+        $opponentIsTyping = intval(file_get_contents($typingFile)) > time();
+      }
+    }
+
+    if ($opponentIsTyping !== $lastTypingState) {
+      $lastTypingState = $opponentIsTyping;
+      echo "event: typing\n";
+      echo "data: " . json_encode(["opponentIsTyping" => $opponentIsTyping]) . "\n\n";
+      ob_flush();
+      flush();
     }
   }
 
