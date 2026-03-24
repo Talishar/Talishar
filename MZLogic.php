@@ -196,6 +196,7 @@ function MZAddZone($player, $parameter, $lastResult)
     $params[0] = $explodeArray[0];
   }
   $cardIDs = [];
+  $cardOwners = [];
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
@@ -203,7 +204,10 @@ function MZAddZone($player, $parameter, $lastResult)
     if (!isset($mzIndex[1])) {
       WriteLog("There was an error, please submit a bug report.");
     }
-    else if(isset($zone[$mzIndex[1]])) array_push($cardIDs, $zone[$mzIndex[1]]);
+    else if(isset($zone[$mzIndex[1]])) {
+      array_push($cardIDs, $zone[$mzIndex[1]]);
+      $cardOwners[] = $cardOwner;
+    }
   }
   for ($i = 0; $i < count($cardIDs); ++$i) {
     switch ($params[0]) {
@@ -229,6 +233,9 @@ function MZAddZone($player, $parameter, $lastResult)
         break;
       case "THEIRBOTDECK":
         AddBottomDeck($cardIDs[$i], $otherPlayer, $params[1] ?? "-");
+        break;
+      case "OWNERSBOTDECK":
+        AddBottomDeck($cardIDs[$i], $cardOwners[$i], $params[1] ?? "-");
         break;
       case "MYDISCARD":
         AddGraveyard($cardIDs[$i], $player, $params[1] ?? "-", $player);
