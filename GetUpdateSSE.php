@@ -222,8 +222,10 @@ while (true) {
 
     // Handle server timeout (75 seconds of no game updates)
     // Only trigger inactivity once the game has actually started (status 5+), not during lobby
-    $noUpdates = $currentTime - $lastUpdateTime;
-    if ($noUpdates > 75000 && $playerInactiveStatus != "1" && !$inactivityMessageSent && $gameStatus >= 5) {
+    // Guard against $lastUpdateTime being 0/empty (cache not yet set): subtracting 0 from the
+    // current Unix-ms timestamp would yield a huge value and falsely fire inactivity immediately.
+    $noUpdates = $currentTime - intval($lastUpdateTime);
+    if (intval($lastUpdateTime) > 0 && $noUpdates > 75000 && $playerInactiveStatus != "1" && !$inactivityMessageSent && $gameStatus >= 5) {
       SetCachePiece($gameName, 12, "1");
       $inactivityMessageSent = true;
       WriteLog("⌛Player " . $otherP . " is inactive.");
