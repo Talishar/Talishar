@@ -1714,7 +1714,7 @@ class glyph_power_spell_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $damage = HasAuraWithSigilInName($this->controller) ? 6 : 4;
+    $damage = HasAuraWithSigilInName($this->controller) || HasLayerWithSigilInName($this->controller) ? 6 : 4;
     DealArcane($damage, 2, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
   }
 }

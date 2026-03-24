@@ -546,6 +546,17 @@ function HasAuraWithSigilInName($player)
   return false;
 }
 
+function HasLayerWithSigilInName($player) {
+  global $Stack;
+  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+    $Layer = $Stack->Card($i, true);
+    if ($Layer->PlayerID() != $player) continue;
+    WriteLog("HERE: " . $Layer->ID());
+    if (CardNameContains($Layer->ID(), "Sigil", $player, partial: true)) return true;
+  }
+  return false;
+}
+
 function IsDoubleArcane($cardID): bool //checks for cards that can shock, but not use up arcane buffs on the shock
 {
   return match ($cardID) {
