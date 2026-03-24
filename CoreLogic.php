@@ -2007,7 +2007,7 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
   if ($cardID == "adaptive_plating") {
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
       $effect = explode(",", $currentTurnEffects[$i]);
-      if ($effect[0] == "adaptive_plating-" . $uniqueID) return $effect[1];
+      if ($effect[0] == "adaptive_plating-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
     }
   }
   if ($cardID == "adaptive_dissolver") {
