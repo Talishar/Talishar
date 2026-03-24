@@ -220,11 +220,13 @@ while (true) {
       WriteLog("🔌Opponent has reconnected.");
     }
 
-    // Handle server timeout (60 seconds of no game updates)
+    // Handle server timeout (75 seconds of no game updates)
+    // Only trigger inactivity once the game has actually started (status 5+), not during lobby
     $noUpdates = $currentTime - $lastUpdateTime;
-    if ($noUpdates > 60000 && $playerInactiveStatus != "1" && !$inactivityMessageSent) {
+    if ($noUpdates > 75000 && $playerInactiveStatus != "1" && !$inactivityMessageSent && $gameStatus >= 5) {
       SetCachePiece($gameName, 12, "1");
       $inactivityMessageSent = true;
+      WriteLog("⌛Player " . $otherP . " is inactive.");
       // Trigger a game state update to reflect inactivity
       $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
       if (!is_string($gameState)) {
