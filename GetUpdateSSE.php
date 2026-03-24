@@ -67,7 +67,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
 $sessionData['userLoggedIn'] = IsUserLoggedIn();
-$sessionData['userName'] = LoggedInUserName() ?: null;
+$sessionData['userName'] = LoggedInUserName() ?: (TryGet('userName', '') ?: null);
 $sessionData['isPvtVoidPatron'] = isset($_SESSION["isPvtVoidPatron"]);
 
 // Capture all Patreon campaign session IDs
