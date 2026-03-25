@@ -1853,6 +1853,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
         if ($from != "HAND") return false;
         if ($CombatChain->HasCurrentLink()) return true;
         if (IsLayerStep()) return true;
+        if (IsResolutionStep()) return true;
         return false;
       default:
         break;

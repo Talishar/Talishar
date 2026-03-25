@@ -2017,7 +2017,8 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       else WriteLog("You cannot reveal a card from your inventory");
       break;
     case "fearless_confrontation_blue":
-      AddCurrentTurnEffect($parameter, $mainPlayer);
+      if (!IsResolutionStep()) // in this case it's targeting a previous attack
+        AddCurrentTurnEffect($parameter, $mainPlayer);
       break;
     case "light_up_the_leaves_red":
       AddCurrentTurnEffect($parameter, $player, uniqueID:$target);

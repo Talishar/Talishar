@@ -1569,7 +1569,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       if($nameBlocked) return "Ability";
       $names = ["-", "-"];
       //can it ability?
-      if ($from == "HAND" && ($CombatChain->HasCurrentLink() || IsLayerStep())) {
+      if ($from == "HAND" && ($CombatChain->HasCurrentLink() || IsLayerStep() || IsResolutionStep())) {
         if ($Stack->BottomLayer()->ID() != $cardID) $names[0] = "Ability"; //don't let it target itself
       }
       // can it attack?
