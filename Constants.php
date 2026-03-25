@@ -886,6 +886,13 @@ function GetDamagePrevention($player, $damage)
     $preventionLeft += PermanentDamagePreventionAmount($player, $i, $damage);
   }
 
+  $allies = &GetAllies($player);
+  $countAllies = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i < $countAllies; $i += $allyPieces) {
+    $preventionLeft += WardAmount($allies[$i], $player, $i);
+  }
+
   $character = &GetPlayerCharacter($player);
   $countCharacter = count($character);
   $characterPieces = CharacterPieces();
