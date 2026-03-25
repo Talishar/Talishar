@@ -199,14 +199,9 @@ function AddFriend($userId, $friendUserId) {
     return ['success' => false, 'message' => 'User not found'];
   }
   
-  // Check if already friends
-  if (AreFriends($userId, $friendUserId)) {
-    return ['success' => false, 'message' => 'Already friends with this user'];
-  }
-  
-  // Check if pending request already exists in either direction
-  $checkPendingQuery = "SELECT 1 FROM friends WHERE (userId = ? AND friendUserId = ?) OR (userId = ? AND friendUserId = ?) LIMIT 1";
-  $stmt = $conn->prepare($checkPendingQuery);
+  // Check if already friends or a request already exists in either direction (one query)
+  $checkQuery = "SELECT status FROM friends WHERE (userId = ? AND friendUserId = ?) OR (userId = ? AND friendUserId = ?) LIMIT 1";
+  $stmt = $conn->prepare($checkQuery);
   if (!$stmt) {
     return ['success' => false, 'message' => 'Database error'];
   }
@@ -216,12 +211,15 @@ function AddFriend($userId, $friendUserId) {
     return ['success' => false, 'message' => 'Database error'];
   }
   $result = $stmt->get_result();
-  $hasPendingRequest = $result->num_rows > 0;
-  $stmt->close();
-  
-  if ($hasPendingRequest) {
+  if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    if ($row['status'] === 'accepted') {
+      return ['success' => false, 'message' => 'Already friends with this user'];
+    }
     return ['success' => false, 'message' => 'Friend request already sent or pending'];
   }
+  $stmt->close();
   
   // Send one-way pending friend request
   $insertQuery = "INSERT INTO friends (userId, friendUserId, status) VALUES (?, ?, 'pending')";
@@ -545,28 +543,7 @@ function CancelFriendRequest($userId, $recipientUserId) {
     return ['success' => false, 'message' => 'Cannot cancel request to yourself'];
   }
   
-  // Check if request exists and is pending
-  $query = "SELECT friendshipId FROM friends WHERE userId = ? AND friendUserId = ? AND status = 'pending'";
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return ['success' => false, 'message' => 'Database error'];
-  }
-  
-  $stmt->bind_param("ii", $userId, $recipientUserId);
-  if (!$stmt->execute()) {
-    $stmt->close();
-    return ['success' => false, 'message' => 'Database error'];
-  }
-  $result = $stmt->get_result();
-  
-  if ($result->num_rows === 0) {
-    $stmt->close();
-    return ['success' => false, 'message' => 'No pending request found'];
-  }
-  
-  $stmt->close();
-  
-  // Delete the pending request
+  // Delete directly; affected_rows tells us whether the request existed
   $deleteQuery = "DELETE FROM friends WHERE userId = ? AND friendUserId = ? AND status = 'pending'";
   $deleteStmt = $conn->prepare($deleteQuery);
   if (!$deleteStmt) {
@@ -578,7 +555,12 @@ function CancelFriendRequest($userId, $recipientUserId) {
     $deleteStmt->close();
     return ['success' => false, 'message' => 'Database error'];
   }
+  $affectedRows = $deleteStmt->affected_rows;
   $deleteStmt->close();
+  
+  if ($affectedRows === 0) {
+    return ['success' => false, 'message' => 'No pending request found'];
+  }
   
   return ['success' => true, 'message' => 'Friend request cancelled'];
 }
@@ -660,12 +642,8 @@ function UpdateFriendNickname($userId, $friendUserId, $nickname) {
     return ['success' => false, 'message' => 'Nickname is too long (max 50 characters)'];
   }
   
-  // Check if they are friends
-  if (!AreFriends($userId, $friendUserId)) {
-    return ['success' => false, 'message' => 'Not friends with this user'];
-  }
-  
-  // Update the nickname
+  // Update directly; use $conn->info "Rows matched:" to distinguish
+  // "not friends" (0 matched) from "same nickname already set" (1 matched, 0 changed)
   $query = "UPDATE friends SET nickname = ? WHERE userId = ? AND friendUserId = ? AND status = 'accepted'";
   $stmt = $conn->prepare($query);
   
@@ -680,8 +658,16 @@ function UpdateFriendNickname($userId, $friendUserId, $nickname) {
     $stmt->close();
     return ['success' => false, 'message' => 'Failed to update nickname'];
   }
-  
   $stmt->close();
+  
+  // Parse matched rows from the info string (e.g. "Rows matched: 1  Changed: 0  Warnings: 0")
+  preg_match('/Rows matched:\s*(\d+)/', $conn->info, $matches);
+  $rowsMatched = isset($matches[1]) ? (int)$matches[1] : 0;
+  
+  if ($rowsMatched === 0) {
+    return ['success' => false, 'message' => 'Not friends with this user'];
+  }
+  
   return ['success' => true, 'message' => 'Nickname updated successfully'];
 }
 
