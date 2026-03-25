@@ -1599,8 +1599,8 @@ class song_of_sinew_yellow extends Card {
       AddDecisionQueue("PASSPARAMETER", $this->controller, $cardList);
       AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
       for ($i = 0; $i < count($cards); ++$i) {
-        AddDecisionQueue("CHOOSECARDID", $this->controller, "<-", 1);
         AddDecisionQueue("SETDQCONTEXT", $this->controller, "Put a card on top of your deck, the last card chosen will be the top card at the end", 1);
+        AddDecisionQueue("CHOOSECARDID", $this->controller, "<-", 1);
         AddDecisionQueue("ADDTOPDECK", $this->controller, "<-", 1);
         AddDecisionQueue("REMOVEFROMCHOICES", $this->controller, "{0}", 1);
         AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
