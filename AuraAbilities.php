@@ -709,11 +709,13 @@ function AuraStartTurnAbilities()
         break;
       case "might":
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        WriteLog(CardLink($auras[$i]) . " will buff your next attack by 1!");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumMightDestroyed, 1);
         break;
       case "vigor":
         GainResources($mainPlayer, 1);
+        WriteLog(CardLink($auras[$i]) . " gives you a resource!");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
         break;
@@ -743,6 +745,7 @@ function AuraStartTurnAbilities()
         break;
       case "agility":
         if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        WriteLog(CardLink($auras[$i]) . " will give your next attack go again!");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
         break;
