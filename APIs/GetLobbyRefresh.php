@@ -23,7 +23,7 @@ $lastUpdate = $_POST["lastUpdate"];
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
 else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
-$isLastAuthKeySet = isset($_SESSION["lastAuthKey"]);
+$lastAuthKey = $_SESSION["lastAuthKey"] ?? null;
 
 session_write_close();
 
@@ -125,7 +125,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 } else if ($gameStatus == $MGS_GameStarted) {
   $response->lastUpdate = "1";
   $response->isMainGameReady = true;
-  if(IsUserLoggedIn() && !$isLastAuthKeySet) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
+  if(IsUserLoggedIn() && ($lastAuthKey == null || $lastAuthKey !== $authKey)) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
   echo json_encode($response);
   exit;
 } else {
