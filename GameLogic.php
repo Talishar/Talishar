@@ -1604,6 +1604,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       else DealArcane(1, 2, "ABILITY", $parameter, true);
       return $lastResult;
+    case "DEALARCANEFULL": //Wrapper for DealArcane function
+      $parameters = explode("-", $parameter);
+      $damage = $parameters[0];
+      $source = $parameters[1] ?? "-";
+      $sourceID = ExtractCardID($source);
+      DealArcane($damage, source:$sourceID, resolvedTarget:$lastResult);
+      return $lastResult;
     case "DEALARCANE":
       if ($lastResult != "-") { // make sure the target is still there
         $dqState[7] = $lastResult;
