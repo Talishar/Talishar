@@ -1393,7 +1393,7 @@ class sigil_of_silphidae_blue extends Card {
         AddDecisionQueue("MZBANISH", $this->controller, "<-", 1);
         AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
         AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
-        AddDecisionQueue("DEALARCANE", $this->controller, "1-" . $this->cardID, 1);
+        AddDecisionQueue("DEALARCANEFULL", $this->controller, "1-" . $this->cardID, 1);
         AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
         AddDecisionQueue("SETCLASSSTATE", $this->controller, parameter: $CS_ArcaneTargetsSelected);
       }
