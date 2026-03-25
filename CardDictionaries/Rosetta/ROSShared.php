@@ -551,7 +551,6 @@ function HasLayerWithSigilInName($player) {
   for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
     $Layer = $Stack->Card($i, true);
     if ($Layer->PlayerID() != $player) continue;
-    WriteLog("HERE: " . $Layer->ID());
     if (CardNameContains($Layer->ID(), "Sigil", $player, partial: true)) return true;
   }
   return false;
