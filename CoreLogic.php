@@ -216,7 +216,7 @@ function BlockingCardDefense($index)
 
 function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID, $defending=false)
 {
-  global $combatChain, $turn;
+  global $combatChain, $turn, $ChainLinks;
   $index = count($combatChain);
   $combatChain[] = $cardID;
   $combatChain[] = $player;
@@ -232,6 +232,13 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   $combatChain[] = 0; //Number of times used
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0]) || $defending) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility(count($combatChain) - CombatChainPieces());
+  if ($index == 0) { // remove any attack proxies from the attacking card from previous chain links 1.4.3c
+		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+			$AttackCard = $ChainLinks->GetLink($i)->AttackCard();
+			if ($AttackCard->OriginUniqueID() == $OriginUniqueID)
+				$AttackCard->Remove();
+		}
+  }
   return $index;
 }
 

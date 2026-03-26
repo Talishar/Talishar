@@ -529,6 +529,7 @@ function ResetCombatChainState()
       if(CardType($linkID) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
         if(CardType($linkID) == "T" || CardType($linkID) == "Macro") continue;//Don't need to add to anywhere if it's a token
+        if (!TypeContains($linkID, "AA", $mainPlayer)) continue; //Don't do anything with attack proxies
         // $j + 7 instead of just $j to grab the "original CardID" in case the card became a copy
         $origLinkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j+7], true, true) : $chainLinks[$i][$j+7];
         $goesWhere = GoesWhereAfterResolving($origLinkID, "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
