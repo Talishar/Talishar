@@ -101,6 +101,7 @@
       case "increase_the_tension_yellow": return 2;
       case "increase_the_tension_blue": return 1;
       case "lunging_press_blue": return 1;
+      case "unified_decree_yellow": return 3;
       default: return 0;
     }
   }
@@ -140,6 +141,7 @@
       case "mauvrion_skies_red": case "mauvrion_skies_yellow": case "mauvrion_skies_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
       case "lunging_press_blue": return true;
       case "kayo_berserker_runt-DOUBLE": case "kayo_berserker_runt-HALF": return true;
+      case "unified_decree_yellow": true;
       default: return false;
     }
   }
@@ -255,6 +257,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
           AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
         }
       }
+      if (!str_contains($target, "COMBATCHAINATTACKS")) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "spoils_of_war_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);

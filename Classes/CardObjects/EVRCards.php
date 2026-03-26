@@ -889,44 +889,96 @@ class fractal_replication_red extends Card {
 //   }
 // }
 
+class in_the_swing extends BaseCard {
+	function PlayAbility($target) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
 
-// class in_the_swing_red extends Card {
+	function IsPlayRestricted() {
+		global $CS_AttacksWithWeapon, $CombatChain;
+		return GetClassState($this->controller, $CS_AttacksWithWeapon) < 1 || !TypeContains($CombatChain->AttackCard()->ID(), "W", $this->controller);
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "in_the_swing_red";
-//     $this->controller = $controller;
-//     }
+class in_the_swing_red extends Card {
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function __construct($controller) {
+    $this->cardID = "in_the_swing_red";
+    $this->controller = $controller;
+		$this->baseCard = new in_the_swing($this->cardID, $this->controller);
+	}
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+		return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
 
 
-// class in_the_swing_yellow extends Card {
+class in_the_swing_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "in_the_swing_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "in_the_swing_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new in_the_swing($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+		return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
 
 
-// class in_the_swing_blue extends Card {
+class in_the_swing_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "in_the_swing_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "in_the_swing_blue";
+    $this->controller = $controller;
+    $this->baseCard = new in_the_swing($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+		return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
 
 
 // class iyslander extends Card {

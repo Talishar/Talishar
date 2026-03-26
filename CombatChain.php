@@ -208,9 +208,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "salt_the_wound_yellow":
         $power += NumAttacksHit();
         break;
-      case "unified_decree_yellow":
-        $power += 3;
-        break;
       case "plasma_barrel_shot":
         $power += 1 + $combatChainState[$CCS_NumBoosted];
         break;
@@ -226,15 +223,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "valiant_thrust_yellow":
       case "valiant_thrust_blue":
         $power += GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
-        break;
-      case "courageous_steelhand_red":
-        $power += GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
-        break;
-      case "courageous_steelhand_yellow":
-        $power += GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 2 : 0;
-        break;
-      case "courageous_steelhand_blue":
-        $power += GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 1 : 0;
         break;
       case "galaxxi_black":
         $power += GetClassState($mainPlayer, $CS_NumPlayedFromBanish) > 0 ? 2 : 0;
@@ -285,15 +273,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "hundred_winds_blue":
         $power += (ComboActive() ? NumChainLinksWithName("Hundred Winds") - 1 : 0);
         break;
-      case "in_the_swing_red":
-        $power += 3;
-        break;
-      case "in_the_swing_yellow":
-        $power += 2;
-        break;
-      case "in_the_swing_blue":
-        $power += 1;
-        break;
       case "swarming_gloomveil_red":
         $power += (GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0);
         break;
@@ -308,23 +287,11 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "phoenix_form_red":
         $power += (NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0);
         break;
-      case "combustion_point_red":
-        $power += 1;
-        break;
       case "lava_burst_red":
         $power += (RuptureActive() ? 3 : 0);
         break;
       case "phoenix_flame_red":
         $power += (NumDraconicChainLinks() >= 2 ? 1 : 0);
-        break;
-      case "rapid_reflex_red":
-        $power += 3;
-        break;
-      case "rapid_reflex_yellow":
-        $power += 2;
-        break;
-      case "rapid_reflex_blue":
-        $power += 1;
         break;
       case "tiger_swipe_red":
         $power += (ComboActive() ? 2 : 0);
@@ -364,9 +331,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "widowmaker_yellow":
       case "widowmaker_blue":
         $power += NumCardsDefended() < 2 ? 3 : 0;
-        break;
-      case "fisticuffs":
-        $power += 1;
         break;
       case "feisty_locals_red":
       case "feisty_locals_yellow":
@@ -429,15 +393,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "beast_mode_yellow":
       case "beast_mode_blue":
         $power += GetClassState($mainPlayer, $CS_HaveIntimidated) > 0 ? 2 : 0;
-        break;
-      case "take_the_upper_hand_red":
-        $power += 3;
-        break;
-      case "take_the_upper_hand_yellow":
-        $power += 2;
-        break;
-      case "take_the_upper_hand_blue":
-        $power += 1;
         break;
       case "rising_power_red":
       case "rising_power_yellow":
@@ -508,17 +463,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "grow_claws_blue":
         $power += isPreviousLinkDraconic() ? 1 : 0;
         break;
-      case "hunts_end_red":
-        $power += 4;
-        break;
-      case "jagged_edge_red":
-        $power += 3;
-        break;
-      case "diced_red":
-      case "diced_yellow":
-      case "diced_blue":
-        $power += 1;
-        break;
       case "hand_of_vengeance":
         $power += 1;
         break;
@@ -535,15 +479,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
           }
           $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
         $power += $numDaggerHits > 0 ? 1 : 0;
-        break;
-      case "incision_red": 
-        $power += SubtypeContains($attackID, "Dagger") ? 3 : 0;
-        break;
-      case "incision_yellow":
-        $power += SubtypeContains($attackID, "Dagger") ? 2 : 0;
-        break;
-      case "incision_blue":
-        $power += SubtypeContains($attackID, "Dagger") ? 1 : 0;
         break;
       case "outed_red":
         $power += CheckMarked($defPlayer) ? 1 : 0;

@@ -112,9 +112,6 @@ function HNTEffectPowerModifier($cardID, $attached=False): int
     "sisters_of_fire_red" => 3,
     "sizzling_steel_red" => NumDraconicChainLinks() > 1 ? 4 : 3,
     "stabbing_pain_red" => 3,
-    "diced_red" => 3,
-    "diced_yellow" => 2,
-    "diced_blue" => 1,
     "twist_and_turn_red" => 4,
     "twist_and_turn_yellow" => 3,
     "twist_and_turn_blue" => 2,
@@ -229,7 +226,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "fire_tenet_strike_first_blue" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "obsidian_fire_vein" => true,
     "obsidian_fire_vein_r" => true,
-    "hunts_end_red" => true,
     "affirm_loyalty_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "endear_devotion_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "fire_and_brimstone_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -242,13 +238,9 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "sisters_of_fire_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "sizzling_steel_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "stabbing_pain_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "diced_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "diced_yellow" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "diced_blue" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "twist_and_turn_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "twist_and_turn_yellow" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "twist_and_turn_blue" => SubtypeContains($attackID, "Dagger", $mainPlayer),
-    "jagged_edge_red" => true,
     "agility_stance_yellow" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "power_stance_blue" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "cut_deep_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -489,9 +481,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "fire_tenet_strike_first_blue":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
-    case "hunts_end_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
     case "long_whisker_loyalty_red":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
@@ -520,9 +509,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "stabbing_pain_red":
       if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
-    case "jagged_edge_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
     case "provoke_blue":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) && CanRevealCards($otherPlayer)) {
@@ -532,11 +518,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("REVEALCARDS", $otherPlayer, "<-", 1);
         AddDecisionQueue("PROVOKE", $otherPlayer, "-", 1);
       }
-      break;
-    case "diced_red":
-    case "diced_yellow":
-    case "diced_blue":
-      AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       break;
     case "twist_and_turn_red":
     case "twist_and_turn_yellow":
