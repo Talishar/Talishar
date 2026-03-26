@@ -3488,7 +3488,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
   if ($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
   if (DelimStringContains($cardType, "I")) return false; //Instants as yet never go on the combat chain
   if (($phase == "A" || $phase == "D") && DelimStringContains($cardType, "A")) return false; //Non-attacks played as instants never go on combat chain
-  if ($cardType == "AR") return true; // Technically wrong, AR goes to the graveyard instead of remaining on the active chain link. CR 2.4.0 - 8.1.2b
+  if ($cardType == "AR") return false; // AR goes to the graveyard instead of remaining on the active chain link. CR 2.4.0 - 8.1.2b
   if ($cardType == "DR") return true;
   if (($phase == "M" || $phase == "ATTACKWITHIT") && $cardType == "AA") return true; //If it's an attack action, it goes on the chain
   return false;

@@ -110,6 +110,20 @@
       case "sloggism_red": return 6;
       case "sloggism_yellow": return 5;
       case "sloggism_blue": return 4;
+      case "rout_red": return 3;
+      case "singing_steelblade_yellow": return 1;
+      case "overpower_red": return isset($idArr[1]) ? 6 : 4;
+      case "overpower_yellow": return isset($idArr[1]) ? 5 : 3;
+      case "overpower_blue": return isset($idArr[1]) ? 4 : 2;
+      case "ironsong_response_red": return 3;
+      case "ironsong_response_yellow": return 2;
+      case "ironsong_response_blue": return 1;
+      case "biting_blade_red": return 3;
+      case "biting_blade_yellow": return 2;
+      case "biting_blade_blue": return 1;
+      case "stroke_of_foresight_red": return 3;
+      case "stroke_of_foresight_yellow": return 2;
+      case "stroke_of_foresight_blue": return 1;
       default: return 0;
     }
   }
@@ -147,6 +161,10 @@
       case "razor_reflex_red": case "razor_reflex_yellow": case "razor_reflex_blue": return true;
       case "nimblism_red": case "nimblism_yellow": case "nimblism_blue": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "sloggism_red": case "sloggism_yellow": case "sloggism_blue": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
+      case "rout_red": case "singing_steelblade_yellow": case "overpower_red": case "overpower_yellow": case "overpower_blue": return true;
+      case "ironsong_response_red": case "ironsong_response_yellow": case "ironsong_response_blue": return true;
+      case "biting_blade_red": case "biting_blade_yellow": case "biting_blade_blue": return true;
+      case "stroke_of_foresight_red": case "stroke_of_foresight_yellow": case "stroke_of_foresight_blue": return true;
       default: return false;
     }
   }
@@ -155,6 +173,7 @@
   {
     global $mainPlayer, $currentPlayer, $defPlayer, $CombatChain;
     $rv = "";
+    $repriseActive = RepriseActive();
     switch($cardID) {
       case "blessing_of_deliverance_red": case "blessing_of_deliverance_yellow": case "blessing_of_deliverance_blue": if(SearchCount(SearchPitch($currentPlayer, minCost:3)) > 0) Draw($currentPlayer); return "";
       case "scabskin_leathers":
@@ -267,6 +286,12 @@
           AddDecisionQueue("ADDHANDOWNER", $defPlayer, "-", 1);
           AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
         }
+        if (!str_contains($target, "COMBATCHAINATTACKS")) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "ironsong_response_red":
+      case "ironsong_response_yellow":
+      case "ironsong_response_blue":
+        if (!str_contains($target, "COMBATCHAINATTACKS") && $repriseActive) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "singing_steelblade_yellow":
         if(RepriseActive() && SearchDeck($currentPlayer, "AR") != "") {

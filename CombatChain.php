@@ -171,51 +171,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "whelming_gustwave_blue":
         $power += (ComboActive() ? 1 : 0);
         break;
-      case "rout_red":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 3 : 0;
-        break;
-      case "singing_steelblade_yellow":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
-        break;
-      case "overpower_red":
-        if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) $power += 0;
-        $power += $repriseActive ? 6 : 4;
-        break;
-      case "overpower_yellow":
-        if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) $power += 0;
-        $power += $repriseActive ? 5 : 3;
-        break;
-      case "overpower_blue":
-        if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) $power += 0;
-        $power += $repriseActive ? 4 : 2;
-        break;
-      case "ironsong_response_red":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 3 : 0;
-        break;
-      case "ironsong_response_yellow":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 2 : 0;
-        break;
-      case "ironsong_response_blue":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 1 : 0;
-        break;
-      case "biting_blade_red":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 3 : 0;
-        break;
-      case "biting_blade_yellow":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 2 : 0;
-        break;
-      case "biting_blade_blue":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
-        break;
-      case "stroke_of_foresight_red":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 3 : 0;
-        break;
-      case "stroke_of_foresight_yellow":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 2 : 0;
-        break;
-      case "stroke_of_foresight_blue":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
-        break;
       case "barraging_brawnhide_red":
       case "barraging_brawnhide_yellow":
       case "barraging_brawnhide_blue":
