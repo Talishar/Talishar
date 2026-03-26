@@ -302,6 +302,7 @@
           AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
+        if (!str_contains($target, "COMBATCHAINATTACKS")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "steelblade_shunt_red": case "steelblade_shunt_yellow": case "steelblade_shunt_blue":
         if(IsWeaponAttack()) {
@@ -314,12 +315,22 @@
         return "";
       case "biting_blade_red": case "biting_blade_yellow": case "biting_blade_blue":
         if(RepriseActive()) { ApplyEffectToEachWeapon($cardID); $rv = "Gives weapons you control +1 for the rest of the turn"; }
+        if (!str_contains($target, "COMBATCHAINATTACKS")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;
       case "stroke_of_foresight_red": case "stroke_of_foresight_yellow": case "stroke_of_foresight_blue":
         if(RepriseActive()) {
           Draw($currentPlayer);
           $hand = &GetHand($mainPlayer);
           if(count($hand) > 0) AddDecisionQueue("HANDTOPBOTTOM", $mainPlayer, "");
+        }
+        if (!str_contains($target, "COMBATCHAINATTACKS")) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "overpower_red":
+      case "overpower_yellow":
+      case "overpower_blue":
+        if (!str_contains($target, "COMBATCHAINATTACKS")) {
+          if ($repriseActive) AddCurrentTurnEffect("$cardID-REPRISE", $currentPlayer);
+          else AddCurrentTurnEffect("$cardID", $currentPlayer);
         }
         return "";
       case "sharpen_steel_red": case "sharpen_steel_yellow": case "sharpen_steel_blue":
