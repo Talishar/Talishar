@@ -124,6 +124,7 @@
       case "stroke_of_foresight_red": return 3;
       case "stroke_of_foresight_yellow": return 2;
       case "stroke_of_foresight_blue": return 1;
+      case "ancestral_empowerment_red": return 1;
       default: return 0;
     }
   }
@@ -165,6 +166,7 @@
       case "ironsong_response_red": case "ironsong_response_yellow": case "ironsong_response_blue": return true;
       case "biting_blade_red": case "biting_blade_yellow": case "biting_blade_blue": return true;
       case "stroke_of_foresight_red": case "stroke_of_foresight_yellow": case "stroke_of_foresight_blue": return true;
+      case "ancestral_empowerment_red": return true;
       default: return false;
     }
   }
@@ -258,6 +260,7 @@
         return "";
       //Ninja
       case "ancestral_empowerment_red":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         Draw($currentPlayer);
         return "";
       case "flic_flak_red": case "flic_flak_yellow": case "flic_flak_blue":

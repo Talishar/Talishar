@@ -137,9 +137,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "lord_of_wind_blue":
         $power += (ComboActive() ? $resourcesPaid : 0);
         break;
-      case "ancestral_empowerment_red":
-        $power += 1;
-        break;
       case "mugenshi_release_yellow":
         $power += (ComboActive() ? 1 : 0);
         break;
