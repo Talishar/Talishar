@@ -352,10 +352,6 @@ if (!IsGameOver()) {
 
 //Now write out the game state
 if (!$skipWriteGamestate) {
-  if (!IsModeAsync($mode)) {
-    SetCachePiece($gameName, 12, "0");
-    $currentPlayerActivity = 0;
-  }
   DoGamestateUpdate();
   include "WriteGamestate.php";
 }

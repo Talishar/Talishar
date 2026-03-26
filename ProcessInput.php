@@ -241,7 +241,6 @@ if (!$skipWriteGamestate) {
     SetCachePiece($gameName, 12, "0");
     SetCachePiece($gameName, 2, $currentTime);
     SetCachePiece($gameName, 3, $currentTime);
-    $currentPlayerActivity = 0;
   }
   DoGamestateUpdate();
   include "WriteGamestate.php";
