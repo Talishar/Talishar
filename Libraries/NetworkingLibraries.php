@@ -904,15 +904,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100007: //Claim Victory when opponent is inactive
       if ($isSimulation)
         return;
-      // WriteLog("JERE: $currentPlayerActivity");
-      // if ($currentPlayerActivity == 1) {
       include_once "./includes/dbh.inc.php";
       include_once "./includes/functions.inc.php";
       $otherPlayer = $playerID == 1 ? 2 : 1;
       if (!IsGameOver())
         PlayerWon($playerID);
       WriteLog("🚩The opponent forfeit due to inactivity.");
-      // }
       break;
     case 100011: //Resume adventure (roguelike)
       if ($roguelikeGameID == "")
@@ -2477,7 +2474,7 @@ function GetLayerTarget($cardID, $from)
         // targetting attack layer
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
       }
-      elseif(!ShouldHoldPriority($currentPlayer) && ShouldAutotargetOpponent($currentPlayer)) {
+      elseif (!ShouldHoldPriority($currentPlayer) && ShouldAutotargetOpponent($currentPlayer)) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:maxCost=1;type=AA");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
@@ -2554,7 +2551,7 @@ function GetLayerTarget($cardID, $from)
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       }
       else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYCHAR-0",1);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYCHAR-0", 1);
       }
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
@@ -2563,10 +2560,7 @@ function GetLayerTarget($cardID, $from)
     case "shred_yellow":
     case "shred_blue":
       $pastChoices = GetPastChainLinkCards($defPlayer, asMZInd: true, blockingClass: "ASSASSIN");
-      if (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer)) {
-        $currentChoices =  GetChainLinkCards($defPlayer, asMZInd:true);
-      }
-      else $currentChoices = "";
+      $currentChoices = (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer)) ? GetChainLinkCards($defPlayer, asMZInd: true) : "";
       if ($currentChoices == "") $choices = $pastChoices;
       elseif ($pastChoices == "") $choices = $currentChoices;
       else $choices = "$pastChoices,$currentChoices";
@@ -4125,7 +4119,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked;
   global $currentTurnEffects, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackTarget, $CCS_AttackTargetUID;
   global $landmarks;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $cardType = CardType($cardID);
   if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {
     WriteLog("You cannot play Non-Attack Actions with an open chain, closing the chain");
@@ -4137,7 +4130,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if ($cardID == "teklo_plasma_pistol" || $cardID == "plasma_barrel_shot") $index = FindCharacterIndex($currentPlayer, $cardID);
   if ($currentPlayer == $mainPlayer && CardClass($cardID) == "MECHANOLOGIST" && CardType($cardID) == "AA") {
     $index = FindCharacterIndex($currentPlayer, "teklovossen_the_mechropotent");
-    if ($index != -1) {
+    if ($index != -1 && SearchCharacterActive($currentPlayer, "teklovossen_the_mechropotent")) {
       GiveAttackGoAgain();
       WriteLog(CardLink("teklovossen_the_mechropotent", "teklovossen_the_mechropotent") . " grants the attack go again.");
     }

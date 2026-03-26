@@ -126,7 +126,6 @@ flush();
 
 $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
-$lastOppStatus = 0;
 $lastFileCheckTime = microtime(true);
 $fileCheckInterval = 30.0;
 $gameFileExists = true;
@@ -136,7 +135,6 @@ $lastSpectatorRefresh = microtime(true);
 $spectatorRefreshInterval = 30.0;
 $rateLimitStartInterval = microtime(true);
 $rateLimitProcessCount = 0;
-$inactivityMessageSent = false;
 $loopStartTimeMs = round(microtime(true) * 1000);
 
 while (true) {
@@ -188,53 +186,6 @@ while (true) {
     }
     SendContent($gameState);
     set_time_limit(120);
-  }
-
-  if($isGamePlayer) {
-    $currentTime = round(microtime(true) * 1000);
-
-    // Read cache values for opponent status
-    $oppLastTime = intval(GetCachePiece($gameName, $otherP + 1));
-    $oppStatus = intval(GetCachePiece($gameName, $otherP + 3));
-    $playerInactiveStatus = GetCachePiece($gameName, 12);
-
-    // Write current player status (required for opponent disconnect detection)
-    SetCachePiece($gameName, $playerID + 1, $currentTime);
-
-    // Handle opponent status changes
-    $timeSinceOppLastConnection = $currentTime - $oppLastTime;
-
-    if ($timeSinceOppLastConnection > 3000 && $oppStatus == 0) {
-      // Opponent disconnected (not yet marked as disconnected)
-      WriteLog("🔌Opponent has disconnected. Waiting 60 seconds to reconnect.");
-      GamestateUpdated($gameName);
-      SetCachePiece($gameName, $otherP + 3, "1");
-    } else if ($timeSinceOppLastConnection > 60000 && $oppStatus == 1) {
-      // Opponent confirmed left (more than 60 seconds since last activity)
-      WriteLog("Opponent has left the game.");
-      GamestateUpdated($gameName);
-      SetCachePiece($gameName, $otherP + 3, "2");
-    } else if ($timeSinceOppLastConnection < 3000 && $oppStatus > 0) {
-      // Opponent reconnected
-      SetCachePiece($gameName, $otherP + 3, "0");
-      $inactivityMessageSent = false;
-      WriteLog("🔌Opponent has reconnected.");
-    }
-
-    // Handle server timeout (75 seconds of no game updates).
-    // Only trigger inactivity once the game has actually started (status 5+), not during lobby.
-    $effectiveLastUpdate = max(intval($lastUpdateTime), $loopStartTimeMs);
-    $noUpdates = $currentTime - $effectiveLastUpdate;
-    if ($playerID == 1 && $noUpdates > 75000 && $playerInactiveStatus != "1" && !$inactivityMessageSent && $gameStatus >= 5) {
-      SetCachePiece($gameName, 12, "1");
-      $inactivityMessageSent = true;
-      WriteLog("⌛Player " . $otherP . " is inactive.");
-      // Trigger a game state update to reflect inactivity
-      $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
-      if (!is_string($gameState)) {
-        SendContent($gameState);
-      }
-    }
   }
 
   // Push typing state as a named SSE event so the frontend can update without

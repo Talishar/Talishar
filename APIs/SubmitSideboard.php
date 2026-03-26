@@ -208,7 +208,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
   fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
   fwrite($handler, "\r\n"); //Animations
-  fwrite($handler, "0\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
+  fwrite($handler, "0\r\n"); // Not Used - Current Player activity status -- 0 = active, 2 = inactive
   fwrite($handler, "0\r\n"); //Player1 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
   fwrite($handler, "0\r\n"); //Player2 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
   fwrite($handler, "0\r\n"); //Player 1 total time

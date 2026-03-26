@@ -9,7 +9,6 @@
       ClearLoginSession();
       return false;
     }
-    UpdateSessionActivity();
     return true;
   }
 
@@ -90,12 +89,6 @@
   {
     CheckSession();
     return $_SESSION["lastAuthKey"] ?? null;
-  }
-
-  function UpdateSessionActivity()
-  {
-    CheckSession();
-    $_SESSION['last_activity'] = time();
   }
 
   function IsSessionExpired()

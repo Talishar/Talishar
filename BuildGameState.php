@@ -1381,27 +1381,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   // Reminder text box highlight thing
   if ($turnPhase != "OVER") {
     $helpText .= $currentPlayer != $playerID ? "Waiting for other player to choose " . TypeToPlay($turnPhase) : GetPhaseHelptext();
-    switch ($currentPlayer) {
-      case $playerID:
-        if ($turnPhase == "P" || $turnPhase == "CHOOSEHANDCANCEL" || $turnPhase == "CHOOSEDISCARDCANCEL") {
-          $helpText .= $turnPhase == "P" ? " (" . $myResources[0] . " of " . $myResources[1] . ")" : "";
-          array_push($promptButtons, CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px"));
+    if($currentPlayer == $playerID) { 
+      if ($turnPhase == "P" || $turnPhase == "CHOOSEHANDCANCEL" || $turnPhase == "CHOOSEDISCARDCANCEL") {
+        $helpText .= $turnPhase == "P" ? " (" . $myResources[0] . " of " . $myResources[1] . ")" : "";
+        array_push($promptButtons, CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px"));
+      }
+      if (CanPassPhase($turnPhase)) {
+        if ($turnPhase == "B") {
+          array_push($promptButtons, CreateButtonAPI($playerID, "Undo Block", 10001, 0, "16px"));
+          array_push($promptButtons, CreateButtonAPI($playerID, "Pass", 99, 0, "16px"));
+          array_push($promptButtons, CreateButtonAPI($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
         }
-        if (CanPassPhase($turnPhase)) {
-          if ($turnPhase == "B") {
-            array_push($promptButtons, CreateButtonAPI($playerID, "Undo Block", 10001, 0, "16px"));
-            array_push($promptButtons, CreateButtonAPI($playerID, "Pass", 99, 0, "16px"));
-            array_push($promptButtons, CreateButtonAPI($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
-          }
-        }
-        break;
-      default:
-        $currentPlayerActivity = intval(GetCachePiece($gameName, 12));
-        if ($currentPlayerActivity == 1 && $playerID != 3) {
-          $helpText .= " — Opponent is inactive";
-          array_push($promptButtons, CreateButtonAPI($playerID, "Leave Game", 100007, 0, "16px"));
-        }
-        break;
+      }
     }
   }
 
@@ -1410,8 +1401,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerPrompt = $playerPrompt;
 
   $response->fullRematchAccepted = $turnPhase == "REMATCH";
-
-  $response->opponentActivity = intval(GetCachePiece($gameName, 12));
 
   // Build player input popup
   $response->playerInputPopUp = BuildPlayerInputPopup($playerID, $turnPhase, $turn, $gameName);

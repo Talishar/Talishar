@@ -126,7 +126,7 @@ function ParseGamestate()
   $permanentUniqueIDCounter = trim($gamestateContent[60+$numChainLinks]);
   $inGameStatus = trim($gamestateContent[61+$numChainLinks]); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
   $animations = GetStringArray($gamestateContent[62+$numChainLinks]); //Animations
-  $currentPlayerActivity = trim($gamestateContent[63+$numChainLinks]); //Current Player activity status -- 0 = active, 2 = inactive
+  $currentPlayerActivity = trim($gamestateContent[63+$numChainLinks]); // Not Used - Current Player activity status -- 0 = active, 2 = inactive
   //64 + numChainLinks unused
   //65 + numChainLinks unused
   $p1TotalTime = trim($gamestateContent[66+$numChainLinks]); //Player 1 total time

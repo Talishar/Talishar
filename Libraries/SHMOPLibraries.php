@@ -12,7 +12,7 @@
 9 - Game visibility (1 = public, 0 = private)
 10 - Is Replay
 11 - Number P2 disconnects
-12 - Current player status (0 = active, 1 = inactive)
+12 - Not Used - Current player status (0 = active, 2 = inactive)
 13 - Format (see function FormatCode)
 14 - Game status (see $MGS_ constants)
 15 - Player 1 is chat enabled
