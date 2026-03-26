@@ -148,6 +148,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "runic_reaping_red-BUFF": case "runic_reaping_yellow-BUFF": case "runic_reaping_blue-BUFF": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "runic_reaping_red-HIT": case "runic_reaping_yellow-HIT": case "runic_reaping_blue-HIT": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "mask_of_perdition": return true;
+    case "blacktek_whisperers": return true;
     default:
       return false;
   }
@@ -492,6 +493,9 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "mask_of_perdition":
       AddEffectToCurrentAttack($cardID);
       return "";
+    case "blacktek_whisperers":
+      AddCurrentTurnEffect($cardID, $currentPlayer);
+      return "";
     default: return "";
   }
 }
@@ -512,7 +516,6 @@ function DYNHitEffect($cardID, $from, $attackID)
       MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted], "MYITEMS", may:true);
       break;
     case "spiders_bite": AddCurrentTurnEffect($cardID, $defPlayer); break;
-    case "blacktek_whisperers": GiveAttackGoAgain(); break;
     case "eradicate_yellow":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);

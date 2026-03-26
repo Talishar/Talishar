@@ -1606,6 +1606,12 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
         return true;
       }
       return false;
+    case "blacktek_whisperers":
+      if (IsHeroAttackTarget() && $fromCombat) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        return true;
+      }
+      return false;
     case "just_a_nick_red-HIT":
     case "maul_yellow-HIT":
       if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
