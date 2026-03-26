@@ -500,6 +500,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
     case "savor_bloodshed_red-HIT":
       Draw($mainPlayer, effectSource:"savor_bloodshed_red");
       return 1;
+    case "blacktek_whisperers":
+      GiveAttackGoAgain();
+      return 1;
     case "scar_tissue_red":
     case "scar_tissue_yellow":
     case "scar_tissue_blue":
