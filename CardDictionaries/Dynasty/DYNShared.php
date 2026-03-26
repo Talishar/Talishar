@@ -87,9 +87,9 @@ function DYNEffectPowerModifier($cardID)
     case "precision_press_red": return (NumEquipBlock() > 0 ? 3 : 0);
     case "precision_press_yellow": return (NumEquipBlock() > 0 ? 2 : 0);
     case "precision_press_blue": return (NumEquipBlock() > 0 ? 1 : 0);
-    case "puncture_red": return 3;
-    case "puncture_yellow": return 2;
-    case "puncture_blue": return 1;
+    case "puncture_red": return NumEquipBlock() > 0 ? 4 : 3;
+    case "puncture_yellow": return NumEquipBlock() > 0 ? 3 : 2;
+    case "puncture_blue": return NumEquipBlock() > 0 ? 2 : 1;
     case "felling_swing_red": return 6;
     case "felling_swing_yellow": return 5;
     case "felling_swing_blue": return 4;
