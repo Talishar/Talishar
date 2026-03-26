@@ -114,6 +114,7 @@ function OUTAbilityCost($cardID)
       case "scout_the_periphery_red": return 3;
       case "scout_the_periphery_yellow": return 2;
       case "scout_the_periphery_blue": return 1;
+      case "silverwind_shuriken_blue": return 1;
       default: return 0;
     }
   }
@@ -164,6 +165,7 @@ function OUTAbilityCost($cardID)
       case "looking_for_a_scrap_red": case "looking_for_a_scrap_yellow": case "looking_for_a_scrap_blue": return true;
       case "spring_load_red": case "spring_load_yellow": case "spring_load_blue": return true;
       case "scout_the_periphery_red": case "scout_the_periphery_yellow": case "scout_the_periphery_blue": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
+      case "silverwind_shuriken_blue": return true;
       default: return false;
     }
   }
@@ -176,6 +178,10 @@ function OUTAbilityCost($cardID)
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     switch ($cardID)
     {
+      case "silverwind_shuriken_blue":
+        if ($from == "PLAY")
+          AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+        return "";
       case "uzuri_switchblade": case "uzuri":
         $banish = new Banish($currentPlayer);
         $card = $banish->FirstCardWithModifier("UZURI");

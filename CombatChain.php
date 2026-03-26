@@ -311,9 +311,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "dishonor_blue":
         $power += (ComboActive() ? 2 : 0);
         break;
-      case "silverwind_shuriken_blue":
-        $power += 1;
-        break;
       case "spinning_wheel_kick_red":
       case "spinning_wheel_kick_yellow":
       case "spinning_wheel_kick_blue":
