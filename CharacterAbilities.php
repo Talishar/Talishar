@@ -1165,7 +1165,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "seekers_leggings":
     case "silken_gi":
     case "threadbare_tunic":
-    case "fisticuffs":
     case "fleet_foot_sandals":
     case "mask_of_three_tails":
     case "pouncing_paws":

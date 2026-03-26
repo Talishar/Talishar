@@ -24,7 +24,6 @@ function OUTAbilityCost($cardID)
     case "seekers_hood": case "seekers_gilet": case "seekers_mitts": case "seekers_leggings": return 1;//Seeker's Equips
     case "silken_gi": return 0;
     case "threadbare_tunic": return 0;
-    case "fisticuffs": return 2;
     case "fleet_foot_sandals": return 0;
     default: return 0;
   }
@@ -55,7 +54,6 @@ function OUTAbilityCost($cardID)
       case "seekers_hood": case "seekers_gilet": case "seekers_mitts": case "seekers_leggings": return "I";//Seeker's Equips
       case "silken_gi": return "I";
       case "threadbare_tunic": return "I";
-      case "fisticuffs": return "AR";
       case "fleet_foot_sandals": return "AR";
       default: return "";
     }

@@ -15,16 +15,6 @@
       case "spreading_flames_red":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "combustion_point_red":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "CCDEFLESSX," . (NumDraconicChainLinks()-1));
-        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-exclude-type-E", 1);
-        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-exclude-subtype-evo", 1);
-        AddDecisionQueue("FILTER", $currentPlayer, "CombatChain-include-player-" . ($currentPlayer == 1 ? 2 : 1), 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
-        AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVECOMBATCHAIN", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIBANISH", ($currentPlayer == 1 ? 2 : 1), "CC,-", 1);
-        return "";
       case "rise_from_the_ashes_red": case "rise_from_the_ashes_yellow": case "rise_from_the_ashes_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         MZMoveCard($currentPlayer, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND", may:true);

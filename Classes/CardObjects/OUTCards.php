@@ -780,17 +780,44 @@
 // }
 
 
-// class fisticuffs extends Card {
+class fisticuffs extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "fisticuffs";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "fisticuffs";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharCard = new CharacterCard($index, $this->controller);
+		$CharCard->Destroy();
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function AbilityCost() {
+		return 2;
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AR";
+	}
+}
 
 
 // class fleet_foot_sandals extends Card {
