@@ -723,6 +723,8 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "ignite_red":
       case "wrath_of_retribution_red":
       case "fire_tenet_strike_first_red":
+      case "fire_tenet_strike_first_yellow":
+      case "fire_tenet_strike_first_blue":
       case "poisoned_blade_red":
       case "poisoned_blade_yellow":
       case "poisoned_blade_blue":
