@@ -315,7 +315,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
        if ($id == "")
          continue;
       if($id == "goldfin_harpoon") $id = "goldfin_harpoon_yellow";
-       ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards);
+       ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format);
 
        if (IsCardBanned($id, $format, $character) && $format != "draft") {
          if ($bannedCard != "")
@@ -901,10 +901,10 @@ function GetCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
   return "";
 }
 
-function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards) {
+function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards, $format) {
   
   // uncomment on 4/1
-  // $id = $id == "titanium_bauble_blue" ? "fangs_a_lot_blue" : $id;
+  // $id = $id == "titanium_bauble_blue" && !str_contains($format, "comp") ? "fangs_a_lot_blue" : $id;
   $cardName = CardName($id);
   if ($cardName == "" || isUnimplemented($id)) {
       echo "$id - $cardName";
