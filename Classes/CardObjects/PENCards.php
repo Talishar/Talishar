@@ -2581,6 +2581,7 @@ class depths_of_despair_blue extends Card {
 
 class fasting_carcass extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    WriteLog("HERE!!! $this->cardID");
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
@@ -2606,7 +2607,7 @@ class fasting_carcass extends BaseCard {
   }
 
   function CurrentEffectGrantsNAAGoAgain($cardID, $color, &$remove) {
-    if (ColorContains($cardID, $color, $this->controller)) {
+    if (ColorContains($cardID, $color, $this->controller) && $cardID != $this->cardID) {
       $remove = true;
       return true;
     }
