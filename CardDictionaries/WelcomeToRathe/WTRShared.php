@@ -27,7 +27,6 @@
       case "anothos": return "AA";
       case "tectonic_plating": case "helm_of_isens_peak": return "A";
       case "harmonized_kodachi": return "AA";
-      case "breaking_scales": return "AR";
       case "dawnblade": return "AA";
       case "braveforge_bracers": return "A";
       case "fyendals_spring_tunic": return "I";

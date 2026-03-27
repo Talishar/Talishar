@@ -131,9 +131,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "romping_club":
         $power += (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
         break;
-      case "breaking_scales":
-        $power += 1;
-        break;
       case "lord_of_wind_blue":
         $power += (ComboActive() ? $resourcesPaid : 0);
         break;

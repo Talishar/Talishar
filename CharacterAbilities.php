@@ -1101,7 +1101,6 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "barkbone_strapping":
     case "helm_of_isens_peak":
-    case "breaking_scales":
     case "heartened_cross_strap":
     case "goliath_gauntlet":
     case "snapdragon_scalers":
