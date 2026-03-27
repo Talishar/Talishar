@@ -100,6 +100,11 @@ class CurrentEffect {
     return $this->pieces[$this->index+2] ?? -1;
   }
 
+  function ApplyToUniqueID($uid) {
+    if (isset($this->pieces[$this->index+2]))
+      $this->pieces[$this->index+2] = $uid;
+  }
+
   function NumUses() {
     return $this->pieces[$this->index+3] ?? 0;
   }

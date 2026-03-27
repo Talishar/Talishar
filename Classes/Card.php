@@ -645,4 +645,8 @@ class Card {
   function AbilitiesToAdd() {
     return "";
   }
+
+  function AssignEffectToCard($effectIndex) { //used to apply effects to the next card "played" not resolved
+    return;
+  }
 }

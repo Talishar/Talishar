@@ -2172,6 +2172,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     }
     else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
+    AssignEffectToCard($currentPlayer);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if (TypeContains($cardID, "W", $currentPlayer) && IsActivated($cardID, $from))

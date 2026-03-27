@@ -2594,6 +2594,24 @@ class fasting_carcass extends BaseCard {
   function CurrentEffectGrantsGoAgain() {
     return true;
   }
+
+  function AssignEffectToCard($effectIndex) {
+    global $Stack;
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer();
+    if (TypeContains($TopLayer->ID(), "A") && ColorContains($TopLayer->ID(), 1, $this->controller))
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+    elseif (TypeContains($TopLayer->ID(), "AA") && ColorContains($TopLayer->ID(), 1, $this->controller))
+      $Effect->ApplyToUniqueID("ATTACK");
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $color, &$remove) {
+    if (ColorContains($cardID, $color, $this->controller)) {
+      $remove = true;
+      return true;
+    }
+    return false;
+  }
 }
 
 class fasting_carcass_red extends Card {
@@ -2612,6 +2630,14 @@ class fasting_carcass_red extends Card {
 
   function CurrentEffectGrantsGoAgain($param) {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
+  }
+
+  function AssignEffectToCard($effectIndex) {
+    $this->baseCard->AssignEffectToCard($effectIndex);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, 1, $remove);
   }
 }
 
@@ -2632,6 +2658,14 @@ class fasting_carcass_yellow extends Card {
   function CurrentEffectGrantsGoAgain($param) {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
+  
+  function AssignEffectToCard($effectIndex) {
+    $this->baseCard->AssignEffectToCard($effectIndex);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, 2, $remove);
+  }
 }
 
 class fasting_carcass_blue extends Card {
@@ -2650,6 +2684,14 @@ class fasting_carcass_blue extends Card {
 
   function CurrentEffectGrantsGoAgain($param) {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
+  }
+
+  function AssignEffectToCard($effectIndex) {
+    $this->baseCard->AssignEffectToCard($effectIndex);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, 3, $remove);
   }
 }
 

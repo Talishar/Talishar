@@ -1874,8 +1874,9 @@ function CurrentEffectGrantsInstantGoAgain($cardID, $from)
 
 function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
 {
-  global $currentTurnEffects, $currentPlayer, $CS_AdditionalCosts;
+  global $currentTurnEffects, $currentPlayer, $CS_AdditionalCosts, $CS_ResolvingLayerUniqueID;
   $hasGoAgain = false;
+  $uniqueID = GetClassState($currentPlayer, $CS_ResolvingLayerUniqueID);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
@@ -1924,24 +1925,6 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
           break;
         case "moon_wish_red-GA":
           $hasGoAgain = ($cardID == "sun_kiss_red" || $cardID == "sun_kiss_yellow" || $cardID == "sun_kiss_blue");
-          break;
-        case "fasting_carcass_red":
-          if (ColorContains($cardID, 1, $currentPlayer)) {
-            $hasGoAgain = true;
-            if ($cardID != $turnEffects[0]) $remove = true;
-          }
-          break;        
-        case "fasting_carcass_yellow":
-          if (ColorContains($cardID, 2, $currentPlayer)) {
-            $hasGoAgain = true;
-            if ($cardID != $turnEffects[0]) $remove = true;
-          }
-          break;
-        case "fasting_carcass_blue":
-          if (ColorContains($cardID, 3, $currentPlayer)) {
-            $hasGoAgain = true;
-            if ($cardID != $turnEffects[0]) $remove = true;
-          }
           break;
         case "first_tenet_of_chi_wind_blue":
           if (ColorContains($cardID, 3, $currentPlayer)) {

@@ -221,6 +221,7 @@ function IsCombatEffectLimited($index)
   global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID, $CombatChain;
   global $CurrentTurnEffects;
   $Effect = $CurrentTurnEffects->Effect($index);
+  if ($Effect->AppliestoUniqueID() == "ATTACK") return false; // it has been applied to the attack in the layer step, we're good
   if (count($combatChain) == 0 || $currentTurnEffects[$index + 2] == -1) return false;
   // if ($currentTurnEffects[$index] == "horrors_of_the_past_yellow") return false;
   $attackSubType = CardSubType($combatChain[0]);
@@ -521,7 +522,7 @@ function ContinueDecisionQueue($lastResult = "")
         }
         else {
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
-          PlayCardEffect($cardID, $params[0], isset($params[1]) ? $params[1] : 0, $target, $additionalCosts, isset($params[3]) ? $params[3] : "-1", isset($params[2]) ? $params[2] : -1);
+          PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
           ClearDieRoll($player);
         }
         //main player should hold priority in resolution step always
