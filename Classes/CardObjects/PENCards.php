@@ -2656,7 +2656,12 @@ class fasting_carcass_blue extends Card {
 class submerge extends BaseCard {
   function PayAdditionalCosts($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_AdditionalCosts;
-    MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4", DQContext: "Choose a card to put fifth from the top of your deck");
+    $hand = GetHand($this->controller);
+    if (count($hand) == 0) {
+      WriteLog("You need to sink a card as an additional cost, reverting gamestate", highlight:true);
+      RevertGamestate();
+    }
+    else MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4", DQContext: "Choose a card to put fifth from the top of your deck");
   }
 }
 
