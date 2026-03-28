@@ -3429,7 +3429,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "TRIGGERTRIGGERS":
-      for ($i = 0; $i < $parameter; ++$i) {
+      for ($i = $parameter - 1; $i >= 0; --$i) {
         $Layer = $Stack->Card($i, true);
         $Hero = new CharacterCard(0, $player);
         if ($Layer->ID() != "TRIGGER") continue;
