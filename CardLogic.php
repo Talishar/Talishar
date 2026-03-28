@@ -4220,7 +4220,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
             AddCurrentTurnEffect($parameter, $mainPlayer);
           }
         }
-        else PlayAura("seismic_surge", $otherPlayer, $additionalCosts, effectSource:$parameter);
+        else PlayAura("seismic_surge", $player, $additionalCosts, effectSource:$parameter);
         break;
       case "lyath_goldmane":
       case "lyath_goldmane_vile_savant":

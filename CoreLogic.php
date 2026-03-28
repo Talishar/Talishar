@@ -3743,7 +3743,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     // PlayAura("seismic_surge", $otherPlayer, $num, effectSource:"valda_brightaxe");
   }
   if ($mainPhase && (SearchCharacterActive($otherPlayer, "valda_seismic_impact") || SearchCurrentTurnEffects("valda_seismic_impact-SHIYANA", $otherPlayer) && SearchCharacterActive($otherPlayer, "shiyana_diamond_gemini"))) {
-    AddLayer("TRIGGER", $player, "valda_seismic_impact", additionalCosts:$num);
+    AddLayer("TRIGGER", $otherPlayer, "valda_seismic_impact", additionalCosts:$num);
     // PlayAura("seismic_surge", $otherPlayer, $num, effectSource:"valda_seismic_impact");
   }
   if (SearchCharacterActive($player, "earthlore_bounty")) {
