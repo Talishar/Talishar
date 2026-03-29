@@ -2581,7 +2581,6 @@ class depths_of_despair_blue extends Card {
 
 class fasting_carcass extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    WriteLog("HERE!!! $this->cardID");
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
