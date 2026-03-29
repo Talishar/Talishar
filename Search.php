@@ -197,7 +197,7 @@ function SearchInner(
         if ($hasCrush && !HasCrush($cardID)) continue;
         if ($hasSuspense && !HasSuspense($cardID)) continue;
         if ($comboOnly && !HasCombo($cardID)) continue;
-        if ($hasCloaked && HasCloaked($cardID) != "DOWN") continue;
+        if ($hasCloaked && HasCloaked($cardID, $player) != "DOWN") continue;
         
         // Check array-based conditions
         if ($frozenOnly && !IsFrozenMZ($array, $zone, $i, $player)) continue;
