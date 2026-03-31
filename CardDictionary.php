@@ -1178,7 +1178,6 @@ function HasGoAgain($cardID, $from="-"): bool|int
     case "crazy_brew_blue":
     case "plasma_purifier_red":
     case "aether_sink_yellow":
-    case "cognition_nodes_blue":
     case "teklo_plasma_pistol":
     case "great_library_of_solana":
     case "plasma_barrel_shot":
@@ -2443,8 +2442,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
           || $myItems[$index + 1] == 0
           || CardSubtype($CombatChain->AttackCard()->ID()) != "Pistol"
           || $myItems[$index + 2] != 2);
-    case "cognition_nodes_blue":
-      return $CombatChain->HasCurrentLink() && $from == "PLAY" && ($myItems[$index + 1] == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $myItems[$index + 2] != 2);
     case "skullbone_crosswrap":
       return !ArsenalHasFaceDownCard($player);
     case "twinning_blade_yellow":

@@ -1438,7 +1438,7 @@ class gone_in_a_flash_red extends Card {
   }
 
   function ActiveLinkPlayTrigger($cardID, $player, $from) {
-    global $mainPlayer;
+    global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     if (TypeContains($cardID, "I") && $player == $this->controller && !IsActivated($cardID, $from)) {
       if(SearchCurrentTurnEffects($this->cardID, $mainPlayer, true))
         AddLayer("TRIGGER", $mainPlayer, $this->cardID);
@@ -1446,11 +1446,13 @@ class gone_in_a_flash_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    global $CombatChain;
-    $message = "if_you_want_to_bounce_the_attack";
-    $context = "Choose if you want to return " . CardLink($CombatChain->AttackCard()->ID()) . " to the owner's hand";
-    Await($this->controller,  "YesNo", message:$message, context:$context, subsequent:false);
-    Await($this->controller, $this->cardID, final:true);
+    global $CombatChain, $CCS_GoesWhereAfterLinkResolves, $combatChainState;
+    if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-") {
+      $message = "if_you_want_to_bounce_the_attack";
+      $context = "Choose if you want to return " . CardLink($CombatChain->AttackCard()->ID()) . " to the owner's hand";
+      Await($this->controller,  "YesNo", message:$message, context:$context, subsequent:false);
+      Await($this->controller, $this->cardID, final:true);
+    }
   }
 }
 

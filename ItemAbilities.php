@@ -170,7 +170,6 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       DestroyItemForPlayer($currentPlayer, $index);
       break;
     case "induction_chamber_red":
-    case "cognition_nodes_blue":
       if ($from == "PLAY" && $items[$index + 1] > 0 && count($combatChain) > 0) {
         $items[$index + 1] -= 1;
         $items[$index + 2] = 1;

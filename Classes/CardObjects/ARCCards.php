@@ -429,17 +429,78 @@
 // }
 
 
-// class cognition_nodes_blue extends Card {
+class cognition_nodes_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "cognition_nodes_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "cognition_nodes_blue";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_PlayIndex, $CombatChain;
+		if($from == "PLAY") {
+			$Item = new ItemCard(GetClassState($this->controller, $CS_PlayIndex), $this->controller);
+			if(!$CombatChain->HasCurrentLink()) {
+				if ($Item->NumCounters() == 0) $Item->AddCounters(1);
+			}
+			else AddCurrentTurnEffect($this->cardID, $this->controller, $from);
+		}
+		return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		$Item = new ItemCard($index, $this->controller);
+		return $CombatChain->HasCurrentLink() && $from == "PLAY" && ($Item->NumCounters() == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $Item->Status() != 2);
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		if(!$check) AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
+		return true;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$Item = new ItemCard($index, $this->controller);
+		$abilityType = GetResolvedAbilityType($this->cardID);
+		if ($from == "PLAY" && $abilityType == "AR") {
+			$Item->AddCounters(-1);
+		}
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+		global $CCS_GoesWhereAfterLinkResolves, $combatChainState, $CombatChain;
+		$otherPlayer = $this->controller == 1 ? 2 : 1;
+		if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-") {
+			$combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+			$destPlayer = (substr($from, 0, 5) == "THEIR") ? $otherPlayer : $this->controller;
+			AddBottomDeck($CombatChain->AttackCard()->ID(), $destPlayer, "CC");
+			WriteLog("Adding " . CardLink($CombatChain->AttackCard()->ID()) . " to the bottom of the deck");
+		}
+	}
+
+	function AbilityCost() {
+		global $CombatChain;
+		return $CombatChain->HasCurrentLink() ? 0 : 1;
+	}
+
+	function AbilityType($index=-1, $from="-") {
+		global $CombatChain;
+		return ($CombatChain->HasCurrentLink() ? "AR" : "A");
+	}
+
+	function AbilityHasGoAgain($from) {
+		$abilityType = GetResolvedAbilityType($this->cardID);
+		return $abilityType == "A";
+	}
+
+	function HasGoAgain($from) {
+		return false;
+	}
+}
 
 
 // class come_to_fight_red extends Card {

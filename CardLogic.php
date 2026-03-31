@@ -693,7 +693,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "pedal_to_the_metal_red":
     case "pedal_to_the_metal_yellow":
     case "pedal_to_the_metal_blue":
-    case "cognition_nodes_blue":
     case "over_loop_red":
     case "over_loop_yellow":
     case "over_loop_blue":

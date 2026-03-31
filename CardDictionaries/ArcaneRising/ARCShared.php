@@ -15,9 +15,6 @@
       case "aether_sink_yellow":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
-      case "cognition_nodes_blue":
-        $abilityType = GetResolvedAbilityType($cardID);
-        return $CombatChain->HasCurrentLink() ? 0 : 1;
       case "death_dealer": return 1;
       case "nebula_blade": return 2;
       case "grasp_of_the_arknight": return 2 + NumRunechants($currentPlayer);
@@ -46,9 +43,6 @@
         if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
         if(isset($items[$index + 1])) return ($items[$index+1] > 0 ? "I" : "A");
         else return "A";
-      case "cognition_nodes_blue":
-        if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        return ($CombatChain->HasCurrentLink() ? "AR" : "A");
       case "convection_amplifier_red": return "A";
       case "dissipation_shield_yellow": return "I";
       case "optekal_monocle_blue": return "A";
@@ -76,9 +70,6 @@
       case "induction_chamber_red":
         return !$CombatChain->HasCurrentLink();
       case "aether_sink_yellow":
-        $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false);
-      case "cognition_nodes_blue":
         $items = &GetItems($currentPlayer);
         return ($items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false);
       case "convection_amplifier_red": return true;
