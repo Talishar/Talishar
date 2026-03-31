@@ -434,8 +434,7 @@
       $hero = ShiyanaCharacter($char[0]);
       if($char[1] == 2 && ($hero == "olympia_prized_fighter" || $hero == "olympia")) {
         $char[1] = 1;
-        PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController:$mainPlayer);
-        WriteLog(CardLink($hero, $hero) . " wins the favor of the crowd!");
+        AddLayer("TRIGGER", $mainPlayer, $hero);
       }
     }
   }

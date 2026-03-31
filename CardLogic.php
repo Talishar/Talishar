@@ -2106,6 +2106,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
     }
     switch ($parameter) {
+      case "olympia":
+      case "olympia_prized_fighter":
+        PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController:$mainPlayer);
+        WriteLog(CardLink($parameter) . " wins the favor of the crowd!");
+        break;
       case "HEAVE":
         Heave();
         break;

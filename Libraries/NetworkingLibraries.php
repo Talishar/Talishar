@@ -4554,6 +4554,7 @@ function ReportBug()
 
 function EndResolutionStep()
 {
+  global $mainPlayer;
   $layerIndex = 0;
   $resolutionIndex = SearchLayersForPhase("RESOLUTIONSTEP");
   if ($resolutionIndex != -1) {
@@ -4564,6 +4565,15 @@ function EndResolutionStep()
   if ($resolutionIndex != -1) {
     NegateLayer("LAYER-$resolutionIndex", "-");
     $layerIndex += LayerPieces();
+  }
+  $MainHero = new CharacterCard(0, $mainPlayer);
+  switch ($MainHero->CardID()) {
+    case "olympia":
+    case "olympia_prized_fighter":
+      $MainHero->SetUsed(2); // he can trigger on each attack
+      break;
+    default:
+      break;
   }
   UnsetChainLinkBanish();
   return $layerIndex;
