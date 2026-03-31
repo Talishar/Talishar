@@ -17,6 +17,7 @@
 14 - Game status (see $MGS_ constants)
 15 - Player 1 is chat enabled
 16 - Player 2 is chat enabled
+17 - currentPlayer Inactive
 */
 
 function WriteCache($name, $data)
@@ -99,26 +100,6 @@ function SetCachePiece($name, $piece, $value)
   $cacheArray[$piece] = $value;
   WriteCache($name, implode("!", $cacheArray));
 }
-
-// Cache values (1-indexed)
-// 1: last update time
-// 2: P1 last connection time
-// 3: P2 last connection time
-// 4: P1 status (0 = connected, -1 = diisconnected, 1 = just joined)
-// 5: P2 status (0 = connected, -1 = diisconnected, 1 = just joined)
-// 6: also last update time?
-// 7: P1 hero
-// 8: P2 hero. This is what's checked to see if another player has already joined.
-// 9: visibility
-// 10: is replay
-// 11: something to do with "The lobby is reactivated"
-// 12: ?
-// 13: format
-// 14: game status, set to 99 (MGS_GameOver) when game ends
-// 15: P1 chat enabled
-// 16: P2 chat enabled
-// 17: P1 decline count
-// 18: P2 decline count
 
 function GetCachePiece($name, $piece)
 {

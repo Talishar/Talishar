@@ -1,5 +1,5 @@
 <?php
-function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true) {
+function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $myAuras, $myItems, $mySoul, $myAllies, $myPermanents, $myResources;
   global $theirHand, $theirPitch, $theirDeck, $theirDiscard, $theirBanish, $theirArsenal, $theirCharacter;
@@ -120,7 +120,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   // Spectator count and names
   $spectatorData = function_exists('GetActiveSpectators') ? GetActiveSpectators($gameName) : ['count' => 0, 'names' => []];
-  $response->spectatorCount = $spectatorData['count'];
+  $response->spectatorCount = $spectatorData['count'] ?? 0;
   $response->spectatorNames = $spectatorData['names'] ?? [];
 
   // send initial on-load information if requested
@@ -1214,7 +1214,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     ));
   }
   $response->landmarks = $landmarksOutput;
-
+  // if ($inactive) WriteLog("The current player may be inactive", highlight:true);
   $response->chatLog = JSONLog($gameName, $playerID);
 
   // Current turn effects
@@ -1447,6 +1447,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $response->opponentIsTyping = $isOpponentTyping;
   }
 
+  $response->inactive = $inactive;
   return $response;
 }
 

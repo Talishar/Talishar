@@ -175,11 +175,16 @@ while (true) {
 
   // Check for game state updates
   $cacheVal = intval($cacheStr);
-  if ($cacheVal > $lastUpdate) {
+  $timeout = 60 * 1000; //seconds
+  $inactive = 1000 * $currentRealTime - intval($lastUpdateTime) > $timeout;
+  $previouslyInactive = GetCachePiece($gameName, 17);
+  if ($cacheVal > $lastUpdate || $inactive && $previouslyInactive == 0) {
+    error_log("Time3: " . 1000 * $currentRealTime - intval($lastUpdateTime));
     $lastUpdate = $cacheVal;
-
+    if ($inactive) SetCachePiece($gameName, 17, 1);
+    else SetCachePiece($gameName, 17, 0);
     // Build and send full game state
-    $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
+    $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive);
     if (is_string($gameState)) {
       SendContent(["error" => $gameState]);
       exit;
