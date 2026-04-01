@@ -1,3 +1,5 @@
+-- Original file: Database/migrations/003_add_metafy_id_column.sql
+--
 -- Add metafyID column to users table
 -- This stores the user's Metafy user ID, retrieved from the Metafy /me API and cached locally.
 SET @col = (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'metafyID');

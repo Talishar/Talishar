@@ -1,3 +1,5 @@
+-- Original file: migrations/004_add_metafy_columns.sql
+--
 -- Metafy OAuth Integration
 -- Adds columns to store Metafy OAuth tokens and community data
 

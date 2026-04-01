@@ -1,3 +1,5 @@
+-- Original file: migrations/001_create_friends_table.sql
+--
 -- Friends Table Schema
 -- This table stores friendship relationships between users
 -- Design allows for bidirectional friendships (A->B and B->A as separate rows for easier querying)

@@ -1,3 +1,5 @@
+-- Original file: METAFY_DATABASE_SETUP.sql
+--
 /**
  * Metafy Integration Database Setup
  * 

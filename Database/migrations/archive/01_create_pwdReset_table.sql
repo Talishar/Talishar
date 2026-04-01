@@ -1,3 +1,5 @@
+-- Original file: Database/01_create_pwdReset_table.sql
+--
 -- Password Reset Database Schema
 -- Run this SQL script in your MySQL database to create the pwdReset table
 
