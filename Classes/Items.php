@@ -117,6 +117,12 @@ class ItemCard {
     return $this->pieces[$this->index+8] ?? "-";
   }
 
+  function SetModalities($modes) {
+    if (!isset($this->pieces[$this->index+8])) return;
+    $this->pieces[$this->index+8] == $modes;
+    return;
+  }
+
   function From() {
     return $this->pieces[$this->index+9] ?? "-";
   }

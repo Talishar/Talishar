@@ -1170,21 +1170,22 @@ function ResetStolenCards()
 
 
 function UnsetItemModifier($player, $modifier, $newMod = "-") {
-  $items = &GetItems($player);
+  $Items = new Items($player);
   $otherPlayer = $player == 1 ? 2 : 1;
-    for($i=0; $i<count($items); $i+=ItemPieces()) {
-      $cardModifier = $items[$i+8];
+    for($i = $Items->NumItems() - 1; $i >= 0; --$i) {
+      $ItemCard = $Items->Card($i, true);
+      $cardModifier = $ItemCard->Modalities();
       if(DelimStringContains($cardModifier, $modifier)) {
-        if ($cardModifier == $modifier) $items[$i+8] = "-";
+        if ($cardModifier == $modifier) $ItemCard->SetModalities("-");
         else {
           $mods = explode(",", $cardModifier);
           $newMods = [];
           foreach ($mods as $mod) {
             if ($mod != $modifier) $newMods[] = $mod;
           }
-          $items[$i+8] = implode(",", $newMods);
+          $ItemCard->SetModalities(implode(",", $newMods));
         }
-        StealItem($player, $i, $otherPlayer, "THEIRITEM");
+        StealItem($player, $ItemCard->Index(), $otherPlayer, "THEIRITEM");
       }
     }
 }
