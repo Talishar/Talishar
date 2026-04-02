@@ -1,3 +1,5 @@
+-- Original file: Database/migrations/001_update_favoritedeck_pk.sql
+--
 -- Drop the old primary key
 ALTER TABLE `favoritedeck` DROP PRIMARY KEY;
 

@@ -1,3 +1,5 @@
+-- Original file: migrations/003_add_nickname_to_friends.sql
+--
 -- Add nickname column to friends table
 -- This allows users to set custom nicknames for their friends
 -- Nickname is optional and limited to 50 characters

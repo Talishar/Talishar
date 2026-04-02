@@ -1,3 +1,5 @@
+-- Original file: migrations/002_create_blocked_users_table.sql
+--
 -- Blocked Users Table Schema
 -- This table stores personal block relationships between users
 -- When user A blocks user B, they won't see each other's open games
