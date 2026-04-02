@@ -1,3 +1,5 @@
+-- Original file: Database/migrations/create_private_messaging.sql
+--
 -- Private Messaging System Database Schema
 -- This file contains the SQL schema for the private messaging feature
 
