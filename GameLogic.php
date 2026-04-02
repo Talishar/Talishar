@@ -431,17 +431,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($subparam2 == "NOPASS") return $rv;
       return $rv == "" ? "PASS" : $rv;
     case "MULTIZONEINDICES":
+      $conds = explode(":", $parameter)[1] ?? "";
       if (strpos($parameter, "MYALLY") !== false) {
-        $parameter = "MYCHAR:subtype=Ally&$parameter";
+        $parameter = "MYCHAR:subtype=Ally;$conds&$parameter";
       } 
       if (strpos($parameter, "THEIRALLY") !== false) {
-        $parameter = "THEIRCHAR:subtype=Ally&$parameter";
+        $parameter = "THEIRCHAR:subtype=Ally;$conds&$parameter";
       }
       if (strpos($parameter, "THEIRCHAR:type=E") !== false) {
-        $parameter = "THEIRITEMS:type=E&$parameter";
+        $parameter = "THEIRITEMS:$conds&$parameter";
       }
       if (strpos($parameter, "MYCHAR:type=E") !== false) {
-        $parameter = "MYITEMS:type=E&$parameter";
+        $parameter = "MYITEMS:$conds&$parameter";
       }
       $rv = SearchMultizone($player, $parameter);
       // we may want to dedupe this eventually, not pressing issue
