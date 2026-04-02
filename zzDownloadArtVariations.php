@@ -272,7 +272,7 @@ if (count($altArtsArray) > 0) {
 function RegenerateImageVariations($filepath, $filename)
 {
   $cardSquaresMissingFolder = __DIR__ . "/../CardImages/media/missing/cardsquares/english/" . $filename . ".webp";
-  $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/" . $filename . "_cropped.webp";
+  $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/english/" . $filename . "_cropped.webp";
   
   // Load the main image
   $image = null;
@@ -329,8 +329,8 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
   $cardImagesMissingFolder = __DIR__ . "/../CardImages/media/missing/cardimages/english/" . $filename . ".webp";
   $cardSquaresUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/cardsquares/english/" . $filename . ".webp";
   $cardSquaresMissingFolder = __DIR__ . "/../CardImages/media/missing/cardsquares/english/" . $filename . ".webp";
-  $cardCropsUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/crops/" . $filename . "_cropped.webp";
-  $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/" . $filename . "_cropped.webp";
+  $cardCropsUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/crops/english/" . $filename . "_cropped.webp";
+  $cardCropsMissingFolder = __DIR__ . "/../CardImages/media/missing/crops/english/" . $filename . "_cropped.webp";
   
   // Check if file already exists in CardImages location
   if (file_exists($filepath) || file_exists($cardImagesUploadedFolder)) {
