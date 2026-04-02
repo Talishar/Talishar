@@ -1715,7 +1715,7 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
     if ($card != "-") $modifier += $card->StaticPowerModifier($index, $powerModifiers);
     switch ($theirAuras[$i]) {
       case "parable_of_humility_yellow":
-        if (CardType($CombatChain->CurrentAttack()) == "AA") {
+        if (CardType($CombatChain->Card($index)->ID()) == "AA") {
           $modifier -= 1;
           array_push($powerModifiers, $theirAuras[$i]);
           array_push($powerModifiers, -1);
