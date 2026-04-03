@@ -494,7 +494,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddEffectToCurrentAttack($cardID);
       return "";
     case "blacktek_whisperers":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      if (HasStealth($CombatChain->AttackCard()->ID()))
+        AddEffectToCurrentAttack($cardID);
       return "";
     default: return "";
   }
