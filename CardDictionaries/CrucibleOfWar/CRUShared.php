@@ -141,7 +141,7 @@
       case "mauvrion_skies_red": case "mauvrion_skies_yellow": case "mauvrion_skies_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
       case "lunging_press_blue": return true;
       case "kayo_berserker_runt-DOUBLE": case "kayo_berserker_runt-HALF": return true;
-      case "unified_decree_yellow": true;
+      case "unified_decree_yellow": return true;
       default: return false;
     }
   }
