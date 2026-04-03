@@ -3441,6 +3441,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $Hero = new CharacterCard(0, $player);
         if ($Layer->ID() != "TRIGGER") continue;
         if ($Layer->PlayerID() != $player) continue;
+        if ($Hero->Status() != 2) continue;
         switch ($Hero->CardID()) {
           case "riptide":
           case "riptide_lurker_of_the_deep":
