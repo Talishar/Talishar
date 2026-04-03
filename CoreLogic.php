@@ -2566,7 +2566,7 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
   $cardID = $char[$index];
   if ($char[$index + 6] == 1) $CombatChain->Remove(GetCombatChainIndex($cardID, $player));
   $char[$index + 6] = 0;
-  if (!isSubcardEmpty($char, $index)) {
+  if (!isSubcardEmpty($char, $index) && !$skipDestroy) {
     $subcards = explode(',', $char[$index + 10]);
     $subcardsCount = count($subcards);
     for ($i = 0; $i < $subcardsCount; $i++) {
