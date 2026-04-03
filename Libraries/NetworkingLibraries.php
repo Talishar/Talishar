@@ -3225,6 +3225,8 @@ function PayAdditionalCosts($cardID, $from, $index="-")
   global $layers, $CS_DynCostResolved, $mainPlayer, $defPlayer, $mainPlayerGamestateStillBuilt, $myStateBuiltFor;
   global $combatChain, $chainLinks;
   $cardSubtype = CardSubType($cardID);
+  $card = GetClass($cardID, $currentPlayer, $from);
+  if ($card != "-") $card->PayAdditionalCosts($from, $index);
   if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
     return;
@@ -3288,8 +3290,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
     AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "BEATCHEST", 1);
   }
-  $card = GetClass($cardID, $currentPlayer, $from);
-  if ($card != "-") $card->PayAdditionalCosts($from, $index);
   switch ($cardID) {
     case "enlightened_strike_red":
       $hand = &GetHand($currentPlayer);
