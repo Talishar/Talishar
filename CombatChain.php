@@ -1807,9 +1807,12 @@ function CombatChainPayAdditionalCosts($index, $from)
     case "cloud_skiff_red":
     case "cloud_skiff_yellow":
     case "cloud_skiff_blue":
-      //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
+      if($inds != "") {//Tap(explode(",", $inds)[0], $currentPlayer);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      }
       if ($from == "PLAY") ++$combatChain[$i + 11];
       else ++$chainLinks[$i][9];
       break;

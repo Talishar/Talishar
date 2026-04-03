@@ -348,10 +348,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
-        $card = GetClass($cardID, $currentPlayer);
-        if ($card != "-") $card->PayAdditionalCosts("CC", $index);
-        else CombatChainPayAdditionalCosts($index, "PLAY");
-        PlayCard($cardID, "PLAY", -1, -1, $combatChain[$index + 7], zone: "CC");
+        PlayCard($cardID, "PLAY", -1, $index, $combatChain[$index + 7], zone: "CC");
       }
       break;
     case 22: //Aura ability
@@ -539,12 +536,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardID = $combatChainAttacks[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "COMBATCHAINATTACKS", intdiv($index, ChainLinksPieces()))) {
         SetClassState($playerID, $CS_PlayIndex, $index);
-        $card = GetClass($cardID, $currentPlayer);
-        if ($card != "-")
-          $card->PayAdditionalCosts("COMBATCHAINATTACKS", $index);
-        else
-          CombatChainPayAdditionalCosts($index, "COMBATCHAINATTACKS");
-        PlayCard($cardID, "COMBATCHAINATTACKS", -1, -1, "-", zone: "COMBATCHAINATTACKS");
+        PlayCard($cardID, "COMBATCHAINATTACKS", -1, $index, "-", zone: "COMBATCHAINATTACKS");
       }
       break;
     case 99: //Pass
@@ -2344,11 +2336,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
     }
     AddCharacterPlayCardTrigger($cardID, $playType, $from);
-    if (class_exists($cardID)) {
-      $card = new $cardID($currentPlayer);
-      $card->PayAdditionalCosts($from, $index);
-    }
-    PayAdditionalCosts($cardID, $from, index: $index);
+    PayAdditionalCosts($cardID, $from, $index);
     if (!IsStaticType($cardType, $from, $cardID)) ResetCardPlayed($cardID, $from);
   }
   if ($turn[0] == "B" && $cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) {
@@ -3259,6 +3247,16 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       default:
         break;
     }
+  } else if ($from == "COMBATCHAINATTACKS" || ($from == "PLAY" && TypeContains($cardID, "AA", $currentPlayer))) {
+      $card = GetClass($cardID, $currentPlayer);
+      if ($from == "COMBATCHAINATTACKS") { //past chain links
+        if ($card != "-") $card->PayAdditionalCosts("COMBATCHAINATTACKS", $index);
+        else CombatChainPayAdditionalCosts($index, "COMBATCHAINATTACKS");
+      }
+      else { //current chain link
+        if ($card != "-") $card->PayAdditionalCosts("CC", $index);
+        else CombatChainPayAdditionalCosts($index, "PLAY");
+      }
   }
   if (HasBoost($cardID, $currentPlayer) && $cardID != "twin_drive_red") Boost($cardID);
   $fuseType = HasFusion($cardID);
@@ -3290,6 +3288,8 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
     AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "BEATCHEST", 1);
   }
+  $card = GetClass($cardID, $currentPlayer, $from);
+  if ($card != "-") $card->PayAdditionalCosts($from, $index);
   switch ($cardID) {
     case "enlightened_strike_red":
       $hand = &GetHand($currentPlayer);
@@ -3376,7 +3376,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
-        PayAdditionalCosts($otherCharacter[0], $from);
+        PayAdditionalCosts($otherCharacter[0], $from, $index);
       }
       break;
     case "plasma_barrel_shot":
