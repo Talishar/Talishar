@@ -2599,9 +2599,9 @@ class fasting_carcass extends BaseCard {
     global $Stack;
     $Effect = new CurrentEffect($effectIndex);
     $TopLayer = $Stack->TopLayer();
-    if (TypeContains($TopLayer->ID(), "A") && ColorContains($TopLayer->ID(), 1, $this->controller))
+    if (TypeContains($TopLayer->ID(), "A") && ColorContains($TopLayer->ID(), $color, $this->controller))
       $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
-    elseif (TypeContains($TopLayer->ID(), "AA") && ColorContains($TopLayer->ID(), 1, $this->controller))
+    elseif (TypeContains($TopLayer->ID(), "AA") && ColorContains($TopLayer->ID(), $color, $this->controller))
       $Effect->ApplyToUniqueID("ATTACK");
   }
 
