@@ -431,19 +431,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($subparam2 == "NOPASS") return $rv;
       return $rv == "" ? "PASS" : $rv;
     case "MULTIZONEINDICES":
-      $conds = explode(":", $parameter)[1] ?? "";
-      if (strpos($parameter, "MYALLY") !== false) {
-        $parameter = "MYCHAR:subtype=Ally;$conds&$parameter";
-      } 
-      if (strpos($parameter, "THEIRALLY") !== false) {
-        $parameter = "THEIRCHAR:subtype=Ally;$conds&$parameter";
+      $searches = [];
+      foreach (explode("&", $parameter) as $search) { //allow searching for stuff in unusual zones for its type
+        $newSearch = $search;
+        $conds = explode(":", $search)[1] ?? "";
+        if (strpos($newSearch, "MYALLY") !== false) {
+          $newSearch = "MYCHAR:subtype=Ally;$conds&$newSearch";
+        } 
+        if (strpos($newSearch, "THEIRALLY") !== false) {
+          $newSearch = "THEIRCHAR:subtype=Ally;$conds&$newSearch";
+        }
+        if (strpos($newSearch, "THEIRCHAR:type=E") !== false) {
+          $newSearch = "THEIRITEMS:$conds&$newSearch";
+        }
+        if (strpos($newSearch, "MYCHAR:type=E") !== false) {
+          $newSearch = "MYITEMS:$conds&$newSearch";
+        }
+        $searches[] = $newSearch;
       }
-      if (strpos($parameter, "THEIRCHAR:type=E") !== false) {
-        $parameter = "THEIRITEMS:$conds&$parameter";
-      }
-      if (strpos($parameter, "MYCHAR:type=E") !== false) {
-        $parameter = "MYITEMS:$conds&$parameter";
-      }
+      $parameter = implode("&", $searches);
       $rv = SearchMultizone($player, $parameter);
       // we may want to dedupe this eventually, not pressing issue
       return $rv == "" ? "PASS" : $rv;
