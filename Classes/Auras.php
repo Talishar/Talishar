@@ -152,9 +152,11 @@ class AuraCard {
 
   function Banish($mod="-", $banishedBy="", $banisher="-") {
     if ($this->index != -1) {
+      $isToken = $this->IsToken();
       $cardID = $this->CardID();
       $this->Remove();
-      return BanishCardForPlayer($cardID, $this->controller, "PLAY", $mod, $banishedBy, $banisher);
+      if ($isToken) return -1;
+      else return BanishCardForPlayer($cardID, $this->controller, "PLAY", $mod, $banishedBy, $banisher);
     }
     return -1;
   }
