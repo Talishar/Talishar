@@ -4167,7 +4167,7 @@ function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
     else if ($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer, $from);
     else if (DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID, from: $from);
     else if (DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer, $from);
-    if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W" && $definedCardType != "Macro") {
+    else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W" && $definedCardType != "Macro") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
       // make sure the card goes to the graveyard after it resolves
       Await($currentPlayer, "ResolveGoesWhere", cardID:$cardID, goesWhere:$goesWhere, from:$from, final:true);
