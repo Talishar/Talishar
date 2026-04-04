@@ -507,6 +507,12 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $label = "";
           $tapped = false;
           
+          //Add indication for token copies
+          if (str_contains($option[0], "AURAS")) {
+            $Card = MZIndexToObject($playerID, $options[$i]);
+            if ($Card->IsToken()) $label = "Token Copy";
+          }
+          
           //Add indication for attacking Allies and Auras with an open combat chain
           $attackingPermanents = ["THEIRALLY", "THEIRAURAS", "MYALLY", "MYAURAS"];
           if ((in_array($option[0], $attackingPermanents)) && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $otherPlayer == $mainPlayer) {
