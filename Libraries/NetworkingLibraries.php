@@ -893,6 +893,17 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       AddDecisionQueue("REMATCH", $otherPlayer, "-");
       ProcessDecisionQueue();
       break;
+    case 100021: //Swap Heroes Rematch
+      if ($isSimulation)
+        return;
+      if ($turn[0] != "OVER")
+        break;
+      $otherPlayer = $playerID == 1 ? 2 : 1;
+      WriteLog("Player $playerID offered to swap heroes and rematch.", highlight: true, highlightColor: "darkblue");
+      AddDecisionQueue("YESNO", $otherPlayer, "if you want to <b>Swap Heroes</b> and rematch?");
+      AddDecisionQueue("SWAPREMATCH", $otherPlayer, "-");
+      ProcessDecisionQueue();
+      break;
     case 100007: //Claim Victory when opponent is inactive
       if ($isSimulation)
         return;
@@ -1106,7 +1117,7 @@ function IsModeAsync($mode)
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true,
-  100018 => true, 100019 => true, 100020 => true
+  100018 => true, 100019 => true, 100020 => true, 100021 => true
   ];
   return isset($asyncModes[$mode]);
 }

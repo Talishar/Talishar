@@ -2768,6 +2768,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog("Player $player declined a rematch.", highlight: true);
       }
       return 0;
+    case "SWAPREMATCH":
+      global $GameStatus_SwapRematch;
+      if ($lastResult == "YES") {
+        //reset health so they don't immediately die again
+        $p1Health = &GetHealth(1);
+        $p1Health = 1;
+        $p2Health = &GetHealth(2);
+        $p2Health = 1;
+        $inGameStatus = $GameStatus_SwapRematch;
+        ClearGameFiles($gameName, true);
+      }
+      else {
+        WriteLog("Player $player declined the swap heroes rematch.", highlight: true);
+      }
+      return 0;
     case "PLAYERTARGETEDABILITY":
       PlayerTargetedAbility($player, $parameter, $lastResult);
       return "";
