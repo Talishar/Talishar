@@ -37,12 +37,12 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
     case "pummel_red":
     case "pummel_yellow":
     case "pummel_blue":
-      if (IsHeroAttackTarget() && CardType($attackID) == "AA") PummelHit();
+      PummelHit();
       break;
     case "razor_reflex_red":
     case "razor_reflex_yellow":
     case "razor_reflex_blue":
-      if (CardType($attackID) == "AA") GiveAttackGoAgain();
+      GiveAttackGoAgain();
       break;
     case "plunder_run_red-1":
     case "plunder_run_yellow-1":
@@ -50,7 +50,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       Draw($mainPlayer);
       return 1;
     case "poison_the_tips_yellow":
-      if (IsHeroAttackTarget()) PummelHit();
+      PummelHit();
       break;
     case "mauvrion_skies_red":
     case "mauvrion_skies_yellow":

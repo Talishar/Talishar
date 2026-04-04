@@ -1517,19 +1517,37 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     return $card->AddEffectHitTrigger($source, $fromCombat, $target, $cardID, $check);
   }
   switch ($effects[0]) {
+    case "pummel_red":
+    case "pummel_yellow":
+    case "pummel_blue":
+      if (IsHeroAttackTarget() && CardType($source) == "AA") 
+      {
+        if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        return true;
+      }
+      return false;
+    case "razor_reflex_red":
+    case "razor_reflex_yellow":
+    case "razor_reflex_blue":
+      if (CardType($source) == "AA") 
+      {
+        if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        return true;
+      }
+      return false;
+    case "poison_the_tips_yellow":
+      if (IsHeroAttackTarget()) 
+      {
+        if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        return true;
+      }
+      return false;
     case "warriors_valor_red":
     case "warriors_valor_yellow":
     case "warriors_valor_blue":
     case "natures_path_pilgrimage_red":
     case "natures_path_pilgrimage_yellow":
     case "natures_path_pilgrimage_blue":
-    case "pummel_red":
-    case "pummel_yellow":
-    case "pummel_blue":
-    case "razor_reflex_red":
-    case "razor_reflex_yellow":
-    case "razor_reflex_blue":
-    case "poison_the_tips_yellow":
     case "mauvrion_skies_red":
     case "mauvrion_skies_yellow":
     case "mauvrion_skies_blue":

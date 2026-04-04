@@ -206,6 +206,44 @@ if ($inGameStatus == $GameStatus_Rematch) {
   InvalidateGamestateCache($gameName); // Clear cached gamestate once at end
   GamestateUpdated($gameName);
   exit;
+} else if ($inGameStatus == $GameStatus_SwapRematch) {
+  include "MenuFiles/ParseGamefile.php";
+  // Swap the deck files (p1DeckOrig.txt <-> p2DeckOrig.txt)
+  $p1OrigPath = "./Games/{$gameName}/p1DeckOrig.txt";
+  $p2OrigPath = "./Games/{$gameName}/p2DeckOrig.txt";
+  $tempPath = "./Games/{$gameName}/p_swap_temp.txt";
+  if (file_exists($p1OrigPath) && file_exists($p2OrigPath)) {
+    rename($p1OrigPath, $tempPath);
+    rename($p2OrigPath, $p1OrigPath);
+    rename($tempPath, $p2OrigPath);
+  }
+  // Restore swapped original decks as active decks
+  if (file_exists($p1OrigPath)) copy($p1OrigPath, "./Games/{$gameName}/p1Deck.txt");
+  if (file_exists($p2OrigPath)) copy($p2OrigPath, "./Games/{$gameName}/p2Deck.txt");
+  // Swap deck metadata so the lobby shows the correct hero for each player
+  include "MenuFiles/WriteGamefile.php";
+  [$p1DeckLink, $p2DeckLink] = [$p2DeckLink, $p1DeckLink];
+  [$p1deckbuilderID, $p2deckbuilderID] = [$p2deckbuilderID, $p1deckbuilderID];
+  [$p1StartingEquipment, $p2StartingEquipment] = [$p2StartingEquipment, $p1StartingEquipment];
+  [$p1MetafyTiers, $p2MetafyTiers] = [$p2MetafyTiers, $p1MetafyTiers];
+  [$p1MetafyCommunities, $p2MetafyCommunities] = [$p2MetafyCommunities, $p1MetafyCommunities];
+  $p2IsAILocal = $p2IsAI == "1";
+  $gameStatus = ($p2IsAILocal ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+  SetCachePiece($gameName, 14, $gameStatus);
+  $firstPlayer = 1;
+  $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+  $p1SideboardSubmitted = "0";
+  $p2SideboardSubmitted = ($p2IsAILocal ? "1" : "0");
+  WriteLog("🔁 Heroes swapped! Player $firstPlayerChooser will choose who goes first.", highlight: true, highlightColor: "darkblue");
+  WriteGameFile();
+  $turn[0] = "REMATCH";
+  include "WriteGamestate.php";
+  $currentTime = round(microtime(true) * 1000);
+  SetCachePiece($gameName, 2, $currentTime);
+  SetCachePiece($gameName, 3, $currentTime);
+  InvalidateGamestateCache($gameName);
+  GamestateUpdated($gameName);
+  exit;
 } else if ($winner != 0 && $turn[0] != "YESNO") {
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
