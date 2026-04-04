@@ -28,6 +28,7 @@ include "Classes/Landmarks.php";
 include "Classes/ClassState.php";
 include "Classes/CombatChainState.php";
 include "Classes/CardObjects/DBGCards.php"; //debug cards
+include "Classes/CardObjects/LGSCards.php";
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/ARCCards.php";
 include "Classes/CardObjects/MONCards.php";
