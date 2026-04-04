@@ -218,11 +218,10 @@
         $grave = GetDiscard($player);
         $uid = $grave[count($grave) - DiscardPieces() + 1];
       }
-      if ($uid != "-") {
-        for ($i = 0; $i < $numMercifulRetribution; ++$i) {
-          SetArcaneTarget($player, "merciful_retribution_yellow", 0);
-          AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow|$uid");
-        }
+      for ($i = 0; $i < $numMercifulRetribution; ++$i) {
+        SetArcaneTarget($player, "merciful_retribution_yellow", 0);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+        AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow|$uid");
       }
     }
   }
