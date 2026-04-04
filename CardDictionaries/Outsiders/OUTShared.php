@@ -251,7 +251,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("ADDTOPORBOT", $currentPlayer, "-", 1);
         return "";
       case "bonds_of_ancestry_red": case "bonds_of_ancestry_yellow": case "bonds_of_ancestry_blue":
-        if(ComboActive())
+        if(ComboActive($cardID))
         {
           AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         }
