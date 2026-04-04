@@ -1966,6 +1966,7 @@ function ColorOverride($cardID, $player = "")
 function ClassContains($cardID, $class, $player)
 {
   $cardClass = ClassOverride($cardID, $player);
+  if ($cardClass != "GENERIC" && $player != "" && SearchPermanentsForCard($player, "shapeshifter") != "") return true;
   return DelimStringContains($cardClass, $class);
 }
 
@@ -2112,6 +2113,7 @@ function TalentOverride($cardID, $player = "", $zone="-")
 function TalentContains($cardID, $talent, $player = "")
 {
   $cardTalent = TalentOverride($cardID, $player);
+  if ($cardTalent != "NONE" && $player != "" && SearchPermanentsForCard($player, "shapeshifter") != "") return true;
   return DelimStringContains($cardTalent, $talent);
 }
 

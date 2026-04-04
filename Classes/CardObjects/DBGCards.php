@@ -75,3 +75,14 @@ class fangs_a_lot_blue extends Card {
     return "GENERIC";
   }
 }
+
+class shapeshifter extends Card {
+  function __construct($controller) {
+    $this->cardID = "fangs_a_lot_blue";
+    $this->controller = $controller;
+  }
+
+  function SpecialType() {
+    return "T";
+  }
+}
