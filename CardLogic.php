@@ -5148,12 +5148,6 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
       $maxCost = GetClassState($player, $CS_HealthGained) - 1;
       if ($maxCost >= 0) {
         $indices = SearchMultizone($player, "MYDISCARD:type=AA;maxCost=$maxCost&MYDISCARD:type=A;maxCost=$maxCost&THEIRDISCARD:type=AA;maxCost=$maxCost&THEIRDISCARD:type=A;maxCost=$maxCost");
-        $indicesArr = explode(",", $indices);
-        $lastCard = $indicesArr[count($indicesArr) - 1] ?? "-";
-        if (!(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") && $lastCard != "-" && GetMZCard($player, $lastCard) == $parameter) {
-          //removing itself from the list of choices
-          $indices = implode(",", array_slice($indicesArr, 0, -1));
-        }
         if ($indices != "") {
           AddDecisionQueue("PASSPARAMETER", $player, $indices);
           AddDecisionQueue("SETDQCONTEXT", $player, "Choose an action to put on the bottom of the owners deck", 1);
@@ -5170,5 +5164,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
   ResolveGoAgain($parameter, $player, "MELD", additionalCosts: $additionalCosts);
   $goesWhere = GoesWhereEffectsModifier($parameter, "MELD", $player);
   $goesWhere = $goesWhere == -1 ? "GY" : $goesWhere;
-  if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") ResolveGoesWhere($goesWhere, $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
+  if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") 
+    Await($player, "ResolveGoesWhere", goesWhere:$goesWhere, cardID:$parameter, from:"MELD");
+    // ResolveGoesWhere($goesWhere, $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
 }

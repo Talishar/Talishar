@@ -215,3 +215,13 @@ function CardChoicesAwait($player) {
   global $dqVars;
   PrependDecisionQueue("BUTTONINPUT", $player, $dqVars["choices"], 1);
 }
+
+function ResolveGoesWhereAwait($player) {
+  global $dqVars;
+  $cardID = $dqVars["cardID"] ?? "-";
+  $goesWhere = $dqVars["goesWhere"] ?? "-";
+  $from = $dqVars["from"] ?? "-";
+  $effectController = $dqVars["effectController"] ?? "";
+  $modifier = $dqVars["modifier"] ?? "NA";
+  ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController, $modifier);
+}
