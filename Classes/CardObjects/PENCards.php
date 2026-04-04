@@ -5403,19 +5403,12 @@ class ion_charged_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
     AddCurrentTurnEffect($this->cardID, $this->controller);
-    AddCurrentTurnEffect($this->cardID, $otherPlayer);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    static $recursionGuard = false;
-    if ($recursionGuard) return false;
-    $recursionGuard = true;
-    $hasGoAgain = DoesAttackHaveGoAgain();
-    $recursionGuard = false;
-    return $hasGoAgain && (TalentContains($CombatChain->AttackCard()->ID(), "LIGHTNING", $this->controller) || TalentContains($CombatChain->AttackCard()->ID(), "ELEMENTAL", $this->controller));
+    return CachedAttackHasGoAgain() && (TalentContains($CombatChain->AttackCard()->ID(), "LIGHTNING", $this->controller) || TalentContains($CombatChain->AttackCard()->ID(), "ELEMENTAL", $this->controller));
   }
 
   function IsCombatEffectPersistent($mode) {

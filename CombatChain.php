@@ -1825,8 +1825,9 @@ function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
   global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
-  global $CombatChain;
+  global $CombatChain, $CCS_CachedGoAgain;
   if (count($combatChain) == 0) return;
+  $combatChainState[$CCS_CachedGoAgain] = (DoesAttackHaveGoAgain() ? "1" : "0");
   $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
@@ -1854,6 +1855,12 @@ function CachedTotalBlock()
 {
   global $combatChainState, $CCS_CachedTotalBlock;
   return $combatChainState[$CCS_CachedTotalBlock];
+}
+
+function CachedAttackHasGoAgain()
+{
+  global $combatChainState, $CCS_CachedGoAgain;
+  return ($combatChainState[$CCS_CachedGoAgain] == "1" ? true : false);
 }
 
 function CachedDominateActive()

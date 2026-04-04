@@ -445,6 +445,7 @@ $CCS_NumCardsBlocking = 44; //used to track when cards "defend together"
 $CCS_NumPowerCounters = 45;
 $CCS_SoulBanishedThisChain = 46;
 $CCS_AttackCost = 47; // the base cost of the attack (necessary for X cost attacks)
+$CCS_CachedGoAgain = 48; // cached result of DoesAttackHaveGoAgain() set before EvaluateCombatChain
 
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
@@ -459,7 +460,7 @@ function ResetCombatChainState()
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
-  global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain, $CCS_AttackCost;
+  global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain, $CCS_AttackCost, $CCS_CachedGoAgain;
 
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -507,6 +508,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_NumPowerCounters] = 0;
   $combatChainState[$CCS_SoulBanishedThisChain] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
+  $combatChainState[$CCS_CachedGoAgain] = 0;
   
   $aGoodCleanFight = false;
   for($i = 0; $i < count($chainLinks); ++$i) {
@@ -562,13 +564,15 @@ function AttackReplaced($cardID, $player)
 {
   global $combatChainState, $currentTurnEffects, $mainPlayer;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_CachedDominateActive, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBasePower, $combatChain;
-  global $CS_NumStealthAttacks, $CCS_AttackCost;
+  global $CS_NumStealthAttacks, $CCS_AttackCost, $CCS_CachedGoAgain;
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_CachedDominateActive] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "BANISH";//Right now only Uzuri can do this
   $combatChainState[$CCS_LinkBasePower] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
+  $combatChainState[$CCS_CachedGoAgain] = 0;
+
   if (HasStealth($cardID)) IncrementClassState($player, $CS_NumStealthAttacks);
   $combatChain[0] = $cardID;
   $combatChain[5] = 0;//Reset Power Modifiers
@@ -596,7 +600,7 @@ function ResetChainLinkState()
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking, $CCS_NumPowerCounters;
-  global $CCS_AttackCost;
+  global $CCS_AttackCost, $CCS_CachedGoAgain;
 
   WriteLog("The chain link was resolved.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -638,6 +642,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_NumCardsBlocking] = 0;
   $combatChainState[$CCS_NumPowerCounters] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
+  $combatChainState[$CCS_CachedGoAgain] = 0;
   RemoveThisLinkEffects();
 }
 
