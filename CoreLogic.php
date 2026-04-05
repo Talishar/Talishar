@@ -4170,7 +4170,7 @@ function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
     else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W" && $definedCardType != "Macro") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
       // make sure the card goes to the graveyard after it resolves
-      Await($currentPlayer, "ResolveGoesWhere", cardID:$cardID, goesWhere:$goesWhere, from:$from, final:true);
+      Await($currentPlayer, "ResolveGoesWhere", cardID:$cardID, goesWhere:$goesWhere, from:$from, final:true, subsequent:false);
     }
   }
 }
