@@ -38,20 +38,16 @@ if (file_exists('../APIKeys/APIKeys.php')) {
 }
 
 $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
-// $metafyClientID and $metafyClientSecret are set as variables by APIKeys.php (included above)
-$oauthClientID     = $metafyClientID     ?? getenv('METAFY_CLIENT_ID')     ?: '';
-$oauthClientSecret = $metafyClientSecret ?? getenv('METAFY_CLIENT_SECRET') ?: '';
+// Same API key used by RefreshMetafyCommunities.php to authenticate against the subscriber endpoint.
+// This is the Talishar app client_id used as Bearer — NOT the OAuth client_id from APIKeys.php.
+$talishar_client_id = '4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI';
 
 $all_subscriber_ids = [];
 $api_source = '';
 $api_error  = null;
 $max_pages  = 50;
 
-if (empty($oauthClientID)) {
-  $api_error = "Metafy client ID not configured. Set METAFY_CLIENT_ID in environment or APIKeys.php.";
-}
-
-if (!empty($oauthClientID)) {
+if (!empty($talishar_client_id)) {
   $page = 1;
 
   while ($page <= $max_pages) {
@@ -60,7 +56,7 @@ if (!empty($oauthClientID)) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 15);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-      'Authorization: Bearer ' . $oauthClientID,
+      'Authorization: Bearer ' . $talishar_client_id,
       'Content-Type: application/json'
     ]);
     curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
@@ -104,9 +100,9 @@ if (!empty($oauthClientID)) {
 $all_subscriber_ids  = array_unique($all_subscriber_ids);
 $subscriber_usernames = $subscriber_usernames ?? [];
 
-// Safety: abort if API returned zero subscribers to avoid clearing everyone
+// Safety: abort if API returned zero subscribers to avoid clearing everyone.
+// Note: use HTTP 200 so nginx does not intercept and strip CORS headers from the response.
 if (empty($all_subscriber_ids)) {
-  http_response_code(502);
   echo json_encode([
     "error" => "Could not fetch any subscribers from Metafy. Sync aborted to avoid clearing valid supporters.",
     "apiError" => $api_error ?? 'No subscribers returned.',
@@ -117,7 +113,6 @@ if (empty($all_subscriber_ids)) {
 // Cross-reference DB
 $conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
 if (!$conn) {
-  http_response_code(500);
   echo json_encode(["error" => "DB connection failed"]);
   exit;
 }
