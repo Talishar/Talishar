@@ -1830,7 +1830,9 @@ function FinalizeTurn()
       DestroyCharacter($mainPlayer, $i-1); //Destroy if it was flagged for destruction
     }
     if ($mainCharacter[$i] != 0) {
-      if ($mainCharacter[$i] != 4) $mainCharacter[$i] = 2;
+      if ($mainCharacter[$i] != 4) {
+        $mainCharacter[$i] = 2;
+      }
       $mainCharacter[$i + 4] = CharacterNumUsesPerTurn($mainCharacter[$i - 1]);
     }
   }
@@ -4571,13 +4573,15 @@ function EndResolutionStep()
     $layerIndex += LayerPieces();
   }
   $MainHero = new CharacterCard(0, $mainPlayer);
-  switch ($MainHero->CardID()) {
-    case "olympia":
-    case "olympia_prized_fighter":
-      $MainHero->SetUsed(2); // he can trigger on each attack
-      break;
-    default:
-      break;
+  if ($MainHero->Status() < 3) {
+    switch ($MainHero->CardID()) {
+      case "olympia":
+      case "olympia_prized_fighter":
+        $MainHero->SetUsed(2); // he can trigger on each attack
+        break;
+      default:
+        break;
+    }
   }
   UnsetChainLinkBanish();
   return $layerIndex;
