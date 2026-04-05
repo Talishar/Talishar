@@ -158,7 +158,7 @@
       return;
     }
     
-    $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, isBanned FROM users WHERE rememberMeToken=?";
+    $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, isBanned, metafyID FROM users WHERE rememberMeToken=?";
     $stmt = mysqli_stmt_init($conn);
     
     if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -174,6 +174,7 @@
         $_SESSION['useremail'] = $row['usersEmail'];
         $_SESSION['patreonEnum'] = $row['patreonEnum'];
         $_SESSION['isBanned'] = $row['isBanned'];
+        $_SESSION['metafyID'] = $row['metafyID'] ?? "";
         $_SESSION['last_activity'] = time();
         $_SESSION['last_regeneration'] = time();
       }
@@ -193,7 +194,7 @@
       return;
     }
     
-    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities FROM users WHERE metafyRememberToken=?";
+    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities, metafyID FROM users WHERE metafyRememberToken=?";
     $stmt = mysqli_stmt_init($conn);
     
     if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -207,6 +208,7 @@
         $_SESSION['userid'] = $row['usersid'];
         $_SESSION['useruid'] = $row['usersUid'];
         $_SESSION['isPatron'] = $row['isPatron'] ?? 0;
+        $_SESSION['metafyID'] = $row['metafyID'] ?? "";
         $_SESSION['last_activity'] = time();
         $_SESSION['last_regeneration'] = time();
       }
