@@ -38,16 +38,91 @@ if (file_exists('../APIKeys/APIKeys.php')) {
 }
 
 $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
-// Same API key used by RefreshMetafyCommunities.php to authenticate against the subscriber endpoint.
-// This is the Talishar app client_id used as Bearer — NOT the OAuth client_id from APIKeys.php.
-$talishar_client_id = '4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI';
+// $metafyClientID and $metafyClientSecret are set as variables by APIKeys.php (included above)
+$oauthClientID     = $metafyClientID     ?? getenv('METAFY_CLIENT_ID')     ?: '';
+$oauthClientSecret = $metafyClientSecret ?? getenv('METAFY_CLIENT_SECRET') ?: '';
+
+$ownerToken        = '';
+$ownerRefreshToken = '';
+$ownerDbId         = null;
+
+$conn_owner = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+if ($conn_owner) {
+  // Prefer the currently-logged-in moderator's token (they are most likely the community owner).
+  // Fall back to any moderator account that has a Metafy token stored.
+  $stmt_owner = mysqli_stmt_init($conn_owner);
+  if (mysqli_stmt_prepare($stmt_owner, "
+    SELECT usersid, metafyAccessToken, metafyRefreshToken
+    FROM users
+    WHERE metafyAccessToken IS NOT NULL AND metafyAccessToken != ''
+    ORDER BY (usersUid = ?) DESC
+    LIMIT 1
+  ")) {
+    mysqli_stmt_bind_param($stmt_owner, 's', $useruid);
+    mysqli_stmt_execute($stmt_owner);
+    $res_owner = mysqli_stmt_get_result($stmt_owner);
+    $row_owner = mysqli_fetch_assoc($res_owner);
+    mysqli_stmt_close($stmt_owner);
+    $ownerToken        = $row_owner['metafyAccessToken']  ?? '';
+    $ownerRefreshToken = $row_owner['metafyRefreshToken'] ?? '';
+    $ownerDbId         = $row_owner['usersid']            ?? null;
+  }
+  mysqli_close($conn_owner);
+}
+
+function RefreshMetafyAccessToken($refreshToken, $clientID, $clientSecret, $userDbId) {
+  if (empty($refreshToken) || empty($clientID) || empty($clientSecret)) return '';
+
+  $ch = curl_init('https://metafy.gg/oauth/token');
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+    'grant_type'    => 'refresh_token',
+    'refresh_token' => $refreshToken,
+    'client_id'     => $clientID,
+    'client_secret' => $clientSecret,
+  ]));
+  curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+  curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
+  curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+  $raw      = curl_exec($ch);
+  $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+
+  if ($httpCode !== 200) return '';
+
+  $tokens     = json_decode($raw, true);
+  $newAccess  = $tokens['access_token']  ?? '';
+  $newRefresh = $tokens['refresh_token'] ?? $refreshToken;
+
+  if (!empty($newAccess) && !empty($userDbId)) {
+    $conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+    if ($conn) {
+      $stmt = mysqli_stmt_init($conn);
+      if (mysqli_stmt_prepare($stmt, "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=? WHERE usersid=?")) {
+        mysqli_stmt_bind_param($stmt, 'ssi', $newAccess, $newRefresh, $userDbId);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+      }
+      mysqli_close($conn);
+    }
+  }
+
+  return $newAccess;
+}
 
 $all_subscriber_ids = [];
 $api_source = '';
 $api_error  = null;
 $max_pages  = 50;
 
-if (!empty($talishar_client_id)) {
+if (empty($ownerToken)) {
+  $api_error = "No Metafy account linked. The Talishar community owner must link their Metafy account via the profile page before syncing.";
+}
+
+if (!empty($ownerToken)) {
+  $auth_token      = $ownerToken;
+  $token_refreshed = false;
   $page = 1;
 
   while ($page <= $max_pages) {
@@ -56,7 +131,7 @@ if (!empty($talishar_client_id)) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 15);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-      'Authorization: Bearer ' . $talishar_client_id,
+      'Authorization: Bearer ' . $auth_token,
       'Content-Type: application/json'
     ]);
     curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
@@ -64,6 +139,18 @@ if (!empty($talishar_client_id)) {
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curl_err = curl_error($ch);
     curl_close($ch);
+
+    // Token expired — try to refresh once and retry
+    if ($http_code === 401 && !$token_refreshed) {
+      $newToken = RefreshMetafyAccessToken($ownerRefreshToken, $oauthClientID, $oauthClientSecret, $ownerDbId);
+      if (!empty($newToken)) {
+        $auth_token      = $newToken;
+        $token_refreshed = true;
+        continue; // retry same page with new token
+      }
+      $api_error = "Metafy returned 401 and token refresh failed. The community owner must re-link their Metafy account via the profile page.";
+      break;
+    }
 
     if ($http_code !== 200) {
       $api_error = "metafy.gg/irk returned HTTP $http_code" . ($curl_err ? " ($curl_err)" : "");
@@ -133,13 +220,22 @@ while ($row = mysqli_fetch_assoc($result)) {
   if (!is_array($communities)) continue;
 
   $has_talishar = false;
+  $is_community_owner = false;
   foreach ($communities as $c) {
     if (($c['id'] ?? '') === $talishar_community_id) {
       $has_talishar = true;
+      if (($c['type'] ?? '') === 'owned') {
+        $is_community_owner = true;
+      }
       break;
     }
   }
   if (!$has_talishar) continue;
+  // Community owner is never in the subscriber list — skip to avoid clearing their access.
+  if ($is_community_owner) {
+    $still_active++;
+    continue;
+  }
 
   $checked++;
   $metafyID = $row['metafyID'] ?? null;
