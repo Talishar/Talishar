@@ -4334,7 +4334,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($CombatChain->FindCardID($cardID)->Index() == -1)
       // helpful log message
       WriteLog(CardLink($cardID) . " could not be added as a defending chain link!");
-  } 
+  }
+  else if (SubtypeContains($cardID, "Evo", $currentPlayer)) EvoHandling($cardID, $currentPlayer, $from);
   //Resolve Effects
   if (!$isBlock && !$skipDRResolution) {
     CurrentEffectPlayOrActivateAbility($cardID, $from);
