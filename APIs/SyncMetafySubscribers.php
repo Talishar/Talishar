@@ -125,6 +125,7 @@ if (!empty($ownerToken)) {
   $token_refreshed = false;
   $page = 1;
 
+  $retries = 0;
   while ($page <= $max_pages) {
     $url = "https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100&page=" . intval($page);
     $ch = curl_init($url);
@@ -135,10 +136,15 @@ if (!empty($ownerToken)) {
       'Content-Type: application/json'
     ]);
     curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-    $raw      = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curl_err = curl_error($ch);
+    curl_setopt($ch, CURLOPT_HEADER, true); // include response headers to read Retry-After
+    $raw_with_headers = curl_exec($ch);
+    $http_code        = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $header_size      = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+    $curl_err         = curl_error($ch);
     curl_close($ch);
+
+    $raw     = substr($raw_with_headers, $header_size);
+    $headers = substr($raw_with_headers, 0, $header_size);
 
     // Token expired — try to refresh once and retry
     if ($http_code === 401 && !$token_refreshed) {
@@ -151,6 +157,22 @@ if (!empty($ownerToken)) {
       $api_error = "Metafy returned 401 and token refresh failed. The community owner must re-link their Metafy account via the profile page.";
       break;
     }
+
+    if ($http_code === 429) {
+      if ($retries >= 3) {
+        $api_error = "metafy.gg/irk returned HTTP 429 (rate limited) after 3 retries. Try again later.";
+        break;
+      }
+      $retry_after = 10; // default wait in seconds
+      if (preg_match('/Retry-After:\s*(\d+)/i', $headers, $m)) {
+        $retry_after = max(1, (int)$m[1]);
+      }
+      sleep(min($retry_after, 60));
+      $retries++;
+      continue; // retry same page
+    }
+
+    $retries = 0; // reset retry counter on success
 
     if ($http_code !== 200) {
       $api_error = "metafy.gg/irk returned HTTP $http_code" . ($curl_err ? " ($curl_err)" : "");
@@ -181,6 +203,7 @@ if (!empty($ownerToken)) {
     $api_source = 'metafy.gg/irk/api/v1/me/community/subscribers';
     if (count($subscribers) < 100) break;
     $page++;
+    usleep(300000); // 300ms pause between pages to avoid rate limits
   }
 }
 
