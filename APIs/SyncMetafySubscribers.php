@@ -189,12 +189,6 @@ if (!empty($ownerToken)) {
       break;
     }
 
-    // Debug: capture first subscriber's raw structure to diagnose key mismatches
-    if ($page === 1 && !isset($debug_first_sub)) {
-      $debug_first_sub = $subscribers[0] ?? null;
-      $debug_api_top_keys = array_keys($data ?? []);
-    }
-
     foreach ($subscribers as $sub) {
       $uid = $sub['user_id'] ?? $sub['id'] ?? null;
       if ($uid) {
@@ -236,10 +230,6 @@ if (!$conn) {
 $sql = "SELECT usersId, usersUid, metafyID, metafyCommunities, metafyAccessToken FROM users WHERE metafyCommunities IS NOT NULL AND metafyCommunities != '' AND metafyCommunities != '[]'";
 $result = mysqli_query($conn, $sql);
 
-$debug_db_total_rows = 0;
-$debug_db_json_invalid = 0;
-$debug_db_no_talishar = 0;
-$debug_sample_community = null;
 $checked = 0;
 $cleared = 0;
 $still_active = 0;
@@ -249,14 +239,8 @@ $cleared_users = [];
 $skipped_users = [];
 
 while ($row = mysqli_fetch_assoc($result)) {
-  $debug_db_total_rows++;
   $communities = json_decode($row['metafyCommunities'], true);
-  if (!is_array($communities)) { $debug_db_json_invalid++; continue; }
-
-  // Capture sample for diagnostics
-  if ($debug_sample_community === null) {
-    $debug_sample_community = array_map(function($c) { return ['id' => $c['id'] ?? null, 'type' => $c['type'] ?? null]; }, $communities);
-  }
+  if (!is_array($communities)) continue;
 
   $has_talishar = false;
   $is_community_owner = false;
@@ -269,7 +253,7 @@ while ($row = mysqli_fetch_assoc($result)) {
       break;
     }
   }
-  if (!$has_talishar) { $debug_db_no_talishar++; continue; }
+  if (!$has_talishar) continue;
   // Community owner is never in the subscriber list — skip to avoid clearing their access.
   if ($is_community_owner) {
     $still_active++;
@@ -359,16 +343,7 @@ $response = [
   "skippedNoMetafyId" => $no_metafy_id,
   "backfilled" => $backfilled,
   "clearedUsers" => $cleared_users,
-  "skippedUsers" => $skipped_users,
-  "_debug" => [
-    "apiTopKeys"      => $debug_api_top_keys ?? [],
-    "firstSubscriber" => $debug_first_sub ?? null,
-    "dbTotalRows"     => $debug_db_total_rows,
-    "dbJsonInvalid"   => $debug_db_json_invalid,
-    "dbNoTalishar"    => $debug_db_no_talishar,
-    "sampleCommunity" => $debug_sample_community,
-    "talisharComId"   => $talishar_community_id,
-  ]
+  "skippedUsers" => $skipped_users
 ];
 
 if ($api_error) {
