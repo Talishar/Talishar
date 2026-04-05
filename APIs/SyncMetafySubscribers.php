@@ -42,84 +42,16 @@ $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
 $oauthClientID     = $metafyClientID     ?? getenv('METAFY_CLIENT_ID')     ?: '';
 $oauthClientSecret = $metafyClientSecret ?? getenv('METAFY_CLIENT_SECRET') ?: '';
 
-// Load moderator's stored Metafy OAuth tokens
-$modMetafyToken        = '';
-$modMetafyRefreshToken = '';
-$modUserDbId           = null;
-$conn_mod = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
-if ($conn_mod) {
-  $stmt_mod = mysqli_stmt_init($conn_mod);
-  if (mysqli_stmt_prepare($stmt_mod, "SELECT usersid, metafyAccessToken, metafyRefreshToken FROM users WHERE usersUid=? LIMIT 1")) {
-    mysqli_stmt_bind_param($stmt_mod, 's', $useruid);
-    mysqli_stmt_execute($stmt_mod);
-    $res_mod = mysqli_stmt_get_result($stmt_mod);
-    $row_mod = mysqli_fetch_assoc($res_mod);
-    mysqli_stmt_close($stmt_mod);
-    $modMetafyToken        = $row_mod['metafyAccessToken']  ?? '';
-    $modMetafyRefreshToken = $row_mod['metafyRefreshToken'] ?? '';
-    $modUserDbId           = $row_mod['usersid']            ?? null;
-  }
-  mysqli_close($conn_mod);
-}
-
-/**
- * Attempt to refresh the Metafy OAuth access token using the stored refresh token.
- * Saves the new token to DB on success. Returns new access token or empty string.
- */
-function RefreshMetafyAccessToken($refreshToken, $clientID, $clientSecret, $userDbId) {
-  if (empty($refreshToken) || empty($clientID) || empty($clientSecret)) return '';
-
-  $ch = curl_init('https://metafy.gg/irk/oauth/token');
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_POST, true);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-    'grant_type'    => 'refresh_token',
-    'refresh_token' => $refreshToken,
-    'client_id'     => $clientID,
-    'client_secret' => $clientSecret,
-  ]));
-  curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-  curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-  curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-  $raw      = curl_exec($ch);
-  $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-  curl_close($ch);
-
-  if ($httpCode !== 200) return '';
-
-  $tokens = json_decode($raw, true);
-  $newAccess  = $tokens['access_token']  ?? '';
-  $newRefresh = $tokens['refresh_token'] ?? $refreshToken;
-
-  if (!empty($newAccess) && !empty($userDbId)) {
-    $conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
-    $stmt = mysqli_stmt_init($conn);
-    if (mysqli_stmt_prepare($stmt, "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=? WHERE usersid=?")) {
-      mysqli_stmt_bind_param($stmt, 'ssi', $newAccess, $newRefresh, $userDbId);
-      mysqli_stmt_execute($stmt);
-      mysqli_stmt_close($stmt);
-    }
-    mysqli_close($conn);
-  }
-
-  return $newAccess;
-}
-
 $all_subscriber_ids = [];
 $api_source = '';
 $api_error  = null;
 $max_pages  = 50;
 
-if (empty($modMetafyToken)) {
-  $api_error = "No Metafy account linked to this moderator. Connect your Metafy account via the profile page.";
+if (empty($oauthClientID)) {
+  $api_error = "Metafy client ID not configured. Set METAFY_CLIENT_ID in environment or APIKeys.php.";
 }
 
-// --- Fetch subscribers from metafy.gg/irk/api/v1/me/community/subscribers ---
-// This is the only real API endpoint for community subscriber lists.
-// It uses the community owner's OAuth token as Bearer.
-if (!empty($modMetafyToken)) {
-  $auth_token  = $modMetafyToken;
-  $token_refreshed = false;
+if (!empty($oauthClientID)) {
   $page = 1;
 
   while ($page <= $max_pages) {
@@ -128,7 +60,7 @@ if (!empty($modMetafyToken)) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 15);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-      'Authorization: Bearer ' . $auth_token,
+      'Authorization: Bearer ' . $oauthClientID,
       'Content-Type: application/json'
     ]);
     curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
@@ -136,18 +68,6 @@ if (!empty($modMetafyToken)) {
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curl_err = curl_error($ch);
     curl_close($ch);
-
-    // Token expired — try to refresh once and retry
-    if ($http_code === 401 && !$token_refreshed) {
-      $newToken = RefreshMetafyAccessToken($modMetafyRefreshToken, $oauthClientID, $oauthClientSecret, $modUserDbId);
-      if (!empty($newToken)) {
-        $auth_token      = $newToken;
-        $token_refreshed = true;
-        continue; // retry same page with new token
-      }
-      $api_error = "metafy.gg/irk returned HTTP 401 and token refresh failed (refresh token may be expired — please re-link your Metafy account on the profile page)";
-      break;
-    }
 
     if ($http_code !== 200) {
       $api_error = "metafy.gg/irk returned HTTP $http_code" . ($curl_err ? " ($curl_err)" : "");
