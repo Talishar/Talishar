@@ -69,6 +69,7 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         $existingUsername = GetExistingUsername($userID);
         $_SESSION['useruid'] = $existingUsername ?? ($user_profile['username'] ?? $user_profile['email'] ?? $userID);
         $_SESSION['isPatron'] = CheckIfMetafySupporter($userID);
+        $_SESSION['metafyID'] = $user_profile['id'] ?? '';
 
         $response->message = 'ok';
         $response->redirect = '/game/MainMenu.php';

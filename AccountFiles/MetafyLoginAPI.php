@@ -56,10 +56,13 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     $refresh_token = $tokens['refresh_token'] ?? '';
     
     // Fetch the user's Metafy ID and save tokens + ID
-    SaveMetafyTokensAndID($access_token, $refresh_token);
+    $metafyUserID = SaveMetafyTokensAndID($access_token, $refresh_token);
     
     // Fetch user's communities
     FetchAndSaveMetafyCommunities($access_token, $response);
+    if (!empty($metafyUserID)) {
+      $_SESSION['metafyID'] = $metafyUserID;
+    }
   } else {
     $error_msg = $tokens['error'] ?? 'Failed to get access token';
     $error_description = $tokens['error_description'] ?? 'No description';
@@ -77,7 +80,7 @@ echo json_encode($response);
 function SaveMetafyTokensAndID($accessToken, $refreshToken)
 {
   if (!isset($_SESSION['userid'])) {
-    return;
+    return null;
   }
   $userID = $_SESSION['userid'];
 
@@ -108,6 +111,10 @@ function SaveMetafyTokensAndID($accessToken, $refreshToken)
     mysqli_stmt_close($stmt);
   }
   mysqli_close($conn);
+  if (!empty($metafyUserID)) {
+    $_SESSION['metafyID'] = $metafyUserID;
+  }
+  return $metafyUserID;
 }
 
 function FetchAndSaveMetafyCommunities($access_token, &$response)
