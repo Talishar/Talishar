@@ -225,3 +225,30 @@ function ResolveGoesWhereAwait($player) {
   $modifier = $dqVars["modifier"] ?? "NA";
   ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController, $modifier);
 }
+
+function MZDestroyAwait($player) {
+  global $dqVars;
+  $MZInd = $dqVars["MZInd"];
+  $effectController = $dqVars["effectController"] ?? "";
+  $allArsenal = $dqVars["allArsenal"] ?? true;
+  MZDestroy($player, $MZInd, $effectController, $allArsenal);
+}
+
+function SharpenAwait($player) {
+  global $dqVars;
+  $MZindex = $dqVars["MZIndex"];
+  $num = $dqVars["num"] ?? 1;
+  Sharpen($MZindex, $player, $num);
+}
+
+function ElseAwait($player) {
+  PrependDecisionQueue("ELSE", $player, "-");
+}
+
+function AddCurrentTurnEffectAwait($player) {
+  global $dqVars;
+  $effectID = $dqVars["effectID"];
+  $from = $dqVars["from"] ?? "-";
+  $uniqueID = $dqVars["uniqueID"] ?? -1;
+  AddCurrentTurnEffect($effectID, $player, $from, $uniqueID);
+}

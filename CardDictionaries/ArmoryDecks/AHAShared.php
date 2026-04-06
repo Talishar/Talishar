@@ -8,8 +8,9 @@ function Sharpen($MZIndex, $player, $num=1) {
       case "MYCHAR":
         $CharacterCard = new CharacterCard($ind, $player);
         if ($CharacterCard->CardID() == "zenith_blade" && SearchCharacterActive($player, "reverent_rerebrace", true)) {
-          if (Rerebrace($MZIndex, $player, $num));
+          if (Rerebrace($MZIndex, $player, $num))
             return;
+					SearchCurrentTurnEffects("reverent_rerebrace", $player, true);
         }
         $CharacterCard->AddCounters($num);
         AddCurrentTurnEffect("hala_bladesaint_of_the_vow", $player, "-", $CharacterCard->UniqueID());
@@ -21,7 +22,17 @@ function Sharpen($MZIndex, $player, $num=1) {
 }
 
 function Rerebrace($MZIndex, $player, $num) {
-  $message = "";
-	$context = "";
+	if (SearchCurrentTurnEffects("reverent_rerebrace", $player)) // the replacement effect has already been applied and declined
+		return false;
+	$Character = new PlayerCharacter($player);
+	$CharacterCard = $Character->FindCardID("reverent_rerebrace");
+  $message = "if_you_want_to_sharpen_an_additional_time";
+	$context = "Choose if you want to destroy " . CardLink("reverent_rerebrace") . " to sharpen an additional time";
 	Await($player, "YesNo", message:$message, context:$context, subsequent:0);
+	Await($player, "MZDestroy", MZInd: "MYCHAR-" . $CharacterCard->Index());
+	Await($player, "Sharpen", MZindex: $MZIndex, num: $num+1, final:true);
+	Await($player, "Else", subsequent:0);
+	Await($player, "AddCurrentTurnEffect", effectID: "reverent_rerebrace");
+	Await($player, "Sharpen", MZindex: $MZIndex, num: $num, final:true);
+	return true;
 }

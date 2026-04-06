@@ -233,4 +233,8 @@ class silverstride_dodgers extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
+
+	function CardBlockModifier($from, $resourcesPaid, $index) {
+		return SearchAurasForCard("flurry", $this->controller, false) != "" ? 1 : 0;
+	}
 }
