@@ -139,3 +139,98 @@ class flurry extends Card {
 		if ($AuraCard != "") $AuraCard->Destroy();
 	}
 }
+
+class paragon_plate extends Card {
+  function __construct($controller) {
+    $this->cardID = "paragon_plate";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		GainResources($this->controller, 1);
+    return "";
+  }
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AR";
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		global $CCS_WeaponIndex, $combatChainState;
+		$CharCard = new CharacterCard($index, $this->controller);
+		$CharCard->Tap();
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon->AddCounters(-1);
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CCS_WeaponIndex, $combatChainState, $CombatChain;
+		if (!TypeContains($CombatChain->AttackCard()->ID(), "Sword", $this->controller)) return true;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		if ($Weapon->NumCounters() <= 0) return true;
+		return false;
+	}
+}
+
+class anticipating_gaze extends Card {
+  function __construct($controller) {
+    $this->cardID = "anticipating_gaze";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function DefaultActiveState() {
+		return 1;
+	}
+
+	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+		global $CombatChain;
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		if ($CharacterCard->IsActive() && TypeContains($CombatChain->AttackCard()->ID(), "Sword"))
+			AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		global $CCS_WeaponIndex, $combatChainState;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		if ($Weapon->NumCounters() > 0) {
+			$message = "if_you_want_to_draw";
+			$context = "Choose if you want to destroy " . CardLink($this->cardID) . " and remove a counter from your sword to draw a card";
+			Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+			Await($this->controller, $this->cardID, index: $target, final:true);
+		}
+	}
+
+	function SpecificLogic() {
+		global $CCS_WeaponIndex, $combatChainState, $dqVars;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Gaze = new CharacterCard($dqVars["index"], $this->controller);
+		$Weapon->AddCounters(-1);
+		$Gaze->Destroy();
+	}
+}
+
+class reverent_rerebrace extends Card {
+  function __construct($controller) {
+    $this->cardID = "reverent_rerebrace";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}
+
+class silverstride_dodgers extends Card {
+  function __construct($controller) {
+    $this->cardID = "silverstride_dodgers";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}

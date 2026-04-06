@@ -465,6 +465,8 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1, $flicked = f
     //tarantula and cindra should still have active triggers after using their abilities
     if ($characterID != "arakni_tarantula" && $characterID != "cindra_dracai_of_retribution" && $characterID != "cindra" && (TypeContains($mainCharacter[$i], "W", $mainPlayer) || $mainCharacter[$i + 1] != "2")) continue;
     $character = $Character->Card($i);
+    $card = GetClass($characterID, $mainPlayer, "EQUIP", $character->UniqueID());
+    if ($card != "-") $card->PermanentHitEffect($i, $damageSource, $targetPlayer, $flicked);
     switch ($characterID) {
       case "katsu_the_wanderer":
       case "katsu":

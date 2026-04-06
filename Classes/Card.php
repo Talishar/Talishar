@@ -649,4 +649,8 @@ class Card {
   function AssignEffectToCard($effectIndex) { //used to apply effects to the next card "played" not resolved
     return;
   }
+
+  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+    return;
+	}
 }
