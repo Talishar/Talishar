@@ -283,8 +283,10 @@ function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
 
 function StartTurnAbilities()
 {
-  global $mainPlayer, $defPlayer, $SET_ShortcutAttackThreshold;
+  global $mainPlayer, $defPlayer, $SET_ShortcutAttackThreshold, $SET_SkipARs, $SET_SkipDRs;
   ChangeSetting($mainPlayer, $SET_ShortcutAttackThreshold, "0");
+  ChangeSetting($mainPlayer, $SET_SkipARs, "0");
+  ChangeSetting($mainPlayer, $SET_SkipDRs, "0");
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $defCharacter = &GetPlayerCharacter($defPlayer);
   if($mainCharacter[13]) AddCurrentTurnEffect("marked", $mainPlayer);  //Marked stays between turns
@@ -1495,7 +1497,7 @@ function CombatChainClosedCharacterEffects()
           $deck = new Deck($defPlayer);
           if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $defPlayer, "DECK", source: "bone_vizier") < 6) {
             $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
-            WriteLog(CardLink("bone_vizier", "bone_vizier") . " put " . CardLink($card, $card) . " on the bottom of your deck");
+            WriteLog("⬇️ " . CardLink("bone_vizier", "bone_vizier") . " put " . CardLink($card, $card) . " on the bottom of your deck");
           }
           break;
         default:
