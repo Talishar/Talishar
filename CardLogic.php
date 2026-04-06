@@ -2570,8 +2570,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "embolden_red":
       case "embolden_yellow":
       case "embolden_blue":
-        AddCurrentTurnEffect($parameter, $player);
-        DestroyAuraUniqueID($player, $uniqueID);
+        if ($additionalCosts == "ENTERS") {
+          if(NumNonTokenAura($player) > 1) 
+            Draw($player);
+        }
+        else {
+          AddCurrentTurnEffect($parameter, $player);
+          DestroyAuraUniqueID($player, $uniqueID);
+        }
         break;
       case "seek_and_destroy_red": case "plan_for_the_worst_blue":
         DestroyArsenal($target, effectController: $player);

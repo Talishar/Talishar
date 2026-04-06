@@ -41,8 +41,8 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "embolden_red": case "embolden_yellow": case "embolden_blue":
-        if(NumNonTokenAura($currentPlayer) > 1) { $rv = "Drew a card"; Draw($currentPlayer); }
-        return $rv;
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ENTERS");
+        return "";
       default: return "";
     }
   }
