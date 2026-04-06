@@ -59,13 +59,38 @@ function GetCardBehavior($cardID, $heroID)
     return $behavior[$cardID];
   }
   
-  // Return neutral default
-  return [0, 0, 0, 0, 0, 0, 0, 0];
+  return GenerateDefaultBehavior($cardID);
 }
 
-/**
- * Get all card behaviors for a specific hero
- */
+function GenerateDefaultBehavior($cardID)
+{
+  $type      = CardType($cardID);
+  $pitchVal  = PitchValue($cardID);
+  $blockVal  = BlockValue($cardID);
+  $powerVal  = PowerValue($cardID);
+
+  $pitchPriority = ($pitchVal > 0) ? ($pitchVal * 0.8) : 0;
+  $blockPriority = ($blockVal > 0) ? 0.3 : 0;
+
+  if($type == "DR") {
+    return [0.5, 0, 0, 0.45, 0.45, $pitchPriority, 0, 0];
+  }
+
+  if($type == "AR") {
+    return [$blockPriority, 0, 0, 0.4, 0, $pitchPriority, 0.2, 0];
+  }
+
+  if($powerVal > 0 || $type == "AA" || $type == "A") {
+    return [$blockPriority, 0.45, 0.35, 0, 0, $pitchPriority, 0.2, 0];
+  }
+
+  if($type == "I") {
+    return [0, 0.3, 0, 0, 0, $pitchPriority, 0, 0.3];
+  }
+
+  return [$blockPriority, 0.2, 0, 0, 0, $pitchPriority, 0.2, 0];
+}
+
 function GetCardBehaviorForHero($heroID)
 {
   switch($heroID) {
@@ -73,24 +98,15 @@ function GetCardBehaviorForHero($heroID)
       return GetIraBehaviors();
     case "fai_rising_rebellion":
       return GetFaiBehaviors();
-    case "lexi_rowdeez":
-      return GetLexiBehaviors();
     default:
       return [];
   }
 }
 
-/**
- * IRA CRIMSON HAZE - Blue combo focused hero
- * Strategy: Setup blue combos, block efficiently with combos
- */
 function GetIraBehaviors()
 {
   return [
-    // ===== HERO HERO ABILITY =====
     "ira_crimson_haze" => [0, 0, 0, 0, 0, 0, 0, 0],
-    
-    // ===== KODACHIS - High Priority Equipment =====
     "harmonized_kodachi" => ComputeKodachiPriority(2), // Computed based on hand state
     
     // ===== BLUE COMBO CARDS - Setup for value =====
@@ -127,17 +143,10 @@ function GetIraBehaviors()
   ];
 }
 
-/**
- * FAI RISING REBELLION - Draconic chain focused hero
- * Strategy: Build draconic chains, play efficient attacks
- */
 function GetFaiBehaviors()
 {
   return [
-    // ===== HERO ABILITY =====
     "fai_rising_rebellion" => ComputeFaiHeroPriority(2), // Computed based on draconic chains
-    
-    // ===== KODACHI =====
     "harmonized_kodachi" => ComputeKodachiPriority(2),
     
     // ===== DRACONIC CHAIN STARTERS - Play early for setup =====
@@ -178,28 +187,11 @@ function GetFaiBehaviors()
   ];
 }
 
-/**
- * LEXI ROWDEEZ - Pepper focused hero (placeholder)
- * Strategy: Play defensive, setup pepper counters
- */
-function GetLexiBehaviors()
-{
-  return [
-    // Placeholder for Lexi - can expand later
-  ];
-}
-
-/**
- * Computed priorities - these update based on game state
- * This allows for smarter, context-aware decisions
- */
-
 function ComputeKodachiPriority($playerID)
 {
   $resources = &GetResources($playerID);
   $blueCount = SearchCount(SearchHand($playerID, "pitch", 3));
   
-  // If we have blue or excess resources, activate kodachi
   $shouldActivate = ($blueCount > 0 || $resources[0] > 1);
   
   return [0, $shouldActivate ? 0.95 : 0.1, 0, 0, 0, 0, 0, $shouldActivate ? 0.95 : 0.1];
@@ -231,11 +223,7 @@ function ComputeArtOfWarPriority($playerID)
 }
 
 function ComputeSnapdragonPriority($playerID)
-{
-  // Snapdragon Scalers: Only activate as permanent ability (index 7)
-  // if we DON'T already have go again
-  // All other priorities should be 0 (don't use for anything else)
-  
+{  
   $hasGoAgain = DoesAttackHaveGoAgain();
   $resources = &GetResources($playerID);
   $hand = &GetHand($playerID);
@@ -247,5 +235,3 @@ function ComputeSnapdragonPriority($playerID)
   
   return [0, 0, 0, 0, 0, 0, 0, $shouldActivate ? 0.85 : 0];
 }
-
-?>
