@@ -1497,7 +1497,7 @@ function CombatChainClosedCharacterEffects()
           $deck = new Deck($defPlayer);
           if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $defPlayer, "DECK", source: "bone_vizier") < 6) {
             $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
-            WriteLog(CardLink("bone_vizier", "bone_vizier") . " put " . CardLink($card, $card) . " on the bottom of your deck");
+            WriteLog("⬇️ " . CardLink("bone_vizier", "bone_vizier") . " put " . CardLink($card, $card) . " on the bottom of your deck");
           }
           break;
         default:

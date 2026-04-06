@@ -2919,7 +2919,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
             AddDecisionQueue("MZDAMAGE", $player, "1,DAMAGE," . $parameter, 1);
             WriteLog(CardLink($parameter, $parameter) . " deals 1 damage");
           } else {
-            WriteLog("The card was put on the bottom of your deck");
+            WriteLog("⬇️ The card was put on the bottom of your deck");
             $deck->AddBottom($deck->Top(remove: true), "DECK");
           }
         }
@@ -3228,7 +3228,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         for ($i = 0; $i < count(GetArsenal($player)) + count(GetHand($player)); $i++) {
           BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
         }
-        AddDecisionQueue("WRITELOG", $player, "The cards and arsenal of Player " . $player . " was put on the bottom of their deck.");
+        AddDecisionQueue("WRITELOG", $player, "⬇️ The cards and arsenal of Player " . $player . " was put on the bottom of their deck.");
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case $CID_Frailty:
@@ -3255,7 +3255,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($deck->Reveal()) {
           $cardID = $deck->Top(true);
           if (!SubtypeContains($cardID, "Evo", $player)) {
-            WriteLog("The card was put on the bottom of your deck");
+            WriteLog("⬇️ The card was put on the bottom of your deck");
             $deck->AddBottom($cardID, "DECK");
           }
           else $deck->AddTop($cardID, "DECK");
@@ -4393,7 +4393,7 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
       AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
-      AddDecisionQueue("WRITELOG", $player, "<0> was put on the bottom of the deck.", 1);
+      AddDecisionQueue("WRITELOG", $player, "⬇️ <0> was put on the bottom of the deck.", 1);
       AddDecisionQueue("ADDBOTDECK", $defPlayer, "Skip", 1);
       AddDecisionQueue("DRAW", $defPlayer, "-");
       break;

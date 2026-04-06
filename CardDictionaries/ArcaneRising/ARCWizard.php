@@ -1252,7 +1252,7 @@ function ProcessSurge($cardID, $player, $target)
     case "perennial_aetherbloom_red":
     case "perennial_aetherbloom_yellow":
     case "perennial_aetherbloom_blue":
-      WriteLog(CardLink($cardID, $cardID) . " returns on the bottom of the deck");
+      WriteLog("⬇️ " . CardLink($cardID, $cardID) . " returns on the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
       $discardPieces = DiscardPieces();

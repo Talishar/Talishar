@@ -3225,7 +3225,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDBOTTOMREMOVETOP":
       $deck = new Deck($player);
       $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
-      WriteLog("Player " . $player . " put " . CardLink($card, $card) . " on the bottom of the deck and Clash again!");
+      WriteLog("⬇️ Player " . $player . " put " . CardLink($card, $card) . " on the bottom of the deck and Clash again!");
       return "";
     case "CLASH":
       ClashLogic($parameter, $player);

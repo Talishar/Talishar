@@ -124,11 +124,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         switch ($mode) {
           case 8:
             $deck->AddTop($buttonInput);
-            WriteLog("Player " . $playerID . " put a card on top of the deck");
+            WriteLog("⬆️ Player " . $playerID . " put a card on top of the deck");
             break;
           case 9:
             $deck->AddBottom($buttonInput);
-            WriteLog("Player " . $playerID . " put a card on the bottom of the deck");
+            WriteLog("⬇️ Player " . $playerID . " put a card on the bottom of the deck");
             break;
         }
         array_splice($options, $found, 1);
@@ -168,7 +168,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if (str_contains($index, ",")) $index = intval(explode(",", $index)[0]);
         array_splice($hand, $index, 1);
         ContinueDecisionQueue($buttonInput);
-        WriteLog("Player " . $playerID . " put a card on the top of the deck.");
+        WriteLog("⬆️ Player " . $playerID . " put a card on the top of the deck.");
       }
       break;
     case 13: //HANDBOTTOM
@@ -180,7 +180,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if (str_contains($index, ",")) $index = intval(explode(",", $index)[0]);
         array_splice($hand, $index, 1);
         ContinueDecisionQueue($buttonInput);
-        WriteLog("Player " . $playerID . " put a card on the bottom of the deck.");
+        WriteLog("⬇️ Player " . $playerID . " put a card on the bottom of the deck.");
       }
       break;
     case 14: //Banish
@@ -733,7 +733,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             AddGraveyard($cardID, $playerID, "MANUAL");
           }
           elseif ($num == "deck") {
-            WriteLog("Player " . $playerID . " manually added a card to the top of their deck", highlight: true);
+            WriteLog("⬆️ Player " . $playerID . " manually added a card to the top of their deck", highlight: true);
             AddTopDeck($cardID, $playerID, "MANUAL");
           }
           elseif ($num == "inv") {
