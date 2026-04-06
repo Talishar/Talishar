@@ -553,3 +553,158 @@ class indefensibly_honed_blue extends Card {
 		DamageTrigger($otherPlayer, 1, "DAMAGE", $this->cardID, $this->controller);
 	}
 }
+
+class deadly_display extends BaseCard {
+	function PlayAbility() {
+		global $CombatChain, $CurrentTurnEffects;
+		if (TypeContains($CombatChain->AttackCard()->ID(), "W")) {
+			AddEffectToCurrentAttack($this->cardID);
+			$originUID = $CombatChain->AttackCard()->OriginUniqueID();
+			$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
+			if ($foundSharpen)
+				AddEffectToCurrentAttack("$this->cardID-ONHIT");
+		}
+		return "";
+	}
+
+	function IsPlayRestricted() {
+		global $CombatChain;
+		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
+		return false;
+	}
+}
+
+class deadly_display_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "deadly_display_red";
+    $this->controller = $controller;
+		$this->baseCard = new deadly_display($this->cardID, $this->controller);
+  }
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "ONHIT" ? 0 : 3;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		if ($parameter == "ONHIT")
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "EFFECTHITEFFECT");
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+		PlayAura("flurry", $this->controller);
+	}
+}
+
+class deadly_display_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "deadly_display_blue";
+    $this->controller = $controller;
+		$this->baseCard = new deadly_display($this->cardID, $this->controller);
+  }
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "ONHIT" ? 0 : 1;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		if ($parameter == "ONHIT")
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "EFFECTHITEFFECT");
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+		PlayAura("flurry", $this->controller);
+	}
+}
+
+class swordmasters_path extends BaseCard {
+	function PlayAbility() {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		AddCurrentTurnEffect("$this->cardID-SHARP", $this->controller);
+	}
+
+	function CombatEffectActive() {
+		global $CombatChain;
+		return SubTypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+}
+
+class swordmasters_path_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "swordmasters_path_red";
+    $this->controller = $controller;
+		$this->baseCard = new swordmasters_path($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+		return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+}
+
+class swordmasters_path_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "swordmasters_path_blue";
+    $this->controller = $controller;
+		$this->baseCard = new swordmasters_path($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+		return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+}
+
+class flurry_foot_dance_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "flurry_foot_dance_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function CardBlockModifier($from, $resourcesPaid, $index) {
+		return SearchAurasForCard("flurry", $this->controller, false) ? 2 : 0;
+	}
+}

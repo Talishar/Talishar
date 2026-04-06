@@ -1,8 +1,22 @@
 <?php
 
 function Sharpen($MZIndex, $player, $num=1) {
+  global $CurrentTurnEffects;
   $zone = explode("-", $MZIndex)[0];
   $ind = explode("-", $MZIndex)[1] ?? -1;
+  for ($i = $CurrentTurnEffects->NumEffects() - 1; $i >= 0 ; --$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    if ($Effect->PlayerID() != $player) continue;
+    switch ($Effect->EffectID()) {
+      case "swordmasters_path_red":
+      case "swordmasters_path_blue":
+        ++$num;
+        $Effect->Remove();
+        break;
+      default:
+        break;
+    }
+  }
   if ($ind != -1) {
     switch ($zone) {
       case "MYCHAR":
