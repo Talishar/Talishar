@@ -238,3 +238,276 @@ class silverstride_dodgers extends Card {
 		return SearchAurasForCard("flurry", $this->controller, false) != "" ? 1 : 0;
 	}
 }
+
+class brimming_blade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "brimming_blade_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $uid = explode("-", $target)[1] ?? -1;
+		$index = SearchCharacterForUniqueID($uid, $this->controller);
+		if ($index != -1) Sharpen("MYCHAR-$index", $this->controller, 2);
+		return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		if (SearchCharacterAliveSubtype($this->controller, "Sword")) return false;
+		return true;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$search = "MYCHAR:subtype=Sword";
+		SetTargets($this->controller, $this->cardID, $search);
+	}
+}
+
+class gleam_of_the_blade_red extends Card {
+	public $archetype;
+  function __construct($controller) {
+    $this->cardID = "gleam_of_the_blade_red";
+    $this->controller = $controller;
+		$this->archetype = new windup($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+		if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
+			AddEffectToCurrentAttack($this->cardID);
+		return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return TypeContains($CombatChain->AttackCard()->ID(), "W");
+	}
+
+	function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		PlayAura("flurry", $this->controller);
+	}
+
+	function GetAbilityTypes($index = -1, $from = '-') {
+		return "I,AR";
+	}
+
+	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+		global $mainPlayer, $CombatChain;
+		$names = "Ability";
+		$nameBlocked = NameBlocked($this->cardID, $index, $from);
+		if($nameBlocked) return $names;
+		if ($from != "HAND") $names = "-,Attack Reaction";
+		elseif ($this->controller == $mainPlayer && $CombatChain->HasCurrentLink() && IsReactionPhase() && TypeContains($CombatChain->AttackCard()->ID(), "W")) $names .= ",Attack Reaction";
+		return $names;
+	}
+
+	function CanActivateAsInstant($index = -1, $from = '') {
+		return $this->archetype->CanActivateAsInstant($index, $from);
+	}
+
+	function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 1;
+  }
+
+	function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+}
+
+class sharp_incline extends BaseCard {
+	function PayAdditionalCosts() {
+		$search = "MYCHAR:subtype=Sword";
+		SetTargets($this->controller, $this->cardID, $search);
+	}
+
+	function PlayAbility($target, $thresh) {
+		Sharpen($target, $this->controller);
+		$Weapon = MZIndexToObject($this->controller, $target);
+		if ($Weapon->NumCounters() >= $thresh)
+			AddCurrentTurnEffect($this->cardID, $this->controller, "-", $Weapon->UniqueID());
+	}
+
+	function CurrentEffectCostModifier($index, $playIndex, &$remove) {
+		$CharCard = new CharacterCard($playIndex, $this->controller);
+		$Effect = new CurrentEffect($index);
+		if ($CharCard->UniqueID() == $Effect->AppliestoUniqueID()) {
+			$remove = true;
+			return -1;
+		}
+		return 0;
+	}
+}
+
+class sharp_incline_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "sharp_incline_red";
+    $this->controller = $controller;
+    $this->baseCard = new sharp_incline($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, 1);
+		return "";
+  }
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
+	}
+
+	function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+		return $this->baseCard->CurrentEffectCostModifier($index, $playIndex, $remove);
+	}
+}
+
+class sharp_incline_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "sharp_incline_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new sharp_incline($this->cardID, $this->controller);
+  }
+  
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, 2);
+		return "";
+  }
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
+	}
+
+	function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+		return $this->baseCard->CurrentEffectCostModifier($index, $playIndex, $remove);
+	}
+}
+
+class shuck_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shuck_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("flurry", $this->controller);
+		return "";
+  }
+}
+
+class silverdrop_downpour_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "silverdrop_downpour_red";
+    $this->controller = $controller;
+  }
+
+	function SelfCostModifier($from) {
+		return SearchCurrentTurnEffects("hala_bladesaint_of_the_vow", $this->controller) ? -1 : 0;
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+		if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
+			AddEffectToCurrentAttack($this->cardID);
+		return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return TypeContains($CombatChain->AttackCard()->ID(), "W");
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
+		return false;
+	}
+}
+
+class backside_of_the_blade_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "backside_of_the_blade_blue";
+    $this->controller = $controller;
+  }
+  
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain, $combatChainState, $CCS_WeaponIndex;
+		if (TypeContains($CombatChain->AttackCard()->ID(), "W")) {
+			// this can do some funny things with targeting previous chain links
+			// for now I'm skipping it
+			AddEffectToCurrentAttack($this->cardID);
+			$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+			$Weapon->AddUse();
+			if ($Weapon->Status() == 1) $Weapon->SetUsed(2);
+		}
+		return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return TypeContains($CombatChain->AttackCard()->ID(), "W");
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
+		return false;
+	}
+}
+
+class visit_the_dawnsmith_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "visit_the_dawnsmith_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function StartTurnAbility($index) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID, $index);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Aura = new AuraCard($target, $this->controller);
+		$Aura->Destroy();
+		$Character = new PlayerCharacter($this->controller);
+		for ($i = 0; $i < $Character->NumCards(); ++$i) {
+			$CharacterCard = $Character->Card($i, true);
+			if (SubtypeContains($CharacterCard->CardID(), "Sword"))
+				Sharpen("MYCHAR-" . $CharacterCard->Index(), $this->controller);
+		}
+	}
+}
+
+class toe_the_line_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "toe_the_line_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+  }
+
+	function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    $prevented = 2;
+    if (!$amount) {
+			if ($preventable) PlayAura("flurry", $this->controller);
+      $remove = true;
+    }
+    return $prevented;
+	}
+}

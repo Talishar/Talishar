@@ -390,7 +390,7 @@ class Card {
     return;
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     return 0;
   }
 
@@ -431,7 +431,7 @@ class Card {
     return GeneratedHasBeatChest($this->cardID);
   }
 
-  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return 0;
   }
 

@@ -1358,6 +1358,15 @@ function GetEasyAbilityNames($cardID, $index, $from) {
       if (CanPlayNAA($cardID, $from, $index)) $names[1] = "Action";
       if ($names[1] == "-") return $names[0];
       return implode(",", $names);
+    case "I,AR":
+      $names = ["-", "-"];
+      //can it ability?
+      if ($from == "HAND") $names[0] = "Ability";
+      else return "-,Action";
+      //can it be played?
+      if (CanPlayNAA($cardID, $from, $index)) $names[1] = "Action";
+      if ($names[1] == "-") return $names[0];
+      return implode(",", $names);
     default:
     return "";
   }
