@@ -160,7 +160,7 @@ class paragon_plate extends Card {
 		$CharCard = new CharacterCard($index, $this->controller);
 		$CharCard->Tap();
 		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
-		$Weapon->AddCounters(-1);
+		$Weapon->AddPowerCounters(-1);
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -208,7 +208,7 @@ class anticipating_gaze extends Card {
 		global $CCS_WeaponIndex, $combatChainState, $dqVars;
 		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
 		$Gaze = new CharacterCard($dqVars["index"], $this->controller);
-		$Weapon->AddCounters(-1);
+		$Weapon->AddPowerCounters(-1);
 		$Gaze->Destroy();
 	}
 }
@@ -671,6 +671,10 @@ class swordmasters_path_red extends Card {
 	function EffectPowerModifier($param, $attached = false) {
 		return 3;
 	}
+
+	function SpecialType() {
+		return "A";
+	}
 }
 
 class swordmasters_path_blue extends Card {
@@ -691,6 +695,10 @@ class swordmasters_path_blue extends Card {
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 3;
+	}
+
+	function SpecialType() {
+		return "A";
 	}
 }
 

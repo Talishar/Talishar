@@ -8,8 +8,8 @@ function Sharpen($MZIndex, $player, $num=1) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
     switch ($Effect->EffectID()) {
-      case "swordmasters_path_red":
-      case "swordmasters_path_blue":
+      case "swordmasters_path_red-SHARP":
+      case "swordmasters_path_blue-SHARP":
         ++$num;
         $Effect->Remove();
         break;
@@ -26,7 +26,7 @@ function Sharpen($MZIndex, $player, $num=1) {
             return;
 					SearchCurrentTurnEffects("reverent_rerebrace", $player, true);
         }
-        $CharacterCard->AddCounters($num);
+        $CharacterCard->AddPowerCounters($num);
         AddCurrentTurnEffect("hala_bladesaint_of_the_vow", $player, "-", $CharacterCard->UniqueID());
         break;
       default:
