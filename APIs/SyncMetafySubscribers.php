@@ -42,47 +42,43 @@ $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
 $oauthClientID     = $metafyClientID     ?? getenv('METAFY_CLIENT_ID')     ?: '';
 $oauthClientSecret = $metafyClientSecret ?? getenv('METAFY_CLIENT_SECRET') ?: '';
 
-$ownerToken        = '';
-$ownerRefreshToken = '';
-$ownerDbId         = null;
-
-$conn_owner = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
-if ($conn_owner) {
-  // Prefer the currently-logged-in moderator's token (they are most likely the community owner).
-  // Fall back to any moderator account that has a Metafy token stored.
-  $stmt_owner = mysqli_stmt_init($conn_owner);
-  if (mysqli_stmt_prepare($stmt_owner, "
-    SELECT usersid, metafyAccessToken, metafyRefreshToken
-    FROM users
-    WHERE metafyAccessToken IS NOT NULL AND metafyAccessToken != ''
-    ORDER BY (usersUid = ?) DESC
-    LIMIT 1
-  ")) {
-    mysqli_stmt_bind_param($stmt_owner, 's', $useruid);
-    mysqli_stmt_execute($stmt_owner);
-    $res_owner = mysqli_stmt_get_result($stmt_owner);
-    $row_owner = mysqli_fetch_assoc($res_owner);
-    mysqli_stmt_close($stmt_owner);
-    $ownerToken        = $row_owner['metafyAccessToken']  ?? '';
-    $ownerRefreshToken = $row_owner['metafyRefreshToken'] ?? '';
-    $ownerDbId         = $row_owner['usersid']            ?? null;
+// Load moderator's stored Metafy OAuth tokens
+$modMetafyToken        = '';
+$modMetafyRefreshToken = '';
+$modUserDbId           = null;
+$conn_mod = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+if ($conn_mod) {
+  $stmt_mod = mysqli_stmt_init($conn_mod);
+  if (mysqli_stmt_prepare($stmt_mod, "SELECT usersid, metafyAccessToken, metafyRefreshToken FROM users WHERE usersUid=? LIMIT 1")) {
+    mysqli_stmt_bind_param($stmt_mod, 's', $useruid);
+    mysqli_stmt_execute($stmt_mod);
+    $res_mod = mysqli_stmt_get_result($stmt_mod);
+    $row_mod = mysqli_fetch_assoc($res_mod);
+    mysqli_stmt_close($stmt_mod);
+    $modMetafyToken        = $row_mod['metafyAccessToken']  ?? '';
+    $modMetafyRefreshToken = $row_mod['metafyRefreshToken'] ?? '';
+    $modUserDbId           = $row_mod['usersid']            ?? null;
   }
-  mysqli_close($conn_owner);
+  mysqli_close($conn_mod);
 }
 
+/**
+ * Attempt to refresh the Metafy OAuth access token using the stored refresh token.
+ * Saves the new token to DB on success. Returns new access token or empty string.
+ */
 function RefreshMetafyAccessToken($refreshToken, $clientID, $clientSecret, $userDbId) {
   if (empty($refreshToken) || empty($clientID) || empty($clientSecret)) return '';
 
-  $ch = curl_init('https://metafy.gg/oauth/token');
+  $ch = curl_init('https://metafy.gg/irk/oauth/token');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_POST, true);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
     'grant_type'    => 'refresh_token',
     'refresh_token' => $refreshToken,
     'client_id'     => $clientID,
     'client_secret' => $clientSecret,
   ]));
-  curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
   curl_setopt($ch, CURLOPT_TIMEOUT, 10);
   $raw      = curl_exec($ch);
@@ -91,21 +87,19 @@ function RefreshMetafyAccessToken($refreshToken, $clientID, $clientSecret, $user
 
   if ($httpCode !== 200) return '';
 
-  $tokens     = json_decode($raw, true);
+  $tokens = json_decode($raw, true);
   $newAccess  = $tokens['access_token']  ?? '';
   $newRefresh = $tokens['refresh_token'] ?? $refreshToken;
 
   if (!empty($newAccess) && !empty($userDbId)) {
     $conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
-    if ($conn) {
-      $stmt = mysqli_stmt_init($conn);
-      if (mysqli_stmt_prepare($stmt, "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=? WHERE usersid=?")) {
-        mysqli_stmt_bind_param($stmt, 'ssi', $newAccess, $newRefresh, $userDbId);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-      }
-      mysqli_close($conn);
+    $stmt = mysqli_stmt_init($conn);
+    if (mysqli_stmt_prepare($stmt, "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=? WHERE usersid=?")) {
+      mysqli_stmt_bind_param($stmt, 'ssi', $newAccess, $newRefresh, $userDbId);
+      mysqli_stmt_execute($stmt);
+      mysqli_stmt_close($stmt);
     }
+    mysqli_close($conn);
   }
 
   return $newAccess;
@@ -116,16 +110,18 @@ $api_source = '';
 $api_error  = null;
 $max_pages  = 50;
 
-if (empty($ownerToken)) {
-  $api_error = "No Metafy account linked. The Talishar community owner must link their Metafy account via the profile page before syncing.";
+if (empty($modMetafyToken)) {
+  $api_error = "No Metafy account linked to this moderator. Connect your Metafy account via the profile page.";
 }
 
-if (!empty($ownerToken)) {
-  $auth_token      = $ownerToken;
+// --- Fetch subscribers from metafy.gg/irk/api/v1/me/community/subscribers ---
+// This is the only real API endpoint for community subscriber lists.
+// It uses the community owner's OAuth token as Bearer.
+if (!empty($modMetafyToken)) {
+  $auth_token  = $modMetafyToken;
   $token_refreshed = false;
   $page = 1;
 
-  $retries = 0;
   while ($page <= $max_pages) {
     $url = "https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100&page=" . intval($page);
     $ch = curl_init($url);
@@ -136,43 +132,22 @@ if (!empty($ownerToken)) {
       'Content-Type: application/json'
     ]);
     curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-    curl_setopt($ch, CURLOPT_HEADER, true); // include response headers to read Retry-After
-    $raw_with_headers = curl_exec($ch);
-    $http_code        = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $header_size      = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-    $curl_err         = curl_error($ch);
+    $raw      = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_err = curl_error($ch);
     curl_close($ch);
-
-    $raw     = substr($raw_with_headers, $header_size);
-    $headers = substr($raw_with_headers, 0, $header_size);
 
     // Token expired — try to refresh once and retry
     if ($http_code === 401 && !$token_refreshed) {
-      $newToken = RefreshMetafyAccessToken($ownerRefreshToken, $oauthClientID, $oauthClientSecret, $ownerDbId);
+      $newToken = RefreshMetafyAccessToken($modMetafyRefreshToken, $oauthClientID, $oauthClientSecret, $modUserDbId);
       if (!empty($newToken)) {
         $auth_token      = $newToken;
         $token_refreshed = true;
         continue; // retry same page with new token
       }
-      $api_error = "Metafy returned 401 and token refresh failed. The community owner must re-link their Metafy account via the profile page.";
+      $api_error = "metafy.gg/irk returned HTTP 401 and token refresh failed (refresh token may be expired — please re-link your Metafy account on the profile page)";
       break;
     }
-
-    if ($http_code === 429) {
-      if ($retries >= 3) {
-        $api_error = "metafy.gg/irk returned HTTP 429 (rate limited) after 3 retries. Try again later.";
-        break;
-      }
-      $retry_after = 10; // default wait in seconds
-      if (preg_match('/Retry-After:\s*(\d+)/i', $headers, $m)) {
-        $retry_after = max(1, (int)$m[1]);
-      }
-      sleep(min($retry_after, 60));
-      $retries++;
-      continue; // retry same page
-    }
-
-    $retries = 0; // reset retry counter on success
 
     if ($http_code !== 200) {
       $api_error = "metafy.gg/irk returned HTTP $http_code" . ($curl_err ? " ($curl_err)" : "");
@@ -203,16 +178,15 @@ if (!empty($ownerToken)) {
     $api_source = 'metafy.gg/irk/api/v1/me/community/subscribers';
     if (count($subscribers) < 100) break;
     $page++;
-    usleep(300000); // 300ms pause between pages to avoid rate limits
   }
 }
 
 $all_subscriber_ids  = array_unique($all_subscriber_ids);
 $subscriber_usernames = $subscriber_usernames ?? [];
 
-// Safety: abort if API returned zero subscribers to avoid clearing everyone.
-// Note: use HTTP 200 so nginx does not intercept and strip CORS headers from the response.
+// Safety: abort if API returned zero subscribers to avoid clearing everyone
 if (empty($all_subscriber_ids)) {
+  http_response_code(502);
   echo json_encode([
     "error" => "Could not fetch any subscribers from Metafy. Sync aborted to avoid clearing valid supporters.",
     "apiError" => $api_error ?? 'No subscribers returned.',
@@ -223,6 +197,7 @@ if (empty($all_subscriber_ids)) {
 // Cross-reference DB
 $conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
 if (!$conn) {
+  http_response_code(500);
   echo json_encode(["error" => "DB connection failed"]);
   exit;
 }
@@ -243,22 +218,13 @@ while ($row = mysqli_fetch_assoc($result)) {
   if (!is_array($communities)) continue;
 
   $has_talishar = false;
-  $is_community_owner = false;
   foreach ($communities as $c) {
     if (($c['id'] ?? '') === $talishar_community_id) {
       $has_talishar = true;
-      if (($c['type'] ?? '') === 'owned') {
-        $is_community_owner = true;
-      }
       break;
     }
   }
   if (!$has_talishar) continue;
-  // Community owner is never in the subscriber list — skip to avoid clearing their access.
-  if ($is_community_owner) {
-    $still_active++;
-    continue;
-  }
 
   $checked++;
   $metafyID = $row['metafyID'] ?? null;
