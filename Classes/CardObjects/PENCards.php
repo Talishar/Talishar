@@ -2198,8 +2198,6 @@ class chorus_of_rotwood_red extends Card {
     Decompose($this->controller, "CHORUSOFROTWOOD");
     AddDecisionQueue("PLAYAURA", $this->controller, "runechant-3", 1);
     AddDecisionQueue("ELSE", $this->controller, "-"); //do this if you decline decompose
-    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1); // put it back in the graveyard
-    AddDecisionQueue("ADDDISCARD", $this->controller, "-", 1);
     AddDecisionQueue("PLAYAURA", $this->controller, "runechant-3", 1);
   }
 }
