@@ -2195,8 +2195,6 @@ class chorus_of_rotwood_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $Discard = new Discard($this->controller);
-    $Discard->RemoveTop(); //don't let them decompose itself
     Decompose($this->controller, "CHORUSOFROTWOOD");
     AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1); // put it back in the graveyard
     AddDecisionQueue("ADDDISCARD", $this->controller, "-", 1);
