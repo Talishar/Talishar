@@ -511,3 +511,45 @@ class toe_the_line_red extends Card {
     return $prevented;
 	}
 }
+
+class indefensibly_honed_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "indefensibly_honed_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $uid = explode("-", $target)[1] ?? -1;
+		$index = SearchCharacterForUniqueID($uid, $this->controller);
+		if ($index != -1) {
+			Sharpen("MYCHAR-$index", $this->controller, 2);
+			$CharacterCard = new CharacterCard($index, $this->controller);
+			if ($CharacterCard->NumCounters() >= 3)
+				AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID: $CharacterCard->UniqueID());
+		}
+		return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		if (SearchCharacterAliveSubtype($this->controller, "Sword")) return false;
+		return true;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$search = "MYCHAR:subtype=Sword";
+		SetTargets($this->controller, $this->cardID, $search);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function CurrentEffectOnBlockEffect($cardID, $from, $start=-1) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$otherPlayer = $this->controller == 1 ? 2 : 1;
+		DamageTrigger($otherPlayer, 1, "DAMAGE", $this->cardID, $this->controller);
+	}
+}
