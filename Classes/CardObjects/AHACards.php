@@ -844,7 +844,7 @@ class polished_blade_red extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain, $combatChainState, $CCS_WeaponIndex;
-		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
+		if (!SubTypeContains($CombatChain->AttackCard()->ID(), "Sword")) return true;
 		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex],  $this->controller);
 		if ($Weapon->NumPowerCounters() == 0) return true;
 		return false;
