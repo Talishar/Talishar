@@ -516,11 +516,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "solitary_companion_red":
     case "solitary_companion_yellow":
     case "solitary_companion_blue":
-      if ($from != "PLAY") {
-        $illusionistAuras = SearchAura($currentPlayer, class: "ILLUSIONIST");
-        $arrayAuras = explode(",", $illusionistAuras);
-        if (count($arrayAuras) <= 1) PlayAura("spectral_shield", $currentPlayer);
-      }
+      if ($from != "PLAY")
+        AddLayer("TRIGGER", $currentPlayer, $cardID);
       return "";
     case "spectral_manifestations_red":
     case "spectral_manifestations_yellow":

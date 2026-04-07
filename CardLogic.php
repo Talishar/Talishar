@@ -2123,6 +2123,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
     }
     switch ($parameter) {
+      case "solitary_companion_red":
+      case "solitary_companion_yellow":
+      case "solitary_companion_blue":
+        $illusionistAuras = SearchAura($player, class: "ILLUSIONIST");
+        $arrayAuras = explode(",", $illusionistAuras);
+        if (count($arrayAuras) <= 1) PlayAura("spectral_shield", $player);
+        break;
       case "olympia":
       case "olympia_prized_fighter":
         PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController:$mainPlayer);
