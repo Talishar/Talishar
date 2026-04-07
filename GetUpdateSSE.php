@@ -179,7 +179,6 @@ while (true) {
   $inactive = 1000 * $currentRealTime - intval($lastUpdateTime) > $timeout;
   $previouslyInactive = GetCachePiece($gameName, 17);
   if ($cacheVal > $lastUpdate || $inactive && $previouslyInactive == 0) {
-    error_log("Time3: " . 1000 * $currentRealTime - intval($lastUpdateTime));
     $lastUpdate = $cacheVal;
     if ($inactive) SetCachePiece($gameName, 17, 1);
     else SetCachePiece($gameName, 17, 0);
