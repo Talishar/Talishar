@@ -252,3 +252,20 @@ function AddCurrentTurnEffectAwait($player) {
   $uniqueID = $dqVars["uniqueID"] ?? -1;
   AddCurrentTurnEffect($effectID, $player, $from, $uniqueID);
 }
+
+function ChooseTextAwait($player) {
+  global $dqVars;
+  $may = $dqVars["may"] ?? false;
+  $choices = $dqVars["choices"];
+  $numChoices = $dqVars["numChoices"] ?? 0;
+  if ($numChoices == 0)
+    $numChoices = count(explode(",", $choices));
+  $maxChoices = $dqVars["maxChoices"] ?? $numChoices;
+  $minChoices = $dqVars["minChoices"] ?? $numChoices;
+  $choices = $dqVars["choices"];
+  $modal = $dqVars["modal"] ?? "";
+  $context = $dqVars["context"] ?? "";
+  if ($modal != "") PrependDecisionQueue("SHOWMODES", $player, $modal, 1);
+  PrependDecisionQueue("MULTICHOOSETEXT", $player, "$maxChoices-$choices-$minChoices");
+  if ($context != "") PrependDecisionQueue("SETDQCONTEXT", $player, $context);
+}

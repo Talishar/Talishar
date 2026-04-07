@@ -786,3 +786,70 @@ class ole_blue extends Card {
 		return false;
 	}
 }
+
+class polished_blade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "polished_blade_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $combatChainState, $CCS_WeaponIndex;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$modes = explode(",", $additionalCosts);
+		foreach ($modes as $mode) {
+			switch($mode) {
+				case "Go_again":
+					GiveAttackGoAgain();
+					break;
+				case "Additional_attack":
+					$Weapon->AddUse();
+					if ($Weapon->Status() == 1) $Weapon->SetUsed(2);
+					break;
+				case "Discount_attack":
+					AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$Weapon->UniqueID());
+					break;
+				default:
+					break;
+			}
+		}
+		return "";
+  }
+
+	function PayAdditionalCosts($from, $index = '-') {
+		global $combatChainState, $CCS_WeaponIndex;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex],  $this->controller);
+		$modalities = "Go_again,Additional_attack,Discount_attack";
+		$range = implode(",", range(1, $Weapon->NumPowerCounters()));
+		Await($this->controller, "ChooseText", "numChoices", choices:$range, subsequent:0, context:"Choose a number of counters to remove");
+		Await($this->controller, "ChooseText", "modes", choices:$modalities, modal:$this->cardID, context: "Choose modes");
+		Await($this->controller, $this->cardID, final:true);
+	}
+
+	function SpecificLogic() {
+		global $dqVars, $Stack;
+		$Character = new PlayerCharacter($this->controller);
+		$Weapon = $Character->FindCardID($this->cardID);
+		$Weapon->AddPowerCounters(-1 * intval($dqVars["numChoices"]));
+		$Layer = $Stack->TopLayer($this->cardID);
+		$Layer->SetAdditionalCosts($dqVars["modes"]);
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain, $combatChainState, $CCS_WeaponIndex;
+		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex],  $this->controller);
+		if ($Weapon->NumPowerCounters() == 0) return true;
+		return false;
+	}
+
+	function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+		$CharCard = new CharacterCard($playIndex, $this->controller);
+		$Effect = new CurrentEffect($index);
+		if ($CharCard->UniqueID() == $Effect->AppliestoUniqueID()) {
+			$remove = true;
+			return -1;
+		}
+		return 0;
+	}
+}
