@@ -1694,7 +1694,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         CheckSpellvoid($target, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         $Character = new PlayerCharacter($targetPlayer);
-        if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier") && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) DoMbrioBaseVizier($targetPlayer, $damage);
+        if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier", checkGem:true) && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) DoMbrioBaseVizier($targetPlayer, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         $Solray = $Character->FindCardID("solray_plating");
