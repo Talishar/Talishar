@@ -76,13 +76,8 @@ class zenith_blade extends Card {
 	}
 }
 
-class edict_of_steel_red extends Card {
-	function __construct($controller) {
-    $this->cardID = "edict_of_steel_red";
-    $this->controller = $controller;
-	}
-
-	function PayAdditionalCosts($from, $index = '-') {
+class edict_of_steel extends BaseCard {
+	function PayAdditionalCosts() {
 		$search = "MYCHAR:subtype=Sword";
 		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a sword to sharpen");
 		AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
@@ -91,16 +86,67 @@ class edict_of_steel_red extends Card {
 		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
 	}
 
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	function PlayAbility($target, $threshold) {
 		$uid = explode("-", $target)[1] ?? -1;
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) {
 			Sharpen("MYCHAR-$index", $this->controller);
 			$weaponCard = new CharacterCard($index, $this->controller);
-			if ($weaponCard->NumPowerCounters() > 0) {
+			if ($weaponCard->NumPowerCounters() >= $threshold) {
 				PlayAura("flurry", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
 			}
 		}
+	}
+}
+
+class edict_of_steel_red extends Card {
+	function __construct($controller) {
+    $this->cardID = "edict_of_steel_red";
+    $this->controller = $controller;
+		$this->baseCard = new edict_of_steel($this->cardID, $this->controller);
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$this->baseCard->PayAdditionalCosts();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility($target, 1);
+		return "";
+	}
+}
+
+class edict_of_steel_yellow extends Card {
+	function __construct($controller) {
+    $this->cardID = "edict_of_steel_yellow";
+    $this->controller = $controller;
+		$this->baseCard = new edict_of_steel($this->cardID, $this->controller);
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$this->baseCard->PayAdditionalCosts();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility($target, 2);
+		return "";
+	}
+}
+
+class edict_of_steel_blue extends Card {
+	function __construct($controller) {
+    $this->cardID = "edict_of_steel_blue";
+    $this->controller = $controller;
+		$this->baseCard = new edict_of_steel($this->cardID, $this->controller);
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$this->baseCard->PayAdditionalCosts();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility($target, 3);
+		return "";
 	}
 }
 
@@ -714,5 +760,29 @@ class flurry_foot_dance_yellow extends Card {
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
 		return SearchAurasForCard("flurry", $this->controller, false) ? 2 : 0;
+	}
+}
+
+class ole_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "ole_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $combatChainState, $CCS_WeaponIndex;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		if ($Weapon->NumPowerCounters() > 0) {
+			$Weapon->AddPowerCounters(-1);
+			Draw($this->controller);
+			PlayAura("flurry", $this->controller);
+		}
+		return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
+		return false;
 	}
 }
