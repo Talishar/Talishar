@@ -771,19 +771,26 @@ class ole_blue extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $combatChainState, $CCS_WeaponIndex;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
-		if ($Weapon->NumPowerCounters() > 0) {
-			$Weapon->AddPowerCounters(-1);
-			Draw($this->controller);
-			PlayAura("flurry", $this->controller);
+		if (!str_contains($target, "COMBATCHAINATTACKS")) {
+			$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+			if ($Weapon->NumPowerCounters() > 0) {
+				$Weapon->AddPowerCounters(-1);
+				Draw($this->controller);
+				PlayAura("flurry", $this->controller);
+			}
 		}
 		return "";
   }
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain;
-		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
-		return false;
+		if (TypeContains($CombatChain->AttackCard()->ID(), "W")) return false;
+		if (SearchCombatChainAttacks($this->controller, type:"W") != "") return false;
+		return true;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		SetTargets($this->controller, $this->cardID, "COMBATCHAIN:type=W&COMBATCHAINATTACKS:type=W");
 	}
 }
 
