@@ -1863,7 +1863,7 @@ function CachedTotalPower()
 function CachedTotalBlock()
 {
   global $combatChainState, $CCS_CachedTotalBlock;
-  return $combatChainState[$CCS_CachedTotalBlock];
+  return $combatChainState[$CCS_CachedTotalBlock] ?? 0;
 }
 
 function CachedAttackHasGoAgain()
