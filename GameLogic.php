@@ -3461,8 +3461,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         switch ($Hero->CardID()) {
           case "riptide":
           case "riptide_lurker_of_the_deep":
-            if (SubtypeContains($Layer->Parameter(), "Trap", $player))
+            if (SubtypeContains($Layer->Parameter(), "Trap", $player)) {
               AddLayer("TRIGGER", $player, $Hero->CardID(), "-", "DAMAGE");
+              ++$i; // needed due to reindexing
+            }
             break;
           default:
             break;
