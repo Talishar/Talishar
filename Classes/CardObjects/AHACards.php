@@ -310,14 +310,6 @@ class reverent_rerebrace extends Card {
 		return 1;
 	}
 
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialSubtype() {
-		return "Arms";
-	}
-
 	function SpecificLogic() {
 		global $dqVars;
 		$choice = $dqVars["choice"];
@@ -439,8 +431,8 @@ class sharp_incline extends BaseCard {
 
 	function PlayAbility($target, $thresh) {
 		Sharpen($target, $this->controller);
-		$Weapon = MZIndexToObject($this->controller, $target);
-		if ($Weapon->NumCounters() >= $thresh)
+		$Weapon = CleanTargetToObject($this->controller, $target);
+		if ($Weapon->NumPowerCounters() >= $thresh)
 			AddCurrentTurnEffect($this->cardID, $this->controller, "-", $Weapon->UniqueID());
 	}
 

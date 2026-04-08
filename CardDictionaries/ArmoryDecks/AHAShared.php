@@ -20,7 +20,6 @@ function Sharpen($MZIndex, $player, $num=1) {
   if ($ind != -1) {
     switch ($zone) {
       case "MYCHAR":
-        WriteLog("HERE sharpening $MZIndex for $num");
         if (is_numeric($ind))
           $CharacterCard = new CharacterCard($ind, $player);
         else {
@@ -28,10 +27,8 @@ function Sharpen($MZIndex, $player, $num=1) {
           $CharacterCard = $Character->FindCardUID($ind);
         }
         if ($CharacterCard->CardID() == "zenith_blade" && SearchCharacterActive($player, "reverent_rerebrace", true)) {
-          if (Rerebrace($MZIndex, $player, $num)) {
-            WriteLog("HERE: rerouting");
+          if (Rerebrace($MZIndex, $player, $num))
             return;
-          }
 					SearchCurrentTurnEffects("reverent_rerebrace", $player, true);
         }
         $CharacterCard->AddPowerCounters($num);
