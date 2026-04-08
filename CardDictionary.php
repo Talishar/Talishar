@@ -2099,10 +2099,10 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   if (DelimStringContains($subtype, "Construct")) {
     switch ($cardID) {
       case "construct_nitro_mechanoid_yellow":
-        if (CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer) == "") return "-";
+        if (SearchItemsForCard("nitro_mechanoida", $currentPlayer) != "") return "-";
         break;
       case "singularity_red":
-        if (CheckIfSingularityConditionsAreMet($currentPlayer) == "") return "-";
+        if (SearchCharacterForCard($currentPlayer, "teklovossen_the_mechropotent")) return "-";
         break;
       default:
         break;
