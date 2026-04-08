@@ -32,7 +32,7 @@ function Sharpen($MZIndex, $player, $num=1) {
 					SearchCurrentTurnEffects("reverent_rerebrace", $player, true);
         }
         $CharacterCard->AddPowerCounters($num);
-        AddCurrentTurnEffect("hala_bladesaint_of_the_vow", $player, "-", $CharacterCard->UniqueID());
+        AddCurrentTurnEffect("SHARPEN", $player, "-", $CharacterCard->UniqueID());
         break;
       default:
         break;

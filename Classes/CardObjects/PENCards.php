@@ -4252,7 +4252,7 @@ class display_of_craftsmanship extends BaseCard {
       AddCurrentTurnEffect($this->cardID, $this->controller);
       $ClassState = new ClassState($this->controller);
       $originUID = $CombatChain->AttackCard()->OriginUniqueID();
-      $foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
+      $foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $originUID);
       $WeaponCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
       if ($foundSharpen->Index() != -1) $WeaponCard->AddPowerCounters(1);
     }

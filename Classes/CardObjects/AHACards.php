@@ -42,14 +42,21 @@ class hala_bladesaint_of_the_vow extends Card {
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) Sharpen("MYCHAR-$index", $this->controller);
 	}
+}
+
+class SHARPEN extends Card {
+	function __construct($controller) {
+    $this->cardID = "SHARPEN";
+    $this->controller = $controller;
+	}
 
 	function CurrentEffectEndTurnAbilities($i, &$remove) {
-		global $currentTurnEffects;
+		$Character = new PlayerCharacter($this->controller);
+		$Effect = new CurrentEffect($i);
 		$remove = true;
-		$uid = $currentTurnEffects[$i + 2];
-		$index = SearchCharacterForUniqueID($uid, $this->controller);
-		$char = &GetPlayerCharacter($this->controller);
-		$char[$index + 3] = 0;
+		$uid = $Effect->AppliestoUniqueID();
+		$CharacterCard = $Character->FindCardUID($uid);
+		$CharacterCard->AddPowerCounters(-1 * $CharacterCard->NumPowerCounters());
 	}
 }
 
@@ -63,7 +70,7 @@ class zenith_blade extends Card {
 		global $CombatChain, $CurrentTurnEffects;
 		$ClassState = new ClassState($this->controller);
 		$originUID = $CombatChain->AttackCard()->OriginUniqueID();
-		$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
+		$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $originUID);
 		return $foundSharpen->Index() != -1 && $ClassState->AttacksWithWeapon() < 1;
 	}
 
@@ -508,7 +515,7 @@ class silverdrop_downpour_red extends Card {
   }
 
 	function SelfCostModifier($from) {
-		return SearchCurrentTurnEffects("hala_bladesaint_of_the_vow", $this->controller) ? -1 : 0;
+		return SearchCurrentTurnEffects("SHARPEN", $this->controller) ? -1 : 0;
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -664,7 +671,7 @@ class deadly_display extends BaseCard {
 		if (TypeContains($CombatChain->AttackCard()->ID(), "W")) {
 			AddEffectToCurrentAttack($this->cardID);
 			$originUID = $CombatChain->AttackCard()->OriginUniqueID();
-			$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
+			$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $originUID);
 			if ($foundSharpen)
 				AddEffectToCurrentAttack("$this->cardID-ONHIT");
 		}
