@@ -185,7 +185,8 @@ Function YesNoAwait($player) {
   global $dqVars;
   $context = $dqVars["context"] ?? "-";
   $message = $dqVars["message"] ?? "-";
-  PrependDecisionQueue("NOPASS", $player, "-", 1);
+  $noPass = $dqVars["noPass"] ?? true;
+  if ($noPass) PrependDecisionQueue("NOPASS", $player, "-", 1);
   PrependDecisionQueue("YESNO", $player, $message, 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, $context, 1);
 }
@@ -237,7 +238,7 @@ function MZDestroyAwait($player) {
 function SharpenAwait($player) {
   global $dqVars;
   $MZindex = $dqVars["MZIndex"];
-  $num = $dqVars["num"] ?? 1;
+  $num = intval($dqVars["num"]) ?? 1;
   Sharpen($MZindex, $player, $num);
 }
 

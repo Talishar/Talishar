@@ -20,10 +20,18 @@ function Sharpen($MZIndex, $player, $num=1) {
   if ($ind != -1) {
     switch ($zone) {
       case "MYCHAR":
-        $CharacterCard = new CharacterCard($ind, $player);
+        WriteLog("HERE sharpening $MZIndex for $num");
+        if (is_numeric($ind))
+          $CharacterCard = new CharacterCard($ind, $player);
+        else {
+          $Character = new PlayerCharacter($player);
+          $CharacterCard = $Character->FindCardUID($ind);
+        }
         if ($CharacterCard->CardID() == "zenith_blade" && SearchCharacterActive($player, "reverent_rerebrace", true)) {
-          if (Rerebrace($MZIndex, $player, $num))
+          if (Rerebrace($MZIndex, $player, $num)) {
+            WriteLog("HERE: rerouting");
             return;
+          }
 					SearchCurrentTurnEffects("reverent_rerebrace", $player, true);
         }
         $CharacterCard->AddPowerCounters($num);
@@ -38,15 +46,11 @@ function Sharpen($MZIndex, $player, $num=1) {
 function Rerebrace($MZIndex, $player, $num) {
 	if (SearchCurrentTurnEffects("reverent_rerebrace", $player)) // the replacement effect has already been applied and declined
 		return false;
-	$Character = new PlayerCharacter($player);
-	$CharacterCard = $Character->FindCardID("reverent_rerebrace");
   $message = "if_you_want_to_sharpen_an_additional_time";
 	$context = "Choose if you want to destroy " . CardLink("reverent_rerebrace") . " to sharpen an additional time";
-	Await($player, "YesNo", message:$message, context:$context, subsequent:0);
-	Await($player, "MZDestroy", MZInd: "MYCHAR-" . $CharacterCard->Index());
-	Await($player, "Sharpen", MZindex: $MZIndex, num: $num+1, final:true);
-	Await($player, "Else", subsequent:0);
-	Await($player, "AddCurrentTurnEffect", effectID: "reverent_rerebrace");
-	Await($player, "Sharpen", MZindex: $MZIndex, num: $num, final:true);
+  $Sword = MZIndexToObject($player, $MZIndex);
+  $uid = $Sword->UniqueID(); // need to use uid to avoid reindexing issues
+	Await($player, "YesNo", "choice", message:$message, context:$context, subsequent:0, noPass:false);
+	Await($player, "reverent_rerebrace", MZIndex: "MYCHAR-$uid", num: $num, final:true);
 	return true;
 }

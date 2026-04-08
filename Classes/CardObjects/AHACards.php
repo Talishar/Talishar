@@ -252,14 +252,6 @@ class paragon_plate extends Card {
 		}
 		return true;
 	}
-
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialSubtype() {
-		return "Chest";
-	}
 }
 
 class anticipating_gaze extends Card {
@@ -279,14 +271,14 @@ class anticipating_gaze extends Card {
 	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
 		global $CombatChain;
 		$CharacterCard = new CharacterCard($index, $this->controller);
-		if ($CharacterCard->IsActive() && TypeContains($CombatChain->AttackCard()->ID(), "Sword"))
+		if ($CharacterCard->IsActive() && SubTypeContains($CombatChain->AttackCard()->ID(), "Sword"))
 			AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
 	}
 
 	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
 		global $CCS_WeaponIndex, $combatChainState;
 		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
-		if ($Weapon->NumCounters() > 0) {
+		if ($Weapon->NumPowerCounters() > 0) {
 			$message = "if_you_want_to_draw";
 			$context = "Choose if you want to destroy " . CardLink($this->cardID) . " and remove a counter from your sword to draw a card";
 			Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
@@ -300,6 +292,7 @@ class anticipating_gaze extends Card {
 		$Gaze = new CharacterCard($dqVars["index"], $this->controller);
 		$Weapon->AddPowerCounters(-1);
 		$Gaze->Destroy();
+		Draw($this->controller);
 	}
 }
 
@@ -312,6 +305,35 @@ class reverent_rerebrace extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
+
+	function DefaultActiveState() {
+		return 1;
+	}
+
+	function SpecialType() {
+		return "E";
+	}
+
+	function SpecialSubtype() {
+		return "Arms";
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$choice = $dqVars["choice"];
+		$num = $dqVars["num"];
+		$MZIndex = $dqVars["MZIndex"];
+		if ($choice == "NO") {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+			Sharpen($MZIndex, $this->controller, $num);
+		}
+		else {
+			$Character = new PlayerCharacter($this->controller);
+			$CharacterCard = $Character->FindCardID($this->cardID);
+			$CharacterCard->Destroy();
+			Sharpen($MZIndex, $this->controller, $num+1);
+		}
+	}
 }
 
 class silverstride_dodgers extends Card {
