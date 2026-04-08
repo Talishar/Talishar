@@ -323,7 +323,11 @@ function CardSubType($cardID, $uniqueID = -1)
   if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
-    if ($number < 400) return GeneratedCardSubtype($cardID);
+    $card = GetClass($cardID, 0);
+    if ($number < 400) {
+      if ($card != "-") return $card->SpecialSubType();
+      return GeneratedCardSubtype($cardID);
+    }
     else if (
       $set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "nitro_mechanoidc" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb")
       return GeneratedCardSubtype($cardID);

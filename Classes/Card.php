@@ -399,6 +399,10 @@ class Card {
     return "-";
   }
 
+  function SpecialSubType() {
+    return GeneratedCardSubtype($this->cardID);
+  }
+
   function SpecialPower() {
     return -1;
   }
