@@ -713,8 +713,10 @@ function GetZoneObject($player,  $zone) {
 
 function MZIndexToObject($player, $MZIndex) {
   $zone = explode("-", $MZIndex)[0];
+  $ind = explode("-", $MZIndex)[1] ?? -1;
+  if (!is_numeric($ind)) return CleanTargetToObject($player, $MZIndex);
   $Zone = GetZoneObject($player, $zone);
-  return $Zone == "" ? "" : $Zone->Card(explode("-", $MZIndex)[1] ?? -1);
+  return $Zone == "" ? "" : $Zone->Card($ind);
 }
 
 function CleanTargetToObject($player, $cleanTarget) {

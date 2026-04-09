@@ -633,9 +633,9 @@ class indefensibly_honed_blue extends Card {
     $uid = explode("-", $target)[1] ?? -1;
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) {
-			Sharpen("MYCHAR-$index", $this->controller, 2);
+			Sharpen("MYCHAR-$index", $this->controller);
 			$CharacterCard = new CharacterCard($index, $this->controller);
-			if ($CharacterCard->NumCounters() >= 3)
+			if ($CharacterCard->NumPowerCounters() >= 3)
 				AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID: $CharacterCard->UniqueID());
 		}
 		return "";
@@ -683,6 +683,14 @@ class deadly_display extends BaseCard {
 		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
 		return false;
 	}
+
+	function AddEffectHitTrigger($parameter, $check) {
+		if (str_contains($parameter, "ONHIT") && IsHeroAttackTarget()) {
+			if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+			return true;
+		}
+		return false;
+	}
 }
 
 class deadly_display_red extends Card {
@@ -709,8 +717,7 @@ class deadly_display_red extends Card {
 	}
 
 	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-		if ($parameter == "ONHIT")
-			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "EFFECTHITEFFECT");
+		return $this->baseCard->AddEffectHitTrigger($parameter, $check);
 	}
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
@@ -742,8 +749,7 @@ class deadly_display_blue extends Card {
 	}
 
 	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-		if ($parameter == "ONHIT")
-			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "EFFECTHITEFFECT");
+		return $this->baseCard->AddEffectHitTrigger($parameter, $check);
 	}
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
@@ -805,7 +811,7 @@ class swordmasters_path_blue extends Card {
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
-		return 3;
+		return 1;
 	}
 
 	function SpecialType() {
@@ -824,7 +830,7 @@ class flurry_foot_dance_yellow extends Card {
   }
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		return SearchAurasForCard("flurry", $this->controller, false) ? 2 : 0;
+		return SearchAurasForCard("flurry", $this->controller, false) != "" ? 2 : 0;
 	}
 }
 
@@ -835,13 +841,26 @@ class ole_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $combatChainState, $CCS_WeaponIndex;
+    global $combatChainState, $CCS_WeaponIndex, $ChainLinks;
 		if (!str_contains($target, "COMBATCHAINATTACKS")) {
 			$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
 			if ($Weapon->NumPowerCounters() > 0) {
 				$Weapon->AddPowerCounters(-1);
 				Draw($this->controller);
 				PlayAura("flurry", $this->controller);
+			}
+		}
+		else {
+			$linkNum = explode("-", $target)[1] ?? "-";
+			if ($linkNum != "-") {
+				$AttackCard = $ChainLinks->GetLink($linkNum)->AttackCard();
+				$Character = new PlayerCharacter($this->controller);
+				$Weapon = $Character->FindCardUID($AttackCard->OriginUniqueID());
+				if ($Weapon->NumPowerCounters() > 0) {
+					$Weapon->AddPowerCounters(-1);
+					Draw($this->controller);
+					PlayAura("flurry", $this->controller);
+				}
 			}
 		}
 		return "";
@@ -893,18 +912,18 @@ class polished_blade_red extends Card {
 		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex],  $this->controller);
 		$modalities = "Go_again,Additional_attack,Discount_attack";
 		$range = implode(",", range(1, $Weapon->NumPowerCounters()));
-		Await($this->controller, "ChooseText", "numChoices", choices:$range, subsequent:0, context:"Choose a number of counters to remove");
-		Await($this->controller, "ChooseText", "modes", choices:$modalities, modal:$this->cardID, context: "Choose modes");
-		Await($this->controller, $this->cardID, final:true);
+		Await($this->controller, "CardChoices", "num", choices:$range, subsequent:0, context:"Choose a number of counters to remove");
+		Await($this->controller, $this->cardID, "numChoices");
+		Await($this->controller, "ChooseText", "modes", choices:$modalities, modal:$this->cardID);
+		Await($this->controller, "SetModes", cardID: $this->cardID, final:true);
 	}
 
 	function SpecificLogic() {
-		global $dqVars, $Stack;
-		$Character = new PlayerCharacter($this->controller);
-		$Weapon = $Character->FindCardID($this->cardID);
-		$Weapon->AddPowerCounters(-1 * intval($dqVars["numChoices"]));
-		$Layer = $Stack->TopLayer($this->cardID);
-		$Layer->SetAdditionalCosts($dqVars["modes"]);
+		global $dqVars, $Stack, $combatChainState, $CCS_WeaponIndex;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex],  $this->controller);
+		$num = $dqVars["num"];
+		$Weapon->AddPowerCounters(-1 * $num);
+		return min($num + 1, 3);
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
