@@ -959,9 +959,7 @@ class volzar_meteor_storm extends Card {
   }
 
   function ArcaneModifier(&$remove, $player, $index, $amount = false) {
-    if ($amount) return 1;
-    if ($player != $this->controller) return 0;
-    return 1;
+    return Amp(1, $remove, $player, $this->controller, $amount);
   }
 
   function AbilityType($index = -1, $from = '-') {
@@ -1248,8 +1246,11 @@ class auric_shards_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
     return "";
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->PlayAbility();
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1273,8 +1274,11 @@ class auric_shards_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
     return "";
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->PlayAbility();
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1298,8 +1302,11 @@ class auric_shards_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
     return "";
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->PlayAbility();
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1346,5 +1353,83 @@ class dashing_flashfoot_yellow extends Card {
 
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
     return DoesAttackHaveGoAgain() ? 1 : 0;
+  }
+}
+
+class rift_breaker_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rift_breaker_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $Auras = new Auras($defPlayer);
+    $AuraCard = $Auras->FindCardID("lightning_flow");
+    $AuraCard->Destroy();
+  }
+}
+
+class arc_ramp_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "arc_ramp_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    if (SearchAuras("lightning_flow", $this->controller)) {
+      // This will not interact correctly with the card having go again from another source
+      // Need an engine update to adress because go again has already been processed by this point
+      Await($this->controller, "YesNo", "choice", subsequent:0, context:"Destroy a " . CardLink("lightning_flow") . " to get go again?");
+      Await($this->controller, $this->cardID, final:true);
+    }
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $mainPlayer;
+    if ($dqVars["choice"] ?? "NO" == "YES") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardID("lightning_flow");
+      $AuraCard->Destroy();
+      if (CurrentEffectPreventsGoAgain($this->cardID) || $this->controller != $mainPlayer) return;
+      GainActionPoints(1, $this->controller);
+    }
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return Amp(1, $remove, $player, $this->controller, $amount);
+  }
+}
+
+class circular_flowtide_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "circular_flowtide_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 }
