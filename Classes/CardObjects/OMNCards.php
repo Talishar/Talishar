@@ -1095,3 +1095,42 @@ class cosmic_suture_blue extends Card {
   }
 }
 
+class scorpio_comet_tail extends Card {
+  function __construct($controller) {
+    $this->cardID = "volzar_meteor_storm";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $ChainLinks;
+    $Weapon = new CharacterCard($index, $this->controller);
+    if ($Weapon->Tapped()) return true;
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $AttackCard = $ChainLinks->GetLink($i)->AttackCard();
+      if ($AttackCard->StillOnChain() && TalentContains($AttackCard->ID(), "LIGHTNING", $this->controller))
+        return false;
+    }
+    return true;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $Weapon = new CharacterCard($index, $this->controller);
+    $Weapon->Tap();
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID);
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    DealArcane(1, resolvedTarget:"THEIRCHAR-0");
+  }
+}
