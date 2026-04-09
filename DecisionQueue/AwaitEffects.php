@@ -185,7 +185,8 @@ Function YesNoAwait($player) {
   global $dqVars;
   $context = $dqVars["context"] ?? "-";
   $message = $dqVars["message"] ?? "-";
-  PrependDecisionQueue("NOPASS", $player, "-", 1);
+  $noPass = $dqVars["noPass"] ?? true;
+  if ($noPass) PrependDecisionQueue("NOPASS", $player, "-", 1);
   PrependDecisionQueue("YESNO", $player, $message, 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, $context, 1);
 }
@@ -213,7 +214,9 @@ function PlayAuraAwait($player) {
 
 function CardChoicesAwait($player) {
   global $dqVars;
+  $context = $dqVars["context"] ?? "";
   PrependDecisionQueue("BUTTONINPUT", $player, $dqVars["choices"], 1);
+  if ($context != "") PrependDecisionQueue("SETDQCONTEXT", $player, $context);
 }
 
 function ResolveGoesWhereAwait($player) {
@@ -224,4 +227,66 @@ function ResolveGoesWhereAwait($player) {
   $effectController = $dqVars["effectController"] ?? "";
   $modifier = $dqVars["modifier"] ?? "NA";
   ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController, $modifier);
+}
+
+function MZDestroyAwait($player) {
+  global $dqVars;
+  $MZInd = $dqVars["MZInd"];
+  $effectController = $dqVars["effectController"] ?? "";
+  $allArsenal = $dqVars["allArsenal"] ?? true;
+  MZDestroy($player, $MZInd, $effectController, $allArsenal);
+}
+
+function SharpenAwait($player) {
+  global $dqVars;
+  $MZindex = $dqVars["MZIndex"];
+  $num = intval($dqVars["num"]) ?? 1;
+  Sharpen($MZindex, $player, $num);
+}
+
+function ElseAwait($player) {
+  PrependDecisionQueue("ELSE", $player, "-");
+}
+
+function AddCurrentTurnEffectAwait($player) {
+  global $dqVars;
+  $effectID = $dqVars["effectID"];
+  $from = $dqVars["from"] ?? "-";
+  $uniqueID = $dqVars["uniqueID"] ?? -1;
+  AddCurrentTurnEffect($effectID, $player, $from, $uniqueID);
+}
+
+function ChooseTextAwait($player) {
+  global $dqVars;
+  $may = $dqVars["may"] ?? false;
+  $choices = $dqVars["choices"];
+  $numChoices = $dqVars["numChoices"] ?? 0;
+  if ($numChoices == 0)
+    $numChoices = count(explode(",", $choices));
+  $maxChoices = $dqVars["maxChoices"] ?? $numChoices;
+  $minChoices = $dqVars["minChoices"] ?? $numChoices;
+  $choices = $dqVars["choices"];
+  $modal = $dqVars["modal"] ?? "";
+  $context = $dqVars["context"] ?? "";
+  if ($context == "" && $modal != "") {
+    if ($maxChoices == $minChoices)
+      $context = "Choose $maxChoices modes for " . CardLink($modal);
+    else
+      $context = "Choose between $minChoices and $maxChoices modes for " . CardLink($modal);
+  }
+  if ($modal != "") PrependDecisionQueue("SHOWMODES", $player, $modal, 1);
+  PrependDecisionQueue("MULTICHOOSETEXT", $player, "$maxChoices-$choices-$minChoices");
+  if ($context != "") PrependDecisionQueue("SETDQCONTEXT", $player, $context);
+}
+
+function IncrementAwait($player) {
+  global $dqVars;
+  $num = intval($dqVars["num"]);
+  $by = intval($dqVars["by"] ?? 1);
+  return $num + $by;
+}
+
+function SetModesAwait($player) {
+  global $dqVars, $CS_AdditionalCosts;
+  SetClassState($player, $CS_AdditionalCosts, $dqVars["modes"]);
 }

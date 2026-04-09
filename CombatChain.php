@@ -852,6 +852,9 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   }
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
+    if (IsCombatEffectLimited($i)) continue;
+    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    if ($card != "-") $card->CurrentEffectOnBlockEffect($cardID, $from);
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "nerve_scalpel":
@@ -880,7 +883,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
 function OnBlockResolveEffects($cardID = "")
 {
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CS_NumBlueDefended;
-  global $CCS_NumCardsBlocking;
+  global $CCS_NumCardsBlocking, $CurrentTurnEffects;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     $effectPowerModifier = EffectsAttackYouControlModifiers($combatChain[$i], $defPlayer);
@@ -978,6 +981,12 @@ function OnBlockResolveEffects($cardID = "")
         break;
       default:
         break;
+    }
+    for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+      $Effect = $CurrentTurnEffects->Effect($i, true);
+      if (IsCombatEffectLimited($Effect->Index())) continue;
+      $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
+      if ($card != "-") $card->CurrentEffectOnBlockEffect($cardID, "-", $start);
     }
   }
   $blockingCards = [];
@@ -1854,7 +1863,7 @@ function CachedTotalPower()
 function CachedTotalBlock()
 {
   global $combatChainState, $CCS_CachedTotalBlock;
-  return $combatChainState[$CCS_CachedTotalBlock];
+  return $combatChainState[$CCS_CachedTotalBlock] ?? 0;
 }
 
 function CachedAttackHasGoAgain()

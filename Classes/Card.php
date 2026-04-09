@@ -390,13 +390,17 @@ class Card {
     return;
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     return 0;
   }
 
   //"Special" functions override the generated card dictionary
   function SpecialType() {
     return "-";
+  }
+
+  function SpecialSubType() {
+    return GeneratedCardSubtype($this->cardID);
   }
 
   function SpecialPower() {
@@ -431,7 +435,7 @@ class Card {
     return GeneratedHasBeatChest($this->cardID);
   }
 
-  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return 0;
   }
 
@@ -647,6 +651,14 @@ class Card {
   }
 
   function AssignEffectToCard($effectIndex) { //used to apply effects to the next card "played" not resolved
+    return;
+  }
+
+  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+    return;
+	}
+
+  function CurrentEffectOnBlockEffect($cardID, $from, $start=-1) {
     return;
   }
 }

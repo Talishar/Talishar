@@ -1452,7 +1452,7 @@ class runebleed_robe extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     if ($type == "ARCANE") {
       $remove = true;
       return 1;
@@ -1614,7 +1614,7 @@ class hyper_inflation_red extends Card {
     $this->baseCard->ProcessAttackTrigger();
   }
 
-  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
 }
@@ -1634,7 +1634,7 @@ class hyper_inflation_yellow extends Card {
     $this->baseCard->ProcessAttackTrigger();
   }
 
-  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
 
@@ -1658,7 +1658,7 @@ class hyper_inflation_blue extends Card {
     $this->baseCard->ProcessAttackTrigger();
   }
 
-  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
 
@@ -1885,7 +1885,7 @@ class voltic_veil_red extends Card {
       DealArcane(1, 1, source:$this->cardID);
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     global $CurrentTurnEffects;
     $Effect = $CurrentTurnEffects->Effect($index);
     if ($damage >= $Effect->NumUses()) {
@@ -2266,7 +2266,7 @@ class cloud_cover extends BaseCard
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
   
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     $remove = true;
     return $this->preventionAmount;
   }
@@ -2284,7 +2284,7 @@ class cloud_cover_red extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
   }
 }
@@ -2301,7 +2301,7 @@ class cloud_cover_yellow extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
   }
 }
@@ -2318,7 +2318,7 @@ class cloud_cover_blue extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
   }
 }
@@ -4252,7 +4252,7 @@ class display_of_craftsmanship extends BaseCard {
       AddCurrentTurnEffect($this->cardID, $this->controller);
       $ClassState = new ClassState($this->controller);
       $originUID = $CombatChain->AttackCard()->OriginUniqueID();
-      $foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
+      $foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $originUID);
       $WeaponCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
       if ($foundSharpen->Index() != -1) $WeaponCard->AddPowerCounters(1);
     }
@@ -5480,7 +5480,7 @@ class voltic_vanguard extends Card {
     return GetClassState($this->controller, $CS_NumInstantPlayed) == 0;
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     global $CurrentTurnEffects;
     $Effect = $CurrentTurnEffects->Effect($index);
     $prevented = min($damage, $Effect->NumUses());
@@ -6547,7 +6547,7 @@ class shatter_sorcery_blue extends Card {
     }
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     if ($type == "ARCANE") {
       $remove = true;
       return 1;
@@ -8203,7 +8203,7 @@ class stormweavers_aegis extends Card {
     return "-";
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     global $CurrentTurnEffects;
     $Effect = $CurrentTurnEffects->Effect($index);
     if (!str_contains($Effect->EffectID(), "PREVENT")) return 0;

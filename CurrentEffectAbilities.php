@@ -889,7 +889,7 @@ function OnAttackEffects($cardID)
 }
 
 
-function CurrentEffectCostModifiers($cardID, $from)
+function CurrentEffectCostModifiers($cardID, $from, $index=-1)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
@@ -906,7 +906,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         }
       }
       $card = GetClass($currentTurnEffects[$i], $currentPlayer);
-      if ($card != "-") $costModifier += $card->CurrentEffectCostModifier($cardID, $from, $remove);
+      if ($card != "-") $costModifier += $card->CurrentEffectCostModifier($cardID, $from, $remove, $i, $index);
       switch ($currentTurnEffects[$i]) {
         case "cartilage_crush_red":
         case "cartilage_crush_yellow":
@@ -1106,7 +1106,7 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
     $remove = false;
-    return $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, true);
+    return $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, true);
   }
   switch ($effects[0]) {
     case "dissipation_shield_yellow":
@@ -1328,7 +1328,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
   $Effect = new CurrentEffect($index);
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
-    $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove);
+    $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable);
     if ($preventable) $preventedDamage += $prevention;
     if ($remove) RemoveCurrentTurnEffect($index);
   }
