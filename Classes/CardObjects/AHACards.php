@@ -1,15 +1,41 @@
 <?php
 
+class hala_base extends BaseCard {
+	function IsPlayRestricted($index) {
+		if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
+		if (SearchCharacterAliveSubtype($this->controller, "Sword")) return false;
+		return true;
+	}
+
+	function PayAdditionalCosts($index) {
+		Tap("MYCHAR-$index", $this->controller);
+		$search = "MYCHAR:subtype=Sword";
+		AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
+		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a sword to sharpen", 1);
+		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+		AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->AddUse();
+		$CharacterCard->SetUsed(2);
+	}
+
+	function PlayAbility($target) {
+		$uid = explode("-", $target)[1] ?? -1;
+		$index = SearchCharacterForUniqueID($uid, $this->controller);
+		if ($index != -1) Sharpen("MYCHAR-$index", $this->controller);
+	}
+}
+
 class hala_bladesaint_of_the_vow extends Card {
   function __construct($controller) {
     $this->cardID = "hala_bladesaint_of_the_vow";
     $this->controller = $controller;
+		$this->baseCard = new hala_base($this->cardID, $this->controller);
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
-		if (SearchCharacterAliveSubtype($this->controller, "Sword")) return false;
-		return true;
+		$this->baseCard->IsPlayRestricted($index);
 	}
 
 	function AbilityCost() {
@@ -25,22 +51,11 @@ class hala_bladesaint_of_the_vow extends Card {
 	}
 
 	function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
-		Tap("MYCHAR-$index", $this->controller);
-		$search = "MYCHAR:subtype=Sword";
-		AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
-		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a sword to sharpen", 1);
-		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-		AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-		$CharacterCard = new CharacterCard($index, $this->controller);
-		$CharacterCard->AddUse();
-		$CharacterCard->SetUsed(2);
+		return $this->baseCard->PayAdditionalCosts($index);
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$uid = explode("-", $target)[1] ?? -1;
-		$index = SearchCharacterForUniqueID($uid, $this->controller);
-		if ($index != -1) Sharpen("MYCHAR-$index", $this->controller);
+		return $this->baseCard->PlayAbility($target);
 	}
 }
 
