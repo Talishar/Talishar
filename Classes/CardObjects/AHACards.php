@@ -35,7 +35,7 @@ class hala_bladesaint_of_the_vow extends Card {
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		$this->baseCard->IsPlayRestricted($index);
+		return $this->baseCard->IsPlayRestricted($index);
 	}
 
 	function AbilityCost() {
