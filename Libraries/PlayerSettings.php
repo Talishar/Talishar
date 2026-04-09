@@ -775,6 +775,14 @@ function IsTeamPotatoSquad($userName)
     case "NoRaven":
     case "middiekittie":
     case "archangel224":
+    case "Nick56":
+    case "SCORPIO":
+    case "ArgentGrey":
+    case "SynThePanda93":
+    case "welpcakes":
+    case "RiptideRipper":
+    case "gilfab":
+    case "dautt":
       return true;
     default: break;
   }
