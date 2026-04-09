@@ -438,9 +438,8 @@ class sharp_incline extends BaseCard {
 
 	function PlayAbility($target, $thresh) {
 		Sharpen($target, $this->controller);
-		$Weapon = CleanTargetToObject($this->controller, $target);
-		if ($Weapon->NumPowerCounters() >= $thresh)
-			AddCurrentTurnEffect($this->cardID, $this->controller, "-", $Weapon->UniqueID());
+		Await($this->controller, $this->cardID, target:$target, thresh:$thresh);
+		
 	}
 
 	function CurrentEffectCostModifier($index, $playIndex, &$remove) {
@@ -451,6 +450,15 @@ class sharp_incline extends BaseCard {
 			return -1;
 		}
 		return 0;
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$target = $dqVars["target"];
+		$thresh = $dqVars["thresh"];
+		$Weapon = CleanTargetToObject($this->controller, $target);
+		if ($Weapon->NumPowerCounters() >= $thresh)
+			AddCurrentTurnEffect($this->cardID, $this->controller, "-", $Weapon->UniqueID());
 	}
 }
 
@@ -473,6 +481,10 @@ class sharp_incline_red extends Card {
 	function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
 		return $this->baseCard->CurrentEffectCostModifier($index, $playIndex, $remove);
 	}
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
 }
 
 class sharp_incline_yellow extends Card {
@@ -493,6 +505,10 @@ class sharp_incline_yellow extends Card {
 
 	function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
 		return $this->baseCard->CurrentEffectCostModifier($index, $playIndex, $remove);
+	}
+	
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
 	}
 }
 
