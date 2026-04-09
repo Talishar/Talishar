@@ -4337,7 +4337,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       // helpful log message
       WriteLog(CardLink($cardID) . " could not be added as a defending chain link!");
   }
-  else if (SubtypeContains($cardID, "Evo", $currentPlayer)) EvoHandling($cardID, $currentPlayer, $from);
+  else ResolvePermanent($cardID, $from, $additionalCosts);
   //Resolve Effects
   if (!$isBlock && !$skipDRResolution) {
     CurrentEffectPlayOrActivateAbility($cardID, $from);

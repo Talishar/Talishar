@@ -1134,3 +1134,183 @@ class scorpio_comet_tail extends Card {
     DealArcane(1, resolvedTarget:"THEIRCHAR-0");
   }
 }
+
+class pulsing_cardia extends BaseCard {
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    GainResources($this->controller, 1);
+  }
+}
+
+class pulsing_cardia_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "pulsing_cardia_red";
+    $this->controller = $controller;
+    $this->baseCard = new pulsing_cardia($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function HasFragment() {
+    return true;
+  }
+}
+
+class pulsing_cardia_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "pulsing_cardia_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new pulsing_cardia($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function HasFragment() {
+    return true;
+  }
+}
+
+class pulsing_cardia_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "pulsing_cardia_blue";
+    $this->controller = $controller;
+    $this->baseCard = new pulsing_cardia($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function HasFragment() {
+    return true;
+  }
+}
+
+class auric_shards extends BaseCard {
+  function PlayAbility() {
+    global $CombatChain;
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true); //it should always be the most recent aura
+    // for now assume it's targeting the current chain link
+    if (HasFragment($CombatChain->AttackCard()->ID()))
+      AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($val, $uniqueID) {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uniqueID);
+    $pow = $AuraCard->HoloCounters() > 0 ? $val : 1;
+    AddCurrentTurnEffect("$this->cardID-$pow", $this->controller);
+  }
+
+  function CombatEffectActive() {
+    global $CombatChain;
+    return HasFragment($CombatChain->AttackCard()->ID());
+  }
+}
+
+class auric_shards_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "auric_shards_red";
+    $this->controller = $controller;
+    $this->baseCard = new auric_shards($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger(4);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+}
+
+class auric_shards_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "auric_shards_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new auric_shards($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger(3);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+}
+
+class auric_shards_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "auric_shards_blue";
+    $this->controller = $controller;
+    $this->baseCard = new auric_shards($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger(2);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+}
