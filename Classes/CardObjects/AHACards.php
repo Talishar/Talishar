@@ -98,10 +98,18 @@ class edict_of_steel extends BaseCard {
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) {
 			Sharpen("MYCHAR-$index", $this->controller);
-			$weaponCard = new CharacterCard($index, $this->controller);
-			if ($weaponCard->NumPowerCounters() >= $threshold) {
-				PlayAura("flurry", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
-			}
+			Await($this->controller, $this->cardID, uid:$uid, threshold:$threshold);
+		}
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$uid= $dqVars["uid"];
+		$threshold = $dqVars["threshold"];
+		$Character = new PlayerCharacter($this->controller);
+		$Weapon = $Character->FindCardUID($uid);
+		if ($Weapon->NumPowerCounters() >= $threshold) {
+			PlayAura("flurry", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
 		}
 	}
 }
@@ -121,6 +129,10 @@ class edict_of_steel_red extends Card {
 		$this->baseCard->PlayAbility($target, 1);
 		return "";
 	}
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
 }
 
 class edict_of_steel_yellow extends Card {
@@ -138,6 +150,10 @@ class edict_of_steel_yellow extends Card {
 		$this->baseCard->PlayAbility($target, 2);
 		return "";
 	}
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
 }
 
 class edict_of_steel_blue extends Card {
@@ -154,6 +170,10 @@ class edict_of_steel_blue extends Card {
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$this->baseCard->PlayAbility($target, 3);
 		return "";
+	}
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
 	}
 }
 
