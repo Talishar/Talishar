@@ -749,11 +749,13 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   return $damage;
 }
 
-function DamageDealtAbilities($player, $damage, $type, $source)
+function DamageDealtAbilities($target, $damage, $type, $source)
 {
   global $mainPlayer, $combatChainState, $CCS_AttackFused;
   if (($source == "explosive_growth_red" || $source == "explosive_growth_yellow" || $source == "explosive_growth_blue") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
   if ($source == "suraya_archangel_of_knowledge") GainHealth($damage, $mainPlayer);
+  $card = GetClass($source, $mainPlayer);
+  if ($card != "-") $card->DamageDealtAbilities($target, $damage, $type);
 }
 
 function DoQuell($targetPlayer, $damage)

@@ -661,4 +661,8 @@ class Card {
   function CurrentEffectOnBlockEffect($cardID, $from, $start=-1) {
     return;
   }
+
+  function DamageDealtAbilities($target, $damage, $type) {
+    return;
+  }
 }

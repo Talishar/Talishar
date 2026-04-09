@@ -1314,3 +1314,37 @@ class auric_shards_blue extends Card {
     return intval($param);
   }
 }
+
+class dashing_flashfoot_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "dashing_flashfoot_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (DoesAttackHaveGoAgain() && IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    DealArcane(1, 1, source:$this->cardID);
+  }
+
+  function DamageDealtAbilities($target, $damage, $type) {
+    global $CombatChain;
+    if ($CombatChain->AttackCard()->ID() != $this->cardID) return; // for now only make this work when it's the active link
+    if (is_numeric($target) && $CombatChain->AttackCard()->NumTimesUsed() == 0) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+    $CombatChain->AttackCard()->AddUse();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("embodiment_of_lightning", $this->controller, effectSource:$this->cardID);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return DoesAttackHaveGoAgain() ? 1 : 0;
+  }
+}
