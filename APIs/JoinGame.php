@@ -742,6 +742,8 @@ function IsCardBanned($cardID, $format, $character)
       switch($cardID) {
         case "blaze_firemind":
         case "raydn_duskbane":
+        case "dorinthea_quicksilver_prodigy":
+        case "dawnblade_resplendent":
           return false;
         default:
           break;
