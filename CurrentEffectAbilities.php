@@ -894,6 +894,7 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  if (!is_numeric($index)) $index = -1; // sometimes index is getting passed in as ""
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {

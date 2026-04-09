@@ -421,7 +421,7 @@ class gleam_of_the_blade_red extends Card {
 	}
 
 	function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		PlayAura("flurry", $this->controller);
+		PlayAura("flurry", $this->controller, effectSource:$this->cardID);
 	}
 
 	function GetAbilityTypes($index = -1, $from = '-') {
@@ -710,7 +710,7 @@ class deadly_display extends BaseCard {
 			AddEffectToCurrentAttack($this->cardID);
 			$originUID = $CombatChain->AttackCard()->OriginUniqueID();
 			$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $originUID);
-			if ($foundSharpen)
+			if ($foundSharpen->Index() != -1)
 				AddEffectToCurrentAttack("$this->cardID-ONHIT");
 		}
 		return "";
@@ -801,9 +801,9 @@ class swordmasters_path extends BaseCard {
 		AddCurrentTurnEffect("$this->cardID-SHARP", $this->controller);
 	}
 
-	function CombatEffectActive() {
+	function CombatEffectActive($parameter) {
 		global $CombatChain;
-		return SubTypeContains($CombatChain->AttackCard()->ID(), "Sword");
+		return SubTypeContains($CombatChain->AttackCard()->ID(), "Sword") && $parameter != "SHARP";
 	}
 }
 
@@ -820,7 +820,7 @@ class swordmasters_path_red extends Card {
   }
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return $this->baseCard->CombatEffectActive();
+		return $this->baseCard->CombatEffectActive($parameter);
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
@@ -845,7 +845,7 @@ class swordmasters_path_blue extends Card {
   }
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return $this->baseCard->CombatEffectActive();
+		return $this->baseCard->CombatEffectActive($parameter);
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
