@@ -932,3 +932,166 @@ class flowstate_embodiment_red extends Card {
     Await($this->controller, "PlayAura", final:true);
   }
 }
+
+class volzar_meteor_storm extends Card {
+  function __construct($controller) {
+    $this->cardID = "volzar_meteor_storm";
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CS_NumInstantsPutInGrave;
+    $Weapon = new CharacterCard($index, $this->controller);
+    if ($Weapon->Tapped()) return true;
+    if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) == 0) return true;
+    return false;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $Weapon = new CharacterCard($index, $this->controller);
+    $Weapon->Tap();
+    $Weapon->SetUsed(2); //unlimited uses
+    $Weapon->AddUse();
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    if ($amount) return 1;
+    if ($player != $this->controller) return 0;
+    return 1;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function SpecialType() {
+    return "W";
+  }
+}
+
+class cosmic_suture extends BaseCard {
+  function PlayAbility($target) {
+    global $CS_NumInstantsPutInGrave;
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    if (GetClassState($this->controller, $CS_NumInstantsPutInGrave))
+      DealArcane(1, resolvedTarget:$target);
+  }
+
+  function CurrentEffectDamagePrevention($index, $damage, $amount, &$remove) {
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->Effect($index);
+    if ($damage >= $Effect->NumUses()) {
+      $remove = true;
+      return $Effect->NumUses();
+    }
+    else {
+      if (!$amount) $Effect->AddUses(-$damage);
+      return $damage;
+    }
+  }
+
+  function PayAdditionalCosts() {
+    SetTargetsArcane($this->controller, $this->cardID);
+  }
+}
+
+class cosmic_suture_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "cosmic_suture_red";
+    $this->controller = $controller;
+    $this->baseCard = new cosmic_suture($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($target);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 4;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+}
+
+class cosmic_suture_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "cosmic_suture_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new cosmic_suture($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($target);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 3;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+}
+
+class cosmic_suture_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "cosmic_suture_blue";
+    $this->controller = $controller;
+    $this->baseCard = new cosmic_suture($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($target);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 2;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+}
+

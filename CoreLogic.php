@@ -4299,3 +4299,16 @@ function SetTargets($player, $cardID, $search, $N=1, $may=false) {
     Await($player, "SetLayerTarget", "currentTargets", layerID:$cardID, final:$nLeft == 1);
   }
 }
+
+//Parameters:
+//target =
+//0: My Hero + Their Hero
+//1: Their Hero only
+//2: Any Target
+//3: Their Hero + Their Allies
+//4: My Hero only (For afflictions)
+function SetTargetsArcane($player, $cardID, $targetType=0) {
+  SetArcaneTarget($player, $cardID, $targetType);
+  AddDecisionQueue("SHOWSELECTEDTARGET", $player, "-", 1);
+  AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
+}

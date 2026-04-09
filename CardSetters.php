@@ -756,7 +756,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $CS_NumAllyPutInGraveyard;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
-  global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext;
+  global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext, $CS_NumInstantsPutInGrave;
   if (str_contains($from, "DECK") && ($cardID == "back_alley_breakline_red" || $cardID == "back_alley_breakline_yellow" || $cardID == "back_alley_breakline_blue") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "E", $player))) {
     if ($player == $mainPlayer) {
       WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
@@ -771,6 +771,8 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   if (!SearchCurrentTurnEffects($hero, $player) && ColorContains($cardID, 3, $player) && ($hero == "gravy_bones_shipwrecked_looter" || $hero == "gravy_bones")) {
     AddCurrentTurnEffect($hero, $player);
   }
+  if (TypeContains($cardID, "I", $player))
+    IncrementClassState($player, $CS_NumInstantsPutInGrave);
   // Code for equipped evos+ going to GY, then Scrapped and it makes them unplayable.
   // this may not be required anymore
   if ($from == "CHAR") {
