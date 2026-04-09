@@ -418,6 +418,7 @@ function ChangeSetting($player, $setting, $value, $playerId = "")
   // Only update game state if not in profile context
   if($player != "" && $player != 0) {
     $settings = &GetSettings($player);
+    if (($settings[$setting] ?? null) === $value) return; // Already at this value, skip write and any DB call
     $settings[$setting] = $value;
     if($setting == $SET_MuteChat) {
       if($value == "1") {
