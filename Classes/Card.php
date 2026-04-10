@@ -673,4 +673,8 @@ class Card {
   function WonWager($wonWager, $amount) {
     return;
   }
+
+  function FragmentTrigger() {
+    return;
+  }
 }
