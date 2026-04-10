@@ -2189,6 +2189,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $attackcard = GetClass($activeLinkID, $mainPlayer, "CC", $CombatChain->AttackCard()->UniqueID());
       $stillThere = $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-";
       if ($attackcard != "-" && $stillThere) $attackcard->ActiveLinkPlayTrigger($cardID, $currentPlayer, $from);
+      for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+        $Card = $CombatChain->Card($i, true);
+        $blockcard = GetClass($Card->ID(), $Card->PlayerID());
+        if ($blockcard != "-") $blockcard->WhileBlockPlayTrigger($Card->Index(), $cardID, $from);
+      }    
     }
     if (SearchCurrentTurnEffects("lightning_greaves", $mainPlayer) && DelimStringContains(CardType($cardID), "I")) {
       // check whether lightning greaves has been activated *before* the card is played

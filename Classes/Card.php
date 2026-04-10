@@ -665,4 +665,8 @@ class Card {
   function DamageDealtAbilities($target, $damage, $type) {
     return;
   }
+
+  function WhileBlockPlayTrigger($index, $cardID, $from) {
+		return;
+	} 
 }
