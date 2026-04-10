@@ -1095,7 +1095,7 @@ class cosmic_suture_blue extends Card {
 
 class scorpio_comet_tail extends Card {
   function __construct($controller) {
-    $this->cardID = "volzar_meteor_storm";
+    $this->cardID = "scorpio_comet_tail";
     $this->controller = $controller;
   }
 
@@ -1122,14 +1122,14 @@ class scorpio_comet_tail extends Card {
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
     if (IsHeroAttackTarget()) {
-      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID);
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
       return true;
     }
     return false;
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    DealArcane(1, resolvedTarget:"THEIRCHAR-0");
+    DealArcane(1, 1);
   }
 }
 
@@ -1254,7 +1254,7 @@ class auric_shards_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger(4);
+    $this->baseCard->ProcessTrigger(4, $uniqueID);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
