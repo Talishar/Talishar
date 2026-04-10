@@ -4373,7 +4373,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($from != "EQUIP" && $from != "PLAY" && $from != "COMBATCHAINATTACKS") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     else if ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     if (!$openedChain) {
-      ResolveGoAgain($cardID, $currentPlayer, $from, additionalCosts: $additionalCosts, uniqueID:$uniqueID);
+      Await($currentPlayer, "ResolveGoAgain", cardID:$cardID, from:$from, additionalCosts:$additionalCosts, uniqueID:$uniqueID, subsequent:0, final:true);
+      
     }
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();

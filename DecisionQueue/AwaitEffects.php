@@ -312,3 +312,12 @@ function AddTopDeckAwait($player) {
   $Deck = new Deck($player);
   return $Deck->AddTop($cardID, $from, $deckIndexModifier);
 }
+
+function ResolveGoAgainAwait($player) {
+  global $dqVars;
+  $cardID = $dqVars["cardID"];
+  $from = $dqVars["from"];
+  $additionalCosts = $dqVars["additionalCosts"];
+  $uniqueID = $dqVars["uniqueID"];
+  ResolveGoAgain($cardID, $player, $from, additionalCosts: $additionalCosts, uniqueID:$uniqueID);
+}

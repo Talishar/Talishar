@@ -1413,13 +1413,22 @@ class arc_ramp_blue extends Card {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardID("lightning_flow");
       $AuraCard->Destroy();
-      if (CurrentEffectPreventsGoAgain($this->cardID) || $this->controller != $mainPlayer) return;
-      GainActionPoints(1, $this->controller);
+      AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
     }
   }
 
   function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    $Effect = new CurrentEffect($index);
+    if (str_contains($Effect->EffectID(), "GOAGAIN")) return;
     return Amp(1, $remove, $player, $this->controller, $amount);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    if ($parameter == "GOAGAIN") {
+      $remove = true;
+      return true;
+    }
+    return false;
   }
 }
 

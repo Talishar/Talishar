@@ -1891,6 +1891,15 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
       $card = GetClass($effectID, $currentPlayer);
       if ($card != "-") $hasGoAgain = $card->CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, $remove) || $hasGoAgain;
       switch ($turnEffects[0]) {
+        case "aether_quickening_red":
+        case "aether_quickening_yellow":
+        case "aether_quickening_blue":
+        case "trailblazing_aether_red":
+        case "trailblazing_aether_yellow":
+        case "trailblazing_aether_blue":
+          $hasGoAgain = true;
+          $remove = true;
+          break;
         case "bloodrush_bellow_yellow-GOAGAIN":
           $hasGoAgain = true;
           $remove = true;
