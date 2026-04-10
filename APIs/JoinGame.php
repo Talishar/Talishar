@@ -19,6 +19,7 @@ include_once "../Classes/CardObjects/OMNCards.php";
 include_once "../Classes/CardObjects/AZSCards.php";
 include_once "../Classes/CardObjects/AHACards.php";
 include_once "../Classes/CardObjects/MPWCards.php";
+include_once "../Classes/CardObjects/AOLCards.php";
 
 
 // GetMetafyTiersFromDatabase is defined in includes/MetafyHelper.php (included above)

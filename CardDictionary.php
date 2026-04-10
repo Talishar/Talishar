@@ -56,6 +56,8 @@ include "CardDictionaries/ArmoryDecks/AACShared.php";
 include "CardDictionaries/ArmoryDecks/ARRShared.php";
 include "CardDictionaries/ArmoryDecks/AHAShared.php";
 include "CardDictionaries/OmensOfTheThirdAge/OMNShared.php";
+include "CardDictionaries/MasteryPacks/MPWShared.php";
+
 
 $CID_BloodRotPox = "bloodrot_pox";
 $CID_Frailty = "frailty";

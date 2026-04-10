@@ -1,4 +1,5 @@
 <?php
+include_once  __DIR__ . "/AHACards.php";
 
 class hala extends Card {
 	function __construct($controller) {
@@ -47,23 +48,7 @@ class golden_grail extends Card {
 	}
 
 	function PayAdditionalCosts($from, $index = '-') {
-		if (CountItemByName("Gold", $this->controller) > 0) {
-			AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_pay_a_" . CardLink("gold", "gold"), 1);
-      AddDecisionQueue("NOPASS", $this->controller, "-", 1);
-      $goldIndices = GetGoldIndices($this->controller);
-      if (str_contains($goldIndices, "MYCHAR")) {
-        AddDecisionQueue("PASSPARAMETER", $this->controller, $goldIndices, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
-      } else AddDecisionQueue("FINDANDDESTROYITEM", $this->controller, "gold-1", 1);
-      AddDecisionQueue("ELSE", $this->controller, "-");
-			AddDecisionQueue("PASSPARAMETER", $this->controller, 2, 1);
-			AddDecisionQueue("PAYRESOURCES", $this->controller, 2, 1);
-		}
-		else {
-			AddDecisionQueue("PASSPARAMETER", $this->controller, 2);
-			AddDecisionQueue("PAYRESOURCES", $this->controller, 2, 1);
-		}
+		PayGoldInstead($this->controller, 2);
 	}
 
 	function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
@@ -128,5 +113,59 @@ class stand_tall_yellow extends Card {
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
 		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+}
+
+class golden_company extends BaseCard {
+	function PayAdditionalCosts() {
+		PayGoldInstead($this->controller, 2);
+	}
+}
+
+class golden_company_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "golden_company_red";
+    $this->controller = $controller;
+    $this->baseCard = new golden_company($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
+	}
+}
+
+class golden_company_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "golden_company_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new golden_company($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
+	}
+}
+
+class golden_company_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "golden_company_blue";
+    $this->controller = $controller;
+    $this->baseCard = new golden_company($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 }

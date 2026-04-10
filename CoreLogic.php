@@ -3215,6 +3215,9 @@ function IsAlternativeCostPaid($cardID, $from)
         case "life_of_the_party_blue":
         case "double_down_red-PAID":
         case "10000_year_reunion_red":
+        case "golden_company_red":
+        case "golden_company_yellow":
+        case "golden_company_blue":
           $isAlternativeCostPaid = true;
           $remove = true;
           break;

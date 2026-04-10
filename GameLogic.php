@@ -50,6 +50,7 @@ include "Classes/CardObjects/AACCards.php";
 include "Classes/CardObjects/AHACards.php";
 include "Classes/CardObjects/AZSCards.php";
 include "Classes/CardObjects/MPWCards.php";
+include "Classes/CardObjects/AOLCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "DecisionQueue/AwaitEffects.php";
 include "CurrentEffectAbilities.php";
@@ -433,28 +434,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($subparam2 == "NOPASS") return $rv;
       return $rv == "" ? "PASS" : $rv;
     case "MULTIZONEINDICES":
-      $searches = [];
-      foreach (explode("&", $parameter) as $search) { //allow searching for stuff in unusual zones for its type
-        $newSearch = $search;
-        $conds = explode(":", $search)[1] ?? "";
-        if (strpos($newSearch, "MYALLY") !== false) {
-          $newSearch = "MYCHAR:subtype=Ally;$conds&$newSearch";
-        } 
-        if (strpos($newSearch, "THEIRALLY") !== false) {
-          $newSearch = "THEIRCHAR:subtype=Ally;$conds&$newSearch";
-        }
-        if (strpos($newSearch, "THEIRCHAR:type=E") !== false) {
-          $newSearch = "THEIRITEMS:$conds&$newSearch";
-        }
-        if (strpos($newSearch, "MYCHAR:type=E") !== false) {
-          $newSearch = "MYITEMS:$conds&$newSearch";
-        }
-        $searches[] = $newSearch;
-      }
-      $parameter = implode("&", $searches);
-      $rv = SearchMultizone($player, $parameter);
-      // we may want to dedupe this eventually, not pressing issue
-      return $rv == "" ? "PASS" : $rv;
+      return MultiZoneIndices($player, $parameter);
     case "SCOURINDICES":
       $targPlayer = explode("|", $parameter)[0];
       $currentTargets = explode(",", explode("|", $parameter)[1]);

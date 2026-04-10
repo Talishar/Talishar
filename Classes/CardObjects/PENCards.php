@@ -7254,7 +7254,11 @@ class cheating_scoundrel_red extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return 3;
-  } 
+  }
+
+  function WonWager($wonWager, $amount) {
+    PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$this->controller);
+  }
 }
 
 class seeker_kunai_red extends Card {

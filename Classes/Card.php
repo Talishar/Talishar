@@ -668,5 +668,9 @@ class Card {
 
   function WhileBlockPlayTrigger($index, $cardID, $from) {
 		return;
-	} 
+	}
+
+  function WonWager($wonWager, $amount) {
+    return;
+  }
 }
