@@ -640,11 +640,13 @@ class visit_the_dawnsmith_blue extends Card {
   }
 
 	function StartTurnAbility($index) {
-		AddLayer("TRIGGER", $this->controller, $this->cardID, $index);
+		$Aura = new AuraCard($index, $this->controller);
+		AddLayer("TRIGGER", $this->controller, $this->cardID, $Aura->UniqueID());
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		$Aura = new AuraCard($target, $this->controller);
+		$Auras = new Auras($this->controller);
+		$Aura = $Auras->FindCardUID($target);
 		$Aura->Destroy();
 		$Character = new PlayerCharacter($this->controller);
 		for ($i = 0; $i < $Character->NumCards(); ++$i) {
@@ -652,7 +654,7 @@ class visit_the_dawnsmith_blue extends Card {
 			if (SubtypeContains($CharacterCard->CardID(), "Sword"))
 				Sharpen("MYCHAR-" . $CharacterCard->Index(), $this->controller);
 		}
-	}
+}
 }
 
 class toe_the_line_red extends Card {
