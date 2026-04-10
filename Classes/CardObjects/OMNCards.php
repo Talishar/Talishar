@@ -1189,6 +1189,10 @@ class pulsing_cardia_yellow extends Card {
   function HasFragment() {
     return true;
   }
+
+  function SpecialPower() {
+    return 4;
+  }
 }
 
 class pulsing_cardia_blue extends Card {
@@ -1212,6 +1216,10 @@ class pulsing_cardia_blue extends Card {
 
   function HasFragment() {
     return true;
+  }
+
+  function SpecialPower() {
+    return 3;
   }
 }
 
