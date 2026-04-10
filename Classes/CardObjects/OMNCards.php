@@ -1282,7 +1282,7 @@ class auric_shards_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger(3);
+    $this->baseCard->ProcessTrigger(3, $uniqueID);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -1310,7 +1310,7 @@ class auric_shards_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger(2);
+    $this->baseCard->ProcessTrigger(2, $uniqueID);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
