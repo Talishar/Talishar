@@ -568,6 +568,8 @@ function AuraStartTurnAbilities()
   $toRemove = [];
   $countAuras = count($auras);
   $aurasPieces = AuraPieces();
+  $mightCount = 0;
+  $vigorCount = 0;
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $EffectContext = $auras[$i];
     $card = GetClass($auras[$i], $mainPlayer);
@@ -709,15 +711,15 @@ function AuraStartTurnAbilities()
         break;
       case "might":
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        WriteLog(CardLink($auras[$i]) . " will buff your next attack by 1!");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumMightDestroyed, 1);
+        ++$mightCount;
         break;
       case "vigor":
         GainResources($mainPlayer, 1);
-        WriteLog(CardLink($auras[$i]) . " gives you a resource!");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
+        ++$vigorCount;
         break;
       case "contest_the_mindfield_blue":
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
@@ -832,6 +834,14 @@ function AuraStartTurnAbilities()
         break;
       }
     }
+  }
+  if ($mightCount > 0) {
+    $suffix = $mightCount > 1 ? " (x$mightCount)" : "";
+    WriteLog(CardLink("might") . "$suffix will buff your next attack by $mightCount!");
+  }
+  if ($vigorCount > 0) {
+    $suffix = $vigorCount > 1 ? " (x$vigorCount)" : "";
+    WriteLog(CardLink("vigor") . "$suffix gives you $vigorCount resource" . ($vigorCount > 1 ? "s" : "") . "!");
   }
   foreach ($toRemove as $uniqueId) {
     DestroyAuraUniqueID($mainPlayer, $uniqueId, mainPhase: false);
