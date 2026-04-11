@@ -3,7 +3,7 @@ include_once  __DIR__ . "/AHACards.php";
 
 class hala extends Card {
 	function __construct($controller) {
-    $this->cardID = "hala_bladesaint_of_the_vow";
+    $this->cardID = "hala";
     $this->controller = $controller;
 		$this->baseCard = new hala_base($this->cardID, $this->controller);
 	}
@@ -47,13 +47,22 @@ class golden_grail extends Card {
 		return "AA";
 	}
 
-	function PayAdditionalCosts($from, $index = '-') {
-		PayGoldInstead($this->controller, 2);
+	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+		PayGoldInstead($this->controller, $this->cardID);
 	}
 
 	function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
 		global $combatChainState, $CCS_WagersThisLink;
 		return $combatChainState[$CCS_WagersThisLink] > 0 ? 1 : 0;
+	}
+
+	function AbilityCost() {
+		return 2;
+	}
+
+	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+		$remove = true;
+		return true;
 	}
 }
 
@@ -83,7 +92,7 @@ class sharpening_sparks_red extends Card {
 	}
 
 	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-		if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "EFFECTHITEFFECT");
+		if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
 		return true;
 	}
 
@@ -117,8 +126,13 @@ class stand_tall_yellow extends Card {
 }
 
 class golden_company extends BaseCard {
-	function PayAdditionalCosts() {
-		PayGoldInstead($this->controller, 2);
+	function PrePitchDecsions() {
+		PayGoldInstead($this->controller, $this->cardID);
+	}
+
+	function CurrentTurnEffectPaid(&$remove) {
+		$remove = true;
+		return true;
 	}
 }
 
@@ -133,8 +147,12 @@ class golden_company_red extends Card {
     return "";
   }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		return $this->baseCard->PayAdditionalCosts();
+	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+		return $this->baseCard->PrePitchDecsions();
+	}
+
+	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+		return $this->baseCard->CurrentTurnEffectPaid($remove);
 	}
 }
 
@@ -149,8 +167,12 @@ class golden_company_yellow extends Card {
     return "";
   }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		return $this->baseCard->PayAdditionalCosts();
+	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+		return $this->baseCard->PrePitchDecsions();
+	}
+
+	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+		return $this->baseCard->CurrentTurnEffectPaid($remove);
 	}
 }
 
@@ -165,7 +187,11 @@ class golden_company_blue extends Card {
     return "";
   }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		return $this->baseCard->PayAdditionalCosts();
+	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+		return $this->baseCard->PrePitchDecsions();
+	}
+
+	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+		return $this->baseCard->CurrentTurnEffectPaid($remove);
 	}
 }

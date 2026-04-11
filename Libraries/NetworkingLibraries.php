@@ -2738,7 +2738,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     }
   }
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->AddPrePitchDecisionQueue($from, $index, $facing);
+  if ($card != "-") $card->AddPrePitchDecisionQueue($from, $index, $facing);
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
     $countCurrentTurnEffects = count($currentTurnEffects);

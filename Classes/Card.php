@@ -677,4 +677,8 @@ class Card {
   function FragmentTrigger() {
     return;
   }
+
+  function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+    return false;
+  }
 }
