@@ -358,6 +358,7 @@ function CharacterHealth($cardID)
       break;
   }
   $set = CardSet($cardID);
+  if ($cardID == "hala") return 20; //fabcube error
   if ($set != "DUM") return GeneratedCharacterHealth($cardID);
   return match ($cardID) {
     "DUMMY" => 40,
@@ -369,6 +370,7 @@ function CharacterIntellect($cardID)
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
+  if ($cardID == "hala") return 4; //fabcube error
   return GeneratedCharacterIntellect($cardID);
 }
 
