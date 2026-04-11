@@ -1390,25 +1390,17 @@ class rift_breaker_red extends Card {
   }
 }
 
-class arc_ramp_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "arc_ramp_blue";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+class arc_ramp extends BaseCard {
+  function PlayAbility() {
     AddCurrentTurnEffect($this->cardID, $this->controller);
     if (SearchAuras("lightning_flow", $this->controller)) {
-      // This will not interact correctly with the card having go again from another source
-      // Need an engine update to adress because go again has already been processed by this point
       Await($this->controller, "YesNo", "choice", subsequent:0, context:"Destroy a " . CardLink("lightning_flow") . " to get go again?");
       Await($this->controller, $this->cardID, final:true);
     }
-    return "";
   }
 
   function SpecificLogic() {
-    global $dqVars, $mainPlayer;
+    global $dqVars;
     if ($dqVars["choice"] ?? "NO" == "YES") {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardID("lightning_flow");
@@ -1417,18 +1409,133 @@ class arc_ramp_blue extends Card {
     }
   }
 
-  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+  function ArcaneModifier($val, $remove, $player, $index, $amount) {
     $Effect = new CurrentEffect($index);
     if (str_contains($Effect->EffectID(), "GOAGAIN")) return;
-    return Amp(1, $remove, $player, $this->controller, $amount);
+    return Amp($val, $remove, $player, $this->controller, $amount);
   }
 
-  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+  function CurrentEffectGrantsNAAGoAgain(&$remove, $parameter) {
     if ($parameter == "GOAGAIN") {
       $remove = true;
       return true;
     }
     return false;
+  }
+}
+
+class arc_ramp_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "arc_ramp_red";
+    $this->controller = $controller;
+    $this->baseCard = new arc_ramp($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return $this->baseCard->ArcaneModifier(3, $remove, $player, $index, $amount);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
+  }
+
+  function SpecialType() { //not in the database yet
+    return "A";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialName() {
+    return "Arc Ramp";
+  }
+}
+
+class arc_ramp_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "arc_ramp_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new arc_ramp($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return $this->baseCard->ArcaneModifier(2, $remove, $player, $index, $amount);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
+  }
+
+  function SpecialType() { //not in the database yet
+    return "A";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialName() {
+    return "Arc Ramp";
+  }
+}
+
+class arc_ramp_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "arc_ramp_blue";
+    $this->controller = $controller;
+    $this->baseCard = new arc_ramp($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return $this->baseCard->ArcaneModifier(1, $remove, $player, $index, $amount);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
   }
 }
 
