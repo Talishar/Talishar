@@ -5768,8 +5768,8 @@ return match($cardID) {
 "gold_baited_hook" => 1,
 "golden_cog" => -1,
 "golden_company_red" => 6,
-"golden_company_yellow" => 6,
-"golden_company_blue" => 6,
+"golden_company_yellow" => 5,
+"golden_company_blue" => 4,
 "golden_gait" => 2,
 "golden_galea" => 2,
 "golden_gauntlets" => 2,
@@ -20177,7 +20177,6 @@ return match($cardID) {
 "florian_rotwood_harbinger" => 40,
 "gallow_end_of_the_line_yellow" => 3,
 "gravy_bones_shipwrecked_looter" => 40,
-"hala" => 4,
 "hala_bladesaint_of_the_vow" => 40,
 "ira_scarlet_revenger" => 40,
 "iyslander" => 18,
@@ -20264,7 +20263,6 @@ function GeneratedCharacterIntellect($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
 "data_doll_mkii" => 3,
-"hala" => 20,
 "lyath_goldmane" => 5,
 "lyath_goldmane_vile_savant" => 5,
 "teklovossen_the_mechropotent" => 3,

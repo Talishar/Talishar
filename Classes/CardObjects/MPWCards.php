@@ -174,10 +174,6 @@ class golden_company_yellow extends Card {
 	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
 		return $this->baseCard->CurrentTurnEffectPaid($remove);
 	}
-
-	function SpecialBlock() {
-		return 5;
-	}
 }
 
 class golden_company_blue extends Card {
@@ -197,9 +193,5 @@ class golden_company_blue extends Card {
 
 	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
 		return $this->baseCard->CurrentTurnEffectPaid($remove);
-	}
-
-	function SpecialBlock() {
-		return 4;
 	}
 }
