@@ -4365,21 +4365,23 @@ class cut_n_carve extends BaseCard {
 		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
 	}
 
-  function PlayAbility($target) {
+  function PlayAbility($target, $threshold) {
     $uid = explode("-", $target)[1] ?? -1;
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) {
 			Sharpen("MYCHAR-$index", $this->controller);
-			$weaponCard = new CharacterCard($index, $this->controller);
-      $threshold = match($this->cardID) {
-        "cut_n_carve_red" => 0,
-        "cut_n_carve_yellow" => 1,
-        "cut_n_carve_blue" => 2,
-      };
-			if ($weaponCard->NumPowerCounters() > $threshold) {
-				AddCurrentTurnEffect($this->cardID, $this->controller, "-", $weaponCard->UniqueID());
-			}
+      Await($this->controller, $this->cardID, subsequent:0, index:$index, threshold:$threshold, final:true);
 		}
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $index = $dqVars["index"];
+    $threshold = $dqVars["threshold"];
+    $weaponCard = new CharacterCard($index, $this->controller);
+    if ($weaponCard->NumPowerCounters() >= $threshold) {
+      AddCurrentTurnEffect($this->cardID, $this->controller, "-", $weaponCard->UniqueID());
+    }
   }
 }
 
@@ -4395,7 +4397,7 @@ class cut_n_carve_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($target);
+    $this->baseCard->PlayAbility($target, 1);
   }
 
   function DoesEffectGrantDominate() {
@@ -4404,6 +4406,10 @@ class cut_n_carve_red extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
   }
 }
 
@@ -4419,7 +4425,7 @@ class cut_n_carve_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($target);
+    $this->baseCard->PlayAbility($target, 2);
   }
 
   function DoesEffectGrantDominate() {
@@ -4428,6 +4434,10 @@ class cut_n_carve_yellow extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
   }
 }
 
@@ -4443,7 +4453,7 @@ class cut_n_carve_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($target);
+    $this->baseCard->PlayAbility($target, 3);
   }
 
   function DoesEffectGrantDominate() {
@@ -4452,6 +4462,10 @@ class cut_n_carve_blue extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
   }
 }
 class graven_gaslight extends Card {
