@@ -358,6 +358,8 @@
   function ProcessWager($cardID, $player, $wonWager, $uniqueID) {
     global $mainPlayer;
     $amount = 1;
+    if(SearchCurrentTurnEffects("double_down_red", $wonWager))
+      $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
     $lostWager = $wonWager == 1 ? 2 : 1;
     $hand = GetHand($mainPlayer);
     if($lostWager == $mainPlayer && SearchCurrentTurnEffects("cheating_scoundrel_red-WAGER", $mainPlayer, true) && count($hand) > 0) {
@@ -447,9 +449,6 @@
     $numWagersWon = 0;
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
-    if(SearchCurrentTurnEffects("double_down_red", $wonWager)) {
-      $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
-    }
     for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = $chainClosed ? false : true;
       if(isset($currentTurnEffects[$i])) {
