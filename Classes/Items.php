@@ -119,7 +119,7 @@ class ItemCard {
 
   function SetModalities($modes) {
     if (!isset($this->pieces[$this->index+8])) return;
-    $this->pieces[$this->index+8] == $modes;
+    $this->pieces[$this->index+8] = $modes;
     return;
   }
 
