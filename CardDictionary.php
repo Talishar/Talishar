@@ -2593,7 +2593,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (count($layers) == 0 && !$CombatChain->HasCurrentLink() && !IsResolutionStep()) return true;
       if (SearchCount(SearchCombatChainLink($currentPlayer, type: "AA", maxCost: 1)) > 0) return false;
       if (SearchCount(SearchCombatChainAttacks($currentPlayer, type: "AA", maxCost: 1)) > 0) return false;
-      if ($ChainLinks->SearchForType("AA") != "") return false;
+      if ($ChainLinks->SearchChainLinks(type:"AA", maxCost:1) != "") return false;
       $countLayers = count($layers);
       $layerPieces = LayerPieces();
       for ($i = 0; $i < $countLayers; $i += $layerPieces) {

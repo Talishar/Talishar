@@ -111,3 +111,15 @@ function HasFragment($cardID) {
 	$card = GetClass($cardID, 0);
 	if ($card != "-") return $card->HasFragment();
 }
+
+function PayLightningFlowInstead($player, $cardID) {
+	if (CountAura("lightning_flow", $player) > 0) {
+		AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_" . CardLink("lightning_flow"), 1);
+		AddDecisionQueue("NOPASS", $player, "-", 1);
+		$Auras = new Auras($player);
+		$AuraCard = $Auras->FindCardID("lightning_flow");
+		AddDecisionQueue("PASSPARAMETER", $player, "MYAURAS-" . $AuraCard->Index(), 1);
+		AddDecisionQueue("MZDESTROY", $player, "-", 1);
+		AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "$cardID-PAID", 1);
+	}
+}

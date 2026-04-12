@@ -1364,17 +1364,8 @@ class dashing_flashfoot_yellow extends Card {
   }
 }
 
-class rift_breaker_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "rift_breaker_red";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
-
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+class rift_breaker extends BaseCard {
+  function AddOnHitTrigger($check) {
     if (IsHeroAttackTarget()) {
       if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
       return true;
@@ -1382,11 +1373,71 @@ class rift_breaker_red extends Card {
     return false;
   }
 
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+  function HitEffect() {
     global $defPlayer;
     $Auras = new Auras($defPlayer);
     $AuraCard = $Auras->FindCardID("lightning_flow");
     $AuraCard->Destroy();
+  }
+}
+
+class rift_breaker_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rift_breaker_red";
+    $this->controller = $controller;
+    $this->baseCard = new rift_breaker($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+}
+
+class rift_breaker_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rift_breaker_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rift_breaker($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+}
+
+class rift_breaker_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rift_breaker_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rift_breaker($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
   }
 }
 
@@ -1555,5 +1606,105 @@ class circular_flowtide_yellow extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
+  }
+}
+
+class stormshard extends BaseCard {
+  function PlayAbility($target, $amount) {
+    global $CombatChain, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    $index = explode("-", $target)[1];
+    if (explode("-", $target)[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
+      if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return "FAILED";
+      CombatChainPowerModifier($index, $amount);
+      AddCurrentTurnEffect($this->cardID."-VISUAL", $this->controller);//For Visual Effect only
+    }
+    elseif (explode("-", $target)[0] == "COMBATCHAINATTACKS") {
+      // targeting a past chain link, do nothing for now
+    }
+    //only add current turn effect if there's no target (ie. played in layer step)
+    elseif (IsLayerStep()) AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function IsPlayRestricted() {
+    global $CombatChain, $Stack, $ChainLinks;
+    if ($Stack->NumLayers() == 0 && !$CombatChain->HasCurrentLink() && !IsResolutionStep()) return true;
+    if (SearchCount(SearchCombatChainLink($this->controller, type: "AA", talent: "LIGHTNING")) > 0) return false;
+    if (SearchCount(SearchCombatChainAttacks($this->controller, type: "AA", talent: "LIGHTNING")) > 0) return false;
+    if ($ChainLinks->SearchChainLinks(type:"AA", talent:"LIGHTNING") != "") return false;
+    $countLayers = $Stack->NumLayers();
+    for ($i = 0; $i < $countLayers; ++$i) {
+      $layer = $Stack->Card($i, true);
+      if (TypeContains($layer->ID(), "AA", $layer->PlayerID(), from:"LAYERS", index:$i) && TalentContains($layer->ID(), "LIGHTNING", $layer->PlayerID()) <= 1) return false;
+    }
+    return true;
+  }
+
+  function PayAdditionalCosts() {
+    if (IsLayerStep()) {
+      // targetting attack layer
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
+    }
+    elseif (!ShouldHoldPriority($this->controller) && ShouldAutotargetOpponent($this->controller)) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINLINK:talent=LIGHTNING;type=AA");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    }
+    else {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS:talent=LIGHNTING;type=AA&COMBATCHAINLINK:talent=LIGHTNING;type=AA");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    }
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function PrePitchDecsions() {
+    PayLightningFlowInstead($this->controller, $this->cardID);
+  }
+
+  function CurrentTurnEffectPaid(&$remove, $index) {
+    $Effect = new CurrentEffect($index);
+    $param = explode("-", $Effect->EffectID())[1] ?? "-";
+    if ($param == "PAID") {
+      $remove = true;
+      return true;
+    }
+    return false;
+  }
+}
+
+class stormshard_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "stormshard_red";
+    $this->controller = $controller;
+    $this->baseCard = new stormshard($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, 3);
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    $this->baseCard->PrePitchDecsions();
+  }
+
+  function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+    return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "VISUAL" ? 0 : 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
   }
 }
