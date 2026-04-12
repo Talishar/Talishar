@@ -2,6 +2,7 @@
 
 include_once './AccountSessionAPI.php';
 include_once './AccountDatabaseAPI.php';
+include_once '../Database/ConnectionManager.php';
 include_once '../APIKeys/APIKeys.php';
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
