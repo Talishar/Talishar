@@ -54,14 +54,7 @@ function PasswordLogin($username, $password, $rememberMe) {
 
 		if($rememberMe)
 		{
-			if (!empty($userData["rememberMeToken"])) {
-				$cookie = $userData["rememberMeToken"];
-			} else {
-				// Generate secure remember me token
-				$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
-				storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
-			}
-			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
+			ApplyRememberMeCookie($userData["usersId"]);
 		}
 		session_write_close();
 
@@ -78,15 +71,34 @@ function IsBanned($username)
 	return (intval($userData["isBanned"]) == 1 ? true : false);
 }
 
-function storeRememberMeCookie($conn, $uuid, $cookie)
+function ApplyRememberMeCookie($usersId)
 {
-  $sql = "UPDATE users SET rememberMeToken=? WHERE usersUid=?";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ss", $cookie, $uuid);
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-	}
+  $conn = GetLocalMySQLConnection();
+  $sql = "SELECT rememberMeToken FROM users WHERE usersId=?";
+  $stmt = mysqli_stmt_init($conn);
+  $cookie = null;
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "s", $usersId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    $cookie = $row["rememberMeToken"] ?? null;
+  }
+
+  if (empty($cookie)) {
+    $cookie = bin2hex(random_bytes(32));
+    $sql2 = "UPDATE users SET rememberMeToken=? WHERE usersId=?";
+    $stmt2 = mysqli_stmt_init($conn);
+    if (mysqli_stmt_prepare($stmt2, $sql2)) {
+      mysqli_stmt_bind_param($stmt2, "ss", $cookie, $usersId);
+      mysqli_stmt_execute($stmt2);
+      mysqli_stmt_close($stmt2);
+    }
+  }
+
+  mysqli_close($conn);
+  setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
 }
 
  ?>

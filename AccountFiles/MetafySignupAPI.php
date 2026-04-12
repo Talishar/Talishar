@@ -1,6 +1,8 @@
 <?php
 
 include_once './AccountSessionAPI.php';
+include_once './AccountDatabaseAPI.php';
+include_once '../Database/ConnectionManager.php';
 include_once '../APIKeys/APIKeys.php';
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
@@ -70,6 +72,8 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         $_SESSION['useruid'] = $existingUsername ?? ($user_profile['username'] ?? $user_profile['email'] ?? $userID);
         $_SESSION['isPatron'] = CheckIfMetafySupporter($userID);
         $_SESSION['metafyID'] = $user_profile['id'] ?? '';
+
+        ApplyRememberMeCookie($userID);
 
         $response->message = 'ok';
         $response->redirect = '/game/MainMenu.php';
@@ -461,4 +465,5 @@ function GetExistingUsername($userID)
   mysqli_close($conn);
   return null;
 }
+
 
