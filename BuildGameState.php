@@ -371,15 +371,16 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $layerObject = new stdClass;
   $layerContents = [];
   $layerPieces = LayerPieces();
+  $specialLayers = ["LAYER", "TRIGGER", "MELD", "PRETRIGGER", "ABILITY"];
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
-    $layerName = $layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" || $layers[$i] == "PRETRIGGER" || $layers[$i] == "ABILITY" ? $layers[$i + 2] : $layers[$i];
+    $layerName = in_array($layers[$i], $specialLayers) ? $layers[$i+2] : $layers[$i];
     array_push($layerContents, JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]));
   }
   $reorderableLayers = [];
   $numReorderable = 0;
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
     $layer = new stdClass();
-    $layerName = $layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" || $layers[$i] == "PRETRIGGER" || $layers[$i] == "ABILITY" ? $layers[$i + 2] : $layers[$i];
+    $layerName = in_array($layers[$i], $specialLayers) ? $layers[$i+2] : $layers[$i];
     $borderColor = null;
     if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 2;
     $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor);

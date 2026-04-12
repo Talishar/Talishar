@@ -640,11 +640,13 @@ class visit_the_dawnsmith_blue extends Card {
   }
 
 	function StartTurnAbility($index) {
-		AddLayer("TRIGGER", $this->controller, $this->cardID, $index);
+		$Aura = new AuraCard($index, $this->controller);
+		AddLayer("TRIGGER", $this->controller, $this->cardID, $Aura->UniqueID());
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		$Aura = new AuraCard($target, $this->controller);
+		$Auras = new Auras($this->controller);
+		$Aura = $Auras->FindCardUID($target);
 		$Aura->Destroy();
 		$Character = new PlayerCharacter($this->controller);
 		for ($i = 0; $i < $Character->NumCards(); ++$i) {
@@ -652,7 +654,7 @@ class visit_the_dawnsmith_blue extends Card {
 			if (SubtypeContains($CharacterCard->CardID(), "Sword"))
 				Sharpen("MYCHAR-" . $CharacterCard->Index(), $this->controller);
 		}
-	}
+}
 }
 
 class toe_the_line_red extends Card {
@@ -687,12 +689,18 @@ class indefensibly_honed_blue extends Card {
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) {
 			Sharpen("MYCHAR-$index", $this->controller);
-			$CharacterCard = new CharacterCard($index, $this->controller);
-			if ($CharacterCard->NumPowerCounters() >= 3)
-				AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID: $CharacterCard->UniqueID());
+			Await($this->controller, $this->cardID, index: $index, subsequent:0, final:true);
 		}
 		return "";
   }
+
+	function SpecificLogic() {
+		global $dqVars;
+		$index = $dqVars["index"];
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		if ($CharacterCard->NumPowerCounters() >= 3)
+			AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID: $CharacterCard->UniqueID());
+	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		if (SearchCharacterAliveSubtype($this->controller, "Sword")) return false;

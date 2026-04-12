@@ -661,4 +661,24 @@ class Card {
   function CurrentEffectOnBlockEffect($cardID, $from, $start=-1) {
     return;
   }
+
+  function DamageDealtAbilities($target, $damage, $type) {
+    return;
+  }
+
+  function WhileBlockPlayTrigger($index, $cardID, $from) {
+		return;
+	}
+
+  function WonWager($wonWager, $amount) {
+    return;
+  }
+
+  function FragmentTrigger() {
+    return;
+  }
+
+  function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+    return false;
+  }
 }

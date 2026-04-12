@@ -127,6 +127,12 @@ function MultiChooseIndicesAwait($player) {
   return $rv == "" ? "PASS" : $rv;
 }
 
+function MultiZoneIndicesAwait($player) {
+  global $dqVars;
+  $search = $dqVars["search"];
+  return MultiZoneIndices($player, $search);
+}
+
 function ChooseMultiZoneAwait($player) {
   global $dqVars;
   $may = $dqVars["may"] ?? false;
@@ -137,6 +143,13 @@ function ChooseMultiZoneAwait($player) {
   else
     PrependDecisionQueue("CHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
   PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose a card", !$notSubsequent);
+}
+
+function MZRemoveAwait($player) {
+  global $dqVars;
+  $MZIndex = $dqVars["MZIndex"];
+  $parameter = $dqVars["parameter"] ?? "-";
+  return MZRemove($player, $MZIndex, $parameter);
 }
 
 function SetLayerTargetAwait($player) {
@@ -289,4 +302,22 @@ function IncrementAwait($player) {
 function SetModesAwait($player) {
   global $dqVars, $CS_AdditionalCosts;
   SetClassState($player, $CS_AdditionalCosts, $dqVars["modes"]);
+}
+
+function AddTopDeckAwait($player) {
+  global $dqVars;
+  $cardID = $dqVars["cardID"];
+  $from = $dqVars["from"] ?? "GY";
+  $deckIndexModifier = $dqVars["deckIndexModifier"] ?? 0;
+  $Deck = new Deck($player);
+  return $Deck->AddTop($cardID, $from, $deckIndexModifier);
+}
+
+function ResolveGoAgainAwait($player) {
+  global $dqVars;
+  $cardID = $dqVars["cardID"];
+  $from = $dqVars["from"];
+  $additionalCosts = $dqVars["additionalCosts"];
+  $uniqueID = $dqVars["uniqueID"];
+  ResolveGoAgain($cardID, $player, $from, additionalCosts: $additionalCosts, uniqueID:$uniqueID);
 }

@@ -815,3 +815,28 @@ function CleanTargetToIndex($player, $target) {
   if ($Card == "") return "";
   return "$zone-" . $Card->Index();
 }
+
+function MultiZoneIndices($player, $parameter) {
+  $searches = [];
+  foreach (explode("&", $parameter) as $search) { //allow searching for stuff in unusual zones for its type
+    $newSearch = $search;
+    $conds = explode(":", $search)[1] ?? "";
+    if (strpos($newSearch, "MYALLY") !== false) {
+      $newSearch = "MYCHAR:subtype=Ally;$conds&$newSearch";
+    } 
+    if (strpos($newSearch, "THEIRALLY") !== false) {
+      $newSearch = "THEIRCHAR:subtype=Ally;$conds&$newSearch";
+    }
+    if (strpos($newSearch, "THEIRCHAR:type=E") !== false) {
+      $newSearch = "THEIRITEMS:$conds&$newSearch";
+    }
+    if (strpos($newSearch, "MYCHAR:type=E") !== false) {
+      $newSearch = "MYITEMS:$conds&$newSearch";
+    }
+    $searches[] = $newSearch;
+  }
+  $parameter = implode("&", $searches);
+  $rv = SearchMultizone($player, $parameter);
+  // we may want to dedupe this eventually, not pressing issue
+  return $rv == "" ? "PASS" : $rv;
+}

@@ -19,6 +19,7 @@ include_once "../Classes/CardObjects/OMNCards.php";
 include_once "../Classes/CardObjects/AZSCards.php";
 include_once "../Classes/CardObjects/AHACards.php";
 include_once "../Classes/CardObjects/MPWCards.php";
+include_once "../Classes/CardObjects/AOLCards.php";
 
 
 // GetMetafyTiersFromDatabase is defined in includes/MetafyHelper.php (included above)
@@ -111,6 +112,7 @@ $preconDecklinks = [
   "https://fabrary.net/decks/01K4XX1ERKXRYW8XHWE9BTAS4W", //pleiades
   "https://fabrary.net/decks/01K74RSFG9RTVPVN534DZPJJNQ", //rhinar
   "https://fabrary.net/decks/01K74RXDPRPJT9YWGFVAPHECDF", //slippy
+  "https://fabrary.net/decks/01KNHHE1MY39BC4PXYXMTJVT1M", //hala
 ];
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
@@ -787,6 +789,7 @@ function isSpecialUsePromo($cardID) {
 
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
+  if ($cardID == "stormshard_red") return true; 
   switch (CardSet($cardID)) {
     case "AHA":
       $card = GetClass($cardID, 0);

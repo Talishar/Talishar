@@ -79,7 +79,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $facing = $arsenal[$index + 1];
         if (SubtypeContains($cardToPlay, "Arrow")) SetClassState($playerID, $CS_ArsenalFacing, $facing);
         if ($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
-        if ($arsenal[$index + 6] > 0) $combatChainState[$CCS_NumPowerCounters] = $arsenal[$index + 6];
+        if (!isset($arsenal[$index + 6])) WriteLog("Something odd happened when playing a card from arsenal. Please submit a bug report", highlight:true);
+        if ($arsenal[$index + 6] ?? 0 > 0) $combatChainState[$CCS_NumPowerCounters] = $arsenal[$index + 6];
         if(!IsStaticType(CardType($cardToPlay, "ARS"), "ARS", $cardToPlay)) RemoveArsenal($playerID, $index);
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID, zone: "MYARS", facing:$facing);
       } else {
@@ -1390,7 +1391,7 @@ function ResolveChainLink()
           $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
           if ($totalPower > 0)
             AllyDamageTakenAbilities($defPlayer, $index);
-          DamageDealtAbilities($mainPlayer, $totalPower, "COMBAT", $combatChain[0]);
+          DamageDealtAbilities("ALLY", $totalPower, "COMBAT", $combatChain[0]);
         }
         AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
       }
@@ -2189,6 +2190,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $attackcard = GetClass($activeLinkID, $mainPlayer, "CC", $CombatChain->AttackCard()->UniqueID());
       $stillThere = $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-";
       if ($attackcard != "-" && $stillThere) $attackcard->ActiveLinkPlayTrigger($cardID, $currentPlayer, $from);
+      for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+        $Card = $CombatChain->Card($i, true);
+        $blockcard = GetClass($Card->ID(), $Card->PlayerID());
+        if ($blockcard != "-") $blockcard->WhileBlockPlayTrigger($Card->Index(), $cardID, $from);
+      }    
     }
     if (SearchCurrentTurnEffects("lightning_greaves", $mainPlayer) && DelimStringContains(CardType($cardID), "I")) {
       // check whether lightning greaves has been activated *before* the card is played
@@ -2732,7 +2738,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     }
   }
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->AddPrePitchDecisionQueue($from, $index, $facing);
+  if ($card != "-") $card->AddPrePitchDecisionQueue($from, $index, $facing);
   if(HasMeld($cardID)) {
     $names = explode(" // ", CardName($cardID));
     $countCurrentTurnEffects = count($currentTurnEffects);
@@ -4337,7 +4343,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       // helpful log message
       WriteLog(CardLink($cardID) . " could not be added as a defending chain link!");
   }
-  else if (SubtypeContains($cardID, "Evo", $currentPlayer)) EvoHandling($cardID, $currentPlayer, $from);
+  else ResolvePermanent($cardID, $from, $additionalCosts);
   //Resolve Effects
   if (!$isBlock && !$skipDRResolution) {
     CurrentEffectPlayOrActivateAbility($cardID, $from);
@@ -4367,7 +4373,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($from != "EQUIP" && $from != "PLAY" && $from != "COMBATCHAINATTACKS") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     else if ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     if (!$openedChain) {
-      ResolveGoAgain($cardID, $currentPlayer, $from, additionalCosts: $additionalCosts, uniqueID:$uniqueID);
+      Await($currentPlayer, "ResolveGoAgain", cardID:$cardID, from:$from, additionalCosts:$additionalCosts, uniqueID:$uniqueID, subsequent:0, final:true);
+      
     }
     CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();

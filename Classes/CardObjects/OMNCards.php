@@ -959,9 +959,7 @@ class volzar_meteor_storm extends Card {
   }
 
   function ArcaneModifier(&$remove, $player, $index, $amount = false) {
-    if ($amount) return 1;
-    if ($player != $this->controller) return 0;
-    return 1;
+    return Amp(1, $remove, $player, $this->controller, $amount);
   }
 
   function AbilityType($index = -1, $from = '-') {
@@ -1097,7 +1095,7 @@ class cosmic_suture_blue extends Card {
 
 class scorpio_comet_tail extends Card {
   function __construct($controller) {
-    $this->cardID = "volzar_meteor_storm";
+    $this->cardID = "scorpio_comet_tail";
     $this->controller = $controller;
   }
 
@@ -1124,13 +1122,438 @@ class scorpio_comet_tail extends Card {
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
     if (IsHeroAttackTarget()) {
-      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID);
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
       return true;
     }
     return false;
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    DealArcane(1, resolvedTarget:"THEIRCHAR-0");
+    DealArcane(1, 1);
+  }
+}
+
+class pulsing_cardia extends BaseCard {
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    GainResources($this->controller, 1);
+  }
+}
+
+class pulsing_cardia_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "pulsing_cardia_red";
+    $this->controller = $controller;
+    $this->baseCard = new pulsing_cardia($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function HasFragment() {
+    return true;
+  }
+}
+
+class pulsing_cardia_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "pulsing_cardia_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new pulsing_cardia($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function HasFragment() {
+    return true;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class pulsing_cardia_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "pulsing_cardia_blue";
+    $this->controller = $controller;
+    $this->baseCard = new pulsing_cardia($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function HasFragment() {
+    return true;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class auric_shards extends BaseCard {
+  function PlayAbility() {
+    global $CombatChain;
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true); //it should always be the most recent aura
+    // for now assume it's targeting the current chain link
+    if (HasFragment($CombatChain->AttackCard()->ID()))
+      AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($val, $uniqueID) {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uniqueID);
+    $pow = $AuraCard->HoloCounters() > 0 ? $val : 1;
+    AddCurrentTurnEffect("$this->cardID-$pow", $this->controller);
+  }
+
+  function CombatEffectActive() {
+    global $CombatChain;
+    return HasFragment($CombatChain->AttackCard()->ID());
+  }
+}
+
+class auric_shards_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "auric_shards_red";
+    $this->controller = $controller;
+    $this->baseCard = new auric_shards($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger(4, $uniqueID);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+}
+
+class auric_shards_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "auric_shards_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new auric_shards($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger(3, $uniqueID);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+}
+
+class auric_shards_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "auric_shards_blue";
+    $this->controller = $controller;
+    $this->baseCard = new auric_shards($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->PlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger(2, $uniqueID);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+}
+
+class dashing_flashfoot_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "dashing_flashfoot_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (DoesAttackHaveGoAgain() && IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    DealArcane(1, 1, source:$this->cardID);
+  }
+
+  function DamageDealtAbilities($target, $damage, $type) {
+    global $CombatChain;
+    if ($CombatChain->AttackCard()->ID() != $this->cardID) return; // for now only make this work when it's the active link
+    if (is_numeric($target) && $CombatChain->AttackCard()->NumTimesUsed() == 0) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+    $CombatChain->AttackCard()->AddUse();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("embodiment_of_lightning", $this->controller, effectSource:$this->cardID);
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return DoesAttackHaveGoAgain() ? 1 : 0;
+  }
+}
+
+class rift_breaker_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rift_breaker_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $Auras = new Auras($defPlayer);
+    $AuraCard = $Auras->FindCardID("lightning_flow");
+    $AuraCard->Destroy();
+  }
+}
+
+class arc_ramp extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    if (SearchAuras("lightning_flow", $this->controller)) {
+      Await($this->controller, "YesNo", "choice", subsequent:0, context:"Destroy a " . CardLink("lightning_flow") . " to get go again?");
+      Await($this->controller, $this->cardID, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    if ($dqVars["choice"] ?? "NO" == "YES") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardID("lightning_flow");
+      $AuraCard->Destroy();
+      AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
+    }
+  }
+
+  function ArcaneModifier($val, $remove, $player, $index, $amount) {
+    $Effect = new CurrentEffect($index);
+    if (str_contains($Effect->EffectID(), "GOAGAIN")) return;
+    return Amp($val, $remove, $player, $this->controller, $amount);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain(&$remove, $parameter) {
+    if ($parameter == "GOAGAIN") {
+      $remove = true;
+      return true;
+    }
+    return false;
+  }
+}
+
+class arc_ramp_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "arc_ramp_red";
+    $this->controller = $controller;
+    $this->baseCard = new arc_ramp($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return $this->baseCard->ArcaneModifier(3, $remove, $player, $index, $amount);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
+  }
+
+  function SpecialType() { //not in the database yet
+    return "A";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialName() {
+    return "Arc Ramp";
+  }
+}
+
+class arc_ramp_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "arc_ramp_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new arc_ramp($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return $this->baseCard->ArcaneModifier(2, $remove, $player, $index, $amount);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
+  }
+
+  function SpecialType() { //not in the database yet
+    return "A";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialName() {
+    return "Arc Ramp";
+  }
+}
+
+class arc_ramp_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "arc_ramp_blue";
+    $this->controller = $controller;
+    $this->baseCard = new arc_ramp($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return $this->baseCard->ArcaneModifier(1, $remove, $player, $index, $amount);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
+  }
+}
+
+class circular_flowtide_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "circular_flowtide_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 }

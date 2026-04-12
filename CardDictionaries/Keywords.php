@@ -358,6 +358,8 @@
   function ProcessWager($cardID, $player, $wonWager, $uniqueID) {
     global $mainPlayer;
     $amount = 1;
+    if(SearchCurrentTurnEffects("double_down_red", $wonWager))
+      $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
     $lostWager = $wonWager == 1 ? 2 : 1;
     $hand = GetHand($mainPlayer);
     if($lostWager == $mainPlayer && SearchCurrentTurnEffects("cheating_scoundrel_red-WAGER", $mainPlayer, true) && count($hand) > 0) {
@@ -370,6 +372,8 @@
       AddDecisionQueue("WINWAGER", $wonWager, $cardID, 1);
       return;
     }
+    $card = GetClass($cardID, $mainPlayer);
+    if ($card != "-") $card->WonWager($wonWager, $amount);
     switch($cardID) {
       case "good_time_chapeau":
         PlayAura("might", $wonWager, $amount);
@@ -423,9 +427,6 @@
         Draw($wonWager);
         PummelHit($lostWager);
         break;
-      case "cheating_scoundrel_red":
-        PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
-        break;
       default:
         break;
     }
@@ -448,9 +449,6 @@
     $numWagersWon = 0;
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
-    if(SearchCurrentTurnEffects("double_down_red", $wonWager)) {
-      $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
-    }
     for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = $chainClosed ? false : true;
       if(isset($currentTurnEffects[$i])) {
@@ -471,6 +469,7 @@
           case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
           case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
           case "drink_em_under_the_table_red":
+          case "odds_on_favorite_blue":
             for($j = 0; $j < $amount; ++$j) {
               if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
             }

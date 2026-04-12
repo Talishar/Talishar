@@ -32,7 +32,8 @@ function Sharpen($MZIndex, $player, $num=1) {
 					SearchCurrentTurnEffects("reverent_rerebrace", $player, true);
         }
         $CharacterCard->AddPowerCounters($num);
-        AddCurrentTurnEffect("SHARPEN", $player, "-", $CharacterCard->UniqueID());
+        if ($CurrentTurnEffects->FindSpecificEffect("SHARPEN", $CharacterCard->UniqueID())->Index() == -1)
+          AddCurrentTurnEffect("SHARPEN", $player, "-", $CharacterCard->UniqueID());
         break;
       default:
         break;

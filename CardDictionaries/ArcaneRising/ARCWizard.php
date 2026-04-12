@@ -1190,8 +1190,7 @@ function ProcessSurge($cardID, $player, $target)
     case "aether_quickening_red":
     case "aether_quickening_yellow":
     case "aether_quickening_blue":
-      if (CurrentEffectPreventsGoAgain($cardID) || $player != $mainPlayer) break;
-      GainActionPoints();
+      AddCurrentTurnEffect($cardID, $player);
       WriteLog(CardLink($cardID, $cardID) . " gained go again");
       break;
     case "prognosticate_red":
@@ -1282,8 +1281,7 @@ function ProcessSurge($cardID, $player, $target)
     case "trailblazing_aether_red":
     case "trailblazing_aether_yellow":
     case "trailblazing_aether_blue":
-      if (CurrentEffectPreventsGoAgain($cardID) || $player != $mainPlayer) break;
-      GainActionPoints();
+      AddCurrentTurnEffect($cardID, $player);
       WriteLog(CardLink($cardID, $cardID) . " gained go again");
       break;
     default:

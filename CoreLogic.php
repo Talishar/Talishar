@@ -749,11 +749,13 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   return $damage;
 }
 
-function DamageDealtAbilities($player, $damage, $type, $source)
+function DamageDealtAbilities($target, $damage, $type, $source)
 {
   global $mainPlayer, $combatChainState, $CCS_AttackFused;
   if (($source == "explosive_growth_red" || $source == "explosive_growth_yellow" || $source == "explosive_growth_blue") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
   if ($source == "suraya_archangel_of_knowledge") GainHealth($damage, $mainPlayer);
+  $card = GetClass($source, $mainPlayer);
+  if ($card != "-") $card->DamageDealtAbilities($target, $damage, $type);
 }
 
 function DoQuell($targetPlayer, $damage)
@@ -3202,6 +3204,8 @@ function IsAlternativeCostPaid($cardID, $from)
   $isAlternativeCostPaid = false;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
+    $card = GetClass($currentTurnEffects[$i], $currentPlayer);
+    if ($card != "-") $isAlternativeCostPaid = $isAlternativeCostPaid || $card->CurrentTurnEffectPaid($cardID, $from, $remove, $i);
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "moon_wish_red":
@@ -4158,8 +4162,7 @@ function MentorTrigger($player, $index, $specificCard = "")
   AddDecisionQueue("SHUFFLEDECK", $player, "-");
 }
 
-//handles moving a card to where it's supposed to go *after* it resolves
-function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
+function ResolvePermanent($cardID, $from, $additionalCosts) {
   global $currentPlayer, $turn;
   if (!GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "COMBATCHAINATTACKS" && $cardID != "quickdodge_flexors") {
     $cardSubtype = CardSubType($cardID);
@@ -4168,7 +4171,21 @@ function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
     else if (DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from: $from);
     else if ($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer, $from);
     else if (DelimStringContains($cardSubtype, "Figment")) PutPermanentIntoPlay($currentPlayer, $cardID, from: $from);
-    else if (DelimStringContains($cardSubtype, "Evo")); //evos handled elsewhere
+    else if (DelimStringContains($cardSubtype, "Evo")) EvoHandling($cardID, $currentPlayer, $from);
+  }
+}
+
+//handles moving a card to where it's supposed to go *after* it resolves
+function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
+  global $currentPlayer, $turn;
+  if (!GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "COMBATCHAINATTACKS" && $cardID != "quickdodge_flexors") {
+    $cardSubtype = CardSubType($cardID);
+    if (DelimStringContains($cardSubtype, "Aura")); //permanents handled elsewhere
+    else if (DelimStringContains($cardSubtype, "Ally"));
+    else if (DelimStringContains($cardSubtype, "Item"));
+    else if ($cardSubtype == "Landmark");
+    else if (DelimStringContains($cardSubtype, "Figment"));
+    else if (DelimStringContains($cardSubtype, "Evo")); 
     else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W" && $definedCardType != "Macro") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
       // make sure the card goes to the graveyard after it resolves

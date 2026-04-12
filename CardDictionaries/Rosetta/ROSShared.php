@@ -563,3 +563,11 @@ function IsDoubleArcane($cardID): bool //checks for cards that can shock, but no
     default => false,
   };
 }
+
+// Use this in a Card objects ArcaneModifier function 
+function Amp($ampAmount, &$remove, $player, $controller, $amount) {
+  if ($amount) return $ampAmount;
+  if ($player != $controller) return 0;
+  $remove = true;
+  return $ampAmount;
+}

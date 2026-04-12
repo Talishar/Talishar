@@ -99,7 +99,15 @@ function DoesBlockTriggerFragment($index) {
 }
 
 function FragmentLayer($blockingCardUID) {
-	global $mainPlayer;
-	if (IsFragmentStillActive($blockingCardUID)) 
+	global $mainPlayer, $CombatChain, $mainPlayer;
+	if (IsFragmentStillActive($blockingCardUID)) {
 		AddCurrentTurnEffect("FRAGMENT", $mainPlayer);
+		$attackCard = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
+		if ($attackCard != "-") $attackCard->FragmentTrigger();
+	}
+}
+
+function HasFragment($cardID) {
+	$card = GetClass($cardID, 0);
+	if ($card != "-") return $card->HasFragment();
 }

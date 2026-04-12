@@ -1128,11 +1128,11 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
       }
       break;
     case "steadfast_red":
-      return $source == $currentTurnEffects[$index + 2] && $preventable ? 6 : 0;
+      return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
     case "steadfast_yellow":
-      return $source == $currentTurnEffects[$index + 2] && $preventable ? 5 : 0;
+      return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
     case "steadfast_blue":
-      return $source == $currentTurnEffects[$index + 2] && $preventable ? 4 : 0;
+      return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
     case "amulet_of_intervention_blue":
       return 1;
     case "helios_mitre":
@@ -1891,6 +1891,15 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
       $card = GetClass($effectID, $currentPlayer);
       if ($card != "-") $hasGoAgain = $card->CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, $remove) || $hasGoAgain;
       switch ($turnEffects[0]) {
+        case "aether_quickening_red":
+        case "aether_quickening_yellow":
+        case "aether_quickening_blue":
+        case "trailblazing_aether_red":
+        case "trailblazing_aether_yellow":
+        case "trailblazing_aether_blue":
+          $hasGoAgain = true;
+          $remove = true;
+          break;
         case "bloodrush_bellow_yellow-GOAGAIN":
           $hasGoAgain = true;
           $remove = true;
