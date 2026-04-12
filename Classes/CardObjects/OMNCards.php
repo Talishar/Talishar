@@ -1460,7 +1460,7 @@ class arc_ramp extends BaseCard {
     }
   }
 
-  function ArcaneModifier($val, $remove, $player, $index, $amount) {
+  function ArcaneModifier($val, &$remove, $player, $index, $amount) {
     $Effect = new CurrentEffect($index);
     if (str_contains($Effect->EffectID(), "GOAGAIN")) return;
     return Amp($val, $remove, $player, $this->controller, $amount);
