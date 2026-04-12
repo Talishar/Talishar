@@ -883,8 +883,10 @@ class electromagnetic_somersault extends BaseCard {
     global $dqVars;
     $choice = $dqVars["currentChoices"];
     $Choice = MZIndexToObject($this->controller, $choice);
-    WriteLog(CardLink($Choice->ID()) . " was chosen.");
-    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$Choice->UniqueID());
+    if ($Choice != "") {
+      WriteLog(CardLink($Choice->ID()) . " was chosen.");
+      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$Choice->UniqueID());
+    }
   }
 
   function ResolutionStepEffectTriggers($index) {
