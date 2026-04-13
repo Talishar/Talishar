@@ -771,7 +771,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   if (!SearchCurrentTurnEffects($hero, $player) && ColorContains($cardID, 3, $player) && ($hero == "gravy_bones_shipwrecked_looter" || $hero == "gravy_bones")) {
     AddCurrentTurnEffect($hero, $player);
   }
-  if (TypeContains($cardID, "I", $player))
+  if (TypeContains($cardID, "I", $player, from:"DISCARD"))
     IncrementClassState($player, $CS_NumInstantsPutInGrave);
   // Code for equipped evos+ going to GY, then Scrapped and it makes them unplayable.
   // this may not be required anymore
