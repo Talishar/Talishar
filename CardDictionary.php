@@ -1740,6 +1740,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $banish = new Banish($player);
   $auras = &GetAuras($player);
   $discard = &GetDiscard($currentPlayer);
+  $Discard = new Discard($currentPlayer);
   $restriction = "";
   $cardType = CardType($cardID, $from, $currentPlayer);
   $subtype = CardSubType($cardID);
@@ -1759,7 +1760,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   } else if ($from == "THEIRARS") {
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
-  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard[$index + 2], $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
+  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $Discard->Card($index)->Facing(), $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
   elseif ($from == "COMBATCHAINATTACKS" && (!AbilityPlayableFromCombatChain($cardID, "-") || !CanPlayInstant($phase))) return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && isset($character[$index + 12]) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
