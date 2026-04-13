@@ -3,8 +3,7 @@
 include __DIR__ . '/zzImageConverter.php';
 
 // FAB Cube API endpoint for card data with all printing variations
-$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/compendium-of-rathe/json/english/card.json";
-
+$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/omens-of-the-third-age/json/english/card.json";
 
 $manualArtVariationOverrides = [
   // Format option 1 - Auto-find URL: "cardID" => "artVariation"
