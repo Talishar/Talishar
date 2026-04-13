@@ -1869,7 +1869,7 @@ function CachedTotalBlock()
 function CachedAttackHasGoAgain()
 {
   global $combatChainState, $CCS_CachedGoAgain;
-  return ($combatChainState[$CCS_CachedGoAgain] == "1" ? true : false);
+  return ($combatChainState[$CCS_CachedGoAgain] ?? "0") == "1" ? true : false;
 }
 
 function CachedDominateActive()
