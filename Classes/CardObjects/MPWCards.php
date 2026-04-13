@@ -112,16 +112,16 @@ class stand_tall_yellow extends Card {
     return "";
   }
 
-	function EffectBlockModifier($index, $from) {
-		return 2;
-	}
 
 	function WhileBlockPlayTrigger($index, $cardID, $from) {
-		if (TypeContains($cardID, "AR")) AddLayer("TRIGGER", $this->controller, $this->cardID);
+		$BlockCard = new ChainCard($index);
+		if (TypeContains($cardID, "AR")) AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$BlockCard->UniqueID());
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		AddCurrentTurnEffect($this->cardID, $this->controller);
+		global $CombatChain;
+		$BlockCard = $CombatChain->FindCardUID($uniqueID);
+		$BlockCard->ModifyDefense(2);
 	}
 }
 
