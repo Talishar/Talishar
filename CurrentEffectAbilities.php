@@ -2955,6 +2955,9 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
         case "scramble_pulse_blue":
           $blockModifier -= TypeContains($cardID, "E", $defPlayer) || SubtypeContains($cardID, "Evo", $defPlayer) ? 1 : 0;
           break;
+        case "fabricate_red":
+          $blockModifier += SubtypeContains($cardID, "Evo", $mainPlayer) && $from == "EQUIP" ? 1 : 0;
+          break;
         default:
           break;
       }
