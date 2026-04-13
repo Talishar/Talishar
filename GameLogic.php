@@ -3561,6 +3561,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $dest = $paramArr[1] ?? "MYHAND";
         $isReveal = isset($paramArr[2]) ? ($paramArr[2] == 1) : true;
         $mod = $paramArr[3] ?? "-";
+        $inds = MultiZoneIndices($player, "MYDECK:$search");
+        if ($inds == "PASS") { // in case there aren't any matches, still show the deck
+          $deck = new Deck($player);
+          $count = $deck->RemainingCards();
+          PrependDecisionQueue("SHUFFLEDECK", $player, "-");
+          PrependDecisionQueue("MULTISHOWCARDSDECK", $player, "<-", 1);
+          PrependDecisionQueue("SETDQCONTEXT", $player, "You have matching cards to search for.", 1);
+          PrependDecisionQueue("DECKCARDS", $player, "<-", 1);
+          PrependDecisionQueue("FINDINDICES", $player, "DECKTOPXINDICES," . $count);
+          return $lastResult;
+        }
         switch($dest) {
           case "MYHAND":
             MZMoveCard($player, "MYDECK:$search", $dest, may:true, isReveal:$isReveal);

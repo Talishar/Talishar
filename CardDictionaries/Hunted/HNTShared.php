@@ -792,24 +792,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         for ($i = 0; $i < count($hand); $i += HandPieces()) {
           if (TypeContains($hand[$i], "AR", $otherPlayer)) $foundAreact = true;
         }
-        $deck = new Deck($currentPlayer);
-        $count = $deck->RemainingCards();
-        $foundDreact = false;
-        for ($i = 0; $i < $count; ++$i) {
-          if (TypeContains($deck->GetCard($i), "DR")) $foundDreact = true;
-        }
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
-        if ($foundAreact) {
-          if ($foundDreact) MaySearchDeck($currentPlayer, "type=DR", "TOPDECK");
-          else {
-            AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
-            AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You have no defense reactions to search for.", 1);
-            AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
-            AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-          }
-        }
+        if ($foundAreact)
+          MaySearchDeck($currentPlayer, "type=DR", "TOPDECK");
         else WriteLog("The opponent has no Attack Reactions");
       }
       break;
