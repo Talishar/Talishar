@@ -179,10 +179,7 @@ class ChainCard {
     }
 
     function CardBlockValue() {
-      if (CanGainBlock($this->ID())) {
-        return BlockValue($this->ID()) + $this->chain[$this->index + 6];
-      }
-      else return BlockValue($this->ID());
+      return $this->index == -1 ? 0 : BlockingCardDefense($this->index);
     }
 
     function OriginalID() {
