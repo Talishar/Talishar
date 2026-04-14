@@ -691,6 +691,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "BEASTWITHIN":
+      $lifeLost = intval($initiator) + 1;
       $deck = new Deck($player);
       if ($deck->Empty()) {
         PlayerLoseHealth(1, $player, true);
@@ -703,9 +704,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $banish = new Banish($player);
         RemoveBanish($player, ($banish->NumCards() - 1) * BanishPieces());
         AddPlayerHand($card, $player, "BANISH");
+        WriteLog("Player " . $player . " lost <b>" . $lifeLost . " </b> life in total to " . CardLink("beast_within_yellow", "beast_within_yellow"));
       }
       else
-        PrependDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
+        PrependDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN," . $lifeLost);
       return 1;
     case "CROWNOFDICHOTOMY":
       $lastType = CardType($lastResult);
