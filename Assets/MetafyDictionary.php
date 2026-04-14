@@ -277,8 +277,13 @@ enum MetafyCommunity : string
         "hyper_inflation_red=GEM131-T", "ion_charged_yellow=GEM135-T", "knife_through_red=GEM113-T", "man_overboard_red=GEM126-T", "maxx_the_hype_nitro=GEM105-T", "rainbow_goo_trap_red=GEM122-T",
         "reinforce_the_line_red=GEM140-T", "roaring_beam_yellow=GEM129-T", "shallow_water_shark_harpoon_yellow=GEM127-T", "shimmering_mirage_blue=GEM125-T", "snarky_prick_red=GEM139-T",
         "submerge_red=GEM128-T", "teklo_trebuchet_2000_blue=GEM121-T", "valahai_riven_yellow=GEM115-T", "weeping_battleground_red=GEM123-T", "elemental_strike_red=PEN205-T",
-        "nitro_mechanoid=GEM519-T", "nitro_mechanoida=GEM519-T", "nitro_mechanoidb=GEM519-T", "nitro_mechanoidc=GEM519-T", "colors_of_aria_red=PEN206-T"
-    ];
+        "nitro_mechanoid=GEM519-T", "nitro_mechanoida=GEM519-T", "nitro_mechanoidb=GEM519-T", "nitro_mechanoidc=GEM519-T", "colors_of_aria_red=PEN206-T", "dawnblade=MPW156-T",
+        "golden_grail=MPW007-T", "hala=MPW004-T", "sharpening_sparks_red=MPW026-T", "stand_tall_yellow=MPW037-T", "valiant_dynamo=MPW012-T", "zenith_blade=MPW005-T", "aurora_legacy_of_tempest=OMN047-T", "circular_flowtide_yellow=OMN033-T", "oscilio_forked_continuum=OMN094-T", "zyggy_starlight=OMN001-T",
+        "zyggy_starlight_red=OMN001-T", "zyggy_starlight_yellow=OMN002-T", "zyggy_starlight_blue=OMN003-T", "cosmic_duality_red=FAB464-T", "nebula_duality_red=FAB465-T",
+        "voltbound_duality_red=FAB466-T", "omens_of_arcana_red=FAB467-T", "astral_strike_red=FAB469-T", "lightning_flow=FAB470-T", "flowing_stormstike_red=FAB471-T",
+        "meteoric_rise_red=FAB472-T", "voltic_impact_red=FAB473-T", "flowstate_embodiment_red=FAB476-T", 
+        "golden_company_red=FAB481-T", "golden_company_yellow=FAB482-T", "golden_company_blue=FAB483-T", 
+        ];
     return $altArts;
   }
 }
