@@ -626,6 +626,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
           if ($option[0] == "COMBATCHAINLINK"){
             $borderColor = $combatChain[$index + 1] == $playerID ? 1 : 2;
+            if ($combatChain[$index + 6] > 0) $enduranceCounters = $combatChain[$index + 6];
           }
 
           if ($option[0] == "THEIRCHAR" || $option[0] == "MYCHAR") {
