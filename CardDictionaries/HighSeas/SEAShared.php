@@ -724,9 +724,14 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           }
         }
         if ($numUsed == 3) {
-          AddDecisionQueue("SEARCHCOMBATCHAIN", $currentPlayer, "-");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card to destroy");
-          AddDecisionQueue("CHOOSECARDID", $currentPlayer, "<-", 1);
+          $pastChoices = GetPastChainLinkCards($defPlayer, asMZInd: true, blockingClass: "ASSASSIN");
+          $currentChoices = GetChainLinkCards($defPlayer, asMZInd: true);
+          if ($currentChoices == "") $choices = $pastChoices;
+          elseif ($pastChoices == "") $choices = $currentChoices;
+          else $choices = "$pastChoices,$currentChoices";
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to destroy");
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $choices);
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
           AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
           if ($from == "PLAY") ++$combatChain[11];
           else ++$chainLinks[$attackInd][9];
