@@ -79,9 +79,11 @@ if (!isset($decksToTry)) $decksToTry = TryPOST("decksToTry"); //This is only use
 if (!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", false); //Set this to true to save the provided deck link to your favorites
 if (!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
 if (!isset($matchup)) $matchup = TryPOST("matchup", ""); //The matchup link
+$forceBaseDeckRefresh = ($matchup === "__base__");
+if ($forceBaseDeckRefresh) $matchup = "";
 $starterDeck = false;
 
-if ($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "") {
+if ($matchup == "" && !$forceBaseDeckRefresh && GetCachePiece($gameName, $playerID + 6) != "") {
   $response->error = "Another player has already joined the game.";
   echo json_encode($response);
   exit;
@@ -149,7 +151,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
    }
  }
 
- if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
+ if ($matchup == "" && !$forceBaseDeckRefresh && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
    if ($gameStatus >= $MGS_GameStarted) {
      $response->gameStarted = true;
    }
