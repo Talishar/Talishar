@@ -724,7 +724,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           }
         }
         if ($numUsed == 3) {
-          $pastChoices = GetPastChainLinkCards($defPlayer, asMZInd: true, blockingClass: "ASSASSIN");
+          $pastChoices = GetPastChainLinkCards($defPlayer, asMZInd: true);
           $currentChoices = GetChainLinkCards($defPlayer, asMZInd: true);
           if ($currentChoices == "") $choices = $pastChoices;
           elseif ($pastChoices == "") $choices = $currentChoices;
