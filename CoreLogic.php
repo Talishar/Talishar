@@ -44,7 +44,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
         if (($canGainAttack || $power < 0) && !($snagActive && ($fromCurrentAttack || CardType(EffectCardID($currentTurnEffects[$i])) == "AR"))) {
           $powerModifiers[] = $currentTurnEffects[$i];
           $powerModifiers[] = $power;
-          AddPower($totalPower, $power);
+          AddPower($totalPower, $power, source:$currentTurnEffects[$i]);
         }
       }
     }
@@ -163,19 +163,31 @@ function ReEvalCombatChain() {
   }
 }
 
-function AddPower(&$totalPower, $amount, $sourceBuff=false): void
+// Effects that modify other buffs but aren't buffs themselves
+function FakeBuff($cardID) {
+  return match($cardID) {
+    "flourish_yellow", "flourish_blue" => true,
+    default => false
+  };
+}
+
+function AddPower(&$totalPower, $amount, $sourceBuff=false, $source="-"): void
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
+  $startBuff = $amount;
   if (PowerCantBeModified($attackID)) return;
-  if ($amount > 0 && ($attackID == "amplifying_arrow_yellow" || $attackID == "doubling_season_red")) $amount += 1;
-  if (!$sourceBuff && $amount > 0) { //thrive and flourish don't apply to buffs to the attack source
-    if (SearchCurrentTurnEffects("thrive_yellow", $mainPlayer)) {
-      $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack so get all the active effects before applying bonus
-      $amount += $num_thrives_active;
+  if (!FakeBuff($source)) { // fake buffs are modifications that can't be modified themselves
+    if ($amount > 0 && ($attackID == "amplifying_arrow_yellow" || $attackID == "doubling_season_red"))
+      $amount += 1;
+    if (!$sourceBuff && $amount > 0) { //thrive and flourish don't apply to buffs to the attack source
+      if (SearchCurrentTurnEffects("thrive_yellow", $mainPlayer)) {
+        $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack so get all the active effects before applying bonus
+        $amount += $num_thrives_active;
+      }
+      SearchCurrentTurnEffects("flourish_yellow-INACTIVE", $mainPlayer, false, false, true);
+      SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
     }
-    SearchCurrentTurnEffects("flourish_yellow-INACTIVE", $mainPlayer, false, false, true);
-    SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
   }
   if ($amount > 0 && ($attackID == "back_heel_kick_red" || $attackID == "back_heel_kick_yellow" || $attackID == "back_heel_kick_blue") && ComboActive()) $amount += 1;
   $totalPower += $amount;
