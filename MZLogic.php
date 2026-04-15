@@ -495,6 +495,14 @@ function FrozenOffsetMZ($zone)
   }
 }
 
+function DefCounterOffsetMZ($zone) {
+  return match($zone) {
+    "CHAR", "MYCHAR", "THEIRCHAR" => 4,
+		"ITEMS", "MYITEMS", "THEIRITEMS" => 12,
+		default => -1
+  };
+}
+
 function MZIsPlayer($MZIndex)
 {
   $indexArr = explode("-", $MZIndex);
@@ -704,7 +712,7 @@ function GetZoneObject($player,  $zone) {
     "COMBATCHAIN" => $CombatChain,
     "MYALLY" => new Allies($player),
     "THEIRALLY" => new Allies($otherPlayer),
-    "MYITEMS" => new Items($player),
+    "MYITEMS", "ITEMS" => new Items($player),
     "THEIRITEMS" => new Items($otherPlayer),
     "COMBATCHAINLINK" => $CombatChain,
     default => ""
