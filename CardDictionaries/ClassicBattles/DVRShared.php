@@ -30,10 +30,6 @@
       case "en_garde_red":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "run_through_yellow":
-        GiveAttackGoAgain();
-        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
-        return "";
       case "thrust_red":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -55,7 +51,6 @@ function DVREffectPowerModifier($cardID)
   $cardID = $params[0];
   switch($cardID) {
     case "en_garde_red": return 3;
-    case "run_through_yellow": return 2;
     case "thrust_red": return 3;
     case "visit_the_blacksmith_blue": return 1;
     default: return 0;
@@ -70,7 +65,7 @@ function DVRCombatEffectActive($cardID, $attackID)
   switch($cardID) {
     case "glistening_steelblade_yellow": case "glistening_steelblade_yellow-1": return CardNameContains($attackID, "Dawnblade", $mainPlayer, true); 
     case "en_garde_red": return TypeContains($attackID, "W", $mainPlayer);
-    case "run_through_yellow": case "thrust_red": case "on_a_knife_edge_yellow": case "visit_the_blacksmith_blue": case "blade_flash_blue": return CardSubType($attackID) == "Sword";
+    case "thrust_red": case "on_a_knife_edge_yellow": case "visit_the_blacksmith_blue": case "blade_flash_blue": return CardSubType($attackID) == "Sword";
     default: return false;
   }
 }

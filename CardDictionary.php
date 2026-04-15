@@ -2645,8 +2645,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !IsWeaponGreaterThanTwiceBasePower();
     case "amulet_of_oblation_blue":
       return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA");
-    case "run_through_yellow":
-      return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || CardSubType($CombatChain->AttackCard()->ID()) != "Sword";
     case "thrust_red":
     case "blade_flash_blue":
       return !$CombatChain->HasCurrentLink() || CardSubType($CombatChain->AttackCard()->ID()) != "Sword";

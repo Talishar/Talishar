@@ -195,3 +195,236 @@ class golden_company_blue extends Card {
 		return $this->baseCard->CurrentTurnEffectPaid($remove);
 	}
 }
+
+class run_through extends BaseCard {
+	function IsPlayRestricted() {
+		return TargetSwordAttack($this->controller) == "";
+	}
+
+	function PlayAbility() {
+		GiveAttackGoAgain();
+		AddCurrentTurnEffectFromCombat($this->cardID, $this->controller);
+		return "";
+	}
+}
+
+class run_through_red extends Card {
+	function __construct($controller) {
+    $this->cardID = "run_through_red";
+    $this->controller = $controller;
+    $this->baseCard = new run_through($this->cardID, $this->controller);
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return $this->baseCard->PlayAbility();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class run_through_yellow extends Card {
+	function __construct($controller) {
+    $this->cardID = "run_through_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new run_through($this->cardID, $this->controller);
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return $this->baseCard->PlayAbility();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class shove_off_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shove_off_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $defPlayer;
+		$options = GetChainLinkCards($defPlayer, "", "E,C");
+		if($options != "") {
+			AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $this->controller, $options);
+			AddDecisionQueue("ADDHANDOWNER", $defPlayer, "-", 1);
+			AddDecisionQueue("REMOVECOMBATCHAIN", $this->controller, "-", 1);
+		}
+    return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return TargetSwordAttack($this->controller) == "";
+	}
+}
+
+class squires_bracers extends Card {
+  function __construct($controller) {
+    $this->cardID = "squires_bracers";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function DefaultActiveState() {
+		return 1;
+	}
+
+	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+		global $CombatChain;
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		if ($CharacterCard->IsActive() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
+			AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+}
+
+class cutting_couriers extends Card {
+  function __construct($controller) {
+    $this->cardID = "cutting_couriers";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function DefaultActiveState() {
+		return 1;
+	}
+
+	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+		global $CombatChain;
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		if ($CharacterCard->IsActive() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
+			AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return true;
+	}
+}
+
+class back_for_seconds_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "back_for_seconds_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumAttacks;
+		if (GetClassState($this->controller, $CS_NumAttacks) == 2)
+			AddCurrentTurnEffect("$this->cardID-3", $this->controller);
+		else
+			AddCurrentTurnEffect("$this->cardID-2", $this->controller);
+		return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return TargetSwordAttack($this->controller) == "";
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return intval($param);
+	}
+}
+
+class blade_rush_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "blade_rush_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
+		AddCurrentTurnEffect("$this->cardID-1", $this->controller);
+		return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain, $CS_NumSwordAttacks;
+		$attackCard = $CombatChain->AttackCard()->ID();
+		if (!SubtypeContains($attackCard, "Sword")) return false;
+		switch ($parameter) {
+			case "GOAGAIN":
+				return GetClassState($this->controller, $CS_NumSwordAttacks) == 0;
+			default:
+				return GetClassState($this->controller, $CS_NumSwordAttacks) == 1;
+		}
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return $param == "GOAGAIN";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "GOAGAIN" ? 1 : 0;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+}
+
+class steel_on_steel_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "steel_on_steel_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function CardBlockModifier($from, $resourcesPaid, $index) {
+		global $CombatChain;
+		return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
+	}
+}
