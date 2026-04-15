@@ -201,7 +201,8 @@ function SearchInner(
         
         // Check array-based conditions
         if ($frozenOnly && !IsFrozenMZ($array, $zone, $i, $player)) continue;
-        if ($hasNegCounters && $array[$i + 4] == 0) continue;
+        $offset = DefCounterOffsetMZ($zone);
+        if ($hasNegCounters && $offset != -1 && $array[$i + $offset] >= 0) continue;
         if ($hasEnergyCounters && !HasEnergyCounters($array, $i)) continue;
         if ($hasCrank && !HasCrank($cardID, $player)) continue;
         if ($hasSteamCounter && !HasSteamCounter($array, $i, $player)) continue;
