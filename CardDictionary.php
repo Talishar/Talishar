@@ -2798,8 +2798,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "angelic_wrath_blue":
       $found = GetChainLinkCards($defPlayer, nameContains: "Herald");
       if ($found != "" && $found != "0") {
-      return false;  
-}
+        return false;  
+      }
       $pastHeralds = SearchCombatChainAttacks($player, nameIncludes:"Herald");
       if ($pastHeralds != "") return false;
       return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
@@ -3353,6 +3353,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       //check that there's an aura with a suspense counter
       if (count(GetSuspenseAuras($currentPlayer, true)) == 0) return true;
+      return false;
+    case "reapers_call_red":
+    case "reapers_call_yellow":
+    case "reapers_call_blue":
+      $abilityNames = GetAbilityNames($cardID, $index, $from);
+      if ($abilityNames == "Ability" && $from != "HAND") return true;
       return false;
     default:
       return false;
