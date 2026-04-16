@@ -2970,13 +2970,12 @@ function IsAllyAttacking()
 
 function IsSpecificAllyAttacking($player, $index)
 {
-  global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
+  global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain;
   if (count($combatChain) == 0) return false;
   if ($mainPlayer != $player) return false;
-  $weaponIndex = intval($combatChainState[$CCS_WeaponIndex]);
-  if ($weaponIndex == -1) return false;
-  if ($weaponIndex != $index) return false;
-  if (!DelimStringContains(CardSubtype($combatChain[0]), "Ally")) return false;
+  $AllyCard = new AllyCard($index, $player);
+  $AttackCard = $CombatChain->AttackCard();
+  if ($AttackCard->OriginUniqueID() != $AllyCard->UniqueID()) return false;
   return true;
 }
 
