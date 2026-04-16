@@ -208,6 +208,11 @@ class run_through extends BaseCard {
 		AddCurrentTurnEffectFromCombat($this->cardID, $this->controller);
 		return "";
 	}
+
+	function CombatEffectActive() {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
 }
 
 class run_through_red extends Card {
@@ -230,7 +235,7 @@ class run_through_red extends Card {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
+		return $this->baseCard->CombatEffectActive();
 	}
 }
 
@@ -254,7 +259,7 @@ class run_through_yellow extends Card {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
+		return $this->baseCard->CombatEffectActive();
 	}
 }
 
