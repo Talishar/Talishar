@@ -114,8 +114,10 @@ class stand_tall_yellow extends Card {
 
 
 	function WhileBlockPlayTrigger($index, $cardID, $from) {
+		global $currentPlayer;
 		$BlockCard = new ChainCard($index);
-		if (TypeContains($cardID, "AR")) AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$BlockCard->UniqueID());
+		if (TypeContains($cardID, "AR") || (IsStaticType(CardType($cardID, $from, $currentPlayer)) && GetResolvedAbilityType($cardID, $from, $currentPlayer) == "AR"))
+			AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$BlockCard->UniqueID());
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
