@@ -4211,6 +4211,7 @@ function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
       Await($currentPlayer, "ResolveGoesWhere", cardID:$cardID, goesWhere:$goesWhere, from:$from, final:true, subsequent:false);
     }
   }
+  Await($currentPlayer, "AfterResolveEffects", subsequent:0, final:true);
 }
 
 function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController = "", $modifier = "NA")

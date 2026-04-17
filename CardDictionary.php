@@ -73,7 +73,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
   global $CS_AdditionalCosts, $currentPlayer, $Stack;
   $cardID = BlindCard($cardID, true);
   $controller = $controller == "-" ? $currentPlayer : $controller;
-  $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN", "STARTTURN", "ATTACKSTEP"];
+  $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN", "STARTTURN", "ATTACKSTEP", "ABILITY"];
   if (!$cardID || in_array($cardID, $adminCards)) return "";
   
   // Handle meld cards that have an action on the left

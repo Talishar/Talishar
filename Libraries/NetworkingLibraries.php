@@ -4376,7 +4376,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       Await($currentPlayer, "ResolveGoAgain", cardID:$cardID, from:$from, additionalCosts:$additionalCosts, uniqueID:$uniqueID, subsequent:0, final:true);
       
     }
-    CopyCurrentTurnEffectsFromAfterResolveEffects();
     CacheCombatResult();
     if (!$isBlock) ProcessAllMirage();
     if ($target == "MISSINGTARGET") CleanUpCombatEffects(isSpectraTarget: true);

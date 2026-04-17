@@ -321,3 +321,7 @@ function ResolveGoAgainAwait($player) {
   $uniqueID = $dqVars["uniqueID"];
   ResolveGoAgain($cardID, $player, $from, additionalCosts: $additionalCosts, uniqueID:$uniqueID);
 }
+
+function AfterResolveEffectsAwait($player) {
+  CopyCurrentTurnEffectsFromAfterResolveEffects();
+}
