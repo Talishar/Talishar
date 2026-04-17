@@ -812,7 +812,7 @@ function isUnimplemented($cardID) {
 function isBannedInFormat($cardID, $format) {
   global $livingLegends, $benched;
   if ($format == "compblitz") $format = "blitz";
-  if ($format == "compcc" || $format == "futurecc") $format = "cc";
+  if ($format == "compcc") $format = "cc";
   if ($format == "compllcc" || $format == "futurell") $format = "llcc";
   if ($format == "compsage" || $format == "futuresage") $format = "sage";
 
@@ -866,6 +866,12 @@ function isBannedInFormat($cardID, $format) {
         "sirens_of_safe_harbor_red", "sirens_of_safe_harbor_yellow", "sirens_of_safe_harbor_blue"
       ], $benched)
   ];
+  if ($format == "futurecc") {
+    $futureBans = ["electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
+                   "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade", "skyward_serenade_yellow",
+                   "volzar_the_lightning_rod"];
+    return in_array($cardID, $bannedCards["cc"]) || in_array($cardID, $futureBans);
+  }
   return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
 }
 
