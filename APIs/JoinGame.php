@@ -566,7 +566,11 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      $p2MetafyCommunities = GetMetafyCommunitiesFromDatabase($p2uid);
    }
 
-   if ($playerID == 2)
+   // Only generate a fresh auth key for a true new join, not for a base-deck refresh.
+   // When $forceBaseDeckRefresh is true the player is already in the lobby and is just
+   // reloading their deck to the base (no matchup) state; regenerating the key here would
+   // invalidate the key stored on the frontend and cause an auth mismatch when the game starts.
+   if ($playerID == 2 && !$forceBaseDeckRefresh)
      $p2Key = hash("sha256", rand() . rand() . rand());
 
   WriteGameFile();
