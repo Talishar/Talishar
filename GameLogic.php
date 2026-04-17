@@ -3395,7 +3395,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
           break;
         default:
-          AddLayer("TRIGGER", $player, $params[0], $target, $additional);
+          $targetLoc = explode("-", $target)[0];
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
           break;
       }
       return $lastResult;

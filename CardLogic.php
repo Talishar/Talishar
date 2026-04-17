@@ -1370,7 +1370,6 @@ function AddCrushEffectTrigger($cardID)
     case "debilitate_red":
     case "debilitate_yellow":
     case "debilitate_blue":
-    case "mangle_red":
     case "righteous_cleansing_yellow":
     case "crush_the_weak_red":
     case "crush_the_weak_yellow":
@@ -1393,6 +1392,13 @@ function AddCrushEffectTrigger($cardID)
     case "hostile_encroachment_red":
     case "renounce_grandeur_red":
       AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
+      break;
+    case "mangle_red":
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;hasNegCounters=true");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_an_equipment_to_destroy", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
+      AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|CRUSHEFFECT", "<-", 1);
       break;
     case "blinding_of_the_old_ones_red": 
     case "smelting_of_the_old_ones_red": 
@@ -2075,7 +2081,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     return;
   }
   elseif ($additionalCosts == "CRUSHEFFECT") {
-    ProcessCrushEffect($target);
+    ProcessCrushEffect($parameter, $target);
     return;
   }
   elseif ($additionalCosts == "TOWEREFFECT") {

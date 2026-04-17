@@ -555,15 +555,22 @@
     return GeneratedHasCrush($cardID);
   }
 
-  function Mangle()
+  function Mangle($player="-", $target="-")
   {
-    global $mainPlayer;
-    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;hasNegCounters=true");
-    AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-    AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+    global $currentPlayer;
+    $player = $player == "-" ? $currentPlayer : $player;
+    if ($target == "-") {
+      AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasNegCounters=true");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+    }
+    else {
+      $targEquip = CleanTargetToObject($player, $target);
+      $targEquip->Destroy();
+    }
   }
 
-  function ProcessCrushEffect($cardID)
+  function ProcessCrushEffect($cardID, $target)
   {
     global $mainPlayer, $defPlayer, $CombatChain, $combatChainState, $CCS_DamageDealt, $layers, $combatChain, $chainLinks;
     if(!IsHeroAttackTarget()) return;
@@ -608,7 +615,7 @@
         AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "mangle_red":
-        Mangle();
+        Mangle($mainPlayer, $target);
         break;
       case "righteous_cleansing_yellow":
         AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES,5");
