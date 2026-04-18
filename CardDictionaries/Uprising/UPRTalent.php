@@ -179,14 +179,6 @@
     global $mainPlayer, $defPlayer;
     switch($cardID)
     {
-      case "liquefy_red":
-        if(IsHeroAttackTarget() && RuptureActive()) {
-          AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
-          AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
-        }
-        break;
       case "breaking_point_red":
         if(IsHeroAttackTarget() && RuptureActive()) DestroyArsenal($defPlayer, effectController:$mainPlayer);
         break;

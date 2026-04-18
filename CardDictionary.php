@@ -2652,8 +2652,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return GetClassState($player, $CS_NumRedPlayed) == 0;
     case "sash_of_sandikai":
       return GetClassState($player, $CS_NumRedPlayed) == 0;
-    case "liquefy_red":
-      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
     case "tome_of_firebrand_red":
       return $player != $mainPlayer || NumDraconicChainLinks() < 4;
     case "ghostly_touch":

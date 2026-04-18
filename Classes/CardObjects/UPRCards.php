@@ -1719,17 +1719,45 @@ class inflame_red extends Card {
 // }
 
 
-// class liquefy_red extends Card {
+class liquefy_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "liquefy_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "liquefy_red";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if(RuptureActive()) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    global $defPlayer;
+    AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+    AddDecisionQueue("CHOOSETHEIRCHARACTER", $this->controller, "<-", 1);
+    AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
+    AddDecisionQueue("DESTROYEQUIPDEF0", $this->controller, "-", 1);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 
 
 // class miragai extends Card {

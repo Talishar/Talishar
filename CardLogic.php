@@ -848,7 +848,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "soaring_strike_yellow":
     case "soaring_strike_blue":
     case "take_the_tempo_red":
-    case "liquefy_red":
     case "stoke_the_flames_red":
     case "erase_face_red":
     case "vipox_red":
