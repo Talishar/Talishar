@@ -729,10 +729,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           if ($currentChoices == "") $choices = $pastChoices;
           elseif ($pastChoices == "") $choices = $currentChoices;
           else $choices = "$pastChoices,$currentChoices";
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to destroy");
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $choices);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
+          if ($choices != "") {
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to destroy");
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $choices);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
+          }
           if ($from == "PLAY") ++$combatChain[11];
           else ++$chainLinks[$attackInd][9];
         }
