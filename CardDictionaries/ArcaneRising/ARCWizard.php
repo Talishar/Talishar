@@ -341,8 +341,6 @@ function PlayRequiresTarget($cardID, $from)
       return 2;
     case "freezing_point_red":
       return 0;
-    case "ice_eternal_blue":
-      return 0;
     case "succumb_to_winter_red":
     case "succumb_to_winter_yellow":
     case "succumb_to_winter_blue":

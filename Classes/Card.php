@@ -681,4 +681,8 @@ class Card {
   function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
     return false;
   }
+
+  function HasFusion() {
+    return "";
+  }
 }

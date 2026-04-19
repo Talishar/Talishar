@@ -207,6 +207,8 @@
   // TODO: Optimize with GeneratedHasFusion function for automation
   function HasFusion($cardID)
   {
+    $card = GetClass($cardID, 0);
+    if ($card != "-") return $card->HasFusion();
     switch($cardID)
     {
       case "endless_winter_red": return "ICE";
@@ -251,7 +253,6 @@
       case "encase_red": return "ICE";
       case "freezing_point_red": return "ICE";
       case "sigil_of_permafrost_red": case "sigil_of_permafrost_yellow": case "sigil_of_permafrost_blue": return "ICE";
-      case "ice_eternal_blue": return "ICE";
       case "succumb_to_winter_red": case "succumb_to_winter_yellow": case "succumb_to_winter_blue": return "ICE";
       case "aether_icevein_red": case "aether_icevein_yellow": case "aether_icevein_blue": return "ICE";
       case "brain_freeze_red": case "brain_freeze_yellow": case "brain_freeze_blue": return "ICE";

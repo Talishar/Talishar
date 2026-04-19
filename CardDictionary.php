@@ -705,8 +705,6 @@ function DynamicCost($cardID)
       $otherPlayerAurasCount = SearchCount(SearchAura($otherPlayer, "", "", 0));
       $otherPlayerAurasCount += SearchCount(SearchLayer($otherPlayer, subtype:"Aura"));
       return $myAurasCount > $otherPlayerAurasCount ? GetIndices($myAurasCount + 1) : GetIndices($otherPlayerAurasCount + 1);
-    case "ice_eternal_blue":
-      return "0,2,4,6,8,10,12,14,16,18,20";
     case "hyper_scrapper_blue":
       $myItemsCount = SearchCount(SearchDiscard($currentPlayer, "", "Item"));
       return GetIndices($myItemsCount + 1);

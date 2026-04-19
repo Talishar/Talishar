@@ -1362,17 +1362,44 @@ class combustion_point_red extends Card {
 // }
 
 
-// class ice_eternal_blue extends Card {
+class ice_eternal_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "ice_eternal_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "ice_eternal_blue";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_LastDynCost;
+    $otherPlayer = ($this->controller == 1 ? 2 : 1);
+    $numFrostBite = GetClassState($this->controller, $CS_LastDynCost)/2;
+    PlayAura("frostbite", $otherPlayer, $numFrostBite, effectController: $this->controller);
+    Await($this->controller, $this->cardID, target:$target, additionalCosts:$additionalCosts, final:true, subsequent:0);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $otherPlayer = ($this->controller == 1 ? 2 : 1);
+    $target = $dqVars["target"];
+    $additionalCosts = $dqVars["additionalCosts"];
+    $amountArcane = SearchCount(SearchAurasForCard("frostbite", $otherPlayer));
+    $amountArcane += SearchCount(SearchCharacterForCardMulti($otherPlayer, "frostbite"));
+    if(DelimStringContains($additionalCosts, "ICE")) DealArcane($amountArcane, 0, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
+  }
+
+  function DynamicCost() {
+    return implode(",", range(0, 10, 2));
+  }
+
+  function ArcaneTargeting($from) {
+    return 0;
+  }
+
+  function HasFusion() {
+    return "ICE";
+  }
+}
 
 
 // class icebind_red extends Card {
