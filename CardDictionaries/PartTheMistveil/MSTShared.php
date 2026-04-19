@@ -374,11 +374,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else Draw($currentPlayer, num:2);
       return "";
     case "a_drop_in_the_ocean_blue":
-      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && IsLayerStep())) AddCurrentTurnEffect($cardID, $mainPlayer);
-      elseif ($target == "-" && !IsLayerStep()) {
-        WriteLog("⚠️You need to select a target⚠️");
-        RevertGamestate();
-      }
+      if ($target == "COMBATCHAINLINK-0" || str_contains($target, "LAYER")) AddCurrentTurnEffect($cardID, $mainPlayer);
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST095_inner_chi_blue," . $from);
       return "";
     case "homage_to_ancestors_blue":
@@ -396,11 +392,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST097_inner_chi_blue," . $from);
       return "";
     case "path_well_traveled_blue":
-      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && IsLayerStep())) GiveAttackGoAgain();
-      elseif ($target == "-" && !IsLayerStep()) {
-        WriteLog("⚠️You need to select a target⚠️");
-        RevertGamestate();
-      }
+      if ($target == "COMBATCHAINLINK-0" || str_contains($target, "LAYER")) GiveAttackGoAgain();
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST098_inner_chi_blue," . $from);
       return "";
     case "preserve_tradition_blue":
@@ -427,11 +419,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST101_inner_chi_blue," . $from);
       return "";
     case "the_grain_that_tips_the_scale_blue":
-      if ($target == "COMBATCHAINLINK-0" || ($target == "-" && IsLayerStep())) AddCurrentTurnEffect($cardID, $mainPlayer);
-      elseif ($target == "-" && !IsLayerStep()) {
-        WriteLog("⚠️You need to select a target⚠️");
-        RevertGamestate();
-      }
+      if ($target == "COMBATCHAINLINK-0" || str_contains($target, "LAYER")) AddCurrentTurnEffect($cardID, $mainPlayer);
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) AddDecisionQueue("TRANSCEND", $currentPlayer, "MST102_inner_chi_blue," . $from);
       return "";
     case "just_a_nick_red":

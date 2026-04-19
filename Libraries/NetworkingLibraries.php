@@ -2412,7 +2412,7 @@ function PlayCardSkipCosts($cardID, $from)
 
 function GetLayerTarget($cardID, $from)
 {
-  global $currentPlayer, $defPlayer, $layers, $CombatChain, $mainPlayer;
+  global $currentPlayer, $defPlayer, $layers, $CombatChain, $mainPlayer, $Stack;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->GetLayerTarget($from);
   switch ($cardID) {
@@ -2674,11 +2674,19 @@ function GetLayerTarget($cardID, $from)
     case "a_drop_in_the_ocean_blue":
     case "path_well_traveled_blue":
     case "the_grain_that_tips_the_scale_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS&ACTIVEATTACK");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack (pass to target an attack in layer step)");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      $inds = MultiZoneIndices($currentPlayer, "COMBATCHAINATTACKS&ACTIVEATTACK");
+      if ($inds == "PASS") $inds = "";
+      if (IsLayerStep()) {
+        if ($inds == "PASS") $inds .= ",LAYER-" . $Stack->BottomLayer()->Index();
+        else $inds = "LAYER-" . $Stack->BottomLayer()->Index();
+      }
+      if ($inds != "") {
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack");
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
+        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      }
       break;
     case "scrub_the_deck_blue":
       $context = "Choose whose deck to scrub";
