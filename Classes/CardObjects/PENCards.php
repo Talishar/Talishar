@@ -2975,7 +2975,9 @@ class quickening_sand_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    Tap($target, $this->controller, 1);
+    $Targ = CleanTargetToObject($this->controller, $target);
+    if ($Targ != "")
+      $Targ->Tap();
   }
 }
 
