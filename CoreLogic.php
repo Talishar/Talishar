@@ -3010,7 +3010,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
 
   //TODO: Move Runeblood Barrier in AuraDamagePreventionAmount
   for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if (AuraDamagePreventionAmount($player, $i, $type, check: true) > 0 || HasWard($auras[$i], $player)) {
+    if (AuraDamagePreventionAmount($player, $i, $type, check: true, preventable: $preventable) > 0 || HasWard($auras[$i], $player)) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
     }

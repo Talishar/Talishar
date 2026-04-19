@@ -1271,7 +1271,7 @@ function AuraEndTurnCleanup()
   for ($i = 0; $i < $countAuras; $i += $aurasPieces) $auras[$i + 5] = AuraNumUses($auras[$i]);
 }
 
-function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active = false, &$cancelRemove = false, $check = false)
+function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active = false, &$cancelRemove = false, $check = false, $preventable = true)
 {
   $preventedDamage = 0;
   $auras = &GetAuras($player);
@@ -1307,13 +1307,13 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
       }
       break;
     case "pyroglyphic_protection_red":
-      if ($type == "ARCANE") $preventedDamage += 3;
+      if ($type == "ARCANE" && $preventable) $preventedDamage += 3;
       break;
     case "pyroglyphic_protection_yellow":
-      if ($type == "ARCANE") $preventedDamage += 2;
+      if ($type == "ARCANE" && $preventable) $preventedDamage += 2;
       break;
     case "pyroglyphic_protection_blue":
-      if ($type == "ARCANE") $preventedDamage += 1;
+      if ($type == "ARCANE" && $preventable) $preventedDamage += 1;
       break;
     default:
       break;
@@ -1332,7 +1332,7 @@ function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
   $preventionAmount = 0;
   $auras = &GetAuras($player);
   if ($preventable) {
-    $preventionAmount = AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove);
+    $preventionAmount = AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove, preventable:$preventable);
     $damage -= $preventionAmount;
     if($preventionAmount > 0 && !$cancelRemove) WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed and prevented " . $preventionAmount . " damage.");
     elseif($preventionAmount > 0) WriteLog(CardLink($auras[$index], $auras[$index]) . " prevented " . $preventionAmount . " damage.");
