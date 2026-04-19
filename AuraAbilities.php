@@ -1652,7 +1652,7 @@ function AuraAttackAbilities($attackID)
   }
 }
 
-function AuraHitEffects($attackID)
+function AuraHitEffects($attackID, $check = false): bool
 {
   global $mainPlayer;
   $attackType = CardType($attackID);
@@ -1666,6 +1666,7 @@ function AuraHitEffects($attackID)
       case "bloodspill_invocation_yellow":
       case "bloodspill_invocation_blue":
         if ($attackType == "AA") {
+          if ($check) return true;
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
         break;
@@ -1674,6 +1675,7 @@ function AuraHitEffects($attackID)
     }
     if ($remove == 1) DestroyAura($mainPlayer, $i);
   }
+  return false;
 }
 
 function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)

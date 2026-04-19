@@ -354,7 +354,7 @@ function GetItemGemState($player, $cardID, $index=-1)
   return $state;
 }
 
-function ItemHitTrigger($attackID)
+function ItemHitTrigger($attackID, $check = false): bool
 {
   global $mainPlayer, $defPlayer;
   $attackType = CardType($attackID);
@@ -366,11 +366,13 @@ function ItemHitTrigger($attackID)
     switch ($items[$i]) {
       case "powder_keg_blue":
         if ($attackSubType == "Gun" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          if ($check) return true;
           AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i + 4]);
         }
         break;
       case "tick_tock_clock_red":
         if (IsHeroAttackTarget() && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          if ($check) return true;
           AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i + 4]);
         }
         break;
@@ -378,11 +380,13 @@ function ItemHitTrigger($attackID)
       case "boom_grenade_yellow":
       case "boom_grenade_blue":
         if (IsHeroAttackTarget() && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          if ($check) return true;
           AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i + 4]);
         }
         break;
       case "autosave_script_blue":
         if ($attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
+          if ($check) return true;
           AddLayer("TRIGGER", $mainPlayer, $items[$i], $attackID, "ITEMHITEFFECT", $items[$i + 4]);
         }
         break;
@@ -390,6 +394,7 @@ function ItemHitTrigger($attackID)
         break;
     }
   }
+  return false;
 }
 
 function ItemDamagePreventionAmount($player, $index, $damage=0, $preventable=true)

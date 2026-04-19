@@ -1950,6 +1950,10 @@ function ActiveOnHits(): bool
   global $CombatChain, $currentTurnEffects, $mainPlayer, $defPlayer;
   if (!$CombatChain->HasCurrentLink()) return false;
   if (AddOnHitTrigger($CombatChain->AttackCard()->ID(), check: true)) return true;
+  if (ItemHitTrigger($CombatChain->AttackCard()->ID(), check: true)) return true;
+  if (MainCharacterHitEffects(check: true)) return true;
+  if (ArsenalHitEffects(check: true)) return true;
+  if (AuraHitEffects($CombatChain->AttackCard()->ID(), check: true)) return true;
   $target = IsHeroAttackTarget() ? $defPlayer : "-";
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectsPieces();

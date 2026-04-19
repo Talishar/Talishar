@@ -657,15 +657,15 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   return $modifier;
 }
 
-function MainCharacterHitEffects()
+function MainCharacterHitEffects($check = false): bool
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
-  $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($mainCharacterEffects); $i += 2) {
     if ($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch ($mainCharacterEffects[$i + 1]) {
         case "steelblade_supremacy_red":
+          if ($check) return true;
           AddLayer("TRIGGER", $mainPlayer, $mainCharacterEffects[$i + 1]);
           break;
         default:
@@ -673,7 +673,7 @@ function MainCharacterHitEffects()
       }
     }
   }
-  return $modifier;
+  return false;
 }
 
 function MainCharacterGrantsGoAgain()

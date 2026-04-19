@@ -523,29 +523,28 @@ function ArsenalPowerModifier(&$powerModifiers)
   return $modifier;
 }
 
-function ArsenalHitEffects()
+function ArsenalHitEffects($check = false): bool
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   $arsenal = GetArsenal($mainPlayer);
-  $modifier = 0;
   for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
     switch ($arsenal[$i]) {
       case "minerva_themis":
         if ($arsenal[$i + 1] == "UP" && TypeContains($attackID, "W", $mainPlayer)) {
+          if ($check) return true;
           MinervaThemisAbility($mainPlayer, $i);
-          break;
         }
       case "hala_goldenhelm":
         if ($arsenal[$i + 1] == "UP" && TypeContains($attackID, "W", $mainPlayer) && CardSubType($attackID) == "Sword") {
+          if ($check) return true;
           HalaGoldenhelmAbility($mainPlayer, $i);
-          break;
         }
       default:
         break;
     }
   }
-  return $modifier;
+  return false;
 }
 
 function ArsenalPlayCardAbilities($cardID)
