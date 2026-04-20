@@ -5617,12 +5617,14 @@ class dramatic_pause_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
     if ($additionalCosts == "DESTROY") {
       DestroyAuraUniqueID($this->controller, $target);
     }
     else {
-      $index = explode("-", $target)[1] ?? -1;
-      if ($index != -1) CombatChainDefenseModifier($index, 3);
+      $uid = explode("-", $target)[1] ?? -1;
+      $targetCard = $CombatChain->FindCardUID($uid);
+      $targetCard->ModifyDefense(3);
     }
   }
 }
@@ -5648,12 +5650,14 @@ class dramatic_pause_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
     if ($additionalCosts == "DESTROY") {
       DestroyAuraUniqueID($this->controller, $target);
     }
     else {
-      $index = explode("-", $target)[1];
-      CombatChainDefenseModifier($index, 2);
+      $uid = explode("-", $target)[1] ?? -1;
+      $targetCard = $CombatChain->FindCardUID($uid);
+      $targetCard->ModifyDefense(2);
     }
   }
 }
@@ -5679,12 +5683,14 @@ class dramatic_pause_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
     if ($additionalCosts == "DESTROY") {
       DestroyAuraUniqueID($this->controller, $target);
     }
     else {
-      $index = explode("-", $target)[1];
-      CombatChainDefenseModifier($index, 1);
+      $uid = explode("-", $target)[1] ?? -1;
+      $targetCard = $CombatChain->FindCardUID($uid);
+      $targetCard->ModifyDefense(1);
     }
   }
 }
