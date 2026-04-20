@@ -680,6 +680,7 @@ function CardPlayTrigger($cardID, $from)
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check=false): bool
 {
   global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn, $CS_HitsWDawnblade;
+  global $combatChainState, $CCS_AttackFused;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   // Can this check be generalized to use a function to check for all hit prevention effects?
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
@@ -795,9 +796,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "oldhim_grandfather_of_eternity":
     case "oldhim":
     case "endless_winter_red":
-    case "entangle_red":
-    case "entangle_yellow":
-    case "entangle_blue":
     case "awakening_blue":
     case "tear_asunder_blue":
     case "embolden_red":
@@ -973,6 +971,14 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "bittering_thorns_blue":
       if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
       return true;
+    case "entangle_red":
+    case "entangle_yellow":
+    case "entangle_blue":
+      if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) {
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        return true;
+      }
+      return false;
     case "phoenix_form_red":
       if(IsHeroAttackTarget() && NumChainLinksWithName("Phoenix Flame") >= 3) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");

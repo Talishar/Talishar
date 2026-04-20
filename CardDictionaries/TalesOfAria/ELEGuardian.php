@@ -64,7 +64,7 @@
         }
         break; 
       case "entangle_red": case "entangle_yellow": case "entangle_blue":
-        if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) AddNextTurnEffect($cardID, $defPlayer);
+        AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "thump_red": case "thump_yellow": case "thump_blue":
         if(IsHeroAttackTarget() && HasIncreasedAttack()) PummelHit();
