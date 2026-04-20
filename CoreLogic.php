@@ -2144,7 +2144,7 @@ function TalentContainsAny($cardID, $talents, $player = "", $zone="-")
   return false;
 }
 
-function RevealCards($cards, $player = "", $look=false)
+function RevealCards($cards, $player = "", $look=false, $fullReveal=true)
 {
   global $currentPlayer;
   if ($player == "") $player = $currentPlayer;
@@ -2164,7 +2164,7 @@ function RevealCards($cards, $player = "", $look=false)
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed";
   WriteLog($string);
-  if ($player != "" && SearchLandmark("korshem_crossroad_of_elements") && !$look) {
+  if ($player != "" && SearchLandmark("korshem_crossroad_of_elements") && !$look && $fullReveal) {
     KorshemRevealAbility($player);
   }
   return true;

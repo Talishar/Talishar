@@ -1209,7 +1209,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "REVEALCARDS":
       $cards = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
-      $revealed = RevealCards($cards, $player);
+      $revealed = RevealCards($cards, $player, fullReveal:$parameter);
       return $revealed ? $lastResult : "PASS";
     case "REVEALHANDCARDS":
       $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);

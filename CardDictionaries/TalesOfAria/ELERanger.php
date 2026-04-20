@@ -75,12 +75,14 @@
     for($i=0; $i<count($elementArray); ++$i)
     {
       $element = $elementArray[$i];
+      $fullReveal = $i == count($elementArray) - 1;
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=" . $element, $subsequent);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion", 1);
+      $context = "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion";
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=$element", $subsequent);
+      AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
-      AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+      AddDecisionQueue("REVEALCARDS", $player, $fullReveal, 1);
       if($isAndOrFuse) {
         AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
         if($i > 0) $elementText .= " and/or ";
