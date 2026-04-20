@@ -10,13 +10,14 @@
     switch($cardID)
     {
       case "korshem_crossroad_of_elements":
-        $rv = "Korshem is a partially manual card. Use the instant ability to destroy it when appropriate. Use the Revert Gamestate button under the Stats page if necessary.";
+        $rv = "Korshem is a partially manual card. Use the instant ability to destroy it when appropriate. Use Undo if necessary.";
         if($from == "PLAY")
         {
           DestroyLandmark(GetClassState($currentPlayer, $CS_PlayIndex));
           $rv = "Korshem was destroyed";
         }
-        return $rv;
+        WriteLog($rv, highlight:true, highlightColor:"Tomato");
+        return "";
       case "invigorate_red": case "invigorate_yellow": case "invigorate_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
