@@ -804,7 +804,7 @@ function IsTeamFabledBrazil($userName)
     case "gravebeat":
     case "LiP":
     case "DShima":
-    case "RodinhoTeclados"
+    case "RodinhoTeclados":
       return true;
     default: break;
   }
