@@ -120,18 +120,18 @@ if(!empty($metafyTiers)) {
 if(!$hasMetafyBadges) {
   //its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
   if($sessionIsPatron && $sessionUserUid !== null && !in_array($sessionUserUid, $contributors)) {
-    $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
+    $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
   }
 
   //This is the code for PvtVoid Patreon
   if($sessionIsPvtVoidPatron || $sessionUserUid !== null && in_array($sessionUserUid, ["PvtVoid"])) {
-    $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
+    $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
   }
 }
 
 //This is the code for Contributor's icon.
 if($sessionUserUid !== null && in_array($sessionUserUid, $contributors)) {
-  $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a developer of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
+  $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a developer of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
 }
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
