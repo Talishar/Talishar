@@ -21,11 +21,11 @@ class CombatChain {
   }
 
   function FindCardUID($uid) {
-    if (!$this->HasCurrentLink()) return "";
+    if (!$this->HasCurrentLink()) return new ChainCard(-1);
     for ($i = 0; $i < count($this->chain); $i += CombatChainPieces()) {
       if ($this->chain[$i + 7] == $uid) return new ChainCard($i);
     }
-    return "";
+    return new ChainCard(-1);
   }
 
   function FindCardID($id) {
