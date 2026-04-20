@@ -1366,7 +1366,19 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           if ($preventedDamage > $damage) $preventedDamage = $damage;
           $currentTurnEffects[$index + 3] -= $origDamage;
         }
-        if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
+        if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
+        $multiAttack = match($source) {
+          "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
+          "vexing_malice_red", "vexing_malice_yellow", "vexing_malice_blue", "reckless_stampede_red" => true,
+          "runic_fellingsong_red", "runic_fellingsong_yellow", "runic_fellingsong_blue" => true,
+          "arcanic_shockwave_red", "arcanic_shockwave_yellow", "arcanic_shockwave_blue" => true,
+          "arcanic_crackle_red", "arcanic_crackle_yellow", "arcanic_crackle_blue" => true,
+          default => false,
+        };
+        if (SubtypeContains($source, "Dagger")) $multiAttack = true;
+        if (TypeContains($source, "AA") && !$multiAttack) $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+        if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+        if ($remove) RemoveCurrentTurnEffect($index);
       }
       break;
     case "amulet_of_intervention_blue":
