@@ -1889,19 +1889,21 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
 {
   global $currentTurnEffects, $currentPlayer, $CS_AdditionalCosts, $CS_ResolvingLayerUniqueID;
   $hasGoAgain = false;
-  $uniqueID = GetClassState($currentPlayer, $CS_ResolvingLayerUniqueID);
+  // uniqueID is the uid of the source, for effects that started applying before the layer was created
+  // uniqueIDResolving in the uid specifically of the layer
+  $uniqueIDResolving = GetClassState($currentPlayer, $CS_ResolvingLayerUniqueID);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       if (strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
       else $turnEffects[0] = $currentTurnEffects[$i];
       $Effect = new CurrentEffect($i);
-      if ($Effect->AppliestoUniqueID() != -1 && $Effect->AppliestoUniqueID() != $uniqueID) continue;
+      if ($Effect->AppliestoUniqueID() != -1 && $Effect->AppliestoUniqueID() != $uniqueID && $Effect->AppliestoUniqueID() != $uniqueIDResolving) continue;
       $effectArr = explode("-", $turnEffects[0]);
       $effectID = $effectArr[0];
       $parameter = $effectArr[1] ?? "-";
       $card = GetClass($effectID, $currentPlayer);
-      if ($card != "-") $hasGoAgain = $card->CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, $remove) || $hasGoAgain;
+      if ($card != "-") $hasGoAgain = $card->CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueIDResolving, $parameter, $remove) || $hasGoAgain;
       switch ($turnEffects[0]) {
         case "aether_quickening_red":
         case "aether_quickening_yellow":
@@ -2061,9 +2063,6 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
     case "precision_press_red":
     case "precision_press_yellow":
     case "precision_press_blue":
-    case "tear_through_the_portal_red":
-    case "tear_through_the_portal_yellow":
-    case "tear_through_the_portal_blue":
     case "agility":
     case "coercive_tendency_blue":
     case "beckoning_mistblade":

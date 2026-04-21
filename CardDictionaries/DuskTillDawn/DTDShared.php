@@ -397,16 +397,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $theirSoul = &GetSoul($otherPlayer);
       if(count($theirSoul) > 0) GiveAttackGoAgain();
       return "";
-    case "tear_through_the_portal_red": case "tear_through_the_portal_yellow": case "tear_through_the_portal_blue":
-      $pitch = "";
-      if (PitchValue($cardID) == 1) $pitch = "1";
-      elseif (PitchValue($cardID) == 2) $pitch = "2";
-      else $pitch = "3";
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYBANISH:type=A;pitch=". $pitch . "&MYBANISH:type=AA;pitch=". $pitch);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
-      AddDecisionQueue("ADDCURRENTEFFECTLASTRESULT", $currentPlayer, $cardID . ",", 1);
-      return "";
     case "anthem_of_spring_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
