@@ -4121,7 +4121,7 @@ class beat_of_the_ironsong_blue extends Card {
     $ind = $combatChainState[$CCS_WeaponIndex];
     $numModes = $char[$ind + 3] + 1;
     $message = $numModes > 1 ? "Choose $numModes modes" : "Choose a mode";
-    $modes = "Buff_power,Go_again,Block_gaining_defense,Can't_be_prevented";
+    $modes = "Buff_power,Go_again,Block_gaining_defense,Damage_can't_be_prevented";
     AddDecisionQueue("SETDQCONTEXT", $this->controller, $message);
     AddDecisionQueue("MULTICHOOSETEXT", $this->controller, "$numModes-$modes-$numModes");
     AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
@@ -4141,7 +4141,7 @@ class beat_of_the_ironsong_blue extends Card {
         case "Block_gaining_defense":
           AddCurrentTurnEffect("$this->cardID-BLOCK", $this->controller);
           break;
-        case "Can't_be_prevented":
+        case "Damage_can't_be_prevented":
           AddCurrentTurnEffect("$this->cardID-PREVENT", $this->controller);
           break;
       }
