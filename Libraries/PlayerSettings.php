@@ -797,18 +797,14 @@ function IsTeamFabledBrazil($userName)
     case "hugodeoz":
     case "diorge":
     case "LGB":
-    case "IvanTaranto":
     case "mishel157":
     case "DanielDertoni":
     case "caduads":
     case "DracaiBR":
     case "gravebeat":
     case "LiP":
-    case "Laerte":
-    case "izumi":
-    case "Gandanm":
     case "DShima":
-    case "FiotzGames":
+    case "RodinhoTeclados":
       return true;
     default: break;
   }
