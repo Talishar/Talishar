@@ -1106,8 +1106,8 @@ function PlayerWon($playerID, $conceded = false)
   $inGameStatus = $GameStatus_Over;
   $turn[0] = "OVER";
   $winner = $playerID;
-  if ($playerID == 1 && $p1uid != "") WriteLog("Player 1 (" . $p1uid . ") won! 🎉", $playerID);
-  else if ($playerID == 2 && $p2uid != "") WriteLog("Player 2 (" . $p2uid . ") won! 🎉", $playerID);
+  if ($playerID == 1 && $p1uid != "") WriteLog("Player 1 (" . substr($p1uid, 0, 20) . ") won! 🎉", $playerID);
+  else if ($playerID == 2 && $p2uid != "") WriteLog("Player 2 (" . substr($p2uid, 0, 20) . ") won! 🎉", $playerID);
   elseif ($playerID == 0) {
     WriteLog("The game is a draw! no match stats reported");
   }
