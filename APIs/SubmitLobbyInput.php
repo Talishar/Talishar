@@ -47,7 +47,7 @@ if ($authKey !== $targetAuth) {
 
 if($action == "Request Chat")
 {
-  $myName = ($playerID == 1 ? $p1uid : $p2uid);
+  $myName = substr($playerID == 1 ? $p1uid : $p2uid, 0, 20);
   $theirName = ($playerID == 1 ? $p2uid : $p1uid);
   if(!str_contains($myName, "Omegaeclipse") && !str_contains($theirName, "Omegaeclipse")) {
     if($playerID == 1) SetCachePiece($gameName, 15, 1);
