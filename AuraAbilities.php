@@ -25,13 +25,14 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
   return true;
 }
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0)
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0, $effectAgent = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated, $CS_HoloAurasEntered;
   global $CS_CreatedCardsThisTurn;
   if ($number == 0) return; //there is no event
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "-") $effectController = $player;
+  if ($effectAgent == "-") $effectAgent = $effectController;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   if (DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
@@ -57,7 +58,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if (!CanPlayAura($cardID, $player, $EffectContext, $effectController, $isToken)) return;
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event
-  if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectController);
+  if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectAgent);
 
   $countVerdantTide = CountCurrentTurnEffects("verdant_tide_red", $player);
   if ($countVerdantTide > 0 && (ClassContains($cardID, "RUNEBLADE", $player) || TalentContains($cardID, "ELEMENTAL", $player))) {

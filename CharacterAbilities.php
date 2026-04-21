@@ -1486,27 +1486,27 @@ function EquipPayAdditionalCosts($cardIndex)
   }
 }
 
-function CharacterModifiesPlayAura($player, $isToken, $effectController)
+function CharacterModifiesPlayAura($player, $isToken, $effectAgent)
 {
-  $char = &GetPlayerCharacter($player);
+  $char = &GetPlayerCharacter($effectAgent);
   $charCount = count($char);
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $charCount; $i += $characterPieces) {
     if (intval($char[$i + 1]) != 2) continue;
     switch ($char[$i]) {
       case "florian_rotwood_harbinger":
-        if (!$isToken || $effectController != $player) return 0;
+        if (!$isToken) return 0;
         // Now we need to check that we banished 8 earth cards.
-        $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
+        $results = SearchCount(SearchMultiZone($effectAgent, "MYBANISH:talent=EARTH"));
         if ($results >= 8) {
           WriteLog(CardLink($char[$i], $char[$i]) . " increases the number of auras tokens created by 1.");
           return 1;
         }
         return 0;
       case "florian":
-        if (!$isToken || $effectController != $player) return 0;
+        if (!$isToken) return 0;
         // Now we need to check that we banished 4 earth cards.
-        $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
+        $results = SearchCount(SearchMultiZone($effectAgent, "MYBANISH:talent=EARTH"));
         if ($results >= 4) {
           WriteLog(CardLink($char[$i], $char[$i]) . " increases the number of auras tokens created by 1.");
           return 1;
