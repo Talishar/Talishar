@@ -3304,10 +3304,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else $additional = "";
       $params = explode(",", $parameter);
       $target = (count($params) < 2) ? $lastResult : $params[1];
-      $targetedPlayer = ($player == 1) ? 2 : 1;
+      $targetedPlayer = (str_contains($lastResult, "THEIR")) ? (($player == 1) ? 2 : 1) : $player;
       $targetClass = TriggerTargets($params[0]);
       if ($targetClass != "") {
-        $targetedPlayer = (DelimStringContains($lastResult, "THEIR", true)) ? (($player == 1) ? 2 : 1) : $player;        
         WriteLog(GetMZCardLink($targetedPlayer, $lastResult) . " targeted by " . CardLink($params[0], $params[0]) . "'s trigger");
       }
       switch ($params[0]) { //these targetting effects need UID
@@ -3398,6 +3397,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($target == "PASS") return $target;
           $targetLoc = explode("-", $target)[0];
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
+          WriteLog("Player " . $targetedPlayer . "'s " . GetMZCardLink($targetedPlayer, $lastResult) . " was targeted");
           break;
       }
       return $lastResult;

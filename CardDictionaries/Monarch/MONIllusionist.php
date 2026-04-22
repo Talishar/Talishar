@@ -220,8 +220,7 @@
       }
       for ($i = 0; $i < $numMercifulRetribution; ++$i) {
         SetArcaneTarget($player, "merciful_retribution_yellow", 0);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
-        AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow|$uid");
+        AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow|$uid", 1);
       }
     }
   }
