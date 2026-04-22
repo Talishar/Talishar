@@ -683,7 +683,7 @@ function ItemsPowerModifiers($cardID, $player, $from)
       case "penetration_script_yellow":
         if (CardType($cardID) == "AA" && ClassContains($cardID, "MECHANOLOGIST", $player) && $from == "CC") ++$powerModifier;
       case "clamp_press_blue":
-        if (SubtypeContains($cardID, "Wrench")) $powerModifier += 2;
+        if (SubtypeContains($cardID, "Wrench") && Controls($from)) $powerModifier += 2;
       default:
         break;
     }

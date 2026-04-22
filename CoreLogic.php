@@ -4348,3 +4348,11 @@ function SetTargetsArcane($player, $cardID, $targetType=0) {
   AddDecisionQueue("SHOWSELECTEDTARGET", $player, "-", 1);
   AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
 }
+
+// returns true if the given $from zone is a zone where a player "controls" a card
+function Controls($from) {
+  return match($from) {
+    "CC", "AURAS", "ITEMS", "CHAR", "EQUIP", "PLAY", "LAYERS", "COMBATCHAIN" => true,
+    default => false
+  };
+}
