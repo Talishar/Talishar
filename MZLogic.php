@@ -574,7 +574,7 @@ function GetMZUID($player, $MZIndex)
     case "LAYER":
       return $zone[$mzArr[1] + 5] ?? "-";
     case "COMBATCHAINATTACKS":
-      return $zone[$mzArr[1] + 7] ?? "-";
+      return $zone[$mzArr[1] + 8] ?? "-";
     case "COMBATCHAINLINK":
       return $zone[$mzArr[1] + 7] ?? "-";
     case "CHAR":
