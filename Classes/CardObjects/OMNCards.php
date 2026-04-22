@@ -89,6 +89,34 @@ class aurora_legacy_of_tempest extends Card {
   }
 }
 
+class aurora_emissary_of_lightning extends Card {
+  function __construct($controller) {
+    $this->cardID = "aurora_emissary_of_lightning";
+    $this->controller = $controller;
+    $this->baseCard = new bauroralegacy($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted($index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    return $this->baseCard->PayAdditionalCosts($index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+}
+
 class oscilio_forked_continuum extends Card {
   function __construct($controller) {
     $this->cardID = "oscilio_forked_continuum";
@@ -406,6 +434,38 @@ class zyggy_base extends BaseCard {
 class zyggy_starlight extends Card {
   function __construct($controller) {
     $this->cardID = "zyggy_starlight";
+    $this->controller = $controller;
+    $this->baseCard = new zyggy_base($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($target);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted($index);
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    return $this->baseCard->PayAdditionalCosts($index);
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+}
+
+class zyggy extends Card {
+  function __construct($controller) {
+    $this->cardID = "zyggy";
     $this->controller = $controller;
     $this->baseCard = new zyggy_base($this->cardID, $this->controller);
   }
