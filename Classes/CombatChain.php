@@ -151,7 +151,10 @@ class ChainCard {
     }
 
     function DefenseModifier() {
-      return $this->chain[$this->index+6] ?? 0;
+      if (isset($this->chain[$this->index+6]) && is_numeric($this->chain[$this->index+6]))
+        return intval($this->chain[$this->index+6]);
+      else
+        return 0;
     }
 
     function ModifyDefense($amount) {
