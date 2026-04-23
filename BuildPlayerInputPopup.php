@@ -441,8 +441,6 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       }
       break;
 
-    // For CHOOSEMULTIZONE and MAYCHOOSEMULTIZONE, we'll provide a simplified version
-    // The full version is very complex and may need to be kept in GetNextTurn.php
     case "MAYCHOOSEMULTIZONE":
     case "CHOOSEMULTIZONE":
       if ($turn[1] == $playerID) {
@@ -506,7 +504,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $uniqueIDIndex = -1;
           $label = "";
           $tapped = false;
-          
+          $overlay = 0;
           //Add indication for token copies
           if (str_contains($option[0], "AURAS")) {
             $Card = MZIndexToObject($playerID, $options[$i]);
@@ -632,8 +630,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           if ($option[0] == "THEIRCHAR" || $option[0] == "MYCHAR") {
             $tapped = $option[0] == "THEIRCHAR" ? $theirCharacter[$index + 14] == 1 : $myCharacter[$index + 14] == 1;
             $powerCounters = $option[0] == "MYCHAR" ? $myCharacter[$index + 3] : $theirCharacter[$index + 3];
+            $overlay = $option[0] == "THEIRCHAR" ? $theirCharacter[$index + 1] != 2 : $myCharacter[$index + 1] != 2;
           }
-
           if ($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN" || $option[0] == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN") {
             $card = $TheirCardBack;
             switch ($option[0]) {
@@ -697,9 +695,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $card = $MyCardBack;
           }
           if ($maxCount < 2)
-            array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: 0, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: substr($option[0], 0, 5) == "THEIR" ? true : false));
+            array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: substr($option[0], 0, 5) == "THEIR" ? true : false));
           else
-            array_push($cardsMultiZone, JSONRenderedCard($card, actionDataOverride: $i - $countOffset));
+            array_push($cardsMultiZone, JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset));
         }
         if ($maxCount >= 2) {
           $formOptions = new stdClass();
