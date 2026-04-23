@@ -303,11 +303,14 @@ class squires_bracers extends Card {
 		global $CombatChain;
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		if ($CharacterCard->IsActive() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
-			AddLayer("TRIGGER", $this->controller, $this->cardID);
+			AddLayer("TRIGGER", $this->controller, $this->cardID, $index);
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+		$message = "if_you_want_to_buff_next_sword";
+		$context = "Choose if you want to destroy " . CardLink($this->cardID) . " to buff your next sword attack";
+		Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+		Await($this->controller, $this->cardID, index: $target, final:true);
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -317,6 +320,14 @@ class squires_bracers extends Card {
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 2;
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$index = $dqVars["index"];
+		AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->Destroy();
 	}
 }
 
@@ -338,11 +349,22 @@ class cutting_couriers extends Card {
 		global $CombatChain;
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		if ($CharacterCard->IsActive() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
-			AddLayer("TRIGGER", $this->controller, $this->cardID);
+			AddLayer("TRIGGER", $this->controller, $this->cardID, $index);
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$message = "if_you_want_to_buff_next_sword";
+		$context = "Choose if you want to destroy " . CardLink($this->cardID) . " to give your attack go again";
+		Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+		Await($this->controller, $this->cardID, index: $target, final:true);
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$index = $dqVars["index"];
 		AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->Destroy();
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
