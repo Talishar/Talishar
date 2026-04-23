@@ -1434,7 +1434,7 @@ function GetMZCardLink($player, $MZ)
   if ($MZ == "") return "";
   $params = explode("-", $MZ);
   $zoneDS = &GetMZZone($player, $params[0]);
-  $index = $params[1];
+  $index = $params[1] ?? "";
   if ($index == "") return "";
   if (is_numeric($index)) {
     if ($params[0] == "PASTCHAINLINK") {
