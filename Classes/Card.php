@@ -650,7 +650,7 @@ class Card {
     return "";
   }
 
-  function AssignEffectToCard($effectIndex) { //used to apply effects to the next card "played" not resolved
+  function AssignEffectToCard($cardID, $effectIndex) { //used to apply effects to the next card "played" not resolved
     return;
   }
 
