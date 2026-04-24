@@ -190,6 +190,14 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->theirOverlayUrl = $overlayURL;
   $response->theirChannelLink = $channelLink;
 
+  // Patron/supporter info for opponent
+  $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
+  $theirUid = ($playerID == 1 ? $p2uid : $p1uid);
+  $response->theirIsContributor = in_array($theirUid, $contributors);
+  $response->theirIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
+  $response->theirIsPvtVoidPatron = ($theirUid === "PvtVoid");
+  $response->theirMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
+
   $response->submitSideboard = ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none"));
 
   $response->myPriority = true;
