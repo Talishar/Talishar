@@ -151,6 +151,16 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
    }
  }
 
+ // Block a recently kicked player from immediately rejoining
+ if ($playerID == 2) {
+   $kickedUsername = strval(GetCachePiece($gameName, 18));
+   if ($kickedUsername !== "" && $kickedUsername === $joinerName) {
+     $response->error = "You were kicked from this lobby.";
+     echo json_encode($response);
+     exit;
+   }
+ }
+
  if ($matchup == "" && !$forceBaseDeckRefresh && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
    if ($gameStatus >= $MGS_GameStarted) {
      $response->gameStarted = true;
@@ -580,6 +590,8 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
   // for now truncate hero names
   SetCachePiece($gameName, $playerID + 6, TruncateHeroName($character));
   SetCachePiece($gameName, 14, $gameStatus);
+  // A different player successfully joined — clear the kicked-player block
+  if ($playerID == 2) SetCachePiece($gameName, 18, "");
   GamestateUpdated($gameName);
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
