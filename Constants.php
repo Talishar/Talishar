@@ -9,6 +9,7 @@ $Card_ResourceBanner = "banneret_of_vigor_yellow";
 
 $GameStatus_Over = 2;
 $GameStatus_Rematch = 3;
+$GameStatus_SwapRematch = 4;
 
 // Multi-level undo configuration - Maximum number of undo backups to maintain
 define("MAX_UNDO_BACKUPS", 10);
@@ -395,6 +396,7 @@ $CS_EvosBoosted = 114;
 $CS_NumWeaponsActivated = 115;
 $CS_NumLightningFlowDestroyed = 116;
 $CS_HoloAurasEntered = 117;
+$CS_NumInstantsPutInGrave = 118;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -445,6 +447,7 @@ $CCS_NumCardsBlocking = 44; //used to track when cards "defend together"
 $CCS_NumPowerCounters = 45;
 $CCS_SoulBanishedThisChain = 46;
 $CCS_AttackCost = 47; // the base cost of the attack (necessary for X cost attacks)
+$CCS_CachedGoAgain = 48; // cached result of DoesAttackHaveGoAgain() set before EvaluateCombatChain
 
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
@@ -459,7 +462,7 @@ function ResetCombatChainState()
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
-  global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain, $CCS_AttackCost;
+  global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain, $CCS_AttackCost, $CCS_CachedGoAgain;
 
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -507,6 +510,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_NumPowerCounters] = 0;
   $combatChainState[$CCS_SoulBanishedThisChain] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
+  $combatChainState[$CCS_CachedGoAgain] = 0;
   
   $aGoodCleanFight = false;
   for($i = 0; $i < count($chainLinks); ++$i) {
@@ -529,6 +533,7 @@ function ResetCombatChainState()
       if(CardType($linkID) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
         if(CardType($linkID) == "T" || CardType($linkID) == "Macro") continue;//Don't need to add to anywhere if it's a token
+        if ($j == 0 && !TypeContains($linkID, "AA", $mainPlayer)) continue; //Don't do anything with attack proxies
         // $j + 7 instead of just $j to grab the "original CardID" in case the card became a copy
         $origLinkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j+7], true, true) : $chainLinks[$i][$j+7];
         $goesWhere = GoesWhereAfterResolving($origLinkID, "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
@@ -561,13 +566,15 @@ function AttackReplaced($cardID, $player)
 {
   global $combatChainState, $currentTurnEffects, $mainPlayer;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_CachedDominateActive, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBasePower, $combatChain;
-  global $CS_NumStealthAttacks, $CCS_AttackCost;
+  global $CS_NumStealthAttacks, $CCS_AttackCost, $CCS_CachedGoAgain;
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_CachedDominateActive] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
   $combatChainState[$CCS_AttackPlayedFrom] = "BANISH";//Right now only Uzuri can do this
   $combatChainState[$CCS_LinkBasePower] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
+  $combatChainState[$CCS_CachedGoAgain] = 0;
+
   if (HasStealth($cardID)) IncrementClassState($player, $CS_NumStealthAttacks);
   $combatChain[0] = $cardID;
   $combatChain[5] = 0;//Reset Power Modifiers
@@ -595,7 +602,7 @@ function ResetChainLinkState()
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking, $CCS_NumPowerCounters;
-  global $CCS_AttackCost;
+  global $CCS_AttackCost, $CCS_CachedGoAgain;
 
   WriteLog("The chain link was resolved.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -637,6 +644,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_NumCardsBlocking] = 0;
   $combatChainState[$CCS_NumPowerCounters] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
+  $combatChainState[$CCS_CachedGoAgain] = 0;
   RemoveThisLinkEffects();
 }
 
@@ -661,6 +669,7 @@ function ResetMainClassState()
   global $CS_CheeredThisTurn, $CS_BooedThisTurn, $CS_SuspensePoppedThisTurn, $CS_SeismicSurgesCreated, $CS_CardsInDeckBeforeOpt;
   global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed, $CS_NumCostedCardsPlayed, $CS_HitCounter, $CS_CreatedCardsThisTurn;
   global $CS_ArcaneDamageDealtToOpponent, $CS_EvosBoosted, $CS_NumWeaponsActivated, $CS_NumLightningFlowDestroyed, $CS_HoloAurasEntered;
+  global $CS_NumInstantsPutInGrave;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -778,6 +787,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumWeaponsActivated] = 0;
   $mainClassState[$CS_NumLightningFlowDestroyed] = 0;
   $mainClassState[$CS_HoloAurasEntered] = 0;
+  $mainClassState[$CS_NumInstantsPutInGrave] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")
@@ -886,6 +896,13 @@ function GetDamagePrevention($player, $damage)
     $preventionLeft += PermanentDamagePreventionAmount($player, $i, $damage);
   }
 
+  $allies = &GetAllies($player);
+  $countAllies = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i < $countAllies; $i += $allyPieces) {
+    $preventionLeft += WardAmount($allies[$i], $player, $i);
+  }
+
   $character = &GetPlayerCharacter($player);
   $countCharacter = count($character);
   $characterPieces = CharacterPieces();
@@ -919,6 +936,6 @@ function CCOffset($piece)
 
 $livingLegends = ["chane_bound_by_shadow", "bravo_star_of_the_show", "aurora_shooting_star", "azalea_ace_in_the_hole", "briar_warden_of_thorns", "dash_inventor_extraordinaire", "dromai_ash_artist", "enigma_ledger_of_ancestry",
                   "florian_rotwood_harbinger", "iyslander_stormbind", "kano_dracai_of_aether", "lexi_livewire", "nuu_alluring_desire", "oldhim_grandfather_of_eternity", "prism_sculptor_of_arc_light",
-                  "viserai_rune_blood", "zen_tamer_of_purpose", "kayo_armed_and_dangerous"];
+                  "viserai_rune_blood", "zen_tamer_of_purpose", "kayo_armed_and_dangerous", "verdance_thorn_of_the_rose"];
 
 $benched = ["chane"];

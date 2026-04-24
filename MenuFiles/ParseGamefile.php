@@ -82,6 +82,8 @@
 
   $FORMAT_CompCC = 1;
   $FORMAT_CompBlitz = 3;
+  $FORMAT_CompLL = 13;
+  $FORMAT_CompSage = 15;
 
   if(!function_exists("UnlockGamefile"))
   {

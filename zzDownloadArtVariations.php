@@ -3,8 +3,7 @@
 include __DIR__ . '/zzImageConverter.php';
 
 // FAB Cube API endpoint for card data with all printing variations
-$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/compendium-of-rathe/json/english/card.json";
-
+$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/omens-of-the-third-age/json/english/card.json";
 
 $manualArtVariationOverrides = [
   // Format option 1 - Auto-find URL: "cardID" => "artVariation"
@@ -18,7 +17,7 @@ $manualArtVariationOverrides = [
   ], */
 ];
 
-echo "<h2>Starting Art Variations Download</h2>";
+echo "=== Starting Art Variations Download ===\n";
 
 $curl = curl_init();
 $headers = [ "Content-Type: application/json" ];
@@ -33,34 +32,36 @@ $curlError = curl_error($curl);
 curl_close($curl);
 
 if ($httpCode !== 200) {
-  echo "Error fetching data! HTTP Code: " . $httpCode . "<BR>";
-  echo "Curl Error: " . $curlError . "<BR>";
-  echo "Received: " . substr($cardData, 0, 200) . "...<BR>";
+  echo "Error fetching data! HTTP Code: " . $httpCode . "\n";
+  echo "Curl Error: " . $curlError . "\n";
+  echo "Received: " . substr($cardData, 0, 200) . "...\n";
   exit;
 }
 
-echo "Successfully fetched data (" . strlen($cardData) . " bytes)<BR>";
+echo "Successfully fetched data (" . strlen($cardData) . " bytes)\n";
 
 $cardArray = json_decode($cardData);
 
 if (json_last_error() !== JSON_ERROR_NONE) {
-  echo "JSON Parse Error: " . json_last_error_msg() . "<BR>";
+  echo "JSON Parse Error: " . json_last_error_msg() . "\n";
   exit;
 }
 
 if (!is_array($cardArray) && !is_object($cardArray)) {
-  echo "Invalid data structure received<BR>";
+  echo "Invalid data structure received\n";
   var_dump($cardArray);
   exit;
 }
 
-echo "Decoded " . (is_array($cardArray) ? count($cardArray) : "unknown") . " cards<BR>";
+echo "Decoded " . (is_array($cardArray) ? count($cardArray) : "unknown") . " cards\n";
 
 
 $altArtsArray = [];
 $newDownloads = [];  // Track only newly downloaded images
+$existingDownloads = [];  // Track already-downloaded images
 $downloadedCount = 0;
 $skippedCount = 0;
+$existingCount = 0;
 $failedCount = 0;
 
 // Track best art variation per card (AA > AB > FA > EA)
@@ -114,11 +115,11 @@ foreach ($cardArray as $card) {
         // Format 2: Manual URL provided
         $artVariations = [$override['artVariation']];
         $manualImageUrl = $override['imageUrl'];
-        echo "[MANUAL OVERRIDE] Using override for " . $cardID . " with art variation: " . $override['artVariation'] . " and manual URL<BR>";
+        echo "[MANUAL OVERRIDE] Using override for " . $cardID . " with art variation: " . $override['artVariation'] . " and manual URL\n";
       } else {
         // Format 1: Auto-find URL
         $artVariations = [$override];
-        echo "[MANUAL OVERRIDE] Using override for " . $cardID . " with art variation: " . $override . "<BR>";
+        echo "[MANUAL OVERRIDE] Using override for " . $cardID . " with art variation: " . $override . "\n";
       }
     }
     
@@ -191,7 +192,7 @@ foreach ($cardArray as $card) {
     $imageUrl = $manualImageUrl ?? ($printing->image_url ?? null);
     if (empty($imageUrl)) {
       $skippedCount++;
-      echo "Skipped: " . $setID . " - No image URL<BR>";
+      echo "Skipped: " . $setID . " - No image URL\n";
       continue;
     }
 
@@ -223,47 +224,112 @@ foreach ($cardArray as $card) {
     $downloadResult = DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOverride);
     if ($downloadResult === false) {
       $failedCount++;
-      echo "Failed: " . $filename . " - Could not download from URL<BR>";
+      echo "Failed: " . $filename . " - Could not download from URL\n";
       continue;
     } else if ($downloadResult === true) {
       // Newly downloaded
       $downloadedCount++;
       // Track this as a new download for adding to altArts
       $newDownloads[$cardID] = $filename;
-      echo "Downloaded: " . $filename . " (" . $bestVariationForPrinting . ")<BR>";
+      echo "Downloaded: " . $filename . " (" . $bestVariationForPrinting . ")\n";
     } else if ($downloadResult === "exists") {
-      // File already existed, skip adding to new downloads
+      $existingCount++;
+      $existingDownloads[$cardID] = $filename;
     }
   }
 }
 
 // Generate PatreonDictionary.php compatible array using only BEST variants
-echo "Total cards processed: " . $cardCount . "<BR>";
-echo "Total printings processed: " . $printingCount . "<BR>";
-echo "Total art variations found: " . $artVariationCount . "<BR>";
-echo "Total downloaded: " . $downloadedCount . "<BR>";
-echo "Total skipped: " . $skippedCount . "<BR>";
-echo "Total failed: " . $failedCount . "<BR>";
-echo "Total unique cards with art variations: " . count($cardBestVariant) . "<BR>";
-echo "<BR>";
+echo "\n=== Summary ===\n";
+echo "Total cards processed: " . $cardCount . "\n";
+echo "Total printings processed: " . $printingCount . "\n";
+echo "Total art variations found: " . $artVariationCount . "\n";
+echo "Total downloaded: " . $downloadedCount . "\n";
+echo "Total already existed: " . $existingCount . "\n";
+echo "Total skipped: " . $skippedCount . "\n";
+echo "Total failed: " . $failedCount . "\n";
+echo "Total unique cards with art variations: " . count($cardBestVariant) . "\n";
+echo "\n";
 
-// Build final altArts array with only newly downloaded images
+// Build final altArts array with newly downloaded images
 foreach ($newDownloads as $cardID => $filename) {
   $altArtsArray[$cardID] = $filename;
 }
 
+// Which sets to highlight as "new" in the missing report
+$newSets = ["FAB"];
+
 if (count($altArtsArray) > 0) {
-  echo "<h3>New entries to add to the \$altArts array below:</h3>";
-  echo "<pre>";
-  
+  echo "=== New entries to add to \$altArts ===\n";
   foreach ($altArtsArray as $cardID => $altArtID) {
-    echo "\"" . htmlspecialchars($cardID) . "=" . htmlspecialchars($altArtID) . "\", ";
+    echo "\"" . $cardID . "=" . $altArtID . "\",\n";
   }
-  
-  echo "</pre>";
-  echo "<BR><strong>Copy the entries above and paste them into the \$altArts array at the bottom of this file.</strong><BR>";
+  echo "\n";
 } else {
-  echo "No new art variations to add.<BR>";
+  echo "No new art variations to add.\n";
+}
+
+// Check for previously downloaded images that are missing from the $altArts array
+// Load $altArts from MetafyDictionary if not yet available
+if (!isset($altArts) || !is_array($altArts)) {
+  // Include the altArts from the bottom of this file
+  $altArts = $altArts ?? [];
+}
+$altArtsLookup = [];
+foreach ($altArts as $entry) {
+  $parts = explode("=", $entry, 2);
+  if (count($parts) === 2) {
+    $altArtsLookup[$parts[0]] = $parts[1];
+  }
+}
+
+$missingFromAltArts = [];
+foreach ($existingDownloads as $cardID => $filename) {
+  if (!isset($altArtsLookup[$cardID]) && !isset($newDownloads[$cardID])) {
+    $missingFromAltArts[$cardID] = $filename;
+  }
+}
+
+if (count($missingFromAltArts) > 0) {
+  // Group missing entries by set
+  $missingBySet = [];
+  foreach ($missingFromAltArts as $cardID => $filename) {
+    $set = substr($filename, 0, 3);
+    $missingBySet[$set][$cardID] = $filename;
+  }
+  ksort($missingBySet);
+
+  // Show new sets first (the ones you care about)
+  $newSetMissing = [];
+  $otherSetMissing = [];
+  foreach ($missingBySet as $set => $entries) {
+    if (in_array($set, $newSets)) {
+      $newSetMissing[$set] = $entries;
+    } else {
+      $otherSetMissing[$set] = $entries;
+    }
+  }
+
+  $newSetCount = 0;
+  foreach ($newSetMissing as $entries) $newSetCount += count($entries);
+
+  if ($newSetCount > 0) {
+    echo "=== NEW SET ENTRIES missing from \$altArts (" . $newSetCount . " from " . implode(", ", array_keys($newSetMissing)) . ") ===\n";
+    foreach ($newSetMissing as $set => $entries) {
+      echo "// --- $set (" . count($entries) . " cards) ---\n";
+      foreach ($entries as $cardID => $altArtID) {
+        echo "\"" . $cardID . "=" . $altArtID . "\",\n";
+      }
+      echo "\n";
+    }
+  }
+
+  $otherCount = 0;
+  foreach ($otherSetMissing as $entries) $otherCount += count($entries);
+
+  if ($otherCount > 0) {
+    echo "(" . $otherCount . " other entries from older sets omitted: " . implode(", ", array_keys($otherSetMissing)) . ")\n";
+  }
 }
 
 /**

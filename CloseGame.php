@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
-include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/SHMOPLibraries.php";
 include_once './Libraries/CSRFLibraries.php';
 include_once './includes/ModeratorList.inc.php';
 

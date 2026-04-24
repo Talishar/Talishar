@@ -1,7 +1,7 @@
 <?php
 
 include "../Libraries/HTTPLibraries.php";
-include "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/CacheLibraries.php";
 
 SetHeaders();
@@ -44,13 +44,6 @@ $isOpponentTyping = false;
 if (extension_loaded('apcu') && ini_get('apc.enabled')) {
   if (function_exists('apcu_fetch')) {
     $isOpponentTyping = @apcu_fetch($typingCacheKey) !== false;
-  }
-} else {
-  // Fallback: check file-based cache
-  $typingFile = "../Games/" . $gameName . "/typing_p" . $opponentID . ".txt";
-  if (file_exists($typingFile)) {
-    $expiryTime = intval(file_get_contents($typingFile));
-    $isOpponentTyping = $expiryTime > time();
   }
 }
 

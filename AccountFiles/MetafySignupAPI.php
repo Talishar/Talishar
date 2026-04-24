@@ -1,6 +1,8 @@
 <?php
 
 include_once './AccountSessionAPI.php';
+include_once './AccountDatabaseAPI.php';
+include_once '../Database/ConnectionManager.php';
 include_once '../APIKeys/APIKeys.php';
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
@@ -69,6 +71,9 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         $existingUsername = GetExistingUsername($userID);
         $_SESSION['useruid'] = $existingUsername ?? ($user_profile['username'] ?? $user_profile['email'] ?? $userID);
         $_SESSION['isPatron'] = CheckIfMetafySupporter($userID);
+        $_SESSION['metafyID'] = $user_profile['id'] ?? '';
+
+        ApplyRememberMeCookie($userID);
 
         $response->message = 'ok';
         $response->redirect = '/game/MainMenu.php';
@@ -151,7 +156,7 @@ function GetMetafyUserProfile($access_token)
  */
 function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
 {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
 
   // Try to find existing user by email
   $email = $user_profile['email'] ?? '';
@@ -240,7 +245,7 @@ function UsernameExists($username, $conn)
  */
 function UpdateMetafyTokens($userID, $access_token, $refresh_token, $metafy_id)
 {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
   $sql = "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=?, metafyID=? WHERE usersid=?";
   $stmt = mysqli_stmt_init($conn);
 
@@ -261,7 +266,7 @@ function FetchAndSaveMetafyCommunities($userID, $access_token)
   // Reuse the logic from MetafyLoginAPI.php
   include_once '../includes/dbh.inc.php';
 
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
   $all_communities = [];
 
   // 1. Fetch the authenticated user's owned community (if they are a coach/creator)
@@ -359,15 +364,46 @@ function FetchAndSaveMetafyCommunities($userID, $access_token)
   // Save all communities to database
   if (count($all_communities) > 0) {
     $communities_json = json_encode($all_communities);
-    $sql = 'UPDATE users SET metafyCommunities=? WHERE usersid=?';
+
+    $existing_metafy_id = null;
+    $stmt_chk = mysqli_stmt_init($conn);
+    if (mysqli_stmt_prepare($stmt_chk, "SELECT metafyID FROM users WHERE usersid=? LIMIT 1")) {
+      mysqli_stmt_bind_param($stmt_chk, 'i', $userID);
+      mysqli_stmt_execute($stmt_chk);
+      $res_chk = mysqli_stmt_get_result($stmt_chk);
+      $row_chk = mysqli_fetch_assoc($res_chk);
+      mysqli_stmt_close($stmt_chk);
+      $existing_metafy_id = $row_chk['metafyID'] ?? null;
+    }
+
+    if (empty($existing_metafy_id)) {
+      $ch_me = curl_init('https://metafy.gg/irk/api/v1/me');
+      curl_setopt($ch_me, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch_me, CURLOPT_TIMEOUT, 5);
+      curl_setopt($ch_me, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $access_token, 'Content-Type: application/json']);
+      curl_setopt($ch_me, CURLOPT_USERAGENT, 'Talishar-App');
+      $me_raw  = curl_exec($ch_me);
+      $me_code = curl_getinfo($ch_me, CURLINFO_HTTP_CODE);
+      curl_close($ch_me);
+      if ($me_code === 200) {
+        $me_data = json_decode($me_raw, true);
+        $existing_metafy_id = $me_data['user']['id'] ?? null;
+      }
+    }
+
+    $sql = 'UPDATE users SET metafyCommunities=?' . (!empty($existing_metafy_id) ? ', metafyID=?' : '') . ' WHERE usersid=?';
     $stmt = mysqli_stmt_init($conn);
     if (mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_stmt_bind_param($stmt, 'ss', $communities_json, $userID);
+      if (!empty($existing_metafy_id)) {
+        mysqli_stmt_bind_param($stmt, 'sss', $communities_json, $existing_metafy_id, $userID);
+      } else {
+        mysqli_stmt_bind_param($stmt, 'ss', $communities_json, $userID);
+      }
       mysqli_stmt_execute($stmt);
       mysqli_stmt_close($stmt);
     }
   }
-  
+
   mysqli_close($conn);
 }
 
@@ -376,7 +412,7 @@ function FetchAndSaveMetafyCommunities($userID, $access_token)
  */
 function CheckIfMetafySupporter($userID)
 {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
   $sql = "SELECT metafyCommunities FROM users WHERE usersid=?";
   $stmt = mysqli_stmt_init($conn);
   
@@ -409,7 +445,7 @@ function CheckIfMetafySupporter($userID)
  */
 function GetExistingUsername($userID)
 {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
   $sql = "SELECT usersUid FROM users WHERE usersid=?";
   $stmt = mysqli_stmt_init($conn);
   
@@ -429,4 +465,5 @@ function GetExistingUsername($userID)
   mysqli_close($conn);
   return null;
 }
+
 

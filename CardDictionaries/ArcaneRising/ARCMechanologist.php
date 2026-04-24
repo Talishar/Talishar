@@ -65,12 +65,6 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
         }
       }
       return $rv;
-    case "cognition_nodes_blue":
-      if($from == "PLAY") {
-        $items = &GetItems($currentPlayer);
-        if(!$CombatChain->HasCurrentLink()) $items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] = 1;
-      }
-      return $rv;
     case "convection_amplifier_red":
       if ($from == "PLAY") {
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -113,10 +107,6 @@ function ARCMechanologistHitEffect($cardID, $from)
   switch ($cardID) {
     case "pedal_to_the_metal_red": case "pedal_to_the_metal_yellow": case "pedal_to_the_metal_blue":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
-      break;
-    case "cognition_nodes_blue":
-      if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-      else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
       break;
     case "over_loop_red": case "over_loop_yellow": case "over_loop_blue":
       if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";

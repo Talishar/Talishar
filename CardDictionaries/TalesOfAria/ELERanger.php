@@ -75,12 +75,14 @@
     for($i=0; $i<count($elementArray); ++$i)
     {
       $element = $elementArray[$i];
+      $fullReveal = $i == count($elementArray) - 1;
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=" . $element, $subsequent);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion", 1);
+      $context = "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion";
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=$element", $subsequent);
+      AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
-      AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+      AddDecisionQueue("REVEALCARDS", $player, $fullReveal, 1);
       if($isAndOrFuse) {
         AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $element, 1);
         if($i > 0) $elementText .= " and/or ";
@@ -207,6 +209,8 @@
   // TODO: Optimize with GeneratedHasFusion function for automation
   function HasFusion($cardID)
   {
+    $card = GetClass($cardID, 0);
+    if ($card != "-") return $card->HasFusion();
     switch($cardID)
     {
       case "endless_winter_red": return "ICE";
@@ -251,7 +255,6 @@
       case "encase_red": return "ICE";
       case "freezing_point_red": return "ICE";
       case "sigil_of_permafrost_red": case "sigil_of_permafrost_yellow": case "sigil_of_permafrost_blue": return "ICE";
-      case "ice_eternal_blue": return "ICE";
       case "succumb_to_winter_red": case "succumb_to_winter_yellow": case "succumb_to_winter_blue": return "ICE";
       case "aether_icevein_red": case "aether_icevein_yellow": case "aether_icevein_blue": return "ICE";
       case "brain_freeze_red": case "brain_freeze_yellow": case "brain_freeze_blue": return "ICE";

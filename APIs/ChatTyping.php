@@ -1,7 +1,7 @@
 <?php
 
 include "../Libraries/HTTPLibraries.php";
-include "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/CacheLibraries.php";
 
 SetHeaders();
@@ -25,23 +25,22 @@ if (!is_numeric($playerID) || ($playerID != 1 && $playerID != 2)) {
   exit;
 }
 
-// Store typing state in cache with 5 second TTL
+// Optional: typing=0 means the player explicitly stopped typing
+$isTyping = true;
+if (isset($_GET['typing'])) {
+  $isTyping = $_GET['typing'] !== '0' && $_GET['typing'] !== 'false';
+}
+
 $cacheKey = "typing_" . md5($gameName) . "_player_" . $playerID;
 
 if (extension_loaded('apcu') && ini_get('apc.enabled')) {
   if (function_exists('apcu_store')) {
-    @apcu_store($cacheKey, true, 5);
+    if ($isTyping) {
+      @apcu_store($cacheKey, true, 5);
+    } else {
+      @apcu_delete($cacheKey);
+    }
   }
-} else {
-  // Fallback: store in a temporary file-based cache
-  $gameDir = "../Games/" . $gameName;
-  if (!is_dir($gameDir)) {
-    @mkdir($gameDir, 0755, true);
-  }
-  
-  $typingFile = $gameDir . "/typing_p" . $playerID . ".txt";
-  $expiryTime = time() + 5;
-  file_put_contents($typingFile, $expiryTime);
 }
 
 $response->success = true;

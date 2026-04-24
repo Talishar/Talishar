@@ -1,3 +1,5 @@
+-- Original file: Database/02_setup_private_messages_table.sql
+--
 -- Create private_messages table for the messaging system
 -- Run this SQL on the fabonline2 database
 

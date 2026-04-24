@@ -136,6 +136,7 @@ def parse_gamestate(gameid):
     results['Both'][f'chain link summary'] = unravel(lines[57 + num_chain_links], "ChainLinkSummary")
     results["P2IsAI"] = lines[75+num_chain_links]
     results["InfiniteHP"] = lines[76+num_chain_links]
+    results["LastUpdateTime"] = lines[68 + num_chain_links]
     
     results['p1']['inventory'] = lines[72 + num_chain_links].split(" ")
     results['p2']['inventory'] = lines[73 + num_chain_links].split(" ")

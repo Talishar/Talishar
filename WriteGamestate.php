@@ -94,7 +94,7 @@ $gamestateLines = array_merge($gamestateLines, [
   $permanentUniqueIDCounter,
   $inGameStatus, // Game status -- 0 = START, 1 = PLAY, 2 = OVER
   "", // Animations - Deprecated
-  $currentPlayerActivity, // Current Player activity status -- 0 = active, 2 = inactive
+  $currentPlayerActivity, //Not Used - Current Player activity status -- 0 = active, 2 = inactive
   "", // Unused
   "", // Unused
   $p1TotalTime, // Player 1 total time

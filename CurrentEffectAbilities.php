@@ -37,12 +37,12 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
     case "pummel_red":
     case "pummel_yellow":
     case "pummel_blue":
-      if (IsHeroAttackTarget() && CardType($attackID) == "AA") PummelHit();
+      PummelHit();
       break;
     case "razor_reflex_red":
     case "razor_reflex_yellow":
     case "razor_reflex_blue":
-      if (CardType($attackID) == "AA") GiveAttackGoAgain();
+      GiveAttackGoAgain();
       break;
     case "plunder_run_red-1":
     case "plunder_run_yellow-1":
@@ -50,7 +50,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       Draw($mainPlayer);
       return 1;
     case "poison_the_tips_yellow":
-      if (IsHeroAttackTarget()) PummelHit();
+      PummelHit();
       break;
     case "mauvrion_skies_red":
     case "mauvrion_skies_yellow":
@@ -500,6 +500,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
     case "savor_bloodshed_red-HIT":
       Draw($mainPlayer, effectSource:"savor_bloodshed_red");
       return 1;
+    case "blacktek_whisperers":
+      GiveAttackGoAgain();
+      return 1;
     case "scar_tissue_red":
     case "scar_tissue_yellow":
     case "scar_tissue_blue":
@@ -519,7 +522,8 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       return 1;
     case "gold_baited_hook":
-      if (TypeContains($effectSource, "AA")) $EffectContext = $effectSource;
+      // if (TypeContains($effectSource, "AA")) $EffectContext = $effectSource;
+      $EffectContext = $effectSource; // ripple away always works on hook
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
@@ -722,6 +726,8 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "ignite_red":
       case "wrath_of_retribution_red":
       case "fire_tenet_strike_first_red":
+      case "fire_tenet_strike_first_yellow":
+      case "fire_tenet_strike_first_blue":
       case "poisoned_blade_red":
       case "poisoned_blade_yellow":
       case "poisoned_blade_blue":
@@ -883,11 +889,12 @@ function OnAttackEffects($cardID)
 }
 
 
-function CurrentEffectCostModifiers($cardID, $from)
+function CurrentEffectCostModifiers($cardID, $from, $index=-1)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  if (!is_numeric($index)) $index = -1; // sometimes index is getting passed in as ""
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
@@ -900,7 +907,7 @@ function CurrentEffectCostModifiers($cardID, $from)
         }
       }
       $card = GetClass($currentTurnEffects[$i], $currentPlayer);
-      if ($card != "-") $costModifier += $card->CurrentEffectCostModifier($cardID, $from, $remove);
+      if ($card != "-") $costModifier += $card->CurrentEffectCostModifier($cardID, $from, $remove, $i, $index);
       switch ($currentTurnEffects[$i]) {
         case "cartilage_crush_red":
         case "cartilage_crush_yellow":
@@ -1100,7 +1107,7 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
     $remove = false;
-    return $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, true);
+    return $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, true);
   }
   switch ($effects[0]) {
     case "dissipation_shield_yellow":
@@ -1121,11 +1128,11 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
       }
       break;
     case "steadfast_red":
-      return $source == $currentTurnEffects[$index + 2] && $preventable ? 6 : 0;
+      return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
     case "steadfast_yellow":
-      return $source == $currentTurnEffects[$index + 2] && $preventable ? 5 : 0;
+      return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
     case "steadfast_blue":
-      return $source == $currentTurnEffects[$index + 2] && $preventable ? 4 : 0;
+      return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
     case "amulet_of_intervention_blue":
       return 1;
     case "helios_mitre":
@@ -1322,7 +1329,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
   $Effect = new CurrentEffect($index);
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
-    $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove);
+    $prevention = $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable);
     if ($preventable) $preventedDamage += $prevention;
     if ($remove) RemoveCurrentTurnEffect($index);
   }
@@ -1359,7 +1366,19 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           if ($preventedDamage > $damage) $preventedDamage = $damage;
           $currentTurnEffects[$index + 3] -= $origDamage;
         }
-        if ($currentTurnEffects[$index + 3] <= 0) RemoveCurrentTurnEffect($index);
+        if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
+        $multiAttack = match($source) {
+          "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
+          "vexing_malice_red", "vexing_malice_yellow", "vexing_malice_blue", "reckless_stampede_red" => true,
+          "runic_fellingsong_red", "runic_fellingsong_yellow", "runic_fellingsong_blue" => true,
+          "arcanic_shockwave_red", "arcanic_shockwave_yellow", "arcanic_shockwave_blue" => true,
+          "arcanic_crackle_red", "arcanic_crackle_yellow", "arcanic_crackle_blue" => true,
+          default => false,
+        };
+        if (SubtypeContains($source, "Dagger")) $multiAttack = true;
+        if (TypeContains($source, "AA") && !$multiAttack) $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+        if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
+        if ($remove) RemoveCurrentTurnEffect($index);
       }
       break;
     case "amulet_of_intervention_blue":
@@ -1868,21 +1887,33 @@ function CurrentEffectGrantsInstantGoAgain($cardID, $from)
 
 function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
 {
-  global $currentTurnEffects, $currentPlayer, $CS_AdditionalCosts;
+  global $currentTurnEffects, $currentPlayer, $CS_AdditionalCosts, $CS_ResolvingLayerUniqueID;
   $hasGoAgain = false;
+  // uniqueID is the uid of the source, for effects that started applying before the layer was created
+  // uniqueIDResolving in the uid specifically of the layer
+  $uniqueIDResolving = GetClassState($currentPlayer, $CS_ResolvingLayerUniqueID);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       if (strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
       else $turnEffects[0] = $currentTurnEffects[$i];
       $Effect = new CurrentEffect($i);
-      if ($Effect->AppliestoUniqueID() != -1 && $Effect->AppliestoUniqueID() != $uniqueID) continue;
+      if ($Effect->AppliestoUniqueID() != -1 && $Effect->AppliestoUniqueID() != $uniqueID && $Effect->AppliestoUniqueID() != $uniqueIDResolving) continue;
       $effectArr = explode("-", $turnEffects[0]);
       $effectID = $effectArr[0];
       $parameter = $effectArr[1] ?? "-";
       $card = GetClass($effectID, $currentPlayer);
-      if ($card != "-") $hasGoAgain = $card->CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, $remove) || $hasGoAgain;
+      if ($card != "-") $hasGoAgain = $card->CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueIDResolving, $parameter, $remove) || $hasGoAgain;
       switch ($turnEffects[0]) {
+        case "aether_quickening_red":
+        case "aether_quickening_yellow":
+        case "aether_quickening_blue":
+        case "trailblazing_aether_red":
+        case "trailblazing_aether_yellow":
+        case "trailblazing_aether_blue":
+          $hasGoAgain = true;
+          $remove = true;
+          break;
         case "bloodrush_bellow_yellow-GOAGAIN":
           $hasGoAgain = true;
           $remove = true;
@@ -1918,24 +1949,6 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
           break;
         case "moon_wish_red-GA":
           $hasGoAgain = ($cardID == "sun_kiss_red" || $cardID == "sun_kiss_yellow" || $cardID == "sun_kiss_blue");
-          break;
-        case "fasting_carcass_red":
-          if (ColorContains($cardID, 1, $currentPlayer)) {
-            $hasGoAgain = true;
-            if ($cardID != $turnEffects[0]) $remove = true;
-          }
-          break;        
-        case "fasting_carcass_yellow":
-          if (ColorContains($cardID, 2, $currentPlayer)) {
-            $hasGoAgain = true;
-            if ($cardID != $turnEffects[0]) $remove = true;
-          }
-          break;
-        case "fasting_carcass_blue":
-          if (ColorContains($cardID, 3, $currentPlayer)) {
-            $hasGoAgain = true;
-            if ($cardID != $turnEffects[0]) $remove = true;
-          }
           break;
         case "first_tenet_of_chi_wind_blue":
           if (ColorContains($cardID, 3, $currentPlayer)) {
@@ -2050,9 +2063,6 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
     case "precision_press_red":
     case "precision_press_yellow":
     case "precision_press_blue":
-    case "tear_through_the_portal_red":
-    case "tear_through_the_portal_yellow":
-    case "tear_through_the_portal_blue":
     case "agility":
     case "coercive_tendency_blue":
     case "beckoning_mistblade":
@@ -2955,6 +2965,9 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
         case "scramble_pulse_yellow";
         case "scramble_pulse_blue":
           $blockModifier -= TypeContains($cardID, "E", $defPlayer) || SubtypeContains($cardID, "Evo", $defPlayer) ? 1 : 0;
+          break;
+        case "fabricate_red":
+          $blockModifier += SubtypeContains($cardID, "Evo", $mainPlayer) && $from == "EQUIP" ? 1 : 0;
           break;
         default:
           break;

@@ -25,12 +25,14 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
   return true;
 }
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0)
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0, $effectAgent = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated, $CS_HoloAurasEntered;
+  global $CS_CreatedCardsThisTurn;
   if ($number == 0) return; //there is no event
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($effectController == "-") $effectController = $player;
+  if ($effectAgent == "-") $effectAgent = $effectController;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   if (DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
@@ -56,7 +58,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if (!CanPlayAura($cardID, $player, $EffectContext, $effectController, $isToken)) return;
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
   // only modify the event if there is an event
-  if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectController);
+  if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectAgent);
 
   $countVerdantTide = CountCurrentTurnEffects("verdant_tide_red", $player);
   if ($countVerdantTide > 0 && (ClassContains($cardID, "RUNEBLADE", $player) || TalentContains($cardID, "ELEMENTAL", $player))) {
@@ -120,10 +122,8 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if ($cardID == "seismic_surge") IncrementClassState($player, $CS_SeismicSurgesCreated, $number);
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->EntersArenaAbility();
-  if ($isToken) {
-    $ClassState = new ClassState($effectController);
-    $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $number);
-  }
+  if ($isToken)
+    IncrementClassState($effectController, $CS_CreatedCardsThisTurn, $number);
 }
 
 function StealAura($srcPlayer, $index, $destPlayer, $from)
@@ -569,6 +569,8 @@ function AuraStartTurnAbilities()
   $toRemove = [];
   $countAuras = count($auras);
   $aurasPieces = AuraPieces();
+  $mightCount = 0;
+  $vigorCount = 0;
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $EffectContext = $auras[$i];
     $card = GetClass($auras[$i], $mainPlayer);
@@ -712,11 +714,13 @@ function AuraStartTurnAbilities()
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumMightDestroyed, 1);
+        ++$mightCount;
         break;
       case "vigor":
         GainResources($mainPlayer, 1);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
+        ++$vigorCount;
         break;
       case "contest_the_mindfield_blue":
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
@@ -744,6 +748,7 @@ function AuraStartTurnAbilities()
         break;
       case "agility":
         if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
+        WriteLog(CardLink($auras[$i]) . " will give your next attack go again!");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
         break;
@@ -830,6 +835,14 @@ function AuraStartTurnAbilities()
         break;
       }
     }
+  }
+  if ($mightCount > 0) {
+    $suffix = $mightCount > 1 ? " (x$mightCount)" : "";
+    WriteLog(CardLink("might") . "$suffix will buff your next attack by $mightCount!");
+  }
+  if ($vigorCount > 0) {
+    $suffix = $vigorCount > 1 ? " (x$vigorCount)" : "";
+    WriteLog(CardLink("vigor") . "$suffix gives you $vigorCount resource" . ($vigorCount > 1 ? "s" : "") . "!");
   }
   foreach ($toRemove as $uniqueId) {
     DestroyAuraUniqueID($mainPlayer, $uniqueId, mainPhase: false);
@@ -1259,7 +1272,7 @@ function AuraEndTurnCleanup()
   for ($i = 0; $i < $countAuras; $i += $aurasPieces) $auras[$i + 5] = AuraNumUses($auras[$i]);
 }
 
-function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active = false, &$cancelRemove = false, $check = false)
+function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active = false, &$cancelRemove = false, $check = false, $preventable = true)
 {
   $preventedDamage = 0;
   $auras = &GetAuras($player);
@@ -1295,13 +1308,13 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
       }
       break;
     case "pyroglyphic_protection_red":
-      if ($type == "ARCANE") $preventedDamage += 3;
+      if ($type == "ARCANE" && $preventable) $preventedDamage += 3;
       break;
     case "pyroglyphic_protection_yellow":
-      if ($type == "ARCANE") $preventedDamage += 2;
+      if ($type == "ARCANE" && $preventable) $preventedDamage += 2;
       break;
     case "pyroglyphic_protection_blue":
-      if ($type == "ARCANE") $preventedDamage += 1;
+      if ($type == "ARCANE" && $preventable) $preventedDamage += 1;
       break;
     default:
       break;
@@ -1320,7 +1333,7 @@ function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
   $preventionAmount = 0;
   $auras = &GetAuras($player);
   if ($preventable) {
-    $preventionAmount = AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove);
+    $preventionAmount = AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove, preventable:$preventable);
     $damage -= $preventionAmount;
     if($preventionAmount > 0 && !$cancelRemove) WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed and prevented " . $preventionAmount . " damage.");
     elseif($preventionAmount > 0) WriteLog(CardLink($auras[$index], $auras[$index]) . " prevented " . $preventionAmount . " damage.");
@@ -1640,7 +1653,7 @@ function AuraAttackAbilities($attackID)
   }
 }
 
-function AuraHitEffects($attackID)
+function AuraHitEffects($attackID, $check = false): bool
 {
   global $mainPlayer;
   $attackType = CardType($attackID);
@@ -1654,6 +1667,7 @@ function AuraHitEffects($attackID)
       case "bloodspill_invocation_yellow":
       case "bloodspill_invocation_blue":
         if ($attackType == "AA") {
+          if ($check) return true;
           AddLayer("TRIGGER", $mainPlayer, $auras[$i], "-", $attackID, $auras[$i + 6]);
         }
         break;
@@ -1662,6 +1676,7 @@ function AuraHitEffects($attackID)
     }
     if ($remove == 1) DestroyAura($mainPlayer, $i);
   }
+  return false;
 }
 
 function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
@@ -1713,7 +1728,7 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
     if ($card != "-") $modifier += $card->StaticPowerModifier($index, $powerModifiers);
     switch ($theirAuras[$i]) {
       case "parable_of_humility_yellow":
-        if (CardType($CombatChain->CurrentAttack()) == "AA") {
+        if (CardType($CombatChain->Card($index)->ID()) == "AA") {
           $modifier -= 1;
           array_push($powerModifiers, $theirAuras[$i]);
           array_push($powerModifiers, -1);

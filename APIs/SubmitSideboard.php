@@ -2,7 +2,7 @@
 
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
-include "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 include "../Libraries/NetworkingLibraries.php";
 include "../Libraries/CacheLibraries.php";
 include "../GameLogic.php";
@@ -107,11 +107,55 @@ if($deckCount > 40 && ($format == "blitz" || $format == "compblitz" || $format =
 
 $inventory = $submission->inventory ?? [];
 
+// Categorize inventory items into their proper sideboard slots so that
+// GetLobbyInfo.php can display them correctly on page refresh.
+$headSB = [];
+$chestSB = [];
+$armsSB = [];
+$legsSB = [];
+$offhandSB = [];
+$weaponSB = [];
+$cardsSB = [];
+$quiverSB = [];
+$modularSB = [];
+
+foreach ($inventory as $item) {
+  if (!$item || $item === '') continue;
+  $subtypeArr = array_map('trim', explode(",", CardSubtype($item)));
+  if (in_array("Head", $subtypeArr)) {
+    $headSB[] = $item;
+  } else if (in_array("Chest", $subtypeArr)) {
+    $chestSB[] = $item;
+  } else if (in_array("Arms", $subtypeArr)) {
+    $armsSB[] = $item;
+  } else if (in_array("Legs", $subtypeArr)) {
+    $legsSB[] = $item;
+  } else if (IsModular($item)) {
+    $modularSB[] = $item;
+  } else if (in_array("Quiver", $subtypeArr)) {
+    $quiverSB[] = $item;
+  } else if (in_array("Off-Hand", $subtypeArr) || HasPerched($item)) {
+    $offhandSB[] = $item;
+  } else if (CardType($item) === "W" || CardType($item) === "E") {
+    $weaponSB[] = $item;
+  } else {
+    $cardsSB[] = $item;
+  }
+}
+
 $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $deckFile = fopen($filename, "w");
 fwrite($deckFile, $character . "\r\n");
-
 fwrite($deckFile, $deck . "\r\n");
+fwrite($deckFile, implode(" ", $headSB) . "\r\n");
+fwrite($deckFile, implode(" ", $chestSB) . "\r\n");
+fwrite($deckFile, implode(" ", $armsSB) . "\r\n");
+fwrite($deckFile, implode(" ", $legsSB) . "\r\n");
+fwrite($deckFile, implode(" ", $offhandSB) . "\r\n");
+fwrite($deckFile, implode(" ", $weaponSB) . "\r\n");
+fwrite($deckFile, implode(" ", $cardsSB) . "\r\n");
+fwrite($deckFile, implode(" ", $quiverSB) . "\r\n");
+fwrite($deckFile, implode(" ", $modularSB) . "\r\n");
 fwrite($deckFile, implode(" ", $inventory));
 fclose($deckFile);
 
@@ -146,7 +190,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, "M 1\r\n"); //What phase/player is active
   fwrite($handler, "1\r\n"); //Action points
   fwrite($handler, "\r\n"); //Combat Chain
-  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1\r\n"); //Combat Chain State
+  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0\r\n"); //Combat Chain State
   fwrite($handler, "\r\n"); //Current Turn Effects
   fwrite($handler, "\r\n"); //Current Turn Effects From Combat
   fwrite($handler, "\r\n"); //Next Turn Effects
@@ -164,7 +208,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
   fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
   fwrite($handler, "\r\n"); //Animations
-  fwrite($handler, "0\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
+  fwrite($handler, "0\r\n"); // Not Used - Current Player activity status -- 0 = active, 2 = inactive
   fwrite($handler, "0\r\n"); //Player1 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
   fwrite($handler, "0\r\n"); //Player2 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
   fwrite($handler, "0\r\n"); //Player 1 total time

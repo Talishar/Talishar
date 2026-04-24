@@ -74,10 +74,10 @@ function SearchAura($player, $type = "", $subtype = "", $maxCost = -1, $minCost 
   return SearchInner($auras, $player, "AURAS", AuraPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, hasWard: $hasWard, hasPowerCounters: $hasPowerCounters, nameIncludes: $nameIncludes, hasSuspense:$hasSuspense);
 }
 
-function SearchItems($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
+function SearchItems($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $nullDef = false)
 {
   $items = &GetItems($player);
-  return SearchInner($items, $player, "ITEMS", ItemPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
+  return SearchInner($items, $player, "ITEMS", ItemPieces(), $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, nullDef:$nullDef);
 }
 
 function SearchAllies($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false)
@@ -197,11 +197,12 @@ function SearchInner(
         if ($hasCrush && !HasCrush($cardID)) continue;
         if ($hasSuspense && !HasSuspense($cardID)) continue;
         if ($comboOnly && !HasCombo($cardID)) continue;
-        if ($hasCloaked && HasCloaked($cardID) != "DOWN") continue;
+        if ($hasCloaked && HasCloaked($cardID, $player) != "DOWN") continue;
         
         // Check array-based conditions
         if ($frozenOnly && !IsFrozenMZ($array, $zone, $i, $player)) continue;
-        if ($hasNegCounters && $array[$i + 4] == 0) continue;
+        $offset = DefCounterOffsetMZ($zone);
+        if ($hasNegCounters && $offset != -1 && $array[$i + $offset] >= 0) continue;
         if ($hasEnergyCounters && !HasEnergyCounters($array, $i)) continue;
         if ($hasCrank && !HasCrank($cardID, $player)) continue;
         if ($hasSteamCounter && !HasSteamCounter($array, $i, $player)) continue;
@@ -1090,11 +1091,10 @@ function SearchItemsForUniqueID($uniqueID, $player)
 
 function SearchAlliesForUniqueID($uniqueID, $player)
 {
-  $allies = &GetAllies($player);
-  $count = count($allies);
-  $pieces = AllyPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($allies[$i + 5] == $uniqueID) return $i;
+  $Allies = new Allies($player);
+  for ($i = 0; $i < $Allies->NumAllies(); ++$i){
+    $AllyCard = $Allies->Card($i, true);
+    if ($AllyCard->UniqueID() == $uniqueID) return $AllyCard->Index();
   }
   return -1;
 }
@@ -1434,7 +1434,7 @@ function GetMZCardLink($player, $MZ)
   if ($MZ == "") return "";
   $params = explode("-", $MZ);
   $zoneDS = &GetMZZone($player, $params[0]);
-  $index = $params[1];
+  $index = $params[1] ?? "";
   if ($index == "") return "";
   if (is_numeric($index)) {
     if ($params[0] == "PASTCHAINLINK") {
@@ -1780,7 +1780,7 @@ function SearchMultizone($player, $searches)
           break;
         case "MYITEMS":
         case "THEIRITEMS":
-          $searchResult = SearchItems($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter);
+          $searchResult = SearchItems($searchPlayer, $type, $subtype, $maxCost, $minCost, $class, $talent, $bloodDebtOnly, $phantasmOnly, $pitch, $specOnly, $maxAttack, $maxDef, $frozenOnly, $hasNegCounters, $hasEnergyCounters, $comboOnly, $minAttack, $hasCrank, $hasSteamCounter, $nullDef);
           break;
         case "MYALLY":
         case "THEIRALLY":

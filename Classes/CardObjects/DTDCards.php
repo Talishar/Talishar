@@ -2413,7 +2413,7 @@ class tear_through_the_portal extends BaseCard {
 		$search = "MYBANISH:type=A;pitch=$pitch&MYBANISH:type=AA;pitch=$pitch";
 		$message = "Choose a $color action card in your banish to get go again";
 		Await($this->controller, "MultiTargetIndices", "indices", search:$search, subsequent:0);
-    Await($this->controller, "ChooseMultiZone", "index", context:$message);
+    	Await($this->controller, "ChooseMultiZone", "index", context:$message);
 		Await($this->controller, $this->cardID, final:true);
 	}
 

@@ -1,3 +1,5 @@
+-- Original file: Database/migrations/add_lastActivity_column.sql
+--
 -- Migration: Add lastActivity column to users table for online status tracking
 -- This column tracks when a user was last active, used to determine if they're online
 

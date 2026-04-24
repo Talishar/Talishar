@@ -22,14 +22,6 @@
       case "sigil_of_permafrost_red": case "sigil_of_permafrost_yellow": case "sigil_of_permafrost_blue":
         if(DelimStringContains($additionalCosts, "ICE")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "ice_eternal_blue":
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        $numFrostBite = GetClassState($currentPlayer, $CS_LastDynCost)/2;
-        PlayAura("frostbite", $otherPlayer, $numFrostBite, effectController: $currentPlayer);
-        $amountArcane = SearchCount(SearchAurasForCard("frostbite", $otherPlayer));
-        $amountArcane += SearchCount(SearchCharacterForCardMulti($otherPlayer, "frostbite"));
-        if(DelimStringContains($additionalCosts, "ICE")) DealArcane($amountArcane, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
-        return "";
       case "succumb_to_winter_red": case "succumb_to_winter_yellow": case "succumb_to_winter_blue":
         if($cardID == "succumb_to_winter_red") $damage = 5;
         else if($cardID == "succumb_to_winter_yellow") $damage = 4;

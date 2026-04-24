@@ -725,8 +725,8 @@ class predatory_plating extends Card {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $CombatChain, $ChainLinks;
-    if (LayerStepPower($this->controller) >= 6) return false;
+    global $CombatChain, $ChainLinks, $mainPlayer;
+    if (LayerStepPower($this->controller) >= 6 && $this->controller == $mainPlayer) return false;
     for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
       $Card = $CombatChain->Card($i, true);
       if ($Card->PlayerID() == $this->controller && TypeContains($Card->ID(), "AA")) {
@@ -1393,7 +1393,7 @@ class sigil_of_silphidae_blue extends Card {
         AddDecisionQueue("MZBANISH", $this->controller, "<-", 1);
         AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
         AddDecisionQueue("PASSPARAMETER", $this->controller, $target, 1);
-        AddDecisionQueue("DEALARCANE", $this->controller, "1-" . $this->cardID, 1);
+        AddDecisionQueue("DEALARCANEFULL", $this->controller, "1-" . $this->cardID, 1);
         AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
         AddDecisionQueue("SETCLASSSTATE", $this->controller, parameter: $CS_ArcaneTargetsSelected);
       }
@@ -1452,7 +1452,7 @@ class runebleed_robe extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     if ($type == "ARCANE") {
       $remove = true;
       return 1;
@@ -1614,7 +1614,7 @@ class hyper_inflation_red extends Card {
     $this->baseCard->ProcessAttackTrigger();
   }
 
-  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
 }
@@ -1634,7 +1634,7 @@ class hyper_inflation_yellow extends Card {
     $this->baseCard->ProcessAttackTrigger();
   }
 
-  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
 
@@ -1658,7 +1658,7 @@ class hyper_inflation_blue extends Card {
     $this->baseCard->ProcessAttackTrigger();
   }
 
-  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from);
   }
 
@@ -1714,7 +1714,7 @@ class glyph_power_spell_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $damage = HasAuraWithSigilInName($this->controller) ? 6 : 4;
+    $damage = HasAuraWithSigilInName($this->controller) || HasLayerWithSigilInName($this->controller) ? 6 : 4;
     DealArcane($damage, 2, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
   }
 }
@@ -1885,7 +1885,7 @@ class voltic_veil_red extends Card {
       DealArcane(1, 1, source:$this->cardID);
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     global $CurrentTurnEffects;
     $Effect = $CurrentTurnEffects->Effect($index);
     if ($damage >= $Effect->NumUses()) {
@@ -2195,15 +2195,9 @@ class chorus_of_rotwood_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $Discard = new Discard($this->controller);
-    $Discard->RemoveTop(); //don't let them decompose itself
     Decompose($this->controller, "CHORUSOFROTWOOD");
-    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1); // put it back in the graveyard
-    AddDecisionQueue("ADDDISCARD", $this->controller, "-", 1);
     AddDecisionQueue("PLAYAURA", $this->controller, "runechant-3", 1);
     AddDecisionQueue("ELSE", $this->controller, "-"); //do this if you decline decompose
-    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1); // put it back in the graveyard
-    AddDecisionQueue("ADDDISCARD", $this->controller, "-", 1);
     AddDecisionQueue("PLAYAURA", $this->controller, "runechant-3", 1);
   }
 }
@@ -2272,7 +2266,7 @@ class cloud_cover extends BaseCard
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
   
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     $remove = true;
     return $this->preventionAmount;
   }
@@ -2290,7 +2284,7 @@ class cloud_cover_red extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
   }
 }
@@ -2307,7 +2301,7 @@ class cloud_cover_yellow extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
   }
 }
@@ -2324,7 +2318,7 @@ class cloud_cover_blue extends Card {
     $this->baseCard->PlayAbility();
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $amount);
   }
 }
@@ -2594,6 +2588,25 @@ class fasting_carcass extends BaseCard {
   function CurrentEffectGrantsGoAgain() {
     return true;
   }
+
+  function AssignEffectToCard($cardID, $effectIndex, $color) {
+    global $Stack;
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer($cardID);
+    if ($TopLayer->PlayerID() != $this->controller) return;
+    if (TypeContains($TopLayer->ID(), "A") && ColorContains($TopLayer->ID(), $color, $this->controller))
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+    elseif (TypeContains($TopLayer->ID(), "AA") && ColorContains($TopLayer->ID(), $color, $this->controller))
+      $Effect->ApplyToUniqueID("ATTACK");
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $color, &$remove) {
+    if (ColorContains($cardID, $color, $this->controller) && $cardID != $this->cardID) {
+      $remove = true;
+      return true;
+    }
+    return false;
+  }
 }
 
 class fasting_carcass_red extends Card {
@@ -2612,6 +2625,14 @@ class fasting_carcass_red extends Card {
 
   function CurrentEffectGrantsGoAgain($param) {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, 1);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, 1, $remove);
   }
 }
 
@@ -2632,6 +2653,14 @@ class fasting_carcass_yellow extends Card {
   function CurrentEffectGrantsGoAgain($param) {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
+  
+  function AssignEffectToCard($cardID, $effectIndex) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, 2);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, 2, $remove);
+  }
 }
 
 class fasting_carcass_blue extends Card {
@@ -2651,12 +2680,25 @@ class fasting_carcass_blue extends Card {
   function CurrentEffectGrantsGoAgain($param) {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
+
+  function AssignEffectToCard($cardID, $effectIndex) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, 3);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, 3, $remove);
+  }
 }
 
 class submerge extends BaseCard {
   function PayAdditionalCosts($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_AdditionalCosts;
-    MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4", DQContext: "Choose a card to put fifth from the top of your deck");
+    $hand = GetHand($this->controller);
+    if (count($hand) == 0) {
+      WriteLog("You need to sink a card as an additional cost, reverting gamestate", highlight:true);
+      RevertGamestate();
+    }
+    else MZMoveCard($this->controller, "MYHAND", "MYTOPDECK-4", DQContext: "Choose a card to put fifth from the top of your deck");
   }
 }
 
@@ -2849,7 +2891,6 @@ class rainbow_goo_trap_red extends Card {
     $CombatChain->Card(0)->ModifyPower(-2);
     AddCurrentTurnEffect("rainbow_goo_trap_red", $mainPlayer);
     AddCurrentTurnEffect("rainbow_goo_trap_red-BLIND", $mainPlayer);
-    TrapTriggered($this->cardID);
     $combatChain[0] = BlindCard($combatChain[0]);
   }
 
@@ -2890,7 +2931,6 @@ class frail_swingline_blue extends Card {
   function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     if (HasDecreasedAttack()) {
       AddLayer("TRIGGER", $this->controller, $this->cardID);
-      TrapTriggered($this->cardID);
     }
   }
 
@@ -2931,12 +2971,13 @@ class quickening_sand_blue extends Card {
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
       //eventually will need to set this with unique ids
       AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
-      TrapTriggered($this->cardID);
     }
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    Tap($target, $this->controller, 1);
+    $Targ = CleanTargetToObject($this->controller, $target);
+    if ($Targ != "")
+      $Targ->Tap();
   }
 }
 
@@ -2974,7 +3015,6 @@ class courageous_crossing_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    TrapTriggered($this->cardID);
     $targetPlayer = str_contains($target, "MY") ? $this->controller : ($this->controller == 1 ? 2 : 1);
     if (str_contains($target, "CHAR")) {
       $Character = new PlayerCharacter($targetPlayer);
@@ -3003,7 +3043,6 @@ class spellbane_trap extends BaseCard {
 
   function ProcessTrigger() {
     PlayAura("spellbane_aegis", $this->controller);
-    TrapTriggered($this->cardID);
   }
 
   function CombatEffectActive() {
@@ -3895,7 +3934,6 @@ class concealed_pathogen extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    TrapTriggered($this->cardID);
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
@@ -3927,7 +3965,6 @@ class concealed_sedative extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    TrapTriggered($this->cardID);
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
@@ -3959,7 +3996,6 @@ class concealed_nerve_gas extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    TrapTriggered($this->cardID);
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
@@ -4219,9 +4255,9 @@ class display_of_craftsmanship extends BaseCard {
       AddCurrentTurnEffect($this->cardID, $this->controller);
       $ClassState = new ClassState($this->controller);
       $originUID = $CombatChain->AttackCard()->OriginUniqueID();
-      $foundSharpen = $CurrentTurnEffects->FindSpecificEffect("hala_bladesaint_of_the_vow", $originUID);
+      $foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $originUID);
       $WeaponCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
-      if ($foundSharpen != "") $WeaponCard->AddPowerCounters(1);
+      if ($foundSharpen->Index() != -1) $WeaponCard->AddPowerCounters(1);
     }
   }
 }
@@ -4332,21 +4368,23 @@ class cut_n_carve extends BaseCard {
 		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
 	}
 
-  function PlayAbility($target) {
+  function PlayAbility($target, $threshold) {
     $uid = explode("-", $target)[1] ?? -1;
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) {
 			Sharpen("MYCHAR-$index", $this->controller);
-			$weaponCard = new CharacterCard($index, $this->controller);
-      $threshold = match($this->cardID) {
-        "cut_n_carve_red" => 0,
-        "cut_n_carve_yellow" => 1,
-        "cut_n_carve_blue" => 2,
-      };
-			if ($weaponCard->NumPowerCounters() > $threshold) {
-				AddCurrentTurnEffect($this->cardID, $this->controller, "-", $weaponCard->UniqueID());
-			}
+      Await($this->controller, $this->cardID, subsequent:0, index:$index, threshold:$threshold, final:true);
 		}
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $index = $dqVars["index"];
+    $threshold = $dqVars["threshold"];
+    $weaponCard = new CharacterCard($index, $this->controller);
+    if ($weaponCard->NumPowerCounters() >= $threshold) {
+      AddCurrentTurnEffect($this->cardID, $this->controller, "-", $weaponCard->UniqueID());
+    }
   }
 }
 
@@ -4362,7 +4400,7 @@ class cut_n_carve_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($target);
+    $this->baseCard->PlayAbility($target, 1);
   }
 
   function DoesEffectGrantDominate() {
@@ -4371,6 +4409,10 @@ class cut_n_carve_red extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
   }
 }
 
@@ -4386,7 +4428,7 @@ class cut_n_carve_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($target);
+    $this->baseCard->PlayAbility($target, 2);
   }
 
   function DoesEffectGrantDominate() {
@@ -4395,6 +4437,10 @@ class cut_n_carve_yellow extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
   }
 }
 
@@ -4410,7 +4456,7 @@ class cut_n_carve_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($target);
+    $this->baseCard->PlayAbility($target, 3);
   }
 
   function DoesEffectGrantDominate() {
@@ -4419,6 +4465,10 @@ class cut_n_carve_blue extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
   }
 }
 class graven_gaslight extends Card {
@@ -5364,19 +5414,12 @@ class ion_charged_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
     AddCurrentTurnEffect($this->cardID, $this->controller);
-    AddCurrentTurnEffect($this->cardID, $otherPlayer);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    static $recursionGuard = false;
-    if ($recursionGuard) return false;
-    $recursionGuard = true;
-    $hasGoAgain = DoesAttackHaveGoAgain();
-    $recursionGuard = false;
-    return $hasGoAgain && (TalentContains($CombatChain->AttackCard()->ID(), "LIGHTNING", $this->controller) || TalentContains($CombatChain->AttackCard()->ID(), "ELEMENTAL", $this->controller));
+    return CachedAttackHasGoAgain() && (TalentContains($CombatChain->AttackCard()->ID(), "LIGHTNING", $this->controller) || TalentContains($CombatChain->AttackCard()->ID(), "ELEMENTAL", $this->controller));
   }
 
   function IsCombatEffectPersistent($mode) {
@@ -5454,7 +5497,7 @@ class voltic_vanguard extends Card {
     return GetClassState($this->controller, $CS_NumInstantPlayed) == 0;
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     global $CurrentTurnEffects;
     $Effect = $CurrentTurnEffects->Effect($index);
     $prevented = min($damage, $Effect->NumUses());
@@ -6521,7 +6564,7 @@ class shatter_sorcery_blue extends Card {
     }
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     if ($type == "ARCANE") {
       $remove = true;
       return 1;
@@ -7228,7 +7271,11 @@ class cheating_scoundrel_red extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return 3;
-  } 
+  }
+
+  function WonWager($wonWager, $amount) {
+    PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$this->controller);
+  }
 }
 
 class seeker_kunai_red extends Card {
@@ -7497,7 +7544,6 @@ class tiger_trap_red extends Card{
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    TrapTriggered($this->cardID);
     AddCurrentTurnEffect($this->cardID, $mainPlayer);
   }
 }
@@ -7616,7 +7662,6 @@ class rune_snare_red extends Card {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
-    TrapTriggered($this->cardID);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -8179,7 +8224,7 @@ class stormweavers_aegis extends Card {
     return "-";
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     global $CurrentTurnEffects;
     $Effect = $CurrentTurnEffects->Effect($index);
     if (!str_contains($Effect->EffectID(), "PREVENT")) return 0;

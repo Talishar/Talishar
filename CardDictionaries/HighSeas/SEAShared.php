@@ -474,9 +474,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($from == "PLAY" && $abilityType == "I") {
         $targetPlayer = explode("-", $target)[0] == "MYALLY" ? $currentPlayer : $otherPlayer;
         $targetUid = explode("-", $target)[1];
-        $allyInd = SearchAlliesForUniqueID($targetUid, $targetPlayer);
-        $allies = &GetAllies($targetPlayer);
-        $allies[$allyInd + 9]++;
+        $Allies = new Allies($targetPlayer);
+        $Ally = $Allies->FindCardUID($targetUid);
+        $Ally->AddPowerCounters();
       }
       break;
     case "shelly_hardened_traveler_yellow":
@@ -708,6 +708,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "palantir_aeronought_red":
       if($from != "PLAY" && $from != "COMBATCHAINATTACKS" && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
       elseif($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
+        $numUsed = 0;
         if ($from == "PLAY") {
           $numUsed = $combatChain[11];
           AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -723,10 +724,17 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           }
         }
         if ($numUsed == 3) {
-          AddDecisionQueue("SEARCHCOMBATCHAIN", $currentPlayer, "-");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card to destroy");
-          AddDecisionQueue("CHOOSECARDID", $currentPlayer, "<-", 1);
-          AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
+          $pastChoices = GetPastChainLinkCards($defPlayer, asMZInd: true);
+          $currentChoices = GetChainLinkCards($defPlayer, asMZInd: true);
+          if ($currentChoices == "") $choices = $pastChoices;
+          elseif ($pastChoices == "") $choices = $currentChoices;
+          else $choices = "$pastChoices,$currentChoices";
+          if ($choices != "") {
+            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to destroy");
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $choices);
+            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERONOUGHT", 1);
+          }
           if ($from == "PLAY") ++$combatChain[11];
           else ++$chainLinks[$attackInd][9];
         }

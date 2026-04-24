@@ -35,7 +35,7 @@ function pwdMatch($pwd, $pwdrepeat)
 // Check if username is in database, if so then return data
 function uidExists($conn, $username)
 {
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_UID_EXISTS);
 	if (!$conn) {
 		header("location: ../Signup.php?error=db_unavailable");
 		exit();
@@ -67,7 +67,7 @@ function uidExists($conn, $username)
 // Check if email is in database, if so then return data
 function emailExists($conn, $email)
 {
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_EMAIL_EXISTS);
 	if (!$conn) {
 		header("location: ../Signup.php?error=db_unavailable");
 		exit();
@@ -96,35 +96,9 @@ function emailExists($conn, $email)
 	}
 }
 
-// Insert new user into database
-function createUser($conn, $username, $email, $pwd, $reportingServer = false)
-{
-	$conn = $reportingServer ? GetReportingDBConnection() : GetDBConnection();
-	if (!$conn) {
-		header("location: ../Signup.php?error=db_unavailable");
-		exit();
-	}
-	$sql = "INSERT INTO users (usersUid, usersEmail, usersPwd) VALUES (?, ?, ?);";
-
-	$stmt = mysqli_stmt_init($conn);
-	if (!mysqli_stmt_prepare($stmt, $sql)) {
-		header("location: ../Signup.php?error=stmtfailed");
-		exit();
-	}
-
-	$hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
-
-	mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashedPwd);
-	mysqli_stmt_execute($stmt);
-	mysqli_stmt_close($stmt);
-	mysqli_close($conn);
-	header("location: ../Signup.php?error=none");
-	exit();
-}
-
 function CreateUserAPI($conn, $username, $email, $pwd)
 {
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_CREATE_USER_API);
 	if (!$conn) {
 		return false;
 	}
@@ -147,11 +121,11 @@ function loginFromCookie()
 {
     if (isset($_COOKIE["rememberMeToken"])) {
         $token = $_COOKIE["rememberMeToken"];
-        $conn = GetDBConnection();
+        $conn = GetDBConnection(DBL_LOGIN_FROM_COOKIE);
         if (!$conn) {
             return; // Silently fail if database unavailable
         }
-        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE rememberMeToken=?";
+        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey, metafyID FROM users WHERE rememberMeToken=?";
         $stmt = mysqli_stmt_init($conn);
         
         if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -177,7 +151,7 @@ function loginFromCookie()
                 $_SESSION["lastGameName"] = $row[7];
                 $_SESSION["lastPlayerId"] = $row[8];
                 $_SESSION["lastAuthKey"] = $row[9];
-                
+                $_SESSION["metafyID"] = $row[10] ?? "";
                 try {
                     PatreonLogin($patreonAccessToken);
                 } catch (\Throwable $e) {
@@ -193,6 +167,7 @@ function loginFromCookie()
                 unset($_SESSION["lastGameName"]);
                 unset($_SESSION["lastPlayerId"]);
                 unset($_SESSION["lastAuthKey"]);
+                unset($_SESSION["metafyID"]);
             }
             session_write_close();
         }
@@ -206,7 +181,7 @@ function loginFromCookie()
 
 function storeFabraryId($uid, $fabraryId)
 {
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_STORE_FABRARY_ID);
 	$sql = "UPDATE users SET fabraryId=? WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -216,21 +191,9 @@ function storeFabraryId($uid, $fabraryId)
 	}
 }
 
-function storeFabDBId($uid, $fabdbId)
-{
-	$conn = GetDBConnection();
-	$sql = "UPDATE users SET fabdbId=? WHERE usersId=?";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ss", $fabdbId, $uid);
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-	}
-}
-
 function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 {
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_STORE_LAST_GAME_INFO);
 	$sql = "UPDATE users SET lastGameName=?, lastPlayerId=?, lastAuthKey=? WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -249,7 +212,7 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 
 function GetDeckBuilderId($uid, $decklink)
 {
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_GET_DECK_BUILDER_ID);
 	if (!$conn) {
         echo json_encode(["error" => "Database connection failed in getting deckbuilder ID"]);
         return "";
@@ -280,7 +243,7 @@ function GetDeckBuilderId($uid, $decklink)
 
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format = "")
 {
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_ADD_FAVORITE_DECK);
 	$deckName = implode("", explode("\"", $deckName));
 	$deckName = implode("", explode("'", $deckName));
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "','" . $format . "'";
@@ -297,7 +260,7 @@ function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format = "")
 function LoadFavoriteDecks($userID)
 {
 	if ($userID == "") return [];
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_LOAD_FAVORITE_DECKS);
 	if (!$conn) return [];
 	$sql = "SELECT decklink, name, hero, format from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
@@ -337,148 +300,118 @@ function logCompletedGameStats($conceded = false)
 	global $winner, $currentTurn, $gameName; //gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
 	global $p1deckbuilderID, $p2deckbuilderID, $gameGUID;
-	if ($winner != 0) {
-		$loser = ($winner == 1 ? 2 : 1);
-		$columns = "WinningHero, LosingHero, NumTurns, WinnerDeck, LoserDeck, WinnerHealth, FirstPlayer";
-		$values = "?, ?, ?, ?, ?, ?, ?";
-		$winnerDeckFile = "./Games/" . $gameName . "/p" . $winner . "Deck.txt";
-		$loserDeckFile = "./Games/" . $gameName . "/p" . $loser . "Deck.txt";
-		if (!file_exists($winnerDeckFile) || !file_exists($loserDeckFile)) return;
-		$winnerDeck = file_get_contents($winnerDeckFile);
-		$loserDeck = file_get_contents($loserDeckFile);
-		$winHero = &GetPlayerCharacter($winner);
-		$loseHero = &GetPlayerCharacter($loser);
+	global $p2IsAI;
+	if ($winner == 0) return;
+	if ($p2IsAI == "1") return; // Don't file results for AI games
 
-		$winHeroID = SetID($winHero[0]);
-		$loseHeroID = SetID($loseHero[0]);
-		$winIDDeck = ConvertDeck($winnerDeck);
-		$loseIDDeck = ConvertDeck($loserDeck);
+	$loser = ($winner == 1 ? 2 : 1);
+	$winnerDeckFile = "./Games/" . $gameName . "/p" . $winner . "Deck.txt";
+	$loserDeckFile = "./Games/" . $gameName . "/p" . $loser . "Deck.txt";
+	if (!file_exists($winnerDeckFile) || !file_exists($loserDeckFile)) return;
+	$winnerDeck = file_get_contents($winnerDeckFile);
+	$loserDeck = file_get_contents($loserDeckFile);
+	$winHero = &GetPlayerCharacter($winner);
+	$loseHero = &GetPlayerCharacter($loser);
 
-		$countWinnerDeck = count(GetDeck($winner));
-		$countLoserDeck = count(GetDeck($loser));
+	$winHeroID = SetID($winHero[0]);
+	$loseHeroID = SetID($loseHero[0]);
+	$winIDDeck = ConvertDeck($winnerDeck);
+	$loseIDDeck = ConvertDeck($loserDeck);
 
-		$conn = GetDBConnection();
-		if (!$conn) {
-			WriteLog("Something went wrong connecting to the database, failing to log stats", highlight:true);
-			return;
-		}
+	$countWinnerDeck = count(GetDeck($winner));
+	$countLoserDeck = count(GetDeck($loser));
 
-		// Build parameterized query safely
-		$params = [$winHeroID, $loseHeroID, $currentTurn, $winIDDeck, $loseIDDeck, GetHealth($winner), $firstPlayer];
-		$paramTypes = "sssssss";
-		
-		if ($p1id != "" && $p1id != "-") {
-			$columns .= ", " . ($winner == 1 ? "WinningPID" : "LosingPID");
-			$values .= ", ?";
-			$params[] = $p1id;
-			$paramTypes .= "s";
-		}
-		if ($p2id != "" && $p2id != "-") {
-			$columns .= ", " . ($winner == 2 ? "WinningPID" : "LosingPID");
-			$values .= ", ?";
-			$params[] = $p2id;
-			$paramTypes .= "s";
-		}
+	$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
+	$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
+	$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
+	$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
+	$p1FabraryDisabled = AreStatsDisabled(1);
+	$p2FabraryDisabled = AreStatsDisabled(2);
+	$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
+	$p2StatsDisabled = AreStatsDisabled(2) || AreGlobalStatsDisabled(2);
 
-		$sql = "INSERT INTO completedgame (" . $columns . ") VALUES (" . $values . ");";
-		$stmt = mysqli_stmt_init($conn);
-		
-		$gameResultID = 0;
-		if (mysqli_stmt_prepare($stmt, $sql)) {
-			mysqli_stmt_bind_param($stmt, $paramTypes, ...$params);
-			mysqli_stmt_execute($stmt);
-			$gameResultID = mysqli_insert_id($conn);
-			mysqli_stmt_close($stmt);
-		}
+	$gameResultID = $gameName;
 
-		if ($p1IsChallengeActive == "1" && $p1id != "-") LogChallengeResult($conn, $gameResultID, $p1id, $winner == 1 ? 1 : 0);
-		if ($p2IsChallengeActive == "1" && $p2id != "-") LogChallengeResult($conn, $gameResultID, $p2id, $winner == 2 ? 1 : 0);
+	// Pre-compute shared data to avoid redundant work
+	$format = GetCachePiece(intval($gameName), 13);
+	$hashedP1Deck = "-";
+	$hashedP2Deck = "-";
+	$detailedResult1Json = SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameResultID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero, $p1StatsDisabled);
+	$detailedResult2Json = SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameResultID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero, $p2StatsDisabled);
 
-		$p1Deck = ($winner == 1 ? $winnerDeck : $loserDeck);
-		$p2Deck = ($winner == 2 ? $winnerDeck : $loserDeck);
-		$p1Hero = ($winner == 1 ? $winHero[0] : $loseHero[0]);
-		$p2Hero = ($winner == 2 ? $winHero[0] : $loseHero[0]);
-		$p1FabraryDisabled = AreStatsDisabled(1);
-		$p2FabraryDisabled = AreStatsDisabled(2);
-		$p1StatsDisabled = AreStatsDisabled(1) || AreGlobalStatsDisabled(1);
-		$p2StatsDisabled = AreStatsDisabled(2) || AreGlobalStatsDisabled(2);
+	// Collect curl handles for parallel execution
+	$curlHandles = [];
 
-		if (!$p1FabraryDisabled || !$p2FabraryDisabled) {
-			SendFullFabraryResults(
-				$gameResultID,
-				$p1FabraryDisabled ? "-" : $p1DeckLink,
-				$p1Deck, $p1Hero, $p1deckbuilderID,
-				$p2FabraryDisabled ? "-" : $p2DeckLink,
-				$p2Deck, $p2Hero, $p2deckbuilderID,
-				$gameGUID, $conceded
-			);
-		}
-		SendFaBInsightsResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
-		$wasFaBBazaarResultsSent = SendFaBBazaarResults($gameResultID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled, $p2StatsDisabled, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
-
-		if (!$p1FabraryDisabled && !$p2FabraryDisabled)  $fabraryDesc = "<b>Fabrary</b>";
-		elseif (!$p1FabraryDisabled)                     $fabraryDesc = "<b>Fabrary</b> (Player 1 only)";
-		elseif (!$p2FabraryDisabled)                     $fabraryDesc = "<b>Fabrary</b> (Player 2 only)";
-		else                                             $fabraryDesc = null;
-
-		$otherSites = "<b>FaB Insights</b>, ";
-		if ($wasFaBBazaarResultsSent) $otherSites .= " and <b>FaBBazaar</b>";
-		if (!$p1StatsDisabled && !$p2StatsDisabled);
-		elseif (!$p1StatsDisabled)                       $otherSites .= " (Player 1 only)";
-		elseif (!$p2StatsDisabled)                       $otherSites .= " (Player 2 only)";
-		else                                             $otherSites = null;
-
-		if ($fabraryDesc !== null && $otherSites !== null)
-			WriteLog("📊 Sending game result to $fabraryDesc and $otherSites", highlight:true, highlightColor:"green");
-		elseif ($fabraryDesc !== null)
-			WriteLog("📊 Sending game result to $fabraryDesc", highlight:true, highlightColor:"green");
-		elseif ($otherSites !== null)
-			WriteLog("📊 Sending game stats to $otherSites", highlight:true, highlightColor:"green");
-		else
-			WriteLog("No game stats sent as both players have disabled stats", highlight:true);
-		mysqli_close($conn);
+	if (!$p1FabraryDisabled || !$p2FabraryDisabled) {
+		$ch = PrepareFabraryRequest(
+			$gameResultID,
+			$p1FabraryDisabled ? "-" : $p1DeckLink,
+			$p1Deck, $p1Hero, $p1deckbuilderID,
+			$p2FabraryDisabled ? "-" : $p2DeckLink,
+			$p2Deck, $p2Hero, $p2deckbuilderID,
+			$format, $gameGUID, $conceded
+		);
+		if ($ch) $curlHandles[] = $ch;
 	}
+
+	$ch = PrepareFaBInsightsRequest($gameResultID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
+	if ($ch) $curlHandles[] = $ch;
+
+	$bazaarHandle = PrepareFaBBazaarRequest($gameResultID, $p1DeckLink, $p2DeckLink, $p1deckbuilderID, $p2deckbuilderID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
+	$wasFaBBazaarResultsSent = ($bazaarHandle !== null);
+	if ($bazaarHandle) $curlHandles[] = $bazaarHandle;
+
+	// Execute all API requests in parallel instead of sequentially
+	if (!empty($curlHandles)) {
+		executeParallelCurlRequests($curlHandles);
+	}
+
+	if (!$p1FabraryDisabled && !$p2FabraryDisabled)  $fabraryDesc = "<b>Fabrary</b>";
+	elseif (!$p1FabraryDisabled)                     $fabraryDesc = "<b>Fabrary</b> (Player 1 only)";
+	elseif (!$p2FabraryDisabled)                     $fabraryDesc = "<b>Fabrary</b> (Player 2 only)";
+	else                                             $fabraryDesc = null;
+
+	$otherSites = "<b>FaB Insights</b>";
+	if ($wasFaBBazaarResultsSent) $otherSites .= " and <b>FaBBazaar</b>";
+	if (!$p1StatsDisabled && !$p2StatsDisabled)      $otherSites .= "";
+	elseif (!$p1StatsDisabled)                       $otherSites .= " (Player 1 only)";
+	elseif (!$p2StatsDisabled)                       $otherSites .= " (Player 2 only)";
+	else                                             $otherSites = null;
+
+	if ($fabraryDesc !== null && $otherSites !== null)
+		WriteLog("📊 Sending game result to $fabraryDesc and $otherSites", highlight:true, highlightColor:"green");
+	elseif ($fabraryDesc !== null)
+		WriteLog("📊 Sending game result to $fabraryDesc", highlight:true, highlightColor:"green");
+	elseif ($otherSites !== null)
+		WriteLog("📊 Sending game stats to $otherSites", highlight:true, highlightColor:"green");
+	else
+		WriteLog("No game stats sent as both players have disabled stats", highlight:true);
 }
 
-function LogChallengeResult($conn, $gameResultID, $playerID, $result)
+function PrepareFabraryRequest($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $format, $gameGUID = "", $conceded = false)
 {
-	WriteLog("Writing challenge result for player " . $playerID);
-	$challengeId = 3;
-	$sql = "INSERT INTO challengeresult (gameId, challengeId, playerId, result) VALUES (?, ?, ?, ?);";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ssss", $gameResultID, $challengeId, $playerID, $result); //Challenge ID 1 = sigil of solace blue
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-	}
-}
-
-function SendFullFabraryResults($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $gameGUID = "", $conceded = false)
-{
-	global $FaBraryKey, $gameName, $p2IsAI;
-	if($p2IsAI == "1") return;//Don't file results for AI games
+	global $FaBraryKey, $gameName;
 	$url = "https://atofkpq0x8.execute-api.us-east-2.amazonaws.com/prod/v1/results";
-	$ch = curl_init($url);
 	$payloadArr = [];
 	$payloadArr['gameID'] = $gameID;
 	$payloadArr['gameName'] = $gameName;
 	$payloadArr['deck1'] = json_decode(SerializeGameResult(1, $p1Decklink, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID));
 	$payloadArr['deck2'] = json_decode(SerializeGameResult(2, $p2Decklink, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID));
-	$payloadArr["format"] = GetCachePiece(intval($gameName), 13);
+	$payloadArr["format"] = $format;
 	$payloadArr['gameGUID'] = $gameGUID;
 	$payloadArr['conceded'] = $conceded;
 
+	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
-	curl_setopt($ch, CURLOPT_HEADER, 0);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-	$headers = [
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, [
 		"x-api-key: " . $FaBraryKey,
 		"Content-Type: application/json",
-	];
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-	$result = curl_exec($ch);
-	curl_close($ch);
+	]);
+	return $ch;
 }
 
 function HashPlayerName($name, $salt) {
@@ -491,58 +424,48 @@ function HashPlayerName($name, $salt) {
     return hash_hmac('sha256', $name, $salt);
 }
 
-function SendFaBInsightsResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0)
+function PrepareFaBInsightsRequest($gameID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0)
 {
-	global $FaBInsightsKey, $gameName, $p2IsAI, $p1uid, $p2uid, $playerHashSalt, $deckHashSalt;
-    // Skip AI games
-    if ($p2IsAI == "1") return;
+	global $FaBInsightsKey, $gameName, $p1uid, $p2uid, $playerHashSalt;
 
-    // Hash player names
-    $hashedP1Name = HashPlayerName($p1uid, $playerHashSalt);
-    $hashedP2Name = HashPlayerName($p2uid, $playerHashSalt);
-	$hashedP1Deck = "-";//HashPlayerName($p1DeckLink, $deckHashSalt);
-	$hashedP2Deck = "-";//HashPlayerName($p2DeckLink, $deckHashSalt);
+	$hashedP1Name = HashPlayerName($p1uid, $playerHashSalt);
+	$hashedP2Name = HashPlayerName($p2uid, $playerHashSalt);
 
-    // Your Azure Function endpoint URL
-    $url = "https://fab-insights.azurewebsites.net/api/send_results";
+	$url = "https://fab-insights.azurewebsites.net/api/send_results";
 
-    // Prepare the data for the POST request
-    $payloadArr = [];
-    $payloadArr['gameID'] = $gameID;
-    $payloadArr['gameName'] = $gameName;
-    $payloadArr['player1Name'] = $hashedP1Name;
-    $payloadArr['player2Name'] = $hashedP2Name;
-    $payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero, $p1StatsDisabled));
-    $payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero, $p2StatsDisabled));
-    $payloadArr["format"] = GetCachePiece(intval($gameName), 13);
+	$payloadArr = [];
+	$payloadArr['gameID'] = $gameID;
+	$payloadArr['gameName'] = $gameName;
+	$payloadArr['player1Name'] = $hashedP1Name;
+	$payloadArr['player2Name'] = $hashedP2Name;
+	$payloadArr['deck1'] = json_decode($detailedResult1Json);
+	$payloadArr['deck2'] = json_decode($detailedResult2Json);
+	$payloadArr["format"] = $format;
 	$payloadArr['gameGUID'] = $gameGUID;
 	$payloadArr['conceded'] = $conceded;
 	$payloadArr['countWinnerDeck'] = $countWinnerDeck;
 	$payloadArr['countLoserDeck'] = $countLoserDeck;
 
-    // Initialize cURL
-    $ch = curl_init($url);
-
-    // Set cURL options
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));  // Send JSON data
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                 // Get the response back
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Content-Type: application/json",  // Specify the content type
-		"x-functions-key: " . $FaBInsightsKey // Add x-functions-key header
-    ]);
-
-    $response = curl_exec($ch);
-    curl_close($ch);
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, [
+		"Content-Type: application/json",
+		"x-functions-key: " . $FaBInsightsKey
+	]);
+	return $ch;
 }
 
-function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2DeckLink, $p2Deck, $p2Hero, $p2deckbuilderID, $p1StatsDisabled = false, $p2StatsDisabled = false, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0)
+function PrepareFaBBazaarRequest($gameID, $p1DeckLink, $p2DeckLink, $p1deckbuilderID, $p2deckbuilderID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0)
 {
-	global $gameName, $p2IsAI, $deckHashSalt, $FaBBazaarKey;
-	if ($p2IsAI == "1") return;
+	global $gameName, $FaBBazaarKey;
 
-	$hashedP1Deck = "-";//HashPlayerName($p1DeckLink, $deckHashSalt);
-	$hashedP2Deck = "-";//HashPlayerName($p2DeckLink, $deckHashSalt);
+	$deckId = (str_contains($p1DeckLink, "fabbazaar") ? $p1deckbuilderID : null)
+		?: (str_contains($p2DeckLink, "fabbazaar") ? $p2deckbuilderID : null);
+	if (empty($deckId)) return null; // Only send if a FaBBazaar deck is used
 
 	$p1TurnLog = &GetCardTurnLog(1);
 	$p2TurnLog = &GetCardTurnLog(2);
@@ -550,35 +473,55 @@ function SendFaBBazaarResults($gameID, $p1DeckLink, $p1Deck, $p1Hero, $p1deckbui
 	$payloadArr = [];
 	$payloadArr['gameID'] = $gameID;
 	$payloadArr['gameName'] = $gameName;
-	$payloadArr['deck1'] = json_decode(SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero, $p1StatsDisabled));
+	$payloadArr['deck1'] = json_decode($detailedResult1Json);
 	$payloadArr['deck1']->turnLog = $p1TurnLog;
-	$payloadArr['deck2'] = json_decode(SerializeDetailedGameResult(2, $hashedP2Deck, $p2Deck, $gameID, $p1Hero, $gameName, $p2deckbuilderID, $p2Hero, $p2StatsDisabled));
+	$payloadArr['deck2'] = json_decode($detailedResult2Json);
 	$payloadArr['deck2']->turnLog = $p2TurnLog;
-	$payloadArr['format'] = GetCachePiece(intval($gameName), 13);
+	$payloadArr['format'] = $format;
 	$payloadArr['gameGUID'] = $gameGUID;
 	$payloadArr['conceded'] = $conceded;
 	$payloadArr['countWinnerDeck'] = $countWinnerDeck;
 	$payloadArr['countLoserDeck'] = $countLoserDeck;
 
-	$deckId = (str_contains($p1DeckLink, "fabbazaar") ? $p1deckbuilderID : null)
-		?: (str_contains($p2DeckLink, "fabbazaar") ? $p2deckbuilderID : null);
-	if (empty($deckId)) return false;//We only send to FaBBazaar if the player is using a FaBBazaar deck
-
-	$url = "https://fabbazaar.app/api/decks/" . $deckId . "/talishar";
+	$url = "https://fabbazaar.app/api/decks/" . urlencode($deckId) . "/talishar";
 
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, [
 		"Content-Type: application/json",
 		"x-api-key: " . $FaBBazaarKey,
 		"User-Agent: Talishar",
 	]);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-	curl_exec($ch);
-	curl_close($ch);
-	return true;
+	return $ch;
+}
+
+// Execute multiple curl handles in parallel using curl_multi
+function executeParallelCurlRequests($handles)
+{
+	if (empty($handles)) return;
+
+	$mh = curl_multi_init();
+	foreach ($handles as $ch) {
+		curl_multi_add_handle($mh, $ch);
+	}
+
+	$running = null;
+	do {
+		$status = curl_multi_exec($mh, $running);
+		if ($running > 0) {
+			curl_multi_select($mh, 1.0);
+		}
+	} while ($running > 0 && $status === CURLM_OK);
+
+	foreach ($handles as $ch) {
+		curl_multi_remove_handle($mh, $ch);
+		curl_close($ch);
+	}
+	curl_multi_close($mh);
 }
 
 function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnStats, $player, $useIntval = false)
@@ -1063,7 +1006,7 @@ function SavePatreonTokens($accessToken, $refreshToken)
 {
 	if(!isset($_SESSION["userid"])) return;
 	$userID = $_SESSION["userid"];
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_SAVE_PATREON_TOKENS);
 	$sql = "UPDATE users SET patreonAccessToken=?, patreonRefreshToken=? WHERE usersid=?";
 	$stmt = mysqli_stmt_init($conn);
 	if(mysqli_stmt_prepare($stmt, $sql)) {
@@ -1074,24 +1017,10 @@ function SavePatreonTokens($accessToken, $refreshToken)
 	mysqli_close($conn);
 }
 
-function AwardBadge($userID, $badgeID)
-{
-	if($userID == "") return "";
-	$conn = GetDBConnection();
-	$sql = "insert into playerbadge (playerId, badgeId, intVariable) values (?, ?, 1) ON DUPLICATE KEY UPDATE intVariable = intVariable + 1;";
-	$stmt = mysqli_stmt_init($conn);
-	if(mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ss", $userID, $badgeID);
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-	}
-	mysqli_close($conn);
-}
-
 function SaveSetting($playerId, $settingNumber, $value)
 {
 	if($playerId == "" || $playerId == "-" || !is_numeric($playerId)) return;
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_SAVE_SETTING);
 	if (!$conn) {
 		return;
 	}
@@ -1111,7 +1040,7 @@ function LoadSavedSettings($playerId)
 		return [];
 	}
 	$output = [];
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_LOAD_SAVED_SETTINGS);
 	if (!$conn) return [];
 	$sql = "select settingNumber,settingValue from `savedsettings` where playerId=(?)";
 	$stmt = mysqli_stmt_init($conn);
@@ -1292,7 +1221,7 @@ function SendEmailAPICurlFallback($userEmail, $url, $email, $sendgridKey)
 
 function BanPlayer($uid)
 {
-	$conn = GetDBConnection();
+	$conn = GetDBConnection(DBL_BAN_PLAYER);
 	$sql = "UPDATE users SET isBanned = true WHERE usersUid = ?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {

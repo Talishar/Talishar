@@ -6,7 +6,7 @@ include_once "../CardDictionary.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../Assets/MetafyDictionary.php";
-include "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 
 // Set headers immediately after includes
@@ -60,7 +60,7 @@ if(!AltArtsDisabled($playerID))
 
   // Add Metafy community alt arts
   if (IsUserLoggedIn()) {
-    $conn = GetDBConnection();
+    $conn = GetDBConnection(DBL_GET_INITIAL_GAME_DATA_API);
     $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
     $stmt = mysqli_stmt_init($conn);
     if (mysqli_stmt_prepare($stmt, $sql)) {

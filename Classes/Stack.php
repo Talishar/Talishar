@@ -158,7 +158,7 @@ class Layer {
 	}
 
 	function LayerUniqueID() { //(the unique ID of the layer)
-		return isset($this->chalayersin[$this->index+6]) ? $this->layers[$this->index+7] : "-";
+		return $this->layers[$this->index+6] ?? "-";
 	}
 
   function Negate($goesWhere="-") {

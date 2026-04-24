@@ -418,6 +418,7 @@ function ChangeSetting($player, $setting, $value, $playerId = "")
   // Only update game state if not in profile context
   if($player != "" && $player != 0) {
     $settings = &GetSettings($player);
+    if (($settings[$setting] ?? null) === $value) return; // Already at this value, skip write and any DB call
     $settings[$setting] = $value;
     if($setting == $SET_MuteChat) {
       if($value == "1") {
@@ -775,6 +776,14 @@ function IsTeamPotatoSquad($userName)
     case "NoRaven":
     case "middiekittie":
     case "archangel224":
+    case "Nick56":
+    case "SCORPIO":
+    case "ArgentGrey":
+    case "SynThePanda93":
+    case "welpcakes":
+    case "RiptideRipper":
+    case "gilfab":
+    case "dautt":
       return true;
     default: break;
   }
@@ -788,18 +797,14 @@ function IsTeamFabledBrazil($userName)
     case "hugodeoz":
     case "diorge":
     case "LGB":
-    case "IvanTaranto":
     case "mishel157":
     case "DanielDertoni":
     case "caduads":
     case "DracaiBR":
     case "gravebeat":
     case "LiP":
-    case "Laerte":
-    case "izumi":
-    case "Gandanm":
     case "DShima":
-    case "FiotzGames":
+    case "RodinhoTeclados":
       return true;
     default: break;
   }
@@ -845,6 +850,7 @@ function IsTeamPitchDevils($userName)
     case "TaddelDown":
     case "inama":
     case "Kanopterix":
+    case "PvtVoid":
       return true;
     default:
       break;

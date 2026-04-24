@@ -55,7 +55,7 @@ switch($cardID) {
 }
 
 function AJVHitEffect($cardID) {
-  global $currentPlayer, $defPlayer;
+  global $currentPlayer, $defPlayer, $EffectContext;
   switch($cardID)
   {
     case "summit_the_unforgiving":
@@ -87,8 +87,11 @@ function AJVEffectPowerModifier($cardID): int
 }
 
 function FrostbiteExposed($otherPlayer, $player, $may=false) {
+  global $EffectContext;
   $renouceInd = SearchCurrentTurnEffectsForIndex("renounce_grandeur_red", $player);
-  $rippleAways = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
+  $rippleAways = 0;
+  if (TypeContains($EffectContext, "AA") || TypeContains($EffectContext, "A"))
+    $rippleAways = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if ($otherPlayer == "-") {
     if (ListExposedEquipSlots(1) == "PASS") $otherPlayer = 2;
     elseif (ListExposedEquipSlots(2) == "PASS") $otherPlayer = 1;

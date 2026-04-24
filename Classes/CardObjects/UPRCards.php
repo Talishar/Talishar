@@ -520,17 +520,40 @@
 // }
 
 
-// class combustion_point_red extends Card {
+class combustion_point_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "combustion_point_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "combustion_point_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("FINDINDICES", $this->controller, "CCDEFLESSX," . (NumDraconicChainLinks()-1));
+    AddDecisionQueue("FILTER", $this->controller, "CombatChain-exclude-type-E", 1);
+    AddDecisionQueue("FILTER", $this->controller, "CombatChain-exclude-subtype-evo", 1);
+    AddDecisionQueue("FILTER", $this->controller, "CombatChain-include-player-" . ($this->controller == 1 ? 2 : 1), 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card to banish", 1);
+    AddDecisionQueue("CHOOSECOMBATCHAIN", $this->controller, "<-", 1);
+    AddDecisionQueue("REMOVECOMBATCHAIN", $this->controller, "-", 1);
+    AddDecisionQueue("MULTIBANISH", ($this->controller == 1 ? 2 : 1), "CC,-", 1);
+
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $this->controller) && !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $this->controller);
+  }
+}
 
 
 // class conduit_of_frostburn extends Card {
@@ -1339,17 +1362,44 @@
 // }
 
 
-// class ice_eternal_blue extends Card {
+class ice_eternal_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "ice_eternal_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "ice_eternal_blue";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_LastDynCost;
+    $otherPlayer = ($this->controller == 1 ? 2 : 1);
+    $numFrostBite = GetClassState($this->controller, $CS_LastDynCost)/2;
+    PlayAura("frostbite", $otherPlayer, $numFrostBite, effectController: $this->controller);
+    Await($this->controller, $this->cardID, target:$target, additionalCosts:$additionalCosts, final:true, subsequent:0);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $otherPlayer = ($this->controller == 1 ? 2 : 1);
+    $target = $dqVars["target"];
+    $additionalCosts = $dqVars["additionalCosts"];
+    $amountArcane = SearchCount(SearchAurasForCard("frostbite", $otherPlayer));
+    $amountArcane += SearchCount(SearchCharacterForCardMulti($otherPlayer, "frostbite"));
+    if(DelimStringContains($additionalCosts, "ICE")) DealArcane($amountArcane, 0, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
+  }
+
+  function DynamicCost() {
+    return implode(",", range(0, 10, 2));
+  }
+
+  function ArcaneTargeting($from) {
+    return 0;
+  }
+
+  function HasFusion() {
+    return "ICE";
+  }
+}
 
 
 // class icebind_red extends Card {
@@ -1696,17 +1746,45 @@ class inflame_red extends Card {
 // }
 
 
-// class liquefy_red extends Card {
+class liquefy_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "liquefy_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "liquefy_red";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if(RuptureActive()) {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    global $defPlayer;
+    AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
+    AddDecisionQueue("CHOOSETHEIRCHARACTER", $this->controller, "<-", 1);
+    AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
+    AddDecisionQueue("DESTROYEQUIPDEF0", $this->controller, "-", 1);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 
 
 // class miragai extends Card {
@@ -1968,44 +2046,96 @@ class inflame_red extends Card {
 //   }
 // }
 
+class rapid_reflex extends BaseCard {
+  function PlayAbility($target) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
 
-// class rapid_reflex_red extends Card {
+  function IsPlayRestricted() {
+    global $CombatChain;
+    return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || CardCost($CombatChain->AttackCard()->ID()) > 0;
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "rapid_reflex_red";
-//     $this->controller = $controller;
-//     }
+class rapid_reflex_red extends Card {
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function __construct($controller) {
+    $this->cardID = "rapid_reflex_red";
+    $this->controller = $controller;
+    $this->baseCard = new rapid_reflex($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
 
 
-// class rapid_reflex_yellow extends Card {
+class rapid_reflex_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "rapid_reflex_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "rapid_reflex_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rapid_reflex($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
 
 
-// class rapid_reflex_blue extends Card {
+class rapid_reflex_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "rapid_reflex_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "rapid_reflex_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rapid_reflex($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
 
 
 // class read_the_ripples_red extends Card {

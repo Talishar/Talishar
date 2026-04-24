@@ -12,7 +12,7 @@
 
 include 'Libraries/HTTPLibraries.php';
 include "HostFiles/Redirector.php";
-include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/SHMOPLibraries.php";
 include "WriteLog.php";
 include_once "./Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "./Assets/MetafyDictionary.php";
@@ -103,8 +103,7 @@ if ($isGamePlayer) {
 }
 
 if ($playerID == 3) {
-  $spectatorName = $sessionData['userName'] ?? 'anonymous';
-  UpdateSpectatorPresence($gameName, $spectatorName);
+  UpdateSpectatorPresence($gameName);
 }
 
 // Check if game file exists

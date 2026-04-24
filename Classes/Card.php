@@ -19,12 +19,21 @@ class Card {
   public $cardID;
   public $controller;
   public $baseCard;
+  public $addedAbilities = [];
 
   // Constructor
   function __construct($cardID, $controller="-") {
     $this->cardID = $cardID;
     $this->controller = $controller;
     $this->baseCard = new BaseCard($cardID, $controller);
+  }
+
+  function AddAbilities($cardIDs) {
+    $addedAbilityIDs = explode(",", $cardIDs);
+    foreach ($addedAbilityIDs as $ability) {
+      $card = GetClass($ability, $this->controller);
+      if ($card != "-") $this->addedAbilities[] = $card;
+    }
   }
 
   function IsType($types) {
@@ -381,13 +390,17 @@ class Card {
     return;
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     return 0;
   }
 
   //"Special" functions override the generated card dictionary
   function SpecialType() {
     return "-";
+  }
+
+  function SpecialSubType() {
+    return GeneratedCardSubtype($this->cardID);
   }
 
   function SpecialPower() {
@@ -422,7 +435,7 @@ class Card {
     return GeneratedHasBeatChest($this->cardID);
   }
 
-  function CurrentEffectCostModifier($cardID, $from, &$remove) {
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return 0;
   }
 
@@ -620,6 +633,8 @@ class Card {
   }
 
   function ActiveLinkPlayTrigger($cardID, $player, $from) {
+    foreach ($this->addedAbilities as $ability) 
+      $ability->ActiveLinkPlayTrigger($cardID, $player, $from);
     return;
   }
 
@@ -629,5 +644,45 @@ class Card {
 
   function HasDominate() {
     return GeneratedHasDominate($this->cardID);
+  }
+
+  function AbilitiesToAdd() {
+    return "";
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex) { //used to apply effects to the next card "played" not resolved
+    return;
+  }
+
+  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+    return;
+	}
+
+  function CurrentEffectOnBlockEffect($cardID, $from, $start=-1) {
+    return;
+  }
+
+  function DamageDealtAbilities($target, $damage, $type) {
+    return;
+  }
+
+  function WhileBlockPlayTrigger($index, $cardID, $from) {
+		return;
+	}
+
+  function WonWager($wonWager, $amount) {
+    return;
+  }
+
+  function FragmentTrigger() {
+    return;
+  }
+
+  function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+    return false;
+  }
+
+  function HasFusion() {
+    return "";
   }
 }

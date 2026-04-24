@@ -2396,44 +2396,96 @@ class stadium_centerpiece extends Card {
 //   }
 // }
 
+class take_the_upper_hand extends BaseCard {
+  function IsPlayRestricted() {
+    global $CombatChain, $combatChainState, $CCS_WagersThisLink;
+    return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
+  }
 
-// class take_the_upper_hand_red extends Card {
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "take_the_upper_hand_red";
-//     $this->controller = $controller;
-//     }
+class take_the_upper_hand_red extends Card {
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function __construct($controller) {
+    $this->cardID = "take_the_upper_hand_red";
+    $this->controller = $controller;
+    $this->baseCard = new take_the_upper_hand($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
 
 
-// class take_the_upper_hand_yellow extends Card {
+class take_the_upper_hand_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "take_the_upper_hand_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "take_the_upper_hand_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new take_the_upper_hand($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
 
 
-// class take_the_upper_hand_blue extends Card {
+class take_the_upper_hand_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "take_the_upper_hand_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "take_the_upper_hand_blue";
+    $this->controller = $controller;
+    $this->baseCard = new take_the_upper_hand($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+}
 
 
 // class talk_a_big_game_blue extends Card {

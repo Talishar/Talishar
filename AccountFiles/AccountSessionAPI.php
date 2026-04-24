@@ -9,7 +9,6 @@
       ClearLoginSession();
       return false;
     }
-    UpdateSessionActivity();
     return true;
   }
 
@@ -25,6 +24,12 @@
     return $_SESSION["useruid"] ?? "";
   }
 
+  function LoggedInMetafyID()
+  {
+    CheckSession();
+    return $_SESSION["metafyID"] ?? "";
+  }
+
   function IsLoggedInUserPatron()
   {
     if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk") return true;
@@ -38,7 +43,7 @@
     // Check if user is a Metafy Talishar supporter
     if(isset($_SESSION["useruid"])) {
       $userName = $_SESSION["useruid"];
-      $conn = GetDBConnection();
+      $conn = GetDBConnection(DBL_ACCOUNT_SESSION_API);
       if ($conn) {
         $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
         $stmt = mysqli_stmt_init($conn);
@@ -86,12 +91,6 @@
     return $_SESSION["lastAuthKey"] ?? null;
   }
 
-  function UpdateSessionActivity()
-  {
-    CheckSession();
-    $_SESSION['last_activity'] = time();
-  }
-
   function IsSessionExpired()
   {
     CheckSession();
@@ -134,6 +133,10 @@
       
       session_start();
       
+      if (empty($_SESSION['userid']) && isset($_COOKIE['rememberMeToken'])) {
+        RestoreRegularSession($_COOKIE['rememberMeToken']);
+      }
+      
       if (empty($_SESSION['userid']) && isset($_COOKIE['metafyRememberToken'])) {
         RestoreMetafySession($_COOKIE['metafyRememberToken']);
       }
@@ -144,18 +147,54 @@
     }
   }
   
+  function RestoreRegularSession($rememberToken)
+  {
+    if (empty($rememberToken)) {
+      return;
+    }
+    
+    $conn = GetDBConnection(DBL_ACCOUNT_SESSION_API);
+    if (!$conn) {
+      return;
+    }
+    
+    $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, isBanned, metafyID FROM users WHERE rememberMeToken=?";
+    $stmt = mysqli_stmt_init($conn);
+    
+    if (mysqli_stmt_prepare($stmt, $sql)) {
+      mysqli_stmt_bind_param($stmt, 's', $rememberToken);
+      mysqli_stmt_execute($stmt);
+      $result = mysqli_stmt_get_result($stmt);
+      $row = mysqli_fetch_assoc($result);
+      mysqli_stmt_close($stmt);
+      
+      if ($row) {
+        $_SESSION['userid'] = $row['usersId'];
+        $_SESSION['useruid'] = $row['usersUid'];
+        $_SESSION['useremail'] = $row['usersEmail'];
+        $_SESSION['patreonEnum'] = $row['patreonEnum'];
+        $_SESSION['isBanned'] = $row['isBanned'];
+        $_SESSION['metafyID'] = $row['metafyID'] ?? "";
+        $_SESSION['last_activity'] = time();
+        $_SESSION['last_regeneration'] = time();
+      }
+    }
+    
+    mysqli_close($conn);
+  }
+  
   function RestoreMetafySession($rememberToken)
   {
     if (empty($rememberToken)) {
       return;
     }
     
-    $conn = GetDBConnection();
+    $conn = GetDBConnection(DBL_ACCOUNT_SESSION_API);
     if (!$conn) {
       return;
     }
     
-    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities FROM users WHERE metafyRememberToken=?";
+    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities, metafyID FROM users WHERE metafyRememberToken=?";
     $stmt = mysqli_stmt_init($conn);
     
     if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -169,6 +208,7 @@
         $_SESSION['userid'] = $row['usersid'];
         $_SESSION['useruid'] = $row['usersUid'];
         $_SESSION['isPatron'] = $row['isPatron'] ?? 0;
+        $_SESSION['metafyID'] = $row['metafyID'] ?? "";
         $_SESSION['last_activity'] = time();
         $_SESSION['last_regeneration'] = time();
       }

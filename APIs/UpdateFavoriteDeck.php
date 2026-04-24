@@ -40,7 +40,7 @@ $userID = $_SESSION["userid"];
 
 // Update the hero for the favorite deck
 try {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_UPDATE_FAVORITE_DECK);
   if (!$conn) {
     $response->success = false;
     $response->message = "Database connection failed.";

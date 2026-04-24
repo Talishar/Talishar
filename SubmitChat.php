@@ -20,7 +20,7 @@ $sessionIsPvtVoidPatron = isset($_SESSION["isPvtVoidPatron"]);
 session_write_close();
 
 include "Libraries/HTTPLibraries.php";
-include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/SHMOPLibraries.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
 SetHeaders();
@@ -76,7 +76,7 @@ $uid = "-";
 if ($sessionUserUid !== null) $uid = $sessionUserUid;
 else $uid = $playerID == 1 ? $p1uid : $p2uid;
 if($uid == "starmorgs") exit;
-$displayName = ($uid != "-" ? $uid : "Player " . $playerID);
+$displayName = ($uid != "-" ? substr($uid, 0, 20) : "Player " . $playerID);
 
 $chatText = "";
 if (tryGet("quickChat")) {
@@ -97,19 +97,7 @@ $contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "
 // List of mod usernames - should match frontend list
 $modUsernames = ["OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn", "Bluffkin"];
 
-// Get Metafy tiers for this player live from DB so stale game file values don't affect chat badges
-$metafyTiers = [];
-if ($uid !== '-') {
-  $liveTiers = GetMetafyTiersFromDatabase($uid);
-  if (!empty($liveTiers)) {
-    $metafyTiers = $liveTiers;
-  } else {
-    // Fallback to game file value (already loaded via ParseGamefile.php)
-    $metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
-  }
-} else {
-  $metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
-}
+$metafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
 if (!is_array($metafyTiers)) $metafyTiers = [];
 
 // Check for Metafy badges first - if user has Metafy badges, only show those
@@ -132,18 +120,18 @@ if(!empty($metafyTiers)) {
 if(!$hasMetafyBadges) {
   //its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
   if($sessionIsPatron && $sessionUserUid !== null && !in_array($sessionUserUid, $contributors)) {
-    $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
+    $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
   }
 
   //This is the code for PvtVoid Patreon
   if($sessionIsPvtVoidPatron || $sessionUserUid !== null && in_array($sessionUserUid, ["PvtVoid"])) {
-    $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
+    $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
   }
 }
 
 //This is the code for Contributor's icon.
 if($sessionUserUid !== null && in_array($sessionUserUid, $contributors)) {
-  $displayName = "<a href='https://metafy.gg/@Talishar' target='_blank' rel='noopener noreferrer'><img title='I am a developer of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
+  $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a developer of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
 }
 
 $filename = "./Games/" . $gameName . "/gamelog.txt";
@@ -169,20 +157,20 @@ function parseQuickChat($inputEnum)
     case "3": return "Are you there?";
     case "4": return "Be right back";
     case "5": return "Can I undo?";
-    case "6": return "Do you want to undo?";
-    case "7": return "Good game!";
-    case "8": return "Got to go";
-    case "9": return "I think there is a bug";
-    case "10": return "No";
-    case "11": return "No problem!";
-    case "12": return "Okay!";
-    case "13": return "Refresh the page";
-    case "14": return "Rematch?";
-    case "15": return "Sorry!";
-    case "16": return "Thanks!";
-    case "17": return "Thanks for the game!";
-    case "18": return "That was really cool!";
-    case "19": return "Thinking... Please bear with me!";
+    case "6": return "Thanks for the game!";
+    case "7": return "No problem!";
+    case "8": return "Thinking... Please bear with me!";
+    case "9": return "Sorry!";
+    case "10": return "Refresh the page";
+    case "11": return "Good Game!";
+    case "12": return "I have to go";
+    case "13": return "I think there is a bug";
+    case "14": return "No thanks";
+    case "15": return "Okay!";
+    case "16": return "Do you want to undo?";
+    case "17": return "Rematch?";
+    case "18": return "Thanks!";
+    case "19": return "That was really cool!";
     case "20": return "Want to Chat?";
     case "21": return "Well played!";
     case "22": return "Whoops!";

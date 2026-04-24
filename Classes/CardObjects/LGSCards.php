@@ -130,17 +130,24 @@
 // }
 
 
-// class spirit_of_christmas_blue extends Card {
+class spirit_of_christmas_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "spirit_of_christmas_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "spirit_of_christmas_blue";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+		foreach ([$otherPlayer, $this->controller] as $player) {
+			PlayAura("agility", $player, effectController:$this->controller);
+			PlayAura("might", $player, effectController:$this->controller);
+			PlayAura("vigor", $player, effectController:$this->controller);
+			PutItemIntoPlayForPlayer("gold", $player, effectController:$this->controller, effectAgent:$player);
+		}
+		return "";
+  }
+}
 
 
 // class thespian_charm_yellow extends Card {

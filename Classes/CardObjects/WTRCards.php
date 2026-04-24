@@ -375,17 +375,40 @@ class alpha_rampage_red extends Card {
 // }
 
 
-// class breaking_scales extends Card {
+class breaking_scales extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "breaking_scales";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "breaking_scales";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    return !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID());
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+}
 
 
 // class breakneck_battery_red extends Card {

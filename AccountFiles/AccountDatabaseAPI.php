@@ -46,6 +46,7 @@ function PasswordLogin($username, $password, $rememberMe) {
 		$patreonAccessToken = $userData["patreonAccessToken"];
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
 		$_SESSION["isBanned"] = $userData["isBanned"];
+		$_SESSION["metafyID"] = $userData["metafyID"] ?? "";
 
 		try {
 			PatreonLogin($patreonAccessToken);
@@ -53,10 +54,7 @@ function PasswordLogin($username, $password, $rememberMe) {
 
 		if($rememberMe)
 		{
-			// Generate secure remember me token
-			$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
-			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
-			storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
+			ApplyRememberMeCookie($userData["usersId"]);
 		}
 		session_write_close();
 
@@ -73,73 +71,34 @@ function IsBanned($username)
 	return (intval($userData["isBanned"]) == 1 ? true : false);
 }
 
-function AttemptPasswordLogin($username, $password, $rememberMe) {
-	$conn = GetLocalMySQLConnection();
-	$userData = LoadUserData($username);
-
-  if($userData != NULL)
-  {
-
-  }
-  else {
-		header("location: ../LoginPage.php");
-		exit();
-  }
-
-
-  try {
-  	$passwordValid = password_verify($password, $userData["usersPwd"]);
-  }
-  catch (\Exception $e) { }
-
-  if($passwordValid)
-  {
-    session_start();
-    session_regenerate_id(true); // Regenerate session ID on login
-		$_SESSION["userid"] = $userData["usersId"];
-		$_SESSION["useruid"] = $userData["usersUid"];
-		$_SESSION["useremail"] = $userData["usersEmail"];
-		// Remove password from session for security
-		$patreonAccessToken = $userData["patreonAccessToken"];
-		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
-		$rememberMeToken = $userData["rememberMeToken"];
-		$_SESSION["isBanned"] = $userData["isBanned"];
-
-		try {
-			PatreonLogin($patreonAccessToken);
-		} catch (\Exception $e) { }
-
-		if($rememberMe)
-		{
-			if($rememberMeToken == "")
-			{
-				// Generate secure remember me token
-				$cookie = hash("sha256", random_bytes(32) . $userData["usersPwd"] . random_bytes(32));
-				storeRememberMeCookie($conn, $_SESSION["useruid"], $cookie);
-			}
-			else $cookie = $rememberMeToken;
-			setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
-		}
-		session_write_close();
-
-		header("location: ../MainMenu.php");
-		exit();
-  }
-  else {
-    header("location: ../LoginPage.php");
-    exit();
-  }
-}
-
-function storeRememberMeCookie($conn, $uuid, $cookie)
+function ApplyRememberMeCookie($usersId)
 {
-  $sql = "UPDATE users SET rememberMeToken=? WHERE usersUid=?";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ss", $cookie, $uuid);
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-	}
+  $conn = GetLocalMySQLConnection();
+  $sql = "SELECT rememberMeToken FROM users WHERE usersId=?";
+  $stmt = mysqli_stmt_init($conn);
+  $cookie = null;
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "s", $usersId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    $cookie = $row["rememberMeToken"] ?? null;
+  }
+
+  if (empty($cookie)) {
+    $cookie = bin2hex(random_bytes(32));
+    $sql2 = "UPDATE users SET rememberMeToken=? WHERE usersId=?";
+    $stmt2 = mysqli_stmt_init($conn);
+    if (mysqli_stmt_prepare($stmt2, $sql2)) {
+      mysqli_stmt_bind_param($stmt2, "ss", $cookie, $usersId);
+      mysqli_stmt_execute($stmt2);
+      mysqli_stmt_close($stmt2);
+    }
+  }
+
+  mysqli_close($conn);
+  setcookie("rememberMeToken", $cookie, time() + (86400 * 90), "/", "", true, true); // Secure and HttpOnly
 }
 
  ?>

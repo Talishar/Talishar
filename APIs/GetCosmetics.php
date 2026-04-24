@@ -59,7 +59,7 @@ if(IsUserLoggedIn()) {
   }
 
   // Add Metafy community benefits
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_GET_COSMETICS);
   $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -228,6 +228,8 @@ function GetPlaymatName($id)
       return "Talishar Purple";
     case 42:
       return "Library of Solana";
+    case 43:
+      return "Taddle Down";
     default:
       return "N/A";
   }

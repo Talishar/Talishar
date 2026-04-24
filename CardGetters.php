@@ -137,11 +137,23 @@ function GetClassState($player, $piece)
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return $mainClassState[$piece];
-    else return $defClassState[$piece];
+    if ($player == $mainPlayer) {
+      if (!isset($mainClassState)) return "";
+      return $mainClassState[$piece];
+    }
+    else {
+      if (!isset($defClassState)) return "";
+      return $defClassState[$piece];
+    }
   } else {
-    if ($player == $myStateBuiltFor) return $myClassState[$piece];
-    else return $theirClassState[$piece];
+    if ($player == $myStateBuiltFor) {
+      if (!isset($myClassState)) return "";
+      return $myClassState[$piece];
+    }
+    else {
+      if (!isset($theirClassState)) return "";
+      return $theirClassState[$piece];
+    }
   }
 }
 
@@ -407,13 +419,14 @@ function GetPreLayers() {
 
 function GetCombatChainAttacks()
 {
-  global $chainLinks;
+  global $chainLinks, $ChainLinks;
   $attacks = [];
-  foreach ($chainLinks as $link) {
-    if ($link[2] == 1 || $link[3] == "PLAY" || $link[3] == "EQUIP") {
-      for ($j = 0; $j < ChainLinksPieces(); ++$j) {
-        array_push($attacks, $link[$j]);
-      }
+  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $LinkCard = $ChainLinks->GetLink($i)->AttackCard();
+    $link = $chainLinks[$i];
+    if ($LinkCard->StillOnChain()) {
+      for ($j = 0; $j < ChainLinksPieces(); ++$j)
+        $attacks[] = $link[$j];
     }
     else {
       //can't find something that's gone

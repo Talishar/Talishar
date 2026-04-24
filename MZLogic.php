@@ -161,7 +161,7 @@ function MZDiscard($player, $parameter, $lastResult)
     $effectController = $params[1] ?? $player;
     AddGraveyard($cardID, $cardOwner, $params[0], $effectController);
     if ($player == $cardOwner) CardDiscarded($player, $cardID);
-    WriteLog(CardLink($cardID, $cardID) . " was discarded");
+    else WriteLog(CardLink($cardID, $cardID) . " was discarded");
   }
   return $lastResult;
 }
@@ -196,6 +196,7 @@ function MZAddZone($player, $parameter, $lastResult)
     $params[0] = $explodeArray[0];
   }
   $cardIDs = [];
+  $cardOwners = [];
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);
     $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
@@ -203,7 +204,10 @@ function MZAddZone($player, $parameter, $lastResult)
     if (!isset($mzIndex[1])) {
       WriteLog("There was an error, please submit a bug report.");
     }
-    else if(isset($zone[$mzIndex[1]])) array_push($cardIDs, $zone[$mzIndex[1]]);
+    else if(isset($zone[$mzIndex[1]])) {
+      array_push($cardIDs, $zone[$mzIndex[1]]);
+      $cardOwners[] = $cardOwner;
+    }
   }
   for ($i = 0; $i < count($cardIDs); ++$i) {
     switch ($params[0]) {
@@ -229,6 +233,9 @@ function MZAddZone($player, $parameter, $lastResult)
         break;
       case "THEIRBOTDECK":
         AddBottomDeck($cardIDs[$i], $otherPlayer, $params[1] ?? "-");
+        break;
+      case "OWNERSBOTDECK":
+        AddBottomDeck($cardIDs[$i], $cardOwners[$i], $params[1] ?? "-");
         break;
       case "MYDISCARD":
         AddGraveyard($cardIDs[$i], $player, $params[1] ?? "-", $player);
@@ -449,7 +456,7 @@ function IsFrozenMZ(&$array, $zone, $i, $player)
   if ($zone == "ARS" && IcelochActive($player)) return true;
   $offset = FrozenOffsetMZ($zone);
   if ($offset == -1) return false;
-  return $array[$i + $offset] == "1";
+  return ($array[$i + $offset] ?? "-") == "1";
 }
 
 function UnfreezeMZ($player, $zone, $index)
@@ -486,6 +493,14 @@ function FrozenOffsetMZ($zone)
     default:
       return -1;
   }
+}
+
+function DefCounterOffsetMZ($zone) {
+  return match($zone) {
+    "CHAR", "MYCHAR", "THEIRCHAR" => 4,
+		"ITEMS", "MYITEMS", "THEIRITEMS" => 12,
+		default => -1
+  };
 }
 
 function MZIsPlayer($MZIndex)
@@ -559,9 +574,9 @@ function GetMZUID($player, $MZIndex)
     case "LAYER":
       return $zone[$mzArr[1] + 5] ?? "-";
     case "COMBATCHAINATTACKS":
-      return $zone[$mzArr[1] + 8] ?? "-"; // CHECK THIS
+      return $zone[$mzArr[1] + 8] ?? "-";
     case "COMBATCHAINLINK":
-      return $zone[$mzArr[1] + 8] ?? "-"; // CHECK THIS
+      return $zone[$mzArr[1] + 7] ?? "-";
     case "CHAR":
     case "MYCHAR":
     case "THEIRCHAR":
@@ -697,7 +712,7 @@ function GetZoneObject($player,  $zone) {
     "COMBATCHAIN" => $CombatChain,
     "MYALLY" => new Allies($player),
     "THEIRALLY" => new Allies($otherPlayer),
-    "MYITEMS" => new Items($player),
+    "MYITEMS", "ITEMS" => new Items($player),
     "THEIRITEMS" => new Items($otherPlayer),
     "COMBATCHAINLINK" => $CombatChain,
     default => ""
@@ -706,8 +721,10 @@ function GetZoneObject($player,  $zone) {
 
 function MZIndexToObject($player, $MZIndex) {
   $zone = explode("-", $MZIndex)[0];
+  $ind = explode("-", $MZIndex)[1] ?? -1;
+  if (!is_numeric($ind)) return CleanTargetToObject($player, $MZIndex);
   $Zone = GetZoneObject($player, $zone);
-  return $Zone->Card(explode("-", $MZIndex)[1] ?? -1);
+  return $Zone == "" ? "" : $Zone->Card($ind);
 }
 
 function CleanTargetToObject($player, $cleanTarget) {
@@ -805,4 +822,29 @@ function CleanTargetToIndex($player, $target) {
   $Card = $Zone->FindCardUID($uid);
   if ($Card == "") return "";
   return "$zone-" . $Card->Index();
+}
+
+function MultiZoneIndices($player, $parameter) {
+  $searches = [];
+  foreach (explode("&", $parameter) as $search) { //allow searching for stuff in unusual zones for its type
+    $newSearch = $search;
+    $conds = explode(":", $search)[1] ?? "";
+    if (strpos($newSearch, "MYALLY") !== false) {
+      $newSearch = "MYCHAR:subtype=Ally;$conds&$newSearch";
+    } 
+    if (strpos($newSearch, "THEIRALLY") !== false) {
+      $newSearch = "THEIRCHAR:subtype=Ally;$conds&$newSearch";
+    }
+    if (strpos($newSearch, "THEIRCHAR:type=E") !== false) {
+      $newSearch = "THEIRITEMS:$conds&$newSearch";
+    }
+    if (strpos($newSearch, "MYCHAR:type=E") !== false) {
+      $newSearch = "MYITEMS:$conds&$newSearch";
+    }
+    $searches[] = $newSearch;
+  }
+  $parameter = implode("&", $searches);
+  $rv = SearchMultizone($player, $parameter);
+  // we may want to dedupe this eventually, not pressing issue
+  return $rv == "" ? "PASS" : $rv;
 }

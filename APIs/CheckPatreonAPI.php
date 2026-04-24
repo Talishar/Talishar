@@ -20,7 +20,7 @@ if (!IsUserLoggedIn()) {
 $response = new stdClass();
 
 if (IsUserLoggedIn()) {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_CHECK_PATREON_API);
   $sql = "SELECT * FROM users where usersUid='" . LoggedInUserName() . "'";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) {

@@ -2,8 +2,8 @@
 /**
  * GetDiscordContentCarousel.php
  * 
- * Fetches video links from the Discord #talishar-content channel
- * Returns YouTube and Twitch videos in a carousel format
+ * Fetches community content links from the Discord #talishar-content channel
+ * Returns YouTube, Twitch, and Metafy guide items in a carousel format
  * 
  * Graceful error handling - returns empty carousel on any error (HTTP 200)
  * Uses APCu caching (10 minute TTL) to reduce Discord API calls
@@ -140,22 +140,62 @@ try {
         exit;
     }
     
-    // Extract videos
+    // Extract content items
     $videos = [];
     $ytRegex = '/(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9_-]{11})/';
     $twRegex = '/twitch\.tv\/(?:videos\/(\d+)|([a-zA-Z0-9_]+))/';
+    $metafyRegex = '/https?:\/\/(?:www\.)?metafy\.gg\/guides(?:\/view)?\/[^\s]+/i';
+
+    $normalizeGuideUrl = function ($url) {
+        return preg_replace('/\?.*$/', '', $url);
+    };
     
     foreach ($messages as $msg) {
         if (!is_array($msg)) continue;
         $content = $msg['content'] ?? '';
-        // Replace channel mentions in content
         $content = str_replace('<#868488473378684938>', '#release-notes', $content);
         $content = str_replace('<#1014193064736194691>', '#talishar-content', $content);
-        // Preserve line breaks
-        $content = nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'), false);
         
         $author = $msg['author']['username'] ?? 'Unknown';
         $timestamp = $msg['timestamp'] ?? date('c');
+        $embeds = is_array($msg['embeds'] ?? null) ? $msg['embeds'] : [];
+
+        $metafyUrl = null;
+        $metafyEmbed = null;
+
+        if (preg_match($metafyRegex, $content, $metafyMatch)) {
+            $metafyUrl = $normalizeGuideUrl($metafyMatch[0]);
+        }
+
+        foreach ($embeds as $embed) {
+            if (!is_array($embed)) {
+                continue;
+            }
+
+            $embedUrl = $embed['url'] ?? '';
+            if (!$metafyUrl && is_string($embedUrl) && preg_match($metafyRegex, $embedUrl)) {
+                $metafyUrl = $normalizeGuideUrl($embedUrl);
+            }
+
+            if ($metafyUrl && !$metafyEmbed && is_string($embedUrl) && stripos($embedUrl, 'metafy.gg') !== false) {
+                $metafyEmbed = $embed;
+            }
+        }
+
+        if ($metafyUrl) {
+            $videos[] = [
+                'videoId' => $msg['id'] ?? md5($metafyUrl . $timestamp),
+                'type' => 'metafy',
+                'title' => $metafyEmbed['title'] ?? $content,
+                'author' => $author,
+                'description' => $metafyEmbed['description'] ?? '',
+                'thumbnail' => $metafyEmbed['thumbnail']['url'] ?? $metafyEmbed['image']['url'] ?? null,
+                'timestamp' => $timestamp,
+                'messageUrl' => $metafyUrl,
+                'url' => $metafyUrl,
+            ];
+            continue;
+        }
         
         if (preg_match($ytRegex, $content, $m)) {
             $videos[] = ['videoId' => $m[1], 'type' => 'youtube', 'title' => $content, 'author' => $author, 'timestamp' => $timestamp];

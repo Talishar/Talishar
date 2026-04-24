@@ -546,10 +546,28 @@ function HasAuraWithSigilInName($player)
   return false;
 }
 
+function HasLayerWithSigilInName($player) {
+  global $Stack;
+  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+    $Layer = $Stack->Card($i, true);
+    if ($Layer->PlayerID() != $player) continue;
+    if (CardNameContains($Layer->ID(), "Sigil", $player, partial: true)) return true;
+  }
+  return false;
+}
+
 function IsDoubleArcane($cardID): bool //checks for cards that can shock, but not use up arcane buffs on the shock
 {
   return match ($cardID) {
     "comet_storm__shock_red" => true,
     default => false,
   };
+}
+
+// Use this in a Card objects ArcaneModifier function 
+function Amp($ampAmount, &$remove, $player, $controller, $amount) {
+  if ($amount) return $ampAmount;
+  if ($player != $controller) return 0;
+  $remove = true;
+  return $ampAmount;
 }

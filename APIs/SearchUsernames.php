@@ -35,14 +35,14 @@ $response = [
 ];
 
 if (strlen($searchQuery) > 0) {
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_SEARCH_USERNAMES);
   if ($conn) {
     // Search for usernames containing the search query
     $sql = "SELECT usersUid, usersEmail FROM users WHERE usersUid LIKE ? LIMIT 20";
     $stmt = mysqli_stmt_init($conn);
 
     if (mysqli_stmt_prepare($stmt, $sql)) {
-      $searchPattern = "%{$searchQuery}%";
+      $searchPattern = "{$searchQuery}%";
       mysqli_stmt_bind_param($stmt, "s", $searchPattern);
       mysqli_stmt_execute($stmt);
       $userData = mysqli_stmt_get_result($stmt);

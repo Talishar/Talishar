@@ -24,7 +24,6 @@ function OUTAbilityCost($cardID)
     case "seekers_hood": case "seekers_gilet": case "seekers_mitts": case "seekers_leggings": return 1;//Seeker's Equips
     case "silken_gi": return 0;
     case "threadbare_tunic": return 0;
-    case "fisticuffs": return 2;
     case "fleet_foot_sandals": return 0;
     default: return 0;
   }
@@ -55,7 +54,6 @@ function OUTAbilityCost($cardID)
       case "seekers_hood": case "seekers_gilet": case "seekers_mitts": case "seekers_leggings": return "I";//Seeker's Equips
       case "silken_gi": return "I";
       case "threadbare_tunic": return "I";
-      case "fisticuffs": return "AR";
       case "fleet_foot_sandals": return "AR";
       default: return "";
     }
@@ -116,6 +114,7 @@ function OUTAbilityCost($cardID)
       case "scout_the_periphery_red": return 3;
       case "scout_the_periphery_yellow": return 2;
       case "scout_the_periphery_blue": return 1;
+      case "silverwind_shuriken_blue": return 1;
       default: return 0;
     }
   }
@@ -166,6 +165,7 @@ function OUTAbilityCost($cardID)
       case "looking_for_a_scrap_red": case "looking_for_a_scrap_yellow": case "looking_for_a_scrap_blue": return true;
       case "spring_load_red": case "spring_load_yellow": case "spring_load_blue": return true;
       case "scout_the_periphery_red": case "scout_the_periphery_yellow": case "scout_the_periphery_blue": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
+      case "silverwind_shuriken_blue": return true;
       default: return false;
     }
   }
@@ -178,6 +178,10 @@ function OUTAbilityCost($cardID)
     $otherPlayer = $currentPlayer == 1 ? 2 : 1;
     switch ($cardID)
     {
+      case "silverwind_shuriken_blue":
+        if ($from == "PLAY")
+          AddCurrentTurnEffect($cardID, $currentPlayer, $from);
+        return "";
       case "uzuri_switchblade": case "uzuri":
         $banish = new Banish($currentPlayer);
         $card = $banish->FirstCardWithModifier("UZURI");
@@ -797,7 +801,7 @@ function OUTAbilityCost($cardID)
     return $combatChainState[$CCS_NumReactionPlayedActivated];
   }
 
-  function TrapTriggered($cardID)
+  function TrapTriggered($cardID) //deprecated
   {
     global $mainPlayer, $defPlayer;
     $char = &GetPlayerCharacter($defPlayer);

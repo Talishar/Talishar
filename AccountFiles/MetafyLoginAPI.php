@@ -56,10 +56,13 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     $refresh_token = $tokens['refresh_token'] ?? '';
     
     // Fetch the user's Metafy ID and save tokens + ID
-    SaveMetafyTokensAndID($access_token, $refresh_token);
+    $metafyUserID = SaveMetafyTokensAndID($access_token, $refresh_token);
     
     // Fetch user's communities
     FetchAndSaveMetafyCommunities($access_token, $response);
+    if (!empty($metafyUserID)) {
+      $_SESSION['metafyID'] = $metafyUserID;
+    }
   } else {
     $error_msg = $tokens['error'] ?? 'Failed to get access token';
     $error_description = $tokens['error_description'] ?? 'No description';
@@ -77,7 +80,7 @@ echo json_encode($response);
 function SaveMetafyTokensAndID($accessToken, $refreshToken)
 {
   if (!isset($_SESSION['userid'])) {
-    return;
+    return null;
   }
   $userID = $_SESSION['userid'];
 
@@ -99,7 +102,7 @@ function SaveMetafyTokensAndID($accessToken, $refreshToken)
     $metafyUserID = $profileData['user']['id'] ?? null;
   }
 
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_LOGIN_API);
   $sql = 'UPDATE users SET metafyAccessToken=?, metafyRefreshToken=?, metafyID=? WHERE usersid=?';
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -108,6 +111,10 @@ function SaveMetafyTokensAndID($accessToken, $refreshToken)
     mysqli_stmt_close($stmt);
   }
   mysqli_close($conn);
+  if (!empty($metafyUserID)) {
+    $_SESSION['metafyID'] = $metafyUserID;
+  }
+  return $metafyUserID;
 }
 
 function FetchAndSaveMetafyCommunities($access_token, &$response)
@@ -118,7 +125,7 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
   }
   
   $userID = $_SESSION['userid'];
-  $conn = GetDBConnection();
+  $conn = GetDBConnection(DBL_METAFY_LOGIN_API);
   
   $all_communities = [];
   
@@ -232,15 +239,48 @@ function FetchAndSaveMetafyCommunities($access_token, &$response)
   
   // Save all communities to database
   $communities_json = json_encode($all_communities);
-  
-  $sql = 'UPDATE users SET metafyCommunities=? WHERE usersid=?';
+
+  $metafyUserID = null;
+  $row_id = null;
+  $conn2 = GetDBConnection(DBL_METAFY_LOGIN_API);
+  $stmt_chk = mysqli_stmt_init($conn2);
+  if (mysqli_stmt_prepare($stmt_chk, "SELECT metafyID FROM users WHERE usersid=? LIMIT 1")) {
+    mysqli_stmt_bind_param($stmt_chk, 'i', $userID);
+    mysqli_stmt_execute($stmt_chk);
+    $res_chk = mysqli_stmt_get_result($stmt_chk);
+    $row_chk = mysqli_fetch_assoc($res_chk);
+    mysqli_stmt_close($stmt_chk);
+    $metafyUserID = $row_chk['metafyID'] ?? null;
+  }
+  mysqli_close($conn2);
+
+  if (empty($metafyUserID)) {
+    $ch_me = curl_init('https://metafy.gg/irk/api/v1/me');
+    curl_setopt($ch_me, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch_me, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch_me, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $access_token, 'Content-Type: application/json']);
+    curl_setopt($ch_me, CURLOPT_USERAGENT, 'Talishar-App');
+    $me_raw  = curl_exec($ch_me);
+    $me_code = curl_getinfo($ch_me, CURLINFO_HTTP_CODE);
+    curl_close($ch_me);
+    if ($me_code === 200) {
+      $me_data      = json_decode($me_raw, true);
+      $metafyUserID = $me_data['user']['id'] ?? null;
+    }
+  }
+
+  $sql = 'UPDATE users SET metafyCommunities=?' . (!empty($metafyUserID) ? ', metafyID=?' : '') . ' WHERE usersid=?';
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, 'ss', $communities_json, $userID);
+    if (!empty($metafyUserID)) {
+      mysqli_stmt_bind_param($stmt, 'sss', $communities_json, $metafyUserID, $userID);
+    } else {
+      mysqli_stmt_bind_param($stmt, 'ss', $communities_json, $userID);
+    }
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
   }
-  
+
   mysqli_close($conn);
 }
 

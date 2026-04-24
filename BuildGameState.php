@@ -1,5 +1,5 @@
 <?php
-function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true) {
+function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $myAuras, $myItems, $mySoul, $myAllies, $myPermanents, $myResources;
   global $theirHand, $theirPitch, $theirDeck, $theirDiscard, $theirBanish, $theirArsenal, $theirCharacter;
@@ -118,10 +118,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $response->lastUpdate = $cacheVal;
 
-  // Spectator count/names
+  // Spectator count and names
   $spectatorData = function_exists('GetActiveSpectators') ? GetActiveSpectators($gameName) : ['count' => 0, 'names' => []];
-  $response->spectatorCount = $spectatorData['count'];
-  $response->spectatorNames = $spectatorData['names'];
+  $response->spectatorCount = $spectatorData['count'] ?? 0;
+  $response->spectatorNames = $spectatorData['names'] ?? [];
 
   // send initial on-load information if requested
   if ($includeInitialLoad) {
@@ -146,6 +146,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
     $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
+    $initialLoad->gameFormat = $format;
 
     $initialLoad->altArts = [];
     $initialLoad->opponentAltArts = [];
@@ -335,8 +336,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $activeChainLink->totalDefense = $blockVal;
   $activeChainLink->reactions = $combatChainReactions;
   $activeChainLink->attackTarget = GetAttackTargetNames($mainPlayer);
-  $activeChainLink->damagePrevention = ($combatChainCount > 0) ? GetDamagePrevention($defPlayer, $totalPower) : 0;
-  $activeChainLink->goAgain = DoesAttackHaveGoAgain();
+  $activeChainLink->damagePrevention = ($combatChainCount > 0 && CanDamageBePrevented($mainPlayer, 0, "COMBAT", $combatChain[0])) ? GetDamagePrevention($defPlayer, $totalPower) : 0;
+  $activeChainLink->goAgain = CachedAttackHasGoAgain();
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
   $activeChainLink->confidence = SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence");
@@ -370,15 +371,16 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $layerObject = new stdClass;
   $layerContents = [];
   $layerPieces = LayerPieces();
+  $specialLayers = ["LAYER", "TRIGGER", "MELD", "PRETRIGGER", "ABILITY"];
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
-    $layerName = $layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" || $layers[$i] == "PRETRIGGER" || $layers[$i] == "ABILITY" ? $layers[$i + 2] : $layers[$i];
+    $layerName = in_array($layers[$i], $specialLayers) ? $layers[$i+2] : $layers[$i];
     array_push($layerContents, JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]));
   }
   $reorderableLayers = [];
   $numReorderable = 0;
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
     $layer = new stdClass();
-    $layerName = $layers[$i] == "LAYER" || $layers[$i] == "TRIGGER" || $layers[$i] == "MELD" || $layers[$i] == "PRETRIGGER" || $layers[$i] == "ABILITY" ? $layers[$i + 2] : $layers[$i];
+    $layerName = in_array($layers[$i], $specialLayers) ? $layers[$i+2] : $layers[$i];
     $borderColor = null;
     if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 2;
     $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor);
@@ -842,7 +844,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $theirArsenalCount = count($theirArsenal);
     for ($i = 0; $i < $theirArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $theirArsenal[$i + 1] = "UP";
-      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
+      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver || ($playerID == 3 && $spectatorIsFriendOfP1 && !IsHideHandFromFriends(1))) {
         $overlay = 0;
         $border = 0;
         $cardID = $theirArsenal[$i];
@@ -880,7 +882,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $myArsenalCount = count($myArsenal);
     for ($i = 0; $i < $myArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $myArsenal[$i + 1] = "UP";
-      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver) {
+      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver && !($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2))) {
         array_push($myArse, JSONRenderedCard(
           cardNumber: $MyCardBack,
           controller: 2,
@@ -1214,7 +1216,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     ));
   }
   $response->landmarks = $landmarksOutput;
-
+  // if ($inactive) WriteLog("The current player may be inactive", highlight:true);
   $response->chatLog = JSONLog($gameName, $playerID);
 
   // Current turn effects
@@ -1381,27 +1383,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   // Reminder text box highlight thing
   if ($turnPhase != "OVER") {
     $helpText .= $currentPlayer != $playerID ? "Waiting for other player to choose " . TypeToPlay($turnPhase) : GetPhaseHelptext();
-    switch ($currentPlayer) {
-      case $playerID:
-        if ($turnPhase == "P" || $turnPhase == "CHOOSEHANDCANCEL" || $turnPhase == "CHOOSEDISCARDCANCEL") {
-          $helpText .= $turnPhase == "P" ? " (" . $myResources[0] . " of " . $myResources[1] . ")" : "";
-          array_push($promptButtons, CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px"));
+    if($currentPlayer == $playerID) { 
+      if ($turnPhase == "P" || $turnPhase == "CHOOSEHANDCANCEL" || $turnPhase == "CHOOSEDISCARDCANCEL") {
+        $helpText .= $turnPhase == "P" ? " (" . $myResources[0] . " of " . $myResources[1] . ")" : "";
+        array_push($promptButtons, CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px"));
+      }
+      if (CanPassPhase($turnPhase)) {
+        if ($turnPhase == "B") {
+          array_push($promptButtons, CreateButtonAPI($playerID, "Undo Block", 10001, 0, "16px"));
+          array_push($promptButtons, CreateButtonAPI($playerID, "Pass", 99, 0, "16px"));
+          array_push($promptButtons, CreateButtonAPI($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
         }
-        if (CanPassPhase($turnPhase)) {
-          if ($turnPhase == "B") {
-            array_push($promptButtons, CreateButtonAPI($playerID, "Undo Block", 10001, 0, "16px"));
-            array_push($promptButtons, CreateButtonAPI($playerID, "Pass", 99, 0, "16px"));
-            array_push($promptButtons, CreateButtonAPI($playerID, "Pass Block and Reactions", 101, 0, "16px", "", "Reactions will not be skipped if the opponent reacts"));
-          }
-        }
-        break;
-      default:
-        $currentPlayerActivity = intval(GetCachePiece($gameName, 12));
-        if ($currentPlayerActivity == 1 && $playerID != 3) {
-          $helpText .= " — Opponent is inactive";
-          array_push($promptButtons, CreateButtonAPI($playerID, "Leave Game", 100007, 0, "16px"));
-        }
-        break;
+      }
     }
   }
 
@@ -1410,8 +1403,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerPrompt = $playerPrompt;
 
   $response->fullRematchAccepted = $turnPhase == "REMATCH";
-
-  $response->opponentActivity = intval(GetCachePiece($gameName, 12));
 
   // Build player input popup
   $response->playerInputPopUp = BuildPlayerInputPopup($playerID, $turnPhase, $turn, $gameName);
@@ -1454,16 +1445,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if (function_exists('apcu_fetch')) {
         $isOpponentTyping = @apcu_fetch($typingCacheKey) !== false;
       }
-    } else {
-      $typingFile = "./Games/" . $gameName . "/typing_p" . $opponentID . ".txt";
-      if (file_exists($typingFile)) {
-        $expiryTime = intval(file_get_contents($typingFile));
-        $isOpponentTyping = $expiryTime > time();
-      }
     }
     $response->opponentIsTyping = $isOpponentTyping;
   }
 
+  $response->inactive = $inactive;
   return $response;
 }
 

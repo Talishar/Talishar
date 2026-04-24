@@ -6,6 +6,7 @@ include_once "../APIKeys/APIKeys.php";
 include_once "../AccountFiles/AccountDatabaseAPI.php";
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
+include_once '../GeneratedCode/GeneratedCardDictionaries.php';
 SetHeaders();
 
 $response = new stdClass();
@@ -55,6 +56,8 @@ session_write_close();
 // Load the deck from the deckbuilder API to get deck name
 $curl = curl_init();
 $isFaBDB = str_contains($decklink, "fabdb");
+$isFaBMeta = str_contains($decklink, "fabmeta") && !str_contains($decklink, "fabtcgmeta");
+$isFaBTCGMeta = str_contains($decklink, "fabtcgmeta");
 
 if ($isFaBDB) {
   $decklinkArr = explode("/", $decklink);
@@ -125,46 +128,39 @@ if (isset($deckObj->{'format'})) {
   }
 }
 
-// Try to find the hero by looking for a card with type C (Character)
-// The Fabrary API returns cards in main deck order
-// Heroes are typically:
-// 1. Cards with uppercase set codes (WTR, ARC, CRU, etc.) + 1-3 digits
-// 2. Only 1 copy in deck (total: 1)
-// 3. NOT equipment/weapon/action/instant/attack reaction
+// Find the hero card using the same identifier logic as JoinGame.php's GetCardId().
+// Fabrary uses 'identifier' (Talishar internal format, e.g. "rhinar") as the primary field,
+// while FabDB uses printings[].sku.sku (e.g. "WTR067-COLD-FOIL").
+// We use GeneratedCardType() to reliably detect Character ("C") type cards.
 
 $cards = isset($deckObj->{'cards'}) ? $deckObj->{'cards'} : [];
-$foundHero = false;
 
 if (is_array($cards) && count($cards) > 0) {
   foreach ($cards as $card) {
-    if (!isset($card->{'cardIdentifier'})) continue;
-    
-    $cardIdentifier = $card->{'cardIdentifier'};
-    $total = isset($card->{'total'}) ? $card->{'total'} : 0;
-    $types = isset($card->{'types'}) ? $card->{'types'} : [];
-    
-    // Check if this is a 1-of card
-    if ($total !== 1) continue;
-    
-    // Check if card type is NOT a common non-hero type
-    $isCommonType = false;
-    if (is_array($types)) {
-      foreach ($types as $type) {
-        if (in_array($type, ["Equipment", "Weapon", "Action", "Instant", "Attack Reaction"])) {
-          $isCommonType = true;
-          break;
-        }
+    // Extract identifier using the same approach as JoinGame GetCardId()
+    $cardID = "";
+    if ($isFaBDB) {
+      if (isset($card->{'printings'}[0]->{'sku'}->{'sku'})) {
+        // FabDB returns SetID format (e.g. "WTR067-COLD-FOIL"), convert to internal ID
+        $setID = explode("-", $card->{'printings'}[0]->{'sku'}->{'sku'})[0];
+        $internalID = GeneratedSetIDtoCardID($setID);
+        $cardID = !empty($internalID) ? $internalID : $setID;
       }
+    } else if ($isFaBMeta) {
+      $cardID = $card->{'identifier'} ?? "";
+    } else if (isset($card->{'identifier'})) {
+      // Fabrary: identifier uses dashes, convert to underscores
+      $cardID = str_replace("-", "_", $card->{'identifier'});
+    } else if (isset($card->{'cardIdentifier'})) {
+      $cardID = $card->{'cardIdentifier'};
     }
-    
-    // If it's a 1-of and not a common type, it's likely a hero
-    if (!$isCommonType) {
-      // Verify it looks like a hero card ID (uppercase set code + numbers)
-      if (preg_match('/^[A-Z]{2,4}\d{1,3}$/', $cardIdentifier)) {
-        $heroID = $cardIdentifier;
-        $foundHero = true;
-        break;
-      }
+
+    if (empty($cardID)) continue;
+
+    // Use GeneratedCardType to reliably identify hero (Character) cards
+    if (str_contains(GeneratedCardType($cardID), "C")) {
+      $heroID = GeneratedSetID($cardID);
+      break;
     }
   }
 }
@@ -177,4 +173,3 @@ $response->success = true;
 $response->message = "Deck added to favorites successfully!";
 
 echo json_encode($response);
-

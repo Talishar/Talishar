@@ -126,7 +126,7 @@ function ParseGamestate()
   $permanentUniqueIDCounter = trim($gamestateContent[60+$numChainLinks]);
   $inGameStatus = trim($gamestateContent[61+$numChainLinks]); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
   $animations = GetStringArray($gamestateContent[62+$numChainLinks]); //Animations
-  $currentPlayerActivity = trim($gamestateContent[63+$numChainLinks]); //Current Player activity status -- 0 = active, 2 = inactive
+  $currentPlayerActivity = trim($gamestateContent[63+$numChainLinks]); // Not Used - Current Player activity status -- 0 = active, 2 = inactive
   //64 + numChainLinks unused
   //65 + numChainLinks unused
   $p1TotalTime = trim($gamestateContent[66+$numChainLinks]); //Player 1 total time
@@ -522,21 +522,11 @@ function ResetUndoBackupsForRematch()
 {
   global $filepath;
   
-  // Check if beginTurnGamestate exists (it should at the start of a rematch)
-  $beginTurnFile = $filepath . "beginTurnGamestate.txt";
-  if (!file_exists($beginTurnFile)) {
-    return; // Nothing to reset if beginTurnGamestate doesn't exist
-  }
-  
-  $beginTurnContent = file_get_contents($beginTurnFile);
-  
-  // Populate all undo backup slots with beginTurnGamestate content
+  // Delete all undo backup slots so undoing cannot reach the previous game.
   for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
     $backupFile = $filepath . "gamestateBackup_" . $i . ".txt";
-    file_put_contents($backupFile, $beginTurnContent);
+    if (file_exists($backupFile)) {
+      unlink($backupFile);
+    }
   }
-  
-  // Overwrite lastTurnGamestate with beginTurnGamestate as well
-  $lastTurnFile = $filepath . "lastTurnGamestate.txt";
-  file_put_contents($lastTurnFile, $beginTurnContent);
 }

@@ -131,14 +131,8 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "romping_club":
         $power += (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
         break;
-      case "breaking_scales":
-        $power += 1;
-        break;
       case "lord_of_wind_blue":
         $power += (ComboActive() ? $resourcesPaid : 0);
-        break;
-      case "ancestral_empowerment_red":
-        $power += 1;
         break;
       case "mugenshi_release_yellow":
         $power += (ComboActive() ? 1 : 0);
@@ -170,51 +164,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "whelming_gustwave_yellow":
       case "whelming_gustwave_blue":
         $power += (ComboActive() ? 1 : 0);
-        break;
-      case "rout_red":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 3 : 0;
-        break;
-      case "singing_steelblade_yellow":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
-        break;
-      case "overpower_red":
-        if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) $power += 0;
-        $power += $repriseActive ? 6 : 4;
-        break;
-      case "overpower_yellow":
-        if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) $power += 0;
-        $power += $repriseActive ? 5 : 3;
-        break;
-      case "overpower_blue":
-        if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) $power += 0;
-        $power += $repriseActive ? 4 : 2;
-        break;
-      case "ironsong_response_red":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 3 : 0;
-        break;
-      case "ironsong_response_yellow":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 2 : 0;
-        break;
-      case "ironsong_response_blue":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && $repriseActive ? 1 : 0;
-        break;
-      case "biting_blade_red":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 3 : 0;
-        break;
-      case "biting_blade_yellow":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 2 : 0;
-        break;
-      case "biting_blade_blue":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
-        break;
-      case "stroke_of_foresight_red":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 3 : 0;
-        break;
-      case "stroke_of_foresight_yellow":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 2 : 0;
-        break;
-      case "stroke_of_foresight_blue":
-        $power += TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
         break;
       case "barraging_brawnhide_red":
       case "barraging_brawnhide_yellow":
@@ -253,9 +202,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "salt_the_wound_yellow":
         $power += NumAttacksHit();
         break;
-      case "unified_decree_yellow":
-        $power += 3;
-        break;
       case "plasma_barrel_shot":
         $power += 1 + $combatChainState[$CCS_NumBoosted];
         break;
@@ -271,15 +217,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "valiant_thrust_yellow":
       case "valiant_thrust_blue":
         $power += GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
-        break;
-      case "courageous_steelhand_red":
-        $power += GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
-        break;
-      case "courageous_steelhand_yellow":
-        $power += GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 2 : 0;
-        break;
-      case "courageous_steelhand_blue":
-        $power += GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 1 : 0;
         break;
       case "galaxxi_black":
         $power += GetClassState($mainPlayer, $CS_NumPlayedFromBanish) > 0 ? 2 : 0;
@@ -330,15 +267,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "hundred_winds_blue":
         $power += (ComboActive() ? NumChainLinksWithName("Hundred Winds") - 1 : 0);
         break;
-      case "in_the_swing_red":
-        $power += 3;
-        break;
-      case "in_the_swing_yellow":
-        $power += 2;
-        break;
-      case "in_the_swing_blue":
-        $power += 1;
-        break;
       case "swarming_gloomveil_red":
         $power += (GetClassState($mainPlayer, $CS_NumAuras) >= 2 ? 1 : 0);
         break;
@@ -353,23 +281,11 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "phoenix_form_red":
         $power += (NumChainLinksWithName("Phoenix Flame") >= 2 ? 2 : 0);
         break;
-      case "combustion_point_red":
-        $power += 1;
-        break;
       case "lava_burst_red":
         $power += (RuptureActive() ? 3 : 0);
         break;
       case "phoenix_flame_red":
         $power += (NumDraconicChainLinks() >= 2 ? 1 : 0);
-        break;
-      case "rapid_reflex_red":
-        $power += 3;
-        break;
-      case "rapid_reflex_yellow":
-        $power += 2;
-        break;
-      case "rapid_reflex_blue":
-        $power += 1;
         break;
       case "tiger_swipe_red":
         $power += (ComboActive() ? 2 : 0);
@@ -392,9 +308,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "dishonor_blue":
         $power += (ComboActive() ? 2 : 0);
         break;
-      case "silverwind_shuriken_blue":
-        $power += 1;
-        break;
       case "spinning_wheel_kick_red":
       case "spinning_wheel_kick_yellow":
       case "spinning_wheel_kick_blue":
@@ -409,9 +322,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "widowmaker_yellow":
       case "widowmaker_blue":
         $power += NumCardsDefended() < 2 ? 3 : 0;
-        break;
-      case "fisticuffs":
-        $power += 1;
         break;
       case "feisty_locals_red":
       case "feisty_locals_yellow":
@@ -474,15 +384,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "beast_mode_yellow":
       case "beast_mode_blue":
         $power += GetClassState($mainPlayer, $CS_HaveIntimidated) > 0 ? 2 : 0;
-        break;
-      case "take_the_upper_hand_red":
-        $power += 3;
-        break;
-      case "take_the_upper_hand_yellow":
-        $power += 2;
-        break;
-      case "take_the_upper_hand_blue":
-        $power += 1;
         break;
       case "rising_power_red":
       case "rising_power_yellow":
@@ -553,17 +454,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "grow_claws_blue":
         $power += isPreviousLinkDraconic() ? 1 : 0;
         break;
-      case "hunts_end_red":
-        $power += 4;
-        break;
-      case "jagged_edge_red":
-        $power += 3;
-        break;
-      case "diced_red":
-      case "diced_yellow":
-      case "diced_blue":
-        $power += 1;
-        break;
       case "hand_of_vengeance":
         $power += 1;
         break;
@@ -580,15 +470,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
           }
           $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
         $power += $numDaggerHits > 0 ? 1 : 0;
-        break;
-      case "incision_red": 
-        $power += SubtypeContains($attackID, "Dagger") ? 3 : 0;
-        break;
-      case "incision_yellow":
-        $power += SubtypeContains($attackID, "Dagger") ? 2 : 0;
-        break;
-      case "incision_blue":
-        $power += SubtypeContains($attackID, "Dagger") ? 1 : 0;
         break;
       case "outed_red":
         $power += CheckMarked($defPlayer) ? 1 : 0;
@@ -706,9 +587,10 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
       }
     }
   }
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($combatChain[$i+1] == $defPlayer) {
-      switch ($combatChain[$i]) {
+  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $ChainCard = $CombatChain->Card($i, true);
+    if ($ChainCard->PlayerID() == $defPlayer) {
+      switch ($ChainCard->ID()) {
           case "captain_of_the_guard_blue":
             if ($blockCard != "-" && $blockCard->TotalPower() > $totalPower) {
               if (!$noGain) ++$blockModifier;
@@ -970,6 +852,9 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   }
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
+    if (IsCombatEffectLimited($i)) continue;
+    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    if ($card != "-") $card->CurrentEffectOnBlockEffect($cardID, $from);
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "nerve_scalpel":
@@ -998,7 +883,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
 function OnBlockResolveEffects($cardID = "")
 {
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CS_NumBlueDefended;
-  global $CCS_NumCardsBlocking;
+  global $CCS_NumCardsBlocking, $CurrentTurnEffects;
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
   for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
     $effectPowerModifier = EffectsAttackYouControlModifiers($combatChain[$i], $defPlayer);
@@ -1096,6 +981,12 @@ function OnBlockResolveEffects($cardID = "")
         break;
       default:
         break;
+    }
+    for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+      $Effect = $CurrentTurnEffects->Effect($i, true);
+      if (IsCombatEffectLimited($Effect->Index())) continue;
+      $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
+      if ($card != "-") $card->CurrentEffectOnBlockEffect($cardID, "-", $start);
     }
   }
   $blockingCards = [];
@@ -1401,7 +1292,7 @@ function BeginningReactionStepEffects()
 {
   global $combatChain, $mainPlayer, $CombatChain;
   if (!$CombatChain->HasCurrentLink()) return "";
-  switch ($combatChain[0]) {
+  switch ($CombatChain->AttackCard()->ID()) {
     case "cyclone_roundhouse_yellow":
       if (ComboActive()) {
         AddLayer("TRIGGER", $mainPlayer, "cyclone_roundhouse_yellow");
@@ -1613,7 +1504,7 @@ function CombatChainPlayAbility($cardID)
 function IsDominateActive()
 {
   global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_CachedDominateActive, $combatChainState;
-  global $CS_NumAuras, $CCS_NumBoosted, $chainLinks, $chainLinkSummary;
+  global $CS_NumAuras, $CCS_NumBoosted, $chainLinks, $chainLinkSummary, $CombatChain;
   if (count($combatChain) == 0) return false;
   if (SearchCurrentTurnEffectsForCycle("timidity_point_red", "timidity_point_yellow", "timidity_point_blue", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("fearless_confrontation_blue", $mainPlayer)) return false;
@@ -1635,7 +1526,7 @@ function IsDominateActive()
     }
   }
   $extraText = GetHorrorsBuff();
-  $textBoxes = [$combatChain[0], $extraText];
+  $textBoxes = [$CombatChain->AttackCard()->ID(), $extraText];
   foreach ($textBoxes as $box) {
     switch ($box) {
       case "open_the_center_red":
@@ -1688,14 +1579,14 @@ function IsDominateActive()
   }
   if ($combatChainState[$CCS_CachedDominateActive] == 1)
     return true;
-  $card = GetClass($combatChain[0], $mainPlayer);
+  $card = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
   if ($card != "-") $card->HasDominate();
   return false;
 }
 
 function IsOverpowerActive()
 {
-  global $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed, $CS_NumAuras;
+  global $combatChain, $mainPlayer, $defPlayer, $currentTurnEffects, $CS_Num6PowBan, $CS_NumItemsDestroyed, $CS_NumAuras, $CombatChain;
   if (count($combatChain) == 0) return false;
   if (SearchItemsForCard("overload_script_red", $mainPlayer) != "" && CardType($combatChain[0]) == "AA" && ClassContains($combatChain[0], "MECHANOLOGIST", $mainPlayer)) {
     return true;
@@ -1705,7 +1596,7 @@ function IsOverpowerActive()
     if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red" && CachedWagerActive()) return true;
   }
   if (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer)) {
-    switch ($combatChain[0]) {
+    switch ($CombatChain->AttackCard()->ID()) {
     case "hms_barracuda_yellow":
     case "hms_kraken_yellow":
     case "hms_marlin_yellow":
@@ -1714,7 +1605,7 @@ function IsOverpowerActive()
         return false;
     }
   }
-  switch ($combatChain[0]) {
+  switch ($CombatChain->AttackCard()->ID()) {
     case "merciless_battleaxe":
       return SearchCurrentTurnEffects("merciless_battleaxe", $mainPlayer);
     case "hanabi_blaster":
@@ -1925,9 +1816,12 @@ function CombatChainPayAdditionalCosts($index, $from)
     case "cloud_skiff_red":
     case "cloud_skiff_yellow":
     case "cloud_skiff_blue":
-      //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
+      if($inds != "") {//Tap(explode(",", $inds)[0], $currentPlayer);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $inds);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      }
       if ($from == "PLAY") ++$combatChain[$i + 11];
       else ++$chainLinks[$i][9];
       break;
@@ -1940,12 +1834,14 @@ function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
   global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
+  global $CombatChain, $CCS_CachedGoAgain;
   if (count($combatChain) == 0) return;
+  $combatChainState[$CCS_CachedGoAgain] = (DoesAttackHaveGoAgain() ? "1" : "0");
   $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
   // hard code this exception to avoid circularity
-  $card = GetClass($combatChain[0], $mainPlayer);
+  $card = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
   if (is_a($card, "SUPDwarfCard") && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
     ++$combatChainState[$CCS_CachedTotalPower];
   }
@@ -1967,7 +1863,13 @@ function CachedTotalPower()
 function CachedTotalBlock()
 {
   global $combatChainState, $CCS_CachedTotalBlock;
-  return $combatChainState[$CCS_CachedTotalBlock];
+  return $combatChainState[$CCS_CachedTotalBlock] ?? 0;
+}
+
+function CachedAttackHasGoAgain()
+{
+  global $combatChainState, $CCS_CachedGoAgain;
+  return ($combatChainState[$CCS_CachedGoAgain] ?? "0") == "1" ? true : false;
 }
 
 function CachedDominateActive()
@@ -2048,6 +1950,10 @@ function ActiveOnHits(): bool
   global $CombatChain, $currentTurnEffects, $mainPlayer, $defPlayer;
   if (!$CombatChain->HasCurrentLink()) return false;
   if (AddOnHitTrigger($CombatChain->AttackCard()->ID(), check: true)) return true;
+  if (ItemHitTrigger($CombatChain->AttackCard()->ID(), check: true)) return true;
+  if (MainCharacterHitEffects(check: true)) return true;
+  if (ArsenalHitEffects(check: true)) return true;
+  if (AuraHitEffects($CombatChain->AttackCard()->ID(), check: true)) return true;
   $target = IsHeroAttackTarget() ? $defPlayer : "-";
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectsPieces();

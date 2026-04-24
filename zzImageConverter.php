@@ -13,7 +13,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
     else if($number >= 400 && $set == "DYN") $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_Back.webp";
     else if($number >= 400) $imageURL= "https://d2h5owxb2ypf43.cloudfront.net/cards/" . $set . NormalizeCardBackID($number) . "_BACK.webp";
     else $imageURL = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/$setID.webp";
-    //else $imageURL = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/$setID-RF.webp";
+    // else $imageURL = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/$setID-RF.webp";
       
     echo("Image for " . $cardID . " does not exist.<BR>");
     $handler = fopen($cardImagesUploadedFolder, "w");

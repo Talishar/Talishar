@@ -649,44 +649,80 @@
 //   }
 // }
 
+class courageous_steelhand extends BaseCard {
+  function PlayAbility() {
+    global $CS_NumCharged;
+    if (GetClassState($this->controller, $CS_NumCharged) > 0) AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
 
-// class courageous_steelhand_red extends Card {
+class courageous_steelhand_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "courageous_steelhand_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "courageous_steelhand_red";
+    $this->controller = $controller;
+    $this->baseCard = new courageous_steelhand($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
 
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
 
-// class courageous_steelhand_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "courageous_steelhand_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 
 
-// class courageous_steelhand_blue extends Card {
+class courageous_steelhand_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "courageous_steelhand_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "courageous_steelhand_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new courageous_steelhand($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+
+class courageous_steelhand_blue extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "courageous_steelhand_blue";
+    $this->controller = $controller;
+    $this->baseCard = new courageous_steelhand($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 
 
 // class cross_the_line_red extends Card {

@@ -20,7 +20,7 @@ include "WriteLog.php";
 include "GameLogic.php";
 include "GameTerms.php";
 include "HostFiles/Redirector.php";
-include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/SHMOPLibraries.php";
 include "Libraries/StatFunctions.php";
 include "Libraries/UILibraries.php";
 include "Libraries/PlayerSettings.php";
@@ -352,10 +352,6 @@ if (!IsGameOver()) {
 
 //Now write out the game state
 if (!$skipWriteGamestate) {
-  if (!IsModeAsync($mode)) {
-    SetCachePiece($gameName, 12, "0");
-    $currentPlayerActivity = 0;
-  }
   DoGamestateUpdate();
   include "WriteGamestate.php";
 }

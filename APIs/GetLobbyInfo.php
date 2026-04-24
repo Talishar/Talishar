@@ -5,7 +5,7 @@ include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
-include "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 
 // Set headers immediately after includes

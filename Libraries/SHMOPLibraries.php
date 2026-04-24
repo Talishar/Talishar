@@ -12,11 +12,12 @@
 9 - Game visibility (1 = public, 0 = private)
 10 - Is Replay
 11 - Number P2 disconnects
-12 - Current player status (0 = active, 1 = inactive)
+12 - Not Used - Current player status (0 = active, 2 = inactive)
 13 - Format (see function FormatCode)
 14 - Game status (see $MGS_ constants)
 15 - Player 1 is chat enabled
 16 - Player 2 is chat enabled
+17 - currentPlayer Inactive
 */
 
 function WriteCache($name, $data)
@@ -108,6 +109,13 @@ function GetCachePiece($name, $piece)
   $cacheArray = explode("!", $cacheVal);
   if ($piece >= count($cacheArray) || $piece < 0) return "";
   return $cacheArray[$piece];
+}
+
+function ReadCacheArray($name)
+{
+  $cacheVal = ReadCache($name);
+  if (empty($cacheVal)) return null;
+  return explode("!", $cacheVal);
 }
 
 function IncrementCachePiece($gameName, $piece)

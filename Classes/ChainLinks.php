@@ -26,13 +26,17 @@ class ChainLinks {
 		return new ChainLink($this->NumLinks() - 1);
 	}
 
-  function SearchForType($type) {
+  function SearchChainLinks($type="-", $talent="-", $maxCost=-1) {
 		$found = [];
 		for ($i = 0; $i < $this->NumLinks(); ++$i) {
 			$Link = $this->GetLink($i);
 			for ($j = 0; $j < $Link->NumCards(); ++$j) {
 				$cardID = $Link->GetLinkCard($j, true)->ID();
-				if (TypeContains($cardID, $type)) array_push($found, $cardID);
+				$player = $Link->GetLinkCard($j, true)->PlayerID();
+				if ($type != "-" && !TypeContains($cardID, $type)) continue;
+				if ($talent != "-" && !TalentContains($cardID, $talent, $player)) continue;
+				if ($maxCost != -1 && CardCost($cardID) > $maxCost) continue;
+				$found[] = $cardID;
 			}
 		}
 		return implode(",", $found);
@@ -161,6 +165,7 @@ class LinkCard {
 	}
 
 	function ID() {
+		if (!isset($this->link)) return "-";
 		if (count($this->link) == 0) return "-";
 		return $this->link[$this->index] ?? "-";
 	}
@@ -170,7 +175,7 @@ class LinkCard {
 	}
 
 	function StillOnChain() {
-		return $this->link[$this->index+2] ?? "-";
+		return $this->link[$this->index+2] ?? 0;
 	}
 
 	function From() {

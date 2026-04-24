@@ -1599,8 +1599,8 @@ class song_of_sinew_yellow extends Card {
       AddDecisionQueue("PASSPARAMETER", $this->controller, $cardList);
       AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
       for ($i = 0; $i < count($cards); ++$i) {
-        AddDecisionQueue("CHOOSECARDID", $this->controller, "<-", 1);
         AddDecisionQueue("SETDQCONTEXT", $this->controller, "Put a card on top of your deck, the last card chosen will be the top card at the end", 1);
+        AddDecisionQueue("CHOOSECARDID", $this->controller, "<-", 1);
         AddDecisionQueue("ADDTOPDECK", $this->controller, "<-", 1);
         AddDecisionQueue("REMOVEFROMCHOICES", $this->controller, "{0}", 1);
         AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
@@ -4121,7 +4121,7 @@ class beat_of_the_ironsong_blue extends Card {
     $ind = $combatChainState[$CCS_WeaponIndex];
     $numModes = $char[$ind + 3] + 1;
     $message = $numModes > 1 ? "Choose $numModes modes" : "Choose a mode";
-    $modes = "Buff_power,Go_again,Block_gaining_defense,Can't_be_prevented";
+    $modes = "Buff_power,Go_again,Block_gaining_defense,Damage_can't_be_prevented";
     AddDecisionQueue("SETDQCONTEXT", $this->controller, $message);
     AddDecisionQueue("MULTICHOOSETEXT", $this->controller, "$numModes-$modes-$numModes");
     AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
@@ -4141,7 +4141,7 @@ class beat_of_the_ironsong_blue extends Card {
         case "Block_gaining_defense":
           AddCurrentTurnEffect("$this->cardID-BLOCK", $this->controller);
           break;
-        case "Can't_be_prevented":
+        case "Damage_can't_be_prevented":
           AddCurrentTurnEffect("$this->cardID-PREVENT", $this->controller);
           break;
       }
@@ -5316,7 +5316,7 @@ class mage_hunter_arrow_red extends Card {
     AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
   }
 
-  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $amount=false) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
     if ($type == "ARCANE") {
       $remove = true;
       return 3;
@@ -5617,12 +5617,14 @@ class dramatic_pause_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
     if ($additionalCosts == "DESTROY") {
       DestroyAuraUniqueID($this->controller, $target);
     }
     else {
-      $index = explode("-", $target)[1] ?? -1;
-      if ($index != -1) CombatChainDefenseModifier($index, 3);
+      $uid = explode("-", $target)[1] ?? -1;
+      $targetCard = $CombatChain->FindCardUID($uid);
+      $targetCard->ModifyDefense(3);
     }
   }
 }
@@ -5648,12 +5650,14 @@ class dramatic_pause_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
     if ($additionalCosts == "DESTROY") {
       DestroyAuraUniqueID($this->controller, $target);
     }
     else {
-      $index = explode("-", $target)[1];
-      CombatChainDefenseModifier($index, 2);
+      $uid = explode("-", $target)[1] ?? -1;
+      $targetCard = $CombatChain->FindCardUID($uid);
+      $targetCard->ModifyDefense(2);
     }
   }
 }
@@ -5679,12 +5683,14 @@ class dramatic_pause_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
     if ($additionalCosts == "DESTROY") {
       DestroyAuraUniqueID($this->controller, $target);
     }
     else {
-      $index = explode("-", $target)[1];
-      CombatChainDefenseModifier($index, 1);
+      $uid = explode("-", $target)[1] ?? -1;
+      $targetCard = $CombatChain->FindCardUID($uid);
+      $targetCard->ModifyDefense(1);
     }
   }
 }

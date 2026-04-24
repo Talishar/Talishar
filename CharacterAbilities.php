@@ -465,6 +465,8 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1, $flicked = f
     //tarantula and cindra should still have active triggers after using their abilities
     if ($characterID != "arakni_tarantula" && $characterID != "cindra_dracai_of_retribution" && $characterID != "cindra" && (TypeContains($mainCharacter[$i], "W", $mainPlayer) || $mainCharacter[$i + 1] != "2")) continue;
     $character = $Character->Card($i);
+    $card = GetClass($characterID, $mainPlayer, "EQUIP", $character->UniqueID());
+    if ($card != "-") $card->PermanentHitEffect($i, $damageSource, $targetPlayer, $flicked);
     switch ($characterID) {
       case "katsu_the_wanderer":
       case "katsu":
@@ -655,15 +657,15 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   return $modifier;
 }
 
-function MainCharacterHitEffects()
+function MainCharacterHitEffects($check = false): bool
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
-  $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($mainCharacterEffects); $i += 2) {
     if ($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch ($mainCharacterEffects[$i + 1]) {
         case "steelblade_supremacy_red":
+          if ($check) return true;
           AddLayer("TRIGGER", $mainPlayer, $mainCharacterEffects[$i + 1]);
           break;
         default:
@@ -671,7 +673,7 @@ function MainCharacterHitEffects()
       }
     }
   }
-  return $modifier;
+  return false;
 }
 
 function MainCharacterGrantsGoAgain()
@@ -1101,7 +1103,6 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "barkbone_strapping":
     case "helm_of_isens_peak":
-    case "breaking_scales":
     case "heartened_cross_strap":
     case "goliath_gauntlet":
     case "snapdragon_scalers":
@@ -1165,7 +1166,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "seekers_leggings":
     case "silken_gi":
     case "threadbare_tunic":
-    case "fisticuffs":
     case "fleet_foot_sandals":
     case "mask_of_three_tails":
     case "pouncing_paws":
@@ -1486,27 +1486,27 @@ function EquipPayAdditionalCosts($cardIndex)
   }
 }
 
-function CharacterModifiesPlayAura($player, $isToken, $effectController)
+function CharacterModifiesPlayAura($player, $isToken, $effectAgent)
 {
-  $char = &GetPlayerCharacter($player);
+  $char = &GetPlayerCharacter($effectAgent);
   $charCount = count($char);
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $charCount; $i += $characterPieces) {
     if (intval($char[$i + 1]) != 2) continue;
     switch ($char[$i]) {
       case "florian_rotwood_harbinger":
-        if (!$isToken || $effectController != $player) return 0;
+        if (!$isToken) return 0;
         // Now we need to check that we banished 8 earth cards.
-        $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
+        $results = SearchCount(SearchMultiZone($effectAgent, "MYBANISH:talent=EARTH"));
         if ($results >= 8) {
           WriteLog(CardLink($char[$i], $char[$i]) . " increases the number of auras tokens created by 1.");
           return 1;
         }
         return 0;
       case "florian":
-        if (!$isToken || $effectController != $player) return 0;
+        if (!$isToken) return 0;
         // Now we need to check that we banished 4 earth cards.
-        $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
+        $results = SearchCount(SearchMultiZone($effectAgent, "MYBANISH:talent=EARTH"));
         if ($results >= 4) {
           WriteLog(CardLink($char[$i], $char[$i]) . " increases the number of auras tokens created by 1.");
           return 1;

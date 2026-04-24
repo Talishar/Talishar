@@ -64,7 +64,7 @@ if (!empty($userName) && !empty($playerHashSalt)) {
 }
 
 $userEmail = '';
-$conn = GetDBConnection();
+$conn = GetDBConnection(DBL_GENERATE_AUTH_TOKEN_API);
 if ($conn) {
     $stmt = $conn->prepare("SELECT usersEmail FROM users WHERE usersId = ?");
     if ($stmt) {

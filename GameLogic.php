@@ -28,15 +28,18 @@ include "Classes/Landmarks.php";
 include "Classes/ClassState.php";
 include "Classes/CombatChainState.php";
 include "Classes/CardObjects/DBGCards.php"; //debug cards
+include "Classes/CardObjects/LGSCards.php";
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/ARCCards.php";
 include "Classes/CardObjects/MONCards.php";
 include "Classes/CardObjects/EVRCards.php";
 include "Classes/CardObjects/UPRCards.php";
 include "Classes/CardObjects/DYNCards.php";
+include "Classes/CardObjects/OUTCards.php";
 include "Classes/CardObjects/DTDCards.php";
 include "Classes/CardObjects/HVYCards.php";
 include "Classes/CardObjects/ROSCards.php";
+include "Classes/CardObjects/HNTCards.php";
 include "Classes/CardObjects/SEACards.php";
 include "Classes/CardObjects/SUPCards.php";
 include "Classes/CardObjects/APSCards.php";
@@ -46,6 +49,8 @@ include "Classes/CardObjects/OMNCards.php";
 include "Classes/CardObjects/AACCards.php";
 include "Classes/CardObjects/AHACards.php";
 include "Classes/CardObjects/AZSCards.php";
+include "Classes/CardObjects/MPWCards.php";
+include "Classes/CardObjects/AOLCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "DecisionQueue/AwaitEffects.php";
 include "CurrentEffectAbilities.php";
@@ -59,7 +64,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
-  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain;
+  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -429,21 +434,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($subparam2 == "NOPASS") return $rv;
       return $rv == "" ? "PASS" : $rv;
     case "MULTIZONEINDICES":
-      if (strpos($parameter, "MYALLY") !== false) {
-        $parameter = "MYCHAR:subtype=Ally&$parameter";
-      } 
-      if (strpos($parameter, "THEIRALLY") !== false) {
-        $parameter = "THEIRCHAR:subtype=Ally&$parameter";
-      }
-      if (strpos($parameter, "THEIRCHAR:type=E") !== false) {
-        $parameter = "THEIRITEMS:type=E&$parameter";
-      }
-      if (strpos($parameter, "MYCHAR:type=E") !== false) {
-        $parameter = "MYITEMS:type=E&$parameter";
-      }
-      $rv = SearchMultizone($player, $parameter);
-      // we may want to dedupe this eventually, not pressing issue
-      return $rv == "" ? "PASS" : $rv;
+      return MultiZoneIndices($player, $parameter);
     case "SCOURINDICES":
       $targPlayer = explode("|", $parameter)[0];
       $currentTargets = explode(",", explode("|", $parameter)[1]);
@@ -813,7 +804,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($character[$lrArr[1] + 5] < 2 && SearchCurrentTurnEffects("blood_on_her_hands_yellow", $player, returnUniqueID: true) != $character[$lrArr[1] + 11]) {
             $uniqueID = $character[$lrArr[1] + 11];
             $otherFlurry = $CurrentTurnEffects->FindSpecificEffect("flurry", $uniqueID);
-            if ($otherFlurry == "") {
+            if ($otherFlurry->Index() == -1) {
               AddCurrentTurnEffect("blood_on_her_hands_yellow", $player, uniqueID: $uniqueID);
               AddCharacterUses($player, $lrArr[1], $parameter);
               AddCurrentTurnEffect("flurry", $player, "", $character[$lrArr[1] + 11]); // marks the effect as a "you may swing twice" effect
@@ -1218,7 +1209,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "REVEALCARDS":
       $cards = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
-      $revealed = RevealCards($cards, $player);
+      $revealed = RevealCards($cards, $player, fullReveal:$parameter);
       return $revealed ? $lastResult : "PASS";
     case "REVEALHANDCARDS":
       $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
@@ -1604,6 +1595,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       else DealArcane(1, 2, "ABILITY", $parameter, true);
       return $lastResult;
+    case "DEALARCANEFULL": //Wrapper for DealArcane function
+      $parameters = explode("-", $parameter);
+      $damage = $parameters[0];
+      $source = $parameters[1] ?? "-";
+      $sourceID = ExtractCardID($source);
+      DealArcane($damage, source:$sourceID, resolvedTarget:$lastResult);
+      return $lastResult;
     case "DEALARCANE":
       if ($lastResult != "-") { // make sure the target is still there
         $dqState[7] = $lastResult;
@@ -1636,7 +1634,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $dqVars[0] = $damage;
           if ($damage > 0) {
             AllyDamageTakenAbilities($targetPlayer, $target[1]);
-            DamageDealtAbilities($player, $damage, "ARCANE", $sourceID);
+            DamageDealtAbilities("ALLY", $damage, "ARCANE", $sourceID);
           }
           if ($allies[$target[1] + 2] <= 0) {
             DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
@@ -1677,7 +1675,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         CheckSpellvoid($target, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         $Character = new PlayerCharacter($targetPlayer);
-        if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier") && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) DoMbrioBaseVizier($targetPlayer, $damage);
+        if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier", checkGem:true) && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) DoMbrioBaseVizier($targetPlayer, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         $Solray = $Character->FindCardID("solray_plating");
@@ -2296,8 +2294,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $object = new CharacterCard($lastResult, $player);
       else
         $object = MZIndexToObject($player, $lastResult);
-      $object->AddDefCounters(-1);
-      if ($parameter < 0) WriteLog(CardLink($object->CardID()) . " gets a -1 counter.");
+      $num = is_numeric($parameter) ? $parameter : -1;
+      $object->AddDefCounters($num);
+      if ($num < 0) WriteLog(CardLink($object->CardID()) . " gets a -1 counter.");
       return $lastResult;
     case "REMOVEDEFCOUNTER":
       if ($lastResult == "") return $lastResult;
@@ -2750,6 +2749,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog("Player $player declined a rematch.", highlight: true);
       }
       return 0;
+    case "SWAPREMATCH":
+      global $GameStatus_SwapRematch;
+      if ($lastResult == "YES") {
+        //reset health so they don't immediately die again
+        $p1Health = &GetHealth(1);
+        $p1Health = 1;
+        $p2Health = &GetHealth(2);
+        $p2Health = 1;
+        $inGameStatus = $GameStatus_SwapRematch;
+        ClearGameFiles($gameName, true);
+      }
+      else {
+        WriteLog("Player $player declined the swap heroes rematch.", highlight: true);
+      }
+      return 0;
     case "PLAYERTARGETEDABILITY":
       PlayerTargetedAbility($player, $parameter, $lastResult);
       return "";
@@ -3123,6 +3137,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $ItemCard = new ItemCard($parameter, $player);
       $subcards = explode(",", $ItemCard->SubCards());
       $subcardsCount = count($subcards);
+      $numToRemove = is_array($lastResult) ? count($lastResult) : 1;
       $cardID = "";
       for ($i = 0; $i < $subcardsCount; $i++) {
         if (is_array($lastResult)) {
@@ -3144,6 +3159,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $subcards = count($subcards) == 0 ? "-" : implode(",", $subcards);
       $ItemCard->SetSubcards($subcards);
+      if ($ItemCard->CardID() == "nitro_mechanoidc")
+        $ItemCard->AddCounters(-1 * $numToRemove);
       return $cardID;
     case "REMOVESOUL":
       $char = &GetPlayerCharacter($player);
@@ -3189,7 +3206,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDBOTTOMREMOVETOP":
       $deck = new Deck($player);
       $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
-      WriteLog("Player " . $player . " put " . CardLink($card, $card) . " on the bottom of the deck and Clash again!");
+      WriteLog("⬇️ Player " . $player . " put " . CardLink($card, $card) . " on the bottom of the deck and Clash again!");
       return "";
     case "CLASH":
       ClashLogic($parameter, $player);
@@ -3287,10 +3304,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else $additional = "";
       $params = explode(",", $parameter);
       $target = (count($params) < 2) ? $lastResult : $params[1];
-      $targetedPlayer = ($player == 1) ? 2 : 1;
+      $targetedPlayer = (str_contains($lastResult, "THEIR")) ? (($player == 1) ? 2 : 1) : $player;
       $targetClass = TriggerTargets($params[0]);
       if ($targetClass != "") {
-        $targetedPlayer = (DelimStringContains($lastResult, "THEIR", true)) ? (($player == 1) ? 2 : 1) : $player;        
         WriteLog(GetMZCardLink($targetedPlayer, $lastResult) . " targeted by " . CardLink($params[0], $params[0]) . "'s trigger");
       }
       switch ($params[0]) { //these targetting effects need UID
@@ -3378,7 +3394,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
           break;
         default:
-          AddLayer("TRIGGER", $player, $params[0], $target, $additional);
+          if ($target == "PASS") return $target;
+          $targetLoc = explode("-", $target)[0];
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
+          WriteLog("Player " . $targetedPlayer . "'s " . GetMZCardLink($targetedPlayer, $lastResult) . " was targeted");
           break;
       }
       return $lastResult;
@@ -3415,6 +3434,26 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "TRIGGERTRIGGERS":
+      for ($i = $parameter - 1; $i >= 0; --$i) {
+        $Layer = $Stack->Card($i, true);
+        $Hero = new CharacterCard(0, $player);
+        if ($Layer->ID() != "TRIGGER") continue;
+        if ($Layer->PlayerID() != $player) continue;
+        if ($Hero->Status() != 2) continue;
+        switch ($Hero->CardID()) {
+          case "riptide":
+          case "riptide_lurker_of_the_deep":
+            if (SubtypeContains($Layer->Parameter(), "Trap", $player)) {
+              AddLayer("TRIGGER", $player, $Hero->CardID(), "-", "DAMAGE");
+              ++$i; // needed due to reindexing
+            }
+            break;
+          default:
+            break;
+        }
+      }
+      return $lastResult;
     case "TRIGGERORDERING":
       $firstPlayer = $lastResult == "Mine" ? $defPlayer : $mainPlayer;
       $secondPlayer = $firstPlayer == 1 ? 2 : 1;
@@ -3433,7 +3472,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if (!in_array($preLayers[$i+2], $secondUniquePreLayers)) array_push($secondUniquePreLayers, $preLayers[$i+2]);
         }
       }
-
+      PrependDecisionQueue("TRIGGERTRIGGERS", $mainPlayer, $firstPreLayers + $secondPreLayers, 1);
+      PrependDecisionQueue("TRIGGERTRIGGERS", $defPlayer, $firstPreLayers + $secondPreLayers, 1);
       if (count($secondUniquePreLayers) > 1 && HoldPrioritySetting($secondPlayer) != 4 && !IsPlayerAI($secondPlayer)) {
         PrependDecisionQueue("ORDERTRIGGERS", $secondPlayer, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $secondPlayer, "PRELAYERIDS", 1);
@@ -3523,6 +3563,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $dest = $paramArr[1] ?? "MYHAND";
         $isReveal = isset($paramArr[2]) ? ($paramArr[2] == 1) : true;
         $mod = $paramArr[3] ?? "-";
+        $inds = MultiZoneIndices($player, "MYDECK:$search");
+        if ($inds == "PASS") { // in case there aren't any matches, still show the deck
+          $deck = new Deck($player);
+          $count = $deck->RemainingCards();
+          PrependDecisionQueue("SHUFFLEDECK", $player, "-");
+          PrependDecisionQueue("MULTISHOWCARDSDECK", $player, "<-", 1);
+          PrependDecisionQueue("SETDQCONTEXT", $player, "You have matching cards to search for.", 1);
+          PrependDecisionQueue("DECKCARDS", $player, "<-", 1);
+          PrependDecisionQueue("FINDINDICES", $player, "DECKTOPXINDICES," . $count);
+          return $lastResult;
+        }
         switch($dest) {
           case "MYHAND":
             MZMoveCard($player, "MYDECK:$search", $dest, may:true, isReveal:$isReveal);

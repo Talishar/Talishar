@@ -6,6 +6,8 @@ function initializePlayerState($handler, $deckHandler, $player)
   global $SET_Mute, $SET_IsPatron, $p1Inventory, $p2Inventory;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
+  // Lines 3-11 are sideboard slots (headSB, chestSB, armsSB, legsSB, offhandSB,
+  for ($i = 0; $i < 9; $i++) GetArray($deckHandler);
   $inventory = GetArray($deckHandler);
   if($player == 1) $p1Inventory = $inventory;
   else $p2Inventory = $inventory;
@@ -32,7 +34,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   fwrite($handler, "\r\n"); //Discard
   fwrite($handler, "\r\n"); //Pitch
   fwrite($handler, "\r\n"); //Banish
-  fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 -1 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0 -1 0 - 0 0 - 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0\r\n"); //Class State
+  fwrite($handler, "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 -1 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0 -1 0 - 0 0 - 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0\r\n"); //Class State
   fwrite($handler, "\r\n"); //Character effects
   fwrite($handler, "\r\n"); //Soul
   fwrite($handler, "\r\n"); //Card Stats

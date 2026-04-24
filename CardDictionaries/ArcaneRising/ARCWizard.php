@@ -341,8 +341,6 @@ function PlayRequiresTarget($cardID, $from)
       return 2;
     case "freezing_point_red":
       return 0;
-    case "ice_eternal_blue":
-      return 0;
     case "succumb_to_winter_red":
     case "succumb_to_winter_yellow":
     case "succumb_to_winter_blue":
@@ -1190,8 +1188,7 @@ function ProcessSurge($cardID, $player, $target)
     case "aether_quickening_red":
     case "aether_quickening_yellow":
     case "aether_quickening_blue":
-      if (CurrentEffectPreventsGoAgain($cardID) || $player != $mainPlayer) break;
-      GainActionPoints();
+      AddCurrentTurnEffect($cardID, $player);
       WriteLog(CardLink($cardID, $cardID) . " gained go again");
       break;
     case "prognosticate_red":
@@ -1252,7 +1249,7 @@ function ProcessSurge($cardID, $player, $target)
     case "perennial_aetherbloom_red":
     case "perennial_aetherbloom_yellow":
     case "perennial_aetherbloom_blue":
-      WriteLog(CardLink($cardID, $cardID) . " returns on the bottom of the deck");
+      WriteLog("⬇️ " . CardLink($cardID, $cardID) . " returns on the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
       $discardPieces = DiscardPieces();
@@ -1282,8 +1279,7 @@ function ProcessSurge($cardID, $player, $target)
     case "trailblazing_aether_red":
     case "trailblazing_aether_yellow":
     case "trailblazing_aether_blue":
-      if (CurrentEffectPreventsGoAgain($cardID) || $player != $mainPlayer) break;
-      GainActionPoints();
+      AddCurrentTurnEffect($cardID, $player);
       WriteLog(CardLink($cardID, $cardID) . " gained go again");
       break;
     default:

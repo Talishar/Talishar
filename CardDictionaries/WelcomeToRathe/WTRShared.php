@@ -27,7 +27,6 @@
       case "anothos": return "AA";
       case "tectonic_plating": case "helm_of_isens_peak": return "A";
       case "harmonized_kodachi": return "AA";
-      case "breaking_scales": return "AR";
       case "dawnblade": return "AA";
       case "braveforge_bracers": return "A";
       case "fyendals_spring_tunic": return "I";
@@ -110,6 +109,21 @@
       case "sloggism_red": return 6;
       case "sloggism_yellow": return 5;
       case "sloggism_blue": return 4;
+      case "rout_red": return 3;
+      case "singing_steelblade_yellow": return 1;
+      case "overpower_red": return isset($idArr[1]) ? 6 : 4;
+      case "overpower_yellow": return isset($idArr[1]) ? 5 : 3;
+      case "overpower_blue": return isset($idArr[1]) ? 4 : 2;
+      case "ironsong_response_red": return 3;
+      case "ironsong_response_yellow": return 2;
+      case "ironsong_response_blue": return 1;
+      case "biting_blade_red": return 3;
+      case "biting_blade_yellow": return 2;
+      case "biting_blade_blue": return 1;
+      case "stroke_of_foresight_red": return 3;
+      case "stroke_of_foresight_yellow": return 2;
+      case "stroke_of_foresight_blue": return 1;
+      case "ancestral_empowerment_red": return 1;
       default: return 0;
     }
   }
@@ -147,6 +161,11 @@
       case "razor_reflex_red": case "razor_reflex_yellow": case "razor_reflex_blue": return true;
       case "nimblism_red": case "nimblism_yellow": case "nimblism_blue": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "sloggism_red": case "sloggism_yellow": case "sloggism_blue": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
+      case "rout_red": case "singing_steelblade_yellow": case "overpower_red": case "overpower_yellow": case "overpower_blue": return true;
+      case "ironsong_response_red": case "ironsong_response_yellow": case "ironsong_response_blue": return true;
+      case "biting_blade_red": case "biting_blade_yellow": case "biting_blade_blue": return true;
+      case "stroke_of_foresight_red": case "stroke_of_foresight_yellow": case "stroke_of_foresight_blue": return true;
+      case "ancestral_empowerment_red": return true;
       default: return false;
     }
   }
@@ -155,6 +174,7 @@
   {
     global $mainPlayer, $currentPlayer, $defPlayer, $CombatChain;
     $rv = "";
+    $repriseActive = RepriseActive();
     switch($cardID) {
       case "blessing_of_deliverance_red": case "blessing_of_deliverance_yellow": case "blessing_of_deliverance_blue": if(SearchCount(SearchPitch($currentPlayer, minCost:3)) > 0) Draw($currentPlayer); return "";
       case "scabskin_leathers":
@@ -239,6 +259,7 @@
         return "";
       //Ninja
       case "ancestral_empowerment_red":
+        AddCurrentTurnEffect($cardID, $currentPlayer);
         Draw($currentPlayer);
         return "";
       case "flic_flak_red": case "flic_flak_yellow": case "flic_flak_blue":
@@ -267,6 +288,12 @@
           AddDecisionQueue("ADDHANDOWNER", $defPlayer, "-", 1);
           AddDecisionQueue("REMOVECOMBATCHAIN", $mainPlayer, "-", 1);
         }
+        if (!str_contains($target, "COMBATCHAINATTACKS")) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "ironsong_response_red":
+      case "ironsong_response_yellow":
+      case "ironsong_response_blue":
+        if (!str_contains($target, "COMBATCHAINATTACKS") && $repriseActive) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "singing_steelblade_yellow":
         if(RepriseActive() && SearchDeck($currentPlayer, "AR") != "") {
@@ -277,6 +304,7 @@
           AddDecisionQueue("WRITELOG", $currentPlayer, "<0> was banished.", 1);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
+        if (!str_contains($target, "COMBATCHAINATTACKS")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "steelblade_shunt_red": case "steelblade_shunt_yellow": case "steelblade_shunt_blue":
         if(IsWeaponAttack()) {
@@ -289,12 +317,22 @@
         return "";
       case "biting_blade_red": case "biting_blade_yellow": case "biting_blade_blue":
         if(RepriseActive()) { ApplyEffectToEachWeapon($cardID); $rv = "Gives weapons you control +1 for the rest of the turn"; }
+        if (!str_contains($target, "COMBATCHAINATTACKS")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;
       case "stroke_of_foresight_red": case "stroke_of_foresight_yellow": case "stroke_of_foresight_blue":
         if(RepriseActive()) {
           Draw($currentPlayer);
           $hand = &GetHand($mainPlayer);
           if(count($hand) > 0) AddDecisionQueue("HANDTOPBOTTOM", $mainPlayer, "");
+        }
+        if (!str_contains($target, "COMBATCHAINATTACKS")) AddCurrentTurnEffect($cardID, $currentPlayer);
+        return "";
+      case "overpower_red":
+      case "overpower_yellow":
+      case "overpower_blue":
+        if (!str_contains($target, "COMBATCHAINATTACKS")) {
+          if ($repriseActive) AddCurrentTurnEffect("$cardID-REPRISE", $currentPlayer);
+          else AddCurrentTurnEffect("$cardID", $currentPlayer);
         }
         return "";
       case "sharpen_steel_red": case "sharpen_steel_yellow": case "sharpen_steel_blue":
@@ -517,15 +555,22 @@
     return GeneratedHasCrush($cardID);
   }
 
-  function Mangle()
+  function Mangle($player="-", $target="-")
   {
-    global $mainPlayer;
-    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;hasNegCounters=true");
-    AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-    AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
+    global $currentPlayer;
+    $player = $player == "-" ? $currentPlayer : $player;
+    if ($target == "-") {
+      AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=E;hasNegCounters=true");
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+    }
+    else {
+      $targEquip = CleanTargetToObject($player, $target);
+      $targEquip->Destroy();
+    }
   }
 
-  function ProcessCrushEffect($cardID)
+  function ProcessCrushEffect($cardID, $target)
   {
     global $mainPlayer, $defPlayer, $CombatChain, $combatChainState, $CCS_DamageDealt, $layers, $combatChain, $chainLinks;
     if(!IsHeroAttackTarget()) return;
@@ -570,7 +615,7 @@
         AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "mangle_red":
-        Mangle();
+        Mangle($mainPlayer, $target);
         break;
       case "righteous_cleansing_yellow":
         AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES,5");
@@ -594,7 +639,7 @@
         AddNextTurnEffect("star_struck_yellow," . $damageDone, $defPlayer);
         break;
       case "boulder_drop_yellow": case "boulder_drop_blue": case "boulder_drop_red":
-        MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true);
+        MZMoveCard($defPlayer, "MYHAND", "MYTOPDECK", silent:true, DQContext: "Choose a card to put on top of your deck");
         break;
       case "put_em_in_their_place_red":
         $hand = &GetHand($defPlayer);

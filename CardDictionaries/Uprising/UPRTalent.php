@@ -139,7 +139,7 @@
         AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}", 1);
-        AddDecisionQueue("MZADDZONE", $currentPlayer, "MYBOTDECK", 1);
+        AddDecisionQueue("MZADDZONE", $currentPlayer, "OWNERSBOTDECK", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from " . CardLink($cardID), 1);
@@ -179,14 +179,6 @@
     global $mainPlayer, $defPlayer;
     switch($cardID)
     {
-      case "liquefy_red":
-        if(IsHeroAttackTarget() && RuptureActive()) {
-          AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
-          AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
-          AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
-        }
-        break;
       case "breaking_point_red":
         if(IsHeroAttackTarget() && RuptureActive()) DestroyArsenal($defPlayer, effectController:$mainPlayer);
         break;

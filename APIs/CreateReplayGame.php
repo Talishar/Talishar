@@ -4,7 +4,7 @@ session_start();
 
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
-include "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 
@@ -167,11 +167,23 @@ $p1StartingHealth = $startingHealth;
 
 $filename = "../Games/$gameName/GameFile.txt";
 $gameFileHandler = fopen($filename, "w");
+if ($gameFileHandler === false) {
+  $response->error = "Failed to create GameFile.txt in game directory: ../Games/$gameName/";
+  http_response_code(500);
+  echo json_encode($response);
+  exit;
+}
 include "../MenuFiles/WriteGamefile.php";
 WriteGameFile();
 
 $filename = "../Games/$gameName/gamelog.txt";
 $handler = fopen($filename, "w");
+if ($handler === false) {
+  $response->error = "Failed to create gamelog.txt in game directory: ../Games/$gameName/";
+  http_response_code(500);
+  echo json_encode($response);
+  exit;
+}
 fclose($handler);
 
 

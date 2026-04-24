@@ -21,11 +21,11 @@ class CombatChain {
   }
 
   function FindCardUID($uid) {
-    if (!$this->HasCurrentLink()) return "";
+    if (!$this->HasCurrentLink()) return new ChainCard(-1);
     for ($i = 0; $i < count($this->chain); $i += CombatChainPieces()) {
       if ($this->chain[$i + 7] == $uid) return new ChainCard($i);
     }
-    return "";
+    return new ChainCard(-1);
   }
 
   function FindCardID($id) {
@@ -145,12 +145,16 @@ class ChainCard {
     }
 
     function ModifyPower($amount) {
+      if (!isset($this->chain[$this->index+5])) return;
       $this->chain[$this->index+5] += $amount;
       CurrentEffectAfterPlayOrActivateAbility();
     }
 
     function DefenseModifier() {
-      return $this->chain[$this->index+6] ?? 0;
+      if (isset($this->chain[$this->index+6]) && is_numeric($this->chain[$this->index+6]))
+        return intval($this->chain[$this->index+6]);
+      else
+        return 0;
     }
 
     function ModifyDefense($amount) {
@@ -178,10 +182,7 @@ class ChainCard {
     }
 
     function CardBlockValue() {
-      if (CanGainBlock($this->ID())) {
-        return BlockValue($this->ID()) + $this->chain[$this->index + 6];
-      }
-      else return BlockValue($this->ID());
+      return $this->index == -1 ? 0 : BlockingCardDefense($this->index);
     }
 
     function OriginalID() {

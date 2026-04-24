@@ -18,6 +18,9 @@ include_once "../Classes/Card.php";
 include_once "../Classes/CardObjects/OMNCards.php";
 include_once "../Classes/CardObjects/AZSCards.php";
 include_once "../Classes/CardObjects/AHACards.php";
+include_once "../Classes/CardObjects/MPWCards.php";
+include_once "../Classes/CardObjects/AOLCards.php";
+
 
 // GetMetafyTiersFromDatabase is defined in includes/MetafyHelper.php (included above)
 
@@ -76,9 +79,11 @@ if (!isset($decksToTry)) $decksToTry = TryPOST("decksToTry"); //This is only use
 if (!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", false); //Set this to true to save the provided deck link to your favorites
 if (!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
 if (!isset($matchup)) $matchup = TryPOST("matchup", ""); //The matchup link
+$forceBaseDeckRefresh = ($matchup === "__base__");
+if ($forceBaseDeckRefresh) $matchup = "";
 $starterDeck = false;
 
-if ($matchup == "" && GetCachePiece($gameName, $playerID + 6) != "") {
+if ($matchup == "" && !$forceBaseDeckRefresh && GetCachePiece($gameName, $playerID + 6) != "") {
   $response->error = "Another player has already joined the game.";
   echo json_encode($response);
   exit;
@@ -109,6 +114,7 @@ $preconDecklinks = [
   "https://fabrary.net/decks/01K4XX1ERKXRYW8XHWE9BTAS4W", //pleiades
   "https://fabrary.net/decks/01K74RSFG9RTVPVN534DZPJJNQ", //rhinar
   "https://fabrary.net/decks/01K74RXDPRPJT9YWGFVAPHECDF", //slippy
+  "https://fabrary.net/decks/01KNHHE1MY39BC4PXYXMTJVT1M", //hala
 ];
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
@@ -145,7 +151,17 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
    }
  }
 
- if ($matchup == "" && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
+ // Block a recently kicked player from immediately rejoining
+ if ($playerID == 2) {
+   $kickedUsername = strval(GetCachePiece($gameName, 18));
+   if ($kickedUsername !== "" && $kickedUsername === $joinerName) {
+     $response->error = "You were kicked from this lobby.";
+     echo json_encode($response);
+     exit;
+   }
+ }
+
+ if ($matchup == "" && !$forceBaseDeckRefresh && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
    if ($gameStatus >= $MGS_GameStarted) {
      $response->gameStarted = true;
    }
@@ -315,7 +331,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
        if ($id == "")
          continue;
       if($id == "goldfin_harpoon") $id = "goldfin_harpoon_yellow";
-       ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards);
+       ProcessCard($id, $count, $numSideboard, $isFaBDB, $totalCards, $modularSideboard, $unsupportedCards, $character, $weapon1, $weapon2, $weaponSideboard, $head, $headSideboard, $chest, $chestSideboard, $arms, $armsSideboard, $legs, $legsSideboard, $offhand, $offhandSideboard, $quiver, $quiverSideboard, $deckCards, $sideboardCards, $format);
 
        if (IsCardBanned($id, $format, $character) && $format != "draft") {
          if ($bannedCard != "")
@@ -560,7 +576,11 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      $p2MetafyCommunities = GetMetafyCommunitiesFromDatabase($p2uid);
    }
 
-   if ($playerID == 2)
+   // Only generate a fresh auth key for a true new join, not for a base-deck refresh.
+   // When $forceBaseDeckRefresh is true the player is already in the lobby and is just
+   // reloading their deck to the base (no matchup) state; regenerating the key here would
+   // invalidate the key stored on the frontend and cause an auth mismatch when the game starts.
+   if ($playerID == 2 && !$forceBaseDeckRefresh)
      $p2Key = hash("sha256", rand() . rand() . rand());
 
   WriteGameFile();
@@ -570,6 +590,8 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
   // for now truncate hero names
   SetCachePiece($gameName, $playerID + 6, TruncateHeroName($character));
   SetCachePiece($gameName, 14, $gameStatus);
+  // A different player successfully joined — clear the kicked-player block
+  if ($playerID == 2) SetCachePiece($gameName, 18, "");
   GamestateUpdated($gameName);
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
@@ -742,6 +764,8 @@ function IsCardBanned($cardID, $format, $character)
       switch($cardID) {
         case "blaze_firemind":
         case "raydn_duskbane":
+        case "dorinthea_quicksilver_prodigy":
+        case "dawnblade_resplendent":
           return false;
         default:
           break;
@@ -774,19 +798,18 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["AHA", "OMN", "AZS"];
+  $unreleasedSets = ["OMN", "AZS", "MPW", "AOL", "DDD"];
   // promos that are made legal ahead of thier set
-  $specialReleases = ["batter_to_a_pulp_red"];
+  $specialReleases = [];
   if (in_array($cardID, $specialReleases)) return false;
   return in_array($cardID, $specialUsePromos) || in_array(CardSet($cardID), $unreleasedSets);
 }
 
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
+  if ($cardID == "stormshard_red") return true; 
+  if ($cardID == "odds_on_favorite_blue") return true; 
   switch (CardSet($cardID)) {
-    case "AHA":
-      $card = GetClass($cardID, 0);
-      return $card == "-";
     case "OMN":
       $card = GetClass($cardID, 0);
       return $card == "-";
@@ -806,7 +829,7 @@ function isUnimplemented($cardID) {
 function isBannedInFormat($cardID, $format) {
   global $livingLegends, $benched;
   if ($format == "compblitz") $format = "blitz";
-  if ($format == "compcc" || $format == "futurecc") $format = "cc";
+  if ($format == "compcc") $format = "cc";
   if ($format == "compllcc" || $format == "futurell") $format = "llcc";
   if ($format == "compsage" || $format == "futuresage") $format = "sage";
 
@@ -820,11 +843,11 @@ function isBannedInFormat($cardID, $format) {
           "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
           "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
           "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
-          "count_your_blessings_red", "count_your_blessings_yellow", "scepter_of_pain", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
+          "count_your_blessings_red", "count_your_blessings_yellow", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
           "azalea_ace_in_the_hole", "death_dealer", "bonds_of_agony_blue", "golden_tipple_red", "golden_tipple_yellow",
-          "plume_of_evergrowth", "talk_a_big_game_blue", "rootbound_carapace_red", "rootbound_carapace_yellow", "rootbound_carapace_blue", "orb_weaver_spinneret_yellow", "orb_weaver_spinneret_blue",
+          "plume_of_evergrowth", "talk_a_big_game_blue", "orb_weaver_spinneret_yellow", "orb_weaver_spinneret_blue",
           "chart_the_high_seas_blue", "wrath_of_retribution_red", "brand_with_cinderclaw_red", "brand_with_cinderclaw_yellow", "brand_with_cinderclaw_blue",
-          "kano_dracai_of_aether", "crucible_of_aetherweave", "florian_rotwood_harbinger", "rotwood_reaper", "mandible_claw",
+          "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots"
       ], $livingLegends),
       "commoner" => [
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
@@ -860,6 +883,12 @@ function isBannedInFormat($cardID, $format) {
         "sirens_of_safe_harbor_red", "sirens_of_safe_harbor_yellow", "sirens_of_safe_harbor_blue"
       ], $benched)
   ];
+  if ($format == "futurecc") {
+    $futureBans = ["electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
+                   "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade", "skyward_serenade_yellow",
+                   "volzar_the_lightning_rod"];
+    return in_array($cardID, $bannedCards["cc"]) || in_array($cardID, $futureBans);
+  }
   return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
 }
 
@@ -901,10 +930,10 @@ function GetCardId($card, $isFaBDB, $isFaBMeta, $orderedSets) {
   return "";
 }
 
-function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards) {
+function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modularSideboard, &$unsupportedCards, &$character, &$weapon1, &$weapon2, &$weaponSideboard, &$head, &$headSideboard, &$chest, &$chestSideboard, &$arms, &$armsSideboard, &$legs, &$legsSideboard, &$offhand, &$offhandSideboard, &$quiver, &$quiverSideboard, &$deckCards, &$sideboardCards, $format) {
   
   // uncomment on 4/1
-  // $id = $id == "titanium_bauble_blue" ? "fangs_a_lot_blue" : $id;
+  // $id = $id == "titanium_bauble_blue" && !str_contains($format, "comp") ? "fangs_a_lot_blue" : $id;
   $cardName = CardName($id);
   if ($cardName == "" || isUnimplemented($id)) {
       echo "$id - $cardName";

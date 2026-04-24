@@ -701,44 +701,107 @@
 //   }
 // }
 
+class diced extends BaseCard {
+	function PlayAbility($i) {
+		AddCurrentTurnEffect("$this->cardID-1", $this->controller);
+		AddCurrentTurnEffectNextAttack("$this->cardID-$i", $this->controller);
+	}
+}
 
-// class diced_red extends Card {
+class diced_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "diced_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "diced_red";
+    $this->controller = $controller;
+		$this->baseCard = new diced($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility(3);
+    return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		if (!$CombatChain->HasCurrentLink()) return true;
+		return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		if (is_numeric($param)) return intval($param);
+		else return 0;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$attackCard = $CombatChain->AttackCard()->ID();
+		return SubtypeContains($attackCard, "Dagger", $this->controller);
+	}
+}
 
 
-// class diced_yellow extends Card {
+class diced_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "diced_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "diced_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new diced($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility(2);
+    return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		if (!$CombatChain->HasCurrentLink()) return true;
+		return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		if (is_numeric($param)) return intval($param);
+		else return 0;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$attackCard = $CombatChain->AttackCard()->ID();
+		return SubtypeContains($attackCard, "Dagger", $this->controller);
+	}
+}
 
 
-// class diced_blue extends Card {
+class diced_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "diced_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "diced_blue";
+    $this->controller = $controller;
+    $this->baseCard = new diced($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility(1);
+    return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		if (!$CombatChain->HasCurrentLink()) return true;
+		return CardSubType($CombatChain->AttackCard()->ID()) != "Dagger";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		if (is_numeric($param)) return intval($param);
+		else return 0;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$attackCard = $CombatChain->AttackCard()->ID();
+		return SubtypeContains($attackCard, "Dagger", $this->controller);
+	}
+}
 
 
 // class display_loyalty_red extends Card {
@@ -1248,17 +1311,34 @@
 // }
 
 
-// class hunts_end_red extends Card {
+class hunts_end_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "hunts_end_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "hunts_end_red";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		if (!$CombatChain->HasCurrentLink()) return true;
+		if (CountAura("fealty", $this->controller) < 3) return true;
+		$subtype = CardSubType($CombatChain->AttackCard()->ID());
+		return $subtype != "Dagger";
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+}
 
 
 // class hunted_or_hunter_red extends Card {
@@ -1325,57 +1405,130 @@
 //   }
 // }
 
+class incision extends BaseCard {
+	function IsPlayRestricted() {
+		global $CombatChain, $chainLinks;
+		if (!$CombatChain->HasCurrentLink()) return true;
+		for ($i = 0; $i < count($chainLinks); ++$i) {
+			if (SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinks[$i][2] == 1) {
+				return false;
+			}
+		}
+		return !DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Dagger");
+	}
 
-// class incision_red extends Card {
+	function PlayAbility() {
+		global $CombatChain;
+		if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "incision_red";
-//     $this->controller = $controller;
-//     }
+class incision_red extends Card {
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function __construct($controller) {
+    $this->cardID = "incision_red";
+    $this->controller = $controller;
+		$this->baseCard = new incision($this->cardID, $this->controller);
+	}
 
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
 
-// class incision_yellow extends Card {
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "incision_yellow";
-//     $this->controller = $controller;
-//     }
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class incision_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "incision_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
 
 
-// class jagged_edge_red extends Card {
+class incision_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "jagged_edge_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "incision_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new incision($this->cardID, $this->controller);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+
+class incision_blue extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "incision_blue";
+    $this->controller = $controller;
+    $this->baseCard = new incision($this->cardID, $this->controller);
+	}
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+
+class jagged_edge_red extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "jagged_edge_red";
+    $this->controller = $controller;
+	}
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $this->controller);
+	}
+}
 
 
 // class kabuto_of_imperial_authority extends Card {

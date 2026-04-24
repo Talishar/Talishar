@@ -87,9 +87,9 @@ function DYNEffectPowerModifier($cardID)
     case "precision_press_red": return (NumEquipBlock() > 0 ? 3 : 0);
     case "precision_press_yellow": return (NumEquipBlock() > 0 ? 2 : 0);
     case "precision_press_blue": return (NumEquipBlock() > 0 ? 1 : 0);
-    case "puncture_red": return 3;
-    case "puncture_yellow": return 2;
-    case "puncture_blue": return 1;
+    case "puncture_red": return NumEquipBlock() > 0 ? 4 : 3;
+    case "puncture_yellow": return NumEquipBlock() > 0 ? 3 : 2;
+    case "puncture_blue": return NumEquipBlock() > 0 ? 2 : 1;
     case "felling_swing_red": return 6;
     case "felling_swing_yellow": return 5;
     case "felling_swing_blue": return 4;
@@ -148,6 +148,7 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "runic_reaping_red-BUFF": case "runic_reaping_yellow-BUFF": case "runic_reaping_blue-BUFF": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "runic_reaping_red-HIT": case "runic_reaping_yellow-HIT": case "runic_reaping_blue-HIT": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "mask_of_perdition": return true;
+    case "blacktek_whisperers": return true;
     default:
       return false;
   }
@@ -492,6 +493,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "mask_of_perdition":
       AddEffectToCurrentAttack($cardID);
       return "";
+    case "blacktek_whisperers":
+      if (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $currentPlayer))
+        AddEffectToCurrentAttack($cardID);
+      return "";
     default: return "";
   }
 }
@@ -512,7 +517,6 @@ function DYNHitEffect($cardID, $from, $attackID)
       MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted], "MYITEMS", may:true);
       break;
     case "spiders_bite": AddCurrentTurnEffect($cardID, $defPlayer); break;
-    case "blacktek_whisperers": GiveAttackGoAgain(); break;
     case "eradicate_yellow":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
@@ -685,6 +689,7 @@ function CheckHitContract($contractType, $otherPlayer)
 function CheckContracts($banishedBy, $cardBanished)
 {
   global $CombatChain, $chainLinks;
+  $chainLinks = $chainLinks ?? [];
   for($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if($chainCard->PlayerID() != $banishedBy) continue;
@@ -694,6 +699,7 @@ function CheckContracts($banishedBy, $cardBanished)
     if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
   for($i = 0; $i < count($chainLinks); ++$i) {
+    if(!is_array($chainLinks[$i])) continue;
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j+1] != $banishedBy) continue;
       if($chainLinks[$i][$j+2] == 0) continue;

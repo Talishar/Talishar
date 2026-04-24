@@ -2,7 +2,7 @@
 
 include 'Libraries/HTTPLibraries.php';
 include "HostFiles/Redirector.php";
-include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/SHMOPLibraries.php";
 
 SetHeaders();
 

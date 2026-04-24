@@ -267,7 +267,7 @@ enum MetafyCommunity : string
         "benji_the_piercing_wind=PEN335-T", "call_to_the_grave_blue=ANQ019-T", "censor_red=ANQ012-T", "chane=PEN344-T", "cut_through_the_facade_red=ANQ013-T", "dash=PEN338-T", 
         "dash_database=PEN337-T", "dromai=PEN347-T", "enlightened_strike_red=ANQ000-T", "fai=PEN348-T", "fate_foreseen_red=ANQ033-T", "fiddlers_green_red=ANQ037-T", "gorganian_tome=ANQ020-T", 
         "hold_the_line_blue=ANQ017-T", "kano=PEN342-T", "kassai_cintari_sellsword=PEN336-T", "lexi=PEN346-T", "midas_touch_yellow=ANQ021-T", 
-        "oasis_respite_red=ANQ035-T", "oldhim=ELE002-T", "premeditate_red=ANQ022-T", "prism=PEN343-T", "remembrance_yellow=ANQ026-T", 
+        "oldhim=ELE002-T", "premeditate_red=ANQ022-T", "prism=PEN343-T", "remembrance_yellow=ANQ026-T", 
         "rhinar=PEN334-T", "ripple_away_blue=ANQ014-T", "riptide=PEN341-T", "rusted_relic_blue=ANQ023-T", "seduce_secrets_yellow=ANQ027-T", 
         "sigil_of_gravespawning_blue=PEN098-T", "snatch_red=ANQ031-T", "teklovossen=PEN339-T", "tenacity_yellow=ANQ015-T", 
         "that_all_you_got_yellow=ANQ018-T", "the_weakest_link_red=ANQ016-T", "this_rounds_on_me_blue=ANQ024-T", "truce_blue=ANQ025-T", "stir_the_wildwood_red=FAB047-T",
@@ -277,8 +277,13 @@ enum MetafyCommunity : string
         "hyper_inflation_red=GEM131-T", "ion_charged_yellow=GEM135-T", "knife_through_red=GEM113-T", "man_overboard_red=GEM126-T", "maxx_the_hype_nitro=GEM105-T", "rainbow_goo_trap_red=GEM122-T",
         "reinforce_the_line_red=GEM140-T", "roaring_beam_yellow=GEM129-T", "shallow_water_shark_harpoon_yellow=GEM127-T", "shimmering_mirage_blue=GEM125-T", "snarky_prick_red=GEM139-T",
         "submerge_red=GEM128-T", "teklo_trebuchet_2000_blue=GEM121-T", "valahai_riven_yellow=GEM115-T", "weeping_battleground_red=GEM123-T", "elemental_strike_red=PEN205-T",
-        "nitro_mechanoid=GEM519-T", "nitro_mechanoida=GEM519-T", "nitro_mechanoidb=GEM519-T", "nitro_mechanoidc=GEM519-T", "colors_of_aria_red=PEN206-T"
-    ];
+        "nitro_mechanoid=GEM519-T", "nitro_mechanoida=GEM519-T", "nitro_mechanoidb=GEM519-T", "nitro_mechanoidc=GEM519-T", "colors_of_aria_red=PEN206-T", "dawnblade=MPW156-T",
+        "golden_grail=MPW007-T", "hala=MPW004-T", "sharpening_sparks_red=MPW026-T", "stand_tall_yellow=MPW037-T", "valiant_dynamo=MPW012-T", "zenith_blade=MPW005-T", "aurora_legacy_of_tempest=OMN047-T", "circular_flowtide_yellow=OMN033-T", "oscilio_forked_continuum=OMN094-T", "zyggy_starlight=OMN001-T",
+        "zyggy_starlight_red=OMN001-T", "zyggy_starlight_yellow=OMN002-T", "zyggy_starlight_blue=OMN003-T", "cosmic_duality_red=FAB464-T", "nebula_duality_red=FAB465-T",
+        "voltbound_duality_red=FAB466-T", "omens_of_arcana_red=FAB467-T", "astral_strike_red=FAB469-T", "lightning_flow=FAB470-T", "flowing_stormstike_red=FAB471-T",
+        "meteoric_rise_red=FAB472-T", "voltic_impact_red=FAB473-T", "flowstate_embodiment_red=FAB476-T", 
+        "golden_company_red=FAB481-T", "golden_company_yellow=FAB482-T", "golden_company_blue=FAB483-T", 
+        ];
     return $altArts;
   }
 }

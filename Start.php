@@ -3,7 +3,7 @@
 ob_start();
 include "HostFiles/Redirector.php";
 include "Libraries/HTTPLibraries.php";
-include "Libraries/SHMOPLibraries.php";
+include_once "Libraries/SHMOPLibraries.php";
 include "Libraries/NetworkingLibraries.php";
 include "GameLogic.php";
 include "GameTerms.php";
@@ -69,7 +69,7 @@ fwrite($handler, "0\r\n"); //Current Turn
 fwrite($handler, "M 1\r\n"); //What phase/player is active
 fwrite($handler, "1\r\n"); //Action points
 fwrite($handler, "\r\n"); //Combat Chain
-fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1\r\n"); //Combat Chain State
+fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0\r\n"); //Combat Chain State
 fwrite($handler, "\r\n"); //Current Turn Effects
 fwrite($handler, "\r\n"); //Current Turn Effects From Combat
 fwrite($handler, "\r\n"); //Next Turn Effects
@@ -87,7 +87,7 @@ fwrite($handler, $p2Key . "\r\n"); //Player 2 auth key
 fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
 fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
 fwrite($handler, "\r\n"); //Animations
-fwrite($handler, "0\r\n"); //Current Player activity status -- 0 = active, 2 = inactive
+fwrite($handler, "0\r\n"); //Not Used - Current Player activity status -- 0 = active, 2 = inactive
 fwrite($handler, "0\r\n"); //Player1 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fwrite($handler, "0\r\n"); //Player2 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
 fwrite($handler, "0\r\n"); //Player 1 total time
