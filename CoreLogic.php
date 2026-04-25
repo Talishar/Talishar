@@ -1225,23 +1225,24 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
 
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    $thisType = CardType($combatChain[$i]);
-    $thisSubType = CardSubType($combatChain[$i]);
     if ($color != "" && !ColorContains($combatChain[$i], $color, $combatChain[$i+1])) continue;
-    if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || TypeContains($combatChain[$i], $cardType, $playerID)) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
-      $excluded = false;
-      foreach($exclCardTypeArray as $cardType) {
-        if (TypeContains($combatChain[$i], $cardType)) $excluded = true;
-      }
-      foreach($exclCardSubTypeArray as $subtype) {
-        if (SubtypeContains($combatChain[$i], $subtype)) $excluded = true;
-      }
-      if ($excluded) continue;
-      if ($pieces != "") $pieces .= ",";
-      if (!$asMZInd) $pieces .= $i;
-      else $pieces .= "COMBATCHAINLINK-$i";
+    if ($playerID != "" && $combatChain[$i + 1] != $playerID) continue;
+    if ($cardType != "" && !TypeContains($combatChain[$i], $cardType, $playerID)) continue;
+    if ($subType != "" && !SubtypeContains($combatChain[$i], $subType)) continue; 
+    if ($nameContains != "" && !CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true)) continue;
+
+    $excluded = false;
+    foreach($exclCardTypeArray as $exCardType) {
+      if (TypeContains($combatChain[$i], $exCardType)) $excluded = true;
     }
-  }
+    foreach($exclCardSubTypeArray as $exSubtype) {
+      if (SubtypeContains($combatChain[$i], $exSubtype)) $excluded = true;
+    }
+    if ($excluded) continue;
+    if ($pieces != "") $pieces .= ",";
+    if (!$asMZInd) $pieces .= $i;
+    else $pieces .= "COMBATCHAINLINK-$i";
+    }
   return $pieces;
 }
 
@@ -1963,6 +1964,7 @@ function ColorOverride($cardID, $player = "")
       case "become_the_cup_red":
       case "become_the_cup_yellow":
       case "become_the_cup_blue":
+        if ($cardID != $effectParams[0]) continue;
         $pitchToAdd = match ($effectParams[1] ?? "-") {
         "Red" => 1, "Yellow" => 2, "Blue" => 3, default => 0
         };
