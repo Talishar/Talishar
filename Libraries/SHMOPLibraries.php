@@ -126,12 +126,14 @@ function IncrementCachePiece($gameName, $piece)
   return $intVal + 1;
 }
 
-function GamestateUpdated($gameName)
+function GamestateUpdated($gameName, $resetTimer = true)
 {
   $cache = ReadCache($gameName);
   $cacheArr = explode(SHMOPDelimiter(), $cache);
   $cacheArr[0]++;
-  $currentTime = round(microtime(true) * 1000);
-  $cacheArr[5] = $currentTime;
+  if ($resetTimer) {
+    $currentTime = round(microtime(true) * 1000);
+    $cacheArr[5] = $currentTime;
+  }
   WriteCache($gameName, implode(SHMOPDelimiter(), $cacheArr));
 }
