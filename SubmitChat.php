@@ -146,7 +146,16 @@ if ($handler) {
   fclose($handler);
 }
 
-GamestateUpdated($gameName);
+$resetTimer = true;
+$gamestateCacheContent = ReadCache(GamestateID($gameName));
+if (!empty($gamestateCacheContent)) {
+    $gamestatePieces = explode("\r\n", $gamestateCacheContent);
+    if (count($gamestatePieces) > 40) {
+        $currentPlayerNum = intval(trim($gamestatePieces[40]));
+        $resetTimer = ($playerID === $currentPlayerNum);
+    }
+}
+GamestateUpdated($gameName, $resetTimer);
 if ($playerID == 1) SetCachePiece($gameName, 11, 0);
 
 function parseQuickChat($inputEnum)
