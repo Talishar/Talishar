@@ -74,8 +74,11 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $oppStatus = strval(GetCachePiece($gameName, $otherP + 3));
 
   if($oppStatus != "-1" && $oppLastTime != "") {
-    if(($currentTime - $oppLastTime) > 8000 && $oppStatus == "0") {
-      WriteLog("🔌 Your opponent has disconnected.", path: "../");
+    if(($currentTime - $oppLastTime) > 5000 && $oppStatus == "0") {
+      $kickSignal = GetCachePiece($gameName, 17);
+      if ($otherP != 2 || $kickSignal !== "kicked") {
+        WriteLog("🔌 Your opponent has disconnected.", path: "../");
+      }
       GamestateUpdated($gameName);
       SetCachePiece($gameName, $otherP + 3, "-1");
       if ($otherP == 2) SetCachePiece($gameName, $otherP + 6, "");
@@ -98,9 +101,13 @@ if ($playerID != 3 && $authKey !== $targetAuth) {
 }
 
 if ($kickPlayerTwo) {
-  $numP2Disconnects = IncrementCachePiece($gameName, 11);
-  if ($numP2Disconnects >= 3) {
-    WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
+  // Only increment the disconnect counter for genuine disconnects, not manual kicks
+  $kickSignal = GetCachePiece($gameName, 17);
+  if ($kickSignal !== "kicked") {
+    $numP2Disconnects = IncrementCachePiece($gameName, 11);
+    if ($numP2Disconnects >= 3) {
+      WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
+    }
   }
   if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("../Games/" . $gameName . "/p2Deck.txt");
   if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("../Games/" . $gameName . "/p2DeckOrig.txt");
@@ -129,6 +136,17 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   echo json_encode($response);
   exit;
 } else {
+
+  // Detect if player 2 was kicked: they are polling but the game slot is empty again
+  if ($playerID == 2 && ($p2uid === "" || $p2uid === "-") && $gameStatus == $MGS_Initial) {
+    $kickSignal = GetCachePiece($gameName, 17);
+    if ($kickSignal === "kicked") {
+      SetCachePiece($gameName, 17, "");
+      $response->wasKicked = true;
+      echo json_encode($response);
+      exit;
+    }
+  }
 
   $response->lastUpdate = GetCachePiece($gameName, 1);
   if ($gameStatus == $MGS_ChooseFirstPlayer) {
@@ -171,6 +189,14 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->theirNameColor = $nameColor;
   $response->theirOverlayUrl = $overlayURL;
   $response->theirChannelLink = $channelLink;
+
+  // Patron/supporter info for opponent
+  $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
+  $theirUid = ($playerID == 1 ? $p2uid : $p1uid);
+  $response->theirIsContributor = in_array($theirUid, $contributors);
+  $response->theirIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
+  $response->theirIsPvtVoidPatron = ($theirUid === "PvtVoid");
+  $response->theirMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
   $response->submitSideboard = ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none"));
 
