@@ -74,7 +74,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $oppStatus = strval(GetCachePiece($gameName, $otherP + 3));
 
   if($oppStatus != "-1" && $oppLastTime != "") {
-    if(($currentTime - $oppLastTime) > 5000 && $oppStatus == "0") {
+    if(($currentTime - $oppLastTime) > 30000 && $oppStatus == "0") {
       $kickSignal = GetCachePiece($gameName, 17);
       if ($otherP != 2 || $kickSignal !== "kicked") {
         WriteLog("🔌 Your opponent has disconnected.", path: "../");
