@@ -1230,11 +1230,11 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
     if ($color != "" && !ColorContains($combatChain[$i], $color, $combatChain[$i+1])) continue;
     if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || TypeContains($combatChain[$i], $cardType, $playerID)) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
       $excluded = false;
-      for ($j = 0; $j < count($exclCardTypeArray); ++$j) {
-        if ($thisType == $exclCardTypeArray[$j]) $excluded = true;
+      foreach($exclCardTypeArray as $cardType) {
+        if (TypeContains($combatChain[$i], $cardType)) $excluded = true;
       }
-      for ($k = 0; $k < count($exclCardSubTypeArray); ++$k) {
-        if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
+      foreach($exclCardSubTypeArray as $subtype) {
+        if (SubtypeContains($combatChain[$i], $subtype)) $excluded = true;
       }
       if ($excluded) continue;
       if ($pieces != "") $pieces .= ",";
