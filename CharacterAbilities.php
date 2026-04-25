@@ -1518,7 +1518,7 @@ function CharacterModifiesPlayAura($player, $isToken, $effectAgent)
   }
 }
 
-function CharacterDamagePreventionAmount($player, $index, $damage, $preventable) {
+function CharacterDamagePreventionAmount($player, $index, $damage, $preventable, $amount=false) {
   global $CS_DamageTaken, $CS_NumCharged;
   $char = &GetPlayerCharacter($player);
   $CharacterCard = new CharacterCard($index, $player);
@@ -1527,6 +1527,7 @@ function CharacterDamagePreventionAmount($player, $index, $damage, $preventable)
     case "cloak_of_darkness":
     case "grasp_of_darkness":
     case "dance_of_darkness":
+      if ($amount) return 0; // if we're only checking how much prevention is there, return 0
       if ($char[$index + 9] == 0) return 0;
       return 2;
     case "soulbond_resolve":
