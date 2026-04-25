@@ -3748,8 +3748,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddDecisionQueue("ADDTRIGGER", $currentPlayer, $parameter);
         }
         else {
-          AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-          AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $params[0], 1);
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $lastResult, 1);
           AddDecisionQueue("ADDTRIGGER", $currentPlayer, $params[0], 1);
         }
       }
