@@ -235,10 +235,14 @@ function InventoryStartGameAbilities($player)
 
 function addAdaptiveEquipmentDecision($player, $cardID, $modalType)
 {
+  AddDecisionQueue("HIDEOPEQUIP", $player, 1);
   AddDecisionQueue("LISTEMPTYEQUIPSLOTS", $player, "-");
   AddDecisionQueue("SETDQVAR", $player, "0", 1);
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose where to equip your " . CardLink($cardID, $cardID), 1);
   AddDecisionQueue("BUTTONINPUT", $player, "{0},None", 1);
   AddDecisionQueue("MODAL", $player, $modalType, 1);
   AddDecisionQueue("SHOWMODES", $player, strtolower($modalType), 1);
+  AddDecisionQueue("HIDEOPEQUIP", $player, 0, 1);
+  AddDecisionQueue("ELSE", $player, "-");
+  AddDecisionQueue("HIDEOPEQUIP", $player, 0, 1);
 }

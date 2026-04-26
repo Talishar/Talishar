@@ -64,7 +64,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
-  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack;
+  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack, $CurrentTurnEffects;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -4102,6 +4102,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
         AddDecisionQueue("SETLAYERTARGET", $player, "seismic_shift_red", 1);
+      }
+      return $lastResult;
+    case "HIDEOPEQUIP":
+      if ($parameter == 1)
+        AddCurrentTurnEffect("HIDEOPEQUIP", $player);
+      else {
+        for ($i = $CurrentTurnEffects->NumEffects() - 1; $i >= 0; --$i) {
+          $Effect = $CurrentTurnEffects->Effect($i, true);
+          if ($Effect->EffectID() == "HIDEOPEQUIP")
+            $Effect->Remove();
+        }
       }
       return $lastResult;
     default:
