@@ -123,3 +123,17 @@ function PayLightningFlowInstead($player, $cardID) {
 		AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "$cardID-PAID", 1);
 	}
 }
+
+// Use for effects that say "Prevent the next X damage"
+function FloatingPrevention($index, $damage, $amount, &$remove) {
+	global $CurrentTurnEffects;
+	$Effect = $CurrentTurnEffects->Effect($index);
+	if ($damage >= $Effect->NumUses()) {
+		$remove = true;
+		return $Effect->NumUses();
+	}
+	else {
+		if (!$amount) $Effect->AddUses(-$damage);
+		return $damage;
+	}
+}
