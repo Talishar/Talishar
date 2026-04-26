@@ -808,7 +808,6 @@ function isSpecialUsePromo($cardID) {
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   if ($cardID == "stormshard_red") return true; 
-  if ($cardID == "odds_on_favorite_blue") return true; 
   switch (CardSet($cardID)) {
     case "OMN":
       $card = GetClass($cardID, 0);
