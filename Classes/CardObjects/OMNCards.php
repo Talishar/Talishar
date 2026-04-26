@@ -1040,16 +1040,7 @@ class cosmic_suture extends BaseCard {
   }
 
   function CurrentEffectDamagePrevention($index, $damage, $amount, &$remove) {
-    global $CurrentTurnEffects;
-    $Effect = $CurrentTurnEffects->Effect($index);
-    if ($damage >= $Effect->NumUses()) {
-      $remove = true;
-      return $Effect->NumUses();
-    }
-    else {
-      if (!$amount) $Effect->AddUses(-$damage);
-      return $damage;
-    }
+    FloatingPrevention($index, $damage, $amount, $remove);
   }
 
   function PayAdditionalCosts() {
@@ -1766,5 +1757,81 @@ class stormshard_red extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+}
+
+class boots_of_omnis_ward extends Card {
+  function __construct($controller) {
+    $this->cardID = "boots_of_omnis_ward";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    global $CS_ArcaneDamageTaken;
+    return GetClassState($this->controller, $CS_ArcaneDamageTaken) > 0 ? 1 : 0;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Hero = new CharacterCard(0, $this->controller);
+    return $Hero->Tapped();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $Hero = new CharacterCard(0, $this->controller);
+    $Equip = new CharacterCard($index, $this->controller);
+    $Hero->Tap();
+    $Equip->Destroy();
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    FloatingPrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 1;
+  }
+}
+
+class static_shelter_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "static_shelter_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $message = "if_you_want_to_make_a_lightning_flow";
+    $context = "Choose if you want to pay a resource and create a " . CardLink("lightning_flow");
+    Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+    Await($this->controller, "PayResourcesEffect", amount:1);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    PlayAura("lightning_flow", $this->controller);
+  }
+
+  function SpecialType() {
+    return "DR";
   }
 }

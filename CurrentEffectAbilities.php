@@ -2855,6 +2855,7 @@ function AdministrativeEffect($effectID)
     case "adaptive_dissolver":
     case "adaptive_alpha_mold":
     case "marked":
+    case "HIDEOPEQUIP":
       return true;
     default:
       return false;
