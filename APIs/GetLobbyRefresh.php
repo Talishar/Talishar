@@ -74,7 +74,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $oppStatus = strval(GetCachePiece($gameName, $otherP + 3));
 
   if($oppStatus != "-1" && $oppLastTime != "") {
-    if(($currentTime - $oppLastTime) > 30000 && $oppStatus == "0") {
+    if(($currentTime - $oppLastTime) > 10000 && $oppStatus == "0") {
       $kickSignal = GetCachePiece($gameName, 17);
       if ($otherP != 2 || $kickSignal !== "kicked") {
         WriteLog("🔌 Your opponent has disconnected.", path: "../");
@@ -109,8 +109,8 @@ if ($kickPlayerTwo) {
       WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
     }
   }
-  if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("../Games/" . $gameName . "/p2Deck.txt");
-  if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("../Games/" . $gameName . "/p2DeckOrig.txt");
+  // Do not delete the deck file here — JoinGame.php overwrites it when a new player joins.
+  // Deleting it causes an empty lobby for players who reconnect before a new player joins.
   $gameStatus = $MGS_Initial;
   SetCachePiece($gameName, 14, $gameStatus);
   $p2Data = [];
