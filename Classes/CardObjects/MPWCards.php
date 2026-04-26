@@ -284,6 +284,30 @@ class run_through_yellow extends Card {
 	}
 }
 
+class run_through_blue extends Card {
+	function __construct($controller) {
+    $this->cardID = "run_through_blue";
+    $this->controller = $controller;
+    $this->baseCard = new run_through($this->cardID, $this->controller);
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return $this->baseCard->PlayAbility();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+}
+
 class shove_off_blue extends Card {
   function __construct($controller) {
     $this->cardID = "shove_off_blue";
