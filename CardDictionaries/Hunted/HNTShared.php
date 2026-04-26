@@ -1187,7 +1187,7 @@ function BubbleToTheSurface()
       AddDecisionQueue("PAYRESOURCESEFFECT", $player, "<-", 1);
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype;type=W", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
       AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
     }
