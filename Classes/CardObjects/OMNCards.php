@@ -1804,3 +1804,34 @@ class boots_of_omnis_ward extends Card {
     return 1;
   }
 }
+
+class static_shelter_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "static_shelter_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $message = "if_you_want_to_make_a_lightning_flow";
+    $context = "Choose if you want to pay a resource and create a " . CardLink("lightning_flow");
+    Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+    Await($this->controller, "PayResourcesEffect", amount:1);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    PlayAura("lightning_flow", $this->controller);
+  }
+
+  function SpecialType() {
+    return "DR";
+  }
+}

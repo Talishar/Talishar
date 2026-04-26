@@ -204,6 +204,15 @@ Function YesNoAwait($player) {
   PrependDecisionQueue("SETDQCONTEXT", $player, $context, 1);
 }
 
+
+// Use this one during the resolution of an effect for clearer UI
+function PayResourcesEffectAwait($player) {
+  global $dqVars;
+  $amount = $dqVars["amount"];
+  PrependDecisionQueue("PAYRESOURCESEFFECT", $player, $amount, 1);  
+  PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);  
+}
+
 function PayResourcesAwait($player) {
   global $dqVars;
   $amount = $dqVars["amount"];
