@@ -1040,7 +1040,7 @@ class cosmic_suture extends BaseCard {
   }
 
   function CurrentEffectDamagePrevention($index, $damage, $amount, &$remove) {
-    FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove);
   }
 
   function PayAdditionalCosts() {
@@ -1797,7 +1797,7 @@ class boots_of_omnis_ward extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove);
   }
 
   function CurrentTurnEffectUses() {
@@ -1829,9 +1829,5 @@ class static_shelter_yellow extends Card {
 
   function SpecificLogic() {
     PlayAura("lightning_flow", $this->controller);
-  }
-
-  function SpecialType() {
-    return "DR";
   }
 }

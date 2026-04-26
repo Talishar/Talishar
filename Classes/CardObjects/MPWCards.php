@@ -463,6 +463,38 @@ class blade_rush_yellow extends Card {
 	}
 }
 
+class steel_on_steel_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "steel_on_steel_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function CardBlockModifier($from, $resourcesPaid, $index) {
+		global $CombatChain;
+		return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
+	}
+}
+
+class steel_on_steel_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "steel_on_steel_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function CardBlockModifier($from, $resourcesPaid, $index) {
+		global $CombatChain;
+		return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
+	}
+}
+
 class steel_on_steel_blue extends Card {
   function __construct($controller) {
     $this->cardID = "steel_on_steel_blue";
@@ -488,7 +520,7 @@ class downswing_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if ($target == "COMBATCHAIN-0") {
+		if (explode("-", $target)[0] == "COMBATCHAIN") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
 		}
@@ -503,10 +535,6 @@ class downswing_red extends Card {
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 1;
-	}
-
-	function SpecialType() {
-		return "AR";
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -535,7 +563,7 @@ class drawing_dead_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if ($target == "COMBATCHAIN-0") {
+		if (explode("-", $target)[0] == "COMBATCHAIN") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
 		}
@@ -550,10 +578,6 @@ class drawing_dead_yellow extends Card {
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 1;
-	}
-
-	function SpecialType() {
-		return "AR";
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -582,7 +606,7 @@ class donkey_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if ($target == "COMBATCHAIN-0") {
+		if (explode("-", $target)[0] == "COMBATCHAIN") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
 		}
@@ -597,10 +621,6 @@ class donkey_blue extends Card {
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 1;
-	}
-
-	function SpecialType() {
-		return "AR";
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {

@@ -20,7 +20,12 @@ function CheckImage($setID, $cardID, $isDuplicate=false)
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $imageURL);
     curl_setopt($ch, CURLOPT_FILE, $handler);
-    curl_exec($ch);
+    if (!curl_exec($ch)) {
+      $imageURLRF = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/$setID-RF.webp";
+      curl_setopt($ch, CURLOPT_URL, $imageURLRF);
+      curl_setopt($ch, CURLOPT_FILE, $handler);
+      curl_exec($ch);
+    }
     if(filesize($cardImagesUploadedFolder) < 10000) { unlink($cardImagesUploadedFolder); return; }
     if(file_exists($cardImagesUploadedFolder))
     {

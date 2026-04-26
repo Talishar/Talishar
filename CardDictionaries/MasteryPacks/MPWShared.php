@@ -19,8 +19,11 @@ function TargetSwordAttack($player) {
   global $CombatChain;
   if (!$CombatChain->HasCurrentLink()) return "";
   $choices = [];
-  $pastLinkCards = GetChainLinkCards($player, subType:"Sword");
-  if ($pastLinkCards != "") $choices[] = $pastLinkCards;
+  $pastLinkCards = SearchCombatChainAttacks($player, subtype:"Sword");
+  if ($pastLinkCards != "") {
+    foreach (explode(",", $pastLinkCards) as $pastLinkCard)
+      $choices[] = "COMBATCHAINATTACKS-$pastLinkCard";
+  }
   if (CardSubType($CombatChain->AttackCard()->ID()) == "Sword") $choices[] = "COMBATCHAIN-0";
   return implode(",", $choices);
 }
