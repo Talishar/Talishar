@@ -685,4 +685,8 @@ class Card {
   function HasFusion() {
     return "";
   }
+
+  function IsWagerEffect($index) {
+    return false;
+  }
 }

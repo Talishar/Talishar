@@ -1,6 +1,27 @@
 <?php
 include_once  __DIR__ . "/AHACards.php";
 
+class sword_attack_reaction {
+	public $cardID;
+  public $controller;
+
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+  }
+
+	function IsPlayRestricted() {
+		return TargetSwordAttack($this->controller) == "";
+	}
+
+	function PayAdditionalCosts() {
+		$choices = TargetSwordAttack($this->controller);
+		AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
+		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+	}
+}
+
 class hala extends Card {
 	function __construct($controller) {
     $this->cardID = "hala";
@@ -455,5 +476,149 @@ class steel_on_steel_blue extends Card {
 	function CardBlockModifier($from, $resourcesPaid, $index) {
 		global $CombatChain;
 		return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
+	}
+}
+
+class downswing_red extends Card {
+	public $archetype;
+  function __construct($controller) {
+    $this->cardID = "downswing_red";
+    $this->controller = $controller;
+		$this->archetype = new sword_attack_reaction($this->cardID, $controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if ($target == "COMBATCHAIN-0") {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+			AddOnWagerEffects();
+		}
+		else
+			WriteLog("A past chain link was targeted");
+		return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function SpecialType() {
+		return "AR";
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->archetype->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->archetype->PayAdditionalCosts();
+	}
+
+	function WonWager($wonWager, $amount) {
+    LoseHealth(1, $wonWager);
+  }
+
+	function IsWagerEffect($index) {
+		return true;
+	}
+}
+
+class drawing_dead_yellow extends Card {
+	public $archetype;
+  function __construct($controller) {
+    $this->cardID = "drawing_dead_yellow";
+    $this->controller = $controller;
+		$this->archetype = new sword_attack_reaction($this->cardID, $controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if ($target == "COMBATCHAIN-0") {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+			AddOnWagerEffects();
+		}
+		else
+			WriteLog("A past chain link was targeted");
+		return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function SpecialType() {
+		return "AR";
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->archetype->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->archetype->PayAdditionalCosts();
+	}
+
+	function WonWager($wonWager, $amount) {
+    PummelHit($wonWager);
+  }
+
+	function IsWagerEffect($index) {
+		return true;
+	}
+}
+
+class donkey_blue extends Card {
+	public $archetype;
+  function __construct($controller) {
+    $this->cardID = "donkey_blue";
+    $this->controller = $controller;
+		$this->archetype = new sword_attack_reaction($this->cardID, $controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if ($target == "COMBATCHAIN-0") {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+			AddOnWagerEffects();
+		}
+		else
+			WriteLog("A past chain link was targeted");
+		return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function SpecialType() {
+		return "AR";
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->archetype->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->archetype->PayAdditionalCosts();
+	}
+
+	function WonWager($wonWager, $amount) {
+		AddDecisionQueue("MULTIZONEINDICES", $wonWager, "MYARS", 1);
+		AddDecisionQueue("SETDQCONTEXT", $wonWager, "Choose a card you want to destroy from your arsenal", 1);
+		AddDecisionQueue("CHOOSEMULTIZONE", $wonWager, "<-", 1);
+		AddDecisionQueue("MZDESTROY", $wonWager, false, 1);
+  }
+
+	function IsWagerEffect($index) {
+		return true;
 	}
 }

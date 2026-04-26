@@ -7247,34 +7247,41 @@ class cheating_scoundrel_red extends Card {
     $this->controller = $controller;
   }
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddCurrentTurnEffect($this->cardID, $this->controller);
-    AddCurrentTurnEffect($this->cardID . "-WAGER", $this->controller);
+    AddCurrentTurnEffect("$this->cardID-BUFF", $this->controller); // gives +3 power
+    AddCurrentTurnEffect("$this->cardID-WAGER", $this->controller); // allows discarding to reverse a wager
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    return CardType($CombatChain->AttackCard()->ID()) == "AA" && $parameter != "WAGER";
+    return CardType($CombatChain->AttackCard()->ID()) == "AA" && $parameter == "BUFF";
   }
 
   function OnAttackEffect($cardID, $i) {
+    global $CombatChain;
     $Effect = new CurrentEffect($i);
     $param = explode("-", $Effect->EffectID())[1] ?? "-";
-    if ($param != "WAGER") {//the "Wager" effect is for the lose replacement effect
+    if ($param != "WAGER" && TypeContains($CombatChain->AttackCard()->ID(), "AA")) {//the "Wager" effect is for the lose replacement effect
       AddLayer("TRIGGER", $this->controller, $this->cardID);
     }
     return false;
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller); // contains the wager effect
     AddOnWagerEffects();
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return 3;
+    return $param == "BUFF" ? 3 : 0;
   }
 
   function WonWager($wonWager, $amount) {
     PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$this->controller);
+  }
+
+  function IsWagerEffect($index) {
+    $Effect = new CurrentEffect($index);
+    return $Effect->EffectID() == $this->cardID; // no -WAGER or -BUFF
   }
 }
 
