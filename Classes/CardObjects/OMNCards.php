@@ -1866,3 +1866,56 @@ class beckoning_brilliance_red extends Card {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $from, $remove, $playIndex);
   }
 }
+
+class blink_of_an_eye extends BaseCard {
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to banish";
+    $indices = FindHoloAuras($this->controller);
+    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices, context:$context);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $MZIndex = $dqVars["MZIndex"];
+    $Aura = MZIndexToObject($this->controller, $MZIndex);
+    $banishInd = $Aura->Banish();
+    if ($banishInd != -1) {
+      $BanishCard = new BanishCard($this->controller, $banishInd);
+      PlayAura($BanishCard->ID(), $this->controller, holoCounters:1);
+      $BanishCard->Remove();
+    }
+  }
+}
+
+class blink_of_an_eye_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "blink_of_an_eye_red";
+    $this->controller = $controller;
+    $this->baseCard = new blink_of_an_eye($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasFragment() {
+    return true;
+  }
+
+  function FragmentTrigger()  {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+}
