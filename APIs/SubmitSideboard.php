@@ -86,7 +86,7 @@ if ($playerID == 2) {
 
 $playerDeck = $submission->deck;
 $deckCount = count($playerDeck);
-if($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc")) {
+if($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "gage")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
   echo json_encode($response);
