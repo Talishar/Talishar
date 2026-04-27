@@ -1831,3 +1831,38 @@ class static_shelter_yellow extends Card {
     PlayAura("lightning_flow", $this->controller);
   }
 }
+
+class beckoning_brilliance extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $playIndex) {
+    if (TypeContains($cardID, "I", $this->controller, from:$from, index:$playIndex)) {
+      $remove = true;
+      return -1;
+    }
+    return 0;
+  }
+}
+
+class beckoning_brilliance_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "beckoning_brilliance_red";
+    $this->controller = $controller;
+    $this->baseCard = new beckoning_brilliance($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+    return $this->baseCard->CurrentEffectCostModifier($cardID, $from, $remove, $playIndex);
+  }
+}
