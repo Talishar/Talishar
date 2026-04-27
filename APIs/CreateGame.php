@@ -90,6 +90,7 @@ if($isShadowBanned) {
   else if($format == "compllcc") $format = "shadowcompllcc";
   else if($format == "blitz" || $format == "commoner") $format = "shadowblitz";
   else if($format == "futuresage" || $format == "sage" || $format == "compsage") $format = "shadowcompsage";
+  else if($format == "gage") $format = "shadowgage";
 }
 
 $p1Data = [1];

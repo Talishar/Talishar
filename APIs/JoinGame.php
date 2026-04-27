@@ -375,7 +375,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
          }
        }
        // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
-       if (($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
+       if (($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell" || $format == "gage") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
          if ($isDeckLegal != "")
            $isDecisDeckLegalkCCLegal .= ", ";
          $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
@@ -407,7 +407,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      exit;
    }
 
-   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "futurecc")) {
+   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "futurecc" || $format == "gage")) {
      $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character) . ".";
      echo json_encode($response);
      exit;
@@ -431,7 +431,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      exit;
    }
 
-   if ($totalCards < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell")) {
+   if ($totalCards < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell" || $format == "gage")) {
      $response->error = "⚠️ The deck link you have entered has too few cards (" . $totalCards . ") and is likely for the blitz/commoner format. Please double-check your decklist link and try again.";
      echo json_encode($response);
      exit;
@@ -880,7 +880,13 @@ function isBannedInFormat($cardID, $format) {
         "aether_spindle_red", "aether_spindle_yellow", "aether_spindle_blue", "burn_up__shock_red",
         "steelblade_shunt_red", "steelblade_shunt_yellow", "steelblade_shunt_blue",
         "sirens_of_safe_harbor_red", "sirens_of_safe_harbor_yellow", "sirens_of_safe_harbor_blue"
-      ], $benched)
+      ], $benched),
+      "gage" => ["bravo_star_of_the_show", "bloodsheath_skeleta", "heavy_industry_power_plant", "kraken_aethervein", "stubby_hammerers",
+        "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue", "chane_bound_by_shadow",
+        "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue",
+        "open_the_floodgates_red", "open_the_floodgates_yellow", "open_the_floodgates_blue",
+        "tome_of_firebrand_red", "art_of_war_yellow", "berserk_yellow", "cash_in_yellow", "remembrance_yellow",
+        "tome_of_divinity_yellow", "tome_of_fyendal_yellow", "awakening_blue", "orihon_of_mystic_tenets_blue"]
   ];
   if ($format == "futurecc") {
     $futureBans = ["electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
