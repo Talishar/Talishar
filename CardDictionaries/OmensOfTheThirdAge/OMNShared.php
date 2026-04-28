@@ -137,3 +137,13 @@ function FloatingPrevention($index, $damage, $amount, &$remove) {
 		return $damage;
 	}
 }
+
+function HoloFlicker($player, $MZIndex) {
+	$Aura = MZIndexToObject($player, $MZIndex);
+	$banishInd = $Aura->Banish();
+	if ($banishInd != -1) {
+		$BanishCard = new BanishCard($player, $banishInd);
+		PlayAura($BanishCard->ID(), $player, holoCounters:1);
+		$BanishCard->Remove();
+	}
+}

@@ -1873,7 +1873,7 @@ class blink_of_an_eye extends BaseCard {
   }
 
   function ProcessTrigger() {
-    $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to banish";
+    $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to flicker";
     $indices = FindHoloAuras($this->controller);
     Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices, context:$context);
     Await($this->controller, $this->cardID, final:true);
@@ -1882,13 +1882,7 @@ class blink_of_an_eye extends BaseCard {
   function SpecificLogic() {
     global $dqVars;
     $MZIndex = $dqVars["MZIndex"];
-    $Aura = MZIndexToObject($this->controller, $MZIndex);
-    $banishInd = $Aura->Banish();
-    if ($banishInd != -1) {
-      $BanishCard = new BanishCard($this->controller, $banishInd);
-      PlayAura($BanishCard->ID(), $this->controller, holoCounters:1);
-      $BanishCard->Remove();
-    }
+    HoloFlicker($this->controller, $MZIndex);
   }
 }
 
@@ -1917,5 +1911,33 @@ class blink_of_an_eye_red extends Card {
 
   function SpecificLogic() {
     return $this->baseCard->SpecificLogic();
+  }
+}
+
+class flicker_reality_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "flicker_reality_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to flicker";
+    $indices = FindHoloAuras($this->controller);
+    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices, context:$context);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $MZIndex = $dqVars["MZIndex"];
+    HoloFlicker($this->controller, $MZIndex);
   }
 }
