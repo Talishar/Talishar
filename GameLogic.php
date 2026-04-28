@@ -3982,6 +3982,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
 
       return $lastResult;
+    case "GETUNTAPPEDCOGS":
+      $inds = GetTapped($player, "MYITEMS", "subtype=Cog");
+      return $inds;
     case "GOLDENSKYWARDEN":
       if (GetMZCard($player, $lastResult) == "golden_cog") {
         PutItemIntoPlayForPlayer("gold", $player, isToken:true, effectController:$player);
