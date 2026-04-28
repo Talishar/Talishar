@@ -883,7 +883,7 @@ function isBannedInFormat($cardID, $format) {
       ], $benched),
       "gage" => ["bravo_star_of_the_show", "bloodsheath_skeleta", "heavy_industry_power_plant", "kraken_aethervein", "stubby_hammerers",
         "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue", "chane_bound_by_shadow",
-        "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue",
+        "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "zephyr_needle",
         "open_the_floodgates_red", "open_the_floodgates_yellow", "open_the_floodgates_blue",
         "tome_of_firebrand_red", "art_of_war_yellow", "berserk_yellow", "cash_in_yellow", "remembrance_yellow",
         "tome_of_divinity_yellow", "tome_of_fyendal_yellow", "awakening_blue", "orihon_of_mystic_tenets_blue"]
