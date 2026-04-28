@@ -2589,19 +2589,20 @@ class fasting_carcass extends BaseCard {
     return true;
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $color) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $color) {
     global $Stack;
     $Effect = new CurrentEffect($effectIndex);
     $TopLayer = $Stack->TopLayer($cardID);
     if ($TopLayer->PlayerID() != $this->controller) return;
+    if (IsActivated($cardID, $from)) return;
     if (TypeContains($TopLayer->ID(), "A") && ColorContains($TopLayer->ID(), $color, $this->controller))
       $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
     elseif (TypeContains($TopLayer->ID(), "AA") && ColorContains($TopLayer->ID(), $color, $this->controller))
       $Effect->ApplyToUniqueID("ATTACK");
   }
 
-  function CurrentEffectGrantsNAAGoAgain($cardID, $color, &$remove) {
-    if (ColorContains($cardID, $color, $this->controller) && $cardID != $this->cardID) {
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $color, &$remove) {
+    if (!IsActivated($cardID, $from) && ColorContains($cardID, $color, $this->controller) && $cardID != $this->cardID) {
       $remove = true;
       return true;
     }
@@ -2627,12 +2628,12 @@ class fasting_carcass_red extends Card {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
 
-  function AssignEffectToCard($cardID, $effectIndex) {
-    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, 1);
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 1);
   }
 
   function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, 1, $remove);
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, $from, 1, $remove);
   }
 }
 
@@ -2654,12 +2655,12 @@ class fasting_carcass_yellow extends Card {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
   
-  function AssignEffectToCard($cardID, $effectIndex) {
-    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, 2);
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 2);
   }
 
   function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, 2, $remove);
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, $from, 2, $remove);
   }
 }
 
@@ -2681,12 +2682,12 @@ class fasting_carcass_blue extends Card {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
 
-  function AssignEffectToCard($cardID, $effectIndex) {
-    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, 3);
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 3);
   }
 
   function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, 3, $remove);
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, $from, 3, $remove);
   }
 }
 
