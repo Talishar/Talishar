@@ -645,6 +645,7 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-", $skipRe
       case "chorus_of_the_amphitheater_red":
       case "chorus_of_the_amphitheater_yellow":
       case "chorus_of_the_amphitheater_blue":
+        if (!TypeContains($source, "I") && !TypeContains($source, "A") && !TypeContains($source, "AA")) break;
         if ($currentTurnEffects[$i + 1] != $player) break;
         $modifier += 1;
         break;

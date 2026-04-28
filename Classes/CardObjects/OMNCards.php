@@ -2102,3 +2102,57 @@ class core_reaction_blue extends Card {
     return "LIGHTNING";
   }
 }
+
+class echoflash_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "echoflash_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    DealArcane(1, source:$this->cardID, resolvedTarget:$target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function AddGraveyardEffect($from, $effectController) {
+    SetArcaneTarget($this->controller, $this->cardID, 0);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $EffectContext;
+    $Hero = new CharacterCard(0, $this->controller);
+    $EffectContext = $Hero->CardID();
+    DealArcane(1, source:$Hero->CardID(), resolvedTarget:$target);
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Echoflash";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+}
