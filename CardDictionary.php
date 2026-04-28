@@ -325,9 +325,9 @@ function CardSubType($cardID, $uniqueID = -1)
   if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
-    // $card = GetClass($cardID, 0);
+    $card = GetClass($cardID, 0);
     if ($number < 400) {
-      // if ($card != "-") return $card->SpecialSubType();
+      if ($card != "-" && is_a($card, "Card")) return $card->SpecialSubType();
       return GeneratedCardSubtype($cardID);
     }
     else if (

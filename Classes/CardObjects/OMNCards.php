@@ -1941,3 +1941,164 @@ class flicker_reality_blue extends Card {
     HoloFlicker($this->controller, $MZIndex);
   }
 }
+
+class core_reaction extends BaseCard {
+
+  function BeginningActionPhaseAbility($index) {
+    $Aura = new AuraCard($index, $this->controller);
+    $uid = $Aura->UniqueID();
+    SetArcaneTarget($this->controller, 2);
+    AddDecisionQueue("ADDTRIGGER", $this->controller, "$this->cardID|$uid", 1);
+  }
+
+  function ProcessTrigger($target, $additionalCosts, $damage) {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($additionalCosts);
+    $AuraCard->Destroy();
+    DealArcane($damage, resolvedTarget:$target);
+  }
+}
+
+class core_reaction_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "core_reaction_red";
+    $this->controller = $controller;
+    $this->baseCard = new core_reaction($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target, $additionalCosts, 4);
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Core Reaction";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+}
+
+class core_reaction_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "core_reaction_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new core_reaction($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target, $additionalCosts, 3);
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Core Reaction";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+}
+
+class core_reaction_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "core_reaction_blue";
+    $this->controller = $controller;
+    $this->baseCard = new core_reaction($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target, $additionalCosts, 2);
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Core Reaction";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+}
