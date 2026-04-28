@@ -1191,8 +1191,16 @@ class hope_merchants_hood extends Card {
     AddDecisionQueue("MULTIREMOVEHAND", $this->controller, "-", 1);
     AddDecisionQueue("MULTIADDDECK", $this->controller, "-", 1);
     AddDecisionQueue("SHUFFLEDECK", $this->controller, "-", 1);
-    AddDecisionQueue("SPECIFICCARD", $this->controller, "HOPEMERCHANTHOOD", 1);
+    Await($this->controller, $this->cardID, lastResultName:"search", final:true);
     return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $search = $dqVars["search"];
+    $count = SearchCount($search);
+    Draw($this->controller, num: $count);
+    WriteLog(CardLink("hope_merchants_hood", "hope_merchants_hood") . " shuffled and drew " . $count . " cards");
   }
 
   function PayAdditionalCosts($from, $index = '-') {

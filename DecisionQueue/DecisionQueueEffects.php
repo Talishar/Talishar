@@ -588,11 +588,6 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       PrependDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:type=$type;class=RUNEBLADE");
       return 1;
-    case "HOPEMERCHANTHOOD":
-      $count = SearchCount($lastResult);
-      Draw($player, num: $count);
-      WriteLog(CardLink("hope_merchants_hood", "hope_merchants_hood") . " shuffled and drew " . $count . " cards");
-      return "1";
     case "CASHOUTCONTINUE":
       PrependDecisionQueue("SPECIFICCARD", $player, "CASHOUTCONTINUE", 1);
       PrependDecisionQueue("SETCLASSSTATE", $player, $CS_AdditionalCosts, 1);
