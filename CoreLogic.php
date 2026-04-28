@@ -3967,15 +3967,17 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
   switch ($toCardID) {
     case "evo_steel_soul_memory_blue":
     case "evo_steel_soul_memory_blue_equip":
-      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         AddCurrentTurnEffect($toCardID, $player);
         WriteLog("🧠" . CardLink("$toCardID") . " gained +1 intellect");
+      }
       break;
     case "evo_steel_soul_processor_blue":
     case "evo_steel_soul_processor_blue_equip":
-      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         GainResources($player, 3);
         WriteLog("🩶" . CardLink("$toCardID") . " gained +3 resources");
+      }
       break;
     case "evo_steel_soul_controller_blue":
     case "evo_steel_soul_controller_blue_equip":
@@ -3985,9 +3987,10 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
       break;
     case "evo_steel_soul_tower_blue":
     case "evo_steel_soul_tower_blue_equip":
-      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         GainActionPoints(1, $player);
         WriteLog("🦿" . CardLink("$toCardID") . " gained +1 action point");
+      }
       break;
     case "evo_zoom_call_yellow":
     case "evo_zoom_call_yellow_equip":
