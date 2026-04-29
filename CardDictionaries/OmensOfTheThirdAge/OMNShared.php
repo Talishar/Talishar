@@ -147,3 +147,12 @@ function HoloFlicker($player, $MZIndex) {
 		$BanishCard->Remove();
 	}
 }
+
+function FirstDamageTrigger($target, $cardID, $player) {
+	global $CombatChain;
+	if ($CombatChain->AttackCard()->ID() != $cardID) return; // for now only make this work when it's the active link
+	if (is_numeric($target) && $CombatChain->AttackCard()->NumTimesUsed() == 0) {
+		AddLayer("TRIGGER", $player, $cardID);
+	}
+	$CombatChain->AttackCard()->AddUse();
+}
