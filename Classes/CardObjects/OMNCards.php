@@ -1947,7 +1947,7 @@ class core_reaction extends BaseCard {
   function BeginningActionPhaseAbility($index) {
     $Aura = new AuraCard($index, $this->controller);
     $uid = $Aura->UniqueID();
-    SetArcaneTarget($this->controller, 2);
+    SetArcaneTarget($this->controller, $this->cardID, 2);
     AddDecisionQueue("ADDTRIGGER", $this->controller, "$this->cardID|$uid", 1);
   }
 
