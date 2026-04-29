@@ -629,10 +629,9 @@ function AbilityCost($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") {
-    $cost = $card->AbilityCost();
-    if ($cost != -1) return $cost;
+  if ($cardID == "restless_coalescence_yellow") {
+    $abilityType = GetResolvedAbilityType($cardID, "PLAY");
+    if ($abilityType == "I") return 0;
   }
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($currentPlayer, "luminaris")) return 0;
@@ -641,6 +640,11 @@ function AbilityCost($cardID)
   }
   if (SearchCharacterForCard($currentPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $currentPlayer) && DelimStringContains($subtype, "Aura")) return 1;
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return 0;
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") {
+    $cost = $card->AbilityCost();
+    return $cost;
+  }
   if ($set == "WTR") return WTRAbilityCost($cardID);
   else if ($set == "ARC") return ARCAbilityCost($cardID);
   else if ($set == "CRU") return CRUAbilityCost($cardID);
@@ -935,7 +939,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   }
   $cardID = BlindCard($cardID, true);
   $basePower = -1;
-  if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura") && $from == "CC") {
+  if (ClassContains($cardID, "ILLUSIONIST", $player) && DelimStringContains($subtype, "Aura") && $from == "CC") {
     if (SearchCharacterForCard($mainPlayer, "luminaris")) $basePower = 1;
     if (SearchCharacterForCard($mainPlayer, "iris_of_reality")) $basePower = 4;
     if (SearchCharacterForCard($mainPlayer, "reality_refractor")) $basePower = 5;

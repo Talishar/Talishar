@@ -1539,6 +1539,7 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "channel_thunder_steppe_yellow":
+        if (IsActivated($cardID, $from)) break;
         if ((DelimStringContains($cardType, "A") || $cardType == "AA") && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }

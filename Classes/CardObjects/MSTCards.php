@@ -1723,7 +1723,7 @@ class restless_coalescence_yellow extends Card {
     $this->controller = $controller;
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		global $CS_PlayIndex;
 		$index = GetClassState($this->controller, $CS_PlayIndex);
 		$auras = GetAuras($this->controller);
@@ -1750,8 +1750,8 @@ class restless_coalescence_yellow extends Card {
 		} else {
 			WriteLog("You do not have the counters to pay for " . CardLink($this->cardID) . " ability.", highlight: true);
 		}
-    return "";
-  }
+		return "";
+	}
 
 	function StartTurnAbility($index) {
 		$AuraCard = new AuraCard($index, $this->controller);
@@ -1778,6 +1778,7 @@ class restless_coalescence_yellow extends Card {
 	}
 
 	function AbilityCost() {
+		// this isn't getting called right now
 		$abilityType = GetResolvedAbilityType($this->cardID, "PLAY");
     if ($abilityType == "I") return 0;
 		else return -1;
