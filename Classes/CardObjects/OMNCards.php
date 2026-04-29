@@ -1955,7 +1955,7 @@ class core_reaction extends BaseCard {
     $Auras = new Auras($this->controller);
     $AuraCard = $Auras->FindCardUID($additionalCosts);
     $AuraCard->Destroy();
-    DealArcane($damage, resolvedTarget:$target);
+    DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
   }
 }
 
