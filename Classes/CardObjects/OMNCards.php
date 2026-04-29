@@ -2144,6 +2144,10 @@ class echoflash_yellow extends Card {
     DealArcane(1, source:$Hero->CardID(), resolvedTarget:$target);
   }
 
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
   function SpecialType() {
     return "I";
   }
