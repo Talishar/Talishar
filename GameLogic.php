@@ -38,6 +38,7 @@ include "Classes/CardObjects/DYNCards.php";
 include "Classes/CardObjects/OUTCards.php";
 include "Classes/CardObjects/DTDCards.php";
 include "Classes/CardObjects/HVYCards.php";
+include "Classes/CardObjects/MSTCards.php";
 include "Classes/CardObjects/ROSCards.php";
 include "Classes/CardObjects/HNTCards.php";
 include "Classes/CardObjects/SEACards.php";

@@ -3,7 +3,7 @@ function MSTAbilityType($cardID, $index = -1, $from = "-"): string
 {
   return match ($cardID) {
     "nuu_alluring_desire", "nuu", "enigma_ledger_of_ancestry", "enigma", "meridian_pathway", "zen_tamer_of_purpose", "zen", "twelve_petal_kasaya", "truths_retold", "uphold_tradition", "aqua_seeing_shell",
-    "skycrest_keikoi", "skybody_keikoi", "skyhold_keikoi", "skywalker_keikoi", "restless_coalescence_yellow", "longdraw_half_glove", "enigma_new_moon" => "I",
+    "skycrest_keikoi", "skybody_keikoi", "skyhold_keikoi", "skywalker_keikoi", "longdraw_half_glove", "enigma_new_moon" => "I",
     "beckoning_mistblade", "tiger_taming_khakkara" => "AA",
     "mask_of_recurring_nightmares", "arousing_wave", "undertow_stilettos", "waves_of_aqua_marine", "aqua_laps" => "AR",
     default => ""
@@ -431,33 +431,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $illusionistAuras = SearchAura($currentPlayer, class: "ILLUSIONIST");
         $arrayAuras = explode(",", $illusionistAuras);
         if (count($arrayAuras) <= 1) GainActionPoints(1, $currentPlayer);
-      }
-      return "";
-    case "restless_coalescence_yellow":
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $auras = GetAuras($currentPlayer);
-      $abilityType = GetResolvedAbilityType($cardID, $from);
-      if ($from != "PLAY") {
-        $count = CountAuraPowerCounters($currentPlayer) + 10; //+10 is an arbitrary number to keep the loop going until the player pass
-        for ($i = 0; $i < $count; $i++) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS:hasPowerCounters=true", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to remove a -1 Power Counter (or pass)", 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $currentPlayer, "TRANSFERPOWERCOUNTER", 1);
-        }
-        AddCurrentTurnEffect($cardID, $currentPlayer, $from, $auras[count($auras) - AuraPieces() + 6]);
-      }
-      if ($abilityType != "I") return "";
-
-      if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID") != -1) {
-        PlayAura("spectral_shield", $currentPlayer);
-        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID"));
-      } elseif (SearchCurrentTurnEffectsForPartialId("PAID")) //It needs to check if the auras was destroy, but it's already paid for
-      {
-        PlayAura("spectral_shield", $currentPlayer);
-        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID"));
-      } else {
-        WriteLog("You do not have the counters to pay for " . CardLink($cardID, $cardID) . " ability.", highlight: true);
       }
       return "";
     case "astral_etchings_red":

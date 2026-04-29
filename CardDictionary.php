@@ -631,9 +631,10 @@ function AbilityCost($cardID)
   $set = CardSet($cardID);
   $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
-  if ($cardID == "restless_coalescence_yellow") {
-    $abilityType = GetResolvedAbilityType($cardID, "PLAY");
-    if ($abilityType == "I") return 0;
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") {
+    $cost = $card->AbilityCost();
+    if ($cost != -1) return $cost;
   }
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($currentPlayer, "luminaris")) return 0;
@@ -641,12 +642,7 @@ function AbilityCost($cardID)
     if (SearchCharacterForCard($currentPlayer, "reality_refractor")) return 2;
   }
   if (SearchCharacterForCard($currentPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $currentPlayer) && DelimStringContains($subtype, "Aura")) return 1;
-
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return 0;
-  if (class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
-    return $card->AbilityCost();
-  }
   if ($set == "WTR") return WTRAbilityCost($cardID);
   else if ($set == "ARC") return ARCAbilityCost($cardID);
   else if ($set == "CRU") return CRUAbilityCost($cardID);
@@ -1223,13 +1219,16 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
   $cardID = ShiyanaCharacter($cardID);
   $set = CardSet($cardID);
   $subtype = CardSubtype($cardID);
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") {
+    $abilityType = $card->AbilityType($index, $from);
+    if ($abilityType != "") return $abilityType;
+  }
   if ($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $player) && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($currentPlayer, "luminaris") || SearchCharacterForCard($player, "iris_of_reality") || SearchCharacterForCard($player, "reality_refractor")) return "AA";
   }
   if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $player) && $player == $mainPlayer) return "AA";
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($player, "storm_of_sandikai")) return "AA";
-  $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->AbilityType($index, $from);
   if ($set == "WTR") return WTRAbilityType($cardID, $index, $from);
   else if ($set == "ARC") return ARCAbilityType($cardID, $index);
   else if ($set == "CRU") return CRUAbilityType($cardID, $index);
@@ -1287,7 +1286,6 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 
     "barbed_castaway" => "I,I",
 
-    "restless_coalescence_yellow" => ($from != "PLAY") ? "" : "I,AA",
     "mighty_windup_red", "mighty_windup_yellow", "mighty_windup_blue", 
     "agile_windup_red", "agile_windup_yellow", "agile_windup_blue", 
     "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue", 
@@ -1458,15 +1456,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       return $names;
     case "haunting_rendition_red": case "mental_block_blue":
       return "Block,Ability";
-    case "restless_coalescence_yellow":
-      $canAttack = CanAttack($cardID, "PLAY", $index, "MYAURA", type:"AA");
-      if ($auras[$index + 3] ?? 0 > 0) $names = "Instant";
-      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
-        return $names;
-      } else if ($canAttack) {
-        $names != "" ? $names .= ",Attack" : $names = "-,Attack";
-      }
-      return $names;
     case "chorus_of_the_amphitheater_red":
     case "chorus_of_the_amphitheater_yellow":
     case "chorus_of_the_amphitheater_blue":
@@ -1787,7 +1776,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         return false;
     }
   }
-  if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && $phase != "B" && isset($myAuras[$index + 11]) && $myAuras[$index + 1] == "1") {
+  if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && $phase != "B" && isset($myAuras[$index + 11]) && $myAuras[$index + 11] == "1") {
     $restriction = "Frozen";
     return false;
   }
@@ -1896,11 +1885,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if (SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I")) && !str_contains($phase, "CHOOSE")) {
     $restriction = "Exude Confidance";
     return false;
-  }
-  if ($cardID == "restless_coalescence_yellow" && $from == "PLAY") {
-    if ($auras[$index + 1] == 2 && $currentPlayer == $mainPlayer && $actionPoints > 0) return true;
-    if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1 && CanPlayInstant($phase) && $auras[$index + 3] > 0) return true;
-    if ($auras[$index + 1] != 2 || $auras[$index + 3] <= 0) return false;
   }
   if (($cardID == "chum_friendly_first_mate_yellow" || $cardID == "anka_drag_under_yellow" || $cardID == "gallow_end_of_the_line_yellow") && $from == "PLAY") {
     if (CheckTapped("MYALLY-$index", $currentPlayer)) return false;
@@ -3432,7 +3416,6 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "outside_interference_blue":
     case "fearless_confrontation_blue":
       return $phase == "B" && count($layers) == 0 || GetResolvedAbilityType($cardID, $from) == "AA";
-    case "restless_coalescence_yellow":
     case "chum_friendly_first_mate_yellow":
     case "anka_drag_under_yellow":
     case "sawbones_dock_hand_yellow":

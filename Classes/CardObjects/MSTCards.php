@@ -1716,17 +1716,110 @@
 // }
 
 
-// class restless_coalescence_yellow extends Card {
+class restless_coalescence_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "restless_coalescence_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "restless_coalescence_yellow";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CS_PlayIndex;
+		$index = GetClassState($this->controller, $CS_PlayIndex);
+		$auras = GetAuras($this->controller);
+		$abilityType = GetResolvedAbilityType($this->cardID, $from);
+		if ($from != "PLAY") {
+			$count = CountAuraPowerCounters($this->controller) + 10; //+10 is an arbitrary number to keep the loop going until the player pass
+			for ($i = 0; $i < $count; $i++) {
+				AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYAURAS:hasPowerCounters=true", 1);
+				AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to remove a -1 Power Counter (or pass)", 1);
+				AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+				AddDecisionQueue("MZOP", $this->controller, "TRANSFERPOWERCOUNTER", 1);
+			}
+			AddCurrentTurnEffect($this->cardID, $this->controller, $from, $auras[count($auras) - AuraPieces() + 6]);
+		}
+		if ($abilityType != "I") return "";
+
+		if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID") != -1) {
+			PlayAura("spectral_shield", $this->controller);
+			RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID"));
+		} elseif (SearchCurrentTurnEffectsForPartialId("PAID")) //It needs to check if the auras was destroy, but it's already paid for
+		{
+			PlayAura("spectral_shield", $this->controller);
+			RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID"));
+		} else {
+			WriteLog("You do not have the counters to pay for " . CardLink($this->cardID) . " ability.", highlight: true);
+		}
+    return "";
+  }
+
+	function StartTurnAbility($index) {
+		$AuraCard = new AuraCard($index, $this->controller);
+		AddCurrentTurnEffect($this->cardID, $this->controller, "PLAY", $AuraCard->UniqueID());
+	}
+
+	function OppStartTurnAbility($index) {
+		$AuraCard = new AuraCard($index, $this->controller);
+		AddCurrentTurnEffect($this->cardID, $this->controller, "PLAY", $AuraCard->UniqueID());
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		if ($from == "PLAY") {
+			$AuraCard = new AuraCard($index, $this->controller);
+			$abilityType = GetResolvedAbilityType($this->cardID, $from, $this->controller);
+      if ($abilityType == "I" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) != -1) {
+        $AuraCard->AddPowerCounters(-1);
+        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()));
+        AddCurrentTurnEffect($this->cardID, $this->controller, "", $AuraCard->UniqueID() . "-PAID");
+      } elseif ($abilityType == "AA") {
+				$AuraCard->SetStatus(1);
+      }
+		}
+	}
+
+	function AbilityCost() {
+		$abilityType = GetResolvedAbilityType($this->cardID, "PLAY");
+    if ($abilityType == "I") return 0;
+		else return -1;
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "I";
+	}
+
+	function GetAbilityTypes($index = -1, $from = '-') {
+		return ($from != "PLAY") ? "" : "I,AA";
+	}
+
+	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+		global $CS_NumActionsPlayed;
+		$AuraCard = new AuraCard($index, $this->controller);
+		$names = "";
+		$canAttack = CanAttack($this->cardID, "PLAY", $index, "MYAURA", type:"AA");
+		if (($AuraCard->NumPowerCounters() ?? 0 > 0) && SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) != -1) $names = "Instant";
+		if (SearchCurrentTurnEffects("red_in_the_ledger_red", $this->controller) && GetClassState($this->controller, $CS_NumActionsPlayed) >= 1) {
+			return $names;
+		} else if ($canAttack) {
+			$names != "" ? $names .= ",Attack" : $names = "-,Attack";
+		}
+		return $names;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $mainPlayer, $phase, $actionPoints;
+		if ($from == "PLAY") {
+			$AuraCard = new AuraCard($index, $this->controller);
+			if ($AuraCard->Status() == 2 && $this->controller == $mainPlayer && $actionPoints > 0) return false;
+			if (SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) != -1 && $AuraCard->NumPowerCounters() > 0) return false;
+			if ($AuraCard->Status() != 2 && ($AuraCard->NumPowerCounters() <= 0 || SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) == -1)) return true;
+		}
+		return false;
+	}
+
+	function GoesOnCombatChain($phase, $from) {
+		return GetResolvedAbilityType($this->cardID, $from) == "AA";
+	}
+}
 
 
 // class rising_sun_setting_moon_blue extends Card {
