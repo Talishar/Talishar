@@ -412,7 +412,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SPELLVOID":
           $damage = explode("-", $dqVars[0])[0];
           $prevention = $dqVars[1];
-          if($prevention < $damage) $rv = SearchSpellvoidIndices($player, $subparam);
+          if($damage > $prevention) $rv = SearchSpellvoidIndices($player, $subparam);
           break;
         case "OPPSENERGYPERMANENTS":
           $rv = [];
@@ -1584,8 +1584,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if($prevented > 0) LogDamagePreventedStats($player, min($damage, $prevented));
         $damage -= $prevented;
         if ($damage < 0) $damage = 0;
-        $dqVars[0] = $damage;
-        if ($damage > 0) CheckSpellvoid($player, $damage);
+        if ($damage > 0) CheckSpellvoid($player, $parameter);
       }
       PrependDecisionQueue("INCDQVAR", $player, "1", 1);
       return $prevented;
