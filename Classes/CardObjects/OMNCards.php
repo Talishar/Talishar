@@ -2005,6 +2005,10 @@ class core_reaction_red extends Card {
   function SpecialTalent() {
     return "LIGHTNING";
   }
+
+  function SpecialBlock() {
+    return -1;
+  }
 }
 
 class core_reaction_yellow extends Card {
@@ -2053,6 +2057,10 @@ class core_reaction_yellow extends Card {
   function SpecialTalent() {
     return "LIGHTNING";
   }
+
+  function SpecialBlock() {
+    return -1;
+  }
 }
 
 class core_reaction_blue extends Card {
@@ -2100,6 +2108,10 @@ class core_reaction_blue extends Card {
 
   function SpecialTalent() {
     return "LIGHTNING";
+  }
+  
+  function SpecialBlock() {
+    return -1;
   }
 }
 
@@ -2154,5 +2166,9 @@ class echoflash_yellow extends Card {
 
   function SpecialTalent() {
     return "LIGHTNING";
+  }
+  
+  function SpecialBlock() {
+    return -1;
   }
 }
