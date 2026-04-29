@@ -1422,6 +1422,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
           "runic_fellingsong_red", "runic_fellingsong_yellow", "runic_fellingsong_blue" => true,
           "arcanic_shockwave_red", "arcanic_shockwave_yellow", "arcanic_shockwave_blue" => true,
           "arcanic_crackle_red", "arcanic_crackle_yellow", "arcanic_crackle_blue" => true,
+          "tempestuous_kiss_red" => true,
           default => false,
         };
         if (SubtypeContains($source, "Dagger")) $multiAttack = true;
