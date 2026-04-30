@@ -2270,8 +2270,70 @@ class mercurial_skies_red extends Card {
   function CurrentEffectGrantsGoAgain($param) {
     return true;
   }
+}
 
-  function SpecialType() {
-    return "A";
+class mercurial_skies_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "mercurial_skies_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new mercurial_skies($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic(2);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function CurrentEffectDamageEffect($target, $source, $type, $damage) {
+    $this->baseCard->CurrentEffectDamageEffect($target, $source);
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+}
+
+class mercurial_skies_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "mercurial_skies_blue";
+    $this->controller = $controller;
+    $this->baseCard = new mercurial_skies($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic(1);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function CurrentEffectDamageEffect($target, $source, $type, $damage) {
+    $this->baseCard->CurrentEffectDamageEffect($target, $source);
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
   }
 }
