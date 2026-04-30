@@ -2202,3 +2202,76 @@ class tempestuous_kiss_red extends Card {
     PummelHit($otherPlayer);
   }
 }
+
+class mercurial_skies extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CurrentEffectDamageEffect($target, $source) {
+    FirstDamageTrigger($target, $source, $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($target) {
+    $Auras = new Auras($this->controller);
+    $Flow = $Auras->FindCardID("lightning_flow");
+    if ($Flow->Index() != -1) {
+      $message = "if_they_want_to_deal_arcane";
+      $context = "Choose if you want to destroy " . CardLink("lightning_flow") . " to deal 3 damage";
+      Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+      Await($this->controller, $this->cardID, target:$target, final:true);
+    }
+  }
+
+  function SpecificLogic($damage) {
+    global $dqVars;
+    $target = $dqVars["target"];
+    $Auras = new Auras($this->controller);
+    $Flow = $Auras->FindCardID("lightning_flow");
+    $Flow->Destroy();
+    DealArcane($damage, 0, source:$this->cardID);
+  }
+
+  function CombatEffectActive() {
+    global $CombatChain;
+    $AttackCard = $CombatChain->AttackCard()->ID();
+    return ClassContains($AttackCard, "RUNEBLADE", $this->controller) || TalentContains($AttackCard, "LIGHTNING", $this->controller);
+  }
+}
+
+class mercurial_skies_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "mercurial_skies_red";
+    $this->controller = $controller;
+    $this->baseCard = new mercurial_skies($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic(3);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function CurrentEffectDamageEffect($target, $source, $type, $damage) {
+    $this->baseCard->CurrentEffectDamageEffect($target, $source);
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+}

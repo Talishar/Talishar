@@ -692,7 +692,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
   global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain, $CS_ArcaneDamageDealtToOpponent;
-  global $CurrentTurnEffects;
+  global $CurrentTurnEffects, $CCS_AttackDamageDealtToHero, $CombatChain;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
@@ -733,6 +733,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     if ($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if ($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
     CurrentEffectDamageEffects($player, $source, $type, $damage);
+    if ($source == $CombatChain->AttackCard()->ID()) $combatChainState[$CCS_AttackDamageDealtToHero] += $damage;
   }
   if ($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ice_storm_red-2", $otherPlayer) && IsHeroAttackTarget()) {
     for ($i = 0; $i < $damage; ++$i) PlayAura("frostbite", $player, effectController:$otherPlayer);
@@ -922,7 +923,7 @@ function CombatChainDamageModifiers($player, $source, $type)
 
 function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
-  global $currentTurnEffects, $EffectContext;
+  global $currentTurnEffects, $EffectContext, $CombatChain;
   $otherPlayer = ($target == 1 ? 2 : 1);
   if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -930,8 +931,11 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
       continue;
     }
     if ($type == "COMBAT" && HitEffectsArePrevented($source)) continue;
+    if ($source == $CombatChain->AttackCard()->ID() && !IsCombatEffectActive($currentTurnEffects[$i])) continue;
     $remove = 0;
     $EffectContext = $currentTurnEffects[$i];
+    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    if ($card != "-") $card->CurrentEffectDamageEffect($target, $source, $type, $damage);
     switch ($currentTurnEffects[$i]) {
       case "blizzard_bolt_red":
       case "blizzard_bolt_yellow":

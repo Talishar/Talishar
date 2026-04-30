@@ -689,4 +689,8 @@ class Card {
   function IsWagerEffect($index) {
     return false;
   }
+
+  function CurrentEffectDamageEffect($target, $source, $type, $damage) {
+    return;
+  }
 }
