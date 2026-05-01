@@ -2213,3 +2213,113 @@ class mercurial_skies_blue extends Card {
     return true;
   }
 }
+
+class ominous_aggression_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "ominous_aggression_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumControlledAurasDestroyed, $CombatChain, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    $index = explode("-", $target)[1];
+    $amount = GetClassState($this->controller, $CS_NumControlledAurasDestroyed) > 0 ? 4 : 2;
+    if (explode("-", $target)[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
+      if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return "FAILED";
+      CombatChainPowerModifier($index, $amount);
+      AddCurrentTurnEffect($this->cardID."-VISUAL", $this->controller);//For Visual Effect only
+    }
+    elseif (explode("-", $target)[0] == "COMBATCHAINATTACKS") {
+      // targeting a past chain link, do nothing for now
+    }
+    //only add current turn effect if there's no target (ie. played in layer step)
+    elseif (IsLayerStep()) AddCurrentTurnEffect("$this->cardID-$amount", $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain, $Stack, $ChainLinks;
+    if ($Stack->NumLayers() == 0 && !$CombatChain->HasCurrentLink() && !IsResolutionStep()) return true;
+    if (SearchCount(SearchCombatChainLink($this->controller, type: "AA")) > 0) return false;
+    if (SearchCount(SearchCombatChainAttacks($this->controller, type: "AA")) > 0) return false;
+    if ($ChainLinks->SearchChainLinks(type:"AA") != "") return false;
+    $countLayers = $Stack->NumLayers();
+    for ($i = 0; $i < $countLayers; ++$i) {
+      $layer = $Stack->Card($i, true);
+      if (TypeContains($layer->ID(), "AA", $layer->PlayerID(), from:"LAYERS", index:$i)) return false;
+    }
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if (IsLayerStep()) {
+      // targetting attack layer
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
+    }
+    elseif (!ShouldHoldPriority($this->controller) && ShouldAutotargetOpponent($this->controller)) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINLINK;type=AA");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    }
+    else {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS;type=AA&COMBATCHAINLINK;type=AA");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    }
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+}
+
+class step_between_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "step_between_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "PLAY")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $mainPlayer;
+    $Hero = new CharacterCard(0, $this->controller);
+    if ($this->controller != $mainPlayer) return true;
+    if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
+    if ($Hero->Tapped() == 1) return true;
+    return false;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
+      $Hero = new CharacterCard(0, $this->controller);
+      $Hero->Tap();
+      Await($this->controller, "PayResources", amount:1, final:true);
+    }
+  }
+
+  function AbilityPlayableFromCombatChain($index="-") {
+    global $mainPlayer;
+    return $this->controller == $mainPlayer;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA";
+  }
+}
