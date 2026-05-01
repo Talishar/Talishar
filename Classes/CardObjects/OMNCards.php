@@ -2286,6 +2286,8 @@ class step_between_red extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if ($from == "PLAY")
       AddCurrentTurnEffect($this->cardID, $this->controller);
+    if ($from == "PLAY" || $from == "COMBATCHAINATTACKS")
+      AddCurrentTurnEffect("$this->cardID-PREVENT", $this->controller);
     return "";
   }
 
@@ -2293,8 +2295,16 @@ class step_between_red extends Card {
     return true;
   }
 
+  function IsCombatEffectPersistent($mode) {
+    return $mode == "PREVENT";
+  }
+
+  function RemoveEffectFromCombatChain() {
+    return true;
+  }
+
   function EffectPowerModifier($param, $attached = false) {
-    return 1;
+    return $param != "PREVENT" ? 1 : 0;
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
