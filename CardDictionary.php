@@ -1355,7 +1355,8 @@ function GetEasyAbilityNames($cardID, $index, $from, $allNames=false) {
       if ($from == "HAND" && !$instantRestricted)
         $names[0] = "Ability"; //don't let it target itself
       // can it attack?
-      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
+      
+      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && ($layerCount <= LayerPieces() || IsResolutionStep()) && $actionPoints > 0){
         if (!$nameBlocked && CanAttack($cardID, $from, $index, type:"AA")) {
           if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) || SearchCurrentTurnEffects("fealty", $currentPlayer)) $names[1] = "Attack";
         }
