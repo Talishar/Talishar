@@ -1972,38 +1972,6 @@ class core_reaction_red extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger($target, $additionalCosts, 4);
   }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Core Reaction";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialBlock() {
-    return -1;
-  }
 }
 
 class core_reaction_yellow extends Card {
@@ -2024,38 +1992,6 @@ class core_reaction_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger($target, $additionalCosts, 3);
   }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Core Reaction";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialBlock() {
-    return -1;
-  }
 }
 
 class core_reaction_blue extends Card {
@@ -2075,38 +2011,6 @@ class core_reaction_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger($target, $additionalCosts, 2);
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Core Reaction";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-  
-  function SpecialBlock() {
-    return -1;
   }
 }
 
@@ -2141,34 +2045,6 @@ class echoflash_yellow extends Card {
 
   function ActionsThatDoArcaneDamage() {
     return true;
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialName() {
-    return "Echoflash";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-  
-  function SpecialBlock() {
-    return -1;
   }
 }
 
