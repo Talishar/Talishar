@@ -3869,12 +3869,14 @@ function EvoHandling($cardID, $player, $from)
   else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
   $replaced = 0;
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if (!$replaced && SubtypeContains($char[$i], $slot, uniqueID:$char[$i + 11])) {
-      if (SubtypeContains($char[$i], "Base") && $char[$i + 1] != 0) {
-        $CombatChain->Remove(GetCombatChainIndex($char[$i], $player));
-        $ChainLinks->RemoveOriginUID($char[$i + 11]);
-        CharacterAddSubcard($player, $i, $char[$i]);
-        $fromCardID = $char[$i];
+    $CharacterCard = new CharacterCard($i, $player);
+    if (!$replaced && SubtypeContains($char[$i], $slot, uniqueID:$CharacterCard->UniqueID())) {
+      if (SubtypeContains($char[$i], "Base") && $CharacterCard->Status() != 0) {
+        $ChainCard = $CombatChain->FindCardOriginUID($CharacterCard->UniqueID());
+        $ChainCard->Remove();
+        $ChainLinks->RemoveOriginUID($CharacterCard->UniqueID());
+        CharacterAddSubcard($player, $i, $CharacterCard->CardID());
+        $fromCardID = $CharacterCard->CardID();
         $char[$i + 2] = 0;//Reset counters
         $char[$i + 4] = 0;//Reset defense counters
         $char[$i + 6] = 0;//Not on chain anymore
