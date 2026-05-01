@@ -815,6 +815,12 @@ function isUnimplemented($cardID) {
     case "AZS":
       $card = GetClass($cardID, 0);
       return $card == "-";
+    case "MPW":
+      $card = GetClass($cardID, 0);
+      return $card == "-";
+    case "AOL":
+      $card = GetClass($cardID, 0);
+      return $card == "-";
     default:
       break;
   }
