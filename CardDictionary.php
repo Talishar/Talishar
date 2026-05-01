@@ -1341,7 +1341,7 @@ function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
 }
 
 //used to get modal ability names of cards with "simple" conditions, ie. no targeting
-function GetEasyAbilityNames($cardID, $index, $from) {
+function GetEasyAbilityNames($cardID, $index, $from, $allNames=false) {
   global $mainPlayer, $currentPlayer, $defPlayer, $layers, $combatChain, $actionPoints, $CombatChain, $Stack;
   $layerCount = count($layers);
   $abilityTypes = GetAbilityTypes($cardID, $index, $from);
@@ -1349,6 +1349,7 @@ function GetEasyAbilityNames($cardID, $index, $from) {
   $instantRestricted = InstantRestricted($cardID, $from, $index);
   switch ($abilityTypes) {
     case "I,AA":
+      if ($allNames) return "Ability,Attack";
       $names = ["-", "-"];
       //can it ability?
       if ($from == "HAND" && !$instantRestricted)
@@ -1362,6 +1363,7 @@ function GetEasyAbilityNames($cardID, $index, $from) {
       $names = $names[1] == "-" ? $names[0] : implode(",", $names);
       return $names;
     case "I,A":
+      if ($allNames) return "Ability,Action";
       $names = ["-", "-"];
       //can it ability?
       if ($from == "HAND" && !$instantRestricted) $names[0] = "Ability";
@@ -1384,7 +1386,7 @@ function GetEasyAbilityNames($cardID, $index, $from) {
   }
 }
 
-function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): string
+function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allNames = false): string
 {
   global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant, $combatChainState, $CCS_EclecticMag;
   global $defPlayer, $CombatChain, $Stack;
@@ -1400,21 +1402,25 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
   if ($card != "-") return $card->GetAbilityNames($index, $from, $nameBlocked, $layerCount, $facing);
   switch ($cardID) {
     case "teklo_plasma_pistol":
+      if ($allNames) return "Add_a_steam_counter,Attack";
       if ($index == -1) return "";
       $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
       if ($character[$index + 2] > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer)) $rv .= ",Attack";
       return $rv;
     case "plasma_barrel_shot":
+      if ($allNames) return "Add_a_steam_counter,Attack";
       $CharacterCard = new CharacterCard($index, $currentPlayer);
       if ($index == -1) return "";
       $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
       if ($CharacterCard->NumCounters() > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer) && $CharacterCard->NumUses() > 0) $rv .= ",Attack";
       return $rv;
     case "barbed_castaway":
+      if ($allNames) return "Load,Aim";
       if(!SearchCurrentTurnEffects("barbed_castaway-Load", $currentPlayer)) return "Aim";
       if(!SearchCurrentTurnEffects("barbed_castaway-Aim", $currentPlayer)) return "Load";
       return "Load,Aim";
     case "jinglewood_smash_hit":
+      if ($allNames) return "Create_tokens,Smash_Jinglewood";
       if ($index == -1) return "";
       return "Create_tokens,Smash_Jinglewood";
     case "mighty_windup_red":
@@ -1442,8 +1448,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
     case "deny_redemption_red":
     case "bam_bam_yellow":
     case "outside_interference_blue":
-      return GetEasyAbilityNames($cardID, $index, $from);
+      return GetEasyAbilityNames($cardID, $index, $from, $allNames);
     case "under_the_trap_door_blue":
+      if ($allNames) return "Ability,Attack";
       // can't use the ability if there are no traps in graveyard
       $names = (SearchDiscard($currentPlayer, subtype: "Trap") != "" && !InstantRestricted($cardID, $from, $index)) ? "Ability" : "-";
       if($nameBlocked) return $names;
@@ -1456,6 +1463,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       }
       return $names;
     case "haunting_rendition_red": case "mental_block_blue":
+      if ($allNames) return "Block,Ability";
       if (InstantRestricted($cardID, $from, $index)) return "-";
       return "Block,Ability";
     case "chorus_of_the_amphitheater_red":
@@ -1468,8 +1476,9 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
     case "photon_splicing_yellow":
     case "photon_splicing_blue":
     case "war_cry_of_themis_yellow":
-      return GetEasyAbilityNames($cardID, $index, $from);
+      return GetEasyAbilityNames($cardID, $index, $from, $allNames);
     case "burn_bare":
+      if ($allNames) return "Ability,Action";
       $names = ["-", "-"];
       //can it ability?
       if ($from == "HAND" && IsPhantasmActive() && !InstantRestricted($cardID, $from, $index)) $names[0] = "Ability";
@@ -1480,6 +1489,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       if ($names[1] == "-") return $names[0];
       return implode(",", $names);
     case "shelter_from_the_storm_red":
+      if ($allNames) return "Ability,Defense Reaction";
       $names = ["-", "-"];
       if ($from == "HAND" && !InstantRestricted($cardID, $from, $index)) $names[0] = "Ability";
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
@@ -1491,6 +1501,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       if ($names[1] == "-") return $names[0];
       return implode(",", $names);
     case "war_cry_of_bellona_yellow":
+      if ($allNames) return "Ability,Attack Reaction";
       $names = ["-", "-"];
       if ($from == "HAND" && !InstantRestricted($cardID, $from, $index))
         $names[0] = "Ability";
@@ -1507,6 +1518,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       if ($names[1] == "-") return $names[0];
       return implode(",", $names);
     case "cogwerx_blunderbuss":
+      if ($allNames) return "Ability,Attack";
       $canAttack = CanAttack($cardID, "EQUIP",$index, "MYCHAR", true);
       $names = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog") == "" || SearchCurrentTurnEffects("cogwerx_blunderbuss", $currentPlayer) ? "-" : "Ability";
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return $names;
@@ -1519,6 +1531,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       return $names;
     case "chum_friendly_first_mate_yellow":
     case "anka_drag_under_yellow":
+      if ($allNames) return "Instant,Attack";
       $names = ["-", "-"];
       $canAttack = CanAttack($cardID, "PLAY", $index, "MYALLY", type:"AA");
       if (SearchHand($currentPlayer, hasWateryGrave: true) != "" && !InstantRestricted($cardID, $from, $index)) $names[0] = "Instant";
@@ -1534,6 +1547,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
     case "chowder_hearty_cook_yellow":
     case "moray_le_fay_yellow":
     case "shelly_hardened_traveler_yellow":
+      if ($allNames) return "Instant,Attack";
       $canAttack = CanAttack($cardID, "PLAY", $index, "MYALLY", type:"AA");
       $names = ["-", "-"];
       if (!InstantRestricted($cardID, $from, $index)) $names[0] = "Instant";
@@ -1559,6 +1573,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       }
       return $names;
     case "cutty_shark_quick_clip_yellow":
+      if ($allNames) return "Ability,Attack";
       $canAttack = CanAttack($cardID, "PLAY", $index, "MYALLY", type:"AA");
       $allies = &GetAllies($currentPlayer);
       $names = "";
@@ -1568,6 +1583,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       if ($canAttack) $names != "" ? $names .= ",Attack" : $names = "-,Attack";
       return $names;
     case "fearless_confrontation_blue":
+      if ($allNames) return "Ability,Attack";
       $instantRestricted = InstantRestricted($cardID, $from, $index);
       $names = ["-", "-"];
       //can it ability?
@@ -1583,6 +1599,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-"): stri
       $names = $names[1] == "-" ? $names[0] : implode(",", $names);
       return $names;
     case "light_up_the_leaves_red":
+      if ($allNames) return "Ability,Action";
       $names = ["-", "-"];
       //can it ability?
       if ($from == "HAND" && SearchCount(SearchHand($currentPlayer, talent:"EARTH")) > 0 && !InstantRestricted($cardID, $from, $index)) $names[0] = "Ability";
@@ -1712,7 +1729,7 @@ function CanPitch($cardID, $from)
 
 function GetAbilityIndex($cardID, $index, $abilityName)
 {
-  $names = explode(",", GetAbilityNames($cardID, $index));
+  $names = explode(",", GetAbilityNames($cardID, $index, allNames:true));
   $abilityName = GamestateUnsanitize($abilityName);
   $countNames = count($names);
   for ($i = 0; $i < $countNames; ++$i) {
