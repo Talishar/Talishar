@@ -1276,11 +1276,11 @@ class pulsing_cardia_blue extends Card {
 
 class auric_shards extends BaseCard {
   function PlayAbility() {
-    global $CombatChain;
+    global $CombatChain, $Stack;
     $Auras = new Auras($this->controller);
     $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true); //it should always be the most recent aura
     // for now assume it's targeting the current chain link
-    if (HasFragment($CombatChain->AttackCard()->ID()))
+    if (HasFragment($CombatChain->AttackCard()->ID()) || (IsLayerStep() && HasFragment($Stack->BottomLayer()->ID())))
       AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
   }
 
