@@ -1678,6 +1678,10 @@ function CanPlayNAA($cardID, $from, $index=-1)
   //check for if you can play at instant speed
   if (ClassContains($cardID, "WIZARD", $currentPlayer) && GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) return true;
   if ($combatChainState[$CCS_EclecticMag]) return true;
+  if ($from == "BANISH") {
+    $banishCard = new BanishCard($currentPlayer, $index);
+    return PlayableFromBanish($banishCard->ID(), $banishCard->Modifier());
+  }
   // check action points
   if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0) return false;
   // check for empty stack (other than the current card)
