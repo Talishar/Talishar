@@ -137,6 +137,7 @@ function ChooseMultiZoneAwait($player) {
   global $dqVars;
   $may = $dqVars["may"] ?? false;
   $indices = $dqVars["indices"] ?? "";
+  if ($indices == "") return "PASS";
   $notSubsequent = $dqVars["notSubsequent"] ?? false;
   if ($may)
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
