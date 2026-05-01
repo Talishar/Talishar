@@ -1514,7 +1514,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
           if (CardNameContains($char[$i], "Raydn", $currentPlayer)) $hasRaydn = true;
         }
       }
-      elseif ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names[1] = "Attack Reaction";
+      if ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names[1] = "Attack Reaction";
       if ($names[1] == "-") return $names[0];
       return implode(",", $names);
     case "cogwerx_blunderbuss":
