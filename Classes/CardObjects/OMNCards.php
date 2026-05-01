@@ -2055,7 +2055,7 @@ class tempestuous_kiss_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    if (DoesAttackHaveGoAgain()) {
+    if (DoesAttackHaveGoAgain() && IsHeroAttackTarget()) {
       AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
     }
     return "";
