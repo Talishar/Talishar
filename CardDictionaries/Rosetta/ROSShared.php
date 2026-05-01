@@ -286,7 +286,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PLAYAURA", $currentPlayer, "runechant-$numRunechants-$cardID", 1);
       return "";
     case "aether_bindings_of_the_third_age":
-      WriteLog("HERE this is a test message");
       AddCurrentTurnEffect("aether_bindings_of_the_third_age,0", $currentPlayer);
       return "";
     case "ink_lined_cloak":
