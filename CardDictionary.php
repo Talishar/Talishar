@@ -1766,7 +1766,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $abilityTypes = GetAbilityTypes($cardID, $index, $from);
   $abilityNames = GetAbilityNames($cardID, $index, $from);
   // modal card where none of the modes are live
-  if ($abilityTypes != "" && $abilityNames == "-") return false;
+  if ($abilityTypes != "" && $abilityNames == "-" && $phase != "P" && $phase != "B") return false;
   if ($phase == "P" && $from != "HAND") return false;
   if ($phase == "B" && $from == "BANISH") return false;
   if ($phase == "B" && $from == "THEIRBANISH") return false;
