@@ -1916,7 +1916,6 @@ class flicker_reality_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    WriteLog("HERE this is a test message");
     return "";
   }
 
