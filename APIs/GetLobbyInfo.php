@@ -7,6 +7,7 @@ include "../Libraries/HTTPLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
+include_once "../Libraries/LegalHeroesHelper.php";
 
 // Set headers immediately after includes
 SetHeaders();
@@ -128,6 +129,7 @@ if($handler) {
   }
 
   $response->format = $format;
+  $response->legalHeroes = GetLegalHeroes($format);
 
   $response->deck->cards = GetArray($handler);
   //Remove deck cards that don't belong
