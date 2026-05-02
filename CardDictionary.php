@@ -1702,6 +1702,18 @@ function CanPlayNAA($cardID, $from, $index=-1)
     $banishCard = new BanishCard($currentPlayer, $index);
     return PlayableFromBanish($banishCard->ID(), $banishCard->Modifier());
   }
+  $Hero = new CharacterCard(0, $currentPlayer);
+  if ($Hero->Status() > 1) {
+    switch ($Hero->CardID()) {
+      case "iyslander":
+      case "iyslander_stormbind":
+        if ($from == "ARS" && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer))
+          return true;
+        break;
+      default:
+        break;
+    }
+  }
   // check action points
   if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0) return false;
   // check for empty stack (other than the current card)
