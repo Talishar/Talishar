@@ -38,6 +38,7 @@ include "Classes/CardObjects/DYNCards.php";
 include "Classes/CardObjects/OUTCards.php";
 include "Classes/CardObjects/DTDCards.php";
 include "Classes/CardObjects/HVYCards.php";
+include "Classes/CardObjects/MSTCards.php";
 include "Classes/CardObjects/ROSCards.php";
 include "Classes/CardObjects/HNTCards.php";
 include "Classes/CardObjects/SEACards.php";
@@ -64,7 +65,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CS_ArcaneTargetsSelected, $inGameStatus, $CS_ArcaneDamageDealt, $MakeStartTurnBackup, $CCS_AttackTargetUID, $MakeStartGameBackup;
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
-  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack;
+  global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack, $CurrentTurnEffects;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -411,7 +412,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "SPELLVOID":
           $damage = explode("-", $dqVars[0])[0];
           $prevention = $dqVars[1];
-          if($prevention < $damage) $rv = SearchSpellvoidIndices($player, $subparam);
+          if($damage > $prevention) $rv = SearchSpellvoidIndices($player, $subparam);
           break;
         case "OPPSENERGYPERMANENTS":
           $rv = [];
@@ -1583,8 +1584,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if($prevented > 0) LogDamagePreventedStats($player, min($damage, $prevented));
         $damage -= $prevented;
         if ($damage < 0) $damage = 0;
-        $dqVars[0] = $damage;
-        if ($damage > 0) CheckSpellvoid($player, $damage);
+        if ($damage > 0) CheckSpellvoid($player, $parameter);
       }
       PrependDecisionQueue("INCDQVAR", $player, "1", 1);
       return $prevented;
@@ -3397,7 +3397,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($target == "PASS") return $target;
           $targetLoc = explode("-", $target)[0];
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
-          WriteLog("Player " . $targetedPlayer . "'s " . GetMZCardLink($targetedPlayer, $lastResult) . " was targeted");
+          WriteLog("Player " . $targetedPlayer . "'s " . GetMZCardLink($targetedPlayer, $lastResult) . " was targeted by " . CardLink($parameter));
           break;
       }
       return $lastResult;
@@ -3748,8 +3748,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddDecisionQueue("ADDTRIGGER", $currentPlayer, $parameter);
         }
         else {
-          AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-          AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $params[0], 1);
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $lastResult, 1);
           AddDecisionQueue("ADDTRIGGER", $currentPlayer, $params[0], 1);
         }
       }
@@ -3983,6 +3982,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
 
       return $lastResult;
+    case "GETUNTAPPEDCOGS":
+      $inds = GetTapped($player, "MYITEMS", "subtype=Cog");
+      return $inds;
     case "GOLDENSKYWARDEN":
       if (GetMZCard($player, $lastResult) == "golden_cog") {
         PutItemIntoPlayForPlayer("gold", $player, isToken:true, effectController:$player);
@@ -4103,6 +4105,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
         AddDecisionQueue("SETLAYERTARGET", $player, "seismic_shift_red", 1);
+      }
+      return $lastResult;
+    case "HIDEOPEQUIP":
+      if ($parameter == 1)
+        AddCurrentTurnEffect("HIDEOPEQUIP", $player);
+      else {
+        for ($i = $CurrentTurnEffects->NumEffects() - 1; $i >= 0; --$i) {
+          $Effect = $CurrentTurnEffects->Effect($i, true);
+          if ($Effect->EffectID() == "HIDEOPEQUIP")
+            $Effect->Remove();
+        }
       }
       return $lastResult;
     default:

@@ -596,13 +596,13 @@ function EffectArcaneBonus($source)
   }
 }
 
-function AssignEffectToCard($cardID, $player) {
+function AssignEffectToCard($cardID, $player, $from) {
   global $CurrentTurnEffects;
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->AppliestoUniqueID() != -1) continue;
     $card = GetClass($Effect->EffectID(), $player);
-    if ($card != "-") $card->AssignEffectToCard($cardID, $Effect->Index());
+    if ($card != "-") $card->AssignEffectToCard($cardID, $Effect->Index(), $from);
   }
 }
 

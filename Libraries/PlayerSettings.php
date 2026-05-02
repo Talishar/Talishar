@@ -495,6 +495,7 @@ function FormatCode($format)
     case "compsage": return 15;
     case "futuresage": return 16;
     case "open": return 17;
+    case "gage": return 18;
     case "precon": return -2;
     default: return -1;
   }
@@ -523,6 +524,7 @@ function FormatName($formatCode)
     case 15: return "compsage";
     case 16: return "futuresage";
     case 17: return "open";
+    case 18: return "gage";
     case -2: return "precon";
     default: return "-";
   }

@@ -29,4 +29,8 @@ class odds_on_favorite_blue extends Card {
 		Await($wonWager, "ShuffleDeck");
 		Await($wonWager, "AddTopDeck", from:"DECK", final:true);
 	}
+
+  function IsWagerEffect($index) {
+    return true;
+  }
 }

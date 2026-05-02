@@ -262,6 +262,7 @@ if ($handle = opendir($path)) {
         else if($format == "precon") $formatName = "Preconstructed Deck";
         else if($format == "sage") $formatName = "Silver Age";
         else if($format == "open") $formatName = "Open";
+        else if($format == "gage") $formatName = "Golden Age";
         
         $description = ($gameDescription == "" ? "Game #" . $gameName : $gameDescription);
         $openGame->format = $format;

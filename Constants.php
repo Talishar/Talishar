@@ -397,6 +397,7 @@ $CS_NumWeaponsActivated = 115;
 $CS_NumLightningFlowDestroyed = 116;
 $CS_HoloAurasEntered = 117;
 $CS_NumInstantsPutInGrave = 118;
+$CS_NumControlledAurasDestroyed = 119;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -448,6 +449,7 @@ $CCS_NumPowerCounters = 45;
 $CCS_SoulBanishedThisChain = 46;
 $CCS_AttackCost = 47; // the base cost of the attack (necessary for X cost attacks)
 $CCS_CachedGoAgain = 48; // cached result of DoesAttackHaveGoAgain() set before EvaluateCombatChain
+$CCS_AttackDamageDealtToHero = 49; // how much damage the active attack has dealt (including arcane pings)
 
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
@@ -462,7 +464,7 @@ function ResetCombatChainState()
   global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
-  global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain, $CCS_AttackCost, $CCS_CachedGoAgain;
+  global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero;
 
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -511,6 +513,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_SoulBanishedThisChain] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
   $combatChainState[$CCS_CachedGoAgain] = 0;
+  $combatChainState[$CCS_AttackDamageDealtToHero] = 0;
   
   $aGoodCleanFight = false;
   for($i = 0; $i < count($chainLinks); ++$i) {
@@ -566,7 +569,7 @@ function AttackReplaced($cardID, $player)
 {
   global $combatChainState, $currentTurnEffects, $mainPlayer;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_CachedDominateActive, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBasePower, $combatChain;
-  global $CS_NumStealthAttacks, $CCS_AttackCost, $CCS_CachedGoAgain;
+  global $CS_NumStealthAttacks, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero;
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_CachedDominateActive] = 0;
   $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "GY";
@@ -574,6 +577,7 @@ function AttackReplaced($cardID, $player)
   $combatChainState[$CCS_LinkBasePower] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
   $combatChainState[$CCS_CachedGoAgain] = 0;
+  $combatChainState[$CCS_AttackDamageDealtToHero] = 0;
 
   if (HasStealth($cardID)) IncrementClassState($player, $CS_NumStealthAttacks);
   $combatChain[0] = $cardID;
@@ -602,7 +606,7 @@ function ResetChainLinkState()
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking, $CCS_NumPowerCounters;
-  global $CCS_AttackCost, $CCS_CachedGoAgain;
+  global $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero;
 
   WriteLog("The chain link was resolved.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -645,6 +649,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_NumPowerCounters] = 0;
   $combatChainState[$CCS_AttackCost] = -1;
   $combatChainState[$CCS_CachedGoAgain] = 0;
+  $combatChainState[$CCS_AttackDamageDealtToHero] = 0;
   RemoveThisLinkEffects();
 }
 
@@ -669,7 +674,7 @@ function ResetMainClassState()
   global $CS_CheeredThisTurn, $CS_BooedThisTurn, $CS_SuspensePoppedThisTurn, $CS_SeismicSurgesCreated, $CS_CardsInDeckBeforeOpt;
   global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed, $CS_NumCostedCardsPlayed, $CS_HitCounter, $CS_CreatedCardsThisTurn;
   global $CS_ArcaneDamageDealtToOpponent, $CS_EvosBoosted, $CS_NumWeaponsActivated, $CS_NumLightningFlowDestroyed, $CS_HoloAurasEntered;
-  global $CS_NumInstantsPutInGrave;
+  global $CS_NumInstantsPutInGrave, $CS_NumControlledAurasDestroyed;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -788,6 +793,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumLightningFlowDestroyed] = 0;
   $mainClassState[$CS_HoloAurasEntered] = 0;
   $mainClassState[$CS_NumInstantsPutInGrave] = 0;
+  $mainClassState[$CS_NumControlledAurasDestroyed] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")
@@ -907,7 +913,10 @@ function GetDamagePrevention($player, $damage)
   $countCharacter = count($character);
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $countCharacter; $i += $characterPieces) {
-    if($character[$i + 12] == "UP") $preventionLeft += WardAmount($character[$i],$player);
+    if($character[$i + 12] == "UP") {
+      $preventionLeft += WardAmount($character[$i],$player);
+      $preventionLeft += CharacterDamagePreventionAmount($player, $i, $damage, true, true);
+    }
   }
 
   return $preventionLeft;

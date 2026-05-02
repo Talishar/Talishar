@@ -137,6 +137,7 @@ function ChooseMultiZoneAwait($player) {
   global $dqVars;
   $may = $dqVars["may"] ?? false;
   $indices = $dqVars["indices"] ?? "";
+  if ($indices == "") return "PASS";
   $notSubsequent = $dqVars["notSubsequent"] ?? false;
   if ($may)
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
@@ -202,6 +203,15 @@ Function YesNoAwait($player) {
   if ($noPass) PrependDecisionQueue("NOPASS", $player, "-", 1);
   PrependDecisionQueue("YESNO", $player, $message, 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, $context, 1);
+}
+
+
+// Use this one during the resolution of an effect for clearer UI
+function PayResourcesEffectAwait($player) {
+  global $dqVars;
+  $amount = $dqVars["amount"];
+  PrependDecisionQueue("PAYRESOURCESEFFECT", $player, $amount, 1);  
+  PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);  
 }
 
 function PayResourcesAwait($player) {

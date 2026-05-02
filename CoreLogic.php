@@ -602,8 +602,6 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
 {
   global $mainPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
-  // $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-  // $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
   $extraText = GetHorrorsBuff();
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
   if ($type == "ARCANE" && $source == "deny_redemption_red") return false;
@@ -617,6 +615,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue" || $extraText == "pick_to_pieces_red" || $extraText == "pick_to_pieces_yellow" || $extraText == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
   if ($damage >= 4 && $source == "batter_to_a_pulp_red") return false;
+  if (SearchCurrentTurnEffects("step_between_red-PREVENT", $otherPlayer)) return false;
   return true;
 }
 
@@ -692,7 +691,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
   global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain, $CS_ArcaneDamageDealtToOpponent;
-  global $CurrentTurnEffects;
+  global $CurrentTurnEffects, $CCS_AttackDamageDealtToHero, $CombatChain;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
@@ -733,6 +732,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     if ($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if ($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
     CurrentEffectDamageEffects($player, $source, $type, $damage);
+    if ($source == $CombatChain->AttackCard()->ID()) $combatChainState[$CCS_AttackDamageDealtToHero] += $damage;
   }
   if ($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ice_storm_red-2", $otherPlayer) && IsHeroAttackTarget()) {
     for ($i = 0; $i < $damage; ++$i) PlayAura("frostbite", $player, effectController:$otherPlayer);
@@ -922,7 +922,7 @@ function CombatChainDamageModifiers($player, $source, $type)
 
 function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
-  global $currentTurnEffects, $EffectContext;
+  global $currentTurnEffects, $EffectContext, $CombatChain;
   $otherPlayer = ($target == 1 ? 2 : 1);
   if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -930,8 +930,11 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
       continue;
     }
     if ($type == "COMBAT" && HitEffectsArePrevented($source)) continue;
+    if ($source == $CombatChain->AttackCard()->ID() && !IsCombatEffectActive($currentTurnEffects[$i])) continue;
     $remove = 0;
     $EffectContext = $currentTurnEffects[$i];
+    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    if ($card != "-") $card->CurrentEffectDamageEffect($target, $source, $type, $damage);
     switch ($currentTurnEffects[$i]) {
       case "blizzard_bolt_red":
       case "blizzard_bolt_yellow":
@@ -1225,23 +1228,24 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
 
   for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    $thisType = CardType($combatChain[$i]);
-    $thisSubType = CardSubType($combatChain[$i]);
     if ($color != "" && !ColorContains($combatChain[$i], $color, $combatChain[$i+1])) continue;
-    if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || TypeContains($combatChain[$i], $cardType, $playerID)) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
-      $excluded = false;
-      for ($j = 0; $j < count($exclCardTypeArray); ++$j) {
-        if ($thisType == $exclCardTypeArray[$j]) $excluded = true;
-      }
-      for ($k = 0; $k < count($exclCardSubTypeArray); ++$k) {
-        if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
-      }
-      if ($excluded) continue;
-      if ($pieces != "") $pieces .= ",";
-      if (!$asMZInd) $pieces .= $i;
-      else $pieces .= "COMBATCHAINLINK-$i";
+    if ($playerID != "" && $combatChain[$i + 1] != $playerID) continue;
+    if ($cardType != "" && !TypeContains($combatChain[$i], $cardType, $playerID)) continue;
+    if ($subType != "" && !SubtypeContains($combatChain[$i], $subType)) continue; 
+    if ($nameContains != "" && !CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true)) continue;
+
+    $excluded = false;
+    foreach($exclCardTypeArray as $exCardType) {
+      if (TypeContains($combatChain[$i], $exCardType)) $excluded = true;
     }
-  }
+    foreach($exclCardSubTypeArray as $exSubtype) {
+      if (SubtypeContains($combatChain[$i], $exSubtype)) $excluded = true;
+    }
+    if ($excluded) continue;
+    if ($pieces != "") $pieces .= ",";
+    if (!$asMZInd) $pieces .= $i;
+    else $pieces .= "COMBATCHAINLINK-$i";
+    }
   return $pieces;
 }
 
@@ -1963,6 +1967,7 @@ function ColorOverride($cardID, $player = "")
       case "become_the_cup_red":
       case "become_the_cup_yellow":
       case "become_the_cup_blue":
+        if ($cardID != $effectParams[0]) break;
         $pitchToAdd = match ($effectParams[1] ?? "-") {
         "Red" => 1, "Yellow" => 2, "Blue" => 3, default => 0
         };
@@ -3864,12 +3869,14 @@ function EvoHandling($cardID, $player, $from)
   else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
   $replaced = 0;
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if (!$replaced && SubtypeContains($char[$i], $slot, uniqueID:$char[$i + 11])) {
-      if (SubtypeContains($char[$i], "Base") && $char[$i + 1] != 0) {
-        $CombatChain->Remove(GetCombatChainIndex($char[$i], $player));
-        $ChainLinks->RemoveOriginUID($char[$i + 11]);
-        CharacterAddSubcard($player, $i, $char[$i]);
-        $fromCardID = $char[$i];
+    $CharacterCard = new CharacterCard($i, $player);
+    if (!$replaced && SubtypeContains($char[$i], $slot, uniqueID:$CharacterCard->UniqueID())) {
+      if (SubtypeContains($char[$i], "Base") && $CharacterCard->Status() != 0) {
+        $ChainCard = $CombatChain->FindCardOriginUID($CharacterCard->UniqueID());
+        $ChainCard->Remove();
+        $ChainLinks->RemoveOriginUID($CharacterCard->UniqueID());
+        CharacterAddSubcard($player, $i, $CharacterCard->CardID());
+        $fromCardID = $CharacterCard->CardID();
         $char[$i + 2] = 0;//Reset counters
         $char[$i + 4] = 0;//Reset defense counters
         $char[$i + 6] = 0;//Not on chain anymore
@@ -3965,15 +3972,17 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
   switch ($toCardID) {
     case "evo_steel_soul_memory_blue":
     case "evo_steel_soul_memory_blue_equip":
-      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         AddCurrentTurnEffect($toCardID, $player);
         WriteLog("🧠" . CardLink("$toCardID") . " gained +1 intellect");
+      }
       break;
     case "evo_steel_soul_processor_blue":
     case "evo_steel_soul_processor_blue_equip":
-      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         GainResources($player, 3);
         WriteLog("🩶" . CardLink("$toCardID") . " gained +3 resources");
+      }
       break;
     case "evo_steel_soul_controller_blue":
     case "evo_steel_soul_controller_blue_equip":
@@ -3983,9 +3992,10 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
       break;
     case "evo_steel_soul_tower_blue":
     case "evo_steel_soul_tower_blue_equip":
-      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID))
+      if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
         GainActionPoints(1, $player);
         WriteLog("🦿" . CardLink("$toCardID") . " gained +1 action point");
+      }
       break;
     case "evo_zoom_call_yellow":
     case "evo_zoom_call_yellow_equip":

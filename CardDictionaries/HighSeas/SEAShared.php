@@ -686,10 +686,10 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(empty($inds)) break;
       $indices = explode(",", $inds);
       $maxCogs = count($indices) >= 3 ? 3 : count($indices);
-      for ($i = 0; $i < count($indices); $i++) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap ".($maxCogs-$i)." cogs you control");
-        //technically should be a MAYCHOOSEMULTIZONE but for playerMacro we make it so it skips the step if there is 1 choice
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds);
+      for ($i = 0; $i < $maxCogs; $i++) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap ".($maxCogs-$i)." cogs you control", 1);
+        AddDecisionQueue("GETUNTAPPEDCOGS", $currentPlayer, "-", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZTAP", $currentPlayer, "0", 1);
       }
       break;

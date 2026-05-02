@@ -551,6 +551,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
+    // hide opponent's equipment while deciding on adaptive stuff
+    $facing = ($i != 0 && SearchCurrentTurnEffects("HIDEOPEQUIP", $playerID)) ? "DOWN" : $theirCharacter[$i + 12];
     if($isGameOver) $theirCharacter[$i + 12] = "UP";
     if ($theirCharacter[$i + 12] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
       if($theirCharacter[$i + 1] > 0) {
@@ -568,7 +570,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) && SearchCombatChainForIndex($theirCharacter[$i], $otherPlayer) != -1 ? 0 : $theirCharacter[$i + 6] == 1,
         isBroken: $theirCharacter[$i + 1] == 0,
         label: $label,
-        facing: $theirCharacter[$i + 12],
+        facing: $facing,
         numUses: $theirCharacter[$i + 5],
         subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
         marked: $theirCharacter[$i + 13] == 1,

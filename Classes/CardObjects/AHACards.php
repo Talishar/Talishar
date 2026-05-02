@@ -363,7 +363,7 @@ class reverent_rerebrace extends Card {
 		}
 		else {
 			PrependDecisionQueue("PAYRESOURCESEFFECT", $this->controller, 1, 1);
-  		PrependDecisionQueue("PASSPARAMETER", $this->controller, 1, 1);
+			PrependDecisionQueue("PASSPARAMETER", $this->controller, 1, 1);
 			$Character = new PlayerCharacter($this->controller);
 			$CharacterCard = $Character->FindCardID($this->cardID);
 			$CharacterCard->Destroy();

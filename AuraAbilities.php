@@ -752,9 +752,6 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumAgilityDestroyed, 1);
         break;
-      case "restless_coalescence_yellow":
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY", $auras[$i + 6]);
-        break;
       case "sigil_of_solitude_red":
       case "sigil_of_solitude_yellow":
       case "sigil_of_solitude_blue":
@@ -857,9 +854,6 @@ function AuraStartTurnAbilities()
     $card = GetClass($cardID, $defPlayer);
     if ($card != "-") $card->OppStartTurnAbility($i);
     switch ($cardID) {
-      case "restless_coalescence_yellow":
-        AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY", $defPlayerAuras[$i + 6]);
-        break;
       case "channel_mount_isen_blue":
         $character = &GetPlayerCharacter($mainPlayer);
         $eqFrostbiteCount = 0;
@@ -1545,6 +1539,7 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "channel_thunder_steppe_yellow":
+        if (IsActivated($cardID, $from)) break;
         if ((DelimStringContains($cardType, "A") || $cardType == "AA") && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "A")) {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
@@ -1830,16 +1825,6 @@ function PayAuraAbilityAdditionalCosts($cardID, $from)
       }
       DestroyAura($currentPlayer, $index);
       Charge(may: false);
-      break;
-    case "restless_coalescence_yellow":
-      $abilityType = GetResolvedAbilityType($cardID, $from, $currentPlayer);
-      if ($abilityType == "I" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]) != -1) {
-        --$auras[$index + 3];
-        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6]));
-        AddCurrentTurnEffect($cardID, $currentPlayer, "", $auras[$index + 6] . "-PAID");
-      } elseif ($abilityType == "AA") {
-        $auras[$index + 1] = 1;
-      }
       break;
     case "fealty":
       DestroyAura($currentPlayer, $index);

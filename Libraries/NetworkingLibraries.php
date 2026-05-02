@@ -2172,14 +2172,14 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   if ($playingCard) {
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from, true) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) {
-      if(!HasMeld($cardID) && (GetResolvedAbilityType($cardID, $from) == "A" || GetResolvedAbilityType($cardID, $from) == "") || (HasMeld($cardID) && ($cachedAdditionalCosts != "Life" && $cachedAdditionalCosts != "Null")))
+      if(!HasMeld($cardID) && (!IsActivated($cardID, $from)) || (HasMeld($cardID) && ($cachedAdditionalCosts != "Life" && $cachedAdditionalCosts != "Null")))
       {
         AssignArcaneBonus($currentPlayer);
       }
       else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     }
     else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
-    AssignEffectToCard($cardID, $currentPlayer);
+    AssignEffectToCard($cardID, $currentPlayer, $from);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
     if (TypeContains($cardID, "W", $currentPlayer) && IsActivated($cardID, $from))

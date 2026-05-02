@@ -123,3 +123,36 @@ function PayLightningFlowInstead($player, $cardID) {
 		AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "$cardID-PAID", 1);
 	}
 }
+
+// Use for effects that say "Prevent the next X damage"
+function FloatingPrevention($index, $damage, $amount, &$remove) {
+	global $CurrentTurnEffects;
+	$Effect = $CurrentTurnEffects->Effect($index);
+	if ($damage >= $Effect->NumUses()) {
+		$remove = true;
+		return $Effect->NumUses();
+	}
+	else {
+		if (!$amount) $Effect->AddUses(-$damage);
+		return $damage;
+	}
+}
+
+function HoloFlicker($player, $MZIndex) {
+	$Aura = MZIndexToObject($player, $MZIndex);
+	$banishInd = $Aura->Banish();
+	if ($banishInd != -1) {
+		$BanishCard = new BanishCard($player, $banishInd);
+		PlayAura($BanishCard->ID(), $player, holoCounters:1);
+		$BanishCard->Remove();
+	}
+}
+
+function FirstDamageTrigger($target, $cardID, $player, $effectID="-") {
+	global $CombatChain, $combatChainState, $CCS_AttackDamageDealtToHero;
+	$triggeringCard = $effectID == "-" ? $cardID : $effectID;
+	if ($CombatChain->AttackCard()->ID() != $cardID) return; // for now only make this work when it's the active link
+	if (is_numeric($target) && $combatChainState[$CCS_AttackDamageDealtToHero] == 0) {
+		AddLayer("TRIGGER", $player, $triggeringCard, $target);
+	}
+}

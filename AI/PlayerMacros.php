@@ -23,8 +23,8 @@ function ProcessMacros()
       $decisionQueueCount = count($decisionQueue);
       $holdPrioritySetting = HoldPrioritySetting($currentPlayer);
       $choiceLength = strlen($turn[2] ?? "");
-      $firstLayer = $layerCount > 0 ? $layers[0] : null;
-      $lastLayer = $layerCount > 0 ? $layers[$layerCount - LayerPieces()] : null;
+      $firstLayer = $layerCount >= LayerPieces() ? $layers[0] : null;
+      $lastLayer = $layerCount >= LayerPieces() ? $layers[$layerCount - LayerPieces()] : null;
       
       switch ($turn[0]) {
         case "A":

@@ -260,12 +260,13 @@ if ($p2IsAI == "1") {
 CacheCombatResult();
 
 if (!IsGameOver()) {
+  $update = time() - intval($lastUpdateTime);
   switch ($playerID) {
     case 1:
-      $p1TotalTime += time() - intval($lastUpdateTime);
+      $p1TotalTime = is_numeric($p1TotalTime) ? $p1TotalTime + $update : $update;
       break;
     case 2:
-      $p2TotalTime += time() - intval($lastUpdateTime);
+      $p2TotalTime = is_numeric($p2TotalTime) ? $p2TotalTime + $update : $update;
       break;
   }
   $lastUpdateTime = time();

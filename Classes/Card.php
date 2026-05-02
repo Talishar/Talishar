@@ -650,7 +650,7 @@ class Card {
     return "";
   }
 
-  function AssignEffectToCard($cardID, $effectIndex) { //used to apply effects to the next card "played" not resolved
+  function AssignEffectToCard($cardID, $effectIndex, $from) { //used to apply effects to the next card "played" not resolved
     return;
   }
 
@@ -684,5 +684,13 @@ class Card {
 
   function HasFusion() {
     return "";
+  }
+
+  function IsWagerEffect($index) {
+    return false;
+  }
+
+  function CurrentEffectDamageEffect($target, $source, $type, $damage) {
+    return;
   }
 }

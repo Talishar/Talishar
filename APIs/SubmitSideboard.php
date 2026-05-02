@@ -86,7 +86,7 @@ if ($playerID == 2) {
 
 $playerDeck = $submission->deck;
 $deckCount = count($playerDeck);
-if($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc")) {
+if($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "gage")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
   echo json_encode($response);
@@ -190,7 +190,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, "M 1\r\n"); //What phase/player is active
   fwrite($handler, "1\r\n"); //Action points
   fwrite($handler, "\r\n"); //Combat Chain
-  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0\r\n"); //Combat Chain State
+  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0\r\n"); //Combat Chain State
   fwrite($handler, "\r\n"); //Current Turn Effects
   fwrite($handler, "\r\n"); //Current Turn Effects From Combat
   fwrite($handler, "\r\n"); //Next Turn Effects

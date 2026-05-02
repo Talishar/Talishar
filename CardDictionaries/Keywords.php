@@ -451,7 +451,17 @@
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
     for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = $chainClosed ? false : true;
-      if(isset($currentTurnEffects[$i])) {
+      if (!isset($currentTurnEffects[$i])) continue;
+      $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+      if ($card != "-" && $card->IsWagerEffect($i)) {
+        for($j = 0; $j < $amount; ++$j) {
+          if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, ExtractCardID($currentTurnEffects[$i]), $wonWager, "WAGER");
+        }
+        // if (IsCombatEffectActive($currentTurnEffects[$i]))
+        RemoveCurrentTurnEffect($i);
+        $hasWager = true;
+      }
+      else {
         switch($currentTurnEffects[$i]) {
           case "good_time_chapeau":
           case "bet_big_red":
@@ -469,25 +479,13 @@
           case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
           case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
           case "drink_em_under_the_table_red":
-          case "odds_on_favorite_blue":
             for($j = 0; $j < $amount; ++$j) {
               if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
             }
             RemoveCurrentTurnEffect($i);
             break;
-          case "cheating_scoundrel_red":
-            for($j = 0; $j < $amount; ++$j) {
-              if (IsCombatEffectActive($currentTurnEffects[$i])) {
-                if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
-        
-              }
-            }
-            if (IsCombatEffectActive($currentTurnEffects[$i])) {
-              RemoveCurrentTurnEffect($i);
-            }
-            break;
           default:
-            $hasWager = false;
+            $hasWager = $hasWager || false;
             break;
         }
       }
