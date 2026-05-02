@@ -5,6 +5,7 @@ include "../CardDictionary.php";
 include '../Libraries/HTTPLibraries.php';
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Libraries/CacheLibraries.php";
+include_once "../Libraries/LegalHeroesHelper.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../includes/dbh.inc.php";
@@ -222,6 +223,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $matchups = TransformMatchupsWithTurnOrder($matchups);
   $response->myDeckLink = $decklink;
   $response->matchups = $matchups;
+  $response->legalHeroes = GetLegalHeroes($format);
 
   // If both players have enabled chat, is true, else false
   $p1ChatStatus = intval(GetCachePiece($gameName, 15));
