@@ -2333,3 +2333,65 @@ class step_between_red extends Card {
     return ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA";
   }
 }
+
+class third_eye_of_the_sphinx extends Card {
+  function __construct($controller) {
+    $this->cardID = "third_eye_of_the_sphinx";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Draw($this->controller, effectSource:$this->cardID);
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Tap();
+    $CharacterCard->AddUse(); // not once per turn
+    $Auras = new Auras($this->controller);
+    $Ponder = $Auras->FindCardID("ponder");
+    $Ponder->Destroy();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    if ($CharacterCard->Tapped() == 1) return true;
+    $Auras = new Auras($this->controller);
+    $Ponder = $Auras->FindCardID("ponder");
+    if ($Ponder->Index() == -1) return true;
+    return false;
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialBlock() {
+    return 1;
+  }
+
+  function SpecialSubType() {
+    return "Head";
+  }
+  
+  function SpecialName() {
+    return "Third Eye of the Sphinx";
+  }
+
+  function SpellVoidAmount($index = -1) {
+    return 1;
+  }
+}

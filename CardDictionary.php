@@ -3557,6 +3557,8 @@ function HasBladeBreak($cardID)
       return true;
     case "glove_of_azure_waves":
       return HighTideConditionMet($defPlayer);
+    case "third_eye_of_the_sphinx": // temporary while waiting on fabcube
+      return true;
     default:
       return GeneratedHasBladeBreak($cardID);
   }
