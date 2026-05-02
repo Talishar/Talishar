@@ -302,6 +302,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ally";
     case "suraya_archangel_of_knowledge":
       return "Angel,Ally";
+    case "third_eye_of_the_sphinx":
+      return "Head"; //temporary
     default:
       break;
   }
