@@ -4661,6 +4661,7 @@ function HasWard($cardID, $player)
     case "haze_shelter_red":
     case "haze_shelter_yellow":
     case "haze_shelter_blue":
+    case "three_visits_red":
       return true;
     default:
       return GeneratedHasWard($cardID);
