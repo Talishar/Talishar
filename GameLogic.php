@@ -1252,6 +1252,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WRITELOGCARDLINK":
       WriteLog(CardLink($parameter, $parameter) . " was chosen");
       return $lastResult;
+    case "WRITELOGMZCARDLINK":
+      WriteLog(GetMZCardLink($player, $parameter) . " was chosen");
+      return $lastResult;
     case "WRITELOGLASTRESULT":
       WriteLog("<b>$lastResult</b> was selected.");
       return $lastResult;
