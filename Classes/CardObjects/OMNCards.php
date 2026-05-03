@@ -2549,3 +2549,35 @@ class turn_to_mindfire_red extends Card {
     return 2;
   }
 }
+
+class tome_of_quandaries_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "tome_of_quandaries_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("ponder", $this->controller, 2);
+    return "";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  // function SpecialName() {
+  //   return "Tome of Quandaries";
+  // }
+}
