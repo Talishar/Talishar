@@ -2434,3 +2434,39 @@ class feral_instinct extends Card {
     return GetClassState($this->controller, $CS_HaveIntimidated) ? -3 : 0;
   }
 }
+
+class unmake_the_underlings extends Card {
+  function __construct($controller) {
+    $this->cardID = "unmake_the_underlings";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRDISCARD:subtype=Ally", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Turn an ally into gold?", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZOP", $this->controller, "FLIP", 1);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (!IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $CCS_AttackTargetUID, $combatChainState, $defPlayer;
+    $uidTarget = $combatChainState[$CCS_AttackTargetUID];
+    $Allies = new Allies($defPlayer);
+    $AllyCard = $Allies->FindCardUID($uidTarget);
+    $AllyCard->Destroy();
+  }
+}
