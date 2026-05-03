@@ -35,3 +35,10 @@ APIKeys/APIKeys.php
 private_messaging_errors.log
 /__pycache__
 .claude/
+
+# Composer artifacts (created by composer-setup, not part of the project)
+composer.phar
+composer-setup.php
+
+# PHPUnit test runner cache
+.phpunit.result.cache
