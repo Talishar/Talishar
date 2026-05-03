@@ -2211,17 +2211,38 @@ class headliner_helm extends Card {
 // }
 
 
-// class shift_the_tide_of_battle_yellow extends Card {
+class shift_the_tide_of_battle_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "shift_the_tide_of_battle_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "shift_the_tide_of_battle_yellow";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if (CachedTotalPower() > PowerValue($CombatChain->AttackCard()->ID(), $this->controller, "CC")) {
+      GiveAttackGoAgain();
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain, $mainPlayer;
+    return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalPower() <= PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC");
+  }
+
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
+    if (IsHeroAttackTarget()) {
+      PlayAura("agility", $this->controller); 
+      $remove = 1;
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 
 
 // class show_no_mercy_red extends Card {

@@ -2139,7 +2139,7 @@ class mercurial_skies_red extends Card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage) {
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
     $this->baseCard->CurrentEffectDamageEffect($target, $source);
   }
 
@@ -2172,7 +2172,7 @@ class mercurial_skies_yellow extends Card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage) {
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
     $this->baseCard->CurrentEffectDamageEffect($target, $source);
   }
 
@@ -2205,7 +2205,7 @@ class mercurial_skies_blue extends Card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage) {
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
     $this->baseCard->CurrentEffectDamageEffect($target, $source);
   }
 

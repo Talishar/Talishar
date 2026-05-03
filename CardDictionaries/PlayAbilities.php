@@ -148,12 +148,6 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
       return "";
-    case "shift_the_tide_of_battle_yellow":
-      if (CachedTotalPower() > PowerValue($CombatChain->AttackCard()->ID(), $currentPlayer, "CC")) {
-        GiveAttackGoAgain();
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      return "";
     case "up_the_ante_blue":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "UPTHEANTE", 1);

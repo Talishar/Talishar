@@ -2945,8 +2945,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return SearchCount(SearchDiscard($currentPlayer, pitch: 1)) < 1 || SearchCount(SearchDiscard($currentPlayer, pitch: 2)) < 1 || !CardSubtype($CombatChain->AttackCard()->ID()) == "Sword";
     case "blade_flurry_red":
       return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
-    case "shift_the_tide_of_battle_yellow":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalPower() <= PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC");
     case "cut_the_deck_red":
     case "cut_the_deck_yellow":
     case "cut_the_deck_blue":

@@ -934,7 +934,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
     $remove = 0;
     $EffectContext = $currentTurnEffects[$i];
     $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
-    if ($card != "-") $card->CurrentEffectDamageEffect($target, $source, $type, $damage);
+    if ($card != "-") $card->CurrentEffectDamageEffect($target, $source, $type, $damage, $remove);
     switch ($currentTurnEffects[$i]) {
       case "blizzard_bolt_red":
       case "blizzard_bolt_yellow":
@@ -957,12 +957,6 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
       case "sigil_of_permafrost_blue":
         if ((IsHeroAttackTarget() || IsHeroAttackTarget() == "" && $source != "frostbite") && $type == "ARCANE") {
           PlayAura("frostbite", $target, $damage, effectController:$otherPlayer);
-          $remove = 1;
-        }
-        break;
-      case "shift_the_tide_of_battle_yellow":
-        if (IsHeroAttackTarget()) {
-          PlayAura("agility", $otherPlayer); 
           $remove = 1;
         }
         break;
