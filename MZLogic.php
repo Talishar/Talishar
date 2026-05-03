@@ -841,6 +841,12 @@ function MultiZoneIndices($player, $parameter) {
     if (strpos($newSearch, "MYCHAR:type=E") !== false) {
       $newSearch = "MYITEMS:$conds&$newSearch";
     }
+    if (strpos($newSearch, "MYAURAS") !== false) {
+      $newSearch = "MYCHAR:subtype=Aura;$conds&$newSearch";
+    }
+    if (strpos($newSearch, "THEIRAURAS") !== false) {
+      $newSearch = "THEIRCHAR:subtype=Aura;$conds&$newSearch";
+    }
     $searches[] = $newSearch;
   }
   $parameter = implode("&", $searches);
