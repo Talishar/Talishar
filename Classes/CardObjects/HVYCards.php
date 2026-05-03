@@ -2242,6 +2242,10 @@ class shift_the_tide_of_battle_yellow extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
 }
 
 
