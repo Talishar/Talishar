@@ -1842,7 +1842,7 @@ function CacheCombatResult()
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
   // hard code this exception to avoid circularity
   $card = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
-  if (is_a($card, "SUPDwarfCard") && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
+  if ((is_a($card, "SUPDwarfCard") || $CombatChain->AttackCard()->ID() == "lionclaw_maul") && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
     ++$combatChainState[$CCS_CachedTotalPower];
   }
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");

@@ -2395,3 +2395,42 @@ class third_eye_of_the_sphinx extends Card {
     return 1;
   }
 }
+
+class lionclaw_maul extends Card {
+  function __construct($controller) {
+    $this->cardID = "lionclaw_maul";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    BOO($this->controller);
+  }
+}
+
+class feral_instinct extends Card {
+  function __construct($controller) {
+    $this->cardID = "feral_instinct";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SelfCostModifier($from) {
+    global $CS_HaveIntimidated;
+    return GetClassState($this->controller, $CS_HaveIntimidated) ? -3 : 0;
+  }
+}
