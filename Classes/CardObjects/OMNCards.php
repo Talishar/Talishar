@@ -2470,3 +2470,82 @@ class unmake_the_underlings extends Card {
     $AllyCard->Destroy();
   }
 }
+
+class turn_to_mindfire extends BaseCard {
+  function PlayAbility($target, $damage) {
+    DealArcane($damage, 2, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
+  }
+
+  function ArcaneHitEffect() {
+    $Hero = new CharacterCard(0, $this->controller);
+    if ($Hero->Tapped() == 0) {
+      $message = "if_you_want_to_tap_to_ponder";
+      $context = "Choose if you want to tap your hero to make a  " . CardLink("ponder");
+      Await($this->controller, "YesNo", "choice", message:$message, context:$context, subsequent:0);
+      Await($this->controller, $this->cardID, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap();
+    PlayAura("ponder", $this->controller, effectSource:$this->cardID);
+  }
+}
+
+class turn_to_mindfire_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "turn_to_mindfire_red";
+    $this->controller = $controller;
+    $this->baseCard = new turn_to_mindfire($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, $this->ArcaneDamage());
+    return "";
+  }
+
+  function ArcaneTargeting($from) {
+    return 2;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 5;
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHitEffect();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  // function SpecialName() {
+  //   return "Turn to Mindfire";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+}
