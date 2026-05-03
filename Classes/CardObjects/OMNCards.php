@@ -2541,9 +2541,9 @@ class turn_to_mindfire_red extends Card {
     return "WIZARD";
   }
 
-  // function SpecialName() {
-  //   return "Turn to Mindfire";
-  // }
+  function SpecialName() {
+    return "Turn to Mindfire";
+  }
 
   function SpecialCost() {
     return 2;
@@ -2577,7 +2577,7 @@ class tome_of_quandaries_blue extends Card {
     return "WIZARD";
   }
 
-  // function SpecialName() {
-  //   return "Tome of Quandaries";
-  // }
+  function SpecialName() {
+    return "Tome of Quandaries";
+  }
 }
