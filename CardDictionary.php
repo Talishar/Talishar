@@ -1770,7 +1770,7 @@ function GetResolvedAbilityName($cardID, $from = "-"): string
 {
   global $currentPlayer, $CS_AbilityIndex;
   $abilityIndex = GetClassState($currentPlayer, $CS_AbilityIndex);
-  $abilityNames = GetAbilityNames($cardID, -1, $from);
+  $abilityNames = GetAbilityNames($cardID, -1, $from, allNames:true);
   if ($abilityNames == "" || $abilityIndex == "-") return "";
   $abilityNames = explode(",", $abilityNames);
   if (isset($abilityNames[$abilityIndex])) return $abilityNames[$abilityIndex];
