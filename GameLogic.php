@@ -900,10 +900,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             ++$character[2]; // Update the counter
             AddSoul($paramArr[1], $player, "-");
             break;
-          } else if ($character[$mzArr[1] + 10] != "-") {
+          } 
+          else if ($character[$mzArr[1] + 10] != "-") {
             $character[$mzArr[1] + 10] .= ",$paramArr[1]";
-          } else $character[$mzArr[1] + 10] = $paramArr[1];
-          ++$character[$mzArr[1] + 2]; // Update the counter
+          } 
+          else $character[$mzArr[1] + 10] = $paramArr[1];
           break;
         case "REMOVEPOWERCOUNTER":
           $auras = &GetAuras($player);

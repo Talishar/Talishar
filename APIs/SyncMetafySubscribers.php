@@ -13,22 +13,22 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 header('Content-Type: application/json');
 
 if (!isset($_SESSION["useruid"])) {
-  http_response_code(401);
   echo json_encode(["error" => "Not logged in"]);
   exit;
 }
 
 $useruid = $_SESSION["useruid"];
+session_write_close();
+
+set_time_limit(300);
 
 include_once '../includes/ModeratorList.inc.php';
 if (!IsUserModerator($useruid)) {
-  http_response_code(403);
   echo json_encode(["error" => "Not authorized"]);
   exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  http_response_code(405);
   echo json_encode(["error" => "Method not allowed"]);
   exit;
 }
@@ -46,7 +46,7 @@ $oauthClientSecret = $metafyClientSecret ?? getenv('METAFY_CLIENT_SECRET') ?: ''
 $modMetafyToken        = '';
 $modMetafyRefreshToken = '';
 $modUserDbId           = null;
-$conn_mod = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+$conn_mod = GetDBConnection();
 if ($conn_mod) {
   $stmt_mod = mysqli_stmt_init($conn_mod);
   if (mysqli_stmt_prepare($stmt_mod, "SELECT usersid, metafyAccessToken, metafyRefreshToken FROM users WHERE usersUid=? LIMIT 1")) {
@@ -92,7 +92,7 @@ function RefreshMetafyAccessToken($refreshToken, $clientID, $clientSecret, $user
   $newRefresh = $tokens['refresh_token'] ?? $refreshToken;
 
   if (!empty($newAccess) && !empty($userDbId)) {
-    $conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+    $conn = GetDBConnection();
     $stmt = mysqli_stmt_init($conn);
     if (mysqli_stmt_prepare($stmt, "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=? WHERE usersid=?")) {
       mysqli_stmt_bind_param($stmt, 'ssi', $newAccess, $newRefresh, $userDbId);
@@ -186,7 +186,6 @@ $subscriber_usernames = $subscriber_usernames ?? [];
 
 // Safety: abort if API returned zero subscribers to avoid clearing everyone
 if (empty($all_subscriber_ids)) {
-  http_response_code(502);
   echo json_encode([
     "error" => "Could not fetch any subscribers from Metafy. Sync aborted to avoid clearing valid supporters.",
     "apiError" => $api_error ?? 'No subscribers returned.',
@@ -195,9 +194,8 @@ if (empty($all_subscriber_ids)) {
 }
 
 // Cross-reference DB
-$conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+$conn = GetDBConnection();
 if (!$conn) {
-  http_response_code(500);
   echo json_encode(["error" => "DB connection failed"]);
   exit;
 }

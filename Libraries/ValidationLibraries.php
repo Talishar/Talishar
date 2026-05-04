@@ -89,12 +89,12 @@ function validateCardID($cardID) {
         return false;
     }
     
-    // Card ID should be alphanumeric (plus hyphens/underscores) and reasonable length
-    if (strlen($cardID) < 1 || strlen($cardID) > 100) {
+    // Semicolons separate multiple card IDs, pipes separate card ID from destination zone (e.g. "card_name|banish")
+    if (strlen($cardID) < 1 || strlen($cardID) > 500) {
         return false;
     }
     
-    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $cardID)) {
+    if (!preg_match('/^[a-zA-Z0-9_ ;|\-]+$/', $cardID)) {
         return false;
     }
     
