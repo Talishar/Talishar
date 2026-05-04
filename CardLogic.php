@@ -677,6 +677,12 @@ function CardPlayTrigger($cardID, $from)
     }
 }
 
+// for cards that trigger when hitting anything
+function AnyHitTrigger($player, $cardID, $check) {
+  if (!$check) AddLayer("TRIGGER", $player, $cardID, "-", "ONHITEFFECT");
+  return true;
+}
+
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check=false): bool
 {
   global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn, $CS_HitsWDawnblade;
@@ -969,8 +975,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "strike_gold_blue":
     case "blow_for_a_blow_red":
     case "bittering_thorns_blue":
-      if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
-      return true;
+      return AnyHitTrigger($mainPlayer, $cardID, $check);
     case "entangle_red":
     case "entangle_yellow":
     case "entangle_blue":

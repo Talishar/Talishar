@@ -179,6 +179,14 @@ function GetArcaneTargetFromUID($player, $target) {
 }
 
 function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $mayAbility = False) {
+  $targetType = match($targetType) {
+    "any_hero" => 0,
+    "their_hero" => 1,
+    "any" => 2,
+    "their" => 3,
+    "my_hero" => 4,
+    default => $targetType
+  };
   $otherPlayer = $player == 1 ? 2 : 1;
   AddDecisionQueue("PASSPARAMETER", $player, $source, ($isPassable ? 1 : 0));
   AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));

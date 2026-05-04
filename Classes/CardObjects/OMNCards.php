@@ -2581,3 +2581,77 @@ class tome_of_quandaries_blue extends Card {
     return "Tome of Quandaries";
   }
 }
+
+class unwinding_finality_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "unwinding_finality_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasFragment() {
+    return true;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    Draw($this->controller, effectSource:$this->cardID);
+  }
+
+  function FragmentTrigger() {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYDISCARD:talent=LIGHTNING;type=I", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Choose a card to put on top", may:true);
+		Await($this->controller, "MZRemove", "cardID");
+		Await($this->controller, "AddTopDeck", from:"DECK", final:true);
+  }
+}
+
+class corrosive_space_dust extends BaseCard {
+  function WardAmount($index, $amount) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    return ($AuraCard->HoloCounters() > 0) ? $amount : 1;
+  }
+
+  function LeavesPlayAbility() {
+    SetArcaneTarget($this->controller, $this->cardID, "any_hero");
+    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+  }
+
+  function ProcessTrigger($target) {
+    DealArcane(1, 0, source:$this->cardID, resolvedTarget:$target);
+  }
+}
+
+class corrosive_space_dust_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "corrosive_space_dust_red";
+    $this->controller = $controller;
+    $this->baseCard = new corrosive_space_dust($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasWard() {
+    return true;
+  }
+
+  function WardAmount($index) {
+    return $this->baseCard->WardAmount($index, 4);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    return $this->baseCard->LeavesPlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($target);
+  }
+}
