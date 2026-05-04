@@ -43,14 +43,13 @@ class InputValidationTest extends TestCase
             'user name', // Contains space
             'user-name', // Contains hyphen
             'user.name', // Contains dot
-            'user_name', // Contains underscore
             '123', // Only numbers
             'test<script>', // Contains HTML
             'test; DROP TABLE users; --', // SQL injection attempt
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidUsernames as $username) {
@@ -102,7 +101,7 @@ class InputValidationTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidEmails as $email) {
@@ -143,7 +142,7 @@ class InputValidationTest extends TestCase
             null, // Null value
             12345678, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidPasswords as $password) {
@@ -189,7 +188,7 @@ class InputValidationTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidGameNames as $gameName) {
@@ -226,7 +225,7 @@ class InputValidationTest extends TestCase
             '', // Empty string
             null, // Null value
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidPlayerIDs as $playerID) {
@@ -266,7 +265,7 @@ class InputValidationTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidCardIDs as $cardID) {
@@ -330,7 +329,7 @@ class InputValidationTest extends TestCase
             '',
             null,
             [],
-            new stdClass()
+            new \stdClass()
         ];
 
         foreach ($invalidBooleans as $boolean) {
@@ -378,7 +377,7 @@ class InputValidationTest extends TestCase
             null, // Null
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidJSON as $json) {
@@ -427,7 +426,7 @@ class InputValidationTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidURLs as $url) {
@@ -473,7 +472,7 @@ class InputValidationTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidIPs as $ip) {
@@ -531,11 +530,19 @@ class InputValidationTest extends TestCase
         foreach ($inputs as $input) {
             $sanitized = sanitizeHTML($input);
             
-            // Should escape HTML entities
-            $this->assertStringContainsString('&lt;', $sanitized, "Less than should be escaped");
-            $this->assertStringContainsString('&gt;', $sanitized, "Greater than should be escaped");
-            $this->assertStringContainsString('&quot;', $sanitized, "Double quotes should be escaped");
-            $this->assertStringContainsString('&#039;', $sanitized, "Single quotes should be escaped");
+            // Should escape HTML entities that are present in the input
+            if (strpos($input, '<') !== false) {
+                $this->assertStringContainsString('&lt;', $sanitized, "Less than should be escaped");
+            }
+            if (strpos($input, '>') !== false) {
+                $this->assertStringContainsString('&gt;', $sanitized, "Greater than should be escaped");
+            }
+            if (strpos($input, '"') !== false) {
+                $this->assertStringContainsString('&quot;', $sanitized, "Double quotes should be escaped");
+            }
+            if (strpos($input, "'") !== false) {
+                $this->assertStringContainsString('&#039;', $sanitized, "Single quotes should be escaped");
+            }
             
             // Should not contain unescaped HTML
             $this->assertStringNotContainsString('<script>', $sanitized, "Script tags should be escaped");

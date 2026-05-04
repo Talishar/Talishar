@@ -6,7 +6,8 @@
  */
 
 function validateUsername($username) {
-    // Username should be alphanumeric and between 3-20 characters
+    // Username should be alphanumeric (plus underscores), start with a letter,
+    // and be between 3-20 characters
     if (empty($username) || !is_string($username)) {
         return false;
     }
@@ -15,7 +16,7 @@ function validateUsername($username) {
         return false;
     }
     
-    if (!ctype_alnum($username)) {
+    if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]{2,19}$/', $username)) {
         return false;
     }
     
@@ -27,7 +28,22 @@ function validateEmail($email) {
         return false;
     }
     
-    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+        return false;
+    }
+    
+    // Additionally require TLD of at least 2 characters
+    $parts = explode('@', $email);
+    if (count($parts) === 2) {
+        $domain = $parts[1];
+        $domainParts = explode('.', $domain);
+        $tld = end($domainParts);
+        if (strlen($tld) < 2) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 function validatePassword($password) {
@@ -35,8 +51,8 @@ function validatePassword($password) {
         return false;
     }
     
-    // Password should be at least 8 characters
-    if (strlen($password) < 8) {
+    // Password should be between 8 and 100 characters
+    if (strlen($password) < 8 || strlen($password) > 100) {
         return false;
     }
     
@@ -61,6 +77,9 @@ function validateGameName($gameName) {
 }
 
 function validatePlayerID($playerID) {
+    if (!is_numeric($playerID)) {
+        return false;
+    }
     $playerID = intval($playerID);
     return ($playerID >= 1 && $playerID <= 3);
 }
@@ -70,8 +89,12 @@ function validateCardID($cardID) {
         return false;
     }
     
-    // Card ID should be alphanumeric and reasonable length
+    // Card ID should be alphanumeric (plus hyphens/underscores) and reasonable length
     if (strlen($cardID) < 1 || strlen($cardID) > 100) {
+        return false;
+    }
+    
+    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $cardID)) {
         return false;
     }
     
@@ -99,6 +122,14 @@ function sanitizeHTML($input) {
 }
 
 function validateInteger($input, $min = null, $max = null) {
+    if ($input === null || $input === '') {
+        return false;
+    }
+    
+    if (filter_var($input, FILTER_VALIDATE_INT) === false) {
+        return false;
+    }
+    
     $value = intval($input);
     
     if ($min !== null && $value < $min) {
@@ -130,7 +161,17 @@ function validateURL($url) {
         return false;
     }
     
-    return filter_var($url, FILTER_VALIDATE_URL) !== false;
+    if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+        return false;
+    }
+    
+    // Additionally require a proper domain with TLD (dot present in host)
+    $parsed = parse_url($url);
+    if (!isset($parsed['host']) || strpos($parsed['host'], '.') === false) {
+        return false;
+    }
+    
+    return true;
 }
 
 function validateIP($ip) {

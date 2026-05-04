@@ -14,6 +14,11 @@ class SessionManagementTest extends TestCase
     {
         parent::setUp();
         
+        // Close any active session so ini_set calls can take effect (e.g., SecureSessionStart tests)
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+        
         // Clear any existing session data
         $_SESSION = [];
         $_COOKIE = [];
@@ -79,7 +84,7 @@ class SessionManagementTest extends TestCase
         $newSessionId = session_id();
         
         $this->assertNotEquals($oldSessionId, $newSessionId, "Session ID should be regenerated after threshold");
-        $this->assertGreaterThan($_SESSION['last_regeneration'], time(), "Last regeneration time should be updated");
+        $this->assertGreaterThan(time() - 2, $_SESSION['last_regeneration'], "Last regeneration time should be updated");
     }
 
     /**
@@ -158,6 +163,11 @@ class SessionManagementTest extends TestCase
      */
     public function testSessionDataRetrieval()
     {
+        // Ensure session is active so $_SESSION assignments persist
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
         // Set up session data
         $_SESSION['lastGameName'] = 'testgame';
         $_SESSION['lastPlayerId'] = 1;
@@ -310,6 +320,6 @@ class SessionManagementTest extends TestCase
         $newSessionId = session_id();
         
         $this->assertNotEquals($oldSessionId, $newSessionId, "Session should be regenerated after timeout");
-        $this->assertGreaterThan($_SESSION['last_regeneration'], time() - 10, "Regeneration time should be updated");
+        $this->assertGreaterThan(time() - 10, $_SESSION['last_regeneration'], "Regeneration time should be updated");
     }
 }

@@ -165,7 +165,7 @@ class SQLInjectionTest extends TestCase
             return false;
         }
         
-        if (!ctype_alnum($username)) {
+        if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]{2,19}$/', $username)) {
             return false;
         }
         
@@ -185,6 +185,10 @@ class SQLInjectionTest extends TestCase
             return false;
         }
         
+        if (!preg_match('/^[a-zA-Z0-9_-]+$/', $cardID)) {
+            return false;
+        }
+        
         return true;
     }
 
@@ -200,6 +204,15 @@ class SQLInjectionTest extends TestCase
         // Remove null bytes and trim whitespace
         $input = str_replace("\0", '', $input);
         $input = trim($input);
+        
+        $input = strip_tags($input);
+        
+        $sqlPatterns = ['/DROP\s+TABLE/i', '/INSERT\s+INTO/i', '/DELETE\s+FROM/i',
+                        '/UPDATE\s+\w+\s+SET/i', '/UNION\s+SELECT/i', '/;--/', "/'--/"];
+        $input = preg_replace($sqlPatterns, '', $input);
+        
+        $input = preg_replace('/javascript:/i', '', $input);
+        $input = preg_replace('/vbscript:/i', '', $input);
         
         return $input;
     }

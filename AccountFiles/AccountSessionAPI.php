@@ -2,7 +2,7 @@
   function IsUserLoggedIn()
   {
     CheckSession();
-    if (!isset($_SESSION['useruid'])) {
+    if (empty($_SESSION['useruid'])) {
       return false;
     }
     if (IsSessionExpired()) {
@@ -15,13 +15,13 @@
   function LoggedInUser()
   {
     CheckSession();
-    return $_SESSION["userid"];
+    return $_SESSION["userid"] ?? null;
   }
 
   function LoggedInUserName()
   {
     CheckSession();
-    return $_SESSION["useruid"] ?? "";
+    return $_SESSION["useruid"] ?? null;
   }
 
   function LoggedInMetafyID()
@@ -44,7 +44,7 @@
     if(isset($_SESSION["useruid"])) {
       $userName = $_SESSION["useruid"];
       $conn = GetDBConnection(DBL_ACCOUNT_SESSION_API);
-      if ($conn) {
+      if ($conn && $conn instanceof \mysqli) {
         $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
         $stmt = mysqli_stmt_init($conn);
         if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -140,10 +140,13 @@
       if (empty($_SESSION['userid']) && isset($_COOKIE['metafyRememberToken'])) {
         RestoreMetafySession($_COOKIE['metafyRememberToken']);
       }
-      
-      // Note: session ID regeneration is done explicitly at login time only,
-      // not periodically here, to avoid losing the new ID when Set-Cookie is
-      // stripped by a reverse proxy (Cloudflare, nginx, etc.).
+    }
+
+    if (!isset($_SESSION['last_regeneration'])) {
+      $_SESSION['last_regeneration'] = time();
+    } elseif (time() - $_SESSION['last_regeneration'] > 300) {
+      session_regenerate_id(true);
+      $_SESSION['last_regeneration'] = time();
     }
   }
   
@@ -219,7 +222,15 @@
   
   function SecureSessionStart()
   {
-    CheckSession();
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.cookie_secure', 1);
+    ini_set('session.use_strict_mode', 1);
+    ini_set('session.cookie_samesite', 'Strict');
+    ini_set('session.gc_maxlifetime', 86400);
+
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
     session_regenerate_id(true);
   }
 ?>
