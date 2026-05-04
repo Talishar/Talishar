@@ -5003,7 +5003,7 @@ function HasFlowCounters($cardID)
     case "channel_the_tranquil_domain_yellow":
     case "channel_the_skybreaker_yellow":
     case "channel_iceloch_glaze_blue":
-    case "channel_galcia's_cradle_blue":
+    case "channel_galcias_cradle_blue":
       return true;
     default:
       return false;

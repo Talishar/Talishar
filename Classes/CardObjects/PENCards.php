@@ -6813,10 +6813,10 @@ class monolith_of_galcia_blue extends Card {
   private
   function GetModes() {
     $modalities = [];
-    $allies = SearchMultizone($this->controller, "THEIRALLY:frozenOnly=1&MYALLY:frozenOnly=1");
-    $auras = SearchMultizone($this->controller, "THEIRAURAS:frozenOnly=1&MYAURAS:frozenOnly=1");
-    $equipment = SearchMultizone($this->controller, "THEIRCHAR:frozenOnly=1;type=E&MYCHAR:frozenOnly=1;type=E");
-    $items = SearchMultizone($this->controller, "THEIRITEMS:frozenOnly=1&MYITEMS:frozenOnly=1");
+    $allies = MultiZoneIndices($this->controller, "THEIRALLY:frozenOnly=1&MYALLY:frozenOnly=1");
+    $auras = MultiZoneIndices($this->controller, "THEIRAURAS:frozenOnly=1&MYAURAS:frozenOnly=1");
+    $equipment = MultiZoneIndices($this->controller, "THEIRCHAR:frozenOnly=1;type=E&MYCHAR:frozenOnly=1;type=E");
+    $items = MultiZoneIndices($this->controller, "THEIRITEMS:frozenOnly=1&MYITEMS:frozenOnly=1");
     if (SearchCount($allies) > 0) array_push($modalities, "Target_ally");
     if (SearchCount($auras) > 0) array_push($modalities, "Target_aura");
     if (SearchCount($equipment) > 0) array_push($modalities, "Target_equipment");

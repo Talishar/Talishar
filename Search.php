@@ -615,7 +615,7 @@ function SearchRemoveDuplicates($search)
 
 function SearchCount($search)
 {
-  if ($search == "") return 0;
+  if ($search == "" || $search == "PASS") return 0;
   return count(explode(",", $search));
 }
 
