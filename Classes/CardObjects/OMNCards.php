@@ -2655,3 +2655,59 @@ class corrosive_space_dust_red extends Card {
     return $this->baseCard->ProcessTrigger($target);
   }
 }
+
+class corrosive_space_dust_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "corrosive_space_dust_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new corrosive_space_dust($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasWard() {
+    return true;
+  }
+
+  function WardAmount($index) {
+    return $this->baseCard->WardAmount($index, 3);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    return $this->baseCard->LeavesPlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($target);
+  }
+}
+
+class corrosive_space_dust_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "corrosive_space_dust_blue";
+    $this->controller = $controller;
+    $this->baseCard = new corrosive_space_dust($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasWard() {
+    return true;
+  }
+
+  function WardAmount($index) {
+    return $this->baseCard->WardAmount($index, 2);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    return $this->baseCard->LeavesPlayAbility();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($target);
+  }
+}
