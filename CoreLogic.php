@@ -732,7 +732,11 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     if ($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if ($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
     CurrentEffectDamageEffects($player, $source, $type, $damage);
-    if ($source == $CombatChain->AttackCard()->ID()) $combatChainState[$CCS_AttackDamageDealtToHero] += $damage;
+    
+    if ($source == $CombatChain->AttackCard()->ID()) {
+      AttackDamageAbilitiesTrigger($damage);
+      $combatChainState[$CCS_AttackDamageDealtToHero] += $damage;
+    }
   }
   if ($damage > 0 && ($type == "COMBAT" || $type == "ATTACKHIT") && SearchCurrentTurnEffects("ice_storm_red-2", $otherPlayer) && IsHeroAttackTarget()) {
     for ($i = 0; $i < $damage; ++$i) PlayAura("frostbite", $player, effectController:$otherPlayer);

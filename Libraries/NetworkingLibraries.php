@@ -1499,7 +1499,6 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       ArsenalHitEffects();
       AuraHitEffects($cardID);
       ItemHitTrigger($cardID);
-      AttackDamageAbilitiesTrigger($damageDone);
       CombatChainHitEffects($combatChain[0], $damageTarget);
 
 
