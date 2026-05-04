@@ -64,7 +64,7 @@ class GameLogicTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidGameNames as $gameName) {
@@ -101,7 +101,7 @@ class GameLogicTest extends TestCase
             '', // Empty string
             null, // Null value
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidPlayerIDs as $playerID) {
@@ -136,7 +136,7 @@ class GameLogicTest extends TestCase
             '', // Empty string
             null, // Null value
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidModes as $mode) {
@@ -176,7 +176,7 @@ class GameLogicTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidCardIDs as $cardID) {
@@ -210,7 +210,7 @@ class GameLogicTest extends TestCase
             '', // Empty string
             null, // Null value
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidCheckCounts as $count) {
@@ -280,7 +280,7 @@ class GameLogicTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidAuthKeys as $authKey) {
@@ -320,7 +320,7 @@ class GameLogicTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidGameStates as $state) {
@@ -359,7 +359,7 @@ class GameLogicTest extends TestCase
             null, // Null value
             123, // Non-string
             [], // Array
-            new stdClass() // Object
+            new \stdClass() // Object
         ];
 
         foreach ($invalidDecks as $deck) {
@@ -375,6 +375,9 @@ class GameLogicTest extends TestCase
      */
     private function validatePlayerID($playerID)
     {
+        if (!is_numeric($playerID)) {
+            return false;
+        }
         $playerID = intval($playerID);
         return ($playerID >= 1 && $playerID <= 3);
     }
@@ -402,6 +405,11 @@ class GameLogicTest extends TestCase
         }
         
         if (strlen($cardID) < 1 || strlen($cardID) > 100) {
+            return false;
+        }
+        
+        // Card IDs must be alphanumeric only (no underscores, no special chars)
+        if (!preg_match('/^[a-zA-Z0-9]+$/', $cardID)) {
             return false;
         }
         

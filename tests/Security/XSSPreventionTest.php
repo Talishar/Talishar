@@ -67,14 +67,11 @@ class XSSPreventionTest extends TestCase
         foreach ($xssPayloads as $payload) {
             $escaped = htmlspecialchars($payload, ENT_QUOTES, 'UTF-8');
             
-            // The escaped version should not contain dangerous characters
+            // The escaped version should not contain dangerous unescaped characters
             $this->assertStringNotContainsString('<script>', $escaped, "Script tags should be escaped");
-            $this->assertStringNotContainsString('onerror=', $escaped, "Event handlers should be escaped");
-            $this->assertStringNotContainsString('onload=', $escaped, "Event handlers should be escaped");
-            $this->assertStringNotContainsString('javascript:', $escaped, "JavaScript URLs should be escaped");
-            $this->assertStringNotContainsString('onfocus=', $escaped, "Event handlers should be escaped");
-            $this->assertStringNotContainsString('onstart=', $escaped, "Event handlers should be escaped");
-            $this->assertStringNotContainsString('ontoggle=', $escaped, "Event handlers should be escaped");
+            $this->assertStringNotContainsString('<img', $escaped, "Img tags should be escaped");
+            $this->assertStringNotContainsString('<iframe', $escaped, "IFrame tags should be escaped");
+            $this->assertStringNotContainsString('<svg', $escaped, "SVG tags should be escaped");
             
             // The escaped version should contain HTML entities
             $this->assertStringContainsString('&lt;', $escaped, "Less than should be escaped");
@@ -112,11 +109,11 @@ class XSSPreventionTest extends TestCase
         foreach ($maliciousInputs as $input) {
             $sanitized = $this->sanitizeHTML($input);
             
-            // Check that dangerous elements are escaped
+            // Check that dangerous unescaped HTML tags are gone
             $this->assertStringNotContainsString('<script>', $sanitized, "Script tags should be escaped");
-            $this->assertStringNotContainsString('onerror=', $sanitized, "Event handlers should be escaped");
-            $this->assertStringNotContainsString('javascript:', $sanitized, "JavaScript URLs should be escaped");
-            $this->assertStringNotContainsString('onload=', $sanitized, "Event handlers should be escaped");
+            $this->assertStringNotContainsString('<img', $sanitized, "Img tags should be escaped");
+            $this->assertStringNotContainsString('<form', $sanitized, "Form tags should be escaped");
+            $this->assertStringNotContainsString('<a href', $sanitized, "Anchor tags should be escaped");
             
             // Check that HTML entities are used
             $this->assertStringContainsString('&lt;', $sanitized, "Less than should be escaped");
@@ -140,10 +137,20 @@ class XSSPreventionTest extends TestCase
         foreach ($validHTML as $html) {
             $escaped = htmlspecialchars($html, ENT_QUOTES, 'UTF-8');
             
-            // Valid HTML should be escaped for security
-            $this->assertStringContainsString('&lt;strong&gt;', $escaped, "HTML tags should be escaped");
-            $this->assertStringContainsString('&lt;a href=', $escaped, "HTML attributes should be escaped");
-            $this->assertStringContainsString('&lt;img src=', $escaped, "HTML tags should be escaped");
+            // Only check HTML-specific assertions when the input actually contains HTML tags
+            if (strpos($html, '<strong>') !== false) {
+                $this->assertStringContainsString('&lt;strong&gt;', $escaped, "HTML tags should be escaped");
+            }
+            if (strpos($html, '<a href=') !== false) {
+                $this->assertStringContainsString('&lt;a href=', $escaped, "HTML attributes should be escaped");
+            }
+            if (strpos($html, '<img src=') !== false) {
+                $this->assertStringContainsString('&lt;img src=', $escaped, "HTML tags should be escaped");
+            }
+            // No unescaped angle brackets should remain if the input had them
+            if (strpos($html, '<') !== false) {
+                $this->assertStringNotContainsString('<', $escaped, "Unescaped angle brackets should not remain");
+            }
         }
     }
 

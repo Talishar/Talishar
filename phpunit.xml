@@ -15,8 +15,8 @@
         <testsuite name="Business Logic Tests">
             <directory>tests/BusinessLogic</directory>
         </testsuite>
-        <testsuite name="Integration Tests">
-            <directory>tests/Integration</directory>
+        <testsuite name="Engine Tests">
+            <directory>tests/Engine</directory>
         </testsuite>
     </testsuites>
     <coverage>

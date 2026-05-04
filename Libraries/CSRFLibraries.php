@@ -18,6 +18,10 @@ function generateCSRFToken() {
 }
 
 function validateCSRFToken($token) {
+    if (!is_string($token)) {
+        return false;
+    }
+
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -39,7 +43,7 @@ function requireCSRFToken() {
         $token = $_POST['csrf_token'] ?? '';
         if (!validateCSRFToken($token)) {
             http_response_code(403);
-            die('CSRF token validation failed');
+            throw new \Exception('CSRF token validation failed');
         }
     }
 }

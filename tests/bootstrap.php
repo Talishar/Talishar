@@ -13,6 +13,11 @@ ini_set('display_errors', 1);
 define('TEST_MODE', true);
 define('ROOT_PATH', dirname(__DIR__));
 
+// Database log key constants used in AccountSessionAPI
+if (!defined('DBL_ACCOUNT_SESSION_API')) {
+    define('DBL_ACCOUNT_SESSION_API', 0);
+}
+
 // Mock session for testing
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -24,10 +29,16 @@ require_once ROOT_PATH . '/Libraries/ValidationLibraries.php';
 require_once ROOT_PATH . '/Libraries/CSRFLibraries.php';
 require_once ROOT_PATH . '/AccountFiles/AccountSessionAPI.php';
 
-// Mock database connection for testing
+require_once ROOT_PATH . '/Constants.php';
+foreach (get_defined_vars() as $__key => $__val) {
+    if (!in_array($__key, ['__key', '__val'], true)) {
+        $GLOBALS[$__key] = $__val;
+    }
+}
+unset($__key, $__val);
+
 function GetTestDBConnection() {
-    // Return a mock connection for testing
-    return new stdClass();
+    return null;
 }
 
 // Override database functions for testing
