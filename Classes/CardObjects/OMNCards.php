@@ -2088,12 +2088,12 @@ class mercurial_skies extends BaseCard {
     FirstDamageTrigger($target, $source, $this->controller, $this->cardID);
   }
 
-  function ProcessTrigger($target) {
+  function ProcessTrigger($target, $damage) {
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
     if ($Flow->Index() != -1) {
       $message = "if_they_want_to_deal_arcane";
-      $context = "Choose if you want to destroy " . CardLink("lightning_flow") . " to deal 3 damage";
+      $context = "Choose if you want to destroy " . CardLink("lightning_flow") . " to deal $damage damage";
       Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
       Await($this->controller, $this->cardID, target:$target, final:true);
     }
@@ -2128,7 +2128,7 @@ class mercurial_skies_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger($target);
+    $this->baseCard->ProcessTrigger($target, 3);
   }
 
   function SpecificLogic() {
@@ -2161,7 +2161,7 @@ class mercurial_skies_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger($target);
+    $this->baseCard->ProcessTrigger($target, 2);
   }
 
   function SpecificLogic() {
@@ -2194,7 +2194,7 @@ class mercurial_skies_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger($target);
+    $this->baseCard->ProcessTrigger($target, 1);
   }
 
   function SpecificLogic() {
