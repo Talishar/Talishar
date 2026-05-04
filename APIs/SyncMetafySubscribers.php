@@ -19,6 +19,9 @@ if (!isset($_SESSION["useruid"])) {
 }
 
 $useruid = $_SESSION["useruid"];
+session_write_close();
+
+set_time_limit(300);
 
 include_once '../includes/ModeratorList.inc.php';
 if (!IsUserModerator($useruid)) {
