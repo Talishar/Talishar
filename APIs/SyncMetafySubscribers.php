@@ -13,7 +13,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 header('Content-Type: application/json');
 
 if (!isset($_SESSION["useruid"])) {
-  http_response_code(401);
   echo json_encode(["error" => "Not logged in"]);
   exit;
 }
@@ -25,13 +24,11 @@ set_time_limit(300);
 
 include_once '../includes/ModeratorList.inc.php';
 if (!IsUserModerator($useruid)) {
-  http_response_code(403);
   echo json_encode(["error" => "Not authorized"]);
   exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  http_response_code(405);
   echo json_encode(["error" => "Method not allowed"]);
   exit;
 }
@@ -189,7 +186,6 @@ $subscriber_usernames = $subscriber_usernames ?? [];
 
 // Safety: abort if API returned zero subscribers to avoid clearing everyone
 if (empty($all_subscriber_ids)) {
-  http_response_code(502);
   echo json_encode([
     "error" => "Could not fetch any subscribers from Metafy. Sync aborted to avoid clearing valid supporters.",
     "apiError" => $api_error ?? 'No subscribers returned.',
@@ -200,7 +196,6 @@ if (empty($all_subscriber_ids)) {
 // Cross-reference DB
 $conn = GetDBConnection();
 if (!$conn) {
-  http_response_code(500);
   echo json_encode(["error" => "DB connection failed"]);
   exit;
 }
