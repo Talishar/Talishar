@@ -210,6 +210,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             $indices = SearchMultizone($player, "MYCHAR:subtype=Evo");
             if ($indices != "") {
               AddDecisionQueue("PASSPARAMETER", $player, $indices);
+              AddDecisionQueue("SETDQCONTEXT", $player, "Choose an Evo permanent to put this under", 1);
               AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
               AddDecisionQueue("MZOP", $player, "ADDSUBCARD,fabricate_red", 1);
               $GoesToGraveyard = false;
