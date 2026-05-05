@@ -693,4 +693,8 @@ class Card {
   function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
     return;
   }
+
+  function PermanentDamageTakenAbility($player, $damage, $source, $playerSource) {
+    return;
+  }
 }

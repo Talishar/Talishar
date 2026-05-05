@@ -2740,3 +2740,48 @@ class prophetic_quickstep_yellow extends Card {
     return DoesAttackHaveGoAgain() ? 1 : 0;
   }
 }
+
+class arcanic_reproach_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "arcanic_reproach_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PermanentDamageTakenAbility($player, $damage, $source, $playerSource) {
+    global $CS_DamageDealtToOpponent;
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $selfInflicted = $source == "bloodrot_pox" || $player == $playerSource;
+    if(GetClassState($otherPlayer, $CS_DamageDealtToOpponent) == 0 && $damage > 0)
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-");
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "START") {
+      $context = "Destroy an aura you control";
+      Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS", subsequent:0);
+      Await($this->controller, "ChooseMultiZone", "MZInd", may:true, context:$context);
+      Await($this->controller, "MZDestroy", final:true);
+    }
+    else {
+			$context = "Reveal a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} card and deal 1 arcane (or pass)";
+      Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND:talent=LIGHTNING", subsequent:0);
+      Await($this->controller, "ChooseMultiZone", "choice", may:true, context:$context);
+			Await($this->controller, $this->cardID, index: $target, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"];
+    RevealCards($choice);
+    DealArcane(1, 1, source:$this->cardID);
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "START");
+  }
+}

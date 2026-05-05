@@ -1405,6 +1405,8 @@ function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
   $aurasPieces = AuraPieces();
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
+    $card = GetClass($auras[$i], $player);
+    if ($card != "-") $card->PermanentDamageTakenAbility($player, $damage, $source, $playerSource);
     switch ($auras[$i]) {
       case "bloodspill_invocation_red":
       case "bloodspill_invocation_yellow":
@@ -1436,13 +1438,6 @@ function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
               AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
             }
           }
-          // I think this block is unnecessary now
-          // elseif (GetClassState($player, $CS_DamageTaken) == 0 && GetClassState($player, $CS_ArcaneDamageTaken) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0) {
-          //   $otherAuras[$i + 5] -= 1;
-          //   if (CardType($source) != "AA" || !SearchCurrentTurnEffects("tarpit_trap_yellow", $otherPlayer) && !HitEffectsArePrevented($source)) {
-          //     AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
-          //   }
-          // }
         }
         break;
       default:
