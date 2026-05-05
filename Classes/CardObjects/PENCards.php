@@ -7689,7 +7689,8 @@ class sigil_of_gravespawning_blue extends Card {
   }
 
   function StartTurnAbility($index) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $index);
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
