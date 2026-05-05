@@ -1676,7 +1676,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
         PrependDecisionQueue("TAKEARCANE", $target, "$damage-$source-$player");
         PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
-        CheckSpellvoid($target, $damage);
+        CheckSpellvoid($target, $damage, $source);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         $Character = new PlayerCharacter($targetPlayer);
         if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier", checkGem:true) && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) DoMbrioBaseVizier($targetPlayer, $damage);

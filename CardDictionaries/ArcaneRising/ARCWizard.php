@@ -1098,11 +1098,18 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
   return implode(",", $choiceArray);
 }
 
-function CheckSpellvoid($player, $damage)
+function CheckSpellvoid($player, $damage, $source = "-")
 {
+  global $dqVars;
+  $caption = "Choose a card with Spellvoid to prevent damage (or pass)";
+  if(!CanDamageBePrevented($player, $damage, "ARCANE", $source)) {
+    $caption .= " <span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
+  } else {
+    $caption .= "<br>";
+  }
   PrependDecisionQueue("SPELLVOIDCHOICES", $player, $damage, 1);
   PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-  PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Spellvoid to prevent damage (or pass)", 1);
+  PrependDecisionQueue("SETDQCONTEXT", $player, $caption, 1);
   PrependDecisionQueue("FINDINDICES", $player, "SPELLVOID,$damage", 1);
 }
 
