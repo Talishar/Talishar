@@ -1247,7 +1247,7 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
   return $pieces;
 }
 
-function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $blockingClass = "", $color = "") {
+function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $blockingClass = "", $color = "", $subtype = "") {
   global $chainLinks, $defPlayer, $mainPlayer;
   $ret = [];
   $exclCardTypeArray = explode(",", $exclCardTypes);
@@ -1259,6 +1259,7 @@ function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = 
       $thisType = CardType($cardID);
       $thisSubType = CardSubType($cardID);
       if ($color != "" && !ColorContains($cardID, $color, $chainLinks[$i][$j + 1])) continue;
+      if ($subType != "" && !SubtypeContains($cardID, $subType)) continue; 
       if (($playerID == "" || $chainLinks[$i][$j + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($cardID, $nameContains, $playerID, partial: true))) {
         $excluded = false;
         for ($k = 0; $k < count($exclCardTypeArray); ++$k) {

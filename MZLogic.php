@@ -2,7 +2,7 @@
 
 function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = true)
 {
-  global $CombatChain, $chainLinks;
+  global $CombatChain, $chainLinks, $ChainLinks;
   $lastResultArr = explode(",", $lastResult);
   $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
@@ -59,6 +59,15 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
       case "MYPERM":
         $Perm = new PermanentCard($mzIndex[1], $player);
         $Perm->Destroy();
+        break;
+      case "PASTCHAINLINK":
+        $inds = explode("-", $lastResult);
+        $linkNum = $inds[2] ?? -1;
+        $linkInd = $inds[1] ?? -1;
+        if ($linkInd != -1 && $linkNum != -1) {
+          $LinkCard = $ChainLinks->GetLink($linkNum)->GetLinkCard($linkInd);
+          $LinkCard->Destroy();
+        }
         break;
       default:
         break;

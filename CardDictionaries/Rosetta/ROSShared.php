@@ -279,7 +279,11 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
       }
       else {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS&COMBATCHAINLINK:subtype=Aura");
+        $MZInds = MultiZoneIndices($currentPlayer, "MYAURAS&COMBATCHAINLINK:subtype=Aura");
+        if ($MZInds == "PASS") $MZInds = "";
+        $pastChoices = GetPastChainLinkCards($currentPlayer, asMZInd: true, subtype:"Aura");
+        $MZInds = CombineSearches($MZInds, $pastChoices);
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $MZInds);
       }
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
