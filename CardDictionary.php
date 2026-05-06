@@ -4548,6 +4548,7 @@ function Is1H($cardID): bool|int
   switch ($cardID) {
     case "claw_of_vynserakai": 
     case "gavel_of_natural_order":
+    case "lionclaw_maul":
       return true;
     default:
       break;

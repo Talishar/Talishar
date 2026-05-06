@@ -2396,7 +2396,7 @@ class third_eye_of_the_sphinx extends Card {
   }
 }
 
-class lionclaw_maul extends Card {
+class lionclaw_maul extends SUPDwarfCard {
   function __construct($controller) {
     $this->cardID = "lionclaw_maul";
     $this->controller = $controller;
@@ -2417,6 +2417,36 @@ class lionclaw_maul extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     BOO($this->controller);
   }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function SpecialTalent() {
+    return "REVILED";
+  }
+
+  function SpecialClass() {
+    return "GUARDIAN";
+  }
+
+  function SpecialType() {
+    return "W";
+  }
+
+  function SpecialName() {
+    return "Lionclaw Maul";
+  }
+
+  
 }
 
 class feral_instinct extends Card {
