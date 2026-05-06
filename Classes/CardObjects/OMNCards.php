@@ -2449,6 +2449,10 @@ class lionclaw_maul extends SUPDwarfCard {
   function SpecialBlock() {
     return -1;
   }
+
+  function SpecialSubType() {
+    return "Hammer";
+  }
 }
 
 class feral_instinct extends Card {
