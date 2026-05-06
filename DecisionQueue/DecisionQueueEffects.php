@@ -1145,6 +1145,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
               }
             }
           }
+          elseif (TypeContains($targetCard, "E") && $TargetCard->From() == "PLAY") {
+            $uid = $TargetCard->OriginUniqueID();
+            $Items = new Items($defPlayer);
+            $TargetItem = $Items->FindCardUID($uid);
+            $TargetItem->Destroy();
+            $TargetCard->Remove();
+            break;
+          }
           else {
             AddGraveyard($targetCard, $defPlayer, "COMBATCHAINLINK", $player);
             for ($i = CombatChainPieces() - 1; $i >= 0; --$i)
@@ -1162,15 +1170,21 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $card = $ChainLinks->GetLink($targetInd2)->GetLinkCard($targetInd);
         $type = CardType($card->ID());
         if ($card->ID() == "-" || !$card->StillOnChain()) return $lastResult;
-        switch ($type) {
-          case "E":
+        if (TypeContains($card->ID(), "E")) {
+          if (SubtypeContains($card->ID(), "Item")) {
+            $uid = $card->OriginUniqueID();
+            $Items = new Items($defPlayer);
+            $TargetItem = $Items->FindCardUID($uid);
+            $TargetItem->Destroy();
+          }
+          else {
             $index = FindCharacterIndex($defPlayer, $card->ID());
             DestroyCharacter($defPlayer, $index);
-            break;
-          default:
-            AddGraveyard($card->ID(), $defPlayer, "CC", $player);
-            $card->Remove();
-            break;
+          }
+        }
+        else {
+          AddGraveyard($card->ID(), $defPlayer, "CC", $player);
+          $card->Remove();
         }
       }
       break;
