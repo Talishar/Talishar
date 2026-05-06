@@ -798,7 +798,7 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["OMN", "AZS", "MPW", "AOL", "DDD"];
+  $unreleasedSets = ["OMN", "AZS", "MPW", "AOL", "DDD", ""];
   // promos that are made legal ahead of thier set
   $specialReleases = [];
   if (in_array($cardID, $specialReleases)) return false;
@@ -819,6 +819,9 @@ function isUnimplemented($cardID) {
       $card = GetClass($cardID, 0);
       return $card == "-";
     case "AOL":
+      $card = GetClass($cardID, 0);
+      return $card == "-";
+    case "": // cards that don't have a set id yet
       $card = GetClass($cardID, 0);
       return $card == "-";
     default:
