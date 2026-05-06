@@ -602,7 +602,7 @@ class backside_of_the_blade_blue extends Card {
   
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CombatChain, $combatChainState, $CCS_WeaponIndex;
-		if (TypeContains($CombatChain->AttackCard()->ID(), "W")) {
+		if (TypeContains($CombatChain->AttackCard()->ID(), "W") && DoesAttackHaveGoAgain()) {
 			// this can do some funny things with targeting previous chain links
 			// for now I'm skipping it
 			AddEffectToCurrentAttack($this->cardID);
