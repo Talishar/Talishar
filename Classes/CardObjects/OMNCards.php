@@ -2833,4 +2833,35 @@ class pile_driver extends Card {
     $CharCard = new CharacterCard($index, $this->controller);
     return $CharCard->Tapped();
   }
+
+  function SpecialType() {
+    return "W";
+  }
+  
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class gear_turner_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "gear_turner_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    MaySearchDeck($this->controller, "subtype=Cog", "MYHAND", context:"Search your deck for a Cog?");
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
 }

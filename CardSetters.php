@@ -957,8 +957,9 @@ function IsAltCard($cardID)
   return false;
 }
 
-function MaySearchDeck($player, $search, $dest, $isReveal=1, $mod="-") {
+function MaySearchDeck($player, $search, $dest, $isReveal=1, $mod="-", $context="") {
   if ($isReveal & !CanRevealCards($player)) return false;
+  if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
   AddDecisionQueue("BUTTONINPUT", $player, "Search,No_search");
   AddDecisionQueue("MAYSEARCHDECK", $player, "$search,$dest,$isReveal,$mod", 1);
   return true;
