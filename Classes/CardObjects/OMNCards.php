@@ -2858,7 +2858,7 @@ class gear_turner_red extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    MaySearchDeck($this->controller, "subtype=Cog", "MYHAND", context:"Search your deck for a Cog?");
+    MaySearchDeck($this->controller, "subtype=Cog", "MYITEMS", context:"Search your deck for a Cog?");
   }
 
   function SpecialPower() {

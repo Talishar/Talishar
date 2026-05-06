@@ -3598,6 +3598,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             AddDecisionQueue("ELSE", $player, "-");
             AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
             return $lastResult;
+          case "MYITEMS":
+            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDECK:$search", 1);
+            AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+            AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
+            AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+            AddDecisionQueue("PLAYITEM", $currentPlayer, "<-", 1);
           default:
             break;
         }
