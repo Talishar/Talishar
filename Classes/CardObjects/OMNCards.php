@@ -2785,3 +2785,52 @@ class arcanic_reproach_blue extends Card {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "START");
   }
 }
+
+class pile_driver extends Card {
+  function __construct($controller) {
+    $this->cardID = "pile_driver";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    Await($this->controller, "YesNo", "choice", subsequent:0, context:"Wager a " . CardLink("gold") . " with the opponent?");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddOnWagerEffects();
+  }
+
+  function WonWager($wonWager, $amount) {
+    PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$this->controller);
+  }
+
+  function IsWagerEffect($index) {
+    return true;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function AbilityCost() {
+    return 4;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharCard = new CharacterCard($index, $this->controller);
+    $CharCard->Tap();
+    $CharCard->AddUse(); //not once per turn
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $CharCard = new CharacterCard($index, $this->controller);
+    return $CharCard->Tapped();
+  }
+}
