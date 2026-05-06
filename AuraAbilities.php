@@ -803,19 +803,21 @@ function AuraStartTurnAbilities()
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "shifting_tides_blue":
+        $AuraCard = new AuraCard($i, $mainPlayer);
+        $destPlayer = str_contains($AuraCard->From(), "THEIR") ? $defPlayer : $mainPlayer;
         $deck = new Deck($mainPlayer);
         if($deck->Empty()) {
-          AddGraveyard($auras[$i], $mainPlayer, "PLAY", $mainPlayer);
+          AddGraveyard($auras[$i], $destPlayer, "PLAY", $mainPlayer);
           DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
           break;
         }
         $top = PitchTopCard($mainPlayer);
         if(ColorContains($top, 3, $mainPlayer)) {
           WriteLog("🌊 The tides shifted to the bottom of your deck");
-          AddBottomDeck($auras[$i], $mainPlayer, "PLAY");
+          AddBottomDeck($auras[$i], $destPlayer, "PLAY");
         }
         else {
-          AddGraveyard($auras[$i], $mainPlayer, "PLAY", $mainPlayer);
+          AddGraveyard($auras[$i], $destPlayer, "PLAY", $mainPlayer);
         }
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
