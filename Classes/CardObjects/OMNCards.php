@@ -2827,6 +2827,7 @@ class pile_driver extends Card {
     $CharCard = new CharacterCard($index, $this->controller);
     $CharCard->Tap();
     $CharCard->AddUse(); //not once per turn
+    $CharCard->SetUsed(2);
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -2840,6 +2841,18 @@ class pile_driver extends Card {
   
   function SpecialPower() {
     return 6;
+  }
+
+  function SpecialSubType() {
+    return "Log";
+  }
+
+  function SpecialName() {
+    return "Pile Driver";
+  }
+
+  function SpecialClass() {
+    return "GUARDIAN";
   }
 }
 
