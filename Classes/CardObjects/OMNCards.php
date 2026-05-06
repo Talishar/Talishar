@@ -2446,7 +2446,9 @@ class lionclaw_maul extends SUPDwarfCard {
     return "Lionclaw Maul";
   }
 
-  
+  function SpecialBlock() {
+    return -1;
+  }
 }
 
 class feral_instinct extends Card {
@@ -2883,6 +2885,10 @@ class pile_driver extends Card {
 
   function SpecialClass() {
     return "GUARDIAN";
+  }
+
+  function SpecialBlock() {
+    return -1;
   }
 }
 
