@@ -2733,7 +2733,7 @@ class crash_site_salvage_yellow extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    if (SubtypeContains($target, "Item"))
+    if ($target != "-")
       GiveAttackGoAgain();
     if (SubtypeContains($target, "Cog"))
       PutItemIntoPlayForPlayer("gold", $this->controller);
