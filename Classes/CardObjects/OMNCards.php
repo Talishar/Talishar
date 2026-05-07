@@ -1790,7 +1790,7 @@ class blink_of_an_eye extends BaseCard {
   function ProcessTrigger() {
     $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to flicker";
     $indices = FindHoloAuras($this->controller);
-    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices, context:$context);
+    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices, context:$context, may:true);
     Await($this->controller, $this->cardID, final:true);
   }
 
