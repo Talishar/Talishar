@@ -179,10 +179,6 @@ class oscilio_scion_of_the_third_age extends Card {
   function AbilityCost() {
     return 1;
   }
-
-  function SpecialType() {
-    return "C";
-  }
 }
 
 class lightning_flow extends Card {
@@ -282,10 +278,6 @@ class nebula_duality_red extends Card {
     return true;
   }
 
-  function SpecialType() {
-    return "A"; //just here for testing
-  }
-
   function CardCost($from = '-') {
     return $this->baseCard->CardCost();
   }
@@ -330,10 +322,6 @@ class nebula_duality_yellow extends Card {
     return true;
   }
 
-  function SpecialType() {
-    return "A"; //just here for testing
-  }
-
   function CardCost($from = '-') {
     return $this->baseCard->CardCost();
   }
@@ -376,10 +364,6 @@ class nebula_duality_blue extends Card {
 
   function ActionsThatDoArcaneDamage() {
     return true;
-  }
-
-  function SpecialType() {
-    return "A"; //just here for testing
   }
 
   function CardCost($from = '-') {
@@ -1025,10 +1009,6 @@ class volzar_meteor_storm extends Card {
   function AbilityType($index = -1, $from = '-') {
     return "I";
   }
-
-  function SpecialType() {
-    return "W";
-  }
 }
 
 class cosmic_suture extends BaseCard {
@@ -1074,10 +1054,6 @@ class cosmic_suture_red extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     $this->baseCard->PayAdditionalCosts();
   }
-
-  function SpecialType() {
-    return "I";
-  }
 }
 
 class cosmic_suture_yellow extends Card {
@@ -1106,10 +1082,6 @@ class cosmic_suture_yellow extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     $this->baseCard->PayAdditionalCosts();
   }
-
-  function SpecialType() {
-    return "I";
-  }
 }
 
 class cosmic_suture_blue extends Card {
@@ -1137,10 +1109,6 @@ class cosmic_suture_blue extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     $this->baseCard->PayAdditionalCosts();
-  }
-
-  function SpecialType() {
-    return "I";
   }
 }
 
@@ -1240,10 +1208,6 @@ class pulsing_cardia_yellow extends Card {
   function HasFragment() {
     return true;
   }
-
-  function SpecialPower() {
-    return 4;
-  }
 }
 
 class pulsing_cardia_blue extends Card {
@@ -1267,10 +1231,6 @@ class pulsing_cardia_blue extends Card {
 
   function HasFragment() {
     return true;
-  }
-
-  function SpecialPower() {
-    return 3;
   }
 }
 
@@ -1544,26 +1504,6 @@ class arc_ramp_red extends Card {
   function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
     return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
   }
-
-  function SpecialType() { //not in the database yet
-    return "A";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialName() {
-    return "Arc Ramp";
-  }
 }
 
 class arc_ramp_yellow extends Card {
@@ -1588,26 +1528,6 @@ class arc_ramp_yellow extends Card {
 
   function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
     return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
-  }
-
-  function SpecialType() { //not in the database yet
-    return "A";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialName() {
-    return "Arc Ramp";
   }
 }
 
@@ -2374,26 +2294,6 @@ class third_eye_of_the_sphinx extends Card {
   function DefaultActiveState() {
     return 0;
   }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialSubType() {
-    return "Head";
-  }
-  
-  function SpecialName() {
-    return "Third Eye of the Sphinx";
-  }
-
-  function SpellVoidAmount($index = -1) {
-    return 1;
-  }
 }
 
 class lionclaw_maul extends SUPDwarfCard {
@@ -2424,34 +2324,6 @@ class lionclaw_maul extends SUPDwarfCard {
 
   function AbilityCost() {
     return 2;
-  }
-
-  function SpecialPower() {
-    return 1;
-  }
-
-  function SpecialTalent() {
-    return "REVILED";
-  }
-
-  function SpecialClass() {
-    return "GUARDIAN";
-  }
-
-  function SpecialType() {
-    return "W";
-  }
-
-  function SpecialName() {
-    return "Lionclaw Maul";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialSubType() {
-    return "Hammer";
   }
 }
 
@@ -2560,30 +2432,6 @@ class turn_to_mindfire_red extends Card {
   function SpecificLogic() {
     $this->baseCard->SpecificLogic();
   }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialName() {
-    return "Turn to Mindfire";
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
 }
 
 class tome_of_quandaries_blue extends Card {
@@ -2595,26 +2443,6 @@ class tome_of_quandaries_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     PlayAura("ponder", $this->controller, 2);
     return "";
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialName() {
-    return "Tome of Quandaries";
   }
 }
 
@@ -2870,30 +2698,6 @@ class pile_driver extends Card {
     $CharCard = new CharacterCard($index, $this->controller);
     return $CharCard->Tapped();
   }
-
-  function SpecialType() {
-    return "W";
-  }
-  
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialSubType() {
-    return "Log";
-  }
-
-  function SpecialName() {
-    return "Pile Driver";
-  }
-
-  function SpecialClass() {
-    return "GUARDIAN";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
 }
 
 class gear_turner_red extends Card {
@@ -2912,10 +2716,6 @@ class gear_turner_red extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     MaySearchDeck($this->controller, "subtype=Cog", "MYITEMS", context:"Search your deck for a Cog?");
-  }
-
-  function SpecialPower() {
-    return 5;
   }
 }
 
