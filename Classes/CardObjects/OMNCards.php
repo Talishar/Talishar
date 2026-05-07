@@ -2472,6 +2472,7 @@ class unwinding_finality_red extends Card {
     Await($this->controller, "MultiZoneIndices", "indices", search:"MYDISCARD:talent=LIGHTNING;type=I", subsequent:0);
 		Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Choose a card to put on top", may:true);
 		Await($this->controller, "MZRemove", "cardID");
+    Await($this->controller, "ShowCard");
 		Await($this->controller, "AddTopDeck", from:"DECK", final:true);
   }
 }

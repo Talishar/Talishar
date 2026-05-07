@@ -335,3 +335,9 @@ function ResolveGoAgainAwait($player) {
 function AfterResolveEffectsAwait($player) {
   CopyCurrentTurnEffectsFromAfterResolveEffects();
 }
+
+function ShowCardAwait($player) {
+  global $dqVars;
+  $cardID = $dqVars["cardID"];
+  WriteLog(CardLink($cardID) . " was chosen");
+}
