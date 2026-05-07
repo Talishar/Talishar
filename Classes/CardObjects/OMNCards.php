@@ -2327,9 +2327,9 @@ class lionclaw_maul extends SUPDwarfCard {
   }
 }
 
-class feral_instinct extends Card {
+class feral_instinct_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "feral_instinct";
+    $this->cardID = "feral_instinct_yellow";
     $this->controller = $controller;
   }
   
