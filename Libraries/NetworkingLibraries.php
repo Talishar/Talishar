@@ -2479,7 +2479,7 @@ function GetLayerTarget($cardID, $from)
     case "lightning_press_yellow":
     case "lightning_press_blue":
       $botLayer = $layers[count($layers) - LayerPieces()];
-      if (CardType($botLayer) == "AA" && CardCost($botLayer) <= 1) {
+      if (IsLayerStep() && CardCost($botLayer) <= 1) {
         // targetting attack layer
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
       }
