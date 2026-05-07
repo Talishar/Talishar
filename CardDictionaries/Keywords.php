@@ -83,7 +83,8 @@
   function Scrap($player)
   {
     global $CS_AdditionalCosts;
-    MZMoveCard($player, "MYDISCARD:type=E&MYDISCARD:subtype=Item&MYDISCARD:subtype=Evo", "MYBANISH,GY,-", may:true);
+    // AddDecisionQueue("SETDQCONTEXT", $player, "Scrap a card?");
+    MZMoveCard($player, "MYDISCARD:type=E&MYDISCARD:subtype=Item&MYDISCARD:subtype=Evo", "MYBANISH,GY,-", may:true, DQContext:"Scrap a card?");
     AddDecisionQueue("APPENDSCRAPEDCARD", $player, $CS_AdditionalCosts . "-SCRAP", 1);
   }
 

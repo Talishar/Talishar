@@ -2918,3 +2918,27 @@ class gear_turner_red extends Card {
     return 5;
   }
 }
+
+class crash_site_salvage_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "crash_site_salvage_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $scrappedID = explode("-", $additionalCosts)[1] ?? "-";
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $scrappedID, "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    if (SubtypeContains($target, "Item"))
+      GiveAttackGoAgain();
+    if (SubtypeContains($target, "Cog"))
+      PutItemIntoPlayForPlayer("gold", $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Scrap($this->controller);
+  }
+}
