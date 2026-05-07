@@ -2742,3 +2742,384 @@ class crash_site_salvage_yellow extends Card {
     Scrap($this->controller);
   }
 }
+
+class astral_sanctuary {
+  public $cardID;
+  public $controller;
+
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+  }
+
+  function IsPlayRestricted() {
+    $Hero = new CharacterCard(0, $this->controller);
+    return $Hero->Tapped();
+  }
+
+  function PayAdditionalCosts($index) {
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap();
+    $CharCard = new CharacterCard($index, $this->controller);
+    $CharCard->Destroy();
+  }
+
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
+
+class helm_of_astral_sanctuary extends Card {
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "helm_of_astral_sanctuary";
+    $this->controller = $controller;
+    $this->archetype = new astral_sanctuary($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->archetype->PlayAbility();
+    return "";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return FloatingPrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->archetype->PayAdditionalCosts($index);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->archetype->IsPlayRestricted();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+}
+
+class robe_of_astral_sanctuary extends Card {
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "robe_of_astral_sanctuary";
+    $this->controller = $controller;
+    $this->archetype = new astral_sanctuary($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->archetype->PlayAbility();
+    return "";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return FloatingPrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->archetype->PayAdditionalCosts($index);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->archetype->IsPlayRestricted();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+}
+
+class gloves_of_astral_sanctuary extends Card {
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "gloves_of_astral_sanctuary";
+    $this->controller = $controller;
+    $this->archetype = new astral_sanctuary($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->archetype->PlayAbility();
+    return "";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return FloatingPrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->archetype->PayAdditionalCosts($index);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->archetype->IsPlayRestricted();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+}
+
+class boots_of_astral_sanctuary extends Card {
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "boots_of_astral_sanctuary";
+    $this->controller = $controller;
+    $this->archetype = new astral_sanctuary($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->archetype->PlayAbility();
+    return "";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return FloatingPrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->archetype->PayAdditionalCosts($index);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->archetype->IsPlayRestricted();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+}
+
+class glide_through_starlight extends BaseCard {
+  public $archetype;
+  function __construct($cardID, $controller = '-') {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function CurrentEffectDamagePrevention($amount, $preventable, &$remove) {
+    $prevented = 1;
+    if (!$amount) {
+      if ($preventable) PlayAura("lightning_flow", $this->controller);
+      $remove = true;
+    }
+    return $prevented;
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+}
+
+class glide_through_starlight_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "glide_through_starlight_red";
+    $this->controller = $controller;
+    $this->baseCard = new glide_through_starlight($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardCost($from = '-') {
+    return 1;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "I,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+    return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->baseCard->CanActivateAsInstant($index, $from);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($amount, $preventable, $remove);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->baseCard->GoesOnCombatChain($phase, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->baseCard->AddPrePitchDecisionQueue($from, $index);
+  }
+}
+
+class glide_through_starlight_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "glide_through_starlight_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new glide_through_starlight($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardCost($from = '-') {
+    return 1;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "I,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+    return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->baseCard->CanActivateAsInstant($index, $from);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($amount, $preventable, $remove);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->baseCard->GoesOnCombatChain($phase, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->baseCard->AddPrePitchDecisionQueue($from, $index);
+  }
+}
+
+class glide_through_starlight_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "glide_through_starlight_blue";
+    $this->controller = $controller;
+    $this->baseCard = new glide_through_starlight($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardCost($from = '-') {
+    return 1;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "I,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+    return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->baseCard->CanActivateAsInstant($index, $from);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($amount, $preventable, $remove);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->baseCard->GoesOnCombatChain($phase, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->baseCard->AddPrePitchDecisionQueue($from, $index);
+  }
+}
+
+class red_lure_harpoon_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "red_lure_harpoon_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $CS_NumCannonsActivated;
+    if (GetClassState($this->controller, $CS_NumCannonsActivated) > 0 && IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $context = "Banish a red action card from the opponent's graveyard";
+    Await($this->controller, "MultiZoneIndices", "indices", search: "THEIRDISCARD:type=A;pitch=1&THEIRDISCARD:type=AA;pitch=1", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", may:true, context:$context);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $otherPlayer = $this->controller == 1 ? 2 : 2;
+    $choice = $dqVars["choice"];
+    $Card = MZIndexToObject($this->controller, $choice);
+    $cardID = $Card->ID();
+    $Card->Remove();
+    BanishCardForPlayer($cardID, $otherPlayer, "THEIRDISCARD", "NTFromOtherPlayer", $this->controller);
+  }
+}

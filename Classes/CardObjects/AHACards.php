@@ -416,14 +416,14 @@ class gleam_of_the_blade_red extends Card {
   function __construct($controller) {
     $this->cardID = "gleam_of_the_blade_red";
     $this->controller = $controller;
-		$this->archetype = new windup($this->cardID, $this->controller);
+	$this->archetype = new windup($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CombatChain;
-		if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
-			AddEffectToCurrentAttack($this->cardID);
-		return "";
+	if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
+		AddEffectToCurrentAttack($this->cardID);
+	return "";
   }
 
 	function EffectPowerModifier($param, $attached = false) {
@@ -665,16 +665,16 @@ class toe_the_line_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddCurrentTurnEffect($this->cardID, $this->controller);
-		return "";
+	return "";
   }
 
 	function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
     $prevented = 2;
     if (!$amount) {
-			if ($preventable) PlayAura("flurry", $this->controller);
+		if ($preventable) PlayAura("flurry", $this->controller);
       $remove = true;
     }
-    return $prevented;
+  	return $prevented;
 	}
 }
 
