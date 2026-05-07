@@ -605,11 +605,11 @@ class backside_of_the_blade_blue extends Card {
 		if (TypeContains($CombatChain->AttackCard()->ID(), "W") && DoesAttackHaveGoAgain()) {
 			// this can do some funny things with targeting previous chain links
 			// for now I'm skipping it
-			AddEffectToCurrentAttack($this->cardID);
 			$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
 			$Weapon->AddUse();
 			if ($Weapon->Status() == 1) $Weapon->SetUsed(2);
 		}
+		AddEffectToCurrentAttack($this->cardID);
 		return "";
   }
 

@@ -2447,7 +2447,7 @@ class lionclaw_maul extends SUPDwarfCard {
   }
 
   function SpecialBlock() {
-    return -1;
+    return -2;
   }
 
   function SpecialSubType() {
@@ -2892,7 +2892,7 @@ class pile_driver extends Card {
   }
 
   function SpecialBlock() {
-    return -1;
+    return -2;
   }
 }
 

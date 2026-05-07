@@ -394,13 +394,13 @@
         PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
         break;
       case "up_the_ante_blue-1":
-        PlayAura("agility", $wonWager, $amount);
+        PlayAura("agility", $wonWager, $amount, effectSource:"up_the_ante_blue");
         break;
       case "up_the_ante_blue-2":
-        PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+        PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer, effectSource:"up_the_ante_blue");
         break;
       case "up_the_ante_blue-3":
-        PlayAura("vigor", $wonWager, $amount);
+        PlayAura("vigor", $wonWager, $amount, effectSource:"up_the_ante_blue");
         break;
       case "edge_ahead_red": case "edge_ahead_yellow": case "edge_ahead_blue":
         PlayAura("agility", $wonWager, $amount);

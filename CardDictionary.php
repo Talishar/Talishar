@@ -817,7 +817,10 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
       break;
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialBlock() != -1) $block = $card->SpecialBlock();
+  if ($card != "-" && $card->SpecialBlock() != -1) {
+    $block = $card->SpecialBlock();
+    if ($block == -2) $block = -1; // let -2 force a null block value
+  }
   if (!$cardID) return "";
   $set = CardSet($cardID);
   switch ($cardID) {

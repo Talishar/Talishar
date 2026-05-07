@@ -13,13 +13,16 @@ class odds_on_favorite_blue extends Card {
   function OnAttackEffect($cardID, $i) {
 		global $CombatChain;
     $Effect = new CurrentEffect($i);
-    if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
+    if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword")) {
+      SearchCurrentTurnEffects($this->cardID, $this->controller, true);
       AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
     return false;
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     AddOnWagerEffects();
+    AddCurrentTurnEffect("$this->cardID-WAGER", $this->controller);
   }
 
 	function WonWager($wonWager, $amount) {
@@ -31,6 +34,7 @@ class odds_on_favorite_blue extends Card {
 	}
 
   function IsWagerEffect($index) {
-    return true;
+    $Effect = new CurrentEffect($index);
+    return str_contains($Effect->EffectID(), "WAGER");
   }
 }

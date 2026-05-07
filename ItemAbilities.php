@@ -1,7 +1,7 @@
 <?php
 
 
-function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-", $effectAgent = "")
+function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-", $effectAgent = "", $effectSource = "")
 {
   global $EffectContext, $CS_NumGoldCreated, $CS_CreatedCardsThisTurn;
   $otherPlayer = $player == 1 ? 2 : 1;
@@ -13,6 +13,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     return;
   }
   if (TypeContains($cardID, "T", $player)) $isToken = true;
+  if ($effectSource != "") $EffectContext = $effectSource;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
