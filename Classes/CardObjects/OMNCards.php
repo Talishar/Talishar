@@ -3120,3 +3120,19 @@ class red_lure_harpoon_blue extends Card {
     BanishCardForPlayer($cardID, $otherPlayer, "THEIRDISCARD", "NTFromOtherPlayer", $this->controller);
   }
 }
+
+class browbeat_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "browbeat_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    $Hand = new Hand($this->controller);
+    return $Hand->NumCards();
+  }
+}

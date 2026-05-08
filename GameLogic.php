@@ -16,6 +16,7 @@ include "Classes/CombatChain.php";
 include "Classes/Stack.php";
 include "Classes/ChainLinks.php";
 include "Classes/Deck.php";
+include "Classes/Hand.php";
 include "Classes/Discard.php";
 include "Classes/Character.php";
 include "Classes/Items.php";
