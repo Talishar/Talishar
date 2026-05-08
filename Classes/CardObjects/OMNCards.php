@@ -2184,12 +2184,12 @@ class ominous_aggression_red extends Card {
       AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
     }
     elseif (!ShouldHoldPriority($this->controller) && ShouldAutotargetOpponent($this->controller)) {
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINLINK;type=AA");
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINLINK:type=AA");
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
     }
     else {
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS;type=AA&COMBATCHAINLINK;type=AA");
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS:type=AA&COMBATCHAINLINK:type=AA");
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
     }
