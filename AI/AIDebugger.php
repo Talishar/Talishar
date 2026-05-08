@@ -1,20 +1,8 @@
 <?php
 
-/**
- * AIDebugger.php - Tools for debugging and developing the AI
- * 
- * This file provides visualization and debugging utilities to understand
- * why the AI is making decisions. Enable debugging to see detailed logs
- * of the AI's decision-making process.
- */
+$AI_DEBUG_ENABLED = false;
+$AI_DEBUG_VISUALIZE = false;
 
-// Enable/disable AI debugging globally
-$AI_DEBUG_ENABLED = false; // Set to true to see detailed logs
-$AI_DEBUG_VISUALIZE = false; // Set to true for prettier priority visualization
-
-/**
- * Simple debug logging for AI decisions
- */
 function AIDebugLog($message, $data = null)
 {
   global $AI_DEBUG_ENABLED;
@@ -28,10 +16,6 @@ function AIDebugLog($message, $data = null)
   }
 }
 
-/**
- * Visualize a priority array for debugging
- * Shows card names, zones, and priority values in readable format
- */
 function VisualizePriorityArray($priorityArray, $title = "Priority Array")
 {
   global $AI_DEBUG_VISUALIZE;
@@ -47,15 +31,11 @@ function VisualizePriorityArray($priorityArray, $title = "Priority Array")
     $zone = $node[1];
     $index = $node[2];
     $priority = $node[3];
-    
-    // Format: "CardName (ZONE) - Priority: 0.85"
+
     WriteLog("  [$i] $cardName ($zone) - Priority: $priority");
   }
 }
 
-/**
- * Analyze why a specific card got a certain priority
- */
 function AnalyzeCardPriority($cardID, $heroID, $priorityType)
 {
   $behavior = GetCardBehavior($cardID, $heroID);
@@ -83,9 +63,6 @@ function AnalyzeCardPriority($cardID, $heroID, $priorityType)
   ];
 }
 
-/**
- * Get statistics about current hand quality
- */
 function GetHandStats($playerID)
 {
   $hand = &GetHand($playerID);
@@ -102,8 +79,8 @@ function GetHandStats($playerID)
   $totalPriority = 0;
   foreach($hand as $cardID) {
     $behavior = GetCardBehavior($cardID, $heroID);
-    $actionPriority = $behavior[1]; // Check action priority
-    
+    $actionPriority = $behavior[1];
+
     $totalPriority += $actionPriority;
     if($actionPriority >= 0.8) $stats["high_value_count"]++;
     if($actionPriority == 0) $stats["zero_priority_count"]++;
@@ -114,10 +91,6 @@ function GetHandStats($playerID)
   return $stats;
 }
 
-/**
- * Test a specific scenario by examining what the AI would play
- * Useful for iterating on card priorities
- */
 function TestAIDecision($playerID, $scenario = "Action")
 {
   $hand = &GetHand($playerID);
@@ -128,16 +101,13 @@ function TestAIDecision($playerID, $scenario = "Action")
   $banish = &GetBanish($playerID);
   
   $priorityArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, $scenario);
-  
-  // Find best card to play
+
   $result = [
     "scenario" => $scenario,
     "best_card" => null,
     "best_priority" => 0,
     "top_3" => []
   ];
-  
-  // Get top 3 candidates
   for($i = max(0, count($priorityArray) - 3); $i < count($priorityArray); ++$i) {
     if($i >= 0) {
       $node = $priorityArray[$i];
@@ -158,10 +128,6 @@ function TestAIDecision($playerID, $scenario = "Action")
   return $result;
 }
 
-/**
- * Print detailed card behavior table for a hero
- * Used for documentation and verification
- */
 function PrintHeroBehaviorTable($heroID)
 {
   $behaviors = GetCardBehaviorForHero($heroID);
@@ -183,9 +149,6 @@ function PrintHeroBehaviorTable($heroID)
   return $output;
 }
 
-/**
- * Validate that all priority values are in acceptable ranges
- */
 function ValidateCardBehaviors()
 {
   $errors = [];
@@ -215,14 +178,8 @@ function ValidateCardBehaviors()
   return $errors;
 }
 
-/**
- * Generate a report on AI performance in last N games
- * Would require game logging to be implemented
- */
 function GenerateAIPerformanceReport($gameLimit = 10)
 {
-  // Placeholder for future implementation
-  // Would need game result logging
   
   return [
     "games_analyzed" => 0,
@@ -232,9 +189,6 @@ function GenerateAIPerformanceReport($gameLimit = 10)
   ];
 }
 
-/**
- * Easy way to toggle debug mode from code
- */
 function SetAIDebugMode($enabled, $visualize = false)
 {
   global $AI_DEBUG_ENABLED, $AI_DEBUG_VISUALIZE;
@@ -248,9 +202,6 @@ function SetAIDebugMode($enabled, $visualize = false)
   }
 }
 
-/**
- * Quick command for checking a hero's card config
- */
 function QuickCheckHero($heroID)
 {
   $result = [

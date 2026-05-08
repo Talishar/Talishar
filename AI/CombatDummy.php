@@ -3,12 +3,10 @@
 include_once "EncounterAI.php";
 
 function CombatDummyAI()
-{
   global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer, $p2IsAI;
   $currentPlayerIsAI = IsPlayerAI($currentPlayer) ? true : false;
   $canceled = false;
   if($p2CharEquip[0] != "DUMMY") {
-    // Only call EncounterAI if P2 is actually AI
     if ($p2IsAI == "1") {
       EncounterAI();
     }
@@ -23,10 +21,10 @@ function CombatDummyAI()
         if($turn[2] == "if_you_want_to_pay_3_to_avoid_taking_2_damage") ContinueDecisionQueue("NO");
         else {
           $options = explode(",", $turn[2]);
-          ContinueDecisionQueue($options[0]);//Just pick the first option
+          ContinueDecisionQueue($options[0]);
         }
       }
-      else if($turn[0] == "M" && $mainPlayer == $currentPlayer && !$canceled)//AIs turn
+      else if($turn[0] == "M" && $mainPlayer == $currentPlayer && !$canceled)
       {
         $character = &GetPlayerCharacter($currentPlayer);
         $index = -1;
@@ -38,7 +36,6 @@ function CombatDummyAI()
         $cost = $baseCost + CurrentEffectCostModifiers($cardID, $from) + $frostbitesPaid + CharacterCostModifier($cardID, $from, CardCost($cardID, $from));
 
         if($index != -1 && $cost == 0)
-        {
           $wasSuccessful = ProcessInput($currentPlayer, 3, "", CharacterPieces(), $index, "");
           if($wasSuccessful) CacheCombatResult();
           else PassInput();

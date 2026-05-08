@@ -1,23 +1,8 @@
 <?php
 
-/**
- * AIHelpers.php - Core AI utility functions for smarter game evaluation
- * 
- * This file contains helper functions for evaluating card value, game state,
- * and making smarter AI decisions beyond simple priority lists.
- */
-
-/**
- * Evaluates the tactical value of playing a card based on current game state
- * 
- * @param string $cardID - Card identifier
- * @param int $playerID - Player ID (usually 2 for AI)
- * @param string $context - Current phase/context (Block, Action, Reaction, etc)
- * @return float - Value score (higher = better to play)
- */
 function EvaluateCardValue($cardID, $playerID, $context = "Action")
 {
-  $baseValue = 0.5; // Default neutral value
+  $baseValue = 0.5;
   
   // Get game state references
   $resources = &GetResources($playerID);
@@ -45,9 +30,6 @@ function EvaluateCardValue($cardID, $playerID, $context = "Action")
   return $baseValue;
 }
 
-/**
- * Evaluates value of an action phase card
- */
 function EvaluateActionValue($cardID, $playerID, &$resources, &$hand, &$character, $playerHealth, $enemyHealth)
 {
   $value = 0.5;
@@ -56,23 +38,19 @@ function EvaluateActionValue($cardID, $playerID, &$resources, &$hand, &$characte
   if(CardType($cardID) == "AA" || CardType($cardID) == "I") {
     $damage = PowerValue($cardID);
     if($enemyHealth <= $damage) {
-      return 0.95; // Lethal threat
+      return 0.95;
     }
-    // Damage scales in value as opponent gets lower
     $value += ($damage / max($enemyHealth, 1)) * 0.3;
   }
   
-  // Cards that generate resources or setup are good
   if(HasCardAbility($cardID, "generate_resources")) {
     $value += 0.2;
   }
   
-  // Cards with combo potential
   if(HasCardAbility($cardID, "combo")) {
     $value += 0.15;
   }
   
-  // Permanent effects (equipment, items) scale up over time
   if(CardType($cardID) == "E" || CardType($cardID) == "I") {
     $value += 0.25;
   }
@@ -80,50 +58,38 @@ function EvaluateActionValue($cardID, $playerID, &$resources, &$hand, &$characte
   return min($value, 0.99);
 }
 
-/**
- * Evaluates value of a block card
- */
 function EvaluateBlockValue($cardID, $playerID, &$resources, &$character, $playerHealth)
 {
   global $combatChain;
   
   $value = 0;
   $blockPower = BlockValue($cardID);
-  
-  // If lethal threat, high priority
+
   if($playerHealth <= $blockPower) {
     return 0.95;
   }
   
-  // Block efficiency: how much damage it prevents
   $value = min($blockPower / max($playerHealth, 1), 0.5);
-  
-  // Defensive reactions or combo cards in block phase get bonus
+
   if(HasCardAbility($cardID, "reaction")) {
     $value += 0.15;
   }
   
-  return min($value, 0.89); // Cap below lethal threshold
+  return min($value, 0.89);
 }
 
-/**
- * Evaluates value of a reaction phase card
- */
 function EvaluateReactionValue($cardID, $playerID, &$resources, &$hand, $playerHealth)
 {
-  $value = 0.4; // Reactions are typically lower value
+  $value = 0.4;
   
-  // Interrupt effects are high value
   if(HasCardAbility($cardID, "interrupt")) {
     $value += 0.3;
   }
   
-  // Damage prevention effects
   if(HasCardAbility($cardID, "damage_prevent")) {
     $value += 0.25;
   }
   
-  // Card draw/tutoring effects
   if(HasCardAbility($cardID, "tutor") || HasCardAbility($cardID, "draw")) {
     $value += 0.2;
   }
@@ -131,29 +97,15 @@ function EvaluateReactionValue($cardID, $playerID, &$resources, &$hand, $playerH
   return min($value, 0.89);
 }
 
-/**
- * Evaluates value of a pitch card
- */
 function EvaluatePitchValue($cardID)
 {
-  $value = PitchValue($cardID) / 3; // Normalize 0-3 pitch to 0-1
-  
-  // Could add logic here to prefer certain colors based on hand composition
-  // For now, just use pitch value
-  
+  $value = PitchValue($cardID) / 3;
+
   return min($value, 0.9);
 }
 
-/**
- * Check if card has a specific ability tag
- * @param string $cardID
- * @param string $abilityTag
- * @return bool
- */
 function HasCardAbility($cardID, $abilityTag)
 {
-  // This would be expanded with a card abilities database
-  // For now, implement basic checks
   
   switch($abilityTag) {
     case "combo":
@@ -175,9 +127,6 @@ function HasCardAbility($cardID, $abilityTag)
   }
 }
 
-/**
- * Gets estimated damage output from current hand
- */
 function EstimateDamageOutput($playerID)
 {
   $hand = &GetHand($playerID);
@@ -194,9 +143,6 @@ function EstimateDamageOutput($playerID)
   return $totalDamage;
 }
 
-/**
- * Gets resource efficiency score (how much value per resource spent)
- */
 function GetResourceEfficiency($cardID)
 {
   $cost = CardCost($cardID);
@@ -207,29 +153,18 @@ function GetResourceEfficiency($cardID)
   return ($power + $value) / $cost;
 }
 
-/**
- * Should the AI be aggressive (go for lethal) or defensive?
- */
 function ShouldBeAggressive($playerID)
 {
   $myHealth = &GetHealth($playerID);
   $enemyHealth = &GetHealth($playerID == 1 ? 2 : 1);
   
   $damageOutput = EstimateDamageOutput($playerID);
-  
-  // Be aggressive if:
-  // - Can deal lethal damage
-  // - Enemy is low health (<= 10)
-  // - Own health is good
-  return ($damageOutput >= $enemyHealth) || 
+
+  return ($damageOutput >= $enemyHealth) ||
          ($enemyHealth <= 10 && $myHealth >= 15) ||
          ($damageOutput >= $enemyHealth - 5 && $myHealth >= $enemyHealth);
 }
 
-/**
- * Get hand quality score (0-1)
- * Higher = better cards in hand
- */
 function GetHandQuality($playerID)
 {
   $hand = &GetHand($playerID);
@@ -243,12 +178,6 @@ function GetHandQuality($playerID)
   return min($totalValue / count($hand), 1.0);
 }
 
-/**
- * Get the "danger level" - how threatened is the AI?
- * Used to shift between offensive and defensive plays
- * 
- * @return float 0-1, where 1 = very threatened
- */
 function GetDangerLevel($playerID)
 {
   $myHealth = &GetHealth($playerID);
@@ -259,14 +188,148 @@ function GetDangerLevel($playerID)
   $estimatedDamage = 0;
   foreach($enemyHand as $cardID) {
     $cost = CardCost($cardID);
-    if($cost <= $enemyResources[0] + 3) { // Assume could pitch for cost
+    if($cost <= $enemyResources[0] + 3) {
       $estimatedDamage += PowerValue($cardID);
     }
   }
   
-  // Danger is lethal % of our health
   if($myHealth <= 0) return 1.0;
   $danger = min($estimatedDamage / $myHealth, 1.0);
-  
+
   return $danger;
+}
+function IraEstimateAttack($playerID)
+{
+  $hand      = &GetHand($playerID);
+  $resources = &GetResources($playerID);
+
+  $bluePitch = $resources[0];
+  foreach ($hand as $cardID) {
+    if (PitchValue($cardID) == 3) $bluePitch += 3;
+  }
+
+  $attacks = [];
+  foreach ($hand as $cardID) {
+    if (PitchValue($cardID) < 3 && PowerValue($cardID) > 0) {
+      $attacks[] = [CardCost($cardID), PowerValue($cardID)];
+    }
+  }
+  usort($attacks, fn($a, $b) => $b[1] <=> $a[1]);
+
+  $totalAttack  = 0;
+  $attacksFired = 0;
+  foreach ($attacks as [$cost, $attack]) {
+    if ($cost <= $bluePitch) {
+      $bluePitch   -= $cost;
+      $totalAttack += $attack;
+      $attacksFired++;
+    }
+  }
+
+  if ($attacksFired > 0) $totalAttack += 1;
+
+  return $totalAttack;
+}
+
+function IraEstimateBlock($playerID)
+{
+  $hand  = &GetHand($playerID);
+  $total = 0;
+  foreach ($hand as $cardID) {
+    $total += BlockValue($cardID);
+  }
+  return $total;
+}
+
+function IraIsInAttackMode($playerID)
+{
+  return IraEstimateAttack($playerID) > IraEstimateBlock($playerID);
+}
+
+function IraIsCardReservedForOffense($cardID, $playerID)
+{
+  $hand      = &GetHand($playerID);
+  $resources = &GetResources($playerID);
+
+  $pitch   = PitchValue($cardID);
+  $cost    = CardCost($cardID);
+  $attack  = PowerValue($cardID);
+  $defense = BlockValue($cardID);
+
+  if ($pitch == 1 && $attack > $defense) {
+    if ($cost == 0) return true;
+
+    $idx = array_search($cardID, $hand, true);
+    if ($idx === false) return false;
+
+    return IraCanFundCostlyAttack([$cardID, "Hand", $idx, 0], $hand, $resources);
+  }
+
+  if ($pitch == 3) {
+    $bluesInHand     = 0;
+    $totalCostlyCost = 0;
+    foreach ($hand as $hCard) {
+      if (PitchValue($hCard) == 3) $bluesInHand++;
+      if (CardCost($hCard) > 0 && PitchValue($hCard) < 3 && PowerValue($hCard) > 0) {
+        $totalCostlyCost += CardCost($hCard);
+      }
+    }
+
+    $totalNeeded = $totalCostlyCost + 1;
+    $resourceFloat = $resources[0] ?? 0;
+    $bluesNeeded = max(0, (int)ceil(($totalNeeded - $resourceFloat) / 3));
+
+    return ($bluesInHand - 1) < $bluesNeeded;
+  }
+
+  return false;
+}
+
+function IraCanFundCostlyAttack($node, $hand, $resources)
+{
+  $cardID = $node[0];
+  $idx    = $node[2];
+  $cost   = CardCost($cardID);
+  if ($cost <= 0) return true;
+
+  $blueYellowPitch = $resources[0];
+  $reds = [];
+  foreach ($hand as $hIdx => $hCard) {
+    if ($hIdx == $idx) continue;
+    $pv = PitchValue($hCard);
+    if ($pv >= 2) {
+      $blueYellowPitch += $pv;
+    } elseif ($pv == 1) {
+      $reds[] = [
+        'attack'    => PowerValue($hCard),
+        'block'     => BlockValue($hCard),
+        'cost'      => CardCost($hCard),
+        'fundable'  => CardCost($hCard) == 0, // 0-cost reds would attack in the chain
+      ];
+    }
+  }
+
+  if ($cost <= $blueYellowPitch) return true;
+
+  usort($reds, function ($a, $b) {
+    if ($a['fundable'] !== $b['fundable']) return $a['fundable'] <=> $b['fundable'];
+    return $a['attack'] <=> $b['attack'];
+  });
+
+  $shortfall = $cost - $blueYellowPitch;
+  $pitchedCount = 0;
+  $blockGiven = 0;
+  $attackLost = 0;
+  foreach ($reds as $r) {
+    if ($pitchedCount >= $shortfall) break;
+    $pitchedCount++;
+    $blockGiven += $r['block'];
+    if ($r['fundable']) $attackLost += $r['attack'];
+  }
+  if ($pitchedCount < $shortfall) return false;
+
+  $attackPath = PowerValue($cardID) + 1 - $attackLost;
+  $blockPath  = BlockValue($cardID) + $blockGiven;
+
+  return $attackPath >= $blockPath;
 }

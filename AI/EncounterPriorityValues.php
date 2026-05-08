@@ -56,15 +56,6 @@ include_once "CardBehaviors.php";
 include_once "AIHelpers.php";
 include_once "AIDebugger.php";
 
-/**
- * Get priority value for a card in a specific context
- * 
- * @param string $cardID - Card identifier
- * @param string $heroID - Hero identifier
- * @param int $type - Priority type index (0-7)
- * 
- * @return float - Priority value (0-0.9, or 10.1-10.9 for computed)
- */
 function GetPriority($cardID, $heroID, $type)
 {
   // Get the card behavior from the new system
@@ -79,7 +70,7 @@ function EncounterBlocksFirstTurn($heroID)
 {
   switch($heroID) {
     default:
-      return true; 
+      return true;
   }
 }
 
