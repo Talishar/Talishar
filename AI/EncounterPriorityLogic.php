@@ -13,6 +13,19 @@
  *   [3] -> Priority Value (0-0.9 normal, 10.1-10.9 computed)
  */
 
+/**
+ * Generate prioritized array of playable actions for a given phase
+ * 
+ * @param array $hand - Player's hand
+ * @param array $character - Character data
+ * @param array $arsenal - Arsenal zone
+ * @param array $items - Items/permanents
+ * @param array $allies - Allies
+ * @param array $banish - Banish zone
+ * @param string $type - Phase type: Block, Action, Reaction, Pitch, ToArsenal
+ * 
+ * @return array - Sorted priority nodes, highest priority last
+ */
 function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, $type)
 {
   $priorityArray = [];
@@ -25,7 +38,6 @@ function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $b
       $priorityArray = ResolvePriorityArray($priorityArray, 10, 0, 2);
       $priorityArray = ResolvePriorityArray($priorityArray, 11, 0, 2);
       $priorityArray = FirstTurnResolution($priorityArray, $character);
-      $priorityArray = MatchBlockValueBoost($priorityArray);
       return SortPriorityArray($priorityArray);
       
     case "Action":
@@ -231,7 +243,7 @@ function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destin
 function FirstTurnResolution($priorityArray, $character)
 {
   global $currentTurn;
-
+  
   if($currentTurn == 0 && EncounterBlocksFirstTurn($character[0])) {
     for($i = 0; $i < count($priorityArray); ++$i) {
       // Boost hand cards but not equipment
@@ -241,33 +253,7 @@ function FirstTurnResolution($priorityArray, $character)
       }
     }
   }
-
-  return $priorityArray;
-}
-
-/**
- * Boost the priority of cards whose block value closely matches the remaining threat.
- * Spec Rule 1: prefer a block-2 card over a block-3 card when the attack is for 2.
- * Cards within 1 of the threat get +0.05; cards that over-block by more than 1 get -0.05.
- */
-function MatchBlockValueBoost($priorityArray)
-{
-  $threatened = CachedTotalPower() - CachedTotalBlock();
-  if ($threatened <= 0) return $priorityArray;
-
-  for ($i = 0; $i < count($priorityArray); $i++) {
-    if ($priorityArray[$i][3] <= 0) continue;
-    $blockVal = BlockValue($priorityArray[$i][0]);
-    if ($blockVal <= 0) continue;
-
-    $overshoot = $blockVal - $threatened;
-    if ($overshoot >= -1 && $overshoot <= 1) {
-      $priorityArray[$i][3] += 0.05;
-    } elseif ($overshoot > 1) {
-      $priorityArray[$i][3] -= 0.05;
-    }
-  }
-
+  
   return $priorityArray;
 }
 

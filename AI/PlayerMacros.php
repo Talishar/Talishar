@@ -15,6 +15,10 @@ function ProcessMacros()
       $lastPhase = $turn[0];
       $somethingChanged = false;
 
+      //Debug
+      // WriteLog("$currentPlayer, $turn[0], $turn[2], $EffectContext");
+
+      // Cache expensive function calls and counts
       $layerCount = count($layers);
       $decisionQueueCount = count($decisionQueue);
       $holdPrioritySetting = HoldPrioritySetting($currentPlayer);
@@ -60,7 +64,7 @@ function ProcessMacros()
               $somethingChanged = true;
               PassInput();
             }
-            elseif ($turn[0] == "INSTANT" && $layerCount > 0) {
+            elseif ($turn[0] == "INSTANT" && $layerCount > 0) {// I don't think this should ever be called after the above
               ProcessInstantMacros($firstLayer, $holdPrioritySetting, $somethingChanged);
             }
           }
@@ -145,6 +149,7 @@ function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChan
   } else if ($hasUniqueID) {
     $subtype = CardSubType($layers[2]);
     if (DelimStringContains($subtype, "Aura") && $holdPrioritySetting != "1") {
+      // TODO: move this gem checking to its own function so we can do all zones checking in one spot
       $Auras = new Auras($layerController);
       $AuraCard = $Auras->FindCardUID($uid);
       $gemStatus = $currentPlayer == $layerController ? $AuraCard->MyGemStatus() : $AuraCard->TheirGemStatus();

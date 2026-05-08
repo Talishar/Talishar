@@ -1,5 +1,9 @@
 <?php
 
+//Every single function with the exception of the PlayCardAttempt() functions at the bottom of this file are entirely used to make sure the card/ability the AI wants to play is actually legal before it attempts anything.
+//This might be a bit to dig through, but you don't really need to understand any of this to create priority arrays.
+//If you do have questions though, just ping me, @Etasus, and I can help you out.
+
 function CardIsBlockable($storedPriorityNode)
 {
   global $combatChain, $combatChainState, $CCS_NumChainLinks, $currentPlayer, $turn;
@@ -14,7 +18,7 @@ function CardIsBlockable($storedPriorityNode)
   switch($combatChain[0])
   {
     case "find_center_blue": return !(ComboActive() && CardCost($storedPriorityNode[0]) < $combatChainState[$CCS_NumChainLinks]);
-    case "herons_flight_red": return false;
+    case "herons_flight_red": return false; //I have no idea how to make Heron's Flight work, so I'm just gonna say it's unblockable. This is so edge case that no one will know for a while lmfaooooo
     case "crane_dance_red":
     case "crane_dance_yellow":
     case "crane_dance_blue": return !(ComboActive() && PowerValue($storedPriorityNode[0]) > $combatChainState[$CCS_NumChainLinks]);

@@ -9,6 +9,7 @@ function EncounterAI()
 {
   global $currentPlayer, $p2CharEquip, $decisionQueue, $mainPlayer, $mainPlayerGamestateStillBuilt, $actionPoints;
   $AIDebug = false;
+  //$AIDebug = true;
   $currentPlayerIsAI = ($currentPlayer == 2 && IsEncounterAI($p2CharEquip[0])) ? true : false;
   if(!IsGameOver() && $currentPlayerIsAI)
   {
@@ -24,27 +25,32 @@ function EncounterAI()
       $items = &GetItems($currentPlayer);
       $allies = &GetAllies($currentPlayer);
       $banish = &GetBanish($currentPlayer);
+      //LogHandArray($hand);
       CacheCombatResult();
       if(count($decisionQueue) > 0)
       {
+        if($AIDebug) WriteLog("AI Branch - Decision Queue");
         global $EffectContext;
         if($EffectContext == "bloodrot_pox")
         {
+          if($AIDebug) WriteLog("AI Branch - Bloodrot");
           ContinueDecisionQueue("NO");
           continue;
         }
         if($decisionQueue[0] == "SHIVER")
         {
+          if($AIDebug) WriteLog("AI Branch - Shiver");
           $options = explode(",", $turn[2]);
           ContinueDecisionQueue($options[1]);
         }
-        if($isBowActive)
+        if($isBowActive)//was the last action a bow action?
         {
+          if($AIDebug) WriteLog("AI Branch - Bow Active");
           $optionIndex = 0;
           $index = 0;
           $largestIndex = 0;
 
-          for($i = 0; $i < count($hand); ++$i)
+          for($i = 0; $i < count($hand); ++$i)//find the highest priority arrow and choose it
           {
             if(CardSubtype($hand[0]) == "Arrow")
             {
@@ -69,67 +75,53 @@ function EncounterAI()
           if($AIDebug) WriteLog("AI Branch - DQ First Option");
           $options = explode(",", $turn[2]);
           $choice = $options[0];
+          //Some things automatically adjust the data
           if($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") {
             $deck = &GetDeck($currentPlayer);
             $choice = $deck[$choice*DeckPieces()];
           }
-          ContinueDecisionQueue($choice);
+          ContinueDecisionQueue($choice);//Just pick the first option
         }
       }
-      else if($turn[0] == "B")
+      else if($turn[0] == "B")//The player is attacking the AI
       {
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Block");
+        if($AIDebug) WriteLog("AI Branch - Block");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
+        //LogPriorityArray($priortyArray);
         $found = false;
-        $skippedReserved = false;
-        while (count($priortyArray) > 0 && !$found) {
+        while (count($priortyArray) > 0 && !$found) { //Grabs items from the array until it finds one it can play.
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
-          array_pop($priortyArray);
-          if(CardIsBlockable($storedPriorityNode)) {
-            // Ira reservation: skip cards needed for the offensive chain when
-            // the remaining damage is survivable. Falls through to a lower-
-            // priority unreserved blocker if one exists.
-            if ($character[0] === "ira_crimson_haze"
-                && $storedPriorityNode[1] == "Hand"
-                && IraIsCardReservedForOffense($storedPriorityNode[0], $currentPlayer)
-                && IraReservationSurvivable($currentPlayer)) {
-              $skippedReserved = true;
-              continue;
-            }
-            $found = true;
-          }
+          array_pop($priortyArray); //grabs the last item in the array (highest priority), and removes it from the array, storing it in $storedPriorityNode
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
+          if(CardIsBlockable($storedPriorityNode)) $found = true; //If the card can be played/blocked with/activated. Found in EncounterPlayLogic.php
         }
+        //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
         $health = &GetHealth($currentPlayer);
+        //If something was found, that thing is able to block (not prio 0), and either the attack is lethal or the AI wants to block with it efficiently, it attempts to block. Otherwise it passes.
+        //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalPower().",cachedblock->".CachedTotalBlock().",health->".$health.",powervalue->".PowerValue("brand_with_cinderclaw_yellow"));
         if(ShouldBlock($found, $storedPriorityNode))
         {
-          BlockCardAttempt($storedPriorityNode);
+          BlockCardAttempt($storedPriorityNode); //attempts to play the card. Found in EncounterPlayLogic.php;
         }
         else
         {
           PassInput();
         }
       }
-      else if($turn[0] == "M" && $mainPlayer == $currentPlayer && $actionPoints > 0)
+      else if($turn[0] == "M" && $mainPlayer == $currentPlayer && $actionPoints > 0)//AIs turn
       {
+        if($AIDebug) WriteLog("AI Branch - AI's Turn");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Action");
-        $iraAttackMode = (IsFirstTurn() && $mainPlayer == $currentPlayer)
-          ? true
-          : IraIsInAttackMode($currentPlayer);
+        //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
           array_pop($priortyArray);
           if(CardIsPlayable($storedPriorityNode, $hand, $resources))
           {
+            //Only attempt to play the card if you have excess resources compared to what needs to be saved
             if($storedPriorityNode[0] != "Hand" || count($hand) > 1)
             {
-              if ($storedPriorityNode[1] == "Hand" && CardCost($storedPriorityNode[0]) > 0) {
-                 if (!IraCanFundCostlyAttack($storedPriorityNode, $hand, $resources)) continue;
-               }
-                && $storedPriorityNode[1] == "Hand"
-                && PitchValue($storedPriorityNode[0]) == 3
-                && !HasGoAgain($storedPriorityNode[0])) {
-                continue;
-              }
               $found = true;
             }
           }
@@ -145,14 +137,17 @@ function EncounterAI()
           PassInput();
         }
       }
-      else if($turn[0] == "A" && $mainPlayer == $currentPlayer)
+      else if($turn[0] == "A" && $mainPlayer == $currentPlayer)//attack reaction phase
       {
+        if($AIDebug) WriteLog("AI Branch - Attack Reactions");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Reaction");
+        //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
           array_pop($priortyArray);
           if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
         }
         if($found == true && $storedPriorityNode[3] != 0)
         {
@@ -164,16 +159,20 @@ function EncounterAI()
           PassInput();
         }
       }
-      else if($turn[0] == "D" && $mainPlayer != $currentPlayer)
+      else if($turn[0] == "D" && $mainPlayer != $currentPlayer)//Defense reaction phase
       {
+        if($AIDebug) WriteLog("AI Branch - Defense Reactions");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Reaction");
+        //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
           array_pop($priortyArray);
           if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
         }
         $threatened = CachedTotalPower() - CachedTotalBlock();
+        //if($found == true && $threatened > 0 && $storedPriorityNode[3] != 0)
         if($found == true && ShouldBlock($found, $storedPriorityNode) && $storedPriorityNode[3] != 0)
         {
           PlayCardAttempt($storedPriorityNode);
@@ -184,13 +183,16 @@ function EncounterAI()
           PassInput();
         }
       }
-      else if($turn[0] == "P" && $mainPlayer == $currentPlayer)
+      else if($turn[0] == "P" && $mainPlayer == $currentPlayer)//pitch phase
       {
+        if($AIDebug) WriteLog("AI Branch - Pitch");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Pitch");
+        //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
           array_pop($priortyArray);
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
           if(CardIsPitchable($storedPriorityNode)) $found = true;
         }
         if($found == true && $storedPriorityNode[3] != 0)
@@ -202,40 +204,23 @@ function EncounterAI()
           PassInput();
         }
       }
-      else if($turn[0] == "DYNPITCH" && $mainPlayer == $currentPlayer)
+      else if($turn[0] == "PDECK")//choosing which card to bottom from pitch
       {
-        $options = explode(",", $turn[2] ?? "");
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Pitch");
-        $bestIdx = -1;
-        $bestPriority = 0;
-        foreach ($priortyArray as $node) {
-          if ($node[1] != "Hand") continue;
-          if ($node[3] <= $bestPriority) continue;
-          if (!in_array((string)$node[2], $options, true)) continue;
-          $bestIdx = $node[2];
-          $bestPriority = $node[3];
-        }
-        if ($bestIdx >= 0) {
-          ContinueDecisionQueue((string)$bestIdx);
-        } else if (count($options) > 0 && $options[0] !== "") {
-          ContinueDecisionQueue($options[0]);
-        } else {
-          PassInput();
-        }
-      }
-      else if($turn[0] == "PDECK")
-      {
+        if($AIDebug) WriteLog("AI Branch - Pitch Deck");
         $pitch = &GetPitch($currentPlayer);
         ProcessInput($currentPlayer, 6, "", $pitch[0], 0, "");
         CacheCombatResult();
       }
-      else if($turn[0] == "ARS" && $mainPlayer == $currentPlayer)
+      else if($turn[0] == "ARS" && $mainPlayer = $currentPlayer)//choose a card to arsenal
       {
+        if($AIDebug) WriteLog("AI Branch - Choose Arsenal");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "ToArsenal");
+        //LogPriorityArray($priortyArray);
         $found = false;
         while (count($priortyArray) > 0 && !$found) {
           $storedPriorityNode = $priortyArray[count($priortyArray)-1];
           array_pop($priortyArray);
+          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
           if(CardIsArsenalable($storedPriorityNode)) $found = true;
         }
         if($found == true && $storedPriorityNode[3] != 0)
@@ -247,23 +232,24 @@ function EncounterAI()
           PassInput();
         }
       }
-      else if($turn[0] == "OPT" && $mainPlayer == $currentPlayer)
+      else if($turn[0] == "OPT" && $mainPlayer = $currentPlayer)
       {
+        if($AIDebug) WriteLog("AI Branch - Opt");
         $options = explode(",", $turn[2]);
         ProcessInput($currentPlayer, 107, $options[0], 0, 0, "");
         CacheCombatResult();
       }
-      else if($turn[0] == "HANDTOPBOTTOM" && $mainPlayer == $currentPlayer)
+      else if($turn[0] == "HANDTOPBOTTOM"  && $mainPlayer = $currentPlayer)
       {
+        if($AIDebug) WriteLog("AI Branch - Hand Top/Bottom");
         $options = explode(",", $turn[2]);
         ProcessInput($currentPlayer, 12, $options[0], 0, 0, "");
         CacheCombatResult();
       }
-      else if($turn[0] == "CHOOSEBOTTOM")
-      {
+      else if($turn[0] == "CHOOSEBOTTOM"){
         if($AIDebug) WriteLog("AI Branch - Hand Choose Bottom");
         $options = explode(",", $turn[2]);
-        ContinueDecisionQueue($options[0]);
+        ContinueDecisionQueue($options[0]);//Just pick the first option
       }
       else
       {
@@ -290,69 +276,37 @@ function IsEncounterAI($enemyHero)
   return $p2IsAI == "1";
 }
 
-function IraReservationSurvivable($playerID)
-{
-  $health     = &GetHealth($playerID);
-  $threatened = CachedTotalPower() - CachedTotalBlock();
-  return ($health - $threatened) > 3;
-}
-
 function ShouldBlock($found, $storedPriorityNode)
 {
   global $currentPlayer;
-  $health     = &GetHealth($currentPlayer);
+  $health = &GetHealth($currentPlayer);
   $threatened = CachedTotalPower() - CachedTotalBlock();
-
-  if (!$found || $threatened <= 0) return false;
-
-  if ($storedPriorityNode[1] == "Character" && NumEquipBlock() == 0 && HaveUnblockedEquip($currentPlayer)) {
+  
+  if(!$found || $threatened == 0) return false;
+  
+  // Check if equipment block is REQUIRED by the current chain link
+  // If so, force the block with equipment
+  if($storedPriorityNode[1] == "Character" && NumEquipBlock() == 0 && HaveUnblockedEquip($currentPlayer)) {
+    // Equipment is required to block, and this is an equipment - force it
     return true;
   }
-
-  if ($threatened >= $health) return true;
-
-  if ($health <= 3) return true;
-
-  if (IsFirstTurn()) return true;
-
-  $character = &GetPlayerCharacter($currentPlayer);
-  if ($character[0] === "ira_crimson_haze"
-      && $storedPriorityNode[1] == "Hand"
-      && IraIsCardReservedForOffense($storedPriorityNode[0], $currentPlayer)
-      && IraReservationSurvivable($currentPlayer)) {
+  
+  // Normal block logic
+  if(IsFirstTurn() && ($threatened > 1 || !DoesAttackHaveGoAgain())) return true;
+  
+  if($storedPriorityNode[3] != 0 &&
+((CachedTotalPower() - CachedTotalBlock() >= $health && $storedPriorityNode[3] != 0) || (CachedTotalPower() - CachedTotalBlock() >= BlockValue($storedPriorityNode[0]) && 2.1 <= $storedPriorityNode[3] && $storedPriorityNode[3] <= 2.9)))
+  {
+    return true;
+  }
+  else
+  {
     return false;
   }
-
-  $cardBlockValue = BlockValue($storedPriorityNode[0]);
-  if ($cardBlockValue <= 0) return false;
-
-  if ($cardBlockValue > $threatened + 1) return false;
-
-  $goAgain = DoesAttackHaveGoAgain();
-
-  if ($goAgain && CachedTotalBlock() > 0) {
-    $damageAfterThisBlock = $threatened - $cardBlockValue;
-    if ($damageAfterThisBlock <= 2) return false;
-  }
-
-  $opponent          = ($currentPlayer == 1) ? 2 : 1;
-  $opponentHandSize  = count(GetHand($opponent));
-  $opponentHasArsenal = !ArsenalEmpty($opponent);
-  $moreAttacksComing = $goAgain || $opponentHandSize > 0 || $opponentHasArsenal;
-
-  $cardAttack     = PowerValue($storedPriorityNode[0]);
-  $cardPitch      = PitchValue($storedPriorityNode[0]);
-  $offensiveValue = max($cardAttack, $cardPitch);
-  $safeHP         = $health > 10;
-
-  if ($threatened <= 2 && $offensiveValue >= 3 && $safeHP && !$moreAttacksComing) {
-    return false;
-  }
-
-  return true;
 }
 
 function IsFirstTurn()
+{
   global $mainPlayer, $firstPlayer, $currentTurn;
   return $mainPlayer == $firstPlayer && $currentTurn == 0;
 }
