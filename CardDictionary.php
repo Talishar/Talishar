@@ -5022,6 +5022,7 @@ function GetClass($cardID, $player, $from="-", $uniqueID="-") {
   };
   if (class_exists($className)) $rv = new $className($player);
   else return "-";
+  if (!is_a($rv, "Card")) return "-";
 	if ($from == "CC") {
 		for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
 			$Effect = $CurrentTurnEffects->Effect($i, true);
