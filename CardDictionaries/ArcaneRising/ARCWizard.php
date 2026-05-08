@@ -1280,17 +1280,23 @@ function ProcessSurge($cardID, $player, $target)
       GainHealth(1, $player);
       $auras = &GetAuras($player);
       $sigilFound = false;
+      $otherSigilFound = false;
       $aurasCount = count($auras);
       $auraPieces = AuraPieces();
+      $otherPlayer = $player == 1 ? 2 : 1;
       for ($i = $aurasCount - $auraPieces; $i >= 0; $i -= $auraPieces) {
         $auraName = CardName($auras[$i]);
+        $AuraCard = new AuraCard($i, $player);
         if (DelimStringContains($auraName, "Sigil", partial: true)) {
-          AddBottomDeck($auras[$i], $player, "STACK");
-          RemoveAura($player, $i, $auras[$i + 4]);
-          $sigilFound = true;
+          $destPlayer = str_contains($AuraCard->From(), "THEIR") ? $otherPlayer : $player;
+          AddBottomDeck($auras[$i], $destPlayer, "STACK");
+          $AuraCard->Remove();
+          if ($destPlayer == $player) $sigilFound = true;
+          else $otherSigilFound = true;
         }
       }
-      if($sigilFound)AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      if($sigilFound) AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      if ($otherSigilFound) AddDecisionQueue("SHUFFLEDECK", $otherPlayer, "-");
       break;
     case "trailblazing_aether_red":
     case "trailblazing_aether_yellow":
