@@ -3310,10 +3310,10 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     SetClassState($currentPlayer, $CS_AdditionalCosts, $banished);
   }
   if (HasBeatChest($cardID)) {
-    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to beat chest");
-    AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDMINPOWER,6");
-    AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-    AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
+    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:minPower=6");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to beat chest (or pass)", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    AddDecisionQueue("MZREMOVE", $currentPlayer, "<-", 1);
     AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
     AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "BEATCHEST", 1);
   }
