@@ -3136,3 +3136,32 @@ class browbeat_blue extends Card {
     return $Hand->NumCards();
   }
 }
+
+class ominous_excavation_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "ominous_excavation_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $context = "Return an Aura from your graveyard to your deck (or pass)";
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYDISCARD:type=I", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", context:$context, may:true);
+    Await($this->controller, $this->cardID, subsequent:0, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $CS_NumControlledAurasDestroyed;
+    $choice = $dqVars["choice"] ?? "-";
+    if ($choice != "-") {
+      $obj = MZIndexToObject($this->controller, $choice);
+      AddBottomDeck($obj->CardID(), $this->controller, "DISCARD");
+      $obj->Remove();
+      $deck = new Deck($this->controller);
+      $deck->Shuffle("-");
+    }
+    if (GetClassState($this->controller, $CS_NumControlledAurasDestroyed) > 0)
+      PlayAura("ponder", $this->controller);
+  }
+}

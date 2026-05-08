@@ -106,6 +106,11 @@ class DiscardCard {
     return $this->controller;
   }
 
+  //alias for ID
+  function CardID() {
+    return $this->ID();
+  }
+
   function ID() {
     return $this->pieces[$this->index] ?? "-";
   }
