@@ -6971,6 +6971,7 @@ class leave_em_speechless_blue extends Card {
 
   function CanPlayAsInstant($index = -1, $from = '') {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
+    if (str_contains($from, "THEIR")) return false;
     return PlayerHasLessHealth($otherPlayer);
   }
 
@@ -7028,6 +7029,7 @@ class by_the_book_blue extends Card {
   }
 
   function CanPlayAsInstant($index = -1, $from = '') {
+    if (str_contains($from, "THEIR")) return false;
     return PlayerHasLessHealth($this->controller);
   }
 
