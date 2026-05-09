@@ -1765,6 +1765,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     case "funeral_moon_red":
     case "requiem_for_the_damned_red":
     case "cull_red":
+      if (str_contains($from, "THEIR")) return false; //only the owner can play it at instant speed
       if (GetClassState($currentPlayer, $CS_HealthLost) > 0 || GetClassState($otherPlayer, $CS_HealthLost) > 0) return true;
       break;
     case "astral_etchings_red":
