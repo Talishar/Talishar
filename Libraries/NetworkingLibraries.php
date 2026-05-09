@@ -1450,7 +1450,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
         $amount = $params[1] ?? 0;
         $uniqueID = $params[2] ?? "-";
         if ($damageDone <= $amount && $uniqueID == $combatChain[8]) {
-          AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
+          AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $damageDone);
           RemoveCurrentTurnEffect($index);
         }
       }

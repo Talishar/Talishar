@@ -1747,7 +1747,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $wepIndex = SearchCharacterForUniqueID($uniqueID, $playerSource);
           $char = GetPlayerCharacter($playerSource);
           if($wepIndex != -1 && $damage <= $amount && $char[$wepIndex] == $source) {
-            AddLayer("TRIGGER", $player, "war_cry_of_bellona_yellow", $amount);
+            AddLayer("TRIGGER", $player, "war_cry_of_bellona_yellow", $damage);
             RemoveCurrentTurnEffect($warcryIndex);
           }
         }
@@ -2974,7 +2974,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $uniqueID = $params[2] ?? "-";
           $damageDone = 1; // hacky for now, should only hit this line on flicks
           if($damageDone <= $amount && $uniqueID == $sourceUID) {
-            AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $amount);
+            AddLayer("TRIGGER", $defPlayer, "war_cry_of_bellona_yellow", $damageDone);
             RemoveCurrentTurnEffect($warcryIndex);
           }
         }
