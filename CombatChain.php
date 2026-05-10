@@ -2018,7 +2018,7 @@ function AfterDamage()
   return false;
 }
 
-function LinkBasePower()
+function LinkBasePower($check=false)
 {
   global $CombatChain, $currentTurnEffects, $mainPlayer, $combatChain, $CS_Num6PowBan, $ChainLinks;
   if ($CombatChain->HasCurrentLink()) {
@@ -2091,7 +2091,7 @@ function LinkBasePower()
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
       if ($currentTurnEffects[$i+1] != $mainPlayer) continue;
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
-      if (!IsCombatEffectActive($currentTurnEffects[$i])) continue;
+      if ($check || !IsCombatEffectActive($currentTurnEffects[$i])) continue;
       if ($card != "-") $basePower = ceil($basePower / $card->EffectDivideBasePower());
       switch ($currentTurnEffects[$i]) {
         case "kayo_berserker_runt-HALF":
