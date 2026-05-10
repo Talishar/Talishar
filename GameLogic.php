@@ -1637,6 +1637,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $damage = AllyDamagePrevention($targetPlayer, $target[1], $damage, "ARCANE");
           $allies[$target[1] + 2] -= $damage;
           $dqVars[0] = $damage;
+          $dqVars["ARCANEDEALT"] = $damage;
           if ($damage > 0) {
             AllyDamageTakenAbilities($targetPlayer, $target[1]);
             DamageDealtAbilities("ALLY", $damage, "ARCANE", $sourceID);

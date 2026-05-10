@@ -3255,4 +3255,8 @@ class gauntlet_of_sword_and_sorcery extends Card {
   function SpecialClass() {
     return "RUNEBLADE";
   }
+
+  function SpecialName() {
+    return "Gauntlet of Sword and Sorcery";
+  }
 }
