@@ -164,8 +164,8 @@ class creep_red extends Card {
 
 class horrors_of_the_past_yellow extends Card {
 	function __construct($controller) {
-    $this->cardID = "horrors_of_the_past_yellow";
-    $this->controller = $controller;
+		$this->cardID = "horrors_of_the_past_yellow";
+		$this->controller = $controller;
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
