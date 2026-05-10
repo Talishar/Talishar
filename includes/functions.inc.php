@@ -334,6 +334,7 @@ function logCompletedGameStats($conceded = false)
 
 	// Pre-compute shared data to avoid redundant work
 	$format = GetCachePiece(intval($gameName), 13);
+	$isPublic = (GetCachePiece(intval($gameName), 9) === "1");
 	$hashedP1Deck = "-";
 	$hashedP2Deck = "-";
 	$detailedResult1Json = SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameResultID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero, $p1StatsDisabled);
@@ -349,15 +350,15 @@ function logCompletedGameStats($conceded = false)
 			$p1Deck, $p1Hero, $p1deckbuilderID,
 			$p2FabraryDisabled ? "-" : $p2DeckLink,
 			$p2Deck, $p2Hero, $p2deckbuilderID,
-			$format, $gameGUID, $conceded
+			$format, $gameGUID, $conceded, $isPublic
 		);
 		if ($ch) $curlHandles[] = $ch;
 	}
 
-	$ch = PrepareFaBInsightsRequest($gameResultID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
+	$ch = PrepareFaBInsightsRequest($gameResultID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic);
 	if ($ch) $curlHandles[] = $ch;
 
-	$bazaarHandle = PrepareFaBBazaarRequest($gameResultID, $p1DeckLink, $p2DeckLink, $p1deckbuilderID, $p2deckbuilderID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck);
+	$bazaarHandle = PrepareFaBBazaarRequest($gameResultID, $p1DeckLink, $p2DeckLink, $p1deckbuilderID, $p2deckbuilderID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic);
 	$wasFaBBazaarResultsSent = ($bazaarHandle !== null);
 	if ($bazaarHandle) $curlHandles[] = $bazaarHandle;
 
@@ -388,7 +389,7 @@ function logCompletedGameStats($conceded = false)
 		WriteLog("No game stats sent as both players have disabled stats", highlight:true);
 }
 
-function PrepareFabraryRequest($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $format, $gameGUID = "", $conceded = false)
+function PrepareFabraryRequest($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $format, $gameGUID = "", $conceded = false, $isPublic = true)
 {
 	global $FaBraryKey, $gameName;
 	$url = "https://atofkpq0x8.execute-api.us-east-2.amazonaws.com/prod/v1/results";
@@ -400,6 +401,7 @@ function PrepareFabraryRequest($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbu
 	$payloadArr["format"] = $format;
 	$payloadArr['gameGUID'] = $gameGUID;
 	$payloadArr['conceded'] = $conceded;
+	$payloadArr['isPublic'] = $isPublic;
 
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_POST, true);
@@ -424,7 +426,7 @@ function HashPlayerName($name, $salt) {
     return hash_hmac('sha256', $name, $salt);
 }
 
-function PrepareFaBInsightsRequest($gameID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0)
+function PrepareFaBInsightsRequest($gameID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0, $isPublic = true)
 {
 	global $FaBInsightsKey, $gameName, $p1uid, $p2uid, $playerHashSalt;
 
@@ -445,6 +447,7 @@ function PrepareFaBInsightsRequest($gameID, $detailedResult1Json, $detailedResul
 	$payloadArr['conceded'] = $conceded;
 	$payloadArr['countWinnerDeck'] = $countWinnerDeck;
 	$payloadArr['countLoserDeck'] = $countLoserDeck;
+	$payloadArr['isPublic'] = $isPublic;
 
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_POST, true);
@@ -459,7 +462,7 @@ function PrepareFaBInsightsRequest($gameID, $detailedResult1Json, $detailedResul
 	return $ch;
 }
 
-function PrepareFaBBazaarRequest($gameID, $p1DeckLink, $p2DeckLink, $p1deckbuilderID, $p2deckbuilderID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0)
+function PrepareFaBBazaarRequest($gameID, $p1DeckLink, $p2DeckLink, $p1deckbuilderID, $p2deckbuilderID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0, $isPublic = true)
 {
 	global $gameName, $FaBBazaarKey;
 
@@ -482,6 +485,7 @@ function PrepareFaBBazaarRequest($gameID, $p1DeckLink, $p2DeckLink, $p1deckbuild
 	$payloadArr['conceded'] = $conceded;
 	$payloadArr['countWinnerDeck'] = $countWinnerDeck;
 	$payloadArr['countLoserDeck'] = $countLoserDeck;
+	$payloadArr['isPublic'] = $isPublic;
 
 	$url = "https://fabbazaar.app/api/decks/" . urlencode($deckId) . "/talishar";
 
