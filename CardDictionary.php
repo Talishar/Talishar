@@ -2647,17 +2647,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "lightning_press_red":
     case "lightning_press_yellow":
     case "lightning_press_blue":
-      if (count($layers) == 0 && !$CombatChain->HasCurrentLink() && !IsResolutionStep()) return true;
-      if (SearchCount(SearchCombatChainLink($currentPlayer, type: "AA", maxCost: 1)) > 0) return false;
-      if (SearchCount(SearchCombatChainAttacks($currentPlayer, type: "AA", maxCost: 1)) > 0) return false;
-      if ($ChainLinks->SearchChainLinks(type:"AA", maxCost:1) != "") return false;
-      $countLayers = count($layers);
-      $layerPieces = LayerPieces();
-      for ($i = 0; $i < $countLayers; $i += $layerPieces) {
-        $layer = new Layer($i);
-        if (CardType($layer->ID(), "LAYERS", $layer->PlayerID(), $layer->AdditionalCosts(), $i) == "AA" && CardCost($layers[$i]) <= 1) return false;
-      }
-      return true;
+      $targets = TargetAttackActionCard(maxCost:1);
+      return count($targets) == 0;
     case "shock_striker_red":
     case "shock_striker_yellow":
     case "shock_striker_blue":

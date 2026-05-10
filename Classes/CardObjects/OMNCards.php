@@ -2149,7 +2149,7 @@ class ominous_aggression_red extends Card {
       CombatChainPowerModifier($index, $amount);
       AddCurrentTurnEffect($this->cardID."-VISUAL", $this->controller);//For Visual Effect only
     }
-    elseif (explode("-", $target)[0] == "COMBATCHAINATTACKS") {
+    elseif (explode("-", $target)[0] == "PASTCHAINLINK") {
       // targeting a past chain link, do nothing for now
     }
     //only add current turn effect if there's no target (ie. played in layer step)
@@ -2165,34 +2165,17 @@ class ominous_aggression_red extends Card {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $CombatChain, $Stack, $ChainLinks;
-    if ($Stack->NumLayers() == 0 && !$CombatChain->HasCurrentLink() && !IsResolutionStep()) return true;
-    if (SearchCount(SearchCombatChainLink($this->controller, type: "AA")) > 0) return false;
-    if (SearchCount(SearchCombatChainAttacks($this->controller, type: "AA")) > 0) return false;
-    if ($ChainLinks->SearchChainLinks(type:"AA") != "") return false;
-    $countLayers = $Stack->NumLayers();
-    for ($i = 0; $i < $countLayers; ++$i) {
-      $layer = $Stack->Card($i, true);
-      if (TypeContains($layer->ID(), "AA", $layer->PlayerID(), from:"LAYERS", index:$i)) return false;
-    }
-    return true;
+    $targets = TargetAttackActionCard();
+    return count($targets) == 0;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    if (IsLayerStep()) {
-      // targetting attack layer
-      AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
-    }
-    elseif (!ShouldHoldPriority($this->controller) && ShouldAutotargetOpponent($this->controller)) {
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINLINK:type=AA");
-      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
-    }
-    else {
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS:type=AA&COMBATCHAINLINK:type=AA");
-      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
-    }
+    $targets = TargetAttackActionCard();
+    $targets = implode(",", $targets);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $targets);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a target for $this->cardID");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, $this->cardID, 1);
     AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
   }
 }
@@ -3258,5 +3241,92 @@ class gauntlet_of_sword_and_sorcery extends Card {
 
   function SpecialName() {
     return "Gauntlet of Sword and Sorcery";
+  }
+}
+
+class livewire_press extends BaseCard {
+
+  function PlayAbility($target) {
+    $zone = explode("-", $target)[0];
+    switch($zone) {
+      case "LAYER":
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+        break;
+      case "COMBATCHAINLINK":
+        $index = intval(explode("-", $target)[1] ?? 0);
+        if ($index == 0)
+          AddCurrentTurnEffect($this->cardID, $this->controller);
+        break;
+      case "PASTCHAINLINK":
+        break;
+      default:
+        break;
+    }
+    return "";
+  }
+
+  function IsPlayRestricted() {
+    $targets = TargetAttackActionCard(talent:"LIGHTNING");
+    return count($targets) == 0;
+  }
+
+  function PayAdditionalCosts() {
+    $targets = TargetAttackActionCard(talent:"LIGHTNING");
+    $targets = implode(",", $targets);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $targets);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a target for $this->cardID");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function AddEffectHitTrigger($check) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function EffectHitEffect($damage) {
+    global $CombatChain;
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    DamageTrigger($otherPlayer, $damage, "DAMAGE", $CombatChain->AttackCard()->ID(), $this->controller);
+  }
+}
+
+class livewire_press_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "livewire_press_red";
+    $this->controller = $controller;
+    $this->baseCard = new livewire_press($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($target);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return $this->baseCard->AddEffectHitTrigger($check);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    $this->baseCard->EffectHitEffect(4);
+  }
+
+  function SpecialType() {
+    return "I";
   }
 }

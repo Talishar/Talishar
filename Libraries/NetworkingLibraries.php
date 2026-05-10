@@ -2478,21 +2478,12 @@ function GetLayerTarget($cardID, $from)
     case "lightning_press_red":
     case "lightning_press_yellow":
     case "lightning_press_blue":
-      $botLayer = $layers[count($layers) - LayerPieces()];
-      if (IsLayerStep() && CardCost($botLayer) <= 1) {
-        // targetting attack layer
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "-");
-      }
-      elseif (!ShouldHoldPriority($currentPlayer) && ShouldAutotargetOpponent($currentPlayer)) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINLINK:maxCost=1;type=AA");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      }
-      else {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:maxCost=1;type=AA&COMBATCHAINLINK:maxCost=1;type=AA");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      }
+      $targets = TargetAttackActionCard(maxCost:1);
+      $targets = implode(",", $targets);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targets);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for $cardID");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "scour_blue":

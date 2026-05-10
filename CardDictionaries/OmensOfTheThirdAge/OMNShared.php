@@ -156,3 +156,37 @@ function FirstDamageTrigger($target, $cardID, $player, $effectID="-") {
 		AddLayer("TRIGGER", $player, $triggeringCard, $target);
 	}
 }
+
+// returns a list of all attack action cards that could be targeted
+function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
+	global $Stack, $CombatChain, $ChainLinks;
+	$targets = [];
+	if (IsLayerStep()) {
+		$botLayer = $Stack->BottomLayer();
+		if (!TypeContains($botLayer->ID(), "AA")) {}
+		elseif ($player != "" && $botLayer->PlayerID() != $player) {}
+		elseif ($talent != "" && !TalentContains($botLayer->ID(), "LIGHTNING", $botLayer->PlayerID())) {}
+		elseif ($maxCost != -1 && CardCost($botLayer->ID(), "LAYER", $botLayer->Index()) > $maxCost) {}
+		else $targets[] = "LAYER-" . $botLayer->Index();
+	}
+	for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+		$ChainCard = $CombatChain->Card($i, true);
+		if (!TypeContains($ChainCard->ID(), "AA")) continue;
+		if ($player != "" && $ChainCard->PlayerID() != $player) continue;
+		if ($talent != "" && !TalentContains($ChainCard->ID(), "LIGHTNING", $ChainCard->PlayerID())) continue;
+		if ($maxCost != -1 && CardCost($ChainCard->ID(), "CC", $ChainCard->Index()) > $maxCost) continue;
+		$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
+	}
+	for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+		$Link = $ChainLinks->GetLink($i);
+		for ($j = 0; $j < $Link->NumCards(); ++$j) {
+			$ChainCard = $Link->GetLinkCard($j, true);
+			if (!TypeContains($ChainCard->ID(), "AA")) continue;
+			if ($player != "" && $ChainCard->PlayerID() != $player) continue;
+			if ($talent != "" && !TalentContains($ChainCard->ID(), "LIGHTNING", $ChainCard->PlayerID())) continue;
+			if ($maxCost != -1 && CardCost($ChainCard->ID(), "CC", $ChainCard->Index()) > $maxCost) continue;
+			$targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
+		}
+	}
+	return $targets;
+}

@@ -174,7 +174,7 @@
           CombatChainPowerModifier($index, $amount);
           AddCurrentTurnEffect($cardID."-VISUAL", $currentPlayer);//For Visual Effect only
         }
-        elseif (explode("-", $target)[0] == "COMBATCHAINATTACKS") {
+        elseif (explode("-", $target)[0] == "PASTCHAINLINK") {
           // targeting a past chain link, do nothing for now
         }
         //only add current turn effect if there's no target (ie. played in layer step)
