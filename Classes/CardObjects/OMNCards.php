@@ -3206,7 +3206,8 @@ class gauntlet_of_sword_and_sorcery extends Card {
 
   function OnAttackEffect($cardID, $i) {
     if (TypeContains($cardID, "AA")) {
-      AddLayer("TRIGGER", $this->controller, $this->cardID);
+      SetArcaneTarget($this->controller, $cardID, "their");
+      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
       return true;
     }
     return false;
@@ -3214,7 +3215,7 @@ class gauntlet_of_sword_and_sorcery extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain;
-    DealArcane(1, 1, source:$CombatChain->AttackCard()->ID());
+    DealArcane(1, 1, source:$CombatChain->AttackCard()->ID(), resolvedTarget:$target);
     Await($this->controller, $this->cardID, final:true);
   }
 
