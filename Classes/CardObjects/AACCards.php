@@ -175,7 +175,7 @@ class horrors_of_the_past_yellow extends Card {
 	function ProcessAttackTrigger($target, $uniqueID) {
 		global $chainLinks, $combatChain;
 		for ($i = count($chainLinks) - 1; $i >=0; --$i) {
-			if (HasStealth($chainLinks[$i][0])) {
+			if (HasStealth($chainLinks[$i][0]) && TypeContains($chainLinks[$i][0], "AA")) {
 				AddEffectToCurrentAttack("$this->cardID-" . $chainLinks[$i][0]);
 				return;
 			}
