@@ -2326,9 +2326,9 @@ class feral_instinct_yellow extends Card {
   }
 }
 
-class unmake_the_underlings extends Card {
+class unmake_the_underlings_blue extends Card {
   function __construct($controller) {
-    $this->cardID = "unmake_the_underlings";
+    $this->cardID = "unmake_the_underlings_blue";
     $this->controller = $controller;
   }
   
