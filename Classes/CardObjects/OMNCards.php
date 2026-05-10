@@ -3330,3 +3330,46 @@ class livewire_press_red extends Card {
     return "I";
   }
 }
+
+class flowshard_elemental extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger() {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND:type=I", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Discard an instant to make a lighting flow (or pass)");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $ind = explode("-", $dqVars["choice"])[1] ?? -1;
+    if ($ind != -1) {
+      DiscardCard($this->controller, $ind, $this->cardID, $this->controller);
+      PlayAura("lightning_flow", $this->controller);
+      GiveAttackGoAgain();
+    }
+  }
+}
+
+class flowshard_elemental_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "flowshard_elemental_red";
+    $this->controller = $controller;
+    $this->baseCard = new flowshard_elemental($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility();
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+}
