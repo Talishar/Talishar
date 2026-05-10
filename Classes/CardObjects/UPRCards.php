@@ -528,14 +528,16 @@ class combustion_point_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddDecisionQueue("FINDINDICES", $this->controller, "CCDEFLESSX," . (NumDraconicChainLinks()-1));
-    AddDecisionQueue("FILTER", $this->controller, "CombatChain-exclude-type-E", 1);
-    AddDecisionQueue("FILTER", $this->controller, "CombatChain-exclude-subtype-evo", 1);
-    AddDecisionQueue("FILTER", $this->controller, "CombatChain-include-player-" . ($this->controller == 1 ? 2 : 1), 1);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card to banish", 1);
-    AddDecisionQueue("CHOOSECOMBATCHAIN", $this->controller, "<-", 1);
-    AddDecisionQueue("REMOVECOMBATCHAIN", $this->controller, "-", 1);
-    AddDecisionQueue("MULTIBANISH", ($this->controller == 1 ? 2 : 1), "CC,-", 1);
+    if (NumDraconicChainLinks() > 0) {
+      AddDecisionQueue("FINDINDICES", $this->controller, "CCDEFLESSX," . (NumDraconicChainLinks()-1));
+      AddDecisionQueue("FILTER", $this->controller, "CombatChain-exclude-type-E", 1);
+      AddDecisionQueue("FILTER", $this->controller, "CombatChain-exclude-subtype-evo", 1);
+      AddDecisionQueue("FILTER", $this->controller, "CombatChain-include-player-" . ($this->controller == 1 ? 2 : 1), 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card to banish", 1);
+      AddDecisionQueue("CHOOSECOMBATCHAIN", $this->controller, "<-", 1);
+      AddDecisionQueue("REMOVECOMBATCHAIN", $this->controller, "-", 1);
+      AddDecisionQueue("MULTIBANISH", ($this->controller == 1 ? 2 : 1), "CC,-", 1);
+    }
 
     AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
