@@ -1753,6 +1753,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       $dqVars[0] = $damage;
+      $dqVars["ARCANEDEALT"] = $damage;
       return $damage;
     case "PAYRESOURCES":
       $resources = &GetResources($player);

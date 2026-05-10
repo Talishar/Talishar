@@ -3165,3 +3165,93 @@ class ominous_excavation_blue extends Card {
       PlayAura("ponder", $this->controller);
   }
 }
+
+class gauntlet_of_sword_and_sorcery extends Card {
+  function __construct($controller) {
+    $this->cardID = "gauntlet_of_sword_and_sorcery";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Hero = new CharacterCard(0, $this->controller);
+    $Gauntlet = new CharacterCard($index, $this->controller);
+    return ($Hero->Tapped() || $Gauntlet->Tapped());
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $Hero = new CharacterCard(0, $this->controller);
+    $Gauntlet = new CharacterCard($index, $this->controller);
+    $Hero->Tap();
+    $Gauntlet->Tap();
+    $Gauntlet->AddUse(); //unlimited uses
+    $Gauntlet->SetUsed(2);
+  }
+
+  function OnAttackEffect($cardID, $i) {
+    if (TypeContains($cardID, "AA")) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+      return true;
+    }
+    return false;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    DealArcane(1, 1, source:$CombatChain->AttackCard()->ID());
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $arcaneDealt = $dqVars["ARCANEDEALT"] ?? 0;
+    if ($arcaneDealt > 0) {
+      AddCurrentTurnEffect("$this->cardID-BUFF", $this->controller);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TypeContains($CombatChain->AttackCard()->ID(), "AA");
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 1 : 0;
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Arms";
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+}
