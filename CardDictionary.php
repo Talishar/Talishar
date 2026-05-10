@@ -302,8 +302,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ally";
     case "suraya_archangel_of_knowledge":
       return "Angel,Ally";
-    case "third_eye_of_the_sphinx":
-      return "Head"; //temporary
+    case "gauntlet_of_sword_and_sorcery":
+      return "Arms"; //temporary
     default:
       break;
   }
@@ -3573,8 +3573,6 @@ function HasBladeBreak($cardID)
       return true;
     case "glove_of_azure_waves":
       return HighTideConditionMet($defPlayer);
-    case "third_eye_of_the_sphinx": // temporary while waiting on fabcube
-      return true;
     default:
       return GeneratedHasBladeBreak($cardID);
   }
