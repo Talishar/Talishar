@@ -157,9 +157,14 @@ function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChan
         $somethingChanged = true;
         PassInput();
       }
-    } else if (DelimStringContains($subtype, "Item") && GetItemGemState($currentPlayer, $layers[2]) == 0 && $holdPrioritySetting != "1") {
-      $somethingChanged = true;
-      PassInput();
+    } else if (DelimStringContains($subtype, "Item") && $holdPrioritySetting != "1") {
+      $Items = new Items($layerController);
+      $ItemCard = $Items->FindCardUID($uid);
+      $gemStatus = $currentPlayer == $layerController ? $ItemCard->MyGemStatus() : $ItemCard->TheirGemStatus();
+      if ($gemStatus === "0") {
+        $somethingChanged = true;
+        PassInput();
+      }
     } else if ($layers[2] == "blasmophet_levia_consumed" && GetCharacterGemState($currentPlayer, $layers[2]) == 0 && $holdPrioritySetting != "1") {
       $somethingChanged = true;
       PassInput();
