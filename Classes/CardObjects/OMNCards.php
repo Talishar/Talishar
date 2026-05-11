@@ -3095,12 +3095,40 @@ class red_lure_harpoon_blue extends Card {
 
   function SpecificLogic() {
     global $dqVars;
-    $otherPlayer = $this->controller == 1 ? 2 : 2;
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
     $choice = $dqVars["choice"];
     $Card = MZIndexToObject($this->controller, $choice);
     $cardID = $Card->ID();
     $Card->Remove();
-    BanishCardForPlayer($cardID, $otherPlayer, "THEIRDISCARD", "NTFromOtherPlayer", $this->controller);
+    BanishCardForPlayer($cardID, $otherPlayer, "DISCARD", "NTFromOtherPlayer", $this->cardID, $this->controller);
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialSubType() {
+    return "Arrow";
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialClass() {
+    return "PIRATE,RANGER";
+  }
+
+  function SpecialName() {
+    return "Red Lure Harpoon";
   }
 }
 
