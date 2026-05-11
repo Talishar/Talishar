@@ -1848,7 +1848,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $resources[0] += PitchValue($lastResult);
       return $lastResult;
     case "BUFFARCANE":
-      AddCurrentTurnEffect("$parameter,$lastResult", $player);
+      if (intval($lastResult) > 0)
+        AddCurrentTurnEffect("$parameter,$lastResult", $player);
       return $lastResult;
     case "BUFFARCANEPREVLAYER":
       global $layers;
