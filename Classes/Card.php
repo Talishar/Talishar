@@ -241,7 +241,7 @@ class Card {
   }
 
   function AddGraveyardEffect($from, $effectController) {
-    return;
+    return false;
   }
 
   function HasSuspense() {
