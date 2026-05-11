@@ -2546,7 +2546,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MELD":
       $lastResultArr = explode("|", $lastResult);
       $target = $lastResultArr[1] ?? "-";
-      MeldCards($player, $parameter, $lastResultArr[0], target:$target);
+      $from = $lastResultArr[2] ?? "-";
+      MeldCards($player, $parameter, $lastResultArr[0], target:$target, from:$from);
       return $lastResult;
     case "SETABILITYTYPE":
       $lastPlayed[2] = $lastResult;

@@ -1477,14 +1477,14 @@ function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAN
   PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
 }
 
-function MeldCards($player, $cardID, $lastResult, $target="-"){
+function MeldCards($player, $cardID, $lastResult, $target="-", $from="-"){
   global $CS_ResolvingLayerUniqueID, $CS_AdditionalCosts;
   if (GetClassState($player, $CS_AdditionalCosts) == "CHAINCLOSING") return;
   if($lastResult == "Both") $names = explode(" // ", CardName($cardID));
   else $names[] = GamestateUnsanitize($lastResult);
   if($lastResult == "Both") {
     $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
-    AddLayer("MELD", $player, $cardID, target:$target, layerUID:$uniqueID);
+    AddLayer("MELD", $player, $cardID, target:$target, layerUID:$uniqueID, uniqueID:$from);
     $meldState = CardType($cardID);
   }
   else $meldState = "I";

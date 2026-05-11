@@ -509,7 +509,7 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessDecisionQueue();
         }
         else if ($cardID == "MELD") {
-          ProcessMeld($player, $parameter, $cardID, target:$target);
+          ProcessMeld($player, $parameter, $cardID, target:$target, from:$uniqueID);
           ProcessDecisionQueue();
         }
         else if ($cardID == "ABILITY") {
@@ -5104,12 +5104,13 @@ function HasSteamCounter($array, $index, $player)
   return false;
 }
 
-function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
+function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $from="-")
 {
   // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts, $CS_ArcaneDamageTaken, $Stack;
   $otherPlayer = $player == 1 ? 2 : 1;
-  switch ($parameter) {
+  $cardID = $parameter;
+  switch ($cardID) {
     case "thistle_bloom__life_yellow":
       PlayAura("runechant", $player, GetClassState($player, $CS_HealthGained));
       break;
@@ -5188,10 +5189,9 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-")
     default:
       break;
   }
-  ResolveGoAgain($parameter, $player, "MELD", additionalCosts: $additionalCosts);
-  $goesWhere = GoesWhereEffectsModifier($parameter, "MELD", $player);
+  ResolveGoAgain($cardID, $player, "MELD", additionalCosts: $additionalCosts);
+  $goesWhere = GoesWhereAfterResolving($cardID, $from, $player);
   $goesWhere = $goesWhere == -1 ? "GY" : $goesWhere;
   if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") 
-    Await($player, "ResolveGoesWhere", goesWhere:$goesWhere, cardID:$parameter, from:"MELD");
-    // ResolveGoesWhere($goesWhere, $parameter, $player, "MELD"); //Only needs to be handled specifically here when playing both side of a Meld card
+    Await($player, "ResolveGoesWhere", goesWhere:$goesWhere, cardID:$cardID, from:$from);
 }

@@ -2128,6 +2128,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $CS_NumBluePlayed, $CS_NumAttacks;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
+  if (HasMeld($cardID) && $additionalCosts == "Both" && $from != "MELD") return "-";
   if ($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH") {
     switch ($cardID) {
       case "dig_up_dinner_blue":
@@ -2157,8 +2158,6 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
         return "THEIRDISCARD";
     }
   }
-
-  if (HasMeld($cardID) && $additionalCosts == "Both" && $from != "MELD") return "-";
   $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player);
   if ($goesWhereEffect != -1) return $goesWhereEffect;
   //hardcode in old favorite for now

@@ -3446,7 +3446,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if (IsCardNamed($currentPlayer, $cardID, "Crouching Tiger")) IncrementClassState($currentPlayer, $CS_NumCrouchingTigerPlayedThisTurn);
   if (HasMeld($cardID)) {
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-    AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "|$target", 1);
+    AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "|$target|$from", 1);
     AddDecisionQueue("MELD", $currentPlayer, $cardID, 1);
     return "";
   }
