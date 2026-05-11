@@ -2611,7 +2611,7 @@ class arcanic_reproach_blue extends Card {
     if ($additionalCosts == "START") {
       $context = "Destroy an aura you control";
       Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS", subsequent:0);
-      Await($this->controller, "ChooseMultiZone", "MZInd", may:true, context:$context);
+      Await($this->controller, "ChooseMultiZone", "MZInd", context:$context);
       Await($this->controller, "MZDestroy", final:true);
     }
     else {
