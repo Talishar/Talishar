@@ -1652,7 +1652,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         elseif ($target[0] == "THEIRCHARUID" || $target[0] == "MYCHARUID") { //perched allies
           $index = SearchCharacterForUniqueID($target[1], $targetPlayer);
           $dqVars[0] = $damage;
-          $dqVars["ARCANEDEALT"] = $damage;
           if ($damage > 0 && $index > 0) {
             $char = &GetPlayerCharacter($targetPlayer);
             $char[$index + 4] -= $damage;
@@ -1665,7 +1664,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         elseif ($target[0] == "THEIRCHAR" || $target[0] == "MYCHAR") { //perched allies targeted without UID
           $index = $target[1];
           $dqVars[0] = $damage;
-          $dqVars["ARCANEDEALT"] = $damage;
           if ($damage > 0 && $index > 0) {
             $char = &GetPlayerCharacter($targetPlayer);
             $char[$index + 4] -= $damage;
