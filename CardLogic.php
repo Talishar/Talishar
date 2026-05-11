@@ -3631,9 +3631,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("SHUFFLEDECK", $player, "-");
         break;
       case "stonewall_gauntlet":
-        if (HasIncreasedAttack()) {
-          AddCurrentTurnEffect($parameter, $otherPlayer);
-        }
+        AddCurrentTurnEffect($parameter, $otherPlayer);
         break;
       case "battlefront_bastion_blue":
       case "battlefront_bastion_red":

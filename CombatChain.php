@@ -1081,7 +1081,6 @@ function OnBlockResolveEffects($cardID = "")
         case "stride_of_reprisal":
         case "traverse_the_universe":
         case "mask_of_wizened_whiskers":
-        case "stonewall_gauntlet":
         case "helm_of_halos_grace":
         case "bracers_of_bellonas_grace":
         case "warpath_of_winged_grace":
@@ -1123,6 +1122,10 @@ function OnBlockResolveEffects($cardID = "")
         case "sunkwater_scalers":
         case "call_for_backup_red":
           AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
+          break;
+        case "stonewall_gauntlet":
+          if (HasIncreasedAttack())
+            AddLayer("TRIGGER", $defPlayer, $defendingCard, $i);
           break;
         case "scowling_flesh_bag":
           $targets = "THEIRCHAR-0";
