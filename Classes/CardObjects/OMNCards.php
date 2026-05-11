@@ -3401,3 +3401,22 @@ class flowshard_elemental_red extends Card {
     $this->baseCard->SpecificLogic();
   }
 }
+
+class cosmic_flare extends BaseCard {
+  function PlayAbility($num) {
+    GainResources($this->controller, $num);
+  }
+}
+
+class cosmic_flare_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "cosmic_flare_red";
+    $this->controller = $controller;
+    $this->baseCard = new cosmic_flare($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility(3);
+    return "";
+  }
+}
