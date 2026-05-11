@@ -641,7 +641,19 @@ enum PatreonCampaign : string
         "zyggy_starlight_red=OMN001-T", "zyggy_starlight_yellow=OMN002-T", "zyggy_starlight_blue=OMN003-T", "cosmic_duality_red=FAB464-T", "nebula_duality_red=FAB465-T",
         "voltbound_duality_red=FAB466-T", "omens_of_arcana_red=FAB467-T", "astral_strike_red=FAB469-T", "lightning_flow=FAB470-T", "flowing_stormstike_red=FAB471-T",
         "meteoric_rise_red=FAB472-T", "voltic_impact_red=FAB473-T", "flowstate_embodiment_red=FAB476-T", 
-        "golden_company_red=FAB481-T", "golden_company_yellow=FAB482-T", "golden_company_blue=FAB483-T", 
+        "golden_company_red=FAB481-T", "golden_company_yellow=FAB482-T", "golden_company_blue=FAB483-T", "aurora_emissary_of_lightning=OMN048-T",
+        "donkey_blue=FAB484-T",
+        "downswing_red=FAB485-T",
+        "drawing_dead_yellow=FAB486-T",
+        "feral_instinct_yellow=OMN229-T",
+        "gear_turner_red=OMN235-T",
+        "glide_through_starlight_red=LGS451-T",
+        "oscilio_scion_of_the_third_age=OMN095-T",
+        "static_shelter_yellow=OMN147-T",
+        "tempestuous_kiss_red=OMN051-T",
+        "tome_of_quandaries_blue=OMN133-T",
+        "unwinding_finality_red=OMN004-T",
+        "zyggy=OMN002-T",
         ];
         break;
       case "8955846": // ManSant
