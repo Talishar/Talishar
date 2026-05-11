@@ -1653,6 +1653,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $index = SearchCharacterForUniqueID($target[1], $targetPlayer);
           $dqVars[0] = $damage;
           if ($damage > 0 && $index > 0) {
+            $dqVars["ARCANEDEALT"] = $damage;
             $char = &GetPlayerCharacter($targetPlayer);
             $char[$index + 4] -= $damage;
             if (-$char[$index + 4] > CharacterHealth($char[$index])) {
@@ -1665,6 +1666,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $index = $target[1];
           $dqVars[0] = $damage;
           if ($damage > 0 && $index > 0) {
+            $dqVars["ARCANEDEALT"] = $damage;
             $char = &GetPlayerCharacter($targetPlayer);
             $char[$index + 4] -= $damage;
             if (-$char[$index + 4] >= CharacterHealth($char[$index])) {
