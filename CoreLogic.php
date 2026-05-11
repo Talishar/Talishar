@@ -662,6 +662,8 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   }
   ResetAuraStatus($player);
   if($damage < $origDamage) LogDamagePreventedStats($player, $origDamage - $damage);
+
+  
   return $damage;
 }
 
@@ -691,7 +693,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
   global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain, $CS_ArcaneDamageDealtToOpponent;
-  global $CurrentTurnEffects, $CCS_AttackDamageDealtToHero, $CombatChain;
+  global $CurrentTurnEffects, $CCS_AttackDamageDealtToHero, $CombatChain, $dqVars;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($damage > 0) {
@@ -718,6 +720,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
       WriteLog("Lost life from " . CardLink("ode_to_wrath_yellow", "ode_to_wrath_yellow"));
     }
     $classState[$CS_DamageTaken] += $damage;
+    if($type == "ARCANE") $dqVars["ARCANEDEALT"] = $damage;
     if (!IsAllyAttacking()) {
       if ($playerSource == $otherPlayer) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
     }
