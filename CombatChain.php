@@ -1961,7 +1961,7 @@ function ActiveOnHits(): bool
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectsPieces();
   for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
-    if (IsCombatEffectActive($currentTurnEffects[$i])) {
+    if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {
         if (AddEffectHitTrigger($currentTurnEffects[$i], source:$CombatChain->AttackCard()->ID(), target:$target, check:true)) return true;
       }

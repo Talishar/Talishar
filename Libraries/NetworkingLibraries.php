@@ -1477,7 +1477,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       $count = count($currentTurnEffects);
       $pieces = CurrentTurnEffectsPieces();
       for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
-        if (IsCombatEffectActive($currentTurnEffects[$i])) {
+        if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
           if ($currentTurnEffects[$i + 1] == $mainPlayer) {
             AddEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget); // Effects that gives effect to the attack
           }

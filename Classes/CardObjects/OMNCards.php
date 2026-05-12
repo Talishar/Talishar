@@ -3505,3 +3505,56 @@ class ominous_respite_yellow extends Card {
     return "";
   }
 }
+
+class settle_the_bill_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "settle_the_bill_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    LoadArrow($this->controller);
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $loadedArrow = $dqVars["LASTRESULT"];
+    $Arsenal = new Arsenal($this->controller);
+    for ($i = 0; $i < $Arsenal->NumCards(); ++$i) {
+      $ArsenalCard = $Arsenal->Card($i, true);
+      if ($ArsenalCard->Facing() == "UP" && $ArsenalCard->CardID() == $loadedArrow) {
+        AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$ArsenalCard->UniqueID());
+      }
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return SubtypeContains($CombatChain->AttackCard()->ID(),  "Arrow");
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRARS", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card you want to destroy from their arsenal", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, false, 1);
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+}
