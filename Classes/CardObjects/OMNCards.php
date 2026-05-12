@@ -3501,7 +3501,7 @@ class ominous_respite_yellow extends Card {
     if (GetClassState($this->controller, $CS_NumControlledAurasDestroyed) > 0)
       GainHealth(3, $this->controller);
     else
-      GainHealth(1, $this->controller);
+      GainHealth(2, $this->controller);
     return "";
   }
 }
