@@ -302,6 +302,8 @@
     if(($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0 && $char[1] == 2) {
       $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
+      PrependDecisionQueue("SETDQVAR", $playerID, "1"); //reset the dqvar
+      PrependDecisionQueue("PASSPARAMETER", $playerID, "");
       PrependDecisionQueue("CLASH", $effectController, $cardID, 1);
       PrependDecisionQueue("ADDBOTTOMREMOVETOP", $otherPlayer, $hero, 1);
       PrependDecisionQueue("NOTEQUALPASS", $playerID, "Target_Opponent");
