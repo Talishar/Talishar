@@ -1525,7 +1525,7 @@ function AuraPlayAbilities($cardID, $from = "")
         DimenxxionalCrossroadsPassive($cardID, $from);
         break;
       case "embodiment_of_lightning":
-        if ($cardType == "AA" && GetResolvedAbilityType($cardID) != "I") {
+        if ($cardType == "AA" && !IsActivated($cardID, $from)) {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $cardID, $auras[$i + 6]);
         }
         break;
