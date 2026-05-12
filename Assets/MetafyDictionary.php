@@ -291,7 +291,6 @@ enum MetafyCommunity : string
         "glide_through_starlight_red=LGS451-T",
         "oscilio_scion_of_the_third_age=OMN095-T",
         "static_shelter_yellow=OMN147-T",
-        "tempestuous_kiss_red=OMN051-T",
         "tome_of_quandaries_blue=OMN133-T",
         "unwinding_finality_red=OMN004-T",
         "zyggy=OMN002-T",
