@@ -4,6 +4,7 @@ include "HostFiles/Redirector.php";
 include_once "AccountFiles/AccountSessionAPI.php";
 
 // Initialize game state
+AddLayer("STARTTURN", $mainPlayer, "-");
 $layerPriority = [];
 array_push($layerPriority, ShouldHoldPriority(1));
 array_push($layerPriority, ShouldHoldPriority(2));
