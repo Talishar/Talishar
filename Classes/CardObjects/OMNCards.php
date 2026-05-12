@@ -3489,3 +3489,19 @@ class blessing_of_aegis_yellow extends Card {
     }
   }
 }
+
+class ominous_respite_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "ominous_respite_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumControlledAurasDestroyed;
+    if (GetClassState($this->controller, $CS_NumControlledAurasDestroyed) > 0)
+      GainHealth(3, $this->controller);
+    else
+      GainHealth(1, $this->controller);
+    return "";
+  }
+}
