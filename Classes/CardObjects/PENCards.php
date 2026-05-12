@@ -6719,6 +6719,10 @@ class blessing_of_bellona_yellow extends Card {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $AuraCard->UniqueID());
   }
 
+  function PermanentAddSoulAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "SOUL");
+  }
+
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     if ($additionalCosts == "SOUL")
       PlayAura("courage", $this->controller);

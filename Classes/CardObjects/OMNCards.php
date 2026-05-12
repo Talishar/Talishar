@@ -3420,3 +3420,72 @@ class cosmic_flare_red extends Card {
     return "";
   }
 }
+
+class a_bit_off_the_side_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "a_bit_off_the_side_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return SubtypeContains($CombatChain->AttackCard()->ID(), "Axe");
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    global $defPlayer;
+    PummelHit($defPlayer);
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+}
+
+class blessing_of_aegis_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "blessing_of_aegis_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function StartTurnAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $AuraCard->UniqueID());
+  }
+
+  function PermanentAddSoulAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "SOUL");
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "SOUL")
+      GainHealth(1, $this->controller);
+    else {
+      AddSoul($this->cardID, $this->controller, "AURAS", false);
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      $AuraCard->Remove();
+    }
+  }
+}

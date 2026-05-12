@@ -697,4 +697,8 @@ class Card {
   function PermanentDamageTakenAbility($player, $damage, $source, $playerSource) {
     return;
   }
+
+  function PermanentAddSoulAbility() {
+    return;
+  }
 }
