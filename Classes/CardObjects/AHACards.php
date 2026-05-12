@@ -716,8 +716,9 @@ class indefensibly_honed_blue extends Card {
 		return true;
 	}
 
-	function CurrentEffectOnBlockEffect($cardID, $from, $start=-1) {
+	function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1) {
 		AddLayer("TRIGGER", $this->controller, $this->cardID);
+		return false;
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {

@@ -2023,6 +2023,12 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
 {
   global $CombatChain, $mainPlayer, $CS_NumCardsDrawn, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
   global $defPlayer;
+  if ($CombatChain->AttackCard()->ID() == "evasive_nageboshi_blue") {
+    if (TypeContains($cardID, "E") || TypeContains($cardID, "AR") || TypeContains($cardID, "DR")) {
+      $restriction = "This attack disallows blocking with equipment and reactions";
+      return true;
+    }
+  }
   if (IsEquipment($cardID, $player) && !CanBlockWithEquipment()) {
     $restriction = "This attack disallows blocking with equipment";
     return true;

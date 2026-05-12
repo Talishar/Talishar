@@ -683,6 +683,13 @@ function AnyHitTrigger($player, $cardID, $check) {
   return true;
 }
 
+// for cards that trigger when hitting a hero
+function HeroHitTrigger($player, $cardID, $check) {
+  if (IsHeroAttackTarget())
+    return AnyHitTrigger($player, $cardID, $check);
+  return false;
+}
+
 function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer = "-", $check=false): bool
 {
   global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn, $CS_HitsWDawnblade;

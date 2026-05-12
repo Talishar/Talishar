@@ -3558,3 +3558,199 @@ class settle_the_bill_red extends Card {
     return "A";
   }
 }
+
+class shuriken {
+  public $cardID;
+  public $controller;
+
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+  }
+
+  function PayAdditionalCosts($from, $index) {
+    if ($from == "PLAY") {
+      $Item = new ItemCard($index, $this->controller);
+      $Item->Tap();
+      AddCurrentTurnEffect($this->cardID, $this->controller, "", $Item->UniqueID());
+    }
+  }
+
+  function GoesOnCombatChain($from) {
+    return $from == "PLAY";
+  }
+
+  function EffectChainClosedEffect($i) {
+    $Effect = new CurrentEffect($i);
+    if ($Effect->EffectID() == $this->cardID) { // make sure it's only the basic effect
+      $uid = $Effect->AppliestoUniqueID();
+      $Items = new Items($this->controller);
+      $ItemCard = $Items->FindCardUID($uid);
+      $ItemCard->Destroy();
+      $Effect->Remove();
+    }
+  }
+
+  function IsPlayRestricted($index, $from) {
+    if ($from == "PLAY") {
+      $Item = new ItemCard($index, $this->controller);
+      return $Item->Tapped();
+    }
+    return false;
+  }
+}
+
+class razor_ring_blue extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "razor_ring_blue";
+    $this->controller = $controller;
+    $this->archetype = new shuriken($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->archetype->PayAdditionalCosts($from, $index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($from);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return true;
+  }
+
+  function EffectChainClosedEffect($i) {
+    $this->archetype->EffectChainClosedEffect($i);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->archetype->IsPlayRestricted($index, $from);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    AddCurrentTurnEffect("$this->cardID-SHRED", $defPlayer);
+  }
+
+  function EffectOnBlockModifier($effectIndex, $chainInd, $from) {
+    $chainCard = new ChainCard($chainInd);
+    if (TypeContains($chainCard->ID(), "A") || TypeContains($chainCard->ID(), "AA")) {
+      $chainCard->ModifyDefense(-1);
+      return true;
+    }
+    return false;
+  }
+
+  function RemoveEffectFromCombatChain() {
+    return true;
+  }
+}
+
+class stun_star_blue extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "stun_star_blue";
+    $this->controller = $controller;
+    $this->archetype = new shuriken($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->archetype->PayAdditionalCosts($from, $index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($from);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return true;
+  }
+
+  function EffectChainClosedEffect($i) {
+    $this->archetype->EffectChainClosedEffect($i);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->archetype->IsPlayRestricted($index, $from);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $defHero = new CharacterCard(0, $defPlayer);
+    $defHero->Tap();
+  }
+}
+
+class evasive_nageboshi_blue extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "evasive_nageboshi_blue";
+    $this->controller = $controller;
+    $this->archetype = new shuriken($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->archetype->PayAdditionalCosts($from, $index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($from);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return true;
+  }
+
+  function EffectChainClosedEffect($i) {
+    $this->archetype->EffectChainClosedEffect($i);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->archetype->IsPlayRestricted($index, $from);
+  }
+}

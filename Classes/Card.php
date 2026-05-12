@@ -658,8 +658,8 @@ class Card {
     return;
 	}
 
-  function CurrentEffectOnBlockEffect($cardID, $from, $start=-1) {
-    return;
+  function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1) {
+    return false;
   }
 
   function DamageDealtAbilities($target, $damage, $type) {
@@ -700,5 +700,13 @@ class Card {
 
   function PermanentAddSoulAbility() {
     return;
+  }
+
+  function EffectChainClosedEffect($i) {
+    return;
+  }
+
+  function EffectOnBlockModifier($effectIndex, $chainInd, $from) {
+    return false;
   }
 }

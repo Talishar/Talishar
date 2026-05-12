@@ -131,6 +131,11 @@ class ItemCard {
     return $this->pieces[$this->index+10] ?? 0;
   }
 
+  function Tap($tapState=1) {
+    if (isset($this->pieces[$this->index+10]))
+      $this->pieces[$this->index+10] = $tapState;
+  }
+
   function RemoveAllCounters() {
     foreach ([1] as $i) {
       if (isset($this->pieces[$this->index + $i]))

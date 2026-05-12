@@ -758,9 +758,10 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if ($combatChain[$i + 2] == "HAND") ++$blockedFromHand;
     }
   }
-  ProcessFragmentOnBlock(count($combatChain) - CombatChainPieces());
+  $chainInd = count($combatChain) - CombatChainPieces();
+  ProcessFragmentOnBlock($chainInd);
   $card = GetClass($combatChain[0], $mainPlayer);
-  if ($card != "-") $card->AttackGetsBlockedEffect(count($combatChain) - CombatChainPieces());
+  if ($card != "-") $card->AttackGetsBlockedEffect($chainInd);
   switch ($combatChain[0]) {
     case "zephyr_needle":
     case "zephyr_needle_r":
@@ -854,7 +855,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     $remove = false;
     if (IsCombatEffectLimited($i)) continue;
     $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
-    if ($card != "-") $card->CurrentEffectOnBlockEffect($cardID, $from);
+    if ($card != "-") $remove = $card->CurrentEffectOnBlockEffect($chainInd, $from);
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "nerve_scalpel":
@@ -982,11 +983,13 @@ function OnBlockResolveEffects($cardID = "")
       default:
         break;
     }
-    for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    for ($i = $CurrentTurnEffects->NumEffects() - 1; $i >= 0; --$i) {
+      $remove = false;
       $Effect = $CurrentTurnEffects->Effect($i, true);
       if (IsCombatEffectLimited($Effect->Index())) continue;
       $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
-      if ($card != "-") $card->CurrentEffectOnBlockEffect($cardID, "-", $start);
+      if ($card != "-") $remove = $card->CurrentEffectOnBlockEffect($cardID, "-", $start);
+      if ($remove) $Effect->Remove();
     }
   }
   $blockingCards = [];
@@ -1328,6 +1331,8 @@ function OnBlockEffects($index, $from)
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
+      $card = GetClass($currentTurnEffects[$i], $currentPlayer);
+      if ($card != "-") $remove = $card->EffectOnBlockModifier($i, $index, $from);
       switch ($currentTurnEffects[$i]) {
         case "flic_flak_red":
         case "flic_flak_yellow":
@@ -1767,6 +1772,8 @@ function CombatChainClosedTriggers()
     if (!isset($currentTurnEffects[$i + 1])) continue;
     $effectID = explode("-", $currentTurnEffects[$i])[0];
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+      $card = GetClass($currentTurnEffects[$i], $mainPlayer);
+      if ($card != "-") $card->EffectChainClosedEffect($i);
       switch ($effectID) {
         case "kunai_of_retribution":
         case "kunai_of_retribution_r":

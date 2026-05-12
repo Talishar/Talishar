@@ -678,7 +678,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       $searchedEffect = $effectArr2[0];  
     }
     else $searchedEffect = $cardID;
-    $card = GetClass($searchedEffect, $mainPlayer);
+    $card = GetClass($searchedEffect, $currentTurnEffects[$i+1]);
     if ($card != "-") $remove = $card->RemoveEffectFromCombatChain();
     switch ($searchedEffect) {
       case "mask_of_momentum":
