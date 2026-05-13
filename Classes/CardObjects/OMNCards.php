@@ -3787,14 +3787,6 @@ class draco_fire_red extends Card {
       return TypeContains($cardID, "AA") ? -1 : 0;
   }
 
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialName() {
-    return "Draco Fire";
-  }
-
   function DiscardStartTurnTrigger($index) {
     global $Stack;
     if ($Stack->FindTrigger($this->cardID) != "") return; //don't trigger if there's already a trigger on the stack
