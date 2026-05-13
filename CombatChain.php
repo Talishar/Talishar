@@ -1991,6 +1991,15 @@ function RemoveCombatChainLink($ind)
   return $chainLinks[$linkInd][0];
 }
 
+function IsCombatChainOpen()
+{
+  global $CombatChain;
+  if ($CombatChain->HasCurrentAttack()) return true;
+  if (IsLayerStep()) return true;
+  if (IsResolutionStep()) return true;
+  return false;
+}
+
 function IsResolutionStep()
 {
   global $Stack;

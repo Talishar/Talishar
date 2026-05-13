@@ -135,4 +135,9 @@ class DiscardCard {
   function Facing() {
     return $this->pieces[$this->index + 2] ?? "UP";
   }
+
+  function Banish($mod="-", $banishedBy="", $banisher="-") {
+    BanishCardForPlayer($this->ID(), $this->controller, "DISCARD", $mod, $banishedBy, $banisher);
+    RemoveDiscard($this->controller, $this->index);
+  }
 }

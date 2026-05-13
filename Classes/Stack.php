@@ -64,7 +64,7 @@ class Stack {
   function FindTrigger($cardID) {
     if ($this->StackEmpty()) return "";
     for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
-      if ($this->layers[$i] == "TRIGGER" && $this->layers[$i+2] == $cardID) return new Layer($i);
+      if (($this->layers[$i] == "TRIGGER" || $this->layers[$i] == "PRETRIGGER")&& $this->layers[$i+2] == $cardID) return new Layer($i);
     }
     return "";
   }

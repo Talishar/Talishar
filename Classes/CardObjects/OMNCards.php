@@ -3754,3 +3754,76 @@ class evasive_nageboshi_blue extends Card {
     return $this->archetype->IsPlayRestricted($index, $from);
   }
 }
+
+class draco_fire_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "draco_fire_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if (IsCombatChainOpen())
+      AddCurrentTurnEffectFromCombat($this->cardID, $this->controller);
+    else
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain, $mainPlayer;
+    return $this->controller == $mainPlayer && TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $mainPlayer);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+    if (!TalentContains($cardID, "DRACONIC", $this->controller)) return 0;
+    if (IsActivated($cardID, $from)) 
+      return GetResolvedAbilityType($cardID, $from, $this->controller) == "AA" ? -1 : 0;
+    else
+      return TypeContains($cardID, "AA") ? -1 : 0;
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialName() {
+    return "Draco Fire";
+  }
+
+  function DiscardStartTurnTrigger($index) {
+    global $Stack;
+    if ($Stack->FindTrigger($this->cardID) != "") return; //don't trigger if there's already a trigger on the stack
+    $foundFires = SearchDiscard($this->controller, nameIncludes:"Draco,Fire");
+    if (SearchCount($foundFires) > 1)
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $foundFires = SearchDiscard($this->controller, nameIncludes:"Draco,Fire");
+    if (SearchCount($foundFires) > 1) {
+      Await($this->controller, "YesNo", context: "if_you_want_to_banish_" . CardLink($this->cardID) . "_to_gain_a_resource", subsequent:0);
+      Await($this->controller, $this->cardID, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    $Discard = new Discard($this->controller);
+    $num = 0;
+    for ($i = 0; $i < $Discard->NumCards(); ++$i) {
+      $Card = $Discard->Card($i, true);
+      if (CardName($Card->CardID()) == CardName($this->cardID)) {
+        $Card->Banish();
+        ++$num;
+        if ($num == 2) {
+          GainResources($this->controller, 1);
+          return;
+        }
+      }
+    }
+  }
+}
