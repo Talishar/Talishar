@@ -713,7 +713,6 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "spirit_of_war_red":
       case "growl_red":
       case "growl_yellow":
-      case "coercive_tendency_blue":
       case "tiger_taming_khakkara":
       case "chase_the_tail_red":
       case "untamed_red":
@@ -2026,7 +2025,6 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
     case "precision_press_yellow":
     case "precision_press_blue":
     case "agility":
-    case "coercive_tendency_blue":
     case "beckoning_mistblade":
     case "slither":
     case "first_tenet_of_chi_wind_blue":
@@ -2440,7 +2438,6 @@ function IsCombatEffectPersistent($cardID)
     case "talk_a_big_game_blue":
     case "fabricate_red":
     case "double_down_red":
-    case "coercive_tendency_blue":
     case "ancestral_harmony_blue":
     case "sacred_art_jade_tiger_domain_blue":
     case "dense_blue_mist_blue-DEBUFF":

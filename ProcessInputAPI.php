@@ -284,6 +284,15 @@ try {
       }
       ContinueDecisionQueue();
       break;
+  case 110: // rearranging the top card of the opponent's deck
+    $otherPlayer = $playerID == 1 ? 2 : 1;
+    $deck = new Deck($otherPlayer);
+    $cardList = $submission->cardListTop;
+    for ($i = count($cardList) - 1; $i >= 0; --$i) {
+      $deck->AddTop($cardList[$i]);
+    }
+    ContinueDecisionQueue();
+    break;
   case 100011: //Resume adventure (roguelike)
     if($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";

@@ -656,17 +656,51 @@ class bloodied_oval extends Card {
 // }
 
 
-// class coercive_tendency_blue extends Card {
+class coercive_tendency_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "coercive_tendency_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "coercive_tendency_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $deck = new Deck($otherPlayer);
+    if ($deck->RemainingCards() > 0) {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card to put on top of their deck");
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "DECKTOPXREMOVE," . 3);
+      AddDecisionQueue("COERCIVE", $this->controller, "<-", 1);
+      Await($this->controller, $this->cardID, final:true);
+    }
+    return "";
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function RemoveEffectFromCombatChain() {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller);
+  }
+
+  function SpecificLogic() {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $deck = new Deck($otherPlayer);
+    $topCard = $deck->Top(true);
+    if ($topCard != "") {
+      BanishCardForPlayer($topCard, $otherPlayer, "DECK", banishedBy:$this->cardID, banisher:$this->controller);
+    }
+  }
+}
 
 
 // class command_respect_red extends Card {
