@@ -341,3 +341,13 @@ function ShowCardAwait($player) {
   $cardID = $dqVars["cardID"];
   WriteLog(CardLink($cardID) . " was chosen");
 }
+
+function AddTriggerAwait($player) {
+  global $dqVars;
+  $additional = $dqVars["additional"] ?? "";
+  $target = $dqVars["target"] ?? "";
+  $cardID = $dqVars["cardID"];
+  $parameter = "$cardID|$additional";
+  PrependDecisionQueue("ADDTRIGGER", $player, $parameter, 1);
+  PrependDecisionQueue("PASSPARAMETER", $player, $target, 1);
+}
