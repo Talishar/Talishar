@@ -3183,7 +3183,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!CardNameContains($otherChar[0], "Arakni")) return true;
       break;
     case "oath_of_loyalty_red":
-      if (str_contains($from, "THEIR")) return false; // this restriction only applies to the card owner
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
     case "danger_digits":
       if (!$CombatChain->HasCurrentLink()) return true;
