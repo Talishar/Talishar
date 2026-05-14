@@ -3323,6 +3323,7 @@ class livewire_press extends BaseCard {
   function EffectHitEffect($damage) {
     global $CombatChain;
     $otherPlayer = $this->controller == 1 ? 2 : 1;
+    SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
     DamageTrigger($otherPlayer, $damage, "DAMAGE", $CombatChain->AttackCard()->ID(), $this->controller);
   }
 }
