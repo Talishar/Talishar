@@ -3874,3 +3874,43 @@ class arcanic_cunning_red extends Card {
     return $this->baseCard->LayerPreventionEffect($type);
   }
 }
+
+class arcanic_cunning_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "arcanic_cunning_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new arcanic_cunning($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CombatChainPreventionEffect($link, $index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->CombatChainPreventionEffect($type);
+  }
+
+  function LayerPreventionEffect($index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->LayerPreventionEffect($type);
+  }
+}
+
+class arcanic_cunning_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "arcanic_cunning_blue";
+    $this->controller = $controller;
+    $this->baseCard = new arcanic_cunning($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CombatChainPreventionEffect($link, $index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->CombatChainPreventionEffect($type);
+  }
+
+  function LayerPreventionEffect($index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->LayerPreventionEffect($type);
+  }
+}
