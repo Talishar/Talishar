@@ -161,6 +161,18 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       }
       break;
 
+    case "COERCIVE":
+      if ($turn[1] == $playerID) {
+        $playerInputPopup->active = true;
+        $options = explode(";", $turn[2]);
+        $topOptions = array_filter(explode(",", $options[0] ?? ""));
+        
+        $topOptCards = array_map(fn($option) => JSONRenderedCard($option, action: 0), $topOptions);
+
+        $playerInputPopup->popup = CreatePopupAPI("REARRANGETOP", [], 0, 1, GetPhaseHelptext(), 1, "", topCards: $topOptCards);
+      }
+      break;
+
     case "ORDERTRIGGERS":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;

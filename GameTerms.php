@@ -115,6 +115,8 @@ function TypeToPlay($phase)
       return "an order for trigger (enable Always Hold Priority to reorder)";
     case "ORDERTRIGGERS":
       return "an order for triggers (spacebar/pass to accept default order)";
+    case "COERCIVE":
+      return "an order for cards on top of the opponent's deck";
   }
 }
 
