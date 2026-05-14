@@ -1941,6 +1941,65 @@ class oasis_respite_red extends Card {
   }
 }
 
+class oasis_respite_yellow extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "oasis_respite_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new oasis_respite($this->cardID, $controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, $from);
+    return "";
+  }
+
+  function CurrentTurnEffectUses() {
+    return 3;
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $amount);
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+}
+
+class oasis_respite_blue extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "oasis_respite_blue";
+    $this->controller = $controller;
+    $this->baseCard = new oasis_respite($this->cardID, $controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, $from);
+    return "";
+  }
+
+  function CurrentTurnEffectUses() {
+    return 2;
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $amount);
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+}
 
 // class ouvia extends Card {
 
