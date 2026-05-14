@@ -877,7 +877,7 @@ function GetAttackTargetNames($player)
 
 function GetDamagePrevention($player, $damage) 
 {
-  global $currentTurnEffects, $combatChain;
+  global $currentTurnEffects, $combatChain, $CombatChain, $ChainLinks, $Stack;
   $preventionLeft = 0;
 
   $countEffects = count($currentTurnEffects);
@@ -916,6 +916,22 @@ function GetDamagePrevention($player, $damage)
     if($character[$i + 12] == "UP") {
       $preventionLeft += WardAmount($character[$i],$player);
       $preventionLeft += CharacterDamagePreventionAmount($player, $i, $damage, true, true);
+    }
+  }
+
+  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $ChainCard = $CombatChain->Card($i, true);
+    if ($player != $ChainCard->PlayerID()) continue;
+    $card = GetClass($ChainCard->ID(), $player, "CC", $ChainCard->UniqueID());
+    if ($card != "-") $preventionLeft += $card->CombatChainPreventionEffect(-1, $ChainCard->Index(), $damage, "COMBAT", true, true);
+  }
+
+  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $Link = $ChainLinks->GetLink($i);
+    for ($j = 0; $j < $Link->NumCards(); ++$j) {
+      $ChainCard = $Link->GetLinkCard($j, true);
+      $card = GetClass($ChainCard->ID(), $player, "CC");
+      if ($card != "-") $preventionLeft += $card->CombatChainPreventionEffect($i, $ChainCard->Index(), $damage, "COMBAT", true, true);
     }
   }
 

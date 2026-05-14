@@ -3844,3 +3844,33 @@ class caress_of_the_reaper_red extends Card {
     $Aura->Destroy();
   }
 }
+
+class arcanic_cunning extends BaseCard {
+  function CombatChainPreventionEffect($type) {
+    return $type == "ARCANE" ? 1 : 0;
+  }
+
+  function LayerPreventionEffect($type) {
+    return $type == "ARCANE" ? 1 : 0;
+  }
+}
+
+class arcanic_cunning_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "arcanic_cunning_red";
+    $this->controller = $controller;
+    $this->baseCard = new arcanic_cunning($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CombatChainPreventionEffect($link, $index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->CombatChainPreventionEffect($type);
+  }
+
+  function LayerPreventionEffect($index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->LayerPreventionEffect($type);
+  }
+}

@@ -709,4 +709,13 @@ class Card {
   function EffectOnBlockModifier($effectIndex, $chainInd, $from) {
     return false;
   }
+
+  function CombatChainPreventionEffect($link, $index, $damage, $type, $source, $preventable, $amount=false) {
+    //$link == -1 means current link
+    return 0;
+  }
+
+  function LayerPreventionEffect($index, $damage, $type, $source, $preventable, $amount=false) {
+    return 0;
+  }
 }

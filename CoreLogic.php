@@ -3014,7 +3014,7 @@ function CanRevealCards($player)
 
 function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, $source = "")
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $CombatChain, $ChainLinks, $Stack;
   $rv = "";
   $auras = &GetAuras($player);
   $indices = "";
@@ -3081,6 +3081,41 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
     }
   }
   $indices = SearchMultiZoneFormat($indices, "CURRENTTURNEFFECTS");
+  $mzIndices = CombineSearches($mzIndices, $indices);
+
+  $indices = [];
+  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $ChainCard = $CombatChain->Card($i, true);
+    if ($player != $ChainCard->PlayerID()) continue;
+    $card = GetClass($ChainCard->ID(), $player, "CC", $ChainCard->UniqueID());
+    if ($card != "-" && $card->CombatChainPreventionEffect(-1, $ChainCard->Index(), $damage, $type, $source, $preventable, true) > 0)
+      $indices[] = $ChainCard->Index();
+  }
+  $indices = SearchMultiZoneFormat(implode(",", $indices), "COMBATCHAIN");
+  $mzIndices = CombineSearches($mzIndices, $indices);
+
+  $indices = [];
+  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $Link = $ChainLinks->GetLink($i);
+    for ($j = 0; $j < $Link->NumCards(); ++$j) {
+      $ChainCard = $Link->GetLinkCard($j, true);
+      $card = GetClass($ChainCard->ID(), $player, "CC");
+      if ($card != "-" && $preventionLeft += $card->CombatChainPreventionEffect($i, $ChainCard->Index(), $damage, $type, $source, $preventable, true))
+        $indices[] = $ChainCard->Index() . "-" . $i;
+    }
+  }
+  $indices = SearchMultiZoneFormat(implode(",", $indices), "CHAINLINK");
+  $mzIndices = CombineSearches($mzIndices, $indices);
+
+  $indices = [];
+  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+    $LayerCard = $Stack->Card($i, true);
+    if ($player != $LayerCard->PlayerID()) continue;
+    $card = GetClass($LayerCard->ID(), $player);
+    if ($card != "-" && $card->LayerPreventionEffect($LayerCard->Index(), $damage, $type, $source, $preventable, true) > 0)
+      $indices[] = $LayerCard->Index();
+  }
+  $indices = SearchMultiZoneFormat(implode(",", $indices), "LAYER");
   $mzIndices = CombineSearches($mzIndices, $indices);
 
   $rv = $mzIndices;
