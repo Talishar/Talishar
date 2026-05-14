@@ -1416,7 +1416,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CS_PowDamageDealt;
   global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer, $CS_HitsWDawnblade;
-  global $CS_HitCounter;
+  global $CS_HitCounter, $CS_ResolvingLayerUniqueID, $CombatChain;
   $wasHit = $damageDone > 0;
   $cardID = $combatChain[0];
   if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
@@ -2545,17 +2545,7 @@ function GetLayerTarget($cardID, $from)
     case "oasis_respite_red":
     case "oasis_respite_yellow":
     case "oasis_respite_blue":
-      if (!ShouldAutotargetOpponent($currentPlayer)) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a hero to grant respite");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      }
-      else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYCHAR-0", 1);
-      }
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
+      
     case "shred_red":
     case "shred_yellow":
     case "shred_blue":

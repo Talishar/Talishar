@@ -228,7 +228,7 @@ function BlockingCardDefense($index)
 
 function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID, $defending=false)
 {
-  global $combatChain, $turn, $ChainLinks;
+  global $combatChain, $turn, $ChainLinks, $CS_ResolvingLayerUniqueID;
   $index = count($combatChain);
   $combatChain[] = $cardID;
   $combatChain[] = $player;
@@ -237,7 +237,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   $combatChain[] = RepriseActive();
   $combatChain[] = 0;//Power Modifier
   $combatChain[] = 0;//Defense modifier
-  $combatChain[] = GetUniqueId($cardID, $player);
+  $combatChain[] = GetClassState($player, $CS_ResolvingLayerUniqueID);
   $combatChain[] = $OriginUniqueID;
   $combatChain[] = $cardID; //original cardID in case it becomes a copy
   $combatChain[] = "-"; //Added static buffs (comma separated list of SetIDs, see ConvertToSetID/ConvertToCardID)
@@ -621,9 +621,14 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
 
 function DealDamageAsync($player, $damage, $type, $source, $playerSource)
 {
-  global $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState, $mainPlayer;
+  global $combatChain, $CS_ArcaneDamagePrevention, $dqVars, $dqState, $mainPlayer, $CombatChain, $CS_ResolvingLayerUniqueID;
   $classState = &GetPlayerClassState($player);
-  if ($type == "COMBAT" || $type == "ATTACKHIT") $source = $combatChain[0];
+  if ($type == "COMBAT" || $type == "ATTACKHIT") {
+    $source = $combatChain[0];
+    $uid = TypeContains($source, "AA") ? $CombatChain->AttackCard()->UniqueID() : $CombatChain->AttackCard()->OriginUniqueID();
+    SetClassState(1, $CS_ResolvingLayerUniqueID, $uid);
+    SetClassState(2, $CS_ResolvingLayerUniqueID, $uid);
+  }
   $otherPlayer = $player == 1 ? 2 : 1;
   $damage = $damage > 0 ? $damage : 0;
   $origDamage = $damage;

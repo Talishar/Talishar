@@ -1799,10 +1799,10 @@ class reckless_stampede_red extends Card {
   }
 
   function AttackGetsBlockedEffect($start) {
-    global $combatChain;
+    global $combatChain, $CombatChain;
     $numBlocking = intdiv(count($combatChain) - $start, CombatChainPieces());
     for($i = 0; $i < $numBlocking; ++$i) {
-      AddLayer("TRIGGER", $this->controller, $this->cardID);
+      AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$CombatChain->AttackCard()->UniqueID());
     }
   }
 

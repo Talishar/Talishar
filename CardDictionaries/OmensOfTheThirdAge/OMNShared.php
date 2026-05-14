@@ -190,3 +190,9 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 	}
 	return $targets;
 }
+
+function SetDamageSourceUID($uid) {
+	global $CS_ResolvingLayerUniqueID;
+	SetClassState(1, $CS_ResolvingLayerUniqueID, $uid);
+	SetClassState(2, $CS_ResolvingLayerUniqueID, $uid);
+}
