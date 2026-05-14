@@ -3822,3 +3822,27 @@ class draco_fire_red extends Card {
     }
   }
 }
+
+class caress_of_the_reaper_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "caress_of_the_reaper_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function DamageDealtAbilities($target, $damage, $type) {
+    $search = $target == $this->controller ? "MYAURAS" : "THEIRAURAS";
+    $context = "Target an aura to destroy";
+    Await($this->controller, "MultiZoneIndices", "indices", search:$search, subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "target", context:$context);
+    Await($this->controller, "AddTrigger", cardID:$this->cardID, final:true);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Aura = CleanTargetToObject($this->controller,  $target);
+    $Aura->Destroy();
+  }
+}
