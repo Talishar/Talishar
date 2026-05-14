@@ -2022,12 +2022,13 @@ class mercurial_skies extends BaseCard {
   }
 
   function SpecificLogic($damage) {
-    global $dqVars;
+    global $dqVars, $CombatChain;
     $target = $dqVars["target"];
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
     $Flow->Destroy();
-    DealArcane($damage, 0, source:$this->cardID);
+    SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
+    DealArcane($damage, 0, source:$CombatChain->AttackCard()->ID());
   }
 
   function CombatEffectActive() {
