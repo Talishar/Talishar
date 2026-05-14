@@ -1016,7 +1016,7 @@ class cosmic_suture extends BaseCard {
     global $CS_NumInstantsPutInGrave;
     AddCurrentTurnEffect($this->cardID, $this->controller);
     if (GetClassState($this->controller, $CS_NumInstantsPutInGrave))
-      DealArcane(1, resolvedTarget:$target);
+      DealArcane(1, resolvedTarget:$target, source:$this->cardID);
   }
 
   function CurrentEffectDamagePrevention($index, $damage, $amount, &$remove) {
