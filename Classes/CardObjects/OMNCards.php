@@ -1960,6 +1960,7 @@ class echoflash_yellow extends Card {
     global $EffectContext;
     $Hero = new CharacterCard(0, $this->controller);
     $EffectContext = $Hero->CardID();
+    SetDamageSourceUID($Hero->UniqueID());
     DealArcane(1, source:$Hero->CardID(), resolvedTarget:$target);
   }
 
@@ -1975,8 +1976,9 @@ class tempestuous_kiss_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
     if (DoesAttackHaveGoAgain() && IsHeroAttackTarget()) {
-      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER", $CombatChain->AttackCard()->UniqueID());
     }
     return "";
   }
@@ -3226,6 +3228,7 @@ class gauntlet_of_sword_and_sorcery extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain;
+    SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
     DealArcane(1, 1, source:$CombatChain->AttackCard()->ID(), resolvedTarget:$target);
     Await($this->controller, $this->cardID, final:true);
   }

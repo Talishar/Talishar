@@ -723,7 +723,7 @@ function GetZoneObject($player,  $zone) {
     "THEIRALLY" => new Allies($otherPlayer),
     "MYITEMS", "ITEMS" => new Items($player),
     "THEIRITEMS" => new Items($otherPlayer),
-    "COMBATCHAINLINK" => $CombatChain,
+    "COMBATCHAINLINK", "CC" => $CombatChain,
     default => ""
   };
 }

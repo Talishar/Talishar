@@ -1853,44 +1853,93 @@ class liquefy_red extends Card {
 //   }
 // }
 
+class oasis_respite extends BaseCard {
+  function CurrentEffectDamagePrevention($damage, $source, $index, &$remove, $amount) {
+    global $EffectContextUID, $CS_ResolvingLayerUniqueID;
+    $Effect = new CurrentEffect($index);
+    $prevAmount = $Effect->NumUses();
+    if (GetClassState(1, $CS_ResolvingLayerUniqueID) == $Effect->AppliestoUniqueID()) {
+      if (!$amount) {
+        $Effect->AddUses(-$damage);
+        if ($Effect->NumUses() <= 0) $remove = true;
+      }
+      return min($damage, $prevAmount);
+    }
+    return 0;
+  }
 
-// class oasis_respite_red extends Card {
+  function PlayAbility($target, $from) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $targetHero = substr($target,0,2) == "MY" ? $this->controller : $otherPlayer;
+    AddDecisionQueue("FINDINDICES", $this->controller, "DAMAGEPREVENTIONTARGET");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a damage source for " . CardLink($this->cardID));
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    Await($this->controller, $this->cardID, final:true);
+    if(PlayerHasLessHealth($targetHero)) GainHealth(1, $targetHero);
+    return "";
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "oasis_respite_red";
-//     $this->controller = $controller;
-//     }
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["LASTRESULT"];
+    $object = MZIndexToObject($this->controller, $choice);
+    if (is_a($object, "Layer")) {
+      $from = explode("|", $object->Parameter())[0];
+      $cardType = CardType($object->ID());
+      if ($object->ID() == "TRIGGER" || IsStaticType($cardType, $from))
+        $uid = $object->UniqueID();
+      else
+        $uid = $object->LayerUniqueID();
+    }
+    else
+      $uid = $object->UniqueID();
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PayAdditionalCosts() {
+    if (!ShouldAutotargetOpponent($this->controller)) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYCHAR:type=C&THEIRCHAR:type=C");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a hero to grant respite");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    }
+    else {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "MYCHAR-0", 1);
+    }
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+}
 
+class oasis_respite_red extends Card {
 
-// class oasis_respite_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "oasis_respite_red";
+    $this->controller = $controller;
+    $this->baseCard = new oasis_respite($this->cardID, $controller);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "oasis_respite_yellow";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, $from);
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function CurrentTurnEffectUses() {
+    return 4;
+  }
 
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $amount);
+  }
 
-// class oasis_respite_blue extends Card {
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "oasis_respite_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+}
 
 
 // class ouvia extends Card {

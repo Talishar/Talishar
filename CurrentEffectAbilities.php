@@ -1141,21 +1141,6 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
           return 1;
         }
       break;
-    case "oasis_respite_red":
-      if ($source == $currentTurnEffects[$index + 2]) {
-          return $currentTurnEffects[$index + 3];
-        }
-      break;
-    case "oasis_respite_yellow":
-      if ($source == $currentTurnEffects[$index + 2]) {
-          return $currentTurnEffects[$index + 3];
-        }
-      break;
-    case "oasis_respite_blue":
-      if ($source == $currentTurnEffects[$index + 2]) {
-          return $currentTurnEffects[$index + 3];
-        }
-      break;
     case "seekers_hood":
     case "seekers_gilet":
     case "seekers_mitts":
@@ -1404,31 +1389,6 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         else $remove = true;
         if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
         if ($source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
-      }
-      if ($remove) RemoveCurrentTurnEffect($index);
-      break;
-    case "oasis_respite_red":
-    case "oasis_respite_yellow":
-    case "oasis_respite_blue":
-      if ($source == $currentTurnEffects[$index + 2]) {
-        if ($preventable) {
-          $preventedDamage += $currentTurnEffects[$index + 3];
-          $currentTurnEffects[$index + 3] -= $damage;
-        }
-        else $remove = true;
-        if ($currentTurnEffects[$index + 3] <= 0) $remove = true;
-        $multiAttack = match($source) {
-          "explosive_growth_red", "explosive_growth_yellow", "explosive_growth_blue", "art_of_the_dragon_fire_red" => true,
-          "vexing_malice_red", "vexing_malice_yellow", "vexing_malice_blue", "reckless_stampede_red" => true,
-          "runic_fellingsong_red", "runic_fellingsong_yellow", "runic_fellingsong_blue" => true,
-          "arcanic_shockwave_red", "arcanic_shockwave_yellow", "arcanic_shockwave_blue" => true,
-          "arcanic_crackle_red", "arcanic_crackle_yellow", "arcanic_crackle_blue" => true,
-          "tempestuous_kiss_red" => true,
-          default => false,
-        };
-        if (SubtypeContains($source, "Dagger")) $multiAttack = true;
-        if (TypeContains($source, "AA") && !$multiAttack) $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
-        if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true; //To be removed when coded with Unique ID instead of cardID name as $source
       }
       if ($remove) RemoveCurrentTurnEffect($index);
       break;

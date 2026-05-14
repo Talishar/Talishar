@@ -186,12 +186,6 @@ function CurrentTurnEffectUses($cardID)
       return 3;
     case "uprising_red":
       return 4;
-    case "oasis_respite_red":
-      return 4;
-    case "oasis_respite_yellow":
-      return 3;
-    case "oasis_respite_blue":
-      return 2;
     case "art_of_the_dragon_blood_red":
       return 3;
     case "shelter_from_the_storm_red":
@@ -465,7 +459,14 @@ function ContinueDecisionQueue($lastResult = "")
         $additionalCosts = array_shift($layers);
         $uniqueID = array_shift($layers);
         $layerUniqueID = array_shift($layers);
-        SetClassState($player, $CS_ResolvingLayerUniqueID, $layerUniqueID);
+        if ($cardID == "TRIGGER") {
+          SetClassState(1, $CS_ResolvingLayerUniqueID, $uniqueID);
+          SetClassState(2, $CS_ResolvingLayerUniqueID, $uniqueID);
+        }
+        else {
+          SetClassState(1, $CS_ResolvingLayerUniqueID, $layerUniqueID);
+          SetClassState(2, $CS_ResolvingLayerUniqueID, $layerUniqueID);
+        }
         $params = explode("|", $parameter);
         if ($currentPlayer != $player) {
           $currentPlayer = $player;
@@ -521,7 +522,9 @@ function ContinueDecisionQueue($lastResult = "")
           ProcessDecisionQueue();
         }
         else {
+          global $EffectContextUID;
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
+          $EffectContextUID = $layerUniqueID;
           PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
           ClearDieRoll($player);
         }
@@ -2088,10 +2091,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
   global $chainLinks, $currentTurnEffects, $ChainLinks;
   global $landmarks;
+  global $EffectContextUID;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
+  // $EffectContextUID = $uniqueID;
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($additionalCosts == "ONHITEFFECT") {
     ProcessHitEffect($parameter, $combatChain[2] ?? "-", $uniqueID, target:$target);
@@ -4418,6 +4423,17 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
   switch($cardID) {
+    case "vexing_malice_red":
+    case "vexing_malice_blue":
+    case "vexing_malice_yellow":
+      DealArcane(2, 0, "PLAYCARD", $cardID);
+      break;
+    case "arcanic_crackle_red": case "arcanic_crackle_yellow": case "arcanic_crackle_blue":
+      DealArcane(1, 0, "PLAYCARD", $cardID);
+      break;
+    case "explosive_growth_red": case "explosive_growth_yellow": case "explosive_growth_blue":
+      DealArcane(1, 0, "PLAYCARD", $cardID);
+      break;
     case "first_tenet_of_chi_moon_blue":
       Draw($player);
       break;

@@ -3,7 +3,7 @@
   function ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $otherPlayer, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;
-    global $CS_NextNAAInstant, $CS_ArcaneDamageDealt, $mainPlayer;
+    global $CS_NextNAAInstant, $CS_ArcaneDamageDealt, $mainPlayer, $CombatChain;
     $rv = "";
     switch($cardID)
     {
@@ -20,7 +20,7 @@
         AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
         return "";
       case "explosive_growth_red": case "explosive_growth_yellow": case "explosive_growth_blue":
-        DealArcane(1, 0, "PLAYCARD", $cardID);
+        AddLayer("TRIGGER", $cardID, $currentPlayer, "-", "ATTACKTRIGGER", $CombatChain->AttackCard()->UniqueID());
         return "";
       case "rites_of_lightning_red": case "rites_of_lightning_yellow": case "rites_of_lightning_blue":
         AddDecisionQueue("CLASSSTATEGREATERORPASS", $currentPlayer, $CS_ArcaneDamageDealt . "-1", 1);

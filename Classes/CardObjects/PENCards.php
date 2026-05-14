@@ -908,6 +908,8 @@ class runic_fellingsong extends BaseCard {
   }
 
   function ProcessTrigger($uniqueID, $target = '-') {
+    global $CombatChain;
+    SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD:subtype=Aura");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Banish an aura to deal 1 arcane?", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);

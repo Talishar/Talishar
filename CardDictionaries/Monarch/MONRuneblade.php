@@ -2,7 +2,7 @@
 
   function MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer;
+    global $currentPlayer, $CombatChain;
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
@@ -60,10 +60,10 @@
         GainResources($currentPlayer, 2);
         return "";
       case "vexing_malice_red": case "vexing_malice_yellow": case "vexing_malice_blue":
-        DealArcane(2, 0, "PLAYCARD", $cardID);
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER", $CombatChain->AttackCard()->UniqueID());
         return "";
       case "arcanic_crackle_red": case "arcanic_crackle_yellow": case "arcanic_crackle_blue":
-        DealArcane(1, 0, "PLAYCARD", $cardID);
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER", $CombatChain->AttackCard()->UniqueID());
         return "";
       default: return "";
     }
