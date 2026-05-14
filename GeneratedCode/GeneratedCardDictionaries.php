@@ -2,6 +2,9 @@
 function GeneratedCardType($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"gauntlet_of_sword_and_sorcery" => "E",
+"livewire_press_red" => "I",
+"cosmic_flare_red" => "I",
 "10000_year_reunion_red" => "A",
 "a_drop_in_the_ocean_blue" => "I",
 "absorb_in_aether_red" => "DR",
@@ -2813,6 +2816,10 @@ default => "AA"
 function GeneratedPowerValue($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"drinking_buddy_red" => 6,
+"flowshard_elemental_red" => 4,
+"browbeat_blue" => 1,
+"red_lure_harpoon_blue" => 4,
 "a_good_clean_fight_red" => 7,
 "adrenaline_rush_red" => 4,
 "adrenaline_rush_yellow" => 3,
@@ -4855,6 +4862,10 @@ default => 0
 function GeneratedBlockValue($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"gauntlet_of_sword_and_sorcery" => 0,
+"flowshard_elemental_red" => 2,
+"livewire_press_red" => -1,
+"cosmic_flare_red" => -1,
 "a_drop_in_the_ocean_blue" => -1,
 "absorb_in_aether_red" => 4,
 "absorb_in_aether_blue" => 2,
@@ -7496,6 +7507,13 @@ default => 3
 function GeneratedCardName($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"drinking_buddy_red" => "Drinking Buddy",
+"gauntlet_of_sword_and_sorcery" => "Gauntlet of Sword and Sorcery",
+"flowshard_elemental_red" => "Flowshard Elemental",
+"livewire_press_red" => "Livewire Press",
+"cosmic_flare_red" => "Cosmic Flare",
+"browbeat_blue" => "Browbeat",
+"red_lure_harpoon_blue" => "Red Lure Harpoon",
 "10000_year_reunion_red" => "10,000 Year Reunion",
 "a_drop_in_the_ocean_blue" => "A Drop in the Ocean",
 "a_good_clean_fight_red" => "A Good Clean Fight",
@@ -12247,6 +12265,9 @@ default => ""
 function GeneratedPitchValue($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"gauntlet_of_sword_and_sorcery" => 0,
+"browbeat_blue" => 3,
+"red_lure_harpoon_blue" => 3,
 "a_drop_in_the_ocean_blue" => 3,
 "absorb_in_aether_yellow" => 2,
 "absorb_in_aether_blue" => 3,
@@ -15637,6 +15658,10 @@ default => 1
 function GeneratedCardCost($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"drinking_buddy_red" => 2,
+"gauntlet_of_sword_and_sorcery" => -1,
+"livewire_press_red" => 1,
+"red_lure_harpoon_blue" => 2,
 "10000_year_reunion_red" => 8,
 "a_good_clean_fight_red" => 3,
 "absorb_in_aether_red" => 1,
@@ -18814,6 +18839,8 @@ default => 0
 function GeneratedCardSubtype($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"gauntlet_of_sword_and_sorcery" => "Arms",
+"red_lure_harpoon_blue" => "Arrow",
 "10000_year_reunion_red" => "Aura",
 "absorption_dome_yellow" => "Item",
 "achilles_accelerator" => "Legs",
@@ -20493,6 +20520,12 @@ default => 4
 function GeneratedRarity($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"drinking_buddy_red" => "P",
+"gauntlet_of_sword_and_sorcery" => "L",
+"flowshard_elemental_red" => "R",
+"livewire_press_red" => "R",
+"browbeat_blue" => "M",
+"red_lure_harpoon_blue" => "M",
 "10000_year_reunion_red" => "M",
 "a_good_clean_fight_red" => "P",
 "absorb_in_aether_red" => "R",
@@ -23027,6 +23060,10 @@ default => false
 function GeneratedCardClass($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"drinking_buddy_red" => "GENERIC",
+"gauntlet_of_sword_and_sorcery" => "RUNEBLADE",
+"browbeat_blue" => "GENERIC",
+"red_lure_harpoon_blue" => "PIRATE,RANGER",
 "10000_year_reunion_red" => "ILLUSIONIST",
 "absorb_in_aether_red" => "WIZARD",
 "absorb_in_aether_yellow" => "WIZARD",
@@ -27069,6 +27106,9 @@ default => "NONE"
 function GeneratedCardTalent($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"flowshard_elemental_red" => "LIGHTNING",
+"livewire_press_red" => "LIGHTNING",
+"cosmic_flare_red" => "LIGHTNING",
 "a_drop_in_the_ocean_blue" => "MYSTIC",
 "a_good_clean_fight_red" => "REVERED",
 "aegis_archangel_of_protection" => "LIGHT",
@@ -28504,6 +28544,12 @@ default => "NONE"
 function GeneratedSetID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"gauntlet_of_sword_and_sorcery" => "OMN086",
+"flowshard_elemental_red" => "OMN149",
+"livewire_press_red" => "OMN159",
+"cosmic_flare_red" => "OMN187",
+"browbeat_blue" => "OMN213",
+"red_lure_harpoon_blue" => "OMN241",
 "10000_year_reunion_red" => "MST131",
 "a_drop_in_the_ocean_blue" => "MST095",
 "a_good_clean_fight_red" => "SUP021",
@@ -33228,6 +33274,13 @@ default => ""
 function GeneratedSetIDtoCardID($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"" => "yorick_weaver_of_tales",
+"OMN086" => "gauntlet_of_sword_and_sorcery",
+"OMN149" => "flowshard_elemental_red",
+"OMN159" => "livewire_press_red",
+"OMN187" => "cosmic_flare_red",
+"OMN213" => "browbeat_blue",
+"OMN241" => "red_lure_harpoon_blue",
 "MST131" => "10000_year_reunion_red",
 "MST095" => "a_drop_in_the_ocean_blue",
 "SUP021" => "a_good_clean_fight_red",
@@ -33513,7 +33566,6 @@ return match($cardID) {
 "SEA152" => "battalion_barque_red",
 "SEA153" => "battalion_barque_yellow",
 "SEA154" => "battalion_barque_blue",
-"" => "yorick_weaver_of_tales",
 "HVY140" => "battered_not_broken_red",
 "SUP083" => "battered_beaten_and_broken_yellow",
 "EVR088" => "battering_bolt_red",
@@ -37953,6 +38005,7 @@ default => ""
 function GeneratedGoAgain($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"gauntlet_of_sword_and_sorcery" => true,
 "aether_ironweave" => true,
 "aether_sink_yellow" => true,
 "agility_stance_yellow" => true,
@@ -39097,6 +39150,7 @@ default => 0
 function GeneratedHasArcaneBarrier($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
+"gauntlet_of_sword_and_sorcery" => true,
 "achilles_accelerator" => true,
 "adaptive_dissolver" => true,
 "aether_ashwing" => true,
@@ -39163,6 +39217,7 @@ default => false
 function GeneratedArcaneBarrierAmount($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"gauntlet_of_sword_and_sorcery" => 1,
 "achilles_accelerator" => 1,
 "adaptive_dissolver" => 1,
 "aether_ashwing" => 1,

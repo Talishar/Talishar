@@ -3358,10 +3358,6 @@ class livewire_press_red extends Card {
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
     $this->baseCard->EffectHitEffect(4);
   }
-
-  function SpecialType() {
-    return "I";
-  }
 }
 
 class flowshard_elemental extends BaseCard {
