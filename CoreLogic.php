@@ -3091,7 +3091,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
     if ($card != "-" && $card->CombatChainPreventionEffect(-1, $ChainCard->Index(), $damage, $type, $source, $preventable, true) > 0)
       $indices[] = $ChainCard->Index();
   }
-  $indices = SearchMultiZoneFormat(implode(",", $indices), "COMBATCHAIN");
+  $indices = SearchMultiZoneFormat(implode(",", $indices), "COMBATCHAINLINK");
   $mzIndices = CombineSearches($mzIndices, $indices);
 
   $indices = [];
@@ -3104,7 +3104,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
         $indices[] = $ChainCard->Index() . "-" . $i;
     }
   }
-  $indices = SearchMultiZoneFormat(implode(",", $indices), "CHAINLINK");
+  $indices = SearchMultiZoneFormat(implode(",", $indices), "PASTCHAINLINK");
   $mzIndices = CombineSearches($mzIndices, $indices);
 
   $indices = [];
