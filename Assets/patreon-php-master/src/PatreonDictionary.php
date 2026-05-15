@@ -653,6 +653,12 @@ enum PatreonCampaign : string
         "tome_of_quandaries_blue=OMN133-T",
         "unwinding_finality_red=OMN004-T",
         "zyggy=OMN002-T",
+        "caress_of_the_reaper_red=OMN087-T",
+        "a_bit_off_the_side_red=OMN243-T",
+        "blessing_of_aegis_yellow=OMN244-T",
+        "browbeat_blue=OMN213-T",
+        "crash_site_salvage_yellow=OMN239-T",
+        "tempestuous_kiss_red=OMN051-T",
         ];
         break;
       case "8955846": // ManSant
