@@ -972,7 +972,7 @@ class flowstate_embodiment_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    Await($this->controller, "CardChoices", choices:"embodiment_of_lightning,lightning_flow", returnName:"cardID", subsequent:false);
+    Await($this->controller, "CardChoices", choices:"Embodiment_of_Lightning,Lightning_Flow", returnName:"cardID", subsequent:false);
     Await($this->controller, "PlayAura", final:true);
   }
 }
