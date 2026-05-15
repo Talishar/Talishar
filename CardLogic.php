@@ -4423,6 +4423,9 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
   switch($cardID) {
+    case "deny_redemption_red":
+      DealArcane(1, 1, "PLAYCARD", $cardID);
+      break;
     case "vexing_malice_red":
     case "vexing_malice_blue":
     case "vexing_malice_yellow":

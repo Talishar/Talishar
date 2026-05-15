@@ -225,7 +225,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "deny_redemption_red":
       if (GetResolvedAbilityType($cardID, "HAND") != "I") {
-        if(PlayerHasLessHealth($currentPlayer)) DealArcane(1, 1, "PLAYCARD", $cardID);
+        if(PlayerHasLessHealth($currentPlayer))
+          AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER", $CombatChain->AttackCard()->UniqueID());
       }
       break;
     case "amethyst_amulet_blue":
