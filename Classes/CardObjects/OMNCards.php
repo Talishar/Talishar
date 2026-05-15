@@ -3914,3 +3914,22 @@ class fraying_lifeforce_red extends Card {
     $this->baseCard->ProcessTrigger();
   }
 }
+
+class fractal_creation_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "fractal_creation_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    MirragingMetamorphDestroyed();
+  }
+}
