@@ -3032,15 +3032,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CURRENTTURNEFFECTS":
           $damage = CurrentEffectDamagePrevention($player, intval($mzIndex[1]), $params[2], $params[0], $params[3], $params[1]);
           break;
-        case "COMBATCHAIN":
-          $damage = CombatChainDamagePrevention($player, intval($mzIndex[1]), $params[2], $params[0], $params[3], $params[1]);
-          break;
-        case "CHAINLINKS":
-          $damage = ChainLinksDamagePrevention($player, intval($mzIndex[2]), intval($mzIndex[1]), $params[2], $params[0], $params[3], $params[1]);
-          break;
-        case "LAYER":
-          $damage = LayerDamagePrevention($player, intval($mzIndex[1]), $params[2], $params[0], $params[3], $params[1]);
-          break;
         default:
           break;
       }
