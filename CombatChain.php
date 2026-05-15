@@ -2195,15 +2195,30 @@ function LayerStepPower($player="") { //calculates the modified power of an atta
   return $power;
 }
 
-function CombatChainDamagePrevention($player, $index, $type, $damage, $source, $preventable) {
-  $ChainCard = new ChainCard($index);
-  $card = GetClass($ChainCard->ID(), $player);
+function CombatChainTakeDamageAbilities($player, $damage, $type, $source) {
+  global $CombatChain, $ChainLinks;
   $vambraceAvailable = SearchCurrentTurnEffects("vambrace_of_determination", $player) != "";
   $vambraceRemove = false;
   $preventedDamage = 0;
-  if ($card != "-") {
-    $prevention = $card->CombatChainPreventionEffect(-1, $index, $damage, $type, $source, $preventable);
-    if ($preventable) $preventedDamage += $prevention;
+  $preventable = CanDamageBePrevented($player, $damage, $type, $source);
+  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $ChainCard = $CombatChain->Card($i, true);
+    $card = GetClass($ChainCard->ID(), $player);
+    if ($card != "-") {
+      $prevention = $card->CombatChainTakeDamageAbility(-1, $i, $damage, $type, $source, $preventable);
+      if ($preventable) $preventedDamage += $prevention;
+    }
+  }
+  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $Link = $ChainLinks->GetLink($i);
+    for ($j = 0; $j < $Link->NumCards(); ++$j) {
+      $ChainCard = $Link->GetLinkCard($j, true);
+      $card = GetClass($ChainCard->ID(), $player);
+      if ($card != "-") {
+        $prevention = $card->CombatChainTakeDamageAbility($i, $j, $damage, $type, $source, $preventable);
+        if ($preventable) $preventedDamage += $prevention;
+      }
+    }
   }
   if ($type == "COMBAT" && $vambraceAvailable && $preventedDamage > 0) {
     $preventedDamage -= 1;
@@ -2215,37 +2230,19 @@ function CombatChainDamagePrevention($player, $index, $type, $damage, $source, $
   return $damage;
 }
 
-function ChainLinksDamagePrevention($player, $linkNum, $index, $type, $damage, $source, $preventable) {
-  Global $ChainLinks;
-  $Link = $ChainLinks->GetLink($linkNum);
-  $ChainCard = $Link->GetLinkCard($index);
-  $card = GetClass($ChainCard->ID(), $player);
+function StackTakeDamageAbilities($player, $damage, $type, $source) {
+  global $Stack;
   $vambraceAvailable = SearchCurrentTurnEffects("vambrace_of_determination", $player) != "";
   $vambraceRemove = false;
   $preventedDamage = 0;
-  if ($card != "-") {
-    $prevention = $card->CombatChainPreventionEffect($linkNum, $index, $damage, $type, $source, $preventable);
-    if ($preventable) $preventedDamage += $prevention;
-  }
-  if ($type == "COMBAT" && $vambraceAvailable && $preventedDamage > 0) {
-    $preventedDamage -= 1;
-    $vambraceAvailable = false;
-    $vambraceRemove = true;
-  }
-  $damage -= $preventedDamage;
-  if ($vambraceRemove) SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
-  return $damage;
-}
-
-function LayerDamagePrevention($player, $index, $type, $damage, $source, $preventable) {
-  $Layer = new Layer($index);
-  $card = GetClass($Layer->ID(), $player);
-  $vambraceAvailable = SearchCurrentTurnEffects("vambrace_of_determination", $player) != "";
-  $vambraceRemove = false;
-  $preventedDamage = 0;
-  if ($card != "-") {
-    $prevention = $card->LayerPreventionEffect($index, $damage, $type, $source, $preventable);
-    if ($preventable) $preventedDamage += $prevention;
+  $preventable = CanDamageBePrevented($player, $damage, $type, $source);
+  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+    $Layer = $Stack->Card($i, true);
+    $card = GetClass($Layer->ID(), $player);
+    if ($card != "-") {
+      $prevention = $card->LayerTakeDamageAbility($i, $damage, $type, $source, $preventable);
+      if ($preventable) $preventedDamage += $prevention;
+    }
   }
   if ($type == "COMBAT" && $vambraceAvailable && $preventedDamage > 0) {
     $preventedDamage -= 1;

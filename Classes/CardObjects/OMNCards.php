@@ -3846,11 +3846,13 @@ class caress_of_the_reaper_red extends Card {
 }
 
 class arcanic_cunning extends BaseCard {
-  function CombatChainPreventionEffect($type) {
+
+
+  function CombatChainTakeDamageAbility($type) {
     return $type == "ARCANE" ? 1 : 0;
   }
 
-  function LayerPreventionEffect($type) {
+  function LayerTakeDamageAbility($type) {
     return $type == "ARCANE" ? 1 : 0;
   }
 }
@@ -3866,12 +3868,12 @@ class arcanic_cunning_red extends Card {
     return "";
   }
 
-  function CombatChainPreventionEffect($link, $index, $damage, $type, $source, $preventable, $amount = false) {
-    return $this->baseCard->CombatChainPreventionEffect($type);
+  function CombatChainTakeDamageAbility($link, $index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->CombatChainTakeDamageAbility($type);
   }
 
-  function LayerPreventionEffect($index, $damage, $type, $source, $preventable, $amount = false) {
-    return $this->baseCard->LayerPreventionEffect($type);
+  function LayerTakeDamageAbility($index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->LayerTakeDamageAbility($type);
   }
 }
 
@@ -3886,12 +3888,12 @@ class arcanic_cunning_yellow extends Card {
     return "";
   }
 
-  function CombatChainPreventionEffect($link, $index, $damage, $type, $source, $preventable, $amount = false) {
-    return $this->baseCard->CombatChainPreventionEffect($type);
+  function CombatChainTakeDamageAbility($link, $index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->CombatChainTakeDamageAbility($type);
   }
 
-  function LayerPreventionEffect($index, $damage, $type, $source, $preventable, $amount = false) {
-    return $this->baseCard->LayerPreventionEffect($type);
+  function LayerTakeDamageAbility($index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->LayerTakeDamageAbility($type);
   }
 }
 
@@ -3906,11 +3908,11 @@ class arcanic_cunning_blue extends Card {
     return "";
   }
 
-  function CombatChainPreventionEffect($link, $index, $damage, $type, $source, $preventable, $amount = false) {
-    return $this->baseCard->CombatChainPreventionEffect($type);
+  function CombatChainTakeDamageAbility($link, $index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->CombatChainTakeDamageAbility($type);
   }
 
-  function LayerPreventionEffect($index, $damage, $type, $source, $preventable, $amount = false) {
-    return $this->baseCard->LayerPreventionEffect($type);
+  function LayerTakeDamageAbility($index, $damage, $type, $source, $preventable, $amount = false) {
+    return $this->baseCard->LayerTakeDamageAbility($type);
   }
 }
