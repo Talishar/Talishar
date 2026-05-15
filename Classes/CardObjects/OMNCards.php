@@ -656,10 +656,6 @@ class cosmic_duality_red extends Card {
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
     return DualityPrePitch($this->cardID, $index, $from, $this->controller);
   }
-
-  function HasFragment() {
-    return true;
-  }
 }
 
 class cosmic_duality_yellow extends Card {
@@ -704,10 +700,6 @@ class cosmic_duality_yellow extends Card {
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
     return DualityPrePitch($this->cardID, $index, $from, $this->controller);
   }
-
-  function HasFragment() {
-    return true;
-  }
 }
 
 class cosmic_duality_blue extends Card {
@@ -751,10 +743,6 @@ class cosmic_duality_blue extends Card {
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
     return DualityPrePitch($this->cardID, $index, $from, $this->controller);
-  }
-
-  function HasFragment() {
-    return true;
   }
 }
 
@@ -1180,10 +1168,6 @@ class pulsing_cardia_red extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
   }
-
-  function HasFragment() {
-    return true;
-  }
 }
 
 class pulsing_cardia_yellow extends Card {
@@ -1204,10 +1188,6 @@ class pulsing_cardia_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
   }
-
-  function HasFragment() {
-    return true;
-  }
 }
 
 class pulsing_cardia_blue extends Card {
@@ -1227,10 +1207,6 @@ class pulsing_cardia_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
-  }
-
-  function HasFragment() {
-    return true;
   }
 }
 
@@ -1810,10 +1786,6 @@ class blink_of_an_eye_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
-  }
-
-  function HasFragment() {
-    return true;
   }
 
   function FragmentTrigger()  {
@@ -2440,10 +2412,6 @@ class unwinding_finality_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
-  }
-
-  function HasFragment() {
-    return true;
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
@@ -3914,5 +3882,35 @@ class arcanic_cunning_blue extends Card {
 
   function LayerTakeDamageAbility($index, $damage, $type, $source, $preventable, $amount = false) {
     return $this->baseCard->LayerTakeDamageAbility($type);
+  }
+}
+
+class fraying_lifeforce extends BaseCard {
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    GainHealth(1, $this->controller);
+  }
+}
+
+class fraying_lifeforce_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "fraying_lifeforce_red";
+    $this->controller = $controller;
+    $this->baseCard = new fraying_lifeforce($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
   }
 }
