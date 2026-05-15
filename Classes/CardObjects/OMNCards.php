@@ -1570,9 +1570,9 @@ class stormshard extends BaseCard {
   function IsPlayRestricted() {
     global $CombatChain, $Stack, $ChainLinks;
     if ($Stack->NumLayers() == 0 && !$CombatChain->HasCurrentLink() && !IsResolutionStep()) return true;
-    if (SearchCount(SearchCombatChainLink($this->controller, type: "AA", talent: "LIGHTNING")) > 0) return false;
-    if (SearchCount(SearchCombatChainAttacks($this->controller, type: "AA", talent: "LIGHTNING")) > 0) return false;
-    if ($ChainLinks->SearchChainLinks(type:"AA", talent:"LIGHTNING") != "") return false;
+    if (SearchCount(SearchCombatChainLink($this->controller, talent: "LIGHTNING")) > 0) return false;
+    if (SearchCount(SearchCombatChainAttacks($this->controller, talent: "LIGHTNING")) > 0) return false;
+    if ($ChainLinks->SearchChainLinks(talent:"LIGHTNING") != "") return false;
     $countLayers = $Stack->NumLayers();
     for ($i = 0; $i < $countLayers; ++$i) {
       $layer = $Stack->Card($i, true);
@@ -1587,12 +1587,12 @@ class stormshard extends BaseCard {
       AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
     }
     elseif (!ShouldHoldPriority($this->controller) && ShouldAutotargetOpponent($this->controller)) {
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINLINK:talent=LIGHTNING;type=AA");
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINLINK:talent=LIGHTNING");
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
     }
     else {
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS:talent=LIGHNTING;type=AA&COMBATCHAINLINK:talent=LIGHTNING;type=AA");
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS:talent=LIGHNTING&COMBATCHAINLINK:talent=LIGHTNING");
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
     }
