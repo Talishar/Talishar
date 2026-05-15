@@ -4788,6 +4788,7 @@ function BlockCantBeModified($cardID)
 function Rarity($cardID)
 {
   $set = CardSet($cardID);
+  if ($cardID == "stormshard_red") return "R";
   if ($set != "DUM") {
     return GeneratedRarity($cardID);
   }
