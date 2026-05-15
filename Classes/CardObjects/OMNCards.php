@@ -3732,7 +3732,7 @@ class draco_fire_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CombatChain;
-    if (IsCombatChainOpen())
+    if (IsCombatChainOpen() && !IsResolutionStep())
       AddCurrentTurnEffectFromCombat($this->cardID, $this->controller);
     else
       AddCurrentTurnEffect($this->cardID, $this->controller);
