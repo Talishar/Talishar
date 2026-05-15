@@ -223,7 +223,7 @@ function PayResourcesAwait($player) {
 
 function PlayAuraAwait($player) {
   global $dqVars;
-  $cardID = $dqVars["cardID"];
+  $cardID = strtolower($dqVars["cardID"]);
   $number = $dqVars["number"] ?? 1;
   $isToken = $dqVars["isToken"] ?? false;
   $rogueHeronSpecial = $dqVars["rogueHeronSpecial"] ?? false;
