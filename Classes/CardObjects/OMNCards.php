@@ -3630,6 +3630,10 @@ class razor_ring_blue extends Card {
   function RemoveEffectFromCombatChain() {
     return true;
   }
+
+  function HasGoAgain($from) {
+    return false; //mistake in generated
+  }
 }
 
 class stun_star_blue extends Card {
@@ -3681,6 +3685,10 @@ class stun_star_blue extends Card {
     $defHero = new CharacterCard(0, $defPlayer);
     $defHero->Tap();
   }
+
+  function HasGoAgain($from) {
+    return false; //mistake in generated
+  }
 }
 
 class evasive_nageboshi_blue extends Card {
@@ -3721,6 +3729,10 @@ class evasive_nageboshi_blue extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     return $this->archetype->IsPlayRestricted($index, $from);
+  }
+
+  function HasGoAgain($from) {
+    return false; //mistake in generated
   }
 }
 
