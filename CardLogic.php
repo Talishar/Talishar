@@ -459,7 +459,8 @@ function ContinueDecisionQueue($lastResult = "")
         $additionalCosts = array_shift($layers);
         $uniqueID = array_shift($layers);
         $layerUniqueID = array_shift($layers);
-        if ($cardID == "TRIGGER") {
+        $from = explode("|", $parameter)[0];
+        if ($cardID == "TRIGGER" || IsStaticType(CardType($cardID), $from)) {
           SetClassState(1, $CS_ResolvingLayerUniqueID, $uniqueID);
           SetClassState(2, $CS_ResolvingLayerUniqueID, $uniqueID);
         }
