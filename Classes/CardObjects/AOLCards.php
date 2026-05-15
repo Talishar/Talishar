@@ -14,8 +14,8 @@ class odds_on_favorite_blue extends Card {
 		global $CombatChain;
     $Effect = new CurrentEffect($i);
     if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword")) {
-      SearchCurrentTurnEffects($this->cardID, $this->controller, true);
       AddLayer("TRIGGER", $this->controller, $this->cardID);
+      return true;
     }
     return false;
   }

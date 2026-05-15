@@ -4423,6 +4423,9 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
   switch($cardID) {
+    case "hold_em_red":
+      AskWager($cardID);
+      break;
     case "deny_redemption_red":
       DealArcane(1, 1, "PLAYCARD", $cardID);
       break;

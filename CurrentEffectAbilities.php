@@ -832,7 +832,7 @@ function OnAttackEffects($cardID)
         case "hold_em_yellow-BUFF":
         case "hold_em_blue-BUFF":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(ExtractCardID($currentTurnEffects[$i]));
+            AddLayer("TRIGGER", $mainPlayer, ExtractCardID($currentTurnEffects[$i]), "-", "ATTACKTRIGGER");
           }
           break;
         case "money_where_ya_mouth_is_red-BUFF":
