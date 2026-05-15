@@ -434,10 +434,10 @@
         break;
     }
     if($wonWager == $mainPlayer) {
-      $char = &GetPlayerCharacter($mainPlayer);
-      $hero = ShiyanaCharacter($char[0]);
-      if($char[1] == 2 && ($hero == "olympia_prized_fighter" || $hero == "olympia")) {
-        $char[1] = 1;
+      $Hero = new CharacterCard(0, $mainPlayer);
+      $hero = ShiyanaCharacter($Hero->CardID());
+      if($Hero->Status() == 2 && ($hero == "olympia_prized_fighter" || $hero == "olympia")) {
+        $Hero->SetUsed(1);
         AddLayer("TRIGGER", $mainPlayer, $hero);
       }
     }
@@ -447,7 +447,7 @@
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects, $EffectContext, $combatChain;
     if ($wonWager == "-") $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
     $MainHero = new CharacterCard(0, $mainPlayer);
-    if ($MainHero->CardID() == "olympia" || $MainHero->CardID() == "olympia_prized_fighter") //ability is once per attack, not once per turn
+    if ($MainHero->Status() < 3 && ($MainHero->CardID() == "olympia" || $MainHero->CardID() == "olympia_prized_fighter")) //ability is once per attack, not once per turn
       $MainHero->SetUsed(2);
     $numWagersWon = 0;
     $amount = 1;
