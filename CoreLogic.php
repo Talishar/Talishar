@@ -604,7 +604,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   $otherPlayer = $player == 1 ? 2 : 1;
   $extraText = GetHorrorsBuff();
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
-  if ($type == "ARCANE" && $source == "deny_redemption_red") return false;
+  if ($type == "ARCANE" && $source == "deny_redemption_red" && SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $otherPlayer)) return false;
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $otherPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer))) return false;
   if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $otherPlayer)) return false;
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $otherPlayer)) return false;
@@ -664,6 +664,9 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   if ($source == "runechant") {
     SearchCurrentTurnEffects("vynnset", $otherPlayer, true);
     SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer, true);
+  }
+  if ($source == "deny_redemption_red") {
+    SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $otherPlayer, true);
   }
   ResetAuraStatus($player);
   if($damage < $origDamage) LogDamagePreventedStats($player, $origDamage - $damage);

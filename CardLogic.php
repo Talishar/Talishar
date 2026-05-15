@@ -4429,6 +4429,8 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       AskWager($cardID);
       break;
     case "deny_redemption_red":
+      //only this ping is unpreventable
+      AddCurrentTurnEffect("$cardID-PREVENTION", $player);
       DealArcane(1, 1, "PLAYCARD", $cardID);
       break;
     case "vexing_malice_red":
