@@ -3968,28 +3968,4 @@ class astral_bridge_red extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     SetTargetsArcane($this->controller, $this->cardID);
   }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return -1;
-  }
-
-  function SpecialName() {
-    return "Astral Bridge";
-  }
 }
