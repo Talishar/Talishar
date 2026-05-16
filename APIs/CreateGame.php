@@ -24,7 +24,7 @@ $visibility = TryPOST("visibility"); //"public" = public game, "private" = priva
 $decksToTry = TryPOST("decksToTry"); //This is only used if there's no favorite deck or decklink. 1 = ira
 $favoriteDeck = TryPOST("favoriteDeck", false); //Set this to true to save the provided deck link to your favorites
 $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
-$gameDescription = htmlentities(TryPOST("gameDescription", "Game #"), ENT_QUOTES); //Just a string with the game name
+$gameDescription = htmlspecialchars(TryPOST("gameDescription", "Game #"), ENT_QUOTES); //Just a string with the game name
 $deckbuilderID = TryPOST("user", "");
 $deckTestDeck = TryPOST("deckTestDeck", "");
 
