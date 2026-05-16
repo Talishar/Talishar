@@ -3138,6 +3138,7 @@ class ominous_excavation_blue extends Card {
     $choice = $dqVars["choice"] ?? "-";
     if ($choice != "-") {
       $obj = MZIndexToObject($this->controller, $choice);
+      WriteLog(CardLink($obj->CardID()) . " was put on the bottom of the deck!");
       AddBottomDeck($obj->CardID(), $this->controller, "DISCARD");
       $obj->Remove();
       $deck = new Deck($this->controller);
