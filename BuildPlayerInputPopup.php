@@ -517,6 +517,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $label = "";
           $tapped = false;
           $overlay = 0;
+          $holoCounters = null;
           //Add indication for token copies
           if (str_contains($option[0], "AURAS")) {
             $Card = MZIndexToObject($playerID, $options[$i]);
@@ -682,6 +683,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $powerCounters = $option[0] == "THEIRAURAS" ? $theirAuras[$index + 3] : $myAuras[$index + 3];
             //Show various counters on Auras in the popups
             $counters = $option[0] == "THEIRAURAS" ? $theirAuras[$index + 2] : $myAuras[$index + 2];
+            //Show holo counters on Auras in the popups
+            $holoCounters = (($option[0] == "THEIRAURAS" ? $theirAuras[$index + 13] : $myAuras[$index + 13]) > 0) ? true : null;
           }
           //Show Steam Counters on items
           if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {
@@ -707,7 +710,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $card = $MyCardBack;
           }
           if ($maxCount < 2)
-            array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: substr($option[0], 0, 5) == "THEIR" ? true : false));
+            array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: substr($option[0], 0, 5) == "THEIR" ? true : false, holoCounters: $holoCounters));
           else
             array_push($cardsMultiZone, JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset));
         }
