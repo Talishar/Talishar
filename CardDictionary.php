@@ -4488,6 +4488,7 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
   if (HasSuspense($cardID) && SearchCurrentTurnEffects("cries_of_encore_red", $player)) return true;
   if ($CurrentTurnEffects->FindSpecificEffect("oscilio_forked_continuum", $DiscardCard->UniqueID())->Index() != -1) return true;
   if ($CurrentTurnEffects->FindSpecificEffect("oscilio_scion_of_the_third_age", $DiscardCard->UniqueID())->Index() != -1) return true;
+  if ($CurrentTurnEffects->FindSpecificEffect("astral_bridge_red", $DiscardCard->UniqueID())->Index() != -1) return true;
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromGraveyard($index);
   return match ($cardID) {

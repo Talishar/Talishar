@@ -3946,3 +3946,50 @@ class fractal_creation_blue extends Card {
     MirragingMetamorphDestroyed();
   }
 }
+
+class astral_bridge_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "astral_bridge_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumInstantsPutInGrave;
+    $deck = new Deck($this->controller);
+    $cardID = $deck->Top(true);
+    $uid = AddGraveyard($cardID, $this->controller, "DECK");
+    if (TypeContains($cardID, "I"))
+      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+    if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0)
+      DealArcane(1, source:$this->cardID, resolvedTarget:$target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetTargetsArcane($this->controller, $this->cardID);
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return -1;
+  }
+
+  function SpecialName() {
+    return "Astral Bridge";
+  }
+}
