@@ -359,8 +359,10 @@
   }
 
   function ProcessWager($cardID, $player, $wonWager, $uniqueID) {
-    global $mainPlayer;
+    global $mainPlayer, $ChainLinks;
     $amount = 1;
+    $Link = $ChainLinks->LastLink();
+    $attackCard = $Link->AttackCard()->ID();
     if(SearchCurrentTurnEffects("double_down_red", $wonWager))
       $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
     $lostWager = $wonWager == 1 ? 2 : 1;
@@ -379,8 +381,8 @@
     if ($card != "-") $card->WonWager($wonWager, $amount);
     switch($cardID) {
       case "good_time_chapeau":
-        PlayAura("might", $wonWager, $amount);
-        PlayAura("vigor", $wonWager, $amount);
+        PlayAura("might", $wonWager, $amount, effectSource:$attackCard);
+        PlayAura("vigor", $wonWager, $amount, effectSource:$attackCard);
         break;
       case "bet_big_red":
         PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
@@ -409,7 +411,7 @@
         PlayAura("agility", $wonWager, $amount);
         break;
       case "hold_em_red": case "hold_em_yellow": case "hold_em_blue":
-        PlayAura("vigor", $wonWager, $amount);
+        PlayAura("vigor", $wonWager, $amount, effectSource:$attackCard);
         break;
       case "wage_might_red": case "wage_might_yellow": case "wage_might_blue":
         PlayAura("might", $wonWager, $amount);
@@ -424,7 +426,7 @@
         PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
         break;
       case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
-        PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
+        PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer, effectSource:$attackCard);
         break;
       case "drink_em_under_the_table_red":
         Draw($wonWager);
