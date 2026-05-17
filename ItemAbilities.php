@@ -16,7 +16,14 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   if ($effectSource != "") $EffectContext = $effectSource;
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
-  if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) $number -= $numMinusTokens;
+  if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) {
+    $number -= $numMinusTokens;
+    if ($number <= 0) {
+      WriteLog(CardLink("ripple_away_blue") . " prevented the creation of a " . CardLink($cardID) . " token");
+    } else {
+      WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of a " . CardLink($cardID) . " tokens");
+    }
+  }
   if ($number <= 0) return; // there's no event in this case
   $items = &GetItems($player);
   $myHoldState = ItemDefaultHoldTriggerState($cardID, $player);

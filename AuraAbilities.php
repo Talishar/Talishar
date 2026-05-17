@@ -67,7 +67,11 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
 
   if ($numMinusTokens > 0 && $isToken && (TypeContains($effectSource, "AA", $player) || TypeContains($effectSource, "A", $player))) {
     $number -= $numMinusTokens;
-    WriteLog(CardLink("ripple_away_blue") . " prevents the creation of $numMinusTokens " . CardLink($cardID) . " tokens!");
+    if ($number <= 0) {
+      WriteLog(CardLink("ripple_away_blue") . " prevented the creation of a " . CardLink($cardID) . " token");
+    } else {
+      WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of a " . CardLink($cardID) . " tokens");
+    }
   }
   if ($cardID == "runechant") $number += CountCurrentTurnEffects("mordred_tide_red", $player);
   if ($cardID == "seismic_surge" && $number > 0) $number += CountAura("promising_terrain_blue", $player);

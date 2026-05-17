@@ -12,7 +12,14 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
   }
-  if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player)) && $firstTransform) $number -= $numMinusTokens;
+  if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player)) && $firstTransform) {
+    $number -= $numMinusTokens;
+    if ($number <= 0) {
+      WriteLog(CardLink("ripple_away_blue") . " prevented the creation of a " . CardLink($cardID) . " token");
+    } else {
+      WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of a " . CardLink($cardID) . " tokens");
+    }
+  }
   $allies = &GetAllies($player);
   for ($i = 0; $i < $number; ++$i) {
     $index = count($allies);
