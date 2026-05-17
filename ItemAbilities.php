@@ -21,7 +21,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     if ($number <= 0) {
       WriteLog(CardLink("ripple_away_blue") . " prevented the creation of a " . CardLink($cardID) . " token");
     } else {
-      WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of a " . CardLink($cardID) . " tokens");
+      WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of " . CardLink($cardID) . " tokens");
     }
   }
   if ($number <= 0) return; // there's no event in this case

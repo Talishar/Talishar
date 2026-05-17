@@ -17,7 +17,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     if ($number <= 0) {
       WriteLog(CardLink("ripple_away_blue") . " prevented the creation of a " . CardLink($cardID) . " token");
     } else {
-      WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of a " . CardLink($cardID) . " tokens");
+      WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of " . CardLink($cardID) . " tokens");
     }
   }
   $allies = &GetAllies($player);
