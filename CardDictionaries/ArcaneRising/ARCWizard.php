@@ -178,7 +178,7 @@ function GetArcaneTargetFromUID($player, $target) {
   return $indexTarget;
 }
 
-function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $mayAbility = False) {
+function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $mayAbility = False, $setTarget = false) {
   $targetType = match($targetType) {
     "any_hero" => 0,
     "their_hero" => 1,
@@ -203,6 +203,10 @@ function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $ma
     else AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   }
   AddDecisionQueue("SETDQVAR", $player, "0", 1);
+  if ($setTarget) {
+    AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $player, $source, 1);
+  }
 }
 
 //Parameters:

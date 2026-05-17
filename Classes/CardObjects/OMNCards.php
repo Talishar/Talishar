@@ -936,8 +936,7 @@ class aphrodias extends Card {
     $CharacterCard->Tap();
     $CharacterCard->AddUse(1); //unlimited uses
     $CharacterCard->SetUsed(2);
-    SetArcaneTarget($this->controller, $this->cardID);
-    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    SetArcaneTarget($this->controller, $this->cardID, setTarget:true);
   }
 }
 
@@ -4006,7 +4005,7 @@ class aethersling_red extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    SetArcaneTarget($this->controller, $this->cardID, "any");
+    SetArcaneTarget($this->controller, $this->cardID, "any", setTarget:true);
   }
 
   function ActionsThatDoArcaneDamage() {
@@ -4100,7 +4099,7 @@ class constella_uplift_yellow extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    SetArcaneTarget($this->controller, $this->cardID);
+    SetArcaneTarget($this->controller, $this->cardID, setTarget:true);
   }
 }
 
