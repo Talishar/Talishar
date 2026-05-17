@@ -4243,6 +4243,10 @@ class path_of_same_ends_yellow extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     return $this->baseCard->PayAdditionalCosts($from, $index);
   }
+
+  function SpecialPower() {
+    return 2; //fabcube error
+  }
 }
 
 class path_of_same_ends_blue extends Card {
@@ -4283,6 +4287,10 @@ class path_of_same_ends_blue extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     return $this->baseCard->PayAdditionalCosts($from, $index);
+  }
+
+  function SpecialPower() {
+    return 1; //fabcube error
   }
 }
 
