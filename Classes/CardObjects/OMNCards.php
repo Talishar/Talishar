@@ -3968,4 +3968,8 @@ class astral_bridge_red extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     SetTargetsArcane($this->controller, $this->cardID);
   }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
 }
