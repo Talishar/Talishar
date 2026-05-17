@@ -1705,6 +1705,8 @@ function SearchMultizone($player, $searches)
                 $searchResult = SearchAurasForCardName($name, $otherPlayer);
                 break;
               default:
+                WriteLog("There was a malformed search, please submit a bug report", highlight:true);
+                $searchResult = "";
                 break;
             }
             if ($rv != "") $rv = $rv . ",";
