@@ -4408,3 +4408,48 @@ class fortitude_of_anvilheim extends Card {
     $CharacterCard->Destroy();
   }
 }
+
+class plutonic_starplate extends Card {
+  function __construct($controller) {
+    $this->cardID = "plutonic_starplate";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardPlayedAbility($cardID, $from) {
+    global $CS_NumLightningPlayed, $mainPlayer;
+    if (GetClassState($this->controller, $CS_NumLightningPlayed) == 0 && TalentContains($cardID, "LIGHTNING") && $this->controller != $mainPlayer)
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    GainResources($this->controller, 1);
+  }
+
+  function DefaultActiveState() {
+    return 0;
+  }
+
+  function ArcaneBarrier() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Chest";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+}

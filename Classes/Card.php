@@ -718,4 +718,8 @@ class Card {
   function LayerTakeDamageAbility($index, $damage, $type, $source, $preventable, $amount=false) {
     return 0;
   }
+
+  function CardPlayedAbility($cardID, $from) {
+    return;
+  }
 }

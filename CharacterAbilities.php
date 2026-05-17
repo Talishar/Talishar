@@ -1611,6 +1611,15 @@ function CharacterAttackDestroyedAbilities($attackID)
   }
 }
 
+function CharacterCardPlayedAbilities($player, $cardID, $from) {
+  $Character = new PlayerCharacter($player);
+  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $CharacterCard = $Character->Card($i, true);
+    $card = GetClass($CharacterCard->CardID(), $player);
+    if ($card != "-") $card->CardPlayedAbility($cardID, $from);
+  }
+}
+
 function CharacterPlayCardAbilities($cardID, $from)
 {
   global $currentPlayer, $CS_NumLess3PowAAPlayed, $CS_NumAttacks;

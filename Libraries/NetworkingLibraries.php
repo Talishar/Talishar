@@ -2196,6 +2196,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if ($blockcard != "-") $blockcard->WhileBlockPlayTrigger($Card->Index(), $cardID, $from);
       }    
     }
+    CharacterCardPlayedAbilities($currentPlayer, $cardID, $from);
     if (SearchCurrentTurnEffects("lightning_greaves", $mainPlayer) && DelimStringContains(CardType($cardID), "I")) {
       // check whether lightning greaves has been activated *before* the card is played
       AddCurrentTurnEffect("lightning_greaves", $currentPlayer, "", $cardID);
