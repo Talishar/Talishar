@@ -2637,6 +2637,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CHOOSEONE":
       return explode(",", $lastResult)[0] ?? "-";
+    case "REVERSELIST":
+      $arr = explode(",", $lastResult);
+      $arr = array_reverse($arr);
+      return implode(",", $arr);
     case "MZSWAP":
       if (str_contains($lastResult, "MY"))
         return str_replace("MY", "THEIR", $lastResult);
