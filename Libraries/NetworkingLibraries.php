@@ -1935,7 +1935,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
 {
   // CR 5.1 - Play a Card (includes cost declaration, targeting, and resolution setup)
   global $playerID, $turn, $currentPlayer, $actionPoints, $layers, $CombatChain;
-  global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved;
+  global $CS_NumActionsPlayed, $CS_NumNonAttackCards, $CS_NumPlayedFromBanish, $CS_DynCostResolved, $CurrentTurnEffects;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layerPriority, $CS_NumWizardNonAttack, $lastPlayed, $CS_PlayIndex, $CS_NumBluePlayed;
   global $decisionQueue, $CS_AbilityIndex, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_LayerPlayIndex, $CS_LastDynCost, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumLightningPlayed;
   global $CS_PlayedAsInstant, $mainPlayer, $EffectContext, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $CS_NumAttacks, $CCS_NumInstantsPlayedByAttackingPlayer;
@@ -2370,6 +2370,12 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $banish->Remove($cachedPlayIndex);
     $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "THEIRDISCARD";
   } else if ($from == "GY" && !ActivatedFromGraveyard($cardID)) {
+    $discardCard = new DiscardCard($cachedPlayIndex, $currentPlayer);
+    $discardUID = $discardCard->UniqueID();
+    foreach (["astral_bridge_red", "oscilio_forked_continuum", "oscilio_scion_of_the_third_age"] as $effectID) {
+      $effect = $CurrentTurnEffects->FindSpecificEffect($effectID, $discardUID);
+      if ($effect->Index() != -1) $effect->Remove();
+    }
     $discard = new Discard($currentPlayer);
     $discard->Remove($cachedPlayIndex);
   }
