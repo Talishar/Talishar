@@ -1427,7 +1427,7 @@ class arc_ramp extends BaseCard {
   function PlayAbility() {
     AddCurrentTurnEffect($this->cardID, $this->controller);
     if (SearchAuras("lightning_flow", $this->controller)) {
-      Await($this->controller, "YesNo", "choice", subsequent:0, context:"Destroy a " . CardLink("lightning_flow") . " to get go again?");
+      Await($this->controller, "YesNo", "choice", subsequent:0, context:"Do you want to destroy a " . CardLink("lightning_flow") . " to get <b>go again</b>?");
       Await($this->controller, $this->cardID, final:true);
     }
   }
@@ -3990,7 +3990,7 @@ class aethersling_red extends Card {
     $Hero = new CharacterCard(0, $this->controller);
     if ($Hero->Tapped() == 0) {
       Await($this->controller, $this->cardID, prepend:true, final:true);
-      Await($this->controller, "YesNo", context: "if_you_want_to_tap_your_hero_to_Go_Again", subsequent:0, prepend:true);
+      Await($this->controller, "YesNo", context: "Do_you_want_to_tap_your_hero_to_Go_Again", subsequent:0, prepend:true);
     }
   }
 
