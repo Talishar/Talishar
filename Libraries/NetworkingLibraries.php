@@ -865,7 +865,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100001: //Main Menu
       if ($isSimulation)
         return;
-      WriteLog("Player $playerID has left the game.");
+      if ($playerID != "3") {
+        WriteLog("Player $playerID has left the game.");
+      }
       header("Location: {$redirectPath}/MainMenu.php");
       exit;
     case 100002: //Concede
