@@ -4452,4 +4452,8 @@ class plutonic_starplate extends Card {
   function SpecialTalent() {
     return "LIGHTNING";
   }
+
+  function SpecialName() {
+    return "Plutonic Starplate";
+  }
 }
