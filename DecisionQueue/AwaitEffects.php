@@ -13,19 +13,35 @@
 //   else AddDecisionQueue("SETDQVAR", $player, implode("|", $returnNames), $subsequent);
 // }
 
-function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, $final=false, ...$args) {
-  AddDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
-  foreach ($args as $key => $value) {
-    AddDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
-    AddDecisionQueue("SETDQVAR", $player, $key, $subsequent);
+function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, $final=false, $prepend=false, ...$args) {
+  if (!$prepend) {
+    AddDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
+    foreach ($args as $key => $value) {
+      AddDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
+      AddDecisionQueue("SETDQVAR", $player, $key, $subsequent);
+    }
+    AddDecisionQueue("AWAIT", $player, $function, $subsequent);
+    if ($final) {
+      AddDecisionQueue("CLEARDQVARS", $player, "-");
+      AddDecisionQueue("ELSE", $player, "-");
+      AddDecisionQueue("CLEARDQVARS", $player, "-");
+    }
+    else AddDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
   }
-  AddDecisionQueue("AWAIT", $player, $function, $subsequent);
-  if ($final) {
-    AddDecisionQueue("CLEARDQVARS", $player, "-");
-    AddDecisionQueue("ELSE", $player, "-");
-    AddDecisionQueue("CLEARDQVARS", $player, "-");
+  else {
+    if ($final) {
+      PrependDecisionQueue("CLEARDQVARS", $player, "-");
+      PrependDecisionQueue("ELSE", $player, "-");
+      PrependDecisionQueue("CLEARDQVARS", $player, "-");
+    }
+    else PrependDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
+    PrependDecisionQueue("AWAIT", $player, $function, $subsequent);
+    foreach ($args as $key => $value) {
+      PrependDecisionQueue("SETDQVAR", $player, $key, $subsequent);
+      PrependDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
+    }
+    PrependDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
   }
-  else AddDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
 }
 
 
@@ -350,4 +366,11 @@ function AddTriggerAwait($player) {
   $parameter = "$cardID|$additional";
   PrependDecisionQueue("ADDTRIGGER", $player, $parameter, 1);
   PrependDecisionQueue("PASSPARAMETER", $player, $target, 1);
+}
+
+function MZTapAwait($player) {
+  global $dqVars;
+  $MZInd = $dqVars["MZIndex"];
+  $tapState = $dqVars["tapState"];
+  Tap($MZInd, $player, $tapState);
 }

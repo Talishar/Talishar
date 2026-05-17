@@ -3973,3 +3973,430 @@ class astral_bridge_red extends Card {
     return true;
   }
 }
+
+class aethersling_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "aethersling_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    DealArcane($this->ArcaneDamage(), source:$this->cardID, resolvedTarget:$target);
+    return "";
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $Hero = new CharacterCard(0, $this->controller);
+    if ($Hero->Tapped() == 0) {
+      Await($this->controller, $this->cardID, prepend:true, final:true);
+      Await($this->controller, "YesNo", context: "if_you_want_to_tap_your_hero_to_Go_Again", subsequent:0, prepend:true);
+    }
+  }
+
+  function SpecificLogic() {
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap();
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    $remove = true;
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetArcaneTarget($this->controller, $this->cardID, "any");
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 4;
+  }
+}
+
+class conflicting_thoughts extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    PlayerOpt($this->controller, 1);
+  }
+}
+
+class conflicting_thoughts_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "conflicting_thoughts_red";
+    $this->controller = $controller;
+    $this->baseCard = new conflicting_thoughts($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+}
+
+class conflicting_thoughts_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "conflicting_thoughts_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new conflicting_thoughts($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+}
+
+class conflicting_thoughts_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "conflicting_thoughts_blue";
+    $this->controller = $controller;
+    $this->baseCard = new conflicting_thoughts($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+}
+
+class constella_uplift_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "constella_uplift_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumInstantsPutInGrave;
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYCHAR:subtype=Staff", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Choose a staff to untap");
+    Await($this->controller, "MZTap", tapState:0, final:true);
+    if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0)
+      DealArcane(1, source:$this->cardID, resolvedTarget:$target);
+    return "";
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetArcaneTarget($this->controller, $this->cardID);
+  }
+}
+
+class path_of_same_ends extends BaseCard {
+  function PlayAbility($from) {
+    if ($from == "PLAY")
+      GiveAttackGoAgain();
+    elseif (IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    DealArcane(1, 1, source:$this->cardID);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $arcaneDealt = $dqVars["ARCANEDEALT"] ?? 0;
+    if ($arcaneDealt > 0) {
+      GiveAttackGoAgain();
+    }
+  }
+
+  function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
+    global $mainPlayer, $CombatChain, $ChainLinks;
+    if ($this->controller != $mainPlayer) return true;
+    if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
+    if ($from == "PLAY" && $CombatChain->AttackCard()->NumTimesUsed() >= 1) return true;
+    if ($from == "COMBATCHAINATTACKS") {
+      $Link = $ChainLinks->GetLink($index);
+      return $Link->AttackCard()->NumTimesUsed() >= 1;
+    }
+    return false;
+  }
+
+  function AbilityPlayableFromCombatChain($index="-") {
+    global $mainPlayer;
+    return $this->controller == $mainPlayer;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CombatChain, $ChainLinks;
+    if (is_numeric($index)) {
+      if ($from == "CC") {
+        $i = 0;
+      }
+      else {
+        $i = intdiv($index, ChainLinksPieces());
+      }
+      if ($from == "CC" || $from == "COMBATCHAINATTACKS") {
+        if ($from == "COMBATCHAINATTACKS") $ChainLinks->GetLink($i)->AttackCard()->AddUse(1);
+        else $CombatChain->AttackCard()->AddUse(1);
+      }
+    }
+  }
+}
+
+class path_of_same_ends_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "path_of_same_ends_red";
+    $this->controller = $controller;
+    $this->baseCard = new path_of_same_ends($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from);
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
+  }
+
+  function AbilityPlayableFromCombatChain($index = '-') {
+    return $this->baseCard->AbilityPlayableFromCombatChain($index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return $this->baseCard->AbilityType($index, $from);
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    return $this->baseCard->PayAdditionalCosts($from, $index);
+  }
+}
+
+class path_of_same_ends_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "path_of_same_ends_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new path_of_same_ends($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from);
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
+  }
+
+  function AbilityPlayableFromCombatChain($index = '-') {
+    return $this->baseCard->AbilityPlayableFromCombatChain($index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return $this->baseCard->AbilityType($index, $from);
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    return $this->baseCard->PayAdditionalCosts($from, $index);
+  }
+}
+
+class path_of_same_ends_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "path_of_same_ends_blue";
+    $this->controller = $controller;
+    $this->baseCard = new path_of_same_ends($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from);
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
+  }
+
+  function AbilityPlayableFromCombatChain($index = '-') {
+    return $this->baseCard->AbilityPlayableFromCombatChain($index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return $this->baseCard->AbilityType($index, $from);
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    return $this->baseCard->PayAdditionalCosts($from, $index);
+  }
+}
+
+class swift_pickup_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "swift_pickup_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYDISCARD:subtype=Item;subtype=Shuriken", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Put a Shuriken on the bottom of your deck?");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $MZIndex = $dqVars["choice"];
+    $ind = explode("-", $MZIndex)[1] ?? -1;
+    if ($ind != -1) {
+      $DiscardCard = new DiscardCard($ind, $this->controller);
+      $cardID = $DiscardCard->ID();
+      $DiscardCard->Remove();
+      $Deck = new Deck($this->controller);
+      $Deck->AddBottom($cardID);
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
+
+class fortitude_of_anvilheim extends Card {
+  function __construct($controller) {
+    $this->cardID = "fortitude_of_anvilheim";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain, $ChainLinks;
+    $choices = [];
+    if (TypeContains($CombatChain->AttackCard()->ID(), "W")) {
+      for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+        $blockingCard = $CombatChain->Card($i, true);
+        if (TypeContains($blockingCard->ID(), "A") || TypeContains($blockingCard->ID(), "AA"))
+          $choices[] = "COMBATCHAINLINK-" . $blockingCard->Index();
+      }
+    }
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $Link = $ChainLinks->GetLink($i);
+      if (TypeContains($Link->AttackCard()->ID(), "W")) {
+        for ($j = 1; $j < $Link->NumCards(); ++$j) {
+          $blockingCard = $Link->GetLinkCard($i, true);
+          if ($blockingCard->StillOnChain() && (TypeContains($blockingCard->ID(), "A") || TypeContains($blockingCard->ID(), "AA")))
+            $choices[] = "PASTCHAINLINK-" . $blockingCard->Index() . "-$i";
+        }
+      }
+    }
+    $choices = implode(",", $choices);
+    Await($this->controller, "ChooseMultiZone", "choice", indices:$choices, context:"Choose a blocking action to return to hand", subsequent:false);
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $CombatChain, $ChainLinks;
+    $choice = $dqVars["choice"];
+    $inds = explode("-", $choice);
+    $zone = $inds[0];
+    switch ($zone) {
+      case "COMBATCHAINLINK":
+        $ind = $inds[1] ?? -1;
+        if ($ind != -1) {
+          $ChainCard = new ChainCard($ind);
+          AddPlayerHand($ChainCard->ID(), $ChainCard->PlayerID(), "CC");
+          $ChainCard->Remove();
+        }
+        break;
+      case "PASTCHAINLINK":
+        $linkNum = $inds[2] ?? -1;
+        $ind = $inds[1] ?? -1;
+        if ($linkNum != -1 && $ind != -1) {
+          $ChainCard = $ChainLinks->GetLink($linkNum)->GetLinkCard($ind);
+          AddPlayerHand($ChainCard->ID(), $ChainCard->PlayerID(), "CC");
+          $ChainCard->Remove();
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap();
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+}
