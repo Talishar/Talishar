@@ -1884,6 +1884,10 @@ class oasis_respite extends BaseCard {
     global $dqVars;
     $choice = $dqVars["LASTRESULT"];
     $object = MZIndexToObject($this->controller, $choice);
+    if ($object == "") {
+      WriteLog("Something odd happened with oasis respite, please submit a bug report", highlight:true);
+      return;
+    }
     if (is_a($object, "Layer")) {
       $from = explode("|", $object->Parameter())[0];
       $cardType = CardType($object->ID());
