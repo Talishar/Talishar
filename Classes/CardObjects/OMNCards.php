@@ -3566,7 +3566,7 @@ class razor_ring_blue extends Card {
   }
 
   function AbilityType($index = -1, $from = '-') {
-    return $this->baseCard->AbilityType($from);
+    return $this->archetype->AbilityType($from);
   }
 
   function GoesOnCombatChain($phase, $from) {
@@ -3633,7 +3633,7 @@ class stun_star_blue extends Card {
   }
 
   function AbilityType($index = -1, $from = '-') {
-    return $this->baseCard->AbilityType($from);
+    return $this->archetype->AbilityType($from);
   }
 
   function GoesOnCombatChain($phase, $from) {
@@ -3688,7 +3688,7 @@ class evasive_nageboshi_blue extends Card {
   }
 
   function AbilityType($index = -1, $from = '-') {
-    return $this->baseCard->AbilityType($from);
+    return $this->archetype->AbilityType($from);
   }
 
   function GoesOnCombatChain($phase, $from) {
