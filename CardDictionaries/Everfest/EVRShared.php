@@ -785,11 +785,12 @@
     AddDecisionQueue("PLAYAURA", $mainPlayer, "<-", 1);
   }
 
-  function MirragingMetamorphDestroyed()
+  function MirragingMetamorphDestroyed($may=false)
   {
     global $mainPlayer;
     AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYAURAS", 1);
-    AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+    else AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
     AddDecisionQueue("MULTIZONETOKENCOPY", $mainPlayer, "-", 1);
   }
 

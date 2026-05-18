@@ -3942,7 +3942,7 @@ class fractal_creation_blue extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    MirragingMetamorphDestroyed();
+    MirragingMetamorphDestroyed(may:true);
   }
 }
 
