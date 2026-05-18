@@ -582,7 +582,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1, $flicked = f
 
 function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs = false, $player = -1)
 {
-  global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain, $CS_NumCharged;
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain, $CS_NumCharged, $CS_NumAttacks;
   $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -645,6 +645,14 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
       case "arakni_web_of_deceit":
         $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
         if (HasStealth($CombatChain->CurrentAttack()) && CheckMarked($otherPlayer) && IsHeroAttackTarget()) {
+          $modifier += 1;
+          $powerModifiers[] = $characterID;
+          $powerModifiers[] = 1;
+        }
+        break;
+      case "ira_crimson_haze":
+      case "ira_scarlet_revenger":
+        if (GetClassState($mainPlayer, $CS_NumAttacks) == 2) {
           $modifier += 1;
           $powerModifiers[] = $characterID;
           $powerModifiers[] = 1;
@@ -1633,21 +1641,12 @@ function CharacterPlayCardAbilities($cardID, $from)
     if ($card != "-") $card->PlayCardAbility($cardID, $from);
     switch ($characterID) {
       case "tiger_stripe_shuko":
-        if ($from != "PLAY") break;
         if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID, $currentPlayer, "CC") <= 2) {
           AddCurrentTurnEffect($characterID, $currentPlayer);
           $character[$i + 1] = 1;
         }
         break;
-      case "ira_crimson_haze":
-      case "ira_scarlet_revenger":
-        if (GetClassState($currentPlayer, $CS_NumAttacks) == 2) {
-          AddCurrentTurnEffect($characterID, $currentPlayer);
-          $character[$i + 1] = 1;
-        }
-        break;
       case "melody_sing_along":
-        if ($from != "PLAY") break;
         if (SubtypeContains($cardID, "Song", $currentPlayer)) PutItemIntoPlayForPlayer("copper", $currentPlayer);
         break;
       default:

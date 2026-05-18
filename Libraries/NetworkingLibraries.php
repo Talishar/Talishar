@@ -4348,9 +4348,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if (!$isBlock && !$skipDRResolution) {
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if ($from != "PLAY") {
+      CharacterPlayCardAbilities($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
     }
-    CharacterPlayCardAbilities($cardID, $from);
     if (!$chainClosed || $definedCardType == "AA") {
       if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
       if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
