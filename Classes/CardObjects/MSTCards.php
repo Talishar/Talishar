@@ -1719,8 +1719,8 @@
 class restless_coalescence_yellow extends Card {
 
   function __construct($controller) {
-    $this->cardID = "restless_coalescence_yellow";
-    $this->controller = $controller;
+		$this->cardID = "restless_coalescence_yellow";
+		$this->controller = $controller;
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -1737,6 +1737,7 @@ class restless_coalescence_yellow extends Card {
 				AddDecisionQueue("MZOP", $this->controller, "TRANSFERPOWERCOUNTER", 1);
 			}
 			AddCurrentTurnEffect($this->cardID, $this->controller, $from, $auras[count($auras) - AuraPieces() + 6]);
+			return "";
 		}
 		if ($abilityType != "I") return "";
 
