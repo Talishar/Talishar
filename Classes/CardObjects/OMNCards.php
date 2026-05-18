@@ -3072,34 +3072,6 @@ class red_lure_harpoon_blue extends Card {
     $Card->Remove();
     BanishCardForPlayer($cardID, $otherPlayer, "DISCARD", "NTFromOtherPlayer", $this->cardID, $this->controller);
   }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialSubType() {
-    return "Arrow";
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialClass() {
-    return "PIRATE,RANGER";
-  }
-
-  function SpecialName() {
-    return "Red Lure Harpoon";
-  }
 }
 
 class browbeat_blue extends Card {
@@ -4242,10 +4214,6 @@ class path_of_same_ends_yellow extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     return $this->baseCard->PayAdditionalCosts($from, $index);
   }
-
-  function SpecialPower() {
-    return 2; //fabcube error
-  }
 }
 
 class path_of_same_ends_blue extends Card {
@@ -4286,10 +4254,6 @@ class path_of_same_ends_blue extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     return $this->baseCard->PayAdditionalCosts($from, $index);
-  }
-
-  function SpecialPower() {
-    return 1; //fabcube error
   }
 }
 
@@ -4445,29 +4409,5 @@ class plutonic_starplate extends Card {
 
   function DefaultActiveState() {
     return 0;
-  }
-
-  function ArcaneBarrier() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 0;
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Chest";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialName() {
-    return "Plutonic Starplate";
   }
 }
