@@ -2382,8 +2382,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $discard = new Discard($currentPlayer);
     $discard->Remove($cachedPlayIndex);
   }
+  WriteLog("JERE: $turn[0], $playType,  " . GetClassState($currentPlayer, $CS_NumAttacks));
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     if ($playType == "AA") IncrementClassState($currentPlayer, $CS_NumAttacks);
+    WriteLog("JERE2: $turn[0], $playType,  " . GetClassState($currentPlayer, $CS_NumAttacks));
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
     CardPlayTrigger($cardID, $from);
@@ -4347,8 +4349,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     CurrentEffectPlayOrActivateAbility($cardID, $from);
     if ($from != "PLAY") {
       ArsenalPlayCardAbilities($cardID);
-      CharacterPlayCardAbilities($cardID, $from);
     }
+    CharacterPlayCardAbilities($cardID, $from);
     if (!$chainClosed || $definedCardType == "AA") {
       if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) AllyAttackAbilities($cardID);
       if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Ally")) SpecificAllyAttackAbilities($cardID);
