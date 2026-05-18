@@ -4421,7 +4421,7 @@ class plutonic_starplate extends Card {
 
   function CardPlayedAbility($cardID, $from) {
     global $CS_NumLightningPlayed, $mainPlayer;
-    if (GetClassState($this->controller, $CS_NumLightningPlayed) == 0 && TalentContains($cardID, "LIGHTNING") && $this->controller != $mainPlayer)
+    if (GetClassState($this->controller, $CS_NumLightningPlayed) == 0 && TalentContains($cardID, "LIGHTNING") && $this->controller != $mainPlayer && !IsActivated($cardID, $from))
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
