@@ -779,7 +779,13 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
 
 function DamageDealtAbilities($target, $damage, $type, $source)
 {
-  global $mainPlayer, $combatChainState, $CCS_AttackFused;
+  global $mainPlayer, $combatChainState, $CCS_AttackFused, $CombatChain, $layers;
+  if ($type == "COMBAT") {
+    if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
+      WriteLog("Damage effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
+      return;
+    }
+  }
   if (($source == "explosive_growth_red" || $source == "explosive_growth_yellow" || $source == "explosive_growth_blue") && $combatChainState[$CCS_AttackFused]) AddCurrentTurnEffect($source, $mainPlayer);
   if ($source == "suraya_archangel_of_knowledge") GainHealth($damage, $mainPlayer);
   $card = GetClass($source, $mainPlayer);
