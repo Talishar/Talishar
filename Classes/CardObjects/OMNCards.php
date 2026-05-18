@@ -3539,6 +3539,10 @@ class shuriken {
     }
     return false;
   }
+
+  function AbilityType($from) {
+    return $from == "PLAY" ? "AA" : "";
+  }
 }
 
 class razor_ring_blue extends Card {
@@ -3562,7 +3566,7 @@ class razor_ring_blue extends Card {
   }
 
   function AbilityType($index = -1, $from = '-') {
-    return "AA";
+    return $this->baseCard->AbilityType($from);
   }
 
   function GoesOnCombatChain($phase, $from) {
@@ -3629,7 +3633,7 @@ class stun_star_blue extends Card {
   }
 
   function AbilityType($index = -1, $from = '-') {
-    return "AA";
+    return $this->baseCard->AbilityType($from);
   }
 
   function GoesOnCombatChain($phase, $from) {
@@ -3684,7 +3688,7 @@ class evasive_nageboshi_blue extends Card {
   }
 
   function AbilityType($index = -1, $from = '-') {
-    return "AA";
+    return $this->baseCard->AbilityType($from);
   }
 
   function GoesOnCombatChain($phase, $from) {
