@@ -635,7 +635,7 @@ function AbilityCost($cardID)
     $abilityType = GetResolvedAbilityType($cardID, "PLAY");
     if ($abilityType == "I") return 0;
   }
-  if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura")) {
+  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($currentPlayer, "luminaris")) return 0;
     if (SearchCharacterForCard($currentPlayer, "iris_of_reality")) return 3;
     if (SearchCharacterForCard($currentPlayer, "reality_refractor")) return 2;
