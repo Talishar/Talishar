@@ -4376,6 +4376,13 @@ class fortitude_of_anvilheim extends Card {
         if ($ind != -1) {
           $ChainCard = new ChainCard($ind);
           AddPlayerHand($ChainCard->ID(), $ChainCard->PlayerID(), "CC");
+          if ($ChainCard->From() == "EQUIP") { //evos
+            $Character = new PlayerCharacter($ChainCard->PlayerID());
+            $CharacterCard = $Character->FindCardID($ChainCard->ID());
+            foreach (explode(",", $CharacterCard->Subcards()) as $subcard)
+              AddGraveyard($subcard, $ChainCard->PlayerID(), "EQUIP");
+            $CharacterCard->Remove();
+          }
           $ChainCard->Remove();
         }
         break;
@@ -4385,6 +4392,13 @@ class fortitude_of_anvilheim extends Card {
         if ($linkNum != -1 && $ind != -1) {
           $ChainCard = $ChainLinks->GetLink($linkNum)->GetLinkCard($ind);
           AddPlayerHand($ChainCard->ID(), $ChainCard->PlayerID(), "CC");
+          if ($ChainCard->From() == "EQUIP") {
+            $Character = new PlayerCharacter($ChainCard->PlayerID());
+            $CharacterCard = $Character->FindCardID($ChainCard->ID());
+            foreach (explode(",", $CharacterCard->Subcards()) as $subcard)
+              AddGraveyard($subcard, $ChainCard->PlayerID(), "EQUIP");
+            $CharacterCard->Remove();
+          }
           $ChainCard->Remove();
         }
         break;
