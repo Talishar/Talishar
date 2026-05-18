@@ -1718,7 +1718,7 @@
 
 class restless_coalescence_yellow extends Card {
 
-  function __construct($controller) {
+  	function __construct($controller) {
 		$this->cardID = "restless_coalescence_yellow";
 		$this->controller = $controller;
 	}
@@ -1768,21 +1768,21 @@ class restless_coalescence_yellow extends Card {
 		if ($from == "PLAY") {
 			$AuraCard = new AuraCard($index, $this->controller);
 			$abilityType = GetResolvedAbilityType($this->cardID, $from, $this->controller);
-      if ($abilityType == "I" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) != -1) {
-        $AuraCard->AddPowerCounters(-1);
-        RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()));
-        AddCurrentTurnEffect($this->cardID, $this->controller, "", $AuraCard->UniqueID() . "-PAID");
-      } elseif ($abilityType == "AA") {
+			if ($abilityType == "I" && $from == "PLAY" && SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) != -1) {
+				$AuraCard->AddPowerCounters(-1);
+				RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()));
+				AddCurrentTurnEffect($this->cardID, $this->controller, "", $AuraCard->UniqueID() . "-PAID");
+			} elseif ($abilityType == "AA") {
 				$AuraCard->SetStatus(1);
-      }
+			}
 		}
 	}
 
 	function AbilityCost() {
 		// this isn't getting called right now
 		$abilityType = GetResolvedAbilityType($this->cardID, "PLAY");
-    if ($abilityType == "I") return 0;
-		else return -1;
+		if ($abilityType == "I") return 0;
+			else return -1;
 	}
 
 	function AbilityType($index = -1, $from = '-') {
@@ -1790,7 +1790,12 @@ class restless_coalescence_yellow extends Card {
 	}
 
 	function GetAbilityTypes($index = -1, $from = '-') {
-		return ($from != "PLAY") ? "" : "I,AA";
+		global $mainPlayer;
+		if ($from == "PLAY")
+			return "";
+		if ($this->controller != $mainPlayer)
+			return "I";
+		return "I,AA";
 	}
 
 	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
