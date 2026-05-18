@@ -4081,8 +4081,11 @@ class constella_uplift_yellow extends Card {
 
 class path_of_same_ends extends BaseCard {
   function PlayAbility($from) {
+    WriteLog("HERE: $from");
     if ($from == "PLAY")
       GiveAttackGoAgain();
+    elseif ($from == "COMBATCHAINATTACKS")
+      WriteLog("For now activating " . CardLink($this->cardID) . " on a past link has no effect");
     elseif (IsHeroAttackTarget())
       AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
   }
