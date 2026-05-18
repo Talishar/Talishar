@@ -3723,8 +3723,13 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     WriteLog("Draw prevented by " . CardLink("by_the_book_blue"));
     return "";
   }
-  if ($effectSource == "gold" && SearchCurrentTurnEffects("not_so_fast_yellow", $player, true)){
-    $player = $otherPlayer;
+  if ($effectSource == "gold" && SearchCurrentTurnEffects("myrkhellir_helm", $player, true))
+    ++$num;
+  if ($effectSource == "gold" && SearchCurrentTurnEffects("not_so_fast_yellow", $otherPlayer, true)){
+    --$num;
+    Draw($otherPlayer, effectSource:"gold");
+    WriteLog("💰 NOT SO FAST");
+    if ($num == 0) return "";
   }
   $deck = new Deck($player);
   $hand = &GetHand($player);

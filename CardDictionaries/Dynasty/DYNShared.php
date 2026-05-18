@@ -471,16 +471,8 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "gold":
       $rv = "";
-      if($from == "PLAY") {
-        if (SearchCurrentTurnEffects("not_so_fast_yellow", $otherPlayer, true)) {
-          WriteLog("💰 NOT SO FAST");
-          Draw($otherPlayer, effectSource:$cardID);
-        }
-        if (SearchCurrentTurnEffects("myrkhellir_helm", $currentPlayer, true)) {
-          Draw($currentPlayer, effectSource:$cardID, num:2);
-        }
-        else Draw($currentPlayer, effectSource:$cardID);
-      }
+      if($from == "PLAY")
+        Draw($currentPlayer, effectSource:$cardID);
       return $rv;
     case "suraya_archangel_of_knowledge":
       $soul = &GetSoul($currentPlayer);
