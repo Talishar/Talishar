@@ -3071,5 +3071,18 @@ class staunch_response_blue extends Card {
 //   }
 // }
 
+class INTIMIDATE extends Card {
+  function __construct($controller) {
+    $this->cardID = "INTIMIDATE";
+    $this->controller = $controller;
+  }
 
-// ?>
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Banish = new Banish($this->controller);
+		$BanishCard = $Banish->FindCardUID($target);
+		if ($BanishCard->Index() != -1) {
+			AddPlayerHand($BanishCard->ID(), $this->controller, "BANISH");
+			$BanishCard->Remove();
+		}
+  }
+}

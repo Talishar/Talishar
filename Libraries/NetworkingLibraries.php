@@ -1732,9 +1732,9 @@ function UndoIntimidate($player)
   $banishCount = count($banish);
   $banishPieces = BanishPieces();
   for ($i = $banishCount - $banishPieces; $i >= 0; $i -= $banishPieces) {
+    $BanishCard = new BanishCard($player, $i);
     if ($banish[$i + 1] == "INT") {
-      array_push($hand, $banish[$i]);
-      RemoveBanish($player, $i);
+      AddLayer("TRIGGER", $player, "INTIMIDATE", $BanishCard->UniqueID());
       continue;
     }
     if ($banish[$i + 1] == "NOFEAR" && SearchLayersForCardID("no_fear_red") == -1) {
