@@ -645,7 +645,7 @@ class fractal_replication_red extends Card {
 	}
 
 	function GetStats($stat) {
-		global $ChainLinks;
+		global $ChainLinks, $CombatChain;
 		$highestAttack = 0;
     $highestBlock = 0;
 		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
@@ -653,6 +653,7 @@ class fractal_replication_red extends Card {
 			for ($j = 0; $j < $Link->NumCards(); ++$j) {
 				$LinkCard = $Link->GetLinkCard($j, true);
 				$cardID = $LinkCard->ID();
+				if ($cardID == $this->cardID) continue; //avoid infinite loops
 				$isIllusionist = ClassContains($cardID, "ILLUSIONIST", $LinkCard->PlayerID()) || $j == 0 && DelimStringContains($Link->Class(), "ILLUSIONIST");
 				if (!$isIllusionist) continue;
 				if (!$LinkCard->StillOnChain()) continue;
@@ -666,6 +667,22 @@ class fractal_replication_red extends Card {
 				$block = BlockValue($cardID);
 				if($block > $highestBlock) $highestBlock = $block;
 			}
+		}
+		for ($j = 0; $j < $CombatChain->NumCardsActiveLink(); ++$j) {
+			$LinkCard = $CombatChain->Card($j, true);
+			$cardID = $LinkCard->ID();
+			if ($cardID == $this->cardID) continue; //avoid infinite loops
+			$isIllusionist = ClassContains($cardID, "ILLUSIONIST", $LinkCard->PlayerID());
+			if (!$isIllusionist) continue;
+			if (!TypeContains($cardID, "AA", $LinkCard->PlayerID())) continue;
+			if ($cardID == $this->cardID) continue;
+			if ($j != 0)
+				$power = ModifiedPowerValue($cardID, $LinkCard->PlayerID(), "CC", source:$this->cardID);
+			else
+				$power = $Link->ModifiedBaseAttack();
+			if($power > $highestAttack) $highestAttack = $power;
+			$block = BlockValue($cardID);
+			if($block > $highestBlock) $highestBlock = $block;
 		}
 		return match($stat) {
 			"block" => $highestBlock,
