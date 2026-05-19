@@ -2009,6 +2009,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       };
       
       $isAnAction = $from != "PLAY" && DelimStringContains($cardType, "A") && !GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer);
+      $card = GetClass($cardID, $currentPlayer);
+      if ($card != "-" && $card->IsAttackLayer()) $isAnAction = false;
       $isNotAbility = GetAbilityTypes($cardID, $index, $from) == "" || GetAbilityNames($cardID, $index, $from) == "-,Action";
       if ($isAnAction && $isNotAbility && !HasMeld($cardID)) {
         // Return card to its zone since it can't be played without paying
@@ -4159,7 +4161,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_NumDragonAttacks, $CS_NumAttackCardsAttacked, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked;
   global $currentTurnEffects, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackTarget, $CCS_AttackTargetUID;
-  global $landmarks;
+  global $landmarks, $CS_WeaponsAttackedWith;
   $cardType = CardType($cardID);
   if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {
     WriteLog("You cannot play Non-Attack Actions with an open chain, closing the chain");
@@ -4320,6 +4322,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         OnAttackEffects($cardID);
       }
       if (!$chainClosed && ($definedCardType == "AA" || GetResolvedAbilityType($cardID, $from) == "AA")) {
+        if (TypeContains($cardID, "W")) {
+          $weaponsAttacked = GetClassState($currentPlayer, $CS_WeaponsAttackedWith);
+          if ($weaponsAttacked == "-") $weaponsAttacked = $uniqueID;
+          else $weaponsAttacked .= ",$uniqueID";
+          SetClassState($currentPlayer, $CS_WeaponsAttackedWith, $weaponsAttacked);
+        }
         IncrementClassState($currentPlayer, $CS_NumTimesAttacked);
         if (DelimStringContains(CardSubType($cardID), "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
         if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);

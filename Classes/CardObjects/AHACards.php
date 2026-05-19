@@ -77,8 +77,8 @@ class SHARPEN extends Card {
 
 class zenith_blade extends Card {
 	function __construct($controller) {
-    $this->cardID = "zenith_blade";
-    $this->controller = $controller;
+		$this->cardID = "zenith_blade";
+		$this->controller = $controller;
 	}
 
 	function DoesAttackHaveGoAgain() {
@@ -562,21 +562,21 @@ class shuck_blue extends Card {
 }
 
 class silverdrop_downpour_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "silverdrop_downpour_red";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "silverdrop_downpour_red";
+		$this->controller = $controller;
+	}
 
 	function SelfCostModifier($from) {
 		return SearchCurrentTurnEffects("SHARPEN", $this->controller) ? -1 : 0;
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain;
+    	global $CombatChain;
 		if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
 			AddEffectToCurrentAttack($this->cardID);
 		return "";
-  }
+  	}
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 4;

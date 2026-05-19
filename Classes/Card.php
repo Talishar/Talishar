@@ -722,4 +722,8 @@ class Card {
   function CardPlayedAbility($cardID, $from) {
     return;
   }
+
+  function IsAttackLayer() {
+    return false;
+  }
 }

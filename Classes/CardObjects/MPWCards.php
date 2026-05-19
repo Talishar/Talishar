@@ -667,13 +667,62 @@ class donkey_blue extends Card {
 	}
 }
 
-// class and_again_blue extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "and_again_blue";
-//     $this->controller = $controller;
-//   }
+class and_again_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "and_again_blue";
+    $this->controller = $controller;
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$Sword = CleanTargetToObject($this->controller, explode(",", $target)[0]);
+		$attackTarget = explode(",", $target)[1] ?? "NA";
+		if ($Sword->Index() != -1) {
+			$index = $Sword->Index();
+			$uniqueID = $Sword->UniqueID();
+			$cardID = $Sword->CardID();
+			$parameter = "EQUIP|0|$index|$uniqueID|MYCHAR";
+			AddAttackQueue($cardID, $this->controller, $attackTarget, $parameter, $uniqueID);
+		}
+    return "";
+  }
+
+  function IsAttackLayer() {
+		return true;
+  }
+
+	function GetTargets() {
+		global $CurrentTurnEffects, $CS_WeaponsAttackedWith;
+		$targets = [];
+		$Character = new PlayerCharacter($this->controller);
+		for ($i = 0; $i < $Character->NumCards(); ++$i) {
+			$CharacterCard = $Character->Card($i, true);
+			if (!SubtypeContains($CharacterCard->CardID(), "Sword")) continue;
+			$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $CharacterCard->UniqueID());
+			if ($foundSharpen->Index() == -1) continue;
+			if (!str_contains(GetClassState($this->controller, $CS_WeaponsAttackedWith), $CharacterCard->UniqueID())) continue;
+			$targets[] = "MYCHAR-" . $CharacterCard->Index();
+		}
+		return $targets;
+	}
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return count($this->GetTargets()) == 0;
+  }
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$targetSwords = $this->GetTargets();
+		AddDecisionQueue("GETTARGETOFATTACK", $this->controller, "$targetSwords[0],EQUIP,1");
+		Await($this->controller, "AQTargeting", "attackTarget", lastResultName:"target");
+		Await($this->controller, "ChooseMultiZone", "targetSword", indices:implode(",", $targetSwords));
+		Await($this->controller, $this->cardID, final:true);
+	}
+
+	function SpecificLogic() {
+		global $dqVars, $Stack;
+		$targetSword = CleanTarget($this->controller, $dqVars["targetSword"]);
+		$attackTarget = $dqVars["attackTarget"]; // AQTargeting already cleaned this
+		$target = "$targetSword,$attackTarget";
+		$Layer = $Stack->TopLayer($this->cardID);
+		$Layer->AddTarget($target);
+	}
+}
