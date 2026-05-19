@@ -182,6 +182,10 @@ class starfield_carapace extends Card {
   function DefaultActiveState() {
     return 0;
   }
+
+  function SpecialBlock() {
+    return 1; //fabcube mistake
+  }
 }
 
 class shattering_stardust_red extends Card {
