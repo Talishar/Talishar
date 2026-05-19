@@ -585,8 +585,8 @@ class fractal_replication_red extends Card {
 		return implode(",", $addedAbilityIDs);
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $ChainLinks, $CombatChain;
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	global $ChainLinks, $CombatChain;
 		$addedAbilities = [];
 		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
 			$Link = $ChainLinks->GetLink($i);
@@ -608,7 +608,7 @@ class fractal_replication_red extends Card {
 			PlayAbility($ability, $from, $resourcesPaid, $target, $additionalCosts);
 		}
 		return "";
-  }
+  	}
 
 	function DoesAttackHaveGoAgain() {
 		global $CurrentTurnEffects;
@@ -647,7 +647,7 @@ class fractal_replication_red extends Card {
 	function GetStats($stat) {
 		global $ChainLinks, $CombatChain;
 		$highestAttack = 0;
-    $highestBlock = 0;
+    	$highestBlock = 0;
 		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
 			$Link = $ChainLinks->GetLink($i);
 			for ($j = 0; $j < $Link->NumCards(); ++$j) {
@@ -679,7 +679,7 @@ class fractal_replication_red extends Card {
 			if ($j != 0)
 				$power = ModifiedPowerValue($cardID, $LinkCard->PlayerID(), "CC", source:$this->cardID);
 			else
-				$power = $Link->ModifiedBaseAttack();
+				$power = LinkBasePower();
 			if($power > $highestAttack) $highestAttack = $power;
 			$block = BlockValue($cardID);
 			if($block > $highestBlock) $highestBlock = $block;
