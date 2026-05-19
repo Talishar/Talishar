@@ -23,11 +23,7 @@ class stardust_spike_red extends Card {
 	}
 
 	function ArcaneModifier(&$remove, $player, $index, $amount=false) {
-		$Effect = new CurrentEffect($index);
-		if ($amount) return $Effect->NumUses();
-		if ($player != $this->controller) return 0;
-		$remove = true;
-		return $Effect->NumUses();
+		return Amp(1, $remove, $player, $this->controller, $amount);
 	}
 }
 
@@ -176,5 +172,66 @@ class starfield_carapace extends Card {
 
   function DefaultActiveState() {
     return 0;
+  }
+}
+
+class shattering_stardust_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shattering_stardust_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return Amp(1, $remove, $player, $this->controller, $amount);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to flicker (or pass)";
+    $indices = FindHoloAuras($this->controller);
+    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices, context:$context, may:true);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $MZIndex = $dqVars["MZIndex"];
+    HoloFlicker($this->controller, $MZIndex);
+  }
+}
+
+class blur_reality_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "blur_reality_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to flicker";
+    $indices = FindHoloAuras($this->controller);
+    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices, context:$context);
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $MZIndex = $dqVars["MZIndex"];
+    HoloFlicker($this->controller, $MZIndex);
   }
 }
