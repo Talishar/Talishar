@@ -4479,3 +4479,396 @@ class beckon_steel_blue extends Card {
     return TargetSwordAttack($this->controller) == "";
   }
 }
+
+class scattering_conflux_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "scattering_conflux_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("embodiment_of_lightning", $this->controller);
+  }
+}
+
+class polarus_pulse_ray extends BaseCard {
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    DealArcane(1, 1, source:$this->cardID);
+  }
+}
+
+class polarus_pulse_ray_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "polarus_pulse_ray_red";
+    $this->controller = $controller;
+    $this->baseCard = new polarus_pulse_ray($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class polarus_pulse_ray_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "polarus_pulse_ray_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new polarus_pulse_ray($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class polarus_pulse_ray_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "polarus_pulse_ray_blue";
+    $this->controller = $controller;
+    $this->baseCard = new polarus_pulse_ray($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class ebbing_arcstride extends BaseCard {
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    GiveAttackGoAgain();
+  }
+}
+
+class ebbing_arcstride_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "ebbing_arcstride_red";
+    $this->controller = $controller;
+    $this->baseCard = new ebbing_arcstride($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class ebbing_arcstride_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "ebbing_arcstride_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new ebbing_arcstride($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class ebbing_arcstride_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "ebbing_arcstride_blue";
+    $this->controller = $controller;
+    $this->baseCard = new ebbing_arcstride($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class shattering_flowtide extends BaseCard {
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
+  }
+}
+
+class shattering_flowtide_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shattering_flowtide_red";
+    $this->controller = $controller;
+    $this->baseCard = new shattering_flowtide($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+}
+
+class shattering_flowtide_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "shattering_flowtide_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new shattering_flowtide($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function SpecialPower() {
+    return 4; //fabcube error
+  }
+}
+
+class shattering_flowtide_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shattering_flowtide_blue";
+    $this->controller = $controller;
+    $this->baseCard = new shattering_flowtide($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function FragmentTrigger() {
+    $this->baseCard->FragmentTrigger();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function SpecialPower() {
+    return 3; //fabcube error
+  }
+}
+
+class elliptical_conflux_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "elliptical_conflux_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("embodiment_of_lightning", $this->controller, effectSource:$this->cardID);
+  }
+}
+
+
+class crackle_from_afar_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "crackle_from_afar_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EntersArenaAbility() {
+    $indices = implode(",", TargetAttack($this->controller));
+    Await($this->controller, "ChooseMultizone", "target", indices:$indices, context:"Target an attack to give +1 power", subsequent:0);
+    Await($this->controller, "AddTrigger", cardID:$this->cardID, final:true);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $targetZone = explode("-", $target)[0];
+    if ($targetZone == "ATTACKQUEUE") {
+      WriteLog("Targeting the attack queue not supported yet");
+    }
+    elseif ($targetZone != "PASTCHAINLINK") {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
+
+class fleeing_starbreeze_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "fleeing_starbreeze_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EntersArenaAbility() {
+    $indices = implode(",", TargetAttack($this->controller));
+    Await($this->controller, "ChooseMultizone", "target", indices:$indices, context:"Target an attack to give +1 power", subsequent:0);
+    Await($this->controller, "AddTrigger", cardID:$this->cardID, final:true);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $targetZone = explode("-", $target)[0];
+    if ($targetZone == "ATTACKQUEUE") {
+      WriteLog("Targeting the attack queue not supported yet");
+    }
+    elseif ($targetZone != "PASTCHAINLINK") {
+      GiveAttackGoAgain();
+    }
+  }
+}
+
+class clear_conscience extends BaseCard {
+  function AddOnHitTrigger($check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect() {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    foreach ([$this->controller, $otherPlayer] as $player) {
+      MZMoveCard($player, "MYHAND", "MYBOTDECK", silent:true, DQContext: "Choose a card to put on the bottom of your deck");
+      PlayAura("ponder", $player);
+    }
+  }
+}
+
+class clear_conscience_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "clear_conscience_red";
+    $this->controller = $controller;
+    $this->baseCard = new clear_conscience($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+}
+
+class clear_conscience_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "clear_conscience_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new clear_conscience($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+}
+
+class clear_conscience_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "clear_conscience_blue";
+    $this->controller = $controller;
+    $this->baseCard = new clear_conscience($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+}

@@ -191,6 +191,31 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 	return $targets;
 }
 
+// returns a list of any attack that can be targeted
+function TargetAttack($player) {
+	global $Stack, $CombatChain, $ChainLinks;
+	$targets = [];
+	if (IsLayerStep()) {
+		$botLayer = $Stack->BottomLayer();
+		// need to make sure this can't target funny attack-layers like emperor
+		$targets[] = "LAYER-" . $botLayer->Index();
+	}
+
+	$i = 0;
+	$ChainCard = $CombatChain->Card($i, true);
+	$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
+
+	for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+		$Link = $ChainLinks->GetLink($i);
+		$j = 0;
+		$ChainCard = $Link->GetLinkCard($j, true);
+		$targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
+	}
+
+	// let it check the attack queue
+	return $targets;
+}
+
 function SetDamageSourceUID($uid) {
 	global $CS_ResolvingLayerUniqueID;
 	SetClassState(1, $CS_ResolvingLayerUniqueID, $uid);
