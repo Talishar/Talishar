@@ -112,10 +112,6 @@ class starfield_veil extends Card {
     return "I";
   }
 
-  function AbilityCost() {
-    return 1;
-  }
-
   function PayAdditionalCosts($from, $index = '-') {
     $CharacterCard = new CharacterCard($index, $this->controller);
     $CharacterCard->Destroy();
