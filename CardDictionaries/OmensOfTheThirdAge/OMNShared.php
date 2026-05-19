@@ -203,8 +203,10 @@ function TargetAttack($player) {
 	}
 
 	$i = 0;
-	$ChainCard = $CombatChain->Card($i, true);
-	$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
+	if ($CombatChain->HasCurrentLink()) {
+		$ChainCard = $CombatChain->Card($i, true);
+		$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
+	}
 
 	for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
 		$Link = $ChainLinks->GetLink($i);
