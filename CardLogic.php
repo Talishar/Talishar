@@ -2140,13 +2140,16 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   }
   elseif ($additionalCosts == "EFFECTHITEFFECT") {
     if(isset($combatChain) && count($combatChain) > 2) {
-      $index = FindCurrentTurnEffectIndex($player, $parameter);
+      // many old onhits use the "target" field to store which onhit it is
+      // if the target is a real target then it won't contain the parameter as a substring
+      $cardID = str_contains($target, $parameter) ? $target : $parameter;
+      $index = FindCurrentTurnEffectIndex($player, $cardID);
       if ($index != -1) {
         // Remove "-string" and "string-" suffixes from the effect ID
         $effectID = preg_replace('/-[^-]*$/', '', $currentTurnEffects[$index]);
         LogPlayCardStats($player, $effectID, "CC", "HIT");
       }
-      if (EffectHitEffect($parameter, $combatChain[2], $uniqueID, effectSource:$combatChain[0], target:$target)) {
+      if (EffectHitEffect($cardID, $combatChain[2], $uniqueID, effectSource:$combatChain[0], target:$target)) {
         if ($index != -1) RemoveCurrentTurnEffect($index);
       }
     }
