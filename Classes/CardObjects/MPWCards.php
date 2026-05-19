@@ -117,7 +117,7 @@ class sharpening_sparks_red extends Card {
 		return true;
 	}
 
-	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
 		global $combatChainState, $CCS_WeaponIndex;
 		Sharpen("MYCHAR-$combatChainState[$CCS_WeaponIndex]", $this->controller);
 	}

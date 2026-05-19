@@ -3295,7 +3295,7 @@ class livewire_press_red extends Card {
     return $this->baseCard->AddEffectHitTrigger($check);
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     $this->baseCard->EffectHitEffect(4);
   }
 }
@@ -3390,7 +3390,7 @@ class a_bit_off_the_side_red extends Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $defPlayer;
     PummelHit($defPlayer);
   }
@@ -3488,7 +3488,7 @@ class settle_the_bill_red extends Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRARS", 1);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card you want to destroy from their arsenal", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -4440,26 +4440,31 @@ class beckon_steel_blue extends Card {
   }
 
   function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-    return AnyHitTrigger($this->controller, $this->cardID, $check, effect:true);
+    $additional = "EFFECTHITEFFECT";
+    if (!$check) {
+      AddDecisionQueue("GETTARGETOFATTACK", $this->controller, "$source,EQUIP,1");
+      Await($this->controller, "AQTargeting", "target", lastResultName:"target");
+      Await($this->controller, "AddTrigger", cardID:$this->cardID, additional:$additional, final:true);
+    }
+    return true;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $CombatChain;
     $AttackCard = $CombatChain->AttackCard();
     $Character = new PlayerCharacter($this->controller);
     $CharacterCard = $Character->FindCardUID($AttackCard->OriginUniqueID());
     Sharpen("MYCHAR-" . $CharacterCard->Index(), $this->controller);
-    Await($this->controller, $this->cardID, uniqueid:$CharacterCard->UniqueID());
+    Await($this->controller, $this->cardID, uniqueid:$CharacterCard->UniqueID(), target:$target);
+    return 1;
   }
 
   function SpecificLogic() {
     global $dqVars;
     $Character = new PlayerCharacter($this->controller);
     $CharacterCard = $Character->FindCardUID($dqVars["uniqueid"]);
-    // you don't need to be able to attack to be able to target
-    AddDecisionQueue("GETTARGETOFATTACK", $this->controller, "$this->cardID,EQUIP,1");
-    if ($CharacterCard->NumPowerCounters() >= 3) { // REMEMBER TO CHANGE TO 3
-      AddAttackLayer($CharacterCard->CardID(), "EQUIP", $CharacterCard->UniqueID(), $zone="MYCHAR");
+    if ($CharacterCard->NumPowerCounters() >= 1) { // REMEMBER TO CHANGE TO 3
+      Await($this->controller, "AddAttackQueue", targets:$dqVars["target"], cardID:$CharacterCard->CardID(), from:"EQUIP", uniqueID:$dqVars["uniqueid"], zone:"MYCHAR", final:true);
     }
   }
 

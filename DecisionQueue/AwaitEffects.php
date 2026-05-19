@@ -375,9 +375,9 @@ function MZTapAwait($player) {
   Tap($MZInd, $player, $tapState);
 }
 
-function AddAttackQueueAwait($player) {
+function AQTargetingAwait($player) {
   global $dqVars, $defPlayer;
-  $targets = explode(",", $dqVars["targets"] ?? "THEIRCHAR-0");
+  $targets = explode(",", $dqVars["target"] ?? "THEIRCHAR-0");
   $cleanedTargets = [];
   foreach($targets as $target) {
     $cleanTarget = CleanTarget($player, $target);
@@ -388,6 +388,12 @@ function AddAttackQueueAwait($player) {
     }
   }
   $targets = implode(",", $cleanedTargets);
+  return $targets;
+}
+
+function AddAttackQueueAwait($player) {
+  global $dqVars, $defPlayer;
+  $targets = $dqVars["target"];
   $cardID = $dqVars["cardID"];
   $from = $dqVars["from"] ?? "-";
   $uniqueID = $dqVars["uniqueID"] ?? "-";

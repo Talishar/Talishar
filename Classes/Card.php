@@ -132,7 +132,7 @@ class Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = "-", $effectSource  = "-", $param = "-", $mode="-") {
+  function EffectHitEffect($from, $source = "-", $effectSource  = "-", $param = "-", $mode="-", $target="-") {
     return;
   }
 

@@ -3411,7 +3411,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default:
           if ($target == "PASS") return $target;
           $targetLoc = explode("-", $target)[0];
-          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
+          $targetID = explode("-", $target)[1];
+          $uid = is_numeric($targetID) ? GetMZUID($targetedPlayer, $target) : $targetID;
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-$uid", $additional);
           WriteLog("Player " . $targetedPlayer . "'s " . GetMZCardLink($targetedPlayer, $lastResult) . " was targeted by " . CardLink($parameter));
           break;
       }

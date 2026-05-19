@@ -173,7 +173,7 @@ class blood_follows_blade_yellow extends Card {
     return true;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = "-") {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = "-", $target="-") {
     PlayAlly("cintari_sellsword", $this->controller, isToken:true);
   }
 
@@ -3786,7 +3786,7 @@ class time_flies_when_youre_having_fun_red extends Card {
     return TypeContains($CombatChain->AttackCard()->ID(), "AA");
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = "-") {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = "-", $target="-") {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
