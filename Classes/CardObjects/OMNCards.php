@@ -4619,6 +4619,10 @@ class ebbing_arcstride_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
   }
+
+  function SpecialPower() {
+    return 4; //fabcube error
+  }
 }
 
 class ebbing_arcstride_blue extends Card {
@@ -4638,6 +4642,10 @@ class ebbing_arcstride_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
+  }
+
+  function SpecialPower() {
+    return 3; //fabcube error
   }
 }
 
