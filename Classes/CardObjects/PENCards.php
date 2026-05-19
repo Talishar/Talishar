@@ -4146,7 +4146,7 @@ class rend_flesh_blue extends Card {
     return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $combatChainState, $CCS_WeaponIndex, $defPlayer;
     $CharCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
     if ($CharCard->NumPowerCounters() > 0) {
@@ -4678,7 +4678,7 @@ class bad_breath_red extends Card {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     PlayAura("might", $this->controller, 3);
     return 1;
   }
@@ -4707,7 +4707,7 @@ class bad_breath_yellow extends Card {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     PlayAura("might", $this->controller, 2);
     return 1;
   }
@@ -4736,7 +4736,7 @@ class bad_breath_blue extends Card {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     PlayAura("might", $this->controller, 1);
     return 1;
   }
@@ -6770,7 +6770,7 @@ class smoldering_steel_red extends Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $defPlayer;
     LoseHealth(1, $defPlayer);
   }
@@ -6877,7 +6877,7 @@ class sense_weakness_blue extends Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $combatChainState, $CCS_DamageDealt, $defPlayer;
     $Allies = new Allies($defPlayer);
     $damage = $combatChainState[$CCS_DamageDealt];

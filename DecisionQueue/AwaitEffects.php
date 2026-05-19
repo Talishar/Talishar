@@ -374,3 +374,41 @@ function MZTapAwait($player) {
   $tapState = $dqVars["tapState"];
   Tap($MZInd, $player, $tapState);
 }
+
+function AQTargetingAwait($player) {
+  global $dqVars, $defPlayer;
+  $targets = explode(",", $dqVars["target"] ?? "THEIRCHAR-0");
+  $cleanedTargets = [];
+  foreach($targets as $target) {
+    $cleanTarget = CleanTarget($player, $target);
+    $cleanedTargets[] = $cleanTarget;
+    $obj = CleanTargetToObject($player, $cleanTarget);
+    if (HasSpectra($obj->CardID())) {
+      AddLayer("TRIGGER", $defPlayer, "SPECTRA", "-", "-", $obj->UniqueID());
+    }
+  }
+  $targets = implode(",", $cleanedTargets);
+  return $targets;
+}
+
+function AddAttackQueueAwait($player) {
+  global $dqVars, $defPlayer;
+  $targets = $dqVars["target"];
+  $cardID = $dqVars["cardID"];
+  $from = $dqVars["from"] ?? "-";
+  $uniqueID = $dqVars["uniqueID"] ?? "-";
+  $zone = $dqVars["zone"] ?? "-";
+  $resourcesPaid = $dqVars["resourcesPaid"]  ?? 0;
+  switch($zone) {
+    case "MYCHAR":
+      $Character = new PlayerCharacter($player);
+      $CharacterCard = $Character->FindCardUID($uniqueID);
+      $index = $CharacterCard->Index();
+      break;
+    default:
+      $index = -1;
+      break;
+  }
+  $parameter = "$from|$resourcesPaid|$index|$uniqueID|$zone";	
+  AddAttackQueue($cardID, $player, $targets, $parameter, $uniqueID);
+}

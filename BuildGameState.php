@@ -371,7 +371,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $layerObject = new stdClass;
   $layerContents = [];
   $layerPieces = LayerPieces();
-  $specialLayers = ["LAYER", "TRIGGER", "MELD", "PRETRIGGER", "ABILITY"];
+  $specialLayers = ["LAYER", "TRIGGER", "MELD", "PRETRIGGER", "ABILITY", "ATTACK"];
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
     $layerName = in_array($layers[$i], $specialLayers) ? $layers[$i+2] : $layers[$i];
     array_push($layerContents, JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]));

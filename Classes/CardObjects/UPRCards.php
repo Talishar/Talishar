@@ -1775,7 +1775,7 @@ class liquefy_red extends Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $defPlayer;
     AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
     AddDecisionQueue("CHOOSETHEIRCHARACTER", $this->controller, "<-", 1);

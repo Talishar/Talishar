@@ -782,7 +782,7 @@ class deadly_display_red extends Card {
 		return $this->baseCard->AddEffectHitTrigger($parameter, $check);
 	}
 
-	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
 		PlayAura("flurry", $this->controller);
 	}
 }
@@ -814,7 +814,7 @@ class deadly_display_blue extends Card {
 		return $this->baseCard->AddEffectHitTrigger($parameter, $check);
 	}
 
-	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
 		PlayAura("flurry", $this->controller);
 	}
 }

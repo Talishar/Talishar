@@ -996,6 +996,10 @@ function SearchZoneForUniqueID($uniqueID, $player, $zone)
     case "MYARS":
     case "THEIRARS":
       return SearchArsenalForUniqueID($uniqueID, $player);
+    case "MYCHAR":
+    case "THEIRCHAR":
+      $Character = new PlayerCharacter($player);
+      return $Character->FindCardUID($uniqueID)->Index();
     default:
       return -1;
   }

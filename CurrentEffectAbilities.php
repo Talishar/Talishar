@@ -2,7 +2,7 @@
 
 
 //Return 1 if the effect should be removed
-function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
+function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $target="-")
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer, $CCS_WeaponIndex, $CombatChain, $CCS_DamageDealt;
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers, $EffectContext;
@@ -22,7 +22,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-")
   $cardID = $effectArr[0];
   $mode = explode("-", $cardID)[1] ?? "-";
   $card = GetClass($cardID, $mainPlayer);
-  if ($card != "-") return $card->EffectHitEffect($from, $source, $effectSource, $effectArr[1] ?? "-", $mode);
+  if ($card != "-") return $card->EffectHitEffect($from, $source, $effectSource, $effectArr[1] ?? "-", $mode, $target);
   switch ($cardID) {
     case "warriors_valor_red":
     case "warriors_valor_yellow":

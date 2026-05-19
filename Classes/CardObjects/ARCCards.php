@@ -471,7 +471,7 @@ class cognition_nodes_blue extends Card {
 		}
 	}
 
-	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
 		global $CCS_GoesWhereAfterLinkResolves, $combatChainState, $CombatChain;
 		$otherPlayer = $this->controller == 1 ? 2 : 1;
 		if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-") {
