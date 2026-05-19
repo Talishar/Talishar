@@ -408,9 +408,9 @@ function AddTriggersToStack()
 //Must be called with the my/their context
 function ContinueDecisionQueue($lastResult = "")
 {
-  global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer;
+  global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer, $combatChainState;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue;
+  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
 
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     $p1Health = GetHealth(1);
@@ -473,6 +473,9 @@ function ContinueDecisionQueue($lastResult = "")
           $additionalCosts = array_shift($attackQueue);
           $uniqueID = array_shift($attackQueue);
           $layerUniqueID = array_shift($attackQueue);
+          $combatChainState[$CCS_AttackTargetUID] = explode("-", $target)[1] ?? "-";
+          $MZIndex = CleanTargetToIndex($currentPlayer, $target);
+          $combatChainState[$CCS_AttackTarget] = $MZIndex;
           EndResolutionStep();
         }
         else {
