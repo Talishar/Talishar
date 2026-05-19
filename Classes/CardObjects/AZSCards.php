@@ -91,10 +91,6 @@ class starfield_touch extends Card {
   function DefaultActiveState() {
     return 1;
   }
-
-  function SpecialBlock() {
-    return 1; //fabcube error
-  }
 }
 
 class starfield_veil extends Card {
@@ -133,10 +129,6 @@ class starfield_veil extends Card {
       $uid = $Stack->TopLayer($cardID)->LayerUniqueID();
       $Effect->ApplyToUniqueID($uid);
     }
-  }
-
-  function SpecialBlock() {
-    return 2; //fabcube error
   }
 }
 
@@ -177,10 +169,6 @@ class starfield_carapace extends Card {
 
   function DefaultActiveState() {
     return 0;
-  }
-
-  function SpecialBlock() {
-    return 1; //fabcube mistake
   }
 }
 

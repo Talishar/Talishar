@@ -4278,7 +4278,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "display_of_craftsmanship_blue":
           break;
         default:
-          WriteLog("HERE0: " . GetAttackTarget());
           $target = ($combatChainState[$CCS_AttackTarget] == "" || $combatChainState[$CCS_AttackTarget] == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());
           break;
       }
@@ -4295,7 +4294,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
     }
     $index = -1;
-    WriteLog("HERE: $target");
     if (!$skipDRResolution && $target != "" && $target != "MISSINGTARGET") {
       $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
     }

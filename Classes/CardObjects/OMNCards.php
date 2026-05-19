@@ -4083,7 +4083,6 @@ class constella_uplift_yellow extends Card {
 
 class path_of_same_ends extends BaseCard {
   function PlayAbility($from) {
-    WriteLog("HERE: $from");
     if ($from == "PLAY")
       GiveAttackGoAgain();
     elseif ($from == "COMBATCHAINATTACKS")
@@ -4619,10 +4618,6 @@ class ebbing_arcstride_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
   }
-
-  function SpecialPower() {
-    return 4; //fabcube error
-  }
 }
 
 class ebbing_arcstride_blue extends Card {
@@ -4642,10 +4637,6 @@ class ebbing_arcstride_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
-  }
-
-  function SpecialPower() {
-    return 3; //fabcube error
   }
 }
 
@@ -4697,10 +4688,6 @@ class shattering_flowtide_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
   }
-
-  function SpecialPower() {
-    return 4; //fabcube error
-  }
 }
 
 class shattering_flowtide_blue extends Card {
@@ -4720,10 +4707,6 @@ class shattering_flowtide_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
-  }
-
-  function SpecialPower() {
-    return 3; //fabcube error
   }
 }
 
