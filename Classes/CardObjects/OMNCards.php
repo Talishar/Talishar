@@ -4418,3 +4418,61 @@ class plutonic_starplate extends Card {
     return 0;
   }
 }
+
+class beckon_steel_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "beckon_steel_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $uid = explode("-", $target)[1] ?? "";
+    if ($uid != "") {
+      $Character = new PlayerCharacter($this->controller);
+      $CharacterCard = $Character->FindCardUID($uid);
+      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+    }
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check, effect:true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+    global $CombatChain;
+    $AttackCard = $CombatChain->AttackCard();
+    $Character = new PlayerCharacter($this->controller);
+    $CharacterCard = $Character->FindCardUID($AttackCard->OriginUniqueID());
+    Sharpen("MYCHAR-" . $CharacterCard->Index(), $this->controller);
+    Await($this->controller, $this->cardID, uniqueid:$CharacterCard->UniqueID());
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $Character = new PlayerCharacter($this->controller);
+    $CharacterCard = $Character->FindCardUID($dqVars["uniqueid"]);
+    if ($CharacterCard->NumPowerCounters() >= 1) { // REMEMBER TO CHANGE TO 3
+      AddAttackLayer($CharacterCard->CardID(), "EQUIP", $CharacterCard->UniqueID(), $zone="MYCHAR");
+    }
+  }
+
+  function SpecialType() {
+    return "AR";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $choices = TargetSwordAttack($this->controller);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
+		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return TargetSwordAttack($this->controller) == "";
+  }
+}

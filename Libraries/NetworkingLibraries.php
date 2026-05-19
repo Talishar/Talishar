@@ -1546,7 +1546,7 @@ function FinalizeChainLink($chainClosed = false)
   global $turn, $actionPoints, $combatChain, $mainPlayer, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AttacksWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalPower, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CombatChain;
-  global $layerPriority;
+  global $layerPriority, $Stack, $AttackQueue, $attackQueue;
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
     if (SearchCurrentTurnEffects("arc_lightning_yellow", $currentPlayer)) {
@@ -1631,6 +1631,22 @@ function FinalizeChainLink($chainClosed = false)
     ResetChainLinkState();
   }
   ProcessDecisionQueue();
+  if ($Stack->StackEmpty() && $AttackQueue->NumAttacks() > 0) {
+    global $CCS_AttackTarget, $CCS_AttackTargetUID;
+    $cardID = array_shift($attackQueue);
+    $player = array_shift($attackQueue);
+    $parameter = array_shift($attackQueue);
+    $target = array_shift($attackQueue);
+    $additionalCosts = array_shift($attackQueue);
+    $uniqueID = array_shift($attackQueue);
+    $layerUniqueID = array_shift($attackQueue);
+    $params = explode("|", $parameter);
+    $combatChainState[$CCS_AttackTargetUID] = explode("-", $target)[1] ?? "-";
+    $MZIndex = CleanTargetToIndex($currentPlayer, $target);
+    $combatChainState[$CCS_AttackTarget] = $MZIndex;
+    PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
+    return;
+  }
   //when on always pass priority, ENDTURN will be added to the stack before the resolution step finishes
   //in that case just skip the resolution step?
   if (!$chainClosed && SearchLayersForPhase("ENDTURN") == -1) {
@@ -3097,12 +3113,19 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
   }
 }
 
-function GetTargetOfAttack($cardID = "")
+function AddAttackLayer($cardID, $from, $uniqueID="-", $zone="-")
+{
+  global $turn, $actionPoints, $currentPlayer;
+  AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, "$cardID,$from,1");
+  Await($currentPlayer, "AddAttackQueue", lastResultName:"targets", cardID:$cardID, from:$from, uniqueID:$uniqueID, zone:$zone, final:true);
+}
+
+function GetTargetOfAttack($cardID = "", $attackQueue=false)
 {
   global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $numTargets = 0;
-  $currentTargets = $combatChainState[$CCS_AttackTarget];
+  $currentTargets = $attackQueue ? "-" : $combatChainState[$CCS_AttackTarget];
   if (!str_contains($currentTargets, "THEIRCHAR-0")) {
     $targets = "THEIRCHAR-0";
     ++$numTargets;
@@ -3151,15 +3174,15 @@ function GetTargetOfAttack($cardID = "")
       $targets = implode(",", $mandatoryTargets);
     }
     if ($numTargets > 1) {
-      PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
+      if (!$attackQueue) PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
       PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
       PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
     } elseif ($numTargets == 1) {
-      PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
+      if (!$attackQueue) PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
       PrependDecisionQueue("PASSPARAMETER", $mainPlayer, $targets);
       PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
     }
-    else WriteLog("There are no additional targets to attack!");
+    elseif (!$attackQueue) WriteLog("There are no additional targets to attack!");
   }
   AddDecisionQueue("TRUCE", $mainPlayer, "-");
 }
@@ -4256,6 +4279,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "display_of_craftsmanship_blue":
           break;
         default:
+          WriteLog("HERE0: " . GetAttackTarget());
           $target = ($combatChainState[$CCS_AttackTarget] == "" || $combatChainState[$CCS_AttackTarget] == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());
           break;
       }
@@ -4272,6 +4296,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
     }
     $index = -1;
+    WriteLog("HERE: $target");
     if (!$skipDRResolution && $target != "" && $target != "MISSINGTARGET") {
       $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
     }

@@ -825,6 +825,7 @@ function CleanTargetToIndex($player, $target) {
   $targetArr = explode("-", $target);
   $zone = $targetArr[0];
   $uid = $targetArr[1];
+  if (is_numeric($uid)) return $target; //it's already an mzindex
   if (str_contains($zone, "UID")) $zone = substr($zone, 0, -3);
   $Zone = GetZoneObject($player, $zone);
   if ($Zone == "") return  "";

@@ -1,7 +1,9 @@
 <?php
 
 global $Stack;
+global $AttackQueue;
 $Stack = new Stack();
+$AttackQueue = new AttackQueue();
 
 class Stack {
 
@@ -37,7 +39,7 @@ class Stack {
   }
 
   function Negate($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * CombatChainPieces();
+    if($cardNumber) $index = $index * LayerPieces();
     if($index < 0 || $index >= count($this->layers)) return "";
     $cardID = $this->layers[$index];
     NegateLayer("LAYERS-$index");
@@ -172,5 +174,80 @@ class Layer {
 		if ($goesWhere != "-") {
 			ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
 		}
+	}
+}
+
+class AttackQueue {
+  private $attackQueue = [];
+
+  function __construct() {
+    global $attackQueue;
+    $this->attackQueue = &$attackQueue;
+  }
+
+  function Card($index, $cardNumber=false) {
+    if($cardNumber) $index = $index * AttackQueuePieces();
+    return new AttackLayer($index);
+  }
+
+  function FindCardUID($uid) {
+    if ($this->NumAttacks() == 0) return "";
+    for ($i = 0; $i < count($this->attackQueue); $i += AttackQueuePieces()) {
+      if ($this->attackQueue[$i + 6] == $uid) return new AttackLayer($i);
+    }
+    return "";
+  }
+
+  function FindCardID($cardID) {
+    if ($this->NumAttacks() == 0) return "";
+    for ($i = 0; $i < count($this->attackQueue); $i += AttackQueuePieces()) {
+      if ($this->attackQueue[$i] == $cardID) return new AttackLayer($i);
+    }
+    return "";
+  }
+
+  function NumAttacks() {
+    return intdiv(count($this->attackQueue), AttackQueuePieces());
+  }
+}
+
+class AttackLayer {
+	// Properties
+	private $attackQueue = [];
+	private $index;
+
+	// Constructor
+	function __construct($index) {
+		global $attackQueue;
+    if ($index != -1)
+  		$this->attackQueue = &$layers;
+    else
+      $this->attackQueue = [];
+		$this->index = $index;
+	}
+
+	function Index() {
+		return $this->index;
+	}
+
+	function ID() {
+		if(count($this->attackQueue) == 0) return "";
+		return $this->attackQueue[$this->index];
+	}
+
+	function PlayerID() {
+		return isset($this->attackQueue[$this->index+1]) ? $this->attackQueue[$this->index+1] : 0;
+	}
+
+	function Parameter() {
+		return isset($this->attackQueue[$this->index+2]) ? $this->attackQueue[$this->index+2] : "-";
+	}
+
+  function DynCost() {
+    return explode("|", $this->Parameter())[1] ?? 0;
+  }
+
+	function Target() {
+		return isset($this->layers[$this->index+3]) ? $this->attackQueue[$this->index+3] : "-";
 	}
 }

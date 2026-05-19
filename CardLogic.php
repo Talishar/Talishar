@@ -252,6 +252,18 @@ function PopLayer()
   return count($layers);//How far it is from the end
 }
 
+function AddAttackQueue($cardID, $player, $targets, $parameter="-", $uniqueID="-", $layerUID="-", $additionalCosts="-") {
+  global $attackQueue;
+  $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
+  array_unshift($attackQueue, $layerUID);
+  array_unshift($attackQueue, $uniqueID);
+  array_unshift($attackQueue, $additionalCosts);
+  array_unshift($attackQueue, $targets);
+  array_unshift($attackQueue, $parameter);
+  array_unshift($attackQueue, $player);
+  array_unshift($attackQueue, $cardID);
+}
+
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-", $layerUID = "-", $skipOrdering = false)
 {
   global $layers, $dqState;
@@ -328,7 +340,7 @@ function ProcessDecisionQueue()
 
 function CloseDecisionQueue($skip=false)
 {
-  global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $mainPlayer;
+  global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $mainPlayer, $Stack;
   $dqState[0] = "0";
   $turn[0] = $dqState[1];
   $turn[1] = $dqState[2];
@@ -347,10 +359,12 @@ function CloseDecisionQueue($skip=false)
 
 function ShouldHoldPriorityNow($player)
 {
-  global $layerPriority, $Stack;
+  global $layerPriority, $Stack, $AttackQueue;
   if ($layerPriority[$player - 1] != "1") return false;
   $noPriorityPhases = ["ENDPHASE", "STARTTURN", "CLOSESTEP"];
   if (in_array($Stack->BottomLayer()->ID(), $noPriorityPhases)) return false;
+  // if the stack is empty and something is in the attack queue, do the attack
+  if (IsResolutionStep() && $Stack->NumLayers() == 1 && $AttackQueue->NumAttacks() > 0) return false;
   $currentLayer = $Stack->TopLayer()->ID();
   $layerType = CardType($currentLayer);
   if (HoldPrioritySetting($player) == 3 && $layerType != "AA" && $layerType != "W") return false;
@@ -396,7 +410,7 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack;
+  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue;
 
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     $p1Health = GetHealth(1);
@@ -451,14 +465,25 @@ function ContinueDecisionQueue($lastResult = "")
           return;
         }
         CloseDecisionQueue();
-        
-        $cardID = array_shift($layers);
-        $player = array_shift($layers);
-        $parameter = array_shift($layers);
-        $target = array_shift($layers);
-        $additionalCosts = array_shift($layers);
-        $uniqueID = array_shift($layers);
-        $layerUniqueID = array_shift($layers);
+        if (IsResolutionStep() && count($layers) == LayerPieces() && count($attackQueue) > 0) {
+          $cardID = array_shift($attackQueue);
+          $player = array_shift($attackQueue);
+          $parameter = array_shift($attackQueue);
+          $target = array_shift($attackQueue);
+          $additionalCosts = array_shift($attackQueue);
+          $uniqueID = array_shift($attackQueue);
+          $layerUniqueID = array_shift($attackQueue);
+          EndResolutionStep();
+        }
+        else {
+          $cardID = array_shift($layers);
+          $player = array_shift($layers);
+          $parameter = array_shift($layers);
+          $target = array_shift($layers);
+          $additionalCosts = array_shift($layers);
+          $uniqueID = array_shift($layers);
+          $layerUniqueID = array_shift($layers);
+        }
         $from = explode("|", $parameter)[0];
         if ($cardID == "TRIGGER" || IsStaticType(CardType($cardID), $from)) {
           SetClassState(1, $CS_ResolvingLayerUniqueID, $uniqueID);
@@ -621,8 +646,6 @@ function ContinueDecisionQueue($lastResult = "")
   $subsequent = array_shift($decisionQueue);
   $makeCheckpoint = array_shift($decisionQueue);
   if (count($layers) > 0 && $layers[0] == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
-    // turn player can play actions in the resolution step
-    // still a little buggy, chain closes if turn player passes here
     $phase = "M";
   }
   $turn[0] = $phase;
@@ -682,8 +705,9 @@ function CardPlayTrigger($cardID, $from)
 }
 
 // for cards that trigger when hitting anything
-function AnyHitTrigger($player, $cardID, $check) {
-  if (!$check) AddLayer("TRIGGER", $player, $cardID, "-", "ONHITEFFECT");
+function AnyHitTrigger($player, $cardID, $check, $effect=false) {
+  $additional = $effect ? "EFFECTHITEFFECT" : "ONHITEFFECT";
+  if (!$check) AddLayer("TRIGGER", $player, $cardID, $cardID, $additional);
   return true;
 }
 

@@ -617,7 +617,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
 
           $index = intval($option[1] ?? 0);
           $card = ($option[0] != "CARDID" && isset($source[$index])) ? $source[$index] : ($option[1] ?? 0);
-          if (($option[0] == "LAYER" || $option[0] == "PRELAYERS") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY")) $card = $source[$index + 2];
+          if (($option[0] == "LAYER" || $option[0] == "PRELAYERS") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY" || $card == "ATTACK")) $card = $source[$index + 2];
 
           if ($option[0] == "THEIRBANISH") {
             $mod = explode("-", $theirBanish[$index + 1])[0];
