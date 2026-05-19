@@ -23,7 +23,8 @@ class stardust_spike_red extends Card {
 	}
 
 	function ArcaneModifier(&$remove, $player, $index, $amount=false) {
-		return Amp(1, $remove, $player, $this->controller, $amount);
+    $Effect = new CurrentEffect($index);
+		return Amp($Effect->NumUses(), $remove, $player, $this->controller, $amount);
 	}
 }
 
