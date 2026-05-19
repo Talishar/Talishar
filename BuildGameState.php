@@ -1276,8 +1276,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
       $counters = $isFriendly ? $friendlyCounts[$cardID] ?? 0 : $opponentCounts[$cardID] ?? 0;
 
-      if($cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red") {
+      if(
+        $cardID == "shelter_from_the_storm_red" || 
+        $cardID == "calming_breeze_red" || 
+        $cardID == "cosmic_suture_red" || 
+        $cardID == "cosmic_suture_yellow" || 
+        $cardID == "cosmic_suture_blue") {
         $counters = $currentTurnEffects[$i + 3];
+      }
+      
+      if($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
+        $parts = explode("-", $currentTurnEffects[$i]);
+        $counters = intval(end($parts));
       }
 
       if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
