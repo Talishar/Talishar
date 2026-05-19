@@ -108,5 +108,5 @@ const DBL_LABELS = [
     47 => 'includes/functions.inc.php::LoadSavedSettings',
     48 => 'includes/functions.inc.php::BanPlayer',
     49 => 'APIs/MatchResultWebhookAPI.php',
-    50 => 'includes/functions.inc.php::GetUserWebhookUrls',
+    50 => 'includes/functions.inc.php::GetWebhookUrlForUser',
 ];

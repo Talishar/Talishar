@@ -118,6 +118,8 @@ if($deckTestMode != "") $p2uid = "Practice Dummy";
 else $p2uid = "-";
 $p1id = "-";
 $p2id = "-";
+$p1WebhookUrl = "";
+$p2WebhookUrl = "";
 $hostIP = $_SERVER['REMOTE_ADDR'];
 $gameGUID = GenerateGameGUID();
 

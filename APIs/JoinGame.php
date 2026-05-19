@@ -565,6 +565,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      // Cache Metafy tiers and communities at join time so BuildGameState doesn't need DB access
      $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
      $p1MetafyCommunities = GetMetafyCommunitiesFromDatabase($p1uid);
+     $p1WebhookUrl = GetWebhookUrlForUser($p1uid);
    }
    else if ($playerID == 2) {
      $p2uid = ($_SESSION["useruid"] ?? "Player 2");
@@ -574,6 +575,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      // Cache Metafy tiers and communities at join time so BuildGameState doesn't need DB access
      $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);
      $p2MetafyCommunities = GetMetafyCommunitiesFromDatabase($p2uid);
+     $p2WebhookUrl = GetWebhookUrlForUser($p2uid);
    }
 
    // Only generate a fresh auth key for a true new join, not for a base-deck refresh.

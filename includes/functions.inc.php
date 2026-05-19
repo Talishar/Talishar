@@ -300,7 +300,6 @@ function logCompletedGameStats($conceded = false)
 	global $winner, $currentTurn, $gameName; //gameName is assumed by ParseGamefile.php
 	global $p1id, $p2id, $p1IsChallengeActive, $p2IsChallengeActive, $p1DeckLink, $p2DeckLink, $firstPlayer;
 	global $p1deckbuilderID, $p2deckbuilderID, $gameGUID;
-	global $p1uid, $p2uid;
 	global $p2IsAI;
 	if ($winner == 0) return;
 	if ($p2IsAI == "1") return; // Don't file results for AI games
@@ -389,7 +388,7 @@ function logCompletedGameStats($conceded = false)
 	else
 		WriteLog("No game stats sent as both players have disabled stats", highlight:true);
 
-	SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2Json, $p1uid, $p2uid, $winner, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic);
+	SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2Json, $winner, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic);
 }
 
 function PrepareFabraryRequest($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $format, $gameGUID = "", $conceded = false, $isPublic = true)
@@ -531,37 +530,29 @@ function executeParallelCurlRequests($handles)
 	curl_multi_close($mh);
 }
 
-function GetUserWebhookUrls(string $p1uid, string $p2uid): array
+function GetWebhookUrlForUser(string $uid): string
 {
-	$result = [$p1uid => null, $p2uid => null];
-	$uids = array_values(array_unique(array_filter([$p1uid, $p2uid])));
-	if (empty($uids)) return $result;
-
+	if (empty($uid) || $uid === "-") return "";
 	$conn = GetDBConnection(DBL_GET_USER_WEBHOOK_URLS);
 	if (!$conn) {
-		error_log("GetUserWebhookUrls: DB connection failed");
-		return $result;
+		error_log("GetWebhookUrlForUser: DB connection failed");
+		return "";
 	}
-
-	$placeholders = implode(',', array_fill(0, count($uids), '?'));
-	$types = str_repeat('s', count($uids));
-	$sql = "SELECT usersUid, matchResultWebhookUrl FROM users WHERE usersUid IN ($placeholders)";
+	$sql = "SELECT matchResultWebhookUrl FROM users WHERE usersUid = ?";
 	$stmt = mysqli_stmt_init($conn);
+	$url = "";
 	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, $types, ...$uids);
+		mysqli_stmt_bind_param($stmt, 's', $uid);
 		mysqli_stmt_execute($stmt);
-		$queryResult = mysqli_stmt_get_result($stmt);
-		while ($row = mysqli_fetch_assoc($queryResult)) {
-			if (!empty($row['matchResultWebhookUrl'])) {
-				$result[$row['usersUid']] = $row['matchResultWebhookUrl'];
-			}
-		}
+		$result = mysqli_stmt_get_result($stmt);
+		$row = mysqli_fetch_assoc($result);
+		$url = $row['matchResultWebhookUrl'] ?? "";
 		mysqli_stmt_close($stmt);
 	} else {
-		error_log("GetUserWebhookUrls: query prepare failed");
+		error_log("GetWebhookUrlForUser: query prepare failed");
 	}
 	mysqli_close($conn);
-	return $result;
+	return $url ?? "";
 }
 
 function PrepareUserWebhookRequest(string $webhookUrl, $gameID, string $detailedResult1Json, string $detailedResult2Json, string $p1uid, string $p2uid, int $winner, $format, string $gameGUID, bool $conceded, int $countWinnerDeck, int $countLoserDeck, bool $isPublic)
@@ -627,15 +618,15 @@ function executeWebhookRequests(array $handles): array
 	return $results;
 }
 
-function SendUserWebhooks($gameResultID, string $detailedResult1Json, string $detailedResult2Json, string $p1uid, string $p2uid, int $winner, $format, string $gameGUID, bool $conceded, int $countWinnerDeck, int $countLoserDeck, bool $isPublic): void
+function SendUserWebhooks($gameResultID, string $detailedResult1Json, string $detailedResult2Json, int $winner, $format, string $gameGUID, bool $conceded, int $countWinnerDeck, int $countLoserDeck, bool $isPublic): void
 {
-	$webhookUrls = GetUserWebhookUrls($p1uid, $p2uid);
+	global $p1uid, $p2uid, $p1WebhookUrl, $p2WebhookUrl;
 
 	$handles = [];
-	foreach ([1 => $p1uid, 2 => $p2uid] as $playerID => $uid) {
-		if (empty($webhookUrls[$uid])) continue;
+	foreach ([1 => [$p1uid, $p1WebhookUrl ?? ""], 2 => [$p2uid, $p2WebhookUrl ?? ""]] as $playerID => [$uid, $url]) {
+		if (empty($url)) continue;
 		$ch = PrepareUserWebhookRequest(
-			$webhookUrls[$uid], $gameResultID,
+			$url, $gameResultID,
 			$detailedResult1Json, $detailedResult2Json,
 			$p1uid, $p2uid, $winner, $format, $gameGUID,
 			$conceded, $countWinnerDeck, $countLoserDeck, $isPublic
