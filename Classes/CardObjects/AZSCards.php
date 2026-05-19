@@ -90,6 +90,10 @@ class starfield_touch extends Card {
   function DefaultActiveState() {
     return 1;
   }
+
+  function SpecialBlock() {
+    return 1;
+  }
 }
 
 class starfield_veil extends Card {
