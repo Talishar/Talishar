@@ -387,6 +387,8 @@ function logCompletedGameStats($conceded = false)
 		WriteLog("📊 Sending game stats to $otherSites", highlight:true, highlightColor:"green");
 	else
 		WriteLog("No game stats sent as both players have disabled stats", highlight:true);
+
+	SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2Json, $winner, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic);
 }
 
 function PrepareFabraryRequest($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $format, $gameGUID = "", $conceded = false, $isPublic = true)
@@ -526,6 +528,124 @@ function executeParallelCurlRequests($handles)
 		curl_close($ch);
 	}
 	curl_multi_close($mh);
+}
+
+function GetWebhookUrlForUser(string $uid): string
+{
+	if (empty($uid) || $uid === "-") return "";
+	$conn = GetDBConnection(DBL_GET_USER_WEBHOOK_URLS);
+	if (!$conn) {
+		error_log("GetWebhookUrlForUser: DB connection failed");
+		return "";
+	}
+	$sql = "SELECT matchResultWebhookUrl FROM users WHERE usersUid = ?";
+	$stmt = mysqli_stmt_init($conn);
+	$url = "";
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, 's', $uid);
+		mysqli_stmt_execute($stmt);
+		$result = mysqli_stmt_get_result($stmt);
+		$row = mysqli_fetch_assoc($result);
+		$url = $row['matchResultWebhookUrl'] ?? "";
+		mysqli_stmt_close($stmt);
+	} else {
+		error_log("GetWebhookUrlForUser: query prepare failed");
+	}
+	mysqli_close($conn);
+	return $url ?? "";
+}
+
+function PrepareUserWebhookRequest(string $webhookUrl, $gameID, string $detailedResult1Json, string $detailedResult2Json, string $p1uid, string $p2uid, int $winner, $format, string $gameGUID, bool $conceded, int $countWinnerDeck, int $countLoserDeck, bool $isPublic)
+{
+	global $gameName;
+
+	$payloadArr = [];
+	$payloadArr['gameID'] = $gameID;
+	$payloadArr['gameName'] = $gameName;
+	$payloadArr['player1Name'] = $p1uid;
+	$payloadArr['player2Name'] = $p2uid;
+	$payloadArr['deck1'] = json_decode($detailedResult1Json);
+	$payloadArr['deck2'] = json_decode($detailedResult2Json);
+	$payloadArr['format'] = $format;
+	$payloadArr['gameGUID'] = $gameGUID;
+	$payloadArr['conceded'] = $conceded;
+	$payloadArr['winner'] = $winner;
+	$payloadArr['countWinnerDeck'] = $countWinnerDeck;
+	$payloadArr['countLoserDeck'] = $countLoserDeck;
+	$payloadArr['isPublic'] = $isPublic;
+
+	$ch = curl_init($webhookUrl);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+	curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+	return $ch;
+}
+
+function executeWebhookRequests(array $handles): array
+{
+	$results = [];
+	if (empty($handles)) return $results;
+
+	$mh = curl_multi_init();
+	foreach ($handles as $playerID => $ch) {
+		curl_multi_add_handle($mh, $ch);
+	}
+
+	$running = null;
+	do {
+		$status = curl_multi_exec($mh, $running);
+		if ($running > 0) {
+			curl_multi_select($mh, 1.0);
+		}
+	} while ($running > 0 && $status === CURLM_OK);
+
+	foreach ($handles as $playerID => $ch) {
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$curlError = curl_error($ch);
+		$results[$playerID] = [
+			'success' => ($httpCode === 200 && empty($curlError)),
+			'code'    => $httpCode,
+			'error'   => $curlError,
+		];
+		curl_multi_remove_handle($mh, $ch);
+		curl_close($ch);
+	}
+	curl_multi_close($mh);
+	return $results;
+}
+
+function SendUserWebhooks($gameResultID, string $detailedResult1Json, string $detailedResult2Json, int $winner, $format, string $gameGUID, bool $conceded, int $countWinnerDeck, int $countLoserDeck, bool $isPublic): void
+{
+	global $p1uid, $p2uid, $p1WebhookUrl, $p2WebhookUrl;
+
+	$handles = [];
+	foreach ([1 => [$p1uid, $p1WebhookUrl ?? ""], 2 => [$p2uid, $p2WebhookUrl ?? ""]] as $playerID => [$uid, $url]) {
+		if (empty($url)) continue;
+		$ch = PrepareUserWebhookRequest(
+			$url, $gameResultID,
+			$detailedResult1Json, $detailedResult2Json,
+			$p1uid, $p2uid, $winner, $format, $gameGUID,
+			$conceded, $countWinnerDeck, $countLoserDeck, $isPublic
+		);
+		if ($ch) $handles[$playerID] = $ch;
+	}
+
+	if (empty($handles)) return;
+
+	$results = executeWebhookRequests($handles);
+	foreach ($results as $playerID => $result) {
+		if ($result['success']) {
+			WriteLog("🔗 Match result sent to Player $playerID's webhook", highlight:true, highlightColor:"green");
+		} else {
+			$detail = !empty($result['error']) ? $result['error'] : "HTTP {$result['code']}";
+			error_log("User webhook failed for player $playerID in game $gameResultID: $detail");
+			WriteLog("⚠️ Match result webhook failed for Player $playerID ($detail)", highlight:true, highlightColor:"red");
+		}
+	}
 }
 
 function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnStats, $player, $useIntval = false)
