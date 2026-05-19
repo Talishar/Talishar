@@ -43,7 +43,7 @@ $response->isPvtVoidPatron = $userName == "PvtVoid" || isset($_SESSION["isPvtVoi
 
 // Get Metafy info from database
 $conn = GetDBConnection(DBL_USER_PROFILE_API);
-$sql = "SELECT metafyAccessToken, metafyCommunities, metafyID FROM users WHERE usersUid=?";
+$sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, matchResultWebhookUrl FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 
 if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -56,6 +56,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   $metafyAccessToken = $row['metafyAccessToken'] ?? null;
   $response->isMetafyLinked = !empty($metafyAccessToken);
   $response->metafyInfo = MetafyLink();
+  $response->matchResultWebhookUrl = $row['matchResultWebhookUrl'] ?? null;
   $response->metafyCommunities = isset($row['metafyCommunities']) ? json_decode($row['metafyCommunities'], true) : [];
     
   // Check if user has an active subscription to the Talishar community via Metafy API
@@ -169,6 +170,7 @@ else {
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = [];
   $response->isMetafySupporter = false;
+  $response->matchResultWebhookUrl = null;
 }
 
 mysqli_close($conn);
