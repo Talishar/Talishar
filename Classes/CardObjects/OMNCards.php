@@ -4872,3 +4872,35 @@ class clear_conscience_blue extends Card {
     $this->baseCard->HitEffect();
   }
 }
+
+class sigil_of_astral_flow_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sigil_of_astral_flow_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CS_ArcaneTargetsSelected;
+    if ($additionalCosts == "DESTROY") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      if ($AuraCard != "") $AuraCard->Destroy();
+    }
+    else {
+      PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
+    }
+  }
+}
