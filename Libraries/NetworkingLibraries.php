@@ -3115,8 +3115,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
 
 function AddAttackLayer($cardID, $from, $uniqueID="-", $zone="-")
 {
-  global $turn, $actionPoints, $currentPlayer;
-  AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, "$cardID,$from,1");
+  global $currentPlayer;
   Await($currentPlayer, "AddAttackQueue", lastResultName:"targets", cardID:$cardID, from:$from, uniqueID:$uniqueID, zone:$zone, final:true);
 }
 

@@ -4456,7 +4456,9 @@ class beckon_steel_blue extends Card {
     global $dqVars;
     $Character = new PlayerCharacter($this->controller);
     $CharacterCard = $Character->FindCardUID($dqVars["uniqueid"]);
-    if ($CharacterCard->NumPowerCounters() >= 1) { // REMEMBER TO CHANGE TO 3
+    // you don't need to be able to attack to be able to target
+    AddDecisionQueue("GETTARGETOFATTACK", $this->controller, "$this->cardID,EQUIP,1");
+    if ($CharacterCard->NumPowerCounters() >= 3) { // REMEMBER TO CHANGE TO 3
       AddAttackLayer($CharacterCard->CardID(), "EQUIP", $CharacterCard->UniqueID(), $zone="MYCHAR");
     }
   }
