@@ -861,6 +861,12 @@ function MultiZoneIndices($player, $parameter) {
   }
   $parameter = implode("&", $searches);
   $rv = SearchMultizone($player, $parameter);
-  // we may want to dedupe this eventually, not pressing issue
+  // deduping
+  $uniqueList = [];
+  foreach(explode(",", $rv) as $index) {
+    if (!in_array($index, $uniqueList))
+      $uniqueList[] = $index;
+  }
+  $rv = implode(",", $uniqueList);
   return $rv == "" ? "PASS" : $rv;
 }
