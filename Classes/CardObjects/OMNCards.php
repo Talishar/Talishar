@@ -4751,7 +4751,7 @@ class crackle_from_afar_blue extends Card {
 
   function EntersArenaAbility() {
     $indices = implode(",", TargetAttack($this->controller));
-    Await($this->controller, "ChooseMultizone", "target", indices:$indices, context:"Target an attack to give +1 power", subsequent:0);
+    Await($this->controller, "ChooseMultizone", "target", indices:$indices, context:"Target an attack to give +1 power", may:true, subsequent:0);
     Await($this->controller, "AddTrigger", cardID:$this->cardID, final:true);
   }
 
@@ -4786,7 +4786,7 @@ class fleeing_starbreeze_blue extends Card {
 
   function EntersArenaAbility() {
     $indices = implode(",", TargetAttack($this->controller));
-    Await($this->controller, "ChooseMultizone", "target", indices:$indices, context:"Target an attack to give +1 power", subsequent:0);
+    Await($this->controller, "ChooseMultizone", "target", indices:$indices, context:"Target an attack to give +1 power", may:true, subsequent:0);
     Await($this->controller, "AddTrigger", cardID:$this->cardID, final:true);
   }
 
