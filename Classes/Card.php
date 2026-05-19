@@ -471,7 +471,7 @@ class Card {
     return;
   }
 
-  function PlayCardEffectAbility($cardID, $from, &$remove) {
+  function PlayCardEffectAbility($cardID, $from, &$remove, $index=-1) {
     return;
   }
 

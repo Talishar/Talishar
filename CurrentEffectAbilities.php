@@ -1739,7 +1739,7 @@ function CurrentEffectPlayAbility($cardID, $from)
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
     $card = GetClass($currentTurnEffects[$i], $currentPlayer);
-      if ($card !=  "-") $card->PlayCardEffectAbility($cardID, $from, $remove);
+      if ($card !=  "-") $card->PlayCardEffectAbility($cardID, $from, $remove, $i);
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "lead_the_charge_red":

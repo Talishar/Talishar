@@ -410,6 +410,7 @@ $CS_NumLightningFlowDestroyed = 116;
 $CS_HoloAurasEntered = 117;
 $CS_NumInstantsPutInGrave = 118;
 $CS_NumControlledAurasDestroyed = 119;
+$CS_NumFragmented = 120;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -686,7 +687,7 @@ function ResetMainClassState()
   global $CS_CheeredThisTurn, $CS_BooedThisTurn, $CS_SuspensePoppedThisTurn, $CS_SeismicSurgesCreated, $CS_CardsInDeckBeforeOpt;
   global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed, $CS_NumCostedCardsPlayed, $CS_HitCounter, $CS_CreatedCardsThisTurn;
   global $CS_ArcaneDamageDealtToOpponent, $CS_EvosBoosted, $CS_NumWeaponsActivated, $CS_NumLightningFlowDestroyed, $CS_HoloAurasEntered;
-  global $CS_NumInstantsPutInGrave, $CS_NumControlledAurasDestroyed;
+  global $CS_NumInstantsPutInGrave, $CS_NumControlledAurasDestroyed, $CS_NumFragmented;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -806,6 +807,7 @@ function ResetMainClassState()
   $mainClassState[$CS_HoloAurasEntered] = 0;
   $mainClassState[$CS_NumInstantsPutInGrave] = 0;
   $mainClassState[$CS_NumControlledAurasDestroyed] = 0;
+  $mainClassState[$CS_NumFragmented] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")

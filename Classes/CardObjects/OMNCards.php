@@ -912,6 +912,8 @@ class aphrodias extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     DealArcane(2, resolvedTarget:$target, source:$this->cardID);
+    if (SearchCurrentTurnEffects("starfield_carapace", $this->controller))
+      Await($this->controller, "starfield_carapace", final:true);
     return "";
   }
 

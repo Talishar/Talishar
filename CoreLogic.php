@@ -4214,10 +4214,19 @@ function MentorTrigger($player, $index, $specificCard = "")
 }
 
 function ResolvePermanent($cardID, $from, $additionalCosts) {
-  global $currentPlayer, $turn;
+  global $currentPlayer, $turn, $CS_ResolvingLayerUniqueID, $CurrentTurnEffects;
   if (!GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "COMBATCHAINATTACKS" && $cardID != "quickdodge_flexors") {
     $cardSubtype = CardSubType($cardID);
-    if (DelimStringContains($cardSubtype, "Aura")) PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts);
+    $uniqueID = GetClassState($currentPlayer, $CS_ResolvingLayerUniqueID);
+    if (DelimStringContains($cardSubtype, "Aura")) {
+      $holoCounters = 0;
+      $Veil = $CurrentTurnEffects->FindSpecificEffect("starfield_veil", $uniqueID);
+      if ($Veil->Index() != -1) {
+        ++$holoCounters;
+        $Veil->Remove();
+      }
+      PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts, holoCounters:$holoCounters);
+    }
     else if (DelimStringContains($cardSubtype, "Ally")) PlayAlly($cardID, $currentPlayer, from: $from);
     else if (DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from: $from);
     else if ($cardSubtype == "Landmark") PlayLandmark($cardID, $currentPlayer, $from);
