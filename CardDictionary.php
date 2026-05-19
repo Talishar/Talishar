@@ -635,12 +635,8 @@ function AbilityCost($cardID)
     $abilityType = GetResolvedAbilityType($cardID, "PLAY");
     if ($abilityType == "I") return 0;
   }
-  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura")) {
-    if (SearchCharacterForCard($currentPlayer, "luminaris")) return 0;
-    if (SearchCharacterForCard($currentPlayer, "iris_of_reality")) return 3;
-    if (SearchCharacterForCard($currentPlayer, "reality_refractor")) return 2;
-  }
-  if (SearchCharacterForCard($currentPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $currentPlayer) && DelimStringContains($subtype, "Aura")) return 1;
+  $auraAttackCosts = AuraAttackCosts($currentPlayer, $cardID);
+  if ($auraAttackCosts != -1) return $auraAttackCosts;
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return 0;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") {

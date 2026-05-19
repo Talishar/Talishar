@@ -1923,14 +1923,12 @@ function AuraBlockModifier($cardID, $from)
   return $totalBlockModifier;
 }
 
-// function AuraPowerModifiers($cardID) {
-//   global $mainPlayer;
-//   $mod = 0;
-//   $Auras = new Auras($mainPlayer);
-//   for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
-//     $AuraCard = $Auras->Card($i, true);
-//     $card = GetClass($AuraCard->CardID(), $mainPlayer);
-//     if ($card != "-") $mod += $card->StaticPowerModifier($cardID);
-//   }
-//   return $mod;
-// }
+function AuraAttackCosts($player, $cardID) {
+  if (ClassContains($cardID, "ILLUSIONIST", $player) && SubtypeContains($cardID, "Aura")) {
+    if (SearchCharacterForCard($player, "luminaris")) return 0;
+    if (SearchCharacterForCard($player, "iris_of_reality")) return 3;
+    if (SearchCharacterForCard($player, "reality_refractor")) return 2;
+  }
+  if (SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $player) && SubtypeContains($cardID, "Aura")) return 1;
+  return -1;
+}

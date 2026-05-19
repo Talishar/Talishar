@@ -1813,12 +1813,14 @@ class restless_coalescence_yellow extends Card {
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		global $mainPlayer, $phase, $actionPoints;
+		global $mainPlayer, $turn, $actionPoints;
 		if ($from == "PLAY") {
 			$AuraCard = new AuraCard($index, $this->controller);
-			if ($AuraCard->Status() == 2 && $this->controller == $mainPlayer && $actionPoints > 0) return false;
+			//can it attack?
+			if ($AuraCard->Status() == 2 && $this->controller == $mainPlayer && $actionPoints > 0 && $turn[0] == "M" && AuraAttackCosts($this->controller, $this->cardID) != -1) return false;
+			//can it activate?
 			if (SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) != -1 && $AuraCard->NumPowerCounters() > 0) return false;
-			if ($AuraCard->Status() != 2 && ($AuraCard->NumPowerCounters() <= 0 || SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) == -1)) return true;
+			if ($AuraCard->NumPowerCounters() <= 0 || SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) == -1) return true;
 		}
 		return false;
 	}
