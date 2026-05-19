@@ -4464,7 +4464,7 @@ class beckon_steel_blue extends Card {
     global $dqVars;
     $Character = new PlayerCharacter($this->controller);
     $CharacterCard = $Character->FindCardUID($dqVars["uniqueid"]);
-    if ($CharacterCard->NumPowerCounters() >= 1) { // REMEMBER TO CHANGE TO 3
+    if ($CharacterCard->NumPowerCounters() >= 3) {
       Await($this->controller, "AddAttackQueue", targets:$dqVars["target"], cardID:$CharacterCard->CardID(), from:"EQUIP", uniqueID:$dqVars["uniqueid"], zone:"MYCHAR", final:true);
     }
   }
