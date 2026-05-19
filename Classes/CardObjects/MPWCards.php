@@ -666,3 +666,14 @@ class donkey_blue extends Card {
 		return true;
 	}
 }
+
+class and_again_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "and_again_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}

@@ -117,17 +117,67 @@
 // }
 
 
-// class barbed_castaway extends Card {
+class barbed_castaway extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "barbed_castaway";
-//     $this->controller = $controller;
-//     }
+  	function __construct($controller) {
+		$this->cardID = "barbed_castaway";
+		$this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if($additionalCosts == "Load") LoadArrow($this->controller);
+        else if($additionalCosts == "Aim") {
+          if(ArsenalHasArrowCardFacing($this->controller, "DOWN")) {
+            Await($this->controller, "YesNo", context:"Flip an arrow face up and give it an aim counter?", subsequent:0);
+			Await($this->controller, $this->cardID, final:true);
+          }
+        }
+        return "";
+	}
+
+	function SpecificLogic() {
+		SetArsenalFacing("UP", $this->controller);
+		$arsenal = &GetArsenal($this->controller);
+		$arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
+	}
+
+	function GetAbilityTypes($index = -1, $from = '-') {
+		return "I,I";
+	}
+
+	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+		if ($allNames) return "Load,Aim";
+		if(!SearchCurrentTurnEffects("barbed_castaway-Load", $this->controller)) return "Aim";
+		if(!SearchCurrentTurnEffects("barbed_castaway-Aim", $this->controller)) return "Load";
+		return "Load,Aim";
+	}
+
+	function NumUses() {
+		return 2;
+	}
+
+	function StartTurnAbility($index) {
+		AddCurrentTurnEffect("$this->cardID-Load", $this->controller);
+      	AddCurrentTurnEffect("$this->cardID-Aim", $this->controller);
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		global $CS_AdditionalCosts;
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$abilityName = GetResolvedAbilityName($this->cardID);
+		SearchCurrentTurnEffects("barbed_castaway-".$abilityName, $this->controller, true);
+		$CharacterCard->AddUse(-1);
+		SetClassState($this->controller, $CS_AdditionalCosts, $abilityName);
+	}
+
+	function AbilityCost() {
+		return 1;
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "I";
+	}
+}
 
 
 // class barbed_undertow_red extends Card {

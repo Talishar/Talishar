@@ -102,7 +102,7 @@ class bait extends Card {
     return ($from == "CC" && $index != 0) ? "AR" : "AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     global $CS_NumActionsPlayed;
     $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYAURA");
     $names = ["-", "-"];
@@ -664,7 +664,7 @@ class the_old_switcheroo_blue extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -1467,7 +1467,7 @@ class wind_up_the_crowd_blue extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -5126,7 +5126,7 @@ class gallow_end_of_the_line_yellow extends Card {
     return ($from != "PLAY") ? "" : "I,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     global $CS_NumActionsPlayed;
     $names = "";
     $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYALLY", type:"AA");
@@ -5259,7 +5259,7 @@ class mage_hunter_arrow_red extends Card {
     return "I,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     global $mainPlayer, $defPlayer, $layers, $combatChain, $actionPoints;
     $layerCount = count($layers);
     $nameBlocked = NameBlocked($this->cardID, $index, $from);

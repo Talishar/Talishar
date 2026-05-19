@@ -220,7 +220,7 @@ class nebula_duality extends BaseCard {
     return "I,A";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -258,7 +258,7 @@ class nebula_duality_red extends Card {
     return $this->baseCard->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
     return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount, $facing);
   }
 
@@ -302,7 +302,7 @@ class nebula_duality_yellow extends Card {
     return $this->baseCard->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
     return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount, $facing);
   }
 
@@ -346,7 +346,7 @@ class nebula_duality_blue extends Card {
     return $this->baseCard->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
     return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount, $facing);
   }
 
@@ -506,7 +506,7 @@ class voltbound_duality_red extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -551,7 +551,7 @@ class voltbound_duality_yellow extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -596,7 +596,7 @@ class voltbound_duality_blue extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -641,7 +641,7 @@ class cosmic_duality_red extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -685,7 +685,7 @@ class cosmic_duality_yellow extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -729,7 +729,7 @@ class cosmic_duality_blue extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -2881,7 +2881,7 @@ class glide_through_starlight extends BaseCard {
     $this->archetype = new windup($this->cardID, $this->controller);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -2930,7 +2930,7 @@ class glide_through_starlight_red extends Card {
     return "I,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -2974,7 +2974,7 @@ class glide_through_starlight_yellow extends Card {
     return "I,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -3018,7 +3018,7 @@ class glide_through_starlight_blue extends Card {
     return "I,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->baseCard->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 

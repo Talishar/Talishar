@@ -10,7 +10,6 @@ function OUTAbilityCost($cardID)
     case "redback_shroud": return 0;
     case "mask_of_many_faces": return 1;
     case "silverwind_shuriken_blue": return 0;
-    case "barbed_castaway": return 1;
     case "trench_of_sunken_treasure": return 0;
     case "quiver_of_abyssal_depths": return 3;
     case "quiver_of_rustling_leaves": return 3;
@@ -40,7 +39,6 @@ function OUTAbilityCost($cardID)
       case "redback_shroud": return "AR";
       case "mask_of_many_faces": return "I";
       case "silverwind_shuriken_blue": return "AR";
-      case "barbed_castaway": return "I";
       case "trench_of_sunken_treasure": return "I";
       case "quiver_of_abyssal_depths": return "I";
       case "quiver_of_rustling_leaves": return "I";
@@ -254,16 +252,6 @@ function OUTAbilityCost($cardID)
         if(ComboActive())
         {
           AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
-        }
-        return "";
-      case "barbed_castaway":
-        if($additionalCosts == "Load") LoadArrow($currentPlayer);
-        else if($additionalCosts == "Aim") {
-          if(ArsenalHasArrowCardFacing($currentPlayer, "DOWN")) {
-            SetArsenalFacing("UP", $currentPlayer);
-            $arsenal = &GetArsenal($currentPlayer);
-            $arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
-          }
         }
         return "";
       case "trench_of_sunken_treasure":

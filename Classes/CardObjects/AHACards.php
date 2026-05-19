@@ -443,7 +443,7 @@ class gleam_of_the_blade_red extends Card {
 		return "I,AR";
 	}
 
-	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
 		global $mainPlayer, $CombatChain;
 		$names = "Ability";
 		$nameBlocked = NameBlocked($this->cardID, $index, $from);

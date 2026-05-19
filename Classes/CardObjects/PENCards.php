@@ -5189,7 +5189,7 @@ class herald_of_victoria_yellow extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -7430,7 +7430,7 @@ class tigrine_reflex_red extends Card {
     return "AR,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
     global $mainPlayer, $combatChain, $actionPoints, $CombatChain;
     $attackCard = $CombatChain->AttackCard()->ID();
     $names = (IsReactionPhase()) ? "Ability" : "-";
@@ -8017,7 +8017,7 @@ class bubba_lubba_run_aground_yellow extends Card {
     return "A";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
     $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYALLY", type:"AA");
     $allies = &GetAllies($this->controller);
     $names = "";

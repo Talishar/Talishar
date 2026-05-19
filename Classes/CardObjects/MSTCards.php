@@ -1796,7 +1796,7 @@ class restless_coalescence_yellow extends Card {
 		return "I,AA";
 	}
 
-	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
 		global $CS_NumActionsPlayed;
 		$AuraCard = new AuraCard($index, $this->controller);
 		$names = "";

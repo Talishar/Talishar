@@ -1287,8 +1287,6 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "guardian_of_the_shadowrealm_red" => $from == "BANISH" ? "A" : "",
     "teklo_plasma_pistol", "jinglewood_smash_hit", "plasma_barrel_shot" => "A,AA",
 
-    "barbed_castaway" => "I,I",
-
     "mighty_windup_red", "mighty_windup_yellow", "mighty_windup_blue", 
     "agile_windup_red", "agile_windup_yellow", "agile_windup_blue", 
     "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue", 
@@ -1401,7 +1399,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
   if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->GetAbilityNames($index, $from, $nameBlocked, $layerCount, $facing);
+  if ($card != "-") return $card->GetAbilityNames($index, $from, $nameBlocked, $layerCount, $facing, $allNames);
   switch ($cardID) {
     case "teklo_plasma_pistol":
       if ($allNames) return "Add_a_steam_counter,Attack";
@@ -1416,11 +1414,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
       if ($CharacterCard->NumCounters() > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer) && $CharacterCard->NumUses() > 0) $rv .= ",Attack";
       return $rv;
-    case "barbed_castaway":
-      if ($allNames) return "Load,Aim";
-      if(!SearchCurrentTurnEffects("barbed_castaway-Load", $currentPlayer)) return "Aim";
-      if(!SearchCurrentTurnEffects("barbed_castaway-Aim", $currentPlayer)) return "Load";
-      return "Load,Aim";
     case "jinglewood_smash_hit":
       if ($allNames) return "Create_tokens,Smash_Jinglewood";
       if ($index == -1) return "";
@@ -3977,7 +3970,6 @@ function CharacterNumUsesPerTurn($cardID)
     case "farflight_longbow":
       return 999;
     case "voltaire_strike_twice":
-    case "barbed_castaway":  
     case "bank_breaker":
       return 2;
     default:

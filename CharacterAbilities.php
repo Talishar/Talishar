@@ -175,10 +175,6 @@ function CharacterStartTurnAbility($index)
     case "victor_goldmane":
       if (!SearchCurrentTurnEffects($cardID . "-1", $mainPlayer) && $character[1] < 3) AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
       break;
-    case "barbed_castaway":
-      AddCurrentTurnEffect("barbed_castaway-Load", $mainPlayer);
-      AddCurrentTurnEffect("barbed_castaway-Aim", $mainPlayer);
-      break;
     case "luminaris_angels_glow":
       AddCurrentTurnEffect("luminaris_angels_glow-1", $mainPlayer);
       AddCurrentTurnEffect("luminaris_angels_glow-2", $mainPlayer);
@@ -1102,12 +1098,6 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "nitro_mechanoida":
       --$character[$cardIndex + 2];
-      break;
-    case "barbed_castaway":
-      $abilityName = GetResolvedAbilityName($cardID);
-      SearchCurrentTurnEffects("barbed_castaway-".$abilityName, $currentPlayer, true);
-      --$character[$cardIndex + 5];
-      SetClassState($currentPlayer, $CS_AdditionalCosts, $abilityName);
       break;
     case "barkbone_strapping":
     case "helm_of_isens_peak":
