@@ -4477,4 +4477,20 @@ class beckon_steel_blue extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     return TargetSwordAttack($this->controller) == "";
   }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Beckon Steel";
+  }
+
+  function SpecialClass() {
+    return "WARRIOR";
+  }
 }
