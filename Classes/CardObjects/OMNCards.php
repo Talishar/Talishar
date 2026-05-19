@@ -4468,10 +4468,6 @@ class beckon_steel_blue extends Card {
     }
   }
 
-  function SpecialType() {
-    return "AR";
-  }
-
   function PayAdditionalCosts($from, $index = '-') {
     $choices = TargetSwordAttack($this->controller);
     AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
@@ -4481,21 +4477,5 @@ class beckon_steel_blue extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     return TargetSwordAttack($this->controller) == "";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialName() {
-    return "Beckon Steel";
-  }
-
-  function SpecialClass() {
-    return "WARRIOR";
   }
 }
