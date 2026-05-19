@@ -3996,28 +3996,25 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
     case "evo_steel_soul_memory_blue":
     case "evo_steel_soul_memory_blue_equip":
       if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        AddCurrentTurnEffect($toCardID, $player);
-        WriteLog("🧠" . CardLink("$toCardID") . " gained +1 intellect");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_memory_blue");
       }
       break;
     case "evo_steel_soul_processor_blue":
     case "evo_steel_soul_processor_blue_equip":
       if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        GainResources($player, 3);
-        WriteLog("🩶" . CardLink("$toCardID") . " gained +3 resources");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_processor_blue");
       }
       break;
     case "evo_steel_soul_controller_blue":
     case "evo_steel_soul_controller_blue_equip":
       if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        MZMoveCard($player, "MYDISCARD:type=AA;maxAttack=6;minAttack=6", "MYTOPDECK-4", true, logText: "🦾".CardLink("$toCardID") . " card chosen: <0>");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_controller_blue");
       }
       break;
     case "evo_steel_soul_tower_blue":
     case "evo_steel_soul_tower_blue_equip":
       if (SubtypeContains($fromCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        GainActionPoints(1, $player);
-        WriteLog("🦿" . CardLink("$toCardID") . " gained +1 action point");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_tower_blue");
       }
       break;
     case "evo_zoom_call_yellow":
@@ -4068,38 +4065,34 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
   switch ($fromCardID) {
     case "evo_steel_soul_memory_blue_equip":
       if (TypeContains($toCardID, "C", $player)) {
-        AddCurrentTurnEffect($fromCardID, $player);
-        AddCurrentTurnEffect($fromCardID, $player);
-        WriteLog("🧠" . CardLink("$fromCardID") . " gained +2 intellect");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_memory_blue");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_memory_blue");
       } else if (SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        AddCurrentTurnEffect($fromCardID, $player);
-        WriteLog("🧠" . CardLink("$fromCardID") . " gained +1 intellect");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_memory_blue");
       }
       break;
     case "evo_steel_soul_processor_blue_equip":
       if (TypeContains($toCardID, "C", $player)) {
-        GainResources($player, 6);
-        WriteLog("🩶" . CardLink("$toCardID") . " gained +6 resources");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_processor_blue");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_processor_blue");
       } else if (SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        GainResources($player, 3);
-        WriteLog("🩶" . CardLink("$toCardID") . " gained +3 resources");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_processor_blue");
       }
       break;
     case "evo_steel_soul_controller_blue_equip":
       if (TypeContains($toCardID, "C", $player)) {
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6;maxAttack=6", "MYTOPDECK-4", true, logText: CardLink("$fromCardID") . " 🦾 Card chosen: <0>");
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6;maxAttack=6", "MYTOPDECK-4", true, logText: CardLink("$fromCardID") . " 🦾 Card chosen: <0>");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_controller_blue");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_controller_blue");
       } else if (SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        MZMoveCard($player, "MYDISCARD:type=AA;minAttack=6;maxAttack=6", "MYTOPDECK-4", true, logText: CardLink("$fromCardID") . " 🦾 Card chosen: <0>");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_controller_blue");
       }
       break;
     case "evo_steel_soul_tower_blue_equip":
       if (TypeContains($toCardID, "C", $player)) {
-        GainActionPoints(2, $player);
-        WriteLog("🦿" . CardLink("$toCardID") . " gained +2 action points");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_tower_blue");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_tower_blue");
       } else if (SubtypeContains($toCardID, "Evo", $player) && CardName($fromCardID) != CardName($toCardID)) {
-        GainActionPoints(1, $player);
-        WriteLog("🦿" . CardLink("$toCardID") . " gained +1 action point");
+        AddLayer("TRIGGER", $player, "evo_steel_soul_tower_blue");
       }
       break;
     default:

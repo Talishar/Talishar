@@ -2182,6 +2182,21 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
     }
     switch ($parameter) {
+      case "evo_steel_soul_memory_blue":
+        AddCurrentTurnEffect($parameter, $player);
+        WriteLog("🧠" . CardLink("$parameter") . " gained +1 intellect");
+        break;
+      case "evo_steel_soul_processor_blue":
+        GainResources($player, 3);
+        WriteLog("🩶" . CardLink("$parameter") . " gained +3 resources");
+        break;
+      case "evo_steel_soul_tower_blue":
+        GainActionPoints(1, $player);
+        WriteLog("🦿" . CardLink("$parameter") . " gained +1 action point");
+        break;
+      case "evo_steel_soul_controller_blue":
+        MZMoveCard($player, "MYDISCARD:type=AA;maxAttack=6;minAttack=6", "MYTOPDECK-4", true, logText: "🦾".CardLink("$parameter") . " card chosen: <0>");
+        break;
       case "solitary_companion_red":
       case "solitary_companion_yellow":
       case "solitary_companion_blue":
