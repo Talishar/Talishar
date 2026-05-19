@@ -781,7 +781,7 @@ function DamageDealtAbilities($target, $damage, $type, $source)
 {
   global $mainPlayer, $combatChainState, $CCS_AttackFused, $CombatChain, $layers;
   if ($type == "COMBAT") {
-    if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
+    if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer)) {
       WriteLog("Damage effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
       return;
     }
