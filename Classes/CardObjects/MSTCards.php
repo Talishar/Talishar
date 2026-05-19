@@ -1791,7 +1791,7 @@ class restless_coalescence_yellow extends Card {
 
 	function GetAbilityTypes($index = -1, $from = '-') {
 		global $mainPlayer;
-		if ($from == "PLAY")
+		if ($from != "PLAY")
 			return "";
 		if ($this->controller != $mainPlayer)
 			return "I";
