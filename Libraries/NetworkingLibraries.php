@@ -4414,8 +4414,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   //Now determine what needs to happen next
   SetClassState($currentPlayer, $CS_PlayIndex, -1);
   SetClassState($currentPlayer, $CS_CharacterIndex, -1);
-  // if (count($layers) == 0 && $turn != "B")
-  //   Await($mainPlayer, "CheckAttackQueue");
+  if (count($layers) == 0 && !$CombatChain->HasCurrentLink())
+    Await($mainPlayer, "CheckAttackQueue");
   ProcessDecisionQueue();
 }
 
