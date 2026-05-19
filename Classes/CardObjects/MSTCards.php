@@ -1793,8 +1793,6 @@ class restless_coalescence_yellow extends Card {
 		global $mainPlayer;
 		if ($from != "PLAY")
 			return "";
-		if ($this->controller != $mainPlayer)
-			return "I";
 		return "I,AA";
 	}
 
