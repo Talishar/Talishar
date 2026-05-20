@@ -113,7 +113,7 @@ class Card {
   }
 
   function NumUses() {
-    return 0;
+    return 1;
   }
 
   function GetAbilityTypes($index=-1, $from="-") {
