@@ -617,6 +617,8 @@ class Card {
   }
 
   function HasFragment() {
+    foreach ($this->addedAbilities as $ability) 
+      if ($ability->HasFragment()) return true;
     return GeneratedHasFragment($this->cardID);
   }
 
@@ -675,6 +677,8 @@ class Card {
   }
 
   function FragmentTrigger() {
+    foreach ($this->addedAbilities as $ability)
+      $ability->FragmentTrigger();
     return;
   }
 

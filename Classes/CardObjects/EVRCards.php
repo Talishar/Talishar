@@ -573,9 +573,9 @@
 
 
 class fractal_replication_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "fractal_replication_red";
-    $this->controller = $controller;
+	function __construct($controller) {
+		$this->cardID = "fractal_replication_red";
+		$this->controller = $controller;
 	}
 
 	function AbilitiesToAdd() {

@@ -81,7 +81,7 @@ function ProcessFragmentOnBlock($index){
 function IsFragmentActive() {
 	global $CombatChain, $mainPlayer;
 	$AttackCard = $CombatChain->AttackCard();
-	$card = GetClass($AttackCard->ID(), $mainPlayer);
+	$card = GetClass($AttackCard->ID(), $mainPlayer, "CC", $AttackCard->UniqueID());
 	if ($card != "-") return $card->HasFragment();
 	return false;
 }
@@ -102,7 +102,7 @@ function FragmentLayer($blockingCardUID) {
 	global $mainPlayer, $CombatChain, $mainPlayer, $CS_NumFragmented;
 	if (IsFragmentStillActive($blockingCardUID)) {
 		AddCurrentTurnEffect("FRAGMENT", $mainPlayer);
-		$attackCard = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
+		$attackCard = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", $CombatChain->AttackCard()->UniqueID());
 		if ($attackCard != "-") $attackCard->FragmentTrigger();
 		IncrementClassState($mainPlayer, $CS_NumFragmented);
 	}
