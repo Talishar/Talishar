@@ -1160,7 +1160,7 @@ function PassInput($autopass = true, $doublePass = false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
   $layerPieces = LayerPieces();
-  // WriteLog($turn[0] . " " . $turn[2]);//Uncomment this to visualize decision PassInput execution
+  //WriteLog($turn[0] . " " . $turn[2]);//Uncomment this to visualize decision PassInput execution
   if (isset($turn[2]) && str_contains($turn[2], "PRELAYER")) {
     $currPreLayers = 0;
     $preLayers = GetPreLayers();
@@ -1194,7 +1194,7 @@ function PassInput($autopass = true, $doublePass = false)
   }
   $passOptions = ["ENDPHASE", "MAYMULTICHOOSETEXT", "MAYCHOOSECOMBATCHAIN", "MAYCHOOSEMULTIZONE", "MAYMULTICHOOSEHAND",
     "MAYCHOOSEHAND", "MAYCHOOSEDISCARD", "MAYCHOOSEARSENAL", "MAYCHOOSEPERMANENT", "MAYCHOOSEDECK", "MAYCHOOSEMYSOUL",
-    "INSTANT", "MULTISHOWCARDSDECK", "OK", "", "MULTISHOWCARDSTHEIRDECK", "MAYCHOOSECARD", "STARTTURN", "MAYCHOOSEHANDHEAVE"];
+    "INSTANT", "MULTISHOWCARDSDECK", "OK", "MULTISHOWCARDSTHEIRDECK", "MAYCHOOSECARD", "STARTTURN", "MAYCHOOSEHANDHEAVE"];
   if (in_array($turn[0], $passOptions)) {
     ContinueDecisionQueue("PASS");
   }
@@ -1218,6 +1218,39 @@ function PassInput($autopass = true, $doublePass = false)
       PitchDeck($currentPlayer, 0);
     }
     PassTurn();
+  }
+  elseif ($turn[0] == "OPT") {
+    global $gameName, $CS_CardsInDeckBeforeOpt;
+    $options = explode(";", $turn[2]);
+    $cardListTop = array_values(array_filter(explode(",", $options[0] ?? "")));
+    $cardListBottom = array_values(array_filter(explode(",", $options[1] ?? "")));
+    $deck = new Deck($currentPlayer);
+    $origDeckSize = GetClassState($currentPlayer, $CS_CardsInDeckBeforeOpt);
+    $proposedDeckSize = $deck->RemainingCards() + count($cardListTop) + count($cardListBottom);
+    if ($origDeckSize == "-" || $origDeckSize == $proposedDeckSize) {
+      if (!IsReplay()) {
+        $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
+        $top = implode(",", $cardListTop);
+        $bot = implode(",", $cardListBottom);
+        fwrite($commandFile, "$currentPlayer OPT $top $bot 0\r\n");
+        fclose($commandFile);
+      }
+      $deck->Opt($cardListTop, $cardListBottom);
+      $topCount = count($cardListTop);
+      $bottomCount = count($cardListBottom);
+      $message = "";
+      if ($topCount > 0) {
+        $message .= $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
+      }
+      if ($bottomCount > 0) {
+        if ($message !== "") $message .= " and ";
+        $message .= $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
+      }
+      WriteLog("Player " . $currentPlayer . " has put " . $message . " of their deck.");
+    } else {
+      WriteLog("Something funny happened while opting. If you believe the opt resolved incorrectly, please submit a bug report.", highlight: true);
+    }
+    ContinueDecisionQueue();
   }
   else {
     switch ($autopass) {
