@@ -255,13 +255,33 @@ function PopLayer()
 function AddAttackQueue($cardID, $player, $targets, $parameter="-", $uniqueID="-", $layerUID="-", $additionalCosts="-") {
   global $attackQueue;
   $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
-  array_unshift($attackQueue, $layerUID);
-  array_unshift($attackQueue, $uniqueID);
-  array_unshift($attackQueue, $additionalCosts);
-  array_unshift($attackQueue, $targets);
-  array_unshift($attackQueue, $parameter);
-  array_unshift($attackQueue, $player);
-  array_unshift($attackQueue, $cardID);
+  $attackQueue[] = $cardID;
+  $attackQueue[] = $player;
+  $attackQueue[] = $parameter;
+  $attackQueue[] = $targets;
+  $attackQueue[] = $additionalCosts;
+  $attackQueue[] = $uniqueID;
+  $attackQueue[] = $layerUID;
+}
+
+function ResolveAttackQueue() {
+  global $attackQueue, $combatChainState, $CCS_AttackTargetUID, $CCS_AttackTarget, $turn;
+  if (count($attackQueue) > 0) {
+    $cardID = array_shift($attackQueue);
+    $player = array_shift($attackQueue);
+    $parameter = array_shift($attackQueue);
+    $target = array_shift($attackQueue);
+    $additionalCosts = array_shift($attackQueue);
+    $uniqueID = array_shift($attackQueue);
+    $layerUniqueID = array_shift($attackQueue);
+
+    $combatChainState[$CCS_AttackTargetUID] = explode("-", $target)[1] ?? "-";
+    $MZIndex = CleanTargetToIndex($player, $target);
+    $combatChainState[$CCS_AttackTarget] = $MZIndex;
+    $params = explode("|", $parameter);
+    $turn[0] = "M";
+    PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
+  }
 }
 
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-", $layerUID = "-", $skipOrdering = false)
