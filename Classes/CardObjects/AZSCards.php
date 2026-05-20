@@ -119,7 +119,7 @@ class starfield_veil extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     global $CS_NumFragmented;
-    return GetClassState($this->controller, $CS_NumFragmented) == 0;
+    return GetClassState(1, $CS_NumFragmented) == 0 && GetClassState(2, $CS_NumFragmented) == 0;
   }
 
   function PlayCardEffectAbility($cardID, $from, &$remove, $index=-1) {
