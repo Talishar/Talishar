@@ -52,9 +52,10 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         break;
       case "COMBATCHAINATTACKS":
         $ind = intdiv($mzIndex[1],ChainLinksPieces());
-        $lastResult = $chainLinks[$ind][0];
-        $chainLinks[$ind][2] = 0;
-        AddGraveyard($chainLinks[$ind][7], $player, "CC", $player);
+        $Link = new ChainLink($ind);
+        $LinkCard = $Link->AttackCard();
+        $lastResult = $LinkCard->ID();
+        $LinkCard->Destroy();
         break;
       case "MYPERM":
         $Perm = new PermanentCard($mzIndex[1], $player);
