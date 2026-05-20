@@ -166,7 +166,6 @@ class barbed_castaway extends Card {
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		$abilityName = GetResolvedAbilityName($this->cardID);
 		SearchCurrentTurnEffects("barbed_castaway-".$abilityName, $this->controller, true);
-		$CharacterCard->AddUse(-1);
 		SetClassState($this->controller, $CS_AdditionalCosts, $abilityName);
 	}
 

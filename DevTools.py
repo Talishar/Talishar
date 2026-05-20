@@ -140,7 +140,10 @@ def parse_gamestate(gameid):
     
     results['p1']['inventory'] = lines[72 + num_chain_links].split(" ")
     results['p2']['inventory'] = lines[73 + num_chain_links].split(" ")
-    results['Both']["attack queue"] = unravel(lines[79 + num_chain_links], "AttackQueue")
+    if len(lines) > 79 + num_chain_links:
+        results['Both']["attack queue"] = unravel(lines[79 + num_chain_links], "AttackQueue")
+    else:
+        results["Both"]["attack queue"] = []
     return results
 
 def FindFunction(function_name, search_root="./"):

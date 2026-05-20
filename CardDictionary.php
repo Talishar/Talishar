@@ -3928,6 +3928,8 @@ function DoesEffectGrantsDominate($cardID): bool
 
 function CharacterNumUsesPerTurn($cardID)
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->NumUses();
   switch ($cardID) {
     case "bravo_showstopper":
     case "bravo":
