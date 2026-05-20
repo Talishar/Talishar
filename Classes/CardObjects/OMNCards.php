@@ -1212,25 +1212,38 @@ class pulsing_cardia_blue extends Card {
 }
 
 class auric_shards extends BaseCard {
-  function PlayAbility() {
+  function PlayAbility($val) {
     global $CombatChain, $Stack;
     $Auras = new Auras($this->controller);
     $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true); //it should always be the most recent aura
-    // for now assume it's targeting the current chain link
-    if (HasFragment($CombatChain->AttackCard()->ID()) || (IsLayerStep() && HasFragment($Stack->BottomLayer()->ID())))
-      AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
+    $targetInds = implode(",", $this->GetTargets());
+    $additional = $AuraCard->HoloCounters() > 0 ? "HOLO" : "NONE";
+    $damage = $additional == "HOLO" ? $val : 1;
+    $context = "Choose an attack with fragment to get +$damage power";
+    Await($this->controller, "ChooseMultiZone", "target", indices:$targetInds, may:true, context:$context, subsequent:0);
+    Await($this->controller, "AddTrigger", additional:$additional, cardID:$this->cardID, final:true);
   }
 
-  function ProcessTrigger($val, $uniqueID) {
-    $Auras = new Auras($this->controller);
-    $AuraCard = $Auras->FindCardUID($uniqueID);
-    $pow = $AuraCard->HoloCounters() > 0 ? $val : 1;
-    AddCurrentTurnEffect("$this->cardID-$pow", $this->controller);
+  function ProcessTrigger($val, $target, $additionalCosts) {
+    $pow = $additionalCosts == "HOLO" ? $val : 1;
+    $zone = explode("-", $target)[0];
+    if ($zone == "LAYER" || $zone == "COMBATCHAINLINK")
+      AddCurrentTurnEffect("$this->cardID-$pow", $this->controller);
   }
 
   function CombatEffectActive() {
     global $CombatChain;
     return HasFragment($CombatChain->AttackCard()->ID());
+  }
+
+  function GetTargets() {
+    $attacks = TargetAttack($this->controller);
+    $rv = [];
+    foreach ($attacks as $attack) {
+      $cardID = GetMZCard($this->controller, $attack);
+      if (HasFragment($cardID)) $rv[] = $attack;
+    }
+    return $rv;
   }
 }
 
@@ -1246,11 +1259,11 @@ class auric_shards_red extends Card {
   }
 
   function EntersArenaAbility() {
-    $this->baseCard->PlayAbility();
+    $this->baseCard->PlayAbility(4);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger(4, $uniqueID);
+    $this->baseCard->ProcessTrigger(4, $target, $additionalCosts);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -1274,11 +1287,11 @@ class auric_shards_yellow extends Card {
   }
 
   function EntersArenaAbility() {
-    $this->baseCard->PlayAbility();
+    $this->baseCard->PlayAbility(3);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger(3, $uniqueID);
+    $this->baseCard->ProcessTrigger(3, $target, $additionalCosts);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -1302,11 +1315,11 @@ class auric_shards_blue extends Card {
   }
 
   function EntersArenaAbility() {
-    $this->baseCard->PlayAbility();
+    $this->baseCard->PlayAbility(2);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $this->baseCard->ProcessTrigger(2, $uniqueID);
+    $this->baseCard->ProcessTrigger(2, $target, $additionalCosts);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
