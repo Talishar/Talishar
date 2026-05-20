@@ -300,6 +300,17 @@ enum MetafyCommunity : string
         "browbeat_blue=OMN213-T",
         "crash_site_salvage_yellow=OMN239-T",
         "tempestuous_kiss_red=OMN051-T",
+        "and_again_blue=MPW028-T",
+        "astral_bridge_red=OMN098-T",
+        "conflicting_thoughts_red=GEM175-T",
+        "constella_uplift_yellow=GEM158-T",
+        "crackle_from_afar_blue=OMN036-T",
+        "elliptical_conflux_yellow=OMN034-T",
+        "fleeing_starbreeze_blue=OMN037-T",
+        "fortitude_of_anvilheim=OMN242-T",
+        "fractal_creation_blue=OMN040-T",
+        "path_of_same_ends_red=GEM155-T",
+        "stardust_spike_red=GEM148-T",
         ];
     return $altArts;
   }
