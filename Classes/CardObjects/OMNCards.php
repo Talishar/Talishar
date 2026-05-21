@@ -4444,11 +4444,14 @@ class beckon_steel_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $uid = explode("-", $target)[1] ?? "";
-    if ($uid != "") {
-      $Character = new PlayerCharacter($this->controller);
-      $CharacterCard = $Character->FindCardUID($uid);
-      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+    global $CombatChain;
+    if (explode("-", $target)[0] == "COMBATCHAINLINK") {
+      $uid = $CombatChain->AttackCard()->OriginUniqueID();
+      if ($uid != "") {
+        $Character = new PlayerCharacter($this->controller);
+        $CharacterCard = $Character->FindCardUID($uid);
+        AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+      }
     }
     return "";
   }
