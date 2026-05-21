@@ -4969,3 +4969,50 @@ class flittering_forcefield_blue extends Card {
     return $this->baseCard->BlockModifier();
   }
 }
+
+class snap_fingers extends Card {
+  function __construct($controller) {
+    $this->cardID = "snap_fingers";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer, $CombatChain;
+    $damageTarget = $defPlayer == $this->controller ? "MYCHAR-0" : "THEIRCHAR-0";
+    $card = MZIndexToObject($this->controller, $target);
+    SetDamageSourceUID($card->UniqueID());
+    DealArcane(1, source:$card->ID(), resolvedTarget:$damageTarget);
+    return "";
+  }
+
+  function GetTargets() {
+    global $CombatChain;
+    $rv = [];
+    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+      $ChainCard = $CombatChain->Card($i, true);
+      if ($ChainCard->PlayerID() == $this->controller && TypeContains($ChainCard->ID(), "AA"))
+        $rv[] = "COMBATCHAINLINK-" . $ChainCard->Index();
+    }
+    return $rv;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return count($this->GetTargets()) == 0;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    $targets = implode(",", $this->GetTargets());
+    Await($this->controller, "ChooseMultiZone", "index", indices:$targets, subsequent:0);
+    Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
+  }
+}
