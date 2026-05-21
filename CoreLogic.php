@@ -1201,6 +1201,7 @@ function ResetStolenCards()
   global $mainPlayer;
   UnsetItemModifier($mainPlayer, "Temporary");
   UnsetAllyModifier($mainPlayer, "Temporary");
+  UnsetAuraModifier($mainPlayer, "Temporary");
 }
 
 
@@ -1233,6 +1234,18 @@ function UnsetAllyModifier($player, $modifier, $newMod = "-") {
       if($cardModifier == $modifier) {
         $allies[$i+14] = "-";
         StealAlly($player, $i, $otherPlayer, "THEIRALLY", tapState:"-");
+      }
+    }
+}
+
+function UnsetAuraModifier($player, $modifier, $newMod = "-") {
+  $auras = &GetAuras($player);
+  $otherPlayer = $player == 1 ? 2 : 1;
+    for($i=0; $i<count($auras); $i+=AuraPieces()) {
+      $cardModifier = $auras[$i+10];
+      if(DelimStringContains($cardModifier, $modifier)) {
+        $auras[$i+10] = "-";
+        StealAura($player, $i, $otherPlayer, "THEIRAURAS");
       }
     }
 }

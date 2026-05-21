@@ -133,7 +133,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     IncrementClassState($effectController, $CS_CreatedCardsThisTurn, $number);
 }
 
-function StealAura($srcPlayer, $index, $destPlayer, $from)
+function StealAura($srcPlayer, $index, $destPlayer, $from, $mod=0)
 {
   $srcAuras = &GetAuras($srcPlayer);
   $destAuras = &GetAuras($destPlayer);
@@ -148,6 +148,9 @@ function StealAura($srcPlayer, $index, $destPlayer, $from)
       } else {
           $srcAuras[$index + $i] = 'THEIR' . $srcAuras[$index + $i];
       }
+    }
+    if($i == 10 && $mod != 0) {//8 - Modalities or e.g "Temporary" for cards that get stolen for a turn.
+      $srcAuras[$index + $i] = $srcAuras[$index + $i] == "-" ? $mod : $srcAuras[$index + $i] . ",$mod";
     }
     array_unshift($destAuras, $srcAuras[$index + $i]);
     unset($srcAuras[$index + $i]);

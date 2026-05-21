@@ -5016,3 +5016,32 @@ class snap_fingers extends Card {
     Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
   }
 }
+
+class tempt_over_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "tempt_over_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"THEIRAURAS:isToken=true", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", context:"Steal an aura token");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"];
+    $from = explode("-", $choice)[0];
+    $index = explode("-", $choice)[1] ?? -1;
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    if ($index != -1)
+      StealAura($otherPlayer, $index, $this->controller, $from, "Temporary");
+  }
+}
