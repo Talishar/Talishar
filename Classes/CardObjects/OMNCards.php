@@ -981,7 +981,10 @@ class volzar_meteor_storm extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddCurrentTurnEffect($this->cardID, $this->controller);
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->FindEffect($this->cardID, $this->controller);
+    if ($Effect->Index() == -1) AddCurrentTurnEffect($this->cardID, $this->controller);
+		else $Effect->AddUses(1);
   }
 
   function PayAdditionalCosts($from, $index = '-') {
@@ -992,7 +995,8 @@ class volzar_meteor_storm extends Card {
   }
 
   function ArcaneModifier(&$remove, $player, $index, $amount = false) {
-    return Amp(1, $remove, $player, $this->controller, $amount);
+    $Effect = new CurrentEffect($index);
+		return Amp($Effect->NumUses(), $remove, $player, $this->controller, $amount);
   }
 
   function AbilityType($index = -1, $from = '-') {
