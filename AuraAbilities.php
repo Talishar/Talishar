@@ -510,10 +510,21 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
 
 function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true, $destinationUID = "-")
 {
-  global $CS_SuspensePoppedThisTurn, $layers;
+  global $CS_SuspensePoppedThisTurn, $layers, $CCS_GoesWhereAfterLinkResolves, $combatChainState, $CombatChain, $ChainLinks;
   if (!$skipTrigger) AuraLeavesPlay($player, $index, $uniqueID, $location, $mainPhase, $destinationUID);
   if ($location == "AURAS") {
     $auras = &GetAuras($player);
+    $uniqueID = $auras[$index + 6];
+
+    // if it's on the combat chain, remove it
+    if ($CombatChain->AttackCard()->OriginUniqueID() == $uniqueID)
+      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $AttackCard = $ChainLinks->GetLink($i)->AttackCard();
+      if ($AttackCard->OriginUniqueID() == $uniqueID)
+        $AttackCard->Remove();
+    }
+
     $cardID = $auras[$index];
     if (HasSuspense($cardID)) IncrementClassState($player, $CS_SuspensePoppedThisTurn);
     $aurasPieces = AuraPieces();
