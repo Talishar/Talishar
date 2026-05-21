@@ -585,6 +585,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             case "ATTACKQUEUE":
               $source = $attackQueue;
               break;
+            case "CARDID":
+              break;
             default:
               WriteLog("An unexpected input $option[0] was sent to CHOOSEMULTIZONE, please submit a bug report", highlight:true);
               break;
