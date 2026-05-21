@@ -1445,7 +1445,7 @@ class arc_ramp extends BaseCard {
   function PlayAbility() {
     AddCurrentTurnEffect($this->cardID, $this->controller);
     if (SearchAuras("lightning_flow", $this->controller)) {
-      Await($this->controller, "YesNo", "choice", subsequent:0, context:"Do you want to destroy a " . CardLink("lightning_flow") . " to get <b>go again</b>?");
+      Await($this->controller, "YesNo", "choice", subsequent:0, context:"Do you want to destroy a " . "{{element|Lightning Flow|" . GetElementColorCode("LIGHTNING") . "}}" . " to get <b>go again</b>?");
       Await($this->controller, $this->cardID, final:true);
     }
   }
@@ -1730,7 +1730,7 @@ class static_shelter_yellow extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $message = "if_you_want_to_make_a_lightning_flow";
-    $context = "Choose if you want to pay a resource and create a " . CardLink("lightning_flow");
+    $context = "Choose if you want to pay a resource and create a " . "{{element|Lightning Flow|" . GetElementColorCode("LIGHTNING") . "}}";
     Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
     Await($this->controller, "PayResourcesEffect", amount:1);
     Await($this->controller, $this->cardID, final:true);
@@ -2005,7 +2005,7 @@ class mercurial_skies extends BaseCard {
     $Flow = $Auras->FindCardID("lightning_flow");
     if ($Flow->Index() != -1) {
       $message = "if_they_want_to_deal_arcane";
-      $context = "Choose if you want to destroy " . CardLink("lightning_flow") . " to deal $damage damage";
+      $context = "Choose if you want to destroy " . "{{element|Lightning Flow|" . GetElementColorCode("LIGHTNING") . "}}" . " to deal $damage damage";
       Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
       Await($this->controller, $this->cardID, target:$target, final:true);
     }
