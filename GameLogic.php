@@ -929,6 +929,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               $GraveCard = new DiscardCard($mzArr[1], $player);
               $GraveCard->Flip("DOWN");
               break;
+            case "THEIRDISCARD":
+              $GraveCard = new DiscardCard($mzArr[1], $otherPlayer);
+              $GraveCard->Flip("DOWN");
+              break;
             case "MYCHAR":
               $Card = new CharacterCard($mzArr[1], $player);
               $Card->Flip("DOWN");
