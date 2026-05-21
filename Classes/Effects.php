@@ -21,9 +21,10 @@ class CurrentTurnEffects {
     return new CurrentEffect($index);
   }
 
-  function FindEffect($effectID) {
+  function FindEffect($effectID, $player="-") {
     if (count($this->effects) == 0) return new CurrentEffect(-1);
     for ($i = 0; $i < count($this->effects); $i += CurrentTurnEffectPieces()) {
+      if ($player != "-"  && $player != $this->effects[$i + 1]) continue;
       if ($this->effects[$i] == $effectID) return new CurrentEffect($i);
     }
     return new CurrentEffect(-1);
