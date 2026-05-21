@@ -45,7 +45,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $combatChainState, $CCS_AttackTargetUID, $CCS_WeaponIndex;
   global $CombatChain, $chainLinks, $landmarks, $currentTurnEffects;
   global $theirHand, $myPermanents, $theirPermanents, $myPitch, $theirPitch;
-  global $theirAllies, $myAllies;
+  global $theirAllies, $myAllies, $attackQueue;
 
   $playerInputPopup = new stdClass();
   $playerInputButtons = [];
@@ -471,42 +471,124 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $optionsCount = count($options);
         for ($i = 0; $i < $optionsCount; ++$i) {
           $option = explode("-", $options[$i]);
-          if ($option[0] == "MYAURAS") $source = $myAuras;
-          else if ($option[0] == "THEIRAURAS") $source = $theirAuras;
-          else if ($option[0] == "MYCHAR") $source = $myCharacter;
-          else if ($option[0] == "THEIRCHAR") $source = $theirCharacter;
-          else if ($option[0] == "MYITEMS") $source = $myItems;
-          else if ($option[0] == "THEIRITEMS") $source = $theirItems;
-          else if ($option[0] == "LAYER") $source = $layers;
-          else if ($option[0] == "MYHAND") $source = $myHand;
-          else if ($option[0] == "THEIRHAND") $source = $theirHand;
-          else if ($option[0] == "MYARSENAL") $source = $myArsenal;
-          else if ($option[0] == "THEIRARSENAL") $source = $theirArsenal;
-          else if ($option[0] == "MYDISCARD" || $option[0] == "MYDISCARDUID") $source = $myDiscard;
-          else if ($option[0] == "THEIRDISCARD" || $option[0] == "THEIRDISCARDUID") $source = $theirDiscard;
-          else if ($option[0] == "MYBANISH") $source = $myBanish;
-          else if ($option[0] == "THEIRBANISH") $source = $theirBanish;
-          else if ($option[0] == "MYALLY") $source = $myAllies;
-          else if ($option[0] == "THEIRALLY") $source = $theirAllies;
-          else if ($option[0] == "MYARS") $source = $myArsenal;
-          else if ($option[0] == "THEIRARS") $source = $theirArsenal;
-          else if ($option[0] == "MYPERM") $source = $myPermanents;
-          else if ($option[0] == "THEIRPERM") $source = $theirPermanents;
-          else if ($option[0] == "MYPITCH") $source = $myPitch;
-          else if ($option[0] == "THEIRPITCH") $source = $theirPitch;
-          else if ($option[0] == "MYDECK") $source = $myDeck;
-          else if ($option[0] == "THEIRDECK") $source = $theirDeck;
-          else if ($option[0] == "MYSOUL") $source = $mySoul;
-          else if ($option[0] == "THEIRSOUL") $source = $theirSoul;
-          else if ($option[0] == "LANDMARK") $source = $landmarks;
-          else if ($option[0] == "CC") $source = $combatChain;
-          else if ($option[0] == "COMBATCHAINLINK") $source = $combatChain;
-          else if ($option[0] == "COMBATCHAINATTACKS") $source = GetCombatChainAttacks();
-          else if ($option[0] == "PASTCHAINLINK") $source = $chainLinks[$option[2]];
-          else if ($option[0] == "PRELAYERS") $source = GetPreLayers();
-          else if ($option[0] == "MAXCOUNT") {$maxCount = intval($option[1]); $countOffset++; continue;}
-          else if ($option[0] == "MINCOUNT") {$minCount = intval($option[1]); $countOffset++; continue;}
-          else if ($option[0] == "CURRENTTURNEFFECTS") $source = $currentTurnEffects;
+          switch($option[0]) {
+            case "MYAURAS":
+              $source = $myAuras;
+              break;
+            case "THEIRAURAS":
+              $source = $theirAuras;
+              break;
+            case "MYCHAR":
+              $source = $myCharacter;
+              break;
+            case "THEIRCHAR":
+              $source = $theirCharacter;
+              break;
+            case "MYITEMS":
+              $source = $myItems;
+              break;
+            case "THEIRITEMS":
+              $source = $theirItems;
+              break;
+            case "LAYER":
+              $source = $layers;
+              break;
+            case "MYHAND":
+              $source = $myHand;
+              break;
+            case "THEIRHAND":
+              $source = $theirHand;
+              break;
+            case "MYARSENAL":
+              $source = $myArsenal;
+              break;
+            case "THEIRARSENAL":
+              $source = $theirArsenal;
+              break;
+            case "MYDISCARD":
+              $source = $myDiscard;
+              break;
+            case "THEIRDISCARD":
+              $source = $theirDiscard;
+              break;
+            case "MYBANISH":
+              $source = $myBanish;
+              break;
+            case "THEIRBANISH":
+              $source = $theirBanish;
+              break;
+            case "MYALLY":
+              $source = $myAllies;
+              break;
+            case "THEIRALLY":
+              $source = $theirAllies;
+              break;
+            case "MYARS":
+              $source = $myArsenal;
+              break;
+            case "THEIRARS":
+              $source = $theirArsenal;
+              break;
+            case "MYPERM":
+              $source = $myPermanents;
+              break;
+            case "THEIRPERM":
+              $source = $theirPermanents;
+              break;
+            case "MYPITCH":
+              $source = $myPitch;
+              break;
+            case "THEIRPITCH":
+              $source = $theirPitch;
+              break;
+            case "MYDECK":
+              $source = $myDeck;
+              break;
+            case "THEIRDECK":
+              $source = $theirDeck;
+              break;
+            case "MYSOUL":
+              $source = $mySoul;
+              break;
+            case "THEIRSOUL":
+              $source = $theirSoul;
+              break;
+            case "LANDMARK":
+              $source = $landmarks;
+              break;
+            case "CC":
+              $source = $combatChain;
+              break;
+            case "COMBATCHAINLINK":
+              $source = $combatChain;
+              break;
+            case "COMBATCHAINATTACKS":
+              $source = GetCombatChainAttacks();
+              break;
+            case "PASTCHAINLINK":
+              $source = $chainLinks[$option[2]];
+              break;
+            case "PRELAYERS":
+              $source = GetPreLayers();
+              break;
+            case "MAXCOUNT":
+              $maxCount = intval($option[1]);
+              $countOffset++;
+              continue 2;
+            case "MINCOUNT":
+              $minCount = intval($option[1]);
+              $countOffset++;
+              continue 2;
+            case "CURRENTTURNEFFECTS":
+              $source = $currentTurnEffects;
+              break;
+            case "ATTACKQUEUE":
+              $source = $attackQueue;
+              break;
+            default:
+              WriteLog("An unexpected input $option[0] was sent to CHOOSEMULTIZONE, please submit a bug report", highlight:true);
+              break;
+          }
           $counters = 0;
           $lifeCounters = 0;
           $enduranceCounters = 0;

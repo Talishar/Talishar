@@ -194,11 +194,10 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 
 // returns a list of any attack that can be targeted
 function TargetAttack($player) {
-	global $Stack, $CombatChain, $ChainLinks, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+	global $Stack, $CombatChain, $ChainLinks, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $AttackQueue;
 	$targets = [];
 	if (IsLayerStep()) {
 		$botLayer = $Stack->BottomLayer();
-		// need to make sure this can't target funny attack-layers like emperor
 		$targets[] = "LAYER-" . $botLayer->Index();
 	}
 
@@ -217,7 +216,10 @@ function TargetAttack($player) {
 			$targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
 	}
 
-	// let it check the attack queue
+	for ($i = 0; $i < $AttackQueue->NumAttacks(); ++$i) {
+		$Card = $AttackQueue->Card($i, true);
+		$targets[] = "ATTACKQUEUE-" . $Card->Index();
+	}
 	return $targets;
 }
 

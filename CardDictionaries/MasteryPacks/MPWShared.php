@@ -15,15 +15,12 @@ function PayGoldInstead($player, $cardID) {
 }
 
 function TargetSwordAttack($player) {
-  //eventually set this up to target past links
-  global $CombatChain;
-  if (!$CombatChain->HasCurrentLink()) return "";
+  $attacks = TargetAttack($player);
   $choices = [];
-  $pastLinkCards = SearchCombatChainAttacks($player, subtype:"Sword");
-  if ($pastLinkCards != "") {
-    foreach (explode(",", $pastLinkCards) as $pastLinkCard)
-      $choices[] = "COMBATCHAINATTACKS-$pastLinkCard";
+  foreach($attacks as $attack) {
+    $cardID = GetMZCard($player, $attack);
+    if (SubtypeContains($cardID, "Sword", $player))
+      $choices[] = $attack;
   }
-  if (CardSubType($CombatChain->AttackCard()->ID()) == "Sword") $choices[] = "COMBATCHAIN-0";
   return implode(",", $choices);
 }
