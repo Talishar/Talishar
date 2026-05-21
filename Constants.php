@@ -464,6 +464,7 @@ $CCS_SoulBanishedThisChain = 46;
 $CCS_AttackCost = 47; // the base cost of the attack (necessary for X cost attacks)
 $CCS_CachedGoAgain = 48; // cached result of DoesAttackHaveGoAgain() set before EvaluateCombatChain
 $CCS_AttackDamageDealtToHero = 49; // how much damage the active attack has dealt (including arcane pings)
+$CCS_NumInstantsPlayedByDefendingPlayer = 50;
 
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
@@ -479,6 +480,7 @@ function ResetCombatChainState()
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
   global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero;
+  global $CCS_NumInstantsPlayedByDefendingPlayer;
 
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -528,6 +530,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_AttackCost] = -1;
   $combatChainState[$CCS_CachedGoAgain] = 0;
   $combatChainState[$CCS_AttackDamageDealtToHero] = 0;
+  $combatChainState[$CCS_NumInstantsPlayedByDefendingPlayer] = 0;
   
   $aGoodCleanFight = false;
   for($i = 0; $i < count($chainLinks); ++$i) {
@@ -620,7 +623,7 @@ function ResetChainLinkState()
   global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking, $CCS_NumPowerCounters;
-  global $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero;
+  global $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero, $CCS_NumInstantsPlayedByDefendingPlayer;
 
   WriteLog("The chain link was resolved.");
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
@@ -664,6 +667,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_AttackCost] = -1;
   $combatChainState[$CCS_CachedGoAgain] = 0;
   $combatChainState[$CCS_AttackDamageDealtToHero] = 0;
+  $combatChainState[$CCS_NumInstantsPlayedByDefendingPlayer] = 0;
   RemoveThisLinkEffects();
 }
 

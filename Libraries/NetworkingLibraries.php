@@ -1993,7 +1993,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
-  global $CS_NumWeaponsActivated;
+  global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer;
 
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   $resources = &GetResources($currentPlayer);
@@ -2405,8 +2405,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($cardType == "AA" && (GetResolvedAbilityType($cardID, $from) == "" || GetResolvedAbilityType($cardID, $from) == "AA")) {
       IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     }
-    if (($CombatChain->HasCurrentLink() || IsLayerStep()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && !IsActivated($cardID, $from) && $mainPlayer == $currentPlayer) {
-      ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
+    if (($CombatChain->HasCurrentLink() && !IsResolutionStep()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && !IsActivated($cardID, $from)) {
+      if ($mainPlayer == $currentPlayer)
+        ++$combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer];
+      else
+        ++$combatChainState[$CCS_NumInstantsPlayedByDefendingPlayer];
     }
     AddCharacterPlayCardTrigger($cardID, $playType, $from);
     PayAdditionalCosts($cardID, $from, $index);

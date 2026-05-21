@@ -4914,3 +4914,58 @@ class sigil_of_astral_flow_blue extends Card {
     }
   }
 }
+
+class flittering_forcefield extends BaseCard {
+  function BlockModifier() {
+    global $CCS_NumInstantsPlayedByDefendingPlayer, $combatChainState;
+    return $combatChainState[$CCS_NumInstantsPlayedByDefendingPlayer] > 0 ? 1 : 0;
+  }
+}
+
+class flittering_forcefield_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "flittering_forcefield_red";
+    $this->controller = $controller;
+    $this->baseCard = new flittering_forcefield($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return $this->baseCard->BlockModifier();
+  }
+}
+
+class flittering_forcefield_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "flittering_forcefield_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new flittering_forcefield($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return $this->baseCard->BlockModifier();
+  }
+}
+
+class flittering_forcefield_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "flittering_forcefield_blue";
+    $this->controller = $controller;
+    $this->baseCard = new flittering_forcefield($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return $this->baseCard->BlockModifier();
+  }
+}
