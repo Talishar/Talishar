@@ -2333,7 +2333,7 @@ class unmake_the_underlings_blue extends Card {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRDISCARD:subtype=Ally", 1);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Turn an ally into gold?", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Flip an ally facedown?", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZOP", $this->controller, "FLIP", 1);
   }
