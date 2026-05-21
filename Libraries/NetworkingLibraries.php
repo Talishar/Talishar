@@ -2544,7 +2544,7 @@ function GetLayerTarget($cardID, $from)
       $targets = TargetAttackActionCard(maxCost:1);
       $targets = implode(",", $targets);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $targets);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for $cardID");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for ". CardLink($cardID));
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
