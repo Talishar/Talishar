@@ -194,7 +194,7 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 
 // returns a list of any attack that can be targeted
 function TargetAttack($player) {
-	global $Stack, $CombatChain, $ChainLinks;
+	global $Stack, $CombatChain, $ChainLinks, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
 	$targets = [];
 	if (IsLayerStep()) {
 		$botLayer = $Stack->BottomLayer();
@@ -205,14 +205,16 @@ function TargetAttack($player) {
 	$i = 0;
 	if ($CombatChain->HasCurrentLink()) {
 		$ChainCard = $CombatChain->Card($i, true);
-		$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
+		if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-")
+			$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
 	}
 
 	for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
 		$Link = $ChainLinks->GetLink($i);
 		$j = 0;
 		$ChainCard = $Link->GetLinkCard($j, true);
-		$targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
+		if ($ChainCard->StillOnChain())
+			$targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
 	}
 
 	// let it check the attack queue
