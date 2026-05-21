@@ -774,6 +774,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
         break;
     }
   }
+  SetDamageSourceUID("-");
   return $damage;
 }
 

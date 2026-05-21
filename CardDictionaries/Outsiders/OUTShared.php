@@ -741,6 +741,7 @@ function OUTAbilityCost($cardID)
         $weaponTargetInd = "MYCHAR-$index";
         $weaponUID = $char[$index + 11];
       }
+      SetDamageSourceUID($weaponUID);
       //Target Hero
       if(substr($targetHero, 0, 5) == "THEIR") {
         $index = SearchCharacterForUniqueID($targetHeroUniqueID, $otherPlayer);
@@ -751,7 +752,6 @@ function OUTAbilityCost($cardID)
         $heroTargetInd = "$targetHero-$index";
       }
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $weaponTargetInd, 1);
-
     }
     if ($destroy) AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     else AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);

@@ -730,9 +730,13 @@ function GetZoneObject($player,  $zone) {
 }
 
 function MZIndexToObject($player, $MZIndex) {
+  global $ChainLinks;
   $zone = explode("-", $MZIndex)[0];
   $ind = explode("-", $MZIndex)[1] ?? -1;
   if (!is_numeric($ind)) return CleanTargetToObject($player, $MZIndex);
+  if ($zone == "COMBATCHAINATTACKS") { //this zone is wonky, handle separately
+    return $ChainLinks->GetLink($ind)->AttackCard();
+  }
   $Zone = GetZoneObject($player, $zone);
   return $Zone == "" ? "" : $Zone->Card($ind);
 }

@@ -1900,6 +1900,8 @@ class oasis_respite extends BaseCard {
       else
         $uid = $object->LayerUniqueID();
     }
+    elseif (is_a($object, "LinkCard"))
+      $uid = $object->OriginUniqueID();
     else
       $uid = $object->UniqueID();
     AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
