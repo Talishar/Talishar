@@ -6265,3 +6265,24 @@ class startworld_warning_yellow extends Card {
 
   }
 }
+
+class electrolyze_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "electrolyze_red";
+    $this->controller = $controller;
+  }
+}
+
+class electrolyze_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "electrolyze_yellow";
+    $this->controller = $controller;
+  }
+}
+
+class electrolyze_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "electrolyze_blue";
+    $this->controller = $controller;
+  }
+}
