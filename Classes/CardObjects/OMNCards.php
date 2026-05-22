@@ -5068,7 +5068,7 @@ class voltaris_blue extends Card {
   }
 
   function SpecialBlock() {
-    return -1;
+    return -2;
   }
 
   function SpecialType() {
@@ -5124,6 +5124,34 @@ class flash_bolt_red extends Card {
   function ActionsThatDoArcaneDamage() {
     return true;
   }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Flash Bolt";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
 }
 
 class flash_bolt_yellow extends Card {
@@ -5148,6 +5176,34 @@ class flash_bolt_yellow extends Card {
   function ActionsThatDoArcaneDamage() {
     return true;
   }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Flash Bolt";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
 }
 
 class flash_bolt_blue extends Card {
@@ -5171,6 +5227,34 @@ class flash_bolt_blue extends Card {
 
   function ActionsThatDoArcaneDamage() {
     return true;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Flash Bolt";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialType() {
+    return "I";
   }
 }
 
@@ -5422,6 +5506,30 @@ class lightning_overload_red extends Card {
   function ArcaneDamage() {
     return 4;
   }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Lightning Overload";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
 }
 
 class lightning_overload_yellow extends Card {
@@ -5447,6 +5555,30 @@ class lightning_overload_yellow extends Card {
   function ArcaneDamage() {
     return 4;
   }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Lightning Overload";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
 }
 
 class lightning_overload_blue extends Card {
@@ -5471,6 +5603,30 @@ class lightning_overload_blue extends Card {
 
   function ArcaneDamage() {
     return 2;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Lightning Overload";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
   }
 }
 
@@ -5509,6 +5665,30 @@ class meteoric_impact_red extends Card {
   function ArcaneDamage() {
     return 3;
   }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Meteoric Impact";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
 }
 
 class meteoric_impact_yellow extends Card {
@@ -5534,6 +5714,30 @@ class meteoric_impact_yellow extends Card {
   function ArcaneDamage() {
     return 2;
   }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Meteoric Impact";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
 }
 
 class meteoric_impact_blue extends Card {
@@ -5558,6 +5762,30 @@ class meteoric_impact_blue extends Card {
 
   function ArcaneDamage() {
     return 1;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Meteoric Impact";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
   }
 }
 
@@ -5630,6 +5858,26 @@ class tap_lessons_past_red extends Card {
   function SpecialType() {
     return "A";
   }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Tap Lessons Past";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
 }
 
 class tap_lessons_past_yellow extends Card {
@@ -5662,6 +5910,30 @@ class tap_lessons_past_yellow extends Card {
 
   function ArcaneDamage() {
     return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Tap Lessons Past";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
   }
 }
 
@@ -5696,6 +5968,30 @@ class tap_lessons_past_blue extends Card {
   function ArcaneDamage() {
     return 2;
   }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Tap Lessons Past";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
 }
 
 class constella_contemplation_yellow extends Card {
@@ -5719,6 +6015,30 @@ class constella_contemplation_yellow extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     SetArcaneTarget($this->controller, $this->cardID, setTarget:true);
   }
+
+  function SpecialName() {
+    return "Constella Contemplation";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
 }
 
 class constella_flowtide_yellow extends Card {
@@ -5741,6 +6061,30 @@ class constella_flowtide_yellow extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     SetArcaneTarget($this->controller, $this->cardID, setTarget:true);
+  }
+
+  function SpecialName() {
+    return "Constella Flowtide";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
   }
 }
 
