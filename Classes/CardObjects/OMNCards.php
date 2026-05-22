@@ -6041,9 +6041,9 @@ class constella_contemplation_yellow extends Card {
   }
 }
 
-class constella_flowtide_yellow extends Card {
+class constella_flowslide_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "constella_flowtide_yellow";
+    $this->cardID = "constella_flowslide_yellow";
     $this->controller = $controller;
   }
   
@@ -6064,7 +6064,7 @@ class constella_flowtide_yellow extends Card {
   }
 
   function SpecialName() {
-    return "Constella Flowtide";
+    return "Constella Flowslide";
   }
 
   function SpecialPitch() {
