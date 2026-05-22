@@ -6261,7 +6261,7 @@ class startworld_warning_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    PlayAura("lightning_flow", $this->controller, 2s);
+    PlayAura("lightning_flow", $this->controller, 2);
 
   }
 }
