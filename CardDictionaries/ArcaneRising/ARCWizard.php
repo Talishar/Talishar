@@ -601,7 +601,7 @@ function MeldTriggersDealingArcane($source)
 
 function CurrentEffectArcaneModifier($source, $player, $meldState = "-", $skipRemove = false): int|string
 {
-  global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
+  global $currentTurnEffects, $CS_ResolvingLayerUniqueID, $EffectContext;
   $modifier = 0;
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
@@ -614,7 +614,7 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-", $skipRe
       case "aether_wildfire_red":
         if ($meldState == "-" && MeldTriggersDealingArcane($source)) $modifier += $effectArr[1];
         else {
-          $cardType = CardType($source);
+          $cardType = CardType($EffectContext);
           if ((DelimStringContains($cardType, "A") || $cardType == "AA")
             && (!HasMeld($source) || DelimStringContains($meldState, "A"))) $modifier += $effectArr[1];
         }

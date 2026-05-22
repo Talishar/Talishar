@@ -6116,7 +6116,7 @@ class nucleus_aetherbolt_red extends Card {
   }
 
   function SpecificLogic() {
-    global $dqVars;
+    global $dqVars, $EffectContext;
     if ($dqVars["mode"] == "first") {
       $Hero = new CharacterCard(0, $this->controller);
       if ($Hero->Tapped() == 0 && $dqVars["ARCANEDEALT"] > 0) {
@@ -6130,8 +6130,17 @@ class nucleus_aetherbolt_red extends Card {
       $Hero = new CharacterCard(0, $this->controller);
       SetDamageSourceUID($Hero->UniqueID());
       $Hero->Tap();
+      $EffectContext = $this->cardID;
       DealArcane(1, source:$Hero->CardID(), resolvedTarget:$dqVars["pingTarget"]);
     }
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
   }
 }
 
