@@ -5402,6 +5402,26 @@ class enion_surge_red extends Card {
   function ArcaneDamage() {
     return 3;
   }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Enion Surge";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
 }
 
 class enion_surge_yellow extends Card {
@@ -5435,6 +5455,26 @@ class enion_surge_yellow extends Card {
   function ArcaneDamage() {
     return 2;
   }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Enion Surge";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
 }
 
 class enion_surge_blue extends Card {
@@ -5467,6 +5507,26 @@ class enion_surge_blue extends Card {
 
   function ArcaneDamage() {
     return 1;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Enion Surge";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
   }
 }
 
@@ -6262,7 +6322,30 @@ class starworld_warning_yellow extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     PlayAura("lightning_flow", $this->controller, 2);
+  }
 
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Starworld Warning";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialBlock() {
+    return -1;
   }
 }
 
@@ -6285,4 +6368,44 @@ class electrolyze_blue extends Card {
     $this->cardID = "electrolyze_blue";
     $this->controller = $controller;
   }
+}
+
+class starlight_road_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "starlight_road_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $indices = "CARDID-lightning_flow,CARDID-embodiment_of_lightning";
+    Await($this->controller, "ChooseMultiZone", "choice", indices:$indices, context:"Choose a token to create", subsequent:0);
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = explode("-", $dqVars["choice"])[1];
+    PlayAura($choice, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Starworld Warning";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialBlock() {
+    return -1;
+  } 
 }
