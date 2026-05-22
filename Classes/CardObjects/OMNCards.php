@@ -5048,3 +5048,844 @@ class tempt_over_yellow extends Card {
       StealAura($otherPlayer, $index, $this->controller, $from, "Temporary");
   }
 }
+
+class voltaris_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "voltaris_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PitchAbility($from) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("lightning_flow", $this->controller);
+  }
+
+  function SpecialBlock() {
+    return -1;
+  }
+
+  function SpecialType() {
+    return "R";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialSubType() {
+    return "Gem";
+  }
+
+  function SpecialName() {
+    return "Voltaris";
+  }
+}
+
+class flash_bolt extends BaseCard {
+  function PlayAbility($damage, $target) {
+    DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
+  }
+
+  function PayAdditionalCosts() {
+    SetArcaneTarget($this->controller, $this->cardID, 0, setTarget:true);
+  }
+}
+
+class flash_bolt_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "flash_bolt_red";
+    $this->controller = $controller;
+    $this->baseCard = new flash_bolt($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+  function ArcaneDamage() {
+    return 3;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+}
+
+class flash_bolt_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "flash_bolt_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new flash_bolt($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+  function ArcaneDamage() {
+    return 2;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+}
+
+class flash_bolt_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "flash_bolt_blue";
+    $this->controller = $controller;
+    $this->baseCard = new flash_bolt($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+  function ArcaneDamage() {
+    return 1;
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+}
+
+class comet_collision extends BaseCard {
+  function PlayAbility($damage, $target) {
+    global $CS_NumInstantsPutInGrave;
+    $arcDamage = GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0 ? $damage + 1 : $damage;
+    DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
+  }
+
+  function PayAdditionalCosts() {
+    SetArcaneTarget($this->controller, $this->cardID, "any", setTarget:true);
+  }
+}
+
+class comet_collision_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "comet_collision_red";
+    $this->controller = $controller;
+    $this->baseCard = new comet_collision($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 3;
+  }
+}
+
+class comet_collision_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "comet_collision_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new comet_collision($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 2;
+  }
+}
+
+class comet_collision_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "comet_collision_blue";
+    $this->controller = $controller;
+    $this->baseCard = new comet_collision($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 1;
+  }
+}
+
+class enion_surge extends BaseCard {
+  function PlayAbility($damage, $target) {
+    DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
+  }
+
+  function PayAdditionalCosts() {
+    SetArcaneTarget($this->controller, $this->cardID, "any", setTarget:true);
+  }
+
+  function ArcaneHitEffect() {
+    $Hero = new CharacterCard(0, $this->controller);
+    if ($Hero->Tapped() == 0) {
+      $message = "if_you_want_to_tap_to_lightning_flow";
+      $context = "Choose if you want to tap your hero to make a  " . CardLink("lightning_flow");
+      Await($this->controller, "YesNo", "choice", message:$message, context:$context, subsequent:0);
+      Await($this->controller, $this->cardID, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap();
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
+  }
+}
+
+class enion_surge_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "enion_surge_red";
+    $this->controller = $controller;
+    $this->baseCard = new enion_surge($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHitEffect();
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 3;
+  }
+}
+
+class enion_surge_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "enion_surge_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new enion_surge($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHitEffect();
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 2;
+  }
+}
+
+class enion_surge_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "enion_surge_blue";
+    $this->controller = $controller;
+    $this->baseCard = new enion_surge($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHitEffect();
+  }
+
+  function SpecificLogic() {
+    return $this->baseCard->SpecificLogic();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 1;
+  }
+}
+
+class lightning_overload extends BaseCard {
+  function PlayAbility($damage, $target) {
+    global $CS_NumInstantsPutInGrave;
+    DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
+    if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0)
+      PlayAura("lightning_flow", $this->controller);
+  }
+
+  function PayAdditionalCosts() {
+    SetArcaneTarget($this->controller, $this->cardID, "any", setTarget:true);
+  }
+}
+
+class lightning_overload_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "lightning_overload_red";
+    $this->controller = $controller;
+    $this->baseCard = new lightning_overload($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 4;
+  }
+}
+
+class lightning_overload_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "lightning_overload_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new lightning_overload($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 4;
+  }
+}
+
+class lightning_overload_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "lightning_overload_blue";
+    $this->controller = $controller;
+    $this->baseCard = new lightning_overload($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 2;
+  }
+}
+
+class meteoric_impact extends BaseCard {
+  function PlayAbility($damage, $target) {
+    global $CS_NumInstantsPutInGrave;
+    $arcDamage = GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0 ? $damage + 2 : $damage;
+    DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
+  }
+
+  function PayAdditionalCosts() {
+    SetArcaneTarget($this->controller, $this->cardID, "any", setTarget:true);
+  }
+}
+
+class meteoric_impact_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "meteoric_impact_red";
+    $this->controller = $controller;
+    $this->baseCard = new meteoric_impact($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 3;
+  }
+}
+
+class meteoric_impact_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "meteoric_impact_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new meteoric_impact($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 2;
+  }
+}
+
+class meteoric_impact_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "meteoric_impact_blue";
+    $this->controller = $controller;
+    $this->baseCard = new meteoric_impact($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 1;
+  }
+}
+
+class tap_lessons_past extends BaseCard {
+  function PlayAbility($damage, $target) {
+    WriteLog("HERE: $this->cardID");
+    DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
+  }
+
+  function PayAdditionalCosts() {
+    SetArcaneTarget($this->controller, $this->cardID, "any", setTarget:true);
+  }
+
+  function ArcaneHitEffect() {
+    $Hero = new CharacterCard(0, $this->controller);
+    if ($Hero->Tapped() == 0) {
+      $message = "if_you_want_to_tap_to_return_an_instant";
+      $context = "Choose if you want to tap your hero to return an instant to your deck";
+      Await($this->controller, "YesNo", "choice", message:$message, context:$context, subsequent:0);
+      Await($this->controller, "MultiZoneIndices", "indices", search:"MYDISCARD:type=I");
+      Await($this->controller, "ChooseMultiZone", "choice", context:"Return an instant to the bottom of your deck");
+      Await($this->controller, $this->cardID, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap();
+    $choice = $dqVars["choice"];
+    $DisCard = MZIndexToObject($this->controller, $choice);
+    $Deck = new Deck($this->controller);
+    $Deck->AddBottom($DisCard->CardID());
+    $DisCard->Remove();
+  }
+}
+
+class tap_lessons_past_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tap_lessons_past_red";
+    $this->controller = $controller;
+    $this->baseCard = new tap_lessons_past($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHitEffect();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 4;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+}
+
+class tap_lessons_past_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "tap_lessons_past_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new tap_lessons_past($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHitEffect();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 3;
+  }
+}
+
+class tap_lessons_past_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "tap_lessons_past_blue";
+    $this->controller = $controller;
+    $this->baseCard = new tap_lessons_past($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($this->ArcaneDamage(), $target);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    $this->baseCard->ArcaneHitEffect();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 2;
+  }
+}
+
+class constella_contemplation_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "constella_contemplation_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumInstantsPutInGrave;
+    PlayAura("ponder", $this->controller);
+    if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0)
+      DealArcane(1, source:$this->cardID, resolvedTarget:$target);
+    return "";
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetArcaneTarget($this->controller, $this->cardID, setTarget:true);
+  }
+}
+
+class constella_flowtide_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "constella_flowtide_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumInstantsPutInGrave;
+    PlayAura("lightning_flow", $this->controller);
+    if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0)
+      DealArcane(1, source:$this->cardID, resolvedTarget:$target);
+    return "";
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetArcaneTarget($this->controller, $this->cardID, setTarget:true);
+  }
+}
+
+class nucleus_aetherbolt_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "nucleus_aetherbolt_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $firstTarget = explode(",", $target)[0];
+    $secondTarget = explode(",", $target)[1];
+    DealArcane($this->ArcaneDamage(), source:$this->cardID, resolvedTarget: $firstTarget);
+    Await($this->controller, $this->cardID, mode:"first", pingTarget:$secondTarget, final:true);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetArcaneTarget($this->controller, $this->cardID, "any", setTarget:true);
+    SetArcaneTarget($this->controller, $this->cardID, "any", context:"Set the target for the second ping", setTarget:true);
+  }
+
+  function ActionsThatDoArcaneDamage() {
+    return true;
+  }
+
+  function ArcaneDamage() {
+    return 3;
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    if ($dqVars["mode"] == "first") {
+      $Hero = new CharacterCard(0, $this->controller);
+      if ($Hero->Tapped() == 0 && $dqVars["ARCANEDEALT"] > 0) {
+        $message = "if_you_want_to_tap_to_deal_1_arcane";
+        $context = "Choose if you want to tap your hero to deal 1 arcane";
+        Await($this->controller, "YesNo", "choice", message:$message, context:$context, subsequent:0);
+        Await($this->controller, $this->cardID, mode:"second", pingTarget:$dqVars["pingTarget"], final:true);
+      }
+    }
+    else {
+      $Hero = new CharacterCard(0, $this->controller);
+      SetDamageSourceUID($Hero->UniqueID());
+      $Hero->Tap();
+      DealArcane(1, source:$Hero->CardID(), resolvedTarget:$dqVars["pingTarget"]);
+    }
+  }
+}
+
+class haven_veil extends BaseCard {
+  function EntersArenaAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function DamagePrevention($index, $damage, $amount, &$remove) {
+    return FloatingPrevention($index, $damage, $amount, $remove);
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    $AuraCard->Destroy();
+  }
+}
+
+class haven_veil_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "haven_veil_red";
+    $this->controller = $controller;
+    $this->baseCard = new haven_veil($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->EntersArenaAbility();
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return $this->baseCard->DamagePrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 3;
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+}
+
+class haven_veil_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "haven_veil_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new haven_veil($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->EntersArenaAbility();
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return $this->baseCard->DamagePrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 2;
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+}
+
+class haven_veil_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "haven_veil_blue";
+    $this->controller = $controller;
+    $this->baseCard = new haven_veil($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EntersArenaAbility() {
+    $this->baseCard->EntersArenaAbility();
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return $this->baseCard->DamagePrevention($index, $damage, $amount, $remove);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 1;
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+}

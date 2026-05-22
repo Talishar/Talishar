@@ -178,7 +178,7 @@ function GetArcaneTargetFromUID($player, $target) {
   return $indexTarget;
 }
 
-function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $mayAbility = False, $setTarget = false) {
+function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $mayAbility = False, $setTarget = false, $context = "") {
   $targetType = match($targetType) {
     "any_hero" => 0,
     "their_hero" => 1,
@@ -188,10 +188,11 @@ function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $ma
     default => $targetType
   };
   $otherPlayer = $player == 1 ? 2 : 1;
+  $context = $context == "" ? "Choose a target for <0>" : $context;
   AddDecisionQueue("PASSPARAMETER", $player, $source, ($isPassable ? 1 : 0));
   AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
   AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET," . $targetType, ($isPassable ? 1 : 0));
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", ($isPassable ? 1 : 0));
+  AddDecisionQueue("SETDQCONTEXT", $player, $context, ($isPassable ? 1 : 0));
   if(ShouldAutotargetOpponent($player) && $targetType == 0) {
     AddDecisionQueue("PASSPARAMETER", $player, "THEIRCHAR-0", 1);
   }

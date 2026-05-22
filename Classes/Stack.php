@@ -60,7 +60,7 @@ class Stack {
     for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
       if ($this->layers[$i] == $cardID) return $this->Card($i);
     }
-    return "";
+    return new Layer(-1);
   }
 
   function FindTrigger($cardID) {
