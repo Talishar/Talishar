@@ -6254,9 +6254,9 @@ class golden_skull_yellow extends Card {
   }
 }
 
-class startworld_warning_yellow extends Card {
+class starworld_warning_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "startworld_warning_yellow";
+    $this->cardID = "starworld_warning_yellow";
     $this->controller = $controller;
   }
 
