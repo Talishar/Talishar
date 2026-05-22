@@ -6243,9 +6243,9 @@ class haven_veil_blue extends Card {
   }
 }
 
-class golden_skull_red extends Card {
+class golden_skull_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "golden_skull_red";
+    $this->cardID = "golden_skull_yellow";
     $this->controller = $controller;
   }
 
