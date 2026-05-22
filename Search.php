@@ -1329,6 +1329,7 @@ function CountItemByName($cardName, $player)
   $total = 0;
   for ($i = 0; $i < $count; $i += $pieces) {
     if (CardNameContains($items[$i], $cardName, $player)) ++$total;
+    else if ($cardName == "Gold" && IsGold($items[$i])) ++$total;
   }
   if ($cardName == "Gold") {
     $char = GetPlayerCharacter($player);

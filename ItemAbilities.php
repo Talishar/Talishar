@@ -139,6 +139,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "backup_protocol_blu_blue":
     case "imperial_seal_of_command_red":
     case "gold":
+    case "golden_skull_red":
     case "diamond_amulet_blue":
     case "amethyst_amulet_blue":
     case "onyx_amulet_blue":

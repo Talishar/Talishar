@@ -6242,3 +6242,14 @@ class haven_veil_blue extends Card {
     $this->baseCard->BeginningActionPhaseAbility($index);
   }
 }
+
+class golden_skull_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "golden_skull_red";
+    $this->controller = $controller;
+  }
+
+  function IsGold() {
+    return true;
+  }
+}
