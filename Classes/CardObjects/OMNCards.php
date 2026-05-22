@@ -6253,3 +6253,15 @@ class golden_skull_yellow extends Card {
     return true;
   }
 }
+
+class startworld_warning_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "startworld_warning_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("lightning_flow", $this->controller, 2s);
+
+  }
+}
