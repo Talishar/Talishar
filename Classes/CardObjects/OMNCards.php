@@ -6097,7 +6097,7 @@ class nucleus_aetherbolt_red extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $firstTarget = explode(",", $target)[0];
     $secondTarget = explode(",", $target)[1];
-    DealArcane($this->ArcaneDamage(), source:$this->cardID, resolvedTarget: $firstTarget);
+    DealArcane(3, source:$this->cardID, resolvedTarget: $firstTarget);
     Await($this->controller, $this->cardID, mode:"first", pingTarget:$secondTarget, final:true);
     return "";
   }
@@ -6112,7 +6112,7 @@ class nucleus_aetherbolt_red extends Card {
   }
 
   function ArcaneDamage() {
-    return 3;
+    return 1;
   }
 
   function SpecificLogic() {
