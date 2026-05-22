@@ -5634,7 +5634,7 @@ class meteoric_impact extends BaseCard {
   function PlayAbility($damage, $target) {
     global $CS_NumInstantsPutInGrave;
     $arcDamage = GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0 ? $damage + 2 : $damage;
-    DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
+    DealArcane($arcDamage, source:$this->cardID, resolvedTarget:$target);
   }
 
   function PayAdditionalCosts() {
