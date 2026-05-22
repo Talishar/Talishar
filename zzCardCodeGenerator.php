@@ -60,10 +60,10 @@
     "Spectra", "Spellvoid", "Steal", "Stealth", "Surge", "Suspense", "Temper",
     "The Crowd Boos", "The Crowd Cheers", "Tower", "Transcend", "Transform",
     "Unfreeze", "Unity", "Universal", "Unlimited", "Wager", "Ward", "Watery Grave",
-    "Fragment"
+    "Fragment", "Quickstrike", "Urusp", "Starfall"
   ];
 
-  $hasKeywordAmount = [ "Amp", "Arcane Barrier", "Arcane Shelter", "Heave", "Opt", "Quell", "Spellvoid", "Ward" ];
+  $hasKeywordAmount = [ "Amp", "Arcane Barrier", "Arcane Shelter", "Heave", "Opt", "Quell", "Spellvoid", "Ward"];
 
   $essenceElements = ["Earth", "Ice", "Lightning"];
 

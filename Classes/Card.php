@@ -730,4 +730,16 @@ class Card {
   function IsAttackLayer() {
     return false;
   }
+
+  function hasQuickstrike() {
+    return GeneratedHasQuickstrike($this->cardID);
+  }
+
+  function hasUrusp() {
+    return GeneratedHasUrusp($this->cardID);
+  }
+
+  function HasStarfall() {
+    return GeneratedHasStarfall($this->cardID);
+  }
 }

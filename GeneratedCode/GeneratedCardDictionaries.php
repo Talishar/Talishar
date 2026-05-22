@@ -42751,4 +42751,30 @@ return match($cardID) {
 default => false
 };
 }
+function GeneratedHasQuickstrike($cardID) {
+if(is_int($cardID)) return false;
+return match($cardID) {
+"dashing_flashfoot_yellow" => true,
+"prophetic_quickstep_yellow" => true,
+"tempestuous_kiss_red" => true,
+default => false
+};
+}
+function GeneratedHasUrusp($cardID) {
+if(is_int($cardID)) return false;
+return match($cardID) {
+default => false
+};
+}
+function GeneratedHasStarfall($cardID) {
+if(is_int($cardID)) return false;
+return match($cardID) {
+"astral_bridge_red" => true,
+"constella_uplift_yellow" => true,
+"cosmic_suture_red" => true,
+"cosmic_suture_yellow" => true,
+"cosmic_suture_blue" => true,
+default => false
+};
+}
 ?>
