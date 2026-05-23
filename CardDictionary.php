@@ -232,6 +232,9 @@ function CardTypeExtended($cardID, $from="", $index=-1) // used to handle evos
     "evo_beta_base_legs_blue_equip" => "A,E",
     "evo_beta_base_head_blue_equip" => "A,E",
     "evo_beta_base_chest_blue_equip" => "A,E",
+
+    "arcbane_grasp_blue" => "I,E",
+    "arcbane_grasp_blue_equip" => "I,E",
   ];
 
   return $evoTypes[$cardID] ?? CardType($cardID, $from, index:$index);

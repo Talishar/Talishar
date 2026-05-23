@@ -3999,6 +3999,8 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
 {
   global $CombatChain;
   $otherPlayer = $player == 1 ? 2 : 1;
+  $card = GetClass($toCardID, $player);
+  if ($card != "-") $card->EquipAbilities();
   switch ($toCardID) {
     case "evo_steel_soul_memory_blue":
     case "evo_steel_soul_memory_blue_equip":

@@ -7990,3 +7990,33 @@ class induce_panic_yellow extends Card {
     }
   }
 }
+
+class arcbane_grasp_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "arcbane_grasp_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}
+
+class arcbane_grasp_blue_equip extends Card {
+  function __construct($controller) {
+    $this->cardID = "arcbane_grasp_blue_equip";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EquipAbilities() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("spellbane_aegis", $this->controller);
+  }
+}

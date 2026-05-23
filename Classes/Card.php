@@ -750,4 +750,8 @@ class Card {
   function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
     return 0;
   }
+
+  function EquipAbilities() {
+    return;
+  }
 }
