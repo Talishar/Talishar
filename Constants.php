@@ -115,9 +115,11 @@ function ItemPieces()
   return 14;
 }
 
+//0 - Card ID
+//1 - Unique ID
 function PitchPieces()
 {
-  return 1;
+  return 2;
 }
 
 //0 - Effect ID

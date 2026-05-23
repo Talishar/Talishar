@@ -683,6 +683,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $pitch = &GetPitch($player);
       WriteLog("Player " . $player . " pitched " . CardLink($lastResult, $lastResult));
       array_push($pitch, $lastResult);
+      array_push($pitch, GetUniqueId($lastResult, $player));
       return $lastResult;
     case "PITCHABILITY":
       PitchAbility($lastResult);

@@ -93,3 +93,40 @@ class runechant_of_greed_yellow extends Card {
     return "Aura";
   }
 }
+
+class baalghor_omen_of_the_end extends Card {
+  function __construct($controller) {
+    $this->cardID = "baalghor_omen_of_the_end";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecialType() {
+    return "C";
+  }
+
+  function PermanentPitchCardAbility($pitchIndex) {
+    $PitchCard = new PitchCard($pitchIndex, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $PitchCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Pitch = new PitchZone($this->controller);
+    $PitchCard = $Pitch->FindCardUID($target);
+    BanishCardForPlayer($PitchCard->CardID(), $this->controller, "PITCH");
+    $PitchCard->Remove();
+  }
+
+  function PermanentPowerModifier(&$powerModifiers) {
+    global $CombatChain;
+    if ($CombatChain->AttackCard()->From() == "BANISH") {
+      $powerModifiers[] = $this->cardID;
+      $powerModifiers[] = 3;
+      return 3;
+    }
+    return 0;
+  }
+}

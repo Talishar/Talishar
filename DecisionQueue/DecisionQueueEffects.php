@@ -1033,12 +1033,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "CHARTTHEHIGHSEAS":
       if (DelimStringContains($lastResult, "MYDECK", true)) {
         $cardID = MZRemove($player, $lastResult);
-        $pitch = &GetPitch($player);
-        WriteLog("Player " . $player . " pitched " . CardLink($cardID, $cardID));
-        array_push($pitch, $cardID);
-        PitchAbility($cardID, "DECK");
-        $resources = &GetResources($player);
-        $resources[0] += PitchValue($cardID);
+        Pitch($cardID, $player);
         $remainingInds = 1;
       }
       else

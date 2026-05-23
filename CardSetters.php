@@ -314,7 +314,8 @@ function RemovePitch($player, $index)
 {
   $pitch = &GetPitch($player);
   $cardID = $pitch[$index];
-  unset($pitch[$index]);
+  for ($i = $index + PitchPieces() - 1; $i >= $index; --$i)
+    unset($pitch[$i]);
   $pitch = array_values($pitch);
   return $cardID;
 }

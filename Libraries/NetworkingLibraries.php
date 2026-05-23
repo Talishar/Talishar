@@ -2184,6 +2184,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $pitchValue = PitchValue($cardID);
     $resources[0] += $pitchValue;
     array_push($pitch, $cardID);
+    array_push($pitch, GetUniqueId($cardID, $currentPlayer));
     if (CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
     PitchAbility($cardID);
   }

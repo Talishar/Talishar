@@ -762,4 +762,12 @@ class Card {
   function IsRunechant() {
     return false;
   }
+
+  function PermanentPitchCardAbility($pitchIndex) {
+    return;
+  }
+
+  function PermanentPowerModifier(&$powerModifiers) {
+    return 0;
+  }
 }

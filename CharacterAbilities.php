@@ -628,6 +628,8 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   for ($i = 0; $i < $mainCharCount; $i += $characterPieces) {
     if (!IsCharacterAbilityActive($mainPlayer, $i)) continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
+    $card = GetClass($characterID, $mainPlayer);
+    if ($card != "-") $modifier += $card->PermanentPowerModifier($powerModifiers);
     switch ($characterID) {
       case "ser_boltyn_breaker_of_dawn":
       case "boltyn":
@@ -1824,5 +1826,14 @@ function CharacterBeatChestTrigger($player) {
   for ($i = 0; $i < $charCount; $i += $characterPieces) {
     $card = GetClass($character[$i], $player);
     if ($card != "-") $card->WhenBeatChest($i);
+  }
+}
+
+function CharacterPitchCardAbilities($player, $index) {
+  $Character = new PlayerCharacter($player);
+  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $CharacterCard = $Character->Card($i, true);
+    $card = GetClass($CharacterCard->CardID(), $player);
+    if ($card != "-") $card->PermanentPitchCardAbility($index);
   }
 }

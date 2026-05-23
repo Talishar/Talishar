@@ -2871,7 +2871,7 @@ function EndTurnPitchHandling($player)
   global $currentPlayer, $turn;
   $pitch = &GetPitch($player);
   if (count($pitch) == 0) return true;
-  else if (count($pitch) == 1) {
+  else if (count($pitch) == PitchPieces()) {
     PitchDeck($player, 0);
     return true;
   } else {
@@ -3603,10 +3603,12 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   return "";
 }
 
-function PitchAbility($cardID, $from="HAND")
+function PitchAbility($cardID, $from="HAND", $index=-1)
 {
   global $currentPlayer, $CS_NumAddedToSoul, $actionPoints, $mainPlayer;
-
+  $pitch = GetPitch($currentPlayer);
+  if ($index == -1)
+    $index = count($pitch) - PitchPieces();
   $pitchValue = PitchValue($cardID);
   if (GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($currentPlayer, "vestige_of_sol") && TalentContains($cardID, "LIGHT", $currentPlayer)) {
     $resources = &GetResources($currentPlayer);
@@ -3633,6 +3635,7 @@ function PitchAbility($cardID, $from="HAND")
       } 
     }
   }
+  CharacterPitchCardAbilities($currentPlayer, $index);
   if (SubtypeContains($cardID, "Chi", $currentPlayer)
     && SearchCharacterAlive($currentPlayer, "meridian_pathway")
     && SearchCharacterForCard($currentPlayer, "meridian_pathway")
@@ -4332,7 +4335,8 @@ function Pitch($cardID, $player)
   $pitch = &GetPitch($player);
   WriteLog("Player " . $player . " pitched " . CardLink($cardID, $cardID));
   $pitch[] = $cardID;
-  PitchAbility($cardID, "DECK");
+  $pitch[] = GetUniqueId($cardID, $player);
+  PitchAbility($cardID, "DECK", count($pitch) - PitchPieces());
   $resources = &GetResources($player);
   $resources[0] += PitchValue($cardID);
 }
