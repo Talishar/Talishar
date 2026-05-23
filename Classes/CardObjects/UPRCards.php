@@ -1855,7 +1855,7 @@ class liquefy_red extends Card {
 
 class oasis_respite extends BaseCard {
   function CurrentEffectDamagePrevention($damage, $source, $index, &$remove, $amount) {
-    global $EffectContextUID, $CS_ResolvingLayerUniqueID, $CombatChain;
+    global $CS_ResolvingLayerUniqueID, $CombatChain;
     $Effect = new CurrentEffect($index);
     $prevAmount = $Effect->NumUses();
     if ($amount && $CombatChain->HasCurrentLink()) {

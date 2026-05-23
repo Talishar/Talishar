@@ -3316,6 +3316,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DestroyItemForPlayer($player, SearchItemForIndex("powder_keg_blue", $player));
       return $lastResult;
     case "ADDTRIGGER":
+      $uniqueID = explode("|", $parameter)[2] ?? "-";
       if (count(explode("|", $parameter)) > 1) {
         $additional = explode("|", $parameter)[1];
         $parameter = explode("|", $parameter)[0];
@@ -3417,7 +3418,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $targetLoc = explode("-", $target)[0];
           $targetID = explode("-", $target)[1];
           $uid = is_numeric($targetID) ? GetMZUID($targetedPlayer, $target) : $targetID;
-          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-$uid", $additional);
+          AddLayer("TRIGGER", $player, $params[0], "$targetLoc-$uid", $additional, $uniqueID);
           WriteLog("Player " . $targetedPlayer . "'s " . GetMZCardLink($targetedPlayer, $lastResult) . " was targeted by " . CardLink($parameter));
           break;
       }

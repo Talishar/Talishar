@@ -172,7 +172,7 @@ function SearchInner(
     $cardID = $array[$i];
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
       // Check cheap conditions first: type, subtype, cost, class, talent, pitch, attack, defense, arcane damage
-      if (($type == "" || DelimStringContains(CardType($cardID, $zone), $type) || $type == "C" && CardType($cardID) == "D" || $type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone))
+      if (($type == "" || TypeContains($cardID, $type, $player, from:$zone, index:$i) || $type == "C" && CardType($cardID) == "D" || $type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone))
         && ($subtype == "" || SubtypeContains($cardID, $subtype, $player))
         && ($maxCost == -1 || CardCost($cardID, $zone) <= $maxCost)
         && ($minCost == -1 || CardCost($cardID, $zone) >= $minCost)

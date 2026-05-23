@@ -605,7 +605,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           //Add indication for token copies
           if (str_contains($option[0], "AURAS")) {
             $Card = MZIndexToObject($playerID, $options[$i]);
-            if ($Card->IsToken()) $label = "Token Copy";
+            if ($Card->IsToken() && !TypeContains($Card->CardID(), "T")) $label = "Token Copy";
           }
           
           //Add indication for attacking Allies and Auras with an open combat chain

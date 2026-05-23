@@ -2058,6 +2058,10 @@ function PitchContains($cardID, $pitch)
 
 function TypeContains($cardID, $type, $player = "", $partial = false, $from = "-", $index = -1)
 {
+  if ($type == "T" && $from == "AURAS" && $player != "" && $index != -1) {
+    $AuraCard = new AuraCard($index, $player);
+    if ($AuraCard->IsToken()) return true;
+  }
   $cardType = CardTypeExtended($cardID, $from, $index);
   return DelimStringContains($cardType, $type, $partial);
 }

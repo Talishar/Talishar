@@ -363,7 +363,8 @@ function AddTriggerAwait($player) {
   $additional = $dqVars["additional"] ?? "";
   $target = $dqVars["target"] ?? "";
   $cardID = $dqVars["cardID"];
-  $parameter = "$cardID|$additional";
+  $uniqueID = $dqVars["uniqueID"] ?? "-";
+  $parameter = "$cardID|$additional|$uniqueID";
   PrependDecisionQueue("ADDTRIGGER", $player, $parameter, 1);
   PrependDecisionQueue("PASSPARAMETER", $player, $target, 1);
 }
@@ -371,7 +372,7 @@ function AddTriggerAwait($player) {
 function MZTapAwait($player) {
   global $dqVars;
   $MZInd = $dqVars["MZIndex"];
-  $tapState = $dqVars["tapState"];
+  $tapState = $dqVars["tapState"] ?? 1;
   Tap($MZInd, $player, $tapState);
 }
 
