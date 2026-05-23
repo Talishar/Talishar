@@ -16,6 +16,7 @@ class sword_attack_reaction {
 
 	function PayAdditionalCosts() {
 		$choices = TargetSwordAttack($this->controller);
+		WriteLog("HERE: $choices");
 		AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
 		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
 		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
@@ -537,14 +538,14 @@ class steel_on_steel_blue extends Card {
 
 class downswing_red extends Card {
 	public $archetype;
- 	 function __construct($controller) {
+	function __construct($controller) {
 		$this->cardID = "downswing_red";
 		$this->controller = $controller;
 		$this->archetype = new sword_attack_reaction($this->cardID, $controller);
  	}
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if (explode("-", $target)[0] == "COMBATCHAIN") {
+		if (explode("-", $target)[0] == "COMBATCHAINLINK") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
 		}
@@ -587,7 +588,7 @@ class drawing_dead_yellow extends Card {
   	}
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if (explode("-", $target)[0] == "COMBATCHAIN") {
+		if (explode("-", $target)[0] == "COMBATCHAINLINK") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
 		}
@@ -630,7 +631,7 @@ class donkey_blue extends Card {
   	}
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if (explode("-", $target)[0] == "COMBATCHAIN") {
+		if (explode("-", $target)[0] == "COMBATCHAINLINK") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
 		}
