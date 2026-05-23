@@ -7050,3 +7050,143 @@ class thunderous_retort_blue extends Card {
     return true;
   }
 }
+
+class constella_waves extends Card {
+  function __construct($controller) {
+    $this->cardID = "constella_waves";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return Amp(1, $remove, $player, $this->controller, $amount);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap();
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Hero = new CharacterCard(0, $this->controller);
+    return $Hero->Tapped() == 1;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+}
+
+class constella_tiara extends Card {
+  function __construct($controller) {
+    $this->cardID = "constella_tiara";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    if ($preventable && $damage > 0) {
+      if (!$amount) {
+        PlayAura("ponder", $this->controller, effectSource:$this->cardID);
+        $remove = true;
+      }
+      return 1;
+    }
+    return 0;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+}
+
+class starflow_robes extends Card {
+  function __construct($controller) {
+    $this->cardID = "starflow_robes";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    if ($preventable && $damage > 0) {
+      if (!$amount) {
+        PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
+        $remove = true;
+      }
+      return 1;
+    }
+    return 0;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+}
+
+class laced_lightning extends Card {
+  function __construct($controller) {
+    $this->cardID = "laced_lightning";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    if ($preventable && $damage > 0) {
+      if (!$amount) {
+        PlayAura("embodiment_of_lightning", $this->controller, effectSource:$this->cardID);
+        $remove = true;
+      }
+      return 1;
+    }
+    return 0;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+}
