@@ -7951,27 +7951,42 @@ class chromatic_refinement_blue extends Card {
   }
 }
 
-// class induce_panic_yellow extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "induce_panic_yellow";
-//     $this->controller = $controller;
-//   }
+class induce_panic_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "induce_panic_yellow";
+    $this->controller = $controller;
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function OnBlockResolveEffects($blockedFromHand, $i, $start) {
-//     AddLayer("TRIGGER", $this->controller, $this->cardID);
-//   }
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
 
-//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-//     Await($this->controller, "CardChoices", "choice", choices:"Red,Yellow,Blue", context:"Don'tpanic", subsequent:false);
-//     Await($this->controller, $this->cardID, final:true);
-//   }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $messages = ["Don't panic just choose a color", "I'm not panicking you're panicking, choose a color",
+                 "come on, choose a color, what's the worst that could happen?",
+                 "CHOOSE A COLOR", "Why are you taking so long to choose a color?",
+                 "I think you should pick red, but what do I know?"];
+    $roll =  GetRandom(0, count($messages)-1);
+    Await($this->controller, "CardChoices", "choice", choices:"Red,Yellow,Blue", context:$messages[$roll], subsequent:false);
+    Await($this->controller, $this->cardID, final:true);
+  }
 
-//   function SpecificLogic() {
-//     global $dqVars;
-//     WriteLog("HERE: " . $dqVars["choice"]);
-//   }
-// }
+  function SpecificLogic() {
+    global $dqVars;
+    $color = match($dqVars["choice"]) {"Red" => 1, "Yellow" => 2, "Blue" => 3};
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    foreach ([$this->controller, $otherPlayer] as $player) {
+      if (!CanRevealCards($player)) continue;
+      $hand = GetHand($player);
+      if (count($hand) == 0) continue;
+      $roll = GetRandom(0, count($hand)-1);
+      RevealCards($hand[$roll], $player);
+      if (ColorContains($hand[$roll], $color, $player))
+        DiscardCard($player, $roll, source:$this->cardID, effectController:$this->controller);
+    }
+  }
+}
