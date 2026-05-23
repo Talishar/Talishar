@@ -883,9 +883,10 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 {
   global $currentTurnEffects, $mainPlayer;
   $modifier = 0;
-  if($type == "ARCANE") return $modifier; //It's already checked upfront for Arcane
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = 0;
+    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    if ($card != "-") $modifier += $card->CurrentEffectDamageBuffs($source, $type, $i, $remove);
     switch ($currentTurnEffects[$i]) {
       case "frazzle_red":
       case "frazzle_yellow":
@@ -922,18 +923,6 @@ function CombatChainDamageModifiers($player, $source, $type)
         case "ball_lightning_red":
         case "ball_lightning_yellow":
         case "ball_lightning_blue":
-          if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
-          break;
-        default:
-          break;
-      }
-    }
-  }
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
-    $Effect = $CurrentTurnEffects->Effect($i, true);
-    if ($Effect->PlayerID() == $mainPlayer) {
-      switch ($Effect->EffectID()) {
-        case "arc_bending_red":
           if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
           break;
         default:

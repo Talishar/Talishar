@@ -7813,64 +7813,142 @@ class spellbane_sigil_blue extends Card {
   }
 }
 
-// class chromatic_refinement extends BaseCard {
-//   function BeginningActionPhaseAbility($index) {
-//     $AuraCard = new AuraCard($index, $this->controller);
-//     AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
-//   }
+class chromatic_refinement extends BaseCard {
+  function BeginningActionPhaseAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
+  }
 
-//   function ProcessTrigger($uniqueID) {
-//     $Auras = new Auras($this->controller);
-//     $AuraCard = $Auras->FindCardUID($uniqueID);
-//     $AuraCard->Destroy();
-//     AddCurrentTurnEffect($this->cardID, $this->controller);
-//   }
-// }
+  function ProcessTrigger($uniqueID) {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uniqueID);
+    $AuraCard->Destroy();
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
 
-// class chromatic_refinement_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "chromatic_refinement_red";
-//     $this->controller = $controller;
-//     $this->baseCard = new chromatic_refinement($this->cardID, $this->controller);
-//   }
+  function CurrentEffectCostModifier($cardID, $index) {
+    $color = PitchValue($this->cardID);
+    $Effect = new CurrentEffect($index);
+    if ($Effect->AppliestoUniqueID() == -1 && ColorContains($cardID, $color, $this->controller))
+      return -1;
+    return 0;
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    global $Stack;
+    $color = PitchValue($this->cardID);
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer($cardID);
+    if ($TopLayer->PlayerID() != $this->controller) return;
+    if (IsActivated($cardID, $from)) return;
+    if (ColorContains($TopLayer->ID(), $color, $this->controller))
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+  }
+
+  function DamageBuff($index, &$remove) {
+    global $CS_ResolvingLayerUniqueID;
+    $Effect = new CurrentEffect($index);
+    WriteLog("HERE!!!" . GetClassState(1, $CS_ResolvingLayerUniqueID) . " - " . $Effect->AppliestoUniqueID());
+    if (GetClassState(1, $CS_ResolvingLayerUniqueID) == $Effect->AppliestoUniqueID()) {
+      $remove = true;
+      return 1;
+    }
+    return 0;
+  }
+}
+
+class chromatic_refinement_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "chromatic_refinement_red";
+    $this->controller = $controller;
+    $this->baseCard = new chromatic_refinement($this->cardID, $this->controller);
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function BeginningActionPhaseAbility($index) {
-//     $this->baseCard->BeginningActionPhaseAbility($index);
-//   }
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
 
-//   function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
-//     $color = 1;
-//     $Effect = new CurrentEffect($index);
-//     if ($Effect->AppliestoUniqueID() == "-" && ColorContains($cardID, $color, $this->controller))
-//       return -1;
-//     return 0;
-//   }
-// }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID);
+  }
 
-// class chromatic_refinement_yellow extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "chromatic_refinement_yellow";
-//     $this->controller = $controller;
-//     $this->baseCard = new chromatic_refinement($this->cardID, $this->controller);
-//   }
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+    return $this->baseCard->CurrentEffectCostModifier($cardID, $index);
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
+  }
+
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
+    return $this->baseCard->DamageBuff($index, $remove);
+  }
+}
+
+class chromatic_refinement_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "chromatic_refinement_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new chromatic_refinement($this->cardID, $this->controller);
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-// class chromatic_refinement_blue extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "chromatic_refinement_blue";
-//     $this->controller = $controller;
-//     $this->baseCard = new chromatic_refinement($this->cardID, $this->controller);
-//   }
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID);
+  }
+
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+    return $this->baseCard->CurrentEffectCostModifier($cardID, $index);
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
+  }
+
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
+    return $this->baseCard->DamageBuff($index, $remove);
+  }
+}
+
+class chromatic_refinement_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "chromatic_refinement_blue";
+    $this->controller = $controller;
+    $this->baseCard = new chromatic_refinement($this->cardID, $this->controller);
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID);
+  }
+
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+    return $this->baseCard->CurrentEffectCostModifier($cardID, $index);
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
+  }
+
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
+    return $this->baseCard->DamageBuff($index, $remove);
+  }
+}

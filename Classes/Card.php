@@ -746,4 +746,8 @@ class Card {
   function DisplayRemainingPrevention() {
     return false;
   }
+  
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
+    return 0;
+  }
 }

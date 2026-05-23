@@ -2188,6 +2188,11 @@ class arc_bending_red extends Card { //untested
   function RemoveEffectFromCombatChain() {
     return true;
   }
+
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
+    global $mainPlayer;
+    return TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA")) ? 1 : 0;
+  }
 }
 
 class chorus_of_rotwood_red extends Card {
