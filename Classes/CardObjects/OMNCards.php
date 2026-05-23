@@ -5481,7 +5481,6 @@ class meteoric_impact_blue extends Card {
 
 class tap_lessons_past extends BaseCard {
   function PlayAbility($damage, $target) {
-    WriteLog("HERE: $this->cardID");
     DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
   }
 
@@ -7848,7 +7847,6 @@ class chromatic_refinement extends BaseCard {
   function DamageBuff($index, &$remove) {
     global $CS_ResolvingLayerUniqueID;
     $Effect = new CurrentEffect($index);
-    WriteLog("HERE!!!" . GetClassState(1, $CS_ResolvingLayerUniqueID) . " - " . $Effect->AppliestoUniqueID());
     if (GetClassState(1, $CS_ResolvingLayerUniqueID) == $Effect->AppliestoUniqueID()) {
       $remove = true;
       return 1;
@@ -7952,3 +7950,28 @@ class chromatic_refinement_blue extends Card {
     return $this->baseCard->DamageBuff($index, $remove);
   }
 }
+
+// class induce_panic_yellow extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "induce_panic_yellow";
+//     $this->controller = $controller;
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
+
+//   function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+//     AddLayer("TRIGGER", $this->controller, $this->cardID);
+//   }
+
+//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+//     Await($this->controller, "CardChoices", "choice", choices:"Red,Yellow,Blue", context:"Don'tpanic", subsequent:false);
+//     Await($this->controller, $this->cardID, final:true);
+//   }
+
+//   function SpecificLogic() {
+//     global $dqVars;
+//     WriteLog("HERE: " . $dqVars["choice"]);
+//   }
+// }
