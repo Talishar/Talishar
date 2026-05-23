@@ -1453,7 +1453,7 @@ function EquipPayAdditionalCosts($cardIndex)
         AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       }
       else {
-        $numOptions = GetChainLinkCards($currentPlayer, "", "C");
+        $numOptions = GetChainLinkCards($currentPlayer, "AA", "C");
         if ($numOptions != "") {
           $numOptions = explode(",", $numOptions);
           $options = [];
