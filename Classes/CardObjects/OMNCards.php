@@ -6952,3 +6952,101 @@ class leech_vitality_red extends Card {
     GainHealth(1, $this->controller);
   }
 }
+
+class thunderous_retort extends BaseCard {
+  function BeginningActionPhaseAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID) {
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uniqueID);
+    $AuraCard->Destroy();
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
+
+class thunderous_retort_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "thunderous_retort_red";
+    $this->controller = $controller;
+    $this->baseCard = new thunderous_retort($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID);
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+class thunderous_retort_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "thunderous_retort_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new thunderous_retort($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID);
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+class thunderous_retort_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "thunderous_retort_blue";
+    $this->controller = $controller;
+    $this->baseCard = new thunderous_retort($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($uniqueID);
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}

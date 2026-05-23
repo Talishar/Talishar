@@ -1092,6 +1092,16 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
         break;
     }
   }
+  $Auras = new Auras($playerID);
+  for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+    $AuraCard = $Auras->Card($i, true);
+    $card = GetClass($AuraCard->CardID(), $playerID);
+    if ($card != "-") {
+      $abAmount = $card->ArcaneBarrier();
+      ++$barrierArray[$abAmount];
+      $total += $abAmount;
+    }
+  }
   if($returnBarrierArray) return $barrierArray;
   $choiceArray = [0];
   if ($barrierArray[1] > 0) $choiceArray[] = 1;
