@@ -6405,10 +6405,6 @@ class singeing_flowstride extends BaseCard {
   function ProcessTrigger() {
     PlayAura("lightning_flow", $this->controller);
   }
-
-  function PowerModifier() {
-    return DoesAttackHaveGoAgain() ? 1 : 0;
-  }
 }
 
 class singeing_flowstride_red extends Card {
@@ -6433,10 +6429,6 @@ class singeing_flowstride_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
-  }
-
-  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    return $this->baseCard->PowerModifier();
   }
 }
 
@@ -6463,10 +6455,6 @@ class singeing_flowstride_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
   }
-
-  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    return $this->baseCard->PowerModifier();
-  }
 }
 
 class singeing_flowstride_blue extends Card {
@@ -6491,10 +6479,6 @@ class singeing_flowstride_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
-  }
-
-  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    return $this->baseCard->PowerModifier();
   }
 }
 
