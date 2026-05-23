@@ -2253,6 +2253,7 @@ class third_eye_of_the_sphinx extends Card {
     $CharacterCard = new CharacterCard($index, $this->controller);
     $CharacterCard->Tap();
     $CharacterCard->AddUse(); // not once per turn
+    $CharacterCard->SetUsed(2);
     $Auras = new Auras($this->controller);
     $Ponder = $Auras->FindCardID("ponder");
     $Ponder->Destroy();
