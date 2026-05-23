@@ -1595,11 +1595,12 @@ class stormshard_red extends Card {
   }
 
   function GetTargets() {
+    global $mainPlayer;
     $attacks = TargetAttack($this->controller);
     $rv = [];
     foreach ($attacks as $attack) {
-      $object = MZIndexToObject($this->controller, $attack);
-      if (TalentContains($object->ID(), "LIGHTNING", $object->PlayerID()))
+      $cardID = GetMZCard($this->controller, $attack);
+      if (TalentContains($cardID, "LIGHTNING", $mainPlayer))
         $rv[] = $attack;
     }
     return $rv;
@@ -7689,11 +7690,12 @@ class stormshatter_yellow extends Card {
   }
 
   function GetTargets() {
+    global $mainPlayer;
     $attacks = TargetAttack($this->controller);
     $rv = [];
     foreach ($attacks as $attack) {
-      $object = MZIndexToObject($this->controller, $attack);
-      if (TalentContains($object->ID(), "LIGHTNING", $object->PlayerID()))
+      $cardID = GetMZCard($this->controller, $attack);
+      if (TalentContains($cardID, "LIGHTNING", $mainPlayer))
         $rv[] = $attack;
     }
     return $rv;
@@ -7746,11 +7748,12 @@ class stormwhirl_blue extends Card {
   }
 
   function GetTargets() {
+    global $mainPlayer;
     $attacks = TargetAttack($this->controller);
     $rv = [];
     foreach ($attacks as $attack) {
-      $object = MZIndexToObject($this->controller, $attack);
-      if (TalentContains($object->ID(), "LIGHTNING", $object->PlayerID()))
+      $cardID = GetMZCard($this->controller, $attack);
+      if (TalentContains($cardID, "LIGHTNING", $mainPlayer))
         $rv[] = $attack;
     }
     return $rv;
