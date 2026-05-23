@@ -540,14 +540,13 @@
         return "";
       case "potion_of_deja_vu_blue":
         if($from == "PLAY"){
-          $cards = "";
-          $pitch = &GetPitch($currentPlayer);
-          while(count($pitch) > 0) {
-            if($cards != "") $cards .= ",";
-            $cards .= array_shift($pitch);
-            for($i=1; $i<PitchPieces(); ++$i) array_shift($pitch);
+          $Pitch = new PitchZone($currentPlayer);
+          $cards = [];
+          for ($i = $Pitch->NumCards() - 1; $i >= 0; --$i) {
+            $PitchCard = $Pitch->Card($i, true);
+            $cards[] = $PitchCard->Remove();
           }
-          if($cards != "") AddDecisionQueue("CHOOSETOP", $currentPlayer, $cards);
+          if(count($cards) > 0) AddDecisionQueue("CHOOSETOP", $currentPlayer, implode(",", $cards));
         }
         return "";
       case "potion_of_ironhide_blue":
