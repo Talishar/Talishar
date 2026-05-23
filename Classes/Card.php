@@ -742,4 +742,8 @@ class Card {
   function HasStarfall() {
     return GeneratedHasStarfall($this->cardID);
   }
+
+  function DisplayRemainingPrevention() {
+    return false;
+  }
 }

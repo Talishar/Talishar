@@ -1709,8 +1709,14 @@ function SearchMultizone($player, $searches)
               case "THEIRAURAS":
                 $searchResult = SearchAurasForCardName($name, $otherPlayer);
                 break;
+              case "MYCHAR":
+                $searchResult = SearchCharacterByName($player, $condition[1]);
+                break;
+              case "THEIRCHAR":
+                $searchResult = SearchCharacterByName($otherPlayer, $condition[1]);
+                break;
               default:
-                WriteLog("There was a malformed search, please submit a bug report", highlight:true);
+                WriteLog("There was a malformed search in zone: $zone, please submit a bug report", highlight:true);
                 $searchResult = "";
                 break;
             }

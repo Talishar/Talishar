@@ -1276,12 +1276,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
       $counters = $isFriendly ? $friendlyCounts[$cardID] ?? 0 : $opponentCounts[$cardID] ?? 0;
 
+      $card = GetClass($cardID, 0);
       if(
         $cardID == "shelter_from_the_storm_red" || 
         $cardID == "calming_breeze_red" || 
-        $cardID == "cosmic_suture_red" || 
-        $cardID == "cosmic_suture_yellow" || 
-        $cardID == "cosmic_suture_blue") {
+        ($card != "-" && $card->DisplayRemainingPrevention())) {
         $counters = $currentTurnEffects[$i + 3];
       }
       
