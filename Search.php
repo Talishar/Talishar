@@ -947,7 +947,7 @@ function SearchAurasForCard($cardID, $player, $selfReferential = true)
   $pieces = AuraPieces();
   $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($auras[$i] == $cardID) {
+    if ($auras[$i] == $cardID || ($cardID == "runechant" && IsRunechant($auras[$i]))) {
       $indices[] = $i;
     }
   }

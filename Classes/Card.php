@@ -754,4 +754,12 @@ class Card {
   function EquipAbilities() {
     return;
   }
+
+  function UsurpedEffect() {
+    return;
+  }
+
+  function IsRunechant() {
+    return false;
+  }
 }

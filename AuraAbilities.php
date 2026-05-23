@@ -495,6 +495,8 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
   global $EffectContext;
   $AuraCard = GetAuraObject($player, $location, $index);
   $cardID = $AuraCard->CardID();
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->DestroyEffect();
   switch ($cardID) {
     case "haze_bending_blue":
       if (!$isToken && $AuraCard->NumAbilityUses() > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
@@ -1394,7 +1396,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
       case "runeblood_barrier_yellow":
         if ($auras[$i + 1] == 2) {
           $auras[$i + 1] = 1;
-          $numRunchants = CountAura("runechant", $player);
+          $numRunchants = NumRunechants($player);
           $numToDestroy = min($numRunchants, $damage);
           for ($j = 0; $j < $numToDestroy; $j++) {
             $index = SearchAurasForIndex("runechant", $player);
@@ -1945,4 +1947,11 @@ function AuraAttackCosts($player, $cardID) {
   }
   if (SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $player) && SubtypeContains($cardID, "Aura")) return 1;
   return -1;
+}
+
+function IsRunechant($cardID) {
+  if (!SearchCurrentTurnEffects("amnesia_red", 1) && $cardID == "runechant") return true;
+  $card = GetClass($cardID, 1);
+  if ($card != "-") return $card->IsRunechant();
+  return false;
 }

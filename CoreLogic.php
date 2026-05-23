@@ -3274,7 +3274,7 @@ function IsAlternativeCostPaid($cardID, $from)
       if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
-  if ($from == "BANISH" && SearchAuras("runechant", $currentPlayer) > 0 && HasRunegate($cardID) && SearchCount(SearchAurasForCard("runechant", $currentPlayer)) >= CardCost($cardID, $from)) {
+  if ($from == "BANISH" && HasRunegate($cardID) && NumRunechants($currentPlayer) >= CardCost($cardID, $from)) {
     $combatChainState[$CCS_WasRuneGate] = 1;
     return true;
   }
