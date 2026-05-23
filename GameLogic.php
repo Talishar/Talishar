@@ -1741,6 +1741,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if($playerSource != $player) LogDamageStats($player, $damage, 0); //Log arcane damageThreatened before it's prevented
 
       if (!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;
+      if (!is_numeric($damage))
+        $damage = 0;
+      if (!is_numeric($lastResult))
+        $lastResult = 0;
       $damage = DealDamageAsync($player, $damage - $lastResult, "ARCANE", $source, $playerSource);
       if ($damage < 0) $damage = 0;
       WriteLog("Player " . $playerSource . " is dealing $damage arcane damage from " . CardLink($source, $source), $player);
