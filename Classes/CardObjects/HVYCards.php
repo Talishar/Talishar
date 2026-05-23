@@ -2266,7 +2266,7 @@ class shift_the_tide_of_battle_yellow extends Card {
     return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalPower() <= PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC");
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
     if (IsHeroAttackTarget()) {
       PlayAura("agility", $this->controller); 
       $remove = 1;

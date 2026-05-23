@@ -1144,6 +1144,9 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "fasting_carcass_blue" => true,
     "growl_red" => true,
     "growl_yellow" => true,
+    "leech_vitality_red" => true,
+    "leech_memory_red" => true,
+    "leech_renown_red" => true,
     default => false
   };
 }

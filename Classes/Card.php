@@ -694,7 +694,7 @@ class Card {
     return false;
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached = false) {
     return;
   }
 

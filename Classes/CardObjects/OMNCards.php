@@ -2021,7 +2021,7 @@ class mercurial_skies_red extends Card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
     $this->baseCard->CurrentEffectDamageEffect($target, $source);
   }
 
@@ -2054,7 +2054,7 @@ class mercurial_skies_yellow extends Card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
     $this->baseCard->CurrentEffectDamageEffect($target, $source);
   }
 
@@ -2087,7 +2087,7 @@ class mercurial_skies_blue extends Card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
     $this->baseCard->CurrentEffectDamageEffect($target, $source);
   }
 
@@ -6820,8 +6820,9 @@ class leech_memory_red extends Card {
     return 3;
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
+    if ($attached)
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -6864,8 +6865,9 @@ class leech_renown_red extends Card {
     return 3;
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
+    if ($attached)
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -6896,8 +6898,9 @@ class leech_vitality_red extends Card {
     return 3;
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
+    if ($attached)
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {

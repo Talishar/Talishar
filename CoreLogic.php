@@ -935,7 +935,7 @@ function CombatChainDamageModifiers($player, $source, $type)
 
 function CurrentEffectDamageEffects($target, $source, $type, $damage)
 {
-  global $currentTurnEffects, $EffectContext, $CombatChain;
+  global $currentTurnEffects, $EffectContext, $CombatChain, $CS_ResolvingLayerUniqueID, $mainPlayer;
   $otherPlayer = ($target == 1 ? 2 : 1);
   if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
@@ -983,6 +983,14 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
         break;
     }
     if ($remove == 1) RemoveCurrentTurnEffect($i);
+  }
+  $damageContextUID = GetClassState(1, $CS_ResolvingLayerUniqueID);
+  if ($damageContextUID == $CombatChain->AttackCard()->UniqueID()) {
+    $effects = explode(",",$CombatChain->AttackCard()->StaticBuffs());
+    foreach ($effects as $effect) {
+      $card = GetClass(SetIDtoCardID($effect), $mainPlayer);
+      if ($card != "-") $card->CurrentEffectDamageEffect($target, $source, $type, $damage, $remove, attached:true);
+    }
   }
 }
 
