@@ -164,6 +164,8 @@
       }
       $set = substr($setID, 0, 3);
       $cardNumber = substr($setID, 3, 3);
+      if (!is_numeric($cardNumber))
+        $cardNumber = 0;
       // get lowest rarity printing
       for($j=0; $j<count($cardArray[$i]->printings); ++$j) {
         $printingRarity = $cardArray[$i]->printings[$j]->rarity;

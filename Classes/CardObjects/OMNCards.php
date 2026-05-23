@@ -3211,28 +3211,8 @@ class gauntlet_of_sword_and_sorcery extends Card {
     return $param == "BUFF" ? 1 : 0;
   }
 
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Arms";
-  }
-
-  function SpecialBlock() {
-    return 0;
-  }
-
   function ArcaneBarrier() {
     return 1;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialName() {
-    return "Gauntlet of Sword and Sorcery";
   }
 }
 
@@ -3414,10 +3394,6 @@ class a_bit_off_the_side_red extends Card {
     global $defPlayer;
     PummelHit($defPlayer);
   }
-
-  function SpecialType() {
-    return "A";
-  }
 }
 
 class blessing_of_aegis_yellow extends Card {
@@ -3513,10 +3489,6 @@ class settle_the_bill_red extends Card {
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card you want to destroy from their arsenal", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZDESTROY", $this->controller, false, 1);
-  }
-
-  function SpecialType() {
-    return "A";
   }
 }
 
@@ -5067,30 +5039,6 @@ class voltaris_blue extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     PlayAura("lightning_flow", $this->controller);
   }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialType() {
-    return "R";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialSubType() {
-    return "Gem";
-  }
-
-  function SpecialName() {
-    return "Voltaris";
-  }
 }
 
 class flash_bolt extends BaseCard {
@@ -5125,34 +5073,6 @@ class flash_bolt_red extends Card {
   function ActionsThatDoArcaneDamage() {
     return true;
   }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Flash Bolt";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialType() {
-    return "I";
-  }
 }
 
 class flash_bolt_yellow extends Card {
@@ -5176,34 +5096,6 @@ class flash_bolt_yellow extends Card {
 
   function ActionsThatDoArcaneDamage() {
     return true;
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Flash Bolt";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialType() {
-    return "I";
   }
 }
 
@@ -5229,41 +5121,13 @@ class flash_bolt_blue extends Card {
   function ActionsThatDoArcaneDamage() {
     return true;
   }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Flash Bolt";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialType() {
-    return "I";
-  }
 }
 
 class comet_collision extends BaseCard {
   function PlayAbility($damage, $target) {
     global $CS_NumInstantsPutInGrave;
     $arcDamage = GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0 ? $damage + 1 : $damage;
-    DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
+    DealArcane($arcDamage, source:$this->cardID, resolvedTarget:$target);
   }
 
   function PayAdditionalCosts() {
@@ -5403,26 +5267,6 @@ class enion_surge_red extends Card {
   function ArcaneDamage() {
     return 3;
   }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialName() {
-    return "Enion Surge";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
 }
 
 class enion_surge_yellow extends Card {
@@ -5456,26 +5300,6 @@ class enion_surge_yellow extends Card {
   function ArcaneDamage() {
     return 2;
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Enion Surge";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
 }
 
 class enion_surge_blue extends Card {
@@ -5508,26 +5332,6 @@ class enion_surge_blue extends Card {
 
   function ArcaneDamage() {
     return 1;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialName() {
-    return "Enion Surge";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
   }
 }
 
@@ -5567,30 +5371,6 @@ class lightning_overload_red extends Card {
   function ArcaneDamage() {
     return 4;
   }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialName() {
-    return "Lightning Overload";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
 }
 
 class lightning_overload_yellow extends Card {
@@ -5616,30 +5396,6 @@ class lightning_overload_yellow extends Card {
   function ArcaneDamage() {
     return 4;
   }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Lightning Overload";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
 }
 
 class lightning_overload_blue extends Card {
@@ -5664,30 +5420,6 @@ class lightning_overload_blue extends Card {
 
   function ArcaneDamage() {
     return 2;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialName() {
-    return "Lightning Overload";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
   }
 }
 
@@ -5726,30 +5458,6 @@ class meteoric_impact_red extends Card {
   function ArcaneDamage() {
     return 3;
   }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialName() {
-    return "Meteoric Impact";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
 }
 
 class meteoric_impact_yellow extends Card {
@@ -5775,30 +5483,6 @@ class meteoric_impact_yellow extends Card {
   function ArcaneDamage() {
     return 2;
   }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Meteoric Impact";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
 }
 
 class meteoric_impact_blue extends Card {
@@ -5823,30 +5507,6 @@ class meteoric_impact_blue extends Card {
 
   function ArcaneDamage() {
     return 1;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialName() {
-    return "Meteoric Impact";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
   }
 }
 
@@ -5915,30 +5575,6 @@ class tap_lessons_past_red extends Card {
   function ArcaneDamage() {
     return 4;
   }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialName() {
-    return "Tap Lessons Past";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
 }
 
 class tap_lessons_past_yellow extends Card {
@@ -5971,30 +5607,6 @@ class tap_lessons_past_yellow extends Card {
 
   function ArcaneDamage() {
     return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Tap Lessons Past";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
   }
 }
 
@@ -6029,30 +5641,6 @@ class tap_lessons_past_blue extends Card {
   function ArcaneDamage() {
     return 2;
   }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialName() {
-    return "Tap Lessons Past";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
 }
 
 class constella_contemplation_yellow extends Card {
@@ -6076,30 +5664,6 @@ class constella_contemplation_yellow extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     SetArcaneTarget($this->controller, $this->cardID, setTarget:true);
   }
-
-  function SpecialName() {
-    return "Constella Contemplation";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
 }
 
 class constella_flowslide_yellow extends Card {
@@ -6122,30 +5686,6 @@ class constella_flowslide_yellow extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     SetArcaneTarget($this->controller, $this->cardID, setTarget:true);
-  }
-
-  function SpecialName() {
-    return "Constella Flowslide";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
   }
 }
 
@@ -6195,28 +5735,31 @@ class nucleus_aetherbolt_red extends Card {
       DealArcane(1, source:$Hero->CardID(), resolvedTarget:$dqVars["pingTarget"]);
     }
   }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
-  }
 }
 
 class haven_veil extends BaseCard {
   function EntersArenaAbility() {
-    AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ENTERS");
   }
 
-  function DamagePrevention($index, $damage, $amount, &$remove) {
+  function DamagePrevention($type, $index, $damage, $amount, &$remove) {
+    if ($type != "ARCANE") return 0;
     return FloatingPrevention($index, $damage, $amount, $remove);
   }
 
   function BeginningActionPhaseAbility($index) {
     $AuraCard = new AuraCard($index, $this->controller);
-    $AuraCard->Destroy();
+    AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"DESTROY", uniqueID:$AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($additionalCosts, $uniqueID) {
+    if ($additionalCosts == "ENTERS")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    else {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      $AuraCard->Destroy();
+    }
   }
 }
 
@@ -6236,7 +5779,7 @@ class haven_veil_red extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->DamagePrevention($index, $damage, $amount, $remove);
+    return $this->baseCard->DamagePrevention($type, $index, $damage, $amount, $remove);
   }
 
   function CurrentTurnEffectUses() {
@@ -6245,6 +5788,10 @@ class haven_veil_red extends Card {
 
   function BeginningActionPhaseAbility($index) {
     $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($additionalCosts, $uniqueID);
   }
 }
 
@@ -6264,7 +5811,7 @@ class haven_veil_yellow extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->DamagePrevention($index, $damage, $amount, $remove);
+    return $this->baseCard->DamagePrevention($type, $index, $damage, $amount, $remove);
   }
 
   function CurrentTurnEffectUses() {
@@ -6273,6 +5820,10 @@ class haven_veil_yellow extends Card {
 
   function BeginningActionPhaseAbility($index) {
     $this->baseCard->BeginningActionPhaseAbility($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($additionalCosts, $uniqueID);
   }
 }
 
@@ -6292,7 +5843,7 @@ class haven_veil_blue extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->DamagePrevention($index, $damage, $amount, $remove);
+    return $this->baseCard->DamagePrevention($type, $index, $damage, $amount, $remove);
   }
 
   function CurrentTurnEffectUses() {
@@ -6302,18 +5853,22 @@ class haven_veil_blue extends Card {
   function BeginningActionPhaseAbility($index) {
     $this->baseCard->BeginningActionPhaseAbility($index);
   }
-}
 
-class golden_skull_yellow extends Card {
-  function __construct($controller) {
-    $this->cardID = "golden_skull_yellow";
-    $this->controller = $controller;
-  }
-
-  function IsGold() {
-    return true;
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return $this->baseCard->ProcessTrigger($additionalCosts, $uniqueID);
   }
 }
+
+// class golden_skull_yellow extends Card { gravy needs to be set up to sacrifice this
+//   function __construct($controller) {
+//     $this->cardID = "golden_skull_yellow";
+//     $this->controller = $controller;
+//   }
+
+//   function IsGold() {
+//     return true;
+//   }
+// }
 
 class starworld_warning_yellow extends Card {
   function __construct($controller) {
@@ -6323,30 +5878,6 @@ class starworld_warning_yellow extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     PlayAura("lightning_flow", $this->controller, 2);
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Starworld Warning";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialBlock() {
-    return -1;
   }
 }
 
@@ -6389,24 +5920,4 @@ class starlight_road_blue extends Card {
     $choice = explode("-", $dqVars["choice"])[1];
     PlayAura($choice, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialName() {
-    return "Starworld Warning";
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialBlock() {
-    return -1;
-  } 
 }
