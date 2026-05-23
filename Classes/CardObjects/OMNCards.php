@@ -1589,7 +1589,7 @@ class stormshard_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $mainPlayer;
-    if (str_contains($target, "COMBATCHAINLINK"))
+    if (str_contains($target, "COMBATCHAINLINK") || str_contains($target, "LAYER"))
       AddCurrentTurnEffect($this->cardID, $mainPlayer);
     return "";
   }
@@ -7685,7 +7685,7 @@ class stormshatter_yellow extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $mainPlayer;
-    if (str_contains($target, "COMBATCHAINLINK"))
+    if (str_contains($target, "COMBATCHAINLINK") || str_contains($target, "LAYER"))
       AddCurrentTurnEffect($this->cardID, $mainPlayer);
     return "";
   }
@@ -7743,7 +7743,7 @@ class stormwhirl_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $mainPlayer;
-    if (str_contains($target, "COMBATCHAINLINK"))
+    if (str_contains($target, "COMBATCHAINLINK") || str_contains($target, "LAYER"))
       AddCurrentTurnEffect($this->cardID, $mainPlayer);
     return "";
   }
