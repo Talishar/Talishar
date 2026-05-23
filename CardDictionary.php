@@ -253,6 +253,7 @@ function SetID($cardID)
     "tusk" => "DUM", // AI custom weapon
     "wrenchtastic" => "DUM", // AI custom weapon
     "UPR551" => "UPR551", //ghostly touch
+    "baalghor_omen_of_the_end" => "IAR159"
   ];
 
   return $specialCases[$cardID] ?? GeneratedSetID($cardID);
@@ -359,6 +360,8 @@ function CharacterHealth($cardID)
   switch ($cardID) {
     case "valda_seismic_impact":
       return 40;
+    case "baalghor_omen_of_the_end":
+      return 33;
     default:
       break;
   }
@@ -374,6 +377,12 @@ function CharacterIntellect($cardID)
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
+  switch ($cardID) {
+    case "baalghor_omen_of_the_end":
+      return 3;
+    default:
+      break;
+  }
   return GeneratedCharacterIntellect($cardID);
 }
 

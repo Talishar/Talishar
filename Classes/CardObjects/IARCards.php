@@ -129,4 +129,12 @@ class baalghor_omen_of_the_end extends Card {
     }
     return 0;
   }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialName() {
+    return "Baalghor, Omen of the End";
+  }
 }

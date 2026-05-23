@@ -412,13 +412,13 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      exit;
    }
 
-   if (CharacterHealth($character) < 30 && ($format == "cc" || $format == "compcc" || $format == "futurecc" || $format == "gage")) {
+   if ((CharacterHealth($character) < 30 || $character == "baalghor_omen_of_the_end") && ($format == "cc" || $format == "compcc" || $format == "futurecc" || $format == "gage")) {
      $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character) . ".";
      echo json_encode($response);
      exit;
    }
 
-   if (CharacterHealth($character) >= 30 && ($format == "blitz" || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage")) {
+   if ((CharacterHealth($character) >= 30 && $character != "baalghor_omen_of_the_end") && ($format == "blitz" || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage")) {
      $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
      echo json_encode($response);
      exit;
