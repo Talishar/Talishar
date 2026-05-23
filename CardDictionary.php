@@ -4719,6 +4719,8 @@ function HasDominate($cardID)
     case "isolate_yellow":
     case "isolate_blue":
       return true;
+    case "elemental_strike":
+      return false; //error in GeneratedFunction
     default:
       break;
   }

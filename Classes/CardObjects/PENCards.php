@@ -317,6 +317,7 @@ class elemental_strike_red extends Card
     $isLightning = SearchCardList($additionalCosts, $this->controller, talent: "LIGHTNING");
     $isIce = SearchCardList($additionalCosts, $this->controller, talent: "ICE");
 
+    WriteLog("HERE: $additionalCosts, $isEarth, $isLightning, $isIce");
     if ($isEarth != '') {
       AddDecisionQueue("POWERMODIFIER", $this->controller, "2", 1);
     }
@@ -324,8 +325,13 @@ class elemental_strike_red extends Card
       GiveAttackGoAgain();
     }
     if ($isIce != '') {
+      WriteLog("JERE???");
       GiveAttackDominate();
     }
+  }
+
+  function HasDominate() {
+    return false; //error in generated function
   }
 }
 
