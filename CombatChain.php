@@ -1588,7 +1588,7 @@ function IsDominateActive()
   if ($combatChainState[$CCS_CachedDominateActive] == 1)
     return true;
   $card = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
-  if ($card != "-") $card->HasDominate();
+  if ($card != "-") return $card->HasDominate();
   return false;
 }
 

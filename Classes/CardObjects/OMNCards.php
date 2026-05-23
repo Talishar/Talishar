@@ -5921,3 +5921,193 @@ class starlight_road_blue extends Card {
     PlayAura($choice, $this->controller);
   }
 }
+
+class holo_shield extends BaseCard {
+  function WardAmount($index, $amount) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    return ($AuraCard->HoloCounters() > 0) ? $amount : 1;
+  }
+}
+
+class holo_shield_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "holo_shield_red";
+    $this->controller = $controller;
+    $this->baseCard = new holo_shield($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasWard() {
+    return true;
+  }
+
+  function WardAmount($index) {
+    return $this->baseCard->WardAmount($index, 4);
+  }
+}
+
+class holo_shield_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "holo_shield_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new holo_shield($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasWard() {
+    return true;
+  }
+
+  function WardAmount($index) {
+    return $this->baseCard->WardAmount($index, 4);
+  }
+}
+
+class holo_shield_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "holo_shield_blue";
+    $this->controller = $controller;
+    $this->baseCard = new holo_shield($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasWard() {
+    return true;
+  }
+
+  function WardAmount($index) {
+    return $this->baseCard->WardAmount($index, 4);
+  }
+}
+
+class nebulus_cycle_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "nebulus_cycle_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("ponder", $this->controller, effectSource:$this->cardID);
+  }
+}
+
+class nourishing_glow_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "nourishing_glow_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function EntersArenaAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    GainHealth(1, $this->controller);
+  }
+}
+
+class fingers_of_fragmentation extends Card {
+  function __construct($controller) {
+    $this->cardID = "fingers_of_fragmentation";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $mainPlayer;
+    AddCurrentTurnEffect($this->cardID, $mainPlayer);
+    return "";
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $mainPlayer, $CurrentTurnEffects;
+    $foundFragment = $CurrentTurnEffects->FindEffect("FRAGMENT", $mainPlayer);
+    return $foundFragment->Index() == -1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+}
+
+class erode_authority_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "erode_authority_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasDominate() {
+    return true;
+  }
+}
+
+class erode_authority_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "erode_authority_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasDominate() {
+    return true;
+  }
+}
+
+class erode_authority_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "erode_authority_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasDominate() {
+    return true;
+  }
+}

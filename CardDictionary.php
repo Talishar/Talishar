@@ -4673,7 +4673,7 @@ function HasDominate($cardID)
   global $mainPlayer, $combatChainState, $CombatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
   $card = GetClass($cardID, 0);
-  if ($card != "-") $card->HasDominate();
+  if ($card != "-" && $card->HasDominate()) return true;
   switch ($cardID) {
     case "open_the_center_red":
     case "open_the_center_yellow":
