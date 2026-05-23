@@ -53,6 +53,7 @@ include "Classes/CardObjects/AHACards.php";
 include "Classes/CardObjects/AZSCards.php";
 include "Classes/CardObjects/MPWCards.php";
 include "Classes/CardObjects/AOLCards.php";
+include "Classes/CardObjects/IARCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "DecisionQueue/AwaitEffects.php";
 include "CurrentEffectAbilities.php";
