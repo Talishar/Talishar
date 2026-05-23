@@ -7190,3 +7190,88 @@ class laced_lightning extends Card {
     $CharacterCard->Destroy();
   }
 }
+
+class visionary_of_orbits_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "visionary_of_orbits_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $search = "MYDISCARD:type=I";
+    Await($this->controller, "MultiZoneIndices", "indices", search:$search, subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Put an attack action card on the bottom of your deck (or pass)");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"];
+    $DisCard = MZIndexToObject($this->controller, $choice);
+    if ($DisCard->Index() != -1) {
+      $Deck = new Deck($this->controller);
+      WriteLog(CardLink($DisCard->CardID()) . " was put on the bottom of the deck");
+      $Deck->AddBottom($DisCard->CardID());
+      $DisCard->Remove();
+    }
+  }
+}
+
+class flow_through_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "flow_through_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (str_contains($target, "COMBATCHAINLINK"))
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function GetTargets() {
+    $attacks = TargetAttack($this->controller);
+    $rv = [];
+    foreach ($attacks as $attack) {
+      $object = MZIndexToObject($this->controller, $attack);
+      if (TalentContains($object->ID(), "LIGHTNING", $object->PlayerID()))
+        $rv[] = $attack;
+    }
+    return $rv;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return count($this->GetTargets()) == 0;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $targets = implode(",", $this->GetTargets());
+    Await($this->controller, "ChooseMultiZone", "index", indices:$targets, context: "target a lightning attack", subsequent:0);
+    Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $CombatChain;
+    PlayAura("lightning_flow", $this->controller, effectSource:$CombatChain->AttackCard()->ID());
+  }
+}
