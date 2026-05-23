@@ -7195,11 +7195,12 @@ class flow_through_blue extends Card {
   }
 
   function GetTargets() {
+    global $mainPlayer;
     $attacks = TargetAttack($this->controller);
     $rv = [];
     foreach ($attacks as $attack) {
-      $object = MZIndexToObject($this->controller, $attack);
-      if (TalentContains($object->ID(), "LIGHTNING", $object->PlayerID()))
+      $cardID = GetMZCard($this->controller, $attack);
+      if (TalentContains($cardID, "LIGHTNING", $mainPlayer))
         $rv[] = $attack;
     }
     return $rv;
