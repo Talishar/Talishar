@@ -2100,13 +2100,13 @@ function SearchLayersForNAACard($maxCost=-1) {
 
 function GetGoldIndices($player) {
   $indices = [];
-  if (!SearchCurrentTurnEffects("amnesia_red", $player)) {
-    $items = GetItems($player);
-    $countItems = count($items);
-    $itemPieces = ItemPieces();
-    for ($i = 0; $i < $countItems; $i += $itemPieces) {
-      if ($items[$i] == "gold") array_push($indices, "MYITEMS-$i");
-    }
+  $items = GetItems($player);
+  $countItems = count($items);
+  $itemPieces = ItemPieces();
+  for ($i = 0; $i < $countItems; $i += $itemPieces) {
+    WriteLog("JERE: $items[$i], " . IsGold($items[$i]));
+    if (NameOverride($items[$i], $player) == "Gold") $indices[] = "MYITEMS-$i";
+    elseif (IsGold($items[$i])) $indices[] = "MYITEMS-$i";
   }
   $char = GetPlayerCharacter($player);
   $countChar = count($char);

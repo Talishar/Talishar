@@ -1339,12 +1339,10 @@ function EquipPayAdditionalCosts($cardIndex)
     case "marlynn":
     case "scurv_stowaway":
       $goldIndices = GetGoldIndices($currentPlayer);
-      if (str_contains($goldIndices, "MYCHAR")) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a gold to destroy", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
-      } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
+      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a gold to destroy", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     case "compass_of_sunken_depths":

@@ -5859,16 +5859,16 @@ class haven_veil_blue extends Card {
   }
 }
 
-// class golden_skull_yellow extends Card { gravy needs to be set up to sacrifice this
-//   function __construct($controller) {
-//     $this->cardID = "golden_skull_yellow";
-//     $this->controller = $controller;
-//   }
+class golden_skull_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "golden_skull_yellow";
+    $this->controller = $controller;
+  }
 
-//   function IsGold() {
-//     return true;
-//   }
-// }
+  function IsGold() {
+    return true;
+  }
+}
 
 class starworld_warning_yellow extends Card {
   function __construct($controller) {
