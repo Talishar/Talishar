@@ -5364,7 +5364,7 @@ class lightning_overload_yellow extends Card {
   }
 
   function ArcaneDamage() {
-    return 4;
+    return 3;
   }
 }
 
