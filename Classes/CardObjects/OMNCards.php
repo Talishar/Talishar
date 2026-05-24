@@ -7400,7 +7400,7 @@ class stellar_glide extends BaseCard {
 
   function ProcessAttackTrigger() {
     Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS:isSameName=lightning_flow", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", "MZInd", may:true, context:"Destroy a lightning flow to gain +2 power (or pass)");
+    Await($this->controller, "ChooseMultiZone", "MZInd", may:true, context:"Destroy a lightning flow to gain go again (or pass)");
     Await($this->controller, "MZDestroy");
     Await($this->controller, "AddCurrentTurnEffect", effectID:$this->cardID, final:true);
   }
