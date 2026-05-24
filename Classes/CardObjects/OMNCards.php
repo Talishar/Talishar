@@ -5937,7 +5937,7 @@ class holo_shield_yellow extends Card {
   }
 
   function WardAmount($index) {
-    return $this->baseCard->WardAmount($index, 4);
+    return $this->baseCard->WardAmount($index, 3);
   }
 }
 
@@ -5957,7 +5957,7 @@ class holo_shield_blue extends Card {
   }
 
   function WardAmount($index) {
-    return $this->baseCard->WardAmount($index, 4);
+    return $this->baseCard->WardAmount($index, 2);
   }
 }
 
