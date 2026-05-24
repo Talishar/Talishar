@@ -306,8 +306,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ally";
     case "suraya_archangel_of_knowledge":
       return "Angel,Ally";
-    case "plutonic_starplate":
-      return "Chest"; //temporary
+    case "baalghor_omen_of_the_end":
+      return "Young";
     default:
       break;
   }
