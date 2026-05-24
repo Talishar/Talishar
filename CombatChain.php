@@ -2204,6 +2204,7 @@ function CombatChainTakeDamageAbilities($player, $damage, $type, $source) {
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $ChainCard = $CombatChain->Card($i, true);
+    if ($player != $ChainCard->PlayerID()) continue;
     $card = GetClass($ChainCard->ID(), $player);
     if ($card != "-") {
       $prevention = $card->CombatChainTakeDamageAbility(-1, $i, $damage, $type, $source, $preventable);
@@ -2214,6 +2215,7 @@ function CombatChainTakeDamageAbilities($player, $damage, $type, $source) {
     $Link = $ChainLinks->GetLink($i);
     for ($j = 0; $j < $Link->NumCards(); ++$j) {
       $ChainCard = $Link->GetLinkCard($j, true);
+      if ($player != $ChainCard->PlayerID()) continue;
       $card = GetClass($ChainCard->ID(), $player);
       if ($card != "-") {
         $prevention = $card->CombatChainTakeDamageAbility($i, $j, $damage, $type, $source, $preventable);
