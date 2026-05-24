@@ -615,7 +615,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue" || $extraText == "pick_to_pieces_red" || $extraText == "pick_to_pieces_yellow" || $extraText == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
   if ($damage >= 4 && $source == "batter_to_a_pulp_red") return false;
-  if (SearchCurrentTurnEffects("step_between_red-PREVENT", $otherPlayer)) return false;
+  if (SearchCurrentTurnEffects("step_between_red-PREVENT", $otherPlayer) && $type == "COMBAT") return false;
   return true;
 }
 
