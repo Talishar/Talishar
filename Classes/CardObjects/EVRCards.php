@@ -1361,9 +1361,10 @@ class pierce_reality_blue extends Card {
   	}
 
 	function AuraPowerModifiers($index, &$powerModifiers) {
-		global $CS_NumIllusionistActionCardAttacks;
+		global $CS_NumIllusionistActionCardAttacks, $CombatChain;
 		$powerModifiers[] = $this->cardID;
-		$mod = GetClassState($this->controller, $CS_NumIllusionistActionCardAttacks) == 1 ? 2 : 0;
+		$isIlluAttack = TypeContains($CombatChain->AttackCard()->ID(), "AA") && ClassContains($CombatChain->AttackCard()->ID(), "ILLUSIONIST", $this->controller);
+		$mod = GetClassState($this->controller, $CS_NumIllusionistActionCardAttacks) == 1 && $isIlluAttack ? 2 : 0;
 		$powerModifiers[] = $mod;
 		return $mod;
 	}
