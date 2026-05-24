@@ -4640,6 +4640,7 @@ function GetDQHelpText()
 function FinalizeAction()
 {
   global $currentPlayer, $mainPlayer, $actionPoints, $turn, $combatChain, $defPlayer, $makeBlockBackup, $mainPlayerGamestateStillBuilt;
+  global $attackQueue;
   BuildMainPlayerGamestate();
   if ($turn[0] == "M") {
     if (count($combatChain) > 0) //Means we initiated a chain link
@@ -4649,7 +4650,7 @@ function FinalizeAction()
       $turn[2] = "";
       $makeBlockBackup = 1;
     } else {
-      if ($actionPoints > 0 || ShouldHoldPriority($mainPlayer)) {
+      if ($actionPoints > 0 || count($attackQueue) > 0 || ShouldHoldPriority($mainPlayer)) {
         $turn[0] = "M";
         $currentPlayer = $mainPlayer;
         $turn[2] = "";
