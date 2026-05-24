@@ -6503,10 +6503,6 @@ class stunning_swipe extends BaseCard {
     Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Tap the defending hero or their weapon");
     Await($this->controller, "MZTap", final:true);
   }
-
-  function PowerModifier() {
-    return DoesAttackHaveGoAgain() ? 1 : 0;
-  }
 }
 
 class stunning_swipe_red extends Card {
@@ -6531,10 +6527,6 @@ class stunning_swipe_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
-  }
-
-  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    return $this->baseCard->PowerModifier();
   }
 }
 
@@ -6561,10 +6553,6 @@ class stunning_swipe_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
   }
-
-  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    return $this->baseCard->PowerModifier();
-  }
 }
 
 class stunning_swipe_blue extends Card {
@@ -6589,10 +6577,6 @@ class stunning_swipe_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessTrigger();
-  }
-
-  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    return $this->baseCard->PowerModifier();
   }
 }
 
