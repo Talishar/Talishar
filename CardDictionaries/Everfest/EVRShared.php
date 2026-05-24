@@ -115,7 +115,6 @@
       case "read_the_glide_path_red": return 3;
       case "read_the_glide_path_yellow": return 2;
       case "read_the_glide_path_blue": return 1;
-      case "pierce_reality_blue": return 2;
       case "veiled_intentions_red": return 4;
       case "veiled_intentions_yellow": return 3;
       case "veiled_intentions_blue": return 2;
@@ -169,7 +168,6 @@
       case "fatigue_shot_red": case "fatigue_shot_yellow": case "fatigue_shot_blue": return CardType($attackID) == "AA";
       case "read_the_glide_path_red": case "read_the_glide_path_yellow": case "read_the_glide_path_blue": return CardSubType($attackID) == "Arrow";
       case "passing_mirage_blue": return ClassContains($attackID, "ILLUSIONIST", $mainPlayer);
-      case "pierce_reality_blue": return ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && CardType($attackID) == "AA";
       case "veiled_intentions_red": case "veiled_intentions_yellow": case "veiled_intentions_blue": return CardType($attackID) == "AA";
       case "this_rounds_on_me_blue": return true;
       case "life_of_the_party_red-1": case "life_of_the_party_red-2": case "life_of_the_party_red-3": return true;

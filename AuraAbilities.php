@@ -190,7 +190,6 @@ function AuraNumUses($cardID)
     case "shimmers_of_silver_blue":
     case "haze_bending_blue":
     case "passing_mirage_blue":
-    case "pierce_reality_blue":
     case "burn_them_all_red":
     case "radiant_forcefield_yellow":
     case "channel_lightning_valley_yellow":
@@ -1550,13 +1549,6 @@ function AuraPlayAbilities($cardID, $from = "")
       case "embodiment_of_lightning":
         if ($cardType == "AA" && !IsActivated($cardID, $from)) {
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], "-", $cardID, $auras[$i + 6]);
-        }
-        break;
-      case "pierce_reality_blue":
-        if ($auras[$i + 5] > 0 && CardType($cardID) == "AA" && ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && GetClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks) < 1) {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack +2");
-          --$auras[$i + 5];
-          AddCurrentTurnEffect("pierce_reality_blue", $currentPlayer, true);
         }
         break;
       case "channel_thunder_steppe_yellow":

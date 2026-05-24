@@ -1349,17 +1349,25 @@ class in_the_swing_blue extends Card {
 // }
 
 
-// class pierce_reality_blue extends Card {
+class pierce_reality_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "pierce_reality_blue";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "pierce_reality_blue";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	return "";
+  	}
+
+	function AuraPowerModifiers($index, &$powerModifiers) {
+		global $CS_NumIllusionistActionCardAttacks;
+		$powerModifiers[] = $this->cardID;
+		$mod = GetClassState($this->controller, $CS_NumIllusionistActionCardAttacks) == 1 ? 2 : 0;
+		$powerModifiers[] = $mod;
+		return $mod;
+	}
+}
 
 
 // class potion_of_deja_vu_blue extends Card {
