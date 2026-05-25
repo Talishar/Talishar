@@ -325,7 +325,6 @@ class elemental_strike_red extends Card
       GiveAttackGoAgain();
     }
     if ($isIce != '') {
-      WriteLog("JERE???");
       GiveAttackDominate();
     }
   }
