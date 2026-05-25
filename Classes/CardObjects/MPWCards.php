@@ -16,7 +16,6 @@ class sword_attack_reaction {
 
 	function PayAdditionalCosts() {
 		$choices = TargetSwordAttack($this->controller);
-		WriteLog("HERE: $choices");
 		AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
 		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
 		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
