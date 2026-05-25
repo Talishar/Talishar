@@ -123,11 +123,13 @@ class Deck {
 
   function Opt($topCardID, $bottomCardID, $from="GY")
   {
+    global $gameName;
     $validation = array_merge($topCardID, array_merge($this->deck, $bottomCardID));
     $valCounts = array_count_values($validation);
     $valid = true;
+    $format = GetCachePiece($gameName, 13);
     foreach($valCounts as $key => $value) {
-      if ($value >= 4 && $key != "copper_cog_blue") {
+      if ($value >= 4 && $key != "copper_cog_blue" && $format != 6 && $format != 7 && $format != 17) {
         WriteLog("A card may have been duplicated! Please report a bug, then post the id on the Talishar discord so I can know if opting was the cause", highlight: true);
         $valid = false;
       }
