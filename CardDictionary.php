@@ -4100,7 +4100,7 @@ function AuraDefaultHoldTriggerState($cardID): int
   global $Landmarks;
   if ($cardID == "lightning_flow") {
     if ($Landmarks->NumLandmarks() == 0) return 2;
-    return $Landmarks->Card(0)->CardID() == "omens_of_arcana" ? 0 : 2;
+    return $Landmarks->Card(0)->CardID() == "omens_of_arcana" ? 1 : 2;
   }
   return match ($cardID) {
     "forged_for_war_yellow", "show_time_blue", "blessing_of_deliverance_red", "blessing_of_deliverance_yellow", "blessing_of_deliverance_blue", "emerging_power_red", "emerging_power_yellow", "emerging_power_blue", "stonewall_confidence_red", "stonewall_confidence_yellow", "stonewall_confidence_blue",
