@@ -253,7 +253,6 @@ function SetID($cardID)
     "tusk" => "DUM", // AI custom weapon
     "wrenchtastic" => "DUM", // AI custom weapon
     "UPR551" => "UPR551", //ghostly touch
-    "baalghor_omen_of_the_end" => "IAR159"
   ];
 
   return $specialCases[$cardID] ?? GeneratedSetID($cardID);
@@ -306,8 +305,6 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Ally";
     case "suraya_archangel_of_knowledge":
       return "Angel,Ally";
-    case "baalghor_omen_of_the_end":
-      return "Young";
     default:
       break;
   }
@@ -360,8 +357,6 @@ function CharacterHealth($cardID)
   switch ($cardID) {
     case "valda_seismic_impact":
       return 40;
-    case "baalghor_omen_of_the_end":
-      return 33;
     default:
       break;
   }
@@ -378,8 +373,6 @@ function CharacterIntellect($cardID)
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
   switch ($cardID) {
-    case "baalghor_omen_of_the_end":
-      return 3;
     default:
       break;
   }
@@ -3838,6 +3831,8 @@ function DoesEffectGrantsOverpower($cardID): bool
   $cardID = ShiyanaCharacter($cardID);
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->DoesEffectGrantDominate();
   return match ($cardID) {
     "betsy_skin_in_the_game", "betsy", "the_golden_son_yellow", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "log_fall_red", "log_fall_yellow", "machinations_of_dominion_blue" => true,
     "bank_breaker", "board_the_ship_red" => true,
