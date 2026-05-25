@@ -527,7 +527,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         $auras = GetAuras($defPlayer);
         $foundAura = false;
         for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-          if (TypeContains($auras[$i], "T", $defPlayer) && !$foundAura) {
+          if ((TypeContains($auras[$i], "T", $defPlayer) || $auras[$i+4] == 1) && !$foundAura) {
             $foundAura = true;
             $power += 1;
           }
