@@ -3832,7 +3832,7 @@ function DoesEffectGrantsOverpower($cardID): bool
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   $card = GetClass($cardID, $mainPlayer);
-  if ($card != "-") return $card->DoesEffectGrantDominate();
+  if ($card != "-") return $card->DoesEffectGrantOverpower();
   return match ($cardID) {
     "betsy_skin_in_the_game", "betsy", "the_golden_son_yellow", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "log_fall_red", "log_fall_yellow", "machinations_of_dominion_blue" => true,
     "bank_breaker", "board_the_ship_red" => true,
