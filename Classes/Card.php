@@ -770,4 +770,8 @@ class Card {
   function PermanentPowerModifier(&$powerModifiers) {
     return 0;
   }
+
+  function DoesEffectGrantOverpower() {
+    return false;
+  }
 }

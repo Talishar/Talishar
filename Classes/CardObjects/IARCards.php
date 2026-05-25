@@ -84,14 +84,6 @@ class runechant_of_greed_yellow extends Card {
   function IsRunechant() {
     return $this->archetype->IsRunechant();
   }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
-  }
 }
 
 class baalghor_omen_of_the_end extends Card {
@@ -102,10 +94,6 @@ class baalghor_omen_of_the_end extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
-  }
-
-  function SpecialType() {
-    return "C";
   }
 
   function PermanentPitchCardAbility($pitchIndex) {
@@ -129,12 +117,244 @@ class baalghor_omen_of_the_end extends Card {
     }
     return 0;
   }
+}
 
-  function SpecialTalent() {
-    return "SHADOW";
+class runechant_of_envy_yellow extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runechant_of_envy_yellow";
+    $this->controller = $controller;
+    $this->archetype = new runechant_of($this->cardID, $this->controller);
   }
 
-  function SpecialName() {
-    return "Baalghor, Omen of the End";
+  function DestroyEffect() {
+    $this->archetype->DestroyEffect();
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->archetype->BeginningActionPhaseAbility($index);
+  }
+
+  function PermanentPlayAbility($cardID, $from, $i) {
+    $this->archetype->PermanentPlayAbility($cardID, $from, $i);
+  }
+
+  function UsurpedEffect() {
+    $this->archetype->UsurpedEffect();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "USURPED")
+      GainHealth(1, $this->controller);
+    else
+      $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
+  }
+
+  function IsRunechant() {
+    return $this->archetype->IsRunechant();
+  }
+}
+
+class runechant_of_gluttony_yellow extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runechant_of_gluttony_yellow";
+    $this->controller = $controller;
+    $this->archetype = new runechant_of($this->cardID, $this->controller);
+  }
+
+  function DestroyEffect() {
+    $this->archetype->DestroyEffect();
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->archetype->BeginningActionPhaseAbility($index);
+  }
+
+  function PermanentPlayAbility($cardID, $from, $i) {
+    $this->archetype->PermanentPlayAbility($cardID, $from, $i);
+  }
+
+  function UsurpedEffect() {
+    $this->archetype->UsurpedEffect();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "USURPED")
+      GainResources($this->controller, 1);
+    else
+      $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
+  }
+
+  function IsRunechant() {
+    return $this->archetype->IsRunechant();
+  }
+}
+
+class runechant_of_lust_yellow extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runechant_of_lust_yellow";
+    $this->controller = $controller;
+    $this->archetype = new runechant_of($this->cardID, $this->controller);
+  }
+
+  function DestroyEffect() {
+    $this->archetype->DestroyEffect();
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->archetype->BeginningActionPhaseAbility($index);
+  }
+
+  function PermanentPlayAbility($cardID, $from, $i) {
+    $this->archetype->PermanentPlayAbility($cardID, $from, $i);
+  }
+
+  function UsurpedEffect() {
+    $this->archetype->UsurpedEffect();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "USURPED")
+      PlayAura("runechant", $this->controller);
+    else
+      $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
+  }
+
+  function IsRunechant() {
+    return $this->archetype->IsRunechant();
+  }
+}
+
+class runechant_of_pride_yellow extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runechant_of_pride_yellow";
+    $this->controller = $controller;
+    $this->archetype = new runechant_of($this->cardID, $this->controller);
+  }
+
+  function DestroyEffect() {
+    $this->archetype->DestroyEffect();
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->archetype->BeginningActionPhaseAbility($index);
+  }
+
+  function PermanentPlayAbility($cardID, $from, $i) {
+    $this->archetype->PermanentPlayAbility($cardID, $from, $i);
+  }
+
+  function UsurpedEffect() {
+    $this->archetype->UsurpedEffect();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    else
+      $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
+  }
+
+  function IsRunechant() {
+    return $this->archetype->IsRunechant();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
+
+class runechant_of_sloth_yellow extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runechant_of_sloth_yellow";
+    $this->controller = $controller;
+    $this->archetype = new runechant_of($this->cardID, $this->controller);
+  }
+
+  function DestroyEffect() {
+    $this->archetype->DestroyEffect();
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->archetype->BeginningActionPhaseAbility($index);
+  }
+
+  function PermanentPlayAbility($cardID, $from, $i) {
+    $this->archetype->PermanentPlayAbility($cardID, $from, $i);
+  }
+
+  function UsurpedEffect() {
+    $this->archetype->UsurpedEffect();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    else
+      $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
+  }
+
+  function IsRunechant() {
+    return $this->archetype->IsRunechant();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+}
+
+class runechant_of_wrath_yellow extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runechant_of_wrath_yellow";
+    $this->controller = $controller;
+    $this->archetype = new runechant_of($this->cardID, $this->controller);
+  }
+
+  function DestroyEffect() {
+    $this->archetype->DestroyEffect();
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $this->archetype->BeginningActionPhaseAbility($index);
+  }
+
+  function PermanentPlayAbility($cardID, $from, $i) {
+    $this->archetype->PermanentPlayAbility($cardID, $from, $i);
+  }
+
+  function UsurpedEffect() {
+    $this->archetype->UsurpedEffect();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    else
+      $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
+  }
+
+  function IsRunechant() {
+    return $this->archetype->IsRunechant();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function DoesEffectGrantOverpower() {
+    return true;
   }
 }
