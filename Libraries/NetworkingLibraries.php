@@ -1579,13 +1579,15 @@ function FinalizeChainLink($chainClosed = false)
   global $turn, $actionPoints, $combatChain, $mainPlayer, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AttacksWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalPower, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CombatChain;
-  global $layerPriority, $Stack, $AttackQueue, $attackQueue;
+  global $layerPriority, $Stack, $AttackQueue, $attackQueue, $CurrentTurnEffects;
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
     if (SearchCurrentTurnEffects("arc_lightning_yellow", $currentPlayer)) {
-      $count = CountCurrentTurnEffects("arc_lightning_yellow", $currentPlayer);
-      for ($i = 0; $i < $count; $i++) {
-        AddLayer("TRIGGER", $currentPlayer, "arc_lightning_yellow");
+      for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+        $Effect = $CurrentTurnEffects->Effect($i, true);
+        if ($Effect->EffectID() == "arc_lightning_yellow") {
+          AddLayer("TRIGGER", $mainPlayer, "arc_lightning_yellow", uniqueID:$Effect->AppliestoUniqueID());
+        }
       }
     }
     GainActionPoints(1, $mainPlayer);

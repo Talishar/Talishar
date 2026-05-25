@@ -2884,6 +2884,7 @@ function EndTurnPitchHandling($player)
 function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqueID="-")
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumWateryGrave;
+  global $CurrentTurnEffects;
   $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
   $cardType = CardType($cardID, additionalCosts:$additionalCosts);
   $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from, $additionalCosts);
@@ -2942,9 +2943,11 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
     if(SearchCurrentTurnEffects("arc_lightning_yellow", $player) && !IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts)) && (GetClassState($player, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
-      $count = CountCurrentTurnEffects("arc_lightning_yellow", $player);
-      for ($i=0; $i < $count; $i++) {
-        AddLayer("TRIGGER", $player, "arc_lightning_yellow");
+      for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+        $Effect = $CurrentTurnEffects->Effect($i, true);
+        if ($Effect->EffectID() == "arc_lightning_yellow") {
+          AddLayer("TRIGGER", $player, "arc_lightning_yellow", uniqueID:$Effect->AppliestoUniqueID());
+        }
       }
     }
     ++$actionPoints;

@@ -66,7 +66,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_NumLightningPlayed, $CS_ArcaneDamageTaken;
-  global $mainPlayer, $CCS_EclecticMag, $combatChainState, $CS_ActionsPlayed;
+  global $mainPlayer, $CCS_EclecticMag, $combatChainState, $CS_ActionsPlayed, $CS_ResolvingLayerUniqueID;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "germinate_blue":
@@ -83,7 +83,8 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PlayAura("embodiment_of_lightning", $currentPlayer);
       return "";
     case "arc_lightning_yellow":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
+      
+      AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:GetClassState($currentPlayer, $CS_ResolvingLayerUniqueID));
       AddCurrentTurnEffect($cardID . "-GOAGAIN", $currentPlayer);
       return "";
     case "staff_of_verdant_shoots":
