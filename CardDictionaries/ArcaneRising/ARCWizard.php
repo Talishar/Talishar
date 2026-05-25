@@ -721,6 +721,11 @@ function ArcaneDamage($cardID): int
   };
 }
 
+function ArcaneDamageMatch($cardID, $damage) {
+  if ($cardID == "nucleus_aetherbolt_red") return $damage == 1 || $damage == 3;
+  else
+    return ArcaneDamage($cardID) == $damage;
+}
 function ActionsThatDoXArcaneDamage($cardID)
 {
   switch ($cardID) {

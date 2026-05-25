@@ -183,7 +183,7 @@ function SearchInner(
         && ($maxAttack == -1 || ModifiedPowerValue($cardID, $player, $zone) <= $maxAttack)
         && ($minAttack == -1 || ModifiedPowerValue($cardID, $player, $zone) >= $minAttack)
         && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
-        && ($arcaneDamage == -1 || ArcaneDamage($cardID) == $arcaneDamage)
+        && ($arcaneDamage == -1 || ArcaneDamageMatch($cardID, $arcaneDamage))
       ) {
         // Check cheaper boolean flags first before any function calls
         if ($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
