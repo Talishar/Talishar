@@ -2110,7 +2110,6 @@ function GetGoldIndices($player) {
   $countItems = count($items);
   $itemPieces = ItemPieces();
   for ($i = 0; $i < $countItems; $i += $itemPieces) {
-    WriteLog("JERE: $items[$i], " . IsGold($items[$i]));
     if (NameOverride($items[$i], $player) == "Gold") $indices[] = "MYITEMS-$i";
     elseif (IsGold($items[$i])) $indices[] = "MYITEMS-$i";
   }
