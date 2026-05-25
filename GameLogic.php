@@ -96,6 +96,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = GetDamagePreventionTargetIndices();
           break;
         case "NAACARDLAYER":
+          $subparam = $subparam == "" ? -1 : $subparam;
           $rv = SearchLayersForNAACard(maxCost:$subparam);
           break;
         case "mugenshi_release_yellow":
