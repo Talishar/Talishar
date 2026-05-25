@@ -4789,7 +4789,7 @@ function BlockCantBeModified($cardID)
 function Rarity($cardID)
 {
   $set = CardSet($cardID);
-  if ($cardID == "stormshard_red") return "R";
+  if ($cardID == "baalghor_omen_of_the_end") return "R"; //speculative
   if ($set != "DUM") {
     return GeneratedRarity($cardID);
   }
