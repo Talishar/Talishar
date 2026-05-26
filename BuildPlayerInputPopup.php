@@ -767,12 +767,15 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
           
           if ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") {
+            $AuraCard = $option[0] == "THEIRAURAS" ? new AuraCard($index, $otherPlayer) : new AuraCard($index, $playerID);
             //Show power counters on Auras in the popups
-            $powerCounters = $option[0] == "THEIRAURAS" ? $theirAuras[$index + 3] : $myAuras[$index + 3];
+            $powerCounters = $AuraCard->NumPowerCounters();
             //Show various counters on Auras in the popups
-            $counters = $option[0] == "THEIRAURAS" ? $theirAuras[$index + 2] : $myAuras[$index + 2];
+            $counters = $AuraCard->NumCounters();
             //Show holo counters on Auras in the popups
-            $holoCounters = (($option[0] == "THEIRAURAS" ? $theirAuras[$index + 13] : $myAuras[$index + 13]) > 0) ? true : null;
+            $holoCounters = $AuraCard->HoloCounters() > 0 ? true : null;
+            //Show "stolen" modifier
+            if ($AuraCard->GetModalities() == "Temporary") $label = "stolen";
           }
           //Show Steam Counters on items
           if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {
