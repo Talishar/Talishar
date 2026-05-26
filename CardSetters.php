@@ -289,13 +289,10 @@ function RemoveDeck($player, $index)
   return $cardID;
 }
 
+//alias for remove graveyard
 function RemoveDiscard($player, $index)
 {
-  $discard = &GetDiscard($player);
-  if (empty($discard)) return "";
-  $cardID = $discard[$index];
-  array_splice($discard, $index, DiscardPieces());
-  return $cardID;
+  return RemoveGraveyard($player, $index);
 }
 
 function GainResources($player, $amount)
