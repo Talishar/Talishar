@@ -1012,8 +1012,8 @@ class cosmic_suture extends BaseCard {
       DealArcane(1, resolvedTarget:$target, source:$this->cardID);
   }
 
-  function CurrentEffectDamagePrevention($index, $damage, $amount, &$remove) {
-    return FloatingPrevention($index, $damage, $amount, $remove);
+  function CurrentEffectDamagePrevention($index, $damage, $amount, &$remove, $preventable) {
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function PayAdditionalCosts() {
@@ -1033,7 +1033,7 @@ class cosmic_suture_red extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($index, $damage, $amount, $remove);
+    return $this->baseCard->CurrentEffectDamagePrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -1676,7 +1676,7 @@ class boots_of_omnis_ward extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -2723,7 +2723,7 @@ class helm_of_astral_sanctuary extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -2761,7 +2761,7 @@ class robe_of_astral_sanctuary extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -2799,7 +2799,7 @@ class gloves_of_astral_sanctuary extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -2837,7 +2837,7 @@ class boots_of_astral_sanctuary extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -5714,9 +5714,9 @@ class haven_veil extends BaseCard {
     AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ENTERS");
   }
 
-  function DamagePrevention($type, $index, $damage, $amount, &$remove) {
+  function DamagePrevention($type, $index, $damage, $amount, &$remove, $preventable) {
     if ($type != "ARCANE") return 0;
-    return FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function BeginningActionPhaseAbility($index) {
@@ -5751,7 +5751,7 @@ class haven_veil_red extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->DamagePrevention($type, $index, $damage, $amount, $remove);
+    return $this->baseCard->DamagePrevention($type, $index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -5783,7 +5783,7 @@ class haven_veil_yellow extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->DamagePrevention($type, $index, $damage, $amount, $remove);
+    return $this->baseCard->DamagePrevention($type, $index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -5815,7 +5815,7 @@ class haven_veil_blue extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->DamagePrevention($type, $index, $damage, $amount, $remove);
+    return $this->baseCard->DamagePrevention($type, $index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -7595,7 +7595,7 @@ class calmveil_of_volthaven_red extends Card {
     $Effect = $CurrentTurnEffects->Effect($index);
     if ($preventable && $damage > 0 && !$amount && $Effect->NumUses() == $this->CurrentTurnEffectUses())
       PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
-    return FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function DisplayRemainingPrevention() {
@@ -7624,7 +7624,7 @@ class calmveil_of_volthaven_yellow extends Card {
     $Effect = $CurrentTurnEffects->Effect($index);
     if ($preventable && $damage > 0 && !$amount && $Effect->NumUses() == $this->CurrentTurnEffectUses())
       PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
-    return FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function DisplayRemainingPrevention() {
@@ -7653,7 +7653,7 @@ class calmveil_of_volthaven_blue extends Card {
     $Effect = $CurrentTurnEffects->Effect($index);
     if ($preventable && $damage > 0 && !$amount && $Effect->NumUses() == $this->CurrentTurnEffectUses())
       PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
-    return FloatingPrevention($index, $damage, $amount, $remove);
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function DisplayRemainingPrevention() {

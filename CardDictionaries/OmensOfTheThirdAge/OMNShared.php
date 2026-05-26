@@ -126,17 +126,18 @@ function PayLightningFlowInstead($player, $cardID) {
 }
 
 // Use for effects that say "Prevent the next X damage"
-function FloatingPrevention($index, $damage, $amount, &$remove) {
+function FloatingPrevention($index, $damage, $amount, &$remove, $preventable=true) {
 	global $CurrentTurnEffects;
 	$Effect = $CurrentTurnEffects->Effect($index);
-	if ($damage >= $Effect->NumUses()) {
+	if ($damage >= $Effect->NumUses() && $preventable) {
 		$remove = true;
 		return $Effect->NumUses();
 	}
-	else {
+	elseif($preventable) {
 		if (!$amount) $Effect->AddUses(-$damage);
 		return $damage;
 	}
+	return 0;
 }
 
 function HoloFlicker($player, $MZIndex) {
