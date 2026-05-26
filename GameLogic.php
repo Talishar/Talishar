@@ -2523,6 +2523,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
           break;
         case "consign_to_cosmos__shock_yellow":
+        case "burn_up__shock_red":
           if ($lastResult == "Both" || $lastResult == "Shock") {
             PrependDecisionQueue("SETLAYERTARGET", $currentPlayer, $parameter, 1);
             PrependDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
