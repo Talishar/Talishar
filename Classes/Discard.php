@@ -50,7 +50,7 @@ class Discard {
   }
 
   function Remove($index) {
-    RemoveGraveyard($this->playerID, $index);
+    return RemoveGraveyard($this->playerID, $index);
   }
 
   function RemoveTop() {

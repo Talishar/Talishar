@@ -15,6 +15,10 @@ class Hand {
   function NumCards() {
     return intdiv(count($this->hand), HandPieces());
   }
+
+  function Remove($index) {
+    return RemoveHand($this->playerID, $index);
+  }
 }
 
 class PitchZone {
