@@ -418,7 +418,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      exit;
    }
 
-   if (!SubtypeContains($character, "Young") && ($format == "blitz" || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage")) {
+   if (!SubtypeContains($character, "Young") && ($format == "blitz" || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage" || $format == "draft")) {
      $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
      echo json_encode($response);
      exit;
