@@ -2136,7 +2136,7 @@ class ominous_aggression_red extends Card {
     $targets = TargetAttackActionCard();
     $targets = implode(",", $targets);
     AddDecisionQueue("PASSPARAMETER", $this->controller, $targets);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a target for $this->cardID");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a target for " . CardLink($this->cardID));
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, $this->cardID, 1);
     AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
@@ -3216,7 +3216,7 @@ class livewire_press extends BaseCard {
     $targets = TargetAttackActionCard(talent:"LIGHTNING");
     $targets = implode(",", $targets);
     AddDecisionQueue("PASSPARAMETER", $this->controller, $targets);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a target for $this->cardID");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a target for " . CardLink($this->cardID));
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, $this->cardID, 1);
     AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
