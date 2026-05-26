@@ -614,6 +614,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       else array_push($myHandContents, JSONRenderedCard(cardNumber: $MyCardBack, controller: 2));
     } else {
       $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || $actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "" : false;
+      if ($restriction == "" && str_contains(GetAbilityTypes($myHand[$i], -1, "HAND"), "I") && InstantRestricted($myHand[$i], "HAND", -1) && !$playable) {
+        $restriction = "Instant cannot be played.";
+      }
       $border = CardBorderColor($myHand[$i], "HAND", $playable, $playerID);
       $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? $actionType : 0;
       if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));

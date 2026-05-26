@@ -1405,6 +1405,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->GetAbilityNames($index, $from, $nameBlocked, $layerCount, $facing, $allNames);
+  $instantRestricted = InstantRestricted($cardID, $from, $index);
   switch ($cardID) {
     case "teklo_plasma_pistol":
       if ($allNames) return "Add_a_steam_counter,Attack";
@@ -1452,7 +1453,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
     case "under_the_trap_door_blue":
       if ($allNames) return "Ability,Attack";
       // can't use the ability if there are no traps in graveyard
-      $names = (SearchDiscard($currentPlayer, subtype: "Trap") != "" && !InstantRestricted($cardID, $from, $index)) ? "Ability" : "-";
+      $names = (SearchDiscard($currentPlayer, subtype: "Trap") != "" && !$instantRestricted) ? "Ability" : "-";
       if($nameBlocked) return $names;
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
         $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
@@ -1464,7 +1465,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       return $names;
     case "haunting_rendition_red": case "mental_block_blue":
       if ($allNames) return "Block,Ability";
-      if (InstantRestricted($cardID, $from, $index)) return "-";
+      if ($instantRestricted) return "-";
       return "Block,Ability";
     case "chorus_of_the_amphitheater_red":
     case "chorus_of_the_amphitheater_yellow":
@@ -1481,7 +1482,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       if ($allNames) return "Ability,Action";
       $names = ["-", "-"];
       //can it ability?
-      if ($from == "HAND" && IsPhantasmActive() && !InstantRestricted($cardID, $from, $index)) $names[0] = "Ability";
+      if ($from == "HAND" && IsPhantasmActive() && !$instantRestricted) $names[0] = "Ability";
       else return "-,Action";
       //can it be played?
       if (CanPlayNAA($cardID, $from, $index)) $names[1] = "Action";
@@ -1491,7 +1492,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
     case "shelter_from_the_storm_red":
       if ($allNames) return "Ability,Defense Reaction";
       $names = ["-", "-"];
-      if ($from == "HAND" && !InstantRestricted($cardID, $from, $index)) $names[0] = "Ability";
+      if ($from == "HAND" && !$instantRestricted) $names[0] = "Ability";
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
       $restriction = "";
       $effectRestricted = !CanBlock($cardID, $from) || !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, "DR", $restriction, "", true);
@@ -1503,7 +1504,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
     case "war_cry_of_bellona_yellow":
       if ($allNames) return "Ability,Attack Reaction";
       $names = ["-", "-"];
-      if ($from == "HAND" && !InstantRestricted($cardID, $from, $index))
+      if ($from == "HAND" && !$instantRestricted)
         $names[0] = "Ability";
       $hasRaydn = false;
       $char = GetPlayerCharacter($currentPlayer);
@@ -1534,7 +1535,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       if ($allNames) return "Instant,Attack";
       $names = ["-", "-"];
       $canAttack = CanAttack($cardID, "PLAY", $index, "MYALLY", type:"AA");
-      if (SearchHand($currentPlayer, hasWateryGrave: true) != "" && !InstantRestricted($cardID, $from, $index)) $names[0] = "Instant";
+      if (SearchHand($currentPlayer, hasWateryGrave: true) != "" && !$instantRestricted) $names[0] = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names[0];
@@ -1550,7 +1551,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       if ($allNames) return "Instant,Attack";
       $canAttack = CanAttack($cardID, "PLAY", $index, "MYALLY", type:"AA");
       $names = ["-", "-"];
-      if (!InstantRestricted($cardID, $from, $index)) $names[0] = "Instant";
+      if (!$instantRestricted) $names[0] = "Instant";
       $allies = &GetAllies($currentPlayer);
       if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
         return $names[0];
@@ -1584,7 +1585,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       return $names;
     case "fearless_confrontation_blue":
       if ($allNames) return "Ability,Attack";
-      $instantRestricted = InstantRestricted($cardID, $from, $index);
       $names = ["-", "-"];
       //can it ability?
       if ($from == "HAND" && ($CombatChain->HasCurrentLink() || IsLayerStep() || IsResolutionStep()) && !$instantRestricted) {
@@ -1602,7 +1602,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       if ($allNames) return "Ability,Action";
       $names = ["-", "-"];
       //can it ability?
-      if ($from == "HAND" && SearchCount(SearchHand($currentPlayer, talent:"EARTH")) > 0 && !InstantRestricted($cardID, $from, $index)) $names[0] = "Ability";
+      if ($from == "HAND" && SearchCount(SearchHand($currentPlayer, talent:"EARTH")) > 0 && !$instantRestricted) $names[0] = "Ability";
       else return "-,Action";
       //can it be played?
       if (CanPlayNAA($cardID, $from, $index)) $names[1] = "Action";
