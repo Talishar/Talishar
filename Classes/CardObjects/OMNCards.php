@@ -1065,7 +1065,7 @@ class cosmic_suture_yellow extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($index, $damage, $amount, $remove);
+    return $this->baseCard->CurrentEffectDamagePrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -1097,7 +1097,7 @@ class cosmic_suture_blue extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($index, $damage, $amount, $remove);
+    return $this->baseCard->CurrentEffectDamagePrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
