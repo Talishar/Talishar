@@ -1612,7 +1612,7 @@ class stormshard_red extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     $targets = implode(",", $this->GetTargets());
-    Await($this->controller, "ChooseMultiZone", "index", indices:$targets, context: "target a lightning attack", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "index", indices:$targets, context: "Choose target a lightning attack", subsequent:0);
     Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
   }
 

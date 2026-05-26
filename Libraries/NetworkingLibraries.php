@@ -715,41 +715,41 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
         elseif (CardType($cardID) == "E" || CardType($cardID) == "W") {
           if ($num == "inv") {
-            WriteLog("Player " . $playerID . " manually added a card to their inventory", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true);
             $inventory = &GetInventory($playerID);
             array_push($inventory, $cardID);
           }
           else {
-            WriteLog("Player " . $playerID . " manually equipped a card", highlight: true);
+            WriteLog("Player " . $playerID . " manually equipped " . CardLink($cardID), highlight: true);
             EquipEquipment($playerID, $cardID);
           }
         }
         elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
           if ($num == "banish") {
-            WriteLog("Player " . $playerID . " manually added a card to their banish", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their banish", highlight: true);
             BanishCardForPlayer($cardID, $playerID, "MANUAL");
           }
           elseif ($num == "grave") {
-            WriteLog("Player " . $playerID . " manually added a card to their graveyard", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their graveyard", highlight: true);
             AddGraveyard($cardID, $playerID, "MANUAL");
           }
           elseif ($num == "deck") {
-            WriteLog("⬆️ Player " . $playerID . " manually added a card to the top of their deck", highlight: true);
+            WriteLog("⬆️ Player " . $playerID . " manually added " . CardLink($cardID) . " to the top of their deck", highlight: true);
             AddTopDeck($cardID, $playerID, "MANUAL");
           }
           elseif ($num == "inv") {
-            WriteLog("Player " . $playerID . " manually added a card to their inventory", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true);
             $inventory = &GetInventory($playerID);
             array_push($inventory, $cardID);
           }
           else {
-            WriteLog("Player " . $playerID . " manually added a card to their hand", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their hand", highlight: true);
             $hand = &GetHand($playerID);
             array_push($hand, $cardID);
           }
         }
         else {
-          WriteLog("Player " . $playerID . " manually created a token", highlight: true);
+          WriteLog("Player " . $playerID . " manually created " . CardLink($cardID), highlight: true);
           if (SubtypeContains($cardID, "Aura"))
             PlayAura($cardID, $playerID, $num, from: "MANUAL");
           elseif (SubtypeContains($cardID, "Item"))

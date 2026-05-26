@@ -2416,7 +2416,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     }
     if ($player != $mainPlayer && SearchAlliesActive($mainPlayer, "themai")) {
-      $restriction = "themai";
+      $restriction = "Themai";
       return true;
     }
     if (EffectPlayCardRestricted($cardID, $type, $from, resolutionCheck: $resolutionCheck) != "") {
@@ -2428,7 +2428,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     }
   }
-  if ($type == "I" && InstantRestricted($cardID, $from, $index)) return true;
+  if ($type == "I" && InstantRestricted($cardID, $from, $index)) {
+    $restriction = "Instant cannot be played.";
+    return true;
+  }
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") {
     return $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
