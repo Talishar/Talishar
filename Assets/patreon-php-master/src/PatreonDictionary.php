@@ -670,6 +670,20 @@ enum PatreonCampaign : string
         "fractal_creation_blue=OMN040-T",
         "path_of_same_ends_red=GEM155-T",
         "stardust_spike_red=GEM148-T",
+        "baalghor_omen_of_the_end=IAR159-T",
+        "gate_to_iarathael=IAR222-T",
+        "golden_skull_yellow=OMN240-T",
+        "nebulus_cycle_yellow=OMN035-T",
+        "nourishing_glow_blue=OMN038-T",
+        "runechant_of_envy_yellow=IAR152-T",
+        "runechant_of_gluttony_yellow=IAR153-T",
+        "runechant_of_greed_yellow=IAR145-T",
+        "runechant_of_lust_yellow=IAR154-T",
+        "runechant_of_pride_yellow=IAR155-T",
+        "runechant_of_sloth_yellow=IAR156-T",
+        "runechant_of_wrath_yellow=IAR157-T",
+        "sigil_of_astral_flow_blue=OMN199-T",
+        "spellbane_sigil_blue=OMN201-T",
         ];
         break;
       case "8955846": // ManSant
