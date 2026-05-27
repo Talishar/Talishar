@@ -606,7 +606,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $skipWriteGamestate = true;
       break;
     case 10002:
-      WriteLog("Player " . $playerID . " manually added 1 action point", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 action point", highlight: true, highlightColor: "darkblue");
       ++$actionPoints;
       break;
     case 10003: //Undo/Revert to prior turn
@@ -635,40 +635,40 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10004:
       if ($actionPoints > 0) {
-        WriteLog("Player " . $playerID . " manually subtracted 1 action point.", highlight: true);
+        WriteLog("Player " . $playerID . " manually subtracted 1 action point.", highlight: true, highlightColor: "darkblue");
         --$actionPoints;
       }
       break;
     case 10005:
-      WriteLog("Player " . $playerID . " manually subtracted 1 life from themself", highlight: true);
+      WriteLog("Player " . $playerID . " manually subtracted 1 life from themself", highlight: true, highlightColor: "darkblue");
       PlayerLoseHealth(1, $playerID);
       break;
     case 10006:
-      WriteLog("Player " . $playerID . " manually added 1 life to themself", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 life to themself", highlight: true, highlightColor: "darkblue");
       $health = &GetHealth($playerID);
       $health += 1;
       break;
     case 10007:
       $targetPlayer = $playerID == 1 ? 2 : 1;
       if (IsPlayerAI($targetPlayer)) {
-        WriteLog("Manually subtracting 1 life from AI opponent");
+        WriteLog("Manually subtracting 1 life from AI opponent", highlight: true, highlightColor: "darkblue");
         $health = &GetHealth($targetPlayer);
         --$health;
       }
       else
-        WriteLog("Subtracting life from your opponent is not allowed");
+        WriteLog("Subtracting life from your opponent is not allowed", highlight: true, highlightColor: "darkblue");
       break;
     case 10008:
-      WriteLog("Player " . $playerID . " manually added 1 life to their opponent", highlight: true);
+      WriteLog("Player " . $playerID . " manually added 1 life to their opponent", highlight: true, highlightColor: "darkblue");
       $health = &GetHealth($playerID == 1 ? 2 : 1);
       $health += 1;
       break;
     case 10009:
-      WriteLog("Player " . $playerID . " manually drew a card for themself", highlight: true);
+      WriteLog("Player " . $playerID . " manually drew a card for themself", highlight: true, highlightColor: "darkblue");
       Draw($playerID, false);
       break;
     case 10010:
-      WriteLog("Player " . $playerID . " manually drew a card for their opponent", highlight: true);
+      WriteLog("Player " . $playerID . " manually drew a card for their opponent", highlight: true, highlightColor: "darkblue");
       Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
@@ -715,41 +715,41 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
         elseif (CardType($cardID) == "E" || CardType($cardID) == "W") {
           if ($num == "inv") {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true, highlightColor: "darkblue");
             $inventory = &GetInventory($playerID);
             array_push($inventory, $cardID);
           }
           else {
-            WriteLog("Player " . $playerID . " manually equipped " . CardLink($cardID), highlight: true);
+            WriteLog("Player " . $playerID . " manually equipped " . CardLink($cardID), highlight: true, highlightColor: "darkblue");
             EquipEquipment($playerID, $cardID);
           }
         }
         elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
           if ($num == "banish") {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their banish", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their banish", highlight: true, highlightColor: "darkblue");
             BanishCardForPlayer($cardID, $playerID, "MANUAL");
           }
           elseif ($num == "grave") {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their graveyard", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their graveyard", highlight: true, highlightColor: "darkblue");
             AddGraveyard($cardID, $playerID, "MANUAL");
           }
           elseif ($num == "deck") {
-            WriteLog("⬆️ Player " . $playerID . " manually added " . CardLink($cardID) . " to the top of their deck", highlight: true);
+            WriteLog("⬆️ Player " . $playerID . " manually added " . CardLink($cardID) . " to the top of their deck", highlight: true, highlightColor: "darkblue");
             AddTopDeck($cardID, $playerID, "MANUAL");
           }
           elseif ($num == "inv") {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true, highlightColor: "darkblue");
             $inventory = &GetInventory($playerID);
             array_push($inventory, $cardID);
           }
           else {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their hand", highlight: true);
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their hand", highlight: true, highlightColor: "darkblue");
             $hand = &GetHand($playerID);
             array_push($hand, $cardID);
           }
         }
         else {
-          WriteLog("Player " . $playerID . " manually created " . CardLink($cardID), highlight: true);
+          WriteLog("Player " . $playerID . " manually created " . CardLink($cardID), highlight: true, highlightColor: "darkblue");
           if (SubtypeContains($cardID, "Aura"))
             PlayAura($cardID, $playerID, $num, from: "MANUAL");
           elseif (SubtypeContains($cardID, "Item"))
@@ -762,27 +762,27 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 10012:
-      WriteLog("Player " . $playerID . " manually added a resource to their pool", highlight: true);
+      WriteLog("Player " . $playerID . " manually added a resource to their pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID);
       $resources[0] += 1;
       break;
     case 10013:
-      WriteLog("Player " . $playerID . " manually added a resource to their opponent's pool", highlight: true);
+      WriteLog("Player " . $playerID . " manually added a resource to their opponent's pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID == 1 ? 2 : 1);
       $resources[0] += 1;
       break;
     case 10014:
-      WriteLog("Player " . $playerID . " manually removed a resource from their opponent's pool", highlight: true);
+      WriteLog("Player " . $playerID . " manually removed a resource from their opponent's pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID == 1 ? 2 : 1);
       $resources[0] -= 1;
       break;
     case 10015:
-      WriteLog("Player " . $playerID . " manually removed a resource from their pool", highlight: true);
+      WriteLog("Player " . $playerID . " manually removed a resource from their pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID);
       $resources[0] -= 1;
       break;
     case 10016:
-      WriteLog("Player " . $playerID . " manually removed their arsenal", highlight: true);
+      WriteLog("Player " . $playerID . " manually removed their arsenal", highlight: true, highlightColor: "darkblue");
       $cardID = RemoveArsenal($playerID, 0);
       AddGraveyard($cardID, $playerID, "ARS");
       break;
