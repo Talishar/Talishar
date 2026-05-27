@@ -769,7 +769,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer . ",1", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD:maxAttack=1;minAttack=1");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD:maxAttack=1;minAttack=1", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer . ",1", 1);
