@@ -4465,7 +4465,8 @@ class scattering_conflux_red extends Card {
 
 class polarus_pulse_ray extends BaseCard {
   function FragmentTrigger() {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
+    global $CombatChain;
+    AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$CombatChain->AttackCard()->UniqueID());
   }
 
   function ProcessTrigger() {
