@@ -20,7 +20,7 @@
         AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
         return "";
       case "explosive_growth_red": case "explosive_growth_yellow": case "explosive_growth_blue":
-        AddLayer("TRIGGER", $cardID, $currentPlayer, "-", "ATTACKTRIGGER", $CombatChain->AttackCard()->UniqueID());
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         return "";
       case "rites_of_lightning_red": case "rites_of_lightning_yellow": case "rites_of_lightning_blue":
         AddDecisionQueue("CLASSSTATEGREATERORPASS", $currentPlayer, $CS_ArcaneDamageDealt . "-1", 1);
