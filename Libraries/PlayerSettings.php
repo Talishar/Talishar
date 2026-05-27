@@ -906,3 +906,11 @@ function IsTeamFabDads($userName)
   }
   return false;
 }
+
+function IsTeamRedLine($userName)
+{
+  return match($userName) {
+    "Aegisworn", "CornOnJacob", "jonam33", "Scribnibble", "Yuriiko" => true,
+    default => false
+  };
+}
