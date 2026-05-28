@@ -3345,7 +3345,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($target != "-") {
             if (!str_contains($target, ",")) {
               $targetLoc = explode("-", $target)[0];
-              AddLayer("TRIGGER", $mainPlayer, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
+              AddLayer("TRIGGER", $mainPlayer, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional, $CombatChain->AttackCard()->UniqueID());
             }
             else {
               $targetArr = explode(",", $target);
@@ -3355,7 +3355,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
                 $targetLoc = explode("-", $targ)[0];
                 array_push($targetUids, "$targetLoc-" . GetMZUID($tp, $targ));
               }
-              AddLayer("TRIGGER", $mainPlayer, $params[0], implode(",", $targetUids), $additional);
+              AddLayer("TRIGGER", $mainPlayer, $params[0], implode(",", $targetUids), $additional, $CombatChain->AttackCard()->UniqueID());
             }
           }
           break;
