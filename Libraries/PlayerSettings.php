@@ -911,6 +911,7 @@ function IsTeamRedLine($userName)
 {
   return match($userName) {
     "Aegisworn", "CornOnJacob", "jonam33", "Scribnibble", "Yuriiko" => true,
+    "Sharp", "MXBloom", "Lazaeus", "bloodbit", "hurricanewes", "Aljo", "Flempa" => true,
     default => false
   };
 }
