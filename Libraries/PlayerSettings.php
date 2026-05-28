@@ -560,6 +560,7 @@ function IsTeamSonicDoom($userName)
     case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "YodasUncle":
     case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "Ocean":
     case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ": case "ZorbyX": case "littlsnek":
+    case "AWizardofEarthsea":
       return true;
     default: break;
   }
@@ -904,4 +905,13 @@ function IsTeamFabDads($userName)
       break;
   }
   return false;
+}
+
+function IsTeamRedLine($userName)
+{
+  return match($userName) {
+    "Aegisworn", "CornOnJacob", "jonam33", "Scribnibble", "Yuriiko" => true,
+    "Sharp", "MXBloom", "Lazaeus", "bloodbit", "hurricanewes", "Aljo", "Flempa" => true,
+    default => false
+  };
 }

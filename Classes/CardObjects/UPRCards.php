@@ -1858,6 +1858,7 @@ class oasis_respite extends BaseCard {
     global $CS_ResolvingLayerUniqueID, $CombatChain;
     $Effect = new CurrentEffect($index);
     $prevAmount = $Effect->NumUses();
+    WriteLog("HERE: " . GetClassState(1, $CS_ResolvingLayerUniqueID));
     if ($amount && $CombatChain->HasCurrentLink() && $source == $CombatChain->AttackCard()->ID()) {
       if ($CombatChain->AttackCard()->UniqueID() == $Effect->AppliestoUniqueID() || $CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID())
         return min($damage, $prevAmount);
