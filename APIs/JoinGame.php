@@ -895,8 +895,9 @@ function isBannedInFormat($cardID, $format) {
         "sigil_of_solace_red", "sigil_of_solace_yellow", "sigil_of_solace_blue",
         "sink_below_red", "sink_below_yellow", "sink_below_blue",
         "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle",
-        "bracers_of_belief", "lightning_press_red", "lightning_press_yellow", "lightning_press_blue",
-        "aether_spindle_red", "aether_spindle_yellow", "aether_spindle_blue", "burn_up__shock_red",
+        "bracers_of_belief", "beckoning_haunt", "deathly_wail_red", "deathly_wail_yellow", "deathly_wail_blue",
+        "ebon_fold", "flourish_yellow", "flourish_blue", "reaping_blade", "volzar_the_lightning_rod",
+        "vantom_wraith_red", "vantom_wraith_yellow", "vantom_wraith_blue",
         "steelblade_shunt_red", "steelblade_shunt_yellow", "steelblade_shunt_blue",
         "sirens_of_safe_harbor_red", "sirens_of_safe_harbor_yellow", "sirens_of_safe_harbor_blue"
       ], $benched),
