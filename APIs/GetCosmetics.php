@@ -17,7 +17,7 @@ $response->cardBacks = [];
 $response->playmats = [];
 
 // Define default playmat IDs (kept in sync with frontend PLAYER_PLAYMATS)
-$defaultPlaymatIds = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 30, 31, 32, 33, 34, 35, 36, 42];
+$defaultPlaymatIds = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 30, 31, 32, 33, 34, 35, 36, 42, 44];
 
 //Add default card back
 $cardBack = new stdClass();
@@ -230,6 +230,8 @@ function GetPlaymatName($id)
       return "Library of Solana";
     case 43:
       return "Taddle Down";
+    case 44:
+      return "Omens of the Third Age";
     default:
       return "N/A";
   }
