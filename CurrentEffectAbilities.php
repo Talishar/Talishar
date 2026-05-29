@@ -2877,7 +2877,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           if ($blockCard->ID() == $Effect->EffectID()) $blockModifier += 1;
           break;
         case "korshem_crossroad_of_elements-2":
-          $blockModifier += 1;
+          if (TypeContains($blockCard->ID(), "A") || TypeContains($blockCard->ID(), "AA")) $blockModifier += 1;
           break;
         case "amulet_of_earth_blue":
           $blockModifier += 1;
