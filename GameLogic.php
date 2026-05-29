@@ -1688,13 +1688,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PrependDecisionQueue("TAKEARCANE", $target, "$damage-$source-$player");
         PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
         CheckSpellvoid($target, $damage, $source);
-        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         $Character = new PlayerCharacter($targetPlayer);
-        if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier", checkGem:true) && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) DoMbrioBaseVizier($targetPlayer, $damage);
-        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
-        if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
+        if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier", checkGem:true) && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) {
+          PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+          DoMbrioBaseVizier($targetPlayer, $damage);
+        }
+        if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) {
+          PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+          DoCapQuickThinking($targetPlayer, $damage);
+        }
         $Solray = $Character->FindCardID("solray_plating");
-        if ($Solray != "" && $Solray->IsActive()) DoSolrayPlating($targetPlayer, $damage);
+        if ($Solray != "" && $Solray->IsActive()) {
+          PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+          DoSolrayPlating($targetPlayer, $damage);
+        }
+        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         DoQuell($target, $damage);
         PrependDecisionQueue("INCDQVAR", $target, "1", 1);
         PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
@@ -1741,6 +1749,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0];
       $source = $parameters[1];
       $playerSource = $parameters[2];
+      WriteLog("JERE in TAKEARCANE: $damage, $lastResult");
       if($playerSource != $player) LogDamageStats($player, $damage, 0); //Log arcane damageThreatened before it's prevented
 
       if (!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;
