@@ -30,6 +30,14 @@ class Stack {
     return "";
   }
 
+  function FindCardSourceUID($uid) {
+    if ($this->StackEmpty()) return new Layer(-1);
+    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+      if ($this->layers[$i + 5] == $uid) return new Layer($i);
+    }
+    return new Layer(-1);
+  }
+
   function FindCardID($cardID) {
     if ($this->StackEmpty()) return "";
     for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {

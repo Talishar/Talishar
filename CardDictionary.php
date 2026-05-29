@@ -56,6 +56,7 @@ include "CardDictionaries/ArmoryDecks/AACShared.php";
 include "CardDictionaries/ArmoryDecks/ARRShared.php";
 include "CardDictionaries/ArmoryDecks/AHAShared.php";
 include "CardDictionaries/OmensOfTheThirdAge/OMNShared.php";
+include "CardDictionaries/IARShared.php";
 include "CardDictionaries/MasteryPacks/MPWShared.php";
 
 
