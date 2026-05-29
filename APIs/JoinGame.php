@@ -865,7 +865,10 @@ function isBannedInFormat($cardID, $format) {
           "azalea_ace_in_the_hole", "death_dealer", "bonds_of_agony_blue", "golden_tipple_red", "golden_tipple_yellow",
           "plume_of_evergrowth", "talk_a_big_game_blue", "orb_weaver_spinneret_yellow", "orb_weaver_spinneret_blue",
           "chart_the_high_seas_blue", "wrath_of_retribution_red", "brand_with_cinderclaw_red", "brand_with_cinderclaw_yellow", "brand_with_cinderclaw_blue",
-          "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots"
+          "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots",
+          "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
+          "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade", "skyward_serenade_yellow",
+          "volzar_the_lightning_rod"
       ], $livingLegends),
       "commoner" => [
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
@@ -895,7 +898,7 @@ function isBannedInFormat($cardID, $format) {
         "sigil_of_solace_red", "sigil_of_solace_yellow", "sigil_of_solace_blue",
         "sink_below_red", "sink_below_yellow", "sink_below_blue",
         "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle",
-        "bracers_of_belief", "beckoning_haunt", "deathly_wail_red", "deathly_wail_yellow", "deathly_wail_blue",
+        "bracers_of_belief", "beckoning_haunt", "deathly_delight_red", "deathly_delight_yellow", "deathly_delight_blue",
         "ebon_fold", "flourish_yellow", "flourish_blue", "reaping_blade", "volzar_the_lightning_rod",
         "vantom_wraith_red", "vantom_wraith_yellow", "vantom_wraith_blue",
         "steelblade_shunt_red", "steelblade_shunt_yellow", "steelblade_shunt_blue",
@@ -909,9 +912,7 @@ function isBannedInFormat($cardID, $format) {
         "tome_of_divinity_yellow", "tome_of_fyendal_yellow", "awakening_blue", "orihon_of_mystic_tenets_blue"]
   ];
   if ($format == "futurecc") {
-    $futureBans = ["electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
-                   "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade", "skyward_serenade_yellow",
-                   "volzar_the_lightning_rod"];
+    $futureBans = [];
     return in_array($cardID, $bannedCards["cc"]) || in_array($cardID, $futureBans);
   }
   return isset($bannedCards[$format]) && in_array($cardID, $bannedCards[$format]);
