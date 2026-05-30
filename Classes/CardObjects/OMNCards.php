@@ -1699,11 +1699,15 @@ class static_shelter_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $message = "if_you_want_to_make_a_lightning_flow";
-    $context = "Choose if you want to pay a resource and create a " . "{{element|Lightning Flow|" . GetElementColorCode("LIGHTNING") . "}}";
-    Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
-    Await($this->controller, "PayResourcesEffect", amount:1);
-    Await($this->controller, $this->cardID, final:true);
+    $hand = &GetHand($this->controller);
+    $resources = &GetResources($this->controller);
+    if (Count($hand) > 0 || $resources[0] > 0) {
+      $message = "if_you_want_to_make_a_lightning_flow";
+      $context = "Choose if you want to pay a resource and create a " . "{{element|Lightning Flow|" . GetElementColorCode("LIGHTNING") . "}}";
+      Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+      Await($this->controller, "PayResourcesEffect", amount:1);
+      Await($this->controller, $this->cardID, final:true);
+    }
   }
 
   function SpecificLogic() {
