@@ -519,9 +519,11 @@ function ROSHitEffect($cardID): void
       $myAuras = &GetAuras($currentPlayer);
       if (count($myAuras) > 0) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura your control to destroy (or pass)", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
         AddDecisionQueue("FINDINDICES", $defPlayer, "HAND", 1);
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to discard", 1);
         AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
         AddDecisionQueue("REMOVEMYHAND", $defPlayer, "-", 1);
         AddDecisionQueue("DISCARDCARD", $defPlayer, "HAND-".$defPlayer, 1);
