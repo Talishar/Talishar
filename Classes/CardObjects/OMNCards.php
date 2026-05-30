@@ -4378,10 +4378,6 @@ class plutonic_starplate extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     GainResources($this->controller, 1);
   }
-
-  function DefaultActiveState() {
-    return 0;
-  }
 }
 
 class beckon_steel_blue extends Card {
