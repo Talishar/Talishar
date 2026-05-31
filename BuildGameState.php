@@ -158,9 +158,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $altArtsPlayerID    = $playerID == 3 ? 1 : $playerID;
     $altArtsOpponentID  = $playerID == 3 ? 2 : $otherPlayer;
 
+    $patreonCampaigns = PatreonCampaign::cases();
+    $metafyCommunityMap = [];
+    foreach (MetafyCommunity::cases() as $case) {
+      $metafyCommunityMap[$case->value] = $case;
+    }
+
     if($playerID == 3 || !AltArtsDisabled($playerID))
     {
-      foreach(PatreonCampaign::cases() as $campaign) {
+      foreach($patreonCampaigns as $campaign) {
         $sessionID = $campaign->SessionID();
         $isPatronOfCampaign = $playerID != 3 && ($sessionPatreonCampaigns[$sessionID] ?? false);
 
@@ -189,24 +195,20 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if (is_array($playerCommunities)) {
         foreach ($playerCommunities as $community) {
           $communityId = $community['id'] ?? null;
-          if ($communityId) {
-            foreach(MetafyCommunity::cases() as $metafyCommunity) {
-              if ($metafyCommunity->value === $communityId) {
-                $metafyAltArts = $metafyCommunity->AltArts();
-                if (!empty($metafyAltArts)) {
-                  $metafyAltArtsCount = count($metafyAltArts);
-                  for($i = 0; $i < $metafyAltArtsCount; ++$i) {
-                    $arr = explode("=", $metafyAltArts[$i]);
-                    if (count($arr) === 2) {
-                      $altArt = new stdClass();
-                      $altArt->name = $metafyCommunity->CommunityName() . ($metafyAltArtsCount > 1 ? " " . $i + 1 : "");
-                      $altArt->cardId = trim($arr[0]);
-                      $altArt->altPath = trim($arr[1]);
-                      array_push($initialLoad->altArts, $altArt);
-                    }
-                  }
+          $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
+          if ($metafyCommunity !== null) {
+            $metafyAltArts = $metafyCommunity->AltArts();
+            if (!empty($metafyAltArts)) {
+              $metafyAltArtsCount = count($metafyAltArts);
+              for($i = 0; $i < $metafyAltArtsCount; ++$i) {
+                $arr = explode("=", $metafyAltArts[$i]);
+                if (count($arr) === 2) {
+                  $altArt = new stdClass();
+                  $altArt->name = $metafyCommunity->CommunityName() . ($metafyAltArtsCount > 1 ? " " . $i + 1 : "");
+                  $altArt->cardId = trim($arr[0]);
+                  $altArt->altPath = trim($arr[1]);
+                  array_push($initialLoad->altArts, $altArt);
                 }
-                break;
               }
             }
           }
@@ -217,7 +219,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     // Get opponent's alt arts
     if($playerID == 3 || !AltArtsDisabled($playerID))
     {
-      foreach(PatreonCampaign::cases() as $campaign) {
+      foreach($patreonCampaigns as $campaign) {
         $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($altArtsOpponentName);
 
         if ($campaign->SessionID() == "isPvtVoidPatron") {
@@ -245,24 +247,20 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if (is_array($opponentCommunities)) {
         foreach ($opponentCommunities as $community) {
           $communityId = $community['id'] ?? null;
-          if ($communityId) {
-            foreach(MetafyCommunity::cases() as $metafyCommunity) {
-              if ($metafyCommunity->value === $communityId) {
-                $opponentMetafyAltArts = $metafyCommunity->AltArts();
-                if (!empty($opponentMetafyAltArts)) {
-                  $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
-                  for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
-                    $arr = explode("=", $opponentMetafyAltArts[$i]);
-                    if (count($arr) === 2) {
-                      $opponentAltArt = new stdClass();
-                      $opponentAltArt->name = $metafyCommunity->CommunityName() . ($opponentMetafyAltArtsCount > 1 ? " " . $i + 1 : "");
-                      $opponentAltArt->cardId = trim($arr[0]);
-                      $opponentAltArt->altPath = trim($arr[1]);
-                      array_push($initialLoad->opponentAltArts, $opponentAltArt);
-                    }
-                  }
+          $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
+          if ($metafyCommunity !== null) {
+            $opponentMetafyAltArts = $metafyCommunity->AltArts();
+            if (!empty($opponentMetafyAltArts)) {
+              $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
+              for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
+                $arr = explode("=", $opponentMetafyAltArts[$i]);
+                if (count($arr) === 2) {
+                  $opponentAltArt = new stdClass();
+                  $opponentAltArt->name = $metafyCommunity->CommunityName() . ($opponentMetafyAltArtsCount > 1 ? " " . $i + 1 : "");
+                  $opponentAltArt->cardId = trim($arr[0]);
+                  $opponentAltArt->altPath = trim($arr[1]);
+                  array_push($initialLoad->opponentAltArts, $opponentAltArt);
                 }
-                break;
               }
             }
           }
