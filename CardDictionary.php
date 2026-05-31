@@ -4794,6 +4794,8 @@ function Rarity($cardID)
 {
   $set = CardSet($cardID);
   if ($cardID == "baalghor_omen_of_the_end") return "R"; //speculative
+  if ($cardID == "raydn_duskbane") return "R"; //downshift
+  if ($cardID == "blaze_firemind") return "R"; //downshift
   if ($set != "DUM") {
     return GeneratedRarity($cardID);
   }
