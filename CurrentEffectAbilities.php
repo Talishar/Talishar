@@ -2540,7 +2540,7 @@ function BeginEndPhaseEffectTriggers()
   $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
   
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
-    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1] ?? 0);
     if ($card != "-") $card->CurrentEffectBeginEndPhaseAbility($i);
     switch ($currentTurnEffects[$i]) {
       case "seek_and_destroy_red-1": 

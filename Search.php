@@ -699,7 +699,8 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($currentTurnEffects[$i + 1] == $player && ($currentTurnEffects[$i] == $card1 || $currentTurnEffects[$i] == $card2 || $currentTurnEffects[$i] == $card3)) return true;
+    $Effect = new CurrentEffect($i);
+    if ($Effect->PlayerID() == $player && ($currentTurnEffects[$i] == $card1 || $currentTurnEffects[$i] == $card2 || $currentTurnEffects[$i] == $card3)) return true;
   }
   return false;
 }

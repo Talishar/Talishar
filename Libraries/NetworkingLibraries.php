@@ -1883,7 +1883,7 @@ function FinalizeTurn()
     if ($mainCharacter[$i + 6] == 1) {
       DestroyCharacter($mainPlayer, $i-1); //Destroy if it was flagged for destruction
     }
-    if ($mainCharacter[$i] != 0) {
+    if (($mainCharacter[$i] ?? 0) != 0) {
       if ($mainCharacter[$i] != 4) {
         $mainCharacter[$i] = 2;
       }

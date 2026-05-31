@@ -1521,7 +1521,8 @@ function IsDominateActive()
 
   $characterEffects = GetCharacterEffects($mainPlayer);
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i])) return true;
+    $Effect = new CurrentEffect($i);
+    if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i])) return true;
   }
   for ($i = 0; $i < count($characterEffects); $i += CharacterEffectPieces()) {
     if ($characterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
@@ -1600,8 +1601,9 @@ function IsOverpowerActive()
     return true;
   }
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsOverpower($currentTurnEffects[$i])) return true;
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red-BUFF" && CachedWagerActive()) return true;
+    $Effect = new CurrentEffect($i);
+    if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsOverpower($currentTurnEffects[$i])) return true;
+    if ($Effect->PlayerID() == $mainPlayer && $currentTurnEffects[$i] == "double_down_red-BUFF" && CachedWagerActive()) return true;
   }
   if (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer)) {
     switch ($CombatChain->AttackCard()->ID()) {
@@ -2109,7 +2111,8 @@ function LinkBasePower($check=false)
     //substage 4
     if ($attackCard != "-") $basePower = ceil($basePower / $attackCard->DivideBasePower());
     for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
-      if ($currentTurnEffects[$i+1] != $mainPlayer) continue;
+      $Effect = new CurrentEffect($i);
+      if ($Effect->PlayerID() != $mainPlayer) continue;
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
       if ($check || !IsCombatEffectActive($currentTurnEffects[$i])) continue;
       if ($card != "-") $basePower = ceil($basePower / $card->EffectDivideBasePower());

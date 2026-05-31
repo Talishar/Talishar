@@ -1105,7 +1105,9 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
       $abAmount = $card->ArcaneBarrier();
       if ($abAmount == "X") {
         for ($j = 1; $j < $max+1; ++$j) {
-          ++$barrierArray[$j];
+          if (isset($barrierArray[$j]))
+            ++$barrierArray[$j];
+          else $barrierArray[$j] = 1;
         }
         $total += $max;
       }
