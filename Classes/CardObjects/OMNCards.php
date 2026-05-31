@@ -5201,7 +5201,7 @@ class enion_surge extends BaseCard {
     $Hero = new CharacterCard(0, $this->controller);
     if ($Hero->Tapped() == 0) {
       $message = "if_you_want_to_tap_to_lightning_flow";
-      $context = "Choose if you want to tap your hero to make a  " . CardLink("lightning_flow");
+      $context = "Choose if you want to tap your hero to make a  " . "{{element|Lightning Flow|" . GetElementColorCode("LIGHTNING") . "|lightning_flow}}";
       Await($this->controller, "YesNo", "choice", message:$message, context:$context, subsequent:0);
       Await($this->controller, $this->cardID, final:true);
     }
