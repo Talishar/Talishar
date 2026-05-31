@@ -961,8 +961,15 @@ class flowstate_embodiment_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    Await($this->controller, "CardChoices", choices:"Embodiment_of_Lightning,Lightning_Flow", returnName:"cardID", subsequent:false);
-    Await($this->controller, "PlayAura", final:true);
+    $indices = "CARDID-lightning_flow,CARDID-embodiment_of_lightning";
+    Await($this->controller, "ChooseMultiZone", "choice", indices:$indices, context:"Choose which token you want to create", subsequent:0);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+    function SpecificLogic() {
+    global $dqVars;
+    $choice = explode("-", $dqVars["choice"])[1];
+    PlayAura($choice, $this->controller);
   }
 }
 
@@ -4072,10 +4079,10 @@ class path_of_same_ends extends BaseCard {
     global $mainPlayer, $CombatChain, $ChainLinks;
     if ($this->controller != $mainPlayer) return true;
     if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
-    if ($from == "PLAY" && $CombatChain->AttackCard()->NumTimesUsed() >= 1) return true;
+    if ($from == "PLAY" && $CombatChain->AttackCard()->NumTimesUsed() >= 999) return true; // basically unlimited
     if ($from == "COMBATCHAINATTACKS") {
       $Link = $ChainLinks->GetLink($index);
-      return $Link->AttackCard()->NumTimesUsed() >= 1;
+      return $Link->AttackCard()->NumTimesUsed() >= 999; // basically unlimited
     }
     return false;
   }
@@ -5766,6 +5773,10 @@ class haven_veil_red extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     return $this->baseCard->ProcessTrigger($additionalCosts, $uniqueID);
   }
+
+  function DisplayRemainingPrevention() {
+    return true;
+  }
 }
 
 class haven_veil_yellow extends Card {
@@ -5798,6 +5809,10 @@ class haven_veil_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     return $this->baseCard->ProcessTrigger($additionalCosts, $uniqueID);
   }
+
+  function DisplayRemainingPrevention() {
+    return true;
+  }
 }
 
 class haven_veil_blue extends Card {
@@ -5829,6 +5844,10 @@ class haven_veil_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     return $this->baseCard->ProcessTrigger($additionalCosts, $uniqueID);
+  }
+  
+  function DisplayRemainingPrevention() {
+    return true;
   }
 }
 
@@ -5883,7 +5902,7 @@ class starlight_road_blue extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $indices = "CARDID-lightning_flow,CARDID-embodiment_of_lightning";
-    Await($this->controller, "ChooseMultiZone", "choice", indices:$indices, context:"Choose a token to create", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", indices:$indices, context:"Choose which token you want to create", subsequent:0);
     Await($this->controller, $this->cardID, final:true);
     return "";
   }
