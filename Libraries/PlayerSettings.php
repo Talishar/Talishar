@@ -39,7 +39,7 @@ $SET_DisableFabInsights = 28; //Did the player disable global stat tracking
 $SET_DisableHeroIntro = 29; //Did the player disable hero intro animation
 $SET_MirroredBoardLayout = 30; //Did the player enable mirrored board layout (opponent)
 $SET_MirroredPlayerBoardLayout = 31; //Did the player enable mirrored board layout (player)
-$SET_AlwaysShowCounters = 32; //Always show counters on cards
+$SET_AlwaysShowCounters = 32; //Always show counters on zones
 $SET_HideHandFromFriends = 33; //Hide your hand content from friends
 
 function HoldPrioritySetting($player)
