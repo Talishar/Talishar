@@ -1451,6 +1451,7 @@ function GetMZCardLink($player, $MZ)
         if ($zoneDS[$index] == "TRIGGER" || $zoneDS[$index] == "MELD" || $zoneDS[$index] == "ABILITY") $index += 2;
         $cardID = $zoneDS[$index] == "runechant_batch" ? "runechant" : $zoneDS[$index];
       }
+      else $cardID = "";
     }
     return CardLink($cardID, $cardID);
   }
