@@ -5766,6 +5766,10 @@ class haven_veil_red extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     return $this->baseCard->ProcessTrigger($additionalCosts, $uniqueID);
   }
+
+  function DisplayRemainingPrevention() {
+    return true;
+  }
 }
 
 class haven_veil_yellow extends Card {
@@ -5798,6 +5802,10 @@ class haven_veil_yellow extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     return $this->baseCard->ProcessTrigger($additionalCosts, $uniqueID);
   }
+
+  function DisplayRemainingPrevention() {
+    return true;
+  }
 }
 
 class haven_veil_blue extends Card {
@@ -5829,6 +5837,10 @@ class haven_veil_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     return $this->baseCard->ProcessTrigger($additionalCosts, $uniqueID);
+  }
+  
+  function DisplayRemainingPrevention() {
+    return true;
   }
 }
 
