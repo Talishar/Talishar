@@ -2872,6 +2872,15 @@ function EndTurnPitchHandling($player)
     PitchDeck($player, 0);
     return true;
   } else {
+    $allSame = true; // don't ask player for input if all cards are the same
+    $firstCard = $pitch[0];
+    for ($i = PitchPieces(); $i < count($pitch); $i += PitchPieces()) {
+      if ($pitch[$i] !== $firstCard) { $allSame = false; break; }
+    }
+    if ($allSame) {
+      while (count($pitch) > 0) PitchDeck($player, 0);
+      return true;
+    }
     $currentPlayer = $player;
     $turn[0] = "PDECK";
     return false;
