@@ -1601,7 +1601,7 @@ function IsOverpowerActive()
   }
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsOverpower($currentTurnEffects[$i])) return true;
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red" && CachedWagerActive()) return true;
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red-BUFF" && CachedWagerActive()) return true;
   }
   if (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer)) {
     switch ($CombatChain->AttackCard()->ID()) {
