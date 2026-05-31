@@ -115,7 +115,7 @@ function HasFragment($cardID) {
 
 function PayLightningFlowInstead($player, $cardID) {
 	if (CountAura("lightning_flow", $player) > 0) {
-		AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_" . CardLink("lightning_flow"), 1);
+		AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_" . "{{element|Lightning Flow|" . GetElementColorCode("LIGHTNING") . "|lightning_flow}}", 1);
 		AddDecisionQueue("NOPASS", $player, "-", 1);
 		$Auras = new Auras($player);
 		$AuraCard = $Auras->FindCardID("lightning_flow");
