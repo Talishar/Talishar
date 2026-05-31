@@ -9,12 +9,12 @@ if ($handler === false) {
 }
 
 $lockTries = 0;
-while (!flock($handler, LOCK_EX) && $lockTries < 10) {
-  usleep(100000); //100ms
+while (!flock($handler, LOCK_EX | LOCK_NB) && $lockTries < 5) {
+  usleep(10000); // 10ms
   ++$lockTries;
 }
 
-if ($lockTries == 10) { fclose($handler); exit; }
+if ($lockTries == 5) { fclose($handler); exit; }
 
 $gamestateLines = [
   implode(" ", $playerHealths),
