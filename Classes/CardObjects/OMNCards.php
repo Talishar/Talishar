@@ -961,8 +961,15 @@ class flowstate_embodiment_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    Await($this->controller, "CardChoices", choices:"Embodiment_of_Lightning,Lightning_Flow", returnName:"cardID", subsequent:false);
-    Await($this->controller, "PlayAura", final:true);
+    $indices = "CARDID-lightning_flow,CARDID-embodiment_of_lightning";
+    Await($this->controller, "ChooseMultiZone", "choice", indices:$indices, context:"Choose which token you want to create", subsequent:0);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+    function SpecificLogic() {
+    global $dqVars;
+    $choice = explode("-", $dqVars["choice"])[1];
+    PlayAura($choice, $this->controller);
   }
 }
 
@@ -5895,7 +5902,7 @@ class starlight_road_blue extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $indices = "CARDID-lightning_flow,CARDID-embodiment_of_lightning";
-    Await($this->controller, "ChooseMultiZone", "choice", indices:$indices, context:"Choose a token to create", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", indices:$indices, context:"Choose which token you want to create", subsequent:0);
     Await($this->controller, $this->cardID, final:true);
     return "";
   }
