@@ -3938,7 +3938,7 @@ class aethersling_red extends Card {
     $Hero = new CharacterCard(0, $this->controller);
     if ($Hero->Tapped() == 0) {
       Await($this->controller, $this->cardID, prepend:true, final:true);
-      Await($this->controller, "YesNo", context: "Do_you_want_to_tap_your_hero_to_Go_Again", subsequent:0, prepend:true);
+      Await($this->controller, "YesNo", context: "Do_you_want_to_tap_your_hero_to_get_go_again?", subsequent:0, prepend:true);
     }
   }
 
