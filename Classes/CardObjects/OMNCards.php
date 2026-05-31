@@ -1153,7 +1153,7 @@ class scorpio_comet_tail extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    DealArcane(1, 1);
+    DealArcane(1, 1, source:$this->cardID);
   }
 }
 
