@@ -5700,7 +5700,7 @@ class nucleus_aetherbolt_red extends Card {
     global $dqVars, $EffectContext;
     if ($dqVars["mode"] == "first") {
       $Hero = new CharacterCard(0, $this->controller);
-      if ($Hero->Tapped() == 0 && $dqVars["ARCANEDEALT"] > 0) {
+      if ($Hero->Tapped() == 0 && ($dqVars["ARCANEDEALT"] ?? 0) > 0) {
         $message = "if_you_want_to_tap_to_deal_1_arcane";
         $context = "Choose if you want to tap your hero to deal 1 arcane";
         Await($this->controller, "YesNo", "choice", message:$message, context:$context, subsequent:0);
