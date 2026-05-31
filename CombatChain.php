@@ -2241,6 +2241,7 @@ function StackTakeDamageAbilities($player, $damage, $type, $source) {
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
     $Layer = $Stack->Card($i, true);
+    if ($Layer->PlayerID() != $player) continue;
     $card = GetClass($Layer->ID(), $player);
     if ($card != "-") {
       $prevention = $card->LayerTakeDamageAbility($i, $damage, $type, $source, $preventable);
