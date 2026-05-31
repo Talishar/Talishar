@@ -4072,10 +4072,10 @@ class path_of_same_ends extends BaseCard {
     global $mainPlayer, $CombatChain, $ChainLinks;
     if ($this->controller != $mainPlayer) return true;
     if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
-    if ($from == "PLAY" && $CombatChain->AttackCard()->NumTimesUsed() >= 1) return true;
+    if ($from == "PLAY" && $CombatChain->AttackCard()->NumTimesUsed() >= 999) return true; // basically unlimited
     if ($from == "COMBATCHAINATTACKS") {
       $Link = $ChainLinks->GetLink($index);
-      return $Link->AttackCard()->NumTimesUsed() >= 1;
+      return $Link->AttackCard()->NumTimesUsed() >= 999; // basically unlimited
     }
     return false;
   }
