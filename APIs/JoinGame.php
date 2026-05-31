@@ -803,9 +803,10 @@ function isSpecialUsePromo($cardID) {
       "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands", "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
   ];
-  $unreleasedSets = ["OMN", "AZS", "MPW", "AOL", "DDD", "IAR", ""];
+  $unreleasedSets = ["MPW", "AOL", "DDD", "IAR", ""];
   // promos that are made legal ahead of thier set
-  $specialReleases = [];
+  $specialReleases = ["runechant_of_envy_yellow", "runechant_of_gluttony_yellow", "runechant_of_greed_yellow", "runechant_of_pride_yellow",
+                      "runechant_of_wrath_yellow", "runechant_of_lust_yellow", "runechant_of_sloth_yellow"];
   if (in_array($cardID, $specialReleases)) return false;
   return in_array($cardID, $specialUsePromos) || in_array(CardSet($cardID), $unreleasedSets);
 }
@@ -813,12 +814,6 @@ function isSpecialUsePromo($cardID) {
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
-    case "OMN":
-      $card = GetClass($cardID, 0);
-      return $card == "-";
-    case "AZS":
-      $card = GetClass($cardID, 0);
-      return $card == "-";
     case "MPW":
       $card = GetClass($cardID, 0);
       return $card == "-";
