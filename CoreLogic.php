@@ -128,7 +128,9 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
           if ($totalDefense > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
             $char = GetPlayerCharacter($mainPlayer);
             $charID = -1;
-            for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+            $charCount = count($char);
+            $characterPieces = CharacterPieces();
+            for ($i = 0; $i < $charCount; $i += $characterPieces) {
               if ($char[$i + 11] == $combatChain[8]) $charID = $i;
             }
             if ($charID == -1) WriteLog("something went wrong, please submit a bug report", highlight: true);
@@ -150,7 +152,9 @@ function ReEvalCombatChain() {
   global $combatChain, $CombatChain, $combatChainState, $mainPlayer, $defPlayer;
   if ($CombatChain->HasCurrentLink()) {
     // checking if things should trigger/be modified with the power change
-    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    $combatChainCount = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
       if ($combatChain[$i + 1] == $defPlayer) {
         ProcessPhantasmOnBlock($i);
         ProcessMirageOnBlock($i);
@@ -175,7 +179,6 @@ function AddPower(&$totalPower, $amount, $sourceBuff=false, $source="-"): void
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
-  $startBuff = $amount;
   if (PowerCantBeModified($attackID)) return;
   if (!FakeBuff($source)) { // fake buffs are modifications that can't be modified themselves
     if ($amount > 0 && ($attackID == "amplifying_arrow_yellow" || $attackID == "doubling_season_red"))
