@@ -161,7 +161,7 @@ function FirstDamageTrigger($target, $cardID, $player, $effectID="-") {
 
 // returns a list of all attack action cards that could be targeted
 function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
-	global $Stack, $CombatChain, $ChainLinks;
+	global $Stack, $CombatChain, $ChainLinks, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
 	$targets = [];
 	if (IsLayerStep()) {
 		$botLayer = $Stack->BottomLayer();
@@ -173,6 +173,7 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 	}
 	for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
 		$ChainCard = $CombatChain->Card($i, true);
+		if ($i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue;
 		if (!TypeContains($ChainCard->ID(), "AA")) continue;
 		if ($player != "" && $ChainCard->PlayerID() != $player) continue;
 		if ($talent != "" && !TalentContains($ChainCard->ID(), "LIGHTNING", $ChainCard->PlayerID())) continue;
@@ -183,6 +184,7 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 		$Link = $ChainLinks->GetLink($i);
 		for ($j = 0; $j < $Link->NumCards(); ++$j) {
 			$ChainCard = $Link->GetLinkCard($j, true);
+			if (!$ChainCard->StillOnChain()) continue;
 			if (!TypeContains($ChainCard->ID(), "AA")) continue;
 			if ($player != "" && $ChainCard->PlayerID() != $player) continue;
 			if ($talent != "" && !TalentContains($ChainCard->ID(), "LIGHTNING", $ChainCard->PlayerID())) continue;
