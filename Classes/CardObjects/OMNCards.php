@@ -7839,7 +7839,7 @@ class chromatic_refinement extends BaseCard {
   function CurrentEffectCostModifier($cardID, $index) {
     $color = PitchValue($this->cardID);
     $Effect = new CurrentEffect($index);
-    if ($Effect->AppliestoUniqueID() == -1 && ColorContains($cardID, $color, $this->controller))
+    if ($Effect->AppliestoUniqueID() == -1 && ColorContains($cardID, $color, $this->controller) && !IsActivated($cardID, $this->controller))
       return -1;
     return 0;
   }
