@@ -87,6 +87,13 @@ $forceBaseDeckRefresh = ($matchup === "__base__");
 if ($forceBaseDeckRefresh) $matchup = "";
 $starterDeck = false;
 
+// forceBaseDeckRefresh is only valid for a player who is already in the lobby.
+if ($forceBaseDeckRefresh && GetCachePiece($gameName, $playerID + 6) == "") {
+  $response->error = "No active session to refresh.";
+  echo json_encode($response);
+  exit;
+}
+
 if ($matchup == "" && !$forceBaseDeckRefresh && GetCachePiece($gameName, $playerID + 6) != "") {
   $response->error = "Another player has already joined the game.";
   echo json_encode($response);
@@ -382,7 +389,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
        // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
        if (($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell" || $format == "gage") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
          if ($isDeckLegal != "")
-           $isDecisDeckLegalkCCLegal .= ", ";
+           $isDeckLegal .= ", ";
          $isDeckLegal .= PitchValue($id) > 0 ? CardName($id) . " (" . PitchValue($id) . ")" : CardName($id);
        }
        if ($format != "draft" && $format != "open" && hasLegendary($id) && $cardCounts[$id] > 1) {
@@ -536,6 +543,16 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
 
  if ($matchup == "") {
    if ($playerID == 2) {
+
+     if (!$forceBaseDeckRefresh) {
+       $slotValue = GetCachePiece($gameName, $playerID + 6);
+       if ($slotValue != "") {
+         $response->error = "Another player has already joined the game.";
+         echo json_encode($response);
+         exit;
+       }
+       SetCachePiece($gameName, $playerID + 6, "joining");
+     }
 
      $gameStatus = $MGS_Player2Joined;
      if (file_exists("../Games/" . $gameName . "/gamestate.txt"))

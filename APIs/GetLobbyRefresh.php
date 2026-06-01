@@ -102,22 +102,31 @@ if ($playerID != 3 && $authKey !== $targetAuth) {
 }
 
 if ($kickPlayerTwo) {
-  // Only increment the disconnect counter for genuine disconnects, not manual kicks
+  // $playerID is the polling player, so the one who disconnected is the other one.
+  $disconnectedPlayer = ($playerID == 1 ? 2 : 1);
   $kickSignal = GetCachePiece($gameName, 17);
-  if ($kickSignal !== "kicked") {
+  if ($disconnectedPlayer == 2 && $kickSignal !== "kicked") {
     $numP2Disconnects = IncrementCachePiece($gameName, 11);
     if ($numP2Disconnects >= 3) {
       WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
     }
   }
-  // Do not delete the deck file here — JoinGame.php overwrites it when a new player joins.
-  // Deleting it causes an empty lobby for players who reconnect before a new player joins.
+
   $gameStatus = $MGS_Initial;
   SetCachePiece($gameName, 14, $gameStatus);
-  $p2Data = [];
-  $p2uid = "";
-  $p2id = "";
-  $p2SideboardSubmitted = "0";
+
+  if ($disconnectedPlayer == 2) {
+    $p2Data = [];
+    $p2uid = "";
+    $p2id = "";
+    $p2SideboardSubmitted = "0";
+  } else {
+    SetCachePiece($gameName, 7, "");
+    $p1uid = "-";
+    $p1id = "";
+    $p1SideboardSubmitted = "0";
+  }
+
   WriteGameFile();
 }
 
