@@ -92,10 +92,10 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
     if ($index == -1) return "I"; // safest bet if the index isn't provided
     $LayerCard = new Layer($index);
     $sourceID = $LayerCard->Parameter();
-    if (isset($meldCards[$sourceID])) return "A,I";
+    if (in_array($sourceID, $meldCards)) return "A,I";
     else return "I";
   }
-  if (isset($meldCards[$cardID])) {
+  if (in_array($cardID, $meldCards)) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH" || $from == "HAND" || $from == "ARS" || $from == "CC") return "A,I";
     if ($index == -1) {
       if (function_exists("GetClassState"))   
