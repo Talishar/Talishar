@@ -164,13 +164,17 @@ try {
     //First validate
     $isValid = true;
     $layerPieces = LayerPieces();
-    if (count($submission->layers) < $dqState[8] / $layerPieces) {
+    $submittedLayers = $submission->layers;
+    $submittedLayersCount = count($submittedLayers);
+    $layersCount = count($layers);
+    if ($submittedLayersCount < $dqState[8] / $layerPieces) {
       $response->error = "Not enough layers.";
       $isValid = false;
       break;
     }
-    for ($i = 0; $i < count($submission->layers); ++$i) {
-      $layerID = $submission->layers[$i];
+    $seenLayerIDs = [];
+    for ($i = 0; $i < $submittedLayersCount; ++$i) {
+      $layerID = $submittedLayers[$i];
       if ($layerID % $layerPieces != 0) {
         $response->error = "Not a layer ID.";
         $isValid = false;
@@ -181,24 +185,24 @@ try {
         $isValid = false;
         break;
       }
-      for ($j = $i + 1; $j < count($submission->layers); ++$j) {
-        if ($layerID == $submission->layers[$j]) {
-          $response->error = "Layer ID is duplicated.";
-          $isValid = false;
-          break;
-        }
+      if (isset($seenLayerIDs[$layerID])) {
+        $response->error = "Layer ID is duplicated.";
+        $isValid = false;
+        break;
       }
+      $seenLayerIDs[$layerID] = true;
     }
     //Now if it's valid, do the swap
     $newLayers = [];
-    for($i = 0; $i < count($submission->layers); ++$i) {
-      for($j = $submission->layers[$i]; $j < $submission->layers[$i] + $layerPieces; ++$j) {
-        if(isset($layers[$j])) array_push($newLayers, $layers[$j]);
+    for($i = 0; $i < $submittedLayersCount; ++$i) {
+      for($j = $submittedLayers[$i]; $j < $submittedLayers[$i] + $layerPieces; ++$j) {
+        if(isset($layers[$j])) $newLayers[] = $layers[$j];
       }
     }
-    if(count($layers) > count($newLayers)) {
-      for($i = $dqState[8] + $layerPieces; $i < $dqState[8] + $layerPieces * count($layers); ++$i) {
-        if(isset($layers[$i])) array_push($newLayers, $layers[$i]);
+    if($layersCount > count($newLayers)) {
+      $upperBound = $dqState[8] + $layerPieces * $layersCount;
+      for($i = $dqState[8] + $layerPieces; $i < $upperBound; ++$i) {
+        if(isset($layers[$i])) $newLayers[] = $layers[$i];
       }
     }
     $layers = $newLayers;
@@ -262,21 +266,20 @@ try {
         }
       foreach ($cardList as $card) {
         $index = -1;
-        for ($i = 0; $i < count($layers); $i += $layerPieces) {
+        $layersCount = count($layers);
+        for ($i = 0; $i < $layersCount; $i += $layerPieces) {
           if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID && $layers[$i+2] == $card) {
             $index = $i;
           }
         }
         if ($index != -1) {
-          $pretrigger = array_slice($layers, $index, $layerPieces);
+          $pretrigger = array_splice($layers, $index, $layerPieces);
           $pretrigger[0] = "TRIGGER";
-          for ($j = $index + $layerPieces - 1; $j >= $index; --$j) {
-            unset($layers[$j]);
-          }
-          $layers = array_merge($pretrigger, $layers);
+          array_unshift($layers, ...$pretrigger);
         }
       }
-      for ($i = 0; $i < count($layers); $i += $layerPieces) {
+      $layersCount = count($layers);
+      for ($i = 0; $i < $layersCount; $i += $layerPieces) {
         if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID) {
           WriteLog("Something went wrong with adding triggers and we missed adding " . $layers[$i+2] . " to the stack", highlight: true);
           $layers[$i] = "TRIGGER";

@@ -2724,12 +2724,13 @@ function RemoveArsenalEffects($player, $cardToReturn, $uniqueID)
 function LookAtHand($player, $look=true)
 {
   $hand = &GetHand($player);
-  $cards = "";
-  for ($i = 0; $i < count($hand); $i += HandPieces()) {
-    if ($cards != "") $cards .= ",";
-    $cards .= $hand[$i];
+  $cardParts = [];
+  $handCount = count($hand);
+  $handPieces = HandPieces();
+  for ($i = 0; $i < $handCount; $i += $handPieces) {
+    $cardParts[] = $hand[$i];
   }
-  RevealCards($cards, $player, look:$look);
+  RevealCards(implode(",", $cardParts), $player, look:$look);
 }
 
 function LookAtArsenal($player, $look=true)
@@ -2908,7 +2909,9 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
       SearchCurrentTurnEffects("mage_master_boots", $player, true);
     }
     $character = GetPlayerCharacter($player);
-    for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+    $characterCount = count($character);
+    $characterPieceSize = CharacterPieces();
+    for ($i = 0; $i < $characterCount; $i += $characterPieceSize) {
       if ($character[$i + 1] != 2) continue;
       switch ($character[$i]) {
         case "silversheen_needle":
