@@ -567,6 +567,10 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      $gamelogPath = "../Games/" . $gameName . "/gamelog.txt";
      file_put_contents($gamelogPath, "");
 
+     if (intval(GetCachePiece($gameName, 11)) >= 3) {
+       WriteLog("⚠️ This lobby was hidden due to inactivity. If you have connection issues, try creating a new game.", path: "../");
+     }
+
      while ($p1roll == $p2roll && $tries > 0) {
        $p1roll = rand(1, 6) + rand(1, 6);
        $p2roll = rand(1, 6) + rand(1, 6);
@@ -606,7 +610,10 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
      $p2Key = hash("sha256", rand() . rand() . rand());
 
   WriteGameFile();
-  SetCachePiece($gameName, $playerID + 1, strval(round(microtime(true) * 1000)));
+  $pingTimestamp = ($playerID == 2)
+    ? strval(round(microtime(true) * 1000) + 30000)
+    : strval(round(microtime(true) * 1000));
+  SetCachePiece($gameName, $playerID + 1, $pingTimestamp);
   SetCachePiece($gameName, $playerID + 3, "0");
   // I'm not 100% sure what this does, but it seems to have been breaking with longer character names
   // for now truncate hero names

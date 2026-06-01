@@ -165,6 +165,15 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 
   if ($playerID == 1 && $gameStatus < $MGS_Player2Joined) {
     $response->isPrivateLobby = ($visibility == "private");
+
+    $lobbyCreatedAt = intval(GetCachePiece($gameName, 6));
+    $warningAlreadySent = GetCachePiece($gameName, 12);
+    if ($lobbyCreatedAt > 0 && $warningAlreadySent != "1"
+        && ($currentTime - $lobbyCreatedAt) > 600000) { // 10 minutes in ms
+      SetCachePiece($gameName, 12, "1");
+      WriteLog("⏳ This lobby has been open for over 10 minutes with no opponent. If you keep having trouble finding a match, try creating a new game.", path: "../");
+      GamestateUpdated($gameName);
+    }
   }
 
   $response->gameLog = JSONLog($gameName, $playerID, "../");
