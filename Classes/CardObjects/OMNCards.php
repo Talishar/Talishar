@@ -22,6 +22,9 @@ class twoscilio extends BaseCard {
     if ($CharacterCard->Tapped()) return true;
     $Auras = new Auras($this->controller);
     if ($Auras->FindCardID("lightning_flow")->Index() == -1) return true;
+    $hand = &GetHand($this->controller);
+    $resources = &GetResources($this->controller);
+    if (Count($hand) == 0 && $resources[0] == 0) return true;
     return false;
   }
 
@@ -47,6 +50,9 @@ class bauroralegacy extends BaseCard {
     if ($CharacterCard->Tapped()) return true;
     $Auras = new Auras($this->controller);
     if ($Auras->FindCardID("lightning_flow")->Index() == -1) return true;
+    $hand = &GetHand($this->controller);
+    $resources = &GetResources($this->controller);
+    if (Count($hand) == 0 && $resources[0] <= 1) return true;
     return false;
   }
 
@@ -378,6 +384,9 @@ class zyggy_base extends BaseCard {
     $Auras = new Auras($this->controller);
     if ($Auras->FindCardID("lightning_flow")->Index() == -1) return true;
     if (FindHoloAuras($this->controller) == "") return true;
+    $hand = &GetHand($this->controller);
+    $resources = &GetResources($this->controller);
+    if (Count($hand) == 0 && $resources[0] <= 1) return true;
     return false;
   }
 
