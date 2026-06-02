@@ -2608,10 +2608,6 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "oasis_respite_red":
-    case "oasis_respite_yellow":
-    case "oasis_respite_blue":
-      
     case "shred_red":
     case "shred_yellow":
     case "shred_blue":

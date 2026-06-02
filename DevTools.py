@@ -13,7 +13,10 @@ for i, line in enumerate(constants):
         piece_name = line[len("function "):-len("Pieces()")-1]
         all_pieces[piece_name] = []
     if ("//" in line and piece_name != ""):
-        all_pieces[piece_name].append(line.split(" - ")[1][:-1])
+        try:
+            all_pieces[piece_name].append(line.split(" - ")[1][:-1])
+        except:
+            print(f"problem parsing {piece_name}, {line}")
     if line[:len("$CCS_")] == "$CCS_" or line[:len("$CCS_")] == "$CSS_":
         all_pieces["ccs"].append(line.split("=")[0].strip()[len("$CCS_"):])
     if line[:len("$CS_")] == "$CS_":
