@@ -1892,16 +1892,7 @@ class voltic_veil_red extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
-    global $CurrentTurnEffects;
-    $Effect = $CurrentTurnEffects->Effect($index);
-    if ($damage >= $Effect->NumUses()) {
-      $remove = true;
-      return $Effect->NumUses();
-    }
-    else {
-      if (!$amount) $Effect->AddUses(-$damage);
-      return $damage;
-    }
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
