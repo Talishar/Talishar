@@ -927,13 +927,16 @@ class aphrodias extends Card {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $CS_HoloAurasEntered;
+    global $CS_HoloAurasEntered, $gameName;
     $CharacterCard = new CharacterCard($index, $this->controller);
+    $format = GetCachePiece($gameName, 13);
     if ($CharacterCard->Tapped()) return true;
     if (GetClassState($this->controller, $CS_HoloAurasEntered) == 0) return true;
-    $hand = &GetHand($this->controller);
-    $resources = &GetResources($this->controller);
-    if (Count($hand) == 0 && $resources[0] == 0) return true;
+    if($format != 6 && $format != 7 && $format != 17) {
+      $hand = &GetHand($this->controller);
+      $resources = &GetResources($this->controller);
+      if (Count($hand) == 0 && $resources[0] == 0) return true;
+    }
     return false;
   }
 
