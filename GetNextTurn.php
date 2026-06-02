@@ -29,7 +29,7 @@ SetHeaders();
 header('Content-Type: application/json; charset=utf-8');
 
 // Validate game name
-$gameName = $_GET["gameName"];
+$gameName = $_GET["gameName"] ?? "";
 if (!IsGameNameValid($gameName)) {
   echo json_encode(["errorMessage" => "Invalid game name."]);
   exit;

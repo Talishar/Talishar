@@ -57,16 +57,17 @@ function CheckAllyDeath($player)
   $countAllies = count($allies);
   $allyPieces = AllyPieces();
   for ($i = $countAllies - $allyPieces; $i >= 0; $i -= $allyPieces) {
-    if ($allies[$i + 2] <= 0) DestroyAlly($player, $i, false, true, $allies[$i + 5]);
+    if ($allies[$i + 2] <= 0) DestroyAlly($player, $i, false, true, $allies[$i + 5] ?? "");
   }
 }
 
 function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false)
 {
+  if ($index < 0) return "";
   $allies = &GetAllies($player);
   $allyPieces = AllyPieces();
   $otherPlayer = $player == 1 ? 2 : 1;
-  $owner = ($allies[$index+14] == "Temporary") ? $otherPlayer : $player;
+  $owner = (($allies[$index+14] ?? "") == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   RemoveAllyEffects($player, $uniqueID);
   if (IsSpecificAllyAttacking($player, $index)) {

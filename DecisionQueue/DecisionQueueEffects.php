@@ -643,8 +643,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $lastResultArr = explode(",", $lastResult);
       $PMIndex = SearchItemsForUniqueID($lastResultArr[0], $player);
       $targetIndex = SearchItemsForUniqueID($lastResultArr[1], $player);
-      ++$items[$targetIndex + 1];
-      if (--$items[$PMIndex + 1] == 0)
+      if ($targetIndex != -1) ++$items[$targetIndex + 1];
+      if ($PMIndex != -1 && --$items[$PMIndex + 1] == 0)
         DestroyItemForPlayer($player, $PMIndex);
       return $lastResult;
     case "TOMEOFDUPLICITY":
@@ -1049,7 +1049,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "KINGKRAKENHARPOON":
-      $index = intval(explode("-", $lastResult)[1]);
+      $index = intval(explode("-", $lastResult)[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
@@ -1060,7 +1060,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "KINGSHARKHARPOON":
-      $index = intval(explode("-", $lastResult)[1]);
+      $index = intval(explode("-", $lastResult)[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
@@ -1071,7 +1071,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "REDFINHARPOON":
-      $index = intval(explode("-", $lastResult)[1]);
+      $index = intval(explode("-", $lastResult)[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
@@ -1082,7 +1082,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "YELLOWFINHARPOON":
-      $index = intval(explode("-", $lastResult)[1]);
+      $index = intval(explode("-", $lastResult)[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
@@ -1093,7 +1093,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "BLUEFINHARPOON":
-      $index = intval(explode("-", $lastResult)[1]);
+      $index = intval(explode("-", $lastResult)[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);

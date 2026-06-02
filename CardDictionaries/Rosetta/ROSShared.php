@@ -47,8 +47,8 @@ function ROSEffectPowerModifier($cardID): int
 function ROSCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer, $CS_ActionsPlayed;
-  $actionsPlayed = explode(",", GetClassState($mainPlayer, $CS_ActionsPlayed));
-  $numActions = count($actionsPlayed);    
+  $actionsPlayed = explode(",", GetClassState($mainPlayer, $CS_ActionsPlayed) ?? "");
+  $numActions = count($actionsPlayed);
   return match ($cardID) {
     "arc_lightning_yellow-GOAGAIN" => TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer), //Arc Lightning giving next action go again.
     "strong_yield_red", "strong_yield_yellow", "strong_yield_blue", "burn_up__shock_red" => true,
@@ -209,8 +209,8 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
     case "current_funnel_blue":
-      $actionsPlayed = explode(",", GetClassState($currentPlayer, $CS_ActionsPlayed));
-      $numActions = count($actionsPlayed);    
+      $actionsPlayed = explode(",", GetClassState($currentPlayer, $CS_ActionsPlayed) ?? "");
+      $numActions = count($actionsPlayed);
       if (count($actionsPlayed) > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }

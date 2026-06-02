@@ -606,6 +606,8 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented;
 
+	if (empty($turnStats) || count($turnStats) < TurnStatPieces()) return;
+
 	$totalDamageThreatened = 0;
 	$totalDamageDealt = 0;
 	$totalResourcesUsed = 0;

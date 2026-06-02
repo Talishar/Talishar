@@ -1736,7 +1736,8 @@ class restless_coalescence_yellow extends Card {
 				AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
 				AddDecisionQueue("MZOP", $this->controller, "TRANSFERPOWERCOUNTER", 1);
 			}
-			AddCurrentTurnEffect($this->cardID, $this->controller, $from, $auras[count($auras) - AuraPieces() + 6]);
+			$lastAuraUID = count($auras) >= AuraPieces() ? $auras[count($auras) - AuraPieces() + 6] : "";
+			AddCurrentTurnEffect($this->cardID, $this->controller, $from, $lastAuraUID);
 			return "";
 		}
 		if ($abilityType != "I") return "";

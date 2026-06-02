@@ -638,8 +638,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           //Add indication for layers targets
           if ($layerCheckCount > 0 && $layers[0] != "" && ($option[0] == "MYDISCARD" || $option[0] == "THEIRDISCARD")) {
             $countLayers = count($layers);
-            for ($j=0; $j < $countLayers; $j += LayerPieces()) { 
-              $target = $option[0]."-".$option[1];
+            for ($j=0; $j < $countLayers; $j += LayerPieces()) {
+              $target = $option[0]."-".($option[1] ?? "");
               $cardID = GetMZCard($currentPlayer, $target);
               $params = explode("-", $layers[$j + 3]);
               if(isset($params[1])) {

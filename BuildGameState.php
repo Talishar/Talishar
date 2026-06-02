@@ -98,7 +98,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $isReactFE = true;
   $isGameOver = function_exists("IsGameOver") ? IsGameOver() : false;
-  $isCasterMode = IsCasterMode();
+  $isCasterMode = function_exists('IsCasterMode') ? IsCasterMode() : false;
   $isReplay = IsReplay();
 
   // Determine friend-based hand visibility using pre-loaded friend list from sessionData
@@ -780,10 +780,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
             $border = 5;
         }
     }
-      $powerCounters = $myCharacter[$i + 3];
+      $powerCounters = $myCharacter[$i + 3] ?? 0;
     }
     if (($myCharacter[$i + 9] ?? 0) != 2 && ($myCharacter[$i + 1] ?? 0) != 0 && $playerID != 3) {
-      $gem = $myCharacter[$i + 9] == 1 ? 1 : 2;
+      $gem = ($myCharacter[$i + 9] ?? 0) == 1 ? 1 : 2;
     }
     $restriction = implode("_", explode(" ", $restriction));
     if($isGameOver) ($myCharacter[$i + 12] ?? "-") == "UP";
@@ -796,27 +796,27 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $myCharData[] = JSONRenderedCard(
           $myChar,
           $currentPlayer == $playerID && $playable ? 3 : 0,
-          $myCharacter[$i + 1] != 2 && $myChar != "DUMMYDISHONORED"? 1 : 0,
+          ($myCharacter[$i + 1] ?? 0) != 2 && $myChar != "DUMMYDISHONORED"? 1 : 0,
           $border,
-          $myCharacter[$i + 1] != 0 ? $counters : 0,
+          ($myCharacter[$i + 1] ?? 0) != 0 ? $counters : 0,
           strval($i),
           0,
-          $myCharacter[$i + 4],
+          $myCharacter[$i + 4] ?? "",
           $powerCounters,
           $playerID,
           $type,
           $sType,
           $restriction,
-          $myCharacter[$i + 1] == 0,
-          $myCharacter[$i + 6] == 1,
-          $myCharacter[$i + 8] == 1,
+          ($myCharacter[$i + 1] ?? 0) == 0,
+          ($myCharacter[$i + 6] ?? 0) == 1,
+          ($myCharacter[$i + 8] ?? 0) == 1,
           $gem,
           label: $label,
-          facing: $myCharacter[$i + 12],
-          numUses: $myCharacter[$i + 5],
-          subcard: isSubcardEmpty($myCharacter, $i) ? NULL : $myCharacter[$i+10],
-          marked: $myCharacter[$i + 13] == 1,
-          tapped: $myCharacter[$i + 14] == 1);
+          facing: $myCharacter[$i + 12] ?? "-",
+          numUses: $myCharacter[$i + 5] ?? 0,
+          subcard: isSubcardEmpty($myCharacter, $i) ? NULL : ($myCharacter[$i+10] ?? null),
+          marked: ($myCharacter[$i + 13] ?? 0) == 1,
+          tapped: ($myCharacter[$i + 14] ?? 0) == 1);
       }
     }
   }

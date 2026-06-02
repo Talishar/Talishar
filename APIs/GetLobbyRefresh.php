@@ -20,7 +20,7 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 if($_POST == null) exit;
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
-$lastUpdate = $_POST["lastUpdate"];
+$lastUpdate = $_POST["lastUpdate"] ?? null;
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
 else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];

@@ -457,7 +457,7 @@
     for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
       $hasWager = $chainClosed ? false : true;
       if (!isset($currentTurnEffects[$i])) continue;
-      $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+      $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1] ?? 0);
       if ($card != "-" && $card->IsWagerEffect($i)) {
         for($j = 0; $j < $amount; ++$j) {
           if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, ExtractCardID($currentTurnEffects[$i]), $wonWager, "WAGER");

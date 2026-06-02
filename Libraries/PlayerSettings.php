@@ -259,7 +259,7 @@ function ShouldSkipDRs($player)
 {
   global $SET_SkipDRs, $SET_PassDRStep;
   $settings = GetSettings($player);
-  $skip = $settings[$SET_SkipDRs] || $settings[$SET_PassDRStep];
+  $skip = ($settings[$SET_SkipDRs] ?? false) || ($settings[$SET_PassDRStep] ?? false);
   ChangeSetting($player, $SET_PassDRStep, 0);
   return $skip;
 }
@@ -269,7 +269,7 @@ function ShouldAutotargetOpponent($player)
   //this is going to break in replays
   global $SET_AutotargetArcane;
   $settings = GetSettings($player);
-  return $settings[$SET_AutotargetArcane] == "1";
+  return ($settings[$SET_AutotargetArcane] ?? "0") == "1";
 }
 
 function IsColorblindMode($player)
@@ -277,7 +277,7 @@ function IsColorblindMode($player)
   global $SET_ColorblindMode;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_ColorblindMode] == "1";
+  return ($settings[$SET_ColorblindMode] ?? "0") == "1";
 }
 
 function ShortcutAttackThreshold($player)
@@ -294,7 +294,7 @@ function IsDynamicScalingEnabled($player)
   global $SET_EnableDynamicScaling;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_EnableDynamicScaling] == "1";
+  return ($settings[$SET_EnableDynamicScaling] ?? "0") == "1";
 }
 
 function IsMuted($player)
@@ -302,7 +302,7 @@ function IsMuted($player)
   global $SET_Mute;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_Mute] == "1";
+  return ($settings[$SET_Mute] ?? "0") == "1";
 }
 
 function IsChatMuted()
@@ -310,7 +310,7 @@ function IsChatMuted()
   global $SET_MuteChat;
   $p1Settings = GetSettings(1);
   $p2Settings = GetSettings(2);
-  return $p1Settings[$SET_MuteChat] == "1" || $p2Settings[$SET_MuteChat] == "1";
+  return ($p1Settings[$SET_MuteChat] ?? "0") == "1" || ($p2Settings[$SET_MuteChat] ?? "0") == "1";
 }
 
 function AreStatsDisabled($player)
@@ -319,7 +319,7 @@ function AreStatsDisabled($player)
   if (IsReplay() || IsPlayerAI(2) || IsPlayerAI(1)) return true;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_DisableStats] == "1";
+  return ($settings[$SET_DisableStats] ?? "0") == "1";
 }
 
 function AreGlobalStatsDisabled($player)
@@ -328,7 +328,7 @@ function AreGlobalStatsDisabled($player)
   if (IsReplay() || IsPlayerAI(2) || IsPlayerAI(1)) return true;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_DisableFabInsights] == "1";
+  return ($settings[$SET_DisableFabInsights] ?? "0") == "1";
 }
 
 function IsHeroIntroDisabled($player)
@@ -336,7 +336,7 @@ function IsHeroIntroDisabled($player)
   global $SET_DisableHeroIntro;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_DisableHeroIntro] == "1";
+  return ($settings[$SET_DisableHeroIntro] ?? "0") == "1";
 }
 
 function IsCasterMode()
@@ -345,7 +345,7 @@ function IsCasterMode()
   $settings1 = GetSettings(1);
   $settings2 = GetSettings(2);
   if ($settings1 == null || $settings2 == null) return false;
-  return $settings1[$SET_CasterMode] == "1" && $settings2[$SET_CasterMode] == "1";
+  return ($settings1[$SET_CasterMode] ?? "0") == "1" && ($settings2[$SET_CasterMode] ?? "0") == "1";
 }
 
 function IsHideHandFromFriends($player)

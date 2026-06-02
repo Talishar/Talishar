@@ -735,12 +735,14 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             }
           }
         }
+        $ind = -1;
         for ($i = 0; $i < count($char); $i += CharacterPieces()) {
           if ($char[$i] == "quickdodge_flexors") {
             $ind = $i;
             break;
           }
         }
+        if ($ind == -1) break;
         if (!SearchCurrentTurnEffects("quickdodge_flexors", $currentPlayer)) {
           AddCurrentTurnEffect("quickdodge_flexors", $currentPlayer);
           AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, $ind, 1);

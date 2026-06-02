@@ -448,7 +448,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 30: //String input
       $cardName = CardName(strtoupper($inputText));
       if ($cardName != "") $inputText = $cardName;
-      if ($turn[2] == "head_leads_the_tail_red" && $inputText == "Head Leads the Tail") //Validate the name
+      if (($turn[2] ?? "") == "head_leads_the_tail_red" && $inputText == "Head Leads the Tail") //Validate the name
       {
         WriteLog(CardLink($turn[2], $turn[2]) . " cannot name itself, your must name another card", highlight: true);
         break;
@@ -954,7 +954,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       $replayPath = $path . $counter;
       $gamePath = "./Games/" . $gameName;
-      mkdir($replayPath, 0777, true);
+      if (!is_dir($replayPath)) mkdir($replayPath, 0777, true);
       copy("$gamePath/origGamestate.txt", "$replayPath/origGamestate.txt");
       copy("$gamePath/commandfile.txt", "$replayPath/commandfile.txt");
 
@@ -1008,7 +1008,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($reportCount == 3) {
         WriteLog("⚠️ Report file is full for this game. Please use discord for further reports.", highlight: true);
       }
-      mkdir($folderName, 0700, true);
+      if (!is_dir($folderName)) mkdir($folderName, 0700, true);
       copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
       if (file_exists("./Games/$gameName/gamestateBackup.txt")) copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
       if (file_exists("./Games/$gameName/gamelog.txt")) copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
@@ -4600,8 +4600,8 @@ function ReportBug()
   if ($bugCount == 3) {
     WriteLog("⚠️ Bug report file is full for this game. Please use Discord to report further bugs.", highlight: true);
   }
-  mkdir($folderName, 0700, true);
-  
+  if (!is_dir($folderName)) mkdir($folderName, 0700, true);
+
   // Copy main game files
   $filesToCopy = [
     "gamestate.txt",

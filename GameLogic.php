@@ -208,7 +208,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "CCDEFLESSX":
           $rv = SearchCombatChainLink($player, "", "", -1, -1, "", "", false, false, -1, false, -1, $subparam);
-          if ($rv != "" && $rv[0] == "0" && (strlen($rv) == 0 || $rv[1] == ",")) $rv = substr($rv, 2);
+          if ($rv != "" && $rv[0] == "0" && (strlen($rv) >= 2 && $rv[1] == ",")) $rv = substr($rv, 2);
           break;
         case "MYHANDARROW":
           $rv = SearchHand($player, "", "Arrow");
@@ -775,7 +775,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "CHARFLAGDESTROY":
       $character = &GetPlayerCharacter($player);
-      if ($parameter + 7 < count($character)) $character[$parameter + 7] = 1;
+      if (intval($parameter) + 7 < count($character)) $character[intval($parameter) + 7] = 1;
       else WriteLog("Something went wrong wtih CHARFLAGDESTROY, please submit a bug report");
       return $lastResult;
     case "ADDCHARACTEREFFECT":
@@ -882,16 +882,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "TURNBANISHFACEDOWN":
           $mzArr = explode("-", $lastResult);
-          TurnBanishFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1]);
+          TurnBanishFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1] ?? "");
           break;
         case "TURNDISCARDFACEDOWN":
           $mzArr = explode("-", $lastResult);
-          TurnDiscardFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1]);
+          TurnDiscardFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1] ?? "");
           break;
         case "ADDITIONALUSE":
           $mzArr = explode("-", $lastResult);
           $character = &GetPlayerCharacter($player);
-          ++$character[$mzArr[1] + 5];
+          ++$character[intval($mzArr[1] ?? 0) + 5];
           if ($character[$mzArr[1] + 1] == 1) $character[$mzArr[1] + 1] = 2;
           break;
         case "ADDSUBCARD":
@@ -1943,11 +1943,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch ($mzArr[0]) {
         case "MYALLY":
         case "THEIRALLY":
-          $uid = $zone[$mzArr[1] + 5];
+          $uid = $zone[intval($mzArr[1] ?? 0) + 5] ?? "-";
           break;
         case "MYAURAS":
         case "THEIRAURAS":
-          $uid = $zone[$mzArr[1] + 6];
+          $uid = $zone[intval($mzArr[1] ?? 0) + 6] ?? "-";
           break;
         default:
           break;
@@ -2218,7 +2218,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($parameter == "DECK") {
         $zone = &GetDeck($player);
       }
-      if (count($lastResult) == 0) return "PASS";
+      if (!is_array($lastResult) || count($lastResult) == 0) return "PASS";
       if (SearchCurrentTurnEffects("amnesia_red", $player)) return "PASS";
       $name = CardName($zone[$lastResult[0]]);
       for ($i = 1; $i < count($lastResult); ++$i) {
@@ -2592,7 +2592,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       };
       $index = GetAbilityIndex($parameter, GetClassState($player, $piece), $lastResult);
       SetClassState($player, $CS_AbilityIndex, $index);
-      $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)));
+      $names = explode(",", GetAbilityNames($parameter, GetClassState($player, $CS_CharacterIndex)) ?? "");
       if (!isset($names[$index])) {
         WriteLog("An error occurred with " . CardLink($parameter, $parameter) . ". Please submit a bug report.");
         return "";

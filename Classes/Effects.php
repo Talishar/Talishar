@@ -41,7 +41,7 @@ class CurrentTurnEffects {
   function FindEffectUID($uid) {
     if (count($this->effects) == 0) return new CurrentEffect(-1);
     for ($i = 0; $i < count($this->effects); $i += CurrentTurnEffectPieces()) {
-      if ($this->effects[$i + 2] == $uid) return new CurrentEffect($i);
+      if (isset($this->effects[$i + 2]) && $this->effects[$i + 2] == $uid) return new CurrentEffect($i);
     }
     return new CurrentEffect(-1);
   }
@@ -49,7 +49,7 @@ class CurrentTurnEffects {
   function FindSpecificEffect($cardID, $uid) {
     if (count($this->effects) == 0) return new CurrentEffect(-1);
     for ($i = 0; $i < count($this->effects); $i += CurrentTurnEffectPieces()) {
-      if ($this->effects[$i] == $cardID && $this->effects[$i + 2] == $uid) return new CurrentEffect($i);
+      if ($this->effects[$i] == $cardID && isset($this->effects[$i + 2]) && $this->effects[$i + 2] == $uid) return new CurrentEffect($i);
     }
     return new CurrentEffect(-1);
   }

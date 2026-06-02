@@ -57,7 +57,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
       for ($i = 0; $i < $amount; ++$i) {
         $uid = GetUniqueId($cardID, $player);
         $rv = count($banish);
-        $splitCard = explode("_", $cardID);
+        $splitCard = explode("_", $cardID ?? "");
         if ($splitCard[count($splitCard) - 1] == "equip")
           $toBanish = GetCardIDBeforeTransform($cardID);
         else $toBanish = $cardID;
@@ -284,8 +284,9 @@ function RemoveDeck($player, $index)
 {
   $deck = &GetDeck($player);
   if (empty($deck)) return "";
-  $cardID = $deck[$index];
-  array_splice($deck, $index, DeckPieces());
+  if (!is_numeric($index) || $index < 0) return "";
+  $cardID = $deck[$index] ?? "";
+  array_splice($deck, intval($index), DeckPieces());
   return $cardID;
 }
 
@@ -700,7 +701,7 @@ function ConsumeDamagePrevention($player)
 
 function IncrementClassState($player, $piece, $amount = 1)
 {
-  SetClassState($player, $piece, (GetClassState($player, $piece) + intval($amount)));
+  SetClassState($player, $piece, (intval(GetClassState($player, $piece)) + intval($amount)));
 }
 
 function AppendClassState($player, $piece, $value)

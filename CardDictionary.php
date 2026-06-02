@@ -4646,7 +4646,7 @@ function WardAmount($cardID, $player, $index = -1)
 function HasWard($cardID, $player)
 {
   $card = GetClass($cardID, $player);
-  if ($card != "-") return $card->HasWard();
+  if ($card != "-" && method_exists($card, 'HasWard')) return $card->HasWard();
   switch ($cardID) {
     case "empyrean_rapture":
       return SearchCurrentTurnEffects("empyrean_rapture-1", $player);
