@@ -3031,15 +3031,13 @@ function IsSpecificAllyAttacking($player, $index)
   return true;
 }
 
-function IsSpecificAuraAttacking($player, $index)
+function IsSpecificAuraAttacking($player, $uniqueID)
 {
-  global $combatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer;
-  if (count($combatChain) == 0) return false;
+  global $CombatChain, $mainPlayer;
+  if (!$CombatChain->HasCurrentLink()) return false;
   if ($mainPlayer != $player) return false;
-  $weaponIndex = intval($combatChainState[$CCS_WeaponIndex]);
-  if ($weaponIndex == -1) return false;
-  if ($weaponIndex != $index) return false;
-  if (!DelimStringContains(CardSubtype($combatChain[0]), "Aura")) return false;
+  if (!DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura")) return false;
+  if ($CombatChain->AttackCard()->OriginUniqueID() != $uniqueID) return false;
   return true;
 }
 

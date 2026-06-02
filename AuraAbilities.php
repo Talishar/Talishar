@@ -525,8 +525,8 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
       if ($AttackCard->OriginUniqueID() == $uniqueID)
         $AttackCard->Remove();
     }
-
     $cardID = $auras[$index];
+    $uniqueID = $auras[$index + 6];
     if (HasSuspense($cardID)) IncrementClassState($player, $CS_SuspensePoppedThisTurn);
     $aurasPieces = AuraPieces();
     for ($i = $index + $aurasPieces - 1; $i >= $index; --$i) {
@@ -541,10 +541,10 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
     $character = array_values($character);
   }
   if (!AfterDamage() && !$skipClose) {
-    if (IsSpecificAuraAttacking($player, $index) || (IsSpecificAuraAttackTarget($player, $index, $uniqueID))) {
-      CloseCombatChain();
+      if (IsSpecificAuraAttacking($player, $uniqueID) || (IsSpecificAuraAttackTarget($player, $index, $uniqueID))) {
+        CloseCombatChain();
+      }
     }
-  }
   return $cardID;
 }
 
