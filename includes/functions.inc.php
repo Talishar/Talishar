@@ -741,8 +741,9 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	if(count($characterCards) > 0) {
 		$yourHeroCardID = $characterCards[0];
 		$deck["yourHero"] = $yourHeroCardID;
+		$deck["startingLife"] = CharacterHealth($yourHeroCardID);
 	}
-	
+
 	// Add opponent's hero if provided
 	if($opposingHero != "") {
 		$deck["opponentHero"] = $opposingHero;
@@ -873,6 +874,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($playerHero != "") $deck["playerHero"] = $playerHero;
+	if($playerHero != "") $deck["startingLife"] = intval(CharacterHealth($playerHero));
 	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
 	$deck["cardResults"] = [];
 	$deck["character"] = [];
