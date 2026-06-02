@@ -2987,6 +2987,13 @@ function IsHeroAttackTarget()
   return false;
 }
 
+function IsHeroLightning($player)
+{
+  $char = &GetPlayerCharacter($player);
+  if(TalentContains($char[0], "LIGHTNING", $player)) return true;
+  return false;
+}
+
 function IsSpecificAllyAttackTarget($player, $index, $uniqueID)
 {
   global $combatChainState, $CCS_AttackTargetUID;
