@@ -931,6 +931,9 @@ class aphrodias extends Card {
     $CharacterCard = new CharacterCard($index, $this->controller);
     if ($CharacterCard->Tapped()) return true;
     if (GetClassState($this->controller, $CS_HoloAurasEntered) == 0) return true;
+    $hand = &GetHand($this->controller);
+    $resources = &GetResources($this->controller);
+    if (Count($hand) == 0 && $resources[0] == 0) return true;
     return false;
   }
 
