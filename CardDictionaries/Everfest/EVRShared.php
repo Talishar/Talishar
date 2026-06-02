@@ -388,8 +388,8 @@
               if ($auras[$j + 6] == $allTargets[$i]) $index = $j;
             }
             if ($index != -1) {
-              DestroyAura($targetPlayer, $index);
-              ++$numDestroyed;
+              $destroyedID = DestroyAura($targetPlayer, $index);
+              if ($destroyedID != "") ++$numDestroyed;
             }
           }
         }

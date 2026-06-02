@@ -470,7 +470,7 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
   }
   if ($AuraCard->CardID() == "fealty" && SearchCharacterActive($player, "dynastic_diadem") && $player != $currentPlayer) {
     WriteLog("<b style='color:red;'>🐉My " . CardLink("fealty") . " cannot be quenched!🐉</b>");
-    return;
+    return "";
   }
   AuraDestroyAbility($player, $index, $isToken, $location);
   $from = $location == "AURAS" ? $AuraCard->From() : "EQUIPMENT";
