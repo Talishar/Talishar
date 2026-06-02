@@ -14,6 +14,11 @@ $GameStatus_SwapRematch = 4;
 // Multi-level undo configuration - Maximum number of undo backups to maintain
 define("MAX_UNDO_BACKUPS", 10);
 
+// Game format codes (must match FormatCode() in PlayerSettings.php)
+define("FORMAT_SEALED", 6);
+define("FORMAT_DRAFT", 7);
+define("FORMAT_OPEN", 17);
+
 function DeckPieces()
 {
   return 1;
