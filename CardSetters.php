@@ -109,6 +109,11 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
       CharacterBanishEffect($cardID, $player);
     } else DestroyCharacter($player, $charIndex, wasBanished: true);
   }
+  if ($cardID == "nitro_mechanoidc" && $from == "CC") {
+    $Items = new Items($player);
+    $Item = $Items->FindCard($cardID);
+    $Item->Destroy(true);
+  }
   $banisher = $banisher == "-" ? $mainPlayer : $banisher;
   if ($banishedBy != "") CheckContracts($banisher, $cardID);
   $rv = BanishByEffect($cardID, $player, $banishedBy, $rv);
