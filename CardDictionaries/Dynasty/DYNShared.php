@@ -691,6 +691,10 @@ function CheckContracts($banishedBy, $cardBanished)
     if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
   for($i = 0; $i < count($chainLinks); ++$i) {
+    if (!isset($chainLinks[$i])) {
+      WriteLog("Something odd happened while checking contracts, please submit a bug report", highlight:true);
+      continue;
+    }
     if(!is_array($chainLinks[$i])) continue;
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j+1] != $banishedBy) continue;
