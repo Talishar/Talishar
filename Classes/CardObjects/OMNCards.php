@@ -416,7 +416,7 @@ class zyggy_base extends BaseCard {
   function PlayAbility($target) {
     $Banish = new Banish($this->controller);
     $BanishCard = $Banish->FindCardUID($target);
-    if ($BanishCard != "" && $BanishCard->Index() != -1) {
+    if ($BanishCard != "" && $BanishCard->Index() != -1 && $BanishCard->Modifier() != "DOWN") {
       $cardID = $BanishCard->ID();
       $BanishCard->Remove();
       PlayAura($cardID, $this->controller, holoCounters:1);
