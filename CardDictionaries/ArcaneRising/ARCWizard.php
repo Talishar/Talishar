@@ -557,7 +557,6 @@ function ArcaneModifierAmount($source, $player, $index)
         return $effectArr[1];
       case "rampant_growth__life_yellow":
         return $effectArr[1];
-      case "will_of_arcana_blue":
       case "staff_of_verdant_shoots-AMP":
       case "sigil_of_aether_blue":
       case "high_voltage_blue":
@@ -624,7 +623,6 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-", $skipRe
         $modifier += $effectArr[1];
         $remove = true;
         break;
-      case "will_of_arcana_blue":
       case "staff_of_verdant_shoots-AMP":
       case "sigil_of_aether_blue"://sigil of aether
       case "high_voltage_blue":

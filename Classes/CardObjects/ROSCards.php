@@ -3019,17 +3019,30 @@ class gone_in_a_flash_red extends Card {
 // }
 
 
-// class will_of_arcana_blue extends Card {
+class will_of_arcana_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "will_of_arcana_blue";
+    $this->controller = $controller;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "will_of_arcana_blue";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PitchAbility($from) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    WriteLog(CardLink($this->cardID, $this->cardID) . " Amp 1");
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    $Effect = new CurrentEffect($index);
+		return Amp($Effect->NumUses(), $remove, $player, $this->controller, $amount);
+  }
+}
 
 
 ?>

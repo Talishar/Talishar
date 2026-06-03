@@ -3682,10 +3682,6 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     case "blood_of_the_dracai_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
-    case "will_of_arcana_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      WriteLog(CardLink($cardID, $cardID) . " Amp 1");
-      break;
     case "back_alley_breakline_red":
     case "back_alley_breakline_yellow":
     case "back_alley_breakline_blue":
