@@ -1000,7 +1000,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
 function AttackDamageAbilitiesTrigger($damageDone)
 {
   global $combatChain, $defPlayer, $mainPlayer;
-  $attackID = $combatChain[0];
+  $attackID = $combatChain[0] ?? "";
   switch ($attackID) {
     case "light_it_up_yellow":
       if (IsHeroAttackTarget() && $damageDone >= NumEquipment($defPlayer)) {
@@ -2252,7 +2252,7 @@ function DoesAttackHaveGoAgain()
 
   //Grant go Again
   $auras = &GetAuras($mainPlayer);
-  $actionsPlayed = explode(",", GetClassState($mainPlayer, $CS_ActionsPlayed));
+  $actionsPlayed = explode(",", GetClassState($mainPlayer, $CS_ActionsPlayed) ?? "");
   $numActions = count($actionsPlayed);
   if (ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
     if (SearchCharacterForCard($mainPlayer, "luminaris") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
@@ -2895,7 +2895,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
 {
   global $CS_NextNAACardGoAgain, $actionPoints, $mainPlayer, $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumWateryGrave;
   global $CurrentTurnEffects;
-  $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed));
+  $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed) ?? "");
   $cardType = CardType($cardID, additionalCosts:$additionalCosts);
   $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from, $additionalCosts);
   if (IsStaticType($cardType, $from, $cardID)) {
@@ -2984,6 +2984,13 @@ function IsHeroAttackTarget()
   foreach(explode(",", GetAttackTarget()) as $target) {
     if (explode("-", $target)[0] == "THEIRCHAR") return true;
   }
+  return false;
+}
+
+function IsHeroLightning($player)
+{
+  $char = &GetPlayerCharacter($player);
+  if(TalentContains($char[0], "LIGHTNING", $player)) return true;
   return false;
 }
 

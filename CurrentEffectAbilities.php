@@ -776,7 +776,7 @@ function OnAttackEffects($cardID)
     $Effect = new CurrentEffect($i);
     $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
     if ($card != "-") $remove = $card->OnAttackEffect($cardID, $i);
-    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+    if (($currentTurnEffects[$i + 1] ?? "") == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "bramble_spark_red":
         case "bramble_spark_yellow":
@@ -1688,7 +1688,7 @@ function CurrentEffectAttackAbility($attackIndex=-1)
   $attackType = CardType($attackID);
   for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
     $remove = false;
-    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+    if (($currentTurnEffects[$i + 1] ?? "") == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "oath_of_steel_red":
           if ($attackType == "W" && $attackIndex == 0) { //don't trigger when cards are blocking
@@ -2077,7 +2077,7 @@ function CurrentEffectPreventsGoAgain($cardID, $from="-", $additionalCosts="-")
   global $currentTurnEffects, $mainPlayer, $CS_AdditionalCosts;
   for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+    if (($currentTurnEffects[$i + 1] ?? "") == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "spinal_crush_red":
           $additionalCosts = $additionalCosts == "-" ? GetClassState($mainPlayer, $CS_AdditionalCosts) : $additionalCosts;

@@ -28,8 +28,8 @@ function PlayLandmark($cardID, $player, $from="-")
 function DestroyLandmark($index, $skipDestroy=false)
 {
   global $landmarks;
-  $cardID = $landmarks[$index];
-  $ownerID = $landmarks[$index + 1];
+  $cardID = $landmarks[$index] ?? "";
+  $ownerID = $landmarks[$index + 1] ?? "";
   $landmarkPieces = LandmarkPieces();
   for($j = $index + $landmarkPieces - 1; $j >= $index; --$j) {
     unset($landmarks[$j]);

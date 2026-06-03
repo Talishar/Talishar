@@ -260,9 +260,10 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
   $auras = &GetAurasLocation($player, $location);
   $auraConstants = AuraLocationConstants($location);
   $uniqueIDIndex = $auraConstants[1];
-  $cardID = $auras[$index];
-  $uniqueID = $auras[$index + $uniqueIDIndex];
+  $cardID = $auras[$index] ?? "";
+  $uniqueID = $auras[$index + $uniqueIDIndex] ?? "";
   $otherPlayer = $player == 1 ? 2 : 1;
+  if ($cardID == "") return;
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID);
   switch ($cardID) {

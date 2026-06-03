@@ -586,6 +586,7 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   $mainCharacterEffectsCount = count($mainCharacterEffects);
   $characterEffectPieces = CharacterEffectPieces();
   for ($i = 0; $i < $mainCharacterEffectsCount; $i += $characterEffectPieces) {
+    if (!isset($mainCharacterEffects[$i + 1])) continue;
     if ($player != -1 && !SearchCurrentTurnEffects(ExtractCardID($mainCharacterEffects[$i + 1]), $player)) return false;
     if ($mainCharacterEffects[$i] == $index && TypeContains($CombatChain->AttackCard()->ID(), "W")) {
       switch ($mainCharacterEffects[$i + 1]) {
@@ -1038,7 +1039,7 @@ function EquipPayAdditionalCosts($cardIndex)
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
-  if (class_exists($cardID)) {
+  if ($cardID && class_exists($cardID)) {
     $card = new $cardID($currentPlayer);
     return $card->EquipPayAdditionalCosts($cardIndex);
   }
@@ -1478,8 +1479,8 @@ function EquipPayAdditionalCosts($cardIndex)
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     default:
-      --$character[$cardIndex + 5];
-      if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
+      if (is_numeric($character[$cardIndex + 5] ?? null)) --$character[$cardIndex + 5];
+      if (($character[$cardIndex + 5] ?? null) == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
       break;
   }
 }

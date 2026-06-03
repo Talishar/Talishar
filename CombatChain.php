@@ -573,6 +573,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   $defAuras = &GetAuras($defPlayer);
   $attackID = $CombatChain->AttackCard()->ID();
   foreach($chainLinks as $link) {
+    if (!is_array($link)) continue;
     for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
       if ($link[$i+1] == $defPlayer && $link[$i+2] == 1) {
         switch ($link[$i]) {

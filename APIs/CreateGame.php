@@ -128,7 +128,7 @@ WriteGameFile();
 
 $filename = "../Games/" . $gameName . "/gamelog.txt";
 $handler = fopen($filename, "w");
-fclose($handler);
+if ($handler !== false) fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
 $cacheVisibility = ($visibility == "public" ? "1" : ($visibility == "friends-only" ? "2" : "0"));

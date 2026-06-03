@@ -5624,7 +5624,7 @@ class dramatic_pause_red extends Card {
     else {
       $uid = explode("-", $target)[1] ?? -1;
       $targetCard = $CombatChain->FindCardUID($uid);
-      $targetCard->ModifyDefense(3);
+      if ($targetCard != "-") $targetCard->ModifyDefense(3);
     }
   }
 }

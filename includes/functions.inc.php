@@ -606,6 +606,8 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented;
 
+	if (empty($turnStats) || count($turnStats) < TurnStatPieces()) return;
+
 	$totalDamageThreatened = 0;
 	$totalDamageDealt = 0;
 	$totalResourcesUsed = 0;
@@ -739,8 +741,9 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	if(count($characterCards) > 0) {
 		$yourHeroCardID = $characterCards[0];
 		$deck["yourHero"] = $yourHeroCardID;
+		$deck["startingLife"] = CharacterHealth($yourHeroCardID);
 	}
-	
+
 	// Add opponent's hero if provided
 	if($opposingHero != "") {
 		$deck["opponentHero"] = $opposingHero;
@@ -871,6 +874,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
 	if($playerHero != "") $deck["playerHero"] = $playerHero;
+	if($playerHero != "") $deck["startingLife"] = intval(CharacterHealth($playerHero));
 	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
 	$deck["cardResults"] = [];
 	$deck["character"] = [];

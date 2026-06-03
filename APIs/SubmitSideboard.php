@@ -231,7 +231,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   $filename = "../Games/" . $gameName . "/gamelog.txt";
   $filepath = "../Games/" . $gameName . "/";
   $handler = fopen($filename, "w");
-  fclose($handler);
+  if ($handler !== false) fclose($handler);
 
   $currentTime = strval(round(microtime(true) * 1000));
   $currentUpdate = GetCachePiece($gameName, 1);

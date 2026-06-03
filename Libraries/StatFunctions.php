@@ -164,7 +164,7 @@ function LogDamagePreventedStats($player, $damagePrevented)
   $preventedStats = &GetTurnStats($player);
   //WriteLog("DEBUG: Logging damage prevented for player $player at turn " . (GetStatTurnIndex($player)) . " with damage prevented $damagePrevented", highlight:true, highlightColor:"blue");
   if(count($preventedStats) <= $baseIndex) StatsStartTurn();
-  $preventedStats[$baseIndex + $TurnStats_DamagePrevented] += $damagePrevented;
+  $preventedStats[$baseIndex + $TurnStats_DamagePrevented] = intval($preventedStats[$baseIndex + $TurnStats_DamagePrevented] ?? 0) + intval($damagePrevented);
 }
 
 function LogCombatResolutionStats($damageThreatened, $damageBlocked)

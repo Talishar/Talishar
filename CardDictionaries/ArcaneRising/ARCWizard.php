@@ -1112,16 +1112,16 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
         $total += $max;
       }
       else {
-        ++$barrierArray[$abAmount];
+        $barrierArray[$abAmount] = ($barrierArray[$abAmount] ?? 0) + 1;
         $total += $abAmount;
       }
     }
   }
   if($returnBarrierArray) return $barrierArray;
   $choiceArray = [0];
-  if ($barrierArray[1] > 0) $choiceArray[] = 1;
-  if ($barrierArray[2] > 0 || ($barrierArray[1] > 1 && $max > 1 && $total >= 2)) $choiceArray[] = 2;
-  if ($barrierArray[3] > 0 || ($max > 2 && $total >= 3)) $choiceArray[] = 3;
+  if (($barrierArray[1] ?? 0) > 0) $choiceArray[] = 1;
+  if (($barrierArray[2] ?? 0) > 0 || (($barrierArray[1] ?? 0) > 1 && $max > 1 && $total >= 2)) $choiceArray[] = 2;
+  if (($barrierArray[3] ?? 0) > 0 || ($max > 2 && $total >= 3)) $choiceArray[] = 3;
   for ($i = 4; $i <= $max; ++$i) {
     if ($i <= $total) $choiceArray[] = $i;
   }

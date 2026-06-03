@@ -142,6 +142,7 @@ function FloatingPrevention($index, $damage, $amount, &$remove, $preventable=tru
 
 function HoloFlicker($player, $MZIndex) {
 	$Aura = MZIndexToObject($player, $MZIndex);
+	if ($Aura == "") return;
 	$banishInd = $Aura->Banish();
 	if ($banishInd != -1) {
 		$BanishCard = new BanishCard($player, $banishInd);

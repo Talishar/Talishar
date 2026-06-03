@@ -828,7 +828,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PlayAura("seismic_surge", $currentPlayer, number: $resourcesPaid);
       return "";
     case "wax_off_blue":
-      $cardsPlayed = explode(",", GetClassState($currentPlayer, $CS_NamesOfCardsPlayed));
+      $cardsPlayed = explode(",", GetClassState($currentPlayer, $CS_NamesOfCardsPlayed) ?? "");
       $cardsPlayedCount = count($cardsPlayed);
       for ($i = 0; $i < $cardsPlayedCount; ++$i) {
         if (CardName($cardsPlayed[$i]) == "Wax On") {

@@ -2595,6 +2595,7 @@ class fasting_carcass extends BaseCard {
     global $Stack;
     $Effect = new CurrentEffect($effectIndex);
     $TopLayer = $Stack->TopLayer($cardID);
+    if ($TopLayer == "-") return;
     if ($TopLayer->PlayerID() != $this->controller) return;
     if (IsActivated($cardID, $from)) return;
     if (TypeContains($TopLayer->ID(), "A") && ColorContains($TopLayer->ID(), $color, $this->controller))

@@ -541,6 +541,7 @@ function ResetCombatChainState()
   
   $aGoodCleanFight = false;
   for($i = 0; $i < count($chainLinks); ++$i) {
+    if (!is_array($chainLinks[$i])) continue;
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j + 2] != "1") continue;
       CombatChainCloseAbilities($chainLinks[$i][$j + 1], $chainLinks[$i][$j], $i);
@@ -549,6 +550,7 @@ function ResetCombatChainState()
   }
 
   for($i = 0; $i < count($chainLinks); ++$i) {
+    if (!is_array($chainLinks[$i])) continue;
     for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j + 2] != "1") continue;
       $linkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j], true, true) : $chainLinks[$i][$j];

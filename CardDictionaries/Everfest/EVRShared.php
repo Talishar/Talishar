@@ -859,7 +859,7 @@
 function HasPlayerEchoed($player) {
   global $CS_NamesOfCardsPlayed;
   if(GetClassState($player, $CS_NamesOfCardsPlayed) == "-") return false;
-  $cardsPlayed = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed));
+  $cardsPlayed = explode(",", GetClassState($player, $CS_NamesOfCardsPlayed) ?? "");
   $cardCount = count($cardsPlayed);
   for($i=0; $i<$cardCount; ++$i) {
     for($j=0; $j < $cardCount; ++$j) { 

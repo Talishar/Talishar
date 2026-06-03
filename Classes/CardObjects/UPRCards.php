@@ -1374,7 +1374,7 @@ class ice_eternal_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_LastDynCost;
     $otherPlayer = ($this->controller == 1 ? 2 : 1);
-    $numFrostBite = GetClassState($this->controller, $CS_LastDynCost)/2;
+    $numFrostBite = intval(GetClassState($this->controller, $CS_LastDynCost))/2;
     PlayAura("frostbite", $otherPlayer, $numFrostBite, effectController: $this->controller);
     Await($this->controller, $this->cardID, target:$target, additionalCosts:$additionalCosts, final:true, subsequent:0);
     return "";
