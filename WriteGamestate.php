@@ -84,7 +84,10 @@ $gamestateLines = [
 // Add chain links
 $chainLinksCount = count($chainLinks);
 for ($i = 0; $i < $chainLinksCount; ++$i) {
-  $gamestateLines[] = implode(" ", $chainLinks[$i]);
+  if (is_array($chainLinks[$i]))
+    $gamestateLines[] = implode(" ", $chainLinks[$i]);
+  else
+    $gamestateLines[] = "";
 }
 
 $gamestateLines = array_merge($gamestateLines, [
