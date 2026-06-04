@@ -1586,7 +1586,8 @@ function FinalizeChainLink($chainClosed = false)
       for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
         $Effect = $CurrentTurnEffects->Effect($i, true);
         if ($Effect->EffectID() == "arc_lightning_yellow") {
-          AddLayer("TRIGGER", $mainPlayer, "arc_lightning_yellow", uniqueID:$Effect->AppliestoUniqueID());
+          SetArcaneTarget($mainPlayer, $Effect->EffectID(), "any");
+          Await($mainPlayer, "AddTrigger", lastResultName:"target", cardID:$Effect->EffectID(), uniqueID:$Effect->AppliestoUniqueID());
         }
       }
     }
