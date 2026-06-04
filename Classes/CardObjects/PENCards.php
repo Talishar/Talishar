@@ -1443,7 +1443,7 @@ class runebleed_robe extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     $Auras = new Auras($this->controller);
-    return $Auras->FindCardID("runechant") == "";
+    return $Auras->FindCardID("runechant")->Index() == -1;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
