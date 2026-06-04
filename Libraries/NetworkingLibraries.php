@@ -1389,6 +1389,7 @@ function ChainLinkBeginResolutionEffects()
 function ResolveChainLink()
 {
   global $combatChain, $combatChainState, $mainPlayer, $defPlayer, $CCS_CombatDamageReplaced, $CCS_LinkTotalPower;
+  global $CCS_DamageDealt;
   BuildMainPlayerGameState();
 
   $totalPower = 0;
@@ -1425,6 +1426,7 @@ function ResolveChainLink()
           $totalPower = 0;
         if ($index < count($allies)) {
           $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
+          $combatChainState[$CCS_DamageDealt] += $totalPower;
           if ($totalPower > 0)
             AllyDamageTakenAbilities($defPlayer, $index);
           DamageDealtAbilities("ALLY", $totalPower, "COMBAT", $combatChain[0]);
@@ -1469,7 +1471,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   }
   if ($wasHit) {
     LogPlayCardStats($mainPlayer, $cardID, "CC", "HIT");
-    $combatChainState[$CCS_DamageDealt] = $damageDone;
+    $combatChainState[$CCS_DamageDealt] += $damageDone;
     IncrementClassState($mainPlayer, $CS_HitCounter);
     // Handle weapon hit effects
     if (IsWeaponAttack()) {
