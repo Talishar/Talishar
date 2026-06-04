@@ -429,17 +429,17 @@
 // }
 
 
-class calming_breeze_red extends Card {
+// class calming_breeze_red extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "calming_breeze_red";
-    $this->controller = $controller;
-  }
+//   function __construct($controller) {
+//     $this->cardID = "calming_breeze_red";
+//     $this->controller = $controller;
+//     }
 
-  function DisplayRemainingPrevention() {
-    return true;
-  }
-}
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
+// }
 
 
 // class chain_reaction_yellow extends Card {
@@ -2675,17 +2675,17 @@ class jagged_edge_red extends Card {
 // }
 
 
-class shelter_from_the_storm_red extends Card {
+// class shelter_from_the_storm_red extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "shelter_from_the_storm_red";
-    $this->controller = $controller;
-  }
+//   function __construct($controller) {
+//     $this->cardID = "shelter_from_the_storm_red";
+//     $this->controller = $controller;
+//     }
 
-  function DisplayRemainingPrevention() {
-    return true;
-  }
-}
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
+// }
 
 
 // class silver_talons_red extends Card {

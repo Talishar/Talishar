@@ -1274,7 +1274,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $counters = $isFriendly ? $friendlyCounts[$cardID] ?? 0 : $opponentCounts[$cardID] ?? 0;
 
       $card = GetClass($cardID, 0);
-      if ($card != "-" && $card->DisplayRemainingPrevention()) {
+      if(
+        $cardID == "shelter_from_the_storm_red" || 
+        $cardID == "calming_breeze_red" || 
+        ($card != "-" && $card->DisplayRemainingPrevention())) {
         $counters = $currentTurnEffects[$i + 3];
       }
       
@@ -1524,7 +1527,7 @@ if (!function_exists('GetCardEffectLabel')) {
 }
 
 function skipEffectUIStacking($cardID) {
-  if (HasFancyCounters($cardID)) return false;
+  if (HasFancyCounters($cardID) || $cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red") return false;
   $card = GetClass($cardID, 0);
   if ($card != "-" && $card->DisplayRemainingPrevention()) return false;
   return true;
