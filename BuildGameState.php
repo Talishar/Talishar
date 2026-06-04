@@ -1527,7 +1527,10 @@ if (!function_exists('GetCardEffectLabel')) {
 }
 
 function skipEffectUIStacking($cardID) {
-  return !HasFancyCounters($cardID) && $cardID != "shelter_from_the_storm_red" && $cardID != "calming_breeze_red";
+  if (HasFancyCounters($cardID) || $cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red") return false;
+  $card = GetClass($cardID, 0);
+  if ($card != "-" && $card->DisplayRemainingPrevention()) return false;
+  return true;
 }
 
 
