@@ -45,7 +45,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $combatChainState, $CCS_AttackTargetUID, $CCS_WeaponIndex;
   global $CombatChain, $chainLinks, $landmarks, $currentTurnEffects;
   global $theirHand, $myPermanents, $theirPermanents, $myPitch, $theirPitch;
-  global $theirAllies, $myAllies, $attackQueue;
+  global $theirAllies, $myAllies, $attackQueue, $Stack;
 
   $playerInputPopup = new stdClass();
   $playerInputButtons = [];
@@ -776,6 +776,14 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $holoCounters = $AuraCard->HoloCounters() > 0 ? true : null;
             //Show "stolen" modifier
             if ($AuraCard->GetModalities() == "Temporary") $label = "stolen";
+            //Show if it's been targeted
+            for ($j = 0; $j < $Stack->NumLayers(); ++$j) {
+              $Layer = $Stack->Card($j, true);
+              if (str_contains($Layer->Target(), $AuraCard->UniqueID())) {
+                $label = "Targeted";
+                continue;
+              }
+            }
           }
           //Show Steam Counters on items
           if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {

@@ -395,13 +395,13 @@ class zyggy_base extends BaseCard {
     $CharacterCard->Tap();
     $CharacterCard->AddUse(1); //unlimited uses
     $CharacterCard->SetUsed(2);
-    $Auras = new Auras($this->controller);
-    $Flow = $Auras->FindCardID("lightning_flow");
-    $Flow->Destroy();
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS:isSameName=lightning_flow", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "MZInd", context:"Destroy a " . CardLink("lightning_flow") . " you control", subsequent:0);
     $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to banish";
     $indices = FindHoloAuras($this->controller, excludeFirstFlow:false);
-    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", subsequent:0, indices:$indices, context:$context);
-    Await($this->controller, $this->cardID, final:true);
+    Await($this->controller, "ChooseMultizone", returnName:"MZIndex", indices:$indices, context:$context);
+    Await($this->controller, $this->cardID);
+    Await($this->controller, "MZDestroy", final:true); // destroys the lightning flow
   }
 
   function SpecificLogic() {
