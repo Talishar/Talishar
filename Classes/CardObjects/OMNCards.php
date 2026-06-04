@@ -401,7 +401,7 @@ class zyggy_base extends BaseCard {
     $context = "Choose a {{element|Lightning|" . GetElementColorCode("LIGHTNING") . "}} aura permanent to banish";
     Await($this->controller, "FindHoloAuras", "indices");
     Await($this->controller, "ChooseMultizone", returnName:"MZIndex", context:$context);
-    Await($this->controller, $this->cardID);
+    Await($this->controller, $this->cardID, final:true);
     
   }
 
