@@ -1156,13 +1156,6 @@ function HasCard($cardID)
   return -1;
 }
 
-function StorePendingNAA($cardID, $player)
-{
-  global $CS_PendingNAACard;
-  if (HoldPrioritySetting($player) == 1) return;
-  SetClassState($player, $CS_PendingNAACard, $cardID);
-}
-
 function PassInput($autopass = true, $doublePass = false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
@@ -2062,7 +2055,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         switch ($from) {
           case "HAND":
             AddPlayerHand($cardID, $currentPlayer, "HAND", index: ($index >= 0 ? $index : -1));
-            StorePendingNAA($cardID, $currentPlayer);
             break;
           case "ARS":
             AddArsenal($cardID, $currentPlayer, "ARS", $facing);
@@ -2073,10 +2065,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         return "";
       }
       elseif (GetResolvedAbilityType($cardID, $from) == "A" && !$blockShortcut) {
-        if ($from == "HAND") {
-          AddPlayerHand($cardID, $currentPlayer, "HAND", index: ($index >= 0 ? $index : -1));
-          StorePendingNAA($cardID, $currentPlayer);
-        }
+        if ($from == "HAND") AddPlayerHand($cardID, $currentPlayer, "HAND", index: ($index >= 0 ? $index : -1)); //card is still getting removed from hand, just put it back
         if ($from == "PLAY") {
           // reset the status
           if (SubtypeContains($cardID, "Ally")) {

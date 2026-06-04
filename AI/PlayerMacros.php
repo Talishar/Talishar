@@ -3,7 +3,7 @@
 function ProcessMacros()
 {
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
-  global $combatChainState, $CCS_RequiredEquipmentBlock, $EffectContext, $CS_PendingNAACard;
+  global $combatChainState, $CCS_RequiredEquipmentBlock, $EffectContext;
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for ($i = 0; $i < $numPass; ++$i) {
@@ -112,34 +112,10 @@ function ProcessMacros()
         $somethingChanged = true; 
         ContinueDecisionQueue("0"); 
       }
-      else if (!IsGameOver() && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) {
-        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0);
-        $somethingChanged = true;
-        ContinueDecisionQueue("0");
-      }
-
-      if (!IsGameOver()
-          && $turn[0] == "M"
-          && $currentPlayer == $mainPlayer
-          && $actionPoints > 0
-          && SearchLayersForPhase("RESOLUTIONSTEP") == -1) {
-        $pendingCard = GetClassState($mainPlayer, $CS_PendingNAACard);
-        if ($pendingCard !== "-" && $pendingCard !== "" && $pendingCard !== null) {
-          SetClassState($mainPlayer, $CS_PendingNAACard, "-");
-
-          $hand = &GetHand($mainPlayer);
-          $found = -1;
-          $handCount = count($hand);
-          for ($j = 0; $j < $handCount; ++$j) {
-            if ($hand[$j] == $pendingCard) { $found = $j; break; }
-          }
-
-          if ($found >= 0 && IsPlayable($pendingCard, $turn[0], "HAND", $found)) {
-            array_splice($hand, $found, 1);
-            PlayCard($pendingCard, "HAND", zone: "MYHAND", index: $found);
-            $somethingChanged = true;
-          }
-        }
+      else if (!IsGameOver() && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
+        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
+        $somethingChanged = true; 
+        ContinueDecisionQueue("0"); 
       }
     }
   }
