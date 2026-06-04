@@ -334,6 +334,7 @@ function logCompletedGameStats($conceded = false)
 
 	// Pre-compute shared data to avoid redundant work
 	$format = GetCachePiece(intval($gameName), 13);
+	if ($format == 7 || $format == 6) return; // Don't send stats for draft (7) or sealed (6) formats
 	$isPublic = (GetCachePiece(intval($gameName), 9) === "1");
 	$hashedP1Deck = "-";
 	$hashedP2Deck = "-";
