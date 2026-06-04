@@ -451,6 +451,15 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $gamestateBackup = file($backupFile);
   $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
   $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
+  // Clear pending NAA from both players on undo
+  // p1ClassState = line 11, p2ClassState = line 29, CS_PendingNAACard = index 122.
+  foreach ([11, 29] as $csLine) {
+    if (isset($gamestateBackup[$csLine])) {
+      $csParts = explode(" ", trim($gamestateBackup[$csLine]));
+      if (isset($csParts[122])) $csParts[122] = "-";
+      $gamestateBackup[$csLine] = implode(" ", $csParts) . "\r\n";
+    }
+  }
   file_put_contents($backupFile, $gamestateBackup);
   // Restore the target backup as current gamestate
   copy($backupFile, $filepath . "gamestate.txt");
