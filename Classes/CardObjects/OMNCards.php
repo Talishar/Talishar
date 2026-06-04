@@ -6706,6 +6706,7 @@ class quick_succession extends BaseCard {
     $attackID = $CombatChain->AttackCard()->ID();
     switch ($parameter) {
       case "GOAGAIN":
+        if (!TypeContains($attackID, "AA")) return false;
         return ClassContains($attackID, "RUNEBLADE", $this->controller) || TalentContains($attackID, "LIGHTNING", $this->controller);
       case "ACTIVE":
         return true;
