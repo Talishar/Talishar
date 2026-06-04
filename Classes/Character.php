@@ -104,7 +104,7 @@ class CharacterCard {
       $this->pieces[$this->index + 3] += $num;
   }
 
-  function NumDefenseCounters() {
+  function NumDefenseCounters() { //also tracks damage dealt to perched allies
     return $this->pieces[$this->index+4] ?? 0;
   }
 
