@@ -1426,7 +1426,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   if (CanPassPhase($turn[0]) && $currentPlayer == $playerID || $isReplay && $playerID == 3) {
     if ($turn[0] == "M" && SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $actionPoints > 0 && !$isReplay) {
-      $response->preventPassPrompt = "Are you sure you want to close the combat chain?";
+      global $p1Settings, $p2Settings;
+      $pSettings = ($playerID == 1 ? $p1Settings : $p2Settings);
+      if (intval($pSettings[0] ?? 0) === 1) {
+        $response->preventPassPrompt = "Are you sure you want to close the combat chain?";
+      }
     }
   }
 
