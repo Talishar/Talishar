@@ -67,6 +67,9 @@ function FindHoloAuras($player, $subtype="LIGHTNING", $holoState=0, $excludeFirs
 	return implode(",", $ret);
 }
 
+function FindHoloAurasAwait($player) {
+	return FindHoloAuras($player, excludeFirstFlow:false);
+}
 function ProcessFragmentOnBlock($index){
 	global $mainPlayer, $Stack;
 	if(IsFragmentActive() && DoesBlockTriggerFragment($index))
