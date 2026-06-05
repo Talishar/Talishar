@@ -56,6 +56,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "BUTTONINPUT":
     case "BUTTONINPUTNOPASS":
     case "CHOOSEARCANE":
+    case "CHOOSETRIGGERS":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $options = explode(",", $turn[2]);
