@@ -588,7 +588,10 @@ function DamageAlly($targetPlayer, $targetInd, $damage, $type) {
   }
   $damage = AllyDamagePrevention($targetPlayer, $targetInd, $damage, $type);
   $allies[$targetInd + 2] -= $damage;
-  if ($damage > 0) AllyDamageTakenAbilities($targetPlayer, $targetInd);
+  if ($damage > 0) {
+    LogDamagePreventedStats($targetPlayer, $damage);
+    AllyDamageTakenAbilities($targetPlayer, $targetInd);
+  }
   if ($allies[$targetInd + 2] <= 0) DestroyAlly($targetPlayer, $targetInd, uniqueID: $allies[$targetInd + 5]);
   return $damage;
 }
