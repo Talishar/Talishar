@@ -432,6 +432,7 @@ function ContinueDecisionQueue($lastResult = "")
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer, $combatChainState;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
+  global $CCS_CachedPreBlockValue;
 
   if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
     $p1Health = GetHealth(1);
@@ -545,6 +546,13 @@ function ContinueDecisionQueue($lastResult = "")
           $turn[0] = "B";
           $currentPlayer = $defPlayer;
           $makeBlockBackup = 1;
+
+          $totalPower = 0;
+          $totalDefense = 0;
+          $chainPowerModifiers = [];
+          EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
+          $combatChainState[$CCS_CachedPreBlockValue] = $totalPower;
+          WriteLog("HJERE: $totalPower");
         } else if ($cardID == "DEFENDSTEP") {
           $turn[0] = "A";
           $currentPlayer = $mainPlayer;

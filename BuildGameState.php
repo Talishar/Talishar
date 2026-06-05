@@ -8,7 +8,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $turn, $currentPlayer, $mainPlayer, $defPlayer, $firstPlayer, $currentTurn, $actionPoints;
   global $currentTurnEffects, $nextTurnEffects, $dqVars, $lastPlayed, $events;
   global $p1Key, $p2Key, $myHealth, $theirHealth, $winner;
-  global $CombatChain, $CCS_AttackTargetUID, $CCS_WeaponIndex, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
+  global $CombatChain, $CCS_AttackTargetUID, $CCS_WeaponIndex, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock, $CCS_CachedPreBlockValue;
   global $AIHasInfiniteHP, $EffectContext;
   global $p1IsPatron, $p2IsPatron, $p1MetafyTiers, $p2MetafyTiers, $p1IsAI, $p2IsAI;
   global $roguelikeGameID, $gameGUID, $p1uid, $p2uid;
@@ -329,7 +329,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
   }
   $blockVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
-  $activeChainLink->totalPower = $totalPower;
+  $powVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? $combatChainState[$CCS_CachedPreBlockValue] : $totalPower;
+  $activeChainLink->totalPower = $powVal;
 
   $activeChainLink->totalDefense = $blockVal;
   $activeChainLink->reactions = $combatChainReactions;
