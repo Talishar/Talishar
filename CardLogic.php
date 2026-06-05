@@ -552,7 +552,6 @@ function ContinueDecisionQueue($lastResult = "")
           $chainPowerModifiers = [];
           EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
           $combatChainState[$CCS_CachedPreBlockValue] = $totalPower;
-          WriteLog("HJERE: $totalPower");
         } else if ($cardID == "DEFENDSTEP") {
           $turn[0] = "A";
           $currentPlayer = $mainPlayer;
