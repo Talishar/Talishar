@@ -368,7 +368,7 @@
     $lostWager = $wonWager == 1 ? 2 : 1;
     $hand = GetHand($mainPlayer);
     if($lostWager == $mainPlayer && SearchCurrentTurnEffects("cheating_scoundrel_red-WAGER", $mainPlayer, true) && count($hand) > 0) {
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You're about to lose a wager! Discard a card to win it instead?");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You're about to lose a wager! Do you want to discard a card to win it instead?");
       AddDecisionQueue("YESNO", $mainPlayer, "-");
       AddDecisionQueue("NOPASS", $mainPlayer, "-",1);
       PummelHit($mainPlayer, true);
