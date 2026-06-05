@@ -2171,6 +2171,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         LogPlayCardStats($player, $effectID, "CC", "HIT");
       }
       if (EffectHitEffect($cardID, $combatChain[2], $uniqueID, effectSource:$combatChain[0], target:$target)) {
+        $index = FindCurrentTurnEffectIndex($player, $cardID); //recheck index, it could have changed
         if ($index != -1) RemoveCurrentTurnEffect($index);
       }
     }
