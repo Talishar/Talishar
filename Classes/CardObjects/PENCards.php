@@ -7289,8 +7289,6 @@ class cheating_scoundrel_red extends Card {
 
   function WonWager($wonWager, $amount) {
     PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$this->controller);
-    $index = FindCurrentTurnEffectIndex($this->controller, $this->cardID);
-    RemoveCurrentTurnEffect($index);
   }
 
   function IsWagerEffect($index) {
