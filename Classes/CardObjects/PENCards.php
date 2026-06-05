@@ -8194,7 +8194,7 @@ class high_current_currency_blue extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     AddDecisionQueue("FINDINDICES", $this->controller, "OPPSENERGYPERMANENTS");
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
     AddDecisionQueue("ELSE", $this->controller, $this->cardID);
