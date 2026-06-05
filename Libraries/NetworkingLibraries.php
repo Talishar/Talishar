@@ -237,7 +237,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 17: //BUTTONINPUT
-      if ($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER") {
+      if ($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER" || $turn[0] == "CHOOSETRIGGERS") {
         ContinueDecisionQueue($buttonInput);
       }
       break;
@@ -1210,6 +1210,9 @@ function PassInput($autopass = true, $doublePass = false)
   }
   elseif ($turn[0] == "CHOOSEARCANE" || $turn[0] == "CHOOSENUMBER") {
     ContinueDecisionQueue("0");
+  }
+  elseif ($turn[0] == "CHOOSETRIGGERS") {
+    ContinueDecisionQueue("Mine");
   }
   elseif ($turn[0] == "ORDERTRIGGERS") {
     $layersCount = count($layers);
