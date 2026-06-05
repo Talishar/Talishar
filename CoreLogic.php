@@ -233,6 +233,9 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
 {
   global $combatChain, $turn, $ChainLinks, $CS_ResolvingLayerUniqueID;
   $index = count($combatChain);
+  if ($index == 0 && $turn[0] != "B") {
+    MakeStartChainLinkBackup(); // Copy gamestate.txt while it holds the pre-attack gamestate
+  }
   $combatChain[] = $cardID;
   $combatChain[] = $player;
   $combatChain[] = $from;
@@ -3454,6 +3457,7 @@ function ClearGameFiles($gameName, $isRematch = false)
     @unlink("./Games/" . $gameName . "/gamestateBackup.txt");
     @unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
     @unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+    @unlink("./Games/" . $gameName . "/startChainLinkGamestate.txt");
   }
 }
 

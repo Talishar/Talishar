@@ -614,7 +614,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $char = &GetPlayerCharacter($otherPlayer);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
         RevertGamestate($buttonInput);
-        WriteLog("Player " . $playerID . " reverted back to a prior turn");
+        if ($buttonInput == "startChainLinkGamestate.txt")
+          WriteLog("Player " . $playerID . " reverted to the start of the chain link");
+        else
+          WriteLog("Player " . $playerID . " reverted back to a prior turn");
       }
       else {
         //It's competitive queue, so we must request confirmation
@@ -630,6 +633,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             AddEvent("REQUESTTHISTURNUNDO", $playerID);
           else if ($buttonInput == "lastTurnGamestate.txt")
             AddEvent("REQUESTLASTTURNUNDO", $playerID);
+          else if ($buttonInput == "startChainLinkGamestate.txt")
+            AddEvent("REQUESTCHAINLINKUNDO", $playerID);
         }
       }
       break;
@@ -1014,6 +1019,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (file_exists("./Games/$gameName/gamelog.txt")) copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
       if (file_exists("./Games/$gameName/beginTurnGamestate.txt")) copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
       if (file_exists("./Games/$gameName/lastTurnGamestate.txt")) copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
+      if (file_exists("./Games/$gameName/startChainLinkGamestate.txt")) copy("./Games/$gameName/startChainLinkGamestate.txt", $folderName . "/startChainLinkGamestate.txt");
       WriteLog("🚨Thank you for reporting a player. The chat log has been saved on the server. Please report it to a mod on Discord with the game number for reference ($gameName).", highlight: true);
       break;
     case 100015: //Request to enable chat
@@ -1058,7 +1064,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100020://Decline chat request
       WriteLog("🚫 Player " . $playerID . " declined the invitation to chat");
       break;
-    case "OPT": // should only show up in replays
+    case 100022:// Confirm chain link undo
+      RevertGamestate("startChainLinkGamestate.txt");
+      WriteLog("Player " . $playerID . " reverted to the start of the chain link");
+      break;
+    case "OPT": // Should only show up in replays
       $deck = new Deck($playerID);
       $cardListTop = explode(",", $buttonInput);
       $cardListBottom = explode(",", $cardID);
@@ -1121,7 +1131,7 @@ function IsModeAsync($mode)
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true,
-  100018 => true, 100019 => true, 100020 => true, 100021 => true
+  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true
   ];
   return isset($asyncModes[$mode]);
 }

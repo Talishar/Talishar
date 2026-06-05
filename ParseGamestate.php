@@ -491,6 +491,12 @@ function SaveReplay() {
   return true;
 }
 
+function MakeStartChainLinkBackup()
+{
+  global $filepath;
+  copy($filepath . "gamestate.txt", $filepath . "startChainLinkGamestate.txt");
+}
+
 function MakeStartTurnBackup()
 {
   global $mainPlayer, $currentTurn, $filepath;
