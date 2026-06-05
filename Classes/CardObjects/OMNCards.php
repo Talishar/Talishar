@@ -933,7 +933,7 @@ class aphrodias extends Card {
     $format = GetCachePiece($gameName, 13);
     if ($CharacterCard->Tapped()) return true;
     if (GetClassState($this->controller, $CS_HoloAurasEntered) == 0) return true;
-    if($format != FORMAT_SEALED && $format != FORMAT_DRAFT) {
+    if($format == FORMAT_SEALED || $format == FORMAT_DRAFT) {
       $hand = &GetHand($this->controller);
       $resources = &GetResources($this->controller);
       if (Count($hand) == 0 && $resources[0] == 0) return true;
