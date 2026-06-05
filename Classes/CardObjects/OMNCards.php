@@ -6535,10 +6535,11 @@ class stunning_swipe extends BaseCard {
   }
 
   function ProcessTrigger() {
-    $search = "THEIRCHAR:type=C&THEIRCHAR:type=W";
-    Await($this->controller, "MultiZoneIndices", "indices", search:$search, subsequent:0);
-    Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Tap the defending hero or their weapon");
-    Await($this->controller, "MZTap", final:true);
+    $inds = GetUntapped($this->controller, "THEIRCHAR", cond:"type=C&THEIRCHAR:type=W");
+    if ($inds != "") {
+      Await($this->controller, "ChooseMultiZone", "MZIndex", indices:$inds, context:"Tap the defending hero or their weapon", subsequent:0);
+      Await($this->controller, "MZTap", final:true);
+    }
   }
 }
 

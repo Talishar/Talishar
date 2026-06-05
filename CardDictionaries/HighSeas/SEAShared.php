@@ -1196,7 +1196,8 @@ function GetUntapped($player, $zone, $cond="-")
   for ($i = 0; $i < count($arr); $i += $count) {
     $index = "$zone-$i";
     if ($cond != "-" && !in_array($index, $allowedInds)) continue;
-    if (!CheckTapped($index, $player)) array_push($unwavedInds, $index);
+    $Card = MZIndexToObject($player, $index);
+    if ($Card->Tapped() == 0) array_push($unwavedInds, $index);
   }
   return implode(",", $unwavedInds);
 }
