@@ -2211,6 +2211,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
     }
     switch ($parameter) {
+      case "cintari_saber":
+      case "cintari_saber_r":
+        AddCharacterEffect($player, $combatChainState[$CCS_WeaponIndex], $CombatChain->AttackCard()->ID());
+        WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
+        break;
       case "evo_steel_soul_memory_blue":
         AddCurrentTurnEffect($parameter, $player);
         WriteLog("🧠" . CardLink("$parameter") . " gained +1 intellect");

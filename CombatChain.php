@@ -924,6 +924,16 @@ function OnBlockResolveEffects($cardID = "")
     $card = GetClass($combatChain[0], $mainPlayer);
     if ($card != "-") $card->AttackGetsBlockedEffect($start);
     switch ($combatChain[0]) {
+      case "cintari_saber":
+      case "cintari_saber_r":
+        for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
+          $LinkCard = new ChainCard($i);
+          if (TypeContains($LinkCard->ID(), "AA")) {
+            AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
+            break;
+          }
+        }
+        break;
       case "zephyr_needle":
       case "zephyr_needle_r":
         EvaluateCombatChain($totalPower, $totalBlock);
@@ -1421,21 +1431,6 @@ function OnBlockEffects($index, $from)
     if ($remove) RemoveCurrentTurnEffect($i);
   }
   $currentTurnEffects = array_values($currentTurnEffects);
-  switch ($CombatChain->AttackCard()->ID()) {
-    case "cintari_saber":
-    case "cintari_saber_r":
-      if ($cardType == "AA" && NumAttacksBlocking() == 1) {
-        AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $CombatChain->AttackCard()->ID());
-        WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
-      }
-      break;
-    default:
-      break;
-  }
-  switch ($CombatChain->Card($index)->ID()) {
-    default:
-      break;
-  }
   //bizarre, but technically symbiosis shot gets a counter when an item blocks
   if (SubtypeContains($chainCard->ID(), "Item", $defPlayer)) {
     $char = &GetPlayerCharacter($defPlayer);
