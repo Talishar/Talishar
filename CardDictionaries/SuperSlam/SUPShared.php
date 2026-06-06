@@ -381,3 +381,23 @@ function TargetDefendingAction($player, $cardID, $setTarget=false) {
     WriteLog(CardLink($cardID, $cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
   }
 }
+
+function CuttingIndicesAwait($player) {
+  global $dqVars, $defPlayer;
+  $lastResult = $dqVars["currentIDs"] ?? "";
+  WriteLog("HERE: $lastResult");
+  $currentNames = [];
+  foreach (explode(",", $lastResult) as $cardID) {
+    if ($cardID != "") array_push($currentNames, CardName($cardID));
+  }
+  $auras = GetAuras($defPlayer);
+  $rv = [];
+  //remove any choices that have already been targeted
+  for($i = 0; $i < count($auras); $i += AuraPieces()) {
+    if (TypeContains($auras[$i], "T", $defPlayer) && !in_array(CardName($auras[$i]), $currentNames)) {
+      array_push($rv, "THEIRAURAS-$i");
+    }
+  }
+  $rv = implode(",", $rv);
+  return $rv == "" ? "PASS" : $rv;
+}

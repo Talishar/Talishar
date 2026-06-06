@@ -1329,9 +1329,37 @@ class cutting_retort_red extends Card {
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
       AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
       AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
-      AddDecisionQueue("SPECIFICCARD", $this->controller, "CUTTING", 1);
+      Await($this->controller, $this->cardID, lastResultName:"num", initial:1, final:true);
     }
     return;
+  }
+
+  function SpecificLogic() {
+    global $defPlayer, $dqVars;
+    $num = $dqVars["num"];
+    $initial = $dqVars["initial"];
+    if ($initial == 1) { //outer loop
+      if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) {
+        WriteLog(CardLink("cutting_retort_red", "cutting_retort_red") . " does not work on an opponent under amnesia");
+        return "";
+      }
+      for ($i = 0; $i < $num; ++$i) {
+        Await($this->controller, $this->cardID, "currentIDs", initial:0, prepend:true);
+        Await($this->controller, "ChooseMultiZone", "choice", prepend:true);
+        Await($this->controller, "CuttingIndices", "indices", prepend:true, subsequent:$i > 0);
+      }
+      return "";
+    }
+    else { //inside the loop, check if the destruction was successful
+      $choice = $dqVars["choice"];
+      $Card = MZIndexToObject($this->controller, $choice);
+      $selectedID = $Card->CardID();
+      $selectedIDs = $dqVars["currentIDs"] ?? "";
+      $selectedIDs = $selectedIDs == "" ? $selectedID : "$selectedIDs,$selectedID";
+      $cardID = $Card->Destroy();
+      if ($cardID != "") CombatChainPowerModifier("COMBATCHAINLINK-0", 1);
+      return $selectedIDs;
+    }
   }
 }
 
