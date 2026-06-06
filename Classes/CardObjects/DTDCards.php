@@ -2421,7 +2421,8 @@ class tear_through_the_portal extends BaseCard {
 		global $dqVars;
 		$index = $dqVars["index"] ?? "";
 		$choice = explode("-", CleanTarget($this->controller, $index))[1] ?? "";
-		AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$choice);
+		// setting from:"PLAY" stops it from adding from combat
+		AddCurrentTurnEffect($this->cardID, $this->controller, from:"PLAY", uniqueID:$choice);
 	}
 }
 
@@ -2433,9 +2434,9 @@ class tear_through_the_portal_red extends Card {
 		$this->baseCard = new tear_through_the_portal($this->cardID, $this->controller);
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility(1, "red");
-  }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return $this->baseCard->PlayAbility(1, "red");
+	}
 
 	function SpecificLogic() {
 		return $this->baseCard->SpecificLogic();
