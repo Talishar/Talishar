@@ -1446,13 +1446,15 @@ function ResolveChainLink()
         if ($totalPower < 0)
           $totalPower = 0;
         if ($index < count($allies)) {
+          $allyHealthBefore = max(0, intval($allies[$index + 2]));
           $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
           $combatChainState[$CCS_DamageDealt] += $totalPower;
           if ($totalPower > 0) {
             LogDamagePreventedStats($defPlayer, $totalPower);
             AllyDamageTakenAbilities($defPlayer, $index);
           }
-          if ($allyDamageThreatened > 0) LogDamageStats($defPlayer, $allyDamageThreatened, $totalPower);
+          $allyDamageDealt = min($totalPower, $allyHealthBefore);
+          if ($allyDamageThreatened > 0) LogDamageStats($defPlayer, $allyDamageThreatened, $allyDamageDealt);
           DamageDealtAbilities("ALLY", $totalPower, "COMBAT", $combatChain[0]);
         }
         AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
