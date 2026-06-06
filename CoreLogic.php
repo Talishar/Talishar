@@ -2203,7 +2203,7 @@ function RevealCards($cards, $player = "", $look=false, $fullReveal=true)
     }
     else $card = $cardArray[$i];
     $string .= CardLink($card, $card);
-    AddEvent("REVEAL", $card);
+    AddEvent("REVEAL", $player . ":" . $card);
   }
   $string .= (count($cardArray) == 1 ? " is" : " are");
   $string .= " revealed";
