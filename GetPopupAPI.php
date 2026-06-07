@@ -112,20 +112,7 @@ switch ($popupType) {
     break;
   case "myStatsPopup":
     if($turn[0] == "OVER") SetCachePiece($gameName, 14, 99);//$MGS_GameOver
-    // Get opponent's hero for export display
-    $opponentPlayerID = ($playerID == 1 ? 2 : 1);
-    $opponentDeckFile = "./Games/" . $gameName . "/p" . $opponentPlayerID . "Deck.txt";
-    $opponentHero = "";
-    if(file_exists($opponentDeckFile)) {
-      $opponentDeckContent = file_get_contents($opponentDeckFile);
-      $opponentDeckLines = explode("\r\n", $opponentDeckContent);
-      if(count($opponentDeckLines) > 0) {
-        $opponentHeroLine = explode(" ", trim($opponentDeckLines[0]));
-        if(count($opponentHeroLine) > 0) {
-          $opponentHero = $opponentHeroLine[0];
-        }
-      }
-    }
+    $opponentHero = (isset($theirCharacter) && count($theirCharacter) > 0) ? $theirCharacter[0] : "";
     $myDeckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $myDeckContents = file_exists($myDeckFile) ? file_get_contents($myDeckFile) : "";
     echo(SerializeGameResult($playerID, "", $myDeckContents, $gameName, $opponentHero, "", "", includeFullLog:true));
