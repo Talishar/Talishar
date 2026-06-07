@@ -4734,12 +4734,13 @@ class crackle_from_afar_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
     $targetZone = explode("-", $target)[0];
     if ($targetZone == "ATTACKQUEUE") {
       WriteLog("Targeting the attack queue not supported yet");
     }
     elseif ($targetZone != "PASTCHAINLINK") {
-      AddCurrentTurnEffect($this->cardID, $this->controller);
+      AddCurrentTurnEffect($this->cardID, $mainPlayer);
     }
   }
 
