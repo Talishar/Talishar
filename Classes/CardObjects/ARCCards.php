@@ -451,7 +451,7 @@ class cognition_nodes_blue extends Card {
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain;
 		$Item = new ItemCard($index, $this->controller);
-		return $CombatChain->HasCurrentLink() && $from == "PLAY" && ($Item->NumCounters() == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $Item->Status() != 2);
+		return $CombatChain->HasCurrentLink() && $from == "PLAY" && ($Item->NumCounters() == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $Item->NumUses() <= 0);
 	}
 
 	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
@@ -466,9 +466,10 @@ class cognition_nodes_blue extends Card {
 	function PayAdditionalCosts($from, $index = '-') {
 		$Item = new ItemCard($index, $this->controller);
 		$abilityType = GetResolvedAbilityType($this->cardID);
-		if ($from == "PLAY" && $abilityType == "AR") {
+		if ($from == "PLAY" && $abilityType == "AR")
 			$Item->AddCounters(-1);
-		}
+		elseif ($from == "PLAY")
+			$Item->AddUses(1);
 	}
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
