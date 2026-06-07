@@ -6,7 +6,7 @@ function ROSAbilityType($cardID): string
     "aurora_shooting_star", "aurora", "oscilio_constella_intelligence", "oscilio", "volzar_the_lightning_rod", "sanctuary_of_aria",
     "well_grounded", "lightning_greaves", "twinkle_toes", "ink_lined_cloak", "hood_of_second_thoughts", "bruised_leather",
     "four_finger_gloves", "calming_cloak", "calming_gesture", "aether_bindings_of_the_third_age" => "I",
-    "staff_of_verdant_shoots", "bloodtorn_bodice", "runehold_release", "hold_focus" => "A",
+    "staff_of_verdant_shoots", "runehold_release", "hold_focus" => "A",
     "rotwood_reaper", "star_fall" => "AA",
     "adaptive_dissolver" => "A",
     default => ""
@@ -28,7 +28,7 @@ function ROSAbilityCost($cardID): int
 function ROSAbilityHasGoAgain($cardID): bool
 {
   return match ($cardID) {
-    "staff_of_verdant_shoots", "bloodtorn_bodice", "runehold_release", "hold_focus" => true,
+    "staff_of_verdant_shoots", "runehold_release", "hold_focus" => true,
     default => false,
   };
 }
@@ -231,12 +231,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "electrostatic_discharge_yellow":
     case "electrostatic_discharge_blue":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
-      return "";
-    case "bloodtorn_bodice":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYAURAS");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      AddDecisionQueue("GAINRESOURCES", $currentPlayer, "1", 1);
       return "";
     case "machinations_of_dominion_blue":
     case "succumb_to_temptation_yellow":

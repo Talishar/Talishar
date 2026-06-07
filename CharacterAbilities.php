@@ -1198,7 +1198,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "harvest_season_blue":
     case "lightning_greaves":
     case "twinkle_toes":
-    case "bloodtorn_bodice":
     case "runehold_release":
     case "aether_bindings_of_the_third_age":
     case "ink_lined_cloak":

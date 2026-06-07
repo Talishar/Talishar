@@ -380,17 +380,39 @@ class blast_to_oblivion_blue extends Card {
 }
 
 
-// class bloodtorn_bodice extends Card {
+class bloodtorn_bodice extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "bloodtorn_bodice";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "bloodtorn_bodice";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    GainResources($this->controller, 1);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    Await($this->controller, "MultiZoneIndices", "indices",  search:"MYAURAS", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "MZInd", context:"Sacrifice an aura to " . CardLink($this->cardID));
+    Await($this->controller, "MZDestroy", final:true);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $auras = &GetAuras($this->controller);
+    return Count($auras) <= 0;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+}
 
 
 // class blossoming_decay_red extends Card {

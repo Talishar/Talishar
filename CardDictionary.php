@@ -3026,9 +3026,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
         } 
        }
       return $haveAuraWard <= 0;
-    case "bloodtorn_bodice":
-      $auras = &GetAuras($player);
-      return Count($auras) <= 0;
     case "maul_yellow":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (CardNameContains($CombatChain->AttackCard()->ID(), "Crouching Tiger", $player)) return false;
