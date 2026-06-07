@@ -1697,7 +1697,7 @@ function RollDie($player, $fromDQ = false, $subsequent = false, $reroll = false)
     if ($playerHasGamblersGloves) GamblersGlovesReroll($player, $player); // reroll your own
     if ($otherPlayerHasGamblersGloves) GamblersGlovesReroll($otherPlayer, $player); //reroll ops
     if (!$fromDQ && !$subsequent) AddDecisionQueue("AFTERDIEROLL", $player, "-");
-  } else {
+  } else if (!$reroll) {
     AfterDieRoll($player);
   }
 }
