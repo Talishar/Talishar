@@ -2083,7 +2083,7 @@ function CurrentEffectPreventsGoAgain($cardID, $from="-", $additionalCosts="-")
           $additionalCosts = $additionalCosts == "-" ? GetClassState($mainPlayer, $CS_AdditionalCosts) : $additionalCosts;
           //this call to cardtype needs "Where the card is currently, not where was it played from
           $cardType = CardType($cardID, "LAYER", additionalCosts:$additionalCosts);
-          $resolvedAbilityType = GetResolvedAbilityType($cardID, $from);
+          $resolvedAbilityType = GetResolvedAbilityType($cardID, $from, $mainPlayer);
           if(HasMeld($cardID) && !IsMeldInstantName($additionalCosts)
           || DelimStringContains($cardType, "AA") 
           || DelimStringContains($cardType, "A") 
