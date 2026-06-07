@@ -237,6 +237,7 @@ function GetCardBack($player)
     case 131: return "CBSnow";
     case 132: return "CBPitchDevils2";
     case 133: return "RedLine";
+    case 134: return "CBSkillIssue";
     default: return "CardBack";
   };
 }
@@ -534,378 +535,133 @@ function FormatName($formatCode)
 
 function IsTeamCardAdvantage($userName)
 {
-  switch ($userName) {
-    case "JacobK": case "Pastry Boi": case "Brotworst": case "1nigoMontoya (Cody)": case "Motley":
-    case "jimmyhl1329": case "Stilltzkin": case "krav": case "infamousb": case "FatFabJesus": case "MisterPNP":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["JacobK", "Pastry Boi", "Brotworst", "1nigoMontoya (Cody)", "Motley",
+    "jimmyhl1329", "Stilltzkin", "krav", "infamousb", "FatFabJesus", "MisterPNP"]);
 }
 
 function IsTeamSecondCycle($userName)
 {
-  switch($userName) {
-    case "The4thAWOL": case "Beserk": case "Dudebroski": case "deathstalker182": case "TryHardYeti": case "Fledermausmann":
-    case "Loganninty7": case "flamedog3": case "Swankypants": case "Blazing For Lethal?": case "Jeztus": case "gokkar":
-    case "Kernalxklink": case "Kymo13":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["The4thAWOL", "Beserk", "Dudebroski", "deathstalker182", "TryHardYeti", "Fledermausmann",
+    "Loganninty7", "flamedog3", "Swankypants", "Blazing For Lethal?", "Jeztus", "gokkar",
+    "Kernalxklink", "Kymo13"]);
 }
 
 function IsTeamSonicDoom($userName)
 {
-  switch($userName) {
-    case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "YodasUncle":
-    case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "Ocean":
-    case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ": case "ZorbyX": case "littlsnek":
-    case "AWizardofEarthsea":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["KanoSux", "BestBoy", "CRGrey", "jujubeans", "YodasUncle",
+    "ravenklath", "Blazing For Lethal?", "DimGuy", "JoeyReads", "OompaLoompaTron", "Ocean",
+    "radiotoast", "ThePitchStack", "KanosWaterBottle", "yamsandwic", "ThatOneKano", "YuutoSJ", "ZorbyX", "littlsnek",
+    "AWizardofEarthsea"]);
 }
 
 function IsTeamPummel($userName)
 {
-  switch($userName) {
-    case "MkDk": case "Kutter": case "Smeoz": case "Fabio": case "JustFonta": case "M3X": case "Tommaso":
-    case "PDMPLB":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["MkDk", "Kutter", "Smeoz", "Fabio", "JustFonta", "M3X", "Tommaso", "PDMPLB"]);
 }
 
 function IsTeamEmperorsRome($userName)
 {
-  switch($userName) {
-    case "Daniele90rm": case "Excelsa": case "kano90": case "Maalox10": case "TriangoloRotondo": case "Piervillo": case "Rean":
-    case "Jekpack": case "playboikrame": case "Danyr99": case "ZiFrank": case "Fevic":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["Daniele90rm", "Excelsa", "kano90", "Maalox10", "TriangoloRotondo", "Piervillo", "Rean",
+    "Jekpack", "playboikrame", "Danyr99", "ZiFrank", "Fevic"]);
 }
 
 function IsTeamTalishar($userName)
 {
-  switch($userName) {
-    case "HelpMeJace2":
-    case "RainyDays":
-    case "Ragnell":
-    case "Hochi":
-    case "Cwaugh":
-    case "QZXK20":
-    case "VexingTie":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["HelpMeJace2", "RainyDays", "Ragnell", "Hochi", "Cwaugh", "QZXK20", "VexingTie"]);
 }
 
 function IsTeamTideBreakers($userName)
 {
-  switch($userName) {
-    case "OotTheMonk": case "Yarandor": case "grossmaul2130": case "EggShot": case "Kasadoom": case "Gulto":
-    case "FinnElbe": case "Stardragon": case "DragonSlayer": case "TerranceSkill": case "TaddelDown":
-    case "Ilya": case "PastaPaul":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["OotTheMonk", "Yarandor", "grossmaul2130", "EggShot", "Kasadoom", "Gulto",
+    "FinnElbe", "Stardragon", "DragonSlayer", "TerranceSkill", "TaddelDown",
+    "Ilya", "PastaPaul"]);
 }
 
 function IsTeamSunflowerSamurai($userName)
 {
-  switch($userName) {
-    case "Usagi":
-    case "HidaEishi":
-    case "kaikou":
-    case "Akuma":
-    case "Free":
-    case "yoeresel":
-    case "Kohs":
-    case "Ch3sh1r3":
-    case "NardoPotente":
-    case "dtitan":
-    case "Pokechtulhu":
-    case "CarlosGG":
-    case "N1MP0":
-    case "Clenyu":
-    case "juanmonzonf":
-    case "Raiswind":
-    case "Bossen":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["Usagi", "HidaEishi", "kaikou", "Akuma", "Free", "yoeresel", "Kohs",
+    "Ch3sh1r3", "NardoPotente", "dtitan", "Pokechtulhu", "CarlosGG", "N1MP0",
+    "Clenyu", "juanmonzonf", "Raiswind", "Bossen"]);
 }
 
 function isTeamCupofTCG($userName)
 {
-  switch($userName) {
-    case "Cody1304":
-    case "Glem":
-    case "parallaxdream":
-    case "2birds1stone":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["Cody1304", "Glem", "parallaxdream", "2birds1stone"]);
 }
 
 function isTeamScowlingFleshBag($userName)
 {
-  switch($userName) {
-    case "Scowling":
-    case "PvtVoid":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["Scowling", "PvtVoid"]);
 }
 
 function IsTeamThaiCardsShop($userName)
 {
-  switch($userName) {
-    case "thaicards":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["thaicards"]);
 }
 
 function IsTeamFABChaos($userName)
 {
-  switch($userName) {
-    case "SaXoChaos":
-    case "nakezuma":
-    case "Broken":
-    case "Atsacus":
-    case "rkntl":
-    case "SlyNight":
-    case "Elnor":
-    case "mythen":
-    case "Enegon":
-    case "Obnoxious":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["SaXoChaos", "nakezuma", "Broken", "Atsacus", "rkntl",
+    "SlyNight", "Elnor", "mythen", "Enegon", "Obnoxious"]);
 }
 
 function IsTeamColdFoilControl($userName)
 {
-  switch($userName) {
-    case "Z-Gin":
-    case "Chaco":
-    case "Kentshero":
-    case "Ardent":
-    case "PurpleHaze":
-    case "luxas":
-    case "chefwheaton":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["Z-Gin", "Chaco", "Kentshero", "Ardent", "PurpleHaze", "luxas", "chefwheaton"]);
 }
 
 function IsTeamRighteousGaming($userName)
 {
-  switch($userName) {
-    case "RighteousGaming":
-    case "Perodic":
-    case "zzdog":
-    case "krav":
-    case "Motley":
-    case "amodell":
-    case "TrentMcB":
-    case "pzych":
-    case "deragun":
-    case "Harvey0209":
-    case "f1av0r":
-    case "Vemnyx":
-    case "mclair":
-    case "FomToolery":
-    case "lostinspacefab":
-    case "SQJ":
-    case "magusoftheguild":
-    case "S1lverback55":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["RighteousGaming", "Perodic", "zzdog", "krav", "Motley", "amodell",
+    "TrentMcB", "pzych", "deragun", "Harvey0209", "f1av0r", "Vemnyx",
+    "mclair", "FomToolery", "lostinspacefab", "SQJ", "magusoftheguild", "S1lverback55"]);
 }
 
 function IsTeamMetalFab($userName)
 {
-  switch($userName) {
-      case "deathstalker182":
-      case "Closetnerds":
-      case "Diene9":
-      case "acroriver":
-      case "ShadowGriffin":
-      case "Kentshero":
-      case "thekingg21":
-      case "Lupinefiasco":
-      case "onlyrunverynoob":
-      case "Brishen":
-      case "Sinthrandir":
-      case "killerbrews":
-      case "Z-Gin":
-      case "Obliterage":
-      case "RedBeard":
-      case "KillerBrews":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["deathstalker182", "Closetnerds", "Diene9", "acroriver", "ShadowGriffin",
+    "Kentshero", "thekingg21", "Lupinefiasco", "onlyrunverynoob", "Brishen",
+    "Sinthrandir", "killerbrews", "Z-Gin", "Obliterage", "RedBeard", "KillerBrews"]);
 }
 
 function IsTeamPotatoSquad($userName)
 {
-  switch($userName) {
-    case "Corry":
-    case "Gibbie":
-    case "sycotik":
-    case "ruin":
-    case "Xandorion":
-    case "ObiJohn":
-    case "tader":
-    case "Wittman1":
-    case "enflames91":
-    case "SlimDrew23":
-    case "NoRaven":
-    case "middiekittie":
-    case "archangel224":
-    case "Nick56":
-    case "SCORPIO":
-    case "ArgentGrey":
-    case "SynThePanda93":
-    case "welpcakes":
-    case "RiptideRipper":
-    case "gilfab":
-    case "dautt":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["Corry", "Gibbie", "sycotik", "ruin", "Xandorion", "ObiJohn",
+    "tader", "Wittman1", "enflames91", "SlimDrew23", "NoRaven", "middiekittie",
+    "archangel224", "Nick56", "SCORPIO", "ArgentGrey", "SynThePanda93",
+    "welpcakes", "RiptideRipper", "gilfab", "dautt"]);
 }
 
 function IsTeamFabledBrazil($userName)
 {
-  switch($userName) {
-    case "tetsuo":
-    case "hugodeoz":
-    case "diorge":
-    case "LGB":
-    case "mishel157":
-    case "DanielDertoni":
-    case "caduads":
-    case "DracaiBR":
-    case "gravebeat":
-    case "LiP":
-    case "DShima":
-    case "RodinhoTeclados":
-      return true;
-    default: break;
-  }
-  return false;
+  return in_array($userName, ["tetsuo", "hugodeoz", "diorge", "LGB", "mishel157", "DanielDertoni",
+    "caduads", "DracaiBR", "gravebeat", "LiP", "DShima", "RodinhoTeclados"]);
 }
 
 function IsTeamFatAndFurious($userName)
 {
-  switch ($userName) {
-    case "OopsAllPummels":
-    case "AngelPillow":
-    case "stefchwan":
-    case "JK":
-    case "Astropeleki":
-    case "Debread":
-    case "Tilemachos27":
-    case "Intzah":
-    case "Cubacash":
-    case "karyo":
-    case "Ironclad":
-    case "Jorin":
-    case "anastaso73":
-    case "z4risu":
-      return true;
-    default:
-      break;
-  }
-  return false;
+  return in_array($userName, ["OopsAllPummels", "AngelPillow", "stefchwan", "JK", "Astropeleki",
+    "Debread", "Tilemachos27", "Intzah", "Cubacash", "karyo",
+    "Ironclad", "Jorin", "anastaso73", "z4risu"]);
 }
 
 function IsTeamPitchDevils($userName)
 {
-  switch ($userName) {
-    case "Lestat":
-    case "elnino":
-    case "RTZ":
-    case "Schmax":
-    case "Belphegor":
-    case "FloJo":
-    case "MikeDwyer":
-    case "Dionysos":
-    case "Sosa":
-    case "TaddelDown":
-    case "inama":
-    case "Kanopterix":
-    case "PvtVoid":
-      return true;
-    default:
-      break;
-  }
-  return false;
+  return in_array($userName, ["Lestat", "elnino", "RTZ", "Schmax", "Belphegor", "FloJo",
+    "MikeDwyer", "Dionysos", "Sosa", "TaddelDown", "inama", "Kanopterix", "PvtVoid"]);
 }
 
 function IsTeamSnapDragons($userName)
 {
-  switch ($userName) {
-    case "iamtherealdylanthompson":
-    case "SpoostingBendog":
-    case "EdgeOfAir":
-    case "Matt":
-    case "Diomedesau":
-    case "Nyjin":
-    case "Manavon":
-    case "Trouthammer":
-    case "N3ardeath":
-    case "Snaps":
-    case "TheGlib":
-    case "PvtVoid":
-    case "TheJudester":
-      return true;
-    default:
-      break;
-  }
-  return false;
+  return in_array($userName, ["iamtherealdylanthompson", "SpoostingBendog", "EdgeOfAir", "Matt",
+    "Diomedesau", "Nyjin", "Manavon", "Trouthammer", "N3ardeath",
+    "Snaps", "TheGlib", "PvtVoid", "TheJudester"]);
 }
 
 function IsTeamFabDads($userName)
 {
-  switch ($userName) {
-      case "LostInDaSpace":
-      case "Belazhul":
-      case "zaketanapareis":
-      case "thilakinos":
-      case "Debread":
-      case "mellone":
-      case "makvag":
-      case "Pitsirikos":
-      case "Alith0r0sKykl0pas":
-      case "Jim":
-      case "nikfabfanfatty":
-      case "PvtVoid":
-      return true;
-    default:
-      break;
-  }
-  return false;
+  return in_array($userName, ["LostInDaSpace", "Belazhul", "zaketanapareis", "thilakinos", "Debread",
+    "mellone", "makvag", "Pitsirikos", "Alith0r0sKykl0pas", "Jim", "nikfabfanfatty", "PvtVoid"]);
 }
 
 function IsTeamRedLine($userName)
@@ -913,6 +669,16 @@ function IsTeamRedLine($userName)
   return match($userName) {
     "Aegisworn", "CornOnJacob", "jonam33", "Scribnibble", "Yuriiko" => true,
     "Sharp", "MXBloom", "Lazaeus", "bloodbit", "hurricanewes", "Aljo", "Flempa" => true,
+    default => false
+  };
+}
+
+function IsTeamSkillIssue($userName)
+{
+  return match($userName) {
+    "Vaxildan", "Kk96", "Skoupakas69", "BreakingChaos", "TheCouncillor", "JaxC" => true,
+    "Cubacash", "kungfoukios", "sudogreeko", "katsubina", "NikolasG", "LegenProMax" => true,
+    "sadonEmsi", "DioReformed", "AggroBlazeNo1Fan", "kenobi", "Giannis92", "PvtVoid" => true,
     default => false
   };
 }
