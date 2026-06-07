@@ -535,6 +535,8 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	global $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_ResourcesLeft, $TurnStats_LifeGained;
 	global $TurnStats_LifeLost, $TurnStats_DamagePrevented, $TurnStats_CardsDiscarded, $p1TotalTime, $p2TotalTime;
+	global $p1LifeHistory, $p2LifeHistory;
+	$lifeHistory = $player == 1 ? $p1LifeHistory : $p2LifeHistory;
 
 	$countTurnStats = count($turnStats);
 
@@ -589,6 +591,7 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 		$deck["turnResults"][$turnKey]["damageTaken"] = $damageTaken;
 		$deck["turnResults"][$turnKey]["lifeGained"] = $lifeGained;
 		$deck["turnResults"][$turnKey]["lifeLost"] = $lifeLost;
+		$deck["turnResults"][$turnKey]["lifeAtTurnEnd"] = isset($lifeHistory[$turnNo]) ? intval($lifeHistory[$turnNo]) : null;
 
 		// SerializeGameResult has turnNo, SerializeDetailedGameResult doesn't - only add if not using intval
 		if(!$useIntval) {

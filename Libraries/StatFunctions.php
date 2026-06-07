@@ -196,6 +196,13 @@ function LogEndTurnStats($player)
   $turnStats[$baseIndex + $TurnStats_CardsLeft] = count($hand);
 }
 
+function LogEndLifeStats()
+{
+  global $p1LifeHistory, $p2LifeHistory, $currentTurn;
+  $p1LifeHistory[$currentTurn] = GetHealth(1);
+  $p2LifeHistory[$currentTurn] = GetHealth(2);
+}
+
 function StatsStartTurn()
 {
   $p1Stats = &GetTurnStats(1);

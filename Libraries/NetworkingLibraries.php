@@ -1892,6 +1892,7 @@ function FinalizeTurn()
   $EffectContext = "-";
   ResetStolenCards();
   LogEndTurnStats($mainPlayer);
+  LogEndLifeStats();
   CurrentEffectEndTurnAbilities();
   AuraEndTurnAbilities();
   AllyEndTurnAbilities();
