@@ -848,7 +848,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "wartune_herald_yellow":
     case "wartune_herald_blue":
     case "galaxxi_black":
-    case "nourishing_emptiness_red":
     case "brandish_red":
     case "brandish_yellow":
     case "brandish_blue":
@@ -1042,6 +1041,11 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "blow_for_a_blow_red":
     case "bittering_thorns_blue":
       return AnyHitTrigger($mainPlayer, $cardID, $check);
+    case "nourishing_emptiness_red":
+      if (SearchDiscard($mainPlayer, "AA") == "") {
+        return AnyHitTrigger($mainPlayer, $cardID, $check);
+      }
+      return false;
     case "entangle_red":
     case "entangle_yellow":
     case "entangle_blue":
