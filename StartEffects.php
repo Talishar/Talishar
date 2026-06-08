@@ -22,8 +22,7 @@ if ($p1StartingHealth != "") $p1H = $p1StartingHealth;
 
 // Initialize game log
 $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
-if (!file_exists($fullLog)) $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
-if (file_exists($fullLog)) {
+if ($p1IsPatron == "1" || $p2IsPatron == "1") {
   $handler = fopen($fullLog, "w+");
   fwrite($handler, "Player $firstPlayer is the first player and will begin play\r\n");
   fclose($handler);
