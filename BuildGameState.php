@@ -13,7 +13,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $p1IsPatron, $p2IsPatron, $p1MetafyTiers, $p2MetafyTiers, $p1IsAI, $p2IsAI;
   global $roguelikeGameID, $gameGUID, $p1uid, $p2uid;
   global $p1MetafyCommunities, $p2MetafyCommunities;
-  global $p1TotalTime, $p2TotalTime;
+  global $p1TotalTime, $p2TotalTime, $ChainLinks;
 
   // Variables that will be set locally and need to be accessible to BuildPlayerInputPopup
   global $MyCardBack, $TheirCardBack, $otherPlayer, $isReactFE, $isGameOver, $isCasterMode, $isReplay, $isHideHandFromFriends, $viewerIsFriendOfOpponent;
