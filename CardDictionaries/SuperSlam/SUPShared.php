@@ -385,7 +385,6 @@ function TargetDefendingAction($player, $cardID, $setTarget=false) {
 function CuttingIndicesAwait($player) {
   global $dqVars, $defPlayer;
   $lastResult = $dqVars["currentIDs"] ?? "";
-  WriteLog("HERE: $lastResult");
   $currentNames = [];
   foreach (explode(",", $lastResult) as $cardID) {
     if ($cardID != "") array_push($currentNames, CardName($cardID));
