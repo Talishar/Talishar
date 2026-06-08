@@ -441,7 +441,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD",$cardID, resolvedTarget: $target);
       return "";
     case "gorganian_tome":
-      $count = SearchCount(CombineSearches(SearchDiscardForCard(1, "gorganian_tome"), SearchDiscardForCard(2, "gorganian_tome")));
+      $count = SearchCount(CombineSearches(SearchDiscardForCard(1, "gorganian_tome"), SearchDiscardForCard(2, "gorganian_tome"))) + 1;
       $count = $count == 0 ? 1 : $count;
       Draw($currentPlayer, num: $count);
       return "Drew " . $count . " card" . ($count > 1 ? "s" : "");
