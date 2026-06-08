@@ -3756,9 +3756,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
         AddDecisionQueue("PLAYAURA", $player, "quicken-1", 1); 
         break;
-      case "arc_lightning_yellow":
-        DealArcane(1, 2, "PLAYCARD", "arc_lightning_yellow", resolvedTarget:$target);
-        break;
       case "verdance_thorn_of_the_rose": 
       case "verdance":
         if(GetCharacterGemState($player, $parameter) != 0) {

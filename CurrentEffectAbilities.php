@@ -1917,14 +1917,6 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
             if ($cardID != $turnEffects[0]) $remove = true;
           }
           break;
-        case "arc_lightning_yellow-GOAGAIN":
-          if (IsStaticType(CardType($cardID), $from)) break;
-          if(SearchCurrentTurnEffects("arc_lightning_yellow", $currentPlayer) && !IsMeldInstantName(GetClassState($currentPlayer, $CS_AdditionalCosts)) && (GetClassState($currentPlayer, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
-            // this is a bandaid fix, go again is getting checked twice for meld cards when only the left side is played
-            if (!HasMeld($cardID)) $hasGoAgain = true;
-            if ($cardID != "arc_lightning_yellow") $remove = true;
-          }
-          break;
         case "goldkiss_rum":
           $hasGoAgain = true;
           $remove = true;
@@ -1958,10 +1950,12 @@ function CurrentEffectGrantsGoAgain()
   $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
   foreach ($activeEffects as $effectSetID) {
     $effect = ConvertToCardID($effectSetID);
+    $effectID = ExtractCardID($effect);
+    $param = explode("-", $effect)[1] ?? "-";
     if (IsCombatEffectActive($effect)) {
       $card = GetClass($effect, $mainPlayer);
       if ($card != "-") {
-        if ($card->CurrentEffectGrantsGoAgain("-")) return true;
+        if ($card->CurrentEffectGrantsGoAgain($param)) return true;
       }
       if (DoesCurrentTurnEffectGrantGoAgain($effect)) return true;
     }
@@ -2030,7 +2024,6 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
     case "first_tenet_of_chi_wind_blue":
     case "shadowrealm_horror_red-2":
     case "flight_path":
-    case "arc_lightning_yellow-GOAGAIN":
     case "agility_stance_yellow":
     case "dragonscaler_flight_path":
     case "path_of_vengeance":

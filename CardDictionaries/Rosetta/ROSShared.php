@@ -50,7 +50,6 @@ function ROSCombatEffectActive($cardID, $attackID): bool
   $actionsPlayed = explode(",", GetClassState($mainPlayer, $CS_ActionsPlayed) ?? "");
   $numActions = count($actionsPlayed);
   return match ($cardID) {
-    "arc_lightning_yellow-GOAGAIN" => TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer), //Arc Lightning giving next action go again.
     "strong_yield_red", "strong_yield_yellow", "strong_yield_blue", "burn_up__shock_red" => true,
     "current_funnel_blue" => $actionsPlayed[$numActions-2] == "current_funnel_blue" && $actionsPlayed[$numActions-1] != "current_funnel_blue" && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "AA", $mainPlayer)),
     "eclectic_magnetism_red" => true,
@@ -81,11 +80,6 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "aurora_shooting_star":
     case "aurora":
       PlayAura("embodiment_of_lightning", $currentPlayer);
-      return "";
-    case "arc_lightning_yellow":
-      
-      AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:GetClassState($currentPlayer, $CS_ResolvingLayerUniqueID));
-      AddCurrentTurnEffect($cardID . "-GOAGAIN", $currentPlayer);
       return "";
     case "staff_of_verdant_shoots":
       AddCurrentTurnEffect($cardID . "-AMP", $currentPlayer, from: "ABILITY");

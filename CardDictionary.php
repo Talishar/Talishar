@@ -1053,7 +1053,6 @@ function HasGoAgain($cardID, $from="-"): bool|int
     case "flourish_yellow":
     case "thrive_yellow":
     case "flourish_blue":
-    case "arc_lightning_yellow":
     case "harvest_season_red":
     case "harvest_season_yellow":
     case "harvest_season_blue":

@@ -26,17 +26,65 @@
 // }
 
 
-// class arc_lightning_yellow extends Card {
+class arc_lightning_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "arc_lightning_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "arc_lightning_yellow";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_ResolvingLayerUniqueID;
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:GetClassState($this->controller, $CS_ResolvingLayerUniqueID));
+    AddCurrentTurnEffect($this->cardID . "-GOAGAIN", $this->controller);
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    DealArcane(1, 2, "PLAYCARD", $this->cardID, resolvedTarget:$target);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain, $mainPlayer;
+    $attackID = $CombatChain->AttackCard()->ID();
+    if ($parameter == "GOAGAIN") {
+      if (!TypeContains($attackID, "AA", $mainPlayer)) return false;
+      // need to check if it's attached
+      if (!IsAttackStep() && !DelimStringContains($CombatChain->AttackCard()->StaticBuffs(), SetID($this->cardID) ."-GOAGAIN")) return false;
+      return true;
+    }
+    return false;
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    global $CS_AdditionalCosts;
+    if ($parameter != "GOAGAIN") return false;
+    if (IsStaticType(CardType($cardID), $from)) return false;
+    if(SearchCurrentTurnEffects("arc_lightning_yellow", $this->controller) && !IsMeldInstantName(GetClassState($this->controller, $CS_AdditionalCosts)) && (GetClassState($this->controller, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
+      // this is a bandaid fix, go again is getting checked twice for meld cards when only the left side is played
+      if ($cardID != "arc_lightning_yellow") $remove = true;
+      if (!HasMeld($cardID)) return true;
+    }
+    return false;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $param == "GOAGAIN";
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    global $Stack;
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer($cardID);
+    if ($TopLayer == "-") return;
+    if ($TopLayer->PlayerID() != $this->controller) return;
+    if (IsActivated($cardID, $from)) return;
+    if (TypeContains($TopLayer->ID(), "A"))
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+    elseif (TypeContains($TopLayer->ID(), "AA"))
+      $Effect->ApplyToUniqueID("ATTACK");
+  }
+}
 
 
 // class arcane_cussing_red extends Card {

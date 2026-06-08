@@ -1149,6 +1149,7 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "leech_vitality_red" => true,
     "leech_memory_red" => true,
     "leech_renown_red" => true,
+    "arc_lightning_yellow-GOAGAIN" => true,
     default => false
   };
 }
