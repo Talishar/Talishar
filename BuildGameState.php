@@ -924,9 +924,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $chainLinkSummaryCount = count($chainLinkSummary);
   $chainLinkSummaryPieces = ChainLinkSummaryPieces();
   for ($i = 0; $i < $chainLinksCount; ++$i) {
-    $damage = $chainLinkSummary[$i * $chainLinkSummaryPieces];
-    $hasHit = $damage > 0 || $chainLinkSummary[$i * $chainLinkSummaryPieces + 5] == 1;
-    $isDraconic = DelimStringContains($chainLinkSummary[$i * $chainLinkSummaryPieces + 2], "DRACONIC", $playerID);
+    $Link = $ChainLinks->GetLink($i);
+    $damage = $Link->DamageDealt();
+    $hasHit = $damage > 0 || $Link->HitOnLink() == 1;
+    $isDraconic = DelimStringContains($Link->Talents(), "DRACONIC", $playerID);
     $chainLinkOutput[] = [
       'result' => $hasHit ? "hit" : "no-hit",
       'isDraconic' => $isDraconic

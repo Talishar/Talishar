@@ -1446,8 +1446,8 @@ function CombatChainClosedItemEffects() {
   global $ChainLinks, $defPlayer, $chainLinkSummary, $mainPlayer;
   
   for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
-    $nervesOfSteelActive = $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
     $Link = $ChainLinks->GetLink($i);
+    $nervesOfSteelActive = $Link->TotalAttack() <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
     for ($j = 0; $j < $Link->NumCards(); ++$j) {
       $LinkCard = $Link->GetLinkCard($j, true);
       if ($LinkCard->PlayerID() != $defPlayer) continue;
@@ -1469,11 +1469,12 @@ function CombatChainClosedItemEffects() {
 
 function CombatChainClosedCharacterEffects()
 {
-  global $chainLinks, $defPlayer, $chainLinkSummary, $mainPlayer;
+  global $chainLinks, $defPlayer, $chainLinkSummary, $mainPlayer, $ChainLinks;
   $character = &GetPlayerCharacter($defPlayer);
   $mainChar = &GetPlayerCharacter($mainPlayer);
   for ($i = 0; $i < count($chainLinks); ++$i) {
-    $nervesOfSteelActive = $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
+    $Link = $ChainLinks->GetLink($i);
+    $nervesOfSteelActive = $Link->TotalAttack() <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
     for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
       if ($chainLinks[$i][$j + 1] != $defPlayer) continue;
       $charIndex = FindCharacterIndexUniqueID($defPlayer, $chainLinks[$i][$j + 8]);

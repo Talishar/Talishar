@@ -1336,7 +1336,7 @@ class cutting_retort_red extends Card {
 
   function SpecificLogic() {
     global $defPlayer, $dqVars;
-    $num = $dqVars["num"];
+    $num = $dqVars["num"] ?? 0;
     $initial = $dqVars["initial"];
     if ($initial == 1) { //outer loop
       if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) {

@@ -1133,7 +1133,8 @@ function SearchCurrentTurnEffectsForPartialId($partial)
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (strpos($currentTurnEffects[$i + 2], $partial) !== false) return true;
+    $Effect = new CurrentEffect($i);
+    if (strpos($Effect->AppliestoUniqueID(), $partial) !== false) return true;
   }
   return false;
 }
@@ -1144,7 +1145,8 @@ function SearchUniqueIDForCurrentTurnEffects($index)
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($currentTurnEffects[$i + 2] == $index) return $currentTurnEffects[$i];
+    $Effect = new CurrentEffect($i);
+    if ($Effect->AppliestoUniqueID() == $index) return $currentTurnEffects[$i];
   }
   return -1;
 }
