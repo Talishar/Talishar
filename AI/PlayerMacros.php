@@ -206,6 +206,22 @@ function ProcessSpecificCardMacros()
     ContinueDecisionQueue(explode(",", $turn[2])[0]); 
     return true;
   }
+  if ($turn[0] == "CHOOSEMULTIZONE" && ($EffectContext == "raise_an_army_yellow" || $EffectContext == "golden_anvil_blue"))
+  {
+    $goldChoices = explode(",", $turn[2]);
+    $firstCard = GetMZCard($currentPlayer, $goldChoices[0]);
+    $allSame = true;
+    foreach ($goldChoices as $choice) {
+      if (GetMZCard($currentPlayer, $choice) != $firstCard) {
+        $allSame = false;
+        break;
+      }
+    }
+    if ($allSame) {
+      ContinueDecisionQueue($goldChoices[0]);
+      return true;
+    }
+  }
   if ($turn[0] == "CHOOSEMULTIZONE" && $EffectContext == "blood_runs_deep_red" || $turn[0] == "MAYCHOOSECARD" && ($EffectContext == "cindra_dracai_of_retribution" || $EffectContext == "cindra"))
   { 
     $daggers = explode(",", $turn[2]);

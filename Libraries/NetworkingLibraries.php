@@ -3953,10 +3953,11 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       break;
     case "raise_an_army_yellow":
       $numGold = CountItemByName("Gold", $currentPlayer);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many " . CardLink("gold") . " you want to destroy");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold + 1));
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, CardLink($cardID) . " was played with a cost of {0}", 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "RAISEANARMY", 1);
       break;
     case "graven_call":
@@ -4024,10 +4025,11 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       break;
     case "visit_the_golden_anvil_blue":
       $numGold = CountItem("gold", $currentPlayer);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many Gold to pay");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many " . CardLink("gold") . " you want to destroy");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, GetIndices($numGold + 1));
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
+      AddDecisionQueue("WRITELOG", $currentPlayer, CardLink($cardID) . " was played with a cost of {0}", 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "GOLDENANVIL", 1);
       break;
     case "shadowrealm_horror_red":
