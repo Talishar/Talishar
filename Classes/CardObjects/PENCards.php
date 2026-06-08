@@ -8284,4 +8284,8 @@ class gloves_of_azure_waves extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return HighTideConditionMet($this->controller) >= 2 ? 3 : 0;
+  }
 }
