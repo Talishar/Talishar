@@ -122,8 +122,10 @@ if(IsUserLoggedIn()) {
   mysqli_close($conn);
 }
 
-// Sort playmats alphabetically by name
+// Sort playmats: Plain (Default) first, then alphabetically
 usort($response->playmats, function($a, $b) {
+  if ($a->id === 0 || $a->id === '0') return -1;
+  if ($b->id === 0 || $b->id === '0') return 1;
   return strcmp($a->name, $b->name);
 });
 
@@ -143,7 +145,7 @@ function GetPlaymatName($id)
 {
   switch ($id) {
     case 0:
-      return "Plain";
+      return "Plain (Default)";
     case 1:
       return "Demonastery";
     case 2:

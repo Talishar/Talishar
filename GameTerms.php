@@ -120,6 +120,22 @@ function TypeToPlay($phase)
   }
 }
 
+function WaitingMessage($phase)
+{
+  switch ($phase) {
+    case "YESNO":
+    case "OK":
+      return "Waiting for your opponent to respond";
+    case "BUTTONINPUT":
+    case "BUTTONINPUTNOPASS":
+      return "Waiting for opponent to make a choice";
+    case "CHOOSEFIRSTPLAYER":
+      return "Waiting for opponent to choose who goes first";
+    default:
+      return "Waiting for other player to choose " . TypeToPlay($phase);
+  }
+}
+
 function PlayTerm($phase, $from="", $cardID="")
 {
   if((canBeAddedToChainDuringDR($cardID) && $phase == "D")) return "blocked with";
