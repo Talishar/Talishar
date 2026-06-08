@@ -209,8 +209,8 @@ function TurnBanishFaceDown($player, $index)
 
 function TurnDiscardFaceDown($player, $index)
 {
-  $discard = &GetDiscard($player);
-  $discard[$index + 2] = "DOWN";
+  $DiscardCard = new DiscardCard($index, $player);
+  $DiscardCard->Flip();
 }
 
 function AddBottomDeck($cardID, $player, $from)
