@@ -1391,7 +1391,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $helpText = "";
   // Reminder text box highlight thing
   if ($turnPhase != "OVER") {
-    $helpText .= $currentPlayer != $playerID ? "Waiting for other player to choose " . TypeToPlay($turnPhase) : GetPhaseHelptext();
+    $helpText .= $currentPlayer != $playerID ? WaitingMessage($turnPhase) : GetPhaseHelptext();
     if($currentPlayer == $playerID) { 
       if ($turnPhase == "P" || $turnPhase == "CHOOSEHANDCANCEL" || $turnPhase == "CHOOSEDISCARDCANCEL") {
         $helpText .= $turnPhase == "P" ? " (" . $myResources[0] . " of " . $myResources[1] . ")" : "";
