@@ -312,43 +312,76 @@
 // }
 
 
-// class coalescence_mirage_red extends Card {
+class coalescence_mirage extends BaseCard {
+	function DestroyEffect() {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "coalescence_mirage_red";
-//     $this->controller = $controller;
-//     }
+	function ProcessTrigger() {
+		CoalescentMirageDestroyed();
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class coalescence_mirage_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "coalescence_mirage_red";
+    $this->controller = $controller;
+    $this->baseCard = new coalescence_mirage($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
+  function DestroyEffect() {
+		$this->baseCard->DestroyEffect();
+  }
 
-// class coalescence_mirage_yellow extends Card {
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "coalescence_mirage_yellow";
-//     $this->controller = $controller;
-//     }
+class coalescence_mirage_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "coalescence_mirage_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new coalescence_mirage($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function DestroyEffect() {
+		$this->baseCard->DestroyEffect();
+  }
 
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
 
-// class coalescence_mirage_blue extends Card {
+class coalescence_mirage_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "coalescence_mirage_blue";
+    $this->controller = $controller;
+    $this->baseCard = new coalescence_mirage($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "coalescence_mirage_blue";
-//     $this->controller = $controller;
-//     }
+  function DestroyEffect() {
+		$this->baseCard->DestroyEffect();
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
+
 
 
 // class crown_of_reflection extends Card {

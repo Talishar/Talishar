@@ -776,10 +776,11 @@
   function CoalescentMirageDestroyed()
   {
     global $mainPlayer;
-    AddDecisionQueue("FINDINDICES", $mainPlayer, "COALESCENTMIRAGE");
-    AddDecisionQueue("MAYCHOOSEHAND", $mainPlayer, "<-", 1);
-    AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
-    AddDecisionQueue("PLAYAURA", $mainPlayer, "<-", 1);
+    $context = "Choose a 0 cost aura to put into play";
+    Await($mainPlayer, "MultiZoneIndices", "indices", search:"MYHAND:class=ILLUSIONIST;subtype=Aura;maxCost=0", subsequent:0);
+    Await($mainPlayer, "ChooseMultiZone", "MZIndex", context:$context, may:true);
+    Await($mainPlayer, "MZRemove", "cardID");
+    Await($mainPlayer, "PlayAura", final:true);
   }
 
   function MirragingMetamorphDestroyed($may=false)
