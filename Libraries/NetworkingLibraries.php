@@ -1450,11 +1450,11 @@ function ResolveChainLink()
           $allies[$index + 2] = intval($allies[$index + 2]) - $totalPower;
           $combatChainState[$CCS_DamageDealt] += $totalPower;
           if ($totalPower > 0) {
-            LogDamagePreventedStats($defPlayer, $totalPower);
+            LogDamagePreventedStats($defPlayer, $allyDamageThreatened);
             AllyDamageTakenAbilities($defPlayer, $index);
           }
           $allyDamageDealt = min($totalPower, $allyHealthBefore);
-          if ($allyDamageThreatened > 0) LogDamageStats($defPlayer, $allyDamageThreatened, $allyDamageDealt);
+          if ($allyDamageThreatened > 0) LogDamageStats($defPlayer, $allyDamageDealt, $allyDamageDealt);
           DamageDealtAbilities("ALLY", $totalPower, "COMBAT", $combatChain[0]);
         }
         AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
@@ -3700,7 +3700,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "blood_on_her_hands_yellow":
       $numCopper = CountItemByName("Copper", $currentPlayer);
       if ($numCopper == 0) {
-        WriteLog("🥉 No copper.");
+        WriteLog("🥉 No copper");
         return "";
       }
       if ($numCopper > 6) $numCopper = 6;
