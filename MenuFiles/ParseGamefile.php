@@ -71,6 +71,8 @@
   $p2MetafyCommunities = json_decode(trim(fgets($gameFileHandler) ?: ''), true);
   if (!is_array($p1MetafyCommunities)) $p1MetafyCommunities = [];
   if (!is_array($p2MetafyCommunities)) $p2MetafyCommunities = [];
+  $p1WebhookUrl = trim(fgets($gameFileHandler) ?: '');
+  $p2WebhookUrl = trim(fgets($gameFileHandler) ?: '');
 
   $MGS_Initial = 0;
   $MGS_Player2Joined = 1;

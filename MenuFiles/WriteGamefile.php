@@ -15,6 +15,7 @@
       global $p1SideboardSubmitted, $p2SideboardSubmitted, $p1StartingEquipment, $p2StartingEquipment, $p1IsAI, $p2IsAI, $gameGUID;
       global $p1MetafyTiers, $p2MetafyTiers;
       global $p1MetafyCommunities, $p2MetafyCommunities;
+      global $p1WebhookUrl, $p2WebhookUrl;
       rewind($gameFileHandler);
       fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
       fwrite($gameFileHandler, implode(" ", $p2Data) . "\r\n");
@@ -58,6 +59,8 @@
       fwrite($gameFileHandler, json_encode($p2MetafyTiers ?? []) . "\r\n");
       fwrite($gameFileHandler, json_encode($p1MetafyCommunities ?? []) . "\r\n");
       fwrite($gameFileHandler, json_encode($p2MetafyCommunities ?? []) . "\r\n");
+      fwrite($gameFileHandler, ($p1WebhookUrl ?? "") . "\r\n");
+      fwrite($gameFileHandler, ($p2WebhookUrl ?? "") . "\r\n");
       fclose($gameFileHandler);
     }
   }
