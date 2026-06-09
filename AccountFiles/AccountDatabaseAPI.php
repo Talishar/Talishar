@@ -47,6 +47,7 @@ function PasswordLogin($username, $password, $rememberMe) {
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
 		$_SESSION["isBanned"] = $userData["isBanned"];
 		$_SESSION["metafyID"] = $userData["metafyID"] ?? "";
+		$_SESSION["rust_counters"] = intval($userData["rust_counters"] ?? 0);
 
 		try {
 			PatreonLogin($patreonAccessToken);

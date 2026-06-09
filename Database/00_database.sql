@@ -74,6 +74,7 @@ CREATE TABLE `users` (
   `lastPlayerId` int(11) NOT NULL DEFAULT 0,
   `lastAuthKey` varchar(128) DEFAULT NULL,
   `numSpectates` int(11) NOT NULL DEFAULT 0,
+  `rust_counters` int(11) NOT NULL DEFAULT 0,
   `lastActivity` TIMESTAMP NULL DEFAULT NULL,
   `systemMessage` TEXT DEFAULT NULL,
   `metafyAccessToken` VARCHAR(500) DEFAULT NULL,

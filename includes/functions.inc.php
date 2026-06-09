@@ -125,7 +125,7 @@ function loginFromCookie()
         if (!$conn) {
             return; // Silently fail if database unavailable
         }
-        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey, metafyID FROM users WHERE rememberMeToken=?";
+        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey, metafyID, rust_counters FROM users WHERE rememberMeToken=?";
         $stmt = mysqli_stmt_init($conn);
         
         if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -152,6 +152,7 @@ function loginFromCookie()
                 $_SESSION["lastPlayerId"] = $row[8];
                 $_SESSION["lastAuthKey"] = $row[9];
                 $_SESSION["metafyID"] = $row[10] ?? "";
+                $_SESSION["rust_counters"] = intval($row[11] ?? 0);
                 try {
                     PatreonLogin($patreonAccessToken);
                 } catch (\Throwable $e) {
@@ -168,6 +169,7 @@ function loginFromCookie()
                 unset($_SESSION["lastPlayerId"]);
                 unset($_SESSION["lastAuthKey"]);
                 unset($_SESSION["metafyID"]);
+                unset($_SESSION["rust_counters"]);
             }
             session_write_close();
         }
@@ -208,6 +210,47 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 	$_SESSION["lastPlayerId"] = $playerID;
 	$_SESSION["lastAuthKey"] = $authKey;
 	session_write_close();
+}
+
+function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
+{
+	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_GAME_START);
+	if (!$conn) {
+		return false;
+	}
+
+	$sql = "UPDATE users SET rust_counters = COALESCE(rust_counters, 0) + 1 WHERE usersId=?";
+	$stmt = mysqli_stmt_init($conn);
+	if (!mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_close($conn);
+		return false;
+	}
+
+	$players = [
+		[
+			"userId" => intval($p1id),
+			"isPatron" => ($p1IsPatron === "1"),
+			"isAI" => ($p1IsAI === "1"),
+		],
+		[
+			"userId" => intval($p2id),
+			"isPatron" => ($p2IsPatron === "1"),
+			"isAI" => ($p2IsAI === "1"),
+		],
+	];
+
+	foreach ($players as $player) {
+		if ($player["isAI"] || $player["isPatron"] || $player["userId"] <= 0) {
+			continue;
+		}
+
+		mysqli_stmt_bind_param($stmt, "i", $player["userId"]);
+		mysqli_stmt_execute($stmt);
+	}
+
+	mysqli_stmt_close($stmt);
+	mysqli_close($conn);
+	return true;
 }
 
 function GetDeckBuilderId($uid, $decklink)
