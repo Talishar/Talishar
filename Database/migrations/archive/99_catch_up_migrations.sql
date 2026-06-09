@@ -30,6 +30,11 @@ SET @col = (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA =
 SET @sql = IF(@col = 0, 'ALTER TABLE `users` ADD COLUMN `systemMessage` TEXT DEFAULT NULL', 'SELECT ''systemMessage already exists''');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
+-- Migration: Add rust_counters column
+SET @col = (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'rust_counters');
+SET @sql = IF(@col = 0, 'ALTER TABLE `users` ADD COLUMN `rust_counters` INT(11) NOT NULL DEFAULT 0', 'SELECT ''rust_counters already exists''');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
 -- Migration: Add Metafy OAuth columns (METAFY_DATABASE_SETUP.sql)
 SET @col = (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'metafyAccessToken');
 SET @sql = IF(@col = 0, 'ALTER TABLE `users` ADD COLUMN `metafyAccessToken` VARCHAR(500) DEFAULT NULL', 'SELECT ''metafyAccessToken already exists''');
