@@ -3881,8 +3881,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog("🎲 Nothing Happened");
       }
       elseif($lastResult == $player) {
-        PlayerLoseHealth($dqVars[0], $player, true);
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:maxCost=$dqVars[0]", 1);
+        $val = $dqVars[0] ?? 0;
+        PlayerLoseHealth($val, $player, true);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYDECK:maxCost=$val", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZADDZONE", $player, "MYHAND,DECK", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
@@ -3890,8 +3891,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);  
       }
       else {
-        LoseHealth($dqVars[1], $otherPlayer);
-        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYDECK:maxCost=$dqVars[1]", 1);
+        $val = $dqVars[1] ?? 0;
+        LoseHealth($val, $otherPlayer);
+        AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYDECK:maxCost=$val", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
         AddDecisionQueue("MZADDZONE", $otherPlayer, "MYHAND,DECK", 1);
         AddDecisionQueue("MZREMOVE", $otherPlayer, "-", 1);
