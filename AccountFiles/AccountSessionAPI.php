@@ -30,6 +30,12 @@
     return $_SESSION["metafyID"] ?? "";
   }
 
+  function LoggedInRustCounters()
+  {
+    CheckSession();
+    return intval($_SESSION["rust_counters"] ?? 0);
+  }
+
   function IsLoggedInUserPatron()
   {
     if(isset($_SESSION["useruid"]) && $_SESSION["useruid"] == "OotTheMonk") return true;
@@ -161,7 +167,7 @@
       return;
     }
     
-    $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, isBanned, metafyID FROM users WHERE rememberMeToken=?";
+    $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, isBanned, metafyID, rust_counters FROM users WHERE rememberMeToken=?";
     $stmt = mysqli_stmt_init($conn);
     
     if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -178,6 +184,7 @@
         $_SESSION['patreonEnum'] = $row['patreonEnum'];
         $_SESSION['isBanned'] = $row['isBanned'];
         $_SESSION['metafyID'] = $row['metafyID'] ?? "";
+        $_SESSION['rust_counters'] = intval($row['rust_counters'] ?? 0);
         $_SESSION['last_activity'] = time();
         $_SESSION['last_regeneration'] = time();
       }
@@ -197,7 +204,7 @@
       return;
     }
     
-    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities, metafyID FROM users WHERE metafyRememberToken=?";
+    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities, metafyID, rust_counters FROM users WHERE metafyRememberToken=?";
     $stmt = mysqli_stmt_init($conn);
     
     if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -212,6 +219,7 @@
         $_SESSION['useruid'] = $row['usersUid'];
         $_SESSION['isPatron'] = $row['isPatron'] ?? 0;
         $_SESSION['metafyID'] = $row['metafyID'] ?? "";
+        $_SESSION['rust_counters'] = intval($row['rust_counters'] ?? 0);
         $_SESSION['last_activity'] = time();
         $_SESSION['last_regeneration'] = time();
       }

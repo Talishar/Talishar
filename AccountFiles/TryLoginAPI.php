@@ -28,6 +28,7 @@ if($response->isUserLoggedIn) {
   $response->timestamp = time();
   $metafyID = LoggedInMetafyID();
   $response->metafyID = $metafyID;
+  $response->rustCounters = LoggedInRustCounters();
   $response->metafyHash = ($metafyID != "") ? hash('sha256', $metafyID . $FaBBazaarSalt . $response->timestamp) : "";
 }
 

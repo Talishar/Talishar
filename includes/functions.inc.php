@@ -125,7 +125,7 @@ function loginFromCookie()
         if (!$conn) {
             return; // Silently fail if database unavailable
         }
-        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey, metafyID FROM users WHERE rememberMeToken=?";
+        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey, metafyID, rust_counters FROM users WHERE rememberMeToken=?";
         $stmt = mysqli_stmt_init($conn);
         
         if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -152,6 +152,7 @@ function loginFromCookie()
                 $_SESSION["lastPlayerId"] = $row[8];
                 $_SESSION["lastAuthKey"] = $row[9];
                 $_SESSION["metafyID"] = $row[10] ?? "";
+                $_SESSION["rust_counters"] = intval($row[11] ?? 0);
                 try {
                     PatreonLogin($patreonAccessToken);
                 } catch (\Throwable $e) {
@@ -168,6 +169,7 @@ function loginFromCookie()
                 unset($_SESSION["lastPlayerId"]);
                 unset($_SESSION["lastAuthKey"]);
                 unset($_SESSION["metafyID"]);
+                unset($_SESSION["rust_counters"]);
             }
             session_write_close();
         }
