@@ -52,9 +52,10 @@ const DBL_SAVE_SETTING                 = 46;
 const DBL_LOAD_SAVED_SETTINGS          = 47;
 const DBL_BAN_PLAYER                   = 48;
 const DBL_SETUP_RUST_COUNTERS_COLUMN   = 49;
+const DBL_ADD_RUST_COUNTERS_GAME_START = 50;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 49;
+const DBL_MAX_KEY = 50;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -107,4 +108,5 @@ const DBL_LABELS = [
     47 => 'includes/functions.inc.php::LoadSavedSettings',
     48 => 'includes/functions.inc.php::BanPlayer',
     49 => 'SetupRustCountersColumn.php',
+    50 => 'includes/functions.inc.php::AddRustCountersForGameStart',
 ];

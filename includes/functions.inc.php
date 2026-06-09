@@ -212,6 +212,47 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 	session_write_close();
 }
 
+function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
+{
+	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_GAME_START);
+	if (!$conn) {
+		return false;
+	}
+
+	$sql = "UPDATE users SET rust_counters = COALESCE(rust_counters, 0) + 1 WHERE usersId=?";
+	$stmt = mysqli_stmt_init($conn);
+	if (!mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_close($conn);
+		return false;
+	}
+
+	$players = [
+		[
+			"userId" => intval($p1id),
+			"isPatron" => ($p1IsPatron === "1"),
+			"isAI" => ($p1IsAI === "1"),
+		],
+		[
+			"userId" => intval($p2id),
+			"isPatron" => ($p2IsPatron === "1"),
+			"isAI" => ($p2IsAI === "1"),
+		],
+	];
+
+	foreach ($players as $player) {
+		if ($player["isAI"] || $player["isPatron"] || $player["userId"] <= 0) {
+			continue;
+		}
+
+		mysqli_stmt_bind_param($stmt, "i", $player["userId"]);
+		mysqli_stmt_execute($stmt);
+	}
+
+	mysqli_stmt_close($stmt);
+	mysqli_close($conn);
+	return true;
+}
+
 function GetDeckBuilderId($uid, $decklink)
 {
 	$conn = GetDBConnection(DBL_GET_DECK_BUILDER_ID);
