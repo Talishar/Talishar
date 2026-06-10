@@ -68,9 +68,9 @@ class ChainLink {
   function __construct($linkNum) {
     global $chainLinks, $chainLinkSummary;
     $this->linkNum = $linkNum;
-    $this->link = &$chainLinks[$linkNum];
-		$summaryIndex = $linkNum * ChainLinkSummaryPieces();
-		$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, ChainLinkSummaryPieces());
+    $this->link = &$chainLinks[$linkNum] ?? [];
+	$summaryIndex = $linkNum * ChainLinkSummaryPieces();
+	$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, ChainLinkSummaryPieces());
   }
 
 	function NumCards() {
