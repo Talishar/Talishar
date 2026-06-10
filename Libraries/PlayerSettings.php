@@ -676,7 +676,7 @@ function IsTeamRedLine($userName)
 function IsTeamSkillIssue($userName)
 {
   return match($userName) {
-    "Vaxildan", "Kk96", "Skoupakas69", "BreakingChaos", "TheCouncillor", "JaxC" => true,
+    "Vaxildan", "kk96", "Skoupakas69", "BreakingChaos", "TheCouncillor", "JaxC" => true,
     "Cubacash", "kungfoukios", "sudogreeko", "katsubina", "NikolasG", "LegenProMax" => true,
     "sadonEmsi", "DioReformed", "AggroBlazeNo1Fan", "kenobi", "Giannis92", "AssassinoCapuccino", "PvtVoid" => true,
     default => false
