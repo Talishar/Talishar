@@ -60,7 +60,7 @@ class ChainLinks {
 class ChainLink {
 
   // Properties
-  private $link = [];
+  	private $link = [];
 	private $linkSummary = [];
 	private $linkNum;
 
