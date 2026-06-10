@@ -4,6 +4,15 @@ require_once __DIR__ . '/../Assets/patreon-php-master/src/PatreonLibraries.php';
 
 use SendGrid\Mail\Mail;
 
+if (!function_exists('IsDevEnvironment')) {
+  function IsDevEnvironment() {
+    $domain = getenv("DOMAIN");
+    if ($domain === "localhost") return true;
+    if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') return true;
+    return false;
+  }
+}
+
 // Check for empty input signup
 function emptyInputSignup($username, $email, $pwd, $pwdRepeat)
 {
@@ -214,6 +223,7 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 
 function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
 {
+	if (IsDevEnvironment()) return false;
 	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_GAME_START);
 	if (!$conn) {
 		return false;

@@ -720,7 +720,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
       if ($source == "dread_scythe" && !SearchNextTurnEffects("dread_scythe", $player)) AddNextTurnEffect("dread_scythe", $player);
       if (($characterID == "briar_warden_of_thorns" || $characterID == "briar") && $otherCharacter[1] == "2" && CardType($source) == "AA") {
         $otherCharacter[1] = 1;
-        AddLayer("TRIGGER", $otherPlayer, $characterID, "-", "DAMAGE");
+        if ($type != "COMBAT" || !HitEffectsArePrevented($source))
+          AddLayer("TRIGGER", $otherPlayer, $characterID, "-", "DAMAGE");
       }
       if ($source == "cryptic_crossing_yellow" && SearchCurrentTurnEffects("cryptic_crossing_yellow", $mainPlayer, true)) {
         WriteLog("Player " . $mainPlayer . " drew a card and Player " . $otherPlayer . " must discard a card");
