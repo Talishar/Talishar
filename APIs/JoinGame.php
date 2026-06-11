@@ -586,7 +586,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
    if ($playerID == 1) {
      $p1uid = ($_SESSION["useruid"] ?? "Player 1");
      $p1id = ($_SESSION["userid"] ?? "");
-     $p1IsPatron = (IsLoggedInUserPatron() ? "1" : "");
+     $p1IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
      $p1ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
      // Cache Metafy tiers and communities at join time so BuildGameState doesn't need DB access
      $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
@@ -595,7 +595,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
    else if ($playerID == 2) {
      $p2uid = ($_SESSION["useruid"] ?? "Player 2");
      $p2id = ($_SESSION["userid"] ?? "");
-     $p2IsPatron = (IsLoggedInUserPatron() ? "1" : "");
+     $p2IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
      $p2ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
      // Cache Metafy tiers and communities at join time so BuildGameState doesn't need DB access
      $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);
