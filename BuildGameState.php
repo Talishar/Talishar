@@ -183,10 +183,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           if($altArts == "") continue;
           $altArts = explode(",", $altArts);
           $altArtsCount = count($altArts);
+          $campaignName = $campaign->CampaignName();
           for($i = 0; $i < $altArtsCount; ++$i) {
             $arr = explode("=", $altArts[$i]);
             $altArt = new stdClass();
-            $altArt->name = $campaign->CampaignName() . ($altArtsCount > 1 ? " " . $i + 1 : "");
+            $altArt->name = $campaignName . ($altArtsCount > 1 ? " " . $i + 1 : "");
             $altArt->cardId = $arr[0];
             $altArt->altPath = $arr[1];
             $initialLoad->altArts[] = $altArt;
@@ -204,11 +205,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
             $metafyAltArts = $metafyCommunity->AltArts();
             if (!empty($metafyAltArts)) {
               $metafyAltArtsCount = count($metafyAltArts);
+              $communityName = $metafyCommunity->CommunityName();
               for($i = 0; $i < $metafyAltArtsCount; ++$i) {
                 $arr = explode("=", $metafyAltArts[$i]);
                 if (count($arr) === 2) {
                   $altArt = new stdClass();
-                  $altArt->name = $metafyCommunity->CommunityName() . ($metafyAltArtsCount > 1 ? " " . $i + 1 : "");
+                  $altArt->name = $communityName . ($metafyAltArtsCount > 1 ? " " . $i + 1 : "");
                   $altArt->cardId = trim($arr[0]);
                   $altArt->altPath = trim($arr[1]);
                   $initialLoad->altArts[] = $altArt;
@@ -235,10 +237,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           if($opponentAltArts == "") continue;
           $opponentAltArts = explode(",", $opponentAltArts);
           $opponentAltArtsCount = count($opponentAltArts);
+          $campaignName = $campaign->CampaignName();
           for($i = 0; $i < $opponentAltArtsCount; ++$i) {
             $arr = explode("=", $opponentAltArts[$i]);
             $opponentAltArt = new stdClass();
-            $opponentAltArt->name = $campaign->CampaignName() . ($opponentAltArtsCount > 1 ? " " . $i + 1 : "");
+            $opponentAltArt->name = $campaignName . ($opponentAltArtsCount > 1 ? " " . $i + 1 : "");
             $opponentAltArt->cardId = $arr[0];
             $opponentAltArt->altPath = $arr[1];
             $initialLoad->opponentAltArts[] = $opponentAltArt;
@@ -256,11 +259,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
             $opponentMetafyAltArts = $metafyCommunity->AltArts();
             if (!empty($opponentMetafyAltArts)) {
               $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
+              $communityName = $metafyCommunity->CommunityName();
               for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
                 $arr = explode("=", $opponentMetafyAltArts[$i]);
                 if (count($arr) === 2) {
                   $opponentAltArt = new stdClass();
-                  $opponentAltArt->name = $metafyCommunity->CommunityName() . ($opponentMetafyAltArtsCount > 1 ? " " . $i + 1 : "");
+                  $opponentAltArt->name = $communityName . ($opponentMetafyAltArtsCount > 1 ? " " . $i + 1 : "");
                   $opponentAltArt->cardId = trim($arr[0]);
                   $opponentAltArt->altPath = trim($arr[1]);
                   $initialLoad->opponentAltArts[] = $opponentAltArt;

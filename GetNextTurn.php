@@ -20,6 +20,11 @@ include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
+include_once 'GameLogic.php';
+include_once "GameTerms.php";
+include_once "Libraries/UILibraries.php";
+include_once "Libraries/StatFunctions.php";
+include_once "Libraries/PlayerSettings.php";
 include_once "BuildGameState.php";
 include_once "BuildPlayerInputPopup.php";
 

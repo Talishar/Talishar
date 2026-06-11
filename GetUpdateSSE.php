@@ -153,8 +153,9 @@ while (true) {
     $lastSpectatorRefresh = $currentRealTime;
   }
 
-  $cacheStr = GetCachePiece($gameName, 1);
-  $lastUpdateTime = GetCachePiece($gameName, 6);
+  $cacheArr = ReadCacheArray($gameName);
+  $cacheStr = $cacheArr[0] ?? "";
+  $lastUpdateTime = $cacheArr[5] ?? "";
   // Check if game file still exists
   if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval || $lastUpdateTime == "" || $cacheStr === "") {
     if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
@@ -165,7 +166,7 @@ while (true) {
   }
 
   // Check if game is over (status 99)
-  $gameStatus = intval(GetCachePiece($gameName, 14));
+  $gameStatus = intval($cacheArr[13] ?? 0);
   if ($gameStatus == 99) {
     // Send final state before exiting
     $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
@@ -179,7 +180,7 @@ while (true) {
   $cacheVal = intval($cacheStr);
   $timeout = 60 * 1000; //seconds
   $inactive = 1000 * $currentRealTime - intval($lastUpdateTime) > $timeout;
-  $previouslyInactive = GetCachePiece($gameName, 17);
+  $previouslyInactive = $cacheArr[16] ?? "";
   if ($cacheVal > $lastUpdate || $inactive && $previouslyInactive == 0) {
     $lastUpdate = $cacheVal;
     if ($inactive) SetCachePiece($gameName, 17, 1);

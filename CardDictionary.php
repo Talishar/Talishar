@@ -147,25 +147,17 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
     "yendurai" => "-",
     "dracona_optimai" => "-",
   ];
+  static $typeCache = [];
+  if (isset($typeCache[$cardID])) return $typeCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") {
     $specialType = $card->SpecialType();
-    if ($specialType != "-") return $specialType;
+    if ($specialType != "-") return $typeCache[$cardID] = $specialType;
   }
   if (isset($specialCases[$cardID])) {
-    return $specialCases[$cardID];
+    return $typeCache[$cardID] = $specialCases[$cardID];
   }
-  $set = CardSet($cardID);
-  if ($set != "DUM") {
-    $setID = SetID($cardID);
-    $number = intval(substr($setID, 3));
-    if ($number < 400) return GeneratedCardType($cardID);
-    if ($set != "MON" && $set != "DYN" && $set != "HNT" && $setID != "UPR551" && 
-        $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb") {
-      return GeneratedCardType($cardID);
-    }
-  }
-  return GeneratedCardType($cardID);
+  return $typeCache[$cardID] = GeneratedCardType($cardID);
 }
 
 function CardTypeExtended($cardID, $from="", $index=-1) // used to handle evos
@@ -244,17 +236,20 @@ function CardTypeExtended($cardID, $from="", $index=-1) // used to handle evos
 function SetID($cardID)
 {
   $cardID = BlindCard($cardID, true);
-  $specialCases = [
-    "teklovossen_the_mechropotentb" => GeneratedSetID("teklovossen_the_mechropotent"),
-    "nitro_mechanoida" => GeneratedSetID("nitro_mechanoid"),
-    "nitro_mechanoidb" => GeneratedSetID("nitro_mechanoid"),
-    "nitro_mechanoidc" => GeneratedSetID("nitro_mechanoid"),
-    "the_hand_that_pulls_the_strings" => "HNT407",
-    "valda_seismic_impact" => "HER135",
-    "tusk" => "DUM", // AI custom weapon
-    "wrenchtastic" => "DUM", // AI custom weapon
-    "UPR551" => "UPR551", //ghostly touch
-  ];
+  static $specialCases = null;
+  if ($specialCases === null) {
+    $specialCases = [
+      "teklovossen_the_mechropotentb" => GeneratedSetID("teklovossen_the_mechropotent"),
+      "nitro_mechanoida" => GeneratedSetID("nitro_mechanoid"),
+      "nitro_mechanoidb" => GeneratedSetID("nitro_mechanoid"),
+      "nitro_mechanoidc" => GeneratedSetID("nitro_mechanoid"),
+      "the_hand_that_pulls_the_strings" => "HNT407",
+      "valda_seismic_impact" => "HER135",
+      "tusk" => "DUM", // AI custom weapon
+      "wrenchtastic" => "DUM", // AI custom weapon
+      "UPR551" => "UPR551", //ghostly touch
+    ];
+  }
 
   return $specialCases[$cardID] ?? GeneratedSetID($cardID);
 }
@@ -325,31 +320,28 @@ function CardSubType($cardID, $uniqueID = -1)
     }
     return "";
   }
+  static $subTypeCache = [];
+  if (isset($subTypeCache[$cardID])) return $subTypeCache[$cardID];
   $set = CardSet($cardID);
   if ($set != "DUM") {
     $setID = SetID($cardID);
     $number = intval(substr($setID, 3));
     $card = GetClass($cardID, 0);
     if ($number < 400) {
-      if ($card != "-" && is_a($card, "Card")) return $card->SpecialSubType();
-      return GeneratedCardSubtype($cardID);
+      if ($card != "-" && is_a($card, "Card")) return $subTypeCache[$cardID] = $card->SpecialSubType();
+      return $subTypeCache[$cardID] = GeneratedCardSubtype($cardID);
     }
     else if (
       $set != "MON" && $set != "DYN" && $cardID != "UPR551" && $cardID != "nitro_mechanoidc" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb")
-      return GeneratedCardSubtype($cardID);
+      return $subTypeCache[$cardID] = GeneratedCardSubtype($cardID);
   }
-  switch ($cardID) {
-    case "UPR551":
-      return "Ally";
-    case "nitro_mechanoidb":
-      return "Chest"; // Technically not true, but needed to work.
-    case "nitro_mechanoidc":
-      return "Item";
-    case "teklovossen_the_mechropotentb":
-      return "Chest,Evo";
-    default:
-      return "";
-  }
+  return $subTypeCache[$cardID] = match ($cardID) {
+    "UPR551" => "Ally",
+    "nitro_mechanoidb" => "Chest", // Technically not true, but needed to work.
+    "nitro_mechanoidc" => "Item",
+    "teklovossen_the_mechropotentb" => "Chest,Evo",
+    default => "",
+  };
 }
 
 function CharacterHealth($cardID)
@@ -385,25 +377,27 @@ function CardSet($cardID)
   $cardID = BlindCard($cardID, true);
   if (!$cardID) return "";
   if (substr($cardID, 0, 3) == "DUM") return "DUM";
+  static $setCache = [];
+  if (isset($setCache[$cardID])) return $setCache[$cardID];
   switch ($cardID) {
     case "kunai_of_retribution_r"://these cards are from promo packs, this is needed to find their code
     case "obsidian_fire_vein_r":
     case "mark_of_the_huntsman_r":
     case "hunters_klaive_r":
-      return "HNT";
+      return $setCache[$cardID] = "HNT";
     case "valda_seismic_impact":
     case "draw_a_crowd_blue":
     case "promising_terrain_blue":
     case "batter_to_a_pulp_red":
-      return "MPG";
+      return $setCache[$cardID] = "MPG";
     case "polly_cranka": case "polly_cranka_ally":
     case "sticky_fingers": case "sticky_fingers_ally":
-      return "SEA";
+      return $setCache[$cardID] = "SEA";
     case "okana_scar_wraps": case "iris_of_the_blossom":
-      return "ASR";
+      return $setCache[$cardID] = "ASR";
     default:
       $setID = SetID(ExtractCardID($cardID));
-      return substr($setID, 0, 3);
+      return $setCache[$cardID] = substr($setID, 0, 3);
   }
 }
 
@@ -510,36 +504,36 @@ function CardTalent($cardID, $from="-")
     default:
       break;
   }
+  static $talentCache = [];
+  if (isset($talentCache[$cardID])) return $talentCache[$cardID];
   $setID = SetID($cardID);
   $set = substr($setID, 0, 3);
   $number = intval(substr($setID, 3));
   if ($number >= 400) {
     switch ($set) {
       case "MON":
-        if ($number == 520) return "SHADOW";
-        else return "NONE";
+        return $talentCache[$cardID] = ($number == 520 ? "SHADOW" : "NONE");
       case "UPR":
-        if ($number >= 406 && $number <= 417) return "DRACONIC";
-        else if ($number >= 439 && $number <= 441) return "DRACONIC";
-        else return "NONE";
+        if ($number >= 406 && $number <= 417) return $talentCache[$cardID] = "DRACONIC";
+        else if ($number >= 439 && $number <= 441) return $talentCache[$cardID] = "DRACONIC";
+        else return $talentCache[$cardID] = "NONE";
       case "DYN":
-        if ($number == 612) return "LIGHT";
-        else return "NONE";
+        return $talentCache[$cardID] = ($number == 612 ? "LIGHT" : "NONE");
     }
   }
   switch ($cardID) {
     case "teklovossen_the_mechropotent":
     case "teklovossen_the_mechropotentb":
-      return "SHADOW";
+      return $talentCache[$cardID] = "SHADOW";
     case "levia_redeemed":
     case "blasmophet_levia_consumed":
-      return "SHADOW";
+      return $talentCache[$cardID] = "SHADOW";
     default:
       break;
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialTalent() != "-") return $card->SpecialTalent();
-  return GeneratedCardTalent($cardID);
+  if ($card != "-" && $card->SpecialTalent() != "-") return $talentCache[$cardID] = $card->SpecialTalent();
+  return $talentCache[$cardID] = GeneratedCardTalent($cardID);
 }
 
 //Minimum cost of the card
@@ -752,6 +746,8 @@ function PitchValue($cardID)
 {
   $cardID = BlindCard($cardID, true);
   if (!$cardID) return "";
+  static $pitchCache = [];
+  if (isset($pitchCache[$cardID])) return $pitchCache[$cardID];
   $set = CardSet($cardID);
   if ($cardID == "goldfin_harpoon_yellow") return -1;
   if (CardType($cardID) == "M" || CardSubType($cardID) == "Landmark") return -1;
@@ -787,9 +783,9 @@ function PitchValue($cardID)
     }
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialPitch() != -1) return $card->SpecialPitch();
+  if ($card != "-" && $card->SpecialPitch() != -1) return $pitchCache[$cardID] = $card->SpecialPitch();
   if ($set != "DUM") {
-    return GeneratedPitchValue($cardID);
+    return $pitchCache[$cardID] = GeneratedPitchValue($cardID);
   }
 }
 

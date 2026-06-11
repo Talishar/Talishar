@@ -418,7 +418,8 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
     $oldFile = $filepath . "gamestateBackup_" . ($i - 1) . ".txt";
     $newFile = $filepath . "gamestateBackup_" . $i . ".txt";
     if (file_exists($oldFile)) {
-      copy($oldFile, $newFile);
+      if (file_exists($newFile)) @unlink($newFile);
+      rename($oldFile, $newFile);
     }
   }
   
@@ -475,9 +476,10 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     $sourceIndex = $i + $stepsBack;
     $sourceFile = $filepath . "gamestateBackup_" . $sourceIndex . ".txt";
     $targetFile = $filepath . "gamestateBackup_" . $i . ".txt";
-    
+
     if ($sourceIndex < MAX_UNDO_BACKUPS && file_exists($sourceFile)) {
-      copy($sourceFile, $targetFile);
+      if (file_exists($targetFile)) @unlink($targetFile);
+      rename($sourceFile, $targetFile);
     } else {
       // No more backups to shift, delete this slot
       if (file_exists($targetFile)) {
