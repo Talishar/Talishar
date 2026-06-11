@@ -234,6 +234,8 @@ function GetPlaymatName($id)
       return "Taddle Down";
     case 44:
       return "Omens of the Third Age";
+    case 45:
+      return "Talishar, The Lost Prince";
     default:
       return "N/A";
   }
