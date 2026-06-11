@@ -925,7 +925,7 @@ function CombatChainDamageModifiers($player, $source, $type)
     }
   }
   for ($i = 0; $i < count($chainLinks); ++$i) {
-    if (($chainLinks[$i][2] ?? 0) == 1) {
+    if ($chainLinks[$i][2] == 1) {
       switch ($chainLinks[$i][0]) {
         case "ball_lightning_red":
         case "ball_lightning_yellow":

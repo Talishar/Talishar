@@ -3,7 +3,7 @@
 function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = true)
 {
   global $CombatChain, $chainLinks, $ChainLinks;
-  $lastResultArr = explode(",", $lastResult ?? "");
+  $lastResultArr = explode(",", $lastResult);
   $otherPlayer = $player == 1 ? 2 : 1;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i]);

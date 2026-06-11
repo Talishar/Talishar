@@ -1,8 +1,6 @@
 <?php
 
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
-$dir = dirname($filename);
-if (!is_dir($dir)) mkdir($dir, 0700, true);
 $handler = fopen($filename, "w");
 
 if ($handler === false) {
@@ -86,7 +84,7 @@ $gamestateLines = [
 // Add chain links
 $chainLinksCount = count($chainLinks);
 for ($i = 0; $i < $chainLinksCount; ++$i) {
-  if (isset($chainLinks[$i]) && is_array($chainLinks[$i]))
+  if (is_array($chainLinks[$i]))
     $gamestateLines[] = implode(" ", $chainLinks[$i]);
   else
     $gamestateLines[] = "";

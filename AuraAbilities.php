@@ -516,7 +516,6 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
   if (!$skipTrigger) AuraLeavesPlay($player, $index, $uniqueID, $location, $mainPhase, $destinationUID);
   if ($location == "AURAS") {
     $auras = &GetAuras($player);
-    if (!isset($auras[$index]) || !isset($auras[$index + 6])) return;
     $uniqueID = $auras[$index + 6];
 
     // if it's on the combat chain, remove it

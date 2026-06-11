@@ -246,7 +246,7 @@ function IsManualMode($player)
 {
   global $SET_ManualMode;
   $settings = GetSettings($player);
-  return $settings[$SET_ManualMode] ?? 0;
+  return $settings[$SET_ManualMode];
 }
 
 function ShouldSkipARs($player)

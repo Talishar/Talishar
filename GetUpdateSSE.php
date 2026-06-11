@@ -123,8 +123,6 @@ if (is_string($initialState)) {
 echo ("data: " . json_encode($initialState) . "\n\n");
 ob_flush();
 flush();
-unset($initialState);
-gc_collect_cycles();
 
 $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
@@ -191,8 +189,6 @@ while (true) {
       exit;
     }
     SendContent($gameState);
-    unset($gameState);
-    gc_collect_cycles();
     set_time_limit(120);
   }
 
