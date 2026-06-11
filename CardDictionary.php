@@ -4941,6 +4941,7 @@ function canBeAddedToChainDuringDR($cardID){
 
 function ExtractCardID($cardID) {
   if ($cardID === null) return "";
+  if (strpbrk($cardID, ",-|") === false) return $cardID; // common case: already bare
   $cardID = explode(",", $cardID)[0];
   $cardID = explode("-", $cardID)[0];
   $cardID = explode("|", $cardID)[0];
@@ -5013,13 +5014,18 @@ function GetClass($cardID, $player, $from="-", $uniqueID="-") {
   if ($cardID !== null && str_contains($cardID, "BLIND")) return "-";
   if ($cardID == "LAYER" || $cardID == "TRIGGER") return "-";
   $cardID = ExtractCardID($cardID);
-  $className = match($cardID) {
-    "10000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
-    default => $cardID
-  };
-  if (class_exists($className)) $rv = new $className($player);
-  else return "-";
-  if (!is_a($rv, "Card")) return "-";
+  static $classNameCache = [];
+  $className = $classNameCache[$cardID] ?? null;
+  if ($className === null) {
+    $className = match($cardID) {
+      "10000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
+      default => $cardID
+    };
+    if ($className === "" || !class_exists($className) || !is_a($className, "Card", true)) $className = "-";
+    $classNameCache[$cardID] = $className;
+  }
+  if ($className === "-") return "-";
+  $rv = new $className($player);
 	if ($from == "CC") {
 		for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
 			$Effect = $CurrentTurnEffects->Effect($i, true);

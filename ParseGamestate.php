@@ -400,14 +400,23 @@ function UpdateMainPlayerGameStateInner()
   $p2CardTurnLog = $mpgBuiltFor == 2 ? $mainCardTurnLog : $defCardTurnLog;
 }
 
+function SaveGamestateSnapshot($destination)
+{
+  global $filepath, $lastWrittenGamestate;
+  if (isset($lastWrittenGamestate)) {
+    return file_put_contents($destination, $lastWrittenGamestate) !== false;
+  }
+  return copy($filepath . "gamestate.txt", $destination);
+}
+
 function MakeGamestateBackup($filename = "gamestateBackup.txt")
 {
-  global $filepath;
-  if(!file_exists($filepath . "gamestate.txt")) WriteLog("Cannot copy gamestate file; it does not exist.");
-  
+  global $filepath, $lastWrittenGamestate;
+  if(!isset($lastWrittenGamestate) && !file_exists($filepath . "gamestate.txt")) WriteLog("Cannot copy gamestate file; it does not exist.");
+
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, etc.)
   if ($filename != "gamestateBackup.txt") {
-    $result = copy($filepath . "gamestate.txt", $filepath . $filename);
+    $result = SaveGamestateSnapshot($filepath . $filename);
     if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
     return;
   }
@@ -424,7 +433,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
   }
   
   // Save current state as backup 0 (most recent)
-  $result = copy($filepath . "gamestate.txt", $filepath . "gamestateBackup_0.txt");
+  $result = SaveGamestateSnapshot($filepath . "gamestateBackup_0.txt");
   if(!$result) WriteLog("Copy of gamestate into gamestateBackup_0.txt failed.");
 }
 
@@ -439,6 +448,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     $skipWriteGamestate = true;
     $gamestate = file_get_contents($filepath . $filename);
     WriteGamestateCache($gameName, $gamestate);
+    $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
     return;
   }
   
@@ -469,6 +479,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $skipWriteGamestate = true;
   $gamestate = file_get_contents($backupFile);
   WriteGamestateCache($gameName, $gamestate);
+  $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
   
   // Shift backups: Remove the reverted backups and shift remaining ones
   // If we reverted 2 steps, backups 0 and 1 are gone, backup 2 becomes 0, backup 3 becomes 1, etc.
@@ -487,7 +498,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
       }
     }
   }
-  $result = copy($filepath . "gamestate.txt", $filepath . $filename);
+  $result = SaveGamestateSnapshot($filepath . $filename);
   if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
 }
 
@@ -498,7 +509,7 @@ function SaveReplay() {
 function MakeStartChainLinkBackup()
 {
   global $filepath;
-  copy($filepath . "gamestate.txt", $filepath . "startChainLinkGamestate.txt");
+  SaveGamestateSnapshot($filepath . "startChainLinkGamestate.txt");
 }
 
 function MakeStartTurnBackup()
@@ -506,15 +517,18 @@ function MakeStartTurnBackup()
   global $mainPlayer, $currentTurn, $filepath;
   $lastTurnFN = $filepath . "lastTurnGamestate.txt";
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
-  if (file_exists($thisTurnFN)) copy($thisTurnFN, $lastTurnFN);
-  copy($filepath . "gamestate.txt", $thisTurnFN);
+  if (file_exists($thisTurnFN)) {
+    if (file_exists($lastTurnFN)) @unlink($lastTurnFN);
+    rename($thisTurnFN, $lastTurnFN);
+  }
+  SaveGamestateSnapshot($thisTurnFN);
   $startGameFN = $filepath . "startGamestate.txt";
   if ((IsPatron(1) || IsPatron(2)) && $currentTurn == 0 && !file_exists($startGameFN)) {
-    copy($filepath . "gamestate.txt", $startGameFN);
+    SaveGamestateSnapshot($startGameFN);
   }
   if (SaveReplay()) {
     $numberedTurnFN = $filepath . "turn_$mainPlayer-$currentTurn" . "_Gamestate.txt";
-    copy($filepath . "gamestate.txt", $numberedTurnFN);
+    SaveGamestateSnapshot($numberedTurnFN);
     $commandFile = fopen("$filepath/commandfile.txt", "a");
     fwrite($commandFile, "$mainPlayer StartTurn $currentTurn 0\r\n");
     fclose($commandFile);

@@ -128,3 +128,5 @@ flock($handler, LOCK_UN);
 fclose($handler);
 
 WriteGamestateCache($gameName, $gamestateContent);
+
+$lastWrittenGamestate = $gamestateContent;

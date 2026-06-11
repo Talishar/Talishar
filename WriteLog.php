@@ -1,24 +1,49 @@
 <?php
 
+// Log lines are buffered in memory and written with one append per file instead
+// of an open/write/flush/close cycle per line (game actions emit many lines).
+// FlushLogBuffer() runs before GamestateUpdated() bumps the change counter, so
+// logs are always on disk before any SSE/polling process rebuilds the game state.
+$logWriteBuffer = [];
+
+function LogBufferAppend($filename, $line, $requireExists)
+{
+  global $logWriteBuffer;
+  static $registered = false;
+  if (!$registered) {
+    register_shutdown_function('FlushLogBuffer');
+    $registered = true;
+  }
+  if (!isset($logWriteBuffer[$filename])) {
+    $logWriteBuffer[$filename] = ["requireExists" => $requireExists, "content" => ""];
+  }
+  $logWriteBuffer[$filename]["content"] .= $line;
+}
+
+function FlushLogBuffer()
+{
+  global $logWriteBuffer;
+  if (empty($logWriteBuffer)) return;
+  foreach ($logWriteBuffer as $filename => $entry) {
+    if ($entry["content"] === "") continue;
+    if ($entry["requireExists"] && !file_exists($filename)) continue; //File does not exist
+    @file_put_contents($filename, $entry["content"], FILE_APPEND);
+  }
+  $logWriteBuffer = [];
+}
+
 function WriteLog($text, $playerColor = 0, $highlight=false, $path="./", $highlightColor="brown")
 {
   global $gameName;
   $filename = "{$path}Games/$gameName/gamelog.txt";
-  if(file_exists($filename)) $handler = fopen($filename, "a");
-  else return; //File does not exist
   $playerSpan = ($playerColor != 0 ? "<span style='color:<PLAYER{$playerColor}COLOR>;'>" : "");
   $playerSpanClose = ($playerColor != 0 ? "</span>" : "");
   if($highlight) $output = $playerSpan . "<p style='background: $highlightColor;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>" . $text . "</span></p>" . $playerSpanClose;
   else $output = $playerSpan . $text . $playerSpanClose;
-  fwrite($handler, "$output\r\n");
-  fflush($handler); // Force immediate write to disk for SSE visibility
-  fclose($handler);
+  LogBufferAppend($filename, "$output\r\n", true);
   if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
     $filename = "{$path}Games/$gameName/fullGamelog.txt";
-    $handler = fopen($filename, "a");
-    fwrite($handler, "$output\r\n");
-    fflush($handler); // Force immediate write to disk for SSE visibility
-    fclose($handler);
+    LogBufferAppend($filename, "$output\r\n", false);
   }
 }
 
@@ -46,22 +71,16 @@ function WriteSystemMessage($text, $path="./")
 {
   global $gameName;
   $filename = "{$path}Games/$gameName/gamelog.txt";
-  if(file_exists($filename)) $handler = fopen($filename, "a");
-  else return; //File does not exist
-  fwrite($handler, "$text\r\n");
-  fflush($handler); // Force immediate write to disk for SSE visibility
-  fclose($handler);
+  LogBufferAppend($filename, "$text\r\n", true);
   if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
     $filename = "{$path}Games/$gameName/fullGamelog.txt";
-    $handler = fopen($filename, "a");
-    fwrite($handler, "$text\r\n");
-    fflush($handler); // Force immediate write to disk for SSE visibility
-    fclose($handler);
+    LogBufferAppend($filename, "$text\r\n", false);
   }
 }
 
 function JSONLog($gameName, $playerID, $path="./")
 {
+  FlushLogBuffer(); // make any lines buffered in this process visible to the read
   $response = "";
   $filename = "{$path}Games/$gameName/gamelog.txt";
   clearstatcache(true, $filename); // Clear file stat cache to get fresh file size

@@ -4613,8 +4613,13 @@ function WriteGamestate()
   $output[] = $lastUpdateTime; //Last update time
   
   // Single write operation with all data at once
-  fwrite($handler, implode("\r\n", $output) . "\r\n");
+  $outputStr = implode("\r\n", $output) . "\r\n";
+  fwrite($handler, $outputStr);
   fclose($handler);
+
+  // Mirror of gamestate.txt for this process — lets backup snapshots write
+  // from memory instead of reading the file back (see SaveGamestateSnapshot).
+  $GLOBALS['lastWrittenGamestate'] = $outputStr;
 }
 
 function AddEvent($type, $value)
