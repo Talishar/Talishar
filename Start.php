@@ -16,7 +16,7 @@ include_once "./includes/functions.inc.php";
 include_once "./MenuFiles/StartHelper.php";
 ob_end_clean();
 
-$gameName = $_GET["gameName"];
+$gameName = $_GET["gameName"] ?? "";
 if (!IsGameNameValid($gameName)) {
   echo ("Invalid game name.");
   exit;
@@ -130,7 +130,6 @@ ob_end_clean();
 
 AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI);
 
-//Update the game file to show that the game has started and other players can join to spectate
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
 

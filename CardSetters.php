@@ -209,7 +209,7 @@ function TurnBanishFaceDown($player, $index)
 
 function TurnDiscardFaceDown($player, $index)
 {
-  $DiscardCard = new DiscardCard($index, $player);
+  $DiscardCard = new DiscardCard(intval($index), $player);
   $DiscardCard->Flip();
 }
 

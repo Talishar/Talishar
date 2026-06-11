@@ -76,7 +76,7 @@ if (!IsGameNameValid($gameName)) {
   echo json_encode($response);
   exit;
 }
-if (!isset($playerID)) $playerID = intval($_POST["playerID"]);
+if (!isset($playerID)) $playerID = intval($_POST["playerID"] ?? 0);
 if (!isset($deck)) $deck = TryPOST("deck"); //This is for limited game modes (see JoinGameInput.php)
 if (!isset($decklink)) $decklink = TryPOST("fabdb", ""); //Deck builder decklink
 if (!isset($decksToTry)) $decksToTry = TryPOST("decksToTry"); //This is only used if there's no favorite deck or decklink. 1 = ira

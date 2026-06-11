@@ -270,7 +270,7 @@ function ResolveGoesWhereAwait($player) {
 
 function MZDestroyAwait($player) {
   global $dqVars;
-  $MZInd = $dqVars["MZInd"];
+  $MZInd = $dqVars["MZInd"] ?? "";
   $effectController = $dqVars["effectController"] ?? "";
   $allArsenal = $dqVars["allArsenal"] ?? true;
   MZDestroy($player, $MZInd, $effectController, $allArsenal);
