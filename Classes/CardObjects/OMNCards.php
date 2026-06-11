@@ -5926,7 +5926,8 @@ class starlight_road_blue extends Card {
 
   function SpecificLogic() {
     global $dqVars;
-    $choice = explode("-", $dqVars["choice"])[1];
+    $parts = explode("-", $dqVars["choice"] ?? "");
+    $choice = $parts[1] ?? $parts[0] ?? "";
     PlayAura($choice, $this->controller);
   }
 }
