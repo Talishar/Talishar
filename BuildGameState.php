@@ -1,5 +1,8 @@
 <?php
 include_once "Libraries/PlayerSettings.php";
+if (!function_exists('IsHideHandFromFriends')) {
+    function IsHideHandFromFriends($player) { return false; }
+}
 function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $myAuras, $myItems, $mySoul, $myAllies, $myPermanents, $myResources;

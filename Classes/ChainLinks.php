@@ -68,7 +68,9 @@ class ChainLink {
   function __construct($linkNum) {
     global $chainLinks, $chainLinkSummary;
     $this->linkNum = $linkNum;
-    $this->link = &$chainLinks[$linkNum] ?? [];
+    if (isset($chainLinks[$linkNum])) {
+      $this->link = &$chainLinks[$linkNum];
+    }
 	$summaryIndex = $linkNum * ChainLinkSummaryPieces();
 	$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, ChainLinkSummaryPieces());
   }
