@@ -51,6 +51,7 @@ function ClearLog($n=30)
 {
   global $gameName;
 
+  FlushLogBuffer(); // buffered lines must be in the file before we slice it
   $filename = "./Games/$gameName/gamelog.txt";
   $handle = fopen("./Games/$gameName/gamelog.txt", "r");
   $lines = [];
