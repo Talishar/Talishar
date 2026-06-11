@@ -648,20 +648,20 @@ function IsTeamFatAndFurious($userName)
 function IsTeamPitchDevils($userName)
 {
   return in_array($userName, ["Lestat", "elnino", "RTZ", "Schmax", "Belphegor", "FloJo",
-    "MikeDwyer", "Dionysos", "Sosa", "TaddelDown", "inama", "Kanopterix", "PvtVoid"]);
+    "MikeDwyer", "Dionysos", "Sosa", "TaddelDown", "inama", "Kanopterix"]);
 }
 
 function IsTeamSnapDragons($userName)
 {
   return in_array($userName, ["iamtherealdylanthompson", "SpoostingBendog", "EdgeOfAir", "Matt",
     "Diomedesau", "Nyjin", "Manavon", "Trouthammer", "N3ardeath",
-    "Snaps", "TheGlib", "PvtVoid", "TheJudester"]);
+    "Snaps", "TheGlib", "TheJudester"]);
 }
 
 function IsTeamFabDads($userName)
 {
   return in_array($userName, ["LostInDaSpace", "Belazhul", "zaketanapareis", "thilakinos", "Debread",
-    "mellone", "makvag", "Pitsirikos", "Alith0r0sKykl0pas", "Jim", "nikfabfanfatty", "PvtVoid"]);
+    "mellone", "makvag", "Pitsirikos", "Alith0r0sKykl0pas", "Jim", "nikfabfanfatty"]);
 }
 
 function IsTeamRedLine($userName)
@@ -678,7 +678,7 @@ function IsTeamSkillIssue($userName)
   return match($userName) {
     "Vaxildan", "kk96", "Skoupakas69", "BreakingChaos", "TheCouncillor", "JaxC" => true,
     "Cubacash", "kungfoukios", "sudogreeko", "katsubina", "NikolasG", "LegenProMax" => true,
-    "sadonEmsi", "DioReformed", "AggroBlazeNo1Fan", "kenobi", "Giannis92", "AssassinoCapuccino", "PvtVoid" => true,
+    "sadonEmsi", "DioReformed", "AggroBlazeNo1Fan", "kenobi", "Giannis92", "AssassinoCapuccino" => true,
     default => false
   };
 }

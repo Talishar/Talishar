@@ -341,10 +341,10 @@ enum PatreonCampaign : string
       case "22": return $userName == "AggroBlaze96";
       case "23": return $userName == "Null";
       case "24": return IsTeamPitchDevils($userName);
-      case "25": return $userName == "Mickz" || $userName == "PvtVoid";
+      case "25": return $userName == "Mickz";
       case "26": return IsTeamSnapDragons($userName);
-      case "27": return $userName == "PvtVoid" || $userName == "AggroBlaze96";
-      case "28": return $userName == "Snow" || $userName == "PvtVoid";
+      case "27": return $userName == "AggroBlaze96";
+      case "28": return $userName == "Snow";
       case "29": return IsTeamRedLine($userName);
       case "30": return IsTeamSkillIssue($userName);
       case "7198186": return $userName == "OotTheMonk" || $userName == "Aegisworn" || $userName == "PvtVoid";
