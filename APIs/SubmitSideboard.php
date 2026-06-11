@@ -42,12 +42,7 @@ if (!IsGameNameValid($gameName)) {
   echo json_encode($response);
   exit;
 }
-$submissionString = $_POST["submission"] ?? null;
-if ($submissionString === null) {
-  $response->error = "Submission data is missing";
-  echo json_encode($response);
-  exit;
-}
+$submissionString = $_POST["submission"];
 
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
@@ -59,11 +54,6 @@ if ($authKey !== $targetAuth) {
 }
 
 $submission = json_decode($submissionString);
-if ($submission === null || !isset($submission->hero)) {
-  $response->error = "Invalid submission data";
-  echo json_encode($response);
-  exit;
-}
 $character = $submission->hero;
 if(!isset($submission->hands)) $hands = "";
 else $hands = implode(" ", $submission->hands);
