@@ -545,13 +545,23 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
    if ($playerID == 2) {
 
      if (!$forceBaseDeckRefresh) {
+       $p2LockPath = "../Games/" . $gameName . "/p2join.lock";
+       $p2LH = @fopen($p2LockPath, 'c');
+       if ($p2LH) flock($p2LH, LOCK_EX);
        $slotValue = GetCachePiece($gameName, $playerID + 6);
        if ($slotValue != "") {
-         $response->error = "Another player has already joined the game.";
+         if ($p2LH) { flock($p2LH, LOCK_UN); fclose($p2LH); }
+         if ($gameStatus >= $MGS_GameStarted) {
+           $response->gameStarted = true;
+         } else {
+           $response->error = "Another player has already joined the game.";
+         }
+         WriteGameFile();
          echo json_encode($response);
          exit;
        }
        SetCachePiece($gameName, $playerID + 6, "joining");
+       if ($p2LH) { flock($p2LH, LOCK_UN); fclose($p2LH); }
      }
 
      $gameStatus = $MGS_Player2Joined;
