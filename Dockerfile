@@ -1,4 +1,4 @@
-FROM php:8.3-apache-bookworm 
+FROM php:8.3-fpm-bookworm
 
 RUN apt-get update && apt-get install -y libbz2-dev
 RUN apt-get update && apt-get install -y libc-client-dev libkrb5-dev && rm -r /var/lib/apt/lists/*
@@ -39,4 +39,22 @@ RUN pecl install xdebug \
 
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 
-RUN a2enmod proxy proxy_http proxy_wstunnel
+# Install Apache2. The fpm image doesn't include it, so we add it from apt.
+# COPY config files before a2enmod so that a2enmod picks up and symlinks our tuned .conf files.
+RUN apt-get update && apt-get install -y apache2
+
+COPY docker/mpm_event.conf /etc/apache2/mods-available/mpm_event.conf
+COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
+COPY docker/php-fpm-pool.conf /usr/local/etc/php-fpm.d/zzz-talishar.conf
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+# Switch from mpm_prefork to mpm_event; enable modules needed for PHP-FPM proxy and the game.
+RUN a2dismod mpm_prefork 2>/dev/null || true \
+    && a2enmod mpm_event proxy proxy_fcgi setenvif proxy_http proxy_wstunnel rewrite headers deflate \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# The fpm base image sets STOPSIGNAL SIGQUIT for FPM's graceful stop, but our
+# entrypoint is now the watchdog shell, not FPM directly. Reset to SIGTERM so
+# docker stop sends the signal our trap actually catches.
+STOPSIGNAL SIGTERM
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
