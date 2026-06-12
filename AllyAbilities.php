@@ -153,7 +153,7 @@ function AllyDestroyedAbility($player, $index)
       if ($charIndex > -1) DestroyCharacter($player, $charIndex);
       break;
     case "oysten_heart_of_gold_yellow":
-      PutItemIntoPlayForPlayer("gold", $player, isToken:true, from:$cardID, effectSource:$cardID);
+      AddLayer("TRIGGER", $player, $allies[$index], "-", "-", $allies[$index + 5]);
       break;
     default:
       break;

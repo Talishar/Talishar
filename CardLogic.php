@@ -4353,6 +4353,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
         }
         break;
+      case "oysten_heart_of_gold_yellow":
+        PutItemIntoPlayForPlayer("gold", $player, isToken:true, from:$parameter, effectSource:$parameter);
+        break;
       case "valda_brightaxe":
       case "valda_seismic_impact":
         if ($additionalCosts == "STARTTURN") {
