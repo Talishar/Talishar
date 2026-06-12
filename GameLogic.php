@@ -4164,6 +4164,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       return $lastResult;
+    case "LAYDOWNTHECHALLENGE":
+      if ($lastResult != $player) {
+        $hand = GetHand($player);
+        $handOpponent = GetHand($lastResult);
+        if (count($hand) < count($handOpponent)) 
+          Draw($player);
+      }
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

@@ -6020,10 +6020,7 @@ class lay_down_the_challenge_yellow extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     Intimidate();
-    $hand = GetHand($this->controller);
-    $handOpponent = GetHand($this->controller == 1 ? 2 : 1);
-    if (count($hand) < count($handOpponent)-1) 
-      Draw($this->controller);
+    AddDecisionQueue("LAYDOWNTHECHALLENGE", $this->controller, "-", 1);
   }
 }
 
