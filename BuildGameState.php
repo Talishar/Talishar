@@ -30,12 +30,20 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     return "Invalid player ID.";
   }
 
-  if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
-    return "Game no longer exists on the server.";
+  static $gameFileSeenAt = [];
+  $nowTs = microtime(true);
+  if (!isset($gameFileSeenAt[$gameName]) || $nowTs - $gameFileSeenAt[$gameName] > 5) {
+    if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
+      unset($gameFileSeenAt[$gameName]);
+      return "Game no longer exists on the server.";
+    }
+    $gameFileSeenAt[$gameName] = $nowTs;
   }
 
+  $buildCacheArr = ReadCacheArray($gameName) ?? [];
+
   // Check spectator permission
-  if ($playerID == 3 && GetCachePiece($gameName, 9) != "1") {
+  if ($playerID == 3 && ($buildCacheArr[8] ?? "") != "1") {
     return "Spectators not allowed.";
   }
 
@@ -74,7 +82,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $isGamePlayer = $playerID == 1 || $playerID == 2;
   $otherPlayer = $playerID == 1 ? 2 : 1;
-  $cacheVal = intval(GetCachePiece($gameName, 1));
+  $cacheVal = intval($buildCacheArr[0] ?? 0);
 
   include_once "ParseGamestate.php";
   ParseGamestate();
@@ -1444,16 +1452,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
   }
 
-  // Chat enabled check
-  $chatPiece15 = intval(GetCachePiece($gameName, 15));
-  $chatPiece16 = intval(GetCachePiece($gameName, 16));
-  $response->chatEnabled = $chatPiece15 == 1 && $chatPiece16 == 1 ? true : false;
-
-  $cacheVisibility = GetCachePiece($gameName, 9);
-  $response->isPrivate = ($cacheVisibility !== "1");
-
-  $isReplayFlag = GetCachePiece($gameName, 10);
-  $response->isReplay = ($isReplayFlag === "1");
+  $response->chatEnabled = intval($buildCacheArr[14] ?? 0) == 1 && intval($buildCacheArr[15] ?? 0) == 1;
+  $response->isPrivate = (($buildCacheArr[8] ?? "") !== "1");
+  $response->isReplay = (($buildCacheArr[9] ?? "") === "1");
 
   $response->aiHasInfiniteHP = $AIHasInfiniteHP;
 

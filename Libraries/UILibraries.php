@@ -275,7 +275,7 @@ function JSONRenderedCard(
   if($onChain !== NULL) $card->onChain = $onChain;
   if($isFrozen !== NULL) $card->isFrozen = $isFrozen;
   if($holoCounters !== NULL) $card->holoCounters = $holoCounters;
-  if($countersMap != json_decode('{}')) $card->countersMap = $countersMap;
+  if($countersMap != new stdClass()) $card->countersMap = $countersMap;
   if($label !== NULL) $card->label = $label;
   if($facing !== NULL) $card->facing = $facing;
   if($numUses !== NULL) $card->numUses = $numUses;

@@ -48,7 +48,11 @@ function GetGameCounter($path = "./")
 function IsReplay()
 {
   global $gameName;
-  return GetCachePiece($gameName, 10) == "1" ? true : false;
+  static $cache = [];
+  if (isset($cache[$gameName])) return $cache[$gameName];
+  $val = GetCachePiece($gameName, 10);
+  if ($val === "") return false;
+  return $cache[$gameName] = ($val == "1");
 }
 
 function SetHeaders()

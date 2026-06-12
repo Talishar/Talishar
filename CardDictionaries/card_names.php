@@ -5,6 +5,8 @@ function CardName($cardID)
     $cardID = BlindCard($cardID, true);
     if($cardID == NULL) return "";
     if($cardID == "POWERCOUNTER") return "+1 Power Counter";
+    static $nameCache = [];
+    if (isset($nameCache[$cardID])) return $nameCache[$cardID];
     switch ($cardID) {
       case "valda_seismic_impact":
         return "Valda, Seismic Impact";
@@ -42,11 +44,11 @@ function CardName($cardID)
     // if(count($arr) < 2) return "";
     // $set = $arr[0];
     $card = GetClass($cardID, 0);
-    if ($card != "-" && is_a($card, "card") && $card->SpecialName() != "-") return $card->SpecialName();
+    if ($card != "-" && is_a($card, "card") && $card->SpecialName() != "-") return $nameCache[$cardID] = $card->SpecialName();
     $set = CardSet($cardID);
     if($set != "DUM")
     {
-      return GeneratedCardName($cardID);
+      return $nameCache[$cardID] = GeneratedCardName($cardID);
     }
 	}
 

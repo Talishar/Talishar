@@ -426,10 +426,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
   for ($i = MAX_UNDO_BACKUPS - 1; $i > 0; $i--) {
     $oldFile = $filepath . "gamestateBackup_" . ($i - 1) . ".txt";
     $newFile = $filepath . "gamestateBackup_" . $i . ".txt";
-    if (file_exists($oldFile)) {
-      if (file_exists($newFile)) @unlink($newFile);
-      rename($oldFile, $newFile);
-    }
+    @rename($oldFile, $newFile);
   }
   
   // Save current state as backup 0 (most recent)
@@ -488,14 +485,10 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     $sourceFile = $filepath . "gamestateBackup_" . $sourceIndex . ".txt";
     $targetFile = $filepath . "gamestateBackup_" . $i . ".txt";
 
-    if ($sourceIndex < MAX_UNDO_BACKUPS && file_exists($sourceFile)) {
-      if (file_exists($targetFile)) @unlink($targetFile);
-      rename($sourceFile, $targetFile);
-    } else {
+    $renamed = $sourceIndex < MAX_UNDO_BACKUPS && @rename($sourceFile, $targetFile);
+    if (!$renamed) {
       // No more backups to shift, delete this slot
-      if (file_exists($targetFile)) {
-        unlink($targetFile);
-      }
+      @unlink($targetFile);
     }
   }
   $result = SaveGamestateSnapshot($filepath . $filename);
@@ -517,10 +510,7 @@ function MakeStartTurnBackup()
   global $mainPlayer, $currentTurn, $filepath;
   $lastTurnFN = $filepath . "lastTurnGamestate.txt";
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
-  if (file_exists($thisTurnFN)) {
-    if (file_exists($lastTurnFN)) @unlink($lastTurnFN);
-    rename($thisTurnFN, $lastTurnFN);
-  }
+  @rename($thisTurnFN, $lastTurnFN);
   SaveGamestateSnapshot($thisTurnFN);
   $startGameFN = $filepath . "startGamestate.txt";
   if ((IsPatron(1) || IsPatron(2)) && $currentTurn == 0 && !file_exists($startGameFN)) {
