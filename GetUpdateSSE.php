@@ -138,6 +138,7 @@ $lastSpectatorRefresh = microtime(true);
 $spectatorRefreshInterval = 30.0;
 $rateLimitStartInterval = microtime(true);
 $rateLimitProcessCount = 0;
+$buildFailureStreak = 0;
 $loopStartTimeMs = round(microtime(true) * 1000);
 
 while (true) {
@@ -183,15 +184,11 @@ while (true) {
   $inactive = 1000 * $currentRealTime - intval($lastUpdateTime) > $timeout;
   $previouslyInactive = $cacheArr[16] ?? "";
   if ($cacheVal > $lastUpdate || $inactive && $previouslyInactive == 0) {
-    $lastUpdate = $cacheVal;
-    if ($inactive) SetCachePiece($gameName, 17, 1);
-    else SetCachePiece($gameName, 17, 0);
     // Build and send full game state
     $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive);
     if (is_string($gameState)) {
       // Only kill the stream for genuinely fatal errors. Transient ones (e.g.
-      // "Game state reverted." mid-undo) resolve on the next update — exiting
-      // here forced every affected client through a full reconnect.
+      // "Game state reverted." mid-undo) resolve on a retry.
       $fatal = str_contains($gameState, "no longer exists")
         || str_contains($gameState, "Invalid Authkey")
         || str_contains($gameState, "Spectators not allowed")
@@ -201,9 +198,18 @@ while (true) {
         SendContent(["error" => $gameState]);
         exit;
       }
+      $buildFailureStreak++;
+      if ($buildFailureStreak > 100) {
+        SendContent(["error" => $gameState]);
+        exit;
+      }
       usleep(intval($sleepMs * 1000));
       continue;
     }
+    $buildFailureStreak = 0;
+    $lastUpdate = $cacheVal;
+    if ($inactive) SetCachePiece($gameName, 17, 1);
+    else SetCachePiece($gameName, 17, 0);
     SendContent($gameState);
     unset($gameState);
     gc_collect_cycles();

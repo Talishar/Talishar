@@ -147,7 +147,7 @@ if ($handler) {
 }
 
 $resetTimer = true;
-$gamestateCacheContent = ReadCache(GamestateID($gameName));
+$gamestateCacheContent = ReadGamestateCache($gameName);
 if (!empty($gamestateCacheContent)) {
     $gamestatePieces = explode("\r\n", $gamestateCacheContent);
     if (count($gamestatePieces) > 40) {

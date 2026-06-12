@@ -46,7 +46,7 @@ function GetCachedGamestate($gameName) {
     $filename = "./Games/" . $gameName . "/gamestate.txt";
   }
   
-  $content = ReadCache(GamestateID($gameName));
+  $content = ReadGamestateCache($gameName);
   
   // Store in APCu for subsequent requests (1 second TTL)
   if (extension_loaded('apcu') && ini_get('apc.enabled')) {

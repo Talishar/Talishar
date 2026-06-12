@@ -47,7 +47,7 @@ function ParseGamestate()
   $mpgBuiltFor = -1;
   $myStateBuiltFor = -1;
 
-  $gamestateContent = ReadCache(GamestateID($gameName));
+  $gamestateContent = ReadGamestateCache($gameName);
   if (substr_count($gamestateContent, "\r\n") < 59) {
     global $filename;
     $gsFile = (isset($filename) && str_contains($filename, "gamestate.txt"))

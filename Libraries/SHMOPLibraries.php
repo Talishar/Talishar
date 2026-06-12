@@ -39,16 +39,20 @@ function WriteGamestateCache($name, $data)
 {
   if ($name == 0) return;
   $serData = trim(serialize(trim($data)));
-  $needed = strlen($serData);
+  $needed = strlen($serData) + 16; // payload + seqlock header
   $key = GamestateID($name);
 
   $size = 32768;
+  $seq = 0;
   $existing = @shmop_open($key, "a", 0, 0);
   if ($existing !== false) {
     $size = shmop_size($existing);
+    $head = shmop_read($existing, 0, 16);
+    if (preg_match('/^\d{16}$/', $head)) $seq = (int)$head;
     if ($size < $needed) {
       shmop_delete($existing);
       $size = max(32768, 1 << (int)ceil(log($needed + 1, 2)));
+      $seq = 0;
     }
   } else if ($needed >= $size) {
     $size = 1 << (int)ceil(log($needed + 1, 2));
@@ -57,10 +61,35 @@ function WriteGamestateCache($name, $data)
   $gsID = @shmop_open($key, "c", 0666, $size);
   if ($gsID == false) {
     exit;
-  } else {
-    $serData = str_pad($serData, $size, "\0");
-    $rv = shmop_write($gsID, $serData, 0);
   }
+  $writeSeq = $seq + ($seq % 2 === 0 ? 1 : 2); // next odd: write in progress
+  shmop_write($gsID, sprintf("%016d", $writeSeq), 0);
+  shmop_write($gsID, str_pad($serData, $size - 16, "\0"), 16);
+  shmop_write($gsID, sprintf("%016d", $writeSeq + 1), 0); // even: stable
+}
+
+function ReadGamestateCache($name)
+{
+  $key = GamestateID($name);
+  for ($try = 0; $try < 10; $try++) {
+    $id = @shmop_open($key, "a", 0, 0);
+    if ($id === false) return "";
+    $size = shmop_size($id);
+    $head = shmop_read($id, 0, 16);
+    if (!preg_match('/^\d{16}$/', $head)) {
+      $raw = trim(shmop_read($id, 0, $size));
+      $un = @unserialize($raw);
+      return $un === false ? "" : $un;
+    }
+    $s1 = (int)$head;
+    if ($s1 % 2 === 1) { usleep(1000); continue; } // write in progress
+    $raw = trim(shmop_read($id, 16, $size - 16));
+    $s2 = (int)shmop_read($id, 0, 16);
+    if ($s1 !== $s2) { usleep(1000); continue; } // torn — retry
+    $un = @unserialize($raw);
+    return $un === false ? "" : $un;
+  }
+  return "";
 }
 
 function ReadCache($name)
