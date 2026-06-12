@@ -3133,6 +3133,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("Player {$player} was targeted to intimidate.");
       $hand = &GetHand($player);
       if (count($hand) == 0) return; //Intimidate did nothing because there are no cards in their hand
+      if ($lastResult == "THEIRCHAR-0") {
+        IncrementClassState($player, $CS_HaveIntimidatedOpponent);
+      }
       $index = GetRandom() % count($hand);
       BanishCardForPlayer($hand[$index], $player, "HAND", "INT");
       RemoveHand($player, $index);

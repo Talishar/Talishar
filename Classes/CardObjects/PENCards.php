@@ -785,8 +785,8 @@ class basalt_boots extends Card {
 
 class aggressive_pounce extends BaseCard {
   function HasIntimidated($controller) {
-    global $CS_HaveIntimidated;
-    return GetClassState($controller, $CS_HaveIntimidated) > 0;
+    global $CS_HaveIntimidatedOpponent;
+    return GetClassState($controller, $CS_HaveIntimidatedOpponent) > 0;
   }
 }
 

@@ -2312,8 +2312,8 @@ class feral_instinct_yellow extends Card {
   }
 
   function SelfCostModifier($from) {
-    global $CS_HaveIntimidated;
-    return GetClassState($this->controller, $CS_HaveIntimidated) ? -3 : 0;
+    global $CS_HaveIntimidatedOpponent;
+    return GetClassState($this->controller, $CS_HaveIntimidatedOpponent) ? -3 : 0;
   }
 }
 
