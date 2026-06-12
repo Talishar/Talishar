@@ -68,6 +68,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
   global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack, $CurrentTurnEffects;
+  global $CS_HaveIntimidatedOpponent;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -3129,12 +3130,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "INTIMIDATE":
       $otherPlayer = $player == 1 ? 2 : 1;
+      $sourcePlayer = $player;
       $player = ($parameter != "-") ? $parameter : (($lastResult == "MYCHAR-0") ? $currentPlayer : $otherPlayer);
       WriteLog("Player {$player} was targeted to intimidate.");
       $hand = &GetHand($player);
       if (count($hand) == 0) return; //Intimidate did nothing because there are no cards in their hand
-      if ($lastResult == "THEIRCHAR-0") {
-        IncrementClassState($player, $CS_HaveIntimidatedOpponent);
+      if ($sourcePlayer != $otherPlayer && $lastResult != "MYCHAR-0") {
+        IncrementClassState($sourcePlayer, $CS_HaveIntimidatedOpponent);
       }
       $index = GetRandom() % count($hand);
       BanishCardForPlayer($hand[$index], $player, "HAND", "INT");
