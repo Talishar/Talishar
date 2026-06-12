@@ -73,8 +73,6 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
 {
   global $CS_AdditionalCosts, $currentPlayer, $Stack;
   $cardID = BlindCard($cardID, true);
-  static $typeCache = [];
-  if ($cardID !== null && isset($typeCache[$cardID])) return $typeCache[$cardID];
   $controller = $controller == "-" ? $currentPlayer : $controller;
   $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN", "STARTTURN", "ATTACKSTEP", "ABILITY"];
   if (!$cardID || in_array($cardID, $adminCards)) return "";
@@ -149,6 +147,8 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
     "yendurai" => "-",
     "dracona_optimai" => "-",
   ];
+  static $typeCache = [];
+  if (isset($typeCache[$cardID])) return $typeCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") {
     $specialType = $card->SpecialType();
@@ -434,39 +434,37 @@ function CardClass($cardID)
     default:
       break;
   }
-  static $classCache = [];
-  if (isset($classCache[$cardID])) return $classCache[$cardID];
   $setID = SetID($cardID);
   $number = intval(substr($setID, 3));
   if ($number >= 400) {
     $set = substr($setID, 0, 3);
     switch ($set) {
       case "MON":
-        if ($number == 404) return $classCache[$cardID] = "ILLUSIONIST";
-        else if ($number == 405) return $classCache[$cardID] = "WARRIOR";
-        else if ($number == 406) return $classCache[$cardID] = "BRUTE";
-        else if ($number == 407) return $classCache[$cardID] = "RUNEBLADE";
-        else return $classCache[$cardID] = "NONE";
+        if ($number == 404) return "ILLUSIONIST";
+        else if ($number == 405) return "WARRIOR";
+        else if ($number == 406) return "BRUTE";
+        else if ($number == 407) return "RUNEBLADE";
+        else return "NONE";
       case "UPR":
-        if ($number >= 406 && $number <= 417) return $classCache[$cardID] = "ILLUSIONIST";
-        else if ($number >= 439 && $number <= 441) return $classCache[$cardID] = "ILLUSIONIST";
-        else if ($number == 551) return $classCache[$cardID] = "ILLUSIONIST";
-        else return $classCache[$cardID] = "NONE";
+        if ($number >= 406 && $number <= 417) return "ILLUSIONIST";
+        else if ($number >= 439 && $number <= 441) return "ILLUSIONIST";
+        else if ($number == 551) return "ILLUSIONIST";
+        else return "NONE";
     }
   }
   switch ($cardID) {
     case "nitro_mechanoida":
     case "nitro_mechanoidb":
     case "nitro_mechanoidc":
-      return $classCache[$cardID] = "MECHANOLOGIST";
+      return "MECHANOLOGIST";
     case "teklovossen_the_mechropotentb":
-      return $classCache[$cardID] = "MECHANOLOGIST";
+      return "MECHANOLOGIST";
     default:
       break;
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialClass() != "-") return $classCache[$cardID] = $card->SpecialClass();
-  return $classCache[$cardID] = GeneratedCardClass($cardID);
+  if ($card != "-" && $card->SpecialClass() != "-") return $card->SpecialClass();
+  return GeneratedCardClass($cardID);
 }
 
 function CardTalent($cardID, $from="-")
@@ -908,6 +906,9 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
 {
   global $mainPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn, $CS_Num6PowBan;
   if (!$cardID) return 0;
+  $set = CardSet($cardID);
+  $class = CardClass($cardID);
+  $subtype = CardSubtype($cardID);
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $player = $player == "-" ? $mainPlayer : $player;
   $char = GetPlayerCharacter($player);
@@ -938,11 +939,8 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
         else return CheckMarked($defPlayer) ? $basePower+1 : $basePower;
       default: break;
     }
-    if (!$attacking || (!$lyathActive && !$lyathShoes)) return $basePower;
   }
   $cardID = BlindCard($cardID, true);
-  $set = CardSet($cardID);
-  $subtype = CardSubtype($cardID);
   $basePower = -1;
   if (ClassContains($cardID, "ILLUSIONIST", $player) && DelimStringContains($subtype, "Aura") && $from == "CC") {
     if (SearchCharacterForCard($mainPlayer, "luminaris")) $basePower = 1;
