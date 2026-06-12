@@ -76,7 +76,7 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         ApplyRememberMeCookie($userID);
 
         $response->message = 'ok';
-        $response->redirect = '/game/MainMenu.php';
+        $response->redirect = '/'; // React app home (legacy MainMenu.php no longer exists)
         $response->isUserLoggedIn = true;
         $response->loggedInUserID = $userID;
         $response->loggedInUserName = $_SESSION['useruid'];

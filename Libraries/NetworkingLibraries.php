@@ -873,7 +873,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($playerID != "3") {
         WriteLog("Player $playerID has left the game.");
       }
-      header("Location: {$redirectPath}/MainMenu.php");
       exit;
     case 100002: //Concede
       if ($isSimulation)

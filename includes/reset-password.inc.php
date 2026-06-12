@@ -95,6 +95,6 @@ if (isset($_POST['reset-password-submit'])) {
   }
 
 } else {
-  header("Location: ../MainMenu.php");
+  header("Location: /"); // React app home (legacy MainMenu.php no longer exists)
   exit();
 }

@@ -4,7 +4,7 @@ $body = json_decode(file_get_contents('php://input'), true);
 if (isset($body['block-user-submit'])) {
     session_start();
     if (!isset($_SESSION['userid'])) {
-        header('Location: ./MainMenu.php');
+        header('Location: /'); // React app home (legacy MainMenu.php no longer exists)
         die();
     }
 

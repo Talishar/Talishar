@@ -32,7 +32,10 @@ function GetGameCounter($path = "./")
     ++$attemptCount;
   }
   if ($attemptCount == 30) {
-    header("Location: " . $redirectPath . "MainMenu.php"); //We never actually got the lock
+    fclose($gcFile);
+    error_log("GetGameCounter: could not lock " . $gameIDCounterFile . " after 30s");
+    http_response_code(503);
+    exit;
   }
   $counter = intval(fgets($gcFile));
   //$gameName = hash("sha256", $counter);
