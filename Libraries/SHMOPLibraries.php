@@ -24,7 +24,9 @@ function WriteCache($name, $data)
 {
   if ($name == 0) return;
   $serData = trim(serialize(trim($data)));
-  $id = @shmop_open($name, "c", 0644, 128);
+  // 0666: segments must stay writable even if first created by a root CLI
+  // script — 0644 left Apache unable to update the cache (game stuck forever).
+  $id = @shmop_open($name, "c", 0666, 128);
   if ($id == false) {
     exit;
   } else {
@@ -37,11 +39,26 @@ function WriteGamestateCache($name, $data)
 {
   if ($name == 0) return;
   $serData = trim(serialize(trim($data)));
-  $gsID = shmop_open(GamestateID($name), "c", 0644, 32768);
+  $needed = strlen($serData);
+  $key = GamestateID($name);
+
+  $size = 32768;
+  $existing = @shmop_open($key, "a", 0, 0);
+  if ($existing !== false) {
+    $size = shmop_size($existing);
+    if ($size < $needed) {
+      shmop_delete($existing);
+      $size = max(32768, 1 << (int)ceil(log($needed + 1, 2)));
+    }
+  } else if ($needed >= $size) {
+    $size = 1 << (int)ceil(log($needed + 1, 2));
+  }
+
+  $gsID = @shmop_open($key, "c", 0666, $size);
   if ($gsID == false) {
     exit;
   } else {
-    $serData = str_pad($serData, 32768, "\0");
+    $serData = str_pad($serData, $size, "\0");
     $rv = shmop_write($gsID, $serData, 0);
   }
 }
@@ -71,11 +88,11 @@ function ShmopReadCache($name)
 function DeleteCache($name)
 {
   //Always try to delete shmop
-  $id = @shmop_open($name, "w", 0644, 128);
+  $id = @shmop_open($name, "w", 0666, 128);
   if($id) {
     shmop_delete($id);
   }
-  $gsID = @shmop_open(GamestateID($name), "c", 0644, 32768);
+  $gsID = @shmop_open(GamestateID($name), "c", 0666, 32768);
   if($gsID) {
     shmop_delete($gsID);
   }

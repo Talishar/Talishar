@@ -48,6 +48,16 @@ function ParseGamestate()
   $myStateBuiltFor = -1;
 
   $gamestateContent = ReadCache(GamestateID($gameName));
+  if (substr_count($gamestateContent, "\r\n") < 59) {
+    global $filename;
+    $gsFile = (isset($filename) && str_contains($filename, "gamestate.txt"))
+      ? $filename : "./Games/" . $gameName . "/gamestate.txt";
+    $fileContent = @file_get_contents($gsFile);
+    if ($fileContent !== false && substr_count($fileContent, "\r\n") >= 59) {
+      $gamestateContent = $fileContent;
+      WriteGamestateCache($gameName, $fileContent);
+    }
+  }
   $gamestateContent = explode("\r\n", $gamestateContent);
   if(count($gamestateContent) < 60) exit;
 

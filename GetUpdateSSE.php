@@ -128,6 +128,7 @@ gc_collect_cycles();
 
 $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
+$lastSendTime = microtime(true); // last time anything was written to the client
 $lastFileCheckTime = microtime(true);
 $fileCheckInterval = 30.0;
 $gameFileExists = true;
@@ -188,8 +189,20 @@ while (true) {
     // Build and send full game state
     $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive);
     if (is_string($gameState)) {
-      SendContent(["error" => $gameState]);
-      exit;
+      // Only kill the stream for genuinely fatal errors. Transient ones (e.g.
+      // "Game state reverted." mid-undo) resolve on the next update — exiting
+      // here forced every affected client through a full reconnect.
+      $fatal = str_contains($gameState, "no longer exists")
+        || str_contains($gameState, "Invalid Authkey")
+        || str_contains($gameState, "Spectators not allowed")
+        || str_contains($gameState, "Invalid game name")
+        || str_contains($gameState, "Invalid player ID");
+      if ($fatal) {
+        SendContent(["error" => $gameState]);
+        exit;
+      }
+      usleep(intval($sleepMs * 1000));
+      continue;
     }
     SendContent($gameState);
     unset($gameState);
@@ -215,23 +228,38 @@ while (true) {
       echo "data: " . json_encode(["opponentIsTyping" => $opponentIsTyping]) . "\n\n";
       ob_flush();
       flush();
+      $lastSendTime = $currentRealTime;
     }
   }
 
+  if ($currentRealTime - $lastSendTime >= 15) {
+    echo "event: hb\n";
+    echo "data: {}\n\n";
+    ob_flush();
+    flush();
+    $lastSendTime = $currentRealTime;
+    if (connection_aborted()) exit;
+  }
+
+  $msSinceLastChange = 1000 * $currentRealTime - intval($lastUpdateTime);
+  $sleepMs = $msSinceLastChange > 5000 ? 150 : 50;
   usleep(intval($sleepMs * 1000));
 }
 
 function SendContent($jsonContent) {
-  global $rateLimitStartInterval, $rateLimitProcessCount;
+  global $rateLimitStartInterval, $rateLimitProcessCount, $lastSendTime;
   $currentRealTime = microtime(true);
+  $lastSendTime = $currentRealTime;
   if($currentRealTime - $rateLimitStartInterval > 1.0) {
     // Reset rate limit counters every second
     $rateLimitStartInterval = $currentRealTime;
     $rateLimitProcessCount = 0;
   } else {
     $rateLimitProcessCount++;
-    if($rateLimitProcessCount > 5) {
-      SendContent(["error" => "Too many game updates in last second. A likely logic error has occurred."]);
+    if($rateLimitProcessCount > 15) {
+      echo ("data: " . json_encode(["error" => "Too many game updates in last second. A likely logic error has occurred."]) . "\n\n");
+      ob_flush();
+      flush();
       exit;
     }
   }

@@ -3,7 +3,7 @@
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 $dir = dirname($filename);
 if (!is_dir($dir)) mkdir($dir, 0700, true);
-$handler = fopen($filename, "w");
+$handler = fopen($filename, "c");
 
 if ($handler === false) {
   error_log("ERROR: Failed to open gamestate file: " . $filename . " (from game: " . $gameName . ")");
@@ -11,12 +11,19 @@ if ($handler === false) {
 }
 
 $lockTries = 0;
-while (!flock($handler, LOCK_EX | LOCK_NB) && $lockTries < 5) {
-  usleep(10000); // 10ms
+while (!flock($handler, LOCK_EX | LOCK_NB) && $lockTries < 100) {
+  usleep(3000); // 3ms
   ++$lockTries;
 }
 
-if ($lockTries == 5) { fclose($handler); exit; }
+if ($lockTries == 100) {
+  fclose($handler);
+  error_log("ERROR: WriteGamestate could not lock " . $filename . " after 300ms — action not persisted (game: " . $gameName . ")");
+  exit;
+}
+
+ftruncate($handler, 0);
+rewind($handler);
 
 $gamestateLines = [
   implode(" ", $playerHealths),

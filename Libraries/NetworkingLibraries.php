@@ -4517,18 +4517,22 @@ function WriteGamestate()
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime;
   
   $filename = "./Games/" . $gameName . "/gamestate.txt";
-  $handler = fopen($filename, "w");
+  $handler = fopen($filename, "c");
 
   $lockTries = 0;
-  while (!flock($handler, LOCK_EX) && $lockTries < 10) {
-    usleep(100000); //100ms
+  while (!flock($handler, LOCK_EX | LOCK_NB) && $lockTries < 100) {
+    usleep(3000); //3ms
     ++$lockTries;
   }
 
-  if ($lockTries == 10) {
+  if ($lockTries == 100) {
     fclose($handler);
+    error_log("ERROR: WriteGamestate() could not lock " . $filename . " after 300ms — state not persisted (game: " . $gameName . ")");
     exit;
   }
+
+  ftruncate($handler, 0);
+  rewind($handler);
 
   // Build entire output string before writing (reduces I/O operations)
   $output = [];
