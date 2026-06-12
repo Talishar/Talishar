@@ -169,17 +169,18 @@ while (true) {
 
   // Check if game is over (status 99)
   $gameStatus = intval($cacheArr[13] ?? 0);
+  $cacheVal = intval($cacheStr);
   if ($gameStatus == 99) {
-    // Send final state before exiting
-    $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
-    if (!is_string($finalState)) {
-      SendContent($finalState);
+    if ($cacheVal > $lastUpdate) {
+      $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
+      if (!is_string($finalState)) {
+        SendContent($finalState);
+      }
+      $lastUpdate = $cacheVal;
     }
-    exit;
-  }
+  } else {
 
   // Check for game state updates
-  $cacheVal = intval($cacheStr);
   $timeout = 60 * 1000; //seconds
   $inactive = 1000 * $currentRealTime - intval($lastUpdateTime) > $timeout;
   $previouslyInactive = $cacheArr[16] ?? "";

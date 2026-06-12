@@ -2,6 +2,9 @@
 function DelimStringContains($str, $find, $partial=false)
 {
   if($str == null) return false;
+  if(strpos((string)$str, ",") === false) {
+    return $partial ? str_contains((string)$str, $find) : (string)$str == $find;
+  }
   $arr = explode(",", $str);
   foreach($arr as $item)
   {
