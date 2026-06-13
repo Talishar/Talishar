@@ -5,26 +5,25 @@ function &GetMZZone($player, $zone)
 {
   global $layers, $combatChain, $chainLinks;
   $rv = [];
-  if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
-  else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
-  else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
-  else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
-  else if ($zone == "MYARSENAL" || $zone == "THEIRARSENAL") $rv = &GetArsenal($player);
-  else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = &GetHand($player);
-  else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = &GetPitch($player);
-  else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
-  else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
-  else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = &GetBanish($player);
-  else if ($zone == "DECK" || $zone == "MYDECK" || $zone == "THEIRDECK") $rv = &GetDeck($player);
-  else if ($zone == "SOUL" || $zone == "MYSOUL" || $zone == "THEIRSOUL") $rv = &GetSoul($player);
-  else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = &GetItems($player);
-  else if ($zone == "LAYER") return $layers;
-  else if ($zone == "CC" || $zone == "COMBATCHAINLINK") return $combatChain;
-  else if ($zone == "COMBATCHAINATTACKS") {
+  if ($zone === "MYCHAR" || $zone === "THEIRCHAR") $rv = &GetPlayerCharacter($player);
+  elseif ($zone === "MYAURAS" || $zone === "THEIRAURAS") $rv = &GetAuras($player);
+  elseif ($zone === "ALLY" || $zone === "MYALLY" || $zone === "THEIRALLY") $rv = &GetAllies($player);
+  elseif ($zone === "MYARS" || $zone === "THEIRARS" || $zone === "MYARSENAL" || $zone === "THEIRARSENAL") $rv = &GetArsenal($player);
+  elseif ($zone === "MYHAND" || $zone === "THEIRHAND") $rv = &GetHand($player);
+  elseif ($zone === "MYPITCH" || $zone === "THEIRPITCH") $rv = &GetPitch($player);
+  elseif ($zone === "MYDISCARD" || $zone === "THEIRDISCARD") $rv = &GetDiscard($player);
+  elseif ($zone === "PERM" || $zone === "MYPERM" || $zone === "THEIRPERM") $rv = &GetPermanents($player);
+  elseif ($zone === "BANISH" || $zone === "MYBANISH" || $zone === "THEIRBANISH") $rv = &GetBanish($player);
+  elseif ($zone === "DECK" || $zone === "MYDECK" || $zone === "THEIRDECK") $rv = &GetDeck($player);
+  elseif ($zone === "SOUL" || $zone === "MYSOUL" || $zone === "THEIRSOUL") $rv = &GetSoul($player);
+  elseif ($zone === "ITEMS" || $zone === "MYITEMS" || $zone === "THEIRITEMS") $rv = &GetItems($player);
+  elseif ($zone === "LAYER") return $layers;
+  elseif ($zone === "CC" || $zone === "COMBATCHAINLINK") return $combatChain;
+  elseif ($zone === "COMBATCHAINATTACKS") {
     $attacks = GetCombatChainAttacks();
     return $attacks;
   }
-  else if ($zone == "PASTCHAINLINK") return $chainLinks;
+  elseif ($zone === "PASTCHAINLINK") return $chainLinks;
   return $rv;
 }
 
@@ -72,20 +71,20 @@ function &GetRelativeMZZone($player, $zone)
 {
   global $layers, $combatChain;
   $rv = "";
-  if (substr($zone, 0, 5) == "THEIR") $player = $player == 1 ? 2 : 1;
-  if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
-  else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
-  else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
-  else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
-  else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = &GetHand($player);
-  else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = &GetPitch($player);
-  else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
-  else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
-  else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = &GetBanish($player);
-  else if ($zone == "DECK" || $zone == "MYDECK" || $zone == "THEIRDECK") $rv = &GetDeck($player);
-  else if ($zone == "SOUL" || $zone == "MYSOUL" || $zone == "THEIRSOUL") $rv = &GetSoul($player);
-  else if ($zone == "LAYER") return $layers;
-  else if ($zone == "CC") return $combatChain;
+  if (substr($zone, 0, 5) === "THEIR") $player = $player == 1 ? 2 : 1;
+  if ($zone === "MYCHAR" || $zone === "THEIRCHAR") $rv = &GetPlayerCharacter($player);
+  elseif ($zone === "MYAURAS" || $zone === "THEIRAURAS") $rv = &GetAuras($player);
+  elseif ($zone === "ALLY" || $zone === "MYALLY" || $zone === "THEIRALLY") $rv = &GetAllies($player);
+  elseif ($zone === "MYARS" || $zone === "THEIRARS" || $zone === "MYARSENAL" || $zone === "THEIRARSENAL") $rv = &GetArsenal($player);
+  elseif ($zone === "MYHAND" || $zone === "THEIRHAND") $rv = &GetHand($player);
+  elseif ($zone === "MYPITCH" || $zone === "THEIRPITCH") $rv = &GetPitch($player);
+  elseif ($zone === "MYDISCARD" || $zone === "THEIRDISCARD") $rv = &GetDiscard($player);
+  elseif ($zone === "PERM" || $zone === "MYPERM" || $zone === "THEIRPERM") $rv = &GetPermanents($player);
+  elseif ($zone === "BANISH" || $zone === "MYBANISH" || $zone === "THEIRBANISH") $rv = &GetBanish($player);
+  elseif ($zone === "DECK" || $zone === "MYDECK" || $zone === "THEIRDECK") $rv = &GetDeck($player);
+  elseif ($zone === "SOUL" || $zone === "MYSOUL" || $zone === "THEIRSOUL") $rv = &GetSoul($player);
+  elseif ($zone === "LAYER") return $layers;
+  elseif ($zone === "CC") return $combatChain;
   return $rv;
 }
 
@@ -137,28 +136,19 @@ function &GetPlayerClassState($player)
 
 function GetClassState($player, $piece)
 {
-  global $mainPlayer, $mainPlayerGamestateStillBuilt;
-  global $myClassState, $theirClassState, $mainClassState, $defClassState;
-  global $myStateBuiltFor;
-  if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) {
-      if (!isset($mainClassState)) return "";
-      return $mainClassState[$piece] ?? "";
-    }
-    else {
-      if (!isset($defClassState)) return "";
-      return $defClassState[$piece] ?? "";
-    }
-  } else {
-    if ($player == $myStateBuiltFor) {
-      if (!isset($myClassState)) return "";
-      return $myClassState[$piece] ?? "";
-    }
-    else {
-      if (!isset($theirClassState)) return "";
-      return $theirClassState[$piece] ?? "";
-    }
+  static $mainPl = -1, $useMainSet;
+  global $mainClassState, $defClassState, $myClassState, $theirClassState;
+
+  if ($mainPl === -1) {
+    global $mainPlayerGamestateStillBuilt, $mainPlayer, $myStateBuiltFor;
+    $useMainSet = (bool)$mainPlayerGamestateStillBuilt;
+    $mainPl = $useMainSet ? $mainPlayer : $myStateBuiltFor;
   }
+
+  if ($useMainSet) {
+    return ($player == $mainPl ? $mainClassState : $defClassState)[$piece] ?? "";
+  }
+  return ($player == $mainPl ? $myClassState : $theirClassState)[$piece] ?? "";
 }
 
 function &GetDeck($player)
