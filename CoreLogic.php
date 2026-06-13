@@ -1927,6 +1927,16 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
 function ClassOverride($cardID, $player)
 {
   global $currentTurnEffects;
+  static $cache = [];
+  static $cacheVersion = -1;
+  $currentVersion = $GLOBALS['cteVersion'] ?? 0;
+  if ($cacheVersion !== $currentVersion) {
+    $cache = [];
+    $cacheVersion = $currentVersion;
+  }
+  $cacheKey = "$cardID|$player";
+  if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];
+
   $cardClass = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
@@ -1976,8 +1986,8 @@ function ClassOverride($cardID, $player)
     if ($cardClass != "") $cardClass .= ",";
     $cardClass .= CardClass($cardID);
   }
-  if ($cardClass == "") return "NONE";
-  return $cardClass;
+  if ($cardClass == "") $cardClass = "NONE";
+  return $cache[$cacheKey] = $cardClass;
 }
 
 function NameOverride($cardID, $player = "")

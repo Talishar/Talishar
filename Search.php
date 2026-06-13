@@ -635,17 +635,21 @@ function SearchMultizoneFormat($search, $zone)
 function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false, $stripParams = false)
 {
   global $currentTurnEffects;
-  $canCache = !$remove && !$activate && !$returnUniqueID && !$stripParams;
-  if ($canCache) {
-    static $cache = [];
-    static $cacheVersion = -1;
+  $canCacheNegative = !$remove && !$returnUniqueID;
+  static $cache = [];
+  static $cacheVersion = -1;
+  if ($canCacheNegative) {
     $currentVersion = $GLOBALS['cteVersion'] ?? 0;
     if ($cacheVersion !== $currentVersion) {
       $cache = [];
       $cacheVersion = $currentVersion;
     }
     $cacheKey = "$cardID|$player";
-    if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];
+    if (array_key_exists($cacheKey, $cache)) {
+      $cached = $cache[$cacheKey];
+      if ($cached === false) return false;              // not found — always safe
+      if ($canCachePositive) return $cached;            // found, no side-effect needed
+    }
   }
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
@@ -659,13 +663,12 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
         $GLOBALS['cteVersion'] = ($GLOBALS['cteVersion'] ?? 0) + 1; // in-place mutation; invalidate cache
       }
       $result = $returnUniqueID ? $currentTurnEffects[$i + 2] : true;
-      if ($canCache) $cache[$cacheKey] = $result;
+      if ($canCachePositive) $cache[$cacheKey] = $result;
       return $result;
     }
   }
-  $result = $returnUniqueID ? -1 : false;
-  if ($canCache) $cache[$cacheKey] = $result;
-  return $result;
+  if ($canCacheNegative) $cache[$cacheKey] = false;
+  return $returnUniqueID ? -1 : false;
 }
 
 function SearchDynamicCurrentTurnEffectsIndex($cardID, $player, $remove = false, $returnUniqueID = false)
