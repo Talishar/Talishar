@@ -225,9 +225,9 @@ function SearchInner(
         // Check string-based conditions last (most expensive)
         if ($nameIncludes != "" && !CardNameContains($cardID, $nameIncludes, $player, partial: true)) continue;
         
-        if ($cardList != "") $cardList = $cardList . ",";
+        if ($cardList != "") $cardList .= ",";
         
-        $cardList = $cardList . ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
+        $cardList .= ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
       }
     }
   }
@@ -949,7 +949,7 @@ function SearchAurasForCard($cardID, $player, $selfReferential = true)
   $pieces = AuraPieces();
   $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($auras[$i] == $cardID || ($cardID == "runechant" && IsRunechant($auras[$i]))) {
+    if ($auras[$i] == $cardID || $cardID == "runechant" && IsRunechant($auras[$i])) {
       $indices[] = $i;
     }
   }
@@ -1725,8 +1725,8 @@ function SearchMultizone($player, $searches)
                 $searchResult = "";
                 break;
             }
-            if ($rv != "") $rv = $rv . ",";
-            $rv = $rv . SearchMultiZoneFormat($searchResult, $zone);
+            if ($rv != "") $rv .= ",";
+            $rv .= SearchMultiZoneFormat($searchResult, $zone);
             if (substr($rv, -1) == ",") $rv = substr($rv, 0, -1);
             $isSameName = true;
             break;
