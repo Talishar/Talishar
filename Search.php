@@ -604,14 +604,20 @@ function CombineSearches($search1, $search2)
 
 function SearchRemoveDuplicates($search)
 {
-  if ($search == "") return "";
-  return implode(",", array_unique(explode(",", $search)));
+  $indices = explode(",", $search);
+  $countIndices = count($indices);
+  for ($i = $countIndices - 1; $i >= 0; --$i) {
+    for ($j = $i - 1; $j >= 0; --$j) {
+      if (isset($indices[$j]) && isset($indices[$i]) && $indices[$j] == $indices[$i]) unset($indices[$i]);
+    }
+  }
+  return implode(",", array_values($indices));
 }
 
 function SearchCount($search)
 {
   if ($search == "" || $search == "PASS") return 0;
-  return substr_count($search, ",") + 1;
+  return count(explode(",", $search));
 }
 
 function SearchMultizoneFormat($search, $zone)
