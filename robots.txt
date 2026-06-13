@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /game/ProcessInput.php
+Disallow: /game/GetNextTurn.php
+Disallow: /game/GetUpdateSSE.php
+Disallow: /game/GetPopupAPI.php
+Disallow: /game/APIs/
+Disallow: /game/AccountFiles/
+Disallow: /Games/
+
+User-agent: Leikibot
+Disallow: /

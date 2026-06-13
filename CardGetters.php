@@ -30,24 +30,24 @@ function &GetMZZone($player, $zone)
 
 function GetMZZonePieces($zone)
 {
-  $rv = 0;
-  if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = CharacterPieces();
-  else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = AuraPieces();
-  else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = AllyPieces();
-  else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = ArsenalPieces();
-  else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = HandPieces();
-  else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = PitchPieces();
-  else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = DiscardPieces();
-  else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = PermanentPieces();
-  else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = BanishPieces();
-  else if ($zone == "DECK" || $zone == "MYDECK" || $zone == "THEIRDECK") $rv = DeckPieces();
-  else if ($zone == "SOUL" || $zone == "MYSOUL" || $zone == "THEIRSOUL") $rv = SoulPieces();
-  else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = ItemPieces();
-  else if ($zone == "LAYER") return LayerPieces();
-  else if ($zone == "CC" || $zone == "COMBATCHAINLINK") $rv = CombatChainPieces();
-  else if ($zone == "COMBATCHAINATTACKS") $rv = ChainLinksPieces();
-  else if ($zone == "PASTCHAINLINK") $rv = ChainLinksPieces();
-  return $rv;
+  return match($zone) {
+    "MYCHAR", "THEIRCHAR" => CharacterPieces(),
+    "MYAURAS", "THEIRAURAS" => AuraPieces(),
+    "ALLY", "MYALLY", "THEIRALLY" => AllyPieces(),
+    "MYARS", "THEIRARS" => ArsenalPieces(),
+    "MYHAND", "THEIRHAND" => HandPieces(),
+    "MYPITCH", "THEIRPITCH" => PitchPieces(),
+    "MYDISCARD", "THEIRDISCARD" => DiscardPieces(),
+    "PERM", "MYPERM", "THEIRPERM" => PermanentPieces(),
+    "BANISH", "MYBANISH", "THEIRBANISH" => BanishPieces(),
+    "DECK", "MYDECK", "THEIRDECK" => DeckPieces(),
+    "SOUL", "MYSOUL", "THEIRSOUL" => SoulPieces(),
+    "ITEMS", "MYITEMS", "THEIRITEMS" => ItemPieces(),
+    "LAYER" => LayerPieces(),
+    "CC", "COMBATCHAINLINK" => CombatChainPieces(),
+    "COMBATCHAINATTACKS", "PASTCHAINLINK" => ChainLinksPieces(),
+    default => 0,
+  };
 }
 
 function GetMZZoneUIDIndex($zone)
@@ -109,8 +109,12 @@ function &GetCharacterEffects($player)
   global $mainCharacterEffects, $defCharacterEffects, $myCharacterEffects, $theirCharacterEffects;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return $mainCharacterEffects;
-    else return $defCharacterEffects;
+    switch ($player) {
+        case $mainPlayer:
+            return $mainCharacterEffects;
+        default:
+            return $defCharacterEffects;
+    }
   } else {
     if ($player == $myStateBuiltFor) return $myCharacterEffects;
     else return $theirCharacterEffects;
@@ -229,7 +233,7 @@ function &GetHealth($player)
 
 function &GetResources($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myResources, $theirResources, $mainResources, $defResources;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -243,7 +247,7 @@ function &GetResources($player)
 
 function &GetItems($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myItems, $theirItems, $mainItems, $defItems;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -257,7 +261,7 @@ function &GetItems($player)
 
 function &GetSoul($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -271,7 +275,7 @@ function &GetSoul($player)
 
 function &GetDiscard($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -285,7 +289,7 @@ function &GetDiscard($player)
 
 function &GetArsenal($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myArsenal, $theirArsenal, $mainArsenal, $defArsenal;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -299,7 +303,7 @@ function &GetArsenal($player)
 
 function &GetAuras($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myAuras, $theirAuras, $mainAuras, $defAuras;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -325,7 +329,7 @@ function &GetAuras($player)
 
 function &GetCardStats($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myCardStats, $theirCardStats, $mainCardStats, $defCardStats;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -353,7 +357,7 @@ function &GetCardTurnLog($player)
 
 function &GetTurnStats($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myTurnStats, $theirTurnStats, $mainTurnStats, $defTurnStats;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -395,7 +399,7 @@ function &GetSettings($player)
 
 function &GetMainCharacterEffects($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myCharacterEffects, $theirCharacterEffects, $mainCharacterEffects, $defCharacterEffects;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {

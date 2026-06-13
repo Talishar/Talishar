@@ -88,16 +88,20 @@ function validateCardID($cardID) {
     if (empty($cardID) || !is_string($cardID)) {
         return false;
     }
-    
+
+    if ($cardID === 'undefined' || $cardID === 'null') {
+        return false;
+    }
+
     // Semicolons separate multiple card IDs, pipes separate card ID from destination zone (e.g. "card_name|banish")
     if (strlen($cardID) < 1 || strlen($cardID) > 500) {
         return false;
     }
-    
+
     if (!preg_match('/^[a-zA-Z0-9_ ;|\-~]+$/', $cardID)) {
         return false;
     }
-    
+
     return true;
 }
 
