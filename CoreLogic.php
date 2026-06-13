@@ -184,10 +184,8 @@ function AddPower(&$totalPower, $amount, $sourceBuff=false, $source="-"): void
     if ($amount > 0 && ($attackID == "amplifying_arrow_yellow" || $attackID == "doubling_season_red"))
       $amount += 1;
     if (!$sourceBuff && $amount > 0) { //thrive and flourish don't apply to buffs to the attack source
-      if (SearchCurrentTurnEffects("thrive_yellow", $mainPlayer)) {
-        $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack so get all the active effects before applying bonus
-        $amount += $num_thrives_active;
-      }
+      $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack; count in one pass (no separate exists-check needed)
+      if ($num_thrives_active > 0) $amount += $num_thrives_active;
       SearchCurrentTurnEffects("flourish_yellow-INACTIVE", $mainPlayer, false, false, true);
       SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
     }
@@ -1929,6 +1927,19 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
 function ClassOverride($cardID, $player)
 {
   global $currentTurnEffects;
+  static $cache = [];
+  static $cacheVersion = -1;
+  static $cacheRequestID = 0;
+  if (!isset($GLOBALS['cteRequestID'])) $GLOBALS['cteRequestID'] = mt_rand();
+  $currentVersion = $GLOBALS['cteVersion'] ?? 0;
+  if ($cacheVersion !== $currentVersion || $cacheRequestID !== $GLOBALS['cteRequestID']) {
+    $cache = [];
+    $cacheVersion = $currentVersion;
+    $cacheRequestID = $GLOBALS['cteRequestID'];
+  }
+  $cacheKey = "$cardID|$player";
+  if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];
+
   $cardClass = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
@@ -1978,8 +1989,8 @@ function ClassOverride($cardID, $player)
     if ($cardClass != "") $cardClass .= ",";
     $cardClass .= CardClass($cardID);
   }
-  if ($cardClass == "") return "NONE";
-  return $cardClass;
+  if ($cardClass == "") $cardClass = "NONE";
+  return $cache[$cacheKey] = $cardClass;
 }
 
 function NameOverride($cardID, $player = "")

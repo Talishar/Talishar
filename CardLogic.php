@@ -91,6 +91,7 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
   $currentTurnEffects[] = $player;
   $currentTurnEffects[] = $uniqueID;
   $currentTurnEffects[] = CurrentTurnEffectUses($cardID);
+  $GLOBALS['cteVersion'] = ($GLOBALS['cteVersion'] ?? 0) + 1;
 }
 
 function AddEffectToCurrentAttack($cardID) {
@@ -130,6 +131,9 @@ function CopyCurrentTurnEffectsFromAfterResolveEffects()
     $currentTurnEffects[] = $afterResolveEffects[$i + 3];
   }
   $afterResolveEffects = [];
+  if ($afterResolveEffectsCount > 0) {
+    $GLOBALS['cteVersion'] = ($GLOBALS['cteVersion'] ?? 0) + 1;
+  }
 }
 
 //This is needed because if you add a current turn effect from combat, it could get deleted as part of the combat resolution
@@ -153,6 +157,7 @@ function CopyCurrentTurnEffectsFromCombat()
     $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i + 3];
   }
   $currentTurnEffectsFromCombat = [];
+  $GLOBALS['cteVersion'] = ($GLOBALS['cteVersion'] ?? 0) + 1;
 }
 
 function RemoveCurrentTurnEffect($index)
@@ -163,6 +168,7 @@ function RemoveCurrentTurnEffect($index)
   unset($currentTurnEffects[$index + 1]);
   unset($currentTurnEffects[$index]);
   $currentTurnEffects = array_values($currentTurnEffects);
+  $GLOBALS['cteVersion'] = ($GLOBALS['cteVersion'] ?? 0) + 1;
 }
 
 function CurrentTurnEffectPieces()
@@ -4878,11 +4884,33 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
 {
   global $CS_Num6PowBan, $CombatChain, $currentTurnEffects;
   if ($cardID == "") return 0;
+  static $cache = [];
+  static $cacheVersion = -1;
+  static $cacheRequestID = 0;
+  static $dynamicPowerCards = [
+    'mutated_mass_blue'      => true, // pitch count
+    'spectral_procession_red'=> true, // aura count
+    'tough_as_a_rok_blue'    => true, // health comparison
+  ];
+  $useCache = ($index === -1 && $source === "" && !isset($dynamicPowerCards[$cardID]));
+  if ($useCache) {
+    if (!isset($GLOBALS['cteRequestID'])) $GLOBALS['cteRequestID'] = mt_rand();
+    $currentVersion = $GLOBALS['cteVersion'] ?? 0;
+    if ($cacheVersion !== $currentVersion || $cacheRequestID !== $GLOBALS['cteRequestID']) {
+      $cache = [];
+      $cacheVersion = $currentVersion;
+      $cacheRequestID = $GLOBALS['cteRequestID'];
+    }
+    $cacheKey = "$cardID|$player|$from";
+    if (isset($cache[$cacheKey])) return $cache[$cacheKey];
+  }
   $power = PowerValue($cardID, $player, $from);
   if ($cardID == "mutated_mass_blue") $power = SearchPitchForNumCosts($player) * 2;
   else if ($cardID == "fractal_replication_red") {
     $card = new fractal_replication_red($player);
-    return $card->SpecialPower();
+    $result = $card->SpecialPower();
+    if ($useCache) $cache[$cacheKey] = $result;
+    return $result;
   }
   else if ($cardID == "spectral_procession_red") $power = CountAura("spectral_shield", $player);
   else if ($cardID == "diabolic_offering_blue") $power = GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
@@ -4923,6 +4951,7 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
   } else {
     $power += EffectDefenderPowerModifiers($cardID);
   }
+  if ($useCache) $cache[$cacheKey] = $power;
   return $power;
 }
 

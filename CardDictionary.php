@@ -434,37 +434,46 @@ function CardClass($cardID)
     default:
       break;
   }
+  static $classCache = [];
+  if (isset($classCache[$cardID])) return $classCache[$cardID];
+
+  $result = null;
   $setID = SetID($cardID);
   $number = intval(substr($setID, 3));
   if ($number >= 400) {
     $set = substr($setID, 0, 3);
     switch ($set) {
       case "MON":
-        if ($number == 404) return "ILLUSIONIST";
-        else if ($number == 405) return "WARRIOR";
-        else if ($number == 406) return "BRUTE";
-        else if ($number == 407) return "RUNEBLADE";
-        else return "NONE";
+        if ($number == 404) $result = "ILLUSIONIST";
+        else if ($number == 405) $result = "WARRIOR";
+        else if ($number == 406) $result = "BRUTE";
+        else if ($number == 407) $result = "RUNEBLADE";
+        else $result = "NONE";
+        break;
       case "UPR":
-        if ($number >= 406 && $number <= 417) return "ILLUSIONIST";
-        else if ($number >= 439 && $number <= 441) return "ILLUSIONIST";
-        else if ($number == 551) return "ILLUSIONIST";
-        else return "NONE";
+        if ($number >= 406 && $number <= 417) $result = "ILLUSIONIST";
+        else if ($number >= 439 && $number <= 441) $result = "ILLUSIONIST";
+        else if ($number == 551) $result = "ILLUSIONIST";
+        else $result = "NONE";
+        break;
     }
   }
-  switch ($cardID) {
-    case "nitro_mechanoida":
-    case "nitro_mechanoidb":
-    case "nitro_mechanoidc":
-      return "MECHANOLOGIST";
-    case "teklovossen_the_mechropotentb":
-      return "MECHANOLOGIST";
-    default:
-      break;
+  if ($result === null) {
+    switch ($cardID) {
+      case "nitro_mechanoida":
+      case "nitro_mechanoidb":
+      case "nitro_mechanoidc":
+      case "teklovossen_the_mechropotentb":
+        $result = "MECHANOLOGIST";
+        break;
+      default:
+        $card = GetClass($cardID, 0);
+        if ($card != "-" && $card->SpecialClass() != "-") $result = $card->SpecialClass();
+        else $result = GeneratedCardClass($cardID);
+        break;
+    }
   }
-  $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialClass() != "-") return $card->SpecialClass();
-  return GeneratedCardClass($cardID);
+  return $classCache[$cardID] = $result;
 }
 
 function CardTalent($cardID, $from="-")
@@ -914,9 +923,9 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
-  if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
+  if ($base && $from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
-    $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
+    $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive;
     $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA");
   }
   //Only weapon that gains power, NOT on their attack
@@ -937,7 +946,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
       case "mark_of_the_huntsman_r":
         if (!IsHeroAttackTarget() || $from != "CC") return $basePower;
         else return CheckMarked($defPlayer) ? $basePower+1 : $basePower;
-      default: break;
+      default: return $basePower; // base power already computed by recursive call, don't recompute
     }
   }
   $cardID = BlindCard($cardID, true);

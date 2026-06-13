@@ -161,6 +161,7 @@ function SearchInner(
 )
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  if ($minAttack === false) $minAttack = -1;
   $cardList = "";
   if (!is_array($talents)) $talents = $talents == "" ? [] : explode(",", $talents);
   $arrayCount = count($array);
@@ -603,20 +604,14 @@ function CombineSearches($search1, $search2)
 
 function SearchRemoveDuplicates($search)
 {
-  $indices = explode(",", $search);
-  $countIndices = count($indices);
-  for ($i = $countIndices - 1; $i >= 0; --$i) {
-    for ($j = $i - 1; $j >= 0; --$j) {
-      if (isset($indices[$j]) && isset($indices[$i]) && $indices[$j] == $indices[$i]) unset($indices[$i]);
-    }
-  }
-  return implode(",", array_values($indices));
+  if ($search == "") return "";
+  return implode(",", array_unique(explode(",", $search)));
 }
 
 function SearchCount($search)
 {
   if ($search == "" || $search == "PASS") return 0;
-  return count(explode(",", $search));
+  return substr_count($search, ",") + 1;
 }
 
 function SearchMultizoneFormat($search, $zone)
@@ -634,6 +629,26 @@ function SearchMultizoneFormat($search, $zone)
 function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false, $stripParams = false)
 {
   global $currentTurnEffects;
+  $canCacheNegative = !$remove && !$returnUniqueID;
+  $canCachePositive = $canCacheNegative && !$activate && !$stripParams;
+  static $cache = [];
+  static $cacheVersion = -1;
+  static $cacheRequestID = 0;
+  if ($canCacheNegative) {
+    if (!isset($GLOBALS['cteRequestID'])) $GLOBALS['cteRequestID'] = mt_rand();
+    $currentVersion = $GLOBALS['cteVersion'] ?? 0;
+    if ($cacheVersion !== $currentVersion || $cacheRequestID !== $GLOBALS['cteRequestID']) {
+      $cache = [];
+      $cacheVersion = $currentVersion;
+      $cacheRequestID = $GLOBALS['cteRequestID'];
+    }
+    $cacheKey = "$cardID|$player|" . ($stripParams ? "1" : "0");
+    if (array_key_exists($cacheKey, $cache)) {
+      $cached = $cache[$cacheKey];
+      if ($cached === false) return false;              // not found — always safe
+      if ($canCachePositive) return $cached;            // found, no side-effect needed
+    }
+  }
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
@@ -641,10 +656,16 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
     $effectName = $stripParams ? explode(",", $currentTurnEffects[$i])[0] : $currentTurnEffects[$i];
     if ($effectName == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
-      if ($activate) $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
-      return $returnUniqueID ? $currentTurnEffects[$i + 2] : true;
+      if ($activate) {
+        $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
+        $GLOBALS['cteVersion'] = ($GLOBALS['cteVersion'] ?? 0) + 1; // in-place mutation; invalidate cache
+      }
+      $result = $returnUniqueID ? $currentTurnEffects[$i + 2] : true;
+      if ($canCachePositive) $cache[$cacheKey] = $result;
+      return $result;
     }
   }
+  if ($canCacheNegative) $cache[$cacheKey] = false;
   return $returnUniqueID ? -1 : false;
 }
 
@@ -709,6 +730,20 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
 function CountCurrentTurnEffects($cardID, $player, $remove = false, $partial = false)
 {
   global $currentTurnEffects;
+  if (!$remove) {
+    static $cache = [];
+    static $cacheVersion = -1;
+    static $cacheRequestID = 0;
+    if (!isset($GLOBALS['cteRequestID'])) $GLOBALS['cteRequestID'] = mt_rand();
+    $currentVersion = $GLOBALS['cteVersion'] ?? 0;
+    if ($cacheVersion !== $currentVersion || $cacheRequestID !== $GLOBALS['cteRequestID']) {
+      $cache = [];
+      $cacheVersion = $currentVersion;
+      $cacheRequestID = $GLOBALS['cteRequestID'];
+    }
+    $cacheKey = "$cardID|$player|$partial";
+    if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];
+  }
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   $total = 0;
@@ -726,6 +761,7 @@ function CountCurrentTurnEffects($cardID, $player, $remove = false, $partial = f
       }
     }
   }
+  if (!$remove) $cache[$cacheKey] = $total;
   return $total;
 }
 function SearchPitchHighestAttack(&$pitch)

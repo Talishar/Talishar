@@ -1,7 +1,14 @@
+# Block known bad bots that scrape game APIs
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_USER_AGENT} Leikibot [NC]
+  RewriteRule .* - [F,L]
+</IfModule>
+
 # Case-insensitive routing for game API files
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  
+
   # Allow direct access to AccountFiles directory (OAuth callbacks, etc)
   RewriteCond %{REQUEST_URI} ^/AccountFiles/ [OR]
   RewriteCond %{REQUEST_URI} ^/game/AccountFiles/
