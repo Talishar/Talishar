@@ -56,10 +56,8 @@ if ($mode == 100015) {
 }
 
 //We should also have some information on the type of command
-$buttonInput = isset($_GET["buttonInput"]) ? sanitizeString($_GET["buttonInput"]) : "";
-if ($buttonInput === 'undefined' || $buttonInput === 'null') $buttonInput = '';
+$buttonInput = isset($_GET["buttonInput"]) ? sanitizeString($_GET["buttonInput"]) : ""; //The player that is the target of the command - e.g. for changing life total
 $cardID = isset($_GET["cardID"]) ? sanitizeString($_GET["cardID"]) : "";
-if ($cardID === 'undefined' || $cardID === 'null') $cardID = '';
 $numMode = isset($_GET["numMode"]) ? intval($_GET["numMode"]) : 0;
 $chkCount = isset($_GET["chkCount"]) ? intval($_GET["chkCount"]) : 0;
 
@@ -81,7 +79,6 @@ for ($i = 0; $i < $chkCount; ++$i) {
     $chkInput[] = $chk;
 }
 $inputText = isset($_GET["inputText"]) ? sanitizeString($_GET["inputText"]) : "";
-if ($inputText === 'undefined' || $inputText === 'null') $inputText = '';
 
 SetHeaders();
 
