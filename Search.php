@@ -636,6 +636,7 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
 {
   global $currentTurnEffects;
   $canCacheNegative = !$remove && !$returnUniqueID;
+  $canCachePositive = $canCacheNegative && !$activate && !$stripParams;
   static $cache = [];
   static $cacheVersion = -1;
   if ($canCacheNegative) {
