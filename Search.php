@@ -162,8 +162,18 @@ function SearchInner(
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   if ($minAttack === false) $minAttack = -1;
-  $cardList = "";
+  $cardListArr = [];
   if (!is_array($talents)) $talents = $talents == "" ? [] : explode(",", $talents);
+  // Pre-compute values that are loop-invariant
+  $talentsStr = count($talents) > 0 ? implode(",", $talents) : "";
+  $defCounterOffset = DefCounterOffsetMZ($zone);
+  $seenNames = []; // for $getDistinctCardNames dedup (O(1) lookup vs O(n) str_contains)
+  static $gameSteps = [
+    'ENDTURN' => 1, 'RESUMETURN' => 1, 'FINALIZECHAINLINK' => 1, 'DEFENDSTEP' => 1,
+    'ENDPHASE' => 1, 'ATTACKSTEP' => 1, 'RESOLUTIONSTEP' => 1, 'CLOSINGCHAIN' => 1,
+    'STARTTURN' => 1, 'PHANTASM' => 1, 'MIRAGE' => 1, 'BLOODDEBT' => 1,
+    'SPECTRA' => 1, 'FRAGMENT' => 1,
+  ];
   $arrayCount = count($array);
   for ($i = 0; $i < $arrayCount; $i += $count) {
     if ($zone == "CHAR" && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
@@ -171,68 +181,72 @@ function SearchInner(
     if ($zone == "DISCARD" && isFaceDownMod($array[$i + 2])) continue;
     if ($zone == "CC" && $i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue; //the attack is already gone
     $cardID = $array[$i];
-    if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
-      // Check cheap conditions first: type, subtype, cost, class, talent, pitch, attack, defense, arcane damage
-      if (($type == "" || TypeContains($cardID, $type, $player, from:$zone, index:$i) || $type == "C" && CardType($cardID) == "D" || $type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone))
-        && ($subtype == "" || SubtypeContains($cardID, $subtype, $player))
-        && ($maxCost == -1 || CardCost($cardID, $zone) <= $maxCost)
-        && ($minCost == -1 || CardCost($cardID, $zone) >= $minCost)
-        && ($class == "" || ClassContains($cardID, $class, $player))
-        && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player, $zone))
-        && ($pitch == -1 || ColorContains($cardID, $pitch, $player))
-        && ($realPitch == "-" || PitchContains($cardID, $realPitch))
-        && ($maxAttack == -1 || ModifiedPowerValue($cardID, $player, $zone) <= $maxAttack)
-        && ($minAttack == -1 || ModifiedPowerValue($cardID, $player, $zone) >= $minAttack)
-        && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
-        && ($arcaneDamage == -1 || ArcaneDamageMatch($cardID, $arcaneDamage))
-      ) {
-        // Check cheaper boolean flags first before any function calls
-        if ($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
-        if ($phantasmOnly && !HasPhantasm($cardID, $zone)) continue;
-        if ($specOnly && !HasSpecialization($cardID)) continue;
-        if ($getDistinctCardNames && str_contains($cardList, GamestateSanitize(CardName($cardID)))) continue;
-        if ($nullDef && BlockValue($cardID) >= 0) continue;
-        if ($is1h && !Is1H($cardID)) continue;
-        if ($hasStealth && !hasStealth($cardID)) continue;
-        if ($hasWateryGrave && !HasWateryGrave($cardID)) continue;
-        if ($hasCrush && !HasCrush($cardID)) continue;
-        if ($hasSuspense && !HasSuspense($cardID)) continue;
-        if ($comboOnly && !HasCombo($cardID)) continue;
-        if ($hasCloaked && HasCloaked($cardID, $player) != "DOWN") continue;
-        
-        // Check array-based conditions
-        if ($frozenOnly && !IsFrozenMZ($array, $zone, $i, $player)) continue;
-        $offset = DefCounterOffsetMZ($zone);
-        if ($hasNegCounters && $offset != -1 && $array[$i + $offset] >= 0) continue;
-        if ($hasEnergyCounters && !HasEnergyCounters($array, $i)) continue;
-        if ($hasCrank && !HasCrank($cardID, $player)) continue;
-        if ($hasSteamCounter && !HasSteamCounter($array, $i, $player)) continue;
-        if ($hasWard && !HasWard($cardID, $player)) continue;
-        if ($hasPowerCounters && !HasPowerCounters($zone, $array, $i)) continue;
-        
-        // Check zone-specific facing conditions
-        if ($zone == "ARS") {
-          if ($faceUp && $array[$i + 1] != "UP") continue;
-          if ($faceDown && $array[$i + 1] != "DOWN") continue;
-        }
-        if ($zone == "CHAR") {
-          if ($faceUp && $array[$i + 12] != "UP") continue;
-          if ($faceDown && $array[$i + 12] != "DOWN") continue;
-        }
-        if ($isIntimidated) {
-          if ($array[$i + 1] != "INT") continue;
-        }
-        
-        // Check string-based conditions last (most expensive)
-        if ($nameIncludes != "" && !CardNameContains($cardID, $nameIncludes, $player, partial: true)) continue;
-        
-        if ($cardList != "") $cardList = $cardList . ",";
-        
-        $cardList = $cardList . ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
+    if (isset($gameSteps[$cardID])) continue;
+    // Check cheap conditions first: type, subtype, cost, class, talent, pitch, attack, defense, arcane damage
+    if (($type == "" || TypeContains($cardID, $type, $player, from:$zone, index:$i) || $type == "C" && CardType($cardID) == "D" || $type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone))
+      && ($subtype == "" || SubtypeContains($cardID, $subtype, $player))
+      && ($maxCost == -1 || CardCost($cardID, $zone) <= $maxCost)
+      && ($minCost == -1 || CardCost($cardID, $zone) >= $minCost)
+      && ($class == "" || ClassContains($cardID, $class, $player))
+      && ($talentsStr == "" || TalentContainsAny($cardID, $talentsStr, $player, $zone))
+      && ($pitch == -1 || ColorContains($cardID, $pitch, $player))
+      && ($realPitch == "-" || PitchContains($cardID, $realPitch))
+      && ($maxAttack == -1 || ModifiedPowerValue($cardID, $player, $zone) <= $maxAttack)
+      && ($minAttack == -1 || ModifiedPowerValue($cardID, $player, $zone) >= $minAttack)
+      && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
+      && ($arcaneDamage == -1 || ArcaneDamageMatch($cardID, $arcaneDamage))
+    ) {
+      // Check cheaper boolean flags first before any function calls
+      if ($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
+      if ($phantasmOnly && !HasPhantasm($cardID, $zone)) continue;
+      if ($specOnly && !HasSpecialization($cardID)) continue;
+      if ($getDistinctCardNames) {
+        $sanitizedName = GamestateSanitize(CardName($cardID));
+        if (isset($seenNames[$sanitizedName])) continue;
+      }
+      if ($nullDef && BlockValue($cardID) >= 0) continue;
+      if ($is1h && !Is1H($cardID)) continue;
+      if ($hasStealth && !hasStealth($cardID)) continue;
+      if ($hasWateryGrave && !HasWateryGrave($cardID)) continue;
+      if ($hasCrush && !HasCrush($cardID)) continue;
+      if ($hasSuspense && !HasSuspense($cardID)) continue;
+      if ($comboOnly && !HasCombo($cardID)) continue;
+      if ($hasCloaked && HasCloaked($cardID, $player) != "DOWN") continue;
+
+      // Check array-based conditions
+      if ($frozenOnly && !IsFrozenMZ($array, $zone, $i, $player)) continue;
+      if ($hasNegCounters && $defCounterOffset != -1 && $array[$i + $defCounterOffset] >= 0) continue;
+      if ($hasEnergyCounters && !HasEnergyCounters($array, $i)) continue;
+      if ($hasCrank && !HasCrank($cardID, $player)) continue;
+      if ($hasSteamCounter && !HasSteamCounter($array, $i, $player)) continue;
+      if ($hasWard && !HasWard($cardID, $player)) continue;
+      if ($hasPowerCounters && !HasPowerCounters($zone, $array, $i)) continue;
+
+      // Check zone-specific facing conditions
+      if ($zone == "ARS") {
+        if ($faceUp && $array[$i + 1] != "UP") continue;
+        if ($faceDown && $array[$i + 1] != "DOWN") continue;
+      }
+      if ($zone == "CHAR") {
+        if ($faceUp && $array[$i + 12] != "UP") continue;
+        if ($faceDown && $array[$i + 12] != "DOWN") continue;
+      }
+      if ($isIntimidated) {
+        if ($array[$i + 1] != "INT") continue;
+      }
+
+      // Check string-based conditions last (most expensive)
+      if ($nameIncludes != "" && !CardNameContains($cardID, $nameIncludes, $player, partial: true)) continue;
+
+      if ($getDistinctCardNames) {
+        $seenNames[$sanitizedName] = true;
+        $cardListArr[] = $sanitizedName;
+      } else {
+        $cardListArr[] = $i;
       }
     }
   }
-  return $cardList;
+  return implode(",", $cardListArr);
 }
 
 function isPriorityStep($cardID)
