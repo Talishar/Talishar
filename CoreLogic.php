@@ -1929,13 +1929,10 @@ function ClassOverride($cardID, $player)
   global $currentTurnEffects;
   static $cache = [];
   static $cacheVersion = -1;
-  static $cacheRequestID = 0;
-  if (!isset($GLOBALS['cteRequestID'])) $GLOBALS['cteRequestID'] = mt_rand();
   $currentVersion = $GLOBALS['cteVersion'] ?? 0;
-  if ($cacheVersion !== $currentVersion || $cacheRequestID !== $GLOBALS['cteRequestID']) {
+  if ($cacheVersion !== $currentVersion) {
     $cache = [];
     $cacheVersion = $currentVersion;
-    $cacheRequestID = $GLOBALS['cteRequestID'];
   }
   $cacheKey = "$cardID|$player";
   if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];

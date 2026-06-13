@@ -131,9 +131,6 @@ function CopyCurrentTurnEffectsFromAfterResolveEffects()
     $currentTurnEffects[] = $afterResolveEffects[$i + 3];
   }
   $afterResolveEffects = [];
-  if ($afterResolveEffectsCount > 0) {
-    $GLOBALS['cteVersion'] = ($GLOBALS['cteVersion'] ?? 0) + 1;
-  }
 }
 
 //This is needed because if you add a current turn effect from combat, it could get deleted as part of the combat resolution
@@ -4885,8 +4882,6 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
   global $CS_Num6PowBan, $CombatChain, $currentTurnEffects;
   if ($cardID == "") return 0;
   static $cache = [];
-  static $cacheVersion = -1;
-  static $cacheRequestID = 0;
   static $dynamicPowerCards = [
     'mutated_mass_blue'      => true, // pitch count
     'spectral_procession_red'=> true, // aura count
@@ -4894,13 +4889,6 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
   ];
   $useCache = ($index === -1 && $source === "" && !isset($dynamicPowerCards[$cardID]));
   if ($useCache) {
-    if (!isset($GLOBALS['cteRequestID'])) $GLOBALS['cteRequestID'] = mt_rand();
-    $currentVersion = $GLOBALS['cteVersion'] ?? 0;
-    if ($cacheVersion !== $currentVersion || $cacheRequestID !== $GLOBALS['cteRequestID']) {
-      $cache = [];
-      $cacheVersion = $currentVersion;
-      $cacheRequestID = $GLOBALS['cteRequestID'];
-    }
     $cacheKey = "$cardID|$player|$from";
     if (isset($cache[$cacheKey])) return $cache[$cacheKey];
   }
