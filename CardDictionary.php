@@ -914,9 +914,9 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
-  if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
+  if ($base && $from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
-    $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
+    $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive;
     $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA");
   }
   //Only weapon that gains power, NOT on their attack
@@ -937,7 +937,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
       case "mark_of_the_huntsman_r":
         if (!IsHeroAttackTarget() || $from != "CC") return $basePower;
         else return CheckMarked($defPlayer) ? $basePower+1 : $basePower;
-      default: break;
+      default: return $basePower; // base power already computed by recursive call, don't recompute
     }
   }
   $cardID = BlindCard($cardID, true);

@@ -184,10 +184,8 @@ function AddPower(&$totalPower, $amount, $sourceBuff=false, $source="-"): void
     if ($amount > 0 && ($attackID == "amplifying_arrow_yellow" || $attackID == "doubling_season_red"))
       $amount += 1;
     if (!$sourceBuff && $amount > 0) { //thrive and flourish don't apply to buffs to the attack source
-      if (SearchCurrentTurnEffects("thrive_yellow", $mainPlayer)) {
-        $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack so get all the active effects before applying bonus
-        $amount += $num_thrives_active;
-      }
+      $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack; count in one pass (no separate exists-check needed)
+      if ($num_thrives_active > 0) $amount += $num_thrives_active;
       SearchCurrentTurnEffects("flourish_yellow-INACTIVE", $mainPlayer, false, false, true);
       SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
     }
