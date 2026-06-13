@@ -88,11 +88,6 @@ function JSONLog($gameName, $playerID, $path="./")
   if (!file_exists($filename)) return "";
   $filesize = filesize($filename);
   if ($filesize > 0) {
-    static $cachedKey = "";
-    static $cachedResponse = "";
-    $colorSide = $playerID == 2 ? 2 : 1;
-    $key = "$filename|$filesize|$colorSide";
-    if ($key === $cachedKey) return $cachedResponse;
     $handler = fopen($filename, "r");
     $line = fread($handler, $filesize);
     fclose($handler);
@@ -101,8 +96,6 @@ function JSONLog($gameName, $playerID, $path="./")
     $player1Color = $playerID == 1 || $playerID == 3 ? $blue : $red;
     $player2Color = $playerID == 2 ? $blue : $red;
     $response = str_replace(["\r\n", "<PLAYER1COLOR>", "<PLAYER2COLOR>"], ["<br>", $player1Color, $player2Color], $line);
-    $cachedKey = $key;
-    $cachedResponse = $response;
   }
   return $response;
 }
