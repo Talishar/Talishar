@@ -161,7 +161,6 @@ function SearchInner(
 )
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-  if ($minAttack === false) $minAttack = -1;
   $cardList = "";
   if (!is_array($talents)) $talents = $talents == "" ? [] : explode(",", $talents);
   $arrayCount = count($array);
@@ -635,18 +634,6 @@ function SearchMultizoneFormat($search, $zone)
 function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false, $stripParams = false)
 {
   global $currentTurnEffects;
-  $canCache = !$remove && !$activate && !$returnUniqueID && !$stripParams;
-  if ($canCache) {
-    static $cache = [];
-    static $cacheVersion = -1;
-    $currentVersion = $GLOBALS['cteVersion'] ?? 0;
-    if ($cacheVersion !== $currentVersion) {
-      $cache = [];
-      $cacheVersion = $currentVersion;
-    }
-    $cacheKey = "$cardID|$player";
-    if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];
-  }
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
@@ -654,18 +641,11 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
     $effectName = $stripParams ? explode(",", $currentTurnEffects[$i])[0] : $currentTurnEffects[$i];
     if ($effectName == $cardID && $currentTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
-      if ($activate) {
-        $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
-        $GLOBALS['cteVersion'] = ($GLOBALS['cteVersion'] ?? 0) + 1; // in-place mutation; invalidate cache
-      }
-      $result = $returnUniqueID ? $currentTurnEffects[$i + 2] : true;
-      if ($canCache) $cache[$cacheKey] = $result;
-      return $result;
+      if ($activate) $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
+      return $returnUniqueID ? $currentTurnEffects[$i + 2] : true;
     }
   }
-  $result = $returnUniqueID ? -1 : false;
-  if ($canCache) $cache[$cacheKey] = $result;
-  return $result;
+  return $returnUniqueID ? -1 : false;
 }
 
 function SearchDynamicCurrentTurnEffectsIndex($cardID, $player, $remove = false, $returnUniqueID = false)
@@ -729,17 +709,6 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
 function CountCurrentTurnEffects($cardID, $player, $remove = false, $partial = false)
 {
   global $currentTurnEffects;
-  if (!$remove) {
-    static $cache = [];
-    static $cacheVersion = -1;
-    $currentVersion = $GLOBALS['cteVersion'] ?? 0;
-    if ($cacheVersion !== $currentVersion) {
-      $cache = [];
-      $cacheVersion = $currentVersion;
-    }
-    $cacheKey = "$cardID|$player|$partial";
-    if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];
-  }
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   $total = 0;
@@ -757,7 +726,6 @@ function CountCurrentTurnEffects($cardID, $player, $remove = false, $partial = f
       }
     }
   }
-  if (!$remove) $cache[$cacheKey] = $total;
   return $total;
 }
 function SearchPitchHighestAttack(&$pitch)
