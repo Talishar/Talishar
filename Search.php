@@ -639,13 +639,16 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
   $canCachePositive = $canCacheNegative && !$activate && !$stripParams;
   static $cache = [];
   static $cacheVersion = -1;
+  static $cacheRequestID = 0;
   if ($canCacheNegative) {
+    if (!isset($GLOBALS['cteRequestID'])) $GLOBALS['cteRequestID'] = mt_rand();
     $currentVersion = $GLOBALS['cteVersion'] ?? 0;
-    if ($cacheVersion !== $currentVersion) {
+    if ($cacheVersion !== $currentVersion || $cacheRequestID !== $GLOBALS['cteRequestID']) {
       $cache = [];
       $cacheVersion = $currentVersion;
+      $cacheRequestID = $GLOBALS['cteRequestID'];
     }
-    $cacheKey = "$cardID|$player";
+    $cacheKey = "$cardID|$player|" . ($stripParams ? "1" : "0");
     if (array_key_exists($cacheKey, $cache)) {
       $cached = $cache[$cacheKey];
       if ($cached === false) return false;              // not found — always safe
@@ -736,10 +739,13 @@ function CountCurrentTurnEffects($cardID, $player, $remove = false, $partial = f
   if (!$remove) {
     static $cache = [];
     static $cacheVersion = -1;
+    static $cacheRequestID = 0;
+    if (!isset($GLOBALS['cteRequestID'])) $GLOBALS['cteRequestID'] = mt_rand();
     $currentVersion = $GLOBALS['cteVersion'] ?? 0;
-    if ($cacheVersion !== $currentVersion) {
+    if ($cacheVersion !== $currentVersion || $cacheRequestID !== $GLOBALS['cteRequestID']) {
       $cache = [];
       $cacheVersion = $currentVersion;
+      $cacheRequestID = $GLOBALS['cteRequestID'];
     }
     $cacheKey = "$cardID|$player|$partial";
     if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];
