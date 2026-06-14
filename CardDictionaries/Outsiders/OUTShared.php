@@ -672,26 +672,26 @@ function OUTAbilityCost($cardID)
     $conditionOtherPlayerMet = false;
     if(!ArsenalFull($player) && SearchDiscard($player, "AA") != "")
     {
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your graveyard.");
-      MZMoveCard($player, "MYDISCARD:type=AA", "MYARS,GY,DOWN");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your graveyard");
+      MZMoveCard($player, "MYDISCARD:type=AA", "MYARS,GY,DOWN", DQContext: "Choose a card from your graveyard");
       $conditionPlayerMet = true;
     }
     if(!ArsenalFull($otherPlayer) && SearchDiscard($otherPlayer, "AA") != "")
     {
       AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from your graveyard.");
-      MZMoveCard($otherPlayer, "MYDISCARD:type=AA", "MYARS,GY,DOWN");
+      MZMoveCard($otherPlayer, "MYDISCARD:type=AA", "MYARS,GY,DOWN", DQContext: "Choose a card from your graveyard");
       $conditionOtherPlayerMet = true;
     }
     if($conditionPlayerMet) {
       AddDecisionQueue("FINDINDICES", $player, "HAND");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your hand to discard.");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your hand to discard");
       AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
       AddDecisionQueue("DISCARDCARD", $player, "HAND-".$player, 1);   
     }
     if($conditionOtherPlayerMet) {
       AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from your hand to discard.");
+      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from your hand to discard");
       AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $otherPlayer, "-", 1);
       AddDecisionQueue("DISCARDCARD", $otherPlayer, "HAND-".$player, 1);   
