@@ -74,31 +74,31 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
   global $CS_AdditionalCosts, $currentPlayer, $Stack;
   $cardID = BlindCard($cardID, true);
   $controller = $controller == "-" ? $currentPlayer : $controller;
-  $adminCards = ["TRIGGER", "-", "FINALIZECHAINLINK", "RESOLUTIONSTEP", "ENDTURN", "DEFENDSTEP", "CLOSINGCHAIN", "STARTTURN", "ATTACKSTEP", "ABILITY"];
-  if (!$cardID || in_array($cardID, $adminCards)) return "";
-  
-  // Handle meld cards that have an action on the left
-  $meldCards = [
-    "thistle_bloom__life_yellow",
-    "arcane_seeds__life_red",
-    "burn_up__shock_red",
-    "pulsing_aether__life_red",
-    "comet_storm__shock_red",
-    "regrowth__shock_blue",
-    "everbloom__life_blue",
-    "consign_to_cosmos__shock_yellow"
+
+  static $adminCards = [
+    "TRIGGER" => 1, "-" => 1, "FINALIZECHAINLINK" => 1, "RESOLUTIONSTEP" => 1,
+    "ENDTURN" => 1, "DEFENDSTEP" => 1, "CLOSINGCHAIN" => 1, "STARTTURN" => 1,
+    "ATTACKSTEP" => 1, "ABILITY" => 1,
   ];
+  if (!$cardID || isset($adminCards[$cardID])) return "";
+
+  static $meldCards = [
+    "thistle_bloom__life_yellow" => 1, "arcane_seeds__life_red" => 1,
+    "burn_up__shock_red" => 1, "pulsing_aether__life_red" => 1,
+    "comet_storm__shock_red" => 1, "regrowth__shock_blue" => 1,
+    "everbloom__life_blue" => 1, "consign_to_cosmos__shock_yellow" => 1,
+  ];
+
   if ($cardID == "MELD") {
     if ($index == -1) return "I"; // safest bet if the index isn't provided
     $LayerCard = new Layer($index);
     $sourceID = $LayerCard->Parameter();
-    if (in_array($sourceID, $meldCards)) return "A,I";
-    else return "I";
+    return isset($meldCards[$sourceID]) ? "A,I" : "I";
   }
-  if (in_array($cardID, $meldCards)) {
+  if (isset($meldCards[$cardID])) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH" || $from == "HAND" || $from == "ARS" || $from == "CC") return "A,I";
     if ($index == -1) {
-      if (function_exists("GetClassState"))   
+      if (function_exists("GetClassState"))
         $additionalCosts = $additionalCosts == "-" ? GetClassState($controller, $CS_AdditionalCosts) : $additionalCosts;
       else $additionalCosts = "-";
     }
@@ -112,8 +112,11 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
     return "A,I";
   }
 
+  static $typeCache = [];
+  if (isset($typeCache[$cardID])) return $typeCache[$cardID];
+
   // Handle special cases
-  $specialCases = [
+  static $specialCases = [
     "UPR551" => "-",
     "nitro_mechanoida" => "W",
     "nitro_mechanoidb" => "E",
@@ -147,8 +150,6 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
     "yendurai" => "-",
     "dracona_optimai" => "-",
   ];
-  static $typeCache = [];
-  if (isset($typeCache[$cardID])) return $typeCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") {
     $specialType = $card->SpecialType();
@@ -163,7 +164,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
 function CardTypeExtended($cardID, $from="", $index=-1) // used to handle evos
 {
   $cardID = BlindCard($cardID, true);
-  $evoTypes = [
+  static $evoTypes = [
     "evo_steel_soul_memory_blue" => "A,E",
     "evo_steel_soul_processor_blue" => "A,E",
     "evo_steel_soul_controller_blue" => "A,E",
@@ -305,7 +306,7 @@ function CardSubType($cardID, $uniqueID = -1)
       break;
   }
   //equipment that could go in any zone
-  $adaptiveMap = array_flip(["adaptive_plating", "adaptive_dissolver", "adaptive_alpha_mold", "frostbite"]);
+  static $adaptiveMap = ["adaptive_plating" => 0, "adaptive_dissolver" => 1, "adaptive_alpha_mold" => 2, "frostbite" => 3];
   if ($uniqueID > -1 && (IsModular($cardID) || $cardID == "frostbite")) {
     global $currentTurnEffects;
     $countCurrentTurnEffects = count($currentTurnEffects);
@@ -643,43 +644,24 @@ function AbilityCost($cardID)
     $cost = $card->AbilityCost();
     return $cost;
   }
-  if ($set == "WTR") return WTRAbilityCost($cardID);
-  else if ($set == "ARC") return ARCAbilityCost($cardID);
-  else if ($set == "CRU") return CRUAbilityCost($cardID);
-  else if ($set == "MON") return MONAbilityCost($cardID);
-  else if ($set == "ELE") return ELEAbilityCost($cardID);
-  else if ($set == "EVR") return EVRAbilityCost($cardID);
-  else if ($set == "UPR") return UPRAbilityCost($cardID);
-  else if ($set == "DVR") return DVRAbilityCost($cardID);
-  else if ($set == "RVD") return RVDAbilityCost($cardID);
-  else if ($set == "DYN") return DYNAbilityCost($cardID);
-  else if ($set == "OUT") return OUTAbilityCost($cardID);
-  else if ($set == "DTD") return DTDAbilityCost($cardID);
-  else if ($set == "TCC") return TCCAbilityCost($cardID);
-  else if ($set == "EVO") return EVOAbilityCost($cardID);
-  else if ($set == "HVY") return HVYAbilityCost($cardID);
-  else if ($set == "AKO") return AKOAbilityCost($cardID);
-  else if ($set == "MST") return MSTAbilityCost($cardID);
-  else if ($set == "ROS") return ROSAbilityCost($cardID);
-  else if ($set == "TER") return TERAbilityCost($cardID);
-  else if ($set == "AIO") return AIOAbilityCost($cardID);
-  else if ($set == "AJV") return AJVAbilityCost($cardID);
-  else if ($set == "HNT") return HNTAbilityCost($cardID);
-  else if ($set == "AMX") return AMXAbilityCost($cardID);
-  else if ($set == "SEA") return SEAAbilityCost($cardID);
-  else if ($set == "AST") return ASTAbilityCost($cardID);
-  else if ($set == "AGB") return AGBAbilityCost($cardID);
-  else if ($set == "MPG") return MPGAbilityCost($cardID);
-  else if ($set == "SUP") return SUPAbilityCost($cardID);
-  else if ($set == "APS") return APSAbilityCost($cardID);
-  else if ($set == "ARR") return ARRAbilityCost($cardID);
-  else if ($set == "AAC") return AACAbilityCost($cardID);
-  else if ($set == "PEN") return PENAbilityCost($cardID);
-  else switch ($cardID) {
+  static $setCostFunctions = [
+    "WTR" => "WTRAbilityCost", "ARC" => "ARCAbilityCost", "CRU" => "CRUAbilityCost",
+    "MON" => "MONAbilityCost", "ELE" => "ELEAbilityCost", "EVR" => "EVRAbilityCost",
+    "UPR" => "UPRAbilityCost", "DVR" => "DVRAbilityCost", "RVD" => "RVDAbilityCost",
+    "DYN" => "DYNAbilityCost", "OUT" => "OUTAbilityCost", "DTD" => "DTDAbilityCost",
+    "TCC" => "TCCAbilityCost", "EVO" => "EVOAbilityCost", "HVY" => "HVYAbilityCost",
+    "AKO" => "AKOAbilityCost", "MST" => "MSTAbilityCost", "ROS" => "ROSAbilityCost",
+    "TER" => "TERAbilityCost", "AIO" => "AIOAbilityCost", "AJV" => "AJVAbilityCost",
+    "HNT" => "HNTAbilityCost", "AMX" => "AMXAbilityCost", "SEA" => "SEAAbilityCost",
+    "AST" => "ASTAbilityCost", "AGB" => "AGBAbilityCost", "MPG" => "MPGAbilityCost",
+    "SUP" => "SUPAbilityCost", "APS" => "APSAbilityCost", "ARR" => "ARRAbilityCost",
+    "AAC" => "AACAbilityCost", "PEN" => "PENAbilityCost",
+  ];
+  if (isset($setCostFunctions[$set])) return $setCostFunctions[$set]($cardID);
+  switch ($cardID) {
     case "riggermortis_yellow": return 1;
     case "bravo_flattering_showman": return 2;
-    default:
-      return 0;
+    default: return 0;
   }
 }
 
@@ -1233,42 +1215,46 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
   }
   if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $player) && $player == $mainPlayer) return "AA";
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($player, "storm_of_sandikai")) return "AA";
-  if ($set == "WTR") return WTRAbilityType($cardID, $index, $from);
-  else if ($set == "ARC") return ARCAbilityType($cardID, $index);
-  else if ($set == "CRU") return CRUAbilityType($cardID, $index);
-  else if ($set == "MON") return MONAbilityType($cardID, $index, $from);
-  else if ($set == "ELE") return ELEAbilityType($cardID, $index, $from);
-  else if ($set == "EVR") return EVRAbilityType($cardID, $index, $from);
-  else if ($set == "UPR") return UPRAbilityType($cardID, $index);
-  else if ($set == "DVR") return DVRAbilityType($cardID);
-  else if ($set == "RVD") return RVDAbilityType($cardID);
-  else if ($set == "DYN") return DYNAbilityType($cardID, $index);
-  else if ($set == "OUT") return OUTAbilityType($cardID, $index);
-  else if ($set == "DTD") return DTDAbilityType($cardID, $index);
-  else if ($set == "TCC") return TCCAbilityType($cardID, $index);
-  else if ($set == "EVO") return EVOAbilityType($cardID, $index, $from);
-  else if ($set == "HVY") return HVYAbilityType($cardID, $index, $from);
-  else if ($set == "AKO") return AKOAbilityType($cardID, $index, $from);
-  else if ($set == "MST") return MSTAbilityType($cardID, $index, $from);
-  else if ($set == "AAZ") return AAZAbilityType($cardID, $index, $from);
-  else if ($set == "ROS") return ROSAbilityType($cardID);
-  else if ($set == "ASB") return ASBAbilityType($cardID, $index);
-  else if ($set == "TER") return TERAbilityType($cardID);
-  else if ($set == "AIO") return AIOAbilityType($cardID, $index, $from);
-  else if ($set == "AJV") return AJVAbilityType($cardID);
-  else if ($set == "HNT") return HNTAbilityType($cardID);
-  else if ($set == "AST") return ASTAbilityType($cardID);
-  else if ($set == "AMX") return AMXAbilityType($cardID);
-  else if ($set == "SEA") return SEAAbilityType($cardID, $from);
-  else if ($set == "ASR") return ASRAbilityType($cardID);
-  else if ($set == "AGB") return AGBAbilityType($cardID, $from);
-  else if ($set == "MPG") return MPGAbilityType($cardID, $from);
-  else if ($set == "SUP") return SUPAbilityType($cardID, $index, $from);
-  else if ($set == "APS") return APSAbilityType($cardID);
-  else if ($set == "ARR") return ARRAbilityType($cardID);
-  else if ($set == "AAC") return AACAbilityType($cardID);
-  else if ($set == "PEN") return PENAbilityType($cardID);
-  else switch ($cardID) {
+  $setResult = match($set) {
+    "WTR" => WTRAbilityType($cardID, $index, $from),
+    "ARC" => ARCAbilityType($cardID, $index),
+    "CRU" => CRUAbilityType($cardID, $index),
+    "MON" => MONAbilityType($cardID, $index, $from),
+    "ELE" => ELEAbilityType($cardID, $index, $from),
+    "EVR" => EVRAbilityType($cardID, $index, $from),
+    "UPR" => UPRAbilityType($cardID, $index),
+    "DVR" => DVRAbilityType($cardID),
+    "RVD" => RVDAbilityType($cardID),
+    "DYN" => DYNAbilityType($cardID, $index),
+    "OUT" => OUTAbilityType($cardID, $index),
+    "DTD" => DTDAbilityType($cardID, $index),
+    "TCC" => TCCAbilityType($cardID, $index),
+    "EVO" => EVOAbilityType($cardID, $index, $from),
+    "HVY" => HVYAbilityType($cardID, $index, $from),
+    "AKO" => AKOAbilityType($cardID, $index, $from),
+    "MST" => MSTAbilityType($cardID, $index, $from),
+    "AAZ" => AAZAbilityType($cardID, $index, $from),
+    "ROS" => ROSAbilityType($cardID),
+    "ASB" => ASBAbilityType($cardID, $index),
+    "TER" => TERAbilityType($cardID),
+    "AIO" => AIOAbilityType($cardID, $index, $from),
+    "AJV" => AJVAbilityType($cardID),
+    "HNT" => HNTAbilityType($cardID),
+    "AST" => ASTAbilityType($cardID),
+    "AMX" => AMXAbilityType($cardID),
+    "SEA" => SEAAbilityType($cardID, $from),
+    "ASR" => ASRAbilityType($cardID),
+    "AGB" => AGBAbilityType($cardID, $from),
+    "MPG" => MPGAbilityType($cardID, $from),
+    "SUP" => SUPAbilityType($cardID, $index, $from),
+    "APS" => APSAbilityType($cardID),
+    "ARR" => ARRAbilityType($cardID),
+    "AAC" => AACAbilityType($cardID),
+    "PEN" => PENAbilityType($cardID),
+    default => null,
+  };
+  if ($setResult !== null) return $setResult;
+  switch ($cardID) {
     case "blaze_firemind": return "I";
     case "magrar": return "A";
     case "riggermortis_yellow": return $from == "PLAY" ? "AA" : "A";
@@ -1327,7 +1313,6 @@ function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
   $cardName = $nameGiven ? $cardID : NameOverride($cardID);
 
   $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $mainPlayer);
-  $underEdict = $underEdict || SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $mainPlayer);
   $underEdict = $underEdict && !$pitch;
 
   $foundNullTime = SearchItemForModalities(GamestateSanitize($cardName), $mainPlayer, "null_time_zone_blue") != -1;
