@@ -161,23 +161,34 @@ function SearchInner(
 )
 {
   global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-  $cardList = "";
+  $cardListArr = [];
   if (!is_array($talents)) $talents = $talents == "" ? [] : explode(",", $talents);
+
+  // Pre-compute zone flags and loop-invariant values outside the loop
+  $isCharZone       = $zone === "CHAR";
+  $isBanishZone     = $zone === "BANISH";
+  $isDiscardZone    = $zone === "DISCARD";
+  $isCCZone         = $zone === "CC";
+  $isArsZone        = $zone === "ARS";
+  $hasTalents       = !empty($talents);
+  $talentsStr       = $hasTalents ? implode(",", $talents) : "";
+  $negCounterOffset = DefCounterOffsetMZ($zone);
+  $seenNames        = [];
+
   $arrayCount = count($array);
   for ($i = 0; $i < $arrayCount; $i += $count) {
-    if ($zone == "CHAR" && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
-    if ($zone == "BANISH" && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
-    if ($zone == "DISCARD" && isFaceDownMod($array[$i + 2])) continue;
-    if ($zone == "CC" && $i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue; //the attack is already gone
+    if ($isCharZone && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
+    if ($isBanishZone && isFaceDownMod($array[$i + 1]) && !$isIntimidated) continue;
+    if ($isDiscardZone && isFaceDownMod($array[$i + 2])) continue;
+    if ($isCCZone && $i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue;
     $cardID = $array[$i];
     if (!isPriorityStep($cardID) && !isAdministrativeStep($cardID)) {
-      // Check cheap conditions first: type, subtype, cost, class, talent, pitch, attack, defense, arcane damage
       if (($type == "" || TypeContains($cardID, $type, $player, from:$zone, index:$i) || $type == "C" && CardType($cardID) == "D" || $type == "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone))
         && ($subtype == "" || SubtypeContains($cardID, $subtype, $player))
         && ($maxCost == -1 || CardCost($cardID, $zone) <= $maxCost)
         && ($minCost == -1 || CardCost($cardID, $zone) >= $minCost)
         && ($class == "" || ClassContains($cardID, $class, $player))
-        && (count($talents) == 0 || TalentContainsAny($cardID, implode(",", $talents), $player, $zone))
+        && (!$hasTalents || TalentContainsAny($cardID, $talentsStr, $player, $zone))
         && ($pitch == -1 || ColorContains($cardID, $pitch, $player))
         && ($realPitch == "-" || PitchContains($cardID, $realPitch))
         && ($maxAttack == -1 || ModifiedPowerValue($cardID, $player, $zone) <= $maxAttack)
@@ -185,11 +196,13 @@ function SearchInner(
         && ($maxDef == -1 || BlockValue($cardID) <= $maxDef)
         && ($arcaneDamage == -1 || ArcaneDamageMatch($cardID, $arcaneDamage))
       ) {
-        // Check cheaper boolean flags first before any function calls
         if ($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
         if ($phantasmOnly && !HasPhantasm($cardID, $zone)) continue;
         if ($specOnly && !HasSpecialization($cardID)) continue;
-        if ($getDistinctCardNames && str_contains($cardList, GamestateSanitize(CardName($cardID)))) continue;
+        if ($getDistinctCardNames) {
+          $sanitizedName = GamestateSanitize(CardName($cardID));
+          if (isset($seenNames[$sanitizedName])) continue;
+        }
         if ($nullDef && BlockValue($cardID) >= 0) continue;
         if ($is1h && !Is1H($cardID)) continue;
         if ($hasStealth && !hasStealth($cardID)) continue;
@@ -198,40 +211,37 @@ function SearchInner(
         if ($hasSuspense && !HasSuspense($cardID)) continue;
         if ($comboOnly && !HasCombo($cardID)) continue;
         if ($hasCloaked && HasCloaked($cardID, $player) != "DOWN") continue;
-        
-        // Check array-based conditions
+
         if ($frozenOnly && !IsFrozenMZ($array, $zone, $i, $player)) continue;
-        $offset = DefCounterOffsetMZ($zone);
-        if ($hasNegCounters && $offset != -1 && $array[$i + $offset] >= 0) continue;
+        if ($hasNegCounters && $negCounterOffset != -1 && $array[$i + $negCounterOffset] >= 0) continue;
         if ($hasEnergyCounters && !HasEnergyCounters($array, $i)) continue;
         if ($hasCrank && !HasCrank($cardID, $player)) continue;
         if ($hasSteamCounter && !HasSteamCounter($array, $i, $player)) continue;
         if ($hasWard && !HasWard($cardID, $player)) continue;
         if ($hasPowerCounters && !HasPowerCounters($zone, $array, $i)) continue;
-        
-        // Check zone-specific facing conditions
-        if ($zone == "ARS") {
+
+        if ($isArsZone) {
           if ($faceUp && $array[$i + 1] != "UP") continue;
           if ($faceDown && $array[$i + 1] != "DOWN") continue;
         }
-        if ($zone == "CHAR") {
+        if ($isCharZone) {
           if ($faceUp && $array[$i + 12] != "UP") continue;
           if ($faceDown && $array[$i + 12] != "DOWN") continue;
         }
-        if ($isIntimidated) {
-          if ($array[$i + 1] != "INT") continue;
-        }
-        
-        // Check string-based conditions last (most expensive)
+        if ($isIntimidated && $array[$i + 1] != "INT") continue;
+
         if ($nameIncludes != "" && !CardNameContains($cardID, $nameIncludes, $player, partial: true)) continue;
-        
-        if ($cardList != "") $cardList .= ",";
-        
-        $cardList .= ($getDistinctCardNames ? GamestateSanitize(CardName($cardID)) : $i);
+
+        if ($getDistinctCardNames) {
+          $seenNames[$sanitizedName] = true;
+          $cardListArr[] = $sanitizedName;
+        } else {
+          $cardListArr[] = $i;
+        }
       }
     }
   }
-  return $cardList;
+  return implode(",", $cardListArr);
 }
 
 function isPriorityStep($cardID)
@@ -603,20 +613,14 @@ function CombineSearches($search1, $search2)
 
 function SearchRemoveDuplicates($search)
 {
-  $indices = explode(",", $search);
-  $countIndices = count($indices);
-  for ($i = $countIndices - 1; $i >= 0; --$i) {
-    for ($j = $i - 1; $j >= 0; --$j) {
-      if (isset($indices[$j]) && isset($indices[$i]) && $indices[$j] == $indices[$i]) unset($indices[$i]);
-    }
-  }
-  return implode(",", array_values($indices));
+  if ($search === "") return "";
+  return implode(",", array_unique(explode(",", $search)));
 }
 
 function SearchCount($search)
 {
-  if ($search == "" || $search == "PASS") return 0;
-  return count(explode(",", $search));
+  if ($search === "" || $search === "PASS") return 0;
+  return substr_count($search, ',') + 1;
 }
 
 function SearchMultizoneFormat($search, $zone)
@@ -1483,7 +1487,8 @@ function SearchMultizone($player, $searches)
   $otherPlayer = $player == 1 ? 2 : 1;
   $unionSearches = explode("&", $searches);
   $rv = "";
-  for ($i = 0; $i < count($unionSearches); ++$i) {
+  $unionCount = count($unionSearches);
+  for ($i = 0; $i < $unionCount; ++$i) {
     $type              = "";
     $subtype           = "";
     $maxCost           = -1;
@@ -1524,7 +1529,8 @@ function SearchMultizone($player, $searches)
     if (count($searchArr) > 1) //Means there are conditions
     {
       $conditions = explode(";", $searchArr[1]);
-      for ($j = 0; $j < count($conditions); ++$j) {
+      $conditionCount = count($conditions);
+      for ($j = 0; $j < $conditionCount; ++$j) {
         $condition = explode("=", $conditions[$j]);
         switch ($condition[0]) {
           case "type":
@@ -1849,7 +1855,8 @@ function MZToIndices($mzSearch)
 {
   $output = "";
   $mzSearchArr = explode(",", $mzSearch);
-  for ($i = 0; $i < count($mzSearchArr); ++$i) {
+  $mzCount = count($mzSearchArr);
+  for ($i = 0; $i < $mzCount; ++$i) {
     $mzArr = explode("-", $mzSearchArr[$i]);
     if ($output != "") $output .= ",";
     $output .= $mzArr[1];
@@ -2002,9 +2009,10 @@ function RemoveCardSameNames($player, $stringCardsIndex, $zone)
 {
   if ($stringCardsIndex == "") return "";
   $indexToCheck = explode(',', $stringCardsIndex);
+  $indexCount = count($indexToCheck);
   $uniqueNameIndex = [];
   $seen = [];
-  for ($i = 0; $i < count($indexToCheck); $i++) {
+  for ($i = 0; $i < $indexCount; $i++) {
     $name = CardName($zone[$indexToCheck[$i]]);
     if (!isset($seen[$name])) {
       $seen[$name] = true;
@@ -2018,9 +2026,10 @@ function RemoveDuplicateCards($player, $stringCardsIndex, $zone)
 {
   if ($stringCardsIndex == "") return "";
   $indexToCheck = explode(',', $stringCardsIndex);
+  $indexCount = count($indexToCheck);
   $uniqueNameIndex = [];
   $seen = [];
-  for ($i = 0; $i < count($indexToCheck); $i++) {
+  for ($i = 0; $i < $indexCount; $i++) {
     $cardID = $zone[$indexToCheck[$i]];
     if (!isset($seen[$cardID])) {
       $seen[$cardID] = true;
