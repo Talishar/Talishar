@@ -1457,7 +1457,7 @@ class inflame_red extends Card {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     global $CS_NumRedPlayed;
-    if(GetClassState($this->controller, $CS_NumRedPlayed) > 1) MZMoveCard($this->controller, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND");
+    if(GetClassState($this->controller, $CS_NumRedPlayed) > 1) MZMoveCard($this->controller, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND", true);
   }
 }
 
