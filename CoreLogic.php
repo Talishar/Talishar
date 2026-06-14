@@ -305,6 +305,8 @@ function StartTurnAbilities()
   ChangeSetting($mainPlayer, $SET_ShortcutAttackThreshold, "0");
   ChangeSetting($mainPlayer, $SET_SkipARs, "0");
   ChangeSetting($mainPlayer, $SET_SkipDRs, "0");
+  ChangeSetting($defPlayer, $SET_SkipARs, "0");
+  ChangeSetting($defPlayer, $SET_SkipDRs, "0");
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $defCharacter = &GetPlayerCharacter($defPlayer);
   if($mainCharacter[13]) AddCurrentTurnEffect("marked", $mainPlayer);  //Marked stays between turns
