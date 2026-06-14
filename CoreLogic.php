@@ -611,11 +611,11 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   global $mainPlayer;
   $otherPlayer = $player == 1 ? 2 : 1;
   $extraText = GetHorrorsBuff();
-  if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
-  if ($type == "ARCANE" && $source == "deny_redemption_red" && SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $otherPlayer)) return false;
-  if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $otherPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer))) return false;
-  if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $otherPlayer)) return false;
-  if (SearchCurrentTurnEffects("tiger_stripe_shuko", $otherPlayer)) return false;
+  if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $mainPlayer)) return false;
+  if ($type == "ARCANE" && $source == "deny_redemption_red" && SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $mainPlayer)) return false;
+  if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $mainPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $mainPlayer))) return false;
+  if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("tiger_stripe_shuko", $mainPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer)) return false;
   $sourceUnpreventable = ["rok", "malign_red", "malign_yellow", "malign_blue", "murkmire_grapnel_red", "murkmire_grapnel_yellow", "murkmire_grapnel_blue"];
@@ -623,7 +623,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue" || $extraText == "pick_to_pieces_red" || $extraText == "pick_to_pieces_yellow" || $extraText == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
   if ($damage >= 4 && $source == "batter_to_a_pulp_red") return false;
-  if (SearchCurrentTurnEffects("step_between_red-PREVENT", $otherPlayer) && $type == "COMBAT") return false;
+  if (SearchCurrentTurnEffects("step_between_red-PREVENT", $mainPlayer) && $type == "COMBAT") return false;
   return true;
 }
 
