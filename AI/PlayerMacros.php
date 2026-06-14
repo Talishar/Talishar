@@ -206,7 +206,10 @@ function ProcessSpecificCardMacros()
     ContinueDecisionQueue(explode(",", $turn[2])[0]); 
     return true;
   }
-  if ($turn[0] == "CHOOSEMULTIZONE" && ($EffectContext == "raise_an_army_yellow" || $EffectContext == "golden_anvil_blue"))
+  if ($turn[0] == "CHOOSEMULTIZONE" 
+  && ($EffectContext == "raise_an_army_yellow" || $EffectContext == "golden_anvil_blue" || $EffectContext == "gravy_bones" || $EffectContext ==  "gravy_bones_shipwrecked_looter"
+  || $EffectContext ==  "puffin_hightail" || $EffectContext ==  "puffin" || $EffectContext ==  "marlynn_treasure_hunter" || $EffectContext ==  "marlynn" || $EffectContext ==  "scurv_stowaway")
+  )
   {
     $goldChoices = explode(",", $turn[2]);
     $firstCard = GetMZCard($currentPlayer, $goldChoices[0]);
