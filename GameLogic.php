@@ -3292,7 +3292,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
       }
-      return $lastResult;
+      return $lastResult !== "" ? $lastResult : "PASS";
     case "CHANGESHIYANA":
       $otherPlayer = $player == 1 ? 2 : 1;
       $otherChar = GetPlayerCharacter($otherPlayer);
