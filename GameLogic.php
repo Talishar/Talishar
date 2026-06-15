@@ -2029,8 +2029,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $otherPlayerCharacter = GetPlayerCharacter($otherPlayer);
           $character = GetPlayerCharacter($player);
           foreach (array_slice($allTargets, 0) as $targ) {
-            $index = intval(explode("-", $targ)[1]);
-            $location = substr(explode("-", $targ)[0], 0, 2);
+            $targParts = explode("-", $targ);
+            if (!isset($targParts[1])) continue;
+            $index = intval($targParts[1]);
+            $location = substr($targParts[0], 0, 2);
             if($location == "MY")
             {
               $cleanTarget == "" ? 
