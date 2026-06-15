@@ -503,6 +503,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function WarmongersDiplomacy($player)
 {
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to make {{element|War|5}} or {{element|Peace|6}}");
   AddDecisionQueue("BUTTONINPUT", $player, "War,Peace");
   AddDecisionQueue("SETDQVAR", $player, "0", 1);
   AddDecisionQueue("WRITELOG", $player, "Player $player chose <b>{0}</b>", 1);
