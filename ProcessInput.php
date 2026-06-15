@@ -47,12 +47,9 @@ if (!validateInteger($mode, 1, 999999)) {
 }
 
 if ($mode == 100015) {
-  if ($playerID == 1 && intval(GetCachePiece($gameName, 15)) == 1)
-    exit;
-  else if ($playerID == 2 && intval(GetCachePiece($gameName, 16)) == 1)
-    exit;
-  else if ($playerID != 1 && $playerID != 2)
-    exit;
+  if ($playerID != 1 && $playerID != 2) exit; // skip cache I/O for spectators
+  $ackPiece = ($playerID == 1) ? 15 : 16;
+  if (intval(GetCachePiece($gameName, $ackPiece)) == 1) exit;
 }
 
 //We should also have some information on the type of command
@@ -74,9 +71,11 @@ if ($chkCount < 0 || $chkCount > 100) {
 }
 $chkInput = [];
 for ($i = 0; $i < $chkCount; ++$i) {
-  $chk = isset($_GET[("chk" . $i)]) ? sanitizeString($_GET[("chk" . $i)]) : "";
-  if ($chk != "")
-    $chkInput[] = $chk;
+  $key = "chk$i";
+  if (isset($_GET[$key])) {
+    $chk = sanitizeString($_GET[$key]);
+    if ($chk !== "") $chkInput[] = $chk;
+  }
 }
 $inputText = isset($_GET["inputText"]) ? sanitizeString($_GET["inputText"]) : "";
 
@@ -97,11 +96,7 @@ if (IsReplay() && $mode == 99) {
   $buttonInput = $params[2] ?? "";
   $cardID = $params[3] ?? "";
   $chkCount = $params[4] ?? "0";
-  $chkInput = isset($params[5]) ? explode("|", $params[5]) : [];
-  $chkInputCount = count($chkInput);
-  for ($i = 0; $i < $chkInputCount; ++$i) {
-    $chkInput[$i] = trim($chkInput[$i]);
-  }
+  $chkInput = isset($params[5]) ? array_map('trim', explode("|", $params[5])) : [];
   //skip any inputs where the non-active player tries something
   if ($mode == "StartTurn" || $playerID != $currentPlayer) {
     ++$pointer;
@@ -112,11 +107,7 @@ if (IsReplay() && $mode == 99) {
     $buttonInput = $params[2] ?? "";
     $cardID = $params[3] ?? "";
     $chkCount = $params[4] ?? "0";
-    $chkInput = isset($params[5]) ? explode("|", $params[5]) : [];
-    $chkInputCount = count($chkInput);
-    for ($i = 0; $i < $chkInputCount; ++$i) {
-      $chkInput[$i] = trim($chkInput[$i]);
-    }
+    $chkInput = isset($params[5]) ? array_map('trim', explode("|", $params[5])) : [];
   }
   //Automate extra passes
   // for($i=1; $i<count($commands); ++$i)
@@ -145,19 +136,19 @@ $conceded = false;
 $randomSeeded = false;
 
 if(!IsReplay()) {
+  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
+  if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
+    $currentTime = (int)(microtime(true) * 1000);
+    SetCachePiece($gameName, 2, $currentTime);
+    SetCachePiece($gameName, 3, $currentTime);
+    exit;
+  }
   if (($playerID == 1 || $playerID == 2) && $authKey == "") {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
   if ($playerID != 3 && $authKey !== $targetAuth) {
     // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
     $authKey = $targetAuth;
-  }
-  if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
-  if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
-    $currentTime = round(microtime(true) * 1000);
-    SetCachePiece($gameName, 2, $currentTime);
-    SetCachePiece($gameName, 3, $currentTime);
-    exit;
   }
 }
 
@@ -260,7 +251,8 @@ if ($p2IsAI == "1") {
 CacheCombatResult();
 
 if (!IsGameOver()) {
-  $update = time() - intval($lastUpdateTime);
+  $now = time();
+  $update = $now - intval($lastUpdateTime);
   switch ($playerID) {
     case 1:
       $p1TotalTime = is_numeric($p1TotalTime) ? $p1TotalTime + $update : $update;
@@ -269,7 +261,7 @@ if (!IsGameOver()) {
       $p2TotalTime = is_numeric($p2TotalTime) ? $p2TotalTime + $update : $update;
       break;
   }
-  $lastUpdateTime = time();
+  $lastUpdateTime = $now;
 }
 
 //Now write out the game state
