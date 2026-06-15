@@ -10,15 +10,9 @@ if ($handler === false) {
   exit;
 }
 
-$lockTries = 0;
-while (!flock($handler, LOCK_EX | LOCK_NB) && $lockTries < 100) {
-  usleep(3000); // 3ms
-  ++$lockTries;
-}
-
-if ($lockTries == 100) {
+if (!flock($handler, LOCK_EX)) {
   fclose($handler);
-  error_log("ERROR: WriteGamestate could not lock " . $filename . " after 300ms — action not persisted (game: " . $gameName . ")");
+  error_log("ERROR: WriteGamestate could not lock " . $filename . " — action not persisted (game: " . $gameName . ")");
   exit;
 }
 
@@ -130,7 +124,6 @@ $gamestateLines = array_merge($gamestateLines, [
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
 
 fwrite($handler, $gamestateContent);
-
 flock($handler, LOCK_UN);
 fclose($handler);
 

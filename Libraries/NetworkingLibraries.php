@@ -4518,16 +4518,15 @@ function WriteGamestate()
   $filename = "./Games/" . $gameName . "/gamestate.txt";
   $handler = fopen($filename, "c");
 
-  $lockTries = 0;
-  while (!flock($handler, LOCK_EX | LOCK_NB) && $lockTries < 100) {
-    usleep(3000); //3ms
-    ++$lockTries;
+  if ($handler === false) {
+    error_log("ERROR: WriteGamestate() could not open " . $filename . " (game: " . $gameName . ")");
+    return;
   }
 
-  if ($lockTries == 100) {
+  if (!flock($handler, LOCK_EX)) {
     fclose($handler);
-    error_log("ERROR: WriteGamestate() could not lock " . $filename . " after 300ms — state not persisted (game: " . $gameName . ")");
-    exit;
+    error_log("ERROR: WriteGamestate() could not lock " . $filename . " — state not persisted (game: " . $gameName . ")");
+    return;
   }
 
   ftruncate($handler, 0);
@@ -4618,6 +4617,7 @@ function WriteGamestate()
   // Single write operation with all data at once
   $outputStr = implode("\r\n", $output) . "\r\n";
   fwrite($handler, $outputStr);
+  flock($handler, LOCK_UN);
   fclose($handler);
 
   // Mirror of gamestate.txt for this process — lets backup snapshots write
