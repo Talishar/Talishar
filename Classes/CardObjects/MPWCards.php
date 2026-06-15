@@ -726,3 +726,53 @@ class and_again_blue extends Card {
 		$Layer->AddTarget($target);
 	}
 }
+
+class durendal extends Card {
+	function __construct($controller) {
+		$this->cardID = "durendal";
+		$this->controller = $controller;
+	}
+  
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AA";
+	}
+
+	function AbilityCost() {
+		return 1;
+	}
+
+	function SpecialPower() {
+		return 3;
+	}
+
+	function SpecialName() {
+		return "Durendal";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialType() {
+		return "W";
+	}
+
+	function SpecialSubType() {
+		return "Sword";
+	}
+
+	function CombatChainBlockModifier($cardID, $from, $index, $sourceIndex) {
+		global $CombatChain;
+		if ($sourceIndex != 0) return 0;
+		$AttackCard = $CombatChain->AttackCard();
+		$uid = $AttackCard->OriginUniqueID();
+		$Character = new PlayerCharacter($this->controller);
+		$Weapon = $Character->FindCardUID($uid);
+		if ($Weapon->NumPowerCounters() <= 0) return 0;
+		return TypeContains($cardID, "AR") || TypeContains($cardID, "DR") ? -1 : 0;
+	}
+}

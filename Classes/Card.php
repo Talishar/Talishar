@@ -774,4 +774,8 @@ class Card {
   function DoesEffectGrantOverpower() {
     return false;
   }
+
+  function CombatChainBlockModifier($cardID, $from, $index, $sourceIndex) {
+    return 0;
+  }
 }

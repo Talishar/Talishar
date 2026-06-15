@@ -557,6 +557,17 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
   return $power;
 }
 
+function CombatChainBlockModifiers($cardID, $from, $index) {
+  global $CombatChain;
+  $block = 0;
+  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $LinkCard = $CombatChain->Card($i, true);
+    $card = GetClass($LinkCard->ID(), $LinkCard->PlayerID());
+    if ($card != "-") $block += $card->CombatChainBlockModifier($cardID, $from, $index, $i);
+  }
+  return $block;
+}
+
 function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
 {
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CS_ArcaneDamageTaken, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
@@ -568,6 +579,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   $blockModifier += AuraBlockModifier($cardID, $from);
   $blockModifier += ItemBlockModifier($cardID);
   $blockModifier += CurrentEffectBlockModifiers($cardID, $from, $index);
+  $blockModifier += CombatChainBlockModifiers($cardID, $from, $index);
   $totalPower = $combatChainState[$CCS_CachedTotalPower];
 
   $defAuras = &GetAuras($defPlayer);
