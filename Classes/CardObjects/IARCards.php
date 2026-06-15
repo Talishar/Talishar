@@ -55,6 +55,26 @@ class runic_reaving_red extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     Usurp($this->cardID, $this->controller, $from);
   }
+
+  function SpecialName() {
+    return "Runic Reaving";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
 }
 
 class runechant_of {
