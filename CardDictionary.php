@@ -4067,6 +4067,7 @@ function CharacterDefaultActiveState($cardID)
     case "spellbound_creepers":
     case "grimoire_of_the_haunt":
     case "old_knocker":
+    case "dragonscaler_flight_path":
       return 1;
     case "okana_scar_wraps":
     case "verdance_thorn_of_the_rose":
