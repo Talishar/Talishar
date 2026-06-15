@@ -61,16 +61,16 @@ if ($cacheVal > 10000000) {
   $lastUpdate = 0;
 }
 $kickPlayerTwo = false;
-$sleepMs = 50; // Exponential backoff start
+$otherP = $playerID == 1 ? 2 : 1;
+$sleepUs = 50000; 
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
-  usleep(intval($sleepMs * 1000));
-  $sleepMs = min($sleepMs * 1.5, 200); // Exponential backoff capped at 200ms
+  usleep($sleepUs);
+  $sleepUs = min((int)($sleepUs * 1.5), 200000); // Cap at 200ms
   $currentTime = round(microtime(true) * 1000);
   $cacheVal = GetCachePiece($gameName, 1);
   SetCachePiece($gameName, $playerID + 1, $currentTime);
   ++$count;
   if ($count == 20) break;
-  $otherP = $playerID == 1 ? 2 : 1;
   $oppLastTime = GetCachePiece($gameName, $otherP + 1);
   $oppStatus = strval(GetCachePiece($gameName, $otherP + 3));
 
@@ -181,17 +181,15 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->playAudio = ($playerID == 1 && $gameStatus == $MGS_ChooseFirstPlayer ? 1 : 0);
 
   $otherHero = "CardBack";
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = $otherP; // $otherP already computed above
   $deckFile = "../Games/" . $gameName . "/p" . $otherPlayer . "Deck.txt";
   if (file_exists($deckFile)) {
     $handler = fopen($deckFile, "r");
-    $otherCharacter = GetArray($handler);
+    $firstLine = trim(fgets($handler));
     fclose($handler);
-    
-    if (is_array($otherCharacter) && count($otherCharacter) > 0) {
-      $otherHero = $otherCharacter[0];
-    } else {
-      $otherHero = "CardBack";
+    if ($firstLine !== '') {
+      $spacePos = strpos($firstLine, ' ');
+      $otherHero = $spacePos !== false ? substr($firstLine, 0, $spacePos) : $firstLine;
     }
   }
   $response->theirHero = $otherHero;
@@ -199,10 +197,14 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 
   $theirName = ($playerID == 1 ? $p2uid : $p1uid);
   if ($theirName == '-') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
-  $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID));
-  $nameColor = ($contentCreator != null ? $contentCreator->NameColor() : "");
-  $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($otherHero) : "");
-  $channelLink = ($contentCreator != null ? $contentCreator->ChannelLink() : "");
+  $contentCreator = ContentCreators::tryFrom($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID);
+  if ($contentCreator !== null) {
+    $nameColor = $contentCreator->NameColor();
+    $overlayURL = $contentCreator->HeroOverlayURL($otherHero);
+    $channelLink = $contentCreator->ChannelLink();
+  } else {
+    $nameColor = $overlayURL = $channelLink = "";
+  }
 
   $response->theirName = $theirName;
   $response->theirNameColor = $nameColor;
@@ -217,10 +219,10 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->theirIsPvtVoidPatron = ($theirUid === "PvtVoid");
   $response->theirMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
-  $response->submitSideboard = ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none"));
+  $response->submitSideboard = $playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none");
 
   $response->myPriority = true;
-  if ($gameStatus == $MGS_ChooseFirstPlayer) $response->myPriority = ($playerID == $firstPlayerChooser ? true : false);
+  if ($gameStatus == $MGS_ChooseFirstPlayer) $response->myPriority = $playerID == $firstPlayerChooser;
   else if ($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $response->myPriority = false;
   else if ($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $response->myPriority = false;
 
