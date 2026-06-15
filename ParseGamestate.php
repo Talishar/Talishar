@@ -480,11 +480,11 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
       $gamestateBackup[$csLine] = implode(" ", $csParts) . "\r\n";
     }
   }
-  file_put_contents($backupFile, $gamestateBackup);
+  $gamestate = implode('', $gamestateBackup);
+  file_put_contents($backupFile, $gamestate);
   // Restore the target backup as current gamestate
   copy($backupFile, $filepath . "gamestate.txt");
   $skipWriteGamestate = true;
-  $gamestate = file_get_contents($backupFile);
   WriteGamestateCache($gameName, $gamestate);
   $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
   
