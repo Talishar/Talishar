@@ -455,7 +455,7 @@ $CCS_CachedNumBlockedFromHand = 28; //Deprecated by 6/22/23 Rules Bulletin
 $CCS_IsBoosted = 29;
 $CCS_AttackTargetUID = 30;
 $CCS_CachedOverpowerActive = 31;
-$CSS_CachedNumActionBlocked = 32;
+$CCS_CachedNumActionBlocked = 32;
 $CCS_CachedNumDefendedFromHand = 33;
 $CCS_HitThisLink = 34;
 $CCS_WagersThisLinkDupe = 35; //somehow duplicated?
@@ -486,7 +486,7 @@ function ResetCombatChainState()
   global $CCS_NumBoosted, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget, $CCS_WasRuneGate, $CCS_PhantasmThisLink;
   global $CCS_LinkTotalPower, $CCS_LinkBasePower, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
-  global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
+  global $mainPlayer, $defPlayer, $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CCS_CachedNumActionBlocked;
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
   global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero;
@@ -523,7 +523,7 @@ function ResetCombatChainState()
   $combatChainState[$CCS_IsBoosted] = 0;
   $combatChainState[$CCS_AttackTargetUID] = "-";
   $combatChainState[$CCS_CachedOverpowerActive] = 0;
-  $combatChainState[$CSS_CachedNumActionBlocked] = 0;
+  $combatChainState[$CCS_CachedNumActionBlocked] = 0;
   $combatChainState[$CCS_CachedNumDefendedFromHand] = 0;
   $combatChainState[$CCS_HitThisLink] = 0;
   $combatChainState[$CCS_PhantasmThisLink] = 0;
@@ -637,7 +637,7 @@ function ResetChainLinkState()
   global $CCS_AttackPlayedFrom, $CCS_ChainLinkHitEffectsPrevented, $CCS_AttackFused, $CCS_AttackTotalDamage, $CCS_AttackTarget;
   global $CCS_LinkTotalPower, $CCS_LinkBasePower, $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement;
   global $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CombatDamageReplaced, $CCS_AttackUniqueID, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock;
-  global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CSS_CachedNumActionBlocked;
+  global $CCS_CachedDominateActive, $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CCS_CachedNumActionBlocked;
   global $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_AttackNumCharged, $CCS_WasRuneGate, $CCS_WagersThisLink, $CCS_PhantasmThisLink, $CCS_NumInstantsPlayedByAttackingPlayer;
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking, $CCS_NumPowerCounters;
   global $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero, $CCS_NumInstantsPlayedByDefendingPlayer, $CCS_CachedPreBlockValue;
@@ -671,7 +671,7 @@ function ResetChainLinkState()
   $combatChainState[$CCS_IsBoosted] = 0;
   $combatChainState[$CCS_AttackTargetUID] = "-";
   $combatChainState[$CCS_CachedOverpowerActive] = 0;
-  $combatChainState[$CSS_CachedNumActionBlocked] = 0;
+  $combatChainState[$CCS_CachedNumActionBlocked] = 0;
   $combatChainState[$CCS_CachedNumDefendedFromHand] = 0;
   $combatChainState[$CCS_HitThisLink] = 0;
   $combatChainState[$CCS_PhantasmThisLink] = 0;

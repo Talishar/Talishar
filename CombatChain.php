@@ -1858,7 +1858,7 @@ function CombatChainPayAdditionalCosts($index, $from)
 function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
-  global $CSS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
+  global $CCS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
   global $CombatChain, $CCS_CachedGoAgain;
   if (count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedGoAgain] = (DoesAttackHaveGoAgain() ? "1" : "0");
@@ -1872,7 +1872,7 @@ function CacheCombatResult()
   }
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
-  $combatChainState[$CSS_CachedNumActionBlocked] = NumActionsBlocking();
+  $combatChainState[$CCS_CachedNumActionBlocked] = NumActionsBlocking();
   if ($combatChainState[$CCS_CachedNumDefendedFromHand] == 0) $combatChainState[$CCS_CachedNumDefendedFromHand] = NumDefendedFromHand();
   $combatChainState[$CCS_WagersThisLink] = (IsWagerActive() ? intval($combatChainState[$CCS_WagersThisLink]) : "0");
   $combatChainState[$CCS_PhantasmThisLink] = (IsPhantasmActive() ? "1" : "0");
@@ -1941,8 +1941,8 @@ function CachedNumDefendedFromHand() //Reprise
 
 function CachedNumActionBlocked()
 {
-  global $combatChainState, $CSS_CachedNumActionBlocked;
-  return $combatChainState[$CSS_CachedNumActionBlocked];
+  global $combatChainState, $CCS_CachedNumActionBlocked;
+  return $combatChainState[$CCS_CachedNumActionBlocked];
 }
 
 function IsPiercingActive($cardID)
