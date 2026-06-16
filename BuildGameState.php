@@ -41,11 +41,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $buildCacheArr = ReadCacheArray($gameName) ?? [];
-
-  // Check spectator permission
-  if ($playerID == 3 && ($buildCacheArr[8] ?? "") != "1") {
-    return "Spectators not allowed.";
-  }
+  $spectatorsPubliclyAllowed = ($buildCacheArr[8] ?? "") == "1";
 
   // Extract session data with defaults
   $sessionUserLoggedIn = $sessionData['userLoggedIn'] ?? false;
@@ -54,28 +50,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $sessionPatreonCampaigns = $sessionData['patreonCampaigns'] ?? [];
 
   $friendListFromSession = [];
-  /*
-  $friendListFromSession = $sessionData['friendList'] ?? [];
-  if (empty($friendListFromSession) && $playerID == 3 && !empty($sessionUserName)) {
-    $dbConn = GetDBConnection();
-    if ($dbConn) {
-      $query = "SELECT u.usersUid FROM friends f JOIN users u ON f.friendUserId = u.usersId WHERE f.userId = (SELECT usersId FROM users WHERE usersUid = ?) AND f.status = 'accepted'";
-      $stmt = $dbConn->prepare($query);
-      if ($stmt) {
-        $stmt->bind_param("s", $sessionUserName);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        while ($row = $result->fetch_assoc()) {
-          $friendListFromSession[] = $row['usersUid'];
-        }
-        $stmt->close();
-      }
-      mysqli_close($dbConn);
-    }
-  }
-  
-  $sessionData['friendList'] = $friendListFromSession;
-  */
 
   $response = new stdClass();
   $response->playerInventory = [];
@@ -126,6 +100,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   } else if ($playerID == 3) {
     $spectatorIsFriendOfP1 = in_array($p1uid, $friendList);
     $spectatorIsFriendOfP2 = in_array($p2uid, $friendList);
+  }
+
+  // Check spectator permission: allowed if the host opened the game to public
+  // spectators, or if the viewer is a friend of either player.
+  if ($playerID == 3 && !$spectatorsPubliclyAllowed && !$spectatorIsFriendOfP1 && !$spectatorIsFriendOfP2) {
+    return "Spectators not allowed.";
   }
 
   $response->lastUpdate = $cacheVal;
