@@ -429,7 +429,7 @@ function ContinueDecisionQueue($lastResult = "")
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer, $combatChainState;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
-  global $CCS_CachedPreBlockValue;
+  global $CCS_CachedPreBlockValue, $CS_LayerResolved;
 
   $dqCount = count($decisionQueue);
   if ($dqCount == 0 || IsGamePhase($decisionQueue[0])) {
@@ -450,7 +450,12 @@ function ContinueDecisionQueue($lastResult = "")
     }
     if ($dqCount == 0 && count($layers) > 0) {
       $priorityHeld = 0;
-      $prioPlayer = $Stack->CountPlayedLayers() > 0 ? $currentPlayer : $mainPlayer;
+      if (GetClassState($mainPlayer, $CS_LayerResolved) > 0) {
+        SetClassState($mainPlayer, $CS_LayerResolved, 0);
+        $prioPlayer = $mainPlayer;
+      }
+      else
+        $prioPlayer = $Stack->CountPlayedLayers() > 0 ? $currentPlayer : $mainPlayer;
       if ($prioPlayer == 1) {
         if (ShouldHoldPriorityNow(1)) {
           AddDecisionQueue("INSTANT", 1, "-");
@@ -534,6 +539,7 @@ function ContinueDecisionQueue($lastResult = "")
           global $EffectContextUID;
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           $EffectContextUID = $layerUniqueID;
+          SetClassState($mainPlayer, $CS_LayerResolved, 1); // lets the game know to give priority back to mainPlayer
           PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
           ClearDieRoll($player);
         } else {
