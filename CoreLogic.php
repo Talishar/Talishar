@@ -4240,6 +4240,7 @@ function NonHitEffects($cardID)
 {
   global $mainPlayer, $defPlayer, $currentTurnEffects;
   // NOTE: count($currentTurnEffects) is NOT cached here because this loop's can call RemoveCurrentTurnEffect()
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < count($currentTurnEffects); $i += $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
