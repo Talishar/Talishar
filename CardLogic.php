@@ -287,9 +287,8 @@ function ResolveAttackQueue() {
 function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts = "-", $uniqueID = "-", $layerUID = "-", $skipOrdering = false)
 {
   global $layers, $CombatChain;
-  static $skipOrderingParams = ["runechant", "seismic_surge"];
   $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
-  $skipOrdering = in_array($parameter, $skipOrderingParams) || $skipOrdering;
+  $skipOrdering = in_array($parameter, ["runechant", "seismic_surge"]) || $skipOrdering;
   if (($additionalCosts == "ONHITEFFECT" || $additionalCosts == "ATTACKTRIGGER") && $uniqueID == "-") $uniqueID = $CombatChain->AttackCard()->UniqueID();
   if ($cardID == "TRIGGER" && !$skipOrdering) { // put triggers into "pre-layers" where they can be ordered
     array_unshift($layers, $layerUID);
@@ -317,13 +316,12 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
 function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeCheckpoint = 0)
 {
   global $decisionQueue;
-  $dqCount = count($decisionQueue);
-  if ($dqCount == 0) $insertIndex = 0;
+  if (count($decisionQueue) == 0) $insertIndex = 0;
   else {
-    $insertIndex = $dqCount - DecisionQueuePieces();
+    $insertIndex = count($decisionQueue) - DecisionQueuePieces();
     if (!IsGamePhase($decisionQueue[$insertIndex])) //Stack must be clear before you can continue with the step
     {
-      $insertIndex = $dqCount;
+      $insertIndex = count($decisionQueue);
     }
   }
 
@@ -384,7 +382,7 @@ function ShouldHoldPriorityNow($player)
 {
   global $layerPriority, $Stack, $AttackQueue;
   if ($layerPriority[$player - 1] != "1") return false;
-  static $noPriorityPhases = ["ENDPHASE", "STARTTURN", "CLOSESTEP"];
+  $noPriorityPhases = ["ENDPHASE", "STARTTURN", "CLOSESTEP"];
   if (in_array($Stack->BottomLayer()->ID(), $noPriorityPhases)) return false;
   // if the stack is empty and something is in the attack queue, do the attack
   if (IsResolutionStep() && $Stack->NumLayers() == 1 && $AttackQueue->NumAttacks() > 0) return false;
@@ -396,23 +394,26 @@ function ShouldHoldPriorityNow($player)
 
 function IsGamePhase($phase)
 {
-  static $gamePhases = [
-    "RESUMEPAYING" => true, "RESUMEPLAY" => true, "RESOLVECHAINLINK" => true,
-    "RESOLVECOMBATDAMAGE" => true, "PASSTURN" => true,
-  ];
-  return isset($gamePhases[$phase]);
+  switch ($phase) {
+    case "RESUMEPAYING":
+    case "RESUMEPLAY":
+    case "RESOLVECHAINLINK":
+    case "RESOLVECOMBATDAMAGE":
+    case "PASSTURN":
+      return true;
+    default:
+      return false;
+  }
 }
 
 function AddTriggersToStack()
 {
   global $layers, $mainPlayer, $defPlayer;
   $preLayers = GetPreLayers();
-  $preLayersCount = count($preLayers);
-  if ($preLayersCount > 0) {
+  if (count($preLayers) > 0) {
     $mainPreLayers = 0;
     $defPreLayers = 0;
-    $layerPieces = LayerPieces();
-    for ($i = 0; $i < $preLayersCount; $i += $layerPieces) {
+    for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
       if ($preLayers[$i+1] == $mainPlayer) ++$mainPreLayers;
       else ++$defPreLayers;
     }
@@ -430,7 +431,7 @@ function ContinueDecisionQueue($lastResult = "")
 {
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer, $combatChainState;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
+  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
   global $CCS_CachedPreBlockValue;
 
   $dqCount = count($decisionQueue);
