@@ -42,4 +42,4 @@ $access_token = $row["patreonAccessToken"];
 
 try {
   PatreonLogin($access_token, false, true);
-} catch (\Exception $e) { }
+} catch (\Exception $e) { error_log("zzPatreonDebug: PatreonLogin threw: " . $e->getMessage()); }

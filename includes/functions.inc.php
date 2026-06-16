@@ -165,7 +165,7 @@ function loginFromCookie()
                 try {
                     PatreonLogin($patreonAccessToken);
                 } catch (\Throwable $e) {
-                    // Handle exception (if any)
+                    error_log("functions.inc.php: PatreonLogin threw: " . $e->getMessage());
                 }
             } else {
                 // Unset session variables if token doesn't match
