@@ -88,17 +88,24 @@ function deleteDirectory($dir)
     return @unlink($dir) || !file_exists($dir);
   }
 
-  $items = scandir($dir, SCANDIR_SORT_NONE);
-  if ($items === false) {
+  try {
+    $iterator = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS),
+      RecursiveIteratorIterator::CHILD_FIRST
+    );
+  } catch (UnexpectedValueException $e) {
     return !file_exists($dir);
   }
-  foreach ($items as $item) {
-    if ($item === '.' || $item === '..') {
-      continue;
-    }
-    if (!deleteDirectory($dir . "/" . $item)) {
+
+  foreach ($iterator as $fileInfo) {
+    $path = $fileInfo->getPathname();
+    $ok = $fileInfo->isDir()
+      ? (@rmdir($path) || !file_exists($path))
+      : (@unlink($path) || !file_exists($path));
+    if (!$ok) {
       return false;
     }
   }
+
   return @rmdir($dir) || !file_exists($dir);
 }
