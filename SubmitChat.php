@@ -53,11 +53,6 @@ if ($authKey === "" && ($playerID == 1 || $playerID == 2)) {
 // Load game file to get Metafy tiers - this populates $p1MetafyTiers and $p2MetafyTiers
 include "MenuFiles/ParseGamefile.php";
 
-if ($playerID === 3 && GetCachePiece($gameName, 9) != "1") {
-  http_response_code(403);
-  die("Spectating is not enabled for this game.");
-}
-
 $allowedOrigins = ['https://talishar.net', 'https://www.talishar.net'];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
