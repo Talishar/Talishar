@@ -1130,11 +1130,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         global $randomSeeded;
         $randomSeeded = true;
       }
-      while (count($zone) > 0) {
-        $index = GetRandom(0, count($zone) - 1);
+      $zoneCount = count($zone);
+      while ($zoneCount > 0) {
+        $index = GetRandom(0, $zoneCount - 1);
         $destArr[] = $zone[$index];
-        unset($zone[$index]);
-        $zone = array_values($zone);
+        array_splice($zone, $index, 1);
+        $zoneCount--;
       }
       $zone = $destArr;
       if ($parameter != "SKIPSEED") {
@@ -3157,9 +3158,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = "";
       for ($i = 0; $i < $subcardsCount; $i++) {
         if (is_array($lastResult)) {
-          if (in_array($subcards[$i], $lastResult)) {
+          $foundIndex = array_search($subcards[$i], $lastResult);
+          if ($foundIndex !== false) {
             $cardID = ($cardID == "") ? $subcards[$i] : $cardID . "," . $subcards[$i];
-            array_splice($lastResult, array_search($subcards[$i], $lastResult), 1);
+            array_splice($lastResult, $foundIndex, 1);
             array_splice($subcards, $i, 1);
             $i--;
             $subcardsCount--;
@@ -3185,9 +3187,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardID = "";
       for ($i = 0; $i < $subcardsCount; $i++) {
         if (is_array($lastResult)) {
-          if (in_array($subcards[$i], $lastResult)) {
+          $foundIndex = array_search($subcards[$i], $lastResult);
+          if ($foundIndex !== false) {
             $cardID = ($cardID == "") ? $subcards[$i] : $cardID . "," . $subcards[$i];
-            array_splice($lastResult, array_search($subcards[$i], $lastResult), 1);
+            array_splice($lastResult, $foundIndex, 1);
             array_splice($subcards, $i, 1);
             $i--;
             $subcardsCount--;

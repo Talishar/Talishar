@@ -4,6 +4,10 @@
 // of an open/write/flush/close cycle per line (game actions emit many lines).
 // FlushLogBuffer() runs before GamestateUpdated() bumps the change counter, so
 // logs are always on disk before any SSE/polling process rebuilds the game state.
+// Per-file content is hard-capped at LOG_BUFFER_FLUSH_THRESHOLD
+if (!defined('LOG_BUFFER_FLUSH_THRESHOLD')) {
+  define('LOG_BUFFER_FLUSH_THRESHOLD', 65536); // bytes, per filename
+}
 $logWriteBuffer = [];
 
 function LogBufferAppend($filename, $line, $requireExists)
@@ -18,6 +22,23 @@ function LogBufferAppend($filename, $line, $requireExists)
     $logWriteBuffer[$filename] = ["requireExists" => $requireExists, "content" => ""];
   }
   $logWriteBuffer[$filename]["content"] .= $line;
+  if (strlen($logWriteBuffer[$filename]["content"]) >= LOG_BUFFER_FLUSH_THRESHOLD) {
+    FlushLogBufferEntry($filename);
+  }
+}
+
+function FlushLogBufferEntry($filename)
+{
+  global $logWriteBuffer;
+  if (!isset($logWriteBuffer[$filename])) return;
+  $entry = $logWriteBuffer[$filename];
+  if ($entry["content"] === "") return;
+  if ($entry["requireExists"] && !file_exists($filename)) {
+    $logWriteBuffer[$filename]["content"] = "";
+    return;
+  }
+  @file_put_contents($filename, $entry["content"], FILE_APPEND);
+  $logWriteBuffer[$filename]["content"] = "";
 }
 
 function FlushLogBuffer()
@@ -25,9 +46,7 @@ function FlushLogBuffer()
   global $logWriteBuffer;
   if (empty($logWriteBuffer)) return;
   foreach ($logWriteBuffer as $filename => $entry) {
-    if ($entry["content"] === "") continue;
-    if ($entry["requireExists"] && !file_exists($filename)) continue; //File does not exist
-    @file_put_contents($filename, $entry["content"], FILE_APPEND);
+    FlushLogBufferEntry($filename);
   }
   $logWriteBuffer = [];
 }
