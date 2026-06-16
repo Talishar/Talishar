@@ -826,3 +826,14 @@ class raise_blades_red extends Card {
 		return true;
 	}
 }
+
+class overwhelming_swing_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "overwhelming_swing_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}
