@@ -2,6 +2,11 @@
 function DelimStringContains($str, $find, $partial=false)
 {
   if($str == null) return false;
+  // Fast path: most calls pass a single value string with no delimiter
+  // Skip the explode()/array. This function is called on so many card-ability check in the engine
+  if (strpos($str, ",") === false) {
+    return $partial ? str_contains($str, $find) : $str == $find;
+  }
   $arr = explode(",", $str);
   foreach($arr as $item)
   {
