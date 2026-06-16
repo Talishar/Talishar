@@ -570,8 +570,8 @@ class downswing_red extends Card {
 	}
 
 	function WonWager($wonWager, $amount) {
-    LoseHealth(1, $wonWager);
-  }
+		LoseHealth(1, $wonWager);
+	}
 
 	function IsWagerEffect($index) {
 		return true;
@@ -668,12 +668,12 @@ class donkey_blue extends Card {
 }
 
 class and_again_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "and_again_blue";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "and_again_blue";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$Sword = CleanTargetToObject($this->controller, explode(",", $target)[0]);
 		$attackTarget = explode(",", $target)[1] ?? "NA";
 		if ($Sword->Index() != -1) {
@@ -683,12 +683,12 @@ class and_again_blue extends Card {
 			$parameter = "EQUIP|0|$index|$uniqueID|MYCHAR";
 			AddAttackQueue($cardID, $this->controller, $attackTarget, $parameter, $uniqueID);
 		}
-    return "";
-  }
+    	return "";
+  	}
 
-  function IsAttackLayer() {
+	function IsAttackLayer() {
 		return true;
-  }
+	}
 
 	function GetTargets() {
 		global $CurrentTurnEffects, $CS_WeaponsAttackedWith;
@@ -705,9 +705,9 @@ class and_again_blue extends Card {
 		return $targets;
 	}
 
-  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return count($this->GetTargets()) == 0;
-  }
+	}
 
 	function PayAdditionalCosts($from, $index = '-') {
 		$targetSwords = $this->GetTargets();
@@ -774,5 +774,55 @@ class durendal extends Card {
 		$Weapon = $Character->FindCardUID($uid);
 		if ($Weapon->NumPowerCounters() <= 0) return 0;
 		return TypeContains($cardID, "AR") || TypeContains($cardID, "DR") ? -1 : 0;
+	}
+}
+
+class raise_blades_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "raise_blades_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		Draw($this->controller, effectSource:$this->cardID);
+		Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Put a card from hand back on top");
+		Await($this->controller, "MZRemove", "cardID");
+		Await($this->controller, "AddTopDeck", final:true);
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword", $this->controller);
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function SpecialPitch() {
+		return 1;
+	}
+
+	function SpecialName() {
+		return "Raise Blades";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function SpecialBlock() {
+		return 3;
+	}
+
+	function HasGoAgain($from) {
+		return true;
 	}
 }
