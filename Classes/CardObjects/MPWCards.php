@@ -765,6 +765,10 @@ class durendal extends Card {
 		return "Sword";
 	}
 
+	function SpecialBlock() {
+		return -2;
+	}
+
 	function CombatChainBlockModifier($cardID, $from, $index, $sourceIndex) {
 		global $CombatChain;
 		if ($sourceIndex != 0) return 0;
