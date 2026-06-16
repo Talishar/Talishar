@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/API.php';
+require_once __DIR__ . '/OAuth.php';
+
   use Patreon\API;
   use Patreon\OAuth;
 
