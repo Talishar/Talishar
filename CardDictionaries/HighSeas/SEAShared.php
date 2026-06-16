@@ -717,7 +717,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         else {
           $attacks = GetCombatChainAttacks();
           $attackInd = -1;
-          for ($i = 0; $i < count($attacks); $i += ChainLinksPieces()) {
+          $attacksCount = count($attacks);
+          for ($i = 0; $i < $attacksCount; $i += ChainLinksPieces()) {
             if ($attacks[$i] == $cardID && $attacks[$i + 9] <= 3) {
               $numUsed = $attacks[$i + 9];
               $attackInd = intdiv($i, ChainLinksPieces());
@@ -1191,9 +1192,9 @@ function GetUntapped($player, $zone, $cond="-")
       return "";
   }
   $unwavedInds = [];
-  $allowedInds = -1;
   $allowedInds = ($cond != "-") ? explode(",", SearchMultizone($player, "$zone:$cond")) : [];
-  for ($i = 0; $i < count($arr); $i += $count) {
+  $arrCount = count($arr);
+  for ($i = 0; $i < $arrCount; $i += $count) {
     $index = "$zone-$i";
     if ($cond != "-" && !in_array($index, $allowedInds)) continue;
     $Card = MZIndexToObject($player, $index);
@@ -1234,9 +1235,9 @@ function GetTapped($player, $zone, $cond="-")
       return "";
   }
   $unwavedInds = [];
-  $allowedInds = -1;
   $allowedInds = ($cond != "-") ? explode(",", SearchMultizone($player, "$zone:$cond")) : [];
-  for ($i = 0; $i < count($arr); $i += $count) {
+  $arrCount = count($arr);
+  for ($i = 0; $i < $arrCount; $i += $count) {
     $index = "$zone-$i";
     if ($cond != "-" && !in_array($index, $allowedInds)) continue;
     if (CheckTapped($index, $player)) array_push($unwavedInds, $index);

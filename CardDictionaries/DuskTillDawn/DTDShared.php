@@ -220,9 +220,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       break;
     case "celestial_reprimand_red": case "celestial_reprimand_yellow": case "celestial_reprimand_blue":
-      if($cardID == "celestial_reprimand_red") $amount = -3;
-      else if($cardID == "celestial_reprimand_yellow") $amount = -2;
-      else $amount = -1;
+      $amount = match($cardID) { "celestial_reprimand_red" => -3, "celestial_reprimand_yellow" => -2, default => -1 };
       if($target != "-") $CombatChain->Card(intval($target))->ModifyPower($amount);
       return "";
     case "celestial_resolve_red": case "celestial_resolve_yellow": case "celestial_resolve_blue":
@@ -258,7 +256,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "lumina_lance_yellow":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
-        for($i=0; $i<count($modes); ++$i)
+        $modesCount = count($modes);
+        for($i=0; $i<$modesCount; ++$i)
         {
           switch($modes[$i])
           {
@@ -321,7 +320,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "blood_dripping_frenzy_blue":
       $cards = explode(",", $additionalCosts);
       $num6Pow = 0;
-      for($i=0; $i<count($cards); ++$i)
+      $cardsCount = count($cards);
+      for($i=0; $i<$cardsCount; ++$i)
       {
         if(HasBloodDebt($cards[$i])) Draw($currentPlayer);
         if(ModifiedPowerValue($cards[$i], $currentPlayer, "HAND", source:$cardID) >= 6) ++$num6Pow;
@@ -424,7 +424,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $cards = explode(",", $cardList);
       $num6plus = 0;
       if ($cardList != "") {
-        for($i=0; $i<count($cards); ++$i)
+        $cardsCount = count($cards);
+        for($i=0; $i<$cardsCount; ++$i)
         {
           WriteLog(CardLink($cards[$i], $cards[$i]) . " chosen randomly");
           if(ModifiedPowerValue($cards[$i], $currentPlayer, "GY", source:$cardID) >= 6) {

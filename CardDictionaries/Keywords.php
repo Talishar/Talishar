@@ -44,7 +44,8 @@
     WriteLog("Player $player cranked");
     IncrementClassState($player, $CS_NumCranked);
     $char = GetPlayerCharacter($player);
-    for ($i = 0; $i < count($char); $i += CharacterPieces()){
+    $charCount = count($char);
+    for ($i = 0; $i < $charCount; $i += CharacterPieces()){
       switch ($char[$i]) {
         case "puffin_hightail":
         case "puffin":
@@ -513,7 +514,7 @@
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("GAINRESOURCES", $player, "1", 1);
     }
-    if(substr($from, 0, 5) == "THEIR") AddPlayerHand($cardID, $otherplayer, "-");
+    if(str_starts_with($from, "THEIR")) AddPlayerHand($cardID, $otherplayer, "-");
     else AddPlayerHand($cardID, $player, "-");
   }
 

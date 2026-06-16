@@ -123,9 +123,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "polar_blast_red": case "polar_blast_yellow": case "polar_blast_blue":
-        if($cardID == "polar_blast_red") $cost = 3;
-        else if($cardID == "polar_blast_yellow") $cost = 2;
-        else $cost = 1;
+        $cost = match($cardID) { "polar_blast_red" => 3, "polar_blast_yellow" => 2, default => 1 };
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_".$cost."_to_prevent_Dominate");
         AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
@@ -136,10 +134,8 @@
           WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         }
         return "";
-      case "winters_bite_red": case "winters_bite_yellow": case "winters_bite_blue": 
-        if($cardID == "winters_bite_red") $pay = 3;
-        else if($cardID == "winters_bite_yellow") $pay = 2;
-        else $pay = 1;
+      case "winters_bite_red": case "winters_bite_yellow": case "winters_bite_blue":
+        $pay = match($cardID) { "winters_bite_red" => 3, "winters_bite_yellow" => 2, default => 1 };
         if(ShouldAutotargetOpponent($currentPlayer)) {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
           AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "WINTERSBITE-" . $pay, 1);
@@ -165,9 +161,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "lightning_press_red": case "lightning_press_yellow": case "lightning_press_blue":
-        $amount = 3;
-        if($cardID == "lightning_press_yellow") $amount = 2;
-        else if($cardID == "lightning_press_blue") $amount = 1;
+        $amount = match($cardID) { "lightning_press_yellow" => 2, "lightning_press_blue" => 1, default => 3 };
         $index = explode("-", $target)[1];
         if (explode("-", $target)[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
           if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return "FAILED";
@@ -239,9 +233,7 @@
 
   function SowTomorrowIndices($player, $cardID)
   {
-    if($cardID == "sow_tomorrow_red") $minCost = 0;
-    else if($cardID == "sow_tomorrow_yellow") $minCost = 1;
-    else $minCost = 2;
+    $minCost = match($cardID) { "sow_tomorrow_red" => 0, "sow_tomorrow_yellow" => 1, default => 2 };
     $earth = CombineSearches(SearchDiscard($player, "A", "", -1, $minCost, "", "EARTH"), SearchDiscard($player, "AA", "", -1, $minCost, "", "EARTH"));
     $elemental = CombineSearches(SearchDiscard($player, "A", "", -1, $minCost, "", "ELEMENTAL"), SearchDiscard($player, "AA", "", -1, $minCost, "", "ELEMENTAL"));
     return CombineSearches($earth, $elemental);
