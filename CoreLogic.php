@@ -246,7 +246,7 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   $combatChain[] = RepriseActive();
   $combatChain[] = 0;//Power Modifier
   $combatChain[] = 0;//Defense modifier
-  $combatChain[] = $turn[0] != "B" ? GetClassState($player, $CS_ResolvingLayerUniqueID) : GetUniqueId($cardID, $player);
+  $combatChain[] = ($turn[0] != "B" && !$defending) ? GetClassState($player, $CS_ResolvingLayerUniqueID) : GetUniqueId($cardID, $player);
   $combatChain[] = $OriginUniqueID;
   $combatChain[] = $cardID; //original cardID in case it becomes a copy
   $combatChain[] = "-"; //Added static buffs (comma separated list of SetIDs, see ConvertToSetID/ConvertToCardID)
