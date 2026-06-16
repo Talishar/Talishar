@@ -213,7 +213,7 @@ if ($handle = opendir($path)) {
         include 'APIParseGamefile.php';
         $status = $gameStatus;
         UnlockGamefile();
-      } else if ($lastRefresh == "" || $currentTime - $lastRefresh > 900000) //1 hour
+      } else if ($lastRefresh == "" || $currentTime - $lastRefresh > 900000) // 15 minutes
       {
         deleteDirectory($folder);
         DeleteCache($gameToken);
@@ -290,7 +290,7 @@ function deleteDirectory($dir) {
     }
 
     if (!is_dir($dir)) {
-        return unlink($dir);
+        return @unlink($dir) || !file_exists($dir);
     }
 
     $dirContents = scandir($dir);

@@ -181,13 +181,17 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   fwrite($handler, "20 20\r\n"); //Player life totals
 
   //Player 1
-  $p1DeckHandler = fopen("../Games/" . $gameName . "/p1Deck.txt", "r");
+  $p1DeckPath = "../Games/" . $gameName . "/p1Deck.txt";
+  if (!file_exists($p1DeckPath)) { fclose($handler); die(json_encode(["error" => "Game deck files not found; the game may have been closed due to inactivity"])); }
+  $p1DeckHandler = fopen($p1DeckPath, "r");
   if (!$p1DeckHandler) { fclose($handler); die(json_encode(["error" => "Game deck files not found"])); }
   initializePlayerState($handler, $p1DeckHandler, 1);
   fclose($p1DeckHandler);
 
   //Player 2
-  $p2DeckHandler = fopen("../Games/" . $gameName . "/p2Deck.txt", "r");
+  $p2DeckPath = "../Games/" . $gameName . "/p2Deck.txt";
+  if (!file_exists($p2DeckPath)) { fclose($handler); die(json_encode(["error" => "Game deck files not found; the game may have been closed due to inactivity"])); }
+  $p2DeckHandler = fopen($p2DeckPath, "r");
   if (!$p2DeckHandler) { fclose($handler); die(json_encode(["error" => "Game deck files not found"])); }
   initializePlayerState($handler, $p2DeckHandler, 2);
   fclose($p2DeckHandler);

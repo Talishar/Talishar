@@ -1925,13 +1925,13 @@ function CachedAttackHasGoAgain()
 function CachedDominateActive()
 {
   global $combatChainState, $CCS_CachedDominateActive;
-  return ($combatChainState[$CCS_CachedDominateActive] == "1" ? true : false);
+  return (($combatChainState[$CCS_CachedDominateActive] ?? "0") == "1" ? true : false);
 }
 
 function CachedOverpowerActive()
 {
   global $combatChainState, $CCS_CachedOverpowerActive;
-  return ($combatChainState[$CCS_CachedOverpowerActive] == "1" ? true : false);
+  return (($combatChainState[$CCS_CachedOverpowerActive] ?? "0") == "1" ? true : false);
 }
 
 function CachedWagerActive()

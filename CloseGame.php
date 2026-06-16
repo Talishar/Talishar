@@ -85,19 +85,20 @@ function deleteDirectory($dir)
   }
 
   if (!is_dir($dir)) {
-    $handler = fopen($dir, "w");
-    fwrite($handler, "");
-    fclose($handler);
-    return unlink($dir);
+    return @unlink($dir) || !file_exists($dir);
   }
 
-  foreach (scandir($dir) as $item) {
-    if ($item == '.' || $item == '..') {
+  $items = scandir($dir, SCANDIR_SORT_NONE);
+  if ($items === false) {
+    return !file_exists($dir);
+  }
+  foreach ($items as $item) {
+    if ($item === '.' || $item === '..') {
       continue;
     }
     if (!deleteDirectory($dir . "/" . $item)) {
       return false;
     }
   }
-  return rmdir($dir);
+  return @rmdir($dir) || !file_exists($dir);
 }
