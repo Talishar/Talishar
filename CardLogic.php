@@ -382,7 +382,7 @@ function ShouldHoldPriorityNow($player)
 {
   global $layerPriority, $Stack, $AttackQueue;
   if ($layerPriority[$player - 1] != "1") return false;
-  $noPriorityPhases = ["ENDPHASE", "STARTTURN", "CLOSESTEP"];
+  static $noPriorityPhases = ["ENDPHASE", "STARTTURN", "CLOSESTEP"];
   if (in_array($Stack->BottomLayer()->ID(), $noPriorityPhases)) return false;
   // if the stack is empty and something is in the attack queue, do the attack
   if (IsResolutionStep() && $Stack->NumLayers() == 1 && $AttackQueue->NumAttacks() > 0) return false;
@@ -394,26 +394,23 @@ function ShouldHoldPriorityNow($player)
 
 function IsGamePhase($phase)
 {
-  switch ($phase) {
-    case "RESUMEPAYING":
-    case "RESUMEPLAY":
-    case "RESOLVECHAINLINK":
-    case "RESOLVECOMBATDAMAGE":
-    case "PASSTURN":
-      return true;
-    default:
-      return false;
-  }
+  static $gamePhases = [
+    "RESUMEPAYING" => true, "RESUMEPLAY" => true, "RESOLVECHAINLINK" => true,
+    "RESOLVECOMBATDAMAGE" => true, "PASSTURN" => true,
+  ];
+  return isset($gamePhases[$phase]);
 }
 
 function AddTriggersToStack()
 {
   global $layers, $mainPlayer, $defPlayer;
   $preLayers = GetPreLayers();
-  if (count($preLayers) > 0) {
+  $preLayersCount = count($preLayers);
+  if ($preLayersCount > 0) {
     $mainPreLayers = 0;
     $defPreLayers = 0;
-    for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $preLayersCount; $i += $layerPieces) {
       if ($preLayers[$i+1] == $mainPlayer) ++$mainPreLayers;
       else ++$defPreLayers;
     }
