@@ -1270,7 +1270,9 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
   $exclCardTypeArray = explode(",", $exclCardTypes);
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
 
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+  $combatChainCount = count($combatChain);
+  $combatChainPieces = CombatChainPieces();
+  for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
     if ($color != "" && !ColorContains($combatChain[$i], $color, $combatChain[$i+1])) continue;
     if ($playerID != "" && $combatChain[$i + 1] != $playerID) continue;
     if ($cardType != "" && !TypeContains($combatChain[$i], $cardType, $playerID)) continue;
@@ -1293,7 +1295,7 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
 }
 
 function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $blockingClass = "", $color = "", $subtype = "") {
-  global $chainLinks, $defPlayer, $mainPlayer;
+  global $chainLinks, $mainPlayer;
   $ret = [];
   $exclCardTypeArray = explode(",", $exclCardTypes);
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
@@ -1328,7 +1330,9 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
   $cardIDs = "";
   $exclCardTypeArray = explode(",", $exclCardTypes);
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+  $combatChainCount = count($combatChain);
+  $combatChainPieces = CombatChainPieces();
+  for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
     $thisType = CardType($combatChain[$i]);
     $thisSubType = CardSubType($combatChain[$i]);
     if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
@@ -1349,7 +1353,7 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CCS_GoesWhereAfterLinkResolves, $defPlayer;
+  global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CombatChain;
   $allies = GetAllies($mainPlayer);
   if ($CombatChain->HasCurrentLink()) {
     if ($combatChain[0] == "exude_confidence_red" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
@@ -1361,8 +1365,9 @@ function ChainLinkResolvedEffects()
 
 function ResolutionStepEffectTriggers()
 {
-  global $currentTurnEffects, $chainLinks, $combatChain, $turn, $mainPlayer;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  global $currentTurnEffects;
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $currentEffect = explode("-", $currentTurnEffects[$i]);
     $parameter = $currentEffect[1] ?? "-";
     if (class_exists($currentEffect[0])) {
@@ -1452,7 +1457,7 @@ function CombatChainClosedMainCharacterEffects()
 }
 
 function CombatChainClosedItemEffects() {
-  global $ChainLinks, $defPlayer, $chainLinkSummary, $mainPlayer;
+  global $ChainLinks, $defPlayer;
   
   for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
     $Link = $ChainLinks->GetLink($i);
@@ -1462,7 +1467,7 @@ function CombatChainClosedItemEffects() {
       if ($LinkCard->PlayerID() != $defPlayer) continue;
       if (!$nervesOfSteelActive) {
         if (HasTemper($LinkCard->ID())) {
-          // there will be issues if nitromechanoid is blocking on the combat chain and gets stolen
+          // there will be issues if nitro mechanoid is blocking on the combat chain and gets stolen
           $defItems = new Items($defPlayer);
           $blockingItem = $defItems->FindCardUID($LinkCard->OriginUniqueID());
           $blockingItem->AddDefCounters(-1);
@@ -1506,7 +1511,7 @@ function CombatChainClosedCharacterEffects()
       if (!$nervesOfSteelActive) {
         if (HasTemper($chainLinks[$i][$j])) {
           if (SubtypeContains($chainLinks[$i][$j], "Item")) {
-            // there will be issues if nitromechanoid is blocking on the combat chain and gets stolen
+            // there will be issues if nitro mechanoid is blocking on the combat chain and gets stolen
             $defItems = new Items($defPlayer);
             $blockingItem = $defItems->FindCardUID($chainLinks[$i][$j + 8]);
             $blockingItem->AddDefCounters(-1);
@@ -2113,7 +2118,9 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
 {
   global $currentTurnEffects;
   $cardName = NameOverride($cardID, $player);
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectPieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
     $modName = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
     if ($partial) {
@@ -3285,7 +3292,8 @@ function IsAlternativeCostPaid($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer, $combatChainState, $CCS_WasRuneGate;
   $isAlternativeCostPaid = false;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     $card = GetClass($currentTurnEffects[$i], $currentPlayer);
     if ($card != "-") $isAlternativeCostPaid = $isAlternativeCostPaid || $card->CurrentTurnEffectPaid($cardID, $from, $remove, $i);
@@ -3346,7 +3354,9 @@ function IsCardNamed($player, $cardID, $name)
 {
   global $currentTurnEffects;
   if (CardName($cardID) == $name) return true;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectPieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
     $givenNames = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
     $givenNames = explode(",", $givenNames);
@@ -3364,7 +3374,8 @@ function GetCurrentAttackNames()
   if (count($combatChain) == 0) return $names;
   $names[] = CardName($combatChain[0]);
   $currentTurnEffectsCount = count($currentTurnEffects);
-  for ($i = 0; $i < $currentTurnEffectsCount; $i += CurrentTurnEffectPieces()) {
+  $currentTurnEffectPieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     $effectArr = explode("-", $currentTurnEffects[$i]);
     $name = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $mainPlayer, $combatChain[0]);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
@@ -3403,7 +3414,6 @@ function HasAttackName($name)
 function HitEffectsArePrevented($cardID)
 {
   global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $mainPlayer, $defPlayer;
-  // if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return true;
   if (SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return true;
   if (SearchCurrentTurnEffects("dense_blue_mist_blue-HITPREVENTION", $defPlayer)) return true;
   if ($combatChainState[$CCS_ChainLinkHitEffectsPrevented]) SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, true);
@@ -3820,7 +3830,8 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     }
   }
 
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+  $currentTurnEffectPieces = CurrentTurnEffectPieces(); 
+  for ($i = count($currentTurnEffects) - $currentTurnEffectPieces; $i >= 0; $i -= $currentTurnEffectPieces) {
     if ($currentTurnEffects[$i + 1] != $player) continue;
     switch ($currentTurnEffects[$i]) {
       case "anka_drag_under_yellow":
@@ -4228,7 +4239,8 @@ function CanOnlyTargetHeroes($cardID)
 function NonHitEffects($cardID)
 {
   global $mainPlayer, $defPlayer, $currentTurnEffects;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+  // NOTE: count($currentTurnEffects) is NOT cached here because this loop's can call RemoveCurrentTurnEffect()
+  for ($i = 0; $i < count($currentTurnEffects); $i += $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "send_packing_yellow":
