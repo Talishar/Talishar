@@ -7,9 +7,11 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
 {
   global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CCS_NumPowerCounters, $combatChain, $defPlayer;
   BuildMainPlayerGameState();
-  $attackType = CardType($CombatChain->AttackCard()->ID());
-  $canGainAttack = CanGainAttack($CombatChain->AttackCard()->ID());
+  $attackID = $CombatChain->AttackCard()->ID(); // cache: AttackCard() allocates a new ChainCard object on every call
+  $attackType = CardType($attackID);
+  $canGainAttack = CanGainAttack($attackID);
   $snagActive = SearchCurrentTurnEffects("snag_blue", $mainPlayer) && $attackType == "AA";
+  $combatChainPieces = CombatChainPieces(); // cache: constant-returning function, avoid repeated call overhead in loops
 
   for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, true);
@@ -29,18 +31,19 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
         AddPower($totalPower, $power);
       }
     } else {
-      $totalDefense += BlockingCardDefense($i * CombatChainPieces());
+      $totalDefense += BlockingCardDefense($i * $combatChainPieces);
     }
   }
   // check +1 counters
   if ($canGainAttack && $combatChainState[$CCS_NumPowerCounters] > 0) $totalPower += $combatChainState[$CCS_NumPowerCounters];
   //Now check current turn effects
   $currentTurnEffectsCount = count($currentTurnEffects);
-  for ($i = 0; $i < $currentTurnEffectsCount; $i += CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {
         $power = EffectPowerModifier($currentTurnEffects[$i]);
-        $fromCurrentAttack = $currentTurnEffects[$i] == $CombatChain->AttackCard()->ID() || IsGrantedBuff($currentTurnEffects[$i]);
+        $fromCurrentAttack = $currentTurnEffects[$i] == $attackID || IsGrantedBuff($currentTurnEffects[$i]);
         if (($canGainAttack || $power < 0) && !($snagActive && ($fromCurrentAttack || CardType(EffectCardID($currentTurnEffects[$i])) == "AR"))) {
           $powerModifiers[] = $currentTurnEffects[$i];
           $powerModifiers[] = $power;
@@ -55,7 +58,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     foreach ($buffs as $buffSetID) {
       $buff = ConvertToCardID($buffSetID);
       $power = EffectPowerModifier($buff, attached: true);
-      if (($canGainAttack || $power < 0) && !($snagActive && ($buff == $CombatChain->AttackCard()->ID() || CardType(EffectCardID($buff)) == "AR"))) {
+      if (($canGainAttack || $power < 0) && !($snagActive && ($buff == $attackID || CardType(EffectCardID($buff)) == "AR"))) {
         $powerModifiers[] = $buff;
         $powerModifiers[] = $power;
         AddPower($totalPower, $power);
@@ -65,7 +68,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   if ($combatChainState[$CCS_WeaponIndex] != -1) {
     $power = 0;
     if (DelimStringContains($attackType, "W")) {
-      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Item")) {
+      if (SubtypeContains($attackID, "Item")) {
         $ItemCard = new ItemCard($combatChainState[$CCS_WeaponIndex], $mainPlayer);
         // check buffs from subcards
         $subcards = $ItemCard->SubCards();
@@ -87,10 +90,10 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
         $power += $CharacterCard->NumPowerCounters();
       }
       if (filter_var($power, FILTER_VALIDATE_INT) === false) $power = 0;
-    } else if (DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura")) {
+    } else if (DelimStringContains(CardSubtype($attackID), "Aura")) {
       $auras = &GetAuras($mainPlayer);
       if (isset($auras[$combatChainState[$CCS_WeaponIndex]])) $power = $auras[$combatChainState[$CCS_WeaponIndex] + 3];
-    } else if (DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Ally")) {
+    } else if (DelimStringContains(CardSubtype($attackID), "Ally")) {
       $allies = &GetAllies($mainPlayer);
       if (isset($allies[$combatChainState[$CCS_WeaponIndex]])) $power = $allies[$combatChainState[$CCS_WeaponIndex] + 9];
     }
@@ -122,7 +125,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       case "zephyr_needle":
       case "zephyr_needle_r":
         $combatChainCount = count($combatChain);
-        for ($i = CombatChainPieces(); $i < $combatChainCount; $i += CombatChainPieces()) {
+        for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
           $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
           $blockVal = intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6];
           if ($totalDefense > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
@@ -609,7 +612,6 @@ function DamageTrigger($player, $damage, $type, $source, $playerSource)
 function CanDamageBePrevented($player, $damage, $type, $source = "-")
 {
   global $mainPlayer;
-  $otherPlayer = $player == 1 ? 2 : 1;
   $extraText = GetHorrorsBuff();
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $mainPlayer)) return false;
   if ($type == "ARCANE" && $source == "deny_redemption_red" && SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $mainPlayer)) return false;
@@ -769,7 +771,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   WriteLog("Player $player took $damage damage");
   PlayerLoseHealth($damage, $player);
   // mark once per damage instance effects as usable again
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $numCurrentTurnEffects = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $numCurrentTurnEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
     $effectArr = explode("-", $Effect->EffectID());
@@ -892,7 +895,8 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 {
   global $currentTurnEffects, $mainPlayer;
   $modifier = 0;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces(); 
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = 0;
     $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
     if ($card != "-") $modifier += $card->CurrentEffectDamageBuffs($source, $type, $i, $remove);
@@ -947,12 +951,14 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
   global $currentTurnEffects, $EffectContext, $CombatChain, $CS_ResolvingLayerUniqueID, $mainPlayer;
   $otherPlayer = ($target == 1 ? 2 : 1);
   if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $AttackCard = $CombatChain->AttackCard(); 
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $target) {
       continue;
     }
     if ($type == "COMBAT" && HitEffectsArePrevented($source)) continue;
-    if ($source == $CombatChain->AttackCard()->ID() && !IsCombatEffectActive($currentTurnEffects[$i])) continue;
+    if ($source == $AttackCard->ID() && !IsCombatEffectActive($currentTurnEffects[$i])) continue;
     $remove = 0;
     $EffectContext = $currentTurnEffects[$i];
     $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
@@ -994,8 +1000,8 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
     if ($remove == 1) RemoveCurrentTurnEffect($i);
   }
   $damageContextUID = GetClassState(1, $CS_ResolvingLayerUniqueID);
-  if ($damageContextUID == $CombatChain->AttackCard()->UniqueID()) {
-    $effects = explode(",",$CombatChain->AttackCard()->StaticBuffs());
+  if ($damageContextUID == $AttackCard->UniqueID()) {
+    $effects = explode(",",$AttackCard->StaticBuffs());
     foreach ($effects as $effect) {
       $card = GetClass(SetIDtoCardID($effect), $mainPlayer);
       if ($card != "-") $card->CurrentEffectDamageEffect($target, $source, $type, $damage, $remove, attached:true);
@@ -1944,7 +1950,9 @@ function ClassOverride($cardID, $player)
     if ($cardClass != "") $cardClass .= ",";
     $cardClass .= "ILLUSIONIST";
   }
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectPieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] != $player) continue;
     $classToAdd = "";
@@ -1999,7 +2007,8 @@ function ColorOverride($cardID, $player = "")
   if (SearchCurrentTurnEffects("blanch_red", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_yellow", $player)) $pitch = 0;
   if (SearchCurrentTurnEffects("blanch_blue", $player)) $pitch = 0;
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $numCurrentTurnEffects = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $numCurrentTurnEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     $effectParams = explode("-", $Effect->EffectID());
     switch ($effectParams[0]) {
@@ -2126,7 +2135,9 @@ function TalentOverride($cardID, $player = "", $zone="-")
 {
   global $currentTurnEffects;
   $cardTalent = "";
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectPieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     $talentToAdd = "";
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] != $player) continue;
@@ -3597,7 +3608,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         $dynCost = explode("-", $currentTurnEffects[$index]);
         MZMoveCard($currentPlayer, "MYHAND:type=A;class=WIZARD;arcaneDamage=" . $dynCost[1], "MYBANISH,HAND,INST," . $cardID . "," . $currentPlayer);
         return "";
-      case "magrar";
+      case "magrar":
           PlayAura("zen_state", $currentPlayer);
           PlayAura("inertia", $currentPlayer);
         return "";
