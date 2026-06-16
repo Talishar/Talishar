@@ -85,19 +85,27 @@ function deleteDirectory($dir)
   }
 
   if (!is_dir($dir)) {
-    $handler = fopen($dir, "w");
-    fwrite($handler, "");
-    fclose($handler);
-    return unlink($dir);
+    return @unlink($dir) || !file_exists($dir);
   }
 
-  foreach (scandir($dir) as $item) {
-    if ($item == '.' || $item == '..') {
-      continue;
-    }
-    if (!deleteDirectory($dir . "/" . $item)) {
+  try {
+    $iterator = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS),
+      RecursiveIteratorIterator::CHILD_FIRST
+    );
+  } catch (UnexpectedValueException $e) {
+    return !file_exists($dir);
+  }
+
+  foreach ($iterator as $fileInfo) {
+    $path = $fileInfo->getPathname();
+    $ok = $fileInfo->isDir()
+      ? (@rmdir($path) || !file_exists($path))
+      : (@unlink($path) || !file_exists($path));
+    if (!$ok) {
       return false;
     }
   }
-  return rmdir($dir);
+
+  return @rmdir($dir) || !file_exists($dir);
 }

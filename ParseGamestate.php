@@ -482,6 +482,10 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   }
   $gamestate = implode('', $gamestateBackup);
   file_put_contents($backupFile, $gamestate);
+  if (!file_exists($backupFile)) {
+    WriteLog("Cannot undo further: the game session was cleaned up before the undo could complete.");
+    return;
+  }
   // Restore the target backup as current gamestate
   copy($backupFile, $filepath . "gamestate.txt");
   $skipWriteGamestate = true;

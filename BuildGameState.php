@@ -41,11 +41,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $buildCacheArr = ReadCacheArray($gameName) ?? [];
-
-  // Check spectator permission
-  if ($playerID == 3 && ($buildCacheArr[8] ?? "") != "1") {
-    return "Spectators not allowed.";
-  }
+  $spectatorsPubliclyAllowed = ($buildCacheArr[8] ?? "") == "1";
 
   // Extract session data with defaults
   $sessionUserLoggedIn = $sessionData['userLoggedIn'] ?? false;
@@ -54,28 +50,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $sessionPatreonCampaigns = $sessionData['patreonCampaigns'] ?? [];
 
   $friendListFromSession = [];
-  /*
-  $friendListFromSession = $sessionData['friendList'] ?? [];
-  if (empty($friendListFromSession) && $playerID == 3 && !empty($sessionUserName)) {
-    $dbConn = GetDBConnection();
-    if ($dbConn) {
-      $query = "SELECT u.usersUid FROM friends f JOIN users u ON f.friendUserId = u.usersId WHERE f.userId = (SELECT usersId FROM users WHERE usersUid = ?) AND f.status = 'accepted'";
-      $stmt = $dbConn->prepare($query);
-      if ($stmt) {
-        $stmt->bind_param("s", $sessionUserName);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        while ($row = $result->fetch_assoc()) {
-          $friendListFromSession[] = $row['usersUid'];
-        }
-        $stmt->close();
-      }
-      mysqli_close($dbConn);
-    }
-  }
-  
-  $sessionData['friendList'] = $friendListFromSession;
-  */
 
   $response = new stdClass();
   $response->playerInventory = [];
@@ -126,6 +100,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   } else if ($playerID == 3) {
     $spectatorIsFriendOfP1 = in_array($p1uid, $friendList);
     $spectatorIsFriendOfP2 = in_array($p2uid, $friendList);
+  }
+
+  // Check spectator permission: allowed if the host opened the game to public
+  // spectators, or if the viewer is a friend of either player.
+  if ($playerID == 3 && !$spectatorsPubliclyAllowed && !$spectatorIsFriendOfP1 && !$spectatorIsFriendOfP2) {
+    return "Spectators not allowed.";
   }
 
   $response->lastUpdate = $cacheVal;
@@ -386,16 +366,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $layerObject = new stdClass;
   $layerContents = [];
   $layerPieces = LayerPieces();
-  $specialLayers = ["LAYER", "TRIGGER", "MELD", "PRETRIGGER", "ABILITY", "ATTACK"];
-  for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
-    $layerName = in_array($layers[$i], $specialLayers) ? $layers[$i+2] : $layers[$i];
-    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
-  }
+  static $specialLayersSet = ["LAYER" => true, "TRIGGER" => true, "MELD" => true, "PRETRIGGER" => true, "ABILITY" => true, "ATTACK" => true];
   $reorderableLayers = [];
   $numReorderable = 0;
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
+    $layerName = isset($specialLayersSet[$layers[$i]]) ? $layers[$i+2] : $layers[$i];
+    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
+
     $layer = new stdClass();
-    $layerName = in_array($layers[$i], $specialLayers) ? $layers[$i+2] : $layers[$i];
     $borderColor = null;
     if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 2;
     $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor);
@@ -451,7 +429,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $opponentSoulArr = [];
   $theirSoulCount = count($theirSoul);
-  for ($i = 0; $i < $theirSoulCount; $i += SoulPieces()) {
+  $soulPieces = SoulPieces();
+  for ($i = 0; $i < $theirSoulCount; $i += $soulPieces) {
     $opponentSoulArr[] = JSONRenderedCard($theirSoul[$i]);
   }
   $response->opponentSoul = $opponentSoulArr;
@@ -653,7 +632,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $playerSoulArr = [];
   $mySoulCount = count($mySoul);
-  for ($i = 0; $i < $mySoulCount; $i += SoulPieces()) {
+  for ($i = 0; $i < $mySoulCount; $i += $soulPieces) {
     $playerSoulArr[] = JSONRenderedCard($mySoul[$i]);
   }
   $response->playerSoul = $playerSoulArr;
@@ -1248,10 +1227,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $opponentRenderedEffects = [];
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $effectCardIds = [];
 
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
       $cardID = explode("-", $currentTurnEffects[$i])[0];
       $cardID = explode(",", $cardID)[0];
+      $effectCardIds[$i] = $cardID;
       if(AdministrativeEffect($cardID) || $cardID == "luminaris_angels_glow-1" || $cardID == "luminaris_angels_glow-2" || HasFancyCounters($cardID)) continue;
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
 
@@ -1283,8 +1264,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-      $cardID = explode("-", $currentTurnEffects[$i])[0];
-      $cardID = explode(",", $cardID)[0];
+      $cardID = $effectCardIds[$i];
       if(AdministrativeEffect($cardID) || $cardID == "luminaris_angels_glow-1" || $cardID == "luminaris_angels_glow-2") continue;
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
       $BorderColor = $isFriendly ? "blue" : "red";
@@ -1305,13 +1285,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
 
       if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
-          if(array_search($cardID, $friendlyRenderedEffects) === false || !skipEffectUIStacking($cardID)) {
-              $friendlyRenderedEffects[] = $cardID;
+          if(!isset($friendlyRenderedEffects[$cardID]) || !skipEffectUIStacking($cardID)) {
+              $friendlyRenderedEffects[$cardID] = true;
               $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
           }
       }
-      elseif(array_search($cardID, $opponentRenderedEffects) === false && $otherPlayer == $currentTurnEffects[$i + 1] || !skipEffectUIStacking($cardID)) {
-          $opponentRenderedEffects[] = $cardID;
+      elseif(!isset($opponentRenderedEffects[$cardID]) && $otherPlayer == $currentTurnEffects[$i + 1] || !skipEffectUIStacking($cardID)) {
+          $opponentRenderedEffects[$cardID] = true;
           $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
       }
   }
@@ -1326,13 +1306,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
           $counters = $isFriendly ? $friendlyCounts[$cardID] : $opponentCounts[$cardID];
           if ($isFriendly || $playerID == 3 && !$isFriendly) {
-            if(array_search($cardID, $friendlyRenderedEffects) === false || !skipEffectUIStacking($cardID)) {
-              $friendlyRenderedEffects[] = $cardID;
+            if(!isset($friendlyRenderedEffects[$cardID]) || !skipEffectUIStacking($cardID)) {
+              $friendlyRenderedEffects[$cardID] = true;
               $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
             }
           }
-          elseif(array_search($cardID, $opponentRenderedEffects) === false && !$isFriendly || !skipEffectUIStacking($cardID)) {
-            $opponentRenderedEffects[] = $cardID;
+          elseif(!isset($opponentRenderedEffects[$cardID]) && !$isFriendly || !skipEffectUIStacking($cardID)) {
+            $opponentRenderedEffects[$cardID] = true;
             $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
           }
         }
@@ -1347,7 +1327,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $newEvents->eventArray = [];
   if (!$isGameOver) {
     $eventsCount = count($events);
-    for ($i = 0; $i < $eventsCount; $i += EventPieces()) {
+    $eventPieces = EventPieces();
+    for ($i = 0; $i < $eventsCount; $i += $eventPieces) {
       $thisEvent = new stdClass();
       $thisEvent->eventType = $events[$i];
       $thisEvent->eventValue = $events[$i + 1] ?? null;
