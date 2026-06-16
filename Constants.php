@@ -520,7 +520,6 @@ function ResetCombatChainState()
   $combatChainState[$CCS_CombatDamageReplaced] = 0;
   $combatChainState[$CCS_AttackUniqueID] = -1;
   $combatChainState[$CCS_RequiredEquipmentBlock] = 0;
-  $combatChainState[$CCS_CachedDominateActive] = 0;
   $combatChainState[$CCS_IsBoosted] = 0;
   $combatChainState[$CCS_AttackTargetUID] = "-";
   $combatChainState[$CCS_CachedOverpowerActive] = 0;
@@ -545,22 +544,26 @@ function ResetCombatChainState()
   $combatChainState[$CCS_CachedPreBlockValue] = 0;
 
   $aGoodCleanFight = false;
-  for($i = 0; $i < count($chainLinks); ++$i) {
+  $numChainLinks = count($chainLinks);
+  $chainLinkPieces = ChainLinksPieces();
+  for($i = 0; $i < $numChainLinks; ++$i) {
     if (!isset($chainLinks[$i])) {
-      WriteLog("Something odd happened while closing the chain2, please submit a bug report", highlight:true);
+      WriteLog("Something odd happened while closing the chain, please submit a bug report", highlight:true);
       continue;
     }
     if (!is_array($chainLinks[$i])) continue;
-    for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+    $innerCount = count($chainLinks[$i]);
+    for($j = 0; $j < $innerCount; $j += $chainLinkPieces) {
       if($chainLinks[$i][$j + 2] != "1") continue;
       CombatChainCloseAbilities($chainLinks[$i][$j + 1], $chainLinks[$i][$j], $i);
       if ($chainLinks[$i][$j] == "a_good_clean_fight_red" && $chainLinks[$i][$j+1] == $mainPlayer) $aGoodCleanFight = true;
     }
   }
 
-  for($i = 0; $i < count($chainLinks); ++$i) {
+  for($i = 0; $i < $numChainLinks; ++$i) {
     if (!is_array($chainLinks[$i])) continue;
-    for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+    $innerCount = count($chainLinks[$i]);
+    for($j = 0; $j < $innerCount; $j += $chainLinkPieces) {
       if($chainLinks[$i][$j + 2] != "1") continue;
       $linkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j], true, true) : $chainLinks[$i][$j];
       $cardType = CardType($linkID);
@@ -622,7 +625,8 @@ function AttackReplaced($cardID, $player)
   $combatChain[9] = $cardID; //new original id
   $combatChain[10] = "-"; // get rid of any layer continuous buffs
   //1.8.10 in the CR
-  for ($i = count(value: $currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+  $ctePieces = CurrentTurnEffectPieces();
+  for ($i = count($currentTurnEffects) - $ctePieces; $i >= 0; $i -= $ctePieces) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
       if ($combatChain[10] == "-") $combatChain[10] = ConvertToSetID($currentTurnEffects[$i]); //saving them as set ids saves space
       else $combatChain[10] .= "," . ConvertToSetID($currentTurnEffects[$i]);
@@ -668,7 +672,6 @@ function ResetChainLinkState()
   $combatChainState[$CCS_CombatDamageReplaced] = 0;
   $combatChainState[$CCS_AttackUniqueID] = -1;
   $combatChainState[$CCS_RequiredEquipmentBlock] = 0;
-  $combatChainState[$CCS_CachedDominateActive] = 0;
   $combatChainState[$CCS_IsBoosted] = 0;
   $combatChainState[$CCS_AttackTargetUID] = "-";
   $combatChainState[$CCS_CachedOverpowerActive] = 0;
@@ -896,12 +899,13 @@ function GetAttackTarget()
     $uidArr = explode(",", $uid);
     $targetArr = explode(",", $MZTarget);
     $ret = [];
-    for ($i = 0; $i < count($uidArr); ++$i) {
-      if ($uidArr[$i] == "-") array_push($ret, $targetArr[$i]);
+    $numUids = count($uidArr);
+    for ($i = 0; $i < $numUids; ++$i) {
+      if ($uidArr[$i] == "-") $ret[] = $targetArr[$i];
       else {
         $mzArr = explode("-", $targetArr[$i]);
         $index = SearchZoneForUniqueID($uidArr[$i], $defPlayer, $mzArr[0]);
-        array_push($ret, $mzArr[0] . "-" . $index . "-" . $uidArr[$i]);
+        $ret[] = "{$mzArr[0]}-{$index}-{$uidArr[$i]}";
       }
     }
     return implode(",", $ret);
@@ -913,7 +917,7 @@ function GetAttackTargetNames($player)
   $targets = GetAttackTarget();
   $ret = [];
   foreach(explode(",", $targets) as $target) {
-    array_push($ret, CardName(GetMZCard($player, $target)));
+    $ret[] = CardName(GetMZCard($player, $target));
   }
   return implode("|", $ret);
 }
