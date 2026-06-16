@@ -1501,14 +1501,23 @@ function NumNonEquipmentDefended()
   return $number;
 }
 
-function NumCardsDefended()
+function NumCardsDefended($linkNum=-1)
 {
   global $combatChain, $defPlayer;
   $number = 0;
-  $combatChainPieces = CombatChainPieces();
-  $combatChainCount = count($combatChain);
-  for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
-    if ($combatChain[$i + 1] == $defPlayer) ++$number;
+  if ($linkNum == -1) {
+    $combatChainPieces = CombatChainPieces();
+    $combatChainCount = count($combatChain);
+    for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
+      if ($combatChain[$i + 1] == $defPlayer) ++$number;
+    }
+  }
+  else {
+    $Link = new ChainLink($linkNum);
+    for ($i = 0; $i < $Link->NumCards(); ++$i) {
+      $LinkCard = $Link->GetLinkCard($i, true);
+      if ($LinkCard->PlayerID() == $defPlayer) ++$number;
+    }
   }
   return $number;
 }

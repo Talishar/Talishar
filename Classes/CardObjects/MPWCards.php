@@ -834,6 +834,70 @@ class overwhelming_swing_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$zone = explode("-", $target)[0];
+		$linkNum = explode("-", $target)[2] ?? -1;
+		$numDefended = match($zone) {
+			"COMBATCHAINLINK" => NumCardsDefended(),
+			"PASTCHAINLINK" => NumCardsDefended($linkNum), //future proofing
+			default => 0
+		};
+		$val = 2 * $numDefended + 1;
+		if ($zone == "COMBATCHAINLINK")
+			AddCurrentTurnEffect("$this->cardID-$val", $this->controller);
     return "";
   }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param;
+	}
+
+	private
+	function GetTargets() {
+		$attacks = TargetAttack($this->controller);
+		$targets = [];
+		foreach($attacks as $attack) {
+			$Card = MZIndexToObject($this->controller, $attack);
+			if (TypeContains($Card->ID(), "W"))
+				$targets[] = $attack;
+		}
+		return implode(",", $targets);
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->GetTargets() == "";
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$targets = $this->GetTargets();
+		Await($this->controller, "ChooseMultiZone", "index", indices:$targets, subsequent:0);
+		Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
+	}
+
+	function CardCost($from = '-') {
+		return NumCardsDefended();
+	}
+
+	function SpecialType() {
+		return "AR";
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+
+	// function SpecialName() {
+	// 	return "Overwhelming Swing";
+	// }
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialBlock() {
+		return 3;
+	}
 }
