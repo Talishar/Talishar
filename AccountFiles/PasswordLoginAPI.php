@@ -1,7 +1,5 @@
 <?php
 
-error_reporting(0);
-
 include_once './AccountSessionAPI.php';
 
 include_once '../Assets/patreon-php-master/src/OAuth.php';
@@ -25,13 +23,14 @@ if($_POST == NULL) {
   exit;
 }
 
-$username = $_POST["userID"];
-$password = $_POST["password"];
+$username = $_POST["userID"] ?? null;
+$password = $_POST["password"] ?? null;
 $rememberMe = isset($_POST["rememberMe"]);
 
 try {
   PasswordLogin($username, $password, $rememberMe);
 } catch (\Exception $e) {
+  error_log("PasswordLoginAPI: PasswordLogin threw: " . $e->getMessage());
 }
 
 $response->isUserLoggedIn = IsUserLoggedIn();

@@ -84,6 +84,7 @@ if (!empty($friendsListParam)) {
     $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
   } catch (Exception $e) {
     // friendsList parameter parsing failed
+    error_log("GetNextTurn: failed to parse friendsList param: " . $e->getMessage());
   }
 }
 

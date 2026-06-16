@@ -1149,6 +1149,7 @@ function PlayerWon($playerID, $conceded = false)
   try {
     logCompletedGameStats($conceded);
   } catch (Exception $e) {
+    error_log("PlayerWon: logCompletedGameStats threw: " . $e->getMessage());
   }
 }
 
