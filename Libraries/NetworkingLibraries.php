@@ -2480,7 +2480,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (!IsStaticType($cardType, $from, $cardID)) {
       CurrentEffectPlayAbility($cardID, $from);
     }
-    if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID)) EvoOnPlayHandling($currentPlayer);
+    if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID) && !IsActivated($cardID, $from)) EvoOnPlayHandling($currentPlayer);
     
   }
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . $cachedAbilityIndex . "|" . $cachedPlayUniqueID . "|" . $zone);

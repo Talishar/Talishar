@@ -3915,7 +3915,7 @@ function EvoOnPlayHandling($player)
 {
   $Hero = new CharacterCard(0, $player);
   if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $player, true) || SearchCurrentTurnEffects("teklovossen", $player, true)) {
-    AddLayer("TRIGGER", $player, $Hero->CardID());
+    AddLayer("TRIGGER", $player, "teklovossen_esteemed_magnate");
   }
 }
 
