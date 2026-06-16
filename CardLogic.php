@@ -434,7 +434,8 @@ function ContinueDecisionQueue($lastResult = "")
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
   global $CCS_CachedPreBlockValue;
 
-  if (count($decisionQueue) == 0 || IsGamePhase($decisionQueue[0])) {
+  $dqCount = count($decisionQueue);
+  if ($dqCount == 0 || IsGamePhase($decisionQueue[0])) {
     $p1Health = GetHealth(1);
     $p2Health = GetHealth(2);
     if ($p1Health <= 0 && $p2Health > 0)
@@ -444,15 +445,13 @@ function ContinueDecisionQueue($lastResult = "")
     elseif ($p2Health <= 0 && $p1Health <= 0)
       PlayerWon(0);
     if (IsGameOver()) return; // Prevent multiple winner logs
-    if (count($decisionQueue) > 0 && $currentPlayer != $decisionQueue[1]) {
-    }
     $preLayers = GetPreLayers();
-    if (count($decisionQueue) == 0 && count($preLayers) > 0) {
+    if ($dqCount == 0 && count($preLayers) > 0) {
       AddTriggersToStack();
       ProcessDecisionQueue();
       return;
     }
-    if (count($decisionQueue) == 0 && count($layers) > 0) {
+    if ($dqCount == 0 && count($layers) > 0) {
       $priorityHeld = 0;
       $prioPlayer = $Stack->CountPlayedLayers() > 0 ? $currentPlayer : $mainPlayer;
       if ($prioPlayer == 1) {
@@ -509,7 +508,8 @@ function ContinueDecisionQueue($lastResult = "")
           $uniqueID = array_shift($layers);
           $layerUniqueID = array_shift($layers);
         }
-        $from = explode("|", $parameter)[0];
+        $params = explode("|", $parameter);
+        $from = $params[0];
         if ($cardID == "TRIGGER" || IsStaticType(CardType($cardID), $from)) {
           SetClassState(1, $CS_ResolvingLayerUniqueID, $uniqueID);
           SetClassState(2, $CS_ResolvingLayerUniqueID, $uniqueID);
@@ -518,7 +518,6 @@ function ContinueDecisionQueue($lastResult = "")
           SetClassState(1, $CS_ResolvingLayerUniqueID, $layerUniqueID);
           SetClassState(2, $CS_ResolvingLayerUniqueID, $layerUniqueID);
         }
-        $params = explode("|", $parameter);
         if ($currentPlayer != $player) {
           $currentPlayer = $player;
           $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -527,68 +526,89 @@ function ContinueDecisionQueue($lastResult = "")
         $layerPriority[0] = ShouldHoldPriority(1);
         $layerPriority[1] = ShouldHoldPriority(2);
 
-        if ($cardID == "ENDTURN") EndStep();
-        else if ($cardID == "ENDPHASE") FinishTurnPass();
-        else if ($cardID == "RESUMETURN") $turn[0] = "M";
-        else if ($cardID == "LAYER") ProcessLayer($player, $parameter, $target, $additionalCosts);
-        else if ($cardID == "FINALIZECHAINLINK") FinalizeChainLink($parameter);
-        else if ($cardID == "CLOSESTEP") FinalizeChainLink($parameter);
-        else if ($cardID == "RESOLUTIONSTEP") {
-          ResetCombatChainState();
-          ProcessDecisionQueue();
-        }
-        else if ($cardID == "CLOSINGCHAIN") {
-          WriteLog("I didn't think this code was reachable, please submit a bug report");
-          ResetCombatChainState();
-          ProcessDecisionQueue();
-        }
-        else if ($cardID == "ATTACKSTEP") {
-          $turn[0] = "B";
-          $currentPlayer = $defPlayer;
-          $makeBlockBackup = 1;
-
-          $totalPower = 0;
-          $totalDefense = 0;
-          $chainPowerModifiers = [];
-          EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
-          $combatChainState[$CCS_CachedPreBlockValue] = $totalPower;
-        } else if ($cardID == "DEFENDSTEP") {
-          $turn[0] = "A";
-          $currentPlayer = $mainPlayer;
-          BeginningReactionStepEffects();
-          ProcessDecisionQueue();
-        } else if ($cardID == "TRIGGER") {
-          ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
-          ProcessDecisionQueue();
-        }
-        else if ($cardID == "PRETRIGGER") {
-          WriteLog("This block should not have been reached, please submit a bug report");
-          ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
-          ProcessDecisionQueue();
-        }
-        else if ($cardID == "MELD") {
-          ProcessMeld($player, $parameter, $cardID, target:$target, from:$uniqueID);
-          ProcessDecisionQueue();
-        }
-        else if ($cardID == "ABILITY") {
-          ProcessAbility($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
-          ProcessDecisionQueue();
-        }
-        else if ($cardID == "STARTTURN") {
-          StartActionPhaseAbilities();
-          ProcessDecisionQueue();
-        }
-        else {
+        static $keywordCardIDs = [
+          "ENDTURN" => true, "ENDPHASE" => true, "RESUMETURN" => true, "LAYER" => true,
+          "FINALIZECHAINLINK" => true, "CLOSESTEP" => true, "RESOLUTIONSTEP" => true,
+          "CLOSINGCHAIN" => true, "ATTACKSTEP" => true, "DEFENDSTEP" => true,
+          "TRIGGER" => true, "PRETRIGGER" => true, "MELD" => true, "ABILITY" => true,
+          "STARTTURN" => true,
+        ];
+        if (!isset($keywordCardIDs[$cardID])) {
           global $EffectContextUID;
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           $EffectContextUID = $layerUniqueID;
           PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
           ClearDieRoll($player);
+        } else {
+          switch ($cardID) {
+            case "ENDTURN":
+              EndStep();
+              break;
+            case "ENDPHASE":
+              FinishTurnPass();
+              break;
+            case "RESUMETURN":
+              $turn[0] = "M";
+              break;
+            case "LAYER":
+              ProcessLayer($player, $parameter, $target, $additionalCosts);
+              break;
+            case "FINALIZECHAINLINK":
+            case "CLOSESTEP":
+              FinalizeChainLink($parameter);
+              break;
+            case "RESOLUTIONSTEP":
+              ResetCombatChainState();
+              ProcessDecisionQueue();
+              break;
+            case "CLOSINGCHAIN":
+              WriteLog("I didn't think this code was reachable, please submit a bug report", highlight:true);
+              ResetCombatChainState();
+              ProcessDecisionQueue();
+              break;
+            case "ATTACKSTEP":
+              $turn[0] = "B";
+              $currentPlayer = $defPlayer;
+              $makeBlockBackup = 1;
+              $totalPower = 0;
+              $totalDefense = 0;
+              $chainPowerModifiers = [];
+              EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
+              $combatChainState[$CCS_CachedPreBlockValue] = $totalPower;
+              break;
+            case "DEFENDSTEP":
+              $turn[0] = "A";
+              $currentPlayer = $mainPlayer;
+              BeginningReactionStepEffects();
+              ProcessDecisionQueue();
+              break;
+            case "TRIGGER":
+              ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+              ProcessDecisionQueue();
+              break;
+            case "PRETRIGGER":
+              WriteLog("This block should not have been reached, please submit a bug report", highlight:true);
+              ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+              ProcessDecisionQueue();
+              break;
+            case "MELD":
+              ProcessMeld($player, $parameter, $cardID, target:$target, from:$uniqueID);
+              ProcessDecisionQueue();
+              break;
+            case "ABILITY":
+              ProcessAbility($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+              ProcessDecisionQueue();
+              break;
+            case "STARTTURN":
+              StartActionPhaseAbilities();
+              ProcessDecisionQueue();
+              break;
+          }
         }
         //main player should hold priority in resolution step always
         if (count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP") $layerPriority[$mainPlayer - 1] = "1";
       }
-    } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPLAY") {
+    } else if ($dqCount > 0 && $decisionQueue[0] == "RESUMEPLAY") {
       if ($currentPlayer != $decisionQueue[1]) {
         $currentPlayer = $decisionQueue[1];
         $otherPlayer = $currentPlayer == 1 ? 2 : 1;
@@ -610,7 +630,7 @@ function ContinueDecisionQueue($lastResult = "")
         ProcessDecisionQueue();
         return;
       }
-    } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESUMEPAYING") {
+    } else if ($dqCount > 0 && $decisionQueue[0] == "RESUMEPAYING") {
       $player = $decisionQueue[1];
       $params = explode("-", $decisionQueue[2]); //Parameter
       if ($lastResult == "") $lastResult = 0;
@@ -638,16 +658,16 @@ function ContinueDecisionQueue($lastResult = "")
         BuildMyGamestate($currentPlayer);
       }
       PlayCard($params[0], $params[1], $lastResult, $params[2], isset($params[3]) ? $params[3] : -1, isset($params[4]) ? $params[4] : -1);
-    } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECHAINLINK") {
+    } else if ($dqCount > 0 && $decisionQueue[0] == "RESOLVECHAINLINK") {
       CloseDecisionQueue();
       ResolveChainLink();
-    } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "RESOLVECOMBATDAMAGE") {
+    } else if ($dqCount > 0 && $decisionQueue[0] == "RESOLVECOMBATDAMAGE") {
       $parameters = explode(",", $decisionQueue[2]);
       if ($parameters[0] != "-") $damageDone = $parameters[0];
       else $damageDone = $dqState[6];
       CloseDecisionQueue();
       if(!IsGameOver()) ResolveCombatDamage($damageDone, $parameters[1]);
-    } else if (count($decisionQueue) > 0 && $decisionQueue[0] == "PASSTURN") {
+    } else if ($dqCount > 0 && $decisionQueue[0] == "PASSTURN") {
       CloseDecisionQueue();
       PassTurn();
     } else {
