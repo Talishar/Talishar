@@ -441,8 +441,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIZONEINDICES":
       return MultiZoneIndices($player, $parameter);
     case "SCOURINDICES":
-      $targPlayer = explode("|", $parameter)[0];
-      $currentTargets = explode(",", explode("|", $parameter)[1]);
+      $scourParts = explode("|", $parameter);
+      $targPlayer = $scourParts[0];
+      $currentTargets = explode(",", $scourParts[1]);
       $search = "$targPlayer:maxCost=0&LAYER:subtype=Aura;maxCost=0";
       $rvOrig = explode(",", SearchMultizone($player, $search));
       $rv = [];
@@ -1059,8 +1060,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDTOPORBOT":
       $deck = new Deck($player);
-      $card = explode(",", $lastResult)[0];
-      $loc = explode(",", $lastResult)[1];
+      $addTopOrBotParts = explode(",", $lastResult);
+      $card = $addTopOrBotParts[0];
+      $loc = $addTopOrBotParts[1];
       if ($loc == "Top") {
         $deck->AddTop($card);
       }
@@ -2010,8 +2012,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $prefix = "MY";
           }
           foreach (array_slice($allTargets, 1) as $targ) {
-            $zone = explode("-", $targ)[0];
-            $index = intval(explode("-", $targ)[1]);
+            $targParts = explode("-", $targ);
+            $zone = $targParts[0];
+            $index = intval($targParts[1]);
             if ($zone == "LAYER") {
               $target .= ",LAYER" . $layers[$index + 6];
               $cleanTarget .= ",LAYERUID-" . $layers[$index + 6];
@@ -3068,8 +3071,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $damage;
     case "EQUIPCARDINVENTORY":
       if (str_contains($parameter, "-")) {
-        $from = explode('-', $parameter)[1];
-        $parameter = explode('-', $parameter)[0];
+        $equipCardInventoryParts = explode('-', $parameter);
+        $from = $equipCardInventoryParts[1];
+        $parameter = $equipCardInventoryParts[0];
         if ($from == "INVENTORY") {
           $inventory = &GetInventory($player);
           $indexToRemove = array_search($parameter, $inventory);
@@ -3081,8 +3085,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "ADDHANDINVENTORY":
       if (str_contains($parameter, "-")) {
-        $from = explode('-', $parameter)[1];
-        $parameter = explode('-', $parameter)[0];
+        $addHandInventoryParts = explode('-', $parameter);
+        $from = $addHandInventoryParts[1];
+        $parameter = $addHandInventoryParts[0];
         if ($from == "INVENTORY") {
           $inventory = &GetInventory($player);
           $indexToRemove = array_search($parameter, $inventory);
@@ -3336,10 +3341,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DestroyItemForPlayer($player, SearchItemForIndex("powder_keg_blue", $player));
       return $lastResult;
     case "ADDTRIGGER":
-      $uniqueID = explode("|", $parameter)[2] ?? "-";
-      if (count(explode("|", $parameter)) > 1) {
-        $additional = explode("|", $parameter)[1];
-        $parameter = explode("|", $parameter)[0];
+      $addTriggerParts = explode("|", $parameter);
+      $uniqueID = $addTriggerParts[2] ?? "-";
+      if (count($addTriggerParts) > 1) {
+        $additional = $addTriggerParts[1];
+        $parameter = $addTriggerParts[0];
       }
       else $additional = "";
       $params = explode(",", $parameter);
@@ -3381,8 +3387,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddLayer("TRIGGER", $player, $params[0], "$targetedPlayer-" . GetMZUID($targetedPlayer, $target));
           break;
         case "pain_in_the_backside_red":
-          $targetLoc = explode("-", $target)[0];
-          $targetInd = explode("-", $target)[1] ?? "-";
+          $targetParts = explode("-", $target);
+          $targetLoc = $targetParts[0];
+          $targetInd = $targetParts[1] ?? "-";
           if ($targetLoc == "MYCHAR") {
             $targetInd = GetMZUID($player, $target);
           }
@@ -3391,8 +3398,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "bite_red":
         case "bite_yellow":
         case "bite_blue":
-          $targetLoc = explode("-", $target)[0];
-          $targetInd = explode("-", $target)[1];
+          $targetParts = explode("-", $target);
+          $targetLoc = $targetParts[0];
+          $targetInd = $targetParts[1];
           if ($targetLoc == "MYCHAR") {
             $targetInd = GetMZUID($player, $target);
           }
@@ -3406,9 +3414,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
           break;
         case "decimator_great_axe":
-          $location = explode("-", $target)[0];
-          $ind1 = explode("-", $target)[1];
-          $ind2 = explode("-", $target)[2] ?? 0;
+          $decimatorParts = explode("-", $target);
+          $location = $decimatorParts[0];
+          $ind1 = $decimatorParts[1];
+          $ind2 = $decimatorParts[2] ?? 0;
           $from = match ($location) {
             "COMBATCHAINLINK" => $combatChain[$ind1 + 2],
             "PASTCHAINLINK" => $uid = $chainLinks[$ind2][$ind1 + 3],
@@ -3435,8 +3444,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         default:
           if ($target == "PASS") return $target;
-          $targetLoc = explode("-", $target)[0];
-          $targetID = explode("-", $target)[1] ?? "-";
+          $targetParts = explode("-", $target);
+          $targetLoc = $targetParts[0];
+          $targetID = $targetParts[1] ?? "-";
           $uid = is_numeric($targetID) ? GetMZUID($targetedPlayer, $target) : $targetID;
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-$uid", $additional, $uniqueID);
           WriteLog("Player " . $targetedPlayer . "'s " . GetMZCardLink($targetedPlayer, $lastResult) . " was targeted by " . CardLink($parameter));
@@ -3780,8 +3790,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       NegateLayer($lastResult);
       return $lastResult;
     case "VERDANCE":
-      $source = explode(",", $parameter)[0];
-      $target = explode(",", $parameter)[1];
+      $arcaneParts = explode(",", $parameter);
+      $source = $arcaneParts[0];
+      $target = $arcaneParts[1];
       DealArcane(1, 3, "ABILITY", $source, resolvedTarget:$target);
       return $lastResult;
     case "BRUTUS":
@@ -4089,23 +4100,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $discard = GetDiscard($player);
       $choices = explode(",", $parameter);
       if (count($choices) == 2) {
+        $choiceInd0 = explode("-", $choices[0])[1];
+        $choiceInd1 = explode("-", $choices[1])[1];
         if ($choices[0] == $lastResult) {
-          $topInd = explode("-", $choices[1])[1];
-          $banishInd = explode("-", $choices[0])[1];
+          $topInd = $choiceInd1;
+          $banishInd = $choiceInd0;
         }
         else {
-          $topInd = explode("-", $choices[0])[1];
-          $banishInd = explode("-", $choices[1])[1];
+          $topInd = $choiceInd0;
+          $banishInd = $choiceInd1;
         }
         AddTopDeck($discard[$topInd], $player, "DISCARD");
         BanishCardForPlayer($discard[$banishInd], $player, "DISCARD");
-        RemoveDiscard($player, explode("-", $choices[1])[1]);
-        RemoveDiscard($player, explode("-", $choices[0])[1]);
+        RemoveDiscard($player, $choiceInd1);
+        RemoveDiscard($player, $choiceInd0);
       }
       else {
         $banishInd = explode("-", $choices[0])[1];
         BanishCardForPlayer($discard[$banishInd], $player, "DISCARD");
-        RemoveDiscard($player, explode("-", $choices[0])[1]);
+        RemoveDiscard($player, $banishInd);
       }
       return $lastResult;
     case "ADDSTATICBUFF":
