@@ -192,9 +192,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "reinforce_steel_red": case "reinforce_steel_yellow": case "reinforce_steel_blue":
-      if($cardID == "reinforce_steel_red") $maxDef = 3;
-      else if($cardID == "reinforce_steel_yellow") $maxDef = 2;
-      else $maxDef = 1;
+      $maxDef = match($cardID) { "reinforce_steel_red" => 3, "reinforce_steel_yellow" => 2, default => 1 };
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;hasNegCounters=true;maxDef=" . $maxDef . ";class=GUARDIAN");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
@@ -214,9 +212,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "predatory_streak_red": case "predatory_streak_yellow": case "predatory_streak_blue":
-      if($cardID == "predatory_streak_red") $amount = 3;
-      else if($cardID == "predatory_streak_yellow") $amount = 2;
-      else $amount = 1;
+      $amount = match($cardID) { "predatory_streak_red" => 3, "predatory_streak_yellow" => 2, default => 1 };
       for($i=0; $i < $amount; $i++) BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer, created:true);
       return "";
     case "merciless_battleaxe":
@@ -239,15 +235,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
 		case "felling_swing_red": case "felling_swing_yellow": case "felling_swing_blue":
-      if($cardID == "felling_swing_red") $amount = 3;
-      else if($cardID == "felling_swing_yellow") $amount = 2;
-      else $amount = 1;
+      $amount = match($cardID) { "felling_swing_red" => 3, "felling_swing_yellow" => 2, default => 1 };
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "visit_the_imperial_forge_red": case "visit_the_imperial_forge_yellow": case "visit_the_imperial_forge_blue":
-      if($cardID == "visit_the_imperial_forge_red") $amount = 3;
-      else if($cardID == "visit_the_imperial_forge_yellow") $amount = 2;
-      else $amount = 1;
+      $amount = match($cardID) { "visit_the_imperial_forge_red" => 3, "visit_the_imperial_forge_yellow" => 2, default => 1 };
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "pulsewave_harpoon_red":
@@ -285,9 +277,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "shred_red": case "shred_yellow": case "shred_blue":
-      if($cardID == "shred_red") $amount = -4;
-      else if($cardID == "shred_yellow") $amount = -3;
-      else $amount = -2;
+      $amount = match($cardID) { "shred_red" => -4, "shred_yellow" => -3, default => -2 };
       if ($target != "-") {
         $targetCard = GetMZCard($currentPlayer, $target);
         $targetInd = explode("-", $target)[1];
@@ -377,9 +367,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(SearchCardList($additionalCosts, $currentPlayer, "A") != "") DealArcane(1, 2, "PLAYCARD", $cardID);
       return "";
     case "runic_reaping_red": case "runic_reaping_yellow": case "runic_reaping_blue":
-      if($cardID == "runic_reaping_red") $amount = 3;
-      else if($cardID == "runic_reaping_yellow") $amount = 2;
-      else $amount = 1;
+      $amount = match($cardID) { "runic_reaping_red" => 3, "runic_reaping_yellow" => 2, default => 1 };
       AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
       if(SearchCardList($additionalCosts, $currentPlayer, "AA") != "") AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       return "";
@@ -414,9 +402,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $auras = &GetAuras($currentPlayer);
       $uniqueID = $auras[count($auras) - AuraPieces() + 6];
-      if($cardID == "tranquil_passing_red") $maxCost = 3;
-      else if($cardID == "tranquil_passing_yellow") $maxCost = 2;
-      else $maxCost = 1;
+      $maxCost = match($cardID) { "tranquil_passing_red" => 3, "tranquil_passing_yellow" => 2, default => 1 };
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=" . $maxCost);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS," . $cardID . "-" . $uniqueID, 1);
@@ -654,8 +640,10 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
       if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $extraText);
     }
   }
-  for($i = 0; $i < count($chainLinks); ++$i) {
-    for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+  $chainLinksCount = count($chainLinks);
+  for($i = 0; $i < $chainLinksCount; ++$i) {
+    $linkCount = count($chainLinks[$i]);
+    for($j = 0; $j < $linkCount; $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j+2] == 0) continue;
       $contractType = ContractType($chainLinks[$i][$j]);
       if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainLinks[$i][$j]);
@@ -690,13 +678,15 @@ function CheckContracts($banishedBy, $cardBanished)
     $contractType = ContractType($chainCard->ID(), $chosenName);
     if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
-  for($i = 0; $i < count($chainLinks); ++$i) {
+  $chainLinksCount = count($chainLinks);
+  for($i = 0; $i < $chainLinksCount; ++$i) {
     if (!isset($chainLinks[$i])) {
       WriteLog("Something odd happened while checking contracts, please submit a bug report", highlight:true);
       continue;
     }
     if(!is_array($chainLinks[$i])) continue;
-    for($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+    $linkCount = count($chainLinks[$i]);
+    for($j = 0; $j < $linkCount; $j += ChainLinksPieces()) {
       if($chainLinks[$i][$j+1] != $banishedBy) continue;
       if($chainLinks[$i][$j+2] == 0) continue;
       if(CardType($chainLinks[$i][$j]) == "AA" && $j > 0) continue; //blocking AA don't generate contracts

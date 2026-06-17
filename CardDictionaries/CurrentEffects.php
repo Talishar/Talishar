@@ -2,7 +2,7 @@
 
 function TCCEffectPowerModifier($cardID, $attached): int|string
 {
-  $idArr = explode(",", $cardID);
+  $idArr = explode(",", $cardID, 2);
   $cardID = $idArr[0];
   return match ($cardID) {
     "crash_down_red" => 6,
@@ -18,8 +18,7 @@ function TCCEffectPowerModifier($cardID, $attached): int|string
 function TCCCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer;
-  $idArr = explode(",", $cardID);
-  $cardID = $idArr[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
     "crash_down_red", "earthlore_empowerment_red", "crash_down_yellow", "earthlore_empowerment_yellow" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA",
     "growl_red", "growl_yellow" => CardNameContains($attackID, "Crouching Tiger", $mainPlayer) && TypeContains($attackID, "AA"),
@@ -30,7 +29,7 @@ function TCCCombatEffectActive($cardID, $attackID): bool
 
 function EVOEffectPowerModifier($cardID): int|string
 {
-  $idArr = explode(",", $cardID);
+  $idArr = explode(",", $cardID, 2);
   $cardID = $idArr[0];
   return match ($cardID) {
     "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue" => $idArr[1],
@@ -46,8 +45,7 @@ function EVOEffectPowerModifier($cardID): int|string
 function EVOCombatEffectActive($cardID, $attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_IsBoosted, $CS_NumItemsDestroyed;
-  $idArr = explode(",", $cardID);
-  $cardID = $idArr[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
     "cogwerx_base_arms", "gigawatt_red", "gigawatt_yellow", "gigawatt_blue" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "gas_up_red", "gas_up_yellow", "gas_up_blue", "quickfire_red", "quickfire_yellow", "quickfire_blue", "re_charge_red", "re_charge_yellow", "re_charge_blue" => $combatChainState[$CCS_IsBoosted],
@@ -61,7 +59,7 @@ function EVOCombatEffectActive($cardID, $attackID)
 
 function HVYEffectPowerModifier($cardID): int|string
 {
-  $idArr = explode(",", $cardID);
+  $idArr = explode(",", $cardID, 2);
   $cardID = $idArr[0];
   return match ($cardID) {
     "bonebreaker_bellow_red", "bonebreaker_bellow_yellow", "bonebreaker_bellow_blue", "tenacity_yellow" => $idArr[1],
@@ -81,22 +79,22 @@ function HVYEffectPowerModifier($cardID): int|string
 function HVYCombatEffectActive($cardID, $attackID)
 {
   global $mainPlayer, $CombatChain;
-  $idArr = explode(",", $cardID);
-  $cardID = $idArr[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $attackCardID = $CombatChain->AttackCard()->ID();
   return match ($cardID) {
-    "bonebreaker_bellow_red", "bonebreaker_bellow_yellow", "bonebreaker_bellow_blue" => ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer),
-    "big_bop_red-BUFF", "big_bop_yellow-BUFF", "big_bop_blue-BUFF", "bigger_than_big_red-BUFF", "bigger_than_big_yellow-BUFF", "bigger_than_big_blue-BUFF" => ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer),
+    "bonebreaker_bellow_red", "bonebreaker_bellow_yellow", "bonebreaker_bellow_blue" => ClassContains($attackCardID, "BRUTE", $mainPlayer),
+    "big_bop_red-BUFF", "big_bop_yellow-BUFF", "big_bop_blue-BUFF", "bigger_than_big_red-BUFF", "bigger_than_big_yellow-BUFF", "bigger_than_big_blue-BUFF" => ClassContains($attackCardID, "GUARDIAN", $mainPlayer),
     "kassai_of_the_golden_sand", "kassai" => TypeContains($attackID, "W", $mainPlayer) && IsHeroAttackTarget(),
     "blade_flurry_red" => TypeContains($attackID, "W", $mainPlayer),
     "commanding_performance_red", "commanding_performance_red-BUFF", "draw_swords_red", "draw_swords_yellow", "draw_swords_blue", "edge_ahead_red-BUFF", "edge_ahead_yellow-BUFF", "edge_ahead_blue-BUFF", "engaged_swiftblade_red",
-    "engaged_swiftblade_yellow", "engaged_swiftblade_blue", "hold_em_red-BUFF", "hold_em_yellow-BUFF", "hold_em_blue-BUFF" => ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer),
-    "lead_with_power_red", "lead_with_power_yellow", "lead_with_power_blue" => ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer),
-    "lead_with_speed_red", "lead_with_speed_yellow", "lead_with_speed_blue" => ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer),
+    "engaged_swiftblade_yellow", "engaged_swiftblade_blue", "hold_em_red-BUFF", "hold_em_yellow-BUFF", "hold_em_blue-BUFF" => ClassContains($attackCardID, "WARRIOR", $mainPlayer),
+    "lead_with_power_red", "lead_with_power_yellow", "lead_with_power_blue" => ClassContains($attackCardID, "BRUTE", $mainPlayer) || ClassContains($attackCardID, "GUARDIAN", $mainPlayer),
+    "lead_with_speed_red", "lead_with_speed_yellow", "lead_with_speed_blue" => ClassContains($attackCardID, "BRUTE", $mainPlayer) || ClassContains($attackCardID, "WARRIOR", $mainPlayer),
     "double_down_red-BUFF" => CachedWagerActive(),
-    "lead_with_heart_red", "lead_with_heart_yellow", "lead_with_heart_blue" => ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer),
+    "lead_with_heart_red", "lead_with_heart_yellow", "lead_with_heart_blue" => ClassContains($attackCardID, "WARRIOR", $mainPlayer) || ClassContains($attackCardID, "GUARDIAN", $mainPlayer),
     "ancestral_harmony_blue" => HasCombo($attackID),
-    "luminaris_angels_glow-1" => str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald"),
-    "luminaris_angels_glow-2" => DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Angel"),
+    "luminaris_angels_glow-1" => str_contains(NameOverride($attackCardID, $mainPlayer), "Herald"),
+    "luminaris_angels_glow-2" => DelimStringContains(CardSubType($attackCardID), "Angel"),
     "betsy_skin_in_the_game", "betsy", "primed_to_fight_red", "stonewall_impasse", "gauntlets_of_iron_will", "good_time_chapeau-PAID", "the_golden_son_yellow", "big_bop_red", "big_bop_yellow", "big_bop_blue", "bigger_than_big_red",
     "bigger_than_big_yellow", "bigger_than_big_blue", "hood_of_red_sand", "talk_a_big_game_blue", "wage_might_red", "wage_might_yellow", "wage_might_blue", "wage_agility_red", "wage_agility_yellow", "wage_agility_blue", "wage_vigor_red", "wage_vigor_yellow",
     "wage_vigor_blue", "standing_order_red", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "wage_gold_red", "wage_gold_yellow",

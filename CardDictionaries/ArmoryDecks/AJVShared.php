@@ -122,7 +122,8 @@ function FrostbiteExposed($otherPlayer, $player, $may=false) {
 function CheckHeavy($player) {
   $count = 0;
   $char = GetPlayerCharacter($player);
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $charCount = count($char);
+  for ($i = 0; $i < $charCount; $i += CharacterPieces()) {
     if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand", $player)) ++$count;
   }
   return $count == 1;

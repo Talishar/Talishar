@@ -104,7 +104,8 @@ function CheckIfConstructBankBreakerConditionsAreMet($player)
 {
   $hasWrench = false;
   $char = &GetPlayerCharacter($player);
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $charCount = count($char);
+  for ($i = 0; $i < $charCount; $i += CharacterPieces()) {
     $characterCardID = $char[$i];
     if ($char[$i + 1] == 0) continue;
     if (CardType($characterCardID) == "W" && SubtypeContains($characterCardID, "Wrench")) $hasWrench = true;

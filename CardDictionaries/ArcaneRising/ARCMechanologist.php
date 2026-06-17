@@ -46,9 +46,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       }
       return $rv;
     case "pour_the_mold_red": case "pour_the_mold_yellow": case "pour_the_mold_blue":
-      if($cardID == "pour_the_mold_red") $maxCost = 2;
-      else if($cardID == "pour_the_mold_yellow") $maxCost = 1;
-      else $maxCost = 0;
+      $maxCost = match($cardID) { "pour_the_mold_red" => 2, "pour_the_mold_yellow" => 1, default => 0 };
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:subtype=Item;maxCost=$maxCost;class=MECHANOLOGIST");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -170,7 +168,8 @@ function DoBoost($player, $cardID, $boostCount=1)
       AddLayer("TRIGGER", $player, "viziertronic_model_i");
     }
     $char = GetPlayerCharacter($player);
-    for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+    $charCount = count($char);
+    for ($j = 0; $j < $charCount; $j += CharacterPieces()) {
       if ($char[$j + 1] == 2) {
         switch ($char[$j]) {
           case "drive_brake":

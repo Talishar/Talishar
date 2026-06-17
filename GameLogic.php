@@ -312,7 +312,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "no_fear_red":
           $hand = &GetHand($player);
           $rv = [];
-          for ($i = 0; $i < count($hand); $i += HandPieces()) {
+          $handCount = count($hand);
+          $handPieces = HandPieces();
+          for ($i = 0; $i < $handCount; $i += $handPieces) {
             if (CardType($hand[$i]) == "AA" && ModifiedPowerValue($hand[$i], $player, "HAND", "no_fear_red") >= 6) $rv[] = $i;
           }
           $rv = implode(",", $rv);
@@ -334,7 +336,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "PRELAYERS":
           $preLayers = GetPreLayers();
           $rv = [];
-          for ($i = 0; $i < count($preLayers); $i += LayerPieces()) {
+          $preLayersCount = count($preLayers);
+          $layerPieces = LayerPieces();
+          for ($i = 0; $i < $preLayersCount; $i += $layerPieces) {
             if ($preLayers[$i + 1] == $player) $rv[] = "PRELAYERS-$i";
           }
           $rv = implode(",", $rv);
@@ -342,7 +346,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "PRELAYERIDS":
           $preLayers = GetPreLayers();
           $rv = [];
-          for ($i = count($preLayers) - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+          $layerPieces = LayerPieces();
+          for ($i = count($preLayers) - $layerPieces; $i >= 0; $i -= $layerPieces) {
             if ($preLayers[$i + 1] == $player) $rv[] = $preLayers[$i+2] . "|" . $preLayers[$i+6];
           }
           $rv = implode(",", $rv);
@@ -423,11 +428,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $playerID = $player == 1 ? 2 : 1;
           $prefix = "THEIR";
           $character = GetPlayerCharacter($playerID);
-          for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+          $characterCount = count($character);
+          $characterPieces = CharacterPieces();
+          for ($i = 0; $i < $characterCount; $i += $characterPieces) {
             if (HasEnergyCounters($character, $i)) $rv[] = $prefix."CHAR-$i";
           }
           $auras = GetAuras($playerID);
-          for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+          $aurasCount = count($auras);
+          $auraPieces = AuraPieces();
+          for ($i = 0; $i < $aurasCount; $i += $auraPieces) {
             if (HasEnergyCounters($auras, $i)) $rv[] = $prefix."AURAS-$i";
           }
           $rv = implode(",", $rv);
@@ -443,45 +452,45 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SCOURINDICES":
       $scourParts = explode("|", $parameter);
       $targPlayer = $scourParts[0];
-      $currentTargets = explode(",", $scourParts[1]);
+      $currentTargets = array_flip(explode(",", $scourParts[1]));
       $search = "$targPlayer:maxCost=0&LAYER:subtype=Aura;maxCost=0";
       $rvOrig = explode(",", SearchMultizone($player, $search));
       $rv = [];
       //remove any choices that have already been targeted
       foreach ($rvOrig as $ind) {
-        if (!in_array($ind, $currentTargets)) $rv[] = $ind;
+        if (!isset($currentTargets[$ind])) $rv[] = $ind;
       }
       $rv = implode(",", $rv);
       return $rv == "" ? "PASS" : $rv;
     case "MULTITARGETINDICES":
-      $currentTargets = explode(",", $lastResult);
+      $currentTargets = array_flip(explode(",", $lastResult));
       $rvOrig = explode(",", SearchMultizone($player, $parameter));
       $rv = [];
       //remove any choices that have already been targeted
       foreach ($rvOrig as $ind) {
-        if (!in_array(CleanTarget($player, $ind), $currentTargets)) $rv[] = $ind;
+        if (!isset($currentTargets[CleanTarget($player, $ind)])) $rv[] = $ind;
       }
       $rv = implode(",", $rv);
       return $rv == "" ? "PASS" : $rv;
     case "ALLYINDICES":
-      $currentTargets = explode(",", $parameter);
+      $currentTargets = array_flip(explode(",", $parameter));
       $search = "THEIRALLY&MYALLY";
       $rvOrig = explode(",", SearchMultizone($player, $search));
       $rv = [];
       //remove any choices that have already been targeted
       foreach ($rvOrig as $ind) {
-        if (!in_array($ind, $currentTargets)) $rv[] = $ind;
+        if (!isset($currentTargets[$ind])) $rv[] = $ind;
       }
       $rv = implode(",", $rv);
       return $rv == "" ? "PASS" : $rv;
     case "COGWERXINDICES":
-      $currentTargets = explode(",", $lastResult);
+      $currentTargets = array_flip(explode(",", $lastResult));
       $search = "MYITEMS:subtype=Cog";
       $rvOrig = explode(",", SearchMultizone($player, $search));
       $rv = [];
       //remove any choices that have already been targeted
       foreach ($rvOrig as $ind) {
-        if (!in_array($ind, $currentTargets)) $rv[] = $ind;
+        if (!isset($currentTargets[$ind])) $rv[] = $ind;
       }
       $rv = implode(",", $rv);
       return $rv == "" ? "PASS" : $rv;
@@ -498,15 +507,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($parameter == "-" || $index != $parameter) {
           if (str_contains($index, "THEIR")) {
             $cardID = GetMZCard($player, $index);
-            if (!TypeContains($cardID, "T") || !in_array($cardID, $foundTheirs) || $cardID == "spectral_shield") {
-              $foundTheirs[] = $cardID;
+            if (!TypeContains($cardID, "T") || !isset($foundTheirs[$cardID]) || $cardID == "spectral_shield") {
+              $foundTheirs[$cardID] = true;
               $dedupedInds[] = $index;
             }
           }
           else {
             $cardID = GetMZCard($player, $index);
-            if (!TypeContains($cardID, "T") || !in_array($cardID, $foundMine) || $cardID == "spectral_shield") {
-              $foundMine[] = $cardID;
+            if (!TypeContains($cardID, "T") || !isset($foundMine[$cardID]) || $cardID == "spectral_shield") {
+              $foundMine[$cardID] = true;
               $dedupedInds[] = $index;
             }
           }
@@ -517,14 +526,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "BLOCKLESS0HAND":
       $hand = &GetHand($player);
       $countHand = count($hand);
-      $cardList = "";
+      $cardListArr = [];
       for ($i = 0; $i < $countHand; $i++) {
         if (BlockValue($hand[$i]) < 0) {
-          if ($cardList != "") $cardList = "$cardList,";
-          $cardList = "$cardList$i";
+          $cardListArr[] = $i;
         }
       }
-      $searchResult = SearchMultiZoneFormat($cardList, "THEIRHAND");
+      $searchResult = SearchMultiZoneFormat(implode(",", $cardListArr), "THEIRHAND");
       $rv = CombineSearches($rv, $searchResult);
       return $rv == "" ? "PASS" : $rv;
     case "PUTPLAY":
@@ -557,13 +565,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cards = explode(",", $lastResult);
       $params = explode(",", $parameter);
       if (count($params) < 3) $params[] = "";
-      $mzIndices = "";
-      for ($i = 0; $i < count($cards); ++$i) {
-        $index = BanishCardForPlayer($cards[$i], $player, $params[0], $params[1] ?? "-", $params[2] ?? "");
-        if ($mzIndices != "") $mzIndices .= ",";
-        $mzIndices .= "BANISH-$index";
+      $mzIndicesArr = [];
+      $cardsCount = count($cards);
+      for ($i = 0; $i < $cardsCount; ++$i) {
+        $mzIndicesArr[] = "BANISH-" . BanishCardForPlayer($cards[$i], $player, $params[0], $params[1] ?? "-", $params[2] ?? "");
       }
-      $dqState[5] = $mzIndices;
+      $dqState[5] = implode(",", $mzIndicesArr);
       return $lastResult;
     case "REMOVECOMBATCHAIN":
       return $CombatChain->Remove($lastResult);
@@ -602,15 +609,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "PUTINANYORDER":
       $deck = new Deck($player == 1 ? 2 : 1);
-      $reorderCards = "";
+      $reorderCardsArr = [];
       for ($i = 0; $i < $parameter; ++$i) {
         if ($deck->RemainingCards() > 0) {
-          if ($reorderCards != "") $reorderCards .= ",";
-          $reorderCards .= $deck->Top(remove: true);
+          $reorderCardsArr[] = $deck->Top(remove: true);
         }
       }
-      if ($reorderCards != "") {
-        PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $reorderCards);
+      if ($reorderCardsArr !== []) {
+        PrependDecisionQueue("CHOOSETOPOPPONENT", $player, implode(",", $reorderCardsArr));
         PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of their deck");
       }
       return "";
@@ -634,17 +640,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $cardID;
     case "MULTIREMOVEDISCARD":
       $discard = &GetDiscard($player);
-      $cards = "";
+      $cardsArr = [];
       if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
-      $cardsRemoved = "";
-      for ($i = 0; $i < count($lastResult); ++$i) {
-        if ($cards != "") $cards .= ",";
-        $cards .= $discard[$lastResult[$i]];
+      $lastResultCount = count($lastResult);
+      for ($i = 0; $i < $lastResultCount; ++$i) {
+        $cardsArr[] = $discard[$lastResult[$i]];
         if ($parameter == "1") WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]));
         RemoveGraveyard($player, $lastResult[$i], resetGraveyard: false);
       }
       $discard = array_values($discard);
-      return $cards;
+      return implode(",", $cardsArr);
     case "MULTIBANISHSOUL":
       if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       for ($i = count($lastResult) - 1; $i >= 0; --$i) BanishFromSoul($player, $lastResult[$i]);
@@ -723,11 +728,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult == "") return "";
       $cards = explode(",", $lastResult);
       $hand = &GetHand($player);
+      $cardsCount = count($cards);
       $log = "";
-      for ($i = 0; $i < count($cards); ++$i) {
+      for ($i = 0; $i < $cardsCount; ++$i) {
         if ($parameter == "1") {
           if ($log != "") $log .= ", ";
-          if ($i != 0 && $i == count($cards) - 1) $log .= "and ";
+          if ($i != 0 && $i == $cardsCount - 1) $log .= "and ";
           $log .= CardLink($cards[$i], $cards[$i]);
         }
         $hand[] = $cards[$i];
@@ -735,19 +741,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($log != "") WriteLog("$log added to hand");
       return $lastResult;
     case "MULTIREMOVEHAND":
-      $cards = "";
+      $cardsArr = [];
       $hand = &GetHand($player);
       if ($lastResult == "") return "";
       if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
-      for ($i = 0; $i < count($lastResult); ++$i) {
-        if ($cards != "") $cards .= ",";
+      $lastResultCount = count($lastResult);
+      for ($i = 0; $i < $lastResultCount; ++$i) {
         if (is_numeric($lastResult[$i])) {
-          $cards .= $hand[$lastResult[$i]];
+          $cardsArr[] = $hand[$lastResult[$i]];
           unset($hand[$lastResult[$i]]);
         }
       }
       $hand = array_values($hand);
-      return $cards;
+      return implode(",", $cardsArr);
     case "DESTROYCHARACTER":
       DestroyCharacter($player, $lastResult);
       return $lastResult;
@@ -833,11 +839,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $mzArr = explode("-", $lastResult);
           return $mzArr[1];
         case "GETCARDINDICES":
-          $arr = explode(",", $lastResult);
           $output = [];
-          for ($i = 0; $i < count($arr); ++$i) {
-            $mzArr = explode("-", $arr[$i]);
-            $output[] = $mzArr[1];
+          foreach (explode(",", $lastResult) as $item) {
+            $output[] = explode("-", $item)[1];
           }
           return implode(",", $output);
         case "GETUNIQUEID":
@@ -961,12 +965,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "REMOVECARD":
           if ($lastResult == "") return $dqVars[0];
           $cards = explode(",", $dqVars[0]);
-          for ($i = 0; $i < count($cards); ++$i) {
-            if ($cards[$i] == $lastResult) {
-              unset($cards[$i]);
-              $cards = array_values($cards);
-              break;
-            }
+          $idx = array_search($lastResult, $cards, true);
+          if ($idx !== false) {
+            array_splice($cards, $idx, 1);
           }
           return implode(",", $cards);
         case "PLAYERLOSEHEALTH": //Doesn't count in endgame stats as damage dealt, but as negative life lost from effects like Blooddebt, Vynnsett, Beast Within, etc.
@@ -1002,16 +1003,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch ($from) {
         case "LastResult":
           $input = explode(",", $lastResult);
-          for ($i = 0; $i < count($input); ++$i) $input[$i] = $input[$i] . "-" . $input[$i];
+          $inputCount = count($input);
+          for ($i = 0; $i < $inputCount; ++$i) $input[$i] = $input[$i] . "-" . $input[$i];
           break;
         case "CombatChain":
           $lastResultArr = explode(",", $lastResult);
-          for ($i = 0; $i < count($lastResultArr); ++$i) $input[] = $combatChain[$lastResultArr[$i] + CCOffset($type)] . "-" . $lastResultArr[$i];
+          $lastResultArrCount = count($lastResultArr);
+          for ($i = 0; $i < $lastResultArrCount; ++$i) $input[] = $combatChain[$lastResultArr[$i] + CCOffset($type)] . "-" . $lastResultArr[$i];
         default:
           break;
       }
       $output = [];
-      for ($i = 0; $i < count($input); ++$i) {
+      $inputCount = count($input);
+      for ($i = 0; $i < $inputCount; ++$i) {
         $inputArr = explode("-", $input[$i]);
         $passFilter = $relationship == "include" ? false : true;
         switch ($type) {
@@ -1078,9 +1082,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MULTIADDDECK":
       if ($lastResult != "") {
         $deck = new Deck($player);
-        $cards = explode(",", $lastResult);
-        for ($i = 0; $i < count($cards); ++$i) {
-          if (CardName($cards[$i]) != "") $deck->AddBottom($cards[$i]);
+        foreach (explode(",", $lastResult) as $card) {
+          if (CardName($card) != "") $deck->AddBottom($card);
           else WriteLog("There was an error adding a card to your deck, please submit a bug report", highlight: true);
         }
       }
@@ -1089,10 +1092,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MULTIADDTOPDECK":
       $deck = new Deck($player);
-      $cards = explode(",", $lastResult);
-      for ($i = 0; $i < count($cards); ++$i) {
-        if ($parameter == "1") WriteLog(CardLink($cards[$i], $cards[$i]));
-        $deck->AddTop($cards[$i]);
+      foreach (explode(",", $lastResult) as $card) {
+        if ($parameter == "1") WriteLog(CardLink($card, $card));
+        $deck->AddTop($card);
       }
       return $lastResult;
     case "MULTIREMOVEDECK":
@@ -1150,19 +1152,22 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DECKCARDS":
       $indices = explode(",", $parameter);
       $deck = &GetDeck($player);
-      $rv = "";
-      for ($i = 0; $i < count($indices); ++$i) {
-        if (count($deck) <= $i) continue;
-        if ($rv != "") $rv .= ",";
-        $rv .= $deck[$i];
+      $indicesCount = count($indices);
+      $deckCount = count($deck);
+      $rvArr = [];
+      for ($i = 0; $i < $indicesCount; ++$i) {
+        if ($deckCount <= $i) continue;
+        $rvArr[] = $deck[$i];
       }
-      return $rv == "" ? "PASS" : $rv;
+      return $rvArr === [] ? "PASS" : implode(",", $rvArr);
     case "DECKCARDNAMES":
       $indices = explode(",", $parameter);
       $deck = &GetDeck($player);
+      $indicesCount = count($indices);
+      $deckCount = count($deck);
       $rv = [];
-      for ($i = 0; $i < count($indices); ++$i) {
-        if (count($deck) <= $i) continue;
+      for ($i = 0; $i < $indicesCount; ++$i) {
+        if ($deckCount <= $i) continue;
         $rv[] = CardLink($deck[$i], $deck[$i]);
       }
       return $rv == [] ? "PASS" : implode(", ", $rv);
@@ -1197,14 +1202,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "SHOWMODES":
       $modes = (is_array($lastResult)) ? $lastResult : explode(",", $lastResult);
+      $modesCount = count($modes);
       $text = "";
-      for ($i = 0; $i < count($modes); ++$i) {
+      for ($i = 0; $i < $modesCount; ++$i) {
         if ($text != "") $text .= ", ";
-        if ($i > 0 && $i == count($modes) - 1) $text .= " and ";
+        if ($i > 0 && $i == $modesCount - 1) $text .= " and ";
         $text .= GamestateUnsanitize($modes[$i]);
       }
       if ($text == "") $text = "None";
-      WriteLog("Selected mode" . (count($modes) > 1 ? "s" : "") . " for " . CardLink($parameter, $parameter) . (count($modes) > 1 ? " are" : " is") . ": " . $text);
+      WriteLog("Selected mode" . ($modesCount > 1 ? "s" : "") . " for " . CardLink($parameter, $parameter) . ($modesCount > 1 ? " are" : " is") . ": " . $text);
       return $lastResult;
     case "REVEALCARDS":
       $cards = is_array($lastResult) ? implode(",", $lastResult) : $lastResult;
@@ -1213,33 +1219,35 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REVEALHANDCARDS":
       $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
       $hand = &GetHand($player);
-      $cards = "";
       if (empty($hand)) return "PASS";
-      for ($i = 0; $i < count($indices); ++$i) {
-        if (isset($hand[$indices[$i]])) { 
-          if ($cards != "") $cards .= ",";
-          $cards .= $hand[$indices[$i]];
-        } 
+      $cardsArr = [];
+      $indicesCount = count($indices);
+      for ($i = 0; $i < $indicesCount; ++$i) {
+        if (isset($hand[$indices[$i]])) {
+          $cardsArr[] = $hand[$indices[$i]];
+        }
       }
+      $cards = implode(",", $cardsArr);
       $revealed = RevealCards($cards, $player);
       return $revealed ? $cards : "PASS";
     case "SHOWHANDWRITELOG":
       $hand = &GetHand($player);
-      $cards = "";
-      for ($i = 0; $i < count($hand); ++$i) {
-        if ($cards != "") $cards .= ", ";
-        $cards .= CardLink($hand[$i], $hand[$i]);
+      $handCount = count($hand);
+      $cardsArr = [];
+      for ($i = 0; $i < $handCount; ++$i) {
+        $cardsArr[] = CardLink($hand[$i], $hand[$i]);
       }
-      if($cards != "") WriteLog("Hand content: $cards.");
+      if ($cardsArr !== []) WriteLog("Hand content: " . implode(", ", $cardsArr) . ".");
       return $lastResult;
     case "SHOWARSENALWRITELOG":
       $arsenal = &GetArsenal($player);
-      $cards = "";
-      for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-        if ($cards != "") $cards .= ", ";
-        $cards .= CardLink($arsenal[$i], $arsenal[$i]);
+      $arsenalCount = count($arsenal);
+      $arsenalPieces = ArsenalPieces();
+      $cardsArr = [];
+      for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
+        $cardsArr[] = CardLink($arsenal[$i], $arsenal[$i]);
       }
-      if($cards != "") WriteLog("Arsenal contents: $cards.");
+      if ($cardsArr !== []) WriteLog("Arsenal contents: " . implode(", ", $cardsArr) . ".");
       return $lastResult;
     case "WRITELASTRESULT":
       WriteLog(GamestateUnsanitize($parameter . "<b>".$lastResult."</b>"));

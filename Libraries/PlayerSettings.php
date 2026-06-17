@@ -629,7 +629,7 @@ function IsTeamPotatoSquad($userName)
   return in_array($userName, ["Corry", "Gibbie", "sycotik", "ruin", "Xandorion", "ObiJohn",
     "tader", "Wittman1", "enflames91", "SlimDrew23", "NoRaven", "middiekittie",
     "archangel224", "Nick56", "SCORPIO", "ArgentGrey", "SynThePanda93",
-    "welpcakes", "RiptideRipper", "gilfab", "dautt"]);
+    "welpcakes", "RiptideRipper", "gilfab", "dautt", "Grublo"]);
 }
 
 function IsTeamFabledBrazil($userName)

@@ -10,7 +10,8 @@
       case "flamescale_furnace":
         $pitch = &GetPitch($currentPlayer);
         $numRed = 0;
-        for($i=0; $i<count($pitch); $i+=PitchPieces()) if(PitchValue($pitch[$i]) == 1) ++$numRed;
+        $pitchCount = count($pitch);
+        for($i=0; $i<$pitchCount; $i+=PitchPieces()) if(PitchValue($pitch[$i]) == 1) ++$numRed;
         GainResources($currentPlayer, $numRed);
         return "";
       case "sash_of_sandikai":
@@ -29,7 +30,8 @@
           if($deck->Reveal($num)) {
             $cards = explode(",", $deck->Top(amount:$num));
             $numRed = 0;
-            for($j = 0; $j < count($cards); ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+            $cardsCount = count($cards);
+            for($j = 0; $j < $cardsCount; ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
             if($numRed > 0) {
               AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
               AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
@@ -76,15 +78,11 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "arctic_incarceration_red": case "arctic_incarceration_yellow": case "arctic_incarceration_blue":
-        if($cardID == "arctic_incarceration_red") $numFrostbites = 3;
-        else if($cardID == "arctic_incarceration_yellow") $numFrostbites = 2;
-        else $numFrostbites = 1;
+        $numFrostbites = match($cardID) { "arctic_incarceration_red" => 3, "arctic_incarceration_yellow" => 2, default => 1 };
         PlayAura("frostbite", $currentPlayer == 1 ? 2 : 1, $numFrostbites, effectController: $currentPlayer);
         return "";
       case "cold_snap_red": case "cold_snap_yellow": case "cold_snap_blue":
-        if($cardID == "cold_snap_red") $cost = 3;
-        else if($cardID == "cold_snap_yellow") $cost = 2;
-        else $cost = 1;
+        $cost = match($cardID) { "cold_snap_red" => 3, "cold_snap_yellow" => 2, default => 1 };
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
         AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
@@ -118,9 +116,7 @@
         if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); }
         return "";
       case "sift_red": case "sift_yellow": case "sift_blue":
-        if($cardID == "sift_red") $numCards = 4;
-        else if($cardID == "sift_yellow") $numCards = 3;
-        else $numCards = 2;
+        $numCards = match($cardID) { "sift_red" => 4, "sift_yellow" => 3, default => 2 };
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, $numCards . "-", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
@@ -129,9 +125,7 @@
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SIFT", 1);
         return "";
       case "strategic_planning_red": case "strategic_planning_yellow": case "strategic_planning_blue":
-        if($cardID == "strategic_planning_red") $maxCost = 2;
-        else if($cardID == "strategic_planning_yellow") $maxCost = 1;
-        else $maxCost = 0;
+        $maxCost = match($cardID) { "strategic_planning_red" => 2, "strategic_planning_yellow" => 1, default => 0 };
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer,"MYDISCARD:maxCost=".$maxCost.";type=AA&MYDISCARD:maxCost=".$maxCost.";type=A&THEIRDISCARD:maxCost=".$maxCost.";type=AA&THEIRDISCARD:maxCost=".$maxCost.";type=A");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a graveyard card", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -154,9 +148,7 @@
         AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "healing_balm_red": case "healing_balm_yellow": case "healing_balm_blue":
-        if($cardID == "healing_balm_red") $amount = 3;
-        else if($cardID == "healing_balm_yellow") $amount = 2;
-        else $amount = 1;
+        $amount = match($cardID) { "healing_balm_red" => 3, "healing_balm_yellow" => 2, default => 1 };
         GainHealth($amount, $currentPlayer);
         return "";
       default: return "";
@@ -210,7 +202,8 @@
   {
     global $CombatChain, $mainPlayer, $chainLinkSummary;
     $numLinks = 0;
-    for($i=0; $i<count($chainLinkSummary); $i+=ChainLinkSummaryPieces()) {
+    $chainLinkSummaryCount = count($chainLinkSummary);
+    for($i=0; $i<$chainLinkSummaryCount; $i+=ChainLinkSummaryPieces()) {
       if(DelimStringContains($chainLinkSummary[$i+2], "DRACONIC")) ++$numLinks;
     }
     if($CombatChain->HasCurrentLink() && TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $mainPlayer)) ++$numLinks;
@@ -221,12 +214,14 @@
   {
     global $mainPlayer, $chainLinkSummary, $combatChain;
     $count = 0;
-    for($i=0; $i<count($chainLinkSummary); $i+=ChainLinkSummaryPieces())
+    $chainLinkSummaryCount = count($chainLinkSummary);
+    for($i=0; $i<$chainLinkSummaryCount; $i+=ChainLinkSummaryPieces())
     {
       if(ChainLinkNameContains($i, $name)) ++$count;
     }
     $currentAttackNames = GetCurrentAttackNames();
-    for($i=0; $i<count($currentAttackNames); ++$i) {
+    $currentAttackNamesCount = count($currentAttackNames);
+    for($i=0; $i<$currentAttackNamesCount; ++$i) {
       if($currentAttackNames[$i] == $name) {
         ++$count;
         break;
@@ -241,7 +236,8 @@
     if(SearchCurrentTurnEffects("amnesia_red", $mainPlayer)) return false;
     if($index >= count($chainLinkSummary)) return false;
     $attackNames = explode(",", $chainLinkSummary[$index+4]);
-    for($i=0; $i<count($attackNames); ++$i) {
+    $attackNamesCount = count($attackNames);
+    for($i=0; $i<$attackNamesCount; ++$i) {
       $attackName = GamestateUnsanitize($attackNames[$i]);
       if($attackName == $name) return true;
     }

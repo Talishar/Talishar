@@ -1770,9 +1770,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $CharacterCard = new CharacterCard($index, $player);
   $myHand = &GetHand($player);
   $banish = new Banish($player);
-  $auras = &GetAuras($player);
-  $discard = &GetDiscard($currentPlayer);
-  $Discard = new Discard($currentPlayer);
+  $discard = new Discard($currentPlayer);
   $restriction = "";
   $cardType = CardType($cardID, $from, $currentPlayer);
   $subtype = CardSubType($cardID);
@@ -1795,7 +1793,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   } else if ($from == "THEIRARS") {
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
-  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $Discard->Card($index)->Facing(), $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
+  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard->Card($index)->Facing(), $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
   elseif ($from == "COMBATCHAINATTACKS" && (!AbilityPlayableFromCombatChain($cardID, "-") || !CanPlayInstant($phase))) return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && isset($character[$index + 12]) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
@@ -1998,7 +1996,8 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
 {
   global $CombatChain, $mainPlayer, $CS_NumCardsDrawn, $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $currentTurnEffects;
   global $defPlayer;
-  if ($CombatChain->AttackCard()->ID() == "evasive_nageboshi_blue") {
+  $attackID = $CombatChain->AttackCard()->ID();
+  if ($attackID == "evasive_nageboshi_blue") {
     if (TypeContains($cardID, "E") || TypeContains($cardID, "AR") || TypeContains($cardID, "DR")) {
       $restriction = "This attack disallows blocking with equipment and reactions";
       return true;
@@ -2013,7 +2012,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
     if ($char[FindCharacterIndex($player, $cardID) + 12] == "DOWN") {
       return true;
     }
-    switch ($CombatChain->AttackCard()->ID()) {
+    switch ($attackID) {
       case "headbutt_blue":
         if (!SubtypeContains($cardID, "Head")) return true;
       default:
@@ -2024,9 +2023,9 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
     $restriction = "stasis_cell_blue";
     return true;
   }
-  if ($CombatChain->AttackCard()->ID() == "heavy_artillery_red" || $CombatChain->AttackCard()->ID() == "heavy_artillery_yellow" || $CombatChain->AttackCard()->ID() == "heavy_artillery_blue") {
+  if ($attackID == "heavy_artillery_red" || $attackID == "heavy_artillery_yellow" || $attackID == "heavy_artillery_blue") {
     if (CardCost($cardID) < EvoUpgradeAmount($mainPlayer) && CardType($cardID) == "AA") {
-      $restriction = $CombatChain->AttackCard()->ID();
+      $restriction = $attackID;
       return true;
     }
   };
@@ -2354,6 +2353,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $mySoul = &GetSoul($player);
   $discard = new Discard($player);
   $otherPlayerDiscard = &GetDiscard($otherPlayer);
+  $attackID = $CombatChain->AttackCard()->ID();
   $type = CardType($cardID);
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if (!$resolutionCheck) { //when running a resoulution check, only check for targets
@@ -2419,7 +2419,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   }
   switch ($cardID) {
     case "ancestral_empowerment_red":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player) || CardType($CombatChain->AttackCard()->ID()) != "AA";
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "NINJA", $player) || CardType($attackID) != "AA";
     case "braveforge_bracers":
       return GetClassState($player, $CS_HitsWithWeapon) == 0;
     case "rout_red":
@@ -2436,14 +2436,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "stroke_of_foresight_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (SearchCombatChainAttacks($mainPlayer, type:"W") != "") return false;
-      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer)) return false;
+      if (TypeContains($attackID, "W", $mainPlayer)) return false;
       return true;
     case "ironsong_response_red":
     case "ironsong_response_yellow":
     case "ironsong_response_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (!RepriseActive()) return false;
-      return !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
+      return !TypeContains($attackID, "W", $mainPlayer);
     case "fyendals_spring_tunic":
       if ($character[$index + 2] == 3) return false;
       if ($currentPlayer != $mainPlayer) return true; //only tick up on your own turn
@@ -2453,8 +2453,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     case "snapdragon_scalers":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (CardType($CombatChain->AttackCard()->ID()) != "AA") return true;
-      if (CardCost($CombatChain->AttackCard()->ID()) > 1) return true;
+      if (CardType($attackID) != "AA") return true;
+      if (CardCost($attackID) > 1) return true;
       return false;
     case "demolition_crew_red":
     case "demolition_crew_yellow":
@@ -2468,18 +2468,18 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "pummel_yellow":
     case "pummel_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      $isClub = SubtypeContains($CombatChain->AttackCard()->ID(), "Club");
-      $isHammer = SubtypeContains($CombatChain->AttackCard()->ID(), "Hammer");
-      if ($isClub || $isHammer || CardType($CombatChain->AttackCard()->ID()) == "AA" && CardCost($CombatChain->AttackCard()->ID(), "CC") >= 2 || $combatChainState[$CCS_AttackCost] >= 2) return false;
+      $subtype = CardSubtype($attackID);
+      $isClub = SubtypeContains($attackID, "Club");
+      $isHammer = SubtypeContains($attackID, "Hammer");
+      if ($isClub || $isHammer || CardType($attackID) == "AA" && CardCost($attackID, "CC") >= 2 || $combatChainState[$CCS_AttackCost] >= 2) return false;
       return true;
     case "razor_reflex_red":
     case "razor_reflex_yellow":
     case "razor_reflex_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      $attackCost = $combatChainState[$CCS_AttackCost] == -1 ? CardCost($CombatChain->AttackCard()->ID(), "CC") : $combatChainState[$CCS_AttackCost];
-      if ($subtype == "Sword" || $subtype == "Dagger" || CardType($CombatChain->AttackCard()->ID()) == "AA" && $attackCost <= 1) return false;
+      $subtype = CardSubtype($attackID);
+      $attackCost = $combatChainState[$CCS_AttackCost] == -1 ? CardCost($attackID, "CC") : $combatChainState[$CCS_AttackCost];
+      if ($subtype == "Sword" || $subtype == "Dagger" || CardType($attackID) == "AA" && $attackCost <= 1) return false;
       return true;
     case "teklo_plasma_pistol":
     case "plasma_barrel_shot":
@@ -2493,19 +2493,19 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "induction_chamber_red":
       return $CombatChain->HasCurrentLink()
         && $from == "PLAY"
-        && (!ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $player)
+        && (!ClassContains($attackID, "MECHANOLOGIST", $player)
           || $myItems[$index + 1] == 0
-          || CardSubtype($CombatChain->AttackCard()->ID()) != "Pistol"
+          || CardSubtype($attackID) != "Pistol"
           || $myItems[$index + 2] != 2);
     case "skullbone_crosswrap":
       return !ArsenalHasFaceDownCard($player);
     case "twinning_blade_yellow":
     case "unified_decree_yellow":
-      return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
+      return !$CombatChain->HasCurrentLink() || !TypeContains($attackID, "W", $mainPlayer);
     case "out_for_blood_red":
     case "out_for_blood_yellow":
     case "out_for_blood_blue":
-      return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
+      return !$CombatChain->HasCurrentLink() || !TypeContains($attackID, "W", $mainPlayer);
     case "shiyana_diamond_gemini":
       return IsPlayRestricted(ShiyanaCharacter("shiyana_diamond_gemini"), $restriction, $from, $index, $player);
     case "feign_death_yellow":
@@ -2519,7 +2519,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "aetherize_blue":
       return count($layers) == 0 || SearchLayer($player, "I", "", 1) == "";
     case "lunging_press_blue":
-      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
+      return !$CombatChain->HasCurrentLink() || CardType($attackID) != "AA";
     case "reinforce_the_line_red":
     case "reinforce_the_line_yellow":
     case "reinforce_the_line_blue":
@@ -2641,7 +2641,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "spellbound_creepers":
       return GetClassState($player, $CS_NumAttackCardsAttacked) == 0 && GetClassState($player, $CS_NumAttackCardsBlocked) == 0; // Attacked with/Blocked with
     case "sutcliffes_suede_hides":
-      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
+      return !$CombatChain->HasCurrentLink() || CardType($attackID) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
     case "ragamuffins_hat":
       return count($myHand) != 1;
     case "deep_blue":
@@ -2649,13 +2649,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "runaways":
       return !HasTakenDamage($player);
     case "shatter_yellow":
-      return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || Is1H($CombatChain->AttackCard()->ID());
+      return !$CombatChain->HasCurrentLink() || !TypeContains($attackID, "W", $mainPlayer) || Is1H($attackID);
     case "blade_runner_red":
     case "blade_runner_yellow":
     case "blade_runner_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (SearchCombatChainAttacks($mainPlayer, type:"W", is1h:true) != "") return false;
-      if (TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) && Is1H($CombatChain->AttackCard()->ID())) return false;
+      if (TypeContains($attackID, "W", $mainPlayer) && Is1H($attackID)) return false;
       return true;
     case "crown_of_reflection":
       return $player != $mainPlayer;
@@ -2674,10 +2674,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "helm_of_sharp_eye":
       return !IsWeaponGreaterThanTwiceBasePower();
     case "amulet_of_oblation_blue":
-      return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA");
+      return $from == "PLAY" && (GetClassState(1, $CS_CardsEnteredGY) == 0 && GetClassState(2, $CS_CardsEnteredGY) == 0 || !$CombatChain->HasCurrentLink() || CardType($attackID) != "AA");
     case "thrust_red":
     case "blade_flash_blue":
-      return !$CombatChain->HasCurrentLink() || CardSubType($CombatChain->AttackCard()->ID()) != "Sword";
+      return !$CombatChain->HasCurrentLink() || CardSubType($attackID) != "Sword";
     case "flamescale_furnace":
       return GetClassState($player, $CS_NumRedPlayed) == 0;
     case "sash_of_sandikai":
@@ -2689,11 +2689,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "frightmare_red":
       return GetClassState($player, $CS_NumPhantasmAADestroyed) < 1;
     case "semblance_blue":
-      if ($CombatChain->HasCurrentLink()) return !ClassContains($CombatChain->AttackCard()->ID(), "ILLUSIONIST", $player);
+      if ($CombatChain->HasCurrentLink()) return !ClassContains($attackID, "ILLUSIONIST", $player);
       else if (count($layers) != 0) return !ClassContains($layers[0], "ILLUSIONIST", $player);
       return true;
     case "tide_flippers":
-      return !$CombatChain->HasCurrentLink() || PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") > 2 || CardType($CombatChain->AttackCard()->ID()) != "AA";
+      return !$CombatChain->HasCurrentLink() || PowerValue($attackID, $mainPlayer, "CC") > 2 || CardType($attackID) != "AA";
     case "waning_moon":
       return GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "alluvion_constellas":
@@ -2737,12 +2737,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "puncture_yellow":
     case "puncture_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      $subtype = CardSubType($CombatChain->AttackCard()->ID());
+      $subtype = CardSubType($attackID);
       return $subtype != "Sword" && $subtype != "Dagger";
     case "blacktek_whisperers":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "ASSASSIN", $mainPlayer) || CardType($attackID) != "AA";
     case "mask_of_perdition":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || CardType($CombatChain->AttackCard()->ID()) != "AA";
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "ASSASSIN", $mainPlayer) || CardType($attackID) != "AA";
     case "shred_red":
     case "shred_yellow":
     case "shred_blue":
@@ -2755,11 +2755,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
           }
         }
       }
-      return NumCardsBlocking() < 1 || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer);
+      return NumCardsBlocking() < 1 || !ClassContains($attackID, "ASSASSIN", $mainPlayer);
     case "cut_to_the_chase_red":
     case "cut_to_the_chase_yellow":
     case "cut_to_the_chase_blue":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) || ContractType($CombatChain->AttackCard()->ID()) == "";
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "ASSASSIN", $mainPlayer) || ContractType($attackID) == "";
     case "point_the_tip_red":
     case "point_the_tip_yellow":
     case "point_the_tip_blue":
@@ -2770,16 +2770,16 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CountAura("spectral_shield", $currentPlayer) < 1;
     case "uzuri_switchblade":
     case "uzuri":
-      return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID()) || count($myHand) == 0;
+      return !$CombatChain->HasCurrentLink() || !HasStealth($attackID) || count($myHand) == 0;
     case "spike_with_bloodrot_red":
     case "spike_with_frailty_red":
     case "spike_with_inertia_red":
     case "razors_edge_red":
     case "razors_edge_yellow":
     case "razors_edge_blue":
-      return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID()) || CardType($CombatChain->AttackCard()->ID()) != "AA";
+      return !$CombatChain->HasCurrentLink() || !HasStealth($attackID) || CardType($attackID) != "AA";
     case "silverwind_shuriken_blue":
-      return $from == "PLAY" ? !$CombatChain->HasCurrentLink() || !HasCombo($CombatChain->AttackCard()->ID()) : false;
+      return $from == "PLAY" ? !$CombatChain->HasCurrentLink() || !HasCombo($attackID) : false;
     case "trench_of_sunken_treasure":
       return !ArsenalHasFaceDownCard($player);
     case "flick_knives":
@@ -2790,13 +2790,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       return false;
     case "concealed_blade_blue":
-      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer) && !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $mainPlayer);
+      return !$CombatChain->HasCurrentLink() || CardType($attackID) != "AA" || !ClassContains($attackID, "ASSASSIN", $mainPlayer) && !ClassContains($attackID, "NINJA", $mainPlayer);
     case "short_and_sharp_red":
     case "short_and_sharp_yellow":
     case "short_and_sharp_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      $subtype = CardSubtype($CombatChain->AttackCard()->ID());
-      if ($subtype == "Dagger" || CardType($CombatChain->AttackCard()->ID()) == "AA" && PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") <= 2) return false;
+      $subtype = CardSubtype($attackID);
+      if ($subtype == "Dagger" || CardType($attackID) == "AA" && PowerValue($attackID, $mainPlayer, "CC") <= 2) return false;
       return true;
     case "mask_of_malicious_manifestations":
       return count($myHand) + count($myArsenal) < 1;
@@ -2811,16 +2811,16 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "threadbare_tunic":
       return count($myHand) > 0;
     case "fleet_foot_sandals":
-      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" && !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer) || PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", base:true) > 1;
+      return !$CombatChain->HasCurrentLink() || CardType($attackID) != "AA" && !TypeContains($attackID, "W", $mainPlayer) || PowerValue($attackID, $mainPlayer, "CC", base:true) > 1;
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
       return count($mySoul) == 0 || $character[5] == 0 || SearchPermanents($player, subtype: "Figment") == "";
     case "luminaris_celestial_fury":
-      return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald") && !SubtypeContains($CombatChain->AttackCard()->ID(), "Angel", $mainPlayer);
+      return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($attackID, $mainPlayer), "Herald") && !SubtypeContains($attackID, "Angel", $mainPlayer);
     case "angelic_descent_red":
     case "angelic_descent_yellow":
     case "angelic_descent_blue":
-      return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
+      return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($attackID, $mainPlayer), "Herald");
     case "angelic_wrath_red":
     case "angelic_wrath_yellow":
     case "angelic_wrath_blue":
@@ -2830,11 +2830,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       $pastHeralds = SearchCombatChainAttacks($player, nameIncludes:"Herald");
       if ($pastHeralds != "") return false;
-      return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
+      return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($attackID, $mainPlayer), "Herald");
     case "celestial_reprimand_red":
     case "celestial_reprimand_yellow":
     case "celestial_reprimand_blue":
-      return count($combatChain) < CombatChainPieces() * 2 || !str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald");
+      return count($combatChain) < CombatChainPieces() * 2 || !str_contains(NameOverride($attackID, $mainPlayer), "Herald");
     case "celestial_resolve_red":
     case "celestial_resolve_yellow":
     case "celestial_resolve_blue":
@@ -2847,7 +2847,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "resounding_courage_red":
     case "resounding_courage_yellow":
     case "resounding_courage_blue":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || !TalentContains($CombatChain->AttackCard()->ID(), "LIGHT", $mainPlayer);
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "WARRIOR", $mainPlayer) || !TalentContains($attackID, "LIGHT", $mainPlayer);
     case "radiant_view":
     case "radiant_raiment":
     case "radiant_touch":
@@ -2864,7 +2864,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "rugged_roller":
       return GetClassState($currentPlayer, $CS_HighestRoll) != 6;
     case "chorus_of_ironsong_yellow":
-      return !$CombatChain->HasCurrentLink() || !CardNameContains($CombatChain->AttackCard()->ID(), "Dawnblade", $mainPlayer, true);
+      return !$CombatChain->HasCurrentLink() || !CardNameContains($attackID, "Dawnblade", $mainPlayer, true);
     case "apocalypse_automaton_red":
       return EvoUpgradeAmount($player) == 0;//Restricted if no EVOs
     case "mask_of_three_tails":
@@ -2894,7 +2894,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return GetClassState($player, $CS_NumBoosted) <= 0;
     case "shriek_razors":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (!ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $mainPlayer)) return true;
+      if (!ClassContains($attackID, "ASSASSIN", $mainPlayer)) return true;
       //check for blocking AAs
       $countCombatChain = count($combatChain);
       $combatChainPieces = CombatChainPieces();
@@ -2917,15 +2917,15 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "kassai":
       return SearchCount(SearchDiscard($currentPlayer, pitch: 1)) < 2 || SearchCount(SearchDiscard($currentPlayer, pitch: 2)) < 2;
     case "prized_galea":
-      return !TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer);
+      return !TypeContains($attackID, "W", $currentPlayer);
     case "hood_of_red_sand":
-      return SearchCount(SearchDiscard($currentPlayer, pitch: 1)) < 1 || SearchCount(SearchDiscard($currentPlayer, pitch: 2)) < 1 || !CardSubtype($CombatChain->AttackCard()->ID()) == "Sword";
+      return SearchCount(SearchDiscard($currentPlayer, pitch: 1)) < 1 || SearchCount(SearchDiscard($currentPlayer, pitch: 2)) < 1 || !CardSubtype($attackID) == "Sword";
     case "blade_flurry_red":
-      return !$CombatChain->HasCurrentLink() || !TypeContains($CombatChain->AttackCard()->ID(), "W", $mainPlayer);
+      return !$CombatChain->HasCurrentLink() || !TypeContains($attackID, "W", $mainPlayer);
     case "cut_the_deck_red":
     case "cut_the_deck_yellow":
     case "cut_the_deck_blue":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "WARRIOR", $mainPlayer);
     case "fatal_engagement_red":
     case "fatal_engagement_yellow":
     case "fatal_engagement_blue":
@@ -2933,11 +2933,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "agile_engagement_red":
     case "agile_engagement_yellow":
     case "agile_engagement_blue":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "WARRIOR", $mainPlayer);
     case "vigorous_engagement_red":
     case "vigorous_engagement_yellow":
     case "vigorous_engagement_blue":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer);
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "WARRIOR", $mainPlayer);
     case "cintari_sellsword":
       return GetClassState($player, $CS_AttacksWithWeapon) <= 0;
     case "balance_of_justice":
@@ -2966,11 +2966,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "venomous_bite_yellow":
     case "venomous_bite_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (CardType($CombatChain->AttackCard()->ID()) == "AA" && (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $player) || TalentContains($CombatChain->AttackCard()->ID(), "MYSTIC", $player))) return false;
+      if (CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $player) || TalentContains($attackID, "MYSTIC", $player))) return false;
       return true;
     case "fang_strike":
     case "slither":
-      return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
+      return !$CombatChain->HasCurrentLink() || CardType($attackID) != "AA";
     case "truths_retold":
     case "uphold_tradition":
     case "aqua_seeing_shell":
@@ -2992,8 +2992,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !IsLayerStep();
     case "just_a_nick_red":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (HasStealth($CombatChain->AttackCard()->ID())) return false;
-      if (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+      if (HasStealth($attackID)) return false;
+      if (LinkBasePower() <= 1 && CardType($attackID) == "AA") return false;
       return true;
     case "astral_etchings_red":
     case "astral_etchings_yellow":
@@ -3008,8 +3008,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $haveAuraWard <= 0;
     case "maul_yellow":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (CardNameContains($CombatChain->AttackCard()->ID(), "Crouching Tiger", $player)) return false;
-      if (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+      if (CardNameContains($attackID, "Crouching Tiger", $player)) return false;
+      if (LinkBasePower() <= 1 && CardType($attackID) == "AA") return false;
       return true;
     case "longdraw_half_glove":
       return count($myHand) + count($myArsenal) < 2;
@@ -3047,14 +3047,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "arakni_black_widow":
     case "arakni_funnel_web":
     case "arakni_redback":
-      if (!($CombatChain->HasCurrentLink() && ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $currentPlayer))) return true;
+      if (!($CombatChain->HasCurrentLink() && ClassContains($attackID, "ASSASSIN", $currentPlayer))) return true;
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
     case "arakni_orb_weaver":
       if (SearchHand($currentPlayer, class:"ASSASSIN") == "") return true;
       return false;
     case "arakni_tarantula":
-      $activeDagger = $CombatChain->HasCurrentLink() && SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer);
+      $activeDagger = $CombatChain->HasCurrentLink() && SubtypeContains($attackID, "Dagger", $currentPlayer);
       $prevLinks = GetCombatChainAttacks();
       $prevDagger = false;
       $countPrevLinks = count($prevLinks);
@@ -3067,7 +3067,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "take_up_the_mantle_yellow":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (HasStealth($CombatChain->AttackCard()->ID()) && DelimStringContains(CardType($CombatChain->AttackCard()->ID()), "AA", true)) return false;
+      if (HasStealth($attackID) && DelimStringContains(CardType($attackID), "AA", true)) return false;
       return true;
     case "tarantula_toxin_red":
       if (!$CombatChain->HasCurrentLink()) return true;
@@ -3084,17 +3084,17 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
           if (SearchCharacterForUniqueID($chainLinks[$i][8], $currentPlayer) != -1) return false;
         }
       }
-      if (HasStealth($CombatChain->AttackCard()->ID()) && NumCardsBlocking() > 0) return false;
-      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
+      if (HasStealth($attackID) && NumCardsBlocking() > 0) return false;
+      if (SubtypeContains($attackID, "Dagger", $currentPlayer)) return false;
       return true;
     case "stains_of_the_redback_red":
     case "stains_of_the_redback_yellow":
     case "stains_of_the_redback_blue":
-      return !$CombatChain->HasCurrentLink() || !HasStealth($CombatChain->AttackCard()->ID());
+      return !$CombatChain->HasCurrentLink() || !HasStealth($attackID);
     case "two_sides_to_the_blade_red":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (HasStealth($CombatChain->AttackCard()->ID())) return false;
-      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) return false;
+      if (HasStealth($attackID)) return false;
+      if (SubtypeContains($attackID, "Dagger", $currentPlayer)) return false;
       return true;
     case "long_whisker_loyalty_red":
       if (!$CombatChain->HasCurrentLink()) return true;
@@ -3142,7 +3142,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "dragonscaler_flight_path":
       if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1) return true;
       $previousLink = SearchCombatChainAttacks($currentPlayer, talent:"DRACONIC") == "";
-      $currentLink = !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $currentPlayer);
+      $currentLink = !TalentContains($attackID, "DRACONIC", $currentPlayer);
       if ($previousLink && $currentLink) return true;
       return false;
     case "vow_of_vengeance":
@@ -3199,7 +3199,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
           return false;
         }
       }
-      return !DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Dagger");
+      return !DelimStringContains(CardSubType($attackID), "Dagger");
     case "bunker_beard":
       if (!$CombatChain->HasCurrentLink()) return true;
       return SearchArsenal($currentPlayer, type:"A") == "" && SearchArsenal($currentPlayer, type:"AA");
@@ -3217,12 +3217,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "nip_at_the_heels_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC") > 3) return true;
+      if (PowerValue($attackID, $mainPlayer, "CC") > 3) return true;
       return false;
     case "war_cry_of_bellona_yellow":
       if ($from == "HAND") return false;
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (!CardNameContains($CombatChain->AttackCard()->ID(), "Raydn", $mainPlayer, true)) return true;
+      if (!CardNameContains($attackID, "Raydn", $mainPlayer, true)) return true;
       return false;
     case "quickdodge_flexors":
       if (!IsHeroAttackTarget()) return true;
@@ -3331,7 +3331,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckTapped("MYCHAR-$index", $currentPlayer) || count($hand) == 0;
     case "okana_scar_wraps":
       if (!$CombatChain->HasCurrentLink()) return true;
-      $attackID = $CombatChain->AttackCard()->ID();
       if (!ClassContains($attackID, "NINJA", $currentPlayer) || !TypeContains($attackID, "AA", $currentPlayer)) return true;
       $edgeThere = SearchCharacterAlive($currentPlayer, "edge_of_autumn");
       $attacks = GetCombatChainAttacks();
@@ -3348,7 +3347,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       return CheckTapped("MYCHAR-$index", $currentPlayer) || !$edgeThere;
     case "legacy_of_ikaru_blue":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $player);
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "NINJA", $player);
     case "lyath_goldmane":
     case "lyath_goldmane_vile_savant":
     case "tuffnut":
@@ -3361,7 +3360,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($currentPlayer == $mainPlayer) {
         if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) return true;
         $previousLink = SearchCombatChainAttacks($currentPlayer, type:"AA") == "";
-        $currentLink = !TypeContains($CombatChain->AttackCard()->ID(), "AA", $currentPlayer);
+        $currentLink = !TypeContains($attackID, "AA", $currentPlayer);
         $unresolvedAttacks = SearchLayersCardType("AA") == "";
         if ($previousLink && $currentLink && $unresolvedAttacks) return true;
       }

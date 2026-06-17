@@ -23,9 +23,7 @@
         if(DelimStringContains($additionalCosts, "ICE")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "succumb_to_winter_red": case "succumb_to_winter_yellow": case "succumb_to_winter_blue":
-        if($cardID == "succumb_to_winter_red") $damage = 5;
-        else if($cardID == "succumb_to_winter_yellow") $damage = 4;
-        else $damage = 3;
+        $damage = match($cardID) { "succumb_to_winter_red" => 5, "succumb_to_winter_yellow" => 4, default => 3 };
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         if(DelimStringContains($additionalCosts, "ICE")) {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, $target . "-" . $cardID, 1);
@@ -33,9 +31,7 @@
         }
         return "";
       case "aether_icevein_red": case "aether_icevein_yellow": case "aether_icevein_blue":
-        if($cardID == "aether_icevein_red") $damage = 5;
-        else if($cardID == "aether_icevein_yellow") $damage = 4;
-        else $damage = 3;
+        $damage = match($cardID) { "aether_icevein_red" => 5, "aether_icevein_yellow" => 4, default => 3 };
         if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID|FUSED";
         else $source = $cardID;
         DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
@@ -44,15 +40,14 @@
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $hand = &GetHand($otherPlayer);
         $cards = "";
-        for($i=0; $i<count($hand); ++$i) {
+        $handCount = count($hand);
+        for($i=0; $i<$handCount; ++$i) {
           if($cards != "") $cards .= ",";
           $cards .= $hand[$i];
         }
         $cardsRevealed = RevealCards($cards);
         if($cardsRevealed && DelimStringContains($additionalCosts, "ICE")) {
-          if($cardID == "brain_freeze_red") $maxCost = 2;
-          else if($cardID == "brain_freeze_yellow") $maxCost = 1;
-          else $maxCost = 0;
+          $maxCost = match($cardID) { "brain_freeze_red" => 2, "brain_freeze_yellow" => 1, default => 0 };
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDACTIONMAXCOST," . $maxCost);
           AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
@@ -60,17 +55,13 @@
         }
         return "";
       case "icebind_red": case "icebind_yellow": case "icebind_blue":
-        if($cardID == "icebind_red") $damage = 3;
-        else if($cardID == "icebind_yellow") $damage = 2;
-        else $damage = 1;
+        $damage = match($cardID) { "icebind_red" => 3, "icebind_yellow" => 2, default => 1 };
         if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID|FUSED";
         else $source = $cardID;
         DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
       case "polar_cap_red": case "polar_cap_yellow": case "polar_cap_blue":
-        if($cardID == "polar_cap_red") $damage = 4;
-        else if($cardID == "polar_cap_yellow") $damage = 3;
-        else $damage = 2;
+        $damage = match($cardID) { "polar_cap_red" => 4, "polar_cap_yellow" => 3, default => 2 };
         if (DelimStringContains($additionalCosts, "ICE")) $source = "$cardID|FUSED";
         else $source = $cardID;
         DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
@@ -79,21 +70,15 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "aether_hail_red": case "aether_hail_yellow": case "aether_hail_blue":
-        if($cardID == "aether_hail_red") $damage = 4;
-        else if($cardID == "aether_hail_yellow") $damage = 3;
-        else $damage = 2;
+        $damage = match($cardID) { "aether_hail_red" => 4, "aether_hail_yellow" => 3, default => 2 };
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "frosting_red": case "frosting_yellow": case "frosting_blue":
-        if($cardID == "frosting_red") $damage = 3;
-        else if($cardID == "frosting_yellow") $damage = 2;
-        else $damage = 1;
+        $damage = match($cardID) { "frosting_red" => 3, "frosting_yellow" => 2, default => 1 };
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "ice_bolt_red": case "ice_bolt_yellow": case "ice_bolt_blue":
-        if($cardID == "ice_bolt_red") $damage = 5;
-        else if($cardID == "ice_bolt_yellow") $damage = 4;
-        else $damage = 3;
+        $damage = match($cardID) { "ice_bolt_red" => 5, "ice_bolt_yellow" => 4, default => 3 };
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "waning_moon":
@@ -120,25 +105,20 @@
         if($targetPlayer == $mainPlayer) GainActionPoints(1, $mainPlayer);
         return "";
       case "dampen_red": case "dampen_yellow": case "dampen_blue":
-        if($cardID == "dampen_red") $damage = 4;
-        else if($cardID == "dampen_yellow") $damage = 3;
-        else $damage = 2;
+        $damage = match($cardID) { "dampen_red" => 4, "dampen_yellow" => 3, default => 2 };
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_ArcaneDamagePrevention, 1);
         return "";
       case "aether_dart_red": case "aether_dart_yellow": case "aether_dart_blue":
-        if($cardID == "aether_dart_red") $damage = 3;
-        else if($cardID == "aether_dart_yellow") $damage = 2;
-        else $damage = 1;
+        $damage = match($cardID) { "aether_dart_red" => 3, "aether_dart_yellow" => 2, default => 1 };
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
         return "";
       case "singe_red": case "singe_yellow": case "singe_blue":
-        if($cardID == "singe_red") $maxAllies = 3;
-        else if($cardID == "singe_yellow") $maxAllies = 2;
-        else $maxAllies = 1;
+        $maxAllies = match($cardID) { "singe_red" => 3, "singe_yellow" => 2, default => 1 };
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $allies = &GetAllies($otherPlayer);
-        if(count($allies) < $maxAllies) $maxAllies = count($allies);
+        $alliesCount = count($allies);
+        if($alliesCount < $maxAllies) $maxAllies = $alliesCount;
         $damage = ArcaneDamage($cardID) + ConsumeArcaneBonus($currentPlayer);
         DealArcane($damage, 1, "PLAYCARD", $cardID, false, $currentPlayer, false, false, resolvedTarget: $target);
         for($i=1; $i<$maxAllies; ++$i) DealArcane($damage, 5, "PLAYCARD", $cardID, false, $currentPlayer, true, true);

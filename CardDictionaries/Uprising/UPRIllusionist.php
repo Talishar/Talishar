@@ -38,9 +38,7 @@
         return "";
       case "rake_the_embers_red": case "rake_the_embers_yellow": case "rake_the_embers_blue":
         PutPermanentIntoPlay($currentPlayer, "ash");
-        if($cardID == "rake_the_embers_red") $maxTransform = 3;
-        else if($cardID == "rake_the_embers_yellow") $maxTransform = 2;
-        else $maxTransform = 1;
+        $maxTransform = match($cardID) { "rake_the_embers_red" => 3, "rake_the_embers_yellow" => 2, default => 1 };
         for($i=0; $i<$maxTransform; ++$i) Transform($currentPlayer, "Ash", "aether_ashwing", true, ($i == 0 ? false : true), ($i == 0 ? false : true));
         return "";
       case "sand_cover_red":
