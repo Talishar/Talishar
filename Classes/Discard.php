@@ -31,6 +31,10 @@ class Discard {
     return $count;
   }
 
+  function NumTotalCards() {
+    return intdiv(count($this->discard), DiscardPieces());
+  }
+
   function TotalCards() { //includes facedown cards in the count
     return count($this->discard);
   }

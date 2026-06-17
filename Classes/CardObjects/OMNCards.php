@@ -3752,8 +3752,9 @@ class draco_fire_red extends Card {
   function SpecificLogic() {
     $Discard = new Discard($this->controller);
     $num = 0;
-    for ($i = $Discard->NumCards() - 1; $i >= 0; --$i) {
+    for ($i = $Discard->NumTotalCards() - 1; $i >= 0; --$i) {
       $Card = $Discard->Card($i, true);
+      WriteLog("HERE: " . $Card->CardID());
       if (CardName($Card->CardID()) == CardName($this->cardID)) {
         $Card->Banish();
         ++$num;
