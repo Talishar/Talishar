@@ -32,10 +32,10 @@ class Deck {
         if($cardIDs != "") $cardIDs .= ",";
         $cardIDs .= $this->deck[$indexArr[$i]];
         unset($this->deck[$indexArr[$i]]);
-        $this->deck = array_values($this->deck);
       }
       else WriteLog("Something went wrong with removing a card from deck, please submit a bug report");
     }
+    $this->deck = array_values($this->deck);
     return $cardIDs;
   }
 
@@ -144,18 +144,18 @@ class Deck {
   }
 
   function Shuffle($parameter) {
-    $destArr = [];
     if ($parameter == "SKIPSEED") {
       global $randomSeeded;
       $randomSeeded = true;
     }
-    while (count($this->deck) > 0) {
-      $index = GetRandom(0, count($this->deck) - 1);
-      array_push($destArr, $this->deck[$index]);
-      unset($this->deck[$index]);
-      $this->deck = array_values($this->deck);
+    // Fisher-Yates in-place: O(n) vs the previous O(n²) build-and-replace
+    $n = count($this->deck);
+    for ($i = $n - 1; $i > 0; --$i) {
+      $j = GetRandom(0, $i);
+      $temp = $this->deck[$i];
+      $this->deck[$i] = $this->deck[$j];
+      $this->deck[$j] = $temp;
     }
-    $this->deck = $destArr;
     if ($parameter != "SKIPSEED") {
       $player = $this->playerID;
       WriteLog("🔄Player $player deck was shuffled");

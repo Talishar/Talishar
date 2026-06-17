@@ -19,8 +19,10 @@ class Auras {
   }
 
   function FindCardUID($uid) {
-    if (count($this->auras) == 0) return new AuraCard(-1, $this->player);
-    for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
+    $count = count($this->auras);
+    if ($count == 0) return new AuraCard(-1, $this->player);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
       if ($this->auras[$i + 6] == $uid) return new AuraCard($i, $this->player);
     }
     // return a null object AuraCard that has all the methods, but they do nothing
@@ -28,8 +30,10 @@ class Auras {
   }
 
   function SearchAurasForModality($mode, $cardID="-") {
-    if (count($this->auras) == 0) return "";
-    for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
+    $count = count($this->auras);
+    if ($count == 0) return "";
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
       if ($cardID != "-" && $this->auras[$i] != $cardID) continue;
       if (DelimStringContains($this->auras[$i + 10], $mode)) return new AuraCard($i, $this->player);
     }
@@ -41,8 +45,10 @@ class Auras {
   }
 
   function FindCardID($cardID) { //returns first AuraCard with a cardID
-    if (count($this->auras) == 0) return new AuraCard(-1, $this->player);
-    for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
+    $count = count($this->auras);
+    if ($count == 0) return new AuraCard(-1, $this->player);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
       if ($this->auras[$i] == $cardID) return new AuraCard($i, $this->player);
     }
     // return a null object AuraCard that has all the methods, but they do nothing
@@ -174,10 +180,8 @@ class AuraCard {
   }
 
   function RemoveAllCounters() {
-    foreach ([2, 3] as $i) {
-      if (isset($this->pieces[$this->index + $i]))
-        $this->pieces[$this->index + $i] = 0;
-    }
+    if (isset($this->pieces[$this->index + 2])) $this->pieces[$this->index + 2] = 0;
+    if (isset($this->pieces[$this->index + 3])) $this->pieces[$this->index + 3] = 0;
   }
 
   function IsTapped() {

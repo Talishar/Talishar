@@ -41,8 +41,10 @@ class PitchZone {
   }
 
   function FindCardUID($uid) {
-    if (count($this->pitch) == 0) return new PitchCard(-1, $this->player);
-    for ($i = 0; $i < count($this->pitch); $i += PitchPieces()) {
+    $count = count($this->pitch);
+    if ($count == 0) return new PitchCard(-1, $this->player);
+    $pitchPieces = PitchPieces();
+    for ($i = 0; $i < $count; $i += $pitchPieces) {
       if ($this->pitch[$i + 1] == $uid) return new PitchCard($i, $this->player);
     }
     return new PitchCard(-1, $this->player);

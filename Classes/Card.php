@@ -37,9 +37,8 @@ class Card {
   }
 
   function IsType($types) {
-    $typesArr = explode(",", $types);
-    for($i=0; $i<count($typesArr); ++$i) {
-      if(TypeContains($this->cardID, $typesArr[$i], $this->controller)) return true;
+    foreach (explode(",", $types) as $type) {
+      if (TypeContains($this->cardID, $type, $this->controller)) return true;
     }
     return false;
   }

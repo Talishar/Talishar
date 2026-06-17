@@ -19,20 +19,24 @@ class Items {
   }
 
   function FindCardUID($uid) {
-    if (count($this->items) == 0) return new ItemCard(-1, $this->player);
-    for ($i = 0; $i < count($this->items); $i += ItemPieces()) {
+    $count = count($this->items);
+    if ($count == 0) return new ItemCard(-1, $this->player);
+    $itemPieces = ItemPieces();
+    for ($i = 0; $i < $count; $i += $itemPieces) {
       if ($this->items[$i + 4] == $uid) return new ItemCard($i, $this->player);
     }
     return new ItemCard(-1, $this->player);
   }
 
   function FindCard($id) {
-    if (count($this->items) == 0) return new ItemCard(-1, $this->player);
-    for ($i = 0; $i < count($this->items); $i += ItemPieces()) {
+    $count = count($this->items);
+    if ($count == 0) return new ItemCard(-1, $this->player);
+    $itemPieces = ItemPieces();
+    for ($i = 0; $i < $count; $i += $itemPieces) {
       if ($this->items[$i] == $id) return new ItemCard($i, $this->player);
     }
     return new ItemCard(-1, $this->player);
-  } 
+  }
 
   function NumItems() {
     return intdiv(count($this->items), ItemPieces());
@@ -137,10 +141,8 @@ class ItemCard {
   }
 
   function RemoveAllCounters() {
-    foreach ([1] as $i) {
-      if (isset($this->pieces[$this->index + $i]))
-        $this->pieces[$this->index + $i] = 0;
-    }
+    if (isset($this->pieces[$this->index + 1]))
+      $this->pieces[$this->index + 1] = 0;
   }
 
   function Destroy($skipDestroy=false) {
