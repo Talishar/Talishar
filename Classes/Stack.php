@@ -24,7 +24,9 @@ class Stack {
 
   function FindCardUID($uid) {
     if ($this->StackEmpty()) return "";
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i + 6] == $uid) return new Layer($i);
     }
     return "";
@@ -32,7 +34,9 @@ class Stack {
 
   function FindCardSourceUID($uid) {
     if ($this->StackEmpty()) return new Layer(-1);
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i + 5] == $uid) return new Layer($i);
     }
     return new Layer(-1);
@@ -40,7 +44,9 @@ class Stack {
 
   function FindCardID($cardID) {
     if ($this->StackEmpty()) return "";
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i] == $cardID) return new Layer($i);
     }
     return "";
@@ -65,7 +71,9 @@ class Stack {
 
   function TopLayer($cardID="-") {
     if ($cardID == "-") return $this->Card(0);
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i] == $cardID) return $this->Card($i);
     }
     return new Layer(-1);
@@ -73,8 +81,10 @@ class Stack {
 
   function FindTrigger($cardID) {
     if ($this->StackEmpty()) return "";
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
-      if (($this->layers[$i] == "TRIGGER" || $this->layers[$i] == "PRETRIGGER")&& $this->layers[$i+2] == $cardID) return new Layer($i);
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
+      if (($this->layers[$i] == "TRIGGER" || $this->layers[$i] == "PRETRIGGER") && $this->layers[$i+2] == $cardID) return new Layer($i);
     }
     return "";
   }
@@ -82,12 +92,14 @@ class Stack {
   function FindLayer($cardID, $player="-", $parameter="-", $target="-") {
     if ($this->StackEmpty()) return "";
     $rv = [];
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i] != $cardID) continue;
       if ($player != "-" && $this->layers[$i + 1] != $player) continue;
       if ($parameter != "-" && $this->layers[$i + 2] != $parameter) continue;
       if ($target != "-" && $this->layers[$i + 3] != $target) continue;
-      array_push($rv, $i);
+      $rv[] = $i;
     }
     return implode(",", $rv);
   }
@@ -98,7 +110,9 @@ class Stack {
 
   function CountPlayedLayers() {
     $count = 0;
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $total = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $total; $i += $layerPieces) {
       if (!isPriorityStep($this->layers[$i]) && $this->layers[$i] != "TRIGGER") ++$count;
     }
     return $count;
@@ -200,7 +214,9 @@ class AttackQueue {
 
   function FindCardUID($uid) {
     if ($this->NumAttacks() == 0) return "";
-    for ($i = 0; $i < count($this->attackQueue); $i += AttackQueuePieces()) {
+    $count = count($this->attackQueue);
+    $attackQueuePieces = AttackQueuePieces();
+    for ($i = 0; $i < $count; $i += $attackQueuePieces) {
       if ($this->attackQueue[$i + 6] == $uid) return new AttackLayer($i);
     }
     return "";
@@ -208,7 +224,9 @@ class AttackQueue {
 
   function FindCardID($cardID) {
     if ($this->NumAttacks() == 0) return "";
-    for ($i = 0; $i < count($this->attackQueue); $i += AttackQueuePieces()) {
+    $count = count($this->attackQueue);
+    $attackQueuePieces = AttackQueuePieces();
+    for ($i = 0; $i < $count; $i += $attackQueuePieces) {
       if ($this->attackQueue[$i] == $cardID) return new AttackLayer($i);
     }
     return "";

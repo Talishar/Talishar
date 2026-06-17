@@ -32,7 +32,7 @@ class LandmarkCard {
   // Constructor
   function __construct($index) {
     global $landmarks;
-		$this->pieces = $landmarks;
+		$this->pieces = &$landmarks;
     $this->index = $index;
   }
 

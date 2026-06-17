@@ -30,7 +30,9 @@ class Banish {
   function FirstCardWithModifier($modifier)
   {
     $index = -1;
-    for($i=0; $i<count($this->banish); $i+=BanishPieces()) {
+    $count = count($this->banish);
+    $banishPieces = BanishPieces();
+    for($i=0; $i<$count; $i+=$banishPieces) {
       if($this->banish[$i+1] == $modifier) $index = $i;
     }
     if($index == -1) return null;
@@ -39,13 +41,16 @@ class Banish {
 
   function Remove($index) {
     $cardID = $this->banish[$index];
-    for($i=0; $i<BanishPieces(); ++$i) unset($this->banish[$index+$i]);
+    $banishPieces = BanishPieces();
+    for($i=0; $i<$banishPieces; ++$i) unset($this->banish[$index+$i]);
     $this->banish = array_values($this->banish);
     return $cardID;
   }
 
   function UnsetBanishModifier($modifier, $newMod="-") {
-    for($i=0; $i<count($this->banish); $i+=BanishPieces()) {
+    $count = count($this->banish);
+    $banishPieces = BanishPieces();
+    for($i=0; $i<$count; $i+=$banishPieces) {
       $modArr = explode("-", $this->banish[$i+1]);
       $cardModifier = $modArr[0];
       if ($modifier == "shadowrealm_horror_red" && str_contains($cardModifier, $modifier)) $this->banish[$i+1] = $newMod;
@@ -55,8 +60,10 @@ class Banish {
   }
 
   function FindCardUID($uid) {
-    if (count($this->banish) == 0) return "";
-    for ($i = 0; $i < count($this->banish); $i += BanishPieces()) {
+    $count = count($this->banish);
+    if ($count == 0) return "";
+    $stride = BanishPieces();
+    for ($i = 0; $i < $count; $i += $stride) {
       if ($this->banish[$i + 2] == $uid) return new BanishCard($this->playerID, $i);
     }
     return "";
@@ -113,7 +120,8 @@ class BanishCard {
     {
       if (isset($this->banish[$this->index])) {
         $cardID = $this->banish[$this->index];
-        for($i=0; $i<BanishPieces(); ++$i) unset($this->banish[$this->index+$i]);
+        $banishPieces = BanishPieces();
+        for($i=0; $i<$banishPieces; ++$i) unset($this->banish[$this->index+$i]);
         $this->banish = array_values($this->banish);
         return $cardID;
       }

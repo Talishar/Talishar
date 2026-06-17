@@ -25,7 +25,9 @@ class Discard {
 
   function NumCards() {
     $count = 0;
-    for ($i=0; $i < count($this->discard); $i += DiscardPieces()) {
+    $total = count($this->discard);
+    $discardPieces = DiscardPieces();
+    for ($i = 0; $i < $total; $i += $discardPieces) {
       if($this->discard[$i+2] != "DOWN") $count++;
     }
     return $count;
@@ -72,8 +74,10 @@ class Discard {
   }
 
   function FindCardUID($uid) {
-    if (count($this->discard) == 0) return new DiscardCard(-1, $this->playerID);
-    for ($i = 0; $i < count($this->discard); $i += DiscardPieces()) {
+    $count = count($this->discard);
+    if ($count == 0) return new DiscardCard(-1, $this->playerID);
+    $discardPieces = DiscardPieces();
+    for ($i = 0; $i < $count; $i += $discardPieces) {
       if ($this->discard[$i + 1] == $uid) return new DiscardCard($i, $this->playerID);
     }
     return new DiscardCard(-1, $this->playerID);

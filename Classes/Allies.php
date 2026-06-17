@@ -19,12 +19,14 @@ class Allies {
   }
 
   function FindCardUID($uid) {
-    if (count($this->allies) == 0) return new AllyCard(-1, $this->player);
-    for ($i = 0; $i < count($this->allies); $i += AllyPieces()) {
+    $count = count($this->allies);
+    if ($count == 0) return new AllyCard(-1, $this->player);
+    $allyPieces = AllyPieces();
+    for ($i = 0; $i < $count; $i += $allyPieces) {
       if ($this->allies[$i + 5] == $uid) return new AllyCard($i, $this->player);
     }
     return new AllyCard(-1, $this->player);
-  } 
+  }
 
   function NumAllies() {
     return intdiv(count($this->allies), AllyPieces());

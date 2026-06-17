@@ -21,12 +21,14 @@ class Permanents {
   }
 
   function FindCardUID($uid) {
-    if (count($this->permanents) == 0) return "";
-    for ($i = 0; $i < count($this->permanents); $i += PermanentPieces()) {
+    $count = count($this->permanents);
+    if ($count == 0) return "";
+    $permanentPieces = PermanentPieces();
+    for ($i = 0; $i < $count; $i += $permanentPieces) {
       if ($this->permanents[$i + 3] == $uid) return new PermanentCard($i, $this->player);
     }
     return "";
-  } 
+  }
 
   function NumPermanents() {
     return intdiv(count($this->permanents), PermanentPieces());
