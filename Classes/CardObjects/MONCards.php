@@ -3219,8 +3219,8 @@ class sonata_arcanix_red extends Card {
     Await($this->controller, "MultiChooseDeck", "indices");
     Await($this->controller, "MultiRemoveDeck", "cardIDs");
     Await($this->controller, "MultiAddHand");
-    Await($this->controller, $this->cardID, mode:"deal_arcane", target:$target);
-    Await($this->controller, "ShuffleDeck", final:true);
+    Await($this->controller, $this->cardID, mode:"deal_arcane", target:$target, final:true);
+    Await($this->controller, "ShuffleDeck", subsequent:0, final:true);
     return "";
   }
 
@@ -3250,6 +3250,8 @@ class sonata_arcanix_red extends Card {
       case "deal_arcane":
         $numArcane = count(explode(",", $dqVars["cardIDs"]));
         DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$dqVars["target"]);
+        $deck = new Deck($this->controller);
+        $deck->Shuffle("-");
         break;
       default:
         break;
