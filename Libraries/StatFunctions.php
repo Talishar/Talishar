@@ -208,9 +208,7 @@ function StatsStartTurn()
   $p1Stats = &GetTurnStats(1);
   $p2Stats = &GetTurnStats(2);
   $turnStatPieces = TurnStatPieces();
-  for($i=0; $i<$turnStatPieces; ++$i)
-  {
-    array_push($p1Stats, 0);
-    array_push($p2Stats, 0);
-  }
+  $zeros = array_fill(0, $turnStatPieces, 0);
+  array_push($p1Stats, ...$zeros);
+  array_push($p2Stats, ...$zeros);
 }

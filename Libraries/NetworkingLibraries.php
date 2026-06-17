@@ -1103,7 +1103,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $layers = array_merge($pretrigger, $layers);
         }
       }
-      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+      $layerPiecesReorder = LayerPieces();
+      $layersCountReorder = count($layers);
+      for ($i = 0; $i < $layersCountReorder; $i += $layerPiecesReorder) {
         if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $playerID) {
           WriteLog("Something went wrong with adding triggers and we missed adding " . $layers[$i + 2] . " to the stack", highlight: true);
           $layers[$i] = "TRIGGER";
@@ -1208,7 +1210,7 @@ function PassInput($autopass = true, $doublePass = false)
       }
     }
   }
-  $passOptions = ["ENDPHASE", "MAYMULTICHOOSETEXT", "MAYCHOOSECOMBATCHAIN", "MAYCHOOSEMULTIZONE", "MAYMULTICHOOSEHAND",
+  static $passOptions = ["ENDPHASE", "MAYMULTICHOOSETEXT", "MAYCHOOSECOMBATCHAIN", "MAYCHOOSEMULTIZONE", "MAYMULTICHOOSEHAND",
     "MAYCHOOSEHAND", "MAYCHOOSEDISCARD", "MAYCHOOSEARSENAL", "MAYCHOOSEPERMANENT", "MAYCHOOSEDECK", "MAYCHOOSEMYSOUL",
     "INSTANT", "MULTISHOWCARDSDECK", "OK", "MULTISHOWCARDSTHEIRDECK", "MAYCHOOSECARD", "STARTTURN", "MAYCHOOSEHANDHEAVE"];
   if (in_array($turn[0], $passOptions)) {
