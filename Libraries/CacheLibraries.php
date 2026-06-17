@@ -28,33 +28,26 @@ if (!function_exists('apcu_fetch')) {
  * Caches for 1 second (plenty of time for concurrent requests)
  */
 function GetCachedGamestate($gameName) {
+  static $apcuAvailable = null;
+  if ($apcuAvailable === null) {
+    $apcuAvailable = extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_fetch');
+  }
+
   $cacheKey = "gamestate_" . md5($gameName);
-  
-  // Try APCu if available
-  if (extension_loaded('apcu') && ini_get('apc.enabled')) {
-    if (function_exists('apcu_fetch')) {
-      $cached = @apcu_fetch($cacheKey);
-      if ($cached !== false) {
-        return $cached;
-      }
+
+  if ($apcuAvailable) {
+    $cached = @apcu_fetch($cacheKey);
+    if ($cached !== false) {
+      return $cached;
     }
   }
-  
-  // Fall back to reading from file
-  global $filename;
-  if (!isset($filename) || !str_contains($filename, "gamestate.txt")) {
-    $filename = "./Games/" . $gameName . "/gamestate.txt";
-  }
-  
+
   $content = ReadGamestateCache($gameName);
-  
-  // Store in APCu for subsequent requests (1 second TTL)
-  if (extension_loaded('apcu') && ini_get('apc.enabled')) {
-    if (function_exists('apcu_store')) {
-      @apcu_store($cacheKey, $content, 1);
-    }
+
+  if ($apcuAvailable) {
+    @apcu_store($cacheKey, $content, 1);
   }
-  
+
   return $content;
 }
 

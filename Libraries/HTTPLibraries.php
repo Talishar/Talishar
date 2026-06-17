@@ -102,11 +102,13 @@ function isMobile()
   $tablet_browser = 0;
   $mobile_browser = 0;
 
-  if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/(tablet|ipad|playbook)|(android(?!.*(mobi|opera mini)))/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
+  $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
+
+  if ($userAgent !== '' && preg_match('/(tablet|ipad|playbook)|(android(?!.*(mobi|opera mini)))/i', $userAgent)) {
     $tablet_browser++;
   }
 
-  if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|iemobile)/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
+  if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|iemobile)/i', $userAgent)) {
     $mobile_browser++;
   }
 
@@ -114,8 +116,8 @@ function isMobile()
     $mobile_browser++;
   }
 
-  if (isset($_SERVER['HTTP_USER_AGENT'])) {
-    $mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));
+  if ($userAgent !== '') {
+    $mobile_ua = substr($userAgent, 0, 4);
     $mobile_agents = [
       'w3c ', 'acs-', 'alav', 'alca', 'amoi', 'audi', 'avan', 'benq', 'bird', 'blac',
       'blaz', 'brew', 'cell', 'cldc', 'cmd-', 'dang', 'doco', 'eric', 'hipt', 'inno',
@@ -132,7 +134,7 @@ function isMobile()
       $mobile_browser++;
     }
 
-    if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'opera mini') > 0) {
+    if (strpos($userAgent, 'opera mini') > 0) {
       $mobile_browser++;
       //Check for tablets on opera mini alternative headers
       $stock_ua = strtolower($_SERVER['HTTP_X_OPERAMINI_PHONE_UA'] ?? ($_SERVER['HTTP_DEVICE_STOCK_UA'] ?? ''));

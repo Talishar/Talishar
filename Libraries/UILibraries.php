@@ -275,7 +275,7 @@ function JSONRenderedCard(
   if($onChain !== NULL) $card->onChain = $onChain;
   if($isFrozen !== NULL) $card->isFrozen = $isFrozen;
   if($holoCounters !== NULL) $card->holoCounters = $holoCounters;
-  if($countersMap != new stdClass()) $card->countersMap = $countersMap;
+  if(!empty((array)$countersMap)) $card->countersMap = $countersMap;
   if($label !== NULL) $card->label = $label;
   if($facing !== NULL) $card->facing = $facing;
   if($numUses !== NULL) $card->numUses = $numUses;
@@ -337,7 +337,8 @@ function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = ""
   $result->canClose = $canClose;
   $result->additionalComments = $additionalComments;
   $cards = [];
-  for ($i = 0; $i < count($fromArr); $i += $arrElements) {
+  $fromArrCount = count($fromArr);
+  for ($i = 0; $i < $fromArrCount; $i += $arrElements) {
     array_push($cards, JSONRenderedCard($fromArr[$i]));
   }
   if (count($cardsArray) > 0) {
