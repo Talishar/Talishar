@@ -3754,7 +3754,6 @@ class draco_fire_red extends Card {
     $num = 0;
     for ($i = $Discard->NumTotalCards() - 1; $i >= 0; --$i) {
       $Card = $Discard->Card($i, true);
-      WriteLog("HERE: " . $Card->CardID());
       if (CardName($Card->CardID()) == CardName($this->cardID)) {
         $Card->Banish();
         ++$num;
