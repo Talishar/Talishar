@@ -893,9 +893,9 @@ class overwhelming_swing_yellow extends Card {
 		return 2;
 	}
 
-	// function SpecialName() {
-	// 	return "Overwhelming Swing";
-	// }
+	function SpecialName() {
+		return "Overwhelming Swing";
+	}
 
 	function SpecialClass() {
 		return "WARRIOR";
@@ -903,5 +903,110 @@ class overwhelming_swing_yellow extends Card {
 
 	function SpecialBlock() {
 		return 3;
+	}
+}
+
+class rake_back_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rake_back_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 2 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+    global $CombatChain;
+    $Effect = new CurrentEffect($i);
+    if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword") && $Effect->EffectID() == $this->cardID)
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    return false;
+  }
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect("$this->cardID-WAGER", $this->controller, from:"PLAY"); // contains the wager effect
+    AddOnWagerEffects();
+  }
+
+	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+		PayGoldInstead($this->controller, $this->cardID);
+	}
+
+	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+		$Effect = new CurrentEffect($index);
+		if (str_contains($Effect->EffectID(), "PAID")) {
+			$remove = true;
+			return true;
+		}
+		return false;
+	}
+
+	function WonWager($wonWager, $amount) {
+    Await($wonWager, "MultiZoneIndices", "indices", search:"MYDISCARD:type=E", subsequent:0);
+		Await($wonWager, "ChooseMultiZone", "MZInd", may:true, context:"Equip an equipment from your graveyard (or pass)");
+		Await($wonWager, $this->cardID, final:true);
+  }
+
+	function SpecificLogic() {
+		global $dqVars;
+		$Card = MZIndexToObject($this->controller, $dqVars["MZInd"]);
+		$cardSubtype = CardSubType($Card->CardID());
+		$subType = "-";
+		if (str_contains($cardSubtype, "Head"))
+			$subType = "Head";
+		elseif (str_contains($cardSubtype, "Chest"))
+			$subType = "Chest";
+		elseif (str_contains($cardSubtype, "Legs"))
+			$subType = "Legs";
+		elseif (str_contains($cardSubtype, "Arms"))
+			$subType = "Arms";
+		if (!SearchCharacterAliveSubtype($this->controller, $subType)) {
+			EquipEquipment($this->controller, $Card->CardID(), from:"DISCARD");
+			$Card->Remove();
+		}
+	}
+
+  function IsWagerEffect($index) {
+    $Effect = new CurrentEffect($index);
+    return $Effect->EffectID() == "$this->cardID-WAGER"; // no -WAGER or -BUFF
+  }
+
+	function CardCost($from = '-') {
+		return 2;
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialName() {
+		return "Rake Back";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function SpecialBlock() {
+		return 3;
+	}
+
+	function HasGoAgain($from) {
+		return true;
 	}
 }
