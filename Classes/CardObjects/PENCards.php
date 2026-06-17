@@ -6272,6 +6272,7 @@ class haboob_red extends Card {
   function Maintenence($index) {
     $AuraCard = new AuraCard($index, $this->controller);
     $AuraCard->AddCounters(1);
+    $uid = $AuraCard->UniqueID();
     $search = SearchPermanents($this->controller, subtype:"Ash");
     if (SearchCount($search) < $AuraCard->NumCounters()) $AuraCard->Destroy();
     else {
@@ -6285,9 +6286,16 @@ class haboob_red extends Card {
         AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
       }
       AddDecisionQueue("ELSE", $this->controller, "-");
-      AddDecisionQueue("PASSPARAMETER", $this->controller, "MYAURAS-".$AuraCard->Index(), 1);
-      AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+      Await($this->controller, $this->cardID, uid:$uid, final:true);
     }
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $uid = $dqVars["uid"];
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uid);
+    $AuraCard->Destroy();
   }
 
   function StartTurnAbility($index) {
