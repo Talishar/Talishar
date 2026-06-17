@@ -613,7 +613,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
 {
   global $mainPlayer;
   $extraText = GetHorrorsBuff();
-  if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $mainPlayer)) return false;
+  if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
   if ($type == "ARCANE" && $source == "deny_redemption_red" && SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $mainPlayer)) return false;
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $mainPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $mainPlayer))) return false;
   if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $mainPlayer)) return false;
