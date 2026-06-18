@@ -1691,7 +1691,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           PrependDecisionQueue("INCDQVAR", $target, "1", 1);
           DoMbrioBaseVizier($targetPlayer, $damage);
         }
-        if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) {
+        if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer) && $targetPlayer != $player) {
           PrependDecisionQueue("INCDQVAR", $target, "1", 1);
           DoCapQuickThinking($targetPlayer, $damage);
         }
