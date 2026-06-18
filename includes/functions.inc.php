@@ -16,29 +16,25 @@ if (!function_exists('IsDevEnvironment')) {
 // Check for empty input signup
 function emptyInputSignup($username, $email, $pwd, $pwdRepeat)
 {
-	$result = (empty($username) || empty($email) || empty($pwd) || empty($pwdRepeat)) ? true : false;
-	return $result;
+	return empty($username) || empty($email) || empty($pwd) || empty($pwdRepeat);
 }
 
 // Check invalid username
 function invalidUid($username)
 {
-	$result = (!ctype_alnum($username)) ? true : false;
-	return $result;
+	return !ctype_alnum($username);
 }
 
 // Check invalid email
 function invalidEmail($email)
 {
-	$result = (!filter_var($email, FILTER_VALIDATE_EMAIL)) ? true : false;
-	return $result;
+	return !filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
 // Check if passwords matches
 function pwdMatch($pwd, $pwdrepeat)
 {
-	$result = ($pwd !== $pwdrepeat) ? true : false;
-	return $result;
+	return $pwd !== $pwdrepeat;
 }
 
 // Check if username is in database, if so then return data
@@ -297,8 +293,7 @@ function GetDeckBuilderId($uid, $decklink)
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format = "")
 {
 	$conn = GetDBConnection(DBL_ADD_FAVORITE_DECK);
-	$deckName = implode("", explode("\"", $deckName));
-	$deckName = implode("", explode("'", $deckName));
+	$deckName = str_replace(['"', "'"], '', $deckName);
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "','" . $format . "'";
 	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero, format) VALUES (?, ?, ?, ?, ?);";
 	$stmt = mysqli_stmt_init($conn);
@@ -323,7 +318,7 @@ function LoadFavoriteDecks($userID)
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 		while ($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			for ($i = 0; $i < 4; ++$i) array_push($output, $row[$i]);
+			for ($i = 0; $i < 4; ++$i) $output[] = $row[$i];
 		}
 		mysqli_free_result($data);  // FREE RESULT BEFORE CLOSING STATEMENT
 		mysqli_stmt_close($stmt);
@@ -333,16 +328,17 @@ function LoadFavoriteDecks($userID)
 }
 
 function ConvertDeck($deck) {
-	$ret = "";
-	foreach(explode("\n", $deck) as $line) {
-		foreach (explode(" ", $line) as $card) {
-			$ret .= SetID($card) . " ";
+	$lines = explode("\n", $deck);
+	$convertedLines = [];
+	foreach ($lines as $line) {
+		$cards = explode(" ", $line);
+		$convertedCards = [];
+		foreach ($cards as $card) {
+			$convertedCards[] = SetID($card);
 		}
-        $ret = substr($ret, 0, -1);
-		$ret .= "\n";
+		$convertedLines[] = implode(" ", $convertedCards);
 	}
-    $ret = substr($ret, 0, -1);
-	return $ret;
+	return implode("\n", $convertedLines);
 }
 
 //Challenge ID 1 = sigil of solace blue
@@ -593,10 +589,11 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	$opponentLifeHistory = $player == 1 ? $p2LifeHistory : $p1LifeHistory;
 
 	$countTurnStats = count($turnStats);
+	$tsp = TurnStatPieces();
 
 	// Populate turn results - only include turns that have actually occurred
-	for($i = 0; $i < $countTurnStats && intval($i / TurnStatPieces()) <= $currentTurn; $i += TurnStatPieces()) {
-		$turnNo = intval($i / TurnStatPieces());
+	for($i = 0; $i < $countTurnStats && intval($i / $tsp) <= $currentTurn; $i += $tsp) {
+		$turnNo = intval($i / $tsp);
 		$turnKey = "turn_" . $turnNo;
 		
 		$cardsUsed = $turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense];
@@ -665,7 +662,9 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented;
 
-	if (empty($turnStats) || count($turnStats) < TurnStatPieces()) return;
+	$tsp = TurnStatPieces();
+	$countTurnStats = count($turnStats);
+	if (empty($turnStats) || $countTurnStats < $tsp) return;
 
 	$totalDamageThreatened = 0;
 	$totalDamageDealt = 0;
@@ -690,11 +689,11 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$totalLifeLost += $turnStats[$TurnStats_LifeLost];
 
 	// Skip turn 0 for average calculations
-	$start = TurnStatPieces();
-	$endIndex = count($turnStats) - TurnStatPieces();
+	$start = $tsp;
+	$endIndex = $countTurnStats - $tsp;
 	if($endIndex < $start) $endIndex = $start;
 
-	for($i = $start; $i < $endIndex; $i += TurnStatPieces()) {
+	for($i = $start; $i < $endIndex; $i += $tsp) {
 		$totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
 		$totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
 		$totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
@@ -738,8 +737,8 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$numTurns_NoLast = $numTurnsCount - 1; // Exclude last turn
 
 	// Subtract the last turn from NoLast values
-	if($endIndex - TurnStatPieces() >= $start) {
-		$lastTurnIndex = $endIndex - TurnStatPieces();
+	if($endIndex - $tsp >= $start) {
+		$lastTurnIndex = $endIndex - $tsp;
 		$totalDamageThreatened_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_DamageThreatened];
 		$totalDamageDealt_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_DamageDealt];
 		$totalResourcesUsed_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_ResourcesUsed];
@@ -813,38 +812,21 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["character"] = [];
 
 	$character = explode(" ", $character);
-	$deduplicatedCharacter = [];
-	for($i = 0; $i < count($character); ++$i) {
-		$card = $character[$i];
-		if (array_key_exists($card, $deduplicatedCharacter)) {
-			$deduplicatedCharacter[$card]++;
-		} else {
-			$deduplicatedCharacter[$card] = 1;
-		}
-	}
+	$deduplicatedCharacter = array_count_values($character);
 
 	foreach ($deduplicatedCharacter as $card => $numCopies) {
-		$cardResult = [
+		$deck["character"][] = [
 			"cardId" => $card,
 			"cardName" => CardName($card),
 			"numCopies" => $numCopies,
 		];
-		array_push($deck["character"], $cardResult);
 	}
 
 	$deckAfterSB = explode(" ", $deckAfterSB);
-	$deduplicatedDeck = [];
-	for($i = 0; $i < count($deckAfterSB); ++$i) {
-		$card = $deckAfterSB[$i];
-		if (array_key_exists($card, $deduplicatedDeck)) {
-			$deduplicatedDeck[$card]++;
-		} else {
-			$deduplicatedDeck[$card] = 1;
-		}
-	}
+	$deduplicatedDeck = array_count_values($deckAfterSB);
 
 	foreach ($deduplicatedDeck as $card => $numCopies) {
-		$cardResult = [
+		$deck["cardResults"][] = [
 			"cardId" => $card,
 			"played" => 0,
 			"blocked" => 0,
@@ -856,47 +838,51 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 			"pitchValue" => PitchValue($card),
 			"numCopies" => $numCopies,
 		];
-		array_push($deck["cardResults"], $cardResult);
 	}
 
 	$cardStats = &GetCardStats($player);
 	$deck["tokenResults"] = [];
 	$deck["arenaCardResults"] = [];
-	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
-		$found = false;
-		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
-			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
-				$deck["cardResults"][$j]["played"] = $cardStats[$i + $CardStats_TimesPlayed];
-				$deck["cardResults"][$j]["blocked"] = $cardStats[$i + $CardStats_TimesBlocked];
-				$deck["cardResults"][$j]["pitched"] = $cardStats[$i + $CardStats_TimesPitched];
-				$deck["cardResults"][$j]["hits"] = $cardStats[$i + $CardStats_TimesHit];
-				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
-				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
-				$deck["cardResults"][$j]["discarded"] = $cardStats[$i + $CardStats_TimesDiscarded];
-				$found = true;
-				break;
-			}
-		}
-		// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
-		if (!$found) {
-			$cardType = CardType($cardStats[$i]);
+
+	// Build a cardId → index map to avoid O(n*m) inner-loop lookups
+	$cardResultIndex = [];
+	foreach ($deck["cardResults"] as $j => $cr) {
+		$cardResultIndex[$cr["cardId"]] = $j;
+	}
+
+	$csp = CardStatPieces();
+	$countCardStats = count($cardStats);
+	for($i = 0; $i < $countCardStats; $i += $csp) {
+		$cardId = $cardStats[$i];
+		if (isset($cardResultIndex[$cardId])) {
+			$j = $cardResultIndex[$cardId];
+			$deck["cardResults"][$j]["played"] = $cardStats[$i + $CardStats_TimesPlayed];
+			$deck["cardResults"][$j]["blocked"] = $cardStats[$i + $CardStats_TimesBlocked];
+			$deck["cardResults"][$j]["pitched"] = $cardStats[$i + $CardStats_TimesPitched];
+			$deck["cardResults"][$j]["hits"] = $cardStats[$i + $CardStats_TimesHit];
+			$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
+			$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
+			$deck["cardResults"][$j]["discarded"] = $cardStats[$i + $CardStats_TimesDiscarded];
+		} else {
+			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
+			$cardType = CardType($cardId);
 			$cardResult = [
-				"cardId" => $cardStats[$i],
+				"cardId" => $cardId,
 				"played" => $cardStats[$i + $CardStats_TimesPlayed],
 				"blocked" => $cardStats[$i + $CardStats_TimesBlocked],
 				"pitched" => $cardStats[$i + $CardStats_TimesPitched],
 				"hits" => $cardStats[$i + $CardStats_TimesHit],
 				"discarded" => $cardStats[$i + $CardStats_TimesDiscarded],
 				"charged" => $cardStats[$i + $CardStats_TimesCharged],
-				"cardName" => CardName($cardStats[$i]),
-				"pitchValue" => PitchValue($cardStats[$i]),
+				"cardName" => CardName($cardId),
+				"pitchValue" => PitchValue($cardId),
 				"katsuDiscard" => $cardStats[$i + $CardStats_TimesKatsuDiscard],
 				"activated" => $cardStats[$i + $CardStats_TimesActivated],
 			];
 			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
-				array_push($deck["arenaCardResults"], $cardResult);
+				$deck["arenaCardResults"][] = $cardResult;
 			} else {
-				array_push($deck["tokenResults"], $cardResult);
+				$deck["tokenResults"][] = $cardResult;
 			}
 		}
 	}
@@ -942,38 +928,21 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$deck["character"] = [];
 
 	$character = explode(" ", $character);
-	$deduplicatedCharacter = [];
-	for($i = 0; $i < count($character); ++$i) {
-		$card = $character[$i];
-		if (array_key_exists($card, $deduplicatedCharacter)) {
-			$deduplicatedCharacter[$card]++;
-		} else {
-			$deduplicatedCharacter[$card] = 1;
-		}
-	}
+	$deduplicatedCharacter = array_count_values($character);
 
 	foreach ($deduplicatedCharacter as $card => $numCopies) {
-		$cardResult = [
+		$deck["character"][] = [
 			"cardId" => $card,
 			"cardName" => CardName($card),
 			"numCopies" => $numCopies,
 		];
-		array_push($deck["character"], $cardResult);
 	}
 
 	$deckAfterSB = explode(" ", $deckAfterSB);
-	$deduplicatedDeck = [];
-	for($i = 0; $i < count($deckAfterSB); ++$i) {
-		$card = $deckAfterSB[$i];
-		if (array_key_exists($card, $deduplicatedDeck)) {
-			$deduplicatedDeck[$card]++;
-		} else {
-			$deduplicatedDeck[$card] = 1;
-		}
-	}
+	$deduplicatedDeck = array_count_values($deckAfterSB);
 
 	foreach ($deduplicatedDeck as $card => $numCopies) {
-		$cardResult = [
+		$deck["cardResults"][] = [
 			"cardId" => $card,
 			"played" => 0,
 			"blocked" => 0,
@@ -985,47 +954,51 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 			"pitchValue" => PitchValue($card),
 			"numCopies" => $numCopies,
 		];
-		array_push($deck["cardResults"], $cardResult);
 	}
 
 	$cardStats = &GetCardStats($player);
 	$deck["tokenResults"] = [];
 	$deck["arenaCardResults"] = [];
-	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
-		$found = false;
-		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
-			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
-				$deck["cardResults"][$j]["played"] = intval($cardStats[$i + $CardStats_TimesPlayed]);
-				$deck["cardResults"][$j]["blocked"] = intval($cardStats[$i + $CardStats_TimesBlocked]);
-				$deck["cardResults"][$j]["pitched"] = intval($cardStats[$i + $CardStats_TimesPitched]);
-				$deck["cardResults"][$j]["hits"] = intval($cardStats[$i + $CardStats_TimesHit]);
-				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesCharged]);
-				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesKatsuDiscard]);
-				$deck["cardResults"][$j]["discarded"] = intval($cardStats[$i + $CardStats_TimesDiscarded]);
-				$found = true;
-				break;
-			}
-		}
-		// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
-		if (!$found) {
-			$cardType = CardType($cardStats[$i]);
+
+	// Build a cardId → index map to avoid O(n*m) inner-loop lookups
+	$cardResultIndex = [];
+	foreach ($deck["cardResults"] as $j => $cr) {
+		$cardResultIndex[$cr["cardId"]] = $j;
+	}
+
+	$csp = CardStatPieces();
+	$countCardStats = count($cardStats);
+	for($i = 0; $i < $countCardStats; $i += $csp) {
+		$cardId = $cardStats[$i];
+		if (isset($cardResultIndex[$cardId])) {
+			$j = $cardResultIndex[$cardId];
+			$deck["cardResults"][$j]["played"] = intval($cardStats[$i + $CardStats_TimesPlayed]);
+			$deck["cardResults"][$j]["blocked"] = intval($cardStats[$i + $CardStats_TimesBlocked]);
+			$deck["cardResults"][$j]["pitched"] = intval($cardStats[$i + $CardStats_TimesPitched]);
+			$deck["cardResults"][$j]["hits"] = intval($cardStats[$i + $CardStats_TimesHit]);
+			$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesCharged]);
+			$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesKatsuDiscard]);
+			$deck["cardResults"][$j]["discarded"] = intval($cardStats[$i + $CardStats_TimesDiscarded]);
+		} else {
+			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
+			$cardType = CardType($cardId);
 			$cardResult = [
-				"cardId" => $cardStats[$i],
+				"cardId" => $cardId,
 				"played" => intval($cardStats[$i + $CardStats_TimesPlayed]),
 				"blocked" => intval($cardStats[$i + $CardStats_TimesBlocked]),
 				"pitched" => intval($cardStats[$i + $CardStats_TimesPitched]),
 				"hits" => intval($cardStats[$i + $CardStats_TimesHit]),
 				"discarded" => intval($cardStats[$i + $CardStats_TimesDiscarded]),
 				"charged" => intval($cardStats[$i + $CardStats_TimesCharged]),
-				"cardName" => CardName($cardStats[$i]),
-				"pitchValue" => PitchValue($cardStats[$i]),
+				"cardName" => CardName($cardId),
+				"pitchValue" => PitchValue($cardId),
 				"katsuDiscard" => intval($cardStats[$i + $CardStats_TimesKatsuDiscard]),
 				"activated" => intval($cardStats[$i + $CardStats_TimesActivated]),
 			];
 			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
-				array_push($deck["arenaCardResults"], $cardResult);
+				$deck["arenaCardResults"][] = $cardResult;
 			} else {
-				array_push($deck["tokenResults"], $cardResult);
+				$deck["tokenResults"][] = $cardResult;
 			}
 		}
 	}
@@ -1120,8 +1093,8 @@ function LoadSavedSettings($playerId)
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			array_push($output, $row[0]);
-			array_push($output, $row[1]);
+			$output[] = $row[0];
+			$output[] = $row[1];
 		}
 		mysqli_free_result($data);  // FREE RESULT BEFORE CLOSING STATEMENT
 		mysqli_stmt_close($stmt);
