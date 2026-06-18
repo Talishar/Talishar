@@ -195,7 +195,7 @@ if ($handle = opendir($path)) {
         $gameInProgress->p2Username = $p2Username;
         $gameInProgress->visibility = $visibility;
         
-        if($gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") $response->gamesInProgress[] = $gameInProgress;
+        if($gameInProgress->p1Hero != "" && $gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") $response->gamesInProgress[] = $gameInProgress;
       }
       else if ($currentTime - $lastGamestateUpdate > 300000) //~5 minutes?
       {

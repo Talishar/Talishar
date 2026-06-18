@@ -865,7 +865,7 @@ class overwhelming_swing_yellow extends Card {
 		$targets = [];
 		foreach($attacks as $attack) {
 			$Card = MZIndexToObject($this->controller, $attack);
-			if ($Card != "" && TypeContains($Card->ID(), "W"))
+			if (is_object($Card) && TypeContains($Card->ID(), "W"))
 				$targets[] = $attack;
 		}
 		return implode(",", $targets);
