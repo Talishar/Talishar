@@ -180,25 +180,7 @@ function CharacterStartTurnAbility($index)
       AddCurrentTurnEffect("luminaris_angels_glow-2", $mainPlayer);
       break;
     case "heirloom_of_snake_hide":
-      $index = FindCharacterIndex($mainPlayer, $cardID);
-      if ($character[$index + 12] == "DOWN" && GetHealth($mainPlayer) == 1) {
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID, $cardID) . "?", 1);
-        AddDecisionQueue("YESNO", $mainPlayer, "an_action", 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
-        AddDecisionQueue("TURNCHARACTERFACEUP", $mainPlayer, "-", 1);
-      }
-      break;
     case "heirloom_of_rabbit_hide":
-      $index = FindCharacterIndex($mainPlayer, $cardID);
-      if ($character[$index + 12] == "DOWN" && GetHealth($mainPlayer) == 1) {
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID, $cardID) . "?", 1);
-        AddDecisionQueue("YESNO", $mainPlayer, "an_action", 1);
-        AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
-        AddDecisionQueue("TURNCHARACTERFACEUP", $mainPlayer, "-", 1);
-      }
-      break;
     case "heirloom_of_tiger_hide":
       $index = FindCharacterIndex($mainPlayer, $cardID);
       if ($character[$index + 12] == "DOWN" && GetHealth($mainPlayer) == 1) {
@@ -668,7 +650,8 @@ function MainCharacterHitEffects($check = false): bool
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
-  for ($i = 0; $i < count($mainCharacterEffects); $i += 2) {
+  $mainCharacterEffectsCount = count($mainCharacterEffects);
+  for ($i = 0; $i < $mainCharacterEffectsCount; $i += 2) {
     if ($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch ($mainCharacterEffects[$i + 1]) {
         case "steelblade_supremacy_red":
@@ -688,7 +671,8 @@ function MainCharacterGrantsGoAgain()
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   if ($combatChainState[$CCS_WeaponIndex] == -1) return false;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
-  for ($i = 0; $i < count($mainCharacterEffects); $i += 2) {
+  $mainCharacterEffectsCount = count($mainCharacterEffects);
+  for ($i = 0; $i < $mainCharacterEffectsCount; $i += 2) {
     if ($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch ($mainCharacterEffects[$i + 1]) {
         case "blood_on_her_hands_yellow-2":
@@ -705,7 +689,8 @@ function WeaponHasGoAgainLabel($index, $player)
 {
   global $mainPlayer;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
-  for ($i = 0; $i < count($mainCharacterEffects); $i += 2) {
+  $mainCharacterEffectsCount = count($mainCharacterEffects);
+  for ($i = 0; $i < $mainCharacterEffectsCount; $i += 2) {
     if ($mainCharacterEffects[$i] == $index) {
       if (!SearchCurrentTurnEffects(ExtractCardID($mainCharacterEffects[$i + 1]), $player)) return false;
       switch ($mainCharacterEffects[$i + 1]) {
@@ -725,7 +710,8 @@ function CharacterCostModifier($cardID, $from, $cost)
   $modifier = 0;
   $char = &GetPlayerCharacter($currentPlayer);
   $characterPieces = CharacterPieces();
-  for ($i = 0; $i < count($char); $i += $characterPieces) {
+  $charCount = count($char);
+  for ($i = 0; $i < $charCount; $i += $characterPieces) {
     if ($char[$i + 1] >= 3 || $char[$i + 1] == 0) continue;
     if (CardType($char[$i]) == "C") $thisChar = ShiyanaCharacter($char[$i]);
     else $thisChar = $char[$i];
@@ -1806,9 +1792,9 @@ function CharacterBoostAbilities($player)
 function ListExposedEquipSlots($player)
 {
   $character = &GetPlayerCharacter($player);
-  $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character) {
-    $charCount = count($character);
-    $characterPieces = CharacterPieces();
+  $charCount = count($character);
+  $characterPieces = CharacterPieces();
+  $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character, $charCount, $characterPieces) {
     for ($i = 0; $i < $charCount; $i += $characterPieces) {
       $subtype = CardSubType($character[$i], $character[$i + 11]);
       $status = $character[$i + 1];

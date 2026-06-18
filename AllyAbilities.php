@@ -6,7 +6,6 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($playerSource == "-") $playerSource = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
-  $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
     WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
@@ -21,34 +20,42 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     }
   }
   $allies = &GetAllies($player);
+  $allyPieces = AllyPieces();
+  $allyHealth = AllyHealth($cardID);
+  $enduranceCounters = AllyEnduranceCounters($cardID);
+  $powerCounters = AllyPowerCounters($cardID);
+  $steamCounters = AllySteamCounters($cardID);
+  $hasCrank = HasCrank($cardID, $player);
+  $isOuvia = ($cardID == "ouvia");
+  $index = count($allies);
   for ($i = 0; $i < $number; ++$i) {
-    $index = count($allies);
-    array_push($allies, $cardID);
-    array_push($allies, 2);
-    array_push($allies, AllyHealth($cardID));
-    array_push($allies, 0); //Frozen
-    array_push($allies, $subCards); //Subcards
-    array_push($allies, GetUniqueId($cardID, $player)); //Unique ID
-    array_push($allies, AllyEnduranceCounters($cardID)); //Endurance Counters
-    array_push($allies, 0); //Life Counters
-    array_push($allies, 1); //Ability/effect uses
-    array_push($allies, AllyPowerCounters($cardID)); //Power Counters
-    array_push($allies, 0); //Damage dealt to the opponent
-    array_push($allies, $tapped); //tapped
-    array_push($allies, AllySteamCounters($cardID)); //steam counters
-    array_push($allies, $from); //where it's played from
-    array_push($allies, 0); //Modifier - e.g "Temporary" for cards that get stolen for a turn.
-    if ($cardID == "ouvia") {
+    $allies[] = $cardID;
+    $allies[] = 2;
+    $allies[] = $allyHealth;
+    $allies[] = 0; //Frozen
+    $allies[] = $subCards; //Subcards
+    $allies[] = GetUniqueId($cardID, $player); //Unique ID
+    $allies[] = $enduranceCounters; //Endurance Counters
+    $allies[] = 0; //Life Counters
+    $allies[] = 1; //Ability/effect uses
+    $allies[] = $powerCounters; //Power Counters
+    $allies[] = 0; //Damage dealt to the opponent
+    $allies[] = $tapped; //tapped
+    $allies[] = $steamCounters; //steam counters
+    $allies[] = $from; //where it's played from
+    $allies[] = 0; //Modifier - e.g "Temporary" for cards that get stolen for a turn.
+    if ($isOuvia) {
       WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
       Transform($player, "Ash", "aether_ashwing", true);
     }
-    if (HasCrank($cardID, $player)) Crank($player, $index, zone:"MYALLY");
+    if ($hasCrank) Crank($player, $index, zone:"MYALLY");
+    $index += $allyPieces;
   }
   if ($isToken) {
     $ClassState = new ClassState($playerSource);
     $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $number);
   }
-  return count($allies) - AllyPieces();
+  return count($allies) - $allyPieces;
 }
 
 function CheckAllyDeath($player)
@@ -219,44 +226,21 @@ function AllyDamagePrevention($player, $index, $damage, $type = "", $source = "-
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   //checking for effects that prevent damage on allies
   for ($i = $countCurrentTurnEffects - $currentTurnEffectPieces; $i >= 0; $i -= $currentTurnEffectPieces) {
-    if ($preventedDamage < $damage && $currentTurnEffects[$i + 1] == $player) {
-      switch ($currentTurnEffects[$i]) {
-        case "sawbones_dock_hand_yellow":
-          if(ClassContains($cardID, "PIRATE", $player)) {
-            if ($canBePrevented) $preventedDamage += 1;
-            RemoveCurrentTurnEffect($i);
-          }
-          break;
-        case "light_up_the_leaves_red":
-          if ($source == $currentTurnEffects[$i + 2]) {
-            if ($canBePrevented && $type == "ARCANE") {
-              $sourceDamage = $damage;
-              $preventedDamage += $currentTurnEffects[$i + 3];
-              $currentTurnEffects[$i + 3] -= $sourceDamage;
-              if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-              if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
-              if (!IsStaticType(CardType($source))) $remove = true;
-            }
-          }
-        default:
-          break;
+    if ($preventedDamage >= $damage) break;
+    $effectID = $currentTurnEffects[$i];
+    if ($effectID == "sawbones_dock_hand_yellow" && $currentTurnEffects[$i + 1] == $player) {
+      if (ClassContains($cardID, "PIRATE", $player)) {
+        if ($canBePrevented) $preventedDamage += 1;
+        RemoveCurrentTurnEffect($i);
       }
-    }
-    elseif ($preventedDamage < $damage) {
-      switch ($currentTurnEffects[$i]) {
-        case "light_up_the_leaves_red":
-          if ($source == $currentTurnEffects[$i + 2]) {
-            if ($canBePrevented && $type == "ARCANE") {
-              $sourceDamage = $damage;
-              $preventedDamage += $currentTurnEffects[$i + 3];
-              $currentTurnEffects[$i + 3] -= $sourceDamage;
-              if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
-              if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
-              if (!IsStaticType(CardType($source))) $remove = true;
-            }
-          }
-        default:
-          break;
+    } elseif ($effectID == "light_up_the_leaves_red" && $source == $currentTurnEffects[$i + 2]) {
+      if ($canBePrevented && $type == "ARCANE") {
+        $sourceDamage = $damage;
+        $preventedDamage += $currentTurnEffects[$i + 3];
+        $currentTurnEffects[$i + 3] -= $sourceDamage;
+        if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
+        if ($source == "spectral_shield" || $source == "runechant" || $source == "aether_ashwing") $remove = true;
+        if (!IsStaticType(CardType($source))) $remove = true;
       }
     }
   }
@@ -546,7 +530,7 @@ function GetPerchedAllies($player)
   $countChar = count($char);
   $charPieces = CharacterPieces();
   for ($i = 0; $i < $countChar; $i += $charPieces) {
-    if (HasPerched($char[$i]) && $char[$i + 1] != 0) array_push($perchedAllies, $i);
+    if (HasPerched($char[$i]) && $char[$i + 1] != 0) $perchedAllies[] = $i;
   }
   return implode(",", $perchedAllies);
 }
@@ -573,7 +557,7 @@ function StealAlly($srcPlayer, $index, $destPlayer, $from, $mod=0, $tapState=0)
           $srcAlly[$index + $i] = 'THEIR' . $srcAlly[$index + $i];
       }
     }
-    array_push($destAlly, $srcAlly[$index + $i]);
+    $destAlly[] = $srcAlly[$index + $i];
     unset($srcAlly[$index + $i]);
   }
   $srcAlly = array_values($srcAlly);
