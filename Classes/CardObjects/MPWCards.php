@@ -793,6 +793,14 @@ class raise_blades_red extends Card {
 		Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Put a card from hand back on top");
 		Await($this->controller, "MZRemove", "cardID");
 		Await($this->controller, "AddTopDeck", final:true);
+		$hand = GetHand($this->controller);
+		if (count($hand) == 0) { //handle case where the game automates putting a card back
+			AddDecisionQueue("DECKCARDS", $this->controller, "0", 1);
+			AddDecisionQueue("SETDQVAR", $this->controller, "1", 1);
+			AddDecisionQueue("SETDQCONTEXT", $this->controller, "you drew <1> and placed it back on top", 1);
+			AddDecisionQueue("OK", $this->controller, "-", 1);
+			AddDecisionQueue("SETDQCONTEXT", $this->controller, "-");
+		}
 		AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
   }
