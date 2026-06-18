@@ -222,6 +222,11 @@ function CardTypeExtended($cardID, $from="", $index=-1) // used to handle evos
     "evo_shortcircuit_blue_equip" => "I,E",
     "evo_speedslip_blue_equip" => "I,E",
 
+    "evo_beta_base_arms_blue" => "A,E",
+    "evo_beta_base_legs_blue" => "A,E",
+    "evo_beta_base_head_blue" => "A,E",
+    "evo_beta_base_chest_blue" => "A,E",
+
     "evo_beta_base_arms_blue_equip" => "A,E",
     "evo_beta_base_legs_blue_equip" => "A,E",
     "evo_beta_base_head_blue_equip" => "A,E",
