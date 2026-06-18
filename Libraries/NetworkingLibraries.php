@@ -227,12 +227,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 16: 
       if (count($decisionQueue) > 0) {
         $index = $cardID;
-        $isValid = false;
-        $validInputs = explode(",", $turn[2]);
-        $validInputsCount = count($validInputs);
-        for ($i = 0; $i < $validInputsCount; ++$i) {
-          if ($validInputs[$i] == $index) $isValid = true;
-        }
+        $isValid = in_array((string)$index, explode(",", $turn[2]));
         if ($isValid) ContinueDecisionQueue($index);
       }
       break;
@@ -458,25 +453,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 31: //Move layer deeper
       $index = $buttonInput;
       if ($index >= $dqState[8]) break;
-      $layer = [];
       $layerPieces = LayerPieces();
-      for ($i = $index; $i < $index + $layerPieces; ++$i) array_push($layer, $layers[$i]);
-      $counter = 0;
+      $layer = array_slice($layers, $index, $layerPieces);
       for ($i = $index + $layerPieces; $i < $index + $layerPieces * 2; ++$i) {
         $layers[$i - $layerPieces] = $layers[$i];
-        $layers[$i] = $layer[$counter++];
+        $layers[$i] = $layer[$i - $index - $layerPieces];
       }
       break;
     case 32: //Move layer up
       $index = $buttonInput;
       if ($index == 0) break;
-      $layer = [];
       $layerPieces = LayerPieces();
-      for ($i = $index; $i < $index + $layerPieces; ++$i) array_push($layer, $layers[$i]);
-      $counter = 0;
+      $layer = array_slice($layers, $index, $layerPieces);
       for ($i = $index - $layerPieces; $i < $index; ++$i) {
         $layers[$i + $layerPieces] = $layers[$i];
-        $layers[$i] = $layer[$counter++];
+        $layers[$i] = $layer[$i - $index + $layerPieces];
       }
       break;
     case 33: //Fully re-order layers
@@ -534,6 +525,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 38: // Past chain link, $from=="COMBATCHAINATTACKS"
       $index = $cardID; //Overridden to be index instead
       $combatChainAttacks = GetCombatChainAttacks();
+      if (!isset($combatChainAttacks[$index])) break;
       $cardID = $combatChainAttacks[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "COMBATCHAINATTACKS", intdiv($index, ChainLinksPieces()))) {
         SetClassState($playerID, $CS_PlayIndex, $index);
@@ -819,14 +811,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $filename = $filepath . "replayCommands.txt";
         $commands = file($filename);
         $pointer = -1;
-        for ($i = 0; $i < count($commands); $i += 1) {
-          $line = $commands[$i];
-          $params = explode(" ", $line);
-          $loadedPlayer = $params[0] ?? "";
-          $loadedMode = $params[1] ?? "";
-          $loadedTurn = $params[2] ?? "";
-          if ($loadedMode == "StartTurn" && $loadedPlayer == $turnPlayer && $loadedTurn == $turnNumber) {
+        $commandsCount = count($commands);
+        for ($i = 0; $i < $commandsCount; ++$i) {
+          $params = explode(" ", $commands[$i]);
+          if (($params[1] ?? "") == "StartTurn" && ($params[0] ?? "") == $turnPlayer && ($params[2] ?? "") == $turnNumber) {
             $pointer = $i;
+            break;
           }
         }
         if ($pointer != -1) {
@@ -1089,21 +1079,23 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case "REORDER": // should only show up in replays
       $cardList = explode(",", $buttonInput);
+      $layerPiecesReorder = LayerPieces();
       foreach ($cardList as $card) {
         $index = -1;
-        for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+        $layersLen = count($layers);
+        for ($i = 0; $i < $layersLen; $i += $layerPiecesReorder) {
           if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $playerID && $layers[$i + 2] == $card) {
             $index = $i;
+            break;
           }
         }
         if ($index != -1) {
-          $pretrigger = array_slice($layers, $index, LayerPieces());
+          $pretrigger = array_slice($layers, $index, $layerPiecesReorder);
           $pretrigger[0] = "TRIGGER";
-          array_splice($layers, $index, LayerPieces());
-          $layers = array_merge($pretrigger, $layers);
+          array_splice($layers, $index, $layerPiecesReorder);
+          $layers = [...$pretrigger, ...$layers];
         }
       }
-      $layerPiecesReorder = LayerPieces();
       $layersCountReorder = count($layers);
       for ($i = 0; $i < $layersCountReorder; $i += $layerPiecesReorder) {
         if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $playerID) {
@@ -1210,10 +1202,10 @@ function PassInput($autopass = true, $doublePass = false)
       }
     }
   }
-  static $passOptions = ["ENDPHASE", "MAYMULTICHOOSETEXT", "MAYCHOOSECOMBATCHAIN", "MAYCHOOSEMULTIZONE", "MAYMULTICHOOSEHAND",
-    "MAYCHOOSEHAND", "MAYCHOOSEDISCARD", "MAYCHOOSEARSENAL", "MAYCHOOSEPERMANENT", "MAYCHOOSEDECK", "MAYCHOOSEMYSOUL",
-    "INSTANT", "MULTISHOWCARDSDECK", "OK", "MULTISHOWCARDSTHEIRDECK", "MAYCHOOSECARD", "STARTTURN", "MAYCHOOSEHANDHEAVE"];
-  if (in_array($turn[0], $passOptions)) {
+  static $passOptions = ["ENDPHASE" => true, "MAYMULTICHOOSETEXT" => true, "MAYCHOOSECOMBATCHAIN" => true, "MAYCHOOSEMULTIZONE" => true, "MAYMULTICHOOSEHAND" => true,
+    "MAYCHOOSEHAND" => true, "MAYCHOOSEDISCARD" => true, "MAYCHOOSEARSENAL" => true, "MAYCHOOSEPERMANENT" => true, "MAYCHOOSEDECK" => true, "MAYCHOOSEMYSOUL" => true,
+    "INSTANT" => true, "MULTISHOWCARDSDECK" => true, "OK" => true, "MULTISHOWCARDSTHEIRDECK" => true, "MAYCHOOSECARD" => true, "STARTTURN" => true, "MAYCHOOSEHANDHEAVE" => true];
+  if (isset($passOptions[$turn[0]])) {
     ContinueDecisionQueue("PASS");
   }
   elseif ($turn[0] == "YESNO") {
