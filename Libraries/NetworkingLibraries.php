@@ -112,15 +112,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 9: //OPT, CHOOSETOP, CHOOSEBOTTOM
       if ($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM") {
         $options = explode(",", $turn[2]);
-        $found = -1;
-        $optionsCount = count($options);
-        for ($i = 0; $i < $optionsCount; ++$i) {
-          if ($options[$i] == $buttonInput) {
-            $found = $i;
-            break;
-          }
-        }
-        if ($found == -1) break; //Invalid input
+        $found = array_search($buttonInput, $options);
+        if ($found === false) break; //Invalid input
         $deck = new Deck($playerID);
         switch ($mode) {
           case 8:
@@ -361,15 +354,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 23: //CHOOSECARD
       if ($turn[0] == "CHOOSECARD" || $turn[0] == "MAYCHOOSECARD") {
         $options = explode(",", $turn[2]);
-        $found = -1;
-        $optionsCount = count($options);
-        for ($i = 0; $i < $optionsCount; ++$i) {
-          if ($options[$i] == $buttonInput) {
-            $found = $i;
-            break;
-          }
-        }
-        if ($found == -1) break; //Invalid input
+        $found = array_search($buttonInput, $options);
+        if ($found === false) break; //Invalid input
         array_splice($options, $found, 1);
         ContinueDecisionQueue($buttonInput);
       }
@@ -419,15 +405,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 29: //CHOOSETOPOPPONENT
       if ($turn[0] == "CHOOSETOPOPPONENT") {
         $options = explode(",", $turn[2]);
-        $found = -1;
-        $optionsCount = count($options);
-        for ($i = 0; $i < $optionsCount; ++$i) {
-          if ($options[$i] == $buttonInput) {
-            $found = $i;
-            break;
-          }
-        }
-        if ($found == -1) break; //Invalid input
+        $found = array_search($buttonInput, $options);
+        if ($found === false) break; //Invalid input
         $deck = new Deck($otherPlayer);
         $deck->AddTop($buttonInput);
         array_splice($options, $found, 1);
@@ -1150,11 +1129,8 @@ function HasCard($cardID)
   }
   else {
     $hand = &GetHand($currentPlayer);
-    $handCount = count($hand);
-    for ($i = 0; $i < $handCount; ++$i) {
-      if ($hand[$i] == $cardID)
-        return $i;
-    }
+    $found = array_search($cardID, $hand);
+    if ($found !== false) return $found;
   }
   return -1;
 }
@@ -1414,14 +1390,16 @@ function ResolveChainLink()
   LogCombatResolutionStats($totalPower, $totalDefense);
   $targets = explode(",", GetAttackTarget());
   //not strictly accurate, the attacker should get to order the damage, but this fixes most problems
+  $hasHeroTarget = false;
   $reorderedTargets = [];
-
   foreach ($targets as $target) {
-    if ($target != "THEIRCHAR-0")
+    if ($target !== "THEIRCHAR-0") {
       $reorderedTargets[] = $target;
+    } else {
+      $hasHeroTarget = true;
+    }
   }
-  if (in_array("THEIRCHAR-0", $targets))
-    $reorderedTargets[] = "THEIRCHAR-0";
+  if ($hasHeroTarget) $reorderedTargets[] = "THEIRCHAR-0";
   AddDecisionQueue("CHECKALLYDEATH", $mainPlayer, "-", 1);
 
   $reorderedCount = count($reorderedTargets);
@@ -1646,17 +1624,18 @@ function FinalizeChainLink($chainClosed = false)
   $ccCount = count($combatChain);
   $ccPieces = CombatChainPieces();
   for ($i = 1; $i < $ccCount; $i += $ccPieces) {
-    $cardType = CardType($combatChain[$i - 1]);
+    $chainCard = $combatChain[$i - 1];
+    $cardType = CardType($chainCard);
     if ($cardType != "W" || $cardType != "E" || $cardType != "C") {
-      $params = explode(",", GoesWhereAfterResolving($combatChain[$i - 1], "COMBATCHAIN", $combatChain[$i]));
+      $params = explode(",", GoesWhereAfterResolving($chainCard, "COMBATCHAIN", $combatChain[$i]));
       $goesWhere = $params[0];
       if ($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves];
-      ResolveGoesWhere($goesWhere, $combatChain[$i - 1], $combatChain[$i], "CC", "", count($params) > 1 ? $params[1] : "NA");
+      ResolveGoesWhere($goesWhere, $chainCard, $combatChain[$i], "CC", "", count($params) > 1 ? $params[1] : "NA");
     }
     $originUID = $combatChain[$i + 7];
     if ($originUID == -1 || ($combatChain[$i + 1] != "PLAY" && $combatChain[$i + 1] != "EQUIP")) $originUID = $combatChain[$i + 6]; //if it doesn't have a source, just give it the combat chain
     $stillOnChain = $combatChain[$i + 1] == "EQUIP" || $combatChain[$i + 1] == "PLAY" || ($goesWhere == "GY") ? "1" : "0";
-    $chainLinks[$CLIndex][] = $combatChain[$i - 1]; //Card ID
+    $chainLinks[$CLIndex][] = $chainCard; //Card ID
     $chainLinks[$CLIndex][] = $combatChain[$i]; //Player ID
     $chainLinks[$CLIndex][] = $stillOnChain; //Still on chain? 1 = yes, 0 = no
     $chainLinks[$CLIndex][] = $combatChain[$i + 1]; //From
@@ -1728,14 +1707,14 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0]) && !IsLayerContinuousBuff($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
-      if ($currentTurnEffects[$i + 3] == 0) array_push($effectsToRemove, $i);
+      if ($currentTurnEffects[$i + 3] == 0) $effectsToRemove[] = $i;
       if (AddedOnHit($currentTurnEffects[$i])) {
         //adding onhits after chain resolution
         if ($addedEffects == "-") $addedEffects = ConvertToSetID($currentTurnEffects[$i]);
         else $addedEffects .= "," . ConvertToSetID($currentTurnEffects[$i]);
       }
     }
-    if (ExtractCardID($currentTurnEffects[$i]) == "crouching_tiger") array_push($effectsToRemove, $i);
+    if (ExtractCardID($currentTurnEffects[$i]) == "crouching_tiger") $effectsToRemove[] = $i;
     switch ($currentTurnEffects[$i]) {
       case "rally_the_rearguard_red":
       case "rally_the_rearguard_yellow":
@@ -1743,10 +1722,10 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
       case "rally_the_coast_guard_red":
       case "rally_the_coast_guard_yellow":
       case "rally_the_coast_guard_blue":
-        array_push($effectsToRemove, $i);
+        $effectsToRemove[] = $i;
         break;
       case "tarpit_trap_yellow":
-        if ($combatChainState[$CCS_DamageDealt] > 0 && CardType($combatChain[0]) == "AA") array_push($effectsToRemove, $i);
+        if ($combatChainState[$CCS_DamageDealt] > 0 && CardType($combatChain[0]) == "AA") $effectsToRemove[] = $i;
         break;
       default:
         break;
@@ -4598,8 +4577,9 @@ function WriteGamestate()
   $output[] = implode(" ", $layerPriority);
   $output[] = $mainPlayer;
   $output[] = implode(" ", $lastPlayed);
-  $output[] = count($chainLinks);
-  for ($i = 0; $i < count($chainLinks); ++$i) {
+  $chainLinksCount = count($chainLinks);
+  $output[] = $chainLinksCount;
+  for ($i = 0; $i < $chainLinksCount; ++$i) {
     $output[] = implode(" ", $chainLinks[$i]);
   }
   $output[] = implode(" ", $chainLinkSummary);

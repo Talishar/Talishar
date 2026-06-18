@@ -73,7 +73,7 @@ function JSONRenderedCard(
 ) {
   $cardNumber = BlindCard($cardNumber, true);
   global $playerID, $CS_NumLightningPlayed;
-  $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
+  $isSpectator = isset($playerID) && $playerID == 3;
   $otherPlayer = $playerID == 1 ? 2 : 1;
 
   $counters = property_exists($countersMap, 'counters') ? $countersMap->counters : $counters;
@@ -225,28 +225,35 @@ function JSONRenderedCard(
   }
   
   //Volzar Amp icon
-  if($controller != NULL){
-    if($cardNumber == "volzar_the_lightning_rod" && $controller == $playerID && GetClassState($playerID, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
-      $countersMap->lightning = GetClassState($playerID, $CS_NumLightningPlayed);
-      $countersMap->counters = 0;
-    }
-    if($cardNumber == "volzar_the_lightning_rod" && $controller == $otherPlayer && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
-      $countersMap->lightning = GetClassState($otherPlayer, $CS_NumLightningPlayed);
-      $countersMap->counters = 0;
+  if($controller != NULL && $cardNumber == "volzar_the_lightning_rod" && $lightningPlayed == NULL) {
+    if($controller == $playerID) {
+      $lightningCount = GetClassState($playerID, $CS_NumLightningPlayed);
+      if($lightningCount > 0) {
+        $countersMap->lightning = $lightningCount;
+        $countersMap->counters = 0;
+      }
+    } elseif($controller == $otherPlayer) {
+      $lightningCount = GetClassState($otherPlayer, $CS_NumLightningPlayed);
+      if($lightningCount > 0) {
+        $countersMap->lightning = $lightningCount;
+        $countersMap->counters = 0;
+      }
     }
   }
 
   //Current Turn Effects amp amount
-  if(substr($showAmpAmount, 0, 6) == "Effect") {
+  if(str_starts_with($showAmpAmount, "Effect")) {
     $index = explode("-", $showAmpAmount)[1];
-    if(ArcaneModifierAmount($cardNumber, $playerID, $index) > 0) {
-      $countersMap->amp = ArcaneModifierAmount($cardNumber, $playerID, $index);
+    $ampOwn = ArcaneModifierAmount($cardNumber, $playerID, $index);
+    if($ampOwn > 0) {
+      $countersMap->amp = $ampOwn;
       $countersMap->counters = 0;
-    } 
-    if(ArcaneModifierAmount($cardNumber, $otherPlayer, $index) > 0) {
-      $countersMap->amp = ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
+    }
+    $ampOther = ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
+    if($ampOther > 0) {
+      $countersMap->amp = $ampOther;
       $countersMap->counters = 0;
-    }   
+    }
   }
   
   if($isSpectator) $gem = NULL;
@@ -339,9 +346,9 @@ function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = ""
   $cards = [];
   $fromArrCount = count($fromArr);
   for ($i = 0; $i < $fromArrCount; $i += $arrElements) {
-    array_push($cards, JSONRenderedCard($fromArr[$i]));
+    $cards[] = JSONRenderedCard($fromArr[$i]);
   }
-  if (count($cardsArray) > 0) {
+  if (!empty($cardsArray)) {
     $cards = $cardsArray;
   }
   $result->cards = $cards;
@@ -377,21 +384,23 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
       break;
   }
 
-  if ($from == "HAND" && $isPlayable && (
-    $dqState[4] == "Choose_a_card_to_charge" ||
-    $dqState[4] == "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" ||
-    $dqState[4] == "Choose_a_card_to_sink" ||
-    $dqState[4] == "Choose_a_card_to_sink_(or_Pass)" ||
-    $turn[0] == "ARS" ||
-    $turn[0] == "P" ||
-    $turn[0] == "CHOOSEHANDCANCEL"
-  )) return 8;
-  if ($from == "HAND" && $isPlayable && (
-    $dqState[4] == "Choose_a_card_to_discard_(or_pass_and_lose_2_health)" ||
-    $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
-    $dqState[4] == "Choose_a_card_to_discard" ||
-    $dqState[4] == "Choose_a_card_to_banish"
-  )) return 9;
+  if ($from == "HAND" && $isPlayable) {
+    if (
+      $dqState[4] == "Choose_a_card_to_charge" ||
+      $dqState[4] == "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" ||
+      $dqState[4] == "Choose_a_card_to_sink" ||
+      $dqState[4] == "Choose_a_card_to_sink_(or_Pass)" ||
+      $turn[0] == "ARS" ||
+      $turn[0] == "P" ||
+      $turn[0] == "CHOOSEHANDCANCEL"
+    ) return 8;
+    if (
+      $dqState[4] == "Choose_a_card_to_discard_(or_pass_and_lose_2_health)" ||
+      $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
+      $dqState[4] == "Choose_a_card_to_discard" ||
+      $dqState[4] == "Choose_a_card_to_banish"
+    ) return 9;
+  }
   if ($turn[0] == "B" && $from != "THEIRCHAR") return $isPlayable ? 6 : 0;
 
   // Zone-specific logic
