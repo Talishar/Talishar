@@ -1011,8 +1011,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100016://Confirm Undo
       RevertGamestate();
-      $skipWriteGamestate = true;
       WriteLog("Player " . $playerID . " allowed undoing the last action");
+      ConsumeUndoRequestEvents();
       break;
     case 100017://Decline Undo
       WriteLog("Player " . $playerID . " declined the undo request");
@@ -1020,14 +1020,17 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $declineCounterPiece = $playerID == 1 ? 17 : 18;
       $currentDeclineCount = intval(GetCachePiece($gameName, $declineCounterPiece));
       SetCachePiece($gameName, $declineCounterPiece, $currentDeclineCount + 1);
+      ConsumeUndoRequestEvents();
       break;
     case 100018://Confirm this turn undo
       RevertGamestate("beginTurnGamestate.txt");
       WriteLog("Player " . $playerID . " reverted to the start of the turn");
+      ConsumeUndoRequestEvents();
       break;
     case 100019://Confirm last turn undo
       RevertGamestate("lastTurnGamestate.txt");
       WriteLog("Player " . $playerID . " reverted to the last turn");
+      ConsumeUndoRequestEvents();
       break;
     case 100020://Decline chat request
       WriteLog("🚫 Player " . $playerID . " declined the invitation to chat");
@@ -1035,6 +1038,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100022:// Confirm chain link undo
       RevertGamestate("startChainLinkGamestate.txt");
       WriteLog("Player " . $playerID . " reverted to the start of the chain link");
+      ConsumeUndoRequestEvents();
       break;
     case "OPT": // Should only show up in replays
       $deck = new Deck($playerID);
@@ -4611,6 +4615,21 @@ function AddEvent($type, $value)
   global $events;
   $events[] = $type;
   $events[] = $value;
+}
+
+function ConsumeUndoRequestEvents()
+{
+  global $events;
+  $undoRequestTypes = ["REQUESTUNDO", "REQUESTTHISTURNUNDO", "REQUESTLASTTURNUNDO", "REQUESTCHAINLINKUNDO"];
+  $filtered = [];
+  $eventPieces = EventPieces();
+  for ($i = 0; $i < count($events); $i += $eventPieces) {
+    if (!in_array($events[$i], $undoRequestTypes)) {
+      $filtered[] = $events[$i];
+      $filtered[] = $events[$i + 1] ?? null;
+    }
+  }
+  $events = $filtered;
 }
 
 function ReportBug()
