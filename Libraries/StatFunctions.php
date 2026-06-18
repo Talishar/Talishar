@@ -16,8 +16,8 @@ $CardStats_TimesBlocked = 2;
 $CardStats_TimesPitched = 3;
 $CardStats_TimesHit = 4;
 $CardStats_TimesCharged = 5;
-$CardStats_TimesDiscarded = 6; 
-$CardStats_Dynamic2 = 7; //Reserved for future use
+$CardStats_TimesDiscarded = 6;
+$CardStats_TimesActivated = 7; //Tracks weapon/arena card activations from play
 $CardStats_Dynamic3 = 8; //Reserved for future use
 $CardStats_TimesKatsuDiscard = 9;
 
@@ -66,7 +66,7 @@ function GetStatTurnIndex($player)
 function LogPlayCardStats($player, $cardID, $from, $type="")
 {
   global $turn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPlayedDefense;
-  global $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $mainPlayer, $CardStats_TimesKatsuDiscard, $TurnStats_CardsDiscarded, $CardStats_TimesDiscarded;
+  global $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $mainPlayer, $CardStats_TimesKatsuDiscard, $TurnStats_CardsDiscarded, $CardStats_TimesDiscarded, $CardStats_TimesActivated;
   global $currentTurn;
   if($type === "") $type = $turn[0];
   $cardTurnLog = &GetCardTurnLog($player);
@@ -98,6 +98,10 @@ function LogPlayCardStats($player, $cardID, $from, $type="")
       {
         // From "PLAY" means it was already played, don't account for it a second time.
         ++$cardStats[$i + $CardStats_TimesPlayed];
+      }
+      if ($from == "PLAY" && TypeContains($cardID, "W"))
+      {
+        ++$cardStats[$i + $CardStats_TimesActivated];
       }
       if($from != "PLAY" && $from != "EQUIP")
       {

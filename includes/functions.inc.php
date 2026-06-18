@@ -773,7 +773,7 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
-	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded;
+	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -891,6 +891,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				"cardName" => CardName($cardStats[$i]),
 				"pitchValue" => PitchValue($cardStats[$i]),
 				"katsuDiscard" => $cardStats[$i + $CardStats_TimesKatsuDiscard],
+				"activated" => $cardStats[$i + $CardStats_TimesActivated],
 			];
 			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
 				array_push($deck["arenaCardResults"], $cardResult);
@@ -915,7 +916,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerHero = "", $excludePrivateFields = false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
-	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded;
+	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -1019,6 +1020,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 				"cardName" => CardName($cardStats[$i]),
 				"pitchValue" => PitchValue($cardStats[$i]),
 				"katsuDiscard" => intval($cardStats[$i + $CardStats_TimesKatsuDiscard]),
+				"activated" => intval($cardStats[$i + $CardStats_TimesActivated]),
 			];
 			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
 				array_push($deck["arenaCardResults"], $cardResult);
