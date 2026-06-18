@@ -2124,7 +2124,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
         if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
         else if ($additionalCosts != "-") {
           $modes = explode(",", $additionalCosts);
-          for ($i = 0; $i < count($modes); ++$i) {
+          $countModes = count($modes);
+          for ($i = 0; $i < $countModes; ++$i) {
             if ($modes[$i] == "Transcend") return "-";
           }
         }
@@ -2223,7 +2224,8 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
       else if ($additionalCosts != "-") {
         $modes = explode(",", $additionalCosts);
-        for ($i = 0; $i < count($modes); ++$i) {
+        $countModes = count($modes);
+        for ($i = 0; $i < $countModes; ++$i) {
           if ($modes[$i] == "Transcend") return "-";
         }
       }
@@ -2289,11 +2291,8 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
 
 function CanPlayInstant($phase)
 {
-  if ($phase == "M") return true;
-  if ($phase == "A") return true;
-  if ($phase == "D") return true;
-  if ($phase == "INSTANT") return true;
-  return false;
+  static $validPhases = ["M" => true, "A" => true, "D" => true, "INSTANT" => true];
+  return isset($validPhases[$phase]);
 }
 
 function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pitchRestriction = "", $phase = "P")
@@ -2755,7 +2754,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $chainLinkPieces = ChainLinksPieces();
       for ($i = 0; $i < $countChainLinks; ++$i) {
         if (ClassContains($chainLinks[$i][0], "ASSASSIN", $mainPlayer)) {
-          for ($j = $chainLinkPieces; $j < count($chainLinks[$i]); $j += $chainLinkPieces) {
+          $chainLinkILen = count($chainLinks[$i]);
+          for ($j = $chainLinkPieces; $j < $chainLinkILen; $j += $chainLinkPieces) {
             if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) return false;
           }
         }
@@ -3080,7 +3080,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $chainLinkPieces = ChainLinksPieces();
       for ($i = 0; $i < $countChainLinks; ++$i) {
         if (HasStealth($chainLinks[$i][0])) {
-          for ($j = $chainLinkPieces; $j < count($chainLinks[$i]); $j += $chainLinkPieces) {
+          $chainLinkILen = count($chainLinks[$i]);
+          for ($j = $chainLinkPieces; $j < $chainLinkILen; $j += $chainLinkPieces) {
             if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) return false;
           }
         }
@@ -3199,7 +3200,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "take_a_stab_yellow":
     case "take_a_stab_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      for ($i = 0; $i < count($chainLinks); ++$i) {
+      $countChainLinksLocal = count($chainLinks);
+      for ($i = 0; $i < $countChainLinksLocal; ++$i) {
         if (SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinks[$i][2] == 1) {
           return false;
         }
@@ -3397,10 +3399,13 @@ function IsDefenseReactionPlayable($cardID, $from)
   global $CombatChain, $mainPlayer;
   $attackCard = $CombatChain->AttackCard()->ID();
   $extraText = GetHorrorsBuff();
-  $blocksDreacts = ["command_and_conquer_red", "back_stab_red", "back_stab_yellow", "back_stab_blue",
-                    "widowmaker_red", "widowmaker_yellow", "widowmaker_blue", "wreck_havoc_red", "wreck_havoc_yellow", "wreck_havoc_blue",
-                    "evasive_nageboshi_blue"];
-  if ((in_array($attackCard, $blocksDreacts) || in_array($extraText, $blocksDreacts)) && CardType($cardID) == "DR") return false;
+  static $blocksDreacts = [
+    "command_and_conquer_red" => 1, "back_stab_red" => 1, "back_stab_yellow" => 1, "back_stab_blue" => 1,
+    "widowmaker_red" => 1, "widowmaker_yellow" => 1, "widowmaker_blue" => 1,
+    "wreck_havoc_red" => 1, "wreck_havoc_yellow" => 1, "wreck_havoc_blue" => 1,
+    "evasive_nageboshi_blue" => 1,
+  ];
+  if ((isset($blocksDreacts[$attackCard]) || isset($blocksDreacts[$extraText])) && CardType($cardID) == "DR") return false;
   if ($CombatChain->AttackCard()->ID() == "exude_confidence_red") if (!ExudeConfidenceReactionsPlayable()) return false;
   if ($from == "HAND" && CardSubType($CombatChain->AttackCard()->ID()) == "Arrow" && SearchCharacterForCard($mainPlayer, "dreadbore")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
@@ -3630,66 +3635,33 @@ function HasTower($cardID)
 
 function RequiresDiscard($cardID)
 {
-  switch ($cardID) {
-    case "bloodrush_bellow_yellow":
-    case "reckless_swing_blue":
-    case "breakneck_battery_red":
-    case "breakneck_battery_yellow":
-    case "breakneck_battery_blue":
-    case "savage_feast_red":
-    case "savage_feast_yellow":
-    case "savage_feast_blue":
-    case "savage_swing_red":
-    case "savage_swing_yellow":
-    case "savage_swing_blue":
-    case "wrecker_romp_red":
-    case "wrecker_romp_yellow":
-    case "wrecker_romp_blue":
-    case "primeval_bellow_red":
-    case "primeval_bellow_yellow":
-    case "primeval_bellow_blue":
-    case "barraging_big_horn_red":
-    case "barraging_big_horn_yellow":
-    case "barraging_big_horn_blue":
-    case "swing_fist_think_later_red":
-    case "swing_fist_think_later_yellow":
-    case "swing_fist_think_later_blue":
-    case "savage_beatdown_red":
-    case "madcap_charger_red":
-    case "madcap_charger_yellow":
-    case "madcap_charger_blue":
-    case "madcap_muscle_red":
-    case "madcap_muscle_yellow":
-    case "madcap_muscle_blue":
-      return true;
-    default:
-      return false;
-  }
+  static $cards = [
+    "bloodrush_bellow_yellow" => 1, "reckless_swing_blue" => 1,
+    "breakneck_battery_red" => 1, "breakneck_battery_yellow" => 1, "breakneck_battery_blue" => 1,
+    "savage_feast_red" => 1, "savage_feast_yellow" => 1, "savage_feast_blue" => 1,
+    "savage_swing_red" => 1, "savage_swing_yellow" => 1, "savage_swing_blue" => 1,
+    "wrecker_romp_red" => 1, "wrecker_romp_yellow" => 1, "wrecker_romp_blue" => 1,
+    "primeval_bellow_red" => 1, "primeval_bellow_yellow" => 1, "primeval_bellow_blue" => 1,
+    "barraging_big_horn_red" => 1, "barraging_big_horn_yellow" => 1, "barraging_big_horn_blue" => 1,
+    "swing_fist_think_later_red" => 1, "swing_fist_think_later_yellow" => 1, "swing_fist_think_later_blue" => 1,
+    "savage_beatdown_red" => 1,
+    "madcap_charger_red" => 1, "madcap_charger_yellow" => 1, "madcap_charger_blue" => 1,
+    "madcap_muscle_red" => 1, "madcap_muscle_yellow" => 1, "madcap_muscle_blue" => 1,
+  ];
+  return isset($cards[$cardID]);
 }
 
 function RequiresBanish($cardID)
 {
-  switch ($cardID) {
-    case "expendable_limbs_blue":
-    case "ram_raider_red":
-    case "ram_raider_yellow":
-    case "ram_raider_blue":
-    case "shaden_scream_red":
-    case "shaden_scream_yellow":
-    case "shaden_scream_blue":
-    case "shaden_swing_red":
-    case "shaden_swing_yellow":
-    case "shaden_swing_blue":
-    case "tribute_to_demolition_red":
-    case "tribute_to_demolition_yellow":
-    case "tribute_to_demolition_blue":
-    case "tribute_to_the_legions_of_doom_red":
-    case "tribute_to_the_legions_of_doom_yellow":
-    case "tribute_to_the_legions_of_doom_blue":
-      return true;
-    default:
-      return false;
-  }
+  static $cards = [
+    "expendable_limbs_blue" => 1,
+    "ram_raider_red" => 1, "ram_raider_yellow" => 1, "ram_raider_blue" => 1,
+    "shaden_scream_red" => 1, "shaden_scream_yellow" => 1, "shaden_scream_blue" => 1,
+    "shaden_swing_red" => 1, "shaden_swing_yellow" => 1, "shaden_swing_blue" => 1,
+    "tribute_to_demolition_red" => 1, "tribute_to_demolition_yellow" => 1, "tribute_to_demolition_blue" => 1,
+    "tribute_to_the_legions_of_doom_red" => 1, "tribute_to_the_legions_of_doom_yellow" => 1, "tribute_to_the_legions_of_doom_blue" => 1,
+  ];
+  return isset($cards[$cardID]);
 }
 
 function HasBeatChest($cardID)
@@ -3702,61 +3674,30 @@ function HasBeatChest($cardID)
 function ETASteamCounters($cardID)
 {
   global $currentPlayer;
+  static $steamCounterMap = [
+    "aether_sink_yellow" => 1, "dissolution_sphere_yellow" => 1, "signal_jammer_blue" => 1,
+    "prismatic_lens_yellow" => 1, "quantum_processor_yellow" => 1, "tick_tock_clock_red" => 1,
+    "polarity_reversal_script_red" => 1, "penetration_script_yellow" => 1, "security_script_blue" => 1,
+    "backup_protocol_red_red" => 1, "backup_protocol_yel_yellow" => 1, "backup_protocol_blu_blue" => 1,
+    "boom_grenade_red" => 1, "boom_grenade_yellow" => 1, "boom_grenade_blue" => 1,
+    "dissolving_shield_blue" => 1, "grinding_gears_blue" => 1, "overload_script_red" => 1,
+    "mhz_script_yellow" => 1, "autosave_script_blue" => 1, "golden_cog" => 1, "assembly_module_blue" => 1,
+    "teklo_core_blue" => 2, "convection_amplifier_red" => 2, "dissolving_shield_yellow" => 2,
+    "mini_forcefield_blue" => 2, "hadron_collider_blue" => 2, "cerebellum_processor_blue" => 2,
+    "null_time_zone_blue" => 2, "clamp_press_blue" => 2, "copper_cog_blue" => 2,
+    "teklo_pounder_blue" => 3, "dissolving_shield_red" => 3, "mini_forcefield_yellow" => 3,
+    "hadron_collider_yellow" => 3,
+    "dissipation_shield_yellow" => 4, "mini_forcefield_red" => 4, "hadron_collider_red" => 4,
+    "optekal_monocle_blue" => 5, "plasma_mainline_red" => 5,
+  ];
+  if (isset($steamCounterMap[$cardID])) return $steamCounterMap[$cardID];
   switch ($cardID) {
-    case "aether_sink_yellow":
-    case "dissolution_sphere_yellow":
-    case "signal_jammer_blue":
-    case "prismatic_lens_yellow":
-    case "quantum_processor_yellow":
-    case "tick_tock_clock_red":
-    case "polarity_reversal_script_red":
-    case "penetration_script_yellow":
-    case "security_script_blue":
-    case "backup_protocol_red_red":
-    case "backup_protocol_yel_yellow":
-    case "backup_protocol_blu_blue":
-    case "boom_grenade_red":
-    case "boom_grenade_yellow":
-    case "boom_grenade_blue":
-    case "dissolving_shield_blue":
-    case "grinding_gears_blue":
-    case "overload_script_red":
-    case "mhz_script_yellow":
-    case "autosave_script_blue":
-    case "golden_cog":
-    case "assembly_module_blue":
-      return 1;
-    case "teklo_core_blue":
-    case "convection_amplifier_red":
-    case "dissolving_shield_yellow":
-    case "mini_forcefield_blue":
-    case "hadron_collider_blue":
-    case "cerebellum_processor_blue":
-    case "null_time_zone_blue":
-    case "clamp_press_blue":
-    case "copper_cog_blue":
-      return 2;
-    case "teklo_pounder_blue":
-    case "dissolving_shield_red":
-    case "mini_forcefield_yellow":
-    case "hadron_collider_yellow":
-      return 3;
-    case "dissipation_shield_yellow":
-    case "mini_forcefield_red":
-    case "hadron_collider_red":
-      return 4;
-    case "optekal_monocle_blue":
-    case "plasma_mainline_red":
-      return 5;
     case "hyper_driver_red":
-      if (SearchCharacterActive($currentPlayer, "puffer_jacket")) return 4;
-      else return 3;
+      return SearchCharacterActive($currentPlayer, "puffer_jacket") ? 4 : 3;
     case "hyper_driver_yellow":
-      if (SearchCharacterActive($currentPlayer, "puffer_jacket")) return 3;
-      else return 2;
+      return SearchCharacterActive($currentPlayer, "puffer_jacket") ? 3 : 2;
     case "hyper_driver_blue":
-      if (SearchCharacterActive($currentPlayer, "puffer_jacket")) return 2;
-      else return 1;
+      return SearchCharacterActive($currentPlayer, "puffer_jacket") ? 2 : 1;
     default:
       return 0;
   }
@@ -3775,33 +3716,19 @@ function AbilityHasGoAgain($cardID, $from)
     $card = new $cardID($currentPlayer);
     return $card->AbilityHasGoAgain($from);
   }
-  if ($set == "WTR") return WTRAbilityHasGoAgain($cardID);
-  else if ($set == "ARC") return ARCAbilityHasGoAgain($cardID);
-  else if ($set == "CRU") return CRUAbilityHasGoAgain($cardID);
-  else if ($set == "MON") return MONAbilityHasGoAgain($cardID);
-  else if ($set == "ELE") return ELEAbilityHasGoAgain($cardID);
-  else if ($set == "EVR") return EVRAbilityHasGoAgain($cardID);
-  else if ($set == "UPR") return UPRAbilityHasGoAgain($cardID);
-  else if ($set == "DYN") return DYNAbilityHasGoAgain($cardID);
-  else if ($set == "OUT") return OUTAbilityHasGoAgain($cardID);
-  else if ($set == "DTD") return DTDAbilityHasGoAgain($cardID);
-  else if ($set == "TCC") return TCCAbilityHasGoAgain($cardID);
-  else if ($set == "EVO") return EVOAbilityHasGoAgain($cardID);
-  else if ($set == "HVY") return HVYAbilityHasGoAgain($cardID);
-  else if ($set == "AKO") return AKOAbilityHasGoAgain($cardID);
-  else if ($set == "AAZ") return AAZAbilityHasGoAgain($cardID);
-  else if ($set == "ROS") return ROSAbilityHasGoAgain($cardID);
-  else if ($set == "AIO") return AIOAbilityHasGoAgain($cardID);
-  else if ($set == "AJV") return AJVAbilityHasGoAgain($cardID);
-  else if ($set == "HNT") return HNTAbilityHasGoAgain($cardID);
-  else if ($set == "AST") return ASTAbilityHasGoAgain($cardID);
-  else if ($set == "SEA") return SEAAbilityHasGoAgain($cardID, $from);
-  else if ($set == "MPG") return MPGAbilityHasGoAgain($cardID);
-  else if ($set == "SUP") return SUPAbilityHasGoAgain($cardID);
-  else if ($set == "APS") return APSAbilityHasGoAgain($cardID);
-  else if ($set == "AAC") return AACAbilityHasGoAgain($cardID);
-  else if ($set == "ARR") return ARRAbilityHasGoAgain($cardID);
-  else if ($set == "PEN") return PENAbilityHasGoAgain($cardID);
+  if ($set == "SEA") return SEAAbilityHasGoAgain($cardID, $from);
+  static $setDispatch = [
+    "WTR" => "WTRAbilityHasGoAgain", "ARC" => "ARCAbilityHasGoAgain", "CRU" => "CRUAbilityHasGoAgain",
+    "MON" => "MONAbilityHasGoAgain", "ELE" => "ELEAbilityHasGoAgain", "EVR" => "EVRAbilityHasGoAgain",
+    "UPR" => "UPRAbilityHasGoAgain", "DYN" => "DYNAbilityHasGoAgain", "OUT" => "OUTAbilityHasGoAgain",
+    "DTD" => "DTDAbilityHasGoAgain", "TCC" => "TCCAbilityHasGoAgain", "EVO" => "EVOAbilityHasGoAgain",
+    "HVY" => "HVYAbilityHasGoAgain", "AKO" => "AKOAbilityHasGoAgain", "AAZ" => "AAZAbilityHasGoAgain",
+    "ROS" => "ROSAbilityHasGoAgain", "AIO" => "AIOAbilityHasGoAgain", "AJV" => "AJVAbilityHasGoAgain",
+    "HNT" => "HNTAbilityHasGoAgain", "AST" => "ASTAbilityHasGoAgain",
+    "MPG" => "MPGAbilityHasGoAgain", "SUP" => "SUPAbilityHasGoAgain", "APS" => "APSAbilityHasGoAgain",
+    "AAC" => "AACAbilityHasGoAgain", "ARR" => "ARRAbilityHasGoAgain", "PEN" => "PENAbilityHasGoAgain",
+  ];
+  if (isset($setDispatch[$set])) return $setDispatch[$set]($cardID);
   switch ($cardID) {
     case "blossom_of_spring":
     case "bravo_flattering_showman":
@@ -3922,53 +3849,22 @@ function CharacterNumUsesPerTurn($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->NumUses();
-  switch ($cardID) {
-    case "bravo_showstopper":
-    case "bravo":
-    case "helios_mitre":
-    case "emperor_dracai_of_aesir":
-    case "seerstone":
-    case "nitro_mechanoida":
-    case "stasis_cell_blue":
-    case "teklovossen_the_mechropotent":
-    case "nuu_alluring_desire":
-    case "nuu":
-    case "enigma_new_moon":
-    case "sanctuary_of_aria":
-    case "quickdodge_flexors":
-    case "bravo_flattering_showman":
-    case "redspine_manta":
-    case "sealace_sarong":
-    case "cogwerx_blunderbuss":
-    case "dead_threads":
-    case "puffin":
-    case "puffin_hightail":
-    case "hammerhead_harpoon_cannon":
-    case "spitfire":
-    case "compass_of_sunken_depths":
-    case "gravy_bones":
-    case "gravy_bones_shipwrecked_looter":
-    case "marlynn":
-    case "marlynn_treasure_hunter":
-    case "gold_baited_hook":
-    case "scurv_stowaway":
-    case "lyath_goldmane":
-    case "lyath_goldmane_vile_savant":
-    case "kayo_underhanded_cheat":
-    case "kayo_strong_arm":
-    case "pleiades":
-    case "pleiades_superstar":
-    case "tuffnut":
-    case "tuffnut_bumbling_hulkster":
-    case "mbrio_base_digits":
-    case "farflight_longbow":
-      return 999;
-    case "voltaire_strike_twice":
-    case "bank_breaker":
-      return 2;
-    default:
-      return 1;
-  }
+  static $unlimitedUses = [
+    "bravo_showstopper" => 1, "bravo" => 1, "helios_mitre" => 1, "emperor_dracai_of_aesir" => 1,
+    "seerstone" => 1, "nitro_mechanoida" => 1, "stasis_cell_blue" => 1, "teklovossen_the_mechropotent" => 1,
+    "nuu_alluring_desire" => 1, "nuu" => 1, "enigma_new_moon" => 1, "sanctuary_of_aria" => 1,
+    "quickdodge_flexors" => 1, "bravo_flattering_showman" => 1, "redspine_manta" => 1,
+    "sealace_sarong" => 1, "cogwerx_blunderbuss" => 1, "dead_threads" => 1, "puffin" => 1,
+    "puffin_hightail" => 1, "hammerhead_harpoon_cannon" => 1, "spitfire" => 1,
+    "compass_of_sunken_depths" => 1, "gravy_bones" => 1, "gravy_bones_shipwrecked_looter" => 1,
+    "marlynn" => 1, "marlynn_treasure_hunter" => 1, "gold_baited_hook" => 1, "scurv_stowaway" => 1,
+    "lyath_goldmane" => 1, "lyath_goldmane_vile_savant" => 1, "kayo_underhanded_cheat" => 1,
+    "kayo_strong_arm" => 1, "pleiades" => 1, "pleiades_superstar" => 1, "tuffnut" => 1,
+    "tuffnut_bumbling_hulkster" => 1, "mbrio_base_digits" => 1, "farflight_longbow" => 1,
+  ];
+  if (isset($unlimitedUses[$cardID])) return 999;
+  if ($cardID === "voltaire_strike_twice" || $cardID === "bank_breaker") return 2;
+  return 1;
 }
 
 //Active (2 = Always Active, 1 = Yes, 0 = No)
@@ -4587,13 +4483,8 @@ function CardCaresAboutPitch($cardID): bool
 
 function IsIyslander($character)
 {
-  switch ($character) {
-    case 'iyslander':
-    case 'iyslander_stormbind':
-      return true;
-    default:
-      return false;
-  }
+  static $forms = ["iyslander" => true, "iyslander_stormbind" => true];
+  return isset($forms[$character]);
 }
 
 function WardAmount($cardID, $player, $index = -1)

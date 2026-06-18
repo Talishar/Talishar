@@ -122,15 +122,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->gameGUID = $gameGUID;
     $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
     $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
-    $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
+    static $contributors = ["sugitime" => true, "OotTheMonk" => true, "Launch" => true, "LaustinSpayce" => true, "Star_Seraph" => true, "Tower" => true, "Etasus" => true, "scary987" => true, "Celenar" => true, "DKGaming" => true, "Aegisworn" => true, "PvtVoid" => true, "Bluffkin" => true];
 
-    $initialLoad->playerIsContributor = in_array($initialLoad->playerName, $contributors);
+    $initialLoad->playerIsContributor = isset($contributors[$initialLoad->playerName]);
     $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron) ?: "";
 
     // Use cached Metafy tiers from game file (populated at JoinGame time)
     $initialLoad->playerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: [];
 
-    $initialLoad->opponentIsContributor = in_array($initialLoad->opponentName, $contributors);
+    $initialLoad->opponentIsContributor = isset($contributors[$initialLoad->opponentName]);
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
     $initialLoad->opponentMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
@@ -342,10 +342,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $activeChainLink->wager = CachedWagerActive();
   $activeChainLink->phantasm = CachedPhantasmActive();
   $activeChainLink->fusion = CachedFusionActive();
-  if ($CombatChain->HasCurrentLink()) $activeChainLink->tower = IsTowerActive();
-  if ($CombatChain->HasCurrentLink()) $activeChainLink->piercing = IsPiercingActive($combatChain[0]);
-  if ($CombatChain->HasCurrentLink()) $activeChainLink->combo = ComboActive();
-  if ($CombatChain->HasCurrentLink()) $activeChainLink->highTide = IsHighTideActive();
+  $hasCurrentLink = $CombatChain->HasCurrentLink();
+  if ($hasCurrentLink) $activeChainLink->tower = IsTowerActive();
+  if ($hasCurrentLink) $activeChainLink->piercing = IsPiercingActive($combatChain[0]);
+  if ($hasCurrentLink) $activeChainLink->combo = ComboActive();
+  if ($hasCurrentLink) $activeChainLink->highTide = IsHighTideActive();
 
   $activeChainLink->fused = false;
 
@@ -482,7 +483,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $overlay = 0;
     $border = 0;
     $cardID = $theirBanish[$i];
-    $mod = explode("-", $theirBanish[$i + 1])[0];
+    $mod = strstr($theirBanish[$i + 1], '-', true) ?: $theirBanish[$i + 1];
     $action = $currentPlayer == $playerID && IsPlayable($theirBanish[$i], $turnPhase, "THEIRBANISH", $i) ? 15 : 0;
     $label = "";
     if (isFaceDownMod($mod) && !$isGameOver) {
@@ -613,7 +614,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       $border = CardBorderColor($myHand[$i], "HAND", $playable, $playerID);
       $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? $actionType : 0;
-      if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
+      if ($restriction != "") $restriction = str_replace(" ", "_", $restriction);
       $actionDataOverride = ($actionType == 16 || $actionType == 27) ? strval($i) : $myHand[$i];
       
       if (isset($myHand[$i + $handPieces - 1])) {
@@ -644,7 +645,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if (isset($myDiscard[$i+2])) {
       $overlay = 0;
       $action = $currentPlayer == $playerID && (PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2], $playerID, $i) || AbilityPlayableFromGraveyard($myDiscard[$i], $i)) && IsPlayable($myDiscard[$i], $turnPhase, "GY", $i) ? 36 : 0;
-      $mod = explode("-", $myDiscard[$i + 2])[0];
+      $mod = strstr($myDiscard[$i + 2], '-', true) ?: $myDiscard[$i + 2];
       $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $playerID, $mod, $i);
       $cardID = $myDiscard[$i];
       if($mod == "DOWN") {
@@ -707,7 +708,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $label = "";
     $overlay = 0;
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turnPhase, "BANISH", $i) ? 14 : 0;
-    $mod = explode("-", $myBanish[$i + 1])[0];
+    $mod = strstr($myBanish[$i + 1], '-', true) ?: $myBanish[$i + 1];
     $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $playerID, $mod);
     $cardID = $myBanish[$i];
     if($mod == "DOWN") {
@@ -781,7 +782,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if (($myCharacter[$i + 9] ?? 0) != 2 && ($myCharacter[$i + 1] ?? 0) != 0 && $playerID != 3) {
       $gem = ($myCharacter[$i + 9] ?? 0) == 1 ? 1 : 2;
     }
-    $restriction = implode("_", explode(" ", $restriction));
+    $restriction = str_replace(" ", "_", $restriction);
     if($isGameOver) ($myCharacter[$i + 12] ?? "-") == "UP";
     if($playerID == 3 &&( $myCharacter[$i + 12] ?? "-") == "DOWN" && !$isGameOver) {
       $myCharData[] = JSONRenderedCard(
@@ -894,7 +895,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $playable = $playerID == $currentPlayer && $turnPhase != "P" && IsPlayable($myArsenal[$i], $turnPhase, "ARS", $i, $restriction);
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable, $playerID);
         $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? 5 : 0;
-        if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
+        if ($restriction != "") $restriction = str_replace(" ", "_", $restriction);
         $actionDataOverride = ($actionType == 16 || $actionType == 27) ? strval($i) : "";
         $myArse[] = JSONRenderedCard(
           cardNumber: $myArsenal[$i],
@@ -966,13 +967,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $theirAurasOutput = [];
   $theirAurasCount = count($theirAuras);
   $auraPieces = AuraPieces();
-  $labeledAuras = ["blessing_of_themis_yellow", "leave_em_speechless_blue"];
+  static $labeledAurasSet = ["blessing_of_themis_yellow" => true, "leave_em_speechless_blue" => true];
   for ($i = 0; $i + $auraPieces - 1 < $theirAurasCount; $i += $auraPieces) {
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
     $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
     $holoCounters = $theirAuras[$i + 13];
-    if(in_array($theirAuras[$i], $labeledAuras)) {
+    if(isset($labeledAurasSet[$theirAuras[$i]])) {
       $label = GamestateUnsanitize($theirAuras[$i + 10]);
     }
     elseif (!TypeContains($theirAuras[$i], "T") && $theirAuras[$i + 4] == 1) {
@@ -1090,7 +1091,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $sType = CardSubType($myAuras[$i]);
     $gem = $myAuras[$i + 7] != 2 ? $myAuras[$i + 7] : NULL;
     $holoCounters = $myAuras[$i + 13];
-    if(in_array($myAuras[$i], $labeledAuras)) {
+    if(isset($labeledAurasSet[$myAuras[$i]])) {
       $label = GamestateUnsanitize($myAuras[$i + 10]);
     }
     elseif (!TypeContains($myAuras[$i], "T") && $myAuras[$i + 4] == 1) {
@@ -1127,7 +1128,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $border = CardBorderColor($myItems[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? 10 : 0;
     $label = "";
-    if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
+    if ($restriction != "") $restriction = str_replace(" ", "_", $restriction);
     $actionDataOverride = strval($i);
     $gem = $myItems[$i + 5] != 2 ? $myItems[$i + 5] : NULL;
     $rustCounters = null;
@@ -1175,7 +1176,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $playable = $currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turnPhase, "PLAY", $i, $restriction) : false;
     $border = CardBorderColor($myPermanents[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? 34 : 0;
-    if ($restriction != "") $restriction = implode("_", explode(" ", $restriction));
+    if ($restriction != "") $restriction = str_replace(" ", "_", $restriction);
     $actionDataOverride = strval($i);
     $myPermanentsOutput[] = JSONRenderedCard(cardNumber: $myPermanents[$i], controller: $playerID, type: $type, sType: $sType, action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, restriction: $restriction);
   }
@@ -1244,7 +1245,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           $opponentCounts[$cardID]++;
       }
   }
-  if ($CombatChain->HasCurrentLink()) {
+  if ($hasCurrentLink) {
     if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
       $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
       foreach ($activeEffects as $effectSetID) {
@@ -1295,7 +1296,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
       }
   }
-  if ($CombatChain->HasCurrentLink()) {
+  if ($hasCurrentLink) {
     if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
       $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
       foreach ($activeEffects as $effectSetID) {
