@@ -658,23 +658,23 @@ class visit_the_dawnsmith_blue extends Card {
 }
 
 class toe_the_line_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "toe_the_line_red";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddCurrentTurnEffect($this->cardID, $this->controller);
-	return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "toe_the_line_red";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
 
 	function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    $prevented = 2;
-    if (!$amount) {
-		if ($preventable) PlayAura("flurry", $this->controller);
-      $remove = true;
-    }
-  	return $prevented;
+		$prevented = 2;
+		if (!$amount) {
+			if ($preventable) PlayAura("flurry", $this->controller);
+			$remove = true;
+		}
+		return $prevented;
 	}
 }
 
