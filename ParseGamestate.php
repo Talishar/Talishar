@@ -464,7 +464,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $backupFile = $filepath . "gamestateBackup_" . $targetBackup . ".txt";
   
   if(!file_exists($backupFile)) {
-    WriteLog("Cannot undo further: Please revert to start of this/previousturn instead.");
+    WriteLog("Cannot undo further: Please revert to start of this/previous turn instead.");
     return;
   }
   // apply current settings to the backup
