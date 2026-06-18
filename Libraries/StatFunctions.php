@@ -99,7 +99,7 @@ function LogPlayCardStats($player, $cardID, $from, $type="")
         // From "PLAY" means it was already played, don't account for it a second time.
         ++$cardStats[$i + $CardStats_TimesPlayed];
       }
-      if ($from == "PLAY" && TypeContains($cardID, "W"))
+      if ($from == "EQUIP" && TypeContains($cardID, "W"))
       {
         ++$cardStats[$i + $CardStats_TimesActivated];
       }
