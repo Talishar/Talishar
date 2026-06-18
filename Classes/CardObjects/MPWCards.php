@@ -745,30 +745,6 @@ class durendal extends Card {
 		return 1;
 	}
 
-	function SpecialPower() {
-		return 3;
-	}
-
-	function SpecialName() {
-		return "Durendal";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialType() {
-		return "W";
-	}
-
-	function SpecialSubType() {
-		return "Sword";
-	}
-
-	function SpecialBlock() {
-		return -2;
-	}
-
 	function CombatChainBlockModifier($cardID, $from, $index, $sourceIndex) {
 		global $CombatChain;
 		if ($sourceIndex != 0) return 0;
@@ -812,30 +788,6 @@ class raise_blades_red extends Card {
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 3;
-	}
-
-	function SpecialPitch() {
-		return 1;
-	}
-
-	function SpecialName() {
-		return "Raise Blades";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function SpecialBlock() {
-		return 3;
-	}
-
-	function HasGoAgain($from) {
-		return true;
 	}
 }
 
@@ -891,26 +843,6 @@ class overwhelming_swing_yellow extends Card {
 
 	function CardCost($from = '-') {
 		return NumCardsDefended();
-	}
-
-	function SpecialType() {
-		return "AR";
-	}
-
-	function SpecialPitch() {
-		return 2;
-	}
-
-	function SpecialName() {
-		return "Overwhelming Swing";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialBlock() {
-		return 3;
 	}
 }
 
@@ -989,32 +921,4 @@ class rake_back_blue extends Card {
     $Effect = new CurrentEffect($index);
     return $Effect->EffectID() == "$this->cardID-WAGER"; // no -WAGER or -BUFF
   }
-
-	function CardCost($from = '-') {
-		return 2;
-	}
-
-	function SpecialPitch() {
-		return 3;
-	}
-
-	function SpecialName() {
-		return "Rake Back";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function SpecialBlock() {
-		return 3;
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
 }
