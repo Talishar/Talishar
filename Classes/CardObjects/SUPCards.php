@@ -419,9 +419,11 @@ class hunter_or_hunted_blue extends Card {
       AddDecisionQueue("SETDQVAR", $player, 1, 1);
       AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
       // show their hand, arsenal, and deck
-      AddDecisionQueue("WRITELOG", $player, CardLink($parameter, $parameter) . " shows opponent's hand and arsenal", 1);
-      AddDecisionQueue("SHOWHANDWRITELOG", $mainPlayer, "-", 1);
-      AddDecisionQueue("SHOWARSENALWRITELOG", $mainPlayer, "-", 1);
+      if(count(GetHand($mainPlayer)) > 0 || count(GetArsenal($mainPlayer)) > 0) {
+        AddDecisionQueue("WRITELOG", $player, CardLink($parameter, $parameter) . " shows opponent's hand and arsenal", 1);
+        AddDecisionQueue("SHOWHANDWRITELOG", $mainPlayer, "-", 1);
+        AddDecisionQueue("SHOWARSENALWRITELOG", $mainPlayer, "-", 1);
+      }
 
       AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count, 1);
       AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
