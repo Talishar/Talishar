@@ -1350,15 +1350,21 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "rust_belt":
       DestroyCharacter($currentPlayer, $cardIndex);
-      //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
+      if ($inds != "") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Cog to tap for " . CardLink("rust_belt"));
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      }
       break;
     case "spitfire":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
-      //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
+      if ($inds != "") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Cog to tap for " . CardLink("spitfire"));
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      }
       break;
     case "cogwerx_blunderbuss":
       if (GetResolvedAbilityType($cardID) == "AA") {
