@@ -80,12 +80,7 @@ foreach(PatreonCampaign::cases() as $campaign) {
 $sessionData['friendList'] = [];
 $friendsListParam = TryGet("friendsList", "");
 if (!empty($friendsListParam)) {
-  try {
-    $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
-  } catch (Exception $e) {
-    // friendsList parameter parsing failed
-    error_log("GetNextTurn: failed to parse friendsList param: " . $e->getMessage());
-  }
+  $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
 }
 
 // Release the session lock NOW - before any file I/O or processing
@@ -99,12 +94,11 @@ $currentTime = round(microtime(true) * 1000);
 // Track player connection status
 if ($isGamePlayer) {
   $playerStatus = intval(GetCachePiece($gameName, $playerID + 3));
-  if ($playerStatus == "-1") WriteLog("🔌Player $playerID has connected.");
+  if ($playerStatus === -1) WriteLog("🔌Player $playerID has connected.");
   SetCachePiece($gameName, $playerID + 1, $currentTime);
   SetCachePiece($gameName, $playerID + 3, "0");
   if ($playerStatus > 0) {
     WriteLog("🔌Player $playerID has reconnected.");
-    SetCachePiece($gameName, $playerID + 3, "0");
   }
 }
 

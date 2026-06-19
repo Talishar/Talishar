@@ -80,7 +80,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if (SubtypeContains($cardToPlay, "Arrow")) SetClassState($playerID, $CS_ArsenalFacing, $facing);
         if ($arsenal[$index + 3] > 0 && CardSubType($cardToPlay) == "Arrow") $combatChainState[$CCS_HasAimCounter] = 1;
         if (!isset($arsenal[$index + 6])) WriteLog("Something odd happened when playing a card from arsenal. Please submit a bug report", highlight:true);
-        if ($arsenal[$index + 6] ?? 0 > 0) $combatChainState[$CCS_NumPowerCounters] = $arsenal[$index + 6];
+        if (($arsenal[$index + 6] ?? 0) > 0) $combatChainState[$CCS_NumPowerCounters] = $arsenal[$index + 6];
         if(!IsStaticType(CardType($cardToPlay, "ARS"), "ARS", $cardToPlay)) RemoveArsenal($playerID, $index);
         PlayCard($cardToPlay, "ARS", -1, -1, $uniqueID, zone: "MYARS", facing:$facing);
       } else {
@@ -312,7 +312,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         break;
       }
       $input = [];
-      $chkInputCount = count($chkInput);
       $optionsCount = count($options);
       for ($i = 0; $i < $chkInputCount; ++$i) {
         if ($chkInput[$i] < 0 || $chkInput[$i] >= $optionsCount) {
@@ -1162,15 +1161,16 @@ function PassInput($autopass = true, $doublePass = false)
         ++$currPreLayers;
     }
     $addedTriggers = [];
-    for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
+    $remainingLayers = [];
+    for ($i = 0; $i < $layersCount; $i += $layerPieces) {
       if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $currentPlayer) {
-        $pretrigger = array_slice($layers, $i, $layerPieces);
-        $pretrigger[0] = "TRIGGER";
-        array_splice($layers, $i, $layerPieces);
-        $addedTriggers = array_merge($pretrigger, $addedTriggers);
+        $addedTriggers[] = "TRIGGER";
+        for ($j = 1; $j < $layerPieces; ++$j) $addedTriggers[] = $layers[$i + $j];
+      } else {
+        for ($j = 0; $j < $layerPieces; ++$j) $remainingLayers[] = $layers[$i + $j];
       }
     }
-    $layers = array_merge($addedTriggers, $layers);
+    $layers = array_merge($addedTriggers, $remainingLayers);
   }
   if ($turn[0] == "B") {
     $uniqueID = SearchCurrentTurnEffects("meganetic_lockwave_blue", $mainPlayer, returnUniqueID: true);
@@ -1631,7 +1631,7 @@ function FinalizeChainLink($chainClosed = false)
   for ($i = 1; $i < $ccCount; $i += $ccPieces) {
     $chainCard = $combatChain[$i - 1];
     $cardType = CardType($chainCard);
-    if ($cardType != "W" || $cardType != "E" || $cardType != "C") {
+    if ($cardType != "W" && $cardType != "E" && $cardType != "C") {
       $params = explode(",", GoesWhereAfterResolving($chainCard, "COMBATCHAIN", $combatChain[$i]));
       $goesWhere = $params[0];
       if ($i == 1 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "GY") $goesWhere = $combatChainState[$CCS_GoesWhereAfterLinkResolves];
@@ -1708,7 +1708,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    $effectArr = explode(",", $currentTurnEffects[$i]);
+    $effectArr = explode(",", $currentTurnEffects[$i], 2);
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0]) && !IsLayerContinuousBuff($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
@@ -1793,9 +1793,8 @@ function UndoIntimidate($player)
   $banishCount = count($banish);
   $banishPieces = BanishPieces();
   for ($i = $banishCount - $banishPieces; $i >= 0; $i -= $banishPieces) {
-    $BanishCard = new BanishCard($player, $i);
     if ($banish[$i + 1] == "INT") {
-      AddLayer("TRIGGER", $player, "INTIMIDATE", $BanishCard->UniqueID());
+      AddLayer("TRIGGER", $player, "INTIMIDATE", (new BanishCard($player, $i))->UniqueID());
       continue;
     }
     if ($banish[$i + 1] == "NOFEAR" && SearchLayersForCardID("no_fear_red") == -1) {
@@ -2821,7 +2820,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
     for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
       if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-        $effectArr = explode(",", $currentTurnEffects[$i]);
+        $effectArr = explode(",", $currentTurnEffects[$i], 2);
         $effectID = $effectArr[0];
         switch ($effectID) {
           case "censor_red":

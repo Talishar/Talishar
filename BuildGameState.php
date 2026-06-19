@@ -343,6 +343,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $activeChainLink->phantasm = CachedPhantasmActive();
   $activeChainLink->fusion = CachedFusionActive();
   $hasCurrentLink = $CombatChain->HasCurrentLink();
+  $staticBuffsArr = [];
+  if ($hasCurrentLink) {
+    $rawBuffs = $CombatChain->AttackCard()->StaticBuffs();
+    if ($rawBuffs !== "-") $staticBuffsArr = explode(",", $rawBuffs);
+  }
   if ($hasCurrentLink) $activeChainLink->tower = IsTowerActive();
   if ($hasCurrentLink) $activeChainLink->piercing = IsPiercingActive($combatChain[0]);
   if ($hasCurrentLink) $activeChainLink->combo = ComboActive();
@@ -675,9 +680,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myDeckCount = count($myDeck);
   $response->playerDeckCount = $myDeckCount;
   $playerHero = ShiyanaCharacter($myCharacter[0], $playerID);
-  static $blockDIOCards = ["spark_of_genius_yellow", "teklovossens_workshop_red", "teklovossens_workshop_yellow", "teklovossens_workshop_blue", "viziertronic_model_i"];
-  static $blockDIOEvents = ["DOCRANK", "CHOOSEMULTIZONE"];
-  $blockDIO = in_array($turnPhase, $blockDIOEvents) && isset($EffectContext) && in_array($EffectContext, $blockDIOCards);
+  static $blockDIOCards = ["spark_of_genius_yellow" => true, "teklovossens_workshop_red" => true, "teklovossens_workshop_yellow" => true, "teklovossens_workshop_blue" => true, "viziertronic_model_i" => true];
+  static $blockDIOEvents = ["DOCRANK" => true, "CHOOSEMULTIZONE" => true];
+  $blockDIO = isset($blockDIOEvents[$turnPhase]) && isset($EffectContext) && isset($blockDIOCards[$EffectContext]);
   if($playerID < 3 && $myDeckCount > 0 && $myCharacter[1] < 3 && ($playerHero == "dash_database" || $playerHero == "dash_io") && $turnPhase != "OPT" && $turnPhase != "P" && $turnPhase != "CHOOSETOPOPPONENT" && !$blockDIO) {
     $playable = $playerID == $currentPlayer && IsPlayable($myDeck[0], $turnPhase, "DECK", 0);
     $response->playerDeckCard = JSONRenderedCard($myDeck[0], action:$playable ? 35 : 0, actionDataOverride:strval(0), borderColor: $playable ? 6 : 0, controller:$playerID);
@@ -1229,12 +1234,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $effectCardIds = [];
+  $adminEffectIdx = [];
 
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-      $cardID = explode("-", $currentTurnEffects[$i])[0];
-      $cardID = explode(",", $cardID)[0];
+      $raw = $currentTurnEffects[$i];
+      $tmp = strstr($raw, '-', true);
+      $firstPart = $tmp !== false ? $tmp : $raw;
+      $tmp2 = strstr($firstPart, ',', true);
+      $cardID = $tmp2 !== false ? $tmp2 : $firstPart;
       $effectCardIds[$i] = $cardID;
-      if(AdministrativeEffect($cardID) || $cardID == "luminaris_angels_glow-1" || $cardID == "luminaris_angels_glow-2" || HasFancyCounters($cardID)) continue;
+      $isAdmin = AdministrativeEffect($cardID) || $cardID === "luminaris_angels_glow-1" || $cardID === "luminaris_angels_glow-2";
+      $adminEffectIdx[$i] = $isAdmin;
+      if($isAdmin || HasFancyCounters($cardID)) continue;
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
 
       if ($isFriendly) {
@@ -1245,20 +1256,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           $opponentCounts[$cardID]++;
       }
   }
-  if ($hasCurrentLink) {
-    if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
-      $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
-      foreach ($activeEffects as $effectSetID) {
-        $cardID = ExtractCardID(ConvertToCardID($effectSetID));
-        if ($cardID != "") {
-          $isFriendly = $playerID == $mainPlayer;
-          if ($isFriendly) {
-            if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
-            $friendlyCounts[$cardID]++;
-          } else {
-            if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
-            $opponentCounts[$cardID]++;
-          }
+  if (!empty($staticBuffsArr)) {
+    foreach ($staticBuffsArr as $effectSetID) {
+      $cardID = ExtractCardID(ConvertToCardID($effectSetID));
+      if ($cardID != "") {
+        $isFriendly = $playerID == $mainPlayer;
+        if ($isFriendly) {
+          if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
+          $friendlyCounts[$cardID]++;
+        } else {
+          if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
+          $opponentCounts[$cardID]++;
         }
       }
     }
@@ -1266,7 +1274,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
       $cardID = $effectCardIds[$i];
-      if(AdministrativeEffect($cardID) || $cardID == "luminaris_angels_glow-1" || $cardID == "luminaris_angels_glow-2") continue;
+      if ($adminEffectIdx[$i]) continue;
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
       $BorderColor = $isFriendly ? "blue" : "red";
 
@@ -1296,26 +1304,23 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
       }
   }
-  if ($hasCurrentLink) {
-    if ($CombatChain->AttackCard()->StaticBuffs() != "-") {
-      $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
-      foreach ($activeEffects as $effectSetID) {
-        $cardID = ExtractCardID(ConvertToCardID($effectSetID));
-        if ($cardID != "") {
-          $isFriendly = $playerID == $mainPlayer;
-          $BorderColor = $isFriendly ? "blue" : "red";
+  if (!empty($staticBuffsArr)) {
+    foreach ($staticBuffsArr as $effectSetID) {
+      $cardID = ExtractCardID(ConvertToCardID($effectSetID));
+      if ($cardID != "") {
+        $isFriendly = $playerID == $mainPlayer;
+        $BorderColor = $isFriendly ? "blue" : "red";
 
-          $counters = $isFriendly ? $friendlyCounts[$cardID] : $opponentCounts[$cardID];
-          if ($isFriendly || $playerID == 3 && !$isFriendly) {
-            if(!isset($friendlyRenderedEffects[$cardID]) || !skipEffectUIStacking($cardID)) {
-              $friendlyRenderedEffects[$cardID] = true;
-              $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
-            }
+        $counters = $isFriendly ? $friendlyCounts[$cardID] : $opponentCounts[$cardID];
+        if ($isFriendly || $playerID == 3 && !$isFriendly) {
+          if(!isset($friendlyRenderedEffects[$cardID]) || !skipEffectUIStacking($cardID)) {
+            $friendlyRenderedEffects[$cardID] = true;
+            $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
           }
-          elseif(!isset($opponentRenderedEffects[$cardID]) && !$isFriendly || !skipEffectUIStacking($cardID)) {
-            $opponentRenderedEffects[$cardID] = true;
-            $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
-          }
+        }
+        elseif(!isset($opponentRenderedEffects[$cardID]) && !$isFriendly || !skipEffectUIStacking($cardID)) {
+          $opponentRenderedEffects[$cardID] = true;
+          $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
         }
       }
     }

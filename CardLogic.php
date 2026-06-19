@@ -2426,8 +2426,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "zephyr_needle":
       case "zephyr_needle_r":
         EvaluateCombatChain($totalPower, $totalBlock, secondNeedleCheck: true);
-        $ccPieces = CombatChainPieces();
-        for ($i = $ccPieces; $i < count($combatChain); $i += $ccPieces) {
+        $combatChainPieces = CombatChainPieces();
+        for ($i = $combatChainPieces; $i < count($combatChain); $i += $combatChainPieces) {
           $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
           $blockVal = intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6];
           if ($totalBlock > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
@@ -3453,9 +3453,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $maxRepeats = count($myItems);
         // check to make sure it's still there before giving it a buff
         $foundSkywarden = false;
-        $ccPieces = CombatChainPieces();
-        $ccCount = count($combatChain);
-        for ($i = $ccPieces; $i < $ccCount; $i += $ccPieces) {
+        $combatChainPieces = CombatChainPieces();
+        $combatChainCount = count($combatChain);
+        for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
           if ($combatChain[$i] == "golden_skywarden_yellow") $foundSkywarden = true;
         }
         $itemPieces = ItemPieces();
@@ -3576,9 +3576,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "golden_glare":
         $yellowPitchCards = 0;
-        $ccPieces = CombatChainPieces();
-        $ccCount = count($combatChain);
-        for ($i = $ccPieces; $i < $ccCount; $i += $ccPieces) {
+        $combatChainPieces = CombatChainPieces();
+        $combatChainCount = count($combatChain);
+        for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
           if (PitchValue($combatChain[$i]) == 2) ++$yellowPitchCards;
         }
         if ($yellowPitchCards >= 2) {
@@ -4650,9 +4650,9 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       $index = -1;
       if ($target == "-") $index = 0;
       else {
-        $ccPieces = CombatChainPieces();
-        $ccCount = count($combatChain);
-        for ($i = 0; $i < $ccCount; $i += $ccPieces) {
+        $combatChainPieces = CombatChainPieces();
+        $combatChainCount = count($combatChain);
+        for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
           if ($combatChain[$i+7] == $target) $index = $i;
         }
       }

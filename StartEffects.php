@@ -6,8 +6,8 @@ include_once "AccountFiles/AccountSessionAPI.php";
 // Initialize game state
 AddLayer("STARTTURN", $mainPlayer, "-");
 $layerPriority = [];
-array_push($layerPriority, ShouldHoldPriority(1));
-array_push($layerPriority, ShouldHoldPriority(2));
+$layerPriority[] = ShouldHoldPriority(1);
+$layerPriority[] = ShouldHoldPriority(2);
 
 // Get player characters and health
 $p1Char = &GetPlayerCharacter(1);
@@ -21,8 +21,7 @@ $format = is_numeric($format) ? FormatName($format) : $format;
 if ($p1StartingHealth != "") $p1H = $p1StartingHealth;
 
 // Initialize game log
-$fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
-if (!file_exists($fullLog)) $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
+$fullLog = "../Games/{$gameName}/fullGamelog.txt";
 if (file_exists($fullLog)) {
   $handler = fopen($fullLog, "w+");
   fwrite($handler, "Player $firstPlayer is the first player and will begin play\r\n");
@@ -97,7 +96,7 @@ if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 function handleCharacterStartAbilities()
 {
-  global $p1Char, $p2Char, $format;
+  global $p1Char, $p2Char;
 
   // Dash abilities
   $p1IsDash = in_array($p1Char[0], ["dash_inventor_extraordinaire", "dash"]);
@@ -167,21 +166,21 @@ function handleCharacterStartAbilities()
   }
   
   // Barbed Castaway
-  if (($index = FindCharacterIndex(1, "barbed_castaway")) > 0) {
+  if (FindCharacterIndex(1, "barbed_castaway") > 0) {
     AddCurrentTurnEffect("barbed_castaway-Load", 1);
     AddCurrentTurnEffect("barbed_castaway-Aim", 1);
   }
-  if (($index = FindCharacterIndex(2, "barbed_castaway")) > 0) {
+  if (FindCharacterIndex(2, "barbed_castaway") > 0) {
     AddCurrentTurnEffect("barbed_castaway-Load", 2);
     AddCurrentTurnEffect("barbed_castaway-Aim", 2);
   }
 
   // Victor
   if (SearchCharacterForCard(1, "victor_goldmane_high_and_mighty") || SearchCharacterForCard(1, "victor_goldmane")) {
-    AddDecisionQueue("ADDCURRENTTURNEFFECT", 1, $p1Char[0] . "-1", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", 1, "{$p1Char[0]}-1", 1);
   }
   if (SearchCharacterForCard(2, "victor_goldmane_high_and_mighty") || SearchCharacterForCard(2, "victor_goldmane")) {
-    AddDecisionQueue("ADDCURRENTTURNEFFECT", 2, $p2Char[0] . "-1", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", 2, "{$p2Char[0]}-1", 1);
   }
 }
 
@@ -215,7 +214,8 @@ function InventoryStartGameAbilities($player)
 {
   global $p1Inventory, $p2Inventory;
   $inventory = $player == 1 ? $p1Inventory : $p2Inventory;
-  for ($i = 0; $i < count($inventory); $i += InventoryPieces()) {
+  $inventoryPieceSize = InventoryPieces();
+  for ($i = 0; $i < count($inventory); $i += $inventoryPieceSize) {
     switch ($inventory[$i]) {
       case "levia_redeemed":
         PutPermanentIntoPlay($player, "levia_redeemed");
