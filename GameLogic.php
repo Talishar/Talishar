@@ -3324,11 +3324,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $mainPlayer);
           $index = GetCombatChainIndex($lastResult, $defPlayer);
           if ($CombatChain->Remove($index) == "") {
-            $chainLinkPieces= ChainLinksPieces();
+            $chainLinkPieces = ChainLinksPieces();
             $chainLinksCount = count($chainLinks);
             for ($i = 0; $i < $chainLinksCount; ++$i) {
               $clICount = count($chainLinks[$i]);
-              for ($j = 0; $j < $clICount; $j += $clPieces) {
+              for ($j = 0; $j < $clICount; $j += $chainLinkPieces) {
                 if ($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j + 2] = 0;
               }
             }
@@ -3890,7 +3890,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $chainLinksCount = count($chainLinks);
       for ($i = 0; $i < $chainLinksCount; ++$i) {
         $clICount = count($chainLinks[$i]);
-        for ($j = $clPieces; $j < $clICount; $j += $clPieces) {
+        for ($j = $chainLinkPieces; $j < $clICount; $j += $chainLinkPieces) {
           if ($chainLinks[$i][$j] == $parameter) {
             $chainLinks[$i][$j+2] = 0;
           }
