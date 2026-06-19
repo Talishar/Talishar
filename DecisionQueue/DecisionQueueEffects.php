@@ -580,8 +580,9 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       Draw($player, num: $lastResult);
       return $lastResult;
     case "SCEPTEROFPAIN":
-      if (intval($dqVars[0]) > 0) {
-        PlayAura("runechant", $player, number: intval($dqVars[0]));
+      $scepterVal = intval($dqVars[0]);
+      if ($scepterVal > 0) {
+        PlayAura("runechant", $player, number: $scepterVal);
       }
       return $lastResult;
     case "AERTHERARC":
@@ -658,7 +659,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return "1";
     case "PLASMAMAINLINE":
       $items = &GetItems($player);
-      $lastResultArr = explode(",", $lastResult);
+      $lastResultArr = explode(",", $lastResult, 3);
       $PMIndex = SearchItemsForUniqueID($lastResultArr[0], $player);
       $targetIndex = SearchItemsForUniqueID($lastResultArr[1], $player);
       if ($targetIndex != -1) ++$items[$targetIndex + 1];
@@ -667,17 +668,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "TOMEOFDUPLICITY":
       $cards = explode(",", $lastResult);
-      $mzIndices = "";
+      $mzParts = [];
       $mod = (CardType($cards[0]) == "A" ? "INST" : "-");
       $countCards = count($cards);
       for ($i = 0; $i < $countCards; ++$i) {
         $index = BanishCardForPlayer($cards[$i], $player, "DECK", $mod);
         WriteLog(CardLink($cards[$i], $cards[$i]) . " was banished.");
-        if ($mzIndices != "")
-          $mzIndices .= ",";
-        $mzIndices .= "BANISH-" . $index;
+        $mzParts[] = "BANISH-" . $index;
       }
-      $dqState[5] = $mzIndices;
+      $dqState[5] = implode(",", $mzParts);
       return $lastResult;
     case "SANDSCOURGREATBOW":
       if ($lastResult == "NO")
@@ -736,7 +735,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       MZMoveCard($player, "MYDISCARD:type=" . $newType . ";class=RUNEBLADE", "MYTOPDECK");
       return 1;
     case "PICKACARD":
-      $index = explode("-", $dqVars[0])[1];
+      $index = explode("-", $dqVars[0], 2)[1];
       $hand = &GetHand($otherPlayer);
       $chosenName = CardName($hand[$index]);
       $rand = GetRandom(0, count($hand) - 1);
@@ -852,13 +851,15 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       sort($lastResult);
       $Items = new Items($player);
       $Mechanoid = $Items->Card($initiator, true);
-      for ($i = count($lastResult) - 1; $i >= 0; --$i) {
+      $lastResultCount = count($lastResult);
+      for ($i = $lastResultCount - 1; $i >= 0; --$i) {
         $ItemCard = new ItemCard($lastResult[$i], $player);
         $Mechanoid->AddSubcard($ItemCard->CardID());
       }
-      $numCounters = count(explode(",", $Mechanoid->SubCards()));
+      $subCards = $Mechanoid->SubCards();
+      $numCounters = $subCards !== '' ? substr_count($subCards, ',') + 1 : 0;
       $Mechanoid->AddCounters($numCounters);
-      for ($i = count($lastResult) - 1; $i >= 0; --$i) { // go through again to avoid re-indexing too early
+      for ($i = $lastResultCount - 1; $i >= 0; --$i) { // go through again to avoid re-indexing too early
         $ItemCard = new ItemCard($lastResult[$i], $player);
         $ItemCard->Destroy(true);
       }
@@ -896,7 +897,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if ($effectInd == -1)
         AddCurrentTurnEffect($char[$index] . "-2", $player, uniqueID: $char[$index + 11]);
       else {
-        $prevVal = intval(explode("-", $currentTurnEffects[$effectInd])[1]);
+        $prevVal = intval(explode("-", $currentTurnEffects[$effectInd], 2)[1]);
         $currentTurnEffects[$effectInd] = $char[$index] . "-" . ($prevVal + 2);
       }
       return $lastResult;
@@ -921,11 +922,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "NOFEAR":
       if (!is_array($lastResult))
         $lastResult = [];
-      for ($i = count($lastResult) - 1; $i >= 0; --$i) {
+      $nofearCount = count($lastResult);
+      for ($i = $nofearCount - 1; $i >= 0; --$i) {
         $cardID = RemoveHand($player, $lastResult[$i]);
         BanishCardForPlayer($cardID, $player, "HAND", "NOFEAR", banisher: $player, banishedBy: "no_fear_red");
       }
-      SetClassState($player, $CS_AdditionalCosts, count($lastResult));
+      SetClassState($player, $CS_AdditionalCosts, $nofearCount);
       return "";
     case "RAISEANARMY":
       if ($dqVars[0] > 0) {
@@ -963,7 +965,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       for ($j = 2; $j >= 0; $j--) {
         $index = SearchDiscardForCard($player, $cardList[$j]);
-        $index = explode(",", $index)[0]; //in case the search returns 2 cards
+        $index = explode(",", $index, 2)[0]; //in case the search returns 2 cards
         RemoveGraveyard($player, $index);
       }
       return $lastResult;
@@ -1069,7 +1071,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "KINGKRAKENHARPOON":
-      $index = intval(explode("-", $lastResult)[1] ?? 0);
+      $lastResParts = explode("-", $lastResult, 3);
+      $index = intval($lastResParts[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
@@ -1080,7 +1083,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "KINGSHARKHARPOON":
-      $index = intval(explode("-", $lastResult)[1] ?? 0);
+      $lastResParts = explode("-", $lastResult, 3);
+      $index = intval($lastResParts[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
@@ -1091,7 +1095,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "REDFINHARPOON":
-      $index = intval(explode("-", $lastResult)[1] ?? 0);
+      $lastResParts = explode("-", $lastResult, 3);
+      $index = intval($lastResParts[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
@@ -1102,7 +1107,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "YELLOWFINHARPOON":
-      $index = intval(explode("-", $lastResult)[1] ?? 0);
+      $lastResParts = explode("-", $lastResult, 3);
+      $index = intval($lastResParts[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
@@ -1113,7 +1119,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "BLUEFINHARPOON":
-      $index = intval(explode("-", $lastResult)[1] ?? 0);
+      $lastResParts = explode("-", $lastResult, 3);
+      $index = intval($lastResParts[1] ?? 0);
       $cardID = GetMZCard($player, $lastResult);
       if (CanRevealCards($defPlayer)) {
         RevealCards($cardID);
@@ -1146,7 +1153,8 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "AERONOUGHT":
       $ind = -1;
       if (str_contains($lastResult, "COMBATCHAINLINK")) {
-        $ind = intval(explode("-", $lastResult)[1] ?? -1);
+        $lastResParts = explode("-", $lastResult, 3);
+        $ind = intval($lastResParts[1] ?? -1);
         if ($ind != -1) {
           $TargetCard = $CombatChain->Card($ind);
           $targetCard = $TargetCard->ID();
@@ -1181,7 +1189,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       else {
         //we've chosen a previous chain link
-        $lastResultParts = explode("-", $lastResult);
+        $lastResultParts = explode("-", $lastResult, 3);
         $targetInd = $lastResultParts[1];
         $targetInd2 = $lastResultParts[2] ?? "-";
         $card = $ChainLinks->GetLink($targetInd2)->GetLinkCard($targetInd);
@@ -1308,9 +1316,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "CREMATION":
       $discard = GetDiscard($otherPlayer);
       $discardPieces = DiscardPieces();
+      $cremationTarget = GamestateUnsanitize($lastResult);
       for ($i = count($discard) - $discardPieces; $i >= 0; $i -= $discardPieces) {
         if (!isFaceDownMod($discard[$i + 2])) {
-          if (ShareName(CardName($discard[$i]), GamestateUnsanitize($lastResult))) {
+          if (ShareName(CardName($discard[$i]), $cremationTarget)) {
             BanishCardForPlayer($discard[$i], $otherPlayer, "DISCARD", banishedBy: "talisman_of_cremation_blue", banisher: $player);
             RemoveDiscard($otherPlayer, $i);
           }
@@ -1319,12 +1328,13 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return $lastResult;
     case "TRUTHORTRICKERY":
       $defHero = GetPlayerCharacter($defPlayer)[0];
+      $defHeroLink = CardLink($defHero, $defHero);
       $deck = new Deck($defPlayer);
       $topCard = $deck->Top();
       if ($lastResult == "NO")
-        WriteLog("You call " . CardLink($defHero, $defHero) . " a liar!");
+        WriteLog("You call {$defHeroLink} a liar!");
       else
-        WriteLog("You think " . CardLink($defHero, $defHero) . " is honest this time");
+        WriteLog("You think {$defHeroLink} is honest this time");
       WriteLog("The top card of their deck was " . CardLink($topCard, $topCard));
       $topColor = ColorOverride($topCard, $defPlayer);
       $chosenColor = match ($params[1]) {
@@ -1339,7 +1349,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         PummelHit($player, context: "Why would you ever trust them? Discard a card");
       }
       else
-        WriteLog("You see through " . CardLink($defHero, $defHero) . "'s trickery");
+        WriteLog("You see through {$defHeroLink}'s trickery");
       return $lastResult;
     case "ALPHA":
       if (ModifiedPowerValue($lastResult, $player, "HAND") >= 6) {
@@ -1347,7 +1357,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "IRONFIST":
-      $index = explode("-", $lastResult)[1];
+      $index = explode("-", $lastResult, 3)[1];
       $arsenal = &GetArsenal($player);
       $arsenal[$index + 1] = "UP";
       ++$arsenal[$index + 6];
@@ -1389,11 +1399,11 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return "";
     case "EMBODYGREATNESS":
       $Character = new CharacterCard(0, $player);
-      $Character->Become(explode("-", $lastResult)[1] ?? $Character->CardID());
+      $Character->Become(explode("-", $lastResult, 2)[1] ?? $Character->CardID());
       return $lastResult;
     case "BOTTLE":
       $attackID = $CombatChain->AttackCard()->ID();
-      $params = explode("-", $lastResult);
+      $params = explode("-", $lastResult, 3);
       $linkNum = $params[2] ?? "-";
       $ind = $params[1] ?? "-";
       if ($linkNum != "-" && $ind != "-") {
@@ -1401,7 +1411,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $LinkCard = $Link->GetLinkCard($ind);
         $names = ($ind == 0) ? $Link->ListofNames() : GamestateSanitize(NameOverride($LinkCard->ID(), $player));
         $namesWithSpaces = str_replace(",", ", ", $names);
-        $nameCount = count(explode(",", $names));
+        $nameCount = substr_count($names, ',') + 1;
         $nameLabel = ($nameCount == 1) ? "name" : "names";
         WriteLog(CardLink($attackID) . " gains the " . $nameLabel . " <b>" . GamestateUnsanitize($namesWithSpaces) . "</b>");
         AddCurrentTurnEffect("$attackID-$names", $player);
@@ -1425,7 +1435,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddCurrentTurnEffect("bone_puppetry", $player, "", $Ally->UniqueID());
       break;
     case "RIPPLINGWAVE":
-      $lastResultArr = explode("-", $lastResult);
+      $lastResultArr = explode("-", $lastResult, 3);
       $zone = $lastResultArr[0];
       $ind = $lastResultArr[1] ?? "-";
       if ($ind == "-") return;
@@ -1480,9 +1490,10 @@ function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAN
 function MeldCards($player, $cardID, $lastResult, $target="-", $from="-"){
   global $CS_ResolvingLayerUniqueID, $CS_AdditionalCosts;
   if (GetClassState($player, $CS_AdditionalCosts) == "CHAINCLOSING") return;
-  if($lastResult == "Both") $names = explode(" // ", CardName($cardID));
+  $isBoth = ($lastResult == "Both");
+  if($isBoth) $names = explode(" // ", CardName($cardID));
   else $names[] = GamestateUnsanitize($lastResult);
-  if($lastResult == "Both") {
+  if($isBoth) {
     $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
     AddLayer("MELD", $player, $cardID, target:$target, layerUID:$uniqueID, uniqueID:$from);
     $meldState = CardType($cardID);
@@ -1494,7 +1505,7 @@ function MeldCards($player, $cardID, $lastResult, $target="-", $from="-"){
         GainHealth(1, $player);
         break;
       case "Shock":
-        $shockTarget = str_contains($target, ",") ? explode(",", $target)[1] : $target;
+        $shockTarget = str_contains($target, ",") ? explode(",", $target, 2)[1] : $target;
         $type = count($names) > 1 && IsDoubleArcane($cardID) ? "ARCANESHOCK" : "PLAYCARD";
         DealArcane(1, 2, $type, $cardID, false, $player, meldState: $meldState, resolvedTarget:$shockTarget);
         break;
