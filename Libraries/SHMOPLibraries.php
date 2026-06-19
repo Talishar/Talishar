@@ -177,7 +177,7 @@ function GamestateUpdated($gameName, $resetTimer = true)
   if (function_exists('FlushLogBuffer')) FlushLogBuffer();
   $cache = ReadCache($gameName);
   $cacheArr = explode(SHMOPDelimiter(), $cache);
-  $cacheArr[0]++;
+  $cacheArr[0] = (int)$cacheArr[0] + 1;
   if ($resetTimer) {
     $currentTime = round(microtime(true) * 1000);
     $cacheArr[5] = $currentTime;
