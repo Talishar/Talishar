@@ -2129,7 +2129,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         "shred_red", "shred_yellow", "shred_blue" => $cleanTarget,
         default => $target,
       };
-      for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+      $layersCount = count($layers);
+      $layerPieces = LayerPieces();
+      for ($i = 0; $i < $layersCount; $i += $layerPieces) {
         if ($layers[$i] == $parameter) {
           if ($layers[$i + 3] == "-") {
             $layers[$i + 3] = $target;
@@ -2210,7 +2212,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (!is_array($lastResult) || count($lastResult) == 0) return "PASS";
       if (SearchCurrentTurnEffects("amnesia_red", $player)) return "PASS";
       $name = CardName($zone[$lastResult[0]]);
-      for ($i = 1; $i < count($lastResult); ++$i) {
+      $lastResultCount = count($lastResult);
+      for ($i = 1; $i < $lastResultCount; ++$i) {
         if (CardName($zone[$lastResult[$i]]) != $name) {
           WriteLog("You selected cards that do not have the same name. Reverting gamestate prior to that effect.", highlight: true);
           RevertGamestate();
@@ -2425,9 +2428,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       } else WriteLog(CardLink("bingo_red", "bingo_red") . "... did not hit the mark");
       return $lastResult;
     case "ALREADYBLOCKING":
-      $ccCount = count($combatChain);
-      $ccPieces = CombatChainPieces();
-      for ($i = 0; $i < $ccCount; $i += $ccPieces) {
+      $combatChainCount = count($combatChain);
+      $combatChainPieces = CombatChainPieces();
+      for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
         if ($combatChain[$i] == $parameter) return "PASS";
       }
       return $parameter;
@@ -3321,7 +3324,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $mainPlayer);
           $index = GetCombatChainIndex($lastResult, $defPlayer);
           if ($CombatChain->Remove($index) == "") {
-            $clPieces = ChainLinksPieces();
+            $chainLinkPieces= ChainLinksPieces();
             $chainLinksCount = count($chainLinks);
             for ($i = 0; $i < $chainLinksCount; ++$i) {
               $clICount = count($chainLinks[$i]);
@@ -3455,13 +3458,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDPRELAYERTOSTACK":
       $ind = explode("-", $lastResult)[1] ?? "-";
-      $lp = LayerPieces();
+      $layerPieces = LayerPieces();
       if ($ind == "FIRST") {
-        for ($i = count($layers) - $lp; $i >= 0; $i -= $lp) {
+        for ($i = count($layers) - $layerPieces; $i >= 0; $i -= $layerPieces) {
           if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player) {
-            $pretrigger = array_slice($layers, $i, $lp);
+            $pretrigger = array_slice($layers, $i, $layerPieces);
             $pretrigger[0] = "TRIGGER";
-            for ($j = $i + $lp - 1; $j >= $i; --$j) {
+            for ($j = $i + $layerPieces - 1; $j >= $i; --$j) {
               unset($layers[$j]);
             }
             $layers = array_merge($pretrigger, $layers);
@@ -3471,13 +3474,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       elseif ($ind != "-") {
-        $currentInd = -1 * $lp;
-        for ($i = 0; $i < count($layers); $i += $lp) {
-          if ($layers[$i] == "PRETRIGGER") $currentInd += $lp;
+        $currentInd = -1 * $layerPieces;
+        for ($i = 0; $i < count($layers); $i += $layerPieces) {
+          if ($layers[$i] == "PRETRIGGER") $currentInd += $layerPieces;
           if ($currentInd == $ind) {
-            $pretrigger = array_slice($layers, $i, $lp);
+            $pretrigger = array_slice($layers, $i, $layerPieces);
             $pretrigger[0] = "TRIGGER";
-            for ($j = $i + $lp - 1; $j >= $i; --$j) {
+            for ($j = $i + $layerPieces - 1; $j >= $i; --$j) {
               unset($layers[$j]);
             }
             $layers = array_merge($pretrigger, $layers);
@@ -3883,15 +3886,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "LEAPFROG":
       // remove leapfrog from current link
-      for ($i = 0; $i < count($chainLinks); ++$i) {
-        for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+      $chainLinkPieces= ChainLinksPieces();
+      $chainLinksCount = count($chainLinks);
+      for ($i = 0; $i < $chainLinksCount; ++$i) {
+        $clICount = count($chainLinks[$i]);
+        for ($j = $clPieces; $j < $clICount; $j += $clPieces) {
           if ($chainLinks[$i][$j] == $parameter) {
             $chainLinks[$i][$j+2] = 0;
           }
         }
       }
       $char = &GetPlayerCharacter($player);
-      for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+      $charCount = count($char);
+      $charPieces = CharacterPieces();
+      for ($i = 0; $i < $charCount; $i += $charPieces) {
         if ($char[$i] == $parameter) {
           $ind = $i;
           break;
@@ -3900,7 +3908,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $originUniqueID = $char[$ind + 11];
       # check if it's already there
       $onCombatChain = false;
-      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+      $combatChainCount = count($combatChain);
+      $combatChainPieces = CombatChainPieces();
+      for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
         if ($combatChain[$i+8] == $originUniqueID && $combatChain[$i + 1] == $player && $combatChain[$i] == $parameter) {
           $onCombatChain = true;
           break;
