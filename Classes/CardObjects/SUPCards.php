@@ -35,7 +35,11 @@ class backspin_thrust_red extends Card {
       }
       if ($from == "CC" || $from == "COMBATCHAINATTACKS") {
         $inds = GetTapped($this->controller, "MYITEMS", "subtype=Cog");
-        if($inds != "") Tap(explode(",", $inds)[0], $this->controller, 0);
+        if ($inds != "") {
+          AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a Cog to untap for " . CardLink($this->cardID));
+          AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $inds, 1);
+          AddDecisionQueue("MZTAP", $this->controller, "0", 1);
+        }
         if ($from == "COMBATCHAINATTACKS") ++$chainLinks[$i][9];
         else ++$combatChain[$i + 11];
       }
