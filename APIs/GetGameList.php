@@ -82,7 +82,7 @@ if(IsUserLoggedIn()) {
   // Friends list — refresh at most every 60 seconds per session
   if (!isset($_SESSION['_friendNamesCache']) || ($now - ($_SESSION['_friendNamesCacheAt'] ?? 0)) > $cacheTTL) {
     $friends = GetUserFriends($userId);
-    $friendUserNames = array_map(function($friend) { return $friend['username']; }, $friends);
+    $friendUserNames = array_column($friends, 'username');
     $_SESSION['_friendNamesCache'] = $friendUserNames;
     $_SESSION['_friendNamesCacheAt'] = $now;
   } else {

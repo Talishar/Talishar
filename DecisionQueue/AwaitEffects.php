@@ -98,15 +98,17 @@ function MultiAddHandAwait($player) {
   $loud = $dqVars["log"] ?? "1";
   $hand = &GetHand($player);
   $log = "";
-  for ($i = 0; $i < count($cards); ++$i) {
-    if ($loud == "1") {
-      if ($log != "") $log .= ", ";
-      if ($i != 0 && $i == count($cards) - 1) $log .= "and ";
+  $count = count($cards);
+  $lastIdx = $count - 1;
+  for ($i = 0; $i < $count; ++$i) {
+    if ($loud === "1") {
+      if ($log !== "") $log .= ", ";
+      if ($i !== 0 && $i === $lastIdx) $log .= "and ";
       $log .= CardLink($cards[$i], $cards[$i]);
     }
-    array_push($hand, $cards[$i]);
+    $hand[] = $cards[$i];
   }
-  if ($log != "") WriteLog("$log added to hand");
+  if ($log !== "") WriteLog("$log added to hand");
   return $dqVars["cardIDs"];
 }
 
@@ -122,9 +124,10 @@ function MultiTargetIndicesAwait($player) {
   $currentTargets = explode(",", $dqVars["currentTargets"] ?? "");
   $rvOrig = explode(",", SearchMultizone($player, $dqVars["search"]));
   $rv = [];
+  $currentTargetsFlip = array_flip($currentTargets);
   //remove any choices that have already been targeted
   foreach ($rvOrig as $ind) {
-    if (!in_array(CleanTarget($player, $ind), $currentTargets)) array_push($rv, $ind);
+    if (!isset($currentTargetsFlip[CleanTarget($player, $ind)])) $rv[] = $ind;
   }
   $rv = implode(",", $rv);
   return $rv == "" ? "PASS" : $rv;
@@ -135,9 +138,10 @@ function MultiChooseIndicesAwait($player) {
   $currentChoices = explode(",", $dqVars["currentChoices"] ?? "");
   $rvOrig = explode(",", SearchMultizone($player, $dqVars["search"]));
   $rv = [];
+  $currentChoicesFlip = array_flip($currentChoices);
   //remove any choices that have already been targeted
   foreach ($rvOrig as $ind) {
-    if (!in_array($ind, $currentChoices)) array_push($rv, $ind);
+    if (!isset($currentChoicesFlip[$ind])) $rv[] = $ind;
   }
   $rv = implode(",", $rv);
   return $rv == "" ? "PASS" : $rv;
@@ -177,7 +181,8 @@ function SetLayerTargetAwait($player) {
   $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
   WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
   $cleanTarget = CleanTarget($player, $targ);
-  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+  $numLayers = $Stack->NumLayers();
+  for ($i = 0; $i < $numLayers; ++$i) {
     $Layer = $Stack->Card($i, true);
     if ($Layer->ID() == $cardID) {
       $Layer->AddTarget($cleanTarget);
@@ -301,7 +306,7 @@ function ChooseTextAwait($player) {
   $choices = $dqVars["choices"];
   $numChoices = $dqVars["numChoices"] ?? 0;
   if ($numChoices == 0)
-    $numChoices = count(explode(",", $choices));
+    $numChoices = substr_count($choices, ',') + 1;
   $maxChoices = $dqVars["maxChoices"] ?? $numChoices;
   $minChoices = $dqVars["minChoices"] ?? $numChoices;
   $choices = $dqVars["choices"];

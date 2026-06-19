@@ -15,11 +15,8 @@ $response = new stdClass();
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
   {
-    $arr = explode(",", $str);
-    for($i=0; $i<count($arr); ++$i)
-    {
-      if($partial && str_contains($arr[$i], $find)) return true;
-      else if($arr[$i] == $find) return true;
+    foreach (explode(",", $str) as $item) {
+      if ($partial ? str_contains($item, $find) : $item == $find) return true;
     }
     return false;
   }

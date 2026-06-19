@@ -22,16 +22,18 @@ $response->favoriteDecks = [];
 if (IsUserLoggedIn()) {
   $savedSettings = LoadSavedSettings(LoggedInUser());
   $settingArray = [];
-  for ($i = 0; $i < count($savedSettings); $i += 2) {
-    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i) + 1];
+  $settingCount = count($savedSettings);
+  for ($i = 0; $i < $settingCount; $i += 2) {
+    $settingArray[$savedSettings[$i]] = $savedSettings[$i + 1];
   }
 
   $favoriteDecks = LoadFavoriteDecks(LoggedInUser());
-  if (count($favoriteDecks) > 0) {
+  $favCount = count($favoriteDecks);
+  if ($favCount > 0) {
     $selIndex = -1;
     if (isset($settingArray[$SET_FavoriteDeckIndex])) $selIndex = $settingArray[$SET_FavoriteDeckIndex];
     $response->lastUsedDeckIndex = $selIndex;
-    for ($i = 0; $i < count($favoriteDecks); $i += 4) {
+    for ($i = 0; $i < $favCount; $i += 4) {
       $deck = new stdClass();
       $deck->index = $i;
       $deck->key = $i . "<fav>" . $favoriteDecks[$i];
@@ -41,7 +43,7 @@ if (IsUserLoggedIn()) {
       $deck->cardBack = "DEFAULT";
       $deck->playmat = "DEFAULT";
       $deck->link = $favoriteDecks[$i];
-      array_push($response->favoriteDecks, $deck);
+      $response->favoriteDecks[] = $deck;
     }
   }
 

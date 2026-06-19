@@ -94,19 +94,20 @@ if($handler) {
   $response->deck->hands = [];
   $response->deck->demiHero = [];
   $response->deck->modular = [];
-  for($i = 1; $i < count($character); ++$i) {
+  $charCount = count($character);
+  for($i = 1; $i < $charCount; ++$i) {
     if (!isset($character[$i])) continue;
     $cardID = $character[$i];
-    if (SubtypeContains($cardID, "Head")) array_push($response->deck->head, $cardID);
-    else if (SubtypeContains($cardID, "Chest")) array_push($response->deck->chest, $cardID);
-    else if (SubtypeContains($cardID, "Arms")) array_push($response->deck->arms, $cardID);
-    else if (SubtypeContains($cardID, "Legs")) array_push($response->deck->legs, $cardID);
-    else if (IsModular($cardID)) array_push($response->deck->modular, $cardID);
+    $subtype = CardSubtype($cardID); // compute once; reused for all slot checks
+    if (DelimStringContains($subtype, "Head")) $response->deck->head[] = $cardID;
+    else if (DelimStringContains($subtype, "Chest")) $response->deck->chest[] = $cardID;
+    else if (DelimStringContains($subtype, "Arms")) $response->deck->arms[] = $cardID;
+    else if (DelimStringContains($subtype, "Legs")) $response->deck->legs[] = $cardID;
+    else if (IsModular($cardID)) $response->deck->modular[] = $cardID;
     else {
       $handItem = new stdClass();
       $handItem->id = $cardID;
-      $handItem->is1H = Is1H($handItem->id);
-      $subtype = CardSubtype($handItem->id);
+      $is1H = Is1H($cardID); // compute once; used twice below
       $numHands = 2;
       if(DelimStringContains($subtype, "Quiver")) {
         $numHands = 0;
@@ -121,10 +122,11 @@ if($handler) {
         $numHands = 1;
         $handItem->isOffhand = true;
       }
-      else if(Is1H($handItem->id)) $numHands = 1;
+      else if($is1H) $numHands = 1;
       $handItem->numHands = $numHands;
-      array_push($response->deck->weapons, $handItem);
-      array_push($response->deck->hands, $handItem);
+      $handItem->is1H = $is1H;
+      $response->deck->weapons[] = $handItem;
+      $response->deck->hands[] = $handItem;
     }
   }
 
@@ -133,11 +135,11 @@ if($handler) {
 
   $response->deck->cards = GetArray($handler);
   //Remove deck cards that don't belong
-  for($i=count($response->deck->cards)-1; $i>=0; --$i)
+  for($i = count($response->deck->cards) - 1; $i >= 0; --$i)
   {
     if(CardType($response->deck->cards[$i]) == "D")
     {
-      array_push($response->deck->demiHero, $response->deck->cards[$i]);
+      $response->deck->demiHero[] = $response->deck->cards[$i];
       unset($response->deck->cards[$i]);
     }
   }
@@ -151,11 +153,11 @@ if($handler) {
   $weaponSB = GetArray($handler);
   $response->deck->cardsSB = GetArray($handler);
   //Remove deck cards that don't belong
-  for($i=count($response->deck->cardsSB)-1; $i>=0; --$i)
+  for($i = count($response->deck->cardsSB) - 1; $i >= 0; --$i)
   {
     if(CardType($response->deck->cardsSB[$i]) == "D")
     {
-      array_push($response->deck->demiHero, $response->deck->cardsSB[$i]);
+      $response->deck->demiHero[] = $response->deck->cardsSB[$i];
       unset($response->deck->cardsSB[$i]);
     }
   }
@@ -164,10 +166,12 @@ if($handler) {
   $quiverSB = GetArray($handler);
   $handsSB = array_merge($weaponSB, $offhandSB, $quiverSB);
   $response->deck->handsSB = [];
-  for ($i = 0; $i < count($handsSB); ++$i) {
+  $handsSBCount = count($handsSB);
+  for ($i = 0; $i < $handsSBCount; ++$i) {
     $handItem = new stdClass();
     $handItem->id = $handsSB[$i];
     $subtype = CardSubtype($handItem->id);
+    $is1H = Is1H($handItem->id); // compute once; used twice below
     $numHands = 2;
     if(DelimStringContains($subtype, "Quiver")) {
       $numHands = 0;
@@ -182,10 +186,10 @@ if($handler) {
       $numHands = 1;
       $handItem->isOffhand = true;
     }
-    else if(Is1H($handItem->id)) $numHands = 1;
+    else if($is1H) $numHands = 1;
     $handItem->numHands = $numHands;
-    $handItem->is1H = Is1H($handItem->id);
-    array_push($response->deck->handsSB, $handItem);
+    $handItem->is1H = $is1H;
+    $response->deck->handsSB[] = $handItem;
   }
 
   $response->deck->modular = GetArray($handler);
