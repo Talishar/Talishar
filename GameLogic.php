@@ -3327,8 +3327,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $chainLinkPieces = ChainLinksPieces();
             $chainLinksCount = count($chainLinks);
             for ($i = 0; $i < $chainLinksCount; ++$i) {
-              $clICount = count($chainLinks[$i]);
-              for ($j = 0; $j < $clICount; $j += $chainLinkPieces) {
+              $chainLinksICount = count($chainLinks[$i]);
+              for ($j = 0; $j < $chainLinksICount; $j += $chainLinkPieces) {
                 if ($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j + 2] = 0;
               }
             }
