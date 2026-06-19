@@ -245,6 +245,23 @@ function ProcessSpecificCardMacros()
         return true;
       }
     }
+    // Auto-resolve a cog tap/untap choice when every option is the same cog (card + steam counters + mod)
+    // identical cogs are interchangeable so don't make the player pick. Gated on the choice being a cog.
+    // Still prompts when the cogs differ (steam counters, a copper cog, a turn-stolen cog, etc.).
+    if (SubtypeContains(GetMZCard($currentPlayer, $firstChoice), "Cog", $currentPlayer)) {
+      $firstCog = MZIndexToObject($currentPlayer, $firstChoice);
+      if (is_object($firstCog)) {
+        $allSameCog = true;
+        for ($k = 1; $k < count($choices); ++$k) {
+          $cog = MZIndexToObject($currentPlayer, $choices[$k]);
+          if (!is_object($cog)
+            || $cog->CardID() != $firstCog->CardID()
+            || $cog->NumCounters() != $firstCog->NumCounters()
+            || $cog->Modalities() != $firstCog->Modalities()) { $allSameCog = false; break; }
+        }
+        if ($allSameCog) { ContinueDecisionQueue($firstChoice); return true; }
+      }
+    }
   }
   if ($turn[0] == "MAYCHOOSECARD" && ($EffectContext == "cindra_dracai_of_retribution" || $EffectContext == "cindra"))
   {
