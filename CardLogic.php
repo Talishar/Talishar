@@ -1508,8 +1508,9 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
   $source = $sourceID != "-" ? $sourceID : $CombatChain->AttackCard()->ID();
   if (SearchCurrentTurnEffects("dense_blue_mist_blue-HITPREVENTION", $defPlayer)) return false;
   $effects = explode(',', $cardID);
-  $parameter = explode("-", $effects[0])[0];
-  $mode = explode("-", $effects[0])[1] ?? "-";
+  $effectParts = explode("-", $effects[0]);
+  $parameter = $effectParts[0];
+  $mode = $effectParts[1] ?? "-";
   $card = GetClass($parameter, $mainPlayer);
   if ($card != "-") $card->AddCardEffectHitTrigger($source, $targetPlayer, $mode);
   switch ($effects[0]) {

@@ -426,8 +426,10 @@ function MZStartTurnIndices()
 function FindEmptyEquipmentSlots($player)
 {
   $character = &GetPlayerCharacter($player);
-  $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character) {
-    for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $charCount = count($character);
+  $charPieces = CharacterPieces();
+  $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character, $charCount, $charPieces) {
+    for ($i = 0; $i < $charCount; $i += $charPieces) {
       $subtype = CardSubType($character[$i], $character[$i + 11]);
       $status = $character[$i + 1];
       if (DelimStringContains($subtype, $slot) && $status != 0) return false;
@@ -1255,25 +1257,29 @@ function UnsetItemModifier($player, $modifier, $newMod = "-") {
 function UnsetAllyModifier($player, $modifier, $newMod = "-") {
   $allies = &GetAllies($player);
   $otherPlayer = $player == 1 ? 2 : 1;
-    for($i=0; $i<count($allies); $i+=AllyPieces()) {
-      $cardModifier = $allies[$i+14];
-      if($cardModifier == $modifier) {
-        $allies[$i+14] = "-";
-        StealAlly($player, $i, $otherPlayer, "THEIRALLY", tapState:"-");
-      }
+  $allyCount = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i < $allyCount; $i += $allyPieces) {
+    $cardModifier = $allies[$i+14];
+    if ($cardModifier == $modifier) {
+      $allies[$i+14] = "-";
+      StealAlly($player, $i, $otherPlayer, "THEIRALLY", tapState:"-");
     }
+  }
 }
 
 function UnsetAuraModifier($player, $modifier, $newMod = "-") {
   $auras = &GetAuras($player);
   $otherPlayer = $player == 1 ? 2 : 1;
-    for($i=0; $i<count($auras); $i+=AuraPieces()) {
-      $cardModifier = $auras[$i+10];
-      if(DelimStringContains($cardModifier, $modifier)) {
-        $auras[$i+10] = "-";
-        StealAura($player, $i, $otherPlayer, "THEIRAURAS");
-      }
+  $auraCount = count($auras);
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $auraCount; $i += $auraPieces) {
+    $cardModifier = $auras[$i+10];
+    if (DelimStringContains($cardModifier, $modifier)) {
+      $auras[$i+10] = "-";
+      StealAura($player, $i, $otherPlayer, "THEIRAURAS");
     }
+  }
 }
 
 function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $color = "")
@@ -2351,7 +2357,9 @@ function DoesAttackHaveGoAgain()
     }
   }
   $otherPlayerCharacter = &GetPlayerCharacter($defPlayer);
-  for ($j = 0; $j < count($otherPlayerCharacter); $j += CharacterPieces()) {
+  $otherCharCount = count($otherPlayerCharacter);
+  $charPieces = CharacterPieces();
+  for ($j = 0; $j < $otherCharCount; $j += $charPieces) {
     if ($otherPlayerCharacter[$j + 1] != 2) continue;
     switch ($otherPlayerCharacter[$j]) {
       case "arakni_5lp3d_7hru_7h3_cr4x":
@@ -3197,14 +3205,15 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $indices = SearchMultiZoneFormat(implode(",", $indices), "MYALLY");
   $mzIndices = CombineSearches($mzIndices, $indices);
 
-  $indices = "";
-  for($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
+  $indexParts = [];
+  $cteCount = count($currentTurnEffects);
+  $ctePieces = CurrentTurnEffectsPieces();
+  for ($i = 0; $i < $cteCount; $i += $ctePieces) {
     if ($currentTurnEffects[$i + 1] == $player && CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, $type, $source, $preventable) > 0) {
-      if ($indices != "") $indices .= ",";
-      $indices .= $i;
+      $indexParts[] = $i;
     }
   }
-  $indices = SearchMultiZoneFormat($indices, "CURRENTTURNEFFECTS");
+  $indices = SearchMultiZoneFormat(implode(",", $indexParts), "CURRENTTURNEFFECTS");
   $mzIndices = CombineSearches($mzIndices, $indices);
 
   $rv = $mzIndices;
@@ -3399,11 +3408,7 @@ function BanishCostModifier($from, $index, $cost)
 
 function IsCurrentAttackName($name)
 {
-  $names = GetCurrentAttackNames();
-  for ($i = 0; $i < count($names); ++$i) {
-    if ($name == $names[$i]) return true;
-  }
-  return false;
+  return in_array($name, GetCurrentAttackNames());
 }
 
 function IsCardNamed($player, $cardID, $name)
@@ -3446,13 +3451,7 @@ function GetCurrentAttackNames()
 
 function SerializeCurrentAttackNames()
 {
-  $names = GetCurrentAttackNames();
-  $serializedNames = "";
-  for ($i = 0; $i < count($names); ++$i) {
-    if ($serializedNames != "") $serializedNames .= ",";
-    $serializedNames .= GamestateSanitize($names[$i]);
-  }
-  return $serializedNames;
+  return implode(",", array_map('GamestateSanitize', GetCurrentAttackNames()));
 }
 
 function HasAttackName($name)
@@ -4418,22 +4417,19 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
 function isPreviousLinkDraconic()
 {
   global $chainLinkSummary;
-  $isDraconic = false;
-  if (count($chainLinkSummary) == 0) return $isDraconic; # No previous links so nothing happens if this is true
-  $talents = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 2]); # Search through the talent types logged on the previous link
-  for ($i = 0; $i < count($talents); ++$i) { # Cycle through talents to see if that previous link was Draconic
-    if ($talents[$i] == "DRACONIC") $isDraconic = true;
-  }
-  return $isDraconic;
+  if (count($chainLinkSummary) == 0) return false;
+  $talents = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 2]);
+  return in_array("DRACONIC", $talents);
 }
 
 function NumSeismicSurge($player)
 {
   $auras = &GetAuras($player);
   $count = 0;
-  for($i=0; $i<count($auras); $i+=AuraPieces())
-  {
-    if(CardNameContains($auras[$i], "Seismic Surge", $player)) ++$count;
+  $auraCount = count($auras);
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $auraCount; $i += $auraPieces) {
+    if (CardNameContains($auras[$i], "Seismic Surge", $player)) ++$count;
   }
   return $count;
 }

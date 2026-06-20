@@ -222,7 +222,7 @@ function AddBottomDeck($cardID, $player, $from)
   }
   else {
   $deck = &GetDeck($player);
-  array_push($deck, $cardID);
+  $deck[] = $cardID;
   }
 }
 
@@ -744,15 +744,19 @@ function AddCharacterEffect($player, $index, $effect)
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
     if ($player == $mainPlayer) {
-      array_push($mainCharacterEffects, $index, $effect);
+      $mainCharacterEffects[] = $index;
+      $mainCharacterEffects[] = $effect;
     } else {
-      array_push($defCharacterEffects, $index, $effect);
+      $defCharacterEffects[] = $index;
+      $defCharacterEffects[] = $effect;
     }
   } else {
     if ($player == $myStateBuiltFor) {
-      array_push($myCharacterEffects, $index, $effect);
+      $myCharacterEffects[] = $index;
+      $myCharacterEffects[] = $effect;
     } else {
-      array_push($theirCharacterEffects, $index, $effect);
+      $theirCharacterEffects[] = $index;
+      $theirCharacterEffects[] = $effect;
     }
   }
 }

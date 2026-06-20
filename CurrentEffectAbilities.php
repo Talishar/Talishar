@@ -522,7 +522,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       return 1;
     case "gold_baited_hook":
-      // if (TypeContains($effectSource, "AA")) $EffectContext = $effectSource;
       $EffectContext = $effectSource; // ripple away always works on hook
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -674,7 +673,7 @@ function EffectHasBlockModifier($cardID)
 
 function RemoveEffectsFromCombatChain($cardID = "")
 {
-  global $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects;
   $searchedEffect = "";
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
@@ -1842,7 +1841,7 @@ function CurrentEffectAfterPlayOrActivateAbility($cache = true)
 
 function CurrentEffectGrantsInstantGoAgain($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer, $layers;
+  global $currentTurnEffects, $currentPlayer;
   $hasGoAgain = false;
   $usedGreaves = false;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
@@ -1866,7 +1865,7 @@ function CurrentEffectGrantsInstantGoAgain($cardID, $from)
 
 function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
 {
-  global $currentTurnEffects, $currentPlayer, $CS_AdditionalCosts, $CS_ResolvingLayerUniqueID;
+  global $currentTurnEffects, $currentPlayer, $CS_ResolvingLayerUniqueID;
   $hasGoAgain = false;
   // uniqueID is the uid of the source, for effects that started applying before the layer was created
   // uniqueIDResolving in the uid specifically of the layer
@@ -1952,8 +1951,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
 
 function CurrentEffectGrantsGoAgain()
 {
-  global $currentTurnEffects, $mainPlayer;
-  global $CCS_GoesWhereAfterLinkResolves, $CombatChain;
+  global $currentTurnEffects, $mainPlayer, $CombatChain;
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
@@ -2273,7 +2271,9 @@ function CurrentEffectEndTurnAbilities()
       case "oath_of_steel_red":
         if ($mainPlayer == $currentTurnEffects[$i + 1]) {
           $char = &GetPlayerCharacter($currentTurnEffects[$i + 1]);
-          for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+          $charCount = count($char);
+          $charPieces = CharacterPieces();
+          for ($j = 0; $j < $charCount; $j += $charPieces) {
             if (TypeContains($char[$j], "W", $mainPlayer)) $char[$j + 3] = 0;
           }
           $remove = true;

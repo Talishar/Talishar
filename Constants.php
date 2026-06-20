@@ -572,9 +572,9 @@ function ResetCombatChainState()
         if(!SubtypeContains($linkID, "Evo")) continue;
         if($chainLinks[$i][$j+3] != "HAND" && BlockValue($linkID) >= 0) continue;
       }
-      if(CardType($linkID) == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
+      if($cardType == "AR" && $chainLinks[$i][$j+1] == $mainPlayer) continue;
       else {
-        if(CardType($linkID) == "T" || CardType($linkID) == "Macro") continue;//Don't need to add to anywhere if it's a token
+        if($cardType == "T" || $cardType == "Macro") continue;//Don't need to add to anywhere if it's a token
         if ($j == 0 && !TypeContains($linkID, "AA", $mainPlayer)) continue; //Don't do anything with attack proxies
         // $j + 7 instead of just $j to grab the "original CardID" in case the card became a copy
         $origLinkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j+7], true, true) : $chainLinks[$i][$j+7];
@@ -591,7 +591,9 @@ function ResetCombatChainState()
   RemoveEffectsFromCombatChain();
   RemoveThisLinkEffects();
   $defCharacter = &GetPlayerCharacter($defPlayer);
-  for($i = 0; $i < count($defCharacter); $i += CharacterPieces()) {
+  $defCharCount = count($defCharacter);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $defCharCount; $i += $charPieces) {
     $defCharacter[$i + 6] = 0;
   }
   $defItems = new Items($defPlayer);

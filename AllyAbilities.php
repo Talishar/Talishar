@@ -217,6 +217,7 @@ function AllySteamCounters($cardID)
 
 function AllyDamagePrevention($player, $index, $damage, $type = "", $source = "-")
 {
+  $index = intval($index);
   global $currentTurnEffects;
   $allies = &GetAllies($player);
   $cardID = $allies[$index];
@@ -353,6 +354,7 @@ function SpecificAllyAttackAbilities($attackID)
 
 function AllyDamageTakenAbilities($player, $i)
 {
+  $i = intval($i);
   $allies = &GetAllies($player);
   switch ($allies[$i]) {
     case "nekria":

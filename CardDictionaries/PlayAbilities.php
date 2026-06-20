@@ -335,7 +335,9 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           RemoveDiscard($currentPlayer, $discardIndex);
           $character = &GetPlayerCharacter($currentPlayer);
           $uniqueID = EquipWeapon($currentPlayer, "graven_call");
-          for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+          $charCount = count($character);
+          $charPieces = CharacterPieces();
+          for ($i = 0; $i < $charCount; $i += $charPieces) {
             if ($character[$i + 11] == $uniqueID) {
               if ($character[$i + 3] == 0) {
                 ++$character[$i + 3];
@@ -369,9 +371,11 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "AERTHERARC");
       return "";
     case "dissolve_reality_yellow":
+      $arsenalPieces = ArsenalPieces();
       for ($i = 1; $i < 3; $i += 1) {
         $arsenal = &GetArsenal($i);
-        for ($j = 0; $j < count($arsenal); $j += ArsenalPieces()) {
+        $arsenalCount = count($arsenal);
+        for ($j = 0; $j < $arsenalCount; $j += $arsenalPieces) {
           AddDecisionQueue("FINDINDICES", $i, "ARSENAL");
           AddDecisionQueue("CHOOSEARSENAL", $i, "<-", 1);
           AddDecisionQueue("REMOVEARSENAL", $i, "-", 1);

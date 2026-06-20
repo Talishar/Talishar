@@ -1226,7 +1226,9 @@ function OnBlockResolveEffects($cardID = "")
           break;
         case "quickdodge_flexors":
           $char = &GetPlayerCharacter($defPlayer);
-          for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+          $charCount = count($char);
+          $charPieces = CharacterPieces();
+          for ($j = 0; $j < $charCount; $j += $charPieces) {
             if ($char[$j] == $defendingCard) $char[$j+7] = "1";
           }
           break;

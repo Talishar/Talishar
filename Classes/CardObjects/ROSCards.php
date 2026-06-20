@@ -328,11 +328,14 @@ class blast_to_oblivion extends BaseCard {
 
   function ProcessTrigger($target) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    $targetedPlayer = intval(explode("-", $target)[0]);
+    $targetParts = explode("-", $target);
+    $targetedPlayer = intval($targetParts[0]);
     $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
-    $uID = explode("-", $target)[1];
+    $uID = $targetParts[1];
     $auras = &GetAuras($targetedPlayer);
-    for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+    $auraCount = count($auras);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $auraCount; $i += $auraPieces) {
       if ($auras[$i + 6] == $uID) {
         $cardID = $auras[$i];
         $cardOwner = substr($auras[$i+9], 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;

@@ -1200,8 +1200,8 @@ function ChannelTalent($uniqueID, $talent)
 
   $numTalent = SearchCount(SearchPitch($mainPlayer, talent: $talent));
   if ($toBottom <= $numTalent) {
+    $article = str_contains('aeiou', strtolower($talent[0])) ? 'an' : 'a';
     for ($j = $toBottom; $j > 0; --$j) {
-      $article = preg_match('/^[aeiou]/i', $talent) ? 'an' : 'a';
       $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($talent)) . "|" . GetElementColorCode($talent) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auraID, $auraID) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "");
       MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: $context);
     }
@@ -1232,8 +1232,8 @@ function ChannelPitchColor($uniqueID, $pitch)
   $numPitch = SearchCount(SearchDiscard($mainPlayer, pitch: $pitch));
   $colorToBanish = ($pitch == 1) ? "red" : (($pitch == 2) ? "yellow" : "blue");
   if ($toBottom <= $numPitch) {
+    $article = str_contains('aeiou', strtolower($colorToBanish[0])) ? 'an' : 'a';
     for ($j = $toBottom; $j > 0; --$j) {
-      $article = preg_match('/^[aeiou]/i', $colorToBanish) ? 'an' : 'a';
       $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($colorToBanish)) . "|" . GetElementColorCode($colorToBanish) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " sand counter" . ($toBottom > 1 ? "s" : "");
       MZMoveCard($mainPlayer, "MYDISCARD:pitch=" . $pitch, "MYBANISH", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: $context);
     }
@@ -1574,7 +1574,7 @@ function AuraPlayAbilities($cardID, $from = "")
         break;
       case "runechant":
         if (($cardType == "AA" && $resolvedAbilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from)) || (TypeContains($cardID, "W", $currentPlayer) && $resolvedAbilityType == "AA") && $resolvedAbilityType != "I") {
-          array_push($runechantUIDS, $auras[$i+6]);
+          $runechantUIDS[] = $auras[$i+6];
         }
         break;
       default:
@@ -1705,23 +1705,23 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
         case "channel_mount_heroic_red":
           if (CardType($chainCard->ID()) == "AA") {
             $modifier += 3;
-            array_push($powerModifiers, $myAuras[$i]);
-            array_push($powerModifiers, 3);
+            $powerModifiers[] = $myAuras[$i];
+            $powerModifiers[] = 3;
           }
           break;
         case $CID_Frailty:
           if ($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS")) {
             $modifier -= 1;
-            array_push($powerModifiers, $myAuras[$i]);
-            array_push($powerModifiers, -1);
+            $powerModifiers[] = $myAuras[$i];
+            $powerModifiers[] = -1;
           }
           break;
         case "sharpened_senses_yellow":
           if(IsWeaponAttack())
           {
             $modifier += 1;
-            array_push($powerModifiers, $myAuras[$i]);
-            array_push($powerModifiers, 1);
+            $powerModifiers[] = $myAuras[$i];
+            $powerModifiers[] = 1;
           }
         default:
           break;
@@ -1738,8 +1738,8 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
       case "parable_of_humility_yellow":
         if (CardType($CombatChain->Card($index)->ID()) == "AA") {
           $modifier -= 1;
-          array_push($powerModifiers, $theirAuras[$i]);
-          array_push($powerModifiers, -1);
+          $powerModifiers[] = $theirAuras[$i];
+          $powerModifiers[] = -1;
         }
         break;
       default:
@@ -1872,7 +1872,8 @@ function isSpectraAttackTarget() {
   $targetArr = explode(",", $combatChainState[$CCS_AttackTarget]);
   $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
   for ($i = count($targetArr) - 1; $i >= 0; --$i) {
-    if (explode("-", $targetArr[$i])[0] == "THEIRAURAS") {
+    $dashPos = strpos($targetArr[$i], '-');
+    if (($dashPos === false ? $targetArr[$i] : substr($targetArr[$i], 0, $dashPos)) == "THEIRAURAS") {
       // remove spectra cards from target
       $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
       if ($ind != -1) {
