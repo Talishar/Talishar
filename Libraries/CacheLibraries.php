@@ -23,19 +23,22 @@ if (!function_exists('apcu_fetch')) {
  *   sudo systemctl restart php-fpm
  */
 
+function _apcuAvailable(): bool {
+  static $v = null;
+  if ($v === null) {
+    $v = extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_fetch');
+  }
+  return $v;
+}
+
 /**
  * Get gamestate with APCu caching
  * Caches for 1 second (plenty of time for concurrent requests)
  */
 function GetCachedGamestate($gameName) {
-  static $apcuAvailable = null;
-  if ($apcuAvailable === null) {
-    $apcuAvailable = extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_fetch');
-  }
+  $cacheKey = "gamestate_" . $gameName;
 
-  $cacheKey = "gamestate_" . md5($gameName);
-
-  if ($apcuAvailable) {
+  if (_apcuAvailable()) {
     $cached = @apcu_fetch($cacheKey);
     if ($cached !== false) {
       return $cached;
@@ -44,7 +47,7 @@ function GetCachedGamestate($gameName) {
 
   $content = ReadGamestateCache($gameName);
 
-  if ($apcuAvailable) {
+  if (_apcuAvailable()) {
     @apcu_store($cacheKey, $content, 1);
   }
 
@@ -56,49 +59,40 @@ function GetCachedGamestate($gameName) {
  * Call this after WriteGamestate
  */
 function InvalidateGamestateCache($gameName) {
-  $cacheKey = "gamestate_" . md5($gameName);
-  
-  if (extension_loaded('apcu') && ini_get('apc.enabled')) {
-    if (function_exists('apcu_delete')) {
-      @apcu_delete($cacheKey);
-    }
-  }
+  if (!_apcuAvailable()) return;
+  @apcu_delete("gamestate_" . $gameName);
 }
 
 function UpdateSpectatorPresence($gameName, $userName = 'Anonymous') {
+  if (!_apcuAvailable()) return;
   $now = time();
   // Sanitize username: alphanumeric, underscores, hyphens, max 30 chars
   $userName = preg_replace('/[^a-zA-Z0-9_\-]/', '', substr($userName, 0, 30));
   if ($userName === '') $userName = 'Anonymous';
 
-  if (extension_loaded('apcu') && ini_get('apc.enabled')) {
-    $key = 'spectators_' . $gameName;
-    $spectators = @apcu_fetch($key);
-    if (!is_array($spectators)) $spectators = [];
-    // Store as username => timestamp (latest timestamp per user)
-    $spectators[$userName] = $now;
-    foreach ($spectators as $name => $lastSeen) {
-      if ($now - $lastSeen > 60) unset($spectators[$name]);
-    }
-    @apcu_store($key, $spectators, 120);
-    return;
+  $key = 'spectators_' . $gameName;
+  $spectators = @apcu_fetch($key);
+  if (!is_array($spectators)) $spectators = [];
+  $spectators[$userName] = $now;
+  foreach ($spectators as $name => $lastSeen) {
+    if ($now - $lastSeen > 60) unset($spectators[$name]);
   }
+  @apcu_store($key, $spectators, 120);
 }
 
 function GetActiveSpectators($gameName) {
+  if (!_apcuAvailable()) return ['count' => 0, 'names' => []];
   $now = time();
   $threshold = 45;
   $names = [];
 
-  if (extension_loaded('apcu') && ini_get('apc.enabled')) {
-    $key = 'spectators_' . $gameName;
-    $spectators = @apcu_fetch($key);
-    if (!is_array($spectators)) return ['count' => 0, 'names' => []];
-    foreach ($spectators as $name => $lastSeen) {
-      if ($now - $lastSeen <= $threshold) {
-        $names[] = is_string($name) ? $name : 'Anonymous';
-      }
+  $key = 'spectators_' . $gameName;
+  $spectators = @apcu_fetch($key);
+  if (!is_array($spectators)) return ['count' => 0, 'names' => []];
+  foreach ($spectators as $name => $lastSeen) {
+    if ($now - $lastSeen <= $threshold) {
+      $names[] = is_string($name) ? $name : 'Anonymous';
     }
-    return ['count' => count($names), 'names' => $names];
   }
+  return ['count' => count($names), 'names' => $names];
 }

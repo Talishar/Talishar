@@ -592,8 +592,8 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	$tsp = TurnStatPieces();
 
 	// Populate turn results - only include turns that have actually occurred
-	for($i = 0; $i < $countTurnStats && intval($i / $tsp) <= $currentTurn; $i += $tsp) {
-		$turnNo = intval($i / $tsp);
+	$turnNo = 0;
+	for($i = 0; $i < $countTurnStats && $turnNo <= $currentTurn; $i += $tsp, ++$turnNo) {
 		$turnKey = "turn_" . $turnNo;
 		
 		$cardsUsed = $turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense];
@@ -612,43 +612,45 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 		$lifeLost = $turnStats[$i + $TurnStats_LifeLost];
 
 		if($useIntval) {
-			$cardsUsed = intval($cardsUsed);
-			$cardsBlocked = intval($cardsBlocked);
-			$cardsPitched = intval($cardsPitched);
-			$cardsDiscarded = intval($cardsDiscarded);
-			$resourcesUsed = intval($resourcesUsed);
-			$resourcesLeft = intval($resourcesLeft);
-			$cardsLeft = intval($cardsLeft);
-			$damageThreatened = intval($damageThreatened);
-			$damageDealt = intval($damageDealt);
-			$damageBlocked = intval($damageBlocked);
-			$damagePrevented = intval($damagePrevented);
-			$damageTaken = intval($damageTaken);
-			$lifeGained = intval($lifeGained);
-			$lifeLost = intval($lifeLost);
+			$cardsUsed = (int)$cardsUsed;
+			$cardsBlocked = (int)$cardsBlocked;
+			$cardsPitched = (int)$cardsPitched;
+			$cardsDiscarded = (int)$cardsDiscarded;
+			$resourcesUsed = (int)$resourcesUsed;
+			$resourcesLeft = (int)$resourcesLeft;
+			$cardsLeft = (int)$cardsLeft;
+			$damageThreatened = (int)$damageThreatened;
+			$damageDealt = (int)$damageDealt;
+			$damageBlocked = (int)$damageBlocked;
+			$damagePrevented = (int)$damagePrevented;
+			$damageTaken = (int)$damageTaken;
+			$lifeGained = (int)$lifeGained;
+			$lifeLost = (int)$lifeLost;
 		}
 
-		$deck["turnResults"][$turnKey]["cardsUsed"] = $cardsUsed;
-		$deck["turnResults"][$turnKey]["cardsBlocked"] = $cardsBlocked;
-		$deck["turnResults"][$turnKey]["cardsPitched"] = $cardsPitched;
-		$deck["turnResults"][$turnKey]["cardsDiscarded"] = $cardsDiscarded;
-		$deck["turnResults"][$turnKey]["resourcesUsed"] = $resourcesUsed;
-		$deck["turnResults"][$turnKey]["resourcesLeft"] = $resourcesLeft;
-		$deck["turnResults"][$turnKey]["cardsLeft"] = $cardsLeft;
-		$deck["turnResults"][$turnKey]["damageThreatened"] = $damageThreatened;
-		$deck["turnResults"][$turnKey]["damageDealt"] = $damageDealt;
-		$deck["turnResults"][$turnKey]["damageBlocked"] = $damageBlocked;
-		$deck["turnResults"][$turnKey]["damagePrevented"] = $damagePrevented;
-		$deck["turnResults"][$turnKey]["damageTaken"] = $damageTaken;
-		$deck["turnResults"][$turnKey]["lifeGained"] = $lifeGained;
-		$deck["turnResults"][$turnKey]["lifeLost"] = $lifeLost;
-		$deck["turnResults"][$turnKey]["lifeAtTurnEnd"] = isset($lifeHistory[$turnNo]) ? intval($lifeHistory[$turnNo]) : null;
-		$deck["turnResults"][$turnKey]["opponentLifeAtTurnEnd"] = isset($opponentLifeHistory[$turnNo]) ? intval($opponentLifeHistory[$turnNo]) : null;
+		$entry = &$deck["turnResults"][$turnKey];
+		$entry["cardsUsed"] = $cardsUsed;
+		$entry["cardsBlocked"] = $cardsBlocked;
+		$entry["cardsPitched"] = $cardsPitched;
+		$entry["cardsDiscarded"] = $cardsDiscarded;
+		$entry["resourcesUsed"] = $resourcesUsed;
+		$entry["resourcesLeft"] = $resourcesLeft;
+		$entry["cardsLeft"] = $cardsLeft;
+		$entry["damageThreatened"] = $damageThreatened;
+		$entry["damageDealt"] = $damageDealt;
+		$entry["damageBlocked"] = $damageBlocked;
+		$entry["damagePrevented"] = $damagePrevented;
+		$entry["damageTaken"] = $damageTaken;
+		$entry["lifeGained"] = $lifeGained;
+		$entry["lifeLost"] = $lifeLost;
+		$entry["lifeAtTurnEnd"] = isset($lifeHistory[$turnNo]) ? (int)$lifeHistory[$turnNo] : null;
+		$entry["opponentLifeAtTurnEnd"] = isset($opponentLifeHistory[$turnNo]) ? (int)$opponentLifeHistory[$turnNo] : null;
 
 		// SerializeGameResult has turnNo, SerializeDetailedGameResult doesn't - only add if not using intval
 		if(!$useIntval) {
-			$deck["turnResults"][$turnKey]["turnNo"] = $turnNo;
+			$entry["turnNo"] = $turnNo;
 		}
+		unset($entry);
 	}
 
 	// Set time information

@@ -7,7 +7,7 @@ function deleteDir(string $dirPath): void {
   if (! is_dir($dirPath)) {
     throw new InvalidArgumentException("$dirPath must be a directory");
   }
-  if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+  if (!str_ends_with($dirPath, '/')) {
     $dirPath .= '/';
   }
   $files = glob($dirPath . '*', GLOB_MARK);
@@ -1152,14 +1152,7 @@ function PassInput($autopass = true, $doublePass = false)
   $layerPieces = LayerPieces();
   //WriteLog($turn[0] . " " . $turn[2]);//Uncomment this to visualize decision PassInput execution
   if (isset($turn[2]) && str_contains($turn[2], "PRELAYER")) {
-    $currPreLayers = 0;
-    $preLayers = GetPreLayers();
-    $preLayersCount = count($preLayers);
     $layersCount = count($layers);
-    for ($i = 0; $i < $preLayersCount; $i += $layerPieces) {
-      if ($preLayers[$i + 1] == $currentPlayer)
-        ++$currPreLayers;
-    }
     $pretriggerFlat = [];
     for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
       if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $currentPlayer) {
@@ -1704,7 +1697,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   global $currentTurnEffects, $combatChainState, $CCS_DamageDealt, $combatChain, $chainLinks;
   $effectsToRemove = [];
   $CLIndex = count($chainLinks) - 1;
-  isset($combatChain[10]) ? $addedEffects = $combatChain[10] : $addedEffects = "-";
+  $addedEffects = $combatChain[10] ?? "-";
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
@@ -4351,7 +4344,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($definedCardType != "T" && $definedCardType != "Macro" && !IsActivated($cardID, $from)) //Don't need to add to anywhere if it's a token
         ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, "LAYER");
       // remove any buff associated with the played attack
-      for ($i = count(value: $currentTurnEffects) - CurrentTurnEffectPieces(); $i >= 0; $i -= CurrentTurnEffectPieces()) {
+      $ctePieces = CurrentTurnEffectPieces();
+      for ($i = count($currentTurnEffects) - $ctePieces; $i >= 0; $i -= $ctePieces) {
         if (IsCombatEffectActive($currentTurnEffects[$i], $cardID) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i])) {
           RemoveCurrentTurnEffect($i);
         }
@@ -4631,11 +4625,15 @@ function AddEvent($type, $value)
 function ConsumeUndoRequestEvents()
 {
   global $events;
-  $undoRequestTypes = ["REQUESTUNDO", "REQUESTTHISTURNUNDO", "REQUESTLASTTURNUNDO", "REQUESTCHAINLINKUNDO"];
+  static $undoRequestTypes = [
+    "REQUESTUNDO" => true, "REQUESTTHISTURNUNDO" => true,
+    "REQUESTLASTTURNUNDO" => true, "REQUESTCHAINLINKUNDO" => true,
+  ];
   $filtered = [];
   $eventPieces = EventPieces();
-  for ($i = 0; $i < count($events); $i += $eventPieces) {
-    if (!in_array($events[$i], $undoRequestTypes)) {
+  $eventsCount = count($events);
+  for ($i = 0; $i < $eventsCount; $i += $eventPieces) {
+    if (!isset($undoRequestTypes[$events[$i]])) {
       $filtered[] = $events[$i];
       $filtered[] = $events[$i + 1] ?? null;
     }

@@ -9,7 +9,7 @@ if (isset($body['block-user-submit'])) {
     }
 
     $userToBlock = $_POST['userToBlock'];
-    if (empty($userToBlock) || $userToBlock == "") {
+    if (empty($userToBlock)) {
         header("Location: ../ProfilePage.php");
         exit();
     }

@@ -157,11 +157,7 @@ function CopyCurrentTurnEffectsFromCombat()
 function RemoveCurrentTurnEffect($index)
 {
   global $currentTurnEffects;
-  unset($currentTurnEffects[$index + 3]);
-  unset($currentTurnEffects[$index + 2]);
-  unset($currentTurnEffects[$index + 1]);
-  unset($currentTurnEffects[$index]);
-  $currentTurnEffects = array_values($currentTurnEffects);
+  array_splice($currentTurnEffects, $index, CurrentTurnEffectPieces());
 }
 
 function CurrentTurnEffectPieces()
@@ -285,23 +281,10 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   $skipOrdering = isset($skipOrderingIDs[$parameter]) || $skipOrdering;
   if (($additionalCosts == "ONHITEFFECT" || $additionalCosts == "ATTACKTRIGGER") && $uniqueID == "-") $uniqueID = $CombatChain->AttackCard()->UniqueID();
   if ($cardID == "TRIGGER" && !$skipOrdering) { // put triggers into "pre-layers" where they can be ordered
-    array_unshift($layers, $layerUID);
-    array_unshift($layers, $uniqueID);
-    array_unshift($layers, $additionalCosts);
-    array_unshift($layers, $target);
-    array_unshift($layers, $parameter);
-    array_unshift($layers, $player);
-    array_unshift($layers, "PRETRIGGER");
+    array_unshift($layers, "PRETRIGGER", $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID);
   }
   else {
-    //Layers are on a stack, so you need to push things on in reverse order
-    array_unshift($layers, $layerUID);
-    array_unshift($layers, $uniqueID);
-    array_unshift($layers, $additionalCosts);
-    array_unshift($layers, $target);
-    array_unshift($layers, $parameter);
-    array_unshift($layers, $player);
-    array_unshift($layers, $cardID);
+    array_unshift($layers, $cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID);
   }
 
   return count($layers);//How far it is from the end
@@ -2181,8 +2164,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       $cardID = str_contains($target, $parameter) ? $target : $parameter;
       $index = FindCurrentTurnEffectIndex($player, $cardID);
       if ($index != -1) {
-        // Remove "-string" and "string-" suffixes from the effect ID
-        $effectID = preg_replace('/-[^-]*$/', '', $currentTurnEffects[$index]);
+        // Remove trailing "-suffix" from the effect ID (e.g. "foo_red-HIT" → "foo_red")
+        $lastDash = strrpos($currentTurnEffects[$index], '-');
+        $effectID = $lastDash !== false ? substr($currentTurnEffects[$index], 0, $lastDash) : $currentTurnEffects[$index];
         LogPlayCardStats($player, $effectID, "CC", "HIT");
       }
       if (EffectHitEffect($cardID, $combatChain[2], $uniqueID, effectSource:$combatChain[0], target:$target)) {

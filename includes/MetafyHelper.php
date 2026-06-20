@@ -160,16 +160,18 @@ if (!function_exists('GetMetafyCommunitiesFromDatabase')) {
 
 function IsValidMetafyTier($tierName)
 {
-  $supportedTiers = [
-    'Fyendal Supporters',
-    'Seers of Ophidia',
-    'Arknight Shards',
-    'Lover of Grandeur',
-    'Sponsors of Trōpal-Dhani',
-    'Light of Sol Gemini Circle'
-  ];
-  
-  return in_array($tierName, $supportedTiers);
+  static $supportedTiersMap = null;
+  if ($supportedTiersMap === null) {
+    $supportedTiersMap = array_flip([
+      'Fyendal Supporters',
+      'Seers of Ophidia',
+      'Arknight Shards',
+      'Lover of Grandeur',
+      'Sponsors of Trōpal-Dhani',
+      'Light of Sol Gemini Circle',
+    ]);
+  }
+  return isset($supportedTiersMap[$tierName]);
 }
 
 ?>

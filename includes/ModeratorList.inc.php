@@ -30,12 +30,18 @@ function GetCardEditorList() {
 }
 
 function IsUserModerator($useruid) {
-  $modList = GetModeratorList();
-  return in_array($useruid, $modList);
+  static $modMap = null;
+  if ($modMap === null) {
+    $modMap = array_flip(GetModeratorList());
+  }
+  return isset($modMap[$useruid]);
 }
 
 function IsCardEditor($useruid) {
-  $editorList = GetCardEditorList();
-  return in_array($useruid, $editorList);
+  static $editorMap = null;
+  if ($editorMap === null) {
+    $editorMap = array_flip(GetCardEditorList());
+  }
+  return isset($editorMap[$useruid]);
 }
 
