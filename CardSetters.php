@@ -327,8 +327,10 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
   $character = &GetPlayerCharacter($player);
   $cardSubType = CardSubType($cardID);
   if ($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && FindCharacterIndex($player, "sandscour_greatbow") != -1) $counters = 1;
+
   // cardID, facing, numUses=1, counters, isFrozen="0", uniqueID, numPowerCounters=0
   array_push($arsenal, $cardID, $facing, 1, $counters, "0", GetUniqueId($cardID, $player), 0);
+
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($facing == "UP") {
     if ($from == "DECK" && str_starts_with($cardID, 'back_alley_breakline_') && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A")) {
@@ -339,11 +341,16 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
     if ($from == "DECK" && $cardSubType == "Arrow" && SearchCharacterActive($player, "crows_nest")) {
       AddLayer("TRIGGER", $player, "crows_nest", "-", "-", -1);
     }
+
+    $arsenalCount = count($arsenal);
+    $arsenalPieces = ArsenalPieces();
+    $uniqueID = $arsenal[$arsenalCount - $arsenalPieces + 5];
+    
     switch ($cardID) {
       case "head_shot_red":
       case "head_shot_yellow":
       case "head_shot_blue":
-        AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+        AddCurrentTurnEffect($cardID, $player, "", $uniqueID);
         break;
       case "ridge_rider_shot_red":
       case "ridge_rider_shot_yellow":
@@ -351,7 +358,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
         AddLayer("TRIGGER", $player, $cardID);
         break;
       case "remorseless_red":
-        AddCurrentTurnEffect($cardID, $otherPlayer, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+        AddCurrentTurnEffect($cardID, $otherPlayer, "", $uniqueID);
         break;
       case "spire_sniping_red":
       case "spire_sniping_yellow":
@@ -359,7 +366,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
         SpireSnipingAbility($player);
         break;
       case "dry_powder_shot_red":
-        AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+        AddCurrentTurnEffect($cardID, $player, "", $uniqueID);
         break;
       case "entangling_shot_red":
         $search = (ShouldAutotargetOpponent($player)) ? "THEIRCHAR:type=C" : "THEIRCHAR:type=C&MYCHAR:type=C";
@@ -379,7 +386,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
         LookAtTopCard($player, $cardID, setPlayer:$player);
         break;
       case "swift_shot_red":
-        AddCurrentTurnEffect($cardID, $player, "", $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+        AddCurrentTurnEffect($cardID, $player, "", $uniqueID);
         break;
       default:
         break;
