@@ -21,10 +21,12 @@ function LogBufferAppend($filename, $line, $requireExists)
     $registered = true;
   }
   if (!isset($logWriteBuffer[$filename])) {
-    $logWriteBuffer[$filename] = ["requireExists" => $requireExists, "content" => ""];
+    $logWriteBuffer[$filename] = ["requireExists" => $requireExists, "content" => "", "size" => 0];
   }
+  $lineLen = strlen($line);
   $logWriteBuffer[$filename]["content"] .= $line;
-  if (strlen($logWriteBuffer[$filename]["content"]) >= LOG_BUFFER_FLUSH_THRESHOLD) {
+  $logWriteBuffer[$filename]["size"] += $lineLen;
+  if ($logWriteBuffer[$filename]["size"] >= LOG_BUFFER_FLUSH_THRESHOLD) {
     FlushLogBufferEntry($filename);
   }
 }
@@ -37,10 +39,12 @@ function FlushLogBufferEntry($filename)
   if ($entry["content"] === "") return;
   if ($entry["requireExists"] && !file_exists($filename)) {
     $logWriteBuffer[$filename]["content"] = "";
+    $logWriteBuffer[$filename]["size"] = 0;
     return;
   }
   @file_put_contents($filename, $entry["content"], FILE_APPEND);
   $logWriteBuffer[$filename]["content"] = "";
+  $logWriteBuffer[$filename]["size"] = 0;
 }
 
 function FlushLogBuffer()
@@ -111,9 +115,16 @@ function JSONLog($gameName, $playerID, $path="./")
   if (!file_exists($filename)) return "";
   $filesize = filesize($filename);
   if ($filesize > 0) {
+    $maxRead = 131072; // 128 KB cap — prevents OOM when log file grows large
     $handler = fopen($filename, "r");
-    $line = fread($handler, $filesize);
+    if ($filesize > $maxRead) {
+      fseek($handler, -$maxRead, SEEK_END);
+    }
+    $line = fread($handler, min($filesize, $maxRead));
     fclose($handler);
+    if ($filesize > $maxRead && ($nl = strpos($line, "\n")) !== false) {
+      $line = substr($line, $nl + 1);
+    }
     $red = "#cb0202";
     $blue = "#128ee5";
     $player1Color = $playerID == 1 || $playerID == 3 ? $blue : $red;

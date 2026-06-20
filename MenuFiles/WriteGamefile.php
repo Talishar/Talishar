@@ -15,49 +15,53 @@
       global $p1SideboardSubmitted, $p2SideboardSubmitted, $p1StartingEquipment, $p2StartingEquipment, $p1IsAI, $p2IsAI, $gameGUID;
       global $p1MetafyTiers, $p2MetafyTiers;
       global $p1MetafyCommunities, $p2MetafyCommunities;
+      // Build entire payload as one string, then write in a single call.
+      // Reduces ~40 fwrite() PHP function calls + stream API dispatches to 1.
+      $content = implode(" ", $p1Data) . "\r\n"
+          . implode(" ", $p2Data) . "\r\n"
+          . $gameStatus         . "\r\n"
+          . $format             . "\r\n"
+          . $visibility         . "\r\n"
+          . $firstPlayerChooser . "\r\n"
+          . $firstPlayer        . "\r\n"
+          . $p1Key              . "\r\n"
+          . $p2Key              . "\r\n"
+          . $p1uid              . "\r\n"
+          . $p2uid              . "\r\n"
+          . $p1id               . "\r\n"
+          . $p2id               . "\r\n"
+          . $gameDescription    . "\r\n"
+          . $hostIP             . "\r\n"
+          . $p1IsPatron         . "\r\n"
+          . $p2IsPatron         . "\r\n"
+          . $p1DeckLink         . "\r\n"
+          . $p2DeckLink         . "\r\n"
+          . $p1IsChallengeActive . "\r\n"
+          . $p2IsChallengeActive . "\r\n"
+          . $joinerIP           . "\r\n"
+          . "\r\n"//Deprecated
+          . json_encode($p1Matchups)          . "\r\n"
+          . json_encode($p2Matchups)          . "\r\n"
+          . $p1deckbuilderID    . "\r\n"
+          . $p2deckbuilderID    . "\r\n"
+          . $roguelikeGameID    . "\r\n"
+          . $p1StartingHealth   . "\r\n"
+          . $p1ContentCreatorID . "\r\n"
+          . $p2ContentCreatorID . "\r\n"
+          . $p1SideboardSubmitted . "\r\n"
+          . $p2SideboardSubmitted . "\r\n"
+          . json_encode($p1StartingEquipment) . "\r\n"
+          . json_encode($p2StartingEquipment) . "\r\n"
+          . $p1IsAI             . "\r\n"
+          . $p2IsAI             . "\r\n"
+          . $gameGUID           . "\r\n"
+          . json_encode($p1MetafyTiers        ?? []) . "\r\n"
+          . json_encode($p2MetafyTiers        ?? []) . "\r\n"
+          . json_encode($p1MetafyCommunities  ?? []) . "\r\n"
+          . json_encode($p2MetafyCommunities  ?? []) . "\r\n";
+
       rewind($gameFileHandler);
-      fwrite($gameFileHandler, implode(" ", $p1Data) . "\r\n");
-      fwrite($gameFileHandler, implode(" ", $p2Data) . "\r\n");
-      fwrite($gameFileHandler, $gameStatus . "\r\n");
-      fwrite($gameFileHandler, $format . "\r\n");
-      fwrite($gameFileHandler, $visibility . "\r\n");
-      fwrite($gameFileHandler, $firstPlayerChooser . "\r\n");
-      fwrite($gameFileHandler, $firstPlayer . "\r\n");
-      fwrite($gameFileHandler, $p1Key . "\r\n");
-      fwrite($gameFileHandler, $p2Key . "\r\n");
-      fwrite($gameFileHandler, $p1uid . "\r\n");
-      fwrite($gameFileHandler, $p2uid . "\r\n");
-      fwrite($gameFileHandler, $p1id . "\r\n");
-      fwrite($gameFileHandler, $p2id . "\r\n");
-      fwrite($gameFileHandler, $gameDescription . "\r\n");
-      fwrite($gameFileHandler, $hostIP . "\r\n");
-      fwrite($gameFileHandler, $p1IsPatron . "\r\n");
-      fwrite($gameFileHandler, $p2IsPatron . "\r\n");
-      fwrite($gameFileHandler, $p1DeckLink . "\r\n");
-      fwrite($gameFileHandler, $p2DeckLink . "\r\n");
-      fwrite($gameFileHandler, $p1IsChallengeActive . "\r\n");
-      fwrite($gameFileHandler, $p2IsChallengeActive . "\r\n");
-      fwrite($gameFileHandler, $joinerIP . "\r\n");
-      fwrite($gameFileHandler, "\r\n");//Deprecated
-      fwrite($gameFileHandler, json_encode($p1Matchups) . "\r\n");
-      fwrite($gameFileHandler, json_encode($p2Matchups) . "\r\n");
-      fwrite($gameFileHandler, $p1deckbuilderID . "\r\n");
-      fwrite($gameFileHandler, $p2deckbuilderID . "\r\n");
-      fwrite($gameFileHandler, $roguelikeGameID . "\r\n");
-      fwrite($gameFileHandler, $p1StartingHealth . "\r\n");
-      fwrite($gameFileHandler, $p1ContentCreatorID . "\r\n");
-      fwrite($gameFileHandler, $p2ContentCreatorID . "\r\n");
-      fwrite($gameFileHandler, $p1SideboardSubmitted . "\r\n");
-      fwrite($gameFileHandler, $p2SideboardSubmitted . "\r\n");
-      fwrite($gameFileHandler, json_encode($p1StartingEquipment) . "\r\n");
-      fwrite($gameFileHandler, json_encode($p2StartingEquipment) . "\r\n");
-      fwrite($gameFileHandler, $p1IsAI . "\r\n");
-      fwrite($gameFileHandler, $p2IsAI . "\r\n");
-      fwrite($gameFileHandler, $gameGUID . "\r\n");
-      fwrite($gameFileHandler, json_encode($p1MetafyTiers ?? []) . "\r\n");
-      fwrite($gameFileHandler, json_encode($p2MetafyTiers ?? []) . "\r\n");
-      fwrite($gameFileHandler, json_encode($p1MetafyCommunities ?? []) . "\r\n");
-      fwrite($gameFileHandler, json_encode($p2MetafyCommunities ?? []) . "\r\n");
+      fwrite($gameFileHandler, $content);
       fclose($gameFileHandler);
     }
   }

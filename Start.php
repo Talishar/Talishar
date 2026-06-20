@@ -28,7 +28,9 @@ if ($playerID == 3) {
   exit;
 }
 
-if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) exit;
+$gameDir = "./Games/" . $gameName . "/";
+
+if (!file_exists($gameDir . "GameFile.txt")) exit;
 
 ob_start();
 include "MenuFiles/ParseGamefile.php";
@@ -46,70 +48,80 @@ if (isset($authKey) && isset($targetKey) && $authKey !== $targetKey) {
 $p1Inventory = "";
 $p2Inventory = "";
 
-//Initialize the initial state of the game
-$filename = "./Games/" . $gameName . "/gamestate.txt";
-$handler = fopen($filename, "w");
-fwrite($handler, "20 20\r\n"); //Player life totals
+// Write the initial gamestate into a php://memory stream so that:
+//   (a) all writes stay in RAM — faster than individual disk fwrite() calls
+//   (b) we reuse the buffer directly instead of calling file_get_contents() afterwards
+//   (c) initializePlayerState() can still write to the handle normally
+$memHandle = fopen("php://memory", "w+");
+
+fwrite($memHandle, "20 20\r\n"); //Player life totals
 
 //Player 1
-$p1DeckHandler = fopen("./Games/" . $gameName . "/p1Deck.txt", "r");
-initializePlayerState($handler, $p1DeckHandler, 1);
+$p1DeckHandler = fopen($gameDir . "p1Deck.txt", "r");
+initializePlayerState($memHandle, $p1DeckHandler, 1);
 fclose($p1DeckHandler);
 
 //Player 2
-$p2DeckHandler = fopen("./Games/" . $gameName . "/p2Deck.txt", "r");
-initializePlayerState($handler, $p2DeckHandler, 2);
+$p2DeckHandler = fopen($gameDir . "p2Deck.txt", "r");
+initializePlayerState($memHandle, $p2DeckHandler, 2);
 fclose($p2DeckHandler);
 
-fwrite($handler, "\r\n"); //Landmarks
-fwrite($handler, "0\r\n"); //Game winner (0=none, else player ID)
-fwrite($handler, "$firstPlayer\r\n"); //First Player
-fwrite($handler, "1\r\n"); //Current Player
-fwrite($handler, "0\r\n"); //Current Turn
-fwrite($handler, "M 1\r\n"); //What phase/player is active
-fwrite($handler, "1\r\n"); //Action points
-fwrite($handler, "\r\n"); //Combat Chain
-fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0\r\n"); //Combat Chain State
-fwrite($handler, "\r\n"); //Current Turn Effects
-fwrite($handler, "\r\n"); //Current Turn Effects From Combat
-fwrite($handler, "\r\n"); //Next Turn Effects
-fwrite($handler, "\r\n"); //Decision Queue
-fwrite($handler, "0\r\n"); //Decision Queue Variables
-fwrite($handler, "0 - - -\r\n"); //Decision Queue State
-fwrite($handler, "\r\n"); //Layers
-fwrite($handler, "\r\n"); //Layer Priority
-fwrite($handler, "1\r\n"); //What player's turn it is
-fwrite($handler, "\r\n"); //Last Played Card
-fwrite($handler, "0\r\n"); //Number of prior chain links this turn
-fwrite($handler, "\r\n"); //Chain Link Summaries
-fwrite($handler, $p1Key . "\r\n"); //Player 1 auth key
-fwrite($handler, $p2Key . "\r\n"); //Player 2 auth key
-fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
-fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
-fwrite($handler, "\r\n"); //Animations
-fwrite($handler, "0\r\n"); //Not Used - Current Player activity status -- 0 = active, 2 = inactive
-fwrite($handler, "0\r\n"); //Player1 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-fwrite($handler, "0\r\n"); //Player2 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
-fwrite($handler, "0\r\n"); //Player 1 total time
-fwrite($handler, "0\r\n"); //Player 2 total time
-fwrite($handler, time() . "\r\n"); //Last update time
-fwrite($handler, $roguelikeGameID . "\r\n"); //Roguelike game id
-fwrite($handler, "\r\n");//Events
-fwrite($handler, "-\r\n");//Effect Context
-fwrite($handler, implode(" ", $p1Inventory) . "\r\n"); //p1 Inventory
-fwrite($handler, implode(" ", $p2Inventory) . "\r\n"); //p2 Inventory
-fwrite($handler, $p1IsAI . "\r\n");//Is player 1 AI (1 = yes, 0 = no)
-fwrite($handler, $p2IsAI . "\r\n");//Is player 2 AI (1 = yes, 0 = no)
-fclose($handler);
+// Batch all remaining fixed-format lines into a single fwrite() call.
+fwrite($memHandle,
+  "\r\n" . //Landmarks
+  "0\r\n" . //Game winner (0=none, else player ID)
+  "$firstPlayer\r\n" . //First Player
+  "1\r\n" . //Current Player
+  "0\r\n" . //Current Turn
+  "M 1\r\n" . //What phase/player is active
+  "1\r\n" . //Action points
+  "\r\n" . //Combat Chain
+  "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0\r\n" . //Combat Chain State
+  "\r\n" . //Current Turn Effects
+  "\r\n" . //Current Turn Effects From Combat
+  "\r\n" . //Next Turn Effects
+  "\r\n" . //Decision Queue
+  "0\r\n" . //Decision Queue Variables
+  "0 - - -\r\n" . //Decision Queue State
+  "\r\n" . //Layers
+  "\r\n" . //Layer Priority
+  "1\r\n" . //What player's turn it is
+  "\r\n" . //Last Played Card
+  "0\r\n" . //Number of prior chain links this turn
+  "\r\n" . //Chain Link Summaries
+  $p1Key . "\r\n" . //Player 1 auth key
+  $p2Key . "\r\n" . //Player 2 auth key
+  "0\r\n" . //Permanent unique ID counter
+  "0\r\n" . //Game status -- 0 = START, 1 = PLAY, 2 = OVER
+  "\r\n" . //Animations
+  "0\r\n" . //Not Used - Current Player activity status -- 0 = active, 2 = inactive
+  "0\r\n" . //Player1 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  "0\r\n" . //Player2 Rating - 0 = not rated, 1 = green (positive), 2 = red (negative)
+  "0\r\n" . //Player 1 total time
+  "0\r\n" . //Player 2 total time
+  time() . "\r\n" . //Last update time
+  $roguelikeGameID . "\r\n" . //Roguelike game id
+  "\r\n" . //Events
+  "-\r\n" . //Effect Context
+  implode(" ", $p1Inventory) . "\r\n" . //p1 Inventory
+  implode(" ", $p2Inventory) . "\r\n" . //p2 Inventory
+  $p1IsAI . "\r\n" . //Is player 1 AI (1 = yes, 0 = no)
+  $p2IsAI . "\r\n" //Is player 2 AI (1 = yes, 0 = no)
+);
+
+// Read the completed gamestate from memory — no disk re-read needed
+rewind($memHandle);
+$gamestate = stream_get_contents($memHandle);
+fclose($memHandle);
+
+// Single disk write replaces the original fopen/~28 fwrite/fclose sequence
+file_put_contents($gameDir . "gamestate.txt", $gamestate);
 
 //Write initial gamestate to memory
-$gamestate = file_get_contents("./Games/" . $gameName . "/gamestate.txt");
 WriteGamestateCache($gameName, $gamestate);
 
-//Set up log file
-$filename = "./Games/" . $gameName . "/gamelog.txt";
-$handler = fopen($filename, "w");
-fclose($handler);
+// Create empty log file
+file_put_contents($gameDir . "gamelog.txt", "");
 
 $currentTime = strval(round(microtime(true) * 1000));
 $currentUpdate = GetCachePiece($gameName, 1);
@@ -149,10 +161,6 @@ setcookie("lastAuthKey", $authKeyToReturn, [
 
 // Return the auth key to the frontend so it can be stored locally
 header('Content-Type: application/json');
-$response = new stdClass();
-$response->success = true;
-$response->authKey = $authKeyToReturn;
-echo json_encode($response);
+echo json_encode(['success' => true, 'authKey' => $authKeyToReturn]);
 
 exit;
-

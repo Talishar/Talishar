@@ -4,22 +4,22 @@ if (!function_exists('GetCardEffectLabel')) {
   function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
     if ($uniqueID == "" || $uniqueID == "-") return "";
     
-    $effectIndex = -1;
+    $effectName = "";
     $effectsCount = count($currentTurnEffects);
     for ($j = 0; $j < $effectsCount; ++$j) {
-      $effectParts = explode("-", $currentTurnEffects[$j]);
-      if (count($effectParts) >= 2) {
-        $targetUID = $effectParts[1];
-        if ($targetUID == $uniqueID) {
-          $effectIndex = $j;
-          break;
-        }
+      $effect = $currentTurnEffects[$j];
+      $p1 = strpos($effect, "-");
+      if ($p1 === false) continue;
+      $p2 = strpos($effect, "-", $p1 + 1);
+      $effectID = ($p2 !== false) ? substr($effect, $p1 + 1, $p2 - $p1 - 1) : substr($effect, $p1 + 1);
+      if ($effectID == $uniqueID) {
+        $effectName = substr($effect, 0, $p1);
+        break;
       }
     }
-    
-    if ($effectIndex == -1) return "";
-    
-    $effectName = explode("-", $currentTurnEffects[$effectIndex])[0];
+
+    if ($effectName === "") return "";
+
     switch ($effectName) {
       case "beseech_the_demigon_red":
       case "beseech_the_demigon_yellow":
@@ -72,11 +72,11 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         }
 
         foreach ($options as $option) {
-          array_push($playerInputButtons, CreateButtonAPI($playerID, str_replace("_", " ", $option), 17, strval($option), "24px"));
+          $playerInputButtons[] = CreateButtonAPI($playerID, str_replace("_", " ", $option), 17, strval($option), "24px");
         }
 
         if(isset($vars[1]) && $vars[1] == "runechant") {
-          array_push($playerInputButtons, CreateButtonAPI($playerID, "Skip All Runechants", 105, 0, "24px"));
+          $playerInputButtons[] = CreateButtonAPI($playerID, "Skip All Runechants", 105, 0, "24px");
         }
 
         $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
@@ -87,8 +87,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "DOCRANK":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        array_push($playerInputButtons, CreateButtonAPI($playerID, "Yes", 20, "YES", "20px"));
-        array_push($playerInputButtons, CreateButtonAPI($playerID, "No", 20, "NO", "20px"));
+        $playerInputButtons[] = CreateButtonAPI($playerID, "Yes", 20, "YES", "20px");
+        $playerInputButtons[] = CreateButtonAPI($playerID, "No", 20, "NO", "20px");
         $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, GetPhaseHelptext(), 1, "");
       }
       break;
@@ -97,11 +97,12 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($currentPlayer == $playerID) {
         $playerInputPopup->active = true;
         $pitchingCards = [];
-        // foreach ($myPitch as $card) {
-        for ($i = 0; $i < count($myPitch); $i += PitchPieces()) {
+        $myPitchCount = count($myPitch);
+        $pitchPieces = PitchPieces();
+        for ($i = 0; $i < $myPitchCount; $i += $pitchPieces) {
           $card = $myPitch[$i];
           $uniqueID = $myPitch[$i+1];
-          array_push($pitchingCards, JSONRenderedCard($card, action: 6, actionDataOverride: $card, uniqueID:$uniqueID));
+          $pitchingCards[] = JSONRenderedCard($card, action: 6, actionDataOverride: $card, uniqueID:$uniqueID);
         }
         $playerInputPopup->popup = CreatePopupAPI("PITCH", [], 0, 1, "Choose a card to place on the bottom of your deck, or pass to shortcut", 1, cardsArray: $pitchingCards);
       }
@@ -113,7 +114,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $options = explode(",", $turn[2]);
         foreach ($options as $option) {
-          array_push($playerInputButtons, CreateButtonAPI($playerID, $option, 7, $option, "24px"));
+          $playerInputButtons[] = CreateButtonAPI($playerID, $option, 7, $option, "24px");
         }
         $playerInputPopup->popup = CreatePopupAPI($turn[0], [], 0, 1, GetPhaseHelptext(), 1, "");
       }
@@ -122,7 +123,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "OK":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
+        $playerInputButtons[] = CreateButtonAPI($playerID, "Ok", 99, "OK", "20px");
         $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, GetPhaseHelptext(), 1, "");
       }
       break;
@@ -135,18 +136,19 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $options = explode(",", $turn[2]);
         $optCards = [];
+        $buttonText = match($turn[0]) {
+          "CHOOSETOP" => "Top",
+          "CHOOSEBOTTOM" => "Bottom",
+          default => "Choose"
+        };
+        $buttonAction = match($turn[0]) {
+          "CHOOSETOP" => 8,
+          "CHOOSEBOTTOM" => 9,
+          default => 23
+        };
         foreach ($options as $option) {
-          array_push($optCards, JSONRenderedCard($option, action: 0));
-          $buttonText = match($turn[0]) {
-            "CHOOSETOP" => "Top",
-            "CHOOSEBOTTOM" => "Bottom",
-            "CHOOSECARD", "MAYCHOOSECARD" => "Choose"
-          };
-          array_push($playerInputButtons, CreateButtonAPI($playerID, $buttonText, match($turn[0]) {
-            "CHOOSETOP" => 8,
-            "CHOOSEBOTTOM" => 9,
-            default => 23
-          }, $option, "20px"));
+          $optCards[] = JSONRenderedCard($option, action: 0);
+          $playerInputButtons[] = CreateButtonAPI($playerID, $buttonText, $buttonAction, $option, "20px");
         }
         $playerInputPopup->popup = CreatePopupAPI("OPT", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $optCards);
       }
@@ -184,9 +186,10 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $orderedLayers = [];
         $layersList = array_filter(explode(",", $turn[2] ?? ""));
         foreach($layersList as $layer) {
-          $ID = explode("|", $layer)[0] ?? "-";
-          $UID = explode("|", $layer)[1] ?? "-";
-          array_push($orderedLayers, JSONRenderedCard($ID, uniqueID:$UID, action: 0));
+          $layerParts = explode("|", $layer);
+          $ID = $layerParts[0] ?? "-";
+          $UID = $layerParts[1] ?? "-";
+          $orderedLayers[] = JSONRenderedCard($ID, uniqueID:$UID, action: 0);
         }
 
         $playerInputPopup->popup = CreatePopupAPI("TRIGGERORDER", [], 0, 1, GetPhaseHelptext(), 1, "Order your triggers. The rightmost trigger will resolve first.", topCards: $orderedLayers);
@@ -200,8 +203,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $options = explode(",", $turn[2]);
         $optCards = [];
         foreach ($options as $option) {
-          array_push($optCards, JSONRenderedCard($option, action: 0, isOpponent: true));
-          array_push($playerInputButtons, CreateButtonAPI($otherPlayer, "Top", 29, $option, "20px"));
+          $optCards[] = JSONRenderedCard($option, action: 0, isOpponent: true);
+          $playerInputButtons[] = CreateButtonAPI($otherPlayer, "Top", 29, $option, "20px");
         }
         $playerInputPopup->popup = CreatePopupAPI("CHOOSETOPOPPONENT", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $optCards);
       }
@@ -219,9 +222,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $cardsArray = [];
         foreach ($myHand as $card) {
-          array_push($cardsArray, JSONRenderedCard($card, action: 0));
-          array_push($playerInputButtons, CreateButtonAPI($playerID, "Top", 12, $card, "20px"));
-          array_push($playerInputButtons, CreateButtonAPI($playerID, "Bottom", 13, $card, "20px"));
+          $cardsArray[] = JSONRenderedCard($card, action: 0);
+          $playerInputButtons[] = CreateButtonAPI($playerID, "Top", 12, $card, "20px");
+          $playerInputButtons[] = CreateButtonAPI($playerID, "Bottom", 13, $card, "20px");
         }
       $playerInputPopup->popup = CreatePopupAPI("HANDTOPBOTTOM", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $cardsArray);
     }
@@ -234,7 +237,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $cardList = [];
         $optionsCount = count($options);
         for ($i = 0; $i < $optionsCount; ++$i) {
-          array_push($cardList, JSONRenderedCard($options[$i], action: 16, actionDataOverride: strval($options[$i])));
+          $cardList[] = JSONRenderedCard($options[$i], action: 16, actionDataOverride: strval($options[$i]));
         }
         $playerInputPopup->popup = CreatePopupAPI("CHOOSEZONE", [], 0, 1, GetPhaseHelptext(), 1, "", cardsArray: $cardList);
       }
@@ -244,7 +247,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSEDECK":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your deck:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your deck:";
         $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2] ?? "", 11, $caption, "(You can click your deck to see its content during this card resolution)");
       }
       break;
@@ -253,7 +257,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSETHEIRDECK":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your opponent deck:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your opponent deck:";
         $playerInputPopup->popup = ChoosePopup($theirDeck, $turn[2] ?? "", 11, $caption);
       }
       break;
@@ -261,7 +266,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSEBANISH":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your banish:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your banish:";
         $playerInputPopup->popup = ChoosePopup($myBanish, $turn[2] ?? "", 16, $caption);
       }
       break;
@@ -271,7 +277,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSEARSENALCANCEL":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your arsenal:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your arsenal:";
         $playerInputPopup->popup = ChoosePopup($myArsenal, $turn[2] ?? "", 16, $caption, "", "ARSENAL");
       }
       break;
@@ -288,7 +295,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSETHEIRHAND":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your opponent's hand:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your opponent's hand:";
         $playerInputPopup->popup = ChoosePopup($theirHand, $turn[2] ?? "", 16, $caption);
       }
       break;
@@ -296,7 +304,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSEMYAURA":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose one of your auras:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose one of your auras:";
         $playerInputPopup->popup = ChoosePopup($myAuras, $turn[2] ?? "", 16, $caption);
       }
       break;
@@ -306,7 +315,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSEDISCARDCANCEL":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your graveyard:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your graveyard:";
         $playerInputPopup->popup = ChoosePopup($myDiscard, $turn[2] ?? "", 16, $caption);
       }
       break;
@@ -314,7 +324,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "MAYCHOOSETHEIRDISCARD":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your opponent's graveyard:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your opponent's graveyard:";
         $playerInputPopup->popup = ChoosePopup($theirDiscard, $turn[2] ?? "", 16, $caption);
       }
       break;
@@ -323,7 +334,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "MAYCHOOSECOMBATCHAIN":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from the combat chain:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from the combat chain:";
         $playerInputPopup->popup = ChoosePopup($combatChain, $turn[2], 16, $caption);
       }
       break;
@@ -331,7 +343,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSECHARACTER":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your character/equipment:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your character/equipment:";
         $playerInputPopup->popup = ChoosePopup($myCharacter, $turn[2] ?? "", 16, $caption);
       }
       break;
@@ -339,7 +352,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSETHEIRCHARACTER":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose a card from your opponent character/equipment:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your opponent character/equipment:";
         $playerInputPopup->popup = ChoosePopup($theirCharacter, $turn[2] ?? "", 16, $caption);
       }
       break;
@@ -373,7 +387,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $subtitles = "(You can click your deck to see its content during this card resolution)";
       }
 
-      $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : $title;
+      $dqHint = GetDQHelpText();
+      $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : $title;
 
       $formOptions->playerID = $playerID;
       $formOptions->caption = "Submit";
@@ -389,27 +404,38 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $defaultChecked = CheckboxDefaultState($options, $minNumber, $maxNumber);
         $multiChooseText = [];
         for ($i = 0; $i < $optionsCount; ++$i) {
-          array_push($multiChooseText, CreateCheckboxAPI($i, $i, -1, $defaultChecked, GamestateUnsanitize(strval($options[$i]))));
+          $multiChooseText[] = CreateCheckboxAPI($i, $i, -1, $defaultChecked, GamestateUnsanitize(strval($options[$i])));
         }
         $playerInputPopup->popup =  CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, $content);
         $playerInputPopup->multiChooseText = $multiChooseText;
       } else {
+        $isMultiChooseDiscard  = ($turnPhase === "MULTICHOOSEDISCARD");
+        $isMultiChooseSubcards = ($turnPhase === "MULTICHOOSESUBCARDS");
+        $isMultiChooseItems    = ($turnPhase === "MULTICHOOSEITEMS");
+        $multiZoneRef = null;
+        if (!$isMultiChooseDiscard && !$isMultiChooseSubcards && !$isMultiChooseItems) {
+          $multiZoneRef = match($turnPhase) {
+            "MULTICHOOSETHEIRDISCARD" => $theirDiscard,
+            "MULTICHOOSEHAND", "MAYMULTICHOOSEHAND" => $myHand,
+            "MULTICHOOSEDECK" => $myDeck,
+            "MULTICHOOSETHEIRDECK" => $theirDeck,
+            "MULTICHOOSEBANISH" => $myBanish,
+            default => null,
+          };
+        }
+
         for ($i = 0; $i < $optionsCount; ++$i) {
           if ($options[$i] != "") {
-            if ($turnPhase == "MULTICHOOSEDISCARD") {
-              $wateryGraveCounter = false;
-              if (SearchLayersForTargetUniqueID($myDiscard[$options[$i]+1]) != -1) {
-                $wateryGraveCounter = true;
-              }
-              array_push($cardsArray, JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i, wateryGraveIcon: $wateryGraveCounter));
+            if ($isMultiChooseDiscard) {
+              $wateryGraveCounter = SearchLayersForTargetUniqueID($myDiscard[$options[$i]+1]) != -1;
+              $cardsArray[] = JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i, wateryGraveIcon: $wateryGraveCounter);
+            } else if ($isMultiChooseSubcards) {
+              $cardsArray[] = JSONRenderedCard($options[$i], actionDataOverride: $i);
+            } else if ($isMultiChooseItems) {
+              $cardsArray[] = JSONRenderedCard($myItems[$options[$i]], overlay:$myItems[$options[$i]+2] != 2 ? 'disabled' : 'none', counters: $myItems[$options[$i]+1], actionDataOverride: $i);
+            } else if ($multiZoneRef !== null) {
+              $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i);
             }
-            else if ($turnPhase == "MULTICHOOSETHEIRDISCARD") array_push($cardsArray, JSONRenderedCard($theirDiscard[$options[$i]], actionDataOverride: $i));
-            else if ($turnPhase == "MULTICHOOSEHAND" || $turnPhase == "MAYMULTICHOOSEHAND") array_push($cardsArray, JSONRenderedCard($myHand[$options[$i]], actionDataOverride: $i));
-            else if ($turnPhase == "MULTICHOOSEDECK") array_push($cardsArray, JSONRenderedCard($myDeck[$options[$i]], actionDataOverride: $i));
-            else if ($turnPhase == "MULTICHOOSETHEIRDECK") array_push($cardsArray, JSONRenderedCard($theirDeck[$options[$i]], actionDataOverride: $i));
-            else if ($turnPhase == "MULTICHOOSEBANISH") array_push($cardsArray, JSONRenderedCard($myBanish[$options[$i]], actionDataOverride: $i));
-            else if ($turnPhase == "MULTICHOOSEITEMS") array_push($cardsArray, JSONRenderedCard($myItems[$options[$i]], overlay:$myItems[$options[$i]+2] != 2 ? 'disabled' : 'none', counters: $myItems[$options[$i]+1], actionDataOverride: $i));
-            else if ($turnPhase == "MULTICHOOSESUBCARDS") array_push($cardsArray, JSONRenderedCard($options[$i], actionDataOverride: $i));
           }
         }
         $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, additionalComments: $subtitles, cardsArray: $cardsArray);
@@ -422,14 +448,15 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $cardsToShow = [];
         $options = explode(",", $turn[2]);
-        $caption = GetDQHelpText() != "-" ? GamestateUnsanitize(GetDQHelpText()) : "Cards from deck:";
+        $dqHint = GetDQHelpText();
+        $caption = $dqHint !== "-" ? GamestateUnsanitize($dqHint) : "Cards from deck:";
 
       foreach ($options as $i => $option) {
         $cardsToShow[] = JSONRenderedCard($myDeck[$i], borderColor: 0, actionDataOverride: $i);
       }
 
       $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, $caption, 1, cardsArray: $cardsToShow);
-        array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
+        $playerInputButtons[] = CreateButtonAPI($playerID, "Ok", 99, "OK", "20px");
       }
       break;
 
@@ -438,14 +465,15 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $cardsToShow = [];
         $options = explode(",", $turn[2]);
-        $caption = GetDQHelpText() != "-" ? GamestateUnsanitize(GetDQHelpText()) : "Cards from opponent's deck:";
+        $dqHint = GetDQHelpText();
+        $caption = $dqHint !== "-" ? GamestateUnsanitize($dqHint) : "Cards from opponent's deck:";
 
       foreach ($options as $i => $option) {
         $cardsToShow[] = JSONRenderedCard($theirDeck[$i], borderColor: 0, actionDataOverride: $i);
       }
 
         $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, $caption, 1, cardsArray: $cardsToShow);
-        array_push($playerInputButtons, CreateButtonAPI($playerID, "Ok", 99, "OK", "20px"));
+        $playerInputButtons[] = CreateButtonAPI($playerID, "Ok", 99, "OK", "20px");
       }
       break;
 
@@ -453,7 +481,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "MAYCHOOSEMYSOUL":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $caption = (GetDQHelpText() != "-") ? GamestateUnsanitize(GetDQHelpText()) : "Choose one of your soul:";
+        $dqHint = GetDQHelpText();
+        $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose one of your soul:";
         $playerInputPopup->popup = ChoosePopup($mySoul, $turn[2], 16, $caption);
       }
       break;
@@ -474,9 +503,26 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $subtitles = "";
         $source = [];
         $optionsCount = count($options);
+        $attackingPermanentsSet = ['THEIRALLY' => true, 'THEIRAURAS' => true, 'MYALLY' => true, 'MYAURAS' => true];
+        $combatChainCount = count($combatChain);
+        $layerCheckCount = count($layers);
+        $turnDataStartsWithMyDeck = (substr($turnData, 0, 6) === "MYDECK");
+        $singleMyDeckInTurnData = (substr_count($turnData, "MYDECK") == 1);
+        $hasCombatChainLink = $CombatChain->HasCurrentLink();
+        $weaponIndexValue = intval($combatChainState[$CCS_WeaponIndex]);
+        $otherIsMain = ($otherPlayer == $mainPlayer);
+        $combatChainPieces = CombatChainPieces();
+        $layerPieces = LayerPieces();
+        $layersActive = ($layerCheckCount > 0 && $layers[0] != "");
+        $isMayChooseMultizone = ($turnPhase === "MAYCHOOSEMULTIZONE");
+        $combatChainFirst = $combatChainCount > 0 ? $combatChain[0] : null;
+        $combatChainLast = $combatChainCount > 0 ? $combatChain[$combatChainCount - $combatChainPieces] : null;
         for ($i = 0; $i < $optionsCount; ++$i) {
           $option = explode("-", $options[$i]);
-          switch($option[0]) {
+          $option0 = $option[0]; // cache zone key — accessed 30+ times per iteration
+          $isMyPrefix = str_starts_with($option0, "MY");
+          $isTheirPrefix = str_starts_with($option0, "THEIR");
+          switch($option0) {
             case "MYAURAS":
               $source = $myAuras;
               break;
@@ -593,7 +639,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             case "CARDID":
               break;
             default:
-              WriteLog("An unexpected input $option[0] was sent to CHOOSEMULTIZONE, please submit a bug report", highlight:true);
+              WriteLog("An unexpected input $option0 was sent to CHOOSEMULTIZONE, please submit a bug report", highlight:true);
               break;
           }
           $counters = 0;
@@ -608,14 +654,13 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $overlay = 0;
           $holoCounters = null;
           //Add indication for token copies
-          if (str_contains($option[0], "AURAS")) {
+          if (str_contains($option0, "AURAS")) {
             $Card = MZIndexToObject($playerID, $options[$i]);
             if ($Card->IsToken() && !TypeContains($Card->CardID(), "T")) $label = "Token Copy";
           }
           
           //Add indication for attacking Allies and Auras with an open combat chain
-          $attackingPermanents = ["THEIRALLY", "THEIRAURAS", "MYALLY", "MYAURAS"];
-          if ((in_array($option[0], $attackingPermanents)) && intval($option[1]) == intval($combatChainState[$CCS_WeaponIndex]) && $CombatChain->HasCurrentLink() && $otherPlayer == $mainPlayer) {
+          if (isset($attackingPermanentsSet[$option0]) && intval($option[1]) == $weaponIndexValue && $hasCombatChainLink && $otherIsMain) {
             $AttackingCard = $CombatChain->AttackCard();
             $Card = MZIndexToObject($playerID, $options[$i]);
             if ($AttackingCard->OriginUniqueID() == $Card->UniqueID())
@@ -623,11 +668,10 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
 
           //Add indication for attacking Allies and Auras in the layer step
-          $layerCheckCount = count($layers);
-          if ($layerCheckCount > 0 && $layers[0] != "") {
-            $searchType = $option[0] == "THEIRALLY" || $option[0] == "MYALLY" ? "Ally" : "Aura";
+          if ($layersActive && (DelimStringContains($option0, "ALLY", true) || DelimStringContains($option0, "AURAS", true))) {
+            $searchType = str_contains($option0, "ALLY") ? "Ally" : "Aura";
             $index = explode(",", SearchLayer($otherPlayer, subtype: $searchType));
-            if (count($index) > 0 && (DelimStringContains($option[0], "ALLY", true) || DelimStringContains($option[0], "AURAS", true))) {
+            if (count($index) > 0) {
               $params = explode("|", $layers[intval($index[0]) + 2]);
               $originUID = $params[3] ?? "-";
               $Card = MZIndexToObject($playerID, $options[$i]);
@@ -637,14 +681,13 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             }
           }
           //Add indication for layers targets
-          if ($layerCheckCount > 0 && $layers[0] != "" && ($option[0] == "MYDISCARD" || $option[0] == "THEIRDISCARD")) {
-            $countLayers = count($layers);
-            for ($j=0; $j < $countLayers; $j += LayerPieces()) {
-              $target = $option[0]."-".($option[1] ?? "");
+          if ($layersActive && ($option0 == "MYDISCARD" || $option0 == "THEIRDISCARD")) {
+            for ($j = 0; $j < $layerCheckCount; $j += $layerPieces) {
+              $target = $option0."-".($option[1] ?? "");
               $cardID = GetMZCard($currentPlayer, $target);
               $params = explode("-", $layers[$j + 3]);
               if(isset($params[1])) {
-                $uniqueIDIndex = ($option[0] == "MYDISCARD") ? SearchDiscardForUniqueID($params[1], $currentPlayer) : SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
+                $uniqueIDIndex = ($option0 == "MYDISCARD") ? SearchDiscardForUniqueID($params[1], $currentPlayer) : SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
               }
               if($uniqueIDIndex != -1 && isset($source[$uniqueIDIndex]) && $cardID == $source[$uniqueIDIndex]) {
                 $label = "Targeted";
@@ -653,10 +696,10 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             }   
           }
 
-          if ($layerCheckCount > 0 && $layers[0] != "" && $option[0] == "LAYER" && $option[1] == 0) {
+          if ($layersActive && $option0 == "LAYER" && $option[1] == 0) {
             // $params = explode("-", $layers[$j + 3]);
             $params = explode("-", $layers[3]);
-            $target = $option[0]."-".$option[1];
+            $target = $option0."-".$option[1];
             $cardID = GetMZCard($currentPlayer, $target);
             if($cardID == "runechant") {
               $label = "Amp " . CurrentEffectArcaneModifier($source, $otherPlayer, skipRemove:true);
@@ -664,10 +707,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
 
           //Bonds of Agony - add indication for hand, graveyard and deck
-          $combatChainCount = count($combatChain);
-          if($combatChainCount > 0) {
-            if($combatChain[0] == "bonds_of_agony_blue" && $turnPhase == "MAYCHOOSEMULTIZONE") {
-              switch ($option[0]) {
+          if ($isMayChooseMultizone && $combatChainCount > 0) {
+            if ($combatChainFirst == "bonds_of_agony_blue") {
+              switch ($option0) {
                   case "THEIRHAND":
                       $label = "Hand";
                       break;
@@ -679,8 +721,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
                       break;
               }  
             }
-            if($combatChain[$combatChainCount - CombatChainPieces()] == "hunter_or_hunted_blue" && $turnPhase == "MAYCHOOSEMULTIZONE") {
-              switch ($option[0]) {
+            if ($combatChainLast == "hunter_or_hunted_blue") {
+              switch ($option0) {
                   case "THEIRHAND":
                       $label = "Hand";
                       break;
@@ -698,45 +740,50 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
 
           //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
-          if ($option[0] == "MYARS") $label = "Arsenal";
+          if ($option0 == "MYARS") $label = "Arsenal";
           //Add indication for past chain links
-          if ($option[0] == "PASTCHAINLINK") $label = "Chain link " . ($option[2] + 1);
+          if ($option0 == "PASTCHAINLINK") $label = "Chain link " . ($option[2] + 1);
           //Add indication for Attacking Mechanoid
-          if (($option[0] == "CC" || $option[0] == "LAYER") && (GetMZCard($currentPlayer, $options[$i]) == "nitro_mechanoida" || GetMZCard($currentPlayer, $options[$i]) == "teklovossen_the_mechropotenta")) $label = "Attacking";
+          if ($option0 == "CC" || $option0 == "LAYER") {
+            $mzCardID = GetMZCard($currentPlayer, $options[$i]);
+            if ($mzCardID == "nitro_mechanoida" || $mzCardID == "teklovossen_the_mechropotenta") $label = "Attacking";
+          }
 
           $index = intval($option[1] ?? 0);
-          $card = ($option[0] != "CARDID" && isset($source[$index])) ? $source[$index] : ($option[1] ?? 0);
-          if (($option[0] == "LAYER" || $option[0] == "PRELAYERS") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY" || $card == "ATTACK")) $card = $source[$index + 2];
+          $card = ($option0 != "CARDID" && isset($source[$index])) ? $source[$index] : ($option[1] ?? 0);
+          if (($option0 == "LAYER" || $option0 == "PRELAYERS") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY" || $card == "ATTACK")) $card = $source[$index + 2];
 
-          if ($option[0] == "THEIRBANISH") {
+          if ($option0 == "THEIRBANISH") {
             $mod = explode("-", $theirBanish[$index + 1])[0];
             $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
             $borderColor = CardBorderColor($card, "BANISH", $action > 0, $playerID, $mod);
             if($borderColor == 7) $label = "Playable";
             if (isFaceDownMod($source[$index + 1])) $card = $TheirCardBack;
           }
-          else if (substr($option[0], 0, 2) == "MY") $borderColor = 1;
-          else if (substr($option[0], 0, 5) == "THEIR") $borderColor = 2;
-          else if ($option[0] == "CC") $borderColor = $combatChain[$index + 1] == $playerID ? 1 : 2;
-          else if ($option[0] == "LAYER" || $option[0] == "PRELAYERS") {
+          else if ($isMyPrefix) $borderColor = 1;
+          else if ($isTheirPrefix) $borderColor = 2;
+          else if ($option0 == "CC") $borderColor = $combatChain[$index + 1] == $playerID ? 1 : 2;
+          else if ($option0 == "LAYER" || $option0 == "PRELAYERS") {
             $borderColor = $source[$index + 1] == $playerID ? 1 : 2;
           }
-          else if ($option[0] == "COMBATCHAINATTACKS") {
+          else if ($option0 == "COMBATCHAINATTACKS") {
             $borderColor = 1;
           }
-          if ($option[0] == "COMBATCHAINLINK"){
+          if ($option0 == "COMBATCHAINLINK"){
             $borderColor = $combatChain[$index + 1] == $playerID ? 1 : 2;
             if ($combatChain[$index + 6] > 0) $enduranceCounters = $combatChain[$index + 6];
           }
 
-          if ($option[0] == "THEIRCHAR" || $option[0] == "MYCHAR") {
-            $tapped = $option[0] == "THEIRCHAR" ? $theirCharacter[$index + 14] == 1 : $myCharacter[$index + 14] == 1;
-            $powerCounters = $option[0] == "MYCHAR" ? $myCharacter[$index + 3] : $theirCharacter[$index + 3];
-            $overlay = $option[0] == "THEIRCHAR" ? $theirCharacter[$index + 1] != 2 : $myCharacter[$index + 1] != 2;
+          if ($option0 == "THEIRCHAR" || $option0 == "MYCHAR") {
+            $isTheirChar = ($option0 == "THEIRCHAR");
+            $charArr = $isTheirChar ? $theirCharacter : $myCharacter;
+            $tapped = $charArr[$index + 14] == 1;
+            $powerCounters = $charArr[$index + 3];
+            $overlay = $charArr[$index + 1] != 2;
           }
-          if ($option[0] == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN" || $option[0] == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN") {
+          if ($option0 == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN" || $option0 == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN") {
             $card = $TheirCardBack;
-            switch ($option[0]) {
+            switch ($option0) {
               case "THEIRARS":
                 $label = "Arsenal";
                 break;
@@ -748,27 +795,29 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             }
           }
 
-          if($option[0] == "CURRENTTURNEFFECTS") {
+          if($option0 == "CURRENTTURNEFFECTS") {
             $cardID = explode("-", $source[$index])[0];
             $card = $cardID;
           }
 
           //Show Life and Def counters on allies in the popups
-          if ($option[0] == "THEIRALLY" || $option[0] == "MYALLY") {
-            $player = $option[0] == "THEIRALLY" ? $otherPlayer : $playerID;
+          if ($option0 == "THEIRALLY" || $option0 == "MYALLY") {
+            $isTheirAlly = ($option0 == "THEIRALLY");
+            $allyArr = $isTheirAlly ? $theirAllies : $myAllies;
+            $player = $isTheirAlly ? $otherPlayer : $playerID;
             $index = intval($option[1]);
-            $lifeCounters = $option[0] == "THEIRALLY" ? $theirAllies[$index + 2] : $myAllies[$index + 2];
-            $enduranceCounters = $option[0] == "THEIRALLY" ? $theirAllies[$index + 6] : $myAllies[$index + 6];
-            $powerCounters =  $option[0] == "THEIRALLY" ? $theirAllies[$index + 9] : $myAllies[$index + 9];
-            $uniqueID = $option[0] == "THEIRALLY" ? $theirAllies[$index + 5] : $myAllies[$index + 5];
-            $tapped = $option[0] == "THEIRALLY" ? $theirAllies[$index + 11] == 1 : $myAllies[$index + 11] == 1;
+            $lifeCounters = $allyArr[$index + 2];
+            $enduranceCounters = $allyArr[$index + 6];
+            $powerCounters = $allyArr[$index + 9];
+            $uniqueID = $allyArr[$index + 5];
+            $tapped = $allyArr[$index + 11] == 1;
             if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
-                $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue(($option[0] == "THEIRALLY") ? $theirAllies[$index] : $myAllies[$index], $player, "ALLY");
+                $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue($allyArr[$index], $player, "ALLY");
             }
           }
-          
-          if ($option[0] == "THEIRAURAS" || $option[0] == "MYAURAS") {
-            $AuraCard = $option[0] == "THEIRAURAS" ? new AuraCard($index, $otherPlayer) : new AuraCard($index, $playerID);
+
+          if ($option0 == "THEIRAURAS" || $option0 == "MYAURAS") {
+            $AuraCard = $isTheirPrefix ? new AuraCard($index, $otherPlayer) : new AuraCard($index, $playerID);
             //Show power counters on Auras in the popups
             $powerCounters = $AuraCard->NumPowerCounters();
             //Show various counters on Auras in the popups
@@ -778,7 +827,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             //Show "stolen" modifier
             if ($AuraCard->GetModalities() == "Temporary") $label = "stolen";
             //Show if it's been targeted
-            for ($j = 0; $j < $Stack->NumLayers(); ++$j) {
+            $numStackLayers = $Stack->NumLayers();
+            for ($j = 0; $j < $numStackLayers; ++$j) {
               $Layer = $Stack->Card($j, true);
               if (str_contains($Layer->Target(), $AuraCard->UniqueID())) {
                 $label = "Targeted";
@@ -787,32 +837,34 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             }
           }
           //Show Steam Counters on items
-          if ($option[0] == "THEIRITEMS" || $option[0] == "MYITEMS") {
-            $steamCounters = $option[0] == "THEIRITEMS" ? $theirItems[$index + 1] : $myItems[$index + 1];
-            $tapped = $option[0] == "THEIRITEMS" ? $theirItems[$index + 10] == 1 : $myItems[$index + 10] == 1;
-            $label = $option[0] == "THEIRITEMS" && $theirItems[$index + 8] != "" && $theirItems[$index + 8] != "-" ? GamestateUnsanitize($theirItems[$index + 8]) : "";
-            $label = $option[0] == "MYITEMS" && $myItems[$index + 8] != "" && $myItems[$index + 8] != "-" ? GamestateUnsanitize($myItems[$index + 8]) : "";
+          if ($option0 == "THEIRITEMS" || $option0 == "MYITEMS") {
+            $isTheirItems = ($option0 == "THEIRITEMS");
+            $itemArr = $isTheirItems ? $theirItems : $myItems;
+            $steamCounters = $itemArr[$index + 1];
+            $tapped = $itemArr[$index + 10] == 1;
+            $itemLabel = $itemArr[$index + 8];
+            $label = ($itemLabel !== "" && $itemLabel !== "-") ? GamestateUnsanitize($itemLabel) : "";
           }
 
-          if ($option[0] == "MYBANISH") {
+          if ($option0 == "MYBANISH") {
             $index = intval($option[1]);
-            $cardID = GetMZCard($currentPlayer, $option[0]."-".$option[1]);
+            $cardID = GetMZCard($currentPlayer, $option0."-".$option[1]);
             $uniqueID = $myBanish[$index + 2];
             $label = GetCardEffectLabel($uniqueID, $currentTurnEffects);
           }
           
           //Show Subtitles on MyDeck
-          if(substr($turnData, 0, 6) === "MYDECK" && $turnData != "MYDECK-0"){
+          if($turnDataStartsWithMyDeck && $turnData != "MYDECK-0"){
             $subtitles = "(You can click your deck to see its content during this card resolution)";
           }
 
-          if($option[0] == "MYDECK" && $option[1] == "0" && $turnPhase == "MAYCHOOSEMULTIZONE" && substr_count($turnData, "MYDECK") == 1) {
+          if($option0 == "MYDECK" && $option[1] == "0" && $isMayChooseMultizone && $singleMyDeckInTurnData) {
             $card = $MyCardBack;
           }
           if ($maxCount < 2)
-            array_push($cardsMultiZone, JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: substr($option[0], 0, 5) == "THEIR" ? true : false, holoCounters: $holoCounters));
+            $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters);
           else
-            array_push($cardsMultiZone, JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset));
+            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset);
         }
         if ($maxCount >= 2) {
           $formOptions = new stdClass();
@@ -869,7 +921,7 @@ function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments 
   for ($i = 0; $i < $optionsCount; ++$i) {
     if($MZName == "ARSENAL" && isset($zone[$options[$i]+1]) && $zone[$options[$i]+1] == "DOWN") $label = "Face Down";
     if (isset($zone[$options[$i]])) {
-      array_push($cardList, JSONRenderedCard($zone[$options[$i]], action: $mode, actionDataOverride: strval($options[$i]), label: $label));
+      $cardList[] = JSONRenderedCard($zone[$options[$i]], action: $mode, actionDataOverride: strval($options[$i]), label: $label);
     }
   }
 

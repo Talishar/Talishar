@@ -19,10 +19,12 @@ function initializePlayerState($handler, $deckHandler, $player)
   fwrite($handler, implode(" ", $deckCards) . "\r\n");
 
   $hero = "";
-  for ($i = 0; $i < count($charEquip); ++$i) {
+  $charEquipCount = count($charEquip);
+  $lastEquipIndex = $charEquipCount - 1;
+  for ($i = 0; $i < $charEquipCount; ++$i) {
     if(TypeContains($charEquip[$i], "C")) $hero = $charEquip[$i];
     if (IsModular($charEquip[$i])) $charEquip[$i] = "NONE00";
-    fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0 0 " . CharacterDefaultActiveState($charEquip[$i]) . " - " . GetUniqueId() . " " . HasCloaked($charEquip[$i], hero:$hero) . " 0 0" . ($i < count($charEquip) - 1 ? " " : "\r\n"));
+    fwrite($handler, $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0 0 " . CharacterDefaultActiveState($charEquip[$i]) . " - " . GetUniqueId() . " " . HasCloaked($charEquip[$i], hero:$hero) . " 0 0" . ($i < $lastEquipIndex ? " " : "\r\n"));
   }
   //Character and equipment. First is ID. Four numbers each. First is status (0=Destroy/unavailable, 1=Used, 2=Unused, 3=Disabled). Second is num counters
   //Third is power modifier, fourth is block modifier
@@ -57,11 +59,12 @@ function initializePlayerState($handler, $deckHandler, $player)
       case $SET_IsPatron: $value = $isPatron; break;
       default: $value = SettingDefaultValue($i, $charEquip[0]); break;
     }
-    array_push($settingArray, $value);
+    $settingArray[] = $value;
   }
-  for($i=0; $i<count($savedSettings); $i+=2)
+  $savedSettingsCount = count($savedSettings);
+  for($i=0; $i<$savedSettingsCount; $i+=2)
   {
-    $settingArray[$savedSettings[intval($i)]] = $savedSettings[intval($i)+1];
+    $settingArray[$savedSettings[$i]] = $savedSettings[$i+1]; 
   }
   fwrite($handler, implode(" ", $settingArray) . "\r\n"); //Settings
 }

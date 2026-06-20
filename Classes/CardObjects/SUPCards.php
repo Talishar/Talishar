@@ -35,7 +35,11 @@ class backspin_thrust_red extends Card {
       }
       if ($from == "CC" || $from == "COMBATCHAINATTACKS") {
         $inds = GetTapped($this->controller, "MYITEMS", "subtype=Cog");
-        if($inds != "") Tap(explode(",", $inds)[0], $this->controller, 0);
+        if ($inds != "") {
+          AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a Cog to untap for " . CardLink($this->cardID));
+          AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $inds, 1);
+          AddDecisionQueue("MZTAP", $this->controller, "0", 1);
+        }
         if ($from == "COMBATCHAINATTACKS") ++$chainLinks[$i][9];
         else ++$combatChain[$i + 11];
       }
@@ -415,9 +419,11 @@ class hunter_or_hunted_blue extends Card {
       AddDecisionQueue("SETDQVAR", $player, 1, 1);
       AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
       // show their hand, arsenal, and deck
-      AddDecisionQueue("WRITELOG", $player, CardLink($parameter, $parameter) . " shows opponent's hand and arsenal", 1);
-      AddDecisionQueue("SHOWHANDWRITELOG", $mainPlayer, "-", 1);
-      AddDecisionQueue("SHOWARSENALWRITELOG", $mainPlayer, "-", 1);
+      if(count(GetHand($mainPlayer)) > 0 || count(GetArsenal($mainPlayer)) > 0) {
+        AddDecisionQueue("WRITELOG", $player, CardLink($parameter, $parameter) . " shows opponent's hand and arsenal", 1);
+        AddDecisionQueue("SHOWHANDWRITELOG", $mainPlayer, "-", 1);
+        AddDecisionQueue("SHOWARSENALWRITELOG", $mainPlayer, "-", 1);
+      }
 
       AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count, 1);
       AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);

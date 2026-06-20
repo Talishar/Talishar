@@ -8,10 +8,7 @@ function PlayLandmark($cardID, $player, $from="-")
     WriteLog($cardID . " was tried to play as a landmark, but is not a landmark.", highlight: true);
     return;
   }
-  array_push($landmarks, $cardID);
-  array_push($landmarks, $player); //The player that originally played the landmark
-  array_push($landmarks, $from);
-  array_push($landmarks, 0); // counters
+  array_push($landmarks, $cardID, $player, $from, 0); // cardID, owner, from, counters
   switch ($cardID) {
     case "treasure_island":
       AddCurrentTurnEffect($cardID, $player);
@@ -30,11 +27,7 @@ function DestroyLandmark($index, $skipDestroy=false)
   global $landmarks;
   $cardID = $landmarks[$index] ?? "";
   $ownerID = $landmarks[$index + 1] ?? "";
-  $landmarkPieces = LandmarkPieces();
-  for($j = $index + $landmarkPieces - 1; $j >= $index; --$j) {
-    unset($landmarks[$j]);
-  }
-  $landmarks = array_values($landmarks);
+  array_splice($landmarks, $index, LandmarkPieces());
   if(!$skipDestroy) AddGraveyard($cardID, $ownerID, "PLAY");
   return $cardID;
 }
@@ -50,11 +43,13 @@ function LandmarkBeginEndPhaseAbilities()
         }
         break;
       case "mistcloak_gully":
-        if(GetClassState($landmarks[$i+1], $CS_NumBluePlayed) > 0 && SearchPitchForColor($landmarks[$i+1], 3) > 0 && GetClassState($landmarks[$i+1], $CS_NumBlueDefended) > 0) {
-          Transcend($landmarks[$i+1], "MST000_inner_chi_blue", $landmarks[$i+2]);
+        $owner = $landmarks[$i + 1];
+        $from  = $landmarks[$i + 2];
+        if (GetClassState($owner, $CS_NumBluePlayed) > 0 && SearchPitchForColor($owner, 3) > 0 && GetClassState($owner, $CS_NumBlueDefended) > 0) {
+          Transcend($owner, "MST000_inner_chi_blue", $from);
           DestroyLandmark($i, true);
         }
-        elseif(GetClassState($landmarks[$i+1], $CS_NumBluePlayed) <= 0 && SearchPitchForColor($landmarks[$i+1], 3) <= 0 && GetClassState($landmarks[$i+1], $CS_NumBlueDefended) <= 0) {
+        elseif (GetClassState($owner, $CS_NumBluePlayed) <= 0 && SearchPitchForColor($owner, 3) <= 0 && GetClassState($owner, $CS_NumBlueDefended) <= 0) {
           DestroyLandmark($i);
         }
         break;
@@ -67,20 +62,22 @@ function LandmarkBeginEndPhaseAbilities()
 function LandmarkStartTurnAbilities()
 {
   global $landmarks, $mainPlayer;
-  for ($i = 0; $i < count($landmarks); ++$i) {
-    switch ($landmarks[$i]) {
+  $n = count($landmarks);
+  for ($i = 0; $i < $n; ++$i) {
+    $cardID = $landmarks[$i];
+    switch ($cardID) {
       case "mistcloak_gully":
-        if($landmarks[$i+1] != $mainPlayer) {
-          AddCurrentTurnEffect($landmarks[$i], $mainPlayer);
+        if ($landmarks[$i + 1] != $mainPlayer) {
+          AddCurrentTurnEffect($cardID, $mainPlayer);
         }
         break;
       case "treasure_island":
-        AddCurrentTurnEffect($landmarks[$i], $mainPlayer);
+        AddCurrentTurnEffect($cardID, $mainPlayer);
         break;
       default:
         break;
-      }
     }
+  }
 }
 
 function SearchLandmarksForID($cardID)

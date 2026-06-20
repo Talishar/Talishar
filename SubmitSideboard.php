@@ -35,15 +35,22 @@ if ($authKey !== $targetAuth) {
 if ($playerCharacter != "" && $playerDeck != "") //If they submitted before loading even finished, use the deck as it existed before
 {
   $char = explode(",", $playerCharacter);
+  $charCount = count($char);
   $numHands = 0;
   $numEquip = 0;
-  for ($i = 0; $i < count($char); ++$i) {
-    if (CardSubType($char[$i]) == "Off-Hand") ++$numHands;
-    else if (CardType($char[$i]) == "W") {
-      if (Is1H($char[$i])) ++$numHands;
-      else $numHands += 2;
+  for ($i = 0; $i < $charCount; ++$i) {
+    $card = $char[$i];
+    if (CardSubType($card) == "Off-Hand") {
+      ++$numHands;
+    } else {
+      $cardType = CardType($card);
+      if ($cardType == "W") {
+        if (Is1H($card)) ++$numHands;
+        else $numHands += 2;
+      } elseif ($cardType == "E") {
+        ++$numEquip;
+      }
     }
-    else if (CardType($char[$i]) == "E") ++$numEquip;
   }
   if ($numHands < 1) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. " . $numHands . " weapon currently equipped.");
@@ -58,22 +65,27 @@ if ($playerCharacter != "" && $playerDeck != "") //If they submitted before load
 
   $playerDeck = explode(",", $playerDeck);
   $deckCount = count($playerDeck);
-  if ($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "gage")) {
+  $ccFormats = ["cc" => 1, "compcc" => 1, "llcc" => 1, "compllcc" => 1, "futurecc" => 1, "gage" => 1];
+  $blitzFormats = ["blitz" => 1, "commoner" => 1, "sage" => 1, "compsage" => 1, "futuresage" => 1];
+  if ($deckCount < 60 && isset($ccFormats[$format])) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is under the legal minimum.");
     header("Location: {$redirectPath}/GameLobby.php?gameName={$gameName}&playerID={$playerID}");
     exit;
   }
-  if ($deckCount < 40 && ($format == "blitz" || $format == "commoner" || $format == "sage" || $format == "compsage" || $format == "futuresage")) {
+  if ($deckCount < 40 && isset($blitzFormats[$format])) {
     WriteLog("Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is under the legal minimum.");
     header("Location: {$redirectPath}/GameLobby.php?gameName={$gameName}&playerID={$playerID}");
     exit;
   }
 
-  for ($i = $deckCount - 1; $i >= 0; --$i) {
+  $filteredDeck = [];
+  for ($i = 0; $i < $deckCount; ++$i) {
     $cardType = CardType($playerDeck[$i]);
-    if ($cardType == "" || $cardType == "C" || $cardType == "E" || $cardType == "W") unset($playerDeck[$i]);
+    if ($cardType !== "" && $cardType !== "C" && $cardType !== "E" && $cardType !== "W") {
+      $filteredDeck[] = $playerDeck[$i];
+    }
   }
-  $playerDeck = array_values($playerDeck);
+  $playerDeck = $filteredDeck;
   $filename = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
   $deckFile = fopen($filename, "w");
   fwrite($deckFile, implode(" ", $char) . "\r\n");
@@ -93,7 +105,7 @@ if ($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
 WriteGameFile();
 GamestateUpdated($gameName);
 
-if ($gameStarted == 1) {
+if ($gameStarted) {
   header("Location: {$redirectPath}/Start.php?gameName={$gameName}&playerID={$playerID}");
 } else {
   header("Location: {$redirectPath}/GameLobby.php?gameName={$gameName}&playerID={$playerID}");

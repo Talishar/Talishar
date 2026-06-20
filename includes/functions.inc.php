@@ -864,7 +864,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 			$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
 			$deck["cardResults"][$j]["discarded"] = $cardStats[$i + $CardStats_TimesDiscarded];
 		} else {
-			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
+			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon/character/companion or if activated from play (e.g. ally tokens), otherwise tokenResults
 			$cardType = CardType($cardId);
 			$cardResult = [
 				"cardId" => $cardId,
@@ -879,7 +879,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				"katsuDiscard" => $cardStats[$i + $CardStats_TimesKatsuDiscard],
 				"activated" => $cardStats[$i + $CardStats_TimesActivated],
 			];
-			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
+			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion") || $cardStats[$i + $CardStats_TimesActivated] > 0) {
 				$deck["arenaCardResults"][] = $cardResult;
 			} else {
 				$deck["tokenResults"][] = $cardResult;
@@ -980,7 +980,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 			$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesKatsuDiscard]);
 			$deck["cardResults"][$j]["discarded"] = intval($cardStats[$i + $CardStats_TimesDiscarded]);
 		} else {
-			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
+			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon/character/companion or if activated from play (e.g. ally tokens), otherwise tokenResults
 			$cardType = CardType($cardId);
 			$cardResult = [
 				"cardId" => $cardId,
@@ -995,7 +995,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 				"katsuDiscard" => intval($cardStats[$i + $CardStats_TimesKatsuDiscard]),
 				"activated" => intval($cardStats[$i + $CardStats_TimesActivated]),
 			];
-			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
+			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion") || intval($cardStats[$i + $CardStats_TimesActivated]) > 0) {
 				$deck["arenaCardResults"][] = $cardResult;
 			} else {
 				$deck["tokenResults"][] = $cardResult;

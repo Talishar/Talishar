@@ -115,9 +115,9 @@ function CharacterCounters($cardID)
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer, $CS_TunicTicks;
-  $char = new Character($mainPlayer, $index);
   $character = GetPlayerCharacter($mainPlayer);
-  if ($char->status != 2) return;
+  if ($character[$index + 1] != 2) return;
+  $char = new Character($mainPlayer, $index);
   $cardID = $char->cardID;
   if ($index == 0) $cardID = ShiyanaCharacter($cardID);
   $card = GetClass($cardID, $mainPlayer);
@@ -182,7 +182,6 @@ function CharacterStartTurnAbility($index)
     case "heirloom_of_snake_hide":
     case "heirloom_of_rabbit_hide":
     case "heirloom_of_tiger_hide":
-      $index = FindCharacterIndex($mainPlayer, $cardID);
       if ($character[$index + 12] == "DOWN" && GetHealth($mainPlayer) == 1) {
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID, $cardID) . "?", 1);
         AddDecisionQueue("YESNO", $mainPlayer, "an_action", 1);
@@ -195,11 +194,9 @@ function CharacterStartTurnAbility($index)
     case "waves_of_aqua_marine":
     case "aqua_laps":
     case "kimono_of_layered_lessons":
-      $index = FindCharacterIndex($mainPlayer, $cardID);
       if ($character[$index + 12] == "UP") DestroyCharacter($mainPlayer, $index);
       break;
     case "koi_blessed_kimono":
-      $index = FindCharacterIndex($mainPlayer, $cardID);
       if ($character[$index + 12] == "DOWN" && GetHealth($mainPlayer) == 1) {
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID, $cardID) . "?", 1);
         AddDecisionQueue("YESNO", $mainPlayer, "an_action", 1);
@@ -248,14 +245,12 @@ function DefCharacterStartTurnAbilities()
         AddCurrentTurnEffect("barbed_castaway-Aim", $defPlayer);
         break;
       case "blasmophet_levia_consumed":
-        $character = GetPlayerCharacter($defPlayer);
         if ($character[1] < 3) {
           AddCurrentTurnEffect("blasmophet_levia_consumed", $defPlayer);
         }
         break;
       case "victor_goldmane_high_and_mighty":
       case "victor_goldmane":
-        $character = GetPlayerCharacter($defPlayer);
         if (!SearchCurrentTurnEffects($character[$i] . "-1", $defPlayer) && $character[1] < 3) AddCurrentTurnEffect($character[$i] . "-1", $defPlayer);
         break;
       default:
@@ -337,7 +332,6 @@ function MainCharacterBeginEndPhaseAbilities()
 
   $defCharacter = &GetPlayerCharacter($defPlayer);
   $defCharCount = count($defCharacter);
-  $characterPieces = CharacterPieces();
   for ($i = 0; $i < $defCharCount; $i += $characterPieces) {
     $characterID = ShiyanaCharacter($defCharacter[$i]);
     switch ($characterID) {
@@ -608,6 +602,7 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainCharacter);
   $characterPieces = CharacterPieces();
+  $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
   for ($i = 0; $i < $mainCharCount; $i += $characterPieces) {
     if (!IsCharacterAbilityActive($mainPlayer, $i)) continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
@@ -624,7 +619,6 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
         break;
       case "arakni_marionette":
       case "arakni_web_of_deceit":
-        $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
         if (HasStealth($CombatChain->CurrentAttack()) && CheckMarked($otherPlayer) && IsHeroAttackTarget()) {
           $modifier += 1;
           $powerModifiers[] = $characterID;
@@ -754,7 +748,7 @@ function CharacterCostModifier($cardID, $from, $cost)
       case "fang_dracai_of_blades":
       case "fang":
         $fealties = SearchAurasForCardName("Fealty", $currentPlayer);
-        if (SubtypeContains($cardID, "Dagger") && count(explode(",", $fealties)) >= 3) --$modifier;
+        if (SubtypeContains($cardID, "Dagger") && substr_count($fealties, ",") >= 2) --$modifier;
         break;
       case "evo_beta_base_head_blue":
       case "evo_beta_base_head_blue_equip":
@@ -1356,15 +1350,21 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "rust_belt":
       DestroyCharacter($currentPlayer, $cardIndex);
-      //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
+      if ($inds != "") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Cog to tap for " . CardLink("rust_belt"));
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      }
       break;
     case "spitfire":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
-      //for some reason DQs aren't working here, for now just automatically choose the first cog
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-      if($inds != "") Tap(explode(",", $inds)[0], $currentPlayer);
+      if ($inds != "") {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Cog to tap for " . CardLink("spitfire"));
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+        AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
+      }
       break;
     case "cogwerx_blunderbuss":
       if (GetResolvedAbilityType($cardID) == "AA") {
@@ -1714,17 +1714,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
           AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
-      default:
-        break;
-    }
-  }
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
-  $otherPlayerCharacter = &GetPlayerCharacter($otherPlayer);
-  $otherCharCount = count($otherPlayerCharacter);
-  $characterPieces = CharacterPieces();
-  for ($j = 0; $j < $otherCharCount; $j += $characterPieces) {
-    if ($otherPlayerCharacter[$j + 1] != 2) continue;
-    switch ($otherPlayerCharacter[$j]) {
       default:
         break;
     }

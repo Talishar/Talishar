@@ -33,8 +33,8 @@ if (!IsGameNameValid($gameName)) {
 $playerID = intval($_GET["playerID"]);
 
 // List of mod usernames - should match frontend list
-$modUsernames = ["OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn", "Bluffkin"];
-$isMod = $sessionUserUid !== null && in_array($sessionUserUid, $modUsernames);
+$modUsernames = array_flip(["OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn", "Bluffkin"]);
+$isMod = $sessionUserUid !== null && isset($modUsernames[$sessionUserUid]);
 
 if ($playerID === 3 && !$isMod) {
   http_response_code(403);
@@ -108,7 +108,7 @@ if ($chatText === "") {
 }
 
 //array for contributors
-$contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid", "Bluffkin"];
+$contributors = array_flip(["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid", "Bluffkin"]);
 
 $metafyTiers = [];
 if ($playerID === 1) $metafyTiers = $p1MetafyTiers ?? [];
@@ -118,15 +118,15 @@ if (!is_array($metafyTiers)) $metafyTiers = [];
 // Check for Metafy badges first - if user has Metafy badges, only show those
 $hasMetafyBadges = false;
 if(!empty($metafyTiers)) {
-  $metafyBadgeHtml = '';
+  $metafyBadgeParts = [];
   foreach($metafyTiers as $tier) {
     $tierImage = GetMetafyTierImage($tier);
     if($tierImage) {
-      $metafyBadgeHtml .= "<a href='https://www.metafy.gg' target='_blank' rel='noopener noreferrer'><img alt='' title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='" . $tierImage . "'/></a>";
+      $metafyBadgeParts[] = "<a href='https://www.metafy.gg' target='_blank' rel='noopener noreferrer'><img alt='' title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='" . $tierImage . "'/></a>";
     }
   }
-  if(!empty($metafyBadgeHtml)) {
-    $displayName = $metafyBadgeHtml . $displayName;
+  if(!empty($metafyBadgeParts)) {
+    $displayName = implode('', $metafyBadgeParts) . $displayName;
     $hasMetafyBadges = true;
   }
 }
@@ -134,18 +134,18 @@ if(!empty($metafyTiers)) {
 // Only show Patreon badges if user doesn't have Metafy badges
 if(!$hasMetafyBadges) {
   //its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
-  if($sessionIsPatron && $sessionUserUid !== null && !in_array($sessionUserUid, $contributors)) {
+  if($sessionIsPatron && $sessionUserUid !== null && !isset($contributors[$sessionUserUid])) {
     $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
   }
 
   //This is the code for PvtVoid Patreon
-  if($sessionIsPvtVoidPatron || $sessionUserUid !== null && in_array($sessionUserUid, ["PvtVoid"])) {
+  if($sessionIsPvtVoidPatron || $sessionUserUid !== null && $sessionUserUid === "PvtVoid") {
     $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronEye.webp'/></a>" . $displayName;
   }
 }
 
 //This is the code for Contributor's icon.
-if($sessionUserUid !== null && in_array($sessionUserUid, $contributors)) {
+if($sessionUserUid !== null && isset($contributors[$sessionUserUid])) {
   $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a developer of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
 }
 
@@ -163,8 +163,9 @@ if ($handler) {
 $resetTimer = true;
 $gamestateCacheContent = ReadGamestateCache($gameName);
 if (!empty($gamestateCacheContent)) {
-    $gamestatePieces = explode("\r\n", $gamestateCacheContent);
-    if (count($gamestatePieces) > 40) {
+    // Limit to 42 pieces so PHP stops scanning the string after index 40 is found
+    $gamestatePieces = explode("\r\n", $gamestateCacheContent, 42);
+    if (isset($gamestatePieces[40])) {
         $currentPlayerNum = intval(trim($gamestatePieces[40]));
         $resetTimer = ($playerID === $currentPlayerNum);
     }
@@ -203,7 +204,7 @@ function parseQuickChat($inputEnum)
 }
 
 function GetMetafyTierImage($tierName) {
-  $tierImages = [
+  static $tierImages = [
     'Fyendal Supporters' => './images/fyendal.webp',
     'Seers of Ophidia' => './images/ophidia.webp',
     'Arknight Shards' => './images/arknight.webp',

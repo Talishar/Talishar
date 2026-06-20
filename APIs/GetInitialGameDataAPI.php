@@ -45,15 +45,16 @@ if(!AltArtsDisabled($playerID))
 {
   foreach(PatreonCampaign::cases() as $campaign) {
     if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUserName()))) {
-      $altArts = $campaign->AltArts($playerID);
-      $altArts = explode(",", $altArts);
-      for($i = 0; $i < count($altArts); ++$i) {
+      $altArts = explode(",", $campaign->AltArts($playerID));
+      $altCount = count($altArts);
+      $campaignName = $campaign->CampaignName();
+      for($i = 0; $i < $altCount; ++$i) {
         $arr = explode("=", $altArts[$i]);
         $altArt = new stdClass();
-        $altArt->name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . ($i + 1) : "");
+        $altArt->name = $campaignName . (count($cardBacks) > 1 ? " " . ($i + 1) : "");
         $altArt->cardId = $arr[0];
         $altArt->altPath = $arr[1];
-        array_push($response->altArts, $altArt);
+        $response->altArts[] = $altArt;
       }
     }
   }
@@ -83,15 +84,17 @@ if(!AltArtsDisabled($playerID))
                   // Add alt arts
                   $altArts = $metafyCommunity->AltArts();
                   if (!empty($altArts)) {
-                    $altArtIds = $altArts;//explode(",", $altArts);
-                    for($i = 0; $i < count($altArtIds); ++$i) {
+                    $altArtIds = $altArts;
+                    $aaidCount = count($altArtIds);
+                    $communityName = $metafyCommunity->CommunityName();
+                    for($i = 0; $i < $aaidCount; ++$i) {
                       $arr = explode("=", trim($altArtIds[$i]));
                       if (count($arr) === 2) {
                         $altArt = new stdClass();
-                        $altArt->name = $metafyCommunity->CommunityName();
+                        $altArt->name = $communityName;
                         $altArt->cardId = trim($arr[0]);
                         $altArt->altPath = trim($arr[1]);
-                        array_push($response->altArts, $altArt);
+                        $response->altArts[] = $altArt;
                       }
                     }
                   }

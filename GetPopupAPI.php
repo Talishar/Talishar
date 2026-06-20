@@ -79,23 +79,24 @@ switch ($popupType) {
     $powerModifiers = [];
     $response->Cards = [];
     EvaluateCombatChain($totalPower, $totalDefense, $powerModifiers);
-    for ($i = 0; $i < count($powerModifiers); $i += 2) {
-      $thisModifier = new stdClass();
-      $idArr = explode("-", $powerModifiers[$i]);
-      $cardID = ExtractCardID($idArr[0]);
+    $powerModifiersCount = count($powerModifiers);
+    for ($i = 0; $i < $powerModifiersCount; $i += 2) {
       $bonus = $powerModifiers[$i + 1];
       if ($bonus == 0) continue;
+      $idArr = explode("-", $powerModifiers[$i]);
+      $cardID = ExtractCardID($idArr[0]);
       $effectName = CardName($cardID);
       if($effectName == "")
       {
         $effectName = $cardID;
         $cardID = "";
       }
+      $thisModifier = new stdClass();
       $thisModifier->Player = $mainPlayer;
       $thisModifier->Name = $effectName;
       $thisModifier->cardID = $cardID;
       $thisModifier->modifier = $bonus;
-      array_push($response->Cards, $thisModifier);
+      $response->Cards[] = $thisModifier;
     }
     break;
   case "myPitchPopup":
@@ -159,10 +160,9 @@ switch ($popupType) {
       
       // Convert flat array to associative array: [settingID => settingValue]
       $dbSettings = [];
-      for ($i = 0; $i < count($dbSettingsFlat); $i += 2) {
-        $settingNumber = $dbSettingsFlat[$i];
-        $settingValue = $dbSettingsFlat[$i + 1];
-        $dbSettings[$settingNumber] = $settingValue;
+      $dbSettingsFlatCount = count($dbSettingsFlat);
+      for ($i = 0; $i < $dbSettingsFlatCount; $i += 2) {
+        $dbSettings[$dbSettingsFlat[$i]] = $dbSettingsFlat[$i + 1];
       }
       
       // Using numeric IDs from ParseSettingsStringValueToIdInt
@@ -233,8 +233,8 @@ function AddSettingFromDB(&$response, $name, $settingID, $dbSettings)
 {
   $thisSetting = new stdClass();
   $thisSetting->name = $name;
-  $thisSetting->value = isset($dbSettings[$settingID]) ? $dbSettings[$settingID] : null;
-  array_push($response, $thisSetting);
+  $thisSetting->value = $dbSettings[$settingID] ?? null;
+  $response[] = $thisSetting;
 }
 
 function AddSetting(&$response, $name, $setting)
@@ -244,16 +244,17 @@ function AddSetting(&$response, $name, $setting)
   $thisSetting = new stdClass();
   $thisSetting->name = $name;
   // Use isset to handle new settings that may not exist for existing players
-  $thisSetting->value = isset($mySettings[$setting]) ? $mySettings[$setting] : "0";
-  array_push($response, $thisSetting);
+  $thisSetting->value = $mySettings[$setting] ?? "0";
+  $response[] = $thisSetting;
 }
 
 function JSONPopup($response, $zone, $zonePieces)
 {
   $response->cards = [];
-  for($i=0; $i<count($zone); $i+=$zonePieces)
+  $zoneCount = count($zone);
+  for($i=0; $i<$zoneCount; $i+=$zonePieces)
   {
-    array_push($response->cards, JSONRenderedCard($zone[$i]));
+    $response->cards[] = JSONRenderedCard($zone[$i]);
   }
 }
 
@@ -265,25 +266,32 @@ function ChainLinkObject($link)
   if (!is_array($chainLinks) || empty($chainLinks[$link])) {
     return $chainLink;
   }
-  for ($i = 0; $i < count($chainLinks[$link]); $i += ChainLinksPieces()) {
+  $linkCards = $chainLinks[$link];
+  $linkCount = count($linkCards);
+  $linkPieces = ChainLinksPieces();
+  for ($i = 0; $i < $linkCount; $i += $linkPieces) {
+    $cardId = $linkCards[$i];
+    $cardOwner = $linkCards[$i + 1];
     $card = new stdClass();
-    $card->Player = $chainLinks[$link][$i+1];
-    if ($chainLinks[$link][$i + 1] == $mainPlayer && CardType($chainLinks[$link][$i]) != "AR")
-    {
-      $powerValue = PowerValue($chainLinks[$link][$i], $mainPlayer, "CC") + $chainLinks[$link][$i + 4];
+    $card->Player = $cardOwner;
+    if ($cardOwner == $mainPlayer) {
+      $cardType = CardType($cardId);
+      if ($cardType != "AR") {
+        $powerValue = PowerValue($cardId, $mainPlayer, "CC") + $linkCards[$i + 4];
+      } elseif ($cardType == "AR" || DelimStringContains($cardType, "I")) {
+        $powerValue = PowerModifier($cardId);
+      } else {
+        $powerValue = 0;
+      }
+    } else {
+      $powerValue = 0;
     }
-    elseif ($chainLinks[$link][$i + 1] == $mainPlayer && (CardType($chainLinks[$link][$i]) == "AR" || DelimStringContains(CardType($chainLinks[$link][$i]), "I")))
-    {
-      $powerValue = PowerModifier($chainLinks[$link][$i]);
-    }
-    else $powerValue = 0;
-    $uid = $chainLinks[$link][$i + 8];
-    $blockValue = ($chainLinks[$link][$i + 1] == $defPlayer) ? ModifiedBlockValue($chainLinks[$link][$i], $defPlayer, "CC", "", $uid) + $chainLinks[$link][$i + 5] : 0;
-    $card->modifier = ($card->Player == $mainPlayer) ? $powerValue : $blockValue;
-    $card->cardID = $chainLinks[$link][$i];
-    $card->Name = CardName($chainLinks[$link][$i]);
-
-    array_push($chainLink->Cards, $card);
+    $uid = $linkCards[$i + 8];
+    $blockValue = ($cardOwner == $defPlayer) ? ModifiedBlockValue($cardId, $defPlayer, "CC", "", $uid) + $linkCards[$i + 5] : 0;
+    $card->modifier = ($cardOwner == $mainPlayer) ? $powerValue : $blockValue;
+    $card->cardID = $cardId;
+    $card->Name = CardName($cardId);
+    $chainLink->Cards[] = $card;
   }
   return $chainLink;
 }
