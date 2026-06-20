@@ -1160,17 +1160,17 @@ function PassInput($autopass = true, $doublePass = false)
       if ($preLayers[$i + 1] == $currentPlayer)
         ++$currPreLayers;
     }
-    $addedTriggers = [];
-    $remainingLayers = [];
-    for ($i = 0; $i < $layersCount; $i += $layerPieces) {
+    $pretriggerFlat = [];
+    for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
       if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $currentPlayer) {
-        $addedTriggers[] = "TRIGGER";
-        for ($j = 1; $j < $layerPieces; ++$j) $addedTriggers[] = $layers[$i + $j];
-      } else {
-        for ($j = 0; $j < $layerPieces; ++$j) $remainingLayers[] = $layers[$i + $j];
+        $chunk = array_splice($layers, $i, $layerPieces);
+        $chunk[0] = "TRIGGER";
+        array_unshift($pretriggerFlat, ...$chunk);
       }
     }
-    $layers = array_merge($addedTriggers, $remainingLayers);
+    if (!empty($pretriggerFlat)) {
+      array_unshift($layers, ...$pretriggerFlat);
+    }
   }
   if ($turn[0] == "B") {
     $uniqueID = SearchCurrentTurnEffects("meganetic_lockwave_blue", $mainPlayer, returnUniqueID: true);

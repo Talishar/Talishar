@@ -260,6 +260,8 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
   global $CS_NumItemsDestroyed;
   if ($index != -1) {
     $items = &GetItems($player);
+    $itemPieces = ItemPieces();
+    if (count($items) < $index + $itemPieces) return "";
     if (!$skipDestroy) {
       if (str_contains($items[$index + 9], "THEIR")) $destPlayer = $player == 1 ? 2 : 1;
       else $destPlayer = $player;
@@ -269,7 +271,6 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
       IncrementClassState($player, $CS_NumItemsDestroyed);
     }
     $cardID = $items[$index];
-    $itemPieces = ItemPieces();
     $subCards = $items[$index + 11];
     if ($subCards != "-") {
       $subCards = explode(",", $subCards);
