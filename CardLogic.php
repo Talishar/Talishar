@@ -122,7 +122,8 @@ function CopyCurrentTurnEffectsFromAfterResolveEffects()
 {
   global $currentTurnEffects, $afterResolveEffects;
   $afterResolveEffectsCount = count($afterResolveEffects);
-  for ($i = 0; $i < $afterResolveEffectsCount; $i += CurrentTurnEffectPieces()) {
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $afterResolveEffectsCount; $i += $pieces) {
     $currentTurnEffects[] = $afterResolveEffects[$i];
     $currentTurnEffects[] = $afterResolveEffects[$i + 1];
     $currentTurnEffects[] = $afterResolveEffects[$i + 2];
@@ -145,7 +146,8 @@ function CopyCurrentTurnEffectsFromCombat()
 {
   global $currentTurnEffects, $currentTurnEffectsFromCombat;
   $currentTurnEffectsFromCombatCount = count($currentTurnEffectsFromCombat);
-  for ($i = 0; $i < $currentTurnEffectsFromCombatCount; $i += CurrentTurnEffectPieces()) {
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $currentTurnEffectsFromCombatCount; $i += $pieces) {
     $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i];
     $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i + 1];
     $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i + 2];

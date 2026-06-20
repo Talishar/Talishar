@@ -3479,7 +3479,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       elseif ($ind != "-") {
         $currentInd = -1 * $layerPieces;
-        for ($i = 0; $i < count($layers); $i += $layerPieces) {
+        $layersCount = count($layers);
+        for ($i = 0; $i < $layersCount; $i += $layerPieces) {
           if ($layers[$i] == "PRETRIGGER") $currentInd += $layerPieces;
           if ($currentInd == $ind) {
             $pretrigger = array_slice($layers, $i, $layerPieces);

@@ -640,13 +640,26 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
   global $currentTurnEffects;
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if (!isset($currentTurnEffects[$i + 1])) continue;
-    $effectName = $stripParams ? explode(",", $currentTurnEffects[$i])[0] : $currentTurnEffects[$i];
-    if ($effectName == $cardID && $currentTurnEffects[$i + 1] == $player) {
-      if ($remove) RemoveCurrentTurnEffect($i);
-      if ($activate) $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
-      return $returnUniqueID ? $currentTurnEffects[$i + 2] : true;
+  if ($stripParams) {
+    for ($i = 0; $i < $count; $i += $pieces) {
+      if (!isset($currentTurnEffects[$i + 1])) continue;
+      $elem = $currentTurnEffects[$i];
+      $commaPos = strpos($elem, ',');
+      $effectName = $commaPos === false ? $elem : substr($elem, 0, $commaPos);
+      if ($effectName == $cardID && $currentTurnEffects[$i + 1] == $player) {
+        if ($remove) RemoveCurrentTurnEffect($i);
+        if ($activate) $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
+        return $returnUniqueID ? $currentTurnEffects[$i + 2] : true;
+      }
+    }
+  } else {
+    for ($i = 0; $i < $count; $i += $pieces) {
+      if (!isset($currentTurnEffects[$i + 1])) continue;
+      if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
+        if ($remove) RemoveCurrentTurnEffect($i);
+        if ($activate) $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
+        return $returnUniqueID ? $currentTurnEffects[$i + 2] : true;
+      }
     }
   }
   return $returnUniqueID ? -1 : false;
@@ -658,9 +671,11 @@ function SearchDynamicCurrentTurnEffectsIndex($cardID, $player, $remove = false,
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    $effectID = explode(",", $currentTurnEffects[$i])[0];
-    if (!isset($currentTurnEffects[$i + 1])) continue;
-    if ($effectID == $cardID && $currentTurnEffects[$i + 1] == $player) {
+    if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $player) continue;
+    $elem = $currentTurnEffects[$i];
+    $commaPos = strpos($elem, ',');
+    $effectID = $commaPos === false ? $elem : substr($elem, 0, $commaPos);
+    if ($effectID == $cardID) {
       if ($remove) RemoveCurrentTurnEffect($i);
       return $returnUniqueID ? $currentTurnEffects[$i + 2] : $i;
     }
@@ -689,9 +704,15 @@ function SearchCurrentTurnEffectsForIndex($cardID, $player)
   global $currentTurnEffects;
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
+  $len = strlen($cardID);
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($currentTurnEffects[$i + 1] == $player && ExtractCardID($currentTurnEffects[$i]) == $cardID) {
-      return $i;
+    if ($currentTurnEffects[$i + 1] != $player) continue;
+    $elem = $currentTurnEffects[$i];
+    if ($elem === $cardID) return $i;
+    $elemLen = strlen($elem);
+    if ($elemLen > $len && strncmp($elem, $cardID, $len) === 0) {
+      $delim = $elem[$len];
+      if ($delim === ',' || $delim === '-' || $delim === '|') return $i;
     }
   }
   return -1;
@@ -701,7 +722,8 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
 {
   global $currentTurnEffects;
   $count = count($currentTurnEffects);
-  for ($i = 0; $i < $count; $i += 4) {
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $player && ($currentTurnEffects[$i] == $card1 || $currentTurnEffects[$i] == $card2 || $currentTurnEffects[$i] == $card3)) return true;
   }
@@ -714,18 +736,22 @@ function CountCurrentTurnEffects($cardID, $player, $remove = false, $partial = f
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   $total = 0;
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if (!$partial){
-      if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
-        if ($remove) RemoveCurrentTurnEffect($i);
+  if (!$remove) {
+    for ($i = 0; $i < $count; $i += $pieces) {
+      if ($currentTurnEffects[$i + 1] != $player) continue;
+      if (!$partial ? ($currentTurnEffects[$i] == $cardID) : str_contains($currentTurnEffects[$i], $cardID)) ++$total;
+    }
+  } else {
+    $toRemove = [];
+    for ($i = 0; $i < $count; $i += $pieces) {
+      if ($currentTurnEffects[$i + 1] != $player) continue;
+      if (!$partial ? ($currentTurnEffects[$i] == $cardID) : str_contains($currentTurnEffects[$i], $cardID)) {
+        $toRemove[] = $i;
         ++$total;
       }
     }
-    else{
-      if (str_contains($currentTurnEffects[$i], $cardID) && $currentTurnEffects[$i + 1] == $player) {
-        if ($remove) RemoveCurrentTurnEffect($i);
-        ++$total;
-      }
+    for ($j = count($toRemove) - 1; $j >= 0; --$j) {
+      RemoveCurrentTurnEffect($toRemove[$j]);
     }
   }
   return $total;

@@ -1318,6 +1318,7 @@ function NuuStaticAbility($banishedBy)
   $prevLinkCount = count($prevLink);
   $chainLinksPieces = ChainLinksPieces();
   if ($prevLinkCount > 0) {
+    $CLIndex = count($chainLinks) - 1;
     for ($i = 0; $i < $prevLinkCount; $i += $chainLinksPieces) {
       if ($defPlayer == $prevLink[$i + 1]) {
         $originalID = GetCardIDBeforeTransform($prevLink[$i]);
@@ -1331,7 +1332,7 @@ function NuuStaticAbility($banishedBy)
         if (DelimStringContains($cardType, "A") || $cardType === "AA") {
           WriteLog(CardLink($prevLink[$i], $prevLink[$i]) . " was banished.");
           BanishCardForPlayer($prevLink[$i], $defPlayer, "CC", "Source-" . $banishedBy, $banishedBy);
-          $chainLinks[count($chainLinks) - 1][$i + 2] = 0;
+          $chainLinks[$CLIndex][$i + 2] = 0;
         }
       }
     }
@@ -1403,7 +1404,7 @@ function ResolveChainLink()
   $reorderedCount = count($reorderedTargets);
   for ($i = 0; $i < $reorderedCount; ++$i) {
     // foreach(explode(",", $targets) as $target) {
-    $target = explode("-", $reorderedTargets[$i]);
+    $target = explode("-", $reorderedTargets[$i], 2);
     if ($target[0] == "THEIRALLY") {
       $index = $target[1];
       if ($index != "") { //check to make sure target is still there
@@ -1480,7 +1481,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       $warCryIndex = SearchDynamicCurrentTurnEffectsIndex("war_cry_of_bellona_yellow-DMG", $defPlayer);
       if ($warCryIndex != -1) {
         $index = $warCryIndex;
-        $params = explode(",", $currentTurnEffects[$index]);
+        $params = explode(",", $currentTurnEffects[$index], 3);
         $amount = $params[1] ?? 0;
         $uniqueID = $params[2] ?? "-";
         if ($damageDone <= $amount && $uniqueID == $combatChain[8]) {

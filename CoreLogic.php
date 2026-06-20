@@ -441,7 +441,9 @@ function ArsenalStartTurnAbilities()
 {
   global $mainPlayer;
   $arsenal = &GetArsenal($mainPlayer);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     switch ($arsenal[$i]) {
       case "the_librarian":
       case "minerva_themis":
@@ -498,7 +500,9 @@ function ArsenalAttackAbilities()
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   $arsenal = GetArsenal($mainPlayer);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     switch ($arsenal[$i]) {
       case "lady_barthimont":
         if (CardType($attackID) == "AA" && $arsenal[$i + 1] == "UP") LadyBarthimontAbility($mainPlayer, $i);
@@ -539,7 +543,9 @@ function ArsenalHitEffects($check = false): bool
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   $arsenal = GetArsenal($mainPlayer);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     switch ($arsenal[$i]) {
       case "minerva_themis":
         if ($arsenal[$i + 1] == "UP" && TypeContains($attackID, "W", $mainPlayer)) {
@@ -563,7 +569,9 @@ function ArsenalPlayCardAbilities($cardID)
   global $currentPlayer;
   $cardType = CardType($cardID);
   $arsenal = GetArsenal($currentPlayer);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     switch ($arsenal[$i]) {
       case "lord_sutcliffe":
         if ($arsenal[$i + 1] == "UP" && DelimStringContains($cardType, "A")) LordSutcliffeAbility($currentPlayer, $i);
@@ -690,7 +698,9 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
 function ResetAuraStatus($player)
 {
   $auras = &GetAuras($player);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $aurasCount = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $aurasCount; $i += $aurasPieces) {
     switch ($auras[$i]) {
       case "runeblood_barrier_yellow":
         $auras[$i + 1] = 2;
@@ -1078,7 +1088,9 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
 
   if ($player == $mainPlayer) {
     $char = &GetPlayerCharacter($player);
-    for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    $charCount = count($char);
+    $charPieces = CharacterPieces();
+    for ($i = 0; $i < $charCount; $i += $charPieces) {
       if (intval($char[$i + 1]) != 2) continue;
       switch ($char[$i]) {
         case "verdance_thorn_of_the_rose":
@@ -1382,7 +1394,9 @@ function ResolutionStepCharacterTriggers()
 {
   global $mainPlayer, $combatChain, $CombatChain;
   $character = &GetPlayerCharacter($mainPlayer);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $characterCount = count($character);
+  $characterPieces = CharacterPieces();
+  for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     $charID = $character[$i];
     switch ($charID) {
       case "nuu_alluring_desire":
@@ -1407,7 +1421,9 @@ function ResolutionStepAttackTriggers()
       case "virulent_touch_red":
       case "virulent_touch_yellow":
       case "virulent_touch_blue":
-        for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+        $ccPieces = CombatChainPieces();
+        $ccCount = count($combatChain);
+        for ($i = $ccPieces; $i < $ccCount; $i += $ccPieces) {
           if ($combatChain[$i + 1] != $defPlayer || $combatChain[$i + 2] != "HAND") continue;
           AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
           break;
@@ -1855,11 +1871,15 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   }
   if ($from == "ARS" && DelimStringContains($cardType, "A") && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "iyslander_stormbind") || SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0]))) return true;
   if ($from == "ARS" && DelimStringContains($cardType, "A") && $currentPlayer != $mainPlayer ) {
-    $crArsenal = &GetArsenal($currentPlayer);
-    for ($i = 0; $i < count($crArsenal); $i += ArsenalPieces()) {
-      if (SearchCurrentTurnEffects("chain_reaction_yellow" . "-" . $crArsenal[$i + 5], $currentPlayer)) return true;
+    $arsenal = &GetArsenal($currentPlayer);
+    $arsenalCount = count($arsenal);
+    $arsenalPieces = ArsenalPieces();
+    for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
+      if (SearchCurrentTurnEffects("chain_reaction_yellow" . "-" . $arsenal[$i + 5], $currentPlayer)) return true;
     }
-    for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+    $layersCount = count($layers);
+    $layersPieces = LayerPieces();
+    for ($i = 0; $i < $layersCount; $i += $layersPieces) {
       if (SearchCurrentTurnEffects("chain_reaction_yellow" . "-" . $layers[$i + 5], $currentPlayer)) return true;
     }
   }
@@ -2064,7 +2084,9 @@ function ColorContains($cardID, $color, $player)
 function ArsenalHasColor($player, $color)
 {
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     if ($arsenal[$i + 1] == "UP" && ColorContains($arsenal[$i], $color, $player)) return true;
   }
   return false;
@@ -2090,24 +2112,34 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
 {
   global $currentTurnEffects;
   $cardSubtype = CardSubtype($cardID);
-  if ($cardID == "adaptive_plating") {
-    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
-      $effect = explode(",", $currentTurnEffects[$i]);
-      if ($effect[0] == "adaptive_plating-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
+  if ($cardID == "adaptive_plating" || $cardID == "adaptive_dissolver" || $cardID == "adaptive_alpha_mold") {
+    $currentTurnEffectsCount = count($currentTurnEffects);
+    $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+    if ($cardID == "adaptive_plating") {
+      $target = "adaptive_plating-" . $uniqueID;
+      for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
+        $commaPos = strpos($currentTurnEffects[$i], ',');
+        $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
+        if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
+      }
     }
-  }
-  if ($cardID == "adaptive_dissolver") {
-    if($subtype == "Base") return true;
-    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
-      $effect = explode(",", $currentTurnEffects[$i]);
-      if ($effect[0] == "adaptive_dissolver-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
+    if ($cardID == "adaptive_dissolver") {
+      if ($subtype == "Base") return true;
+      $target = "adaptive_dissolver-" . $uniqueID;
+      for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
+        $commaPos = strpos($currentTurnEffects[$i], ',');
+        $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
+        if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
+      }
     }
-  }
-  if ($cardID == "adaptive_alpha_mold") {
-    if($subtype == "Base") return true;
-    for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectsPieces()) {
-      $effect = explode(",", $currentTurnEffects[$i]);
-      if ($effect[0] == "adaptive_alpha_mold-" . $uniqueID) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
+    if ($cardID == "adaptive_alpha_mold") {
+      if ($subtype == "Base") return true;
+      $target = "adaptive_alpha_mold-" . $uniqueID;
+      for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
+        $commaPos = strpos($currentTurnEffects[$i], ',');
+        $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
+        if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
+      }
     }
   }
   return DelimStringContains($cardSubtype, $subtype);
@@ -2239,7 +2271,9 @@ function RevealHand($player) {
   $hand = &GetHand($player);
   $cards = "";
   if (empty($hand)) return true;
-  for ($i = 0; $i < count($hand); $i += HandPieces()) {
+  $handCount = count($hand);
+  $handPieces = HandPieces();
+  for ($i = 0; $i < $handCount; $i += $handPieces) {
     if (isset($hand[$i])) { 
       if ($cards != "") $cards .= ",";
       $cards .= $hand[$i];
@@ -2301,7 +2335,9 @@ function DoesAttackHaveGoAgain()
   //the last action in numActions is going to be the current chain link
   //so we want the second to last to be current funnel, and 3rd to last to be lightning
   $character = &GetPlayerCharacter($mainPlayer);
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $characterCount = count($character);
+  $characterPieces = CharacterPieces();
+  for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
@@ -2584,7 +2620,9 @@ function AttackDestroyed($attackID)
 function AttackDestroyedEffects($attackID)
 {
   global $currentTurnEffects, $mainPlayer;
-  for ($i = 0; $i < count($currentTurnEffects); $i += CurrentTurnEffectPieces()) {
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     switch ($currentTurnEffects[$i]) {
       case "veiled_intentions_red":
       case "veiled_intentions_yellow":
@@ -2756,7 +2794,9 @@ function LookAtHand($player, $look=true)
 function LookAtArsenal($player, $look=true)
 {
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     if ($arsenal[$i + 1] == "DOWN") {
       RevealCards($arsenal[$i], $player, look:$look);
     }
@@ -2787,7 +2827,9 @@ function HaveUnblockedEquip($player)
     $items = &GetItems($player);
     if ($items[$mechanoidIndex + 13] == 0) return true;
   }
-  for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
+  $charPieces = CharacterPieces();
+  $charCount = count($char);
+  for ($i = $charPieces; $i < $charCount; $i += $charPieces) {
     if ($char[$i + 1] == 0) continue;//If broken
     if ($char[$i + 6] == 1) continue;//On combat chain
     if ($char[$i + 12] == "DOWN") continue; //Face-down
@@ -2803,7 +2845,9 @@ function NumEquipBlock($from="-")
 {
   global $combatChain, $defPlayer, $combatChainState, $CCS_RequiredEquipmentBlock;
   $numEquipBlock = 0;
-  for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+  $combatChainPieces = CombatChainPieces();
+  $combatChainCount = count($combatChain);
+  for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
     $Card = new ChainCard($i);
     if ($from != "-" && $Card->From() != $from) continue;
     if (DelimStringContains(CardSubType($combatChain[$i]), "Evo") && $combatChain[$i + 1] == $defPlayer && $combatChainState[$CCS_RequiredEquipmentBlock] < 1) ++$numEquipBlock; // Working, but technically wrong until we get CardTypeContains
@@ -2815,7 +2859,9 @@ function NumEquipBlock($from="-")
 function HaveUnblockedNegCounterEquip($player)
 {
   $char = &GetPlayerCharacter($player);
-  for ($i = CharacterPieces(); $i < count($char); $i += CharacterPieces()) {
+  $charPieces = CharacterPieces();
+  $charCount = count($char);
+  for ($i = $charPieces; $i < $charCount; $i += $charPieces) {
     if ($char[$i + 1] == 0) continue;//If broken
     if ($char[$i + 4] == 0) continue;//No negative counters
     if ($char[$i + 6] == 1) continue;//On combat chain
@@ -2829,10 +2875,12 @@ function HaveUnblockedNegCounterEquip($player)
 
 function NumNegCounterEquipBlock()
 {
-  global $combatChain, $defPlayer, $combatChainState, $CCS_RequiredNegCounterEquipmentBlock;
+  global $combatChain, $defPlayer;
   $numNegCounterEquipBlock = 0;
   $defChar = GetPlayerCharacter($defPlayer);
-  for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+  $combatChainPieces = CombatChainPieces();
+  $combatChainCount = count($combatChain);
+  for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
     if ($combatChain[$i + 2] == "EQUIP" && TypeContains($combatChain[$i], "E", $defPlayer) && $combatChain[$i+1] == $defPlayer) {
       $uid = $combatChain[$i + 8];
       $charIndex = SearchCharacterForUniqueID($uid, $defPlayer);
@@ -2898,7 +2946,9 @@ function EndTurnPitchHandling($player)
   } else {
     $allSame = true; // don't ask player for input if all cards are the same
     $firstCard = $pitch[0];
-    for ($i = PitchPieces(); $i < count($pitch); $i += PitchPieces()) {
+    $pitchPieces = PitchPieces();
+    $pitchCount = count($pitch);
+    for ($i = $pitchPieces; $i < $pitchCount; $i += $pitchPieces) {
       if ($pitch[$i] !== $firstCard) { $allSame = false; break; }
     }
     if ($allSame) {
@@ -3085,9 +3135,11 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $rv = "";
   $auras = &GetAuras($player);
   $indices = "";
+  $auraCount = count($auras);
+  $auraPieces = AuraPieces();
 
   //TODO: Move Runeblood Barrier in AuraDamagePreventionAmount
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  for ($i = 0; $i < $auraCount; $i += $auraPieces) {
     if (AuraDamagePreventionAmount($player, $i, $type, check: true, preventable: $preventable) > 0 || HasWard($auras[$i], $player)) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -3097,7 +3149,9 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
 
   $permanents = &GetPermanents($player);
   $indices = "";
-  for ($i = 0; $i < count($permanents); $i += PermanentPieces()) {
+  $permsCount = count($permanents);
+  $permsPieces = PermanentPieces();
+  for ($i = 0; $i < $permsCount; $i += $permsPieces) {
     if (PermanentDamagePreventionAmount($player, $i, $damage) > 0) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -3106,9 +3160,11 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $indices = SearchMultiZoneFormat($indices, "MYPERM");
   $mzIndices = CombineSearches($mzIndices, $indices);
 
-  $char = &GetPlayerCharacter($player); 
+  $char = &GetPlayerCharacter($player);
   $indices = "";
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $charCount = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $charPieces) {
     if ($char[$i + 1] != 0 && (WardAmount($char[$i], $player) > 0 || CharacterDamagePreventionAmount($player, $i, $damage, $preventable) > 0) && $char[$i + 12] == "UP") {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -3119,8 +3175,9 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
 
   $items = &GetItems($player);
   $itemCount = count($items);
+  $itemPieces = ItemPieces();
   $indices = "";
-  for ($i = 0; $i < $itemCount; $i += ItemPieces()) {
+  for ($i = 0; $i < $itemCount; $i += $itemPieces) {
     if (ItemDamagePreventionAmount($player, $i, $damage, $preventable) > 0) {
       if ($indices != "") $indices .= ",";
       $indices .= $i;
@@ -3401,9 +3458,12 @@ function SerializeCurrentAttackNames()
 function HasAttackName($name)
 {
   global $chainLinkSummary;
-  for ($i = 0; $i < count($chainLinkSummary); $i += ChainLinkSummaryPieces()) {
+  $chainLinkSummaryCount = count($chainLinkSummary);
+  $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+  for ($i = 0; $i < $chainLinkSummaryCount; $i += $chainLinkSummaryPieces) {
     $names = explode(",", $chainLinkSummary[$i + 4]);
-    for ($j = 0; $j < count($names); ++$j) {
+    $namesCount = count($names);
+    for ($j = 0; $j < $namesCount; ++$j) {
       if ($name == GamestateUnsanitize($names[$j])) return true;
     }
   }
@@ -3951,7 +4011,9 @@ function EvoHandling($cardID, $player, $from)
   else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
   else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
   $replaced = 0;
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $charCount = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $charPieces) {
     $CharacterCard = new CharacterCard($i, $player);
     if (!$replaced && SubtypeContains($char[$i], $slot, uniqueID:$CharacterCard->UniqueID())) {
       if (SubtypeContains($char[$i], "Base") && $CharacterCard->Status() != 0) {
@@ -4191,7 +4253,9 @@ function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer)
   $hasLegs = false;
   $hasWeapon = false;
   $char = &GetPlayerCharacter($currentPlayer);
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $charCount = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $charPieces) {
     $characterCardID = $char[$i];
     if ($char[$i + 1] == 0) continue;
     if (!ClassContains($characterCardID, "MECHANOLOGIST", $currentPlayer)) continue;
@@ -4407,7 +4471,9 @@ function IsPlayed($cardID, $from="", $player=-1, $index=0) {
 
 function TurnArsenalFaceUp($player) {
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     if ($arsenal[$i + 1] == "DOWN") {
       $arsenal[$i + 1] = "UP";
       ArsenalTurnFaceUpAbility($arsenal[$i], $player);

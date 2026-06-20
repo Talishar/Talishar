@@ -571,7 +571,8 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "legacy_of_ikaru_blue":
       if (count($chainLinks) > 0) {
         $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 4]);
-        for ($i = 0; $i < count($lastAttackNames); ++$i) {
+        $lastAttackCount = count($lastAttackNames);
+        for ($i = 0; $i < $lastAttackCount; ++$i) {
           $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
           if ($lastAttackName == "Edge of Autumn") {
             WriteLog("You have learned well from the " . CardLink($cardID, $cardID) . " and drew a card.");
@@ -902,11 +903,11 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
   if (!is_numeric($index)) $index = -1; // sometimes index is getting passed in as ""
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $cardType = CardType($cardID);
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       if (DelimStringContains($currentTurnEffects[$i], "art_of_the_dragon_blood_red", true)) {
-        $cardType = CardType($cardID);
         if(TalentContains($cardID, "DRACONIC", $currentPlayer) && !IsStaticType($cardType, $from, $cardID)) {
           $costModifier -= 1;
           --$currentTurnEffects[$i + 3];
@@ -925,13 +926,14 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
           }
           break;
         case "seismic_surge":
-          if (ClassContains($cardID, "GUARDIAN", $currentPlayer) && CardType($cardID) == "AA") {
+          if (ClassContains($cardID, "GUARDIAN", $currentPlayer) && $cardType == "AA") {
             $costModifier -= 1;
             $remove = true;
           }
           break;
         case "heartened_cross_strap":
-          if (CardType($cardID) == "AA" && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) {
+          $resolvedType = GetResolvedAbilityType($cardID, $from);
+          if ($cardType == "AA" && ($resolvedType == "AA" || $resolvedType == "")) {
             $costModifier -= 2;
             $remove = true;
           }
@@ -944,19 +946,20 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
         case "dauntless_red-2":
         case "dauntless_yellow-2":
         case "dauntless_blue-2":
-          if (CardType($cardID) == "DR" && (GetResolvedAbilityType($cardID, $from) == "DR" || GetResolvedAbilityType($cardID, $from) == "")) {
+          $resolvedType = GetResolvedAbilityType($cardID, $from);
+          if ($cardType == "DR" && ($resolvedType == "DR" || $resolvedType == "")) {
             $costModifier += 1;
             $remove = true;
           }
           break;
         case "bloodsheath_skeleta-AA":
-          if (CardType($cardID) == "AA") {
+          if ($cardType == "AA") {
             $costModifier -= CountAura("runechant", $currentPlayer);
             $remove = true;
           }
           break;
         case "bloodsheath_skeleta-NAA":
-          if (CardType($cardID) == "A") {
+          if ($cardType == "A") {
             $costModifier -= CountAura("runechant", $currentPlayer);
             $remove = true;
           }
@@ -964,7 +967,8 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
         case "hamstring_shot_red":
         case "hamstring_shot_yellow":
         case "hamstring_shot_blue":
-          if ((CardType($cardID) == "AA" || GetResolvedAbilityType($cardID, $from) == "AA") && (GetResolvedAbilityType($cardID, $from) == "AA" || GetResolvedAbilityType($cardID, $from) == "")) {
+          $resolvedType = GetResolvedAbilityType($cardID, $from);
+          if (($cardType == "AA" || $resolvedType == "AA") && ($resolvedType == "AA" || $resolvedType == "")) {
             $costModifier += 1;
             $remove = true;
           }
@@ -981,7 +985,7 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
           $costModifier += 1;
           break;
         case "amulet_of_ignition_yellow":
-          if (IsStaticType(CardType($cardID), $from, $cardID)) {
+          if (IsStaticType($cardType, $from, $cardID)) {
             $costModifier -= 1;
             $remove = true;
           }
@@ -1002,38 +1006,38 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
           }
           break;
         case "alluvion_constellas":
-          if (IsStaticType(CardType($cardID), $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) {
+          if (IsStaticType($cardType, $from, $cardID) && DelimStringContains(CardSubType($cardID), "Staff")) {
             $costModifier -= 3;
             $remove = true;
           }
           break;
         case "redback_shroud":
-          if (CardType($cardID) == "AR") {
+          if ($cardType == "AR") {
             $costModifier -= 1;
             $remove = true;
           }
           break;
         case "silken_gi-1":
-          if (CardType($cardID) == "AA") {
+          if ($cardType == "AA") {
             $costModifier -= 1;
             $remove = true;
           }
           break;
         case "empyrean_rapture":
-          if (CardType($cardID) == "C") {
+          if ($cardType == "C") {
             $costModifier -= 2;
             $remove = true;
           }
           break;
         case "bequest_the_vast_beyond_red":
-          if (CardType($cardID) == "AA" && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
+          if ($cardType == "AA" && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
             $costModifier -= CountAura("runechant", $currentPlayer);
             $remove = true;
           }
           break;
         case "earthlore_empowerment_red":
         case "earthlore_empowerment_yellow":
-          if (ClassContains($cardID, "GUARDIAN", $currentPlayer) && CardType($cardID) == "AA") $costModifier -= 1;
+          if (ClassContains($cardID, "GUARDIAN", $currentPlayer) && $cardType == "AA") $costModifier -= 1;
           break;
         case "evo_engine_room_yellow_equip":
           if (TypeContains($cardID, "W", $currentPlayer)) {
@@ -1043,10 +1047,10 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
           break;
         case "savage_sash":
           $power = LayerStepPower();
-          if (CardType($cardID) == "AA" && $power >= 6) $costModifier -= 1;
+          if ($cardType == "AA" && $power >= 6) $costModifier -= 1;
           break;
         case "evo_heartdrive_blue":
-          if (CardType($cardID) == "AA") {
+          if ($cardType == "AA") {
             $costModifier -= 1;
             $remove = true;
           }
@@ -1076,7 +1080,8 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
           break;
         case "heart_of_vengeance":
           $otherChar = &GetPlayerCharacter(player: $otherPlayer);
-          $isAttack = GetResolvedAbilityType($cardID, $from) == "AA" || (GetResolvedAbilityType($cardID, $from) == "" && CardType($cardID) == "AA");
+          $resolvedType = GetResolvedAbilityType($cardID, $from);
+          $isAttack = $resolvedType == "AA" || ($resolvedType == "" && $cardType == "AA");
           if (CardNameContains($otherChar[0], "Arakni") && $isAttack) {
             $costModifier -= 1;
             $remove = true;
@@ -1745,6 +1750,7 @@ function CurrentEffectPlayAbility($cardID, $from)
   if (DynamicCost($cardID) != "") $cost = GetClassState($currentPlayer, $CS_LastDynCost);
   else $cost = CardCost($cardID, $from);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $cardType = CardType($cardID);
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     $card = GetClass($currentTurnEffects[$i], $currentPlayer);
@@ -1752,21 +1758,18 @@ function CurrentEffectPlayAbility($cardID, $from)
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "lead_the_charge_red":
-          $cardType = CardType($cardID);
           if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 0) {
             ++$actionPoints;
             $remove = true;
           }
           break;
         case "lead_the_charge_yellow":
-          $cardType = CardType($cardID);
           if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 1) {
             ++$actionPoints;
             $remove = true;
           }
           break;
         case "lead_the_charge_blue":
-          $cardType = CardType($cardID);
           if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 2) {
             ++$actionPoints;
             $remove = true;
@@ -1789,8 +1792,9 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $remove = false;
-      $effectArr = explode(",", $currentTurnEffects[$i]);
-      switch ($effectArr[0]) {
+      $commaPos = strpos($currentTurnEffects[$i], ',');
+      $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
+      switch ($effectBase) {
         case "chane_bound_by_shadow":
         case "chane":
           $cardType = CardType($cardID);
@@ -1871,16 +1875,17 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      if (strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
-      else $turnEffects[0] = $currentTurnEffects[$i];
+      $commaPos = strpos($currentTurnEffects[$i], ',');
+      $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
       $Effect = new CurrentEffect($i);
-      if ($Effect->AppliestoUniqueID() != -1 && $Effect->AppliestoUniqueID() != $uniqueID && $Effect->AppliestoUniqueID() != $uniqueIDResolving) continue;
-      $effectArr = explode("-", $turnEffects[0]);
-      $effectID = $effectArr[0];
-      $parameter = $effectArr[1] ?? "-";
+      $appliesTo = $Effect->AppliestoUniqueID();
+      if ($appliesTo != -1 && $appliesTo != $uniqueID && $appliesTo != $uniqueIDResolving) continue;
+      $dashPos = strpos($effectBase, '-');
+      $effectID = $dashPos !== false ? substr($effectBase, 0, $dashPos) : $effectBase;
+      $parameter = $dashPos !== false ? substr($effectBase, $dashPos + 1) : "-";
       $card = GetClass($effectID, $currentPlayer);
       if ($card != "-") $hasGoAgain = $card->CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueIDResolving, $parameter, $remove) || $hasGoAgain;
-      switch ($turnEffects[0]) {
+      switch ($effectBase) {
         case "aether_quickening_red":
         case "aether_quickening_yellow":
         case "aether_quickening_blue":
@@ -1929,7 +1934,7 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
         case "first_tenet_of_chi_wind_blue":
           if (ColorContains($cardID, 3, $currentPlayer)) {
             $hasGoAgain = true;
-            if ($cardID != $turnEffects[0]) $remove = true;
+            if ($cardID != $effectBase) $remove = true;
           }
           break;
         case "goldkiss_rum":
@@ -1949,19 +1954,20 @@ function CurrentEffectGrantsGoAgain()
 {
   global $currentTurnEffects, $mainPlayer;
   global $CCS_GoesWhereAfterLinkResolves, $CombatChain;
-  $step = CurrentTurnEffectPieces();
-  $cteCount = count($currentTurnEffects);
-  for ($i = 0; $i < $cteCount; $i += $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-      if (strlen($currentTurnEffects[$i]) > 6) $turnEffects = explode(",", $currentTurnEffects[$i]);
-      else $turnEffects[0] = $currentTurnEffects[$i];
-      $card = GetClass($turnEffects[0], $mainPlayer);
+      $commaPos = strpos($currentTurnEffects[$i], ',');
+      $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
+      $card = GetClass($effectBase, $mainPlayer);
       if ($card != "-") {
-        $param = explode("-", $turnEffects[0])[1] ?? "-";
+        $dashPos = strpos($effectBase, '-');
+        $param = $dashPos !== false ? substr($effectBase, $dashPos + 1) : "-";
         if ($card->CurrentEffectGrantsGoAgain($param)) return true;
       }
-      if (DoesCurrentTurnEffectGrantGoAgain($turnEffects[0])) return true;
+      if (DoesCurrentTurnEffectGrantGoAgain($effectBase)) return true;
     }
   }
   $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
@@ -2085,9 +2091,9 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
 function CurrentEffectPreventsGoAgain($cardID, $from="-", $additionalCosts="-")
 {
   global $currentTurnEffects, $mainPlayer, $CS_AdditionalCosts;
-  $step = CurrentTurnEffectPieces();
-  $cteCount = count($currentTurnEffects);
-  for ($i = 0; $i < $cteCount; $i += $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if (($currentTurnEffects[$i + 1] ?? "") == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -2122,9 +2128,9 @@ function CurrentEffectPreventsDefenseReaction($from)
 {
   global $currentTurnEffects, $currentPlayer;
   $reactionPrevented = false;
-  $step = CurrentTurnEffectPieces();
-  $cteCount = count($currentTurnEffects);
-  for ($i = 0; $i < $cteCount; $i += $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -2152,9 +2158,9 @@ function CurrentEffectPreventsDefenseReaction($from)
 function CurrentEffectPreventsDraw($player, $isMainPhase)
 {
   global $currentTurnEffects;
-  $step = CurrentTurnEffectPieces();
-  $cteCount = count($currentTurnEffects);
-  for ($i = 0; $i < $cteCount; $i += $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "cranial_crush_blue":
@@ -2172,8 +2178,8 @@ function CurrentEffectIntellectModifier($remove = false)
 {
   global $currentTurnEffects, $mainPlayer;
   $intellectModifier = 0;
-  $step = CurrentTurnEffectPieces();
-  for ($i = count($currentTurnEffects) - $step; $i >= 0; $i -= $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       $cardID = ExtractCardID($currentTurnEffects[$i]);
       switch ($cardID) {
@@ -2216,9 +2222,9 @@ function CurrentEffectIntellectModifier($remove = false)
 
 function CurrentEffectStartTurnAbilities() {
   global $mainPlayer, $currentTurnEffects;
-  $step = CurrentTurnEffectPieces();
-  $cteCount = count($currentTurnEffects);
-  for ($i = 0; $i < $cteCount; $i += $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
     switch ($currentTurnEffects[$i]) {
       case "blinding_of_the_old_ones_red":
@@ -2243,11 +2249,19 @@ function CurrentEffectBeginningActionPhaseAbilities() {
 function CurrentEffectEndTurnAbilities()
 {
   global $currentTurnEffects, $mainPlayer, $defPlayer;
-  $step = CurrentTurnEffectsPieces();
-  for ($i = count($currentTurnEffects) - $step; $i >= 0; $i -= $step) {
+  $underSet = [];
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
+    $raw = $currentTurnEffects[$j];
+    if (str_ends_with($raw, '-UNDER')) {
+      $underSet[substr($raw, 0, -6) . '|' . $currentTurnEffects[$j + 1]] = true;
+    }
+  }
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     $cardID = ExtractCardID($currentTurnEffects[$i]);
-    if (SearchCurrentTurnEffects($cardID . "-UNDER", $currentTurnEffects[$i + 1])) {
+    if (isset($underSet[$cardID . '|' . $currentTurnEffects[$i + 1]])) {
       AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1]);
     }
     $card = GetClass($cardID, $currentTurnEffects[$i + 1]);
@@ -2508,9 +2522,9 @@ function IsCombatEffectPersistent($cardID)
 function BeginEndPhaseEffects()
 {
   global $currentTurnEffects, $mainPlayer, $EffectContext, $defPlayer;
-  $step = CurrentTurnEffectsPieces();
-  $cteCount = count($currentTurnEffects);
-  for ($i = 0; $i < $cteCount; $i += $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     $EffectContext = $currentTurnEffects[$i];
     switch ($currentTurnEffects[$i]) {
       case "revel_in_runeblood_red":
@@ -2564,9 +2578,9 @@ function BeginEndPhaseEffectTriggers()
     $defChar[1] = 2;
   }
   $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
-  $step = CurrentTurnEffectsPieces();
-  $cteCount = count($currentTurnEffects);
-  for ($i = 0; $i < $cteCount; $i += $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1] ?? 0);
     if ($card != "-") $card->CurrentEffectBeginEndPhaseAbility($i);
     switch ($currentTurnEffects[$i]) {
@@ -2589,9 +2603,9 @@ function BeginEndPhaseEffectTriggers()
 function ActivateAbilityEffects()
 {
   global $currentPlayer, $currentTurnEffects, $mainPlayer;
-  $step = CurrentTurnEffectsPieces();
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $somethingRemoved = false;
-  for ($i = count($currentTurnEffects) - $step; $i >= 0; $i -= $step) {
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
@@ -2642,9 +2656,9 @@ function EffectDefenderPowerModifiers($cardID)
 {
   $mod = 0;
   global $defPlayer, $currentTurnEffects;
-  $step = CurrentTurnEffectsPieces();
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $somethingRemoved = false;
-  for ($i = count($currentTurnEffects) - $step; $i >= 0; $i -= $step) {
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     if ($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
       $card = GetClass($currentTurnEffects[$i], $defPlayer);
@@ -2679,8 +2693,8 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
   $abilityType = GetAbilityType($cardID, from: $from);
   if ($p2IsAI) return false;
   $restrictedBy = "";
-  $step = CurrentTurnEffectsPieces();
-  for ($i = count($currentTurnEffects) - $step; $i >= 0; $i -= $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i], 2);
       $effectID = $effectArr[0];
@@ -2714,8 +2728,8 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
 function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase, $modalCheck = false, $from="-")
 {
   global $currentTurnEffects, $currentPlayer, $turn;
-  $step = CurrentTurnEffectsPieces();
-  for ($i = count($currentTurnEffects) - $step; $i >= 0; $i -= $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i], 2);
       $effectID = $effectArr[0];
@@ -2743,8 +2757,8 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
   $otherPlayer = $currentPlayer == 1 ? 2 : 1;
-  $step = CurrentTurnEffectsPieces();
-  for ($i = count($currentTurnEffects) - $step; $i >= 0; $i -= $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $effectArr = explode(",", $currentTurnEffects[$i], 2);
       $effectID = $effectArr[0];
@@ -2773,7 +2787,9 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
               if (TypeContains($cardID, "AA")) {
                 // this case is needed because brand with cinderclaw isn't set to become active until after the attack is played
                 $restrict = true;
-                for ($j = 0; $j < count($currentTurnEffects); $j += CurrentTurnEffectPieces()) {
+                $jCount = count($currentTurnEffects);
+                $jPieces = CurrentTurnEffectPieces();
+                for ($j = 0; $j < $jCount; $j += $jPieces) {
                   switch ($currentTurnEffects[$j]) {
                     case "brand_with_cinderclaw_red":
                     case "brand_with_cinderclaw_yellow":
@@ -2823,9 +2839,9 @@ function EffectsAttackYouControlModifiers($cardID, $player)
 {
   global $currentTurnEffects;
   $powerModifier = 0;
-  $step = CurrentTurnEffectPieces();
-  $cteCount = count($currentTurnEffects);
-  for ($i = 0; $i < $cteCount; $i += $step) {
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $player) {
       $card = GetClass($currentTurnEffects[$i], $player);
       if ($card != "-") $powerModifier += $card->EffectAttackYouControlModifiers($cardID);

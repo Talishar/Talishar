@@ -950,7 +950,8 @@ function OnBlockResolveEffects($cardID = "")
     switch ($combatChain[0]) {
       case "cintari_saber":
       case "cintari_saber_r":
-        for ($i = $start; $i < count($combatChain); $i += $combatChainPieces) {
+        $combatChainCount = count($combatChain);
+        for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
           $LinkCard = new ChainCard($i);
           if (TypeContains($LinkCard->ID(), "AA")) {
             AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
@@ -1002,7 +1003,8 @@ function OnBlockResolveEffects($cardID = "")
       case "spark_spray_yellow":
       case "spark_spray_blue":
         $numBlocking = 0;
-        for ($i = $combatChainPieces; $i < count($combatChain); $i += $combatChainPieces) {
+        $combatChainCount = count($combatChain);
+        for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
           if ($combatChain[$i+1] == $defPlayer) $numBlocking += 1;
         }
         if ($numBlocking > 0) {
@@ -2192,7 +2194,8 @@ function LinkBasePower($check=false)
     }
     $char = GetPlayerCharacter($mainPlayer);
     $charPieces = CharacterPieces();
-    for ($i = 0; $i < count($char); $i += $charPieces) {
+    $charCount = count($char);
+    for ($i = 0; $i < $charCount; $i += $charPieces) {
       if (isset($char[$i + 1]) && $char[$i + 1] == 2) {
         $card = GetClass($char[$i], $mainPlayer);
         if ($card != "-") $basePower = ceil($basePower / $card->CharDivideBasePower());
