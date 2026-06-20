@@ -67,9 +67,7 @@ function BottomDeckMultizone($player, $zone1, $zone2, $isMandatory = false, $con
 function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $combatChain, $layers;
-  if (IsLayerStep()) {
-    AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
-  } else if (count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
+  if (IsLayerStep() || count($combatChain) > 0) AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
   else AddCurrentTurnEffect($cardID, $player, $from, $uniqueID);
 }
 
@@ -82,7 +80,8 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
       return;
     }
   }
-  $card = explode("-", $cardID)[0];
+  $dashPos = strpos($cardID, "-");
+  $card = $dashPos !== false ? substr($cardID, 0, $dashPos) : $cardID;
   if (CardType($card) == "A" && !CanPlayAsInstant($cardID, -1, $from) && count($combatChain) > 0 && IsCombatEffectActive($cardID) && !IsCombatEffectPersistent($cardID) && $from != "PLAY") {
     AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
     return;
@@ -282,7 +281,8 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
 {
   global $layers, $CombatChain;
   $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
-  $skipOrdering = in_array($parameter, ["runechant", "seismic_surge"]) || $skipOrdering;
+  static $skipOrderingIDs = ["runechant" => true, "seismic_surge" => true];
+  $skipOrdering = isset($skipOrderingIDs[$parameter]) || $skipOrdering;
   if (($additionalCosts == "ONHITEFFECT" || $additionalCosts == "ATTACKTRIGGER") && $uniqueID == "-") $uniqueID = $CombatChain->AttackCard()->UniqueID();
   if ($cardID == "TRIGGER" && !$skipOrdering) { // put triggers into "pre-layers" where they can be ordered
     array_unshift($layers, $layerUID);
@@ -662,7 +662,7 @@ function ContinueDecisionQueue($lastResult = "")
     }
     return;
   }
-  [$phase, $player, $parameter] = array_splice($decisionQueue, 0, 3);
+  [$phase, $player, $parameter, $subsequent, $makeCheckpoint] = array_splice($decisionQueue, 0, 5);
   // foreach($dqVars as $key => $value) WriteLog("$key => $value"); // Uncomment this to visualize decision queue variables execution
   // WriteLog($dqVars[0] . " " . $dqVars[1] . " " . $dqVars[2]); // Uncomment this to visualize decision queue variables execution
   // WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult); // Uncomment this to visualize decision queue execution
@@ -679,7 +679,6 @@ function ContinueDecisionQueue($lastResult = "")
   if ($dqVarsCount > 2 && isset($dqVars[2])) {
     $parameter = str_replace("<2>", CardLink($dqVars[2], $dqVars[2]), $parameter);
   }
-  [$subsequent, $makeCheckpoint] = array_splice($decisionQueue, 0, 2);
   if (count($layers) > 0 && $layers[0] == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
     $phase = "M";
   }
@@ -5026,7 +5025,9 @@ function DestroyFrozenArsenal($player)
 {
   $arsenal = &GetArsenal($player);
   $otherPlayer = $player == 1 ? 2 : 1;
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     if ($arsenal[$i + 4] == "1") {
       DestroyArsenal($player, effectController: $otherPlayer);
     }

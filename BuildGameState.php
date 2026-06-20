@@ -294,7 +294,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if($playerID == 3) $borderColor = $combatChain[$i + 1] == $otherPlayer ? 2 : 1;
 
     $countersMap = new stdClass();
-    if (HasAimCounter() && $i == 0) $countersMap->aim = 1;
+    if ($i == 0 && HasAimCounter()) $countersMap->aim = 1;
 
     if ($i == 0) {
       $activeChainLink->attackingCard = JSONRenderedCard(
@@ -357,16 +357,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $response->activeChainLink = $activeChainLink;
 
-  //Tracker State
-  $tracker = new stdClass();
-  $tracker->color = $playerID == $currentPlayer ? "blue" : "red";
   $layersCount = count($layers);
   $chainLinksCount = count($chainLinks);
-  if ($turnPhase == "B" || $layersCount > 0 && $layers[0] == "DEFENDSTEP") $tracker->position = "Defense";
-  else if ($turnPhase == "A" || $turnPhase == "D") $tracker->position = "Reactions";
-  else if ($turnPhase == "PDECK" || $turnPhase == "ARS" || $layersCount > 0 && ($layers[0] == "ENDTURN" || $layers[0] == "FINALIZECHAINLINK")) $tracker->position = "EndTurn";
-  else $tracker->position = ($chainLinksCount > 0 || $layersCount > 0 && $layers[0] == "ATTACKSTEP") ? "Combat" : "Main";
-  $response->tracker = $tracker;
+
+  // Tracker State — deprecated, no longer used
+  // $tracker = new stdClass();
+  // $tracker->color = $playerID == $currentPlayer ? "blue" : "red";
+  // if ($turnPhase == "B" || $layersCount > 0 && $layers[0] == "DEFENDSTEP") $tracker->position = "Defense";
+  // else if ($turnPhase == "A" || $turnPhase == "D") $tracker->position = "Reactions";
+  // else if ($turnPhase == "PDECK" || $turnPhase == "ARS" || $layersCount > 0 && ($layers[0] == "ENDTURN" || $layers[0] == "FINALIZECHAINLINK")) $tracker->position = "EndTurn";
+  // else $tracker->position = ($chainLinksCount > 0 || $layersCount > 0 && $layers[0] == "ATTACKSTEP") ? "Combat" : "Main";
+  // $response->tracker = $tracker;
 
   //Display Layer
   $layerObject = new stdClass;
@@ -381,7 +382,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
     $layer = new stdClass();
     $borderColor = null;
-    if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 2;
+    if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 9;
     $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor);
     $layer->layerID = $i;
     $layer->isReorderable = false;
@@ -431,10 +432,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //Their Life
   $response->opponentHealth = $theirHealth;
   //Their Soul Count
-  $response->opponentSoulCount = count($theirSoul);
+  $theirSoulCount = count($theirSoul);
+  $response->opponentSoulCount = $theirSoulCount;
 
   $opponentSoulArr = [];
-  $theirSoulCount = count($theirSoul);
   $soulPieces = SoulPieces();
   for ($i = 0; $i < $theirSoulCount; $i += $soulPieces) {
     $opponentSoulArr[] = JSONRenderedCard($theirSoul[$i]);
@@ -467,7 +468,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->opponentDeckCard = JSONRenderedCard($theirDeckCount > 0 ? $TheirCardBack : $blankZone);
   $opponentDeckArr = [];
   $deckPieces = DeckPieces();
-  if ($isGameOver || IsReplay()) {
+  if ($isGameOver || $isReplay) {
     if ($playerID != 3) {
       for($i=0; $i<$theirDeckCount; $i+=$deckPieces) {
         $opponentDeckArr[] = JSONRenderedCard($theirDeck[$i]);
@@ -634,10 +635,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //My Life
   $response->playerHealth = $myHealth;
   //My Soul Count
-  $response->playerSoulCount = count($mySoul);
+  $mySoulCount = count($mySoul);
+  $response->playerSoulCount = $mySoulCount;
 
   $playerSoulArr = [];
-  $mySoulCount = count($mySoul);
   for ($i = 0; $i < $mySoulCount; $i += $soulPieces) {
     $playerSoulArr[] = JSONRenderedCard($mySoul[$i]);
   }
@@ -690,12 +691,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   else $response->playerDeckCard = JSONRenderedCard($myDeckCount > 0 ? $MyCardBack : $blankZone);
   $playerDeckArr = [];
   $response->playerDeckPopup = false;
-  if ($playerID == $currentPlayer || $isGameOver || IsReplay()) {
+  if ($playerID == $currentPlayer || $isGameOver || $isReplay) {
     if(($turnPhase == "CHOOSEMULTIZONE" || $turnPhase == "MAYCHOOSEMULTIZONE") && isset($turn[2]) && substr($turn[2], 0, 6) === "MYDECK" && $turn[2] != "MYDECK-0"
     || $turnPhase == "MAYCHOOSEDECK"
     || $turnPhase == "CHOOSEDECK"
     || $turnPhase == "MULTICHOOSEDECK"
-    || $isGameOver || IsReplay()) {
+    || $isGameOver || $isReplay) {
       for($i=0; $i<$myDeckCount; $i+=$deckPieces) {
         $playerDeckArr[] = JSONRenderedCard($myDeck[$i]);
       }
@@ -839,7 +840,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $cardID = $attacks[$i];
     if ($action != 0) $playablePastLinks[] = JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: strval($i), label: $label);
   }
-  $response->playerBanish = array_merge($response->playerBanish, $playablePastLinks);
+  if (!empty($playablePastLinks)) {
+    $response->playerBanish = [...$response->playerBanish, ...$playablePastLinks];
+  }
 
   //Their Arsenal
   $theirArse = [];
@@ -1360,11 +1363,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->turnPhase = $turnPhaseObj;
 
   // Do we have priority?
-  $response->havePriority = $currentPlayer == $playerID ? true : false;
+  $response->havePriority = ($currentPlayer == $playerID);
 
   // For spectators, simulate havePriority as if they were player 1
   if ($playerID == 3) {
-    $response->havePriority = $currentPlayer == 1 ? true : false;
+    $response->havePriority = ($currentPlayer == 1);
   }
 
   // opponent and player Action Points

@@ -2260,30 +2260,29 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
+    if ($currentTurnEffects[$i + 1] != $player) continue;
     $effectID = ExtractCardID($currentTurnEffects[$i]);
-    if ($currentTurnEffects[$i + 1] == $player) {
-      switch ($effectID) {
-        case "blossoming_spellblade_red":
-          if (($from == "BANISH" || $from == "MELD") && SearchCurrentTurnEffectsForUniqueID($cardID) != -1) {
-            RemoveCurrentTurnEffect($i);
-            return "BANISH";
-          }
-          break;
-        case "amulet_of_oblation_blue":
-          $effectArr = explode("-", $currentTurnEffects[$i]);
-          if ($cardID == $effectArr[1]) {
-            RemoveCurrentTurnEffect($i);
-            return "BOTDECK";
-          }
-          break;
-        case "under_the_trap_door_blue":
-          if ($cardID == $currentTurnEffects[$i + 2] && $from == "CHAINCLOSING") {
-            RemoveCurrentTurnEffect($i);
-            return "BANISH";
-          }
-        default:
-          break;
-      }
+    switch ($effectID) {
+      case "blossoming_spellblade_red":
+        if (($from == "BANISH" || $from == "MELD") && SearchCurrentTurnEffectsForUniqueID($cardID) != -1) {
+          RemoveCurrentTurnEffect($i);
+          return "BANISH";
+        }
+        break;
+      case "amulet_of_oblation_blue":
+        $effectArr = explode("-", $currentTurnEffects[$i]);
+        if ($cardID == $effectArr[1]) {
+          RemoveCurrentTurnEffect($i);
+          return "BOTDECK";
+        }
+        break;
+      case "under_the_trap_door_blue":
+        if ($cardID == $currentTurnEffects[$i + 2] && $from == "CHAINCLOSING") {
+          RemoveCurrentTurnEffect($i);
+          return "BANISH";
+        }
+      default:
+        break;
     }
   }
   return -1;
@@ -3003,14 +3002,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "astral_etchings_red":
     case "astral_etchings_yellow":
     case "astral_etchings_blue":
-      $haveAuraWard = 0;
       $auras = &GetAuras($player);
-      foreach ($auras as &$aura) {
-        if (HasWard($aura, $player)){
-          $haveAuraWard = +1;
-        } 
-       }
-      return $haveAuraWard <= 0;
+      foreach ($auras as $aura) { 
+        if (HasWard($aura, $player)) return false;
+      }
+      return true;
     case "maul_yellow":
       if (!$CombatChain->HasCurrentLink()) return true;
       if (CardNameContains($attackID, "Crouching Tiger", $player)) return false;
@@ -3872,111 +3868,48 @@ function CharacterDefaultActiveState($cardID)
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->DefaultActiveState();
-  switch ($cardID) {
-    case "silken_form":
-    case "heat_wave":
-    case "conduit_of_frostburn":
-    case "quelling_robe":
-    case "quelling_sleeves":
-    case "quelling_slippers":
-    case "shroud_of_darkness":
-    case "cloak_of_darkness":
-    case "grasp_of_darkness":
-    case "dance_of_darkness":
-    case "blasmophet_levia_consumed":
-      return 0;
-    case "refraction_bolters":
-    case "vest_of_the_first_fist":
-    case "breeze_rider_boots":
-    case "metacarpus_node":
-    case "hooves_of_the_shadowbeast":
-    case "plume_of_evergrowth":
-    case "shock_charmers":
-    case "mark_of_lightning":
-    case "halo_of_illumination":
-    case "dream_weavers":
-    case "ebon_fold":
-    case "spell_fray_tiara":
-    case "spell_fray_cloak":
-    case "spell_fray_gloves":
-    case "spell_fray_leggings":
-    case "mask_of_the_pouncing_lynx":
-    case "beaten_trackers":
-    case "quiver_of_abyssal_depths":
-    case "quiver_of_rustling_leaves":
-    case "enchanted_quiver":
-    case "driftwood_quiver":
-    case "evo_circuit_breaker_red_equip":
-    case "evo_atom_breaker_red_equip":
-    case "evo_face_breaker_red_equip":
-    case "evo_mach_breaker_red_equip":
-    case "hide_tanner":
-    case "grains_of_bloodspill":
-    case "meridian_pathway":
-    case "longdraw_half_glove":
-    case "aether_crackers":
-    case "hard_knuckle":
-    case "arcanite_fortress":
-    case "widow_veil_respirator":
-    case "widow_back_abdomen":
-    case "widow_claw_tarsus":
-    case "widow_web_crawler":
-    case "blood_splattered_vest":
-    case "leap_frog_vocal_sac":
-    case "leap_frog_slime_skin":
-    case "leap_frog_gloves":
-    case "leap_frog_leggings":
-    case "robe_of_autumns_fall":
-    case "prism_awakener_of_sol":
-    case "prism_advent_of_thrones":
-    case "storm_striders":
-    case "alluvion_constellas":
-    case "compass_of_sunken_depths":
-    case "pouncing_paws":
-    case "fyendals_spring_tunic":
-    case "halo_of_lumina_light":
-    case "unicycle":
-    case "tuffnut":
-    case "tuffnut_bumbling_hulkster":
-    case "trench_of_sunken_treasure":
-    case "well_grounded":
-    case "tiara_of_suspense":
-    case "aether_bindings_of_the_third_age":
-    case "mask_of_many_faces":
-    case "ornate_tessen":
-    case "radiant_flow":
-    case "radiant_raiment":
-    case "radiant_touch":
-    case "radiant_view":
-    case "tremorshield_sabatons":
-    case "sealace_sarong":
-    case "talismanic_lense":
-    case "gravy_bones":
-    case "gravy_bones_shipwrecked_looter":
-    case "dead_threads":
-    case "achilles_accelerator":
-    case "lyath_goldmane":
-    case "lyath_goldmane_vile_savant":
-    case "teklovossen":
-    case "teklovossen_esteemed_magnate":
-    case "fai":
-    case "fai_rising_rebellion":
-    case "tearing_shuko":
-    case "blood_scent":
-    case "honing_hood":
-    case "spellbound_creepers":
-    case "grimoire_of_the_haunt":
-    case "old_knocker":
-    case "dragonscaler_flight_path":
-      return 1;
-    case "okana_scar_wraps":
-    case "verdance_thorn_of_the_rose":
-    case "verdance":
-    case "jarl_vetreidi":
-      return 0;
-    default:
-      return 2;
-  }
+  static $state0 = [
+    "silken_form" => 1, "heat_wave" => 1, "conduit_of_frostburn" => 1,
+    "quelling_robe" => 1, "quelling_sleeves" => 1, "quelling_slippers" => 1,
+    "shroud_of_darkness" => 1, "cloak_of_darkness" => 1, "grasp_of_darkness" => 1,
+    "dance_of_darkness" => 1, "blasmophet_levia_consumed" => 1,
+    "okana_scar_wraps" => 1, "verdance_thorn_of_the_rose" => 1,
+    "verdance" => 1, "jarl_vetreidi" => 1,
+  ];
+  static $state1 = [
+    "refraction_bolters" => 1, "vest_of_the_first_fist" => 1, "breeze_rider_boots" => 1,
+    "metacarpus_node" => 1, "hooves_of_the_shadowbeast" => 1, "plume_of_evergrowth" => 1,
+    "shock_charmers" => 1, "mark_of_lightning" => 1, "halo_of_illumination" => 1,
+    "dream_weavers" => 1, "ebon_fold" => 1, "spell_fray_tiara" => 1,
+    "spell_fray_cloak" => 1, "spell_fray_gloves" => 1, "spell_fray_leggings" => 1,
+    "mask_of_the_pouncing_lynx" => 1, "beaten_trackers" => 1, "quiver_of_abyssal_depths" => 1,
+    "quiver_of_rustling_leaves" => 1, "enchanted_quiver" => 1, "driftwood_quiver" => 1,
+    "evo_circuit_breaker_red_equip" => 1, "evo_atom_breaker_red_equip" => 1,
+    "evo_face_breaker_red_equip" => 1, "evo_mach_breaker_red_equip" => 1,
+    "hide_tanner" => 1, "grains_of_bloodspill" => 1, "meridian_pathway" => 1,
+    "longdraw_half_glove" => 1, "aether_crackers" => 1, "hard_knuckle" => 1,
+    "arcanite_fortress" => 1, "widow_veil_respirator" => 1, "widow_back_abdomen" => 1,
+    "widow_claw_tarsus" => 1, "widow_web_crawler" => 1, "blood_splattered_vest" => 1,
+    "leap_frog_vocal_sac" => 1, "leap_frog_slime_skin" => 1, "leap_frog_gloves" => 1,
+    "leap_frog_leggings" => 1, "robe_of_autumns_fall" => 1, "prism_awakener_of_sol" => 1,
+    "prism_advent_of_thrones" => 1, "storm_striders" => 1, "alluvion_constellas" => 1,
+    "compass_of_sunken_depths" => 1, "pouncing_paws" => 1, "fyendals_spring_tunic" => 1,
+    "halo_of_lumina_light" => 1, "unicycle" => 1, "tuffnut" => 1,
+    "tuffnut_bumbling_hulkster" => 1, "trench_of_sunken_treasure" => 1, "well_grounded" => 1,
+    "tiara_of_suspense" => 1, "aether_bindings_of_the_third_age" => 1, "mask_of_many_faces" => 1,
+    "ornate_tessen" => 1, "radiant_flow" => 1, "radiant_raiment" => 1,
+    "radiant_touch" => 1, "radiant_view" => 1, "tremorshield_sabatons" => 1,
+    "sealace_sarong" => 1, "talismanic_lense" => 1, "gravy_bones" => 1,
+    "gravy_bones_shipwrecked_looter" => 1, "dead_threads" => 1, "achilles_accelerator" => 1,
+    "lyath_goldmane" => 1, "lyath_goldmane_vile_savant" => 1, "teklovossen" => 1,
+    "teklovossen_esteemed_magnate" => 1, "fai" => 1, "fai_rising_rebellion" => 1,
+    "tearing_shuko" => 1, "blood_scent" => 1, "honing_hood" => 1,
+    "spellbound_creepers" => 1, "grimoire_of_the_haunt" => 1, "old_knocker" => 1,
+    "dragonscaler_flight_path" => 1,
+  ];
+  if (isset($state0[$cardID])) return 0;
+  if (isset($state1[$cardID])) return 1;
+  return 2;
 }
 
 //Hold priority for triggers (2 = Always hold, 1 = Hold, 0 = Don't Hold)
@@ -4822,11 +4755,9 @@ function canBeAddedToChainDuringDR($cardID){
 
 function ExtractCardID($cardID) {
   if ($cardID === null) return "";
-  if (strpbrk($cardID, ",-|") === false) return $cardID; // common case: already bare
-  $cardID = explode(",", $cardID)[0];
-  $cardID = explode("-", $cardID)[0];
-  $cardID = explode("|", $cardID)[0];
-  return $cardID;
+  $end = strcspn($cardID, ",-|");
+  if ($end === strlen($cardID)) return $cardID;
+  return substr($cardID, 0, $end);
 }
 
 function CountAllies($player)
@@ -4855,17 +4786,11 @@ function HasEffectActive($cardID) {
 
 function BlindCard($cardID, $unblind=false, $excludeEquips=false) {
   if (!$unblind && $excludeEquips && TypeContains($cardID, "E")) return $cardID;
-  $blindMarker = "BLIND";
-  $c = strlen($blindMarker) + 1;
   if ($cardID === null) return "";
   if ($unblind) {
-    if (str_contains($cardID, $blindMarker)) return substr($cardID, 0, -$c);
-    else return $cardID;
+    return str_contains($cardID, "BLIND") ? substr($cardID, 0, -6) : $cardID;
   }
-  else {
-    if (str_contains($cardID, $blindMarker)) return $cardID;
-    return "$cardID~$blindMarker";
-  }
+  return str_contains($cardID, "BLIND") ? $cardID : "$cardID~BLIND";
 }
 
 //For effects that grant an ability to an AA card that then grants the attack power

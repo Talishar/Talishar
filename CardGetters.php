@@ -29,24 +29,24 @@ function &GetMZZone($player, $zone)
 
 function GetMZZonePieces($zone)
 {
-  $rv = 0;
-  if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = CharacterPieces();
-  else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = AuraPieces();
-  else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = AllyPieces();
-  else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = ArsenalPieces();
-  else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = HandPieces();
-  else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = PitchPieces();
-  else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = DiscardPieces();
-  else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = PermanentPieces();
-  else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = BanishPieces();
-  else if ($zone == "DECK" || $zone == "MYDECK" || $zone == "THEIRDECK") $rv = DeckPieces();
-  else if ($zone == "SOUL" || $zone == "MYSOUL" || $zone == "THEIRSOUL") $rv = SoulPieces();
-  else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = ItemPieces();
-  else if ($zone == "LAYER") return LayerPieces();
-  else if ($zone == "CC" || $zone == "COMBATCHAINLINK") $rv = CombatChainPieces();
-  else if ($zone == "COMBATCHAINATTACKS") $rv = ChainLinksPieces();
-  else if ($zone == "PASTCHAINLINK") $rv = ChainLinksPieces();
-  return $rv;
+  return match($zone) {
+    "MYCHAR", "THEIRCHAR" => CharacterPieces(),
+    "MYAURAS", "THEIRAURAS" => AuraPieces(),
+    "ALLY", "MYALLY", "THEIRALLY" => AllyPieces(),
+    "MYARS", "THEIRARS" => ArsenalPieces(),
+    "MYHAND", "THEIRHAND" => HandPieces(),
+    "MYPITCH", "THEIRPITCH" => PitchPieces(),
+    "MYDISCARD", "THEIRDISCARD" => DiscardPieces(),
+    "PERM", "MYPERM", "THEIRPERM" => PermanentPieces(),
+    "BANISH", "MYBANISH", "THEIRBANISH" => BanishPieces(),
+    "DECK", "MYDECK", "THEIRDECK" => DeckPieces(),
+    "SOUL", "MYSOUL", "THEIRSOUL" => SoulPieces(),
+    "ITEMS", "MYITEMS", "THEIRITEMS" => ItemPieces(),
+    "LAYER" => LayerPieces(),
+    "CC", "COMBATCHAINLINK" => CombatChainPieces(),
+    "COMBATCHAINATTACKS", "PASTCHAINLINK" => ChainLinksPieces(),
+    default => 0,
+  };
 }
 
 function GetMZZoneUIDIndex($zone)
@@ -413,7 +413,9 @@ function GetPreLayers() {
   $layerPieces = LayerPieces();
   $layerCount = count($layers);
   for ($i = 0; $i < $layerCount; $i += $layerPieces) {
-    if ($layers[$i] == "PRETRIGGER") $preLayers = array_merge($preLayers, array_slice($layers, $i, $layerPieces));
+    if ($layers[$i] == "PRETRIGGER") {
+      for ($j = 0; $j < $layerPieces; ++$j) $preLayers[] = $layers[$i + $j];
+    }
   }
   return $preLayers;
 }
@@ -421,20 +423,16 @@ function GetPreLayers() {
 function GetCombatChainAttacks()
 {
   global $chainLinks, $ChainLinks;
-  $attacks = [];
   $chainLinksPieces = ChainLinksPieces();
   $chainLinksCount = $ChainLinks->NumLinks();
+  $attacks = array_fill(0, $chainLinksCount * $chainLinksPieces, "-");
+  $idx = 0;
   for ($i = 0; $i < $chainLinksCount; ++$i) {
-    $LinkCard = $ChainLinks->GetLink($i)->AttackCard();
-    $link = $chainLinks[$i];
-    if ($LinkCard->StillOnChain()) {
-      for ($j = 0; $j < $chainLinksPieces; ++$j)
-        $attacks[] = $link[$j];
+    if ($ChainLinks->GetLink($i)->AttackCard()->StillOnChain()) {
+      $link = $chainLinks[$i];
+      for ($j = 0; $j < $chainLinksPieces; ++$j) $attacks[$idx + $j] = $link[$j];
     }
-    else {
-      //can't find something that's gone
-      for ($j = 0; $j < $chainLinksPieces; ++$j) array_push($attacks, "-");
-    }
+    $idx += $chainLinksPieces;
   }
   return $attacks;
 }
@@ -492,7 +490,8 @@ function ArsenalHasArrowFacingColor($player, $facing, $color)
 function ArsenalFull($player)
 {
   $arsenal = &GetArsenal($player);
-  $fullCount = SearchCharacterActive($player, "new_horizon") && ArsenalHasFaceUpCard($player) ? ArsenalPieces() * 2 : ArsenalPieces();
+  $pieces = ArsenalPieces();
+  $fullCount = SearchCharacterActive($player, "new_horizon") && ArsenalHasFaceUpCard($player) ? $pieces * 2 : $pieces;
   return count($arsenal) >= $fullCount;
 }
 
