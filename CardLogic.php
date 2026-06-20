@@ -4631,7 +4631,8 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         $auraCount = count($auras);
         for($i = 0; $i < $auraCount; $i += $auraPieces) {
           $name = NameOverride($auras[$i], $player);
-          if (TypeContains($auras[$i], "T") && !isset($uniqueAurasSet[$name])) {
+          $Aura = new AuraCard($i, $player);
+          if ((TypeContains($auras[$i], "T") || $Aura->IsToken()) && !isset($uniqueAurasSet[$name])) {
             $uniqueAuras[] = $name;
             $uniqueAurasSet[$name] = true;
           }
