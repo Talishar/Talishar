@@ -422,6 +422,7 @@ $CS_WeaponsAttackedWith = 121;
 $CS_PendingNAACard = 122; // Card ID of a NAA queued to auto-play after chain closes (or "-" if none)
 $CS_HaveIntimidatedOpponent = 123;
 $CS_LayerResolved = 124;
+$CS_PreventionCache = 125;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -715,7 +716,7 @@ function ResetMainClassState()
   global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed, $CS_NumCostedCardsPlayed, $CS_HitCounter, $CS_CreatedCardsThisTurn;
   global $CS_ArcaneDamageDealtToOpponent, $CS_EvosBoosted, $CS_NumWeaponsActivated, $CS_NumLightningFlowDestroyed, $CS_HoloAurasEntered;
   global $CS_NumInstantsPutInGrave, $CS_NumControlledAurasDestroyed, $CS_NumFragmented, $CS_WeaponsAttackedWith, $CS_PendingNAACard, $CS_HaveIntimidatedOpponent;
-  global $CS_LayerResolved;
+  global $CS_LayerResolved, $CS_PreventionCache;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -840,6 +841,7 @@ function ResetMainClassState()
   $mainClassState[$CS_PendingNAACard] = "-";
   $mainClassState[$CS_HaveIntimidatedOpponent] = 0;
   $mainClassState[$CS_LayerResolved] = 0;
+  $mainClassState[$CS_PreventionCache] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")

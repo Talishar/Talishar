@@ -68,7 +68,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
   global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack, $CurrentTurnEffects;
-  global $CS_HaveIntimidatedOpponent;
+  global $CS_HaveIntimidatedOpponent, $CS_PreventionCache;
   $rv = "";
   $otherPlayer = $player == 1 ? 2 : 1;
   switch ($phase) {
@@ -1577,7 +1577,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($damage < 0) $damage = 0;
         if ($damage > 0) CheckSpellvoid($player, $parameter);
       }
-      PrependDecisionQueue("INCDQVAR", $player, "1", 1);
+      PrependDecisionQueue("INCREMENTCLASSSTATEBY", $player, $CS_PreventionCache, 1);
       return $prevented;
     case "THREATENARCANE":
       $paramArr = explode(",", $parameter);
@@ -1666,29 +1666,28 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $target = $targetPlayer;
         $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
         PrependDecisionQueue("TAKEARCANE", $target, "$damage-$source-$player");
-        PrependDecisionQueue("PASSPARAMETER", $target, "{1}");
         CheckSpellvoid($target, $damage, $source);
         $Character = new PlayerCharacter($targetPlayer);
         if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier", checkGem:true) && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) {
-          PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+          PrependDecisionQueue("INCREMENTCLASSSTATEBY", $target, $CS_PreventionCache, 1);
           DoMbrioBaseVizier($targetPlayer, $damage);
         }
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer) && $targetPlayer != $player) {
-          PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+          PrependDecisionQueue("INCREMENTCLASSSTATEBY", $target, $CS_PreventionCache, 1);
           DoCapQuickThinking($targetPlayer, $damage);
         }
         $Solray = $Character->FindCardID("solray_plating");
         if ($Solray != "" && $Solray->IsActive()) {
-          PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+          PrependDecisionQueue("INCREMENTCLASSSTATEBY", $target, $CS_PreventionCache, 1);
           DoSolrayPlating($targetPlayer, $damage);
         }
-        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+        PrependDecisionQueue("INCREMENTCLASSSTATEBY", $target, $CS_PreventionCache, 1);
         DoQuell($target, $damage);
-        PrependDecisionQueue("INCDQVAR", $target, "1", 1);
+        PrependDecisionQueue("INCREMENTCLASSSTATEBY", $target, $CS_PreventionCache, 1);
         PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
         PrependDecisionQueue("ARCANECHOSEN", $target, $source, 1);
         PrependDecisionQueue("CHOOSEARCANE", $target, $arcaneBarrier, 1);
-        PrependDecisionQueue("SETDQVAR", $target, "1", 1);
+        PrependDecisionQueue("SETCLASSSTATE", $target, $CS_PreventionCache, 1);
         PrependDecisionQueue("PASSPARAMETER", $target, "0", 1);
         PrependDecisionQueue("SETDQVAR", $target, "0", 1);
         PrependDecisionQueue("PASSPARAMETER", $target, "$damage-$sourceID", 1);
@@ -1730,7 +1729,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $source = $parameters[1];
       $playerSource = $parameters[2];
       if($playerSource != $player) LogDamageStats($player, $damage, 0); //Log arcane damageThreatened before it's prevented
-
+      $lastResult = GetClassState($player, $CS_PreventionCache) ?? 0;
+      SetClassState($player, $CS_PreventionCache, 0);
       if (!CanDamageBePrevented($player, $damage, "ARCANE", $source)) $lastResult = 0;
       if (!is_numeric($damage))
         $damage = 0;
@@ -1977,6 +1977,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "INCREMENTCOMBATCHAINSTATEBY":
       $combatChainState[$parameter] += $lastResult;
+      return $lastResult;
+    case "INCREMENTCLASSSTATEBY":
+      IncrementClassState($player, $parameter, intval($lastResult));
       return $lastResult;
     case "SETLAYERTARGET":
       global $layers;
