@@ -4120,11 +4120,14 @@ function ComboActive($cardID = "")
         if ($lastAttackName == "Crouching Tiger") return true;
         break;
       case "aspect_of_tiger_body_red":
-        return DelimStringContains($ChainLinks->LastLink()->Colors(), 1);
+        $attackCard = $ChainLinks->LastLink()->AttackCard()->ID();
+        return DelimStringContains($ChainLinks->LastLink()->Colors(), 1) && TypeContains($attackCard, "AA");
       case "aspect_of_tiger_soul_yellow":
-        return DelimStringContains($ChainLinks->LastLink()->Colors(), 2);
+        $attackCard = $ChainLinks->LastLink()->AttackCard()->ID();
+        return DelimStringContains($ChainLinks->LastLink()->Colors(), 2) && TypeContains($attackCard, "AA");
       case "aspect_of_tiger_mind_blue":
-        return DelimStringContains($ChainLinks->LastLink()->Colors(), 3);
+        $attackCard = $ChainLinks->LastLink()->AttackCard()->ID();
+        return DelimStringContains($ChainLinks->LastLink()->Colors(), 3) && TypeContains($attackCard, "AA");
       case "breed_anger_red":
       case "breed_anger_yellow":
       case "breed_anger_blue":

@@ -5,28 +5,28 @@ $ChainLinks = new ChainLinks();
 
 class ChainLinks {
 
-  // Properties
-  private $chain = [];
+	// Properties
+	private $chain = [];
 
-  // Constructor
-  function __construct() {
-    global $chainLinks;
-    $this->chain = &$chainLinks;
-  }
+	// Constructor
+	function __construct() {
+		global $chainLinks;
+		$this->chain = &$chainLinks;
+	}
 
-  function GetLink($linkNum) {
-    return new ChainLink($linkNum);
-  }
+	function GetLink($linkNum) {
+		return new ChainLink($linkNum);
+	}
 
-  function NumLinks() {
-		return count($this->chain);
-  }
+	function NumLinks() {
+			return count($this->chain);
+	}
 
 	function LastLink() {
 		return new ChainLink($this->NumLinks() - 1);
 	}
 
-  function SearchChainLinks($type="-", $talent="-", $maxCost=-1) {
+  	function SearchChainLinks($type="-", $talent="-", $maxCost=-1) {
 		$found = [];
 		$numLinks = $this->NumLinks();
 		for ($i = 0; $i < $numLinks; ++$i) {
