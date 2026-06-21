@@ -80,7 +80,7 @@ handleCogwerxEquipment($p1Char, $p2Char);
 //Macro for Limited
 if($format == "draft"){
   AddDecisionQueue("PASSPARAMETER", "-", "omens_of_arcana");
-  AddDecisionQueue("PUTPLAY", "-", "-", 1);
+  AddDecisionQueue("PUTPLAY", 1, "-", 1);
 }
 
 // Add final game setup decisions
