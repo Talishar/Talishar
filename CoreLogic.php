@@ -630,8 +630,16 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $mainPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer)) return false;
-  $sourceUnpreventable = ["rok", "malign_red", "malign_yellow", "malign_blue", "murkmire_grapnel_red", "murkmire_grapnel_yellow", "murkmire_grapnel_blue"];
-  if (in_array($source, $sourceUnpreventable) || in_array($extraText, $sourceUnpreventable)) return false;
+  $isUnpreventableSource = match($source) {
+    "rok", "malign_red", "malign_yellow", "malign_blue",
+    "murkmire_grapnel_red", "murkmire_grapnel_yellow", "murkmire_grapnel_blue" => true,
+    default => false
+  };
+  if ($isUnpreventableSource || match($extraText) {
+    "rok", "malign_red", "malign_yellow", "malign_blue",
+    "murkmire_grapnel_red", "murkmire_grapnel_yellow", "murkmire_grapnel_blue" => true,
+    default => false
+  }) return false;
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue" || $extraText == "pick_to_pieces_red" || $extraText == "pick_to_pieces_yellow" || $extraText == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
   if ($damage >= 4 && $source == "batter_to_a_pulp_red") return false;
@@ -1579,8 +1587,10 @@ function CombatChainClosedCharacterEffects()
       if (HasGuardwell($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
 
         $blockModifier = ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5];//Add -block value counter
-        $bladeBeckoner = ["blade_beckoner_helm", "blade_beckoner_plating", "blade_beckoner_gauntlets", "blade_beckoner_boots"];
-        if (IsWeapon($chainLinks[$i][0], "PLAY") && in_array($chainLinks[$i][$j], $bladeBeckoner)) {
+        if (IsWeapon($chainLinks[$i][0], "PLAY") && match($chainLinks[$i][$j]) {
+          "blade_beckoner_helm", "blade_beckoner_plating", "blade_beckoner_gauntlets", "blade_beckoner_boots" => true,
+          default => false
+        }) {
           $blockModifier += 1;
         }
         $blockModifier = $blockModifier < 0 ? 0 : $blockModifier;
@@ -2804,8 +2814,10 @@ function RemoveArsenalEffects($player, $cardToReturn, $uniqueID)
   if ($uniqueID == SearchCurrentTurnEffects("bulls_eye_bracers", $player, returnUniqueID: true)) SearchCurrentTurnEffects("bulls_eye_bracers", $player, true);
   if ($uniqueID == SearchCurrentTurnEffects("glidewell_fins", $player, returnUniqueID: true)) SearchCurrentTurnEffects("glidewell_fins", $player, true);
   if ($uniqueID == SearchCurrentTurnEffects("remorseless_red", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("remorseless_red", $otherPlayer, true); 
-  $arrowWithEffects = ["head_shot_red", "head_shot_yellow", "head_shot_blue", "dry_powder_shot_red", "swift_shot_red"];
-  if (in_array($cardToReturn, $arrowWithEffects)) {
+  if (match($cardToReturn) {
+    "head_shot_red", "head_shot_yellow", "head_shot_blue", "dry_powder_shot_red", "swift_shot_red" => true,
+    default => false
+  }) {
     $index = SearchCurrentTurnEffectsForUniqueID($uniqueID);
     if ($index != -1) RemoveCurrentTurnEffect($index);
   }
@@ -3056,7 +3068,8 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
     }
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
-    if(SearchCurrentTurnEffects("arc_lightning_yellow", $player) && !IsMeldInstantName(GetClassState($player, $CS_AdditionalCosts)) && (GetClassState($player, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
+    $additionalCostsClassState = GetClassState($player, $CS_AdditionalCosts);
+    if(SearchCurrentTurnEffects("arc_lightning_yellow", $player) && !IsMeldInstantName($additionalCostsClassState) && ($additionalCostsClassState != "Both" || $from == "MELD")) {
       for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
         $Effect = $CurrentTurnEffects->Effect($i, true);
         if ($Effect->EffectID() == "arc_lightning_yellow") {
@@ -3466,7 +3479,7 @@ function GetCurrentAttackNames()
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($name != "" && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
       if (str_contains($name, ","))
-        $names = array_merge($names, explode(",", $name));
+        array_push($names, ...explode(",", $name));
       else $names[] = $name;
     }
   }

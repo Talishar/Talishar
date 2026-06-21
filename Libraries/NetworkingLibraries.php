@@ -659,7 +659,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $num = 1;
         if (SetIDtoCardID(strtoupper($cardID)) != "")
           $cardID = SetIDtoCardID(strtoupper($cardID));
-        $cardID = str_replace(" ", "_", $cardID);
+        if (str_contains($cardID, ' ')) $cardID = str_replace(' ', '_', $cardID);
         $splitCard = explode("_", $cardID);
         $color = end($splitCard);
         switch ($color) {

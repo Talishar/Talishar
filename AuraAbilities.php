@@ -13,7 +13,7 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
   if ($isToken) {
     $ind = SearchCurrentTurnEffectsForIndex("break_stature_yellow", $effectController);
     if ($ind != -1 && $currentTurnEffects[$ind + 2] != "") {
-      if (NameOverride($cardID, $player) == NameOverride($currentTurnEffects[$ind + 2], $player)) {
+      if (NameOverride($cardID, $player) === NameOverride($currentTurnEffects[$ind + 2], $player)) {
         return false;
       }
     }
@@ -81,14 +81,13 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   }
   if ($cardID == "manifestation_of_miragai_blue") SearchCardList($additionalCosts, $player, subtype: "Chi") != "" ? $numPowerCounters += 4 : $numPowerCounters += 2;
   if ($cardID == "waxing_specter_red" || $cardID == "waxing_specter_yellow" || $cardID == "waxing_specter_blue") $numPowerCounters += SearchPitchForColor($player, 3) > 0 ? 1 : 0;
-  if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("vengeful_apparition_red", $player, true) && CardCost($cardID, $from) <= 2 && CardCost($cardID, $from) > -1) {
-    ++$numPowerCounters;
-  }
-  if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("vengeful_apparition_yellow", $player, true) && CardCost($cardID, $from) <= 1 && CardCost($cardID, $from) > -1) {
-    ++$numPowerCounters;
-  }
-  if (ClassContains($cardID, "ILLUSIONIST", $player) && SearchCurrentTurnEffects("vengeful_apparition_blue", $player, true) && CardCost($cardID, $from) <= 0 && CardCost($cardID, $from) > -1) {
-    ++$numPowerCounters;
+  if (ClassContains($cardID, "ILLUSIONIST", $player)) {
+    $apparitionCost = CardCost($cardID, $from);
+    if ($apparitionCost > -1) {
+      if (SearchCurrentTurnEffects("vengeful_apparition_red", $player, true) && $apparitionCost <= 2) ++$numPowerCounters;
+      if (SearchCurrentTurnEffects("vengeful_apparition_yellow", $player, true) && $apparitionCost <= 1) ++$numPowerCounters;
+      if (SearchCurrentTurnEffects("vengeful_apparition_blue", $player, true) && $apparitionCost <= 0) ++$numPowerCounters;
+    }
   }
 
   $defaultHoldState = AuraDefaultHoldTriggerState($cardID);

@@ -938,7 +938,7 @@ class electromagnetic_somersault extends BaseCard {
     $options = SearchCombatChainLink($this->controller, "AA", minCost: $minCost);
     if($options != "") {
       $search = "COMBATCHAINLINK:type=AA;minCost=$minCost";
-      $max = count(explode(",", $options));
+      $max = substr_count($options, ",") + 1;
       $message = "Choose an attack action card to return to the owner's hand";
       Await($this->controller, "MultiChooseIndices", "indices", search:$search, subsequent:0);
     	Await($this->controller, "ChooseMultiZone", "currentChoices", context:$message, may:true);

@@ -186,7 +186,7 @@
         return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "shock_striker_red": case "shock_striker_yellow": case "shock_striker_blue": return true;
       case "electrify_red": case "electrify_yellow": case "electrify_blue": return CardType($attackID) == "AA";
-      case "amulet_of_lightning_blue": return CardType($attackID) == "AA" || CardType($attackID) == "A";
+      case "amulet_of_lightning_blue": $cardType = CardType($attackID); return $cardType == "AA" || $cardType == "A";
       case "rampart_of_the_rams_head": return true;
       case "tear_asunder_blue": return ClassContains($attackID, "GUARDIAN", $mainPlayer);
       case "embolden_red": case "embolden_yellow": case "embolden_blue": return ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA";

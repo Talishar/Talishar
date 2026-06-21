@@ -888,7 +888,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $indexChar = SearchCharacterForUniqueID($uid, $targetPlayer);
       if ($indexChar != -1) {
         $char = GetPlayerCharacter($targetPlayer);
-        $charCost = CardCost($char[$indexChar]) >= 0 ? CardCost($char[$indexChar]) : 0;
+        $charCostRaw = CardCost($char[$indexChar]);
+        $charCost = $charCostRaw >= 0 ? $charCostRaw : 0;
         PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$charCost, isToken:true, effectController:$currentPlayer);
         $token = $charCost > 1 ? " tokens" : " token";
         $CharName = CardLink($char[$indexChar], $char[$indexChar]);

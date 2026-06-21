@@ -2802,7 +2802,7 @@ class hit_the_gas_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     //eventually we'll want to make this check if it should draw only after you finish flipping cards
     $search = "MYBANISH:isSameName=hyper_driver_red";
-    $count = count(explode(",", SearchMultizone($this->controller, $search)));
+    $count = SearchCount(SearchMultizone($this->controller, $search));
     // AddDecisionQueue("PASSPARAMETER", $this->controller, 1);
     // AddDecisionQueue("SETDQVAR", $this->controller, 0, 1); // number of cards flipped
     for ($i = 0; $i < $count; ++$i) {

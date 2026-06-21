@@ -99,8 +99,8 @@ function handleCharacterStartAbilities()
   global $p1Char, $p2Char;
 
   // Dash abilities
-  $p1IsDash = in_array($p1Char[0], ["dash_inventor_extraordinaire", "dash"]);
-  $p2IsDash = in_array($p2Char[0], ["dash_inventor_extraordinaire", "dash"]);
+  $p1IsDash = ($p1Char[0] === "dash_inventor_extraordinaire" || $p1Char[0] === "dash");
+  $p2IsDash = ($p2Char[0] === "dash_inventor_extraordinaire" || $p2Char[0] === "dash");
 
   if ($p1IsDash) {
     $items = SearchDeck(1, "", "Item", 2, -1, "MECHANOLOGIST");
@@ -122,14 +122,14 @@ function handleCharacterStartAbilities()
   }
 
   // Fai abilities
-  if (in_array($p1Char[0], ["fai_rising_rebellion", "fai"])) {
+  if ($p1Char[0] === "fai_rising_rebellion" || $p1Char[0] === "fai") {
     $cards = SearchDeckForCard(1, "phoenix_flame_red");
     if ($cards != "") {
       AddDecisionQueue("MAYCHOOSEDECK", 1, $cards);
       AddDecisionQueue("ADDDISCARD", 1, "DECK", 1);
     }
   }
-  if (in_array($p2Char[0], ["fai_rising_rebellion", "fai"])) {
+  if ($p2Char[0] === "fai_rising_rebellion" || $p2Char[0] === "fai") {
     $cards = SearchDeckForCard(2, "phoenix_flame_red");
     if ($cards != "") {
       AddDecisionQueue("MAYCHOOSEDECK", 2, $cards);
@@ -219,7 +219,7 @@ function InventoryStartGameAbilities($player)
     switch ($inventory[$i]) {
       case "levia_redeemed":
         PutPermanentIntoPlay($player, "levia_redeemed");
-        array_push($inventory, "blasmophet_levia_consumed");
+        $inventory[] = "blasmophet_levia_consumed";
         break;
       case "adaptive_plating":
         addAdaptiveEquipmentDecision($player, $inventory[$i], "ADAPTIVEPLATING");

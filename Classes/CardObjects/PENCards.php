@@ -1488,7 +1488,7 @@ class beckoning_haunt extends Card {
       $cardCost = CardCost($discard[$i]);
       $cost = 2 * $cardCost + 1;
       if (SubtypeContains($discard[$i], "Aura", $this->controller) && !in_array($cost, $costs)) {
-        array_push($costs, $cost);
+        $costs[] = $cost;
       }
     }
     sort($costs);
@@ -1918,7 +1918,7 @@ class embody_greatness_yellow extends Card {
     global $livingLegends;
     $choices = [];
     foreach($livingLegends as $hero) {
-      array_push($choices, "CARDID-$hero");
+      $choices[] = "CARDID-$hero";
     }
     AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -2931,7 +2931,7 @@ class frail_swingline_blue extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     $choices = ["THEIRCHAR-0"];
-    if (!ShouldAutotargetOpponent($this->controller)) array_push($choices, "MYCHAR-0");
+    if (!ShouldAutotargetOpponent($this->controller)) $choices[] = "MYCHAR-0";
     AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a frailty", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -2964,8 +2964,7 @@ class quickening_sand_blue extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    $choices = ["THEIRCHAR-0"];
-    array_push($choices, "MYCHAR-0");
+    $choices = ["THEIRCHAR-0", "MYCHAR-0"];
     AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a quicken", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -3005,8 +3004,7 @@ class courageous_crossing_blue extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    $choices = ["THEIRCHAR-0"];
-    array_push($choices, "MYCHAR-0");
+    $choices = ["THEIRCHAR-0", "MYCHAR-0"];
     AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a courage", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -3770,7 +3768,7 @@ class become_the_bottle extends BaseCard {
       for ($j = 0; $j < $Link->NumCards(); ++$j) {
         $LinkCard = $Link->GetLinkCard($j, true);
         $ind = $LinkCard->Index();
-        if (!TypeContains($LinkCard->ID(), "AR")) array_push($choices, "PASTCHAINLINK-$ind-$i");
+        if (!TypeContains($LinkCard->ID(), "AR")) $choices[] = "PASTCHAINLINK-$ind-$i";
       }
     }
     $choices = implode(",", $choices);
@@ -6243,9 +6241,9 @@ class wax_and_wane_blue extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     global $CS_AdditionalCosts;
     $modalities = [];
-    if (SearchAura($this->controller, pitch:3) != "") array_push($modalities, "Buff_blue_aura");
-    if (SearchAura($this->controller, hasWard:true) != "") array_push($modalities, "Buff_ward_aura");
-    if (count($modalities) == 2) array_push($modalities, "Both");
+    if (SearchAura($this->controller, pitch:3) != "") $modalities[] = "Buff_blue_aura";
+    if (SearchAura($this->controller, hasWard:true) != "") $modalities[] = "Buff_ward_aura";
+    if (count($modalities) == 2) $modalities[] = "Both";
     $modalities = implode(",", $modalities);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
     AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
@@ -6323,8 +6321,8 @@ class haboob_red extends Card {
     global $CombatChain;
     $cardID = $CombatChain->Card($index)->ID();
     if (TypeContains($cardID, "AA")) {
-      array_push($powerModifier, $this->cardID);
-      array_push($powerModifier, -1);
+      $powerModifier[] = $this->cardID;
+      $powerModifier[] = -1;
       return -1;
     }
     return 0;
@@ -6377,7 +6375,8 @@ class ransack_and_raze_blue extends Card {
     $costs = [];
     for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
       $LM = $Landmarks->Card($i, true);
-      if (CardCost($LM->CardID()) != -1) array_push($costs, CardCost($LM->CardID()));
+      $landmarkCost = CardCost($LM->CardID());
+      if ($landmarkCost != -1) $costs[] = $landmarkCost;
     }
     return implode(",", $costs);
   }
@@ -6426,16 +6425,16 @@ class destructive_tendencies_blue extends Card {
       for ($i = 0; $i < $Items->NumItems(); ++$i) {
         $Item = $Items->Card($i, true);
         if (TypeContains($Item->CardID(), "T") && !in_array("Remove_from_item", $modalities))
-          array_push($modalities, "Remove_from_item");
+          $modalities[] = "Remove_from_item";
       }
       $Auras = new Auras($player);
       for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
         $Aura = $Auras->Card($i, true);
         if ((TypeContains($Aura->CardID(), "T") || $Aura->IsToken()) && !in_array("Remove_from_aura", $modalities))
-          array_push($modalities, "Remove_from_aura");
+          $modalities[] = "Remove_from_aura";
       }
     }
-    if (count($modalities) == 2) array_push($modalities, "Both");
+    if (count($modalities) == 2) $modalities[] = "Both";
     $modalities = implode(",", $modalities);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
     AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
@@ -6493,13 +6492,13 @@ class pilfer_the_tomb_blue extends Card {
       if ($Graveyard->NumCards() == 0) return False;
       for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
         $Card = $Graveyard->Card($i, true);
-        if (TypeContains($Card->ID(), "I", $player) && !in_array("Banish_Instant", $modalities)) 
-          array_push($modalities, "Banish_Instant");
+        if (TypeContains($Card->ID(), "I", $player) && !in_array("Banish_Instant", $modalities))
+          $modalities[] = "Banish_Instant";
         if (ColorContains($Card->ID(), "2", $player) && !in_array("Banish_Yellow", $modalities))
-          array_push($modalities, "Banish_Yellow");
+          $modalities[] = "Banish_Yellow";
       }
     }
-    if (count($modalities) == 2) array_push($modalities, "Both");
+    if (count($modalities) == 2) $modalities[] = "Both";
     $modalities = implode(",", $modalities);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
     AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
@@ -6545,11 +6544,11 @@ class shatter_sorcery_blue extends Card {
       for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
         $Aura = $Auras->Card($i, true);
         if (CardNameContains($Aura->CardID(), "Sigil", $player, true) && !in_array("Destroy_Sigil", $modalities))
-          array_push($modalities, "Destroy_Sigil");
+          $modalities[] = "Destroy_Sigil";
       }
     }
-    array_push($modalities, "Prevent_1_Arcane");
-    if (count($modalities) == 2) array_push($modalities, "Both");
+    $modalities[] = "Prevent_1_Arcane";
+    if (count($modalities) == 2) $modalities[] = "Both";
     $modalities = implode(",", $modalities);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
     AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
@@ -6834,10 +6833,10 @@ class monolith_of_galcia_blue extends Card {
     $auras = MultiZoneIndices($this->controller, "THEIRAURAS:frozenOnly=1&MYAURAS:frozenOnly=1");
     $equipment = MultiZoneIndices($this->controller, "THEIRCHAR:frozenOnly=1;type=E&MYCHAR:frozenOnly=1;type=E");
     $items = MultiZoneIndices($this->controller, "THEIRITEMS:frozenOnly=1&MYITEMS:frozenOnly=1");
-    if (SearchCount($allies) > 0) array_push($modalities, "Target_ally");
-    if (SearchCount($auras) > 0) array_push($modalities, "Target_aura");
-    if (SearchCount($equipment) > 0) array_push($modalities, "Target_equipment");
-    if (SearchCount($items) > 0) array_push($modalities, "Target_item");
+    if (SearchCount($allies) > 0) $modalities[] = "Target_ally";
+    if (SearchCount($auras) > 0) $modalities[] = "Target_aura";
+    if (SearchCount($equipment) > 0) $modalities[] = "Target_equipment";
+    if (SearchCount($items) > 0) $modalities[] = "Target_item";
     return $modalities;
   }
 
@@ -7392,7 +7391,7 @@ class lobotomy_red extends Card {
     if ($numHands < 2) { //Only Equip if there is a broken weapon/off-hand
       foreach ($inventory as $cardID) {
         if (NameOverride($cardID) == "Orbitoclast") {
-          array_push($weapons, "CARDID-$cardID");
+          $weapons[] = "CARDID-$cardID";
         };
       }
       $weapons = implode(",", $weapons);

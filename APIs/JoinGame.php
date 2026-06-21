@@ -81,7 +81,8 @@ if (!function_exists("CheckHeroPreference")) {
     $rawTokens = explode(', ', $namesPart);
     $tokens = array_map(function($t) { return strtolower(trim(str_replace(',', '', $t))); }, $rawTokens);
     $candidates = $tokens;
-    for ($i = 0; $i < count($tokens) - 1; $i++) {
+    $tokensCount = count($tokens) - 1;
+    for ($i = 0; $i < $tokensCount; $i++) {
       $candidates[] = $tokens[$i] . ' ' . $tokens[$i + 1];
     }
 

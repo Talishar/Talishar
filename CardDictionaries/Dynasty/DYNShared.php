@@ -133,7 +133,7 @@ function DYNCombatEffectActive($cardID, $attackID)
       $subtype = CardSubType($attackID);
       return ($subtype == "Sword") || ($subtype == "Dagger");
     case "felling_swing_red": case "felling_swing_yellow": case "felling_swing_blue": return CardSubType($attackID) == "Axe";
-    case "visit_the_imperial_forge_red": case "visit_the_imperial_forge_yellow": case "visit_the_imperial_forge_blue": return (CardSubType($attackID) == "Sword" || CardSubType($attackID) == "Dagger");
+    case "visit_the_imperial_forge_red": case "visit_the_imperial_forge_yellow": case "visit_the_imperial_forge_blue": $cardSubType = CardSubType($attackID); return ($cardSubType == "Sword" || $cardSubType == "Dagger");
     case "bios_update_red-1": return $combatChainState[$CCS_IsBoosted];
     case "cut_to_the_chase_red": case "cut_to_the_chase_yellow": case "cut_to_the_chase_blue": return true;
     case "immobilizing_shot_red": return true;
@@ -714,13 +714,13 @@ function CheckContract($contractType, $cardBanished, $player)
     case "REDPITCH": return PitchValue($cardBanished) == 1;
     case "YELLOWPITCH": return PitchValue($cardBanished) == 2;
     case "BLUEPITCH": return PitchValue($cardBanished) == 3;
-    case "COST1ORLESS": return CardCost($cardBanished) <= 1 && CardCost($cardBanished) >= 0;
+    case "COST1ORLESS": $cost = CardCost($cardBanished); return $cost >= 0 && $cost <= 1;
     case "COST2ORMORE": return CardCost($cardBanished) >= 2;
     case "AA": return CardType($cardBanished) == "AA";
     case "GOAGAIN": return HasGoAgain($cardBanished);
     case "NAA": return TypeContains($cardBanished, "A");
     case "BLOCK2ORLESS": return BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0;
-    case "REACTIONS": return CardType($cardBanished) == "AR" || CardType($cardBanished) == "DR";
+    case "REACTIONS": $cardType = CardType($cardBanished); return $cardType == "AR" || $cardType == "DR";
     case "NONACTION": return !IsActionCard($cardBanished);
     case "NAMEDCARD":
       return ShareName(NameOverride($cardBanished, $otherPlayer), GamestateUnsanitize($chosenName));

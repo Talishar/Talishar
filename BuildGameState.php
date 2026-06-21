@@ -621,7 +621,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       $border = CardBorderColor($myHand[$i], "HAND", $playable, $playerID);
       $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? $actionType : 0;
-      if ($restriction != "") $restriction = str_replace(" ", "_", $restriction);
+      if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
       $actionDataOverride = ($actionType == 16 || $actionType == 27) ? strval($i) : $myHand[$i];
       
       if (isset($myHand[$i + $handPieces - 1])) {
@@ -789,7 +789,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if (($myCharacter[$i + 9] ?? 0) != 2 && ($myCharacter[$i + 1] ?? 0) != 0 && $playerID != 3) {
       $gem = ($myCharacter[$i + 9] ?? 0) == 1 ? 1 : 2;
     }
-    $restriction = str_replace(" ", "_", $restriction);
+    if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
     if($isGameOver) ($myCharacter[$i + 12] ?? "-") == "UP";
     if($playerID == 3 &&( $myCharacter[$i + 12] ?? "-") == "DOWN" && !$isGameOver) {
       $myCharData[] = JSONRenderedCard(
@@ -904,7 +904,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $playable = $playerID == $currentPlayer && $turnPhase != "P" && IsPlayable($myArsenal[$i], $turnPhase, "ARS", $i, $restriction);
         $border = CardBorderColor($myArsenal[$i], "ARS", $playable, $playerID);
         $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? 5 : 0;
-        if ($restriction != "") $restriction = str_replace(" ", "_", $restriction);
+        if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
         $actionDataOverride = ($actionType == 16 || $actionType == 27) ? strval($i) : "";
         $myArse[] = JSONRenderedCard(
           cardNumber: $myArsenal[$i],
@@ -1137,7 +1137,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $border = CardBorderColor($myItems[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? 10 : 0;
     $label = "";
-    if ($restriction != "") $restriction = str_replace(" ", "_", $restriction);
+    if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
     $actionDataOverride = strval($i);
     $gem = $myItems[$i + 5] != 2 ? $myItems[$i + 5] : NULL;
     $rustCounters = null;
@@ -1185,7 +1185,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $playable = $currentPlayer == $playerID ? IsPlayable($myPermanents[$i], $turnPhase, "PLAY", $i, $restriction) : false;
     $border = CardBorderColor($myPermanents[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? 34 : 0;
-    if ($restriction != "") $restriction = str_replace(" ", "_", $restriction);
+    if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
     $actionDataOverride = strval($i);
     $myPermanentsOutput[] = JSONRenderedCard(cardNumber: $myPermanents[$i], controller: $playerID, type: $type, sType: $sType, action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, restriction: $restriction);
   }

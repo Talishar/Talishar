@@ -2486,7 +2486,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "SETDQCONTEXT":
-      $dqState[4] = str_replace(" ", "_", $parameter);
+      $dqState[4] = str_contains($parameter, ' ') ? str_replace(' ', '_', $parameter) : $parameter;
       return $lastResult;
     // case "SHOWTOPCARDS":
     //   $text = CardName($lastResult) . " shows you're top $parameter cards are";

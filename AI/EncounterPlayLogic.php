@@ -255,9 +255,10 @@ function FixHand($currentPlayer)
 {
   $hand = &GetHand($currentPlayer);
   $fix = [];
-  for($i = 0; $i < count($hand); ++$i)
+  $handCount = count($hand);
+  for($i = 0; $i < $handCount; ++$i)
   {
-    if($hand[$i] != "") array_push($fix, $hand[$i]);
+    if($hand[$i] != "") $fix[] = $hand[$i];
   }
   $hand = $fix;
 }

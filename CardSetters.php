@@ -137,18 +137,18 @@ function BanishByEffect($cardID, $player, $banisher, &$rv) {
     if ($banishedBy == "nasreth_the_soul_harrower" && TalentContains($cardID, "LIGHT", $player)) {
       GainHealth(1, $otherPlayer);
     }
-    if (($banishedBy == "persuasive_prognosis_blue") && (DelimStringContains(CardType($cardID), "A") || CardType($cardID) == "AA")) {
+    if ($banishedBy == "persuasive_prognosis_blue" && ($cardType = CardType($cardID)) && (DelimStringContains($cardType, "A") || $cardType == "AA")) {
       GainHealth(1, $otherPlayer);
     }
-    if (($banishedBy == "art_of_desire_body_red") && ColorContains($cardID, 1, $player)) {
+    if ($banishedBy == "art_of_desire_body_red" && ColorContains($cardID, 1, $player)) {
       Draw($otherPlayer);
       GainHealth(1, $otherPlayer);
     }
-    if (($banishedBy == "art_of_desire_soul_yellow") && ColorContains($cardID, 2, $player)) {
+    if ($banishedBy == "art_of_desire_soul_yellow" && ColorContains($cardID, 2, $player)) {
       Draw($otherPlayer);
       GainHealth(1, $otherPlayer);
     }
-    if (($banishedBy == "art_of_desire_mind_blue") && ColorContains($cardID, 3, $player)) {
+    if ($banishedBy == "art_of_desire_mind_blue" && ColorContains($cardID, 3, $player)) {
       Draw($otherPlayer);
       GainHealth(1, $otherPlayer);
     }

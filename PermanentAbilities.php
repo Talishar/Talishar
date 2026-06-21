@@ -64,7 +64,8 @@ function DestroyPermanent($player, $index)
 function PermanentDestroyed($player, $cardID, $isToken = false)
 {
   $goesWhere = GoesWhereAfterResolving($cardID);
-  if (CardType($cardID) == "T" || $isToken || CardType($cardID) == "Macro") return; //Don't need to add to anywhere if it's a token
+  $permanentType = CardType($cardID);
+  if ($permanentType == "T" || $isToken || $permanentType == "Macro") return; //Don't need to add to anywhere if it's a token
   ResolveGoesWhere($goesWhere, $cardID, $player, "PLAY");
 }
 

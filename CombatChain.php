@@ -2083,8 +2083,10 @@ function IsLayerStep()
   if (!isset($layers[$layerInd])) return false;
   // account for transitioning from resolution step to layerstep
   if ($layers[$layerInd] == "RESOLUTIONSTEP" && isset($layers[$layerInd - $layerPieces])) $layerInd -= $layerPieces;
-  static $nonCardLayers = ["LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY", "MELD", "RESUMETURN"];
-  if (in_array($layers[$layerInd], $nonCardLayers)) return false;
+  if (match($layers[$layerInd]) {
+    "LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY", "MELD", "RESUMETURN" => true,
+    default => false
+  }) return false;
   if ($layers[$layerInd + 1] != $mainPlayer) return false;
   $layerFrom = explode("|", $layers[$layerInd + 2])[0];
   return GoesOnCombatChain("M", $layers[$layerInd], $layerFrom, $mainPlayer);

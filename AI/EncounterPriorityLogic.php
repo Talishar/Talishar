@@ -88,13 +88,9 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
 {
   switch($zone) {
     case "Hand":
-      for($i = 0; $i < count($zoneArr); ++$i) {
-        array_push($priorityArray, [
-          $zoneArr[$i],
-          "Hand",
-          $i,
-          GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ]);
+      $zoneCount = count($zoneArr);
+      for($i = 0; $i < $zoneCount; ++$i) {
+        $priorityArray[] = [$zoneArr[$i], "Hand", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 

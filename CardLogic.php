@@ -360,8 +360,9 @@ function ShouldHoldPriorityNow($player)
 {
   global $layerPriority, $Stack, $AttackQueue;
   if ($layerPriority[$player - 1] != "1") return false;
-  static $noPriorityPhases = ["ENDPHASE", "STARTTURN", "CLOSESTEP"];
-  if (in_array($Stack->BottomLayer()->ID(), $noPriorityPhases)) return false;
+  if (match($Stack->BottomLayer()->ID()) {
+    "ENDPHASE", "STARTTURN", "CLOSESTEP" => true, default => false
+  }) return false;
   // if the stack is empty and something is in the attack queue, do the attack
   if (IsResolutionStep() && $Stack->NumLayers() == 1 && $AttackQueue->NumAttacks() > 0) return false;
   $currentLayer = $Stack->TopLayer()->ID();
@@ -4586,10 +4587,11 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
     case "second_strike_red":
     case "second_strike_yellow":
     case "second_strike_blue":
-      if (GetClassState($player, $CS_DamageDealt) + GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
+      $totalDamage = GetClassState($player, $CS_DamageDealt) + GetClassState($player, $CS_ArcaneDamageDealt);
+      if ($totalDamage > 0) {
         AddCurrentTurnEffect($cardID, $player);
       }
-      if (GetClassState($player, $CS_DamageDealt) + GetClassState($player, $CS_ArcaneDamageDealt) > 0) GiveAttackGoAgain();
+      if ($totalDamage > 0) GiveAttackGoAgain();
       break;
     case "unsheathed_red":
       CacheCombatResult();

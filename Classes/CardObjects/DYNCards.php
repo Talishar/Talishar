@@ -661,7 +661,8 @@ class construct_nitro_mechanoid_yellow extends Card {
 		$Character = new PlayerCharacter($this->controller);
 		for ($i = $Character->NumCards() - 1; $i >= 0; $i -= 1) {
 			$CharCard = $Character->Card($i, true);
-			if(CardType($CharCard->CardID()) != "C" && CardType($CharCard->CardID()) != "Companion") {
+			$charCardType = CardType($CharCard->CardID());
+			if($charCardType != "C" && $charCardType != "Companion") {
 				$Mechanoid->AddSubcard($CharCard->CardID());
 				$characterSubCards = $CharCard->Subcards();
 				if ($characterSubCards != "-") {
