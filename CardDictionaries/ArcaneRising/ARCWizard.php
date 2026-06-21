@@ -1146,7 +1146,7 @@ function CheckSpellvoid($player, $damage, $source = "-")
 function ArcaneHitEffect($player, $source, $target, $damage)
 {
   global $CS_ArcaneDamageDealt, $layers;
-  $cardID = explode("|",  $source)[0] ?? $source;
+  $cardID = explode("|", $source, 2)[0] ?? $source;
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->ArcaneHitEffect($source, $target, $damage);
   switch ($source) {

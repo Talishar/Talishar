@@ -1833,7 +1833,7 @@ function CombatChainClosedTriggers()
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    $effectParts = explode("-", $currentTurnEffects[$i]);
+    $effectParts = explode("-", $currentTurnEffects[$i], 2);
     $effectID = $effectParts[0];
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
@@ -2088,7 +2088,7 @@ function IsLayerStep()
     default => false
   }) return false;
   if ($layers[$layerInd + 1] != $mainPlayer) return false;
-  $layerFrom = explode("|", $layers[$layerInd + 2])[0];
+  $layerFrom = explode("|", $layers[$layerInd + 2], 2)[0];
   return GoesOnCombatChain("M", $layers[$layerInd], $layerFrom, $mainPlayer);
 }
 
@@ -2138,7 +2138,7 @@ function LinkBasePower($check=false)
     for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
       if ($card != "-") $basePower = $card->EffectSetBasePower($basePower);
-      $effects = explode("-", $currentTurnEffects[$i]);
+      $effects = explode("-", $currentTurnEffects[$i], 2);
       switch ($effects[0]) {
         case "kayo_underhanded_cheat":
         case "kayo_strong_arm":

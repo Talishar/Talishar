@@ -1894,7 +1894,7 @@ class oasis_respite extends BaseCard {
       return;
     }
     if (is_a($object, "Layer")) {
-      $from = explode("|", $object->Parameter())[0];
+      $from = explode("|", $object->Parameter(), 2)[0];
       $cardType = CardType($object->ID());
       if ($object->ID() == "TRIGGER" || IsStaticType($cardType, $from))
         $uid = $object->UniqueID();

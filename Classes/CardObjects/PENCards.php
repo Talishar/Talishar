@@ -1510,7 +1510,7 @@ class beckoning_haunt extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $Discard = new Discard($this->controller);
-    $targetCard = $Discard->FindCardUID(explode("-", $target)[1] ?? "-");
+    $targetCard = $Discard->FindCardUID(explode("-", $target, 2)[1] ?? "-");
     if ($targetCard == "") return "FAILED";
     $targetIndex = $targetCard->Index();
     $cardID = RemoveGraveyard($this->controller, $targetIndex);
@@ -3027,7 +3027,7 @@ class courageous_crossing_blue extends Card {
     $targetPlayer = str_contains($target, "MY") ? $this->controller : ($this->controller == 1 ? 2 : 1);
     if (str_contains($target, "CHAR")) {
       $Character = new PlayerCharacter($targetPlayer);
-      $CharacterCard = $Character->FindCardUID(explode("-", $target)[1]);
+      $CharacterCard = $Character->FindCardUID(explode("-", $target, 2)[1]);
       if ($CharacterCard != "" && $CharacterCard->NumPowerCounters() > 0) $CharacterCard->AddPowerCounters(-1);
     }
     elseif (str_contains($target, "AURAS")) {
@@ -7829,7 +7829,7 @@ class touch_of_reality extends Card {
     global $currentTurnEffects;
     $ind = SearchCurrentTurnEffectsForIndex($this->cardID, $this->controller);
     if ($ind != -1) {
-      return intval(explode("-", $currentTurnEffects[$ind])[1] ?? 0);
+      return intval(explode("-", $currentTurnEffects[$ind], 2)[1] ?? 0);
     }
     return 0;
   }

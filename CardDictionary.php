@@ -317,7 +317,7 @@ function CardSubType($cardID, $uniqueID = -1)
     $countCurrentTurnEffects = count($currentTurnEffects);
     $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
     for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
-      $effectArr = explode("-", $currentTurnEffects[$i]);
+      $effectArr = explode("-", $currentTurnEffects[$i], 2);
       if (!isset($adaptiveMap[$effectArr[0]])) continue;
       $effectArr = explode(",", $effectArr[1]);
       if ($effectArr[0] != $uniqueID) continue;
@@ -2270,7 +2270,7 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
         }
         break;
       case "amulet_of_oblation_blue":
-        $effectArr = explode("-", $currentTurnEffects[$i]);
+        $effectArr = explode("-", $currentTurnEffects[$i], 2);
         if ($cardID == $effectArr[1]) {
           RemoveCurrentTurnEffect($i);
           return "BOTDECK";

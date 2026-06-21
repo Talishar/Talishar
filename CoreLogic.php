@@ -1407,7 +1407,7 @@ function ResolutionStepEffectTriggers()
   global $currentTurnEffects, $chainLinks, $combatChain, $turn, $mainPlayer;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    $currentEffect = explode("-", $currentTurnEffects[$i]);
+    $currentEffect = explode("-", $currentTurnEffects[$i], 2);
     $parameter = $currentEffect[1] ?? "-";
     if (class_exists($currentEffect[0])) {
       $card = new $currentEffect[0]($currentTurnEffects[$i + 1]);
@@ -2187,7 +2187,7 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
-    $effectArr = explode("-", $currentTurnEffects[$i]);
+    $effectArr = explode("-", $currentTurnEffects[$i], 2);
     $modName = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
     if ($partial) {
       $modName = explode(" ", $modName);
@@ -3455,7 +3455,7 @@ function IsCardNamed($player, $cardID, $name)
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
-    $effectArr = explode("-", $currentTurnEffects[$i]);
+    $effectArr = explode("-", $currentTurnEffects[$i], 2);
     $givenNames = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
     $givenNames = explode(",", $givenNames);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
@@ -3474,7 +3474,7 @@ function GetCurrentAttackNames()
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
-    $effectArr = explode("-", $currentTurnEffects[$i]);
+    $effectArr = explode("-", $currentTurnEffects[$i], 2);
     $name = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $mainPlayer, $combatChain[0]);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($name != "" && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
@@ -3710,7 +3710,7 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         return "";
       case "blaze_firemind":
         $index = SearchCurrentTurnEffectsForIndex("blaze_firemind", $currentPlayer);
-        $dynCost = explode("-", $currentTurnEffects[$index]);
+        $dynCost = explode("-", $currentTurnEffects[$index], 2);
         MZMoveCard($currentPlayer, "MYHAND:type=A;class=WIZARD;arcaneDamage=" . $dynCost[1], "MYBANISH,HAND,INST," . $cardID . "," . $currentPlayer);
         return "";
       case "magrar":

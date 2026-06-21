@@ -151,7 +151,7 @@ class Layer {
 	}
 
   function DynCost() {
-    return explode("|", $this->Parameter())[1] ?? 0;
+    return explode("|", $this->Parameter(), 2)[1] ?? 0;
   }
 
 	function Target() {
@@ -270,7 +270,7 @@ class AttackLayer {
 	}
 
   function DynCost() {
-    return explode("|", $this->Parameter())[1] ?? 0;
+    return explode("|", $this->Parameter(), 2)[1] ?? 0;
   }
 
 	function Target() {

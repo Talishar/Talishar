@@ -685,7 +685,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             for ($j = 0; $j < $layerCheckCount; $j += $layerPieces) {
               $target = $option0."-".($option[1] ?? "");
               $cardID = GetMZCard($currentPlayer, $target);
-              $params = explode("-", $layers[$j + 3]);
+              $params = explode("-", $layers[$j + 3], 2);
               if(isset($params[1])) {
                 $uniqueIDIndex = ($option0 == "MYDISCARD") ? SearchDiscardForUniqueID($params[1], $currentPlayer) : SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
               }
@@ -698,7 +698,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
 
           if ($layersActive && $option0 == "LAYER" && $option[1] == 0) {
             // $params = explode("-", $layers[$j + 3]);
-            $params = explode("-", $layers[3]);
+            $params = explode("-", $layers[3], 2);
             $target = $option0."-".$option[1];
             $cardID = GetMZCard($currentPlayer, $target);
             if($cardID == "runechant") {

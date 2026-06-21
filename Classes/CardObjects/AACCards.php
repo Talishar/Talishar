@@ -107,7 +107,7 @@ class rage_baiters extends Card {
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		if ($target == "COMBATCHAINLINK-0") AddEffectToCurrentAttack($this->cardID);
 		else {
-			$index = intval(explode("-", $target)[1]);
+			$index = intval(explode("-", $target, 2)[1]);
 			AddEffectToPastAttack($index, $this->cardID);
 		}
 	}
@@ -192,7 +192,7 @@ class horrors_of_the_past_yellow extends Card {
 	}
 
 	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-		$copiedText = explode("-", $parameter)[1] ?? "-";
+		$copiedText = explode("-", $parameter, 2)[1] ?? "-";
 		if ($copiedText != "-") {
 			if (!$check) AddOnHitTrigger($copiedText, $this->cardID, $target);
 			return true;

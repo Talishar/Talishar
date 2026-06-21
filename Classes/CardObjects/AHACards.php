@@ -21,7 +21,7 @@ class hala_base extends BaseCard {
 	}
 
 	function PlayAbility($target) {
-		$uid = explode("-", $target)[1] ?? -1;
+		$uid = explode("-", $target, 2)[1] ?? -1;
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) Sharpen("MYCHAR-$index", $this->controller);
 	}
@@ -109,7 +109,7 @@ class edict_of_steel extends BaseCard {
 	}
 
 	function PlayAbility($target, $threshold) {
-		$uid = explode("-", $target)[1] ?? -1;
+		$uid = explode("-", $target, 2)[1] ?? -1;
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) {
 			Sharpen("MYCHAR-$index", $this->controller);
@@ -913,7 +913,7 @@ class ole_blue extends Card {
 			}
 		}
 		else {
-			$linkNum = explode("-", $target)[1] ?? "-";
+			$linkNum = explode("-", $target, 2)[1] ?? "-";
 			if ($linkNum != "-") {
 				$AttackCard = $ChainLinks->GetLink($linkNum)->AttackCard();
 				$Character = new PlayerCharacter($this->controller);

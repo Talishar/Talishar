@@ -917,7 +917,7 @@ function AddSpecificGraveyard($cardID, &$graveyard, $from, $mods="-")
 function NegateLayer($MZIndex, $goesWhere = "GY")
 {
   global $layers;
-  $params = explode("-", $MZIndex);
+  $params = explode("-", $MZIndex, 2);
   $index = $params[1];
   if (!is_numeric($index)) return;
   $cardID = $layers[$index];

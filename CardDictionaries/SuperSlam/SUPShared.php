@@ -77,7 +77,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer, $uid);
       }
       else {
-        $targetIndex = intval(explode("-", $target)[1]);
+        $targetIndex = intval(explode("-", $target, 2)[1]);
         $uid = $CombatChain->Card($targetIndex)->UniqueID();
         AddCurrentTurnEffect($cardID, $currentPlayer, "", $uid);
         ReEvalCombatChain();
@@ -349,7 +349,7 @@ function RemoveSuspense($player, $MZIndex, $mainPhase = true)
   $otherPlayer = 3 - $player;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
   $auras = &GetAuras($targetPlayer);
-  $ind = explode("-", $MZIndex)[1];
+  $ind = explode("-", $MZIndex, 2)[1];
   --$auras[$ind + 2];
   if ($auras[$ind + 2] <= 0) {
     AddLayer("TRIGGER", $targetPlayer, "$auras[$ind]", $auras[$ind + 6], "DESTROY");
@@ -361,7 +361,7 @@ function AddSuspense($player, $MZIndex)
   $otherPlayer = 3 - $player;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
   $auras = &GetAuras($targetPlayer);
-  $ind = explode("-", $MZIndex)[1];
+  $ind = explode("-", $MZIndex, 2)[1];
   ++$auras[$ind + 2];
 }
 

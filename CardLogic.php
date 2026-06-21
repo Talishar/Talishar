@@ -461,7 +461,7 @@ function ContinueDecisionQueue($lastResult = "")
       if ($priorityHeld) {
         ContinueDecisionQueue("");
       } else {
-        if (RequiresDieRoll($layers[0], explode("|", $layers[2])[0], $layers[1])) {
+        if (RequiresDieRoll($layers[0], explode("|", $layers[2], 2)[0], $layers[1])) {
           RollDie($layers[1]);
           ContinueDecisionQueue("");
           return;

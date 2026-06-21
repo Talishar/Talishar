@@ -673,7 +673,7 @@ function CheckContracts($banishedBy, $cardBanished)
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if($chainCard->PlayerID() != $banishedBy) continue;
     if(CardType($chainCard->ID()) == "AA" && $i > 0) continue; //blocking AA don't generate contracts
-    $chosenName = explode("|", $chainCard->StaticBuffs())[1] ?? "-";
+    $chosenName = explode("|", $chainCard->StaticBuffs(), 2)[1] ?? "-";
     $contractType = ContractType($chainCard->ID(), $chosenName);
     if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
@@ -691,7 +691,7 @@ function CheckContracts($banishedBy, $cardBanished)
       if($chainLinks[$i][$j+2] == 0) continue;
       if(CardType($chainLinks[$i][$j]) == "AA" && $j > 0) continue; //blocking AA don't generate contracts
       //this may not work, check later
-      $chosenName = explode("|", $chainLinks[$i][$j+6])[1] ?? "-";
+      $chosenName = explode("|", $chainLinks[$i][$j+6], 2)[1] ?? "-";
       $contractType = ContractType($chainLinks[$i][$j], $chosenName);
       if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
     }

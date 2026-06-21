@@ -2698,7 +2698,7 @@ class crash_site_salvage_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $scrappedID = explode("-", $additionalCosts)[1] ?? "";
+    $scrappedID = explode("-", $additionalCosts, 2)[1] ?? "";
     AddLayer("TRIGGER", $this->controller, $this->cardID, $scrappedID, "ATTACKTRIGGER");
     return "";
   }
@@ -4274,7 +4274,7 @@ class swift_pickup_red extends Card {
   function SpecificLogic() {
     global $dqVars;
     $MZIndex = $dqVars["choice"];
-    $ind = explode("-", $MZIndex)[1] ?? -1;
+    $ind = explode("-", $MZIndex, 2)[1] ?? -1;
     if ($ind != -1) {
       $DiscardCard = new DiscardCard($ind, $this->controller);
       $cardID = $DiscardCard->ID();
@@ -5011,8 +5011,9 @@ class tempt_over_yellow extends Card {
   function SpecificLogic() {
     global $dqVars;
     $choice = $dqVars["choice"];
-    $from = explode("-", $choice, 2)[0];
-    $index = explode("-", $choice)[1] ?? -1;
+    $choiceParts = explode("-", $choice, 2);
+    $from = $choiceParts[0];
+    $index = $choiceParts[1] ?? -1;
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     if ($index != -1)
       StealAura($otherPlayer, $index, $this->controller, $from, "Temporary");

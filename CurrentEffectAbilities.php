@@ -20,7 +20,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
   }
   $effectArr = explode(",", $cardID);
   $cardID = $effectArr[0];
-  $mode = explode("-", $cardID)[1] ?? "-";
+  $mode = explode("-", $cardID, 2)[1] ?? "-";
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") return $card->EffectHitEffect($from, $source, $effectSource, $effectArr[1] ?? "-", $mode, $target);
   switch ($cardID) {
@@ -256,7 +256,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         $targetUID = $combatChainState[$CCS_AttackTargetUID];
         $allies = GetAllies($defPlayer);
         foreach(explode(",", $indices) as $index) {
-          $ind = explode("-", $index)[1];
+          $ind = explode("-", $index, 2)[1];
           if ($allies[$ind + 5] != $targetUID) $filtIndices[] = $index;
         }
         $indices = implode(",", $filtIndices);
@@ -1114,9 +1114,9 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
 {
   global $currentTurnEffects;
   $otherPlayer = 3 - $player;
-  $effects = explode("-", $currentTurnEffects[$index]);
+  $effects = explode("-", $currentTurnEffects[$index], 2);
   $Effect = new CurrentEffect($index);
-  $source = explode("|", $source)[0] ?? $source;
+  $source = explode("|", $source, 2)[0] ?? $source;
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
     $remove = false;
@@ -1323,7 +1323,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
   $source = ExtractCardID($source);
   $remove = false;
   $preventedDamage = 0;
-  $effects = explode("-", $currentTurnEffects[$index]);
+  $effects = explode("-", $currentTurnEffects[$index], 2);
   $Effect = new CurrentEffect($index);
   $card = GetClass($effects[0], $player);
   if ($card != "-") {
@@ -1974,7 +1974,7 @@ function CurrentEffectGrantsGoAgain()
   foreach ($activeEffects as $effectSetID) {
     $effect = ConvertToCardID($effectSetID);
     $effectID = ExtractCardID($effect);
-    $param = explode("-", $effect)[1] ?? "-";
+    $param = explode("-", $effect, 2)[1] ?? "-";
     if (IsCombatEffectActive($effect)) {
       $card = GetClass($effect, $mainPlayer);
       if ($card != "-") {
@@ -2311,7 +2311,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   $trimID = ExtractCardID($cardID);
   $card = GetClass($trimID, $mainPlayer);
   if ($card != "-") {
-    $parameter = explode("-", $cardID)[1] ?? "-";
+    $parameter = explode("-", $cardID, 2)[1] ?? "-";
     return $card->CombatEffectActive($parameter, $defendingCard, $flicked);
   }
   $set = CardSet($cardID);
@@ -2370,7 +2370,7 @@ function IsCombatEffectPersistent($cardID)
   $effectArr = explode(",", $cardID);
   $cardID = ShiyanaCharacter($effectArr[0]);
   if (DelimStringContains($cardID, "art_of_the_dragon_blood_red", true)) return true;
-  $mode = explode("-", $cardID)[1] ?? "-";
+  $mode = explode("-", $cardID, 2)[1] ?? "-";
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->IsCombatEffectPersistent($mode);
   switch ($cardID) {

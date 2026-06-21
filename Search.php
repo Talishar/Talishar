@@ -2134,7 +2134,7 @@ function SearchLayersForNAACard($maxCost=-1) {
     $layerPieces = LayerPieces();
     for ($i = 0; $i < $countLayers; $i += $layerPieces) {
       $playerID = $layers[$i+1];
-      $from = explode("|",$layers[$i+2])[0];
+      $from = explode("|",$layers[$i+2], 2)[0];
       if ($maxCost != -1 && CardCost($layers[$i], "LAYER", index:$i) > $maxCost) continue;
       if (TypeContains($layers[$i], "A", from: "LAYER", index:$i) && (!IsActivated($layers[$i], $from))) {
         $found[] = "LAYER-" . $i;
