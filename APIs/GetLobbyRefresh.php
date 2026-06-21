@@ -51,43 +51,54 @@ include "../HostFiles/Redirector.php";
 include "../Libraries/UILibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 
-$currentTime = round(microtime(true) * 1000);
+$currentTime = (int)(microtime(true) * 1000);
 SetCachePiece($gameName, $playerID + 1, $currentTime);
 
 $count = 0;
-$cacheVal = GetCachePiece($gameName, 1);
+$otherP = $playerID == 1 ? 2 : 1;
+$myTimeIdx   = $playerID;
+$oppTimeIdx  = $otherP;
+$oppStatIdx  = $otherP + 2;
+$kickPlayerTwo = false;
+
+$cacheArr = ReadCacheArray($gameName);
+$cacheVal = $cacheArr ? (int)($cacheArr[0] ?? 0) : 0;
 if ($cacheVal > 10000000) {
   SetCachePiece($gameName, 1, 1);
   $lastUpdate = 0;
+  $cacheVal = 1;
 }
-$kickPlayerTwo = false;
-$otherP = $playerID == 1 ? 2 : 1;
-$sleepUs = 50000; 
+
+$sleepUs = 50000;
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   usleep($sleepUs);
-  $sleepUs = min((int)($sleepUs * 1.5), 200000); // Cap at 200ms
-  $currentTime = round(microtime(true) * 1000);
-  $cacheVal = GetCachePiece($gameName, 1);
-  SetCachePiece($gameName, $playerID + 1, $currentTime);
+  $sleepUs = min((int)($sleepUs * 1.5), 200000);
+  $currentTime = (int)(microtime(true) * 1000);
+
+  $cacheArr = ReadCacheArray($gameName);
+  if (!$cacheArr) break;
+  $cacheVal     = (int)$cacheArr[0];
+  $oppLastTime  = $cacheArr[$oppTimeIdx] ?? "";
+  $oppStatus    = strval($cacheArr[$oppStatIdx] ?? "");
+
+  $cacheArr[$myTimeIdx] = $currentTime;
+  WriteCache($gameName, implode("!", $cacheArr));
+
   ++$count;
   if ($count == 20) break;
-  $oppLastTime = GetCachePiece($gameName, $otherP + 1);
-  $oppStatus = strval(GetCachePiece($gameName, $otherP + 3));
 
-  if($oppStatus != "-1" && $oppLastTime != "") {
-    if(($currentTime - $oppLastTime) > 10000 && $oppStatus == "0") {
-      $kickSignal = GetCachePiece($gameName, 17);
+  if ($oppStatus !== "-1" && $oppLastTime !== "") {
+    if (($currentTime - (int)$oppLastTime) > 30000 && $oppStatus === "0") {
+      $kickSignal = $cacheArr[16] ?? ""; // slot 17 → index 16
       if ($otherP != 2 || $kickSignal !== "kicked") {
         WriteLog("🔌 Your opponent has disconnected.", path: "../");
       }
+      $cacheArr[$oppStatIdx] = "-1";
+      if ($otherP == 2) $cacheArr[$otherP + 5] = ""; // slot $otherP+6 → index $otherP+5
+      WriteCache($gameName, implode("!", $cacheArr));
       GamestateUpdated($gameName);
-      SetCachePiece($gameName, $otherP + 3, "-1");
-      if ($otherP == 2) SetCachePiece($gameName, $otherP + 6, "");
       $kickPlayerTwo = true;
-      include "./APIParseGamefile.php";
-      include "../MenuFiles/WriteGamefile.php";
-      $p1SideboardSubmitted = "0";
-      WriteGameFile();
+      break;
     }
   }
 }
@@ -257,7 +268,6 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   // Typing indicator — same APCu key used by ChatTyping.php / CheckOpponentTyping.php.
   // Piggybacking on the existing lobby poll costs zero extra requests.
   if ($response->chatEnabled && ($playerID == 1 || $playerID == 2)) {
-    $otherP = $playerID == 1 ? 2 : 1;
     $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;
     $opponentIsTyping = false;
     if (extension_loaded('apcu') && ini_get('apc.enabled')) {
