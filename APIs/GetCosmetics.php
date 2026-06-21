@@ -145,6 +145,15 @@ $response->cardBacks = array_values(array_filter($response->cardBacks, function(
   return true;
 }));
 
+// Deduplicate playmats by id (safety net for multiple sources)
+$seenPlaymatIds = [];
+$response->playmats = array_values(array_filter($response->playmats, function($pm) use (&$seenPlaymatIds) {
+  $id = (string)($pm->id ?? '');
+  if (isset($seenPlaymatIds[$id])) return false;
+  $seenPlaymatIds[$id] = true;
+  return true;
+}));
+
 session_write_close();
 echo json_encode($response);
 
