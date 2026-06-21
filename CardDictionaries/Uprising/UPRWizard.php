@@ -98,7 +98,7 @@
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "TOMEOFDUPLICITY", 1);
         return "";
       case "rewind_blue":
-        $index = intval(explode("-", $target)[1]);
+        $index = intval(explode("-", $target, 2)[1]);
         $targetPlayer = $layers[$index + 1];
         if(substr($from, 0, 5) != "THEIR") NegateLayer($target, "HAND");
         else NegateLayer($target, "THEIRHAND"); 

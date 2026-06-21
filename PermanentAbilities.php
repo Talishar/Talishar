@@ -44,7 +44,7 @@ function RemovePermanent($player, $index)
   $PermanentCard = new PermanentCard($index, $player);
   $cardID = $permanents[$index];
   if ($cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") {
-    $cardID = explode(",", $PermanentCard->Subcards())[0];
+    $cardID = explode(",", $PermanentCard->Subcards(), 2)[0];
   }
   array_splice($permanents, $index, PermanentPieces());
   return $cardID;
@@ -79,7 +79,7 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        $origMaterial = explode(",", $permanents[$i+2])[0];
+        $origMaterial = explode(",", $permanents[$i+2], 2)[0];
         if ($origMaterial != "-") PutPermanentIntoPlay($mainPlayer, $origMaterial);
         $remove = 1;
         break;
@@ -95,7 +95,7 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        $origMaterial = explode(",", $permanents[$i+2])[0];
+        $origMaterial = explode(",", $permanents[$i+2], 2)[0];
         if ($origMaterial != "-") PutPermanentIntoPlay($defPlayer, $origMaterial);
         $remove = 1;
         break;

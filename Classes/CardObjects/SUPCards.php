@@ -5274,8 +5274,9 @@ class channel_the_tranquil_domain_yellow extends Card {
       ChannelTalent($target, "EARTH");
     }
     else {
-      $targetPlayer = explode("-", $target)[0];
-      $targetUID = explode("-", $target)[1];
+      $targetParts = explode("-", $target, 2);
+      $targetPlayer = $targetParts[0];
+      $targetUID = $targetParts[1];
       $targetIndex = SearchAurasForUniqueID($targetUID, $targetPlayer);
       if ($targetIndex != -1) {
         $targetMZIndex = $targetPlayer == $this->controller ? "MYAURAS-$targetIndex" : "THEIRAURAS-$targetIndex";

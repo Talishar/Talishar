@@ -343,7 +343,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if ($additionalCosts == "Reduce_Block" || $additionalCosts == "Both") {
           if ($target != "-") {
             $targetCardID = GetMZCard($currentPlayer, $target);
-            $targetInd = explode("-", $target)[1];
+            $targetInd = explode("-", $target, 2)[1];
             $TargetCard =$CombatChain->Card($targetInd);
             if (TypeContains($targetCardID, "E") && $TargetCard->From() == "EQUIP") {
               $uid = $TargetCard->OriginUniqueID();
@@ -1131,7 +1131,7 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
 
 function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves to a card, even if it transforms
   //for now only tracking dagger buffs, ideally we'd want to track all static buffs
-  $cardID = explode(",", $cardID)[0];
+  $cardID = explode(",", $cardID, 2)[0];
   return match($cardID) {
     "plunge_red" => true,
     "plunge_yellow" => true,

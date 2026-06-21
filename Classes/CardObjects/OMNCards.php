@@ -1265,7 +1265,7 @@ class auric_shards extends BaseCard {
 
   function ProcessTrigger($val, $target, $additionalCosts) {
     $pow = $additionalCosts == "HOLO" ? $val : 1;
-    $zone = explode("-", $target)[0];
+    $zone = explode("-", $target, 2)[0];
     if ($zone == "LAYER" || $zone == "COMBATCHAINLINK")
       AddCurrentTurnEffect("$this->cardID-$pow", $this->controller);
   }
@@ -2132,14 +2132,15 @@ class ominous_aggression_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_NumControlledAurasDestroyed, $CombatChain, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-    $index = explode("-", $target)[1];
+    $targetParts = explode("-", $target, 2);
+    $index = $targetParts[1];
     $amount = GetClassState($this->controller, $CS_NumControlledAurasDestroyed) > 0 ? 4 : 2;
-    if (explode("-", $target)[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
+    if ($targetParts[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
       if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return "FAILED";
       CombatChainPowerModifier($index, $amount);
       AddCurrentTurnEffect($this->cardID."-VISUAL", $this->controller);//For Visual Effect only
     }
-    elseif (explode("-", $target)[0] == "PASTCHAINLINK") {
+    elseif ($targetParts[0] == "PASTCHAINLINK") {
       // targeting a past chain link, do nothing for now
     }
     //only add current turn effect if there's no target (ie. played in layer step)
@@ -3216,13 +3217,14 @@ class gauntlet_of_sword_and_sorcery extends Card {
 class livewire_press extends BaseCard {
 
   function PlayAbility($target) {
-    $zone = explode("-", $target)[0];
+    $targetParts = explode("-", $target, 2);
+    $zone = $targetParts[0];
     switch($zone) {
       case "LAYER":
         AddCurrentTurnEffect($this->cardID, $this->controller);
         break;
       case "COMBATCHAINLINK":
-        $index = intval(explode("-", $target)[1] ?? 0);
+        $index = intval($targetParts[1] ?? 0);
         if ($index == 0)
           AddCurrentTurnEffect($this->cardID, $this->controller);
         break;
@@ -4411,7 +4413,7 @@ class beckon_steel_blue extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CombatChain;
-    if (explode("-", $target)[0] == "COMBATCHAINLINK") {
+    if (explode("-", $target, 2)[0] == "COMBATCHAINLINK") {
       $uid = $CombatChain->AttackCard()->OriginUniqueID();
       if ($uid != "") {
         $Character = new PlayerCharacter($this->controller);
@@ -4735,7 +4737,7 @@ class crackle_from_afar_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
-    $targetZone = explode("-", $target)[0];
+    $targetZone = explode("-", $target, 2)[0];
     if ($targetZone == "ATTACKQUEUE") {
       WriteLog("Targeting the attack queue not supported yet");
     }
@@ -4770,7 +4772,7 @@ class fleeing_starbreeze_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $targetZone = explode("-", $target)[0];
+    $targetZone = explode("-", $target, 2)[0];
     if ($targetZone == "ATTACKQUEUE") {
       WriteLog("Targeting the attack queue not supported yet");
     }
@@ -5009,7 +5011,7 @@ class tempt_over_yellow extends Card {
   function SpecificLogic() {
     global $dqVars;
     $choice = $dqVars["choice"];
-    $from = explode("-", $choice)[0];
+    $from = explode("-", $choice, 2)[0];
     $index = explode("-", $choice)[1] ?? -1;
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     if ($index != -1)
@@ -5693,8 +5695,9 @@ class nucleus_aetherbolt_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $firstTarget = explode(",", $target)[0];
-    $secondTarget = explode(",", $target)[1] ?? "";
+    $targetParts = explode(",", $target, 2);
+    $firstTarget = $targetParts[0];
+    $secondTarget = $targetParts[1] ?? "";
     DealArcane(3, source:$this->cardID, resolvedTarget: $firstTarget);
     Await($this->controller, $this->cardID, mode:"first", pingTarget:$secondTarget, final:true);
     return "";

@@ -252,7 +252,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "platinum_amulet_blue":
       if($from == "PLAY") {
         $targetCard = GetMZCard($currentPlayer, $target);
-        $targetInd = explode("-", $target)[1];
+        $targetInd = explode("-", $target, 2)[1];
         if (TypeContains($targetCard, "E")) {
           // I'm going to assume that a player can't have two copies of the same blocking equipment
           AddCurrentTurnEffect($cardID, $defPlayer, uniqueID:$combatChain[$targetInd+8]);
@@ -473,8 +473,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "moray_le_fay_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "I") {
-        $targetPlayer = explode("-", $target)[0] == "MYALLY" ? $currentPlayer : $otherPlayer;
-        $targetUid = explode("-", $target)[1];
+        $targetParts = explode("-", $target, 2);
+        $targetPlayer = $targetParts[0] == "MYALLY" ? $currentPlayer : $otherPlayer;
+        $targetUid = $targetParts[1];
         $Allies = new Allies($targetPlayer);
         $Ally = $Allies->FindCardUID($targetUid);
         $Ally->AddPowerCounters();
@@ -489,8 +490,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "kelpie_tangled_mess_yellow":
       $abilityType = GetResolvedAbilityType($cardID, $from);
       if ($from == "PLAY" && $abilityType == "A") {
-        $zone = explode("-", $target)[0];
-        $targetUid = explode("-", $target)[1];
+        $targetParts = explode("-", $target, 2);
+        $zone = $targetParts[0];
+        $targetUid = $targetParts[1];
         if (str_contains($target, "ALLY")) {
           $targetPlayer = $zone == "MYALLY" ? $currentPlayer : $otherPlayer;
           $allyInd = SearchAlliesForUniqueID($targetUid, $targetPlayer);
@@ -505,8 +507,9 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "clap_em_in_irons_blue":
-      $zone = explode("-", $target)[0];
-      $targetUid = explode("-", $target)[1];
+      $targetParts = explode("-", $target, 2);
+      $zone = $targetParts[0];
+      $targetUid = $targetParts[1];
       if (str_contains($target, "ALLY")) {
         $targetPlayer = $zone == "MYALLY" ? $currentPlayer : $otherPlayer;
         $allyInd = SearchAlliesForUniqueID($targetUid, $targetPlayer);
@@ -873,7 +876,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "midas_touch_yellow":
       $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
-      $uid = explode("-", $target)[1];
+      $uid = explode("-", $target, 2)[1];
       $indexAlly = SearchAlliesForUniqueID($uid, $targetPlayer);
       if ($indexAlly != -1) {
         $allies = GetAllies($targetPlayer);
@@ -981,7 +984,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       DealArcane(ArcaneDamage($cardID), 2, "PLAYCARD", $cardID, resolvedTarget: $target);
       break;
     case "arcane_compliance_blue":
-      $layerID = $layers[intval(explode("-", $target)[1]) + 6];
+      $layerID = $layers[intval(explode("-", $target, 2)[1]) + 6];
       AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$layerID);
       break;
     case "herald_of_sekem_red":
@@ -1250,16 +1253,17 @@ function GetTapped($player, $zone, $cond="-")
 function Tap($MZindex, $player, $tapState=1, $endStepUntap=false)
 {
   global $CS_NumGoldCreated;
-  $zoneName = explode("-", $MZindex)[0];
+  $MZparts = explode("-", $MZindex, 2);
+  $zoneName = $MZparts[0];
   $otherPlayer = 3 - $player;
   $targetPlayer = (str_contains($zoneName, "THEIR")) ? $otherPlayer : $player;
-  
+
   $zone = &GetMZZone($targetPlayer, $zoneName);
-  if (!isset(explode("-", $MZindex)[1])) {
+  if (!isset($MZparts[1])) {
     WriteLog("Something odd happened with tapping, please submit a bug report: $MZindex", highlight:true);
     return;
   }
-  $index = intval(explode("-", $MZindex)[1]);
+  $index = intval($MZparts[1]);
   //Untap
   if($tapState == 0 && !isUntappedPrevented($MZindex, $zoneName, $targetPlayer, $endStepUntap)) {
     if($endStepUntap && $zone[$index] == "gold_baited_hook" && GetClassState($player, piece: $CS_NumGoldCreated) <= 0 && $zone[$index + 14] == 1 && SearchCharacterAlive($player, $zone[$index])) DestroyCharacter($player, $index);
@@ -1279,9 +1283,10 @@ function Tap($MZindex, $player, $tapState=1, $endStepUntap=false)
 
 function CheckTapped($MZindex, $player): bool
 {
-  $zoneName = explode("-", $MZindex)[0];
+  $MZparts = explode("-", $MZindex, 2);
+  $zoneName = $MZparts[0];
   $zone = &GetMZZone($player, $zoneName);
-  $index = intval(explode("-", $MZindex)[1]);
+  $index = intval($MZparts[1]);
   if (str_contains($zoneName, "CHAR")) return isset($zone[$index + 14]) && $zone[$index + 14] == 1;
   elseif (str_contains($zoneName, "ALLY")) return isset($zone[$index + 11]) && $zone[$index + 11] == 1;
   elseif (str_contains($zoneName, "ITEM")) return isset($zone[$index + 10]) && $zone[$index + 10] == 1;
@@ -1292,8 +1297,9 @@ function CheckTapped($MZindex, $player): bool
 function isUntappedPrevented($MZindex, $zoneName, $player, $endStepUntap=false): bool
 {
   $untapPrevented = false;
-  $zoneName = explode("-", $MZindex)[0];
-  $index = intval(explode("-", $MZindex)[1]);
+  $MZparts = explode("-", $MZindex, 2);
+  $zoneName = $MZparts[0];
+  $index = intval($MZparts[1]);
   $zone = &GetMZZone($player, $zoneName);
   if(SearchCurrentTurnEffects("goldkiss_rum-PREVENTION", $player) && $MZindex == "MYCHAR-0" && !ClassContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
     return true;

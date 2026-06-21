@@ -552,7 +552,7 @@ class downswing_red extends Card {
  	}
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if (explode("-", $target)[0] == "COMBATCHAINLINK") {
+		if (explode("-", $target, 2)[0] == "COMBATCHAINLINK") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
 		}
@@ -595,7 +595,7 @@ class drawing_dead_yellow extends Card {
   	}
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if (explode("-", $target)[0] == "COMBATCHAINLINK") {
+		if (explode("-", $target, 2)[0] == "COMBATCHAINLINK") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
 		}
@@ -638,7 +638,7 @@ class donkey_blue extends Card {
   	}
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if (explode("-", $target)[0] == "COMBATCHAINLINK") {
+		if (explode("-", $target, 2)[0] == "COMBATCHAINLINK") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
 		}
@@ -682,8 +682,9 @@ class and_again_blue extends Card {
 	}
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$Sword = CleanTargetToObject($this->controller, explode(",", $target)[0]);
-		$attackTarget = explode(",", $target)[1] ?? "NA";
+		$targetParts = explode(",", $target, 2);
+		$Sword = CleanTargetToObject($this->controller, $targetParts[0]);
+		$attackTarget = $targetParts[1] ?? "NA";
 		if ($Sword->Index() != -1) {
 			$index = $Sword->Index();
 			$uniqueID = $Sword->UniqueID();
@@ -806,8 +807,9 @@ class overwhelming_swing_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$zone = explode("-", $target)[0];
-		$linkNum = explode("-", $target)[2] ?? -1;
+		$targetParts = explode("-", $target, 3);
+		$zone = $targetParts[0];
+		$linkNum = $targetParts[2] ?? -1;
 		$numDefended = match($zone) {
 			"COMBATCHAINLINK" => NumCardsDefended(),
 			"PASTCHAINLINK" => NumCardsDefended($linkNum), //future proofing

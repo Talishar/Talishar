@@ -574,7 +574,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       // I'm assuming we'll never have multiple copies of the same evo breaker equipped
       $searchResult = SearchCharacterForCards($cardID . "_equip", $currentPlayer);
       if ($searchResult != "") {
-        $index = intval(explode(",", $searchResult)[0]);
+        $index = intval(explode(",", $searchResult, 2)[0]);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $index);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         $maxRepeats = SearchCount(SearchItemsForCardName("Hyper Driver", $currentPlayer));

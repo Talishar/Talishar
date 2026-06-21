@@ -400,7 +400,7 @@ function DestroyAuraByID($player, $cardID)
 {
   $inds = SearchAurasForCard($cardID, $player);
   if ($inds != "") {
-    $index = explode(",", $inds)[0];
+    $index = explode(",", $inds, 2)[0];
     DestroyAura($player, $index);
   }
 }

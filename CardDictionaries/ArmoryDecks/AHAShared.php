@@ -2,8 +2,9 @@
 
 function Sharpen($MZIndex, $player, $num=1) {
   global $CurrentTurnEffects;
-  $zone = explode("-", $MZIndex)[0];
-  $ind = explode("-", $MZIndex)[1] ?? -1;
+  $MZparts = explode("-", $MZIndex, 2);
+  $zone = $MZparts[0];
+  $ind = $MZparts[1] ?? -1;
   for ($i = $CurrentTurnEffects->NumEffects() - 1; $i >= 0 ; --$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;

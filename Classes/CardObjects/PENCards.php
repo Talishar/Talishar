@@ -7888,8 +7888,8 @@ class mind_meets_might_red extends Card {
     if (RevealHand($defPlayer)) {
       $num = SearchCount(SearchMultizone($defPlayer, "MYHAND:minAttack=6"));
       for ($i = 0; $i < $num; ++$i) {
-        $index = explode(",", SearchMultizone($defPlayer, "MYHAND:minAttack=6"))[0];
-        DiscardCard($defPlayer, explode("-", $index)[1], $this->cardID, $this->controller);
+        $index = explode(",", SearchMultizone($defPlayer, "MYHAND:minAttack=6"), 2)[0];
+        DiscardCard($defPlayer, explode("-", $index, 2)[1], $this->cardID, $this->controller);
       }
       Draw($defPlayer, effectSource:$this->cardID, num:$num);
     }

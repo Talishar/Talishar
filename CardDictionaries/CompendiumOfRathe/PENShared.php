@@ -86,7 +86,7 @@ function SuperFrozen($player, $MZIndex) {
     switch ($Effect->EffectID()) {
       case "channel_galcias_cradle_blue":
         $mzUID = CleanTarget($player, $MZIndex);
-        if ($mzUID == (explode(",", $Effect->AppliestoUniqueID())[0] ?? "-")) return true;
+        if ($mzUID == (explode(",", $Effect->AppliestoUniqueID(), 2)[0] ?? "-")) return true;
         break;
       case "crown_of_frozen_thoughts":
         if ($MZIndex == "MYCHAR-0")
@@ -120,7 +120,7 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
       break;
     case "smoldering_steel_red":
       $steelIndex = SearchDiscardForCard($player, $cardID);
-      $index = explode(",", $steelIndex)[0];
+      $index = explode(",", $steelIndex, 2)[0];
       if ($steelIndex == "" || SearchCurrentTurnEffects("smoldering_steel_red", $player))
         return false;
       break;

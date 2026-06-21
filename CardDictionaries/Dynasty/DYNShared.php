@@ -277,9 +277,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $amount = match($cardID) { "shred_red" => -4, "shred_yellow" => -3, default => -2 };
       if ($target != "-") {
         $targetCard = GetMZCard($currentPlayer, $target);
-        $targetInd = explode("-", $target)[1];
-        $targetInd2 = explode("-", $target)[2] ?? "-";
-        $targetZone = explode("-", $target)[0];
+        $targetParts = explode("-", $target, 3);
+        $targetZone = $targetParts[0];
+        $targetInd = $targetParts[1];
+        $targetInd2 = $targetParts[2] ?? "-";
         $TargetCard = $targetZone == "COMBATCHAINLINK" ? $CombatChain->Card($targetInd) : $ChainLinks->GetLink($targetInd2)->GetLinkCard($targetInd);
         if (TypeContains($targetCard, "E") && $TargetCard->From() == "EQUIP") {
           $uid = $TargetCard->OriginUniqueID();
@@ -709,7 +710,7 @@ function CheckContract($contractType, $cardBanished, $player)
 {
   $otherPlayer = 3 - $player;
   $chosenName = strlen($contractType) > strlen("NAMEDCARD-") ? substr($contractType, strlen("NAMEDCARD-")) : "-";
-  $contractType = explode("-", $contractType)[0];
+  $contractType = explode("-", $contractType, 2)[0];
   switch($contractType) {
     case "REDPITCH": return PitchValue($cardBanished) == 1;
     case "YELLOWPITCH": return PitchValue($cardBanished) == 2;

@@ -277,7 +277,7 @@ function ProcessSpecificCardMacros()
   if ($turn[0] == "BUTTONINPUT" && $EffectContext == "jarl_vetreidi")
   {
     if(GetCharacterGemState($currentPlayer, $EffectContext) != 0) {
-      ContinueDecisionQueue(explode(",", $turn[2])[0]);
+      ContinueDecisionQueue(explode(",", $turn[2], 2)[0]);
       return true;
     }
   }

@@ -162,13 +162,14 @@
         return "";
       case "lightning_press_red": case "lightning_press_yellow": case "lightning_press_blue":
         $amount = match($cardID) { "lightning_press_yellow" => 2, "lightning_press_blue" => 1, default => 3 };
-        $index = explode("-", $target)[1];
-        if (explode("-", $target)[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
+        $targetParts = explode("-", $target, 2);
+        $index = $targetParts[1];
+        if ($targetParts[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
           if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return "FAILED";
           CombatChainPowerModifier($index, $amount);
           AddCurrentTurnEffect($cardID."-VISUAL", $currentPlayer);//For Visual Effect only
         }
-        elseif (explode("-", $target)[0] == "PASTCHAINLINK") {
+        elseif ($targetParts[0] == "PASTCHAINLINK") {
           // targeting a past chain link, do nothing for now
         }
         //only add current turn effect if there's no target (ie. played in layer step)

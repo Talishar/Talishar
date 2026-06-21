@@ -419,7 +419,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = implode(",", $rv);
           break;
         case "SPELLVOID":
-          $damage = explode("-", $dqVars[0])[0];
+          $damage = explode("-", $dqVars[0], 2)[0];
           $prevention = GetClassState($player, $CS_PreventionCache) ?? 0;
           if($damage > $prevention) $rv = SearchSpellvoidIndices($player, $subparam);
           break;
@@ -2661,7 +2661,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "CHOOSEONE":
-      return explode(",", $lastResult)[0] ?? "-";
+      return explode(",", $lastResult, 2)[0] ?? "-";
     case "REVERSELIST":
       return implode(",", array_reverse(explode(",", $lastResult)));
     case "MZSWAP":
@@ -3393,7 +3393,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "azvolai":
           if ($target != "-") {
             if (!str_contains($target, ",")) {
-              $targetLoc = explode("-", $target)[0];
+              $targetLoc = explode("-", $target, 2)[0];
               AddLayer("TRIGGER", $mainPlayer, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional, $CombatChain->AttackCard()->UniqueID());
             }
             else {
@@ -3401,7 +3401,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               $targetUids = [];
               foreach ($targetArr as $targ) {
                 $tp = str_contains($targ, "MY") ? $player : $targetedPlayer;
-                $targetLoc = explode("-", $targ)[0];
+                $targetLoc = explode("-", $targ, 2)[0];
                 $targetUids[] = "$targetLoc-" . GetMZUID($tp, $targ);
               }
               AddLayer("TRIGGER", $mainPlayer, $params[0], implode(",", $targetUids), $additional, $CombatChain->AttackCard()->UniqueID());
@@ -3441,7 +3441,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "verdance_thorn_of_the_rose":
         case "nettling_shot_red":
         case "sigil_of_aether_blue":
-          $targetLoc = explode("-", $target)[0];
+          $targetLoc = explode("-", $target, 2)[0];
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target), $additional);
           break;
         case "decimator_great_axe":
@@ -3470,7 +3470,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddLayer("TRIGGER", $player, $params[0], "$location-$uid");
           break;
         case "courageous_crossing_blue":
-          $targetLoc = explode("-", $target)[0];
+          $targetLoc = explode("-", $target, 2)[0];
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-" . GetMZUID($targetedPlayer, $target));
           break;
         default:
@@ -4204,7 +4204,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $numTargets = intval($lastResult);
       $search = "THEIRAURAS:type=T&MYAURAS:type=T";
       for ($i = 0; $i < $numTargets; ++$i) {
-        $ind = explode(",", GetUntapped($player, "MYAURAS", "isSameName=seismic_surge"))[0];
+        $ind = explode(",", GetUntapped($player, "MYAURAS", "isSameName=seismic_surge"), 2)[0];
         Tap($ind, $player);
         $nLeft = $numTargets - $i;
         AddDecisionQueue("MULTITARGETINDICES", $player, $search, 1);

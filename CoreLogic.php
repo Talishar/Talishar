@@ -277,7 +277,7 @@ function DefendingTerm($term)
 function CombatChainPowerModifier($index, $amount)
 {
   global $combatChain;
-  if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index)[1];
+  if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index, 2)[1];
   $combatChain[$index + 5] += $amount;
   ProcessPhantasmOnBlock($index);
   ProcessAllMirage();
@@ -286,7 +286,7 @@ function CombatChainPowerModifier($index, $amount)
 function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
 {
   global $combatChain, $CombatChain;
-  if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index)[1];
+  if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index, 2)[1];
   if (isset($combatChain[$index])) {
     $CombatChain->Card($index)->ModifyDefense($amount);
     switch ($combatChain[0]) {
@@ -1818,7 +1818,7 @@ function GetBanishModifier($index)
   global $currentPlayer;
     $banish = GetBanish($currentPlayer);
     if ($index < count($banish)) {
-      return explode("-", $banish[$index + 1])[0];
+      return explode("-", $banish[$index + 1], 2)[0];
     }
   return "";
 }
@@ -1893,7 +1893,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     $banish = GetBanish($currentPlayer);
     if ($index > -1 && $index < count($banish)) {
       if ($banish[$index + 1] !== null) {
-        $mod = explode("-", $banish[$index + 1])[0];
+        $mod = explode("-", $banish[$index + 1], 2)[0];
         if (DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || str_contains($mod, "shadowrealm_horror_red")) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
       }
     }
@@ -3098,7 +3098,7 @@ function GetUniqueId($cardID = "", $player = "")
 function IsHeroAttackTarget()
 {
   foreach(explode(",", GetAttackTarget()) as $target) {
-    if (explode("-", $target)[0] == "THEIRCHAR") return true;
+    if (explode("-", $target, 2)[0] == "THEIRCHAR") return true;
   }
   return false;
 }

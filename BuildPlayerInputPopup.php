@@ -754,7 +754,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           if (($option0 == "LAYER" || $option0 == "PRELAYERS") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY" || $card == "ATTACK")) $card = $source[$index + 2];
 
           if ($option0 == "THEIRBANISH") {
-            $mod = explode("-", $theirBanish[$index + 1])[0];
+            $mod = explode("-", $theirBanish[$index + 1], 2)[0];
             $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
             $borderColor = CardBorderColor($card, "BANISH", $action > 0, $playerID, $mod);
             if($borderColor == 7) $label = "Playable";
@@ -796,7 +796,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
 
           if($option0 == "CURRENTTURNEFFECTS") {
-            $cardID = explode("-", $source[$index])[0];
+            $cardID = explode("-", $source[$index], 2)[0];
             $card = $cardID;
           }
 

@@ -277,7 +277,7 @@
         return "";
       case "steelblade_supremacy_red": case "ironsong_determination_yellow":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        $targetMZInd = SearchCharacterForUniqueID(explode("-", $target)[1], $currentPlayer);
+        $targetMZInd = SearchCharacterForUniqueID(explode("-", $target, 2)[1], $currentPlayer);
         if ($targetMZInd != -1) {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "MYCHAR-$targetMZInd");
           AddDecisionQueue("ADDMZBUFF", $currentPlayer, $cardID, 1);

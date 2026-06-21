@@ -1732,7 +1732,7 @@ function CurrentEffectAttackAbility($attackIndex=-1)
         case "public_bounty_yellow-UNSET":
         case "public_bounty_blue-UNSET":
           if (IsHeroAttackTarget() && CheckMarked($defPlayer)) {
-            $cardID = explode("-", $currentTurnEffects[$i])[0];
+            $cardID = explode("-", $currentTurnEffects[$i], 2)[0];
             $currentTurnEffects[$i] = $cardID;
           }
           break;
@@ -2885,8 +2885,9 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
   $originUniqueID = $blockCard != "-" ? $blockCard->OriginUniqueID() : "-";
   $isAction = TypeContains($cardID, "A", $defPlayer) || TypeContains($cardID, "AA", $defPlayer);
   if ($blockCard == "-" && str_contains($index, ",")) {
-    $i = explode(",", $index)[0];
-    $j = explode(",", $index)[1];
+    $indexParts = explode(",", $index, 2);
+    $i = $indexParts[0];
+    $j = $indexParts[1];
     $Link = $ChainLinks->GetLink($i);
     $blockCard = $Link->GetLinkCard($j);
     $originUniqueID = $blockCard->OriginUniqueID();

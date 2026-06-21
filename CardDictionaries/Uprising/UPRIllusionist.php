@@ -10,7 +10,7 @@
       if (isset($permanents[$targetIndex])) {
         $matID = $permanents[$targetIndex];
         if ($matID == "UPR439" || $matID == "UPR440" || $matID == "UPR441") { //untransform sand cover
-          $origMaterial = explode(",", $permanents[$targetIndex+2])[0];
+          $origMaterial = explode(",", $permanents[$targetIndex+2], 2)[0];
           DestroyPermanent($currentPlayer, $targetIndex);
           $targetIndex = PutPermanentIntoPlay($currentPlayer, $origMaterial);
           $target = "MYPERM-$targetIndex";

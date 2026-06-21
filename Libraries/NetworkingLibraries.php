@@ -1680,7 +1680,7 @@ function FinalizeChainLink($chainClosed = false)
     $uniqueID = array_shift($attackQueue);
     $layerUniqueID = array_shift($attackQueue);
     $params = explode("|", $parameter);
-    $combatChainState[$CCS_AttackTargetUID] = explode("-", $target)[1] ?? "-";
+    $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
     $MZIndex = CleanTargetToIndex($currentPlayer, $target);
     $combatChainState[$CCS_AttackTarget] = $MZIndex;
     PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
@@ -4245,7 +4245,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
   if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
     for ($i = count($targetArr) - 1; $i >= 0; --$i) {
-      if (explode("-", $targetArr[$i])[0] == "THEIRAURAS") {
+      if (explode("-", $targetArr[$i], 2)[0] == "THEIRAURAS") {
         // remove spectra cards from target
         $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
         if ($ind == -1) {
@@ -4309,7 +4309,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         $missingTarget = false;
         switch ($cardID) {
           case "just_a_nick_red":
-            $targetUID = explode("-", $target)[1];
+            $targetUID = explode("-", $target, 2)[1];
             if ($CombatChain->AttackCard()->UniqueID() != $targetUID) $missingTarget = true;
             break;
           default:

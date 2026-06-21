@@ -255,7 +255,7 @@ function ResolveAttackQueue() {
   if (count($attackQueue) > 0) {
     [$cardID, $player, $parameter, $target, $additionalCosts] = array_splice($attackQueue, 0, 7);
 
-    $combatChainState[$CCS_AttackTargetUID] = explode("-", $target)[1] ?? "-";
+    $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
     $MZIndex = CleanTargetToIndex($player, $target);
     $combatChainState[$CCS_AttackTarget] = $MZIndex;
     $params = explode("|", $parameter);
@@ -469,7 +469,7 @@ function ContinueDecisionQueue($lastResult = "")
         CloseDecisionQueue();
         if (IsResolutionStep() && count($layers) == LayerPieces() && count($attackQueue) > 0) {
           [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID] = array_splice($attackQueue, 0, 7);
-          $combatChainState[$CCS_AttackTargetUID] = explode("-", $target)[1] ?? "-";
+          $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
           $MZIndex = CleanTargetToIndex($currentPlayer, $target);
           $combatChainState[$CCS_AttackTarget] = $MZIndex;
           EndResolutionStep();
@@ -1582,7 +1582,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer, $combatChain;
   $effects = explode(',', $cardID);
-  $parameter = explode("-", $effects[0])[0];
+  $parameter = explode("-", $effects[0], 2)[0];
   if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   if (CardType($source) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
   $effectID = ExtractCardID($cardID);
@@ -3768,10 +3768,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("NOPASS", $player, "-");
         }
         if (str_contains($target, "THEIRCHAR")) {
-          $target = "THEIRCHARUID-" . explode("-", $target)[1];
+          $target = "THEIRCHARUID-" . explode("-", $target, 2)[1];
         }
         if (str_contains($target, "MYCHAR")) {
-          $target = "MYCHARUID-" . explode("-", $target)[1];
+          $target = "MYCHARUID-" . explode("-", $target, 2)[1];
         }
         AddDecisionQueue("VERDANCE", $player, "$parameter,$target", 1);
         break;
@@ -4232,7 +4232,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         LoseHealth($additionalCosts, $player);
         if($additionalCosts >= 3) {
           $controller = str_contains($uniqueID, "MYAURAS") ? $player : $otherPlayer;
-          $uniqueID = str_contains($uniqueID, "-") ? explode("-", $uniqueID)[1] : "-";
+          $uniqueID = str_contains($uniqueID, "-") ? explode("-", $uniqueID, 2)[1] : "-";
           DestroyAuraUniqueID($controller, $uniqueID);
         }
         break;
@@ -4423,7 +4423,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "ley_line_of_the_old_ones_blue":
         if ($uniqueID == "-") PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:$parameter);
-        else if (CountAura("seismic_surge", $player) == 0) DestroyAuraUniqueID($player, explode("-", $uniqueID)[1]);
+        else if (CountAura("seismic_surge", $player) == 0) DestroyAuraUniqueID($player, explode("-", $uniqueID, 2)[1]);
         break;
       case "sunkwater_lookout":
       case "sunkwater_exoshell":
@@ -5287,15 +5287,15 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $fro
       break;
     case "null__shock_yellow":
       if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) {
-        $nullTarget = str_contains($target, ",") ? explode(",", $target)[0] : $target;
-        $targetLayer = $Stack->FindCardUID(explode("-", $nullTarget)[1] ?? "-");
+        $nullTarget = str_contains($target, ",") ? explode(",", $target, 2)[0] : $target;
+        $targetLayer = $Stack->FindCardUID(explode("-", $nullTarget, 2)[1] ?? "-");
         if ($targetLayer != "" && CardCost($targetLayer->ID(), "LAYERS") < GetClassState($player, $CS_ArcaneDamageDealt)) {
           $Stack->Negate($targetLayer->Index());
         }
       }
       break;
     case "comet_storm__shock_red":
-      $stormTarget = str_contains($target, ",") ? explode(",", $target)[0] : $target;
+      $stormTarget = str_contains($target, ",") ? explode(",", $target, 2)[0] : $target;
       $meldState = (GetClassState($player, $CS_AdditionalCosts) == "Both") ? "I,A" : "A";
       DealArcane(5, 2, "PLAYCARD", $parameter, player:$player, meldState: $meldState, resolvedTarget:$stormTarget);
       break;
