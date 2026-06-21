@@ -30,7 +30,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated, $CS_HoloAurasEntered;
   global $CS_CreatedCardsThisTurn;
   if ($number == 0) return; //there is no event
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($effectController == "-") $effectController = $player;
   if ($effectAgent == "-") $effectAgent = $effectController;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
@@ -103,22 +103,20 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $isTokenFlag = $isToken ? 1 : 0;
   
   for ($i = 0; $i < $number; ++$i) {
-    array_push($auras,
-      $cardID, // 0: Card ID
-      2, // 1: Status
-      $rogueHeronSpecial ? 0 : $cachedAuraPlayCounters, // 2: Miscellaneous Counters
-      $numPowerCounters, // 3: Power counters
-      $isTokenFlag, // 4: Is token 0=No, 1=Yes
-      $cachedAuraNumUses, // 5: Number of uses
-      GetUniqueId($cardID, $player), // 6: Unique ID
-      $myHoldState, // 7: My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
-      $theirHoldState, // 8: Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
-      $from, // 9: Where it's played from
-      "-", // 10: modalities
-      0, // frozen, (0 = no, 1 = yes)
-      0, // tapped (0 = no, 1 = yes)
-      $holoCounters, // holo counters
-    );
+    $auras[] = $cardID; // 0: Card ID
+    $auras[] = 2; // 1: Status
+    $auras[] = $rogueHeronSpecial ? 0 : $cachedAuraPlayCounters; // 2: Miscellaneous Counters
+    $auras[] = $numPowerCounters; // 3: Power counters
+    $auras[] = $isTokenFlag; // 4: Is token 0=No, 1=Yes
+    $auras[] = $cachedAuraNumUses; // 5: Number of uses
+    $auras[] = GetUniqueId($cardID, $player); // 6: Unique ID
+    $auras[] = $myHoldState; // 7: My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    $auras[] = $theirHoldState; // 8: Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
+    $auras[] = $from; // 9: Where it's played from
+    $auras[] = "-"; // 10: modalities
+    $auras[] = 0; // frozen, (0 = no, 1 = yes)
+    $auras[] = 0; // tapped (0 = no, 1 = yes)
+    $auras[] = $holoCounters; // holo counters
   }
   if ($holoCounters > 0) IncrementClassState($player, $CS_HoloAurasEntered, $number);
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
@@ -259,7 +257,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
   $uniqueIDIndex = $auraConstants[1];
   $cardID = $auras[$index] ?? "";
   $uniqueID = $auras[$index + $uniqueIDIndex] ?? "";
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($cardID == "") return;
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID);
@@ -549,7 +547,7 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
 function AuraCostModifier($cardID = "", $from = "-")
 {
   global $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   $myAuras = &GetAuras($currentPlayer);
   $theirAuras = &GetAuras($otherPlayer);
   $modifier = 0;
@@ -596,7 +594,7 @@ function AuraStartTurnAbilities()
     $EffectContext = $auras[$i];
     $card = GetClass($auras[$i], $mainPlayer);
     if ($card != "-") {
-      if ($card->StartTurnAbility($i)) array_push($toRemove, $auras[$i + 6]);
+      if ($card->StartTurnAbility($i)) $toRemove[] = $auras[$i + 6];
     }
     if (isset($auras[$i])) {
       switch ($auras[$i]) {
@@ -671,7 +669,7 @@ function AuraStartTurnAbilities()
         else $amount = ($auras[$i] == "blessing_of_ingenuity_yellow") ? 2 : 1;
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         $searchHyper = CombineSearches(SearchDiscardForCard($mainPlayer, "hyper_driver_red", "hyper_driver_yellow", "hyper_driver_blue"), SearchBanishForCardMulti($mainPlayer, "hyper_driver_red", "hyper_driver_yellow", "hyper_driver_blue"));
-        $countHyper = count(explode(",", $searchHyper));
+        $countHyper = substr_count($searchHyper, ",") + 1;
         if ($amount > $countHyper) $amount = $countHyper;
         for ($j = 0; $j < $amount; ++$j) {
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=hyper_driver_red;cardID=hyper_driver_yellow;cardID=hyper_driver_blue&MYBANISH:cardID=hyper_driver_red;cardID=hyper_driver_yellow;cardID=hyper_driver_blue");
@@ -1423,7 +1421,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
 function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
 {
   global $CS_DamageDealtToOpponent;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
 
   $auras = &GetAuras($player);
   $selfInflicted = $source == "bloodrot_pox" || $player == $playerSource;
@@ -1728,7 +1726,7 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
       }
     }
   }
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $theirAuras = &GetAuras($otherPlayer);
   $countTheirAuras = count($theirAuras);
   for ($i = 0; $i < $countTheirAuras; $i += $aurasPieces) {
@@ -1793,7 +1791,7 @@ function GetAuraGemState($player, $cardID)
 function AuraIntellectModifier()
 {
   global $mainPlayer;
-  $otherPlayer = $mainPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $mainPlayer ;
   $intellectModifier = 0;
   $auras = &GetAuras($mainPlayer);
   $countAuras = count($auras);

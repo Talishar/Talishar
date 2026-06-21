@@ -124,7 +124,7 @@ if (IsReplay() && $mode == 99) {
 
 $isProcessInput = true;
 
-$otherPlayer = $currentPlayer == 1 ? 2 : 1;
+$otherPlayer = 3 - $currentPlayer;
 $skipWriteGamestate = false;
 $mainPlayerGamestateStillBuilt = 0;
 $makeCheckpoint = 0;

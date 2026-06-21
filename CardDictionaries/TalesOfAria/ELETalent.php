@@ -246,7 +246,7 @@
 
   function ExposedToTheElementsEarth($player)
   {
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       PrependDecisionQueue("MODDEFCOUNTER", $otherPlayer, "-1", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to put a -1 counter", 1);
@@ -255,7 +255,7 @@
 
   function ExposedToTheElementsIce($player)
   {
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       PrependDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy", 1);

@@ -36,7 +36,7 @@ function AJVPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (DelimStringContains($additionalCosts, "ICE")) {
         Mangle();
       }
-      $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+      $otherPlayer = 3 - $currentPlayer;
       FrostbiteExposed($otherPlayer, $currentPlayer);
       return "";
     default:

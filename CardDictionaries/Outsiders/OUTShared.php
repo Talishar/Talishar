@@ -181,7 +181,7 @@ function OUTAbilityCost($cardID)
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $defPlayer, $combatChain, $combatChainState;
     global $CID_Frailty, $CID_BloodRotPox, $CID_Inertia, $CombatChain;
     $rv = "";
-    $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+    $otherPlayer = 3 - $currentPlayer;
     switch ($cardID)
     {
       case "silverwind_shuriken_blue":
@@ -208,7 +208,9 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "spreading_plague_yellow":
-        for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+        $combatChainCount = count($combatChain);
+        $combatChainPieces = CombatChainPieces();
+        for($i=0; $i<$combatChainCount; $i+=$combatChainPieces)
         {
           if(IsHeroAttackTarget() && $combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
         }
@@ -618,9 +620,11 @@ function OUTAbilityCost($cardID)
         break;
       case "stab_wound_blue":
         $numDaggerHits = 0;
-        for($i=0; $i<count($chainLinks); ++$i)
+        $chainLinksCount = count($chainLinks);
+        $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+        for($i=0; $i<$chainLinksCount; ++$i)
         {
-          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
+          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) ++$numDaggerHits;
         }
         $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
         if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("stab_wound_blue", "stab_wound_blue"));
@@ -675,7 +679,7 @@ function OUTAbilityCost($cardID)
 
   function CodexOfFrailty($player)
   {
-    $otherPlayer = $player == 1 ? 2 : 1;
+    $otherPlayer = 3 - $player;
     $conditionPlayerMet = false;
     $conditionOtherPlayerMet = false;
     if(!ArsenalFull($player) && SearchDiscard($player, "AA") != "")
@@ -783,9 +787,11 @@ function OUTAbilityCost($cardID)
   {
     global $chainLinks, $chainLinkSummary, $combatChainState, $CCS_FlickedDamage;
     $damage = 0;
-    for($i=0; $i<count($chainLinks); ++$i)
+    $chainLinksCount = count($chainLinks);
+    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+    for($i=0; $i<$chainLinksCount; ++$i)
     {
-      if(SubtypeContains($chainLinks[$i][0], $subtype)) $damage += $chainLinkSummary[$i*ChainLinkSummaryPieces()];
+      if(SubtypeContains($chainLinks[$i][0], $subtype)) $damage += $chainLinkSummary[$i*$chainLinkSummaryPieces];
     }
     if ($subtype == "Dagger") $damage += $combatChainState[$CCS_FlickedDamage];
     return $damage;
@@ -810,7 +816,7 @@ function OUTAbilityCost($cardID)
 
   function LookAtTopCard($player, $source, $showHand=false, $setPlayer="-")
   {
-    $otherPlayer = $player == 1 ? 2 : 1;
+    $otherPlayer = 3 - $player;
     if ($setPlayer == "-") {
       AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
       AddDecisionQueue("SETDQVAR", $player, "1");

@@ -320,7 +320,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $skipWriteGamestate = true;
           break;
         } else {
-          array_push($input, $options[$chkInput[$i]]);
+          $input[] = $options[$chkInput[$i]];
         }
       }
       if (!$skipWriteGamestate) {
@@ -692,7 +692,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           if ($num == "inv") {
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true, highlightColor: "darkblue");
             $inventory = &GetInventory($playerID);
-            array_push($inventory, $cardID);
+            $inventory[] = $cardID;
           }
           else {
             WriteLog("Player " . $playerID . " manually equipped " . CardLink($cardID), highlight: true, highlightColor: "darkblue");
@@ -715,12 +715,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           elseif ($num == "inv") {
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true, highlightColor: "darkblue");
             $inventory = &GetInventory($playerID);
-            array_push($inventory, $cardID);
+            $inventory[] = $cardID;
           }
           else {
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their hand", highlight: true, highlightColor: "darkblue");
             $hand = &GetHand($playerID);
-            array_push($hand, $cardID);
+            $hand[] = $cardID;
           }
         }
         else {
@@ -2002,7 +2002,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
   global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer;
 
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   $resources = &GetResources($currentPlayer);
   $pitch = &GetPitch($currentPlayer);
   $dynCostResolved = intval($dynCostResolved);
@@ -2195,8 +2195,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   } else if ($turn[0] == "P") {
     $pitchValue = PitchValue($cardID);
     $resources[0] += $pitchValue;
-    array_push($pitch, $cardID);
-    array_push($pitch, GetUniqueId($cardID, $currentPlayer));
+    $pitch[] = $cardID;
+    $pitch[] = GetUniqueId($cardID, $currentPlayer);
     if (CardCaresAboutPitch($turn[3])) AddAdditionalCost($currentPlayer, $cardID);
     PitchAbility($cardID);
   }
@@ -2644,7 +2644,7 @@ function GetLayerTarget($cardID, $from)
       if ($from == "PLAY"){
         $numOptions = explode(",", GetChainLinkCards($defPlayer, "", "C"));
         $options = [];
-        foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+        foreach ($numOptions as $num) $options[] = "COMBATCHAINLINK-$num";
         $options = implode(",", $options);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to buff");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
@@ -2767,7 +2767,7 @@ function GetLayerTarget($cardID, $from)
     case "arcane_compliance_blue":
       $indices = explode(",", SearchLayersCardType("A", "AA"));
       $formattedIndices = [];
-      foreach ($indices as $index) array_push($formattedIndices, "LAYER-$index");
+      foreach ($indices as $index) $formattedIndices[] = "LAYER-$index";
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, implode(",", $formattedIndices));
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an action to block arcane buffs on");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -3200,7 +3200,7 @@ function GetTargetOfAttack($cardID = "", $attackQueue=false)
       if (HasSpectra($auras[$i]) && !str_contains($currentTargets, $targIndex)) {
         $targets = $targets == "" ? $targIndex : "$targets,$targIndex";
         ++$numTargets;
-        if ($auras[$i] == "arc_light_sentinel_yellow") array_push($mandatoryTargets, "THEIRAURAS-$i");
+        if ($auras[$i] == "arc_light_sentinel_yellow") $mandatoryTargets[] = "THEIRAURAS-$i";
       }
     }
     $allies = &GetAllies($defPlayer);
@@ -3217,7 +3217,7 @@ function GetTargetOfAttack($cardID = "", $attackQueue=false)
           for ($j = 0; $j < $countCurrentTurnEffects; $j += $currentTurnEffectPieces) {
             if ($currentTurnEffects[$j+1] == $mainPlayer && $currentTurnEffects[$j] == "chum_friendly_first_mate_yellow") {
               if ($currentTurnEffects[$j+2] == $allies[$i+5]) {
-                array_push($mandatoryTargets, "THEIRALLY-$i");
+                $mandatoryTargets[] = "THEIRALLY-$i";
               }
             }
           }
@@ -4064,7 +4064,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       if ($numOptions != "") {
         $numOptions = explode(",", $numOptions);
         $options = [];
-        foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+        foreach ($numOptions as $num) $options[] = "COMBATCHAINLINK-$num";
         $options = implode(",", $options);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to shred", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
@@ -4083,7 +4083,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       break;
     case "long_whisker_loyalty_red":
       $modalities = (SubtypeContains($combatChain[0], "Dagger")) ? "Buff_Power,Additional_Attack,Mark" : "Additional_Attack,Mark";
-      $numModes = min(count(explode(",", $modalities)), NumDraconicChainLinks());
+      $numModes = min(substr_count($modalities, ",") + 1, NumDraconicChainLinks());
       if ($numModes > 0) {
         if ($numModes < 3) {
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $numModes == 1 ? "Choose 1 mode" : "Choose " . $numModes . " modes");

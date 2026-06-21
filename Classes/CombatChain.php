@@ -60,11 +60,12 @@ class CombatChain {
   }
 
   function Remove($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * CombatChainPieces();
+    $combatChainPieces = CombatChainPieces();
+    if($cardNumber) $index = $index * $combatChainPieces;
     if($index < 0 || $index >= count($this->chain)) return "";
     $cardID = $this->chain[$index];
     // RemoveEffectsFromCombatChain($cardID); I think this function call is no longer necessary
-    for($i = CombatChainPieces() - 1; $i >= 0; --$i) unset($this->chain[$index+$i]);
+    for($i = $combatChainPieces - 1; $i >= 0; --$i) unset($this->chain[$index+$i]);
     $this->chain = array_values($this->chain);
     return $cardID;
   }

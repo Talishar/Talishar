@@ -148,7 +148,9 @@ function UPRDealDamageEffect($cardID)
   {
     $character = &GetPlayerCharacter($player);
     $quellAmount = 0;
-    for($i=0; $i<count($character); $i+=CharacterPieces()) {
+    $charCount = count($character);
+    $charPieces = CharacterPieces();
+    for($i=0; $i<$charCount; $i+=$charPieces) {
       if($character[$i+1] == "0" || $character[$i+9] == "0") continue;
       $quellAmount += QuellAmount($character[$i]);
     }
@@ -175,7 +177,9 @@ function UPRDealDamageEffect($cardID)
   {
     $character = &GetPlayerCharacter($player);
     $indices = "";
-    for($i=0; $i<count($character); $i+=CharacterPieces())
+    $charCount = count($character);
+    $charPieces = CharacterPieces();
+    for($i=0; $i<$charCount; $i+=$charPieces)
     {
       if($character[$i+1] == "0") continue;
       if(QuellAmount($character[$i]) > 0)

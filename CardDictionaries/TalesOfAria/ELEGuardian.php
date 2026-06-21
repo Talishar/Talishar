@@ -28,7 +28,7 @@
         if(DelimStringContains($additionalCosts, "ICE") && DelimStringContains($additionalCosts, "EARTH")) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "awakening_blue":
-        $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+        $otherPlayer = 3 - $currentPlayer;
         if (!IsPlayerAI($otherPlayer)) $num = GetHealth($otherPlayer) - GetHealth($currentPlayer);
         else {
           $num = 10;

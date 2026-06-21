@@ -1411,8 +1411,9 @@ function OnBlockEffects($index, $from)
         case "orbitoclast_r":
           if (DelimStringContains($cardType, "A")) $chainCard->ModifyDefense(-1);
           $splitCard = explode("_", $chainCard->ID());
-          if ($splitCard[count($splitCard) - 1] == "equip") {
-            $id = implode("_", array_splice($splitCard, 0, count($splitCard) - 1));
+          $splitCount = count($splitCard);
+          if ($splitCard[$splitCount - 1] == "equip") {
+            $id = implode("_", array_splice($splitCard, 0, $splitCount - 1));
             if (CardType($id) != $cardType) $chainCard->ModifyDefense(-1);
           }
           break;

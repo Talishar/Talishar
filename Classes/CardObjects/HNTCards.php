@@ -1409,7 +1409,8 @@ class incision extends BaseCard {
 	function IsPlayRestricted() {
 		global $CombatChain, $chainLinks;
 		if (!$CombatChain->HasCurrentLink()) return true;
-		for ($i = 0; $i < count($chainLinks); ++$i) {
+		$chainLinksCount = count($chainLinks);
+		for ($i = 0; $i < $chainLinksCount; ++$i) {
 			if (SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinks[$i][2] == 1) {
 				return false;
 			}

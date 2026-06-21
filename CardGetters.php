@@ -5,7 +5,7 @@ function &GetMZZone($player, $zone)
 {
   global $layers, $combatChain, $chainLinks;
   $rv = [];
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
   else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);

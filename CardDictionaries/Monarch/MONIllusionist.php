@@ -147,7 +147,9 @@
     if(count($combatChain) == 0) return false;
     if($source == "burn_bare") return true;
     $blockGreaterThan6 = false;
-    for($i=CombatChainPieces(); $i<count($combatChain); $i+=CombatChainPieces())
+    $combatChainCount = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    for($i=$combatChainPieces; $i<$combatChainCount; $i+=$combatChainPieces)
     {
       if(DoesBlockTriggerPhantasm($i)) $blockGreaterThan6 = true;
     }
@@ -182,11 +184,12 @@
     }
     else if ($combatChain[10] != "PHANTASM") {
       $turn[0] = "A";
-      for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
+      $layerPieces = LayerPieces();
+      for($i=count($layers)-$layerPieces; $i >= 0; $i-=$layerPieces)
       {
         if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "TRIGGER" && $layers[$i+2] == "PHANTASM"))
         {
-          for($j=$i; $j<$i+LayerPieces(); ++$j) unset($layers[$j]);
+          for($j=$i; $j<$i+$layerPieces; ++$j) unset($layers[$j]);
         }
       }
       $layers = array_values($layers);

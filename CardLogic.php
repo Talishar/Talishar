@@ -294,14 +294,23 @@ function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeChe
     }
   }
 
-  $parameter = str_replace(" ", "_", $parameter ?? "");
+  // Fast path: avoid str_replace allocation when parameter has no spaces (most common case)
+  if ($parameter === null) {
+    $parameter = "";
+  } elseif (str_contains($parameter, ' ')) {
+    $parameter = str_replace(' ', '_', $parameter);
+  }
   array_splice($decisionQueue, $insertIndex, 0, [$phase, $player, $parameter, $subsequent, $makeCheckpoint]);
 }
 
 function PrependDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeCheckpoint = 0)
 {
   global $decisionQueue;
-  $parameter = str_replace(" ", "_", $parameter ?? "");
+  if ($parameter === null) {
+    $parameter = "";
+  } elseif (str_contains($parameter, ' ')) {
+    $parameter = str_replace(' ', '_', $parameter);
+  }
   array_unshift($decisionQueue, $phase, $player, $parameter, $subsequent, $makeCheckpoint);
 }
 
@@ -479,7 +488,7 @@ function ContinueDecisionQueue($lastResult = "")
         }
         if ($currentPlayer != $player) {
           $currentPlayer = $player;
-          $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+          $otherPlayer = 3 - $currentPlayer;
           BuildMyGamestate($currentPlayer);
         }
         $layerPriority[0] = ShouldHoldPriority(1);
@@ -571,7 +580,7 @@ function ContinueDecisionQueue($lastResult = "")
     } else if ($dqCount > 0 && $decisionQueue[0] == "RESUMEPLAY") {
       if ($currentPlayer != $decisionQueue[1]) {
         $currentPlayer = $decisionQueue[1];
-        $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+        $otherPlayer = 3 - $currentPlayer;
         BuildMyGamestate($currentPlayer);
       }
       $params = explode("|", $decisionQueue[2]);
@@ -604,7 +613,7 @@ function ContinueDecisionQueue($lastResult = "")
         CloseDecisionQueue(); // restores $turn[0] to the pre-play phase
         if ($currentPlayer != $player) {
           $currentPlayer = $player;
-          $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+          $otherPlayer = 3 - $currentPlayer;
           BuildMyGamestate($currentPlayer);
         }
         $layerPriority[$player - 1] = "0";
@@ -614,7 +623,7 @@ function ContinueDecisionQueue($lastResult = "")
       CloseDecisionQueue();
       if ($currentPlayer != $player) {
         $currentPlayer = $player;
-        $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+        $otherPlayer = 3 - $currentPlayer;
         BuildMyGamestate($currentPlayer);
       }
       PlayCard($params[0], $params[1], $lastResult, $params[2], isset($params[3]) ? $params[3] : -1, isset($params[4]) ? $params[4] : -1);
@@ -1796,7 +1805,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
 function AddCharacterPlayCardTrigger($cardID, $playType, $from)
 {
   global $mainPlayer;
-  $otherPlayer = $mainPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $mainPlayer ;
   $charPieces = CharacterPieces();
   $mainChar = GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainChar);
@@ -1955,7 +1964,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
 function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 {
   global $layers, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (CardType($target) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $player, count($layers) <= LayerPieces())) {
     WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
     return false;
@@ -2003,7 +2012,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
   global $combatChain, $mainPlayer;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $card = GetClass($parameter, $player);
   if ($card != "-") return $card->ProcessAbility($uniqueID, $target, $additionalCosts, $from);
   switch ($parameter) {
@@ -2092,7 +2101,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
         $choices = [];
         foreach ($inventory as $cardID) {
           if (TalentContains($cardID, "REVILED", $player) && TypeContains($cardID, "AA")) {
-            array_push($choices, $cardID);
+            $choices[] = $cardID;
           };
         }
         if (count($choices) == 0) {
@@ -2138,7 +2147,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   $parameter = ShiyanaCharacter($parameter);
   $EffectContext = $parameter;
   // $EffectContextUID = $uniqueID;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($additionalCosts == "ONHITEFFECT") {
     ProcessHitEffect($parameter, $combatChain[2] ?? "-", $uniqueID, target:$target);
     return;
@@ -2900,7 +2909,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $numRed = 0;
           foreach ($cards as $card) if (PitchValue($card) == 1) ++$numRed;
           if ($numRed > 0) {
-            $otherPlayer = $player == 1 ? 2 : 1;
+            $otherPlayer = 3 - $player;
             AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
             AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
             AddDecisionQueue("MODDEFCOUNTER", $otherPlayer, -1 * $numRed, 1);
@@ -2912,7 +2921,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $deck = new Deck($player);
         if ($deck->Reveal(1)) {
           if (PitchValue($deck->Top()) == 1) {
-            $otherPlayer = $player == 1 ? 2 : 1;
+            $otherPlayer = 3 - $player;
             AddDecisionQueue("SHOWHANDWRITELOG", $otherPlayer, "<-", 1);
             AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
             AddDecisionQueue("CHOOSETHEIRHAND", $player, "<-", 1);
@@ -3599,7 +3608,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $hand = &GetHand($player);
         for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
           if ($banish[$i + 1] == "NOFEAR") {
-            array_push($hand, $banish[$i]);
+            $hand[] = $banish[$i];
             RemoveBanish($player, $i);
           }
         }
@@ -3726,12 +3735,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddCurrentTurnEffect($parameter, $player, "CC");
         break;
       case "stone_rain_red":
-        $otherPlayer = $player == 1 ? 2 : 1;
+        $otherPlayer = 3 - $player;
         $banish = &GetBanish($otherPlayer);
         $hand = &GetHand($otherPlayer);
         for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
           if ($banish[$i + 1] == "STONERAIN") {
-            array_push($hand, $banish[$i]);
+            $hand[] = $banish[$i];
             RemoveBanish($otherPlayer, $i);
           }
         }
@@ -4285,7 +4294,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $targetParts = explode("-", $target);
         $zone = $targetParts[0];
         $uid = $targetParts[1];
-        $otherPlayer = $player == 1 ? 2 : 1;
+        $otherPlayer = 3 - $player;
         switch ($zone) {
           case "THEIRALLY":
             $MZIndex = "$zone-" . SearchAlliesForUniqueID($uid, $otherPlayer);
@@ -4392,7 +4401,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $fromMod = "Hand,MOUNTAIN";
         $choices = SearchMultizone($player, $search);
         if ($choices != "") {
-          $numChoices = count(explode(",", $choices));
+          $numChoices = substr_count($choices, ",") + 1;
           for ($i = 0; $i < $numChoices; ++$i) {
             AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
             AddDecisionQueue("SETDQCONTEXT", $player, "Banish an action from hand. (Cards will be added as blocking in the order you banish them)", 1);
@@ -4424,7 +4433,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $arsenalPieces = ArsenalPieces();
         $arsenalCount = count($arsenal);
         for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
-          if ($arsenal[$i + 1] == "UP") array_push($inds, "MYARS-$i");
+          if ($arsenal[$i + 1] == "UP") $inds[] = "MYARS-$i";
         }
         if (count($inds) > 0) {
           $context = "Choose a face up card in your arsenal to sink";
@@ -5004,7 +5013,7 @@ function GamblersGlovesReroll($player, $target){
 function DestroyFrozenArsenal($player)
 {
   $arsenal = &GetArsenal($player);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $arsenalCount = count($arsenal);
   $arsenalPieces = ArsenalPieces();
   for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
@@ -5239,7 +5248,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $fro
 {
   // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts, $CS_ArcaneDamageTaken, $Stack;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $cardID = $parameter;
   switch ($cardID) {
     case "thistle_bloom__life_yellow":

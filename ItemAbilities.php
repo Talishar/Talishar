@@ -4,7 +4,7 @@
 function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-", $effectAgent = "", $effectSource = "")
 {
   global $EffectContext, $CS_NumGoldCreated, $CS_CreatedCardsThisTurn;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($effectController == "") $effectController = $player;
   if ($effectAgent == "") $effectAgent = $effectController;
   if (!DelimStringContains(CardSubType($cardID), "Item") && $cardID != "levia_redeemed") return;
@@ -33,7 +33,20 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     $uniqueID = GetUniqueId($cardID, $player);
     $steamCounters = SteamCounterLogic($cardID, $player, $uniqueID) + $steamCounterModifier;
     $index = count($items);
-    array_push($items, $cardID, $steamCounters, 2, ItemUses($cardID), $uniqueID, $myHoldState, $theirHoldState, 0, ItemModalities($cardID), $from, 0, "-", 0, 0);
+    $items[] = $cardID;
+    $items[] = $steamCounters;
+    $items[] = 2;
+    $items[] = ItemUses($cardID);
+    $items[] = $uniqueID;
+    $items[] = $myHoldState;
+    $items[] = $theirHoldState;
+    $items[] = 0;
+    $items[] = ItemModalities($cardID);
+    $items[] = $from;
+    $items[] = 0;
+    $items[] = "-";
+    $items[] = 0;
+    $items[] = 0;
     if (HasCrank($cardID, $player)) Crank($player, $index, $mainPhase);
   }
 
@@ -99,7 +112,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
   global $currentPlayer, $CS_PlayIndex, $combatChain, $CS_AdditionalCosts;
   $index = GetClassState($currentPlayer, $CS_PlayIndex);
   $items = &GetItems($currentPlayer);
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     case "crazy_brew_blue":
     case "energy_potion_blue":
@@ -152,8 +165,8 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "amulet_of_echoes_blue":
       DestroyItemForPlayer($currentPlayer, $index);
       $legalTargets = [];
-      if (HasPlayerEchoed($otherPlayer)) array_push($legalTargets, "THEIRCHAR-0");
-      if (HasPlayerEchoed($currentPlayer)) array_push($legalTargets, "MYCHAR-0");
+      if (HasPlayerEchoed($otherPlayer)) $legalTargets[] = "THEIRCHAR-0";
+      if (HasPlayerEchoed($currentPlayer)) $legalTargets[] = "MYCHAR-0";
       $legalTargets = implode(",", $legalTargets);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for " . CardLink($cardID, $cardID));
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $legalTargets, 1);
@@ -279,7 +292,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
     }
     array_splice($items, $index, $itemPieces);
     if ($cardID == "stasis_cell_blue") {
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
@@ -542,7 +555,7 @@ function ItemEndTurnAbilities()
 
 function ItemDamageTakenAbilities($player, $damage)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $items = &GetItems($otherPlayer);
   $countItems = count($items);
   $itemPieces = ItemPieces();
@@ -645,14 +658,16 @@ function ItemPowerModifiers(&$powerModifiers)
         $attackID = $CombatChain->AttackCard()->ID();
         if (CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           $modifier += 1;
-          array_push($powerModifiers, $items[$i], 1);
+          $powerModifiers[] = $items[$i];
+          $powerModifiers[] = 1;
         }
         break;
       case "clamp_press_blue":
         $attackID = $CombatChain->AttackCard()->ID();
         if (SubtypeContains($attackID, "Wrench")) {
           $modifier += 2;
-          array_push($powerModifiers, $items[$i], 2);
+          $powerModifiers[] = $items[$i];
+          $powerModifiers[] = 2;
         }
         break;
       default:

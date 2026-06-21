@@ -82,7 +82,9 @@ function LogPlayCardStats($player, $cardID, $from, $type = "")
     if ($cardStats[$i] === $cardID) { $found = true; break; }
   }
   if (!$found) {
-    array_push($cardStats, $cardID, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    $cardStats[] = $cardID;
+    $cardStats[] = 0; $cardStats[] = 0; $cardStats[] = 0; $cardStats[] = 0;
+    $cardStats[] = 0; $cardStats[] = 0; $cardStats[] = 0; $cardStats[] = 0; $cardStats[] = 0;
     // Loop exited with $i === $cardStatsCount, which is the start of the new entry.
   }
 
@@ -214,6 +216,11 @@ function StatsStartTurn()
 {
   $p1Stats = &GetTurnStats(1);
   $p2Stats = &GetTurnStats(2);
-  array_push($p1Stats, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  array_push($p2Stats, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  $z = 0;
+  $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z;
+  $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z;
+  $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z;
+  $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z;
+  $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z;
+  $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z;
 }

@@ -831,7 +831,9 @@ class bear_hug extends BaseCard {
     // this is *technically* not correct, it won't interact correctly with dpot
     // leaving it as is for now because no one will play d-pot kayo
     $pitch = GetPitch($this->controller);
-    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+    $pitchCount = count($pitch);
+    $pitchPieces = PitchPieces();
+    for ($i = 0; $i < $pitchCount; $i += $pitchPieces) {
       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return false;
     }
     return true;
@@ -1480,7 +1482,9 @@ class beckoning_haunt extends Card {
   function DynamicCost() {
     $costs = [];
     $discard = GetDiscard($this->controller);
-    for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+    $discardCount = count($discard);
+    $discardPieces = DiscardPieces();
+    for ($i = 0; $i < $discardCount; $i += $discardPieces) {
       $cardCost = CardCost($discard[$i]);
       $cost = 2 * $cardCost + 1;
       if (SubtypeContains($discard[$i], "Aura", $this->controller) && !in_array($cost, $costs)) {
@@ -2099,9 +2103,10 @@ class knife_through extends BaseCard {
     global $combatChainState, $CCS_FlickedDamage, $chainLinks, $chainLinkSummary;
     $numDaggerHits = 0;
     $count = count($chainLinks);
+    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
     for($i=0; $i<$count; ++$i)
     {
-      if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) 
+      if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) 
         ++$numDaggerHits;
     }
     $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
@@ -2389,7 +2394,9 @@ class skera_strapping extends Card {
   function SpellVoidAmount($index=-1) {
     //this has an issue where it can actually gain spellvoid in the middle of preventing arcane damage
     $pitch = GetPitch($this->controller);
-    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+    $pitchCount = count($pitch);
+    $pitchPieces = PitchPieces();
+    for ($i = 0; $i < $pitchCount; $i += $pitchPieces) {
       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return 3;
     }
     return 0;
@@ -3240,7 +3247,9 @@ class skywarden_no161803_yellow extends Card {
     $myItems = GetItems($this->controller);
     // check to make sure it's still there before giving it a buff
     $foundSkywarden = false;
-    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    $combatChainCount = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
       if ($combatChain[$i] == $this->cardID) $foundSkywarden = true;
     }
 
@@ -4181,7 +4190,9 @@ class power_of_make_believe extends BaseCard {
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
     global $combatChain, $defPlayer, $CombatChain;
     $modifier = 0;
-    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    $combatChainCount = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
       if ($combatChain[$i + 1] == $defPlayer && $CombatChain->Card($i)->TotalPower() >= 6) $modifier += 1;
     }
     return $modifier;
@@ -5931,7 +5942,8 @@ class put_on_ice extends BaseCard {
     if ($from == "ARS") Draw($this->controller);
     //this card's targeting is a mess right now that I don't want to deal with anymore, this works and I'm happy
     $targetArr = explode(",", $target);
-    for ($i = 0; $i < count($targetArr); ++$i) {
+    $targetArrCount = count($targetArr);
+    for ($i = 0; $i < $targetArrCount; ++$i) {
       $targ = CleanTargetToIndex($this->controller, $targetArr[$i]);
       MZFreeze($targ);
     }
@@ -7451,8 +7463,9 @@ class tigrine_reflex_red extends Card {
     $names = (IsReactionPhase()) ? "Ability" : "-";
     $nameBlocked = NameBlocked($this->cardID, $index, $from);
     if($nameBlocked) return $names;
-    if (IsResolutionStep()) $layerCount -= LayerPieces();
-    if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
+    $layerPieces = LayerPieces();
+    if (IsResolutionStep()) $layerCount -= $layerPieces;
+    if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= $layerPieces && $actionPoints > 0){
       $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $this->controller);
       $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($this->cardID)), $this->controller);
       if (!$warmongersPeace && !$underEdict && CanAttack($this->cardID, $from, $index, type:"AA")) {
@@ -7835,7 +7848,9 @@ class lunar_mirage_red extends Card {
 
   function AttackGetsBlockedEffect($start) {
     global $combatChain, $defPlayer;
-    for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
+    $combatChainCount = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
       if ($combatChain[$i + 1] != $defPlayer) continue;
       if (ModifiedPowerValue($combatChain[$i], $defPlayer, "CC", "", $i) >=6) {
         AddLayer("TRIGGER", $this->controller, $combatChain[$i], $combatChain[$i+7], "LUNARMIRAGE");

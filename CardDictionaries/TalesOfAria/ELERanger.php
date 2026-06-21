@@ -34,7 +34,9 @@
         return "";
       case "honing_hood":
         $arsenal = &GetArsenal($currentPlayer);
-        for($i=0; $i < count($arsenal); $i+=ArsenalPieces()) {
+        $arsenalCount = count($arsenal);
+        $arsenalPieces = ArsenalPieces();
+        for($i=0; $i < $arsenalCount; $i+=$arsenalPieces) {
           AddPlayerHand($arsenal[$i], $currentPlayer, "ARS");
         }
         $arsenal = [];
@@ -269,14 +271,15 @@
   {
     global $currentTurnEffects;
     $costModifier = 0;
-    for($i=count($currentTurnEffects)-CurrentTurnEffectsPieces(); $i>=0; $i-=CurrentTurnEffectsPieces())
+    $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+    for($i=count($currentTurnEffects)-$currentTurnEffectsPieces; $i>=0; $i-=$currentTurnEffectsPieces)
     {
       $remove = 0;
       if($player == $currentTurnEffects[$i+1]) {
         switch($currentTurnEffects[$i]) {
           case "isenhowl_weathervane_red": case "isenhowl_weathervane_yellow": case "isenhowl_weathervane_blue":
             if($element == "ICE") {
-              $otherPlayer = $player == 1 ? 2 : 1;
+              $otherPlayer = 3 - $player;
               AddLayer("TRIGGER", $player, $currentTurnEffects[$i], $otherPlayer);
               $remove = 1;
             }
@@ -292,8 +295,9 @@
   function AuraFuseEffects($player, $element)
   {
     $auras = &GetAuras($player);
-    $otherPlayer = $player == 1 ? 2 : 1;
-    for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces()) {
+    $otherPlayer = 3 - $player;
+    $auraPieces = AuraPieces();
+    for($i=count($auras)-$auraPieces; $i>=0; $i-=$auraPieces) {
       switch($auras[$i]) {
         case "insidious_chill_blue":
           if($element == "ICE") AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);

@@ -770,7 +770,7 @@ function CharacterCostModifier($cardID, $from, $cost)
         break;
     }
   }
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   $OtherChar = new PlayerCharacter($otherPlayer);
   for ($i = 0; $i < $OtherChar->NumCards(); ++$i) {
     $CharCard = $OtherChar->Card($i, true);
@@ -891,7 +891,7 @@ function StealEquipment($srcPlayer, $index, $destPlayer, $trueSteal = false)
   }
   else {
     for ($i = 0; $i < $characterPieces; ++$i) {
-      array_push($destChar, $srcChar[$index + $i]);
+      $destChar[] = $srcChar[$index + $i];
     }
   }
   $destChar = array_values($destChar);
@@ -934,7 +934,7 @@ function NumOccupiedHands($player)
 function EquipWeapon($player, $cardID, $source = "-")
 {
   global $EffectContext;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (SearchCurrentTurnEffects("ripple_away_blue", $player) != "" || (SearchCurrentTurnEffects("ripple_away_blue", $otherPlayer)) != "") {
     if (TypeContains($cardID, "T", $player, true) && (CardType($source) == "A" || CardType($source) == "AA")) {
       WriteLog("🌊 You can't equip token weapons from an action card under " . CardLink("ripple_away_blue", "ripple_away_blue"));
@@ -1006,7 +1006,7 @@ function ShiyanaCharacter($cardID, $player = "")
   global $currentPlayer;
   if ($player == "") $player = $currentPlayer;
   if ($cardID == "shiyana_diamond_gemini") {
-    $otherPlayer = $player == 1 ? 2 : 1;
+    $otherPlayer = 3 - $player;
     $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) $cardID = $otherCharacter[0];
   }
@@ -1403,7 +1403,7 @@ function EquipPayAdditionalCosts($cardIndex)
         $attackID = $attacks[$ind];
         $names = GamestateUnsanitize($chainLinkSummary[$i+4]);
         if (!DelimStringContains(CardType($attackID), "W") && DelimStringContains($names, "Edge of Autumn")) {
-          array_push($allInds, "COMBATCHAINATTACKS-$ind");
+          $allInds[] = "COMBATCHAINATTACKS-$ind";
         }
       }
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, implode(",", $allInds));
@@ -1445,7 +1445,7 @@ function EquipPayAdditionalCosts($cardIndex)
         if ($numOptions != "") {
           $numOptions = explode(",", $numOptions);
           $options = [];
-          foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+          foreach ($numOptions as $num) $options[] = "COMBATCHAINLINK-$num";
           $options = implode(",", $options);
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to buff the power of");
           AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);

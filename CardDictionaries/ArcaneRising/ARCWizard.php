@@ -153,7 +153,7 @@ function ARCWizardHitEffect($cardID)
 }
 
 function GetArcaneTargetFromUID($player, $target) {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $targetArr = explode("-", $target);
   $indexTarget = "-";
   if (!isset($targetArr[1])) return "-";
@@ -187,7 +187,7 @@ function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $ma
     "my_hero" => 4,
     default => $targetType
   };
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $context = $context == "" ? "Choose a target for <0>" : $context;
   AddDecisionQueue("PASSPARAMETER", $player, $source, ($isPassable ? 1 : 0));
   AddDecisionQueue("SETDQVAR", $player, "0", ($isPassable ? 1 : 0));
@@ -222,7 +222,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
 {
   global $currentPlayer, $CS_ArcaneTargetsSelected;
   if ($player == 0) $player = $currentPlayer;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $skipHitEffect = false; //we should *never* skip hit effects
   if ($damage > 0) {
     $damage += CurrentEffectArcaneModifier($source, $player, meldState: $meldState) * $nbArcaneInstance;
@@ -459,7 +459,7 @@ function PlayRequiresTarget($cardID, $from)
 function GetArcaneTargetIndices($player, $target): string
 {
   global $CS_ArcaneTargetsSelected;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($target == 4) return "MYCHAR-0";
   if ($target != 4 && $target != 5) $rv = "THEIRCHAR-0";
   else $rv = "";
@@ -1312,7 +1312,7 @@ function ProcessSurge($cardID, $player, $target)
       $otherSigilFound = false;
       $aurasCount = count($auras);
       $auraPieces = AuraPieces();
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       for ($i = $aurasCount - $auraPieces; $i >= 0; $i -= $auraPieces) {
         $auraName = CardName($auras[$i]);
         $AuraCard = new AuraCard($i, $player);

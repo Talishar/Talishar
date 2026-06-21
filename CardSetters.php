@@ -20,7 +20,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext;
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $character = &GetPlayerCharacter($player);
   $characterID = ShiyanaCharacter($character[0]);
   $amount = 1;
@@ -59,7 +59,9 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
       $rv = count($banish);
       for ($i = 0; $i < $amount; ++$i) {
         $uid = GetUniqueId($cardID, $player);
-        array_push($banish, $toBanish, $mod, $uid);
+        $banish[] = $toBanish;
+        $banish[] = $mod;
+        $banish[] = $uid;
         if ($foundThemis != "")
           AddLayer("TRIGGER", $foundThemis->Player(), $foundThemis->CardID(), $player, "FLIP", $uid);
       }
@@ -120,14 +122,14 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
 function BanishByEffect($cardID, $player, $banisher, &$rv) {
   global $mainPlayer, $CombatChain, $ChainLinks;
 
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $banish = GetBanish($player);
   // $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
   // $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
   $extraText = GetHorrorsBuff();
   $attackCard = IsResolutionStep() ? $ChainLinks->LastLink()->AttackCard()->ID() : $CombatChain->AttackCard()->ID();
   $banishEffects = [$banisher];
-  if ($banisher == $attackCard) array_push($banishEffects, $extraText);
+  if ($banisher == $attackCard) $banishEffects[] = $extraText;
 
   $banishPieces = BanishPieces();
   $banishCount = count($banish);
@@ -329,9 +331,15 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
   if ($facing == "UP" && $from == "DECK" && $cardSubType == "Arrow" && FindCharacterIndex($player, "sandscour_greatbow") != -1) $counters = 1;
 
   // cardID, facing, numUses=1, counters, isFrozen="0", uniqueID, numPowerCounters=0
-  array_push($arsenal, $cardID, $facing, 1, $counters, "0", GetUniqueId($cardID, $player), 0);
+  $arsenal[] = $cardID;
+  $arsenal[] = $facing;
+  $arsenal[] = 1;
+  $arsenal[] = $counters;
+  $arsenal[] = "0";
+  $arsenal[] = GetUniqueId($cardID, $player);
+  $arsenal[] = 0;
 
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($facing == "UP") {
     if ($from == "DECK" && str_starts_with($cardID, 'back_alley_breakline_') && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A")) {
       if ($player == $mainPlayer) {
@@ -503,7 +511,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase = true)
 
 function AddSpecificSoul($cardID, &$soul, $from)
 {
-  array_push($soul, $cardID);
+  $soul[] = $cardID;
 }
 
 function BanishFromSoul($player, $index = 0)
@@ -901,7 +909,9 @@ function RemoveCharacterEffects($player, $index, $effect)
 
 function AddSpecificGraveyard($cardID, &$graveyard, $from, $mods="-")
 {
-  array_push($graveyard, $cardID, GetUniqueId(), $mods);
+  $graveyard[] = $cardID;
+  $graveyard[] = GetUniqueId();
+  $graveyard[] = $mods;
 }
 
 function NegateLayer($MZIndex, $goesWhere = "GY")
@@ -912,7 +922,7 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
   if (!is_numeric($index)) return;
   $cardID = $layers[$index];
   $player = $layers[$index + 1];
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   array_splice($layers, $index, LayerPieces());
   if ($goesWhere != "-") {
     ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);

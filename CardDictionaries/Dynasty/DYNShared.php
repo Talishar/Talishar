@@ -638,9 +638,10 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
     }
   }
   $chainLinksCount = count($chainLinks);
+  $chainLinksPieces = ChainLinksPieces();
   for($i = 0; $i < $chainLinksCount; ++$i) {
     $linkCount = count($chainLinks[$i]);
-    for($j = 0; $j < $linkCount; $j += ChainLinksPieces()) {
+    for($j = 0; $j < $linkCount; $j += $chainLinksPieces) {
       if($chainLinks[$i][$j+2] == 0) continue;
       $contractType = ContractType($chainLinks[$i][$j]);
       if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainLinks[$i][$j]);
@@ -676,6 +677,7 @@ function CheckContracts($banishedBy, $cardBanished)
     if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
   $chainLinksCount = count($chainLinks);
+  $chainLinksPieces = ChainLinksPieces();
   for($i = 0; $i < $chainLinksCount; ++$i) {
     if (!isset($chainLinks[$i])) {
       WriteLog("Something odd happened while checking contracts, please submit a bug report", highlight:true);
@@ -683,7 +685,7 @@ function CheckContracts($banishedBy, $cardBanished)
     }
     if(!is_array($chainLinks[$i])) continue;
     $linkCount = count($chainLinks[$i]);
-    for($j = 0; $j < $linkCount; $j += ChainLinksPieces()) {
+    for($j = 0; $j < $linkCount; $j += $chainLinksPieces) {
       if($chainLinks[$i][$j+1] != $banishedBy) continue;
       if($chainLinks[$i][$j+2] == 0) continue;
       if(CardType($chainLinks[$i][$j]) == "AA" && $j > 0) continue; //blocking AA don't generate contracts
@@ -705,7 +707,7 @@ function ImperialWarHorn($player, $term)
 
 function CheckContract($contractType, $cardBanished, $player)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $chosenName = strlen($contractType) > strlen("NAMEDCARD-") ? substr($contractType, strlen("NAMEDCARD-")) : "-";
   $contractType = explode("-", $contractType)[0];
   switch($contractType) {

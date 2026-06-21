@@ -297,7 +297,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "glyph_overlay_blue":
       $numSigils = 0;
       $sigils = SearchAura($currentPlayer, nameIncludes: "Sigil");
-      if($sigils != "") $numSigils = count(explode(",", $sigils));
+      if($sigils != "") $numSigils = substr_count($sigils, ",") + 1;
       DealArcane(ArcaneDamage($cardID) + $numSigils, 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       return "";
     case "save_the_thought_red":
@@ -535,7 +535,9 @@ function GetTrapIndices($player)
 function HasAuraWithSigilInName($player)
 {
   $auras = &GetAuras($player);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $auraCount = count($auras);
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $auraCount; $i += $auraPieces) {
     if (CardNameContains($auras[$i], "Sigil", $player, partial: true)) return true;
   }
   return false;

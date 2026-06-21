@@ -30,7 +30,7 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $defPlayer, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   $rv = "";
   switch ($cardID) {
     case "mini_meataxe":

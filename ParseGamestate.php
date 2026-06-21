@@ -15,16 +15,12 @@ ParseGamestate();
 
 function GamestateSanitize($input)
 {
-  $output = str_replace(",", "<44>", $input);
-  $output = str_replace(" ", "_", $output);
-  return $output;
+  return str_replace([",", " "], ["<44>", "_"], $input);
 }
 
 function GamestateUnsanitize($input)
 {
-  $output = str_replace("<44>", ",", $input);
-  $output = str_replace("_", " ", $output);
-  return $output;
+  return str_replace(["<44>", "_"], [",", " "], $input);
 }
 
 function ParseGamestate()
@@ -127,8 +123,7 @@ function ParseGamestate()
   if (!is_numeric($numChainLinks)) $numChainLinks = 0;
   $chainLinks = [];
   for ($i = 0; $i < $numChainLinks; ++$i) {
-    $chainLink = GetStringArray($gamestateContent[57+$i]);
-    array_push($chainLinks, $chainLink);
+    $chainLinks[] = GetStringArray($gamestateContent[57+$i]);
   }
   $chainLinkSummary = GetStringArray($gamestateContent[57+$numChainLinks]);
   $p1Key = trim($gamestateContent[58+$numChainLinks]);

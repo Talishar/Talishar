@@ -62,7 +62,7 @@
 
   function ProcessTowerEffect($cardID)
   {
-    global $CombatChain, $mainPlayer, $defPlayer, $layers;
+    global $mainPlayer, $defPlayer, $layers;
     if(!IsHeroAttackTarget()) return;
     if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
       WriteLog("Tower effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
@@ -173,7 +173,7 @@
   }
 
   function WonClashAbility($playerID, $cardID, $effectController="", $switchedPlayers=[false, false]) {
-    global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $dqVars, $defPlayer;
+    global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $defPlayer;
     $otherPlayer = $playerID == 1 ? 2 : 1;
     
     $deck = new Deck($playerID);
@@ -517,21 +517,20 @@
 
   function Transcend($player, $cardID, $from)
   {
-    global $currentPlayer, $CS_Transcended;
-    $otherplayer = $player == 1 ? 2 : 1;
+    global $CS_Transcended;
+    $otherPlayer = 3 - $player;
     SetClassState($player, $CS_Transcended, 1);
     if(SearchCharacterAlive($player, "twelve_petal_kasaya")) {
       AddDecisionQueue("YESNO", $player, "if you want to gain a resource");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("GAINRESOURCES", $player, "1", 1);
     }
-    if(str_starts_with($from, "THEIR")) AddPlayerHand($cardID, $otherplayer, "-");
+    if(str_starts_with($from, "THEIR")) AddPlayerHand($cardID, $otherPlayer, "-");
     else AddPlayerHand($cardID, $player, "-");
   }
 
   /**
    * Decompose is a keyword added in ROS. Per LSS decompose gives you an option to banishes 2 earth and 1 action card for a bonus effect
-   *
    * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
    */
   function Decompose($player, $specificCardDQ, $target = "") {

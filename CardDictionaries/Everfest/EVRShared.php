@@ -369,12 +369,14 @@
         $allTargets = explode(",", $target);
         $numDestroyed = 0;
         $allTargetsCount = count($allTargets);
+        $layerPieces = LayerPieces();
+        $auraPieces = AuraPieces();
         for ($i = 1; $i < $allTargetsCount; $i++) {
           if (str_starts_with($allTargets[$i], "LAYER")) {
             $index = -1;
             $uid = substr($allTargets[$i], 5);
             $layersCount = count($layers);
-            for ($j = 0; $j < $layersCount; $j += LayerPieces()) {
+            for ($j = 0; $j < $layersCount; $j += $layerPieces) {
               if ($layers[$j + 6] == $uid) $index = $j;
             }
             if ($index != -1) {
@@ -386,7 +388,7 @@
           else {
             $index = -1;
             $aurasCount = count($auras);
-            for ($j = 0; $j < $aurasCount; $j += AuraPieces()) {
+            for ($j = 0; $j < $aurasCount; $j += $auraPieces) {
               if ($auras[$j + 6] == $allTargets[$i]) $index = $j;
             }
             if ($index != -1) {
@@ -597,9 +599,10 @@
         {
           $deck = new Deck($mainPlayer);
           $chainLinksCount = count($chainLinks);
+          $chainLinkSummaryPieces = ChainLinkSummaryPieces();
           for($i=0; $i<$chainLinksCount; ++$i)
           {
-            $listOfNames = $chainLinkSummary[$i*ChainLinkSummaryPieces()+4];
+            $listOfNames = $chainLinkSummary[$i*$chainLinkSummaryPieces+4];
             foreach (explode(",", $listOfNames) as $name) {
               if($chainLinks[$i][2] == "1" && GamestateUnsanitize($name) == "Hundred Winds")
               {
@@ -620,7 +623,8 @@
           $hand = &GetHand($defPlayer);
           $cards = "";
           $numDiscarded = 0;
-          for($i=count($hand)-HandPieces(); $i>=0; $i-=HandPieces())
+          $handPieces = HandPieces();
+          for($i=count($hand)-$handPieces; $i>=0; $i-=$handPieces)
           {
             $id = $hand[$i];
             $cardType = CardType($id);
@@ -694,15 +698,17 @@
     $heaveIndices = "";
     $totalResources = GetResources($mainPlayer)[0];
     $handCount = count($hand);
-    for($i=0; $i<$handCount; $i+=HandPieces()) {
+    $handPieces = HandPieces();
+    $auraPieces = AuraPieces();
+    for($i=0; $i<$handCount; $i+= $handPieces) {
       if (is_numeric(PitchValue($hand[$i]))) $totalResources += PitchValue($hand[$i]);
     }
     $auras = GetAuras($mainPlayer);
     $aurasCount = count($auras);
-    for($i = 0; $i < $aurasCount; $i += AuraPieces()) {
+    for($i = 0; $i < $aurasCount; $i += $auraPieces) {
       if ($auras[$i] == "ponder") $totalResources += 3;
     }
-    for($i=0; $i<$handCount; $i+=HandPieces()) {
+    for($i=0; $i<$handCount; $i+= $handPieces) {
       $availableResources = (is_numeric(PitchValue($hand[$i]))) ? $totalResources - PitchValue($hand[$i]) : $totalResources;
       $heaveVal = HeaveValue($hand[$i]);
       if($heaveVal > 0 && ($availableResources >= $heaveVal || !$resourceCounting)) {
@@ -772,7 +778,7 @@
       $attackID = $attacks[$ind];
       $names = GamestateUnsanitize($chainLinkSummary[$i+4]);
       if (!DelimStringContains(CardType($attackID), "W") && DelimStringContains($names, "Crazy Brew")) {
-        array_push($attackCards, "COMBATCHAINATTACKS-$ind");
+        $attackCards[] = "COMBATCHAINATTACKS-$ind";
       }
     }
     return CombineSearches(CombineSearches($items, $handCards), implode(",", $attackCards));
@@ -803,9 +809,11 @@
     $character = &GetPlayerCharacter($player);
     $indices = "";
     //past chain links
+    $chainLinksPieces = ChainLinksPieces();
+    $combatChainPieces = CombatChainPieces();
     foreach($chainLinks as $link) {
       $linkCount = count($link);
-      for ($i = 0; $i < $linkCount; $i += ChainLinksPieces()) {
+      for ($i = 0; $i < $linkCount; $i += $chainLinksPieces) {
         $characterIndex = SearchCharacterForUniqueID($link[$i+8], $player);
         if ($characterIndex != -1) {
           if($character[$characterIndex+6] == 1 
@@ -822,7 +830,7 @@
     }
     // Current link
     $combatChainCount = count($combatChain);
-    for ($i = CombatChainPieces(); $i < $combatChainCount; $i += CombatChainPieces()) {
+    for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
       $characterIndex = SearchCharacterForUniqueID($CombatChain->Card($i)->OriginUniqueID(), $player);
       if ($characterIndex != -1 && $character[$characterIndex] == $CombatChain->Card($i)->ID()) {
         if($character[$characterIndex+6] == 1 
@@ -844,7 +852,8 @@
     $deck = &GetDeck($player);
     $indices = "";
     $deckCount = count($deck);
-    for($i=0; $i<$deckCount; $i+=DeckPieces()) {
+    $deckPieces = DeckPieces();
+    for($i=0; $i<$deckCount; $i+= $deckPieces) {
       if(SubtypeContains($deck[$i], "Item", $player)) {
         $name = CardName($deck[$i]);
         if(str_contains($name, "Potion") || str_contains($name, "Talisman") || str_contains($name, "Amulet")) {

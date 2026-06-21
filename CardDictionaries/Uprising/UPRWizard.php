@@ -2,7 +2,7 @@
 
   function UPRWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $CS_LastDynCost, $layers;
+    global $currentPlayer, $mainPlayer, $CS_ArcaneDamagePrevention, $layers;
     $rv = "";
     switch($cardID)
     {
