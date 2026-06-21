@@ -40,14 +40,15 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-    if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+    $effectID = $currentTurnEffects[$i];
+    if (IsCombatEffectActive($effectID) && !IsCombatEffectLimited($i)) {
       if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-        $power = EffectPowerModifier($currentTurnEffects[$i]);
-        $fromCurrentAttack = $currentTurnEffects[$i] == $attackID || IsGrantedBuff($currentTurnEffects[$i]);
-        if (($canGainAttack || $power < 0) && !($snagActive && ($fromCurrentAttack || CardType(EffectCardID($currentTurnEffects[$i])) == "AR"))) {
-          $powerModifiers[] = $currentTurnEffects[$i];
+        $power = EffectPowerModifier($effectID);
+        $fromCurrentAttack = $effectID == $attackID || IsGrantedBuff($effectID);
+        if (($canGainAttack || $power < 0) && !($snagActive && ($fromCurrentAttack || CardType(EffectCardID($effectID)) == "AR"))) {
+          $powerModifiers[] = $effectID;
           $powerModifiers[] = $power;
-          AddPower($totalPower, $power, source:$currentTurnEffects[$i]);
+          AddPower($totalPower, $power, source:$effectID);
         }
       }
     }
@@ -187,10 +188,8 @@ function AddPower(&$totalPower, $amount, $sourceBuff=false, $source="-"): void
     if ($amount > 0 && ($attackID == "amplifying_arrow_yellow" || $attackID == "doubling_season_red"))
       $amount += 1;
     if (!$sourceBuff && $amount > 0) { //thrive and flourish don't apply to buffs to the attack source
-      if (SearchCurrentTurnEffects("thrive_yellow", $mainPlayer)) {
-        $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack so get all the active effects before applying bonus
-        $amount += $num_thrives_active;
-      }
+      $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack
+      if ($num_thrives_active > 0) $amount += $num_thrives_active;
       SearchCurrentTurnEffects("flourish_yellow-INACTIVE", $mainPlayer, false, false, true);
       SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
     }
@@ -315,23 +314,26 @@ function StartTurnAbilities()
   if($mainCharacter[13]) AddCurrentTurnEffect("marked", $mainPlayer);  //Marked stays between turns
   if($defCharacter[13]) AddCurrentTurnEffect("marked", $defPlayer); //Marked stays between turns
   CurrentEffectStartTurnAbilities();
-  for ($i = count($mainCharacter) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
+  $charPieces = CharacterPieces();
+  $itemPieces = ItemPieces();
+  for ($i = count($mainCharacter) - $charPieces; $i >= 0; $i -= $charPieces) {
     CharacterStartTurnAbility($i);
   }
   ArsenalStartTurnAbilities();
   DefCharacterStartTurnAbilities();
   AuraStartTurnAbilities();
-  AllyStartTurnAbilities($mainPlayer); 
+  AllyStartTurnAbilities($mainPlayer);
   LandmarkStartTurnAbilities();
 
   $mainItems = &GetItems($mainPlayer);
-  for ($i = count($mainItems) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+  for ($i = count($mainItems) - $itemPieces; $i >= 0; $i -= $itemPieces) {
     $mainItems[$i + 2] = "2";
     $mainItems[$i + 3] = ItemUses($mainItems[$i]);
     ItemStartTurnAbility($i);
   }
+  $banishPieces = BanishPieces();
   $mainBanish = &GetBanish($mainPlayer);
-  for ($i = count($mainBanish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+  for ($i = count($mainBanish) - $banishPieces; $i >= 0; $i -= $banishPieces) {
     if($mainBanish[$i + 1] == "RETURNFIRE"){
       if (!ArsenalFull($mainPlayer) ) {
         $arsenal = &GetArsenal($mainPlayer);
@@ -346,7 +348,7 @@ function StartTurnAbilities()
   }
   $defItems = &GetItems($defPlayer);
   $defItemsCount = count($defItems);
-  for ($i = 0; $i < $defItemsCount; $i += ItemPieces()) {
+  for ($i = 0; $i < $defItemsCount; $i += $itemPieces) {
     $defItems[$i + 2] = "2";
     $defItems[$i + 3] = ItemUses($defItems[$i]);
     if ($defItems[$i + 7] == "1" && !SuperFrozen($mainPlayer, "THEIRITEMS-$i") && !SuperFrozen($defPlayer, "MYITEMS-$i"))
@@ -354,26 +356,29 @@ function StartTurnAbilities()
   }
   $defCharacter = &GetPlayerCharacter($defPlayer);
   $defCharacterCount = count($defCharacter);
-  for ($i = 0; $i < $defCharacterCount; $i += CharacterPieces()) {
+  for ($i = 0; $i < $defCharacterCount; $i += $charPieces) {
     if ($defCharacter[$i+8] == "1" && !SuperFrozen($mainPlayer, "THEIRCHAR-$i") && !SuperFrozen($defPlayer, "MYCHAR-$i")) {
       $defCharacter[$i + 8] = "0";//Reset Frozen
     }
   }
   $defAllies = &GetAllies($defPlayer);
   $defAlliesCount = count($defAllies);
-  for ($i = 0; $i < $defAlliesCount; $i += AllyPieces()) {
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i < $defAlliesCount; $i += $allyPieces) {
     if ($defAllies[$i+3] == "1" && !SuperFrozen($mainPlayer, "THEIRALLY-$i") && !SuperFrozen($defPlayer, "MYALLY-$i"))
       $defAllies[$i + 3] = "0";//Reset Frozen
   }
   $defAuras = &GetAuras($defPlayer);
   $defAuraCount = count($defAuras);
-  for ($i = 0; $i < $defAuraCount; $i += AuraPieces()) {
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $defAuraCount; $i += $auraPieces) {
     if ($defAuras[$i+11] == "1" && !SuperFrozen($mainPlayer, "THEIRAURAS-$i") && !SuperFrozen($defPlayer, "MYAURAS-$i"))
       $defAuras[$i + 11] = "0";//Reset Frozen
   }
   $defArsenal = &GetArsenal($defPlayer);
   $defArsenalCount = count($defArsenal);
-  for ($i = 0; $i < $defArsenalCount; $i += ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $defArsenalCount; $i += $arsenalPieces) {
     $defArsenal[$i + 4] = "0";//Reset Frozen
   }
   MZStartTurnMayAbilities();
@@ -399,7 +404,8 @@ function MZStartTurnIndices()
   global $mainPlayer;
   $graveyard = &GetDiscard($mainPlayer);
   $cards = "";
-  for ($i = count($graveyard) - DiscardPieces(); $i >= 0; $i -= DiscardPieces()) {
+  $discardPieces = DiscardPieces();
+  for ($i = count($graveyard) - $discardPieces; $i >= 0; $i -= $discardPieces) {
     $card = GetClass($graveyard[$i], $mainPlayer);
     if ($card != "-") $card->DiscardStartTurnTrigger($i);
     switch ($graveyard[$i]) {
@@ -428,14 +434,18 @@ function FindEmptyEquipmentSlots($player)
   $character = &GetPlayerCharacter($player);
   $charCount = count($character);
   $charPieces = CharacterPieces();
-  $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character, $charCount, $charPieces) {
-    for ($i = 0; $i < $charCount; $i += $charPieces) {
-      $subtype = CardSubType($character[$i], $character[$i + 11]);
-      $status = $character[$i + 1];
-      if (DelimStringContains($subtype, $slot) && $status != 0) return false;
+  $slots = ["Head", "Chest", "Arms", "Legs"];
+  $occupied = [];
+  for ($i = 0; $i < $charCount && count($occupied) < 4; $i += $charPieces) {
+    if ($character[$i + 1] == 0) continue; // destroyed cards don't occupy a slot
+    $subtype = CardSubType($character[$i], $character[$i + 11]);
+    foreach ($slots as $slot) {
+      if (!isset($occupied[$slot]) && DelimStringContains($subtype, $slot)) {
+        $occupied[$slot] = true;
+      }
     }
-    return true;
-  });
+  }
+  $available = array_filter($slots, fn($s) => !isset($occupied[$s]));
   return empty($available) ? "" : implode(",", $available);
 }
 
@@ -473,7 +483,8 @@ function ArsenalBeginEndPhaseAbilities()
 {
   global $mainPlayer;
   $arsenal = &GetArsenal($mainPlayer);
-  for ($i = count($arsenal) - ArsenalPieces(); $i >= 0; $i -= ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  for ($i = count($arsenal) - $arsenalPieces; $i >= 0; $i -= $arsenalPieces) {
     switch ($arsenal[$i]) {
       case "the_hand_that_pulls_the_strings":
         if ($arsenal[$i + 1] == "UP") {
@@ -526,7 +537,8 @@ function ArsenalPowerModifier(&$powerModifiers)
   $arsenal = GetArsenal($mainPlayer);
   $modifier = 0;
   $arsenalCount = count($arsenal);
-  for ($i = 0; $i < $arsenalCount; $i += ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     switch ($arsenal[$i]) {
       case "minerva_themis":
         $modifier += ($arsenal[$i + 1] == "UP" && TypeContains($attackID, "W", $mainPlayer) && Is1H($attackID) ? 1 : 0);
@@ -1294,7 +1306,7 @@ function UnsetAuraModifier($player, $modifier, $newMod = "-") {
 function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $color = "")
 {
   global $combatChain;
-  $pieces = "";
+  $piecesArr = [];
   $exclCardTypeArray = explode(",", $exclCardTypes);
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
 
@@ -1304,7 +1316,7 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
     if ($color != "" && !ColorContains($combatChain[$i], $color, $combatChain[$i+1])) continue;
     if ($playerID != "" && $combatChain[$i + 1] != $playerID) continue;
     if ($cardType != "" && !TypeContains($combatChain[$i], $cardType, $playerID)) continue;
-    if ($subType != "" && !SubtypeContains($combatChain[$i], $subType)) continue; 
+    if ($subType != "" && !SubtypeContains($combatChain[$i], $subType)) continue;
     if ($nameContains != "" && !CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true)) continue;
 
     $excluded = false;
@@ -1315,11 +1327,9 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
       if (SubtypeContains($combatChain[$i], $exSubtype)) $excluded = true;
     }
     if ($excluded) continue;
-    if ($pieces != "") $pieces .= ",";
-    if (!$asMZInd) $pieces .= $i;
-    else $pieces .= "COMBATCHAINLINK-$i";
+    $piecesArr[] = !$asMZInd ? $i : "COMBATCHAINLINK-$i";
     }
-  return $pieces;
+  return implode(",", $piecesArr);
 }
 
 function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $blockingClass = "", $color = "", $subtype = "") {
@@ -1362,7 +1372,7 @@ function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = 
 function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "")
 {
   global $combatChain;
-  $cardIDs = "";
+  $cardIDsArr = [];
   $exclCardTypeArray = explode(",", $exclCardTypes);
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
   $exclCardTypeCount = count($exclCardTypeArray);
@@ -1383,11 +1393,10 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
         }
       }
       if ($excluded) continue;
-      if ($cardIDs != "") $cardIDs .= ",";
-      $cardIDs .= $combatChain[$i];
+      $cardIDsArr[] = $combatChain[$i];
     }
   }
-  return $cardIDs;
+  return implode(",", $cardIDsArr);
 }
 
 function ChainLinkResolvedEffects()
@@ -2189,17 +2198,11 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     $effectArr = explode("-", $currentTurnEffects[$i], 2);
     $modName = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
-    if ($partial) {
-      $modName = explode(" ", $modName);
-      $modName = implode(",", $modName);
-    }
+    if ($partial && $modName !== "") $modName = str_replace(" ", ",", $modName);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($modName != "" && $currentTurnEffects[$i + 1] == $player && DelimStringContains($modName, $name, $partial)) return true;
   }
-  if ($partial) {
-    $cardName = explode(" ", $cardName);
-    $cardName = implode(",", $cardName);
-  }
+  if ($partial) $cardName = str_replace(" ", ",", $cardName);
   if ($cardName == $name) return true; //Card is breaking due to comma
   return DelimStringContains($cardName, $name, $partial);
 }
@@ -2306,18 +2309,14 @@ function RevealCards($cards, $player = "", $look=false, $fullReveal=true)
 
 function RevealHand($player) {
   $hand = &GetHand($player);
-  $cards = "";
   if (empty($hand)) return true;
   $handCount = count($hand);
   $handPieces = HandPieces();
+  $cardsArr = [];
   for ($i = 0; $i < $handCount; $i += $handPieces) {
-    if (isset($hand[$i])) { 
-      if ($cards != "") $cards .= ",";
-      $cards .= $hand[$i];
-    } 
+    if (isset($hand[$i])) $cardsArr[] = $hand[$i];
   }
-  $revealed = RevealCards($cards, $player);
-  return $revealed;
+  return RevealCards(implode(",", $cardsArr), $player);
 }
 
 function DoesAttackHaveGoAgain()
@@ -3525,7 +3524,8 @@ function HitsInRow()
 {
   global $chainLinkSummary;
   $numHits = 0;
-  for ($i = count($chainLinkSummary) - ChainLinkSummaryPieces(); $i >= 0 && intval($chainLinkSummary[$i + 5]) > 0; $i -= ChainLinkSummaryPieces()) {
+  $summaryPieces = ChainLinkSummaryPieces();
+  for ($i = count($chainLinkSummary) - $summaryPieces; $i >= 0 && intval($chainLinkSummary[$i + 5]) > 0; $i -= $summaryPieces) {
     ++$numHits;
   }
   return $numHits;
@@ -3536,7 +3536,8 @@ function HitsInCombatChain()
   global $chainLinkSummary, $combatChainState, $CCS_HitThisLink, $CCS_DamageDealt;
   $numHits = intval($combatChainState[$CCS_HitThisLink]); //track flicks
   if ($combatChainState[$CCS_DamageDealt] > 0) $numHits += 1; //tracks during thhe damage step
-  for ($i = count($chainLinkSummary) - ChainLinkSummaryPieces(); $i >= 0; $i -= ChainLinkSummaryPieces()) {
+  $summaryPieces = ChainLinkSummaryPieces();
+  for ($i = count($chainLinkSummary) - $summaryPieces; $i >= 0; $i -= $summaryPieces) {
     $numHits += intval($chainLinkSummary[$i + 5]);
   }
   return $numHits;
@@ -3546,7 +3547,8 @@ function NumAttacksHit()
 {
   global $chainLinkSummary;
   $numHits = 0;
-  for ($i = count($chainLinkSummary) - ChainLinkSummaryPieces(); $i >= 0; $i -= ChainLinkSummaryPieces()) {
+  $summaryPieces = ChainLinkSummaryPieces();
+  for ($i = count($chainLinkSummary) - $summaryPieces; $i >= 0; $i -= $summaryPieces) {
     if ($chainLinkSummary[$i] > 0) ++$numHits;
   }
   return $numHits;
@@ -3954,8 +3956,9 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
       if (DelimStringContains($cardType, "A") || $cardType == "AA") PlayAura("seismic_surge", $player, $num, effectSource:"earthlore_bounty");
     }
   }
+  $auraPieces = AuraPieces();
   $myAuras = GetAuras($player);
-  for ($i = count($myAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  for ($i = count($myAuras) - $auraPieces; $i >= 0; $i -= $auraPieces) {
     switch ($myAuras[$i]) {
       case "escalate_bloodshed_red":
         if ($mainPhase) {
@@ -3969,7 +3972,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     }
   }
   $theirAuras = GetAuras($otherPlayer);
-  for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+  for ($i = count($theirAuras) - $auraPieces; $i >= 0; $i -= $auraPieces) {
     switch ($theirAuras[$i]) {
       case "escalate_bloodshed_red":
         if ($mainPhase) {
