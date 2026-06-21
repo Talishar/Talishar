@@ -7,11 +7,11 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
 {
   global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CCS_NumPowerCounters, $combatChain, $defPlayer;
   BuildMainPlayerGameState();
-  $attackID = $CombatChain->AttackCard()->ID(); // cache: AttackCard() allocates a new ChainCard object on every call
+  $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
   $canGainAttack = CanGainAttack($attackID);
   $snagActive = SearchCurrentTurnEffects("snag_blue", $mainPlayer) && $attackType == "AA";
-  $combatChainPieces = CombatChainPieces(); // cache: constant-returning function, avoid repeated call overhead in loops
+  $combatChainPieces = CombatChainPieces();
 
   for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
     $chainCard = $CombatChain->Card($i, true);
@@ -40,16 +40,15 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
+    if ($currentTurnEffects[$i + 1] !== $mainPlayer) continue;
     $effectID = $currentTurnEffects[$i];
     if (IsCombatEffectActive($effectID) && !IsCombatEffectLimited($i)) {
-      if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-        $power = EffectPowerModifier($effectID);
-        $fromCurrentAttack = $effectID == $attackID || IsGrantedBuff($effectID);
-        if (($canGainAttack || $power < 0) && !($snagActive && ($fromCurrentAttack || CardType(EffectCardID($effectID)) == "AR"))) {
-          $powerModifiers[] = $effectID;
-          $powerModifiers[] = $power;
-          AddPower($totalPower, $power, source:$effectID);
-        }
+      $power = EffectPowerModifier($effectID);
+      $fromCurrentAttack = $effectID == $attackID || IsGrantedBuff($effectID);
+      if (($canGainAttack || $power < 0) && !($snagActive && ($fromCurrentAttack || CardType(EffectCardID($effectID)) == "AR"))) {
+        $powerModifiers[] = $effectID;
+        $powerModifiers[] = $power;
+        AddPower($totalPower, $power, source:$effectID);
       }
     }
   }
@@ -200,7 +199,7 @@ function AddPower(&$totalPower, $amount, $sourceBuff=false, $source="-"): void
 
 function BlockingCardDefense($index)
 {
-  global $combatChain, $defPlayer, $currentTurnEffects, $CombatChain;
+  global $defPlayer, $CombatChain;
   $BlockCard = $CombatChain->Card($index);
   $cardID = $BlockCard->ID();
   $canGainBlock = CanGainBlock($cardID);
@@ -294,8 +293,8 @@ function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
       EvaluateCombatChain($totalPower, $totalBlock);
     }
     if ($skipLog == "-") {
-      if ($amount > 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets +" . $amount . " defense");
-      else if ($amount < 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
+      if ($amount > 0) WriteLog(CardLink($combatChain[$index]) . " gets +" . $amount . " defense");
+      else if ($amount < 0) WriteLog(CardLink($combatChain[$index]) . " gets " . $amount . " defense");
     }
   }
   return $index;
@@ -533,7 +532,6 @@ function ArsenalPowerModifier(&$powerModifiers)
 {
   global $CombatChain, $mainPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
-  $attackType = CardType($attackID);
   $arsenal = GetArsenal($mainPlayer);
   $modifier = 0;
   $arsenalCount = count($arsenal);
@@ -598,7 +596,7 @@ function ArsenalPlayCardAbilities($cardID)
 
 function HasIncreasedAttack()
 {
-  global $CombatChain, $combatChainState, $mainPlayer, $combatChain;
+  global $CombatChain, $mainPlayer, $combatChain;
   if ($CombatChain->HasCurrentLink()) {
     $power = CachedTotalPower();
     if (SearchCharacterActive($mainPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($combatChain[0], $mainPlayer) && SubtypeContains($combatChain[0], "Aura", $mainPlayer)) {
@@ -612,7 +610,7 @@ function HasIncreasedAttack()
 
 function HasDecreasedAttack()
 {
-  global $CombatChain, $combatChainState, $mainPlayer, $combatChain;
+  global $CombatChain, $mainPlayer, $combatChain;
   if ($CombatChain->HasCurrentLink()) {
     $power = CachedTotalPower();
     if (SearchCharacterActive($mainPlayer, "cosmo_scroll_of_ancestral_tapestry") && HasWard($combatChain[0], $mainPlayer) && SubtypeContains($combatChain[0], "Aura", $mainPlayer)) {
@@ -824,7 +822,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
 
 function DamageDealtAbilities($target, $damage, $type, $source)
 {
-  global $mainPlayer, $combatChainState, $CCS_AttackFused, $CombatChain, $layers;
+  global $mainPlayer, $combatChainState, $CCS_AttackFused;
   if ($type == "COMBAT") {
     if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer)) {
       WriteLog("Damage effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
@@ -925,7 +923,7 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
 
 function CurrentEffectDamageModifiers($player, $source, $type)
 {
-  global $currentTurnEffects, $mainPlayer;
+  global $currentTurnEffects;
   $modifier = 0;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces(); 
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
@@ -948,7 +946,7 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 
 function CombatChainDamageModifiers($player, $source, $type)
 {
-  global $chainLinks, $CombatChain, $mainPlayer, $CurrentTurnEffects;
+  global $chainLinks, $CombatChain;
   $modifier = 0;
   if($type == "ARCANE") return $modifier; //It's already checked upfront for Arcane
   if ($CombatChain->HasCurrentLink()) {
@@ -956,7 +954,7 @@ function CombatChainDamageModifiers($player, $source, $type)
       case "ball_lightning_red":
       case "ball_lightning_yellow":
       case "ball_lightning_blue":
-        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
+        if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $player) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
         break;
       default:
         break;
@@ -969,7 +967,7 @@ function CombatChainDamageModifiers($player, $source, $type)
         case "ball_lightning_red":
         case "ball_lightning_yellow":
         case "ball_lightning_blue":
-          if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
+          if (TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $player) && (TypeContains($source, "A") || TypeContains($source, "AA"))) ++$modifier;
           break;
         default:
           break;
@@ -1333,7 +1331,7 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
 }
 
 function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $blockingClass = "", $color = "", $subtype = "") {
-  global $chainLinks, $defPlayer, $mainPlayer;
+  global $chainLinks, $mainPlayer;
   $ret = [];
   $exclCardTypeArray = explode(",", $exclCardTypes);
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
@@ -1401,7 +1399,7 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CCS_GoesWhereAfterLinkResolves, $defPlayer;
+  global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CombatChain;
   $allies = GetAllies($mainPlayer);
   if ($CombatChain->HasCurrentLink()) {
     if ($combatChain[0] == "exude_confidence_red" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
@@ -1413,7 +1411,7 @@ function ChainLinkResolvedEffects()
 
 function ResolutionStepEffectTriggers()
 {
-  global $currentTurnEffects, $chainLinks, $combatChain, $turn, $mainPlayer;
+  global $currentTurnEffects;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $currentEffect = explode("-", $currentTurnEffects[$i], 2);
@@ -1512,7 +1510,7 @@ function CombatChainClosedMainCharacterEffects()
 }
 
 function CombatChainClosedItemEffects() {
-  global $ChainLinks, $defPlayer, $chainLinkSummary, $mainPlayer;
+  global $ChainLinks, $defPlayer;
   
   for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
     $Link = $ChainLinks->GetLink($i);
@@ -1841,10 +1839,13 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
+  $cardTypeIsAction = DelimStringContains($cardType, "A");
+  $subtypeIsAura = DelimStringContains($subtype, "Aura");
+  $isStaticType = IsStaticType($cardType, $from, $cardID);
 
   // cards whose ability lets you play them at instant speed
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") if ($card->CanPlayAsInstant($index, $from)) return true;
+  if ($card != "-" && $card->CanPlayAsInstant($index, $from)) return true;
   switch ($cardID) {
     case "snapback_red":
     case "snapback_yellow":
@@ -1891,9 +1892,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   }
 
   if (CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("spirit_of_eirina_yellow", $currentPlayer) != "") return true;
-  if (DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
-  if (!IsStaticType($cardType, $from, $cardID) && DelimStringContains($cardType, "A") && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
-  if (DelimStringContains($cardType, "A") && $currentPlayer == $mainPlayer && $combatChainState[$CCS_EclecticMag]) return true;
+  if ($cardTypeIsAction && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
+  if (!$isStaticType && $cardTypeIsAction && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
+  if ($cardTypeIsAction && $currentPlayer == $mainPlayer && $combatChainState[$CCS_EclecticMag]) return true;
   if ($cardType == "C" || $cardType == "E" || $cardType == "W") {
     if ($index == -1) $index = GetClassState($currentPlayer, $CS_CharacterIndex);
     if (SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
@@ -1902,36 +1903,40 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     $banish = GetBanish($currentPlayer);
     if ($index > -1 && $index < count($banish)) {
       if ($banish[$index + 1] !== null) {
-        $mod = explode("-", $banish[$index + 1], 2)[0];
+        $banishMeta = $banish[$index + 1];
+        $dashPos = strpos($banishMeta, "-");
+        $mod = $dashPos !== false ? substr($banishMeta, 0, $dashPos) : $banishMeta;
         if (DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || str_contains($mod, "shadowrealm_horror_red")) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
       }
     }
   }
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if (SearchCurrentTurnEffects("meridian_pathway", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
-  if (SubtypeContains($cardID, "Evo") && GetResolvedAbilityType($cardID, $from, $currentPlayer) != "AA") {
+  if (DelimStringContains($subtype, "Evo") && GetResolvedAbilityType($cardID, $from, $currentPlayer) != "AA") {
     if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $currentPlayer) || SearchCurrentTurnEffects("teklovossen", $currentPlayer)) return true;
     if (SearchCurrentTurnEffects("scrap_compactor_red", $currentPlayer) || SearchCurrentTurnEffects("scrap_compactor_yellow", $currentPlayer) || SearchCurrentTurnEffects("scrap_compactor_blue", $currentPlayer)) return true;
   }
-  if ($from == "ARS" && DelimStringContains($cardType, "A") && $currentPlayer != $mainPlayer && ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "iyslander_stormbind") || SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0]))) return true;
-  if ($from == "ARS" && DelimStringContains($cardType, "A") && $currentPlayer != $mainPlayer ) {
+  if ($from == "ARS" && $cardTypeIsAction && $currentPlayer != $mainPlayer) {
+    if (ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "iyslander_stormbind") || SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0]))) return true;
     $arsenal = &GetArsenal($currentPlayer);
     $arsenalCount = count($arsenal);
     $arsenalPieces = ArsenalPieces();
     for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
-      if (SearchCurrentTurnEffects("chain_reaction_yellow" . "-" . $arsenal[$i + 5], $currentPlayer)) return true;
+      if (SearchCurrentTurnEffects("chain_reaction_yellow-" . $arsenal[$i + 5], $currentPlayer)) return true;
     }
     $layersCount = count($layers);
     $layersPieces = LayerPieces();
     for ($i = 0; $i < $layersCount; $i += $layersPieces) {
-      if (SearchCurrentTurnEffects("chain_reaction_yellow" . "-" . $layers[$i + 5], $currentPlayer)) return true;
+      if (SearchCurrentTurnEffects("chain_reaction_yellow-" . $layers[$i + 5], $currentPlayer)) return true;
     }
   }
-  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("vengeful_apparition_red-INST", $currentPlayer) && CardCost($cardID, $from) <= 2) return true;
-  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("vengeful_apparition_yellow-INST", $currentPlayer) && CardCost($cardID, $from) <= 1) return true;
-  if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("vengeful_apparition_blue-INST", $currentPlayer) && CardCost($cardID, $from) <= 0) return true;
-  if (DelimStringContains($subtype, "Aura") && SearchCurrentTurnEffects("fluttersteps", $currentPlayer)) return true;
-  $isStaticType = IsStaticType($cardType, $from, $cardID);
+  if ($subtypeIsAura && ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) {
+    $cardCost = CardCost($cardID, $from);
+    if (SearchCurrentTurnEffects("vengeful_apparition_red-INST", $currentPlayer) && $cardCost <= 2) return true;
+    if (SearchCurrentTurnEffects("vengeful_apparition_yellow-INST", $currentPlayer) && $cardCost <= 1) return true;
+    if (SearchCurrentTurnEffects("vengeful_apparition_blue-INST", $currentPlayer) && $cardCost <= 0) return true;
+  }
+  if ($subtypeIsAura && SearchCurrentTurnEffects("fluttersteps", $currentPlayer)) return true;
   $abilityType = "-";
   if ($isStaticType) $abilityType = GetAbilityType($cardID, $index, $from);
   if (($cardType == "AR" || $abilityType == "AR" && $isStaticType) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
@@ -1939,7 +1944,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   if ($from == "DECK" && (SearchCharacterActive($currentPlayer, "dash_io") || SearchCharacterActive($currentPlayer, "dash_database"))) return true;
 
   if (!$secondCheck || $layers[0] == "ABILITY") { // when checking if something *was* played at instant speed, this check only makes sense if the ability was used
-    $card = GetClass($cardID, $currentPlayer);
     if ($card != "-") return $card->CanActivateAsInstant($index, $from); //rename this function to "CanActivateAsInstant"
     switch ($cardID) { // cards that can be *activated* at instant speed
       case "mighty_windup_red":
@@ -2223,13 +2227,13 @@ function TalentOverride($cardID, $player = "", $zone="-")
       case "brand_with_cinderclaw_blue":
       case "enflame_the_firebrand_red":
         if (TypeContains($cardID, "AA") || TypeContains($cardID, "W") || SubtypeContains($cardID, "Ally")) {
-          $talentToAdd = "DRACONIC"; //Brand of Cinderclaw
+          $talentToAdd = "DRACONIC";
         }
         break;
       case "blessing_of_vynserakai_red":
         $talentToAdd = "DRACONIC";
         break;
-      case "fealty": //Fealty
+      case "fealty":
         $cardType = CardType($cardID);
         if (!TypeContains($cardID, "W") && !TypeContains($cardID, "AA") && !IsStaticType($cardType)) { // We'll need to add cases for Allies and Emperor Attacking
           $talentToAdd = "DRACONIC";
@@ -2331,7 +2335,7 @@ function DoesAttackHaveGoAgain()
   $from = $combatChain[2] ?? "CC";
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
-  $isAura = DelimStringContains(CardSubtype($attackID), "Aura");
+  $isAura = DelimStringContains($attackSubtype, "Aura");
 
   //Prevention Natural Go Again
   if (CurrentEffectPreventsGoAgain($attackID, $from)) return false;
@@ -2346,13 +2350,14 @@ function DoesAttackHaveGoAgain()
 
   //Grant go Again
   $auras = &GetAuras($mainPlayer);
-  $actionsPlayed = explode(",", GetClassState($mainPlayer, $CS_ActionsPlayed) ?? "");
-  $numActions = count($actionsPlayed);
   if (ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
     if (SearchCharacterForCard($mainPlayer, "luminaris") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if ($isAura && SearchCharacterForCard($mainPlayer, "iris_of_reality")) return true;
   }
-  if ($isAura && SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry") && isset($auras[$combatChainState[$CCS_WeaponIndex] + 3]) ? $auras[$combatChainState[$CCS_WeaponIndex] + 3] > 0 : false) return true;
+  if ($isAura && SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
+    $cosmoIndex = $combatChainState[$CCS_WeaponIndex] + 3;
+    if (isset($auras[$cosmoIndex]) && $auras[$cosmoIndex] > 0) return true;
+  }
   if ($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) {
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
     return true;
@@ -2360,11 +2365,11 @@ function DoesAttackHaveGoAgain()
 
   if ($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("ode_to_wrath_yellow", $mainPlayer)) return true;
   if (DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "dromai_ash_artist") || SearchCharacterActive($mainPlayer, "dromai") || SearchCurrentTurnEffects("dromai_ash_artist-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("dromai-SHIYANA", $mainPlayer))) return true;
-  if (SearchItemsForCard("mhz_script_yellow", $mainPlayer) != "" && $attackType == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "MECHANOLOGIST", $mainPlayer)) return true;
-  if (SearchCurrentTurnEffectsForCycle("engaged_swiftblade_red", "engaged_swiftblade_yellow", "engaged_swiftblade_blue", $mainPlayer) && ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
-  
-  if (SearchCurrentTurnEffects("first_tenet_of_chi_wind_blue", $mainPlayer) && PitchValue($CombatChain->AttackCard()->ID()) == 3 && $CombatChain->AttackCard()->From() != "PLAY") return true;
-  if (SearchCurrentTurnEffects("spreading_mist_blue-GOAGAIN", $mainPlayer) && $CombatChain->AttackCard()->From() != "PLAY") return true;
+  if (SearchItemsForCard("mhz_script_yellow", $mainPlayer) != "" && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) return true;
+  if (SearchCurrentTurnEffectsForCycle("engaged_swiftblade_red", "engaged_swiftblade_yellow", "engaged_swiftblade_blue", $mainPlayer) && ClassContains($attackID, "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
+
+  if (SearchCurrentTurnEffects("first_tenet_of_chi_wind_blue", $mainPlayer) && PitchValue($attackID) == 3 && $from != "PLAY") return true;
+  if (SearchCurrentTurnEffects("spreading_mist_blue-GOAGAIN", $mainPlayer) && $from != "PLAY") return true;
 
   if (IsWeaponGreaterThanTwiceBasePower() && SearchAuras("sharpened_senses_yellow", $mainPlayer) && IsWeaponAttack()) return true;
   if (SearchCurrentTurnEffects("goldkiss_rum", $mainPlayer)) return true;
@@ -2373,14 +2378,13 @@ function DoesAttackHaveGoAgain()
   $character = &GetPlayerCharacter($mainPlayer);
   $characterCount = count($character);
   $characterPieces = CharacterPieces();
+  $isFirstStealthAttack = HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1;
   for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
       case "arakni_solitary_confinement": case "arakni_5lp3d_7hru_7h3_cr4x":
-        if (HasStealth($attackID) && GetClassState($mainPlayer, piece: $CS_NumStealthAttacks) == 1) {
-          return true;
-        }
+        if ($isFirstStealthAttack) return true;
         break;
       default:
         break;
@@ -2388,14 +2392,11 @@ function DoesAttackHaveGoAgain()
   }
   $otherPlayerCharacter = &GetPlayerCharacter($defPlayer);
   $otherCharCount = count($otherPlayerCharacter);
-  $charPieces = CharacterPieces();
-  for ($j = 0; $j < $otherCharCount; $j += $charPieces) {
+  for ($j = 0; $j < $otherCharCount; $j += $characterPieces) {
     if ($otherPlayerCharacter[$j + 1] != 2) continue;
     switch ($otherPlayerCharacter[$j]) {
       case "arakni_5lp3d_7hru_7h3_cr4x":
-        if (HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1) {
-          return true;
-        }
+        if ($isFirstStealthAttack) return true;
         break;
       default:
         break;
@@ -2555,7 +2556,9 @@ function DoesAttackHaveGoAgain()
     case "current_funnel_blue":
       //the last action in numActions is going to be the current chain link
       //so we want the second to last
-      return count($actionsPlayed) > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING", $mainPlayer);
+      $actionsPlayed = explode(",", GetClassState($mainPlayer, $CS_ActionsPlayed) ?? "");
+      $numActions = count($actionsPlayed);
+      return $numActions > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING", $mainPlayer);
     case "flittering_charge_red":
     case "flittering_charge_yellow":
     case "flittering_charge_blue":
@@ -2627,7 +2630,7 @@ function BlockCardDestroyed($cardID, $player)
 
 function AttackDestroyed($attackID)
 {
-  global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  global $mainPlayer;
   $card = GetClass($attackID, $mainPlayer);
   if ($card != "-") $card->DestroyEffect();
   switch ($attackID) {
@@ -3013,15 +3016,18 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
   $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from, $additionalCosts);
   if (IsStaticType($cardType, $from, $cardID)) {
     $hasGoAgain = AbilityHasGoAgain($cardID, $from);
-    if (GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID) || $hasGoAgain;
+    if (GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = $hasGoAgain || CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID);
   } else {
-    $hasGoAgain = HasMeld($cardID) ? 0 : HasGoAgain($cardID, $from);
-    if (GetClassState($player, $CS_NextNAACardGoAgain) && (DelimStringContains($cardType, "A") || $from == "MELD")) {
+    $hasMeld = HasMeld($cardID);
+    $cardTypeIsAction = DelimStringContains($cardType, "A");
+    $cardTypeIsInstant = DelimStringContains($cardType, "I");
+    $hasGoAgain = $hasMeld ? 0 : HasGoAgain($cardID, $from);
+    if (GetClassState($player, $CS_NextNAACardGoAgain) && ($cardTypeIsAction || $from == "MELD")) {
       $hasGoAgain = true;
       SetClassState($player, $CS_NextNAACardGoAgain, 0);
       SearchCurrentTurnEffects("mage_master_boots", $player, true);
     }
-    $character = GetPlayerCharacter($player);
+    $character = &GetPlayerCharacter($player);
     $characterCount = count($character);
     $characterPieceSize = CharacterPieces();
     for ($i = 0; $i < $characterCount; $i += $characterPieceSize) {
@@ -3043,23 +3049,23 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
       }
     }
     $numActionsPlayed = count($actionsPlayed);
-    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING", $mainPlayer) && $actionsPlayed[$numActionsPlayed-2] == "current_funnel_blue" && DelimStringContains($cardType, "A")) {
+    if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING", $mainPlayer) && $actionsPlayed[$numActionsPlayed-2] == "current_funnel_blue" && $cardTypeIsAction) {
       if (SearchCurrentTurnEffects("current_funnel_blue", $mainPlayer, remove: true)) $hasGoAgain = true;
     }
     if ($cardType == "AA" && SearchCurrentTurnEffects("blizzard_blue", $player)) $hasGoAgain = false;
     if ($cardType == "AA" && SearchCurrentTurnEffects("rainbow_goo_trap_red", $player)) $hasGoAgain = false;
-    if (DelimStringContains($cardType, "A")) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID) || $hasGoAgain;
-    if (DelimStringContains($cardType, "A") && $hasGoAgain && (SearchAuras("fog_down_yellow", 1) || SearchAuras("fog_down_yellow", 2))) $hasGoAgain = false;
-    if (DelimStringContains($cardType, "I") && !HasMeld($cardID)){
-      $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
+    if ($cardTypeIsAction) $hasGoAgain = $hasGoAgain || CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID);
+    if ($cardTypeIsAction && $hasGoAgain && (SearchAuras("fog_down_yellow", 1) || SearchAuras("fog_down_yellow", 2))) $hasGoAgain = false;
+    if ($cardTypeIsInstant && !$hasMeld){
+      $hasGoAgain = $hasGoAgain || CurrentEffectGrantsInstantGoAgain($cardID, $from);
     }
-    elseif (DelimStringContains($cardType, "I") && $from != "MELD" && IsMeldInstantName($additionalCosts)){
+    elseif ($cardTypeIsInstant && $from != "MELD" && IsMeldInstantName($additionalCosts)){
       // handles case of only right side
-      $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain;
+      $hasGoAgain = $hasGoAgain || CurrentEffectGrantsInstantGoAgain($cardID, $from);
     }
     elseif ($from == "MELD" && $additionalCosts == "MELD"){
       // handles case of left side resolving after melding
-      $hasGoAgain = CurrentEffectGrantsInstantGoAgain($cardID, $from) || $hasGoAgain || HasGoAgain($cardID);
+      $hasGoAgain = $hasGoAgain || HasGoAgain($cardID) || CurrentEffectGrantsInstantGoAgain($cardID, $from);
     }
     elseif ($from == "MELD"){
       // handles case of only left side

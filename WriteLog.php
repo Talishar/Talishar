@@ -23,10 +23,10 @@ function LogBufferAppend($filename, $line, $requireExists)
   if (!isset($logWriteBuffer[$filename])) {
     $logWriteBuffer[$filename] = ["requireExists" => $requireExists, "content" => "", "size" => 0];
   }
-  $lineLen = strlen($line);
-  $logWriteBuffer[$filename]["content"] .= $line;
-  $logWriteBuffer[$filename]["size"] += $lineLen;
-  if ($logWriteBuffer[$filename]["size"] >= LOG_BUFFER_FLUSH_THRESHOLD) {
+  $entry = &$logWriteBuffer[$filename];
+  $entry["content"] .= $line;
+  $entry["size"] += strlen($line);
+  if ($entry["size"] >= LOG_BUFFER_FLUSH_THRESHOLD) {
     FlushLogBufferEntry($filename);
   }
 }
@@ -35,16 +35,16 @@ function FlushLogBufferEntry($filename)
 {
   global $logWriteBuffer;
   if (!isset($logWriteBuffer[$filename])) return;
-  $entry = $logWriteBuffer[$filename];
+  $entry = &$logWriteBuffer[$filename];
   if ($entry["content"] === "") return;
   if ($entry["requireExists"] && !file_exists($filename)) {
-    $logWriteBuffer[$filename]["content"] = "";
-    $logWriteBuffer[$filename]["size"] = 0;
+    $entry["content"] = "";
+    $entry["size"] = 0;
     return;
   }
   @file_put_contents($filename, $entry["content"], FILE_APPEND);
-  $logWriteBuffer[$filename]["content"] = "";
-  $logWriteBuffer[$filename]["size"] = 0;
+  $entry["content"] = "";
+  $entry["size"] = 0;
 }
 
 function FlushLogBuffer()
@@ -62,15 +62,21 @@ function FlushLogBuffer()
 function WriteLog($text, $playerColor = 0, $highlight=false, $path="./", $highlightColor="brown")
 {
   global $gameName;
-  $filename = "{$path}Games/$gameName/gamelog.txt";
-  $playerSpan = ($playerColor != 0 ? "<span style='color:<PLAYER{$playerColor}COLOR>;'>" : "");
-  $playerSpanClose = ($playerColor != 0 ? "</span>" : "");
-  if($highlight) $output = $playerSpan . "<p style='background: $highlightColor;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>" . $text . "</span></p>" . $playerSpanClose;
-  else $output = $playerSpan . $text . $playerSpanClose;
-  LogBufferAppend($filename, "$output\r\n", true);
+  if ($playerColor === 0) {
+    $output = $highlight
+      ? "<p style='background: $highlightColor;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>$text</span></p>"
+      : $text;
+  } else {
+    $inner = $highlight
+      ? "<p style='background: $highlightColor;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>$text</span></p>"
+      : $text;
+    $output = "<span style='color:<PLAYER{$playerColor}COLOR>;'>$inner</span>";
+  }
+  $line = "$output\r\n";
+  $basePath = "{$path}Games/$gameName/";
+  LogBufferAppend("{$basePath}gamelog.txt", $line, true);
   if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
-    $filename = "{$path}Games/$gameName/fullGamelog.txt";
-    LogBufferAppend($filename, "$output\r\n", false);
+    LogBufferAppend("{$basePath}fullGamelog.txt", $line, false);
   }
 }
 
@@ -80,7 +86,7 @@ function ClearLog($n=30)
 
   FlushLogBuffer(); // buffered lines must be in the file before we slice it
   $filename = "./Games/$gameName/gamelog.txt";
-  $handle = fopen("./Games/$gameName/gamelog.txt", "r");
+  $handle = fopen($filename, "r");
   $lines = [];
   if ($handle) {
     while (!feof($handle)) {
@@ -98,38 +104,36 @@ function ClearLog($n=30)
 function WriteSystemMessage($text, $path="./")
 {
   global $gameName;
-  $filename = "{$path}Games/$gameName/gamelog.txt";
-  LogBufferAppend($filename, "$text\r\n", true);
+  $line = "$text\r\n";
+  $basePath = "{$path}Games/$gameName/";
+  LogBufferAppend("{$basePath}gamelog.txt", $line, true);
   if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
-    $filename = "{$path}Games/$gameName/fullGamelog.txt";
-    LogBufferAppend($filename, "$text\r\n", false);
+    LogBufferAppend("{$basePath}fullGamelog.txt", $line, false);
   }
 }
 
 function JSONLog($gameName, $playerID, $path="./")
 {
   FlushLogBuffer(); // make any lines buffered in this process visible to the read
-  $response = "";
   $filename = "{$path}Games/$gameName/gamelog.txt";
   clearstatcache(true, $filename); // Clear file stat cache to get fresh file size
   if (!file_exists($filename)) return "";
   $filesize = filesize($filename);
-  if ($filesize > 0) {
-    $maxRead = 131072; // 128 KB cap — prevents OOM when log file grows large
-    $handler = fopen($filename, "r");
-    if ($filesize > $maxRead) {
-      fseek($handler, -$maxRead, SEEK_END);
-    }
-    $line = fread($handler, min($filesize, $maxRead));
-    fclose($handler);
-    if ($filesize > $maxRead && ($nl = strpos($line, "\n")) !== false) {
-      $line = substr($line, $nl + 1);
-    }
-    $red = "#cb0202";
-    $blue = "#128ee5";
-    $player1Color = $playerID == 1 || $playerID == 3 ? $blue : $red;
-    $player2Color = $playerID == 2 ? $blue : $red;
-    $response = str_replace(["\r\n", "<PLAYER1COLOR>", "<PLAYER2COLOR>"], ["<br>", $player1Color, $player2Color], $line);
+  if ($filesize <= 0) return "";
+  $maxRead = 131072; // 128 KB cap — prevents OOM when log file grows large
+  $truncated = $filesize > $maxRead;
+  $handler = fopen($filename, "r");
+  if ($truncated) {
+    fseek($handler, -$maxRead, SEEK_END);
   }
-  return $response;
+  $line = fread($handler, $truncated ? $maxRead : $filesize);
+  fclose($handler);
+  if ($truncated && ($nl = strpos($line, "\n")) !== false) {
+    $line = substr($line, $nl + 1);
+  }
+  $red = "#cb0202";
+  $blue = "#128ee5";
+  $player1Color = ($playerID === 1 || $playerID === 3) ? $blue : $red;
+  $player2Color = ($playerID === 2) ? $blue : $red;
+  return str_replace(["\r\n", "<PLAYER1COLOR>", "<PLAYER2COLOR>"], ["<br>", $player1Color, $player2Color], $line);
 }

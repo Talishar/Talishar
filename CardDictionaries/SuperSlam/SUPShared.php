@@ -114,7 +114,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "thespian_charm_yellow":
       $params = explode(",", $additionalCosts);
-      for($i = 0; $i < count($params); ++$i) {
+      $paramsCount = count($params);
+      for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Destroy_a_Might_or_Vigor":
             $search = "THEIRAURAS:cardID=might;cardID=vigor";
@@ -139,7 +140,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "liars_charm_yellow":
       $params = explode(",", $additionalCosts);
-      for($i = 0; $i < count($params); ++$i) {
+      $paramsCount = count($params);
+      for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Steal_a_Toughness_or_Vigor":
             $search = "THEIRAURAS:cardID=vigor;cardID=toughness";
@@ -170,7 +172,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "numbskull_charm_yellow":
       $params = explode(",", $additionalCosts);
-      for($i = 0; $i < count($params); ++$i) {
+      $paramsCount = count($params);
+      for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Destroy_a_Confidence_or_Might":
             $search = "THEIRAURAS:cardID=confidence;cardID=might";
@@ -196,7 +199,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "cheaters_charm_yellow":
       $params = explode(",", $additionalCosts);
-      for($i = 0; $i < count($params); ++$i) {
+      $paramsCount = count($params);
+      for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Steal_a_Confidence_or_Toughness":
             $search = "THEIRAURAS:cardID=confidence;cardID=toughness";

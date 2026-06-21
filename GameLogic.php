@@ -669,7 +669,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDHANDOWNER":
       $otherPlayer = 3 - $player;
-      if (substr($combatChain[$lastResult + 2], 0, 5) == "THEIR") AddPlayerHand($combatChain[$lastResult], $otherPlayer, "CC");
+      if (str_starts_with($combatChain[$lastResult + 2], "THEIR")) AddPlayerHand($combatChain[$lastResult], $otherPlayer, "CC");
       else AddPlayerHand($combatChain[$lastResult], $player, "CC");
       return $lastResult;
     case "ADDMYPITCH":
@@ -683,8 +683,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "ADDARSENAL":
       $params = explode("-", $parameter);
-      $from = count($params) > 0 ? $params[0] : "-";
-      $facing = count($params) > 1 ? $params[1] : "DOWN";
+      $from = $params[0];
+      $facing = $params[1] ?? "DOWN";
       $deck = new Deck($player);
       if (!ArsenalFull($player)) {
         AddArsenal($deck->Top(), $player, $from, $facing);
@@ -695,8 +695,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
     case "ADDARSENALFROMDECK": //needed for schism so pass doesn't skip the other player
       $params = explode("-", $parameter);
-      $from = count($params) > 0 ? $params[0] : "-";
-      $facing = count($params) > 1 ? $params[1] : "DOWN";
+      $from = $params[0];
+      $facing = $params[1] ?? "DOWN";
       $deck = new Deck($player);
       if (!ArsenalFull($player) && $deck->RemainingCards() > 0) {
         AddArsenal($deck->Top(), $player, $from, $facing);
@@ -729,30 +729,33 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cards = explode(",", $lastResult);
       $hand = &GetHand($player);
       $cardsCount = count($cards);
-      $log = "";
-      for ($i = 0; $i < $cardsCount; ++$i) {
-        if ($parameter == "1") {
-          if ($log != "") $log .= ", ";
-          if ($i != 0 && $i == $cardsCount - 1) $log .= "and ";
-          $log .= CardLink($cards[$i], $cards[$i]);
+      array_push($hand, ...$cards);
+      if ($parameter == "1") {
+        $logParts = [];
+        for ($i = 0; $i < $cardsCount; ++$i) {
+          $link = CardLink($cards[$i], $cards[$i]);
+          $logParts[] = ($i !== 0 && $i === $cardsCount - 1) ? "and $link" : $link;
         }
-        $hand[] = $cards[$i];
+        WriteLog(implode(", ", $logParts) . " added to hand");
       }
-      if ($log != "") WriteLog("$log added to hand");
       return $lastResult;
     case "MULTIREMOVEHAND":
-      $cardsArr = [];
       $hand = &GetHand($player);
       if ($lastResult == "") return "";
       if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       $lastResultCount = count($lastResult);
+      $cardsArr = [];
+      $removeKeys = [];
       for ($i = 0; $i < $lastResultCount; ++$i) {
         if (is_numeric($lastResult[$i])) {
-          $cardsArr[] = $hand[$lastResult[$i]];
-          unset($hand[$lastResult[$i]]);
+          $index = (int)$lastResult[$i];
+          if (isset($hand[$index])) {
+            $cardsArr[] = $hand[$index];
+            $removeKeys[$index] = true;
+          }
         }
       }
-      $hand = array_values($hand);
+      if ($removeKeys) $hand = array_values(array_diff_key($hand, $removeKeys));
       return implode(",", $cardsArr);
     case "DESTROYCHARACTER":
       DestroyCharacter($player, $lastResult);
@@ -873,11 +876,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "TURNBANISHFACEDOWN":
           $mzArr = explode("-", $lastResult, 2);
-          TurnBanishFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1] ?? "");
+          TurnBanishFaceDown(str_starts_with($mzArr[0], "MY") ? $player : ($player == 1 ? 2 : 1), $mzArr[1] ?? "");
           break;
         case "TURNDISCARDFACEDOWN":
           $mzArr = explode("-", $lastResult, 2);
-          TurnDiscardFaceDown(substr($mzArr[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1), $mzArr[1] ?? "");
+          TurnDiscardFaceDown(str_starts_with($mzArr[0], "MY") ? $player : ($player == 1 ? 2 : 1), $mzArr[1] ?? "");
           break;
         case "ADDITIONALUSE":
           $mzArr = explode("-", $lastResult, 2);
@@ -1134,7 +1137,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $zoneCount = count($zone);
       for ($i = $zoneCount - 1; $i > 0; --$i) {
         $j = GetRandom(0, $i);
-        [$zone[$i], $zone[$j]] = [$zone[$j], $zone[$i]];
+        $tmp = $zone[$i]; $zone[$i] = $zone[$j]; $zone[$j] = $tmp;
       }
       if ($parameter != "SKIPSEED") {
         WriteLog("🔄Player $player deck was shuffled");
@@ -1197,15 +1200,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "SHOWMODES":
-      $modes = (is_array($lastResult)) ? $lastResult : explode(",", $lastResult);
+      $modes = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
       $modesCount = count($modes);
-      $text = "";
-      for ($i = 0; $i < $modesCount; ++$i) {
-        if ($text != "") $text .= ", ";
-        if ($i > 0 && $i == $modesCount - 1) $text .= " and ";
-        $text .= GamestateUnsanitize($modes[$i]);
+      $parts = array_map('GamestateUnsanitize', $modes);
+      if ($modesCount === 0) {
+        $text = "None";
+      } elseif ($modesCount === 1) {
+        $text = $parts[0];
+      } else {
+        $last = array_pop($parts);
+        $text = implode(", ", $parts) . ",  and " . $last;
       }
-      if ($text == "") $text = "None";
       WriteLog("Selected mode" . ($modesCount > 1 ? "s" : "") . " for " . CardLink($parameter, $parameter) . ($modesCount > 1 ? " are" : " is") . ": " . $text);
       return $lastResult;
     case "REVEALCARDS":
@@ -1479,18 +1484,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TOPDECKCHOOSE":
       $cards = explode(",", $lastResult);
       $params = explode(",", $parameter);
-      $indices = "";
-      $numMatch = 0;
+      $indicesArr = [];
       $cardsCount = count($cards);
       for ($i = 0; $i < $cardsCount; ++$i) {
-        if (DelimStringContains(CardSubType($cards[$i]), $params[1])) {
-          if ($indices != "") $indices .= ",";
-          $indices .= $i;
-          ++$numMatch;
-        }
+        if (DelimStringContains(CardSubType($cards[$i]), $params[1])) $indicesArr[] = $i;
       }
-      if ($numMatch == 0) return "PASS";
-      return "$params[0]-$indices-0";
+      if (empty($indicesArr)) return "PASS";
+      return "$params[0]-" . implode(",", $indicesArr) . "-0";
     case "CHARGE":
       DQCharge();
       return "1";
@@ -1549,8 +1549,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $otherPlayer = 3 - $player;
       $params = explode("-", $parameter);
       $damage = intval($params[0]);
-      $source = count($params) > 1 ? $params[1] : "-";
-      $type = count($params) > 2 ? $params[2] : "DAMAGE";
+      $source = $params[1] ?? "-";
+      $type = $params[2] ?? "DAMAGE";
       $playerSource = $params[3] ?? $player;
       if (!CanDamageBePrevented($player, $damage, "DAMAGE", $source)) $lastResult = 0;
       $damage -= intval($lastResult);
@@ -1994,7 +1994,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           // "MYAURAS" is omitted as it can be understood
           $allTargets = explode(",", $lastResult);
           // targetting opponent or targetting self
-          if (substr($lastResult, 0, 5) == "THEIR") {
+          if (str_starts_with($lastResult, "THEIR")) {
             $target .= "O";
             $cleanTarget .= "THEIRCHAR-0";
             $auras = GetAuras($otherPlayer);
@@ -2030,14 +2030,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $targParts = explode("-", $targ);
             if (!isset($targParts[1])) continue;
             $index = intval($targParts[1]);
-            $location = substr($targParts[0], 0, 2);
-            if($location == "MY")
+            $location = $targParts[0];
+            if(str_starts_with($location, "MY"))
             {
               $cleanTarget == "" ? 
                   $cleanTarget .= "MYCHAR," . $character[$index + 11] 
                 : $cleanTarget .= ",MYCHAR," . $character[$index + 11];
             }
-            elseif ($location == "CO")
+            elseif (str_starts_with($location, "CO"))
             {
               $cleanTarget == "" ? 
                 $cleanTarget .= "COMBATCHAINATTACKS,$index" 
@@ -2150,19 +2150,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $cleanTarget;
     case "SHOWCHOSENCARD":
       foreach (explode(",", $lastResult) as $targ) {
-        $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
+        $targetPlayer = str_starts_with($targ, "THEIR") ? ($player == 1 ? 2 : 1) : $player;
         WriteLog("Player " . $targetPlayer . " chose " . GetMZCardLink($targetPlayer, $targ));
       }
       return $lastResult;
     case "SHOWSELECTEDTARGET":
       foreach (explode(",", $lastResult) as $targ) {
-        $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
+        $targetPlayer = str_starts_with($targ, "THEIR") ? ($player == 1 ? 2 : 1) : $player;
         WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
       }
       return $lastResult;
     case "SCOURSHOWSELECTEDTARGET":
       foreach (explode(",", $lastResult) as $targ) {
-        $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
+        $targetPlayer = str_starts_with($targ, "THEIR") ? ($player == 1 ? 2 : 1) : $player;
         WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
       }
       return $lastResult;
@@ -2327,11 +2327,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "REMOVEDEFCOUNTER":
       if ($lastResult == "") return $lastResult;
-      if (substr($lastResult, 0, 5) == "THEIR") {
+      if (str_starts_with($lastResult, "THEIR")) {
         $index = intval(explode("-", $lastResult, 2)[1]);
         $player = $player == 1 ? 2 : 1;
       }
-      elseif(substr($lastResult, 0, 2) == "MY") {
+      elseif(str_starts_with($lastResult, "MY")) {
         $index = intval(explode("-", $lastResult, 2)[1]);
       }
       else {
@@ -2394,8 +2394,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "CLEARDQVARS":
       global $dqVars;
-      foreach($dqVars as $key => $value) unset($dqVars[$key]);
-      $dqVars = array_values($dqVars);
+      $dqVars = [];
       return "";
     case "MZSETDQVAR":
       $cardID = GetMZCard($player, $lastResult);
@@ -2486,7 +2485,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "SETDQCONTEXT":
-      $dqState[4] = str_contains($parameter, ' ') ? str_replace(' ', '_', $parameter) : $parameter;
+      $dqState[4] = str_replace(' ', '_', $parameter);
       return $lastResult;
     // case "SHOWTOPCARDS":
     //   $text = CardName($lastResult) . " shows you're top $parameter cards are";
@@ -2633,7 +2632,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $params[0];
       foreach ($lastResultArr as $mzItem) {
         $mzIndex = explode("-", $mzItem);
-        $target = (substr($mzIndex[0], 0, 2) == "MY") ? $player : ($player == 1 ? 2 : 1);
+        $target = str_starts_with($mzIndex[0], "MY") ? $player : ($player == 1 ? 2 : 1);
         if (!str_contains($mzIndex[0], "ALLY")) {
           if ($mzIndex[1] == 0) {
 
@@ -2913,9 +2912,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
         }
       }
-      $dqVars[0] = str_replace($lastResult, "", $dqVars[0]);
-      $dqVars[0] = trim($dqVars[0], ",");
-      $dqVars[0] = str_replace(",,", ",", $dqVars[0]);
+      $dqVars[0] = implode(",", array_filter(
+        explode(",", $dqVars[0]),
+        fn($v) => $v !== "" && $v !== $lastResult
+      ));
       return $lastResult;
     case "MZREMOVEALLCOUNTERS":
       $lastResultArr = explode(",", $lastResult);
@@ -3316,18 +3316,18 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMOVEINDICESIFACTIVECHAINLINK":
       $indices = explode(",", $lastResult);
       $char = GetPlayerCharacter($player);
-      $indicesCount = count($indices);
-      for ($i = 0; $i < $indicesCount; $i++) {
-        $option = explode("-", $indices[$i]);
-        if ($option[0] == "MYCHAR") {
-          if ($char[$option[1]] == $combatChain[0] && $char[$option[1] + 11] == $combatChain[8]) {
-            $lastResult = str_replace($indices[$i], "", $lastResult);
-            $lastResult = trim($lastResult, ",");
-            $lastResult = str_replace(",,", ",", $lastResult);
-          }
+      $filtered = [];
+      foreach ($indices as $index) {
+        $option = explode("-", $index, 2);
+        if ($option[0] === "MYCHAR"
+            && $char[$option[1]] === $combatChain[0]
+            && $char[$option[1] + 11] === $combatChain[8]) {
+          continue;
         }
+        $filtered[] = $index;
       }
-      return $lastResult !== "" ? $lastResult : "PASS";
+      $result = implode(",", $filtered);
+      return $result !== "" ? $result : "PASS";
     case "CHANGESHIYANA":
       $otherPlayer = 3 - $player;
       $otherChar = GetPlayerCharacter($otherPlayer);
@@ -3611,44 +3611,34 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "FABRICATE":
       $char = &GetPlayerCharacter($currentPlayer);
       $inventory = &GetInventory($currentPlayer);
-      $equipments = "";
+      $equipmentsArr = [];
       foreach ($inventory as $cardID) {
         if (TypeContains($cardID, "E", $currentPlayer) && CardNameContains($cardID, "Proto", $currentPlayer, true)) {
           switch (CardSubType($cardID)) {
             case "Base,Head":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Head")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Head")) $equipmentsArr[] = $cardID;
               break;
             case "Base,Chest":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Chest")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Chest")) $equipmentsArr[] = $cardID;
               break;
             case "Base,Arms":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Arms")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Arms")) $equipmentsArr[] = $cardID;
               break;
             case "Base,Legs":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Legs")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Legs")) $equipmentsArr[] = $cardID;
               break;
             default:
               break;
           }
         }
       }
-      WriteLog($equipments);
-      if ($equipments == "") {
+      if (empty($equipmentsArr)) {
         WriteLog("🚫Proto Equipments not found in your inventory");
         return "PASS";
-      } else return $equipments;
+      }
+      $equipments = implode(",", $equipmentsArr);
+      WriteLog($equipments);
+      return $equipments;
     case "MAYSEARCHDECK":
       if ($lastResult == "Search") {
         $paramArr = explode(",", $parameter);
@@ -3702,72 +3692,53 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "VISITTHEGOLDENANVIL":
-      $equipments = "";
       $char = &GetPlayerCharacter($currentPlayer);
       $inventory = &GetInventory($currentPlayer);
       $numHands = NumOccupiedHands($currentPlayer);
+      $equipmentsArr = [];
       foreach ($inventory as $cardID) {
         if (TypeContains($cardID, "W", $currentPlayer)) {
-          if ($numHands == 0 || Is1H($cardID) && $numHands == 1) {
-            if ($equipments != "") $equipments .= ",";
-            $equipments .= $cardID;
-          }
+          if ($numHands == 0 || Is1H($cardID) && $numHands == 1) $equipmentsArr[] = $cardID;
         }
         if (TypeContains($cardID, "E", $currentPlayer)) {
           switch (CardSubType($cardID)) {
             case "Head":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Head")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Head")) $equipmentsArr[] = $cardID;
               break;
             case "Chest":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Chest")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Chest")) $equipmentsArr[] = $cardID;
               break;
             case "Arms":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Arms")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Arms")) $equipmentsArr[] = $cardID;
               break;
             case "Legs":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Legs")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Legs")) $equipmentsArr[] = $cardID;
               break;
             case "Off-Hand":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Off-Hand")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Off-Hand")) $equipmentsArr[] = $cardID;
               break;
             case "Quiver":
-              if (!SearchCharacterAliveSubtype($currentPlayer, "Quiver")) {
-                if ($equipments != "") $equipments .= ",";
-                $equipments .= $cardID;
-              }
+              if (!SearchCharacterAliveSubtype($currentPlayer, "Quiver")) $equipmentsArr[] = $cardID;
               break;
             default:
               break;
           }
         }
       }
-      return $equipments;
+      return implode(",", $equipmentsArr);
     case "LISTEMPTYEQUIPSLOTS":
       $character = &GetPlayerCharacter($player);
       $charCount = count($character);
       $charPieces = CharacterPieces();
-      $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character, $charCount, $charPieces) {
-        for ($i = 0; $i < $charCount; $i += $charPieces) {
-          $subtype = CardSubType($character[$i], $character[$i + 11]);
-          if (DelimStringContains($subtype, $slot)) return false;
-        }
-        return true;
-      });
+      $filledSlots = [];
+      for ($i = 0; $i < $charCount; $i += $charPieces) {
+        $subtype = CardSubType($character[$i], $character[$i + 11]);
+        if (DelimStringContains($subtype, "Head"))  $filledSlots["Head"]  = true;
+        if (DelimStringContains($subtype, "Chest")) $filledSlots["Chest"] = true;
+        if (DelimStringContains($subtype, "Arms"))  $filledSlots["Arms"]  = true;
+        if (DelimStringContains($subtype, "Legs"))  $filledSlots["Legs"]  = true;
+      }
+      $available = array_filter(["Head", "Chest", "Arms", "Legs"], fn($slot) => !isset($filledSlots[$slot]));
       return empty($available) ? "PASS" : implode(",", $available);
     case "LISTEXPOSEDEQUIPSLOTS":
       if ($parameter == "-") return ListExposedEquipSlots($player);
@@ -3810,9 +3781,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $rv = SearchMultizone($player, $parameter); // I want multizone to return a blank string if no results so I built this
       return $rv;
     case "REMOVEPREVIOUSCHOICES":
-      $lastResult = str_replace($parameter, "", $lastResult);
-      $lastResult = trim($lastResult, ",");
-      $lastResult = str_replace(",,", ",", $lastResult);
+      $lastResult = implode(",", array_filter(
+        explode(",", $lastResult),
+        fn($v) => $v !== "" && $v !== $parameter
+      ));
       return $lastResult;
     case "TRUCE":
       if (SearchCurrentTurnEffects("truce_blue", $defPlayer, remove: true)){
@@ -4062,11 +4034,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           Tap($indices[$i], $player);
         }
       }
-      if (substr($zone, 0, 2) == "MY" && GetPerchedAllies($player) != "") {
+      if (str_starts_with($zone, "MY") && GetPerchedAllies($player) != "") {
         $myPerched = explode(",", GetPerchedAllies($player));
         foreach($myPerched as $j) Tap("MYCHAR-".$j, $player);
       }
-      else if(substr($zone, 0, 5) == "THEIR" && GetPerchedAllies($otherPlayer) != "") {
+      else if(str_starts_with($zone, "THEIR") && GetPerchedAllies($otherPlayer) != "") {
         $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
         foreach($theirPerched as $j) Tap("THEIRCHAR-".$j, $player);
       }
@@ -4082,11 +4054,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           Tap($indices[$i], $player, 0);
         }
       }
-      if (substr($zone, 0, 2) == "MY" && GetPerchedAllies($player) != "") {
+      if (str_starts_with($zone, "MY") && GetPerchedAllies($player) != "") {
         $myPerched = explode(",", GetPerchedAllies($player));
         foreach($myPerched as $j) Tap("MYCHAR-".$j, $player, 0);
       }
-      else if(substr($zone, 0, 5) == "THEIR" && GetPerchedAllies($otherPlayer) != "") {
+      else if(str_starts_with($zone, "THEIR") && GetPerchedAllies($otherPlayer) != "") {
         $theirPerched = explode(",", GetPerchedAllies($otherPlayer));
         foreach($theirPerched as $j) Tap("THEIRCHAR-".$j, $player, 0);
       }

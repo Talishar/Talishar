@@ -300,7 +300,16 @@ function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeChe
   } elseif (str_contains($parameter, ' ')) {
     $parameter = str_replace(' ', '_', $parameter);
   }
-  array_splice($decisionQueue, $insertIndex, 0, [$phase, $player, $parameter, $subsequent, $makeCheckpoint]);
+  // Avoid O(N) array_splice for the common append case; direct push is O(1)
+  if ($insertIndex === $dqCount) {
+    $decisionQueue[] = $phase;
+    $decisionQueue[] = $player;
+    $decisionQueue[] = $parameter;
+    $decisionQueue[] = $subsequent;
+    $decisionQueue[] = $makeCheckpoint;
+  } else {
+    array_splice($decisionQueue, $insertIndex, 0, [$phase, $player, $parameter, $subsequent, $makeCheckpoint]);
+  }
 }
 
 function PrependDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeCheckpoint = 0)
@@ -380,10 +389,10 @@ function IsGamePhase($phase)
   return isset($gamePhases[$phase]);
 }
 
-function AddTriggersToStack()
+function AddTriggersToStack($preLayers = null)
 {
   global $layers, $mainPlayer, $defPlayer;
-  $preLayers = GetPreLayers();
+  if ($preLayers === null) $preLayers = GetPreLayers();
   $preLayersCount = count($preLayers);
   if ($preLayersCount > 0) {
     $mainPreLayers = 0;
@@ -423,7 +432,7 @@ function ContinueDecisionQueue($lastResult = "")
     if (IsGameOver()) return; // Prevent multiple winner logs
     $preLayers = GetPreLayers();
     if ($dqCount == 0 && count($preLayers) > 0) {
-      AddTriggersToStack();
+      AddTriggersToStack($preLayers);
       ProcessDecisionQueue();
       return;
     }
@@ -651,17 +660,20 @@ function ContinueDecisionQueue($lastResult = "")
   // WriteLog($dqVars[0] . " " . $dqVars[1] . " " . $dqVars[2]); // Uncomment this to visualize decision queue variables execution
   // WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult); // Uncomment this to visualize decision queue execution
   $dqVarsCount = count($dqVars);
-  if ($dqVarsCount > 0) {
-    if (str_contains($parameter, "{0}") && isset($dqVars[0])) $parameter = str_replace("{0}", $dqVars[0], $parameter);
-    if (str_contains($parameter, "<0>") && isset($dqVars[0])) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
-    if ($dqVarsCount > 1 && str_contains($parameter, "{1}") && isset($dqVars[1])) $parameter = str_replace("{1}", $dqVars[1], $parameter);
-    if ($dqVarsCount > 2 && str_contains($parameter, "{2}") && isset($dqVars[2])) $parameter = str_replace("{2}", $dqVars[2], $parameter);
-  }
-  if ($dqVarsCount > 1 && isset($dqVars[1])) {
-    $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
-  }
-  if ($dqVarsCount > 2 && isset($dqVars[2])) {
-    $parameter = str_replace("<2>", CardLink($dqVars[2], $dqVars[2]), $parameter);
+  // Guard: skip all substitution when $parameter has no template markers (the common case)
+  if ($dqVarsCount > 0 && (str_contains($parameter, '{') || str_contains($parameter, '<'))) {
+    if (isset($dqVars[0])) {
+      if (str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
+      if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
+    }
+    if ($dqVarsCount > 1 && isset($dqVars[1])) {
+      if (str_contains($parameter, "{1}")) $parameter = str_replace("{1}", $dqVars[1], $parameter);
+      if (str_contains($parameter, "<1>")) $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
+    }
+    if ($dqVarsCount > 2 && isset($dqVars[2])) {
+      if (str_contains($parameter, "{2}")) $parameter = str_replace("{2}", $dqVars[2], $parameter);
+      if (str_contains($parameter, "<2>")) $parameter = str_replace("<2>", CardLink($dqVars[2], $dqVars[2]), $parameter);
+    }
   }
   if (count($layers) > 0 && $layers[0] == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
     $phase = "M";
@@ -746,6 +758,168 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
   if (CardType($cardID) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") return $card->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
+  // O(1) hash lookup replacing ~250 sequential switch-case comparisons for unconditional AnyHitTrigger cards
+  static $directAnyHitCards = [
+    "snatch_red"=>true,"snatch_yellow"=>true,"snatch_blue"=>true,
+    "pedal_to_the_metal_red"=>true,"pedal_to_the_metal_yellow"=>true,"pedal_to_the_metal_blue"=>true,
+    "over_loop_red"=>true,"over_loop_yellow"=>true,"over_loop_blue"=>true,
+    "red_in_the_ledger_red"=>true,"endless_arrow_red"=>true,
+    "hamstring_shot_red"=>true,"hamstring_shot_yellow"=>true,"hamstring_shot_blue"=>true,
+    "salvage_shot_red"=>true,"salvage_shot_yellow"=>true,"salvage_shot_blue"=>true,
+    "nebula_blade"=>true,"arknight_ascendancy_red"=>true,
+    "life_for_a_life_red"=>true,"life_for_a_life_yellow"=>true,"life_for_a_life_blue"=>true,
+    "pursuit_of_knowledge_blue"=>true,
+    "cadaverous_contraband_red"=>true,"cadaverous_contraband_yellow"=>true,"cadaverous_contraband_blue"=>true,
+    "fervent_forerunner_red"=>true,"fervent_forerunner_yellow"=>true,"fervent_forerunner_blue"=>true,
+    "moon_wish_red"=>true,"moon_wish_yellow"=>true,"moon_wish_blue"=>true,
+    "rifting_red"=>true,"rifting_yellow"=>true,"rifting_blue"=>true,
+    "soulbead_strike_red"=>true,"soulbead_strike_yellow"=>true,"soulbead_strike_blue"=>true,
+    "torrent_of_tempo_red"=>true,"torrent_of_tempo_yellow"=>true,"torrent_of_tempo_blue"=>true,
+    "bittering_thorns_yellow"=>true,"whirling_mist_blossom_yellow"=>true,
+    "high_speed_impact_red"=>true,"high_speed_impact_yellow"=>true,"high_speed_impact_blue"=>true,
+    "combustible_courier_red"=>true,"combustible_courier_yellow"=>true,"combustible_courier_blue"=>true,
+    "remorseless_red"=>true,
+    "pathing_helix_red"=>true,"pathing_helix_yellow"=>true,"pathing_helix_blue"=>true,
+    "sleep_dart_red"=>true,"sleep_dart_yellow"=>true,"sleep_dart_blue"=>true,
+    "dread_triptych_blue"=>true,
+    "consuming_volition_red"=>true,"consuming_volition_yellow"=>true,"consuming_volition_blue"=>true,
+    "meat_and_greet_red"=>true,"meat_and_greet_yellow"=>true,"meat_and_greet_blue"=>true,
+    "coax_a_commotion_red"=>true,
+    "promise_of_plenty_red"=>true,"promise_of_plenty_yellow"=>true,"promise_of_plenty_blue"=>true,
+    "herald_of_erudition_yellow"=>true,"herald_of_judgment_yellow"=>true,
+    "herald_of_triumph_red"=>true,"herald_of_triumph_yellow"=>true,"herald_of_triumph_blue"=>true,
+    "herald_of_protection_red"=>true,"herald_of_protection_yellow"=>true,"herald_of_protection_blue"=>true,
+    "herald_of_ravages_red"=>true,"herald_of_ravages_yellow"=>true,"herald_of_ravages_blue"=>true,
+    "herald_of_rebirth_red"=>true,"herald_of_rebirth_yellow"=>true,"herald_of_rebirth_blue"=>true,
+    "herald_of_tenacity_red"=>true,"herald_of_tenacity_yellow"=>true,"herald_of_tenacity_blue"=>true,
+    "wartune_herald_red"=>true,"wartune_herald_yellow"=>true,"wartune_herald_blue"=>true,
+    "galaxxi_black"=>true,
+    "brandish_red"=>true,"brandish_yellow"=>true,"brandish_blue"=>true,
+    "overload_red"=>true,"overload_yellow"=>true,"overload_blue"=>true,
+    "illuminate_red"=>true,"illuminate_yellow"=>true,"illuminate_blue"=>true,
+    "rising_solartide_red"=>true,"rising_solartide_yellow"=>true,"rising_solartide_blue"=>true,
+    "soul_harvest_blue"=>true,
+    "lunartide_plunderer_red"=>true,"lunartide_plunderer_yellow"=>true,"lunartide_plunderer_blue"=>true,
+    "oldhim_grandfather_of_eternity"=>true,"oldhim"=>true,"endless_winter_red"=>true,
+    "awakening_blue"=>true,"tear_asunder_blue"=>true,
+    "embolden_red"=>true,"embolden_yellow"=>true,"embolden_blue"=>true,
+    "light_it_up_yellow"=>true,
+    "frost_fang_red"=>true,"frost_fang_yellow"=>true,"frost_fang_blue"=>true,
+    "icy_encounter_red"=>true,"icy_encounter_yellow"=>true,"icy_encounter_blue"=>true,
+    "pulverize_red"=>true,"spring_tidings_yellow"=>true,
+    "ride_the_tailwind_red"=>true,"ride_the_tailwind_yellow"=>true,"ride_the_tailwind_blue"=>true,
+    "battering_bolt_red"=>true,
+    "fatigue_shot_red"=>true,"fatigue_shot_yellow"=>true,"fatigue_shot_blue"=>true,
+    "timidity_point_red"=>true,"timidity_point_yellow"=>true,"timidity_point_blue"=>true,
+    "drowning_dire_red"=>true,"drowning_dire_yellow"=>true,"drowning_dire_blue"=>true,
+    "reek_of_corruption_red"=>true,"reek_of_corruption_yellow"=>true,"reek_of_corruption_blue"=>true,
+    "bingo_red"=>true,
+    "dustup_red"=>true,"dustup_yellow"=>true,"dustup_blue"=>true,
+    "kyloria"=>true,"nekria"=>true,"vynserakai"=>true,
+    "engulfing_flamewave_red"=>true,"engulfing_flamewave_yellow"=>true,"engulfing_flamewave_blue"=>true,
+    "mounting_anger_red"=>true,"mounting_anger_yellow"=>true,"mounting_anger_blue"=>true,
+    "rising_resentment_red"=>true,"rising_resentment_yellow"=>true,"rising_resentment_blue"=>true,
+    "soaring_strike_red"=>true,"soaring_strike_yellow"=>true,"soaring_strike_blue"=>true,
+    "take_the_tempo_red"=>true,"stoke_the_flames_red"=>true,"erase_face_red"=>true,"vipox_red"=>true,
+    "flex_claws_red"=>true,"flex_claws_yellow"=>true,"flex_claws_blue"=>true,
+    "jubeel_spellbane"=>true,
+    "urgent_delivery_red"=>true,"urgent_delivery_yellow"=>true,"urgent_delivery_blue"=>true,
+    "heat_seeker_red"=>true,"immobilizing_shot_red"=>true,
+    "drill_shot_red"=>true,"drill_shot_yellow"=>true,"drill_shot_blue"=>true,
+    "hemorrhage_bore_red"=>true,"hemorrhage_bore_yellow"=>true,"hemorrhage_bore_blue"=>true,
+    "infiltrate_red"=>true,
+    "infect_red"=>true,"infect_yellow"=>true,"infect_blue"=>true,
+    "sedate_red"=>true,"sedate_yellow"=>true,"sedate_blue"=>true,
+    "wither_red"=>true,"wither_yellow"=>true,"wither_blue"=>true,
+    "wander_with_purpose_yellow"=>true,
+    "be_like_water_red"=>true,"be_like_water_yellow"=>true,"be_like_water_blue"=>true,
+    "deadly_duo_red"=>true,"deadly_duo_yellow"=>true,"deadly_duo_blue"=>true,
+    "barbed_undertow_red"=>true,
+    "infecting_shot_red"=>true,"infecting_shot_yellow"=>true,"infecting_shot_blue"=>true,
+    "sedation_shot_red"=>true,"sedation_shot_yellow"=>true,"sedation_shot_blue"=>true,
+    "withering_shot_red"=>true,"withering_shot_yellow"=>true,"withering_shot_blue"=>true,
+    "plunge_red"=>true,"plunge_yellow"=>true,"plunge_blue"=>true,
+    "death_touch_red"=>true,"death_touch_yellow"=>true,"death_touch_blue"=>true,
+    "amnesia_red"=>true,
+    "humble_red"=>true,"humble_yellow"=>true,"humble_blue"=>true,
+    "cut_down_to_size_red"=>true,"cut_down_to_size_yellow"=>true,"cut_down_to_size_blue"=>true,
+    "destructive_deliberation_red"=>true,"destructive_deliberation_yellow"=>true,"destructive_deliberation_blue"=>true,
+    "lay_to_rest_red"=>true,"lay_to_rest_yellow"=>true,"lay_to_rest_blue"=>true,
+    "flail_of_agony"=>true,
+    "hungering_demigon_red"=>true,"hungering_demigon_yellow"=>true,"hungering_demigon_blue"=>true,
+    "nasreth_the_soul_harrower"=>true,"censor_red"=>true,"mischievous_meeps_red"=>true,
+    "under_loop_red"=>true,"jinglewood_smash_hit"=>true,"bittering_thorns_red"=>true,
+    "banksy"=>true,"heist_red"=>true,
+    "spring_a_leak_red"=>true,"spring_a_leak_yellow"=>true,"spring_a_leak_blue"=>true,
+    "data_link_red"=>true,"data_link_yellow"=>true,"data_link_blue"=>true,
+    "dive_through_data_red"=>true,"dive_through_data_yellow"=>true,"dive_through_data_blue"=>true,
+    "expedite_red"=>true,"expedite_yellow"=>true,"expedite_blue"=>true,
+    "metex_red"=>true,"metex_yellow"=>true,"metex_blue"=>true,
+    "under_loop_yellow"=>true,"under_loop_blue"=>true,
+    "already_dead_red"=>true,"intoxicating_shot_blue"=>true,"millers_grindstone"=>true,
+    "pay_up_red"=>true,
+    "performance_bonus_red"=>true,"performance_bonus_yellow"=>true,"performance_bonus_blue"=>true,
+    "judge_jury_executioner_red"=>true,"strength_rules_all_red"=>true,"beckoning_mistblade"=>true,
+    "biting_breeze_red"=>true,"biting_breeze_yellow"=>true,"biting_breeze_blue"=>true,
+    "murky_water_red"=>true,
+    "earth_form_red"=>true,"earth_form_yellow"=>true,"earth_form_blue"=>true,
+    "lightning_form_red"=>true,"lightning_form_yellow"=>true,"lightning_form_blue"=>true,
+    "splintering_deadwood_red"=>true,"splintering_deadwood_yellow"=>true,"splintering_deadwood_blue"=>true,
+    "summit_the_unforgiving"=>true,"devotion_never_dies_red"=>true,
+    "strike_gold_red"=>true,"strike_gold_yellow"=>true,"strike_gold_blue"=>true,
+    "blow_for_a_blow_red"=>true,"bittering_thorns_blue"=>true,
+  ];
+  if (isset($directAnyHitCards[$cardID])) return AnyHitTrigger($mainPlayer, $cardID, $check);
+  // O(1) hash lookup replacing ~70 sequential switch-case comparisons for hero-hit-only cards
+  static $heroHitCards = [
+    "command_and_conquer_red"=>true,
+    "searing_shot_red"=>true,"searing_shot_yellow"=>true,"searing_shot_blue"=>true,
+    "persuasive_prognosis_blue"=>true,
+    "art_of_desire_body_red"=>true,"art_of_desire_soul_yellow"=>true,"art_of_desire_mind_blue"=>true,
+    "bonds_of_attraction_red"=>true,"bonds_of_attraction_yellow"=>true,"bonds_of_attraction_blue"=>true,
+    "bonds_of_memory_red"=>true,"bonds_of_memory_yellow"=>true,"bonds_of_memory_blue"=>true,
+    "desires_of_flesh_red"=>true,"desires_of_flesh_yellow"=>true,"desires_of_flesh_blue"=>true,
+    "impulsive_desire_red"=>true,"impulsive_desire_yellow"=>true,"impulsive_desire_blue"=>true,
+    "minds_desire_red"=>true,"minds_desire_yellow"=>true,"minds_desire_blue"=>true,
+    "rowdy_locals_blue"=>true,"the_weakest_link_red"=>true,
+    "blanch_red"=>true,"blanch_yellow"=>true,"blanch_blue"=>true,
+    "factfinding_mission_red"=>true,"factfinding_mission_yellow"=>true,"factfinding_mission_blue"=>true,
+    "static_shock_red"=>true,"static_shock_yellow"=>true,
+    "snuff_out_red"=>true,"cut_through_the_facade_red"=>true,"hand_behind_the_pen_red"=>true,
+    "smash_up_red"=>true,"tongue_tied_red"=>true,"splatter_skull_red"=>true,
+    "mark_the_prey_red"=>true,"mark_the_prey_yellow"=>true,"mark_the_prey_blue"=>true,
+    "tag_the_target_red"=>true,"tag_the_target_yellow"=>true,"tag_the_target_blue"=>true,
+    "trap_and_release_red"=>true,"trap_and_release_yellow"=>true,"trap_and_release_blue"=>true,
+    "pursue_to_the_edge_of_oblivion_red"=>true,"pursue_to_the_pits_of_despair_red"=>true,
+    "conqueror_of_the_high_seas_red"=>true,"cogwerx_dovetail_red"=>true,
+    "cloud_city_steamboat_red"=>true,"cloud_city_steamboat_yellow"=>true,"cloud_city_steamboat_blue"=>true,
+    "cogwerx_zeppelin_red"=>true,"cogwerx_zeppelin_yellow"=>true,"cogwerx_zeppelin_blue"=>true,
+    "hms_barracuda_yellow"=>true,"hms_kraken_yellow"=>true,"hms_marlin_yellow"=>true,
+    "pilfer_the_wreck_red"=>true,"pilfer_the_wreck_yellow"=>true,"pilfer_the_wreck_blue"=>true,
+    "crash_down_the_gates_red"=>true,"crash_down_the_gates_yellow"=>true,"crash_down_the_gates_blue"=>true,
+    "undercover_acquisition_red"=>true,"jack_be_nimble_red"=>true,"jack_be_quick_red"=>true,
+    "money_or_your_life_red"=>true,"money_or_your_life_yellow"=>true,"money_or_your_life_blue"=>true,
+    "bam_bam_yellow"=>true,
+    "wreck_havoc_red"=>true,"wreck_havoc_yellow"=>true,"wreck_havoc_blue"=>true,
+    "send_packing_yellow"=>true,"stab_wound_blue"=>true,"old_leather_and_vim_red"=>true,
+    "uplifting_performance_blue"=>true,"offensive_behavior_blue"=>true,
+    "spew_obscenities_yellow"=>true,"eradicate_yellow"=>true,"regicide_blue"=>true,
+    "leave_no_witnesses_red"=>true,"surgical_extraction_blue"=>true,
+    "plunder_the_poor_red"=>true,"plunder_the_poor_yellow"=>true,"plunder_the_poor_blue"=>true,
+    "rob_the_rich_red"=>true,"rob_the_rich_yellow"=>true,"rob_the_rich_blue"=>true,
+    "annihilate_the_armed_red"=>true,"annihilate_the_armed_yellow"=>true,"annihilate_the_armed_blue"=>true,
+    "fleece_the_frail_red"=>true,"fleece_the_frail_yellow"=>true,"fleece_the_frail_blue"=>true,
+    "nix_the_nimble_red"=>true,"nix_the_nimble_yellow"=>true,"nix_the_nimble_blue"=>true,
+    "sack_the_shifty_red"=>true,"sack_the_shifty_yellow"=>true,"sack_the_shifty_blue"=>true,
+    "slay_the_scholars_red"=>true,"slay_the_scholars_yellow"=>true,"slay_the_scholars_blue"=>true,
+  ];
+  if (isset($heroHitCards[$cardID])) {
+    if (IsHeroAttackTarget()) {
+      if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
   switch ($cardID) {
     case "snatch_red":
     case "snatch_yellow":
@@ -1418,6 +1592,30 @@ function AddCrushEffectTrigger($cardID)
   }
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") return $card->AddCrushEffectTrigger();
+  // O(1) hash lookup replacing ~25 sequential switch-case comparisons for unconditional crush cards
+  static $directCrushCards = [
+    "crippling_crush_red"=>true,"spinal_crush_red"=>true,"cranial_crush_blue"=>true,
+    "disable_red"=>true,"disable_yellow"=>true,"disable_blue"=>true,
+    "buckling_blow_red"=>true,"buckling_blow_yellow"=>true,"buckling_blow_blue"=>true,
+    "cartilage_crush_red"=>true,"cartilage_crush_yellow"=>true,"cartilage_crush_blue"=>true,
+    "crush_confidence_red"=>true,"crush_confidence_yellow"=>true,"crush_confidence_blue"=>true,
+    "debilitate_red"=>true,"debilitate_yellow"=>true,"debilitate_blue"=>true,
+    "righteous_cleansing_yellow"=>true,
+    "crush_the_weak_red"=>true,"crush_the_weak_yellow"=>true,"crush_the_weak_blue"=>true,
+    "chokeslam_red"=>true,"chokeslam_yellow"=>true,"chokeslam_blue"=>true,
+    "star_struck_yellow"=>true,
+    "boulder_drop_yellow"=>true,"boulder_drop_blue"=>true,"boulder_drop_red"=>true,
+    "put_em_in_their_place_red"=>true,"batter_to_a_pulp_red"=>true,
+    "grind_them_down_red"=>true,"grind_them_down_yellow"=>true,"grind_them_down_blue"=>true,
+    "flatten_the_field_red"=>true,"flatten_the_field_yellow"=>true,"flatten_the_field_blue"=>true,
+    "knock_em_off_their_feet_red"=>true,"break_stature_yellow"=>true,
+    "headbutt_blue"=>true,"fault_line_red"=>true,"hostile_encroachment_red"=>true,
+    "renounce_grandeur_red"=>true,
+  ];
+  if (isset($directCrushCards[$cardID])) {
+    AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
+    return false;
+  }
   switch ($cardID) {
     case "crippling_crush_red":
     case "spinal_crush_red":
@@ -4781,8 +4979,9 @@ function BanishRandom($player, $source, $playerSource="-")
 {
   $playerSource = $playerSource == "-" ? $player : $playerSource;
   $hand = &GetHand($player);
-  if (count($hand) == 0) return "";
-  $index = GetRandom() % count($hand);
+  $handCount = count($hand);
+  if ($handCount == 0) return "";
+  $index = GetRandom() % $handCount;
   $banished = $hand[$index];
   unset($hand[$index]);
   $hand = array_values($hand);
@@ -4796,9 +4995,9 @@ function DiscardRandom($player = "", $source = "", $effectController = "")
   if ($player == "") $player = $currentPlayer;
   if ($effectController == "") $effectController = $currentPlayer;
   $hand = &GetHand($player);
-  if (count($hand) == 0) return "";
-  if (count($hand) > 1) $index = GetRandom(0, count($hand) - 1);
-  else $index = 0;
+  $handCount = count($hand);
+  if ($handCount == 0) return "";
+  $index = ($handCount > 1) ? GetRandom(0, $handCount - 1) : 0;
   $discarded = $hand[$index];
   unset($hand[$index]);
   $hand = array_values($hand);
@@ -4869,7 +5068,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
   if ($modifiedAttack >= 6) {
     $character = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($character[0]);
-    if (($characterID == "rhinar_reckless_rampage" || $characterID == "rhinar" || $characterID == "rhinar") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) {
+    if (($characterID == "rhinar_reckless_rampage" || $characterID == "rhinar") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) {
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
     } else if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $character[1] == 2 && $player == $mainPlayer && $mainPhase) {
       AddLayer("TRIGGER", $mainPlayer, $character[0]);
@@ -5053,17 +5252,12 @@ function IsWeaponGreaterThanTwiceBasePower()
 
 function HasEnergyCounters($array, $index)
 {
-  switch ($array[$index]) {
-    case "fyendals_spring_tunic":
-    case "alluvion_constellas":
-    case "blaze_firemind":
-    case "geyser_of_seismic_stirrings_red":
-    case "geyser_of_seismic_stirrings_yellow":
-    case "geyser_of_seismic_stirrings_blue":
-      return $array[$index + 2] > 0;
-    default:
-      return false;
-  }
+  static $energyCards = [
+    "fyendals_spring_tunic" => true, "alluvion_constellas" => true, "blaze_firemind" => true,
+    "geyser_of_seismic_stirrings_red" => true, "geyser_of_seismic_stirrings_yellow" => true,
+    "geyser_of_seismic_stirrings_blue" => true,
+  ];
+  return isset($energyCards[$array[$index]]) && $array[$index + 2] > 0;
 }
 
 function HasPowerCounters($zone, $array, $index)
@@ -5078,152 +5272,82 @@ function HasPowerCounters($zone, $array, $index)
 
 function IsEnergyCounters($cardID)
 {
-  switch ($cardID) {
-    case "fyendals_spring_tunic":
-    case "alluvion_constellas":
-    case "blaze_firemind":
-      return true;
-    default:
-      return false;
-  }
+  static $cards = ["fyendals_spring_tunic" => true, "alluvion_constellas" => true, "blaze_firemind" => true];
+  return isset($cards[$cardID]);
 }
 
 function HasHauntCounters($cardID)
 {
-  switch ($cardID) {
-    case "ghostly_touch":
-      return true;
-    default:
-      return false;
-  }
+  return $cardID === "ghostly_touch";
 }
 
 function HasVerseCounters($cardID)
 {
-  switch ($cardID) {
-    case "runeblood_incantation_red":
-    case "runeblood_incantation_yellow":
-    case "runeblood_incantation_blue":
-    case "malefic_incantation_red":
-    case "malefic_incantation_yellow":
-    case "malefic_incantation_blue":
-      return true;
-    default:
-      return false;
-  }
+  static $cards = [
+    "runeblood_incantation_red" => true, "runeblood_incantation_yellow" => true, "runeblood_incantation_blue" => true,
+    "malefic_incantation_red" => true, "malefic_incantation_yellow" => true, "malefic_incantation_blue" => true,
+  ];
+  return isset($cards[$cardID]);
 }
 
 function HasDoomCounters($cardID)
 {
-  switch ($cardID) {
-    case "looming_doom_blue":
-    case "chains_of_mephetis_blue":
-    case "doomsaying_red":
-      return true;
-    default:
-      return false;
-  }
+  static $cards = ["looming_doom_blue" => true, "chains_of_mephetis_blue" => true, "doomsaying_red" => true];
+  return isset($cards[$cardID]);
 }
 
 function HasRustCounters($cardID)
 {
-  switch ($cardID) {
-    case "talishar_the_lost_prince":
-      return true;
-    default:
-      return false;
-  }
+  return $cardID === "talishar_the_lost_prince";
 }
 
 function HasFlowCounters($cardID)
 {
-  switch ($cardID) {
-    case "channel_mount_heroic_red":
-    case "channel_lake_frigid_blue":
-    case "channel_thunder_steppe_yellow":
-    case "channel_the_bleak_expanse_blue":
-    case "channel_the_millennium_tree_red":
-    case "channel_lightning_valley_yellow":
-    case "channel_mount_isen_blue":
-    case "channel_the_tranquil_domain_yellow":
-    case "channel_the_skybreaker_yellow":
-    case "channel_iceloch_glaze_blue":
-    case "channel_galcias_cradle_blue":
-      return true;
-    default:
-      return false;
-  }
+  static $cards = [
+    "channel_mount_heroic_red" => true, "channel_lake_frigid_blue" => true,
+    "channel_thunder_steppe_yellow" => true, "channel_the_bleak_expanse_blue" => true,
+    "channel_the_millennium_tree_red" => true, "channel_lightning_valley_yellow" => true,
+    "channel_mount_isen_blue" => true, "channel_the_tranquil_domain_yellow" => true,
+    "channel_the_skybreaker_yellow" => true, "channel_iceloch_glaze_blue" => true,
+    "channel_galcias_cradle_blue" => true,
+  ];
+  return isset($cards[$cardID]);
 }
 
 function HasFrostCounters($cardID)
 {
-  switch ($cardID) {
-    case "insidious_chill_blue":
-      return true;
-    default:
-      return false;
-  }
+  return $cardID === "insidious_chill_blue";
 }
 
 function HasBalanceCounters($cardID)
 {
-  switch ($cardID) {
-    case "zen_state":
-    case "preach_modesty_red":
-      return true;
-    default:
-      return false;
-  }
+  static $cards = ["zen_state" => true, "preach_modesty_red" => true];
+  return isset($cards[$cardID]);
 }
 
 function HasBindCounters($cardID)
 {
-  switch ($cardID) {
-    case "spellbound_creepers":
-      return true;
-    default:
-      return false;
-  }
+  return $cardID === "spellbound_creepers";
 }
 
 function HasStainCounters($cardID)
 {
-  switch ($cardID) {
-    case "blood_splattered_vest":
-      return true;
-    default:
-      return false;
-  }
+  return $cardID === "blood_splattered_vest";
 }
 
 function HasStormCounters($cardID)
 {
-  switch ($cardID) {
-    case "haboob_red":
-      return true;
-    default:
-      return false;
-  }
+  return $cardID === "haboob_red";
 }
 
 function HasGoldCounters($cardID)
 {
-  switch ($cardID) {
-    case "treasure_island":
-      return true;
-    default:
-      return false;
-  }
+  return $cardID === "treasure_island";
 }
 
 function HasSandCounters($cardID)
 {
-  switch ($cardID) {
-    case "parched_terrain_red":
-      return true;
-    default:
-      return false;
-  }
+  return $cardID === "parched_terrain_red";
 }
 
 function HasFancyCounters($cardID)

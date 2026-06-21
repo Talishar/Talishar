@@ -15,13 +15,15 @@ SetHeaders();
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
   {
-    $arr = explode(",", $str);
-    for($i=0; $i<count($arr); ++$i)
-    {
-      if($partial && str_contains($arr[$i], $find)) return true;
-      else if($arr[$i] == $find) return true;
+    if ($partial) {
+      $arr = explode(",", $str);
+      $len = count($arr);
+      for ($i = 0; $i < $len; ++$i) {
+        if (str_contains($arr[$i], $find)) return true;
+      }
+      return false;
     }
-    return false;
+    return str_contains(',' . $str . ',', ',' . $find . ',');
   }
 }
 
@@ -135,15 +137,15 @@ if($handler) {
 
   $response->deck->cards = GetArray($handler);
   //Remove deck cards that don't belong
-  for($i = count($response->deck->cards) - 1; $i >= 0; --$i)
-  {
-    if(CardType($response->deck->cards[$i]) == "D")
-    {
-      $response->deck->demiHero[] = $response->deck->cards[$i];
-      unset($response->deck->cards[$i]);
+  $filteredCards = [];
+  foreach ($response->deck->cards as $card) {
+    if (CardType($card) === "D") {
+      $response->deck->demiHero[] = $card;
+    } else {
+      $filteredCards[] = $card;
     }
   }
-  $response->deck->cards = array_values($response->deck->cards);
+  $response->deck->cards = $filteredCards;
 
   $response->deck->headSB = GetArray($handler);
   $response->deck->chestSB = GetArray($handler);
@@ -153,15 +155,15 @@ if($handler) {
   $weaponSB = GetArray($handler);
   $response->deck->cardsSB = GetArray($handler);
   //Remove deck cards that don't belong
-  for($i = count($response->deck->cardsSB) - 1; $i >= 0; --$i)
-  {
-    if(CardType($response->deck->cardsSB[$i]) == "D")
-    {
-      $response->deck->demiHero[] = $response->deck->cardsSB[$i];
-      unset($response->deck->cardsSB[$i]);
+  $filteredCardsSB = [];
+  foreach ($response->deck->cardsSB as $card) {
+    if (CardType($card) === "D") {
+      $response->deck->demiHero[] = $card;
+    } else {
+      $filteredCardsSB[] = $card;
     }
   }
-  $response->deck->cardsSB = array_values($response->deck->cardsSB);
+  $response->deck->cardsSB = $filteredCardsSB;
 
   $quiverSB = GetArray($handler);
   $handsSB = array_merge($weaponSB, $offhandSB, $quiverSB);
@@ -213,15 +215,13 @@ if($handler) {
     $heroCard->hasEssenceOfIce = GeneratedHasEssenceOfIce($heroId);
     $heroCard->hasEssenceOfEarth = GeneratedHasEssenceOfEarth($heroId);
     $heroCard->hasEssenceOfLightning = GeneratedHasEssenceOfLightning($heroId);
-    array_push($response->deck->cardDictionary, $heroCard);
+    $response->deck->cardDictionary[] = $heroCard;
     $cardIndex[$heroId] = "1";
   }
-  
   // Include both main deck and sideboard cards in the dictionary
-  $allCards = array_merge($response->deck->cards, $response->deck->cardsSB);
-  
-  foreach($allCards as $card) {
-    if(!array_key_exists($card, $cardIndex)) {
+
+  foreach ($response->deck->cards as $card) {
+    if (!isset($cardIndex[$card])) {
       $cardIndex[$card] = "1";
       $dictionaryCard = new stdClass();
       $dictionaryCard->id = $card;
@@ -240,7 +240,30 @@ if($handler) {
       $dictionaryCard->hasMark = GeneratedHasMark($card);
       $dictionaryCard->hasCharge = GeneratedHasCharge($card);
       $dictionaryCard->hasSuspense = hasSuspense($card);
-      array_push($response->deck->cardDictionary, $dictionaryCard);
+      $response->deck->cardDictionary[] = $dictionaryCard;
+    }
+  }
+  foreach ($response->deck->cardsSB as $card) {
+    if (!isset($cardIndex[$card])) {
+      $cardIndex[$card] = "1";
+      $dictionaryCard = new stdClass();
+      $dictionaryCard->id = $card;
+      $dictionaryCard->pitch = PitchValue($card);
+      $dictionaryCard->power = GeneratedPowerValue($card);
+      $dictionaryCard->blockValue = GeneratedBlockValue($card);
+      $dictionaryCard->class = CardClass($card);
+      $dictionaryCard->talent = CardTalent($card);
+      $dictionaryCard->type = CardType($card);
+      $dictionaryCard->subtype = CardSubtype($card);
+      $dictionaryCard->cost = GeneratedCardCost($card);
+      $dictionaryCard->hasStealth = GeneratedHasStealth($card);
+      $dictionaryCard->hasBloodDebt = GeneratedHasBloodDebt($card);
+      $dictionaryCard->hasBoost = GeneratedHasBoost($card);
+      $dictionaryCard->hasDecompose = GeneratedHasDecompose($card);
+      $dictionaryCard->hasMark = GeneratedHasMark($card);
+      $dictionaryCard->hasCharge = GeneratedHasCharge($card);
+      $dictionaryCard->hasSuspense = hasSuspense($card);
+      $response->deck->cardDictionary[] = $dictionaryCard;
     }
   }
 
