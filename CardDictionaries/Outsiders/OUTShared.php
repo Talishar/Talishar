@@ -124,10 +124,12 @@ function OUTAbilityCost($cardID)
   {
     global $mainPlayer;
     $commaSuffix = '';
+    $dashSuffix = '';
     if (($commaPos = strpos($cardID, ",")) !== false) {
       $commaSuffix = substr($cardID, $commaPos + 1);
       $cardID = substr($cardID, 0, $commaPos);
     } elseif (($dashPos = strpos($cardID, "-")) !== false) {
+      $dashSuffix = substr($cardID, $dashPos + 1);
       $cardID = substr($cardID, 0, $dashPos);
     }
     switch ($cardID)
@@ -160,11 +162,11 @@ function OUTAbilityCost($cardID)
       case "toxic_tips": return CardType($attackID) == "AA";
       case "toxicity_red": case "toxicity_yellow": case "toxicity_blue": return CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer));
       case "silken_gi":
-        return isset($dashArr[1]) && $dashArr[1] == "2" && CardType($attackID) == "AA";
+        return $dashSuffix === "2" && CardType($attackID) == "AA";
       case "gore_belching_red": return true;
       case "premeditate_red":
-        if (isset($dashArr[1]) && $dashArr[1] == "1") return CardType($attackID) == "AA";
-        else if (isset($dashArr[1]) && $dashArr[1] == "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
+        if ($dashSuffix === "1") return CardType($attackID) == "AA";
+        else if ($dashSuffix === "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
         else return false;
       case "looking_for_a_scrap_red": case "looking_for_a_scrap_yellow": case "looking_for_a_scrap_blue": return true;
       case "spring_load_red": case "spring_load_yellow": case "spring_load_blue": return true;
