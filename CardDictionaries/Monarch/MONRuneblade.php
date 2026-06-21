@@ -84,8 +84,10 @@
   {
     $discard = &GetDiscard($player);
     if(empty($discard)) return "";
-    $rv = (count($discard) == 1 ? "1" : "2") . "-";
-    for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+    $discardCount = count($discard);
+    $discardPieces = DiscardPieces();
+    $rv = ($discardCount == 1 ? "1" : "2") . "-";
+    for ($i = 0; $i < $discardCount; $i += $discardPieces) {
       if (!isFaceDownMod($discard[$i+2])) $rv .= $i . ",";
     }
     $rv = substr($rv, 0, strlen($rv) - 1);//remove the last comma

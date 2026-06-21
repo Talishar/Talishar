@@ -1203,7 +1203,7 @@ function ChannelTalent($uniqueID, $talent)
     $article = str_contains('aeiou', strtolower($talent[0])) ? 'an' : 'a';
     for ($j = $toBottom; $j > 0; --$j) {
       $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($talent)) . "|" . GetElementColorCode($talent) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auraID, $auraID) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "");
-      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: $context);
+      MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom, isSubsequent: $j < $toBottom, DQContext: $context);
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
@@ -1235,7 +1235,7 @@ function ChannelPitchColor($uniqueID, $pitch)
     $article = str_contains('aeiou', strtolower($colorToBanish[0])) ? 'an' : 'a';
     for ($j = $toBottom; $j > 0; --$j) {
       $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($colorToBanish)) . "|" . GetElementColorCode($colorToBanish) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " sand counter" . ($toBottom > 1 ? "s" : "");
-      MZMoveCard($mainPlayer, "MYDISCARD:pitch=" . $pitch, "MYBANISH", $j == $toBottom ? true : false, isSubsequent: $j < $toBottom, DQContext: $context);
+      MZMoveCard($mainPlayer, "MYDISCARD:pitch=" . $pitch, "MYBANISH", $j == $toBottom, isSubsequent: $j < $toBottom, DQContext: $context);
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
@@ -1315,7 +1315,7 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
       if ($active) {
         $soul = &GetSoul($player);
         if (count($soul) > 0) {
-          $cancelRemove = count($soul) > 1 ? true : false;
+          $cancelRemove = count($soul) > 1;
           MZMoveCard($player, "MYSOUL", "MYBANISH,SOUL,-");
           if ($damage > 1) $auras[$index + 5] = 0;
           $preventedDamage = 1;

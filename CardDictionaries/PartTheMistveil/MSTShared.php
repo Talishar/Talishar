@@ -24,8 +24,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer, $combatChainState, $CombatChain;
   $from = $CombatChain->AttackCard()->From();
-  $idArr = explode(",", $cardID);
-  $cardID = $idArr[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
     "mistcloak_gully" => IsHeroAttackTarget(),
     "beckoning_mistblade", "first_tenet_of_chi_moon_blue", "first_tenet_of_chi_tide_blue", "prismatic_leyline_yellow-BLUE" => ColorContains($attackID, 3, $mainPlayer),
@@ -48,8 +47,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
 function MSTEffectPowerModifier($cardID, $attached=false): int
 {
   global $mainPlayer;
-  $idArr = explode(",", $cardID);
-  $cardID = $idArr[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
     "a_drop_in_the_ocean_blue", "stonewall_gauntlet" => -1,
     "mistcloak_gully", "dense_blue_mist_blue-DEBUFF" => IsHeroAttackTarget() ? -1 : 0,

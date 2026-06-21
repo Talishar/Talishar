@@ -169,7 +169,8 @@ function DoBoost($player, $cardID, $boostCount=1)
     }
     $char = GetPlayerCharacter($player);
     $charCount = count($char);
-    for ($j = 0; $j < $charCount; $j += CharacterPieces()) {
+    $charPieces = CharacterPieces();
+    for ($j = 0; $j < $charCount; $j += $charPieces) {
       if ($char[$j + 1] == 2) {
         switch ($char[$j]) {
           case "drive_brake":

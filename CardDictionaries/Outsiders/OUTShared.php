@@ -70,11 +70,14 @@ function OUTAbilityCost($cardID)
 
   function OUTEffectPowerModifier($cardID, $attached=false)
   {
-    $idArr = explode("-", $cardID);
-    $idArr2 = explode(",", $idArr[0]);
-    $cardID = $idArr2[0];
-    if ($cardID == "premeditate_red" && isset($idArr[1]) && $idArr[1] == "2") return 3;
-    if ($cardID == "silken_gi" && isset($idArr[1]) && $idArr[1] == "2") return -1;
+    $dashSuffix = '';
+    if (($dashPos = strpos($cardID, "-")) !== false) {
+      $dashSuffix = substr($cardID, $dashPos + 1);
+      $cardID = substr($cardID, 0, $dashPos);
+    }
+    if (($commaPos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $commaPos);
+    if ($cardID == "premeditate_red" && $dashSuffix === "2") return 3;
+    if ($cardID == "silken_gi" && $dashSuffix === "2") return -1;
     switch($cardID)
     {
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return 3;
@@ -104,7 +107,7 @@ function OUTAbilityCost($cardID)
       case "short_and_sharp_red": return 3;
       case "short_and_sharp_yellow": return 2;
       case "short_and_sharp_blue": return 1;
-      case "gore_belching_red": return (-1 * $idArr[1]);
+      case "gore_belching_red": return (-1 * $dashSuffix);
       case "looking_for_a_scrap_red": case "looking_for_a_scrap_yellow": case "looking_for_a_scrap_blue": return 1;
       case "spring_load_red": return 3;
       case "spring_load_yellow": return 2;
@@ -120,17 +123,20 @@ function OUTAbilityCost($cardID)
   function OUTCombatEffectActive($cardID, $attackID)
   {
     global $mainPlayer;
-    $dashArr = explode("-", $cardID);
-    $commaArr = explode(",", $cardID);
-    $cardID = $dashArr[0];
-    if(count($commaArr) > 1) $cardID = $commaArr[0];
+    $commaSuffix = '';
+    if (($commaPos = strpos($cardID, ",")) !== false) {
+      $commaSuffix = substr($cardID, $commaPos + 1);
+      $cardID = substr($cardID, 0, $commaPos);
+    } elseif (($dashPos = strpos($cardID, "-")) !== false) {
+      $cardID = substr($cardID, 0, $dashPos);
+    }
     switch ($cardID)
     {
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return true;
       case "prowl_red": case "prowl_yellow": case "prowl_blue": return HasStealth($attackID) && TypeContains($attackID, "AA");
       case "razors_edge_red": case "razors_edge_yellow": case "razors_edge_blue": return true;
       case "mask_of_many_faces": return CardType($attackID) == "AA";
-      case "head_leads_the_tail_red": return CardType($attackID) == "AA" && count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
+      case "head_leads_the_tail_red": return CardType($attackID) == "AA" && $commaSuffix !== '' && IsCurrentAttackName(GamestateUnsanitize($commaSuffix));
       case "be_like_water_red": case "be_like_water_yellow": case "be_like_water_blue": return true;
       case "deadly_duo_red": case "deadly_duo_yellow": case "deadly_duo_blue": return CardType($attackID) == "AA" && PowerValue($attackID, $mainPlayer, "LAYER") <= 2;//Base power
       case "buzzsaw_trap_blue": return true;

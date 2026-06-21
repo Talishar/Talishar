@@ -101,11 +101,17 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) PlayAura("might", $currentPlayer);
       return "";
     case "bonebreaker_bellow_red":
+      $amount = 3;
+      if (SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) $amount += 2;
+      AddCurrentTurnEffect($cardID . "," . $amount, $currentPlayer);
+      return "";
     case "bonebreaker_bellow_yellow":
+      $amount = 2;
+      if (SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) $amount += 2;
+      AddCurrentTurnEffect($cardID . "," . $amount, $currentPlayer);
+      return "";
     case "bonebreaker_bellow_blue":
-      if ($cardID == "bonebreaker_bellow_red") $amount = 3;
-      else if ($cardID == "bonebreaker_bellow_yellow") $amount = 2;
-      else if ($cardID == "bonebreaker_bellow_blue") $amount = 1;
+      $amount = 1;
       if (SearchCurrentTurnEffects("BEATCHEST", $currentPlayer)) $amount += 2;
       AddCurrentTurnEffect($cardID . "," . $amount, $currentPlayer);
       return "";
@@ -372,7 +378,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "dissolve_reality_yellow":
       $arsenalPieces = ArsenalPieces();
-      for ($i = 1; $i < 3; $i += 1) {
+      for ($i = 1; $i < 3; ++$i) {
         $arsenal = &GetArsenal($i);
         $arsenalCount = count($arsenal);
         for ($j = 0; $j < $arsenalCount; $j += $arsenalPieces) {
@@ -582,23 +588,25 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         return "Light up the gem under the equipment when you want to use the conditional effect❗";
       }
     case "demolition_protocol_red":
-      if (IsHeroAttackTarget() && EvoUpgradeAmount($mainPlayer) > 0) {
+      $evoUpgradeMain = EvoUpgradeAmount($mainPlayer);
+      if (IsHeroAttackTarget() && $evoUpgradeMain > 0) {
+        $evoUpgradeCurr = EvoUpgradeAmount($currentPlayer);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:hasSteamCounter=true&THEIRCHAR:hasSteamCounter=true");
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MAXCOUNT-" . EvoUpgradeAmount($mainPlayer) . ",MINCOUNT-" . 0 . ",", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to " . EvoUpgradeAmount($currentPlayer) . " card" . (EvoUpgradeAmount($mainPlayer) > 1 ? "s" : "") . " to remove all steam counters from.", 1);
+        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "MAXCOUNT-" . $evoUpgradeMain . ",MINCOUNT-0,", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to " . $evoUpgradeCurr . " card" . ($evoUpgradeMain > 1 ? "s" : "") . " to remove all steam counters from.", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVEALLCOUNTERS", $currentPlayer, "<-");
       }
       return "";
     case "pulsewave_protocol_yellow":
-      if (IsHeroAttackTarget() && EvoUpgradeAmount($currentPlayer) > 0) {
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        AddDecisionQueue("PASSPARAMETER", $otherPlayer, EvoUpgradeAmount($currentPlayer), 1);
+      $evoUpgrade = EvoUpgradeAmount($currentPlayer);
+      if (IsHeroAttackTarget() && $evoUpgrade > 0) {
+        AddDecisionQueue("PASSPARAMETER", $otherPlayer, $evoUpgrade, 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . EvoUpgradeAmount($currentPlayer) . " card(s)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose " . $evoUpgrade . " card(s)", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
         AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
@@ -664,7 +672,9 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "penetration_script_yellow":
       if ($currentPlayer == $defPlayer) {
-        for ($j = CombatChainPieces(); $j < count($combatChain); $j += CombatChainPieces()) {
+        $combatChainPieces = CombatChainPieces();
+        $combatChainCount = count($combatChain);
+        for ($j = $combatChainPieces; $j < $combatChainCount; $j += $combatChainPieces) {
           if ($combatChain[$j + 1] != $currentPlayer) continue;
           ProcessPhantasmOnBlock($j);
         }
@@ -749,9 +759,10 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "meganetic_lockwave_blue":
       if ($resourcesPaid == 0) return;
+      $lockwaveCount = intval($resourcesPaid / 3);
       AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYCHAR:type=E");
-      AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "MAXCOUNT-" . $resourcesPaid / 3 . ",MINCOUNT-" . $resourcesPaid / 3 . ",");
-      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose " . $resourcesPaid / 3 . " equipment for the effect of " . CardLink("meganetic_lockwave_blue", "meganetic_lockwave_blue") . ".");
+      AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "MAXCOUNT-" . $lockwaveCount . ",MINCOUNT-" . $lockwaveCount . ",");
+      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose " . $lockwaveCount . " equipment for the effect of " . CardLink("meganetic_lockwave_blue", "meganetic_lockwave_blue") . ".");
       AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
       AddDecisionQueue("MZSWITCHPLAYER", $currentPlayer, "<-", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -925,9 +936,10 @@ function CountBlockingCards() {
   $countChainLinks = count($chainLinks);
   $chainLinksPieces = ChainLinksPieces();
   for ($i = 0; $i < $countChainLinks; ++$i) {
-    $chainLinkCount = count($chainLinks[$i]);
+    $link = $chainLinks[$i];
+    $chainLinkCount = count($link);
     for ($j = 0; $j < $chainLinkCount; $j += $chainLinksPieces) {
-      if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j+2] == 1) ++$buff;
+      if ($link[$j + 1] == $defPlayer && $link[$j + 2] == 1) ++$buff;
     }
   }
   return $buff;
@@ -943,9 +955,9 @@ function PhantomTidemawDestroy($player = -1, $index = -1)
   if ($index == -1) {
     $countAuras = count($auras);
     $auraPieces = AuraPieces();
-    for ($i = 0; $i < $countAuras; $i++) {
-      if (isset($auras[$i * $auraPieces]) && $auras[$i * $auraPieces] == "phantom_tidemaw_blue") {
-        ++$auras[$i * $auraPieces + 3];
+    for ($i = 0; $i < $countAuras; $i += $auraPieces) {
+      if ($auras[$i] == "phantom_tidemaw_blue") {
+        ++$auras[$i + 3];
       }
     }
   } else if ($index > -1) {

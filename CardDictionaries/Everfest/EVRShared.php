@@ -81,9 +81,11 @@
 
   function EVREffectPowerModifier($cardID)
   {
-    $params = explode(",", $cardID);
-    $cardID = $params[0];
-    if(count($params) > 1) $parameter = $params[1];
+    $parameter = '';
+    if (($pos = strpos($cardID, ",")) !== false) {
+      $parameter = substr($cardID, $pos + 1);
+      $cardID = substr($cardID, 0, $pos);
+    }
     switch($cardID)
     {
       case "skull_crushers": return 1;
@@ -134,8 +136,7 @@
   function EVRCombatEffectActive($cardID, $attackID)
   {
     global $CS_AttacksWithWeapon, $mainPlayer;
-    $params = explode(",", $cardID);
-    $cardID = $params[0];
+    if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
     switch($cardID)
     {
       case "skull_crushers": return ClassContains($attackID, "BRUTE", $mainPlayer);
@@ -762,9 +763,11 @@
     $handCards = SearchMultizoneFormat(SearchHandForCard($currentPlayer, "crazy_brew_blue"), "MYHAND");
     $attackCards = [];
     $attacks = GetCombatChainAttacks();
+    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+    $chainLinksPieces = ChainLinksPieces();
     $chainLinkSummaryCount = count($chainLinkSummary);
-    for ($i = 0; $i < $chainLinkSummaryCount; $i += ChainLinkSummaryPieces()) {
-      $ind = intdiv($i, ChainLinkSummaryPieces()) * ChainLinksPieces();
+    for ($i = 0; $i < $chainLinkSummaryCount; $i += $chainLinkSummaryPieces) {
+      $ind = intdiv($i, $chainLinkSummaryPieces) * $chainLinksPieces;
       if ($attacks[$ind+2] == 0 || $attacks[$ind] == "-") continue;
       $attackID = $attacks[$ind];
       $names = GamestateUnsanitize($chainLinkSummary[$i+4]);

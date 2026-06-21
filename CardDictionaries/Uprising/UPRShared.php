@@ -57,9 +57,7 @@
 
   function UPREffectPowerModifier($cardID)
   {
-    $params = explode("-", $cardID);
-    $cardID = $params[0];
-    if(count($params) > 1) $subparam = $params[1];
+    if (($pos = strpos($cardID, "-")) !== false) $cardID = substr($cardID, 0, $pos);
     switch($cardID)
     {
       case "skittering_sands_red": return 3;
@@ -83,8 +81,7 @@
   function UPRCombatEffectActive($cardID, $attackID)
   {
     global $mainPlayer;
-    $params = explode("-", $cardID);
-    $cardID = $params[0];
+    if (($pos = strpos($cardID, "-")) !== false) $cardID = substr($cardID, 0, $pos);
     switch($cardID)
     {
       case "skittering_sands_red": case "skittering_sands_yellow": case "skittering_sands_blue": return true;

@@ -915,8 +915,9 @@ function OnBlockResolveEffects($cardID = "")
   global $combatChain, $defPlayer, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CombatChain, $CS_NumBlueDefended;
   global $CCS_NumCardsBlocking, $CurrentTurnEffects;
   $combatChainPieces = CombatChainPieces();
+  $combatChainCount = count($combatChain);
   //This is when blocking fully resolves, so everything on the chain from here is a blocking card except the first
-  for ($i = $combatChainPieces; $i < count($combatChain); $i += $combatChainPieces) {
+  for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
     $effectPowerModifier = EffectsAttackYouControlModifiers($combatChain[$i], $defPlayer);
     if ($effectPowerModifier != 0) CombatChainPowerModifier($i, $effectPowerModifier);
     $auraPowerModifier = AurasAttackYouControlModifiers($combatChain[$i], $defPlayer);
@@ -931,7 +932,7 @@ function OnBlockResolveEffects($cardID = "")
   $blockedWithAura = 0;
   $numDefending = 0; //number of total cards defending
   $start = -1; //contains the index where cards "defending together" starts
-  for ($i = $combatChainPieces; $i < count($combatChain); $i += $combatChainPieces) {
+  for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
     if ($combatChain[$i + 1] == $defPlayer) ++$numDefending;
     if ($numDefending > $combatChainState[$CCS_NumCardsBlocking]) {
       $start = $start == -1 ? $i : $start;
@@ -1030,7 +1031,7 @@ function OnBlockResolveEffects($cardID = "")
     }
   }
   $blockingCards = [];
-  for ($i = $start; $i < count($combatChain); $i += $combatChainPieces) {
+  for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
     if ($combatChain[$i + 1] == $defPlayer) {
       $defendingCard = $combatChain[$i];
       $card = GetClass($defendingCard, $defPlayer);
@@ -1178,7 +1179,7 @@ function OnBlockResolveEffects($cardID = "")
           break;
         case "apex_bonebreaker":
           $num6Block = 0;
-          for ($j = $start; $j < count($combatChain); $j += $combatChainPieces) {
+          for ($j = $start; $j < $combatChainCount; $j += $combatChainPieces) {
             if (ModifiedPowerValue($combatChain[$j], $defPlayer, "CC", "apex_bonebreaker") >= 6) ++$num6Block;
           }
           if ($num6Block) {
@@ -1205,13 +1206,13 @@ function OnBlockResolveEffects($cardID = "")
           break;
         case "face_purgatory":
           $conditionsMet = 0;
-          for ($j = $start; $j < count($combatChain); $j += $combatChainPieces) {
+          for ($j = $start; $j < $combatChainCount; $j += $combatChainPieces) {
             if (CardType($combatChain[$j]) == "AA") {
               ++$conditionsMet; 
               break;
             }
           }
-          for ($k = $start; $k < count($combatChain); $k += $combatChainPieces) {
+          for ($k = $start; $k < $combatChainCount; $k += $combatChainPieces) {
             if (DelimStringContains(CardType($combatChain[$k], "CC"), "A")) {
               ++$conditionsMet; 
               break;
@@ -1589,7 +1590,7 @@ function IsDominateActive()
       case "open_the_center_red":
       case "open_the_center_yellow":
       case "open_the_center_blue":
-        return (ComboActive() ? true : false);
+        return ComboActive();
       case "demolition_crew_red":
       case "demolition_crew_yellow":
       case "demolition_crew_blue":
@@ -1617,7 +1618,7 @@ function IsDominateActive()
       case "macho_grande_blue":
         return true;
       case "break_tide_yellow":
-        return (ComboActive() ? true : false);
+        return ComboActive();
       case "payload_red":
       case "payload_yellow":
       case "payload_blue":
@@ -1941,26 +1942,26 @@ function CachedTotalBlock()
 function CachedAttackHasGoAgain()
 {
   global $combatChainState, $CCS_CachedGoAgain;
-  return ($combatChainState[$CCS_CachedGoAgain] ?? "0") == "1" ? true : false;
+  return ($combatChainState[$CCS_CachedGoAgain] ?? "0") == "1";
 }
 
 function CachedDominateActive()
 {
   global $combatChainState, $CCS_CachedDominateActive;
-  return (($combatChainState[$CCS_CachedDominateActive] ?? "0") == "1" ? true : false);
+  return ($combatChainState[$CCS_CachedDominateActive] ?? "0") == "1";
 }
 
 function CachedOverpowerActive()
 {
   global $combatChainState, $CCS_CachedOverpowerActive;
-  return (($combatChainState[$CCS_CachedOverpowerActive] ?? "0") == "1" ? true : false);
+  return ($combatChainState[$CCS_CachedOverpowerActive] ?? "0") == "1";
 }
 
 function CachedWagerActive()
 {
   global $combatChainState, $CCS_WagersThisLink;
   if (isset($combatChainState[$CCS_WagersThisLink])) {
-    return ($combatChainState[$CCS_WagersThisLink] >= "1" ? true : false);
+    return $combatChainState[$CCS_WagersThisLink] >= "1";
   } else return false;
 }
 
@@ -1968,7 +1969,7 @@ function CachedFusionActive()
 {
   global $combatChainState, $CCS_AttackFused;
   if (isset($combatChainState[$CCS_AttackFused])) {
-    return ($combatChainState[$CCS_AttackFused] == "1" ? true : false);
+    return $combatChainState[$CCS_AttackFused] == "1";
   } else return false;
 }
 
@@ -1976,7 +1977,7 @@ function CachedPhantasmActive()
 {
   global $combatChainState, $CCS_PhantasmThisLink;
   if (isset($combatChainState[$CCS_PhantasmThisLink])) {
-    return ($combatChainState[$CCS_PhantasmThisLink] == "1" ? true : false);
+    return $combatChainState[$CCS_PhantasmThisLink] == "1";
   } else return false;
 }
 

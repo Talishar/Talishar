@@ -79,8 +79,11 @@
   function MONEffectPowerModifier($cardID)
   {
     global $mainPlayer, $CS_NumNonAttackCards, $CombatChain;
-    $arr = explode(",", $cardID);
-    $cardID = $arr[0];
+    $suffix = '';
+    if (($pos = strpos($cardID, ",")) !== false) {
+      $suffix = substr($cardID, $pos + 1);
+      $cardID = substr($cardID, 0, $pos);
+    }
     switch($cardID)
     {
       case "herald_of_triumph_red": case "herald_of_triumph_yellow": case "herald_of_triumph_blue": return -1;
@@ -115,7 +118,7 @@
       case "bounding_demigon_red": case "bounding_demigon_yellow": case "bounding_demigon_blue": return 1;
       case "rift_bind_red": case "rift_bind_yellow": case "rift_bind_blue": return GetClassState($mainPlayer, $CS_NumNonAttackCards);
       case "shadow_puppetry_red": return 1;
-      case "soul_harvest_blue": return $arr[1];
+      case "soul_harvest_blue": return $suffix;
       case "howl_from_beyond_red": return 3;
       case "howl_from_beyond_yellow": return 2;
       case "howl_from_beyond_blue": return 1;
@@ -140,8 +143,7 @@
   function MONCombatEffectActive($cardID, $attackID)
   {
     global $defPlayer, $mainPlayer;
-    $arr = explode(",", $cardID);
-    $cardID = $arr[0];
+    if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
     switch($cardID)
     {
       case "herald_of_triumph_red": case "herald_of_triumph_yellow": case "herald_of_triumph_blue": return CardType($attackID) == "AA";

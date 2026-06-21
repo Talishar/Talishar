@@ -38,7 +38,7 @@ function HVYAbilityType($cardID, $index = -1, $from = "-"): string
     "vigor_girth", "flat_trackers", "gauntlet_of_might", "kassai", "monstrous_veil", "good_time_chapeau", "kassai_of_the_golden_sand", "knucklehead" => "A",
     "hood_of_red_sand", "prized_galea" => "AR",
     "balance_of_justice", "glory_seeker", "sheltered_cove" => "I",
-    "graven_call" => $from == "GY" ? "I" : "AA",
+    "graven_call" => $from === "GY" ? "I" : "AA",
     default => ""
   };
 }
@@ -55,7 +55,7 @@ function TCCAbilityCost($cardID): int
 {
   return match ($cardID) {
     "teklo_blaster", "hammer_of_havenhold" => 3,
-    "jinglewood_smash_hit" => GetResolvedAbilityType($cardID) == "A" ? 3 : 0,
+    "jinglewood_smash_hit" => GetResolvedAbilityType($cardID) === "A" ? 3 : 0,
     default => 0
   };
 }
@@ -80,11 +80,14 @@ function TCCAbilityHasGoAgain($cardID): bool
   };
 }
 
-function EVOAbilityCost($cardID): int
+function EVOAbilityCost(string $cardID): int
 {
   global $currentPlayer;
+  if ($cardID === "teklo_leveler") {
+    $evo = EvoUpgradeAmount($currentPlayer);
+    return $evo == 1 ? 3 : ($evo >= 2 ? 1 : 0);
+  }
   return match ($cardID) {
-    "teklo_leveler" => (EvoUpgradeAmount($currentPlayer) == 1 ? 3 : ((EvoUpgradeAmount($currentPlayer) >= 2) ? 1 : 0)),
     "teklovossen_esteemed_magnate", "teklovossen_the_mechropotent", "teklovossen" => 3,
     "maxx_the_hype_nitro", "backup_protocol_blu_blue", "backup_protocol_yel_yellow", "shriek_razors", "warband_of_bellona", "backup_protocol_red_red", "maxx_nitro" => 2,
     "cogwerx_base_legs", "cogwerx_base_arms", "cogwerx_base_chest", "cogwerx_base_head", "banksy" => 1,
@@ -99,7 +102,7 @@ function EVOAbilityType($cardID, $index = -1, $from = ""): string
     "maxx_the_hype_nitro", "maxx_nitro" => (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? "A" : ""),
     "banksy" => (GetClassState($currentPlayer, $CS_NumCranked) > 0 ? "AA" : ""),
     "teklo_leveler" => (EvoUpgradeAmount($currentPlayer) >= 1 ? "AA" : ""),
-    "prismatic_lens_yellow", "quantum_processor_yellow", "fuel_injector_blue", "steam_canister_blue", "dissolving_shield_red", "backup_protocol_red_red", "backup_protocol_yel_yellow", "backup_protocol_blu_blue", "dissolving_shield_yellow", "dissolving_shield_blue" => ($from == "PLAY" ? "I" : "A"),
+    "prismatic_lens_yellow", "quantum_processor_yellow", "fuel_injector_blue", "steam_canister_blue", "dissolving_shield_red", "backup_protocol_red_red", "backup_protocol_yel_yellow", "backup_protocol_blu_blue", "dissolving_shield_yellow", "dissolving_shield_blue" => ($from === "PLAY" ? "I" : "A"),
     "teklovossen_the_mechropotent", "symbiosis_shot" => "AA",
     "teklovossen_esteemed_magnate", "cogwerx_base_legs", "cogwerx_base_arms", "cogwerx_base_chest", "cogwerx_base_head", "evo_thruster_yellow_equip", "evo_smoothbore_yellow_equip", "evo_engine_room_yellow_equip", "evo_command_center_yellow_equip", "evo_charging_rods_yellow_equip", "evo_cogspitter_yellow_equip", "evo_battery_pack_yellow_equip", "evo_data_mine_yellow_equip", "teklovossen" => "I",
     "stasis_cell_blue", "medkit_blue", "warband_of_bellona", "grinding_gears_blue" => "A",
@@ -119,10 +122,10 @@ function EVOAbilityHasGoAgain($cardID): bool
 
 function DestroyTopCardTarget($player, $target=false): void
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
   AddDecisionQueue("SETDQVAR", $player, "1");
-  if (ShouldAutotargetOpponent($player) && !$target) {
+  if (!$target && ShouldAutotargetOpponent($player)) {
     AddDecisionQueue("PASSPARAMETER", $player, "Target_Opponent");
   } else {
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose target hero");

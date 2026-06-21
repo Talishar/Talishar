@@ -18,7 +18,7 @@ class Banish {
   }
 
   function NumCards() {
-    return count($this->banish) / BanishPieces();
+    return intdiv(count($this->banish), BanishPieces());
   }
 
   function Card($index, $cardNumber = false)
@@ -51,8 +51,9 @@ class Banish {
     $count = count($this->banish);
     $banishPieces = BanishPieces();
     for($i=0; $i<$count; $i+=$banishPieces) {
-      $modArr = explode("-", $this->banish[$i+1]);
-      $cardModifier = $modArr[0];
+      $mod = $this->banish[$i+1];
+      $dashPos = strpos($mod, "-");
+      $cardModifier = $dashPos !== false ? substr($mod, 0, $dashPos) : $mod;
       if ($modifier == "shadowrealm_horror_red" && str_contains($cardModifier, $modifier)) $this->banish[$i+1] = $newMod;
       else if($cardModifier == $modifier) $this->banish[$i+1] = $newMod;
       else if($cardModifier == "Source" && $modifier == "TCL") $this->banish[$i+1] = $newMod;

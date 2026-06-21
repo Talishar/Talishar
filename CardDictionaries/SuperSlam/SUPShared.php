@@ -214,8 +214,10 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             $condition = false;
             if ($currentPlayer == $mainPlayer) {
               if (CachedTotalPower() >= 6) $condition = true;
-              for ($j = 0; $j < count($chainLinkSummary); $j += ChainLinkSummaryPieces()) {
-                if ($chainLinkSummary[$j + 1] >= 6) $condition = true;
+              $chainLinksummaryCount = count($chainLinkSummary);
+              $chainLinksummaryPieces = ChainLinkSummaryPieces();
+              for ($j = 0; $j < $chainLinksummaryCount; $j += $chainLinksummaryPieces) {
+                if ($chainLinkSummary[$j + 1] >= 6) { $condition = true; break; }
               }
               if ($condition) {
                 Deal2OrDiscard($targetPlayer);

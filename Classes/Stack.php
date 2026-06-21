@@ -139,8 +139,7 @@ class Layer {
 	}
 
 	function ID() {
-		if(count($this->layers) == 0) return "";
-		return $this->layers[$this->index];
+		return $this->layers[$this->index] ?? "";
 	}
 
 	function PlayerID() {

@@ -493,8 +493,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "fire_and_brimstone_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $character = &GetPlayerCharacter($currentPlayer);
-      $weaponIndex1 = CharacterPieces();
-      $weaponIndex2 = CharacterPieces() * 2;
+      $charPieces = CharacterPieces();
+      $weaponIndex1 = $charPieces;
+      $weaponIndex2 = $charPieces * 2;
       if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($currentPlayer, $weaponIndex1, 1);
       if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($currentPlayer, $weaponIndex2, 1);
       break;
@@ -565,9 +566,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $subtype = SubtypeContains($targetID, "Ally", $currentPlayer);
       if($type) {
         $character = &GetPlayerCharacter($currentPlayer);
+        $charPieces = CharacterPieces();
+        $charCount = count($character);
         $index = -1;
-        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-          if ($character[$i + 11] == $targetUID) $index = $i;
+        for ($i = 0; $i < $charCount; $i += $charPieces) {
+          if ($character[$i + 11] == $targetUID) { $index = $i; break; }
         }
         if ($index != -1) {
           ++$character[$index + 5];
@@ -787,8 +790,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(IsHeroAttackTarget()){
         $hand = GetHand($otherPlayer);
         $foundAreact = false;
-        for ($i = 0; $i < count($hand); $i += HandPieces()) {
-          if (TypeContains($hand[$i], "AR", $otherPlayer)) $foundAreact = true;
+        $handCount = count($hand);
+        $handPieces = HandPieces();
+        for ($i = 0; $i < $handCount; $i += $handPieces) {
+          if (TypeContains($hand[$i], "AR", $otherPlayer)) { $foundAreact = true; break; }
         }
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
@@ -1031,7 +1036,9 @@ function ListDracDaggersGraveyard($player) {
   $weapons = "";
   $char = &GetPlayerCharacter($player);
   $graveyard = &GetDiscard($player);
-  for ($i = 0; $i < count($graveyard); $i += DiscardPieces()) {
+  $graveyardCount = count($graveyard);
+  $discardPieces = DiscardPieces();
+  for ($i = 0; $i < $graveyardCount; $i += $discardPieces) {
     $cardID = $graveyard[$i];
     if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger") && !isFaceDownMod($graveyard[$i+2])) {
       if (TalentContains($cardID, "DRACONIC", $player)) {

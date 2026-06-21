@@ -76,8 +76,9 @@ class ChainLink {
     if (isset($chainLinks[$linkNum])) {
       $this->link = &$chainLinks[$linkNum];
     }
-	$summaryIndex = $linkNum * ChainLinkSummaryPieces();
-	$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, ChainLinkSummaryPieces());
+	$summaryPieces = ChainLinkSummaryPieces();
+	$summaryIndex = $linkNum * $summaryPieces;
+	$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, $summaryPieces);
   }
 
 	function NumCards() {

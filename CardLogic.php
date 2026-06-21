@@ -107,7 +107,8 @@ function AddEffectToPastAttack($index, $cardID) {
 function AddAfterResolveEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
   global $afterResolveEffects, $combatChain;
-  $card = explode("-", $cardID)[0];
+  $dashPos = strpos($cardID, "-");
+  $card = $dashPos !== false ? substr($cardID, 0, $dashPos) : $cardID;
   if (CardType($card) == "A" && count($combatChain) > 0 && !IsCombatEffectPersistent($cardID) && $from != "PLAY") {
     AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
     return;
@@ -121,15 +122,10 @@ function AddAfterResolveEffect($cardID, $player, $from = "", $uniqueID = -1)
 function CopyCurrentTurnEffectsFromAfterResolveEffects()
 {
   global $currentTurnEffects, $afterResolveEffects;
-  $afterResolveEffectsCount = count($afterResolveEffects);
-  $pieces = CurrentTurnEffectPieces();
-  for ($i = 0; $i < $afterResolveEffectsCount; $i += $pieces) {
-    $currentTurnEffects[] = $afterResolveEffects[$i];
-    $currentTurnEffects[] = $afterResolveEffects[$i + 1];
-    $currentTurnEffects[] = $afterResolveEffects[$i + 2];
-    $currentTurnEffects[] = $afterResolveEffects[$i + 3];
+  if ($afterResolveEffects) {
+    array_push($currentTurnEffects, ...$afterResolveEffects);
+    $afterResolveEffects = [];
   }
-  $afterResolveEffects = [];
 }
 
 //This is needed because if you add a current turn effect from combat, it could get deleted as part of the combat resolution
@@ -145,15 +141,10 @@ function AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID = -1)
 function CopyCurrentTurnEffectsFromCombat()
 {
   global $currentTurnEffects, $currentTurnEffectsFromCombat;
-  $currentTurnEffectsFromCombatCount = count($currentTurnEffectsFromCombat);
-  $pieces = CurrentTurnEffectPieces();
-  for ($i = 0; $i < $currentTurnEffectsFromCombatCount; $i += $pieces) {
-    $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i];
-    $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i + 1];
-    $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i + 2];
-    $currentTurnEffects[] = $currentTurnEffectsFromCombat[$i + 3];
+  if ($currentTurnEffectsFromCombat) {
+    array_push($currentTurnEffects, ...$currentTurnEffectsFromCombat);
+    $currentTurnEffectsFromCombat = [];
   }
-  $currentTurnEffectsFromCombat = [];
 }
 
 function RemoveCurrentTurnEffect($index)
@@ -243,9 +234,7 @@ function PrependLayer($cardID, $player, $parameter, $target = "-", $additionalCo
 function PopLayer()
 {
   global $layers;
-  for ($i=0; $i < LayerPieces(); $i++) { 
-    array_pop($layers);
-  }
+  array_splice($layers, -LayerPieces());
   return count($layers);//How far it is from the end
 }
 
@@ -1808,9 +1797,10 @@ function AddCharacterPlayCardTrigger($cardID, $playType, $from)
 {
   global $mainPlayer;
   $otherPlayer = $mainPlayer == 1 ? 2 : 1;
+  $charPieces = CharacterPieces();
   $mainChar = GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainChar);
-  for ($i = 0; $i < $mainCharCount; $i += CharacterPieces()) {
+  for ($i = 0; $i < $mainCharCount; $i += $charPieces) {
     switch ($mainChar[$i]) {
       default:
         break;
@@ -1818,7 +1808,7 @@ function AddCharacterPlayCardTrigger($cardID, $playType, $from)
   }
   $otherChar = GetPlayerCharacter($otherPlayer);
   $otherCharCount = count($otherChar);
-  for ($i = 0; $i < $otherCharCount; $i += CharacterPieces()) {
+  for ($i = 0; $i < $otherCharCount; $i += $charPieces) {
     switch ($otherChar[$i]) {
       case "leap_frog_vocal_sac":
       case "leap_frog_slime_skin":
@@ -1933,7 +1923,8 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       $openHands = true;
       $char = GetPlayerCharacter($player);
       $charPieces = CharacterPieces();
-      for ($i = $charPieces; $i < count($char); $i += $charPieces) {
+      $charCount = count($char);
+      for ($i = $charPieces; $i < $charCount; $i += $charPieces) {
         if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand")) {
           if ($char[$i + 1] != 0) $openHands = false;
         }
@@ -2413,7 +2404,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "zephyr_needle_r":
         EvaluateCombatChain($totalPower, $totalBlock, secondNeedleCheck: true);
         $combatChainPieces = CombatChainPieces();
-        for ($i = $combatChainPieces; $i < count($combatChain); $i += $combatChainPieces) {
+        $combatChainCount = count($combatChain);
+        for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
           $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
           $blockVal = intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6];
           if ($totalBlock > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
@@ -3449,7 +3441,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         for ($i = 0; $i < $myItemsCount; $i += $itemPieces) {
           if ($myItems[$i] == "golden_cog") ++$maxRepeats; // you can galvanize the gold made by galvanizing a cog
         }
-        for ($i = 0; $i < $maxRepeats; $i += itemPieces()) {
+        for ($i = 0; $i < $maxRepeats; $i += $itemPieces) {
           AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS", 1);
           AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to galvanize for " . CardLink($parameter, $parameter) . " effect", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
@@ -4290,8 +4282,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "entangling_shot_red":
       case "nettling_shot_red":
       case "quickening_sand_blue":
-        $zone = explode("-", $target)[0];
-        $uid = explode("-", $target)[1];
+        $targetParts = explode("-", $target);
+        $zone = $targetParts[0];
+        $uid = $targetParts[1];
         $otherPlayer = $player == 1 ? 2 : 1;
         switch ($zone) {
           case "THEIRALLY":

@@ -58,8 +58,11 @@
 
   function WTREffectPowerModifier($cardID)
   {
-    $idArr = explode("-", $cardID);
-    $cardID = $idArr[0];
+    $suffix = '';
+    if (($pos = strpos($cardID, "-")) !== false) {
+      $suffix = substr($cardID, $pos + 1);
+      $cardID = substr($cardID, 0, $pos);
+    }
     switch($cardID)
     {
       case "bloodrush_bellow_yellow": return 2;
@@ -76,7 +79,7 @@
       case "emerging_power_red": return 3;
       case "emerging_power_yellow": return 2;
       case "emerging_power_blue": return 1;
-      case "lord_of_wind_blue": return isset($idArr[1]) ? $idArr[1] : 0;
+      case "lord_of_wind_blue": return $suffix !== '' ? $suffix : 0;
       case "braveforge_bracers": return 1;
       case "warriors_valor_red": return 3;
       case "warriors_valor_yellow": return 2;
@@ -111,9 +114,9 @@
       case "sloggism_blue": return 4;
       case "rout_red": return 3;
       case "singing_steelblade_yellow": return 1;
-      case "overpower_red": return isset($idArr[1]) ? 6 : 4;
-      case "overpower_yellow": return isset($idArr[1]) ? 5 : 3;
-      case "overpower_blue": return isset($idArr[1]) ? 4 : 2;
+      case "overpower_red": return $suffix !== '' ? 6 : 4;
+      case "overpower_yellow": return $suffix !== '' ? 5 : 3;
+      case "overpower_blue": return $suffix !== '' ? 4 : 2;
       case "ironsong_response_red": return 3;
       case "ironsong_response_yellow": return 2;
       case "ironsong_response_blue": return 1;
@@ -131,8 +134,7 @@
   function WTRCombatEffectActive($cardID, $attackID)
   {
     global $mainPlayer, $CS_LastDynCost;
-    $idArr = explode("-", $cardID);
-    $cardID = $idArr[0];
+    if (($pos = strpos($cardID, "-")) !== false) $cardID = substr($cardID, 0, $pos);
     switch($cardID)
     {
       case "bloodrush_bellow_yellow": return ClassContains($attackID, "BRUTE", $mainPlayer);

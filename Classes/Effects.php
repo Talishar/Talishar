@@ -67,7 +67,7 @@ class CurrentTurnEffects {
   }
 
 	function RemoveEffectByID($effectID) {
-		for ($i = $this->NumEffects() - 1; $i >= 0; $i -= 1) {
+		for ($i = $this->NumEffects() - 1; $i >= 0; --$i) {
 			$Effect = $this->Effect($i, true);
 			if ($Effect->EffectID() == $effectID) $Effect->Remove();
 		}

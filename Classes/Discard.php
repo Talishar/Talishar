@@ -64,13 +64,12 @@ class Discard {
   }
 
   function Add($cardID, $from="GY", $mods="-") {
-    array_push($this->discard, $cardID);
-    array_push($this->discard, GetUniqueId());
-    array_push($this->discard, "-");
+    array_push($this->discard, $cardID, GetUniqueId(), "-");
   }
 
   function TopCard() {
-    return count($this->discard) > 0 ? $this->discard[count($this->discard) - DiscardPieces()] : "";
+    $count = count($this->discard);
+    return $count > 0 ? $this->discard[$count - DiscardPieces()] : "";
   }
 
   function FindCardUID($uid) {

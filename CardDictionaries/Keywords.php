@@ -45,11 +45,13 @@
     IncrementClassState($player, $CS_NumCranked);
     $char = GetPlayerCharacter($player);
     $charCount = count($char);
-    for ($i = 0; $i < $charCount; $i += CharacterPieces()){
+    $charPieces = CharacterPieces();
+    $numCranked = GetClassState($player, $CS_NumCranked);
+    for ($i = 0; $i < $charCount; $i += $charPieces) {
       switch ($char[$i]) {
         case "puffin_hightail":
         case "puffin":
-          if (GetClassState($player, $CS_NumCranked) == 2 && SearchCharacterActive($player, $char[$i])) AddLayer("TRIGGER", $player, $char[$i]);
+          if ($numCranked == 2 && SearchCharacterActive($player, $char[$i])) AddLayer("TRIGGER", $player, $char[$i]);
           break;
         default:
           break;
@@ -105,8 +107,11 @@
       $playerID = $switched ? 3 - $i : $i;
       $deck = new Deck($playerID);
       if($deck->Reveal(1, $switched, true)) {
-        $power = $deck->Empty() ? 0 : ModifiedPowerValue($deck->Top(), $playerID, "DECK", source:$cardID);
-        if(!TypeContains($deck->Top(), "AA") && $power == 0) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
+        if(!$deck->Empty()) {
+          $topCard = $deck->Top();
+          $power = ModifiedPowerValue($topCard, $playerID, "DECK", source:$cardID);
+          if(!TypeContains($topCard, "AA") && $power == 0) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
+        } else { $power = 0; }
         if($i == 1) $p1Power = $power;
         else $p2Power = $power;
       }
@@ -174,14 +179,15 @@
     $deck = new Deck($playerID);
     $switched = $switchedPlayers[0] || $switchedPlayers[1];
     if (!$switched) {
-      switch ($deck->Top()) {
+      $deckTop = $deck->Top();
+      switch ($deckTop) {
         case "the_golden_son_yellow":
         case "thunk_red": case "thunk_yellow": case "thunk_blue":
         case "wallop_red": case "wallop_yellow": case "wallop_blue":
-          AddLayer("TRIGGER", $playerID, $deck->Top());
+          AddLayer("TRIGGER", $playerID, $deckTop);
           break;
         default:
-          $topCard = GetClass($deck->Top(), $playerID);
+          $topCard = GetClass($deckTop, $playerID);
           if ($topCard != "-") $topCard->WonClashWithAbility($playerID);
           break;
       }
@@ -194,7 +200,6 @@
     switch($cardID)
     {
       case "millers_grindstone":
-        $otherPlayer = $playerID == 1 ? 2 : 1;
         $otherDeck = new Deck($otherPlayer);
         if($otherDeck->Empty()) {
           break;
@@ -299,8 +304,8 @@
     $otherPlayer = $playerID == 1 ? 2 : 1;
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
-    $goldIndices = GetGoldIndices($playerID);
     if(($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0 && $char[1] == 2) {
+      $goldIndices = GetGoldIndices($playerID);
       $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
       PrependDecisionQueue("SETDQVAR", $playerID, "1"); //reset the dqvar
@@ -455,13 +460,17 @@
     $numWagersWon = 0;
     $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
-    for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-      $hasWager = $chainClosed ? false : true;
+    $effectPieces = CurrentTurnEffectsPieces();
+    for($i = count($currentTurnEffects) - $effectPieces; $i >= 0; $i -= $effectPieces) {
+      $hasWager = !$chainClosed;
       if (!isset($currentTurnEffects[$i])) continue;
       $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1] ?? 0);
       if ($card != "-" && $card->IsWagerEffect($i)) {
-        for($j = 0; $j < $amount; ++$j) {
-          if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, ExtractCardID($currentTurnEffects[$i]), $wonWager, "WAGER");
+        if (!$chainClosed) {
+          $triggerCardID = ExtractCardID($currentTurnEffects[$i]);
+          for($j = 0; $j < $amount; ++$j) {
+            AddLayer("TRIGGER", $mainPlayer, $triggerCardID, $wonWager, "WAGER");
+          }
         }
         // if (IsCombatEffectActive($currentTurnEffects[$i]))
         RemoveCurrentTurnEffect($i);
@@ -485,13 +494,15 @@
           case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
           case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
           case "drink_em_under_the_table_red":
-            for($j = 0; $j < $amount; ++$j) {
-              if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
+            if (!$chainClosed) {
+              $triggerCardID = $currentTurnEffects[$i];
+              for($j = 0; $j < $amount; ++$j) {
+                AddLayer("TRIGGER", $mainPlayer, $triggerCardID, $wonWager, "WAGER");
+              }
             }
             RemoveCurrentTurnEffect($i);
             break;
           default:
-            $hasWager = $hasWager || false;
             break;
         }
       }
@@ -528,30 +539,31 @@
     $earthBanishes = 2;
     $totalBanishes = 3;
     // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
+    $earthDiscard = SearchDiscard($player, talent: "EARTH");
     $countInDiscard = SearchCount(
       SearchRemoveDuplicates(
         CombineSearches(
-          SearchDiscard($player, talent: "EARTH"),
+          $earthDiscard,
           CombineSearches(
             SearchDiscard($player, "A"),
-            SearchDiscard($player
-            , "AA"))
+            SearchDiscard($player, "AA"))
           )
         )
       );
       // Must have the minimum # of earth cards too.
-      $earthCountInDiscard = SearchCount(SearchDiscard($player, talent: "EARTH"));
+      $earthCountInDiscard = SearchCount($earthDiscard);
       if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
+        $earthColorCode = GetElementColorCode("EARTH");
         // Earth Banishes
         for($i = 0; $i < $earthBanishes; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
       switch ($earthBanishes - $i) {
         case 1:
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose 1 {{element|Earth|" . GetElementColorCode("EARTH") . "}} card to banish", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose 1 {{element|Earth|" . $earthColorCode . "}} card to banish", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           break;
         default:
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $earthBanishes . " {{element|Earth|" . GetElementColorCode("EARTH") . "}} cards to banish (or pass)", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $earthBanishes . " {{element|Earth|" . $earthColorCode . "}} cards to banish (or pass)", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           break;
       }
@@ -562,7 +574,7 @@
         // Action banishes.
         for($i = 0; $i < $actionBanishes; $i++) {
           AddDecisionQueue("GETCARDSFORDECOMPOSE", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1); // Modified MULTIZONEINDICES so if there are no actions it can be sent to the next dq and it will revert gamestate. Can't use "PASS" because YESNO "PASS" result is already present.
-          AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different {{element|Earth|" . GetElementColorCode("EARTH") . "}} cards.", 1);
+          AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different {{element|Earth|" . $earthColorCode . "}} cards.", 1);
           AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($actionBanishes - $i) . " action card(s) to banish", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, "GY,-", 1);

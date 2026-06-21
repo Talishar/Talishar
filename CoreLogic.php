@@ -942,7 +942,8 @@ function CombatChainDamageModifiers($player, $source, $type)
         break;
     }
   }
-  for ($i = 0; $i < count($chainLinks); ++$i) {
+  $chainLinksCount = count($chainLinks);
+  for ($i = 0; $i < $chainLinksCount; ++$i) {
     if (($chainLinks[$i][2] ?? 0) == 1) {
       switch ($chainLinks[$i][0]) {
         case "ball_lightning_red":
@@ -1274,7 +1275,7 @@ function UnsetAuraModifier($player, $modifier, $newMod = "-") {
   $auraCount = count($auras);
   $auraPieces = AuraPieces();
   for ($i = 0; $i < $auraCount; $i += $auraPieces) {
-    $cardModifier = $auras[$i+10];
+    $cardModifier = $auras[$i+10] ?? "-";
     if (DelimStringContains($cardModifier, $modifier)) {
       $auras[$i+10] = "-";
       StealAura($player, $i, $otherPlayer, "THEIRAURAS");
@@ -1318,21 +1319,28 @@ function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = 
   $ret = [];
   $exclCardTypeArray = explode(",", $exclCardTypes);
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
-  for ($i = 0; $i < count($chainLinks); ++$i) {
+  $exclCardTypeCount = count($exclCardTypeArray);
+  $exclCardSubTypeCount = count($exclCardSubTypeArray);
+  $chainLinksCount = count($chainLinks);
+  $chainLinksPieces = ChainLinksPieces();
+  for ($i = 0; $i < $chainLinksCount; ++$i) {
     if ($blockingClass != "" && !ClassContains($chainLinks[$i][0], $blockingClass, $mainPlayer)) continue;
-    for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+    $chainLinkICount = count($chainLinks[$i]);
+    for ($j = 0; $j < $chainLinkICount; $j += $chainLinksPieces) {
       $cardID = $chainLinks[$i][$j];
       $thisType = CardType($cardID);
       $thisSubType = CardSubType($cardID);
       if ($color != "" && !ColorContains($cardID, $color, $chainLinks[$i][$j + 1])) continue;
-      if ($subType != "" && !SubtypeContains($cardID, $subType)) continue; 
+      if ($subType != "" && !SubtypeContains($cardID, $subType)) continue;
       if (($playerID == "" || $chainLinks[$i][$j + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($cardID, $nameContains, $playerID, partial: true))) {
         $excluded = false;
-        for ($k = 0; $k < count($exclCardTypeArray); ++$k) {
-          if ($thisType == $exclCardTypeArray[$k]) $excluded = true;
+        for ($k = 0; $k < $exclCardTypeCount; ++$k) {
+          if ($thisType == $exclCardTypeArray[$k]) { $excluded = true; break; }
         }
-        for ($k = 0; $k < count($exclCardSubTypeArray); ++$k) {
-          if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
+        if (!$excluded) {
+          for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
+            if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
+          }
         }
         if ($excluded) continue;
         if (!$asMZInd) $ret[] = "$j-$i";
@@ -1349,6 +1357,8 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
   $cardIDs = "";
   $exclCardTypeArray = explode(",", $exclCardTypes);
   $exclCardSubTypeArray = explode(",", $exclCardSubTypes);
+  $exclCardTypeCount = count($exclCardTypeArray);
+  $exclCardSubTypeCount = count($exclCardSubTypeArray);
   $combatChainCount = count($combatChain);
   $combatChainPieces = CombatChainPieces();
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
@@ -1356,11 +1366,13 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
     $thisSubType = CardSubType($combatChain[$i]);
     if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
       $excluded = false;
-      for ($j = 0; $j < count($exclCardTypeArray); ++$j) {
-        if ($thisType == $exclCardTypeArray[$j]) $excluded = true;
+      for ($j = 0; $j < $exclCardTypeCount; ++$j) {
+        if ($thisType == $exclCardTypeArray[$j]) { $excluded = true; break; }
       }
-      for ($k = 0; $k < count($exclCardSubTypeArray); ++$k) {
-        if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) $excluded = true;
+      if (!$excluded) {
+        for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
+          if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
+        }
       }
       if ($excluded) continue;
       if ($cardIDs != "") $cardIDs .= ",";
@@ -1462,8 +1474,11 @@ function CombatChainClosedMainCharacterEffects()
 {
   global $chainLinks, $mainPlayer;
   $character = &GetPlayerCharacter($mainPlayer);
-  for ($i = 0; $i < count($chainLinks); ++$i) {
-    for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+  $chainLinksCount = count($chainLinks);
+  $chainLinksPieces = ChainLinksPieces();
+  for ($i = 0; $i < $chainLinksCount; ++$i) {
+    $chainLinkICount = count($chainLinks[$i]);
+    for ($j = 0; $j < $chainLinkICount; $j += $chainLinksPieces) {
       if ($chainLinks[$i][$j + 1] != $mainPlayer) continue;
       $charIndex = FindCharacterIndex($mainPlayer, $chainLinks[$i][$j]);
       if ($charIndex == -1) continue;
@@ -1509,10 +1524,14 @@ function CombatChainClosedCharacterEffects()
   global $chainLinks, $defPlayer, $chainLinkSummary, $mainPlayer, $ChainLinks;
   $character = &GetPlayerCharacter($defPlayer);
   $mainChar = &GetPlayerCharacter($mainPlayer);
-  for ($i = 0; $i < count($chainLinks); ++$i) {
+  $chainLinksCount = count($chainLinks);
+  $chainLinksPieces = ChainLinksPieces();
+  $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+  for ($i = 0; $i < $chainLinksCount; ++$i) {
     $Link = $ChainLinks->GetLink($i);
     $nervesOfSteelActive = $Link->TotalAttack() <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
-    for ($j = 0; $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+    $chainLinkICount = count($chainLinks[$i]);
+    for ($j = 0; $j < $chainLinkICount; $j += $chainLinksPieces) {
       if ($chainLinks[$i][$j + 1] != $defPlayer) continue;
       $charIndex = FindCharacterIndexUniqueID($defPlayer, $chainLinks[$i][$j + 8]);
       if ($charIndex == -1) {
@@ -1572,7 +1591,7 @@ function CombatChainClosedCharacterEffects()
       }
       switch ($chainLinks[$i][$j]) {
         case "phantasmal_footsteps":
-          if (!DelimStringContains($chainLinkSummary[$i * ChainLinkSummaryPieces() + 3], "ILLUSIONIST") && $chainLinkSummary[$i * ChainLinkSummaryPieces() + 1] >= 6) {
+          if (!DelimStringContains($chainLinkSummary[$i * $chainLinkSummaryPieces + 3], "ILLUSIONIST") && $chainLinkSummary[$i * $chainLinkSummaryPieces + 1] >= 6) {
             DestroyCharacter($defPlayer, FindCharacterIndex($defPlayer, "phantasmal_footsteps"));
           }
           break;
@@ -1708,7 +1727,7 @@ function GetIndices($count, $add = 0, $pieces = 1, $zone="")
   $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
     $ind = $zone == "" ? $i + $add : "$zone-" . $i + $add;
-    array_push($indices, $ind);
+    $indices[] = $ind;
   }
   return implode(",", $indices);
 }
@@ -2241,7 +2260,8 @@ function TalentContainsAny($cardID, $talents, $player = "", $zone="-")
   $cardTalent = TalentOverride($cardID, $player, $zone);
   //Loop over current turn effects to find modifiers
   $talentArr = explode(",", $talents);
-  for ($i = 0; $i < count($talentArr); ++$i) {
+  $talentArrCount = count($talentArr);
+  for ($i = 0; $i < $talentArrCount; ++$i) {
     if (DelimStringContains($cardTalent, $talentArr[$i])) return true;
   }
   return false;
@@ -2254,8 +2274,9 @@ function RevealCards($cards, $player = "", $look=false, $fullReveal=true)
   if (!$look && !CanRevealCards($player)) return false;
   if ($cards == "") return true;
   $cardArray = explode(",", $cards);
+  $cardArrayCount = count($cardArray);
   $string = "👁️‍🗨️";
-  for ($i = 0; $i < count($cardArray); ++$i) {
+  for ($i = 0; $i < $cardArrayCount; ++$i) {
     if ($string != "👁️‍🗨️") $string .= ", ";
     if (CardName($cardArray[$i]) == "") { //in case the card gets passed as an MZIndex
       $card = GetMZCard($player, $cardArray[$i]);
@@ -2556,9 +2577,11 @@ function DoesAttackHaveGoAgain()
     case "cut_through_yellow":
     case "cut_through_blue":
       $numDaggerHits = 0;
-        for($i=0; $i<count($chainLinks); ++$i)
+      $chainLinksCount = count($chainLinks);
+      $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+        for($i=0; $i<$chainLinksCount; ++$i)
         {
-          if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
+          if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) ++$numDaggerHits;
         }
         $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
       return $numDaggerHits > 0;
@@ -2719,7 +2742,8 @@ function RemoveCharacter($player, $index)
   $ret = $char[$index];
   $card = GetClass($ret, $player);
   if ($card != "-") $card->LeavesPlayAbility($index, $char[$index+11], "CHAR", true);
-  for ($i = 0; $i < CharacterPieces(); ++$i) {
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charPieces; ++$i) {
     unset($char[$index + $i]);
   }
   $char = array_values($char);

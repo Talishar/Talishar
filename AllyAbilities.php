@@ -220,6 +220,7 @@ function AllyDamagePrevention($player, $index, $damage, $type = "", $source = "-
   $index = intval($index);
   global $currentTurnEffects;
   $allies = &GetAllies($player);
+  if ($index < 0 || !isset($allies[$index])) return $damage;
   $cardID = $allies[$index];
   $preventedDamage = 0;
   $canBePrevented = CanDamageBePrevented($player, $damage, $type, $source);
@@ -356,6 +357,7 @@ function AllyDamageTakenAbilities($player, $i)
 {
   $i = intval($i);
   $allies = &GetAllies($player);
+  if ($i < 0 || !isset($allies[$i])) return;
   switch ($allies[$i]) {
     case "nekria":
       $allies[$i + 2] -= 1;

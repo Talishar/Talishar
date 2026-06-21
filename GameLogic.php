@@ -1017,7 +1017,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $inputCount = count($input);
       for ($i = 0; $i < $inputCount; ++$i) {
         $inputArr = explode("-", $input[$i]);
-        $passFilter = $relationship == "include" ? false : true;
+        $passFilter = $relationship != "include";
         switch ($type) {
           case "type":
             if (CardType($inputArr[0]) == $compare) $passFilter = !$passFilter;
@@ -1860,7 +1860,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "BUFFARCANEPREVLAYER":
       global $layers;
       $index = 0;
-      for ($index = 0; $index < count($layers) && ($layers[$index] == "TRIGGER" || $layers[$index] == "PRETRIGGER"); $index += LayerPieces()) ;
+      $layersCount = count($layers); $layerPieces = LayerPieces();
+      for ($index = 0; $index < $layersCount && ($layers[$index] == "TRIGGER" || $layers[$index] == "PRETRIGGER"); $index += $layerPieces) ;
       AddCurrentTurnEffect("metacarpus_node", $player, "PLAY", $layers[$index + 6]);
       return $lastResult;
     case "LASTARSENALADDEFFECT":
@@ -2300,7 +2301,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $lastResultArr = explode("-", $lastResult);
       $zone = $lastResultArr[0];
       $zoneDS = &GetMZZone($player, $zone);
-      for ($i = 1; $i < count($lastResultArr); $i += 2) {
+      $lastResultArrCount = count($lastResultArr);
+      for ($i = 1; $i < $lastResultArrCount; $i += 2) {
         if ($zone == "MYALLY" || $zone == "THEIRALLY") $zoneDS[$lastResultArr[$i] + 9] += $parameter;
         if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $zoneDS[$lastResultArr[$i] + 3] += $parameter;
       }
@@ -3423,7 +3425,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "decimator_great_axe":
           $decimatorParts = explode("-", $target);
           $location = $decimatorParts[0];
-          $ind1 = $decimatorParts[1];
+          $ind1 = $decimatorParts[1] ?? 0;
           $ind2 = $decimatorParts[2] ?? 0;
           $from = match ($location) {
             "COMBATCHAINLINK" => $combatChain[$ind1 + 2],
