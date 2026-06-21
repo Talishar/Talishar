@@ -201,7 +201,7 @@
         return $rv;
       case "reckless_swing_blue":
         if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
-          WriteLog(Cardlink($cardID) . " deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID, $defPlayer);
+          WriteLog(Cardlink($cardID, $cardID) . " deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID, $defPlayer);
         }
         return "";
       case "sand_sketched_plan_blue":
@@ -508,7 +508,7 @@
     $handCount = count($hand);
     if($handCount == 0) return;
     $char = &GetPlayerCharacter($mainPlayer);
-    if($context == "") $context = "if you want to use ".CardLink($char[0])." ability";
+    if($context == "") $context = "if you want to use ".CardLink($char[0], $char[0])." ability";
     AddDecisionQueue("YESNO", $mainPlayer, $context);
     AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
     AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND:maxCost=0;minCost=0", 1);
@@ -577,7 +577,7 @@
     global $mainPlayer, $defPlayer, $CombatChain, $combatChainState, $CCS_DamageDealt, $layers, $combatChain, $chainLinks;
     if(!IsHeroAttackTarget()) return;
     if(CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
-      WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow"));
+      WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
       return true;
     }
     $card = GetClass($cardID, $mainPlayer);
@@ -676,7 +676,7 @@
         $indices = SearchMultizone($mainPlayer, "THEIRAURAS:cardID=seismic_surge");
         if(empty($indices)) break;
         MZChooseAndDestroy($mainPlayer, "THEIRAURAS:cardID=seismic_surge", context: "Choose a Seismic Surge token to destroy");
-        WriteLog("Player $mainPlayer destroyed a " . CardLink("seismic_surge") . " token");
+        WriteLog("Player $mainPlayer destroyed a " . CardLink("seismic_surge", "seismic_surge") . " token");
         break;
       case "knock_em_off_their_feet_red":
         Tap("MYCHAR-0", $defPlayer);

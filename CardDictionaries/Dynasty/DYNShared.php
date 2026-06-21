@@ -424,7 +424,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
         if(IsRoyal($currentPlayer))
         {
-          $rv .= "👁️‍🗨️" .CardLink($cardID) . " revealed the opponent's hand";
+          $rv .= "👁️‍🗨️" .CardLink($cardID, $cardID) . " revealed the opponent's hand";
           $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
@@ -594,7 +594,7 @@ function ContractType($cardID, $chosenName="-")
 function ContractCompleted($player, $cardID)
 {
   global $CS_NumContractsCompleted, $EffectContext;
-  WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID));
+  WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID));
   IncrementClassState($player, $CS_NumContractsCompleted);
   if($EffectContext == "coercive_tendency_blue") AddCurrentTurnEffect("coercive_tendency_blue", $player);
   if (class_exists($cardID)) {
@@ -746,7 +746,7 @@ function SilverBuyback($player, $index) {
   if (CountItem("silver", $player) >= 2 && $discardIndex != "" && $foundSlot) {
     AddDecisionQueue("COUNTITEM", $player, "silver");
     AddDecisionQueue("LESSTHANPASS", $player, "2");
-    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_2_".Cardlink("silver")."_and_equip_" . CardLink($graveyard[$index]), 1);
+    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_2_".Cardlink("silver", "silver")."_and_equip_" . CardLink($graveyard[$index]), 1);
     AddDecisionQueue("NOPASS", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "silver-2", 1);
     AddDecisionQueue("FINDANDDESTROYITEM", $player, "<-", 1);

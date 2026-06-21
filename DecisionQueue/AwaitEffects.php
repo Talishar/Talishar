@@ -104,7 +104,7 @@ function MultiAddHandAwait($player) {
     if ($loud === "1") {
       if ($log !== "") $log .= ", ";
       if ($i !== 0 && $i === $lastIdx) $log .= "and ";
-      $log .= CardLink($cards[$i]);
+      $log .= CardLink($cards[$i], $cards[$i]);
     }
     $hand[] = $cards[$i];
   }

@@ -6,7 +6,7 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
     if ($isToken) {//this is a band-aid fix for cases where EffectContext isn't updated properly
-      WriteLog("🙇 " . CardLink("preach_modesty_red") . " prevents the creation of " . CardLink($cardID));
+      WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
       return;
     }
   }
@@ -43,7 +43,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
     if ($isToken) {//this is a band-aid fix for cases where EffectContext isn't updated properly
-      WriteLog("🙇 " . CardLink("preach_modesty_red") . " prevents the creation of " . CardLink($cardID));
+      WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
       return;
     }
   }
@@ -242,7 +242,7 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   }
   else $uid = "-";
   for ($i = 0; $i < $numMercifulRetribution; ++$i) {
-    if (CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from " . CardLink("merciful_retribution_yellow") . " because it is a token copy</span>");
+    if (CardType($cardID) != "T" && $isToken) WriteLog("<span style='color:red;'>The card is not put in your soul from " . CardLink("merciful_retribution_yellow", "merciful_retribution_yellow") . " because it is a token copy</span>");
     SetArcaneTarget($player, "merciful_retribution_yellow", 0);
     AddDecisionQueue("ADDTRIGGER", $player, "merciful_retribution_yellow|$uid");
   }
@@ -306,14 +306,14 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
       AddLayer("TRIGGER", $player, $cardID, "-", "LEAVES");
       break;
     case "sigil_of_sanctuary_blue":
-      WriteLog(CardLink($cardID) . " created an " . CardLink("embodiment_of_earth"));
+      WriteLog(CardLink($cardID, $cardID) . " created an " . CardLink("embodiment_of_earth", "embodiment_of_earth"));
       PlayAura("embodiment_of_earth", $player);
       break;
     case "sigil_of_earth_blue":
       PlayAura("embodiment_of_earth", $player);
       break;
     case "sigil_of_conductivity_blue":
-      WriteLog(CardLink($cardID) . " created an " . CardLink("embodiment_of_lightning"));
+      WriteLog(CardLink($cardID, $cardID) . " created an " . CardLink("embodiment_of_lightning", "embodiment_of_lightning"));
       PlayAura("embodiment_of_lightning", $player, effectSource:$cardID, effectController:$player);
       break;
     case "sigil_of_lightning_blue":
@@ -603,7 +603,7 @@ function AuraStartTurnAbilities()
       //These are all start of turn events without priority
       case "genesis_yellow":
         AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYHAND");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for " . CardLink($auras[$i]));
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card to put in your hero's soul for " . CardLink($auras[$i], $auras[$i]));
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
         AddDecisionQueue("SPECIFICCARD", $mainPlayer, "GENESIS", 1);
@@ -717,10 +717,10 @@ function AuraStartTurnAbilities()
         break;
       case "chains_of_mephetis_blue":
         if ($auras[$i + 2] > 0) {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_doom_counter_and_keep_" . CardLink($auras[$i]) . "_and_keep_it_in_play?");
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_doom_counter_and_keep_" . CardLink($auras[$i], $auras[$i]) . "_and_keep_it_in_play?");
           AddDecisionQueue("REMOVECOUNTERAURAORDESTROY", $mainPlayer, $auras[$i + 6]);
         } else {
-          WriteLog(CardLink($auras[$i]) . " was destroyed");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " was destroyed");
           DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         }
         break;
@@ -750,7 +750,7 @@ function AuraStartTurnAbilities()
       case "stacked_in_your_favor_yellow":
       case "stacked_in_your_favor_blue":
         $effectSource = $auras[$i];
-        WriteLog("Resolving " . CardLink($auras[$i]) . " ability");
+        WriteLog("Resolving " . CardLink($auras[$i], $auras[$i]) . " ability");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         Draw($mainPlayer, effectSource: $effectSource);
         MZMoveCard($mainPlayer, "MYHAND", "MYTOPDECK", silent: true);
@@ -801,7 +801,7 @@ function AuraStartTurnAbilities()
           }
         }
         LoseHealth($eqFrostbiteCount, $mainPlayer);
-        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue") .".");
+        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
         break;
       case "agility_stance_yellow":
         if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); 
@@ -900,7 +900,7 @@ function AuraStartTurnAbilities()
           }
         }
         LoseHealth($eqFrostbiteCount, $mainPlayer);
-        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue") .".");
+        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
         break;
       case "toughness":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY");
@@ -1202,14 +1202,14 @@ function ChannelTalent($uniqueID, $talent)
   if ($toBottom <= $numTalent) {
     $article = str_contains('aeiou', strtolower($talent[0])) ? 'an' : 'a';
     for ($j = $toBottom; $j > 0; --$j) {
-      $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($talent)) . "|" . GetElementColorCode($talent) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auraID) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "");
+      $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($talent)) . "|" . GetElementColorCode($talent) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auraID, $auraID) . " with " . $toBottom . " flow counter" . ($toBottom > 1 ? "s" : "");
       MZMoveCard($mainPlayer, "MYPITCH:talent=" . $talent, "MYBOTDECK", $j == $toBottom, isSubsequent: $j < $toBottom, DQContext: $context);
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
     AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
   } else {
-    WriteLog("Not enough <b>" . ucwords(strtolower($talent)) . "</b> cards in your pitch to satisfy " . CardLink($auraID) . ". Aura destroyed.");
+    WriteLog("Not enough <b>" . ucwords(strtolower($talent)) . "</b> cards in your pitch to satisfy " . CardLink($auraID, $auraID) . ". Aura destroyed.");
     $AuraCard->Destroy();
   }
 }
@@ -1234,14 +1234,14 @@ function ChannelPitchColor($uniqueID, $pitch)
   if ($toBottom <= $numPitch) {
     $article = str_contains('aeiou', strtolower($colorToBanish[0])) ? 'an' : 'a';
     for ($j = $toBottom; $j > 0; --$j) {
-      $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($colorToBanish)) . "|" . GetElementColorCode($colorToBanish) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index]) . " with " . $toBottom . " sand counter" . ($toBottom > 1 ? "s" : "");
+      $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($colorToBanish)) . "|" . GetElementColorCode($colorToBanish) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " sand counter" . ($toBottom > 1 ? "s" : "");
       MZMoveCard($mainPlayer, "MYDISCARD:pitch=" . $pitch, "MYBANISH", $j == $toBottom, isSubsequent: $j < $toBottom, DQContext: $context);
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
     AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
   } else {
-    WriteLog("Not enough <b>" . $colorToBanish . "</b> cards in graveyard to satisfy " . CardLink("parched_terrain_red") . ". Aura destroyed.");
+    WriteLog("Not enough <b>" . $colorToBanish . "</b> cards in graveyard to satisfy " . CardLink("parched_terrain_red", "parched_terrain_red") . ". Aura destroyed.");
     DestroyAuraUniqueID($mainPlayer, $uniqueID);
   }
 }
@@ -1355,8 +1355,8 @@ function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
   if ($preventable) {
     $preventionAmount = AuraDamagePreventionAmount($player, $index, $type, $damage, true, $cancelRemove, preventable:$preventable);
     $damage -= $preventionAmount;
-    if($preventionAmount > 0 && !$cancelRemove) WriteLog(CardLink($auras[$index]) . " was destroyed and prevented " . $preventionAmount . " damage.");
-    elseif($preventionAmount > 0) WriteLog(CardLink($auras[$index]) . " prevented " . $preventionAmount . " damage.");
+    if($preventionAmount > 0 && !$cancelRemove) WriteLog(CardLink($auras[$index], $auras[$index]) . " was destroyed and prevented " . $preventionAmount . " damage.");
+    elseif($preventionAmount > 0) WriteLog(CardLink($auras[$index], $auras[$index]) . " prevented " . $preventionAmount . " damage.");
   }
   //hardcode this for now, figure out a better way to handle this later
   switch ($auras[$index]) {
@@ -1403,7 +1403,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
             if ($index != -1) DestroyAuraUniqueID($player, $auras[$index + 6]);
           }
           $verb = $numToDestroy > 1 ? "s were" : " was";
-          WriteLog($numToDestroy . " " . CardLink("runechant") . $verb . " destroyed");
+          WriteLog($numToDestroy . " " . CardLink("runechant", "runechant") . $verb . " destroyed");
           if ($preventable) $preventedDamage += $numToDestroy;
         }
         break;
@@ -1539,7 +1539,7 @@ function AuraPlayAbilities($cardID, $from = "")
         if (($cardType == "AA" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA"))
           || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA") && IsWeapon($cardID, $from))
           || (TypeContains($cardID, "W") && $resolvedAbilityType == "AA" && ($from == "EQUIP" || $from == "PLAY"))) {
-          WriteLog(CardLink($auras[$i]) . " gives the attack go again");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
           GiveAttackGoAgain();
           $remove = 1;
         }
@@ -1568,7 +1568,7 @@ function AuraPlayAbilities($cardID, $from = "")
         break;
       case "eloquence":
         if (DelimStringContains($cardType, "A") && $from != "PLAY") {
-          WriteLog(CardLink($auras[$i]) . " gives the next non-attack action card go again");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the next non-attack action card go again");
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
         break;
@@ -1633,14 +1633,14 @@ function AuraAttackAbilities($attackID)
       case "shimmers_of_silver_blue":
         if ($auras[$i + 5] > 0 && DelimStringContains(CardSubtype($attackID), "Aura") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
           $index = GetClassState($mainPlayer, $CS_PlayIndex);
-          WriteLog(CardLink($auras[$i]) . " puts a +1 counter on " . CardLink($auras[$index]));
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " puts a +1 counter on " . CardLink($auras[$index], $auras[$index]));
           ++$auras[$index + 3];
           --$auras[$i + 5];
         }
         break;
       case "passing_mirage_blue":
         if ($auras[$i + 5] > 0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) <= 1) {
-          WriteLog(CardLink($auras[$i]) . " makes your first illusionist attack each turn loses phantasm");
+          WriteLog(CardLink($auras[$i], $auras[$i]) . " makes your first illusionist attack each turn loses phantasm");
           --$auras[$i + 5];
           // AddCurrentTurnEffect("passing_mirage_blue", $mainPlayer, true);
         }

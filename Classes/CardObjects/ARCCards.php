@@ -1693,15 +1693,15 @@ class ravenous_rabble extends BaseCard {
 
 	function ProcessAttackTrigger() {
   	$deck = new Deck($this->controller);
-		if($deck->Empty()) return CardLink($this->cardID). " does not get negative power because your deck is empty";
+		if($deck->Empty()) return CardLink($this->cardID, $this->cardID). " does not get negative power because your deck is empty";
 		if($deck->Reveal(1)) {
 			$top = $deck->Top();
 			$pitch = PitchValue($top);
 			$pitch = $pitch > -1 ? $pitch : 0;
 			AddCurrentTurnEffect($this->cardID . "-$pitch", $this->controller);
-			return "Reveals " . CardLink($top) . " and gets -" . $pitch . " power";
+			return "Reveals " . CardLink($top, $top) . " and gets -" . $pitch . " power";
 		}
-		return CardLink($this->cardID). " does not get negative power because the reveal was prevented";
+		return CardLink($this->cardID, $this->cardID). " does not get negative power because the reveal was prevented";
 	}
 
 	function EffectPowerModifier($param) {

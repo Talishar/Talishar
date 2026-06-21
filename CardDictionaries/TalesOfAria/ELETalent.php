@@ -53,7 +53,7 @@
           AddDecisionQueue("MZADDZONE", $currentPlayer, "MYHAND", 1);
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         } else {
-          WriteLog(CardLink($cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+          WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
           return "FAILED";
         }
         return "";
@@ -86,12 +86,12 @@
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
           if($from == "ARS") {
             AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-            WriteLog(CardLink($cardID) . " draw a card.");
+            WriteLog(CardLink($cardID, $cardID) . " draw a card.");
           }
           ResolveGoesWhere("BANISH", $cardID, $currentPlayer, $from);
         } 
         else {
-          WriteLog(CardLink($cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+          WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
           ResolveGoesWhere("GY", $cardID, $currentPlayer, $from);
           return "FAILED";
         }
@@ -131,7 +131,7 @@
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
         if($from == "ARS") {
           Draw($currentPlayer);
-          WriteLog(CardLink($cardID) . " draw a card.");
+          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         }
         return "";
       case "winters_bite_red": case "winters_bite_yellow": case "winters_bite_blue":
@@ -185,7 +185,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if($from == "ARS") {
           Draw($currentPlayer);
-          WriteLog(CardLink($cardID) . " draw a card.");
+          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         }
         return "";
       case "amulet_of_lightning_blue":
@@ -260,7 +260,7 @@
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy", 1);
       PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
-      PrependDecisionQueue("WRITELOG", $player, "Player $otherPlayer declined_to_pay_for_".CardLink("exposed_to_the_elements_blue").".", 1);
+      PrependDecisionQueue("WRITELOG", $player, "Player $otherPlayer declined_to_pay_for_".CardLink("exposed_to_the_elements_blue", "exposed_to_the_elements_blue").".", 1);
       PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
       PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
       PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0);

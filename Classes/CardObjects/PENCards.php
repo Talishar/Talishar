@@ -178,14 +178,14 @@ class magmatic_carapace extends Card
       return;
     if (CheckTapped("MYCHAR-$index", $this->controller))
       return;
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "if you want to tap " . CardLink("magmatic_carapace") . " and pay 1 to create a " . CardLink("seismic_surge"));
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "if you want to tap " . CardLink("magmatic_carapace", "magmatic_carapace") . " and pay 1 to create a " . CardLink("seismic_surge", "seismic_surge"));
     AddDecisionQueue("YESNO", $this->controller, "-", 1);
     AddDecisionQueue("NOPASS", $this->controller, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, "MYCHAR-$index", 1);
     AddDecisionQueue("MZTAP", $this->controller, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, "1", 1);
     AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
-    AddDecisionQueue("WRITELOG", $this->controller, CardLink("magmatic_carapace") . " created a " . CardLink("seismic_surge"), 1);
+    AddDecisionQueue("WRITELOG", $this->controller, CardLink("magmatic_carapace", "magmatic_carapace") . " created a " . CardLink("seismic_surge", "seismic_surge"), 1);
     AddDecisionQueue("PLAYAURA", $this->controller, "seismic_surge", 1);
   }
 }
@@ -381,7 +381,7 @@ class comeback_kicks extends Card
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
     if (PlayerHasLessHealth($this->controller)) {
-      $message = "if you want to destroy " . Cardlink($this->cardID);
+      $message = "if you want to destroy " . Cardlink($this->cardID, $this->cardID);
       if ($this->controller != $mainPlayer) $message .= " (you won't gain an action point on your opponent's turn";
       $index = FindCharacterIndex($this->controller, $this->cardID);
       AddDecisionQueue("YESNO", $this->controller, $message);
@@ -598,7 +598,7 @@ class fire_that_burns_within_red extends Card {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYHAND:isSameName=phoenix_flame_red");
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard a " . CardLink("phoenix_flame_red") . "?", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard a " . CardLink("phoenix_flame_red", "phoenix_flame_red") . "?", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->controller, 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
@@ -3245,7 +3245,7 @@ class skywarden_no161803_yellow extends Card {
     }
 
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYITEMS", 1);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an item to galvanize for " . CardLink($this->cardID) . " effect", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an item to galvanize for " . CardLink($this->cardID, $this->cardID) . " effect", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("GOLDENSKYWARDEN", $this->controller, $target, 1);
     AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
@@ -3596,7 +3596,7 @@ class assembly_module_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if ($from == "PLAY") {
       AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:isSameName=hyper_driver_red");
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a " . CardLink("hyper_driver") . "?", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a " . CardLink("hyper_driver", "hyper_driver") . "?", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
       AddDecisionQueue("PUTPLAY", $this->controller, "-", 1);
@@ -7227,7 +7227,7 @@ class art_of_the_phoenix_war_red extends Card {
       RevertGamestate();
     }
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYHAND:isSameName=phoenix_flame_red");
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard a " . CardLink("phoenix_flame_red"), 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard a " . CardLink("phoenix_flame_red", "phoenix_flame_red"), 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->controller, 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
@@ -7351,7 +7351,7 @@ class seeker_kunai_red extends Card {
     if (CountItem("silver", $this->controller) >= 2) {
       AddDecisionQueue("COUNTITEM", $this->controller, "silver");
       AddDecisionQueue("LESSTHANPASS", $this->controller, "2");
-      AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_pay_2_".Cardlink("silver")."_and_recur_" . CardLink($this->cardID), 1);
+      AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_pay_2_".Cardlink("silver", "silver")."_and_recur_" . CardLink($this->cardID), 1);
       AddDecisionQueue("NOPASS", $this->controller, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $this->controller, "silver-2", 1);
       AddDecisionQueue("FINDANDDESTROYITEM", $this->controller, "<-", 1);
@@ -7619,7 +7619,7 @@ class templar_spellbane extends Card {
       if(GetClassState($this->controller, $CS_NumWeaponsActivated) > 0) $prevent = 2;
       else $prevent = 1;
       IncrementClassState($this->controller, $CS_ArcaneDamagePrevention, $prevent);
-      return CardLink($this->cardID) . " prevent your next arcane damage by " . $prevent;
+      return CardLink($this->cardID, $this->cardID) . " prevent your next arcane damage by " . $prevent;
   }
 
   function EquipPayAdditionalCosts($index = '-') {
@@ -8223,7 +8223,7 @@ class stormweavers_aegis extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     if ($from == "PLAY") {
       if(SearchCount(SearchMultiZone($this->controller, "MYHAND:type=I")) == 0) {
-        WriteLog("No instant card in hand pay the discard cost of " . CardLink($this->cardID) . ". Reverting the gamestate.", highlight:true);
+        WriteLog("No instant card in hand pay the discard cost of " . CardLink($this->cardID, $this->cardID) . ". Reverting the gamestate.", highlight:true);
         RevertGamestate();
       }
       MZMoveCard($this->controller, "MYHAND:type=I", "MYDISCARD," . $this->controller);

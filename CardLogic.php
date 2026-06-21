@@ -643,15 +643,15 @@ function ContinueDecisionQueue($lastResult = "")
   $dqVarsCount = count($dqVars);
   if ($dqVarsCount > 0) {
     if (str_contains($parameter, "{0}") && isset($dqVars[0])) $parameter = str_replace("{0}", $dqVars[0], $parameter);
-    if (str_contains($parameter, "<0>") && isset($dqVars[0])) $parameter = str_replace("<0>", CardLink($dqVars[0]), $parameter);
+    if (str_contains($parameter, "<0>") && isset($dqVars[0])) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);
     if ($dqVarsCount > 1 && str_contains($parameter, "{1}") && isset($dqVars[1])) $parameter = str_replace("{1}", $dqVars[1], $parameter);
     if ($dqVarsCount > 2 && str_contains($parameter, "{2}") && isset($dqVars[2])) $parameter = str_replace("{2}", $dqVars[2], $parameter);
   }
   if ($dqVarsCount > 1 && isset($dqVars[1])) {
-    $parameter = str_replace("<1>", CardLink($dqVars[1]), $parameter);
+    $parameter = str_replace("<1>", CardLink($dqVars[1], $dqVars[1]), $parameter);
   }
   if ($dqVarsCount > 2 && isset($dqVars[2])) {
-    $parameter = str_replace("<2>", CardLink($dqVars[2]), $parameter);
+    $parameter = str_replace("<2>", CardLink($dqVars[2], $dqVars[2]), $parameter);
   }
   if (count($layers) > 0 && $layers[0] == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
     $phase = "M";
@@ -1829,7 +1829,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
   global $combatChain, $mainPlayer, $layers, $defPlayer;
   $character = &GetPlayerCharacter($player);
   if (CardType($target) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
-    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow"));
+    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
     return true;
   }
   switch ($cardID) {
@@ -1839,19 +1839,19 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "refraction_bolters":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID)."_to_get_Go_Again");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID)."_to_get_Go_Again");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-$index", 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
       AddDecisionQueue("OP", $player, "GIVEATTACKGOAGAIN", 1);
-      AddDecisionQueue("WRITELOG", $player, Cardlink($cardID)." was destroyed", 1);
+      AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID)." was destroyed", 1);
       break;
     case "mask_of_momentum":
       Draw($player);
       break;
     case "vest_of_the_first_fist":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID)."_to_gain_2_resources");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID)."_to_gain_2_resources");
       AddDecisionQueue("NOPASS", $player, "");
       AddDecisionQueue("PASSPARAMETER", $player, "MYCHAR-" . $index, 1);
       AddDecisionQueue("MZDESTROY", $player, "-", 1);
@@ -1859,7 +1859,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "breeze_rider_boots":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID));
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID));
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -1867,7 +1867,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "mask_of_the_pouncing_lynx":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if you want to destroy ".Cardlink($cardID));
+      AddDecisionQueue("YESNO", $player, "if you want to destroy ".Cardlink($cardID, $cardID));
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -1882,30 +1882,30 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       $hand = &GetHand($player);
       $resources = &GetResources($player);
       if (TypeContains($combatChain[0], "W", $mainPlayer) && (Count($hand) > 0 || $resources[0] > 0)) {
-        AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("vigor"), 0, 1);
+        AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("vigor", "vigor"), 0, 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-        AddDecisionQueue("WRITELOG", $player, CardLink($cardID) . " created a " . CardLink("vigor") . " token ", 1);
+        AddDecisionQueue("WRITELOG", $player, CardLink($cardID, $cardID) . " created a " . CardLink("vigor", "vigor") . " token ", 1);
         AddDecisionQueue("PASSPARAMETER", $player, "vigor", 1);
         AddDecisionQueue("PUTPLAY", $player, "-", 1);
       }
       break;
     case "aether_crackers":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID)."_to_deal_one_arcane");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID)."_to_deal_one_arcane");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
       AddDecisionQueue("DEALARCANE", $player, "1" . "-" . "aether_crackers" . "-" . "TRIGGER", 1);
-      AddDecisionQueue("WRITELOG", $player, Cardlink($cardID) . " were destroyed", 1);
+      AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID) . " were destroyed", 1);
       break;
     case "arakni_marionette":
     case "arakni_web_of_deceit":
       GiveAttackGoAgain();
       break;
     case "arakni_tarantula":
-      WriteLog(CardLink($cardID) . "'s venom saps 1 life from " . $defPlayer);
+      WriteLog(CardLink($cardID, $cardID) . "'s venom saps 1 life from " . $defPlayer);
       LoseHealth(1, $defPlayer);
       break;
     case "cindra_dracai_of_retribution":
@@ -1915,7 +1915,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       PlayAura("fealty", $player);
       break;
     case "blood_splattered_vest":
-      AddDecisionQueue("YESNO", $player, "to_add_a_stain_counter_to_".Cardlink($cardID));
+      AddDecisionQueue("YESNO", $player, "to_add_a_stain_counter_to_".Cardlink($cardID, $cardID));
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("SPECIFICCARD", $player, "BLOODSPATTEREDVEST", 1);
       break;
@@ -1941,7 +1941,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       break;
     case "robe_of_autumns_fall":
       $index = FindCharacterIndex($player, $cardID);
-      AddDecisionQueue("YESNO", $player, "if you want to destroy ".Cardlink($cardID));
+      AddDecisionQueue("YESNO", $player, "if you want to destroy ".Cardlink($cardID, $cardID));
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -1957,12 +1957,12 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
   global $layers, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $otherPlayer = $player == 1 ? 2 : 1;
   if (CardType($target) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $player, count($layers) <= LayerPieces())) {
-    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow"));
+    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
     return false;
   }
   switch ($cardID) {
     case "powder_keg_blue":
-      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink($cardID) . "_and_a_defending_equipment?");
+      AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink($cardID, $cardID) . "_and_a_defending_equipment?");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("SEARCHCOMBATCHAIN", $player, "E", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a defending equipment to destroy", 1);
@@ -2034,7 +2034,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
     case "trip_the_light_fantastic_yellow":
     case "trip_the_light_fantastic_blue":
       AddCurrentTurnEffect($parameter."-2", $player);
-      WriteLog(CardLink($parameter) . " is preventing the next 2 damage.");
+      WriteLog(CardLink($parameter, $parameter) . " is preventing the next 2 damage.");
       break;
     case "chorus_of_the_amphitheater_red":
     case "chorus_of_the_amphitheater_yellow":
@@ -2200,7 +2200,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "cintari_saber":
       case "cintari_saber_r":
         AddCharacterEffect($player, $combatChainState[$CCS_WeaponIndex], $CombatChain->AttackCard()->ID());
-        WriteLog(CardLink($CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
+        WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
         break;
       case "evo_steel_soul_memory_blue":
         AddCurrentTurnEffect($parameter, $player);
@@ -2301,7 +2301,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "blow_for_a_blow_yellow":
       case "blow_for_a_blow_blue":
         if(PlayerHasLessHealth($mainPlayer)) {
-          WriteLog(CardLink($parameter) . " gains Go Again!");
+          WriteLog(CardLink($parameter, $parameter) . " gains Go Again!");
           GiveAttackGoAgain();
         }
         break;
@@ -2309,7 +2309,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "pound_for_pound_yellow":
       case "pound_for_pound_blue":
         if(PlayerHasLessHealth($mainPlayer)) {
-          WriteLog(CardLink($parameter) . " gains Dominate!");
+          WriteLog(CardLink($parameter, $parameter) . " gains Dominate!");
           AddCurrentTurnEffect($parameter, $player);
         }
         break;
@@ -2317,7 +2317,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "adrenaline_rush_yellow":
       case "adrenaline_rush_blue":
         if(PlayerHasLessHealth($mainPlayer)) {
-          WriteLog(CardLink($parameter) . " gains +3 Power!");
+          WriteLog(CardLink($parameter, $parameter) . " gains +3 Power!");
           AddCurrentTurnEffect($parameter, $player);
         }
         break;
@@ -2325,7 +2325,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "wounded_bull_yellow":
       case "wounded_bull_blue":
         if(PlayerHasLessHealth($mainPlayer)) {
-          WriteLog(CardLink($parameter) . " gains +1 Power!");
+          WriteLog(CardLink($parameter, $parameter) . " gains +1 Power!");
           AddCurrentTurnEffect($parameter, $player);
         }
         break;
@@ -2358,7 +2358,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($parameter == "bloodspill_invocation_red") $amount = 3;
         else if ($parameter == "bloodspill_invocation_yellow") $amount = 2;
         else $amount = 1;
-        WriteLog(CardLink($parameter) . " created $amount runechants");
+        WriteLog(CardLink($parameter, $parameter) . " created $amount runechants");
         PlayAura("runechant", $player, $amount);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
@@ -2452,7 +2452,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "hyper_x3":
         $banish = GetBanish($player);
         $index = SearchBanishForUID($player, $target);
-        if ($index == -1) WriteLog(CardLink($parameter)."'s trigger fails");
+        if ($index == -1) WriteLog(CardLink($parameter, $parameter)."'s trigger fails");
         else {
           EquipmentBoostEffect($player, "hyper_x3", $banish[$index]);
           RemoveBanish($player, $index);
@@ -2461,7 +2461,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "bios_update_red":
         $banish = GetBanish($player);
         $index = SearchBanishForUID($player, $target);
-        if ($index == -1) WriteLog(CardLink($parameter)."'s trigger fails");
+        if ($index == -1) WriteLog(CardLink($parameter, $parameter)."'s trigger fails");
         else {
           PutItemIntoPlayForPlayer($banish[$index], $player);
           RemoveBanish($player, $index);
@@ -2518,7 +2518,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
             $numBloodDebt -= $health - 13;
             PlayerLoseHealth($health - 13, $player, true);
             if (SearchInventoryForCard($mainPlayer, "levia_redeemed") != "") {
-              AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into ".CardLink("blasmophet_levia_consumed"));
+              AddDecisionQueue("YESNO", $mainPlayer, "if you want to transform into ".CardLink("blasmophet_levia_consumed", "blasmophet_levia_consumed"));
               AddDecisionQueue("NOPASS", $mainPlayer, "-");
               AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
               AddDecisionQueue("TRANSFORMHERO", $mainPlayer, "blasmophet_levia_consumed", 1);
@@ -2547,7 +2547,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $resources = &GetResources($player);
         if (Count($hand) > 0 || $resources[0] > 0) {
           if ($player == $defPlayer) {
-            AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter));
+            AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
             AddDecisionQueue("BUTTONINPUT", $player, "0,1");
             AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
             AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
@@ -2559,19 +2559,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
             AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
             AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
             AddDecisionQueue("GAINACTIONPOINTS", $player, "1", 1);
-            AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_" . CardLink("phantasmal_footsteps"), 1);
+            AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_" . CardLink("phantasmal_footsteps", "phantasmal_footsteps"), 1);
           }
         }
         break;
       case "hooves_of_the_shadowbeast":
         $index = FindCharacterIndex($player, $parameter);
         AddDecisionQueue("CHARREADYORPASS", $player, $index);
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter)."_to_gain_an_action_point", 1);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter, $parameter)."_to_gain_an_action_point", 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
         AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
         AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
-        AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_".Cardlink($parameter), 1);
+        AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_".Cardlink($parameter, $parameter), 1);
         break;
       case "soul_shackle":
         $deck = new Deck($player);
@@ -2581,7 +2581,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "ironhide_plate":
       case "ironhide_gauntlet":
       case "ironhide_legs":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter));
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
         AddDecisionQueue("BUTTONINPUT", $player, "0,1");
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
@@ -2592,7 +2592,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "seeds_of_agony_red":
       case "seeds_of_agony_yellow":
       case "seeds_of_agony_blue":
-        WriteLog(CardLink($parameter) . " dealt 1 damage.");
+        WriteLog(CardLink($parameter, $parameter) . " dealt 1 damage.");
         DealArcane(1, 2, "PLAYCARD", $parameter, false, $player, resolvedTarget: $target);
         break;
       case "endless_winter_red":
@@ -2634,7 +2634,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "embodiment_of_lightning":
-        WriteLog(CardLink($parameter) . " grants go again");
+        WriteLog(CardLink($parameter, $parameter) . " grants go again");
         GiveAttackGoAgain();
         DestroyAuraUniqueID($player, $uniqueID);
         break;
@@ -2644,7 +2644,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "mark_of_lightning":
         $index = FindCharacterIndex($player, $parameter);
-        AddDecisionQueue("YESNO", $player, "destroy_".Cardlink($parameter)."_to_have_the_attack_deal_1_damage");
+        AddDecisionQueue("YESNO", $player, "destroy_".Cardlink($parameter, $parameter)."_to_have_the_attack_deal_1_damage");
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
         AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -2664,7 +2664,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "rampart_of_the_rams_head":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter));
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
         AddDecisionQueue("BUTTONINPUT", $player, "0,1");
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
@@ -2711,10 +2711,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $index = SearchItemsForUniqueID($uniqueID, $player);
         if ($items[$index + 1] > 0 && GetItemGemState($mainPlayer, $items[$index], $index) == 0) --$items[$index + 1];
         elseif($items[$index + 1] > 0) {
-          AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index]) . "_and_keep_it_in_play?", 1);
+          AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]) . "_and_keep_it_in_play?", 1);
           AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
         } else {
-          WriteLog(CardLink($items[$index]) . " was destroyed");
+          WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
           DestroyItemForPlayer($player, $index);
         }
         break;
@@ -2748,14 +2748,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $cardID = $deck->Top(true);
           if (ModifiedPowerValue($cardID, $player, "DECK", source: "pack_call_yellow") < 6) {
             $deck->AddBottom($cardID, "DECK");
-            WriteLog(CardLink("pack_call_yellow") . " put " . CardLink($cardID) . " on the bottom of your deck");
+            WriteLog(CardLink("pack_call_yellow", "pack_call_yellow") . " put " . CardLink($cardID, $cardID) . " on the bottom of your deck");
           }
           else $deck->AddTop($cardID); // the card gets "put" on top
         }
         break;
       case "dromai":
       case "dromai_ash_artist":
-        WriteLog(CardLink($parameter) . " creates an " . CardLink("ash"));
+        WriteLog(CardLink($parameter, $parameter) . " creates an " . CardLink("ash", "ash"));
         PutPermanentIntoPlay($player, "ash");
         break;
       case "burn_them_all_red":
@@ -2805,7 +2805,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         --$auras[$index + 2];
         PayOrDiscard($target, 2, true);
         if ($auras[$index + 2] == 0) {
-          WriteLog(CardLink($auras[$index]) . " is destroyed");
+          WriteLog(CardLink($auras[$index], $auras[$index]) . " is destroyed");
           DestroyAura($player, $index);
         }
         break;
@@ -2929,12 +2929,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "beaten_trackers":
         $index = FindCharacterIndex($player, $parameter);
         AddDecisionQueue("CHARREADYORPASS", $player, $index);
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter)."_to_gain_an_action_point", 1);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter, $parameter)."_to_gain_an_action_point", 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
         AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
         AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
-        AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_an_action_point_from_" . CardLink("beaten_trackers"), 1);
+        AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_an_action_point_from_" . CardLink("beaten_trackers", "beaten_trackers"), 1);
         break;
       case "skull_crack_red":
         GainResources($player, 1);
@@ -2943,7 +2943,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $deck = new Deck($player);
         if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $player, "DECK", source: "berserk_yellow") >= 6) {
           Draw($player);
-          WriteLog(CardLink($parameter) . " drew a card");
+          WriteLog(CardLink($parameter, $parameter) . " drew a card");
         }
         break;
       case "reincarnate_red":
@@ -2958,7 +2958,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $Items = new Items($player);
         $targetItem = $Items->FindCardUID($target);
         if ($targetItem != "") {
-          AddDecisionQueue("YESNO", $player, "if_you_want_to_move_a_steam_counter_to_" . CardLink($targetItem->CardID()));
+          AddDecisionQueue("YESNO", $player, "if_you_want_to_move_a_steam_counter_to_" . CardLink($targetItem->CardID(), $targetItem->CardID()));
           AddDecisionQueue("NOPASS", $player, "-");
           AddDecisionQueue("PASSPARAMETER", $player, $uniqueID . "," . $target, 1);
           AddDecisionQueue("SPECIFICCARD", $player, "PLASMAMAINLINE", 1);
@@ -2968,7 +2968,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "crankshaft_yellow":
       case "crankshaft_blue":
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=hyper_driver_red");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a ".Cardlink("hyper_driver")." to get a steam counter", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a ".Cardlink("hyper_driver", "hyper_driver")." to get a steam counter", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZADDCOUNTER", $player, "-", 1);
         break;
@@ -3004,13 +3004,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "vynnset_iron_maiden":
       case "vynnset":
-        AddDecisionQueue("YESNO", $player, "if you want to pay 1 life for " . CardLink($parameter), 1);
+        AddDecisionQueue("YESNO", $player, "if you want to pay 1 life for " . CardLink($parameter, $parameter), 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
         AddDecisionQueue("OP", $player, "PLAYERLOSEHEALTH", 1);
         if (!SearchCurrentTurnEffects($parameter, $player)) { //The effect only apply to one event of damage. Anti-duplicate.
           AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter, 1);
-          $message = CardLink($parameter) . "'s pain makes a runechant unpreventable!";
+          $message = CardLink($parameter, $parameter) . "'s pain makes a runechant unpreventable!";
           AddDecisionQueue("WRITELOG", $player, "<b>$message</b>", 1);
         }
         break;
@@ -3026,7 +3026,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
             AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target to deal 1 damage");
             AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
             AddDecisionQueue("MZDAMAGE", $player, "1,DAMAGE," . $parameter, 1);
-            WriteLog(CardLink($parameter) . " deals 1 damage");
+            WriteLog(CardLink($parameter, $parameter) . " deals 1 damage");
           } else {
             WriteLog("⬇️ The card was put on the bottom of your deck");
             $deck->AddBottom($deck->Top(remove: true), "DECK");
@@ -3046,7 +3046,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "crown_of_dominion":
         PutItemIntoPlayForPlayer("gold", $player, mainPhase:"False", effectController: $player);
-        WriteLog(CardLink($parameter) . " created a Gold token");
+        WriteLog(CardLink($parameter, $parameter) . " created a Gold token");
         break;
       case "ponder":
         Draw($player, false);
@@ -3067,7 +3067,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           default:
             break;
         }
-        WriteLog(CardLink("plague_hive_yellow") . " created a " . CardLink($auraCreated));
+        WriteLog(CardLink("plague_hive_yellow", "plague_hive_yellow") . " created a " . CardLink($auraCreated, $auraCreated));
         PlayAura($auraCreated, $otherPlayer, effectController: $player);
         break;
       case "cyclone_roundhouse_yellow":
@@ -3137,7 +3137,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddGraveyard($topDeck, $mainPlayer, "DECK");
           $numName = SearchCount(SearchMultizone($mainPlayer, "MYDISCARD:isSameName=" . $topDeck));
           LoseHealth($numName, $mainPlayer);
-          WriteLog(Cardlink($topDeck) . " was put in the graveyard. Player $mainPlayer lost $numName life");
+          WriteLog(Cardlink($topDeck, $topDeck) . " was put in the graveyard. Player $mainPlayer lost $numName life");
         }
         else WriteLog("No card from deck to put into graveyayrd");
         break;
@@ -3145,7 +3145,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
         AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
         AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "-1", 1);
-        WriteLog(CardLink($parameter) . " triggered and puts a -1 counter on an equipment");
+        WriteLog(CardLink($parameter, $parameter) . " triggered and puts a -1 counter on an equipment");
         break;
       case "pendulum_trap_yellow":
         $deck = new Deck($mainPlayer);
@@ -3153,8 +3153,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         for ($i = 0; $i < 2; ++$i) {
           $cardRemoved = $deck->Top(remove: true);
           AddGraveyard($cardRemoved, $mainPlayer, "DECK");
-          if ($i == 0) $rv .= Cardlink($cardRemoved);
-          else $rv .= " and " . Cardlink($cardRemoved) . " into the graveyard";
+          if ($i == 0) $rv .= Cardlink($cardRemoved, $cardRemoved);
+          else $rv .= " and " . Cardlink($cardRemoved, $cardRemoved) . " into the graveyard";
         }
         WriteLog($rv);
         break;
@@ -3164,7 +3164,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "virulent_touch_red":
       case "virulent_touch_yellow":
       case "virulent_touch_blue":
-        WriteLog(CardLink($parameter) . " creates a ".CardLink($CID_BloodRotPox)." from being blocked from hand.");
+        WriteLog(CardLink($parameter, $parameter) . " creates a ".CardLink($CID_BloodRotPox, $CID_BloodRotPox)." from being blocked from hand.");
         PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
         break;
       case "bloodrot_trap_red":
@@ -3177,7 +3177,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         PlayAura($CID_Inertia, $mainPlayer, effectController: $defPlayer);
         break;
       case "vambrace_of_determination":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter));
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
         AddDecisionQueue("BUTTONINPUT", $player, "0,1");
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
@@ -3191,7 +3191,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "spark_spray_red":
       case "spark_spray_yellow":
       case "spark_spray_blue":
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_buff_".CardLink($parameter), 0, 1);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_buff_".CardLink($parameter, $parameter), 0, 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
@@ -3333,7 +3333,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case $CID_Inertia:
         $deck = new Deck($player);
-        WriteLog("Processing the end of turn effect of " . CardLink("inertia") . ".");
+        WriteLog("Processing the end of turn effect of " . CardLink("inertia", "inertia") . ".");
         $numToBottom = count(GetArsenal($player)) + count(GetHand($player));
         for ($i = 0; $i < $numToBottom; $i++) {
           BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
@@ -3422,7 +3422,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "infuse_titanium_yellow":
       case "infuse_titanium_blue":
       case "steel_street_hoons_blue": //Galvanize
-        MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose an item to galvanize for " . CardLink($parameter) . " effect");
+        MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose an item to galvanize for " . CardLink($parameter, $parameter) . " effect");
         AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
         AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
         break;
@@ -3443,7 +3443,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         for ($i = 0; $i < $maxRepeats; $i += $itemPieces) {
           AddDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS", 1);
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to galvanize for " . CardLink($parameter) . " effect", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose an item to galvanize for " . CardLink($parameter, $parameter) . " effect", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("GOLDENSKYWARDEN", $player, $target, 1);
           AddDecisionQueue("MZDESTROY", $player, "-", 1);
@@ -3457,7 +3457,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "tough_old_wrench_red":
       case "tough_old_wrench_yellow":
       case "tough_old_wrench_blue":
-        MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose an item to galvanize for " . CardLink($parameter) . " effect");
+        MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose an item to galvanize for " . CardLink($parameter, $parameter) . " effect");
         AddDecisionQueue("PASSPARAMETER", $player, "golden_cog", 1);
         AddDecisionQueue("PUTPLAY", $player, "0", 1);
         break;
@@ -3471,7 +3471,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "evo_circuit_breaker_red_equip":
         $i = SearchCharacterForUniqueID($target, $player);
         if ($i != -1 && EvoHasUnderCard($player, $i)) {
-          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter));
+          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter, $parameter));
           AddDecisionQueue("NOPASS", $player, "-");
           MZMoveCard($player, "MYBANISH:type=AA", "MYTOPDECK", may: false, isSubsequent: true);
           MZMoveCard($player, "MYBANISH:type=AA", "MYTOPDECK", may: false, isSubsequent: true);
@@ -3483,7 +3483,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "evo_atom_breaker_red_equip":
         $i = SearchCharacterForUniqueID($target, $player);
         if ($i != -1 && EvoHasUnderCard($player, $i)) {
-          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter));
+          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter, $parameter));
           AddDecisionQueue("NOPASS", $player, "-");
           AddDecisionQueue("GAINRESOURCES", $player, 2, 1);
           CharacterChooseSubcard($player, $i, isSubsequent:true);
@@ -3493,7 +3493,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "evo_face_breaker_red_equip":
         $i = SearchCharacterForUniqueID($target, $player);
         if ($i != -1 && EvoHasUnderCard($player, $i)) {
-          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter));
+          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter, $parameter));
           AddDecisionQueue("NOPASS", $player, "-");
           AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "$parameter-BUFF", 1);
           CharacterChooseSubcard($player, $i, isSubsequent:true);
@@ -3503,7 +3503,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "evo_mach_breaker_red_equip":
         $i = SearchCharacterForUniqueID($target, $player);
         if ($i != -1 && EvoHasUnderCard($player, $i)) {
-          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter));
+          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter, $parameter));
           AddDecisionQueue("NOPASS", $player, "-");
           AddDecisionQueue("PLAYAURA", $player, "quicken", 1);
           CharacterChooseSubcard($player, $i, isSubsequent:true);
@@ -3532,7 +3532,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "canopy_shelter_blue":
       case "apex_bonebreaker":
         PlayAura("might", $player);
-        WriteLog(CardLink($parameter) . " created a " . CardLink("might") . " token");
+        WriteLog(CardLink($parameter, $parameter) . " created a " . CardLink("might", "might") . " token");
         break;
       case "pack_call_red":
       case "pack_call_blue":
@@ -3541,7 +3541,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $cardID = $deck->Top(true);
           if (ModifiedPowerValue($cardID, $player, "DECK", source: "pack_call_yellow") < 6) {
             $deck->AddBottom($cardID, "DECK");
-            WriteLog(CardLink($parameter) . " put " . CardLink($cardID) . " on the bottom of your deck");
+            WriteLog(CardLink($parameter, $parameter) . " put " . CardLink($cardID, $cardID) . " on the bottom of your deck");
           }
           else $deck->AddTop($cardID); // the card gets "put" on top
         }
@@ -3561,12 +3561,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         if ($yellowPitchCards >= 2) {
           PutItemIntoPlayForPlayer("gold", $player, effectController: $player);
-          WriteLog(CardLink("golden_glare") . " created a ".CardLink("gold")." token");
+          WriteLog(CardLink("golden_glare", "golden_glare") . " created a ".CardLink("gold", "gold")." token");
         }
         break;
       case "the_golden_son_yellow":
         PutItemIntoPlayForPlayer("gold", $player, effectController: $player);
-        WriteLog(CardLink($parameter) . " created a ".CardLink("gold")." token for Player " . $player);
+        WriteLog(CardLink($parameter, $parameter) . " created a ".CardLink("gold", "gold")." token for Player " . $player);
         break;
       case "victor_goldmane":
       case "victor_goldmane_high_and_mighty":
@@ -3580,13 +3580,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "thunk_yellow":
       case "thunk_blue":
         PlayAura("might", $player); 
-        WriteLog(CardLink($parameter) . " created a ".CardLink("might")." token for Player " . $player);
+        WriteLog(CardLink($parameter, $parameter) . " created a ".CardLink("might", "might")." token for Player " . $player);
         break;
       case "wallop_red":
       case "wallop_yellow":
       case "wallop_blue":
         PlayAura("vigor", $player); 
-        WriteLog(CardLink($parameter) . " created a ".CardLink("vigor")." token for Player " . $player);
+        WriteLog(CardLink($parameter, $parameter) . " created a ".CardLink("vigor", "vigor")." token for Player " . $player);
         break;
       case "commanding_performance_red":
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
@@ -3609,7 +3609,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "run_into_trouble_red":
         if (CountAura("agility", $player) > 0) {
-          WriteLog(CardLink($parameter) . " deals 1 damage");
+          WriteLog(CardLink($parameter, $parameter) . " deals 1 damage");
           DamageTrigger($mainPlayer, 1, "DAMAGE", $parameter, $player);
         }
         break;
@@ -3646,7 +3646,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         PlayAura("agility", $player);
         PlayAura("might", $player);
         PlayAura("vigor", $player);
-        WriteLog(CardLink($parameter) . " created an " . CardLink("agility") . ", " . CardLink("might") . " and " . CardLink("vigor") . " tokens.");
+        WriteLog(CardLink($parameter, $parameter) . " created an " . CardLink("agility", "agility") . ", " . CardLink("might", "might") . " and " . CardLink("vigor", "vigor") . " tokens.");
         break;
       case "standing_order_red":
         MZMoveCard($player, "MYARS", "MYBOTDECK", may: true, silent: true, DQContext:"Choose a card to put on the bottom of your deck (or pass)");
@@ -3658,19 +3658,19 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "hide_tanner":
         $index = FindCharacterIndex($player, $parameter);
         AddDecisionQueue("CHARREADYORPASS", $player, $index);
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter)."_to_gain_2_".CardLink("might")."_tokens", 1);
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter, $parameter)."_to_gain_2_".CardLink("might", "might")."_tokens", 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
         AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
         AddDecisionQueue("PLAYAURA", $player, "might-2", 1);
-        AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_".Cardlink("might")."_tokens_from_" . CardLink("hide_tanner"), 1);
+        AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_2_".Cardlink("might", "might")."_tokens_from_" . CardLink("hide_tanner", "hide_tanner"), 1);
         break;
       case "nuu_alluring_desire":
       case "nuu":
         NuuStaticAbility($target);
         break;
       case "meridian_pathway":
-        AddDecisionQueue("YESNO", $player, "if_you_want_" . CardLink("meridian_pathway") . "_to_gain_Ward_3");
+        AddDecisionQueue("YESNO", $player, "if_you_want_" . CardLink("meridian_pathway", "meridian_pathway") . "_to_gain_Ward_3");
         AddDecisionQueue("NOPASS", $player, "-");
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "MERIDIANWARD", 1);
         break;
@@ -3686,7 +3686,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "second_tenet_of_chi_moon_blue":
         Draw($player, effectSource:$parameter);
-        WriteLog(CardLink($parameter) . " draw a card.");
+        WriteLog(CardLink($parameter, $parameter) . " draw a card.");
         break;
       case "essence_of_ancestry_body_red":
       case "essence_of_ancestry_soul_yellow":
@@ -3754,7 +3754,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "verdance_thorn_of_the_rose": 
       case "verdance":
         if(GetCharacterGemState($player, $parameter) != 0) {
-          AddDecisionQueue("YESNO", $player, "if you want " . CardLink($parameter) . " to deal arcane damage");
+          AddDecisionQueue("YESNO", $player, "if you want " . CardLink($parameter, $parameter) . " to deal arcane damage");
           AddDecisionQueue("NOPASS", $player, "-");
         }
         if (str_contains($target, "THEIRCHAR")) {
@@ -3841,7 +3841,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           ChannelTalent($target, "LIGHTNING");
         }
         else {
-          WriteLog(CardLink($parameter) . " draws a card");
+          WriteLog(CardLink($parameter, $parameter) . " draws a card");
           Draw($player);
         }
         break;
@@ -3867,7 +3867,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         PlayAura("runechant", $player, $numRunechantsCreated);
         break;
       case "aether_bindings_of_the_third_age":
-        WriteLog(CardLink("aether_bindings_of_the_third_age") . " Amp 1");
+        WriteLog(CardLink("aether_bindings_of_the_third_age", "aether_bindings_of_the_third_age") . " Amp 1");
         $index = -1;
         $cteCount = count($currentTurnEffects);
         for ($i = 0; $i < $cteCount; $i += 4) {
@@ -3900,7 +3900,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "hard_knuckle":
         $index = FindCharacterIndex($mainPlayer, "hard_knuckle");
-        AddDecisionQueue("YESNO", $mainPlayer, "to_destroy_".Cardlink($parameter));
+        AddDecisionQueue("YESNO", $mainPlayer, "to_destroy_".Cardlink($parameter, $parameter));
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
         AddDecisionQueue("DESTROYCHARACTER", $mainPlayer, "-", 1);
@@ -3911,7 +3911,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if (isset($deck[0])) {
           $topCard = $deck[0];
           AddDecisionQueue("DECKCARDS", $defPlayer, "0");
-          AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_banish_the_top_card_of_your_deck_with_" . CardLink($parameter), 1);
+          AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_banish_the_top_card_of_your_deck_with_" . CardLink($parameter, $parameter), 1);
           AddDecisionQueue("NOPASS", $defPlayer, "-", 1);
           AddDecisionQueue("PARAMDELIMTOARRAY", $defPlayer, "0", 1);
           AddDecisionQueue("MULTIREMOVEDECK", $defPlayer, "0", 1);
@@ -3924,7 +3924,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "heavy_industry_ram_stop":
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter));
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
         AddDecisionQueue("BUTTONINPUT", $player, "0,1");
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
@@ -3989,7 +3989,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "prowess_of_agility_blue":
         $index = SearchAurasForUniqueID($uniqueID, $player);
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink("prowess_of_agility_blue")."_and_draw");
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink("prowess_of_agility_blue","prowess_of_agility_blue")."_and_draw");
         AddDecisionQueue("NOPASS", $player, "-");
         AddDecisionQueue("PASSPARAMETER", $player, "$index", 1);
         AddDecisionQueue("PREPENDLASTRESULT", $player, "MYAURAS-", 1);
@@ -4012,7 +4012,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "leap_frog_slime_skin":
       case "leap_frog_gloves":
       case "leap_frog_leggings":
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_add_".Cardlink($parameter)."_to_active_chain_link");
+        AddDecisionQueue("YESNO", $player, "if_you_want_to_add_".Cardlink($parameter,$parameter)."_to_active_chain_link");
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("LEAPFROG", $player, $parameter, 1);
         break;
@@ -4106,7 +4106,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "puffin_hightail":
       case "puffin":
         Draw($player, effectSource:$parameter);
-        WriteLog("Player " . $player . " drew a card from " . CardLink($parameter));
+        WriteLog("Player " . $player . " drew a card from " . CardLink($parameter, $parameter));
         break;
       case "marlynn_treasure_hunter":
       case "marlynn":
@@ -4151,7 +4151,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $numGold = min($additionalCosts, $landmarks[$treasureID + 3]);
           $landmarks[$treasureID + 3] -= $numGold;
           PutItemIntoPlayForPlayer("gold", $player, number:$numGold, isToken:true);
-          WriteLog("Player $player plundered $numGold " . CardLink("gold") . " from " . CardLink("treasure_island"));
+          WriteLog("Player $player plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
         }
         break;
       case "fiddlers_green_red": case "fiddlers_green_yellow": case "fiddlers_green_blue":
@@ -4207,9 +4207,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "loan_shark_yellow":
         DestroyAuraUniqueID($player, $uniqueID);
-        WriteLog("Resolving " . CardLink($parameter) . " ability");
+        WriteLog("Resolving " . CardLink($parameter, $parameter) . " ability");
         AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND");
-        AddDecisionQueue("SETDQCONTEXT", $player, CardLink($parameter) . ": choose a card to discard (or pass and lose 2 health)");
+        AddDecisionQueue("SETDQCONTEXT", $player, CardLink($parameter, $parameter) . ": choose a card to discard (or pass and lose 2 health)");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZREMOVE", $player, "-", 1);
         AddDecisionQueue("ADDDISCARD", $player, "HAND", 1);
@@ -4262,7 +4262,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $inds = GetUntapped($player, "MYITEMS", "subtype=Cog");
         if(empty($inds)) break;
         AddDecisionQueue("PASSPARAMETER", $player, $inds);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Tap a cog to create a ".CardLink("golden_cog")." (or pass)", 1);
+        AddDecisionQueue("SETDQCONTEXT", $player, "Tap a cog to create a ".CardLink("golden_cog", "golden_cog")." (or pass)", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZTAP", $player, "<-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, "golden_cog", 1);
@@ -4275,7 +4275,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         LookAtTopCard($player, $parameter, setPlayer:$player);
         break;
       case "lost_in_transit_yellow":
-        AddDecisionQueue("YESNO", $player, "if you want to remove a gold counter from " . CardLink("treasure_island"), 1);
+        AddDecisionQueue("YESNO", $player, "if you want to remove a gold counter from " . CardLink("treasure_island", "treasure_island"), 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("REMOVETREASUREISLANDCOUNTER", $player, 1, 1);
         break;
@@ -4314,7 +4314,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("MZOP", $defPlayer, "GAINCONTROL", 1);
         break;
       case "anka_drag_under_yellow":
-        PummelHit($player, context: "Discard a card to " . CardLink("anka_drag_under_yellow") . " effect.");
+        PummelHit($player, context: "Discard a card to " . CardLink("anka_drag_under_yellow", "anka_drag_under_yellow") . " effect.");
         break;
       case "WATERYGRAVE":
         $grave = &GetDiscard($player);
@@ -4357,7 +4357,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($additionalCosts == "STARTTURN") {
           if (CountAura("seismic_surge", $mainPlayer) >= 3) {
             $char = new CharacterCard(0, $player);
-            WriteLog(CardLink($char->cardID()) . " gives Crush attacks Dominate this turn");
+            WriteLog(CardLink($char->cardID(), $char->cardID()) . " gives Crush attacks Dominate this turn");
             AddCurrentTurnEffect($parameter, $mainPlayer);
           }
         }
@@ -4869,7 +4869,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
   switch ($discarded) {
     case "massacre_red":
       if ($source != "" && ClassContains($source, "BRUTE", $mainPlayer) && CardType($source) == "AA") {
-        WriteLog(CardLink("massacre_red") . " intimidated because it was discarded by a Brute attack action card.");
+        WriteLog(CardLink("massacre_red", "massacre_red") . " intimidated because it was discarded by a Brute attack action card.");
         AddLayer("TRIGGER", $mainPlayer, $discarded);
       }
       break;
@@ -4880,7 +4880,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
       break;
   }
   LogPlayCardStats($player, $discarded, "HAND", "DISCARD");
-  WriteLog(CardLink($discarded) . " was discarded");
+  WriteLog(CardLink($discarded, $discarded) . " was discarded");
 }
 
 function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
@@ -4994,7 +4994,7 @@ function Intimidate($player = "")
 
 function GamblersGlovesReroll($player, $target){
   $gamblersGlovesIndex = FindCharacterIndex($player, "gamblers_gloves");
-  AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink("gamblers_gloves")."_to_reroll_the_result");
+  AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink("gamblers_gloves", "gamblers_gloves")."_to_reroll_the_result");
   AddDecisionQueue("NOPASS", $player, "-");
   AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
   AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
@@ -5268,7 +5268,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $fro
     case "rampant_growth__life_yellow":
       $ampAmount = GetClassState($player, $CS_HealthGained);
       AddCurrentTurnEffect($parameter . "," . $ampAmount, $player, "ABILITY");
-      WriteLog(CardLink($parameter) . " Amp " . $ampAmount);
+      WriteLog(CardLink($parameter, $parameter) . " Amp " . $ampAmount);
       break;
     case "pulsing_aether__life_red":
       $meldState = (GetClassState($player, $CS_AdditionalCosts) == "Both") ? "I,A" : "A";

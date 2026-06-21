@@ -50,7 +50,7 @@ function DoCapQuickThinking($targetPlayer, $damage)
     PrependDecisionQueue("MZREMOVE", $targetPlayer, "HAND", 1);
     PrependDecisionQueue("MZDISCARD", $targetPlayer, "HAND", 1);
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $targetPlayer, "<-", 1);
-    PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an instant to discard to " . CardLink("cap_of_quick_thinking"), 1);
+    PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an instant to discard to " . CardLink("cap_of_quick_thinking", "cap_of_quick_thinking"), 1);
     PrependDecisionQueue("MULTIZONEINDICES", $targetPlayer, "MYHAND:type=I", 1);
     LogDamagePreventedStats($targetPlayer, 1);
   }

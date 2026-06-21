@@ -102,7 +102,7 @@
         $resources = &GetResources($currentPlayer);
         if (count($hand) > 0 || $resources[0] >= 2)
         {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay to buff " . CardLink($cardID), 1);
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay to buff " . CardLink($cardID, $cardID), 1);
           AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,2", 0, 1);
           AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
         }

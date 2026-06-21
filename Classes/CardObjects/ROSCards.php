@@ -3108,7 +3108,7 @@ class will_of_arcana_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     AddCurrentTurnEffect($this->cardID, $this->controller);
-    WriteLog(CardLink($this->cardID) . " Amp 1");
+    WriteLog(CardLink($this->cardID, $this->cardID) . " Amp 1");
   }
 
   function ArcaneModifier(&$remove, $player, $index, $amount = false) {

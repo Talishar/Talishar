@@ -3,17 +3,17 @@
 function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
 {
   global $CombatChain, $layers, $mainPlayer;
-  WriteLog("Processing hit effect for " . CardLink($cardID));
+  WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
   $noLayers = count($layers) < LayerPieces();
   if (!DelimStringContains(CardType($cardID), "W")) {//stops flicks from interacting with tarpit trap
     if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, $noLayers)) {
-      WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow"));
+      WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
       return true;
     }
   }
   //check tarpit trap against flicked kiss of death if the current attack is a dagger
   if (CardType($cardID) == "AA" && SubtypeContains($cardID, "Dagger", $mainPlayer) && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, $noLayers)) {
-    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow"));
+    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
     return true;
   }
   $cardID = ShiyanaCharacter($cardID);
@@ -1261,7 +1261,7 @@ function OnBlockResolveEffects($cardID = "")
         AddLayer("TRIGGER", $defPlayer, "daily_grind_blue", $defendingCard);
       }
       ++$combatChainState[$CCS_NumCardsBlocking];
-      $blockingCards[] = CardLink($defendingCard);
+      $blockingCards[] = CardLink($defendingCard, $defendingCard);
     }
   }
   $message = "Player $defPlayer blocked with";
@@ -1455,7 +1455,7 @@ function OnBlockEffects($index, $from)
         case "plow_through_blue":
           if ($cardType == "AA" && NumAttacksBlocking() == 1) {
             AddCharacterEffect($otherPlayer, $combatChainState[$CCS_WeaponIndex], $currentTurnEffects[$i]);
-            WriteLog(CardLink($currentTurnEffects[$i]) . " gives your weapon +1 for the rest of the turn");
+            WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " gives your weapon +1 for the rest of the turn");
           }
           break;
         default:
@@ -1490,7 +1490,7 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
       $AttackPowerValue = $chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1];
       if ($AttackPowerValue <= 2) {
         Draw($player, effectSource:$cardID);
-        WriteLog(CardLink($cardID) . " drew a card");
+        WriteLog(CardLink($cardID, $cardID) . " drew a card");
       }
       break;
     case "regicide_blue":
@@ -1545,7 +1545,7 @@ function CombatChainPlayAbility($cardID)
       case "sigil_of_parapets_blue":
         if (ClassContains($cardID, "WIZARD", $defPlayer)) {
           $combatChain[$i + 6] += 2;
-          WriteLog(CardLink($combatChain[$i]) . " gets +2 defense");
+          WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " gets +2 defense");
         }
         break;
       default:
@@ -1801,7 +1801,7 @@ function CombatChainClosedTriggers()
           $from = $chainLinks[$i][$j+3];
           $whoseGY = str_contains($from, "THEIR") ? "THEIRDISCARD" : "MYDISCARD";
           // Do you want to banish this card face-down, and banish a card from each player who lost life this turn?
-          AddDecisionQueue("YESNO", $mainPlayer, "do_you_want_to_banish_".CardLink("deep_recesses_of_existence_blue")."?");
+          AddDecisionQueue("YESNO", $mainPlayer, "do_you_want_to_banish_".CardLink("deep_recesses_of_existence_blue", "deep_recesses_of_existence_blue")."?");
           // This will exit early if No
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "$whoseGY:cardID=deep_recesses_of_existence_blue", 1);

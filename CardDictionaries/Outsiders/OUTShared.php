@@ -571,7 +571,7 @@ function OUTAbilityCost($cardID)
         $resources = &GetResources($mainPlayer);
         if(Count($hand) > 0 || $resources[0] > 0)
         {
-          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give ".CardLink($cardID)." a name", 0, 1);
+          AddDecisionQueue("YESNO", $mainPlayer, "if you want to pay 1 to give ".CardLink($cardID, $cardID)." a name", 0, 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "1", 1);
           AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
@@ -621,7 +621,7 @@ function OUTAbilityCost($cardID)
           if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
         }
         $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
-        if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("stab_wound_blue"));
+        if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("stab_wound_blue", "stab_wound_blue"));
         LoseHealth($numDaggerHits, $defPlayer);
         break;
       case "plunge_red": case "plunge_yellow": case "plunge_blue":
@@ -817,10 +817,10 @@ function OUTAbilityCost($cardID)
       AddDecisionQueue("EQUALPASS", $player, "Target_Opponent");
     }
     else AddDecisionQueue("PASSPARAMETER", $player, $setPlayer);
-    AddDecisionQueue("WRITELOG", $player, CardLink($source) . " shows your top deck", 1);
+    AddDecisionQueue("WRITELOG", $player, CardLink($source, $source) . " shows your top deck", 1);
     AddDecisionQueue("DECKCARDS", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
-    AddDecisionQueue("SETDQCONTEXT", $player, CardLink($source) . " shows the top of your deck is <1>", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, CardLink($source, $source) . " shows the top of your deck is <1>", 1);
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
@@ -831,7 +831,7 @@ function OUTAbilityCost($cardID)
     else AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
     AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
     AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
-    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardLink($source) . " shows the top of their deck is <1>", 1);
+    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardLink($source, $source) . " shows the top of their deck is <1>", 1);
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, "-");
   }

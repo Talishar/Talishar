@@ -45,8 +45,8 @@ class Deck {
       if($this->RemainingCards() > 0) {
         $otherPlayer = $this->playerID == 1 ? 2 : 1;
         for($revealedCards = 0; $revealedCards < $revealCount && count($this->deck) > $revealedCards; $revealedCards++) {
-          if (!$switched) WriteLog("👁️‍🗨️Player " . $this->playerID . " reveals " . CardLink($this->deck[$revealedCards]));
-          else WriteLog("👁️‍🗨️Player " . $otherPlayer . " reveals " . CardLink($this->deck[$revealedCards]) . " from their opponent's deck!");
+          if (!$switched) WriteLog("👁️‍🗨️Player " . $this->playerID . " reveals " . CardLink($this->deck[$revealedCards], $this->deck[$revealedCards]));
+          else WriteLog("👁️‍🗨️Player " . $otherPlayer . " reveals " . CardLink($this->deck[$revealedCards] , $this->deck[$revealedCards]) . " from their opponent's deck!");
           if ($isClash) {
             $char = &GetPlayerCharacter($this->playerID);
             // CLASHDASH: Dash's own deck reveal skip animation for Dash IO since they already see the top of their decks.
@@ -84,7 +84,7 @@ class Deck {
       $cardID = $this->Remove(0);
       $cardType = CardType($cardID);
       if($modifier == "TCC" && $cardType != "AR" && $cardType != "I" && $cardType != "AA" && !CanPlayAsInstant($cardID)) $modifier = "-";
-      WriteLog(CardLink($cardID). " was banished.");
+      WriteLog(CardLink($cardID, $cardID). " was banished.");
       BanishCardForPlayer($cardID, $this->playerID, "DECK", $modifier, $banishedBy, $banisher);
     }
     return $cardID;

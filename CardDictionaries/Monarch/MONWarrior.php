@@ -51,7 +51,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "v_of_the_vanguard_yellow":
-        WriteLog(CardLink("v_of_the_vanguard_yellow") . " gives all attacks on this combat chain +" . CountCurrentTurnEffects("v_of_the_vanguard_yellow", $currentPlayer));
+        WriteLog(CardLink("v_of_the_vanguard_yellow", "v_of_the_vanguard_yellow") . " gives all attacks on this combat chain +" . CountCurrentTurnEffects("v_of_the_vanguard_yellow", $currentPlayer));
         return "";
       default: return "";
     }

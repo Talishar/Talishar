@@ -1200,7 +1200,7 @@ class hope_merchants_hood extends Card {
     $search = $dqVars["search"];
     $count = SearchCount($search);
     Draw($this->controller, num: $count);
-    WriteLog(CardLink("hope_merchants_hood") . " shuffled and drew " . $count . " cards");
+    WriteLog(CardLink("hope_merchants_hood", "hope_merchants_hood") . " shuffled and drew " . $count . " cards");
   }
 
   function PayAdditionalCosts($from, $index = '-') {

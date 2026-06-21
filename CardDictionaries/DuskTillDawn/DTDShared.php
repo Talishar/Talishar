@@ -289,7 +289,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       } 
       else {
-        WriteLog(CardLink($cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
         return "FAILED";
       }
       return "";
@@ -424,7 +424,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $cardsCount = count($cards);
         for($i=0; $i<$cardsCount; ++$i)
         {
-          WriteLog(CardLink($cards[$i]) . " chosen randomly");
+          WriteLog(CardLink($cards[$i], $cards[$i]) . " chosen randomly");
           if(ModifiedPowerValue($cards[$i], $currentPlayer, "GY", source:$cardID) >= 6) {
             ++$num6plus;
             $deck->AddBottom($cards[$i], "GY");
@@ -600,7 +600,7 @@ function MirageLayer($target)
       $cardID = $ChainCard->Remove();
       BlockCardDestroyed($cardID, $defPlayer);
       AddGraveyard($cardID, $defPlayer, "CC");
-      WriteLog(CardLink($cardID) . " is destroyed by <b>Mirage</b>");
+      WriteLog(CardLink($cardID, $cardID) . " is destroyed by <b>Mirage</b>");
       if(ClassContains($cardID, "ILLUSIONIST", $mainPlayer)) PhantomTidemawDestroy();
     }
   }
@@ -670,7 +670,7 @@ function DemiHeroHealth($cardID)
 function CallDownLightning()
 {
   global $mainPlayer, $CombatChain;
-  WriteLog(CardLink("call_down_the_lightning_yellow") . " deals 1 damage");
+  WriteLog(CardLink("call_down_the_lightning_yellow", "call_down_the_lightning_yellow") . " deals 1 damage");
   if(IsDecisionQueueActive()) {
     PrependDecisionQueue("MZDAMAGE", $mainPlayer, "1,ATTACKHIT," . $CombatChain->CurrentAttack());
     PrependDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");

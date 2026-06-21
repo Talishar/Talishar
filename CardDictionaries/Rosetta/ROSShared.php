@@ -139,7 +139,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "seeds_of_tomorrow_blue":
       AddCurrentTurnEffect($cardID."-5", $currentPlayer);
-      return CardLink($cardID) . " is preventing the next 5 damage.";
+      return CardLink($cardID, $cardID) . " is preventing the next 5 damage.";
     case "summers_fall_red":
     case "summers_fall_yellow":
     case "summers_fall_blue":

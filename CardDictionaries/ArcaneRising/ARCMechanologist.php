@@ -126,7 +126,7 @@ function Boost($cardID)
   global $currentPlayer;
   if(SearchCurrentTurnEffects("evo_speedslip_blue", $currentPlayer, true) && HasBoost($cardID, $currentPlayer)) {
       $amountBoostChoices = "0,1,2";
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many times you want to activate boost on " . CardLink($cardID));
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many times you want to activate boost on " . CardLink($cardID, $cardID));
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $amountBoostChoices);
       AddDecisionQueue("OP", $currentPlayer, "BOOST-".$cardID, 1);
   } else {
@@ -193,7 +193,7 @@ function DoBoost($player, $cardID, $boostCount=1)
       }
     }
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
-    WriteLog("Boost banished " . CardLink($boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " <b>go again</b>.");
+    WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " <b>go again</b>.");
     IncrementClassState($player, $CS_NumBoosted);
     ++$combatChainState[$CCS_NumBoosted];
     $combatChainState[$CCS_IsBoosted] = 1;
@@ -245,7 +245,7 @@ function ItemBoostEffects()
         break;
       case "teklo_pounder_blue":
         if($Item->Status() == 2) {
-          WriteLog(CardLink($Item->CardID()) . " gives the attack +2");
+          WriteLog(CardLink($Item->CardID(), $Item->CardID()) . " gives the attack +2");
           $Item->AddCounters(-1);
           $Item->SetStatus(1);
           AddCurrentTurnEffect("teklo_pounder_blue", $currentPlayer, "PLAY");

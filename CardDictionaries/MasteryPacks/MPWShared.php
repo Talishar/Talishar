@@ -2,7 +2,7 @@
 
 function PayGoldInstead($player, $cardID) {
   if (CountItemByName("Gold", $player) > 0) {
-    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_" . CardLink("gold"), 1);
+    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_" . CardLink("gold", "gold"), 1);
     AddDecisionQueue("NOPASS", $player, "-", 1);
     $goldIndices = GetGoldIndices($player);
     if (str_contains($goldIndices, "MYCHAR")) {

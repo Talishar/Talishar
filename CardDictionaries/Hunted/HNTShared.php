@@ -319,7 +319,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect("arakni_tarantula", $currentPlayer);
       }
       else {
-        WriteLog("A previous chain link was targeted by " . CardLink($cardID) . ", currently this will have no effect");
+        WriteLog("A previous chain link was targeted by " . CardLink($cardID, $cardID) . ", currently this will have no effect");
       }
       break;
     case "take_up_the_mantle_yellow":
@@ -842,7 +842,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(GetClassState($currentPlayer, $CS_NumSeismicSurgeDestroyed) > 0 || SearchAurasForCard("seismic_surge", $currentPlayer) != "") $prevent = 2;
       else $prevent = 1;
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
-      return CardLink($cardID) . " prevent your next arcane damage by " . $prevent;
+      return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "roiling_fissure_blue":
       $maxSeismicCount = count(explode(",", SearchAurasForCard("seismic_surge", $currentPlayer)))+1;
       $maxCost = $resourcesPaid - 1;
@@ -874,7 +874,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $prevent = SearchArsenal($currentPlayer, subtype:"Arrow", faceUp:true) != "" ? 2 : 1;
       AddCurrentTurnEffect($cardID, $currentPlayer);
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
-      return CardLink($cardID) . " prevent your next arcane damage by " . $prevent;
+      return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "douse_in_runeblood_red":
       AddLayer("TRIGGER", $currentPlayer, "douse_in_runeblood_red");
       break;
@@ -905,8 +905,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "cull_red":
-      MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-", context:"Choose a card to banish to " . CardLink($cardID));
-      MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-", context:"Choose a card to banish to " . CardLink($cardID));
+      MZChooseAndBanish($currentPlayer, "MYHAND", "HAND,-", context:"Choose a card to banish to " . CardLink($cardID, $cardID));
+      MZChooseAndBanish($otherPlayer, "MYHAND", "HAND,-", context:"Choose a card to banish to " . CardLink($cardID, $cardID));
       break;
     case "the_hand_that_pulls_the_strings":
       AddCurrentTurnEffect("the_hand_that_pulls_the_strings", $currentPlayer);
@@ -930,7 +930,7 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
       break;
     case "mark_of_the_huntsman":
     case "mark_of_the_huntsman_r":
-      AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy " . CardLink($cardID) . " and mark the opponent", 0, 1);
+      AddDecisionQueue("YESNO", $mainPlayer, "if you want to destroy " . CardLink($cardID, $cardID) . " and mark the opponent", 0, 1);
       AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
@@ -1071,7 +1071,7 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
       };
     }
     else $transformTarget = $choice;
-    WriteLog(CardLink($characterID) . " becomes " . CardLink($transformTarget));
+    WriteLog(CardLink($characterID, $characterID) . " becomes " . CardLink($transformTarget, $transformTarget));
     if (GetClassState($mainPlayer, $CS_OriginalHero) == "-") {
       SetClassState($mainPlayer, $CS_OriginalHero, $characterID);
     }
@@ -1087,7 +1087,7 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
   $char[0] = $transformTarget;
   //don't trigger trap_door if you transfrom from trap_door into trap_door
   if ($transformTarget == "arakni_trap_door" && $characterID != "arakni_trap_door") {
-    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_a_card_to_".CardLink("arakni_trap_door")."?");
+    AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_a_card_to_".CardLink("arakni_trap_door", "arakni_trap_door")."?");
     AddDecisionQueue("NOPASS", $mainPlayer, "-");
     AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDECK", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);

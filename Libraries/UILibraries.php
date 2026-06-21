@@ -430,7 +430,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
   return 6;
 }
 
-function CardLink($caption)
+function CardLink($caption, $cardNumber="-", $recordMenu = false)
 {
   global $darkMode, $playerID, $isReactFE;
   $cardNumber = $cardNumber == "-" ? $caption : $cardNumber;

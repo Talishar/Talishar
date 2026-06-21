@@ -153,7 +153,7 @@ function MZRemove($player, $lastResult, $parameter="-")
         break;
     }
   }
-  if ($parameter == "WRITELOG") WriteLog(CardLink($lastResult) . " was chosen");
+  if ($parameter == "WRITELOG") WriteLog(CardLink($lastResult, $lastResult) . " was chosen");
   return $lastResult;
 }
 
@@ -171,7 +171,7 @@ function MZDiscard($player, $parameter, $lastResult)
     $effectController = $params[1] ?? $player;
     AddGraveyard($cardID, $cardOwner, $params[0], $effectController);
     if ($player == $cardOwner) CardDiscarded($player, $cardID);
-    else WriteLog(CardLink($cardID) . " was discarded");
+    else WriteLog(CardLink($cardID, $cardID) . " was discarded");
   }
   return $lastResult;
 }
@@ -187,7 +187,7 @@ function MZReveal($player, $parameter, $lastResult)
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     $cardID = $zone[$mzIndex[1]] ?? "-";
     if ($cardID != "-")
-      WriteLog("👁️‍🗨️" .CardLink($cardID) . " was revealed");
+      WriteLog("👁️‍🗨️" .CardLink($cardID, $cardID) . " was revealed");
     else
       WriteLog("Nothing was revealed");
   }
@@ -225,13 +225,13 @@ function MZAddZone($player, $parameter, $lastResult)
       case "MYBANISH":
         if (count($params) < 4) $params[] = $player;
         BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "");
-        WriteLog(CardLink($cardIDs[$i]) . " was banished.");
+        WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "THEIRBANISH":
         if (count($params) < 4)
           $params[] = $player;
         BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "");
-        WriteLog(CardLink($cardIDs[$i]) . " was banished.");
+        WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "MYHAND":
         AddPlayerHand($cardIDs[$i], $player, $params[1] ?? "-");
@@ -329,7 +329,7 @@ function MZBanish($player, $parameter, $lastResult)
     if (!isset($mzIndex[1])) { WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true); continue; }
     BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
   }
-  if (count($params) <= 3 && isset($mzIndex[1])) WriteLog(CardLink($zone[$mzIndex[1]]) . " was banished.");
+  if (count($params) <= 3 && isset($mzIndex[1])) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
   return $lastResult;
 }
 
@@ -614,7 +614,7 @@ function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $
   $otherPlayer = $player == 1 ? 2 : 1;
   if ($logText == "") $logText = "Card chosen: <0>";
   if (str_contains($search, "DECK") && (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "")) {
-    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue"));
+    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
   }
   AddDecisionQueue("MULTIZONEINDICES", $player, $search, $isSubsequent ? 1 : 0);
