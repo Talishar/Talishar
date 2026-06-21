@@ -59,11 +59,11 @@ function EVOHitEffect($cardID)
         $defendingCardsStr = GetChainLinkCards($defPlayer, exclCardTypes: "C");
         if ($defendingCardsStr !== '') {
           $defendingCardsArr = explode(",", $defendingCardsStr);
-          $cardLink = CardLink("annihilator_engine_red", "annihilator_engine_red");
+          $cardLink = CardLink("annihilator_engine_red");
           for ($i = count($defendingCardsArr) - 1; $i >= 0; --$i) {
             $defendingCard = $defendingCardsArr[$i];
             $cardVal = $combatChain[$defendingCard];
-            WriteLog($cardLink . " destroyed " . CardLink($cardVal, $cardVal) . ".");
+            WriteLog($cardLink . " destroyed " . CardLink($cardVal) . ".");
             if (CardType($cardVal) == "E") {
               DestroyCharacter($defPlayer, FindCharacterIndex($defPlayer, $cardVal));
             } else {

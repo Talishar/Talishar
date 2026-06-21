@@ -295,8 +295,8 @@ function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
       EvaluateCombatChain($totalPower, $totalBlock);
     }
     if ($skipLog == "-") {
-      if ($amount > 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets +" . $amount . " defense");
-      else if ($amount < 0) WriteLog(CardLink($combatChain[$index], $combatChain[$index]) . " gets " . $amount . " defense");
+      if ($amount > 0) WriteLog(CardLink($combatChain[$index]) . " gets +" . $amount . " defense");
+      else if ($amount < 0) WriteLog(CardLink($combatChain[$index]) . " gets " . $amount . " defense");
     }
   }
   return $index;
@@ -454,7 +454,7 @@ function ArsenalStartTurnAbilities()
       case "hala_goldenhelm":
       case "chief_rukutan":
         if ($arsenal[$i + 1] == "DOWN") {
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_turn_".CardLink($arsenal[$i], $arsenal[$i])."_face_up");
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_turn_".CardLink($arsenal[$i])."_face_up");
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
           AddDecisionQueue("TURNARSENALFACEUP", $mainPlayer, $i, 1);
         }
@@ -478,7 +478,7 @@ function ArsenalBeginEndPhaseAbilities()
       case "the_hand_that_pulls_the_strings":
         if ($arsenal[$i + 1] == "UP") {
           if(CountItem("silver", $mainPlayer) >= 1) {
-            AddDecisionQueue("YESNO", $mainPlayer, "destroy_a_".Cardlink("silver", "silver")."_to_keep_".CardLink($arsenal[$i], $arsenal[$i]), 1);
+            AddDecisionQueue("YESNO", $mainPlayer, "destroy_a_".Cardlink("silver")."_to_keep_".CardLink($arsenal[$i]), 1);
             AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
             AddDecisionQueue("PASSPARAMETER", $mainPlayer, "silver-1", 1);
             AddDecisionQueue("FINDANDDESTROYITEM", $mainPlayer, "<-", 1);
@@ -750,7 +750,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     AuraDamageDealtAbilities($otherPlayer, $damage, $playerSource);
     if (SearchAuras("ode_to_wrath_yellow", $otherPlayer)) {
       LoseHealth(CountAura("ode_to_wrath_yellow", $otherPlayer), $player);
-      WriteLog("Lost life from " . CardLink("ode_to_wrath_yellow", "ode_to_wrath_yellow"));
+      WriteLog("Lost life from " . CardLink("ode_to_wrath_yellow"));
     }
     $classState[$CS_DamageTaken] += $damage;
     if($type == "ARCANE") $dqVars["ARCANEDEALT"] = $damage;
@@ -807,7 +807,7 @@ function DamageDealtAbilities($target, $damage, $type, $source)
   global $mainPlayer, $combatChainState, $CCS_AttackFused, $CombatChain, $layers;
   if ($type == "COMBAT") {
     if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer)) {
-      WriteLog("Damage effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
+      WriteLog("Damage effect prevented by " . CardLink("tarpit_trap_yellow"));
       return;
     }
   }
@@ -837,7 +837,7 @@ function DoMbrioBaseVizier($player, $damage)
     PrependDecisionQueue("PASSPARAMETER", $player, 1, 1); //prevent 1 damage
     PrependDecisionQueue("MZREMOVECOUNTER", $player, "<-", 1);
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-    PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a ". Cardlink("hyper_driver", "hyper_driver")." to remove a steam counter to prevent one arcane", 1);
+    PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a ". Cardlink("hyper_driver")." to remove a steam counter to prevent one arcane", 1);
     PrependDecisionQueue("MULTIZONEINDICES", $player, "MYITEMS:isSameName=hyper_driver_red");
     PrependDecisionQueue("SETDQVAR", $player, "0", 1); // current damage prevention
   }
@@ -898,7 +898,7 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
     else if ($zone == "MYAURAS") DestroyAura($player, $index);
     else if ($zone == "MYALLY") DestroyAlly($player, $index);
     $prevented += $spellVoidAmount;
-    WriteLog(CardLink($cardID, $cardID) . " was destroyed and prevented " . $spellVoidAmount . " arcane damage.");
+    WriteLog(CardLink($cardID) . " was destroyed and prevented " . $spellVoidAmount . " arcane damage.");
   }
   return $prevented;
 }
@@ -1058,19 +1058,19 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   $otherHealth = &GetHealth($otherPlayer);
   $p2Char = &GetPlayerCharacter($otherPlayer);
   if (SearchCurrentTurnEffects("dread_scythe", $player) && $preventable) {
-    WriteLog(CardLink("dread_scythe", "dread_scythe") . " prevented you from gaining life");
+    WriteLog(CardLink("dread_scythe") . " prevented you from gaining life");
     return false;
   }
   if ((SearchCurrentTurnEffects("deny_redemption_red", $player) || SearchCurrentTurnEffects("deny_redemption_red", $otherPlayer)) && $preventable) {
-    WriteLog(CardLink("deny_redemption_red", "deny_redemption_red") . " prevented you from gaining life");
+    WriteLog(CardLink("deny_redemption_red") . " prevented you from gaining life");
     return false;
   }
   if ((SearchCharacterForCard($player, "reaping_blade") || SearchCharacterForCard($otherPlayer, "reaping_blade") && $preventable) && $health > $otherHealth) {
-    WriteLog("<span style='color:red;'>🗡️ " . CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life</span>");
+    WriteLog("<span style='color:red;'>🗡️ " . CardLink("reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life</span>");
     return false;
   }
   if ((SearchAurasForCard("parched_terrain_red", 1) != "" || SearchAurasForCard("parched_terrain_red", 2) != "") && $preventable) {
-    WriteLog(CardLink("parched_terrain_red", "parched_terrain_red") . " prevents heroes from gaining " . ($amount == 1 ? "health" : $amount . " health"));
+    WriteLog(CardLink("parched_terrain_red") . " prevents heroes from gaining " . ($amount == 1 ? "health" : $amount . " health"));
     return false;
   }
   if ((SearchCurrentTurnEffects("poison_the_well_blue", 1, remove: true) || SearchCurrentTurnEffects("poison_the_well_blue", 2, remove: true)) && $preventable) {
@@ -1606,7 +1606,7 @@ function CombatChainClosedCharacterEffects()
           $deck = new Deck($defPlayer);
           if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $defPlayer, "DECK", source: "bone_vizier") < 6) {
             $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
-            WriteLog("⬇️ " . CardLink("bone_vizier", "bone_vizier") . " put " . CardLink($card, $card) . " on the bottom of your deck");
+            WriteLog("⬇️ " . CardLink("bone_vizier") . " put " . CardLink($card) . " on the bottom of your deck");
           }
           break;
         default:
@@ -1764,11 +1764,11 @@ function AfterDieRoll($player)
   $skullCrusherIndex = FindCharacterIndex($player, "skull_crushers");
   if ($skullCrusherIndex > -1 && IsCharacterAbilityActive($player, $skullCrusherIndex)) {
     if ($roll == 1) {
-      WriteLog(CardLink("skull_crushers", "skull_crushers") . " was destroyed");
+      WriteLog(CardLink("skull_crushers") . " was destroyed");
       DestroyCharacter($player, $skullCrusherIndex);
     }
     if ($roll == 5 || $roll == 6) {
-      WriteLog(CardLink("skull_crushers", "skull_crushers") . " gives +1 this turn");
+      WriteLog(CardLink("skull_crushers") . " gives +1 this turn");
       AddCurrentTurnEffect("skull_crushers", $player);
     }
   }
@@ -2282,7 +2282,7 @@ function RevealCards($cards, $player = "", $look=false, $fullReveal=true)
       $card = GetMZCard($player, $cardArray[$i]);
     }
     else $card = $cardArray[$i];
-    $string .= CardLink($card, $card);
+    $string .= CardLink($card);
     AddEvent("REVEAL", $player . ":" . $card);
   }
   $string .= (count($cardArray) == 1 ? " is" : " are");
@@ -3155,7 +3155,7 @@ function CanRevealCards($player)
 {
   $otherPlayer = $player == 1 ? 2 : 1;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "") {
-    WriteLog("Reveal prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
+    WriteLog("Reveal prevented by " . CardLink("channel_the_bleak_expanse_blue"));
     return false;
   }
   return true;
@@ -3745,7 +3745,7 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
   if ($pitchValue == 1) {
     $talismanOfRecompenseIndex = GetItemIndex("talisman_of_recompense_yellow", $currentPlayer);
     if ($talismanOfRecompenseIndex > -1) {
-      WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1 and destroyed itself");
+      WriteLog(CardLink("talisman_of_recompense_yellow") . " gained 3 instead of 1 and destroyed itself");
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
       GainResources($currentPlayer, 2);
     }
@@ -3794,7 +3794,7 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     case "back_alley_breakline_yellow":
     case "back_alley_breakline_blue":
       if ($from == "DECK" && $currentPlayer == $mainPlayer) {
-        WriteLog("Player ". $currentPlayer ." gained 1 action point from " . CardLink($cardID, $cardID).".");
+        WriteLog("Player ". $currentPlayer ." gained 1 action point from " . CardLink($cardID).".");
         ++$actionPoints;
       }
       break;
@@ -3858,13 +3858,13 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     if ($talismanOfTithes != "") {
       $indices = explode(",", $talismanOfTithes);
       DestroyItemForPlayer($otherPlayer, $indices[0]);
-      WriteLog(CardLink("talisman_of_tithes_blue", "talisman_of_tithes_blue") . " prevented a draw and was destroyed");
+      WriteLog(CardLink("talisman_of_tithes_blue") . " prevented a draw and was destroyed");
       --$num;
     }
   }
   if ($num == 0) return "";
   if ($fromCardEffect && (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "")) {
-    WriteLog("Draw prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
+    WriteLog("Draw prevented by " . CardLink("channel_the_bleak_expanse_blue"));
     return "";
   }
   if ($mainPhase && (SearchAurasForCard("by_the_book_blue", $otherPlayer) != "" || SearchAurasForCard("by_the_book_blue", $player) != "")) {
@@ -3887,7 +3887,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   for ($j = 0; $j < $num; ++$j) {
     $cardID = $deck->Top(remove: true);
     if ($mainPhase && (SearchAurasForCard("chains_of_mephetis_blue", 1) != "" || SearchAurasForCard("chains_of_mephetis_blue", 2) != "")) {
-      WriteLog("⛓️ Your draw was banished by " . CardLink("chains_of_mephetis_blue", "chains_of_mephetis_blue"));
+      WriteLog("⛓️ Your draw was banished by " . CardLink("chains_of_mephetis_blue"));
       BanishCardForPlayer($cardID, $player, "DECK", "TT", $player);
       continue;
       //It's unclear whether chains of mephetis should skip draw triggerrs. 8.5.6c suggests it should not, but the rules team
@@ -3918,7 +3918,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     switch ($currentTurnEffects[$i]) {
       case "anka_drag_under_yellow":
         if ($mainPhase){
-          WriteLog("🦈 You are being dragged under by " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]));
+          WriteLog("🦈 You are being dragged under by " . CardLink($currentTurnEffects[$i]));
           AddLayer("TRIGGER", $player, $currentTurnEffects[$i]);
           RemoveCurrentTurnEffect($i);
         }
@@ -3947,7 +3947,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
       case "escalate_bloodshed_red":
         if ($mainPhase) {
           //TODO rework this to be a respondable trigger
-          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
+          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red"));
           PlayerLoseHealth($num, $player, true);
         }
         break;
@@ -3961,7 +3961,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
       case "escalate_bloodshed_red":
         if ($mainPhase) {
           //TODO rework this to be a respondable trigger
-          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
+          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red"));
           LoseHealth($num, $player);
         }
         break;
@@ -3979,7 +3979,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
 
 function ChooseToPay($player, $cardID, $amounts)
 {
-  AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($cardID, $cardID));
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($cardID));
   AddDecisionQueue("BUTTONINPUT", $player, $amounts);
   AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
   AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
@@ -3989,10 +3989,10 @@ function WardPoppedAbility($player, $cardID)
 {
   if (SearchCharacterActive($player, "celestial_kimono", setInactive: true)) {
     GainResources($player, 1);
-    WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono", "celestial_kimono"));
+    WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono"));
   }
   if (SearchCharacterActive($player, "diadem_of_dreamstate", setInactive: true) || $cardID == "diadem_of_dreamstate") {
-    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_".CardLink("ponder", "ponder"));
+    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_".CardLink("ponder"));
     AddDecisionQueue("NOPASS", $player, "-");
     AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
     AddDecisionQueue("PLAYAURA", $player, "ponder-1", 1);
@@ -4291,7 +4291,7 @@ function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer)
     }
   }
   if (!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";
-  if (SearchCount(SearchMultizone($currentPlayer, "MYITEMS:isSameName=hyper_driver")) < 3) return "You don't meet the ".CardLink("hyper_driver", "hyper_driver_red")." requirement";
+  if (SearchCount(SearchMultizone($currentPlayer, "MYITEMS:isSameName=hyper_driver")) < 3) return "You don't meet the ".CardLink("hyper_driver")." requirement";
   return "";
 }
 
@@ -4461,7 +4461,7 @@ function NumSeismicSurge($player)
 function Pitch($cardID, $player)
 {
   $pitch = &GetPitch($player);
-  WriteLog("Player " . $player . " pitched " . CardLink($cardID, $cardID));
+  WriteLog("Player " . $player . " pitched " . CardLink($cardID));
   $pitch[] = $cardID;
   $pitch[] = GetUniqueId($cardID, $player);
   PitchAbility($cardID, "DECK", count($pitch) - PitchPieces());

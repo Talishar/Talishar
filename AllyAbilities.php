@@ -8,7 +8,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
-    WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    WriteLog("🙇 " . CardLink("preach_modesty_red") . " prevents the creation of " . CardLink($cardID));
     return;
   }
   if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player)) && $firstTransform) {
@@ -45,7 +45,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     $allies[] = $from; //where it's played from
     $allies[] = 0; //Modifier - e.g "Temporary" for cards that get stolen for a turn.
     if ($isOuvia) {
-      WriteLog(CardLink($cardID, $cardID) . " lets you transform up to 1 ash into an Ashwing.");
+      WriteLog(CardLink($cardID) . " lets you transform up to 1 ash into an Ashwing.");
       Transform($player, "Ash", "aether_ashwing", true);
     }
     if ($hasCrank) Crank($player, $index, zone:"MYALLY");
@@ -176,7 +176,7 @@ function AllyStartTurnAbilities($player)
   for ($i = 0; $i < $countAllies; $i += $allyPieces) {
     switch ($allies[$i]) {
       case "ouvia":
-        WriteLog(CardLink($allies[$i], $allies[$i]) . " lets you transform up to 1 ash into an ".CardLink("aether_ashwing", "aether_ashwing").".");
+        WriteLog(CardLink($allies[$i]) . " lets you transform up to 1 ash into an ".CardLink("aether_ashwing").".");
         Transform($player, "Ash", "aether_ashwing", true);
         break;
       default:
@@ -330,7 +330,7 @@ function SpecificAllyAttackAbilities($attackID)
         if ($attackID == $allies[$i] && $allies[$i + 8] > 0) {
           GainActionPoints(1);
           --$allies[$i + 8];
-          WriteLog("Gained 1 action point from " . CardLink($allies[$i], $allies[$i]));
+          WriteLog("Gained 1 action point from " . CardLink($allies[$i]));
         }
         break;
       case "suraya_archangel_of_erudition":
@@ -363,7 +363,7 @@ function AllyDamageTakenAbilities($player, $i)
       $allies[$i + 2] -= 1;
       $allies[$i + 7] -= 1;
       PutPermanentIntoPlay($player, "ash");
-      WriteLog(CardLink($allies[$i], $allies[$i]) . " got a -1 life counter and created an ".CardLink("ash", "ash")." token");
+      WriteLog(CardLink($allies[$i]) . " got a -1 life counter and created an ".CardLink("ash")." token");
       break;
     default:
       break;

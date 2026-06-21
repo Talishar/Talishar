@@ -83,7 +83,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "no_fear_red":
       $prevention = is_numeric($additionalCosts) ? $additionalCosts + 2 : 2;
       AddCurrentTurnEffect($cardID . "-" . $prevention, $currentPlayer);
-      WriteLog(CardLink($cardID, $cardID) . " prevents the next <b> $prevention damage</b>");
+      WriteLog(CardLink($cardID) . " prevents the next <b> $prevention damage</b>");
       return "";
     case "rawhide_rumble_red":
     case "rawhide_rumble_yellow":
@@ -331,7 +331,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "starting_stake_yellow":
       if (CountItem("gold", $currentPlayer, false) == 0) {
         PutItemIntoPlayForPlayer("gold", $currentPlayer, effectController: $currentPlayer);
-        WriteLog(CardLink($cardID, $cardID) . " created a Gold token");
+        WriteLog(CardLink($cardID) . " created a Gold token");
       }
       return;
     case "graven_call":
@@ -395,7 +395,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
       AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID) . " shows the top cards of your deck are", 1);
       AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . ($resourcesPaid + 1));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
@@ -626,8 +626,8 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $requiredEquip = ($numNegCounterEquip > $evoUpgradeAmt) ? $evoUpgradeAmt : $numNegCounterEquip;
       if ($numNegCounterEquip > 0 && $requiredEquip > 0 && IsHeroAttackTarget()) {
         $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = $requiredEquip;
-        if ($requiredEquip > 1) $rv = CardLink($cardID, $cardID) . " requires you to block with " . $requiredEquip . " equipments";
-        else $rv = CardLink($cardID, $cardID) . " requires you to block with " . $requiredEquip . " equipment";
+        if ($requiredEquip > 1) $rv = CardLink($cardID) . " requires you to block with " . $requiredEquip . " equipments";
+        else $rv = CardLink($cardID) . " requires you to block with " . $requiredEquip . " equipment";
         WriteLog($rv);
       }
       return "";
@@ -762,7 +762,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $lockwaveCount = intval($resourcesPaid / 3);
       AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYCHAR:type=E");
       AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "MAXCOUNT-" . $lockwaveCount . ",MINCOUNT-" . $lockwaveCount . ",");
-      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose " . $lockwaveCount . " equipment for the effect of " . CardLink("meganetic_lockwave_blue", "meganetic_lockwave_blue") . ".");
+      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose " . $lockwaveCount . " equipment for the effect of " . CardLink("meganetic_lockwave_blue") . ".");
       AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
       AddDecisionQueue("MZSWITCHPLAYER", $currentPlayer, "<-", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -834,7 +834,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           $items = explode(",", $items);
           $destroyedItem = $items[GetRandom(0, count($items) - 1)];
           $destroyedItemID = GetMZCard($currentPlayer, $destroyedItem);
-          WriteLog(CardLink("smashing_performance_yellow", "smashing_performance_yellow") . " destroys " . CardLink($destroyedItemID, $destroyedItemID) . ".");
+          WriteLog(CardLink("smashing_performance_yellow") . " destroys " . CardLink($destroyedItemID) . ".");
           MZDestroy($currentPlayer, $destroyedItem, $currentPlayer);
         }
       }
@@ -971,7 +971,7 @@ function ModularMove($cardID, $uniqueID)
   $exposedSlots = ListExposedEquipSlots($currentPlayer);
   if ($exposedSlots != "PASS") {
     AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $currentPlayer, "-");
-    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an equipment zone to move " . CardLink($cardID, $cardID) . " to.", 1);
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an equipment zone to move " . CardLink($cardID) . " to.", 1);
     AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
     AddDecisionQueue("MODULARMOVE", $currentPlayer, $uniqueID, 1);
   }

@@ -80,16 +80,16 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0");
       AddDecisionQueue("SETDQVAR", $otherPlayer, "0");
       AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "3", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with " . CardLink($cardID, $cardID)."?");
-      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with " . CardLink($cardID, $cardID), 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with " . CardLink($cardID)."?");
+      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with " . CardLink($cardID), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $otherPlayer, "0", 1);
       AddDecisionQueue("MULTIBANISH", $otherPlayer, "DECK,-," . $cardID, 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
       AddDecisionQueue("NONECARDPITCHORPASS", $currentPlayer, "3");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <0>");
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with " . CardLink($cardID, $cardID), 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID)." shows the top of your deck is <0>");
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with " . CardLink($cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -452,7 +452,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MZADDCOUNTERS", $currentPlayer, $amount, 1);
       }
       else {
-        WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+        WriteLog(CardLink($cardID) . " layer fails as there are no remaining targets for the targeted effect.");
         return "FAILED";
       }
       return "";
@@ -540,8 +540,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $numGold = CountItem("gold", $currentPlayer);
       if ($numGold >= 3 && !SearchCurrentTurnEffects("amnesia_red", $currentPlayer)) {
         PlayAura("might", $currentPlayer, $numGold); 
-        WriteLog(CardLink($cardID, $cardID) . " created a Gold token and " . $numGold . " Might tokens");
-      } else WriteLog(CardLink($cardID, $cardID) . " created a Gold token");
+        WriteLog(CardLink($cardID) . " created a Gold token and " . $numGold . " Might tokens");
+      } else WriteLog(CardLink($cardID) . " created a Gold token");
       return "";
     case "visit_the_golden_anvil_blue":
       for ($i = 0; $i < intval($additionalCosts); ++$i) {
@@ -620,7 +620,7 @@ function MSTHitEffect($cardID, $from): void
       AddDecisionQueue("FINDINDICES", $defPlayer, "DECKTOPXINDICES," . $count);
       AddDecisionQueue("DECKCARDS", $defPlayer, "<-", 1);
       AddDecisionQueue("LOOKTOPDECK", $defPlayer, "-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID, $cardID) . " shows the your opponents deck are", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($cardID) . " shows the your opponents deck are", 1);
       AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $mainPlayer, "<-", 1);
       AddDecisionQueue("SHUFFLEDECK", $defPlayer, "-");
       break;

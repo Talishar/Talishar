@@ -109,7 +109,7 @@
   function LordSutcliffeAbility($player, $index)
   {
     global $currentPlayer;
-    WriteLog(CardLink("lord_sutcliffe", "lord_sutcliffe") . " deals 1 arcane damage to each player");
+    WriteLog(CardLink("lord_sutcliffe") . " deals 1 arcane damage to each player");
     DealArcane(1, 0, "ABILITY", "lord_sutcliffe", false, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
     AddDecisionQueue("LORDSUTCLIFFE", $currentPlayer, $index, 1);

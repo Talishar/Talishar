@@ -92,11 +92,11 @@ function TerraEndPhaseAbility($characterID, $player): void
   $hand = &GetHand($player);
   $earthTalent = SearchCount(SearchPitch($player, talent: "EARTH"));
   if (($earthTalent >= 1) && (Count($hand) > 0 || $resources[0] > 0)) {
-    AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("might", "might"), 0, 1);
+    AddDecisionQueue("YESNO", $player, "if you want to pay 1 to create a " . CardLink("might"), 0, 1);
     AddDecisionQueue("NOPASS", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
     AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
-    AddDecisionQueue("WRITELOG", $player, CardLink($characterID, $characterID) . " created a " . CardLink("might", "might") . " token ", 1);
+    AddDecisionQueue("WRITELOG", $player, CardLink($characterID) . " created a " . CardLink("might") . " token ", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "might", 1);
     AddDecisionQueue("PUTPLAY", $player, "-", 1);
   }

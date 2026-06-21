@@ -10,16 +10,16 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with ". CardLink($cardID, $cardID)."?");
-      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to banish <0> with ". CardLink($cardID)."?");
+      AddDecisionQueue("YESNO", $currentPlayer, "whether to banish a card with ". CardLink($cardID), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIREMOVEDECK", $currentPlayer, "0", 1);
       AddDecisionQueue("MULTIBANISH", $currentPlayer, "DECK,INST", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{0}");
       AddDecisionQueue("NONECARDTYPEORPASS", $currentPlayer, "A");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <0>");
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID)." shows the top of your deck is <0>");
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "crucible_of_aetherweave":
@@ -44,7 +44,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
       AddDecisionQueue("ALLCARDTYPEORPASS", $currentPlayer, "A", 1);
       AddDecisionQueue("ALLCARDCLASSORPASS", $currentPlayer, "WIZARD", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with " . CardLink($cardID, $cardID), 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to banish <1> with " . CardLink($cardID), 1);
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_banish_the_card", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
@@ -53,8 +53,8 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("ELSE", $currentPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, 1, 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID)." shows the top of your deck is <1>", 1);
-      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID)." shows the top of your deck is <1>", 1);
+      AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
     case "forked_lightning_red":
@@ -228,7 +228,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
     $damage += CurrentEffectArcaneModifier($source, $player, meldState: $meldState) * $nbArcaneInstance;
     $damage += CurrentEffectDamageModifiers($player, $source, $type);
     $damage += CombatChainDamageModifiers($player, $source, $type);
-    if ($type != "PLAYCARD" && $type != "ARCANESHOCK") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
+    if ($type != "PLAYCARD" && $type != "ARCANESHOCK") WriteLog(CardLink($source) . " is dealing " . $damage . " arcane damage.");
     if ($fromQueue) {
       if (!$limitDuplicates) {
         PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
@@ -1179,7 +1179,7 @@ function ArcaneHitEffect($player, $source, $target, $damage)
       break;
     case "sigil_of_aether_blue":
       AddCurrentTurnEffect($source, $player);
-      WriteLog(CardLink($source, $source) . " Amp 1");
+      WriteLog(CardLink($source) . " Amp 1");
       break;
     default:
       break;
@@ -1228,13 +1228,13 @@ function ProcessSurge($cardID, $player, $target)
       break;
     case "swell_tidings_red":
       PlayAura("ponder", $player);
-      WriteLog(CardLink($cardID, $cardID) . " created a " . CardLink("ponder", "ponder") . " token");
+      WriteLog(CardLink($cardID) . " created a " . CardLink("ponder") . " token");
       break;
     case "aether_quickening_red":
     case "aether_quickening_yellow":
     case "aether_quickening_blue":
       AddCurrentTurnEffect($cardID, $player);
-      WriteLog(CardLink($cardID, $cardID) . " gained go again");
+      WriteLog(CardLink($cardID) . " gained go again");
       break;
     case "prognosticate_red":
     case "prognosticate_yellow":
@@ -1276,25 +1276,25 @@ function ProcessSurge($cardID, $player, $target)
     case "etchings_of_arcana_red":
     case "etchings_of_arcana_yellow":
     case "etchings_of_arcana_blue":
-      WriteLog(CardLink($cardID, $cardID) . " returns a sigil from graveyard to hand");
+      WriteLog(CardLink($cardID) . " returns a sigil from graveyard to hand");
       MZMoveCard($player, "MYDISCARD:subtype=Aura;nameIncludes=Sigil", "MYHAND", may: true);
       break;
     case "open_the_flood_gates_red": 
     case "open_the_flood_gates_yellow": 
     case "open_the_flood_gates_blue":
-      WriteLog(CardLink($cardID, $cardID) . " draws 2 cards");
+      WriteLog(CardLink($cardID) . " draws 2 cards");
       Draw($player, num:2);
       break;
     case "overflow_the_aetherwell_red":
     case "overflow_the_aetherwell_yellow":
     case "overflow_the_aetherwell_blue":
-      WriteLog(CardLink($cardID, $cardID) . " gains 2 resources");
+      WriteLog(CardLink($cardID) . " gains 2 resources");
       GainResources($player, 2);
       break;
     case "perennial_aetherbloom_red":
     case "perennial_aetherbloom_yellow":
     case "perennial_aetherbloom_blue":
-      WriteLog("⬇️ " . CardLink($cardID, $cardID) . " returns on the bottom of the deck");
+      WriteLog("⬇️ " . CardLink($cardID) . " returns on the bottom of the deck");
       AddBottomDeck($cardID, $player, "STACK"); //create a copy on the bottom
       $discard = &GetDiscard($player);
       $discardPieces = DiscardPieces();
@@ -1305,7 +1305,7 @@ function ProcessSurge($cardID, $player, $target)
     case "glyph_overlay_red":
     case "glyph_overlay_yellow":
     case "glyph_overlay_blue":
-      WriteLog(CardLink($cardID, $cardID) . " gains 1 life and returns sigils to the deck");
+      WriteLog(CardLink($cardID) . " gains 1 life and returns sigils to the deck");
       GainHealth(1, $player);
       $auras = &GetAuras($player);
       $sigilFound = false;
@@ -1331,7 +1331,7 @@ function ProcessSurge($cardID, $player, $target)
     case "trailblazing_aether_yellow":
     case "trailblazing_aether_blue":
       AddCurrentTurnEffect($cardID, $player);
-      WriteLog(CardLink($cardID, $cardID) . " gained go again");
+      WriteLog(CardLink($cardID) . " gained go again");
       break;
     default:
       break;

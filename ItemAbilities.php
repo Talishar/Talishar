@@ -9,7 +9,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   if ($effectAgent == "") $effectAgent = $effectController;
   if (!DelimStringContains(CardSubType($cardID), "Item") && $cardID != "levia_redeemed") return;
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
-    WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    WriteLog("🙇 " . CardLink("preach_modesty_red") . " prevents the creation of " . CardLink($cardID));
     return;
   }
   if (TypeContains($cardID, "T", $player)) $isToken = true;
@@ -155,7 +155,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       if (HasPlayerEchoed($otherPlayer)) array_push($legalTargets, "THEIRCHAR-0");
       if (HasPlayerEchoed($currentPlayer)) array_push($legalTargets, "MYCHAR-0");
       $legalTargets = implode(",", $legalTargets);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for " . CardLink($cardID, $cardID));
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for " . CardLink($cardID));
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $legalTargets, 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
@@ -456,10 +456,10 @@ function ItemStartTurnAbility($index)
     case "null_time_zone_blue":
       if ($mainItems[$index + 1] > 0 && GetItemGemState($mainPlayer, $mainItems[$index], $index) == 0) --$mainItems[$index + 1];
       elseif($mainItems[$index + 1] > 0) {
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($mainItems[$index], $mainItems[$index]) . "_(chosen_name:_" . $mainItems[$index+8] . ")", 1);
+        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($mainItems[$index]) . "_(chosen_name:_" . $mainItems[$index+8] . ")", 1);
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROYUID", $mainPlayer, $mainItems[$index+4], 1);
       } else {
-        WriteLog(CardLink($mainItems[$index], $mainItems[$index]) . " was destroyed");
+        WriteLog(CardLink($mainItems[$index]) . " was destroyed");
         DestroyItemForPlayer($mainPlayer, $index);
       }
       break;
@@ -494,7 +494,7 @@ function ItemStartTurnAbility($index)
     case "assembly_module_blue":
       if ($mainItems[$index + 1] > 0 && GetItemGemState($mainPlayer, $mainItems[$index], $index) == 0) --$mainItems[$index + 1];
       elseif($mainItems[$index + 1] > 0) {
-        AddDecisionQueue("YESNO", $mainPlayer, "if you want to remove a Steam Counter and keep " . CardLink($mainItems[$index], $mainItems[$index]) . " and keep it in play?");
+        AddDecisionQueue("YESNO", $mainPlayer, "if you want to remove a Steam Counter and keep " . CardLink($mainItems[$index]) . " and keep it in play?");
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROYUID", $mainPlayer, $mainItems[$index + 4]);
       }
       else DestroyItemForPlayer($mainPlayer, $index);
@@ -505,7 +505,7 @@ function ItemStartTurnAbility($index)
         DestroyItemForPlayer($mainPlayer, $index);
         if (isset($mainItems[$index])) {
           DealDamageAsync($mainPlayer, 1, "DAMAGE", $mainItems[$index], $mainPlayer);
-          WriteLog(CardLink("tick_tock_clock_red", "tick_tock_clock_red") . " deals 1 damage to Player " . $mainPlayer . ".");
+          WriteLog(CardLink("tick_tock_clock_red") . " deals 1 damage to Player " . $mainPlayer . ".");
         }
       }
       break;

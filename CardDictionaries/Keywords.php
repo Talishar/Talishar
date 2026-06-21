@@ -15,7 +15,7 @@
       "MYALLY" => GetAllies($player),
       default => GetItems($player)
     };
-    $message = "Do you want to Crank your " . CardLink($MZZone[$index], $MZZone[$index]) ."?";
+    $message = "Do you want to Crank your " . CardLink($MZZone[$index]) ."?";
     if ($player != $mainPlayer) $mainPhase = "False"; //you can crank on the opponent's turn, you just won't get an action point
     if ($mainPhase != "True") $message .= " You won't get an action point.";
     PrependDecisionQueue("PASSPARAMETER", $player, "{0}");
@@ -65,7 +65,7 @@
     global $CombatChain, $mainPlayer, $defPlayer, $layers;
     if(!IsHeroAttackTarget()) return;
     if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
-      WriteLog("Tower effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
+      WriteLog("Tower effect prevented by " . CardLink("tarpit_trap_yellow"));
       return true;
     }
     $card = GetClass($cardID, $mainPlayer);
@@ -329,7 +329,7 @@
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $otherPlayer, "the_old_switcheroo_blue", 1);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, "the_old_switcheroo_blue", 1);
       PrependDecisionQueue("NOPASS", $playerID, "-", 1);
-      PrependDecisionQueue("YESNO", $playerID, "if_you_want_to_destroy_1_" . CardLink("gold", "gold") ."_to_clash_again", 1);
+      PrependDecisionQueue("YESNO", $playerID, "if_you_want_to_destroy_1_" . CardLink("gold") ."_to_clash_again", 1);
       PrependDecisionQueue("SETDQVAR", $playerID, "1");
       PrependDecisionQueue("PASSPARAMETER", $playerID, "NO");
     }

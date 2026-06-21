@@ -420,14 +420,14 @@ class hunter_or_hunted_blue extends Card {
       AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
       // show their hand, arsenal, and deck
       if(count(GetHand($mainPlayer)) > 0 || count(GetArsenal($mainPlayer)) > 0) {
-        AddDecisionQueue("WRITELOG", $player, CardLink($parameter, $parameter) . " shows opponent's hand and arsenal", 1);
+        AddDecisionQueue("WRITELOG", $player, CardLink($parameter) . " shows opponent's hand and arsenal", 1);
         AddDecisionQueue("SHOWHANDWRITELOG", $mainPlayer, "-", 1);
         AddDecisionQueue("SHOWARSENALWRITELOG", $mainPlayer, "-", 1);
       }
 
       AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count, 1);
       AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($parameter, $parameter) . " shows the your opponents deck are", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($parameter) . " shows the your opponents deck are", 1);
       AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $player, "<-", 1);
       //MULTISHOWCARDSTHEIRDECK seems to return PASS, so we need this else and need to repeat the check
       AddDecisionQueue("ELSE", $player, "-");
@@ -621,7 +621,7 @@ class toby_jugs extends Card {
     global $CombatChain;
     $defCard = $CombatChain->FindCardUID($target);
     if ($defCard != "") {
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose how much to pay for " . CardLink($this->cardID, $this->cardID));
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose how much to pay for " . CardLink($this->cardID));
       AddDecisionQueue("BUTTONINPUT", $this->controller, "0,1");
       AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $this->controller, "1", 1);
@@ -1314,7 +1314,7 @@ class kick_the_hornets_nest_yellow extends Card {
     PlayAura("might", $this->controller);
     PlayAura("toughness", $this->controller);
     PlayAura("vigor", $this->controller);
-    WriteLog(CardLink($this->controller, $this->cardID) . " created an " . CardLink("confidence", "confidence") . ", " . CardLink("might", "might") . ", " . CardLink("toughness", "toughness") . " and " . CardLink("vigor", "vigor") . " tokens.");
+    WriteLog(CardLink($this->controller) . " created an " . CardLink("confidence") . ", " . CardLink("might") . ", " . CardLink("toughness") . " and " . CardLink("vigor") . " tokens.");
   }
 
   function AddGraveyardEffect($from, $effectController) {
@@ -1350,7 +1350,7 @@ class cutting_retort_red extends Card {
     $initial = $dqVars["initial"];
     if ($initial == 1) { //outer loop
       if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) {
-        WriteLog(CardLink("cutting_retort_red", "cutting_retort_red") . " does not work on an opponent under amnesia");
+        WriteLog(CardLink("cutting_retort_red") . " does not work on an opponent under amnesia");
         return "";
       }
       for ($i = 0; $i < $num; ++$i) {
@@ -1635,7 +1635,7 @@ class song_of_sinew_yellow extends Card {
       for ($i = 0; $i < count($cards); ++$i) {
         if (ModifiedPowerValue($cards[$i], $this->controller, "DECK") >= 6) ++$numSixes;
       }
-      WriteLog(CardLink($this->cardID, $this->cardID) . " is buffing the next attack by $numSixes!");
+      WriteLog(CardLink($this->cardID) . " is buffing the next attack by $numSixes!");
       AddCurrentTurnEffect("$this->cardID-$numSixes", $this->controller);
       $cardList = implode(",", $cards);
       AddDecisionQueue("PASSPARAMETER", $this->controller, $cardList);
@@ -2842,7 +2842,7 @@ class unexpected_backhand extends BaseCard{
 
   function ProcessTrigger() {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    WriteLog(CardLink($this->cardID, $this->cardID) . " deals 1 damage");
+    WriteLog(CardLink($this->cardID) . " deals 1 damage");
     DealDamageAsync($otherPlayer, 1, "DAMAGE", $this->cardID, $this->controller);
   }
 }
@@ -3245,7 +3245,7 @@ class energetic_impact_blue extends Card {
 
   function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
     PlayAura("vigor", $this->controller);
-    WriteLog(CardLink("energetic_impact_blue", "energetic_impact_blue") . " created a " . CardLink("vigor", "vigor") . " token");
+    WriteLog(CardLink("energetic_impact_blue") . " created a " . CardLink("vigor") . " token");
   }
 }
 

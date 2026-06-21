@@ -52,7 +52,7 @@
         Reload();
         return "";
       case "silver_the_tip_red": case "silver_the_tip_yellow": case "silver_the_tip_blue":
-        if(!ArsenalEmpty($currentPlayer)) return "🏹 Your arsenal is full, " . CardLink($cardID, $cardID) . " does nothing.";
+        if(!ArsenalEmpty($currentPlayer)) return "🏹 Your arsenal is full, " . CardLink($cardID) . " does nothing.";
         $count = match($cardID) { "silver_the_tip_red" => 4, "silver_the_tip_yellow" => 3, default => 2 };
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $count);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
@@ -60,7 +60,7 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);
         AddDecisionQueue("LOOKTOPDECK", $currentPlayer, "-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top cards of your deck are", 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID) . " shows the top cards of your deck are", 1);
         AddDecisionQueue("MULTISHOWCARDSDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES," . $count);
         AddDecisionQueue("DECKCARDS", $currentPlayer, "<-", 1);

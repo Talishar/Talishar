@@ -79,16 +79,16 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   && str_starts_with($cardID, 'back_alley_breakline_')
   && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetAbilityType($EffectContext) != "")
   && $player == $mainPlayer) {
-    WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
+    WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID).".");
     ++$actionPoints;
   }
   if (($mod == "BOOST" && $from == "DECK") && str_starts_with($cardID, 'crankshaft_')) {
-    WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
+    WriteLog(CardLink($cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
     AddLayer("TRIGGER", $player, $cardID);
   }
   if (ModifiedPowerValue($cardID, $player, $from, source: $banishedBy) >= 6) {
     if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer && ($characterID == "levia_shadowborn_abomination" || $characterID == "levia") && $character[1] == 2) { // Levia
-      WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose life from Blood Debt this turn.");
+      WriteLog(CardLink($characterID) . " banished a card with 6+ power, and won't lose life from Blood Debt this turn.");
     }
     ++$classState[$CS_Num6PowBan];
     $index = FindCharacterIndex($player, "hooves_of_the_shadowbeast");
@@ -218,7 +218,7 @@ function TurnDiscardFaceDown($player, $index)
 function AddBottomDeck($cardID, $player, $from)
 {
   if(TypeContains($cardID, "T", $player)) { // 'T' type indicates the card is a token
-    WriteLog(CardLink($cardID, $cardID) . " is a token. So instead of going on the bottom of the deck, it ceases to exist.");
+    WriteLog(CardLink($cardID) . " is a token. So instead of going on the bottom of the deck, it ceases to exist.");
   }
   else {
   $deck = &GetDeck($player);
@@ -236,11 +236,11 @@ function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1, $created
 {
   global $CS_NumCrouchingTigerCreatedThisTurn, $EffectContext;
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "") && !str_contains($from, "DISCARD") && !str_contains($from, "BANISH")) {
-    WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    WriteLog("🙇 " . CardLink("preach_modesty_red") . " prevents the creation of " . CardLink($cardID));
     return;
   }
   if(TypeContains($cardID, "T", $player)) { // 'T' type indicates the card is a token
-    WriteLog(CardLink($cardID, $cardID) . " is a token. So instead of going to hand, it ceases to exist.");
+    WriteLog(CardLink($cardID) . " is a token. So instead of going to hand, it ceases to exist.");
   }
   else {
     $hand = &GetHand($player);
@@ -335,7 +335,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
   if ($facing == "UP") {
     if ($from == "DECK" && str_starts_with($cardID, 'back_alley_breakline_') && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A")) {
       if ($player == $mainPlayer) {
-        WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
+        WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID).".");
         GainActionPoints(1);
       }    }
     if ($from == "DECK" && $cardSubType == "Arrow" && SearchCharacterActive($player, "crows_nest")) {
@@ -451,7 +451,7 @@ function DestroyArsenal($player, $index = -1, $effectController = "", $allArsena
     if ($index > -1 && $index != $i) continue;
     if ($cardIDs != "") $cardIDs .= ",";
     $cardIDs .= $arsenal[$i];
-    WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal");
+    WriteLog(CardLink($arsenal[$i]) . " was destroyed from the arsenal");
     AddGraveyard($arsenal[$i], $player, "ARS", $effectController);
     RemoveArsenal($player, $i);
   }
@@ -641,7 +641,7 @@ function AssignArcaneBonus($playerID)
           $layerIndex += LayerPieces();
         }
         $effectID = ExtractCardID($currentTurnEffects[$i]);
-        WriteLog("Arcane bonus from " . CardLink($effectID, $effectID) . " associated with " . CardLink($layers[$layerIndex], $layers[$layerIndex]));
+        WriteLog("Arcane bonus from " . CardLink($effectID) . " associated with " . CardLink($layers[$layerIndex]));
         $uniqueID = $layers[$layerIndex + 6];
         $currentTurnEffects[$i + 2] = $uniqueID;
       }
@@ -768,7 +768,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext, $CS_NumInstantsPutInGrave;
   if (str_contains($from, "DECK") && str_starts_with($cardID, 'back_alley_breakline_') && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "E", $player))) {
     if ($player == $mainPlayer) {
-      WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
+      WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID).".");
       GainActionPoints(1);
     }
   }

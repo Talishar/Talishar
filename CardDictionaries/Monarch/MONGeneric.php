@@ -14,7 +14,7 @@
             $CombatChain->AttackCard()->ModifyPower(2);
             break;
           case "COMBATCHAINATTACKS":
-            WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+            WriteLog("For now activating " . CardLink($cardID) . " on a previous chain link will have no effect");
             break;
         }
         return "";
@@ -60,7 +60,7 @@
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         }
         else {
-          WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
+          WriteLog(CardLink($cardID) . " layer fails as there are no remaining targets for the targeted effect.");
           return "FAILED";
         }
         return "";

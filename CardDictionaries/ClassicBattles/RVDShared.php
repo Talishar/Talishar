@@ -33,7 +33,7 @@ function RVDPlayAbility($cardID)
     case "wrecking_ball_red":
       Draw($currentPlayer);
       $card = DiscardRandom();
-      $rv = "Discarded " . CardLink($card, $card);
+      $rv = "Discarded " . CardLink($card);
       if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:"wrecking_ball_red") >= 6) {
         Intimidate();
       }
@@ -47,7 +47,7 @@ function RVDPlayAbility($cardID)
 
 function ChiefRukutanAbility($player, $index)
 {
-  $rv = CardLink("chief_rukutan", "chief_rukutan") . " Intimidates";
+  $rv = CardLink("chief_rukutan") . " Intimidates";
   Intimidate();
   $arsenal = &GetArsenal($player);
   ++$arsenal[$index+3];

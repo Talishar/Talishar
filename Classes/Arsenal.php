@@ -86,7 +86,7 @@ class ArsenalCard {
 	}
 
 	function Destroy($effectController=0) {
-		WriteLog(CardLink($this->CardID(), $this->CardID()) . " was destroyed from the arsenal");
+		WriteLog(CardLink($this->CardID()) . " was destroyed from the arsenal");
 		AddGraveyard($this->CardID(), $this->controller, "ARS", $effectController);
 		$this->Remove();
 	}

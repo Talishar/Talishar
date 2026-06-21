@@ -6,7 +6,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
   $permanents = &GetPermanents($player);
   $otherPlayer = $player == 1 ? 2 : 1;
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
-    WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    WriteLog("🙇 " . CardLink("preach_modesty_red") . " prevents the creation of " . CardLink($cardID));
     return;
   }
   if(TypeContains($cardID, "T", $player)) $isToken = true;
@@ -151,7 +151,7 @@ function PermanentTakeDamageAbilities($player, $index, $damage, $preventable, $t
           $index = FindCharacterIndex($player, "celestial_kimono");
           $char[$index + 1] = 1;
           GainResources($player, 1);
-          WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono", "celestial_kimono"));
+          WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono"));
         }
         DestroyPermanent($player, $i);
       }

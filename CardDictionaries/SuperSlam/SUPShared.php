@@ -283,7 +283,7 @@ function BOO($player)
   $ClassState->SetBooedThisTurn(1);
   $char = GetPlayerCharacter($player);
   $heroID = ShiyanaCharacter($char[0], $player);
-  WriteLog("🍅<b>BOOOOO!</b> The crowd jeers at " . CardLink($char[0], $char[0]) . "!");
+  WriteLog("🍅<b>BOOOOO!</b> The crowd jeers at " . CardLink($char[0]) . "!");
   if ($char[1] < 3) {
     switch($heroID) {
       case "lyath_goldmane":
@@ -303,7 +303,7 @@ function Cheer($player)
   $ClassState = new ClassState($player);
   $ClassState->SetCheeredThisTurn(1);
   $char = GetPlayerCharacter($player);
-  WriteLog("👏Let's go! The crowd <b>cheers</b> for " . CardLink($char[0], $char[0]) . "!");
+  WriteLog("👏Let's go! The crowd <b>cheers</b> for " . CardLink($char[0]) . "!");
   for ($i = 0; $i < count($char); $i += CharacterPieces()) {
     $card = GetClass($char[$i], $player);
     if ($card != "-") $card->CheerTrigger();
@@ -380,7 +380,7 @@ function TargetDefendingAction($player, $cardID, $setTarget=false) {
     if ($setTarget) AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
   }
   else {
-    WriteLog(CardLink($cardID, $cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
+    WriteLog(CardLink($cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
   }
 }
 

@@ -220,7 +220,7 @@ class flurry extends Card {
 			$targetWep->AddUse();
 		}
 		elseif ($otherFlurry != "") {
-			WriteLog(CardLink($targetWep->CardID(), $targetWep->CardID()) . " has already been flurried!");
+			WriteLog(CardLink($targetWep->CardID()) . " has already been flurried!");
 		}
 		$Auras = new Auras($this->controller);
 		$AuraCard = $Auras->FindCardUID($uniqueID);

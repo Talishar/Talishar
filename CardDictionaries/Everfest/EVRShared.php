@@ -244,7 +244,7 @@
         return "";
       case "steadfast_red": case "steadfast_yellow": case "steadfast_blue":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for " . CardLink($cardID, $cardID));
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for " . CardLink($cardID));
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", "-", 1);
@@ -281,7 +281,7 @@
           GiveAttackGoAgain();
         }
         else {
-          WriteLog("A previous chain link was targeted by " . CardLink($cardID, $cardID));
+          WriteLog("A previous chain link was targeted by " . CardLink($cardID));
         }
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
         return "";
@@ -378,7 +378,7 @@
               if ($layers[$j + 6] == $uid) $index = $j;
             }
             if ($index != -1) {
-              WriteLog(CardLink($cardID, $cardID) . " destroyed " . CardLink($layers[$index], $layers[$index]) . " while it was on the stack!");
+              WriteLog(CardLink($cardID) . " destroyed " . CardLink($layers[$index]) . " while it was on the stack!");
               NegateLayer("LAYER-$index");
               ++$numDestroyed;
             }
@@ -430,7 +430,7 @@
         return "";
       case "firebreathing_red":
         if($from == "PLAY") AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer, "PLAY");
-        elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+        elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID) . " on a previous chain link will have no effect");
         return "";
       case "cash_out_blue":
         PutItemIntoPlayForPlayer("silver", $currentPlayer, 0, intval($additionalCosts));
@@ -635,7 +635,7 @@
           }
           LoseHealth($numDiscarded, $defPlayer);
           RevealCards($cards, $defPlayer);//CanReveal checked earlier
-          if($numDiscarded > 0)WriteLog(CardLink("battering_bolt_red", "battering_bolt_red") . " discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
+          if($numDiscarded > 0)WriteLog(CardLink("battering_bolt_red") . " discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
           $hand = array_values($hand);
         }
         break;

@@ -4,7 +4,7 @@ function SearchDeck($player, $type = "", $subtype = "", $maxCost = -1, $minCost 
 {
   $otherPlayer = $player == 1 ? 2 : 1;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "") {
-    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
+    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue"));
     return "";
   }
   $deck = &GetDeck($player);
@@ -338,7 +338,7 @@ function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
 {
   $otherPlayer = $player == 1 ? 2 : 1;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "") {
-    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
+    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue"));
     return "";
   }
   $deck = &GetDeck($player);
@@ -358,7 +358,7 @@ function SearchDeckByName($player, $name)
 {
   $otherPlayer = $player == 1 ? 2 : 1;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "") {
-    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
+    WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue"));
     return "";
   }
   if (SearchCurrentTurnEffects("amnesia_red", $player)) return "";
@@ -1463,7 +1463,7 @@ function GetRelativeMZCardLink($player, $MZ)
   $zoneDS = &GetRelativeMZZone($player, $params[0]);
   $index = $params[1];
   if ($index == "" || !isset($zoneDS[$index])) return "";
-  return CardLink($zoneDS[$index], $zoneDS[$index]);
+  return CardLink($zoneDS[$index]);
 }
 
 function GetMZCardLink($player, $MZ)
@@ -1484,7 +1484,7 @@ function GetMZCardLink($player, $MZ)
       }
       else $cardID = "";
     }
-    return CardLink($cardID, $cardID);
+    return CardLink($cardID);
   }
   else { //the index was a UID
     $pieces = GetMZZonePieces($params[0]);
@@ -1493,7 +1493,7 @@ function GetMZCardLink($player, $MZ)
       $count = count($zoneDS);
       for ($i = 0; $i < $count; $i += $pieces) {
         $cardID = $zoneDS[$i];
-        if ($index == $zoneDS[$i + $offset]) return CardLink($cardID, $cardID);
+        if ($index == $zoneDS[$i + $offset]) return CardLink($cardID);
       }
     }
   }

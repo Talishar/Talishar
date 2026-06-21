@@ -139,7 +139,7 @@ function CharacterStartTurnAbility($index)
       if (GetHealth($mainPlayer) <= 13) {
         $char->status = 0;
         BanishCardForPlayer($char->cardID, $mainPlayer, "EQUIP", "NA");
-        WriteLog(CardLink($char->cardID, $char->cardID) . " got banished for having 13 or less life");
+        WriteLog(CardLink($char->cardID) . " got banished for having 13 or less life");
       }
       break;
     case "bravo_star_of_the_show":
@@ -160,10 +160,10 @@ function CharacterStartTurnAbility($index)
     case "vynnset_iron_maiden":
     case "vynnset":
       if ($character[1] < 3) {
-        MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-", DQContext:"Choose a card to banish for ".CardLink($cardID, $cardID));
+        MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-", DQContext:"Choose a card to banish for ".CardLink($cardID));
         // this is a little messy, but vynnset's effect context can get messed up inside PlayAura
         if (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "") {
-          WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+          WriteLog("🙇 " . CardLink("preach_modesty_red") . " prevents the creation of " . CardLink($cardID));
         }
         else {
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "runechant", 1);
@@ -183,7 +183,7 @@ function CharacterStartTurnAbility($index)
     case "heirloom_of_rabbit_hide":
     case "heirloom_of_tiger_hide":
       if ($character[$index + 12] == "DOWN" && GetHealth($mainPlayer) == 1) {
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID, $cardID) . "?", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID) . "?", 1);
         AddDecisionQueue("YESNO", $mainPlayer, "an_action", 1);
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
@@ -198,7 +198,7 @@ function CharacterStartTurnAbility($index)
       break;
     case "koi_blessed_kimono":
       if ($character[$index + 12] == "DOWN" && GetHealth($mainPlayer) == 1) {
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID, $cardID) . "?", 1);
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to turn face-up " . CardLink($cardID) . "?", 1);
         AddDecisionQueue("YESNO", $mainPlayer, "an_action", 1);
         AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $index, 1);
@@ -233,7 +233,7 @@ function DefCharacterStartTurnAbilities()
       case "silver_palms":
         if (PlayerHasLessHealth($mainPlayer)) {
           AddDecisionQueue("CHARREADYORPASS", $defPlayer, $i);
-          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_".CardLink("silver","silver").".", 1);
+          AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_draw_a_card_and_give_your_opponent_a_".CardLink("silver").".", 1);
           AddDecisionQueue("NOPASS", $mainPlayer, "-", 1);
           AddDecisionQueue("DRAW", $mainPlayer, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $defPlayer, "silver", 1);
@@ -265,7 +265,7 @@ function CharacterDestroyEffect($cardID, $player)
   if ($card != "-") $card->DestroyEffect();
   switch ($cardID) {
     case "new_horizon":
-      WriteLog(Cardlink($cardID, $cardID) . " destroys your arsenal");
+      WriteLog(Cardlink($cardID) . " destroys your arsenal");
       DestroyArsenal($player, effectController: $player);
       break;
     case "wave_of_reality":
@@ -791,7 +791,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND")
   }
   if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) { 
     if (TypeContains($cardID, "T", $player, true)) {
-      WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+      WriteLog("🙇 " . CardLink("preach_modesty_red") . " prevents the creation of " . CardLink($cardID));
       return;
     }
   }
@@ -874,13 +874,13 @@ function StealEquipment($srcPlayer, $index, $destPlayer, $trueSteal = false)
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $destCharCount; $i += $characterPieces) {
     if ($destChar[$i+1] > 1 && SubtypeContains($destChar[$i], $slot)) {
-      WriteLog("You can't equip over your already equipped " . CardLink($destChar[$i], $destChar[$i]));
+      WriteLog("You can't equip over your already equipped " . CardLink($destChar[$i]));
       return "";
     }
     else if ($destChar[$i + 1] == 1 && SubtypeContains($destChar[$i], $slot)) $existingIndex = $i;
   }
   if ($slot == "Off-Hand" && NumOccupiedHands($destPlayer) > 1) {
-    WriteLog("You don't have a free hand to hold " . CardLink($cardID, $cardID));
+    WriteLog("You don't have a free hand to hold " . CardLink($cardID));
     return "";
   }
   // if the equipment has been destroyed but left a ghost
@@ -937,13 +937,13 @@ function EquipWeapon($player, $cardID, $source = "-")
   $otherPlayer = $player == 1 ? 2 : 1;
   if (SearchCurrentTurnEffects("ripple_away_blue", $player) != "" || (SearchCurrentTurnEffects("ripple_away_blue", $otherPlayer)) != "") {
     if (TypeContains($cardID, "T", $player, true) && (CardType($source) == "A" || CardType($source) == "AA")) {
-      WriteLog("🌊 You can't equip token weapons from an action card under " . CardLink("ripple_away_blue", "ripple_away_blue"));
+      WriteLog("🌊 You can't equip token weapons from an action card under " . CardLink("ripple_away_blue"));
       return;
     }
   }
   if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) { 
     if (TypeContains($cardID, "T", $player, true)) {
-      WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+      WriteLog("🙇 " . CardLink("preach_modesty_red") . " prevents the creation of " . CardLink($cardID));
       return;
     }
   }
@@ -1372,7 +1372,7 @@ function EquipPayAdditionalCosts($cardIndex)
       }
       else {
         $cogIndices = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to give " . CardLink($cardID, $cardID) . " next attack go again");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Tap a cog to give " . CardLink($cardID) . " next attack go again");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $cogIndices, 1);
         AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
       }
@@ -1483,7 +1483,7 @@ function CharacterModifiesPlayAura($player, $isToken, $effectAgent)
         // Now we need to check that we banished 8 earth cards.
         $results = SearchCount(SearchMultiZone($effectAgent, "MYBANISH:talent=EARTH"));
         if ($results >= 8) {
-          WriteLog(CardLink($char[$i], $char[$i]) . " increases the number of auras tokens created by 1.");
+          WriteLog(CardLink($char[$i]) . " increases the number of auras tokens created by 1.");
           return 1;
         }
         return 0;
@@ -1492,7 +1492,7 @@ function CharacterModifiesPlayAura($player, $isToken, $effectAgent)
         // Now we need to check that we banished 4 earth cards.
         $results = SearchCount(SearchMultiZone($effectAgent, "MYBANISH:talent=EARTH"));
         if ($results >= 4) {
-          WriteLog(CardLink($char[$i], $char[$i]) . " increases the number of auras tokens created by 1.");
+          WriteLog(CardLink($char[$i]) . " increases the number of auras tokens created by 1.");
           return 1;
         }
         return 0;
@@ -1732,13 +1732,13 @@ function CharacterAttackAbilities($attackID)
       case "evo_scatter_shot_blue_equip":
         if ($attackID == "teklo_blaster") {
           AddCurrentTurnEffect($char[$i], $mainPlayer);
-          WriteLog(CardLink($char[$i], $char[$i]) . " gives +1");
+          WriteLog(CardLink($char[$i]) . " gives +1");
         }
         break;
       case "evo_rapid_fire_blue_equip":
         if ($attackID == "teklo_blaster") {
           GiveAttackGoAgain();
-          WriteLog(CardLink($char[$i], $char[$i]) . " gives Go Again");
+          WriteLog(CardLink($char[$i]) . " gives Go Again");
         }
         break;
       default:

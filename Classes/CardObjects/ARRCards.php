@@ -192,7 +192,7 @@ class torc_of_vim extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $index = FindCharacterIndex($this->controller, $this->cardID);
-    AddDecisionQueue("YESNO", $this->controller, "if you want to destroy ".Cardlink($this->cardID, $this->cardID));
+    AddDecisionQueue("YESNO", $this->controller, "if you want to destroy ".Cardlink($this->cardID));
     AddDecisionQueue("NOPASS", $this->controller, "-");
     AddDecisionQueue("PASSPARAMETER", $this->controller, $index, 1);
     AddDecisionQueue("DESTROYCHARACTER", $this->controller, "-", 1);
@@ -226,7 +226,7 @@ class trampling_trackers extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $index = FindCharacterIndex($this->controller, $this->cardID);
-    AddDecisionQueue("YESNO", $this->controller, "if you want to destroy ".Cardlink($this->cardID, $this->cardID));
+    AddDecisionQueue("YESNO", $this->controller, "if you want to destroy ".Cardlink($this->cardID));
     AddDecisionQueue("NOPASS", $this->controller, "-");
     AddDecisionQueue("PASSPARAMETER", $this->controller, $index, 1);
     AddDecisionQueue("DESTROYCHARACTER", $this->controller, "-", 1);
@@ -256,7 +256,7 @@ class echo_casque extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $index = FindCharacterIndex($this->controller, $this->cardID);
-    AddDecisionQueue("YESNO", $this->controller, "if you want to pay a resource and destroy ".Cardlink($this->cardID, $this->cardID));
+    AddDecisionQueue("YESNO", $this->controller, "if you want to pay a resource and destroy ".Cardlink($this->cardID));
     AddDecisionQueue("NOPASS", $this->controller, "-");
     AddDecisionQueue("PASSPARAMETER", $this->controller, $index, 1);
     AddDecisionQueue("DESTROYCHARACTER", $this->controller, "-", 1);

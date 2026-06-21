@@ -142,20 +142,20 @@ function UPRIllusionistDealDamageEffect($cardID)
       }
     } else if($materialType == "Ash") {
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into, $into), 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a material to transform into " . CardLink($into), 1);
       if($optional) AddDecisionQueue("MAYCHOOSEPERMANENT", $player, "<-", 1);
       else AddDecisionQueue("CHOOSEPERMANENT", $player, "<-", 1);
       AddDecisionQueue("TRANSFORM", $player, $into.",".$firstTransform, 1);
     } else if($materialType == "spectral_shield") {
       $subType = CardSubType($materialType);
       AddDecisionQueue("FINDINDICES", $player, "spectral_shield",($subsequent ? 1 : 0));
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a " . CardLink($materialType, $materialType) . " to transform into " . CardLink($into, $into), 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a " . CardLink($materialType) . " to transform into " . CardLink($into), 1);
       AddDecisionQueue("CHOOSEMY" . strtoupper($subType), $player, "<-", 1);
       AddDecisionQueue("TRANSFORM" . strtoupper($subType), $player, $into, 1);
     } else {
       $subType = CardSubType($materialType);
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $subType, ($subsequent ? 1 : 0));
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a " . CardLink($materialType, $materialType) . " to transform into " . CardLink($into, $into), 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a " . CardLink($materialType) . " to transform into " . CardLink($into), 1);
       AddDecisionQueue("CHOOSEMY" . strtoupper($subType), $player, "<-", 1);
       AddDecisionQueue("TRANSFORM" . strtoupper($subType), $player, $into, 1);
     }

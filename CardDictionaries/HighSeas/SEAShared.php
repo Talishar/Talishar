@@ -279,7 +279,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $numGold = ClassContains($char[0], "THIEF", $currentPlayer) ? $landmarks[$treasureID + 3] : round($landmarks[$treasureID + 3] / 2);
         $landmarks[$treasureID + 3] -= $numGold;
         PutItemIntoPlayForPlayer("gold", $currentPlayer, number:$numGold, isToken:true);
-        WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold", "gold") . " from " . CardLink("treasure_island", "treasure_island"));
+        WriteLog("Player $currentPlayer plundered $numGold " . CardLink("gold") . " from " . CardLink("treasure_island"));
       }
       break;
     case "mutiny_on_the_battalion_barque_blue":
@@ -295,7 +295,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "thievn_varmints_red":
-      AddDecisionQueue("YESNO", $currentPlayer, "if you want to remove a gold counter from " . CardLink("treasure_island", "treasure_island"), 1);
+      AddDecisionQueue("YESNO", $currentPlayer, "if you want to remove a gold counter from " . CardLink("treasure_island"), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("REMOVETREASUREISLANDCOUNTER", $currentPlayer, 1, 1);
       break;
@@ -356,7 +356,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "expedition_to_horizons_mantle_red":
       $treasureID = SearchLandmarksForID("treasure_island");
       if ($treasureID != -1) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to put a gold counter on for " . CardLink("treasure_island", "treasure_island") . "?");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to put a gold counter on for " . CardLink("treasure_island") . "?");
         AddDecisionQueue("YESNO", $currentPlayer, "-");
         AddDecisionQueue("NOPASS", $currentPlayer, "-");
         AddDecisionQueue("ADDCOUNTERLANDMARK", $currentPlayer, $treasureID, 1);
@@ -467,7 +467,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MZBOTTOM", $currentPlayer, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, "gold", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
-        AddDecisionQueue("WRITELOG", $currentPlayer, "🪙" . CardLink($cardID, $cardID). " found some sunken treasure!", 1);
+        AddDecisionQueue("WRITELOG", $currentPlayer, "🪙" . CardLink($cardID). " found some sunken treasure!", 1);
       }
       break;
     case "moray_le_fay_yellow":
@@ -550,7 +550,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $topTwo = [];
       $deckSize = count($deck) / DeckPieces();
       for ($i = 0; $i < min([2, $deckSize]); ++$i) {
-        $val = CardLink($deck[$i], $deck[$i]);
+        $val = CardLink($deck[$i]);
         array_push($topTwo, $val);
         if (ColorContains($deck[$i], 3, $currentPlayer)) array_push($foundBlues, $val);
       }
@@ -574,7 +574,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deck = GetDeck($currentPlayer);
       $topCard = $deck[0];
       if(SubtypeContains($topCard, "Arrow", $currentPlayer)) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put " . CardLink($topCard, $topCard) . " face-up in your arsenal");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put " . CardLink($topCard) . " face-up in your arsenal");
         AddDecisionQueue("YESNO", $currentPlayer, "");
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("PARAMDELIMTOARRAY", $currentPlayer, "0", 1);
@@ -583,7 +583,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("LASTARSENALADDEFFECT", $currentPlayer, $cardID . ",DECK", 1);
       }
       else{
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows the top card of your deck is " . CardLink($topCard, $topCard), 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID) . " shows the top card of your deck is " . CardLink($topCard), 1);
         AddDecisionQueue("OK", $currentPlayer, "-", 1);
       }
       break;
@@ -633,7 +633,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "spitfire":
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
       if(empty($inds)) break;
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may tap a cog to buff ".CardLink($cardID, $cardID)." (or pass)");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may tap a cog to buff ".CardLink($cardID)." (or pass)");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
       AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
@@ -704,7 +704,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "+1 Power,Go Again");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "COGCONTROL-".$cardID, 1);
       }
-      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID) . " on a previous chain link will have no effect");
       break;
     case "palantir_aeronought_red":
       if($from != "PLAY" && $from != "COMBATCHAINATTACKS" && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
@@ -751,7 +751,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "jolly_bludger_yellow-OP", 1);
       }
-      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID) . " on a previous chain link will have no effect");
       else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "cogwerx_dovetail_red":
@@ -759,7 +759,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("BUTTONINPUTNOPASS", $currentPlayer, "+1 Power,Go Again");
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "COGCONTROL-".$cardID, 1);
       }
-      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID) . " on a previous chain link will have no effect");
       return "";
     case "cloud_city_steamboat_red":
     case "cloud_city_steamboat_yellow":
@@ -768,7 +768,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "cogwerx_zeppelin_yellow":
     case "cogwerx_zeppelin_blue":
       if ($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
-      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID) . " on a previous chain link will have no effect");
       return "";
     case "scurv_stowaway":
       PutItemIntoPlayForPlayer("goldkiss_rum", $currentPlayer);
@@ -827,7 +827,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "tip_the_barkeep_blue":
       PutItemIntoPlayForPlayer("goldkiss_rum", $currentPlayer, isToken: true);
       if(CountItem("gold", $currentPlayer, false) > 0) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Would you like to give a ".CardLink("gold", "gold")." token to your opponent?");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Would you like to give a ".CardLink("gold")." token to your opponent?");
         AddDecisionQueue("YESNO", $currentPlayer, "");
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:type=T;cardID=gold", 1);
@@ -839,15 +839,15 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "murderous_rabble_blue":
       $deck = new Deck($currentPlayer);
-      if($deck->Empty()) return CardLink($cardID, $cardID). " does not get power because your deck is empty";
+      if($deck->Empty()) return CardLink($cardID). " does not get power because your deck is empty";
       if($deck->Reveal(1)) {
         $top = $deck->Top();
         $pitch = PitchValue($top);
         $pitch = $pitch > -1 ? $pitch : 0;
         $CombatChain->AttackCard()->ModifyPower($pitch);
-        return "Reveals " . CardLink($top, $top) . " and gets +" . $pitch . " power";
+        return "Reveals " . CardLink($top) . " and gets +" . $pitch . " power";
       }
-      return CardLink($cardID, $cardID). " does not get power because the reveal was prevented";
+      return CardLink($cardID). " does not get power because the reveal was prevented";
     case "saltwater_swell_red":
     case "saltwater_swell_yellow": 
     case "saltwater_swell_blue":
@@ -868,7 +868,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deck->Reveal(1);
       $pitchValue = pitchValue($deck->Top());
       AddCurrentTurnEffect("$cardID-$pitchValue", $currentPlayer);
-      WriteLog(CardLink($cardID, $cardID) . " prevents the next <b>$pitchValue damage</b>");
+      WriteLog(CardLink($cardID) . " prevents the next <b>$pitchValue damage</b>");
       break;
     case "midas_touch_yellow":
       $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
@@ -879,8 +879,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $allyCost = CardCost($allies[$indexAlly]);
         PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$allyCost, isToken:true, effectController:$currentPlayer);
         $token = $allyCost > 1 ? " tokens" : " token";
-        $allyName = CardLink($allies[$indexAlly], $allies[$indexAlly]);
-        WriteLog("Player $targetPlayer's $allyName turned into $allyCost " . CardLink("gold", "gold") . " $token!");
+        $allyName = CardLink($allies[$indexAlly]);
+        WriteLog("Player $targetPlayer's $allyName turned into $allyCost " . CardLink("gold") . " $token!");
         DestroyAlly($targetPlayer, $indexAlly);
         return "";
       }
@@ -890,13 +890,13 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         $charCost = CardCost($char[$indexChar]) >= 0 ? CardCost($char[$indexChar]) : 0;
         PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$charCost, isToken:true, effectController:$currentPlayer);
         $token = $charCost > 1 ? " tokens" : " token";
-        $CharName = CardLink($char[$indexChar], $char[$indexChar]);
-        WriteLog("Player $targetPlayer's $CharName turned into $charCost " . CardLink("gold", "gold") . " $token!");
+        $CharName = CardLink($char[$indexChar]);
+        WriteLog("Player $targetPlayer's $CharName turned into $charCost " . CardLink("gold") . " $token!");
         DestroyCharacter($targetPlayer, $indexChar);
         return "";
       }
       else {
-        WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
+        WriteLog(CardLink($cardID) . " fizzles due to missing target");
         return "FAILED";
       }
     case "chart_a_course_red":
@@ -905,7 +905,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $treasureID = SearchLandmarksForID("treasure_island");
       if ($treasureID != -1) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to put a gold counter on for " . CardLink("treasure_island", "treasure_island") . "?");
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to put a gold counter on for " . CardLink("treasure_island") . "?");
         AddDecisionQueue("YESNO", $currentPlayer, "-");
         AddDecisionQueue("NOPASS", $currentPlayer, "-");
         AddDecisionQueue("ADDCOUNTERLANDMARK", $currentPlayer, $treasureID, 1);
@@ -991,7 +991,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
         AddDecisionQueue("ADDSOUL", $currentPlayer, "HAND", 1);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,2", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for ".CardLink($cardID, $cardID), 1);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for ".CardLink($cardID), 1);
         if (ShouldAutotargetOpponent($currentPlayer) && CountAllies($currentPlayer) <= 0 && CountAllies($otherPlayer) <= 0) {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRCHAR-0", 1);
         }
@@ -1036,7 +1036,7 @@ function SEAHitEffect($cardID): void
       $inds = GetUntapped($mainPlayer, "MYITEMS", "subtype=Cog");
       if(empty($inds)) break;
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, $inds);
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Tap a cog to create a ".CardLink("golden_cog", "golden_cog")." (or pass)", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Tap a cog to create a ".CardLink("golden_cog")." (or pass)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZTAP", $mainPlayer, "<-", 1);
       AddDecisionQueue("PASSPARAMETER", $mainPlayer, "golden_cog", 1);
@@ -1049,7 +1049,7 @@ function SEAHitEffect($cardID): void
       PutItemIntoPlayForPlayer("gold", $mainPlayer, number:$count, effectController:$mainPlayer, isToken:true);
       break;
     case "cogwerx_dovetail_red":
-      WriteLog(CardLink($cardID, $cardID) . " untap all the cogs Player " . $mainPlayer . " control.");
+      WriteLog(CardLink($cardID) . " untap all the cogs Player " . $mainPlayer . " control.");
       AddDecisionQueue("UNTAPALL", $mainPlayer, "MYITEMS:subtype=Cog", 1);
       break;
     case "hms_barracuda_yellow":
@@ -1126,7 +1126,7 @@ function SEAHitEffect($cardID): void
       $theirNumGold = CountItem("gold", $defPlayer);
       for ($i = 0; $i < $repeat; $i++) {
         if($theirNumGold > 0) {
-          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to give " . CardLink($cardID, $cardID));
+          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to give " . CardLink($cardID));
           AddDecisionQueue("BUTTONINPUT", $defPlayer, "Gold,Life");
           AddDecisionQueue("EQUALPASS", $defPlayer, "Life");
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold", 1);
@@ -1365,7 +1365,7 @@ function PitchTopCard($player)
     }
     else {
       RevealCards($top);
-      WriteLog("Pitching " . CardLink($top, $top) . " prevented");
+      WriteLog("Pitching " . CardLink($top) . " prevented");
       $deck->AddTop($top);
     }
   }

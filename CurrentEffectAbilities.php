@@ -10,12 +10,12 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
   $attackID = $CombatChain->AttackCard()->ID();
   if ($source == "-") {
     if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
-      WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
+      WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow"));
       return true;
     }
   }
   else if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
-    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
+    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow"));
     return true;
   }
   $effectArr = explode(",", $cardID);
@@ -324,7 +324,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       if (IsHeroAttackTarget()) PlayAura($CID_Inertia, $defPlayer, effectController: $mainPlayer);
       break;
     case "mask_of_shifting_perspectives":
-      WriteLog(CardLink($cardID, $cardID) . " lets you sink a card");
+      WriteLog(CardLink($cardID) . " lets you sink a card");
       BottomDeck($mainPlayer, true, shouldDraw: true);
       break;
     case "concealed_blade_blue":
@@ -494,7 +494,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "poisoned_blade_red":
     case "poisoned_blade_yellow":
     case "poisoned_blade_blue":
-      WriteLog("The " . CardLink($cardID, $cardID) . " drains 1 health");
+      WriteLog("The " . CardLink($cardID) . " drains 1 health");
       LoseHealth(1, $defPlayer);
       break;
     case "savor_bloodshed_red-HIT":
@@ -535,7 +535,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       PutItemIntoPlayForPlayer("gold", $mainPlayer);
       break;
     case "drop_the_anchor_red":
-      WriteLog(CardLink($cardID, $cardID) . " tap Player " . $defPlayer . ", and all the allies they control.");
+      WriteLog(CardLink($cardID) . " tap Player " . $defPlayer . ", and all the allies they control.");
       Tap("THEIRCHAR-0", $mainPlayer);
       AddDecisionQueue("TAPALL", $mainPlayer, "THEIRALLY", 1);
       break;
@@ -574,7 +574,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         for ($i = 0; $i < $lastAttackCount; ++$i) {
           $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
           if ($lastAttackName == "Edge of Autumn") {
-            WriteLog("You have learned well from the " . CardLink($cardID, $cardID) . " and drew a card.");
+            WriteLog("You have learned well from the " . CardLink($cardID) . " and drew a card.");
             Draw($mainPlayer, effectSource:$CombatChain->AttackCard()->ID());
           }
         }
@@ -1059,7 +1059,7 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
             $costModifier -= 1;
             $remove = true;
             if ($cardID == "fealty") {
-              WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " is discounting your fealty, this is not a bug. You need to use the fealty in response to your " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " ability.");
+              WriteLog(CardLink($currentTurnEffects[$i]) . " is discounting your fealty, this is not a bug. You need to use the fealty in response to your " . CardLink($currentTurnEffects[$i]) . " ability.");
             }
           }
           break;
@@ -2162,7 +2162,7 @@ function CurrentEffectPreventsDraw($player, $isMainPhase)
     if ($currentTurnEffects[$i + 1] == $player) {
       switch ($currentTurnEffects[$i]) {
         case "cranial_crush_blue":
-          if ($isMainPhase) WriteLog("Draw prevented by " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]));
+          if ($isMainPhase) WriteLog("Draw prevented by " . CardLink($currentTurnEffects[$i]));
           return $isMainPhase;
         default:
           break;
@@ -2529,7 +2529,7 @@ function BeginEndPhaseEffects()
     switch ($currentTurnEffects[$i]) {
       case "revel_in_runeblood_red":
         if (CountAura("runechant", $mainPlayer) > 0) {
-          WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " destroyed your ".CardLink("runechant", "runechant")." tokens");
+          WriteLog(CardLink($currentTurnEffects[$i]) . " destroyed your ".CardLink("runechant")." tokens");
           DestroyAllThisAura($currentTurnEffects[$i + 1], "runechant");
         }
         break;
@@ -2610,7 +2610,7 @@ function ActivateAbilityEffects()
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "endless_winter_red-HIT":
-          WriteLog(CardLink("endless_winter_red", "endless_winter_red") . " created a frostbite");
+          WriteLog(CardLink("endless_winter_red") . " created a frostbite");
           PlayAura("frostbite", $currentPlayer, effectController:$mainPlayer);
           break;
         default:
@@ -2718,7 +2718,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
     }
   }
   if ($revertNeeded && $restrictedBy != "") {
-    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.", highlight: true);
+    WriteLog("The attack is restricted by " . CardLink($restrictedBy) . ". Reverting the gamestate.", highlight: true);
     RevertGamestate();
     return true;
   }
@@ -2819,7 +2819,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
     return true;
   }
   if ($revertNeeded && $restrictedBy != "") {
-    WriteLog("The attack is restricted by " . CardLink($restrictedBy, $restrictedBy) . ". Reverting the gamestate.", highlight: true);
+    WriteLog("The attack is restricted by " . CardLink($restrictedBy) . ". Reverting the gamestate.", highlight: true);
     RevertGamestate();
     return true;
   }
