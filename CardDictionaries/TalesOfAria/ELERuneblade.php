@@ -2,8 +2,8 @@
 
   function ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
-    global $currentPlayer, $otherPlayer, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;
-    global $CS_NextNAAInstant, $CS_ArcaneDamageDealt, $mainPlayer, $CombatChain;
+    global $currentPlayer, $CS_NumNonAttackCards, $CS_NumAttackCards, $combatChainState, $CCS_WeaponIndex;
+    global $CS_NextNAAInstant, $CS_ArcaneDamageDealt;
     $rv = "";
     switch($cardID)
     {

@@ -23,7 +23,9 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $character = &GetPlayerCharacter($currentPlayer);
         if(GetClassState($currentPlayer, $CS_NumCharged) > 0) {
-          for($i=0; $i<count($character); $i+=CharacterPieces()) {
+          $charCount = count($character);
+          $charPieces = CharacterPieces();
+          for($i=0; $i<$charCount; $i+=$charPieces) {
             if(CardType($character[$i]) == "W" && $character[$i+1] != 0) { $character[$i+1] = 2; ++$character[$i+5]; }
           }
         }

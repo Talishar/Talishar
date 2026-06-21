@@ -63,8 +63,8 @@ class Banish {
   function FindCardUID($uid) {
     $count = count($this->banish);
     if ($count == 0) return "";
-    $stride = BanishPieces();
-    for ($i = 0; $i < $count; $i += $stride) {
+    $banishPieces = BanishPieces();
+    for ($i = 0; $i < $count; $i += $banishPieces) {
       if ($this->banish[$i + 2] == $uid) return new BanishCard($this->playerID, $i);
     }
     return "";

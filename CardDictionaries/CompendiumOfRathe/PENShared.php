@@ -46,7 +46,7 @@ function PENPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $mainPlayer, $combatChainState, $combatChain, $chainLinkSummary, $chainLinks, $defPlayer;
   global $CombatChain;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     default:
       return "";
@@ -99,7 +99,7 @@ function SuperFrozen($player, $MZIndex) {
 }
 
 function IcelochActive($player) {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (SearchAurasForCard("channel_iceloch_glaze_blue", $otherPlayer) == "") return false;
   if (SearchAurasForCard("frostbite", $player) != "") return true;
   if (SearchCharacterForCard($player, "frostbite")) return true;

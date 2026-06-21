@@ -110,12 +110,14 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       if (IsHeroAttackTarget()) {
         $hand = &GetHand($defPlayer);
         $cards = "";
-        for ($i = 0; $i < 2 && count($hand) > 0; ++$i) {
-          $index = GetRandom() % count($hand);
+        $handCount = count($hand);
+        for ($i = 0; $i < 2 && $handCount > 0; ++$i) {
+          $index = GetRandom() % $handCount;
           if ($cards != "") $cards .= ",";
           $cards .= $hand[$index];
           unset($hand[$index]);
           $hand = array_values($hand);
+          $handCount = count($hand);
         }
         if ($cards != "") AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, $cards);
       }
@@ -255,7 +257,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         $allies = GetAllies($defPlayer);
         foreach(explode(",", $indices) as $index) {
           $ind = explode("-", $index)[1];
-          if ($allies[$ind + 5] != $targetUID) array_push($filtIndices, $index);
+          if ($allies[$ind + 5] != $targetUID) $filtIndices[] = $index;
         }
         $indices = implode(",", $filtIndices);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $indices);
@@ -899,7 +901,7 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
 {
   global $currentTurnEffects, $currentPlayer, $CS_PlayUniqueID;
   $costModifier = 0;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   if (!is_numeric($index)) $index = -1; // sometimes index is getting passed in as ""
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $cardType = CardType($cardID);
@@ -1111,7 +1113,7 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
 function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type, $source, $preventable=true)
 {
   global $currentTurnEffects;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $effects = explode("-", $currentTurnEffects[$index]);
   $Effect = new CurrentEffect($index);
   $source = explode("|", $source)[0] ?? $source;
@@ -1315,7 +1317,7 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
 function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source, $preventable)
 {
   global $currentTurnEffects;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $vambraceAvailable = SearchCurrentTurnEffects("vambrace_of_determination", $player) != "";
   $vambraceRemove = false;
   $source = ExtractCardID($source);
@@ -2737,11 +2739,13 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase
         case "burdens_of_the_past_blue":
           // handle modal cards separately
           $defenseReactionsInDiscard = explode(",", SearchDiscard($currentPlayer, "DR", getDistinctCardNames: true));
+          $sanitizedCardName = GamestateSanitize(NameOverride($cardID, $currentPlayer));
+          $isDiscardRestricted = in_array($sanitizedCardName, $defenseReactionsInDiscard) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT");
           if ($modalCheck || GetAbilityTypes($cardID) == "") {
-            if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $defenseReactionsInDiscard) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
+            if ($isDiscardRestricted) $restriction = "burdens_of_the_past_blue";
           }
           elseif(GetAbilityNames($cardID, from:$from) == "-,Defense Reaction" || GetAbilityNames($cardID, from:$from) == "Defense Reaction") {//if dreact is the only available mode
-            if (in_array(GamestateSanitize(NameOverride($cardID, $currentPlayer)), $defenseReactionsInDiscard) && CardType($cardID) == "DR" && ($turn[0] == "A" || $turn[0] == "D" || $turn[0] == "INSTANT")) $restriction = "burdens_of_the_past_blue";
+            if ($isDiscardRestricted) $restriction = "burdens_of_the_past_blue";
           }
           break;
         default:
@@ -2756,7 +2760,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {

@@ -3232,7 +3232,8 @@ class sonata_arcanix_red extends Card {
         $numAA = 0;
         $numNAA = 0;
         $AAIndices = "";
-        for ($i = 0; $i < count($cards); ++$i) {
+        $cardsCount = count($cards);
+        for ($i = 0; $i < $cardsCount; ++$i) {
           $cardType = CardType($cards[$i]);
           if (DelimStringContains($cardType, "A")) ++$numNAA;
           else if ($cardType == "AA") {
@@ -3248,7 +3249,7 @@ class sonata_arcanix_red extends Card {
         $dqVars["indices"] = $AAIndices;
         break;
       case "deal_arcane":
-        $numArcane = count(explode(",", $dqVars["cardIDs"]));
+        $numArcane = substr_count($dqVars["cardIDs"], ",") + 1;
         DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$dqVars["target"]);
         $deck = new Deck($this->controller);
         $deck->Shuffle("-");

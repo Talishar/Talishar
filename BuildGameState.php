@@ -94,12 +94,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $spectatorIsFriendOfP2 = false;
   
   $friendList = $sessionData['friendList'] ?? [];
+  $friendSet = !empty($friendList) ? array_flip($friendList) : [];
   if ($playerID == 1 || $playerID == 2) {
     $opponentUID = $playerID == 1 ? $p2uid : $p1uid;
-    $viewerIsFriendOfOpponent = in_array($opponentUID, $friendList);
+    $viewerIsFriendOfOpponent = isset($friendSet[$opponentUID]);
   } else if ($playerID == 3) {
-    $spectatorIsFriendOfP1 = in_array($p1uid, $friendList);
-    $spectatorIsFriendOfP2 = in_array($p2uid, $friendList);
+    $spectatorIsFriendOfP1 = isset($friendSet[$p1uid]);
+    $spectatorIsFriendOfP2 = isset($friendSet[$p2uid]);
   }
 
   // Check spectator permission: allowed if the host opened the game to public

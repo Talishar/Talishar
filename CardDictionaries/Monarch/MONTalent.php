@@ -3,7 +3,7 @@
   function MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target="-", $additionalCosts = "")
   {
     global $currentPlayer, $mainPlayer, $CS_NumAddedToSoul, $CombatChain, $CS_PlayIndex;
-    $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+    $otherPlayer = 3 - $currentPlayer;
     switch($cardID)
     {
       case "great_library_of_solana":

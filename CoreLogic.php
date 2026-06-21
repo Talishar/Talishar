@@ -414,7 +414,7 @@ function MZStartTurnIndices()
         break;
       case "loyalty_beyond_the_grave_red":
         $foundLoyalties = SearchDiscard($mainPlayer, nameIncludes:"Loyalty,Beyond,the,Grave");
-        if (count(explode(",", $foundLoyalties)) >= 2) $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD"));
+        if (substr_count($foundLoyalties, ",") >= 1) $cards = CombineSearches($cards, SearchMultiZoneFormat($i, "MYDISCARD"));
         break;
       default:
         break;
@@ -649,7 +649,7 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
     SetClassState(1, $CS_ResolvingLayerUniqueID, $uid);
     SetClassState(2, $CS_ResolvingLayerUniqueID, $uid);
   }
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $damage = $damage > 0 ? $damage : 0;
   $origDamage = $damage;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
@@ -727,7 +727,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain, $CS_ArcaneDamageDealtToOpponent;
   global $CurrentTurnEffects, $CCS_AttackDamageDealtToHero, $CombatChain, $dqVars;
   $classState = &GetPlayerClassState($player);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($damage > 0) {
     if ($source != "NA") {
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
@@ -1053,7 +1053,7 @@ function LoseHealth($amount, $player)
 function GainHealth($amount, $player, $silent = false, $preventable = true)
 {
   global $mainPlayer, $CS_HealthGained;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
   $p2Char = &GetPlayerCharacter($otherPlayer);
@@ -1236,7 +1236,7 @@ function ResetStolenCards()
 
 function UnsetItemModifier($player, $modifier, $newMod = "-") {
   $Items = new Items($player);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
     for($i = $Items->NumItems() - 1; $i >= 0; --$i) {
       $ItemCard = $Items->Card($i, true);
       $cardModifier = $ItemCard->Modalities();
@@ -1257,7 +1257,7 @@ function UnsetItemModifier($player, $modifier, $newMod = "-") {
 
 function UnsetAllyModifier($player, $modifier, $newMod = "-") {
   $allies = &GetAllies($player);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $allyCount = count($allies);
   $allyPieces = AllyPieces();
   for ($i = 0; $i < $allyCount; $i += $allyPieces) {
@@ -1271,7 +1271,7 @@ function UnsetAllyModifier($player, $modifier, $newMod = "-") {
 
 function UnsetAuraModifier($player, $modifier, $newMod = "-") {
   $auras = &GetAuras($player);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $auraCount = count($auras);
   $auraPieces = AuraPieces();
   for ($i = 0; $i < $auraCount; $i += $auraPieces) {
@@ -1709,7 +1709,7 @@ function GetCardIDBeforeTransform($cardID)
 
 function PlayerHasLessHealth($player)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $playerHealth = GetHealth($player);
   $otherPlayerHealth = GetHealth($otherPlayer);
   $playerHasLineCrossers = FindCharacterIndex($player, "line_crossers") != -1;
@@ -1735,7 +1735,7 @@ function GetIndices($count, $add = 0, $pieces = 1, $zone="")
 function RollDie($player, $fromDQ = false, $subsequent = false, $reroll = false)
 {
   global $CS_DieRoll;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $numRolls = 1 + CountCurrentTurnEffects("ready_to_roll_blue", $player);
   $highRoll = 0;
   for ($i = 0; $i < $numRolls; ++$i) {
@@ -1818,7 +1818,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers, $CombatChain;
   global $combatChainState, $CCS_EclecticMag, $CS_ArcaneDamageDealt;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
@@ -1987,7 +1987,7 @@ function ClassOverride($cardID, $player)
 {
   global $currentTurnEffects;
   $cardClass = "";
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
   $mainCharacter = &GetPlayerCharacter($player);
 
@@ -2772,7 +2772,7 @@ function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharact
     else $char[$newCharactersSubcardIndex + 10] = $char[$newCharactersSubcardIndex + 10] . "," . $cardID;
     $characterPieces = CharacterPieces();
     if ($newCharactersSubcardIndex > $index) $newCharactersSubcardIndex -= $characterPieces;
-    for ($i = 0; $i < $characterPieces; $i++) array_splice($char, $index, 1);
+    array_splice($char, $index, $characterPieces);
     UpdateSubcardCounterCount($player, $newCharactersSubcardIndex);
   }
 }
@@ -2785,7 +2785,7 @@ function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharacter
   $cardID = $items[$itemIndex];
   if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex + 10] = $cardID;
   else $char[$newCharactersSubcardIndex + 10] = $char[$newCharactersSubcardIndex + 10] . "," . $cardID;
-  for ($i = 0; $i < $itemPieces; $i++) array_splice($items, $itemIndex, 1);
+  array_splice($items, $itemIndex, $itemPieces);
   if ($char[$newCharactersSubcardIndex] == "nitro_mechanoida") UpdateSubcardCounterCount($player, $newCharactersSubcardIndex);
 }
 
@@ -2794,12 +2794,12 @@ function UpdateSubcardCounterCount($player, $index)
   $char = &GetPlayerCharacter($player);
 
   if (empty($char[$index + 10])) $char[$index + 2] = 0;
-  else $char[$index + 2] = count(explode(",", $char[$index + 10]));
+  else $char[$index + 2] = substr_count($char[$index + 10], ",") + 1;
 }
 
 function RemoveArsenalEffects($player, $cardToReturn, $uniqueID)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($uniqueID == SearchCurrentTurnEffects("dreadbore", $player, returnUniqueID: true)) SearchCurrentTurnEffects("dreadbore", $player, true);
   if ($uniqueID == SearchCurrentTurnEffects("bulls_eye_bracers", $player, returnUniqueID: true)) SearchCurrentTurnEffects("bulls_eye_bracers", $player, true);
   if ($uniqueID == SearchCurrentTurnEffects("glidewell_fins", $player, returnUniqueID: true)) SearchCurrentTurnEffects("glidewell_fins", $player, true);
@@ -3153,7 +3153,7 @@ function IsSpecificAuraAttacking($player, $uniqueID)
 
 function CanRevealCards($player)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "") {
     WriteLog("Reveal prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return false;
@@ -3247,7 +3247,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
 function GetDamagePreventionTargetIndices()
 {
   global $combatChain, $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   $rv = "";
   $rv = SearchMultizone($otherPlayer, "LAYER");
   if (count($combatChain) > 0 && CardType($combatChain[0]) != "W") {
@@ -3852,7 +3852,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   global $EffectContext, $mainPlayer, $CS_NumCardsDrawn, $currentTurnEffects;
   //main phase argument is deprecated
   if ($mainPhase == true) $mainPhase = SearchLayersForPhase("STARTTURN") == -1 && SearchLayersForPhase("ENDPHASE") == -1;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($mainPhase && $player != $mainPlayer) {
     $talismanOfTithes = SearchItemsForCard("talisman_of_tithes_blue", $otherPlayer);
     if ($talismanOfTithes != "") {
@@ -4006,7 +4006,8 @@ function BanishHand($player)
 {
   $hand = &GetHand($player);
   $banishedCards = "";
-  for ($i = 0; $i < count($hand); ++$i) {
+  $handCount = count($hand);
+  for ($i = 0; $i < $handCount; ++$i) {
     if ($banishedCards != "") $banishedCards .= ",";
     $banishedCards .= $hand[$i];
     BanishCardForPlayer($hand[$i], $player, "HAND", "-", $player);
@@ -4028,7 +4029,7 @@ function EvoHandling($cardID, $player, $from)
   global $dqVars, $CombatChain, $ChainLinks;
   $char = &GetPlayerCharacter($player);
   $slot = "";
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (SubtypeContains($cardID, "Head")) $slot = "Head";
   else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
   else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
@@ -4136,7 +4137,7 @@ function EvoHasUnderCard($player, $index)
 function EvoTransformAbility($toCardID, $fromCardID, $player = "")
 {
   global $CombatChain;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $card = GetClass($toCardID, $player);
   if ($card != "-") $card->EquipAbilities();
   switch ($toCardID) {
@@ -4402,7 +4403,7 @@ function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
 function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController = "", $modifier = "NA")
 {
   if($effectController == "") $effectController = $player;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   switch ($goesWhere) {
     case "BOTDECK":
       AddBottomDeck($cardID, $player, $from);

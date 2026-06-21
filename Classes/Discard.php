@@ -43,11 +43,12 @@ class Discard {
 
   function RemoveRandom($count=1) {
     $cards = "";
+    $discardPieces = DiscardPieces();
     for($i = 0; $i < $count && !$this->Empty(); $i++) {
-      $index = (GetRandom() % $this->NumCards()) * DiscardPieces();
+      $index = (GetRandom() % $this->NumCards()) * $discardPieces;
       if($cards != "") $cards .= ",";
       $cards .= $this->discard[$index];
-      for ($j = DiscardPieces() - 1; $j >= 0; --$j) {
+      for ($j = $discardPieces - 1; $j >= 0; --$j) {
         unset($this->discard[$index + $j]);
       }
       $this->discard = array_values($this->discard);
@@ -64,7 +65,9 @@ class Discard {
   }
 
   function Add($cardID, $from="GY", $mods="-") {
-    array_push($this->discard, $cardID, GetUniqueId(), "-");
+    $this->discard[] = $cardID;
+    $this->discard[] = GetUniqueId();
+    $this->discard[] = "-";
   }
 
   function TopCard() {

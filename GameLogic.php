@@ -70,7 +70,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack, $CurrentTurnEffects;
   global $CS_HaveIntimidatedOpponent, $CS_PreventionCache;
   $rv = "";
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   switch ($phase) {
     case "FINDINDICES":
       BuildMainPlayerGamestate();
@@ -102,11 +102,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "mugenshi_release_yellow":
           $rv = SearchDeckForCard($player, "lord_of_wind_blue");
-          if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
+          if ($rv != "") $rv = (substr_count($rv, ",") + 1) . "-" . $rv;
           break;
         case "lord_of_wind_blue":
           $rv = LordOfWindIndices($player);
-          if ($rv != "") $rv = count(explode(",", $rv)) . "-" . $rv;
+          if ($rv != "") $rv = (substr_count($rv, ",") + 1) . "-" . $rv;
           break;
         case "lesson_in_lava_yellow":
           $rv = SearchDeck($player, "", "", $lastResult, 0, "WIZARD");
@@ -354,7 +354,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "TOKENAURAS":
           $rv = [];
-          $otherPlayer = $player == 1 ? 2 : 1;
+          $otherPlayer = 3 - $player;
           foreach ([$otherPlayer, $player] as $p) {
             $prefix = $p == $player ? "MYAURAS" : "THEIRAURAS";
             $Auras = new Auras($p);
@@ -367,7 +367,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "TOKENITEMS":
           $rv = [];
-          $otherPlayer = $player == 1 ? 2 : 1;
+          $otherPlayer = 3 - $player;
           foreach ([$otherPlayer, $player] as $p) {
             $prefix = $p == $player ? "MYITEMS" : "THEIRITEMS";
             $Items = new Items($p);
@@ -380,7 +380,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "SIGILAURAS":
           $rv = [];
-          $otherPlayer = $player == 1 ? 2 : 1;
+          $otherPlayer = 3 - $player;
           foreach ([$otherPlayer, $player] as $p) {
             $prefix = $p == $player ? "MYAURAS" : "THEIRAURAS";
             $Auras = new Auras($p);
@@ -393,7 +393,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "INSTANTDISCARD":
           $rv = [];
-          $otherPlayer = $player == 1 ? 2 : 1;
+          $otherPlayer = 3 - $player;
           foreach ([$otherPlayer] as $p) {
             $prefix = "THEIRDISCARD";
             $Graveyard = new Discard($p);
@@ -406,7 +406,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "YELLOWDISCARD":
           $rv = [];
-          $otherPlayer = $player == 1 ? 2 : 1;
+          $otherPlayer = 3 - $player;
           foreach ([$otherPlayer] as $p) {
             $prefix = "THEIRDISCARD";
             $Graveyard = new Discard($p);
@@ -668,7 +668,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "ADDHANDOWNER":
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       if (substr($combatChain[$lastResult + 2], 0, 5) == "THEIR") AddPlayerHand($combatChain[$lastResult], $otherPlayer, "CC");
       else AddPlayerHand($combatChain[$lastResult], $player, "CC");
       return $lastResult;
@@ -1444,7 +1444,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "LORDOFWIND":
       $number = 0;
       if ($lastResult != "") {
-        $number = count(explode(",", $lastResult));
+        $number = substr_count($lastResult, ",") + 1;
       }
       AddResourceCost($player, $number);
       AddCurrentTurnEffect("lord_of_wind_blue-$number", $player);
@@ -1495,7 +1495,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DQCharge();
       return "1";
     case "FINISHCHARGE":
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       //Abilities when you charge it
       global $Card_CourageBanner, $Card_QuickenBanner, $Card_SpellbaneBanner, $Card_LifeBanner, $Card_BlockBanner, $Card_ResourceBanner, $CS_DamageDealt;
       switch ($lastResult) {
@@ -1546,7 +1546,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $damage;
     case "TAKEDAMAGE":
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $params = explode("-", $parameter);
       $damage = intval($params[0]);
       $source = count($params) > 1 ? $params[1] : "-";
@@ -2057,7 +2057,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         default:
           $targetArr = explode("-", $lastResult);
-          $otherPlayer = $player == 1 ? 2 : 1;
+          $otherPlayer = 3 - $player;
           if ($targetArr[0] == "LAYER") {
             $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
           }
@@ -2681,14 +2681,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return MZRemove($player, $lastResult, $parameter);
     case "MZADDTOBOTDECK":
       $card = MZRemove($player, $lastResult, $parameter);
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $owner = str_contains($lastResult, "MY") ? $player : $otherPlayer;
       $deck = new Deck($owner);
       $deck->AddBottom($card);
       return $card;
     case "MZADDTOTOPDECK":
       $card = MZRemove($player, $lastResult, $parameter);
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $owner = str_contains($lastResult, "MY") ? $player : $otherPlayer;
       $deck = new Deck($owner);
       $deck->AddTop($card);
@@ -2730,7 +2730,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TRANSFORMHERO":
       return ResolveTransformHero($player, $parameter, $lastResult);
     case "AFTERTHAW":
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $params = explode("-", $lastResult);
       if ($params[0] == "MYAURAS") DestroyAura($player, $params[1]);
       else if($params[0] == "MYCHAR") DestroyAura($player, $params[1], "", "EQUIP");
@@ -2738,7 +2738,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "SUCCUMBTOWINTER":
       $params = explode("-", $lastResult);
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       switch ($params[0]) {
         case "THEIRALLY":
           $allies = &GetAllies($otherPlayer);
@@ -2827,7 +2827,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MZADDCOUNTERANDEFFECT":
       $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $params = explode(",", $parameter);
       foreach ($lastResultArr as $mzItem) {
         $mzIndex = explode("-", $mzItem);
@@ -2845,7 +2845,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MZADDCOUNTER":
       $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $params = explode(",", $parameter);
       foreach ($lastResultArr as $mzItem) {
         $mzIndex = explode("-", $mzItem);
@@ -2871,7 +2871,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MZREMOVECOUNTER":
       $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $params = explode(",", $parameter);
       foreach ($lastResultArr as $mzItem) {
         $mzIndex = explode("-", $mzItem);
@@ -2919,7 +2919,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "MZREMOVEALLCOUNTERS":
       $lastResultArr = explode(",", $lastResult);
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $params = explode(",", $parameter);
       $removedSteamCounterCount = 0;
       for ($i = count($lastResultArr) - 1; $i >= 0; --$i) {
@@ -3107,7 +3107,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "EQUIPCARD":
       $params = explode('-', $parameter);
       $slot = $params[1] ?? "-";
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $chosenPlayer = isset($params[2]) ? (str_contains($params[2], "MY") ? $player : $otherPlayer) : $player;
       EquipEquipment($chosenPlayer, $params[0], $params[1], $params[3] ?? "-");
       return "";
@@ -3138,7 +3138,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if (CardType($params[0]) == "AA" && GetResolvedAbilityType($params[0], $params[1]) == "" || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack($params[0], $attackQueue);
       return $lastResult;
     case "INTIMIDATE":
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $sourcePlayer = $player;
       $player = ($parameter != "-") ? $parameter : (($lastResult == "MYCHAR-0") ? $currentPlayer : $otherPlayer);
       WriteLog("Player {$player} was targeted to intimidate.");
@@ -3157,18 +3157,29 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $subcards = explode(",", $char[$parameter + 10]);
       $subcardsCount = count($subcards);
       $cardID = "";
-      for ($i = 0; $i < $subcardsCount; $i++) {
-        if (is_array($lastResult)) {
-          $foundIndex = array_search($subcards[$i], $lastResult);
-          if ($foundIndex !== false) {
-            $cardID = ($cardID == "") ? $subcards[$i] : $cardID . "," . $subcards[$i];
-            array_splice($lastResult, $foundIndex, 1);
-            array_splice($subcards, $i, 1);
-            $i--;
-            $subcardsCount--;
-            if (count($lastResult) == 0) break;
+      if (is_array($lastResult)) {
+        // O(n+m) hash-based match instead of O(n*m) array_search+splice per element
+        $lookupMap = array_count_values($lastResult);
+        $lookupRemaining = count($lastResult);
+        $newSubcards = [];
+        for ($i = 0; $i < $subcardsCount; $i++) {
+          $sc = $subcards[$i];
+          if (isset($lookupMap[$sc]) && $lookupMap[$sc] > 0) {
+            $cardID = ($cardID == "") ? $sc : $cardID . "," . $sc;
+            $lookupMap[$sc]--;
+            if (--$lookupRemaining === 0) {
+              for ($j = $i + 1; $j < $subcardsCount; $j++) {
+                $newSubcards[] = $subcards[$j];
+              }
+              break;
+            }
+          } else {
+            $newSubcards[] = $sc;
           }
-        } else {
+        }
+        $subcards = $newSubcards;
+      } else {
+        for ($i = 0; $i < $subcardsCount; $i++) {
           if ($subcards[$i] == $lastResult) {
             $cardID = $subcards[$i];
             array_splice($subcards, $i, 1);
@@ -3186,18 +3197,29 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $subcardsCount = count($subcards);
       $numToRemove = is_array($lastResult) ? count($lastResult) : 1;
       $cardID = "";
-      for ($i = 0; $i < $subcardsCount; $i++) {
-        if (is_array($lastResult)) {
-          $foundIndex = array_search($subcards[$i], $lastResult);
-          if ($foundIndex !== false) {
-            $cardID = ($cardID == "") ? $subcards[$i] : $cardID . "," . $subcards[$i];
-            array_splice($lastResult, $foundIndex, 1);
-            array_splice($subcards, $i, 1);
-            $i--;
-            $subcardsCount--;
-            if (count($lastResult) == 0) break;
+      if (is_array($lastResult)) {
+        // O(n+m) hash-based match instead of O(n*m) array_search+splice per element
+        $lookupMap = array_count_values($lastResult);
+        $lookupRemaining = $numToRemove;
+        $newSubcards = [];
+        for ($i = 0; $i < $subcardsCount; $i++) {
+          $sc = $subcards[$i];
+          if (isset($lookupMap[$sc]) && $lookupMap[$sc] > 0) {
+            $cardID = ($cardID == "") ? $sc : $cardID . "," . $sc;
+            $lookupMap[$sc]--;
+            if (--$lookupRemaining === 0) {
+              for ($j = $i + 1; $j < $subcardsCount; $j++) {
+                $newSubcards[] = $subcards[$j];
+              }
+              break;
+            }
+          } else {
+            $newSubcards[] = $sc;
           }
-        } else {
+        }
+        $subcards = $newSubcards;
+      } else {
+        for ($i = 0; $i < $subcardsCount; $i++) {
           if ($subcards[$i] == $lastResult) {
             $cardID = $subcards[$i];
             array_splice($subcards, $i, 1);
@@ -3307,7 +3329,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult !== "" ? $lastResult : "PASS";
     case "CHANGESHIYANA":
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $otherChar = GetPlayerCharacter($otherPlayer);
       if ($lastResult != "shiyana_diamond_gemini" && !IsPlayerAI($player)) {
         $lifeDifference = GeneratedCharacterHealth("shiyana_diamond_gemini") - GeneratedCharacterHealth($otherChar[0]);
@@ -3470,9 +3492,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player) {
             $pretrigger = array_slice($layers, $i, $layerPieces);
             $pretrigger[0] = "TRIGGER";
-            for ($j = $i + $layerPieces - 1; $j >= $i; --$j) {
-              unset($layers[$j]);
-            }
+            array_splice($layers, $i, $layerPieces);
             $layers = array_merge($pretrigger, $layers);
             $preLayers = GetPreLayers();
             return $lastResult;
@@ -3487,9 +3507,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($currentInd == $ind) {
             $pretrigger = array_slice($layers, $i, $layerPieces);
             $pretrigger[0] = "TRIGGER";
-            for ($j = $i + $layerPieces - 1; $j >= $i; --$j) {
-              unset($layers[$j]);
-            }
+            array_splice($layers, $i, $layerPieces);
             $layers = array_merge($pretrigger, $layers);
             $preLayers = GetPreLayers();
             return $lastResult;
@@ -3754,7 +3772,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "LISTEXPOSEDEQUIPSLOTS":
       if ($parameter == "-") return ListExposedEquipSlots($player);
       else {
-        $otherPlayer = $player == 1 ? 2 : 1;
+        $otherPlayer = 3 - $player;
         $chosenPlayer = $player ? str_contains($parameter, "MY") : $otherPlayer;
         return ListExposedEquipSlots($chosenPlayer);
       }
@@ -3820,7 +3838,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       DealArcane(1, 3, "ABILITY", $source, resolvedTarget:$target);
       return $lastResult;
     case "BRUTUS":
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $dqVars[0] = ($lastResult == "MYCHAR-0") ? $player : $otherPlayer;
       AddDecisionQueue("WONCLASH", $player, $parameter);
       return $lastResult;
@@ -3882,7 +3900,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else WriteLog(CardLink($cardID, $cardID) . " could not be added as a blocking card");
       return $lastResult;
     case "COMPARENUMBERS":
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       WriteLog("Player $player chose number $dqVars[0]");
       WriteLog("Player $otherPlayer chose number $dqVars[1]");
       if ($dqVars[0] > $dqVars[1]) return $player;
@@ -3927,7 +3945,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $char[$ind + 6] = 1;
       return $lastResult;
     case "SPURLOCKED":
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       if($lastResult == "PASS") {
         WriteLog("🎲 Nothing Happened");
       }
@@ -3961,7 +3979,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "HUNTSMANMARK":
       if ($lastResult != "PASS") {
-        $otherPlayer = $player == 1 ? 2 : 1;
+        $otherPlayer = 3 - $player;
         $index = $parameter == -1 ? -1 : SearchCharacterForUniqueID($parameter, $player);
         if ($index != -1) DestroyCharacter($player, $index);
         MarkHero($otherPlayer);
@@ -4036,7 +4054,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TAPALL":
       $params = explode(":", $parameter); 
       $zone = $params[0];
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $untapped = GetUntapped($currentPlayer, $zone, $params[1] ?? "-");
       if ($untapped != "") {
         $indices = explode(",", $untapped);
@@ -4056,7 +4074,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "UNTAPALL":
       $params = explode(":", $parameter); 
       $zone = $params[0];
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $tapped = GetTapped($currentPlayer, $zone, $params[1] ?? "-");
       if ($tapped != "") {
         $indices = explode(",", $tapped);

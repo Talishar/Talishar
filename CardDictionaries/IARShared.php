@@ -8,7 +8,7 @@ function Usurp($cardID, $player, $from) {
 			$MZInds = [];
 			foreach ($inds as $ind)
 				$MZInds[] = "MYAURAS-$ind";
-			$otherPlayer = $player == 1 ? 2 : 1;
+			$otherPlayer = 3 - $player;
 			$theirInds = explode(",", SearchAurasForCard("runechant", $otherPlayer, false));
 			foreach ($theirInds as $ind)
 				$MZInds[] = "THEIRAURAS-$ind";

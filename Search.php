@@ -2,7 +2,7 @@
 
 function SearchDeck($player, $type = "", $subtype = "", $maxCost = -1, $minCost = -1, $class = "", $talent = "", $bloodDebtOnly = false, $phantasmOnly = false, $pitch = -1, $specOnly = false, $maxAttack = -1, $maxDef = -1, $frozenOnly = false, $hasNegCounters = false, $hasEnergyCounters = false, $comboOnly = false, $minAttack = false, $hasCrank = false, $hasSteamCounter = false, $hasCrush = false)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "") {
     WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
@@ -336,7 +336,7 @@ function SearchArsenalForCard($player, $card, $facing = "-")
 
 function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "") {
     WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
@@ -356,7 +356,7 @@ function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
 
 function SearchDeckByName($player, $name)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "") {
     WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
@@ -792,9 +792,11 @@ function SearchPitchForNumCosts($player)
   
   for ($i = 0; $i < $count; $i += $pieces) {
     $cost = CardCost($pitch[$i]);
-    if($cost == -1) continue;
-    while (count($countArr) <= $cost) array_push($countArr, 0);
-    if ($countArr[$cost] == 0) ++$total;
+    if ($cost == -1) continue;
+    if (!isset($countArr[$cost])) {
+      $countArr[$cost] = 0;
+      ++$total;
+    }
     ++$countArr[$cost];
   }
   return $total;
@@ -1508,7 +1510,7 @@ function GetMZCardLink($player, $MZ)
 function SearchMultizone($player, $searches)
 {
   global $combatChain;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $unionSearches = explode("&", $searches);
   $rv = "";
   $unionCount = count($unionSearches);
@@ -2078,7 +2080,7 @@ function SearchCombatChainDefendingCards($player, $cardType = "-")
 {
   global $chainLinks;
   if ($cardType == "-") $cardType = "";
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $cardIDList = [];
   $baseList = GetChainLinkCardIDs($otherPlayer, $cardType, exclCardTypes: "C");
   if ($baseList != "") {
@@ -2118,7 +2120,7 @@ function SearchLayersCardType($type, $type2="-")
   for ($i = 0; $i < $countLayers; $i += $layerPieces) {
     $cardType = CardType($layers[$i], "STACK", $layers[$i+1], $layers[$i+4]);
     if (DelimStringContains($cardType, $type) || $type2 != "-" && DelimStringContains($cardType, $type2)) {
-      array_push($found, $i);
+      $found[] = $i;
     }
   }
   if (count($found) == 0) return "";
@@ -2135,7 +2137,7 @@ function SearchLayersForNAACard($maxCost=-1) {
       $from = explode("|",$layers[$i+2])[0];
       if ($maxCost != -1 && CardCost($layers[$i], "LAYER", index:$i) > $maxCost) continue;
       if (TypeContains($layers[$i], "A", from: "LAYER", index:$i) && (!IsActivated($layers[$i], $from))) {
-        array_push($found, "LAYER-" . $i);
+        $found[] = "LAYER-" . $i;
       }
     }
     $rv = (count($found) == 0) ? "" : implode(",", $found);
@@ -2155,7 +2157,7 @@ function GetGoldIndices($player) {
   $countChar = count($char);
   $charPieces = CharacterPieces();
   for ($i = 0; $i < $countChar; $i += $charPieces) {
-    if (IsGold($char[$i]) && $char[$i+1] > 1) array_push($indices, "MYCHAR-$i");
+    if (IsGold($char[$i]) && $char[$i+1] > 1) $indices[] = "MYCHAR-$i";
   }
   return implode(",", $indices);
 }
@@ -2166,7 +2168,7 @@ function GetAllyCounterIndices($player) {
   for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
     $Ally = $Allies->Card($i, true);
     if ($Ally->PowerCounters() > 0) {
-      array_push($choices, "MYALLY-" . $Ally->Index());
+      $choices[] = "MYALLY-" . $Ally->Index();
     }
   }
   return implode(",", $choices);

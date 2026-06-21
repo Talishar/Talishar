@@ -59,7 +59,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $mainPlayer, $chainLinkSummary;
   global $CombatChain;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     case "punching_gloves":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -304,7 +304,9 @@ function Cheer($player)
   $ClassState->SetCheeredThisTurn(1);
   $char = GetPlayerCharacter($player);
   WriteLog("👏Let's go! The crowd <b>cheers</b> for " . CardLink($char[0], $char[0]) . "!");
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $charCount = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $charPieces) {
     $card = GetClass($char[$i], $player);
     if ($card != "-") $card->CheerTrigger();
     if ($char[$i + 1] < 3) {
@@ -334,15 +336,17 @@ function GetSuspenseAuras($player, $hasCounter = false)
 {
   $auras = GetAuras($player);
   $susp = [];
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if (HasSuspense($auras[$i]) && (!$hasCounter || $auras[$i + 2])) array_push($susp, "MYAURAS-$i");
+  $auraCount = count($auras);
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $auraCount; $i += $auraPieces) {
+    if (HasSuspense($auras[$i]) && (!$hasCounter || $auras[$i + 2])) $susp[] = "MYAURAS-$i";
   }
   return $susp;
 }
 
 function RemoveSuspense($player, $MZIndex, $mainPhase = true)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
   $auras = &GetAuras($targetPlayer);
   $ind = explode("-", $MZIndex)[1];
@@ -354,7 +358,7 @@ function RemoveSuspense($player, $MZIndex, $mainPhase = true)
 
 function AddSuspense($player, $MZIndex)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
   $auras = &GetAuras($targetPlayer);
   $ind = explode("-", $MZIndex)[1];
@@ -372,7 +376,7 @@ function TargetDefendingAction($player, $cardID, $setTarget=false) {
   if ($numOptions != "") {
     $numOptions = explode(",", $numOptions);
     $options = [];
-    foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+    foreach ($numOptions as $num) $options[] = "COMBATCHAINLINK-$num";
     $options = implode(",", $options);
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a defending action card to buff");
     AddDecisionQueue("CHOOSEMULTIZONE", $player, $options, 1);
@@ -389,14 +393,16 @@ function CuttingIndicesAwait($player) {
   $lastResult = $dqVars["currentIDs"] ?? "";
   $currentNames = [];
   foreach (explode(",", $lastResult) as $cardID) {
-    if ($cardID != "") array_push($currentNames, CardName($cardID));
+    if ($cardID != "") $currentNames[] = CardName($cardID);
   }
   $auras = GetAuras($defPlayer);
   $rv = [];
+  $auraCount = count($auras);
+  $auraPieces = AuraPieces();
   //remove any choices that have already been targeted
-  for($i = 0; $i < count($auras); $i += AuraPieces()) {
+  for($i = 0; $i < $auraCount; $i += $auraPieces) {
     if (TypeContains($auras[$i], "T", $defPlayer) && !in_array(CardName($auras[$i]), $currentNames)) {
-      array_push($rv, "THEIRAURAS-$i");
+      $rv[] = "THEIRAURAS-$i";
     }
   }
   $rv = implode(",", $rv);

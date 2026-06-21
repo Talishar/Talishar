@@ -82,9 +82,10 @@ class rage_baiters extends Card {
 		global $CombatChain, $chainLinks;
 		Tap("MYCHAR-$index", $this->controller);
 		$options = [];
-		if (HasStealth($CombatChain->AttackCard()->ID())) array_push($options, "COMBATCHAINLINK-0");
-		for ($i = 0; $i < count($chainLinks); ++$i) {
-			if (HasStealth($chainLinks[$i][0])) array_push($options, "PASTCHAINLINK-0-$i");
+		if (HasStealth($CombatChain->AttackCard()->ID())) $options[] = "COMBATCHAINLINK-0";
+		$chainLinksCount = count($chainLinks);
+			for ($i = 0; $i < $chainLinksCount; ++$i) {
+			if (HasStealth($chainLinks[$i][0])) $options[] = "PASTCHAINLINK-0-$i";
 		}
 		$options = implode(",", $options);
 		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card with stealth to give on-hit mark", 1);

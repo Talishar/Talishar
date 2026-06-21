@@ -237,7 +237,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       return $lastResult;
     case "COAXCOMMOTION":
       if(!is_array($lastResult)) return $lastResult;
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       $countLastResult = count($lastResult);
       for($i = 0; $i < $countLastResult; ++$i) {
         switch($lastResult[$i]) {

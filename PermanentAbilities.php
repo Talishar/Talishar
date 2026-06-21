@@ -4,7 +4,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
 {
   global $EffectContext;
   $permanents = &GetPermanents($player);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
     WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
@@ -21,11 +21,17 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
   }
   if ($uniqueID === "-") {
     for ($i = 0; $i < $number; ++$i) {
-      array_push($permanents, $cardID, $from, $subCards, GetUniqueId($cardID, $player));
+      $permanents[] = $cardID;
+      $permanents[] = $from;
+      $permanents[] = $subCards;
+      $permanents[] = GetUniqueId($cardID, $player);
     }
   } else {
     for ($i = 0; $i < $number; ++$i) {
-      array_push($permanents, $cardID, $from, $subCards, $uniqueID);
+      $permanents[] = $cardID;
+      $permanents[] = $from;
+      $permanents[] = $subCards;
+      $permanents[] = $uniqueID;
     }
   }
   return count($permanents) - PermanentPieces();

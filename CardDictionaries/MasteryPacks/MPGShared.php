@@ -60,7 +60,7 @@ function MPGAbilityCost($cardID): int
 function MPGPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     case "seismic_eruption_yellow":
       PlayAura("seismic_surge", $currentPlayer, 3, true);
@@ -133,63 +133,83 @@ function BlindPlayer($player, $unblind=false, $excludeEquips=false)
 {
   global $chainLinks;
   $deck = &GetDeck($player);
-  for ($i = 0; $i < count($deck); $i += DeckPieces()) {
+  $deckCount = count($deck);
+  $deckPieces = DeckPieces();
+  for ($i = 0; $i < $deckCount; $i += $deckPieces) {
     $deck[$i] = BlindCard($deck[$i], $unblind, $excludeEquips);
   }
 
   $discard = &GetDiscard($player);
-  for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+  $discardCount = count($discard);
+  $discardPieces = DiscardPieces();
+  for ($i = 0; $i < $discardCount; $i += $discardPieces) {
     $discard[$i] = BlindCard($discard[$i], $unblind, $excludeEquips);
   }
 
   $banish = &GetBanish($player);
-  for ($i = 0; $i < count($banish); $i += BanishPieces()) {
+  $banishCount = count($banish);
+  $banishPieces = BanishPieces();
+  for ($i = 0; $i < $banishCount; $i += $banishPieces) {
     $banish[$i] = BlindCard($banish[$i], $unblind, $excludeEquips);
   }
 
   $pitch = &GetPitch($player);
-  for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+  $pitchCount = count($pitch);
+  $pitchPieces = PitchPieces();
+  for ($i = 0; $i < $pitchCount; $i += $pitchPieces) {
     $pitch[$i] = BlindCard($pitch[$i], $unblind, $excludeEquips);
   }
 
   $hand = &GetHand($player);
-  for ($i = 0; $i < count($hand); $i += HandPieces()) {
+  $handCount = count($hand);
+  $handPieces = HandPieces();
+  for ($i = 0; $i < $handCount; $i += $handPieces) {
     $hand[$i] = BlindCard($hand[$i], $unblind, $excludeEquips);
   }
 
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     $arsenal[$i] = BlindCard($arsenal[$i], $unblind, $excludeEquips);
   }
 
   $char = &GetPlayerCharacter($player);
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $charCount = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $charPieces) {
     $char[$i] = BlindCard($char[$i], $unblind, $excludeEquips);
   }
 
   $items = &GetItems($player);
-  for ($i = 0; $i < count($items); $i += ItemPieces()) {
+  $itemsCount = count($items);
+  $itemsPieces = ItemPieces();
+  for ($i = 0; $i < $itemsCount; $i += $itemsPieces) {
     $items[$i] = BlindCard($items[$i], $unblind, $excludeEquips);
   }
 
   $auras = &GetAuras($player);
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
+  $aurasCount = count($auras);
+  $aurasPieces = AuraPieces();
+  for ($i = 0; $i < $aurasCount; $i += $aurasPieces) {
     $auras[$i] = BlindCard($auras[$i], $unblind, $excludeEquips);
   }
 
   $allies = &GetAllies($player);
-  for ($i = 0; $i < count($allies); $i += AllyPieces()) {
+  $alliesCount = count($allies);
+  $alliesPieces = AllyPieces();
+  for ($i = 0; $i < $alliesCount; $i += $alliesPieces) {
     $allies[$i] = BlindCard($allies[$i], $unblind, $excludeEquips);
   }
 
-  $j = 0;
+  $chainLinksPieces = ChainLinksPieces();
   foreach ($chainLinks as &$link) {
-    for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
+    $linkCount = count($link);
+    for ($i = 0; $i < $linkCount; $i += $chainLinksPieces) {
       if ($link[$i + 1] == $player) {
         $link[$i] = BlindCard($link[$i], $unblind, $excludeEquips);
       }
     }
     unset($link);
-    ++$j;
   }
 }

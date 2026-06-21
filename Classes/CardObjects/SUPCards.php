@@ -1632,7 +1632,8 @@ class song_of_sinew_yellow extends Card {
     if ($deck->Reveal(4)) {
       $cards = explode(",", $deck->Top(true, amount: 4));
       $numSixes = 0;
-      for ($i = 0; $i < count($cards); ++$i) {
+      $cardsCount = count($cards);
+      for ($i = 0; $i < $cardsCount; ++$i) {
         if (ModifiedPowerValue($cards[$i], $this->controller, "DECK") >= 6) ++$numSixes;
       }
       WriteLog(CardLink($this->cardID, $this->cardID) . " is buffing the next attack by $numSixes!");
@@ -1640,7 +1641,7 @@ class song_of_sinew_yellow extends Card {
       $cardList = implode(",", $cards);
       AddDecisionQueue("PASSPARAMETER", $this->controller, $cardList);
       AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-      for ($i = 0; $i < count($cards); ++$i) {
+      for ($i = 0; $i < $cardsCount; ++$i) {
         AddDecisionQueue("SETDQCONTEXT", $this->controller, "Put a card on top of your deck, the last card chosen will be the top card at the end", 1);
         AddDecisionQueue("CHOOSECARDID", $this->controller, "<-", 1);
         AddDecisionQueue("ADDTOPDECK", $this->controller, "<-", 1);
@@ -2130,8 +2131,10 @@ class ironfist_revelation extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $arsenal = &GetArsenal($this->controller);
     $choices = [];
-    for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
-      if ($arsenal[$i + 1] == "DOWN" && HasCrush($arsenal[$i])) array_push($choices, "MYARS-$i");
+    $arsenalCount = count($arsenal);
+    $arsenalPieces = ArsenalPieces();
+    for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
+      if ($arsenal[$i + 1] == "DOWN" && HasCrush($arsenal[$i])) $choices[] = "MYARS-$i";
     }
     if (count($choices) > 0) {
       $choices = implode(",", $choices);
@@ -3879,8 +3882,8 @@ class the_suspense_is_killing_me_blue extends Card {
   function AuraPowerModifiers($index, &$powerModifiers) {
     global $CS_NumAttacks;
     if (GetClassState($this->controller, $CS_NumAttacks) == 1) {
-      array_push($powerModifiers, $this->cardID);
-      array_push($powerModifiers, 1);
+      $powerModifiers[] = $this->cardID;
+      $powerModifiers[] = 1;
       return 1;
     }
     return 0;

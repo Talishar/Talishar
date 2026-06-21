@@ -8,7 +8,10 @@ function PlayLandmark($cardID, $player, $from="-")
     WriteLog($cardID . " was tried to play as a landmark, but is not a landmark.", highlight: true);
     return;
   }
-  array_push($landmarks, $cardID, $player, $from, 0); // cardID, owner, from, counters
+  $landmarks[] = $cardID; // cardID, owner, from, counters
+  $landmarks[] = $player;
+  $landmarks[] = $from;
+  $landmarks[] = 0;
   switch ($cardID) {
     case "treasure_island":
       AddCurrentTurnEffect($cardID, $player);

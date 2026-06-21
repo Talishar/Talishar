@@ -673,7 +673,7 @@ function AbilityCost($cardID)
 function DynamicCost($cardID)
 {
   global $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   $cardID = BlindCard($cardID, true);
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->DynamicCost();
@@ -1767,7 +1767,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer, $CCS_NumUsedInReactions;
   global $CombatChain, $combatChain, $layers;
   if ($player == "") $player = $currentPlayer;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $myArsenal = &GetArsenal($player);
   $myAllies = &GetAllies($player);
   $myAuras = &GetAuras($player);
@@ -2348,7 +2348,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
   global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter, $ChainLinks;
   if ($player == "") $player = $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   $character = &GetPlayerCharacter($player);
   $myHand = &GetHand($player);
   $myArsenal = &GetArsenal($player);
@@ -4280,7 +4280,7 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
   global $currentPlayer;
   $mod = explode("-", $mod)[0];
   if ($player == "") $player = $currentPlayer;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (isFaceDownMod($mod)) return false;
   if (ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("nuu_alluring_desire", $player) || SearchCurrentTurnEffects("nuu", $player))) return true;
   if ($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
@@ -4291,7 +4291,7 @@ function PlayableFromOtherPlayerArsenal($cardID, $face="DOWN", $player ="")
 {
   global $currentPlayer;
   if ($player == "") $player = $currentPlayer;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($face == "UP" && SearchCurrentTurnEffects("annexation_of_all_things_known_yellow-MAIN", $player)) return true;
   else return false;
 }

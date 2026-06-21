@@ -306,7 +306,7 @@ function HasPlayableCard($player, $phase)
 {
   global $CombatChain;
   $restriction = "";
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   
   // Cache piece sizes
   $characterPieces = CharacterPieces();

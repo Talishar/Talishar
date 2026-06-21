@@ -70,7 +70,7 @@ if ($playerID != 0) {
   $p2Key = "";
 }
 
-$otherPlayer = $currentPlayer == 1 ? 2 : 1;
+$otherPlayer = 3 - $currentPlayer;
 $skipWriteGamestate = false;
 $mainPlayerGamestateStillBuilt = 0;
 $makeCheckpoint = 0;

@@ -11,7 +11,8 @@
         $pitch = &GetPitch($currentPlayer);
         $numRed = 0;
         $pitchCount = count($pitch);
-        for($i=0; $i<$pitchCount; $i+=PitchPieces()) if(PitchValue($pitch[$i]) == 1) ++$numRed;
+        $pitchPieces = PitchPieces();
+        for($i=0; $i<$pitchCount; $i+=$pitchPieces) if(PitchValue($pitch[$i]) == 1) ++$numRed;
         GainResources($currentPlayer, $numRed);
         return "";
       case "sash_of_sandikai":
@@ -176,8 +177,9 @@
       case "vipox_red":
         if(IsHeroAttackTarget()) {
           $hand = &GetHand($defPlayer);
-          LoseHealth(count($hand)/HandPieces(), $defPlayer);
-          WriteLog("Player $defPlayer loses " . count($hand)/HandPieces() . " health");
+          $numCards = count($hand)/HandPieces();
+          LoseHealth($numCards, $defPlayer);
+          WriteLog("Player $defPlayer loses " . $numCards . " health");
         } 
         break;
       default: break;
@@ -191,7 +193,6 @@
 
   function RuptureActive($beforePlay=false, $notAttack=false)
   {
-    global $combatChainState;
     if($notAttack) $target = 4;
     else $target = ($beforePlay ? 3 : 4);
     if(NumChainLinks() >= $target) return true;
@@ -203,7 +204,8 @@
     global $CombatChain, $mainPlayer, $chainLinkSummary;
     $numLinks = 0;
     $chainLinkSummaryCount = count($chainLinkSummary);
-    for($i=0; $i<$chainLinkSummaryCount; $i+=ChainLinkSummaryPieces()) {
+    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+    for($i=0; $i<$chainLinkSummaryCount; $i+=$chainLinkSummaryPieces) {
       if(DelimStringContains($chainLinkSummary[$i+2], "DRACONIC")) ++$numLinks;
     }
     if($CombatChain->HasCurrentLink() && TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $mainPlayer)) ++$numLinks;
@@ -212,10 +214,11 @@
 
   function NumChainLinksWithName($name)
   {
-    global $mainPlayer, $chainLinkSummary, $combatChain;
+    global $chainLinkSummary;
     $count = 0;
     $chainLinkSummaryCount = count($chainLinkSummary);
-    for($i=0; $i<$chainLinkSummaryCount; $i+=ChainLinkSummaryPieces())
+    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+    for($i=0; $i<$chainLinkSummaryCount; $i+=$chainLinkSummaryPieces)
     {
       if(ChainLinkNameContains($i, $name)) ++$count;
     }

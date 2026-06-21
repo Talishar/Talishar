@@ -72,7 +72,7 @@ function HNTAbilityHasGoAgain($cardID): bool
 function HNTEffectPowerModifier($cardID, $attached=False): int
 {
   global $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   return match ($cardID) {
     "arakni_black_widow" => 3,
     "arakni_funnel_web" => 3,
@@ -362,7 +362,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "anaphylactic_shock_blue":
       if (GetClassState($otherPlayer, $CS_DamageDealtToOpponent)) LoseHealth(1, $otherPlayer);
       $allies = GetAllies($otherPlayer);
-      for ($j = 0; $j < count($allies); $j += AllyPieces()) {
+      $alliesCount = count($allies);
+      $alliesPieces = AllyPieces();
+      for ($j = 0; $j < $alliesCount; $j += $alliesPieces) {
         if ($allies[$j + 10] > 0) {
           LogDamageStats($otherPlayer, 0, 1);
           --$allies[$j+2];
@@ -725,21 +727,28 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "quickdodge_flexors":
       $successfullyBlocked = false;
-      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+      $combatChainCount = count($combatChain);
+      $combatChainPieces = CombatChainPieces();
+      for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
         if ($combatChain[$i] == "quickdodge_flexors") $successfullyBlocked = true;
       }
       if ($successfullyBlocked) {
         $char = &GetPlayerCharacter($currentPlayer);
         // remove flexors from its previous link
-        for ($i = 0; $i < count($chainLinks); ++$i) {
-          for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+        $chainLinksPieces = ChainLinksPieces();
+        $chainLinksCount = count($chainLinks);
+        for ($i = 0; $i < $chainLinksCount; ++$i) {
+          $linkCount = count($chainLinks[$i]);
+          for ($j = $chainLinksPieces; $j < $linkCount; $j += $chainLinksPieces) {
             if ($chainLinks[$i][$j] == "quickdodge_flexors") {
               $chainLinks[$i][$j+2] = 0;
             }
           }
         }
         $ind = -1;
-        for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+        $countChar = count($char);
+        $characterPieces = CharacterPieces();
+        for ($i = 0; $i < $countChar; $i += $characterPieces) {
           if ($char[$i] == "quickdodge_flexors") {
             $ind = $i;
             break;
@@ -844,7 +853,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "roiling_fissure_blue":
-      $maxSeismicCount = count(explode(",", SearchAurasForCard("seismic_surge", $currentPlayer)))+1;
+      $maxSeismicCount = substr_count(SearchAurasForCard("seismic_surge", $currentPlayer), ",") + 2;
       $maxCost = $resourcesPaid - 1;
       for($i=0; $i < $maxSeismicCount; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:minCost=0;maxCost=".$maxCost."&MYAURAS:minCost=0;maxCost=".$maxCost, 1);

@@ -3,7 +3,7 @@
 function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = false, $firstTransform = true, $tapped = 0, $from = "-", $playerSource = "-")
 {
   global $EffectContext;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($playerSource == "-") $playerSource = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
@@ -73,7 +73,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   if ($index < 0) return "";
   $allies = &GetAllies($player);
   $allyPieces = AllyPieces();
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $owner = (($allies[$index+14] ?? "") == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   RemoveAllyEffects($player, $uniqueID);
@@ -90,7 +90,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
 
 function RemoveAllyEffects($player, $uniqueID)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($uniqueID == SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, true);
 }
 
@@ -368,7 +368,7 @@ function AllyDamageTakenAbilities($player, $i)
     default:
       break;
   }
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $otherAuras = &GetAuras($otherPlayer);
   $countOtherAuras = count($otherAuras);
   $auraPieces = AuraPieces();

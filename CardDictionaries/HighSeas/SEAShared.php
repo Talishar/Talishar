@@ -217,7 +217,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks;
   global $CS_PlayIndex, $CS_NextNAACardGoAgain, $defPlayer, $layers;
   global $CS_ArcaneTargetsSelected, $chainLinks, $combatChainState;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     // Generic cards
     case "regain_composure_blue":
@@ -551,8 +551,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deckSize = count($deck) / DeckPieces();
       for ($i = 0; $i < min([2, $deckSize]); ++$i) {
         $val = CardLink($deck[$i], $deck[$i]);
-        array_push($topTwo, $val);
-        if (ColorContains($deck[$i], 3, $currentPlayer)) array_push($foundBlues, $val);
+        $topTwo[] = $val;
+        if (ColorContains($deck[$i], 3, $currentPlayer)) $foundBlues[] = $val;
       }
       $foundBlues = implode(" and ", $foundBlues);
       $topTwo = implode(" and ", $topTwo);
@@ -718,10 +718,11 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           $attacks = GetCombatChainAttacks();
           $attackInd = -1;
           $attacksCount = count($attacks);
-          for ($i = 0; $i < $attacksCount; $i += ChainLinksPieces()) {
+          $chainLinksPieces = ChainLinksPieces();
+          for ($i = 0; $i < $attacksCount; $i += $chainLinksPieces) {
             if ($attacks[$i] == $cardID && $attacks[$i + 9] <= 3) {
               $numUsed = $attacks[$i + 9];
-              $attackInd = intdiv($i, ChainLinksPieces());
+              $attackInd = intdiv($i, $chainLinksPieces);
             }
           }
         }
@@ -1154,7 +1155,7 @@ function SEAHitEffect($cardID): void
 
 function GetUntapped($player, $zone, $cond="-")
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   switch ($zone) {
     case "MYCHAR":
       $arr = GetPlayerCharacter($player);
@@ -1198,14 +1199,14 @@ function GetUntapped($player, $zone, $cond="-")
     $index = "$zone-$i";
     if ($cond != "-" && !in_array($index, $allowedInds)) continue;
     $Card = MZIndexToObject($player, $index);
-    if ($Card->Tapped() == 0) array_push($unwavedInds, $index);
+    if ($Card->Tapped() == 0) $unwavedInds[] = $index;
   }
   return implode(",", $unwavedInds);
 }
 
 function GetTapped($player, $zone, $cond="-")
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   switch ($zone) {
     case "MYCHAR":
       $arr = GetPlayerCharacter($player);
@@ -1240,7 +1241,7 @@ function GetTapped($player, $zone, $cond="-")
   for ($i = 0; $i < $arrCount; $i += $count) {
     $index = "$zone-$i";
     if ($cond != "-" && !in_array($index, $allowedInds)) continue;
-    if (CheckTapped($index, $player)) array_push($unwavedInds, $index);
+    if (CheckTapped($index, $player)) $unwavedInds[] = $index;
   }
   return implode(",", $unwavedInds);
 }
@@ -1249,7 +1250,7 @@ function Tap($MZindex, $player, $tapState=1, $endStepUntap=false)
 {
   global $CS_NumGoldCreated;
   $zoneName = explode("-", $MZindex)[0];
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $targetPlayer = (str_contains($zoneName, "THEIR")) ? $otherPlayer : $player;
   
   $zone = &GetMZZone($targetPlayer, $zoneName);
@@ -1338,7 +1339,9 @@ function UndestroyHook($player)
 {
   if (SearchCurrentTurnEffects("gold_baited_hook", $player)) {
     $char = GetPlayerCharacter($player);
-    for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+    $countChar = count($char);
+    $characterPieces = CharacterPieces();
+    for ($i = 0; $i < $countChar; $i += $characterPieces) {
       if ($char[$i] == "gold_baited_hook" && $char[$i+1] != 0) UndestroyCharacter($player, $i, false);
     }
   }

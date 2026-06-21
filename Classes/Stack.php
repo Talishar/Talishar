@@ -187,8 +187,9 @@ class Layer {
   function Negate($goesWhere="-") {
 		$cardID = $this->layers[$this->index];
 		$player = $this->layers[$this->index + 1];
-		$otherPlayer = $player == 1 ? 2 : 1;
-		for ($i = $this->index + LayerPieces() - 1; $i >= $this->index; --$i) {
+		$otherPlayer = 3 - $player;
+    $layerPieces = LayerPieces();
+		for ($i = $this->index + $layerPieces - 1; $i >= $this->index; --$i) {
 			unset($this->layers[$i]);
 		}
 		$this->layers = array_values($this->layers);
