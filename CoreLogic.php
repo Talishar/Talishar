@@ -3282,10 +3282,15 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
 
 function GetDamagePreventionTargetIndices()
 {
-  global $combatChain, $currentPlayer;
+  global $combatChain, $currentPlayer, $Stack;
   $otherPlayer = 3 - $currentPlayer;
-  $rv = "";
-  $rv = SearchMultizone($otherPlayer, "LAYER");
+  $rv = [];
+  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+    $Layer = $Stack->Card($i, true);
+    // non-card layers are not valid damage sources
+    if ($Layer->IsCardLayer()) $rv[] = "LAYER-" . $Layer->Index();
+  }
+  $rv = implode(",", $rv);
   if (count($combatChain) > 0 && CardType($combatChain[0]) != "W") {
     //don't find weapons here, they're handled in SearchCharacter
     $rv = CombineSearches($rv, "CC-0");

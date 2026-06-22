@@ -197,6 +197,13 @@ class Layer {
 			ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
 		}
 	}
+
+  function IsCardLayer() {
+    if (isAdministrativeStep($this->ID())) return false;
+    $nonCards = ["TRIGGER", "PRETRIGGER", "ABILITY"];
+    if (in_array($this->ID(), $nonCards)) return false;
+    return $this->ID() != "";
+  }
 }
 
 class AttackQueue {
