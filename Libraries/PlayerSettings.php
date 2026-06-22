@@ -686,7 +686,7 @@ function IsTeamSkillIssue($userName)
 
 function IsTeamWingedHussars($userName)
 {
-  static $members = ["Calebovitsch" => 1, "Steve119" => 1, "Lucid" => 1, "Seba" => 1, "raskoks" => 1, "chudy" => 1, "metatron" => 1,
+  static $members = ["Calebovitsch" => 1, "Steve119" => 1, "Lucid" => 1, "Seba" => 1, "raskoks" => 1, "Chudy" => 1, "metatron" => 1,
     "Dovi" => 1, "dssstefan" => 1, "makos" => 1, "RavenLemur" => 1, "XIR" => 1, "PvtVoid" => 1];
   return isset($members[$userName]);
 }
