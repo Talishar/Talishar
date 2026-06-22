@@ -1659,6 +1659,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
         AddDecisionQueue("WRITELOG", $player, CardLink($cardID, $cardID) . " created a " . CardLink("vigor", "vigor") . " token ", 1);
         AddDecisionQueue("PASSPARAMETER", $player, "vigor", 1);
         AddDecisionQueue("PUTPLAY", $player, "-", 1);
+        AddDecisionQueue("LOGSTATS", $player, $cardID.",EQUIP,PASSIVE", 1);
       }
       break;
     case "aether_crackers":
@@ -2439,6 +2440,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "rampart_of_the_rams_head", 1);
+        AddDecisionQueue("LOGSTATS", $player, $parameter.",EQUIP,PASSIVE", 1);
         break;
       case "embolden_red":
       case "embolden_yellow":

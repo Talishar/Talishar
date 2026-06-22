@@ -13,9 +13,8 @@ $CardStats_TimesHit = 4;
 $CardStats_TimesCharged = 5;
 $CardStats_TimesDiscarded = 6;
 $CardStats_TimesActivated = 7; //Tracks weapon/arena card activations from play
-$CardStats_Dynamic3 = 8; //Reserved for future use
+$CardStats_TimesPassiveTriggered = 8; //Tracks passive equipment/character effect triggers (e.g. Tiger Stripe Shuko buff, Valiant Dynamo refresh)
 $CardStats_TimesKatsuDiscard = 9;
-
 $TurnStats_DamageThreatened = 0;
 $TurnStats_DamageDealt = 1;
 $TurnStats_CardsPlayedOffense = 2;
@@ -64,9 +63,11 @@ function LogPlayCardStats($player, $cardID, $from, $type = "")
          $CardStats_TimesHit, $CardStats_TimesCharged, $TurnStats_CardsPlayedOffense,
          $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked,
          $mainPlayer, $CardStats_TimesKatsuDiscard, $TurnStats_CardsDiscarded,
-         $CardStats_TimesDiscarded, $CardStats_TimesActivated, $currentTurn;
+         $CardStats_TimesDiscarded, $CardStats_TimesActivated, $CardStats_TimesPassiveTriggered, $currentTurn;
 
-  if ($type === "") $type = $turn[0];
+  if ($type === "") {
+    $type = $turn[0];
+  }
 
   $cardTurnLog   = &GetCardTurnLog($player);
   $cardTurnLog[] = [intval($currentTurn), $cardID, $type];
@@ -109,6 +110,9 @@ function LogPlayCardStats($player, $cardID, $from, $type = "")
     case "DISCARD":
       ++$cardStats[$i + $CardStats_TimesDiscarded];
       ++$turnStats[$baseIndex + $TurnStats_CardsDiscarded];
+      break;
+    case "PASSIVE":
+      ++$cardStats[$i + $CardStats_TimesPassiveTriggered];
       break;
     default:
       if ($from == "PLAY" || $from == "EQUIP")

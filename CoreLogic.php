@@ -3731,8 +3731,8 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     $index = count($pitch) - PitchPieces();
   $pitchValue = PitchValue($cardID);
   if (GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($currentPlayer, "vestige_of_sol") && TalentContains($cardID, "LIGHT", $currentPlayer)) {
-    $resources = &GetResources($currentPlayer);
-    $resources[0] += 1;
+    GainResources($currentPlayer, 1);
+    LogPlayCardStats($currentPlayer, "vestige_of_sol", "PASSIVE");
   }
   if ($pitchValue == 1) {
     $talismanOfRecompenseIndex = GetItemIndex("talisman_of_recompense_yellow", $currentPlayer);

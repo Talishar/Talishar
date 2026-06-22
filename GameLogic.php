@@ -4205,6 +4205,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           Draw($player);
       }
       return $lastResult;
+    case "LOGSTATS":
+      $params = explode(",", $parameter, 3);
+      LogPlayCardStats($player, $params[0], $params[1], $params[2]);
+      return $lastResult;
     default:
       return "NOTSTATIC";
   }

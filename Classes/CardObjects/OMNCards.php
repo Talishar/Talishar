@@ -4402,6 +4402,7 @@ class plutonic_starplate extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     GainResources($this->controller, 1);
+    LogPlayCardStats($this->controller, $this->cardID, "PASSIVE");
   }
 }
 

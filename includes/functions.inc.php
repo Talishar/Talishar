@@ -774,7 +774,7 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
-	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated;
+	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated, $CardStats_TimesPassiveTriggered;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -865,6 +865,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 			$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
 			$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
 			$deck["cardResults"][$j]["discarded"] = $cardStats[$i + $CardStats_TimesDiscarded];
+			$deck["cardResults"][$j]["activated"] = $cardStats[$i + $CardStats_TimesActivated];
+			$deck["cardResults"][$j]["passiveTriggered"] = $cardStats[$i + $CardStats_TimesPassiveTriggered];
 		} else {
 			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon/character/companion or if activated from play (e.g. ally tokens), otherwise tokenResults
 			$cardType = CardType($cardId);
@@ -880,8 +882,9 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 				"pitchValue" => PitchValue($cardId),
 				"katsuDiscard" => $cardStats[$i + $CardStats_TimesKatsuDiscard],
 				"activated" => $cardStats[$i + $CardStats_TimesActivated],
+				"passiveTriggered" => $cardStats[$i + $CardStats_TimesPassiveTriggered],
 			];
-			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion") || $cardStats[$i + $CardStats_TimesActivated] > 0) {
+			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion") || $cardStats[$i + $CardStats_TimesActivated] > 0 || $cardStats[$i + $CardStats_TimesPassiveTriggered] > 0 || $cardStats[$i + $CardStats_TimesPitched] > 0) {
 				$deck["arenaCardResults"][] = $cardResult;
 			} else {
 				$deck["tokenResults"][] = $cardResult;
@@ -904,7 +907,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerHero = "", $excludePrivateFields = false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
-	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated;
+	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated, $CardStats_TimesPassiveTriggered;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -981,6 +984,8 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 			$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesCharged]);
 			$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesKatsuDiscard]);
 			$deck["cardResults"][$j]["discarded"] = intval($cardStats[$i + $CardStats_TimesDiscarded]);
+			$deck["cardResults"][$j]["activated"] = intval($cardStats[$i + $CardStats_TimesActivated]);
+			$deck["cardResults"][$j]["passiveTriggered"] = intval($cardStats[$i + $CardStats_TimesPassiveTriggered]);
 		} else {
 			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon/character/companion or if activated from play (e.g. ally tokens), otherwise tokenResults
 			$cardType = CardType($cardId);
@@ -996,8 +1001,9 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 				"pitchValue" => PitchValue($cardId),
 				"katsuDiscard" => intval($cardStats[$i + $CardStats_TimesKatsuDiscard]),
 				"activated" => intval($cardStats[$i + $CardStats_TimesActivated]),
+				"passiveTriggered" => intval($cardStats[$i + $CardStats_TimesPassiveTriggered]),
 			];
-			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion") || intval($cardStats[$i + $CardStats_TimesActivated]) > 0) {
+			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion") || intval($cardStats[$i + $CardStats_TimesActivated]) > 0 || intval($cardStats[$i + $CardStats_TimesPassiveTriggered]) > 0 || intval($cardStats[$i + $CardStats_TimesPitched]) > 0) {
 				$deck["arenaCardResults"][] = $cardResult;
 			} else {
 				$deck["tokenResults"][] = $cardResult;

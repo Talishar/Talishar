@@ -396,7 +396,10 @@ function MainCharacterEndTurnAbilities()
         KassaiEndTurnAbility();
         break;
       case "valiant_dynamo":
-        if ($mainClassState[$CS_AttacksWithWeapon] >= 2 && $mainCharacter[$i + 4] < 0) ++$mainCharacter[$i + 4];
+        if ($mainClassState[$CS_AttacksWithWeapon] >= 2 && $mainCharacter[$i + 4] < 0) {
+          ++$mainCharacter[$i + 4];
+          LogPlayCardStats($mainPlayer, "valiant_dynamo", "EQUIP", "PASSIVE");
+        }
         break;
       case "duskblade":
         if (GetClassState($mainPlayer, $CS_NumNonAttackCards) == 0 || GetClassState($mainPlayer, $CS_NumAttackCards) == 0) $mainCharacter[$i + 3] = 0;
@@ -1616,6 +1619,7 @@ function CharacterPlayCardAbilities($cardID, $from)
         if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID, $currentPlayer, "CC") <= 2) {
           AddCurrentTurnEffect($characterID, $currentPlayer);
           $character[$i + 1] = 1;
+          LogPlayCardStats($currentPlayer, "tiger_stripe_shuko", "EQUIP", "PASSIVE");
         }
         break;
       case "melody_sing_along":
