@@ -49,8 +49,8 @@ function EncounterAI()
           $optionIndex = 0;
           $index = 0;
           $largestIndex = 0;
-
-          for($i = 0; $i < count($hand); ++$i)//find the highest priority arrow and choose it
+          $handCount = count($hand);
+          for($i = 0; $i < $handCount; ++$i)//find the highest priority arrow and choose it
           {
             if(CardSubtype($hand[0]) == "Arrow")
             {

@@ -109,15 +109,6 @@ if (IsReplay() && $mode == 99) {
     $chkCount = $params[4] ?? "0";
     $chkInput = isset($params[5]) ? array_map('trim', explode("|", $params[5])) : [];
   }
-  //Automate extra passes
-  // for($i=1; $i<count($commands); ++$i)
-  // {
-  //   $line = $commands[$pointer+1];
-  //   $params = explode(" ", $line);
-  //   if(intval($mode) != 99 || intval($params[1]) != 99) break;
-  //   ++$numPass;
-  //   ++$pointer;
-  // }
   $commands[0] = "$pointer\r\n";
   file_put_contents($filename, $commands);
 }

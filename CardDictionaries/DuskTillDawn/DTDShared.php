@@ -647,7 +647,10 @@ function ResolveTransformHero($player, $cardID, $parameter)
   switch($cardID)
   {
     case "levia_redeemed":
-      for($i=$banish->NumCards() - 1; $i >= 0; --$i) TurnBanishFaceDown($player, $i * BanishPieces());
+      $banishPieces = BanishPieces();
+      for($i=$banish->NumCards() - 1; $i >= 0; --$i) {
+        TurnBanishFaceDown($player, $i * $banishPieces);
+      }
       break;
     case "blasmophet_levia_consumed": // 3.0.3a A player may look at any private object they own, or is in a zone that they own, unless the object is in the deck zone.
       $deck = new Deck($player);

@@ -252,7 +252,8 @@ function ProcessSpecificCardMacros()
       $firstCog = MZIndexToObject($currentPlayer, $firstChoice);
       if (is_object($firstCog)) {
         $allSameCog = true;
-        for ($k = 1; $k < count($choices); ++$k) {
+        $choicesCount = count($choices);
+        for ($k = 1; $k < $choicesCount; ++$k) {
           $cog = MZIndexToObject($currentPlayer, $choices[$k]);
           if (!is_object($cog)
             || $cog->CardID() != $firstCog->CardID()

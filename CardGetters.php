@@ -5,7 +5,6 @@ function &GetMZZone($player, $zone)
 {
   global $layers, $combatChain, $chainLinks;
   $rv = [];
-  $otherPlayer = 3 - $player;
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
   else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
@@ -304,20 +303,20 @@ function &GetAuras($player)
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
     if ($player == $mainPlayer) {
-      $mainAuras = array_values($mainAuras);//It seems like there's a bug with things not being removed correctly
+      if (!array_is_list($mainAuras)) $mainAuras = array_values($mainAuras);
       return $mainAuras;
     }
     else {
-      $defAuras = array_values($defAuras);
+      if (!array_is_list($defAuras)) $defAuras = array_values($defAuras);
       return $defAuras;
     }
   } else {
     if ($player == $myStateBuiltFor) {
-      $myAuras = array_values($myAuras);
+      if (!array_is_list($myAuras)) $myAuras = array_values($myAuras);
       return $myAuras;
     }
     else {
-      $theirAuras = array_values($theirAuras);
+      if (!array_is_list($theirAuras)) $theirAuras = array_values($theirAuras);
       return $theirAuras;
     }
   }

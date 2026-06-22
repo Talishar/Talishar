@@ -123,7 +123,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       $chainLinksPieces = ChainLinksPieces();
       foreach ($chainLinks as &$link) {
-        for ($k = 0; $k < count($link); $k += $chainLinksPieces) {
+        $linkCount = count($link);
+        for ($k = 0; $k < $linkCount; $k += $chainLinksPieces) {
           if (CardType($link[$k]) == "AA" && $link[$k + 1] == $defPlayer) {
             BanishCardForPlayer($link[$k], $defPlayer, "CC", $mod, $cardID);
             $link[$k + 2] = 0;

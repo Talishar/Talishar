@@ -219,8 +219,11 @@ function SearchInner(
       if (!($type === "C" && CardType($cardID) === "D") && !($type === "W" && SubtypeContains($cardID, "Aura") && !IsWeapon($cardID, $zone))) continue;
     }
     if ($subtype !== "" && !SubtypeContains($cardID, $subtype, $player)) continue;
-    if ($maxCost !== -1 && CardCost($cardID, $zone) > $maxCost) continue;
-    if ($minCost !== -1 && CardCost($cardID, $zone) < $minCost) continue;
+    if ($maxCost !== -1 || $minCost !== -1) {
+      $cost = CardCost($cardID, $zone);
+      if ($maxCost !== -1 && $cost > $maxCost) continue;
+      if ($minCost !== -1 && $cost < $minCost) continue;
+    }
     if ($class !== "" && !ClassContains($cardID, $class, $player)) continue;
 
     if ($hasTalents) {
@@ -257,8 +260,11 @@ function SearchInner(
 
     if ($pitch !== -1 && !ColorContains($cardID, $pitch, $player)) continue;
     if ($realPitch !== "-" && !PitchContains($cardID, $realPitch)) continue;
-    if ($maxAttack !== -1 && ModifiedPowerValue($cardID, $player, $zone) > $maxAttack) continue;
-    if ($minAttack !== -1 && ModifiedPowerValue($cardID, $player, $zone) < $minAttack) continue;
+    if ($maxAttack !== -1 || $minAttack !== -1) {
+      $power = ModifiedPowerValue($cardID, $player, $zone);
+      if ($maxAttack !== -1 && $power > $maxAttack) continue;
+      if ($minAttack !== -1 && $power < $minAttack) continue;
+    }
     if ($maxDef !== -1 && BlockValue($cardID) > $maxDef) continue;
     if ($arcaneDamage !== -1 && !ArcaneDamageMatch($cardID, $arcaneDamage)) continue;
 
@@ -596,11 +602,15 @@ function SearchCharacterAliveSubtype($player, $subtype, $notActiveLink = false, 
       else if ($combatChain[8] != $character[$i + 11]) return true;
     }
     if ($character[$i] == "frostbite" && !$excludeAuras) {
-      $slot = "";
+      $prefix    = "frostbite-" . $character[$i + 11] . ",";
+      $prefixLen = strlen($prefix);
+      $slot      = "";
       $effectCount = count($currentTurnEffects);
       for ($j = 0; $j < $effectCount; $j += $effectPieces) {
-        $effect = explode(",", $currentTurnEffects[$j]);
-        if ($effect[0] == "frostbite-" . $character[$i + 11]) $slot = $effect[1];
+        $eff = $currentTurnEffects[$j];
+        if (strlen($eff) > $prefixLen && strncmp($eff, $prefix, $prefixLen) === 0) {
+          $slot = substr($eff, $prefixLen);
+        }
       }
       if ($subtype == $slot) return true;
     }
@@ -691,12 +701,7 @@ function SearchMultizoneFormat($search, $zone)
 {
   if ($search == "") return "";
   if ($zone == "ACTIVEATTACK") $zone = "COMBATCHAINLINK";
-  $searchArr = explode(",", $search);
-  $countSearchArr = count($searchArr);
-  for ($i = 0; $i < $countSearchArr; ++$i) {
-    $searchArr[$i] = $zone . "-" . $searchArr[$i];
-  }
-  return implode(",", $searchArr);
+  return $zone . "-" . str_replace(",", ",$zone-", $search);
 }
 
 function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniqueID = false, $activate = false, $stripParams = false)
@@ -914,8 +919,9 @@ function SearchBanishForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
 {
   $banish = GetBanish($playerID);
   $count = count($banish);
+  $pieces = BanishPieces();
   $cardList = [];
-  for ($i = 0; $i < $count; ++$i) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($banish[$i] == $card1 || $banish[$i] == $card2 || $banish[$i] == $card3) {
       $cardList[] = $i;
     }
@@ -927,8 +933,9 @@ function SearchItemsForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
 {
   $items = GetItems($playerID);
   $count = count($items);
+  $pieces = ItemPieces();
   $cardList = [];
-  for ($i = 0; $i < $count; ++$i) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if ($items[$i] == $card1 || $items[$i] == $card2 || $items[$i] == $card3) {
       $cardList[] = $i;
     }
@@ -940,8 +947,9 @@ function SearchCharacterForCardMulti($playerID, $card1, $card2 = "", $card3 = ""
 {
   $char = GetPlayerCharacter($playerID);
   $count = count($char);
+  $pieces = CharacterPieces();
   $cardList = [];
-  for ($i = 0; $i < $count; ++$i) {
+  for ($i = 0; $i < $count; $i += $pieces) {
     if (($char[$i] == $card1 || $char[$i] == $card2 || $char[$i] == $card3) && $char[$i + 1] != 0 && $char[$i + 12] != "DOWN") {
       $cardList[] = $i;
     }
@@ -981,14 +989,11 @@ function GetArsenalFaceDownIndices($player)
   $arsenal = &GetArsenal($player);
   $count = count($arsenal);
   $pieces = ArsenalPieces();
-  $indices = "";
+  $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($arsenal[$i + 1] == "DOWN") {
-      if ($indices != "") $indices .= ",";
-      $indices .= $i;
-    }
+    if ($arsenal[$i + 1] == "DOWN") $indices[] = $i;
   }
-  return $indices;
+  return implode(",", $indices);
 }
 
 function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatChain = false)
@@ -1330,14 +1335,11 @@ function SearchInventoryForCard($player, $cardID)
   $inventory = &GetInventory($player);
   $count = count($inventory);
   $pieces = InventoryPieces();
-  $indices = "";
+  $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($inventory[$i] == $cardID) {
-      if ($indices != "") $indices .= ",";
-      $indices .= $i;
-    }
+    if ($inventory[$i] == $cardID) $indices[] = $i;
   }
-  return $indices;
+  return implode(",", $indices);
 }
 
 function SearchLandmark($cardID)
@@ -1572,7 +1574,6 @@ function GetMZCardLink($player, $MZ)
 //Example: AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:maxAttack=3;type=AA");
 function SearchMultizone($player, $searches)
 {
-  global $combatChain;
   $otherPlayer = 3 - $player;
   $unionSearches = explode("&", $searches);
   $rv = "";
@@ -2063,32 +2064,38 @@ function GetPlayerNumTokens($player)
   $permanents = &GetPermanents($player);
   $char = &GetPlayerCharacter($player);
   $count = 0;
+
   $countAuras = count($auras);
   $auraPieces = AuraPieces();
   for ($i = 0; $i < $countAuras; $i += $auraPieces) {
     if (TypeContains($auras[$i], "T", $player)) ++$count;
   }
+
   $countItems = count($items);
   $itemPieces = ItemPieces();
   for ($i = 0; $i < $countItems; $i += $itemPieces) {
     if (TypeContains($items[$i], "T", $player)) ++$count;
   }
+
   $countAllies = count($ally);
   $allyPieces = AllyPieces();
   for ($i = 0; $i < $countAllies; $i += $allyPieces) {
     if (TypeContains($ally[$i], "T", $player)) ++$count;
     else if (TypeContains($ally[$i + 4], "T", $player)) ++$count; //Check for Allies Subcards
   }
+
   $countPermanents = count($permanents);
   $permanentsPieces = PermanentPieces();
   for ($i = 0; $i < $countPermanents; $i += $permanentsPieces) {
     if (TypeContains($permanents[$i], "T", $player)) ++$count;
   }
+
   $countChar = count($char);
   $charPieces = CharacterPieces();
   for ($i = 0; $i < $countChar; $i += $charPieces) {
     if (TypeContains($char[$i], "T", $player)) ++$count;
   }
+  
   return $count;
 }
 
@@ -2194,7 +2201,6 @@ function SearchLayersForNAACard($maxCost=-1) {
     $countLayers = count($layers);
     $layerPieces = LayerPieces();
     for ($i = 0; $i < $countLayers; $i += $layerPieces) {
-      $playerID = $layers[$i+1];
       $from = explode("|",$layers[$i+2], 2)[0];
       if ($maxCost != -1 && CardCost($layers[$i], "LAYER", index:$i) > $maxCost) continue;
       if (TypeContains($layers[$i], "A", from: "LAYER", index:$i) && (!IsActivated($layers[$i], $from))) {
@@ -2226,7 +2232,8 @@ function GetGoldIndices($player) {
 function GetAllyCounterIndices($player) {
   $choices = [];
   $Allies = new Allies($player);
-  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+  $alliesCount = $Allies->NumAllies();
+  for ($i = 0; $i < $alliesCount; ++$i) {
     $Ally = $Allies->Card($i, true);
     if ($Ally->PowerCounters() > 0) {
       $choices[] = "MYALLY-" . $Ally->Index();

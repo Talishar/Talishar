@@ -1076,7 +1076,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $pretrigger = array_slice($layers, $index, $layerPiecesReorder);
           $pretrigger[0] = "TRIGGER";
           array_splice($layers, $index, $layerPiecesReorder);
-          $layers = [...$pretrigger, ...$layers];
+          array_unshift($layers, ...$pretrigger);
         }
       }
       $layersCountReorder = count($layers);
@@ -1201,7 +1201,8 @@ function PassInput($autopass = true, $doublePass = false)
   }
   elseif ($turn[0] == "PDECK") {
     $pitch = &GetPitch($currentPlayer);
-    for ($i = 0; $i < count($pitch); ++$i) {
+    $pitchCount = count($pitch);
+    for ($i = 0; $i < $pitchCount; ++$i) {
       PitchDeck($currentPlayer, 0);
     }
     PassTurn();
@@ -1451,6 +1452,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CS_PowDamageDealt;
   global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer, $CS_HitsWDawnblade;
   global $CS_HitCounter, $CS_ResolvingLayerUniqueID, $CombatChain;
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $wasHit = $damageDone > 0;
   $cardID = $combatChain[0];
   if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
@@ -1510,8 +1512,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       }
 
       $count = count($currentTurnEffects);
-      $pieces = CurrentTurnEffectsPieces();
-      for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
+      for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
         if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
           if ($currentTurnEffects[$i + 1] == $mainPlayer) {
             AddEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget); // Effects that gives effect to the attack
@@ -1545,8 +1546,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       }
 
       $count = count($currentTurnEffects);
-      $pieces = CurrentTurnEffectsPieces();
-      for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
+      for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
         if ($currentTurnEffects[$i] == "celestial_kimono")
           AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "celestial_kimono");
         if (IsCombatEffectActive($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer && !$combatChainState[$CCS_ChainLinkHitEffectsPrevented]) {
@@ -1619,7 +1619,8 @@ function FinalizeChainLink($chainClosed = false)
   
 
   $chainLinks[] = [];
-  $CLIndex = count($chainLinks) - 1;
+  $chainLinkIndex = count($chainLinks) - 1;
+  $currentLink = &$chainLinks[$chainLinkIndex];
   $ccCount = count($combatChain);
   $ccPieces = CombatChainPieces();
   for ($i = 1; $i < $ccCount; $i += $ccPieces) {
@@ -1634,17 +1635,18 @@ function FinalizeChainLink($chainClosed = false)
     $originUID = $combatChain[$i + 7];
     if ($originUID == -1 || ($combatChain[$i + 1] != "PLAY" && $combatChain[$i + 1] != "EQUIP")) $originUID = $combatChain[$i + 6]; //if it doesn't have a source, just give it the combat chain
     $stillOnChain = $combatChain[$i + 1] == "EQUIP" || $combatChain[$i + 1] == "PLAY" || ($goesWhere == "GY") ? "1" : "0";
-    $chainLinks[$CLIndex][] = $chainCard; //Card ID
-    $chainLinks[$CLIndex][] = $combatChain[$i]; //Player ID
-    $chainLinks[$CLIndex][] = $stillOnChain; //Still on chain? 1 = yes, 0 = no
-    $chainLinks[$CLIndex][] = $combatChain[$i + 1]; //From
-    $chainLinks[$CLIndex][] = $combatChain[$i + 4]; //Power Modifier
-    $chainLinks[$CLIndex][] = $combatChain[$i + 5]; //Defense Modifier
-    $chainLinks[$CLIndex][] = "-"; //Added On-hits (comma separated)
-    $chainLinks[$CLIndex][] = $combatChain[$i + 8]; //Original card ID, differs from CardID in case of copies
-    $chainLinks[$CLIndex][] = $originUID; //Origin unique ID
-    $chainLinks[$CLIndex][] = $combatChain[$i + 10]; //number of times used
+    $currentLink[] = $chainCard; //Card ID
+    $currentLink[] = $combatChain[$i]; //Player ID
+    $currentLink[] = $stillOnChain; //Still on chain? 1 = yes, 0 = no
+    $currentLink[] = $combatChain[$i + 1]; //From
+    $currentLink[] = $combatChain[$i + 4]; //Power Modifier
+    $currentLink[] = $combatChain[$i + 5]; //Defense Modifier
+    $currentLink[] = "-"; //Added On-hits (comma separated)
+    $currentLink[] = $combatChain[$i + 8]; //Original card ID, differs from CardID in case of copies
+    $currentLink[] = $originUID; //Origin unique ID
+    $currentLink[] = $combatChain[$i + 10]; //number of times used
   }
+  unset($currentLink);
 
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();
@@ -1697,7 +1699,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
 {
   global $currentTurnEffects, $combatChainState, $CCS_DamageDealt, $combatChain, $chainLinks;
   $effectsToRemove = [];
-  $CLIndex = count($chainLinks) - 1;
+  $chainLinkIndex = count($chainLinks) - 1;
   $addedEffects = $combatChain[10] ?? "-";
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
@@ -1730,8 +1732,8 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
         break;
     }
   }
-  if (isset($chainLinks[$CLIndex])) {
-    if (isset($chainLinks[$CLIndex][6])) $chainLinks[$CLIndex][6] = $addedEffects;
+  if (isset($chainLinks[$chainLinkIndex])) {
+    if (isset($chainLinks[$chainLinkIndex][6])) $chainLinks[$chainLinkIndex][6] = $addedEffects;
   }
   $countEffectsToRemove = count($effectsToRemove);
   for ($i = 0; $i < $countEffectsToRemove; ++$i) {
@@ -1947,21 +1949,21 @@ function FinalizeTurn()
   $nextTurnEffectsCount = count($nextTurnEffects);
   $nextTurnPieces = NextTurnPieces();
   $currentTurnEffectPiecesNT = CurrentTurnEffectsPieces();
-  for ($i = $nextTurnEffectsCount - $nextTurnPieces; $i >= 0; $i -= $nextTurnPieces) {
-    switch ($nextTurnEffects[$i + 4]) {
-      case 1:
-        for ($j = 0; $j < $nextTurnPieces; ++$j) {
-          if ($j < $currentTurnEffectPiecesNT)
-            $currentTurnEffects[] = $nextTurnEffects[$i + $j];
-          unset($nextTurnEffects[$i + $j]);
-        }
-        break;
-      default:
-        --$nextTurnEffects[$i + 4];
-        break;
+  $newNextTurnEffects = [];
+  for ($i = 0; $i < $nextTurnEffectsCount; $i += $nextTurnPieces) {
+    if ($nextTurnEffects[$i + 4] == 1) {
+      for ($j = 0; $j < $currentTurnEffectPiecesNT; ++$j) {
+        $currentTurnEffects[] = $nextTurnEffects[$i + $j];
+      }
+    } else {
+      $base = count($newNextTurnEffects);
+      for ($j = 0; $j < $nextTurnPieces; ++$j) {
+        $newNextTurnEffects[] = $nextTurnEffects[$i + $j];
+      }
+      --$newNextTurnEffects[$base + 4];
     }
   }
-  $nextTurnEffects = array_values($nextTurnEffects);
+  $nextTurnEffects = $newNextTurnEffects;
   // this is needed to reset the defending player's class state even if their turn is getting skipped
   $defPlayer = $mainPlayer;
   $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
@@ -2484,10 +2486,6 @@ function InstantMod($mod)
 function PlayCardSkipCosts($cardID, $from)
 {
   global $layers, $turn;
-  $cardType = CardType($cardID);
-  // this is now handled earlier
-  // GetTargetOfAttack($cardID); // Not sure why this is needed (2x GetTargetOfAttack), but it works....
-  // if (($turn[0] == "M" || $turn[0] == "ATTACKWITHIT") && $cardType == "AA") GetTargetOfAttack($cardID);
   if ($turn[0] != "B" || (count($layers) > 0 && $layers[0] != "")) {
     GetLayerTarget($cardID, $from);
   }
@@ -2496,7 +2494,7 @@ function PlayCardSkipCosts($cardID, $from)
 
 function GetLayerTarget($cardID, $from)
 {
-  global $currentPlayer, $defPlayer, $layers, $CombatChain, $mainPlayer, $Stack;
+  global $currentPlayer, $defPlayer, $CombatChain, $mainPlayer, $Stack;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->GetLayerTarget($from);
   switch ($cardID) {

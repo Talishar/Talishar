@@ -2124,7 +2124,7 @@ function ColorContains($cardID, $color, $player)
       $pitchValue = 2;
       break;
     case "Blue":
-      $color = 3;
+      $pitchValue = 3;
       break;
     default:
       $pitchValue = $color;

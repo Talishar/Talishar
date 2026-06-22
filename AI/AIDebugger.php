@@ -38,10 +38,11 @@ function VisualizePriorityArray($priorityArray, $title = "Priority Array")
   
   if(!$AI_DEBUG_VISUALIZE) return;
   
+  $priorityArrayCount = count($priorityArray);
   WriteLog("=== $title ===");
-  WriteLog("Total cards: " . count($priorityArray));
-  
-  for($i = 0; $i < count($priorityArray); ++$i) {
+  WriteLog("Total cards: " . $priorityArrayCount);
+
+  for($i = 0; $i < $priorityArrayCount; ++$i) {
     $node = $priorityArray[$i];
     $cardName = CardName($node[0]);
     $zone = $node[1];

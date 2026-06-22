@@ -175,12 +175,13 @@ function SortPriorityArray($priorityArray)
 function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destinationSecondary, $amount = 1)
 {
   // Find and resolve the highest-priority cards in range
+  $priorityArrayCount = count($priorityArray);
   for($i = 0; $i < $amount; $i++) {
     $index = -1;
     $maxPriority = $range + 0.09; // Just below range start
     
     // Find highest priority card in range
-    for($j = 0; $j < count($priorityArray); ++$j) {
+    for($j = 0; $j < $priorityArrayCount; ++$j) {
       if($priorityArray[$j][3] >= $range + 0.1 && 
          $priorityArray[$j][3] <= $range + 0.9 &&
          $priorityArray[$j][3] > $maxPriority) {
@@ -202,7 +203,7 @@ function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destin
   }
   
   // Resolve remaining cards in range
-  for($k = 0; $k < count($priorityArray); ++$k) {
+  for($k = 0; $k < $priorityArrayCount; ++$k) {
     if($priorityArray[$k][3] >= $range + 0.1 && $priorityArray[$k][3] <= $range + 0.9) {
       if($destinationSecondary == "Unplayed") {
         $priorityArray[$k][3] = 0;
@@ -225,7 +226,8 @@ function FirstTurnResolution($priorityArray, $character)
   global $currentTurn;
   
   if($currentTurn == 0 && EncounterBlocksFirstTurn($character[0])) {
-    for($i = 0; $i < count($priorityArray); ++$i) {
+    $priorityArrayCount = count($priorityArray);
+    for($i = 0; $i < $priorityArrayCount; ++$i) {
       // Boost hand cards but not equipment
       if($priorityArray[$i][3] != 0 && $priorityArray[$i][1] != "Character") {
         $decimalPart = $priorityArray[$i][3] - (int)$priorityArray[$i][3];

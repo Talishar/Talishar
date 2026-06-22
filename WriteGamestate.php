@@ -93,7 +93,7 @@ for ($i = 0; $i < $chainLinksCount; ++$i) {
     $gamestateLines[] = "";
 }
 
-$gamestateLines = array_merge($gamestateLines, [
+array_push($gamestateLines,
   implode(" ", $chainLinkSummary),
   $p1Key,
   $p2Key,
@@ -119,7 +119,7 @@ $gamestateLines = array_merge($gamestateLines, [
   implode(" ", is_array($attackQueue ?? null) ? $attackQueue : []),
   json_encode($p1LifeHistory ?? []),
   json_encode($p2LifeHistory ?? [])
-]);
+);
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
 
