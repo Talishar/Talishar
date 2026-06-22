@@ -1819,28 +1819,27 @@ function CombatChainClosedTriggers()
   }
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if (!isset($currentTurnEffects[$i + 1])) continue;
+    // Filter by player before the explode + GetClass calls
+    if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $mainPlayer) continue;
     $effectParts = explode("-", $currentTurnEffects[$i], 2);
     $effectID = $effectParts[0];
-    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-      $card = GetClass($currentTurnEffects[$i], $mainPlayer);
-      if ($card != "-") $card->EffectChainClosedEffect($i);
-      switch ($effectID) {
-        case "kunai_of_retribution":
-        case "kunai_of_retribution_r":
-          $uniqueID = $effectParts[1];
-          $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
-          if ($index != -1) DestroyCharacter($mainPlayer, $index);
-          break;
-        case "breakwater_undertow":
-          $uniqueID = explode("-", $currentTurnEffects[$i+2], 2)[1];
-          $index = SearchAlliesForUniqueID($uniqueID, $mainPlayer);
-          if ($index != -1) DestroyAlly($mainPlayer, $index);
-          RemoveCurrentTurnEffect($i);
-          break;
-        default:
-          break;
-      }
+    $card = GetClass($currentTurnEffects[$i], $mainPlayer);
+    if ($card != "-") $card->EffectChainClosedEffect($i);
+    switch ($effectID) {
+      case "kunai_of_retribution":
+      case "kunai_of_retribution_r":
+        $uniqueID = $effectParts[1];
+        $index = FindCharacterIndexUniqueID($mainPlayer, $uniqueID);
+        if ($index != -1) DestroyCharacter($mainPlayer, $index);
+        break;
+      case "breakwater_undertow":
+        $uniqueID = explode("-", $currentTurnEffects[$i+2], 2)[1];
+        $index = SearchAlliesForUniqueID($uniqueID, $mainPlayer);
+        if ($index != -1) DestroyAlly($mainPlayer, $index);
+        RemoveCurrentTurnEffect($i);
+        break;
+      default:
+        break;
     }
   }
 }

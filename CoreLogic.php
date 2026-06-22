@@ -2022,10 +2022,14 @@ function ClassOverride($cardID, $player)
   }
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
+  $shiyanaTarget = $otherCharacter[0] . "-SHIYANA";
+  $eraseFaceRed = false;
+  $shiyanaFound = false;
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] != $player) continue;
-    switch ($currentTurnEffects[$i]) {
+    $effectID = $currentTurnEffects[$i];
+    switch ($effectID) {
       case "phantasmify_red":
       case "phantasmify_yellow":
       case "phantasmify_blue":
@@ -2037,14 +2041,18 @@ function ClassOverride($cardID, $player)
       case "transmogrify_blue":
         $classes[] = "ILLUSIONIST";
         break;
+      case "erase_face_red":
+        $eraseFaceRed = true;
+        break;
       default:
+        if ($effectID === $shiyanaTarget) $shiyanaFound = true;
         break;
     }
   }
-  if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $player)) {
+  if ($shiyanaFound) {
     $classes[] = CardClass($otherCharacter[0]) . ",SHAPESHIFTER";
   }
-  if (!SearchCurrentTurnEffects("erase_face_red", $player)) {
+  if (!$eraseFaceRed) {
     $classes[] = CardClass($cardID);
   }
   if (empty($classes)) return "NONE";
@@ -2060,10 +2068,21 @@ function NameOverride($cardID, $player = "")
 
 function ColorOverride($cardID, $player = "")
 {
-  global $CurrentTurnEffects;
+  global $CurrentTurnEffects, $currentTurnEffects;
   $pitch = PitchValue($cardID);
   if ($cardID == "goldfin_harpoon_yellow") $pitch = 2;
-  if (SearchCurrentTurnEffects("blanch_red", $player) || SearchCurrentTurnEffects("blanch_yellow", $player) || SearchCurrentTurnEffects("blanch_blue", $player)) $pitch = 0;
+  $currentTurnEffectsCount  = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  $blanched  = false;
+  for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
+    if (!isset($currentTurnEffects[$j + 1]) || $currentTurnEffects[$j + 1] != $player) continue;
+    $eff = $currentTurnEffects[$j];
+    if ($eff === "blanch_red" || $eff === "blanch_yellow" || $eff === "blanch_blue") {
+      $blanched = true;
+      break;
+    }
+  }
+  if ($blanched) $pitch = 0;
   $numCurrentTurnEffects = $CurrentTurnEffects->NumEffects();
   for ($i = 0; $i < $numCurrentTurnEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
@@ -2082,7 +2101,7 @@ function ColorOverride($cardID, $player = "")
         }
         break;
       default:
-      break;  
+      break;
     }
   }
   return $pitch;
@@ -2155,8 +2174,7 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
         $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
         if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
       }
-    }
-    if ($cardID == "adaptive_dissolver") {
+    } elseif ($cardID == "adaptive_dissolver") {
       if ($subtype == "Base") return true;
       $target = "adaptive_dissolver-" . $uniqueID;
       for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
@@ -2164,8 +2182,7 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
         $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
         if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
       }
-    }
-    if ($cardID == "adaptive_alpha_mold") {
+    } else { // adaptive_alpha_mold
       if ($subtype == "Base") return true;
       $target = "adaptive_alpha_mold-" . $uniqueID;
       for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
@@ -2185,11 +2202,12 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
+    if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $player) continue;
     $effectArr = explode("-", $currentTurnEffects[$i], 2);
     $modName = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
     if ($partial && $modName !== "") $modName = str_replace(" ", ",", $modName);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
-    if ($modName != "" && $currentTurnEffects[$i + 1] == $player && DelimStringContains($modName, $name, $partial)) return true;
+    if ($modName != "" && DelimStringContains($modName, $name, $partial)) return true;
   }
   if ($partial) $cardName = str_replace(" ", ",", $cardName);
   if ($cardName == $name) return true; //Card is breaking due to comma
@@ -2200,6 +2218,7 @@ function TalentOverride($cardID, $player = "", $zone="-")
 {
   global $currentTurnEffects;
   $talents = [];
+  $erasedFace = false;
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
@@ -2228,11 +2247,14 @@ function TalentOverride($cardID, $player = "", $zone="-")
           $talents[] = "DRACONIC";
         }
         break;
+      case "erase_face_red":
+        $erasedFace = true;
+        break;
       default:
         break;
     }
   }
-  if (!SearchCurrentTurnEffects("erase_face_red", $player)) {
+  if (!$erasedFace) {
     $talents[] = CardTalent($cardID, $zone);
   }
   if ($cardID == "colors_of_aria_red" && ($zone == "HAND"|| $zone == "DECK")) {
@@ -2253,7 +2275,9 @@ function TalentContains($cardID, $talent, $player = "")
 function TalentContainsAny($cardID, $talents, $player = "", $zone="-")
 {
   $cardTalent = TalentOverride($cardID, $player, $zone);
-  //Loop over current turn effects to find modifiers
+  if (strpos($talents, ",") === false) {
+    return DelimStringContains($cardTalent, $talents);
+  }
   $talentArr = explode(",", $talents);
   $talentArrCount = count($talentArr);
   for ($i = 0; $i < $talentArrCount; ++$i) {
@@ -3431,12 +3455,11 @@ function IsCardNamed($player, $cardID, $name)
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
+    if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $player) continue;
     $effectArr = explode("-", $currentTurnEffects[$i], 2);
     $givenNames = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
-    $givenNames = explode(",", $givenNames);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
-    foreach($givenNames as $givenName)
-      if ($name == $givenName && $currentTurnEffects[$i + 1] == $player) return true;
+    if ($givenNames != "" && DelimStringContains($givenNames, $name)) return true;
   }
   return false;
 }
@@ -3450,10 +3473,11 @@ function GetCurrentAttackNames()
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
+    if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $mainPlayer) continue;
     $effectArr = explode("-", $currentTurnEffects[$i], 2);
     $name = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $mainPlayer, $combatChain[0]);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
-    if ($name != "" && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
+    if ($name != "" && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
       if (str_contains($name, ","))
         array_push($names, ...explode(",", $name));
       else $names[] = $name;
