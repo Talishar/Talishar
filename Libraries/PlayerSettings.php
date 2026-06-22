@@ -238,6 +238,7 @@ function GetCardBack($player)
     132 => "CBPitchDevils2",
     133 => "RedLine",
     134 => "CBSkillIssue",
+    135 => "CBWingedHussars",
   ];
   return $cardBackMap[$settings[$SET_Cardback] ?? 0] ?? "CardBack";
 }
@@ -680,5 +681,12 @@ function IsTeamSkillIssue($userName)
   static $members = ["Vaxildan" => 1, "kk96" => 1, "Skoupakas69" => 1, "BreakingChaos" => 1, "TheCouncillor" => 1, "JaxC" => 1,
     "Cubacash" => 1, "kungfoukios" => 1, "sudogreeko" => 1, "katsubina" => 1, "NikolasG" => 1, "LegenProMax" => 1,
     "sadonEmsi" => 1, "DioReformed" => 1, "AggroBlazeNo1Fan" => 1, "kenobi" => 1, "Giannis92" => 1, "AssassinoCapuccino" => 1];
+  return isset($members[$userName]);
+}
+
+function IsTeamWingedHussars($userName)
+{
+  static $members = ["Calebovitsch" => 1, "Steve119" => 1, "Lucid" => 1, "Seba" => 1, "raskoks" => 1, "chudy" => 1, "metatron" => 1,
+    "Dovi" => 1, "dssstefan" => 1, "makos" => 1, "RavenLemur" => 1, "XIR" => 1, "PvtVoid" => 1];
   return isset($members[$userName]);
 }
