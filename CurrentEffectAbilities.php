@@ -913,12 +913,11 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
   if (!is_numeric($index)) $index = -1; // sometimes index is getting passed in as ""
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $cardType = CardType($cardID);
-  $hasArtOfDragon = SearchCurrentTurnEffects("art_of_the_dragon_blood_red", $currentPlayer) != "";
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     $effect = $currentTurnEffects[$i];
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      if ($hasArtOfDragon && DelimStringContains($effect, "art_of_the_dragon_blood_red", true)) {
+      if (explode("-", $effect)[0] == "art_of_the_dragon_blood_red") {
         if(TalentContains($cardID, "DRACONIC", $currentPlayer) && !IsStaticType($cardType, $from, $cardID)) {
           $costModifier -= 1;
           --$currentTurnEffects[$i + 3];
