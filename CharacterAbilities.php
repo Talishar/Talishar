@@ -115,7 +115,7 @@ function CharacterCounters($cardID)
 function CharacterStartTurnAbility($index)
 {
   global $mainPlayer, $CS_TunicTicks;
-  $character = GetPlayerCharacter($mainPlayer);
+  $character = &GetPlayerCharacter($mainPlayer);
   if ($character[$index + 1] != 2) return;
   $char = new Character($mainPlayer, $index);
   $cardID = $char->cardID;
@@ -365,7 +365,6 @@ function MainCharacterBeginEndPhaseTriggers()
 
   $defCharacter = &GetPlayerCharacter($defPlayer);
   $defCharCount = count($defCharacter);
-  $characterPieces = CharacterPieces();
   for ($i = 0; $i < $defCharCount; $i += $characterPieces) {
     $characterID = ShiyanaCharacter($defCharacter[$i]);
     switch ($characterID) {
@@ -428,7 +427,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1, $flicked = f
   }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $Character = new PlayerCharacter($mainPlayer);
-  $isAA = $cardID == "-" && CardType($attackID) == "AA" || CardType($cardID) == "AA";
+  $isAA = $cardID == "-" ? CardType($attackID) == "AA" : CardType($cardID) == "AA";
   $damageSource = $cardID != "-" ? $cardID : $attackID;
   $mainCharCount = count($mainCharacter);
   $characterPieces = CharacterPieces();
@@ -599,7 +598,6 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
     }
   }
   if ($onlyBuffs) return $modifier;
-  $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainCharacter);
   $characterPieces = CharacterPieces();
   $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
@@ -707,8 +705,7 @@ function CharacterCostModifier($cardID, $from, $cost)
   $charCount = count($char);
   for ($i = 0; $i < $charCount; $i += $characterPieces) {
     if ($char[$i + 1] >= 3 || $char[$i + 1] == 0) continue;
-    if (CardType($char[$i]) == "C") $thisChar = ShiyanaCharacter($char[$i]);
-    else $thisChar = $char[$i];
+    $thisChar = ShiyanaCharacter($char[$i]);
     $card = GetClass($thisChar, $currentPlayer);
     if ($card != "-") $modifier += $card->StaticCostModifier($cardID, $from, $cost);
     switch ($thisChar) {
@@ -747,8 +744,7 @@ function CharacterCostModifier($cardID, $from, $cost)
         break;
       case "fang_dracai_of_blades":
       case "fang":
-        $fealties = SearchAurasForCardName("Fealty", $currentPlayer);
-        if (SubtypeContains($cardID, "Dagger") && substr_count($fealties, ",") >= 2) --$modifier;
+        if (SubtypeContains($cardID, "Dagger") && substr_count(SearchAurasForCardName("Fealty", $currentPlayer), ",") >= 2) --$modifier;
         break;
       case "evo_beta_base_head_blue":
       case "evo_beta_base_head_blue_equip":
@@ -810,11 +806,10 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND")
   $charCount = count($char);
   $characterPieces = CharacterPieces();
   $negativeCounters = 0;
+  if ($from != "MYDISCARD" && ($cardID == "graven_cowl" || $cardID == "graven_vestment" || $cardID == "graven_gloves" || $cardID == "graven_walkers")) {
+    --$negativeCounters;
+  }
   for ($i = $characterPieces; $i < $charCount && !$replaced; $i += $characterPieces) {
-    $negativeCounters = 0;
-    if ($from != "MYDISCARD" && ($cardID == "graven_cowl" || $cardID == "graven_vestment" || $cardID == "graven_gloves" || $cardID == "graven_walkers")) {
-        --$negativeCounters;
-    }    
     if (SubtypeContains($char[$i], $slot, $player, $uniqueID)) {
       $char[$i] = $cardID;
       $char[$i + 1] = 2;
@@ -954,8 +949,9 @@ function EquipWeapon($player, $cardID, $source = "-")
   $uniqueID = GetUniqueId($cardID, $player);
   $charCount = count($char);
   $characterPieces = CharacterPieces();
+  $is1H = Is1H($cardID);
   //check if you have enough hands to equip it
-  if (Is1H($cardID) && $numHands < 2 || !Is1H($cardID) && $numHands == 0){
+  if ($is1H && $numHands < 2 || !$is1H && $numHands == 0){
     //Replace the first destroyed weapon; if none you can't re-equip
     for ($i = $characterPieces; $i < $charCount && !$replaced; $i += $characterPieces) {
       if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand")) {
@@ -1783,14 +1779,16 @@ function ListExposedEquipSlots($player)
   $character = &GetPlayerCharacter($player);
   $charCount = count($character);
   $characterPieces = CharacterPieces();
-  $available = array_filter(["Head", "Chest", "Arms", "Legs"], function ($slot) use ($character, $charCount, $characterPieces) {
-    for ($i = 0; $i < $charCount; $i += $characterPieces) {
-      $subtype = CardSubType($character[$i], $character[$i + 11]);
-      $status = $character[$i + 1];
-      if (DelimStringContains($subtype, $slot) && $status != 0) return false;
-    }
-    return true;
-  });
+  $exposedSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
+  for ($i = 0; $i < $charCount; $i += $characterPieces) {
+    if ($character[$i + 1] == 0) continue;
+    $subtype = CardSubType($character[$i], $character[$i + 11]);
+    if ($exposedSlots["Head"] && DelimStringContains($subtype, "Head")) $exposedSlots["Head"] = false;
+    if ($exposedSlots["Chest"] && DelimStringContains($subtype, "Chest")) $exposedSlots["Chest"] = false;
+    if ($exposedSlots["Arms"] && DelimStringContains($subtype, "Arms")) $exposedSlots["Arms"] = false;
+    if ($exposedSlots["Legs"] && DelimStringContains($subtype, "Legs")) $exposedSlots["Legs"] = false;
+  }
+  $available = array_keys(array_filter($exposedSlots));
   return empty($available) ? "PASS" : implode(",", $available);
 }
 

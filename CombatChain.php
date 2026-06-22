@@ -21,72 +21,59 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
   if ($card != "-") return $card->HitEffect($cardID, $from, $uniqueID, $target);
   $set = CardSet($cardID);
   $class = CardClass($cardID);
-  if ($set == "WTR") return WTRHitEffect($cardID);
-  else if ($set == "ARC") {
-    switch ($class) {
-      case "MECHANOLOGIST":
-        return ARCMechanologistHitEffect($cardID, $from);
-      case "RANGER":
-        return ARCRangerHitEffect($cardID, $from);
-      case "RUNEBLADE":
-        return ARCRunebladeHitEffect($cardID);
-      case "WIZARD":
-        return ARCWizardHitEffect($cardID);
-      case "GENERIC":
-        return ARCGenericHitEffect($cardID);
-    }
-  } else if ($set == "CRU") return CRUHitEffect($cardID);
-  else if ($set == "MON") {
-    switch ($class) {
-      case "BRUTE":
-        return MONBruteHitEffect($cardID);
-      case "ILLUSIONIST":
-        return MONIllusionistHitEffect($cardID);
-      case "RUNEBLADE":
-        return MONRunebladeHitEffect($cardID);
-      case "WARRIOR":
-        return MONWarriorHitEffect($cardID);
-      case "GENERIC":
-        return MONGenericHitEffect($cardID);
-      case "NONE":
-        return MONTalentHitEffect($cardID);
-      default:
-        return "";
-    }
-  } else if ($set == "ELE") {
-    switch ($class) {
-      case "GUARDIAN":
-        return ELEGuardianHitEffect($cardID);
-      case "RANGER":
-        return ELERangerHitEffect($cardID);
-      case "RUNEBLADE":
-        return ELERunebladeHitEffect($cardID);
-      default:
-        return ELETalentHitEffect($cardID);
-    }
-  } else if ($set == "EVR") return EVRHitEffect($cardID, $target);
-  else if ($set == "UPR") return UPRHitEffect($cardID);
-  else if ($set == "DYN") return DYNHitEffect($cardID, $from, $CombatChain->AttackCard()->ID());
-  else if ($set == "OUT") return OUTHitEffect($cardID, $from);
-  else if ($set == "DTD") return DTDHitEffect($cardID);
-  else if ($set == "TCC") return TCCHitEffect($cardID);
-  else if ($set == "EVO") return EVOHitEffect($cardID);
-  else if ($set == "HVY") return HVYHitEffect($cardID);
-  else if ($set == "AKO") return AKOHitEffect($cardID);
-  else if ($set == "MST") return MSTHitEffect($cardID, $from);
-  else if ($set == "AAZ") return AAZHitEffect($cardID);
-  else if ($set == "AUR") return AURHitEffect($cardID);
-  else if ($set == "ROS") return ROSHitEffect($cardID);
-  else if ($set == "AJV") return AJVHitEffect($cardID);
-  else if ($set == "HNT") return HNTHitEffect($cardID, $uniqueID, target:$target);
-  else if ($set == "SEA") return SEAHitEffect($cardID);
-  else if ($set == "ASR") return ASRHitEffect($cardID);
-  else if ($set == "SUP") return SUPHitEffect($cardID);
-  else if ($set == "APS") return APSHitEffect($cardID);
-  else if ($set == "ARR") return ARRHitEffect($cardID);
-  else if ($set == "AAC") return AACHitEffect($cardID, $target);
-  else if ($set == "PEN") return PENHitEffect($cardID);
-  else return -1;
+  switch ($set) {
+    case "WTR": return WTRHitEffect($cardID);
+    case "ARC":
+      switch ($class) {
+        case "MECHANOLOGIST": return ARCMechanologistHitEffect($cardID, $from);
+        case "RANGER":        return ARCRangerHitEffect($cardID, $from);
+        case "RUNEBLADE":     return ARCRunebladeHitEffect($cardID);
+        case "WIZARD":        return ARCWizardHitEffect($cardID);
+        case "GENERIC":       return ARCGenericHitEffect($cardID);
+      }
+      break;
+    case "CRU": return CRUHitEffect($cardID);
+    case "MON":
+      switch ($class) {
+        case "BRUTE":       return MONBruteHitEffect($cardID);
+        case "ILLUSIONIST": return MONIllusionistHitEffect($cardID);
+        case "RUNEBLADE":   return MONRunebladeHitEffect($cardID);
+        case "WARRIOR":     return MONWarriorHitEffect($cardID);
+        case "GENERIC":     return MONGenericHitEffect($cardID);
+        case "NONE":        return MONTalentHitEffect($cardID);
+        default:            return "";
+      }
+    case "ELE":
+      switch ($class) {
+        case "GUARDIAN":  return ELEGuardianHitEffect($cardID);
+        case "RANGER":    return ELERangerHitEffect($cardID);
+        case "RUNEBLADE": return ELERunebladeHitEffect($cardID);
+        default:          return ELETalentHitEffect($cardID);
+      }
+    case "EVR": return EVRHitEffect($cardID, $target);
+    case "UPR": return UPRHitEffect($cardID);
+    case "DYN": return DYNHitEffect($cardID, $from, $CombatChain->AttackCard()->ID());
+    case "OUT": return OUTHitEffect($cardID, $from);
+    case "DTD": return DTDHitEffect($cardID);
+    case "TCC": return TCCHitEffect($cardID);
+    case "EVO": return EVOHitEffect($cardID);
+    case "HVY": return HVYHitEffect($cardID);
+    case "AKO": return AKOHitEffect($cardID);
+    case "MST": return MSTHitEffect($cardID, $from);
+    case "AAZ": return AAZHitEffect($cardID);
+    case "AUR": return AURHitEffect($cardID);
+    case "ROS": return ROSHitEffect($cardID);
+    case "AJV": return AJVHitEffect($cardID);
+    case "HNT": return HNTHitEffect($cardID, $uniqueID, target:$target);
+    case "SEA": return SEAHitEffect($cardID);
+    case "ASR": return ASRHitEffect($cardID);
+    case "SUP": return SUPHitEffect($cardID);
+    case "APS": return APSHitEffect($cardID);
+    case "ARR": return ARRHitEffect($cardID);
+    case "AAC": return AACHitEffect($cardID, $target);
+    case "PEN": return PENHitEffect($cardID);
+  }
+  return -1;
 }
 
 function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
@@ -567,7 +554,8 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
 function CombatChainBlockModifiers($cardID, $from, $index) {
   global $CombatChain;
   $block = 0;
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numCardsActiveLink = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $numCardsActiveLink; ++$i) {
     $LinkCard = $CombatChain->Card($i, true);
     $card = GetClass($LinkCard->ID(), $LinkCard->PlayerID());
     if ($card != "-") $block += $card->CombatChainBlockModifier($cardID, $from, $index, $i);
@@ -609,7 +597,8 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
       }
     }
   }
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numActiveLink = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $numActiveLink; ++$i) {
     $ChainCard = $CombatChain->Card($i, true);
     if ($ChainCard->PlayerID() == $defPlayer) {
       switch ($ChainCard->ID()) {
@@ -951,7 +940,6 @@ function OnBlockResolveEffects($cardID = "")
     switch ($combatChain[0]) {
       case "cintari_saber":
       case "cintari_saber_r":
-        $combatChainCount = count($combatChain);
         for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
           $LinkCard = new ChainCard($i);
           if (TypeContains($LinkCard->ID(), "AA")) {
@@ -1004,7 +992,6 @@ function OnBlockResolveEffects($cardID = "")
       case "spark_spray_yellow":
       case "spark_spray_blue":
         $numBlocking = 0;
-        $combatChainCount = count($combatChain);
         for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
           if ($combatChain[$i+1] == $defPlayer) $numBlocking += 1;
         }
@@ -1585,7 +1572,7 @@ function IsDominateActive()
   }
   $attackCardID = $CombatChain->AttackCard()->ID();
   $extraText = GetHorrorsBuff();
-  $textBoxes = [$attackCardID, $extraText];
+  $textBoxes = $extraText !== "-" ? [$attackCardID, $extraText] : [$attackCardID];
   foreach ($textBoxes as $box) {
     switch ($box) {
       case "open_the_center_red":
@@ -2025,7 +2012,8 @@ function ActiveOnHits(): bool
 {
   global $CombatChain, $currentTurnEffects, $mainPlayer, $defPlayer;
   if (!$CombatChain->HasCurrentLink()) return false;
-  $attackCardID = $CombatChain->AttackCard()->ID();
+  $attackCard = $CombatChain->AttackCard();
+  $attackCardID = $attackCard->ID();
   if (AddOnHitTrigger($attackCardID, check: true)) return true;
   if (ItemHitTrigger($attackCardID, check: true)) return true;
   if (MainCharacterHitEffects(check: true)) return true;
@@ -2041,7 +2029,7 @@ function ActiveOnHits(): bool
       }
     }
   }
-  foreach(explode(",", $CombatChain->AttackCard()->StaticBuffs()) as $effectSetID) {
+  foreach(explode(",", $attackCard->StaticBuffs()) as $effectSetID) {
     $effect = ConvertToCardID($effectSetID);
     if (IsCombatEffectActive($effect)) {
       if (AddEffectHitTrigger($effect, source:$attackCardID, target:$target, check:true)) return true;// Effects that do gives their effect to the attack
@@ -2245,7 +2233,8 @@ function CombatChainHitEffects($sourceID="-", $targetPlayer="-") {
     CombatChainHitEffect($CombatChain->AttackCard()->ID(), $sourceID, $targetPlayer);
   }
 
-  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+  $numLinks = $ChainLinks->NumLinks();
+  for ($i = 0; $i < $numLinks; ++$i) {
     $attackCard = $ChainLinks->GetLink($i)->GetLinkCard(0)->ID();
     CombatChainHitEffect($attackCard, $sourceID, $targetPlayer);
   }
@@ -2278,7 +2267,8 @@ function CombatChainTakeDamageAbilities($player, $damage, $type, $source) {
   $vambraceRemove = false;
   $preventedDamage = 0;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numActiveLink = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $numActiveLink; ++$i) {
     $ChainCard = $CombatChain->Card($i, true);
     if ($player != $ChainCard->PlayerID()) continue;
     $card = GetClass($ChainCard->ID(), $player);
@@ -2287,9 +2277,11 @@ function CombatChainTakeDamageAbilities($player, $damage, $type, $source) {
       if ($preventable) $preventedDamage += $prevention;
     }
   }
-  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+  $numLinks = $ChainLinks->NumLinks();
+  for ($i = 0; $i < $numLinks; ++$i) {
     $Link = $ChainLinks->GetLink($i);
-    for ($j = 0; $j < $Link->NumCards(); ++$j) {
+    $numLinkCards = $Link->NumCards();
+    for ($j = 0; $j < $numLinkCards; ++$j) {
       $ChainCard = $Link->GetLinkCard($j, true);
       if ($player != $ChainCard->PlayerID()) continue;
       $card = GetClass($ChainCard->ID(), $player);
@@ -2315,7 +2307,8 @@ function StackTakeDamageAbilities($player, $damage, $type, $source) {
   $vambraceRemove = false;
   $preventedDamage = 0;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
-  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+  $numLayers = $Stack->NumLayers();
+  for ($i = 0; $i < $numLayers; ++$i) {
     $Layer = $Stack->Card($i, true);
     if ($Layer->PlayerID() != $player) continue;
     $card = GetClass($Layer->ID(), $player);

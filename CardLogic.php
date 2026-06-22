@@ -758,7 +758,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
   if (CardType($cardID) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") return $card->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
-  // O(1) hash lookup replacing ~250 sequential switch-case comparisons for unconditional AnyHitTrigger cards
   static $directAnyHitCards = [
     "snatch_red"=>true,"snatch_yellow"=>true,"snatch_blue"=>true,
     "pedal_to_the_metal_red"=>true,"pedal_to_the_metal_yellow"=>true,"pedal_to_the_metal_blue"=>true,
@@ -870,7 +869,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "blow_for_a_blow_red"=>true,"bittering_thorns_blue"=>true,
   ];
   if (isset($directAnyHitCards[$cardID])) return AnyHitTrigger($mainPlayer, $cardID, $check);
-  // O(1) hash lookup replacing ~70 sequential switch-case comparisons for hero-hit-only cards
   static $heroHitCards = [
     "command_and_conquer_red"=>true,
     "searing_shot_red"=>true,"searing_shot_yellow"=>true,"searing_shot_blue"=>true,
@@ -921,287 +919,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     return false;
   }
   switch ($cardID) {
-    case "snatch_red":
-    case "snatch_yellow":
-    case "snatch_blue":
-    case "pedal_to_the_metal_red":
-    case "pedal_to_the_metal_yellow":
-    case "pedal_to_the_metal_blue":
-    case "over_loop_red":
-    case "over_loop_yellow":
-    case "over_loop_blue":
-    case "red_in_the_ledger_red":
-    case "endless_arrow_red":
-    case "hamstring_shot_red":
-    case "hamstring_shot_yellow":
-    case "hamstring_shot_blue":
-    case "salvage_shot_red":
-    case "salvage_shot_yellow":
-    case "salvage_shot_blue":
-    case "nebula_blade":
-    case "arknight_ascendancy_red":
-    case "life_for_a_life_red":
-    case "life_for_a_life_yellow":
-    case "life_for_a_life_blue":
-    case "pursuit_of_knowledge_blue":
-    case "cadaverous_contraband_red":
-    case "cadaverous_contraband_yellow":
-    case "cadaverous_contraband_blue":
-    case "fervent_forerunner_red":
-    case "fervent_forerunner_yellow":
-    case "fervent_forerunner_blue":
-    case "moon_wish_red":
-    case "moon_wish_yellow":
-    case "moon_wish_blue":
-    case "rifting_red":
-    case "rifting_yellow":
-    case "rifting_blue":
-    case "soulbead_strike_red":
-    case "soulbead_strike_yellow":
-    case "soulbead_strike_blue":
-    case "torrent_of_tempo_red":
-    case "torrent_of_tempo_yellow":
-    case "torrent_of_tempo_blue":
-    case "bittering_thorns_yellow":
-    case "whirling_mist_blossom_yellow":
-    case "high_speed_impact_red":
-    case "high_speed_impact_yellow":
-    case "high_speed_impact_blue":
-    case "combustible_courier_red":
-    case "combustible_courier_yellow":
-    case "combustible_courier_blue":
-    case "remorseless_red":
-    case "pathing_helix_red":
-    case "pathing_helix_yellow":
-    case "pathing_helix_blue":
-    case "sleep_dart_red":
-    case "sleep_dart_yellow":
-    case "sleep_dart_blue":
-    case "dread_triptych_blue":
-    case "consuming_volition_red":
-    case "consuming_volition_yellow":
-    case "consuming_volition_blue":
-    case "meat_and_greet_red":
-    case "meat_and_greet_yellow":
-    case "meat_and_greet_blue":
-    case "coax_a_commotion_red":
-    case "promise_of_plenty_red":
-    case "promise_of_plenty_yellow":
-    case "promise_of_plenty_blue":
-    case "herald_of_erudition_yellow":
-    case "herald_of_judgment_yellow":
-    case "herald_of_triumph_red":
-    case "herald_of_triumph_yellow":
-    case "herald_of_triumph_blue":
-    case "herald_of_protection_red":
-    case "herald_of_protection_yellow":
-    case "herald_of_protection_blue":
-    case "herald_of_ravages_red":
-    case "herald_of_ravages_yellow":
-    case "herald_of_ravages_blue":
-    case "herald_of_rebirth_red":
-    case "herald_of_rebirth_yellow":
-    case "herald_of_rebirth_blue":
-    case "herald_of_tenacity_red":
-    case "herald_of_tenacity_yellow":
-    case "herald_of_tenacity_blue":
-    case "wartune_herald_red":
-    case "wartune_herald_yellow":
-    case "wartune_herald_blue":
-    case "galaxxi_black":
-    case "brandish_red":
-    case "brandish_yellow":
-    case "brandish_blue":
-    case "overload_red":
-    case "overload_yellow":
-    case "overload_blue":
-    case "illuminate_red":
-    case "illuminate_yellow":
-    case "illuminate_blue":
-    case "rising_solartide_red":
-    case "rising_solartide_yellow":
-    case "rising_solartide_blue":
-    case "soul_harvest_blue":
-    case "lunartide_plunderer_red":
-    case "lunartide_plunderer_yellow":
-    case "lunartide_plunderer_blue":
-    case "oldhim_grandfather_of_eternity":
-    case "oldhim":
-    case "endless_winter_red":
-    case "awakening_blue":
-    case "tear_asunder_blue":
-    case "embolden_red":
-    case "embolden_yellow":
-    case "embolden_blue":
-    case "light_it_up_yellow":
-    case "frost_fang_red":
-    case "frost_fang_yellow":
-    case "frost_fang_blue":
-    case "icy_encounter_red":
-    case "icy_encounter_yellow":
-    case "icy_encounter_blue":
-    case "pulverize_red":
-    case "spring_tidings_yellow":
-    case "ride_the_tailwind_red":
-    case "ride_the_tailwind_yellow":
-    case "ride_the_tailwind_blue":
-    case "battering_bolt_red":
-    case "fatigue_shot_red":
-    case "fatigue_shot_yellow":
-    case "fatigue_shot_blue":
-    case "timidity_point_red":
-    case "timidity_point_yellow":
-    case "timidity_point_blue":
-    case "drowning_dire_red":
-    case "drowning_dire_yellow":
-    case "drowning_dire_blue":
-    case "reek_of_corruption_red":
-    case "reek_of_corruption_yellow":
-    case "reek_of_corruption_blue":
-    case "bingo_red":
-    case "dustup_red":
-    case "dustup_yellow":
-    case "dustup_blue":
-    case "kyloria":
-    case "nekria":
-    case "vynserakai":
-    case "engulfing_flamewave_red":
-    case "engulfing_flamewave_yellow":
-    case "engulfing_flamewave_blue":
-    case "mounting_anger_red":
-    case "mounting_anger_yellow":
-    case "mounting_anger_blue":
-    case "rising_resentment_red":
-    case "rising_resentment_yellow":
-    case "rising_resentment_blue":
-    case "soaring_strike_red":
-    case "soaring_strike_yellow":
-    case "soaring_strike_blue":
-    case "take_the_tempo_red":
-    case "stoke_the_flames_red":
-    case "erase_face_red":
-    case "vipox_red":
-    case "flex_claws_red":
-    case "flex_claws_yellow":
-    case "flex_claws_blue":
-    case "jubeel_spellbane":
-    case "urgent_delivery_red":
-    case "urgent_delivery_yellow":
-    case "urgent_delivery_blue":
-    case "heat_seeker_red":
-    case "immobilizing_shot_red":
-    case "drill_shot_red":
-    case "drill_shot_yellow":
-    case "drill_shot_blue":
-    case "hemorrhage_bore_red":
-    case "hemorrhage_bore_yellow":
-    case "hemorrhage_bore_blue":
-    case "infiltrate_red":
-    case "infect_red":
-    case "infect_yellow":
-    case "infect_blue":
-    case "sedate_red":
-    case "sedate_yellow":
-    case "sedate_blue":
-    case "wither_red":
-    case "wither_yellow":
-    case "wither_blue":
-    case "wander_with_purpose_yellow":
-    case "be_like_water_red":
-    case "be_like_water_yellow":
-    case "be_like_water_blue":
-    case "deadly_duo_red":
-    case "deadly_duo_yellow":
-    case "deadly_duo_blue":
-    case "barbed_undertow_red":
-    case "infecting_shot_red":
-    case "infecting_shot_yellow":
-    case "infecting_shot_blue":
-    case "sedation_shot_red":
-    case "sedation_shot_yellow":
-    case "sedation_shot_blue":
-    case "withering_shot_red":
-    case "withering_shot_yellow":
-    case "withering_shot_blue":
-    case "plunge_red":
-    case "plunge_yellow":
-    case "plunge_blue":
-    case "death_touch_red":
-    case "death_touch_yellow":
-    case "death_touch_blue":
-    case "amnesia_red":
-    case "humble_red":
-    case "humble_yellow":
-    case "humble_blue":
-    case "cut_down_to_size_red":
-    case "cut_down_to_size_yellow":
-    case "cut_down_to_size_blue":
-    case "destructive_deliberation_red":
-    case "destructive_deliberation_yellow":
-    case "destructive_deliberation_blue":
-    case "lay_to_rest_red":
-    case "lay_to_rest_yellow":
-    case "lay_to_rest_blue":
-    case "flail_of_agony":
-    case "hungering_demigon_red":
-    case "hungering_demigon_yellow":
-    case "hungering_demigon_blue":
-    case "nasreth_the_soul_harrower":
-    case "censor_red":
-    case "mischievous_meeps_red":
-    case "under_loop_red":
-    case "jinglewood_smash_hit":
-    case "bittering_thorns_red":
-    case "banksy":
-    case "heist_red":
-    case "spring_a_leak_red":
-    case "spring_a_leak_yellow":
-    case "spring_a_leak_blue":
-    case "data_link_red":
-    case "data_link_yellow":
-    case "data_link_blue":
-    case "dive_through_data_red":
-    case "dive_through_data_yellow":
-    case "dive_through_data_blue":
-    case "expedite_red":
-    case "expedite_yellow":
-    case "expedite_blue":
-    case "metex_red":
-    case "metex_yellow":
-    case "metex_blue":
-    case "under_loop_yellow":
-    case "under_loop_blue":
-    case "already_dead_red":
-    case "intoxicating_shot_blue":
-    case "millers_grindstone":
-    case "pay_up_red":
-    case "performance_bonus_red":
-    case "performance_bonus_yellow":
-    case "performance_bonus_blue":
-    case "judge_jury_executioner_red":
-    case "strength_rules_all_red":
-    case "beckoning_mistblade":
-    case "biting_breeze_red":
-    case "biting_breeze_yellow":
-    case "biting_breeze_blue":
-    case "murky_water_red":
-    case "earth_form_red":
-    case "earth_form_yellow":
-    case "earth_form_blue":
-    case "lightning_form_red":
-    case "lightning_form_yellow":
-    case "lightning_form_blue":
-    case "splintering_deadwood_red":
-    case "splintering_deadwood_yellow":
-    case "splintering_deadwood_blue":
-    case "summit_the_unforgiving":
-    case "devotion_never_dies_red":
-    case "strike_gold_red":
-    case "strike_gold_yellow":
-    case "strike_gold_blue":
-    case "blow_for_a_blow_red":
-    case "bittering_thorns_blue":
-      return AnyHitTrigger($mainPlayer, $cardID, $check);
     case "nourishing_emptiness_red":
       if (SearchDiscard($mainPlayer, "AA") == "") {
         return AnyHitTrigger($mainPlayer, $cardID, $check);
@@ -1231,119 +948,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
       else return false;
     case "breaking_point_red":
       if(IsHeroAttackTarget() && RuptureActive()) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
-        return true;
-      }
-      break;
-    case "command_and_conquer_red":
-    case "searing_shot_red":
-    case "searing_shot_yellow":
-    case "searing_shot_blue":
-    case "persuasive_prognosis_blue":
-    case "art_of_desire_body_red":
-    case "art_of_desire_soul_yellow":
-    case "art_of_desire_mind_blue":
-    case "bonds_of_attraction_red":
-    case "bonds_of_attraction_yellow":
-    case "bonds_of_attraction_blue":
-    case "bonds_of_memory_red":
-    case "bonds_of_memory_yellow":
-    case "bonds_of_memory_blue":
-    case "desires_of_flesh_red":
-    case "desires_of_flesh_yellow":
-    case "desires_of_flesh_blue":
-    case "impulsive_desire_red":
-    case "impulsive_desire_yellow":
-    case "impulsive_desire_blue":
-    case "minds_desire_red":
-    case "minds_desire_yellow":
-    case "minds_desire_blue":
-    case "rowdy_locals_blue":
-    case "the_weakest_link_red":
-    case "blanch_red":
-    case "blanch_yellow":
-    case "blanch_blue":
-    case "factfinding_mission_red":
-    case "factfinding_mission_yellow":
-    case "factfinding_mission_blue":
-    case "static_shock_red":
-    case "static_shock_yellow":
-    case "snuff_out_red":
-    case "cut_through_the_facade_red":
-    case "hand_behind_the_pen_red":
-    case "smash_up_red":
-    case "tongue_tied_red":
-    case "splatter_skull_red":
-    case "mark_the_prey_red":
-    case "mark_the_prey_yellow":
-    case "mark_the_prey_blue":
-    case "tag_the_target_red":
-    case "tag_the_target_yellow":
-    case "tag_the_target_blue":
-    case "trap_and_release_red":
-    case "trap_and_release_yellow":
-    case "trap_and_release_blue":
-    case "pursue_to_the_edge_of_oblivion_red":
-    case "pursue_to_the_pits_of_despair_red":
-    case "conqueror_of_the_high_seas_red":
-    case "cogwerx_dovetail_red":
-    case "cloud_city_steamboat_red":
-    case "cloud_city_steamboat_yellow":
-    case 'cloud_city_steamboat_blue':
-    case "cogwerx_zeppelin_red":
-    case "cogwerx_zeppelin_yellow":
-    case "cogwerx_zeppelin_blue":
-    case "hms_barracuda_yellow":
-    case "hms_kraken_yellow":
-    case "hms_marlin_yellow":
-    case "pilfer_the_wreck_red":
-    case "pilfer_the_wreck_yellow":
-    case "pilfer_the_wreck_blue":
-    case "crash_down_the_gates_red":
-    case "crash_down_the_gates_yellow":
-    case "crash_down_the_gates_blue":
-    case "undercover_acquisition_red":
-    case "jack_be_nimble_red":
-    case "jack_be_quick_red":
-    case "money_or_your_life_red":
-    case "money_or_your_life_yellow":
-    case "money_or_your_life_blue":
-    case "bam_bam_yellow":
-    case "wreck_havoc_red":
-    case "wreck_havoc_yellow":
-    case "wreck_havoc_blue":
-    case "send_packing_yellow":
-    case "stab_wound_blue":
-    case "old_leather_and_vim_red":
-    case "uplifting_performance_blue":
-    case "offensive_behavior_blue":
-    case "spew_obscenities_yellow":
-    case "eradicate_yellow":
-    case "regicide_blue":
-    case "leave_no_witnesses_red":
-    case "surgical_extraction_blue":
-    case "plunder_the_poor_red":
-    case "plunder_the_poor_yellow":
-    case "plunder_the_poor_blue":
-    case "rob_the_rich_red":
-    case "rob_the_rich_yellow":
-    case "rob_the_rich_blue":
-    case "annihilate_the_armed_red":
-    case "annihilate_the_armed_yellow":
-    case "annihilate_the_armed_blue":
-    case "fleece_the_frail_red":
-    case "fleece_the_frail_yellow":
-    case "fleece_the_frail_blue":
-    case "nix_the_nimble_red":
-    case "nix_the_nimble_yellow":
-    case "nix_the_nimble_blue":
-    case "sack_the_shifty_red":
-    case "sack_the_shifty_yellow":
-    case "sack_the_shifty_blue":
-    case "slay_the_scholars_red":
-    case "slay_the_scholars_yellow":
-    case "slay_the_scholars_blue":
-      if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
@@ -1592,7 +1196,6 @@ function AddCrushEffectTrigger($cardID)
   }
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") return $card->AddCrushEffectTrigger();
-  // O(1) hash lookup replacing ~25 sequential switch-case comparisons for unconditional crush cards
   static $directCrushCards = [
     "crippling_crush_red"=>true,"spinal_crush_red"=>true,"cranial_crush_blue"=>true,
     "disable_red"=>true,"disable_yellow"=>true,"disable_blue"=>true,
@@ -1617,47 +1220,6 @@ function AddCrushEffectTrigger($cardID)
     return false;
   }
   switch ($cardID) {
-    case "crippling_crush_red":
-    case "spinal_crush_red":
-    case "cranial_crush_blue":
-    case "disable_red":
-    case "disable_yellow":
-    case "disable_blue":
-    case "buckling_blow_red":
-    case "buckling_blow_yellow":
-    case "buckling_blow_blue":
-    case "cartilage_crush_red":
-    case "cartilage_crush_yellow":
-    case "cartilage_crush_blue":
-    case "crush_confidence_red":
-    case "crush_confidence_yellow":
-    case "crush_confidence_blue":
-    case "debilitate_red":
-    case "debilitate_yellow":
-    case "debilitate_blue":
-    case "righteous_cleansing_yellow":
-    case "crush_the_weak_red":
-    case "crush_the_weak_yellow":
-    case "crush_the_weak_blue":
-    case "chokeslam_red":
-    case "chokeslam_yellow":
-    case "chokeslam_blue":
-    case "star_struck_yellow":
-    case "boulder_drop_yellow":
-    case "boulder_drop_blue":
-    case "boulder_drop_red":
-    case "put_em_in_their_place_red":
-    case "batter_to_a_pulp_red":
-    case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
-    case "flatten_the_field_red": case "flatten_the_field_yellow": case "flatten_the_field_blue":
-    case "knock_em_off_their_feet_red":
-    case "break_stature_yellow":
-    case "headbutt_blue":
-    case "fault_line_red":
-    case "hostile_encroachment_red":
-    case "renounce_grandeur_red":
-      AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "CRUSHEFFECT");
-      break;
     case "mangle_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;hasNegCounters=true");
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_an_equipment_to_destroy", 1);
@@ -4950,7 +4512,8 @@ function TopDeckToArsenal($player)
 function DiscardHand($player, $mainPhase = true)
 {
   $hand = &GetHand($player);
-  for ($i = count($hand) - HandPieces(); $i >= 0; $i -= HandPieces()) {
+  $handPieces = HandPieces();
+  for ($i = count($hand) - $handPieces; $i >= 0; $i -= $handPieces) {
     DiscardCard($player, $i, mainPhase: $mainPhase);
   }
 }
@@ -5010,8 +4573,9 @@ function DiscardRandom($player = "", $source = "", $effectController = "")
 function PitchRandom($player)
 {
   $hand = &GetHand($player);
-  if (count($hand) == 0) return "";
-  $index = (count($hand) > 1) ? GetRandom(0, count($hand) - 1) : 0;
+  $handCount = count($hand);
+  if ($handCount == 0) return "";
+  $index = ($handCount > 1) ? GetRandom(0, $handCount - 1) : 0;
   $pitched = $hand[$index];
   unset($hand[$index]);
   $hand = array_values($hand);
@@ -5029,13 +4593,15 @@ function DiscardedAtRandomEffects($player, $discarded, $source)
     AddLayer("TRIGGER", $player, "berserk_yellow");
   }
   $character = GetPlayerCharacter($player);
-  $index = FindCharacterIndex($player, "beaten_trackers");
-  if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && $player == $mainPlayer && ModifiedPowerValue($discarded, $player, "GY", "HAND") >= 6) {
-    AddLayer("TRIGGER", $player, $character[$index]);
-  }
-  $index = FindCharacterIndex($player, "hide_tanner");
-  if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && $player == $mainPlayer && ModifiedPowerValue($discarded, $player, "GY", "HAND") >= 6) {
-    AddLayer("TRIGGER", $player, $character[$index]);
+  if ($player == $mainPlayer) {
+    $index = FindCharacterIndex($player, "beaten_trackers");
+    if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && ModifiedPowerValue($discarded, $player, "GY", "HAND") >= 6) {
+      AddLayer("TRIGGER", $player, $character[$index]);
+    }
+    $index = FindCharacterIndex($player, "hide_tanner");
+    if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && ModifiedPowerValue($discarded, $player, "GY", "HAND") >= 6) {
+      AddLayer("TRIGGER", $player, $character[$index]);
+    }
   }
   switch ($discarded) {
     case "skull_crack_red":

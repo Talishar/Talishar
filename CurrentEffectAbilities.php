@@ -8,13 +8,14 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
   global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia, $Card_LifeBanner, $Card_ResourceBanner, $layers, $EffectContext;
   global $chainLinks, $chainLinkSummary, $CCS_AttackTargetUID;
   $attackID = $CombatChain->AttackCard()->ID();
+  $layerCheck = count($layers) < LayerPieces();
   if ($source == "-") {
-    if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
+    if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, $layerCheck)) {
       WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
       return true;
     }
   }
-  else if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) < LayerPieces())) {
+  else if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, $layerCheck)) {
     WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
     return true;
   }
@@ -56,9 +57,11 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "mauvrion_skies_yellow":
     case "mauvrion_skies_blue":
       if (ClassContains($attackID, "RUNEBLADE", $mainPlayer)) {
-        if ($cardID == "mauvrion_skies_red") $amount = 3;
-        else if ($cardID == "mauvrion_skies_yellow") $amount = 2;
-        else $amount = 1;
+        $amount = match($cardID) {
+          "mauvrion_skies_red" => 3,
+          "mauvrion_skies_yellow" => 2,
+          default => 1,
+        };
         PlayAura("runechant", $mainPlayer, $amount);
       }
       break;
@@ -187,9 +190,11 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "electrify_yellow":
     case "electrify_blue":
       if (IsHeroAttackTarget()) {
-        if ($cardID == "electrify_red") $damage = 3;
-        else if ($cardID == "electrify_yellow") $damage = 2;
-        else $damage = 1;
+        $damage = match($cardID) {
+          "electrify_red" => 3,
+          "electrify_yellow" => 2,
+          default => 1,
+        };
         DamageTrigger($defPlayer, $damage, "ATTACKHIT", $cardID, $mainPlayer);
         return 1;
       }
@@ -208,8 +213,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "twin_twisters_red-1":
     case "twin_twisters_yellow-1":
     case "twin_twisters_blue-1":
-      $idArr = explode("-", $cardID);
-      AddCurrentTurnEffectFromCombat($idArr[0] . "-2", $mainPlayer);
+      AddCurrentTurnEffectFromCombat(substr($cardID, 0, -1) . "2", $mainPlayer);
       break;
     case "outland_skirmish_red-1":
     case "outland_skirmish_yellow-1":
@@ -224,9 +228,11 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "high_striker_red":
     case "high_striker_yellow":
     case "high_striker_blue":
-      if ($cardID == "high_striker_red") $amount = 6;
-      else if ($cardID == "high_striker_yellow") $amount = 4;
-      else $amount = 2;
+      $amount = match($cardID) {
+        "high_striker_red" => 6,
+        "high_striker_yellow" => 4,
+        default => 2,
+      };
       PutItemIntoPlayForPlayer("copper", $mainPlayer, 0, $amount);
       return 1;
     case "smashing_good_time_red-1":
@@ -284,9 +290,11 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "runic_reaping_yellow-HIT":
     case "runic_reaping_blue-HIT":
       if (ClassContains($attackID, "RUNEBLADE", $mainPlayer)) {
-        if ($cardID == "runic_reaping_red-HIT") $amount = 3;
-        else if ($cardID == "runic_reaping_yellow-HIT") $amount = 2;
-        else $amount = 1;
+        $amount = match($cardID) {
+          "runic_reaping_red-HIT" => 3,
+          "runic_reaping_yellow-HIT" => 2,
+          default => 1,
+        };
         PlayAura("runechant", $mainPlayer, $amount, true);
       }
       break;
@@ -905,19 +913,21 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
   if (!is_numeric($index)) $index = -1; // sometimes index is getting passed in as ""
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $cardType = CardType($cardID);
+  $hasArtOfDragon = SearchCurrentTurnEffects("art_of_the_dragon_blood_red", $currentPlayer) != "";
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
+    $effect = $currentTurnEffects[$i];
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      if (DelimStringContains($currentTurnEffects[$i], "art_of_the_dragon_blood_red", true)) {
+      if ($hasArtOfDragon && DelimStringContains($effect, "art_of_the_dragon_blood_red", true)) {
         if(TalentContains($cardID, "DRACONIC", $currentPlayer) && !IsStaticType($cardType, $from, $cardID)) {
           $costModifier -= 1;
           --$currentTurnEffects[$i + 3];
           if ($currentTurnEffects[$i + 3] <= 0) $remove = true;
         }
       }
-      $card = GetClass($currentTurnEffects[$i], $currentPlayer);
+      $card = GetClass($effect, $currentPlayer);
       if ($card != "-") $costModifier += $card->CurrentEffectCostModifier($cardID, $from, $remove, $i, $index);
-      switch ($currentTurnEffects[$i]) {
+      switch ($effect) {
         case "cartilage_crush_red":
         case "cartilage_crush_yellow":
         case "cartilage_crush_blue":
@@ -1061,7 +1071,7 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
             $costModifier -= 1;
             $remove = true;
             if ($cardID == "fealty") {
-              WriteLog(CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " is discounting your fealty, this is not a bug. You need to use the fealty in response to your " . CardLink($currentTurnEffects[$i], $currentTurnEffects[$i]) . " ability.");
+              WriteLog(CardLink($effect, $effect) . " is discounting your fealty, this is not a bug. You need to use the fealty in response to your " . CardLink($effect, $effect) . " ability.");
             }
           }
           break;
@@ -1452,9 +1462,11 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "break_of_dawn_red":
     case "break_of_dawn_yellow":
     case "break_of_dawn_blue":
-      if ($effects[0] == "break_of_dawn_red") $prevention = 4;
-      else if ($effects[0] == "break_of_dawn_yellow") $prevention = 3;
-      else if ($effects[0] == "break_of_dawn_blue") $prevention = 2;
+      $prevention = match($effects[0]) {
+        "break_of_dawn_red" => 4,
+        "break_of_dawn_yellow" => 3,
+        default => 2,
+      };
       if (TalentContains($source, "SHADOW", $otherPlayer)) {
         if ($preventable) $preventedDamage += $prevention;
         RemoveCurrentTurnEffect($index);
@@ -1713,9 +1725,11 @@ function CurrentEffectAttackAbility($attackIndex=-1)
         case "seeds_of_agony_red":
         case "seeds_of_agony_yellow":
         case "seeds_of_agony_blue":
-          if ($currentTurnEffects[$i] == "seeds_of_agony_red") $maxCost = 2;
-          else if ($currentTurnEffects[$i] == "seeds_of_agony_yellow") $maxCost = 1;
-          else $maxCost = 0;
+          $maxCost = match($currentTurnEffects[$i]) {
+            "seeds_of_agony_red" => 2,
+            "seeds_of_agony_yellow" => 1,
+            default => 0,
+          };
           if ($attackType == "AA" && CardCost($attackID) <= $maxCost) {
             SetArcaneTarget($mainPlayer, $currentTurnEffects[$i]);
             AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
@@ -2698,11 +2712,12 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-      $effectArr = explode(",", $currentTurnEffects[$i], 2);
-      $effectID = $effectArr[0];
+      $commaPos = strpos($currentTurnEffects[$i], ',');
+      $effectID = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
       switch ($effectID) {
         case "star_struck_yellow":
-          if ($powerValue <= $effectArr[1] && ($type == "AA" || $resolvedAbilityType == "AA" || $abilityType == "AA") && ($hasNoAbilityTypes || $resolvedAbilityType == "AA")) {
+          $effectParam = $commaPos !== false ? substr($currentTurnEffects[$i], $commaPos + 1) : '';
+          if ($powerValue <= $effectParam && ($type == "AA" || $resolvedAbilityType == "AA" || $abilityType == "AA") && ($hasNoAbilityTypes || $resolvedAbilityType == "AA")) {
             $restrictedBy = "star_struck_yellow";
           }
           break;
@@ -2762,16 +2777,32 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
   $restrictedBy = "";
   $otherPlayer = 3 - $currentPlayer;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $hasBrandOrEnflame = false;
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
+    switch ($currentTurnEffects[$j]) {
+      case "brand_with_cinderclaw_red":
+      case "brand_with_cinderclaw_yellow":
+      case "brand_with_cinderclaw_blue":
+      case "enflame_the_firebrand_red":
+        $hasBrandOrEnflame = true;
+        break 2;
+      default:
+        break;
+    }
+  }
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $effectArr = explode(",", $currentTurnEffects[$i], 2);
-      $effectID = $effectArr[0];
+      $commaPos = strpos($currentTurnEffects[$i], ',');
+      $effectID = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
       switch ($effectID) {
         case "chains_of_eminence_red":
-          if ($from != "PLAY" && !IsStaticType(CardType($cardID)) && GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "chains_of_eminence_red";
+          $effectParam = $commaPos !== false ? substr($currentTurnEffects[$i], $commaPos + 1) : '';
+          if ($from != "PLAY" && !IsStaticType(CardType($cardID)) && GamestateSanitize(NameOverride($cardID)) == $effectParam) $restrictedBy = "chains_of_eminence_red";
           break;
         case "censor_red":
-          if ($from != "PLAY" && !IsStaticType(CardType($cardID)) && GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) $restrictedBy = "censor_red";
+          $effectParam = $commaPos !== false ? substr($currentTurnEffects[$i], $commaPos + 1) : '';
+          if ($from != "PLAY" && !IsStaticType(CardType($cardID)) && GamestateSanitize(NameOverride($cardID)) == $effectParam) $restrictedBy = "censor_red";
           break;
         case "WarmongersWar":
           // warmongers processing for meld cards handled in AddPrePitchDecisionQueue
@@ -2790,22 +2821,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
             if (!SearchCurrentTurnEffects("fealty", $currentPlayer) && !TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID, from:$from), "I")) {
               if (TypeContains($cardID, "AA")) {
                 // this case is needed because brand with cinderclaw isn't set to become active until after the attack is played
-                $restrict = true;
-                $jCount = count($currentTurnEffects);
-                $jPieces = CurrentTurnEffectPieces();
-                for ($j = 0; $j < $jCount; $j += $jPieces) {
-                  switch ($currentTurnEffects[$j]) {
-                    case "brand_with_cinderclaw_red":
-                    case "brand_with_cinderclaw_yellow":
-                    case "brand_with_cinderclaw_blue":
-                    case "enflame_the_firebrand_red":
-                      $restrict = false;
-                      break;
-                    default:
-                      break;
-                    }
-                }
-                if ($restrict) $restrictedBy = $effectID;
+                if (!$hasBrandOrEnflame) $restrictedBy = $effectID;
               }
               else $restrictedBy = $effectID;
             }
@@ -2833,10 +2849,10 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
 function EffectCardID($effect)
 {
   if ($effect == "") return $effect;
-  $arr = explode(",", $effect);
-  $id = $arr[0];
-  $arr = explode("-", $id);
-  return $arr[0];
+  $commaPos = strpos($effect, ',');
+  $id = $commaPos !== false ? substr($effect, 0, $commaPos) : $effect;
+  $dashPos = strpos($id, '-');
+  return $dashPos !== false ? substr($id, 0, $dashPos) : $id;
 }
 
 function EffectsAttackYouControlModifiers($cardID, $player)

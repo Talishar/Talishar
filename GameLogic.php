@@ -164,7 +164,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MULTIHAND":
           $hand = &GetHand($player);
-          $rv = (count($hand) == 0) ? "" : count($hand) . "-" . GetIndices(count($hand), 0, HandPieces());
+          $handCount = count($hand);
+          $rv = ($handCount == 0) ? "" : $handCount . "-" . GetIndices($handCount, 0, HandPieces());
           break;
         case "MULTIBANISH":
           $banish = new Banish($player);
@@ -394,27 +395,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "INSTANTDISCARD":
           $rv = [];
           $otherPlayer = 3 - $player;
-          foreach ([$otherPlayer] as $p) {
-            $prefix = "THEIRDISCARD";
-            $Graveyard = new Discard($p);
-            for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
-              $Card = $Graveyard->Card($i, true);
-              if (TypeContains($Card->ID(), "I") ) $rv[] = "$prefix-" . $Card->Index();
-            }
+          $Graveyard = new Discard($otherPlayer);
+          for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+            $Card = $Graveyard->Card($i, true);
+            if (TypeContains($Card->ID(), "I")) $rv[] = "THEIRDISCARD-" . $Card->Index();
           }
           $rv = implode(",", $rv);
           break;
         case "YELLOWDISCARD":
           $rv = [];
           $otherPlayer = 3 - $player;
-          foreach ([$otherPlayer] as $p) {
-            $prefix = "THEIRDISCARD";
-            $Graveyard = new Discard($p);
-            for ($i = 0; $i < $Graveyard->TotalCards(); ++$i) {
-              $Card = $Graveyard->Card($i, true);
-              if ($Card->Facing() == "DOWN") continue;
-              if (ColorContains($Card->ID(), "2", $p) ) $rv[] = "$prefix-" . $Card->Index();
-            }
+          $Graveyard = new Discard($otherPlayer);
+          for ($i = 0; $i < $Graveyard->TotalCards(); ++$i) {
+            $Card = $Graveyard->Card($i, true);
+            if ($Card->Facing() == "DOWN") continue;
+            if (ColorContains($Card->ID(), "2", $otherPlayer)) $rv[] = "THEIRDISCARD-" . $Card->Index();
           }
           $rv = implode(",", $rv);
           break;
@@ -505,16 +500,16 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dedupedInds = [];
       foreach($inds as $index) {
         if ($parameter == "-" || $index != $parameter) {
-          if (str_contains($index, "THEIR")) {
-            $cardID = GetMZCard($player, $index);
-            if (!TypeContains($cardID, "T") || !isset($foundTheirs[$cardID]) || $cardID == "spectral_shield") {
+          $cardID = GetMZCard($player, $index);
+          $isDedupeToken = TypeContains($cardID, "T") && $cardID !== "spectral_shield";
+          if (str_starts_with($index, "THEIR")) {
+            if (!$isDedupeToken || !isset($foundTheirs[$cardID])) {
               $foundTheirs[$cardID] = true;
               $dedupedInds[] = $index;
             }
           }
           else {
-            $cardID = GetMZCard($player, $index);
-            if (!TypeContains($cardID, "T") || !isset($foundMine[$cardID]) || $cardID == "spectral_shield") {
+            if (!$isDedupeToken || !isset($foundMine[$cardID])) {
               $foundMine[$cardID] = true;
               $dedupedInds[] = $index;
             }
@@ -575,7 +570,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMOVECOMBATCHAIN":
       return $CombatChain->Remove($lastResult);
     case "COMBATCHAINPOWERMODIFIER":
-      $params = explode("-", $parameter);
+      $params = explode("-", $parameter, 3);
       if ($params[0] == "") {
         $val = -intval($params[1]);
         $skip = $params[2] ?? "-";
@@ -585,14 +580,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $skip = $params[1] ?? "-";
       }
       CombatChainPowerModifier($lastResult, $val);
-      $cardID = str_contains($lastResult, "COMBATCHAINLINK") ? $combatChain[explode("-", $lastResult, 2)[1]] : $combatChain[$lastResult];
+      $cardID = str_starts_with($lastResult, "COMBATCHAINLINK") ? $combatChain[explode("-", $lastResult, 2)[1]] : $combatChain[$lastResult];
       if ($skip == "-") {
         if ($val > 0) WriteLog(CardLink($cardID, $cardID) . " gets +" . $val . " power");
         else if ($val < 0) WriteLog(CardLink($cardID, $cardID) . " loses " . -$val . " power");
       }
       return $lastResult;
     case "COMBATCHAINDEFENSEMODIFIER":
-      $params = explode("-", $parameter);
+      $params = explode("-", $parameter, 3);
       if ($params[0] == "") {
         $val = -intval($params[1]);
         $skip = $params[2] ?? "-";
@@ -643,9 +638,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $cardsArr = [];
       if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
       $lastResultCount = count($lastResult);
+      $logDiscard = $parameter == "1";
       for ($i = 0; $i < $lastResultCount; ++$i) {
         $cardsArr[] = $discard[$lastResult[$i]];
-        if ($parameter == "1") WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]));
+        if ($logDiscard) WriteLog(CardLink($discard[$lastResult[$i]], $discard[$lastResult[$i]]));
         RemoveGraveyard($player, $lastResult[$i], resetGraveyard: false);
       }
       $discard = array_values($discard);
@@ -1018,9 +1014,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       $output = [];
       $inputCount = count($input);
+      $defaultPassFilter = $relationship !== "include";
       for ($i = 0; $i < $inputCount; ++$i) {
         $inputArr = explode("-", $input[$i]);
-        $passFilter = $relationship != "include";
+        $passFilter = $defaultPassFilter;
         switch ($type) {
           case "type":
             if (CardType($inputArr[0]) == $compare) $passFilter = !$passFilter;
@@ -1149,9 +1146,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$parameter + 1] = 1;
       return $parameter;
     case "DECKCARDS":
-      $indices = explode(",", $parameter);
+      $indicesCount = substr_count($parameter, ",") + 1;
       $deck = &GetDeck($player);
-      $indicesCount = count($indices);
       $deckCount = count($deck);
       $rvArr = [];
       for ($i = 0; $i < $indicesCount; ++$i) {
@@ -1160,9 +1156,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $rvArr === [] ? "PASS" : implode(",", $rvArr);
     case "DECKCARDNAMES":
-      $indices = explode(",", $parameter);
+      $indicesCount = substr_count($parameter, ",") + 1;
       $deck = &GetDeck($player);
-      $indicesCount = count($indices);
       $deckCount = count($deck);
       $rv = [];
       for ($i = 0; $i < $indicesCount; ++$i) {
@@ -1172,7 +1167,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $rv == [] ? "PASS" : implode(", ", $rv);
     case "DESTROYTOPCARD":
       $deck = new Deck($player);
-      WriteLog("Destroyed " . CardLink($deck->Top(), $deck->Top()) . " on top of Player " . $player . " deck");
+      $topCard = $deck->Top();
+      WriteLog("Destroyed " . CardLink($topCard, $topCard) . " on top of Player " . $player . " deck");
       AddGraveyard($deck->Top(remove: true), $player, "DECK");
       return $lastResult;
     case "CHECKMELDABILITYCLOSED":
@@ -2056,72 +2052,71 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $target = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
           break;
         default:
-          $targetArr = explode("-", $lastResult);
+          $targetArr = explode("-", $lastResult, 2);
           $otherPlayer = 3 - $player;
-          if ($targetArr[0] == "LAYER") {
-            $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
+          $targetZoneIdx = (int)($targetArr[1] ?? 0);
+          switch ($targetArr[0]) {
+            case "LAYER":
+              $cleanTarget = "LAYERUID-" . $layers[$targetZoneIdx + 6];
+              break;
+            case "THEIRDISCARD":
+              $discard = GetDiscard($otherPlayer);
+              $cleanTarget = "THEIRDISCARDUID-" . $discard[$targetZoneIdx + 1];
+              break;
+            case "MYDISCARD":
+              $discard = GetDiscard($player);
+              $cleanTarget = "MYDISCARDUID-" . $discard[$targetZoneIdx + 1];
+              break;
+            case "THEIRAURAS":
+              $auras = GetAuras($otherPlayer);
+              $cleanTarget = "THEIRAURASUID-" . $auras[$targetZoneIdx + 6];
+              break;
+            case "MYAURAS":
+              $auras = GetAuras($player);
+              $cleanTarget = "MYAURASUID-" . $auras[$targetZoneIdx + 6];
+              break;
+            case "THEIRITEMS":
+              $items = GetItems($otherPlayer);
+              $cleanTarget = "THEIRITEMSUID-" . $items[$targetZoneIdx + 4];
+              break;
+            case "MYITEMS":
+              $items = GetItems($player);
+              $cleanTarget = "MYITEMSUID-" . $items[$targetZoneIdx + 4];
+              break;
+            case "THEIRCHAR":
+              $char = GetPlayerCharacter($otherPlayer);
+              $cleanTarget = "THEIRCHARUID-" . $char[$targetZoneIdx + 11];
+              break;
+            case "MYCHAR":
+              $char = GetPlayerCharacter($player);
+              $cleanTarget = "MYCHAR-" . $char[$targetZoneIdx + 11];
+              break;
+            case "COMBATCHAINATTACKS":
+            case "PASTCHAINLINK":
+              // Index cannot be messed up before resolution
+              $cleanTarget = $lastResult;
+              break;
+            case "COMBATCHAIN":
+              // right now only support targetting the active chain link
+              $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
+              break;
+            case "MYALLY":
+              $allies = GetAllies($player);
+              $cleanTarget = "MYALLY-" . $allies[$targetZoneIdx + 5];
+              break;
+            case "THEIRALLY":
+              $allies = GetAllies($otherPlayer);
+              $cleanTarget = "THEIRALLY-" . $allies[$targetZoneIdx + 5];
+              break;
+            case "MYPERM":
+              $permanents = GetPermanents($player);
+              $cleanTarget = "MYPERM-" . $permanents[$targetZoneIdx + 3];
+              break;
+            case "COMBATCHAINLINK":
+              $cleanTarget = "COMBATCHAINLINK-" . $CombatChain->Card($targetZoneIdx)->UniqueID();
+              break;
           }
-          elseif ($targetArr[0] == "THEIRDISCARD") {
-            $discard = GetDiscard($otherPlayer);
-            $cleanTarget = "THEIRDISCARDUID-" . $discard[$targetArr[1] + 1];
-          }
-          elseif ($targetArr[0] == "MYDISCARD") {
-            $discard = GetDiscard($player);
-            $cleanTarget = "MYDISCARDUID-" . $discard[$targetArr[1] + 1];
-          }
-          elseif ($targetArr[0] == "THEIRAURAS") {
-            $auras = GetAuras($otherPlayer);
-            $cleanTarget = "THEIRAURASUID-" . $auras[$targetArr[1] + 6];
-          }
-          elseif ($targetArr[0] == "MYAURAS") {
-            $auras = GetAuras($player);
-            $cleanTarget = "MYAURASUID-" . $auras[$targetArr[1] + 6];
-          }
-          elseif ($targetArr[0] == "THEIRITEMS") {
-            $items = GetItems($otherPlayer);
-            $cleanTarget = "THEIRITEMSUID-" . $items[$targetArr[1] + 4];
-          }
-          elseif ($targetArr[0] == "MYITEMS") {
-            $items = GetItems($player);
-            $cleanTarget = "MYITEMSUID-" . $items[$targetArr[1] + 4];
-          }
-          elseif ($targetArr[0] == "THEIRCHAR") {
-            $char = GetPlayerCharacter($otherPlayer);
-            $cleanTarget = "THEIRCHARUID-" . $char[$targetArr[1] + 11];
-          }
-          elseif ($targetArr[0] == "MYCHAR") {
-            $char = GetPlayerCharacter($player);
-            $cleanTarget = "MYCHAR-" . $char[$targetArr[1] + 11];
-          }
-          elseif ($targetArr[0] == "COMBATCHAINATTACKS") {
-            // It's not possible for this index to get messed up before resolution
-            $cleanTarget = $lastResult;
-          }
-          elseif ($targetArr[0] == "COMBATCHAIN") {
-            $char = GetPlayerCharacter($otherPlayer);
-            //right now only support targetting the active chain link
-            $cleanTarget = "COMBATCHAIN-" . $CombatChain->AttackCard()->UniqueID();
-          }
-          elseif ($targetArr[0] == "MYALLY") {
-            $allies = GetAllies($player);
-            $cleanTarget = "MYALLY-" . $allies[$targetArr[1] + 5];
-          }
-          elseif ($targetArr[0] == "THEIRALLY") {
-            $allies = GetAllies($otherPlayer);
-            $cleanTarget = "THEIRALLY-" . $allies[$targetArr[1] + 5];
-          }
-          elseif ($targetArr[0] == "MYPERM") {
-            $permanents = GetPermanents($player);
-            $cleanTarget = "MYPERM-" . $permanents[$targetArr[1] + 3];
-          }
-          elseif ($targetArr[0] == "PASTCHAINLINK") {
-            // It's not possible for this index to get messed up before resolution
-            $cleanTarget = $lastResult;
-          }
-          elseif ($targetArr[0] == "COMBATCHAINLINK") {
-            $cleanTarget = "COMBATCHAINLINK-" . $CombatChain->Card($targetArr[1] ?? 0)->UniqueID();
-          }
-          $target = $cleanTarget != "" ? $cleanTarget : $lastResult;
+          $target = $cleanTarget !== "" ? $cleanTarget : $lastResult;
           break;
       }
       // in the long run *everything* should use clean target, but to make sure this doesn't break anything
@@ -2664,9 +2659,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REVERSELIST":
       return implode(",", array_reverse(explode(",", $lastResult)));
     case "MZSWAP":
-      if (str_contains($lastResult, "MY"))
+      if (str_starts_with($lastResult, "MY"))
         return str_replace("MY", "THEIR", $lastResult);
-      elseif (str_contains($lastResult, "THEIR"))
+      elseif (str_starts_with($lastResult, "THEIR"))
         return str_replace("THEIR", "MY", $lastResult);
       else
         return $lastResult;
@@ -2681,14 +2676,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MZADDTOBOTDECK":
       $card = MZRemove($player, $lastResult, $parameter);
       $otherPlayer = 3 - $player;
-      $owner = str_contains($lastResult, "MY") ? $player : $otherPlayer;
+      $owner = str_starts_with($lastResult, "MY") ? $player : $otherPlayer;
       $deck = new Deck($owner);
       $deck->AddBottom($card);
       return $card;
     case "MZADDTOTOPDECK":
       $card = MZRemove($player, $lastResult, $parameter);
       $otherPlayer = 3 - $player;
-      $owner = str_contains($lastResult, "MY") ? $player : $otherPlayer;
+      $owner = str_starts_with($lastResult, "MY") ? $player : $otherPlayer;
       $deck = new Deck($owner);
       $deck->AddTop($card);
       return $card;
@@ -2984,9 +2979,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         $ctePieces = CurrentTurnEffectsPieces();
         for ($i = count($currentTurnEffects) - $ctePieces; $i >= 0; $i -= $ctePieces) {
-          if ($currentTurnEffects[$i] == "celestial_kimono") AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "celestial_kimono");
-          if (IsCombatEffectActive($currentTurnEffects[$i], flicked: true) && $currentTurnEffects[$i + 1] == $mainPlayer) {
-            AddCardEffectHitTrigger($currentTurnEffects[$i], $cardID, $targetPlayer); // Effects that do not gives it's effect to the attack
+          $currentTurnEffectID = $currentTurnEffects[$i];
+          $currentTurnEffectsPlayer = $currentTurnEffects[$i + 1];
+          if ($currentTurnEffectID == "celestial_kimono") AddLayer("TRIGGER", $currentTurnEffectsPlayer, "celestial_kimono");
+          if (IsCombatEffectActive($currentTurnEffectID, flicked: true) && $currentTurnEffectsPlayer == $mainPlayer) {
+            AddCardEffectHitTrigger($currentTurnEffectID, $cardID, $targetPlayer); // Effects that do not gives it's effect to the attack
           }
         }
         CombatChainHitEffects($cardID, $targetPlayer);

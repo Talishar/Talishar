@@ -317,6 +317,8 @@ function CardSubType($cardID, $uniqueID = -1)
     $countCurrentTurnEffects = count($currentTurnEffects);
     $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
     for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
+      $firstChar = $currentTurnEffects[$i][0];
+      if ($firstChar !== 'a' && $firstChar !== 'f') continue;
       $effectArr = explode("-", $currentTurnEffects[$i], 2);
       if (!isset($adaptiveMap[$effectArr[0]])) continue;
       $effectArr = explode(",", $effectArr[1]);
@@ -371,10 +373,6 @@ function CharacterIntellect($cardID)
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
-  switch ($cardID) {
-    default:
-      break;
-  }
   return GeneratedCharacterIntellect($cardID);
 }
 
@@ -735,9 +733,10 @@ function PitchValue($cardID)
   if (!$cardID) return "";
   static $pitchCache = [];
   if (isset($pitchCache[$cardID])) return $pitchCache[$cardID];
+  if ($cardID == "goldfin_harpoon_yellow") return $pitchCache[$cardID] = -1;
+  $cardType = CardType($cardID);
+  if ($cardType == "M" || CardSubType($cardID) == "Landmark") return $pitchCache[$cardID] = -1;
   $set = CardSet($cardID);
-  if ($cardID == "goldfin_harpoon_yellow") return -1;
-  if (CardType($cardID) == "M" || CardSubType($cardID) == "Landmark") return -1;
   switch ($cardID) {
     case "MST000_inner_chi_blue":
     case "MST010_inner_chi_blue":
@@ -782,9 +781,12 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
   $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
-  if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
-    $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
-    $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
+  static $skipLyathFroms = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true];
+  if (!isset($skipLyathFroms[$from])) {
+    $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant")
+      || SearchCharacterActive($player, "lyath_goldmane")
+      || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player)
+      || (SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) && SearchCharacterActive($player, $char[0]));
     $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA");
   }
   $block = -2;
@@ -894,16 +896,18 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   global $mainPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn, $CS_Num6PowBan;
   if (!$cardID) return 0;
   $set = CardSet($cardID);
-  $class = CardClass($cardID);
   $subtype = CardSubtype($cardID);
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $player = $player == "-" ? $mainPlayer : $player;
   $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
-  if ($from != "HAND" && $from != "DECK" && $from != "ARS" && $from != "DISCARD" && $from != "BANISH" && $from != "PITCH") {
-    $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant") || SearchCharacterActive($player, "lyath_goldmane");
-    $lyathActive = SearchCharacterActive($player, $char[0]) && SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player) || $lyathActive; 
+  static $skipLyathFromsPow = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true];
+  if (!isset($skipLyathFromsPow[$from])) {
+    $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant")
+      || SearchCharacterActive($player, "lyath_goldmane")
+      || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player)
+      || (SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) && SearchCharacterActive($player, $char[0]));
     $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA");
   }
   //Only weapon that gains power, NOT on their attack
@@ -986,206 +990,90 @@ function HasGoAgain($cardID, $from="-"): bool|int
 {
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasGoAgain($from);
-  switch ($cardID) { //cards that may have missed go again in the generated script
-    case "spiders_bite":
-    case "nerve_scalpel":
-    case "orbitoclast":
-    case "hunters_klaive":
-    case "beckoning_mistblade":
-    case "shifting_winds_of_the_mystic_beast_blue":
-    case "wind_chakra_red":
-    case "wind_chakra_yellow":
-    case "wind_chakra_blue":
-    case "companion_of_the_claw_red":
-    case "companion_of_the_claw_yellow":
-    case "companion_of_the_claw_blue":
-    case "harmony_of_the_hunt_red":
-    case "harmony_of_the_hunt_yellow":
-    case "harmony_of_the_hunt_blue":
-    case "tiger_form_incantation_red":
-    case "tiger_form_incantation_yellow":
-    case "tiger_form_incantation_blue":
-    case "first_tenet_of_chi_moon_blue":
-    case "first_tenet_of_chi_tide_blue":
-    case "first_tenet_of_chi_wind_blue":
-    case "spectral_manifestations_red":
-    case "spectral_manifestations_yellow":
-    case "spectral_manifestations_blue":
-    case "tiger_taming_khakkara":
-    case "biting_breeze_red":
-    case "biting_breeze_yellow":
-    case "biting_breeze_blue":
-    case "untamed_red":
-    case "untamed_yellow":
-    case "untamed_blue":
-    case "prismatic_leyline_yellow":
-    case "water_the_seeds_red":
-    case "water_the_seeds_yellow":
-    case "water_the_seeds_blue":
-    case "line_it_up_yellow":
-    case "arcane_seeds__life_red":
-    case "burn_up__shock_red":
-    case "heartbeat_of_candlehold_blue":
-    case "channel_the_millennium_tree_red":
-    case "earths_embrace_blue":
-    case "fry_red":
-    case "fry_yellow":
-    case "fry_blue":
-    case "sizzle_red":
-    case "sizzle_yellow":
-    case "flourish_yellow":
-    case "thrive_yellow":
-    case "flourish_blue":
-    case "harvest_season_red":
-    case "harvest_season_yellow":
-    case "harvest_season_blue":
-    case "strong_yield_red":
-    case "strong_yield_yellow":
-    case "strong_yield_blue":
-    case "sigil_of_earth_blue":
-    case "condemn_to_slaughter_red":
-    case "machinations_of_dominion_blue":
-    case "succumb_to_temptation_yellow":
-    case "condemn_to_slaughter_yellow":
-    case "condemn_to_slaughter_blue":
-    case "malefic_incantation_red":
-    case "malefic_incantation_yellow":
-    case "malefic_incantation_blue":
-    case "sigil_of_the_arknight_blue":
-    case "arcane_cussing_red":
-    case "arcane_cussing_yellow":
-    case "arcane_cussing_blue":
-    case "deadwood_dirge_red":
-    case "deadwood_dirge_yellow":
-    case "deadwood_dirge_blue":
-    case "sigil_of_deadwood_blue":
-    case "exploding_aether_red":
-    case "exploding_aether_yellow":
-    case "exploding_aether_blue":
-    case "call_to_the_grave_blue":
-    case "sigil_of_cycles_blue":
-    case "sigil_of_fyendal_blue":
-    case "unsheathed_red":
-    case "regrowth__shock_blue":
-    case "heavy_industry_power_plant":
-    case "channel_mount_isen_blue":
-    case "hunters_klaive_r":
-    case "mark_of_the_huntsman":
-    case "mark_of_the_huntsman_r":
-    case "orb_weaver_spinneret_red":
-    case "orb_weaver_spinneret_yellow":
-    case "orb_weaver_spinneret_blue":
-    case "kunai_of_retribution":
-    case "kunai_of_retribution_r":
-    case "ignite_red":
-    case "wrath_of_retribution_red":
-    case "blood_drop_red":
-    case "blood_line_red":
-    case "blood_runs_deep_red":
-    case "devotion_never_dies_red":
-    case "fire_tenet_strike_first_red":
-    case "fire_tenet_strike_first_yellow":
-    case "fire_tenet_strike_first_blue":
-    case "grow_claws_red":
-    case "grow_claws_yellow":
-    case "grow_claws_blue":
-    case "tag_the_target_red":
-    case "tag_the_target_yellow":
-    case "tag_the_target_blue":
-    case "trap_and_release_red":
-    case "trap_and_release_yellow":
-    case "trap_and_release_blue":
-    case "sharpened_senses_yellow":
-    case "twist_and_turn_red":
-    case "twist_and_turn_yellow":
-    case "twist_and_turn_blue":
-    case "agility_stance_yellow":
-    case "flurry_stance_red":
-    case "power_stance_blue":
-    case "cut_deep_red":
-    case "cut_deep_yellow":
-    case "cut_deep_blue":
-    case "hunt_a_killer_red":
-    case "hunt_a_killer_yellow":
-    case "hunt_a_killer_blue":
-    case "knife_through_butter_red":
-    case "knife_through_butter_yellow":
-    case "knife_through_butter_blue":
-    case "point_of_engagement_red":
-    case "point_of_engagement_yellow":
-    case "point_of_engagement_blue":
-    case "sworn_vengeance_red":
-    case "sworn_vengeance_yellow":
-    case "sworn_vengeance_blue":
-    case "coat_of_allegiance":
-    case "oath_of_loyalty_red":
-    case "hunt_to_the_ends_of_rathe_red":
-    case "pain_in_the_backside_red":
-    case "up_sticks_and_run_red":
-    case "up_sticks_and_run_yellow":
-    case "up_sticks_and_run_blue":
-    case "pick_up_the_point_red":
-    case "pick_up_the_point_yellow":
-    case "pick_up_the_point_blue":
-    case "poisoned_blade_red":
-    case "poisoned_blade_yellow":
-    case "poisoned_blade_blue":
-    case "throw_yourself_at_them_red":
-    case "throw_yourself_at_them_yellow":
-    case "throw_yourself_at_them_blue":
-    case "savor_bloodshed_red":
-    case "cut_from_the_same_cloth_red":
-    case "cut_from_the_same_cloth_yellow":
-    case "cut_from_the_same_cloth_blue":
-    case "dual_threat_yellow":
-    case "relentless_pursuit_blue":
-    case "outed_red":
-    case "trot_along_blue":
-    case "public_bounty_red":
-    case "public_bounty_yellow":
-    case "public_bounty_blue":
-    case "roiling_fissure_blue":
-    case "spur_locked_blue":
-    case "money_where_ya_mouth_is_red":
-    case "money_where_ya_mouth_is_yellow":
-    case "money_where_ya_mouth_is_blue":
-    case "jack_o_lantern_red":
-    case "jack_o_lantern_yellow":
-    case "jack_o_lantern_blue":
-    case "flying_high_red":
-    case "flying_high_yellow":
-    case "flying_high_blue":
-      return true;
-    case "war_cry_of_themis_yellow":
-      return GetResolvedAbilityType($cardID) == "A";
-    case "healing_potion_blue": // cards with activated abilities with go again, but don't themselves have it
-    case "potion_of_strength_blue":
-    case "imperial_seal_of_command_red":
-    case "optekal_monocle_blue":
-    case "imperial_edict_red":
-    case "induction_chamber_red":
-    case "convection_amplifier_red":
-    case "stasis_cell_blue":
-    case "crazy_brew_blue":
-    case "plasma_purifier_red":
-    case "aether_sink_yellow":
-    case "teklo_plasma_pistol":
-    case "great_library_of_solana":
-    case "plasma_barrel_shot":
-    case "kelpie_tangled_mess_yellow":
-    case "cutty_shark_quick_clip_yellow":
-    case "onyx_amulet_blue":
-    case "pearl_amulet_blue":
-    case "pounamu_amulet_blue":
-      return false;
-    case "limpit_hop_a_long_yellow":
-      return $from == "ATTACK";
-    case "performance_bonus_red": //cards that the script just messed up
-    case "performance bonus_yellow":
-    case "performance_bonus_blue":
-      return false;
-  }
-  return GeneratedGoAgain($cardID);
+
+  static $goAgainTrue = [
+    "spiders_bite" => 1, "nerve_scalpel" => 1, "orbitoclast" => 1, "hunters_klaive" => 1,
+    "beckoning_mistblade" => 1, "shifting_winds_of_the_mystic_beast_blue" => 1,
+    "wind_chakra_red" => 1, "wind_chakra_yellow" => 1, "wind_chakra_blue" => 1,
+    "companion_of_the_claw_red" => 1, "companion_of_the_claw_yellow" => 1, "companion_of_the_claw_blue" => 1,
+    "harmony_of_the_hunt_red" => 1, "harmony_of_the_hunt_yellow" => 1, "harmony_of_the_hunt_blue" => 1,
+    "tiger_form_incantation_red" => 1, "tiger_form_incantation_yellow" => 1, "tiger_form_incantation_blue" => 1,
+    "first_tenet_of_chi_moon_blue" => 1, "first_tenet_of_chi_tide_blue" => 1, "first_tenet_of_chi_wind_blue" => 1,
+    "spectral_manifestations_red" => 1, "spectral_manifestations_yellow" => 1, "spectral_manifestations_blue" => 1,
+    "tiger_taming_khakkara" => 1,
+    "biting_breeze_red" => 1, "biting_breeze_yellow" => 1, "biting_breeze_blue" => 1,
+    "untamed_red" => 1, "untamed_yellow" => 1, "untamed_blue" => 1,
+    "prismatic_leyline_yellow" => 1,
+    "water_the_seeds_red" => 1, "water_the_seeds_yellow" => 1, "water_the_seeds_blue" => 1,
+    "line_it_up_yellow" => 1, "arcane_seeds__life_red" => 1, "burn_up__shock_red" => 1,
+    "heartbeat_of_candlehold_blue" => 1, "channel_the_millennium_tree_red" => 1, "earths_embrace_blue" => 1,
+    "fry_red" => 1, "fry_yellow" => 1, "fry_blue" => 1,
+    "sizzle_red" => 1, "sizzle_yellow" => 1,
+    "flourish_yellow" => 1, "thrive_yellow" => 1, "flourish_blue" => 1,
+    "harvest_season_red" => 1, "harvest_season_yellow" => 1, "harvest_season_blue" => 1,
+    "strong_yield_red" => 1, "strong_yield_yellow" => 1, "strong_yield_blue" => 1,
+    "sigil_of_earth_blue" => 1,
+    "condemn_to_slaughter_red" => 1, "condemn_to_slaughter_yellow" => 1, "condemn_to_slaughter_blue" => 1,
+    "machinations_of_dominion_blue" => 1, "succumb_to_temptation_yellow" => 1,
+    "malefic_incantation_red" => 1, "malefic_incantation_yellow" => 1, "malefic_incantation_blue" => 1,
+    "sigil_of_the_arknight_blue" => 1,
+    "arcane_cussing_red" => 1, "arcane_cussing_yellow" => 1, "arcane_cussing_blue" => 1,
+    "deadwood_dirge_red" => 1, "deadwood_dirge_yellow" => 1, "deadwood_dirge_blue" => 1,
+    "sigil_of_deadwood_blue" => 1,
+    "exploding_aether_red" => 1, "exploding_aether_yellow" => 1, "exploding_aether_blue" => 1,
+    "call_to_the_grave_blue" => 1, "sigil_of_cycles_blue" => 1, "sigil_of_fyendal_blue" => 1,
+    "unsheathed_red" => 1, "regrowth__shock_blue" => 1, "heavy_industry_power_plant" => 1,
+    "channel_mount_isen_blue" => 1, "hunters_klaive_r" => 1,
+    "mark_of_the_huntsman" => 1, "mark_of_the_huntsman_r" => 1,
+    "orb_weaver_spinneret_red" => 1, "orb_weaver_spinneret_yellow" => 1, "orb_weaver_spinneret_blue" => 1,
+    "kunai_of_retribution" => 1, "kunai_of_retribution_r" => 1,
+    "ignite_red" => 1, "wrath_of_retribution_red" => 1,
+    "blood_drop_red" => 1, "blood_line_red" => 1, "blood_runs_deep_red" => 1,
+    "devotion_never_dies_red" => 1,
+    "fire_tenet_strike_first_red" => 1, "fire_tenet_strike_first_yellow" => 1, "fire_tenet_strike_first_blue" => 1,
+    "grow_claws_red" => 1, "grow_claws_yellow" => 1, "grow_claws_blue" => 1,
+    "tag_the_target_red" => 1, "tag_the_target_yellow" => 1, "tag_the_target_blue" => 1,
+    "trap_and_release_red" => 1, "trap_and_release_yellow" => 1, "trap_and_release_blue" => 1,
+    "sharpened_senses_yellow" => 1,
+    "twist_and_turn_red" => 1, "twist_and_turn_yellow" => 1, "twist_and_turn_blue" => 1,
+    "agility_stance_yellow" => 1, "flurry_stance_red" => 1, "power_stance_blue" => 1,
+    "cut_deep_red" => 1, "cut_deep_yellow" => 1, "cut_deep_blue" => 1,
+    "hunt_a_killer_red" => 1, "hunt_a_killer_yellow" => 1, "hunt_a_killer_blue" => 1,
+    "knife_through_butter_red" => 1, "knife_through_butter_yellow" => 1, "knife_through_butter_blue" => 1,
+    "point_of_engagement_red" => 1, "point_of_engagement_yellow" => 1, "point_of_engagement_blue" => 1,
+    "sworn_vengeance_red" => 1, "sworn_vengeance_yellow" => 1, "sworn_vengeance_blue" => 1,
+    "coat_of_allegiance" => 1, "oath_of_loyalty_red" => 1, "hunt_to_the_ends_of_rathe_red" => 1,
+    "pain_in_the_backside_red" => 1,
+    "up_sticks_and_run_red" => 1, "up_sticks_and_run_yellow" => 1, "up_sticks_and_run_blue" => 1,
+    "pick_up_the_point_red" => 1, "pick_up_the_point_yellow" => 1, "pick_up_the_point_blue" => 1,
+    "poisoned_blade_red" => 1, "poisoned_blade_yellow" => 1, "poisoned_blade_blue" => 1,
+    "throw_yourself_at_them_red" => 1, "throw_yourself_at_them_yellow" => 1, "throw_yourself_at_them_blue" => 1,
+    "savor_bloodshed_red" => 1,
+    "cut_from_the_same_cloth_red" => 1, "cut_from_the_same_cloth_yellow" => 1, "cut_from_the_same_cloth_blue" => 1,
+    "dual_threat_yellow" => 1, "relentless_pursuit_blue" => 1, "outed_red" => 1, "trot_along_blue" => 1,
+    "public_bounty_red" => 1, "public_bounty_yellow" => 1, "public_bounty_blue" => 1,
+    "roiling_fissure_blue" => 1, "spur_locked_blue" => 1,
+    "money_where_ya_mouth_is_red" => 1, "money_where_ya_mouth_is_yellow" => 1, "money_where_ya_mouth_is_blue" => 1,
+    "jack_o_lantern_red" => 1, "jack_o_lantern_yellow" => 1, "jack_o_lantern_blue" => 1,
+    "flying_high_red" => 1, "flying_high_yellow" => 1, "flying_high_blue" => 1,
+  ];
+  static $goAgainFalse = [
+    "healing_potion_blue" => 1, "potion_of_strength_blue" => 1, "imperial_seal_of_command_red" => 1,
+    "optekal_monocle_blue" => 1, "imperial_edict_red" => 1, "induction_chamber_red" => 1,
+    "convection_amplifier_red" => 1, "stasis_cell_blue" => 1, "crazy_brew_blue" => 1,
+    "plasma_purifier_red" => 1, "aether_sink_yellow" => 1, "teklo_plasma_pistol" => 1,
+    "great_library_of_solana" => 1, "plasma_barrel_shot" => 1,
+    "kelpie_tangled_mess_yellow" => 1, "cutty_shark_quick_clip_yellow" => 1,
+    "onyx_amulet_blue" => 1, "pearl_amulet_blue" => 1, "pounamu_amulet_blue" => 1,
+    "performance_bonus_red" => 1, "performance bonus_yellow" => 1, "performance_bonus_blue" => 1,
+  ];
+  if (isset($goAgainTrue[$cardID])) return true;
+  if (isset($goAgainFalse[$cardID])) return false;
+  return match ($cardID) {
+    "war_cry_of_themis_yellow" => GetResolvedAbilityType($cardID) == "A",
+    "limpit_hop_a_long_yellow" => $from == "ATTACK",
+    default => GeneratedGoAgain($cardID),
+  };
 }
 
 function TriggerTargets($cardID)
@@ -1498,7 +1386,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       $characterPieces = CharacterPieces();
       if (!$nameBlocked){
         for ($i = 0; $i < $countCharacter; $i += $characterPieces) {
-          if (CardNameContains($char[$i], "Raydn", $currentPlayer)) $hasRaydn = true;
+          if (CardNameContains($char[$i], "Raydn", $currentPlayer)) { $hasRaydn = true; break; }
         }
       }
       if ($currentPlayer == $mainPlayer && count($combatChain) > 0 && IsReactionPhase() && $hasRaydn) $names[1] = "Attack Reaction";
@@ -4687,61 +4575,30 @@ function HasMeld($cardID){
   return GeneratedHasMeld($cardID); 
 }
 
-Function IsMeldInstantName($term){
-  switch ($term) {
-      case "Shock":
-      case "Life":
-      case "Rampant_Growth":
-      case "Null":
-      case "Vaporize":
-      return true;
-    default:
-      return false;
-  }  
+function IsMeldInstantName($term): bool {
+  static $names = ["Shock" => 1, "Life" => 1, "Rampant_Growth" => 1, "Null" => 1, "Vaporize" => 1];
+  return isset($names[$term]);
 }
 
-Function IsMeldActionName($term){
-  switch ($term) {
-      case "Pulsing_Aether":
-      case "Arcane_Seeds":
-      case "Comet_Storm":
-      case "Thistle_Bloom":
-      case "Burn_Up":
-      case "Regrowth":
-      case "Consign_To_Cosmos":
-      case "Everbloom":
-      return true;
-    default:
-      return false;
-  }  
+function IsMeldActionName($term): bool {
+  static $names = [
+    "Pulsing_Aether" => 1, "Arcane_Seeds" => 1, "Comet_Storm" => 1, "Thistle_Bloom" => 1,
+    "Burn_Up" => 1, "Regrowth" => 1, "Consign_To_Cosmos" => 1, "Everbloom" => 1,
+  ];
+  return isset($names[$term]);
 }
 
-
-Function IsMeldRightSideName($term){
-  switch ($term) {
-      case "Shock":
-      case "Life":
-      return true;
-    default:
-      return false;
-  }  
+function IsMeldRightSideName($term): bool {
+  static $names = ["Shock" => 1, "Life" => 1];
+  return isset($names[$term]);
 }
 
-Function IsMeldLeftSideName($term){
-  switch ($term) {
-      case "Pulsing_Aether":
-      case "Arcane_Seeds":
-      case "Comet_Storm":
-      case "Thistle_Bloom":
-      case "Burn_Up":
-      case "Regrowth":
-      case "Null":
-      case "Rampant_Growth":
-      case "Vaporize":
-        return true;
-      default:
-        return false;
-  }  
+function IsMeldLeftSideName($term): bool {
+  static $names = [
+    "Pulsing_Aether" => 1, "Arcane_Seeds" => 1, "Comet_Storm" => 1, "Thistle_Bloom" => 1,
+    "Burn_Up" => 1, "Regrowth" => 1, "Null" => 1, "Rampant_Growth" => 1, "Vaporize" => 1,
+  ];
+  return isset($names[$term]);
 }
 
 function canBeAddedToChainDuringDR($cardID){
