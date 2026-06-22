@@ -631,13 +631,13 @@ function DamageTrigger($player, $damage, $type, $source, $playerSource)
 
 function CanDamageBePrevented($player, $damage, $type, $source = "-")
 {
-  global $mainPlayer;
+  global $mainPlayer, $CombatChain;
   $extraText = GetHorrorsBuff();
   if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
   if ($type == "ARCANE" && $source == "deny_redemption_red" && SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $mainPlayer)) return false;
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $mainPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $mainPlayer))) return false;
   if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $mainPlayer)) return false;
-  if (SearchCurrentTurnEffects("tiger_stripe_shuko", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("tiger_stripe_shuko", $mainPlayer) && $source == $CombatChain->AttackCard()->ID()) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer)) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer)) return false;
   static $unpreventable = ["rok" => true, "malign_red" => true, "malign_yellow" => true, "malign_blue" => true, "murkmire_grapnel_red" => true, "murkmire_grapnel_yellow" => true, "murkmire_grapnel_blue" => true];
