@@ -2763,6 +2763,12 @@ function RemoveCharacter($player, $index)
   $ret = $char[$index];
   $card = GetClass($ret, $player);
   if ($card != "-") $card->LeavesPlayAbility($index, $char[$index+11], "CHAR", true);
+  $CharCard =  new CharacterCard($index, $player);
+  if (!AfterDamage()) {
+    if (IsSpecificWeaponAttacking($player, $CharCard->UniqueID())) {
+      CloseCombatChain();
+    }
+  }
   $charPieces = CharacterPieces();
   for ($i = 0; $i < $charPieces; ++$i) {
     unset($char[$index + $i]);
@@ -3174,6 +3180,16 @@ function IsSpecificAuraAttacking($player, $uniqueID)
   if (!$CombatChain->HasCurrentLink()) return false;
   if ($mainPlayer != $player) return false;
   if (!DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura")) return false;
+  if ($CombatChain->AttackCard()->OriginUniqueID() != $uniqueID) return false;
+  return true;
+}
+
+function IsSpecificWeaponAttacking($player, $uniqueID)
+{
+  global $CombatChain, $mainPlayer;
+  if (!$CombatChain->HasCurrentLink()) return false;
+  if ($mainPlayer != $player) return false;
+  if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return false;
   if ($CombatChain->AttackCard()->OriginUniqueID() != $uniqueID) return false;
   return true;
 }

@@ -4256,7 +4256,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
   //put onto combat chain if that's where it needs to go
   if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
-    if ($from == "PLAY" && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains($definedCardSubType, "Item")) {
+    if (($from == "PLAY" || $from == "EQUIP") && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains($definedCardSubType, "Item")) {
       WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
       return;
     }

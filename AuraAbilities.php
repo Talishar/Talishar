@@ -536,10 +536,10 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
     $character = array_values($character);
   }
   if (!AfterDamage() && !$skipClose) {
-      if (IsSpecificAuraAttacking($player, $uniqueID) || (IsSpecificAuraAttackTarget($player, $index, $uniqueID))) {
-        CloseCombatChain();
-      }
+    if (IsSpecificAuraAttacking($player, $uniqueID) || (IsSpecificAuraAttackTarget($player, $index, $uniqueID))) {
+      CloseCombatChain();
     }
+  }
   return $cardID;
 }
 

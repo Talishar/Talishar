@@ -1486,11 +1486,11 @@ function SearchArcaneReplacement($player, $zone, $damage)
   }
   $addedRunechants = 0; //tracks how many runechants are displayed, only display up to the amount of damage
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i)) continue;
     $cardID = $array[$i];
+    if ($zone == "MYCHAR" && !IsCharacterAbilityActive($player, $i) && $cardID != "claw_of_vynserakai") continue;
     if ($zone == "MYAURAS" && $array[$i + 7] == 0) continue;
     if (SpellVoidAmount($cardID, $player, $i) > 0) {
-      if ($zone == "MYCHAR" && !IsCharacterActive($player, $i)) continue;
+      if ($zone == "MYCHAR" && !IsCharacterActive($player, $i) && $cardID != "claw_of_vynserakai") continue;
       if ($cardID == "runechant" && $zone != "MYCHAR") {
         if ($addedRunechants < $damage) {
           $cardList[] = $i;
