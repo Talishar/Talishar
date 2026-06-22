@@ -72,12 +72,13 @@
   {
     if(!CanRevealCards($player)) { WriteLog("Cannot fuse because you cannot reveal cards"); return; }
     $elementArray = explode(",", $elements);
+    $elementCount = count($elementArray);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
-    for($i=0; $i<count($elementArray); ++$i)
+    for($i=0; $i<$elementCount; ++$i)
     {
       $element = $elementArray[$i];
-      $fullReveal = $i == count($elementArray) - 1;
+      $fullReveal = $i == $elementCount - 1;
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
       $context = "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion";
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=$element", $subsequent);

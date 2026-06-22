@@ -607,11 +607,12 @@ function MirageLayer($target)
   else { //Aegisworn: I don't understand this block
     $turn[0] = "A";
     $currentPlayer = $mainPlayer;
-    for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
+    $layerPieces = LayerPieces();
+    for($i=count($layers)-$layerPieces; $i >= 0; $i-=$layerPieces)
     {
       if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "LAYER" && $layers[$i+2] == "MIRAGE"))
       {
-        for($j=$i; $j<($i+LayerPieces()); ++$j) unset($layers[$j]);
+        for($j=$i; $j<($i+$layerPieces); ++$j) unset($layers[$j]);
       }
     }
     $layers = array_values($layers);

@@ -125,19 +125,19 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       case "zephyr_needle":
       case "zephyr_needle_r":
         $combatChainCount = count($combatChain);
+        $needleChar = GetPlayerCharacter($mainPlayer);
+        $needleCharCount = count($needleChar);
+        $needleCharPieces = CharacterPieces();
         for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
           $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
           $blockVal = intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6];
           if ($totalDefense > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
-            $char = GetPlayerCharacter($mainPlayer);
             $charID = -1;
-            $charCount = count($char);
-            $characterPieces = CharacterPieces();
-            for ($i = 0; $i < $charCount; $i += $characterPieces) {
-              if ($char[$i + 11] == $combatChain[8]) $charID = $i;
+            for ($j = 0; $j < $needleCharCount; $j += $needleCharPieces) {
+              if ($needleChar[$j + 11] == $combatChain[8]) $charID = $j;
             }
             if ($charID == -1) WriteLog("something went wrong, please submit a bug report", highlight: true);
-            if (SearchLayersForCardID($combatChain[0]) == -1 && $char[$charID + 7] != "1") {
+            if (SearchLayersForCardID($combatChain[0]) == -1 && $needleChar[$charID + 7] != "1") {
               AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
             }
             break;
@@ -435,12 +435,14 @@ function FindEmptyEquipmentSlots($player)
   $charPieces = CharacterPieces();
   $slots = ["Head", "Chest", "Arms", "Legs"];
   $occupied = [];
-  for ($i = 0; $i < $charCount && count($occupied) < 4; $i += $charPieces) {
+  $occupiedCount = 0;
+  for ($i = 0; $i < $charCount && $occupiedCount < 4; $i += $charPieces) {
     if ($character[$i + 1] == 0) continue; // destroyed cards don't occupy a slot
     $subtype = CardSubType($character[$i], $character[$i + 11]);
     foreach ($slots as $slot) {
       if (!isset($occupied[$slot]) && DelimStringContains($subtype, $slot)) {
         $occupied[$slot] = true;
+        ++$occupiedCount;
       }
     }
   }

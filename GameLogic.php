@@ -76,10 +76,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       BuildMainPlayerGamestate();
       $parameters = explode(",", $parameter);
       $parameter = $parameters[0];
-      $subparam = (count($parameters) > 1) ? $parameters[1] : "";
-      $subparam2 = (count($parameters) > 2) ? $parameters[2] : "";
-      $subparam3 = (count($parameters) > 3) ? $parameters[3] : true;
-      $subparam4 = (count($parameters) > 4) ? $parameters[4] : "";
+      $paramCount = count($parameters);
+      $subparam = ($paramCount > 1) ? $parameters[1] : "";
+      $subparam2 = ($paramCount > 2) ? $parameters[2] : "";
+      $subparam3 = ($paramCount > 3) ? $parameters[3] : true;
+      $subparam4 = ($paramCount > 4) ? $parameters[4] : "";
       switch ($parameter) {
         case "TRAPS":
           $rv = GetTrapIndices($player);
@@ -3786,7 +3787,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "TRUCE":
       if (SearchCurrentTurnEffects("truce_blue", $defPlayer, remove: true)){
         $theirAuras = &GetAuras($defPlayer);
-        for ($i = count($theirAuras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+        $auraPieces = AuraPieces();
+        for ($i = count($theirAuras) - $auraPieces; $i >= 0; $i -= $auraPieces) {
           switch ($theirAuras[$i]) {
             case "truce_blue":
               AddLayer("TRIGGER", $defPlayer, $theirAuras[$i], "truce_blue-2", uniqueID: $theirAuras[$i + 6]);
@@ -4106,7 +4108,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "CONVERTLAYERTOABILITY":
       $layerIndex = -1;
       $layersCount = count($layers);
-      for ($i = $layersCount - LayerPieces(); $i >= 0; $i -= LayerPieces()) {
+      $layerPieces = LayerPieces();
+      for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
         if ($layers[$i] == $parameter) $layerIndex = $i;
       }
       if ($layerIndex != -1) {

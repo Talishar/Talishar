@@ -39,13 +39,7 @@
       case "brain_freeze_red": case "brain_freeze_yellow": case "brain_freeze_blue":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
         $hand = &GetHand($otherPlayer);
-        $cards = "";
-        $handCount = count($hand);
-        for($i=0; $i<$handCount; ++$i) {
-          if($cards != "") $cards .= ",";
-          $cards .= $hand[$i];
-        }
-        $cardsRevealed = RevealCards($cards);
+        $cardsRevealed = RevealCards(implode(",", $hand));
         if($cardsRevealed && DelimStringContains($additionalCosts, "ICE")) {
           $maxCost = match($cardID) { "brain_freeze_red" => 2, "brain_freeze_yellow" => 1, default => 0 };
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HANDACTIONMAXCOST," . $maxCost);

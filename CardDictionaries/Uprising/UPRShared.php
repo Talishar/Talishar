@@ -176,7 +176,7 @@ function UPRDealDamageEffect($cardID)
   function QuellIndices($player)
   {
     $character = &GetPlayerCharacter($player);
-    $indices = "";
+    $indicesArr = [];
     $charCount = count($character);
     $charPieces = CharacterPieces();
     for($i=0; $i<$charCount; $i+=$charPieces)
@@ -184,11 +184,10 @@ function UPRDealDamageEffect($cardID)
       if($character[$i+1] == "0") continue;
       if(QuellAmount($character[$i]) > 0)
       {
-        if($indices != "") $indices .= ",";
-        $indices .= SearchMultizoneFormat($i, "MYCHAR");
+        $indicesArr[] = SearchMultizoneFormat($i, "MYCHAR");
       }
     }
-    return $indices;
+    return implode(",", $indicesArr);
   }
 
 ?>

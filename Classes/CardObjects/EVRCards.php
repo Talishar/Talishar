@@ -647,7 +647,8 @@ class fractal_replication_red extends Card {
 		global $CurrentTurnEffects;
 		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
 		$addedAbilities = explode(",", $Effect->EffectID());
-		for ($i = 1; $i < count($addedAbilities); ++$i) {
+		$addedAbilitiesCount = count($addedAbilities);
+		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
 			if (HasGoAgain($addedAbilities[$i])) return true;
 		}
 		return false;
@@ -661,7 +662,8 @@ class fractal_replication_red extends Card {
 		global $CurrentTurnEffects;
 		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
 		$addedAbilities = explode(",", $Effect->EffectID());
-		for ($i = 1; $i < count($addedAbilities); ++$i) {
+		$addedAbilitiesCount = count($addedAbilities);
+		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
 			if (HasPhantasm($addedAbilities[$i])) return true;
 		}
 		return false;
@@ -671,7 +673,8 @@ class fractal_replication_red extends Card {
 		global $CurrentTurnEffects;
 		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
 		$addedAbilities = explode(",", $Effect->EffectID());
-		for ($i = 1; $i < count($addedAbilities); ++$i) {
+		$addedAbilitiesCount = count($addedAbilities);
+		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
 			if (HasDominate($addedAbilities[$i])) return true;
 		}
 		return false;
@@ -736,7 +739,8 @@ class fractal_replication_red extends Card {
 		global $CurrentTurnEffects;
 		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
 		$addedAbilities = explode(",", $Effect->EffectID());
-		for ($i = 1; $i < count($addedAbilities); ++$i) {
+		$addedAbilitiesCount = count($addedAbilities);
+		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
 			$availableOnhit = AddOnHitTrigger($addedAbilities[$i], $uniqueID, $source, $targetPlayer, $check);
 			if ($check && $availableOnhit) return true;
 		}

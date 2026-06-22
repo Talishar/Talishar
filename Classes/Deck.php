@@ -26,17 +26,16 @@ class Deck {
   function Remove($indices) {
     if ($indices == "") return "";
     $indexArr = explode(",", $indices);
-    $cardIDs = "";
+    $cardIDs = [];
     for($i=count($indexArr)-1; $i>= 0; --$i) {
       if (isset($this->deck[$indexArr[$i]])) {
-        if($cardIDs != "") $cardIDs .= ",";
-        $cardIDs .= $this->deck[$indexArr[$i]];
+        $cardIDs[] = $this->deck[$indexArr[$i]];
         unset($this->deck[$indexArr[$i]]);
       }
       else WriteLog("Something went wrong with removing a card from deck, please submit a bug report");
     }
     $this->deck = array_values($this->deck);
-    return $cardIDs;
+    return implode(",", $cardIDs);
   }
 
   function Reveal($revealCount=1, $switched=false, $isClash=false) {

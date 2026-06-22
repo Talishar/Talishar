@@ -78,7 +78,8 @@ function ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)
 function CardIsPitchable($storedPriorityNode)
 {
   global $currentTurnEffects, $currentPlayer;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "frost_lock_blue": return CardCost($storedPriorityNode[0]) != 0;
@@ -98,7 +99,8 @@ function CardIsArsenalable($storedPriorityNode)
 function CardIsPrevented($cardID)
 {
   global $currentTurnEffects, $currentPlayer;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "crush_the_weak_red":

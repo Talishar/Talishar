@@ -3231,17 +3231,17 @@ class sonata_arcanix_red extends Card {
         $cards = explode(",", $dqVars["cardIDs"]);
         $numAA = 0;
         $numNAA = 0;
-        $AAIndices = "";
+        $AAIndicesArr = [];
         $cardsCount = count($cards);
         for ($i = 0; $i < $cardsCount; ++$i) {
           $cardType = CardType($cards[$i]);
           if (DelimStringContains($cardType, "A")) ++$numNAA;
           else if ($cardType == "AA") {
             ++$numAA;
-            if ($AAIndices != "") $AAIndices .= ",";
-            $AAIndices .= $i;
+            $AAIndicesArr[] = $i;
           }
         }
+        $AAIndices = implode(",", $AAIndicesArr);
         $numMatch = $numAA > $numNAA ? $numNAA : $numAA;
         if ($numMatch == 0) return "PASS";
         $dqVars["maxNumber"] = $numMatch;
