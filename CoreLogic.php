@@ -12,8 +12,9 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   $canGainAttack = CanGainAttack($attackID);
   $snagActive = SearchCurrentTurnEffects("snag_blue", $mainPlayer) && $attackType == "AA";
   $combatChainPieces = CombatChainPieces();
+  $numCardsActiveLink = $CombatChain->NumCardsActiveLink();
 
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  for ($i = 0; $i < $numCardsActiveLink; ++$i) {
     $chainCard = $CombatChain->Card($i, true);
     if ($chainCard->PlayerID() == $mainPlayer) {
       if ($i == 0 && $attackType != "W") $power = LinkBasePower();
@@ -331,6 +332,7 @@ function StartTurnAbilities()
     ItemStartTurnAbility($i);
   }
   $banishPieces = BanishPieces();
+  $arsenalPieces = ArsenalPieces();
   $mainBanish = &GetBanish($mainPlayer);
   for ($i = count($mainBanish) - $banishPieces; $i >= 0; $i -= $banishPieces) {
     if($mainBanish[$i + 1] == "RETURNFIRE"){
@@ -338,7 +340,7 @@ function StartTurnAbilities()
         $arsenal = &GetArsenal($mainPlayer);
         AddArsenal($mainBanish[$i], $mainPlayer, "BANISH", "UP");
         RemoveBanish($mainPlayer, $i);
-        AddCurrentTurnEffect("return_fire_red", $mainPlayer, uniqueID:$arsenal[count($arsenal) - ArsenalPieces() + 5]);
+        AddCurrentTurnEffect("return_fire_red", $mainPlayer, uniqueID:$arsenal[count($arsenal) - $arsenalPieces + 5]);
       }
       else {
         $mainBanish[$i + 1] = "-";
@@ -919,12 +921,13 @@ function CurrentEffectDamageModifiers($player, $source, $type)
 {
   global $currentTurnEffects;
   $modifier = 0;
-  $currentTurnEffectsPieces = CurrentTurnEffectsPieces(); 
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = 0;
-    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    $effectID = $currentTurnEffects[$i];
+    $card = GetClass($effectID, $currentTurnEffects[$i + 1]);
     if ($card != "-") $modifier += $card->CurrentEffectDamageBuffs($source, $type, $i, $remove);
-    switch ($currentTurnEffects[$i]) {
+    switch ($effectID) {
       case "frazzle_red":
       case "frazzle_yellow":
       case "frazzle_blue":
@@ -976,30 +979,34 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
   global $currentTurnEffects, $EffectContext, $CombatChain, $CS_ResolvingLayerUniqueID, $mainPlayer;
   $otherPlayer = ($target == 1 ? 2 : 1);
   if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
-  $AttackCard = $CombatChain->AttackCard(); 
+  $AttackCard = $CombatChain->AttackCard();
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $attackCardID = $AttackCard->ID();
+  $isCombat = ($type == "COMBAT");
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $target) {
+    $effectPlayer = $currentTurnEffects[$i + 1];
+    if ($effectPlayer == $target) {
       continue;
     }
-    if ($type == "COMBAT" && HitEffectsArePrevented($source)) continue;
-    if ($source == $AttackCard->ID() && !IsCombatEffectActive($currentTurnEffects[$i])) continue;
+    if ($isCombat && HitEffectsArePrevented($source)) continue;
+    $effectID = $currentTurnEffects[$i];
+    if ($source == $attackCardID && !IsCombatEffectActive($effectID)) continue;
     $remove = 0;
-    $EffectContext = $currentTurnEffects[$i];
-    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    $EffectContext = $effectID;
+    $card = GetClass($effectID, $effectPlayer);
     if ($card != "-") $card->CurrentEffectDamageEffect($target, $source, $type, $damage, $remove);
-    switch ($currentTurnEffects[$i]) {
+    switch ($effectID) {
       case "blizzard_bolt_red":
       case "blizzard_bolt_yellow":
       case "blizzard_bolt_blue":
         if (IsHeroAttackTarget() && CardType($source) == "AA")
-          AddLayer("TRIGGER", $otherPlayer, $currentTurnEffects[$i], $target);
+          AddLayer("TRIGGER", $otherPlayer, $effectID, $target);
         break;
       case "chilling_icevein_red":
       case "chilling_icevein_yellow":
       case "chilling_icevein_blue":
         if (IsHeroAttackTarget() && CardType($source) == "AA")
-          AddLayer("TRIGGER", $otherPlayer, $currentTurnEffects[$i], $target);
+          AddLayer("TRIGGER", $otherPlayer, $effectID, $target);
         break;
       case "blossoming_spellblade_red":
         if ($source == "blossoming_spellblade_red" && (IsHeroAttackTarget() || $type != "COMBAT"))
@@ -1015,7 +1022,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
         break;
       case "staff_of_verdant_shoots": // So technically this procks if you deal damage to yourself but this would need to be refactored in order to make that work. Until someone has this happen, lets just leave it as so.
         if ($source != "frostbite" && $type == "ARCANE") {
-          PlayAura("embodiment_of_earth", $currentTurnEffects[$i + 1], 1);
+          PlayAura("embodiment_of_earth", $effectPlayer, 1);
           $remove = 1;
         }
         break;
@@ -1069,11 +1076,11 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   $health = &GetHealth($player);
   $otherHealth = &GetHealth($otherPlayer);
   $p2Char = &GetPlayerCharacter($otherPlayer);
-  if (SearchCurrentTurnEffects("dread_scythe", $player) && $preventable) {
+  if ($preventable && SearchCurrentTurnEffects("dread_scythe", $player)) {
     WriteLog(CardLink("dread_scythe", "dread_scythe") . " prevented you from gaining life");
     return false;
   }
-  if ((SearchCurrentTurnEffects("deny_redemption_red", $player) || SearchCurrentTurnEffects("deny_redemption_red", $otherPlayer)) && $preventable) {
+  if ($preventable && (SearchCurrentTurnEffects("deny_redemption_red", $player) || SearchCurrentTurnEffects("deny_redemption_red", $otherPlayer))) {
     WriteLog(CardLink("deny_redemption_red", "deny_redemption_red") . " prevented you from gaining life");
     return false;
   }
@@ -1081,7 +1088,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     WriteLog("<span style='color:red;'>🗡️ " . CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life</span>");
     return false;
   }
-  if ((SearchAurasForCard("parched_terrain_red", 1) != "" || SearchAurasForCard("parched_terrain_red", 2) != "") && $preventable) {
+  if ($preventable && (SearchAurasForCard("parched_terrain_red", 1) != "" || SearchAurasForCard("parched_terrain_red", 2) != "")) {
     WriteLog(CardLink("parched_terrain_red", "parched_terrain_red") . " prevents heroes from gaining " . ($amount == 1 ? "health" : $amount . " health"));
     return false;
   }

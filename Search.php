@@ -687,7 +687,7 @@ function CombineSearches($search1, $search2)
 
 function SearchRemoveDuplicates($search)
 {
-  if ($search === "") return "";
+  if ($search === "" || strpos($search, ',') === false) return $search;
   return implode(",", array_unique(explode(",", $search)));
 }
 

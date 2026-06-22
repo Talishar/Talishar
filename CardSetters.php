@@ -317,6 +317,9 @@ function AddResourceCost($player, $amount)
 function RemovePitch($player, $index)
 {
   $pitch = &GetPitch($player);
+  if (!isset($pitch[$index])) {
+    return "";
+  }
   $cardID = $pitch[$index];
   array_splice($pitch, $index, PitchPieces());
   return $cardID;

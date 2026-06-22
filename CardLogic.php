@@ -294,13 +294,12 @@ function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeChe
     }
   }
 
-  // Fast path: avoid str_replace allocation when parameter has no spaces (most common case)
   if ($parameter === null) {
     $parameter = "";
   } elseif (str_contains($parameter, ' ')) {
     $parameter = str_replace(' ', '_', $parameter);
   }
-  // Avoid O(N) array_splice for the common append case; direct push is O(1)
+
   if ($insertIndex === $dqCount) {
     $decisionQueue[] = $phase;
     $decisionQueue[] = $player;
@@ -391,7 +390,7 @@ function IsGamePhase($phase)
 
 function AddTriggersToStack($preLayers = null)
 {
-  global $layers, $mainPlayer, $defPlayer;
+  global $mainPlayer;
   if ($preLayers === null) $preLayers = GetPreLayers();
   $preLayersCount = count($preLayers);
   if ($preLayersCount > 0) {

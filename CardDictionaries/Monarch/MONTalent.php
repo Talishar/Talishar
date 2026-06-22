@@ -19,7 +19,7 @@
         return "";
       case "soul_food_yellow":
         $hand = &GetHand($currentPlayer);
-        for($i = 0; $i < count($hand); ++$i) AddSoul($hand[$i], $currentPlayer, "HAND");
+        foreach($hand as $handCard) AddSoul($handCard, $currentPlayer, "HAND");
         $hand = [];
         return "";
       case "tome_of_divinity_yellow":

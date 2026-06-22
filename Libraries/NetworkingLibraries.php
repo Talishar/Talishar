@@ -1674,13 +1674,7 @@ function FinalizeChainLink($chainClosed = false)
   ProcessDecisionQueue();
   if ($Stack->StackEmpty() && $AttackQueue->NumAttacks() > 0) {
     global $CCS_AttackTarget, $CCS_AttackTargetUID;
-    $cardID = array_shift($attackQueue);
-    $player = array_shift($attackQueue);
-    $parameter = array_shift($attackQueue);
-    $target = array_shift($attackQueue);
-    $additionalCosts = array_shift($attackQueue);
-    $uniqueID = array_shift($attackQueue);
-    $layerUniqueID = array_shift($attackQueue);
+    [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID] = array_splice($attackQueue, 0, 7);
     $params = explode("|", $parameter);
     $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
     $MZIndex = CleanTargetToIndex($currentPlayer, $target);

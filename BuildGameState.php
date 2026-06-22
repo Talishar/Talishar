@@ -531,12 +531,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if (TypeContains($theirChar, "D")) $type = "C";
     $sTypeArr = explode(",", CardSubType($theirChar, $theirCharacter[$i+11]));
     $sType = $sTypeArr[0];
-    $sTypeArrCount = count($sTypeArr);
-    for($j=0; $j<$sTypeArrCount; ++$j) {
-      if($sTypeArr[$j] == "Head" || $sTypeArr[$j] == "Chest" || $sTypeArr[$j] == "Arms" || $sTypeArr[$j] == "Legs") {
-        $sType = $sTypeArr[$j];
-        break;
-      }
+    static $equipSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
+    foreach ($sTypeArr as $st) {
+      if (isset($equipSlots[$st])) { $sType = $st; break; }
     }
     $border = CardBorderColor($theirChar, "THEIRCHAR", true, $otherPlayer);
     if (TypeContains($theirCharacter[$i], "W", $playerID)) {
@@ -763,12 +760,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if (TypeContains($myChar, "D")) $type = "C";
     $sTypeArr = explode(",", CardSubType($myChar, $myCharacter[$i+11] ?? ""));
     $sType = $sTypeArr[0];
-    $sTypeArrCount = count($sTypeArr);
-    for($j=0; $j<$sTypeArrCount; ++$j) {
-      if($sTypeArr[$j] == "Head" || $sTypeArr[$j] == "Chest" || $sTypeArr[$j] == "Arms" || $sTypeArr[$j] == "Legs") {
-        $sType = $sTypeArr[$j];
-        break;
-      }
+    foreach ($sTypeArr as $st) {
+      if (isset($equipSlots[$st])) { $sType = $st; break; }
     }
     if (TypeContains($myChar, "W", $playerID)) {
       ++$numWeapons;
@@ -1239,6 +1232,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $effectCardIds = [];
   $adminEffectIdx = [];
+  $fancyCountersCache = [];
 
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
       $raw = $currentTurnEffects[$i];
@@ -1249,7 +1243,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $effectCardIds[$i] = $cardID;
       $isAdmin = AdministrativeEffect($cardID) || $cardID === "luminaris_angels_glow-1" || $cardID === "luminaris_angels_glow-2";
       $adminEffectIdx[$i] = $isAdmin;
-      if($isAdmin || HasFancyCounters($cardID)) continue;
+      if ($isAdmin) continue;
+      if (!isset($fancyCountersCache[$cardID])) {
+          $fancyCountersCache[$cardID] = HasFancyCounters($cardID);
+      }
+      if ($fancyCountersCache[$cardID]) continue;
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
 
       if ($isFriendly) {
@@ -1276,34 +1274,41 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
   }
 
+  $skipStackCache = [];
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
       $cardID = $effectCardIds[$i];
       if ($adminEffectIdx[$i]) continue;
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
       $BorderColor = $isFriendly ? "blue" : "red";
-
       $counters = $isFriendly ? $friendlyCounts[$cardID] ?? 0 : $opponentCounts[$cardID] ?? 0;
 
-      $card = GetClass($cardID, 0);
-      if(
-        $cardID == "shelter_from_the_storm_red" || 
-        $cardID == "calming_breeze_red" || 
-        ($card != "-" && $card->DisplayRemainingPrevention())) {
-        $counters = $currentTurnEffects[$i + 3];
+      if (!isset($skipStackCache[$cardID])) {
+          $skipStackCache[$cardID] = skipEffectUIStacking($cardID);
       }
-      
-      if($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
-        $parts = explode("-", $currentTurnEffects[$i]);
-        $counters = intval(end($parts));
-      }
+      $doesStack = !$skipStackCache[$cardID];
 
-      if ($playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1]) {
-          if(!isset($friendlyRenderedEffects[$cardID]) || !skipEffectUIStacking($cardID)) {
+      if ($isFriendly) {
+          if (!isset($friendlyRenderedEffects[$cardID]) || $doesStack) {
+              $card = GetClass($cardID, 0);
+              if ($cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red" || ($card != "-" && $card->DisplayRemainingPrevention())) {
+                  $counters = $currentTurnEffects[$i + 3];
+              }
+              if ($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
+                  $parts = explode("-", $currentTurnEffects[$i]);
+                  $counters = intval(end($parts));
+              }
               $friendlyRenderedEffects[$cardID] = true;
               $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
           }
-      }
-      elseif(!isset($opponentRenderedEffects[$cardID]) && $otherPlayer == $currentTurnEffects[$i + 1] || !skipEffectUIStacking($cardID)) {
+      } elseif (!isset($opponentRenderedEffects[$cardID]) && $otherPlayer == $currentTurnEffects[$i + 1] || $doesStack) {
+          $card = GetClass($cardID, 0);
+          if ($cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red" || ($card != "-" && $card->DisplayRemainingPrevention())) {
+              $counters = $currentTurnEffects[$i + 3];
+          }
+          if ($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
+              $parts = explode("-", $currentTurnEffects[$i]);
+              $counters = intval(end($parts));
+          }
           $opponentRenderedEffects[$cardID] = true;
           $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
       }

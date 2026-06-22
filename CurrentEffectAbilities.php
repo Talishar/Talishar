@@ -684,15 +684,15 @@ function EffectHasBlockModifier($cardID)
 function RemoveEffectsFromCombatChain($cardID = "")
 {
   global $currentTurnEffects;
-  $searchedEffect = "";
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $validCardID = ($cardID != "");
+  $searchedEffect = $validCardID ? $cardID : "";
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
-    if($cardID == "") {
+    if (!$validCardID) {
       $raw = $currentTurnEffects[$i];
       $searchedEffect = substr($raw, 0, strcspn($raw, '-,'));
     }
-    else $searchedEffect = $cardID;
     $card = GetClass($searchedEffect, $currentTurnEffects[$i+1]);
     if ($card != "-") $remove = $card->RemoveEffectFromCombatChain();
     switch ($searchedEffect) {
@@ -758,15 +758,15 @@ function RemoveEffectsFromCombatChain($cardID = "")
 function RemoveThisLinkEffects($cardID="")
 {
   global $currentTurnEffects, $combatChainState, $CCS_EclecticMag;
-  $searchedEffect = "";
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $validCardID = ($cardID != "");
+  $searchedEffect = $validCardID ? $cardID : "";
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
-    if($cardID == "") {
+    if (!$validCardID) {
       $raw = $currentTurnEffects[$i];
       $searchedEffect = substr($raw, 0, strcspn($raw, '-,'));
     }
-    else $searchedEffect = $cardID;
     switch ($searchedEffect) {
       case "gone_in_a_flash_red":
       case "blast_to_oblivion_red":
@@ -2747,8 +2747,9 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $effectArr = explode(",", $currentTurnEffects[$i], 2);
-      $effectID = $effectArr[0];
+      $effect = $currentTurnEffects[$i];
+      $commaPos = strpos($effect, ',');
+      $effectID = $commaPos === false ? $effect : substr($effect, 0, $commaPos);
       switch ($effectID) {
         case "burdens_of_the_past_blue":
           // handle modal cards separately
