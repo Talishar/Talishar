@@ -2440,7 +2440,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "rampart_of_the_rams_head", 1);
-        AddDecisionQueue("LOGSTATS", $player, $parameter.",EQUIP,PASSIVE", 1);
         break;
       case "embolden_red":
       case "embolden_yellow":
