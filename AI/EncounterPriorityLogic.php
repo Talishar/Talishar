@@ -96,28 +96,32 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
 
     case "Arsenal":
       $zoneCount = count($zoneArr);
-      for ($i = 0; $i < $zoneCount; $i += ArsenalPieces()) {
+      $arsenalPieces = ArsenalPieces();
+      for ($i = 0; $i < $zoneCount; $i += $arsenalPieces) {
         $priorityArray[] = [$zoneArr[$i], "Arsenal", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 
     case "Character":
       $zoneCount = count($zoneArr);
-      for ($i = 0; $i < $zoneCount; $i += CharacterPieces()) {
+      $characterPieces = CharacterPieces();
+      for ($i = 0; $i < $zoneCount; $i += $characterPieces) {
         $priorityArray[] = [$zoneArr[$i], "Character", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 
     case "Items":
       $zoneCount = count($zoneArr);
-      for ($i = 0; $i < $zoneCount; $i += ItemPieces()) {
+      $itemPieces = ItemPieces();
+      for ($i = 0; $i < $zoneCount; $i += $itemPieces) {
         $priorityArray[] = [$zoneArr[$i], "Item", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 
     case "Allies":
       $zoneCount = count($zoneArr);
-      for ($i = 0; $i < $zoneCount; $i += AllyPieces()) {
+      $allyPieces = AllyPieces();
+      for ($i = 0; $i < $zoneCount; $i += $allyPieces) {
         $priorityArray[] = [$zoneArr[$i], "Ally", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;

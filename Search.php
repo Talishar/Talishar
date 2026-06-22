@@ -1879,15 +1879,13 @@ function SearchMultizone($player, $searches)
 
 function MZToIndices($mzSearch)
 {
-  $output = "";
   $mzSearchArr = explode(",", $mzSearch);
   $mzCount = count($mzSearchArr);
+  $outputArr = [];
   for ($i = 0; $i < $mzCount; ++$i) {
-    $mzArr = explode("-", $mzSearchArr[$i]);
-    if ($output != "") $output .= ",";
-    $output .= $mzArr[1];
+    $outputArr[] = explode("-", $mzSearchArr[$i], 2)[1];
   }
-  return $output;
+  return implode(",", $outputArr);
 }
 
 function FrozenCount($player)

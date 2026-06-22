@@ -455,7 +455,8 @@ function DestroyArsenal($player, $index = -1, $effectController = "", $allArsena
 {
   $arsenal = &GetArsenal($player);
   $cardIDs = "";
-  for ($i = count($arsenal) - ArsenalPieces(); $i >= 0; $i -= ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  for ($i = count($arsenal) - $arsenalPieces; $i >= 0; $i -= $arsenalPieces) {
     if ($index > -1 && $index != $i) continue;
     if ($cardIDs != "") $cardIDs .= ",";
     $cardIDs .= $arsenal[$i];

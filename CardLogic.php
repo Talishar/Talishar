@@ -3121,7 +3121,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "blasmophet_levia_consumed":
         $banish = &GetBanish($player);
-        for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+        $banishPieces = BanishPieces();
+        for ($i = count($banish) - $banishPieces; $i >= 0; $i -= $banishPieces) {
           if ($banish[$i + 1] == "blasmophet_levia_consumed") {
             TurnBanishFaceDown($player, $i);
             break;
@@ -3367,7 +3368,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "no_fear_red":
         $banish = &GetBanish($player);
         $hand = &GetHand($player);
-        for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+        $banishPieces = BanishPieces();
+        for ($i = count($banish) - $banishPieces; $i >= 0; $i -= $banishPieces) {
           if ($banish[$i + 1] == "NOFEAR") {
             $hand[] = $banish[$i];
             RemoveBanish($player, $i);
@@ -3499,7 +3501,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $otherPlayer = 3 - $player;
         $banish = &GetBanish($otherPlayer);
         $hand = &GetHand($otherPlayer);
-        for ($i = count($banish) - BanishPieces(); $i >= 0; $i -= BanishPieces()) {
+        $banishPieces = BanishPieces();
+        for ($i = count($banish) - $banishPieces; $i >= 0; $i -= $banishPieces) {
           if ($banish[$i + 1] == "STONERAIN") {
             $hand[] = $banish[$i];
             RemoveBanish($otherPlayer, $i);
@@ -3598,7 +3601,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "flash_of_brilliance":
         $hand = SearchHand($player, talent: "LIGHTNING");
-        if (count(explode(",", $hand)) > 0) {
+        if ($hand !== "") {
           AddDecisionQueue("FINDINDICES", $player, "HAND", 1);
           AddDecisionQueue("SETDQCONTEXT", $player, "Choose a lightning card from your hand to discard.", 1);
           MZMoveCard($player, "MYHAND:talent=LIGHTNING", "MYDISCARD", may:true, logText:"Card discarded: <0>", isSubsequent:true);

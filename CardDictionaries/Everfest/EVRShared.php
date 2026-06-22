@@ -621,7 +621,7 @@
         if(IsHeroAttackTarget() && CanRevealCards($mainPlayer))
         {
           $hand = &GetHand($defPlayer);
-          $cards = "";
+          $cardsArr = [];
           $numDiscarded = 0;
           $handPieces = HandPieces();
           for($i=count($hand)-$handPieces; $i>=0; $i-=$handPieces)
@@ -634,11 +634,10 @@
               unset($hand[$i]);
               ++$numDiscarded;
             }
-            if($cards != "") $cards .= ",";
-            $cards .= $id;
+            $cardsArr[] = $id;
           }
           LoseHealth($numDiscarded, $defPlayer);
-          RevealCards($cards, $defPlayer);//CanReveal checked earlier
+          RevealCards(implode(",", $cardsArr), $defPlayer);//CanReveal checked earlier
           if($numDiscarded > 0)WriteLog(CardLink("battering_bolt_red", "battering_bolt_red") . " discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
           $hand = array_values($hand);
         }
@@ -695,13 +694,14 @@
     global $mainPlayer;
     if(ArsenalFull($mainPlayer)) return "";
     $hand = &GetHand($mainPlayer);
-    $heaveIndices = "";
+    $heaveIndicesArr = [];
     $totalResources = GetResources($mainPlayer)[0];
     $handCount = count($hand);
     $handPieces = HandPieces();
     $auraPieces = AuraPieces();
     for($i=0; $i<$handCount; $i+= $handPieces) {
-      if (is_numeric(PitchValue($hand[$i]))) $totalResources += PitchValue($hand[$i]);
+      $pv = PitchValue($hand[$i]);
+      if (is_numeric($pv)) $totalResources += $pv;
     }
     $auras = GetAuras($mainPlayer);
     $aurasCount = count($auras);
@@ -709,14 +709,14 @@
       if ($auras[$i] == "ponder") $totalResources += 3;
     }
     for($i=0; $i<$handCount; $i+= $handPieces) {
-      $availableResources = (is_numeric(PitchValue($hand[$i]))) ? $totalResources - PitchValue($hand[$i]) : $totalResources;
+      $pv = PitchValue($hand[$i]);
+      $availableResources = is_numeric($pv) ? $totalResources - $pv : $totalResources;
       $heaveVal = HeaveValue($hand[$i]);
       if($heaveVal > 0 && ($availableResources >= $heaveVal || !$resourceCounting)) {
-        if($heaveIndices != "") $heaveIndices .= ",";
-        $heaveIndices .= $i;
+        $heaveIndicesArr[] = $i;
       }
     }
-    return $heaveIndices;
+    return implode(",", $heaveIndicesArr);
   }
 
   function Heave()
@@ -807,7 +807,7 @@
   {
     global $chainLinks, $combatChain, $CombatChain;
     $character = &GetPlayerCharacter($player);
-    $indices = "";
+    $indicesArr = [];
     //past chain links
     $chainLinksPieces = ChainLinksPieces();
     $combatChainPieces = CombatChainPieces();
@@ -822,8 +822,7 @@
           && (CardType($character[$characterIndex]) == "E" || DelimStringContains(CardSubType($character[$characterIndex]), "Evo")) 
           && BlockValue($character[$characterIndex]) - $character[$characterIndex+4] + $link[$i+5] < $pendingDamage)
           {
-            if($indices != "") $indices .= ",";
-            $indices .= $characterIndex;
+            $indicesArr[] = $characterIndex;
           }
         }
       }
@@ -833,36 +832,34 @@
     for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
       $characterIndex = SearchCharacterForUniqueID($CombatChain->Card($i)->OriginUniqueID(), $player);
       if ($characterIndex != -1 && $character[$characterIndex] == $CombatChain->Card($i)->ID()) {
-        if($character[$characterIndex+6] == 1 
-        && $character[$characterIndex+1] != 0 
+        if($character[$characterIndex+6] == 1
+        && $character[$characterIndex+1] != 0
         && $character[$characterIndex+12] != "DOWN"
-        && (CardType($character[$characterIndex]) == "E" || DelimStringContains(CardSubType($character[$characterIndex]), "Evo")) 
+        && (CardType($character[$characterIndex]) == "E" || DelimStringContains(CardSubType($character[$characterIndex]), "Evo"))
         && ($CombatChain->Card($i)->CardBlockValue()) < $pendingDamage)
         {
-          if($indices != "") $indices .= ",";
-          $indices .= $characterIndex;
+          $indicesArr[] = $characterIndex;
         }
       }
     }
-    return $indices;
+    return implode(",", $indicesArr);
   }
 
   function KnickKnackIndices($player)
   {
     $deck = &GetDeck($player);
-    $indices = "";
+    $indicesArr = [];
     $deckCount = count($deck);
     $deckPieces = DeckPieces();
     for($i=0; $i<$deckCount; $i+= $deckPieces) {
       if(SubtypeContains($deck[$i], "Item", $player)) {
         $name = CardName($deck[$i]);
         if(str_contains($name, "Potion") || str_contains($name, "Talisman") || str_contains($name, "Amulet")) {
-          if($indices != "") $indices .= ",";
-          $indices .= $i;
+          $indicesArr[] = $i;
         }
       }
     }
-    return $indices;
+    return implode(",", $indicesArr);
   }
 
   function CashOutIndices($player)
