@@ -3923,12 +3923,14 @@ class astral_bridge_red extends Card {
     global $CS_NumInstantsPutInGrave;
     $deck = new Deck($this->controller);
     $cardID = $deck->Top(true);
-    $uid = AddGraveyard($cardID, $this->controller, "DECK");
-    AddDecisionQueue("WRITELOG", $this->controller, CardLink($cardID) . " was put into the graveyard.");
-    if (TypeContains($cardID, "I"))
-      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
-    if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0)
-      DealArcane(1, source:$this->cardID, resolvedTarget:$target);
+    if ($cardID != "") {
+      $uid = AddGraveyard($cardID, $this->controller, "DECK");
+      AddDecisionQueue("WRITELOG", $this->controller, CardLink($cardID) . " was put into the graveyard.");
+      if (TypeContains($cardID, "I"))
+        AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+      if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0)
+        DealArcane(1, source:$this->cardID, resolvedTarget:$target);
+    }
     return "";
   }
 
