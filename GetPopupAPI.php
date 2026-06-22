@@ -83,20 +83,15 @@ switch ($popupType) {
     for ($i = 0; $i < $powerModifiersCount; $i += 2) {
       $bonus = $powerModifiers[$i + 1];
       if ($bonus == 0) continue;
-      $idArr = explode("-", $powerModifiers[$i]);
-      $cardID = ExtractCardID($idArr[0]);
+      $rawId = $powerModifiers[$i];
+      $dashPos = strpos($rawId, '-');
+      $cardID = ExtractCardID($dashPos !== false ? substr($rawId, 0, $dashPos) : $rawId);
       $effectName = CardName($cardID);
-      if($effectName == "")
-      {
+      if ($effectName === "") {
         $effectName = $cardID;
         $cardID = "";
       }
-      $thisModifier = new stdClass();
-      $thisModifier->Player = $mainPlayer;
-      $thisModifier->Name = $effectName;
-      $thisModifier->cardID = $cardID;
-      $thisModifier->modifier = $bonus;
-      $response->Cards[] = $thisModifier;
+      $response->Cards[] = ["Player" => $mainPlayer, "Name" => $effectName, "cardID" => $cardID, "modifier" => $bonus];
     }
     break;
   case "myPitchPopup":
@@ -194,32 +189,33 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "HideHandFromFriends", 33, $dbSettings);
     } else {
       // Normal game settings
-      AddSetting($response->Settings, "HoldPrioritySetting", $SET_AlwaysHoldPriority);
-      AddSetting($response->Settings, "TryReactUI", $SET_TryUI2);
-      AddSetting($response->Settings, "DarkMode", $SET_DarkMode);
-      AddSetting($response->Settings, "ManualMode", $SET_ManualMode);
-      AddSetting($response->Settings, "SkipARWindow", $SET_SkipARs);
-      AddSetting($response->Settings, "SkipDRWindow", $SET_SkipDRs);
-      AddSetting($response->Settings, "AutoTargetOpponent", $SET_AutotargetArcane);
-      AddSetting($response->Settings, "ColorblindMode", $SET_ColorblindMode);
-      AddSetting($response->Settings, "ShortcutAttackThreshold", $SET_ShortcutAttackThreshold);
-      AddSetting($response->Settings, "MuteSound", $SET_Mute);
-      AddSetting($response->Settings, "CardBack", $SET_Cardback);
-      AddSetting($response->Settings, "IsPatron", $SET_IsPatron);
-      AddSetting($response->Settings, "MuteChat", $SET_MuteChat);
-      AddSetting($response->Settings, "DisableStats", $SET_DisableStats);
-      AddSetting($response->Settings, "DisableAltArts", $SET_DisableAltArts);
-      AddSetting($response->Settings, "IsCasterMode", $SET_CasterMode);
-      AddSetting($response->Settings, "IsStreamerMode", $SET_StreamerMode);
-      AddSetting($response->Settings, "Playmat", $SET_Playmat);
-      AddSetting($response->Settings, "AlwaysAllowUndo", $SET_AlwaysAllowUndo);
-      AddSetting($response->Settings, "ManualTunic", $SET_ManualTunic);
-      AddSetting($response->Settings, "DisableFabInsights", $SET_DisableFabInsights);
-      AddSetting($response->Settings, "DisableHeroIntro", $SET_DisableHeroIntro);
-      AddSetting($response->Settings, "MirroredBoardLayout", $SET_MirroredBoardLayout);
-      AddSetting($response->Settings, "MirroredPlayerBoardLayout", $SET_MirroredPlayerBoardLayout);
-      AddSetting($response->Settings, "AlwaysShowCounters", $SET_AlwaysShowCounters);
-      AddSetting($response->Settings, "HideHandFromFriends", $SET_HideHandFromFriends);
+      $playerSettings = GetSettings($playerID);
+      AddSetting($response->Settings, "HoldPrioritySetting", $SET_AlwaysHoldPriority, $playerSettings);
+      AddSetting($response->Settings, "TryReactUI", $SET_TryUI2, $playerSettings);
+      AddSetting($response->Settings, "DarkMode", $SET_DarkMode, $playerSettings);
+      AddSetting($response->Settings, "ManualMode", $SET_ManualMode, $playerSettings);
+      AddSetting($response->Settings, "SkipARWindow", $SET_SkipARs, $playerSettings);
+      AddSetting($response->Settings, "SkipDRWindow", $SET_SkipDRs, $playerSettings);
+      AddSetting($response->Settings, "AutoTargetOpponent", $SET_AutotargetArcane, $playerSettings);
+      AddSetting($response->Settings, "ColorblindMode", $SET_ColorblindMode, $playerSettings);
+      AddSetting($response->Settings, "ShortcutAttackThreshold", $SET_ShortcutAttackThreshold, $playerSettings);
+      AddSetting($response->Settings, "MuteSound", $SET_Mute, $playerSettings);
+      AddSetting($response->Settings, "CardBack", $SET_Cardback, $playerSettings);
+      AddSetting($response->Settings, "IsPatron", $SET_IsPatron, $playerSettings);
+      AddSetting($response->Settings, "MuteChat", $SET_MuteChat, $playerSettings);
+      AddSetting($response->Settings, "DisableStats", $SET_DisableStats, $playerSettings);
+      AddSetting($response->Settings, "DisableAltArts", $SET_DisableAltArts, $playerSettings);
+      AddSetting($response->Settings, "IsCasterMode", $SET_CasterMode, $playerSettings);
+      AddSetting($response->Settings, "IsStreamerMode", $SET_StreamerMode, $playerSettings);
+      AddSetting($response->Settings, "Playmat", $SET_Playmat, $playerSettings);
+      AddSetting($response->Settings, "AlwaysAllowUndo", $SET_AlwaysAllowUndo, $playerSettings);
+      AddSetting($response->Settings, "ManualTunic", $SET_ManualTunic, $playerSettings);
+      AddSetting($response->Settings, "DisableFabInsights", $SET_DisableFabInsights, $playerSettings);
+      AddSetting($response->Settings, "DisableHeroIntro", $SET_DisableHeroIntro, $playerSettings);
+      AddSetting($response->Settings, "MirroredBoardLayout", $SET_MirroredBoardLayout, $playerSettings);
+      AddSetting($response->Settings, "MirroredPlayerBoardLayout", $SET_MirroredPlayerBoardLayout, $playerSettings);
+      AddSetting($response->Settings, "AlwaysShowCounters", $SET_AlwaysShowCounters, $playerSettings);
+      AddSetting($response->Settings, "HideHandFromFriends", $SET_HideHandFromFriends, $playerSettings);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;
@@ -231,21 +227,15 @@ echo json_encode($response);
 
 function AddSettingFromDB(&$response, $name, $settingID, $dbSettings)
 {
-  $thisSetting = new stdClass();
-  $thisSetting->name = $name;
-  $thisSetting->value = $dbSettings[$settingID] ?? null;
-  $response[] = $thisSetting;
+  $response[] = ["name" => $name, "value" => $dbSettings[$settingID] ?? null];
 }
 
-function AddSetting(&$response, $name, $setting)
+function AddSetting(&$response, $name, $setting, $preloadedSettings = null)
 {
   global $playerID;
-  $mySettings = &GetSettings($playerID);
-  $thisSetting = new stdClass();
-  $thisSetting->name = $name;
-  // Use isset to handle new settings that may not exist for existing players
-  $thisSetting->value = $mySettings[$setting] ?? "0";
-  $response[] = $thisSetting;
+  $mySettings = ($preloadedSettings !== null) ? $preloadedSettings : GetSettings($playerID);
+  // Use null coalesce to handle new settings that may not exist for existing players
+  $response[] = ["name" => $name, "value" => $mySettings[$setting] ?? "0"];
 }
 
 function JSONPopup($response, $zone, $zonePieces)
@@ -266,32 +256,30 @@ function ChainLinkObject($link)
   if (!is_array($chainLinks) || empty($chainLinks[$link])) {
     return $chainLink;
   }
-  $linkCards = $chainLinks[$link];
+  $linkCards = &$chainLinks[$link];
   $linkCount = count($linkCards);
   $linkPieces = ChainLinksPieces();
   for ($i = 0; $i < $linkCount; $i += $linkPieces) {
     $cardId = $linkCards[$i];
     $cardOwner = $linkCards[$i + 1];
-    $card = new stdClass();
-    $card->Player = $cardOwner;
-    if ($cardOwner == $mainPlayer) {
+    if ($cardOwner === $mainPlayer) {
       $cardType = CardType($cardId);
-      if ($cardType != "AR") {
+      if ($cardType !== "AR") {
         $powerValue = PowerValue($cardId, $mainPlayer, "CC") + $linkCards[$i + 4];
-      } elseif ($cardType == "AR" || DelimStringContains($cardType, "I")) {
-        $powerValue = PowerModifier($cardId);
       } else {
-        $powerValue = 0;
+        $powerValue = PowerModifier($cardId);
       }
     } else {
       $powerValue = 0;
     }
     $uid = $linkCards[$i + 8];
-    $blockValue = ($cardOwner == $defPlayer) ? ModifiedBlockValue($cardId, $defPlayer, "CC", "", $uid) + $linkCards[$i + 5] : 0;
-    $card->modifier = ($cardOwner == $mainPlayer) ? $powerValue : $blockValue;
-    $card->cardID = $cardId;
-    $card->Name = CardName($cardId);
-    $chainLink->Cards[] = $card;
+    $blockValue = ($cardOwner === $defPlayer) ? ModifiedBlockValue($cardId, $defPlayer, "CC", "", $uid) + $linkCards[$i + 5] : 0;
+    $chainLink->Cards[] = [
+      "Player"   => $cardOwner,
+      "modifier" => ($cardOwner === $mainPlayer) ? $powerValue : $blockValue,
+      "cardID"   => $cardId,
+      "Name"     => CardName($cardId),
+    ];
   }
   return $chainLink;
 }
