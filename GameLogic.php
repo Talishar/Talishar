@@ -1864,7 +1864,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "LASTARSENALADDEFFECT":
       $params = explode(",", $parameter);
       $arsenal = &GetArsenal($player);
-      if (count($arsenal) > 0 && count($params) == 2) AddCurrentTurnEffect($params[0], $player, $params[1], $arsenal[count($arsenal) - ArsenalPieces() + 5]);
+      $arsenalCount = count($arsenal);
+      if ($arsenalCount > 0 && count($params) == 2) AddCurrentTurnEffect($params[0], $player, $params[1], $arsenal[$arsenalCount - ArsenalPieces() + 5]);
       return $lastResult;
     case "INVERTEXISTENCE":
       if ($lastResult == "") {

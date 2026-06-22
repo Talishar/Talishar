@@ -109,7 +109,8 @@ function GetHandStats($playerID)
     if($actionPriority == 0) $stats["zero_priority_count"]++;
   }
   
-  $stats["average_priority"] = count($hand) > 0 ? $totalPriority / count($hand) : 0;
+  $handCount = count($hand);
+  $stats["average_priority"] = $handCount > 0 ? $totalPriority / $handCount : 0;
   
   return $stats;
 }
@@ -138,7 +139,8 @@ function TestAIDecision($playerID, $scenario = "Action")
   ];
   
   // Get top 3 candidates
-  for($i = max(0, count($priorityArray) - 3); $i < count($priorityArray); ++$i) {
+  $priorityCount = count($priorityArray);
+  for($i = max(0, $priorityCount - 3); $i < $priorityCount; ++$i) {
     if($i >= 0) {
       $node = $priorityArray[$i];
       $result["top_3"][] = [
@@ -148,9 +150,9 @@ function TestAIDecision($playerID, $scenario = "Action")
       ];
     }
   }
-  
-  if(count($priorityArray) > 0) {
-    $best = $priorityArray[count($priorityArray) - 1];
+
+  if($priorityCount > 0) {
+    $best = $priorityArray[$priorityCount - 1];
     $result["best_card"] = CardName($best[0]);
     $result["best_priority"] = $best[3];
   }

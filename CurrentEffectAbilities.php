@@ -338,17 +338,17 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       BottomDeck($mainPlayer, true, shouldDraw: true);
       break;
     case "concealed_blade_blue":
-      $weapons = "";
+      $weaponsArr = [];
       $char = &GetPlayerCharacter($mainPlayer);
       $inventory = &GetInventory($mainPlayer);
       $numHands = NumOccupiedHands($mainPlayer);
       if ($numHands < 2) { //Only Equip if there is a broken weapon/off-hand
         foreach ($inventory as $cardID) {
           if (TypeContains($cardID, "W", $mainPlayer) && SubtypeContains($cardID, "Dagger")) {
-            if ($weapons != "") $weapons .= ",";
-            $weapons .= $cardID;
+            $weaponsArr[] = $cardID;
           };
         }
+        $weapons = implode(",", $weaponsArr);
         if ($weapons == "") {
           WriteLog("Player " . $mainPlayer . " doesn't have any dagger in their inventory");
           return;

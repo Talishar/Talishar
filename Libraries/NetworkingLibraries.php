@@ -3688,11 +3688,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         return "";
       }
       if ($numCopper > 6) $numCopper = 6;
-      $buttons = "";
-      for ($i = 0; $i <= $numCopper; ++$i) {
-        if ($buttons != "") $buttons .= ",";
-        $buttons .= $i;
-      }
+      $buttons = implode(",", range(0, $numCopper));
       $numCopper > 1 ? $modes = "-Buff_Weapon,Buff_Weapon,Go_Again,Go_Again,Attack_Twice,Attack_Twice" : $modes = "-Buff_Weapon,Go_Again,Attack_Twice";
       $numCopper > 1 ? $text = "modes" : $text = "mode";
 

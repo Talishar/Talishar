@@ -858,11 +858,10 @@ function OUTAbilityCost($cardID)
     if(!CanRevealCards($currentPlayer)) return "";
     $cardRemoved = "";
     $deck = &GetDeck($currentPlayer);
-    $cardsToReveal = "";
+    $cardsToRevealArr = [];
     for($i=0; $i<count($deck); ++$i)
     {
-      if($cardsToReveal != "") $cardsToReveal .= ",";
-      $cardsToReveal .= $deck[$i];
+      $cardsToRevealArr[] = $deck[$i];
       if(CardType($deck[$i]) == "AA")
       {
         $cardRemoved = $deck[$i];
@@ -871,7 +870,7 @@ function OUTAbilityCost($cardID)
         break;
       }
     }
-    RevealCards($cardsToReveal);
+    RevealCards(implode(",", $cardsToRevealArr));
     AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
     return $cardRemoved;
   }

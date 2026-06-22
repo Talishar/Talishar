@@ -1042,7 +1042,7 @@ function RecurDagger($player) //$mode == 0 for left, and 1 for right
 }
 
 function ListDracDaggersGraveyard($player) {
-  $weapons = "";
+  $weaponsArr = [];
   $char = &GetPlayerCharacter($player);
   $graveyard = &GetDiscard($player);
   $graveyardCount = count($graveyard);
@@ -1051,11 +1051,11 @@ function ListDracDaggersGraveyard($player) {
     $cardID = $graveyard[$i];
     if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger") && !isFaceDownMod($graveyard[$i+2])) {
       if (TalentContains($cardID, "DRACONIC", $player)) {
-        if ($weapons != "") $weapons .= ",";
-        $weapons .= $cardID;
+        $weaponsArr[] = $cardID;
       }
     }
   }
+  $weapons = implode(",", $weaponsArr);
   if ($weapons == "") {
     WriteLog("Player " . $player . " doesn't have any dagger in their graveyard");
   }
@@ -1176,17 +1176,16 @@ function BubbleToTheSurface()
   if(!CanRevealCards($currentPlayer)) return "";
     $cardRemoved = "";
     $deck = &GetDeck($currentPlayer);
-    $cardsToReveal = "";
+    $cardsToRevealArr = [];
     for($i=0; $i<count($deck); ++$i)
     {
-      if($cardsToReveal != "") $cardsToReveal .= ",";
-      $cardsToReveal .= $deck[$i];
+      $cardsToRevealArr[] = $deck[$i];
       if(PitchValue($deck[$i]) == 1)
             {
         $cardRemoved = $deck[$i];
         unset($deck[$i]);
         $deck = array_values($deck);
-        RevealCards($cardsToReveal);
+        RevealCards(implode(",", $cardsToRevealArr));
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return $cardRemoved;
       }
