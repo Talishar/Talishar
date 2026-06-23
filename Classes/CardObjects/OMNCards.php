@@ -503,7 +503,7 @@ class voltbound_duality_red extends Card {
   }
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
+    DealArcane(1, source:"$this->cardID-ABILITY", player:$this->controller, resolvedTarget:$target);
     PlayAura("lightning_flow", $this->controller);
   }
 
