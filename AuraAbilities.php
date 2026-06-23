@@ -476,8 +476,11 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
   }
   IncrementClassState($player, $CS_NumControlledAurasDestroyed);
   // Refreshes the aura index with the Unique ID in case of aura destruction
-  if ($CombatChain->HasCurrentLink() && DelimStringContains(CardSubtype($CombatChain->AttackCard()->ID()), "Aura") && $player == $mainPlayer) {
-    $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($CombatChain->AttackCard()->OriginUniqueID(), $player);
+  if ($CombatChain->HasCurrentLink() && $player == $mainPlayer) {
+    $attackCard = $CombatChain->AttackCard();
+    if (DelimStringContains(CardSubtype($attackCard->ID()), "Aura")) {
+      $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($attackCard->OriginUniqueID(), $player);
+    }
   }
   if ($cardID == "passing_mirage_blue") ReEvalCombatChain(); //check if phantasm should trigger
   return $cardID;

@@ -1369,7 +1369,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       if ($from == "HAND" && !$instantRestricted) $names[0] = "Ability";
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
       $restriction = "";
-      $effectRestricted = !CanBlock($cardID, $from) || !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, "DR", $restriction, "", true);
+      $effectRestricted = !CanBlock($cardID, $from) || !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, $restriction, "", true);
       if ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$effectRestricted && IsReactionPhase() && IsHeroAttackTarget() && !$nameBlocked) {
         $names[1] = "Defense Reaction";
       }
@@ -1660,10 +1660,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $myAllies = &GetAllies($player);
   $myAuras = &GetAuras($player);
   $character = &GetPlayerCharacter($player);
-  $CharacterCard = new CharacterCard($index, $player);
   $myHand = &GetHand($player);
-  $banish = new Banish($player);
-  $discard = new Discard($currentPlayer);
   $restriction = "";
   $cardType = CardType($cardID, $from, $currentPlayer);
   $subtype = CardSubType($cardID);
@@ -1676,8 +1673,11 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase == "B" && $from == "BANISH") return false;
   if ($phase == "B" && $from == "THEIRBANISH") return false;
   if ($from == "BANISH") {
+    $banish = new Banish($player);
     $banishCard = $banish->Card($index);
-    if (!(PlayableFromBanish($banishCard->ID(), $banishCard->Modifier()) || AbilityPlayableFromBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
+    $banishCardID  = $banishCard->ID();
+    $banishCardMod = $banishCard->Modifier();
+    if (!(PlayableFromBanish($banishCardID, $banishCardMod) || AbilityPlayableFromBanish($banishCardID, $banishCardMod))) return false;
   }
   if ($from == "THEIRBANISH") {
     $theirBanish = new Banish($otherPlayer);
@@ -1686,17 +1686,18 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   } else if ($from == "THEIRARS") {
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
-  } else if ($from == "GY" && !PlayableFromGraveyard($cardID, $discard->Card($index)->Facing(), $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
-  elseif ($from == "COMBATCHAINATTACKS" && (!AbilityPlayableFromCombatChain($cardID, "-") || !CanPlayInstant($phase))) return false;
+  } else if ($from == "GY") {
+    $discard = new Discard($currentPlayer);
+    if (!PlayableFromGraveyard($cardID, $discard->Card($index)->Facing(), $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
+  } elseif ($from == "COMBATCHAINATTACKS" && (!AbilityPlayableFromCombatChain($cardID, "-") || !CanPlayInstant($phase))) return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && isset($character[$index + 12]) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
+    $CharacterCard = new CharacterCard($index, $player);
     if (TypeContains($cardID, "E", $player) && $from == "CHAR" && $CharacterCard->OnChain() == 1) return false;
     if (IsBlockRestricted($cardID, $restriction, $player)) return false;
   }
   if ($phase != "B" && $from == "CHAR" && isset($character[$index + 1]) && $character[$index + 1] != "2") return false;
-  // I don't remember why this line was here, removing for now as it's causing problems
-  // if ($phase != "B" && TypeContains($cardID, "E", $player) && GetCharacterGemState($player, $cardID) == 0 && (ManualTunicSetting($player) == 0 && $cardID != "fyendals_spring_tunic")) return false;
   if ($from == "CHAR" && $phase != "B" && IsFrozenMZ($character, "CHAR", $index, $player)) {
     $restriction = "Frozen";
     return false;
@@ -1744,7 +1745,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       }
     }
     if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
-      if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B") && !str_contains(GetAbilityTypes($cardID, $index, $from), "I")) return false;
+      if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B") && !str_contains($abilityTypes, "I")) return false;
     }
   }
   if ($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player) || $cardID == "down_and_dirty_red" || HasAmbush($cardID, $defPlayer))) return false;
@@ -1784,13 +1785,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $isStaticType = IsStaticType($cardType, $from, $cardID);
   if ($isStaticType) $cardType = GetAbilityType($cardID, $index, $from);
   // don't block cards with multiple abilities where one hasn't been decided yet
-  $abilityNames = GetAbilityNames($cardID, $index, $from);
   if ($cardType == "" && $abilityNames == "") return false;
   if (RequiresDiscard($cardID) || $cardID == "enlightened_strike_red") {
     if ($from == "HAND" && count($myHand) < 2) return false;
     else if (count($myHand) < 1) return false;
   }
-  if (EffectPlayCardConstantRestriction($cardID, CardType($cardID), $restriction, $phase, from:$from)) return false;
+  if (EffectPlayCardConstantRestriction($cardID, $restriction, $phase, from:$from)) return false;
   if ($phase != "B" && $phase != "P" && !str_contains($phase, "CHOOSE") && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
   if ($phase == "M" && $subtype == "Arrow") {
     if ($from != "ARS") return false;
@@ -2230,11 +2230,11 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "", $resolutionCheck = false)
 {
   global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
-  global $CS_DamageTaken, $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $CS_DamageDealt, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
+  global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
-  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $CCS_WagersThisLink, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
+  global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
-  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter, $ChainLinks;
+  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $currentPlayer;
   $character = &GetPlayerCharacter($player);
@@ -2242,7 +2242,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $myArsenal = &GetArsenal($player);
   $myItems = &GetItems($player);
   $mySoul = &GetSoul($player);
-  $discard = new Discard($player);
   $otherPlayerDiscard = &GetDiscard($otherPlayer);
   $attackID = $CombatChain->AttackCard()->ID();
   $type = CardType($cardID);
@@ -2376,7 +2375,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "plasma_barrel_shot":
       return GetAbilityNames($cardID, $index, $from) == "-";
     case "teklo_foundry_heart":
-      return GetClassState($player, $CS_NumBoosted) < 1;
     case "achilles_accelerator":
       return GetClassState($player, $CS_NumBoosted) < 1;
     case "maximum_velocity_red":
@@ -2461,13 +2459,13 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "unworldly_bellow_red":
     case "unworldly_bellow_yellow":
     case "unworldly_bellow_blue":
-      return $discard->NumCards() < 3;
+      return (new Discard($player))->NumCards() < 3;
     case "doomsday_blue":
       return SearchCount(SearchBanish($player, "", "", -1, -1, "", "", true)) < 6;
     case "eclipse_blue":
       return GetClassState($player, $CS_NumBloodDebtPlayed) < 6;
     case "soul_harvest_blue":
-      return $discard->NumCards() < 6;
+      return (new Discard($player))->NumCards() < 6;
     case "aether_ironweave":
       return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "blood_drop_brocade":
@@ -2903,7 +2901,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "longdraw_half_glove":
       return count($myHand) + count($myArsenal) < 2;
     case "shadowrealm_horror_red":
-      return $discard->NumCards() < 3;
+      return (new Discard($player))->NumCards() < 3;
     case "enigma_new_moon":
       return GetPlayerNumEquipment($player, "DOWN") <= 0;
     case "aurora_shooting_star":
@@ -3281,7 +3279,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
 function IsDefenseReactionPlayable($cardID, $from)
 {
   global $CombatChain, $mainPlayer;
-  $attackCard = $CombatChain->AttackCard()->ID();
+  $attackID = $CombatChain->AttackCard()->ID();
   $extraText = GetHorrorsBuff();
   static $blocksDreacts = [
     "command_and_conquer_red" => 1, "back_stab_red" => 1, "back_stab_yellow" => 1, "back_stab_blue" => 1,
@@ -3289,13 +3287,13 @@ function IsDefenseReactionPlayable($cardID, $from)
     "wreck_havoc_red" => 1, "wreck_havoc_yellow" => 1, "wreck_havoc_blue" => 1,
     "evasive_nageboshi_blue" => 1,
   ];
-  if ((isset($blocksDreacts[$attackCard]) || isset($blocksDreacts[$extraText])) && CardType($cardID) == "DR") return false;
-  if ($CombatChain->AttackCard()->ID() == "exude_confidence_red") if (!ExudeConfidenceReactionsPlayable()) return false;
-  if ($from == "HAND" && CardSubType($CombatChain->AttackCard()->ID()) == "Arrow" && SearchCharacterForCard($mainPlayer, "dreadbore")) return false;
+  if ((isset($blocksDreacts[$attackID]) || isset($blocksDreacts[$extraText])) && CardType($cardID) == "DR") return false;
+  if ($attackID == "exude_confidence_red") if (!ExudeConfidenceReactionsPlayable()) return false;
+  if ($from == "HAND" && CardSubType($attackID) == "Arrow" && SearchCharacterForCard($mainPlayer, "dreadbore")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
   if (SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("imperial_seal_of_command_red", $mainPlayer) && CardType($cardID) == "DR") return false;
-  if ($from == "HAND" && CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($CombatChain->AttackCard()->ID()) == "AA") return false;
+  if ($from == "HAND" && CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($attackID) == "AA") return false;
   return true;
 }
 

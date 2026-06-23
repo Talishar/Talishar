@@ -2743,7 +2743,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
   return $restrictedBy;
 }
 
-function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase, $modalCheck = false, $from="-")
+function EffectPlayCardConstantRestriction($cardID, &$restriction, $phase, $modalCheck = false, $from="-")
 {
   global $currentTurnEffects, $currentPlayer, $turn;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
@@ -2761,8 +2761,11 @@ function EffectPlayCardConstantRestriction($cardID, $type, &$restriction, $phase
           if ($modalCheck || GetAbilityTypes($cardID) == "") {
             if ($isDiscardRestricted) $restriction = "burdens_of_the_past_blue";
           }
-          elseif(GetAbilityNames($cardID, from:$from) == "-,Defense Reaction" || GetAbilityNames($cardID, from:$from) == "Defense Reaction") {//if dreact is the only available mode
-            if ($isDiscardRestricted) $restriction = "burdens_of_the_past_blue";
+          else {
+            $abilityNames = GetAbilityNames($cardID, from:$from);
+            if ($abilityNames == "-,Defense Reaction" || $abilityNames == "Defense Reaction") {//if dreact is the only available mode
+              if ($isDiscardRestricted) $restriction = "burdens_of_the_past_blue";
+            }
           }
           break;
         default:
@@ -2911,6 +2914,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
     $originUniqueID = $blockCard->OriginUniqueID();
   }
 
+  $blockCardID = $blockCard != "-" ? $blockCard->ID() : "";
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
     $blockModifier = 0;
     $Effect = $CurrentTurnEffects->Effect($i, true);
@@ -2949,38 +2953,38 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           $blockModifier += SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC") ? 1 : 0;
           break;
         case "phantasmal_footsteps":
-          if ($blockCard->ID() == $Effect->EffectID()) $blockModifier += 1;
+          if ($blockCardID == $Effect->EffectID()) $blockModifier += 1;
           break;
         case "korshem_crossroad_of_elements-2":
-          if (TypeContains($blockCard->ID(), "A") || TypeContains($blockCard->ID(), "AA")) $blockModifier += 1;
+          if (TypeContains($blockCardID, "A") || TypeContains($blockCardID, "AA")) $blockModifier += 1;
           break;
         case "amulet_of_earth_blue":
           $blockModifier += 1;
           break;
         case "rampart_of_the_rams_head":
-          $blockModifier += ($blockCard->ID() == $Effect->EffectID() ? 1 : 0);
+          $blockModifier += ($blockCardID == $Effect->EffectID() ? 1 : 0);
           break;
         case "fletch_a_red_tail_red":
-          $blockModifier += (PitchValue($blockCard->ID()) == 1 && HasAimCounter() ? -1 : 0);
+          $blockModifier += (PitchValue($blockCardID) == 1 && HasAimCounter() ? -1 : 0);
           break;
         case "fletch_a_yellow_tail_yellow":
-          $blockModifier += (PitchValue($blockCard->ID()) == 2 && HasAimCounter() ? -1 : 0);
+          $blockModifier += (PitchValue($blockCardID) == 2 && HasAimCounter() ? -1 : 0);
           break;
         case "fletch_a_blue_tail_blue":
-          $blockModifier += (PitchValue($blockCard->ID()) == 3 && HasAimCounter() ? -1 : 0);
+          $blockModifier += (PitchValue($blockCardID) == 3 && HasAimCounter() ? -1 : 0);
           break;
         case "defender_of_daybreak_red":
         case "defender_of_daybreak_yellow":
         case "defender_of_daybreak_blue":
-          $blockModifier += (CardType($blockCard->ID()) != "E" && TalentContains($blockCard->ID(), "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
+          $blockModifier += (CardType($blockCardID) != "E" && TalentContains($blockCardID, "LIGHT", $defPlayer) && TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $mainPlayer) ? 1 : 0);
           break;
         case "lay_down_the_law_red":
-          $blockModifier += (CachedTotalPower() >= 13 && !TypeContains($blockCard->ID(), "E") && !DelimStringContains(CardSubType($blockCard->ID()), "Evo")) ? -1 : 0;
+          $blockModifier += (CachedTotalPower() >= 13 && !TypeContains($blockCardID, "E") && !DelimStringContains(CardSubType($blockCardID), "Evo")) ? -1 : 0;
           break;
         case "ratchet_up_red":
         case "ratchet_up_yellow":
         case "ratchet_up_blue":
-          $blockModifier += IsActionCard($blockCard->ID()) ? -1 : 0;
+          $blockModifier += IsActionCard($blockCardID) ? -1 : 0;
           break;
         case "wide_blue_yonder_blue":
           $blockModifier += SearchPitchForColor($mainPlayer, 3);
@@ -2988,7 +2992,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
         case "heavy_industry_surveillance":
         case "heavy_industry_ram_stop":
         case "breaker_helm_protos":
-          $blockModifier += ($blockCard->ID() == $Effect->EffectID() ? 1 : 0);
+          $blockModifier += ($blockCardID == $Effect->EffectID() ? 1 : 0);
           break;
         default:
           break;

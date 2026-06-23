@@ -129,14 +129,14 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
         $needleChar = GetPlayerCharacter($mainPlayer);
         $needleCharCount = count($needleChar);
         $needleCharPieces = CharacterPieces();
+        $charID = -1;
+        for ($j = 0; $j < $needleCharCount; $j += $needleCharPieces) {
+          if ($needleChar[$j + 11] == $combatChain[8]) { $charID = $j; break; }
+        }
         for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
           $uid = $combatChain[$i + 2] == "EQUIP" ? $combatChain[$i + 8] : $combatChain[$i + 7];
           $blockVal = intval(ModifiedBlockValue($combatChain[$i], $defPlayer, "CC", "", $uid)) + BlockModifier($combatChain[$i], "CC", 0, $i) + $combatChain[$i + 6];
           if ($totalDefense > 0 && $blockVal > $totalPower && $combatChain[$i + 1] == $defPlayer) {
-            $charID = -1;
-            for ($j = 0; $j < $needleCharCount; $j += $needleCharPieces) {
-              if ($needleChar[$j + 11] == $combatChain[8]) $charID = $j;
-            }
             if ($charID == -1) WriteLog("something went wrong, please submit a bug report", highlight: true);
             if (SearchLayersForCardID($combatChain[0]) == -1 && $needleChar[$charID + 7] != "1") {
               AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
@@ -1116,23 +1116,19 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
       if (intval($char[$i + 1]) != 2) continue;
       switch ($char[$i]) {
         case "verdance_thorn_of_the_rose":
-          // Now we need to check that we banished 8 earth cards.
           $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
           if ($results >= 8) {
             SetArcaneTarget($mainPlayer, $char[$i], 3);
             AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "<-", 1);
             AddDecisionQueue("ADDTRIGGER", $mainPlayer, $char[$i], 1);
-            // AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
           break;
         case "verdance":
-          // Now we need to check that we banished 4 earth cards.
           $results = SearchCount(SearchMultiZone($player, "MYBANISH:talent=EARTH"));
           if ($results >= 4) {
             SetArcaneTarget($mainPlayer, $char[$i], 3);
             AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "<-", 1);
             AddDecisionQueue("ADDTRIGGER", $mainPlayer, $char[$i], 1);
-            // AddLayer("TRIGGER", $mainPlayer, $char[$i], 3);
           }
           break;
         default:
@@ -1306,24 +1302,23 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
 {
   global $combatChain;
   $piecesArr = [];
-  $exclCardTypeArray = $exclCardTypes !== "" ? explode(",", $exclCardTypes) : [];
+  $exclTypeSet = $exclCardTypes !== "" ? array_flip(explode(",", $exclCardTypes)) : [];
   $exclCardSubTypeArray = $exclCardSubTypes !== "" ? explode(",", $exclCardSubTypes) : [];
+  $exclCardSubTypeCount = count($exclCardSubTypeArray);
 
   $combatChainCount = count($combatChain);
   $combatChainPieces = CombatChainPieces();
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
     if ($color != "" && !ColorContains($combatChain[$i], $color, $combatChain[$i+1])) continue;
     if ($playerID != "" && $combatChain[$i + 1] != $playerID) continue;
+    $thisType = CardType($combatChain[$i]);
     if ($cardType != "" && !TypeContains($combatChain[$i], $cardType, $playerID)) continue;
     if ($subType != "" && !SubtypeContains($combatChain[$i], $subType)) continue;
     if ($nameContains != "" && !CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true)) continue;
-
+    if (isset($exclTypeSet[$thisType])) continue;
     $excluded = false;
-    foreach($exclCardTypeArray as $exCardType) {
-      if (TypeContains($combatChain[$i], $exCardType)) { $excluded = true; break; }
-    }
-    if (!$excluded) foreach($exclCardSubTypeArray as $exSubtype) {
-      if (SubtypeContains($combatChain[$i], $exSubtype)) { $excluded = true; break; }
+    for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
+      if (SubtypeContains($combatChain[$i], $exclCardSubTypeArray[$k])) { $excluded = true; break; }
     }
     if ($excluded) continue;
     $piecesArr[] = !$asMZInd ? $i : "COMBATCHAINLINK-$i";
@@ -2213,7 +2208,7 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $player) continue;
     $effectArr = explode("-", $currentTurnEffects[$i], 2);
-    $modName = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
+    $modName = CurrentEffectNameModifier($effectArr[0], isset($effectArr[1]) ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
     if ($partial && $modName !== "") $modName = str_replace(" ", ",", $modName);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($modName != "" && DelimStringContains($modName, $name, $partial)) return true;
@@ -3487,7 +3482,7 @@ function IsCardNamed($player, $cardID, $name)
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $player) continue;
     $effectArr = explode("-", $currentTurnEffects[$i], 2);
-    $givenNames = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
+    $givenNames = CurrentEffectNameModifier($effectArr[0], isset($effectArr[1]) ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($givenNames != "" && DelimStringContains($givenNames, $name)) return true;
   }
@@ -3505,7 +3500,7 @@ function GetCurrentAttackNames()
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $mainPlayer) continue;
     $effectArr = explode("-", $currentTurnEffects[$i], 2);
-    $name = CurrentEffectNameModifier($effectArr[0], count($effectArr) > 1 ? GamestateUnsanitize($effectArr[1]) : "N/A", $mainPlayer, $combatChain[0]);
+    $name = CurrentEffectNameModifier($effectArr[0], isset($effectArr[1]) ? GamestateUnsanitize($effectArr[1]) : "N/A", $mainPlayer, $combatChain[0]);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($name != "" && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
       if (str_contains($name, ","))

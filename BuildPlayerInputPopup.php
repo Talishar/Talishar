@@ -6,7 +6,8 @@ if (!function_exists('GetCardEffectLabel')) {
     
     $effectName = "";
     $effectsCount = count($currentTurnEffects);
-    for ($j = 0; $j < $effectsCount; ++$j) {
+    $effectPieces = CurrentTurnEffectPieces();
+    for ($j = 0; $j < $effectsCount; $j += $effectPieces) {
       $effect = $currentTurnEffects[$j];
       $p1 = strpos($effect, "-");
       if ($p1 === false) continue;

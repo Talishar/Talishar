@@ -1767,8 +1767,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $hand = &GetHand($player);
         $char = &GetPlayerCharacter($player);
         $handPitch = 0;
-        foreach ($hand as $handCard)
-          $handPitch += PitchValue($handCard);
+        $handCount = count($hand);
+        $handPieces = HandPieces();
+        for ($i = 0; $i < $handCount; $i += $handPieces) {
+          $handPitch += PitchValue($hand[$i]);
+          if ($handPitch > 0) break;
+        }
         if ($handPitch == 0 && !IsPlayerAI($player)) {
           WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.", highlight: true);
           RevertGamestate();
@@ -1792,8 +1796,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $hand = &GetHand($player);
         $char = &GetPlayerCharacter($player);
         $handPitch = 0;
-        foreach ($hand as $handCard)
-          $handPitch += PitchValue($handCard);
+        $handCount = count($hand);
+        $handPieces = HandPieces();
+        for ($i = 0; $i < $handCount; $i += $handPieces) {
+          $handPitch += PitchValue($hand[$i]);
+          if ($handPitch > 0) break;
+        }
         if ($handPitch == 0 && !IsPlayerAI($player)) {
           WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.", highlight: true);
           RevertGamestate();
