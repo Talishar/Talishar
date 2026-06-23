@@ -399,8 +399,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "swindlers_grift_red":
     case "swindlers_grift_yellow":
     case "swindlers_grift_blue":
-      // MZMoveCard($currentPlayer, "MYHAND:pitch=2", "MYDISCARD", true);
-      // AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:pitch=2");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Discard a card to " . CardLink($cardID) . " (or pass)", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
