@@ -202,6 +202,8 @@ class Layer {
     if (isAdministrativeStep($this->ID())) return false;
     $nonCards = ["TRIGGER", "PRETRIGGER", "ABILITY"];
     if (in_array($this->ID(), $nonCards)) return false;
+    $from = explode("|", $this->Parameter())[0];
+    if ($from == "PLAY" || $from == "EQUIP") return false;
     return $this->ID() != "";
   }
 }
