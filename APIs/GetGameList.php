@@ -62,15 +62,19 @@ if(IsUserLoggedIn()) {
                 UNION
                 SELECT u.usersUid FROM blocked_users b
                 JOIN users u ON b.userId = u.usersId WHERE b.blockedUserId = ?";
-      $stmt = $conn->prepare($query);
-      if ($stmt) {
-        $stmt->bind_param("ii", $userId, $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        while ($row = $result->fetch_assoc()) {
-          $blockedUserNames[] = $row['usersUid'];
+      try {
+        $stmt = $conn->prepare($query);
+        if ($stmt) {
+          $stmt->bind_param("ii", $userId, $userId);
+          $stmt->execute();
+          $result = $stmt->get_result();
+          while ($row = $result->fetch_assoc()) {
+            $blockedUserNames[] = $row['usersUid'];
+          }
+          $stmt->close();
         }
-        $stmt->close();
+      } catch (\Exception $e) {
+        error_log("GetGameList: blocked users query failed: " . $e->getMessage());
       }
     }
     $_SESSION['_blockedCache'] = $blockedUserNames;

@@ -1544,6 +1544,7 @@ function CombatChainClosedCharacterEffects()
   $chainLinksPieces = ChainLinksPieces();
   $chainLinkSummaryPieces = ChainLinkSummaryPieces();
   for ($i = 0; $i < $chainLinksCount; ++$i) {
+    if (!isset($chainLinks[$i]) || !is_array($chainLinks[$i])) continue;
     $Link = $ChainLinks->GetLink($i);
     $nervesOfSteelActive = $Link->TotalAttack() <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
     $chainLinkICount = count($chainLinks[$i]);

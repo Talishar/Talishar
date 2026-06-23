@@ -23,6 +23,16 @@ function LogBufferAppend($filename, $line, $requireExists)
   if (!isset($logWriteBuffer[$filename])) {
     $logWriteBuffer[$filename] = ["requireExists" => $requireExists, "content" => "", "size" => 0];
   }
+  static $memLimitBytes = null;
+  if ($memLimitBytes === null) {
+    $raw = ini_get('memory_limit');
+    $n = (int)$raw;
+    $unit = strtolower(substr(trim($raw), -1));
+    $memLimitBytes = match($unit) { 'g' => $n * 1073741824, 'm' => $n * 1048576, 'k' => $n * 1024, default => $n };
+  }
+  if ($memLimitBytes > 0 && ($memLimitBytes - memory_get_usage()) < 2097152) {
+    FlushLogBufferEntry($filename);
+  }
   $entry = &$logWriteBuffer[$filename];
   $entry["content"] .= $line;
   $entry["size"] += strlen($line);

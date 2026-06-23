@@ -562,7 +562,7 @@ function ResetCombatChainState()
   }
 
   for($i = 0; $i < $numChainLinks; ++$i) {
-    if (!is_array($chainLinks[$i])) continue;
+    if (!isset($chainLinks[$i]) || !is_array($chainLinks[$i])) continue;
     $innerCount = count($chainLinks[$i]);
     for($j = 0; $j < $innerCount; $j += $chainLinkPieces) {
       if($chainLinks[$i][$j + 2] != "1") continue;

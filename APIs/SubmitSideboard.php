@@ -239,6 +239,12 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
 
   //Write initial gamestate to memory
   $gamestate = file_get_contents("../Games/" . $gameName . "/gamestate.txt");
+  if ($gamestate === false) {
+    error_log("SubmitSideboard: gamestate.txt missing for game $gameName — directory may have been cleaned up");
+    $response->error = "Game files not found; the game may have been closed due to inactivity";
+    echo json_encode($response);
+    exit;
+  }
   WriteGamestateCache($gameName, $gamestate);
 
   //Set up log file
@@ -257,7 +263,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   $p2chatEnabled = GetCachePiece($gameName, 16);
   $currentPlayer = 0;
   $isReplay = 0;
-  WriteCache($gameName, $currentUpdate + 1 . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!" . $p1chatEnabled . "!" . $p2chatEnabled); //Initialize SHMOP cache for this game
+  WriteCache($gameName, ((int)$currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!" . $p1chatEnabled . "!" . $p2chatEnabled); //Initialize SHMOP cache for this game
 
   $filename = "../Games/" . $gameName . "/gamestate.txt";
   include "../ParseGamestate.php";
