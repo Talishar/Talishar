@@ -2022,10 +2022,9 @@ function ActiveOnHits(): bool
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectsPieces();
   for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
+    if ($currentTurnEffects[$i + 1] !== $mainPlayer) continue;
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-      if ($currentTurnEffects[$i + 1] == $mainPlayer) {
-        if (AddEffectHitTrigger($currentTurnEffects[$i], source:$attackCardID, target:$target, check:true)) return true;
-      }
+      if (AddEffectHitTrigger($currentTurnEffects[$i], source:$attackCardID, target:$target, check:true)) return true;
     }
   }
   foreach(explode(",", $attackCard->StaticBuffs()) as $effectSetID) {

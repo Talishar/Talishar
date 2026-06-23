@@ -599,9 +599,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
 function EffectPowerModifier($cardID, $attached=false)
 {
   global $mainPlayer;
-  $parts = explode("-", $cardID, 2);
-  $cid = $parts[0];
-  $param = $parts[1] ?? "-";
+  $dashPos = strpos($cardID, '-');
+  $cid = $dashPos !== false ? substr($cardID, 0, $dashPos) : $cardID;
+  $param = $dashPos !== false ? substr($cardID, $dashPos + 1) : '-';
   $card = GetClass($cid, $mainPlayer);
   if ($card != "-") return $card->EffectPowerModifier($param, $attached);
   $set = CardSet($cardID);
@@ -2324,7 +2324,8 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   $trimID = ExtractCardID($cardID);
   $card = GetClass($trimID, $mainPlayer);
   if ($card != "-") {
-    $parameter = explode("-", $cardID, 2)[1] ?? "-";
+    $dashPos = strpos($cardID, '-');
+    $parameter = $dashPos !== false ? substr($cardID, $dashPos + 1) : '-';
     return $card->CombatEffectActive($parameter, $defendingCard, $flicked);
   }
   $set = CardSet($cardID);
@@ -2380,10 +2381,11 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
 function IsCombatEffectPersistent($cardID)
 {
   global $Card_LifeBanner, $Card_ResourceBanner;
-  $effectArr = explode(",", $cardID);
-  $cardID = ShiyanaCharacter($effectArr[0]);
+  $commaPos = strpos($cardID, ',');
+  $cardID = ShiyanaCharacter($commaPos !== false ? substr($cardID, 0, $commaPos) : $cardID);
   if (DelimStringContains($cardID, "art_of_the_dragon_blood_red", true)) return true;
-  $mode = explode("-", $cardID, 2)[1] ?? "-";
+  $dashPos = strpos($cardID, '-');
+  $mode = $dashPos !== false ? substr($cardID, $dashPos + 1) : '-';
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->IsCombatEffectPersistent($mode);
   switch ($cardID) {

@@ -711,7 +711,6 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
   $pieces = CurrentTurnEffectPieces();
   if ($stripParams) {
     for ($i = 0; $i < $count; $i += $pieces) {
-      if (!isset($currentTurnEffects[$i + 1])) continue;
       $elem = $currentTurnEffects[$i];
       $commaPos = strpos($elem, ',');
       $effectName = $commaPos === false ? $elem : substr($elem, 0, $commaPos);
@@ -723,7 +722,6 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
     }
   } else {
     for ($i = 0; $i < $count; $i += $pieces) {
-      if (!isset($currentTurnEffects[$i + 1])) continue;
       if ($currentTurnEffects[$i] == $cardID && $currentTurnEffects[$i + 1] == $player) {
         if ($remove) RemoveCurrentTurnEffect($i);
         if ($activate) $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
@@ -758,7 +756,6 @@ function SearchNextTurnEffects($cardID, $player, $remove = false, $returnUniqueI
   $count = count($nextTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (!isset($nextTurnEffects[$i + 1])) continue;
     if ($nextTurnEffects[$i] == $cardID && $nextTurnEffects[$i + 1] == $player) {
       if ($remove) RemoveCurrentTurnEffect($i);
       if ($activate) $nextTurnEffects[$i] = ExtractCardID($nextTurnEffects[$i]);
@@ -793,7 +790,6 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (!isset($currentTurnEffects[$i + 1])) continue;
     if ($currentTurnEffects[$i + 1] == $player && ($currentTurnEffects[$i] == $card1 || $currentTurnEffects[$i] == $card2 || $currentTurnEffects[$i] == $card3)) return true;
   }
   return false;
@@ -909,8 +905,9 @@ function SearchBanishForCardName($playerID, $cardID)
   $banish = GetBanish($playerID);
   $count = count($banish);
   $pieces = BanishPieces();
+  $targetName = CardName($cardID);
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (CardName($banish[$i]) == CardName($cardID)) return $i;
+    if (CardName($banish[$i]) == $targetName) return $i;
   }
   return -1;
 }
@@ -1360,8 +1357,9 @@ function CountAura($cardID, $player)
   $count = count($auras);
   $pieces = AuraPieces();
   $total = 0;
+  $targetName = CardName($cardID);
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (CardName($auras[$i]) == CardName($cardID)) ++$total;
+    if (CardName($auras[$i]) == $targetName) ++$total;
   }
   return $total;
 }

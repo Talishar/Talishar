@@ -1694,13 +1694,14 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
   $myAuras = &GetAuras($player);
   $countAuras = count($myAuras);
   $aurasPieces = AuraPieces();
+  $attackIsAA = (CardType($chainCard->ID()) === "AA");
   if (!$onBlock) {//This codeblock was counting CMH twice on block
     for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
       $card = GetClass($myAuras[$i], $player);
       if ($card != "-") $modifier += $card->AuraPowerModifiers($index, $powerModifiers);
       switch ($myAuras[$i]) {
         case "channel_mount_heroic_red":
-          if (CardType($chainCard->ID()) == "AA") {
+          if ($attackIsAA) {
             $modifier += 3;
             $powerModifiers[] = $myAuras[$i];
             $powerModifiers[] = 3;
@@ -1733,7 +1734,7 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
     if ($card != "-") $modifier += $card->StaticPowerModifier($index, $powerModifiers);
     switch ($theirAuras[$i]) {
       case "parable_of_humility_yellow":
-        if (CardType($CombatChain->Card($index)->ID()) == "AA") {
+        if ($attackIsAA) {
           $modifier -= 1;
           $powerModifiers[] = $theirAuras[$i];
           $powerModifiers[] = -1;

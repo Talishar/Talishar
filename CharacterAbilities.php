@@ -563,10 +563,11 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   if ($index == -1) $index = $combatChainState[$CCS_WeaponIndex];
   $mainCharacterEffectsCount = count($mainCharacterEffects);
   $characterEffectPieces = CharacterEffectPieces();
+  $attackIsWeapon = TypeContains($CombatChain->AttackCard()->ID(), "W");
   for ($i = 0; $i < $mainCharacterEffectsCount; $i += $characterEffectPieces) {
     if (!isset($mainCharacterEffects[$i + 1])) continue;
     if ($player != -1 && !SearchCurrentTurnEffects(ExtractCardID($mainCharacterEffects[$i + 1]), $player)) return false;
-    if ($mainCharacterEffects[$i] == $index && TypeContains($CombatChain->AttackCard()->ID(), "W")) {
+    if ($mainCharacterEffects[$i] == $index && $attackIsWeapon) {
       switch ($mainCharacterEffects[$i + 1]) {
         case "steelblade_supremacy_red":
           $modifier += 2;

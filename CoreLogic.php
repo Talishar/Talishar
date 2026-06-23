@@ -1334,9 +1334,8 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
 function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", $nameContains = "", $subType = "", $exclCardSubTypes = "", $asMZInd = false, $blockingClass = "", $color = "", $subtype = "") {
   global $chainLinks, $mainPlayer;
   $ret = [];
-  $exclCardTypeArray = $exclCardTypes !== "" ? explode(",", $exclCardTypes) : [];
+  $exclTypeSet = $exclCardTypes !== "" ? array_flip(explode(",", $exclCardTypes)) : [];
   $exclCardSubTypeArray = $exclCardSubTypes !== "" ? explode(",", $exclCardSubTypes) : [];
-  $exclCardTypeCount = count($exclCardTypeArray);
   $exclCardSubTypeCount = count($exclCardSubTypeArray);
   $chainLinksCount = count($chainLinks);
   $chainLinksPieces = ChainLinksPieces();
@@ -1350,13 +1349,11 @@ function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = 
       if ($color != "" && !ColorContains($cardID, $color, $chainLinks[$i][$j + 1])) continue;
       if ($subType != "" && !SubtypeContains($cardID, $subType)) continue;
       if (($playerID == "" || $chainLinks[$i][$j + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($cardID, $nameContains, $playerID, partial: true))) {
+        if (isset($exclTypeSet[$thisType])) continue;
         $excluded = false;
-        for ($k = 0; $k < $exclCardTypeCount; ++$k) {
-          if ($thisType == $exclCardTypeArray[$k]) { $excluded = true; break; }
-        }
-        if (!$excluded) {
+        if ($thisSubType !== "") {
           for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
-            if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
+            if (DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
           }
         }
         if ($excluded) continue;
@@ -1372,9 +1369,8 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
 {
   global $combatChain;
   $cardIDsArr = [];
-  $exclCardTypeArray = $exclCardTypes !== "" ? explode(",", $exclCardTypes) : [];
+  $exclTypeSet = $exclCardTypes !== "" ? array_flip(explode(",", $exclCardTypes)) : [];
   $exclCardSubTypeArray = $exclCardSubTypes !== "" ? explode(",", $exclCardSubTypes) : [];
-  $exclCardTypeCount = count($exclCardTypeArray);
   $exclCardSubTypeCount = count($exclCardSubTypeArray);
   $combatChainCount = count($combatChain);
   $combatChainPieces = CombatChainPieces();
@@ -1382,13 +1378,11 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
     $thisType = CardType($combatChain[$i]);
     $thisSubType = CardSubType($combatChain[$i]);
     if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
+      if (isset($exclTypeSet[$thisType])) continue;
       $excluded = false;
-      for ($j = 0; $j < $exclCardTypeCount; ++$j) {
-        if ($thisType == $exclCardTypeArray[$j]) { $excluded = true; break; }
-      }
-      if (!$excluded) {
+      if ($thisSubType !== "") {
         for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
-          if ($thisSubType != "" && DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
+          if (DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
         }
       }
       if ($excluded) continue;
@@ -1415,10 +1409,17 @@ function ResolutionStepEffectTriggers()
   global $currentTurnEffects;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    $currentEffect = explode("-", $currentTurnEffects[$i], 2);
-    $parameter = $currentEffect[1] ?? "-";
-    if (class_exists($currentEffect[0])) {
-      $card = new $currentEffect[0]($currentTurnEffects[$i + 1]);
+    $effectID = $currentTurnEffects[$i];
+    $dashPos = strpos($effectID, '-');
+    if ($dashPos !== false) {
+      $effectClass = substr($effectID, 0, $dashPos);
+      $parameter = substr($effectID, $dashPos + 1);
+    } else {
+      $effectClass = $effectID;
+      $parameter = '-';
+    }
+    if (class_exists($effectClass)) {
+      $card = new $effectClass($currentTurnEffects[$i + 1]);
       if ($card->ResolutionStepEffectTriggers($parameter, $i)) RemoveCurrentTurnEffect($i);
     }
   }
