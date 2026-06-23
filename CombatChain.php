@@ -1378,7 +1378,8 @@ function OnBlockEffects($index, $from)
         case "withstand_red":
         case "withstand_yellow":
         case "withstand_blue":
-          if (ClassContains($chainCard->ID(), "GUARDIAN", $currentPlayer) && CardSubType($chainCard->ID()) == "Off-Hand") {
+          $chainCardID = $chainCard->ID();
+          if (ClassContains($chainCardID, "GUARDIAN", $currentPlayer) && CardSubType($chainCardID) == "Off-Hand") {
             if ($currentTurnEffects[$i] == "withstand_red") $amount = 6;
             else if ($currentTurnEffects[$i] == "withstand_yellow") $amount = 5;
             else $amount = 4;
@@ -1428,7 +1429,8 @@ function OnBlockEffects($index, $from)
           }
           break;
         case "toughness":
-          if (TypeContains($chainCard->ID(), "A") || TypeContains($chainCard->ID(), "AA")) {
+          $chainCardID = $chainCard->ID();
+          if (TypeContains($chainCardID, "A") || TypeContains($chainCardID, "AA")) {
             $chainCard->ModifyDefense(1);
             $remove = true;
           }

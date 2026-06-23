@@ -1323,7 +1323,8 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
       AddLayer("TRIGGER", $mainPlayer, "force_of_nature_blue", "force_of_nature_blue-TRIGGER", "EFFECTHITEFFECT", $source);
       break;
     case "succumb_to_temptation_yellow":
-      if (CardType($CombatChain->AttackCard()->ID()) == "AA" && ClassContains($CombatChain->AttackCard()->ID(), "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
+      $attackID = $CombatChain->AttackCard()->ID();
+      if (CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
@@ -1969,8 +1970,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     switch ($parameter) {
       case "cintari_saber":
       case "cintari_saber_r":
-        AddCharacterEffect($player, $combatChainState[$CCS_WeaponIndex], $CombatChain->AttackCard()->ID());
-        WriteLog(CardLink($CombatChain->AttackCard()->ID(), $CombatChain->AttackCard()->ID()) . " got +1 for the rest of the turn.");
+        $attackID = $CombatChain->AttackCard()->ID();
+        AddCharacterEffect($player, $combatChainState[$CCS_WeaponIndex], $attackID);
+        WriteLog(CardLink($attackID) . " got +1 for the rest of the turn.");
         break;
       case "evo_steel_soul_memory_blue":
         AddCurrentTurnEffect($parameter, $player);
