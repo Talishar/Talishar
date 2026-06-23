@@ -66,6 +66,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       }
     }
   }
+  $originUniqueID = $CombatChain->AttackCard()->OriginUniqueID();
   if ($combatChainState[$CCS_WeaponIndex] != -1) {
     $power = 0;
     if (DelimStringContains($attackType, "W")) {
@@ -92,8 +93,9 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       }
       if (filter_var($power, FILTER_VALIDATE_INT) === false) $power = 0;
     } else if (DelimStringContains(CardSubtype($attackID), "Aura")) {
-      $auras = &GetAuras($mainPlayer);
-      if (isset($auras[$combatChainState[$CCS_WeaponIndex]])) $power = $auras[$combatChainState[$CCS_WeaponIndex] + 3];
+      $Auras = new Auras($mainPlayer);
+      $AuraCard = $Auras->FindCardUID($originUniqueID);
+      $power = $AuraCard->NumPowerCounters();
     } else if (DelimStringContains(CardSubtype($attackID), "Ally")) {
       $allies = &GetAllies($mainPlayer);
       if (isset($allies[$combatChainState[$CCS_WeaponIndex]])) $power = $allies[$combatChainState[$CCS_WeaponIndex] + 9];
@@ -2356,13 +2358,16 @@ function DoesAttackHaveGoAgain()
 
   //Grant go Again
   $auras = &GetAuras($mainPlayer);
+  $Auras = new Auras($mainPlayer);
   if (ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
     if (SearchCharacterForCard($mainPlayer, "luminaris") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if ($isAura && SearchCharacterForCard($mainPlayer, "iris_of_reality")) return true;
   }
   if ($isAura && SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
-    $cosmoIndex = $combatChainState[$CCS_WeaponIndex] + 3;
-    if (isset($auras[$cosmoIndex]) && $auras[$cosmoIndex] > 0) return true;
+    // $cosmoIndex = $combatChainState[$CCS_WeaponIndex] + 3;
+    $attack = $CombatChain->AttackCard();
+    $AuraCard = $Auras->FindCardUID($attack->OriginUniqueID());
+    if ($AuraCard->NumPowerCounters() > 0) return true;
   }
   if ($combatChainState[$CCS_CurrentAttackGainedGoAgain] == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) {
     $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
