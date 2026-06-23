@@ -93,19 +93,24 @@ function GetUserFriends($userId) {
     ORDER BY u.usersUid ASC
   ";
   
-  $stmt = $conn->prepare($query);
+  try {
+    $stmt = $conn->prepare($query);
+  } catch (\Exception $e) {
+    error_log("GetUserFriends: prepare failed: " . $e->getMessage());
+    return [];
+  }
   if (!$stmt) {
     return [];
   }
-  
+
   $stmt->bind_param("i", $userId);
   if (!$stmt->execute()) {
     $stmt->close();
     return [];
   }
-  
+
   $result = $stmt->get_result();
-  
+
   // List of contributors
   $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
   
