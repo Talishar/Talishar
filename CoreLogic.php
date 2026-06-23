@@ -2721,7 +2721,7 @@ function UndestroyCharacter($player, $index, $resetCounters=true)
   if ($resetCounters) $char[$index + 4] = 0;
 }
 
-function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = false)
+function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = false, $skipClose = false)
 {
   if ($index == -1) return "";
   global $CombatChain;
@@ -2750,11 +2750,11 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
     if (!$wasBanished) AddGraveyard($cardID, $player, "CHAR");
     CharacterDestroyEffect($cardID, $player);
   }
-  RemoveCharacter($player, $index);
+  RemoveCharacter($player, $index, skipClose:$skipClose);
   return $cardID;
 }
 
-function RemoveCharacter($player, $index)
+function RemoveCharacter($player, $index, $skipClose=false)
 {
   global $combatChainState, $CCS_WeaponIndex;
   if ($index == -1) return "";
@@ -2767,7 +2767,7 @@ function RemoveCharacter($player, $index)
   if ($card != "-") $card->LeavesPlayAbility($index, $char[$index+11], "CHAR", true);
   $CharCard =  new CharacterCard($index, $player);
   if (!AfterDamage()) {
-    if (IsSpecificWeaponAttacking($player, $CharCard->UniqueID())) {
+    if (IsSpecificWeaponAttacking($player, $CharCard->UniqueID()) && !$skipClose) {
       CloseCombatChain();
     }
   }
