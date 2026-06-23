@@ -199,7 +199,7 @@ function OUTAbilityCost($cardID)
         if (CardType($combatChain[0]) == "AA") $deck->AddBottom($combatChain[0], "CC");
         else {//chelicera
           $index = SearchCharacterForUniqueID($combatChain[8], $currentPlayer);
-          DestroyCharacter($currentPlayer, $index);
+          DestroyCharacter($currentPlayer, $index, skipClose:true);
         }
         AttackReplaced($card->ID(), $currentPlayer);
         $card->Remove();
