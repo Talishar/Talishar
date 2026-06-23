@@ -88,7 +88,8 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
         }
       }
       else {
-        $CharacterCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $mainPlayer);
+        $Character = new PlayerCharacter($mainPlayer);
+        $CharacterCard = $Character->FindCardUID($originUniqueID);
         $power += $CharacterCard->NumPowerCounters();
       }
       if (filter_var($power, FILTER_VALIDATE_INT) === false) $power = 0;
@@ -97,8 +98,9 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       $AuraCard = $Auras->FindCardUID($originUniqueID);
       $power = $AuraCard->NumPowerCounters();
     } else if (DelimStringContains(CardSubtype($attackID), "Ally")) {
-      $allies = &GetAllies($mainPlayer);
-      if (isset($allies[$combatChainState[$CCS_WeaponIndex]])) $power = $allies[$combatChainState[$CCS_WeaponIndex] + 9];
+      $Allies = new Allies($mainPlayer);
+      $AllyCard = $Allies->FindCardUID($originUniqueID);
+      $power = $AllyCard->PowerCounters();
     }
     if ($canGainAttack || $power < 0) {
       $powerModifiers[] = "POWERCOUNTER"; //Power Counter image ID
