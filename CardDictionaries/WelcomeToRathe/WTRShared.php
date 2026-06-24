@@ -271,10 +271,6 @@
       case "braveforge_bracers":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "glint_the_quicksilver_blue":
-        if (TypeContains($CombatChain->AttackCard()->ID(), "W")) GiveAttackGoAgain();
-        if(RepriseActive()) Draw($currentPlayer);
-        return "";
       case "steelblade_supremacy_red": case "ironsong_determination_yellow":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $targetMZInd = SearchCharacterForUniqueID(explode("-", $target, 2)[1], $currentPlayer);

@@ -1549,7 +1549,11 @@ function GetMZCardLink($player, $MZ)
       }
       else $cardID = "";
     }
-    return CardLink($cardID, $cardID);
+    $ret = CardLink($cardID, $cardID);
+    if ($params[0] == "ATTACKQUEUE") {
+      $ret = "queued $ret attack";
+    }
+    return $ret;
   }
   else { //the index was a UID
     $pieces = GetMZZonePieces($params[0]);

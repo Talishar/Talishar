@@ -2317,7 +2317,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "overpower_red":
     case "overpower_yellow":
     case "overpower_blue":
-    case "glint_the_quicksilver_blue":
     case "biting_blade_red":
     case "biting_blade_yellow":
     case "biting_blade_blue":

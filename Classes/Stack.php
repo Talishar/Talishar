@@ -255,7 +255,7 @@ class AttackLayer {
 	function __construct($index) {
 		global $attackQueue;
     if ($index != -1)
-  		$this->attackQueue = &$layers;
+  		$this->attackQueue = &$attackQueue;
     else
       $this->attackQueue = [];
 		$this->index = $index;
@@ -285,4 +285,17 @@ class AttackLayer {
 	function Target() {
 		return isset($this->layers[$this->index+3]) ? $this->attackQueue[$this->index+3] : "-";
 	}
+
+  function QueuedBuffs() {
+    return $this->attackQueue[$this->index + 7] ?? "-";
+  }
+
+  function AddBuff($buff) {
+    if (isset($this->attackQueue[$this->index + 7])) {
+      if ($this->attackQueue[$this->index + 7] == "-")
+        $this->attackQueue[$this->index + 7] = $buff;
+      else
+        $this->attackQueue[$this->index + 7] .= ",$buff";
+    }
+  }
 }

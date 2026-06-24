@@ -3,7 +3,7 @@
 //Player == currentplayer
 function &GetMZZone($player, $zone)
 {
-  global $layers, $combatChain, $chainLinks;
+  global $layers, $combatChain, $chainLinks, $attackQueue;
   $rv = [];
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
@@ -19,6 +19,7 @@ function &GetMZZone($player, $zone)
   else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = &GetItems($player);
   else if ($zone == "LAYER") return $layers;
   else if ($zone == "CC" || $zone == "COMBATCHAINLINK") return $combatChain;
+  else if ($zone == "ATTACKQUEUE") return $attackQueue;
   else if ($zone == "COMBATCHAINATTACKS") {
     $attacks = GetCombatChainAttacks();
     return $attacks;

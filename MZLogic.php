@@ -690,7 +690,7 @@ function MZSwitchPlayer($zoneStr)
 }
 
 function GetZoneObject($player,  $zone) {
-  global $Stack, $CombatChain, $ChainLinks;
+  global $Stack, $CombatChain, $ChainLinks, $AttackQueue;
   $otherPlayer = 3 - $player;
   if (str_ends_with($zone, "UID"))
     $zone = substr($zone, 0, -3);
@@ -708,6 +708,7 @@ function GetZoneObject($player,  $zone) {
     "MYITEMS", "ITEMS" => new Items($player),
     "THEIRITEMS" => new Items($otherPlayer),
     "COMBATCHAINLINK", "CC" => $CombatChain,
+    "ATTACKQUEUE" => $AttackQueue,
     default => ""
   };
 }

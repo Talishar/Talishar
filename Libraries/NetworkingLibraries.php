@@ -1694,7 +1694,11 @@ function FinalizeChainLink($chainClosed = false)
   ProcessDecisionQueue();
   if ($Stack->StackEmpty() && $AttackQueue->NumAttacks() > 0) {
     global $CCS_AttackTarget, $CCS_AttackTargetUID;
-    [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID] = array_splice($attackQueue, 0, 7);
+    [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
+    if ($buffs != "-") {
+      foreach(explode(",", $buffs) as $buff)
+        AddCurrentTurnEffectNextAttack($buff, $player);
+    }
     $params = explode("|", $parameter);
     $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
     $MZIndex = CleanTargetToIndex($currentPlayer, $target);
@@ -2517,7 +2521,6 @@ function GetLayerTarget($cardID, $from)
     case "overpower_red":
     case "overpower_yellow":
     case "overpower_blue":
-    case "glint_the_quicksilver_blue":
     case "biting_blade_red":
     case "biting_blade_yellow":
     case "biting_blade_blue":

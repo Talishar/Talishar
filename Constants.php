@@ -223,9 +223,10 @@ function LayerPieces()
 //4 - Additional Costs
 //5 - Unique ID (the unique ID of the object that created the layer)
 //6 - Layer Unique ID (the unique ID of the layer)
+//7 - queued buffs
 function AttackQueuePieces()
 {
-  return 7;
+  return 8;
 }
 
 //0 - Card ID

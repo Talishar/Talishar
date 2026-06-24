@@ -248,18 +248,22 @@ function AddAttackQueue($cardID, $player, $targets, $parameter="-", $uniqueID="-
   $attackQueue[] = $additionalCosts;
   $attackQueue[] = $uniqueID;
   $attackQueue[] = $layerUID;
+  $attackQueue[] = "-"; // buffs
 }
 
 function ResolveAttackQueue() {
   global $attackQueue, $combatChainState, $CCS_AttackTargetUID, $CCS_AttackTarget, $turn;
   if (count($attackQueue) > 0) {
-    [$cardID, $player, $parameter, $target, $additionalCosts] = array_splice($attackQueue, 0, 7);
-
+    [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
     $MZIndex = CleanTargetToIndex($player, $target);
     $combatChainState[$CCS_AttackTarget] = $MZIndex;
     $params = explode("|", $parameter);
     $turn[0] = "M";
+    if ($buffs != "-") {
+      foreach(explode(",", $buffs) as $buff)
+        AddCurrentTurnEffect($buff, $player);
+    }
     PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
   }
 }
@@ -476,14 +480,18 @@ function ContinueDecisionQueue($lastResult = "")
         }
         CloseDecisionQueue();
         if (IsResolutionStep() && count($layers) == LayerPieces() && count($attackQueue) > 0) {
-          [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID] = array_splice($attackQueue, 0, 7);
+          [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
+          if ($buffs != "-") {
+            foreach(explode(",", $buffs) as $buff)
+              AddCurrentTurnEffectNextAttack($buff, $player);
+          }
           $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
           $MZIndex = CleanTargetToIndex($currentPlayer, $target);
           $combatChainState[$CCS_AttackTarget] = $MZIndex;
           EndResolutionStep();
         }
         else {
-          [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID] = array_splice($layers, 0, 7);
+          [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID] = array_splice($layers, 0, LayerPieces());
         }
         $params = explode("|", $parameter);
         $from = $params[0];
