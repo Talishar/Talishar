@@ -1062,28 +1062,28 @@ function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modul
   $numMainBoard = ($isFaBDB ? $count - $numSideboard : $count);
 
   if (IsModular($id)) {
-      for ($j = 0; $j < $numMainBoard + $numSideboard; ++$j) {
-          if ($modularSideboard != "") $modularSideboard .= " ";
-          $modularSideboard .= $id;
-      }
-      $totalCards += $numMainBoard + $numSideboard;
+    for ($j = 0; $j < $numMainBoard + $numSideboard; ++$j) {
+        if ($modularSideboard != "") $modularSideboard .= " ";
+        $modularSideboard .= $id;
+    }
+    $totalCards += $numMainBoard + $numSideboard;
   } elseif (TypeContains($id, "C")) {
       $character = $id;
   } elseif (TypeContains($id, "W")) {
-      ++$totalCards;
+      $totalCards += $numMainBoard + $numSideboard;
       for ($j = 0; $j < $numMainBoard; ++$j) {
-          if ($j > 0) $id = ReverseArt($id);
-          if ($weapon1 == "") $weapon1 = $id;
-          elseif ($weapon2 == "") $weapon2 = $id;
-          else {
-              if ($weaponSideboard != "") $weaponSideboard .= " ";
-              $weaponSideboard .= $id;
-          }
-      }
-      for ($j = 0; $j < $numSideboard; ++$j) {
-          if ($numMainBoard > 0 || $j > 0) $id = ReverseArt($id);
+        if ($j > 0) $id = ReverseArt($id);
+        if ($weapon1 == "") $weapon1 = $id;
+        elseif ($weapon2 == "") $weapon2 = $id;
+        else {
           if ($weaponSideboard != "") $weaponSideboard .= " ";
           $weaponSideboard .= $id;
+        }
+      }
+      for ($j = 0; $j < $numSideboard; ++$j) {
+        if ($numMainBoard > 0 || $j > 0) $id = ReverseArt($id);
+        if ($weaponSideboard != "") $weaponSideboard .= " ";
+        $weaponSideboard .= $id;
       }
   } elseif (TypeContains($id, "E") || TypeContains($id, "Companion")) {
       ++$totalCards;
