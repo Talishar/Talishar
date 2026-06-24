@@ -470,10 +470,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $opponentDeckArr = [];
   $deckPieces = DeckPieces();
   if ($isGameOver || $isReplay) {
-    if ($playerID != 3) {
-      for($i=0; $i<$theirDeckCount; $i+=$deckPieces) {
-        $opponentDeckArr[] = JSONRenderedCard($theirDeck[$i]);
-      }    
+    for($i=0; $i<$theirDeckCount; $i+=$deckPieces) {
+      $opponentDeckArr[] = JSONRenderedCard($theirDeck[$i]);
     }
   }
   $theirBlessingsCount = SearchCount(SearchDiscardForCard($otherPlayer, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));

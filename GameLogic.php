@@ -3120,7 +3120,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "STEALEQUIPMENT":
       $targetPlayer = str_contains($lastResult, "THEIR") ? $otherPlayer : $player;
-      $index = explode("-", $lastResult, 2)[1];
+      $index = explode("-", $lastResult, 2)[1] ?? -1;
+      if ($index == -1) return $cardID;
       $trueSteal = $parameter == "STEAL";
       StealEquipment($targetPlayer, $index, $player, $trueSteal);
       return $cardID;
@@ -3134,10 +3135,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         }
       }
-      if ($effectIndex == -1) WriteLog("Something went horribly wrong, please submit a bug report");
-      $effectArr = explode(",", $currentTurnEffects[$i]);
+      if ($effectIndex == -1) { WriteLog("Something went horribly wrong, please submit a bug report"); return $lastResult; }
+      $effectArr = explode(",", $currentTurnEffects[$effectIndex]);
       $effectArr[count($effectArr) - 1] = $lastResult;
-      $currentTurnEffects[$i] = implode(",", $effectArr);
+      $currentTurnEffects[$effectIndex] = implode(",", $effectArr);
       return $lastResult;
     case "GETTARGETOFATTACK":
       $params = explode(",", $parameter);
@@ -3853,17 +3854,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "PERFORATE":
-      $ind = explode("-", $parameter, 2)[1];
+      $ind = explode("-", $parameter, 2)[1] ?? -1;
+      if ($ind == -1) return $lastResult;
       $char = &GetPlayerCharacter($player);
       AddCurrentTurnEffect("perforate_yellow", $player,"", $char[$ind+11]);
       return $lastResult;
     case "ADDONHITMARK":
-      $ind = explode("-", $parameter, 2)[1];
+      $ind = explode("-", $parameter, 2)[1] ?? -1;
+      if ($ind == -1) return $lastResult;
       $char = &GetPlayerCharacter($player);
       AddCurrentTurnEffect("long_whisker_loyalty_red-MARK," . $char[$ind+11], $player,"", $char[$ind+11]);
       return $lastResult;
     case "PROVOKE":
-      $handInd = explode("-", $lastResult, 2)[1];
+      $handInd = explode("-", $lastResult, 2)[1] ?? -1;
+      if ($handInd == -1) return $lastResult;
       $hand = &GetHand($player);
       $cardID = $hand[$handInd];
       $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
@@ -3954,7 +3958,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "TRAPDOOR":
       $deck = &GetDeck($player);
-      $index = explode("-", $lastResult, 2)[1];
+      $index = explode("-", $lastResult, 2)[1] ?? -1;
+      if ($index == -1) return $lastResult;
       BanishCardForPlayer($deck[$index], $player, "DECK", "TRAPDOOR");
       RemoveDeck($player, $index);
       WriteLog("Player {$player} banishes a card face down");
