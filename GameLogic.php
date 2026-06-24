@@ -3845,10 +3845,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChain[0] = $lastResult;
       return $lastResult;
     case "EXTRAATTACK":
-      $ind = explode("-", $parameter, 2)[1];
-      $char = &GetPlayerCharacter($player);
-      $char[$ind+5]++;
-      if ($char[$ind+1] == 1) $char[$ind+1]++;
+      $ind = explode("-", $parameter, 2)[1] ?? -1;
+      if ($ind != -1) {
+        $char = &GetPlayerCharacter($player);
+        $char[$ind+5]++;
+        if ($char[$ind+1] == 1) $char[$ind+1]++;
+      }
       return $lastResult;
     case "PERFORATE":
       $ind = explode("-", $parameter, 2)[1];
