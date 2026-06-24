@@ -734,3 +734,12 @@
       default: return;
     }
   }
+
+function AddEffectToAttack($player, $effectID, $target) {
+  if ($target == "COMBATCHAINLINK-0") AddCurrentTurnEffect($effectID, $player);
+  elseif (explode("-", $target)[0] == "ATTACKQUEUE") {
+    $ind = intval(explode("-", $target)[1] ?? 0);
+    $QueueCard = new AttackLayer($ind);
+    $QueueCard->AddBuff($effectID);
+  }
+}

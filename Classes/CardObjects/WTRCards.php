@@ -1069,13 +1069,7 @@ class glint_the_quicksilver_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain, $AttackQueue;
-    if ($target == "COMBATCHAINLINK-0") AddCurrentTurnEffect($this->cardID, $this->controller);
-    elseif (explode("-", $target)[0] == "ATTACKQUEUE") {
-      $ind = intval(explode("-", $target)[1] ?? 0);
-      $QueueCard = new AttackLayer($ind);
-      $QueueCard->AddBuff($this->cardID);
-    }
+    AddEffectToAttack($this->controller, $this->cardID, $target);
     if(RepriseActive()) Draw($this->controller);
     return "";
   }
