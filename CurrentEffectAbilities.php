@@ -118,9 +118,8 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
           $index = GetRandom() % $handCount;
           if ($cards != "") $cards .= ",";
           $cards .= $hand[$index];
-          unset($hand[$index]);
-          $hand = array_values($hand);
-          $handCount = count($hand);
+          array_splice($hand, $index, 1);
+          --$handCount;
         }
         if ($cards != "") AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, $cards);
       }
@@ -751,7 +750,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       default:
         break;
     }
-    if ($remove && SearchCurrentTurnEffectsForIndex($searchedEffect, $currentTurnEffects[$i + 1]) != -1) RemoveCurrentTurnEffect($i);
+    if ($remove && (!$validCardID || SearchCurrentTurnEffectsForIndex($searchedEffect, $currentTurnEffects[$i + 1]) != -1)) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -777,7 +776,7 @@ function RemoveThisLinkEffects($cardID="")
       default:
         break;
     }
-    if ($remove && SearchCurrentTurnEffectsForIndex($searchedEffect, $currentTurnEffects[$i + 1]) != -1) RemoveCurrentTurnEffect($i);
+    if ($remove && (!$validCardID || SearchCurrentTurnEffectsForIndex($searchedEffect, $currentTurnEffects[$i + 1]) != -1)) RemoveCurrentTurnEffect($i);
   }
   $combatChainState[$CCS_EclecticMag] = 0;
 }
@@ -917,7 +916,7 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
     $remove = false;
     $effect = $currentTurnEffects[$i];
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      if (explode("-", $effect)[0] == "art_of_the_dragon_blood_red") {
+      if ($effect === "art_of_the_dragon_blood_red" || str_starts_with($effect, "art_of_the_dragon_blood_red-")) {
         if(TalentContains($cardID, "DRACONIC", $currentPlayer) && !IsStaticType($cardType, $from, $cardID)) {
           $costModifier -= 1;
           --$currentTurnEffects[$i + 3];
@@ -2918,10 +2917,12 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
     $blockModifier = 0;
     $Effect = $CurrentTurnEffects->Effect($i, true);
-    $card = GetClass(ExtractCardID($Effect->EffectID()), $Effect->PlayerID());
+    $effectID = $Effect->EffectID();
+    $effectPlayerID = $Effect->PlayerID();
+    $card = GetClass(ExtractCardID($effectID), $effectPlayerID);
     if ($card != "-") $blockModifier += $card->EffectBlockModifier($index, $from);
-    if ($Effect->PlayerID() == $defPlayer) {
-      switch ($Effect->EffectID()) { // effects on the def player
+    if ($effectPlayerID == $defPlayer) {
+      switch ($effectID) { // effects on the def player
         case "art_of_war_yellow-1":
         case "potion_of_ironhide_blue":
           $blockModifier += TypeContains($cardID, "AA", $defPlayer) ? 1 : 0;
@@ -2953,7 +2954,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           $blockModifier += SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC") ? 1 : 0;
           break;
         case "phantasmal_footsteps":
-          if ($blockCardID == $Effect->EffectID()) $blockModifier += 1;
+          if ($blockCardID == $effectID) $blockModifier += 1;
           break;
         case "korshem_crossroad_of_elements-2":
           if (TypeContains($blockCardID, "A") || TypeContains($blockCardID, "AA")) $blockModifier += 1;
@@ -2962,7 +2963,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           $blockModifier += 1;
           break;
         case "rampart_of_the_rams_head":
-          $blockModifier += ($blockCardID == $Effect->EffectID() ? 1 : 0);
+          $blockModifier += ($blockCardID == $effectID ? 1 : 0);
           break;
         case "fletch_a_red_tail_red":
           $blockModifier += (PitchValue($blockCardID) == 1 && HasAimCounter() ? -1 : 0);
@@ -2992,7 +2993,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
         case "heavy_industry_surveillance":
         case "heavy_industry_ram_stop":
         case "breaker_helm_protos":
-          $blockModifier += ($blockCardID == $Effect->EffectID() ? 1 : 0);
+          $blockModifier += ($blockCardID == $effectID ? 1 : 0);
           break;
         default:
           break;
