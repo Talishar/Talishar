@@ -452,7 +452,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $dqHint = GetDQHelpText();
         $caption = $dqHint !== "-" ? GamestateUnsanitize($dqHint) : "Cards from deck:";
 
-      foreach ($options as $i => $option) {
+      $optCount = count($options);
+      for ($i = 0; $i < $optCount; $i++) {
         $cardsToShow[] = JSONRenderedCard($myDeck[$i], borderColor: 0, actionDataOverride: $i);
       }
 
@@ -469,7 +470,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $dqHint = GetDQHelpText();
         $caption = $dqHint !== "-" ? GamestateUnsanitize($dqHint) : "Cards from opponent's deck:";
 
-      foreach ($options as $i => $option) {
+      $optCount = count($options);
+      for ($i = 0; $i < $optCount; $i++) {
         $cardsToShow[] = JSONRenderedCard($theirDeck[$i], borderColor: 0, actionDataOverride: $i);
       }
 
@@ -504,7 +506,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $subtitles = "";
         $source = [];
         $optionsCount = count($options);
-        $attackingPermanentsSet = ['THEIRALLY' => true, 'THEIRAURAS' => true, 'MYALLY' => true, 'MYAURAS' => true];
+        static $attackingPermanentsSet = ['THEIRALLY' => true, 'THEIRAURAS' => true, 'MYALLY' => true, 'MYAURAS' => true];
         $combatChainCount = count($combatChain);
         $layerCheckCount = count($layers);
         $turnDataStartsWithMyDeck = (substr($turnData, 0, 6) === "MYDECK");
@@ -519,7 +521,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $combatChainFirst = $combatChainCount > 0 ? $combatChain[0] : null;
         $combatChainLast = $combatChainCount > 0 ? $combatChain[$combatChainCount - $combatChainPieces] : null;
         for ($i = 0; $i < $optionsCount; ++$i) {
-          $option = explode("-", $options[$i]);
+          $option = explode("-", $options[$i], 3);
           $option0 = $option[0]; // cache zone key — accessed 30+ times per iteration
           $isMyPrefix = str_starts_with($option0, "MY");
           $isTheirPrefix = str_starts_with($option0, "THEIR");
@@ -683,18 +685,19 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
           //Add indication for layers targets
           if ($layersActive && ($option0 == "MYDISCARD" || $option0 == "THEIRDISCARD")) {
+            $target = $option0."-".($option[1] ?? "");
+            $cardID = GetMZCard($currentPlayer, $target);
+            $isMyDiscard = ($option0 == "MYDISCARD");
             for ($j = 0; $j < $layerCheckCount; $j += $layerPieces) {
-              $target = $option0."-".($option[1] ?? "");
-              $cardID = GetMZCard($currentPlayer, $target);
               $params = explode("-", $layers[$j + 3], 2);
               if(isset($params[1])) {
-                $uniqueIDIndex = ($option0 == "MYDISCARD") ? SearchDiscardForUniqueID($params[1], $currentPlayer) : SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
+                $uniqueIDIndex = $isMyDiscard ? SearchDiscardForUniqueID($params[1], $currentPlayer) : SearchDiscardForUniqueID($params[1], $layers[$j + 1]);
               }
               if($uniqueIDIndex != -1 && isset($source[$uniqueIDIndex]) && $cardID == $source[$uniqueIDIndex]) {
                 $label = "Targeted";
-                continue;
+                break;
               }
-            }   
+            }
           }
 
           if ($layersActive && $option0 == "LAYER" && $option[1] == 0) {
@@ -833,7 +836,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
               $Layer = $Stack->Card($j, true);
               if (str_contains($Layer->Target(), $AuraCard->UniqueID())) {
                 $label = "Targeted";
-                continue;
+                break;
               }
             }
           }
@@ -920,9 +923,10 @@ function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments 
   $optionsCount = count($options);
   $cardList = [];
   for ($i = 0; $i < $optionsCount; ++$i) {
-    if($MZName == "ARSENAL" && isset($zone[$options[$i]+1]) && $zone[$options[$i]+1] == "DOWN") $label = "Face Down";
-    if (isset($zone[$options[$i]])) {
-      $cardList[] = JSONRenderedCard($zone[$options[$i]], action: $mode, actionDataOverride: strval($options[$i]), label: $label);
+    $zoneIdx = (int)$options[$i];
+    if($MZName == "ARSENAL" && isset($zone[$zoneIdx + 1]) && $zone[$zoneIdx + 1] == "DOWN") $label = "Face Down";
+    if (isset($zone[$zoneIdx])) {
+      $cardList[] = JSONRenderedCard($zone[$zoneIdx], action: $mode, actionDataOverride: strval($options[$i]), label: $label);
     }
   }
 

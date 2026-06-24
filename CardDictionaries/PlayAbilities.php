@@ -72,7 +72,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if (CountAura("might", $currentPlayer) >= 6) PlayAura("agility", $currentPlayer); 
 
         shuffle($cards);
-        foreach ($cards as $cardID) $deck->AddTop($cardID, "DECK");
+        foreach ($cards as $card) $deck->AddTop($card, "DECK");
       }
       return "";
     case "reckless_charge_blue":
@@ -417,8 +417,7 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $mainPlayer, $currentPlayer, $defPlayer;
-  $rv = "";
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     case "lay_down_the_law_red":
       AddCurrentTurnEffect($cardID, $defPlayer);
@@ -504,17 +503,17 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $mainPlayer, $currentPlayer, $defPlayer, $combatChain, $CCS_RequiredNegCounterEquipmentBlock, $combatChainState;
   global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_NumItemsDestroyed, $currentTurnEffects, $CombatChain;
-  $rv = "";
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-  $character = &GetPlayerCharacter($currentPlayer);
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     case "maxx_the_hype_nitro":
     case "maxx_nitro":
+      $character = &GetPlayerCharacter($currentPlayer);
       PutItemIntoPlayForPlayer("hyper_driver", $currentPlayer, 2);
       --$character[5];
       return "";
     case "teklovossen_esteemed_magnate":
     case "teklovossen":
+      $character = &GetPlayerCharacter($currentPlayer);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       --$character[5];
       return "";
@@ -755,7 +754,8 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (DelimStringContains($additionalCosts, "SCRAP", true)) GainResources($currentPlayer, 1);
       return "";
     case "moonshot_yellow":
-      for ($i = 0; $i < $resourcesPaid; $i += 2) AddCurrentTurnEffect($cardID, $currentPlayer);
+      $moonCount = intval($resourcesPaid / 2);
+      for ($i = 0; $i < $moonCount; ++$i) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "meganetic_lockwave_blue":
       if ($resourcesPaid == 0) return;
@@ -936,7 +936,7 @@ function CountBlockingCards() {
   $countChainLinks = count($chainLinks);
   $chainLinksPieces = ChainLinksPieces();
   for ($i = 0; $i < $countChainLinks; ++$i) {
-    $link = $chainLinks[$i];
+    $link = &$chainLinks[$i];
     $chainLinkCount = count($link);
     for ($j = 0; $j < $chainLinkCount; $j += $chainLinksPieces) {
       if ($link[$j + 1] == $defPlayer && $link[$j + 2] == 1) ++$buff;

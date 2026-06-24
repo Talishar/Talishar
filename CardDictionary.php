@@ -1934,16 +1934,16 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $defPlayer) {
-      $effectArr = explode(",", $currentTurnEffects[$i]);
-      $effectID = $effectArr[0];
-      switch ($effectID) {
-        case "chains_of_eminence_red":
-          if (GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) return true;
-          break;
-        default:
-          break;
-      }
+    if ($currentTurnEffects[$i + 1] !== $defPlayer) continue;
+    $effectStr = $currentTurnEffects[$i];
+    $commaPos = strpos($effectStr, ",");
+    $effectID = $commaPos !== false ? substr($effectStr, 0, $commaPos) : $effectStr;
+    switch ($effectID) {
+      case "chains_of_eminence_red":
+        if ($commaPos !== false && GamestateSanitize(NameOverride($cardID)) == substr($effectStr, $commaPos + 1)) return true;
+        break;
+      default:
+        break;
     }
   }
   if(SubtypeContains($cardID, "Aura", $player) && !CanBlockWithAura($cardID)) return true;
@@ -2190,18 +2190,18 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $playerID) {
-      $effectArr = explode(",", $currentTurnEffects[$i]);
-      $effectID = $effectArr[0];
-      switch ($effectID) {
-        case "chains_of_eminence_red":
-          if (GamestateSanitize(NameOverride($cardID)) == $effectArr[1]) {
-            $restrictedBy = "chains_of_eminence_red";
-            return true;
-          }
-        default:
-          break;
-      }
+    if ($currentTurnEffects[$i + 1] !== $playerID) continue;
+    $effectStr = $currentTurnEffects[$i];
+    $commaPos = strpos($effectStr, ",");
+    $effectID = $commaPos !== false ? substr($effectStr, 0, $commaPos) : $effectStr;
+    switch ($effectID) {
+      case "chains_of_eminence_red":
+        if ($commaPos !== false && GamestateSanitize(NameOverride($cardID)) == substr($effectStr, $commaPos + 1)) {
+          $restrictedBy = "chains_of_eminence_red";
+          return true;
+        }
+      default:
+        break;
     }
   }
   if (SearchCurrentTurnEffects("frost_lock_blue-3", $playerID) && CardCost($cardID) == 0) {
@@ -3394,18 +3394,14 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 
 function IsStaticType($cardType, $from = "", $cardID = "")
 {
-  if (
-    DelimStringContains($cardType, "C") || 
-    DelimStringContains($cardType, "E") || 
-    DelimStringContains($cardType, "W") || 
-    DelimStringContains($cardType, "D") || 
-    DelimStringContains($cardType, "Companion") || 
-    $from == "PLAY" || 
-    $from == "COMBATCHAINATTACKS" || 
-    $from == "ARS" && DelimStringContains($cardType, "M") || 
-    $cardID != "" && $from == "BANISH" && AbilityPlayableFromBanish($cardID)) {
-      return true;
-  }
+  if ($from === "PLAY" || $from === "COMBATCHAINATTACKS") return true;
+  if (DelimStringContains($cardType, "C") ||
+      DelimStringContains($cardType, "E") ||
+      DelimStringContains($cardType, "W") ||
+      DelimStringContains($cardType, "D") ||
+      DelimStringContains($cardType, "Companion")) return true;
+  if ($from === "ARS" && DelimStringContains($cardType, "M")) return true;
+  if ($cardID !== "" && $from === "BANISH" && AbilityPlayableFromBanish($cardID)) return true;
   return false;
 }
 

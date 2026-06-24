@@ -54,7 +54,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     }
   }
   // check layer continuous buffs
-  if(isset($combatChain[10])) {
+  if(isset($combatChain[10]) && $combatChain[10] !== "-") {
     $buffs = explode(",", $combatChain[10]);
     foreach ($buffs as $buffSetID) {
       $buff = ConvertToCardID($buffSetID);
@@ -382,7 +382,6 @@ function StartTurnAbilities()
   }
   $defArsenal = &GetArsenal($defPlayer);
   $defArsenalCount = count($defArsenal);
-  $arsenalPieces = ArsenalPieces();
   for ($i = 0; $i < $defArsenalCount; $i += $arsenalPieces) {
     $defArsenal[$i + 4] = "0";//Reset Frozen
   }
@@ -449,6 +448,7 @@ function FindEmptyEquipmentSlots($player)
       if (!isset($occupied[$slot]) && DelimStringContains($subtype, $slot)) {
         $occupied[$slot] = true;
         ++$occupiedCount;
+        break;
       }
     }
   }
@@ -1639,7 +1639,8 @@ function NumDefendedFromHand()
 {
   global $CombatChain, $defPlayer;
   $num = 0;
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numCards = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $numCards; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       // this used to explicitly exclude instant cards and I don't know why, removing for now
@@ -1653,7 +1654,8 @@ function NumCardsBlocking()
 {
   global $CombatChain, $defPlayer;
   $num = 0;
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numCards = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $numCards; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
@@ -1668,7 +1670,8 @@ function NumCardsNonEquipBlocking()
 {
   global $CombatChain, $defPlayer;
   $num = 0;
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numCards = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $numCards; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       if (!TypeContains($chainCard->ID(), "E")) ++$num;
@@ -1681,7 +1684,8 @@ function NumAttacksBlocking()
 {
   global $CombatChain, $defPlayer;
   $num = 0;
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numCards = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $numCards; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer && CardType($chainCard->ID()) == "AA") ++$num;
   }
@@ -1692,7 +1696,8 @@ function NumActionsBlocking()
 {
   global $CombatChain, $defPlayer;
   $num = 0;
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numCards = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $numCards; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       $type = CardType($chainCard->ID());
@@ -1711,7 +1716,8 @@ function NumNonBlocksDefending()
 {
   global $CombatChain, $defPlayer;
   $num = 0;
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numCards = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $numCards; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber: true);
     if ($chainCard->PlayerID() == $defPlayer) {
       if (!TypeContains($chainCard->ID(), "B")) ++$num;
@@ -2173,31 +2179,14 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
   global $currentTurnEffects;
   $cardSubtype = CardSubtype($cardID);
   if ($cardID == "adaptive_plating" || $cardID == "adaptive_dissolver" || $cardID == "adaptive_alpha_mold") {
+    if ($cardID !== "adaptive_plating" && $subtype == "Base") return true;
     $currentTurnEffectsCount = count($currentTurnEffects);
     $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-    if ($cardID == "adaptive_plating") {
-      $target = "adaptive_plating-" . $uniqueID;
-      for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-        $commaPos = strpos($currentTurnEffects[$i], ',');
-        $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
-        if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
-      }
-    } elseif ($cardID == "adaptive_dissolver") {
-      if ($subtype == "Base") return true;
-      $target = "adaptive_dissolver-" . $uniqueID;
-      for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-        $commaPos = strpos($currentTurnEffects[$i], ',');
-        $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
-        if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
-      }
-    } else { // adaptive_alpha_mold
-      if ($subtype == "Base") return true;
-      $target = "adaptive_alpha_mold-" . $uniqueID;
-      for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-        $commaPos = strpos($currentTurnEffects[$i], ',');
-        $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
-        if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
-      }
+    $target = $cardID . "-" . $uniqueID;
+    for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
+      $commaPos = strpos($currentTurnEffects[$i], ',');
+      $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
+      if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
     }
   }
   return DelimStringContains($cardSubtype, $subtype);

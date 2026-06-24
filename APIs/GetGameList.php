@@ -75,6 +75,7 @@ if(IsUserLoggedIn()) {
         }
       } catch (\Exception $e) {
         error_log("GetGameList: blocked users query failed: " . $e->getMessage());
+        $conn = GetDBConnection(0); // Reconnect
       }
     }
     $_SESSION['_blockedCache'] = $blockedUserNames;

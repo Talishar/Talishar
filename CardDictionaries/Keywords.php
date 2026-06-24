@@ -43,18 +43,20 @@
     if($mainPhase) GainActionPoints(1, $player);
     WriteLog("Player $player cranked");
     IncrementClassState($player, $CS_NumCranked);
-    $char = GetPlayerCharacter($player);
-    $charCount = count($char);
-    $charPieces = CharacterPieces();
     $numCranked = GetClassState($player, $CS_NumCranked);
-    for ($i = 0; $i < $charCount; $i += $charPieces) {
-      switch ($char[$i]) {
-        case "puffin_hightail":
-        case "puffin":
-          if ($numCranked == 2 && SearchCharacterActive($player, $char[$i])) AddLayer("TRIGGER", $player, $char[$i]);
-          break;
-        default:
-          break;
+    if ($numCranked == 2) {
+      $char = &GetPlayerCharacter($player);
+      $charCount = count($char);
+      $charPieces = CharacterPieces();
+      for ($i = 0; $i < $charCount; $i += $charPieces) {
+        switch ($char[$i]) {
+          case "puffin_hightail":
+          case "puffin":
+            if (SearchCharacterActive($player, $char[$i])) AddLayer("TRIGGER", $player, $char[$i]);
+            break;
+          default:
+            break;
+        }
       }
     }
     if(CardName($MZZone[$index]) == "Hyper Driver" && ($MZZone[$index+$steamInd] <= 0)) DestroyItemForPlayer($player, $index);
@@ -176,9 +178,9 @@
     global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $defPlayer;
     $otherPlayer = $playerID == 1 ? 2 : 1;
     
-    $deck = new Deck($playerID);
     $switched = $switchedPlayers[0] || $switchedPlayers[1];
     if (!$switched) {
+      $deck = new Deck($playerID);
       $deckTop = $deck->Top();
       switch ($deckTop) {
         case "the_golden_son_yellow":
@@ -304,7 +306,7 @@
     $otherPlayer = $playerID == 1 ? 2 : 1;
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
-    if(($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0 && $char[1] == 2) {
+    if($char[1] == 2 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0) {
       $goldIndices = GetGoldIndices($playerID);
       $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
@@ -455,10 +457,10 @@
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects, $EffectContext, $combatChain;
     if ($wonWager == "-") $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
     $MainHero = new CharacterCard(0, $mainPlayer);
-    if ($MainHero->Status() < 3 && ($MainHero->CardID() == "olympia" || $MainHero->CardID() == "olympia_prized_fighter")) //ability is once per attack, not once per turn
+    $mainHeroCardID = $MainHero->CardID();
+    if ($MainHero->Status() < 3 && ($mainHeroCardID == "olympia" || $mainHeroCardID == "olympia_prized_fighter")) //ability is once per attack, not once per turn
       $MainHero->SetUsed(2);
     $numWagersWon = 0;
-    $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
     $effectPieces = CurrentTurnEffectsPieces();
     for($i = count($currentTurnEffects) - $effectPieces; $i >= 0; $i -= $effectPieces) {
@@ -468,9 +470,7 @@
       if ($card != "-" && $card->IsWagerEffect($i)) {
         if (!$chainClosed) {
           $triggerCardID = ExtractCardID($currentTurnEffects[$i]);
-          for($j = 0; $j < $amount; ++$j) {
-            AddLayer("TRIGGER", $mainPlayer, $triggerCardID, $wonWager, "WAGER");
-          }
+          AddLayer("TRIGGER", $mainPlayer, $triggerCardID, $wonWager, "WAGER");
         }
         // if (IsCombatEffectActive($currentTurnEffects[$i]))
         RemoveCurrentTurnEffect($i);
@@ -496,9 +496,7 @@
           case "drink_em_under_the_table_red":
             if (!$chainClosed) {
               $triggerCardID = $currentTurnEffects[$i];
-              for($j = 0; $j < $amount; ++$j) {
-                AddLayer("TRIGGER", $mainPlayer, $triggerCardID, $wonWager, "WAGER");
-              }
+              AddLayer("TRIGGER", $mainPlayer, $triggerCardID, $wonWager, "WAGER");
             }
             RemoveCurrentTurnEffect($i);
             break;

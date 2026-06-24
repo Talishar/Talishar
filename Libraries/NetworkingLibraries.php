@@ -275,7 +275,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           break;
         }
 
-        $input = "";
+        $inputParts = [];
         $chkInputCount = count($chkInput);
         $optionsCount = count($options);
         for ($i = 0; $i < $chkInputCount; ++$i) {
@@ -286,11 +286,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             $skipWriteGamestate = true;
             break;
           }
-          if ($input != "") $input .= ",";
-          $input .= $options[$index + $limitOffset];
+          $inputParts[] = $options[$index + $limitOffset];
         }
         if (!$skipWriteGamestate) {
-          ContinueDecisionQueue($input);
+          ContinueDecisionQueue(implode(",", $inputParts));
         }
         break;
       } else if (!str_starts_with($turn[0], "MULTICHOOSE") && !str_starts_with($turn[0], "MAYMULTICHOOSE")) break;
@@ -1063,21 +1062,36 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case "REORDER": // should only show up in replays
       $cardList = explode(",", $buttonInput);
       $layerPiecesReorder = LayerPieces();
+      $cardIndexMap = [];
+      $layersLen = count($layers);
+      for ($i = 0; $i < $layersLen; $i += $layerPiecesReorder) {
+        if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $playerID) {
+          $cardIndexMap[$layers[$i + 2]] = $i;
+        }
+      }
+      $movedIndices = [];
+      $newLayersTop = [];
       foreach ($cardList as $card) {
-        $index = -1;
-        $layersLen = count($layers);
+        if (isset($cardIndexMap[$card])) {
+          $idx = $cardIndexMap[$card];
+          $movedIndices[$idx] = true;
+          $chunk = ["TRIGGER"];
+          for ($j = 1; $j < $layerPiecesReorder; $j++) {
+            $chunk[] = $layers[$idx + $j];
+          }
+          $newLayersTop = array_merge($chunk, $newLayersTop);
+        }
+      }
+      if (!empty($newLayersTop)) {
+        $newLayersRest = [];
         for ($i = 0; $i < $layersLen; $i += $layerPiecesReorder) {
-          if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $playerID && $layers[$i + 2] == $card) {
-            $index = $i;
-            break;
+          if (!isset($movedIndices[$i])) {
+            for ($j = 0; $j < $layerPiecesReorder; $j++) {
+              $newLayersRest[] = $layers[$i + $j];
+            }
           }
         }
-        if ($index != -1) {
-          $pretrigger = array_slice($layers, $index, $layerPiecesReorder);
-          $pretrigger[0] = "TRIGGER";
-          array_splice($layers, $index, $layerPiecesReorder);
-          array_unshift($layers, ...$pretrigger);
-        }
+        $layers = array_merge($newLayersTop, $newLayersRest);
       }
       $layersCountReorder = count($layers);
       for ($i = 0; $i < $layersCountReorder; $i += $layerPiecesReorder) {
@@ -1154,15 +1168,21 @@ function PassInput($autopass = true, $doublePass = false)
   if (isset($turn[2]) && str_contains($turn[2], "PRELAYER")) {
     $layersCount = count($layers);
     $pretriggerFlat = [];
-    for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
+    $remaining = [];
+    for ($i = 0; $i < $layersCount; $i += $layerPieces) {
       if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $currentPlayer) {
-        $chunk = array_splice($layers, $i, $layerPieces);
-        $chunk[0] = "TRIGGER";
-        array_unshift($pretriggerFlat, ...$chunk);
+        $pretriggerFlat[] = "TRIGGER";
+        for ($j = 1; $j < $layerPieces; $j++) {
+          $pretriggerFlat[] = $layers[$i + $j];
+        }
+      } else {
+        for ($j = 0; $j < $layerPieces; $j++) {
+          $remaining[] = $layers[$i + $j];
+        }
       }
     }
     if (!empty($pretriggerFlat)) {
-      array_unshift($layers, ...$pretriggerFlat);
+      $layers = array_merge($pretriggerFlat, $remaining);
     }
   }
   if ($turn[0] == "B") {
@@ -1782,16 +1802,20 @@ function UndoIntimidate($player)
   $hand = &GetHand($player);
   $banishCount = count($banish);
   $banishPieces = BanishPieces();
+  $noFearAdded = (SearchLayersForCardID("no_fear_red") != -1);
+  $stoneRainAdded = (SearchLayersForCardID("stone_rain_red") != -1);
   for ($i = $banishCount - $banishPieces; $i >= 0; $i -= $banishPieces) {
     if ($banish[$i + 1] == "INT") {
       AddLayer("TRIGGER", $player, "INTIMIDATE", (new BanishCard($player, $i))->UniqueID());
       continue;
     }
-    if ($banish[$i + 1] == "NOFEAR" && SearchLayersForCardID("no_fear_red") == -1) {
+    if (!$noFearAdded && $banish[$i + 1] == "NOFEAR") {
       AddLayer("TRIGGER", $player, "no_fear_red", "-");
+      $noFearAdded = true;
     }
-    if ($banish[$i + 1] == "STONERAIN" && SearchLayersForCardID("stone_rain_red") == -1) {
+    if (!$stoneRainAdded && $banish[$i + 1] == "STONERAIN") {
       AddLayer("TRIGGER", $defPlayer, "stone_rain_red", "-");
+      $stoneRainAdded = true;
     }
   }
 }
@@ -1946,14 +1970,10 @@ function FinalizeTurn()
   $newNextTurnEffects = [];
   for ($i = 0; $i < $nextTurnEffectsCount; $i += $nextTurnPieces) {
     if ($nextTurnEffects[$i + 4] == 1) {
-      for ($j = 0; $j < $currentTurnEffectPiecesNT; ++$j) {
-        $currentTurnEffects[] = $nextTurnEffects[$i + $j];
-      }
+      array_push($currentTurnEffects, ...array_slice($nextTurnEffects, $i, $currentTurnEffectPiecesNT));
     } else {
       $base = count($newNextTurnEffects);
-      for ($j = 0; $j < $nextTurnPieces; ++$j) {
-        $newNextTurnEffects[] = $nextTurnEffects[$i + $j];
-      }
+      array_push($newNextTurnEffects, ...array_slice($nextTurnEffects, $i, $nextTurnPieces));
       --$newNextTurnEffects[$base + 4];
     }
   }
