@@ -512,16 +512,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $numBanished = SearchCount($lastResult);
       $numLeft = 5 - $numBanished;
       $deck = new Deck($otherPlayer);
-      $reorderCards = "";
+      $reorderCards = [];
       for ($i = 0; $i < $numLeft; ++$i) {
         if ($deck->RemainingCards() > 0) {
-          if ($reorderCards != "")
-            $reorderCards .= ",";
-          $reorderCards .= $deck->Top(remove: true);
+          $reorderCards[] = $deck->Top(remove: true);
         }
       }
-      if ($reorderCards != "") {
-        PrependDecisionQueue("CHOOSETOPOPPONENT", $player, $reorderCards);
+      if ($reorderCards) {
+        PrependDecisionQueue("CHOOSETOPOPPONENT", $player, implode(",", $reorderCards));
         PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put on top of their deck");
       }
       return "";

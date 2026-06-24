@@ -155,9 +155,7 @@ function UPRDealDamageEffect($cardID)
       $quellAmount += QuellAmount($character[$i]);
     }
     if($quellAmount > $damage) $quellAmount = $damage;
-    $rv = "0";
-    for($i=1; $i<=$quellAmount; ++$i) $rv .= "," . $i;
-    return $rv;
+    return implode(",", range(0, $quellAmount));
   }
 
   function QuellEndPhase($player)

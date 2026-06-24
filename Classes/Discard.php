@@ -42,18 +42,17 @@ class Discard {
   }
 
   function RemoveRandom($count=1) {
-    $cards = "";
+    $cards = [];
     $discardPieces = DiscardPieces();
     for($i = 0; $i < $count && !$this->Empty(); $i++) {
       $index = (GetRandom() % $this->NumCards()) * $discardPieces;
-      if($cards != "") $cards .= ",";
-      $cards .= $this->discard[$index];
+      $cards[] = $this->discard[$index];
       for ($j = $discardPieces - 1; $j >= 0; --$j) {
         unset($this->discard[$index + $j]);
       }
       $this->discard = array_values($this->discard);
     }
-    return $cards;
+    return implode(",", $cards);
   }
 
   function Remove($index) {

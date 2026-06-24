@@ -397,9 +397,9 @@ function TargetDefendingAction($player, $cardID, $setTarget=false) {
 function CuttingIndicesAwait($player) {
   global $dqVars, $defPlayer;
   $lastResult = $dqVars["currentIDs"] ?? "";
-  $currentNames = [];
+  $currentNamesMap = [];
   foreach (explode(",", $lastResult) as $cardID) {
-    if ($cardID != "") $currentNames[] = CardName($cardID);
+    if ($cardID != "") $currentNamesMap[CardName($cardID)] = true;
   }
   $auras = GetAuras($defPlayer);
   $rv = [];
@@ -407,7 +407,7 @@ function CuttingIndicesAwait($player) {
   $auraPieces = AuraPieces();
   //remove any choices that have already been targeted
   for($i = 0; $i < $auraCount; $i += $auraPieces) {
-    if (TypeContains($auras[$i], "T", $defPlayer) && !in_array(CardName($auras[$i]), $currentNames)) {
+    if (TypeContains($auras[$i], "T", $defPlayer) && !isset($currentNamesMap[CardName($auras[$i])])) {
       $rv[] = "THEIRAURAS-$i";
     }
   }

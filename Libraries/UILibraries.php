@@ -76,67 +76,69 @@ function JSONRenderedCard(
   $isSpectator = isset($playerID) && $playerID == 3;
   $otherPlayer = $playerID == 1 ? 2 : 1;
 
-  $counters = property_exists($countersMap, 'counters') ? $countersMap->counters : $counters;
+  // isset() is a language construct (~3-5x faster than property_exists() function call).
+  // Counter values are always integers, never null, so isset() is semantically equivalent here.
+  $counters = isset($countersMap->counters) ? $countersMap->counters : $counters;
   if($counters != NULL) $countersMap->counters = $counters;
 
-  $lifeCounters = property_exists($countersMap, 'life') ? $countersMap->life : $lifeCounters;
+  $lifeCounters = isset($countersMap->life) ? $countersMap->life : $lifeCounters;
   if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
 
-  $defCounters = property_exists($countersMap, 'defense') ? $countersMap->defense : $defCounters;
+  $defCounters = isset($countersMap->defense) ? $countersMap->defense : $defCounters;
   if($defCounters != NULL) $countersMap->defense = $defCounters;
 
-  $powerCounters = property_exists($countersMap, 'attack') ? $powerCounters->attack : $powerCounters;
+  $powerCounters = isset($countersMap->attack) ? $powerCounters->attack : $powerCounters;
   if($powerCounters != NULL) $countersMap->attack = $powerCounters;
 
-  $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam : $steamCounters;
+  $steamCounters = isset($countersMap->steam) ? $steamCounters->steam : $steamCounters;
   if($steamCounters != NULL) $countersMap->steam = $steamCounters;
 
-  $energyCounters = property_exists($countersMap, 'energy') ? $energyCounters->energy : $energyCounters;
+  $energyCounters = isset($countersMap->energy) ? $energyCounters->energy : $energyCounters;
   if($energyCounters != NULL) $countersMap->energy = $energyCounters;
 
-  $hauntCounters = property_exists($countersMap, 'haunt') ? $hauntCounters->haunt : $hauntCounters;
+  $hauntCounters = isset($countersMap->haunt) ? $hauntCounters->haunt : $hauntCounters;
   if($hauntCounters != NULL) $countersMap->haunt = $hauntCounters;
 
-  $verseCounters = property_exists($countersMap, 'verse') ? $verseCounters->verse : $verseCounters;
+  $verseCounters = isset($countersMap->verse) ? $verseCounters->verse : $verseCounters;
   if($verseCounters != NULL) $countersMap->verse = $verseCounters;
 
-  $doomCounters = property_exists($countersMap, 'doom') ? $doomCounters->doom : $doomCounters;
+  $doomCounters = isset($countersMap->doom) ? $doomCounters->doom : $doomCounters;
   if($doomCounters != NULL) $countersMap->doom = $doomCounters;
 
-  $lessonCounters = property_exists($countersMap, 'lesson') ? $lessonCounters->lesson : $lessonCounters;
+  $lessonCounters = isset($countersMap->lesson) ? $lessonCounters->lesson : $lessonCounters;
   if($lessonCounters != NULL) $countersMap->lesson = $lessonCounters;
 
-  $rustCounters = property_exists($countersMap, 'rust') ? $rustCounters->rust : $rustCounters;
+  $rustCounters = isset($countersMap->rust) ? $rustCounters->rust : $rustCounters;
   if($rustCounters != NULL) $countersMap->rust = $rustCounters;
 
-  $flowCounters = property_exists($countersMap, 'flow') ? $flowCounters->flow : $flowCounters;
+  $flowCounters = isset($countersMap->flow) ? $flowCounters->flow : $flowCounters;
   if($flowCounters != NULL) $countersMap->flow = $flowCounters;
 
-  $frostCounters = property_exists($countersMap, 'frost') ? $frostCounters->frost : $frostCounters;
+  $frostCounters = isset($countersMap->frost) ? $frostCounters->frost : $frostCounters;
   if($frostCounters != NULL) $countersMap->frost = $frostCounters;
 
-  $balanceCounters = property_exists($countersMap, 'balance') ? $balanceCounters->balance : $balanceCounters;
+  $balanceCounters = isset($countersMap->balance) ? $balanceCounters->balance : $balanceCounters;
   if($balanceCounters != NULL) $countersMap->balance = $balanceCounters;
 
-  $bindCounters = property_exists($countersMap, 'bind') ? $bindCounters->bind : $bindCounters;
+  $bindCounters = isset($countersMap->bind) ? $bindCounters->bind : $bindCounters;
   if($bindCounters != NULL) $countersMap->bind = $bindCounters;
 
-  $stainCounters = property_exists($countersMap, 'stain') ? $stainCounters->stain : $stainCounters;
+  $stainCounters = isset($countersMap->stain) ? $stainCounters->stain : $stainCounters;
   if($stainCounters != NULL) $countersMap->stain = $stainCounters;
 
-  $stormCounters = property_exists($countersMap, 'storm') ? $stormCounters->storm : $stormCounters;
+  $stormCounters = isset($countersMap->storm) ? $stormCounters->storm : $stormCounters;
   if($stormCounters != NULL) $countersMap->storm = $stormCounters;
 
-  $goldCounters = property_exists($countersMap, 'gold') ? $goldCounters->gold : $goldCounters;
+  $goldCounters = isset($countersMap->gold) ? $goldCounters->gold : $goldCounters;
   if($goldCounters != NULL) $countersMap->gold = $goldCounters;
 
-  $suspenseCounters = property_exists($countersMap, 'suspense') ? $suspenseCounters->suspense : $suspenseCounters;
+  $suspenseCounters = isset($countersMap->suspense) ? $suspenseCounters->suspense : $suspenseCounters;
   if($suspenseCounters != NULL) $countersMap->suspense = $suspenseCounters;
 
-  $sandCounters = property_exists($countersMap, 'sand') ? $sandCounters->sand : $sandCounters;
+  $sandCounters = isset($countersMap->sand) ? $sandCounters->sand : $sandCounters;
   if($sandCounters != NULL) $countersMap->sand = $sandCounters;
 
-  $wateryGraveIcon = property_exists($countersMap, 'wateryGrave') ? $wateryGraveIcon->wateryGrave : $wateryGraveIcon;
+  $wateryGraveIcon = isset($countersMap->wateryGrave) ? $wateryGraveIcon->wateryGrave : $wateryGraveIcon;
   if($wateryGraveIcon != NULL) $countersMap->wateryGrave = $wateryGraveIcon;
 
   if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
@@ -475,7 +477,8 @@ function CardLink($caption, $cardNumber="-", $recordMenu = false)
 
 function isFaceDownMod($mod)
 {
-  return $mod == "INT" || $mod == "DOWN" || $mod == "UZURI" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR";
+  static $faceDownMods = ["INT" => true, "DOWN" => true, "UZURI" => true, "NTSTONERAIN" => true, "STONERAIN" => true, "TRAPDOOR" => true];
+  return isset($faceDownMods[$mod]);
 }
 
   function GetElementColorCode($element)

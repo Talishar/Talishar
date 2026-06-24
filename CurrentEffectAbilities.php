@@ -112,16 +112,15 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "oaken_old_red":
       if (IsHeroAttackTarget()) {
         $hand = &GetHand($defPlayer);
-        $cards = "";
+        $cards = [];
         $handCount = count($hand);
         for ($i = 0; $i < 2 && $handCount > 0; ++$i) {
           $index = GetRandom() % $handCount;
-          if ($cards != "") $cards .= ",";
-          $cards .= $hand[$index];
+          $cards[] = $hand[$index];
           array_splice($hand, $index, 1);
           --$handCount;
         }
-        if ($cards != "") AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, $cards);
+        if ($cards) AddDecisionQueue("CHOOSEBOTTOM", $defPlayer, implode(",", $cards));
       }
       break;   
     case "mulch_red":

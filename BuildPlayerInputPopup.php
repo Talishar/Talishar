@@ -159,12 +159,14 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $options = explode(";", $turn[2]);
-        $topOptions = array_filter(explode(",", $options[0] ?? ""));
-        $bottomOptions = array_filter(explode(",", $options[1] ?? ""));
-        
-        $topOptCards = array_map(fn($option) => JSONRenderedCard($option, action: 0), $topOptions);
-        $bottomOptCards = array_map(fn($option) => JSONRenderedCard($option, action: 0), $bottomOptions);
-
+        $topOptCards = [];
+        foreach (explode(",", $options[0] ?? "") as $option) {
+          if ($option !== "") $topOptCards[] = JSONRenderedCard($option, action: 0);
+        }
+        $bottomOptCards = [];
+        foreach (explode(",", $options[1] ?? "") as $option) {
+          if ($option !== "") $bottomOptCards[] = JSONRenderedCard($option, action: 0);
+        }
         $playerInputPopup->popup = CreatePopupAPI("NEWOPT", [], 0, 1, GetPhaseHelptext(), 1, "", topCards: $topOptCards, bottomCards: $bottomOptCards);
       }
       break;
@@ -173,10 +175,10 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $options = explode(";", $turn[2]);
-        $topOptions = array_filter(explode(",", $options[0] ?? ""));
-        
-        $topOptCards = array_map(fn($option) => JSONRenderedCard($option, action: 0), $topOptions);
-
+        $topOptCards = [];
+        foreach (explode(",", $options[0] ?? "") as $option) {
+          if ($option !== "") $topOptCards[] = JSONRenderedCard($option, action: 0);
+        }
         $playerInputPopup->popup = CreatePopupAPI("REARRANGETOP", [], 0, 1, GetPhaseHelptext(), 1, "", topCards: $topOptCards);
       }
       break;

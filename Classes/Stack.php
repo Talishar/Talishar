@@ -200,8 +200,8 @@ class Layer {
 
   function IsCardLayer() {
     if (isAdministrativeStep($this->ID())) return false;
-    $nonCards = ["TRIGGER", "PRETRIGGER", "ABILITY"];
-    if (in_array($this->ID(), $nonCards)) return false;
+    static $nonCards = ["TRIGGER" => 1, "PRETRIGGER" => 1, "ABILITY" => 1];
+    if (isset($nonCards[$this->ID()])) return false;
     $from = explode("|", $this->Parameter())[0];
     if ($from == "PLAY" || $from == "EQUIP") return false;
     return $this->ID() != "";

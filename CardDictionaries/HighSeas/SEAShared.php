@@ -1201,11 +1201,11 @@ function GetUntapped($player, $zone, $cond="-")
       return "";
   }
   $unwavedInds = [];
-  $allowedInds = ($cond != "-") ? explode(",", SearchMultizone($player, "$zone:$cond")) : [];
+  $allowedIndsMap = ($cond != "-") ? array_flip(explode(",", SearchMultizone($player, "$zone:$cond"))) : [];
   $arrCount = count($arr);
   for ($i = 0; $i < $arrCount; $i += $count) {
     $index = "$zone-$i";
-    if ($cond != "-" && !in_array($index, $allowedInds)) continue;
+    if ($cond != "-" && !isset($allowedIndsMap[$index])) continue;
     $Card = MZIndexToObject($player, $index);
     if ($Card->Tapped() == 0) $unwavedInds[] = $index;
   }
@@ -1244,11 +1244,11 @@ function GetTapped($player, $zone, $cond="-")
       return "";
   }
   $unwavedInds = [];
-  $allowedInds = ($cond != "-") ? explode(",", SearchMultizone($player, "$zone:$cond")) : [];
+  $allowedIndsMap = ($cond != "-") ? array_flip(explode(",", SearchMultizone($player, "$zone:$cond"))) : [];
   $arrCount = count($arr);
   for ($i = 0; $i < $arrCount; $i += $count) {
     $index = "$zone-$i";
-    if ($cond != "-" && !in_array($index, $allowedInds)) continue;
+    if ($cond != "-" && !isset($allowedIndsMap[$index])) continue;
     if (CheckTapped($index, $player)) $unwavedInds[] = $index;
   }
   return implode(",", $unwavedInds);

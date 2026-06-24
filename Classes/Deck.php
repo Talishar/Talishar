@@ -65,13 +65,18 @@ class Deck {
 
   function Top($remove = false, $amount = 1)
   {
-    $rv = "";
-    for($i=0; $i<$amount && count($this->deck) > ($remove ? 0 : $i); ++$i)
-    {
-      if($rv != "") $rv .= ",";
-      $rv .= ($remove ? array_shift($this->deck) : $this->deck[$i]);
+    $cards = [];
+    if ($remove) {
+      for ($i = 0; $i < $amount && !empty($this->deck); ++$i) {
+        $cards[] = array_shift($this->deck);
+      }
+    } else {
+      $deckCount = count($this->deck);
+      for ($i = 0; $i < $amount && $i < $deckCount; ++$i) {
+        $cards[] = $this->deck[$i];
+      }
     }
-    return $rv;
+    return implode(",", $cards);
   }
 
   function BanishTop($modifier = "-", $banishedBy = "", $amount=1, $banisher="-") {

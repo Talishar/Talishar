@@ -466,33 +466,34 @@ function GetArcaneTargetIndices($player, $target): string
   if (($target == 0 || $target == 2) && !ShouldAutotargetOpponent($player)) $rv .= ",MYCHAR-0";
   $allyPieces = AllyPieces();
   if ($target == 2) {
+    $parts = [];
     $theirAllies = &GetAllies($otherPlayer);
     $theirAlliesCount = count($theirAllies);
-    for ($i = 0; $i < $theirAlliesCount; $i += $allyPieces) $rv .= ",THEIRALLY-" . $i;
+    for ($i = 0; $i < $theirAlliesCount; $i += $allyPieces) $parts[] = "THEIRALLY-" . $i;
     $myAllies = &GetAllies($player);
     $myAlliesCount = count($myAllies);
-    for ($i = 0; $i < $myAlliesCount; $i += $allyPieces) $rv .= ",MYALLY-" . $i;
+    for ($i = 0; $i < $myAlliesCount; $i += $allyPieces) $parts[] = "MYALLY-" . $i;
     $theirPerchedStr = GetPerchedAllies($otherPlayer);
     if ($theirPerchedStr !== "") {
-      $theirPerched = explode(",", $theirPerchedStr);
-      foreach($theirPerched as $i) $rv .= ",THEIRCHAR-" . $i;
+      foreach (explode(",", $theirPerchedStr) as $idx) $parts[] = "THEIRCHAR-" . $idx;
     }
     $myPerchedStr = GetPerchedAllies($player);
     if ($myPerchedStr !== "") {
-      $myPerched = explode(",", $myPerchedStr);
-      foreach($myPerched as $i) $rv .= ",MYCHAR-" . $i;
+      foreach (explode(",", $myPerchedStr) as $idx) $parts[] = "MYCHAR-" . $idx;
     }
+    if ($parts) $rv .= "," . implode(",", $parts);
   } else if ($target == 3 || $target == 5) {
+    $parts = [];
     $theirAllies = &GetAllies($otherPlayer);
     $theirAlliesCount = count($theirAllies);
-    for ($i = 0; $i < $theirAlliesCount; $i += $allyPieces) {
-      if ($rv !== "") $rv .= ",";
-      $rv .= "THEIRALLY-" . $i;
-    }
+    for ($i = 0; $i < $theirAlliesCount; $i += $allyPieces) $parts[] = "THEIRALLY-" . $i;
     $theirPerchedStr = GetPerchedAllies($otherPlayer);
     if ($theirPerchedStr !== "") {
-      $theirPerched = explode(",", $theirPerchedStr);
-      foreach($theirPerched as $i) $rv .= ",THEIRCHAR-" . $i;
+      foreach (explode(",", $theirPerchedStr) as $idx) $parts[] = "THEIRCHAR-" . $idx;
+    }
+    if ($parts) {
+      if ($rv !== "") $rv .= ",";
+      $rv .= implode(",", $parts);
     }
   }
   $targets = explode(",", $rv);

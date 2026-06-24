@@ -1319,13 +1319,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $BorderColor = $isFriendly ? "blue" : "red";
 
         $counters = $isFriendly ? $friendlyCounts[$cardID] : $opponentCounts[$cardID];
+        if (!isset($skipStackCache[$cardID])) {
+          $skipStackCache[$cardID] = skipEffectUIStacking($cardID);
+        }
+        $buffDoesStack = !$skipStackCache[$cardID];
         if ($isFriendly || $playerID == 3 && !$isFriendly) {
-          if(!isset($friendlyRenderedEffects[$cardID]) || !skipEffectUIStacking($cardID)) {
+          if (!isset($friendlyRenderedEffects[$cardID]) || $buffDoesStack) {
             $friendlyRenderedEffects[$cardID] = true;
             $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
           }
         }
-        elseif(!isset($opponentRenderedEffects[$cardID]) && !$isFriendly || !skipEffectUIStacking($cardID)) {
+        elseif (!isset($opponentRenderedEffects[$cardID]) && !$isFriendly || $buffDoesStack) {
           $opponentRenderedEffects[$cardID] = true;
           $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
         }
@@ -1427,16 +1431,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   // Build player input popup
   $response->playerInputPopUp = BuildPlayerInputPopup($playerID, $turnPhase, $turn, $gameName);
 
-  $response->canPassPhase = CanPassPhase($turn[0]) && $currentPlayer == $playerID || $isReplay && $playerID == 3;
+  $canPassPhaseForPlayer = (CanPassPhase($turn[0]) && $currentPlayer == $playerID) || ($isReplay && $playerID == 3);
+  $response->canPassPhase = $canPassPhaseForPlayer;
 
   $response->preventPassPrompt = "";
-  if (CanPassPhase($turn[0]) && $currentPlayer == $playerID || $isReplay && $playerID == 3) {
+  if ($canPassPhaseForPlayer) {
     if ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID) && !$isReplay) {
       $response->preventPassPrompt = "Are you sure you want to skip arsenal?";
     }
   }
 
-  if (CanPassPhase($turn[0]) && $currentPlayer == $playerID || $isReplay && $playerID == 3) {
+  if ($canPassPhaseForPlayer) {
     if ($turn[0] == "M" && SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $actionPoints > 0 && !$isReplay) {
       global $p1Settings, $p2Settings;
       $pSettings = ($playerID == 1 ? $p1Settings : $p2Settings);

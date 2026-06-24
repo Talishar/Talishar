@@ -3032,10 +3032,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     case "blaze_firemind":
       $char = &GetPlayerCharacter($currentPlayer);
       $numCounters = $char[2];
-      $costChoices = "0";
-      for ($i = 1; $i <= $numCounters; ++$i) {
-        $costChoices .= "," . $i;
-      }
+      $costChoices = implode(",", range(0, $numCounters));
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much you want to pay");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $costChoices);
       AddDecisionQueue("ADDCURRENTEFFECTLASTRESULT", $currentPlayer, "blaze_firemind-", 1);
