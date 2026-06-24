@@ -779,7 +779,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ADDMZBUFF":
       $lrArr = explode("-", $lastResult, 2);
       $characterEffects = &GetCharacterEffects($player);
-      $characterEffects[] = $lrArr[1];
+      $characterEffects[] = $lrArr[1] ?? 0;
       $characterEffects[] = $parameter;
       return $lastResult;
     case "ADDMZUSES":
@@ -787,7 +787,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       switch ($lrArr[0]) {
         case "MYCHAR":
         case "THEIRCHAR":
-          AddCharacterUses($player, $lrArr[1], $parameter);
+          AddCharacterUses($player, $lrArr[1] ?? 0, $parameter);
           break;
         default:
           break;
