@@ -9,6 +9,9 @@ DraftFiles/Games/46/GameFile.txt
 DraftFiles/HostFiles/Counter.txt
 Nero's Levia Deck.txt
 HostFiles/GameIDCounter.txt
+HostFiles/bannedPlayers.txt
+HostFiles/bannedIPs.txt
+HostFiles/ibannedIPs.txt
 /BugReports/
 Images/.DS_Store
 .DS_Store
