@@ -3203,9 +3203,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "infuse_titanium_yellow":
       case "infuse_titanium_blue":
       case "steel_street_hoons_blue": //Galvanize
-        MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose an item to galvanize for " . CardLink($parameter, $parameter) . " effect");
-        AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
-        AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
+        $index = $CombatChain->FindCardUID($uniqueID)->Index();
+        if ($index != -1) {
+          MZChooseAndDestroy($player, "MYITEMS", may: true, context: "Choose an item to galvanize for " . CardLink($parameter, $parameter) . " effect");
+          AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+          AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
+        }
         break;
       case "golden_skywarden_yellow":
         $myItems = GetItems($player);
