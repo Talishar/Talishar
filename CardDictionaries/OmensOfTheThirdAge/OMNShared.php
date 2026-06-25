@@ -54,7 +54,8 @@ function DualityPrePitch($cardID, $index, $from, $player) {
 function FindHoloAuras($player, $subtype="LIGHTNING", $holoState=0, $excludeFirstFlow=true) {
 	$Auras = new Auras($player);
 	$ret = [];
-	for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+	$numAuras = $Auras->NumAuras();
+	for ($i = 0; $i < $numAuras; ++$i) {
 		$AuraCard = $Auras->Card($i, true);
 		if ($excludeFirstFlow && $AuraCard->CardID() == "lightning_flow") {
 			$excludeFirstFlow = false;
@@ -175,7 +176,8 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 		elseif ($maxCost != -1 && CardCost($botLayer->ID(), "LAYER", $botLayer->Index()) > $maxCost) {}
 		else $targets[] = "LAYER-" . $botLayer->Index();
 	}
-	for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+	$numActiveLink = $CombatChain->NumCardsActiveLink();
+	for ($i = 0; $i < $numActiveLink; ++$i) {
 		$ChainCard = $CombatChain->Card($i, true);
 		if ($i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue;
 		if (!TypeContains($ChainCard->ID(), "AA")) continue;
@@ -184,9 +186,11 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 		if ($maxCost != -1 && CardCost($ChainCard->ID(), "CC", $ChainCard->Index()) > $maxCost) continue;
 		$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
 	}
-	for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+	$numLinks = $ChainLinks->NumLinks();
+	for ($i = 0; $i < $numLinks; ++$i) {
 		$Link = $ChainLinks->GetLink($i);
-		for ($j = 0; $j < $Link->NumCards(); ++$j) {
+		$numLinkCards = $Link->NumCards();
+		for ($j = 0; $j < $numLinkCards; ++$j) {
 			$ChainCard = $Link->GetLinkCard($j, true);
 			if (!$ChainCard->StillOnChain()) continue;
 			if (!TypeContains($ChainCard->ID(), "AA")) continue;
@@ -215,7 +219,8 @@ function TargetAttack($player) {
 			$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
 	}
 
-	for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+	$numLinks = $ChainLinks->NumLinks();
+	for ($i = 0; $i < $numLinks; ++$i) {
 		$Link = $ChainLinks->GetLink($i);
 		$j = 0;
 		$ChainCard = $Link->GetLinkCard($j, true);
@@ -223,7 +228,8 @@ function TargetAttack($player) {
 			$targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
 	}
 
-	for ($i = 0; $i < $AttackQueue->NumAttacks(); ++$i) {
+	$numAttacks = $AttackQueue->NumAttacks();
+	for ($i = 0; $i < $numAttacks; ++$i) {
 		$Card = $AttackQueue->Card($i, true);
 		$targets[] = "ATTACKQUEUE-" . $Card->Index();
 	}

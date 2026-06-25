@@ -236,16 +236,17 @@ function ItemBoostEffects()
   $Items = new Items($currentPlayer);
   for ($i = $Items->NumItems() - 1; $i >=0; $i -= 1) {
     $Item = $Items->Card($i, true);
-    switch ($Item->CardID()) {
+    $itemCardID = $Item->CardID();
+    switch ($itemCardID) {
       case "hyper_driver_red": case "hyper_driver_yellow": case "hyper_driver_blue": case "hyper_driver":
         if($Item->Status() == 2) {
-          AddLayer("TRIGGER", $currentPlayer, $Item->CardID(), $Item->Index(), "-", $Item->UniqueID());
+          AddLayer("TRIGGER", $currentPlayer, $itemCardID, $Item->Index(), "-", $Item->UniqueID());
           $Item->SetStatus(1);
         }
         break;
       case "teklo_pounder_blue":
         if($Item->Status() == 2) {
-          WriteLog(CardLink($Item->CardID(), $Item->CardID()) . " gives the attack +2");
+          WriteLog(CardLink($itemCardID, $itemCardID) . " gives the attack +2");
           $Item->AddCounters(-1);
           $Item->SetStatus(1);
           AddCurrentTurnEffect("teklo_pounder_blue", $currentPlayer, "PLAY");
@@ -253,7 +254,7 @@ function ItemBoostEffects()
         }
         break;
       case "hadron_collider_red": case "hadron_collider_yellow": case "hadron_collider_blue":
-        AddLayer("TRIGGER", $currentPlayer, $Item->CardID(), $Item->Index(), "-", $Item->UniqueID());
+        AddLayer("TRIGGER", $currentPlayer, $itemCardID, $Item->Index(), "-", $Item->UniqueID());
         break;
     }
   }

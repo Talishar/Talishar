@@ -22,7 +22,7 @@ function MSTAbilityCost($cardID): int
 
 function MSTCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer, $combatChainState, $CombatChain;
+  global $mainPlayer, $CombatChain;
   $from = $CombatChain->AttackCard()->From();
   if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
@@ -67,7 +67,7 @@ function MSTEffectPowerModifier($cardID, $attached=false): int
 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_PlayIndex;
+  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer;
   global $combatChain, $defPlayer, $CombatChain, $chainLinks, $CS_NumAttacks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
@@ -114,9 +114,10 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (!empty($defendingCards)) {
         $defendingCards = explode(",", $defendingCards);
         foreach (array_reverse($defendingCards) as $card) {
-          if (CardType($combatChain[$card]) === "AA") {
-            BanishCardForPlayer($combatChain[$card], $defPlayer, "CC", $mod, $cardID);
-            $index = GetCombatChainIndex($combatChain[$card], $defPlayer);
+          $combatChainCard = $combatChain[$card];
+          if (CardType($combatChainCard) === "AA") {
+            BanishCardForPlayer($combatChainCard, $defPlayer, "CC", $mod, $cardID);
+            $index = GetCombatChainIndex($combatChainCard, $defPlayer);
             $CombatChain->Remove($index);
           }
         }
@@ -125,8 +126,9 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       foreach ($chainLinks as &$link) {
         $linkCount = count($link);
         for ($k = 0; $k < $linkCount; $k += $chainLinksPieces) {
-          if (CardType($link[$k]) == "AA" && $link[$k + 1] == $defPlayer) {
-            BanishCardForPlayer($link[$k], $defPlayer, "CC", $mod, $cardID);
+          $linkCard = $link[$k];
+          if (CardType($linkCard) == "AA" && $link[$k + 1] == $defPlayer) {
+            BanishCardForPlayer($linkCard, $defPlayer, "CC", $mod, $cardID);
             $link[$k + 2] = 0;
           }
         }
@@ -601,7 +603,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function MSTHitEffect($cardID, $from): void
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CombatChain;
+  global $mainPlayer, $defPlayer, $CombatChain;
   $deck = new Deck($defPlayer);
   $discard = new Discard($defPlayer);
   $attackCard = $CombatChain->AttackCard()->ID();
@@ -752,14 +754,16 @@ function CountControlledAuras($player, $class="ILLUSIONIST") {
   foreach ($chainLinks as $link) {
     $linkCount = count($link);
     for ($i = 0; $i < $linkCount; $i += $chainLinksPieces) {
-      if ($link[$i + 1] == $player && ClassContains($link[$i], $class, $player) && SubtypeContains($link[$i], "Aura")) {
+      $linkCard = $link[$i];
+      if ($link[$i + 1] == $player && ClassContains($linkCard, $class, $player) && SubtypeContains($linkCard, "Aura")) {
         ++$count;
       }
     }
   }
   $combatChainCount = count($combatChain);
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
-    if ($combatChain[$i + 1] == $player && ClassContains($combatChain[$i], $class, $player) && SubtypeContains($combatChain[$i], "Aura")) {
+    $ccCard = $combatChain[$i];
+    if ($combatChain[$i + 1] == $player && ClassContains($ccCard, $class, $player) && SubtypeContains($ccCard, "Aura")) {
       ++$count;
     }
   }

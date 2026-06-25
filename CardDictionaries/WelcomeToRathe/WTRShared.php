@@ -489,8 +489,9 @@
     $cards = "";
     for($i=0; $i<$amount && $i<$deckCount; ++$i)
     {
-      $cards .= $deck[$i] . ($i < 2 ? "," : "");
-      if(CardCost($deck[$i]) >= 3) ++$lifegain;
+      $deckCard = $deck[$i];
+      $cards .= $deckCard . ($i < 2 ? "," : "");
+      if(CardCost($deckCard) >= 3) ++$lifegain;
     }
     RevealCards($cards, $mainPlayer);
     GainHealth($lifegain, $mainPlayer);

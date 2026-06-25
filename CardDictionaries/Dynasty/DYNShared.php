@@ -626,7 +626,8 @@ function ContractCompleted($player, $cardID)
 function CheckHitContracts($mainPlayer, $otherPlayer)
 {
   global $CombatChain, $chainLinks;
-  for($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numActiveLink = $CombatChain->NumCardsActiveLink();
+  for($i = 0; $i < $numActiveLink; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     $contractType = ContractType($chainCard->ID());
     if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainCard->ID());
@@ -669,7 +670,8 @@ function CheckContracts($banishedBy, $cardBanished)
 {
   global $CombatChain, $chainLinks;
   $chainLinks = $chainLinks ?? [];
-  for($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $numActiveLink = $CombatChain->NumCardsActiveLink();
+  for($i = 0; $i < $numActiveLink; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if($chainCard->PlayerID() != $banishedBy) continue;
     if(CardType($chainCard->ID()) == "AA" && $i > 0) continue; //blocking AA don't generate contracts
@@ -743,17 +745,19 @@ function Shred($currentPlayer, $amount)
 
 function SilverBuyback($player, $index) {
   $graveyard = GetDiscard($player);
+  $graveyardCard = $graveyard[$index];
+  $graveyardSubType = CardSubType($graveyardCard);
   $emptyEquipmentSlots = explode(",", FindEmptyEquipmentSlots($player));
-  $discardIndex = SearchDiscardForCard($player, $graveyard[$index]);
-  $foundSlot = in_array(CardSubType($graveyard[$index]), $emptyEquipmentSlots);
+  $discardIndex = SearchDiscardForCard($player, $graveyardCard);
+  $foundSlot = in_array($graveyardSubType, $emptyEquipmentSlots);
   if (CountItem("silver", $player) >= 2 && $discardIndex != "" && $foundSlot) {
     AddDecisionQueue("COUNTITEM", $player, "silver");
     AddDecisionQueue("LESSTHANPASS", $player, "2");
-    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_2_".Cardlink("silver", "silver")."_and_equip_" . CardLink($graveyard[$index]), 1);
+    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_2_".Cardlink("silver", "silver")."_and_equip_" . CardLink($graveyardCard), 1);
     AddDecisionQueue("NOPASS", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "silver-2", 1);
     AddDecisionQueue("FINDANDDESTROYITEM", $player, "<-", 1);
-    AddDecisionQueue("EQUIPCARD", $player, $graveyard[$index]."-".CardSubType($graveyard[$index])."-MYDISCARD-MYDISCARD", 1);
+    AddDecisionQueue("EQUIPCARD", $player, $graveyardCard."-".$graveyardSubType."-MYDISCARD-MYDISCARD", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "MYDISCARD-" . $discardIndex, 1);
     AddDecisionQueue("MZREMOVE", $player, "-", 1);
   }

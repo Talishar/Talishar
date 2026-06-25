@@ -556,10 +556,12 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $foundBlues = [];
       $topTwo = [];
       $deckSize = count($deck) / DeckPieces();
-      for ($i = 0; $i < min([2, $deckSize]); ++$i) {
-        $val = CardLink($deck[$i], $deck[$i]);
+      $maxCards = min(2, $deckSize);
+      for ($i = 0; $i < $maxCards; ++$i) {
+        $cardID = $deck[$i];
+        $val = CardLink($cardID, $cardID);
         $topTwo[] = $val;
-        if (ColorContains($deck[$i], 3, $currentPlayer)) $foundBlues[] = $val;
+        if (ColorContains($cardID, 3, $currentPlayer)) $foundBlues[] = $val;
       }
       $foundBlues = implode(" and ", $foundBlues);
       $topTwo = implode(" and ", $topTwo);
@@ -693,7 +695,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");   
       if(empty($inds)) break;
       $indices = explode(",", $inds);
-      $maxCogs = count($indices) >= 3 ? 3 : count($indices);
+      $maxCogs = min(count($indices), 3);
       for ($i = 0; $i < $maxCogs; $i++) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may untap ".($maxCogs-$i)." cogs you control", 1);
         AddDecisionQueue("GETUNTAPPEDCOGS", $currentPlayer, "-", 1);

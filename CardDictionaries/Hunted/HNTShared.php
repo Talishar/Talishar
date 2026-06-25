@@ -172,7 +172,8 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
-  if ($cardID == "long_whisker_loyalty_red" & count($dashArr) > 1) {
+  $hasSuffix = count($dashArr) > 1;
+  if ($cardID == "long_whisker_loyalty_red" & $hasSuffix) {
     if ($dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
     if (DelimStringContains($dashArr[1], "MARK", true)) {
       $id = str_contains($dashArr[1], ",") ? explode(",", $dashArr[1])[1] : -1;
@@ -180,14 +181,14 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
       return $character[$combatChainState[$CCS_WeaponIndex] + 11] == $id;
     }
   }
-  if ($cardID == "arakni_black_widow" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
-  if ($cardID == "arakni_funnel_web" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
-  if ($cardID == "fealty" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
-  if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
-  if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return IsWeaponAttack();
-  if (($cardID == "public_bounty_red" || $cardID == "public_bounty_yellow" || $cardID == "public_bounty_blue") && count($dashArr) > 1 && $dashArr[1] == "UNSET") return false;
-  if (($cardID == "knife_through_butter_red" || $cardID == "knife_through_butter_yellow" || $cardID == "knife_through_butter_blue") && count($dashArr) > 1 && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
-  if (($cardID == "point_of_engagement_red" || $cardID == "point_of_engagement_yellow" || $cardID == "point_of_engagement_blue") && count($dashArr) > 1) {
+  if ($cardID == "arakni_black_widow" && $hasSuffix && $dashArr[1] == "HIT") return HasStealth($attackID);
+  if ($cardID == "arakni_funnel_web" && $hasSuffix && $dashArr[1] == "HIT") return HasStealth($attackID);
+  if ($cardID == "fealty" && $hasSuffix && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
+  if ($cardID == "dual_threat_yellow" && $hasSuffix && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
+  if ($cardID == "dual_threat_yellow" && $hasSuffix && $dashArr[1] == "WEAPON") return IsWeaponAttack();
+  if (($cardID == "public_bounty_red" || $cardID == "public_bounty_yellow" || $cardID == "public_bounty_blue") && $hasSuffix && $dashArr[1] == "UNSET") return false;
+  if (($cardID == "knife_through_butter_red" || $cardID == "knife_through_butter_yellow" || $cardID == "knife_through_butter_blue") && $hasSuffix && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
+  if (($cardID == "point_of_engagement_red" || $cardID == "point_of_engagement_yellow" || $cardID == "point_of_engagement_blue") && $hasSuffix) {
     switch ($dashArr[1]) {
       case "NEXTDAGGER":
         return SubtypeContains($attackID, "Dagger", $mainPlayer);
@@ -197,7 +198,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
         break;
     }
   }
-  if ($cardID == "imperial_seal_of_command_red" && count($dashArr) > 1 && $dashArr[1] == "HIT") return true;
+  if ($cardID == "imperial_seal_of_command_red" && $hasSuffix && $dashArr[1] == "HIT") return true;
   return match ($cardID) {
     "arakni_black_widow" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "arakni_funnel_web" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
@@ -1177,7 +1178,8 @@ function BubbleToTheSurface()
     $cardRemoved = "";
     $deck = &GetDeck($currentPlayer);
     $cardsToRevealArr = [];
-    for($i=0; $i<count($deck); ++$i)
+    $deckCount = count($deck);
+    for($i=0; $i<$deckCount; ++$i)
     {
       $cardsToRevealArr[] = $deck[$i];
       if(PitchValue($deck[$i]) == 1)

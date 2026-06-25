@@ -187,7 +187,8 @@
       $layerPieces = LayerPieces();
       for($i=count($layers)-$layerPieces; $i >= 0; $i-=$layerPieces)
       {
-        if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "TRIGGER" && $layers[$i+2] == "PHANTASM"))
+        $layerType = $layers[$i];
+        if($layerType == "DEFENDSTEP" || ($layerType == "TRIGGER" && $layers[$i+2] == "PHANTASM"))
         {
           for($j=$i; $j<$i+$layerPieces; ++$j) unset($layers[$j]);
         }

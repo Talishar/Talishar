@@ -80,7 +80,8 @@ function DoSolrayPlating($targetPlayer, $damage)
 
 function SuperFrozen($player, $MZIndex) {
   global $CurrentTurnEffects;
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $numEffects = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $numEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
     switch ($Effect->EffectID()) {

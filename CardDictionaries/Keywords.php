@@ -49,10 +49,11 @@
       $charCount = count($char);
       $charPieces = CharacterPieces();
       for ($i = 0; $i < $charCount; $i += $charPieces) {
-        switch ($char[$i]) {
+        $charCard = $char[$i];
+        switch ($charCard) {
           case "puffin_hightail":
           case "puffin":
-            if (SearchCharacterActive($player, $char[$i])) AddLayer("TRIGGER", $player, $char[$i]);
+            if (SearchCharacterActive($player, $charCard)) AddLayer("TRIGGER", $player, $charCard);
             break;
           default:
             break;
@@ -466,18 +467,19 @@
     for($i = count($currentTurnEffects) - $effectPieces; $i >= 0; $i -= $effectPieces) {
       $hasWager = !$chainClosed;
       if (!isset($currentTurnEffects[$i])) continue;
-      $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1] ?? 0);
+      $effectCardID = $currentTurnEffects[$i];
+      $card = GetClass($effectCardID, $currentTurnEffects[$i+1] ?? 0);
       if ($card != "-" && $card->IsWagerEffect($i)) {
         if (!$chainClosed) {
-          $triggerCardID = ExtractCardID($currentTurnEffects[$i]);
+          $triggerCardID = ExtractCardID($effectCardID);
           AddLayer("TRIGGER", $mainPlayer, $triggerCardID, $wonWager, "WAGER");
         }
-        // if (IsCombatEffectActive($currentTurnEffects[$i]))
+        // if (IsCombatEffectActive($effectCardID))
         RemoveCurrentTurnEffect($i);
         $hasWager = true;
       }
       else {
-        switch($currentTurnEffects[$i]) {
+        switch($effectCardID) {
           case "good_time_chapeau":
           case "bet_big_red":
           case "big_bop_red": case "big_bop_yellow": case "big_bop_blue":

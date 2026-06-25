@@ -407,7 +407,8 @@ function CuttingIndicesAwait($player) {
   $auraPieces = AuraPieces();
   //remove any choices that have already been targeted
   for($i = 0; $i < $auraCount; $i += $auraPieces) {
-    if (TypeContains($auras[$i], "T", $defPlayer) && !isset($currentNamesMap[CardName($auras[$i])])) {
+    $auraID = $auras[$i];
+    if (TypeContains($auraID, "T", $defPlayer) && !isset($currentNamesMap[CardName($auraID)])) {
       $rv[] = "THEIRAURAS-$i";
     }
   }

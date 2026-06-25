@@ -125,7 +125,8 @@ function CheckHeavy($player) {
   $charCount = count($char);
   $charPieces = CharacterPieces();
   for ($i = 0; $i < $charCount; $i += $charPieces) {
-    if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand", $player)) ++$count;
+    $charCard = $char[$i];
+    if (TypeContains($charCard, "W", $player) || SubtypeContains($charCard, "Off-Hand", $player)) ++$count;
   }
   return $count == 1;
   // $weapons = SearchCharacter($player, type:"W");

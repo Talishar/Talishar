@@ -424,12 +424,13 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $cardsCount = count($cards);
         for($i=0; $i<$cardsCount; ++$i)
         {
-          WriteLog(CardLink($cards[$i], $cards[$i]) . " chosen randomly");
-          if(ModifiedPowerValue($cards[$i], $currentPlayer, "GY", source:$cardID) >= 6) {
+          $card = $cards[$i];
+          WriteLog(CardLink($card, $card) . " chosen randomly");
+          if(ModifiedPowerValue($card, $currentPlayer, "GY", source:$cardID) >= 6) {
             ++$num6plus;
-            $deck->AddBottom($cards[$i], "GY");
+            $deck->AddBottom($card, "GY");
           }
-          else $discard->Add($cards[$i]);
+          else $discard->Add($card);
         }
         if($num6plus > 0) {
           GainHealth($num6plus, $currentPlayer);
@@ -573,8 +574,10 @@ function ProcessMirageOnBlock($index)
 function ProcessAllMirage()
 {
   global $CombatChain;
-  for($i=1; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
-    ProcessMirageOnBlock($i*CombatChainPieces());
+  $numActiveLink = $CombatChain->NumCardsActiveLink();
+  $combatChainPieces = CombatChainPieces();
+  for($i=1; $i<$numActiveLink; ++$i) {
+    ProcessMirageOnBlock($i*$combatChainPieces);
   }
 }
 
@@ -592,7 +595,7 @@ function HasMirage($cardID)
 
 function MirageLayer($target)
 {
-  global $CombatChain, $mainPlayer, $combatChainState, $defPlayer, $turn, $layers;
+  global $CombatChain, $mainPlayer, $defPlayer, $turn, $layers;
   if(DoesAttackTriggerMirage())
   {
     $ChainCard = $CombatChain->FindCardUID($target);
@@ -610,7 +613,8 @@ function MirageLayer($target)
     $layerPieces = LayerPieces();
     for($i=count($layers)-$layerPieces; $i >= 0; $i-=$layerPieces)
     {
-      if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "LAYER" && $layers[$i+2] == "MIRAGE"))
+      $layerType = $layers[$i];
+      if($layerType == "DEFENDSTEP" || ($layerType == "LAYER" && $layers[$i+2] == "MIRAGE"))
       {
         for($j=$i; $j<($i+$layerPieces); ++$j) unset($layers[$j]);
       }

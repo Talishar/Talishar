@@ -545,7 +545,8 @@ function HasAuraWithSigilInName($player)
 
 function HasLayerWithSigilInName($player) {
   global $Stack;
-  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+  $numLayers = $Stack->NumLayers();
+  for ($i = 0; $i < $numLayers; ++$i) {
     $Layer = $Stack->Card($i, true);
     if ($Layer->PlayerID() != $player) continue;
     if (CardNameContains($Layer->ID(), "Sigil", $player, partial: true)) return true;

@@ -1098,7 +1098,8 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
     }
   }
   $Auras = new Auras($playerID);
-  for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+  $numAuras = $Auras->NumAuras();
+  for ($i = 0; $i < $numAuras; ++$i) {
     $AuraCard = $Auras->Card($i, true);
     $card = GetClass($AuraCard->CardID(), $playerID);
     if ($card != "-") {

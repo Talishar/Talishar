@@ -277,11 +277,12 @@
     {
       $remove = 0;
       if($player == $currentTurnEffects[$i+1]) {
-        switch($currentTurnEffects[$i]) {
+        $effectCardID = $currentTurnEffects[$i];
+        switch($effectCardID) {
           case "isenhowl_weathervane_red": case "isenhowl_weathervane_yellow": case "isenhowl_weathervane_blue":
             if($element == "ICE") {
               $otherPlayer = 3 - $player;
-              AddLayer("TRIGGER", $player, $currentTurnEffects[$i], $otherPlayer);
+              AddLayer("TRIGGER", $player, $effectCardID, $otherPlayer);
               $remove = 1;
             }
             break;
@@ -299,9 +300,10 @@
     $otherPlayer = 3 - $player;
     $auraPieces = AuraPieces();
     for($i=count($auras)-$auraPieces; $i>=0; $i-=$auraPieces) {
-      switch($auras[$i]) {
+      $auraCard = $auras[$i];
+      switch($auraCard) {
         case "insidious_chill_blue":
-          if($element == "ICE") AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
+          if($element == "ICE") AddLayer("TRIGGER", $player, $auraCard, $otherPlayer, uniqueID:$auras[$i+6]);
           break;
         default: break;
       }

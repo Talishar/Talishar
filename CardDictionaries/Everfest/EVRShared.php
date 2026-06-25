@@ -380,7 +380,8 @@
               if ($layers[$j + 6] == $uid) $index = $j;
             }
             if ($index != -1) {
-              WriteLog(CardLink($cardID, $cardID) . " destroyed " . CardLink($layers[$index], $layers[$index]) . " while it was on the stack!");
+              $destroyedLayer = $layers[$index];
+              WriteLog(CardLink($cardID, $cardID) . " destroyed " . CardLink($destroyedLayer, $destroyedLayer) . " while it was on the stack!");
               NegateLayer("LAYER-$index");
               ++$numDestroyed;
             }

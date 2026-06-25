@@ -162,5 +162,3 @@ function ASBAbilityType($cardID, $index = -1): string
     default => ""
   };
 }
-
-?>

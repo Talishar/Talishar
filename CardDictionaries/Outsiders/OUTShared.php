@@ -859,7 +859,8 @@ function OUTAbilityCost($cardID)
     $cardRemoved = "";
     $deck = &GetDeck($currentPlayer);
     $cardsToRevealArr = [];
-    for($i=0; $i<count($deck); ++$i)
+    $deckCount = count($deck);
+    for($i=0; $i<$deckCount; ++$i)
     {
       $cardsToRevealArr[] = $deck[$i];
       if(CardType($deck[$i]) == "AA")
