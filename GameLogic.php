@@ -415,7 +415,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = implode(",", $rv);
           break;
         case "SPELLVOID":
-          $damage = explode("-", $dqVars[0], 2)[0];
+          $dqVal = $dqVars[0];
+          $dashPos = strpos($dqVal, '-');
+          $damage = $dashPos !== false ? substr($dqVal, 0, $dashPos) : $dqVal;
           $prevention = GetClassState($player, $CS_PreventionCache) ?? 0;
           if($damage > $prevention) $rv = SearchSpellvoidIndices($player, $subparam);
           break;
@@ -581,7 +583,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $skip = $params[1] ?? "-";
       }
       CombatChainPowerModifier($lastResult, $val);
-      $cardID = str_starts_with($lastResult, "COMBATCHAINLINK") ? $combatChain[explode("-", $lastResult, 2)[1]] : $combatChain[$lastResult];
+      $cardID = str_starts_with($lastResult, "COMBATCHAINLINK") ? $combatChain[(int)substr($lastResult, 16)] : $combatChain[$lastResult];
       if ($skip == "-") {
         if ($val > 0) WriteLog(CardLink($cardID, $cardID) . " gets +" . $val . " power");
         else if ($val < 0) WriteLog(CardLink($cardID, $cardID) . " loses " . -$val . " power");
@@ -836,12 +838,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $targetPlayer = str_contains($lastResult, "MY") ? $player : $otherPlayer;
           return GamestateSanitize(NameOverride($cardID, $targetPlayer));
         case "GETCARDINDEX":
-          $mzArr = explode("-", $lastResult, 2);
-          return $mzArr[1];
+          return substr($lastResult, strpos($lastResult, '-') + 1);
         case "GETCARDINDICES":
           $output = [];
           foreach (explode(",", $lastResult) as $item) {
-            $output[] = explode("-", $item, 2)[1];
+            $dashPos = strpos($item, '-');
+            $output[] = $dashPos !== false ? substr($item, $dashPos + 1) : $item;
           }
           return implode(",", $output);
         case "GETUNIQUEID":
@@ -1017,22 +1019,25 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $inputCount = count($input);
       $defaultPassFilter = $relationship !== "include";
       for ($i = 0; $i < $inputCount; ++$i) {
-        $inputArr = explode("-", $input[$i]);
+        $item = $input[$i];
+        $dashPos = strpos($item, '-');
+        $inputCard = $dashPos !== false ? substr($item, 0, $dashPos) : $item;
+        $inputIdx = $dashPos !== false ? substr($item, $dashPos + 1) : '';
         $passFilter = $defaultPassFilter;
         switch ($type) {
           case "type":
-            if (CardType($inputArr[0]) == $compare) $passFilter = !$passFilter;
+            if (CardType($inputCard) == $compare) $passFilter = !$passFilter;
             break;
           case "subtype":
-            if (SubtypeContains($inputArr[0], $compare, $player)) $passFilter = !$passFilter;
+            if (SubtypeContains($inputCard, $compare, $player)) $passFilter = !$passFilter;
             break;
           case "player":
-            if ($inputArr[0] == $compare) $passFilter = !$passFilter;
+            if ($inputCard == $compare) $passFilter = !$passFilter;
             break;
           default:
             break;
         }
-        if ($passFilter) $output[] = $inputArr[1];
+        if ($passFilter) $output[] = $inputIdx;
       }
       return count($output) > 0 ? implode(",", $output) : "PASS";
     case "PASSPARAMETER":
@@ -1264,7 +1269,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("<b>$lastResult</b> was selected.");
       return $lastResult;
     case "WRITELOGCOMBATCHAIN":
-      $cardID = str_contains($lastResult, "COMBATCHAINLINK") ? $combatChain[explode("-", $lastResult, 2)[1]] : $combatChain[$lastResult];
+      $cardID = str_contains($lastResult, "COMBATCHAINLINK") ? $combatChain[(int)substr($lastResult, 16)] : $combatChain[$lastResult];
       WriteLog(GamestateUnsanitize(CardLink($cardID) . " " . $parameter));
       return $lastResult;
     case "ADDCURRENTTURNEFFECT":
