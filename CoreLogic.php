@@ -3024,7 +3024,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
   $goAgainPrevented = CurrentEffectPreventsGoAgain($cardID, $from, $additionalCosts);
   if (IsStaticType($cardType, $from, $cardID)) {
     $hasGoAgain = AbilityHasGoAgain($cardID, $from);
-    if (GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = $hasGoAgain || CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID);
+    if (GetResolvedAbilityType($cardID, $from) == "A") $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID) || $hasGoAgain;
   } else {
     $hasMeld = HasMeld($cardID);
     $cardTypeIsAction = DelimStringContains($cardType, "A");
