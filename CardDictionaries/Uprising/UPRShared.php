@@ -146,6 +146,7 @@ function UPRDealDamageEffect($cardID)
 
   function QuellChoices($player, $damage)
   {
+    $damage = (int)$damage;
     $character = &GetPlayerCharacter($player);
     $quellAmount = 0;
     $charCount = count($character);
