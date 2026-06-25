@@ -133,6 +133,7 @@ function JSONLog($gameName, $playerID, $path="./")
   $maxRead = 131072; // 128 KB cap — prevents OOM when log file grows large
   $truncated = $filesize > $maxRead;
   $handler = fopen($filename, "r");
+  if ($handler === false) return "";
   if ($truncated) {
     fseek($handler, -$maxRead, SEEK_END);
   }
