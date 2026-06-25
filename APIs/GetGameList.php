@@ -57,6 +57,9 @@ if(IsUserLoggedIn()) {
   // Blocked users — refresh at most every 60 seconds per session
   if (!isset($_SESSION['_blockedCache']) || ($now - ($_SESSION['_blockedCacheAt'] ?? 0)) > $cacheTTL) {
     if ($conn) {
+      if (!$conn->ping()) {
+        $conn = GetDBConnection(DBL_GET_GAME_LIST);
+      }
       $query = "SELECT u.usersUid FROM blocked_users b
                 JOIN users u ON b.blockedUserId = u.usersId WHERE b.userId = ?
                 UNION
@@ -75,7 +78,7 @@ if(IsUserLoggedIn()) {
         }
       } catch (\Exception $e) {
         error_log("GetGameList: blocked users query failed: " . $e->getMessage());
-        $conn = GetDBConnection(0); // Reconnect
+        $conn = GetDBConnection(DBL_GET_GAME_LIST);
       }
     }
     $_SESSION['_blockedCache'] = $blockedUserNames;

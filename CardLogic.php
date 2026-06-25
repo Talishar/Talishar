@@ -480,7 +480,7 @@ function ContinueDecisionQueue($lastResult = "")
         }
         CloseDecisionQueue();
         if (IsResolutionStep() && count($layers) == LayerPieces() && count($attackQueue) > 0) {
-          [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
+          [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
           if ($buffs != "-") {
             foreach(explode(",", $buffs) as $buff)
               AddCurrentTurnEffectNextAttack($buff, $player);
