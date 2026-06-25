@@ -280,7 +280,7 @@ function DefendingTerm($term)
 function CombatChainPowerModifier($index, $amount)
 {
   global $combatChain;
-  if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index, 2)[1];
+  if (str_contains($index, "COMBATCHAINLINK")) $index = (int)substr($index, 16);
   $combatChain[$index + 5] += $amount;
   ProcessPhantasmOnBlock($index);
   ProcessAllMirage();
@@ -289,7 +289,7 @@ function CombatChainPowerModifier($index, $amount)
 function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
 {
   global $combatChain, $CombatChain;
-  if (str_contains($index, "COMBATCHAINLINK")) $index = explode("-", $index, 2)[1];
+  if (str_contains($index, "COMBATCHAINLINK")) $index = (int)substr($index, 16);
   if (isset($combatChain[$index])) {
     $CombatChain->Card($index)->ModifyDefense($amount);
     switch ($combatChain[0]) {
@@ -641,13 +641,14 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
 {
   global $mainPlayer, $CombatChain;
   $extraText = GetHorrorsBuff();
-  if ($type == "ARCANE" && SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
-  if ($type == "ARCANE" && $source == "deny_redemption_red" && SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $mainPlayer)) return false;
+  if ($type == "ARCANE") {
+    if (SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
+    if ($source == "deny_redemption_red" && SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $mainPlayer)) return false;
+  }
   if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $mainPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $mainPlayer))) return false;
   if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $mainPlayer) && $source == $CombatChain->AttackCard()->ID()) return false;
-  if ($type == "COMBAT" && SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer)) return false;
-  if ($type == "COMBAT" && SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer)) return false;
+  if ($type == "COMBAT" && (SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer) || SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer))) return false;
   static $unpreventable = ["rok" => true, "malign_red" => true, "malign_yellow" => true, "malign_blue" => true, "murkmire_grapnel_red" => true, "murkmire_grapnel_yellow" => true, "murkmire_grapnel_blue" => true];
   if (isset($unpreventable[$source]) || isset($unpreventable[$extraText])) return false;
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue" || $extraText == "pick_to_pieces_red" || $extraText == "pick_to_pieces_yellow" || $extraText == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
@@ -1343,10 +1344,10 @@ function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = 
     $chainLinkICount = count($chainLinks[$i]);
     for ($j = 0; $j < $chainLinkICount; $j += $chainLinksPieces) {
       $cardID = $chainLinks[$i][$j];
-      $thisType = CardType($cardID);
-      $thisSubType = CardSubType($cardID);
       if ($color != "" && !ColorContains($cardID, $color, $chainLinks[$i][$j + 1])) continue;
       if ($subType != "" && !SubtypeContains($cardID, $subType)) continue;
+      $thisType = CardType($cardID);
+      $thisSubType = CardSubType($cardID);
       if (($playerID == "" || $chainLinks[$i][$j + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($cardID, $nameContains, $playerID, partial: true))) {
         if (isset($exclTypeSet[$thisType])) continue;
         $excluded = false;
@@ -1374,9 +1375,10 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
   $combatChainCount = count($combatChain);
   $combatChainPieces = CombatChainPieces();
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
+    if ($playerID != "" && $combatChain[$i + 1] != $playerID) continue;
     $thisType = CardType($combatChain[$i]);
     $thisSubType = CardSubType($combatChain[$i]);
-    if (($playerID == "" || $combatChain[$i + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
+    if (($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
       if (isset($exclTypeSet[$thisType])) continue;
       $excluded = false;
       if ($thisSubType !== "") {
@@ -1407,6 +1409,7 @@ function ResolutionStepEffectTriggers()
 {
   global $currentTurnEffects;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  static $classExistsCache = [];
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $effectID = $currentTurnEffects[$i];
     $dashPos = strpos($effectID, '-');
@@ -1417,7 +1420,10 @@ function ResolutionStepEffectTriggers()
       $effectClass = $effectID;
       $parameter = '-';
     }
-    if (class_exists($effectClass)) {
+    if (!isset($classExistsCache[$effectClass])) {
+      $classExistsCache[$effectClass] = class_exists($effectClass);
+    }
+    if ($classExistsCache[$effectClass]) {
       $card = new $effectClass($currentTurnEffects[$i + 1]);
       if ($card->ResolutionStepEffectTriggers($parameter, $i)) RemoveCurrentTurnEffect($i);
     }
@@ -1838,7 +1844,9 @@ function GetBanishModifier($index)
   global $currentPlayer;
     $banish = GetBanish($currentPlayer);
     if ($index < count($banish)) {
-      return explode("-", $banish[$index + 1], 2)[0];
+      $meta = $banish[$index + 1];
+      $dashPos = strpos($meta, '-');
+      return $dashPos !== false ? substr($meta, 0, $dashPos) : $meta;
     }
   return "";
 }
@@ -1927,7 +1935,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   if (SearchCurrentTurnEffects("meridian_pathway", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
   if (DelimStringContains($subtype, "Evo") && GetResolvedAbilityType($cardID, $from, $currentPlayer) != "AA") {
     if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $currentPlayer) || SearchCurrentTurnEffects("teklovossen", $currentPlayer)) return true;
-    if (SearchCurrentTurnEffects("scrap_compactor_red", $currentPlayer) || SearchCurrentTurnEffects("scrap_compactor_yellow", $currentPlayer) || SearchCurrentTurnEffects("scrap_compactor_blue", $currentPlayer)) return true;
+    if (SearchCurrentTurnEffectsForCycle("scrap_compactor_red", "scrap_compactor_yellow", "scrap_compactor_blue", $currentPlayer)) return true;
   }
   if ($from == "ARS" && $cardTypeIsAction && $currentPlayer != $mainPlayer) {
     if (ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "iyslander_stormbind") || SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0]))) return true;
@@ -2100,13 +2108,16 @@ function ColorOverride($cardID, $player = "")
   $numCurrentTurnEffects = $CurrentTurnEffects->NumEffects();
   for ($i = 0; $i < $numCurrentTurnEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
-    $effectParams = explode("-", $Effect->EffectID());
-    switch ($effectParams[0]) {
+    $effectID = $Effect->EffectID();
+    $dashPos = strpos($effectID, '-');
+    $effectBase = $dashPos !== false ? substr($effectID, 0, $dashPos) : $effectID;
+    $effectParam = $dashPos !== false ? substr($effectID, $dashPos + 1) : "-";
+    switch ($effectBase) {
       case "become_the_cup_red":
       case "become_the_cup_yellow":
       case "become_the_cup_blue":
-        if ($cardID != $effectParams[0]) break;
-        $pitchToAdd = match ($effectParams[1] ?? "-") {
+        if ($cardID != $effectBase) break;
+        $pitchToAdd = match ($effectParam) {
         "Red" => 1, "Yellow" => 2, "Blue" => 3, default => 0
         };
         if ($pitchToAdd != 0) {
@@ -2200,8 +2211,11 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
     if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $player) continue;
-    $effectArr = explode("-", $currentTurnEffects[$i], 2);
-    $modName = CurrentEffectNameModifier($effectArr[0], isset($effectArr[1]) ? GamestateUnsanitize($effectArr[1]) : "N/A", $player, $cardID);
+    $eff = $currentTurnEffects[$i];
+    $dashPos = strpos($eff, '-');
+    $effectBase = $dashPos !== false ? substr($eff, 0, $dashPos) : $eff;
+    $effectParam = $dashPos !== false ? GamestateUnsanitize(substr($eff, $dashPos + 1)) : "N/A";
+    $modName = CurrentEffectNameModifier($effectBase, $effectParam, $player, $cardID);
     if ($partial && $modName !== "") $modName = str_replace(" ", ",", $modName);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($modName != "" && DelimStringContains($modName, $name, $partial)) return true;
