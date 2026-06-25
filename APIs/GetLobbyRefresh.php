@@ -131,11 +131,13 @@ if ($kickPlayerTwo) {
     $p2uid = "";
     $p2id = "";
     $p2SideboardSubmitted = "0";
+    $p1SideboardSubmitted = "0";
   } else {
     SetCachePiece($gameName, 7, "");
     $p1uid = "-";
     $p1id = "";
     $p1SideboardSubmitted = "0";
+    $p2SideboardSubmitted = "0";
   }
 
   WriteGameFile();
