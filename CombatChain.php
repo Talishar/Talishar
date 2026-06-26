@@ -1344,7 +1344,7 @@ function ModifyBlockForType($type, $amount)
   $combatChainPieces = CombatChainPieces();
   for ($i = count($combatChain) - $combatChainPieces; $i > 0; $i -= $combatChainPieces) {
     if ($combatChain[$i + 1] != $defPlayer) continue;
-    if (!DelimStringContains(CardTypeExtended($combatChain[$i]), $type)) continue;
+    if (!TypeContains($combatChain[$i], $type)) continue;
     ++$count;
     $combatChain[$i + 6] += $amount;
     if ($type == "DR") return $count;
@@ -1408,7 +1408,7 @@ function OnBlockEffects($index, $from)
           break;
         case "scale_peeler":
         case "scale_peeler_r":
-          if ($cardType == "E" || DelimStringContains($cardSubtype, "Evo")) $chainCard->ModifyDefense(-1);
+          if (TypeContains($chainCard->ID(), "E")) $chainCard->ModifyDefense(-1);
           break;
         case $Card_BlockBanner:
           if (DelimStringContains($cardType, "A") || $cardType == "AA") {
