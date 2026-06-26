@@ -1794,7 +1794,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase != "B" && $phase != "P" && !str_contains($phase, "CHOOSE") && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
   if ($phase == "M" && $subtype == "Arrow") {
     if ($from != "ARS") return false;
-    if (!SubtypeContains($character[CharacterPieces()], "Bow") && !SubtypeContains($character[CharacterPieces() * 2], "Bow")) return false;
+    if (!SearchCharacterAliveSubtype($player, "Bow")) return false;
   }
   if (SearchCurrentTurnEffects("three_of_a_kind_red", $player) && !$isStaticType && $from != "ARS") return false;
   if (SearchCurrentTurnEffects("red_in_the_ledger_red", $player)) {

@@ -786,7 +786,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     else SetClassState($otherPlayer, $CS_PowDamageDealt, GetClassState($otherPlayer, $CS_PowDamageDealt) + $damage);
     if ($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if ($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
-    CurrentEffectDamageEffects($player, $source, $type, $damage);
+    CurrentEffectDamageEffects($player, $source, $type, $damage, $playerSource);
     
     if ($source == $CombatChain->AttackCard()->ID()) {
       AttackDamageAbilitiesTrigger($damage);
@@ -979,7 +979,7 @@ function CombatChainDamageModifiers($player, $source, $type)
   return $modifier;
 }
 
-function CurrentEffectDamageEffects($target, $source, $type, $damage)
+function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSource)
 {
   global $currentTurnEffects, $EffectContext, $CombatChain, $CS_ResolvingLayerUniqueID, $mainPlayer;
   $otherPlayer = ($target == 1 ? 2 : 1);
@@ -990,7 +990,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
   $isCombat = ($type == "COMBAT");
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $effectPlayer = $currentTurnEffects[$i + 1];
-    if ($effectPlayer == $target) {
+    if ($effectPlayer != $playerSource) {
       continue;
     }
     if ($isCombat && HitEffectsArePrevented($source)) continue;
@@ -1025,9 +1025,9 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage)
           $remove = 1;
         }
         break;
-      case "staff_of_verdant_shoots": // So technically this procks if you deal damage to yourself but this would need to be refactored in order to make that work. Until someone has this happen, lets just leave it as so.
-        if ($source != "frostbite" && $type == "ARCANE") {
-          PlayAura("embodiment_of_earth", $effectPlayer, 1);
+      case "staff_of_verdant_shoots":
+        if ($type == "ARCANE") {
+          AddLayer("TRIGGER", $effectPlayer, $effectID);
           $remove = 1;
         }
         break;

@@ -1976,6 +1976,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
     }
     switch ($parameter) {
+      case "staff_of_verdant_shoots":
+        PlayAura("embodiment_of_earth", $player, 1);
+        break;
       case "cintari_saber":
       case "cintari_saber_r":
         $attackID = $CombatChain->AttackCard()->ID();

@@ -1630,6 +1630,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             LogDamagePreventedStats($targetPlayer, $damage);
             AllyDamageTakenAbilities($targetPlayer, $target[1]);
             DamageDealtAbilities("ALLY", $damage, "ARCANE", $sourceID);
+            CurrentEffectDamageEffects(implode("-", $target), $source, "ARCANE", $damage, $player);
           }
           if ($allies[$target[1] + 2] <= 0) {
             DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
