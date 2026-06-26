@@ -332,19 +332,14 @@ class blast_to_oblivion extends BaseCard {
     $targetedPlayer = intval($targetParts[0]);
     $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
     $uID = $targetParts[1];
-    $auras = &GetAuras($targetedPlayer);
-    $auraCount = count($auras);
-    $auraPieces = AuraPieces();
-    for ($i = 0; $i < $auraCount; $i += $auraPieces) {
-      if ($auras[$i + 6] == $uID) {
-        $cardID = $auras[$i];
-        $cardOwner = substr($auras[$i+9], 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
-        $lastResult = RemoveAura($targetedPlayer, $i);
-        AddPlayerHand($cardID, $cardOwner, "-");
-        return $lastResult;
-      }
-    }
-    WriteLog("The target for " . CardLink($this->cardID) . " has been removed, effect fizzling");
+    $Auras = new Auras($targetedPlayer);
+    $AuraCard = $Auras->FindCardUID($uID);
+    $cardID = $AuraCard->CardID();
+    $cardOwner = substr($AuraCard->From(), 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
+    if (!$AuraCard->IsToken())
+      AddPlayerHand($cardID, $cardOwner, "-");
+    $lastResult = $AuraCard->Remove();
+    return $lastResult;
   }
 
   function ActiveLinkPlayTrigger($cardID, $player, $from) {
