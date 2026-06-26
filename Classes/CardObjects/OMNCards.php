@@ -6530,7 +6530,7 @@ class singeing_flowstride_blue extends Card {
 class stunning_swipe extends BaseCard {
   function PlayAbility() {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    if (DoesAttackHaveGoAgain() && IsHeroAttackTarget() && IsHeroLightning($otherPlayer))
+    if (DoesAttackHaveGoAgain() && IsHeroAttackTarget())
       AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
     return "";
   }
@@ -6540,7 +6540,8 @@ class stunning_swipe extends BaseCard {
   }
 
   function DamageDealtAbilities($target) {
-    FirstDamageTrigger($target, $this->cardID, $this->controller);
+    if (IsHeroLightning($target))
+      FirstDamageTrigger($target, $this->cardID, $this->controller);
   }
 
   function ProcessTrigger() {
