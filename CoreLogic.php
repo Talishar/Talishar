@@ -157,21 +157,21 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
 
 // function to recheck if things should trigger after gamestate change (like Lyath losing his ability)
 function ReEvalCombatChain() {
-  global $combatChain, $CombatChain, $combatChainState, $mainPlayer, $defPlayer;
+  global $combatChain, $CombatChain, $combatChainState, $CCS_CachedTotalPower, $defPlayer;
   if ($CombatChain->HasCurrentLink()) {
     // checking if things should trigger/be modified with the power change
+    $totalPower = 0;
+    $totalBlock = 0;
+    EvaluateCombatChain($totalPower, $totalBlock);
+    $combatChainState[$CCS_CachedTotalPower] = $totalPower;
     $combatChainCount = count($combatChain);
     $combatChainPieces = CombatChainPieces();
     for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
       if ($combatChain[$i + 1] == $defPlayer) {
         ProcessPhantasmOnBlock($i);
-        ProcessMirageOnBlock($i);
       }
     }
     ProcessAllMirage();
-    $totalPower = 0;
-    $totalBlock = 0;
-    EvaluateCombatChain($totalPower, $totalBlock);
   }
 }
 

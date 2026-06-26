@@ -90,6 +90,8 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
   $currentTurnEffects[] = $player;
   $currentTurnEffects[] = $uniqueID;
   $currentTurnEffects[] = CurrentTurnEffectUses($cardID);
+  if (IsCombatEffectActive($cardID))
+    ReEvalCombatChain();
 }
 
 function AddEffectToCurrentAttack($cardID) {
