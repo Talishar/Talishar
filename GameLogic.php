@@ -41,6 +41,7 @@ include "Classes/CardObjects/DTDCards.php";
 include "Classes/CardObjects/HVYCards.php";
 include "Classes/CardObjects/MSTCards.php";
 include "Classes/CardObjects/ROSCards.php";
+include "Classes/CardObjects/AJVCards.php";
 include "Classes/CardObjects/HNTCards.php";
 include "Classes/CardObjects/SEACards.php";
 include "Classes/CardObjects/SUPCards.php";
@@ -3122,7 +3123,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $slot = $params[1] ?? "-";
       $otherPlayer = 3 - $player;
       $chosenPlayer = isset($params[2]) ? (str_contains($params[2], "MY") ? $player : $otherPlayer) : $player;
-      EquipEquipment($chosenPlayer, $params[0], $params[1], $params[3] ?? "-");
+      EquipEquipment($chosenPlayer, $params[0], $params[1], $params[3] ?? "-", effectAgent:$player);
       return "";
     case "STEALEQUIPMENT":
       $targetPlayer = str_contains($lastResult, "THEIR") ? $otherPlayer : $player;

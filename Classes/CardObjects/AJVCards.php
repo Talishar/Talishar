@@ -52,17 +52,35 @@
 // }
 
 
-// class jarl_vetreidi extends Card {
+class jarl_vetreidi extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "jarl_vetreidi";
-//     $this->controller = $controller;
-//     }
+    function __construct($controller) {
+        $this->cardID = "jarl_vetreidi";
+        $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        return "";
+    }
+
+    function DefaultActiveState() {
+        return 1;
+    }
+
+    function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+        $otherPlayer = $this->controller == 1 ? 2 : 1;
+        FrostBiteExposed($otherPlayer, $this->controller);
+    }
+
+    function CardPlayTrigger($cardID, $from, $index) {
+        if (TalentContains($cardID, "ICE", $this->controller) && !IsActivated($cardID, $from))
+          AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+
+    function SpecificLogic() {
+
+    }
+}
 
 
 // class ollin_ice_cap extends Card {

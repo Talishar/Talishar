@@ -3725,9 +3725,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("BRUTUS", $player, $target, 1);
         break;
-      case "jarl_vetreidi":
-        FrostBiteExposed($otherPlayer, $player);
-        break;
       case "unforgetting_unforgiving_red":
         if(SearchCharacter($otherPlayer, hasNegCounters: true) != "") {
           $search = "isSameName=mangle_red";

@@ -110,7 +110,7 @@ function IcelochActive($player) {
   return false;
 }
 
-function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource="", $effectController="", $slot="") {
+function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource="", $effectController="", $slot="", $effectAgent="") {
   switch ($cardID) {
     case "smoldering_scales":
       $Character = new PlayerCharacter($player);
@@ -153,7 +153,11 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
   AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $cardID, 1);
   if ($zone == "AURAS")
     AddDecisionQueue("PLAYAURA", $player, "frostbite-$number-$effectSource-$effectController", 1);
-  elseif ($zone == "EQUIP")
-    AddDecisionQueue("EQUIPCARD", $player, "frostbite-$slot", 1);
+  elseif ($zone == "EQUIP") {
+    if ($effectAgent == $player)
+      AddDecisionQueue("EQUIPCARD", $player, "frostbite-$slot", 1);
+    else
+      AddDecisionQueue("EQUIPCARD", $effectAgent, "frostbite-$slot-THEIR", 1);
+  }
   return true;
 }

@@ -780,9 +780,10 @@ function CharacterCostModifier($cardID, $from, $cost)
   return CostCantBeModified($cardID) ? 0 : $modifier;
 }
 
-function EquipEquipment($player, $cardID, $slot = "", $from = "HAND")
+function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAgent="")
 {
-  global $EffectContext;
+  global $EffectContext, $CS_NumAuras;
+  if ($effectAgent == "") $effectAgent = $player;
   if ($slot == "") {
     if (SubtypeContains($cardID, "Head")) $slot = "Head";
     else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
@@ -796,9 +797,9 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND")
     }
   }
   if ($cardID == "frostbite") {
-    if (Smoldering($player, "smoldering_scales", "EQUIP", slot:$slot))
+    if (Smoldering($player, "smoldering_scales", "EQUIP", slot:$slot, effectAgent:$effectAgent))
       return;
-    if (Smoldering($player, "smoldering_steel_red", "EQUIP", slot:$slot))
+    if (Smoldering($player, "smoldering_steel_red", "EQUIP", slot:$slot, effectAgent:$effectAgent))
       return;
     SearchCurrentTurnEffects("smoldering_scales", $player, true);
     SearchCurrentTurnEffects("smoldering_steel_red", $player, true);
@@ -853,7 +854,10 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND")
   if ($cardID == "adaptive_plating") AddCurrentTurnEffect("adaptive_plating-" . $uniqueID . "," . $slot, $player);
   if ($cardID == "adaptive_dissolver") AddCurrentTurnEffect("adaptive_dissolver-" . $uniqueID . ",Base," . $slot, $player);
   if ($cardID == "adaptive_alpha_mold") AddCurrentTurnEffect("adaptive_alpha_mold-" . $uniqueID . ",Base," . $slot, $player);
-  if ($cardID == "frostbite") AddCurrentTurnEffect("frostbite-" . $uniqueID . "," . $slot, $player);
+  if ($cardID == "frostbite") {
+    AddCurrentTurnEffect("frostbite-" . $uniqueID . "," . $slot, $player);
+    IncrementClassState($effectAgent, $CS_NumAuras);
+  }
   AddEquipTrigger($cardID, $player);
 }
 
@@ -1708,11 +1712,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         if ($from == "DECK") {
           --$character[$i + 1];
           --$character[$i + 5];
-        }
-        break;
-      case "jarl_vetreidi":
-        if (TalentContains($cardID, "ICE", $currentPlayer) && !IsStaticType(CardType($cardID), $from, $cardID)) {
-          AddLayer("TRIGGER", $currentPlayer, $characterID);
         }
         break;
       default:

@@ -3755,7 +3755,7 @@ function CharacterDefaultActiveState($cardID)
     "shroud_of_darkness" => 1, "cloak_of_darkness" => 1, "grasp_of_darkness" => 1,
     "dance_of_darkness" => 1, "blasmophet_levia_consumed" => 1,
     "okana_scar_wraps" => 1, "verdance_thorn_of_the_rose" => 1,
-    "verdance" => 1, "jarl_vetreidi" => 1,
+    "verdance" => 1,
   ];
   static $state1 = [
     "refraction_bolters" => 1, "vest_of_the_first_fist" => 1, "breeze_rider_boots" => 1,
