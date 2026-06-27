@@ -1610,7 +1610,7 @@ function CharacterCardPlayedAbilities($player, $cardID, $from) {
 
 function CharacterPlayCardAbilities($cardID, $from)
 {
-  global $currentPlayer, $CS_NumLess3PowAAPlayed, $CS_NumAttacks;
+  global $currentPlayer, $CS_NumLess3PowAAPlayed;
   $PlayerCharacter = new PlayerCharacter($currentPlayer);
   for ($i = 0; $i < $PlayerCharacter->NumCards(); ++$i) {
     $CharacterCard = $PlayerCharacter->Card($i, true);
