@@ -546,9 +546,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0 ||
         SearchCurrentTurnEffectsForPartialId($theirCharacter[$i + 11] ?? "-")) $border = 5;
     }
-    if($i == 0) {
+    if($i == 0 && $otherPlayer == $mainPlayer) {
       $heroCard = $theirCharacter[$i];
-      if ($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai" && GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 1) {
+      if (($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai") && GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 1) {
         $border = 5;
       }
     }
@@ -784,9 +784,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       $powerCounters = $myCharacter[$i + 3] ?? 0;
     }
-    if($i == 0 && !$playable) {
+    if($i == 0 && !$playable && $playerID == $mainPlayer) {
       $heroCard = $myCharacter[$i];
-      if ($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai" && GetClassState($playerID, $CS_NumCardsDrawn) >= 1) {
+      if (($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai") && GetClassState($playerID, $CS_NumCardsDrawn) >= 1) {
         $border = 5;
       }
     }
