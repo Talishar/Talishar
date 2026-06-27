@@ -1900,6 +1900,7 @@ function CacheCombatResult()
   global $CombatChain, $CCS_CachedGoAgain;
   if (count($combatChain) == 0) return;
   $combatChainState[$CCS_CachedGoAgain] = (DoesAttackHaveGoAgain() ? "1" : "0");
+  $oldPower = $combatChainState[$CCS_CachedTotalPower];
   $combatChainState[$CCS_CachedTotalPower] = 0;
   $combatChainState[$CCS_CachedTotalBlock] = 0;
   EvaluateCombatChain($combatChainState[$CCS_CachedTotalPower], $combatChainState[$CCS_CachedTotalBlock], secondNeedleCheck:true);
@@ -1908,6 +1909,8 @@ function CacheCombatResult()
   if (is_a($card, "SUPDwarfCard") && $combatChainState[$CCS_CachedTotalPower] > LinkBasePower()) {
     ++$combatChainState[$CCS_CachedTotalPower];
   }
+  if ($combatChainState[$CCS_CachedTotalPower] > $oldPower && $combatChainState[$CCS_CachedTotalPower] >= 6)
+    ProcessAllMirage();
   $combatChainState[$CCS_CachedDominateActive] = (IsDominateActive() ? "1" : "0");
   $combatChainState[$CCS_CachedOverpowerActive] = (IsOverpowerActive() ? "1" : "0");
   $combatChainState[$CCS_CachedNumActionBlocked] = NumActionsBlocking();
