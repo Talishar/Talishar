@@ -891,7 +891,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     for ($j = $combatChainPieceCount; $j < $combatChainCount; $j += $combatChainPieceCount) {
       if ($combatChain[$j + 1] == $otherPlayer && $combatChain[$j + 2] == "ARS") {
         $theirArse[] = JSONRenderedCard(
-          cardNumber: $cardback,
+          cardNumber: $TheirCardBack,
           controller: $playerID == 1 ? 2 : 1,
           facing: "DOWN", // Technically false, but we currently do not store the facing of an arsenal card once it left the arsenal zone. Likely will be reported as bug at some point
           uniqueID: $combatChain[$j + 7]
