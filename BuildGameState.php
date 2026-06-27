@@ -13,7 +13,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $currentTurnEffects, $nextTurnEffects, $dqVars, $lastPlayed, $events;
   global $p1Key, $p2Key, $myHealth, $theirHealth, $winner;
   global $CombatChain, $CCS_AttackTargetUID, $CCS_WeaponIndex, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock, $CCS_CachedPreBlockValue;
-  global $AIHasInfiniteHP, $EffectContext;
+  global $AIHasInfiniteHP, $EffectContext, $CS_NumCardsDrawn;
   global $p1IsPatron, $p2IsPatron, $p1MetafyTiers, $p2MetafyTiers, $p1IsAI, $p2IsAI;
   global $roguelikeGameID, $gameGUID, $p1uid, $p2uid;
   global $p1MetafyCommunities, $p2MetafyCommunities;
@@ -546,6 +546,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0 ||
         SearchCurrentTurnEffectsForPartialId($theirCharacter[$i + 11] ?? "-")) $border = 5;
     }
+    if($i == 0 && !$playable) {
+      $heroCard = $theirCharacter[$i];
+      if ($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai" && GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 1) {
+        $border = 5;
+      }
+    }
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
     // hide opponent's equipment while deciding on adaptive stuff
@@ -769,13 +775,20 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       $label = WeaponHasGoAgainLabel($i, $playerID) ? "Go Again" : "";
       $weaponPowerModifiers = [];
-    if (!$playable) {
-        if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $playerID) > 0 ||
-            SearchCurrentTurnEffectsForPartialId($myCharacter[$i + 11] ?? "-")) {
-            $border = 5;
-        }
-    }
+      if (!$playable) {
+          if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $playerID) > 0 ||
+              SearchCurrentTurnEffectsForPartialId($myCharacter[$i + 11] ?? "-")) {
+              $border = 5;
+          }
+
+      }
       $powerCounters = $myCharacter[$i + 3] ?? 0;
+    }
+    if($i == 0 && !$playable) {
+      $heroCard = $myCharacter[$i];
+      if ($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai" && GetClassState($playerID, $CS_NumCardsDrawn) >= 1) {
+        $border = 5;
+      }
     }
     if (($myCharacter[$i + 9] ?? 0) != 2 && ($myCharacter[$i + 1] ?? 0) != 0 && $playerID != 3) {
       $gem = ($myCharacter[$i + 9] ?? 0) == 1 ? 1 : 2;
