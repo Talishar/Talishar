@@ -546,7 +546,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0 ||
         SearchCurrentTurnEffectsForPartialId($theirCharacter[$i + 11] ?? "-")) $border = 5;
     }
-    if($i == 0 && !$playable) {
+    if($i == 0) {
       $heroCard = $theirCharacter[$i];
       if ($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai" && GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 1) {
         $border = 5;
