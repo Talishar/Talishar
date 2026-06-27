@@ -4345,6 +4345,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           break;
         default:
           $target = ($combatChainState[$CCS_AttackTarget] == "" || $combatChainState[$CCS_AttackTarget] == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());
+          if ($target == "") $target = "MISSINGTARGET";
           break;
       }
     }
