@@ -1611,19 +1611,18 @@ function CharacterCardPlayedAbilities($player, $cardID, $from) {
 function CharacterPlayCardAbilities($cardID, $from)
 {
   global $currentPlayer, $CS_NumLess3PowAAPlayed, $CS_NumAttacks;
-  $character = &GetPlayerCharacter($currentPlayer);
-  $charCount = count($character);
-  $characterPieces = CharacterPieces();
-  for ($i = 0; $i < $charCount; $i += $characterPieces) {
-    if ($character[$i + 1] != 2) continue;
-    $characterID = ShiyanaCharacter($character[$i]);
+  $PlayerCharacter = new PlayerCharacter($currentPlayer);
+  for ($i = 0; $i < $PlayerCharacter->NumCards(); ++$i) {
+    $CharacterCard = $PlayerCharacter->Card($i, true);
+    if ($CharacterCard->Status() != 2) continue;
+    $characterID = ShiyanaCharacter($CharacterCard->ID());
     $card = GetClass($characterID, $currentPlayer);
     if ($card != "-") $card->PlayCardAbility($cardID, $from);
     switch ($characterID) {
       case "tiger_stripe_shuko":
         if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID, $currentPlayer, "CC") <= 2) {
           AddCurrentTurnEffect($characterID, $currentPlayer);
-          $character[$i + 1] = 1;
+          $CharacterCard->SetUsed();
           LogPlayCardStats($currentPlayer, "tiger_stripe_shuko", "EQUIP", "PASSIVE");
         }
         break;

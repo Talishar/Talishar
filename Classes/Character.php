@@ -67,6 +67,10 @@ class CharacterCard {
     return $this->pieces[$this->index] ?? "-";
   }
 
+  function ID() {
+    return $this->CardID();
+  }
+
   function Become($cardID) {
     global $CS_OriginalHero;
     if ($this->index == 0 && GetClassState($this->controller, $CS_OriginalHero) == "-") {
