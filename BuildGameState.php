@@ -546,9 +546,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0 ||
         SearchCurrentTurnEffectsForPartialId($theirCharacter[$i + 11] ?? "-")) $border = 5;
     }
-    if($i == 0) {
+    if($i == 0 && $otherPlayer == $mainPlayer) {
       $heroCard = $theirCharacter[$i];
-      if ($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai" && GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 1) {
+      if (($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai") && GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 1) {
         $border = 5;
       }
     }
@@ -784,9 +784,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       $powerCounters = $myCharacter[$i + 3] ?? 0;
     }
-    if($i == 0 && !$playable) {
+    if($i == 0 && !$playable && $playerID == $mainPlayer) {
       $heroCard = $myCharacter[$i];
-      if ($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai" && GetClassState($playerID, $CS_NumCardsDrawn) >= 1) {
+      if (($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai") && GetClassState($playerID, $CS_NumCardsDrawn) >= 1) {
         $border = 5;
       }
     }
@@ -891,7 +891,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     for ($j = $combatChainPieceCount; $j < $combatChainCount; $j += $combatChainPieceCount) {
       if ($combatChain[$j + 1] == $otherPlayer && $combatChain[$j + 2] == "ARS") {
         $theirArse[] = JSONRenderedCard(
-          cardNumber: $cardback,
+          cardNumber: $TheirCardBack,
           controller: $playerID == 1 ? 2 : 1,
           facing: "DOWN", // Technically false, but we currently do not store the facing of an arsenal card once it left the arsenal zone. Likely will be reported as bug at some point
           uniqueID: $combatChain[$j + 7]
