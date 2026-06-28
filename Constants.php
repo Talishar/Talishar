@@ -493,11 +493,9 @@ function ResetCombatChainState()
   global $chainLinks, $chainLinkSummary, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink, $CCS_HasAimCounter, $CCS_AttackNumCharged, $CCS_NumInstantsPlayedByAttackingPlayer; 
   global $CCS_NextInstantBouncesAura, $CCS_EclecticMag, $CCS_FlickedDamage, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
   global $CCS_NumPowerCounters, $CCS_SoulBanishedThisChain, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero;
-  global $CCS_NumInstantsPlayedByDefendingPlayer, $CCS_CachedPreBlockValue, $Stack;
+  global $CCS_NumInstantsPlayedByDefendingPlayer, $CCS_CachedPreBlockValue;
 
   if(count($chainLinks) > 0) WriteLog("The combat chain was closed.");
-  AddLayer("CLOSESTEP", $mainPlayer, 1);
-
   $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
   $combatChainState[$CCS_CachedDominateActive] = 0;
   $combatChainState[$CCS_WeaponIndex] = -1;
