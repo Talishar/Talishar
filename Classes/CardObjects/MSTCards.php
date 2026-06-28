@@ -663,17 +663,29 @@
 // }
 
 
-// class eloquent_eulogy_red extends Card {
+class eloquent_eulogy_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "eloquent_eulogy_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "eloquent_eulogy_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function CombatChainCloseAbility($chainLink) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $mainPlayer, $defPlayer, $CS_HealthLost;
+		$numEloquence = 0;
+		if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numEloquence;
+		if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numEloquence;
+		if ($numEloquence > 0) PlayAura("eloquence", $mainPlayer, effectSource: $this->cardID);
+	}
+}
 
 
 // class emissary_of_moon_red extends Card {

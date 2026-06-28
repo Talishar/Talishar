@@ -71,9 +71,9 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   }
   $classState[$CS_CardsBanished] += $amount;
   if ($created) {
-      $ClassState = new ClassState($player);
-      $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $amount);
-    }
+    $ClassState = new ClassState($player);
+    $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $amount);
+  }
   if ($isFaceDown) return $rv;
   //Do additional effects
   if ($cardID == "slithering_shadowpede_red" && $from == "HAND" && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
@@ -127,7 +127,9 @@ function BanishByEffect($cardID, $player, $banisher, &$rv) {
   // $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
   // $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
   $extraText = GetHorrorsBuff();
-  $attackCard = IsResolutionStep() ? $ChainLinks->LastLink()->AttackCard()->ID() : $CombatChain->AttackCard()->ID();
+  $attackCard = "-";
+  if (IsCombatChainOpen())
+    $attackCard = IsResolutionStep() ? $ChainLinks->LastLink()->AttackCard()->ID() : $CombatChain->AttackCard()->ID();
   $banishEffects = [$banisher];
   if ($banisher == $attackCard) $banishEffects[] = $extraText;
 

@@ -1477,13 +1477,6 @@ function CombatChainCloseAbilities($player, $cardID, $chainLink)
         PlayAura("quicken", $defPlayer);
       }
       break;
-    case "that_all_you_got_yellow":
-      $AttackPowerValue = $chainLinkSummary[$chainLink * ChainLinkSummaryPieces() + 1];
-      if ($AttackPowerValue <= 2) {
-        Draw($player, effectSource:$cardID);
-        WriteLog(CardLink($cardID, $cardID) . " drew a card");
-      }
-      break;
     case "regicide_blue":
       if ($player == $mainPlayer) LoseHealth(GetHealth($mainPlayer), $mainPlayer);
       break;
@@ -1732,87 +1725,22 @@ function CombatChainClosedTriggers()
   $chainLinksCount = count($chainLinks);
   $chainLinkPieces = ChainLinksPieces();
   for ($i = 0; $i < $chainLinksCount; ++$i) {
+    $Link = new ChainLink($i);
     if (!isset($chainLinks[$i])) {
       WriteLog("Something odd happened while closing the chain, please submit a bug report", highlight:true);
       continue;
     }
     $chainLinkICount = count($chainLinks[$i]);
     for ($j = 0; $j < $chainLinkICount; $j += $chainLinkPieces) {
-      $cardType = CardType($chainLinks[$i][$j]);
-      if ($chainLinks[$i][$j + 1] != $mainPlayer || ($chainLinks[$i][$j + 2] == 0 && !IsStaticType($cardType))) continue;
-      switch ($chainLinks[$i][$j]) {
+      $LinkCard = $Link->GetLinkCard($j);
+      $cardType = CardType($LinkCard->PlayerID());
+      if ($LinkCard->PlayerID() != $mainPlayer || ($LinkCard->StillOnChain() == 0 && !IsStaticType($cardType))) continue;
+      switch ($LinkCard->ID()) {
         case "hell_hammer":
           $index = FindCharacterIndex($mainPlayer, "hell_hammer");
           if ($index > -1 && SearchCurrentTurnEffects("hell_hammer", $mainPlayer, true)) {
             BanishCardForPlayer("hell_hammer", $mainPlayer, "CC");
             DestroyCharacter($mainPlayer, $index, true);
-          }
-          break;
-        case "widespread_annihilation_blue":
-          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "ARS,-");
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "ARS,-");
-          break;
-        case "widespread_destruction_yellow":
-          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
-          break;
-        case "widespread_ruin_red":
-          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
-            $deck = new Deck($mainPlayer);
-            $deck->BanishTop();
-          }
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
-            $deck = new Deck($defPlayer);
-            $deck->BanishTop();
-          }
-          break;
-        case "deathly_wail_red":
-        case "deathly_wail_yellow":
-        case "deathly_wail_blue":
-          $numRunechant = 0;
-          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numRunechant;
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numRunechant;
-          if ($numRunechant > 0) PlayAura("runechant", $mainPlayer, $numRunechant, effectSource: $chainLinks[$i][$j]);
-          break;
-        case "deathly_delight_red":
-        case "deathly_delight_yellow":
-        case "deathly_delight_blue":
-          $numLife = 0;
-          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numLife;
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numLife;
-          if ($numLife > 0) GainHealth($numLife, $mainPlayer);
-          break;
-        case "eloquent_eulogy_red":
-          $numEloquence = 0;
-          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numEloquence;
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numEloquence;
-          if ($numEloquence > 0) PlayAura("eloquence", $mainPlayer, effectSource: $chainLinks[$i][$j]);
-          break;
-        case "deep_recesses_of_existence_blue":
-          $from = $chainLinks[$i][$j+3];
-          $whoseGY = str_contains($from, "THEIR") ? "THEIRDISCARD" : "MYDISCARD";
-          // Do you want to banish this card face-down, and banish a card from each player who lost life this turn?
-          AddDecisionQueue("YESNO", $mainPlayer, "do_you_want_to_banish_".CardLink("deep_recesses_of_existence_blue", "deep_recesses_of_existence_blue")."?");
-          // This will exit early if No
-          AddDecisionQueue("NOPASS", $mainPlayer, "-");
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "$whoseGY:cardID=deep_recesses_of_existence_blue", 1);
-          AddDecisionQueue("REVERSELIST", $mainPlayer, "-", 1); // make it banish the top DRE
-          AddDecisionQueue("CHOOSEONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $mainPlayer, "$whoseGY,DOWN," . $mainPlayer, 1);
-          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card in your Graveyard to banish", 1);
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $mainPlayer, 1);
-            AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-          }
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card in your opponent's Graveyard to banish", 1);
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRDISCARD", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $defPlayer, 1);
-            AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
           }
           break;
         default:
@@ -2063,7 +1991,7 @@ function IsResolutionStep()
 {
   global $Stack;
   $resolutionStep = $Stack->FindCardID("RESOLUTIONSTEP");
-  return $resolutionStep != "";
+  return $resolutionStep->Index() != -1;
 }
 
 function IsLayerStep()
@@ -2076,7 +2004,7 @@ function IsLayerStep()
   // account for transitioning from resolution step to layerstep
   if ($layers[$layerInd] == "RESOLUTIONSTEP" && isset($layers[$layerInd - $layerPieces])) $layerInd -= $layerPieces;
   if (match($layers[$layerInd]) {
-    "LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY", "MELD", "RESUMETURN" => true,
+    "LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY", "MELD", "RESUMETURN", "CLOSESTEP" => true,
     default => false
   }) return false;
   if ($layers[$layerInd + 1] != $mainPlayer) return false;
