@@ -645,6 +645,11 @@ function AssignArcaneBonus($playerID)
         case "tempest_aurora_blue":
           if (CardCost($layers[$layerIndex]) > 0) $skip = true;
           break;
+        case "stir_the_aetherwinds_red":
+        case "stir_the_aetherwinds_yellow":
+        case "stir_the_aetherwinds_blue":
+          if (!TypeContains($layers[$layerIndex], "A", $playerID)) $skip = true;
+          break;
         default:
           break;
       }
