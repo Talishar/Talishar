@@ -946,7 +946,18 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $turnBackupFileDest = "$replayPath/turn_$player-$turnNum" . "_Gamestate.txt";
         }
       }
-      WriteLog("Player " . $playerID . " saved this game as their replay # $counter.");
+      WriteLog("Player " . $playerID . " saved this game as their replay #$counter.");
+
+      // Generate a shareable link for this replay
+      $sharedDir = "./Replays/shared/";
+      if (!file_exists($sharedDir)) mkdir($sharedDir, 0777, true);
+      $shareToken = bin2hex(random_bytes(32));
+      $tokenData = json_encode(["userId" => $pid, "replayNumber" => (int)$counter]);
+      if (file_put_contents($sharedDir . $shareToken . ".json", $tokenData) !== false) {
+        $shareUrl = "/replay/shared?token=$shareToken";
+        WriteLog("Share replay #$counter: <a href=\"$shareUrl\" target=\"_blank\" rel=\"noopener noreferrer\">Click to open shareable link</a>");
+      }
+
       $counterFile = fopen($path . "counter.txt", "w");
       fwrite($counterFile, $counter + 1);
       fclose($counterFile);
