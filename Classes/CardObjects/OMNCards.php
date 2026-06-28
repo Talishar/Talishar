@@ -1856,6 +1856,7 @@ class core_reaction extends BaseCard {
   function ProcessTrigger($target, $additionalCosts, $damage) {
     $Auras = new Auras($this->controller);
     $AuraCard = $Auras->FindCardUID($additionalCosts);
+    SetDamageSourceUID($AuraCard->UniqueID());
     $AuraCard->Destroy();
     DealArcane($damage, source:$this->cardID, resolvedTarget:$target);
   }
