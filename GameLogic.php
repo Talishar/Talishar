@@ -3128,10 +3128,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "STEALEQUIPMENT":
       $targetPlayer = str_contains($lastResult, "THEIR") ? $otherPlayer : $player;
       $index = explode("-", $lastResult, 2)[1] ?? -1;
-      if ($index == -1) return $cardID;
+      if ($index == -1) return "";
       $trueSteal = $parameter == "STEAL";
       StealEquipment($targetPlayer, $index, $player, $trueSteal);
-      return $cardID;
+      return "";
     case "MODULARMOVE":
       $effectIndex = -1;
       $ctePieces = CurrentTurnEffectPieces();

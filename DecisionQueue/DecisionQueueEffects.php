@@ -1355,7 +1355,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       }
       return $lastResult;
     case "IRONFIST":
-      $index = explode("-", $lastResult, 3)[1];
+      $index = explode("-", $lastResult, 3)[1] ?? 0;
       $arsenal = &GetArsenal($player);
       $arsenal[$index + 1] = "UP";
       ++$arsenal[$index + 6];
