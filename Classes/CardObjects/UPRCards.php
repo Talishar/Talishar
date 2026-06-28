@@ -3026,17 +3026,31 @@ class rapid_reflex_blue extends Card {
 // }
 
 
-// class that_all_you_got_yellow extends Card {
+class that_all_you_got_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "that_all_you_got_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "that_all_you_got_yellow";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    global $ChainLinks;
+    $Link = $ChainLinks->GetLink($chainLink);
+    $AttackPowerValue = $Link->TotalAttack();
+    if ($AttackPowerValue <= 2)
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = "-", $additionalCosts = "-", $from = "-") {
+    Draw($this->controller, effectSource:$this->cardID);
+    WriteLog(CardLink($this->cardID, $this->cardID) . " drew a card");
+    return "";
+  }
+}
 
 
 // class thaw_red extends Card {

@@ -4182,6 +4182,41 @@ class deep_recesses_of_existence_blue extends Card {
     $this->cardID = "deep_recesses_of_existence_blue";
     $this->controller = $controller;
   }
+
+  function CombatChainCloseAbility($chainLink) {
+    $Link = new ChainLink($chainLink);
+    $LinkCard = $Link->AttackCard();
+		AddLayer("TRIGGER", $this->controller, $this->cardID, target:$LinkCard->From());
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $mainPlayer, $defPlayer, $CS_HealthLost;
+		$from = $target;
+    $whoseGY = str_contains($from, "THEIR") ? "THEIRDISCARD" : "MYDISCARD";
+    // Do you want to banish this card face-down, and banish a card from each player who lost life this turn?
+    AddDecisionQueue("YESNO", $mainPlayer, "do_you_want_to_banish_".CardLink("deep_recesses_of_existence_blue", "deep_recesses_of_existence_blue")."?");
+    // This will exit early if No
+    AddDecisionQueue("NOPASS", $mainPlayer, "-");
+    AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "$whoseGY:cardID=deep_recesses_of_existence_blue", 1);
+    AddDecisionQueue("REVERSELIST", $mainPlayer, "-", 1); // make it banish the top DRE
+    AddDecisionQueue("CHOOSEONE", $mainPlayer, "<-", 1);
+    AddDecisionQueue("MZBANISH", $mainPlayer, "$whoseGY,DOWN," . $mainPlayer, 1);
+    AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+    if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card in your Graveyard to banish", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $mainPlayer, 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+    }
+    if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card in your opponent's Graveyard to banish", 1);
+      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRDISCARD", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+      AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $defPlayer, 1);
+      AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
+    }
+	}
 }
 
 class power_of_make_believe extends BaseCard {

@@ -848,82 +848,154 @@ class beseech_the_demigon_blue extends Card {
 // }
 
 
-// class deathly_delight_red extends Card {
+class deathly_delight extends BaseCard {
+	function CombatChainCloseAbility() {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "deathly_delight_red";
-//     $this->controller = $controller;
-//     }
+	function ProcessTrigger() {
+		global $mainPlayer, $CS_HealthLost, $defPlayer;
+		$numLife = 0;
+		if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numLife;
+		if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numLife;
+		if ($numLife > 0) GainHealth($numLife, $mainPlayer);
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class deathly_delight_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "deathly_delight_red";
+		$this->controller = $controller;
+		$this->baseCard = new deathly_delight($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function CombatChainCloseAbility($chainLink) {
+		return $this->baseCard->CombatChainCloseAbility();
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
+
+class deathly_delight_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "deathly_delight_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new deathly_delight($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function CombatChainCloseAbility($chainLink) {
+		return $this->baseCard->CombatChainCloseAbility();
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
+
+class deathly_delight_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "deathly_delight_blue";
+		$this->controller = $controller;
+		$this->baseCard = new deathly_delight($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function CombatChainCloseAbility($chainLink) {
+		return $this->baseCard->CombatChainCloseAbility();
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
+
+class deathly_wail extends BaseCard {
+	function CombatChainCloseAbility() {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger() {
+		global $mainPlayer, $CS_HealthLost, $defPlayer;
+		$numRunechant = 0;
+		if (GetClassState($mainPlayer, $CS_HealthLost) > 0) ++$numRunechant;
+		if (GetClassState($defPlayer, $CS_HealthLost) > 0) ++$numRunechant;
+		if ($numRunechant > 0) PlayAura("runechant", $mainPlayer, $numRunechant, effectSource: $this->cardID);
+	}
+}
+
+class deathly_wail_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "deathly_wail_red";
+		$this->controller = $controller;
+		$this->baseCard = new deathly_wail($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function CombatChainCloseAbility($chainLink) {
+		return $this->baseCard->CombatChainCloseAbility();
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
 
 
-// class deathly_delight_yellow extends Card {
+class deathly_wail_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "deathly_wail_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new deathly_wail($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "deathly_delight_yellow";
-//     $this->controller = $controller;
-//     }
+	function CombatChainCloseAbility($chainLink) {
+		return $this->baseCard->CombatChainCloseAbility();
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
 
+class deathly_wail_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "deathly_wail_blue";
+		$this->controller = $controller;
+		$this->baseCard = new deathly_wail($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-// class deathly_delight_blue extends Card {
+	function CombatChainCloseAbility($chainLink) {
+		return $this->baseCard->CombatChainCloseAbility();
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "deathly_delight_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class deathly_wail_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "deathly_wail_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class deathly_wail_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "deathly_wail_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class deathly_wail_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "deathly_wail_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
 
 
 // class decimator_great_axe extends Card {
@@ -2870,43 +2942,79 @@ class tear_through_the_portal_blue extends Card {
 // }
 
 
-// class widespread_annihilation_blue extends Card {
+class widespread_annihilation_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "widespread_annihilation_blue";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "widespread_annihilation_blue";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
+	function CombatChainCloseAbility($chainLink) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
 
-// class widespread_destruction_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "widespread_destruction_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $mainPlayer, $defPlayer, $CS_HealthLost;
+		if (GetClassState($mainPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "HAND,-");
+		if (GetClassState($defPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "HAND,-");
+	}
+}
 
 
-// class widespread_ruin_red extends Card {
+class widespread_destruction_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "widespread_ruin_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "widespread_destruction_yellow";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function CombatChainCloseAbility($chainLink) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $mainPlayer, $defPlayer, $CS_HealthLost;
+		if (GetClassState($mainPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
+		if (GetClassState($defPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
+	}
+}
+
+
+class widespread_ruin_red extends Card {
+
+	function __construct($controller) {
+		$this->cardID = "widespread_ruin_red";
+		$this->controller = $controller;
+    }
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function CombatChainCloseAbility($chainLink) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $mainPlayer, $defPlayer, $CS_HealthLost;
+		if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
+            $deck = new Deck($mainPlayer);
+			$deck->BanishTop();
+		}
+		if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
+			$deck = new Deck($defPlayer);
+			$deck->BanishTop();
+		}
+	}
+}
 
 
 ?>

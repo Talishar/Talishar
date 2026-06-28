@@ -420,7 +420,7 @@ function ContinueDecisionQueue($lastResult = "")
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer, $combatChainState;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
-  global $CCS_CachedPreBlockValue, $CS_LayerResolved;
+  global $CCS_CachedPreBlockValue, $CS_LayerResolved, $CombatChain;
 
   $dqCount = count($decisionQueue);
   if ($dqCount == 0 || IsGamePhase($decisionQueue[0])) {
@@ -541,7 +541,12 @@ function ContinueDecisionQueue($lastResult = "")
               break;
             case "FINALIZECHAINLINK":
             case "CLOSESTEP":
-              FinalizeChainLink($parameter);
+              if ($CombatChain->HasCurrentLink())
+                FinalizeChainLink($parameter);
+              else {
+                $Layer = $Stack->FindCardID($cardID);
+                $Layer->Negate();
+              }
               break;
             case "RESOLUTIONSTEP":
               ResetCombatChainState();

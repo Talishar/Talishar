@@ -43,13 +43,13 @@ class Stack {
   }
 
   function FindCardID($cardID) {
-    if ($this->StackEmpty()) return "";
+    if ($this->StackEmpty()) return new Layer(-1);
     $count = count($this->layers);
     $layerPieces = LayerPieces();
     for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i] == $cardID) return new Layer($i);
     }
-    return "";
+    return new Layer(-1);
   }
 
   function Negate($index, $cardNumber=false) {

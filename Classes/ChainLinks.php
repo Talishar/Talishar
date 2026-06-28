@@ -19,7 +19,7 @@ class ChainLinks {
 	}
 
 	function NumLinks() {
-			return count($this->chain);
+		return count($this->chain);
 	}
 
 	function LastLink() {
