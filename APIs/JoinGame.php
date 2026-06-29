@@ -1010,7 +1010,7 @@ function isBannedInFormat($cardID, $format) {
   }
   if ($format == "futuresage") {
     $futureBans = [];
-    $futureUnbans = ["cash_in_yellow", "seeds_of_agony_red", "seeds_of_agony_yellow", "seed_of_agony_blue",
+    $futureUnbans = ["cash_in_yellow", "seeds_of_agony_red", "seeds_of_agony_yellow", "seeds_of_agony_blue",
                     "steelblade_shunt_red", "steelblade_shunt_yellow", "steelblade_shunt_blue",
                     "vigorous_smashup_red", "vigorous_smashup_yellow", "vigorous_smashup_blue"];
     return (in_array($cardID, $futureBans) || (isset($bannedSets["sage"][$cardID]) && !in_array($cardID, $futureUnbans)));
