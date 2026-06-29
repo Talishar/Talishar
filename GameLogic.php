@@ -2333,9 +2333,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else
         $object = MZIndexToObject($player, $lastResult);
       $num = is_numeric($parameter) ? $parameter : -1;
-      if ($object != "" && $object != "-")
+      if ($object != "" && $object != "-") {
         $object->AddDefCounters($num);
-      if ($num < 0) WriteLog(CardLink($object->CardID()) . " gets a -1 counter.");
+        if ($num < 0) WriteLog(CardLink($object->CardID()) . " gets a -1 counter.");
+      }
       return $lastResult;
     case "REMOVEDEFCOUNTER":
       if ($lastResult == "") return $lastResult;
