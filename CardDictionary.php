@@ -698,7 +698,7 @@ function DynamicCost($cardID)
     case "tectonic_rift_blue":
       return "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";
     case "sonata_fantasmia_blue":
-      if(SearchCurrentTurnEffects("bloodsheath_skeleta-NAA", $currentPlayer) || SearchCurrentTurnEffects("bloodsheath_skeleta-AA", $currentPlayer)) {
+      if(SearchCurrentTurnEffectsAny(["bloodsheath_skeleta-NAA", "bloodsheath_skeleta-AA"], $currentPlayer)) {
         return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
       }
       return "0,2,4,6,8,10,12,14,16,18,20";
@@ -707,14 +707,14 @@ function DynamicCost($cardID)
     case "reel_in_blue":
       return "0,1,2,3,4,5,6,7,8,9,10,11,12";
     case "sonata_galaxia_red":
-      if(SearchCurrentTurnEffects("bloodsheath_skeleta-NAA", $currentPlayer) || SearchCurrentTurnEffects("bloodsheath_skeleta-AA", $currentPlayer)) {
+      if(SearchCurrentTurnEffectsAny(["bloodsheath_skeleta-NAA", "bloodsheath_skeleta-AA"], $currentPlayer)) {
         return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
       }
       return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60";
     case "supercell_blue":
       return GetIndices(SearchCount(SearchItemsByName($currentPlayer, "Hyper Driver")) + 1);
     case "germinate_blue":
-      if(SearchCurrentTurnEffects("bloodsheath_skeleta-NAA", $currentPlayer) || SearchCurrentTurnEffects("bloodsheath_skeleta-AA", $currentPlayer)) {
+      if(SearchCurrentTurnEffectsAny(["bloodsheath_skeleta-NAA", "bloodsheath_skeleta-AA"], $currentPlayer)) {
         return "0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110";
       }
       return "0,2,4,6,8,10,12,14,16,18,20";
@@ -4163,7 +4163,7 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
   if (isFaceDownMod($mod)) return false;
-  if (ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("nuu_alluring_desire", $player) || SearchCurrentTurnEffects("nuu", $player))) return true;
+  if (ColorContains($cardID, 3, $otherPlayer) && SearchCurrentTurnEffectsAny(["nuu_alluring_desire", "nuu"], $player)) return true;
   if ($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
   else return false;
 }

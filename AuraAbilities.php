@@ -4,7 +4,7 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
   global $EffectContext, $currentTurnEffects;
   if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
-  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+  if (TypeContains($EffectContext, "C", $player) && (PreachModestyActive())) {
     if ($isToken) {//this is a band-aid fix for cases where EffectContext isn't updated properly
       WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
       return;
@@ -41,7 +41,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $auras = &GetAuras($player);
   $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
-  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+  if (TypeContains($EffectContext, "C", $player) && (PreachModestyActive())) {
     if ($isToken) {//this is a band-aid fix for cases where EffectContext isn't updated properly
       WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
       return;
@@ -52,8 +52,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       return;
     if (Smoldering($player, "smoldering_steel_red", number:$number, effectSource:$effectSource, effectController:$effectController))
       return;
-    SearchCurrentTurnEffects("smoldering_scales", $player, true);
-    SearchCurrentTurnEffects("smoldering_steel_red", $player, true);
+    RemoveCurrentTurnEffectsMulti(["smoldering_scales", "smoldering_steel_red"], $player);
   }
   if (!CanPlayAura($cardID, $player, $EffectContext, $effectController, $isToken)) return;
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;
@@ -1282,13 +1281,12 @@ function AuraEndTurnAbilities()
 
 function AuraEndTurnCleanup()
 {
+  $aurasPieces = AuraPieces();
   $auras = &GetAuras(1);
   $countAuras = count($auras);
-  $aurasPieces = AuraPieces();
   for ($i = 0; $i < $countAuras; $i += $aurasPieces) $auras[$i + 5] = AuraNumUses($auras[$i]);
   $auras = &GetAuras(2);
   $countAuras = count($auras);
-  $aurasPieces = AuraPieces();
   for ($i = 0; $i < $countAuras; $i += $aurasPieces) $auras[$i + 5] = AuraNumUses($auras[$i]);
 }
 

@@ -5,7 +5,7 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
   global $EffectContext;
   $permanents = &GetPermanents($player);
   $otherPlayer = 3 - $player;
-  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+  if (TypeContains($EffectContext, "C", $player) && (PreachModestyActive())) {
     WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
   }
@@ -164,10 +164,10 @@ function PermanentTakeDamageAbilities($player, $index, $damage, $preventable, $t
       }
     }
   }
-  if (SearchCurrentTurnEffects("vambrace_of_determination", $player) != "" && $preventedDamage > 0) {//vambrace
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true)) {
     $preventedDamage -= 1;
-    SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
   }
+  
   $damage -= $preventedDamage;
   if ($damage <= 0) $damage = 0;
   return $damage;

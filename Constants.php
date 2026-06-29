@@ -1002,7 +1002,7 @@ function HasAimCounter()
   return $combatChainState[$CCS_HasAimCounter];
 }
 
-function CCOffset($piece)
+function CombatChainOffset($piece)
 {
   switch($piece)
   {

@@ -1852,7 +1852,7 @@ class reckless_stampede_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
+    $switched = SearchCurrentTurnEffectsEitherPlayer("the_old_switcheroo_blue");
     Clash($this->cardID, $this->controller);
 
     $otherPlayer = $this->controller == 1 ? 2 : 1;
@@ -3050,7 +3050,7 @@ class vigorous_smashup extends BaseCard {
   }
 
   function ProcessTrigger() {
-    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
+    $switched = SearchCurrentTurnEffectsEitherPlayer("the_old_switcheroo_blue");
     Clash($this->cardID, $this->controller);
     // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
     $revealedCardController = $this->controller;
@@ -3141,7 +3141,7 @@ class tough_smashup extends BaseCard {
   }
 
   function ProcessTrigger() {
-    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
+    $switched = SearchCurrentTurnEffectsEitherPlayer("the_old_switcheroo_blue");
     Clash($this->cardID, $this->controller);
     // This card puts the revealed card on bottom, so it's possible we reveal an opponent's card due to Switcheroo.
     $revealedCardController = $this->controller;

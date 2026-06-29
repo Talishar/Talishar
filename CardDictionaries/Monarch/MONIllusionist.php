@@ -154,7 +154,7 @@
       if(DoesBlockTriggerPhantasm($i)) $blockGreaterThan6 = true;
     }
     if(!$blockGreaterThan6) return false;
-    if((SearchCurrentTurnEffects("dream_weavers", $mainPlayer) && CardType($CombatChain->AttackCard()->ID()) == "AA") || SearchCurrentTurnEffects("passing_mirage_blue", $mainPlayer) || SearchCurrentTurnEffects("semblance_blue", $mainPlayer) || SearchCurrentTurnEffects("miragai", $mainPlayer)) { return false; }
+    if((SearchCurrentTurnEffects("dream_weavers", $mainPlayer) && CardType($CombatChain->AttackCard()->ID()) == "AA") || SearchCurrentTurnEffectsAny(["passing_mirage_blue", "semblance_blue", "miragai"], $mainPlayer)) { return false; }
     return true;
   }
 

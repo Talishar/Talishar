@@ -1012,7 +1012,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "CombatChain":
           $lastResultArr = explode(",", $lastResult);
           $lastResultArrCount = count($lastResultArr);
-          for ($i = 0; $i < $lastResultArrCount; ++$i) $input[] = $combatChain[$lastResultArr[$i] + CCOffset($type)] . "-" . $lastResultArr[$i];
+          $combatChainOffset = CombatChainOffset($type);
+          for ($i = 0; $i < $lastResultArrCount; ++$i) $input[] = $combatChain[$lastResultArr[$i] + $combatChainOffset] . "-" . $lastResultArr[$i];
         default:
           break;
       }

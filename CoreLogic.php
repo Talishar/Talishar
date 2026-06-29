@@ -194,8 +194,7 @@ function AddPower(&$totalPower, $amount, $sourceBuff=false, $source="-"): void
     if (!$sourceBuff && $amount > 0) { //thrive and flourish don't apply to buffs to the attack source
       $num_thrives_active = CountCurrentTurnEffects("thrive_yellow", $mainPlayer); //thrives stack
       if ($num_thrives_active > 0) $amount += $num_thrives_active;
-      SearchCurrentTurnEffects("flourish_yellow-INACTIVE", $mainPlayer, false, false, true);
-      SearchCurrentTurnEffects("flourish_blue-INACTIVE", $mainPlayer, false, false, true);
+      ActivateCurrentTurnEffectsMulti(["flourish_yellow-INACTIVE", "flourish_blue-INACTIVE"], $mainPlayer);
     }
   }
   if ($amount > 0 && ($attackID == "back_heel_kick_red" || $attackID == "back_heel_kick_yellow" || $attackID == "back_heel_kick_blue") && ComboActive()) $amount += 1;
@@ -645,10 +644,10 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
     if (SearchCurrentTurnEffects("swarming_gloomveil_red", $player)) return false;
     if ($source == "deny_redemption_red" && SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $mainPlayer)) return false;
   }
-  if ($source == "runechant" && (SearchCurrentTurnEffects("vynnset", $mainPlayer) || SearchCurrentTurnEffects("vynnset_iron_maiden", $mainPlayer))) return false;
+  if ($source == "runechant" && SearchCurrentTurnEffectsAny(["vynnset", "vynnset_iron_maiden"], $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("tiger_stripe_shuko", $mainPlayer) && $source == $CombatChain->AttackCard()->ID()) return false;
-  if ($type == "COMBAT" && (SearchCurrentTurnEffects("chorus_of_ironsong_yellow", $mainPlayer) || SearchCurrentTurnEffects("jagged_edge_red", $mainPlayer))) return false;
+  if ($type == "COMBAT" && SearchCurrentTurnEffectsAny(["chorus_of_ironsong_yellow", "jagged_edge_red"], $mainPlayer)) return false;
   static $unpreventable = ["rok" => true, "malign_red" => true, "malign_yellow" => true, "malign_blue" => true, "murkmire_grapnel_red" => true, "murkmire_grapnel_yellow" => true, "murkmire_grapnel_blue" => true];
   if (isset($unpreventable[$source]) || isset($unpreventable[$extraText])) return false;
   if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue" || $extraText == "pick_to_pieces_red" || $extraText == "pick_to_pieces_yellow" || $extraText == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
@@ -703,8 +702,7 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   //Prevention happens with user selection
   if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable, $source);
   if ($source == "runechant") {
-    SearchCurrentTurnEffects("vynnset", $otherPlayer, true);
-    SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer, true);
+    RemoveCurrentTurnEffectsMulti(["vynnset", "vynnset_iron_maiden"], $otherPlayer);
   }
   if ($source == "deny_redemption_red") {
     SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $otherPlayer, true);
@@ -1085,7 +1083,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     WriteLog(CardLink("dread_scythe", "dread_scythe") . " prevented you from gaining life");
     return false;
   }
-  if ($preventable && (SearchCurrentTurnEffects("deny_redemption_red", $player) || SearchCurrentTurnEffects("deny_redemption_red", $otherPlayer))) {
+  if ($preventable && SearchCurrentTurnEffectsEitherPlayer("deny_redemption_red")) {
     WriteLog(CardLink("deny_redemption_red", "deny_redemption_red") . " prevented you from gaining life");
     return false;
   }
@@ -1855,7 +1853,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers, $CombatChain;
-  global $combatChainState, $CCS_EclecticMag, $CS_ArcaneDamageDealt;
+  global $combatChainState, $CCS_EclecticMag, $CS_ArcaneDamageDealt, $currentTurnEffects;
   $otherPlayer = 3 - $currentPlayer;
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
@@ -1934,7 +1932,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if (SearchCurrentTurnEffects("meridian_pathway", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
   if (DelimStringContains($subtype, "Evo") && GetResolvedAbilityType($cardID, $from, $currentPlayer) != "AA") {
-    if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $currentPlayer) || SearchCurrentTurnEffects("teklovossen", $currentPlayer)) return true;
+    if (SearchCurrentTurnEffectsAny(["teklovossen_esteemed_magnate", "teklovossen"], $currentPlayer)) return true;
     if (SearchCurrentTurnEffectsForCycle("scrap_compactor_red", "scrap_compactor_yellow", "scrap_compactor_blue", $currentPlayer)) return true;
   }
   if ($from == "ARS" && $cardTypeIsAction && $currentPlayer != $mainPlayer) {
@@ -1942,20 +1940,39 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     $arsenal = &GetArsenal($currentPlayer);
     $arsenalCount = count($arsenal);
     $arsenalPieces = ArsenalPieces();
-    for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
-      if (SearchCurrentTurnEffects("chain_reaction_yellow-" . $arsenal[$i + 5], $currentPlayer)) return true;
+    $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+    $currentTurnEffectsCount = count($currentTurnEffects);
+    $chainReactionUIDs = [];
+    for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
+      if ($currentTurnEffects[$j + 1] === $currentPlayer) {
+        $eff = $currentTurnEffects[$j];
+        if (str_starts_with($eff, "chain_reaction_yellow-")) {
+          $chainReactionUIDs[substr($eff, 22)] = true;
+        }
+      }
     }
-    $layersCount = count($layers);
-    $layersPieces = LayerPieces();
-    for ($i = 0; $i < $layersCount; $i += $layersPieces) {
-      if (SearchCurrentTurnEffects("chain_reaction_yellow-" . $layers[$i + 5], $currentPlayer)) return true;
+    if (!empty($chainReactionUIDs)) {
+      for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
+        if (isset($chainReactionUIDs[$arsenal[$i + 5]])) return true;
+      }
+      $layersCount = count($layers);
+      $layersPieces = LayerPieces();
+      for ($i = 0; $i < $layersCount; $i += $layersPieces) {
+        if (isset($chainReactionUIDs[$layers[$i + 5]])) return true;
+      }
     }
   }
   if ($subtypeIsAura && ClassContains($cardID, "ILLUSIONIST", $currentPlayer)) {
     $cardCost = CardCost($cardID, $from);
-    if (SearchCurrentTurnEffects("vengeful_apparition_red-INST", $currentPlayer) && $cardCost <= 2) return true;
-    if (SearchCurrentTurnEffects("vengeful_apparition_yellow-INST", $currentPlayer) && $cardCost <= 1) return true;
-    if (SearchCurrentTurnEffects("vengeful_apparition_blue-INST", $currentPlayer) && $cardCost <= 0) return true;
+    $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+    $currentTurnEffectsCount = count($currentTurnEffects);
+    for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
+      if ($currentTurnEffects[$j + 1] !== $currentPlayer) continue;
+      $effect = $currentTurnEffects[$j];
+      if ($effect === "vengeful_apparition_red-INST" && $cardCost <= 2) return true;
+      if ($effect === "vengeful_apparition_yellow-INST" && $cardCost <= 1) return true;
+      if ($effect === "vengeful_apparition_blue-INST" && $cardCost <= 0) return true;
+    }
   }
   if ($subtypeIsAura && SearchCurrentTurnEffects("fluttersteps", $currentPlayer)) return true;
   $abilityType = "-";
@@ -2352,8 +2369,7 @@ function DoesAttackHaveGoAgain()
 
   //Prevention Natural Go Again
   if (CurrentEffectPreventsGoAgain($attackID, $from)) return false;
-  if (SearchCurrentTurnEffects("blizzard_blue", $mainPlayer)) return false;
-  if (SearchCurrentTurnEffects("rainbow_goo_trap_red", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffectsAny(["blizzard_blue", "rainbow_goo_trap_red"], $mainPlayer)) return false;
 
   //Natural Go Again
   if (!$isAura && HasGoAgain($attackID, "ATTACK")) return true;
@@ -2380,7 +2396,7 @@ function DoesAttackHaveGoAgain()
   }
 
   if ($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("ode_to_wrath_yellow", $mainPlayer)) return true;
-  if (DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "dromai_ash_artist") || SearchCharacterActive($mainPlayer, "dromai") || SearchCurrentTurnEffects("dromai_ash_artist-SHIYANA", $mainPlayer) || SearchCurrentTurnEffects("dromai-SHIYANA", $mainPlayer))) return true;
+  if (DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "dromai_ash_artist") || SearchCharacterActive($mainPlayer, "dromai") || SearchCurrentTurnEffectsAny(["dromai_ash_artist-SHIYANA", "dromai-SHIYANA"], $mainPlayer))) return true;
   if (SearchItemsForCard("mhz_script_yellow", $mainPlayer) != "" && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) return true;
   if (SearchCurrentTurnEffectsForCycle("engaged_swiftblade_red", "engaged_swiftblade_yellow", "engaged_swiftblade_blue", $mainPlayer) && ClassContains($attackID, "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
 
@@ -3074,8 +3090,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
     if ($numActionsPlayed > 2 && TalentContains($actionsPlayed[$numActionsPlayed-3], "LIGHTNING", $mainPlayer) && $actionsPlayed[$numActionsPlayed-2] == "current_funnel_blue" && $cardTypeIsAction) {
       if (SearchCurrentTurnEffects("current_funnel_blue", $mainPlayer, remove: true)) $hasGoAgain = true;
     }
-    if ($cardType == "AA" && SearchCurrentTurnEffects("blizzard_blue", $player)) $hasGoAgain = false;
-    if ($cardType == "AA" && SearchCurrentTurnEffects("rainbow_goo_trap_red", $player)) $hasGoAgain = false;
+    if ($cardType == "AA" && SearchCurrentTurnEffectsAny(["blizzard_blue", "rainbow_goo_trap_red"], $player)) $hasGoAgain = false;
     if ($cardTypeIsAction) $hasGoAgain = $hasGoAgain || CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID);
     if ($cardTypeIsAction && $hasGoAgain && (SearchAuras("fog_down_yellow", 1) || SearchAuras("fog_down_yellow", 2))) $hasGoAgain = false;
     if ($cardTypeIsInstant && !$hasMeld){

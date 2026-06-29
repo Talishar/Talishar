@@ -795,6 +795,69 @@ function SearchCurrentTurnEffectsForCycle($card1, $card2, $card3, $player)
   return false;
 }
 
+function SearchCurrentTurnEffectsAny(array $cardIDs, $player): bool
+{
+  global $currentTurnEffects;
+  $lookup = array_flip($cardIDs);
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if ($currentTurnEffects[$i + 1] == $player && isset($lookup[$currentTurnEffects[$i]])) return true;
+  }
+  return false;
+}
+
+function SearchCurrentTurnEffectsEitherPlayer(string $cardID): bool
+{
+  global $currentTurnEffects;
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if ($currentTurnEffects[$i] === $cardID) return true;
+  }
+  return false;
+}
+
+function RemoveCurrentTurnEffectsMulti(array $cardIDs, $player): void
+{
+  global $currentTurnEffects;
+  $lookup = array_flip($cardIDs);
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  $toRemove = [];
+  $remaining = count($cardIDs);
+  for ($i = 0; $i < $count && $remaining > 0; $i += $pieces) {
+    if ($currentTurnEffects[$i + 1] !== $player) continue;
+    $eff = $currentTurnEffects[$i];
+    if (isset($lookup[$eff])) {
+      $toRemove[] = $i;
+      unset($lookup[$eff]);
+      --$remaining;
+    }
+  }
+  for ($j = count($toRemove) - 1; $j >= 0; --$j) {
+    RemoveCurrentTurnEffect($toRemove[$j]);
+  }
+}
+
+function ActivateCurrentTurnEffectsMulti(array $cardIDs, $player): void
+{
+  global $currentTurnEffects;
+  $lookup = array_flip($cardIDs);
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  $remaining = count($cardIDs);
+  for ($i = 0; $i < $currentTurnEffectsCount && $remaining > 0; $i += $currentTurnEffectsPieces) {
+    if ($currentTurnEffects[$i + 1] !== $player) continue;
+    $effect = $currentTurnEffects[$i];
+    if (isset($lookup[$effect])) {
+      $currentTurnEffects[$i] = ExtractCardID($effect);
+      unset($lookup[$effect]);
+      --$remaining;
+    }
+  }
+}
+
 function CountCurrentTurnEffects($cardID, $player, $remove = false, $partial = false)
 {
   global $currentTurnEffects;
@@ -1050,6 +1113,19 @@ function SearchAurasForCard($cardID, $player, $selfReferential = true)
     }
   }
   return implode(",", $indices);
+}
+
+function PreachModestyActive(): bool
+{
+  $pieces = AuraPieces();
+  foreach ([1, 2] as $p) {
+    $auras = &GetAuras($p);
+    $count = count($auras);
+    for ($i = 0; $i < $count; $i += $pieces) {
+      if ($auras[$i] === "preach_modesty_red") return true;
+    }
+  }
+  return false;
 }
 
 function SearchAurasForCardName($cardName, $player, $selfReferential = true)

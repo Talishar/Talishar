@@ -162,7 +162,7 @@ function CharacterStartTurnAbility($index)
       if ($character[1] < 3) {
         MZMoveCard($mainPlayer, "MYHAND", "MYBANISH,HAND,-", DQContext:"Choose a card to banish for ".CardLink($cardID, $cardID));
         // this is a little messy, but vynnset's effect context can get messed up inside PlayAura
-        if (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "") {
+        if (PreachModestyActive()) {
           WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
         }
         else {
@@ -733,7 +733,7 @@ function CharacterCostModifier($cardID, $from, $cost)
       case "nuu_alluring_desire":
       case "nuu":
         $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-        if ($from == "THEIRBANISH" && ColorContains($cardID, 3, $otherPlayer) && (SearchCurrentTurnEffects("nuu_alluring_desire", $currentPlayer) || SearchCurrentTurnEffects("nuu", $currentPlayer))) $modifier -= $cost;
+        if ($from == "THEIRBANISH" && ColorContains($cardID, 3, $otherPlayer) && SearchCurrentTurnEffectsAny(["nuu_alluring_desire", "nuu"], $currentPlayer)) $modifier -= $cost;
         break;
       case "enigma_ledger_of_ancestry":
       case "enigma":
@@ -790,7 +790,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
     else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
     else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
   }
-  if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) { 
+  if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (PreachModestyActive())) { 
     if (TypeContains($cardID, "T", $player, true)) {
       WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
       return;
@@ -801,8 +801,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
       return;
     if (Smoldering($player, "smoldering_steel_red", "EQUIP", slot:$slot, effectAgent:$effectAgent))
       return;
-    SearchCurrentTurnEffects("smoldering_scales", $player, true);
-    SearchCurrentTurnEffects("smoldering_steel_red", $player, true);
+    RemoveCurrentTurnEffectsMulti(["smoldering_scales", "smoldering_steel_red"], $player);
   }
   $char = &GetPlayerCharacter($player);
   $uniqueID = GetUniqueId($cardID, $player);
@@ -944,7 +943,7 @@ function EquipWeapon($player, $cardID, $source = "-")
       return;
     }
   }
-  if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) { 
+  if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (PreachModestyActive())) { 
     if (TypeContains($cardID, "T", $player, true)) {
       WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
       return;

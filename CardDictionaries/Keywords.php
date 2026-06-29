@@ -105,7 +105,7 @@
   {
     global $mainPlayer, $defPlayer, $dqVars;
     $p1Power = ""; $p2Power = "";
-    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
+    $switched = SearchCurrentTurnEffectsEitherPlayer("the_old_switcheroo_blue");
     for($i=1; $i<=2; ++$i) {
       $playerID = $switched ? 3 - $i : $i;
       $deck = new Deck($playerID);

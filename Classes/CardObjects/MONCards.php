@@ -3190,7 +3190,7 @@ class sonata_arcanix_red extends Card {
   }
 
   function DynamicCost() {
-    if(SearchCurrentTurnEffects("bloodsheath_skeleta-NAA", $this->controller) || SearchCurrentTurnEffects("bloodsheath_skeleta-AA", $this->controller))
+    if(SearchCurrentTurnEffectsAny(["bloodsheath_skeleta-NAA", "bloodsheath_skeleta-AA"], $this->controller))
       $end = 100;
     else $end = 20;
     return implode(",", range(0, $end, 2));

@@ -110,7 +110,7 @@ class Deck {
       array_splice($this->deck, $deckIndexModifier, 0, $cardID);
     }
     else {
-      if (SearchCurrentTurnEffects("topsy_turvy", 1) || SearchCurrentTurnEffects("topsy_turvy", 2)) {
+      if (SearchCurrentTurnEffectsEitherPlayer("topsy_turvy")) {
         WriteLog("Things are " . CardLink("topsy_turvy") . " so the card goes to the bottom instead!");
         $this->AddBottom($cardID);
       }

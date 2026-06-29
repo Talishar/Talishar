@@ -2200,7 +2200,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.3 Declare Costs Begin (CR 2.0)
       $resources[1] = 0;
       $dynCost = "";
-      $isNuu = SearchCurrentTurnEffects("nuu_alluring_desire", $currentPlayer) || SearchCurrentTurnEffects("nuu", $currentPlayer);
+      $isNuu = SearchCurrentTurnEffectsAny(["nuu_alluring_desire", "nuu"], $currentPlayer);
       $nuuActive = $isNuu && ColorContains($cardID, 3, $otherPlayer);
       if ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index, $facing); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
@@ -2313,7 +2313,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $activeAttackID = $CombatChain->HasCurrentLink() ? $CombatChain->AttackCard()->ID() : "";
     $isFireVein = ($activeAttackID == "obsidian_fire_vein" || $activeAttackID == "obsidian_fire_vein_r");
     if($activeAttackID && $isFireVein && $currentPlayer == $mainPlayer) {
-      $hasFireVeinEffect = SearchCurrentTurnEffects("obsidian_fire_vein", $currentPlayer) || SearchCurrentTurnEffects("obsidian_fire_vein_r", $currentPlayer);
+      $hasFireVeinEffect = SearchCurrentTurnEffectsAny(["obsidian_fire_vein", "obsidian_fire_vein_r"], $currentPlayer);
       if (!$hasFireVeinEffect) {
         if (!$isStaticType && (TalentContains($cardID, "DRACONIC", $currentPlayer)) && $resolvedAbilityType != "I") {
           AddCurrentTurnEffect($activeAttackID, $currentPlayer);

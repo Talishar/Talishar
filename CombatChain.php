@@ -941,8 +941,7 @@ function OnBlockResolveEffects($cardID = "")
       case "cintari_saber":
       case "cintari_saber_r":
         for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
-          $LinkCard = new ChainCard($i);
-          if (TypeContains($LinkCard->ID(), "AA")) {
+          if (TypeContains($combatChain[$i], "AA")) {
             AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
             break;
           }
@@ -1018,8 +1017,11 @@ function OnBlockResolveEffects($cardID = "")
     }
   }
   $blockingCards = [];
+  $commandingPerfEligible = SearchCurrentTurnEffects("commanding_performance_red", $mainPlayer) !== ""
+    && ClassContains($combatChain[0], "WARRIOR", $mainPlayer)
+    && IsHeroAttackTarget()
+    && SearchLayersForCardID("commanding_performance_red") == -1;
   for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
-    $LinkCard = new ChainCard($i);
     if ($combatChain[$i + 1] == $defPlayer) {
       $defendingCard = $combatChain[$i];
       $card = GetClass($defendingCard, $defPlayer);
@@ -1027,9 +1029,12 @@ function OnBlockResolveEffects($cardID = "")
         $card -> OnBlockResolveEffects($blockedFromHand, $i, $start);
       }
       if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
-      if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i, uniqueID:$LinkCard->UniqueID());
+      if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i, uniqueID:$combatChain[$i + 7]);
       elseif($cardID != "" && $combatChain[$i] == $cardID && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
-      if (SearchCurrentTurnEffects("commanding_performance_red", $mainPlayer) != "" && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("commanding_performance_red") == -1) AddLayer("TRIGGER", $mainPlayer, "commanding_performance_red", $defPlayer);
+      if ($commandingPerfEligible && TypeContains($combatChain[$i], "AA", $defPlayer)) {
+        AddLayer("TRIGGER", $mainPlayer, "commanding_performance_red", $defPlayer);
+        $commandingPerfEligible = false;
+      }
       switch ($defendingCard) {//code for Jarl's armor
         case "ollin_ice_cap":
           $sub = TalentContains($defendingCard, "ICE", $defPlayer) ? 1 : 0; //necessary for a fringe case where the helm but not the other blocking card loses its talent
@@ -1550,10 +1555,7 @@ function IsDominateActive()
   global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_CachedDominateActive, $combatChainState;
   global $CS_NumAuras, $CCS_NumBoosted, $chainLinks, $chainLinkSummary, $CombatChain;
   if (count($combatChain) == 0) return false;
-  if (SearchCurrentTurnEffectsForCycle("timidity_point_red", "timidity_point_yellow", "timidity_point_blue", $mainPlayer)) return false;
-  if (SearchCurrentTurnEffects("fearless_confrontation_blue", $mainPlayer)) return false;
-  if (SearchCurrentTurnEffects("unflinching_foothold", $mainPlayer)) return false;
-  if (SearchCurrentTurnEffects("rainbow_goo_trap_red", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffectsAny(["timidity_point_red", "timidity_point_yellow", "timidity_point_blue", "fearless_confrontation_blue", "unflinching_foothold", "rainbow_goo_trap_red"], $mainPlayer)) return false;
 
   $characterEffects = GetCharacterEffects($mainPlayer);
   $countCurrentTurnEffects = count($currentTurnEffects);
@@ -1642,9 +1644,10 @@ function IsOverpowerActive()
   }
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
+  $wagerActive = CachedWagerActive();
   for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsOverpower($currentTurnEffects[$i])) return true;
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red-BUFF" && CachedWagerActive()) return true;
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red-BUFF" && $wagerActive) return true;
   }
   $overpowerAttackID = $CombatChain->AttackCard()->ID();
   if (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer)) {
