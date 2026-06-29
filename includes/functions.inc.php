@@ -263,7 +263,6 @@ function GetDeckBuilderId($uid, $decklink)
 {
 	$conn = GetDBConnection(DBL_GET_DECK_BUILDER_ID);
 	if (!$conn) {
-        echo json_encode(["error" => "Database connection failed in getting deckbuilder ID"]);
         return "";
 	}
 	$sql = "SELECT fabraryId,fabdbId FROM users WHERE usersId=?";

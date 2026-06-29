@@ -43,6 +43,16 @@ $response->isPvtVoidPatron = $userName == "PvtVoid" || isset($_SESSION["isPvtVoi
 
 // Get Metafy info from database
 $conn = GetDBConnection(DBL_USER_PROFILE_API);
+if ($conn === false) {
+  $response->rustCounters = 0;
+  $response->isMetafyLinked = false;
+  $response->metafyInfo = MetafyLink();
+  $response->metafyCommunities = [];
+  $response->isMetafySupporter = false;
+  header('Content-Type: application/json');
+  echo json_encode($response);
+  exit;
+}
 $sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, rust_counters FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 
