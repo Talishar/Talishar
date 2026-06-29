@@ -938,7 +938,7 @@ function isBannedInFormat($cardID, $format) {
   if ($format == "compblitz") $format = "blitz";
   if ($format == "compcc") $format = "cc";
   if ($format == "compllcc" || $format == "futurell") $format = "llcc";
-  if ($format == "compsage" || $format == "futuresage") $format = "sage";
+  if ($format == "compsage") $format = "sage";
 
   static $bannedSets = null;
   if ($bannedSets === null) {
@@ -1007,6 +1007,13 @@ function isBannedInFormat($cardID, $format) {
     $futureBans = ["remembrance"];
     $futureUnbans = ["electromagnetic_somersault_blue", "skyward_serenade_yellow", "talk_a_big_game_blue"];
     return (in_array($cardID, $futureBans) || (isset($bannedSets["cc"][$cardID]) && !in_array($cardID, $futureUnbans)));
+  }
+  if ($format == "futuresage") {
+    $futureBans = [];
+    $futureUnbans = ["cash_in_yellow", "seeds_of_agony_red", "seeds_of_agony_yellow", "seed_of_agony_blue",
+                    "steelblade_shunt_red", "steelblade_shunt_yellow", "steelblade_shunt_blue",
+                    "vigorous_smashup_red", "vigorous_smashup_yellow", "vigorous_smashup_blue"];
+    return (in_array($cardID, $futureBans) || (isset($bannedSets["sage"][$cardID]) && !in_array($cardID, $futureUnbans)));
   }
   return isset($bannedSets[$format]) && isset($bannedSets[$format][$cardID]);
 }
