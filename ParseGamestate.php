@@ -553,7 +553,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 
 function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
 {
-  global $gameName, $skipWriteGamestate, $filepath, $p1Settings, $p2Settings;
+  global $gameName, $skipWriteGamestate, $filepath, $p1Settings, $p2Settings, $CS_NumUndoesThisTurn;
   
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
   if ($filename != "gamestateBackup.txt") {
@@ -578,6 +578,13 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $gamestateBackup = file($backupFile);
   $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
   $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
+  // don't reset the number of undoes used
+  $p1ClassState = explode(" ", substr($gamestateBackup[11], 0, -2));
+  $p2ClassState = explode(" ", substr($gamestateBackup[29], 0, -2));
+  $p1ClassState[$CS_NumUndoesThisTurn] = GetClassState(1, $CS_NumUndoesThisTurn);
+  $p2ClassState[$CS_NumUndoesThisTurn] = GetClassState(2, $CS_NumUndoesThisTurn);
+  $gamestateBackup[11] = implode(" ", $p1ClassState) . "\r\n";
+  $gamestateBackup[29] = implode(" ", $p2ClassState) . "\r\n";
   // Clear pending NAA from both players on undo
   // p1ClassState = line 11, p2ClassState = line 29, CS_PendingNAACard = index 122.
   foreach ([11, 29] as $csLine) {

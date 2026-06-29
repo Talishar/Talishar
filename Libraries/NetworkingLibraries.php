@@ -1,6 +1,7 @@
 <?php
 const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
 const MAX_REPLAYS_SAVED = 3;
+const UNDO_PER_TURN_LIMIT = 25;
 
 function deleteDir(string $dirPath): void {
   //https://stackoverflow.com/questions/3349753/delete-directory-with-files-in-it
@@ -26,7 +27,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
-  global $roguelikeGameID, $CS_SkipAllRunechants, $numMode;
+  global $roguelikeGameID, $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
     case 0:
@@ -549,6 +550,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($playerID, $CS_SkipAllRunechants, 1);
       break;
     case 10000: //Undo
+      if (GetClassState($playerID, $CS_NumUndoesThisTurn) > UNDO_PER_TURN_LIMIT) {
+        WriteLog("Player $playerID has reverted the gamestate too many times this turn. Proceed with the game", highlight:true);
+        break;
+      }
+      IncrementClassState($playerID, $CS_NumUndoesThisTurn);
       $format = GetCachePiece($gameName, 13);
       $char = &GetPlayerCharacter($otherPlayer);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
