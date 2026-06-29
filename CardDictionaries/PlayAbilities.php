@@ -158,10 +158,6 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
       AddDecisionQueue("MODAL", $currentPlayer, "UPTHEANTE", 1);
       return "";
-    case "commanding_performance_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
-      return "";
     case "raise_an_army_yellow":
       PlayAlly("cintari_sellsword", $currentPlayer, number: intval($additionalCosts), from:$from);
       return "";

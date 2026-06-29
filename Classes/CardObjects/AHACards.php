@@ -716,7 +716,7 @@ class indefensibly_honed_blue extends Card {
 		return true;
 	}
 
-	function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1) {
+	function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1, $effectIndex=-1) {
 		AddLayer("TRIGGER", $this->controller, $this->cardID);
 		return false;
 	}

@@ -2487,7 +2487,6 @@ function IsCombatEffectPersistent($cardID)
     case "stonewall_impasse":
     case "kassai_of_the_golden_sand":
     case "kassai":
-    case "commanding_performance_red":
     case "talk_a_big_game_blue":
     case "fabricate_red":
     case "double_down_red":

@@ -742,17 +742,57 @@ class coercive_tendency_blue extends Card {
 // }
 
 
-// class commanding_performance_red extends Card {
+class commanding_performance_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "commanding_performance_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "commanding_performance_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddCurrentTurnEffect($this->cardID . "-BUFF", $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 3 : 0;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return $mode != "BUFF";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRARS", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose which card you want to destroy from their arsenal", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $this->controller, false, 1);
+  }
+
+  function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1, $effectIndex=-1) {
+    global $combatChain, $defPlayer;
+    $combatChainCount = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    $Effect = new CurrentEffect($effectIndex);
+    if (str_contains($Effect->EffectID(), "BUFF")) return false;
+    if ($start == -1) return false;
+    for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
+      $ChainCard = new ChainCard($i);
+      if ($ChainCard->PlayerID() != $defPlayer) continue;
+      if (TypeContains($ChainCard->ID(), "AA")) {
+        AddLayer("TRIGGER", $this->controller, $this->cardID);
+        return false;
+      }
+    }
+    return false;
+  }
+}
 
 
 // class concuss_red extends Card {

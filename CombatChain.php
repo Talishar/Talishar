@@ -873,7 +873,7 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     $remove = false;
     if (IsCombatEffectLimited($i)) continue;
     $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
-    if ($card != "-") $remove = $card->CurrentEffectOnBlockEffect($chainInd, $from);
+    if ($card != "-") $remove = $card->CurrentEffectOnBlockEffect($chainInd, $from, effectIndex:$i);
     if ($currentTurnEffects[$i + 1] == $defPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "nerve_scalpel":
@@ -1012,7 +1012,7 @@ function OnBlockResolveEffects($cardID = "")
       $Effect = $CurrentTurnEffects->Effect($i, true);
       if (IsCombatEffectLimited($Effect->Index())) continue;
       $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
-      if ($card != "-") $remove = $card->CurrentEffectOnBlockEffect($cardID, "-", $start);
+      if ($card != "-") $remove = $card->CurrentEffectOnBlockEffect($cardID, "-", $start, $Effect->Index());
       if ($remove) $Effect->Remove();
     }
   }
@@ -1027,7 +1027,6 @@ function OnBlockResolveEffects($cardID = "")
       if (($blockedFromHand >= 2 && $combatChain[$i + 2] == "HAND") || ($blockedFromHand >= 1 && $combatChain[$i + 2] != "HAND")) UnityEffect($combatChain[$i]);
       if($cardID == "" && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $combatChain[$i], $i, uniqueID:$combatChain[$i + 7]);
       elseif($cardID != "" && $combatChain[$i] == $cardID && HasGalvanize($combatChain[$i])) AddLayer("TRIGGER", $defPlayer, $cardID, $i);
-      if (SearchCurrentTurnEffects("commanding_performance_red", $mainPlayer) != "" && TypeContains($combatChain[$i], "AA", $defPlayer) && ClassContains($combatChain[0], "WARRIOR", $mainPlayer) && IsHeroAttackTarget() && SearchLayersForCardID("commanding_performance_red") == -1) AddLayer("TRIGGER", $mainPlayer, "commanding_performance_red", $defPlayer);
       switch ($defendingCard) {//code for Jarl's armor
         case "ollin_ice_cap":
           $sub = TalentContains($defendingCard, "ICE", $defPlayer) ? 1 : 0; //necessary for a fringe case where the helm but not the other blocking card loses its talent

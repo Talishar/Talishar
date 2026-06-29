@@ -3375,12 +3375,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         PlayAura("vigor", $player); 
         WriteLog(CardLink($parameter, $parameter) . " created a ".CardLink("vigor", "vigor")." token for Player " . $player);
         break;
-      case "commanding_performance_red":
-        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose which card you want to destroy from their arsenal", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $player, false, 1);
-        break;
       case "no_fear_red":
         $banish = &GetBanish($player);
         $hand = &GetHand($player);

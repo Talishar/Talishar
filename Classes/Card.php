@@ -659,7 +659,7 @@ class Card {
     return;
 	}
 
-  function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1) {
+  function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1, $effectIndex=-1) {
     return false;
   }
 
