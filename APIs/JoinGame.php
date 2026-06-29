@@ -1004,7 +1004,9 @@ function isBannedInFormat($cardID, $format) {
     ];
   }
   if ($format == "futurecc") {
-    return isset($bannedSets["cc"][$cardID]); // $futureBans is always [] so only check cc list
+    $futureBans = ["remembrance"];
+    $futureUnbans = ["electromagnetic_somersault_blue", "skyward_serenade_yellow", "talk_a_big_game_blue"];
+    return (in_array($cardID, $futureBans) || (isset($bannedSets["cc"][$cardID]) && !in_array($cardID, $futureUnbans)));
   }
   return isset($bannedSets[$format]) && isset($bannedSets[$format][$cardID]);
 }
