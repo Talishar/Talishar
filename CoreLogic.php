@@ -702,7 +702,8 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   //Prevention happens with user selection
   if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable, $source);
   if ($source == "runechant") {
-    RemoveCurrentTurnEffectsMulti(["vynnset", "vynnset_iron_maiden"], $otherPlayer);
+    SearchCurrentTurnEffects("vynnset", $otherPlayer, true);
+    SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer, true);
   }
   if ($source == "deny_redemption_red") {
     SearchCurrentTurnEffects("deny_redemption_red-PREVENTION", $otherPlayer, true);
