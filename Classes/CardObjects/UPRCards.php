@@ -1391,7 +1391,7 @@ class ice_eternal_blue extends Card {
   }
 
   function DynamicCost() {
-    return implode(",", range(0, 10, 2));
+    return implode(",", range(0, 20, 2));
   }
 
   function ArcaneTargeting($from) {
