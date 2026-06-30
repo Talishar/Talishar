@@ -550,7 +550,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($playerID, $CS_SkipAllRunechants, 1);
       break;
     case 10000: //Undo
-      if (GetClassState($playerID, $CS_NumUndoesThisTurn) > UNDO_PER_TURN_LIMIT) {
+      if (GetClassState($playerID, $CS_NumUndoesThisTurn) > UNDO_PER_TURN_LIMIT && !IsDevEnvironment()) {
         WriteLog("Player $playerID has reverted the gamestate too many times this turn. Proceed with the game", highlight:true);
         break;
       }
