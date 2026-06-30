@@ -272,6 +272,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //Choose Cardback
   $MyCardBack = GetCardBack($playerID);
   $TheirCardBack = GetCardBack($otherPlayer);
+  $defCardBack = GetCardBack($defPlayer);
   $borderColor = 0;
 
   $response->MyPlaymat = IsColorblindMode($playerID) ? 0 : GetPlaymat($playerID);
@@ -308,7 +309,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       );
       continue;
     }
-    $cardID = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? $TheirCardBack : $combatChain[$i];
+    $cardID = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? $defCardBack : $combatChain[$i];
     $combatChainReactions[] = JSONRenderedCard(
       cardNumber: $cardID,
       controller: $combatChain[$i + 1] ?? NULL,
