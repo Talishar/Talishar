@@ -11,6 +11,7 @@ enum MetafyCommunity : string
   case EmperorsRome = "e0f5f68e-615f-4e52-a23b-3d5b6f9f1b8c";
   case SnapDragons = "ae238384-f748-460d-8a40-b48bf280614d";
   case FaBlazing = "005c6167-ef5c-428c-a196-d012ca300f7f";
+  case FabInsight = "68794fd8-8b30-46c2-9269-de2bf8ac4157";
 
   public function CommunityName(): string
   {
@@ -24,6 +25,7 @@ enum MetafyCommunity : string
       self::EmperorsRome => "Emperors Rome",
       self::SnapDragons => "Snap Dragons",
       self::FaBlazing => "FaBlazing",
+      self::FabInsight => "FabInsight",
     };
   }
 
@@ -39,6 +41,7 @@ enum MetafyCommunity : string
       self::EmperorsRome => "metafyEmperorsRome",
       self::SnapDragons => "metafySnapDragons",
       self::FaBlazing => "metafyFaBlazing",
+      self::FabInsight => "metafyFabInsight",
     };
   }
 
@@ -54,6 +57,7 @@ enum MetafyCommunity : string
       self::EmperorsRome => "67",
       self::SnapDragons => "127",
       self::FaBlazing => "129",
+      self::FabInsight => "136",
       default => "",
     };
   }
