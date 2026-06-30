@@ -355,7 +355,7 @@ function StartTurnAbilities()
   for ($i = 0; $i < $defItemsCount; $i += $itemPieces) {
     $defItems[$i + 2] = "2";
     $defItems[$i + 3] = ItemUses($defItems[$i]);
-    if ($defItems[$i + 7] == "1" && !SuperFrozen($mainPlayer, "THEIRITEMS-$i") && !SuperFrozen($defPlayer, "MYITEMS-$i"))
+    if (isset($defItems[$i + 7]) && $defItems[$i + 7] == "1" && !SuperFrozen($mainPlayer, "THEIRITEMS-$i") && !SuperFrozen($defPlayer, "MYITEMS-$i"))
       $defItems[$i + 7] = "0";//Reset Frozen
   }
   $defCharacter = &GetPlayerCharacter($defPlayer);
