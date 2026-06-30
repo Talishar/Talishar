@@ -50,9 +50,6 @@
       case "rifted_torment_red": case "rifted_torment_yellow": case "rifted_torment_blue":
         if($from == "BANISH") DealArcane(1, 0, "PLAYCARD", $cardID);
         return "";
-      case "seeds_of_agony_red": case "seeds_of_agony_yellow": case "seeds_of_agony_blue":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "dread_scythe":
         DealArcane(1, 1, "PLAYCARD", $cardID);
         return "";

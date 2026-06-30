@@ -4098,10 +4098,6 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
     case "rip_through_reality_yellow":
     case "rip_through_reality_blue":
       return true;
-    case "seeds_of_agony_red":
-    case "seeds_of_agony_yellow":
-    case "seeds_of_agony_blue":
-      return true;
     case "eclipse_blue":
     case "mutated_mass_blue":
     case "tome_of_torment_red":

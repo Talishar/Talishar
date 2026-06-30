@@ -2935,43 +2935,101 @@ class courageous_steelhand_blue extends Card {
 // }
 
 
-// class seeds_of_agony_red extends Card {
+class seeds_of_agony extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "seeds_of_agony_red";
-//     $this->controller = $controller;
-//     }
+  function OnAttackEffect($cardID, $cost) {
+    if (TypeContains($cardID, "AA") && CardCost($cardID) <= $cost) {
+      SetArcaneTarget($this->controller, $cardID, "any_hero");
+      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
+      return true;
+    }
+    return false;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function ProcessTrigger($target) {
+    global $CombatChain;
+    SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
+    DealArcane(1, 1, source:$CombatChain->AttackCard()->ID(), resolvedTarget:$target);
+  }
+}
 
+class seeds_of_agony_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "seeds_of_agony_red";
+    $this->controller = $controller;
+    $this->baseCard = new seeds_of_agony($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
 
-// class seeds_of_agony_yellow extends Card {
+  function OnAttackEffect($cardID, $i) {
+    return $this->baseCard->OnAttackEffect($cardID, 2);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "seeds_of_agony_yellow";
-//     $this->controller = $controller;
-//     }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
 
+class seeds_of_agony_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "seeds_of_agony_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new seeds_of_agony($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
 
-// class seeds_of_agony_blue extends Card {
+  function OnAttackEffect($cardID, $i) {
+    return $this->baseCard->OnAttackEffect($cardID, 1);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "seeds_of_agony_blue";
-//     $this->controller = $controller;
-//     }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
+
+class seeds_of_agony_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "seeds_of_agony_blue";
+    $this->controller = $controller;
+    $this->baseCard = new seeds_of_agony($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function OnAttackEffect($cardID, $i) {
+    return $this->baseCard->OnAttackEffect($cardID, 0);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
 
 
 // class seek_enlightenment_red extends Card {
