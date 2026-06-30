@@ -616,7 +616,14 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "sticky_fingers": case "sticky_fingers_ally":
-      if ($cardID == "sticky_fingers") PlayAlly("sticky_fingers_ally", $currentPlayer, tapped:true, from:$from);
+      if ($cardID == "sticky_fingers") {
+        $allyInd = PlayAlly("sticky_fingers_ally", $currentPlayer, tapped:true, from:$from);
+        $Character = new PlayerCharacter($currentPlayer);
+        $CharacterCard = $Character->FindCardID($cardID);
+        $CharacterCard->Destroy(skipDestroy: true);
+        $AllyCard = new AllyCard($allyInd, $currentPlayer);
+        $CombatChain->AttackCard()->UpdateSource($AllyCard->UniqueID());
+      }
       if (IsHeroAttackTarget()) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS:type=T;cardID=gold");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);

@@ -186,6 +186,13 @@ class ChainCard {
       return isset($this->chain[$this->index+8]) ? $this->chain[$this->index+8] : null;
     }
 
+    function UpdateSource($uid) {
+      if (isset($this->chain[$this->index+7]))
+        $this->chain[$this->index+7] = $uid;
+      if (isset($this->chain[$this->index+8]))
+        $this->chain[$this->index+8] = $uid;
+    }
+
     function StaticBuffs() {
       return isset($this->chain[$this->index+10]) ? $this->chain[$this->index+10] : "";
     }

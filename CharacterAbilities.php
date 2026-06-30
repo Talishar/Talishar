@@ -1018,7 +1018,7 @@ function ShiyanaCharacter($cardID, $player = "")
 
 function EquipPayAdditionalCosts($cardIndex)
 {
-  global $currentPlayer, $CS_TunicTicks, $mainPlayer, $chainLinkSummary, $CS_AdditionalCosts;
+  global $currentPlayer, $CS_TunicTicks, $mainPlayer, $chainLinkSummary, $CS_AdditionalCosts, $Stack;
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
@@ -1349,7 +1349,8 @@ function EquipPayAdditionalCosts($cardIndex)
       break;
     case "sticky_fingers":
       Tap("MYCHAR-$cardIndex", $currentPlayer);
-      if(!isSpectraAttackTarget()) DestroyCharacter($currentPlayer, $cardIndex, wasBanished:true);
+      $CharacterCard = new CharacterCard($cardIndex, $currentPlayer);
+      $Stack->TopLayer($cardID)->AddTarget($CharacterCard->UniqueID());
       break;
     case "rust_belt":
       DestroyCharacter($currentPlayer, $cardIndex);

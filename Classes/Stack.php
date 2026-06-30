@@ -150,6 +150,11 @@ class Layer {
 		return isset($this->layers[$this->index+2]) ? $this->layers[$this->index+2] : "-";
 	}
 
+  function UpdateParameter($param) {
+    if (isset($this->layers[$this->index+2]))
+      $this->layers[$this->index+2] = $param;
+  }
+
   function DynCost() {
     return explode("|", $this->Parameter(), 2)[1] ?? 0;
   }
@@ -179,6 +184,11 @@ class Layer {
 	function UniqueID() { //(the unique ID of the object that created the layer)
 		return $this->layers[$this->index+5] ?? "-";
 	}
+
+  function UpdateUID($uid) {
+    if (isset($this->layers[$this->index+5]))
+      $this->layers[$this->index+5] = $uid;
+  }
 
 	function LayerUniqueID() { //(the unique ID of the layer)
 		return $this->layers[$this->index+6] ?? "-";
