@@ -1262,7 +1262,7 @@ function SearchItemsForUniqueID($uniqueID, $player)
   $count = count($items);
   $pieces = ItemPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($items[$i + 4] == $uniqueID) return $i;
+    if (isset($items[$i + 4]) && $items[$i + 4] == $uniqueID) return $i;
   }
   return -1;
 }

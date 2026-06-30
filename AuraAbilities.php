@@ -30,6 +30,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated, $CS_HoloAurasEntered;
   global $CS_CreatedCardsThisTurn;
   if ($number == 0) return; //there is no event
+  $number = (int)$number;
   $otherPlayer = 3 - $player;
   if ($effectController == "-") $effectController = $player;
   if ($effectAgent == "-") $effectAgent = $effectController;
