@@ -219,8 +219,9 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PlayAura("might", $currentPlayer); 
       return "";
     case "talk_a_big_game_blue":
+      $numbers = implode(",", range(0, 30, 1));
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a number");
-      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $numbers);
       AddDecisionQueue("WRITELOGLASTRESULT", $currentPlayer, "-", 1);
       AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "talk_a_big_game_blue,");
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "<-");
