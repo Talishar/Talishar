@@ -4271,7 +4271,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
       break;
     case "evo_speedslip_blue":
     case "evo_speedslip_blue_equip":
-      AddCurrentTurnEffect("evo_speedslip_blue", $player);
+      AddCurrentTurnEffectNextAttack("evo_speedslip_blue", $player);
       break;
     default:
       break;

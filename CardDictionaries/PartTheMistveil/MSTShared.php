@@ -40,6 +40,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
     "levels_of_enlightenment_blue", "dense_blue_mist_blue-HITPREVENTION", "dense_blue_mist_blue-DEBUFF", "deep_blue_sea_blue", "wide_blue_yonder_blue", "a_drop_in_the_ocean_blue", "the_grain_that_tips_the_scale_blue", "just_a_nick_red-BUFF",
     "just_a_nick_red-HIT", "maul_yellow-BUFF", "maul_yellow-HIT", "stonewall_gauntlet", "emissary_of_tides_red", "murky_water_red", "shadowrealm_horror_red-1", "shadowrealm_horror_red-2" => true,
     "cosmic_awakening_blue-1", "cosmic_awakening_blue-2", "cosmic_awakening_blue-3" => true,
+    "evo_speedslip_blue" => true,
     default => false,
   };
 }
