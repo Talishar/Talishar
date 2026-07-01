@@ -458,13 +458,13 @@ class gleam_of_the_blade_red extends Card {
 	}
 
 	function CardCost($from = '-') {
-    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
-    return 1;
-  }
+		if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+		return 1;
+	}
 
 	function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
-    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
-  }
+		return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+	}
 }
 
 class sharp_incline extends BaseCard {
@@ -500,16 +500,16 @@ class sharp_incline extends BaseCard {
 }
 
 class sharp_incline_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "sharp_incline_red";
-    $this->controller = $controller;
-    $this->baseCard = new sharp_incline($this->cardID, $this->controller);
-  }
+	function __construct($controller) {
+		$this->cardID = "sharp_incline_red";
+		$this->controller = $controller;
+		$this->baseCard = new sharp_incline($this->cardID, $this->controller);
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($target, 1);
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility($target, 1);
 		return "";
-  }
+	}
 
 	function PayAdditionalCosts($from, $index = '-') {
 		return $this->baseCard->PayAdditionalCosts();
@@ -525,16 +525,16 @@ class sharp_incline_red extends Card {
 }
 
 class sharp_incline_yellow extends Card {
-  function __construct($controller) {
-    $this->cardID = "sharp_incline_yellow";
-    $this->controller = $controller;
-    $this->baseCard = new sharp_incline($this->cardID, $this->controller);
-  }
-  
+  	function __construct($controller) {
+		$this->cardID = "sharp_incline_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new sharp_incline($this->cardID, $this->controller);
+	}
+	
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($target, 2);
+		$this->baseCard->PlayAbility($target, 2);
 		return "";
-  }
+	}
 
 	function PayAdditionalCosts($from, $index = '-') {
 		return $this->baseCard->PayAdditionalCosts();
@@ -550,15 +550,15 @@ class sharp_incline_yellow extends Card {
 }
 
 class shuck_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "shuck_blue";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    PlayAura("flurry", $this->controller);
+	function __construct($controller) {
+		$this->cardID = "shuck_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		PlayAura("flurry", $this->controller);
 		return "";
-  }
+	}
 }
 
 class silverdrop_downpour_red extends Card {
