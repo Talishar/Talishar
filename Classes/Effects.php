@@ -52,11 +52,12 @@ class CurrentTurnEffects {
     return new CurrentEffect(-1);
   }
 
-  function FindSpecificEffect($cardID, $uid) {
+  function FindSpecificEffect($cardID, $uid, $player=-1) {
     $count = count($this->effects);
     if ($count == 0) return new CurrentEffect(-1);
     $currentTurnEffectPieces = CurrentTurnEffectPieces();
     for ($i = 0; $i < $count; $i += $currentTurnEffectPieces) {
+      if ($player != -1 && ($this->effects[$i+1] ?? -1) != $player) continue;
       if ($this->effects[$i] == $cardID && isset($this->effects[$i + 2]) && $this->effects[$i + 2] == $uid) return new CurrentEffect($i);
     }
     return new CurrentEffect(-1);

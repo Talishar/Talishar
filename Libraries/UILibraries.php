@@ -408,7 +408,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
   // Zone-specific logic
   if ($from == "BANISH") {
     if (HasBloodDebt($cardID)) return 2;
-    if (!$isPlayable && !PlayableFromBanish($cardID, $mod)) return 0;
+    if (!$isPlayable && !PlayableFromBanish($cardID, $mod, index:$index)) return 0;
     if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
     if ($isPlayable && ComboActive($cardID)) return 3;
     if ($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 3;

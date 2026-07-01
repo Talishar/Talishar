@@ -404,7 +404,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $discardPieces = DiscardPieces();
 
   for ($i=0; $i < $theirBanishCount; $i += $banishPieces) {
-    if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer) && $theirBanish[$i+1] != "TRAPDOOR") {
+    if (PlayableFromBanish($theirBanish[$i], $theirBanish[$i+1], player:$otherPlayer, index:$i) && $theirBanish[$i+1] != "TRAPDOOR") {
       $theirHandContents[] = JSONRenderedCard($theirBanish[$i], borderColor:7);
     }
   }

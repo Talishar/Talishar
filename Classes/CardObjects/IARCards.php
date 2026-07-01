@@ -433,3 +433,37 @@ class runechant_of_wrath_yellow extends Card {
     return true;
   }
 }
+
+class gate_to_iarathael extends Card {
+  private $targetSearch;
+  function __construct($controller) {
+    $this->cardID = "gate_to_iarathael";
+    $this->controller = $controller;
+    $this->targetSearch = "MYBANISH:bloodDebtOnly=true;type=A&MYBANISH:bloodDebtOnly=true;type=AA";
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $uid = explode("-", $target)[1] ?? "-";
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetTargets($this->controller, $this->cardID, $this->targetSearch);
+    $AuraCard = new AuraCard($index, $this->controller);
+    $AuraCard->Destroy();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $targets = SearchMultizone($this->controller, $this->targetSearch);
+    return $targets == "";
+  }
+}

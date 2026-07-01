@@ -1571,7 +1571,7 @@ function CanPlayNAA($cardID, $from, $index=-1)
   if ($combatChainState[$CCS_EclecticMag]) return true;
   if ($from == "BANISH") {
     $banishCard = new BanishCard($currentPlayer, $index);
-    return PlayableFromBanish($banishCard->ID(), $banishCard->Modifier());
+    return PlayableFromBanish($banishCard->ID(), $banishCard->Modifier(), index:$index);
   }
   $Hero = new CharacterCard(0, $currentPlayer);
   if ($Hero->Status() > 1) {
@@ -1677,7 +1677,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $banishCard = $banish->Card($index);
     $banishCardID  = $banishCard->ID();
     $banishCardMod = $banishCard->Modifier();
-    if (!(PlayableFromBanish($banishCardID, $banishCardMod) || AbilityPlayableFromBanish($banishCardID, $banishCardMod))) return false;
+    if (!(PlayableFromBanish($banishCardID, $banishCardMod, index:$index) || AbilityPlayableFromBanish($banishCardID, $banishCardMod))) return false;
   }
   if ($from == "THEIRBANISH") {
     $theirBanish = new Banish($otherPlayer);
@@ -4049,10 +4049,11 @@ function HasRunegate($cardID)
   return GeneratedHasRunegate($cardID);
 }
 
-function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player = "")
+function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player = "", $index = -1)
 {
-  global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan;
+  global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan, $CurrentTurnEffects;
   if ($player == "") $player = $currentPlayer;
+  $banishCard = new BanishCard($player, $index);
   $mod = explode("-", $mod ?? "", 2)[0];
   if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
   if (isFaceDownMod($mod)) return false;
@@ -4062,6 +4063,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   $char = &GetPlayerCharacter($player);
   if (SubtypeContains($cardID, "Evo") && ($char[0] == "professor_teklovossen" || $char[0] == "teklovossen_esteemed_magnate" || $char[0] == "teklovossen") && $char[1] < 3) return true;
   if (!$nonLimitedOnly && $char[0] == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
+  if ($CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $banishCard->UniqueID(), $player)->Index() != -1) return true;
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromBanish($mod, $nonLimitedOnly);
   switch ($cardID) {

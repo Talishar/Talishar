@@ -27,7 +27,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
-  global $roguelikeGameID, $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn;
+  global $roguelikeGameID, $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
     case 0:
@@ -186,6 +186,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         echo("Banish Index " . $index . " Invalid Input<BR>");
         return false;
       }
+      $banishCard = new BanishCard($playerID, $index);
       $cardID = $banish[$index];
       $mod = $banish[$index + 1];
       if (!IsPlayable($cardID, $turn[0], "BANISH", $index)) break;
@@ -195,7 +196,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($mod == "spew_shadow_red" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("spew_shadow_red", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if (CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      if (!PlayableFromBanish($cardID, $mod, true)) SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
+      if (!PlayableFromBanish($cardID, $mod, true, index:$index)) SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
       if (str_contains($mod, "shadowrealm_horror_red")) {
         $currentPlayerBanish = new Banish($currentPlayer);
         $currentPlayerBanish->UnsetBanishModifier($mod);
@@ -203,6 +204,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if ($effectIndex != -1) RemoveCurrentTurnEffect($effectIndex);
       }
       if($mod == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
+      // clean up the effect now that it's been used
+      $Effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $banishCard->UniqueID(), $playerID);
+      $Effect->Remove();
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$mod);
       break;
     case 15: // Their Banish
