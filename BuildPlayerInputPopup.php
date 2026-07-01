@@ -121,6 +121,17 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       }
       break;
 
+    case "NUMBERINPUT":
+      if ($turn[1] == $playerID) {
+        $playerInputPopup->active = true;
+        $options = explode(",", $turn[2]);
+        foreach ($options as $option) {
+          $playerInputButtons[] = CreateButtonAPI($playerID, $option, 7, $option, "24px");
+        }
+        $playerInputPopup->popup = CreatePopupAPI("NUMBERINPUT", [], 0, 1, GetPhaseHelptext(), 1, "");
+      }
+      break;
+
     case "OK":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;

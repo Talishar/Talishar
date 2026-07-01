@@ -104,6 +104,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 7: //Number input
       if ($turn[0] == "DYNPITCH" || $turn[0] == "CHOOSENUMBER") {
         ContinueDecisionQueue($buttonInput);
+      } else if ($turn[0] == "NUMBERINPUT") {
+        if (in_array((string)$buttonInput, explode(",", $turn[2]), true)) {
+          ContinueDecisionQueue($buttonInput);
+        } else {
+          echo("Number input " . $turn[0] . " Invalid Input<BR>");
+          return false;
+        }
       } else {
         echo("Number input " . $turn[0] . " Invalid Input<BR>");
         return false;

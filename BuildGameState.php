@@ -1318,9 +1318,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
               if ($cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red" || ($card != "-" && $card->DisplayRemainingPrevention())) {
                   $counters = $currentTurnEffects[$i + 3];
               }
-              if ($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
+              elseif ($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
                   $parts = explode("-", $currentTurnEffects[$i]);
                   $counters = intval(end($parts));
+              }
+              elseif ($cardID == "talk_a_big_game_blue") {
+                $parts = explode(",", $currentTurnEffects[$i]);
+                $counters = intval(end($parts));
               }
               $friendlyRenderedEffects[$cardID] = true;
               $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
@@ -1330,8 +1334,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           if ($cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red" || ($card != "-" && $card->DisplayRemainingPrevention())) {
               $counters = $currentTurnEffects[$i + 3];
           }
-          if ($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
+          elseif ($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
               $parts = explode("-", $currentTurnEffects[$i]);
+              $counters = intval(end($parts));
+          }
+          elseif ($cardID == "talk_a_big_game_blue") {
+              $parts = explode(",", $currentTurnEffects[$i]);
               $counters = intval(end($parts));
           }
           $opponentRenderedEffects[$cardID] = true;

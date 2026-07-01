@@ -110,6 +110,7 @@ function TypeToPlay($phase)
     case "INPUTCARDNAME":
       return "a card name";
     case "CHOOSENUMBER":
+    case "NUMBERINPUT":
       return "a number";
     case "STARTTURN":
       return "an order for trigger (enable Always Hold Priority to reorder)";
@@ -128,6 +129,7 @@ function WaitingMessage($phase)
       return "Waiting for your opponent to respond";
     case "BUTTONINPUT":
     case "BUTTONINPUTNOPASS":
+    case "NUMBERINPUT":
       return "Waiting for opponent to make a choice";
     case "CHOOSEFIRSTPLAYER":
       return "Waiting for opponent to choose who goes first";

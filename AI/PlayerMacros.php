@@ -289,6 +289,7 @@ function AutopassPhaseWithOneOption($phase)
 {
   switch ($phase) {
     case "BUTTONINPUT":
+    case "NUMBERINPUT":
     case "CHOOSEMULTIZONE":
     case "CHOOSECHARACTER":
     case "CHOOSECOMBATCHAIN":
