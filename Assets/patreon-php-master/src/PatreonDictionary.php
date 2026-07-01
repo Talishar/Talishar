@@ -103,6 +103,7 @@ enum PatreonCampaign : string
   case RedLine = "29";
   case SkillIssue = "30";
   case WingedHussars = "31";
+  case FabInsight = "32";
   case Talishar = "7198186";
   case PushThePoint = "7579026";
   case GoAgainGaming = "7329070";
@@ -256,6 +257,7 @@ enum PatreonCampaign : string
       case "29": return "Red Line";
       case "30": return "Skill Issue";
       case "31": return "Winged Hussars";
+      case "32": return "Fab Insight";
       case "7198186": return "Talishar";
       case "7579026": return "Push the Point";
       case "7329070": return "Go Again Gaming";
@@ -350,6 +352,7 @@ enum PatreonCampaign : string
       case "29": return IsTeamRedLine($userName);
       case "30": return IsTeamSkillIssue($userName);
       case "31": return IsTeamWingedHussars($userName);
+      case "32": return IsTeamFabInsight($userName);
       case "7198186": return $userName == "OotTheMonk" || $userName == "Aegisworn" || $userName == "PvtVoid";
       case "7579026": return $userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp";
       case "7329070": return $userName == "GoAgainGamingAz";
@@ -725,6 +728,66 @@ enum PatreonCampaign : string
         "stinging_sprite_red=GEM153-T",
         "toe_the_line_red=GEM165-T",
         "toughen_up_blue=GEM176-T",
+        "arcane_polarity_red=LGS458-T",
+        "boltyn=HER160-T",
+        "boneyard_marauder_red=FAB023-T",
+        "braveforge_bracers=MPW011-T",
+        "colors_of_aria_red=FAB426-T",
+        "confidence=FAB394-T",
+        "dorinthea_quicksilver_prodigy=HER167-T",
+        "durendal=MPW008-T",
+        "elemental_strike_red=FAB425-T",
+        "emeritus_scolding_red=TNP007-T",
+        "emeritus_scolding_yellow=TNP008-T",
+        "emeritus_scolding_blue=TNP009-T",
+        "fate_foreseen_red=FAB487-T",
+        "flic_flak_red=TNP022-T",
+        "flic_flak_yellow=TNP023-T",
+        "flic_flak_blue=TNP024-T",
+        "frosthaven_sheath_red=FAB427-T",
+        "grains_of_bloodspill=MPW010-T",
+        "groundbreaker_crix=HER155-T",
+        "heartened_cross_strap=APR004-T",
+        "infecting_shot_red=TNP004-T",
+        "infecting_shot_yellow=TNP005-T",
+        "infecting_shot_blue=TNP006-T",
+        "leaven_sheath_red=FAB428-T",
+        "luminaris=CON001-T",
+        "macho_grande_blue=SBR031-T",
+        "mauvrion_skies_red=TNP025-T",
+        "mauvrion_skies_yellow=TNP026-T",
+        "mauvrion_skies_blue=TNP027-T",
+        "olympia_prized_fighter=HER170-T",
+        "peace_of_mind_red=FAB131-T",
+        "phantasmal_footsteps=CON002-T",
+        "ponder=FAB489-T",
+        "pursuit_of_knowledge_blue=LGS442-T",
+        "razor_reflex_red=FAB475-T",
+        "reaping_blade=CON003-T",
+        "shove_off_blue=LGS457-T",
+        "shred_red=TNP013-T",
+        "shred_yellow=TNP014-T",
+        "shred_blue=TNP015-T",
+        "sigil_of_fate=FAB402-T",
+        "spears_of_surreality_red=TNP016-T",
+        "spears_of_surreality_yellow=TNP017-T",
+        "spears_of_surreality_blue=TNP018-T",
+        "spellbound_creepers=CON004-T",
+        "staunch_response_red=TNP019-T",
+        "staunch_response_yellow=TNP020-T",
+        "staunch_response_blue=TNP021-T",
+        "stormshard_red=FAB478-T",
+        "stormwind_sheath_red=FAB429-T",
+        "the_librarian_magister_of_history=JDG062-T",
+        "warriors_valor_red=TNP010-T",
+        "warriors_valor_yellow=TNP011-T",
+        "warriors_valor_blue=TNP012-T",
+        "wild_ride_red=TNP001-T",
+        "wild_ride_yellow=TNP002-T",
+        "wild_ride_blue=TNP003-T",
+        "zipper_hit_red=TNP028-T",
+        "zipper_hit_yellow=TNP029-T",
+        "zipper_hit_blue=TNP030-T",
         ];
         break;
       case "8955846": // ManSant
@@ -805,6 +868,7 @@ enum PatreonCampaign : string
       case "29": return "133";
       case "30": return "134";
       case "31": return "135";
+      case "32": return "136";
       case "7198186": return "1,2,3,4,5,6,7,8,82,83";
       case "7579026": return "9";
       case "7329070": return "10,11,12,13,14,15,16";
