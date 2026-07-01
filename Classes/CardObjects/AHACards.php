@@ -494,7 +494,7 @@ class sharp_incline extends BaseCard {
 		$target = $dqVars["target"];
 		$thresh = $dqVars["thresh"];
 		$Weapon = CleanTargetToObject($this->controller, $target);
-		if ($Weapon->NumPowerCounters() >= $thresh)
+		if ($Weapon != "" && $Weapon->NumPowerCounters() >= $thresh)
 			AddCurrentTurnEffect($this->cardID, $this->controller, "-", $Weapon->UniqueID());
 	}
 }
