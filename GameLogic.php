@@ -3669,7 +3669,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $count = $deck->RemainingCards();
           PrependDecisionQueue("SHUFFLEDECK", $player, "-");
           PrependDecisionQueue("MULTISHOWCARDSDECK", $player, "<-", 1);
-          PrependDecisionQueue("SETDQCONTEXT", $player, "You have matching cards to search for.", 1);
+          PrependDecisionQueue("SETDQCONTEXT", $player, "You have no matching cards to search for.", 1);
           PrependDecisionQueue("DECKCARDS", $player, "<-", 1);
           PrependDecisionQueue("FINDINDICES", $player, "DECKTOPXINDICES," . $count);
           return $lastResult;
