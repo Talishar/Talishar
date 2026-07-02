@@ -164,6 +164,16 @@ CREATE TABLE IF NOT EXISTS blocked_users (
 
 -- --------------------------------------------------------
 --
+-- Table structure for table `banned_ips`
+--
+CREATE TABLE IF NOT EXISTS banned_ips (
+  ip VARCHAR(45) NOT NULL PRIMARY KEY,
+  bannedBy VARCHAR(255) DEFAULT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+--
 -- Table structure for table `savedsettings`
 --
 CREATE TABLE IF NOT EXISTS `savedsettings` (

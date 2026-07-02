@@ -1282,6 +1282,34 @@ function BanPlayer($uid)
 	}
 }
 
+function EnsureBannedIPsTable($conn)
+{
+	$sql = "CREATE TABLE IF NOT EXISTS banned_ips (
+		ip VARCHAR(45) NOT NULL PRIMARY KEY,
+		bannedBy VARCHAR(255) DEFAULT NULL,
+		createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+	if (!mysqli_query($conn, $sql)) {
+		error_log("Failed to create banned_ips table: " . mysqli_error($conn));
+	}
+}
+
+function BanIP($ip, $bannedBy = "")
+{
+	$conn = GetDBConnection(DBL_BAN_PLAYER);
+	if (!$conn) return false;
+	EnsureBannedIPsTable($conn);
+	$sql = "INSERT INTO banned_ips (ip, bannedBy) VALUES (?, ?) ON DUPLICATE KEY UPDATE ip = ip";
+	$stmt = mysqli_stmt_init($conn);
+	$success = false;
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ss", $ip, $bannedBy);
+		$success = mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	return $success;
+}
+
 if (!function_exists('GenerateGameGUID')) {
 	function GenerateGameGUID()
 	{

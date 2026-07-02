@@ -69,25 +69,22 @@ $usernameToDelete = trim(TryPOSTData("usernameToDelete", "", $postData));
 $result = ["status" => "success"];
 
 if ($playerToBan != "") {
-  $writeResult = file_put_contents('./HostFiles/bannedPlayers.txt', $playerToBan . "\r\n", FILE_APPEND | LOCK_EX);
-  if ($writeResult === false) {
-    $result["status"] = "error";
-    $result["message"] = "Failed to write banned player to file";
-  } else {
-    BanPlayer($playerToBan);
-    $result["message"] = "Player $playerToBan has been banned.";
-  }
+  // Database is the source of truth; the txt file is a legacy copy that
+  // does not survive deploys/container restarts.
+  BanPlayer($playerToBan);
+  @file_put_contents('./HostFiles/bannedPlayers.txt', $playerToBan . "\r\n", FILE_APPEND | LOCK_EX);
+  $result["message"] = "Player $playerToBan has been banned.";
 }
 if ($ipToBan != "") {
   $gameName = $ipToBan;
   include './MenuFiles/ParseGamefile.php';
   $ipToBan = $playerNumberToBan == "1" ? $hostIP : $joinerIP;
-  $writeResult = file_put_contents('./HostFiles/bannedIPs.txt', $ipToBan . "\r\n", FILE_APPEND | LOCK_EX);
-  if ($writeResult === false) {
-    $result["status"] = "error";
-    $result["message"] = "Failed to write banned IP to file";
-  } else {
+  if (BanIP($ipToBan, $useruid)) {
+    @file_put_contents('./HostFiles/bannedIPs.txt', $ipToBan . "\r\n", FILE_APPEND | LOCK_EX);
     $result["message"] = "IP $ipToBan has been banned.";
+  } else {
+    $result["status"] = "error";
+    $result["message"] = "Failed to save banned IP to database";
   }
 }
 
