@@ -95,8 +95,7 @@ $currentTime = round(microtime(true) * 1000);
 if ($isGamePlayer) {
   $playerStatus = intval(GetCachePiece($gameName, $playerID + 3));
   if ($playerStatus === -1) WriteLog("🔌Player $playerID has connected.");
-  SetCachePiece($gameName, $playerID + 1, $currentTime);
-  SetCachePiece($gameName, $playerID + 3, "0");
+  SetCachePieces($gameName, [$playerID + 1 => $currentTime, $playerID + 3 => "0"]);
   if ($playerStatus > 0) {
     WriteLog("🔌Player $playerID has reconnected.");
   }

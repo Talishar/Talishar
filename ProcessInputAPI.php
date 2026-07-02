@@ -91,8 +91,7 @@ try {
     if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
     if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
       $currentTime = round(microtime(true) * 1000);
-      SetCachePiece($gameName, 2, $currentTime);
-      SetCachePiece($gameName, 3, $currentTime);
+      SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
       exit;
     }
   }
@@ -340,8 +339,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $turn[0] = "REMATCH";
   include "WriteGamestate.php";
   $currentTime = round(microtime(true) * 1000);
-  SetCachePiece($gameName, 2, $currentTime);
-  SetCachePiece($gameName, 3, $currentTime);
+  SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
   GamestateUpdated($gameName);
   exit;
 } else if ($winner != 0 && $turn[0] != "YESNO") {

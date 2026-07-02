@@ -2779,8 +2779,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $p2Health = &GetHealth(2);
       $p2Health = 1;
       $currentTime = round(microtime(true) * 1000);
-      SetCachePiece($gameName, 2, $currentTime);
-      SetCachePiece($gameName, 3, $currentTime);
+      SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
       ClearGameFiles($gameName);
       include "MenuFiles/ParseGamefile.php";
       header("Location: $redirectPath/Start.php?gameName=$gameName&playerID=$playerID");

@@ -1990,8 +1990,7 @@ function FinalizeTurn()
   $turn[2] = "";
   $turn[3] = "";
   // Reset undo decline counters for both players at the start of each turn
-  SetCachePiece($GLOBALS['gameName'], 17, 0); // Reset player 1 undo decline counter
-  SetCachePiece($GLOBALS['gameName'], 18, 0); // Reset player 2 undo decline counter
+  SetCachePieces($GLOBALS['gameName'], [17 => 0, 18 => 0]); // Reset both players' undo decline counters
   $actionPoints = 1;
   $combatChain = [];
   $currentTurnEffectsFromCombat = [];

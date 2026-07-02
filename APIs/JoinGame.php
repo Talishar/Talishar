@@ -682,14 +682,17 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
   $pingTimestamp = ($playerID == 2)
     ? strval(round(microtime(true) * 1000) + 30000)
     : strval(round(microtime(true) * 1000));
-  SetCachePiece($gameName, $playerID + 1, $pingTimestamp);
-  SetCachePiece($gameName, $playerID + 3, "0");
-  // I'm not 100% sure what this does, but it seems to have been breaking with longer character names
-  // for now truncate hero names
-  SetCachePiece($gameName, $playerID + 6, TruncateHeroName($character));
-  SetCachePiece($gameName, 14, $gameStatus);
+  $cachePieces = [
+    $playerID + 1 => $pingTimestamp,
+    $playerID + 3 => "0",
+    // I'm not 100% sure what this does, but it seems to have been breaking with longer character names
+    // for now truncate hero names
+    $playerID + 6 => TruncateHeroName($character),
+    14 => $gameStatus,
+  ];
   // A different player successfully joined — clear the kicked-player block
-  if ($playerID == 2) SetCachePiece($gameName, 18, "");
+  if ($playerID == 2) $cachePieces[18] = "";
+  SetCachePieces($gameName, $cachePieces);
   GamestateUpdated($gameName);
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);

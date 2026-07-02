@@ -130,8 +130,7 @@ if(!IsReplay()) {
   if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
   if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
     $currentTime = (int)(microtime(true) * 1000);
-    SetCachePiece($gameName, 2, $currentTime);
-    SetCachePiece($gameName, 3, $currentTime);
+    SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
     exit;
   }
   if (($playerID == 1 || $playerID == 2) && $authKey == "") {
@@ -183,8 +182,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $turn[0] = "REMATCH";
   include "WriteGamestate.php";
   $currentTime = round(microtime(true) * 1000);
-  SetCachePiece($gameName, 2, $currentTime);
-  SetCachePiece($gameName, 3, $currentTime);
+  SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
   InvalidateGamestateCache($gameName); // Clear cached gamestate once at end
   GamestateUpdated($gameName);
   exit;
@@ -221,8 +219,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $turn[0] = "REMATCH";
   include "WriteGamestate.php";
   $currentTime = round(microtime(true) * 1000);
-  SetCachePiece($gameName, 2, $currentTime);
-  SetCachePiece($gameName, 3, $currentTime);
+  SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
   InvalidateGamestateCache($gameName);
   GamestateUpdated($gameName);
   exit;
@@ -260,9 +257,7 @@ if (!$skipWriteGamestate) {
   if(!IsModeAsync($mode))
   {
     $currentTime = round(microtime(true) * 1000);
-    SetCachePiece($gameName, 12, "0");
-    SetCachePiece($gameName, 2, $currentTime);
-    SetCachePiece($gameName, 3, $currentTime);
+    SetCachePieces($gameName, [12 => "0", 2 => $currentTime, 3 => $currentTime]);
   }
   DoGamestateUpdate();
   include "WriteGamestate.php";
