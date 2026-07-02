@@ -583,7 +583,7 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
    exit;
  }
 
- if ($playerID == 2 && !$forceBaseDeckRefresh && $matchup === "") {
+ if ($playerID == 2 && !$forceBaseDeckRefresh && $matchup === "" && $visibility === "public") {
    $preferenceError = CheckHeroPreference($character, $gameDescription);
    if ($preferenceError !== null) {
      $response->error = $preferenceError;
