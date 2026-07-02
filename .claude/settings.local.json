@@ -5,7 +5,16 @@
       "Bash(php vendor/bin/phpunit)",
       "Bash(php -l GetUpdateSSE.php)",
       "Bash(php -l BuildGameState.php)",
-      "PowerShell(docker exec talishar-mysql-server-1 mysql -uroot -psecret fabonline -e \"CREATE TABLE IF NOT EXISTS banned_ips \\(ip VARCHAR\\(45\\) NOT NULL PRIMARY KEY, bannedBy VARCHAR\\(255\\) DEFAULT NULL, createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP\\) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci; INSERT INTO banned_ips \\(ip, bannedBy\\) VALUES \\('203.0.113.7', 'testmod'\\) ON DUPLICATE KEY UPDATE ip = ip; SELECT ip, bannedBy FROM banned_ips; SELECT usersUid FROM users WHERE isBanned = 1 ORDER BY usersUid LIMIT 5;\")"
+      "PowerShell(docker exec talishar-mysql-server-1 mysql -uroot -psecret fabonline -e \"CREATE TABLE IF NOT EXISTS banned_ips \\(ip VARCHAR\\(45\\) NOT NULL PRIMARY KEY, bannedBy VARCHAR\\(255\\) DEFAULT NULL, createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP\\) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci; INSERT INTO banned_ips \\(ip, bannedBy\\) VALUES \\('203.0.113.7', 'testmod'\\) ON DUPLICATE KEY UPDATE ip = ip; SELECT ip, bannedBy FROM banned_ips; SELECT usersUid FROM users WHERE isBanned = 1 ORDER BY usersUid LIMIT 5;\")",
+      "PowerShell(& C:\\\\xampp\\\\php\\\\php.exe -l \"C:\\\\xampp\\\\htdocs\\\\Flesh and Blood\\\\Talishar\\\\includes\\\\functions.inc.php\")",
+      "PowerShell(& C:\\\\xampp\\\\php\\\\php.exe -l \"C:\\\\xampp\\\\htdocs\\\\Flesh and Blood\\\\Talishar\\\\AccountFiles\\\\SignupAPI.php\")",
+      "PowerShell(& C:\\\\xampp\\\\php\\\\php.exe -l \"C:\\\\xampp\\\\htdocs\\\\Flesh and Blood\\\\Talishar\\\\AccountFiles\\\\AccountDatabaseAPI.php\")",
+      "PowerShell(& C:\\\\xampp\\\\php\\\\php.exe -l \"C:\\\\xampp\\\\htdocs\\\\Flesh and Blood\\\\Talishar\\\\APIs\\\\CreateGame.php\")",
+      "PowerShell(& C:\\\\xampp\\\\php\\\\php.exe -l \"C:\\\\xampp\\\\htdocs\\\\Flesh and Blood\\\\Talishar\\\\APIs\\\\GetGameList.php\")",
+      "PowerShell(& C:\\\\xampp\\\\php\\\\php.exe -l \"C:\\\\xampp\\\\htdocs\\\\Flesh and Blood\\\\Talishar\\\\APIs\\\\JoinGame.php\")",
+      "PowerShell(& C:\\\\xampp\\\\php\\\\php.exe -l \"C:\\\\xampp\\\\htdocs\\\\Flesh and Blood\\\\Talishar\\\\APIs\\\\GetModPageData.php\")",
+      "PowerShell(& C:\\\\xampp\\\\php\\\\php.exe -l \"C:\\\\xampp\\\\htdocs\\\\Flesh and Blood\\\\Talishar\\\\includes\\\\DBLogConstants.php\")",
+      "PowerShell(Set-Location \"C:\\\\xampp\\\\htdocs\\\\Flesh and Blood\\\\Talishar-FE\"; $out = npx tsc --noEmit 2>&1; $out | Select-Object -First 30; \"---- total lines: $\\($out.Count\\)\")"
     ]
   }
 }

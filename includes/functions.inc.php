@@ -118,8 +118,10 @@ function CreateUserAPI($conn, $username, $email, $pwd)
 
 	mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashedPwd);
 	mysqli_stmt_execute($stmt);
+	$newUserId = mysqli_insert_id($conn);
 	mysqli_stmt_close($stmt);
 	mysqli_close($conn);
+	return $newUserId > 0 ? $newUserId : false;
 }
 
 function loginFromCookie()
@@ -158,6 +160,7 @@ function loginFromCookie()
                 $_SESSION["lastAuthKey"] = $row[9];
                 $_SESSION["metafyID"] = $row[10] ?? "";
                 $_SESSION["rust_counters"] = intval($row[11] ?? 0);
+                LogIPHistory($row[0]);
                 try {
                     PatreonLogin($patreonAccessToken);
                 } catch (\Throwable $e) {
@@ -1308,6 +1311,88 @@ function BanIP($ip, $bannedBy = "")
 		mysqli_stmt_close($stmt);
 	}
 	return $success;
+}
+
+function IsIPBanned($ip = null)
+{
+	if ($ip === null) $ip = $_SERVER['REMOTE_ADDR'] ?? "";
+	if ($ip == "") return false;
+
+	static $cache = [];
+	if (isset($cache[$ip])) return $cache[$ip];
+
+	$banned = false;
+
+	$bannedIPsFile = dirname(__DIR__) . "/HostFiles/bannedIPs.txt";
+	if (file_exists($bannedIPsFile)) {
+		$lines = @file($bannedIPsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+		if ($lines && in_array($ip, array_map('trim', $lines))) $banned = true;
+	}
+
+	if (!$banned) {
+		$conn = GetDBConnection(DBL_IS_IP_BANNED);
+		if ($conn) {
+			$sql = "SELECT 1 FROM banned_ips WHERE ip = ? LIMIT 1";
+			$stmt = mysqli_stmt_init($conn);
+			try {
+				if (mysqli_stmt_prepare($stmt, $sql)) {
+					mysqli_stmt_bind_param($stmt, "s", $ip);
+					mysqli_stmt_execute($stmt);
+					$result = mysqli_stmt_get_result($stmt);
+					$banned = ($result && mysqli_fetch_row($result) != null);
+					mysqli_stmt_close($stmt);
+				}
+			} catch (\Exception $e) {
+				error_log("IsIPBanned: query failed: " . $e->getMessage());
+			}
+		}
+	}
+
+	$cache[$ip] = $banned;
+	return $banned;
+}
+
+function EnsureIPHistoryTable($conn)
+{
+	$sql = "CREATE TABLE IF NOT EXISTS ip_history (
+		usersId INT NOT NULL,
+		ip VARCHAR(45) NOT NULL,
+		firstSeen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		lastSeen TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		timesSeen INT NOT NULL DEFAULT 1,
+		PRIMARY KEY (usersId, ip),
+		INDEX idx_ip (ip)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+	if (!mysqli_query($conn, $sql)) {
+		error_log("Failed to create ip_history table: " . mysqli_error($conn));
+	}
+}
+
+function LogIPHistory($usersId, $ip = null)
+{
+	if ($ip === null) $ip = $_SERVER['REMOTE_ADDR'] ?? "";
+	if ($ip == "" || $usersId == null || $usersId === "") return;
+
+	static $logged = [];
+	$key = $usersId . "|" . $ip;
+	if (isset($logged[$key])) return;
+	$logged[$key] = true;
+
+	$conn = GetDBConnection(DBL_LOG_IP_HISTORY);
+	if (!$conn) return;
+	EnsureIPHistoryTable($conn);
+	$sql = "INSERT INTO ip_history (usersId, ip) VALUES (?, ?)
+		ON DUPLICATE KEY UPDATE lastSeen = CURRENT_TIMESTAMP, timesSeen = timesSeen + 1";
+	$stmt = mysqli_stmt_init($conn);
+	try {
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_bind_param($stmt, "is", $usersId, $ip);
+			mysqli_stmt_execute($stmt);
+			mysqli_stmt_close($stmt);
+		}
+	} catch (\Exception $e) {
+		error_log("LogIPHistory: query failed: " . $e->getMessage());
+	}
 }
 
 if (!function_exists('GenerateGameGUID')) {

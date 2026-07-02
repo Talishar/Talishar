@@ -30,7 +30,8 @@ if (!IsUserModerator($useruid)) {
 $response = [
   "bannedPlayers" => [],
   "bannedIPs" => [],
-  "recentAccounts" => []
+  "recentAccounts" => [],
+  "linkedAccounts" => []
 ];
 
 $bannedPlayers = [];
@@ -97,6 +98,44 @@ if ($conn) {
 
     mysqli_stmt_close($stmt);
   }
+
+  EnsureIPHistoryTable($conn);
+  $linkedAccounts = [];
+  $sql = "SELECT DISTINCT u2.usersUid, h1.ip, u1.usersUid
+          FROM users u1
+          JOIN ip_history h1 ON h1.usersId = u1.usersId
+          JOIN ip_history h2 ON h2.ip = h1.ip AND h2.usersId != h1.usersId
+          JOIN users u2 ON u2.usersId = h2.usersId
+          WHERE u1.isBanned = 1 AND u2.isBanned = 0
+          LIMIT 200";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $linkData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($linkData, MYSQLI_NUM)) {
+      $linkedAccounts[$row[0] . "|" . $row[1]] = ["username" => $row[0], "ip" => $row[1], "linkedTo" => $row[2]];
+    }
+    mysqli_stmt_close($stmt);
+  }
+  $sql = "SELECT DISTINCT u.usersUid, b.ip
+          FROM users u
+          JOIN ip_history h ON h.usersId = u.usersId
+          JOIN banned_ips b ON b.ip = h.ip
+          WHERE u.isBanned = 0
+          LIMIT 200";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $linkData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($linkData, MYSQLI_NUM)) {
+      $key = $row[0] . "|" . $row[1];
+      if (!isset($linkedAccounts[$key])) {
+        $linkedAccounts[$key] = ["username" => $row[0], "ip" => $row[1], "linkedTo" => "banned IP"];
+      }
+    }
+    mysqli_stmt_close($stmt);
+  }
+  $response["linkedAccounts"] = array_values($linkedAccounts);
 
   mysqli_close($conn);
 }

@@ -34,6 +34,7 @@ $response->canSeeQueue = $canSeeQueue;
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
 else if(IsUserLoggedIn()) $isShadowBanned = IsBannedPlayer(LoggedInUserName());
+if(!$isShadowBanned) $isShadowBanned = IsIPBanned();
 
 // If player is actually banned, return empty game list
 if(IsUserLoggedIn() && IsBannedPlayer(LoggedInUserName())) {

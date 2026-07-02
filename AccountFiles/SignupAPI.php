@@ -41,6 +41,11 @@
     echo(json_encode($response));
     exit;
   }
+  if (IsIPBanned()) {
+    $response->error = "Unable to create an account at this time. Please try again later.";
+    echo(json_encode($response));
+    exit;
+  }
   $conn = GetDBConnection(DBL_SIGNUP_API);
   // Is the username taken already
   if (uidExists($conn, $username) !== false) {
@@ -58,7 +63,8 @@
     exit;
   }
 
-  CreateUserAPI($conn, $username, $email, $pwd);
+  $newUserId = CreateUserAPI($conn, $username, $email, $pwd);
+  if ($newUserId !== false) LogIPHistory($newUserId);
 
   $response->message = "Success!";
   echo(json_encode($response));

@@ -174,6 +174,20 @@ CREATE TABLE IF NOT EXISTS banned_ips (
 
 -- --------------------------------------------------------
 --
+-- Table structure for table `ip_history`
+--
+CREATE TABLE IF NOT EXISTS ip_history (
+  usersId INT NOT NULL,
+  ip VARCHAR(45) NOT NULL,
+  firstSeen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  lastSeen TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  timesSeen INT NOT NULL DEFAULT 1,
+  PRIMARY KEY (usersId, ip),
+  INDEX idx_ip (ip)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+--
 -- Table structure for table `savedsettings`
 --
 CREATE TABLE IF NOT EXISTS `savedsettings` (

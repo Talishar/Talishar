@@ -48,6 +48,7 @@ if (!isset($_SESSION["userid"])) {
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
 else if(isset($_SESSION["userid"])) $isShadowBanned = IsBanned($_SESSION["userid"]);
+if(!$isShadowBanned) $isShadowBanned = IsIPBanned();
 
 if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking

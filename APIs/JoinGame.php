@@ -187,6 +187,7 @@ include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
 $joinerName = ($_SESSION["useruid"] ?? "Player 2");
+if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
  if ($playerID == 3 && $joinerName == "starmorgs" || ($p1uid == "zeni" || $p1uid == "rkhalid890") && $joinerName == "starmorgs" || $p1uid == "starmorgs" && ($joinerName == "zeni" || $joinerName == "rkhalid890")) {
    $response->error = "Unable to join this game.";
    WriteGameFile();
@@ -211,6 +212,13 @@ $joinerName = ($_SESSION["useruid"] ?? "Player 2");
        exit;
      }
    }
+ }
+
+ if ($playerID == 2 && !$forceBaseDeckRefresh && !str_starts_with($format ?? "", "shadow") && IsIPBanned()) {
+   $response->error = "Unable to join this game.";
+   WriteGameFile();
+   echo json_encode($response);
+   exit;
  }
 
  // Block a recently kicked player from immediately rejoining
