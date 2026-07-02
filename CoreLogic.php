@@ -256,7 +256,8 @@ function AddCombatChain($cardID, $player, $from, $resourcesPaid, $OriginUniqueID
   if ($turn[0] == "B" || CardType($cardID) == "DR" || DefendingTerm($turn[0]) || $defending) OnBlockEffects($index, $from);
   CurrentEffectAttackAbility(count($combatChain) - CombatChainPieces());
   if ($index == 0) { // remove any attack proxies from the attacking card from previous chain links 1.4.3c
-		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+		$numLinks = $ChainLinks->NumLinks();
+		for ($i = 0; $i < $numLinks; ++$i) {
 			$AttackCard = $ChainLinks->GetLink($i)->AttackCard();
 			if ($AttackCard->OriginUniqueID() == $OriginUniqueID)
 				$AttackCard->Remove();
@@ -1518,10 +1519,12 @@ function CombatChainClosedMainCharacterEffects()
 function CombatChainClosedItemEffects() {
   global $ChainLinks, $defPlayer;
   
-  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+  $numLinks = $ChainLinks->NumLinks();
+  for ($i = 0; $i < $numLinks; ++$i) {
     $Link = $ChainLinks->GetLink($i);
     $nervesOfSteelActive = $Link->TotalAttack() <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
-    for ($j = 0; $j < $Link->NumCards(); ++$j) {
+    $numCards = $Link->NumCards();
+    for ($j = 0; $j < $numCards; ++$j) {
       $LinkCard = $Link->GetLinkCard($j, true);
       if ($LinkCard->PlayerID() != $defPlayer) continue;
       if (!$nervesOfSteelActive) {
@@ -3114,7 +3117,8 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
     $additionalCostsClassState = GetClassState($player, $CS_AdditionalCosts);
     if(SearchCurrentTurnEffects("arc_lightning_yellow", $player) && !IsMeldInstantName($additionalCostsClassState) && ($additionalCostsClassState != "Both" || $from == "MELD")) {
-      for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+      $numEffects = $CurrentTurnEffects->NumEffects();
+      for ($i = 0; $i < $numEffects; ++$i) {
         $Effect = $CurrentTurnEffects->Effect($i, true);
         if ($Effect->EffectID() == "arc_lightning_yellow") {
           SetArcaneTarget($mainPlayer, $Effect->EffectID(), "any");
@@ -3281,7 +3285,8 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $ally = &GetAllies($player);
   $Allies = new Allies($player);
   $indices = [];
-  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+  $numAllies = $Allies->NumAllies();
+  for ($i = 0; $i < $numAllies; ++$i) {
     $Ally = $Allies->Card($i, true);
     if ($Ally->Status() != 0 && WardAmount($Ally->CardID(), $player) > 0)
       $indices[] = $Ally->Index();
@@ -3309,7 +3314,8 @@ function GetDamagePreventionTargetIndices()
   global $combatChain, $currentPlayer, $Stack;
   $otherPlayer = 3 - $currentPlayer;
   $rv = [];
-  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+  $numLayers = $Stack->NumLayers();
+  for ($i = 0; $i < $numLayers; ++$i) {
     $Layer = $Stack->Card($i, true);
     // non-card layers are not valid damage sources
     if ($Layer->IsCardLayer()) $rv[] = "LAYER-" . $Layer->Index();

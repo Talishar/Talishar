@@ -505,7 +505,8 @@ function AddSoul($cardID, $player, $from, $isMainPhase = true)
     if ($player == $mainPlayer)
       if (SearchCharacterAlive($player, "empyrean_rapture") && !SearchCurrentTurnEffects("empyrean_rapture", $player) && CardNameContains($cardID, "Herald", $player, true)) AddCurrentTurnEffect("empyrean_rapture", $player);
     $Auras = new Auras($player);
-    for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+    $numAuras = $Auras->NumAuras();
+    for ($i = 0; $i < $numAuras; ++$i) {
       $card = GetClass($Auras->Card($i, true)->CardID(), $player);
       if ($card != "-") $card->PermanentAddSoulAbility();
     }
@@ -614,7 +615,8 @@ function EffectArcaneBonus($source)
 
 function AssignEffectToCard($cardID, $player, $from) {
   global $CurrentTurnEffects;
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $numEffects = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $numEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
     if ($Effect->AppliestoUniqueID() != -1) continue;

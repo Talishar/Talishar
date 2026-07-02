@@ -599,7 +599,8 @@ function ResetCombatChainState()
     $defCharacter[$i + 6] = 0;
   }
   $defItems = new Items($defPlayer);
-  for ($i = 0; $i < $defItems->NumItems(); ++$i) {
+  $numItems = $defItems->NumItems();
+  for ($i = 0; $i < $numItems; ++$i) {
     $ItemCard = $defItems->Card($i, true);
     $ItemCard->ToggleOnChain(0);
   }

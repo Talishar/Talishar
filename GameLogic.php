@@ -361,7 +361,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           foreach ([$otherPlayer, $player] as $p) {
             $prefix = $p == $player ? "MYAURAS" : "THEIRAURAS";
             $Auras = new Auras($p);
-            for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+            $numAuras = $Auras->NumAuras();
+            for ($i = 0; $i < $numAuras; ++$i) {
               $Aura = $Auras->Card($i, true);
               if (TypeContains($Aura->CardID(), "T") || $Aura->IsToken()) $rv[] = "$prefix-" . $Aura->Index();
             }
@@ -374,7 +375,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           foreach ([$otherPlayer, $player] as $p) {
             $prefix = $p == $player ? "MYITEMS" : "THEIRITEMS";
             $Items = new Items($p);
-            for ($i = 0; $i < $Items->NumItems(); ++$i) {
+            $numItems = $Items->NumItems();
+            for ($i = 0; $i < $numItems; ++$i) {
               $Item = $Items->Card($i, true);
               if (TypeContains($Item->CardID(), "T") ) $rv[] = "$prefix-" . $Item->Index();
             }
@@ -387,7 +389,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           foreach ([$otherPlayer, $player] as $p) {
             $prefix = $p == $player ? "MYAURAS" : "THEIRAURAS";
             $Auras = new Auras($p);
-            for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+            $numAuras = $Auras->NumAuras();
+            for ($i = 0; $i < $numAuras; ++$i) {
               $Aura = $Auras->Card($i, true);
               if (CardNameContains($Aura->CardID(), "Sigil", $player, true)) $rv[] = "$prefix-" . $Aura->Index();
             }
@@ -398,7 +401,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = [];
           $otherPlayer = 3 - $player;
           $Graveyard = new Discard($otherPlayer);
-          for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+          $numCards = $Graveyard->NumCards();
+          for ($i = 0; $i < $numCards; ++$i) {
             $Card = $Graveyard->Card($i, true);
             if (TypeContains($Card->ID(), "I")) $rv[] = "THEIRDISCARD-" . $Card->Index();
           }
@@ -408,7 +412,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = [];
           $otherPlayer = 3 - $player;
           $Graveyard = new Discard($otherPlayer);
-          for ($i = 0; $i < $Graveyard->TotalCards(); ++$i) {
+          $totalCards = $Graveyard->TotalCards();
+          for ($i = 0; $i < $totalCards; ++$i) {
             $Card = $Graveyard->Card($i, true);
             if ($Card->Facing() == "DOWN") continue;
             if (ColorContains($Card->ID(), "2", $otherPlayer)) $rv[] = "THEIRDISCARD-" . $Card->Index();
@@ -4006,7 +4011,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $AuraCard->AddModality($params[1]);
       foreach ([1,2] as $playerID) {
         $Banish = new Banish($playerID);
-        for ($i = 0; $i < $Banish->NumCards(); ++$i) {
+        $numCards = $Banish->NumCards();
+        for ($i = 0; $i < $numCards; ++$i) {
           $BanishCard = $Banish->Card($i, true);
           $banishName = NameOverride($BanishCard->ID(), $playerID);
           if (ShareName($banishName, GamestateUnsanitize($params[1]))) {

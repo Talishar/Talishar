@@ -1507,7 +1507,8 @@ function InstantRestricted($cardID, $from, $index, $zone="-", $type="-") {
       break;
   }
 
-  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+  $numLinks = $ChainLinks->NumLinks();
+  for ($i = 0; $i < $numLinks; ++$i) {
     $Link = $ChainLinks->GetLink($i);
     $AttackCard = $Link->GetLinkCard(0);
     switch ($AttackCard->ID()) {

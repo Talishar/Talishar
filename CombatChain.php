@@ -1515,7 +1515,8 @@ function NumCardsDefended($linkNum=-1)
   }
   else {
     $Link = new ChainLink($linkNum);
-    for ($i = 0; $i < $Link->NumCards(); ++$i) {
+    $numCards = $Link->NumCards();
+    for ($i = 0; $i < $numCards; ++$i) {
       $LinkCard = $Link->GetLinkCard($i, true);
       if ($LinkCard->PlayerID() == $defPlayer) ++$number;
     }

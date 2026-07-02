@@ -518,7 +518,8 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
     // if it's on the combat chain, remove it
     if ($CombatChain->AttackCard()->OriginUniqueID() == $uniqueID)
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $numLinks = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $numLinks; ++$i) {
       $AttackCard = $ChainLinks->GetLink($i)->AttackCard();
       if ($AttackCard->OriginUniqueID() == $uniqueID)
         $AttackCard->Remove();

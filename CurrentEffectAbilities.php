@@ -893,7 +893,8 @@ function OnAttackEffects($cardID)
   }
 
   $DefChar =  new PlayerCharacter($defPlayer);
-  for ($i = 0; $i < $DefChar->NumCards(); ++$i) {
+  $numCards = $DefChar->NumCards();
+  for ($i = 0; $i < $numCards; ++$i) {
     $CharCard = $DefChar->Card($i, true);
     if ($CharCard->CardID() == "unflinching_foothold" && $CharCard->IsActive() && IsDominateActive()) { //special case here
       Await($defPlayer, "YesNo", context: "if_you_want_to_activate_" . CardLink("unflinching_foothold"), subsequent:0);

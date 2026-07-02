@@ -1570,7 +1570,8 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
 
       if ($damageTarget == "HERO") {
         $DefChar = new PlayerCharacter($defPlayer);
-        for ($i = 0; $i < $DefChar->NumCards(); ++$i) {
+        $numCards = $DefChar->NumCards();
+        for ($i = 0; $i < $numCards; ++$i) {
           $CharCard = $DefChar->Card($i, true);
           AddCharacterGetHitTrigger($CharCard->CardID(), "CURRENTATTACK");
         }
@@ -1631,7 +1632,8 @@ function FinalizeChainLink($chainClosed = false)
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
     if (SearchCurrentTurnEffects("arc_lightning_yellow", $currentPlayer)) {
-      for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+      $numEffects = $CurrentTurnEffects->NumEffects();
+      for ($i = 0; $i < $numEffects; ++$i) {
         $Effect = $CurrentTurnEffects->Effect($i, true);
         if ($Effect->EffectID() == "arc_lightning_yellow") {
           SetArcaneTarget($mainPlayer, $Effect->EffectID(), "any");

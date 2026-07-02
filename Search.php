@@ -1270,7 +1270,8 @@ function SearchItemsForUniqueID($uniqueID, $player)
 function SearchAlliesForUniqueID($uniqueID, $player)
 {
   $Allies = new Allies($player);
-  for ($i = 0; $i < $Allies->NumAllies(); ++$i){
+  $numAllies = $Allies->NumAllies();
+  for ($i = 0; $i < $numAllies; ++$i){
     $AllyCard = $Allies->Card($i, true);
     if ($AllyCard->UniqueID() == $uniqueID) return $AllyCard->Index();
   }
