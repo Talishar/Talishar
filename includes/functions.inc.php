@@ -384,9 +384,10 @@ function logCompletedGameStats($conceded = false)
 	$gameResultID = $gameName;
 
 	// Pre-compute shared data to avoid redundant work
-	$format = GetCachePiece(intval($gameName), 13);
+	$gameCacheArr = ReadCacheArray(intval($gameName));
+	$format = $gameCacheArr[12] ?? "";
 	if ($format == 7 || $format == 6) return; // Don't send stats for draft (7) or sealed (6) formats
-	$isPublic = (GetCachePiece(intval($gameName), 9) === "1");
+	$isPublic = (($gameCacheArr[8] ?? "") === "1"); 
 	$hashedP1Deck = "-";
 	$hashedP2Deck = "-";
 	$detailedResult1Json = SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameResultID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero, $p1StatsDisabled);

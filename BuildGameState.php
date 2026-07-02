@@ -3,7 +3,7 @@ include_once "Libraries/PlayerSettings.php";
 if (!function_exists('IsHideHandFromFriends')) {
     function IsHideHandFromFriends($player) { return false; }
 }
-function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false) {
+function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false, $cacheSnapshot = null) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $myAuras, $myItems, $mySoul, $myAllies, $myPermanents, $myResources;
   global $theirHand, $theirPitch, $theirDeck, $theirDiscard, $theirBanish, $theirArsenal, $theirCharacter;
@@ -40,7 +40,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $gameFileSeenAt[$gameName] = $nowTs;
   }
 
-  $buildCacheArr = ReadCacheArray($gameName) ?? [];
+  $buildCacheArr = $cacheSnapshot ?? ReadCacheArray($gameName) ?? [];
   $spectatorsPubliclyAllowed = ($buildCacheArr[8] ?? "") == "1";
 
   // Extract session data with defaults

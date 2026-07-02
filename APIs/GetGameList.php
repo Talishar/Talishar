@@ -107,11 +107,12 @@ session_write_close();
 if(IsUserLoggedIn()) {
   $lastGameName = SessionLastGameName();
   if($lastGameName != "") {
-    $gameStatus = GetCachePiece($lastGameName, 14);
+    $lastGameArr = ReadCacheArray($lastGameName);
+    $gameStatus = $lastGameArr[13] ?? "";
     if($gameStatus != "" && $gameStatus != 99) {
       $playerID = SessionLastGamePlayerID();
       $otherP = $playerID == 1 ? 2 : 1;
-      $oppStatus = strval(GetCachePiece($lastGameName, $otherP + 3));
+      $oppStatus = strval($lastGameArr[$otherP + 2] ?? "");
       if($oppStatus != "-1") {
         $response->LastGameName = $lastGameName;
         $response->LastPlayerID = $playerID;

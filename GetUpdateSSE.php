@@ -110,10 +110,11 @@ $typingCheckInterval = 1.5; // seconds between checks
 $lastTypingState = false;
 
 // Send initial full game state
-$cacheVal = intval(GetCachePiece($gameName, 1));
+$initialCacheArr = ReadCacheArray($gameName);
+$cacheVal = intval($initialCacheArr[0] ?? ""); // piece 1
 $lastUpdate = $cacheVal;
 
-$initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true);
+$initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, false, $initialCacheArr);
 if (is_string($initialState)) {
   // Error occurred
   echo ("data: " . json_encode(["error" => $initialState]) . "\n\n");
@@ -174,7 +175,7 @@ while (true) {
   $gameStatus = intval($cacheArr[13] ?? 0);
   if ($gameStatus == 99) {
     // Send final state before exiting
-    $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
+    $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, false, $cacheArr);
     if (!is_string($finalState)) {
       SendContent($finalState);
     }
@@ -188,7 +189,7 @@ while (true) {
   $previouslyInactive = $cacheArr[16] ?? "";
   if ($cacheVal > $lastUpdate || $inactive && $previouslyInactive == 0) {
     // Build and send full game state
-    $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive);
+    $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive, $cacheArr);
     if (is_string($gameState)) {
       // Only kill the stream for genuinely fatal errors. Transient ones (e.g.
       // "Game state reverted." mid-undo) resolve on a retry.

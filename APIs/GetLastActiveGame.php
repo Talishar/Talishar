@@ -80,7 +80,8 @@ include "./APIParseGamefile.php";
 // Check if game is still in progress
 // Cache piece 14 is set to 99 (MGS_GameOver) when game ends
 // If cache piece 14 is 99, the game is definitely over
-$cacheStatus = GetCachePiece($gameName, 14);
+$gameCacheArr = ReadCacheArray($gameName);
+$cacheStatus = $gameCacheArr[13] ?? "";
 $MGS_GameOver = 99;
 
 $response->gameInProgress = false;
@@ -101,7 +102,7 @@ $response->opponentName = ($opponentID == 1 ? ($p1uid != "-" ? $p1uid : "Player 
 // Check if opponent is currently disconnected
 // Cache piece structure: playerID+3 contains the connection status
 // 0 = connected, -1 = disconnected, 1 = just joined
-$opponentStatus = GetCachePiece($gameName, $opponentID + 3);
+$opponentStatus = $gameCacheArr[$opponentID + 2] ?? "";
 $response->opponentDisconnected = ($opponentStatus == "-1" || $opponentStatus == "");
 
 if ($playerID != 3) {

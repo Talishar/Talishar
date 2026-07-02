@@ -564,7 +564,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         break;
       }
       IncrementClassState($playerID, $CS_NumUndoesThisTurn);
-      $format = GetCachePiece($gameName, 13);
+      $undoCacheArr = ReadCacheArray($gameName);
+      $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
         RevertGamestate();
@@ -575,7 +576,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         //It's competitive queue, so we must request confirmation
         // Check if opponent has declined too many undo requests already
         $opponentDeclinePiece = $otherPlayer == 1 ? 17 : 18;
-        $opponentDeclineCount = intval(GetCachePiece($gameName, $opponentDeclinePiece));
+        $opponentDeclineCount = intval($undoCacheArr[$opponentDeclinePiece - 1] ?? "");
         if ($opponentDeclineCount >= UNDO_DECLINE_LIMIT) {
           AddEvent("UNDODENIEDNOTICE", $playerID);
         }
@@ -594,7 +595,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       ++$actionPoints;
       break;
     case 10003: //Undo/Revert to prior turn
-      $format = GetCachePiece($gameName, 13);
+      $undoCacheArr = ReadCacheArray($gameName);
+      $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
         RevertGamestate($buttonInput);
@@ -607,7 +609,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         //It's competitive queue, so we must request confirmation
         // Check if opponent has declined too many undo requests already
         $opponentDeclinePiece = $otherPlayer == 1 ? 17 : 18;
-        $opponentDeclineCount = intval(GetCachePiece($gameName, $opponentDeclinePiece));
+        $opponentDeclineCount = intval($undoCacheArr[$opponentDeclinePiece - 1] ?? "");
         if ($opponentDeclineCount >= UNDO_DECLINE_LIMIT) {
           WriteLog("Player " . $playerID . " requested to undo but opponent has declined too many undo requests this turn");
         }
@@ -1026,7 +1028,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           SetCachePiece($gameName, 16, 1);
           break;
       }
-      if (GetCachePiece($gameName, 15) != 1 || GetCachePiece($gameName, 16) != 1) {
+      $chatCacheArr = ReadCacheArray($gameName);
+      if (($chatCacheArr[14] ?? "") != 1 || ($chatCacheArr[15] ?? "") != 1) { // pieces 15, 16
         AddEvent("REQUESTCHAT", $playerID);
         if (IsPlayerAI(2))
           WriteLog("🤖 The dummy beeps at you");
