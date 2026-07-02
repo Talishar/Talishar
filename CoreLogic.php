@@ -210,11 +210,11 @@ function BlockingCardDefense($index)
   $from = $BlockCard->From();
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaid = is_numeric($BlockCard->ResourcesPaid()) ? intval($BlockCard->ResourcesPaid()) : 0;
-  $resourcesPaid = $resourcesPaid + intval($baseCost);
+  $resourcesPaid += intval($baseCost);
   $uid = ($from == "EQUIP" || $from == "PLAY") ? $BlockCard->OriginUniqueID() : $BlockCard->UniqueID();
   $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC", "", $uid));
   if (!BlockCantBeModified($cardID)) {
-    if (($BlockCard->DefenseModifier() < 0 || $canGainBlock)) $defense += $BlockCard->DefenseModifier();
+    if ($BlockCard->DefenseModifier() < 0 || $canGainBlock) $defense += $BlockCard->DefenseModifier();
     $blockModifier = intval(BlockModifier($cardID, $from, $resourcesPaid, $index));
     $defense += $blockModifier;
   }
@@ -987,7 +987,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
   $AttackCard = $CombatChain->AttackCard();
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $attackCardID = $AttackCard->ID();
-  $isCombat = ($type == "COMBAT");
+  $isCombat = $type == "COMBAT";
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $effectPlayer = $currentTurnEffects[$i + 1];
     if ($effectPlayer != $playerSource) {
@@ -1764,7 +1764,7 @@ function GetIndices($count, $add = 0, $pieces = 1, $zone="")
     }
   } else {
     for ($i = 0; $i < $count; $i += $pieces) {
-      $indices[] = "$zone-" . ($i + $add);
+      $indices[] = "$zone-" . $i + $add;
     }
   }
   return implode(",", $indices);

@@ -1112,7 +1112,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           for ($j = 1; $j < $layerPiecesReorder; $j++) {
             $chunk[] = $layers[$idx + $j];
           }
-          $newLayersTop = array_merge($chunk, $newLayersTop);
+          $newLayersTop = [...$chunk, ...$newLayersTop];
         }
       }
       if (!empty($newLayersTop)) {
@@ -1124,7 +1124,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             }
           }
         }
-        $layers = array_merge($newLayersTop, $newLayersRest);
+        $layers = [...$newLayersTop, ...$newLayersRest];
       }
       $layersCountReorder = count($layers);
       for ($i = 0; $i < $layersCountReorder; $i += $layerPiecesReorder) {
@@ -1215,7 +1215,7 @@ function PassInput($autopass = true, $doublePass = false)
       }
     }
     if (!empty($pretriggerFlat)) {
-      $layers = array_merge($pretriggerFlat, $remaining);
+      $layers = [...$pretriggerFlat, ...$remaining];
     }
   }
   if ($turn[0] == "B") {
@@ -2242,7 +2242,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index . "-" . $uniqueID . "-" . $zone);
-      $decisionQueue = array_merge($decisionQueue, $dqCopy);
+      $decisionQueue = [...$decisionQueue, ...$dqCopy];
       ProcessDecisionQueue();
       //MISSING CR 5.1.3d Decide if action that can be played as instant will be
       //MISSING CR 5.1.3e Decide order of costs to be paid
