@@ -2154,7 +2154,7 @@ function LinkBasePower($check=false)
       }
     }
     //substage 3
-    if ($attackCard != "-") $basePower = $basePower * $attackCard->MultiplyBasePower();
+    if ($attackCard != "-") $basePower *= $attackCard->MultiplyBasePower();
     for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
       if ($card != "-") $basePower = $card->EffectMultiplyBasePower() * $basePower;

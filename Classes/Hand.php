@@ -36,7 +36,7 @@ class PitchZone {
   }
 
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * PitchPieces();
+    if($cardNumber) $index *= PitchPieces();
     return new PitchCard($index, $this->player);
   }
 

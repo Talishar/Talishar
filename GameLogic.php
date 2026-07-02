@@ -1008,7 +1008,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "LastResult":
           $input = explode(",", $lastResult);
           $inputCount = count($input);
-          for ($i = 0; $i < $inputCount; ++$i) $input[$i] = $input[$i] . "-" . $input[$i];
+          for ($i = 0; $i < $inputCount; ++$i) $input[$i] .= "-" . $input[$i];
           break;
         case "CombatChain":
           $lastResultArr = explode(",", $lastResult);

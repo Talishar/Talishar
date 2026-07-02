@@ -16,7 +16,7 @@ class CombatChain {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * CombatChainPieces();
+    if($cardNumber) $index *= CombatChainPieces();
     return new ChainCard($index);
   }
 
@@ -61,7 +61,7 @@ class CombatChain {
 
   function Remove($index, $cardNumber=false) {
     $combatChainPieces = CombatChainPieces();
-    if($cardNumber) $index = $index * $combatChainPieces;
+    if($cardNumber) $index *= $combatChainPieces;
     if($index < 0 || $index >= count($this->chain)) return "";
     $cardID = $this->chain[$index];
     // RemoveEffectsFromCombatChain($cardID); I think this function call is no longer necessary

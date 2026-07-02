@@ -2814,12 +2814,12 @@ function RemoveCharacterAndAddAsSubcardToCharacter($player, $index, &$newCharact
       for ($i = 0; $i < $subcardsCount; $i++) {
         if ($char[0] == "teklovossen_the_mechropotent") AddSoul($subcards[$i], $player, "-");
         if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex + 10] = $subcards[$i];
-        else $char[$newCharactersSubcardIndex + 10] = $char[$newCharactersSubcardIndex + 10] . "," . $subcards[$i];
+        else $char[$newCharactersSubcardIndex + 10] .= "," . $subcards[$i];
       }
     }
     CharacterDestroyEffect($cardID, $player);
     if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex + 10] = $cardID;
-    else $char[$newCharactersSubcardIndex + 10] = $char[$newCharactersSubcardIndex + 10] . "," . $cardID;
+    else $char[$newCharactersSubcardIndex + 10] .= "," . $cardID;
     $characterPieces = CharacterPieces();
     if ($newCharactersSubcardIndex > $index) $newCharactersSubcardIndex -= $characterPieces;
     array_splice($char, $index, $characterPieces);
@@ -2834,7 +2834,7 @@ function RemoveItemAndAddAsSubcardToCharacter($player, $itemIndex, $newCharacter
   $itemPieces = ItemPieces();
   $cardID = $items[$itemIndex];
   if (isSubcardEmpty($char, $newCharactersSubcardIndex)) $char[$newCharactersSubcardIndex + 10] = $cardID;
-  else $char[$newCharactersSubcardIndex + 10] = $char[$newCharactersSubcardIndex + 10] . "," . $cardID;
+  else $char[$newCharactersSubcardIndex + 10] .= "," . $cardID;
   array_splice($items, $itemIndex, $itemPieces);
   if ($char[$newCharactersSubcardIndex] == "nitro_mechanoida") UpdateSubcardCounterCount($player, $newCharactersSubcardIndex);
 }
@@ -4146,7 +4146,7 @@ function CharacterAddSubcard($player, $index, $card)
 {
   $char = &GetPlayerCharacter($player);
   if (isSubcardEmpty($char, $index)) $char[$index + 10] = $card;
-  else $char[$index + 10] = $char[$index + 10] . "," . $card;
+  else $char[$index + 10] .= "," . $card;
 }
 
 function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $isMandatory = true, $actionName = "banish", $isSubsequent=false)
@@ -4157,7 +4157,7 @@ function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $i
   $chooseMultizoneData = "";
   for ($i = 0; $i < $subcardsCount; $i++) {
     if ($chooseMultizoneData == "") $chooseMultizoneData = "CARDID-" . $subcards[$i];
-    else $chooseMultizoneData = $chooseMultizoneData . ",CARDID-" . $subcards[$i];
+    else $chooseMultizoneData .= ",CARDID-" . $subcards[$i];
   }
   if ($chooseMultizoneData != "") {
     if ($count == 1) {
@@ -4183,7 +4183,7 @@ function ItemChooseaAndRemoveSubcard($player, $index, $fromDQ = false, $count = 
   $chooseMultizoneData = "";
   for ($i = 0; $i < $subcardsCount; $i++) {
     if ($chooseMultizoneData == "") $chooseMultizoneData = "CARDID-" . $subcards[$i];
-    else $chooseMultizoneData = $chooseMultizoneData . ",CARDID-" . $subcards[$i];
+    else $chooseMultizoneData .= ",CARDID-" . $subcards[$i];
   }
   if ($chooseMultizoneData != "") {
     if ($count == 1) {

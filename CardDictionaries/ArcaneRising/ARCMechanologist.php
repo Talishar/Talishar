@@ -287,7 +287,7 @@ function OnBoostCardPutUnderCharacter(&$chars, $index, $charID, $player) {
 
 function AddSubcardToChar(&$chars, $index, $cardID) {
   if (isSubcardEmpty($chars, $index)) $chars[$index+10] = $cardID;
-  else $chars[$index+10] = $chars[$index+10] . "," . $cardID;
+  else $chars[$index+10] .= "," . $cardID;
   $chars[$index+2]++;
 }
 

@@ -523,7 +523,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $charPieces = CharacterPieces();
       AddSoul($char[0], $currentPlayer, "-");
       if (isSubcardEmpty($char, 0)) $char[10] = $char[0];
-      else $char[10] = $char[10] . "," . $char[0];
+      else $char[10] .= "," . $char[0];
       $char[0] = "teklovossen_the_mechropotent";
       $char[1] = 2;
       $char[2] = 0;

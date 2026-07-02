@@ -23,7 +23,7 @@ class Banish {
 
   function Card($index, $cardNumber = false)
   {
-    if($cardNumber) $index = $index * BanishPieces();
+    if($cardNumber) $index *= BanishPieces();
     return new BanishCard($this->playerID, $index);
   }
 

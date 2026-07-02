@@ -16,7 +16,7 @@ class Permanents {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * PermanentPieces();
+    if($cardNumber) $index *= PermanentPieces();
     return new PermanentCard($index, $this->player);
   }
 
