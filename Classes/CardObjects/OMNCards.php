@@ -3088,9 +3088,11 @@ class red_lure_harpoon_blue extends Card {
     $choice = $dqVars["choice"] ?? "-";
     if ($choice == "-") return;
     $Card = MZIndexToObject($this->controller, $choice);
-    $cardID = $Card->ID();
-    $Card->Remove();
-    BanishCardForPlayer($cardID, $otherPlayer, "DISCARD", "NTFromOtherPlayer", $this->cardID, $this->controller);
+    if ($Card != "") {
+      $cardID = $Card->ID();
+      $Card->Remove();
+      BanishCardForPlayer($cardID, $otherPlayer, "DISCARD", "NTFromOtherPlayer", $this->cardID, $this->controller);
+    }
   }
 }
 

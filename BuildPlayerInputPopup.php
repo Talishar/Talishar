@@ -655,7 +655,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             case "CARDID":
               break;
             default:
-              WriteLog("An unexpected input $option0 was sent to CHOOSEMULTIZONE, please submit a bug report", highlight:true);
+              // WriteLog("An unexpected input $option0 was sent to CHOOSEMULTIZONE, please submit a bug report", highlight:true);
               break;
           }
           $counters = 0;
