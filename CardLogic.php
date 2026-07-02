@@ -1868,6 +1868,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "outside_interference_blue":
       if (CanRevealCards($player)) {
+        /** @var array|string $inventory */
         $inventory = &GetInventory($player);
         $choices = [];
         foreach ($inventory as $cardID) {
@@ -4382,21 +4383,21 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       $uniqueAurasSet = [];
       $auraPieces = AuraPieces();
       $charPieces = CharacterPieces();
-      for($player = 1; $player < 3; ++$player) {
-        $auras = GetAuras($player);
+      for($j = 1; $j < 3; ++$j) {
+        $auras = GetAuras($j);
         $auraCount = count($auras);
         for($i = 0; $i < $auraCount; $i += $auraPieces) {
-          $name = NameOverride($auras[$i], $player);
+          $name = NameOverride($auras[$i], $j);
           if ((TypeContains($auras[$i], "T") || $auras[$i + 4] == 1) && !isset($uniqueAurasSet[$name])) {
             $uniqueAuras[] = $name;
             $uniqueAurasSet[$name] = true;
           }
         }
-        $character = GetPlayerCharacter($player);
+        $character = GetPlayerCharacter($j);
         $charCount = count($character);
         for($i = 0; $i < $charCount; $i += $charPieces) {
-          $name = NameOverride($character[$i], $player);
-          if (TypeContains($character[$i], "T") && !isset($uniqueAurasSet[$name]) && SubtypeContains($character[$i], "Aura", $player)) {
+          $name = NameOverride($character[$i], $j);
+          if (TypeContains($character[$i], "T") && !isset($uniqueAurasSet[$name]) && SubtypeContains($character[$i], "Aura", $j)) {
             $uniqueAuras[] = $name;
             $uniqueAurasSet[$name] = true;
           }
@@ -4408,7 +4409,10 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         $combatChainPieces = CombatChainPieces();
         $combatChainCount = count($combatChain);
         for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
-          if ($combatChain[$i+7] == $target) $index = $i;
+          if ($combatChain[$i+7] == $target) {
+            $index = $i;
+            break; // Found it, stop looping
+          }
         }
       }
       if ($index != -1) {

@@ -153,7 +153,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 11: //CHOOSEDECK
       if ($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSETHEIRDECK") {
-        $player = ($turn[0] == "CHOOSETHEIRDECK") ? $playerID == 1 ? 2 : 1 : $playerID;
+        $player = ($turn[0] == "CHOOSETHEIRDECK") ? $playerID - 3 : $playerID;
         $deck = new Deck($player);
         $index = $cardID;
         $cardID = $deck->Remove($index);
@@ -664,8 +664,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10011:
       $cardList = explode(";", $cardID);
-      foreach ($cardList as $cardID) {
-        $cardID = trim($cardID);
+      foreach ($cardList as $card) {
+        $cardID = trim($card);
         if (str_contains($cardID, "|")) {
           $cardIDParts = explode("|", $cardID);
           $num = $cardIDParts[1];

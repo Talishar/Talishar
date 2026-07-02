@@ -58,8 +58,15 @@ if(IsUserLoggedIn()) {
   // Blocked users — refresh at most every 60 seconds per session
   if (!isset($_SESSION['_blockedCache']) || ($now - ($_SESSION['_blockedCacheAt'] ?? 0)) > $cacheTTL) {
     if ($conn) {
-      if (!$conn->ping()) {
+      if (!$conn || $conn->connect_error) {
         $conn = GetDBConnection(DBL_GET_GAME_LIST);
+      } else {
+        try {
+          $conn->query("SELECT 1");
+        } catch (\Throwable $e) {
+          error_log("GetGameList: connection check failed: " . $e->getMessage());
+          $conn = GetDBConnection(DBL_GET_GAME_LIST);
+        }
       }
       $query = "SELECT u.usersUid FROM blocked_users b
                 JOIN users u ON b.blockedUserId = u.usersId WHERE b.userId = ?
@@ -196,11 +203,11 @@ if ($handle = opendir($path)) {
         }
 
         $gameInProgress = new stdClass();
-        $gameInProgress->p1Hero = $cacheArr[6] ?? "";   // piece 7
-        $gameInProgress->p2Hero = $cacheArr[7] ?? "";   // piece 8
+        $gameInProgress->p1Hero = $cacheArr[6] ?? "";
+        $gameInProgress->p2Hero = $cacheArr[7] ?? "";
         $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
         $gameInProgress->gameName = $gameToken;
-        $gameInProgress->format = $cacheArr[12] ?? "";  // piece 13
+        $gameInProgress->format = $cacheArr[12] ?? "";
         $gameInProgress->gameCreator = $gameCreator;
         $gameInProgress->p2Username = $p2Username;
         $gameInProgress->visibility = $visibility;
@@ -222,6 +229,10 @@ if ($handle = opendir($path)) {
     $gameName = $gameToken;
     $lineCount = 0;
     $status = -1;
+    $format = "";
+    $gameDescription = "";
+    $p1uid = "";
+    $p2uid = "";
     if (file_exists($gf)) {
       $openCacheArr = ReadCacheArray($gameName);
       $lastRefresh = ($openCacheArr !== null) ? intval($openCacheArr[1] ?? "") : 0; //Player 1 last connection time

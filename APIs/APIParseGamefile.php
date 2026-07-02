@@ -10,8 +10,9 @@ if (!function_exists("GetArray")) {
   }
 }
 
+$gameName = isset($gameName) ? trim((string) $gameName) : '';
 $filename = "../Games/" . $gameName . "/GameFile.txt";
-if (!file_exists($filename)) exit;
+if ($gameName === '' || !file_exists($filename)) exit;
 $gameFileHandler = fopen($filename, "r+");
 
 $lockTries = 0;
