@@ -240,6 +240,7 @@ function GetCardBack($player)
     134 => "CBSkillIssue",
     135 => "CBWingedHussars",
     136 => "CBFabInsight",
+    137 => "CBNxi2",
   ];
   return $cardBackMap[$settings[$SET_Cardback] ?? 0] ?? "CardBack";
 }
