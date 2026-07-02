@@ -60,8 +60,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $found = HasCard($cardID);
       if ($turn[0] == "ARS" && $found >= 0) {
         $hand = &GetHand($playerID);
-        unset($hand[$found]);
-        $hand = array_values($hand);
+        array_splice($hand, $found, 1);
         AddArsenal($cardID, $currentPlayer, "HAND", "DOWN");
         PassTurn();
       } else {
@@ -476,8 +475,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($index >= count($deck)) break;
       $cardID = $deck[$index];
       if (!IsPlayable($cardID, $turn[0], "DECK", $index)) break;
-      unset($deck[$index]);
-      $deck = array_values($deck);
+      array_splice($deck, $index, 1);
       PlayCard($cardID, "DECK", zone: "MYDECK");
       break;
     case 36: //Play card from graveyard
@@ -4286,10 +4284,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         // remove spectra cards from target
         $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
         if ($ind == -1) {
-          unset($targetArr[$i]);
-          unset($uidArr[$i]);
-          $targetArr = array_values($targetArr);
-          $uidArr = array_values($uidArr);
+          array_splice($targetArr, $i, 1);
+          array_splice($uidArr, $i, 1);
         }
       }
     }

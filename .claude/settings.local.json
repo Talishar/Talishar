@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(php -l:*)",
-      "Bash(php vendor/bin/phpunit)"
+      "Bash(php vendor/bin/phpunit)",
+      "Bash(php -l GetUpdateSSE.php)",
+      "Bash(php -l BuildGameState.php)"
     ]
   }
 }

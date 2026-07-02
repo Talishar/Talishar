@@ -78,11 +78,7 @@ class ArsenalCard {
 
 	function Remove() {
 		$cardID = $this->CardID();
-		$arsenalPieces = ArsenalPieces();
-		for ($i = $this->index + $arsenalPieces - 1; $i >= $this->index; --$i) {
-			unset($this->pieces[$i]);
-		}
-		$this->pieces = array_values($this->pieces);
+		array_splice($this->pieces, $this->index, ArsenalPieces());
 		return $cardID;
 	}
 

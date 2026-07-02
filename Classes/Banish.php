@@ -41,9 +41,7 @@ class Banish {
 
   function Remove($index) {
     $cardID = $this->banish[$index];
-    $banishPieces = BanishPieces();
-    for($i=0; $i<$banishPieces; ++$i) unset($this->banish[$index+$i]);
-    $this->banish = array_values($this->banish);
+    array_splice($this->banish, $index, BanishPieces());
     return $cardID;
   }
 
@@ -121,9 +119,7 @@ class BanishCard {
     {
       if (isset($this->banish[$this->index])) {
         $cardID = $this->banish[$this->index];
-        $banishPieces = BanishPieces();
-        for($i=0; $i<$banishPieces; ++$i) unset($this->banish[$this->index+$i]);
-        $this->banish = array_values($this->banish);
+        array_splice($this->banish, $this->index, BanishPieces());
         return $cardID;
       }
       return "-";

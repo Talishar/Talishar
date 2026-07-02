@@ -633,8 +633,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $hand = &GetHand($player);
       if (isset($hand[$lastResult])) {
         $cardID = $hand[$lastResult];
-        unset($hand[$lastResult]);
-        $hand = array_values($hand);
+        array_splice($hand, $lastResult, 1);
       }
       else $cardID = "";
       return $cardID;
@@ -724,10 +723,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arsenal = &GetArsenal($player);
       $cardToReturn = $arsenal[$index];
       RemoveArsenalEffects($player, $cardToReturn, $arsenal[$index + 5]);
-      for ($i = $index + ArsenalPieces() - 1; $i >= $index; --$i) {
-        unset($arsenal[$i]);
-      }
-      $arsenal = array_values($arsenal);
+      array_splice($arsenal, $index, ArsenalPieces());
       return $cardToReturn;
     case "MULTIADDHAND":
       if ($lastResult == "") return "";
@@ -3889,13 +3885,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ((TypeContains($cardID, "A") || TypeContains($cardID, "AA")) && !$dominateRestricted && !$overpowerRestricted) {
         AddCombatChain($cardID, $player, "HAND", 0, -1);
         OnBlockResolveEffects($cardID);
-        unset($hand[$handInd]);
-        $hand = array_values($hand);
+        array_splice($hand, $handInd, 1);
       }
       elseif(!(TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) {
         AddGraveyard($cardID, $player, "HAND");
-        unset($hand[$handInd]);
-        $hand = array_values($hand);
+        array_splice($hand, $handInd, 1);
       }
       else WriteLog(CardLink($cardID, $cardID) . " could not be added as a blocking card");
       return $lastResult;

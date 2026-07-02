@@ -129,6 +129,8 @@ gc_collect_cycles();
 
 $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
+$typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;
+$apcuAvailable = extension_loaded('apcu') && ini_get('apc.enabled');
 $lastSendTime = microtime(true); // last time anything was written to the client
 $lastFileCheckTime = microtime(true);
 $fileCheckInterval = 30.0;
@@ -222,10 +224,9 @@ while (true) {
   // the state actually changes — zero cost for games where nobody is typing.
   if ($isGamePlayer && ($currentRealTime - $lastTypingCheckTime >= $typingCheckInterval)) {
     $lastTypingCheckTime = $currentRealTime;
-    $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;
     $opponentIsTyping = false;
 
-    if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+    if ($apcuAvailable) {
       $opponentIsTyping = @apcu_fetch($typingCacheKey) !== false;
     }
 

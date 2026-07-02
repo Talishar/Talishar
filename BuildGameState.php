@@ -611,9 +611,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myHandContents = [];
   $myHandCount = count($myHand);
   $handPieces = HandPieces();
+  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2)));
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     if ($playerID == 3) {
-      $spectatorCanSeeP2Hand = $isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2));
       if($spectatorCanSeeP2Hand) $myHandContents[] = JSONRenderedCard(cardNumber: $myHand[$i], controller: 2);
       else $myHandContents[] = JSONRenderedCard(cardNumber: $MyCardBack, controller: 2);
     } else {

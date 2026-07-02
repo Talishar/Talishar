@@ -1177,9 +1177,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
           }
           else {
             AddGraveyard($targetCard, $defPlayer, "COMBATCHAINLINK", $player);
-            for ($i = CombatChainPieces() - 1; $i >= 0; --$i)
-              unset($combatChain[$ind + $i]);
-            $combatChain = array_values($combatChain);
+            array_splice($combatChain, $ind, CombatChainPieces());
           }
           $cardID = "palantir_aeronought_red";
           WriteLog("The " . CardLink($cardID, $cardID) . " shot down " . CardLink($targetCard, $targetCard));

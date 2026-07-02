@@ -2796,11 +2796,7 @@ function RemoveCharacter($player, $index, $skipClose=false)
       CloseCombatChain();
     }
   }
-  $charPieces = CharacterPieces();
-  for ($i = 0; $i < $charPieces; ++$i) {
-    unset($char[$index + $i]);
-  }
-  $char = array_values($char);
+  array_splice($char, $index, CharacterPieces());
   return $ret;
 }
 

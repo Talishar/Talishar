@@ -542,8 +542,7 @@ function BanishFromSpecificSoul(&$soul, $player, $index = 0)
 {
   if (count($soul) == 0) return;
   $cardID = $soul[$index];
-  unset($soul[$index]);
-  $soul = array_values($soul);
+  array_splice($soul, $index, 1);
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 
@@ -552,8 +551,7 @@ function RemoveSoul($player, $index)
   if ($index != -1) {
     $soul = &GetSoul($player);
     $cardID = $soul[$index];
-    unset($soul[$index]);
-    $soul = array_values($soul);
+    array_splice($soul, $index, 1);
     return $cardID;
   }
   else {

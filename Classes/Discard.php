@@ -47,10 +47,7 @@ class Discard {
     for($i = 0; $i < $count && !$this->Empty(); $i++) {
       $index = (GetRandom() % $this->NumCards()) * $discardPieces;
       $cards[] = $this->discard[$index];
-      for ($j = $discardPieces - 1; $j >= 0; --$j) {
-        unset($this->discard[$index + $j]);
-      }
-      $this->discard = array_values($this->discard);
+      array_splice($this->discard, $index, $discardPieces);
     }
     return implode(",", $cards);
   }

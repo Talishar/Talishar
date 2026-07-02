@@ -527,11 +527,7 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
     $cardID = $auras[$index];
     $uniqueID = $auras[$index + 6];
     if (HasSuspense($cardID)) IncrementClassState($player, $CS_SuspensePoppedThisTurn);
-    $aurasPieces = AuraPieces();
-    for ($i = $index + $aurasPieces - 1; $i >= $index; --$i) {
-      unset($auras[$i]);
-    }
-    $auras = array_values($auras);
+    array_splice($auras, $index, AuraPieces());
   }
   elseif ($location == "EQUIP") {
     $character = &GetPlayerCharacter($player);

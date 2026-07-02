@@ -4550,8 +4550,7 @@ function BanishRandom($player, $source, $playerSource="-")
   if ($handCount == 0) return "";
   $index = GetRandom() % $handCount;
   $banished = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
+  array_splice($hand, $index, 1);
   BanishCardForPlayer($banished, $player, "HAND", banishedBy:$source, banisher:$playerSource);
   return $banished;
 }
@@ -4566,8 +4565,7 @@ function DiscardRandom($player = "", $source = "", $effectController = "")
   if ($handCount == 0) return "";
   $index = ($handCount > 1) ? GetRandom(0, $handCount - 1) : 0;
   $discarded = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
+  array_splice($hand, $index, 1);
   CardDiscarded($player, $discarded, $source);
   AddGraveyard($discarded, $player, "HAND", $effectController);
   DiscardedAtRandomEffects($player, $discarded, $source);
@@ -4581,8 +4579,7 @@ function PitchRandom($player)
   if ($handCount == 0) return "";
   $index = ($handCount > 1) ? GetRandom(0, $handCount - 1) : 0;
   $pitched = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
+  array_splice($hand, $index, 1);
   Pitch($pitched, $player);
   return $pitched;
 }
