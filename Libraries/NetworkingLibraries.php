@@ -598,6 +598,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $undoCacheArr = ReadCacheArray($gameName);
       $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
+      if (GetClassState($playerID, $CS_NumUndoesThisTurn) > UNDO_PER_TURN_LIMIT && !IsDevEnvironment()) {
+        WriteLog("Player $playerID has reverted the gamestate too many times this turn. Proceed with the game", highlight:true);
+        break;
+      }
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
         RevertGamestate($buttonInput);
         if ($buttonInput == "startChainLinkGamestate.txt")
