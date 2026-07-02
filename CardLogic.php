@@ -1351,8 +1351,9 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer, $combatChain;
   $effects = explode(',', $cardID);
   $parameter = explode("-", $effects[0], 2)[0];
-  if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
-  if (CardType($source) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
+  $sourceIsAA = CardType($source) == "AA";
+  if ($sourceIsAA && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2)
+    || SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer))) return false;
   $effectID = ExtractCardID($cardID);
   if (class_exists($effectID)) {
     $card = new $effectID($mainPlayer);
@@ -1362,7 +1363,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "pummel_red":
     case "pummel_yellow":
     case "pummel_blue":
-      if (IsHeroAttackTarget() && CardType($source) == "AA") 
+      if (IsHeroAttackTarget() && $sourceIsAA)
       {
         if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
         return true;
@@ -1371,7 +1372,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "razor_reflex_red":
     case "razor_reflex_yellow":
     case "razor_reflex_blue":
-      if (CardType($source) == "AA") 
+      if ($sourceIsAA)
       {
         if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
         return true;

@@ -3141,7 +3141,10 @@ function GetUniqueId($cardID = "", $player = "")
 
 function IsHeroAttackTarget()
 {
-  foreach(explode(",", GetAttackTarget()) as $target) {
+  global $combatChainState, $CCS_AttackTarget;
+  $MZTarget = $combatChainState[$CCS_AttackTarget];
+  if ($MZTarget == "NA") return false;
+  foreach (explode(",", $MZTarget) as $target) {
     if (str_starts_with($target, "THEIRCHAR-") || $target === "THEIRCHAR") return true;
   }
   return false;
