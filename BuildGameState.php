@@ -3,7 +3,7 @@ include_once "Libraries/PlayerSettings.php";
 if (!function_exists('IsHideHandFromFriends')) {
     function IsHideHandFromFriends($player) { return false; }
 }
-function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false) {
+function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false, $cacheSnapshot = null) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $myAuras, $myItems, $mySoul, $myAllies, $myPermanents, $myResources;
   global $theirHand, $theirPitch, $theirDeck, $theirDiscard, $theirBanish, $theirArsenal, $theirCharacter;
@@ -40,7 +40,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $gameFileSeenAt[$gameName] = $nowTs;
   }
 
-  $buildCacheArr = ReadCacheArray($gameName) ?? [];
+  $buildCacheArr = $cacheSnapshot ?? ReadCacheArray($gameName) ?? [];
   $spectatorsPubliclyAllowed = ($buildCacheArr[8] ?? "") == "1";
 
   // Extract session data with defaults
@@ -611,9 +611,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myHandContents = [];
   $myHandCount = count($myHand);
   $handPieces = HandPieces();
+  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2)));
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     if ($playerID == 3) {
-      $spectatorCanSeeP2Hand = $isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2));
       if($spectatorCanSeeP2Hand) $myHandContents[] = JSONRenderedCard(cardNumber: $myHand[$i], controller: 2);
       else $myHandContents[] = JSONRenderedCard(cardNumber: $MyCardBack, controller: 2);
     } else {

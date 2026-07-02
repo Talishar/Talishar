@@ -49,6 +49,8 @@ function PasswordLogin($username, $password, $rememberMe) {
 		$_SESSION["metafyID"] = $userData["metafyID"] ?? "";
 		$_SESSION["rust_counters"] = intval($userData["rust_counters"] ?? 0);
 
+		LogIPHistory($userData["usersId"]);
+
 		try {
 			PatreonLogin($patreonAccessToken);
 		} catch (\Exception $e) { error_log("PasswordLogin: PatreonLogin threw: " . $e->getMessage()); }

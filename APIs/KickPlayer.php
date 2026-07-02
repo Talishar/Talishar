@@ -74,12 +74,14 @@ if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("../Games/"
 
 // Reset game state back to waiting for opponent
 $gameStatus = $MGS_Initial;
-SetCachePiece($gameName, 14, $gameStatus);
-SetCachePiece($gameName, 8, "");
-SetCachePiece($gameName, 5, "-1");
-SetCachePiece($gameName, 11, 0);
-SetCachePiece($gameName, 17, "kicked");
-SetCachePiece($gameName, 18, $kickedName);
+SetCachePieces($gameName, [
+  14 => $gameStatus,
+  8 => "",
+  5 => "-1",
+  11 => 0,
+  17 => "kicked",
+  18 => $kickedName,
+]);
 
 $p2Data = [];
 $p2uid = "";

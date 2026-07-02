@@ -772,7 +772,8 @@ function CharacterCostModifier($cardID, $from, $cost)
   }
   $otherPlayer = 3 - $currentPlayer;
   $OtherChar = new PlayerCharacter($otherPlayer);
-  for ($i = 0; $i < $OtherChar->NumCards(); ++$i) {
+  $numCards = $OtherChar->NumCards();
+  for ($i = 0; $i < $numCards; ++$i) {
     $CharCard = $OtherChar->Card($i, true);
     $card = GetClass($CharCard->CardID(), $otherPlayer);
     if ($card != "-") $modifier += $card->StaticCostModifier($cardID, $from, $cost);
@@ -1601,7 +1602,8 @@ function CharacterAttackDestroyedAbilities($attackID)
 
 function CharacterCardPlayedAbilities($player, $cardID, $from) {
   $Character = new PlayerCharacter($player);
-  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+  $numCards = $Character->NumCards();
+  for ($i = 0; $i < $numCards; ++$i) {
     $CharacterCard = $Character->Card($i, true);
     $card = GetClass($CharacterCard->CardID(), $player);
     if ($card != "-") $card->CardPlayedAbility($cardID, $from);
@@ -1612,7 +1614,8 @@ function CharacterPlayCardAbilities($cardID, $from)
 {
   global $currentPlayer, $CS_NumLess3PowAAPlayed;
   $PlayerCharacter = new PlayerCharacter($currentPlayer);
-  for ($i = 0; $i < $PlayerCharacter->NumCards(); ++$i) {
+  $numCards = $PlayerCharacter->NumCards();
+  for ($i = 0; $i < $numCards; ++$i) {
     $CharacterCard = $PlayerCharacter->Card($i, true);
     if ($CharacterCard->Status() != 2) continue;
     $characterID = ShiyanaCharacter($CharacterCard->ID());
@@ -1807,7 +1810,8 @@ function CharacterBeatChestTrigger($player) {
 
 function CharacterPitchCardAbilities($player, $index) {
   $Character = new PlayerCharacter($player);
-  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+  $numCards = $Character->NumCards();
+  for ($i = 0; $i < $numCards; ++$i) {
     $CharacterCard = $Character->Card($i, true);
     $card = GetClass($CharacterCard->CardID(), $player);
     if ($card != "-") $card->PermanentPitchCardAbility($index);

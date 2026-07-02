@@ -347,7 +347,7 @@ enum PatreonCampaign : string
       case "24": return IsTeamPitchDevils($userName);
       case "25": return $userName == "Mickz";
       case "26": return IsTeamSnapDragons($userName);
-      case "27": return $userName == "AggroBlaze96";
+      case "27": return $userName == "AggroBlaze96" || $userName == "PvtVoid";
       case "28": return $userName == "Snow";
       case "29": return IsTeamRedLine($userName);
       case "30": return IsTeamSkillIssue($userName);
@@ -382,7 +382,7 @@ enum PatreonCampaign : string
       case "9851977": return $userName == "DaganTheZookeeper" || $userName == "OotTheMonk";
       case "279086": return $userName == "brandaotcg" || $userName == "OotTheMonk" || $userName == "Aegisworn";
       case "11184392": return $userName == "PatSmashGood" || $userName == "OotTheMonk";
-      case "11481720": return $userName == "nxi";
+      case "11481720": return $userName == "nxi" || $userName == "PvtVoid";
       case "9408649": return $userName == "Aegisworn";
       case "9734205": return $userName == "tog" || $userName == "bnet" || $userName == "balakay";
       case "9574942": return $userName == "Azor";
@@ -898,7 +898,7 @@ enum PatreonCampaign : string
       case "9851977": return "54";
       case "279086": return "56";
       case "11184392": return "63";
-      case "11481720": return "65";
+      case "11481720": return "65,137";
       case "9408649": return "1,2,3,4,5,6,7,8,82,83";
       case "9734205": return "68,69";
       case "9574942": return "71";

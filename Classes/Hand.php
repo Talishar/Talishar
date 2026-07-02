@@ -77,9 +77,7 @@ class PitchCard {
   function Remove() {
     if ($this->index == -1) return;
     $cardID = $this->CardID();
-    for ($i = $this->index + PitchPieces() - 1; $i >= $this->index; --$i)
-      unset($this->pieces[$i]);
-    $this->pieces = array_values($this->pieces);
+    array_splice($this->pieces, $this->index, PitchPieces());
     return $cardID;
   }
 }

@@ -91,12 +91,13 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $currentTime = round(microtime(true) * 1000);
 
+$cacheArr = ReadCacheArray($gameName);
+
 // Track player connection status
 if ($isGamePlayer) {
-  $playerStatus = intval(GetCachePiece($gameName, $playerID + 3));
+  $playerStatus = intval($cacheArr[$playerID + 2] ?? "");
   if ($playerStatus === -1) WriteLog("🔌Player $playerID has connected.");
-  SetCachePiece($gameName, $playerID + 1, $currentTime);
-  SetCachePiece($gameName, $playerID + 3, "0");
+  SetCachePieces($gameName, [$playerID + 1 => $currentTime, $playerID + 3 => "0"]);
   if ($playerStatus > 0) {
     WriteLog("🔌Player $playerID has reconnected.");
   }
@@ -113,14 +114,14 @@ if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
 }
 
 // Check cache value for updates (optional optimization)
-$cacheVal = intval(GetCachePiece($gameName, 1));
+$cacheVal = intval($cacheArr[0] ?? "");
 if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   echo "0";
   exit;
 }
 
 // Build and return the game state
-$response = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true);
+$response = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, false, $cacheArr);
 
 if (is_string($response)) {
   // Error occurred

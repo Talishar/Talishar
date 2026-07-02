@@ -30,23 +30,60 @@ if (!IsUserModerator($useruid)) {
 $response = [
   "bannedPlayers" => [],
   "bannedIPs" => [],
-  "recentAccounts" => []
+  "recentAccounts" => [],
+  "linkedAccounts" => [],
+  "bannedPlayerIPs" => new stdClass()
 ];
 
+$bannedPlayers = [];
 $bannedPlayersFile = "../HostFiles/bannedPlayers.txt";
 if (file_exists($bannedPlayersFile)) {
-  $bannedPlayers = file($bannedPlayersFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-  $response["bannedPlayers"] = $bannedPlayers ? array_values(array_filter($bannedPlayers)) : [];
+  $lines = file($bannedPlayersFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+  if ($lines) {
+    foreach ($lines as $line) {
+      $line = trim($line);
+      if ($line != "") $bannedPlayers[strtolower($line)] = $line;
+    }
+  }
 }
 
+$bannedIPs = [];
 $bannedIPsFile = "../HostFiles/bannedIPs.txt";
 if (file_exists($bannedIPsFile)) {
-  $bannedIPs = file($bannedIPsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-  $response["bannedIPs"] = $bannedIPs ? array_values(array_filter($bannedIPs)) : [];
+  $lines = file($bannedIPsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+  if ($lines) {
+    foreach ($lines as $line) {
+      $line = trim($line);
+      if ($line != "") $bannedIPs[$line] = $line;
+    }
+  }
 }
 
 $conn = GetDBConnection(DBL_GET_MOD_PAGE_DATA);
 if ($conn) {
+  $sql = "SELECT usersUid FROM users WHERE isBanned = 1 ORDER BY usersUid";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $userData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($userData, MYSQLI_NUM)) {
+      if (!empty($row[0])) $bannedPlayers[strtolower($row[0])] = $row[0];
+    }
+    mysqli_stmt_close($stmt);
+  }
+
+  EnsureBannedIPsTable($conn);
+  $sql = "SELECT ip FROM banned_ips ORDER BY createdAt";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $ipData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($ipData, MYSQLI_NUM)) {
+      if (!empty($row[0])) $bannedIPs[$row[0]] = $row[0];
+    }
+    mysqli_stmt_close($stmt);
+  }
+
   $sql = "SELECT usersUid FROM users ORDER BY usersId DESC LIMIT 20";
   $stmt = mysqli_stmt_init($conn);
 
@@ -63,8 +100,69 @@ if ($conn) {
     mysqli_stmt_close($stmt);
   }
 
+  EnsureIPHistoryTable($conn);
+
+  $bannedPlayerIPs = [];
+  $sql = "SELECT u.usersUid, GROUP_CONCAT(h.ip ORDER BY h.lastSeen DESC SEPARATOR ',')
+          FROM users u
+          JOIN ip_history h ON h.usersId = u.usersId
+          WHERE u.isBanned = 1
+          GROUP BY u.usersId, u.usersUid";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $ipHistData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($ipHistData, MYSQLI_NUM)) {
+      if (!empty($row[0]) && !empty($row[1])) {
+        $bannedPlayerIPs[strtolower($row[0])] = explode(",", $row[1]);
+      }
+    }
+    mysqli_stmt_close($stmt);
+  }
+  if (count($bannedPlayerIPs) > 0) $response["bannedPlayerIPs"] = $bannedPlayerIPs;
+
+  $linkedAccounts = [];
+  $sql = "SELECT DISTINCT u2.usersUid, h1.ip, u1.usersUid
+          FROM users u1
+          JOIN ip_history h1 ON h1.usersId = u1.usersId
+          JOIN ip_history h2 ON h2.ip = h1.ip AND h2.usersId != h1.usersId
+          JOIN users u2 ON u2.usersId = h2.usersId
+          WHERE u1.isBanned = 1 AND u2.isBanned = 0
+          LIMIT 200";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $linkData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($linkData, MYSQLI_NUM)) {
+      $linkedAccounts[$row[0] . "|" . $row[1]] = ["username" => $row[0], "ip" => $row[1], "linkedTo" => $row[2]];
+    }
+    mysqli_stmt_close($stmt);
+  }
+  $sql = "SELECT DISTINCT u.usersUid, b.ip
+          FROM users u
+          JOIN ip_history h ON h.usersId = u.usersId
+          JOIN banned_ips b ON b.ip = h.ip
+          WHERE u.isBanned = 0
+          LIMIT 200";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $linkData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($linkData, MYSQLI_NUM)) {
+      $key = $row[0] . "|" . $row[1];
+      if (!isset($linkedAccounts[$key])) {
+        $linkedAccounts[$key] = ["username" => $row[0], "ip" => $row[1], "linkedTo" => "banned IP"];
+      }
+    }
+    mysqli_stmt_close($stmt);
+  }
+  $response["linkedAccounts"] = array_values($linkedAccounts);
+
   mysqli_close($conn);
 }
+
+$response["bannedPlayers"] = array_values($bannedPlayers);
+$response["bannedIPs"] = array_values($bannedIPs);
 
 echo json_encode($response);
 ?>

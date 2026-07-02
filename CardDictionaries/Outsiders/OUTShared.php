@@ -866,8 +866,7 @@ function OUTAbilityCost($cardID)
       if(CardType($deck[$i]) == "AA")
       {
         $cardRemoved = $deck[$i];
-        unset($deck[$i]);
-        $deck = array_values($deck);
+        array_splice($deck, $i, 1);
         break;
       }
     }

@@ -1185,8 +1185,7 @@ function BubbleToTheSurface()
       if(PitchValue($deck[$i]) == 1)
             {
         $cardRemoved = $deck[$i];
-        unset($deck[$i]);
-        $deck = array_values($deck);
+        array_splice($deck, $i, 1);
         RevealCards(implode(",", $cardsToRevealArr));
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return $cardRemoved;

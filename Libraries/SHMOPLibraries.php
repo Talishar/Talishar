@@ -146,6 +146,18 @@ function SetCachePiece($name, $piece, $value)
   WriteCache($name, implode("!", $cacheArray));
 }
 
+// Batched SetCachePiece: applies several pieceW with a single shmop read-modify-write
+function SetCachePieces($name, $pieces)
+{
+  $cacheVal = ReadCache($name);
+  if ($cacheVal == "") return;
+  $cacheArray = explode("!", $cacheVal);
+  foreach ($pieces as $piece => $value) {
+    $cacheArray[$piece - 1] = $value;
+  }
+  WriteCache($name, implode("!", $cacheArray));
+}
+
 function GetCachePiece($name, $piece)
 {
   $piece -= 1;

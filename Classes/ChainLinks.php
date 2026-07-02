@@ -66,20 +66,25 @@ class ChainLink {
 
   // Properties
   	private $link = [];
-	private $linkSummary = [];
+	private $linkSummary = null;
 	private $linkNum;
 
   // Constructor
   function __construct($linkNum) {
-    global $chainLinks, $chainLinkSummary;
+    global $chainLinks;
     $this->linkNum = $linkNum;
     if (isset($chainLinks[$linkNum])) {
       $this->link = &$chainLinks[$linkNum];
     }
-	$summaryPieces = ChainLinkSummaryPieces();
-	$summaryIndex = $linkNum * $summaryPieces;
-	$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, $summaryPieces);
   }
+
+	private function LoadSummary() {
+		if ($this->linkSummary === null) {
+			global $chainLinkSummary;
+			$summaryPieces = ChainLinkSummaryPieces();
+			$this->linkSummary = array_slice($chainLinkSummary, $this->linkNum * $summaryPieces, $summaryPieces);
+		}
+	}
 
 	function NumCards() {
 		return intdiv(count($this->link), ChainLinksPieces());
@@ -117,43 +122,53 @@ class ChainLink {
 	}
 
 	function DamageDealt() {
+		$this->LoadSummary();
 		return $this->linkSummary[0] ?? 0;
 	}
 
 	function TotalAttack() {
+		$this->LoadSummary();
 		return $this->linkSummary[1] ?? 0;
 	}
 
 	function Talents() {
+		$this->LoadSummary();
 		return $this->linkSummary[2] ?? "-";
 	}
 
 	function AddTalent($tal) {
+		$this->LoadSummary();
 		if ($this->linkSummary[2] == "-") $this->linkSummary[2] = $tal;
 		else $this->linkSummary[2] .= ",$tal";
 	}
 
 	function Class() {
+		$this->LoadSummary();
 		return $this->linkSummary[3] ?? "-";
 	}
 
 	function ListofNames() {
+		$this->LoadSummary();
 		return $this->linkSummary[4] ?? "";
 	}
 
 	function HitOnLink() {
+		$this->LoadSummary();
 		return $this->linkSummary[5] ?? 0;
 	}
 
 	function ModifiedBaseAttack() {
+		$this->LoadSummary();
 		return $this->linkSummary[6] ?? 0;
 	}
 
 	function ModalPlayAbility() {
+		$this->LoadSummary();
 		return $this->linkSummary[7] ?? "-";
 	}
 
 	function Colors() {
+		$this->LoadSummary();
 		return $this->linkSummary[8] ?? "-";
 	}
 }

@@ -3085,7 +3085,8 @@ class red_lure_harpoon_blue extends Card {
   function SpecificLogic() {
     global $dqVars;
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    $choice = $dqVars["choice"];
+    $choice = $dqVars["choice"] ?? "-";
+    if ($choice == "-") return;
     $Card = MZIndexToObject($this->controller, $choice);
     $cardID = $Card->ID();
     $Card->Remove();

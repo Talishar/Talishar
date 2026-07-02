@@ -124,10 +124,8 @@ class CurrentEffect {
   }
 
 	function Remove() {
-		for ($i = CurrentTurnEffectPieces() - 1; $i >= 0; --$i) {
-			unset($this->pieces[$this->index + $i]);
-		}
-		$this->pieces = array_values($this->pieces);
+		if ($this->index < 0) return;
+		array_splice($this->pieces, $this->index, CurrentTurnEffectPieces());
 	}
 }
 

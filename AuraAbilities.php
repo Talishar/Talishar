@@ -518,7 +518,8 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
     // if it's on the combat chain, remove it
     if ($CombatChain->AttackCard()->OriginUniqueID() == $uniqueID)
       $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
-    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $numLinks = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $numLinks; ++$i) {
       $AttackCard = $ChainLinks->GetLink($i)->AttackCard();
       if ($AttackCard->OriginUniqueID() == $uniqueID)
         $AttackCard->Remove();
@@ -526,11 +527,7 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
     $cardID = $auras[$index];
     $uniqueID = $auras[$index + 6];
     if (HasSuspense($cardID)) IncrementClassState($player, $CS_SuspensePoppedThisTurn);
-    $aurasPieces = AuraPieces();
-    for ($i = $index + $aurasPieces - 1; $i >= $index; --$i) {
-      unset($auras[$i]);
-    }
-    $auras = array_values($auras);
+    array_splice($auras, $index, AuraPieces());
   }
   elseif ($location == "EQUIP") {
     $character = &GetPlayerCharacter($player);

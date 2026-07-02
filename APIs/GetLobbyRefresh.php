@@ -52,7 +52,6 @@ include "../Libraries/UILibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 
 $currentTime = (int)(microtime(true) * 1000);
-SetCachePiece($gameName, $playerID + 1, $currentTime);
 
 $count = 0;
 $otherP = $playerID == 1 ? 2 : 1;
@@ -62,6 +61,10 @@ $oppStatIdx  = $otherP + 2;
 $kickPlayerTwo = false;
 
 $cacheArr = ReadCacheArray($gameName);
+if ($cacheArr) {
+  $cacheArr[$myTimeIdx] = $currentTime;
+  WriteCache($gameName, implode("!", $cacheArr));
+}
 $cacheVal = $cacheArr ? (int)($cacheArr[0] ?? 0) : 0;
 if ($cacheVal > 10000000) {
   SetCachePiece($gameName, 1, 1);
@@ -89,12 +92,12 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($oppStatus !== "-1" && $oppLastTime !== "") {
     if (($currentTime - (int)$oppLastTime) > 30000 && $oppStatus === "0") {
-      $kickSignal = $cacheArr[16] ?? ""; // slot 17 → index 16
+      $kickSignal = $cacheArr[16] ?? "";
       if ($otherP != 2 || $kickSignal !== "kicked") {
         WriteLog("🔌 Your opponent has disconnected.", path: "../");
       }
       $cacheArr[$oppStatIdx] = "-1";
-      if ($otherP == 2) $cacheArr[$otherP + 5] = ""; // slot $otherP+6 → index $otherP+5
+      if ($otherP == 2) $cacheArr[$otherP + 5] = "";
       WriteCache($gameName, implode("!", $cacheArr));
       GamestateUpdated($gameName);
       $kickPlayerTwo = true;
@@ -159,10 +162,11 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   echo json_encode($response);
   exit;
 } else {
+  $cacheArr = ReadCacheArray($gameName);
 
   // Detect if player 2 was kicked: they are polling but the game slot is empty again
   if ($playerID == 2 && ($p2uid === "" || $p2uid === "-") && $gameStatus == $MGS_Initial) {
-    $kickSignal = GetCachePiece($gameName, 17);
+    $kickSignal = $cacheArr[16] ?? "";
     if ($kickSignal === "kicked") {
       SetCachePiece($gameName, 17, "");
       $response->wasKicked = true;
@@ -171,7 +175,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     }
   }
 
-  $response->lastUpdate = GetCachePiece($gameName, 1);
+  $response->lastUpdate = $cacheArr[0] ?? "";
   if ($gameStatus == $MGS_ChooseFirstPlayer) {
     $response->amIChoosingFirstPlayer = ($playerID == $firstPlayerChooser);
   }
@@ -179,8 +183,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   if ($playerID == 1 && $gameStatus < $MGS_Player2Joined) {
     $response->isPrivateLobby = ($visibility == "private");
 
-    $lobbyCreatedAt = intval(GetCachePiece($gameName, 6));
-    $warningAlreadySent = GetCachePiece($gameName, 12);
+    $lobbyCreatedAt = intval($cacheArr[5] ?? "");
+    $warningAlreadySent = $cacheArr[11] ?? ""; 
     if ($lobbyCreatedAt > 0 && $warningAlreadySent != "1"
         && ($currentTime - $lobbyCreatedAt) > 600000) { // 10 minutes in ms
       SetCachePiece($gameName, 12, "1");
@@ -261,8 +265,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->legalHeroes = GetLegalHeroes($format);
 
   // If both players have enabled chat, is true, else false
-  $p1ChatStatus = intval(GetCachePiece($gameName, 15));
-  $p2ChatStatus = intval(GetCachePiece($gameName, 16));
+  $p1ChatStatus = intval($cacheArr[14] ?? "");
+  $p2ChatStatus = intval($cacheArr[15] ?? "");
   $response->chatEnabled = ($p1ChatStatus == 1 && $p2ChatStatus == 1 ? true : false);
   if($playerID == 1) $response->chatInvited = ($p1ChatStatus == 0 && $p2ChatStatus == 1);
   else if($playerID == 2) $response->chatInvited = ($p2ChatStatus == 0 && $p1ChatStatus == 1);

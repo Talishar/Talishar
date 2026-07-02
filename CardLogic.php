@@ -1351,8 +1351,9 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer, $combatChain;
   $effects = explode(',', $cardID);
   $parameter = explode("-", $effects[0], 2)[0];
-  if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
-  if (CardType($source) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
+  $sourceIsAA = CardType($source) == "AA";
+  if ($sourceIsAA && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2)
+    || SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer))) return false;
   $effectID = ExtractCardID($cardID);
   if (class_exists($effectID)) {
     $card = new $effectID($mainPlayer);
@@ -1362,7 +1363,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "pummel_red":
     case "pummel_yellow":
     case "pummel_blue":
-      if (IsHeroAttackTarget() && CardType($source) == "AA") 
+      if (IsHeroAttackTarget() && $sourceIsAA)
       {
         if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
         return true;
@@ -1371,7 +1372,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "razor_reflex_red":
     case "razor_reflex_yellow":
     case "razor_reflex_blue":
-      if (CardType($source) == "AA") 
+      if ($sourceIsAA)
       {
         if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
         return true;
@@ -1867,6 +1868,7 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       break;
     case "outside_interference_blue":
       if (CanRevealCards($player)) {
+        /** @var array|string $inventory */
         $inventory = &GetInventory($player);
         $choices = [];
         foreach ($inventory as $cardID) {
@@ -4381,21 +4383,21 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       $uniqueAurasSet = [];
       $auraPieces = AuraPieces();
       $charPieces = CharacterPieces();
-      for($player = 1; $player < 3; ++$player) {
-        $auras = GetAuras($player);
+      for($j = 1; $j < 3; ++$j) {
+        $auras = GetAuras($j);
         $auraCount = count($auras);
         for($i = 0; $i < $auraCount; $i += $auraPieces) {
-          $name = NameOverride($auras[$i], $player);
+          $name = NameOverride($auras[$i], $j);
           if ((TypeContains($auras[$i], "T") || $auras[$i + 4] == 1) && !isset($uniqueAurasSet[$name])) {
             $uniqueAuras[] = $name;
             $uniqueAurasSet[$name] = true;
           }
         }
-        $character = GetPlayerCharacter($player);
+        $character = GetPlayerCharacter($j);
         $charCount = count($character);
         for($i = 0; $i < $charCount; $i += $charPieces) {
-          $name = NameOverride($character[$i], $player);
-          if (TypeContains($character[$i], "T") && !isset($uniqueAurasSet[$name]) && SubtypeContains($character[$i], "Aura", $player)) {
+          $name = NameOverride($character[$i], $j);
+          if (TypeContains($character[$i], "T") && !isset($uniqueAurasSet[$name]) && SubtypeContains($character[$i], "Aura", $j)) {
             $uniqueAuras[] = $name;
             $uniqueAurasSet[$name] = true;
           }
@@ -4407,7 +4409,10 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
         $combatChainPieces = CombatChainPieces();
         $combatChainCount = count($combatChain);
         for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
-          if ($combatChain[$i+7] == $target) $index = $i;
+          if ($combatChain[$i+7] == $target) {
+            $index = $i;
+            break; // Found it, stop looping
+          }
         }
       }
       if ($index != -1) {
@@ -4550,8 +4555,7 @@ function BanishRandom($player, $source, $playerSource="-")
   if ($handCount == 0) return "";
   $index = GetRandom() % $handCount;
   $banished = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
+  array_splice($hand, $index, 1);
   BanishCardForPlayer($banished, $player, "HAND", banishedBy:$source, banisher:$playerSource);
   return $banished;
 }
@@ -4566,8 +4570,7 @@ function DiscardRandom($player = "", $source = "", $effectController = "")
   if ($handCount == 0) return "";
   $index = ($handCount > 1) ? GetRandom(0, $handCount - 1) : 0;
   $discarded = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
+  array_splice($hand, $index, 1);
   CardDiscarded($player, $discarded, $source);
   AddGraveyard($discarded, $player, "HAND", $effectController);
   DiscardedAtRandomEffects($player, $discarded, $source);
@@ -4581,8 +4584,7 @@ function PitchRandom($player)
   if ($handCount == 0) return "";
   $index = ($handCount > 1) ? GetRandom(0, $handCount - 1) : 0;
   $pitched = $hand[$index];
-  unset($hand[$index]);
-  $hand = array_values($hand);
+  array_splice($hand, $index, 1);
   Pitch($pitched, $player);
   return $pitched;
 }

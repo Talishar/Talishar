@@ -146,7 +146,7 @@ foreach ($inventory as $item) {
     $quiverSB[] = $item;
   } else if (in_array("Off-Hand", $subtypeArr) || HasPerched($item)) {
     $offhandSB[] = $item;
-  } else if (CardType($item) === "W" || CardType($item) === "E") {
+  } else if (($itemType = CardType($item)) === "W" || $itemType === "E") {
     $weaponSB[] = $item;
   } else {
     $cardsSB[] = $item;
@@ -254,13 +254,14 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   if ($handler !== false) fclose($handler);
 
   $currentTime = strval(round(microtime(true) * 1000));
-  $currentUpdate = GetCachePiece($gameName, 1);
-  $p1Hero = GetCachePiece($gameName, 7);
-  $p2Hero = GetCachePiece($gameName, 8);
-  $visibility = GetCachePiece($gameName, 9);
-  $format = GetCachePiece($gameName, 13);
-  $p1chatEnabled = GetCachePiece($gameName, 15);
-  $p2chatEnabled = GetCachePiece($gameName, 16);
+  $cacheArr = ReadCacheArray($gameName); // one shmop read
+  $currentUpdate = $cacheArr[0] ?? ""; 
+  $p1Hero = $cacheArr[6] ?? "";        
+  $p2Hero = $cacheArr[7] ?? "";       
+  $visibility = $cacheArr[8] ?? "";    
+  $format = $cacheArr[12] ?? "";        
+  $p1chatEnabled = $cacheArr[14] ?? ""; 
+  $p2chatEnabled = $cacheArr[15] ?? ""; 
   $currentPlayer = 0;
   $isReplay = 0;
   WriteCache($gameName, ((int)$currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!" . $p1chatEnabled . "!" . $p2chatEnabled); //Initialize SHMOP cache for this game

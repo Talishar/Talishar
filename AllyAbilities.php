@@ -83,8 +83,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   $cardID = $allies[$index];
   AllyAddGraveyard($owner, $cardID, toBanished:$toBanished);
   AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished);
-  for ($j = $index + $allyPieces - 1; $j >= $index; --$j) unset($allies[$j]);
-  $allies = array_values($allies);
+  array_splice($allies, $index, $allyPieces);
   return $cardID;
 }
 

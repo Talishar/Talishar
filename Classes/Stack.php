@@ -199,11 +199,7 @@ class Layer {
       $cardID = $this->layers[$this->index];
       $player = $this->layers[$this->index + 1];
       $otherPlayer = 3 - $player;
-      $layerPieces = LayerPieces();
-      for ($i = $this->index + $layerPieces - 1; $i >= $this->index; --$i) {
-        unset($this->layers[$i]);
-      }
-      $this->layers = array_values($this->layers);
+      array_splice($this->layers, $this->index, LayerPieces());
       if ($goesWhere != "-") {
         ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
       }
