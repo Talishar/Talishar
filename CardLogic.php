@@ -649,8 +649,7 @@ function ContinueDecisionQueue($lastResult = "")
       ResolveChainLink();
     } else if ($dqCount > 0 && $decisionQueue[0] == "RESOLVECOMBATDAMAGE") {
       $parameters = explode(",", $decisionQueue[2]);
-      if ($parameters[0] != "-") $damageDone = $parameters[0];
-      else $damageDone = $dqState[6];
+      $damageDone = ($parameters[0] != "-") ? $parameters[0] : $dqState[6];
       CloseDecisionQueue();
       if(!IsGameOver()) ResolveCombatDamage($damageDone, $parameters[1]);
     } else if ($dqCount > 0 && $decisionQueue[0] == "PASSTURN") {
@@ -1677,7 +1676,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
       AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-      AddDecisionQueue("DEALARCANE", $player, "1" . "-" . "aether_crackers" . "-" . "TRIGGER", 1);
+      AddDecisionQueue("DEALARCANE", $player, "1-aether_crackers-TRIGGER", 1);
       AddDecisionQueue("WRITELOG", $player, Cardlink($cardID, $cardID) . " were destroyed", 1);
       break;
     case "arakni_marionette":
@@ -2965,7 +2964,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
         break;
       case "give_and_take_red":
-        MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . (CachedTotalPower()-1) . "&MYDISCARD:type=AA;maxCost=" . (CachedTotalPower()-1), "MYTOPDECK", may: true);
+        MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalPower()-1 . "&MYDISCARD:type=AA;maxCost=" . CachedTotalPower()-1, "MYTOPDECK", may: true);
         break;
       case "spark_spray_red":
       case "spark_spray_yellow":
@@ -3333,7 +3332,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         Clash($parameter, effectController: $player);
         break;
       case "gauntlets_of_iron_will":
-        if ($CombatChain->HasCurrentLink()) AddCurrentTurnEffect("gauntlets_of_iron_will," . (CachedTotalPower() - LinkBasePower()), $mainPlayer);
+        if ($CombatChain->HasCurrentLink()) AddCurrentTurnEffect("gauntlets_of_iron_will," . CachedTotalPower() - LinkBasePower(), $mainPlayer);
         break;
       case "golden_glare":
         $yellowPitchCards = 0;
@@ -4998,7 +4997,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $fro
       break;
     case "regrowth__shock_blue":
       if (GetClassState($otherPlayer, $CS_ArcaneDamageTaken) > 0) {
-        MZMoveCard($player, "MYDISCARD:type=AA;minCost=0;maxCost=" . (GetClassState($otherPlayer, $CS_ArcaneDamageTaken) - 1), "MYHAND", DQContext: "Choose an attack action card with cost less than " . (GetClassState($player, $CS_ArcaneDamageDealt) - 1));
+        MZMoveCard($player, "MYDISCARD:type=AA;minCost=0;maxCost=" . GetClassState($otherPlayer, $CS_ArcaneDamageTaken) - 1, "MYHAND", DQContext: "Choose an attack action card with cost less than " . GetClassState($player, $CS_ArcaneDamageDealt) - 1);
       }
       break;
     case "consign_to_cosmos__shock_yellow":
