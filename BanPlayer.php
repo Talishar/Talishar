@@ -64,6 +64,7 @@ function TryPOSTData($key, $default = "", $data = []) {
 $playerToBan = trim(TryPOSTData("playerToBan", "", $postData));
 $ipToBan = trim(TryPOSTData("ipToBan", "", $postData));
 $playerNumberToBan = trim(TryPOSTData("playerNumberToBan", "", $postData));
+$directIPToBan = trim(TryPOSTData("directIPToBan", "", $postData));
 $usernameToDelete = trim(TryPOSTData("usernameToDelete", "", $postData));
 
 $result = ["status" => "success"];
@@ -82,6 +83,19 @@ if ($ipToBan != "") {
   if (BanIP($ipToBan, $useruid)) {
     @file_put_contents('./HostFiles/bannedIPs.txt', $ipToBan . "\r\n", FILE_APPEND | LOCK_EX);
     $result["message"] = "IP $ipToBan has been banned.";
+  } else {
+    $result["status"] = "error";
+    $result["message"] = "Failed to save banned IP to database";
+  }
+}
+
+if ($directIPToBan != "") {
+  if (filter_var($directIPToBan, FILTER_VALIDATE_IP) === false) {
+    $result["status"] = "error";
+    $result["message"] = "\"$directIPToBan\" is not a valid IP address.";
+  } else if (BanIP($directIPToBan, $useruid)) {
+    @file_put_contents('./HostFiles/bannedIPs.txt', $directIPToBan . "\r\n", FILE_APPEND | LOCK_EX);
+    $result["message"] = "IP $directIPToBan has been banned.";
   } else {
     $result["status"] = "error";
     $result["message"] = "Failed to save banned IP to database";

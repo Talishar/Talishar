@@ -31,7 +31,8 @@ $response = [
   "bannedPlayers" => [],
   "bannedIPs" => [],
   "recentAccounts" => [],
-  "linkedAccounts" => []
+  "linkedAccounts" => [],
+  "bannedPlayerIPs" => new stdClass()
 ];
 
 $bannedPlayers = [];
@@ -100,6 +101,26 @@ if ($conn) {
   }
 
   EnsureIPHistoryTable($conn);
+
+  $bannedPlayerIPs = [];
+  $sql = "SELECT u.usersUid, GROUP_CONCAT(h.ip ORDER BY h.lastSeen DESC SEPARATOR ',')
+          FROM users u
+          JOIN ip_history h ON h.usersId = u.usersId
+          WHERE u.isBanned = 1
+          GROUP BY u.usersId, u.usersUid";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $ipHistData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($ipHistData, MYSQLI_NUM)) {
+      if (!empty($row[0]) && !empty($row[1])) {
+        $bannedPlayerIPs[strtolower($row[0])] = explode(",", $row[1]);
+      }
+    }
+    mysqli_stmt_close($stmt);
+  }
+  if (count($bannedPlayerIPs) > 0) $response["bannedPlayerIPs"] = $bannedPlayerIPs;
+
   $linkedAccounts = [];
   $sql = "SELECT DISTINCT u2.usersUid, h1.ip, u1.usersUid
           FROM users u1
