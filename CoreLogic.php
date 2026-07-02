@@ -890,23 +890,13 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
   $zone = $params[0];
   if (!isset($params[1])) return $prevented;
   $index = $params[1];
-  switch ($zone) {
-    case "MYCHAR":
-      $source = &GetPlayerCharacter($player);
-      break;
-    case "MYITEMS":
-      $source = &GetItems($player);
-      break;
-    case "MYAURAS":
-      $source = &GetAuras($player);
-      break;
-    case "MYALLY":
-      $source = &GetAllies($player);
-      break;
-    default:
-      $source = [];
-      break;
-  }
+  $source = match ($zone) {
+    "MYCHAR" => GetPlayerCharacter($player),
+    "MYITEMS" => GetItems($player),
+    "MYAURAS" => GetAuras($player),
+    "MYALLY" => GetAllies($player),
+    default => [],
+  };
   if ($zone == "MYCHAR" && $source[$index + 1] == 0) return;
   if (!isset($source[$index])) WriteLog("Please report this bug to the developers. " . $zone . " " . $index, highlight:true);
     $cardID = $source[$index];
@@ -3490,14 +3480,11 @@ function BanishCostModifier($from, $index, $cost)
   if ($from != "BANISH" && $from != "THEIRBANISH") return 0;
   $from == "BANISH" ? $banish = GetBanish($currentPlayer) : $banish = GetBanish($otherPlayer);
   $mod = explode("-", $banish[$index + 1]);
-  switch ($mod[0]) {
-    case "sonic_boom_yellow":
-      return -1 * intval($mod[1]);
-    case "TCCGorgonsGaze":
-      return -1 * intval($cost);
-    default:
-      return 0;
-  }
+  return match ($mod[0]) {
+    "sonic_boom_yellow" => -1 * intval($mod[1]),
+    "TCCGorgonsGaze" => -1 * intval($cost),
+    default => 0,
+  };
 }
 
 function IsCurrentAttackName($name)
@@ -3686,49 +3673,32 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
   if ($card != "-") return $card->PlayAbility($from, $resourcesPaid, $target, $additionalCosts);
   if ($set == "WTR") return WTRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "ARC") {
-    switch ($class) {
-      case "MECHANOLOGIST":
-        return ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "RANGER":
-        return ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "RUNEBLADE":
-        return ARCRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "WIZARD":
-        return ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "GENERIC":
-        return ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      default:
-        return "";
-    }
+    return match ($class) {
+      "MECHANOLOGIST" => ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "RANGER" => ARCRangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "RUNEBLADE" => ARCRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "WIZARD" => ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "GENERIC" => ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      default => "",
+    };
   } else if ($set == "CRU") return CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "MON") {
-    switch ($class) {
-      case "BRUTE":
-        return MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "ILLUSIONIST":
-        return MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "RUNEBLADE":
-        return MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "WARRIOR":
-        return MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "GENERIC":
-        return MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "NONE":
-        return MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      default:
-        return "";
-    }
+    return match ($class) {
+      "BRUTE" => MONBrutePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "ILLUSIONIST" => MONIllusionistPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "RUNEBLADE" => MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "WARRIOR" => MONWarriorPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "GENERIC" => MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "NONE" => MONTalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      default => "",
+    };
   } else if ($set == "ELE") {
-    switch ($class) {
-      case "GUARDIAN":
-        return ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "RANGER":
-        return ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      case "RUNEBLADE":
-        return ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-      default:
-        return ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
-    }
+    return match ($class) {
+      "GUARDIAN" => ELEGuardianPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "RANGER" => ELERangerPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      "RUNEBLADE" => ELERunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+      default => ELETalentPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts),
+    };
   } else if ($set == "EVR") return EVRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "UPR") return UPRPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
   else if ($set == "DVR") return DVRPlayAbility($cardID);
@@ -4387,12 +4357,10 @@ function CheckIfSingularityConditionsAreMet($currentPlayer)
 
 function CanOnlyTargetHeroes($cardID)
 {
-  switch ($cardID) {
-    case "apocalypse_automaton_red":
-      return true;
-    default:
-      return false;
-  }
+  return match ($cardID) {
+    "apocalypse_automaton_red" => true,
+    default => false,
+  };
 }
 
 function NonHitEffects($cardID)

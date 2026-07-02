@@ -4027,26 +4027,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $zone = $targetParts[0];
         $uid = $targetParts[1];
         $otherPlayer = 3 - $player;
-        switch ($zone) {
-          case "THEIRALLY":
-            $MZIndex = "$zone-" . SearchAlliesForUniqueID($uid, $otherPlayer);
-            break;
-          case "MYALLY":
-            $MZIndex = "$zone-" . SearchAlliesForUniqueID($uid, $player);
-            break;
-          case "THEIRCHAR":
-            $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer);
-            break;
-          case "THEIRCHARUID":
-            $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer);
-            break;
-          case "MYCHAR":
-            $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $player);
-            break;
-          case "MYCHARUID":
-            $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $player);
-            break;
-        }
+        $MZIndex = match ($zone) {
+          "THEIRALLY" => "$zone-" . SearchAlliesForUniqueID($uid, $otherPlayer),
+          "MYALLY" => "$zone-" . SearchAlliesForUniqueID($uid, $player),
+          "THEIRCHAR" => "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer),
+          "THEIRCHARUID" => "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer),
+          "MYCHAR" => "$zone-" . SearchCharacterForUniqueID($uid, $player),
+          "MYCHARUID" => "$zone-" . SearchCharacterForUniqueID($uid, $player),
+        };
         Tap($MZIndex, $player);
         break;
       case "light_fingers":
@@ -4800,12 +4788,10 @@ function HasEnergyCounters($array, $index)
 
 function HasPowerCounters($zone, $array, $index)
 {
-  switch ($zone) {
-    case "AURAS":
-      return $array[$index + 3] > 0;
-    default:
-      return false;
-  }
+  return match ($zone) {
+    "AURAS" => $array[$index + 3] > 0,
+    default => false,
+  };
 }
 
 function IsEnergyCounters($cardID)
