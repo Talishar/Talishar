@@ -338,12 +338,19 @@ function HasSuspense($cardID)
 
 function GetSuspenseAuras($player, $hasCounter = false)
 {
+  global $CombatChain;
   $auras = GetAuras($player);
   $susp = [];
   $auraCount = count($auras);
   $auraPieces = AuraPieces();
   for ($i = 0; $i < $auraCount; $i += $auraPieces) {
     if (HasSuspense($auras[$i]) && (!$hasCounter || $auras[$i + 2])) $susp[] = "MYAURAS-$i";
+  }
+  if (!$hasCounter) {
+    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+      $LinkCard = $CombatChain->Card($i, true);
+      if ($LinkCard->PlayerID() == $player && HasSuspense($LinkCard->ID())) $susp[] = "COMBATCHAIN-" . $LinkCard->Index();
+    }
   }
   return $susp;
 }
