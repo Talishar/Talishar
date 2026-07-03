@@ -994,9 +994,6 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
       case "blizzard_bolt_red":
       case "blizzard_bolt_yellow":
       case "blizzard_bolt_blue":
-        if (IsHeroAttackTarget() && CardType($source) == "AA")
-          AddLayer("TRIGGER", $otherPlayer, $effectID, $target);
-        break;
       case "chilling_icevein_red":
       case "chilling_icevein_yellow":
       case "chilling_icevein_blue":
@@ -2446,21 +2443,6 @@ function DoesAttackHaveGoAgain()
     case "harmonized_kodachi":
     case "harmonized_kodachi_r":
       return SearchCount(SearchPitch($mainPlayer, minCost: 0, maxCost: 0)) > 0;
-    case "mugenshi_release_yellow":
-    case "hurricane_technique_yellow":
-      return ComboActive($attackID);
-    case "open_the_center_red":
-    case "open_the_center_yellow":
-    case "open_the_center_blue":
-      return ComboActive($attackID);
-    case "rising_knee_thrust_red":
-    case "rising_knee_thrust_yellow":
-    case "rising_knee_thrust_blue":
-      return ComboActive($attackID);
-    case "whelming_gustwave_red":
-    case "whelming_gustwave_yellow":
-    case "whelming_gustwave_blue":
-      return ComboActive($attackID);
     case "last_ditch_effort_blue":
       $deck = new Deck($mainPlayer);
       return $deck->Empty();
@@ -2475,30 +2457,53 @@ function DoesAttackHaveGoAgain()
     case "barraging_big_horn_yellow":
     case "barraging_big_horn_blue":
       if (NumCardsNonEquipBlocking() < 2) return true;
+    case "mugenshi_release_yellow":
+    case "hurricane_technique_yellow":
+    case "open_the_center_red":
+    case "open_the_center_yellow":
+    case "open_the_center_blue":
+    case "rising_knee_thrust_red":
+    case "rising_knee_thrust_yellow":
+    case "rising_knee_thrust_blue":
+    case "whelming_gustwave_red":
+    case "whelming_gustwave_yellow":
+    case "whelming_gustwave_blue":
     case "crane_dance_red":
     case "crane_dance_yellow":
     case "crane_dance_blue":
-      return ComboActive($attackID);
     case "rushing_river_red":
     case "rushing_river_yellow":
     case "rushing_river_blue":
+    case "tiger_swipe_red":
+    case "pouncing_qi_red":
+    case "pouncing_qi_yellow":
+    case "pouncing_qi_blue":
+    case "chase_the_tail_red":
+    case "aspect_of_tiger_body_red":
+    case "aspect_of_tiger_soul_yellow":
+    case "aspect_of_tiger_mind_blue":
+    case "breed_anger_red":
+    case "breed_anger_yellow":
+    case "breed_anger_blue":
+    case "gustwave_of_the_second_wind_red":
+    case "seek_vengeance_red":
+    case "seek_vengeance_blue":
+    case "vengeance_never_rests_blue":
       return ComboActive($attackID);
     case "meat_and_greet_red":
     case "meat_and_greet_yellow":
     case "meat_and_greet_blue":
-      return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
-    case "battlefield_blitz_red":
-    case "battlefield_blitz_yellow":
-    case "battlefield_blitz_blue":
-      return GetClassState($mainPlayer, $CS_NumCharged) > 0;
-    case "take_flight_red":
-    case "take_flight_yellow":
-    case "take_flight_blue":
-      return GetClassState($mainPlayer, $CS_NumCharged) > 0;
     case "rip_through_reality_red":
     case "rip_through_reality_yellow":
     case "rip_through_reality_blue":
       return GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0;
+    case "battlefield_blitz_red":
+    case "battlefield_blitz_yellow":
+    case "battlefield_blitz_blue":
+    case "take_flight_red":
+    case "take_flight_yellow":
+    case "take_flight_blue":
+      return GetClassState($mainPlayer, $CS_NumCharged) > 0;
     case "soul_reaping_red":
     case "ursur_the_soul_reaper":
       return count(GetSoul($defPlayer)) > 0 && IsHeroAttackTarget();
@@ -2523,27 +2528,24 @@ function DoesAttackHaveGoAgain()
     case "boltn_shot_blue":
       return CachedTotalPower() > PowerValue($attackID, $mainPlayer, "CC");
     case "swarming_gloomveil_red":
+    case "runerager_swarm_red":
+    case "runerager_swarm_yellow":
+    case "runerager_swarm_blue":
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "searing_emberblade":
-      return NumDraconicChainLinks() >= 2;
     case "cinderskin_devotion_red":
     case "cinderskin_devotion_yellow":
     case "cinderskin_devotion_blue":
-      return NumDraconicChainLinks() >= 2;
     case "lava_vein_loyalty_red":
     case "lava_vein_loyalty_yellow":
     case "lava_vein_loyalty_blue":
+    case "hot_on_their_heels_red":
+    case "mark_with_magma_red":
       return NumDraconicChainLinks() >= 2;
     case "phoenix_form_red":
       return NumChainLinksWithName("Phoenix Flame") >= 1;
     case "blaze_headlong_red":
       return GetClassState($mainPlayer, $CS_NumRedPlayed) > 1;
-    case "tiger_swipe_red":
-      return ComboActive($attackID);
-    case "pouncing_qi_red":
-    case "pouncing_qi_yellow":
-    case "pouncing_qi_blue":
-      return ComboActive($attackID);
     case "quicksilver_dagger":
     case "quicksilver_dagger_r":
       return GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) != "-";
@@ -2561,20 +2563,10 @@ function DoesAttackHaveGoAgain()
       return true;
     case "second_tenet_of_chi_wind_blue":
       return GetClassState($mainPlayer, $CS_Transcended) > 0;
-    case "chase_the_tail_red":
-      return ComboActive($attackID);
-    case "aspect_of_tiger_body_red":
-    case "aspect_of_tiger_soul_yellow":
-    case "aspect_of_tiger_mind_blue":
-      return ComboActive($attackID);
     case "rising_speed_red":
     case "rising_speed_yellow":
     case "rising_speed_blue":
       return GetClassState($mainPlayer, $CS_NumCardsDrawn) > 0;
-    case "breed_anger_red":
-    case "breed_anger_yellow":
-    case "breed_anger_blue":
-      return ComboActive($attackID);
     case "photon_rush_red":
     case "photon_rush_blue":
     case "star_fall":
@@ -2591,17 +2583,8 @@ function DoesAttackHaveGoAgain()
       if (isset($combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer])) { // the first time this is checked in a chain it isn't set but the rest of the time it can be checked.
         return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0;
       } else return false;
-    case "runerager_swarm_red":
-    case "runerager_swarm_yellow":
-    case "runerager_swarm_blue":
-      return GetClassState($mainPlayer, $CS_NumAuras) > 0;
-    case "gustwave_of_the_second_wind_red":
-      return ComboActive($attackID);
     case "burning_blade_dance_red":
       return NumDraconicChainLinks() > 1;
-    case "hot_on_their_heels_red":
-    case "mark_with_magma_red":
-      return NumDraconicChainLinks() >= 2;
     case "art_of_the_dragon_blood_red":
       $attackUniqueID = $CombatChain->AttackCard()->UniqueID();
       return SearchCurrentTurnEffects("art_of_the_dragon_blood_red-$attackUniqueID", $mainPlayer);
@@ -2625,10 +2608,6 @@ function DoesAttackHaveGoAgain()
       return $numDaggerHits > 0;
     case "retrace_the_past_blue":
       return SearchCurrentTurnEffectsForIndex("retrace_the_past_blue", $mainPlayer) != -1;
-    case "seek_vengeance_red":
-    case "seek_vengeance_blue":
-    case "vengeance_never_rests_blue":
-      return ComboActive($attackID);
     default:
       return false;
   }
@@ -2671,8 +2650,6 @@ function AttackDestroyed($attackID)
     case "dunebreaker_cenipai_red":
     case "dunebreaker_cenipai_yellow":
     case "dunebreaker_cenipai_blue":
-      PutPermanentIntoPlay($mainPlayer, "ash");
-      break;
     case "embermaw_cenipai_red":
     case "embermaw_cenipai_yellow":
     case "embermaw_cenipai_blue":
@@ -3349,6 +3326,8 @@ function SelfCostModifier($cardID, $from)
     case "rune_flash_red":
     case "rune_flash_yellow":
     case "rune_flash_blue":
+    case "runic_reckoning_red":
+    case "sonata_galaxia_red":
       return -1 * NumRunechants($currentPlayer);
     case "bolting_blade_yellow":
       return -1 * (2 * GetClassState($currentPlayer, $CS_NumCharged));
@@ -3359,6 +3338,9 @@ function SelfCostModifier($cardID, $from)
     case "jump_start_red":
     case "jump_start_yellow":
     case "jump_start_blue":
+    case "rev_up_red":
+    case "rev_up_yellow":
+    case "rev_up_blue":
       return SearchMultizone($currentPlayer, "MYITEMS:isSameName=hyper_driver_red") != "" ? -1 : 0;
     case "bonds_of_ancestry_red":
     case "bonds_of_ancestry_yellow":
@@ -3373,17 +3355,13 @@ function SelfCostModifier($cardID, $from)
     case "bleed_out_blue":
       return -1 * DamageDealtBySubtype("Dagger");
     case "dimenxxional_vortex":
-      return $from == "BANISH" ? -2 : 0;
     case "grim_feast_red":
     case "grim_feast_yellow":
     case "grim_feast_blue":
-      return $from == "BANISH" ? -2 : 0;
     case "vile_inquisition_red":
     case "vile_inquisition_yellow":
     case "vile_inquisition_blue":
       return $from == "BANISH" ? -2 : 0;
-    case "runic_reckoning_red":
-      return -1 * NumRunechants($currentPlayer);
     case "liquid_cooled_mayhem_red":
     case "liquid_cooled_mayhem_yellow":
     case "liquid_cooled_mayhem_blue":
@@ -3392,10 +3370,6 @@ function SelfCostModifier($cardID, $from)
     case "terminator_tank_red":
     case "war_machine_red":
       return EvoUpgradeAmount($currentPlayer) >= 2 ? -3 : 0;
-    case "rev_up_red":
-    case "rev_up_yellow":
-    case "rev_up_blue":
-      return SearchMultizone($currentPlayer, "MYITEMS:isSameName=hyper_driver_red") != "" ? -1 : 0;
     case "quickfire_red":
     case "quickfire_yellow":
     case "quickfire_blue":
@@ -3411,13 +3385,10 @@ function SelfCostModifier($cardID, $from)
     case "rising_energy_yellow":
     case "rising_energy_blue":
       return GetClassState($currentPlayer, $CS_NumCardsDrawn) > 0 ? -1 : 0;
-    case "sonata_galaxia_red":
-      return -1 * NumRunechants($currentPlayer);
     case "wrath_of_retribution_red":
     case "blood_drop_red":
     case "blood_line_red":
     case "blood_runs_deep_red":
-      return -1 * NumDraconicChainLinks();
     case "fire_and_brimstone_red":
     case "dynastic_dedication_red":
     case "imperial_intent_red":

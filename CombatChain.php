@@ -117,15 +117,34 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
     }
     switch ($cardID) {
       case "romping_club":
+      case "riled_up_red":
+      case "riled_up_yellow":
+      case "riled_up_blue":
         $power += (GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0);
         break;
       case "lord_of_wind_blue":
         $power += (ComboActive() ? $resourcesPaid : 0);
         break;
       case "mugenshi_release_yellow":
-        $power += (ComboActive() ? 1 : 0);
-        break;
       case "hurricane_technique_yellow":
+      case "open_the_center_red":
+      case "open_the_center_yellow":
+      case "open_the_center_blue":
+      case "whelming_gustwave_red":
+      case "whelming_gustwave_yellow":
+      case "whelming_gustwave_blue":
+      case "crane_dance_red":
+      case "crane_dance_yellow":
+      case "crane_dance_blue":
+      case "rushing_river_red":
+      case "rushing_river_yellow":
+      case "rushing_river_blue":
+      case "pouncing_qi_red":
+      case "pouncing_qi_yellow":
+      case "pouncing_qi_blue":
+      case "spinning_wheel_kick_red":
+      case "spinning_wheel_kick_yellow":
+      case "spinning_wheel_kick_blue":
         $power += (ComboActive() ? 1 : 0);
         break;
       case "fluster_fist_red":
@@ -136,26 +155,27 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "blackout_kick_red":
       case "blackout_kick_yellow":
       case "blackout_kick_blue":
+      case "break_tide_yellow":
         $power += (ComboActive() ? 3 : 0);
-        break;
-      case "open_the_center_red":
-      case "open_the_center_yellow":
-      case "open_the_center_blue":
-        $power += (ComboActive() ? 1 : 0);
         break;
       case "rising_knee_thrust_red":
       case "rising_knee_thrust_yellow":
       case "rising_knee_thrust_blue":
+      case "herons_flight_red":
+      case "winds_of_eternity_blue":
+      case "tiger_swipe_red":
+      case "dishonor_blue":
+      case "descendent_gustwave_red":
+      case "descendent_gustwave_yellow":
+      case "descendent_gustwave_blue":
         $power += (ComboActive() ? 2 : 0);
-        break;
-      case "whelming_gustwave_red":
-      case "whelming_gustwave_yellow":
-      case "whelming_gustwave_blue":
-        $power += (ComboActive() ? 1 : 0);
         break;
       case "barraging_brawnhide_red":
       case "barraging_brawnhide_yellow":
       case "barraging_brawnhide_blue":
+      case "stony_woottonhog_red":
+      case "stony_woottonhog_yellow":
+      case "stony_woottonhog_blue":
         $power += NumCardsNonEquipBlocking() < 2 ? 1 : 0;
         break;
       case "push_the_point_red":
@@ -163,24 +183,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "push_the_point_blue":
         $idx = count($chainLinkSummary) - ChainLinkSummaryPieces();
         if (isset($chainLinkSummary[$idx]) && $chainLinkSummary[$idx] > 0) $power += 2;
-        break;
-      case "riled_up_red":
-      case "riled_up_yellow":
-      case "riled_up_blue":
-        $power += GetClassState($mainPlayer, $CS_Num6PowDisc) > 0 ? 1 : 0;
-        break;
-      case "herons_flight_red":
-        $power += ComboActive() ? 2 : 0;
-        break;
-      case "crane_dance_red":
-      case "crane_dance_yellow":
-      case "crane_dance_blue":
-        $power += ComboActive() ? 1 : 0;
-        break;
-      case "rushing_river_red":
-      case "rushing_river_yellow":
-      case "rushing_river_blue":
-        $power += ComboActive() ? 1 : 0;
         break;
       case "flying_kick_red":
       case "flying_kick_yellow":
@@ -199,8 +201,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
         $power += $combatChainState[$CCS_NumBoosted];
         break;
       case "raydn_duskbane":
-        $power += GetClassState($mainPlayer, $CS_NumCharged) > 0 ? 3 : 0;
-        break;
       case "valiant_thrust_red":
       case "valiant_thrust_yellow":
       case "valiant_thrust_blue":
@@ -212,17 +212,15 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "piercing_shadow_vise_red":
       case "piercing_shadow_vise_yellow":
       case "piercing_shadow_vise_blue":
+      case "arcanic_spike_red":
+      case "arcanic_spike_yellow":
+      case "arcanic_spike_blue":
         $power += GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0 ? 2 : 0;
         break;
       case "tremor_of_iarathael_red":
       case "tremor_of_iarathael_yellow":
       case "tremor_of_iarathael_blue":
         $power += GetClassState($mainPlayer, $CS_CardsBanished) > 0 ? 2 : 0;
-        break;
-      case "stony_woottonhog_red":
-      case "stony_woottonhog_yellow":
-      case "stony_woottonhog_blue":
-        $power += NumCardsNonEquipBlocking() < 2 ? 1 : 0;
         break;
       case "surging_militia_red":
       case "surging_militia_yellow":
@@ -243,12 +241,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "burgeoning_yellow":
       case "burgeoning_blue":
         $power += $from == "ARS" ? 1 : 0;
-        break;
-      case "break_tide_yellow":
-        $power += (ComboActive() ? 3 : 0);
-        break;
-      case "winds_of_eternity_blue":
-        $power += (ComboActive() ? 2 : 0);
         break;
       case "hundred_winds_red":
       case "hundred_winds_yellow":
@@ -275,14 +267,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "phoenix_flame_red":
         $power += (NumDraconicChainLinks() >= 2 ? 1 : 0);
         break;
-      case "tiger_swipe_red":
-        $power += (ComboActive() ? 2 : 0);
-        break;
-      case "pouncing_qi_red":
-      case "pouncing_qi_yellow":
-      case "pouncing_qi_blue":
-        $power += (ComboActive() ? 1 : 0);
-        break;
       case "qi_unleashed_red":
       case "qi_unleashed_yellow":
       case "qi_unleashed_blue":
@@ -293,19 +277,6 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "sneak_attack_blue":
         $power += (NumAttackReactionsPlayed() > 0 ? 4 : 0);
         break;
-      case "dishonor_blue":
-        $power += (ComboActive() ? 2 : 0);
-        break;
-      case "spinning_wheel_kick_red":
-      case "spinning_wheel_kick_yellow":
-      case "spinning_wheel_kick_blue":
-        $power += (ComboActive() ? 1 : 0);
-        break;
-      case "descendent_gustwave_red":
-      case "descendent_gustwave_yellow":
-      case "descendent_gustwave_blue":
-        $power += (ComboActive() ? 2 : 0);
-        break;
       case "widowmaker_red":
       case "widowmaker_yellow":
       case "widowmaker_blue":
@@ -314,6 +285,7 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "feisty_locals_red":
       case "feisty_locals_yellow":
       case "feisty_locals_blue":
+      case "rowdy_locals_blue":
         $power += (CachedNumActionBlocked() > 0 ? 2 : 0);
         break;
       case "freewheeling_renegades_red":
@@ -400,29 +372,17 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
       case "pick_to_pieces_blue":
         $power += NumAttackReactionsPlayed() > 0 ? 1 : 0;
         break;
-      case "rowdy_locals_blue":
-        $power += CachedNumActionBlocked() > 0 ? 2 : 0;
-        break;
       case "crackling_red":
       case "crackling_yellow":
       case "star_fall":
         $power += GetClassState($mainPlayer, $CS_NumLightningPlayed) > 0;
         break;
       case "felling_of_the_crown_red":
-        $power += SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:talent=EARTH")) >= 4 ? 4 : 0;
-        break;
       case "plow_under_yellow":
-        $power += SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:talent=EARTH")) >= 4 ? 4 : 0;
-        break;
       case "strength_of_four_seasons_red":
       case "strength_of_four_seasons_yellow":
       case "strength_of_four_seasons_blue":
         $power += SearchCount(SearchMultiZone($mainPlayer, "MYBANISH:talent=EARTH")) >= 4 ? 4 : 0;
-        break;
-      case "arcanic_spike_red":
-      case "arcanic_spike_yellow":
-      case "arcanic_spike_blue":
-        $power += GetClassState($defPlayer, $CS_ArcaneDamageTaken) > 0 ? 2 : 0;
         break;
       case "hit_the_high_notes_red":
       case "hit_the_high_notes_yellow":
@@ -739,24 +699,19 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
 function PlayBlockModifier($cardID)
 {
   switch ($cardID) {
-    case "reinforce_the_line_red":
-      return 4;
-    case "reinforce_the_line_yellow":
-      return 3;
-    case "reinforce_the_line_blue":
-      return 2;
-    case "summerwood_shelter_red":
-      return 4;
-    case "summerwood_shelter_yellow":
-      return 3;
-    case "summerwood_shelter_blue":
-      return 2;
     case "celestial_resolve_red":
       return 5;
+    case "reinforce_the_line_red":
+    case "summerwood_shelter_red":
     case "celestial_resolve_yellow":
       return 4;
+    case "reinforce_the_line_yellow":
+    case "summerwood_shelter_yellow":
     case "celestial_resolve_blue":
       return 3;
+    case "reinforce_the_line_blue":
+    case "summerwood_shelter_blue":
+      return 2;
     default:
       return 0;
   }
@@ -800,8 +755,6 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     case "spark_spray_red":
     case "spark_spray_yellow":
     case "spark_spray_blue":
-      AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
-      break;
     case "pec_perfect_red":
       AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
       break;
@@ -814,55 +767,31 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   }
   switch ($cardID) {
     case "tripwire_trap_red":
-      AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
     case "pitfall_trap_yellow":
-      AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
     case "rockslide_trap_blue":
       AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "buzzsaw_trap_blue":
+    case "boulder_trap_yellow":
+    case "inertia_trap_red":
+    case "den_of_the_spider_red":
       if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "collapsing_trap_blue":
+    case "tarpit_trap_yellow":
+    case "frailty_trap_red":
+    case "lair_of_the_spider_red":
+    case "chain_reaction_yellow":
       if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "spike_pit_trap_blue":
-      if (NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
-    case "boulder_trap_yellow":
-      if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
     case "pendulum_trap_yellow":
-      if (NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
-    case "tarpit_trap_yellow":
-      if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
     case "bloodrot_trap_red":
-      if (NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
-    case "frailty_trap_red":
-      if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
-    case "inertia_trap_red":
-      if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
     case "hunted_or_hunter_red":
       if (NumAttackReactionsPlayed() > 0) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "smoke_out_red":
       if (ColorContains($combatChain[0], 1, $mainPlayer)) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
-    case "lair_of_the_spider_red":
-      if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
-    case "den_of_the_spider_red":
-      if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
-      break;
-    case "chain_reaction_yellow":
-      if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
   }
   if ($blockedFromHand > 0 && SearchCharacterActive($mainPlayer, "mark_of_lightning", true) && (TalentContains($combatChain[0], "LIGHTNING", $mainPlayer) || TalentContains($combatChain[0], "ELEMENTAL", $mainPlayer))) {
@@ -1576,35 +1505,32 @@ function IsDominateActive()
       case "open_the_center_red":
       case "open_the_center_yellow":
       case "open_the_center_blue":
+      case "break_tide_yellow":
         return ComboActive();
       case "demolition_crew_red":
       case "demolition_crew_yellow":
       case "demolition_crew_blue":
-        return true;
       case "arknight_ascendancy_red":
-        return true;
       case "herald_of_erudition_yellow":
-        return true;
       case "herald_of_tenacity_red":
       case "herald_of_tenacity_yellow":
       case "herald_of_tenacity_blue":
-        return true;
-      case "nourishing_emptiness_red":
-        return SearchDiscard($mainPlayer, "AA") == "";
       case "overload_red":
       case "overload_yellow":
       case "overload_blue":
+      case "macho_grande_red":
+      case "macho_grande_yellow":
+      case "macho_grande_blue":
+      case "isolate_red":
+      case "isolate_yellow":
+      case "isolate_blue":
         return true;
+      case "nourishing_emptiness_red":
+        return SearchDiscard($mainPlayer, "AA") == "";
       case "thump_red":
       case "thump_yellow":
       case "thump_blue":
         return HasIncreasedAttack();
-      case "macho_grande_red":
-      case "macho_grande_yellow":
-      case "macho_grande_blue":
-        return true;
-      case "break_tide_yellow":
-        return ComboActive();
       case "payload_red":
       case "payload_yellow":
       case "payload_blue":
@@ -1613,10 +1539,6 @@ function IsDominateActive()
       case "drowning_dire_yellow":
       case "drowning_dire_blue":
         return GetClassState($mainPlayer, $CS_NumAuras) > 0;
-      case "isolate_red":
-      case "isolate_yellow":
-      case "isolate_blue":
-        return true;
       default:
         break;
     }
@@ -1657,16 +1579,18 @@ function IsOverpowerActive()
     case "merciless_battleaxe":
       return SearchCurrentTurnEffects("merciless_battleaxe", $mainPlayer);
     case "hanabi_blaster":
+    case "nitro_mechanoidc":
       return true;
     case "spectral_rider_red":
     case "spectral_rider_yellow":
     case "spectral_rider_blue":
       return SearchCurrentTurnEffects("spectral_rider_red", $mainPlayer);
-    case "nitro_mechanoidc":
-      return true;
     case "glaring_impact_red":
     case "glaring_impact_yellow":
     case "glaring_impact_blue":
+    case "hydraulic_press_red":
+    case "hydraulic_press_yellow":
+    case "hydraulic_press_blue":
       return SearchCurrentTurnEffects($combatChain[0], $mainPlayer);
     case "wall_breaker_red":
     case "wall_breaker_yellow":
@@ -1676,10 +1600,6 @@ function IsOverpowerActive()
     case "terminator_tank_red":
     case "war_machine_red":
       return EvoUpgradeAmount($mainPlayer) >= 3;
-    case "hydraulic_press_red":
-    case "hydraulic_press_yellow":
-    case "hydraulic_press_blue":
-      return SearchCurrentTurnEffects($combatChain[0], $mainPlayer);
     case "moonshot_yellow":
       return CachedTotalPower() >= 10;
     case "torque_tuned_red":

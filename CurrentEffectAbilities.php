@@ -28,6 +28,13 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "warriors_valor_red":
     case "warriors_valor_yellow":
     case "warriors_valor_blue":
+    case "razor_reflex_red":
+    case "razor_reflex_yellow":
+    case "razor_reflex_blue":
+    case "light_the_way_red":
+    case "light_the_way_yellow":
+    case "light_the_way_blue":
+    case "lumina_lance_yellow-3":
       GiveAttackGoAgain();
       break;
     case "natures_path_pilgrimage_red":
@@ -38,21 +45,14 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "pummel_red":
     case "pummel_yellow":
     case "pummel_blue":
+    case "poison_the_tips_yellow":
       PummelHit();
-      break;
-    case "razor_reflex_red":
-    case "razor_reflex_yellow":
-    case "razor_reflex_blue":
-      GiveAttackGoAgain();
       break;
     case "plunder_run_red-1":
     case "plunder_run_yellow-1":
     case "plunder_run_blue-1":
       Draw($mainPlayer);
       return 1;
-    case "poison_the_tips_yellow":
-      PummelHit();
-      break;
     case "mauvrion_skies_red":
     case "mauvrion_skies_yellow":
     case "mauvrion_skies_blue":
@@ -137,6 +137,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "snow_under_red":
     case "snow_under_yellow":
     case "snow_under_blue":
+    case "ice_quake_red-HIT":
+    case "ice_quake_yellow-HIT":
+    case "ice_quake_blue-HIT":
       if (IsHeroAttackTarget()) PlayAura("frostbite", $defPlayer, effectController: $mainPlayer);
       break;
     case "frost_lock_blue-2":
@@ -151,6 +154,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "buzz_bolt_red":
     case "buzz_bolt_yellow":
     case "buzz_bolt_blue":
+    case "shock_striker_red":
+    case "shock_striker_yellow":
+    case "shock_striker_blue":
       if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID, $mainPlayer);
       break;
     case "force_of_nature_blue-TRIGGER":
@@ -158,11 +164,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       break;
     case "flashfreeze_red-BUFF":
       if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 3, "ATTACKHIT", $cardID, $mainPlayer);
-      break;
-    case "ice_quake_red-HIT":
-    case "ice_quake_yellow-HIT":
-    case "ice_quake_blue-HIT":
-      if (IsHeroAttackTarget()) PlayAura("frostbite", $defPlayer, effectController: $mainPlayer);
       break;
     case "chill_to_the_bone_red":
       PlayAura("frostbite", $defPlayer, 3, effectController: $mainPlayer);
@@ -179,11 +180,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "shock_charmers":
       if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID, $mainPlayer);
       return 1;
-    case "shock_striker_red":
-    case "shock_striker_yellow":
-    case "shock_striker_blue":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID, $mainPlayer);
-      break;
     case "electrify_red":
     case "electrify_yellow":
     case "electrify_blue":
@@ -384,16 +380,11 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "spirit_of_war_red":
       PlayAura("courage", $mainPlayer);
       break;
-    case "light_the_way_red":
-    case "light_the_way_yellow":
-    case "light_the_way_blue":
-      GiveAttackGoAgain();
-      break;
     case "lumina_lance_yellow-2":
+    case "evo_command_center_yellow_equip":
+    case "hood_of_red_sand":
+    case "target_totalizer":
       Draw($mainPlayer);
-      break;
-    case "lumina_lance_yellow-3":
-      GiveAttackGoAgain();
       break;
     case "ironsong_versus":
       if (IsHeroAttackTarget()) PlayAura("courage", $mainPlayer);
@@ -418,16 +409,10 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
       }
       break;
-    case "evo_command_center_yellow_equip":
-      Draw($mainPlayer);
-      break;
     case "kassai_of_the_golden_sand":
     case "kassai":
       if (IsHeroAttackTarget()) PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController: $mainPlayer);
       return 1;
-    case "hood_of_red_sand":
-      Draw($mainPlayer);
-      break;
     case "talk_a_big_game_blue":
       if ($combatChainState[$CCS_DamageDealt] >= $effectArr[1]) {
         PlayAura("might", $mainPlayer, $effectArr[1]);
@@ -443,9 +428,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "maul_yellow-HIT":
       BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true);
       BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true);
-      break;
-    case "target_totalizer":
-      Draw($mainPlayer);
       break;
     case "burn_up__shock_red":
       if (IsHeroAttackTarget()) DealArcane(4, 1, "PLAYCARD", $cardID, false, $mainPlayer);
@@ -466,6 +448,12 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       AddDecisionQueue("BANISHCARD", $defPlayer, "MYARS,-,$source", 1);
       return 0;
     case "two_sides_to_the_blade_red-ATTACK":
+    case "hunt_a_killer_red":
+    case "hunt_a_killer_yellow":
+    case "hunt_a_killer_blue":
+    case "sworn_vengeance_red":
+    case "sworn_vengeance_yellow":
+    case "sworn_vengeance_blue":
       if (IsHeroAttackTarget()) MarkHero($defPlayer);
       break;
     case "long_whisker_loyalty_red-MARK":
@@ -489,16 +477,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       }
       else WriteLog("A strange error has happened with twist and turn. Please submit a bug report", highlight: true);
       return 0;
-    case "hunt_a_killer_red":
-    case "hunt_a_killer_yellow":
-    case "hunt_a_killer_blue":
-      if (IsHeroAttackTarget()) MarkHero($defPlayer);
-      break;
-    case "sworn_vengeance_red":
-    case "sworn_vengeance_yellow":
-    case "sworn_vengeance_blue":
-      if (IsHeroAttackTarget()) MarkHero($defPlayer);
-      break;
     case "poisoned_blade_red":
     case "poisoned_blade_yellow":
     case "poisoned_blade_blue":
@@ -824,20 +802,15 @@ function OnAttackEffects($cardID)
         case "big_bop_red-BUFF":
         case "big_bop_yellow-BUFF":
         case "big_bop_blue-BUFF":
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(ExtractCardID($currentTurnEffects[$i]));
-          }
-          break;
         case "bigger_than_big_red-BUFF":
         case "bigger_than_big_yellow-BUFF":
         case "bigger_than_big_blue-BUFF":
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(ExtractCardID($currentTurnEffects[$i]));
-          }
-          break;
         case "edge_ahead_red-BUFF":
         case "edge_ahead_yellow-BUFF":
         case "edge_ahead_blue-BUFF":
+        case "money_where_ya_mouth_is_red-BUFF":
+        case "money_where_ya_mouth_is_yellow-BUFF":
+        case "money_where_ya_mouth_is_blue-BUFF":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(ExtractCardID($currentTurnEffects[$i]));
           }
@@ -847,13 +820,6 @@ function OnAttackEffects($cardID)
         case "hold_em_blue-BUFF":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AddLayer("TRIGGER", $mainPlayer, ExtractCardID($currentTurnEffects[$i]), "-", "ATTACKTRIGGER");
-          }
-          break;
-        case "money_where_ya_mouth_is_red-BUFF":
-        case "money_where_ya_mouth_is_yellow-BUFF":
-        case "money_where_ya_mouth_is_blue-BUFF":
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AskWager(ExtractCardID($currentTurnEffects[$i]));
           }
           break;
         case "shifting_winds_of_the_mystic_beast_blue":
@@ -983,13 +949,9 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
           }
           break;
         case "frost_lock_blue-1":
-          $costModifier += 1;
-          break;
         case "cold_wave_red":
         case "cold_wave_yellow":
         case "cold_wave_blue":
-          $costModifier += 1;
-          break;
         case "heart_of_ice":
           $costModifier += 1;
           break;
@@ -1027,6 +989,7 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
           }
           break;
         case "silken_gi-1":
+        case "evo_heartdrive_blue":
           if ($cardType == "AA") {
             $costModifier -= 1;
             $remove = true;
@@ -1057,12 +1020,6 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
         case "savage_sash":
           $power = LayerStepPower();
           if ($cardType == "AA" && $power >= 6) $costModifier -= 1;
-          break;
-        case "evo_heartdrive_blue":
-          if ($cardType == "AA") {
-            $costModifier -= 1;
-            $remove = true;
-          }
           break;
         case "ignite_red":
           if (TalentContains($cardID, "DRACONIC", $currentPlayer)) {
@@ -1131,14 +1088,14 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
     return $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, true);
   }
   switch ($effects[0]) {
-    case "dissipation_shield_yellow":
-      return intval($effects[1]);
     case "blessing_of_serenity_red":
+    case "peace_of_mind_yellow":
       if ($type == "COMBAT") {
         return 3;
       }
       break;
     case "blessing_of_serenity_yellow":
+    case "peace_of_mind_blue":
       if ($type == "COMBAT") {
         return 2;
       }
@@ -1149,23 +1106,38 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
       }
       break;
     case "steadfast_red":
-      return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
     case "steadfast_yellow":
-      return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
     case "steadfast_blue":
       return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
     case "amulet_of_intervention_blue":
+    case "seekers_hood":
+    case "seekers_gilet":
+    case "seekers_mitts":
+    case "seekers_leggings":
+    case "interlude_blue":
+    case "sigil_of_shelter_blue":
+    case "sawbones_dock_hand_yellow":
+    case "dissolving_shield_red":
+    case "dissolving_shield_yellow":
+    case "dissolving_shield_blue":
+    case "battlefront_bastion_red":
+    case "battlefront_bastion_yellow":
+    case "battlefront_bastion_blue":
+    case "skycrest_keikoi":
+    case "skybody_keikoi":
+    case "skyhold_keikoi":
+    case "skywalker_keikoi":
+    case "runaways":
+    case "hood_of_second_thoughts":
+    case "bruised_leather":
+    case "four_finger_gloves":
+    case "crown_of_seeds":
       return 1;
     case "helios_mitre":
       if ($source == $currentTurnEffects[$index + 2]) {
           return 1;
         }
       break;
-    case "seekers_hood":
-    case "seekers_gilet":
-    case "seekers_mitts":
-    case "seekers_leggings":
-      return 1;
     case "brush_off_red":
       if ($damage <= 3) {
         return $damage;
@@ -1186,16 +1158,6 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
         return 4;
       }
       break;
-    case "peace_of_mind_yellow":
-      if ($type == "COMBAT") {
-        return 3;
-      }
-      break;
-    case "peace_of_mind_blue":
-      if ($type == "COMBAT") {
-        return 2;
-      }
-      break;
     case "break_of_dawn_red":
     case "break_of_dawn_yellow":
     case "break_of_dawn_blue":
@@ -1210,10 +1172,6 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
       break;
     case "interlude_red":
       return 3;
-    case "interlude_yellow":
-      return 2;
-    case "interlude_blue":
-      return 1;
     case "evo_circuit_breaker_red":
     case "evo_atom_breaker_red":
     case "evo_face_breaker_red":
@@ -1226,6 +1184,8 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
         return intval($effects[1]);
       }
       break;
+    case "dissipation_shield_yellow":
+    case "throw_caution_to_the_wind_blue":
     case "no_fear_red":
     case "seeds_of_tomorrow_blue":
     case "hold_the_line_blue":
@@ -1242,30 +1202,16 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
     case "mental_block_blue":
       if (!$preventable) return 0;
       return intval($effects[1]);
+    case "interlude_yellow":
     case "battered_not_broken_red":
     case "take_it_on_the_chin_red":
     case "slap_happy_red":
     case "sheltered_cove":
+    case "sigil_of_shelter_yellow":
       return 2;
     case "shelter_from_the_storm_red":
     case "calming_breeze_red":
       return $Effect->NumUses() == $effects[1] ? 1 : 0;
-    case "dissolving_shield_red":
-    case "dissolving_shield_yellow":
-    case "dissolving_shield_blue":
-    case "battlefront_bastion_red":
-    case "battlefront_bastion_yellow":
-    case "battlefront_bastion_blue":
-    case "skycrest_keikoi":
-    case "skybody_keikoi":
-    case "skyhold_keikoi":
-    case "skywalker_keikoi":
-    case "runaways":
-    case "hood_of_second_thoughts":
-    case "bruised_leather":
-    case "four_finger_gloves":
-    case "crown_of_seeds":
-      return 1;
     case "moon_chakra_red":
       return match ($currentTurnEffects[$index]) {
         "moon_chakra_red-1" => 3,
@@ -1296,10 +1242,6 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
         return $damage;
       }
       break;
-    case "sigil_of_shelter_yellow":
-      return 2;
-    case "sigil_of_shelter_blue":
-      return 1;
     case "sanctuary_of_aria":
       if ($source == $currentTurnEffects[$index + 2]) {
         return $damage;
@@ -1307,10 +1249,6 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
       break;
     case "misfire_dampener":
       return $type == "ARCANE" ? intval($effects[1]) : 0;
-    case "sawbones_dock_hand_yellow":
-      return 1;
-    case "throw_caution_to_the_wind_blue":
-      return intval($effects[1]);
     case "light_up_the_leaves_red":
       if ($source == $currentTurnEffects[$index + 2] && $type == "ARCANE") {
         return $damage;
@@ -1341,16 +1279,19 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
   }
   switch ($effects[0]) {
     case "dissipation_shield_yellow":
+    case "no_fear_red":
       if ($preventable) $preventedDamage += intval($effects[1]);
       RemoveCurrentTurnEffect($index);
       break;
     case "blessing_of_serenity_red":
+    case "peace_of_mind_yellow":
       if ($type == "COMBAT") {
         if ($preventable) $preventedDamage += 3;
         RemoveCurrentTurnEffect($index);
       }
       break;
     case "blessing_of_serenity_yellow":
+    case "peace_of_mind_blue":
       if ($type == "COMBAT") {
         if ($preventable) $preventedDamage += 2;
         RemoveCurrentTurnEffect($index);
@@ -1397,6 +1338,8 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "bruised_leather":
     case "four_finger_gloves":
     case "crown_of_seeds":
+    case "interlude_blue":
+    case "sawbones_dock_hand_yellow":
       if ($preventable) $preventedDamage += 1;
       RemoveCurrentTurnEffect($index);
       break;
@@ -1416,6 +1359,10 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "seekers_gilet":
     case "seekers_mitts":
     case "seekers_leggings":
+    case "battlefront_bastion_blue":
+    case "battlefront_bastion_red":
+    case "battlefront_bastion_yellow":
+    case "sigil_of_shelter_blue":
       if ($preventable) {
         $preventedDamage += 1;
       }
@@ -1445,18 +1392,6 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         RemoveCurrentTurnEffect($index);
       }
       break;
-    case "peace_of_mind_yellow":
-      if ($type == "COMBAT") {
-        if ($preventable) $preventedDamage += 3;
-        RemoveCurrentTurnEffect($index);
-      }
-      break;
-    case "peace_of_mind_blue":
-      if ($type == "COMBAT") {
-        if ($preventable) $preventedDamage += 2;
-        RemoveCurrentTurnEffect($index);
-      }
-      break;
     case "break_of_dawn_red":
     case "break_of_dawn_yellow":
     case "break_of_dawn_blue":
@@ -1475,11 +1410,8 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       RemoveCurrentTurnEffect($index);
       break;
     case "interlude_yellow":
+    case "sheltered_cove":
       if ($preventable) $preventedDamage += 2;
-      RemoveCurrentTurnEffect($index);
-      break;
-    case "interlude_blue":
-      if ($preventable) $preventedDamage += 1;
       RemoveCurrentTurnEffect($index);
       break;
     case "evo_circuit_breaker_red":
@@ -1494,18 +1426,6 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         if ($preventable) $preventedDamage += intval($effects[1]);
         RemoveCurrentTurnEffect($index);
       }
-      break;
-    case "no_fear_red":
-      if ($preventable) $preventedDamage += intval($effects[1]);
-      RemoveCurrentTurnEffect($index);
-      break;
-    case "battlefront_bastion_blue":
-    case "battlefront_bastion_red":
-    case "battlefront_bastion_yellow":
-      if ($preventable) {
-        $preventedDamage += 1;
-      }
-      RemoveCurrentTurnEffect($index);
       break;
     case "battered_not_broken_red":
       if ($preventable) {
@@ -1526,10 +1446,6 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         $preventedDamage += 2;
         PlayAura("vigor", $player); 
       }
-      RemoveCurrentTurnEffect($index);
-      break;
-    case "sheltered_cove":
-      if ($preventable) $preventedDamage += 2;
       RemoveCurrentTurnEffect($index);
       break;
     case "trip_the_light_fantastic_red":
@@ -1638,12 +1554,6 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       }
       RemoveCurrentTurnEffect($index);
       break;
-    case "sigil_of_shelter_blue":
-      if ($preventable) {
-        $preventedDamage += 1;
-      }
-      RemoveCurrentTurnEffect($index);
-      break;
     case "sanctuary_of_aria":
       if ($source == $currentTurnEffects[$index + 2]) {
         if ($preventable) {
@@ -1659,10 +1569,6 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
         RemoveCurrentTurnEffect($index);
         break;
       }
-      break;
-    case "sawbones_dock_hand_yellow":
-      if ($preventable) $preventedDamage += 1;
-      RemoveCurrentTurnEffect($index);
       break;
     case "throw_caution_to_the_wind_blue":
       if ($preventable) {
@@ -1905,10 +1811,9 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
         case "trailblazing_aether_red":
         case "trailblazing_aether_yellow":
         case "trailblazing_aether_blue":
-          $hasGoAgain = true;
-          $remove = true;
-          break;
         case "bloodrush_bellow_yellow-GOAGAIN":
+        case "amulet_of_lightning_blue":
+        case "goldkiss_rum":
           $hasGoAgain = true;
           $remove = true;
           break;
@@ -1937,10 +1842,6 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
             $remove = true;
           }
           break;
-        case "amulet_of_lightning_blue":
-          $hasGoAgain = true;
-          $remove = true;
-          break;
         case "moon_wish_red-GA":
           $hasGoAgain = ($cardID == "sun_kiss_red" || $cardID == "sun_kiss_yellow" || $cardID == "sun_kiss_blue");
           break;
@@ -1949,10 +1850,6 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
             $hasGoAgain = true;
             if ($cardID != $effectBase) $remove = true;
           }
-          break;
-        case "goldkiss_rum":
-          $hasGoAgain = true;
-          $remove = true;
           break;
         default:
           break;
@@ -2147,17 +2044,15 @@ function CurrentEffectPreventsDefenseReaction($from)
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "remorseless_red":
+        case "release_the_tension_red-1":
+        case "release_the_tension_yellow-1":
+        case "release_the_tension_blue-1":
           if ($from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i])) $reactionPrevented = true;
           break;
         case "increase_the_tension_red-1":
         case "increase_the_tension_yellow-1":
         case "increase_the_tension_blue-1":
           if ($from == "HAND" && IsCombatEffectActive($currentTurnEffects[$i])) $reactionPrevented = true;
-          break;
-        case "release_the_tension_red-1":
-        case "release_the_tension_yellow-1":
-        case "release_the_tension_blue-1":
-          if ($from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i])) $reactionPrevented = true;
           break;
         default:
           break;
@@ -2366,7 +2261,6 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   if ($setResult !== null) return $setResult;
   switch ($cardID) {
     case "banneret_of_salvation_yellow":
-      return DTDCombatEffectActive($cardID, $cardToCheck);
     case "banneret_of_vigor_yellow":
       return DTDCombatEffectActive($cardID, $cardToCheck);
     case "ira_scarlet_revenger":
@@ -2648,14 +2542,8 @@ function CurrentEffectNameModifier($effectID, $effectParameter, $player, $cardID
     case "be_like_water_red":
     case "be_like_water_yellow":
     case "be_like_water_blue":
-      $name = $effectParameter;
-      break;
     case "crouching_tiger":
-      $name = $effectParameter;
-      break;
     case "retrace_the_past_blue":
-      $name = $effectParameter;
-      break;
     case "become_the_bottle_red":
     case "become_the_bottle_yellow":
     case "become_the_bottle_blue":
@@ -2682,8 +2570,6 @@ function EffectDefenderPowerModifiers($cardID)
         case "herald_of_triumph_red":
         case "herald_of_triumph_yellow":
         case "herald_of_triumph_blue":
-          $mod -= 1;
-          break;
         case "figment_of_triumph_yellow":
         case "victoria_archangel_of_triumph":
         case "herald_of_victoria_yellow":
@@ -2937,13 +2823,11 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           $blockModifier -= $Effect->AppliestoUniqueID() == $originUniqueID ? 4 : 0;
           break;
         case "shred_yellow":
+        case "tarantula_toxin_red-SHRED":
           $blockModifier -= $Effect->AppliestoUniqueID() == $originUniqueID ? 3 : 0;
           break;
         case "shred_blue":
           $blockModifier -= $Effect->AppliestoUniqueID() == $originUniqueID ? 2 : 0;
-          break;
-        case "tarantula_toxin_red-SHRED":
-          $blockModifier -= $Effect->AppliestoUniqueID() == $originUniqueID ? 3 : 0;
           break;
         case "pulse_of_isenloft_blue":
           $talentCheck = TalentContains($cardID, "ICE", $defPlayer) || TalentContains($cardID, "EARTH", $defPlayer) || TalentContains($cardID, "ELEMENTAL", $defPlayer);
@@ -2962,6 +2846,9 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           $blockModifier += 1;
           break;
         case "rampart_of_the_rams_head":
+        case "heavy_industry_surveillance":
+        case "heavy_industry_ram_stop":
+        case "breaker_helm_protos":
           $blockModifier += ($blockCardID == $effectID ? 1 : 0);
           break;
         case "fletch_a_red_tail_red":
@@ -2988,11 +2875,6 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           break;
         case "wide_blue_yonder_blue":
           $blockModifier += SearchPitchForColor($mainPlayer, 3);
-          break;
-        case "heavy_industry_surveillance":
-        case "heavy_industry_ram_stop":
-        case "breaker_helm_protos":
-          $blockModifier += ($blockCardID == $effectID ? 1 : 0);
           break;
         default:
           break;

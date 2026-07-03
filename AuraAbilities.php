@@ -281,13 +281,9 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
     case "waning_vengeance_red":
     case "waning_vengeance_yellow":
     case "waning_vengeance_blue":
-      AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
-      break;
     case "essence_of_ancestry_body_red":
     case "essence_of_ancestry_soul_yellow":
     case "essence_of_ancestry_mind_blue":
-      AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
-      break;
     case "haunting_specter_red":
     case "haunting_specter_yellow":
     case "haunting_specter_blue":
@@ -300,6 +296,7 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
       if ($illusionistAuras == "" || strpos($illusionistAuras, ",") === false) AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
     case "sigil_of_brilliance_yellow":
+    case "sigil_of_temporal_manipulation_blue":
       AddLayer("TRIGGER", $player, $cardID, "-", "LEAVES");
       break;
     case "sigil_of_sanctuary_blue":
@@ -340,9 +337,6 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
       AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
       // AddLayer("TRIGGER", $player, $cardID, "-", "Arcane", $uniqueID);
       break;
-    case "sigil_of_temporal_manipulation_blue":
-      AddLayer("TRIGGER", $player, $cardID, "-", "LEAVES");
-      break;
     case "sigil_of_forethought_blue":
       PlayAura("ponder", $player);
       break;
@@ -370,21 +364,19 @@ function AuraPlayCounters($cardID)
   switch ($cardID) {
     case "zen_state":
     case "preach_modesty_red":
+    case "runeblood_incantation_blue":
+    case "malefic_incantation_blue":
+    case "geyser_of_seismic_stirrings_blue":
       return 1;
     case "runeblood_incantation_red":
     case "malefic_incantation_red":
     case "geyser_of_seismic_stirrings_red":
+    case "insidious_chill_blue":
       return 3;
     case "runeblood_incantation_yellow":
     case "malefic_incantation_yellow":
     case "geyser_of_seismic_stirrings_yellow":
       return 2;
-    case "runeblood_incantation_blue":
-    case "malefic_incantation_blue":
-    case "geyser_of_seismic_stirrings_blue":
-      return 1;
-    case "insidious_chill_blue":
-      return 3;
     default:
       return 0;
   }
@@ -408,11 +400,6 @@ function DestroyAuraByID($player, $cardID)
 function AuraLocationConstants($location)
 {
   switch ($location) {
-    case "AURAS":
-      $pieces = AuraPieces();
-      $uniqueIDIndex = 6;
-      $numUsesIndex = 5;
-      break;
     case "EQUIP":
       $pieces = CharacterPieces();
       $uniqueIDIndex = 11;
@@ -430,9 +417,6 @@ function AuraLocationConstants($location)
 function &GetAurasLocation($player, $location)
 {
   switch ($location) {
-    case "AURAS":
-      $auras = &GetAuras($player);
-      break;
     case "EQUIP":
       $auras = &GetPlayerCharacter($player);
       break;
@@ -445,8 +429,6 @@ function &GetAurasLocation($player, $location)
 
 function GetAuraObject($player, $location, $index) {
   switch ($location) {
-    case "AURAS":
-      return new AuraCard($index, $player);
     case "EQUIP":
       return new CharacterCard($index, $player);
     default:
@@ -701,6 +683,12 @@ function AuraStartTurnAbilities()
       case "blessing_of_aether_red":
       case "blessing_of_aether_yellow":
       case "blessing_of_aether_blue":
+      case "crash_down_red":
+      case "earthlore_empowerment_red":
+      case "crash_down_yellow":
+      case "earthlore_empowerment_yellow":
+      case "power_stance_blue": // These can stack, so we don't care if the effect is already in play. See: Ancestral Harmony for comparison.
+      case "blessing_of_vynserakai_red":
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
@@ -721,13 +709,6 @@ function AuraStartTurnAbilities()
           DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         }
         break;
-      case "crash_down_red":
-      case "earthlore_empowerment_red":
-      case "crash_down_yellow":
-      case "earthlore_empowerment_yellow":
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
       case "might":
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
@@ -741,6 +722,8 @@ function AuraStartTurnAbilities()
         ++$vigorCount;
         break;
       case "contest_the_mindfield_blue":
+      case "daily_grind_blue":
+      case "seismic_shelter_blue":
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "stacked_in_your_favor_red":
@@ -755,9 +738,6 @@ function AuraStartTurnAbilities()
       case "big_bop_red":
       case "big_bop_yellow":
       case "big_bop_blue":
-        AddCurrentTurnEffect($auras[$i] . "-BUFF", $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
       case "bigger_than_big_red":
       case "bigger_than_big_yellow":
       case "bigger_than_big_blue":
@@ -813,14 +793,6 @@ function AuraStartTurnAbilities()
         if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
-      case "power_stance_blue":
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); // These can stack, so we don't care if the effect is already in play. See: Ancestral Harmony for comparison.
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
-      case "blessing_of_vynserakai_red":
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        break;
       case "shifting_tides_blue":
         $AuraCard = new AuraCard($i, $mainPlayer);
         $destPlayer = str_contains($AuraCard->From(), "THEIR") ? $defPlayer : $mainPlayer;
@@ -844,10 +816,6 @@ function AuraStartTurnAbilities()
         AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumConfidenceDestroyed, 1);
-        break;
-      case "daily_grind_blue":
-      case "seismic_shelter_blue":
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       default:
         break;
