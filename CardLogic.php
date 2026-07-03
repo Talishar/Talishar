@@ -1823,8 +1823,6 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
       // AddCurrentTurnEffect($parameter."-DMG,".$additionalCosts.",".$uniqueID, $player);
       break;
     case "deny_redemption_red":
-      AddCurrentTurnEffect($parameter, $player);
-      break;
     case "bam_bam_yellow":
       AddCurrentTurnEffect($parameter, $player);
       break;
@@ -1995,19 +1993,50 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "teklovossen":
       case "teklovossen_esteemed_magnate":
+      case "mask_of_momentum":
         Draw($player);
         break;
       case "heart_of_fyendal_blue":
+      case "fyendals_fighting_spirit_red":
+      case "fyendals_fighting_spirit_yellow":
+      case "fyendals_fighting_spirit_blue":
         if (PlayerHasLessHealth($player)) GainHealth(1, $player);
         break;
       case "rhinar_reckless_rampage":
       case "rhinar":
+      case "massacre_red":
         Intimidate();
         break;
       case "forged_for_war_yellow":
+      case "stonewall_confidence_red":
+      case "stonewall_confidence_yellow":
+      case "stonewall_confidence_blue":
+      case "chains_of_eminence_red":
+      case "stamp_authority_blue":
+      case "runeblood_barrier_yellow":
+      case "embodiment_of_earth":
+      case "pyroglyphic_protection_red":
+      case "pyroglyphic_protection_yellow":
+      case "pyroglyphic_protection_blue":
+      case "fog_down_yellow":
+      // sigils are destroyed at the start of the action phase
+      case "sigil_of_protection_red":
+      case "sigil_of_protection_yellow":
+      case "sigil_of_protection_blue":
+      case "sigil_of_earth_blue":
+      case "sigil_of_lightning_blue":
+      case "sigil_of_the_arknight_blue":
+      case "sigil_of_deadwood_blue":
+      case "sigil_of_forethought_blue":
+      case "sigil_of_cycles_blue":
+      case "sigil_of_fyendal_blue":
+      case $CID_Frailty:
+      case "sharpened_senses_yellow":
+      case "fealty":
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "show_time_blue":
+      case "tome_of_aeo_blue":
         Draw($player);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
@@ -2023,20 +2052,23 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "emerging_power_red":
       case "emerging_power_yellow":
       case "emerging_power_blue":
-        AddCurrentTurnEffect($parameter, $player);
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
-      case "stonewall_confidence_red":
-      case "stonewall_confidence_yellow":
-      case "stonewall_confidence_blue":
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
       case "seismic_surge":
+      case "towering_titan_red":
+      case "towering_titan_yellow":
+      case "towering_titan_blue":
+      case "emerging_dominance_red":
+      case "emerging_dominance_yellow":
+      case "emerging_dominance_blue":
+      case "emerging_avalanche_red":
+      case "emerging_avalanche_yellow":
+      case "emerging_avalanche_blue":
+      case "strength_of_sequoia_red":
+      case "strength_of_sequoia_yellow":
+      case "strength_of_sequoia_blue":
+      case "crumble_to_eternity_blue":
+      case "draw_a_crowd_blue":
         AddCurrentTurnEffect($parameter, $player);
         DestroyAuraUniqueID($player, $uniqueID);
-        break;
-      case "mask_of_momentum":
-        Draw($player);
         break;
       case "steelblade_supremacy_red":
         Draw($mainPlayer);
@@ -2123,33 +2155,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           DestroyAuraUniqueID($player, $uid);
         }
         break;
-      case "chains_of_eminence_red":
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
       case "arknight_shard_blue":
         PlayAura("runechant", $player);
         break;
       case "beast_within_yellow":
         AddDecisionQueue("SPECIFICCARD", $player, "BEASTWITHIN");
         break;
-      case "massacre_red":
-        Intimidate();
-        break;
-      case "stamp_authority_blue":
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
-      case "towering_titan_red":
-      case "towering_titan_yellow":
-      case "towering_titan_blue":
-        AddCurrentTurnEffect($parameter, $player);
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
-      case "emerging_dominance_red":
-      case "emerging_dominance_yellow":
-      case "emerging_dominance_blue":
-        AddCurrentTurnEffect($parameter, $player);
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;  
       case "zephyr_needle":
       case "zephyr_needle_r":
         EvaluateCombatChain($totalPower, $totalBlock, secondNeedleCheck: true);
@@ -2241,9 +2252,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "dread_triptych_blue":
         if (GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("runechant", $player);
         if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) PlayAura("runechant", $player);
-        break;
-      case "runeblood_barrier_yellow":
-        DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "metacarpus_node":
         AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
@@ -2342,18 +2350,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "endless_winter_red":
         PlayAura("frostbite", $player, effectController: $mainPlayer);
         break;
-      case "emerging_avalanche_red":
-      case "emerging_avalanche_yellow":
-      case "emerging_avalanche_blue":
-        AddCurrentTurnEffect($parameter, $player);
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
-      case "strength_of_sequoia_red":
-      case "strength_of_sequoia_yellow":
-      case "strength_of_sequoia_blue":
-        AddCurrentTurnEffect($parameter, $player);
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
       case "rites_of_replenishment_red":
       case "rites_of_replenishment_yellow":
       case "rites_of_replenishment_blue":
@@ -2373,9 +2369,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "bramble_spark_yellow":
       case "bramble_spark_blue":
         DealArcane(1, 0, "PLAYCARD", $CombatChain->AttackCard()->ID(), true, resolvedTarget:$target);
-        break;
-      case "embodiment_of_earth":
-        DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "embodiment_of_lightning":
         WriteLog(CardLink($parameter, $parameter) . " grants go again");
@@ -2434,6 +2427,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if(count($combatChain) > 0) DealArcane(1, 0, "PLAYCARD", $combatChain[0]);
         break;
       case "stalagmite_bastion_of_isenloft":
+      case "ollin_ice_cap":
         PlayAura("frostbite", $mainPlayer, effectController: $defPlayer);
         break;
       case "blizzard_bolt_red":
@@ -2478,12 +2472,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "iyslander_stormbind":
         PlayAura("frostbite", $otherPlayer, effectController: $player);
         break;
-      case "pyroglyphic_protection_red":
-      case "pyroglyphic_protection_yellow":
-      case "pyroglyphic_protection_blue":
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
       case "haze_bending_blue":
+      case "wave_of_reality":
         PlayAura("spectral_shield", $player);
         break;
       case "pack_call_yellow":
@@ -2578,9 +2568,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         BottomDeckMultizone($player, "MYHAND", "MYARS");
         AddDecisionQueue("DRAW", $player, "-", 1);
         break;
-      case "fog_down_yellow":
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
       case "flex_red":
       case "flex_yellow":
       case "flex_blue":
@@ -2588,29 +2575,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
         AddDecisionQueue("COMBATCHAINPOWERMODIFIER", $player, "2", 1);
         break;
-      case "fyendals_fighting_spirit_red":
-      case "fyendals_fighting_spirit_yellow":
-      case "fyendals_fighting_spirit_blue":
-        if (PlayerHasLessHealth($player)) GainHealth(1, $player);
-        break;
       case "brothers_in_arms_red":
       case "brothers_in_arms_yellow":
       case "brothers_in_arms_blue":
         ChooseToPay($player, $parameter, "0,1");
         AddDecisionQueue("PASSPARAMETER", $player, $target, 1);
         AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $player, "2", 1);
-        break;
-      case "sigil_of_protection_red":
-      case "sigil_of_protection_yellow":
-      case "sigil_of_protection_blue":
-      case "sigil_of_earth_blue":
-      case "sigil_of_lightning_blue":
-      case "sigil_of_the_arknight_blue":
-      case "sigil_of_deadwood_blue":
-      case "sigil_of_forethought_blue":
-      case "sigil_of_cycles_blue":
-      case "sigil_of_fyendal_blue":
-        DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
         break;
       case "sigil_of_temporal_manipulation_blue":
         if ($additionalCosts ==  "LEAVES") {
@@ -2681,6 +2651,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_an_action_point_from_" . CardLink("beaten_trackers", "beaten_trackers"), 1);
         break;
       case "skull_crack_red":
+      case "scurv_stowaway":
         GainResources($player, 1);
         break;
       case "berserk_yellow":
@@ -2781,13 +2752,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $deck = new Deck($player);
         if (!$deck->Empty() && !ArsenalFull($player)) AddArsenal($deck->Top(remove: true), $player, "DECK", "UP");
         break;
-      case "wave_of_reality":
-        PlayAura("spectral_shield", $player);
-        break;
-      case "tome_of_aeo_blue":
-        Draw($player);
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
       case "crown_of_dominion":
         PutItemIntoPlayForPlayer("gold", $player, mainPhase:"False", effectController: $player);
         WriteLog(CardLink($parameter, $parameter) . " created a Gold token");
@@ -2864,6 +2828,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         LookAtTopCard($player, "wayfinders_crest");
         break;
       case "buzzsaw_trap_blue":
+      case "tarpit_trap_yellow":
+      case "kabuto_of_imperial_authority":
         AddCurrentTurnEffect($parameter, $mainPlayer);
         break;
       case "collapsing_trap_blue":
@@ -2901,9 +2867,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           else $rv .= " and " . Cardlink($cardRemoved, $cardRemoved) . " into the graveyard";
         }
         WriteLog($rv);
-        break;
-      case "tarpit_trap_yellow":
-        AddCurrentTurnEffect($parameter, $mainPlayer);
         break;
       case "virulent_touch_red":
       case "virulent_touch_yellow":
@@ -3083,9 +3046,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
         }
         AddDecisionQueue("WRITELOG", $player, "⬇️ The cards and arsenal of Player " . $player . " was put on the bottom of their deck.");
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
-      case $CID_Frailty:
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "eloquence":
@@ -3294,9 +3254,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           else $deck->AddTop($cardID); // the card gets "put" on top
         }
         break;
-      case "stonewall_impasse":
-        Clash($parameter, effectController: $player);
-        break;
       case "gauntlets_of_iron_will":
         if ($CombatChain->HasCurrentLink()) AddCurrentTurnEffect("gauntlets_of_iron_will," . CachedTotalPower() - LinkBasePower(), $mainPlayer);
         break;
@@ -3320,9 +3277,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "victor_goldmane_high_and_mighty":
         WriteLog("Player $player drew a card from Victor");
         Draw($player);
-        break;
-      case "trounce_red":
-        Clash($parameter, effectController: $player);
         break;
       case "thunk_red":
       case "thunk_yellow":
@@ -3359,6 +3313,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "hearty_block_red":
         if (CountAura("vigor", $player) > 0) GainHealth(1, $player);
         break;
+      case "stonewall_impasse":
+      case "trounce_red":
       case "test_of_agility_red":
       case "clash_of_might_red":
       case "clash_of_might_yellow":
@@ -3687,13 +3643,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           MaySearchDeck($player, $search, "MYBANISH", 0, $mod);
         }
         break;
-      case "crumble_to_eternity_blue":
-        AddCurrentTurnEffect($parameter, $player);
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
-      case "ollin_ice_cap":
-        PlayAura("frostbite", $mainPlayer, effectController: $defPlayer);
-        break;
       case "tectonic_crust":
         PlayAura("seismic_surge", $defPlayer, effectController: $defPlayer);
         break;
@@ -3737,17 +3686,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("MZDESTROY", $player, "-", 1);
         AddDecisionQueue("DRAW", $player, "-", 1);
         break;
-      case "kabuto_of_imperial_authority":
-        AddCurrentTurnEffect($parameter, $mainPlayer);
-        break;
-      case "sharpened_senses_yellow":
-        DestroyAuraUniqueID($player, $uniqueID);
-        break;
       case "smoke_out_red":
         MarkHero($mainPlayer);
-        break;
-      case "fealty":
-        DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "leap_frog_vocal_sac":
       case "leap_frog_slime_skin":
@@ -3790,6 +3730,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if (CountAura("runechant", $player) - $startingRunechants >= 3) GiveAttackGoAgain();
         break;
       case "ring_of_roses_yellow":
+      case "sirens_of_safe_harbor_red": case "sirens_of_safe_harbor_yellow": case "sirens_of_safe_harbor_blue":
         GainHealth(1, $player);
         break;
       case "null_time_zone_blue":
@@ -3853,9 +3794,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "marlynn":
         LoadArrow($player);
         break;
-      case "scurv_stowaway":
-        GainResources($player, 1);
-        break;
       case "sunken_treasure_blue":
         AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRDISCARD&MYDISCARD");
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to turn face-down");
@@ -3903,18 +3841,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         };
         GainHealth($healthGain, $player);
         break;
-      case "sirens_of_safe_harbor_red": case "sirens_of_safe_harbor_yellow": case "sirens_of_safe_harbor_blue":
-        GainHealth(1, $player);
-        break;
       case "sea_legs_yellow":
         PutItemIntoPlayForPlayer("goldkiss_rum", $player, effectController:$player, isToken:true);
         break;
       case "fools_gold_yellow":
         PutItemIntoPlayForPlayer("gold", $player, effectController:$player, isToken:true);
-        break;
-      case "draw_a_crowd_blue":
-        AddCurrentTurnEffect($parameter, $player);
-        DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "promising_terrain_blue":
         DestroyAuraUniqueID($player, $uniqueID);
@@ -4094,6 +4025,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "lyath_goldmane":
       case "lyath_goldmane_vile_savant":
+      case "alpha_instinct_blue":
         PlayAura("might", $player, isToken:true, effectController:$player, effectSource:$parameter);
         break;
       case "kayo_underhanded_cheat":
@@ -4194,9 +4126,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("CHOOSEMULTIZONE", $otherPlayer, "<-", 1);
         AddDecisionQueue("BACKUP", $player, "{0}", 1);
         break;
-      case "alpha_instinct_blue":
-        PlayAura("might", $player, isToken:true, effectController:$player, effectSource: $parameter);
-        break;
       case "decimator_great_axe":
         [$zone, $uid] = explode("-", $target, 2);
         AddCurrentTurnEffect($parameter, $player, '', $uid);
@@ -4251,8 +4180,6 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       DealArcane(2, 0, "PLAYCARD", $cardID);
       break;
     case "arcanic_crackle_red": case "arcanic_crackle_yellow": case "arcanic_crackle_blue":
-      DealArcane(1, 0, "PLAYCARD", $cardID);
-      break;
     case "explosive_growth_red": case "explosive_growth_yellow": case "explosive_growth_blue":
       DealArcane(1, 0, "PLAYCARD", $cardID);
       break;
@@ -4564,8 +4491,6 @@ function DiscardedAtRandomEffects($player, $discarded, $source)
   }
   switch ($discarded) {
     case "skull_crack_red":
-      AddLayer("TRIGGER", $player, $discarded);
-      break;
     case "reincarnate_red":
     case "reincarnate_yellow":
     case "reincarnate_blue":
