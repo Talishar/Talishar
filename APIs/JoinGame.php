@@ -649,7 +649,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $firstPlayerChooser = ($p1roll > $p2roll ? 1 : 2);
      WriteLog("Player $firstPlayerChooser chooses who goes first.", path: "../");
      $gameStatus = $MGS_ChooseFirstPlayer;
-     $joinerIP = $_SERVER['REMOTE_ADDR'];
+     $joinerIP = GetClientIP();
    }
 
    if ($playerID == 1) {

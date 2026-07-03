@@ -119,7 +119,7 @@ if($deckTestMode != "") $p2uid = "Practice Dummy";
 else $p2uid = "-";
 $p1id = "-";
 $p2id = "-";
-$hostIP = $_SERVER['REMOTE_ADDR'];
+$hostIP = GetClientIP();
 $gameGUID = GenerateGameGUID();
 
 $filename = "../Games/" . $gameName . "/GameFile.txt";

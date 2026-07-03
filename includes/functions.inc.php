@@ -1314,9 +1314,78 @@ function BanIP($ip, $bannedBy = "")
 	return $success;
 }
 
+function IsIPInCIDR($ip, $cidr)
+{
+	if (strpos($cidr, '/') === false) return $ip === $cidr;
+	list($subnet, $bits) = explode('/', $cidr);
+	$bits = (int)$bits;
+	$ipBin = @inet_pton($ip);
+	$subnetBin = @inet_pton($subnet);
+	if ($ipBin === false || $subnetBin === false || strlen($ipBin) !== strlen($subnetBin)) {
+		return false;
+	}
+	$bytes = intdiv($bits, 8);
+	$remainderBits = $bits % 8;
+	if ($bytes > 0 && substr($ipBin, 0, $bytes) !== substr($subnetBin, 0, $bytes)) {
+		return false;
+	}
+	if ($remainderBits > 0) {
+		$mask = ~(0xFF >> $remainderBits) & 0xFF;
+		if ((ord($ipBin[$bytes]) & $mask) !== (ord($subnetBin[$bytes]) & $mask)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+function IsCloudflareIP($ip)
+{
+	// Official ranges: https://www.cloudflare.com/ips/
+	static $cfRanges = [
+		'173.245.48.0/20',
+		'103.21.244.0/22',
+		'103.22.200.0/22',
+		'103.31.4.0/22',
+		'141.101.64.0/18',
+		'108.162.192.0/18',
+		'190.93.240.0/20',
+		'188.114.96.0/20',
+		'197.234.240.0/22',
+		'198.41.128.0/17',
+		'162.158.0.0/15',
+		'104.16.0.0/13',
+		'104.24.0.0/14',
+		'172.64.0.0/13',
+		'131.0.72.0/22',
+		'2400:cb00::/32',
+		'2606:4700::/32',
+		'2803:f800::/32',
+		'2405:b500::/32',
+		'2405:8100::/32',
+		'2a06:98c0::/29',
+		'2c0f:f248::/32',
+	];
+	foreach ($cfRanges as $range) {
+		if (IsIPInCIDR($ip, $range)) return true;
+	}
+	return false;
+}
+
+function GetClientIP()
+{
+	$remoteAddr = $_SERVER['REMOTE_ADDR'] ?? "";
+	if ($remoteAddr !== "" && IsCloudflareIP($remoteAddr) && !empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+		$cfIP = $_SERVER['HTTP_CF_CONNECTING_IP'];
+		if (filter_var($cfIP, FILTER_VALIDATE_IP)) {
+			return $cfIP;
+		}
+	}
+	return $remoteAddr;
+}
+
 function IsIPBanned($ip = null)
 {
-	if ($ip === null) $ip = $_SERVER['REMOTE_ADDR'] ?? "";
+	if ($ip === null) $ip = GetClientIP();
 	if ($ip == "") return false;
 
 	static $cache = [];
@@ -1371,8 +1440,11 @@ function EnsureIPHistoryTable($conn)
 
 function LogIPHistory($usersId, $ip = null)
 {
-	if ($ip === null) $ip = $_SERVER['REMOTE_ADDR'] ?? "";
+	if ($ip === null) $ip = GetClientIP();
 	if ($ip == "" || $usersId == null || $usersId === "") return;
+	// Never record a Cloudflare edge address as a player's IP -- it's shared
+	// by unrelated visitors and would poison ban-evasion IP matching.
+	if (IsCloudflareIP($ip)) return;
 
 	static $logged = [];
 	$key = $usersId . "|" . $ip;

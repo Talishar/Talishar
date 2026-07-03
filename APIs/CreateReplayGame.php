@@ -7,6 +7,7 @@ include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
+include_once '../includes/functions.inc.php';
 
 SetHeaders();
 
@@ -162,7 +163,7 @@ $p1uid = "-";
 $p2uid = "-";
 $p1id = "-";
 $p2id = "-";
-$hostIP = $_SERVER['REMOTE_ADDR'];
+$hostIP = GetClientIP();
 $p1StartingHealth = $startingHealth;
 
 $filename = "../Games/$gameName/GameFile.txt";
