@@ -970,7 +970,7 @@ function isBannedInFormat($cardID, $format) {
           "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots",
           "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
           "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade", "skyward_serenade_yellow",
-          "volzar_the_lightning_rod"
+          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow"
       ], $livingLegends)),
       "commoner" => array_flip([
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
