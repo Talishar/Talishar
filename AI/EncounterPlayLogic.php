@@ -66,7 +66,7 @@ function CardIsPlayable($storedPriorityNode, $hand, $resources)
   $handCount = count($hand);
   for($i = 0; $i < $handCount; ++$i)
   {
-    if($i != $index) $totalPitch = $totalPitch + PitchValue($hand[$i]);
+    if($i != $index) $totalPitch += PitchValue($hand[$i]);
   }
   return $finalCost <= $totalPitch;
 }

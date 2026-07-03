@@ -104,12 +104,10 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
 
 function CharacterCounters($cardID)
 {
-  switch ($cardID) {
-    case "nitro_mechanoida":
-      return 8;
-    default:
-      return 0;
-  }
+  return match ($cardID) {
+    "nitro_mechanoida" => 8,
+    default => 0,
+  };
 }
 
 function CharacterStartTurnAbility($index)

@@ -17,7 +17,7 @@ class CurrentTurnEffects {
 
   // Methods
   function Effect($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * CurrentTurnEffectPieces();
+    if($cardNumber) $index *= CurrentTurnEffectPieces();
     return new CurrentEffect($index);
   }
 
@@ -142,7 +142,7 @@ class NextTurnEffects {
 
   // Methods
   function Effect($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * NextTurnEffectsPieces();
+    if($cardNumber) $index *= NextTurnEffectsPieces();
     return new NextEffect($index);
   }
 

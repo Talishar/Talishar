@@ -18,7 +18,7 @@ class Stack {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * LayerPieces();
+    if($cardNumber) $index *= LayerPieces();
     return new Layer($index);
   }
 
@@ -53,7 +53,7 @@ class Stack {
   }
 
   function Negate($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * LayerPieces();
+    if($cardNumber) $index *= LayerPieces();
     if($index < 0 || $index >= count($this->layers)) return "";
     $cardID = $this->layers[$index];
     NegateLayer("LAYERS-$index");
@@ -225,7 +225,7 @@ class AttackQueue {
   }
 
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * AttackQueuePieces();
+    if($cardNumber) $index *= AttackQueuePieces();
     return new AttackLayer($index);
   }
 

@@ -394,7 +394,7 @@
         $actions = SearchDiscard($currentPlayer, "A");
         $attackActions = SearchDiscard($currentPlayer, "AA");
         if($actions == "") $actions = $attackActions;
-        else if($attackActions != "") $actions = $actions . "," . $attackActions;
+        else if($attackActions != "") $actions .= "," . $attackActions;
         if($actions == "") return "";
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "3-" . $actions);
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "REMEMBRANCE", 1);

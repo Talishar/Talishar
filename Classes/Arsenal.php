@@ -22,7 +22,7 @@ class Arsenal {
 	}
 
 	function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * ArsenalPieces();
+    if($cardNumber) $index *= ArsenalPieces();
     return new ArsenalCard($index, $this->player);
   }
 

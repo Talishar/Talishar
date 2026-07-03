@@ -1068,7 +1068,7 @@ function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatC
     if ($onCombatChain && $character[$i + 6] == 0) continue;
     $block = BlockValue($character[$i]);
     if ($block != -1) {
-      $block = $block + $character[$i + 4] + BlockModifier($character[$i], "EQUIP", "-", $i);
+      $block += $character[$i + 4] + BlockModifier($character[$i], "EQUIP", "-", $i);
       $block = $block < 0 ? 0 : $block;
     }
     if ($minBlock == -1 && $maxBlock == -1 || $block <= $maxBlock && $block >= $minBlock) {

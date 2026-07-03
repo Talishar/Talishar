@@ -14,7 +14,7 @@ class Auras {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * AuraPieces();
+    if($cardNumber) $index *= AuraPieces();
     return new AuraCard($index, $this->player);
   }
 

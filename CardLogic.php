@@ -165,24 +165,20 @@ function CurrentTurnEffectUses($cardID)
   if ($card != "-") return $card->CurrentTurnEffectUses();
   switch ($effectID) {
     case "steadfast_red":
+    case "light_up_the_leaves_red":
       return 6;
     case "steadfast_yellow":
       return 5;
     case "steadfast_blue":
-      return 4;
-    case "blood_of_the_dracai_red":
-      return 3;
     case "uprising_red":
       return 4;
+    case "blood_of_the_dracai_red":
     case "art_of_the_dragon_blood_red":
-      return 3;
     case "shelter_from_the_storm_red":
     case "calming_breeze_red":
       return 3;
     case "give_no_quarter_blue":
       return 2;
-    case "light_up_the_leaves_red":
-      return 6;
     default:
       return 1;
   }
@@ -1016,6 +1012,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "down_but_not_out_red":
     case "down_but_not_out_yellow":
     case "down_but_not_out_blue":
+    case "winters_wail":
       if (SearchCurrentTurnEffects($cardID, $mainPlayer)) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
@@ -1068,12 +1065,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "enact_vengeance_red":
     case "vengeance_never_rests_blue":
       if (ComboActive($cardID) && IsHeroAttackTarget()) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
-        return true;
-      }
-      break;
-    case "winters_wail":
-      if (SearchCurrentTurnEffects($cardID, $mainPlayer)) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
@@ -1304,6 +1295,8 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
     case "chill_to_the_bone_red":
     case "chill_to_the_bone_yellow":
     case "chill_to_the_bone_blue":
+    case "burn_up__shock_red":
+    case "imperial_seal_of_command_red-HIT":
       if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
@@ -1317,12 +1310,6 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
     case "plunder_run_yellow-1":
     case "plunder_run_blue-1":
       if (TypeContains($source, "AA")) {
-        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-      }
-      break;
-    case "burn_up__shock_red":
-    case "imperial_seal_of_command_red-HIT":
-      if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
@@ -1372,13 +1359,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "razor_reflex_yellow":
     case "razor_reflex_blue":
       if ($sourceIsAA)
-      {
-        if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-        return true;
-      }
-      return false;
-    case "poison_the_tips_yellow":
-      if (IsHeroAttackTarget()) 
       {
         if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
         return true;
@@ -1457,6 +1437,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "hood_of_red_sand":
       if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
       return true;
+    case "poison_the_tips_yellow":
     case "talk_a_big_game_blue":
     case "lace_with_bloodrot_red":
     case "lace_with_frailty_red":
@@ -1474,8 +1455,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
       return false;
     case "just_a_nick_red-HIT":
     case "maul_yellow-HIT":
-      if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      return true;
     case "two_sides_to_the_blade_red-ATTACK":
     case "long_whisker_loyalty_red-MARK":
     case "twist_and_turn_red":
@@ -1487,6 +1466,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "sworn_vengeance_red":
     case "sworn_vengeance_yellow":
     case "sworn_vengeance_blue":
+    case "legacy_of_ikaru_blue":
       if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
       return true;
     case "searing_gaze_red":
@@ -1501,6 +1481,8 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "heave_ho_blue":
     case "yo_ho_ho_blue":
     case "bam_bam_yellow":
+    case "loot_the_hold_blue":
+    case "loot_the_arsenal_blue":
       if (IsHeroAttackTarget()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
         return true;
@@ -1536,12 +1518,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
       }
       return false;
     case "arakni_black_widow-HIT":
-      // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
-      if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || IsHeroAttackTarget() && $fromCombat) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-        return true;
-      }
-      return false;
     case "arakni_funnel_web-HIT":
       // trigger cases: 1. stealth AA hit, 2. active chain chelicera hit, 3. flicked kiss
       if (TypeContains($source, "AA", $mainPlayer) && !$fromCombat || IsHeroAttackTarget() && $fromCombat) {
@@ -1555,16 +1531,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
         return true;
       }
       return false;
-    case "loot_the_hold_blue":
-    case "loot_the_arsenal_blue":
-      if (IsHeroAttackTarget()) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-        return true;
-      }
-      return false;
-    case "legacy_of_ikaru_blue":
-      if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT");
-      return true;
     default:
       break;
   }
@@ -4061,26 +4027,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $zone = $targetParts[0];
         $uid = $targetParts[1];
         $otherPlayer = 3 - $player;
-        switch ($zone) {
-          case "THEIRALLY":
-            $MZIndex = "$zone-" . SearchAlliesForUniqueID($uid, $otherPlayer);
-            break;
-          case "MYALLY":
-            $MZIndex = "$zone-" . SearchAlliesForUniqueID($uid, $player);
-            break;
-          case "THEIRCHAR":
-            $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer);
-            break;
-          case "THEIRCHARUID":
-            $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer);
-            break;
-          case "MYCHAR":
-            $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $player);
-            break;
-          case "MYCHARUID":
-            $MZIndex = "$zone-" . SearchCharacterForUniqueID($uid, $player);
-            break;
-        }
+        $MZIndex = match ($zone) {
+          "THEIRALLY" => "$zone-" . SearchAlliesForUniqueID($uid, $otherPlayer),
+          "MYALLY" => "$zone-" . SearchAlliesForUniqueID($uid, $player),
+          "THEIRCHAR" => "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer),
+          "THEIRCHARUID" => "$zone-" . SearchCharacterForUniqueID($uid, $otherPlayer),
+          "MYCHAR" => "$zone-" . SearchCharacterForUniqueID($uid, $player),
+          "MYCHARUID" => "$zone-" . SearchCharacterForUniqueID($uid, $player),
+        };
         Tap($MZIndex, $player);
         break;
       case "light_fingers":
@@ -4834,12 +4788,10 @@ function HasEnergyCounters($array, $index)
 
 function HasPowerCounters($zone, $array, $index)
 {
-  switch ($zone) {
-    case "AURAS":
-      return $array[$index + 3] > 0;
-    default:
-      return false;
-  }
+  return match ($zone) {
+    "AURAS" => $array[$index + 3] > 0,
+    default => false,
+  };
 }
 
 function IsEnergyCounters($cardID)

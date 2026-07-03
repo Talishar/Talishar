@@ -14,7 +14,7 @@ class PlayerCharacter {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * CharacterPieces();
+    if($cardNumber) $index *= CharacterPieces();
     return new CharacterCard($index, $this->player);
   }
 

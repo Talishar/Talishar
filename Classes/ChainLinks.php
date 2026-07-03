@@ -113,7 +113,7 @@ class ChainLink {
 	}
 
 	function GetLinkCard($index, $cardNumber=false) {
-		if ($cardNumber) $index = $index * ChainLinksPieces();
+		if ($cardNumber) $index *= ChainLinksPieces();
 		return new LinkCard($this->linkNum, $index);
 	}
 
