@@ -1011,7 +1011,10 @@ function isBannedInFormat($cardID, $format) {
         "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "zephyr_needle",
         "open_the_floodgates_red", "open_the_floodgates_yellow", "open_the_floodgates_blue",
         "tome_of_firebrand_red", "art_of_war_yellow", "berserk_yellow", "cash_in_yellow", "remembrance_yellow",
-        "tome_of_divinity_yellow", "tome_of_fyendal_yellow", "awakening_blue", "orihon_of_mystic_tenets_blue"]),
+        "tome_of_divinity_yellow", "tome_of_fyendal_yellow", "awakening_blue", "orihon_of_mystic_tenets_blue",
+        "channel_lightning_valley_yellow",
+        "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
+        "mordred_tide_red", "skyward_serenade_yellow", "volzar_the_lightning_rod", "briar_warden_of_thorns"]),
     ];
   }
   if ($format == "futurecc") {
