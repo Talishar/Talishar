@@ -371,9 +371,9 @@ function AllyDamageTakenAbilities($player, $i)
   $otherAuras = &GetAuras($otherPlayer);
   $countOtherAuras = count($otherAuras);
   $auraPieces = AuraPieces();
-  for ($i = $countOtherAuras - $auraPieces; $i >= 0; $i -= $auraPieces) {
+  for ($j = $countOtherAuras - $auraPieces; $j >= 0; $j -= $auraPieces) {
     $remove = 0;
-    switch ($otherAuras[$i]) {
+    switch ($otherAuras[$j]) {
       // case "bloodspill_invocation_red": //need to check if damage was dealt by an AA card?
       // case "bloodspill_invocation_yellow":
       // case "bloodspill_invocation_blue":
@@ -383,12 +383,12 @@ function AllyDamageTakenAbilities($player, $i)
         $remove = 1;
         break;
       case "ley_line_of_the_old_ones_blue":
-        AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i]);
+        AddLayer("TRIGGER", $otherPlayer, $otherAuras[$j]);
         break;
       default:
         break;
     }
-    if ($remove) DestroyAura($otherPlayer, $i);
+    if ($remove) DestroyAura($otherPlayer, $j);
   }
 }
 

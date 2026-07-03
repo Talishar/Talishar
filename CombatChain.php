@@ -76,7 +76,7 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
   return -1;
 }
 
-function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
+function PowerModifier($attackCardID, $from = "", $resourcesPaid = 0, $repriseActive = -1)
 {
   global $mainPlayer, $defPlayer, $CS_Num6PowDisc, $CombatChain, $combatChainState, $mainAuras, $CS_CardsBanished;
   global $CS_NumCharged, $CCS_NumBoosted, $defPlayer, $CS_ArcaneDamageTaken, $CS_NumYellowPutSoul, $CS_NumCardsDrawn;
@@ -85,11 +85,11 @@ function PowerModifier($cardID, $from = "", $resourcesPaid = 0, $repriseActive =
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $CS_BooedThisTurn, $CS_NumItemsDestroyed;
   $attackID = $CombatChain->AttackCard()->ID();
   if ($repriseActive == -1) $repriseActive = RepriseActive();
-  $extraText = $cardID == $attackID ? GetHorrorsBuff() : "-";
+  $extraText = $attackCardID == $attackID ? GetHorrorsBuff() : "-";
   if ($extraText != "-") {
-    $textBoxes = [$cardID, $extraText];
+    $textBoxes = [$attackCardID, $extraText];
   }
-  else $textBoxes = [$cardID];
+  else $textBoxes = [$attackCardID];
   $power = 0;
   foreach($textBoxes as $cardID) {
     if (HasPiercing($cardID, $from)) $power += NumEquipBlock() > 0 ? 1 : 0;
