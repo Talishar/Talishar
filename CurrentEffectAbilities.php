@@ -337,9 +337,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       $inventory = &GetInventory($mainPlayer);
       $numHands = NumOccupiedHands($mainPlayer);
       if ($numHands < 2) { //Only Equip if there is a broken weapon/off-hand
-        foreach ($inventory as $cardID) {
-          if (TypeContains($cardID, "W", $mainPlayer) && SubtypeContains($cardID, "Dagger")) {
-            $weaponsArr[] = $cardID;
+        foreach ($inventory as $weaponID) {
+          if (TypeContains($weaponID, "W", $mainPlayer) && SubtypeContains($weaponID, "Dagger")) {
+            $weaponsArr[] = $weaponID;
           };
         }
         $weapons = implode(",", $weaponsArr);

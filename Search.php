@@ -1295,7 +1295,7 @@ function SearchPermanentsForUniqueID($uniqueID, $player)
   $count = count($perms);
   $pieces = PermanentPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($perms[$i + 3] == $uniqueID) return $i;
+    if (($perms[$i + 3] ?? null) == $uniqueID) return $i;
   }
   return -1;
 }

@@ -1,5 +1,6 @@
 <?php
 
+global $gameName;
 function GetStringArray($line)
 {
   $line = trim($line);
@@ -579,8 +580,8 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
   $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
   // don't reset the number of undoes used
-  $p1ClassState = explode(" ", substr($gamestateBackup[11], 0, -2));
-  $p2ClassState = explode(" ", substr($gamestateBackup[29], 0, -2));
+  $p1ClassState = explode(" ", substr($gamestateBackup[11] ?? "", 0, -2));
+  $p2ClassState = explode(" ", substr($gamestateBackup[29] ?? "", 0, -2));
   $p1ClassState[$CS_NumUndoesThisTurn] = GetClassState(1, $CS_NumUndoesThisTurn);
   $p2ClassState[$CS_NumUndoesThisTurn] = GetClassState(2, $CS_NumUndoesThisTurn);
   $gamestateBackup[11] = implode(" ", $p1ClassState) . "\r\n";

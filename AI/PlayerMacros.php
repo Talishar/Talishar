@@ -250,12 +250,12 @@ function ProcessSpecificCardMacros()
     // Still prompts when the cogs differ (steam counters, a copper cog, a turn-stolen cog, etc.).
     if (SubtypeContains(GetMZCard($currentPlayer, $firstChoice), "Cog", $currentPlayer)) {
       $firstCog = MZIndexToObject($currentPlayer, $firstChoice);
-      if (is_object($firstCog)) {
+      if (is_object($firstCog) && method_exists($firstCog, 'CardID')) {
         $allSameCog = true;
         $choicesCount = count($choices);
         for ($k = 1; $k < $choicesCount; ++$k) {
           $cog = MZIndexToObject($currentPlayer, $choices[$k]);
-          if (!is_object($cog)
+          if (!is_object($cog) || !method_exists($cog, 'CardID')
             || $cog->CardID() != $firstCog->CardID()
             || $cog->NumCounters() != $firstCog->NumCounters()
             || $cog->Modalities() != $firstCog->Modalities()) { $allSameCog = false; break; }

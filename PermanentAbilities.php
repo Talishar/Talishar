@@ -39,10 +39,11 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
 
 function RemovePermanent($player, $index)
 {
+  if ($index == -1) return "-";
   $index = intval($index);
   $permanents = &GetPermanents($player);
   $PermanentCard = new PermanentCard($index, $player);
-  $cardID = $permanents[$index];
+  $cardID = $permanents[$index] ?? "-";
   if ($cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") {
     $cardID = explode(",", $PermanentCard->Subcards(), 2)[0];
   }
