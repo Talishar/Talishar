@@ -30,12 +30,12 @@ class PlayerCharacter {
 
   function FindCardID($id) {
     $count = count($this->char);
-    if ($count == 0) return "";
+    if ($count == 0) return new CharacterCard(-1, $this->player);
     $characterPieces = CharacterPieces();
     for ($i = 0; $i < $count; $i += $characterPieces) {
       if ($this->char[$i] == $id) return new CharacterCard($i, $this->player);
     }
-    return "";
+    return new CharacterCard(-1, $this->player);
   }
 
   function NumCards() {
