@@ -1912,7 +1912,7 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] !== $defPlayer) continue;
+    if ($currentTurnEffects[$i + 1] != $defPlayer) continue;
     $effectStr = $currentTurnEffects[$i];
     $commaPos = strpos($effectStr, ",");
     $effectID = $commaPos !== false ? substr($effectStr, 0, $commaPos) : $effectStr;
