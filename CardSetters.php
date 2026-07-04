@@ -623,10 +623,9 @@ function AssignEffectToCard($cardID, $player, $from) {
   }
 }
 
-function AssignArcaneBonus($playerID)
+function AssignArcaneBonus($playerID, $layerIndex=0)
 {
   global $currentTurnEffects, $layers;
-  $layerIndex = 0;
   //not a damage bonus, but needs to be associated with the first card played
   $ind = SearchCurrentTurnEffectsForIndex("conduit_of_frostburn", $playerID);
   if ($ind != -1) $currentTurnEffects[$ind + 2] = $layers[$layerIndex + 6];

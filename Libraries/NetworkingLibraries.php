@@ -2056,7 +2056,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
-  global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer;
+  global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack;
 
   $otherPlayer = 3 - $currentPlayer;
   $resources = &GetResources($currentPlayer);
@@ -2293,6 +2293,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $abilityType = "";
   $playType = $cardType;
   $EffectContext = $cardID;
+  $layerIndex = $Stack->TopLayer($cardID)->Index();
   PlayerMacrosCardPlayed();
   if ($zone == "MYCHAR") EquipPayAdditionalCosts($index);
   if ($zone == "MYALLY") AllyPayAdditionalCosts($index, $from);
@@ -2302,7 +2303,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) {
       if(!HasMeld($cardID) && (!IsActivated($cardID, $from)) || (HasMeld($cardID) && ($cachedAdditionalCosts != "Life" && $cachedAdditionalCosts != "Null")))
       {
-        AssignArcaneBonus($currentPlayer);
+        AssignArcaneBonus($currentPlayer, $layerIndex);
       }
       else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     }
