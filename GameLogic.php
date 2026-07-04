@@ -3115,6 +3115,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "LISTDRACDAGGERGRAVEYARD":
       return ListDracDaggersGraveyard($player);
     case "EQUIPCARDGRAVEYARD":
+      if (str_contains($parameter, "CARDID")) $parameter = explode("-", $parameter)[1];
       $index = SearchGetFirstIndex(SearchMultizone($currentPlayer, "MYDISCARD:cardID=$parameter"));
       RemoveGraveyard($currentPlayer, $index);
       if (CardType($parameter) == "W") EquipWeapon($player, $parameter);

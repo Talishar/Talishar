@@ -1038,7 +1038,7 @@ function RecurDagger($player) //$mode == 0 for left, and 1 for right
   AddDecisionQueue("LISTDRACDAGGERGRAVEYARD", $player, "-");
   AddDecisionQueue("NULLPASS", $player, "-", 1);
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
-  AddDecisionQueue("MAYCHOOSECARD", $player, "<-", 1);
+  AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
 }
 
@@ -1052,7 +1052,7 @@ function ListDracDaggersGraveyard($player) {
     $cardID = $graveyard[$i];
     if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger") && !isFaceDownMod($graveyard[$i+2])) {
       if (TalentContains($cardID, "DRACONIC", $player)) {
-        $weaponsArr[] = $cardID;
+        $weaponsArr[] = "CARDID-$cardID";
       }
     }
   }
