@@ -7930,7 +7930,7 @@ class chromatic_refinement_red extends Card {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
   }
 
-  function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove, $player) {
     return $this->baseCard->DamageBuff($index, $remove);
   }
 }
@@ -7962,7 +7962,7 @@ class chromatic_refinement_yellow extends Card {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
   }
 
-  function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove, $player) {
     return $this->baseCard->DamageBuff($index, $remove);
   }
 }
@@ -7994,7 +7994,7 @@ class chromatic_refinement_blue extends Card {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
   }
 
-  function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove, $player) {
     return $this->baseCard->DamageBuff($index, $remove);
   }
 }

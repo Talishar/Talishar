@@ -226,7 +226,7 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
   $skipHitEffect = false; //we should *never* skip hit effects
   if ($damage > 0) {
     $damage += CurrentEffectArcaneModifier($source, $player, meldState: $meldState) * $nbArcaneInstance;
-    $damage += CurrentEffectDamageModifiers($player, $source, $type);
+    $damage += CurrentEffectDamageModifiers($player, $source, $type, "ARCANE");
     $damage += CombatChainDamageModifiers($player, $source, $type);
     if ($type != "PLAYCARD" && $type != "ARCANESHOCK") WriteLog(CardLink($source, $source) . " is dealing " . $damage . " arcane damage.");
     if ($fromQueue) {

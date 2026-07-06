@@ -2172,7 +2172,7 @@ class seeds_of_strength_red extends Card {
   }
 }
 
-class arc_bending_red extends Card { //untested
+class arc_bending_red extends Card {
   function __construct($controller) {
     $this->cardID = "arc_bending_red";
     $this->controller = $controller;
@@ -2192,8 +2192,9 @@ class arc_bending_red extends Card { //untested
     return true;
   }
 
-  function CurrentEffectDamageBuffs($source, $type, $index, &$remove) {
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove, $player) {
     global $mainPlayer;
+    if ($player != $mainPlayer) return 0; // non turn player can't ever control an "attack"
     return TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA")) ? 1 : 0;
   }
 }

@@ -672,6 +672,7 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   $damage = $damage > 0 ? $damage : 0;
   $origDamage = $damage;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
+  WriteLog("HERE dealdamageasync");
   if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
   if ($damage > 0) $damage += CombatChainDamageModifiers($player, $source, $type);
   if ($preventable) {
@@ -912,16 +913,17 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
   return $prevented;
 }
 
-function CurrentEffectDamageModifiers($player, $source, $type)
+function CurrentEffectDamageModifiers($player, $source, $type, $check="-")
 {
   global $currentTurnEffects;
   $modifier = 0;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  if ($type == "ARCANE" && $check != "ARCANE") return $modifier; // arcane only needs to be handled once
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = 0;
     $effectID = $currentTurnEffects[$i];
     $card = GetClass($effectID, $currentTurnEffects[$i + 1]);
-    if ($card != "-") $modifier += $card->CurrentEffectDamageBuffs($source, $type, $i, $remove);
+    if ($card != "-") $modifier += $card->CurrentEffectDamageBuffs($source, $type, $i, $remove, $player);
     switch ($effectID) {
       case "frazzle_red":
       case "frazzle_yellow":
