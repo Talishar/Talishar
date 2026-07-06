@@ -911,7 +911,7 @@ function isSpecialUsePromo($cardID) {
     $releaseSet = array_flip([
       "runechant_of_envy_yellow", "runechant_of_gluttony_yellow", "runechant_of_greed_yellow",
       "runechant_of_pride_yellow", "runechant_of_wrath_yellow", "runechant_of_lust_yellow",
-      "runechant_of_sloth_yellow"
+      "runechant_of_sloth_yellow", "runic_reaving_red"
     ]);
     $unreleasedSetNames = array_flip(["MPW", "AOL", "DDD", "IAR", ""]);
   }
