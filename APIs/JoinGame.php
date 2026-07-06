@@ -261,7 +261,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    }
    else if ($isFaBTCGMeta) {
      $parsedUrl = parse_url($decklink);
-     parse_str($parsedUrl['query'], $queryParams);
+     parse_str($parsedUrl['query'] ?? "-", $queryParams);
      $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
      $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
    }
