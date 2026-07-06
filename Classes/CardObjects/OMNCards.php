@@ -2137,7 +2137,10 @@ class ominous_aggression_red extends Card {
     $index = $targetParts[1];
     $amount = GetClassState($this->controller, $CS_NumControlledAurasDestroyed) > 0 ? 4 : 2;
     if ($targetParts[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
-      if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return "FAILED";
+      if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") {
+        WriteLog(CardLink($this->cardID, $this->cardID) . " layer fails as the target is no longer valid.");
+        return "";
+      }
       CombatChainPowerModifier($index, $amount);
       AddCurrentTurnEffect($this->cardID."-VISUAL", $this->controller);//For Visual Effect only
     }

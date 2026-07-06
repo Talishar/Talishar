@@ -54,7 +54,7 @@
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         } else {
           WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
-          return "FAILED";
+          return "";
         }
         return "";
       case "tome_of_harvests_blue":
@@ -93,7 +93,7 @@
         else {
           WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
           ResolveGoesWhere("GY", $cardID, $currentPlayer, $from);
-          return "FAILED";
+          return "";
         }
         return "";
       case "amulet_of_earth_blue":
@@ -165,7 +165,10 @@
         $targetParts = explode("-", $target, 2);
         $index = $targetParts[1];
         if ($targetParts[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
-          if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return "FAILED";
+          if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") {
+            WriteLog(CardLink($cardID, $cardID) . " layer fails as the target is no longer valid.");
+            return "";
+          }
           CombatChainPowerModifier($index, $amount);
           AddCurrentTurnEffect($cardID."-VISUAL", $currentPlayer);//For Visual Effect only
         }

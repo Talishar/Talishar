@@ -1511,7 +1511,10 @@ class beckoning_haunt extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $Discard = new Discard($this->controller);
     $targetCard = $Discard->FindCardUID(explode("-", $target, 2)[1] ?? "-");
-    if ($targetCard == "") return "FAILED";
+    if ($targetCard == "") {
+      WriteLog(CardLink($this->cardID, $this->cardID) . " layer fails as the target is no longer valid.");
+      return "";
+    }
     $targetIndex = $targetCard->Index();
     $cardID = RemoveGraveyard($this->controller, $targetIndex);
     AddPlayerHand($cardID, $this->controller, "DISCARD");

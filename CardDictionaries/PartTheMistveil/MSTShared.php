@@ -461,7 +461,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
-        return "FAILED";
+        return "";
       }
       return "";
     case "single_minded_determination_red":

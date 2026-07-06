@@ -290,7 +290,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       } 
       else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
-        return "FAILED";
+        return "";
       }
       return "";
     case "blistering_assault_red": case "blistering_assault_yellow": case "blistering_assault_blue":

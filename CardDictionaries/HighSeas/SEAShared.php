@@ -915,7 +915,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       else {
         WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
-        return "FAILED";
+        return "";
       }
     case "chart_a_course_red":
     case "chart_a_course_yellow":

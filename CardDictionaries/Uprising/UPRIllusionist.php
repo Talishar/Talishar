@@ -138,7 +138,7 @@ function UPRIllusionistDealDamageEffect($cardID)
       }
       else {
         WriteLog("The target to transform is no longer there!", highlight:true);
-        return "FAILED";
+        return "";
       }
     } else if($materialType == "Ash") {
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));
