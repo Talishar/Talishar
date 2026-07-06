@@ -255,7 +255,7 @@ function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPa
 	];
 
 	foreach ($players as $player) {
-		if ($player["isAI"] || $player["isPatron"] || $player["userId"] <= 0) {
+		if ($player["isAI"] || $player["isPatron"] || $player["userId"] <= 0 || $player["userId"] == 465) {
 			continue;
 		}
 
