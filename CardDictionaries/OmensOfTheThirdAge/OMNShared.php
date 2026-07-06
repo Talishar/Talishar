@@ -43,6 +43,8 @@ function DualityPrePitch($cardID, $index, $from, $player) {
 		AddDecisionQueue("PASSPARAMETER", $player, $cardID, 1);
 	}
 	AddDecisionQueue("DISCARDCARD", $player, "HAND-$cardID", 1);
+	AddDecisionQueue("PASSPARAMETER", $player, $cardID, 1);
+	AddDecisionQueue("SETDQVAR", $player, "0", 1);
 	AddDecisionQueue("CONVERTLAYERTOABILITY", $player, $cardID, 1);
 	AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET,0", 1);
 	AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", 1);
