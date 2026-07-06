@@ -2308,6 +2308,16 @@ function GetGoldIndices($player) {
   return implode(",", $indices);
 }
 
+function QueueDestroyGold($player)
+{
+  $goldIndices = GetGoldIndices($player);
+  if (str_contains($goldIndices, "MYCHAR")) {
+    AddDecisionQueue("PASSPARAMETER", $player, $goldIndices, 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+    AddDecisionQueue("MZDESTROY", $player, "-", 1);
+  } else AddDecisionQueue("FINDANDDESTROYITEM", $player, "gold-1", 1);
+}
+
 function GetAllyCounterIndices($player) {
   $choices = [];
   $Allies = new Allies($player);

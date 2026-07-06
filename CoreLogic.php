@@ -1630,95 +1630,58 @@ function CombatChainClosedCharacterEffects()
   }
 }
 
-function NumDefendedFromHand()
+function CountDefendingCards(callable $counter)
 {
   global $CombatChain, $defPlayer;
   $num = 0;
   $numCards = $CombatChain->NumCardsActiveLink();
   for ($i = 0; $i < $numCards; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber: true);
-    if ($chainCard->PlayerID() == $defPlayer) {
-      // this used to explicitly exclude instant cards and I don't know why, removing for now
-      if ($chainCard->From() == "HAND") ++$num;
-    }
+    if ($chainCard->PlayerID() == $defPlayer) $num += (int)$counter($chainCard);
   }
   return $num;
+}
+
+function NumDefendedFromHand()
+{
+  // this used to explicitly exclude instant cards and I don't know why, removing for now
+  return CountDefendingCards(fn($chainCard) => $chainCard->From() == "HAND");
 }
 
 function NumCardsBlocking()
 {
-  global $CombatChain, $defPlayer;
-  $num = 0;
-  $numCards = $CombatChain->NumCardsActiveLink();
-  for ($i = 0; $i < $numCards; ++$i) {
-    $chainCard = $CombatChain->Card($i, cardNumber: true);
-    if ($chainCard->PlayerID() == $defPlayer) {
-      $type = CardType($chainCard->ID());
-      // for some reason this explicitly excluded instants, not sure why, removing for now
-      if ($type != "C") ++$num;
-    }
-  }
-  return $num;
+  // for some reason this explicitly excluded instants, not sure why, removing for now
+  return CountDefendingCards(fn($chainCard) => CardType($chainCard->ID()) != "C");
 }
 
 function NumCardsNonEquipBlocking()
 {
-  global $CombatChain, $defPlayer;
-  $num = 0;
-  $numCards = $CombatChain->NumCardsActiveLink();
-  for ($i = 0; $i < $numCards; ++$i) {
-    $chainCard = $CombatChain->Card($i, cardNumber: true);
-    if ($chainCard->PlayerID() == $defPlayer) {
-      if (!TypeContains($chainCard->ID(), "E")) ++$num;
-    }
-  }
-  return $num;
+  return CountDefendingCards(fn($chainCard) => !TypeContains($chainCard->ID(), "E"));
 }
 
 function NumAttacksBlocking()
 {
-  global $CombatChain, $defPlayer;
-  $num = 0;
-  $numCards = $CombatChain->NumCardsActiveLink();
-  for ($i = 0; $i < $numCards; ++$i) {
-    $chainCard = $CombatChain->Card($i, cardNumber: true);
-    if ($chainCard->PlayerID() == $defPlayer && CardType($chainCard->ID()) == "AA") ++$num;
-  }
-  return $num;
+  return CountDefendingCards(fn($chainCard) => CardType($chainCard->ID()) == "AA");
 }
 
 function NumActionsBlocking()
 {
-  global $CombatChain, $defPlayer;
-  $num = 0;
-  $numCards = $CombatChain->NumCardsActiveLink();
-  for ($i = 0; $i < $numCards; ++$i) {
-    $chainCard = $CombatChain->Card($i, cardNumber: true);
-    if ($chainCard->PlayerID() == $defPlayer) {
-      $type = CardType($chainCard->ID());
-      if (DelimStringContains($type, "A") || $type == "AA") ++$num;
-      if (DelimStringContains($type, "E")) {
-        if (SubtypeContains($chainCard->ID(), "Evo" && $chainCard->ID() != "teklovossen_the_mechropotentb" && $chainCard->ID() != "nitro_mechanoidb")) {
-          if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$num;
-        }
+  return CountDefendingCards(function ($chainCard) {
+    $count = 0;
+    $type = CardType($chainCard->ID());
+    if (DelimStringContains($type, "A") || $type == "AA") ++$count;
+    if (DelimStringContains($type, "E")) {
+      if (SubtypeContains($chainCard->ID(), "Evo" && $chainCard->ID() != "teklovossen_the_mechropotentb" && $chainCard->ID() != "nitro_mechanoidb")) {
+        if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$count;
       }
     }
-  }
-  return $num;
+    return $count;
+  });
 }
 
 function NumNonBlocksDefending()
 {
-  global $CombatChain, $defPlayer;
-  $num = 0;
-  $numCards = $CombatChain->NumCardsActiveLink();
-  for ($i = 0; $i < $numCards; ++$i) {
-    $chainCard = $CombatChain->Card($i, cardNumber: true);
-    if ($chainCard->PlayerID() == $defPlayer) {
-      if (!TypeContains($chainCard->ID(), "B")) ++$num;
-    }
-  }
-  return $num;
+  return CountDefendingCards(fn($chainCard) => !TypeContains($chainCard->ID(), "B"));
 }
 
 function GetCardIDBeforeTransform($cardID)
@@ -1974,60 +1937,33 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
 
   if (!$secondCheck || $layers[0] == "ABILITY") { // when checking if something *was* played at instant speed, this check only makes sense if the ability was used
     if ($card != "-") return $card->CanActivateAsInstant($index, $from); //rename this function to "CanActivateAsInstant"
-    switch ($cardID) { // cards that can be *activated* at instant speed
-      case "mighty_windup_red":
-      case "mighty_windup_yellow":
-      case "mighty_windup_blue":
-      case "agile_windup_red":
-      case "agile_windup_yellow":
-      case "agile_windup_blue":
-      case "vigorous_windup_red":
-      case "vigorous_windup_yellow":
-      case "vigorous_windup_blue":
-      case "ripple_away_blue":
-      case "fruits_of_the_forest_red":
-      case "fruits_of_the_forest_yellow":
-      case "fruits_of_the_forest_blue":
-      case "trip_the_light_fantastic_red":
-      case "trip_the_light_fantastic_yellow":
-      case "trip_the_light_fantastic_blue":
+    // cards that can be *activated* at instant speed
+    if (in_array($cardID, WINDUP_STYLE_CARDS, true) || in_array($cardID, ARCANE_ABILITY_ACTION_CARDS, true)) {
+      switch ($cardID) { // group members with extra activation conditions
+        case "under_the_trap_door_blue":
+          return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";
+        case "burn_bare":
+          if ($from != "HAND") return false;
+          return IsPhantasmActive();
+        case "fearless_confrontation_blue":
+          if ($from != "HAND") return false;
+          if ($CombatChain->HasCurrentLink()) return true;
+          if (IsLayerStep()) return true;
+          if (IsResolutionStep()) return true;
+          return false;
+        default:
+          return $from == "HAND";
+      }
+    }
+    switch ($cardID) {
       case "haunting_rendition_red":
       case "mental_block_blue":
-      case "chorus_of_the_amphitheater_red":
-      case "chorus_of_the_amphitheater_yellow":
-      case "chorus_of_the_amphitheater_blue":
-      case "arcane_twining_red":
-      case "arcane_twining_yellow":
-      case "arcane_twining_blue":
-      case "photon_splicing_red":
-      case "photon_splicing_yellow":
-      case "photon_splicing_blue":
-      case "reapers_call_red":
-      case "reapers_call_yellow":
-      case "reapers_call_blue":
       case "shelter_from_the_storm_red":
-      case "tip_off_red":
-      case "tip_off_yellow":
-      case "tip_off_blue":
       case "war_cry_of_themis_yellow":
       case "war_cry_of_bellona_yellow":
-      case "deny_redemption_red":
-      case "bam_bam_yellow":
-      case "outside_interference_blue":
         return $from == "HAND";
       case "light_up_the_leaves_red":
         return $from == "HAND" && SearchCount(SearchHand($currentPlayer, talent: "EARTH")) > 1;
-      case "under_the_trap_door_blue":
-        return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";
-      case "burn_bare":
-        if ($from != "HAND") return false;
-        return IsPhantasmActive();
-      case "fearless_confrontation_blue":
-        if ($from != "HAND") return false;
-        if ($CombatChain->HasCurrentLink()) return true;
-        if (IsLayerStep()) return true;
-        if (IsResolutionStep()) return true;
-        return false;
       default:
         break;
     }
@@ -4090,16 +4026,21 @@ function CharacterAddSubcard($player, $index, $card)
   else $char[$index + 10] .= "," . $card;
 }
 
-function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $isMandatory = true, $actionName = "banish", $isSubsequent=false)
+function BuildSubcardChooseData($subcards)
 {
-  $character = &GetPlayerCharacter($player);
-  $subcards = explode(",", $character[$index + 10]);
   $subcardsCount = count($subcards);
   $chooseMultizoneData = "";
   for ($i = 0; $i < $subcardsCount; $i++) {
     if ($chooseMultizoneData == "") $chooseMultizoneData = "CARDID-" . $subcards[$i];
     else $chooseMultizoneData .= ",CARDID-" . $subcards[$i];
   }
+  return $chooseMultizoneData;
+}
+
+function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $isMandatory = true, $actionName = "banish", $isSubsequent=false)
+{
+  $character = &GetPlayerCharacter($player);
+  $chooseMultizoneData = BuildSubcardChooseData(explode(",", $character[$index + 10]));
   if ($chooseMultizoneData != "") {
     if ($count == 1) {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to $actionName from " . CardName($character[$index]), $isSubsequent);
@@ -4119,13 +4060,7 @@ function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $i
 
 function ItemChooseaAndRemoveSubcard($player, $index, $fromDQ = false, $count = 1, $isMandatory = true, $actionName = "banish", $isSubsequent=false) {
   $ItemCard = new ItemCard($index, $player);
-  $subcards = explode(",", $ItemCard->SubCards());
-  $subcardsCount = count($subcards);
-  $chooseMultizoneData = "";
-  for ($i = 0; $i < $subcardsCount; $i++) {
-    if ($chooseMultizoneData == "") $chooseMultizoneData = "CARDID-" . $subcards[$i];
-    else $chooseMultizoneData .= ",CARDID-" . $subcards[$i];
-  }
+  $chooseMultizoneData = BuildSubcardChooseData(explode(",", $ItemCard->SubCards()));
   if ($chooseMultizoneData != "") {
     if ($count == 1) {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a subcard to $actionName from " . CardName($ItemCard->CardID()), $isSubsequent);

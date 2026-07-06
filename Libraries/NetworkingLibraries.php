@@ -1076,20 +1076,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $deck = new Deck($playerID);
       $cardListTop = explode(",", $buttonInput);
       $cardListBottom = explode(",", $cardID);
-      $deck->Opt($cardListTop, $cardListBottom);
-      $topCount = count($cardListTop);
-      $bottomCount = count($cardListBottom);
-      $message = "";
-      if ($topCount > 0) {
-        $message .= $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
-      }
-      if ($bottomCount > 0) {
-        if ($message !== "") {
-          $message .= " and ";
-        }
-        $message .= $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
-      }
-      WriteLog("Player " . $playerID . " has put " . $message . " of their deck.");
+      OptAndLog($deck, $playerID, $cardListTop, $cardListBottom);
       ContinueDecisionQueue();
       break;
     case "REORDER": // should only show up in replays
@@ -1193,6 +1180,22 @@ function StorePendingNAA($cardID, $player)
   SetClassState($player, $CS_PendingNAACard, $cardID);
 }
 
+function OptAndLog($deck, $player, $cardListTop, $cardListBottom)
+{
+  $deck->Opt($cardListTop, $cardListBottom);
+  $topCount = count($cardListTop);
+  $bottomCount = count($cardListBottom);
+  $message = "";
+  if ($topCount > 0) {
+    $message .= $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
+  }
+  if ($bottomCount > 0) {
+    if ($message !== "") $message .= " and ";
+    $message .= $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
+  }
+  WriteLog("Player " . $player . " has put " . $message . " of their deck.");
+}
+
 function PassInput($autopass = true, $doublePass = false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
@@ -1276,18 +1279,7 @@ function PassInput($autopass = true, $doublePass = false)
         fwrite($commandFile, "$currentPlayer OPT $top $bot 0\r\n");
         fclose($commandFile);
       }
-      $deck->Opt($cardListTop, $cardListBottom);
-      $topCount = count($cardListTop);
-      $bottomCount = count($cardListBottom);
-      $message = "";
-      if ($topCount > 0) {
-        $message .= $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
-      }
-      if ($bottomCount > 0) {
-        if ($message !== "") $message .= " and ";
-        $message .= $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
-      }
-      WriteLog("Player " . $currentPlayer . " has put " . $message . " of their deck.");
+      OptAndLog($deck, $currentPlayer, $cardListTop, $cardListBottom);
     } else {
       WriteLog("Something funny happened while opting. If you believe the opt resolved incorrectly, please submit a bug report.", highlight: true);
     }
@@ -2841,6 +2833,50 @@ function GetLayerTarget($cardID, $from)
   }
 }
 
+function QueueArcaneAbilityOrActionChoice($cardID, $index, $from)
+{
+  global $currentPlayer, $CS_NumActionsPlayed;
+  $names = GetAbilityNames($cardID, $index, $from);
+  if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+    AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
+  } elseif ($names != "" && $from == "HAND" && $names != "-,Action"){
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or the action");
+    AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
+    AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+  } else{
+    AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
+  }
+  AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Action", 1);
+  AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+  AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
+  AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+  $targetType = 2;
+  AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,$targetType", 1);
+  AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
+  AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+  AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+  AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+  AddDecisionQueue("ELSE", $currentPlayer, "-");
+  AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+  AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+}
+
+function QueueSacredArtModes($cardID, $modalities)
+{
+  global $currentPlayer, $CS_NumBluePlayed, $CS_AdditionalCosts;
+  $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 1 ? 3 : 1;
+  if ($numModes == 1) {
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 1 mode");
+    AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-$modalities-$numModes");
+    AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
+  } else {
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
+    AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
+    AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
+  }
+}
+
 function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
 {
   global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
@@ -2919,6 +2955,29 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
     AddDecisionQueue("MELDTARGETTING", $currentPlayer, $cardID, 1);
   }
+  if (in_array($cardID, WINDUP_STYLE_CARDS, true)) {
+    $names = GetAbilityNames($cardID, $index, $from);
+    $names = str_replace("-,", "", $names);
+    if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
+      AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
+    } elseif ($names != "" && $from == "HAND") {
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or attack");
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
+      AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
+    } else {
+      AddDecisionQueue("SETABILITYTYPEATTACK", $currentPlayer, $cardID);
+    }
+    AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Ability");
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
+    AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+    AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
+    return;
+  }
+  if (in_array($cardID, ARCANE_ABILITY_ACTION_CARDS, true)) {
+    QueueArcaneAbilityOrActionChoice($cardID, $index, $from);
+    AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
+    return;
+  }
   switch ($cardID) {
     case "lord_of_wind_blue":
       if (ComboActive($cardID)) {
@@ -2959,13 +3018,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
         AddDecisionQueue("SEARCHCURRENTEFFECTPASS", $currentPlayer, "cash_in_yellow");
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("gold", "gold"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-        $goldIndices = GetGoldIndices($currentPlayer);
-        if (str_contains($goldIndices, "MYCHAR")) {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices, 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        } else
-          AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
+        QueueDestroyGold($currentPlayer);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "cash_in_yellow", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, CardLink("gold", "gold") . "_alternative_cost_was_paid.", 1);
       }
@@ -2992,61 +3045,12 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
       AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
-    //Windups
-    case "mighty_windup_red":
-    case "mighty_windup_yellow":
-    case "mighty_windup_blue":
-    case "agile_windup_red":
-    case "agile_windup_yellow":
-    case "agile_windup_blue":
-    case "vigorous_windup_red":
-    case "vigorous_windup_yellow":
-    case "vigorous_windup_blue":
-    case "ripple_away_blue":
-    case "fruits_of_the_forest_red":
-    case "fruits_of_the_forest_yellow":
-    case "fruits_of_the_forest_blue":
-    case "trip_the_light_fantastic_red":
-    case "trip_the_light_fantastic_yellow":
-    case "trip_the_light_fantastic_blue":
-    case "under_the_trap_door_blue":
-    case "reapers_call_red":
-    case "reapers_call_yellow":
-    case "reapers_call_blue":
-    case "tip_off_red":
-    case "tip_off_yellow":
-    case "tip_off_blue":
-    case "deny_redemption_red":
-    case "bam_bam_yellow":
-    case "outside_interference_blue":
-    case "fearless_confrontation_blue":
-      $names = GetAbilityNames($cardID, $index, $from);
-      $names = str_replace("-,", "", $names);
-      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
-        AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
-      } elseif ($names != "" && $from == "HAND") {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or attack");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
-        AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
-      } else {
-        AddDecisionQueue("SETABILITYTYPEATTACK", $currentPlayer, $cardID);
-      }
-      AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Ability");
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
-      AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
-      break;
     case "double_down_red":
       AddDecisionQueue("COUNTITEM", $currentPlayer, "gold"); 
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
       AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("gold", "gold"), 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-      $goldIndices = GetGoldIndices($currentPlayer);
-      if (str_contains($goldIndices, "MYCHAR")) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-      } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
+      QueueDestroyGold($currentPlayer);
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "double_down_red-PAID", 1);
       break;
     case "10000_year_reunion_red":
@@ -3077,41 +3081,6 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     case "haunting_rendition_red":
     case "mental_block_blue":
       AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
-      AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
-      break;
-    case "chorus_of_the_amphitheater_red":
-    case "chorus_of_the_amphitheater_yellow":
-    case "chorus_of_the_amphitheater_blue":
-    case "arcane_twining_red":
-    case "arcane_twining_yellow":
-    case "arcane_twining_blue":
-    case "photon_splicing_red":
-    case "photon_splicing_yellow":
-    case "photon_splicing_blue":
-    case "burn_bare":
-      $names = GetAbilityNames($cardID, $index, $from);
-      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
-        AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
-      } elseif ($names != "" && $from == "HAND" && $names != "-,Action"){
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or the action");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
-        AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
-      } else{
-        AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
-      }
-      AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Action", 1);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
-      $targetType = 2;
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,$targetType", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("ELSE", $currentPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
       AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
       AddDecisionQueue("CONVERTLAYERTOABILITY", $currentPlayer, $cardID, 1);
@@ -3170,30 +3139,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       break;
     case "light_up_the_leaves_red":
-      $names = GetAbilityNames($cardID, $index, $from);
-      if (SearchCurrentTurnEffects("red_in_the_ledger_red", $currentPlayer) && GetClassState($currentPlayer, $CS_NumActionsPlayed) >= 1) {
-        AddDecisionQueue("SETABILITYTYPEABILITY", $currentPlayer, $cardID);
-      } elseif ($names != "" && $from == "HAND" && $names != "-,Action"){
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose to play the ability or the action");
-        AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
-        AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);
-      } else{
-        AddDecisionQueue("SETABILITYTYPEACTION", $currentPlayer, $cardID);
-      }
-      AddDecisionQueue("NOTEQUALPASS", $currentPlayer, "Action", 1);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
-      $targetType = 2;
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,$targetType", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for <0>", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-
-      AddDecisionQueue("ELSE", $currentPlayer, "-");
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-$cardID", 1);
+      QueueArcaneAbilityOrActionChoice($cardID, $index, $from);
       // discarding an extra earth card
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an {{element|Earth|" . GetElementColorCode("EARTH") . "}} Card to discard", 1);
       AddDecisionQueue("FINDINDICES", $currentPlayer, "HANDTALENT,EARTH,NOPASS", 1);
@@ -3940,12 +3886,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       if (CountItemByName("Gold", $currentPlayer) > 0) {
         AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_the_additional_cost_of_1_" . CardLink("gold", "gold"), 1);
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-        $goldIndices = GetGoldIndices($currentPlayer);
-        if (str_contains($goldIndices, "MYCHAR")) {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices, 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-        } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
+        QueueDestroyGold($currentPlayer);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
         AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       }
@@ -4000,46 +3941,13 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       }
       break;
     case "sacred_art_undercurrent_desires_blue":
-      $modalities = "Create_a_Fang_Strike_and_Slither,Banish_up_to_2_cards_in_an_opposing_hero_graveyard,Transcend";
-      $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 1 ? 3 : 1;
-      if ($numModes == 1) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 1 mode");
-        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-$modalities-$numModes");
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
-      } else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
-      }
+      QueueSacredArtModes($cardID, "Create_a_Fang_Strike_and_Slither,Banish_up_to_2_cards_in_an_opposing_hero_graveyard,Transcend");
       break;
     case "sacred_art_immortal_lunar_shrine_blue":
-      $modalities = "Create_2_Spectral_Shield,Put_a_+1_counter_on_each_aura_with_ward_you_control,Transcend";
-      $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 1 ? 3 : 1;
-      if ($numModes == 1) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 1 mode");
-        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-$modalities-$numModes");
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
-      } else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
-      }
+      QueueSacredArtModes($cardID, "Create_2_Spectral_Shield,Put_a_+1_counter_on_each_aura_with_ward_you_control,Transcend");
       break;
     case "sacred_art_jade_tiger_domain_blue":
-      $modalities = "Create_2_Crouching_Tigers,Crouching_Tigers_Get_+1_this_turn,Transcend";
-      $numModes = GetClassState($currentPlayer, $CS_NumBluePlayed) > 1 ? 3 : 1;
-      if ($numModes == 1) {
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 1 mode");
-        AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-$modalities-$numModes");
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
-      } else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
-        AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
-      }
+      QueueSacredArtModes($cardID, "Create_2_Crouching_Tigers,Crouching_Tigers_Get_+1_this_turn,Transcend");
       break;
     case "longdraw_half_glove":
       $myHand = &GetHand($currentPlayer);

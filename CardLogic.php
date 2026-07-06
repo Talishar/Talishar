@@ -1870,6 +1870,26 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
   return "";
 }
 
+function QueueRevealInstant($player)
+{
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose an instant to reveal", 1);
+  AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=I");
+  AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
+  AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+}
+
+function QueueDestroyCharacterForActionPoint($player, $parameter)
+{
+  $index = FindCharacterIndex($player, $parameter);
+  AddDecisionQueue("CHARREADYORPASS", $player, $index);
+  AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter, $parameter)."_to_gain_an_action_point", 1);
+  AddDecisionQueue("NOPASS", $player, "-", 1);
+  AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
+  AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
+  AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+}
+
 function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
@@ -2322,13 +2342,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "hooves_of_the_shadowbeast":
-        $index = FindCharacterIndex($player, $parameter);
-        AddDecisionQueue("CHARREADYORPASS", $player, $index);
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter, $parameter)."_to_gain_an_action_point", 1);
-        AddDecisionQueue("NOPASS", $player, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-        AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-        AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+        QueueDestroyCharacterForActionPoint($player, $parameter);
         AddDecisionQueue("WRITELOG", $player, "Gained_an_action_point_from_".Cardlink($parameter, $parameter), 1);
         break;
       case "soul_shackle":
@@ -2641,13 +2655,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if (isset($targetArr[1])) DealArcane(1, 2, "PLAYCARD", $combatChain[0], false, $mainPlayer, resolvedTarget:$targetArr[1], useUIDs:true);
         break;
       case "beaten_trackers":
-        $index = FindCharacterIndex($player, $parameter);
-        AddDecisionQueue("CHARREADYORPASS", $player, $index);
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($parameter, $parameter)."_to_gain_an_action_point", 1);
-        AddDecisionQueue("NOPASS", $player, "-", 1);
-        AddDecisionQueue("PASSPARAMETER", $player, $index, 1);
-        AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
-        AddDecisionQueue("GAINACTIONPOINTS", $player, 1, 1);
+        QueueDestroyCharacterForActionPoint($player, $parameter);
         AddDecisionQueue("WRITELOG", $player, "Player_" . $player . "_gained_an_action_point_from_" . CardLink("beaten_trackers", "beaten_trackers"), 1);
         break;
       case "skull_crack_red":
@@ -3743,21 +3751,13 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "zap_clappers":
         if (CanRevealCards($player)) {
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose an instant to reveal", 1);
-          AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=I");
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-          AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
-          AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+          QueueRevealInstant($player);
           AddDecisionQueue("DEALARCANE", $player, "1-zap_clappers-TRIGGER", 1);
         }
         break;
       case "starlight_striders":
         if (CanRevealCards($player)) {
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose an instant to reveal", 1);
-          AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:type=I");
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-          AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
-          AddDecisionQueue("REVEALCARDS", $player, "-", 1);
+          QueueRevealInstant($player);
           AddDecisionQueue("PLAYAURA", $player, "embodiment_of_lightning", 1);
         }
         break;

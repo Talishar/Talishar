@@ -1019,3 +1019,26 @@ $livingLegends = ["chane_bound_by_shadow", "bravo_star_of_the_show", "aurora_sho
                   "viserai_rune_blood", "zen_tamer_of_purpose", "kayo_armed_and_dangerous", "verdance_thorn_of_the_rose", "prism_awakener_of_sol"];
 
 $benched = ["kano", "ira", "kayo"];
+
+// Cards that can be discarded or used as attack
+const WINDUP_STYLE_CARDS = [
+  "mighty_windup_red", "mighty_windup_yellow", "mighty_windup_blue",
+  "agile_windup_red", "agile_windup_yellow", "agile_windup_blue",
+  "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue",
+  "ripple_away_blue",
+  "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue",
+  "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue",
+  "under_the_trap_door_blue",
+  "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
+  "tip_off_red", "tip_off_yellow", "tip_off_blue",
+  "deny_redemption_red", "bam_bam_yellow", "outside_interference_blue",
+  "fearless_confrontation_blue",
+];
+
+// Cards that can be discarded or used as an action
+const ARCANE_ABILITY_ACTION_CARDS = [
+  "chorus_of_the_amphitheater_red", "chorus_of_the_amphitheater_yellow", "chorus_of_the_amphitheater_blue",
+  "arcane_twining_red", "arcane_twining_yellow", "arcane_twining_blue",
+  "photon_splicing_red", "photon_splicing_yellow", "photon_splicing_blue",
+  "burn_bare",
+];
