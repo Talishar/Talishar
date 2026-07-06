@@ -308,7 +308,6 @@
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
     if($char[1] == 2 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0) {
-      $goldIndices = GetGoldIndices($playerID);
       $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
       PrependDecisionQueue("SETDQVAR", $playerID, "1"); //reset the dqvar
@@ -323,11 +322,7 @@
       PrependDecisionQueue("SETDQVAR", $playerID, "1");
       PrependDecisionQueue("BUTTONINPUT", $playerID, "Target_Opponent,Target_Yourself", 1);
       PrependDecisionQueue("SETDQCONTEXT", $playerID, "Choose target hero", 1);
-      if(str_contains($goldIndices, "MYCHAR")) {
-        PrependDecisionQueue("MZDESTROY", $playerID, "-", 1);
-        PrependDecisionQueue("MAYCHOOSEMULTIZONE", $playerID, "<-", 1);
-        PrependDecisionQueue("PASSPARAMETER", $playerID, $goldIndices, 1);
-      } else PrependDecisionQueue("FINDANDDESTROYITEM", $playerID, "gold-1", 1);
+      QueueDestroyGold($playerID, prepend:true);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, $hero."-2", 1);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $otherPlayer, "the_old_switcheroo_blue", 1);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, "the_old_switcheroo_blue", 1);

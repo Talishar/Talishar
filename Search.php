@@ -2308,14 +2308,28 @@ function GetGoldIndices($player) {
   return implode(",", $indices);
 }
 
-function QueueDestroyGold($player)
+// Queues destruction of gold
+function QueueDestroyGold($player, $isMandatory = false, $showContext = false, $itemFallback = true, $subsequent = 1, $prepend = false)
 {
   $goldIndices = GetGoldIndices($player);
-  if (str_contains($goldIndices, "MYCHAR")) {
-    AddDecisionQueue("PASSPARAMETER", $player, $goldIndices, 1);
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-    AddDecisionQueue("MZDESTROY", $player, "-", 1);
-  } else AddDecisionQueue("FINDANDDESTROYITEM", $player, "gold-1", 1);
+  if (!$itemFallback || str_contains($goldIndices, "MYCHAR")) {
+    $chooseMode = $isMandatory ? "CHOOSEMULTIZONE" : "MAYCHOOSEMULTIZONE";
+    if ($prepend) {
+      PrependDecisionQueue("MZDESTROY", $player, "-", 1);
+      PrependDecisionQueue($chooseMode, $player, "<-", 1);
+      if ($showContext) PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a gold to destroy", 1);
+      PrependDecisionQueue("PASSPARAMETER", $player, $goldIndices, $subsequent);
+    } else {
+      AddDecisionQueue("PASSPARAMETER", $player, $goldIndices, $subsequent);
+      if ($showContext) AddDecisionQueue("SETDQCONTEXT", $player, "Choose a gold to destroy", 1);
+      AddDecisionQueue($chooseMode, $player, "<-", 1);
+      AddDecisionQueue("MZDESTROY", $player, "-", 1);
+    }
+  } elseif ($prepend) {
+    PrependDecisionQueue("FINDANDDESTROYITEM", $player, "gold-1", 1);
+  } else {
+    AddDecisionQueue("FINDANDDESTROYITEM", $player, "gold-1", 1);
+  }
 }
 
 function GetAllyCounterIndices($player) {

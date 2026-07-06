@@ -930,20 +930,14 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "RAISEANARMY":
       if ($dqVars[0] > 0) {
         --$dqVars[0];
-        $goldIndices = GetGoldIndices($player);
-        AddDecisionQueue("PASSPARAMETER", $player, $goldIndices, 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $player, "-", 1);
+        QueueDestroyGold($player, isMandatory:true, itemFallback:false);
         AddDecisionQueue("SPECIFICCARD", $player, "RAISEANARMY", 1);
       }
       return "";
     case "GOLDENANVIL":
       if ($dqVars[0] > 0) {
         --$dqVars[0];
-        $goldIndices = GetGoldIndices($player);
-        AddDecisionQueue("PASSPARAMETER", $player, $goldIndices, 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $player, "-", 1);
+        QueueDestroyGold($player, isMandatory:true, itemFallback:false);
         AddDecisionQueue("SPECIFICCARD", $player, "GOLDENANVIL", 1);
       }
       return "";

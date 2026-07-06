@@ -1283,13 +1283,7 @@ function EquipPayAdditionalCosts($cardIndex)
       if ($character[$cardIndex + 5] == 0) $character[$cardIndex + 1] = 1; //By default, if it's used, set it to used
       break;
     case "good_time_chapeau":
-      $goldIndices = GetGoldIndices($currentPlayer);
-      if (str_contains($goldIndices, "MYCHAR")) {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a gold to destroy", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
-      } else AddDecisionQueue("FINDANDDESTROYITEM", $currentPlayer, "gold-1", 1);
+      QueueDestroyGold($currentPlayer, isMandatory:true, showContext:true, subsequent:0);
       break;
     case "hood_of_red_sand":
       DestroyCharacter($currentPlayer, $cardIndex);
@@ -1322,11 +1316,7 @@ function EquipPayAdditionalCosts($cardIndex)
     case "marlynn_treasure_hunter":
     case "marlynn":
     case "scurv_stowaway":
-      $goldIndices = GetGoldIndices($currentPlayer);
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $goldIndices);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a gold to destroy", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZDESTROY", $currentPlayer, "<-", 1);
+      QueueDestroyGold($currentPlayer, isMandatory:true, showContext:true, itemFallback:false, subsequent:0);
       Tap("MYCHAR-$cardIndex", $currentPlayer);
       break;
     case "compass_of_sunken_depths":
