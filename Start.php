@@ -7,6 +7,7 @@ include_once "Libraries/SHMOPLibraries.php";
 include "Libraries/NetworkingLibraries.php";
 include "GameLogic.php";
 include "GameTerms.php";
+include "WriteLog.php";
 include "Libraries/StatFunctions.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/UILibraries.php";
@@ -141,6 +142,9 @@ include "ParseGamestate.php";
 include "StartEffects.php";
 ob_end_clean();
 
+if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)) {
+  WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight: true, highlightColor: "green");
+}
 AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI);
 
 $gameStatus = $MGS_GameStarted;

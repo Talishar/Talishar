@@ -220,9 +220,15 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 	session_write_close();
 }
 
+function ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)
+{
+	return $p1IsPatron === "1" || $p2IsPatron === "1";
+}
+
 function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
 {
 	if (IsDevEnvironment()) return false;
+	if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)) return true;
 	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_GAME_START);
 	if (!$conn) {
 		return false;
