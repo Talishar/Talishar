@@ -439,7 +439,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         }
 
         for ($i = 0; $i < $optionsCount; ++$i) {
-          if ($options[$i] != "") {
+          if ($options[$i] != "" && $options[$i] != "PASS" && $options[$i] != "NOPASS") {
             if ($isMultiChooseDiscard) {
               $wateryGraveCounter = SearchLayersForTargetUniqueID($myDiscard[$options[$i]+1]) != -1;
               $cardsArray[] = JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i, wateryGraveIcon: $wateryGraveCounter);
@@ -823,11 +823,11 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $allyArr = $isTheirAlly ? $theirAllies : $myAllies;
             $player = $isTheirAlly ? $otherPlayer : $playerID;
             $index = intval($option[1]);
-            $lifeCounters = $allyArr[$index + 2];
-            $enduranceCounters = $allyArr[$index + 6];
-            $powerCounters = $allyArr[$index + 9];
-            $uniqueID = $allyArr[$index + 5];
-            $tapped = $allyArr[$index + 11] == 1;
+            $lifeCounters = $allyArr[$index + 2] ?? 0;
+            $enduranceCounters = $allyArr[$index + 6] ?? 0;
+            $powerCounters = $allyArr[$index + 9] ?? 0;
+            $uniqueID = $allyArr[$index + 5] ?? "-";
+            $tapped = ($allyArr[$index + 11] ?? 0) == 1;
             if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
                 $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue($allyArr[$index], $player, "ALLY");
             }

@@ -408,6 +408,7 @@ class zyggy_base extends BaseCard {
   function SpecificLogic() {
     global $dqVars, $Stack;
     $AuraCard = MZIndexToObject($this->controller, $dqVars["MZIndex"]);
+    if (!is_object($AuraCard)) return;
     $banishCount = $AuraCard->Banish();
     $BanishedCard = new BanishCard($this->controller, $banishCount);
     $Layer = $Stack->TopLayer($this->cardID);

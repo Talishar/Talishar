@@ -370,7 +370,7 @@ function StartTurnAbilities()
   $defAlliesCount = count($defAllies);
   $allyPieces = AllyPieces();
   for ($i = 0; $i < $defAlliesCount; $i += $allyPieces) {
-    if ($defAllies[$i+3] == "1" && !SuperFrozen($mainPlayer, "THEIRALLY-$i") && !SuperFrozen($defPlayer, "MYALLY-$i"))
+    if (isset($defAllies[$i+3]) && $defAllies[$i+3] == "1" && !SuperFrozen($mainPlayer, "THEIRALLY-$i") && !SuperFrozen($defPlayer, "MYALLY-$i"))
       $defAllies[$i + 3] = "0";//Reset Frozen
   }
   $defAuras = &GetAuras($defPlayer);
@@ -1671,7 +1671,7 @@ function NumActionsBlocking()
     $type = CardType($chainCard->ID());
     if (DelimStringContains($type, "A") || $type == "AA") ++$count;
     if (DelimStringContains($type, "E")) {
-      if (SubtypeContains($chainCard->ID(), "Evo" && $chainCard->ID() != "teklovossen_the_mechropotentb" && $chainCard->ID() != "nitro_mechanoidb")) {
+      if (SubtypeContains($chainCard->ID(), "Evo") && $chainCard->ID() != "teklovossen_the_mechropotentb" && $chainCard->ID() != "nitro_mechanoidb") {
         if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$count;
       }
     }

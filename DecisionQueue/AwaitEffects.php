@@ -202,8 +202,8 @@ function DealDamageAwait($player) {
 
   $targetArr = explode("-", $target);
   $targetPlayer = $targetArr[0] == "MYCHAR" || $targetArr[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
-  if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
-    return DamageAlly($targetPlayer, $target[1], $damage, $type);
+  if ($targetArr[0] == "THEIRALLY" || $targetArr[0] == "MYALLY") {
+    return DamageAlly($targetPlayer, $targetArr[1], $damage, $type);
   } else {
     PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
     if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);

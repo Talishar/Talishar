@@ -1523,9 +1523,9 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "courage":
-        if ($cardType == "AA" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA")
+        if (($cardType == "AA" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA")
           || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from))
-          || (TypeContains($cardID, "W", $currentPlayer) && $resolvedAbilityType!= "A") && $resolvedAbilityType!= "I") {
+          || (TypeContains($cardID, "W", $currentPlayer) && $resolvedAbilityType!= "A")) && $resolvedAbilityType!= "I") {
           AddCurrentTurnEffect("courage", $currentPlayer);
           $remove = 1;
         }
@@ -1537,7 +1537,7 @@ function AuraPlayAbilities($cardID, $from = "")
         }
         break;
       case "runechant":
-        if (($cardType == "AA" && $resolvedAbilityType != "I" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from)) || (TypeContains($cardID, "W", $currentPlayer) && $resolvedAbilityType == "AA") && $resolvedAbilityType != "I") {
+        if ((($cardType == "AA" && $from != "PLAY") || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from)) || (TypeContains($cardID, "W", $currentPlayer) && $resolvedAbilityType == "AA")) && $resolvedAbilityType != "I") {
           $runechantUIDS[] = $auras[$i+6];
         }
         break;

@@ -581,6 +581,11 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "hook_blue": case "line_blue": case "sinker_blue":
       $deck = GetDeck($currentPlayer);
+      if (empty($deck)) {
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardLink($cardID, $cardID) . " shows your deck is empty", 1);
+        AddDecisionQueue("OK", $currentPlayer, "-", 1);
+        break;
+      }
       $topCard = $deck[0];
       if(SubtypeContains($topCard, "Arrow", $currentPlayer)) {
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to put " . CardLink($topCard, $topCard) . " face-up in your arsenal");
