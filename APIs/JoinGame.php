@@ -965,12 +965,12 @@ function isBannedInFormat($cardID, $format) {
           "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
           "count_your_blessings_red", "count_your_blessings_yellow", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
           "azalea_ace_in_the_hole", "death_dealer", "bonds_of_agony_blue", "golden_tipple_red", "golden_tipple_yellow",
-          "plume_of_evergrowth", "talk_a_big_game_blue", "orb_weaver_spinneret_yellow", "orb_weaver_spinneret_blue",
+          "plume_of_evergrowth", "orb_weaver_spinneret_yellow", "orb_weaver_spinneret_blue",
           "chart_the_high_seas_blue", "wrath_of_retribution_red", "brand_with_cinderclaw_red", "brand_with_cinderclaw_yellow", "brand_with_cinderclaw_blue",
           "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots",
-          "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
-          "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade", "skyward_serenade_yellow",
-          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow"
+          "electromagnetic_somersault_red", "electromagnetic_somersault_yellow",
+          "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade",
+          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow"
       ], $livingLegends)),
       "commoner" => array_flip([
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
@@ -982,12 +982,12 @@ function isBannedInFormat($cardID, $format) {
       "sage" => array_flip(array_merge([
         "fiddlers_green_red", "fiddlers_green_yellow", "fiddlers_green_blue",
         "honing_hood", "nimby_red", "nimby_yellow", "nimby_blue",
-        "old_knocker", "reality_refractor", "vigorous_smashup_red", "vigorous_smashup_yellow", "vigorous_smashup_blue",
+        "old_knocker", "reality_refractor",
         "aether_flare_red", "aether_flare_yellow", "aether_flare_blue", "aether_ironweave",
         "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue",
         "belittle_red", "belittle_yellow", "belittle_blue",
         "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue",
-        "cash_in_yellow", "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessing_blue",
+        "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessing_blue",
         "deadwood_dirge_red", "deadwood_dirge_yellow", "deadwood_dirge_blue",
         "drone_of_brutality_red", "drone_of_brutality_blue", "drone_of_brutality_yellow",
         "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
@@ -996,14 +996,13 @@ function isBannedInFormat($cardID, $format) {
         "goliath_gauntlet", "heartened_cross_strap", "mask_of_three_tails",
         "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
         "ragamuffins_hat",
-        "rosetta_thorn", "seeds_of_agony_red", "seeds_of_agony_yellow", "seeds_of_agony_blue",
+        "rosetta_thorn",
         "sigil_of_solace_red", "sigil_of_solace_yellow", "sigil_of_solace_blue",
         "sink_below_red", "sink_below_yellow", "sink_below_blue",
         "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle",
         "bracers_of_belief", "beckoning_haunt", "deathly_delight_red", "deathly_delight_yellow", "deathly_delight_blue",
         "ebon_fold", "flourish_yellow", "flourish_blue", "reaping_blade", "volzar_the_lightning_rod",
         "vantom_wraith_red", "vantom_wraith_yellow", "vantom_wraith_blue",
-        "steelblade_shunt_red", "steelblade_shunt_yellow", "steelblade_shunt_blue",
         "sirens_of_safe_harbor_red", "sirens_of_safe_harbor_yellow", "sirens_of_safe_harbor_blue"
       ], $benched)),
       "gage" => array_flip(["bravo_star_of_the_show", "bloodsheath_skeleta", "heavy_industry_power_plant", "kraken_aethervein", "stubby_hammerers",
@@ -1018,15 +1017,13 @@ function isBannedInFormat($cardID, $format) {
     ];
   }
   if ($format == "futurecc") {
-    $futureBans = ["remembrance"];
-    $futureUnbans = ["electromagnetic_somersault_blue", "skyward_serenade_yellow", "talk_a_big_game_blue"];
+    $futureBans = [];
+    $futureUnbans = [];
     return (in_array($cardID, $futureBans) || (isset($bannedSets["cc"][$cardID]) && !in_array($cardID, $futureUnbans)));
   }
   if ($format == "futuresage") {
     $futureBans = [];
-    $futureUnbans = ["cash_in_yellow", "seeds_of_agony_red", "seeds_of_agony_yellow", "seeds_of_agony_blue",
-                    "steelblade_shunt_red", "steelblade_shunt_yellow", "steelblade_shunt_blue",
-                    "vigorous_smashup_red", "vigorous_smashup_yellow", "vigorous_smashup_blue"];
+    $futureUnbans = [];
     return (in_array($cardID, $futureBans) || (isset($bannedSets["sage"][$cardID]) && !in_array($cardID, $futureUnbans)));
   }
   return isset($bannedSets[$format]) && isset($bannedSets[$format][$cardID]);
