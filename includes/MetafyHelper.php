@@ -158,6 +158,20 @@ if (!function_exists('GetMetafyCommunitiesFromDatabase')) {
   }
 }
 
+if (!function_exists('IsTalisharMetafySupporter')) {
+  function IsTalisharMetafySupporter($communities)
+  {
+    if (!is_array($communities)) return false;
+    $talisharCommunityId = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
+    foreach ($communities as $community) {
+      if (($community['id'] ?? null) === $talisharCommunityId) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
 function IsValidMetafyTier($tierName)
 {
   static $supportedTiersMap = null;

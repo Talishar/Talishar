@@ -655,20 +655,20 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    if ($playerID == 1) {
      $p1uid = ($_SESSION["useruid"] ?? "Player 1");
      $p1id = ($_SESSION["userid"] ?? "");
-     $p1IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
      $p1ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
      // Cache Metafy tiers and communities at join time so BuildGameState doesn't need DB access
      $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
      $p1MetafyCommunities = GetMetafyCommunitiesFromDatabase($p1uid);
+     $p1IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) || IsTalisharMetafySupporter($p1MetafyCommunities) ? "1" : "");
    }
    else if ($playerID == 2) {
      $p2uid = ($_SESSION["useruid"] ?? "Player 2");
      $p2id = ($_SESSION["userid"] ?? "");
-     $p2IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) ? "1" : "");
      $p2ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
      // Cache Metafy tiers and communities at join time so BuildGameState doesn't need DB access
      $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);
      $p2MetafyCommunities = GetMetafyCommunitiesFromDatabase($p2uid);
+     $p2IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) || IsTalisharMetafySupporter($p2MetafyCommunities) ? "1" : "");
    }
 
    // Only generate a fresh auth key for a true new join, not for a base-deck refresh.

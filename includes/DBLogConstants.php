@@ -55,9 +55,10 @@ const DBL_SETUP_RUST_COUNTERS_COLUMN   = 49;
 const DBL_ADD_RUST_COUNTERS_GAME_START = 50;
 const DBL_IS_IP_BANNED                 = 51;
 const DBL_LOG_IP_HISTORY               = 52;
+const DBL_CLEAR_RUST_COUNTERS          = 53;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 52;
+const DBL_MAX_KEY = 53;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -113,4 +114,5 @@ const DBL_LABELS = [
     50 => 'includes/functions.inc.php::AddRustCountersForGameStart',
     51 => 'includes/functions.inc.php::IsIPBanned',
     52 => 'includes/functions.inc.php::LogIPHistory',
+    53 => 'APIs/ClearRustCounters.php',
 ];
