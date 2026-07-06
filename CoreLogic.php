@@ -672,7 +672,6 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   $damage = $damage > 0 ? $damage : 0;
   $origDamage = $damage;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
-  WriteLog("HERE dealdamageasync");
   if ($damage > 0) $damage += CurrentEffectDamageModifiers($player, $source, $type);
   if ($damage > 0) $damage += CombatChainDamageModifiers($player, $source, $type);
   if ($preventable) {
