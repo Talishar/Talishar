@@ -35,6 +35,7 @@ $response->userName = $userName;
 
 $response->patreonInfo = PatreonLink();
 $response->isPatreonLinked = isset($_SESSION["patreonAuthenticated"]);
+$response->isPatreonSupporter = IsLoggedInUserPatron() == true;
 
 // Check if user is contributor or PvtVoid patron
 $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
