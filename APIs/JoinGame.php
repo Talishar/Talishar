@@ -391,6 +391,17 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
        $id = GetCardId($cards[$i], $isFaBDB, $isFaBMeta, $orderedSets);
        if (TypeContains($id, "C")) { $character = $id; break; }
      }
+
+     // Check the lobby's hero preference restriction as soon as we know the hero
+     if ($playerID == 2 && !$forceBaseDeckRefresh && $matchup === "" && $visibility === "public" && $character != "") {
+       $preferenceError = CheckHeroPreference($character, $gameDescription);
+       if ($preferenceError !== null) {
+         $response->error = $preferenceError;
+         echo json_encode($response);
+         exit;
+       }
+     }
+
      for ($i = 0; $i < $cardCount; ++$i) {
        $count = $cards[$i]->{'total'};
        $numSideboard = (isset($cards[$i]->{'sideboardTotal'}) ? $cards[$i]->{'sideboardTotal'} : 0);
@@ -589,15 +600,6 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $response->error = "There is no character. Something went wrong with parsing your deck.";
    echo json_encode($response);
    exit;
- }
-
- if ($playerID == 2 && !$forceBaseDeckRefresh && $matchup === "" && $visibility === "public") {
-   $preferenceError = CheckHeroPreference($character, $gameDescription);
-   if ($preferenceError !== null) {
-     $response->error = $preferenceError;
-     echo json_encode($response);
-     exit;
-   }
  }
 
  if ($matchup == "") {
