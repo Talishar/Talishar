@@ -225,9 +225,17 @@ function ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)
 	return $p1IsPatron === "1" || $p2IsPatron === "1";
 }
 
+function ShouldSkipRustCountersForContributors()
+{
+	global $p1uid, $p2uid;
+	$contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid", "Bluffkin"];
+	if (in_array($p1uid, $contributors) || in_array($p2uid, $contributors)) return true;
+}
+
 function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
 {
 	if (IsDevEnvironment()) return false;
+	if (ShouldSkipRustCountersForContributors()) return true;
 	if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)) return true;
 	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_GAME_START);
 	if (!$conn) {
