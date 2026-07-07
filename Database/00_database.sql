@@ -170,6 +170,7 @@ CREATE TABLE IF NOT EXISTS blocked_users (
 -- Table structure for table `name_history`
 --
 CREATE TABLE IF NOT EXISTS name_history (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   usersId INT NOT NULL,
   oldName VARCHAR(128) NOT NULL,
   newName VARCHAR(128) NOT NULL,
