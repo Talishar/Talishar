@@ -85,6 +85,7 @@ SetCachePieces($gameName, [
 
 $p2Data = [];
 $p2uid = "";
+$p2DisplayName = "";
 $p2id = "";
 $p2SideboardSubmitted = "0";
 $p1SideboardSubmitted = "0";

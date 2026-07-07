@@ -67,6 +67,8 @@ if (($playerID == 1 || $playerID == 2) && $authKey == "") {
 $sessionData = [];
 $sessionData['userLoggedIn'] = IsUserLoggedIn();
 $sessionData['userName'] = $sessionData['userLoggedIn'] ? LoggedInUserName() : null;
+// Display name for spectator lists etc.; userName stays the handle for identity checks
+$sessionData['displayName'] = $sessionData['userLoggedIn'] ? LoggedInDisplayName() : null;
 $sessionData['isPvtVoidPatron'] = isset($_SESSION["isPvtVoidPatron"]);
 
 // Capture all Patreon campaign session IDs before releasing session
@@ -104,7 +106,7 @@ if ($isGamePlayer) {
 }
 
 if ($playerID == 3) {
-  UpdateSpectatorPresence($gameName);
+  UpdateSpectatorPresence($gameName, $sessionData['displayName'] ?? 'Anonymous');
 }
 
 // Check if game file exists

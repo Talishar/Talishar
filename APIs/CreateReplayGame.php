@@ -161,6 +161,8 @@ if (empty($p1Key) || empty($p2Key)) {
 
 $p1uid = "-";
 $p2uid = "-";
+$p1DisplayName = "";
+$p2DisplayName = "";
 $p1id = "-";
 $p2id = "-";
 $hostIP = GetClientIP();
