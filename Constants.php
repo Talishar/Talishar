@@ -563,14 +563,14 @@ function ResetCombatChainState()
     }
   }
   CombatChainClosedTriggers();
-  Await($mainPlayer, "ClearCombatChain");
+  Await($mainPlayer, "ClearCombatChain", subsequent:false);
   UnsetCombatChainBanish();
   CombatChainClosedCharacterEffects(); //eventually all these effects should move above the combat chain being cleared
   CombatChainClosedItemEffects();
   CombatChainClosedMainCharacterEffects();
   RemoveEffectsFromCombatChain();
   RemoveThisLinkEffects();
-  Await($mainPlayer, "CloseCombatChain");
+  Await($mainPlayer, "CloseCombatChain", subsequent:false, final:true);
 }
 
 function AttackReplaced($cardID, $player)
