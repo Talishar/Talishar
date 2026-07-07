@@ -97,7 +97,7 @@ if ($cacheStatus == $MGS_GameOver) {
 
 // Get opponent info
 $opponentID = ($playerID == 1 ? 2 : 1);
-$response->opponentName = ($opponentID == 1 ? ($p1uid != "-" ? $p1uid : "Player 1") : ($p2uid != "-" ? $p2uid : "Player 2"));
+$response->opponentName = ($opponentID == 1 ? ($p1uid != "-" ? $p1DisplayName : "Player 1") : ($p2uid != "-" ? $p2DisplayName : "Player 2"));
 
 // Check if opponent is currently disconnected
 // Cache piece structure: playerID+3 contains the connection status

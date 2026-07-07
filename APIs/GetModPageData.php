@@ -32,7 +32,8 @@ $response = [
   "bannedIPs" => [],
   "recentAccounts" => [],
   "linkedAccounts" => [],
-  "bannedPlayerIPs" => new stdClass()
+  "bannedPlayerIPs" => new stdClass(),
+  "recentNameChanges" => []
 ];
 
 $bannedPlayers = [];
@@ -84,7 +85,7 @@ if ($conn) {
     mysqli_stmt_close($stmt);
   }
 
-  $sql = "SELECT usersUid FROM users ORDER BY usersId DESC LIMIT 20";
+  $sql = "SELECT usersUid, displayName FROM users ORDER BY usersId DESC LIMIT 20";
   $stmt = mysqli_stmt_init($conn);
 
   if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -93,10 +94,33 @@ if ($conn) {
 
     while ($row = mysqli_fetch_array($userData, MYSQLI_NUM)) {
       if (!empty($row[0])) {
-        array_push($response["recentAccounts"], $row[0]);
+        // Mods see the handle, annotated with the display name when one is set
+        $accountLabel = $row[0];
+        if (!empty($row[1]) && $row[1] != $row[0]) $accountLabel .= " (aka " . $row[1] . ")";
+        array_push($response["recentAccounts"], $accountLabel);
       }
     }
 
+    mysqli_stmt_close($stmt);
+  }
+
+  // Recent display-name changes so mods can trace accounts across renames
+  $sql = "SELECT u.usersUid, h.oldName, h.newName, h.changedAt
+          FROM name_history h
+          JOIN users u ON u.usersId = h.usersId
+          ORDER BY h.changedAt DESC LIMIT 50";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $nameData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($nameData, MYSQLI_NUM)) {
+      $response["recentNameChanges"][] = [
+        "username" => $row[0],
+        "oldName" => $row[1],
+        "newName" => $row[2],
+        "changedAt" => $row[3]
+      ];
+    }
     mysqli_stmt_close($stmt);
   }
 
