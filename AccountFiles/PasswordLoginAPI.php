@@ -37,6 +37,7 @@ $response->isUserLoggedIn = IsUserLoggedIn();
 if($response->isUserLoggedIn) {
   $response->loggedInUserID = LoggedInUser();
   $response->loggedInUserName = LoggedInUserName();
+  $response->loggedInDisplayName = LoggedInDisplayName();
   $response->isPatron = IsLoggedInUserPatron();
 }
 
