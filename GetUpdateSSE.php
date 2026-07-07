@@ -68,7 +68,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 $sessionData['userLoggedIn'] = IsUserLoggedIn();
 $sessionData['userName'] = LoggedInUserName() ?: (TryGet('userName', '') ?: null);
-$sessionData['displayName'] = LoggedInDisplayName() ?: $sessionData['userName'];
 $sessionData['isPvtVoidPatron'] = isset($_SESSION["isPvtVoidPatron"]);
 
 // Capture all Patreon campaign session IDs
@@ -96,7 +95,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 }
 
 if ($playerID == 3) {
-  UpdateSpectatorPresence($gameName, $sessionData['displayName'] ?? 'Anonymous');
+  UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'Anonymous');
 }
 
 header('Content-Type: text/event-stream');
@@ -156,7 +155,7 @@ while (true) {
   }
 
   if ($playerID == 3 && $currentRealTime - $lastSpectatorRefresh >= $spectatorRefreshInterval) {
-    UpdateSpectatorPresence($gameName, $sessionData['displayName'] ?? 'Anonymous');
+    UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'Anonymous');
     $lastSpectatorRefresh = $currentRealTime;
   }
 

@@ -17,14 +17,13 @@ if (isset($body['block-user-submit'])) {
     require 'dbh.inc.php';
 
     $conn = GetDBConnection(DBL_BLOCK_USER);
-    // Match by account handle or display name so blocking works on whichever name was seen
-    $sql = "SELECT usersId FROM users WHERE usersUid=? OR displayName=?";
+    $sql = "SELECT usersId FROM users WHERE usersUid=?";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
         echo "There was an error preparing the blocked user lookup query.";
         exit();
     } else {
-        mysqli_stmt_bind_param($stmt, "ss", $userToBlock, $userToBlock);
+        mysqli_stmt_bind_param($stmt, "s", $userToBlock);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $row = $result->fetch_assoc();

@@ -121,25 +121,23 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     include "MenuFiles/ParseGamefile.php";
     $initialLoad = new stdClass();
     $initialLoad->gameGUID = $gameGUID;
-    $initialLoad->playerName = $playerID == 1 ? $p1DisplayName : $p2DisplayName;
-    $initialLoad->opponentName = $playerID == 1 ? $p2DisplayName : $p1DisplayName;
-    $playerUid = $playerID == 1 ? $p1uid : $p2uid;
-    $opponentUid = $playerID == 1 ? $p2uid : $p1uid;
+    $initialLoad->playerName = $playerID == 1 ? $p1uid : $p2uid;
+    $initialLoad->opponentName = $playerID == 1 ? $p2uid : $p1uid;
     static $contributors = ["sugitime" => true, "OotTheMonk" => true, "Launch" => true, "LaustinSpayce" => true, "Star_Seraph" => true, "Tower" => true, "Etasus" => true, "scary987" => true, "Celenar" => true, "DKGaming" => true, "Aegisworn" => true, "PvtVoid" => true, "Bluffkin" => true];
 
-    $initialLoad->playerIsContributor = isset($contributors[$playerUid]);
+    $initialLoad->playerIsContributor = isset($contributors[$initialLoad->playerName]);
     $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron) ?: "";
 
     // Use cached Metafy tiers from game file (populated at JoinGame time)
     $initialLoad->playerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: [];
 
-    $initialLoad->opponentIsContributor = isset($contributors[$opponentUid]);
+    $initialLoad->opponentIsContributor = isset($contributors[$initialLoad->opponentName]);
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
     $initialLoad->opponentMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
     $initialLoad->roguelikeGameID = $roguelikeGameID;
-    $initialLoad->playerIsPvtVoidPatron = $playerUid == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
-    $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
+    $initialLoad->playerIsPvtVoidPatron = $initialLoad->playerName == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
+    $initialLoad->opponentIsPvtVoidPatron = $initialLoad->opponentName == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
     $initialLoad->gameFormat = $format;
 
@@ -148,8 +146,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
     // For spectators (playerID==3), resolve alt arts from the game file usernames directly.
     // p1uid maps to the "player" (altArts) slot; p2uid maps to the "opponent" (opponentAltArts) slot.
-    $altArtsPlayerName  = $playerID == 3 ? $p1uid : $playerUid;
-    $altArtsOpponentName = $playerID == 3 ? $p2uid : $opponentUid;
+    $altArtsPlayerName  = $playerID == 3 ? $p1uid : $initialLoad->playerName;
+    $altArtsOpponentName = $playerID == 3 ? $p2uid : $initialLoad->opponentName;
     $altArtsPlayerID    = $playerID == 3 ? 1 : $playerID;
     $altArtsOpponentID  = $playerID == 3 ? 2 : $otherPlayer;
 

@@ -72,11 +72,6 @@ $p1MetafyCommunities = json_decode(trim(fgets($gameFileHandler) ?: ''), true);
 $p2MetafyCommunities = json_decode(trim(fgets($gameFileHandler) ?: ''), true);
 if (!is_array($p1MetafyCommunities)) $p1MetafyCommunities = [];
 if (!is_array($p2MetafyCommunities)) $p2MetafyCommunities = [];
-// Display names snapshotted at join time; older game files predate these
-$p1DisplayName = trim(fgets($gameFileHandler) ?: '');
-$p2DisplayName = trim(fgets($gameFileHandler) ?: '');
-if ($p1DisplayName === '') $p1DisplayName = $p1uid;
-if ($p2DisplayName === '') $p2DisplayName = $p2uid;
 
 $MGS_Initial = 0;
 $MGS_Player2Joined = 1;

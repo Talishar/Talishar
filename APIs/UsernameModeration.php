@@ -100,7 +100,7 @@ if ($action === 'getOffensiveUsernames') {
     }
 
     // Get all active (not banned) usernames
-    $sql = "SELECT usersId, usersUid, displayName FROM users WHERE isBanned = 0 ORDER BY usersId DESC";
+    $sql = "SELECT usersId, usersUid FROM users WHERE isBanned = 0 ORDER BY usersId DESC";
     $result = mysqli_query($conn, $sql);
 
     if (!$result) {
@@ -120,33 +120,23 @@ if ($action === 'getOffensiveUsernames') {
 
     foreach ($rows as $row) {
         $username = strtolower($row['usersUid']);
+        $cleanUsername = str_replace(['-', '_', '1', '0', '3', '5', '7', '!', '@'], '', $username);
 
         // Skip whitelisted usernames (in-memory check, no extra DB query)
         if (isset($whitelistSet[$username])) {
             continue;
         }
 
-        // Scan both the handle and the custom display name
-        $namesToCheck = [$row['usersUid']];
-        if (!empty($row['displayName'])) $namesToCheck[] = $row['displayName'];
-
-        foreach ($namesToCheck as $nameToCheck) {
-            $cleanUsername = str_replace(['-', '_', '1', '0', '3', '5', '7', '!', '@'], '', strtolower($nameToCheck));
-            $matched = false;
-            // Check against offensive patterns
-            foreach ($cleanPatterns as $pattern) {
-                if (strpos($cleanUsername, $pattern) !== false) {
-                    $offensiveUsers[] = [
-                        'usersId' => $row['usersId'],
-                        'username' => $row['usersUid'],
-                        'displayName' => !empty($row['displayName']) ? $row['displayName'] : $row['usersUid'],
-                        'matchedPattern' => $pattern
-                    ];
-                    $matched = true;
-                    break;
-                }
+        // Check against offensive patterns
+        foreach ($cleanPatterns as $pattern) {
+            if (strpos($cleanUsername, $pattern) !== false) {
+                $offensiveUsers[] = [
+                    'usersId' => $row['usersId'],
+                    'username' => $row['usersUid'],
+                    'matchedPattern' => $pattern
+                ];
+                break; // Don't add same user multiple times
             }
-            if ($matched) break; // Don't add same user multiple times
         }
     }
 

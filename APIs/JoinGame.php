@@ -657,9 +657,6 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    if ($playerID == 1) {
      $p1uid = ($_SESSION["useruid"] ?? "Player 1");
      $p1id = ($_SESSION["userid"] ?? "");
-     // Snapshot the display name at join time; the account handle ($p1uid) stays
-     // the key for all lookups (Metafy, Patreon, contributor, ban checks)
-     $p1DisplayName = ($_SESSION["displayName"] ?? "") !== "" ? $_SESSION["displayName"] : $p1uid;
      $p1ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
      // Cache Metafy tiers and communities at join time so BuildGameState doesn't need DB access
      $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
@@ -669,7 +666,6 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    else if ($playerID == 2) {
      $p2uid = ($_SESSION["useruid"] ?? "Player 2");
      $p2id = ($_SESSION["userid"] ?? "");
-     $p2DisplayName = ($_SESSION["displayName"] ?? "") !== "" ? $_SESSION["displayName"] : $p2uid;
      $p2ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
      // Cache Metafy tiers and communities at join time so BuildGameState doesn't need DB access
      $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);

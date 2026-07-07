@@ -77,11 +77,6 @@
   $p2MetafyCommunities  = json_decode($lines[$li++] ?? '', true);
   if (!is_array($p1MetafyCommunities)) $p1MetafyCommunities = [];
   if (!is_array($p2MetafyCommunities)) $p2MetafyCommunities = [];
-  // Display names snapshotted at join time; older game files predate these
-  $p1DisplayName        = $lines[$li++] ?? '';
-  $p2DisplayName        = $lines[$li++] ?? '';
-  if ($p1DisplayName === '') $p1DisplayName = $p1uid;
-  if ($p2DisplayName === '') $p2DisplayName = $p2uid;
   unset($lines, $li, $line);
 
   $MGS_Initial = 0;

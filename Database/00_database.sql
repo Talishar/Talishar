@@ -81,13 +81,10 @@ CREATE TABLE `users` (
   `metafyRefreshToken` VARCHAR(500) DEFAULT NULL,
   `metafyCommunities` LONGTEXT DEFAULT NULL,
   `metafyID` VARCHAR(128) DEFAULT NULL,
-  `displayName` varchar(50) DEFAULT NULL,
-  `lastNameChange` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`usersId`),
   KEY `usersUid` (`usersUid`),
   KEY `idx_metafy_access_token` (`metafyAccessToken`),
-  KEY `idx_rememberMeToken` (`rememberMeToken`),
-  UNIQUE KEY `idx_displayName` (`displayName`)
+  KEY `idx_rememberMeToken` (`rememberMeToken`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 --
 -- Indexes for dumped tables
@@ -163,20 +160,6 @@ CREATE TABLE IF NOT EXISTS blocked_users (
   CHECK (userId != blockedUserId),
   INDEX idx_user_id (userId),
   INDEX idx_blocked_user_id (blockedUserId)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
---
--- Table structure for table `name_history`
---
-CREATE TABLE IF NOT EXISTS name_history (
-  usersId INT NOT NULL,
-  oldName VARCHAR(128) NOT NULL,
-  newName VARCHAR(128) NOT NULL,
-  changedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_users (usersId),
-  INDEX idx_oldName (oldName),
-  FOREIGN KEY (usersId) REFERENCES users(usersId) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

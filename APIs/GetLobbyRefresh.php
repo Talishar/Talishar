@@ -132,14 +132,12 @@ if ($kickPlayerTwo) {
   if ($disconnectedPlayer == 2) {
     $p2Data = [];
     $p2uid = "";
-    $p2DisplayName = "";
     $p2id = "";
     $p2SideboardSubmitted = "0";
     $p1SideboardSubmitted = "0";
   } else {
     SetCachePiece($gameName, 7, "");
     $p1uid = "-";
-    $p1DisplayName = "";
     $p1id = "";
     $p1SideboardSubmitted = "0";
     $p2SideboardSubmitted = "0";
@@ -214,8 +212,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->theirHero = $otherHero;
   $response->theirHeroName = CardName($otherHero);
 
-  $theirName = ($playerID == 1 ? $p2DisplayName : $p1DisplayName);
-  if ($theirName == '-' || $theirName == '') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
+  $theirName = ($playerID == 1 ? $p2uid : $p1uid);
+  if ($theirName == '-') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
   $contentCreator = ContentCreators::tryFrom($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID);
   if ($contentCreator !== null) {
     $nameColor = $contentCreator->NameColor();

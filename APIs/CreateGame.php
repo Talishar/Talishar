@@ -117,8 +117,6 @@ $p2Key = hash("sha256", rand() . rand() . rand());
 $p1uid = "-";
 if($deckTestMode != "") $p2uid = "Practice Dummy";
 else $p2uid = "-";
-$p1DisplayName = "";
-$p2DisplayName = "";
 $p1id = "-";
 $p2id = "-";
 $hostIP = GetClientIP();

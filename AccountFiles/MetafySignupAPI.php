@@ -72,7 +72,6 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         $_SESSION['useruid'] = $existingUsername ?? ($user_profile['username'] ?? $user_profile['email'] ?? $userID);
         $_SESSION['isPatron'] = CheckIfMetafySupporter($userID);
         $_SESSION['metafyID'] = $user_profile['id'] ?? '';
-        $_SESSION['displayName'] = GetExistingDisplayName($userID) ?? '';
 
         ApplyRememberMeCookie($userID);
 
@@ -462,30 +461,7 @@ function GetExistingUsername($userID)
       return $row['usersUid'];
     }
   }
-
-  mysqli_close($conn);
-  return null;
-}
-
-function GetExistingDisplayName($userID)
-{
-  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
-  $sql = "SELECT displayName FROM users WHERE usersid=?";
-  $stmt = mysqli_stmt_init($conn);
-
-  if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, 's', $userID);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $row = mysqli_fetch_assoc($result);
-    mysqli_stmt_close($stmt);
-
-    if ($row && isset($row['displayName'])) {
-      mysqli_close($conn);
-      return $row['displayName'];
-    }
-  }
-
+  
   mysqli_close($conn);
   return null;
 }
