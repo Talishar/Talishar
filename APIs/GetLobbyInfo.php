@@ -60,8 +60,8 @@ ob_start();
 include "./APIParseGamefile.php";
 ob_end_clean();
 
-$yourName = ($playerID == 1 ? $p1uid : $p2uid);
-$theirName = ($playerID == 1 ? $p2uid : $p1uid);
+$yourName = ($playerID == 1 ? $p1DisplayName : $p2DisplayName);
+$theirName = ($playerID == 1 ? $p2DisplayName : $p1DisplayName);
 
 $response->badges = [];
 

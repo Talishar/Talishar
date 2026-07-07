@@ -38,6 +38,7 @@ function pwdMatch($pwd, $pwdrepeat)
 }
 
 // Check if username is in database, if so then return data
+// Also matches display names so a new signup can't take a name another player displays as
 function uidExists($conn, $username)
 {
 	$conn = GetDBConnection(DBL_UID_EXISTS);
@@ -45,14 +46,14 @@ function uidExists($conn, $username)
 		header("location: ../Signup.php?error=db_unavailable");
 		exit();
 	}
-	$sql = "SELECT * FROM users WHERE usersUid = ?;";
+	$sql = "SELECT * FROM users WHERE usersUid = ? OR displayName = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
 		header("location: ../Signup.php?error=stmtfailed");
 		exit();
 	}
 
-	mysqli_stmt_bind_param($stmt, "s", $username);
+	mysqli_stmt_bind_param($stmt, "ss", $username, $username);
 	mysqli_stmt_execute($stmt);
 
 	// "Get result" returns the results from a prepared statement
@@ -132,7 +133,7 @@ function loginFromCookie()
         if (!$conn) {
             return; // Silently fail if database unavailable
         }
-        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey, metafyID, rust_counters FROM users WHERE rememberMeToken=?";
+        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey, metafyID, rust_counters, displayName FROM users WHERE rememberMeToken=?";
         $stmt = mysqli_stmt_init($conn);
         
         if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -160,6 +161,7 @@ function loginFromCookie()
                 $_SESSION["lastAuthKey"] = $row[9];
                 $_SESSION["metafyID"] = $row[10] ?? "";
                 $_SESSION["rust_counters"] = intval($row[11] ?? 0);
+                $_SESSION["displayName"] = $row[12] ?? "";
                 LogIPHistory($row[0]);
                 try {
                     PatreonLogin($patreonAccessToken);
@@ -178,6 +180,7 @@ function loginFromCookie()
                 unset($_SESSION["lastAuthKey"]);
                 unset($_SESSION["metafyID"]);
                 unset($_SESSION["rust_counters"]);
+                unset($_SESSION["displayName"]);
             }
             session_write_close();
         }
@@ -1288,8 +1291,57 @@ function SendEmailAPICurlFallback($userEmail, $url, $email, $sendgridKey)
 	}
 }
 
+// Returns the player's display name, falling back to the account handle when unset.
+function GetDisplayNameByUid($uid)
+{
+	if ($uid == "" || $uid == "-") return $uid;
+	$conn = GetDBConnection(DBL_GET_DISPLAY_NAME);
+	if (!$conn) return $uid;
+	$displayName = null;
+	$sql = "SELECT displayName FROM users WHERE usersUid = ?";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $uid);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_bind_result($stmt, $displayName);
+		mysqli_stmt_fetch($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	return ($displayName !== null && $displayName !== "") ? $displayName : $uid;
+}
+
+function ResolveNameToAccount($name)
+{
+	if ($name == "") return null;
+	$conn = GetDBConnection(DBL_RESOLVE_NAME_TO_ACCOUNT);
+	if (!$conn) return null;
+
+	$queries = [
+		"SELECT usersId, usersUid FROM users WHERE usersUid = ? LIMIT 1",
+		"SELECT usersId, usersUid FROM users WHERE displayName = ? LIMIT 1",
+		"SELECT u.usersId, u.usersUid FROM name_history h JOIN users u ON u.usersId = h.usersId
+		 WHERE h.oldName = ? OR h.newName = ? ORDER BY h.changedAt DESC LIMIT 1"
+	];
+	foreach ($queries as $i => $sql) {
+		$stmt = mysqli_stmt_init($conn);
+		if (!mysqli_stmt_prepare($stmt, $sql)) continue;
+		if ($i == 2) mysqli_stmt_bind_param($stmt, "ss", $name, $name);
+		else mysqli_stmt_bind_param($stmt, "s", $name);
+		mysqli_stmt_execute($stmt);
+		$usersId = null;
+		$usersUid = null;
+		mysqli_stmt_bind_result($stmt, $usersId, $usersUid);
+		$found = mysqli_stmt_fetch($stmt);
+		mysqli_stmt_close($stmt);
+		if ($found) return ["usersId" => $usersId, "usersUid" => $usersUid];
+	}
+	return null;
+}
+
 function BanPlayer($uid)
 {
+	$account = ResolveNameToAccount($uid);
+	if ($account !== null) $uid = $account["usersUid"];
 	$conn = GetDBConnection(DBL_BAN_PLAYER);
 	$sql = "UPDATE users SET isBanned = true WHERE usersUid = ?";
 	$stmt = mysqli_stmt_init($conn);
@@ -1298,6 +1350,7 @@ function BanPlayer($uid)
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
+	return $uid;
 }
 
 function EnsureBannedIPsTable($conn)
