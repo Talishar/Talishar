@@ -1642,6 +1642,54 @@ function IsFusionActive()
   return intval($combatChainState[$CCS_AttackFused]) > 0;
 }
 
+function ClearCombatChainAwait($player) {
+  global $chainLinks;
+  $aGoodCleanFight = false;
+  $numChainLinks = count($chainLinks);
+  $chainLinkPieces = ChainLinksPieces();
+  for($i = 0; $i < $numChainLinks; ++$i) {
+    if (!isset($chainLinks[$i]) || !is_array($chainLinks[$i])) continue;
+    $innerCount = count($chainLinks[$i]);
+    for($j = 0; $j < $innerCount; $j += $chainLinkPieces) {
+      if($chainLinks[$i][$j + 2] != "1") continue;
+      $linkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j], true, true) : $chainLinks[$i][$j];
+      $cardType = CardType($linkID);
+      if($cardType != "AA" && $cardType != "DR" && $cardType != "AR" && $cardType != "A" && $cardType != "B" && $cardType != "M" && !DelimStringContains($cardType, "I")) {
+        if(!SubtypeContains($linkID, "Evo")) continue;
+        if($chainLinks[$i][$j+3] != "HAND" && BlockValue($linkID) >= 0) continue;
+      }
+      if($cardType == "AR" && $chainLinks[$i][$j+1] == $player) continue;
+      else {
+        if($cardType == "T" || $cardType == "Macro") continue;//Don't need to add to anywhere if it's a token
+        if ($j == 0 && !TypeContains($linkID, "AA", $player)) continue; //Don't do anything with attack proxies
+        // $j + 7 instead of just $j to grab the "original CardID" in case the card became a copy
+        $origLinkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j+7], true, true) : $chainLinks[$i][$j+7];
+        $goesWhere = GoesWhereAfterResolving($origLinkID, "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
+        ResolveGoesWhere($goesWhere, $origLinkID, $chainLinks[$i][$j + 1], "CHAINCLOSING");
+      }
+    }
+  }
+}
+
+function CloseCombatChainAwait($player) {
+  global $defPlayer, $chainLinks, $chainLinkSummary;
+  $defCharacter = &GetPlayerCharacter($defPlayer);
+  $defCharCount = count($defCharacter);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $defCharCount; $i += $charPieces) {
+    $defCharacter[$i + 6] = 0;
+  }
+  $defItems = new Items($defPlayer);
+  $numItems = $defItems->NumItems();
+  for ($i = 0; $i < $numItems; ++$i) {
+    $ItemCard = $defItems->Card($i, true);
+    $ItemCard->ToggleOnChain(0);
+  }
+  $chainLinks = [];
+  $chainLinkSummary = [];
+  EndResolutionStep();
+}
+
 function CombatChainClosedTriggers()
 {
   global $chainLinks, $mainPlayer, $defPlayer, $CS_HealthLost, $currentTurnEffects;
@@ -1711,25 +1759,7 @@ function CombatChainClosedTriggers()
           AddDecisionQueue("YESNO", $mainPlayer, "do_you_want_to_banish_".CardLink("deep_recesses_of_existence_blue", "deep_recesses_of_existence_blue")."?");
           // This will exit early if No
           AddDecisionQueue("NOPASS", $mainPlayer, "-");
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "$whoseGY:cardID=deep_recesses_of_existence_blue", 1);
-          AddDecisionQueue("REVERSELIST", $mainPlayer, "-", 1); // make it banish the top DRE
-          AddDecisionQueue("CHOOSEONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $mainPlayer, "$whoseGY,DOWN," . $mainPlayer, 1);
-          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-          if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card in your Graveyard to banish", 1);
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $mainPlayer, 1);
-            AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-          }
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
-            AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card in your opponent's Graveyard to banish", 1);
-            AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRDISCARD", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-            AddDecisionQueue("MZBANISH", $mainPlayer, "GY,-," . $defPlayer, 1);
-            AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-          }
+          Await($mainPlayer, "deep_recesses_of_existence_blue", i:$i, j:$j, final:true);
           break;
         default:
           break;

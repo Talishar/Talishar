@@ -4186,6 +4186,32 @@ class deep_recesses_of_existence_blue extends Card {
     $this->cardID = "deep_recesses_of_existence_blue";
     $this->controller = $controller;
   }
+
+  function SpecificLogic() {
+    global $dqVars, $mainPlayer, $defPlayer, $CS_HealthLost;
+    $i = $dqVars["i"] ?? -1;
+    $j = $dqVars["j"] ?? -1;
+    if ($i == -1 || $j == -1) return;
+    $Link = new ChainLink($i);
+    $LinkCard = $Link->GetLinkCard($j);
+    $destPlayer = str_contains($LinkCard->From(), "THEIR") ? $defPlayer : $mainPlayer;
+    BanishCardForPlayer($LinkCard->OriginalCardID(), $destPlayer, "CC", mod:"DOWN");
+    $LinkCard->Remove();
+    if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
+      PrependDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+      PrependDecisionQueue("MZBANISH", $this->controller, "GY,-," . $this->controller, 1);
+      PrependDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRDISCARD", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card in your opponent's Graveyard to banish", 1);
+    }
+    if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
+      PrependDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+      PrependDecisionQueue("MZBANISH", $this->controller, "GY,-," . $this->controller, 1);
+      PrependDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card in your Graveyard to banish", 1);
+    }
+  }
 }
 
 class power_of_make_believe extends BaseCard {
