@@ -702,6 +702,6 @@ function IsTeamFabInsight($userName)
 
 function IsTeamOddwillows($userName)
 {
-  static $members = ["BenOddwillows" => 1, "PvtVoid" => 1];
+  static $members = ["BenOddwillows" => 1, "PvtVoid" => 1, "Teari" => 1, "arcaneghost" => 1];
   return isset($members[$userName]);
 }
