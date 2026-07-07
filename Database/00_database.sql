@@ -34,7 +34,10 @@ CREATE TABLE `favoritedeck` (
   `usersId` int(11) NOT NULL,
   `name` varchar(128) NOT NULL,
   `hero` varchar(8) NOT NULL,
-  `format` varchar(32) DEFAULT NULL
+  `format` varchar(32) DEFAULT NULL,
+  `cardBack` varchar(32) NOT NULL DEFAULT '0',
+  `playmat` varchar(32) NOT NULL DEFAULT '0',
+  `altArtsCustomized` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
@@ -106,6 +109,21 @@ ADD PRIMARY KEY (`GameID`),
 ALTER TABLE `favoritedeck`
 ADD PRIMARY KEY (`decklink`, `usersId`),
   ADD KEY `usersId` (`usersId`);
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `deck_alt_arts`
+--
+CREATE TABLE IF NOT EXISTS deck_alt_arts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  usersId INT NOT NULL,
+  -- Collation must match favoritedeck.decklink exactly for the FK below to be valid.
+  decklink VARCHAR(128) NOT NULL COLLATE utf8mb4_0900_ai_ci,
+  cardId VARCHAR(64) NOT NULL,
+  altPath VARCHAR(128) NOT NULL,
+  UNIQUE KEY idx_user_deck_card (usersId, decklink, cardId),
+  FOREIGN KEY (decklink, usersId) REFERENCES favoritedeck(decklink, usersId) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 --

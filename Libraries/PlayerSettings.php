@@ -92,9 +92,121 @@ function IsPatron($player)
   return $settings[$SET_IsPatron] ?? "0" == "1";
 }
 
+function GetFavoriteDeckCosmeticOverride($player)
+{
+  global $p1id, $p2id, $p1DeckLink, $p2DeckLink;
+  static $cache = [];
+  if (array_key_exists($player, $cache)) return $cache[$player];
+
+  $userId = ($player == 1) ? ($p1id ?? '') : ($p2id ?? '');
+  $deckLink = ($player == 1) ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+
+  if (
+    empty($userId) || $userId === '-' || empty($deckLink) ||
+    !function_exists('GetDBConnection') || !defined('DBL_BUILD_GAME_STATE')
+  ) {
+    return $cache[$player] = null;
+  }
+
+  $conn = GetDBConnection(DBL_BUILD_GAME_STATE);
+  if (!$conn) return $cache[$player] = null;
+
+  $result = null;
+  $sql = "SELECT cardBack, playmat FROM favoritedeck WHERE decklink = ? AND usersId = ? LIMIT 1";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "ss", $deckLink, $userId);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $row = $res ? mysqli_fetch_assoc($res) : null;
+    mysqli_stmt_close($stmt);
+    if ($row) {
+      $result = [
+        'cardBack' => strval($row['cardBack'] ?? '0'),
+        'playmat' => strval($row['playmat'] ?? '0')
+      ];
+    }
+  }
+  mysqli_close($conn);
+
+  return $cache[$player] = $result;
+}
+
+function GetDeckAltArtOverride($userId, $deckLink)
+{
+  static $cache = [];
+  $cacheKey = $userId . '|' . $deckLink;
+  if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];
+
+  if (
+    empty($userId) || $userId === '-' || empty($deckLink) ||
+    !function_exists('GetDBConnection') || !defined('DBL_BUILD_GAME_STATE')
+  ) {
+    return $cache[$cacheKey] = null;
+  }
+
+  $conn = GetDBConnection(DBL_BUILD_GAME_STATE);
+  if (!$conn) return $cache[$cacheKey] = null;
+
+  $customized = false;
+  $sql = "SELECT altArtsCustomized FROM favoritedeck WHERE decklink = ? AND usersId = ? LIMIT 1";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "ss", $deckLink, $userId);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $row = $res ? mysqli_fetch_assoc($res) : null;
+    mysqli_stmt_close($stmt);
+    $customized = $row && intval($row['altArtsCustomized'] ?? 0) === 1;
+  }
+
+  $map = [];
+  if ($customized) {
+    $sql = "SELECT cardId, altPath FROM deck_alt_arts WHERE decklink = ? AND usersId = ?";
+    $stmt = mysqli_stmt_init($conn);
+    if (mysqli_stmt_prepare($stmt, $sql)) {
+      mysqli_stmt_bind_param($stmt, "ss", $deckLink, $userId);
+      mysqli_stmt_execute($stmt);
+      $res = mysqli_stmt_get_result($stmt);
+      while ($row = mysqli_fetch_assoc($res)) {
+        $map[$row['cardId']] = $row['altPath'];
+      }
+      mysqli_stmt_close($stmt);
+    }
+  }
+  mysqli_close($conn);
+
+  return $cache[$cacheKey] = ['customized' => $customized, 'map' => $map];
+}
+
+// If the player has explicitly customized alt arts for the deck they're playing,
+// their saved per-card selections replace the auto-assembled campaign/community
+// pool entirely (unselected cards fall back to base art). Otherwise the pool is
+// left untouched so players who never visited the customization page keep the
+// legacy behavior.
+function ApplyDeckAltArtOverride($poolAltArts, $userId, $deckLink)
+{
+  $override = GetDeckAltArtOverride($userId, $deckLink);
+  if ($override === null || !$override['customized']) return $poolAltArts;
+
+  $result = [];
+  foreach ($override['map'] as $cardId => $altPath) {
+    $altArt = new stdClass();
+    $altArt->name = 'My Deck';
+    $altArt->cardId = $cardId;
+    $altArt->altPath = $altPath;
+    $result[] = $altArt;
+  }
+  return $result;
+}
+
 function GetPlaymat($player)
 {
   global $SET_Playmat;
+  $override = GetFavoriteDeckCosmeticOverride($player);
+  if ($override !== null && $override['playmat'] !== '0') {
+    return $override['playmat'];
+  }
   $settings = GetSettings($player);
   return $settings[$SET_Playmat] ?? 0;
 }
@@ -243,7 +355,11 @@ function GetCardBack($player)
     137 => "CBNxi2",
     138 => "CBOddwillows",
   ];
-  return $cardBackMap[$settings[$SET_Cardback] ?? 0] ?? "CardBack";
+  $override = GetFavoriteDeckCosmeticOverride($player);
+  $cardBackId = ($override !== null && $override['cardBack'] !== '0')
+    ? $override['cardBack']
+    : ($settings[$SET_Cardback] ?? 0);
+  return $cardBackMap[$cardBackId] ?? "CardBack";
 }
 
 function IsManualMode($player)

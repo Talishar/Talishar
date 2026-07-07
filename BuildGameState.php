@@ -5,6 +5,7 @@ if (!function_exists('IsHideHandFromFriends')) {
 }
 function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false, $cacheSnapshot = null) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
+  global $p1CharEquip, $p2CharEquip;
   global $myAuras, $myItems, $mySoul, $myAllies, $myPermanents, $myResources;
   global $theirHand, $theirPitch, $theirDeck, $theirDiscard, $theirBanish, $theirArsenal, $theirCharacter;
   global $theirAuras, $theirItems, $theirSoul, $theirAllies, $theirPermanents, $theirResources;
@@ -18,6 +19,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $roguelikeGameID, $gameGUID, $p1uid, $p2uid;
   global $p1MetafyCommunities, $p2MetafyCommunities;
   global $p1TotalTime, $p2TotalTime, $ChainLinks;
+  global $p1id, $p2id, $p1DeckLink, $p2DeckLink;
 
   // Variables that will be set locally and need to be accessible to BuildPlayerInputPopup
   global $MyCardBack, $TheirCardBack, $otherPlayer, $isReactFE, $isGameOver, $isCasterMode, $isReplay, $isHideHandFromFriends, $viewerIsFriendOfOpponent;
@@ -170,7 +172,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         }
 
         if($isPatronOfCampaign || $campaign->IsTeamMember($sessionUserName ?? '') || $campaign->IsTeamMember($altArtsPlayerName)) {
-          $altArts = $campaign->AltArts($altArtsPlayerID);
+          $altArtsHero = $altArtsPlayerID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
+          $altArts = $campaign->AltArts($altArtsHero);
           if($altArts == "") continue;
           $altArts = explode(",", $altArts);
           $altArtsCount = count($altArts);
@@ -224,7 +227,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         }
 
         if($isOpponentSupporterOfCampaign) {
-          $opponentAltArts = $campaign->AltArts($altArtsOpponentID);
+          $opponentAltArtsHero = $altArtsOpponentID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
+          $opponentAltArts = $campaign->AltArts($opponentAltArtsHero);
           if($opponentAltArts == "") continue;
           $opponentAltArts = explode(",", $opponentAltArts);
           $opponentAltArtsCount = count($opponentAltArts);
@@ -266,6 +270,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         }
       }
     }
+
+    $myUserId = $altArtsPlayerID == 1 ? ($p1id ?? '') : ($p2id ?? '');
+    $myDeckLink = $altArtsPlayerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+    $initialLoad->altArts = ApplyDeckAltArtOverride($initialLoad->altArts, $myUserId, $myDeckLink);
+
+    $oppUserId = $altArtsOpponentID == 1 ? ($p1id ?? '') : ($p2id ?? '');
+    $oppDeckLink = $altArtsOpponentID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+    $initialLoad->opponentAltArts = ApplyDeckAltArtOverride($initialLoad->opponentAltArts, $oppUserId, $oppDeckLink);
+
     $response->initialLoad = $initialLoad;
   }
 

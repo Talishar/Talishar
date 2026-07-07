@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../../AllAltArtVariations.php';
+
 enum ContentCreators : string
 {
   case InstantSpeed = "0";
@@ -414,24 +416,24 @@ enum PatreonCampaign : string
     }
   }
 
-  public function AltArts($playerID): string
+  public function AltArts($heroCardNumber = ""): string
   {
     $altArts = [];
-    $char = getPlayerCharacter($playerID);
 
-    // Add character-specific alt arts
-    if(GeneratedHasEssenceOfEarth($char[0])) {
-      $altArts[] = "runechant=ARC112-Earth";
-      $altArts[] = "might=TER028-might";
-    }
-    if(GeneratedHasEssenceOfLightning($char[0])) {
-      $altArts[] = "runechant=ARC112-Lightning";
-    }
-    if($char[0] == "enigma" || $char[0] == "enigma_ledger_of_ancestry") {
-      $altArts[] = "spectral_shield=MON104-Blue";
-    }
-    if($char[0] == "enigma_new_moon") {
-      $altArts[] = "spectral_shield=MON104-Green";
+    if ($heroCardNumber !== "") {
+      if(GeneratedHasEssenceOfEarth($heroCardNumber)) {
+        $altArts[] = "runechant=ARC112-Earth";
+        $altArts[] = "might=TER028-might";
+      }
+      if(GeneratedHasEssenceOfLightning($heroCardNumber)) {
+        $altArts[] = "runechant=ARC112-Lightning";
+      }
+      if($heroCardNumber == "enigma" || $heroCardNumber == "enigma_ledger_of_ancestry") {
+        $altArts[] = "spectral_shield=MON104-Blue";
+      }
+      if($heroCardNumber == "enigma_new_moon") {
+        $altArts[] = "spectral_shield=MON104-Green";
+      }
     }
 
     // Add campaign-specific alt arts
@@ -450,7 +452,7 @@ enum PatreonCampaign : string
     switch($this->value) {
       case "7198186": // Talishar
       case "9408649": // PvtVoid
-      $altArts = [
+        $altArts = [
         "a_drop_in_the_ocean_blue=MST095-T", "a_good_clean_fight_red=GEM088-T", "adaptive_alpha_mold=SUP253-T", "aegis_archangel_of_protection=DTD407-T",
         "aether_ashwing=UPR042-T", "aether_quickening_red=FAB112-T", "aether_quickening_yellow=FAB113-T", "aether_quickening_blue=FAB114-T", "aether_wildfire_red=EVR123-T",
         "affirm_loyalty_red=GEM012-T", "agile_windup_red=KYO007-T", "agile_windup_yellow=KYO016-T", "agile_windup_blue=KYO022-T", "agility_stance_yellow=FAB313-T",

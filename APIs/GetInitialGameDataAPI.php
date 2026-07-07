@@ -44,9 +44,12 @@ $response->altArts = [];
 //Get Alt arts
 if(!AltArtsDisabled($playerID))
 {
+  $heroCacheArr = ReadCacheArray($gameName) ?? [];
+  $playerHero = $playerID == 1 ? ($heroCacheArr[6] ?? "") : ($heroCacheArr[7] ?? "");
+
   foreach(PatreonCampaign::cases() as $campaign) {
     if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUserName()))) {
-      $altArts = explode(",", $campaign->AltArts($playerID));
+      $altArts = explode(",", $campaign->AltArts($playerHero));
       $altCount = count($altArts);
       $campaignName = $campaign->CampaignName();
       for($i = 0; $i < $altCount; ++$i) {
