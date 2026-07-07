@@ -1019,7 +1019,7 @@ function isBannedInFormat($cardID, $format) {
     ];
   }
   if ($format == "futurecc") {
-    $futureBans = [];
+    $futureBans = ["victor_goldmane_high_and_mighty", "millers_grindstone"];
     $futureUnbans = [];
     return (in_array($cardID, $futureBans) || (isset($bannedSets["cc"][$cardID]) && !in_array($cardID, $futureUnbans)));
   }
