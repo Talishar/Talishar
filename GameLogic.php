@@ -2467,7 +2467,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
       }
-      else AddCombatChain($lastResult, $player, $parameter, 0, -1);
+      else AddCombatChain($lastResult, $player, $parameter, 0, -1, true);
       OnBlockResolveEffects($lastResult);
       if (TypeContains($lastResult, "DR")) OnDefenseReactionResolveEffects("CC", cardID: $lastResult);
       return $lastResult;
