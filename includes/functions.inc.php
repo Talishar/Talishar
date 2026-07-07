@@ -231,7 +231,7 @@ function ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)
 function ShouldSkipRustCountersForContributors()
 {
 	global $p1uid, $p2uid;
-	$contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "Bluffkin"];
+	$contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "Bluffkin", "Bluffkin1"];
 	if (in_array($p1uid, $contributors) || in_array($p2uid, $contributors)) return true;
 }
 

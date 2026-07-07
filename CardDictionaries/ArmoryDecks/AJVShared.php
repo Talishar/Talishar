@@ -113,8 +113,9 @@ function FrostbiteExposed($otherPlayer, $player, $may=false) {
       AddDecisionQueue("EQUIPCARD", $player, "frostbite-{1}-{0}", 1);
     }
     else {
+      $dest = $player == $otherPlayer ? "MY" : "THEIR";
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
-      AddDecisionQueue("EQUIPCARD", $player, "frostbite-{0}-THEIR", 1);
+      AddDecisionQueue("EQUIPCARD", $player, "frostbite-{0}-$dest", 1);
     }
   }
 }
