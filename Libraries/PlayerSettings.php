@@ -241,6 +241,7 @@ function GetCardBack($player)
     135 => "CBWingedHussars",
     136 => "CBFabInsight",
     137 => "CBNxi2",
+    138 => "CBOddwillows",
   ];
   return $cardBackMap[$settings[$SET_Cardback] ?? 0] ?? "CardBack";
 }
@@ -696,5 +697,11 @@ function IsTeamWingedHussars($userName)
 function IsTeamFabInsight($userName)
 {
     static $members = ["FaBInsights" => 1, "PvtVoid" => 1];
+  return isset($members[$userName]);
+}
+
+function IsTeamOddwillows($userName)
+{
+  static $members = ["BenOddwillows" => 1, "PvtVoid" => 1];
   return isset($members[$userName]);
 }
