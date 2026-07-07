@@ -15,7 +15,6 @@
       global $p1SideboardSubmitted, $p2SideboardSubmitted, $p1StartingEquipment, $p2StartingEquipment, $p1IsAI, $p2IsAI, $gameGUID;
       global $p1MetafyTiers, $p2MetafyTiers;
       global $p1MetafyCommunities, $p2MetafyCommunities;
-      global $p1DisplayName, $p2DisplayName;
       // Build entire payload as one string, then write in a single call.
       // Reduces ~40 fwrite() PHP function calls + stream API dispatches to 1.
       $content = implode(" ", $p1Data) . "\r\n"
@@ -59,9 +58,7 @@
           . json_encode($p1MetafyTiers        ?? []) . "\r\n"
           . json_encode($p2MetafyTiers        ?? []) . "\r\n"
           . json_encode($p1MetafyCommunities  ?? []) . "\r\n"
-          . json_encode($p2MetafyCommunities  ?? []) . "\r\n"
-          . ($p1DisplayName ?? "")                   . "\r\n"
-          . ($p2DisplayName ?? "")                   . "\r\n";
+          . json_encode($p2MetafyCommunities  ?? []) . "\r\n";
 
       rewind($gameFileHandler);
       fwrite($gameFileHandler, $content);

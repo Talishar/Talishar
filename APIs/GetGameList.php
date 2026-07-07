@@ -166,24 +166,16 @@ if ($handle = opendir($path)) {
         $gameFilePath = $folder . "GameFile.txt";
         $gameCreator = "";
         $p2Username = "";
-        $p1ShownName = "";
-        $p2ShownName = "";
         if (file_exists($gameFilePath)) {
-          // Read only the needed lines instead of parsing the whole file
+          // Read only the two username lines instead of loading the whole file
           $fh = fopen($gameFilePath, "r");
           if ($fh) {
             for ($i = 0; $i < 9; $i++) { if (fgets($fh) === false) break; }
             $gameCreator = trim((string)fgets($fh));  // line 10: p1uid
             $p2Username  = trim((string)fgets($fh));  // line 11: p2uid
-            // Skip to the trailing display-name lines (43-44); missing on older game files
-            for ($i = 0; $i < 31; $i++) { if (fgets($fh) === false) break; }
-            $p1ShownName = trim((string)fgets($fh));  // line 43: p1DisplayName
-            $p2ShownName = trim((string)fgets($fh));  // line 44: p2DisplayName
             fclose($fh);
           }
         }
-        if ($p1ShownName === "") $p1ShownName = $gameCreator;
-        if ($p2ShownName === "") $p2ShownName = $p2Username;
         
         // Determine if this game should be shown
         $showGame = false;
@@ -216,9 +208,8 @@ if ($handle = opendir($path)) {
         $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
         $gameInProgress->gameName = $gameToken;
         $gameInProgress->format = $cacheArr[12] ?? "";
-        // Display names for the UI; the friend/ban/block checks above key off the handles
-        $gameInProgress->gameCreator = $p1ShownName;
-        $gameInProgress->p2Username = $p2ShownName;
+        $gameInProgress->gameCreator = $gameCreator;
+        $gameInProgress->p2Username = $p2Username;
         $gameInProgress->visibility = $visibility;
         
         if($gameInProgress->p1Hero != "" && $gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") $response->gamesInProgress[] = $gameInProgress;
@@ -242,8 +233,6 @@ if ($handle = opendir($path)) {
     $gameDescription = "";
     $p1uid = "";
     $p2uid = "";
-    $p1DisplayName = "";
-    $p2DisplayName = "";
     if (file_exists($gf)) {
       $openCacheArr = ReadCacheArray($gameName);
       $lastRefresh = ($openCacheArr !== null) ? intval($openCacheArr[1] ?? "") : 0; //Player 1 last connection time
@@ -307,7 +296,7 @@ if ($handle = opendir($path)) {
         $openGame->formatName = $formatName;
         $openGame->description = $description;
         $openGame->gameName = $gameToken;
-        $openGame->gameCreator = $p1DisplayName !== "" ? $p1DisplayName : $p1uid;
+        $openGame->gameCreator = $p1uid;
         $openGame->visibility = $visibility;
         if($isShadowBanned) {
           if($format == "shadowblitz" || $format == "shadowcc") $response->openGames[] = $openGame;

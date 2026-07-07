@@ -27,16 +27,15 @@ if (!file_exists("../Games/" . $gameName . "/GameFile.txt")) {
 
 include "./APIParseGamefile.php";
 
-// p1Name/p2Name are display-only; perk and contributor checks key off the immutable handles
-$response->p1Name = $p1DisplayName;
-$response->p2Name = $p2DisplayName;
+$response->p1Name = $p1uid;
+$response->p2Name = $p2uid;
 $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
 $response->p1IsPatron = $p1IsPatron == "" ? false : true;
-$response->p1IsContributor = in_array($p1uid, $contributors);
+$response->p1IsContributor = in_array($response->p1Name, $contributors);
 $response->p2IsPatron = $p2IsPatron == "" ? false : true;
-$response->p2IsContributor = in_array($p2uid, $contributors);
-$response->p1IsPvtVoidPatron = $p1uid == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
-$response->p2IsPvtVoidPatron = $p2uid == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
+$response->p2IsContributor = in_array($response->p2Name, $contributors);
+$response->p1IsPvtVoidPatron = $response->p1Name == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
+$response->p2IsPvtVoidPatron = $response->p2Name == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
 $response->roguelikeGameID = $roguelikeGameID;
 
 $response->altArts = [];

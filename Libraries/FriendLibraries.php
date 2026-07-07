@@ -86,7 +86,7 @@ function GetUserFriends($userId) {
   $userId = (int)$userId;
   
   $query = "
-    SELECT f.friendUserId, u.usersUid, u.usersId, f.nickname, u.displayName
+    SELECT f.friendUserId, u.usersUid, u.usersId, f.nickname
     FROM friends f
     JOIN users u ON f.friendUserId = u.usersId
     WHERE f.userId = ? AND f.status = 'accepted'
@@ -119,10 +119,7 @@ function GetUserFriends($userId) {
     $username = $row['usersUid'];
     $friends[] = [
       'friendUserId' => (int)$row['usersId'],
-      // username stays the account handle — the frontend echoes it back for
-      // friend hand-visibility checks against game-file uids
       'username' => $username,
-      'displayName' => ($row['displayName'] ?? "") !== "" ? $row['displayName'] : $username,
       'nickname' => $row['nickname'] ?: null,
       'isContributor' => in_array($username, $contributors),
       'isPatron' => false, // Would need database lookup of patron status
@@ -369,7 +366,7 @@ function GetPendingRequests($userId) {
   $userId = (int)$userId;
   
   $query = "
-    SELECT f.friendshipId, f.userId as requesterUserId, u.usersUid as requesterUsername, u.displayName as requesterDisplayName, f.createdAt
+    SELECT f.friendshipId, f.userId as requesterUserId, u.usersUid as requesterUsername, f.createdAt
     FROM friends f
     JOIN users u ON f.userId = u.usersId
     WHERE f.friendUserId = ? AND f.status = 'pending'
@@ -395,7 +392,6 @@ function GetPendingRequests($userId) {
       'friendshipId' => (int)$row['friendshipId'],
       'requesterUserId' => (int)$row['requesterUserId'],
       'requesterUsername' => $row['requesterUsername'],
-      'requesterDisplayName' => ($row['requesterDisplayName'] ?? "") !== "" ? $row['requesterDisplayName'] : $row['requesterUsername'],
       'createdAt' => $row['createdAt']
     ];
   }
@@ -458,14 +454,13 @@ function FindUserByUsername($username) {
     return null;
   }
   
-  // Match by account handle first, then by display name (unique across both namespaces)
-  $query = "SELECT usersId, usersUid FROM users WHERE usersUid = ? OR displayName = ? LIMIT 1";
+  $query = "SELECT usersId, usersUid FROM users WHERE usersUid = ? LIMIT 1";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
     return null;
   }
-
-  $stmt->bind_param("ss", $username, $username);
+  
+  $stmt->bind_param("s", $username);
   if (!$stmt->execute()) {
     $stmt->close();
     return null;
@@ -501,7 +496,7 @@ function GetSentRequests($userId) {
   }
   
   $query = "
-    SELECT f.friendshipId, f.friendUserId, u.usersUid as recipientUsername, u.displayName as recipientDisplayName, f.createdAt
+    SELECT f.friendshipId, f.friendUserId, u.usersUid as recipientUsername, f.createdAt
     FROM friends f
     JOIN users u ON f.friendUserId = u.usersId
     WHERE f.userId = ? AND f.status = 'pending'
@@ -526,7 +521,6 @@ function GetSentRequests($userId) {
       'friendshipId' => (int)$row['friendshipId'],
       'recipientUserId' => (int)$row['friendUserId'],
       'recipientUsername' => $row['recipientUsername'],
-      'recipientDisplayName' => ($row['recipientDisplayName'] ?? "") !== "" ? $row['recipientDisplayName'] : $row['recipientUsername'],
       'createdAt' => $row['createdAt']
     ];
   }
@@ -599,31 +593,30 @@ function SearchUsers($searchTerm, $limit = 10) {
   $limit = max($limit, 1);
   
   $searchPattern = $searchTerm . '%';
-  $query = "SELECT usersId, usersUid, displayName FROM users WHERE usersUid LIKE ? OR displayName LIKE ? LIMIT ?";
+  $query = "SELECT usersId, usersUid FROM users WHERE usersUid LIKE ? LIMIT ?";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
     return [];
   }
-
-  $stmt->bind_param("ssi", $searchPattern, $searchPattern, $limit);
+  
+  $stmt->bind_param("si", $searchPattern, $limit);
   if (!$stmt->execute()) {
     $stmt->close();
     return [];
   }
-
+  
   $result = $stmt->get_result();
-
+  
   // Pre-load banned players once instead of checking per result
   $bannedPlayers = GetBannedPlayers();
-
+  
   $users = [];
   while ($row = $result->fetch_assoc()) {
     // Check against pre-loaded banned list (O(1) lookup)
     if (!isset($bannedPlayers[strtolower($row['usersUid'])])) {
       $users[] = [
         'usersId' => (int)$row['usersId'],
-        'username' => $row['usersUid'],
-        'displayName' => ($row['displayName'] ?? "") !== "" ? $row['displayName'] : $row['usersUid']
+        'username' => $row['usersUid']
       ];
     }
   }

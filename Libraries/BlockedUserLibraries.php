@@ -22,7 +22,7 @@ function GetBlockedUsers($userId) {
   }
   
   $query = "
-    SELECT b.blockedUserId, u.usersUid, u.usersId, u.displayName
+    SELECT b.blockedUserId, u.usersUid, u.usersId
     FROM blocked_users b
     JOIN users u ON b.blockedUserId = u.usersId
     WHERE b.userId = ?
@@ -42,8 +42,7 @@ function GetBlockedUsers($userId) {
   while ($row = $result->fetch_assoc()) {
     $blockedUsers[] = [
       'blockedUserId' => $row['usersId'],
-      'username' => $row['usersUid'],
-      'displayName' => ($row['displayName'] ?? "") !== "" ? $row['displayName'] : $row['usersUid']
+      'username' => $row['usersUid']
     ];
   }
   

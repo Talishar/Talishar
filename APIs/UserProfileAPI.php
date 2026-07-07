@@ -54,7 +54,7 @@ if ($conn === false) {
   echo json_encode($response);
   exit;
 }
-$sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, rust_counters, displayName, lastNameChange FROM users WHERE usersUid=?";
+$sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, rust_counters FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 
 if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -63,13 +63,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   $result = mysqli_stmt_get_result($stmt);
   $row = mysqli_fetch_assoc($result);
   mysqli_stmt_close($stmt);
-
-  $response->displayName = ($row['displayName'] ?? "") != "" ? $row['displayName'] : $userName;
-  $response->hasCustomDisplayName = ($row['displayName'] ?? "") != "";
-  $lastNameChange = $row['lastNameChange'] ?? null;
-  $nextChangeTime = $lastNameChange !== null ? strtotime($lastNameChange) + 7 * 86400 : 0;
-  $response->nextChangeAllowed = $nextChangeTime > time() ? date("c", $nextChangeTime) : null;
-
+  
   $metafyAccessToken = $row['metafyAccessToken'] ?? null;
   $response->rustCounters = intval($row['rust_counters'] ?? 0);
   $response->isMetafyLinked = !empty($metafyAccessToken);
@@ -192,14 +186,6 @@ else {
 
 mysqli_close($conn);
 session_write_close();
-
-if (!isset($response->displayName)) {
-  $response->displayName = $userName;
-  $response->hasCustomDisplayName = false;
-  $response->nextChangeAllowed = null;
-}
-// Display name changes are a supporter perk (Patreon or Metafy Talishar supporter)
-$response->canChangeDisplayName = ($response->isPatreonSupporter || $response->isMetafySupporter || $response->isPvtVoidPatron) == true;
 
 header('Content-Type: application/json');
 echo json_encode($response);

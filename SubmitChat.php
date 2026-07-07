@@ -13,7 +13,6 @@ session_start();
 $sessionP1AuthKey = $_SESSION["p1AuthKey"] ?? null;
 $sessionP2AuthKey = $_SESSION["p2AuthKey"] ?? null;
 $sessionUserUid = $_SESSION['useruid'] ?? null;
-$sessionDisplayName = $_SESSION['displayName'] ?? "";
 $sessionIsPatron = isset($_SESSION["isPatron"]);
 $sessionIsPvtVoidPatron = isset($_SESSION["isPvtVoidPatron"]);
 
@@ -93,10 +92,7 @@ $uid = "-";
 if ($sessionUserUid !== null) $uid = $sessionUserUid;
 else if ($playerID === 1 || $playerID === 2) $uid = $playerID == 1 ? $p1uid : $p2uid;
 if($uid == "starmorgs") exit;
-$shownName = $uid;
-if ($sessionUserUid !== null && $sessionDisplayName !== "") $shownName = $sessionDisplayName;
-else if ($sessionUserUid === null && ($playerID === 1 || $playerID === 2)) $shownName = $playerID == 1 ? $p1DisplayName : $p2DisplayName;
-$displayName = ($shownName != "-" && $shownName != "" ? substr($shownName, 0, 20) : "Player " . $playerID);
+$displayName = ($uid != "-" ? substr($uid, 0, 20) : "Player " . $playerID);
 
 $chatText = "";
 if (tryGet("quickChat")) {
