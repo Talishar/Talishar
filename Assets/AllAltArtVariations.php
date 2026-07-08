@@ -257,6 +257,7 @@ function GetAllAltArtVariations(): array
     "spears_of_surreality_blue=TNP018-T", "spellbound_creepers=CON004-T", "staunch_response_red=TNP019-T", "staunch_response_yellow=TNP020-T",
     "staunch_response_blue=TNP021-T", "stormshard_red=FAB478-T", "stormwind_sheath_red=FAB429-T", "the_librarian_magister_of_history=JDG062-T",
     "warriors_valor_red=TNP010-T", "warriors_valor_yellow=TNP011-T", "warriors_valor_blue=TNP012-T", "wild_ride_red=TNP001-T", "wild_ride_yellow=TNP002-T",
-    "wild_ride_blue=TNP003-T", "zipper_hit_red=TNP028-T", "zipper_hit_yellow=TNP029-T", "zipper_hit_blue=TNP030-T",
+    "wild_ride_blue=TNP003-T", "zipper_hit_red=TNP028-T", "zipper_hit_yellow=TNP029-T", "zipper_hit_blue=TNP030-T", "ghost_protocol_architect_red=PEN062-T",
+    "ghost_protocol_mainframe_blue=PEN063-T",
   ];
 }

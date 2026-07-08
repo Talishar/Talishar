@@ -792,6 +792,8 @@ enum PatreonCampaign : string
         "zipper_hit_red=TNP028-T",
         "zipper_hit_yellow=TNP029-T",
         "zipper_hit_blue=TNP030-T",
+        "ghost_protocol_architect_red=PEN062-T",
+        "ghost_protocol_mainframe_blue=PEN063-T",
         ];
         break;
       case "8955846": // ManSant
