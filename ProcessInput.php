@@ -16,6 +16,7 @@ include "Libraries/UILibraries.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
 include "Libraries/CacheLibraries.php";
+include_once "includes/MetafyHelper.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
 require_once "Libraries/CoreLibraries.php";
