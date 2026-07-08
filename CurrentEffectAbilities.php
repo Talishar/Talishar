@@ -1621,7 +1621,7 @@ function CurrentEffectAttackAbility($attackIndex=-1)
     if (($currentTurnEffects[$i + 1] ?? "") == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "oath_of_steel_red":
-          if ($attackType == "W" && $attackIndex == 0) { //don't trigger when cards are blocking
+          if (DelimStringContains($attackType, "W") && $attackIndex == 0) { //don't trigger when cards are blocking
             $character = &GetPlayerCharacter($mainPlayer);
             ++$character[GetClassState($mainPlayer, $CS_PlayIndex) + 3];
           }
