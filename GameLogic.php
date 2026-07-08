@@ -3661,6 +3661,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult == "Search") {
         $paramArr = explode(",", $parameter);
         $search = $paramArr[0] ?? "-";
+        if ($search == "-") {
+          $search = $dqVars["search"];
+          unset($dqVars["search"]);
+        }
         $dest = $paramArr[1] ?? "MYHAND";
         $isReveal = isset($paramArr[2]) ? ($paramArr[2] == 1) : true;
         $mod = $paramArr[3] ?? "-";

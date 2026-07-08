@@ -4210,13 +4210,10 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
       AddDecisionQueue("MZBANISH", $player, "GY,-," . $player, 1);
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
-      AddDecisionQueue("PREPENDLASTRESULT", $player, "MYDECK:isSameName=", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $player, "<-", 1);
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZBANISH", $player, "DECK,TCC," . $player, 1);
-      AddDecisionQueue("MZREMOVE", $player, "-", 1);
-      AddDecisionQueue("ELSE", $player, "-");
-      AddDecisionQueue("WRITELOG", $player, "No card was banished from deck!", 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $player, "isSameName=", 1);
+      AddDecisionQueue("SETDQVAR", $player, "search", 1);
+      AddDecisionQueue("PASSPARAMETER", $player, "Search", 1);
+      AddDecisionQueue("MAYSEARCHDECK", $player, "-,MYBANISH,false,TCC", 1);
       break;
     case "emissary_of_moon_red":
     case "emissary_of_tides_red":
