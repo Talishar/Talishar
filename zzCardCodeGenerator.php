@@ -73,6 +73,8 @@
     if (in_array($keyword, $hasKeywordAmount)) GenerateKeywordFunction($cardArray, $handler, $functionName . "Amount", $keyword, true);
   }
 
+  GenerateCardTokensFunction($cardArray, $handler);
+
   fwrite($handler, "?>");
 
   fclose($handler);
@@ -331,6 +333,46 @@
       fwrite($handler, "default => false\r\n");
     }
     
+    fwrite($handler, "};\r\n}\r\n");
+  }
+
+  function GenerateCardTokensFunction(&$cardArray, $handler)
+  {
+    echo "<BR>CardTokens<BR>";
+    fwrite($handler, "function GeneratedCardTokens(\$cardID) {\r\n");
+    fwrite($handler, "if(is_int(\$cardID)) return \"\";\r\n");
+    fwrite($handler, "return match(\$cardID) {\r\n");
+
+    $tokens = [];
+    for ($i = 0; $i < count($cardArray); ++$i) {
+      if (!in_array("Token", $cardArray[$i]->types)) continue;
+      if (!isset($tokens[$cardArray[$i]->name])) {
+        $tokens[$cardArray[$i]->name] = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
+      }
+    }
+
+    $associativeArray = [];
+    for ($i = 0; $i < count($cardArray); ++$i) {
+      $cardID = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
+      if (isset($associativeArray[$cardID])) continue;
+      $text = $cardArray[$i]->functional_text_plain ?? "";
+      if ($text == "") continue;
+      $text = str_replace($cardArray[$i]->name, "", $text);
+      $matched = [];
+      foreach ($tokens as $tokenName => $tokenID) {
+        if ($tokenName == $cardArray[$i]->name) continue;
+        if (preg_match('/\b' . preg_quote($tokenName, '/') . 's?\b/u', $text)) $matched[] = $tokenID;
+      }
+      if (count($matched) == 0) continue;
+      $matched = array_unique($matched);
+      sort($matched);
+      $associativeArray[$cardID] = implode(",", $matched);
+    }
+
+    foreach ($associativeArray as $cID => $tokenList) {
+      fwrite($handler, "\"$cID\" => \"$tokenList\",\r\n");
+    }
+    fwrite($handler, "default => \"\"\r\n");
     fwrite($handler, "};\r\n}\r\n");
   }
 

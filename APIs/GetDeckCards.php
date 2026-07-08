@@ -17,6 +17,7 @@ SetHeaders();
 
 $response = new stdClass();
 $response->cards = [];
+$response->tokens = [];
 
 if (!IsUserLoggedIn()) {
   if (isset($_COOKIE["rememberMeToken"])) {
@@ -45,14 +46,18 @@ if (empty($decklink)) {
 // Confirm this deck actually belongs to the logged-in user before hitting an
 // external deckbuilder API on their behalf.
 $conn = GetDBConnection(DBL_GET_DECK_CARDS);
-$sql = "SELECT 1 FROM favoritedeck WHERE decklink=? AND usersId=?";
+$sql = "SELECT hero FROM favoritedeck WHERE decklink=? AND usersId=?";
 $stmt = mysqli_stmt_init($conn);
 $owned = false;
+$deckHero = "";
 if (mysqli_stmt_prepare($stmt, $sql)) {
   mysqli_stmt_bind_param($stmt, "ss", $decklink, $userID);
   mysqli_stmt_execute($stmt);
-  mysqli_stmt_store_result($stmt);
-  $owned = mysqli_stmt_num_rows($stmt) > 0;
+  $data = mysqli_stmt_get_result($stmt);
+  if ($row = mysqli_fetch_assoc($data)) {
+    $owned = true;
+    $deckHero = $row['hero'] ?? "";
+  }
   mysqli_stmt_close($stmt);
 }
 mysqli_close($conn);
@@ -104,6 +109,35 @@ foreach ($cardIds as $cardId) {
   $card->baseCardNumber = $cardId;
   $card->selectedAltPath = $selectedAltArts[$cardId] ?? null;
   $response->cards[] = $card;
+}
+
+if (function_exists('GeneratedCardTokens')) {
+  $tokenIds = [];
+  $queue = $cardIds;
+  if (!empty($deckHero)) $queue[] = $deckHero;
+  $processed = [];
+  while (count($queue) > 0) {
+    $cid = array_shift($queue);
+    if (isset($processed[$cid])) continue;
+    $processed[$cid] = true;
+    $refs = GeneratedCardTokens($cid);
+    if ($refs == "") continue;
+    foreach (explode(",", $refs) as $tokenId) {
+      if (!in_array($tokenId, $tokenIds)) {
+        $tokenIds[] = $tokenId;
+        $queue[] = $tokenId;
+      }
+    }
+  }
+  sort($tokenIds);
+  foreach ($tokenIds as $tokenId) {
+    $token = new stdClass();
+    $token->cardId = $tokenId;
+    $token->altArts = $altArtEntitlements[$tokenId] ?? [];
+    $token->baseCardNumber = $tokenId;
+    $token->selectedAltPath = $selectedAltArts[$tokenId] ?? null;
+    $response->tokens[] = $token;
+  }
 }
 
 session_write_close();
