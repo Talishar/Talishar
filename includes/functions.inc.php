@@ -329,7 +329,7 @@ function LoadFavoriteDecks($userID)
 	if ($userID == "") return [];
 	$conn = GetDBConnection(DBL_LOAD_FAVORITE_DECKS);
 	if (!$conn) return [];
-	$sql = "SELECT decklink, name, hero, format from favoritedeck where usersId=?";
+	$sql = "SELECT decklink, name, hero, format, cardBack, playmat, altArtsCustomized from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -337,13 +337,88 @@ function LoadFavoriteDecks($userID)
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 		while ($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			for ($i = 0; $i < 4; ++$i) $output[] = $row[$i];
+			for ($i = 0; $i < 7; ++$i) $output[] = $row[$i];
 		}
 		mysqli_free_result($data);  // FREE RESULT BEFORE CLOSING STATEMENT
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);
 	return $output;
+}
+
+function FetchDeckFromDeckbuilder($decklink)
+{
+	global $FaBraryKey;
+
+	$curl = curl_init();
+	$isFaBDB = str_contains($decklink, "fabdb");
+	$isFaBMeta = str_contains($decklink, "fabmeta") && !str_contains($decklink, "fabtcgmeta");
+
+	if ($isFaBDB) {
+		$decklinkArr = explode("/", $decklink);
+		$slug = $decklinkArr[count($decklinkArr) - 1];
+		$apiLink = "https://api.fabdb.net/decks/" . $slug;
+	} else if (str_contains($decklink, "fabrary")) {
+		$headers = [
+			"x-api-key: " . $FaBraryKey,
+			"Content-Type: application/json",
+		];
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		// Extract slug: https://fabrary.net/decks/SLUG or https://fabrary.net/decks/SLUG?matchupId=...
+		$urlWithoutQuery = explode("?", $decklink)[0];
+		$decklinkArr = explode("/", $urlWithoutQuery);
+		$slug = $decklinkArr[count($decklinkArr) - 1];
+		$apiLink = "https://atofkpq0x8.execute-api.us-east-2.amazonaws.com/prod/v1/decks/" . $slug;
+	} else {
+		$decklinkArr = explode("/", $decklink);
+		$slug = $decklinkArr[count($decklinkArr) - 1];
+		$apiLink = "https://api.fabmeta.net/deck/" . $slug;
+	}
+
+	curl_setopt($curl, CURLOPT_URL, $apiLink);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	$apiDeck = curl_exec($curl);
+	$apiInfo = curl_getinfo($curl);
+	curl_close($curl);
+
+	if ($apiDeck === FALSE) return null;
+
+	$result = new stdClass();
+	$result->deckObj = json_decode($apiDeck);
+	$result->isFaBDB = $isFaBDB;
+	$result->isFaBMeta = $isFaBMeta;
+	$result->httpCode = $apiInfo['http_code'];
+	return $result;
+}
+
+function ResolveDeckCardIds($deckObj, $isFaBDB, $isFaBMeta)
+{
+	$cardIds = [];
+	$cards = isset($deckObj->{'cards'}) ? $deckObj->{'cards'} : [];
+
+	if (!is_array($cards)) return $cardIds;
+
+	foreach ($cards as $card) {
+		$cardID = "";
+		if ($isFaBDB) {
+			if (isset($card->{'printings'}[0]->{'sku'}->{'sku'})) {
+				$setID = explode("-", $card->{'printings'}[0]->{'sku'}->{'sku'})[0];
+				$internalID = GeneratedSetIDtoCardID($setID);
+				$cardID = !empty($internalID) ? $internalID : $setID;
+			}
+		} else if ($isFaBMeta) {
+			$cardID = $card->{'identifier'} ?? "";
+		} else if (isset($card->{'identifier'})) {
+			$cardID = str_replace("-", "_", $card->{'identifier'});
+		} else if (isset($card->{'cardIdentifier'})) {
+			$cardID = $card->{'cardIdentifier'};
+		}
+
+		if (empty($cardID)) continue;
+		if (!in_array($cardID, $cardIds)) $cardIds[] = $cardID;
+	}
+
+	return $cardIds;
 }
 
 function ConvertDeck($deck) {

@@ -59,9 +59,11 @@ const DBL_CLEAR_RUST_COUNTERS          = 53;
 const DBL_GET_DISPLAY_NAME             = 54;
 const DBL_RESOLVE_NAME_TO_ACCOUNT      = 55;
 const DBL_CHANGE_DISPLAY_NAME          = 56;
+const DBL_GET_DECK_CARDS               = 57;
+const DBL_SAVE_DECK_COSMETICS          = 58;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 56;
+const DBL_MAX_KEY = 58;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -121,4 +123,6 @@ const DBL_LABELS = [
     54 => 'includes/functions.inc.php::GetDisplayNameByUid',
     55 => 'includes/functions.inc.php::ResolveNameToAccount',
     56 => 'APIs/ChangeDisplayNameAPI.php',
+    57 => 'APIs/GetDeckCards.php',
+    58 => 'APIs/SaveDeckCosmetics.php',
 ];

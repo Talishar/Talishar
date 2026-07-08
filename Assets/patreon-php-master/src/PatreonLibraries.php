@@ -9,7 +9,6 @@ require_once __DIR__ . '/PatreonDictionary.php';
 
 function PatreonLogin($access_token, $silent=true, $debugMode=false)
 {
-  if($access_token == "kQopjDLY-6z16ZEW4sLP8x9LrPMIRTblQcQQElMWu1Q") return false;
   $output = new stdClass();
   $output->patreonCampaigns = [];
   if($access_token == "") return $output;

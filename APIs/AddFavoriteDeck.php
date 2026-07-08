@@ -51,54 +51,26 @@ $userID = $_SESSION["userid"];
 session_write_close();
 
 // Load the deck from the deckbuilder API to get deck name
-$curl = curl_init();
-$isFaBDB = str_contains($decklink, "fabdb");
-$isFaBMeta = str_contains($decklink, "fabmeta") && !str_contains($decklink, "fabtcgmeta");
-$isFaBTCGMeta = str_contains($decklink, "fabtcgmeta");
+$fetched = FetchDeckFromDeckbuilder($decklink);
 
-if ($isFaBDB) {
-  $decklinkArr = explode("/", $decklink);
-  $slug = $decklinkArr[count($decklinkArr) - 1];
-  $apiLink = "https://api.fabdb.net/decks/" . $slug;
-} else if (str_contains($decklink, "fabrary")) {
-  $headers = [
-    "x-api-key: " . $FaBraryKey,
-    "Content-Type: application/json",
-  ];
-  curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-  // Extract slug: https://fabrary.net/decks/SLUG or https://fabrary.net/decks/SLUG?matchupId=...
-  $urlWithoutQuery = explode("?", $decklink)[0];
-  $decklinkArr = explode("/", $urlWithoutQuery);
-  $slug = $decklinkArr[count($decklinkArr) - 1];
-  $apiLink = "https://atofkpq0x8.execute-api.us-east-2.amazonaws.com/prod/v1/decks/" . $slug;
-} else {
-  $decklinkArr = explode("/", $decklink);
-  $slug = $decklinkArr[count($decklinkArr) - 1];
-  $apiLink = "https://api.fabmeta.net/deck/" . $slug;
-}
-
-curl_setopt($curl, CURLOPT_URL, $apiLink);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-$apiDeck = curl_exec($curl);
-$apiInfo = curl_getinfo($curl);
-curl_close($curl);
-
-if ($apiDeck === FALSE) {
+if ($fetched === null) {
   $response->success = false;
   $response->message = "Deckbuilder API for this deck returns no data.";
   echo json_encode($response);
   exit;
 }
 
-$deckObj = json_decode($apiDeck);
-
 // Check for API errors
-if ($apiInfo['http_code'] == 403) {
+if ($fetched->httpCode == 403) {
   $response->success = false;
   $response->message = "API access denied. The deck URL may be invalid.";
   echo json_encode($response);
   exit;
 }
+
+$deckObj = $fetched->deckObj;
+$isFaBDB = $fetched->isFaBDB;
+$isFaBMeta = $fetched->isFaBMeta;
 
 if ($deckObj == null) {
   $response->success = false;
@@ -130,35 +102,13 @@ if (isset($deckObj->{'format'})) {
 // while FabDB uses printings[].sku.sku (e.g. "WTR067-COLD-FOIL").
 // We use GeneratedCardType() to reliably detect Character ("C") type cards.
 
-$cards = isset($deckObj->{'cards'}) ? $deckObj->{'cards'} : [];
+$deckCardIds = ResolveDeckCardIds($deckObj, $isFaBDB, $isFaBMeta);
 
-if (is_array($cards) && count($cards) > 0) {
-  foreach ($cards as $card) {
-    // Extract identifier using the same approach as JoinGame GetCardId()
-    $cardID = "";
-    if ($isFaBDB) {
-      if (isset($card->{'printings'}[0]->{'sku'}->{'sku'})) {
-        // FabDB returns SetID format (e.g. "WTR067-COLD-FOIL"), convert to internal ID
-        $setID = explode("-", $card->{'printings'}[0]->{'sku'}->{'sku'})[0];
-        $internalID = GeneratedSetIDtoCardID($setID);
-        $cardID = !empty($internalID) ? $internalID : $setID;
-      }
-    } else if ($isFaBMeta) {
-      $cardID = $card->{'identifier'} ?? "";
-    } else if (isset($card->{'identifier'})) {
-      // Fabrary: identifier uses dashes, convert to underscores
-      $cardID = str_replace("-", "_", $card->{'identifier'});
-    } else if (isset($card->{'cardIdentifier'})) {
-      $cardID = $card->{'cardIdentifier'};
-    }
-
-    if (empty($cardID)) continue;
-
-    // Use GeneratedCardType to reliably identify hero (Character) cards
-    if (str_contains(GeneratedCardType($cardID), "C")) {
-      $heroID = GeneratedSetID($cardID);
-      break;
-    }
+foreach ($deckCardIds as $cardID) {
+  // Use GeneratedCardType to reliably identify hero (Character) cards
+  if (str_contains(GeneratedCardType($cardID), "C")) {
+    $heroID = GeneratedSetID($cardID);
+    break;
   }
 }
 

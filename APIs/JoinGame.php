@@ -132,6 +132,12 @@ if (!isset($decklink)) $decklink = TryPOST("fabdb", ""); //Deck builder decklink
 if (!isset($decksToTry)) $decksToTry = TryPOST("decksToTry"); //This is only used if there's no favorite deck or decklink. 1 = ira
 if (!isset($favoriteDeck)) $favoriteDeck = TryPOST("favoriteDeck", false); //Set this to true to save the provided deck link to your favorites
 if (!isset($favoriteDeckLink)) $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. It's the favorite deck index, then the string "<fav>" then the favorite deck link
+
+if ($favoriteDeckLink != "0" && str_contains($favoriteDeckLink, "<fav>")) {
+  $favDeckArr = explode("<fav>", $favoriteDeckLink);
+  $favoriteDeckLink = $favDeckArr[count($favDeckArr) - 1];
+}
+
 if (!isset($matchup)) $matchup = TryPOST("matchup", ""); //The matchup link
 $forceBaseDeckRefresh = ($matchup === "__base__");
 if ($forceBaseDeckRefresh) $matchup = "";
