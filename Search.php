@@ -1214,11 +1214,10 @@ function SearchLayersForTargetUniqueID($uniqueID)
 
 function SearchAurasForUniqueID($uniqueID, $player)
 {
-  $auras = &GetAuras($player);
-  $count = count($auras);
-  $pieces = AuraPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($auras[$i + 6] == $uniqueID) return $i;
+  $Auras = new Auras($player);
+  for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+    $AuraCard = $Auras->Card($i, true);
+    if ($AuraCard->UniqueID() == $uniqueID) return $AuraCard->Index();
   }
   return -1;
 }
