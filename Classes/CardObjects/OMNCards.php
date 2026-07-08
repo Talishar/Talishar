@@ -219,7 +219,7 @@ class nebula_duality extends BaseCard {
 
   function ProcessAbility($target) {
     DealArcane(1, source:"$this->cardID-ABILITY", player:$this->controller, resolvedTarget:$target);
-    PlayAura("lightning_flow", $this->controller);
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
   function GetAbilityTypes($index = -1, $from = '-') {
@@ -505,7 +505,7 @@ class voltbound_duality_red extends Card {
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     DealArcane(1, source:"$this->cardID-ABILITY", player:$this->controller, resolvedTarget:$target);
-    PlayAura("lightning_flow", $this->controller);
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
   function CardCost($from = '-') {
@@ -550,7 +550,7 @@ class voltbound_duality_yellow extends Card {
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
-    PlayAura("lightning_flow", $this->controller);
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
   function CardCost($from = '-') {
@@ -595,7 +595,7 @@ class voltbound_duality_blue extends Card {
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
-    PlayAura("lightning_flow", $this->controller);
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
   function CardCost($from = '-') {
@@ -640,7 +640,7 @@ class cosmic_duality_red extends Card {
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
-    PlayAura("lightning_flow", $this->controller);
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
   function CardCost($from = '-') {
@@ -684,7 +684,7 @@ class cosmic_duality_yellow extends Card {
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
-    PlayAura("lightning_flow", $this->controller);
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
   function CardCost($from = '-') {
@@ -728,7 +728,7 @@ class cosmic_duality_blue extends Card {
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     DealArcane(1, source:$this->cardID, player:$this->controller, resolvedTarget:$target);
-    PlayAura("lightning_flow", $this->controller);
+    PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
   function CardCost($from = '-') {
