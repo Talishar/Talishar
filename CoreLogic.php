@@ -377,8 +377,9 @@ function StartTurnAbilities()
   $defAuraCount = count($defAuras);
   $auraPieces = AuraPieces();
   for ($i = 0; $i < $defAuraCount; $i += $auraPieces) {
-    if ($defAuras[$i+11] == "1" && !SuperFrozen($mainPlayer, "THEIRAURAS-$i") && !SuperFrozen($defPlayer, "MYAURAS-$i"))
-      $defAuras[$i + 11] = "0";//Reset Frozen
+    $defAura = new AuraCard($i, $defPlayer);
+    if ($defAura->IsFrozen() == "1" && !SuperFrozen($mainPlayer, "THEIRAURAS-$i") && !SuperFrozen($defPlayer, "MYAURAS-$i"))
+      $defAura->FreezeState(0);//Reset Frozen
   }
   $defArsenal = &GetArsenal($defPlayer);
   $defArsenalCount = count($defArsenal);

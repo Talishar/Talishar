@@ -184,6 +184,15 @@ class AuraCard {
     if (isset($this->pieces[$this->index + 3])) $this->pieces[$this->index + 3] = 0;
   }
 
+  function IsFrozen() {
+    return $this->pieces[$this->index+11] ?? 0;
+  }
+
+  function FreezeState($state=0) {
+    if (isset($this->pieces[$this->index + 11]))
+      $this->pieces[$this->index + 11] = $state;
+  }
+
   function IsTapped() {
     return $this->pieces[$this->index+12] ?? 0;
   }

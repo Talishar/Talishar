@@ -373,9 +373,9 @@ function AddSuspense($player, $MZIndex)
 {
   $otherPlayer = 3 - $player;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
-  $auras = &GetAuras($targetPlayer);
   $ind = explode("-", $MZIndex, 2)[1];
-  ++$auras[$ind + 2];
+  $AuraCard = new AuraCard($ind, $targetPlayer);
+  $AuraCard->AddCounters(1);
 }
 
 function TargetDefendingAction($player, $cardID, $setTarget=false) {
