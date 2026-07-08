@@ -777,4 +777,8 @@ class Card {
   function CombatChainBlockModifier($cardID, $from, $index, $sourceIndex) {
     return 0;
   }
+
+  function PlayTrigger($from) {
+    return;
+  }
 }

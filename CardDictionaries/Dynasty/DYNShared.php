@@ -406,12 +406,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS," . $cardID . "-" . $uniqueID, 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       return "";
-    case "spectral_prowler_red": case "spectral_prowler_yellow": case "spectral_prowler_blue":
-      if(SearchAuras("spectral_shield", $currentPlayer)) GiveAttackGoAgain();
-      return "";
-    case "spectral_rider_red": case "spectral_rider_yellow": case "spectral_rider_blue":
-      if(SearchAuras("spectral_shield", $currentPlayer)) AddCurrentTurnEffect("spectral_rider_red", $currentPlayer);
-      return "";
     case "water_glow_lanterns_red": case "water_glow_lanterns_yellow": case "water_glow_lanterns_blue":
       $deck = new Deck($currentPlayer);
       if($deck->Reveal(1) && ColorContains($deck->Top(), PitchValue($cardID), $currentPlayer)) PlayAura("spectral_shield", $currentPlayer, 1, true);

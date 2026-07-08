@@ -712,6 +712,8 @@ function ProcessLayer($player, $parameter, $target = "-", $additionalCosts = "-"
 function CardPlayTrigger($cardID, $from)
 {
   global $mainPlayer;
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") $card->PlayTrigger($from);
   switch ($cardID) {
       case "scar_for_a_scar_red":
       case "scar_for_a_scar_yellow":
