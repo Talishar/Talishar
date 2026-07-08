@@ -365,7 +365,6 @@ enum MetafyCommunity : string
         "boltyn=HER160-T",
         "boneyard_marauder_red=FAB023-T",
         "braveforge_bracers=MPW011-T",
-        "colors_of_aria_red=FAB426-T",
         "confidence=FAB394-T",
         "dorinthea_quicksilver_prodigy=HER167-T",
         "durendal=MPW008-T",

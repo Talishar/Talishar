@@ -245,7 +245,7 @@ function GetAllAltArtVariations(): array
     "runechant_of_gluttony_yellow=GEM179-T", "runechant_of_greed_yellow=GEM177-T", "runechant_of_lust_yellow=GEM180-T", "runechant_of_pride_yellow=GEM181-T",
     "runechant_of_sloth_yellow=GEM182-T", "runechant_of_wrath_yellow=GEM183-T", "seek_vengeance_red=GEM163-T", "shattering_flowtide_red=GEM152-T",
     "speed_demon_red=GEM166-T", "starlight_road_blue=GEM174-T", "stinging_sprite_red=GEM153-T", "toe_the_line_red=GEM165-T", "toughen_up_blue=GEM176-T",
-    "arcane_polarity_red=LGS458-T", "boltyn=HER160-T", "boneyard_marauder_red=FAB023-T", "braveforge_bracers=MPW011-T", "colors_of_aria_red=FAB426-T",
+    "arcane_polarity_red=LGS458-T", "boltyn=HER160-T", "boneyard_marauder_red=FAB023-T", "braveforge_bracers=MPW011-T",
     "confidence=FAB394-T", "dorinthea_quicksilver_prodigy=HER167-T", "durendal=MPW008-T", "elemental_strike_red=FAB425-T", "emeritus_scolding_red=TNP007-T",
     "emeritus_scolding_yellow=TNP008-T", "emeritus_scolding_blue=TNP009-T", "fate_foreseen_red=FAB487-T", "flic_flak_red=TNP022-T",
     "flic_flak_yellow=TNP023-T", "flic_flak_blue=TNP024-T", "frosthaven_sheath_red=FAB427-T", "grains_of_bloodspill=MPW010-T", "groundbreaker_crix=HER155-T",
