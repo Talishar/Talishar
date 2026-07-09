@@ -1731,7 +1731,7 @@ function FinalizeChainLink($chainClosed = false)
     global $CCS_AttackTarget, $CCS_AttackTargetUID;
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $params = explode("|", $parameter);
-    if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]))) return; 
+    if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]), AQCheck:true)) return; 
     if ($buffs != "-") {
       foreach(explode(",", $buffs) as $buff)
         AddCurrentTurnEffectNextAttack($buff, $player);

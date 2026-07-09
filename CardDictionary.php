@@ -1501,13 +1501,13 @@ function InstantRestricted($cardID, $from, $index, $zone="-", $type="-") {
 }
 
 // checks for stuff like warmongers
-function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type="-")
+function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type="-", $AQCheck=false)
 {
   global $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $layers;
   if (SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer)) return false;
   $type = $type == "-" ? CardType($cardID, $from) : $type;
   if (EffectAttackRestricted($cardID, $type, $from, index:$index, overrideType:$type) != "") return false;
-  if ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0) return false;
+  if (!$AQCheck && ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0)) return false;
   $layerCount = count($layers);
   if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
   if ($layerCount > LayerPieces()) return false;

@@ -253,7 +253,7 @@ function ResolveAttackQueue() {
   if (count($attackQueue) > 0) {
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $params = explode("|", $parameter);
-    if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]))) return; 
+    if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]), AQCheck:true)) return; 
     $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
     $MZIndex = CleanTargetToIndex($player, $target);
     $combatChainState[$CCS_AttackTarget] = $MZIndex;
@@ -480,7 +480,7 @@ function ContinueDecisionQueue($lastResult = "")
         if (IsResolutionStep() && count($layers) == LayerPieces() && count($attackQueue) > 0) {
           [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
           $params = explode("|", $parameter);
-          if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]))) return; 
+          if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]), AQCheck:true)) return; 
           if ($buffs != "-") {
             foreach(explode(",", $buffs) as $buff)
               AddCurrentTurnEffectNextAttack($buff, $player);
