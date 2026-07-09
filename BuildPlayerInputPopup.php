@@ -36,9 +36,6 @@ if (!function_exists('GetCardEffectLabel')) {
   }
 }
 
-// Maps a multizone option's zone prefix to the zone word shown on popup cards
-// (and used to decide whether a popup's choices span multiple zones).
-// Returns "" for non-zone keys, which are excluded from that decision.
 function MZZoneCategory($zoneKey, $index) {
   switch ($zoneKey) {
     case "MYHAND": case "THEIRHAND":
@@ -50,8 +47,6 @@ function MZZoneCategory($zoneKey, $index) {
     case "LANDMARK":
       return "In Play";
     case "MYCHAR": case "THEIRCHAR":
-      // Index 0 is the hero: never labeled and never opens the gate — there is
-      // only ever one hero and it's visually unmistakable.
       return $index == 0 ? "" : "Equipment";
     case "MYARS": case "THEIRARS":
     case "MYARSENAL": case "THEIRARSENAL":
@@ -67,7 +62,7 @@ function MZZoneCategory($zoneKey, $index) {
     case "MYSOUL": case "THEIRSOUL":
       return "Soul";
     case "CC": case "COMBATCHAINLINK": case "COMBATCHAINATTACKS": case "PASTCHAINLINK":
-      return "Chain";
+      return "Combat Chain";
     default:
       return "";
   }
