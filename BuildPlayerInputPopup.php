@@ -551,8 +551,6 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $subtitles = "";
         $source = [];
         $optionsCount = count($options);
-        // Zone labels disambiguate choices that span multiple zones (e.g. Lighten
-        // the Load: destroy an item in play or discard the same card from hand).
         $zoneCategories = [];
         for ($j = 0; $j < $optionsCount; ++$j) {
           $optParts = explode("-", $options[$j], 3);
@@ -880,8 +878,6 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           if($option0 == "MYDECK" && $option[1] == "0" && $isMayChooseMultizone && $singleMyDeckInTurnData) {
             $card = $MyCardBack;
           }
-          // Own hand cards are face-up to their owner, so labeling every other
-          // zone disambiguates by elimination without labeling the whole hand.
           if ($showZoneLabels && $label == "" && $option0 != "MYHAND") {
             $label = MZZoneCategory($option0, intval($option[1] ?? 0));
           }
