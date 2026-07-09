@@ -983,7 +983,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $counterFile = fopen($path . "counter.txt", "w");
       fwrite($counterFile, $counter + 1);
       fclose($counterFile);
-      $ownerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
+      $ownerMetafyTiers = json_decode(trim($gameFile[$playerID == 1 ? 38 : 39] ?? ''), true);
+      if (!is_array($ownerMetafyTiers)) {
+        $ownerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
+      }
       $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers);
       $replayFiles = glob($path . "*");
       $filecount = count($replayFiles);
