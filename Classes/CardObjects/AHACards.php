@@ -595,13 +595,15 @@ class silverdrop_downpour_red extends Card {
 }
 
 class backside_of_the_blade_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "backside_of_the_blade_blue";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "backside_of_the_blade_blue";
+		$this->controller = $controller;
+	}
   
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain, $combatChainState, $CCS_WeaponIndex;
+    	global $CombatChain, $combatChainState, $CCS_WeaponIndex;
+		AddEffectToCurrentAttack($this->cardID);
+		CacheCombatResult();
 		if (TypeContains($CombatChain->AttackCard()->ID(), "W") && DoesAttackHaveGoAgain()) {
 			// this can do some funny things with targeting previous chain links
 			// for now I'm skipping it
@@ -609,7 +611,6 @@ class backside_of_the_blade_blue extends Card {
 			$Weapon->AddUse();
 			if ($Weapon->Status() == 1) $Weapon->SetUsed(2);
 		}
-		AddEffectToCurrentAttack($this->cardID);
 		return "";
   }
 
