@@ -3721,7 +3721,7 @@ function CharacterDefaultActiveState($cardID)
     "teklovossen_esteemed_magnate" => 1, "fai" => 1, "fai_rising_rebellion" => 1,
     "tearing_shuko" => 1, "blood_scent" => 1, "honing_hood" => 1,
     "spellbound_creepers" => 1, "grimoire_of_the_haunt" => 1, "old_knocker" => 1,
-    "dragonscaler_flight_path" => 1,
+    "dragonscaler_flight_path" => 1, "calming_gesture" => 1,
   ];
   if (isset($state0[$cardID])) return 0;
   if (isset($state1[$cardID])) return 1;
