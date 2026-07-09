@@ -797,6 +797,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $turnPlayer = $playerID;
           $turnNumber = $cardID;
         }
+        if ($turnPlayer == 3) $turnPlayer = $mainPlayer;
         if (!is_numeric($turnPlayer) || !is_numeric($turnNumber)) {
           WriteLog("$cardID cannot be parsed as a turn number", highlight: true);
           break;
