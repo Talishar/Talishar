@@ -385,7 +385,6 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
     default:
       break;
   }
-
   if ($from == "HAND" && $isPlayable) {
     if (
       $dqState[4] == "Choose_a_card_to_charge" ||
@@ -403,7 +402,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
       $dqState[4] == "Choose_a_card_to_banish"
     ) return 9;
   }
-  if ($turn[0] == "B" && $from != "THEIRCHAR") return $isPlayable ? 6 : 0;
+  if ($turn[0] == "B" && $isPlayable && $from != "THEIRCHAR") return $isPlayable ? 8 : 0;
 
   // Zone-specific logic
   if ($from == "BANISH") {
