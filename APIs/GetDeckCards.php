@@ -131,9 +131,10 @@ if (function_exists('GeneratedCardTokens')) {
   }
   sort($tokenIds);
   foreach ($tokenIds as $tokenId) {
+    if (empty($altArtEntitlements[$tokenId])) continue;
     $token = new stdClass();
     $token->cardId = $tokenId;
-    $token->altArts = $altArtEntitlements[$tokenId] ?? [];
+    $token->altArts = $altArtEntitlements[$tokenId];
     $token->baseCardNumber = $tokenId;
     $token->selectedAltPath = $selectedAltArts[$tokenId] ?? null;
     $response->tokens[] = $token;
