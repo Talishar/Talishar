@@ -1563,9 +1563,45 @@ function GetPhaseHelptext()
   return $DQText != "-" ? GamestateUnsanitize($DQText) : $defaultText;
 }
 
+if (!function_exists('GetCardEffectLabel')) {
+  function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
+    if ($uniqueID == "" || $uniqueID == "-") return "";
+    
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->FindEffectUID($uniqueID);
+    if ($Effect->Index() == -1) return "";
+    
+    $effectName = $Effect->EffectID();
+    switch ($effectName) {
+      case "beseech_the_demigon_red":
+      case "beseech_the_demigon_yellow":
+      case "beseech_the_demigon_blue":
+      case "painful_passage_red-buff":
+        return "Power +" . EffectPowerModifier($effectName);
+      case "tear_through_the_portal_red":
+      case "tear_through_the_portal_yellow":
+      case "tear_through_the_portal_blue":
+      case "painful_passage_red-go_again":
+        return "Go Again";
+      default:
+        return "";
+    }
+  }
+}
+
 function skipEffectUIStacking($cardID) {
   if (HasFancyCounters($cardID) || $cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red") return false;
   $card = GetClass($cardID, 0);
   if ($card != "-" && $card->DisplayRemainingPrevention()) return false;
   return true;
+}
+
+
+if (!function_exists('IsDevEnvironment')) {
+  function IsDevEnvironment() {
+    $domain = getenv("DOMAIN");
+    if ($domain === "localhost") return true;
+    if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') return true;
+    return false;
+  }
 }

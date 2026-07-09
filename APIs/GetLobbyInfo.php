@@ -12,6 +12,29 @@ include_once "../Libraries/LegalHeroesHelper.php";
 // Set headers immediately after includes
 SetHeaders();
 
+if (!function_exists("DelimStringContains")) {
+  function DelimStringContains($str, $find, $partial=false)
+  {
+    if ($partial) {
+      $arr = explode(",", $str);
+      $len = count($arr);
+      for ($i = 0; $i < $len; ++$i) {
+        if (str_contains($arr[$i], $find)) return true;
+      }
+      return false;
+    }
+    return str_contains(',' . $str . ',', ',' . $find . ',');
+  }
+}
+
+if (!function_exists("SubtypeContains")) {
+  function SubtypeContains($cardID, $subtype, $player="")
+  {
+    $cardSubtype = CardSubtype($cardID);
+    return DelimStringContains($cardSubtype, $subtype);
+  }
+}
+
 $_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = TryPOST("gameName", 0);
 $playerID = TryPOST("playerID", 0);

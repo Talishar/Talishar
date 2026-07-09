@@ -1,21 +1,5 @@
 <?php
 
-require_once __DIR__ . '/CoreLibraries.php';
-
-if (!function_exists("SubtypeContains")) {
-  function SubtypeContains($cardID, $subtype, $player = "")
-  {
-    return DelimStringContains(CardSubtype($cardID), $subtype);
-  }
-}
-
-if (!function_exists("TypeContains")) {
-  function TypeContains($cardID, $type, $player = "")
-  {
-    return DelimStringContains(CardType($cardID), $type);
-  }
-}
-
 // Source of truth for the hero universe. Mirrors HEROES_OF_RATHE in
 // Talishar-FE/src/routes/index/components/filter/constants.ts. When a new
 // hero ships, add it here AND in the FE constants file.

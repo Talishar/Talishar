@@ -5,7 +5,14 @@
  * Note: This file should be included after APIKeys.php and dbh.inc.php
  */
 
-require_once __DIR__ . '/../Libraries/CoreLibraries.php';
+if (!function_exists('IsDevEnvironment')) {
+  function IsDevEnvironment() {
+    $domain = getenv("DOMAIN");
+    if ($domain === "localhost") return true;
+    if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') return true;
+    return false;
+  }
+}
 
 function FetchMetafyCommunities($accessToken)
 {
