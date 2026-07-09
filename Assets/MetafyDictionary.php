@@ -423,8 +423,6 @@ enum MetafyCommunity : string
         "ghost_protocol_architect_red=PEN062-T",
         "ghost_protocol_mainframe_blue=PEN063-T",
         "blasmophet_the_soul_harvester=FAB041-T",
-        "cintari_sellsword=FAB201-T",
-        "colors_of_aria_red=FAB426-T",
         "command_and_conquer_red=FAB278-T",
         "conqueror_of_the_high_seas_red=FAB355-T",
         "electrify_blue=FAB048-T",
@@ -446,7 +444,6 @@ enum MetafyCommunity : string
         "sacred_art_immortal_lunar_shrine_blue=FAB234-T",
         "sacred_art_jade_tiger_domain_blue=FAB233-T",
         "sacred_art_undercurrent_desires_blue=FAB232-T",
-        "snatch_red=FAB331-T",
         ];
     return $altArts;
   }

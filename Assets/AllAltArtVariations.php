@@ -259,8 +259,6 @@ function GetAllAltArtVariations(): array
     "warriors_valor_red=TNP010-T", "warriors_valor_yellow=TNP011-T", "warriors_valor_blue=TNP012-T", "wild_ride_red=TNP001-T", "wild_ride_yellow=TNP002-T",
     "wild_ride_blue=TNP003-T", "zipper_hit_red=TNP028-T", "zipper_hit_yellow=TNP029-T", "zipper_hit_blue=TNP030-T", "ghost_protocol_architect_red=PEN062-T",
     "ghost_protocol_mainframe_blue=PEN063-T", "blasmophet_the_soul_harvester=FAB041-T",
-    "cintari_sellsword=FAB201-T",
-    "colors_of_aria_red=FAB426-T",
     "command_and_conquer_red=FAB278-T",
     "conqueror_of_the_high_seas_red=FAB355-T",
     "electrify_blue=FAB048-T",
@@ -282,6 +280,5 @@ function GetAllAltArtVariations(): array
     "sacred_art_immortal_lunar_shrine_blue=FAB234-T",
     "sacred_art_jade_tiger_domain_blue=FAB233-T",
     "sacred_art_undercurrent_desires_blue=FAB232-T",
-    "snatch_red=FAB331-T",
   ];
 }
