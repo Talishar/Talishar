@@ -36,6 +36,43 @@ if (!function_exists('GetCardEffectLabel')) {
   }
 }
 
+// Maps a multizone option's zone prefix to the zone word shown on popup cards
+// (and used to decide whether a popup's choices span multiple zones).
+// Returns "" for non-zone keys, which are excluded from that decision.
+function MZZoneCategory($zoneKey, $index) {
+  switch ($zoneKey) {
+    case "MYHAND": case "THEIRHAND":
+      return "Hand";
+    case "MYITEMS": case "THEIRITEMS":
+    case "MYAURAS": case "THEIRAURAS":
+    case "MYALLY": case "THEIRALLY":
+    case "MYPERM": case "THEIRPERM":
+    case "LANDMARK":
+      return "In Play";
+    case "MYCHAR": case "THEIRCHAR":
+      // Index 0 is the hero: never labeled and never opens the gate — there is
+      // only ever one hero and it's visually unmistakable.
+      return $index == 0 ? "" : "Equipment";
+    case "MYARS": case "THEIRARS":
+    case "MYARSENAL": case "THEIRARSENAL":
+      return "Arsenal";
+    case "MYDISCARD": case "THEIRDISCARD":
+      return "Graveyard";
+    case "MYDECK": case "THEIRDECK":
+      return "Deck";
+    case "MYBANISH": case "THEIRBANISH":
+      return "Banish";
+    case "MYPITCH": case "THEIRPITCH":
+      return "Pitch";
+    case "MYSOUL": case "THEIRSOUL":
+      return "Soul";
+    case "CC": case "COMBATCHAINLINK": case "COMBATCHAINATTACKS": case "PASTCHAINLINK":
+      return "Chain";
+    default:
+      return "";
+  }
+}
+
 function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $myHand, $myPitch, $myDeck, $theirDeck, $myDiscard, $theirDiscard;
   global $myBanish, $theirBanish, $myArsenal, $theirArsenal;
@@ -519,20 +556,25 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $subtitles = "";
         $source = [];
         $optionsCount = count($options);
+        // Zone labels disambiguate choices that span multiple zones (e.g. Lighten
+        // the Load: destroy an item in play or discard the same card from hand).
+        $zoneCategories = [];
+        for ($j = 0; $j < $optionsCount; ++$j) {
+          $optParts = explode("-", $options[$j], 3);
+          $category = MZZoneCategory($optParts[0], intval($optParts[1] ?? 0));
+          if ($category != "") $zoneCategories[$category] = true;
+        }
+        $showZoneLabels = count($zoneCategories) >= 2;
         static $attackingPermanentsSet = ['THEIRALLY' => true, 'THEIRAURAS' => true, 'MYALLY' => true, 'MYAURAS' => true];
-        $combatChainCount = count($combatChain);
         $layerCheckCount = count($layers);
         $turnDataStartsWithMyDeck = (substr($turnData, 0, 6) === "MYDECK");
         $singleMyDeckInTurnData = (substr_count($turnData, "MYDECK") == 1);
         $hasCombatChainLink = $CombatChain->HasCurrentLink();
         $weaponIndexValue = intval($combatChainState[$CCS_WeaponIndex]);
         $otherIsMain = ($otherPlayer == $mainPlayer);
-        $combatChainPieces = CombatChainPieces();
         $layerPieces = LayerPieces();
         $layersActive = ($layerCheckCount > 0 && $layers[0] != "");
         $isMayChooseMultizone = ($turnPhase === "MAYCHOOSEMULTIZONE");
-        $combatChainFirst = $combatChainCount > 0 ? $combatChain[0] : null;
-        $combatChainLast = $combatChainCount > 0 ? $combatChain[$combatChainCount - $combatChainPieces] : null;
         for ($i = 0; $i < $optionsCount; ++$i) {
           $option = explode("-", $options[$i], 3);
           $option0 = $option[0]; // cache zone key — accessed 30+ times per iteration
@@ -723,41 +765,6 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             }
           }
 
-          //Bonds of Agony - add indication for hand, graveyard and deck
-          if ($isMayChooseMultizone && $combatChainCount > 0) {
-            if ($combatChainFirst == "bonds_of_agony_blue") {
-              switch ($option0) {
-                  case "THEIRHAND":
-                      $label = "Hand";
-                      break;
-                  case "THEIRDECK":
-                      $label = "Deck";
-                      break;
-                  case "THEIRDISCARD":
-                      $label = "Graveyard";
-                      break;
-              }  
-            }
-            if ($combatChainLast == "hunter_or_hunted_blue") {
-              switch ($option0) {
-                  case "THEIRHAND":
-                      $label = "Hand";
-                      break;
-                  case "THEIRDECK":
-                      $label = "Deck";
-                      break;
-                  case "THEIRDISCARD":
-                      $label = "Graveyard";
-                      break;
-                  case "THEIRARSENAL":
-                      $label = "Arsenal";
-                      break;
-              }  
-            }
-          }
-
-          //Add indication for Crown of Providence if you have the same card in hand and in the arsenal.
-          if ($option0 == "MYARS") $label = "Arsenal";
           //Add indication for past chain links
           if ($option0 == "PASTCHAINLINK") $label = "Chain link " . ($option[2] + 1);
           //Add indication for Attacking Mechanoid
@@ -878,10 +885,15 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           if($option0 == "MYDECK" && $option[1] == "0" && $isMayChooseMultizone && $singleMyDeckInTurnData) {
             $card = $MyCardBack;
           }
+          // Own hand cards are face-up to their owner, so labeling every other
+          // zone disambiguates by elimination without labeling the whole hand.
+          if ($showZoneLabels && $label == "" && $option0 != "MYHAND") {
+            $label = MZZoneCategory($option0, intval($option[1] ?? 0));
+          }
           if ($maxCount < 2)
             $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters);
           else
-            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset);
+            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label);
         }
         if ($maxCount >= 2) {
           $formOptions = new stdClass();
