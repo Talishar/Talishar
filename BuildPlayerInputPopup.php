@@ -552,9 +552,11 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $source = [];
         $optionsCount = count($options);
         $zoneCategories = [];
+        $optionCategories = [];
         for ($j = 0; $j < $optionsCount; ++$j) {
           $optParts = explode("-", $options[$j], 3);
           $category = MZZoneCategory($optParts[0], intval($optParts[1] ?? 0));
+          $optionCategories[$j] = $category;
           if ($category != "") $zoneCategories[$category] = true;
         }
         $showZoneLabels = count($zoneCategories) >= 2;
@@ -879,7 +881,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $card = $MyCardBack;
           }
           if ($showZoneLabels && $label == "" && $option0 != "MYHAND") {
-            $label = MZZoneCategory($option0, intval($option[1] ?? 0));
+            $label = $optionCategories[$i];
           }
           if ($maxCount < 2)
             $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters);
