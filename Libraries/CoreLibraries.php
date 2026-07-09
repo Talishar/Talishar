@@ -16,6 +16,14 @@ function DelimStringContains($str, $find, $partial=false)
   return false;
 }
 
+function IsDevEnvironment()
+{
+  $domain = getenv("DOMAIN");
+  if ($domain === "localhost") return true;
+  if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') return true;
+  return false;
+}
+
 function GetRandom($low=-1, $high=-1, $reroll=false)
 {
   global $randomSeeded;

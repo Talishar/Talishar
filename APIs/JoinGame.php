@@ -28,31 +28,7 @@ include_once "../Classes/CardObjects/LGSCards.php";
 
 // GetMetafyTiersFromDatabase is defined in includes/MetafyHelper.php (included above)
 
-if (!function_exists("DelimStringContains")) {
-  function DelimStringContains($str, $find, $partial=false)
-  {
-    foreach (explode(",", $str) as $item) {
-      if ($partial ? str_contains($item, $find) : $item == $find) return true;
-    }
-    return false;
-  }
-}
-
-if (!function_exists("SubtypeContains")) {
-  function SubtypeContains($cardID, $subtype, $player = "")
-  {
-    $cardSubtype = CardSubtype($cardID);
-    return DelimStringContains($cardSubtype, $subtype);
-  }
-}
-
-if (!function_exists("TypeContains")) {
-  function TypeContains($cardID, $type, $player = "")
-  {
-    $cardType = CardType($cardID);
-    return DelimStringContains($cardType, $type);
-  }
-}
+include_once "../Libraries/LegalHeroesHelper.php";
 
 if (!function_exists("CheckHeroPreference")) {
   function CheckHeroPreference($character, $gameDescription) {

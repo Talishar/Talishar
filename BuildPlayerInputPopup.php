@@ -1,40 +1,6 @@
 <?php
 
-if (!function_exists('GetCardEffectLabel')) {
-  function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
-    if ($uniqueID == "" || $uniqueID == "-") return "";
-    
-    $effectName = "";
-    $effectsCount = count($currentTurnEffects);
-    $effectPieces = CurrentTurnEffectPieces();
-    for ($j = 0; $j < $effectsCount; $j += $effectPieces) {
-      $effect = $currentTurnEffects[$j];
-      $p1 = strpos($effect, "-");
-      if ($p1 === false) continue;
-      $p2 = strpos($effect, "-", $p1 + 1);
-      $effectID = ($p2 !== false) ? substr($effect, $p1 + 1, $p2 - $p1 - 1) : substr($effect, $p1 + 1);
-      if ($effectID == $uniqueID) {
-        $effectName = substr($effect, 0, $p1);
-        break;
-      }
-    }
-
-    if ($effectName === "") return "";
-
-    switch ($effectName) {
-      case "beseech_the_demigon_red":
-      case "beseech_the_demigon_yellow":
-      case "beseech_the_demigon_blue":
-        return "Power +" . EffectPowerModifier($effectName);
-      case "tear_through_the_portal_red":
-      case "tear_through_the_portal_yellow":
-      case "tear_through_the_portal_blue":
-        return "Go Again";
-      default:
-        return "";
-    }
-  }
-}
+require_once __DIR__ . "/Libraries/UILibraries.php";
 
 function MZZoneCategory($zoneKey, $index) {
   switch ($zoneKey) {
@@ -245,7 +211,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSETOPOPPONENT":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $otherPlayer = $playerID == 1 ? 2 : 1;
+        $otherPlayer = OtherPlayer($playerID);
         $options = explode(",", $turn[2]);
         $optCards = [];
         foreach ($options as $option) {

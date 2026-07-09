@@ -11,17 +11,6 @@ SetHeaders();
 
 $response = new stdClass();
 
-// Helper function to check if a delimited string contains a value
-if (!function_exists("DelimStringContains")) {
-  function DelimStringContains($str, $find, $partial=false)
-  {
-    foreach (explode(",", $str) as $item) {
-      if ($partial ? str_contains($item, $find) : $item == $find) return true;
-    }
-    return false;
-  }
-}
-
 $_POST = json_decode(file_get_contents('php://input'), true);
 $decklink = TryPOST("fabdb", "");
 
