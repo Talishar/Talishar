@@ -311,8 +311,6 @@ function GetAllAltArtVariations(): array
     "bravo_flattering_showman=BDD001-T",
     "frankie_make_ends_meat=LSS021-T",
     "renounce_grandeur_red=FAB330-T",
-    "rhinar_reckless_rampage=1HP001-T",
-    "romping_club=1HP006-T",
     "bittering_thorns_red=LGS445-T",
     "cheaters_charm_yellow=LGS424-T",
     "liars_charm_yellow=LGS425-T",
