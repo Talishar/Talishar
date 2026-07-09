@@ -11,6 +11,13 @@ $manualArtVariationOverrides = [
   //   "art_of_the_void_red" => "AA",
   // Format option 2 - Manual URL: "cardID" => ["artVariation" => "XX", "imageUrl" => "https://..."]
   //   "another_card_red" => ["artVariation" => "FA", "imageUrl" => "https://example.com/image.jpg"],
+  // Format option 3 - Multiple manual entries (e.g. token reprints with new art
+  // that FabCube does not flag as art variations). Each entry needs a setID so
+  // the filename can be derived from the printing it represents:
+  //   "gold" => [
+  //     ["artVariation" => "AA", "setID" => "TCC098", "imageUrl" => "https://example.com/gold-tcc.jpg"],
+  //     ["artVariation" => "AA", "setID" => "SEA221", "imageUrl" => "https://example.com/gold-sea.jpg"],
+  //   ],
 
 /*  "ghost_protocol_mainframe_blue" => [
    "artVariation" => "EA",
@@ -62,15 +69,18 @@ echo "Decoded " . (is_array($cardArray) ? count($cardArray) : "unknown") . " car
 
 
 $altArtsArray = [];
-$newDownloads = [];  // Track only newly downloaded images
-$existingDownloads = [];  // Track already-downloaded images
+$newDownloads = [];  // "cardID=filename" entries newly downloaded this run
+$existingDownloads = [];  // "cardID=filename" entries already on disk
 $downloadedCount = 0;
 $skippedCount = 0;
 $existingCount = 0;
 $failedCount = 0;
 
-// Track best art variation per card (AA > AB > FA > EA)
-$cardBestVariant = [];
+// A card can have several alt arts across sets/printings (e.g. Runechant and
+// Gold tokens); download every distinct printing, deduped by filename.
+$processedFilenames = [];
+$cardsWithVariants = [];
+$overrideConsumed = [];
 
 $cardCount = 0;
 $printingCount = 0;
@@ -89,6 +99,37 @@ function GetArtVariationPriority($artVar) {
     "EA" => 1
   ];
   return $priorities[$artVar] ?? 0;
+}
+
+foreach ($manualArtVariationOverrides as $overrideCardID => $override) {
+  if (!is_array($override) || !array_is_list($override)) continue;
+  foreach ($override as $entry) {
+    $setID = $entry['setID'] ?? "";
+    $imageUrl = $entry['imageUrl'] ?? "";
+    if (strlen($setID) < 4 || empty($imageUrl)) {
+      echo "[MANUAL OVERRIDE] Skipping entry for " . $overrideCardID . ": setID and imageUrl are required\n";
+      continue;
+    }
+    $filename = substr($setID, 0, 3) . str_pad(intval(substr($setID, 3)), 3, "0", STR_PAD_LEFT) . "-T";
+    if (isset($processedFilenames[$filename])) continue;
+    $processedFilenames[$filename] = true;
+    $cardsWithVariants[$overrideCardID] = true;
+
+    $filepath = __DIR__ . "/../CardImages/media/missing/cardimages/english/" . $filename . ".webp";
+    echo "[MANUAL OVERRIDE] " . $overrideCardID . " (" . ($entry['artVariation'] ?? "AA") . ") from manual URL\n";
+    $downloadResult = DownloadArtVariationImage($filepath, $imageUrl, $filename, true);
+    if ($downloadResult === false) {
+      $failedCount++;
+      echo "Failed: " . $filename . " - Could not download from URL\n";
+    } else if ($downloadResult === true) {
+      $downloadedCount++;
+      $newDownloads[] = $overrideCardID . "=" . $filename;
+      echo "Downloaded: " . $filename . " (" . ($entry['artVariation'] ?? "AA") . ")\n";
+    } else if ($downloadResult === "exists") {
+      $existingCount++;
+      $existingDownloads[] = $overrideCardID . "=" . $filename;
+    }
+  }
 }
 
 foreach ($cardArray as $card) {
@@ -114,7 +155,14 @@ foreach ($cardArray as $card) {
     $manualImageUrl = null;  // For manual URL overrides
     
     // Check if this card has a manual override
-    if (isset($manualArtVariationOverrides[$cardID])) {
+    $isManualOverride = false;
+    if (
+      isset($manualArtVariationOverrides[$cardID]) &&
+      !isset($overrideConsumed[$cardID]) &&
+      !(is_array($manualArtVariationOverrides[$cardID]) && array_is_list($manualArtVariationOverrides[$cardID]))
+    ) {
+      $overrideConsumed[$cardID] = true;
+      $isManualOverride = true;
       $override = $manualArtVariationOverrides[$cardID];
       if (is_array($override)) {
         // Format 2: Manual URL provided
@@ -205,28 +253,14 @@ foreach ($cardArray as $card) {
     $filename = $set . str_pad($number, 3, "0", STR_PAD_LEFT) . "-T";
     $filepath = __DIR__ . "/../CardImages/media/missing/cardimages/english/" . $filename . ".webp";
 
-    // Track if this is the best variant for this card (only download the fanciest)
-    // Allow download if: not yet tracked, OR better priority, OR manual override
-    $isManualOverride = isset($manualArtVariationOverrides[$cardID]);
-    $shouldDownload = !isset($cardBestVariant[$cardID]) || $bestPriority > $cardBestVariant[$cardID]['priority'] || $isManualOverride;
-    
-    if (!$shouldDownload) {
-      // Skip this variant, we already have a better one for this card
+    if (isset($processedFilenames[$filename])) {
       $skippedCount++;
       continue;
     }
-    
-    // Update best variant tracking
-    $cardBestVariant[$cardID] = [
-      'priority' => $bestPriority,
-      'variant' => $bestVariationForPrinting,
-      'filename' => $filename,
-      'filepath' => $filepath,
-      'imageUrl' => $imageUrl
-    ];
+    $processedFilenames[$filename] = true;
+    $cardsWithVariants[$cardID] = true;
 
-    // Download only the best variant
-    $downloadResult = DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOverride);
+    $downloadResult = DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOverride, BuildFallbackImageUrls($setID));
     if ($downloadResult === false) {
       $failedCount++;
       echo "Failed: " . $filename . " - Could not download from URL\n";
@@ -235,16 +269,16 @@ foreach ($cardArray as $card) {
       // Newly downloaded
       $downloadedCount++;
       // Track this as a new download for adding to altArts
-      $newDownloads[$cardID] = $filename;
+      $newDownloads[] = $cardID . "=" . $filename;
       echo "Downloaded: " . $filename . " (" . $bestVariationForPrinting . ")\n";
     } else if ($downloadResult === "exists") {
       $existingCount++;
-      $existingDownloads[$cardID] = $filename;
+      $existingDownloads[] = $cardID . "=" . $filename;
     }
   }
 }
 
-// Generate PatreonDictionary.php compatible array using only BEST variants
+// Generate PatreonDictionary.php compatible entries for every downloaded variant
 echo "\n=== Summary ===\n";
 echo "Total cards processed: " . $cardCount . "\n";
 echo "Total printings processed: " . $printingCount . "\n";
@@ -253,21 +287,19 @@ echo "Total downloaded: " . $downloadedCount . "\n";
 echo "Total already existed: " . $existingCount . "\n";
 echo "Total skipped: " . $skippedCount . "\n";
 echo "Total failed: " . $failedCount . "\n";
-echo "Total unique cards with art variations: " . count($cardBestVariant) . "\n";
+echo "Total unique cards with art variations: " . count($cardsWithVariants) . "\n";
 echo "\n";
 
 // Build final altArts array with newly downloaded images
-foreach ($newDownloads as $cardID => $filename) {
-  $altArtsArray[$cardID] = $filename;
-}
+$altArtsArray = $newDownloads;
 
 // Which sets to highlight as "new" in the missing report
 $newSets = ["FAB"];
 
 if (count($altArtsArray) > 0) {
   echo "=== New entries to add to \$altArts ===\n";
-  foreach ($altArtsArray as $cardID => $altArtID) {
-    echo "\"" . $cardID . "=" . $altArtID . "\",\n";
+  foreach ($altArtsArray as $entry) {
+    echo "\"" . $entry . "\",\n";
   }
   echo "\n";
 } else {
@@ -275,19 +307,13 @@ if (count($altArtsArray) > 0) {
 }
 
 // Check for previously downloaded images that are missing from the $altArts array
-$altArts = GetAllAltArtVariations();
-$altArtsLookup = [];
-foreach ($altArts as $entry) {
-  $parts = explode("=", $entry, 2);
-  if (count($parts) === 2) {
-    $altArtsLookup[$parts[0]] = $parts[1];
-  }
-}
+$altArtsLookup = array_flip(GetAllAltArtVariations());
 
 $missingFromAltArts = [];
-foreach ($existingDownloads as $cardID => $filename) {
-  if (!isset($altArtsLookup[$cardID]) && !isset($newDownloads[$cardID])) {
-    $missingFromAltArts[$cardID] = $filename;
+foreach ($existingDownloads as $entry) {
+  if (!isset($altArtsLookup[$entry]) && !in_array($entry, $newDownloads)) {
+    list($cardID, $filename) = explode("=", $entry, 2);
+    $missingFromAltArts[$cardID . "=" . $filename] = $filename;
   }
 }
 
@@ -318,8 +344,8 @@ if (count($missingFromAltArts) > 0) {
     echo "=== NEW SET ENTRIES missing from \$altArts (" . $newSetCount . " from " . implode(", ", array_keys($newSetMissing)) . ") ===\n";
     foreach ($newSetMissing as $set => $entries) {
       echo "// --- $set (" . count($entries) . " cards) ---\n";
-      foreach ($entries as $cardID => $altArtID) {
-        echo "\"" . $cardID . "=" . $altArtID . "\",\n";
+      foreach ($entries as $entry => $altArtID) {
+        echo "\"" . $entry . "\",\n";
       }
       echo "\n";
     }
@@ -389,7 +415,58 @@ function RegenerateImageVariations($filepath, $filename)
   }
 }
 
-function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOverride = false)
+/**
+ * Alternate URLs to try when the FabCube image_url is dead (e.g. HTTP 403).
+ * Legend Story's public S3 bucket hosts most printings under predictable
+ * names: {setID}.webp plus foiling suffixes.
+ */
+function BuildFallbackImageUrls($setID)
+{
+  $urls = [];
+  foreach (["", "-CF", "-RF"] as $suffix) {
+    $urls[] = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/" . $setID . $suffix . ".webp";
+  }
+  return $urls;
+}
+
+/**
+ * Fetch image bytes from a URL. Returns the data string, or null on failure
+ * (non-200, empty response, or a response too small to be a real card image).
+ */
+function FetchImageData($url, $filename)
+{
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+  curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: image/*,*/*']);
+
+  $imageData = curl_exec($ch);
+  $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  $curlError = curl_error($ch);
+  curl_close($ch);
+
+  if ($httpCode !== 200 || empty($imageData)) {
+    if (!empty($curlError)) {
+      echo "Download error (" . $httpCode . "): " . $curlError . " - " . $filename . " [" . $url . "]<BR>";
+    } else {
+      echo "Download failed (HTTP " . $httpCode . "): " . $filename . " [" . $url . "]<BR>";
+    }
+    return null;
+  }
+
+  if (strlen($imageData) < 5000) {
+    echo "Response too small (" . strlen($imageData) . " bytes): " . $filename . " [" . $url . "]<BR>";
+    return null;
+  }
+
+  return $imageData;
+}
+
+function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOverride = false, $fallbackUrls = [])
 {
   // Only use CardImages paths, not backend folders
   $cardImagesUploadedFolder = __DIR__ . "/../CardImages/media/uploaded/public/cardimages/english/" . $filename . ".webp";
@@ -412,27 +489,23 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
 
   // Create temp file for download
   $tempFile = $filepath . ".tmp";
-  
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $imageUrl);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-  curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
-  curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: image/*,*/*']);
-  
-  $imageData = curl_exec($ch);
-  $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-  $curlError = curl_error($ch);
-  curl_close($ch);
 
-  if ($httpCode !== 200 || empty($imageData)) {
-    if (!empty($curlError)) {
-      echo "Download error (" . $httpCode . "): " . $curlError . " - " . $filename . "<BR>";
-    } else {
-      echo "Download failed (HTTP " . $httpCode . "): " . $filename . "<BR>";
+  // Try the primary URL first, then any fallback URL variations
+  $urlsToTry = array_merge([$imageUrl], $fallbackUrls);
+  $imageData = null;
+  foreach ($urlsToTry as $i => $url) {
+    // Skip fallbacks identical to the primary URL
+    if ($i > 0 && $url === $imageUrl) continue;
+    $imageData = FetchImageData($url, $filename);
+    if ($imageData !== null) {
+      if ($i > 0) {
+        echo "Fallback URL worked for " . $filename . ": " . $url . "<BR>";
+      }
+      break;
     }
+  }
+
+  if ($imageData === null) {
     return false;
   }
 
@@ -445,14 +518,6 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
 
   fwrite($handler, $imageData);
   fclose($handler);
-
-  // Validate file size
-  $fileSize = filesize($tempFile);
-  if ($fileSize < 5000) {
-    unlink($tempFile);
-    echo "File too small (" . $fileSize . " bytes): " . $filename . "<BR>";
-    return false;
-  }
 
   // Try to process image and convert to webp
   $success = false;
