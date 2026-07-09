@@ -1730,11 +1730,12 @@ function FinalizeChainLink($chainClosed = false)
   if ($Stack->StackEmpty() && $AttackQueue->NumAttacks() > 0) {
     global $CCS_AttackTarget, $CCS_AttackTargetUID;
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
+    $params = explode("|", $parameter);
+    if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]))) return; 
     if ($buffs != "-") {
       foreach(explode(",", $buffs) as $buff)
         AddCurrentTurnEffectNextAttack($buff, $player);
     }
-    $params = explode("|", $parameter);
     $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
     $MZIndex = CleanTargetToIndex($currentPlayer, $target);
     $combatChainState[$CCS_AttackTarget] = $MZIndex;
