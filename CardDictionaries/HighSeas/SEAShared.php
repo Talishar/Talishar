@@ -655,7 +655,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
       if(empty($inds)) break;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may tap a cog to buff ".CardLink($cardID, $cardID)." (or pass)");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds, 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, $inds);
       AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
