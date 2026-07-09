@@ -313,6 +313,12 @@ function GetAllAltArtVariations(): array
     "renounce_grandeur_red=FAB330-T",
     "rhinar_reckless_rampage=1HP001-T",
     "romping_club=1HP006-T",
-    "thespian_charm_yellow=APS014-T",
+    "bittering_thorns_red=LGS445-T",
+    "cheaters_charm_yellow=LGS424-T",
+    "liars_charm_yellow=LGS425-T",
+    "numbskull_charm_yellow=LGS422-T",
+    "rhinar_reckless_rampage=HER159-T",
+    "romping_club=FAB399-T",
+    "thespian_charm_yellow=LGS423-T",
   ];
 }

@@ -19,35 +19,10 @@ $manualArtVariationOverrides = [
   //     ["artVariation" => "AA", "setID" => "SEA221", "imageUrl" => "https://example.com/gold-sea.jpg"],
   //   ],
 
-   "cheaters_charm_yellow" => [
+/*    "cheaters_charm_yellow" => [
    "artVariation" => "EA",
-   "setID" => "SUP068",
    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS424-RF.webp"
-  ], 
-
-   "bravo_flattering_showman" => [
-   "artVariation" => "EA",
-   "setID" => "BDD001",
-   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS445-RF.webp"
-  ], 
-  
-   "numbskull_charm_yellow" => [
-   "artVariation" => "EA",
-   "setID" => "SUP007",
-   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS422-RF.webp"
-  ], 
-
-   "thespian_charm_yellow" => [
-   "artVariation" => "EA",
-    "setID" => "SUP013",
-   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS423-RF.webp"
-  ], 
-
-   "liars_charm_yellow" => [
-   "artVariation" => "EA",
-    "setID" => "SUP076",
-   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS425-RF.webp"
-  ], 
+  ],  */
 ];
 
 echo "=== Starting Art Variations Download ===\n";
@@ -138,7 +113,7 @@ foreach ($manualArtVariationOverrides as $overrideCardID => $override) {
 
     $filepath = __DIR__ . "/../CardImages/media/missing/cardimages/english/" . $filename . ".webp";
     echo "[MANUAL OVERRIDE] " . $overrideCardID . " (" . ($entry['artVariation'] ?? "AA") . ") from manual URL\n";
-    $downloadResult = DownloadArtVariationImage($filepath, $imageUrl, $filename, true);
+    $downloadResult = DownloadArtVariationImage($filepath, $imageUrl, $filename, true, BuildFallbackImageUrls($setID));
     if ($downloadResult === false) {
       $failedCount++;
       echo "Failed: " . $filename . " - Could not download from URL\n";
@@ -262,13 +237,11 @@ foreach ($cardArray as $card) {
       $number += 400;
     }
 
-    // Get image URL - use manual override if provided, otherwise use API URL
-    $imageUrl = $manualImageUrl ?? ($printing->image_url ?? null);
-    if (empty($imageUrl)) {
-      $skippedCount++;
-      echo "Skipped: " . $setID . " - No image URL\n";
-      continue;
-    }
+    // Get image URL - use manual override if provided, otherwise use API URL.
+    // FabCube frequently ships no image_url for LSS promo/foil printings even
+    // though the image exists on the S3 bucket under a foiling suffix. In that
+    // case leave $imageUrl empty and rely entirely on the derived fallback URLs.
+    $imageUrl = $manualImageUrl ?? ($printing->image_url ?? "");
 
     // Build filename: SET + number + "-T"
     $filename = $set . str_pad($number, 3, "0", STR_PAD_LEFT) . "-T";
@@ -439,13 +412,17 @@ function RegenerateImageVariations($filepath, $filename)
 function BuildFallbackImageUrls($setID)
 {
   $urls = [];
-  foreach (["", "-CF", "-RF"] as $suffix) {
-    $urls[] = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/" . $setID . $suffix . ".webp";
+  $sizes = ["large", "normal", "small"];
+  $suffixes = ["", "-RF", "-CF", "-MV", "-EA", "-FA"];
+  foreach ($sizes as $size) {
+    foreach ($suffixes as $suffix) {
+      $urls[] = "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/" . $size . "/" . $setID . $suffix . ".webp";
+    }
   }
   return $urls;
 }
 
-function FetchImageData($url, $filename)
+function FetchImageData($url, $filename, $quiet = false)
 {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
@@ -462,16 +439,22 @@ function FetchImageData($url, $filename)
   curl_close($ch);
 
   if ($httpCode !== 200 || empty($imageData)) {
-    if (!empty($curlError)) {
-      echo "Download error (" . $httpCode . "): " . $curlError . " - " . $filename . " [" . $url . "]<BR>";
-    } else {
-      echo "Download failed (HTTP " . $httpCode . "): " . $filename . " [" . $url . "]<BR>";
+    // Suppress per-URL noise while probing fallbacks; the caller reports once
+    // if every candidate URL failed.
+    if (!$quiet) {
+      if (!empty($curlError)) {
+        echo "Download error (" . $httpCode . "): " . $curlError . " - " . $filename . " [" . $url . "]<BR>";
+      } else {
+        echo "Download failed (HTTP " . $httpCode . "): " . $filename . " [" . $url . "]<BR>";
+      }
     }
     return null;
   }
 
   if (strlen($imageData) < 5000) {
-    echo "Response too small (" . strlen($imageData) . " bytes): " . $filename . " [" . $url . "]<BR>";
+    if (!$quiet) {
+      echo "Response too small (" . strlen($imageData) . " bytes): " . $filename . " [" . $url . "]<BR>";
+    }
     return null;
   }
 
@@ -502,15 +485,17 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
   // Create temp file for download
   $tempFile = $filepath . ".tmp";
 
-  // Try the primary URL first, then any fallback URL variations
-  $urlsToTry = array_merge([$imageUrl], $fallbackUrls);
+  // Try the primary URL first, then any fallback URL variations. De-dupe and
+  // drop empties so we never probe the same URL twice or curl an empty string
+  // (the primary is empty when FabCube shipped no image_url for the printing).
+  $urlsToTry = array_values(array_filter(array_unique(array_merge([$imageUrl], $fallbackUrls))));
   $imageData = null;
-  foreach ($urlsToTry as $i => $url) {
-    // Skip fallbacks identical to the primary URL
-    if ($i > 0 && $url === $imageUrl) continue;
-    $imageData = FetchImageData($url, $filename);
+  $primaryUrl = $imageUrl;
+  foreach ($urlsToTry as $url) {
+    // Probe every candidate quietly; report only once below if all fail.
+    $imageData = FetchImageData($url, $filename, true);
     if ($imageData !== null) {
-      if ($i > 0) {
+      if ($url !== $primaryUrl) {
         echo "Fallback URL worked for " . $filename . ": " . $url . "<BR>";
       }
       break;
@@ -518,6 +503,7 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
   }
 
   if ($imageData === null) {
+    echo "Download failed (all " . count($urlsToTry) . " URL variations tried): " . $filename . "<BR>";
     return false;
   }
 
