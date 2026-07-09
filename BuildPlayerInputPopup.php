@@ -45,7 +45,7 @@ function MZZoneCategory($zoneKey, $index) {
     case "MYALLY": case "THEIRALLY":
     case "MYPERM": case "THEIRPERM":
     case "LANDMARK":
-      return "In Play";
+      return "Arena";
     case "MYCHAR": case "THEIRCHAR":
       return $index == 0 ? "" : "Equipment";
     case "MYARS": case "THEIRARS":
