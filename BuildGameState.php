@@ -1,5 +1,6 @@
 <?php
 include_once "Libraries/PlayerSettings.php";
+include_once __DIR__ . "/includes/ModeratorList.inc.php";
 if (!function_exists('IsHideHandFromFriends')) {
     function IsHideHandFromFriends($player) { return false; }
 }
@@ -127,15 +128,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->opponentName = $playerID == 1 ? $p2DisplayName : $p1DisplayName;
     $playerUid = $playerID == 1 ? $p1uid : $p2uid;
     $opponentUid = $playerID == 1 ? $p2uid : $p1uid;
-    static $contributors = ["sugitime" => true, "OotTheMonk" => true, "Launch" => true, "LaustinSpayce" => true, "Star_Seraph" => true, "Tower" => true, "Etasus" => true, "scary987" => true, "Celenar" => true, "DKGaming" => true, "Aegisworn" => true, "PvtVoid" => true, "Bluffkin" => true];
-
-    $initialLoad->playerIsContributor = isset($contributors[$playerUid]);
+    $initialLoad->playerIsContributor = IsUserContributor($playerUid);
     $initialLoad->playerIsPatron = ($playerID == 1 ? $p1IsPatron : $p2IsPatron) ?: "";
 
     // Use cached Metafy tiers from game file (populated at JoinGame time)
     $initialLoad->playerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?: [];
 
-    $initialLoad->opponentIsContributor = isset($contributors[$opponentUid]);
+    $initialLoad->opponentIsContributor = IsUserContributor($opponentUid);
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
     $initialLoad->opponentMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 

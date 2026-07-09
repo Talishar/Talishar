@@ -8,6 +8,7 @@ include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../Assets/MetafyDictionary.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
+include_once "../includes/ModeratorList.inc.php";
 
 // Set headers immediately after includes
 SetHeaders();
@@ -30,11 +31,10 @@ include "./APIParseGamefile.php";
 // p1Name/p2Name are display-only; perk and contributor checks key off the immutable handles
 $response->p1Name = $p1DisplayName;
 $response->p2Name = $p2DisplayName;
-$contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
 $response->p1IsPatron = $p1IsPatron == "" ? false : true;
-$response->p1IsContributor = in_array($p1uid, $contributors);
+$response->p1IsContributor = IsUserContributor($p1uid);
 $response->p2IsPatron = $p2IsPatron == "" ? false : true;
-$response->p2IsContributor = in_array($p2uid, $contributors);
+$response->p2IsContributor = IsUserContributor($p2uid);
 $response->p1IsPvtVoidPatron = $p1uid == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
 $response->p2IsPvtVoidPatron = $p2uid == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
 $response->roguelikeGameID = $roguelikeGameID;

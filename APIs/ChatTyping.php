@@ -7,6 +7,7 @@ session_write_close();
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/CacheLibraries.php";
+include_once "../includes/ModeratorList.inc.php";
 
 SetHeaders();
 
@@ -23,8 +24,7 @@ if (!IsGameNameValid($gameName)) {
 
 $playerID = $_GET["playerID"] ?? $_POST["playerID"] ?? null;
 
-$modUsernames = ["OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn", "Bluffkin"];
-$isMod = $sessionUserUid !== null && in_array($sessionUserUid, $modUsernames);
+$isMod = $sessionUserUid !== null && IsUserModerator($sessionUserUid);
 
 if (!is_numeric($playerID) || ($playerID != 1 && $playerID != 2 && !($playerID == 3 && $isMod))) {
   $response->errorMessage = "Invalid player ID.";

@@ -16,6 +16,7 @@ include_once "../Libraries/UILibraries.php";
 include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
+include_once "../includes/ModeratorList.inc.php";
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -37,9 +38,7 @@ $response->patreonInfo = PatreonLink();
 $response->isPatreonLinked = isset($_SESSION["patreonAuthenticated"]);
 $response->isPatreonSupporter = IsLoggedInUserPatron() == true;
 
-// Check if user is contributor or PvtVoid patron
-$contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
-$response->isContributor = in_array($userName, $contributors);
+$response->isContributor = IsUserContributor($userName);
 $response->isPvtVoidPatron = $userName == "PvtVoid" || isset($_SESSION["isPvtVoidPatron"]);
 
 // Get Metafy info from database

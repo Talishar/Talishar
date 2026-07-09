@@ -231,8 +231,8 @@ function ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)
 function ShouldSkipRustCountersForContributors()
 {
 	global $p1uid, $p2uid;
-	$contributors = ["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "Bluffkin", "Bluffkin1", "PvtVoid"];
-	if (in_array($p1uid, $contributors) || in_array($p2uid, $contributors)) return true;
+	include_once __DIR__ . '/ModeratorList.inc.php';
+	return IsUserContributor($p1uid) || IsUserContributor($p2uid);
 }
 
 function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)

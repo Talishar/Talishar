@@ -33,9 +33,8 @@ if (!IsGameNameValid($gameName)) {
 }
 $playerID = intval($_GET["playerID"]);
 
-// List of mod usernames - should match frontend list
-$modUsernames = array_flip(["OotTheMonk", "LaustinSpayce", "Tower", "PvtVoid", "Aegisworn", "Bluffkin"]);
-$isMod = $sessionUserUid !== null && isset($modUsernames[$sessionUserUid]);
+include_once "includes/ModeratorList.inc.php";
+$isMod = $sessionUserUid !== null && IsUserModerator($sessionUserUid);
 
 if ($playerID === 3 && !$isMod) {
   http_response_code(403);
@@ -111,9 +110,6 @@ if ($chatText === "") {
   die("No message.");
 }
 
-//array for contributors
-$contributors = array_flip(["sugitime", "OotTheMonk", "LaustinSpayce", "Tower", "Etasus", "Aegisworn", "PvtVoid", "Bluffkin"]);
-
 $metafyTiers = [];
 if ($playerID === 1) $metafyTiers = $p1MetafyTiers ?? [];
 else if ($playerID === 2) $metafyTiers = $p2MetafyTiers ?? [];
@@ -138,7 +134,7 @@ if(!empty($metafyTiers)) {
 // Only show Patreon badges if user doesn't have Metafy badges
 if(!$hasMetafyBadges) {
   //its sort of sloppy, but it this will fail if you're in the contributors array because we want to give you the contributor icon, not the patron icon.
-  if($sessionIsPatron && $sessionUserUid !== null && !isset($contributors[$sessionUserUid])) {
+  if($sessionIsPatron && !IsUserContributor($sessionUserUid)) {
     $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a Metafy Supporter of Talishar 💖' style='margin-bottom:3px; height:16px;' src='./images/patronHeart.webp' /></a>" . $displayName;
   }
 
@@ -149,7 +145,7 @@ if(!$hasMetafyBadges) {
 }
 
 //This is the code for Contributor's icon.
-if($sessionUserUid !== null && isset($contributors[$sessionUserUid])) {
+if(IsUserContributor($sessionUserUid)) {
   $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a developer of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
 }
 

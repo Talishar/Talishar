@@ -29,6 +29,33 @@ function GetCardEditorList() {
   ];
 }
 
+function GetContributorList() {
+  return [
+    "sugitime",
+    "OotTheMonk",
+    "Launch",
+    "LaustinSpayce",
+    "Star_Seraph",
+    "Tower",
+    "Etasus",
+    "scary987",
+    "Celenar",
+    "DKGaming",
+    "Aegisworn",
+    "PvtVoid",
+    "Bluffkin",
+    "Bluffkin1"
+  ];
+}
+
+function IsUserContributor($useruid) {
+  static $contributorMap = null;
+  if ($contributorMap === null) {
+    $contributorMap = array_flip(GetContributorList());
+  }
+  return $useruid !== null && $useruid !== "" && isset($contributorMap[$useruid]);
+}
+
 function IsUserModerator($useruid) {
   static $modMap = null;
   if ($modMap === null) {

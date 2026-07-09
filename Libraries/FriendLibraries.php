@@ -5,6 +5,8 @@
  * Helper functions for friend list management
  */
 
+include_once __DIR__ . '/../includes/ModeratorList.inc.php';
+
 /**
  * Get banned player usernames from bannedPlayers.txt
  * @return array Set-like array of banned usernames (lowercase for case-insensitive comparison)
@@ -111,9 +113,6 @@ function GetUserFriends($userId) {
 
   $result = $stmt->get_result();
 
-  // List of contributors
-  $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
-  
   $friends = [];
   while ($row = $result->fetch_assoc()) {
     $username = $row['usersUid'];
@@ -124,7 +123,7 @@ function GetUserFriends($userId) {
       'username' => $username,
       'displayName' => ($row['displayName'] ?? "") !== "" ? $row['displayName'] : $username,
       'nickname' => $row['nickname'] ?: null,
-      'isContributor' => in_array($username, $contributors),
+      'isContributor' => IsUserContributor($username),
       'isPatron' => false, // Would need database lookup of patron status
       'isPvtVoidPatron' => IsPvtVoidPatron($username), // Check against PvtVoid patron list
     ];

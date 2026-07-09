@@ -11,6 +11,7 @@ include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";
 include_once "../includes/MatchupHelpers.php";
+include_once "../includes/ModeratorList.inc.php";
 
 SetHeaders();
 
@@ -233,9 +234,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->theirChannelLink = $channelLink;
 
   // Patron/supporter info for opponent
-  $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
   $theirUid = ($playerID == 1 ? $p2uid : $p1uid);
-  $response->theirIsContributor = in_array($theirUid, $contributors);
+  $response->theirIsContributor = IsUserContributor($theirUid);
   $response->theirIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
   $response->theirIsPvtVoidPatron = ($theirUid === "PvtVoid");
   $response->theirMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
