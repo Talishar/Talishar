@@ -28,6 +28,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
   global $roguelikeGameID, $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects;
+  global $p1MetafyTiers, $p2MetafyTiers;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
     case 0:
@@ -982,9 +983,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $counterFile = fopen($path . "counter.txt", "w");
       fwrite($counterFile, $counter + 1);
       fclose($counterFile);
+      $ownerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
+      $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers);
       $replayFiles = glob($path . "*");
       $filecount = count($replayFiles);
-      if ($filecount > MAX_REPLAYS_SAVED + 1) {
+      if ($filecount > $maxReplaysSaved + 1) {
         $minCounter = INF;
         foreach ($replayFiles as $dirName) {
           $dirNum = basename($dirName);
@@ -992,7 +995,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             $minCounter = intval($dirNum);
         }
         if (!is_infinite($minCounter)) {
-          WriteLog("You've reached the maximum number of saved replays, deleting your oldest ($minCounter)", highlight: true);
+          WriteLog("You've reached the maximum number of saved replays ($maxReplaysSaved), deleting your oldest ($minCounter)", highlight: true);
           deleteDir($path . $minCounter . "/");
         }
       }

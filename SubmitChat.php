@@ -203,6 +203,7 @@ function parseQuickChat($inputEnum)
     case "21": return "Well played!";
     case "22": return "Whoops!";
     case "23": return "Yes";
+    case "24": return "Hello, good luck have fun!";
     default: return "";
   };
 }

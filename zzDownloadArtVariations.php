@@ -12,9 +12,13 @@ $manualArtVariationOverrides = [
   // Format option 2 - Manual URL: "cardID" => ["artVariation" => "XX", "imageUrl" => "https://..."]
   //   "another_card_red" => ["artVariation" => "FA", "imageUrl" => "https://example.com/image.jpg"],
 
-/*    "colors_of_aria_red" => [
+/*  "ghost_protocol_mainframe_blue" => [
    "artVariation" => "EA",
-   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/FAB426.webp"
+   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/LGS443-CF.webp"
+  ],
+   "ghost_protocol_architect_red" => [
+   "artVariation" => "EA",
+   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/LGS444-CF.webp"
   ], */
 ];
 

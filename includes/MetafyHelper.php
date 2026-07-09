@@ -188,4 +188,26 @@ function IsValidMetafyTier($tierName)
   return isset($supportedTiersMap[$tierName]);
 }
 
+// Replay save slots granted per Metafy tier, on top of the base patron allotment.
+// Higher tiers grant more slots as a subscriber incentive.
+function GetMaxReplaySlotsForTiers($metafyTiers)
+{
+  $tierSlotMap = [
+    'Fyendal Supporters' => 5,
+    'Seers of Ophidia' => 8,
+    'Arknight Shards' => 10,
+    'Light of Sol Gemini Circle' => 12,
+    'Lover of Grandeur' => 15,
+    'Sponsors of Trōpal-Dhani' => 20,
+  ];
+  $maxSlots = MAX_REPLAYS_SAVED;
+  if (!is_array($metafyTiers)) return $maxSlots;
+  foreach ($metafyTiers as $tierName) {
+    if (isset($tierSlotMap[$tierName]) && $tierSlotMap[$tierName] > $maxSlots) {
+      $maxSlots = $tierSlotMap[$tierName];
+    }
+  }
+  return $maxSlots;
+}
+
 ?>

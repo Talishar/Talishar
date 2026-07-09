@@ -365,7 +365,6 @@ enum MetafyCommunity : string
         "boltyn=HER160-T",
         "boneyard_marauder_red=FAB023-T",
         "braveforge_bracers=MPW011-T",
-        "colors_of_aria_red=FAB426-T",
         "confidence=FAB394-T",
         "dorinthea_quicksilver_prodigy=HER167-T",
         "durendal=MPW008-T",
@@ -421,6 +420,8 @@ enum MetafyCommunity : string
         "zipper_hit_red=TNP028-T",
         "zipper_hit_yellow=TNP029-T",
         "zipper_hit_blue=TNP030-T",
+        "ghost_protocol_architect_red=PEN062-T",
+        "ghost_protocol_mainframe_blue=PEN063-T",
         ];
     return $altArts;
   }
