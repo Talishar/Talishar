@@ -19,14 +19,35 @@ $manualArtVariationOverrides = [
   //     ["artVariation" => "AA", "setID" => "SEA221", "imageUrl" => "https://example.com/gold-sea.jpg"],
   //   ],
 
-/*  "ghost_protocol_mainframe_blue" => [
+   "cheaters_charm_yellow" => [
    "artVariation" => "EA",
-   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/LGS443-CF.webp"
-  ],
-   "ghost_protocol_architect_red" => [
+   "setID" => "SUP068",
+   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS424-RF.webp"
+  ], 
+
+   "bravo_flattering_showman" => [
    "artVariation" => "EA",
-   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/LGS444-CF.webp"
-  ], */
+   "setID" => "BDD001",
+   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS445-RF.webp"
+  ], 
+  
+   "numbskull_charm_yellow" => [
+   "artVariation" => "EA",
+   "setID" => "SUP007",
+   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS422-RF.webp"
+  ], 
+
+   "thespian_charm_yellow" => [
+   "artVariation" => "EA",
+    "setID" => "SUP013",
+   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS423-RF.webp"
+  ], 
+
+   "liars_charm_yellow" => [
+   "artVariation" => "EA",
+    "setID" => "SUP076",
+   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS425-RF.webp"
+  ], 
 ];
 
 echo "=== Starting Art Variations Download ===\n";
@@ -415,11 +436,6 @@ function RegenerateImageVariations($filepath, $filename)
   }
 }
 
-/**
- * Alternate URLs to try when the FabCube image_url is dead (e.g. HTTP 403).
- * Legend Story's public S3 bucket hosts most printings under predictable
- * names: {setID}.webp plus foiling suffixes.
- */
 function BuildFallbackImageUrls($setID)
 {
   $urls = [];
@@ -429,10 +445,6 @@ function BuildFallbackImageUrls($setID)
   return $urls;
 }
 
-/**
- * Fetch image bytes from a URL. Returns the data string, or null on failure
- * (non-200, empty response, or a response too small to be a real card image).
- */
 function FetchImageData($url, $filename)
 {
   $ch = curl_init();
@@ -633,7 +645,6 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
     }
   }
 
-  // If conversion failed, just move the file as-is
   if (file_exists($tempFile)) {
     try {
       CreateDirIfNotExists(dirname($filepath));
@@ -648,9 +659,6 @@ function DownloadArtVariationImage($filepath, $imageUrl, $filename, $isManualOve
   return false;
 }
 
-/**
- * Helper function to create directory if it doesn't exist
- */
 function CreateDirIfNotExists($path)
 {
   if (!is_dir($path)) {
@@ -658,10 +666,6 @@ function CreateDirIfNotExists($path)
   }
 }
 
-/**
- * Get card identifier (from zzCardCodeGenerator.php)
- * Normalizes card name to lowercase with color suffix
- */
 function GetCardIdentifier($name, $pitch, $delimiter = "_")
 {
   if ($name == "Goldfin Harpoon") return "goldfin_harpoon_yellow";
