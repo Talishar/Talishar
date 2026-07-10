@@ -982,7 +982,7 @@ function isBannedInFormat($cardID, $format) {
           "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots",
           "electromagnetic_somersault_red", "electromagnetic_somersault_yellow",
           "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade",
-          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow"
+          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow", "millers_grindstone"
       ], $livingLegends)),
       "commoner" => array_flip([
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
@@ -1029,7 +1029,7 @@ function isBannedInFormat($cardID, $format) {
     ];
   }
   if ($format == "futurecc") {
-    $futureBans = ["victor_goldmane_high_and_mighty", "millers_grindstone"];
+    $futureBans = [];
     $futureUnbans = [];
     return (in_array($cardID, $futureBans) || (isset($bannedSets["cc"][$cardID]) && !in_array($cardID, $futureUnbans)));
   }

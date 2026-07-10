@@ -980,7 +980,7 @@ function CombatChainOffset($piece)
 
 $livingLegends = ["chane_bound_by_shadow", "bravo_star_of_the_show", "aurora_shooting_star", "azalea_ace_in_the_hole", "briar_warden_of_thorns", "dash_inventor_extraordinaire", "dromai_ash_artist", "enigma_ledger_of_ancestry",
                   "florian_rotwood_harbinger", "iyslander_stormbind", "kano_dracai_of_aether", "lexi_livewire", "nuu_alluring_desire", "oldhim_grandfather_of_eternity", "prism_sculptor_of_arc_light",
-                  "viserai_rune_blood", "zen_tamer_of_purpose", "kayo_armed_and_dangerous", "verdance_thorn_of_the_rose", "prism_awakener_of_sol"];
+                  "viserai_rune_blood", "zen_tamer_of_purpose", "kayo_armed_and_dangerous", "verdance_thorn_of_the_rose", "prism_awakener_of_sol", "victor_goldmane_high_and_mighty"];
 
 $benched = ["kano", "ira", "kayo"];
 
