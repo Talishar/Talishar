@@ -354,6 +354,7 @@ function GetCardBack($player)
     136 => "CBFabInsight",
     137 => "CBNxi2",
     138 => "CBOddwillows",
+    139 => "CBShine",
   ];
   $override = GetFavoriteDeckCosmeticOverride($player);
   $cardBackId = ($override !== null && $override['cardBack'] !== '0')
@@ -819,5 +820,11 @@ function IsTeamFabInsight($userName)
 function IsTeamOddwillows($userName)
 {
   static $members = ["BenOddwillows" => 1, "PvtVoid" => 1, "Teari" => 1, "arcaneghost" => 1];
+  return isset($members[$userName]);
+}
+
+function IsTeamShine($userName)
+{
+  static $members = ["shine" => 1, "Baumfish" => 1, "Curryking" => 1, "DanielB" => 1, "Flixi" => 1, "malusNexx2" => 1, "Sleepless" => 1, "Thalric" => 1, "Nexre" => 1, "PvtVoid" => 1];
   return isset($members[$userName]);
 }
