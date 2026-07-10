@@ -209,11 +209,11 @@ foreach ($cardArray as $card) {
     $set = substr($setID, 0, 3);
     $number = intval(substr($setID, 3));
 
-    // Check if double-sided card back (is_front: false adds +400)
+    // Skip back faces of double-sided cards (is_front: false); back-face
+    // promo images are not used as alt arts
     $isBack = false;
     if (isset($printing->double_sided_card_info) && is_array($printing->double_sided_card_info)) {
       foreach ($printing->double_sided_card_info as $dfc_info) {
-        // Only add 400 if this is the back face (is_front: false)
         if (isset($dfc_info->is_front) && $dfc_info->is_front === false) {
           $isBack = true;
           break;
@@ -222,7 +222,8 @@ foreach ($cardArray as $card) {
     }
 
     if ($isBack) {
-      $number += 400;
+      $skippedCount++;
+      continue;
     }
 
     // Get image URL - use manual override if provided, otherwise use API URL.
