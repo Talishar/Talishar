@@ -144,7 +144,7 @@ ob_end_clean();
 if (ShouldSkipRustCountersForContributors()) {
   WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight: true, highlightColor: "green");
 }
-if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)) {
+elseif (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)) {
   WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight: true, highlightColor: "green");
 }
 AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI);

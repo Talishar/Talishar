@@ -270,6 +270,12 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   include "../ParseGamestate.php";
   include "../StartEffects.php";
 
+  if (ShouldSkipRustCountersForContributors()) {
+    WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight: true, highlightColor: "green", path: "../");
+  }
+  elseif (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)) {
+    WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight: true, highlightColor: "green", path: "../");
+  }
   AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI);
 
   //Update the game file to show that the game has started and other players can join to spectate
