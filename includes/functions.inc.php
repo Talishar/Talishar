@@ -4,7 +4,14 @@ require_once __DIR__ . '/../Assets/patreon-php-master/src/PatreonLibraries.php';
 
 use SendGrid\Mail\Mail;
 
-require_once __DIR__ . '/../Libraries/CoreLibraries.php';
+if (!function_exists('IsDevEnvironment')) {
+  function IsDevEnvironment() {
+    $domain = getenv("DOMAIN");
+    if ($domain === "localhost") return true;
+    if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') return true;
+    return false;
+  }
+}
 
 // Check for empty input signup
 function emptyInputSignup($username, $email, $pwd, $pwdRepeat)
@@ -440,7 +447,7 @@ function logCompletedGameStats($conceded = false)
 	if ($winner == 0) return;
 	if ($p2IsAI == "1") return; // Don't file results for AI games
 
-	$loser = (OtherPlayer($winner));
+	$loser = ($winner == 1 ? 2 : 1);
 	$winnerDeckFile = "./Games/" . $gameName . "/p" . $winner . "Deck.txt";
 	$loserDeckFile = "./Games/" . $gameName . "/p" . $loser . "Deck.txt";
 	if (!file_exists($winnerDeckFile) || !file_exists($loserDeckFile)) return;
@@ -981,7 +988,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	}
 
 	$turnStats = &GetTurnStats($player);
-	$otherPlayerTurnStats = &GetTurnStats(OtherPlayer($player));
+	$otherPlayerTurnStats = &GetTurnStats($player == 1 ? 2 : 1);
 
 	// Use helper function to populate turn stats and aggregates (useIntval=false for SerializeGameResult)
 	PopulateTurnStatsAndAggregates($deck, $turnStats, $otherPlayerTurnStats, $player, false);
@@ -1099,7 +1106,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		}
 	}
 	$turnStats = &GetTurnStats($player);
-	$otherPlayerTurnStats = &GetTurnStats(OtherPlayer($player));
+	$otherPlayerTurnStats = &GetTurnStats($player == 1 ? 2 : 1);
 
 	PopulateTurnStatsAndAggregates($deck, $turnStats, $otherPlayerTurnStats, $player, true);
 	PopulateAggregateStats($deck, $turnStats);
@@ -1197,6 +1204,38 @@ function LoadSavedSettings($playerId)
 	}
 	mysqli_close($conn);
 	return $output;
+}
+
+function SendEmail($userEmail, $url)
+{
+	include "../APIKeys/APIKeys.php";
+	require '../vendor/autoload.php';
+
+	$email = new Mail();
+	$email->setFrom("noreply@sendgrid.net", "Talishar");
+	$email->addTo($userEmail);
+	$email->addContent(
+		"text/html",
+		"
+        <p>
+          We recieved a password reset request. The link to reset your password is below.
+          If you did not make this request, you can ignore this email
+        </p>
+        <p>
+          Here is your password reset link: </br>
+          <a href=$url>Password Reset</a>
+        </p>
+      "
+	);
+	$sendgrid = new \SendGrid($sendgridKey);
+	try {
+		$response = $sendgrid->send($email);
+		print $response->statusCode() . "\n";
+		print_r($response->headers());
+		print $response->body() . "\n";
+	} catch (Exception $e) {
+		echo 'Caught exception: ' . $e->getMessage() . "\n";
+	}
 }
 
 function SendEmailAPI($userEmail, $url)
