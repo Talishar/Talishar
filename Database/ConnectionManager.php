@@ -7,7 +7,7 @@
      $password = getenv("MYSQL_ROOT_PASSWORD") ;
      $database = "fabonline";
 	   try {
-       return mysqli_connect($hostname, $username, $password, $database);
+       return mysqli_connect("p:" . $hostname, $username, $password, $database);
      } catch (\Exception $e) {
 
      }

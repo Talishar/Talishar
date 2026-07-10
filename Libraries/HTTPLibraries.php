@@ -54,7 +54,6 @@ function IsReplay()
   static $cache = [];
   if (isset($cache[$gameName])) return $cache[$gameName];
   $val = GetCachePiece($gameName, 10);
-  if ($val === "") return false;
   return $cache[$gameName] = ($val == "1");
 }
 

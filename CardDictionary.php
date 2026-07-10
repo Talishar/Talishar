@@ -1183,19 +1183,21 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 
 function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
   global $mainPlayer, $defPlayer;
+  if (!$pitch && SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $mainPlayer)) return true;
+  $fromHand = $from == "HAND";
+  if (!$fromHand && !$pitch) return false;
+
   $cardName = $nameGiven ? $cardID : NameOverride($cardID);
+  $sanitizedName = GamestateSanitize($cardName);
 
-  $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $mainPlayer);
-  $underEdict = $underEdict && !$pitch;
+  if (SearchItemForModalities($sanitizedName, $mainPlayer, "null_time_zone_blue") != -1) return true;
+  if (SearchItemForModalities($sanitizedName, $defPlayer, "null_time_zone_blue") != -1) return true;
 
-  $foundNullTime = SearchItemForModalities(GamestateSanitize($cardName), $mainPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities(GamestateSanitize($cardName), $defPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime && ($from == "HAND" || $pitch);
-
-  $foundSpeechless = SearchAuraForModalities(GamestateSanitize($cardName), $mainPlayer, "leave_em_speechless_blue") != -1;
-  $foundSpeechless = $foundSpeechless || SearchAuraForModalities(GamestateSanitize($cardName), $defPlayer, "leave_em_speechless_blue") != -1;
-  $foundSpeechless = $foundSpeechless && $from == "HAND" && !$pitch;
-  return $foundNullTime || $foundSpeechless || $underEdict;
+  if ($fromHand && !$pitch) {
+    if (SearchAuraForModalities($sanitizedName, $mainPlayer, "leave_em_speechless_blue") != -1) return true;
+    if (SearchAuraForModalities($sanitizedName, $defPlayer, "leave_em_speechless_blue") != -1) return true;
+  }
+  return false;
 }
 
 //used to get modal ability names of cards with "simple" conditions, ie. no targeting
@@ -4056,7 +4058,7 @@ function AbilityPlayableFromBanish($cardID, $mod = "")
 function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
 {
   global $currentPlayer;
-  $mod = explode("-", $mod, 2)[0];
+  $mod = explode("-", $mod ?? "", 2)[0];
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
   if (isFaceDownMod($mod)) return false;

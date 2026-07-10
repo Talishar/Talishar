@@ -23,7 +23,7 @@ function GetDBConnection($logKey = 0)
     }
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 	try {
-        $conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+        $conn = mysqli_connect("p:" . $servername, $dBUsername, $dBPassword, $dBName);
 	} catch (\Exception $e) {
 		error_log("DB connection failed: " . mysqli_connect_error() . " (errno: " . mysqli_connect_errno() . ")");
 		return false;
