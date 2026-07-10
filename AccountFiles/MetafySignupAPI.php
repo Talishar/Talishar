@@ -7,6 +7,7 @@ include_once '../APIKeys/APIKeys.php';
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once '../Libraries/HTTPLibraries.php';
+include_once '../Libraries/FriendLibraries.php';
 
 CheckSession();
 
@@ -189,7 +190,7 @@ function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
   // Check if username already exists, generate unique one if needed
   $base_username = $username;
   $counter = 1;
-  while (UsernameExists($username, $conn)) {
+  while (UsernameExists($username, $conn) || IsBannedPlayer($username)) {
     $username = $base_username . $counter;
     $counter++;
   }

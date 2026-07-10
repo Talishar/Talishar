@@ -13,6 +13,7 @@
 
   require_once "../includes/dbh.inc.php";
   require_once '../includes/functions.inc.php';
+  require_once '../Libraries/FriendLibraries.php';
 
   $response = new stdClass();
 
@@ -47,8 +48,9 @@
     exit;
   }
   $conn = GetDBConnection(DBL_SIGNUP_API);
-  // Is the username taken already
-  if (uidExists($conn, $username) !== false) {
+  // Is the username taken already, or a banned name (banned names stay
+  // reserved even after the original account is deleted)
+  if (uidExists($conn, $username) !== false || IsBannedPlayer($username)) {
     $response->error = "The chosen username is taken.";
     echo(json_encode($response));
     mysqli_close($conn);
