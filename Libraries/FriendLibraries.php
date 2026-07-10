@@ -13,33 +13,64 @@ include_once __DIR__ . '/../includes/ModeratorList.inc.php';
  */
 function GetBannedPlayers() {
   static $bannedPlayers = null;
-  
+
   if ($bannedPlayers !== null) {
     return $bannedPlayers;
   }
-  
-  $bannedPlayers = [];
-  $banFilePath = __DIR__ . '/../HostFiles/bannedPlayers.txt';
-  
-  if (!file_exists($banFilePath)) {
-    return $bannedPlayers;
-  }
-  
-  $banContent = file_get_contents($banFilePath);
-  if ($banContent === false) {
-    return $bannedPlayers;
-  }
-  
-  // Split by newlines and process each line
-  $lines = explode("\n", $banContent);
-  foreach ($lines as $line) {
-    $line = trim($line);
-    if (!empty($line)) {
-      // Store with lowercase for case-insensitive comparison
-      $bannedPlayers[strtolower($line)] = true;
+
+  if (function_exists('apcu_fetch')) {
+    $cached = apcu_fetch('talishar_banned_players');
+    if (is_array($cached)) {
+      $bannedPlayers = $cached;
+      return $bannedPlayers;
     }
   }
-  
+
+  $bannedPlayers = [];
+  $banFilePath = __DIR__ . '/../HostFiles/bannedPlayers.txt';
+
+  if (file_exists($banFilePath)) {
+    $banContent = file_get_contents($banFilePath);
+    if ($banContent !== false) {
+      $lines = explode("\n", $banContent);
+      foreach ($lines as $line) {
+        $line = trim($line);
+        if (!empty($line)) {
+          // Store with lowercase for case-insensitive comparison
+          $bannedPlayers[strtolower($line)] = true;
+        }
+      }
+    }
+  }
+
+  $conn = ValidateConnOrReturnEmpty() ? $GLOBALS['conn'] : (function_exists('GetDBConnection') ? GetDBConnection() : null);
+  if ($conn) {
+    // banned_players may not exist yet on a fresh install; users.isBanned always does
+    try {
+      $result = mysqli_query($conn, "SELECT name FROM banned_players");
+      if ($result) {
+        while ($row = mysqli_fetch_row($result)) {
+          if (!empty($row[0])) $bannedPlayers[strtolower($row[0])] = true;
+        }
+      }
+    } catch (\Exception $e) {
+    }
+    try {
+      $result = mysqli_query($conn, "SELECT usersUid FROM users WHERE isBanned = 1");
+      if ($result) {
+        while ($row = mysqli_fetch_row($result)) {
+          if (!empty($row[0])) $bannedPlayers[strtolower($row[0])] = true;
+        }
+      }
+    } catch (\Exception $e) {
+      error_log("GetBannedPlayers: query failed: " . $e->getMessage());
+    }
+  }
+
+  if (function_exists('apcu_store')) {
+    apcu_store('talishar_banned_players', $bannedPlayers, 60);
+  }
+
   return $bannedPlayers;
 }
 

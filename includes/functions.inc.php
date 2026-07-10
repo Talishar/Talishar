@@ -1429,11 +1429,12 @@ function ResolveNameToAccount($name)
 	return null;
 }
 
-function BanPlayer($uid)
+function BanPlayer($uid, $bannedBy = "")
 {
 	$account = ResolveNameToAccount($uid);
 	if ($account !== null) $uid = $account["usersUid"];
 	$conn = GetDBConnection(DBL_BAN_PLAYER);
+	if (!$conn) return $uid;
 	$sql = "UPDATE users SET isBanned = true WHERE usersUid = ?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -1441,7 +1442,28 @@ function BanPlayer($uid)
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
+	EnsureBannedPlayersTable($conn);
+	$sql = "INSERT INTO banned_players (name, bannedBy) VALUES (?, ?) ON DUPLICATE KEY UPDATE name = name";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ss", $uid, $bannedBy);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	if (function_exists('apcu_delete')) @apcu_delete('talishar_banned_players');
 	return $uid;
+}
+
+function EnsureBannedPlayersTable($conn)
+{
+	$sql = "CREATE TABLE IF NOT EXISTS banned_players (
+		name VARCHAR(255) NOT NULL PRIMARY KEY,
+		bannedBy VARCHAR(255) DEFAULT NULL,
+		createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+	if (!mysqli_query($conn, $sql)) {
+		error_log("Failed to create banned_players table: " . mysqli_error($conn));
+	}
 }
 
 function EnsureBannedIPsTable($conn)

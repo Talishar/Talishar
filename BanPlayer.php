@@ -72,7 +72,7 @@ $result = ["status" => "success"];
 if ($playerToBan != "") {
   // Database is the source of truth; the txt file is a legacy copy that
   // does not survive deploys/container restarts.
-  $bannedUid = BanPlayer($playerToBan);
+  $bannedUid = BanPlayer($playerToBan, $useruid);
   @file_put_contents('./HostFiles/bannedPlayers.txt', $bannedUid . "\r\n", FILE_APPEND | LOCK_EX);
   if ($bannedUid != $playerToBan) $result["message"] = "Player $playerToBan (account: $bannedUid) has been banned.";
   else $result["message"] = "Player $playerToBan has been banned.";

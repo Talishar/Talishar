@@ -73,6 +73,18 @@ if ($conn) {
     mysqli_stmt_close($stmt);
   }
 
+  EnsureBannedPlayersTable($conn);
+  $sql = "SELECT name FROM banned_players ORDER BY createdAt";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_execute($stmt);
+    $banNameData = mysqli_stmt_get_result($stmt);
+    while ($row = mysqli_fetch_array($banNameData, MYSQLI_NUM)) {
+      if (!empty($row[0])) $bannedPlayers[strtolower($row[0])] = $row[0];
+    }
+    mysqli_stmt_close($stmt);
+  }
+
   EnsureBannedIPsTable($conn);
   $sql = "SELECT ip FROM banned_ips ORDER BY createdAt";
   $stmt = mysqli_stmt_init($conn);
