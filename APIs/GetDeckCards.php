@@ -121,8 +121,10 @@ if (function_exists('GeneratedCardTokens')) {
     if (isset($processed[$cid])) continue;
     $processed[$cid] = true;
     $refs = GeneratedCardTokens($cid);
-    if ($refs == "") continue;
-    foreach (explode(",", $refs) as $tokenId) {
+    $refList = $refs == "" ? [] : explode(",", $refs);
+    foreach (GetDemiHeroForms($cid) as $form) $refList[] = $form;
+    foreach ($refList as $tokenId) {
+      if ($tokenId === "") continue;
       if (!in_array($tokenId, $tokenIds)) {
         $tokenIds[] = $tokenId;
         $queue[] = $tokenId;

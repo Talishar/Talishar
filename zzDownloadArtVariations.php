@@ -7,19 +7,7 @@ include_once __DIR__ . '/Assets/AllAltArtVariations.php';
 $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
 
 $manualArtVariationOverrides = [
-  // Format option 1 - Auto-find URL: "cardID" => "artVariation"
-  //   "art_of_the_void_red" => "AA",
-  // Format option 2 - Manual URL: "cardID" => ["artVariation" => "XX", "imageUrl" => "https://..."]
-  //   "another_card_red" => ["artVariation" => "FA", "imageUrl" => "https://example.com/image.jpg"],
-  // Format option 3 - Multiple manual entries (e.g. token reprints with new art
-  // that FabCube does not flag as art variations). Each entry needs a setID so
-  // the filename can be derived from the printing it represents:
-  //   "gold" => [
-  //     ["artVariation" => "AA", "setID" => "TCC098", "imageUrl" => "https://example.com/gold-tcc.jpg"],
-  //     ["artVariation" => "AA", "setID" => "SEA221", "imageUrl" => "https://example.com/gold-sea.jpg"],
-  //   ],
-
-/*    "cheaters_charm_yellow" => [
+  /*"cheaters_charm_yellow" => [
    "artVariation" => "EA",
    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/LGS424-RF.webp"
   ],  */
