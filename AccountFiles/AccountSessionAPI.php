@@ -174,16 +174,16 @@
       return;
     }
     
-    $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, isBanned, metafyID, rust_counters, displayName FROM users WHERE rememberMeToken=?";
+    $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, isBanned, metafyID, rust_counters, displayName, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE rememberMeToken=?";
     $stmt = mysqli_stmt_init($conn);
-    
+
     if (mysqli_stmt_prepare($stmt, $sql)) {
       mysqli_stmt_bind_param($stmt, 's', $rememberToken);
       mysqli_stmt_execute($stmt);
       $result = mysqli_stmt_get_result($stmt);
       $row = mysqli_fetch_assoc($result);
       mysqli_stmt_close($stmt);
-      
+
       if ($row) {
         $_SESSION['userid'] = $row['usersId'];
         $_SESSION['useruid'] = $row['usersUid'];
@@ -193,6 +193,9 @@
         $_SESSION['metafyID'] = $row['metafyID'] ?? "";
         $_SESSION['rust_counters'] = intval($row['rust_counters'] ?? 0);
         $_SESSION['displayName'] = $row['displayName'] ?? "";
+        $_SESSION['lastGameName'] = $row['lastGameName'] ?? 0;
+        $_SESSION['lastPlayerId'] = $row['lastPlayerId'] ?? 0;
+        $_SESSION['lastAuthKey'] = $row['lastAuthKey'] ?? "";
         $_SESSION['last_activity'] = time();
         $_SESSION['last_regeneration'] = time();
       }
@@ -212,16 +215,16 @@
       return;
     }
     
-    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities, metafyID, rust_counters, displayName FROM users WHERE metafyRememberToken=?";
+    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities, metafyID, rust_counters, displayName, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE metafyRememberToken=?";
     $stmt = mysqli_stmt_init($conn);
-    
+
     if (mysqli_stmt_prepare($stmt, $sql)) {
       mysqli_stmt_bind_param($stmt, 's', $rememberToken);
       mysqli_stmt_execute($stmt);
       $result = mysqli_stmt_get_result($stmt);
       $row = mysqli_fetch_assoc($result);
       mysqli_stmt_close($stmt);
-      
+
       if ($row) {
         $_SESSION['userid'] = $row['usersid'];
         $_SESSION['useruid'] = $row['usersUid'];
@@ -229,6 +232,9 @@
         $_SESSION['metafyID'] = $row['metafyID'] ?? "";
         $_SESSION['rust_counters'] = intval($row['rust_counters'] ?? 0);
         $_SESSION['displayName'] = $row['displayName'] ?? "";
+        $_SESSION['lastGameName'] = $row['lastGameName'] ?? 0;
+        $_SESSION['lastPlayerId'] = $row['lastPlayerId'] ?? 0;
+        $_SESSION['lastAuthKey'] = $row['lastAuthKey'] ?? "";
         $_SESSION['last_activity'] = time();
         $_SESSION['last_regeneration'] = time();
       }

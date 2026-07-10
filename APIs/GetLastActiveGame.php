@@ -15,6 +15,8 @@
  */
 
 include "../HostFiles/Redirector.php";
+include_once "../includes/dbh.inc.php";
+include_once "../includes/functions.inc.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
 include "../Libraries/HTTPLibraries.php";
@@ -22,23 +24,31 @@ include_once "../Libraries/SHMOPLibraries.php";
 
 SetHeaders();
 
-session_start();
+$loggedIn = IsUserLoggedIn();
 
 session_write_close();
 
 $response = new stdClass();
 
-// Check if user is logged in and has a last game
-if (!isset($_SESSION["lastGameName"]) || !isset($_SESSION["lastPlayerId"]) || !isset($_SESSION["lastAuthKey"])) {
+$gameName = $_SESSION["lastGameName"] ?? "";
+$playerID = $_SESSION["lastPlayerId"] ?? "";
+$authKey = $_SESSION["lastAuthKey"] ?? "";
+
+if ($loggedIn && (intval($gameName) <= 0 || empty($authKey))) {
+    $lastGame = GetLastGameInfo(LoggedInUser());
+    if ($lastGame != null) {
+        $gameName = $lastGame["lastGameName"];
+        $playerID = $lastGame["lastPlayerId"];
+        $authKey = $lastGame["lastAuthKey"];
+    }
+}
+
+if (intval($gameName) <= 0 || empty($authKey) || $playerID === "" || $playerID === null) {
     $response->gameExists = false;
     $response->gameInProgress = false;
     echo json_encode($response);
     exit;
 }
-
-$gameName = $_SESSION["lastGameName"];
-$playerID = $_SESSION["lastPlayerId"];
-$authKey = $_SESSION["lastAuthKey"];
 
 // Spectators cannot use session recovery - only players 1 and 2
 if ($playerID == 3) {

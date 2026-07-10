@@ -223,6 +223,30 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 	session_write_close();
 }
 
+function GetLastGameInfo($uid)
+{
+	$conn = GetDBConnection(DBL_GET_LAST_GAME_INFO);
+	if (!$conn) {
+		return null;
+	}
+	$result = null;
+	$sql = "SELECT lastGameName, lastPlayerId, lastAuthKey FROM users WHERE usersId=?";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $uid);
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+		$row = mysqli_fetch_assoc($data);
+		mysqli_free_result($data);
+		mysqli_stmt_close($stmt);
+		if ($row != null && intval($row["lastGameName"]) > 0 && !empty($row["lastAuthKey"])) {
+			$result = $row;
+		}
+	}
+	mysqli_close($conn);
+	return $result;
+}
+
 function ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)
 {
 	return $p1IsPatron === "1" || $p2IsPatron === "1";

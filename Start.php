@@ -157,6 +157,10 @@ $domain = (!empty(getenv("DOMAIN")) ? getenv("DOMAIN") : "talishar.net");
 $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
 $authKeyToReturn = ($playerID == 1 ? $p1Key : $p2Key);
 
+if (!empty($_SESSION["userid"])) {
+  StoreLastGameInfo($_SESSION["userid"], $gameName, $playerID, $authKeyToReturn);
+}
+
 setcookie("lastAuthKey", $authKeyToReturn, [
   'expires' => time() + (86400 * 7), // 7 days
   'path' => "/",

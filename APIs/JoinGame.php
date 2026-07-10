@@ -735,6 +735,10 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
       'samesite' => 'Strict'
     ]);
   }
+
+  if (($playerID == 1 || $playerID == 2) && !empty($_SESSION["userid"])) {
+    StoreLastGameInfo($_SESSION["userid"], $gameName, $playerID, $playerID == 1 ? $p1Key : $p2Key);
+  }
 }
 
 $response->message = "success";
