@@ -3936,9 +3936,9 @@ class astral_bridge_red extends Card {
       AddDecisionQueue("WRITELOG", $this->controller, CardLink($cardID) . " was put into the graveyard.");
       if (TypeContains($cardID, "I"))
         AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
-      if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0)
-        DealArcane(1, source:$this->cardID, resolvedTarget:$target);
     }
+    if (GetClassState($this->controller, $CS_NumInstantsPutInGrave) > 0)
+      DealArcane(1, source:$this->cardID, resolvedTarget:$target);
     return "";
   }
 
