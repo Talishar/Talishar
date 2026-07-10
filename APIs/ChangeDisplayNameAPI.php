@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
+include_once '../Libraries/FriendLibraries.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -94,6 +95,10 @@ if ($newShownName === $currentShownName) {
 }
 
 if (!$isClearing && strcasecmp($newName, $userUid) != 0) {
+  // Banned names stay reserved even after the original account is deleted
+  if (IsBannedPlayer($newName)) {
+    DisplayNameError("That name is already taken.");
+  }
   $sql = "SELECT usersId FROM users WHERE (LOWER(usersUid) = LOWER(?) OR LOWER(displayName) = LOWER(?)) AND usersId <> ? LIMIT 1";
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
