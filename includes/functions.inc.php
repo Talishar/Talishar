@@ -262,8 +262,14 @@ function ShouldSkipRustCountersForContributors()
 function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
 {
 	if (IsDevEnvironment()) return false;
-	if (ShouldSkipRustCountersForContributors()) return true;
-	if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)) return true;
+	if (ShouldSkipRustCountersForContributors() && $p2IsAI !== "1") {
+		WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight: true, highlightColor: "green", path: "../");
+		return true;
+	}
+	elseif (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron) && $p2IsAI !== "1") {
+		WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight: true, highlightColor: "green", path: "../");
+		return true;
+	}
 	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_GAME_START);
 	if (!$conn) {
 		return false;
