@@ -14,6 +14,7 @@ include "../AI/CombatDummy.php";
 include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";
 include_once "../MenuFiles/StartHelper.php";
+include_once "../WriteLog.php";
 SetHeaders();
 
 $response = new stdClass();
