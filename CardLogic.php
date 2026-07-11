@@ -4516,7 +4516,7 @@ function DiscardCard($player, $index, $source = "", $effectController = "", $mai
 function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
 {
   global $CS_Num6PowDisc, $mainPlayer;
-  AddEvent("DISCARD", $discarded);
+  AddEvent("DISCARD", $player . ":" . $discarded);
   $modifiedAttack = ModifiedPowerValue($discarded, $player, "HAND", $source);
   if ($modifiedAttack >= 6) {
     $character = &GetPlayerCharacter($player);
