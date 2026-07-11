@@ -51,7 +51,7 @@ class Deck {
             // CLASHDASH: Dash's own deck reveal skip animation for Dash IO since they already see the top of their decks.
             $clashEvent = ($char[0] == "dash_database" || $char[0] == "dash_io") ? "CLASHDASH" : "CLASH";
             AddEvent($clashEvent, $this->playerID . ":" . $this->deck[$revealedCards]);
-          } else AddEvent("REVEAL", $this->deck[$revealedCards]);
+          } else AddEvent("REVEAL", $this->playerID . ":" . $this->deck[$revealedCards]);
         }
         if(SearchLandmark("korshem_crossroad_of_elements")) KorshemRevealAbility($this->playerID);
         return true;

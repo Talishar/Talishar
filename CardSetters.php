@@ -25,7 +25,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   $characterID = ShiyanaCharacter($character[0]);
   $amount = 1;
   $isFaceDown = isFaceDownMod($mod);
-  AddEvent("BANISH", ($isFaceDown ? "CardBack" : $cardID));
+  AddEvent("BANISH", $player . ":" . ($isFaceDown ? "CardBack" : $cardID));
   //Effects that change the modifier
   if ($characterID == "blasmophet_levia_consumed" && $character[1] < 3) {
     AddLayer("TRIGGER", $player, $characterID);
@@ -477,7 +477,7 @@ function AddSoul($cardID, $player, $from, $isMainPhase = true)
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $combatChain;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
-  AddEvent("SOUL", $cardID);
+  AddEvent("SOUL", $player . ":" . $cardID);
   global $CS_NumAddedToSoul, $CS_NumYellowPutSoul;
   global $myStateBuiltFor;
   if ($cardID == "spirit_of_eirina_yellow") {
