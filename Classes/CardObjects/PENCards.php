@@ -2193,9 +2193,9 @@ class arc_bending_red extends Card {
   }
 
   function CurrentEffectDamageBuffs($source, $type, $index, &$remove, $player) {
-    global $mainPlayer;
-    if ($player != $mainPlayer) return 0; // non turn player can't ever control an "attack"
-    return TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $mainPlayer) && (TypeContains($source, "A") || TypeContains($source, "AA")) ? 1 : 0;
+    global $defPlayer;
+    if ($player != $defPlayer) return 0; // non turn player can't ever control an "attack"
+    return TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $this->controller) && (TypeContains($source, "A") || TypeContains($source, "AA")) ? 1 : 0;
   }
 }
 
