@@ -2,14 +2,15 @@
 
 function Usurp($cardID, $player, $from) {
 	if (!IsActivated($cardID, $from)) {
+		$otherPlayer = 3 - $player;
 		$inds = SearchAurasForCard("runechant", $player, false);
-		if ($inds != "") {
-			$inds = explode(",", $inds);
+		$theirInds = SearchAurasForCard("runechant", $otherPlayer, false);
+		if ($inds != "" || $theirInds != "") {
 			$MZInds = [];
+			$inds = $inds != "" ? explode(",", $inds) : [];
 			foreach ($inds as $ind)
 				$MZInds[] = "MYAURAS-$ind";
-			$otherPlayer = 3 - $player;
-			$theirInds = explode(",", SearchAurasForCard("runechant", $otherPlayer, false));
+			$theirInds = $theirInds != "" ? explode(",", $theirInds) : [];
 			foreach ($theirInds as $ind)
 				$MZInds[] = "THEIRAURAS-$ind";
 			$context = "Usurp a " . CardLink("runechant");
