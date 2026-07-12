@@ -330,6 +330,7 @@ function GetAllAltArtVariations(): array
     "yendurai=UPR417-T", "yo_ho_ho_blue=GEM053-T", "yorick_weaver_of_tales=LSS004-T", "zealous_belting_red=JDG028-T",
     "zenith_blade=MPW005-T", "zero_to_sixty_red=FAB177-T", "zipper_hit_blue=TNP030-T", "zipper_hit_red=TNP028-T",
     "zipper_hit_yellow=TNP029-T", "zyggy=OMN002-T", "zyggy_starlight=OMN001-T", "zyggy_starlight_blue=OMN003-T",
-    "zyggy_starlight_red=OMN001-T", "zyggy_starlight_yellow=OMN002-T",
+    "zyggy_starlight_red=OMN001-T", "zyggy_starlight_yellow=OMN002-T", "scar_for_a_scar_red=1HP396-T",
+    "trot_along_blue=DDD016-T",
   ];
 }
