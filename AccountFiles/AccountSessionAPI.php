@@ -6,9 +6,19 @@
       return false;
     }
     if (IsSessionExpired()) {
-      ClearLoginSession();
-      return false;
+      ClearLoginSession(false);
+      if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+      }
+      if (empty($_SESSION['userid']) && isset($_COOKIE['rememberMeToken'])) {
+        RestoreRegularSession($_COOKIE['rememberMeToken']);
+      }
+      if (empty($_SESSION['userid']) && isset($_COOKIE['metafyRememberToken'])) {
+        RestoreMetafySession($_COOKIE['metafyRememberToken']);
+      }
+      return !empty($_SESSION['useruid']);
     }
+    $_SESSION['last_activity'] = time();
     return true;
   }
 
@@ -116,7 +126,7 @@
     return false;
   }
 
-  function ClearLoginSession()
+  function ClearLoginSession($deleteRememberCookies = true)
   {
     // Only start session if it's not already active
     if (session_status() === PHP_SESSION_NONE) {
@@ -125,10 +135,11 @@
     session_unset();
     session_destroy();
 
-    //Also delete cookies
-    if (isset($_COOKIE["rememberMeToken"])) setcookie("rememberMeToken", "", time() + 1, "/");
-    if (isset($_COOKIE["lastAuthKey"])) setcookie("lastAuthKey", "", time() + 1, "/");
-    if (isset($_COOKIE["metafyRememberToken"])) setcookie("metafyRememberToken", "", time() + 1, "/");
+    if ($deleteRememberCookies) {
+      if (isset($_COOKIE["rememberMeToken"])) setcookie("rememberMeToken", "", time() - 3600, "/");
+      if (isset($_COOKIE["lastAuthKey"])) setcookie("lastAuthKey", "", time() - 3600, "/");
+      if (isset($_COOKIE["metafyRememberToken"])) setcookie("metafyRememberToken", "", time() - 3600, "/");
+    }
   }
 
   function CheckSession()
@@ -155,10 +166,22 @@
       }
     }
 
+    if (!empty($_SESSION['obsolete'])) {
+      if (($_SESSION['obsolete_expires'] ?? 0) < time()) {
+        session_unset();
+      }
+      return;
+    }
+
     if (!isset($_SESSION['last_regeneration'])) {
       $_SESSION['last_regeneration'] = time();
     } elseif (time() - $_SESSION['last_regeneration'] > 300) {
-      session_regenerate_id(true);
+      $_SESSION['obsolete'] = true;
+      $_SESSION['obsolete_expires'] = time() + 60;
+      session_write_close();          // persist grace markers to the old session
+      session_start();
+      session_regenerate_id(false);   // new ID; old session file kept for the grace window
+      unset($_SESSION['obsolete'], $_SESSION['obsolete_expires']);
       $_SESSION['last_regeneration'] = time();
     }
   }
@@ -168,37 +191,50 @@
     if (empty($rememberToken)) {
       return;
     }
-    
+
     $conn = GetDBConnection(DBL_ACCOUNT_SESSION_API);
     if (!$conn) {
       return;
     }
-    
-    $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, isBanned, metafyID, rust_counters, displayName, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE rememberMeToken=?";
-    $stmt = mysqli_stmt_init($conn);
 
-    if (mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_stmt_bind_param($stmt, 's', $rememberToken);
-      mysqli_stmt_execute($stmt);
-      $result = mysqli_stmt_get_result($stmt);
-      $row = mysqli_fetch_assoc($result);
-      mysqli_stmt_close($stmt);
+    try {
+      $sql = "SELECT usersId, usersUid, usersEmail, patreonEnum, patreonAccessToken, isBanned, metafyID, rust_counters, displayName, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE rememberMeToken=?";
+      $stmt = mysqli_stmt_init($conn);
 
-      if ($row) {
-        $_SESSION['userid'] = $row['usersId'];
-        $_SESSION['useruid'] = $row['usersUid'];
-        $_SESSION['useremail'] = $row['usersEmail'];
-        $_SESSION['patreonEnum'] = $row['patreonEnum'];
-        $_SESSION['isBanned'] = $row['isBanned'];
-        $_SESSION['metafyID'] = $row['metafyID'] ?? "";
-        $_SESSION['rust_counters'] = intval($row['rust_counters'] ?? 0);
-        $_SESSION['displayName'] = $row['displayName'] ?? "";
-        $_SESSION['lastGameName'] = $row['lastGameName'] ?? 0;
-        $_SESSION['lastPlayerId'] = $row['lastPlayerId'] ?? 0;
-        $_SESSION['lastAuthKey'] = $row['lastAuthKey'] ?? "";
-        $_SESSION['last_activity'] = time();
-        $_SESSION['last_regeneration'] = time();
+      if (mysqli_stmt_prepare($stmt, $sql)) {
+        mysqli_stmt_bind_param($stmt, 's', $rememberToken);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        if ($row) {
+          $_SESSION['userid'] = $row['usersId'];
+          $_SESSION['useruid'] = $row['usersUid'];
+          $_SESSION['useremail'] = $row['usersEmail'];
+          $_SESSION['patreonEnum'] = $row['patreonEnum'];
+          $_SESSION['isBanned'] = $row['isBanned'];
+          $_SESSION['metafyID'] = $row['metafyID'] ?? "";
+          $_SESSION['rust_counters'] = intval($row['rust_counters'] ?? 0);
+          $_SESSION['displayName'] = $row['displayName'] ?? "";
+          $_SESSION['lastGameName'] = $row['lastGameName'] ?? 0;
+          $_SESSION['lastPlayerId'] = $row['lastPlayerId'] ?? 0;
+          $_SESSION['lastAuthKey'] = $row['lastAuthKey'] ?? "";
+          $_SESSION['last_activity'] = time();
+          $_SESSION['last_regeneration'] = time();
+
+          if (!empty($row['patreonAccessToken'])) {
+            try {
+              require_once __DIR__ . '/../Assets/patreon-php-master/src/PatreonLibraries.php';
+              PatreonLogin($row['patreonAccessToken']);
+            } catch (\Throwable $e) {
+              error_log("RestoreRegularSession: PatreonLogin failed: " . $e->getMessage());
+            }
+          }
+        }
       }
+    } catch (\Throwable $e) {
+      error_log("RestoreRegularSession failed: " . $e->getMessage());
     }
 
     mysqli_close($conn);
@@ -214,32 +250,49 @@
     if (!$conn) {
       return;
     }
-    
-    $sql = "SELECT usersid, usersUid, isPatron, metafyCommunities, metafyID, rust_counters, displayName, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE metafyRememberToken=?";
-    $stmt = mysqli_stmt_init($conn);
 
-    if (mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_stmt_bind_param($stmt, 's', $rememberToken);
-      mysqli_stmt_execute($stmt);
-      $result = mysqli_stmt_get_result($stmt);
-      $row = mysqli_fetch_assoc($result);
-      mysqli_stmt_close($stmt);
+    try {
+      $sql = "SELECT usersid, usersUid, metafyCommunities, metafyID, rust_counters, displayName, lastGameName, lastPlayerId, lastAuthKey FROM users WHERE metafyRememberToken=?";
+      $stmt = mysqli_stmt_init($conn);
 
-      if ($row) {
-        $_SESSION['userid'] = $row['usersid'];
-        $_SESSION['useruid'] = $row['usersUid'];
-        $_SESSION['isPatron'] = $row['isPatron'] ?? 0;
-        $_SESSION['metafyID'] = $row['metafyID'] ?? "";
-        $_SESSION['rust_counters'] = intval($row['rust_counters'] ?? 0);
-        $_SESSION['displayName'] = $row['displayName'] ?? "";
-        $_SESSION['lastGameName'] = $row['lastGameName'] ?? 0;
-        $_SESSION['lastPlayerId'] = $row['lastPlayerId'] ?? 0;
-        $_SESSION['lastAuthKey'] = $row['lastAuthKey'] ?? "";
-        $_SESSION['last_activity'] = time();
-        $_SESSION['last_regeneration'] = time();
+      if (mysqli_stmt_prepare($stmt, $sql)) {
+        mysqli_stmt_bind_param($stmt, 's', $rememberToken);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        if ($row) {
+          $isPatron = 0;
+          if (!empty($row['metafyCommunities'])) {
+            $communities = json_decode($row['metafyCommunities'], true);
+            if (is_array($communities)) {
+              foreach ($communities as $community) {
+                // Talishar Metafy community
+                if (isset($community['id']) && $community['id'] === 'be5e01c0-02d1-4080-b601-c056d69b03f6') {
+                  $isPatron = 1;
+                  break;
+                }
+              }
+            }
+          }
+          $_SESSION['userid'] = $row['usersid'];
+          $_SESSION['useruid'] = $row['usersUid'];
+          $_SESSION['isPatron'] = $isPatron;
+          $_SESSION['metafyID'] = $row['metafyID'] ?? "";
+          $_SESSION['rust_counters'] = intval($row['rust_counters'] ?? 0);
+          $_SESSION['displayName'] = $row['displayName'] ?? "";
+          $_SESSION['lastGameName'] = $row['lastGameName'] ?? 0;
+          $_SESSION['lastPlayerId'] = $row['lastPlayerId'] ?? 0;
+          $_SESSION['lastAuthKey'] = $row['lastAuthKey'] ?? "";
+          $_SESSION['last_activity'] = time();
+          $_SESSION['last_regeneration'] = time();
+        }
       }
+    } catch (\Throwable $e) {
+      error_log("RestoreMetafySession failed: " . $e->getMessage());
     }
-    
+
     mysqli_close($conn);
   }
   
