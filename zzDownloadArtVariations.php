@@ -7,10 +7,10 @@ include_once __DIR__ . '/Assets/AllAltArtVariations.php';
 $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
 
 $manualArtVariationOverrides = [
-/*   "gravy_bones_shipwrecked_looter" => [
+   "fate_foreseen_red" => [
    "artVariation" => "AA",
-   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/JA_HER161-RF.webp"
-  ], */
+   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/ZH_FAB024-RF.webp"
+  ], 
 ];
 
 echo "=== Starting Art Variations Download ===\n";
