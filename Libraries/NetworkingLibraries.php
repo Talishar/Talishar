@@ -2038,9 +2038,7 @@ function FinalizeTurn()
   $MakeStartTurnBackup = true;
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);
-  WriteSystemMessage("═══════════════");
-  if (!$extraTurn) WriteLog("Player $mainPlayer's turn $currentTurn has begun.");
-  else WriteLog("Player $mainPlayer's extra turn $currentTurn has begun.");
+  WriteSystemMessage("[[TURN_START:$currentTurn:$mainPlayer]]");
   DoGamestateUpdate();
   ProcessDecisionQueue();
 }
