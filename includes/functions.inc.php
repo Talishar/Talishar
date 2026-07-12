@@ -627,6 +627,8 @@ function PrepareFaBInsightsRequest($gameID, $detailedResult1Json, $detailedResul
 	$payloadArr['player2Name'] = $hashedP2Name;
 	$payloadArr['deck1'] = json_decode($detailedResult1Json);
 	$payloadArr['deck2'] = json_decode($detailedResult2Json);
+	if (isset($payloadArr['deck1']->turnResults)) $payloadArr['deck1']->turnLog = GetCardTurnLog(1);
+	if (isset($payloadArr['deck2']->turnResults)) $payloadArr['deck2']->turnLog = GetCardTurnLog(2);
 	$payloadArr["format"] = $format;
 	$payloadArr['gameGUID'] = $gameGUID;
 	$payloadArr['conceded'] = $conceded;
@@ -720,8 +722,11 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_ResourcesLeft, $TurnStats_LifeGained;
 	global $TurnStats_LifeLost, $TurnStats_DamagePrevented, $TurnStats_CardsDiscarded, $p1TotalTime, $p2TotalTime;
 	global $p1LifeHistory, $p2LifeHistory;
+	global $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
 	$lifeHistory = $player == 1 ? $p1LifeHistory : $p2LifeHistory;
 	$opponentLifeHistory = $player == 1 ? $p2LifeHistory : $p1LifeHistory;
+	$arcaneDealt = ($player == 1 ? $p1ArcaneDamageDealt : $p2ArcaneDamageDealt) ?? [];
+	$arcaneTaken = ($player == 1 ? $p2ArcaneDamageDealt : $p1ArcaneDamageDealt) ?? [];
 
 	$countTurnStats = count($turnStats);
 	$tsp = TurnStatPieces();
@@ -776,6 +781,8 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 		$entry["damageBlocked"] = $damageBlocked;
 		$entry["damagePrevented"] = $damagePrevented;
 		$entry["damageTaken"] = $damageTaken;
+		$entry["arcaneDamageDealt"] = isset($arcaneDealt[$turnNo]) ? (int)$arcaneDealt[$turnNo] : 0;
+		$entry["arcaneDamageTaken"] = isset($arcaneTaken[$turnNo]) ? (int)$arcaneTaken[$turnNo] : 0;
 		$entry["lifeGained"] = $lifeGained;
 		$entry["lifeLost"] = $lifeLost;
 		$entry["lifeAtTurnEnd"] = isset($lifeHistory[$turnNo]) ? (int)$lifeHistory[$turnNo] : null;

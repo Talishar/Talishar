@@ -150,6 +150,21 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
   $damagerStats[$baseIndex + $TurnStats_DamageDealt] += $damageDealt;
 }
 
+// Called on FinalizeDamage() and $damageDealt is $type == ARCANE only tracks damage dealt to opposing players
+function LogArcaneDamageStats($player, $damageDealt)
+{
+  global $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
+  $playerSource = $player == 1 ? 2 : 1;
+  $turnIndex = GetStatTurnIndex($playerSource);
+  if ($playerSource == 1) {
+    if (!isset($p1ArcaneDamageDealt[$turnIndex])) $p1ArcaneDamageDealt[$turnIndex] = 0;
+    $p1ArcaneDamageDealt[$turnIndex] += $damageDealt;
+  } else {
+    if (!isset($p2ArcaneDamageDealt[$turnIndex])) $p2ArcaneDamageDealt[$turnIndex] = 0;
+    $p2ArcaneDamageDealt[$turnIndex] += $damageDealt;
+  }
+}
+
 function LogLifeGainedStats($player, $healthGained)
 {
   global $TurnStats_LifeGained;
