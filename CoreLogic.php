@@ -800,6 +800,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   if ($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
   else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
   if ($type == "ARCANE" && $player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
+  //I believe IncrementClassState resets every turn and is used to activate effects that check if arcane was dealt that turn so I added line below
+  if ($type == "ARCANE" && $player != $playerSource) LogArcaneDamageStats($player, $damage);
   WriteLog("Player $player took $damage damage");
   PlayerLoseHealth($damage, $player);
   // mark once per damage instance effects as usable again

@@ -118,7 +118,9 @@ array_push($gamestateLines,
   json_encode($p2CardTurnLog),
   implode(" ", is_array($attackQueue ?? null) ? $attackQueue : []),
   json_encode($p1LifeHistory ?? []),
-  json_encode($p2LifeHistory ?? [])
+  json_encode($p2LifeHistory ?? []),
+  json_encode($p1ArcaneDamageDealt ?? []),
+  json_encode($p2ArcaneDamageDealt ?? [])
 );
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
