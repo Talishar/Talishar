@@ -1664,7 +1664,9 @@ function FinalizeChainLink($chainClosed = false)
   $chainLinkSummary[] = LinkBasePower();
   $chainLinkSummary[] = GetClassState($mainPlayer, $CS_ModalAbilityChoosen);
   $chainLinkSummary[] = ColorOverride($combatChain[0] ?? "", $mainPlayer);
-  
+  $chainLinkSummary[] = "";
+  $resolvedValuesSlot = count($chainLinkSummary) - 1;
+
   ResolveWagers($chainClosed);
   if (!$chainClosed) {
     ResolutionStepEffectTriggers();
@@ -1703,6 +1705,24 @@ function FinalizeChainLink($chainClosed = false)
     $currentLink[] = $combatChain[$i + 10]; //number of times used
   }
   unset($currentLink);
+
+  $resolvedValues = [];
+  $builtLink = &$chainLinks[$chainLinkIndex];
+  $builtCount = count($builtLink);
+  $builtPieces = ChainLinksPieces();
+  for ($k = 0; $k < $builtCount; $k += $builtPieces) {
+    $cid = $builtLink[$k];
+    $owner = $builtLink[$k + 1];
+    if ($owner === $mainPlayer) {
+      $resolvedValues[] = CardType($cid) !== "AR"
+        ? PowerValue($cid, $mainPlayer, "CC") + $builtLink[$k + 4]
+        : PowerModifier($cid);
+    } else {
+      $resolvedValues[] = ModifiedBlockValue($cid, $owner, "CC", "", $builtLink[$k + 8]) + $builtLink[$k + 5];
+    }
+  }
+  unset($builtLink);
+  $chainLinkSummary[$resolvedValuesSlot] = implode(",", $resolvedValues);
 
   //Clean up combat effects that were used and are one-time
   CleanUpCombatEffects();

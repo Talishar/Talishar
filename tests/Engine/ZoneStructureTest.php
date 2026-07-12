@@ -78,9 +78,9 @@ class ZoneStructureTest extends TestCase
         $this->assertSame(10, ChainLinksPieces());
     }
 
-    public function testChainLinkSummaryPiecesIsNine(): void
+    public function testChainLinkSummaryPiecesIsTen(): void
     {
-        $this->assertSame(9, ChainLinkSummaryPieces());
+        $this->assertSame(10, ChainLinkSummaryPieces());
     }
 
     public function testCurrentTurnEffectsPiecesIsFour(): void

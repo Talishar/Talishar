@@ -268,9 +268,12 @@ function ChainLinksPieces()
 //6 - Modified Base Attack Stats - e.g. Transmogrify
 //7 - Modal Play Ability - e.g. Enlightened Strike
 //8 - Colors
+//9 - Resolved per-card combat values (comma separated, aligned to the link's card order:
+//    attackers = final attack, blockers = final block). Snapshotted at resolution because
+//    recomputing after the fact drifts (attackers read their base, blockers read 0).
 function ChainLinkSummaryPieces()
 {
-  return 9;
+  return 10;
 }
 
 //0 - Card ID

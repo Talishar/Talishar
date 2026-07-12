@@ -958,8 +958,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Chain Links
   $chainLinkOutput = [];
-  $chainLinkSummaryCount = count($chainLinkSummary);
-  $chainLinkSummaryPieces = ChainLinkSummaryPieces();
   for ($i = 0; $i < $chainLinksCount; ++$i) {
     $Link = $ChainLinks->GetLink($i);
     $damage = $Link->DamageDealt();

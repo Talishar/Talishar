@@ -91,7 +91,7 @@ switch ($popupType) {
         $effectName = $cardID;
         $cardID = "";
       }
-      $response->Cards[] = ["Player" => $mainPlayer, "Name" => $effectName, "cardID" => $cardID, "modifier" => $bonus];
+      $response->Cards[] = ["Player" => $mainPlayer, "Name" => $effectName, "cardID" => $cardID, "modifier" => $bonus, "pitch" => PitchValue($cardID)];
     }
     break;
   case "myPitchPopup":
@@ -132,11 +132,11 @@ switch ($popupType) {
     $popupIndex = intval(($chainLinkIndex ?? $params[1]));
     $response = ChainLinkObject($popupIndex);
     $index = $popupIndex * ChainLinkSummaryPieces();
-    if (isset($chainLinkSummary[$index])) {
-        $response->TotalDamageDealt = $chainLinkSummary[$index];
-    } else {
-        $response->TotalDamageDealt = 0;
-    }
+    $response->TotalDamageDealt = $chainLinkSummary[$index] ?? 0;
+    $response->TotalAttack = $chainLinkSummary[$index + 1] ?? 0;
+    $response->DidItHit = (($chainLinkSummary[$index + 5] ?? 0) == 1)
+      || (($chainLinkSummary[$index] ?? 0) > 0);
+    $response->AttackingPlayerID = $mainPlayer;
     break;
   case "mySettings":
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
@@ -250,36 +250,44 @@ function JSONPopup($response, $zone, $zonePieces)
 
 function ChainLinkObject($link)
 {
-  global $chainLinks, $mainPlayer, $defPlayer;
+  global $chainLinks, $chainLinkSummary, $mainPlayer, $defPlayer;
   $chainLink = new stdClass();
   $chainLink->Cards = [];
   if (!is_array($chainLinks) || empty($chainLinks[$link])) {
     return $chainLink;
   }
+  $snapshotIndex = $link * ChainLinkSummaryPieces() + 9;
+  $resolved = (isset($chainLinkSummary[$snapshotIndex]) && $chainLinkSummary[$snapshotIndex] !== "")
+    ? explode(",", $chainLinkSummary[$snapshotIndex])
+    : null;
+
   $linkCards = &$chainLinks[$link];
   $linkCount = count($linkCards);
   $linkPieces = ChainLinksPieces();
+  $cardPos = 0;
   for ($i = 0; $i < $linkCount; $i += $linkPieces) {
     $cardId = $linkCards[$i];
     $cardOwner = $linkCards[$i + 1];
-    if ($cardOwner === $mainPlayer) {
-      $cardType = CardType($cardId);
-      if ($cardType !== "AR") {
-        $powerValue = PowerValue($cardId, $mainPlayer, "CC") + $linkCards[$i + 4];
-      } else {
-        $powerValue = PowerModifier($cardId);
-      }
+    if ($resolved !== null && isset($resolved[$cardPos])) {
+      $modifier = intval($resolved[$cardPos]);
+    } elseif ($cardOwner === $mainPlayer) {
+      $modifier = CardType($cardId) !== "AR"
+        ? PowerValue($cardId, $mainPlayer, "CC") + $linkCards[$i + 4]
+        : PowerModifier($cardId);
     } else {
-      $powerValue = 0;
+      $uid = $linkCards[$i + 8];
+      $modifier = ($cardOwner === $defPlayer)
+        ? ModifiedBlockValue($cardId, $defPlayer, "CC", "", $uid) + $linkCards[$i + 5]
+        : 0;
     }
-    $uid = $linkCards[$i + 8];
-    $blockValue = ($cardOwner === $defPlayer) ? ModifiedBlockValue($cardId, $defPlayer, "CC", "", $uid) + $linkCards[$i + 5] : 0;
     $chainLink->Cards[] = [
       "Player"   => $cardOwner,
-      "modifier" => ($cardOwner === $mainPlayer) ? $powerValue : $blockValue,
+      "modifier" => $modifier,
       "cardID"   => $cardId,
       "Name"     => CardName($cardId),
+      "pitch"    => PitchValue($cardId),
     ];
+    ++$cardPos;
   }
   return $chainLink;
 }
