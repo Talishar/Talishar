@@ -2826,8 +2826,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "riptide_lurker_of_the_deep":
       case "riptide":
-        if ($additionalCosts == "DAMAGE")
+        if ($additionalCosts == "DAMAGE") {
+          $defHero = new CharacterCard(0, $defPlayer);
+          SetDamageSourceUID($defHero->UniqueID());
           DamageTrigger($mainPlayer, 1, "DAMAGE", $parameter, $defPlayer);
+        }
         else SuperReload();
         break;
       case "crows_nest":
