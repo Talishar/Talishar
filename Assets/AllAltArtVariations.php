@@ -331,6 +331,6 @@ function GetAllAltArtVariations(): array
     "zenith_blade=MPW005-T", "zero_to_sixty_red=FAB177-T", "zipper_hit_blue=TNP030-T", "zipper_hit_red=TNP028-T",
     "zipper_hit_yellow=TNP029-T", "zyggy=OMN002-T", "zyggy_starlight=OMN001-T", "zyggy_starlight_blue=OMN003-T",
     "zyggy_starlight_red=OMN001-T", "zyggy_starlight_yellow=OMN002-T", "scar_for_a_scar_red=1HP396-T",
-    "trot_along_blue=DDD016-T",
+    "trot_along_blue=DDD016-T", "gravy_bones_shipwrecked_looter=AGB001-T",
   ];
 }
