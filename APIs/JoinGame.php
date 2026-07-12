@@ -631,6 +631,14 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
        if ($p2LH) { flock($p2LH, LOCK_UN); fclose($p2LH); }
      }
 
+     $p2uid = ($_SESSION["useruid"] ?? "Player 2");
+     $p2id = ($_SESSION["userid"] ?? "");
+     $p2DisplayName = ($_SESSION["displayName"] ?? "") !== "" ? $_SESSION["displayName"] : $p2uid;
+     $p2ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
+     $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);
+     $p2MetafyCommunities = GetMetafyCommunitiesFromDatabase($p2uid);
+     $p2IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) || IsTalisharMetafySupporter($p2MetafyCommunities) ? "1" : "");
+
      $gameStatus = $MGS_Player2Joined;
      if (file_exists("../Games/" . $gameName . "/gamestate.txt"))
        unlink("../Games/" . $gameName . "/gamestate.txt");
@@ -647,6 +655,13 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      if (intval(GetCachePiece($gameName, 11)) >= 3) {
        WriteLog("⚠️ This lobby was hidden due to inactivity. If you have connection issues, try creating a new game.", path: "../");
      }
+
+    if (ShouldSkipRustCountersForContributors() && $p2IsAI !== "1") {
+      WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight:true, path: "../", highlightColor: "green");
+    }
+    elseif (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron) && $p2IsAI !== "1") {
+      WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight:true, path: "../", highlightColor: "green");
+    }
 
      while ($p1roll == $p2roll && $tries > 0) {
        $p1roll = rand(1, 6) + rand(1, 6);
@@ -671,16 +686,6 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
      $p1MetafyCommunities = GetMetafyCommunitiesFromDatabase($p1uid);
      $p1IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) || IsTalisharMetafySupporter($p1MetafyCommunities) ? "1" : "");
-   }
-   else if ($playerID == 2) {
-     $p2uid = ($_SESSION["useruid"] ?? "Player 2");
-     $p2id = ($_SESSION["userid"] ?? "");
-     $p2DisplayName = ($_SESSION["displayName"] ?? "") !== "" ? $_SESSION["displayName"] : $p2uid;
-     $p2ContentCreatorID = ($_SESSION["patreonEnum"] ?? "");
-     // Cache Metafy tiers and communities at join time so BuildGameState doesn't need DB access
-     $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);
-     $p2MetafyCommunities = GetMetafyCommunitiesFromDatabase($p2uid);
-     $p2IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) || IsTalisharMetafySupporter($p2MetafyCommunities) ? "1" : "");
    }
 
    // Only generate a fresh auth key for a true new join, not for a base-deck refresh.
