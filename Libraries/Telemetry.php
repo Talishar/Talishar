@@ -16,8 +16,20 @@ function TelemetryEvent(string $event, array $metrics = []): void
     'current_revision' => 'int',
     'status' => 'int',
     'reason' => 'label',
-    'outcome' => 'label'
+    'outcome' => 'label',
+    'sample_rate' => 'int'
   ];
+
+  $durationMs = is_numeric($metrics['duration_ms'] ?? null) ? (int)$metrics['duration_ms'] : 0;
+  $outcome = (string)($metrics['outcome'] ?? '');
+  $sampleRate = 1;
+  if ($event === 'state.build' && $outcome === 'ok' && $durationMs < 100) {
+    $sampleRate = 1000; // 0.1% of routine state builds
+  } elseif ($event === 'action.completed' && $outcome === 'ok' && $durationMs < 250) {
+    $sampleRate = 100; // 1% of routine commands
+  }
+  if ($sampleRate > 1 && mt_rand(1, $sampleRate) !== 1) return;
+  if ($sampleRate > 1) $metrics['sample_rate'] = $sampleRate;
 
   $payload = [
     'event' => preg_replace('/[^a-z0-9._-]/', '', strtolower($event)),
