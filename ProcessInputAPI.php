@@ -27,8 +27,6 @@ include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
-include_once "Libraries/Telemetry.php";
-$actionStartedAt = microtime(true);
 require_once "Libraries/CoreLibraries.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
@@ -76,14 +74,6 @@ if ($playerID != 0) {
   if ($expectedRevision !== null && !IsReplay()) {
     $currentRevision = (int)(ReadCacheArray($gameName)[0] ?? 0);
     if ($expectedRevision !== $currentRevision) {
-      TelemetryEvent('action.rejected', [
-        'mode' => $mode,
-        'player_id' => $playerID,
-        'reason' => 'stale_game_state',
-        'expected_revision' => $expectedRevision,
-        'current_revision' => $currentRevision,
-        'status' => 409
-      ]);
       http_response_code(409);
       echo json_encode([
         'error' => 'STALE_GAME_STATE',
@@ -153,16 +143,15 @@ try {
       if (!$isSimulation) {
         include_once "./includes/dbh.inc.php";
         include_once "./includes/functions.inc.php";
-      if ($playerID == 0) {
-          // Profile settings must always belong to the authenticated session.
-          // Never accept a user ID from the request body.
-          if (!is_numeric($sessionUserId)) {
-            http_response_code(401);
-            $response->error = "Authentication required to change profile settings.";
-            TelemetryEvent('action.rejected', ['mode' => $mode, 'reason' => 'profile_auth_required', 'status' => 401]);
-            break;
+        if ($playerID == 0) {
+          // Profile settings update - prefer userID from frontend (more reliable than session)
+          // Only use POST userID if it's actually a valid numeric ID (guards against JS String(null) = "null")
+          $postUserID = $_POST["userID"] ?? "";
+          if (is_numeric($postUserID)) {
+            $userID = $postUserID;
+          } elseif ($sessionUserId !== null) {
+            $userID = $sessionUserId;
           }
-          $userID = (int)$sessionUserId;
         } else {
           // In-game settings update - get userID from game file
           $preservedP1IsAI = $p1IsAI ?? "0";
@@ -351,14 +340,6 @@ echo json_encode($response);
 
 // For profile settings updates, exit here to avoid further processing
 if ($playerID == 0) {
-  if (!isset($response->error)) {
-    TelemetryEvent('action.completed', [
-      'mode' => $mode,
-      'player_id' => 0,
-      'duration_ms' => (int)((microtime(true) - $actionStartedAt) * 1000),
-      'outcome' => 'ok'
-    ]);
-  }
   exit;
 }
 
@@ -383,12 +364,6 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $currentTime = round(microtime(true) * 1000);
   SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
   GamestateUpdated($gameName);
-  TelemetryEvent('action.completed', [
-    'mode' => $mode,
-    'player_id' => $playerID,
-    'duration_ms' => (int)((microtime(true) - $actionStartedAt) * 1000),
-    'outcome' => 'rematch'
-  ]);
   exit;
 } else if ($winner != 0 && $turn[0] != "YESNO") {
   $inGameStatus = $GameStatus_Over;
@@ -420,12 +395,5 @@ if ($MakeStartTurnBackup) MakeStartTurnBackup();
 if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 GamestateUpdated($gameName);
-
-TelemetryEvent('action.completed', [
-  'mode' => $mode,
-  'player_id' => $playerID,
-  'duration_ms' => (int)((microtime(true) - $actionStartedAt) * 1000),
-  'outcome' => 'ok'
-]);
 
 exit;

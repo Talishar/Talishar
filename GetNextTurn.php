@@ -21,7 +21,6 @@ include_once "Libraries/CacheLibraries.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
 include_once "Libraries/FriendLibraries.php";
-include_once "Libraries/Telemetry.php";
 include_once 'GameLogic.php';
 include_once "GameTerms.php";
 include_once "Libraries/UILibraries.php";
@@ -127,13 +126,7 @@ if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 }
 
 // Build and return the game state
-$buildStartedAt = microtime(true);
 $response = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, false, $cacheArr);
-TelemetryEvent('state.build', [
-  'duration_ms' => (int)((microtime(true) - $buildStartedAt) * 1000),
-  'player_id' => $playerID,
-  'outcome' => is_string($response) ? 'error' : 'ok'
-]);
 
 if (is_string($response)) {
   // Error occurred

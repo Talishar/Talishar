@@ -8,14 +8,12 @@ include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once '../includes/functions.inc.php';
-include_once '../Libraries/Telemetry.php';
 
 SetHeaders();
 
 $userId = "";
 if (isset($_SESSION["userid"])) $userId = $_SESSION["useruid"];
 if ($userId == "") {
-  TelemetryEvent('replay.load_failed', ['reason' => 'not_authenticated', 'status' => 401]);
   echo "You must be logged in to use this feature.";
   exit;
 }
@@ -27,7 +25,6 @@ $replayNumber = $_POST["replayNumber"] ?? null;
 
 // Validation: replayNumber must be provided
 if ($replayNumber === null || $replayNumber === '') {
-  TelemetryEvent('replay.load_failed', ['reason' => 'missing_replay_number', 'status' => 400]);
   $response->error = "Missing required parameter: replayNumber\n\nPlease provide a valid replay game number.";
   $response->replayNumber = $replayNumber;
   http_response_code(400);
@@ -37,7 +34,6 @@ if ($replayNumber === null || $replayNumber === '') {
 
 // Validation: replayNumber must be numeric
 if (!is_numeric($replayNumber)) {
-  TelemetryEvent('replay.load_failed', ['reason' => 'invalid_replay_number', 'status' => 400]);
   $response->error = "Invalid replayNumber format. Expected a numeric value, received: " . htmlspecialchars($replayNumber);
   http_response_code(400);
   echo json_encode($response);
@@ -48,7 +44,6 @@ $replayPath = "../Replays/$userId/$replayNumber/";
 
 // Validation: Replay directory exists
 if (!file_exists($replayPath)) {
-  TelemetryEvent('replay.load_failed', ['reason' => 'replay_not_found', 'status' => 404]);
   $replayPath_display = htmlspecialchars($replayPath);
   $availableReplays = array_filter(scandir("../Replays/") ?? [], function($item) {
     return $item !== '.' && $item !== '..' && is_dir("../Replays/$item");
@@ -81,7 +76,6 @@ foreach ($requiredFiles as $file => $description) {
 }
 
 if (!empty($missingFiles)) {
-  TelemetryEvent('replay.load_failed', ['reason' => 'replay_files_missing', 'status' => 400]);
   $missingFilesList = "\n\nMissing files:\n";
   foreach ($missingFiles as $file => $description) {
     $missingFilesList .= "  • $file ($description)\n";
@@ -245,7 +239,6 @@ for ($player = 1; $player < 3; ++$player) {
 }
 
 if (!empty($copyErrors)) {
-  TelemetryEvent('replay.load_failed', ['reason' => 'replay_copy_failed', 'status' => 500]);
   $response->error = "Failed to copy replay files to game directory.";
   $response->copyErrors = $copyErrors;
   $response->debug = [
