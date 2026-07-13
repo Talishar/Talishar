@@ -952,9 +952,16 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!is_dir($replayPath)) mkdir($replayPath, 0777, true);
       copy("$gamePath/origGamestate.txt", "$replayPath/origGamestate.txt");
       copy("$gamePath/commandfile.txt", "$replayPath/commandfile.txt");
+      $p1Hero = GetPlayerCharacter(1)[0] ?? "";
+      $p2Hero = GetPlayerCharacter(2)[0] ?? "";
       $replayMetadata = [
         "p1DisplayName" => trim($gameFile[42] ?? ""),
-        "p2DisplayName" => trim($gameFile[43] ?? "")
+        "p2DisplayName" => trim($gameFile[43] ?? ""),
+        "p1HeroCardId" => $p1Hero,
+        "p2HeroCardId" => $p2Hero,
+        "p1HeroName" => $p1Hero === "" ? "" : CardName($p1Hero),
+        "p2HeroName" => $p2Hero === "" ? "" : CardName($p2Hero),
+        "favorite" => false
       ];
       file_put_contents(
         "$replayPath/replayMetadata.json",
@@ -997,18 +1004,22 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $ownerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
       }
       $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers);
-      $replayFiles = glob($path . "*");
-      $filecount = count($replayFiles);
-      if ($filecount > $maxReplaysSaved + 1) {
-        $minCounter = INF;
-        foreach ($replayFiles as $dirName) {
-          $dirNum = basename($dirName);
-          if (is_numeric($dirNum) && intval($dirNum) < $minCounter)
-            $minCounter = intval($dirNum);
+      $replayDirectories = glob($path . "[0-9]*", GLOB_ONLYDIR) ?: [];
+      if (count($replayDirectories) > $maxReplaysSaved) {
+        $oldestNonFavorite = INF;
+        foreach ($replayDirectories as $directory) {
+          $metadataPath = $directory . "/replayMetadata.json";
+          $metadata = file_exists($metadataPath) ? json_decode(file_get_contents($metadataPath), true) : [];
+          $isFavorite = is_array($metadata) && ($metadata["favorite"] ?? false) === true;
+          $replayNumber = (int)basename($directory);
+          if (!$isFavorite && $replayNumber < $oldestNonFavorite) $oldestNonFavorite = $replayNumber;
         }
-        if (!is_infinite($minCounter)) {
-          WriteLog("You've reached the maximum number of saved replays ($maxReplaysSaved), deleting your oldest ($minCounter)", highlight: true);
-          deleteDir($path . $minCounter . "/");
+        if (!is_infinite($oldestNonFavorite)) {
+          WriteLog("You've reached the maximum number of saved replays ($maxReplaysSaved), deleting your oldest non-favorite replay ($oldestNonFavorite)", highlight: true);
+          deleteDir($path . $oldestNonFavorite . "/");
+        }
+        else {
+          WriteLog("All saved replays are favorites, so none were deleted.", highlight: true);
         }
       }
       break;
