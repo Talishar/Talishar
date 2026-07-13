@@ -61,13 +61,8 @@ function ASRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
         return "";
       case "iris_of_the_blossom":
-        $search = "MYDECK:cardID=whirling_mist_blossom_yellow";
-        $fromMod = "Deck,TT"; //pull it out of the deck, playable "This Turn"
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $currentPlayer, $fromMod, 1);
-        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+        $search = "cardID=whirling_mist_blossom_yellow";
+        MaySearchDeck($currentPlayer, $search, "MYBANISH", mod:"TT", may:false);
         return "";
       default:
         return "";

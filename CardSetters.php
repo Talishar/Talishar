@@ -982,10 +982,11 @@ function IsAltCard($cardID)
   return false;
 }
 
-function MaySearchDeck($player, $search, $dest, $isReveal=1, $mod="-", $context="") {
+function MaySearchDeck($player, $search, $dest, $isReveal=1, $mod="-", $context="", $may=true) {
   if ($isReveal & !CanRevealCards($player)) return false;
   if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
-  AddDecisionQueue("BUTTONINPUT", $player, "Search,No_search");
+  if ($may) AddDecisionQueue("BUTTONINPUT", $player, "Search,No_search");
+  else AddDecisionQueue("PASSPARAMETER", $player, "Search");
   AddDecisionQueue("MAYSEARCHDECK", $player, "$search,$dest,$isReveal,$mod", 1);
   return true;
 }
