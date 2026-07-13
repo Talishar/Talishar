@@ -20,16 +20,14 @@ function TelemetryEvent(string $event, array $metrics = []): void
     'sample_rate' => 'int'
   ];
 
+  // Do not send routine successful game-loop events to the PHP error log.
   $durationMs = is_numeric($metrics['duration_ms'] ?? null) ? (int)$metrics['duration_ms'] : 0;
   $outcome = (string)($metrics['outcome'] ?? '');
-  $sampleRate = 1;
   if ($event === 'state.build' && $outcome === 'ok' && $durationMs < 100) {
-    $sampleRate = 1000; // 0.1% of routine state builds
+    return;
   } elseif ($event === 'action.completed' && $outcome === 'ok' && $durationMs < 250) {
-    $sampleRate = 100; // 1% of routine commands
+    return;
   }
-  if ($sampleRate > 1 && mt_rand(1, $sampleRate) !== 1) return;
-  if ($sampleRate > 1) $metrics['sample_rate'] = $sampleRate;
 
   $payload = [
     'event' => preg_replace('/[^a-z0-9._-]/', '', strtolower($event)),
