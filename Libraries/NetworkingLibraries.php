@@ -947,6 +947,27 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $counter = fgets($counterFile);
         fclose($counterFile);
       }
+      $ownerMetafyTiers = json_decode(trim($gameFile[$playerID == 1 ? 38 : 39] ?? ''), true);
+      if (!is_array($ownerMetafyTiers)) {
+        $ownerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
+      }
+      $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers);
+      $savedReplayDirectories = glob($path . "[0-9]*", GLOB_ONLYDIR) ?: [];
+      if (count($savedReplayDirectories) >= $maxReplaysSaved) {
+        $allSavedReplaysAreFavorites = true;
+        foreach ($savedReplayDirectories as $directory) {
+          $metadataPath = $directory . "/replayMetadata.json";
+          $metadata = file_exists($metadataPath) ? json_decode(file_get_contents($metadataPath), true) : [];
+          if (!is_array($metadata) || ($metadata["favorite"] ?? false) !== true) {
+            $allSavedReplaysAreFavorites = false;
+            break;
+          }
+        }
+        if ($allSavedReplaysAreFavorites) {
+          WriteLog("Replay was not saved: all $maxReplaysSaved replay slots are favorites. Remove a favorite replay or <a href=\"https://metafy.gg/@talishar/members\" target=\"_blank\" rel=\"noopener noreferrer\">increase your replay slots with Metafy</a>.", highlight: true);
+          break;
+        }
+      }
       $replayPath = $path . $counter;
       $gamePath = "./Games/" . $gameName;
       if (!is_dir($replayPath)) mkdir($replayPath, 0777, true);
@@ -999,11 +1020,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $counterFile = fopen($path . "counter.txt", "w");
       fwrite($counterFile, $counter + 1);
       fclose($counterFile);
-      $ownerMetafyTiers = json_decode(trim($gameFile[$playerID == 1 ? 38 : 39] ?? ''), true);
-      if (!is_array($ownerMetafyTiers)) {
-        $ownerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
-      }
-      $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers);
       $replayDirectories = glob($path . "[0-9]*", GLOB_ONLYDIR) ?: [];
       if (count($replayDirectories) > $maxReplaysSaved) {
         $oldestNonFavorite = INF;
@@ -1019,7 +1035,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           deleteDir($path . $oldestNonFavorite . "/");
         }
         else {
-          WriteLog("All saved replays are favorites, so none were deleted.", highlight: true);
+          deleteDir($replayPath . "/");
+          WriteLog("Replay was not saved: all $maxReplaysSaved replay slots are favorites. Remove a favorite replay or <a href=\"https://metafy.gg/@talishar/members\" target=\"_blank\" rel=\"noopener noreferrer\">increase your replay slots with Metafy</a>.", highlight: true);
         }
       }
       break;
