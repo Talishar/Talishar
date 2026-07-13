@@ -3171,6 +3171,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $chainLinksPieces = ChainLinksPieces();
       for ($i = 0; $i < $countChainLinkSummary; $i += $chainLinkSummaryPieces) {
         $ind = intdiv($i, $chainLinkSummaryPieces) * $chainLinksPieces;
+        if (!isset($attacks[$ind], $chainLinkSummary[$i + 4])) continue;
         $attackID = $attacks[$ind];
         $names = GamestateUnsanitize($chainLinkSummary[$i+4]);
         if (!DelimStringContains(CardType($attackID), "W") && DelimStringContains($names, "Edge of Autumn")) {

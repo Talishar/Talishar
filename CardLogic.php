@@ -4684,7 +4684,9 @@ function CanGainAttack($cardID)
   global $combatChain, $mainPlayer;
   if (SearchCurrentTurnEffects("buzzsaw_trap_blue", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("tiger_trap_red", $mainPlayer)) return false;
-  return !SearchCurrentTurnEffects("chokeslam_red", $mainPlayer) || CardType($combatChain[0]) != "AA";
+  return !SearchCurrentTurnEffects("chokeslam_red", $mainPlayer)
+    || !isset($combatChain[0])
+    || CardType($combatChain[0]) != "AA";
 }
 
 function CanGainBlock($cardID) {
