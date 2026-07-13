@@ -952,6 +952,14 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!is_dir($replayPath)) mkdir($replayPath, 0777, true);
       copy("$gamePath/origGamestate.txt", "$replayPath/origGamestate.txt");
       copy("$gamePath/commandfile.txt", "$replayPath/commandfile.txt");
+      $replayMetadata = [
+        "p1DisplayName" => trim($gameFile[42] ?? ""),
+        "p2DisplayName" => trim($gameFile[43] ?? "")
+      ];
+      file_put_contents(
+        "$replayPath/replayMetadata.json",
+        json_encode($replayMetadata, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+      );
 
       for ($player = 1; $player < 3; ++$player) {
         $turnNum = 1;

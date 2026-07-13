@@ -103,6 +103,14 @@ $p1uid = "-";
 $p2uid = "-";
 $p1DisplayName = "";
 $p2DisplayName = "";
+$metadataPath = $replayPath . "replayMetadata.json";
+if (file_exists($metadataPath)) {
+    $replayMetadata = json_decode(file_get_contents($metadataPath), true);
+    if (is_array($replayMetadata)) {
+        $p1DisplayName = trim((string)($replayMetadata["p1DisplayName"] ?? ""));
+        $p2DisplayName = trim((string)($replayMetadata["p2DisplayName"] ?? ""));
+    }
+}
 $p1id = "-";
 $p2id = "-";
 $hostIP = GetClientIP();
