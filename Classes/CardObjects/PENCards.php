@@ -6039,8 +6039,7 @@ class reckless_arithmetic_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $roll = GetDieRoll($this->controller);
-    AddCurrentTurnEffect($this->cardID . "-" . $roll, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
   }
 
   function EffectPowerModifier($param, $attached = false) {
@@ -6049,6 +6048,11 @@ class reckless_arithmetic_blue extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $roll = GetDieRoll($this->controller);
+    AddCurrentTurnEffect($this->cardID . "-" . $roll, $this->controller);
   }
 }
 
