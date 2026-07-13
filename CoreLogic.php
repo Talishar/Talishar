@@ -6,6 +6,7 @@ include "CardGetters.php";
 function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = [], $secondNeedleCheck = false)
 {
   global $CombatChain, $mainPlayer, $currentTurnEffects, $combatChainState, $CCS_WeaponIndex, $CCS_NumPowerCounters, $combatChain, $defPlayer;
+  global $turn, $currentPlayer, $CCS_CachedPreBlockValue;
   BuildMainPlayerGameState();
   $attackID = $CombatChain->AttackCard()->ID();
   $attackType = CardType($attackID);
@@ -152,6 +153,9 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
       default:
         break;
     }
+  }
+  if ($turn[0] == "B" && $currentPlayer == $defPlayer && $CombatChain->NumCardsActiveLink() == 1) {
+    $combatChainState[$CCS_CachedPreBlockValue] = $totalPower;
   }
 }
 

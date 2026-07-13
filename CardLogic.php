@@ -560,7 +560,6 @@ function ContinueDecisionQueue($lastResult = "")
               $totalDefense = 0;
               $chainPowerModifiers = [];
               EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
-              $combatChainState[$CCS_CachedPreBlockValue] = $totalPower;
               break;
             case "DEFENDSTEP":
               $turn[0] = "A";
