@@ -229,10 +229,10 @@ class flurry extends Card {
 }
 
 class paragon_plate extends Card {
-  function __construct($controller) {
-    $this->cardID = "paragon_plate";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "paragon_plate";
+		$this->controller = $controller;
+	}
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		GainResources($this->controller, 1);
@@ -245,22 +245,7 @@ class paragon_plate extends Card {
 
 	function PayAdditionalCosts($from, $index = '-') {
 		global $CCS_WeaponIndex, $combatChainState, $CombatChain, $ChainLinks;
-		$choices = [];
-		//current chain  link
-		$Character = new PlayerCharacter($this->controller);
-		if (SubTypeContains($CombatChain->AttackCard()->ID(), "Sword", $this->controller)) {
-			$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
-			if ($Weapon->NumPowerCounters() > 0) $choices[] = "MYCHAR-" . $Weapon->Index();
-		}
-		//past chain links
-		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
-			$AttackCard = $ChainLinks->GetLink($i)->AttackCard();
-			if (SubtypeContains($AttackCard->ID(), "Sword")) {
-				$Weapon = $Character->FindCardUID($AttackCard->OriginUniqueID());
-				if ($Weapon->NumPowerCounters() > 0) $choices[] = "MYCHAR-" . $Weapon->Index();
-			}
-		}
-		$indices = implode(",", $choices);
+		$indices = TargetSwordAttack($this->controller);
 		$context =  "Remove a +1 counter from an attacking sword";
 		Await($this->controller, "ChooseMultiZone", "choice", indices:$indices, notSubsequent:true, context:$context);
 		Await($this->controller, $this->cardID, final:true);
@@ -272,7 +257,9 @@ class paragon_plate extends Card {
 	function SpecificLogic() {
 		global $dqVars;
 		$MZIndex = $dqVars["choice"];
-		$Weapon = MZIndexToObject($this->controller, $MZIndex);
+		$Attack = MZIndexToObject($this->controller, $MZIndex);
+		$Character = new PlayerCharacter($this->controller);
+		$Weapon = $Character->FindCardUID($Attack->OriginUniqueID());
 		$Weapon->AddPowerCounters(-1);
 	}
 
