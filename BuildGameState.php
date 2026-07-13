@@ -1,5 +1,6 @@
 <?php
 include_once "Libraries/PlayerSettings.php";
+include_once "Classes/GameStateResponse.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
 if (!function_exists('IsHideHandFromFriends')) {
     function IsHideHandFromFriends($player) { return false; }
@@ -54,8 +55,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $friendListFromSession = [];
 
-  $response = new stdClass();
-  $response->playerInventory = [];
+  $response = new GameStateResponse();
 
   $isGamePlayer = $playerID == 1 || $playerID == 2;
   $otherPlayer = $playerID == 1 ? 2 : 1;

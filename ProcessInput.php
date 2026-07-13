@@ -24,10 +24,13 @@ include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
 include_once "./Libraries/ValidationLibraries.php";
+include_once "Libraries/Telemetry.php";
+$actionStartedAt = microtime(true);
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"] ?? "";
 if (!IsGameNameValid($gameName)) {
+  TelemetryEvent('action.rejected', ['reason' => 'invalid_game_name', 'status' => 400]);
   echo "Invalid game name.";
   exit;
 }
@@ -37,12 +40,14 @@ $mode = $_GET["mode"];
 
 // Validate player ID
 if (!validatePlayerID($playerID)) {
+  TelemetryEvent('action.rejected', ['reason' => 'invalid_player_id', 'status' => 400]);
   echo "Invalid player ID.";
   exit;
 }
 
 // Validate mode is a valid integer
 if (!validateInteger($mode, 1, 999999)) {
+  TelemetryEvent('action.rejected', ['reason' => 'invalid_mode', 'status' => 400]);
   echo "Invalid mode.";
   exit;
 }
@@ -61,12 +66,14 @@ $chkCount = isset($_GET["chkCount"]) ? intval($_GET["chkCount"]) : 0;
 
 // Validate card ID if provided
 if (!empty($cardID) && !validateCardID($cardID)) {
+  TelemetryEvent('action.rejected', ['mode' => $mode, 'player_id' => $playerID, 'reason' => 'invalid_card_id', 'status' => 400]);
   echo "Invalid card ID.";
   exit;
 }
 
 // Validate check count
 if ($chkCount < 0 || $chkCount > 100) {
+  TelemetryEvent('action.rejected', ['mode' => $mode, 'player_id' => $playerID, 'reason' => 'invalid_check_count', 'status' => 400]);
   echo "Invalid check count.";
   exit;
 }
@@ -106,6 +113,14 @@ include "ParseGamestate.php";
 if ($expectedRevision !== null && !IsReplay()) {
   $currentRevision = (int)(ReadCacheArray($gameName)[0] ?? 0);
   if ($expectedRevision !== $currentRevision) {
+    TelemetryEvent('action.rejected', [
+      'mode' => $mode,
+      'player_id' => $playerID,
+      'reason' => 'stale_game_state',
+      'expected_revision' => $expectedRevision,
+      'current_revision' => $currentRevision,
+      'status' => 409
+    ]);
     http_response_code(409);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
@@ -304,5 +319,12 @@ if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 InvalidateGamestateCache($gameName); // Clear cached gamestate once after all updates
 GamestateUpdated($gameName);
+
+TelemetryEvent('action.completed', [
+  'mode' => $mode,
+  'player_id' => $playerID,
+  'duration_ms' => (int)((microtime(true) - $actionStartedAt) * 1000),
+  'outcome' => 'ok'
+]);
 
 exit;

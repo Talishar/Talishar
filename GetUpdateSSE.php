@@ -20,6 +20,7 @@ include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
 include_once "Libraries/FriendLibraries.php";
+include_once "Libraries/Telemetry.php";
 
 include_once 'GameLogic.php';
 include_once "GameTerms.php";
@@ -113,7 +114,13 @@ $initialCacheArr = ReadCacheArray($gameName);
 $cacheVal = intval($initialCacheArr[0] ?? ""); // piece 1
 $lastUpdate = $cacheVal;
 
+$buildStartedAt = microtime(true);
 $initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, false, $initialCacheArr);
+TelemetryEvent('state.build', [
+  'duration_ms' => (int)((microtime(true) - $buildStartedAt) * 1000),
+  'player_id' => $playerID,
+  'outcome' => is_string($initialState) ? 'error' : 'ok'
+]);
 if (is_string($initialState)) {
   // Error occurred
   echo ("data: " . json_encode(["error" => $initialState]) . "\n\n");
@@ -149,7 +156,10 @@ while (true) {
 
   // Check client connection more frequently to detect refreshes/disconnects
   if ($currentRealTime - $lastConnectionCheck >= $connectionCheckInterval) {
-    if (connection_aborted()) exit;
+    if (connection_aborted()) {
+      TelemetryEvent('sse.disconnected', ['player_id' => $playerID, 'reason' => 'client_abort']);
+      exit;
+    }
     $lastConnectionCheck = $currentRealTime;
   }
 
@@ -188,7 +198,13 @@ while (true) {
   $previouslyInactive = $cacheArr[16] ?? "";
   if ($cacheVal > $lastUpdate || $inactive && $previouslyInactive == 0) {
     // Build and send full game state
+    $buildStartedAt = microtime(true);
     $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive, $cacheArr);
+    TelemetryEvent('state.build', [
+      'duration_ms' => (int)((microtime(true) - $buildStartedAt) * 1000),
+      'player_id' => $playerID,
+      'outcome' => is_string($gameState) ? 'error' : 'ok'
+    ]);
     if (is_string($gameState)) {
       // Only kill the stream for genuinely fatal errors. Transient ones (e.g.
       // "Game state reverted." mid-undo) resolve on a retry.
