@@ -20,7 +20,6 @@ include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
-include_once "Libraries/FriendLibraries.php";
 include_once 'GameLogic.php';
 include_once "GameTerms.php";
 include_once "Libraries/UILibraries.php";
@@ -79,13 +78,11 @@ foreach(PatreonCampaign::cases() as $campaign) {
   $sessionData['patreonCampaigns'][$sessionID] = isset($_SESSION[$sessionID]);
 }
 
-// Friend relationships are authorization data
+// Load friend list if user is logged in (for friend hand visibility checks)
 $sessionData['friendList'] = [];
-if ($sessionData['userLoggedIn']) {
-  $viewerUserId = LoggedInUser();
-  if (is_numeric($viewerUserId)) {
-    $sessionData['friendList'] = array_column(GetUserFriends((int)$viewerUserId), 'username');
-  }
+$friendsListParam = TryGet("friendsList", "");
+if (!empty($friendsListParam)) {
+  $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
 }
 
 // Release the session lock NOW - before any file I/O or processing
