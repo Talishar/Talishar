@@ -171,7 +171,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MULTIBANISH":
           $banish = new Banish($player);
-          $rv = $subparam . "-" . GetIndices($banish->NumCards() * BanishPieces(), 0, BanishPieces());
+          $banishPieces = BanishPieces();
+          $rv = $subparam . "-" . GetIndices($banish->NumCards() * $banishPieces, 0, $banishPieces);
           break;
         case "MULTIHANDAA":
           $search = SearchHand($player, "AA");
@@ -2021,7 +2022,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             $auras = GetAuras($player);
             $prefix = "MY";
           }
-          foreach (array_slice($allTargets, 1) as $targ) {
+          $allTargetsCount = count($allTargets);
+          for ($i = 1; $i < $allTargetsCount; ++$i) {
+            $targ = $allTargets[$i];
             $targParts = explode("-", $targ);
             $zone = $targParts[0];
             $index = intval($targParts[1]);
@@ -2041,7 +2044,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $allTargets = explode(",", $lastResult);
           $otherPlayerCharacter = GetPlayerCharacter($otherPlayer);
           $character = GetPlayerCharacter($player);
-          foreach (array_slice($allTargets, 0) as $targ) {
+          foreach ($allTargets as $targ) {
             $targParts = explode("-", $targ);
             if (!isset($targParts[1])) continue;
             $index = intval($targParts[1]);
@@ -2926,10 +2929,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             break;
         }
       }
-      $dqVars[0] = implode(",", array_filter(
-        explode(",", $dqVars[0]),
-        fn($v) => $v !== "" && $v !== $lastResult
-      ));
+      $remainingChoices = [];
+      foreach (explode(",", $dqVars[0]) as $choice) {
+        if ($choice !== "" && $choice !== $lastResult) $remainingChoices[] = $choice;
+      }
+      $dqVars[0] = implode(",", $remainingChoices);
       return $lastResult;
     case "MZREMOVEALLCOUNTERS":
       $lastResultArr = explode(",", $lastResult);
@@ -3123,7 +3127,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "EQUIPCARD":
       $params = explode('-', $parameter);
-      $slot = $params[1] ?? "-";
       $otherPlayer = 3 - $player;
       $chosenPlayer = isset($params[2]) ? (str_contains($params[2], "MY") ? $player : $otherPlayer) : $player;
       EquipEquipment($chosenPlayer, $params[0], $params[1], $params[3] ?? "-", effectAgent:$player);
@@ -3305,8 +3308,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $winner = $dqVars[0];
       $params = explode(",", $parameter);
       $switchedPlayers = [SearchCurrentTurnEffects("the_old_switcheroo_blue", 1, true), SearchCurrentTurnEffects("the_old_switcheroo_blue", 2, true)];
-      $mainDeck = new Deck($mainPlayer);
-      $defDeck = new Deck($defPlayer);
       if ($winner > 0) {
         WonClashAbility($winner, $params[0], $params[1], $switchedPlayers);
       }
@@ -3753,15 +3754,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $charCount = count($character);
       $charPieces = CharacterPieces();
       $filledSlots = [];
+      $equipmentSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
       for ($i = 0; $i < $charCount; $i += $charPieces) {
-        $subtype = CardSubType($character[$i], $character[$i + 11]);
-        if (DelimStringContains($subtype, "Head"))  $filledSlots["Head"]  = true;
-        if (DelimStringContains($subtype, "Chest")) $filledSlots["Chest"] = true;
-        if (DelimStringContains($subtype, "Arms"))  $filledSlots["Arms"]  = true;
-        if (DelimStringContains($subtype, "Legs"))  $filledSlots["Legs"]  = true;
+        $subtypeString = CardSubType($character[$i], $character[$i + 11]);
+        if ($subtypeString == null) continue;
+        foreach (explode(",", $subtypeString) as $subtype) {
+          if (isset($equipmentSlots[$subtype])) $filledSlots[$subtype] = true;
+        }
       }
-      $available = array_filter(["Head", "Chest", "Arms", "Legs"], fn($slot) => !isset($filledSlots[$slot]));
-      return empty($available) ? "PASS" : implode(",", $available);
+      $available = [];
+      if (!isset($filledSlots["Head"])) $available[] = "Head";
+      if (!isset($filledSlots["Chest"])) $available[] = "Chest";
+      if (!isset($filledSlots["Arms"])) $available[] = "Arms";
+      if (!isset($filledSlots["Legs"])) $available[] = "Legs";
+      return $available === [] ? "PASS" : implode(",", $available);
     case "LISTEXPOSEDEQUIPSLOTS":
       if ($parameter == "-") return ListExposedEquipSlots($player);
       else {
@@ -3803,10 +3809,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $rv = SearchMultizone($player, $parameter); // I want multizone to return a blank string if no results so I built this
       return $rv;
     case "REMOVEPREVIOUSCHOICES":
-      $lastResult = implode(",", array_filter(
-        explode(",", $lastResult),
-        fn($v) => $v !== "" && $v !== $parameter
-      ));
+      $remainingChoices = [];
+      foreach (explode(",", $lastResult) as $choice) {
+        if ($choice !== "" && $choice !== $parameter) $remainingChoices[] = $choice;
+      }
+      $lastResult = implode(",", $remainingChoices);
       return $lastResult;
     case "TRUCE":
       if (SearchCurrentTurnEffects("truce_blue", $defPlayer, remove: true)){
@@ -4242,4 +4249,3 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "NOTSTATIC";
   }
 }
- 

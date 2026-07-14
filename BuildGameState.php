@@ -47,17 +47,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $spectatorsPubliclyAllowed = ($buildCacheArr[8] ?? "") == "1";
 
   // Extract session data with defaults
-  $sessionUserLoggedIn = $sessionData['userLoggedIn'] ?? false;
   $sessionUserName = $sessionData['userName'] ?? null;
   $sessionIsPvtVoidPatron = $sessionData['isPvtVoidPatron'] ?? false;
   $sessionPatreonCampaigns = $sessionData['patreonCampaigns'] ?? [];
 
-  $friendListFromSession = [];
-
   $response = new stdClass();
   $response->playerInventory = [];
 
-  $isGamePlayer = $playerID == 1 || $playerID == 2;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   $cacheVal = intval($buildCacheArr[0] ?? 0);
 
@@ -391,7 +387,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $layerPieces = LayerPieces();
   static $specialLayersSet = ["LAYER" => true, "TRIGGER" => true, "MELD" => true, "PRETRIGGER" => true, "ABILITY" => true, "ATTACK" => true];
   $reorderableLayers = [];
-  $numReorderable = 0;
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
     $layerName = isset($specialLayersSet[$layers[$i]]) ? $layers[$i+2] : $layers[$i];
     $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
@@ -436,7 +431,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $theirHandCount = count($theirHand);
-  $spectatorCanSeeP1Hand = $playerID == 3 && ($isCasterMode || ($spectatorIsFriendOfP1 && !IsHideHandFromFriends(1)));
   $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !IsHideHandFromFriends(1));
   
   for ($i = 0; $i < $theirHandCount; ++$i) {
@@ -535,6 +529,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $characterContents = [];
   $theirCharacterCount = count($theirCharacter);
   $characterPieces = CharacterPieces();
+  $hideOpponentEquipment = $theirCharacterCount > $characterPieces && SearchCurrentTurnEffects("HIDEOPEQUIP", $playerID);
   for ($i = 0; $i < $theirCharacterCount; $i += $characterPieces) {
     $label = "";
     $border = 0;
@@ -572,7 +567,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
     $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
     // hide opponent's equipment while deciding on adaptive stuff
-    $facing = ($i != 0 && SearchCurrentTurnEffects("HIDEOPEQUIP", $playerID)) ? "DOWN" : $theirCharacter[$i + 12];
+    $facing = ($i != 0 && $hideOpponentEquipment) ? "DOWN" : $theirCharacter[$i + 12];
     if($isGameOver) $theirCharacter[$i + 12] = "UP";
     if ($theirCharacter[$i + 12] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
       if($theirCharacter[$i + 1] > 0) {
@@ -1262,7 +1257,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   // Current turn effects
   $playerEffects = [];
   $opponentEffects = [];
-  $friendlyEffects = "";
   $BorderColor = NULL;
   $counters = NULL;
   $friendlyCounts = [];
@@ -1277,10 +1271,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
       $raw = $currentTurnEffects[$i];
-      $tmp = strstr($raw, '-', true);
-      $firstPart = $tmp !== false ? $tmp : $raw;
-      $tmp2 = strstr($firstPart, ',', true);
-      $cardID = $tmp2 !== false ? $tmp2 : $firstPart;
+      $cardIDLength = strcspn($raw, '-,');
+      $cardID = $cardIDLength === strlen($raw) ? $raw : substr($raw, 0, $cardIDLength);
       $effectCardIds[$i] = $cardID;
       $isAdmin = AdministrativeEffect($cardID) || $cardID === "luminaris_angels_glow-1" || $cardID === "luminaris_angels_glow-2";
       $adminEffectIdx[$i] = $isAdmin;
@@ -1335,12 +1327,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
                   $counters = $currentTurnEffects[$i + 3];
               }
               elseif ($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
-                  $parts = explode("-", $currentTurnEffects[$i]);
-                  $counters = intval(end($parts));
+                  $separatorPosition = strrpos($currentTurnEffects[$i], "-");
+                  $counters = intval($separatorPosition === false ? $currentTurnEffects[$i] : substr($currentTurnEffects[$i], $separatorPosition + 1));
               }
               elseif ($cardID == "talk_a_big_game_blue") {
-                $parts = explode(",", $currentTurnEffects[$i]);
-                $counters = intval(end($parts));
+                $separatorPosition = strrpos($currentTurnEffects[$i], ",");
+                $counters = intval($separatorPosition === false ? $currentTurnEffects[$i] : substr($currentTurnEffects[$i], $separatorPosition + 1));
               }
               $friendlyRenderedEffects[$cardID] = true;
               $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
@@ -1351,12 +1343,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
               $counters = $currentTurnEffects[$i + 3];
           }
           elseif ($cardID == "haunting_rendition_red" || $cardID == "mental_block_blue") {
-              $parts = explode("-", $currentTurnEffects[$i]);
-              $counters = intval(end($parts));
+              $separatorPosition = strrpos($currentTurnEffects[$i], "-");
+              $counters = intval($separatorPosition === false ? $currentTurnEffects[$i] : substr($currentTurnEffects[$i], $separatorPosition + 1));
           }
           elseif ($cardID == "talk_a_big_game_blue") {
-              $parts = explode(",", $currentTurnEffects[$i]);
-              $counters = intval(end($parts));
+            $separatorPosition = strrpos($currentTurnEffects[$i], ",");
+            $counters = intval($separatorPosition === false ? $currentTurnEffects[$i] : substr($currentTurnEffects[$i], $separatorPosition + 1));
           }
           $opponentRenderedEffects[$cardID] = true;
           $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);

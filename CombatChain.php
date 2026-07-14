@@ -1284,7 +1284,6 @@ function OnBlockEffects($index, $from)
   global $Card_BlockBanner;
   $chainCard = $CombatChain->Card($index);
   $cardType = CardType($chainCard->ID());
-  $cardSubtype = CardSubType($chainCard->ID());
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $currentTurnEffectPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectPieces; $i >= 0; $i -= $currentTurnEffectPieces) {
@@ -1325,10 +1324,9 @@ function OnBlockEffects($index, $from)
         case "orbitoclast":
         case "orbitoclast_r":
           if (DelimStringContains($cardType, "A")) $chainCard->ModifyDefense(-1);
-          $splitCard = explode("_", $chainCard->ID());
-          $splitCount = count($splitCard);
-          if ($splitCard[$splitCount - 1] == "equip") {
-            $id = implode("_", array_splice($splitCard, 0, $splitCount - 1));
+          $chainCardID = $chainCard->ID();
+          if ($chainCardID === "equip" || str_ends_with($chainCardID, "_equip")) {
+            $id = substr($chainCardID, 0, -6);
             if (CardType($id) != $cardType) $chainCard->ModifyDefense(-1);
           }
           break;
@@ -1381,7 +1379,6 @@ function OnBlockEffects($index, $from)
     }
     if ($remove) RemoveCurrentTurnEffect($i);
   }
-  $currentTurnEffects = array_values($currentTurnEffects);
   //bizarre, but technically symbiosis shot gets a counter when an item blocks
   if (SubtypeContains($chainCard->ID(), "Item", $defPlayer)) {
     $char = &GetPlayerCharacter($defPlayer);
@@ -1753,8 +1750,6 @@ function CombatChainClosedTriggers()
           if ($numEloquence > 0) PlayAura("eloquence", $mainPlayer, effectSource: $chainLinks[$i][$j]);
           break;
         case "deep_recesses_of_existence_blue":
-          $from = $chainLinks[$i][$j+3];
-          $whoseGY = str_contains($from, "THEIR") ? "THEIRDISCARD" : "MYDISCARD";
           // Do you want to banish this card face-down, and banish a card from each player who lost life this turn?
           AddDecisionQueue("YESNO", $mainPlayer, "do_you_want_to_banish_".CardLink("deep_recesses_of_existence_blue", "deep_recesses_of_existence_blue")."?");
           // This will exit early if No
@@ -2050,7 +2045,6 @@ function LinkBasePower($check=false)
   global $CombatChain, $currentTurnEffects, $mainPlayer, $combatChain, $CS_Num6PowBan, $ChainLinks;
   if ($CombatChain->HasCurrentLink()) {
     $attackID = $CombatChain->AttackCard()->ID();
-    $attackUID = $CombatChain->AttackCard()->UniqueID();
     $attackOriginUID = $combatChain[8];
     if (SubTypeContains($attackID, "Aura")) {
       $index = SearchAurasForUniqueID($attackOriginUID, $mainPlayer);

@@ -449,16 +449,20 @@ function FindEmptyEquipmentSlots($player)
   for ($i = 0; $i < $charCount && $occupiedCount < 4; $i += $charPieces) {
     if ($character[$i + 1] == 0) continue; // destroyed cards don't occupy a slot
     $subtype = CardSubType($character[$i], $character[$i + 11]);
+    $subtypeSet = $subtype == null ? [] : array_flip(explode(",", $subtype));
     foreach ($slots as $slot) {
-      if (!isset($occupied[$slot]) && DelimStringContains($subtype, $slot)) {
+      if (!isset($occupied[$slot]) && isset($subtypeSet[$slot])) {
         $occupied[$slot] = true;
         ++$occupiedCount;
         break;
       }
     }
   }
-  $available = array_filter($slots, fn($s) => !isset($occupied[$s]));
-  return empty($available) ? "" : implode(",", $available);
+  $available = [];
+  foreach ($slots as $slot) {
+    if (!isset($occupied[$slot])) $available[] = $slot;
+  }
+  return $available === [] ? "" : implode(",", $available);
 }
 
 function ArsenalStartTurnAbilities()
@@ -3192,7 +3196,6 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   }
   $mzIndices = CombineSearches($mzIndices, SearchMultizoneFormat(implode(",", $indicesArr), "MYITEMS"));
 
-  $ally = &GetAllies($player);
   $Allies = new Allies($player);
   $indices = [];
   $numAllies = $Allies->NumAllies();
@@ -3975,7 +3978,6 @@ function BanishHand($player)
 
 function EvoOnPlayHandling($player)
 {
-  $Hero = new CharacterCard(0, $player);
   if (SearchCurrentTurnEffects("teklovossen_esteemed_magnate", $player, true) || SearchCurrentTurnEffects("teklovossen", $player, true)) {
     AddLayer("TRIGGER", $player, "teklovossen_esteemed_magnate");
   }
