@@ -475,7 +475,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $showOppPitch = $turnPhase != "PDECK";
   $theirPitchCount = count($theirPitch);
   for ($i = $theirPitchCount - $pitchPieces; $i >= 0; $i -= $pitchPieces) {
-    $opponentPitchArr[] = JSONRenderedCard($showOppPitch ? $theirPitch[$i] : $TheirCardBack);
+    $pitchCard = JSONRenderedCard($showOppPitch ? $theirPitch[$i] : $TheirCardBack);
+    if ($showOppPitch) $pitchCard->pitchValue = PitchValue($theirPitch[$i]);
+    $opponentPitchArr[] = $pitchCard;
   }
   $response->opponentPitch = $opponentPitchArr;
 
@@ -690,7 +692,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $playerPitchArr = [];
   $myPitchCount = count($myPitch);
   for($i = $myPitchCount - $pitchPieces; $i >= 0; $i -= $pitchPieces) {
-    $playerPitchArr[] = JSONRenderedCard($myPitch[$i]);
+    $pitchCard = JSONRenderedCard($myPitch[$i]);
+    $pitchCard->pitchValue = PitchValue($myPitch[$i]);
+    $playerPitchArr[] = $pitchCard;
   }
   $response->playerPitch = $playerPitchArr;
 
