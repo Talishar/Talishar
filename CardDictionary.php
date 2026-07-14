@@ -461,7 +461,10 @@ function CardClass($cardID)
       break;
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialClass() != "-") return $card->SpecialClass();
+  if ($card != "-") {
+    $specialClass = $card->SpecialClass();
+    if ($specialClass != "-") return $specialClass;
+  }
   return GeneratedCardClass($cardID);
 }
 
@@ -529,7 +532,10 @@ function CardTalent($cardID, $from="-")
       break;
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialTalent() != "-") return $talentCache[$cardID] = $card->SpecialTalent();
+  if ($card != "-") {
+    $specialTalent = $card->SpecialTalent();
+    if ($specialTalent != "-") return $talentCache[$cardID] = $specialTalent;
+  }
   return $talentCache[$cardID] = GeneratedCardTalent($cardID);
 }
 
@@ -613,8 +619,11 @@ function CardCost($cardID, $from="-", $index=-1)
       break;
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialCost() != -1) return $card->SpecialCost();
-  elseif ($card != "-") return $card->CardCost($from);
+  if ($card != "-") {
+    $specialCost = $card->SpecialCost();
+    if ($specialCost != -1) return $specialCost;
+    return $card->CardCost($from);
+  }
   if ($set != "DUM") {
     return GeneratedCardCost($cardID);
   }
@@ -755,7 +764,10 @@ function PitchValue($cardID)
     }
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialPitch() != -1) return $pitchCache[$cardID] = $card->SpecialPitch();
+  if ($card != "-") {
+    $specialPitch = $card->SpecialPitch();
+    if ($specialPitch != -1) return $pitchCache[$cardID] = $specialPitch;
+  }
   if ($set != "DUM") {
     return $pitchCache[$cardID] = GeneratedPitchValue($cardID);
   }
@@ -790,9 +802,12 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
       break;
   }
   $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->SpecialBlock() != -1) {
-    $block = $card->SpecialBlock();
-    if ($block == -2) $block = -1; // let -2 force a null block value
+  if ($card != "-") {
+    $specialBlock = $card->SpecialBlock();
+    if ($specialBlock != -1) {
+      $block = $specialBlock;
+      if ($block == -2) $block = -1; // let -2 force a null block value
+    }
   }
   if (!$cardID) return "";
   $set = CardSet($cardID);
@@ -958,7 +973,10 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     default => $basePower,
   };
   $card = GetClass($cardID, $player);
-  if ($card != "-" && $card->SpecialPower() != -1) $basePower = $card->SpecialPower();
+  if ($card != "-") {
+    $specialPower = $card->SpecialPower();
+    if ($specialPower != -1) $basePower = $specialPower;
+  }
   // Lyath ability is handled elsewhere while attacking
   if ($lyathActive && !$attacking) $basePower = ceil($basePower / 2);
   if ($lyathShoes && !$attacking) $basePower = ceil($basePower / 2);

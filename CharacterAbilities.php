@@ -1776,14 +1776,17 @@ function ListExposedEquipSlots($player)
   $exposedSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
   for ($i = 0; $i < $charCount; $i += $characterPieces) {
     if ($character[$i + 1] == 0) continue;
-    $subtype = CardSubType($character[$i], $character[$i + 11]);
-    if ($exposedSlots["Head"] && DelimStringContains($subtype, "Head")) $exposedSlots["Head"] = false;
-    if ($exposedSlots["Chest"] && DelimStringContains($subtype, "Chest")) $exposedSlots["Chest"] = false;
-    if ($exposedSlots["Arms"] && DelimStringContains($subtype, "Arms")) $exposedSlots["Arms"] = false;
-    if ($exposedSlots["Legs"] && DelimStringContains($subtype, "Legs")) $exposedSlots["Legs"] = false;
+    $subtypeString = CardSubType($character[$i], $character[$i + 11]);
+    if ($subtypeString == null) continue;
+    foreach (explode(",", $subtypeString) as $subtype) {
+      if (isset($exposedSlots[$subtype])) $exposedSlots[$subtype] = false;
+    }
   }
-  $available = array_keys(array_filter($exposedSlots));
-  return empty($available) ? "PASS" : implode(",", $available);
+  $available = [];
+  foreach ($exposedSlots as $slot => $isExposed) {
+    if ($isExposed) $available[] = $slot;
+  }
+  return $available === [] ? "PASS" : implode(",", $available);
 }
 
 function CharacterBeatChestTrigger($player) {

@@ -149,7 +149,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Item not playable
       --$items[$index + 3];
       SetClassState($playerID, $CS_PlayIndex, $index);
-      $set = CardSet($cardID);
       PlayCard($cardID, "PLAY", -1, $index, $items[$index + 4], zone: "MYITEMS");
       break;
     case 11: //CHOOSEDECK
@@ -1126,7 +1125,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100015: //Request to enable chat
       include "MenuFiles/ParseGamefile.php";
-      $myName = ($playerID == 1 ? $p1uid : $p2uid);
       switch ($playerID) {
         case 1:
           SetCachePiece($gameName, 15, 1);
@@ -2339,8 +2337,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.3 Declare Costs Begin (CR 2.0)
       $resources[1] = 0;
       $dynCost = "";
-      $isNuu = SearchCurrentTurnEffectsAny(["nuu_alluring_desire", "nuu"], $currentPlayer);
-      $nuuActive = $isNuu && ColorContains($cardID, 3, $otherPlayer);
       if ($playingCard) $dynCost = DynamicCost($cardID); //CR 5.1.3a Declare variable cost (CR 2.0)
       if ($playingCard) AddPrePitchDecisionQueue($cardID, $from, $index, $facing); //CR 5.1.3b,c Declare additional/optional costs (CR 2.0)
       if ($dynCost != "" || $dynCost == 0 && substr($from, 0, 5) != "THEIR") {

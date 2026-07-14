@@ -1707,7 +1707,6 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  $somethingRemoved = false;
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $remove = false;
@@ -1728,10 +1727,9 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
         default:
           break;
       }
-      if ($remove) { $somethingRemoved = true; RemoveCurrentTurnEffect($i); }
+      if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
-  if ($somethingRemoved) $currentTurnEffects = array_values($currentTurnEffects);
   return false;
 }
 
@@ -1739,10 +1737,8 @@ function CurrentEffectAfterPlayOrActivateAbility($cache = true)
 {
   global $currentTurnEffects, $currentPlayer;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  $somethingRemoved = false;
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $remove = false;
       $effectArr = explode(",", $currentTurnEffects[$i]);
       switch ($effectArr[0]) {
         case "gauntlets_of_iron_will":
@@ -1752,10 +1748,8 @@ function CurrentEffectAfterPlayOrActivateAbility($cache = true)
         default:
           break;
       }
-      if ($remove) { $somethingRemoved = true; RemoveCurrentTurnEffect($i); }
     }
   }
-  if ($somethingRemoved) $currentTurnEffects = array_values($currentTurnEffects);
   return false;
 }
 
@@ -2513,9 +2507,7 @@ function ActivateAbilityEffects()
 {
   global $currentPlayer, $currentTurnEffects, $mainPlayer;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  $somethingRemoved = false;
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    $remove = false;
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "endless_winter_red-HIT":
@@ -2526,9 +2518,7 @@ function ActivateAbilityEffects()
           break;
       }
     }
-    if ($remove) { $somethingRemoved = true; RemoveCurrentTurnEffect($i); }
   }
-  if ($somethingRemoved) $currentTurnEffects = array_values($currentTurnEffects);
 }
 
 function CurrentEffectNameModifier($effectID, $effectParameter, $player, $cardID)
@@ -2560,9 +2550,7 @@ function EffectDefenderPowerModifiers($cardID)
   $mod = 0;
   global $defPlayer, $currentTurnEffects;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  $somethingRemoved = false;
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    $remove = false;
     if ($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
       $card = GetClass($currentTurnEffects[$i], $defPlayer);
       if ($card != "-") $mod += $card->EffectDefenderPowerModifier($cardID);
@@ -2579,9 +2567,7 @@ function EffectDefenderPowerModifiers($cardID)
           break;
       }
     }
-    if ($remove) { $somethingRemoved = true; RemoveCurrentTurnEffect($i); }
   }
-  if ($somethingRemoved) $currentTurnEffects = array_values($currentTurnEffects);
   return $mod;
 }
 

@@ -25,6 +25,11 @@ class Deck {
 
   function Remove($indices) {
     if ($indices == "") return "";
+    if ($indices === 0 || $indices === "0") {
+      if (isset($this->deck[0])) return array_shift($this->deck);
+      WriteLog("Something went wrong with removing a card from deck, please submit a bug report");
+      return "";
+    }
     $indexArr = explode(",", $indices);
     $cardIDs = [];
     for($i=count($indexArr)-1; $i>= 0; --$i) {
@@ -43,7 +48,8 @@ class Deck {
     if(CanRevealCards($this->playerID)) {
       if($this->RemainingCards() > 0) {
         $otherPlayer = $this->playerID == 1 ? 2 : 1;
-        for($revealedCards = 0; $revealedCards < $revealCount && count($this->deck) > $revealedCards; $revealedCards++) {
+        $deckCount = count($this->deck);
+        for($revealedCards = 0; $revealedCards < $revealCount && $deckCount > $revealedCards; $revealedCards++) {
           if (!$switched) WriteLog("👁️‍🗨️Player " . $this->playerID . " reveals " . CardLink($this->deck[$revealedCards], $this->deck[$revealedCards]));
           else WriteLog("👁️‍🗨️Player " . $otherPlayer . " reveals " . CardLink($this->deck[$revealedCards] , $this->deck[$revealedCards]) . " from their opponent's deck!");
           if ($isClash) {
@@ -128,7 +134,7 @@ class Deck {
   function Opt($topCardID, $bottomCardID, $from="GY")
   {
     global $gameName;
-    $validation = array_merge($topCardID, array_merge($this->deck, $bottomCardID));
+    $validation = array_merge($topCardID, $this->deck, $bottomCardID);
     $valCounts = array_count_values($validation);
     $valid = true;
     $format = GetCachePiece($gameName, 13);

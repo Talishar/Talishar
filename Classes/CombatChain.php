@@ -146,10 +146,11 @@ class ChainCard {
     function TotalPower() {
       $powerModifiers = [];
       $player = $this->PlayerID();
-      if(PowerCantBeModified($this->ID())) return PowerValue($this->ID(), $player, "CC");
-      $powerValue = $this->index == 0 ? LinkBasePower() : ModifiedPowerValue($this->ID(), $player, "CC", $this->ID(), $this->index);
+      $cardID = $this->ID();
+      if(PowerCantBeModified($cardID)) return PowerValue($cardID, $player, "CC");
+      $powerValue = $this->index == 0 ? LinkBasePower() : ModifiedPowerValue($cardID, $player, "CC", $cardID, $this->index);
       $powerValue += AuraPowerModifiers($this->index, $powerModifiers, onBlock: true);
-      $powerValue += ItemsPowerModifiers($this->ID(), $player, "CC");
+      $powerValue += ItemsPowerModifiers($cardID, $player, "CC");
       $powerValue += $this->PowerValue();//Combat chain power modifier
       return $powerValue;
     }

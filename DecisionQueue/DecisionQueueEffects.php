@@ -487,15 +487,16 @@ function PlayerTargetedAbility($player, $card, $lastResult)
 
 function filterIndices($indices, $zone, $dqVars, $condition)
 {
-  $filteredIndices = array_filter($indices, function ($index) use ($zone, $dqVars, $condition) {
+  $filteredIndices = [];
+  foreach ($indices as $index) {
     if (!isset($zone[$index])) {
-      return false; // skip this index if it doesn't exist in $zone
+      continue; // skip this index if it doesn't exist in $zone
     }
     $block = BlockValue($zone[$index]);
-    if ($block <= -1 || !$condition($block, $dqVars)) return false;
+    if ($block <= -1 || !$condition($block, $dqVars)) continue;
     $type = CardType($zone[$index]);
-    return DelimStringContains($type, "A") || $type == "AA";
-  });
+    if (DelimStringContains($type, "A") || $type == "AA") $filteredIndices[] = $index;
+  }
   $filteredIndices = implode(",", $filteredIndices);
   return $filteredIndices == "" ? "PASS" : $filteredIndices;
 }

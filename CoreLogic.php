@@ -213,12 +213,15 @@ function BlockingCardDefense($index)
   $canGainBlock = CanGainBlock($cardID);
   $from = $BlockCard->From();
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
-  $resourcesPaid = is_numeric($BlockCard->ResourcesPaid()) ? intval($BlockCard->ResourcesPaid()) : 0;
+  $resourcesPaidValue = $BlockCard->ResourcesPaid();
+  $resourcesPaid = is_numeric($resourcesPaidValue) ? intval($resourcesPaidValue) : 0;
   $resourcesPaid += intval($baseCost);
   $uid = ($from == "EQUIP" || $from == "PLAY") ? $BlockCard->OriginUniqueID() : $BlockCard->UniqueID();
   $defense = intval(ModifiedBlockValue($cardID, $defPlayer, "CC", "", $uid));
-  if (!BlockCantBeModified($cardID)) {
-    if ($BlockCard->DefenseModifier() < 0 || $canGainBlock) $defense += $BlockCard->DefenseModifier();
+  $blockCantBeModified = BlockCantBeModified($cardID);
+  if (!$blockCantBeModified) {
+    $defenseModifier = $BlockCard->DefenseModifier();
+    if ($defenseModifier < 0 || $canGainBlock) $defense += $defenseModifier;
     $blockModifier = intval(BlockModifier($cardID, $from, $resourcesPaid, $index));
     $defense += $blockModifier;
   }
@@ -226,13 +229,13 @@ function BlockingCardDefense($index)
     $DefItems = new Items($defPlayer);
     $ItemCard = $DefItems->FindCardUID($BlockCard->OriginUniqueID());
     $counters = $ItemCard->NumDefCounters();
-    if (!BlockCantBeModified($cardID) && ($canGainBlock || $counters < 0)) $defense += $counters;
+    if (!$blockCantBeModified && ($canGainBlock || $counters < 0)) $defense += $counters;
   }
   elseif (TypeContains($cardID, "E", $defPlayer)) {
     $defCharacter = new PlayerCharacter($defPlayer);
     $CharCard = $defCharacter->FindCardUID($uid);
     $counters = $CharCard->NumDefenseCounters();
-    if (!BlockCantBeModified($cardID) && ($canGainBlock || $counters < 0)) $defense += $counters;
+    if (!$blockCantBeModified && ($canGainBlock || $counters < 0)) $defense += $counters;
   }
   if ($defense < 0) $defense = 0;
   return $defense;
@@ -1680,11 +1683,12 @@ function NumActionsBlocking()
 {
   return CountDefendingCards(function ($chainCard) {
     $count = 0;
-    $type = CardType($chainCard->ID());
+    $chainCardID = $chainCard->ID();
+    $type = CardType($chainCardID);
     if (DelimStringContains($type, "A") || $type == "AA") ++$count;
     if (DelimStringContains($type, "E")) {
-      if (SubtypeContains($chainCard->ID(), "Evo") && $chainCard->ID() != "teklovossen_the_mechropotentb" && $chainCard->ID() != "nitro_mechanoidb") {
-        if (CardType(GetCardIDBeforeTransform($chainCard->ID())) == "A") ++$count;
+      if (SubtypeContains($chainCardID, "Evo") && $chainCardID != "teklovossen_the_mechropotentb" && $chainCardID != "nitro_mechanoidb") {
+        if (CardType(GetCardIDBeforeTransform($chainCardID)) == "A") ++$count;
       }
     }
     return $count;

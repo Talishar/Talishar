@@ -83,7 +83,6 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   $playerInputPopup = new stdClass();
   $playerInputButtons = [];
   $playerInputPopup->active = false;
-  $myPitchZone = new PitchZone($playerID);
 
   switch ($turnPhase) {
     case "BUTTONINPUT":
