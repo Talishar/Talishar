@@ -1349,6 +1349,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
   $countAuras = count($auras);
   $aurasPieces = AuraPieces();
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
+    if (!isset($auras[$i])) continue;
     if ($preventedDamage == $damage) {
       $preventedDamage = $damage;
       break;

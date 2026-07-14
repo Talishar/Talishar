@@ -50,6 +50,10 @@ if ($playerID != 0 && !IsGameNameValid($gameName)) {
   exit;
 }
 $authKey = $_POST["authKey"] ?? "";
+$expectedRevision = isset($_POST["expectedRevision"]) && is_numeric($_POST["expectedRevision"])
+  ? (int)$_POST["expectedRevision"]
+  : null;
+$commandId = is_string($_POST["commandId"] ?? null) ? $_POST["commandId"] : "";
 
 //We should also have some information on the type of command
 $mode = $_POST["mode"] ?? null;
@@ -60,7 +64,26 @@ $submission = json_decode($submission); //I don't know why it's not correctly pa
 //First we need to parse the game state from the file
 // For profile settings updates (playerID == 0), skip gamestate parsing
 if ($playerID != 0) {
+  $commandLock = @fopen("./Games/$gameName/process.lock", "c");
+  if ($commandLock === false || !flock($commandLock, LOCK_EX)) {
+    http_response_code(503);
+    echo json_encode(['error' => 'Game is busy. Please retry.']);
+    exit;
+  }
   include "ParseGamestate.php";
+  if ($expectedRevision !== null && !IsReplay()) {
+    $currentRevision = (int)(ReadCacheArray($gameName)[0] ?? 0);
+    if ($expectedRevision !== $currentRevision) {
+      http_response_code(409);
+      echo json_encode([
+        'error' => 'STALE_GAME_STATE',
+        'expectedRevision' => $expectedRevision,
+        'currentRevision' => $currentRevision,
+        'commandId' => $commandId
+      ]);
+      exit;
+    }
+  }
 } else {
   // Initialize minimal state for profile-only operations
   $currentPlayer = 0;

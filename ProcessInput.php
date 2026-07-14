@@ -79,12 +79,44 @@ for ($i = 0; $i < $chkCount; ++$i) {
   }
 }
 $inputText = isset($_GET["inputText"]) ? sanitizeString($_GET["inputText"]) : "";
+$expectedRevision = isset($_GET["expectedRevision"]) && is_numeric($_GET["expectedRevision"])
+  ? (int)$_GET["expectedRevision"]
+  : null;
+$commandId = isset($_GET["commandId"]) ? sanitizeString($_GET["commandId"]) : "";
+
+// Serialize the complete read/validate/write cycle for a game. A stale-state
+// check alone cannot prevent two simultaneous requests from both reading the
+// same state before either one writes it
+$commandLock = @fopen("./Games/$gameName/process.lock", "c");
+if ($commandLock === false || !flock($commandLock, LOCK_EX)) {
+  http_response_code(503);
+  echo "Game is busy. Please retry.";
+  exit;
+}
 
 SetHeaders();
 
 $numPass = 0;
 //First we need to parse the game state from the file
 include "ParseGamestate.php";
+
+// Talishar-FE send the revision they rendered before issuing an action. Once
+// a command advances the game, retries and double-clicks carry the old value
+// and are rejected safely
+if ($expectedRevision !== null && !IsReplay()) {
+  $currentRevision = (int)(ReadCacheArray($gameName)[0] ?? 0);
+  if ($expectedRevision !== $currentRevision) {
+    http_response_code(409);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+      'error' => 'STALE_GAME_STATE',
+      'expectedRevision' => $expectedRevision,
+      'currentRevision' => $currentRevision,
+      'commandId' => $commandId
+    ]);
+    exit;
+  }
+}
 
 if (IsReplay() && $mode == 99) {
   $filename = "./Games/$gameName/replayCommands.txt";

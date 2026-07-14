@@ -206,6 +206,7 @@
     $chainLinkSummaryCount = count($chainLinkSummary);
     $chainLinkSummaryPieces = ChainLinkSummaryPieces();
     for($i=0; $i<$chainLinkSummaryCount; $i+=$chainLinkSummaryPieces) {
+      if (!isset($chainLinkSummary[$i + 2])) continue;
       if(DelimStringContains($chainLinkSummary[$i+2], "DRACONIC")) ++$numLinks;
     }
     if($CombatChain->HasCurrentLink() && TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $mainPlayer)) ++$numLinks;
