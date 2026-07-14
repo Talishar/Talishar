@@ -7783,8 +7783,9 @@ class stormwhirl_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $mainPlayer;
-    if (str_contains($target, "COMBATCHAINLINK") || str_contains($target, "LAYER"))
+    global $mainPlayer, $CombatChain;
+
+    if ((str_contains($target, "COMBATCHAINLINK") && $CombatChain->AttackCard()->StillThere()) || str_contains($target, "LAYER"))
       AddCurrentTurnEffect($this->cardID, $mainPlayer);
     return "";
   }

@@ -225,4 +225,12 @@ class ChainCard {
       global $CombatChain;
       return $CombatChain->Remove($this->Index());
     }
+
+    function StillThere() {
+      global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+      if ($this->index != 0 && isset($this->chain[$this->index])) return true;
+      elseif ($this->index == 0)
+        return $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-";
+      return false;
+    }
 }
