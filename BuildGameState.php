@@ -1504,14 +1504,19 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   if ($playerID >= 1 && $playerID <= 2) {
     $opponentID = ($playerID == 1) ? 2 : 1;
     $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $opponentID;
+    $presenceCacheKey = "presence_" . md5($gameName) . "_player_" . $opponentID;
 
     $isOpponentTyping = false;
+    $opponentPresence = null;
     if (extension_loaded('apcu') && ini_get('apc.enabled')) {
       if (function_exists('apcu_fetch')) {
         $isOpponentTyping = @apcu_fetch($typingCacheKey) !== false;
+        $cachedPresence = @apcu_fetch($presenceCacheKey);
+        if (is_array($cachedPresence)) $opponentPresence = $cachedPresence;
       }
     }
     $response->opponentIsTyping = $isOpponentTyping;
+    $response->opponentPresence = $opponentPresence;
   }
 
   $response->inactive = $inactive;
