@@ -802,6 +802,63 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           WriteLog("$cardID cannot be parsed as a turn number", highlight: true);
           break;
         }
+        if ((int)$turnNumber === 0) {
+          $startBackup = "replayStartGamestate.txt";
+          if (!file_exists($filepath . $startBackup)) {
+            $sourceFile = $filepath . "replaySource.json";
+            $source = file_exists($sourceFile)
+              ? json_decode(file_get_contents($sourceFile), true)
+              : null;
+            if (
+              is_array($source) &&
+              isset($source["userId"], $source["replayNumber"])
+            ) {
+              $origGamestate = "./Replays/" . $source["userId"] . "/" . (int)$source["replayNumber"] . "/origGamestate.txt";
+              if (file_exists($origGamestate)) copy($origGamestate, $filepath . $startBackup);
+            }
+          }
+          if (!file_exists($filepath . $startBackup)) {
+            if (session_status() === PHP_SESSION_NONE) session_start();
+            $userId = $_SESSION["useruid"] ?? "";
+            $replayCommands = file_get_contents($filepath . "replayCommands.txt");
+            $firstLineEnd = strpos($replayCommands, "\n");
+            $replayCommands = $firstLineEnd === false ? "" : substr($replayCommands, $firstLineEnd + 1);
+            $replayRoot = "./Replays/$userId/";
+            if ($userId !== "" && is_dir($replayRoot)) {
+              foreach (glob($replayRoot . "[0-9]*", GLOB_ONLYDIR) ?: [] as $replayDirectory) {
+                $commandFile = $replayDirectory . "/commandfile.txt";
+                $origGamestate = $replayDirectory . "/origGamestate.txt";
+                if (
+                  file_exists($commandFile) &&
+                  file_exists($origGamestate) &&
+                  trim(file_get_contents($commandFile)) === trim($replayCommands)
+                ) {
+                  copy($origGamestate, $filepath . $startBackup);
+                  break;
+                }
+              }
+            }
+            if (!file_exists($filepath . $startBackup)) {
+              WriteLog("Cannot find this replay's original gamestate.", highlight: true);
+              break;
+            }
+          }
+          $filename = $filepath . "replayCommands.txt";
+          $commands = file($filename);
+          $commands[0] = "0\r\n";
+          file_put_contents($filename, $commands);
+          RevertGamestate($startBackup);
+          WriteLog("Returning to the start of the replay", highlight: true);
+          break;
+        }
+        if (!str_contains($cardID, "-")) {
+          foreach ([1, 2] as $candidatePlayer) {
+            if (file_exists($filepath . "turn_$candidatePlayer-$turnNumber" . "_Gamestate.txt")) {
+              $turnPlayer = $candidatePlayer;
+              break;
+            }
+          }
+        }
         $backupFname = "turn_$turnPlayer-$turnNumber" . "_Gamestate.txt";
         $backupLoc = $filepath . $backupFname;
         if (!file_exists($backupLoc)) {

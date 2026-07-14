@@ -8,11 +8,12 @@ include_once "../AccountFiles/AccountSessionAPI.php";
 
 SetHeaders();
 
+$userId = $_SESSION["useruid"] ?? "";
+$isPatron = IsLoggedInUserPatron();
 session_write_close();
 
 $response = new stdClass();
 
-$userId = $_SESSION["useruid"] ?? "";
 if ($userId === "") {
     $response->error = "You must be logged in to share replays.";
     http_response_code(401);
@@ -20,7 +21,6 @@ if ($userId === "") {
     exit;
 }
 
-$isPatron = ($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false);
 if (!$isPatron) {
     $response->error = "Replay sharing is only available to patrons.";
     http_response_code(403);

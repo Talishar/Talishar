@@ -206,6 +206,7 @@ WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $
 // Copy replay files with error handling
 $origGamestateSource = $replayPath . "origGamestate.txt";
 $origGamestateDest = "../Games/$gameName/gamestate.txt";
+$replayStartGamestateDest = "../Games/$gameName/replayStartGamestate.txt";
 $commandFileSource = $replayPath . "commandfile.txt";
 $commandFileDest = "../Games/$gameName/replayCommands.txt";
 
@@ -214,6 +215,13 @@ $copyErrors = [];
 if (!@copy($origGamestateSource, $origGamestateDest)) {
   $copyErrors[] = "Failed to copy original gamestate from $origGamestateSource to $origGamestateDest";
 }
+if (!@copy($origGamestateSource, $replayStartGamestateDest)) {
+  $copyErrors[] = "Failed to create replay start snapshot from $origGamestateSource";
+}
+file_put_contents(
+  "../Games/$gameName/replaySource.json",
+  json_encode(["userId" => $userId, "replayNumber" => (int)$replayNumber])
+);
 
 if (!@copy($commandFileSource, $commandFileDest)) {
   $copyErrors[] = "Failed to copy command file from $commandFileSource to $commandFileDest";

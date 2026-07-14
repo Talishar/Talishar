@@ -63,6 +63,7 @@ WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $
 WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $currentTime . "!!!" . $visibility . "!" . $isReplay . "!0!0!0!" . $gameStatus . "!0!0"); //Initialize SHMOP cache for this game
 
 copy("./Replays/" . $userId . "/" . $replayNumber . "/origGamestate.txt", "./Games/" . $gameName . "/gamestate.txt");
+copy("./Replays/" . $userId . "/" . $replayNumber . "/origGamestate.txt", "./Games/" . $gameName . "/replayStartGamestate.txt");
 copy("./Replays/" . $userId . "/" . $replayNumber . "/replayCommands.txt", "./Games/" . $gameName . "/replayCommands.txt");
 
 //Write initial gamestate to memory
