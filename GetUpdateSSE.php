@@ -105,10 +105,11 @@ header('Cache-Control: no-cache');
 $lastUpdate = 0;
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 
-// Typing state tracking — pushed via named SSE event, no polling needed
-$lastTypingCheckTime = 0.0;
-$typingCheckInterval = 1.5; // seconds between checks
+// Ephemeral activity state pushed via named SSE events.
+$lastActivityCheckTime = 0.0;
+$activityCheckInterval = 1.5; // seconds between APCu checks
 $lastTypingState = false;
+$lastPresenceState = null;
 
 // Send initial full game state
 $initialCacheArr = ReadCacheArray($gameName);
@@ -132,6 +133,7 @@ gc_collect_cycles();
 $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
 $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;
+$presenceCacheKey = "presence_" . md5($gameName) . "_player_" . $otherP;
 $apcuAvailable = extension_loaded('apcu') && ini_get('apc.enabled');
 $lastSendTime = microtime(true); // last time anything was written to the client
 $lastFileCheckTime = microtime(true);
@@ -221,21 +223,32 @@ while (true) {
     set_time_limit(120);
   }
 
-  // Push typing state as a named SSE event so the frontend can update without
-  // any polling. Checks every $typingCheckInterval seconds; only emits when
-  // the state actually changes — zero cost for games where nobody is typing.
-  if ($isGamePlayer && ($currentRealTime - $lastTypingCheckTime >= $typingCheckInterval)) {
-    $lastTypingCheckTime = $currentRealTime;
+  // Push ephemeral activity as named SSE events so the frontend does not poll.
+  // Check APCu periodically and emit only when a state changes.
+  if ($isGamePlayer && ($currentRealTime - $lastActivityCheckTime >= $activityCheckInterval)) {
+    $lastActivityCheckTime = $currentRealTime;
     $opponentIsTyping = false;
+    $opponentPresence = null;
 
     if ($apcuAvailable) {
       $opponentIsTyping = @apcu_fetch($typingCacheKey) !== false;
+      $cachedPresence = @apcu_fetch($presenceCacheKey);
+      if (is_array($cachedPresence)) $opponentPresence = $cachedPresence;
     }
 
     if ($opponentIsTyping !== $lastTypingState) {
       $lastTypingState = $opponentIsTyping;
       echo "event: typing\n";
       echo "data: " . json_encode(["opponentIsTyping" => $opponentIsTyping]) . "\n\n";
+      ob_flush();
+      flush();
+      $lastSendTime = $currentRealTime;
+    }
+
+    if ($opponentPresence !== $lastPresenceState) {
+      $lastPresenceState = $opponentPresence;
+      echo "event: presence\n";
+      echo "data: " . json_encode(["opponentPresence" => $opponentPresence]) . "\n\n";
       ob_flush();
       flush();
       $lastSendTime = $currentRealTime;
