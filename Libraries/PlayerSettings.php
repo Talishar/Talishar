@@ -792,7 +792,8 @@ function IsTeamFabDads($userName)
 function IsTeamRedLine($userName)
 {
   static $members = ["Aegisworn" => 1, "CornOnJacob" => 1, "jonam33" => 1, "Scribnibble" => 1, "Yuriiko" => 1,
-    "Sharp" => 1, "MXBloom" => 1, "Lazaeus" => 1, "bloodbit" => 1, "hurricanewes" => 1, "Aljo" => 1, "Flempa" => 1];
+    "Sharp" => 1, "MXBloom" => 1, "Lazaeus" => 1, "bloodbit" => 1, "hurricanewes" => 1, "Aljo" => 1, "Flempa" => 1,
+    "redprairiedawn" => 1];
   return isset($members[$userName]);
 }
 
