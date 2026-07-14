@@ -98,8 +98,10 @@ if (IsReplay() && $mode == 99) {
   $cardID = $params[3] ?? "";
   $chkCount = $params[4] ?? "0";
   $chkInput = isset($params[5]) ? array_map('trim', explode("|", $params[5])) : [];
-  //skip any inputs where the non-active player tries something
-  if ($mode == "StartTurn" || $playerID != $currentPlayer) {
+  while (
+    ($mode == "StartTurn" || $playerID != $currentPlayer) &&
+    $pointer < count($commands) - 1
+  ) {
     ++$pointer;
     $line = $commands[$pointer] ?? "";
     $params = explode(" ", $line);
