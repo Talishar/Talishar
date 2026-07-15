@@ -1317,7 +1317,7 @@ class kick_the_hornets_nest_yellow extends Card {
     WriteLog(CardLink($this->controller, $this->cardID) . " created an " . CardLink("confidence", "confidence") . ", " . CardLink("might", "might") . ", " . CardLink("toughness", "toughness") . " and " . CardLink("vigor", "vigor") . " tokens.");
   }
 
-  function AddGraveyardEffect($from, $effectController) {
+  function AddGraveyardEffect($from, $effectController, $cardController) {
     if ($effectController != $this->controller && $from != "CC") AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 }

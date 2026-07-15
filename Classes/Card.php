@@ -239,7 +239,7 @@ class Card {
     return;
   }
 
-  function AddGraveyardEffect($from, $effectController) {
+  function AddGraveyardEffect($from, $effectController, $cardController) {
     return false;
   }
 

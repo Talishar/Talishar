@@ -778,7 +778,7 @@ function AddCharacterEffect($player, $index, $effect)
   }
 }
 
-function AddGraveyard($cardID, $player, $from, $effectController = "")
+function AddGraveyard($cardID, $player, $from, $effectController = "", $cardController = "")
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $CS_NumAllyPutInGraveyard;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
@@ -807,11 +807,12 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
   if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow") return;
   $card = GetClass($cardID, $player);
   $ret = false;
-  if ($card != "-") $ret = $card->AddGraveyardEffect($from, $effectController);
+  if ($card != "-") $ret = $card->AddGraveyardEffect($from, $effectController, $cardController);
   if ($ret) return;
   switch ($cardID) {
     case "mark_of_the_beast_yellow":
-      BanishCardForPlayer($cardID, $player, $from, "NA");
+      if ($cardController == "" || $player == $cardController) // only if it goes to *your* graveyard
+        BanishCardForPlayer($cardID, $player, $from, "NA");
       return;
     case "beast_within_yellow":
       if ($from != "CC" && $from != "COMBATCHAINLINK") AddLayer("TRIGGER", $player, $cardID);
@@ -826,7 +827,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       break;
     case "fiddlers_green_red": case "fiddlers_green_yellow": case "fiddlers_green_blue":
     case "sirens_of_safe_harbor_red": case "sirens_of_safe_harbor_yellow": case "sirens_of_safe_harbor_blue":
-      if ($effectController == "" || $effectController == $player)
+      if ($cardController == "" || $player == $cardController) // only if it goes to *your* graveyard
         AddLayer("TRIGGER", $player, $cardID);
       break;
     case "sea_legs_yellow": case "fools_gold_yellow":

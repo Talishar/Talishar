@@ -1532,7 +1532,7 @@ class engulfing_shadows_yellow extends Card {
     $this->controller = $controller;
   }
 
-  function AddGraveyardEffect($from, $effectController) {
+  function AddGraveyardEffect($from, $effectController, $cardController) {
     BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
     return true;
   }
@@ -2534,14 +2534,14 @@ class embraforged_gauntlet extends Card {
     $this->controller = $controller;
   }
 
-  function AddGraveyardEffect($from, $effectController) {
+  function AddGraveyardEffect($from, $effectController, $cardController) {
     BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
     return true;
   }
 }
 
 class depths_of_despair extends BaseCard {
-  function AddGraveyardEffect($from, $effectController) {
+  function AddGraveyardEffect($from, $effectController, $cardController) {
     global $defPlayer;
     if($from == "CC" && $this->controller == $defPlayer) {
       BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
@@ -2557,8 +2557,8 @@ class depths_of_despair_red extends Card {
     $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
   }
 
-  function AddGraveyardEffect($from, $effectController) {
-    return $this->baseCard->AddGraveyardEffect($from, $effectController);
+  function AddGraveyardEffect($from, $effectController, $cardController) {
+    return $this->baseCard->AddGraveyardEffect($from, $effectController, $cardController);
   }
 }
 
@@ -2569,8 +2569,8 @@ class depths_of_despair_yellow extends Card {
     $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
   }
 
-  function AddGraveyardEffect($from, $effectController) {
-    return $this->baseCard->AddGraveyardEffect($from, $effectController);
+  function AddGraveyardEffect($from, $effectController, $cardController) {
+    return $this->baseCard->AddGraveyardEffect($from, $effectController, $cardController);
   }
 }
 
@@ -2581,8 +2581,8 @@ class depths_of_despair_blue extends Card {
     $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
   }
 
-  function AddGraveyardEffect($from, $effectController) {
-    return $this->baseCard->AddGraveyardEffect($from, $effectController);
+  function AddGraveyardEffect($from, $effectController, $cardController) {
+    return $this->baseCard->AddGraveyardEffect($from, $effectController, $cardController);
   }
 }
 

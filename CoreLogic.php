@@ -4372,10 +4372,11 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
       AddPlayerHand($cardID, $player, $from);
       break;
     case "GY":
+      $destPlayer = $player;
       if ($from == "CC") break; //Things that would go to the GY stay on till the chain is closing and the close step.
       if ($from == "CHAINCLOSING") $from = "CC";
-      if (DelimStringContains(CardSubType($cardID), "Affliction") && $from != "CC") $player = $otherPlayer;
-      return AddGraveyard($cardID, $player, $from, $effectController);
+      if (DelimStringContains(CardSubType($cardID), "Affliction") && $from != "CC") $destPlayer = $otherPlayer;
+      return AddGraveyard($cardID, $destPlayer, $from, $effectController, $player);
     case "SOUL":
       AddSoul($cardID, $player, $from);
       break;
@@ -4389,7 +4390,7 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
       BanishCardForPlayer($cardID, $otherPlayer, $from, $modifier);
       break;
     case "THEIRDISCARD":
-      return AddGraveyard($cardID, $otherPlayer, $from, $effectController);
+      return AddGraveyard($cardID, $otherPlayer, $from, $effectController, $player);
     case "THEIRBOTDECK":
       AddBottomDeck($cardID, $otherPlayer, $from);
       break;
