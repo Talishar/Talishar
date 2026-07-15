@@ -826,7 +826,8 @@ function AddGraveyard($cardID, $player, $from, $effectController = "")
       break;
     case "fiddlers_green_red": case "fiddlers_green_yellow": case "fiddlers_green_blue":
     case "sirens_of_safe_harbor_red": case "sirens_of_safe_harbor_yellow": case "sirens_of_safe_harbor_blue":
-      AddLayer("TRIGGER", $player, $cardID);
+      if ($effectController == "" || $effectController == $player)
+        AddLayer("TRIGGER", $player, $cardID);
       break;
     case "sea_legs_yellow": case "fools_gold_yellow":
       if(str_contains($from, "HAND")) {
