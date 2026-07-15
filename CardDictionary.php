@@ -2301,8 +2301,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     return $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
   }
   switch ($cardID) {
-    case "ancestral_empowerment_red":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "NINJA", $player) || CardType($attackID) != "AA";
     case "braveforge_bracers":
       return GetClassState($player, $CS_HitsWithWeapon) == 0;
     case "rout_red":

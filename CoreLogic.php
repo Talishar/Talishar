@@ -4485,6 +4485,13 @@ function SetTargets($player, $cardID, $search, $N=1, $may=false) {
   }
 }
 
+function SetTargetsChoices($player, $cardID, $choices) {
+  AddDecisionQueue("PASSPARAMETER", $player, $choices);
+  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
+  AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+}
+
 //Parameters:
 //target =
 //0: My Hero + Their Hero

@@ -5,7 +5,7 @@ class alpha_rampage_red extends Card {
   function __construct($controller) {
     $this->cardID = "alpha_rampage_red";
     $this->controller = $controller;
-    }
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
@@ -37,17 +37,48 @@ class alpha_rampage_red extends Card {
 }
 
 
-// class ancestral_empowerment_red extends Card {
+class ancestral_empowerment_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "ancestral_empowerment_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "ancestral_empowerment_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddEffectToAttack($this->controller, $this->cardID, $target);
+    Draw($this->controller);
+    return "";
+  }
+
+  private
+  function GetTargets() {
+    $attacks = TargetAttack($this->controller);
+    $choices = [];
+    foreach($attacks as $attack) {
+      $cardID = GetMZCard($this->controller, $attack);
+      if (TypeContains($cardID, "AA") && ClassContains($cardID, "NINJA", $this->controller))
+        $choices[] = $attack;
+    }
+    return implode(",", $choices);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->GetTargets() == "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $targets = $this->GetTargets();
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 
 
 // class anothos extends Card {
