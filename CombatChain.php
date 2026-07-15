@@ -1578,10 +1578,6 @@ function IsOverpowerActive()
     case "hanabi_blaster":
     case "nitro_mechanoidc":
       return true;
-    case "spectral_rider_red":
-    case "spectral_rider_yellow":
-    case "spectral_rider_blue":
-      return SearchCurrentTurnEffects("spectral_rider_red", $mainPlayer);
     case "glaring_impact_red":
     case "glaring_impact_yellow":
     case "glaring_impact_blue":
