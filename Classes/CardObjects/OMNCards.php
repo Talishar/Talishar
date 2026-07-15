@@ -1941,8 +1941,10 @@ class echoflash_yellow extends Card {
   }
 
   function AddGraveyardEffect($from, $effectController) {
-    SetArcaneTarget($this->controller, $this->cardID, 0);
-    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
+    if ($effectController == $this->controller) { // has to go to *your* graveyard
+      SetArcaneTarget($this->controller, $this->cardID, 0);
+      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
+    }
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
