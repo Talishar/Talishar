@@ -1818,7 +1818,7 @@ class restless_coalescence_yellow extends Card {
 		if ($from == "PLAY") {
 			$AuraCard = new AuraCard($index, $this->controller);
 			//can it attack?
-			if (CanAttack($this->cardID, "PLAY", $index, "MYAURA", true) && $AuraCard->Status() == 2 && AuraAttackCosts($this->controller, $this->cardID) != -1) return false;
+			if ($turn[0] == "M" && CanAttack($this->cardID, "PLAY", $index, "MYAURA", true) && $AuraCard->Status() == 2 && AuraAttackCosts($this->controller, $this->cardID) != -1) return false;
 			//can it activate?
 			if (SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) != -1 && $AuraCard->NumPowerCounters() > 0) return false;
 			if ($AuraCard->NumPowerCounters() <= 0 || SearchCurrentTurnEffectsForUniqueID($AuraCard->UniqueID()) == -1) return true;
