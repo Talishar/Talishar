@@ -5233,6 +5233,10 @@ class gallow_end_of_the_line_yellow extends Card {
       AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
     }
   }
+
+  function SpecialHealth() {
+    return 3; //missing from fabcube
+  }
 }
 
 class channel_the_tranquil_domain_yellow extends Card {

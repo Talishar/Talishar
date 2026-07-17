@@ -804,7 +804,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   if ($from == "CHAR" && str_ends_with($cardID, '_equip')) {
     $cardID = GetCardIDBeforeTransform($cardID);
   }
-  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow") return;
+  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow" || (HasIncarnate($cardID) && $from == "PLAY")) return;
   $card = GetClass($cardID, $player);
   $ret = false;
   if ($card != "-") $ret = $card->AddGraveyardEffect($from, $effectController, $cardController);
@@ -849,9 +849,13 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   }
   $grave = GetDiscard($player);
   $graveLastIndex = count($grave) - DiscardPieces() + 1;
+  $DisCard = new DiscardCard(count($grave) - DiscardPieces(), $player);
   if ((HasWateryGrave($cardID) && $from == "PLAY") || ($cardID == "beneath_the_surface_yellow" && $from == "CC")) {
-    AddLayer("TRIGGER", $player, "WATERYGRAVE", target:$grave[$graveLastIndex]);
+    AddLayer("TRIGGER", $player, "WATERYGRAVE", target:$DisCard->UniqueID());
   }
+  $Hero = new CharacterCard(0, $player);
+  if (SubtypeContains($cardID, "Zombie") && $from == "PLAY" && ($Hero->CardID() == "malice" || $Hero->CardID() == "malice_domina_of_the_dead"))
+    AddLayer("TRIGGER", $player, $Hero->CardID(), $DisCard->UniqueID());
   return $grave[$graveLastIndex];
 }
 

@@ -411,6 +411,10 @@ function AddAttackQueueAwait($player) {
       $CharacterCard = $Character->FindCardUID($uniqueID);
       $index = $CharacterCard->Index();
       break;
+    case "MYALLY":
+      $Allies = new Allies($player);
+      $AllyCard = $Allies->FindCardUID($uniqueID);
+      $index = $AllyCard->Index();
     default:
       $index = -1;
       break;

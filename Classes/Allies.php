@@ -92,6 +92,15 @@ class AllyCard {
     return $this->pieces[$this->index + 7] ?? 0;
   }
 
+  public function AddLifeCounters($n) {
+    if (isset($this->pieces[$this->index + 7])) {
+      if ($this->Life() + $n <= 0)
+        $this->Destroy();
+      else
+        $this->pieces[$this->index + 7] += $n;
+    }
+  }
+
   public function NumUses(): int {
     return $this->pieces[$this->index + 8] ?? 0;
   }

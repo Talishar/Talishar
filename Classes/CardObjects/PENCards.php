@@ -8042,6 +8042,10 @@ class boo_resident_spook_yellow extends Card {
     $Card = new AllyCard($index, $this->controller);
     return $Card->Tapped() ? 0 : 2;
   }
+
+  function SpecialHealth() {
+    return 2;
+  }
 }
 
 class bubba_lubba_run_aground_yellow extends Card {
@@ -8112,6 +8116,10 @@ class bubba_lubba_run_aground_yellow extends Card {
 
   function HasGoAgain($from) {
     return false;
+  }
+
+  function SpecialHealth() {
+    return 5;
   }
 }
 

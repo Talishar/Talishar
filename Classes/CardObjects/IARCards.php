@@ -2,6 +2,330 @@
 include_once  __DIR__ . "/HVYCards.php";
 include_once  __DIR__ . "/SUPCards.php";
 
+class DECAY extends card {
+  function __construct($controller) {
+    $this->cardID = "DECAY";
+    $this->controller = $controller;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Allies = new Allies($this->controller);
+    $DecayingAlly = $Allies->FindCardUID($target);
+    $DecayingAlly->AddLifeCounters(-1);
+    WriteLog(CardLink($DecayingAlly->CardID()) . " decays!");
+  }
+}
+
+class malice_base extends BaseCard {
+  private $targetSearch;
+  function __construct($cardID, $controller="-") {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+    $this->targetSearch = "MYDISCARD:subtype=Zombie";
+  }
+  function PlayAbility($target) {
+    $uid = explode("-", $target)[1] ?? "-";
+    $Discard = new Discard($this->controller);
+    $targetCard = $Discard->FindCardUID($uid);
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$targetCard->UniqueID());
+  }
+
+  function IsPlayRestricted($index) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    if ($CharacterCard->Tapped()) return true;
+    $search = SearchMultizone($this->controller, $this->targetSearch);
+    if ($search == "") return true;
+  }
+
+  function PayAdditionalCosts($index) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Tap();
+    $CharacterCard->SetUsed(2);
+    $CharacterCard->AddUse(1);
+    SetTargets($this->controller, $this->cardID, $this->targetSearch);
+  }
+
+  function ProcessTrigger($target) {
+    $Discard = new Discard($this->controller);
+    $TargetCard = $Discard->FindCardUID($target);
+    if ($TargetCard->Index() != -1) {
+      BanishCardForPlayer($TargetCard->CardID(), $this->controller, "DISCARD", "DOWN");
+      $TargetCard->Remove();
+    }
+    BanishCardForPlayer("corrupted_corpse", $this->controller, "-", created:true);
+  }
+}
+
+class malice extends Card {
+  private $targetSearch;
+  function __construct($controller) {
+    $this->cardID = "malice";
+    $this->controller = $controller;
+    $this->baseCard = new malice_base($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted($index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialType() {
+    return "C";
+  }
+
+  function SpecialName() {
+    return "Malice";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class malice_domina_of_the_dead extends Card {
+  private $targetSearch;
+  function __construct($controller) {
+    $this->cardID = "malice_domina_of_the_dead";
+    $this->controller = $controller;
+    $this->baseCard = new malice_base($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target);
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted($index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts($index);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialType() {
+    return "C";
+  }
+
+  function SpecialName() {
+    return "Malice";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialHealth() {
+    return 40;
+  }
+}
+
+class vox_necropolis extends Card {
+  function __construct($controller) {
+    $this->cardID = "vox_necropolis";
+    $this->controller = $controller;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Allies = new Allies($this->controller);
+    $AllyCard = $Allies->FindCardUID($uniqueID);
+    if ($AllyCard->Index() != -1) {
+      $index = $AllyCard->Index();
+      $parameter = "PLAY|0|$index|$uniqueID|MYALLY";
+			AddAttackQueue($AllyCard->CardID(), $this->controller, $target, $parameter, $uniqueID);
+    }
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialType() {
+    return "W";
+  }
+
+  function SpecialName() {
+    return "Vox Necropolis";
+  }
+}
+
+class restless_magister_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_magister_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish", 1);
+    AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+    AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-", 1);
+  }
+
+  function HasDecay() {
+    return true;
+  }
+
+  function SpecialSubType() {
+    return "Zombie,Ally";
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialHealth() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialName() {
+    return "Restless Magister";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class corrupted_corpse extends Card {
+  function __construct($controller) {
+    $this->cardID = "corrupted_corpse";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "PLAY")
+      AddCurrentTurnEffect($this->cardID, $this->controller, $from="PLAY");
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true; // doing it this way so it interacts correctly with hypothermia
+  }
+
+  function HasIncarnate() {
+    return true;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+
+  function SpecialName() {
+    return "Corrupted Corpse";
+  }
+
+  function SpecialPitch() {
+    return -1;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialHealth() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialSubType() {
+    return "Zombie,Ally";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
 class runic_reaving_red extends Card {
   private $archetype;
   function __construct($controller) {

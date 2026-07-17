@@ -1929,6 +1929,7 @@ function EndStep()
   AddLayer("ENDPHASE", $mainPlayer, "-");
   MainCharacterBeginEndPhaseTriggers();
   AuraBeginEndPhaseTriggers();
+  AllyBeginEndPhaseTriggers();
   OpponentsAuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
   if (HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
@@ -3465,6 +3466,8 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         if ($card != "-") $card->PayAdditionalCosts("CC", $index);
         else CombatChainPayAdditionalCosts($index, "PLAY");
       }
+  } else if ($from == "PLAY" && SubtypeContains($cardID, "Ally")) {
+    PayAllyAbilityAdditionalCosts($cardID, $index, $from);
   }
   if (HasBoost($cardID, $currentPlayer) && $cardID != "twin_drive_red") Boost($cardID);
   $fuseType = HasFusion($cardID);

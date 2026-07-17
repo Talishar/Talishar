@@ -418,7 +418,7 @@ function ContinueDecisionQueue($lastResult = "")
   global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer, $combatChainState;
   global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
   global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
-  global $CCS_CachedPreBlockValue, $CS_LayerResolved;
+  global $CCS_CachedPreBlockValue, $CS_LayerResolved, $CombatChain;
 
   $dqCount = count($decisionQueue);
   if ($dqCount == 0 || IsGamePhase($decisionQueue[0])) {
@@ -569,6 +569,8 @@ function ContinueDecisionQueue($lastResult = "")
               break;
             case "TRIGGER":
               ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
+              if (count($layers) == 0 && !$CombatChain->HasCurrentLink())
+                Await($mainPlayer, "CheckAttackQueue");
               ProcessDecisionQueue();
               break;
             case "PRETRIGGER":

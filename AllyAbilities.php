@@ -28,6 +28,8 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   $hasCrank = HasCrank($cardID, $player);
   $isOuvia = ($cardID == "ouvia");
   $index = count($allies);
+  if (($from == "GY" || $from == "BANISH") && SearchCharacterAlive($player, "vox_necropolis"))
+    $tapped = true;
   for ($i = 0; $i < $number; ++$i) {
     $allies[] = $cardID;
     $allies[] = 2;
@@ -55,7 +57,16 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     $ClassState = new ClassState($playerSource);
     $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $number);
   }
-  return count($allies) - $allyPieces;
+  $index = count($allies) - $allyPieces;
+  if ($from == "GY" || $from == "BANISH") {
+    if (SearchCharacterAlive($player, "vox_necropolis")) {
+      $AllyCard = new AllyCard($index, $player);
+      AddDecisionQueue("GETTARGETOFATTACK", $player, $AllyCard->CardID() . ",PLAY,1");
+      Await($player, "AQTargeting", "target", lastResultName:"target");
+      Await($player, "AddTrigger", uniqueID:$AllyCard->UniqueID(), cardID:"vox_necropolis", final:true);
+    }
+  }
+  return $index;
 }
 
 function CheckAllyDeath($player)
@@ -134,6 +145,8 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false)
 function AllyHealth($cardID)
 {
   $cardID = BlindCard($cardID, true);
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->SpecialHealth();
   return match($cardID) {
     "polly_cranka_ally" => 1,
     "sticky_fingers_ally" => 2,
@@ -419,6 +432,19 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
   return $damage;
 }
 
+function AllyBeginEndPhaseTriggers() {
+  global $mainPlayer;
+  $Allies = new Allies($mainPlayer);
+  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+    $AllyCard = $Allies->Card($i, true);
+    $card = GetClass($AllyCard->CardID(), $mainPlayer);
+    if ($card != "-") {
+      if ($card->HasDecay())
+        AddLayer("TRIGGER", $mainPlayer, "DECAY", $AllyCard->UniqueID());
+    }
+  }
+}
+
 function AllyBeginEndTurnEffects()
 {
   global $mainPlayer, $defPlayer;
@@ -583,4 +609,33 @@ function DamageAlly($targetPlayer, $targetInd, $damage, $type) {
   }
   if ($allies[$targetInd + 2] <= 0) DestroyAlly($targetPlayer, $targetInd, uniqueID: $allies[$targetInd + 5]);
   return $damage;
+}
+
+function AllyAttackCosts($player, $cardID) {
+  if (SearchCharacterAlive($player, "vox_necropolis") && SubtypeContains($cardID, "Zombie"))
+    return 1;
+  return -1;
+}
+
+function PayAllyAbilityAdditionalCosts($cardID, $index, $from) {
+  global $currentPlayer;
+  if (GetResolvedAbilityType($cardID, $from) == "AA") {
+    if (SearchCharacterAlive($currentPlayer, "vox_necropolis") && SubtypeContains($cardID, "Zombie")) {
+      $AllyCard = new AllyCard($index, $currentPlayer);
+      $AllyCard->SetStatus(2);
+      $AllyCard->AddUses(1);
+      $AllyCard->Tap();
+    }
+  }
+}
+
+function AllyAbilityRestricted($cardID, $index, $from) {
+  global $currentPlayer;
+  if (GetResolvedAbilityType($cardID, $from) == "AA") {
+    if (SearchCharacterAlive($currentPlayer, "vox_necropolis") && SubtypeContains($cardID, "Zombie")) {
+      $AllyCard = new AllyCard($index, $currentPlayer);
+      return $AllyCard->Tapped();
+    }
+  }
+  return false;
 }

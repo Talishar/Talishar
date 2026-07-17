@@ -361,6 +361,8 @@ function CharacterHealth($cardID)
       break;
   }
   $set = CardSet($cardID);
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->SpecialHealth();
   if ($set != "DUM") return GeneratedCharacterHealth($cardID);
   return match ($cardID) {
     "DUMMY" => 40,
@@ -642,6 +644,8 @@ function AbilityCost($cardID)
   }
   $auraAttackCosts = AuraAttackCosts($currentPlayer, $cardID);
   if ($auraAttackCosts != -1) return $auraAttackCosts;
+  $allyAttackCosts = AllyAttackCosts($currentPlayer, $cardID);
+  if ($allyAttackCosts != -1) return $allyAttackCosts;
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return 0;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") {
@@ -1106,6 +1110,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
   }
   if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $player) && $player == $mainPlayer) return "AA";
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($player, "storm_of_sandikai")) return "AA";
+  if ($from == "PLAY" && SubtypeContains($cardID, "Zombie", $player) && SearchCharacterForCard($player, "vox_necropolis")) return "AA";
   $setResult = match($set) {
     "WTR" => WTRAbilityType($cardID, $index, $from),
     "ARC" => ARCAbilityType($cardID, $index),
@@ -1159,9 +1164,10 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 {
+
   $card = GetClass($cardID, 1);
-  if ($card != "-") return $card->GetAbilityTypes($index, $from);
-  return match ($cardID) {
+  if ($card != "-") $abilityTypes = $card->GetAbilityTypes($index, $from);
+  $abilityTypes = match ($cardID) {
     "guardian_of_the_shadowrealm_red" => $from == "BANISH" ? "A" : "",
     "teklo_plasma_pistol", "jinglewood_smash_hit", "plasma_barrel_shot" => "A,AA",
 
@@ -1197,6 +1203,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "cogwerx_blunderbuss" => "I,AA",
     default => "",
   };
+  return $abilityTypes;
 }
 
 function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
@@ -2296,6 +2303,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     $restriction = "Instant cannot be played.";
     return true;
   }
+  if (SubtypeContains($cardID, "Ally") && AllyAbilityRestricted($cardID, $index, $from)) return true;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") {
     return $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
@@ -3969,6 +3977,8 @@ function HasBloodDebt($cardID)
   global $currentPlayer;
   $char = GetPlayerCharacter($currentPlayer);
   if ($char[0] == "levia_redeemed") return false;
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasBloodDebt();
   return GeneratedHasBloodDebt($cardID);
 }
 
@@ -4105,6 +4115,8 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
   if ($CurrentTurnEffects->FindSpecificEffect("oscilio_forked_continuum", $DiscardCard->UniqueID())->Index() != -1) return true;
   if ($CurrentTurnEffects->FindSpecificEffect("oscilio_scion_of_the_third_age", $DiscardCard->UniqueID())->Index() != -1) return true;
   if ($CurrentTurnEffects->FindSpecificEffect("astral_bridge_red", $DiscardCard->UniqueID())->Index() != -1) return true;
+  if ($CurrentTurnEffects->FindSpecificEffect("malice", $DiscardCard->UniqueID())->Index() != -1) return true;
+  if ($CurrentTurnEffects->FindSpecificEffect("malice_domina_of_the_dead", $DiscardCard->UniqueID())->Index() != -1) return true;
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromGraveyard($index);
   return match ($cardID) {

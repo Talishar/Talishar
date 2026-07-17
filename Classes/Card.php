@@ -789,4 +789,20 @@ class Card {
   function Frontside() {
     return $this->cardID;
   }
+  
+  function SpecialHealth() {
+    return GeneratedCharacterHealth($this->cardID);
+  }
+
+  function HasBloodDebt() {
+    return GeneratedHasBloodDebt($this->cardID);
+  }
+
+  function HasIncarnate() {
+    return false;
+  }
+
+  function HasDecay() {
+    return false;
+  }
 }

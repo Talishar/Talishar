@@ -35,3 +35,9 @@ function UsurpAwait($player) {
 	WriteLog(CardLink($dqVars["cardID"]) . " usurped a runechant!");
 	SetClassState($player, $CS_AdditionalCosts, "USURPED");
 }
+
+function HasIncarnate($cardID) {
+	$card = GetClass($cardID, 0);
+	if ($card != "-") return $card->HasIncarnate();
+	return false;
+}
