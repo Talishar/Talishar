@@ -3254,6 +3254,7 @@ function IsDefenseReactionPlayable($cardID, $from)
   if ($from == "HAND" && CardSubType($attackID) == "Arrow" && SearchCharacterForCard($mainPlayer, "dreadbore")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
   if (SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer)) return false;
+  if (SearchCurrentTurnEffects("corrupt_and_conquer_red", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("imperial_seal_of_command_red", $mainPlayer) && CardType($cardID) == "DR") return false;
   if ($from == "HAND" && CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($attackID) == "AA") return false;
   return true;

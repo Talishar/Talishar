@@ -36,6 +36,17 @@ class Arsenal {
 		$this->arsenal = [];
 		return implode(",", $cardIDs);
 	}
+
+	function BanishAll($effectController=0) {
+		$cardIDs = [];
+		for ($i = $this->NumCards() - 1; $i >= 0; --$i) {
+			$Card = $this->Card($i, true);
+			$cardIDs[] = $Card->CardID();
+			$Card->Banish($effectController);
+		}
+		$this->arsenal = [];
+		return implode(",", $cardIDs);
+	}
 }
 
 class ArsenalCard {
@@ -87,6 +98,12 @@ class ArsenalCard {
 		AddEvent("ARSENALDESTROY", $this->controller . ":" . $this->CardID() . ":" . $slotIndex);
 		WriteLog(CardLink($this->CardID(), $this->CardID()) . " was destroyed from the arsenal");
 		AddGraveyard($this->CardID(), $this->controller, "ARS", $effectController);
+		$this->Remove();
+	}
+
+	function Banish($effectController=0) {
+		WriteLog(CardLink($this->CardID(), $this->CardID()) . " was banished from the arsenal");
+		BanishCardForPlayer($this->CardID(), $this->controller, "ARS", banisher:$effectController);
 		$this->Remove();
 	}
 }

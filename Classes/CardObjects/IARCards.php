@@ -1120,4 +1120,91 @@ class sinspeaker_gloomblade_red extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     Usurp($this->cardID, $this->controller, $from);
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class demonbound_gloomblade extends BaseCard {
+  function PlayAbility($additionalCosts) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier() {
+    return 2;
+  }
+
+  function CombatEffectActive() {
+    return true;
+  }
+}
+
+class demonbound_gloomblade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "demonbound_gloomblade_red";
+    $this->controller = $controller;
+    $this->baseCard = new demonbound_gloomblade($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($additionalCosts);
+    return "";
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class corrupt_and_conquer_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "corrupt_and_conquer_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "BANISH")
+      AddCurrentTurnEffect($this->cardID, $this->controller); // makes dreacts unplayable
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $Arsenal = new Arsenal($defPlayer);
+    $Arsenal->BanishAll($this->controller);
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
 }
