@@ -199,6 +199,10 @@ class vox_necropolis extends Card {
   function SpecialName() {
     return "Vox Necropolis";
   }
+
+  function SpecialBlock() {
+    return -2;
+  }
 }
 
 class restless_magister_red extends Card {
@@ -323,6 +327,139 @@ class corrupted_corpse extends Card {
 
   function SpecialTalent() {
     return "SHADOW";
+  }
+}
+
+class viserai_base extends BaseCard {
+
+  function ProcessTrigger() {
+    global $CS_NumRunechantsCreated, $CS_OriginalHero;
+    $Deck = new Deck($this->controller);
+    if (!$Deck->Empty()) {
+      $Deck->BanishTop();
+    }
+    if (GetClassState($this->controller, $CS_NumRunechantsCreated) >= 3) {
+      WriteLog("Viserai has usurped the Shadow Throne!");
+      SetClassState($this->controller, $CS_OriginalHero, $this->cardID);
+      $Hero = new CharacterCard(0, $this->controller);
+      $Hero->Become("viserai_usurper");
+    }
+  }
+}
+
+class viserai_the_forsaken extends Card {
+  function __construct($controller) {
+    $this->cardID = "viserai_the_forsaken";
+    $this->controller = $controller;
+    $this->baseCard = new viserai_base($this->cardID, $this->controller);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function SpecialHealth() {
+    return 40;
+  }
+
+  function SpecialName() {
+    return "Viserai the Forsaken";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialType() {
+    return "C";
+  }
+}
+
+class viserai_between_worlds extends Card {
+  function __construct($controller) {
+    $this->cardID = "viserai_between_worlds";
+    $this->controller = $controller;
+    $this->baseCard = new viserai_base($this->cardID, $this->controller);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function SpecialHealth() {
+    return 20;
+  }
+
+  function SpecialName() {
+    return "Viserai the Forsaken";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialType() {
+    return "C";
+  }
+}
+
+class viserai_usurper extends Card {
+  function __construct($controller) {
+    $this->cardID = "viserai_usurper";
+    $this->controller = $controller;
+  }
+
+  private
+  function EndPhaseAbility() {
+    global $CS_IARGatesMadeorUsed;
+    if (GetClassState($this->controller, $CS_IARGatesMadeorUsed) >= 1) {
+      $message = "if_you_want_to_forsake_your_throne";
+      $context = "Choose if you want to forsake your throne";
+      Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+      Await($this->controller, $this->cardID, final:true);
+    }
+  }
+
+  function DefenderPermanentEndPhaseAbility($index) {
+    $this->EndPhaseAbility();
+  }
+
+  function PermanentEndPhaseAbility($index) {
+    $this->EndPhaseAbility();
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $CS_OriginalHero;
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Become(GetClassState($this->controller, $CS_OriginalHero));
+  }
+
+  function SpecialType() {
+    return "C";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialSubType() {
+    return "Demon";
   }
 }
 

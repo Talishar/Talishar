@@ -42,7 +42,7 @@ function initializePlayerState($handler, $deckHandler, $player)
     "\r\n" .        //Discard
     "\r\n" .        //Pitch
     "\r\n" .        //Banish
-    "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 -1 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0 -1 0 - 0 0 - 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 - - 0 0 0 0\r\n" .  //Class State
+    "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 -1 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0 -1 0 - 0 0 - 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 - - 0 0 0 0 0 0 0\r\n" .  //Class State
     "\r\n" .        //Character effects
     "\r\n" .        //Soul
     "\r\n" .        //Card Stats

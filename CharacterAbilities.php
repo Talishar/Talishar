@@ -351,9 +351,11 @@ function MainCharacterBeginEndPhaseTriggers()
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $mainCharCount; $i += $characterPieces) {
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
+    if ($mainCharacter[$i + 1] != 2) continue; //Do not process ability if it is disabled (e.g. Humble)
+    $card = GetClass($characterID, $mainPlayer);
+    if ($card != "-") $card->PermanentEndPhaseAbility($i);
     switch ($characterID) {
       case "terra":
-        if ($mainCharacter[$i + 1] != 2) break; //Do not process ability if it is disabled (e.g. Humble)
         AddLayer("TRIGGER", $mainPlayer, $characterID);
         break;
       default:
@@ -365,9 +367,11 @@ function MainCharacterBeginEndPhaseTriggers()
   $defCharCount = count($defCharacter);
   for ($i = 0; $i < $defCharCount; $i += $characterPieces) {
     $characterID = ShiyanaCharacter($defCharacter[$i]);
+    if ($defCharacter[$i + 1] != 2) continue; //Do not process ability if it is disabled (e.g. Humble)
+    $card = GetClass($characterID, $defPlayer);
+    if ($card != "-") $card->DefenderPermanentEndPhaseAbility($i);
     switch ($characterID) {
       case "terra":
-        if ($defCharacter[$i + 1] != 2) break; //Do not process ability if it is disabled (e.g. Humble)
         AddLayer("TRIGGER", $defPlayer, $characterID);
         break;
       default:

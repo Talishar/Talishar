@@ -2303,7 +2303,7 @@ function DoesAttackHaveGoAgain()
   global $CS_NumItemsDestroyed, $CCS_WeaponIndex, $CS_NumCharged, $CS_NumCardsDrawn, $CS_Transcended;
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks, $combatChain;
-  global $CS_ArcaneDamageDealt, $CurrentTurnEffects;
+  global $CS_ArcaneDamageDealt, $CurrentTurnEffects, $CS_NumBloodDebtAttacksPlayed;
   $attackID = $CombatChain->AttackCard()->ID();
   $from = $combatChain[2] ?? "CC";
   $attackType = CardType($attackID);
@@ -2354,12 +2354,16 @@ function DoesAttackHaveGoAgain()
   $characterCount = count($character);
   $characterPieces = CharacterPieces();
   $isFirstStealthAttack = HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1;
+  $isFirstBloodDebtAttack = HasBloodDebt($attackID) && TypeContains($attackID, "AA") && GetClassState($mainPlayer, $CS_NumBloodDebtAttacksPlayed) == 1;
   for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
     switch ($characterID) {
       case "arakni_solitary_confinement": case "arakni_5lp3d_7hru_7h3_cr4x":
         if ($isFirstStealthAttack) return true;
+        break;
+      case "viserai_usurper":
+        if ($isFirstBloodDebtAttack) return true;
         break;
       default:
         break;

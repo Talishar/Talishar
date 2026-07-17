@@ -2171,7 +2171,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_ActionsPlayed, $CS_AdditionalCosts, $CS_NumInstantPlayed, $CS_NumWateryGrave;
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
-  global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack;
+  global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack, $CS_NumBloodDebtAttacksPlayed, $CS_IARGatesMadeorUsed;
 
   $otherPlayer = 3 - $currentPlayer;
   $resources = &GetResources($currentPlayer);
@@ -2580,6 +2580,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if ($from == "BANISH" || $from == "THEIRBANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
     if (HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
+    if (HasBloodDebt($cardID) && TypeContains($cardID, "AA") && !IsActivated($cardID, $from)) IncrementClassState($currentPlayer, $CS_NumBloodDebtAttacksPlayed);
+    if ($cardID == "gate_to_iarathael") IncrementClassState($currentPlayer, $CS_IARGatesMadeorUsed);
     if (ColorContains($cardID, 1, $currentPlayer) && $from != "PLAY" && $resolvedAbilityType != "I") IncrementClassState($currentPlayer, $CS_NumRedPlayed);
     if (ColorContains($cardID, 3, $currentPlayer) && $from != "PLAY" && $resolvedAbilityType != "I") IncrementClassState($currentPlayer, $CS_NumBluePlayed);
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && $resolvedAbilityType != "I") {

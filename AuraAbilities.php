@@ -28,7 +28,7 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0, $effectAgent = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated, $CS_HoloAurasEntered;
-  global $CS_CreatedCardsThisTurn;
+  global $CS_CreatedCardsThisTurn, $CS_NumRunechantsCreated, $CS_IARGatesMadeorUsed;
   if ($number == 0) return; //there is no event
   $number = (int)$number;
   $otherPlayer = 3 - $player;
@@ -124,6 +124,14 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   else if ($cardID != "frostbite") IncrementClassState($player, $CS_NumAuras, $number);
   if ($cardID == "fealty") IncrementClassState($player, $CS_FealtyCreated, $number);
   if ($cardID == "seismic_surge") IncrementClassState($player, $CS_SeismicSurgesCreated, $number);
+  $Hero = new CharacterCard(0, $effectAgent);
+  if ($cardID == "runechant") {
+    IncrementClassState($effectAgent, $CS_NumRunechantsCreated, $number);
+    if ($Hero->CardID() == "viserai_between_worlds" || $Hero->CardID() == "viserai_the_forsaken")
+      AddLayer("TRIGGER", $effectAgent, $Hero->CardID());
+  }
+  if ($cardID == "gate_to_iarathael")
+    IncrementClassState($effectAgent, $CS_IARGatesMadeorUsed);
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->EntersArenaAbility();
   if ($isToken)

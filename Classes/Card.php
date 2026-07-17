@@ -805,4 +805,12 @@ class Card {
   function HasDecay() {
     return false;
   }
+
+  function PermanentEndPhaseAbility($index) {
+    return;
+  }
+
+  function DefenderPermanentEndPhaseAbility($index) {
+    return;
+  }
 }
