@@ -1167,7 +1167,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 
   $card = GetClass($cardID, 1);
   if ($card != "-") $abilityTypes = $card->GetAbilityTypes($index, $from);
-  $abilityTypes = match ($cardID) {
+  else $abilityTypes = match ($cardID) {
     "guardian_of_the_shadowrealm_red" => $from == "BANISH" ? "A" : "",
     "teklo_plasma_pistol", "jinglewood_smash_hit", "plasma_barrel_shot" => "A,AA",
 
