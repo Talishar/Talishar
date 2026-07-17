@@ -1025,3 +1025,67 @@ class soul_of_existence_purple extends Card {
     return -2;
   }
 }
+
+class blood_harvest extends Card {
+  function __construct($controller) {
+    $this->cardID = "blood_harvest";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "I,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
+    return GetEasyAbilityNames($this->cardID, $index, $from);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    global $layers;
+    return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return ($from == "HAND");
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 3;
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    global $CS_NumActionsPlayed;
+    $names = GetAbilityNames($this->cardID, $index, $from);
+    $names = str_replace("-,", "", $names);
+    if (SearchCurrentTurnEffects("red_in_the_ledger_red", $this->controller) && GetClassState($this->controller, $CS_NumActionsPlayed) >= 1) {
+      AddDecisionQueue("SETABILITYTYPEABILITY", $this->controller, $this->cardID);
+    } elseif ($names != "" && $from == "HAND") {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose to play the ability or attack");
+      AddDecisionQueue("BUTTONINPUT", $this->controller, $names);
+      AddDecisionQueue("SETABILITYTYPE", $this->controller, $this->cardID);
+    } else {
+      AddDecisionQueue("SETABILITYTYPEATTACK", $this->controller, $this->cardID);
+    }
+    AddDecisionQueue("NOTEQUALPASS", $this->controller, "Ability");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "MYHAND-$index", 1);
+    AddDecisionQueue("MZBANISH", $this->controller, "HAND", 1);
+    AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    GainResources($this->controller, 3);
+  }
+
+  function SpecialPitch() {
+    return -1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
