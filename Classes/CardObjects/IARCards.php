@@ -853,3 +853,38 @@ class suraya_archangel_of_endless_hope extends Card {
     return "AA";
   }
 }
+
+class soul_of_existence_purple extends Card {
+  function __construct($controller) {
+    $this->cardID = "soul_of_existence_purple";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function PitchAbility($from) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    LoseHealth(1, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 4;
+  }
+
+  function SpecialName() {
+    return "Soul of Existence";
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+}

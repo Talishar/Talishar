@@ -705,6 +705,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             $cardID .= "_yellow";
           elseif (CardName($cardID . "_blue") != "")
             $cardID .= "_blue";
+          elseif (CardName($cardID . "_purple") != "")
+            $cardID .= "_purple";
         }
         if (TypeContains($cardID, "C")) {
           WriteLog("Player " . $playerID . " transformed their hero", highlight: true);
