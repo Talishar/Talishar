@@ -3042,7 +3042,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $mzArr = explode("-", $parameter);
       $permanents = &GetPermanents($player);
       $cardID = $permanents[$mzArr[1]];
-      $newCardID = match($cardID) {
+      $card = GetClass($cardID, $player);
+      if ($card != "-") $newCardID = $card->Backside();
+      else $newCardID = match($cardID) {
         "figment_of_erudition_yellow" => "suraya_archangel_of_erudition",
         "figment_of_judgment_yellow" => "themis_archangel_of_judgment",
         "figment_of_protection_yellow" => "aegis_archangel_of_protection",

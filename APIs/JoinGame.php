@@ -880,8 +880,7 @@ function IsCardBanned($cardID, $format, $character)
     if ($format == "futuresage") { //future downshifts
       if (in_array($cardID, $benched)) return false;
       switch($cardID) {
-        case "blaze_firemind":
-        case "raydn_duskbane":
+        case "prism_advent_of_thrones":
         case "dorinthea_quicksilver_prodigy":
         case "dawnblade_resplendent":
           return false;

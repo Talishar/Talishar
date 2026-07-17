@@ -98,7 +98,9 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false)
   if ($cardID == "-") return;
   if (!TypeContains($cardID, "T")) {
     if (SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
-    $id = match($cardID) {
+    $card = GetClass($cardID, $player);
+    if ($card != "-" && $id = $card->Frontside());
+    else $id = match($cardID) {
       "suraya_archangel_of_erudition" => "figment_of_erudition_yellow",
       "themis_archangel_of_judgment" => "figment_of_judgment_yellow",
       "aegis_archangel_of_protection" => "figment_of_protection_yellow",

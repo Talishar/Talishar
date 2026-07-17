@@ -781,4 +781,12 @@ class Card {
   function PlayTrigger($from) {
     return;
   }
+
+  function Backside() {
+    return "-";
+  }
+
+  function Frontside() {
+    return $this->cardID;
+  }
 }

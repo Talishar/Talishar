@@ -467,3 +467,65 @@ class gate_to_iarathael extends Card {
     return $targets == "";
   }
 }
+
+class figment_of_hope_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "figment_of_hope_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function Backside() {
+    return "suraya_archangel_of_endless_hope";
+  }
+
+  function SpecialSubType() {
+    return "Figment";
+  }
+
+  function SpecialCost() {
+    return 4;
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+}
+
+class suraya_archangel_of_endless_hope extends Card {
+  function __construct($controller) {
+    $this->cardID = "suraya_archangel_of_endless_hope";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function Frontside() {
+    return "figment_of_hope_yellow";
+  }
+
+  function SpecialType() {
+    return "-"; //this seems to be required for backside allies?
+  }
+
+  function SpecialSubType() {
+    return "Angel,Ally"; // may be required even after fabcube update
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+}
