@@ -1089,3 +1089,35 @@ class blood_harvest extends Card {
     return 6;
   }
 }
+
+class sinspeaker_gloomblade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "sinspeaker_gloomblade_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "BANISH") {
+      MaySearchDeck($this->controller, "subtype=Aura;nameIncludes=Runechant", "MYAURAS", context:"Search your deck for a runechant to play");
+    }
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+}
