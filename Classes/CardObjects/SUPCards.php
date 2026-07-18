@@ -1999,8 +1999,9 @@ class concealed_object_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $mainPlayer;
     if ($from == "PLAY") {
-      AddCurrentTurnEffect($this->cardID, $this->controller);
+      AddCurrentTurnEffect($this->cardID, $mainPlayer);
     }
     elseif($additionalCosts == "putIntoPlay") AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
