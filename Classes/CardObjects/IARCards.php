@@ -1602,3 +1602,71 @@ class beckoning_hunger_red extends Card {
     return 7;
   }
 }
+
+class seven_sin_nebula extends Card {
+  function __construct($controller) {
+    $this->cardID = "seven_sin_nebula";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $Weapon = new CharacterCard($index, $this->controller);
+    $Weapon->TapForCost();
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    PlayAura("runechant", $this->controller);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CS_NumPlayedFromBanish;
+    if (GetClassState($this->controller, $CS_NumPlayedFromBanish) == 0) return true;
+    $Weapon = new CharacterCard($index, $this->controller);
+    if ($Weapon->Tapped()) return true;
+    return false;
+  }
+
+  function SpecialName() {
+    return "Seven Sin Nebula";
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialType() {
+    return "W";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialSubType() {
+    return "Sword";
+  }
+}

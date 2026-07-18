@@ -216,4 +216,10 @@ class CharacterCard {
   function Tap($tapState=1, $endStepUntap=false) {
     Tap("MYCHAR-" . $this->index, $this->controller, $tapState, $endStepUntap);
   }
+
+  function TapForCost() { //used when tap is a cost instead of once per turn.
+    $this->Tap();
+    $this->AddUse();
+    $this->SetUsed(2);
+  }
 }
