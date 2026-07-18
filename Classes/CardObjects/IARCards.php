@@ -1448,3 +1448,34 @@ class blasmophet_insatiable_hunger extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 }
+
+class circlet_of_eternal_end extends Card {
+  function __construct($controller) {
+    $this->cardID = "circlet_of_eternal_end";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Await($this->controller, "MultiZoneIndices", "MZInd", search:"THEIRBANISH", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", context:"Turn a card in the attacker's banish face down", may:true);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $mainPlayer;
+    $choice = $dqVars["choice"];
+    $ind = explode("-", $choice)[1] ?? -1;
+    if ($ind != -1) {
+      $BanishCard = new BanishCard($mainPlayer, $ind);
+      $BanishCard->SetModifier("DOWN");
+    }
+  }
+}
