@@ -15,13 +15,11 @@ include_once "../Assets/MetafyDictionary.php";
 
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
-include_once "../Classes/CardObjects/OMNCards.php";
-include_once "../Classes/CardObjects/AZSCards.php";
-include_once "../Classes/CardObjects/AHACards.php";
 include_once "../Classes/CardObjects/MPWCards.php";
 include_once "../Classes/CardObjects/AOLCards.php";
 // include_once "../Classes/CardObjects/DDDCards.php"; this file hasn't been made yet
 include_once "../Classes/CardObjects/IARCards.php";
+include_once "../Classes/CardObjects/AMACards.php";
 // promos for special formats
 include_once "../Classes/CardObjects/LGSCards.php";
 
@@ -931,7 +929,7 @@ function isSpecialUsePromo($cardID) {
       "runechant_of_pride_yellow", "runechant_of_wrath_yellow", "runechant_of_lust_yellow",
       "runechant_of_sloth_yellow", "runic_reaving_red"
     ]);
-    $unreleasedSetNames = array_flip(["MPW", "AOL", "DDD", "IAR", ""]);
+    $unreleasedSetNames = array_flip(["MPW", "AOL", "DDD", "IAR", "AMA", ""]);
   }
   if (isset($releaseSet[$cardID])) return false;
   return isset($promoSet[$cardID]) || isset($unreleasedSetNames[CardSet($cardID)]);
@@ -941,17 +939,10 @@ function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
     case "MPW":
-      $card = GetClass($cardID, 0);
-      return $card == "-";
     case "AOL":
-      $card = GetClass($cardID, 0);
-      return $card == "-";
     case "DDD":
-      $card = GetClass($cardID, 0);
-      return $card == "-";
     case "IAR":
-      $card = GetClass($cardID, 0);
-      return $card == "-";
+    case "AMA":
     case "": // cards that don't have a set id yet
       $card = GetClass($cardID, 0);
       return $card == "-";

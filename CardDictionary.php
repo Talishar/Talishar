@@ -3385,6 +3385,7 @@ function HasBladeBreak($cardID)
     case $CID_TekloLegs:
     case "mask_of_malicious_manifestations":
     case "circlet_of_eternal_end": //temporary
+    case "corrupted_crown": //temporary
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
@@ -3406,6 +3407,7 @@ function HasBattleworn($cardID)
     case "teklovossen_the_mechropotentb":
     case "torc_of_vim":
     case "echo_casque":
+    case "undead_grasp": //temporary
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);

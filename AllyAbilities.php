@@ -96,7 +96,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   $cardID = $allies[$index];
   RemoveAllyEffects($player, $cardID, $uniqueID);
-  if (IsSpecificAllyAttacking($player, $index)) {
+  if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep()) {
     CloseCombatChain();
   }
   AllyAddGraveyard($owner, $cardID, toBanished:$toBanished);
@@ -657,4 +657,17 @@ function AllyAbilityRestricted($cardID, $index, $from) {
     }
   }
   return false;
+}
+
+function AllyPowerModifiers(&$powerModifiers, $index = -1)
+{
+  global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain, $CS_NumCharged, $CS_NumAttacks;
+  $modifier = 0;
+  $Allies = new Allies($mainPlayer);
+  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+    $AllyCard = $Allies->Card($i, true);
+    $card = GetClass($AllyCard->CardID(), $mainPlayer);
+    if ($card != "-") $modifier += $card->PermanentPowerModifier($powerModifiers);
+  }
+  return $modifier;
 }

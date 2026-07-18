@@ -166,6 +166,24 @@ function ChooseMultiZoneAwait($player) {
   PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose a card", !$notSubsequent);
 }
 
+function DiscardAwait($player) {
+  global $dqVars;
+  $MZIndex = $dqVars["MZIndex"] ?? "-";
+  $source = $dqVars["source"] ?? "";
+  $from = "HAND";
+  $effectController = $dqVars["effectController"] ?? "";
+  $cardController = $player;
+  if ($MZIndex != "-")
+    $index = explode("-", $MZIndex)[1] ?? -1;
+  else $index = $dqVars["index"] ?? -1;
+  if ($index != -1) {
+    $Hand = new Hand($player);
+    $cardID = $Hand->Remove($index);
+    CardDiscarded($player, $cardID, $source);
+    AddGraveyard($cardID, $player, $from, $effectController, $cardController);
+  }
+}
+
 function MZRemoveAwait($player) {
   global $dqVars;
   $MZIndex = $dqVars["MZIndex"];

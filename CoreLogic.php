@@ -125,6 +125,10 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   if ($canGainAttack || $power < 0) {
     AddPower($totalPower, $power);
   }
+  $power = AllyPowerModifiers($powerModifiers);
+  if ($canGainAttack || $power < 0) {
+    AddPower($totalPower, $power);
+  }
   CurrentEffectAfterPlayOrActivateAbility(false); //checking gauntlets of iron will
   if (!$secondNeedleCheck && isset($combatChain[0])) {
     switch ($combatChain[0]) {

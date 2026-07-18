@@ -2267,3 +2267,12 @@ function StackTakeDamageAbilities($player, $damage, $type, $source) {
   if ($vambraceRemove) SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
   return $damage;
 }
+
+function IsPreDamageStep() { // condition to check if the combat chain should close when the attack source is destroyed
+  global $CombatChain, $Stack;
+  if (IsLayerStep()) return true;
+  if (!$CombatChain->HasCurrentLink()) return false;
+  if ($Stack->FindCardID("FINALIZECHAINLINK")) return false;
+  if (IsResolutionStep()) return false;
+  return true;
+}
