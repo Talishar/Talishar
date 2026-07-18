@@ -1098,11 +1098,15 @@ class sinspeaker_gloomblade_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if ($from == "BANISH") {
-      MaySearchDeck($this->controller, "subtype=Aura;nameIncludes=Runechant", "MYAURAS", context:"Search your deck for a runechant to play");
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
     }
     if ($additionalCosts == "USURPED")
       AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    MaySearchDeck($this->controller, "subtype=Aura;nameIncludes=Runechant", "MYAURAS", context:"Search your deck for a runechant to play");
   }
 
   function EffectPowerModifier($param, $attached = false) {
@@ -1206,5 +1210,241 @@ class corrupt_and_conquer_red extends Card {
 
   function SpecialType() {
     return "AA";
+  }
+}
+
+class open_the_gate_to_iarathael_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "open_the_gate_to_iarathael_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+
+  function GetBanishedEffect($from, $banisher, $banishedBy) {
+    if ($from == "HAND" || $from == "DECK")
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "HITEFFECT"); //hit effect to consolidate the trigger
+  }
+}
+
+class shadowrealm_harrower_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_harrower_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "BANISH")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $combatChainState, $CCS_DamageDealt;
+    GainHealth($combatChainState[$CCS_DamageDealt], $this->controller);
+  }
+}
+
+class shadowrealm_harvester_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_harvester_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "BANISH")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
+}
+
+class shadowrealm_reaper_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_reaper_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "BANISH")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+}
+
+class unbound_by_shadow extends BaseCard {
+  function PlayAbility($from) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $from, "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target) {
+    if ($target == "BANISH")
+      PlayAura("gate_to_iarathael", $this->controller);
+  }
+}
+
+class unbound_by_shadow_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "unbound_by_shadow_red";
+    $this->controller = $controller;
+    $this->baseCard = new unbound_by_shadow($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from);
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger($target);
+  }
+}
+
+class pull_from_beyond extends BaseCard {
+  function PlayAbility() {
+    Opt($this->cardID, 2);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic($color) {
+    $deck = new Deck($this->controller);
+    $banishedCard = $deck->BanishTop();
+    if (ColorContains($banishedCard, $color, $this->controller))
+      PlayAura("gate_to_iarathael", $this->controller);
+  }
+}
+
+class pull_from_beyond_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "pull_from_beyond_red";
+    $this->controller = $controller;
+    $this->baseCard = new pull_from_beyond($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic(1);
+  }
+}
+
+class pull_from_beyond_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "pull_from_beyond_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new pull_from_beyond($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic(2);
+  }
+}
+
+class pull_from_beyond_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "pull_from_beyond_blue";
+    $this->controller = $controller;
+    $this->baseCard = new pull_from_beyond($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic(3);
+  }
+}
+
+class blasmophet_insatiable_hunger extends Card {
+  function __construct($controller) {
+    $this->cardID = "blasmophet_insatiable_hunger";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PermanentEndPhaseAbility($index) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "MZInd", context:"Banish a card from your hand (or pass)", may:true, subsequent:0);
+    Await($this->controller, "MZBanish");
+    Await($this->controller, "MZRemove", final:true);
+    Await($this->controller, $this->cardID, index:$index, subsequent:0, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $CS_NumBloodDebtBanished;
+    $index = $dqVars["index"];
+    $AllyCard = new AllyCard($index, $this->controller);
+    if (GetClassState($this->controller, $CS_NumBloodDebtBanished) == 0)
+      $AllyCard->Destroy();
+  }
+
+  function StartTurnAbility($index) { // give the once per turn ability to play from banish
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function OppStartTurnAbility($index) { // give the once per turn ability to play from banish
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EntersArenaAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 }

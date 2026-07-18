@@ -202,7 +202,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($mod == "spew_shadow_red" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("spew_shadow_red", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if (CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      if (!PlayableFromBanish($cardID, $mod, true, index:$index)) SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
+      if (!PlayableFromBanish($cardID, $mod, true, index:$index)) {
+        $found = SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
+        if (!$found)
+          SearchCurrentTurnEffects("blasmophet_insatiable_hunger", $currentPlayer, true);
+      }
       if (str_contains($mod, "shadowrealm_horror_red")) {
         $currentPlayerBanish = new Banish($currentPlayer);
         $currentPlayerBanish->UnsetBanishModifier($mod);

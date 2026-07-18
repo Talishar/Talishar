@@ -813,4 +813,8 @@ class Card {
   function DefenderPermanentEndPhaseAbility($index) {
     return;
   }
+
+  function GetBanishedEffect($from, $banisher, $banishedBy) {
+    return;
+  }
 }

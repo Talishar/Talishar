@@ -333,7 +333,7 @@ function StartTurnAbilities()
   ArsenalStartTurnAbilities();
   DefCharacterStartTurnAbilities();
   AuraStartTurnAbilities();
-  AllyStartTurnAbilities($mainPlayer);
+  AllyStartTurnAbilities();
   LandmarkStartTurnAbilities();
 
   $mainItems = &GetItems($mainPlayer);

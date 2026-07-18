@@ -17,7 +17,7 @@ function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = 
 
 function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from = "", $banishedBy = "", $banisher = "-", $created = false)
 {
-  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext;
+  global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext, $CS_NumBloodDebtBanished;
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
@@ -76,6 +76,8 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     }
   if ($isFaceDown) return $rv;
   //Do additional effects
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->GetBanishedEffect($from, $banisher, $banishedBy);
   if ($cardID == "slithering_shadowpede_red" && $from == "HAND" && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
   if (($mod == "BOOST" || $from == "DECK")
   && str_starts_with($cardID, 'back_alley_breakline_')
@@ -101,6 +103,8 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if(TalentContains($cardID, "EARTH", $player)) {
     ++$classState[$CS_NumEarthBanished];
   }
+  if (HasBloodDebt($cardID) && ($banisher == $player || $banisher == "-"))
+    IncrementClassState($player, $CS_NumBloodDebtBanished);
   if (TypeContains($cardID, "E", $player) && ($from == "EQUIP" || $from == "CC")) {
     $charIndex = FindCharacterIndex($player, $cardID);
     if ($charIndex == -1) {

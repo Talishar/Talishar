@@ -182,20 +182,30 @@ function AllyDestroyedAbility($player, $index)
   if (HasWard($cardID, $player)) WardPoppedAbility($player, $cardID);
 }
 
-function AllyStartTurnAbilities($player)
+function AllyStartTurnAbilities()
 {
-  $allies = &GetAllies($player);
+  global $mainPlayer, $defPlayer;
+  $allies = &GetAllies($mainPlayer);
   $countAllies = count($allies);
   $allyPieces = AllyPieces();
   for ($i = 0; $i < $countAllies; $i += $allyPieces) {
+    $card = GetClass($allies[$i], $mainPlayer);
+    if ($card != "-") $card->StartTurnAbility($i);
     switch ($allies[$i]) {
       case "ouvia":
         WriteLog(CardLink($allies[$i], $allies[$i]) . " lets you transform up to 1 ash into an ".CardLink("aether_ashwing", "aether_ashwing").".");
-        Transform($player, "Ash", "aether_ashwing", true);
+        Transform($mainPlayer, "Ash", "aether_ashwing", true);
         break;
       default:
         break;
     }
+  }
+  $allies = &GetAllies($defPlayer);
+  $countAllies = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i < $countAllies; $i += $allyPieces) {
+    $card = GetClass($allies[$i], $defPlayer);
+    if ($card != "-") $card->OppStartTurnAbility($i);
   }
 }
 

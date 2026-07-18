@@ -173,6 +173,13 @@ function MZRemoveAwait($player) {
   return MZRemove($player, $MZIndex, $parameter);
 }
 
+function MZBanishAwait($player) {
+  global $dqVars;
+  $MZIndex = $dqVars["MZIndex"];
+  $parameter = $dqVars["parameter"] ?? "-";
+  return MZBanish($player, $parameter, $MZIndex);
+}
+
 function SetLayerTargetAwait($player) {
   global $dqVars, $Stack;
   $cardID = $dqVars["layerID"] ?? "-";
