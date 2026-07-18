@@ -1256,6 +1256,10 @@ class corrupt_and_conquer_red extends Card {
     $Arsenal->BanishAll($this->controller);
   }
 
+  function SpecialCost() {
+    return 2;
+  }
+
   function SpecialPower() {
     return 6;
   }
@@ -1266,6 +1270,18 @@ class corrupt_and_conquer_red extends Card {
 
   function SpecialType() {
     return "AA";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Corrupt and Conquer";
   }
 }
 
@@ -1290,6 +1306,30 @@ class open_the_gate_to_iarathael_red extends Card {
   function GetBanishedEffect($from, $banisher, $banishedBy) {
     if ($from == "HAND" || $from == "DECK")
       AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "HITEFFECT"); //hit effect to consolidate the trigger
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Open the Gate to I'Arathael";
   }
 }
 
@@ -1321,6 +1361,38 @@ class shadowrealm_harrower_blue extends Card {
     global $combatChainState, $CCS_DamageDealt;
     GainHealth($combatChainState[$CCS_DamageDealt], $this->controller);
   }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Shadowrealm Harrower";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
 }
 
 class shadowrealm_harvester_red extends Card {
@@ -1346,6 +1418,38 @@ class shadowrealm_harvester_red extends Card {
   function DoesEffectGrantOverpower() {
     return true;
   }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Shadowrealm Harvester";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
 }
 
 class shadowrealm_reaper_yellow extends Card {
@@ -1370,6 +1474,38 @@ class shadowrealm_reaper_yellow extends Card {
 
   function CurrentEffectGrantsGoAgain($param) {
     return true;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Shadowrealm Reaper";
+  }
+
+  function SpecialPitch() {
+    return 2;
   }
 }
 
@@ -1398,6 +1534,30 @@ class unbound_by_shadow_red extends Card {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     $this->baseCard->ProcessAttackTrigger($target);
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Unbound by Shadow";
   }
 }
 
@@ -1430,6 +1590,26 @@ class pull_from_beyond_red extends Card {
   function SpecificLogic() {
     $this->baseCard->SpecificLogic(1);
   }
+
+  function SpecialName() {
+    return "Pull from Beyond";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
 }
 
 class pull_from_beyond_yellow extends Card {
@@ -1447,6 +1627,30 @@ class pull_from_beyond_yellow extends Card {
   function SpecificLogic() {
     $this->baseCard->SpecificLogic(2);
   }
+
+  function SpecialName() {
+    return "Pull from Beyond";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
 }
 
 class pull_from_beyond_blue extends Card {
@@ -1463,6 +1667,30 @@ class pull_from_beyond_blue extends Card {
 
   function SpecificLogic() {
     $this->baseCard->SpecificLogic(3);
+  }
+
+  function SpecialName() {
+    return "Pull from Beyond";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function HasGoAgain($from) {
+    return true;
   }
 }
 
