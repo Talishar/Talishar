@@ -94,20 +94,21 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   $otherPlayer = 3 - $player;
   $owner = (($allies[$index+14] ?? "") == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
-  RemoveAllyEffects($player, $uniqueID);
+  $cardID = $allies[$index];
+  RemoveAllyEffects($player, $cardID, $uniqueID);
   if (IsSpecificAllyAttacking($player, $index)) {
     CloseCombatChain();
   }
-  $cardID = $allies[$index];
   AllyAddGraveyard($owner, $cardID, toBanished:$toBanished);
   AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished);
   array_splice($allies, $index, $allyPieces);
   return $cardID;
 }
 
-function RemoveAllyEffects($player, $uniqueID)
+function RemoveAllyEffects($player, $cardID, $uniqueID)
 {
   $otherPlayer = 3 - $player;
+  if ($cardID == "blasmophet_the_insatiable_hunger") SearchCurrentTurnEffects($cardID, $player, true);
   if ($uniqueID == SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, true);
 }
 
