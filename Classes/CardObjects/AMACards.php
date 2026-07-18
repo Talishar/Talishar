@@ -203,16 +203,50 @@ class dig_for_souls_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		AddDecisionQueue("FINDINDICES", $this->controller, "DECKTOPXREMOVE,$resourcesPaid");
-		AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
-		AddDecisionQueue("CHOOSECARD", $this->controller, "<-", 1);
-		AddDecisionQueue("ADDDISCARD", $this->controller, "DECK");
-		AddDecisionQueue("OP", $this->controller, "REMOVECARD", 1);
-		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Put the rest on the bottom", 1);
+		$Deck = new Deck($this->controller);
+		$cards = $Deck->Top(true, $resourcesPaid);
+		$inds = [];
+		$allInds = [];
+		foreach (explode(",", $cards) as $card) {
+			if (SubtypeContains($card, "Zombie")) $inds[] = "CARDID-$card";
+			$allInds[] = "CARDID-$card";
+		}
+		$inds = implode(",", $inds);
+		$allInds = implode(",", $allInds);
+		Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a Zombie to put in the graveyard", subsequent:0);
+		Await($this->controller, $this->cardID, inds:$allInds);
 		AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+		Await($this->controller, final:true);
+
+		AddDecisionQueue("ELSE", $this->controller, "-");
+		Await($this->controller, $this->cardID, else:true, inds:$allInds);
+		AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+		Await($this->controller, final:true);
+
 		AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
   }
+
+	function SpecificLogic() {
+		global $dqVars;
+		$else = $dqVars["else"] ?? false;
+		$inds = explode(",", $dqVars["inds"]);
+		if ($else)
+			$choice = "-";
+		else {
+			$choice = $dqVars["choice"];
+			$chosenCard = explode("-", $choice)[1];
+			AddGraveyard($chosenCard, $this->controller, "DECK");
+		}
+		$newInds = [];
+		foreach($inds as $ind) {
+			if ($ind == $choice)
+				$choice = "-";
+			else
+				$newInds[] = explode("-", $ind)[1];
+		}
+		return implode(",", $newInds);
+	}
 
 	function DynamicCost() {
     return implode(",", range(0, 20, 1));

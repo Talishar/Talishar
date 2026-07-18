@@ -13,14 +13,14 @@
 //   else AddDecisionQueue("SETDQVAR", $player, implode("|", $returnNames), $subsequent);
 // }
 
-function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, $final=false, $prepend=false, ...$args) {
+function Await($player, $function="",  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, $final=false, $prepend=false, ...$args) {
   if (!$prepend) {
     AddDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
     foreach ($args as $key => $value) {
       AddDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
       AddDecisionQueue("SETDQVAR", $player, $key, $subsequent);
     }
-    AddDecisionQueue("AWAIT", $player, $function, $subsequent);
+    if ($function != "") AddDecisionQueue("AWAIT", $player, $function, $subsequent);
     if ($final) {
       AddDecisionQueue("CLEARDQVARS", $player, "-");
       AddDecisionQueue("ELSE", $player, "-");
@@ -35,7 +35,7 @@ function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="L
       PrependDecisionQueue("CLEARDQVARS", $player, "-");
     }
     else PrependDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
-    PrependDecisionQueue("AWAIT", $player, $function, $subsequent);
+    if ($function != "") PrependDecisionQueue("AWAIT", $player, $function, $subsequent);
     foreach ($args as $key => $value) {
       PrependDecisionQueue("SETDQVAR", $player, $key, $subsequent);
       PrependDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
