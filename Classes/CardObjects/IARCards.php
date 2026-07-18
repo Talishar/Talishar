@@ -1108,8 +1108,8 @@ class blood_harvest extends Card {
       AddDecisionQueue("SETABILITYTYPEATTACK", $this->controller, $this->cardID);
     }
     AddDecisionQueue("NOTEQUALPASS", $this->controller, "Ability");
-    AddDecisionQueue("PASSPARAMETER", $this->controller, "MYHAND-$index", 1);
-    AddDecisionQueue("MZBANISH", $this->controller, "HAND", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("BANISHCARD", $this->controller, "HAND", 1);
     AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
   }
 
