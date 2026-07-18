@@ -821,4 +821,8 @@ class Card {
   function AwakenAbility() {
     return;
   }
+
+  function IsUnique() {
+    return false;
+  }
 }

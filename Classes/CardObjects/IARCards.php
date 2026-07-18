@@ -1457,8 +1457,9 @@ class blasmophet_the_insatiable_hunger extends Card {
   }
 
   function PermanentEndPhaseAbility($index) {
+    // I'm assuming right now that there's no reason to resolve this after blood debt
     Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", "MZInd", context:"Banish a card from your hand (or pass)", may:true, subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Banish a card from your hand (or pass)", may:true, subsequent:0);
     Await($this->controller, "MZBanish");
     Await($this->controller, "MZRemove", final:true);
     Await($this->controller, $this->cardID, index:$index, subsequent:0, final:true);
@@ -1468,8 +1469,10 @@ class blasmophet_the_insatiable_hunger extends Card {
     global $dqVars, $CS_NumBloodDebtBanished;
     $index = $dqVars["index"];
     $AllyCard = new AllyCard($index, $this->controller);
-    if (GetClassState($this->controller, $CS_NumBloodDebtBanished) == 0)
+    if (GetClassState($this->controller, $CS_NumBloodDebtBanished) == 0) {
+      WriteLog(CardLink($this->cardID) . " is starving and has left to find food elsewhere");
       $AllyCard->Destroy();
+    }
   }
 
   function StartTurnAbility($index) { // give the once per turn ability to play from banish
@@ -1482,6 +1485,26 @@ class blasmophet_the_insatiable_hunger extends Card {
 
   function EntersArenaAbility() {
     AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function IsUnique() {
+    return true;
+  }
+
+  function SpecialSubType() {
+    return "Demon,Ally";
+  }
+
+  function SpecialType() {
+    return "T";
+  }
+
+  function SpecialHealth() {
+    return 6;
+  }
+
+  function SpecialName() {
+    return "Blasmophet the Insatiable Hunger";
   }
 }
 
@@ -1529,5 +1552,53 @@ class circlet_of_eternal_end extends Card {
 
   function SpecialName() {
     return "Circlet of Eternal End";
+  }
+}
+
+class beckoning_hunger extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    $Deck = new Deck($this->controller);
+    $Deck->BanishTop();
+  }
+
+  function AddOnHitTrigger($check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect() {
+    PlayAlly("blasmophet_the_insatiable_hunger", $this->controller);
+  }
+}
+
+class beckoning_hunger_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "beckoning_hunger_red";
+    $this->controller = $controller;
+    $this->baseCard = new beckoning_hunger($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  function SpecialPower() {
+    return 7;
   }
 }

@@ -205,7 +205,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!PlayableFromBanish($cardID, $mod, true, index:$index)) {
         $found = SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
         if (!$found)
-          SearchCurrentTurnEffects("blasmophet_insatiable_hunger", $currentPlayer, true);
+          SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $currentPlayer, true);
       }
       if (str_contains($mod, "shadowrealm_horror_red")) {
         $currentPlayerBanish = new Banish($currentPlayer);
@@ -760,6 +760,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             PutItemIntoPlayForPlayer($cardID, $playerID, number: $num, from: "MANUAL");
           elseif (SubtypeContains($cardID, "Landmark"))
             PlayLandmark($cardID, $playerID, "MANUAL");
+          elseif (SubtypeContains($cardID, "Ally"))
+            PlayAlly($cardID, $playerID, from:"MANUAL");
           else
             PutPermanentIntoPlay($playerID, $cardID, from: "MANUAL");
         }

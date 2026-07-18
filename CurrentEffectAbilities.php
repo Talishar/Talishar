@@ -2500,7 +2500,7 @@ function BeginEndPhaseEffectTriggers()
         break;
     }
   }
-  if (!IsImmuneToBloodDebt($mainPlayer) && $numBloodDebt > 0) AddLayer("TRIGGER", $mainPlayer, "BLOODDEBT");
+  if ($numBloodDebt > 0) AddLayer("TRIGGER", $mainPlayer, "BLOODDEBT", additionalCosts:$numBloodDebt);
 }
 
 function ActivateAbilityEffects()

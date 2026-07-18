@@ -26,6 +26,17 @@ class Allies {
     return new AllyCard(-1, $this->player);
   }
 
+  public function FindCardID($id): AllyCard {
+    $count = count($this->allies);
+    if ($count === 0) return new AllyCard(-1, $this->player);
+    $allyPieces = AllyPieces();
+    $allies = $this->allies;
+    for ($i = 0; $i < $count; $i += $allyPieces) {
+      if ($allies[$i] == $id) return new AllyCard($i, $this->player);
+    }
+    return new AllyCard(-1, $this->player);
+  }
+
   public function NumAllies(): int {
     return intdiv(count($this->allies), AllyPieces());
   }

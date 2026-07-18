@@ -2289,7 +2289,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "metacarpus_node"), 1);
         break;
       case "BLOODDEBT":
-        $numBloodDebt = SearchCount(SearchBanish($mainPlayer, "", "", -1, -1, "", "", true));
+        if (IsImmuneToBloodDebt($mainPlayer)) return;
+        $numBloodDebt = $additionalCosts;
         $totalBloodDebt = $numBloodDebt;
         $char = &GetPlayerCharacter($mainPlayer);
         if ($char[0] == "blasmophet_levia_consumed" && +$char[1] == 2) {
