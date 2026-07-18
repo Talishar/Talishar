@@ -3057,6 +3057,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(CardLink($cardID, $cardID) . " awakened into " . CardLink($newCardID, $newCardID));
       RemovePermanent($player, $mzArr[1]);
       PlayAlly($newCardID, $player, from:"MYPERM");
+      $card = GetClass($newCardID, $player);
+      if ($card != "-") $card->AwakenAbility();
       return "1";
     case "PROCESSDAMAGEPREVENTION":
       $mzIndex = explode("-", $lastResult, 2);

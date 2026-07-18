@@ -1374,6 +1374,7 @@ function UndestroyHook($player)
 
 function hasUnlimited($cardID)
 {
+  if ($cardID == "figment_of_hope_yellow") return true; // temporary
   return GeneratedHasUnlimited($cardID);
 }
 

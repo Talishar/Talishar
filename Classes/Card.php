@@ -817,4 +817,8 @@ class Card {
   function GetBanishedEffect($from, $banisher, $banishedBy) {
     return;
   }
+
+  function AwakenAbility() {
+    return;
+  }
 }

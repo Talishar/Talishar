@@ -954,6 +954,18 @@ class figment_of_hope_yellow extends Card {
   function SpecialType() {
     return "I";
   }
+
+  function SpecialName() {
+    return "Figment of Hope";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
 }
 
 class suraya_archangel_of_endless_hope extends Card {
@@ -964,6 +976,22 @@ class suraya_archangel_of_endless_hope extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
+  }
+
+  function AbilityCost() {
+    return 2;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function AwakenAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    GainHealth(1, $this->controller);
   }
 
   function Frontside() {
@@ -982,12 +1010,20 @@ class suraya_archangel_of_endless_hope extends Card {
     return 4;
   }
 
-  function AbilityCost() {
-    return 2;
+  function SpecialName() {
+    return "Suraya, Archangel of Endless Hope";
   }
 
-  function AbilityType($index = -1, $from = '-') {
-    return "AA";
+  function SpecialHealth() {
+    return 4;
+  }
+
+  function WardAmount($index) {
+    return 4;
+  }
+
+  function HasWard() {
+    return true;
   }
 }
 
@@ -1410,9 +1446,9 @@ class pull_from_beyond_blue extends Card {
   }
 }
 
-class blasmophet_insatiable_hunger extends Card {
+class blasmophet_the_insatiable_hunger extends Card {
   function __construct($controller) {
-    $this->cardID = "blasmophet_insatiable_hunger";
+    $this->cardID = "blasmophet_the_insatiable_hunger";
     $this->controller = $controller;
   }
   
@@ -1464,7 +1500,7 @@ class circlet_of_eternal_end extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    Await($this->controller, "MultiZoneIndices", "MZInd", search:"THEIRBANISH", subsequent:0);
+    Await($this->controller, "MultiZoneIndices", "indices", search:"THEIRBANISH", subsequent:0);
     Await($this->controller, "ChooseMultiZone", "choice", context:"Turn a card in the attacker's banish face down", may:true);
     Await($this->controller, $this->cardID, final:true);
   }
@@ -1477,5 +1513,21 @@ class circlet_of_eternal_end extends Card {
       $BanishCard = new BanishCard($mainPlayer, $ind);
       $BanishCard->SetModifier("DOWN");
     }
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Head";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Circlet of Eternal End";
   }
 }
