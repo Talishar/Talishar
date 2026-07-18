@@ -195,3 +195,70 @@ class undead_grasp extends Card {
 		return 1;
 	}
 }
+
+class dig_for_souls_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "dig_for_souls_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddDecisionQueue("FINDINDICES", $this->controller, "DECKTOPXREMOVE,$resourcesPaid");
+		AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+		AddDecisionQueue("CHOOSECARD", $this->controller, "<-", 1);
+		AddDecisionQueue("ADDDISCARD", $this->controller, "DECK");
+		AddDecisionQueue("OP", $this->controller, "REMOVECARD", 1);
+		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Put the rest on the bottom", 1);
+		AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function DynamicCost() {
+    return implode(",", range(0, 20, 1));
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Zombie");
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $CombatChain;
+		$Allies = new Allies($this->controller);
+		$Ally = $Allies->FindCardUID($CombatChain->AttackCard()->OriginUniqueID());
+		$Ally->Destroy();
+	}
+
+	function SpecialName() {
+		return "Dig for Souls";
+	}
+
+	function SpecialBlock() {
+		return 3;
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+}
