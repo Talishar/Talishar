@@ -1313,7 +1313,8 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
 {
   global $combatChain;
   $piecesArr = [];
-  $exclTypeSet = $exclCardTypes !== "" ? array_flip(explode(",", $exclCardTypes)) : [];
+  $exclCardTypes = explode(",", $exclCardTypes) ?? [];
+  // $exclTypeSet = $exclCardTypes !== "" ? array_flip() : [];
   $exclCardSubTypeArray = $exclCardSubTypes !== "" ? explode(",", $exclCardSubTypes) : [];
   $exclCardSubTypeCount = count($exclCardSubTypeArray);
 
@@ -1326,7 +1327,9 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
     if ($cardType != "" && !TypeContains($combatChain[$i], $cardType, $playerID)) continue;
     if ($subType != "" && !SubtypeContains($combatChain[$i], $subType)) continue;
     if ($nameContains != "" && !CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true)) continue;
-    if (isset($exclTypeSet[$thisType])) continue;
+    foreach ($exclCardTypes as $exclCardType) {
+      if (TypeContains($combatChain[$i], $exclCardType)) continue 2;
+    }
     $excluded = false;
     for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
       if (SubtypeContains($combatChain[$i], $exclCardSubTypeArray[$k])) { $excluded = true; break; }
