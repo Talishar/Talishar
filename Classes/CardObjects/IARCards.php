@@ -1243,6 +1243,10 @@ class demonbound_gloomblade extends BaseCard {
   function CombatEffectActive() {
     return true;
   }
+
+  function PayAdditionalCosts($from) {
+    Usurp($this->cardID, $this->controller, $from);
+  }
 }
 
 class demonbound_gloomblade_red extends Card {
@@ -1267,6 +1271,10 @@ class demonbound_gloomblade_red extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return $this->baseCard->CombatEffectActive();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts($from);
   }
 
   function HasBloodDebt() {
