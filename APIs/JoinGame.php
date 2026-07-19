@@ -1082,6 +1082,7 @@ function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modul
   
   // uncomment on 4/1
   // $id = $id == "titanium_bauble_blue" && !str_contains($format, "comp") ? "fangs_a_lot_blue" : $id;
+  $id = $character == "viserai_the_forsaken" && $id == "talishar_the_lost_prince" ? "seven_sin_nebula" : $id;
   $cardName = CardName($id);
   if ($cardName == "" || isUnimplemented($id)) {
       echo "$id - $cardName";
