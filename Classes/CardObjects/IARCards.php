@@ -1708,13 +1708,25 @@ class blasmophet_the_insatiable_hunger extends Card {
     return "";
   }
 
-  function PermanentEndPhaseAbility($index) {
+  private
+  function EndPhase($index) {
     // I'm assuming right now that there's no reason to resolve this after blood debt
-    Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Banish a card from your hand (or pass)", may:true, subsequent:0);
-    Await($this->controller, "MZBanish");
-    Await($this->controller, "MZRemove", final:true);
-    Await($this->controller, $this->cardID, index:$index, subsequent:0, final:true);
+    $Hand = new Hand($this->controller);
+    if ($Hand->NumCards() != 0) {
+      Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
+      Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Banish a card from your hand (or pass)", may:true, subsequent:0);
+      Await($this->controller, "MZBanish");
+      Await($this->controller, "MZRemove", final:true);
+      Await($this->controller, $this->cardID, index:$index, subsequent:0, final:true);
+    }
+  }
+
+  function PermanentEndPhaseAbility($index) {
+    $this->EndPhase($index);
+  }
+
+  function DefenderPermanentEndPhaseAbility($index) {
+    $this->EndPhase($index);
   }
 
   function SpecificLogic() {

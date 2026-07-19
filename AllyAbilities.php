@@ -451,7 +451,7 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
 }
 
 function AllyBeginEndPhaseTriggers() {
-  global $mainPlayer;
+  global $mainPlayer, $defPlayer;
   $Allies = new Allies($mainPlayer);
   for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
     $AllyCard = $Allies->Card($i, true);
@@ -460,6 +460,17 @@ function AllyBeginEndPhaseTriggers() {
       if ($card->HasDecay())
         AddLayer("TRIGGER", $mainPlayer, "DECAY", $AllyCard->UniqueID());
       $card->PermanentEndPhaseAbility($i);
+    }
+  }
+
+  $Allies = new Allies($defPlayer);
+  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+    $AllyCard = $Allies->Card($i, true);
+    $card = GetClass($AllyCard->CardID(), $defPlayer);
+    if ($card != "-") {
+      if ($card->HasDecay())
+        AddLayer("TRIGGER", $defPlayer, "DECAY", $AllyCard->UniqueID());
+      $card->DefenderPermanentEndPhaseAbility($i);
     }
   }
 }
