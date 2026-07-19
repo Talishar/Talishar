@@ -108,6 +108,10 @@ class malice extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function SpecialBlock() {
+    return -2;
+  }
 }
 
 class malice_domina_of_the_dead extends Card {
@@ -165,6 +169,10 @@ class malice_domina_of_the_dead extends Card {
 
   function SpecialHealth() {
     return 40;
+  }
+
+  function SpecialBlock() {
+    return -2;
   }
 }
 
@@ -377,6 +385,10 @@ class viserai_the_forsaken extends Card {
   function SpecialType() {
     return "C";
   }
+
+  function SpecialBlock() {
+    return -2;
+  }
 }
 
 class viserai_between_worlds extends Card {
@@ -408,6 +420,10 @@ class viserai_between_worlds extends Card {
 
   function SpecialType() {
     return "C";
+  }
+
+  function SpecialBlock() {
+    return -2;
   }
 }
 
@@ -460,6 +476,10 @@ class viserai_usurper extends Card {
 
   function SpecialSubType() {
     return "Demon";
+  }
+
+  function SpecialBlock() {
+    return -2;
   }
 }
 
@@ -1184,6 +1204,30 @@ class sinspeaker_gloomblade_red extends Card {
   function HasBloodDebt() {
     return true;
   }
+
+  function SpecialName() {
+    return "Demonbound Gloomblade";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
 }
 
 class demonbound_gloomblade extends BaseCard {
@@ -1227,6 +1271,30 @@ class demonbound_gloomblade_red extends Card {
 
   function HasBloodDebt() {
     return true;
+  }
+
+  function SpecialName() {
+    return "Demonbound Gloomblade";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 3;
   }
 }
 
@@ -2074,5 +2142,67 @@ class seven_sin_nebula extends Card {
 
   function SpecialSubType() {
     return "Sword";
+  }
+}
+
+class become_the_shadow_lord_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "become_the_shadow_lord_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $context = "Banish a card from your hand";
+    $hand = new Hand($this->controller);
+    if ($hand->NumCards() > 0) {
+      Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
+      Await($this->controller, "CHOOSEMULTIZONE", "choice", context:$context);
+      Await($this->controller, $this->cardID, final:true);
+    }
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"];
+    $ind = explode("-", $choice)[1] ?? -1;
+    if ($ind != -1) {
+      $Hand = new Hand($this->controller);
+      $cardID = $Hand->Remove($ind);
+      WriteLog(CardLink($cardID) . " was sacrificed to " . CardLink($this->cardID) . "!");
+      BanishCardForPlayer($cardID, $this->controller, "HAND");
+      if (ClassContains($cardID, "RUNEBLADE", $this->controller))
+        PlayAura("runechant", $this->controller, effectSource:$this->cardID);
+      if (TalentContains($cardID, "SHADOW", $this->controller))
+        PlayAura("gate_to_iarathael", $this->controller, effectSource:$this->cardID);
+    }
+  }
+
+  function SpecialName() {
+    return "Become the Shadow Lord";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function HasGoAgain($from) {
+    return true;
   }
 }
