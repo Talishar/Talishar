@@ -468,8 +468,6 @@ function AllyBeginEndPhaseTriggers() {
     $AllyCard = $Allies->Card($i, true);
     $card = GetClass($AllyCard->CardID(), $defPlayer);
     if ($card != "-") {
-      if ($card->HasDecay())
-        AddLayer("TRIGGER", $defPlayer, "DECAY", $AllyCard->UniqueID());
       $card->DefenderPermanentEndPhaseAbility($i);
     }
   }
