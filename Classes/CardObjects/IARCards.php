@@ -1080,6 +1080,10 @@ class soul_of_existence_purple extends Card {
   function SpecialBlock() {
     return -2;
   }
+
+  function SpecialType() {
+    return "R";
+  }
 }
 
 class blood_harvest extends Card {
