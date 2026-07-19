@@ -1206,7 +1206,7 @@ class sinspeaker_gloomblade_red extends Card {
   }
 
   function SpecialName() {
-    return "Demonbound Gloomblade";
+    return "Sinspeaker Gloomblade";
   }
 
   function SpecialType() {
