@@ -439,7 +439,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
       $formOptions->caption = "Submit";
       $formOptions->mode = 19;
       $optionsCount = count($options);
-      $formOptions->maxNo = $optionsCount;
+      $formOptions->maxNo = min($maxNumber, $optionsCount);
+      $formOptions->minNo = min(intval($minNumber), $formOptions->maxNo);
       $playerInputPopup->formOptions = $formOptions;
 
       $choiceOptions = "checkbox";
