@@ -1665,7 +1665,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer, $CCS_NumUsedInReactions;
-  global $CombatChain, $combatChain, $layers;
+  global $CombatChain, $combatChain, $layers, $CCS_CachedTotalPower;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
   $myArsenal = &GetArsenal($player);
@@ -1820,13 +1820,13 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     && $player == $defPlayer
     && ($abilityType == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
     $restriction = "Exude Confidance";
-    $exudeAttack = PowerValue("exude_confidence_red", $mainPlayer, "CC");
+    $exudeAttack = $combatChainState[$CCS_CachedTotalPower];
     $countCombatChain = count($combatChain);
     $combatChainPieces = CombatChainPieces();
     for ($i = $combatChainPieces; $i < $countCombatChain; $i += $combatChainPieces) {
       if (DelimStringContains(CardType($combatChain[$i]), "AA")) {
         $powerValue = PowerValue($combatChain[$i], $defPlayer, "CC");
-        if ($powerValue + $combatChain[$i + 5] >= $exudeAttack + $combatChain[5]) {
+        if ($powerValue + $combatChain[$i + 5] >= $exudeAttack) {
           $restriction = "";
         }
       }
