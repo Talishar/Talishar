@@ -60,6 +60,7 @@ $myTimeIdx   = $playerID;
 $oppTimeIdx  = $otherP;
 $oppStatIdx  = $otherP + 2;
 $kickPlayerTwo = false;
+$sideboardWasReset = false;
 
 $cacheArr = ReadCacheArray($gameName);
 if ($cacheArr) {
@@ -93,10 +94,6 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 
   if ($oppStatus !== "-1" && $oppLastTime !== "") {
     if (($currentTime - (int)$oppLastTime) > 30000 && $oppStatus === "0") {
-      $kickSignal = $cacheArr[16] ?? "";
-      if ($otherP != 2 || $kickSignal !== "kicked") {
-        WriteLog("🔌 Your opponent has disconnected.", path: "../");
-      }
       $cacheArr[$oppStatIdx] = "-1";
       if ($otherP == 2) $cacheArr[$otherP + 5] = "";
       WriteCache($gameName, implode("!", $cacheArr));
@@ -120,6 +117,21 @@ if ($kickPlayerTwo) {
   // $playerID is the polling player, so the one who disconnected is the other one.
   $disconnectedPlayer = ($playerID == 1 ? 2 : 1);
   $kickSignal = GetCachePiece($gameName, 17);
+  $wasChoosingSideboard = $gameStatus >= $MGS_P2Sideboard && $gameStatus < $MGS_GameStarted;
+
+  if ($wasChoosingSideboard) {
+    $originalDeck = "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt";
+    $activeDeck = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+    if (file_exists($originalDeck)) {
+      copy($originalDeck, $activeDeck);
+      $sideboardWasReset = true;
+    }
+  }
+
+  if ($disconnectedPlayer != 2 || $kickSignal !== "kicked") {
+    WriteLog($wasChoosingSideboard ? "Your opponent has left the lobby." : "🔌 Your opponent has disconnected.", path: "../");
+  }
+
   if ($disconnectedPlayer == 2 && $kickSignal !== "kicked") {
     $numP2Disconnects = IncrementCachePiece($gameName, 11);
     if ($numP2Disconnects >= 3) {
@@ -150,6 +162,7 @@ if ($kickPlayerTwo) {
 }
 
 $response = new stdClass();
+$response->sideboardWasReset = $sideboardWasReset;
 
 if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   // Stale-state: cache hasn't advanced beyond what client already has.
