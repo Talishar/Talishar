@@ -911,19 +911,21 @@ class rake_back_blue extends Card {
 	function SpecificLogic() {
 		global $dqVars;
 		$Card = MZIndexToObject($this->controller, $dqVars["MZInd"]);
-		$cardSubtype = CardSubType($Card->CardID());
-		$subType = "-";
-		if (str_contains($cardSubtype, "Head"))
-			$subType = "Head";
-		elseif (str_contains($cardSubtype, "Chest"))
-			$subType = "Chest";
-		elseif (str_contains($cardSubtype, "Legs"))
-			$subType = "Legs";
-		elseif (str_contains($cardSubtype, "Arms"))
-			$subType = "Arms";
-		if (!SearchCharacterAliveSubtype($this->controller, $subType)) {
-			EquipEquipment($this->controller, $Card->CardID(), from:"DISCARD");
-			$Card->Remove();
+		if ($Card != "") {
+			$cardSubtype = CardSubType($Card->CardID());
+			$subType = "-";
+			if (str_contains($cardSubtype, "Head"))
+				$subType = "Head";
+			elseif (str_contains($cardSubtype, "Chest"))
+				$subType = "Chest";
+			elseif (str_contains($cardSubtype, "Legs"))
+				$subType = "Legs";
+			elseif (str_contains($cardSubtype, "Arms"))
+				$subType = "Arms";
+			if (!SearchCharacterAliveSubtype($this->controller, $subType)) {
+				EquipEquipment($this->controller, $Card->CardID(), from:"DISCARD");
+				$Card->Remove();
+			}
 		}
 	}
 
