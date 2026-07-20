@@ -234,10 +234,10 @@ class paragon_plate extends Card {
 		$this->controller = $controller;
 	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		GainResources($this->controller, 1);
-    return "";
-  }
+		return "";
+	}
 
 	function AbilityType($index = -1, $from = '-') {
 		return "AR";
@@ -258,9 +258,11 @@ class paragon_plate extends Card {
 		global $dqVars;
 		$MZIndex = $dqVars["choice"];
 		$Attack = MZIndexToObject($this->controller, $MZIndex);
-		$Character = new PlayerCharacter($this->controller);
-		$Weapon = $Character->FindCardUID($Attack->OriginUniqueID());
-		$Weapon->AddPowerCounters(-1);
+		if ($Attack != "") {
+			$Character = new PlayerCharacter($this->controller);
+			$Weapon = $Character->FindCardUID($Attack->OriginUniqueID());
+			$Weapon->AddPowerCounters(-1);
+		}
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
