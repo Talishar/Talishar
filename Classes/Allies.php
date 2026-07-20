@@ -21,7 +21,7 @@ class Allies {
     $allyPieces = AllyPieces();
     $allies = $this->allies;
     for ($i = 0; $i < $count; $i += $allyPieces) {
-      if ($allies[$i + 5] ?? "-" == $uid) return new AllyCard($i, $this->player);
+      if (($allies[$i + 5] ?? "-") == $uid) return new AllyCard($i, $this->player);
     }
     return new AllyCard(-1, $this->player);
   }
