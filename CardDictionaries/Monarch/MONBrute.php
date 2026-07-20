@@ -92,6 +92,7 @@
     // set the banishmod to track which shadowrealm horror banished it
     if ($banishMod == "shadowrealm_horror_red") $banishMod = $layers[count($layers) - LayerPieces() + 6];
     foreach ($toBanish as $cardID) BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $banishMod);
+    WriteLog(implode(", ", array_map(fn($cardID) => CardLink($cardID, $cardID), $toBanish)) . " were banished.");
     return $BanishedIncludes6 > 3 ? 3 : $BanishedIncludes6;
   }
 
