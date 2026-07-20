@@ -139,7 +139,7 @@ class Deck {
     $valid = true;
     $format = GetCachePiece($gameName, 13);
     foreach($valCounts as $key => $value) {
-      if ($value >= 4 && hasUnlimited($key) && $format != FORMAT_SEALED && $format != FORMAT_DRAFT && $format != FORMAT_OPEN) {
+      if ($value >= 4 && !hasUnlimited($key) && $format != FORMAT_SEALED && $format != FORMAT_DRAFT && $format != FORMAT_OPEN) {
         WriteLog("A card may have been duplicated from opting! Consider undoing and trying the opt again", highlight: true);
         $valid = false;
       }
