@@ -425,6 +425,10 @@ class viserai_between_worlds extends Card {
   function SpecialBlock() {
     return -2;
   }
+
+  function SpecialSubType() {
+    return "Young";
+  }
 }
 
 class viserai_usurper extends Card {
