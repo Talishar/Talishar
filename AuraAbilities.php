@@ -125,7 +125,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if ($cardID == "fealty") IncrementClassState($player, $CS_FealtyCreated, $number);
   if ($cardID == "seismic_surge") IncrementClassState($player, $CS_SeismicSurgesCreated, $number);
   $Hero = new CharacterCard(0, $effectAgent);
-  if ($cardID == "runechant") {
+  if ($cardID == "runechant" && $number > 0) {
     IncrementClassState($effectAgent, $CS_NumRunechantsCreated, $number);
     if ($Hero->CardID() == "viserai_between_worlds" || $Hero->CardID() == "viserai_the_forsaken")
       AddLayer("TRIGGER", $effectAgent, $Hero->CardID());
