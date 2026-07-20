@@ -1325,8 +1325,14 @@ function isUntappedPrevented($MZindex, $zoneName, $player, $endStepUntap=false):
   if(SearchCurrentTurnEffects("turn_heads_blue", $player) && $MZindex == "MYCHAR-0") {
     return true;
   }
-  if (str_contains($zoneName, "CHAR")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 11] ? $untapPrevented = true : $untapPrevented = false;
-  elseif (str_contains($zoneName, "ALLY")) SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $zone[$index + 5] ? $untapPrevented = true : $untapPrevented = false;
+  if (str_contains($zoneName, "CHAR")) {
+    $uid = $zone[$index + 11] ?? "-";
+    SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $uid ? $untapPrevented = true : $untapPrevented = false;
+  }
+  elseif (str_contains($zoneName, "ALLY")) {
+    $uid = $zone[$index + 5] ?? "-";
+    SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $uid ? $untapPrevented = true : $untapPrevented = false;
+  }
   if (GetMZCard($player, $MZindex) == "havoc_wrap" && $endStepUntap) $untapPrevented = true;
   return $untapPrevented;
 }
