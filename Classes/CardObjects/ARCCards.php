@@ -91,17 +91,88 @@
 // }
 
 
-// class aether_sink_yellow extends Card {
+class aether_sink_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "aether_sink_yellow";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "aether_sink_yellow";
+		$this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if ($from == "PLAY") {
+			$Items = new Items($this->controller);
+			$ItemCard = $Items->FindCardUID($target);
+			$abilityType = GetResolvedAbilityType($this->cardID, $from, $this->controller);
+			if ($abilityType == "I")
+				AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID: $target);
+			elseif ($ItemCard->NumCounters() == 0)
+				$ItemCard->AddCounters(1);
+		}
+		return "";
+	}
+
+	function HasGoAgain($from) {
+		return $from == "PLAY";
+	}
+
+	function AbilityHasGoAgain($from) {
+		if ($from == "PLAY") {
+			return GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A";
+		}
+		return false;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		global $Stack;
+		if ($from == "PLAY") {
+			$ItemCard = new ItemCard($index, $this->controller);
+			$abilityType = GetResolvedAbilityType($this->cardID, $from, $this->controller);
+			if ($abilityType == "I")
+				$ItemCard->AddCounters(-1);
+			$Layer = $Stack->TopLayer($this->cardID);
+			$Layer->AddTarget($ItemCard->UniqueID());
+			$ItemCard->AddUses(1); // not once per turn
+		}
+	}
+
+	function AbilityCost() {
+		return GetResolvedAbilityType($this->cardID, "PLAY") == "A" ? 1 : 0;
+	}
+
+	function GetAbilityTypes($index = -1, $from = '-') {
+		return ($from != "PLAY") ? "" : "I,A";
+	}
+
+	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
+		global $mainPlayer, $actionPoints;
+		$names = ["-", "-"];
+		$ItemCard = new ItemCard($index, $this->controller);
+		if ($ItemCard->NumCounters() > 0) $names[0] = "Gain Arcane Barrier";
+		if ($this->controller == $mainPlayer && $actionPoints > 0) $names[1] = "Add Steam";
+		$ret = implode(",", $names);
+		return $ret;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $mainPlayer, $turn, $actionPoints;
+		if ($from != "PLAY") return false;
+		$ItemCard = new ItemCard($index, $this->controller);
+		if ($ItemCard->NumCounters() > 0) return false;
+		if ($this->controller != $mainPlayer || $turn[0] != "M" || $actionPoints == 0) return true;
+		return false;
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "I";
+	}
+
+	function ArcaneBarrier($index) {
+		global $CurrentTurnEffects;
+		$ItemCard = new ItemCard($index, $this->controller);
+		$Effect = $CurrentTurnEffects->FindSpecificEffect($this->cardID, $ItemCard->UniqueID(), $this->controller);
+		return $Effect->Index() != -1 ?  2 : 0;
+	}
+}
 
 
 // class aether_spindle_red extends Card {

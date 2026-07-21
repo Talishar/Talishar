@@ -897,7 +897,7 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
     if ($character[$i + 1] == 0 || $character[$i + 12] == "DOWN") continue;
     $card = GetClass($character[$i], $playerID);
     if ($card != "-") {
-      $abAmount = $card->ArcaneBarrier();
+      $abAmount = $card->ArcaneBarrier($i);
       ++$barrierArray[$abAmount];
       $total += $abAmount;
     }
@@ -1063,6 +1063,12 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
   $itemsCount = count($items);
   $itemPieces = ItemPieces();
   for ($i = 0; $i < $itemsCount; $i += $itemPieces) {
+    $card = GetClass($items[$i], $playerID);
+    if ($card != "-") {
+      $abAmount = $card->ArcaneBarrier($i);
+      ++$barrierArray[$abAmount];
+      $total += $abAmount;
+    }
     switch ($items[$i]) {
       case "rusted_relic_blue":
         ++$barrierArray[1];
@@ -1085,25 +1091,13 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
         break;
     }
   }
-  $currentTurnEffectsCount = count($currentTurnEffects);
-  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-    switch ($currentTurnEffects[$i]) {
-      case "aether_sink_yellow":
-        ++$barrierArray[2];
-        $total += 2;
-        break;
-      default:
-        break;
-    }
-  }
   $Auras = new Auras($playerID);
   $numAuras = $Auras->NumAuras();
   for ($i = 0; $i < $numAuras; ++$i) {
     $AuraCard = $Auras->Card($i, true);
     $card = GetClass($AuraCard->CardID(), $playerID);
     if ($card != "-") {
-      $abAmount = $card->ArcaneBarrier();
+      $abAmount = $card->ArcaneBarrier($i);
       if ($abAmount == "X") {
         for ($j = 1; $j < $max+1; ++$j) {
           if (isset($barrierArray[$j]))

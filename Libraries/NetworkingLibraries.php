@@ -215,8 +215,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       if($mod == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
       // clean up the effect now that it's been used
-      $Effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $banishCard->UniqueID(), $playerID);
-      $Effect->Remove();
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$mod);
       break;
     case 15: // Their Banish
@@ -1568,22 +1566,22 @@ function ResolveChainLink()
         if ($totalPower > 0)
           $totalPower += CombatChainDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
         $allyDamageThreatened = max(0, $totalPower - $totalDefense);
-        $totalPower = AllyDamagePrevention($defPlayer, $index, $totalPower, "COMBAT", $combatChain[0]);
-        if ($totalPower < 0)
-          $totalPower = 0;
+        $allyDamageThreatened = AllyDamagePrevention($defPlayer, $index, $allyDamageThreatened, "COMBAT", $combatChain[0]);
+        if ($allyDamageThreatened < 0)
+          $allyDamageThreatened = 0;
         if (isset($allies[$index + 2])) {
           $allyHealthBefore = max(0, intval($allies[$index + 2]));
-          $allies[$index + 2] = intval($allies[$index + 2]) - (int)$totalPower;
-          $combatChainState[$CCS_DamageDealt] += $totalPower;
-          if ($totalPower > 0) {
+          $allies[$index + 2] = intval($allies[$index + 2]) - (int)$allyDamageThreatened;
+          $combatChainState[$CCS_DamageDealt] += $allyDamageThreatened;
+          if ($allyDamageThreatened > 0) {
             LogDamagePreventedStats($defPlayer, $allyDamageThreatened);
             AllyDamageTakenAbilities($defPlayer, $index);
           }
-          $allyDamageDealt = min($totalPower, $allyHealthBefore);
+          $allyDamageDealt = min($allyDamageThreatened, $allyHealthBefore);
           if ($allyDamageThreatened > 0) LogDamageStats($defPlayer, $allyDamageDealt, $allyDamageDealt);
-          DamageDealtAbilities("ALLY", $totalPower, "COMBAT", $combatChain[0]);
+          DamageDealtAbilities("ALLY", $allyDamageThreatened, "COMBAT", $combatChain[0]);
         }
-        AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$totalPower,ALLY");
+        AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "$allyDamageThreatened,ALLY");
       }
       else
         AddDecisionQueue("RESOLVECOMBATDAMAGE", $mainPlayer, "0,ALLY");
@@ -2266,6 +2264,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         return "";
       }
     }
+  }
+  if ($from == "BANISH") {
+    $Effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $playerID);
+    $Effect->Remove();
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
@@ -3016,7 +3018,12 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
   if (IsStaticType($cardType, $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index, $from);
     if ($names != "") {
-      $names = str_replace("-,", "", $names);
+      $names = explode(",", $names);
+      $newNames = [];
+      foreach ($names as $name){ //filter out null names
+        if ($name != "-" && $name != "") $newNames[] = $name;
+      }
+      $names = implode(",", $newNames);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which ability to activate");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
       AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);

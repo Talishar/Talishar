@@ -52,17 +52,6 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? 1 : 0), 1);
       return "";
-    case "aether_sink_yellow":
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $items = &GetItems($currentPlayer);
-      if($index != -1) {
-        $items[$index+1] = ($items[$index + 1] == 0 ? 1 : 0);
-        if($items[$index+1] == 0) {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          $items[$index+2] = 2;
-        }
-      }
-      return $rv;
     case "convection_amplifier_red":
       if ($from == "PLAY") {
         $index = GetClassState($currentPlayer, $CS_PlayIndex);

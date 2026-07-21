@@ -2607,7 +2607,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         "shelly_hardened_travleer",
         "gallow_end_of_the_line_yellow",
         "boo_resident_spook_yellow",
-        "bubba_lubba_run_aground_yellow" => $CS_PlayIndex,
+        "bubba_lubba_run_aground_yellow",
+        "aether_sink_yellow" => $CS_PlayIndex,
         default => $CS_CharacterIndex
       };
       $index = GetAbilityIndex($parameter, GetClassState($player, $piece), $lastResult);

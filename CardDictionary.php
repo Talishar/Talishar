@@ -254,6 +254,10 @@ function SetID($cardID)
       "tusk" => "DUM", // AI custom weapon
       "wrenchtastic" => "DUM", // AI custom weapon
       "UPR551" => "UPR551", //ghostly touch
+      "viserai_the_forsaken" => "IAR106", //temporary while waiting on fabcube
+      "viserai_between_worlds" => "IAR107",
+      "malice" => "IAR054",
+      "malice_domina_of_the_dead" => "IAR053",
     ];
   }
 
@@ -1068,7 +1072,7 @@ function HasGoAgain($cardID, $from="-"): bool|int
     "healing_potion_blue" => 1, "potion_of_strength_blue" => 1, "imperial_seal_of_command_red" => 1,
     "optekal_monocle_blue" => 1, "imperial_edict_red" => 1, "induction_chamber_red" => 1,
     "convection_amplifier_red" => 1, "stasis_cell_blue" => 1, "crazy_brew_blue" => 1,
-    "plasma_purifier_red" => 1, "aether_sink_yellow" => 1, "teklo_plasma_pistol" => 1,
+    "plasma_purifier_red" => 1, "teklo_plasma_pistol" => 1,
     "great_library_of_solana" => 1, "plasma_barrel_shot" => 1,
     "kelpie_tangled_mess_yellow" => 1, "cutty_shark_quick_clip_yellow" => 1,
     "onyx_amulet_blue" => 1, "pearl_amulet_blue" => 1, "pounamu_amulet_blue" => 1,
@@ -1665,7 +1669,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
 {
   global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
   global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer, $CCS_NumUsedInReactions;
-  global $CombatChain, $combatChain, $layers;
+  global $CombatChain, $combatChain, $layers, $CCS_CachedTotalPower;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
   $myArsenal = &GetArsenal($player);
@@ -1820,13 +1824,13 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     && $player == $defPlayer
     && ($abilityType == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
     $restriction = "Exude Confidance";
-    $exudeAttack = PowerValue("exude_confidence_red", $mainPlayer, "CC");
+    $exudeAttack = $combatChainState[$CCS_CachedTotalPower];
     $countCombatChain = count($combatChain);
     $combatChainPieces = CombatChainPieces();
     for ($i = $combatChainPieces; $i < $countCombatChain; $i += $combatChainPieces) {
       if (DelimStringContains(CardType($combatChain[$i]), "AA")) {
         $powerValue = PowerValue($combatChain[$i], $defPlayer, "CC");
-        if ($powerValue + $combatChain[$i + 5] >= $exudeAttack + $combatChain[5]) {
+        if ($powerValue + $combatChain[$i + 5] >= $exudeAttack) {
           $restriction = "";
         }
       }
