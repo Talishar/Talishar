@@ -3219,7 +3219,7 @@ class gauntlet_of_sword_and_sorcery extends Card {
     return $param == "BUFF" ? 1 : 0;
   }
 
-  function ArcaneBarrier() {
+  function ArcaneBarrier($index) {
     return 1;
   }
 }
@@ -7847,7 +7847,7 @@ class spellbane_sigil_blue extends Card {
     return "";
   }
 
-  function ArcaneBarrier() {
+  function ArcaneBarrier($index) {
     return "X";
   }
 

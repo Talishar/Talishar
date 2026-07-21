@@ -462,7 +462,7 @@ class Card {
     return false;
   }
 
-  function ArcaneBarrier() {
+  function ArcaneBarrier($index) {
     return GeneratedArcaneBarrierAmount($this->cardID);
   }
 

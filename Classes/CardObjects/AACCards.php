@@ -260,7 +260,7 @@ class stalkers_steps extends Card {
 		}
 	}
 
-	function ArcaneBarrier() {
+	function ArcaneBarrier($index) {
 		return 1;
 	}
 

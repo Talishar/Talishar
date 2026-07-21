@@ -3018,7 +3018,12 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
   if (IsStaticType($cardType, $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index, $from);
     if ($names != "") {
-      $names = str_replace("-,", "", $names);
+      $names = explode(",", $names);
+      $newNames = [];
+      foreach ($names as $name){ //filter out null names
+        if ($name != "-" && $name != "") $newNames[] = $name;
+      }
+      $names = implode(",", $newNames);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which ability to activate");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $names);
       AddDecisionQueue("SETABILITYTYPE", $currentPlayer, $cardID);

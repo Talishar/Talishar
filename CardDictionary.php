@@ -1068,7 +1068,7 @@ function HasGoAgain($cardID, $from="-"): bool|int
     "healing_potion_blue" => 1, "potion_of_strength_blue" => 1, "imperial_seal_of_command_red" => 1,
     "optekal_monocle_blue" => 1, "imperial_edict_red" => 1, "induction_chamber_red" => 1,
     "convection_amplifier_red" => 1, "stasis_cell_blue" => 1, "crazy_brew_blue" => 1,
-    "plasma_purifier_red" => 1, "aether_sink_yellow" => 1, "teklo_plasma_pistol" => 1,
+    "plasma_purifier_red" => 1, "teklo_plasma_pistol" => 1,
     "great_library_of_solana" => 1, "plasma_barrel_shot" => 1,
     "kelpie_tangled_mess_yellow" => 1, "cutty_shark_quick_clip_yellow" => 1,
     "onyx_amulet_blue" => 1, "pearl_amulet_blue" => 1, "pounamu_amulet_blue" => 1,
