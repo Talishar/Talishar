@@ -48,8 +48,11 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     $items[] = 0;
     $items[] = 0;
     if (HasCrank($cardID, $player)) Crank($player, $index, $mainPhase);
+    if ($cardID == "hyper_driver" && $steamCounters == 0) {
+      WriteLog("A hyper driver with no counters is immediately destroyed");
+      DestroyItemForPlayer($player, count($items) - ItemPieces());
+    }
   }
-
   $char = &GetPlayerCharacter($player);
   $hero = ShiyanaCharacter($char[0], $player);
   if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($cardID, "MECHANOLOGIST", $player)) {
