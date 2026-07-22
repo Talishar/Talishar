@@ -1441,11 +1441,11 @@ class shadowrealm_harrower_blue extends Card {
     return 1;
   }
 
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
   }
 
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
     global $combatChainState, $CCS_DamageDealt;
     GainHealth($combatChainState[$CCS_DamageDealt], $this->controller);
   }

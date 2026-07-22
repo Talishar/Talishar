@@ -751,9 +751,9 @@ function AnyHitTrigger($player, $cardID, $check, $effect=false) {
 }
 
 // for cards that trigger when hitting a hero
-function HeroHitTrigger($player, $cardID, $check) {
+function HeroHitTrigger($player, $cardID, $check, $effect=false) {
   if (IsHeroAttackTarget())
-    return AnyHitTrigger($player, $cardID, $check);
+    return AnyHitTrigger($player, $cardID, $check, $effect);
   return false;
 }
 
