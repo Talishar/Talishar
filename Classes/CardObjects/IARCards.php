@@ -1487,3 +1487,52 @@ class become_the_shadow_lord_blue extends Card {
     }
   }
 }
+
+class bridge_of_damnation_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "bridge_of_damnation_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  private
+  function Maintenence($index) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYBANISH:subtype=Zombie", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", may:1, context:"Move a zombie from banish to graveyard (or pass)");
+    Await($this->controller, $this->cardID);
+    AddDecisionQueue("ELSE", $this->controller, "-");
+    Await($this->controller, $this->cardID, destroyIndex:$index);
+    Await($this->controller, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $index = $dqVars["destroyIndex"] ?? -1;
+    $choice = $dqVars["choice"] ?? "";
+    if ($index == -1) {
+      $banishInd = explode("-", $choice)[1] ?? "";
+      if ($banishInd != "") {
+        $BanishCard = new BanishCard($this->controller, $banishInd);
+        AddGraveyard($BanishCard->ID(), $this->controller, "BANISH");
+        $BanishCard->Remove();
+      }
+    }
+    else {
+      $AuraCard = new AuraCard($index, $this->controller);
+      $AuraCard->Destroy();
+    }
+  }
+
+  function StartTurnAbility($index) {
+    $this->Maintenence($index);
+    return false;
+  }
+
+  function OppStartTurnAbility($index) {
+    $this->Maintenence($index);
+    return false;
+  }
+}
