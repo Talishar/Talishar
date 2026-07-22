@@ -97,6 +97,8 @@
       "2" => "_yellow",
       3 => "_blue",
       "3" => "_blue",
+      4 => "_purple",
+      "4" => "_purple",
       default => ""
     };
     return $cardID . $suffix;
