@@ -9,9 +9,9 @@
                    "PEN", "OMN", "AZS", "MPW", "AOL", "DDD", "IAR", "TNP"];
 
   // Main branch FAB Cube
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
+  // $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
   // Feature branch FAB Cube
-  // $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/omens-of-the-third-age/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/usurp-the-shadow-throne/json/english/card.json";
 
   $curl = curl_init();
   $headers = [ "Content-Type: application/json" ];
