@@ -4061,7 +4061,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "base_of_the_mountain":
         $search = "MYHAND:type=AA&MYHAND:type=A";
-        $fromMod = "Hand,MOUNTAIN";
+        $fromMod = "HAND,MOUNTAIN";
         $choices = SearchMultizone($player, $search);
         if ($choices != "") {
           $numChoices = substr_count($choices, ",") + 1;
