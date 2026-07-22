@@ -213,15 +213,22 @@ class dig_for_souls_red extends Card {
 		}
 		$inds = implode(",", $inds);
 		$allInds = implode(",", $allInds);
-		Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a Zombie to put in the graveyard", subsequent:0);
-		Await($this->controller, $this->cardID, inds:$allInds);
-		AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
-		Await($this->controller, final:true);
+		if ($inds != "") {
+			Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a Zombie to put in the graveyard", subsequent:0);
+			Await($this->controller, $this->cardID, inds:$allInds);
+			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+			Await($this->controller, final:true);
 
-		AddDecisionQueue("ELSE", $this->controller, "-");
-		Await($this->controller, $this->cardID, else:true, inds:$allInds);
-		AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
-		Await($this->controller, final:true);
+			AddDecisionQueue("ELSE", $this->controller, "-");
+			Await($this->controller, $this->cardID, else:true, inds:$allInds);
+			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+			Await($this->controller, final:true);
+		}
+		else {
+			Await($this->controller, $this->cardID, else:true, inds:$allInds);
+			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+			Await($this->controller, final:true);
+		}
 
 		AddCurrentTurnEffect($this->cardID, $this->controller);
     	return "";
