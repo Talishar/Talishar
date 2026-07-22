@@ -197,12 +197,12 @@ class undead_grasp extends Card {
 }
 
 class dig_for_souls_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "dig_for_souls_red";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "dig_for_souls_red";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$Deck = new Deck($this->controller);
 		$cards = $Deck->Top(true, $resourcesPaid);
 		$inds = [];
@@ -224,8 +224,8 @@ class dig_for_souls_red extends Card {
 		Await($this->controller, final:true);
 
 		AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
+    	return "";
+  	}
 
 	function SpecificLogic() {
 		global $dqVars;
