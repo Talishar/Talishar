@@ -361,7 +361,7 @@ enum PatreonCampaign : string
       case "32": return IsTeamFabInsight($userName);
       case "33": return IsTeamOddwillows($userName);
       case "34": return IsTeamShine($userName);
-      case "7198186": return $userName == "OotTheMonk" || $userName == "Aegisworn" || $userName == "PvtVoid";
+      case "7198186": return $userName == "OotTheMonk" || $userName == "Aegisworn" || $userName == "PvtVoid" || $userName == "Bluffkin1";
       case "7579026": return $userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp";
       case "7329070": return $userName == "GoAgainGamingAz";
       case "1787491": return $userName == "RedZoneRogue";
