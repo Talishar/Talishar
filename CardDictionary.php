@@ -792,7 +792,7 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
   $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
-  static $skipLyathFroms = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true];
+  static $skipLyathFroms = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true,"GY"=>true];
   if (!isset($skipLyathFroms[$from])) {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant")
       || SearchCharacterActive($player, "lyath_goldmane")
@@ -910,7 +910,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
-  static $skipLyathFromsPow = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true];
+  static $skipLyathFromsPow = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true,"GY"=>true];
   if (!isset($skipLyathFromsPow[$from])) {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant")
       || SearchCharacterActive($player, "lyath_goldmane")
