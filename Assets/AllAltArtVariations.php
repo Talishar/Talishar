@@ -331,6 +331,6 @@ function GetAllAltArtVariations(): array
     "zipper_hit_yellow=TNP029-T", "zyggy=OMN002-T", "zyggy_starlight=OMN001-T", "zyggy_starlight_blue=OMN003-T",
     "zyggy_starlight_red=OMN001-T", "zyggy_starlight_yellow=OMN002-T", "scar_for_a_scar_red=1HP396-T",
     "trot_along_blue=DDD016-T", "gravy_bones_shipwrecked_looter=AGB001-T", "fate_foreseen_red=1HP405-T",
-    "vynnset_iron_maiden=CON007-MV"
+    "vynnset_iron_maiden=CON007-MV", "ser_boltyn_breaker_of_dawn=CON005-MV", "flail_of_agony=CON008-MV", "raydn_duskbane=CON006-MV"
   ];
 }
