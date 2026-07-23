@@ -857,15 +857,15 @@ class overwhelming_swing_yellow extends Card {
 }
 
 class rake_back_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "rake_back_blue";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "rake_back_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		global $CombatChain;
@@ -933,4 +933,48 @@ class rake_back_blue extends Card {
     $Effect = new CurrentEffect($index);
     return $Effect->EffectID() == "$this->cardID-WAGER"; // no -WAGER or -BUFF
   }
+}
+
+class into_the_muck_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "into_the_muck_red";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CombatChain;
+		$inds = [];
+		for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+			$LinkCard = $CombatChain->Card($i, true);
+			if (!TypeContains($LinkCard->ID(), "E")) $inds[] = "COMBATCHAINLINK-" . $LinkCard->Index();
+		}
+		$inds = implode(",", $inds);
+		Await($this->controller, "ChooseMultiZone", "MZIndex", indices:$inds, context:"Banish a defending card", subsequent:0);
+		Await($this->controller, $this->cardID, final:true);
+		return "";
+	}
+
+	function SpecificLogic() {
+		global $dqVars, $CombatChain;
+		$MZIndex = $dqVars["MZIndex"];
+		$ind = explode("-", $MZIndex)[1] ?? -1;
+		if ($ind != -1) {
+			$LinkCard = new ChainCard($ind);
+			BanishCardForPlayer($LinkCard->ID(), $LinkCard->PlayerID(), "CC", banishedBy:$this->cardID, banisher:$this->controller);
+			$LinkCard->Remove();
+		}
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain, $combatChainState, $CCS_WagersThisLink;
+		return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
+	}
+
+	function SpecialType() {
+		return "AR";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
 }
