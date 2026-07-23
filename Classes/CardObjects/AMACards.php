@@ -34,10 +34,6 @@ class restless_commander_red extends Card {
     return "Restless Commander";
   }
 
-  function HasBloodDebt() {
-    return true;
-  }
-
   function SpecialClass() {
     return "NECROMANCER";
   }
