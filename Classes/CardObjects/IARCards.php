@@ -604,8 +604,9 @@ class runechant_of_pride_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
     if ($additionalCosts == "USURPED")
-      AddCurrentTurnEffect($this->cardID, $this->controller);
+      AddCurrentTurnEffect($this->cardID, $mainPlayer);
     else
       $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
   }
@@ -648,8 +649,9 @@ class runechant_of_sloth_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
     if ($additionalCosts == "USURPED")
-      AddCurrentTurnEffect($this->cardID, $this->controller);
+      AddCurrentTurnEffect($this->cardID, $mainPlayer);
     else
       $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
   }
@@ -692,8 +694,9 @@ class runechant_of_wrath_yellow extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
     if ($additionalCosts == "USURPED")
-      AddCurrentTurnEffect($this->cardID, $this->controller);
+      AddCurrentTurnEffect($this->cardID, $mainPlayer);
     else
       $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
   }
