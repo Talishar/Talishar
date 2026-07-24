@@ -982,3 +982,71 @@ class into_the_muck_red extends Card {
 		return "Into the Muck";
 	}
 }
+
+class honed_for_honor_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "honed_for_honor_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$uid = explode("-", $target, 2)[1] ?? -1;
+		$index = SearchCharacterForUniqueID($uid, $this->controller);
+		if ($index != -1) {
+			Sharpen("MYCHAR-$index", $this->controller);
+			Await($this->controller, $this->cardID, uid:$uid);
+			Await($this->controller, final:true);
+		}
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$second = $dqVars["second"] ?? false;
+		if (!$second) {
+			$uid= $dqVars["uid"];
+			$threshold = 3;
+			$Character = new PlayerCharacter($this->controller);
+			$Weapon = $Character->FindCardUID($uid);
+			if ($Weapon->NumPowerCounters() >= $threshold) {
+				Await($this->controller, $this->cardID, second:true, prepend:true);
+				Await($this->controller, "ChooseMultiZone", "choice", context:"Put an attack reaction on top of your deck (or pass)", may:true, prepend:true);
+				Await($this->controller, "MultiZoneIndices", "indices", search:"MYDISCARD:type=AR", prepend:true);
+			}
+		}
+		else {
+			$choice = $dqVars["choice"] ?? "-";
+			$ind = explode("-", $choice)[1] ?? -1;
+			if ($ind != -1) {
+				$DisCard = new DiscardCard($ind, $this->controller);
+				$Deck = new Deck($this->controller);
+				$Deck->AddTop($DisCard->CardID());
+				$DisCard->Remove();
+			}
+		}
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$search = "MYCHAR:subtype=Sword";
+		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a sword to sharpen");
+		AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
+		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+		AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+	}
+
+	function SpecialClass() {
+		return "Warrior";
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+}
