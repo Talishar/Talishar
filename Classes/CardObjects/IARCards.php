@@ -1568,8 +1568,6 @@ class hex_gauntlet extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    $CharacterCard = new CharacterCard($index, $this->controller);
     BanishCardForPlayer($this->cardID, $this->controller, "EQUIP");
-    $CharacterCard->Remove();
   }
 }
