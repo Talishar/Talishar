@@ -1034,6 +1034,12 @@ class honed_for_honor_blue extends Card {
 		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
 	}
 
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		$search = "MYCHAR:subtype=Sword";
+		$result = MultiZoneIndices($this->controller, $search);
+		return $result == "";
+	}
+
 	function SpecialClass() {
 		return "Warrior";
 	}
