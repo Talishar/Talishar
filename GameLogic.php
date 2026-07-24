@@ -3851,6 +3851,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $arcaneParts = explode(",", $parameter);
       $source = $arcaneParts[0];
       $target = $arcaneParts[1];
+      $Hero = new CharacterCard(0, $player);
+      SetDamageSourceUID($Hero->UniqueID());
       DealArcane(1, 3, "ABILITY", $source, resolvedTarget:$target);
       return $lastResult;
     case "BRUTUS":
