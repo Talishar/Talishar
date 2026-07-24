@@ -977,4 +977,8 @@ class into_the_muck_red extends Card {
 	function SpecialClass() {
 		return "WARRIOR";
 	}
+
+	function SpecialName() {
+		return "Into the Muck";
+	}
 }
