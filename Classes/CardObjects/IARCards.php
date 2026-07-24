@@ -1539,3 +1539,37 @@ class bridge_of_damnation_blue extends Card {
     return false;
   }
 }
+
+class hex_gauntlet extends Card {
+  function __construct($controller) {
+    $this->cardID = "hex_gauntlet";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYBANISH:bloodDebtOnly=1", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", context:"Turn a card with blood debt facedown");
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"] ?? "";
+    $ind = explode("-", $choice)[1] ?? -1;
+    if ($ind != -1) {
+      $BanishCard = new BanishCard($this->controller, $ind);
+      $BanishCard->SetModifier("DOWN");
+    }
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    BanishCardForPlayer($this->cardID, $this->controller, "EQUIP");
+    $CharacterCard->Remove();
+  }
+}
