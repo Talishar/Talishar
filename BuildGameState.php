@@ -45,6 +45,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $buildCacheArr = $cacheSnapshot ?? ReadCacheArray($gameName) ?? [];
   $spectatorsPubliclyAllowed = ($buildCacheArr[8] ?? "") == "1";
+  $isReplay = ($buildCacheArr[9] ?? "") === "1";
 
   // Extract session data with defaults
   $sessionUserName = $sessionData['userName'] ?? null;
@@ -70,7 +71,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   // Auth validation
   $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
-  if ($playerID != 3 && $authKey !== $targetAuth) {
+  if (!$isReplay && $playerID != 3 && $authKey !== $targetAuth) {
     return "Invalid Authkey";
   }
 
@@ -84,7 +85,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $isReactFE = true;
   $isGameOver = function_exists("IsGameOver") ? IsGameOver() : false;
   $isCasterMode = function_exists('IsCasterMode') ? IsCasterMode() : false;
-  $isReplay = IsReplay();
 
   // Determine friend-based hand visibility using pre-loaded friend list from sessionData
   $isHideHandFromFriends = IsHideHandFromFriends($otherPlayer);
