@@ -796,7 +796,7 @@ function OnAttackEffects($cardID)
         case "good_time_chapeau-PAID":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AddOnWagerEffects();
-            AddCurrentTurnEffect(ExtractCardID($currentTurnEffects[$i]), $mainPlayer);
+            $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
           }
           break;
         case "big_bop_red-BUFF":
