@@ -1041,7 +1041,7 @@ class honed_for_honor_blue extends Card {
 	}
 
 	function SpecialClass() {
-		return "Warrior";
+		return "WARRIOR";
 	}
 
 	function SpecialPitch() {
