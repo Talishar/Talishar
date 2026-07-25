@@ -5,21 +5,23 @@ session_start();
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
+include_once "../includes/dbh.inc.php";
 
 SetHeaders();
 
 $userId = $_SESSION["useruid"] ?? "";
-$isPatron = IsLoggedInUserPatron();
-session_write_close();
-
 $response = new stdClass();
 
-if ($userId === "") {
+if ($userId === "" || !preg_match('/^[A-Za-z0-9_-]+$/', $userId)) {
+    session_write_close();
     $response->error = "You must be logged in to share replays.";
     http_response_code(401);
     echo json_encode($response);
     exit;
 }
+
+$isPatron = IsLoggedInUserPatron();
+session_write_close();
 
 if (!$isPatron) {
     $response->error = "Replay sharing is only available to patrons.";
