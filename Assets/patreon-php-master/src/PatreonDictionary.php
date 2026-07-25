@@ -465,6 +465,7 @@ enum PatreonCampaign : string
           "might=might-ManSant",
           "quicken=quicken-ManSant",
           "vigor=vigor-ManSant",
+          "goldkiss_rhum=goldkiss_rhum-ManSant",
         ];
         break;
       case "279086": // Brandao
