@@ -1055,4 +1055,8 @@ class honed_for_honor_blue extends Card {
 	function HasGoAgain($from) {
 		return true;
 	}
+
+	function SpecialName() {
+		return "Honed for Honor";
+	}
 }

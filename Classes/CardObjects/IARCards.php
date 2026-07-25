@@ -919,6 +919,10 @@ class blood_harvest extends Card {
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     GainResources($this->controller, 3);
   }
+
+  function SpecialBlock() {
+    return 0;
+  }
 }
 
 class sinspeaker_gloomblade_red extends Card {
