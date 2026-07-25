@@ -13,6 +13,7 @@ enum MetafyCommunity : string
   case SnapDragons = "ae238384-f748-460d-8a40-b48bf280614d";
   case FaBlazing = "005c6167-ef5c-428c-a196-d012ca300f7f";
   case FabInsight = "68794fd8-8b30-46c2-9269-de2bf8ac4157";
+  case IndyFab = "f28bbd6b-a583-4ce3-bf5d-f4e1bf0109b5";
 
   public function CommunityName(): string
   {
@@ -27,6 +28,7 @@ enum MetafyCommunity : string
       self::SnapDragons => "Snap Dragons",
       self::FaBlazing => "FaBlazing",
       self::FabInsight => "FabInsight",
+      self::IndyFab => "IndyFab",
     };
   }
 
@@ -43,6 +45,7 @@ enum MetafyCommunity : string
       self::SnapDragons => "metafySnapDragons",
       self::FaBlazing => "metafyFaBlazing",
       self::FabInsight => "metafyFabInsight",
+      self::IndyFab => "metafyIndyFab",
     };
   }
 
@@ -59,6 +62,7 @@ enum MetafyCommunity : string
       self::SnapDragons => "127",
       self::FaBlazing => "129",
       self::FabInsight => "136",
+      self::IndyFab => "140",
       default => "",
     };
   }
