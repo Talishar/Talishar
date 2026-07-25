@@ -902,6 +902,7 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $attacking=false)
 {
   global $mainPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn, $CS_Num6PowBan;
+  global $practiceDummyWeaponPower;
   if (!$cardID) return 0;
   $set = CardSet($cardID);
   $subtype = CardSubtype($cardID);
@@ -981,7 +982,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     "suraya_archangel_of_knowledge" => 4,
     "teklovossen_the_mechropotent" => 6,
     "tusk" => 2, // AI custom weapon
-    "wrenchtastic" => 4, // AI custom weapon
+    "wrenchtastic" => isset($practiceDummyWeaponPower) ? intval($practiceDummyWeaponPower) : 4, // AI custom weapon
     "teklovossen_the_mechropotentb" => 6,
     default => $basePower,
   };

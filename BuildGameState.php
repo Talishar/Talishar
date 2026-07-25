@@ -15,7 +15,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $currentTurnEffects, $nextTurnEffects, $dqVars, $lastPlayed, $events;
   global $p1Key, $p2Key, $myHealth, $theirHealth, $winner;
   global $CombatChain, $CCS_AttackTargetUID, $CCS_WeaponIndex, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock, $CCS_CachedPreBlockValue;
-  global $AIHasInfiniteHP, $EffectContext, $CS_NumCardsDrawn;
+  global $AIHasInfiniteHP, $practiceDummyWeaponPower, $EffectContext, $CS_NumCardsDrawn;
   global $p1IsPatron, $p2IsPatron, $p1MetafyTiers, $p2MetafyTiers, $p1IsAI, $p2IsAI;
   global $roguelikeGameID, $gameGUID, $p1uid, $p2uid;
   global $p1MetafyCommunities, $p2MetafyCommunities;
@@ -1499,6 +1499,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->isReplay = (($buildCacheArr[9] ?? "") === "1");
 
   $response->aiHasInfiniteHP = $AIHasInfiniteHP;
+  $response->practiceDummyWeaponPower = intval($practiceDummyWeaponPower ?? 4);
 
   // Opponent typing indicator
   if ($playerID >= 1 && $playerID <= 2) {

@@ -905,6 +905,15 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $AIHasInfiniteHP = $infiniteMode;
       WriteLog("AI infinite HP toggled to " . ($infiniteMode ? "ON" : "OFF"), highlight: true);
       break;
+    case 10020:
+      global $practiceDummyWeaponPower;
+      $opponent = $playerID == 1 ? 2 : 1;
+      $opponentCharacter = &GetPlayerCharacter($opponent);
+      if (in_array("wrenchtastic", $opponentCharacter, true)) {
+        $practiceDummyWeaponPower = max(0, min(100, intval($numMode)));
+        WriteLog("Practice Dummy weapon power set to " . $practiceDummyWeaponPower, highlight: true);
+      }
+      break;
     case 100000: //Quick Rematch
       if ($isSimulation)
         return;

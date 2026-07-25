@@ -38,7 +38,7 @@ function ParseGamestate()
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity;
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $EffectContext;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
-  global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI, $AIHasInfiniteHP, $attackQueue;
+  global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI, $AIHasInfiniteHP, $attackQueue, $practiceDummyWeaponPower;
 
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
@@ -155,6 +155,9 @@ function ParseGamestate()
   $p2LifeHistory = isset($gamestateContent[81+$numChainLinks]) ? json_decode(trim($gamestateContent[81+$numChainLinks]), true) ?? [] : [];
   $p1ArcaneDamageDealt = isset($gamestateContent[82+$numChainLinks]) ? json_decode(trim($gamestateContent[82+$numChainLinks]), true) ?? [] : [];
   $p2ArcaneDamageDealt = isset($gamestateContent[83+$numChainLinks]) ? json_decode(trim($gamestateContent[83+$numChainLinks]), true) ?? [] : [];
+  $practiceDummyWeaponPower = isset($gamestateContent[84+$numChainLinks])
+    ? max(0, min(100, intval($gamestateContent[84+$numChainLinks])))
+    : 4;
 
   BuildMyGamestate($playerID);
 }
