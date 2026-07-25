@@ -90,6 +90,12 @@ if (session_status() === PHP_SESSION_ACTIVE) {
   session_write_close();
 }
 
+if ($playerID == 3 && (!$sessionData['userLoggedIn'] || empty($sessionData['userName']))) {
+  http_response_code(401);
+  echo json_encode(["errorMessage" => "Authentication required to spectate."]);
+  exit;
+}
+
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $currentTime = round(microtime(true) * 1000);
 
@@ -106,7 +112,7 @@ if ($isGamePlayer) {
 }
 
 if ($playerID == 3) {
-  UpdateSpectatorPresence($gameName, $sessionData['displayName'] ?? 'Anonymous');
+  UpdateSpectatorPresence($gameName, $sessionData['displayName']);
 }
 
 // Check if game file exists

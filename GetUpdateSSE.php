@@ -67,7 +67,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
 $sessionData['userLoggedIn'] = IsUserLoggedIn();
-$sessionData['userName'] = LoggedInUserName() ?: (TryGet('userName', '') ?: null);
+$sessionData['userName'] = LoggedInUserName();
 $sessionData['displayName'] = LoggedInDisplayName() ?: $sessionData['userName'];
 $sessionData['isPvtVoidPatron'] = isset($_SESSION["isPvtVoidPatron"]);
 
@@ -96,7 +96,13 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 }
 
 if ($playerID == 3) {
-  UpdateSpectatorPresence($gameName, $sessionData['displayName'] ?? 'Anonymous');
+  if (!$sessionData['userLoggedIn'] || empty($sessionData['userName'])) {
+    echo ("data: " . json_encode(["error" => "Authentication required to spectate."]) . "\n\n");
+    ob_flush();
+    flush();
+    exit;
+  }
+  UpdateSpectatorPresence($gameName, $sessionData['displayName']);
 }
 
 header('Content-Type: text/event-stream');
@@ -158,7 +164,7 @@ while (true) {
   }
 
   if ($playerID == 3 && $currentRealTime - $lastSpectatorRefresh >= $spectatorRefreshInterval) {
-    UpdateSpectatorPresence($gameName, $sessionData['displayName'] ?? 'Anonymous');
+    UpdateSpectatorPresence($gameName, $sessionData['displayName']);
     $lastSpectatorRefresh = $currentRealTime;
   }
 
