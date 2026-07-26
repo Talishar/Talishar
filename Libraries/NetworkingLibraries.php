@@ -119,7 +119,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 8:
     case 9: //OPT, CHOOSETOP, CHOOSEBOTTOM
       if ($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM") {
-        $options = array_filter(explode(",", $turn[2] ?? ""));
+        $options = array_filter(explode(",", $turn[2] ?? ""), fn($option) => $option !== "");
         $found = array_search($buttonInput, $options);
         if ($found === false) break; //Invalid input
         $deck = new Deck($playerID);
