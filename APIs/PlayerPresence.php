@@ -47,8 +47,14 @@ if (extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_
     ];
     $isValid = is_array($presence) && isset($presence["type"]);
 
-    if ($isValid && $presence["type"] === "combat-summary") {
-      $presence = ["type" => "combat-summary"];
+    $allowedSimpleTypes = [
+      "combat-summary" => true,
+      "choosing" => true,
+      "settings" => true
+    ];
+
+    if ($isValid && isset($allowedSimpleTypes[$presence["type"]])) {
+      $presence = ["type" => $presence["type"]];
     } elseif (
       $isValid &&
       $presence["type"] === "zone" &&
