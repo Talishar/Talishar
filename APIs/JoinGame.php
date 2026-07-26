@@ -654,12 +654,13 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
        WriteLog("⚠️ This lobby was hidden due to inactivity. If you have connection issues, try creating a new game.", path: "../");
      }
 
-    if (ShouldSkipRustCountersForContributors() && $p2IsAI !== "1") {
-      WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight:true, path: "../", highlightColor: "green");
-    }
-    elseif (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron) && $p2IsAI !== "1") {
+    if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron) && $p2IsAI !== "1") {
       WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight:true, path: "../", highlightColor: "green");
     }
+    elseif (ShouldSkipRustCountersForContributors() && $p2IsAI !== "1") {
+      WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight:true, path: "../", highlightColor: "green");
+    }
+
 
      while ($p1roll == $p2roll && $tries > 0) {
        $p1roll = rand(1, 6) + rand(1, 6);
