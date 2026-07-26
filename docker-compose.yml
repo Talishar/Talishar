@@ -1,5 +1,3 @@
-version: "3.7"
-
 # Production SSL Configuration Notes:
 # For production deployments with SSL, ensure your Apache/Nginx reverse proxy has:
 # 1. Valid SSL certificate matching all server names (talishar.net, www.talishar.net, api.talishar.net, fe.talishar.net, legacy.talishar.net)

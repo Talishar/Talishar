@@ -294,7 +294,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your deck:";
-        $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2] ?? "", 11, $caption, "(You can click your deck to see its content during this card resolution)");
+        $playerInputPopup->popup = ChoosePopup($myDeck, $turn[2] ?? "", 11, $caption, "(You can click your deck to see its content during this card resolution)", searchable: true);
       }
       break;
 
@@ -304,7 +304,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your opponent deck:";
-        $playerInputPopup->popup = ChoosePopup($theirDeck, $turn[2] ?? "", 11, $caption, isOpponent: true);
+        $playerInputPopup->popup = ChoosePopup($theirDeck, $turn[2] ?? "", 11, $caption, isOpponent: true, searchable: true);
       }
       break;
 
@@ -936,7 +936,7 @@ function CheckboxDefaultState($options, $minNumber = 0, $maxNumber = 0) {
 /**
  * Helper for creating popups
  */
-function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments = "", $MZName = "", $label = "", $isOpponent = false)
+function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments = "", $MZName = "", $label = "", $isOpponent = false, $searchable = false)
 {
   $options = explode(",", $options);
   $optionsCount = count($options);
@@ -949,5 +949,6 @@ function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments 
     }
   }
 
-  return CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, "", additionalComments: $additionalComments, cardsArray: $cardList);
+  $customInput = $searchable ? "SEARCHABLE" : "";
+  return CreatePopupAPI("CHOOSEZONE", [], 0, 1, $caption, 1, $customInput, additionalComments: $additionalComments, cardsArray: $cardList);
 }

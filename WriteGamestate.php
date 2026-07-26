@@ -120,7 +120,8 @@ array_push($gamestateLines,
   json_encode($p1LifeHistory ?? []),
   json_encode($p2LifeHistory ?? []),
   json_encode($p1ArcaneDamageDealt ?? []),
-  json_encode($p2ArcaneDamageDealt ?? [])
+  json_encode($p2ArcaneDamageDealt ?? []),
+  max(0, min(100, intval($practiceDummyWeaponPower ?? 4)))
 );
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";

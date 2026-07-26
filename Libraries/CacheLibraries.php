@@ -63,12 +63,13 @@ function InvalidateGamestateCache($gameName) {
   @apcu_delete("gamestate_" . $gameName);
 }
 
-function UpdateSpectatorPresence($gameName, $userName = 'Anonymous') {
+function UpdateSpectatorPresence($gameName, $userName = null) {
   if (!_apcuAvailable()) return;
+  if (!is_string($userName) || trim($userName) === '') return;
   $now = time();
   // Sanitize username: alphanumeric, underscores, hyphens, max 30 chars
   $userName = preg_replace('/[^a-zA-Z0-9_\-]/', '', substr($userName, 0, 30));
-  if ($userName === '') $userName = 'Anonymous';
+  if ($userName === '' || strcasecmp($userName, 'Anonymous') === 0) return;
 
   $key = 'spectators_' . $gameName;
   $spectators = @apcu_fetch($key);
@@ -90,8 +91,13 @@ function GetActiveSpectators($gameName) {
   $spectators = @apcu_fetch($key);
   if (!is_array($spectators)) return ['count' => 0, 'names' => []];
   foreach ($spectators as $name => $lastSeen) {
-    if ($now - $lastSeen <= $threshold) {
-      $names[] = is_string($name) ? $name : 'Anonymous';
+    if (
+      is_string($name)
+      && $name !== ''
+      && strcasecmp($name, 'Anonymous') !== 0
+      && $now - $lastSeen <= $threshold
+    ) {
+      $names[] = $name;
     }
   }
   return ['count' => count($names), 'names' => $names];
