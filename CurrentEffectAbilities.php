@@ -1483,7 +1483,7 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
       if ($preventable) {
         $damageToPrevent = min($damage, $effects[1]);
         $preventedDamage += $damageToPrevent;
-        if($effects[1] == 2) PlayAura("ponder", $player); 
+        if($effects[1] == 2) PlayAura("ponder", $player, effectSource:$effects[0]); 
         $effects[1] -= $damageToPrevent;
         $currentTurnEffects[$index] = $effects[0] . "-" . $effects[1];
       }
