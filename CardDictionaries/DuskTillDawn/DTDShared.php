@@ -632,7 +632,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char = &GetPlayerCharacter($player);
   AddSoul($char[0], $player, "PLAY");
   $char[0] = $cardID;
-  $char[1] = 2; //When you transformm, You are no longer that hero, therefore you are not dishonored and reset your stats 🐝
+  $char[1] = 2; //When you transform, You are no longer that hero, therefore you are not dishonored and reset your stats 🐝
   $char[2] = CharacterCounters($cardID);
   $char[3] = 0;
   $char[4] = 0;
@@ -643,10 +643,11 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char[9] = CharacterDefaultActiveState($cardID);
   $char[13] = 0;
   $char[14] = 0; //assuming transform untaps
+  AddEvent("HERO_TRANSFORM", $player . ":" . $cardID);
   $health = &GetHealth($player);
   $health = DemiHeroHealth($cardID);
   $banish = new Banish($player);
-  CurrentEffectIntellectModifier(true); ///When you transformm, You are no longer that hero, therefore your intellect reset 🐝
+  CurrentEffectIntellectModifier(true); ///When you transform, You are no longer that hero, therefore your intellect reset 🐝
   switch($cardID)
   {
     case "levia_redeemed":

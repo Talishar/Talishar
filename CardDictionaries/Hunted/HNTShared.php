@@ -1095,6 +1095,7 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
     SetClassState($mainPlayer, $CS_OriginalHero, "-");
   }
   $char[0] = $transformTarget;
+  AddEvent("HERO_TRANSFORM", $mainPlayer . ":" . $transformTarget);
   //don't trigger trap_door if you transfrom from trap_door into trap_door
   if ($transformTarget == "arakni_trap_door" && $characterID != "arakni_trap_door") {
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_a_card_to_".CardLink("arakni_trap_door", "arakni_trap_door")."?");
