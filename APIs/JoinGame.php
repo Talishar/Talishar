@@ -52,6 +52,36 @@ if (!function_exists("TypeContains")) {
   }
 }
 
+if (!function_exists("FormatDisplayName")) {
+  function FormatDisplayName($format)
+  {
+    return match ($format) {
+      "cc" => "Classic Constructed",
+      "compcc" => "Competitive Classic Constructed",
+      "blitz" => "Blitz",
+      "compblitz" => "Competitive Blitz",
+      "futurecc" => "Future Classic Constructed",
+      "commoner" => "Commoner",
+      "sealed" => "Sealed",
+      "draft" => "Draft",
+      "llcc" => "Living Legend",
+      "llblitz" => "Living Legend Blitz",
+      "openformatblitz" => "Open Blitz",
+      "clash" => "Clash",
+      "futurell" => "Future Living Legend",
+      "openformatllblitz" => "Open Living Legend Blitz",
+      "compllcc" => "Competitive Living Legend",
+      "sage" => "Silver Age",
+      "compsage" => "Competitive Silver Age",
+      "futuresage" => "Future Silver Age",
+      "open" => "Open",
+      "gage" => "Golden Age",
+      "precon" => "Preconstructed Deck",
+      default => $format,
+    };
+  }
+}
+
 if (!function_exists("CheckHeroPreference")) {
   function CheckHeroPreference($character, $gameDescription) {
     $knownClasses = ['assassin', 'brute', 'guardian', 'illusionist', 'mechanologist',
@@ -488,24 +518,24 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character) . ".";
      echo json_encode($response);
      exit;
-   }
+    }
 
-   if (!SubtypeContains($character, "Young") && ($format == "blitz" || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage" || $format == "draft")) {
-     $response->error = "⚠️ Adult heroes are not legal in this format: " . CardName($character) . ".";
-     echo json_encode($response);
-     exit;
-   }
+    if (!SubtypeContains($character, "Young") && ($format == "blitz" || $format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage" || $format == "draft")) {
+      $response->error = "⚠️ Adult heroes are not legal in " . FormatDisplayName($format) . ": " . CardName($character) . ".";
+      echo json_encode($response);
+      exit;
+    }
 
-   if ($bannedCard != "") {
-     $response->error = "⚠️ The following cards are not legal in this format: " . $bannedCard . ".";
-     echo json_encode($response);
-     exit;
-   }
+    if ($bannedCard != "") {
+      $response->error = "⚠️ The following cards are not legal in " . FormatDisplayName($format) . ": " . $bannedCard . ".";
+      echo json_encode($response);
+      exit;
+    }
 
-   if ($restrictedCard != "") {
-     $response->error = "⚠️ The following cards are restricted to up to 1 copy in this format: " . $restrictedCard . ".";
-     echo json_encode($response);
-     exit;
+    if ($restrictedCard != "") {
+      $response->error = "⚠️ The following cards are restricted to up to 1 copy in " . FormatDisplayName($format) . ": " . $restrictedCard . ".";
+      echo json_encode($response);
+      exit;
    }
 
    if ($totalCards < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell" || $format == "gage")) {
