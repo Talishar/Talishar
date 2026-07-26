@@ -64,7 +64,9 @@ function WriteGamestateCache($name, $data)
   }
   $writeSeq = $seq + ($seq % 2 === 0 ? 1 : 2); // next odd: write in progress
   shmop_write($gsID, sprintf("%016d", $writeSeq), 0);
-  shmop_write($gsID, str_pad($serData, $size - 16, "\0"), 16);
+  // Serialized strings carry their own byte length. Stale bytes after the
+  // payload are ignored by the length-aware reader below.
+  shmop_write($gsID, $serData, 16);
   shmop_write($gsID, sprintf("%016d", $writeSeq + 1), 0); // even: stable
 }
 
@@ -83,7 +85,18 @@ function ReadGamestateCache($name)
     }
     $s1 = (int)$head;
     if ($s1 % 2 === 1) { usleep(1000); continue; } // write in progress
-    $raw = trim(shmop_read($id, 16, $size - 16));
+    $available = $size - 16;
+    $prefix = shmop_read($id, 16, min(64, $available));
+    $raw = false;
+    if (preg_match('/^s:(\d+):"/', $prefix, $matches)) {
+      $contentLength = (int)$matches[1];
+      $contentOffset = strpos($prefix, '"') + 1;
+      $serializedLength = $contentOffset + $contentLength + 2;
+      if ($serializedLength <= $available) {
+        $raw = shmop_read($id, 16, $serializedLength);
+      }
+    }
+    if ($raw === false) $raw = trim(shmop_read($id, 16, $available));
     $s2 = (int)shmop_read($id, 0, 16);
     if ($s1 !== $s2) { usleep(1000); continue; } // torn — retry
     $un = @unserialize($raw);

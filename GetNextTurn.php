@@ -20,6 +20,7 @@ include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
+include_once "Libraries/FriendLibraries.php";
 include_once 'GameLogic.php';
 include_once "GameTerms.php";
 include_once "Libraries/UILibraries.php";
@@ -82,12 +83,10 @@ foreach(PatreonCampaign::cases() as $campaign) {
   $sessionData['patreonCampaigns'][$sessionID] = isset($_SESSION[$sessionID]);
 }
 
-// Load friend list if user is logged in (for friend hand visibility checks)
+// Resolve spectator authorization server-side. The polling fallback must not
+// depend on the frontend having loaded and forwarded its friend list first.
 $sessionData['friendList'] = [];
-$friendsListParam = TryGet("friendsList", "");
-if (!empty($friendsListParam)) {
-  $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
-}
+$viewerUserId = $playerID == 3 && $sessionData['userLoggedIn'] ? LoggedInUser() : null;
 
 // Release the session lock NOW - before any file I/O or processing
 if (session_status() === PHP_SESSION_ACTIVE) {
@@ -99,6 +98,10 @@ if ($playerID == 3 && (!$sessionData['userLoggedIn'] || empty($sessionData['user
   echo json_encode(["errorMessage" => "Authentication required to spectate."]);
   exit;
 }
+if (is_numeric($viewerUserId)) {
+  $sessionData['friendList'] = GetUserFriendUsernames((int)$viewerUserId);
+}
+$sessionData['friendSet'] = !empty($sessionData['friendList']) ? array_flip($sessionData['friendList']) : [];
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $currentTime = round(microtime(true) * 1000);

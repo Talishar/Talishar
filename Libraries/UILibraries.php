@@ -141,7 +141,7 @@ function JSONRenderedCard(
   $wateryGraveIcon = isset($countersMap->wateryGrave) ? $wateryGraveIcon->wateryGrave : $wateryGraveIcon;
   if($wateryGraveIcon != NULL) $countersMap->wateryGrave = $wateryGraveIcon;
 
-  if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
+  if(isset($countersMap->counters) && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
     $type = CardType($cardNumber);
     $subtype = CardSubType($cardNumber);

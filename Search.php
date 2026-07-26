@@ -208,7 +208,7 @@ function SearchInner(
 
   $arrayCount = count($array);
   for ($i = 0; $i < $arrayCount; $i += $count) {
-    if (!array_key_exists($i, $array) || !array_key_exists($i + $count - 1, $array)) continue;
+    if (!isset($array[$i], $array[$i + $count - 1])) continue;
     if ($isCharZone && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
     if ($isBanishZone && isFaceDownMod($array[$i + 1] ?? "") && !$isIntimidated) continue;
     if ($isDiscardZone && isFaceDownMod($array[$i + 2] ?? "")) continue;
@@ -1173,8 +1173,7 @@ function SearchZoneForUniqueID($uniqueID, $player, $zone)
       return SearchArsenalForUniqueID($uniqueID, $player);
     case "MYCHAR":
     case "THEIRCHAR":
-      $Character = new PlayerCharacter($player);
-      return $Character->FindCardUID($uniqueID)->Index();
+      return SearchCharacterForUniqueID($uniqueID, $player);
     default:
       return -1;
   }
@@ -1215,10 +1214,11 @@ function SearchLayersForTargetUniqueID($uniqueID)
 
 function SearchAurasForUniqueID($uniqueID, $player)
 {
-  $Auras = new Auras($player);
-  for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
-    $AuraCard = $Auras->Card($i, true);
-    if ($AuraCard->UniqueID() == $uniqueID) return $AuraCard->Index();
+  $auras = &GetAuras($player);
+  $count = count($auras);
+  $pieces = AuraPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if (($auras[$i + 6] ?? "-") == $uniqueID) return $i;
   }
   return -1;
 }
@@ -1269,11 +1269,11 @@ function SearchItemsForUniqueID($uniqueID, $player)
 
 function SearchAlliesForUniqueID($uniqueID, $player)
 {
-  $Allies = new Allies($player);
-  $numAllies = $Allies->NumAllies();
-  for ($i = 0; $i < $numAllies; ++$i){
-    $AllyCard = $Allies->Card($i, true);
-    if ($AllyCard->UniqueID() == $uniqueID) return $AllyCard->Index();
+  $allies = &GetAllies($player);
+  $count = count($allies);
+  $pieces = AllyPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if (($allies[$i + 5] ?? "-") == $uniqueID) return $i;
   }
   return -1;
 }
@@ -2334,12 +2334,12 @@ function QueueDestroyGold($player, $isMandatory = false, $showContext = false, $
 
 function GetAllyCounterIndices($player) {
   $choices = [];
-  $Allies = new Allies($player);
-  $alliesCount = $Allies->NumAllies();
-  for ($i = 0; $i < $alliesCount; ++$i) {
-    $Ally = $Allies->Card($i, true);
-    if ($Ally->PowerCounters() > 0) {
-      $choices[] = "MYALLY-" . $Ally->Index();
+  $allies = &GetAllies($player);
+  $alliesCount = count($allies);
+  $alliesPieces = AllyPieces();
+  for ($i = 0; $i < $alliesCount; $i += $alliesPieces) {
+    if (($allies[$i + 9] ?? 0) > 0) {
+      $choices[] = "MYALLY-" . $i;
     }
   }
   return implode(",", $choices);
