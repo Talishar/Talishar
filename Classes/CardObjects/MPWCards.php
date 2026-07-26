@@ -969,18 +969,6 @@ class into_the_muck_red extends Card {
 		global $CombatChain, $combatChainState, $CCS_WagersThisLink;
 		return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
 	}
-
-	function SpecialType() {
-		return "AR";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialName() {
-		return "Into the Muck";
-	}
 }
 
 class honed_for_honor_blue extends Card {
@@ -1039,24 +1027,5 @@ class honed_for_honor_blue extends Card {
 		$result = MultiZoneIndices($this->controller, $search);
 		return $result == "";
 	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialPitch() {
-		return 3;
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialName() {
-		return "Honed for Honor";
-	}
 }
+

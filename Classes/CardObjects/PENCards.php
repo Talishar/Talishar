@@ -4446,7 +4446,7 @@ class cut_n_carve_red extends Card {
     $this->baseCard->PlayAbility($target, 1);
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return true;
   }
 
@@ -4474,7 +4474,7 @@ class cut_n_carve_yellow extends Card {
     $this->baseCard->PlayAbility($target, 2);
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return true;
   }
 
@@ -4502,7 +4502,7 @@ class cut_n_carve_blue extends Card {
     $this->baseCard->PlayAbility($target, 3);
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return true;
   }
 
@@ -6922,7 +6922,7 @@ class sense_weakness_blue extends Card {
     return 1;
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return true;
   }
 

@@ -534,7 +534,7 @@ class Card {
     return;
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return false;
   }
 
@@ -824,5 +824,9 @@ class Card {
 
   function IsUnique() {
     return false;
+  }
+
+  function WinWagerTrigger() {
+    return;
   }
 }

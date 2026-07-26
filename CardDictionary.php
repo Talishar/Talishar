@@ -3398,7 +3398,6 @@ function HasBladeBreak($cardID)
     case $CID_TekloArms:
     case $CID_TekloLegs:
     case "mask_of_malicious_manifestations":
-    case "circlet_of_eternal_end": //temporary
     case "corrupted_crown": //temporary
       return true;
     case "vambrace_of_determination":
@@ -3419,9 +3418,7 @@ function HasBattleworn($cardID)
   global $defPlayer;
   switch ($cardID) {
     case "teklovossen_the_mechropotentb":
-    case "torc_of_vim":
-    case "echo_casque":
-    case "undead_grasp": //temporary
+    case "prizeworn_pathfinders":
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);
@@ -3616,12 +3613,12 @@ function DoesEffectGrantsOverpower($cardID): bool
   };
 }
 
-function DoesEffectGrantsDominate($cardID): bool
+function DoesEffectGrantsDominate($cardID, $i): bool
 {
   global $combatChainState, $CCS_AttackFused, $mainPlayer;
   $cardID = ShiyanaCharacter($cardID);
   $card = GetClass($cardID, $mainPlayer);
-  if ($card != "-") return $card->DoesEffectGrantDominate();
+  if ($card != "-") return $card->DoesEffectGrantDominate($i);
   switch ($cardID) {
     case "bravo_showstopper":
     case "bravo":

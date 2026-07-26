@@ -1480,7 +1480,7 @@ function IsDominateActive()
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i])) return true;
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i], $i)) return true;
   }
   $characterEffectPieces = CharacterEffectPieces();
   $characterEffectsCount = count($characterEffects);

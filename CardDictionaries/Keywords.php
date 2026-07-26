@@ -447,6 +447,12 @@
         AddLayer("TRIGGER", $mainPlayer, $hero);
       }
     }
+    $WinnerCharacter = new PlayerCharacter($wonWager);
+    for ($i = 0; $i < $WinnerCharacter->NumCards(); ++$i) {
+      $CharCard = $WinnerCharacter->Card($i, true);
+      $card = GetClass($CharCard->CardID(), $wonWager);
+      if ($card != "-") $card->WinWagerTrigger();
+    }
   }
 
   function ResolveWagers($chainClosed=false, $wonWager="-") {
