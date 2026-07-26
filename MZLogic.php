@@ -311,13 +311,20 @@ function MZBanish($player, $parameter, $lastResult)
   $modifier = $paramCount > 1 ? $params[1] : "-";
   $banishedBy = $paramCount > 2 ? $params[2] : "";
   $banisher = $params[3] ?? "-";
+  $banishedCards = [];
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i], 2);
+    if (!isset($mzIndex[1]) || !is_numeric($mzIndex[1])) {
+      WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
+      continue;
+    }
+    $index = (int)$mzIndex[1];
     $cardOwner = (str_starts_with($mzIndex[0], "MY") ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     if ($mzIndex[0] == "COMBATCHAINATTACKS") {
       $attacks = GetCombatChainAttacks();
-      $cardOwner = $attacks[$mzIndex[1] + 1];
+      if (!isset($attacks[$index + 1])) continue;
+      $cardOwner = $attacks[$index + 1];
     }
     if($params[0] == "-") {
       if (str_starts_with($mzIndex[0], "MY")) {
@@ -328,10 +335,18 @@ function MZBanish($player, $parameter, $lastResult)
         $params[0] = $mzIndex[0];
       }
     }
-    if (!isset($mzIndex[1])) { WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true); continue; }
-    BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
+    if (!is_array($zone) || !array_key_exists($index, $zone)) {
+      WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
+      continue;
+    }
+    $cardID = $zone[$index];
+    $banishedCards[] = $cardID;
+    BanishCardForPlayer($cardID, $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
   }
-  if ($paramCount <= 3 && isset($mzIndex[1])) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
+  if ($paramCount <= 3 && count($banishedCards) > 0) {
+    $cardID = $banishedCards[count($banishedCards) - 1];
+    WriteLog(CardLink($cardID, $cardID) . " was banished.");
+  }
   return $lastResult;
 }
 

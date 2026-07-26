@@ -91,7 +91,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSETRIGGERS":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $options = explode(",", $turn[2]);
+        $options = array_filter(explode(",", $turn[2] ?? ""));
         $caption = "";
         if ($turnPhase == "CHOOSEARCANE") {
           $vars = explode("-", $dqVars[0]);
@@ -177,7 +177,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "MAYCHOOSECARD":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $options = explode(",", $turn[2]);
+        $options = array_filter(explode(",", $turn[2] ?? ""));
         $optCards = [];
         $buttonText = match($turn[0]) {
           "CHOOSETOP" => "Top",

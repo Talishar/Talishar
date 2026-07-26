@@ -910,8 +910,8 @@ class rake_back_blue extends Card {
 
 	function SpecificLogic() {
 		global $dqVars;
-		$Card = MZIndexToObject($this->controller, $dqVars["MZInd"]);
-		if ($Card != "") {
+		$Card = MZIndexToObject($this->controller, $dqVars["MZInd"] ?? "");
+		if (is_object($Card)) {
 			$cardSubtype = CardSubType($Card->CardID());
 			$subType = "-";
 			if (str_contains($cardSubtype, "Head"))

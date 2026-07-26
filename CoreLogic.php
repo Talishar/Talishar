@@ -292,7 +292,17 @@ function CombatChainPowerModifier($index, $amount)
 {
   global $combatChain;
   if (str_contains($index, "COMBATCHAINLINK")) $index = (int)substr($index, 16);
-  $combatChain[$index + 5] += $amount;
+  if (!is_numeric($index)) {
+    WriteLog("Invalid combat chain index while modifying power.", highlight: true);
+    return;
+  }
+  $index = (int)$index;
+  $powerIndex = $index + 5;
+  if (!array_key_exists($powerIndex, $combatChain)) {
+    WriteLog("Invalid combat chain index while modifying power.", highlight: true);
+    return;
+  }
+  $combatChain[$powerIndex] = (int)$combatChain[$powerIndex] + (int)$amount;
   ProcessPhantasmOnBlock($index);
   ProcessAllMirage();
 }
@@ -1505,15 +1515,16 @@ function CombatChainClosedMainCharacterEffects()
 {
   global $chainLinks, $mainPlayer;
   $character = &GetPlayerCharacter($mainPlayer);
-  $chainLinksCount = count($chainLinks);
   $chainLinksPieces = ChainLinksPieces();
-  for ($i = 0; $i < $chainLinksCount; ++$i) {
-    $chainLinkICount = count($chainLinks[$i]);
+  foreach ($chainLinks as $chainLink) {
+    if (!is_array($chainLink)) continue;
+    $chainLinkICount = count($chainLink);
     for ($j = 0; $j < $chainLinkICount; $j += $chainLinksPieces) {
-      if ($chainLinks[$i][$j + 1] != $mainPlayer) continue;
-      $charIndex = FindCharacterIndex($mainPlayer, $chainLinks[$i][$j]);
+      if (!isset($chainLink[$j], $chainLink[$j + 1])) continue;
+      if ($chainLink[$j + 1] != $mainPlayer) continue;
+      $charIndex = FindCharacterIndex($mainPlayer, $chainLink[$j]);
       if ($charIndex == -1) continue;
-      switch ($chainLinks[$i][$j]) {
+      switch ($chainLink[$j]) {
         case "zephyr_needle":
         case "zephyr_needle_r":
           if ($character[$charIndex + 7] == "1") DestroyCharacter($mainPlayer, $charIndex);
@@ -1998,6 +2009,8 @@ function ClassOverride($cardID, $player)
 {
   global $currentTurnEffects;
   $classes = [];
+  if (!is_numeric($player) || (int)$player < 1 || (int)$player > 2) return CardClass($cardID);
+  $player = (int)$player;
   $otherPlayer = 3 - $player;
   $otherCharacter = &GetPlayerCharacter($otherPlayer);
   $mainCharacter = &GetPlayerCharacter($player);

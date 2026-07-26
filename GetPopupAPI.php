@@ -71,6 +71,12 @@ SetHeaders();
 $cardSize = 120;
 $params = explode("-", $popupType);
 $popupType = $params[0];
+$profilePopup = $popupType === "mySettings";
+if ($playerID == 0 && !$profilePopup) {
+  http_response_code(400);
+  echo json_encode(["error" => "A game popup requires a valid player ID."]);
+  exit;
+}
 $response = new stdClass();
 switch ($popupType) {
   case "attackSummary":

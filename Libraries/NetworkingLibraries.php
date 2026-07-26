@@ -119,7 +119,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 8:
     case 9: //OPT, CHOOSETOP, CHOOSEBOTTOM
       if ($turn[0] == "CHOOSETOP" || $turn[0] == "CHOOSEBOTTOM") {
-        $options = explode(",", $turn[2]);
+        $options = array_filter(explode(",", $turn[2] ?? ""));
         $found = array_search($buttonInput, $options);
         if ($found === false) break; //Invalid input
         $deck = new Deck($playerID);
@@ -188,7 +188,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $cardID;
       $banish = &GetBanish($playerID);
       $theirChar = &GetPlayerCharacter($otherPlayer);
-      if ($index < 0 || $index >= count($banish)) {
+      if (!is_numeric($index) || $index < 0 || $index + 2 >= count($banish)) {
         echo("Banish Index " . $index . " Invalid Input<BR>");
         return false;
       }
@@ -221,7 +221,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $cardID;
       $theirBanish = &GetBanish($otherPlayer);
       $theirChar = &GetPlayerCharacter($otherPlayer);
-      if ($index < 0 || $index >= count($theirBanish)) {
+      if (!is_numeric($index) || $index < 0 || $index + 2 >= count($theirBanish)) {
         echo("Banish Index " . $index . " Invalid Input<BR>");
         return false;
       }

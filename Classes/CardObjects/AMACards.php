@@ -233,20 +233,19 @@ class dig_for_souls_red extends Card {
 	function SpecificLogic() {
 		global $dqVars;
 		$else = $dqVars["else"] ?? false;
-		$inds = explode(",", $dqVars["inds"]);
-		if ($else)
-			$choice = "-";
-		else {
-			$choice = $dqVars["choice"];
-			$chosenCard = explode("-", $choice)[1];
-			AddGraveyard($chosenCard, $this->controller, "DECK");
+		$inds = array_filter(explode(",", $dqVars["inds"] ?? ""));
+		$choice = $else ? "-" : ($dqVars["choice"] ?? "-");
+		if ($choice !== "-") {
+			$choiceParts = explode("-", $choice, 2);
+			if (isset($choiceParts[1]) && $choiceParts[1] !== "") {
+				AddGraveyard($choiceParts[1], $this->controller, "DECK");
+			}
 		}
 		$newInds = [];
 		foreach($inds as $ind) {
-			if ($ind == $choice)
-				$choice = "-";
-			else
-				$newInds[] = explode("-", $ind)[1];
+			if ($ind === $choice) continue;
+			$indParts = explode("-", $ind, 2);
+			if (isset($indParts[1]) && $indParts[1] !== "") $newInds[] = $indParts[1];
 		}
 		return implode(",", $newInds);
 	}

@@ -337,7 +337,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
   }
   $blockVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
-  $powVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? $combatChainState[$CCS_CachedPreBlockValue] : $totalPower;
+  $powVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? ($combatChainState[$CCS_CachedPreBlockValue] ?? $totalPower) : $totalPower;
   $activeChainLink->totalPower = $powVal;
 
   $activeChainLink->totalDefense = $blockVal;
