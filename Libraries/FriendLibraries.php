@@ -105,6 +105,75 @@ function IsPvtVoidPatron($username) {
 }
 
 /**
+ * Get accepted friend account handles for spectator visibility checks.
+ *
+ * The optional connection makes this independently testable. When omitted,
+ * the function owns and closes the connection it creates.
+ *
+ * @param int $userId
+ * @param object|null $connection
+ * @return array
+ */
+function GetUserFriendUsernames($userId, $connection = null) {
+  if (!is_numeric($userId)) {
+    return [];
+  }
+
+  $ownsConnection = false;
+  if ($connection === null) {
+    if (!function_exists('GetDBConnection')) {
+      return [];
+    }
+    $connection = GetDBConnection();
+    $ownsConnection = true;
+  }
+
+  if (!$connection) {
+    return [];
+  }
+
+  $stmt = null;
+  try {
+    $query = "
+      SELECT u.usersUid
+      FROM friends f
+      JOIN users u ON f.friendUserId = u.usersId
+      WHERE f.userId = ? AND f.status = 'accepted'
+      ORDER BY u.usersUid ASC
+    ";
+    $stmt = $connection->prepare($query);
+    if (!$stmt) {
+      return [];
+    }
+
+    $userId = (int)$userId;
+    $stmt->bind_param("i", $userId);
+    if (!$stmt->execute()) {
+      return [];
+    }
+
+    $result = $stmt->get_result();
+    $usernames = [];
+    while ($row = $result->fetch_assoc()) {
+      if (!empty($row['usersUid'])) {
+        $usernames[] = $row['usersUid'];
+      }
+    }
+    return $usernames;
+  } catch (\Throwable $e) {
+    error_log("GetUserFriendUsernames: query failed: " . $e->getMessage());
+    return [];
+  } finally {
+    if ($stmt) {
+      $stmt->close();
+    }
+    if ($ownsConnection && method_exists($connection, 'close')) {
+      $connection->close();
+    }
+  }
+}
+
+/**
  * Get all accepted friends for a user
  * @param int $userId
  * @return array List of friend user IDs and names

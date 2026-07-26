@@ -256,9 +256,9 @@ class paragon_plate extends Card {
 
 	function SpecificLogic() {
 		global $dqVars;
-		$MZIndex = $dqVars["choice"];
+		$MZIndex = $dqVars["choice"] ?? "";
 		$Attack = MZIndexToObject($this->controller, $MZIndex);
-		if ($Attack != "") {
+		if (is_object($Attack)) {
 			$Character = new PlayerCharacter($this->controller);
 			$Weapon = $Character->FindCardUID($Attack->OriginUniqueID());
 			$Weapon->AddPowerCounters(-1);

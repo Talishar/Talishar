@@ -363,17 +363,19 @@ function CardSubType($cardID, $uniqueID = -1)
 function CharacterHealth($cardID)
 {
   $cardID = BlindCard($cardID, true);
+  static $healthCache = [];
+  if (isset($healthCache[$cardID])) return $healthCache[$cardID];
   switch ($cardID) {
     case "valda_seismic_impact":
-      return 40;
+      return $healthCache[$cardID] = 40;
     default:
       break;
   }
   $set = CardSet($cardID);
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->SpecialHealth();
-  if ($set != "DUM") return GeneratedCharacterHealth($cardID);
-  return match ($cardID) {
+  if ($card != "-") return $healthCache[$cardID] = $card->SpecialHealth();
+  if ($set != "DUM") return $healthCache[$cardID] = GeneratedCharacterHealth($cardID);
+  return $healthCache[$cardID] = match ($cardID) {
     "DUMMY" => 40,
     default => 20,
   };
@@ -444,22 +446,24 @@ function CardClass($cardID)
     default:
       break;
   }
+  static $classCache = [];
+  if (isset($classCache[$cardID])) return $classCache[$cardID];
   $setID = SetID($cardID);
   $number = intval(substr($setID, 3));
   if ($number >= 400) {
     $set = substr($setID, 0, 3);
     switch ($set) {
       case "MON":
-        if ($number == 404) return "ILLUSIONIST";
-        else if ($number == 405) return "WARRIOR";
-        else if ($number == 406) return "BRUTE";
-        else if ($number == 407) return "RUNEBLADE";
-        else return "NONE";
+        if ($number == 404) return $classCache[$cardID] = "ILLUSIONIST";
+        else if ($number == 405) return $classCache[$cardID] = "WARRIOR";
+        else if ($number == 406) return $classCache[$cardID] = "BRUTE";
+        else if ($number == 407) return $classCache[$cardID] = "RUNEBLADE";
+        else return $classCache[$cardID] = "NONE";
       case "UPR":
-        if ($number >= 406 && $number <= 417) return "ILLUSIONIST";
-        else if ($number >= 439 && $number <= 441) return "ILLUSIONIST";
-        else if ($number == 551) return "ILLUSIONIST";
-        else return "NONE";
+        if ($number >= 406 && $number <= 417) return $classCache[$cardID] = "ILLUSIONIST";
+        else if ($number >= 439 && $number <= 441) return $classCache[$cardID] = "ILLUSIONIST";
+        else if ($number == 551) return $classCache[$cardID] = "ILLUSIONIST";
+        else return $classCache[$cardID] = "NONE";
     }
   }
   switch ($cardID) {
@@ -467,16 +471,16 @@ function CardClass($cardID)
     case "nitro_mechanoidb":
     case "nitro_mechanoidc":
     case "teklovossen_the_mechropotentb":
-      return "MECHANOLOGIST";
+      return $classCache[$cardID] = "MECHANOLOGIST";
     default:
       break;
   }
   $card = GetClass($cardID, 0);
   if ($card != "-") {
     $specialClass = $card->SpecialClass();
-    if ($specialClass != "-") return $specialClass;
+    if ($specialClass != "-") return $classCache[$cardID] = $specialClass;
   }
-  return GeneratedCardClass($cardID);
+  return $classCache[$cardID] = GeneratedCardClass($cardID);
 }
 
 function CardTalent($cardID, $from="-")
@@ -4192,16 +4196,18 @@ function HasLegendary($cardID): bool
 
 function Is1H($cardID): bool|int
 {
+  static $oneHandedCache = [];
+  if (isset($oneHandedCache[$cardID])) return $oneHandedCache[$cardID];
   switch ($cardID) {
     case "claw_of_vynserakai": 
     case "gavel_of_natural_order":
     case "lionclaw_maul":
-      return true;
+      return $oneHandedCache[$cardID] = true;
     default:
       break;
   }
-  if (SubtypeContains($cardID, "Off-Hand")) return true;
-  return GeneratedIs1H($cardID);
+  if (SubtypeContains($cardID, "Off-Hand")) return $oneHandedCache[$cardID] = true;
+  return $oneHandedCache[$cardID] = GeneratedIs1H($cardID);
 }
 
 function AbilityPlayableFromCombatChain($cardID, $index="-"): bool
@@ -4430,12 +4436,14 @@ function BlockCantBeModified($cardID)
 
 function Rarity($cardID)
 {
+  static $rarityCache = [];
+  if (isset($rarityCache[$cardID])) return $rarityCache[$cardID];
   $set = CardSet($cardID);
-  if ($cardID == "baalghor_omen_of_the_end") return "R";
-  if ($cardID == "raydn_duskbane") return "R"; //downshift
-  if ($cardID == "blaze_firemind") return "R"; //downshift
+  if ($cardID == "baalghor_omen_of_the_end") return $rarityCache[$cardID] = "R";
+  if ($cardID == "raydn_duskbane") return $rarityCache[$cardID] = "R"; //downshift
+  if ($cardID == "blaze_firemind") return $rarityCache[$cardID] = "R"; //downshift
   if ($set != "DUM") {
-    return GeneratedRarity($cardID);
+    return $rarityCache[$cardID] = GeneratedRarity($cardID);
   }
 }
 

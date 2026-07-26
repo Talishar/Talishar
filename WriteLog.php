@@ -8,13 +8,15 @@
 if (!defined('LOG_BUFFER_FLUSH_THRESHOLD')) {
   define('LOG_BUFFER_FLUSH_THRESHOLD', 65536); // bytes, per filename
 }
-// Reserve a 512KB memory block that the shutdown handler can free before flushing,
-$GLOBALS['_logMemoryReserve'] = str_repeat('x', 524288);
+$GLOBALS['_logMemoryReserve'] = null;
 $logWriteBuffer = [];
 
 function LogBufferAppend($filename, $line, $requireExists)
 {
   global $logWriteBuffer;
+  if (!isset($GLOBALS['_logMemoryReserve'])) {
+    $GLOBALS['_logMemoryReserve'] = str_repeat('x', 524288);
+  }
   static $registered = false;
   if (!$registered) {
     register_shutdown_function('FlushLogBuffer');

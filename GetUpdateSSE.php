@@ -19,6 +19,7 @@ include_once "./Assets/MetafyDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
+include_once "Libraries/FriendLibraries.php";
 
 include_once 'GameLogic.php';
 include_once "GameTerms.php";
@@ -78,17 +79,11 @@ foreach(PatreonCampaign::cases() as $campaign) {
   $sessionData['patreonCampaigns'][$sessionID] = isset($_SESSION[$sessionID]);
 }
 
-// Load friend list if user is logged in (for friend hand visibility checks)
+// Friend hand/arsenal visibility is authorization data. Resolve it from the
+// database instead of relying on a client parameter that may be absent when
+// the long-lived SSE connection starts.
 $sessionData['friendList'] = [];
-$friendsListParam = TryGet("friendsList", "");
-if (!empty($friendsListParam)) {
-  try {
-    $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
-  } catch (Exception $e) {
-    // friendsList parameter parsing failed
-    error_log("GetUpdateSSE: failed to parse friendsList param: " . $e->getMessage());
-  }
-}
+$viewerUserId = $playerID == 3 && $sessionData['userLoggedIn'] ? LoggedInUser() : null;
 
 // Release session lock BEFORE SSE loop to prevent deadlock
 if (session_status() === PHP_SESSION_ACTIVE) {
@@ -102,8 +97,12 @@ if ($playerID == 3) {
     flush();
     exit;
   }
+  if (is_numeric($viewerUserId)) {
+    $sessionData['friendList'] = GetUserFriendUsernames((int)$viewerUserId);
+  }
   UpdateSpectatorPresence($gameName, $sessionData['displayName']);
 }
+$sessionData['friendSet'] = !empty($sessionData['friendList']) ? array_flip($sessionData['friendList']) : [];
 
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
@@ -153,6 +152,7 @@ $rateLimitStartInterval = microtime(true);
 $rateLimitProcessCount = 0;
 $buildFailureStreak = 0;
 $loopStartTimeMs = round(microtime(true) * 1000);
+$buildsSinceCycleCollection = 0;
 
 while (true) {
   $currentRealTime = microtime(true);
@@ -225,7 +225,10 @@ while (true) {
     else SetCachePiece($gameName, 17, 0);
     SendContent($gameState);
     unset($gameState);
-    gc_collect_cycles();
+    if (++$buildsSinceCycleCollection >= 25) {
+      gc_collect_cycles();
+      $buildsSinceCycleCollection = 0;
+    }
     set_time_limit(120);
   }
 

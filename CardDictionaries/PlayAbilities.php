@@ -546,6 +546,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       PutCharacterIntoPlayForPlayer("teklovossen_the_mechropotentb", $currentPlayer);
+      AddEvent("HERO_TRANSFORM", $currentPlayer . ":teklovossen_the_mechropotent");
       return "";
     case "adaptive_plating":
       ModularMove($cardID, $additionalCosts);

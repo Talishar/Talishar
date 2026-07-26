@@ -46,19 +46,21 @@ function ParseGamestate()
 
   // explode once; avoids a redundant O(n) substr_count scan on the same string
   $gamestateContent = explode("\r\n", ReadGamestateCache($gameName));
-  if (count($gamestateContent) < 60) {
+  $gamestateLineCount = count($gamestateContent);
+  if ($gamestateLineCount < 60) {
     global $filename;
     $gsFile = (isset($filename) && str_contains($filename, "gamestate.txt"))
       ? $filename : "./Games/" . $gameName . "/gamestate.txt";
     $fileContent = @file_get_contents($gsFile);
     if ($fileContent !== false) {
       $gamestateContent = explode("\r\n", $fileContent);
-      if (count($gamestateContent) >= 60) {
+      $gamestateLineCount = count($gamestateContent);
+      if ($gamestateLineCount >= 60) {
         WriteGamestateCache($gameName, $fileContent);
       }
     }
   }
-  if(count($gamestateContent) < 60) exit;
+  if ($gamestateLineCount < 60) exit;
 
   $playerHealths = GetStringArray($gamestateContent[0]); // 1
 

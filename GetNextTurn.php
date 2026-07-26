@@ -20,6 +20,7 @@ include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
+include_once "Libraries/FriendLibraries.php";
 include_once 'GameLogic.php';
 include_once "GameTerms.php";
 include_once "Libraries/UILibraries.php";
@@ -48,9 +49,13 @@ if (!is_numeric($playerID)) {
 }
 
 // Check spectator permission
-if ($playerID == 3 && GetCachePiece($gameName, 9) != "1") {
-  header('HTTP/1.0 403 Forbidden');
-  exit;
+$cacheArr = null;
+if ($playerID == 3) {
+  $cacheArr = ReadCacheArray($gameName) ?? [];
+  if (($cacheArr[8] ?? "") != "1") {
+    header('HTTP/1.0 403 Forbidden');
+    exit;
+  }
 }
 
 // Get auth key
@@ -78,12 +83,10 @@ foreach(PatreonCampaign::cases() as $campaign) {
   $sessionData['patreonCampaigns'][$sessionID] = isset($_SESSION[$sessionID]);
 }
 
-// Load friend list if user is logged in (for friend hand visibility checks)
+// Resolve spectator authorization server-side. The polling fallback must not
+// depend on the frontend having loaded and forwarded its friend list first.
 $sessionData['friendList'] = [];
-$friendsListParam = TryGet("friendsList", "");
-if (!empty($friendsListParam)) {
-  $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
-}
+$viewerUserId = $playerID == 3 && $sessionData['userLoggedIn'] ? LoggedInUser() : null;
 
 // Release the session lock NOW - before any file I/O or processing
 if (session_status() === PHP_SESSION_ACTIVE) {
@@ -95,11 +98,14 @@ if ($playerID == 3 && (!$sessionData['userLoggedIn'] || empty($sessionData['user
   echo json_encode(["errorMessage" => "Authentication required to spectate."]);
   exit;
 }
+if (is_numeric($viewerUserId)) {
+  $sessionData['friendList'] = GetUserFriendUsernames((int)$viewerUserId);
+}
+$sessionData['friendSet'] = !empty($sessionData['friendList']) ? array_flip($sessionData['friendList']) : [];
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $currentTime = round(microtime(true) * 1000);
-
-$cacheArr = ReadCacheArray($gameName);
+$cacheArr ??= ReadCacheArray($gameName) ?? [];
 
 // Track player connection status
 if ($isGamePlayer) {
@@ -115,15 +121,13 @@ if ($playerID == 3) {
   UpdateSpectatorPresence($gameName, $sessionData['displayName']);
 }
 
-// Check if game file exists
-if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
-  echo json_encode(["errorMessage" => "Game no longer exists on the server."]);
-  exit;
-}
-
 // Check cache value for updates (optional optimization)
 $cacheVal = intval($cacheArr[0] ?? "");
 if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
+  if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
+    echo json_encode(["errorMessage" => "Game no longer exists on the server."]);
+    exit;
+  }
   echo "0";
   exit;
 }

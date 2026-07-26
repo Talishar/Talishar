@@ -288,7 +288,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   if($playerID == 1) $response->chatInvited = ($p1ChatStatus == 0 && $p2ChatStatus == 1);
   else if($playerID == 2) $response->chatInvited = ($p2ChatStatus == 0 && $p1ChatStatus == 1);
 
-  // Typing indicator — same APCu key used by ChatTyping.php / CheckOpponentTyping.php.
+  // Typing indicator — same APCu key used by ChatTyping.php.
   // Piggybacking on the existing lobby poll costs zero extra requests.
   if ($response->chatEnabled && ($playerID == 1 || $playerID == 2)) {
     $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;

@@ -177,7 +177,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "MAYCHOOSECARD":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $options = explode(",", $turn[2]);
+        $options = array_filter(explode(",", $turn[2] ?? ""), fn($option) => $option !== "");
         $optCards = [];
         $buttonText = match($turn[0]) {
           "CHOOSETOP" => "Top",

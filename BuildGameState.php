@@ -58,8 +58,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $otherPlayer = $playerID == 1 ? 2 : 1;
   $cacheVal = intval($buildCacheArr[0] ?? 0);
 
-  include_once "ParseGamestate.php";
-  ParseGamestate();
+  if (!function_exists("ParseGamestate")) {
+    include_once "ParseGamestate.php";
+  } else {
+    ParseGamestate();
+  }
 
   if (empty($p1uid) || empty($p2uid)) {
     $gameFileLines = @file("./Games/" . $gameName . "/GameFile.txt", FILE_IGNORE_NEW_LINES);
@@ -87,13 +90,21 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $isCasterMode = function_exists('IsCasterMode') ? IsCasterMode() : false;
 
   // Determine friend-based hand visibility using pre-loaded friend list from sessionData
-  $isHideHandFromFriends = IsHideHandFromFriends($otherPlayer);
+  if ($playerID == 3) {
+    $hideP1HandFromFriends = IsHideHandFromFriends(1);
+    $hideP2HandFromFriends = IsHideHandFromFriends(2);
+    $isHideHandFromFriends = $hideP1HandFromFriends;
+  } else {
+    $hideP1HandFromFriends = false;
+    $hideP2HandFromFriends = false;
+    $isHideHandFromFriends = IsHideHandFromFriends($otherPlayer);
+  }
   $viewerIsFriendOfOpponent = false;
   $spectatorIsFriendOfP1 = false;
   $spectatorIsFriendOfP2 = false;
   
   $friendList = $sessionData['friendList'] ?? [];
-  $friendSet = !empty($friendList) ? array_flip($friendList) : [];
+  $friendSet = $sessionData['friendSet'] ?? (!empty($friendList) ? array_flip($friendList) : []);
   if ($playerID == 1 || $playerID == 2) {
     $opponentUID = $playerID == 1 ? $p2uid : $p1uid;
     $viewerIsFriendOfOpponent = isset($friendSet[$opponentUID]);
@@ -337,7 +348,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
   }
   $blockVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
-  $powVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? $combatChainState[$CCS_CachedPreBlockValue] : $totalPower;
+  $powVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? ($combatChainState[$CCS_CachedPreBlockValue] ?? $totalPower) : $totalPower;
   $activeChainLink->totalPower = $powVal;
 
   $activeChainLink->totalDefense = $blockVal;
@@ -431,7 +442,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $theirHandCount = count($theirHand);
-  $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !IsHideHandFromFriends(1));
+  $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends);
   
   for ($i = 0; $i < $theirHandCount; ++$i) {
     $theirHandContents[] = JSONRenderedCard($showTheirHand ? $theirHand[$i] : $TheirCardBack);
@@ -622,7 +633,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myHandContents = [];
   $myHandCount = count($myHand);
   $handPieces = HandPieces();
-  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2)) || IsReplay());
+  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay);
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     if ($playerID == 3) {
       if($spectatorCanSeeP2Hand) $myHandContents[] = JSONRenderedCard(cardNumber: $myHand[$i], controller: 2);
@@ -871,7 +882,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $theirArsenalCount = count($theirArsenal);
     for ($i = 0; $i < $theirArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $theirArsenal[$i + 1] = "UP";
-      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver || ($playerID == 3 && $spectatorIsFriendOfP1 && !IsHideHandFromFriends(1))) {
+      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends)) {
         $overlay = 0;
         $border = 0;
         $cardID = $theirArsenal[$i];
@@ -922,7 +933,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $myArsenalCount = count($myArsenal);
     for ($i = 0; $i < $myArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $myArsenal[$i + 1] = "UP";
-      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver && !($spectatorIsFriendOfP2 && !IsHideHandFromFriends(2))) {
+      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver && !($spectatorIsFriendOfP2 && !$hideP2HandFromFriends)) {
         $myArse[] = JSONRenderedCard(
           cardNumber: $MyCardBack,
           controller: 2,
@@ -981,9 +992,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
     if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
-    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1 && SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Targeted/Effect Active";
-    elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
-    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
+    else {
+      $isTargeted = SearchLayersForTargetUniqueID($uniqueID) != -1;
+      $hasActiveEffect = SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1;
+      if ($isTargeted && $hasActiveEffect) $label = "Targeted/Effect Active";
+      elseif ($hasActiveEffect) $label = "Effect Active";
+      elseif ($isTargeted) $label = "Targeted";
+    }
     $theirAlliesOutput[] = JSONRenderedCard(
         cardNumber: $theirAllies[$i],
         overlay: $theirAllies[$i + 1] != 2 ? 1 : 0,

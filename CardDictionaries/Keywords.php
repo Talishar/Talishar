@@ -38,7 +38,7 @@
       $MZZone = &GetItems($player);
       $steamInd = 1;
     }
-    if($MZZone[$index+$steamInd] <= 0) return;
+    if(!isset($MZZone[$index+$steamInd]) || $MZZone[$index+$steamInd] <= 0) return;
     --$MZZone[$index+$steamInd];
     if($mainPhase) GainActionPoints(1, $player);
     WriteLog("Player $player cranked");
