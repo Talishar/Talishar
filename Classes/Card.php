@@ -829,4 +829,8 @@ class Card {
   function WinWagerTrigger() {
     return;
   }
+
+  function EffectIntellectModifier($i, $remove) {
+    return 0;
+  }
 }

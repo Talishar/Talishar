@@ -1505,7 +1505,7 @@ function AuraPlayAbilities($cardID, $from = "")
     $remove = 0;
     $card = GetClass($auras[$i], $currentPlayer);
     if ($card != "-") {
-      $card->PermanentPlayAbility($cardID, $from, $i);
+      $remove = $card->PermanentPlayAbility($cardID, $from, $i);
     }
     switch ($auras[$i]) {
       case "quicken":

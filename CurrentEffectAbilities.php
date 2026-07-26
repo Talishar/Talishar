@@ -1662,6 +1662,17 @@ function CurrentEffectAttackAbility($attackIndex=-1)
   }
 }
 
+function CurrentEffectActivateAbility($cardID, $from) { // ideally I'd like to merge this with the below function
+  global $CurrentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost;
+  for ($i = $CurrentTurnEffects->NumEffects(); $i >= 0; --$i) {
+    $remove = false;
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
+    if ($card !=  "-") $card->PlayCardEffectAbility($cardID, $from, $remove, $i);
+    if ($remove) $Effect->Remove();
+  }
+}
+
 function CurrentEffectPlayAbility($cardID, $from)
 {
   global $currentTurnEffects, $currentPlayer, $actionPoints, $CS_LastDynCost;
@@ -1672,8 +1683,8 @@ function CurrentEffectPlayAbility($cardID, $from)
   $cardType = CardType($cardID);
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
-    $card = GetClass($currentTurnEffects[$i], $currentPlayer);
-      if ($card !=  "-") $card->PlayCardEffectAbility($cardID, $from, $remove, $i);
+    $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+    if ($card !=  "-") $card->PlayCardEffectAbility($cardID, $from, $remove, $i);
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "lead_the_charge_red":
@@ -2083,6 +2094,8 @@ function CurrentEffectIntellectModifier($remove = false)
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       $cardID = ExtractCardID($currentTurnEffects[$i]);
+      $card = GetClass($cardID, $mainPlayer);
+      if ($card != "-") $intellectModifier += $card->EffectIntellectModifier($i, $remove);
       switch ($cardID) {
         case "helm_of_isens_peak":
         case "pursuit_of_knowledge_blue":
