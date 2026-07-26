@@ -58,8 +58,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $otherPlayer = $playerID == 1 ? 2 : 1;
   $cacheVal = intval($buildCacheArr[0] ?? 0);
 
-  include_once "ParseGamestate.php";
-  ParseGamestate();
+  if (!function_exists("ParseGamestate")) {
+    include_once "ParseGamestate.php";
+  } else {
+    ParseGamestate();
+  }
 
   if (empty($p1uid) || empty($p2uid)) {
     $gameFileLines = @file("./Games/" . $gameName . "/GameFile.txt", FILE_IGNORE_NEW_LINES);
@@ -981,9 +984,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
     if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
-    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1 && SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Targeted/Effect Active";
-    elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
-    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
+    else {
+      $isTargeted = SearchLayersForTargetUniqueID($uniqueID) != -1;
+      $hasActiveEffect = SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1;
+      if ($isTargeted && $hasActiveEffect) $label = "Targeted/Effect Active";
+      elseif ($hasActiveEffect) $label = "Effect Active";
+      elseif ($isTargeted) $label = "Targeted";
+    }
     $theirAlliesOutput[] = JSONRenderedCard(
         cardNumber: $theirAllies[$i],
         overlay: $theirAllies[$i + 1] != 2 ? 1 : 0,

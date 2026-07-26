@@ -48,9 +48,13 @@ if (!is_numeric($playerID)) {
 }
 
 // Check spectator permission
-if ($playerID == 3 && GetCachePiece($gameName, 9) != "1") {
-  header('HTTP/1.0 403 Forbidden');
-  exit;
+$cacheArr = null;
+if ($playerID == 3) {
+  $cacheArr = ReadCacheArray($gameName) ?? [];
+  if (($cacheArr[8] ?? "") != "1") {
+    header('HTTP/1.0 403 Forbidden');
+    exit;
+  }
 }
 
 // Get auth key
@@ -98,8 +102,7 @@ if ($playerID == 3 && (!$sessionData['userLoggedIn'] || empty($sessionData['user
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $currentTime = round(microtime(true) * 1000);
-
-$cacheArr = ReadCacheArray($gameName);
+$cacheArr ??= ReadCacheArray($gameName) ?? [];
 
 // Track player connection status
 if ($isGamePlayer) {
@@ -115,15 +118,13 @@ if ($playerID == 3) {
   UpdateSpectatorPresence($gameName, $sessionData['displayName']);
 }
 
-// Check if game file exists
-if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
-  echo json_encode(["errorMessage" => "Game no longer exists on the server."]);
-  exit;
-}
-
 // Check cache value for updates (optional optimization)
 $cacheVal = intval($cacheArr[0] ?? "");
 if ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
+  if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
+    echo json_encode(["errorMessage" => "Game no longer exists on the server."]);
+    exit;
+  }
   echo "0";
   exit;
 }

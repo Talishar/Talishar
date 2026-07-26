@@ -2855,7 +2855,7 @@ function GetLayerTarget($cardID, $from)
     case "cleansing_light_blue":
       if($cardID == "cleansing_light_red") $targetPitch = 1;
       else if($cardID == "cleansing_light_yellow") $targetPitch = 2;
-      else if($cardID == "cleansing_light_blue") $targetPitch = 3;
+      else $targetPitch = 3;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:pitch=" . $targetPitch . "&MYAURAS:pitch=" . $targetPitch);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target aura");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
