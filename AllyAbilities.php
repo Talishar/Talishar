@@ -8,10 +8,6 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   $Allies = new Allies($player);
-  if (IsUnique($cardID) && $Allies->FindCardID($cardID)->Index() != -1) {
-    WriteLog(CardLink($cardID) . " is unique! You can only control one.");
-    return;
-  }
   if (TypeContains($EffectContext, "C", $player) && (PreachModestyActive())) {
     WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
@@ -73,6 +69,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   }
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->EntersArenaAbility();
+  CheckUnique($player);
   return $index;
 }
 

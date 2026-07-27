@@ -4656,3 +4656,10 @@ function IsInstantMod($mod) {
     default => false
   };
 }
+
+function Moniker($cardID) {
+  return match ($cardID) {
+    "ser_boltyn_breaker_of_dawn" => "boltyn",
+    default => explode("_", $cardID)[0]
+  };
+}

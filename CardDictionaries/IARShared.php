@@ -41,3 +41,51 @@ function HasIncarnate($cardID) {
 	if ($card != "-") return $card->HasIncarnate();
 	return false;
 }
+
+function CheckUnique($player) {
+	$Allies = new Allies($player);
+	$Char = new PlayerCharacter($player);
+	$uniqueCards = [];
+	for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+		$AllyCard = $Allies->Card($i, true);
+		if (IsUnique($AllyCard->CardID())) $uniqueCards[] = Moniker($AllyCard->CardID());
+	}
+	for ($i = 0; $i < $Char->NumCards(); ++$i) {
+		$CharCard = $Char->Card($i, true);
+		if (IsUnique($CharCard->CardID())) $uniqueCards[] = Moniker($CharCard->CardID());
+	}
+
+	foreach ($uniqueCards as $uniqueCard) {
+		$conflicts = [];
+		for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+			$AllyCard = $Allies->Card($i, true);
+			if (Moniker($AllyCard->CardID()) == $uniqueCard) $conflicts[] = "MYALLY-" . $AllyCard->Index();
+		}
+		for ($i = 0; $i < $Char->NumCards(); ++$i) {
+			$CharCard = $Char->Card($i, true);
+			if (Moniker($CharCard->CardID()) == $uniqueCard) $conflicts[] = "MYCHAR-" . $CharCard->Index();
+		}
+		if (count($conflicts) > 1) {
+			// for now don't let people kill themselves on accident
+			if (($key = array_search('MYCHAR-0', $conflicts)) !== false)
+				unset($conflicts[$key]);
+			$conflicts = array_values($conflicts);
+
+			$conflicts = implode(",", $conflicts);
+			Await($player, "ChooseMultiZone", "choice", indices:$conflicts, context:"Sacrifice a $uniqueCard to the Unique Rule", subsequent:0);
+			Await($player, "ProcessUnique", final:true);
+			return;
+		}
+	}
+}
+
+function ProcessUniqueAwait($player) {
+	global $dqVars;
+	$choice = $dqVars["choice"];
+	$obj = MZIndexToObject($player, $choice);
+	if ($obj != "") {
+		WriteLog("Sacrificing " . CardLink($obj->CardID()) . " to the Unique Rule!");
+		$obj->Destroy(skipDestroy:true);
+	}
+	CheckUnique($player);
+}
