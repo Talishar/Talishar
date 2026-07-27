@@ -54,14 +54,14 @@ class restless_commander_red extends Card {
 }
 
 class corrupted_crown extends Card {
-  function __construct($controller) {
-    $this->cardID = "corrupted_crown";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "corrupted_crown";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function OnBlockResolveEffects($blockedFromHand, $i, $start) {
 		$BlockCard = new ChainCard($i);
@@ -79,7 +79,7 @@ class corrupted_crown extends Card {
 		$choice = $dqVars["choice"];
 		$uniqueID = $dqVars["uniqueID"];
 		$ChainCard = $CombatChain->FindCardUID($uniqueID);
-		MZBanish($this->controller, "", $choice);
+		MZBanish($this->controller, "HAND", $choice);
 		MZRemove($this->controller, $choice);
 		$ChainCard->ModifyDefense(1);
 	}
