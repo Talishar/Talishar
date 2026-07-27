@@ -306,4 +306,8 @@ class AttackLayer {
         $this->attackQueue[$this->index + 7] .= ",$buff";
     }
   }
+
+  function SourceUniqueID() {
+    return $this->attackQueue[$this->index + 5] ?? "-";
+  }
 }

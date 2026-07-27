@@ -1267,3 +1267,69 @@ class bluff_catcher_yellow extends Card {
 		return 1;
 	}
 }
+
+class point_of_escalation_yellow extends Card {
+	private $archetype;
+	function __construct($controller) {
+		$this->cardID = "point_of_escalation_yellow";
+		$this->controller = $controller;
+		$this->archetype = new sword_attack_reaction($this->cardID, $controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CS_WeaponsAttackedWith, $CombatChain, $AttackQueue;
+		$weaponAttacks = explode(",", GetClassState($this->controller, $CS_WeaponsAttackedWith));
+		$pow = 0;
+		$uid = "-";
+		if ($target == "COMBATCHAINLINK-0")
+			$uid = $CombatChain->AttackCard()->OriginUniqueID();
+		elseif (str_contains($target, "ATTACKQUEUE")) {
+			$ind = explode("-", $target)[1] ?? -1;
+			if ($ind != -1) {
+				$QueueCard = $AttackQueue->Card($ind);
+				$uid = $QueueCard->SourceUniqueID();
+			}
+		}
+		foreach ($weaponAttacks as $attack)
+			if ($attack == $uid) $pow += 2;
+		if ($pow > 0)
+			AddEffectToAttack($this->controller, "$this->cardID-$pow", $target);
+		return "";
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return intval($param);
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->archetype->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->archetype->PayAdditionalCosts();
+	}
+
+	function SpecialName() {
+		return "Point of Escalation";
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function SpecialType() {
+		return "AR";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+}
