@@ -315,6 +315,9 @@ function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
   if ($srcItems[$index] == "gold") {
     UndestroyHook($destPlayer);
     IncrementClassState($destPlayer, $CS_NumGoldCreated);
+    $Hero = new CharacterCard(0, $destPlayer);
+    if ($Hero->CardID() == "killjoy_the_crooked_blade")
+      AddLayer("TRIGGER", $destPlayer, $Hero->CardID());
   }
   $destItems = &GetItems($destPlayer);
   $itemPieces = ItemPieces();

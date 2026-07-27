@@ -1335,3 +1335,88 @@ class point_of_escalation_yellow extends Card {
 		return "WARRIOR";
 	}
 }
+
+class zane_broadly_beloved extends Card {
+  function __construct($controller) {
+    $this->cardID = "zane_broadly_beloved";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		if ($additionalCosts == "CHEER") {
+			Draw($this->controller);
+			Draw($this->controller == 1 ? 2 : 1);
+		}
+		else
+			Cheer($this->controller);
+  }
+
+  function CheerTrigger() {
+		global $CS_CheeredThisTurn;
+		if (GetClassState($this->controller, $CS_CheeredThisTurn) == 1)
+			AddLayer("TRIGGER", $this->cardID, $this->controller, "-", "CHEER");
+  }
+
+  // function SpecialName() {
+	// 	return "Zane Broadly Beloved";
+  // }
+
+  function SpecialTalent() {
+		return "Revered";
+  }
+
+  function SpecialClass() {
+		return "WARRIOR";
+  }
+
+  function SpecialType() {
+		return "C";
+  }
+}
+
+class killjoy_the_crooked_blade extends Card {
+  function __construct($controller) {
+    $this->cardID = "killjoy_the_crooked_blade";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		if ($additionalCosts == "BOO") {
+			$otherPlayer = $this->controller == 1 ? 2 : 1;
+			if (PlayerHasLessHealth($this->controller))
+				LoseHealth(1, $otherPlayer);
+		}
+		else
+			BOO($this->controller);
+	}
+
+	function BooTrigger() {
+		global $CS_BooedThisTurn;
+		if (GetClassState($this->controller, $CS_BooedThisTurn) == 1)
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "BOO");
+	}
+
+  function SpecialName() {
+		return "Killjoy the Crooked Blade";
+  }
+
+  function SpecialTalent() {
+		return "Reviled";
+  }
+
+  function SpecialClass() {
+		return "WARRIOR,THIEF";
+  }
+
+  function SpecialType() {
+		return "C";
+  }
+}

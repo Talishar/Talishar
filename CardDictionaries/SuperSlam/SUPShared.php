@@ -283,12 +283,14 @@ function Deal2OrDiscard($targetPlayer, $effectSource="-")
 
 function BOO($player)
 {
-  $ClassState = new ClassState($player);
-  $ClassState->SetBooedThisTurn(1);
+  global $CS_BooedThisTurn;
+  IncrementClassState($player, $CS_BooedThisTurn);
   $char = GetPlayerCharacter($player);
   $heroID = ShiyanaCharacter($char[0], $player);
   WriteLog("🍅<b>BOOOOO!</b> The crowd jeers at " . CardLink($char[0], $char[0]) . "!");
   if ($char[1] < 3) {
+    $card = GetClass($char[0], $player);
+    if ($card != "-") $card->BooTrigger();
     switch($heroID) {
       case "lyath_goldmane":
       case "lyath_goldmane_vile_savant":
@@ -304,8 +306,8 @@ function BOO($player)
 
 function Cheer($player)
 {
-  $ClassState = new ClassState($player);
-  $ClassState->SetCheeredThisTurn(1);
+  global $CS_CheeredThisTurn;
+  IncrementClassState($player, $CS_CheeredThisTurn);
   $char = GetPlayerCharacter($player);
   WriteLog("👏Let's go! The crowd <b>cheers</b> for " . CardLink($char[0], $char[0]) . "!");
   $charCount = count($char);

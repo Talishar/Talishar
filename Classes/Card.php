@@ -458,6 +458,10 @@ class Card {
     return;
   }
 
+  function BooTrigger() {
+    return;
+  }
+
   function PlayableFromBanish($mod, $nonLimitedOnly) {
     return false;
   }
