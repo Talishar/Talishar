@@ -68,9 +68,9 @@ class prizeworn_pathfinders extends Card {
       $Equipment->AddDefCounters(1);
   }
 
-  // function SpecialName() {
-  //   return "Prizeworn Pathfinders";
-  // }
+  function SpecialName() {
+    return "Prizeworn Pathfinders";
+  }
 
   function SpecialBlock() {
     return 1;
@@ -125,9 +125,9 @@ class heads_up_red extends Card {
     return $param == "DOMINATE";
   }
 
-  // function SpecialName() {
-  //   return "Heads Up";
-  // }
+  function SpecialName() {
+    return "Heads Up";
+  }
 
   function SpecialCost() {
     return 1;
@@ -176,9 +176,9 @@ class visit_the_prize_room_blue extends Card {
     }
   }
 
-  // function SpecialName() {
-  //   return "Visit the Prize Room";
-  // }
+  function SpecialName() {
+    return "Visit the Prize Room";
+  }
 
   function SpecialPitch() {
     return 3;
