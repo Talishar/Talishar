@@ -313,8 +313,9 @@ function CardSubType($cardID, $uniqueID = -1)
     case "undead_grasp": // temporary
       return "Arms";
     case "corrupted_crown":
-    case "circlet_of_eternal_end":
       return "Head";
+    case "prizeworn_pathfinders":
+      return "Legs";
     default:
       break;
   }
