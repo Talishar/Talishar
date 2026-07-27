@@ -936,7 +936,8 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
   switch ($cardID) {
     case "hunters_klaive":
     case "hunters_klaive_r":
-      MarkHero($defPlayer);
+      $target = $target == "-" ? $defPlayer : $target;
+      MarkHero($target);
       break;
     case "mark_of_the_huntsman":
     case "mark_of_the_huntsman_r":
@@ -945,8 +946,9 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
     case "kiss_of_death_red":
-      WriteLog("Player $defPlayer loses 1 life.");
-      LoseHealth(1, $defPlayer);
+      $target = $target == "-" ? $defPlayer : $target;
+      WriteLog("Player $target loses 1 life.");
+      LoseHealth(1, $target);
       break;
     case "mark_of_the_black_widow_red":
     case "mark_of_the_black_widow_yellow":

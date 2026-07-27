@@ -647,14 +647,9 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "stasis_cell_blue":
       if ($from == "PLAY") {
-        // $indices = MultiZoneIndices($currentPlayer, "THEIRCHAR:type=E");
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=E");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("EQUIPCANTDEFEND", $currentPlayer, "stasis_cell_blue-B-", 1);
-        // AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-        // AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target equipment it cannot defend this turn");
-        // AddDecisionQueue("CHOOSETHEIRCHARACTER", $currentPlayer, "<-", 1);
-        // AddDecisionQueue("EQUIPCANTDEFEND", $otherPlayer, "stasis_cell_blue-B-", 1);
       }
       break;
     case "fuel_injector_blue":

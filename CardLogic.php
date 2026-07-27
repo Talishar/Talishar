@@ -1037,7 +1037,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "scale_peeler":
     case "scale_peeler_r":
       if (IsHeroAttackTarget() || $targetPlayer != "-") {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT", $uniqueID);
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $targetPlayer, "ONHITEFFECT", $uniqueID);
         return true;
       }
       break;
@@ -1090,7 +1090,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
       break;
     case "kiss_of_death_red":
       if (IsHeroAttackTarget() || $targetPlayer == $defPlayer) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
+        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $targetPlayer, "ONHITEFFECT");
         return true;
       }
     case "dishonor_blue":
