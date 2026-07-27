@@ -1065,18 +1065,19 @@ class terms_of_combat_red extends Card {
 
 class shimmer_of_the_blade_red extends Card {
 	public $archetype;
-  function __construct($controller) {
-    $this->cardID = "shimmer_of_the_blade_red";
-    $this->controller = $controller;
-	$this->archetype = new windup($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain;
-	if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
-		AddEffectToCurrentAttack($this->cardID);
-	return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "shimmer_of_the_blade_red";
+		$this->controller = $controller;
+		$this->archetype = new windup($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CombatChain;
+		if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+			// AddEffectToCurrentAttack($this->cardID); switch back to this once the card has a set id
+		return "";
+	}
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 3;
