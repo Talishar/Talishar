@@ -1220,7 +1220,7 @@ class bluff_catcher_yellow extends Card {
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
-		return $param != "WAGER" ? 3 : 0;
+		return $param != "WAGER" && $param != "INT" ? 3 : 0;
 	}
 
 	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
