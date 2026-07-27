@@ -1310,10 +1310,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($player == $mainPlayer) AddNextTurnEffect($effect, $player, numTurns: 2); //If played at instant speed from Dash
       return $lastResult;
     case "EQUIPCANTDEFEND":
-      $character = &GetPlayerCharacter($player);
-      WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " can't defend this turn.");
-      $effect = $parameter . $character[$lastResult];
-      AddCurrentTurnEffect($effect, $player);
+      $Object = MZIndexToObject($player, $lastResult);
+      if ($Object != "") {
+        WriteLog(CardLink($Object->CardID()) . " can't defend this turn.");
+        $effect = $parameter . $Object->CardID();
+        $otherPlayer = $player == 1 ? 2 : 1;
+        AddCurrentTurnEffect($effect, $otherPlayer);
+      }
       return $lastResult;
     case "ADDCURRENTANDNEXTTURNEFFECT":
       AddCurrentTurnEffect($parameter, $player);
