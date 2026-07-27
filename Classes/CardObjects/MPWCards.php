@@ -1366,7 +1366,7 @@ class zane_broadly_beloved extends Card {
   // }
 
   function SpecialTalent() {
-		return "Revered";
+		return "REVERED";
   }
 
   function SpecialClass() {
@@ -1376,6 +1376,10 @@ class zane_broadly_beloved extends Card {
   function SpecialType() {
 		return "C";
   }
+
+	function SpecialSubType() {
+		return "Young";
+	}
 }
 
 class killjoy_the_crooked_blade extends Card {
@@ -1409,7 +1413,7 @@ class killjoy_the_crooked_blade extends Card {
   }
 
   function SpecialTalent() {
-		return "Reviled";
+		return "REVILED";
   }
 
   function SpecialClass() {
@@ -1419,4 +1423,8 @@ class killjoy_the_crooked_blade extends Card {
   function SpecialType() {
 		return "C";
   }
+
+	function SpecialSubType() {
+		return "Young";
+	}
 }
