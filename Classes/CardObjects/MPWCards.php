@@ -1216,6 +1216,7 @@ class bluff_catcher_yellow extends Card {
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		global $CombatChain;
+		if ($parameter == "INT") return false;
 		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
 	}
 
