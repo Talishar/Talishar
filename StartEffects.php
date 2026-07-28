@@ -215,7 +215,8 @@ function InventoryStartGameAbilities($player)
   global $p1Inventory, $p2Inventory;
   $inventory = $player == 1 ? $p1Inventory : $p2Inventory;
   $inventoryPieceSize = InventoryPieces();
-  for ($i = 0; $i < count($inventory); $i += $inventoryPieceSize) {
+  $accountedFor = [];
+  for ($i = count($inventory) - 1; $i >= 0; $i -= $inventoryPieceSize) {
     switch ($inventory[$i]) {
       case "levia_redeemed":
         PutPermanentIntoPlay($player, "levia_redeemed");
@@ -230,6 +231,13 @@ function InventoryStartGameAbilities($player)
       case "adaptive_alpha_mold":
         addAdaptiveEquipmentDecision($player, $inventory[$i], "ADAPTIVEALPHAMOLD");
         break;
+    }
+    if (!in_array($inventory[$i], $accountedFor) && !IsModular($inventory[$i]) && TypeContains($inventory[$i], "E")) {
+      // remove anything in the inventory that got equipped
+      $accountedFor[] = $inventory[$i];
+      if (SearchCharacterForCard($player, $inventory[$i])) {
+        RemoveInventory($player, $i);
+      }
     }
   }
 }
