@@ -1380,6 +1380,10 @@ class zane_broadly_beloved extends Card {
 	function SpecialSubType() {
 		return "Young";
 	}
+
+	function SpecialBlock() {
+		return -2;
+	}
 }
 
 class killjoy_the_crooked_blade extends Card {
@@ -1426,5 +1430,9 @@ class killjoy_the_crooked_blade extends Card {
 
 	function SpecialSubType() {
 		return "Young";
+	}
+
+	function SpecialBlock() {
+		return -2;
 	}
 }
