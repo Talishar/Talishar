@@ -7,12 +7,24 @@ function Usurp($cardID, $player, $from) {
 		$theirInds = SearchAurasForCard("runechant", $otherPlayer, false);
 		if ($inds != "" || $theirInds != "") {
 			$MZInds = [];
+			$includedCardIDs = [];
 			$inds = $inds != "" ? explode(",", $inds) : [];
-			foreach ($inds as $ind)
-				$MZInds[] = "MYAURAS-$ind";
+			foreach ($inds as $ind) {
+				$Aura = new AuraCard($ind, $player);
+				if (!in_array($Aura->CardID(), $includedCardIDs)) {
+					$MZInds[] = "MYAURAS-$ind";
+					$includedCardIDs[] = $Aura->CardID();
+				}
+			}
 			$theirInds = $theirInds != "" ? explode(",", $theirInds) : [];
-			foreach ($theirInds as $ind)
-				$MZInds[] = "THEIRAURAS-$ind";
+			$includedCardIDs = [];
+			foreach ($theirInds as $ind) {
+				$Aura = new AuraCard($ind, $otherPlayer);
+				if (!in_array($Aura->CardID(), $includedCardIDs)) {
+					$MZInds[] = "THEIRAURAS-$ind";
+					$includedCardIDs[] = $Aura->CardID();
+				}
+			}
 			$context = "Usurp a " . CardLink("runechant");
 			Await($player, "ChooseMultiZone", "choice", indices:implode(",", $MZInds), context:$context);
 			Await($player, "Usurp", cardID:$cardID, final:true);
