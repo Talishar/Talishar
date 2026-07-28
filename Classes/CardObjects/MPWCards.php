@@ -506,8 +506,7 @@ class steel_on_steel_red extends Card {
 	}
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CombatChain;
-		return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
+		return IsWeaponAttack() ? 1 : 0;
 	}
 }
 
@@ -522,8 +521,7 @@ class steel_on_steel_yellow extends Card {
 	}
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CombatChain;
-		return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
+		return IsWeaponAttack() ? 1 : 0;
 	}
 }
 
@@ -538,8 +536,7 @@ class steel_on_steel_blue extends Card {
 	}
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CombatChain;
-		return TypeContains($CombatChain->AttackCard()->ID(), "W") ? 1 : 0;
+		return IsWeaponAttack() ? 1 : 0;
 	}
 }
 
