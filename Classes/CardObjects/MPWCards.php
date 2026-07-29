@@ -1713,3 +1713,135 @@ class big_slick_blue extends Card {
 		return 3;
 	}
 }
+
+class check_raise extends BaseCard {
+	function PlayAbility() {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive() {
+		global $combatChainState, $CCS_WagersThisLink;
+		// technically wrong, it should trigger and create a new effect that's active, but I can't
+		// see any strategic difference
+		return $combatChainState[$CCS_WagersThisLink] > 0;
+	}
+}
+
+class check_raise_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "check_raise_red";
+    $this->controller = $controller;
+    $this->baseCard = new check_raise($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+
+	function SpecialName() {
+		return "Check Raise";
+	}
+
+	function SpecialType() { 
+		return "A";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+}
+
+class check_raise_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "check_raise_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new check_raise($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function SpecialName() {
+		return "Check Raise";
+	}
+
+	function SpecialType() { 
+		return "A";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+}
+
+class check_raise_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "check_raise_blue";
+    $this->controller = $controller;
+    $this->baseCard = new check_raise($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function SpecialName() {
+		return "Check Raise";
+	}
+
+	function SpecialType() { 
+		return "A";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+}
