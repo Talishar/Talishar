@@ -1500,3 +1500,216 @@ class all_in_red extends Card {
 		return "WARRIOR";
 	}
 }
+
+
+class big_slick extends BaseCard {
+	function PlayAbility() {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive() {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function OnAttackEffect($i) {
+		global $CombatChain;
+		$Effect = new CurrentEffect($i);
+		if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword") && $Effect->EffectID() == $this->cardID)
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+		return false;
+	}
+
+	function ProcessTrigger() {
+		AddCurrentTurnEffect("$this->cardID-WAGER", $this->controller, from:"PLAY"); // contains the wager effect
+		AddOnWagerEffects();
+	}
+
+	function WonWager($wonWager) {
+    Draw($wonWager);
+	}
+
+	function IsWagerEffect($index) {
+		$Effect = new CurrentEffect($index);
+		return $Effect->EffectID() == "$this->cardID-WAGER"; // no -WAGER or -BUFF
+	}
+}
+
+class big_slick_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "big_slick_red";
+    $this->controller = $controller;
+    $this->baseCard = new big_slick($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 5 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		$this->baseCard->OnAttackEffect($i);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager);
+	}
+
+	function IsWagerEffect($index) {
+		return $this->baseCard->IsWagerEffect($index);
+	}
+
+	function SpecialName() {
+		return "Big Slick";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialCost() {
+		return 3;
+	}
+}
+
+class big_slick_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "big_slick_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new big_slick($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 4 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		$this->baseCard->OnAttackEffect($i);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager);
+	}
+
+	function IsWagerEffect($index) {
+		return $this->baseCard->IsWagerEffect($index);
+	}
+
+	function SpecialName() {
+		return "Big Slick";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+
+	function SpecialCost() {
+		return 3;
+	}
+}
+
+class big_slick_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "big_slick_blue";
+    $this->controller = $controller;
+    $this->baseCard = new big_slick($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 3 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		$this->baseCard->OnAttackEffect($i);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager);
+	}
+
+	function IsWagerEffect($index) {
+		return $this->baseCard->IsWagerEffect($index);
+	}
+
+	function SpecialName() {
+		return "Big Slick";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialCost() {
+		return 3;
+	}
+}
