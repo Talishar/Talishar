@@ -158,6 +158,15 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
         break;
     }
   }
+  if (SubtypeContains($CombatChain->AttackCard()->ID(), "Aura")) {
+    // check if the aura got stolen and is now no longer a weapon
+    // hacky but should work for now. All buffs no longer apply because the power is now missing, not 0
+    $MainAuras = new Auras($mainPlayer);
+    $DefAuras = new Auras($defPlayer);
+    $uid = $CombatChain->AttackCard()->OriginUniqueID();
+    if ($MainAuras->FindCardUID($uid)->Index() == -1 && $DefAuras->FindCardUID($uid)->Index() != -1)
+      $totalPower = 0;
+  }
   if ($turn[0] == "B" && $currentPlayer == $defPlayer && $CombatChain->NumCardsActiveLink() == 1) {
     $combatChainState[$CCS_CachedPreBlockValue] = $totalPower;
   }
