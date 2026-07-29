@@ -270,7 +270,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
 {
   global $layers, $CombatChain;
   $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
-  static $skipOrderingIDs = ["runechant" => true, "seismic_surge" => true];
+  static $skipOrderingIDs = ["seismic_surge" => true];
   $skipOrdering = isset($skipOrderingIDs[$parameter]) || $skipOrdering;
   if (($additionalCosts == "ONHITEFFECT" || $additionalCosts == "ATTACKTRIGGER") && $uniqueID == "-") $uniqueID = $CombatChain->AttackCard()->UniqueID();
   if ($cardID == "TRIGGER" && !$skipOrdering) { // put triggers into "pre-layers" where they can be ordered
