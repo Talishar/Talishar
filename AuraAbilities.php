@@ -999,6 +999,10 @@ function AuraBeginEndPhaseTriggers()
     $card = GetClass($auras[$i], $mainPlayer);
     if ($card != "-") $card->BeginEndTurnAbilities($i);
     switch ($auras[$i]) {
+      case "frostbite":
+        FrostHexEndTurnAbility($mainPlayer);
+        AddLayer("TRIGGER", $mainPlayer, "frostbite", "-", "AURAS", $auras[$i + 6]);
+        break;
       case "read_the_ripples_red":
       case "read_the_ripples_yellow":
       case "read_the_ripples_blue":
@@ -1056,6 +1060,26 @@ function AuraBeginEndPhaseTriggers()
     }
   }
   $auras = array_values($auras);
+
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
+  $countMainCharacter = count($mainCharacter);
+  $characterPieces = CharacterPieces();
+  for ($i = $countMainCharacter - $characterPieces; $i >= 0; $i -= $characterPieces) {
+    $remove = 0;
+    switch ($mainCharacter[$i]) {
+      case "frostbite":
+        FrostHexEndTurnAbility($mainPlayer);
+        AddLayer("TRIGGER", $mainPlayer, "frostbite", "-", "EQUIP", $mainCharacter[$i + 11]);
+        break;
+      default:
+        break;
+      }
+    if ($remove == 1){
+      $uniqueID = $mainCharacter[$i + 11];
+      DestroyAuraUniqueID($mainPlayer, $uniqueID, "EQUIP");
+    }
+  }
+  $mainCharacter = array_values($mainCharacter);
 
   $theirAuras = &GetAuras($defPlayer);
   $countTheirAuras = count($theirAuras);
@@ -1122,10 +1146,6 @@ function AuraBeginEndPhaseAbilities()
       case "channel_the_bleak_expanse_blue":
         ChannelTalent($auras[$i+6], "ICE");
         break;
-      case "frostbite":
-        FrostHexEndTurnAbility($mainPlayer);
-        $remove = 1;
-        break;
       case "looming_doom_blue":
         if ($auras[$i + 2] == 0) $remove = 1;
         else {
@@ -1139,26 +1159,6 @@ function AuraBeginEndPhaseAbilities()
     if ($remove == 1) DestroyAura($mainPlayer, $i);
   }
   $auras = array_values($auras);
-  // check auras in the equip slot
-  $mainCharacter = &GetPlayerCharacter($mainPlayer);
-  $countMainCharacter = count($mainCharacter);
-  $characterPieces = CharacterPieces();
-  for ($i = $countMainCharacter - $characterPieces; $i >= 0; $i -= $characterPieces) {
-    $remove = 0;
-    switch ($mainCharacter[$i]) {
-      case "frostbite":
-        FrostHexEndTurnAbility($mainPlayer);
-        $remove = 1;
-        break;
-      default:
-        break;
-      }
-    if ($remove == 1){
-      $uniqueID = $mainCharacter[$i + 11];
-      DestroyAuraUniqueID($mainPlayer, $uniqueID, "EQUIP");
-    }
-  }
-  $mainCharacter = array_values($mainCharacter);
 }
 
 // From Pitch -> Bottom of the deck
