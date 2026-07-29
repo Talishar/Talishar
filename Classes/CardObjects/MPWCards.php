@@ -1433,3 +1433,70 @@ class killjoy_the_crooked_blade extends Card {
 		return -2;
 	}
 }
+
+class all_in_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "all_in_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function OnAttackEffect($cardID, $i) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID, );
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $CombatChain, $CurrentTurnEffects;
+		if ($additionalCosts == "FAILURE") {
+			WriteLog("The house always wins", highlight:true);
+			LoseHealth(GetHealth($this->controller), $this->controller);
+		}
+		else {
+			if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword")) {
+				WriteLog("🪙Player $this->controller is going all in!🪙");
+				$Effect = $CurrentTurnEffects->FindEffect($this->cardID);
+				$goldIndices = explode(",", GetGoldIndices($this->controller));
+				$num = count($goldIndices);
+				for ($i = $num - 1; $i >=0; --$i) {
+					MZDestroy($this->controller, $goldIndices[$i]);
+				}
+				$Effect->Replace("$this->cardID-$num");
+			}
+		}
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "-" ? 0 : 2 * intval($param);
+	}
+
+	function ResolutionStepEffectTriggers($parameter, $index) {
+		global $CCS_DamageDealt, $combatChainState;
+		if ($combatChainState[$CCS_DamageDealt] == 0)
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "FAILURE");
+	}
+
+	function SpecialName() {
+		return "All In";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+}
