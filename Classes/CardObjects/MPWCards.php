@@ -2195,3 +2195,190 @@ class thwart_yellow extends Card {
 		return "B";
 	}
 }
+
+class take_the_lead_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "take_the_lead_red";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
+
+	function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+		$prevented = 2;
+		if (!$amount) {
+			if ($preventable) PlayAura("blade_dance", $this->controller);
+			$remove = true;
+		}
+		return $prevented;
+	}
+
+	function SpecialName() {
+		return "Take the Lead";
+	}
+
+	function SpecialType() {
+		return "I";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialBlock() {
+		return -2;
+	}
+}
+
+class sharp_n_shine extends BaseCard {
+	function PayAdditionalCosts() {
+		$search = "MYCHAR:subtype=Sword";
+		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a sword to sharpen");
+		AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
+		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+		AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+	}
+
+	function PlayAbility($target, $threshold) {
+		$uid = explode("-", $target, 2)[1] ?? -1;
+		$index = SearchCharacterForUniqueID($uid, $this->controller);
+		if ($index != -1) {
+			Sharpen("MYCHAR-$index", $this->controller);
+			Await($this->controller, $this->cardID, uid:$uid, threshold:$threshold);
+		}
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$uid= $dqVars["uid"];
+		$threshold = $dqVars["threshold"];
+		$Character = new PlayerCharacter($this->controller);
+		$Weapon = $Character->FindCardUID($uid);
+		if ($Weapon->NumPowerCounters() >= $threshold) {
+			PlayAura("blade_dance", $this->controller, 1, true, effectController:$this->controller, effectSource:$this->cardID);
+		}
+	}
+}
+
+class sharp_n_shine_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "sharp_n_shine_red";
+    $this->controller = $controller;
+    $this->baseCard = new sharp_n_shine($this->cardID, $this->controller);
+  }
+  
+  function PayAdditionalCosts($from, $index = '-') {
+		$this->baseCard->PayAdditionalCosts();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility($target, 1);
+		return "";
+	}
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+
+	function SpecialName() {
+		return "Sharp 'N Shine";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+}
+
+class sharp_n_shine_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "sharp_n_shine_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new sharp_n_shine($this->cardID, $this->controller);
+  }
+  
+  function PayAdditionalCosts($from, $index = '-') {
+		$this->baseCard->PayAdditionalCosts();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility($target, 2);
+		return "";
+	}
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+
+	function SpecialName() {
+		return "Sharp 'N Shine";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+}
+
+class sharp_n_shine_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sharp_n_shine_blue";
+    $this->controller = $controller;
+    $this->baseCard = new sharp_n_shine($this->cardID, $this->controller);
+  }
+  
+  function PayAdditionalCosts($from, $index = '-') {
+		$this->baseCard->PayAdditionalCosts();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility($target, 3);
+		return "";
+	}
+
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+
+	function SpecialName() {
+		return "Sharp 'N Shine";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+}

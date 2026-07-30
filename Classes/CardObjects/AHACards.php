@@ -131,8 +131,8 @@ class edict_of_steel extends BaseCard {
 
 class edict_of_steel_red extends Card {
 	function __construct($controller) {
-    $this->cardID = "edict_of_steel_red";
-    $this->controller = $controller;
+		$this->cardID = "edict_of_steel_red";
+		$this->controller = $controller;
 		$this->baseCard = new edict_of_steel($this->cardID, $this->controller);
 	}
 
@@ -152,8 +152,8 @@ class edict_of_steel_red extends Card {
 
 class edict_of_steel_yellow extends Card {
 	function __construct($controller) {
-    $this->cardID = "edict_of_steel_yellow";
-    $this->controller = $controller;
+		$this->cardID = "edict_of_steel_yellow";
+		$this->controller = $controller;
 		$this->baseCard = new edict_of_steel($this->cardID, $this->controller);
 	}
 
@@ -173,8 +173,8 @@ class edict_of_steel_yellow extends Card {
 
 class edict_of_steel_blue extends Card {
 	function __construct($controller) {
-    $this->cardID = "edict_of_steel_blue";
-    $this->controller = $controller;
+		$this->cardID = "edict_of_steel_blue";
+		$this->controller = $controller;
 		$this->baseCard = new edict_of_steel($this->cardID, $this->controller);
 	}
 
@@ -669,20 +669,20 @@ class toe_the_line_red extends Card {
 }
 
 class indefensibly_honed_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "indefensibly_honed_blue";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "indefensibly_honed_blue";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $uid = explode("-", $target)[1] ?? -1;
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$uid = explode("-", $target)[1] ?? -1;
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) {
 			Sharpen("MYCHAR-$index", $this->controller);
 			Await($this->controller, $this->cardID, index: $index, subsequent:0, final:true);
 		}
 		return "";
-  }
+	}
 
 	function SpecificLogic() {
 		global $dqVars;
