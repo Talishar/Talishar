@@ -1845,3 +1845,112 @@ class check_raise_blue extends Card {
 		return 3;
 	}
 }
+
+class below_the_belt_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "below_the_belt_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		global $defPlayer;
+		$DefHeroChar = new CharacterCard(0, $defPlayer);
+		if (ClassContains($DefHeroChar->CardID(), "WARRIOR", $defPlayer))
+			return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+		else
+			return false;
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		ArsenalChooseAndDestroy($this->controller);
+	}
+
+	function SpecialName() {
+		return "Below the Belt";
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+}
+
+class steel_to_the_dome_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "steel_to_the_dome_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		global $defPlayer;
+		$DefHeroChar = new CharacterCard(0, $defPlayer);
+		if (ClassContains($DefHeroChar->CardID(), "WARRIOR", $defPlayer))
+			return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+		else
+			return false;
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $defPlayer;
+		PummelHit($defPlayer);
+	}
+
+	function SpecialName() {
+		return "Below the Belt";
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+}

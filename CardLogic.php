@@ -27,6 +27,13 @@ function PummelHit($player = -1, $passable = false, $fromDQ = false, $context = 
   }
 }
 
+function ArsenalChooseAndDestroy($player) {
+  AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRARS", 1);
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card you want to destroy from their arsenal", 1);
+  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+  AddDecisionQueue("MZDESTROY", $player, false, 1);
+}
+
 function HandToTopDeck($player)
 {
   AddDecisionQueue("FINDINDICES", $player, "HAND");
