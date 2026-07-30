@@ -2379,6 +2379,6 @@ class sharp_n_shine_blue extends Card {
 	}
 
 	function SpecialPitch() {
-		return 2;
+		return 3;
 	}
 }
