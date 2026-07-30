@@ -1988,3 +1988,160 @@ class peaceful_sanctuary_red extends Card {
 		$AuraCard->Destroy();
 	}
 }
+
+class rest_before_battle_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rest_before_battle_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CS_AttacksWithWeapon;
+		return GetClassState($this->controller, $CS_AttacksWithWeapon) == 0;
+	}
+
+	function StartTurnAbility($index) {
+		$AuraCard = new AuraCard($index, $this->controller);
+		AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Auras = new Auras($this->controller);
+		$AuraCard = $Auras->FindCardUID($uniqueID);
+		if ($AuraCard->Index() != -1) {
+			$AuraCard->Destroy();
+			Draw($this->controller, false);
+		}
+	}
+
+	function SpecialName() {
+		return "Rest Before Battle";
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function SpecialSubType() {
+		return "Aura";
+	}
+}
+
+class lessons_learned_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "lessons_learned_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$inds = [];
+		$discard = GetDiscard($this->controller);
+		$discardPieces = DiscardPieces();
+		$discardCount = count($discard);
+		for ($i = 0; $i < $discardCount; $i += $discardPieces) {
+			if (!isFaceDownMod($discard[$i + 2]) && TypeContains($discard[$i], "AR")) {
+				$inds[] = $i;
+			}
+		}
+		$maxChoosable = (SearchCurrentTurnEffects("amnesia_red", $this->controller)) ? 1 : 3;
+		AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $inds));
+		AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "$maxChoosable-", 1);
+		AddDecisionQueue("MULTICHOOSEDISCARD", $this->controller, "<-", 1);
+		AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $this->controller, "DISCARD", 1);
+		Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+	function SpecificLogic() {
+		global $dqVars;
+		$lastResult = $dqVars["LASTRESULT"] ?? "";
+		if ($lastResult != "") {
+			$lastResult = explode(",", $lastResult);
+			$cards = "";
+      $deck = new Deck($this->controller);
+      $discard = new Discard($this->controller);
+      sort($lastResult);
+      for ($i = count($lastResult) - 1; $i >= 0; --$i) {
+        $cardID = $discard->Remove($lastResult[$i]);
+        $deck->AddBottom($cardID, "GY");
+        if ($cards != "")
+          $cards .= ", ";
+        if ($i == 0)
+          $cards .= "and ";
+        $cards .= CardLink($cardID, $cardID);
+      }
+      WriteLog(CardLink($this->cardID) . " shuffled into your deck " . $cards);
+			$deck->Shuffle("-");
+		}
+	}
+
+	function SpecialName() {
+		return "Lessons Learned";
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialType() {
+		return "I";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialBlock() {
+		return -2;
+	}
+}
+
+class longsword_leggings extends Card {
+  function __construct($controller) {
+    $this->cardID = "longsword_leggings";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		Await($this->controller, "ChooseMultiZone", "cardID", indices:"CARDID-blade_dance,CARDID-flurry", context:"create a token", subsequent:0);
+		Await($this->controller, "PlayAura", final:true);
+    return "";
+  }
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharCard = new CharacterCard($index, $this->controller);
+		$CharCard->Destroy();
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "A";
+	}
+
+	function SpecialType() {
+		return "E";
+	}
+
+	function SpecialName() {
+		return "Longsword Leggings";
+	}
+
+	function SpecialBlock() {
+		return 1;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+}

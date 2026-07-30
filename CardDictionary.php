@@ -313,6 +313,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "corrupted_crown":
       return "Head";
     case "prizeworn_pathfinders":
+    case "longsword_leggings":
       return "Legs";
     case "prizeworn_plating":
       return "Chest";
@@ -3422,6 +3423,7 @@ function HasBattleworn($cardID)
   switch ($cardID) {
     case "teklovossen_the_mechropotentb":
     case "prizeworn_pathfinders":
+    case "longsword_leggings":
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);
