@@ -204,3 +204,263 @@ class visit_the_prize_room_blue extends Card {
     return 2;
   }
 }
+
+class prizeworn_plating extends Card {
+  function __construct($controller) {
+    $this->cardID = "prizeworn_plating";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function WinWagerTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $message = "if_you_want_to_make_a_vigor";
+    $context = "Choose if you want to make a vigor with " . CardLink($this->cardID);
+    $Hero = new CharacterCard(0, $this->controller);
+    if (!$Hero->Tapped()) {
+      Await($this->controller, "YesNo", message:$message, context:$context, subsequent:0);
+      Await($this->controller, $this->cardID, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    $Character = new PlayerCharacter($this->controller);
+    $Equipment = $Character->FindCardID($this->cardID);
+    $Equipment->Destroy();
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap();
+    PlayAura("vigor", $this->controller);
+  }
+
+  function SpecialName() {
+    return "Prizeworn Plating";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "WARRIOR";
+  }
+
+  function HasGuardwell() {
+    return true;
+  }
+}
+
+class prizeworn_gauntlet extends Card {
+  function __construct($controller) {
+    $this->cardID = "prizeworn_gauntlet";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function WinWagerTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $message = "if_you_want_to_make_a_courage";
+    $context = "Choose if you want to make a courage with " . CardLink($this->cardID);
+    $Hero = new CharacterCard(0, $this->controller);
+    if (!$Hero->Tapped()) {
+      Await($this->controller, "YesNo", message:$message, context:$context, subsequent:0);
+      Await($this->controller, $this->cardID, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    $Character = new PlayerCharacter($this->controller);
+    $Equipment = $Character->FindCardID($this->cardID);
+    $Equipment->Destroy();
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap();
+    PlayAura("courage", $this->controller);
+  }
+
+  function SpecialName() {
+    return "Prizeworn Gauntlet";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "WARRIOR";
+  }
+
+  function HasGuardwell() {
+    return true;
+  }
+}
+
+class belly_buster extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffect("$this->cardID-WAGER", $this->controller);
+  }
+
+  function OnAttackEffect() {
+    global $CombatChain;
+    if (ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $this->controller))
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger() {
+    AskWager($this->cardID);
+  }
+
+  function IsWagerEffect($index) {
+    $Effect = new CurrentEffect($index);
+		return $Effect->EffectID() == $this->cardID;
+  }
+
+  function WonWager($wonWager) {
+    PlayAura("courage", $wonWager);
+  }
+
+  function CombatEffectActive() {
+    global $CombatChain;
+		return ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $this->controller);
+  }
+
+  function EffectPowerModifier($param, $val) {
+    return $param == "WAGER" ? $val : 0;
+  }
+}
+
+class belly_buster_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "belly_buster_red";
+    $this->controller = $controller;
+    $this->baseCard = new belly_buster($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function OnAttackEffect($cardID, $i) {
+    $this->baseCard->OnAttackEffect();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function IsWagerEffect($index) {
+    return $this->baseCard->IsWagerEffect($index);
+  }
+
+  function WonWager($wonWager, $amount) {
+    $this->baseCard->WonWager($wonWager);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier($param, 3);
+	}
+
+  function SpecialName() {
+    return "Belly Buster";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "WARRIOR";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+
+class belly_buster_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "belly_buster_blue";
+    $this->controller = $controller;
+    $this->baseCard = new belly_buster($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function OnAttackEffect($cardID, $i) {
+    $this->baseCard->OnAttackEffect();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function IsWagerEffect($index) {
+    return $this->baseCard->IsWagerEffect($index);
+  }
+
+  function WonWager($wonWager, $amount) {
+    $this->baseCard->WonWager($wonWager);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier($param, 1);
+	}
+
+  function SpecialName() {
+    return "Belly Buster";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "WARRIOR";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+}

@@ -314,6 +314,10 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Head";
     case "prizeworn_pathfinders":
       return "Legs";
+    case "prizeworn_plating":
+      return "Chest";
+    case "prizeworn_gauntlet":
+      return "Arms";
     default:
       break;
   }
@@ -3441,6 +3445,8 @@ function HasTemper($cardID)
 
 function HasGuardwell($cardID)
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasGuardwell();
   return GeneratedHasGuardwell($cardID);
 }
 

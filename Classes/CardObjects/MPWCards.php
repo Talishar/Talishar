@@ -900,10 +900,10 @@ class rake_back_blue extends Card {
 	}
 
 	function WonWager($wonWager, $amount) {
-    	Await($wonWager, "MultiZoneIndices", "indices", search:"MYDISCARD:type=E", subsequent:0);
+		Await($wonWager, "MultiZoneIndices", "indices", search:"MYDISCARD:type=E", subsequent:0);
 		Await($wonWager, "ChooseMultiZone", "MZInd", may:true, context:"Equip an equipment from your graveyard (or pass)");
 		Await($wonWager, $this->cardID, final:true);
-  	}
+	}
 
 	function SpecificLogic() {
 		global $dqVars;

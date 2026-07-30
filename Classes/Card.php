@@ -171,6 +171,10 @@ class Card {
     return GeneratedHasTemper($this->cardID) == "true";
   }
 
+  function HasGuardwell() {
+    return GeneratedHasGuardwell($this->cardID);
+  }
+
   function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     return;
   }
