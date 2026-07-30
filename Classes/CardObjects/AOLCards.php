@@ -334,8 +334,8 @@ class belly_buster extends BaseCard {
 		return $Effect->EffectID() == $this->cardID;
   }
 
-  function WonWager($wonWager) {
-    PlayAura("courage", $wonWager);
+  function WonWager($wonWager, $amount) {
+    PlayAura("courage", $wonWager, $amount);
   }
 
   function CombatEffectActive() {
@@ -373,7 +373,7 @@ class belly_buster_red extends Card {
   }
 
   function WonWager($wonWager, $amount) {
-    $this->baseCard->WonWager($wonWager);
+    $this->baseCard->WonWager($wonWager, $amount);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -430,7 +430,7 @@ class belly_buster_blue extends Card {
   }
 
   function WonWager($wonWager, $amount) {
-    $this->baseCard->WonWager($wonWager);
+    $this->baseCard->WonWager($wonWager, $amount);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
