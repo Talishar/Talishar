@@ -2037,6 +2037,10 @@ class rest_before_battle_yellow extends Card {
 	function SpecialSubType() {
 		return "Aura";
 	}
+
+	function SpecialBlock() {
+		return 3;
+	}
 }
 
 class lessons_learned_blue extends Card {
