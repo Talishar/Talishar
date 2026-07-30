@@ -632,9 +632,9 @@ class donkey_blue extends Card {
 		$this->cardID = "donkey_blue";
 		$this->controller = $controller;
 		$this->archetype = new sword_attack_reaction($this->cardID, $controller);
-  	}
+	}
   
-  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		if (explode("-", $target, 2)[0] == "COMBATCHAINLINK") {
 			AddCurrentTurnEffect($this->cardID, $this->controller);
 			AddOnWagerEffects();
@@ -642,7 +642,7 @@ class donkey_blue extends Card {
 		else
 			WriteLog("A past chain link was targeted");
 		return "";
-  	}
+	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		return true;
@@ -665,7 +665,7 @@ class donkey_blue extends Card {
 		AddDecisionQueue("SETDQCONTEXT", $wonWager, "Choose a card you want to destroy from your arsenal", 1);
 		AddDecisionQueue("CHOOSEMULTIZONE", $wonWager, "<-", 1);
 		AddDecisionQueue("MZDESTROY", $wonWager, false, 1);
-  	}
+	}
 
 	function IsWagerEffect($index) {
 		return true;
@@ -2147,5 +2147,51 @@ class longsword_leggings extends Card {
 
 	function SpecialClass() {
 		return "WARRIOR";
+	}
+}
+
+class thwart_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "thwart_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $CombatChain, $mainPlayer, $combatChainState, $CCS_NumPowerCounters;
+		$MainCharacter = new PlayerCharacter($mainPlayer);
+		$Auras = new Auras($mainPlayer);
+		$AttackingCard = $CombatChain->AttackCard();
+		if (IsWeaponAttack()) {
+			if (TypeContains($AttackingCard->ID(), "W"))
+				$Weapon = $MainCharacter->FindCardUID($AttackingCard->OriginUniqueID());
+			elseif (SubtypeContains($AttackingCard->ID(), "Aura")) 
+				$Weapon = $Auras->FindCardUID($AttackingCard->OriginUniqueID());
+			if ($Weapon->NumPowerCounters() > 0)
+				$Weapon->AddPowerCounters(-$Weapon->NumPowerCounters());
+		}
+		else {
+			if ($combatChainState[$CCS_NumPowerCounters] > 0)
+				$combatChainState[$CCS_NumPowerCounters] = 0;
+		}
+	}
+
+	function SpecialName() {
+		return "Thwart";
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+
+	function SpecialType() {
+		return "B";
 	}
 }
