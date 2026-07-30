@@ -764,6 +764,12 @@ function OnAttackEffects($cardID)
   $attackType = CardType($cardID);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
+    $Effect = new CurrentEffect($i);
+    $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
+    //used for effects that by default should be on the bottom of the stack
+    if ($card != "-") $remove = $card->OnAttackEffectEarly($cardID, $i);
+  }
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = false;
     $Effect = new CurrentEffect($i);
     $card = GetClass($Effect->EffectID(), $Effect->PlayerID());

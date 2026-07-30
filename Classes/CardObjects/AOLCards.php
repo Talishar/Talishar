@@ -109,8 +109,9 @@ class heads_up_red extends Card {
     return $param != "DOMINATE" ? 3 : 0;
   }
 
-  function OnAttackEffect($cardID, $i) {
+  function OnAttackEffectEarly($cardID, $i) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
+    return false;
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {

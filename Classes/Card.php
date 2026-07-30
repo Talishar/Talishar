@@ -841,4 +841,10 @@ class Card {
   function EffectIntellectModifier($i, $remove) {
     return 0;
   }
+
+  function OnAttackEffectEarly($cardID, $i) {
+    // used for effects that by default should trigger before other effects
+    // used for convenience in default ordering
+    return false;
+  }
 }
