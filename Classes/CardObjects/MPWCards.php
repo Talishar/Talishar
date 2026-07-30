@@ -1954,3 +1954,37 @@ class steel_to_the_dome_red extends Card {
 		return true;
 	}
 }
+
+class peaceful_sanctuary_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "peaceful_sanctuary_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function SpecialName() {
+		return "Peaceful Sanctuary";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function SpecialSubType() {
+		return "Aura";
+	}
+
+	function BeginningActionPhaseAbility($index) {
+		$AuraCard = new AuraCard($index, $this->controller);
+		AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID: $AuraCard->UniqueID());
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Auras = new Auras($this->controller);
+		$AuraCard = $Auras->FindCardUID($uniqueID);
+		$AuraCard->Destroy();
+	}
+}

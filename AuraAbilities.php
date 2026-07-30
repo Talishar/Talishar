@@ -1,7 +1,7 @@
 <?php
 
 function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-", $isToken=false) {
-  global $EffectContext, $currentTurnEffects;
+  global $EffectContext, $currentTurnEffects, $mainPlayer, $defPlayer;
   if ($effectController == "-") $effectController = $player;
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   if (TypeContains($EffectContext, "C", $player) && (PreachModestyActive())) {
@@ -18,9 +18,12 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
       }
     }
     $ind = SearchCurrentTurnEffectsForIndex("renounce_grandeur_red", $effectController);
-    if ($ind != -1) {
+    if ($ind != -1)
       return false;
-    }
+    $MainAuras = new Auras($mainPlayer);
+    $DefAuras = new Auras($defPlayer);
+    if ($MainAuras->FindCardID("peaceful_sanctuary_red")->Index() != -1 || $DefAuras->FindCardID("peaceful_sanctuary_red")->Index() != -1)
+      return false;
   }
   return true;
 }
@@ -28,7 +31,7 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
 function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0, $effectAgent = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated, $CS_HoloAurasEntered;
-  global $CS_CreatedCardsThisTurn, $CS_NumRunechantsCreated, $CS_IARGatesMadeorUsed;
+  global $CS_CreatedCardsThisTurn, $CS_NumRunechantsCreated, $CS_IARGatesMadeorUsed, $mainPlayer;
   if ($number == 0) return; //there is no event
   $number = (int)$number;
   $otherPlayer = 3 - $player;
@@ -47,6 +50,13 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
       return;
     }
+  }
+  $MainAuras = new Auras($mainPlayer);
+  $DefAuras = new Auras($defPlayer);
+  $foundSanctuary = $MainAuras->FindCardID("peaceful_sanctuary_red")->Index() != -1 || $DefAuras->FindCardID("peaceful_sanctuary_red")->Index() != -1;
+  if ($foundSanctuary && $isToken) {
+    WriteLog(CardLink("peaceful_sanctuary_red") . " prevents the creation of " . CardLink($cardID, $cardID));
+    return;
   }
   if ($cardID == "frostbite") {
     if (Smoldering($player, "smoldering_scales", number:$number, effectSource:$effectSource, effectController:$effectController))
