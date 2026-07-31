@@ -2382,3 +2382,215 @@ class sharp_n_shine_blue extends Card {
 		return 3;
 	}
 }
+
+class gut_shot extends BaseCard {
+	function PlayAbility() {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive() {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function OnAttackEffect($i) {
+		global $CombatChain;
+		$Effect = new CurrentEffect($i);
+		if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword") && $Effect->EffectID() == $this->cardID)
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+		return false;
+	}
+
+	function ProcessTrigger() {
+		AddCurrentTurnEffect("$this->cardID-WAGER", $this->controller, from:"PLAY"); // contains the wager effect
+		AddOnWagerEffects();
+	}
+
+	function WonWager($wonWager, $amount) {
+    PlayAura("blade_dance", $wonWager, $amount);
+	}
+
+	function IsWagerEffect($index) {
+		$Effect = new CurrentEffect($index);
+		return $Effect->EffectID() == "$this->cardID-WAGER"; // no -WAGER or -BUFF
+	}
+}
+
+class gut_shot_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "gut_shot_red";
+    $this->controller = $controller;
+    $this->baseCard = new gut_shot($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 3 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		$this->baseCard->OnAttackEffect($i);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function IsWagerEffect($index) {
+		return $this->baseCard->IsWagerEffect($index);
+	}
+
+	function SpecialName() {
+		return "Gut Shot";
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+}
+
+class gut_shot_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "gut_shot_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new gut_shot($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 2 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		$this->baseCard->OnAttackEffect($i);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function IsWagerEffect($index) {
+		return $this->baseCard->IsWagerEffect($index);
+	}
+
+	function SpecialName() {
+		return "Gut Shot";
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+}
+
+class gut_shot_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "gut_shot_blue";
+    $this->controller = $controller;
+    $this->baseCard = new gut_shot($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 1 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		$this->baseCard->OnAttackEffect($i);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function IsWagerEffect($index) {
+		return $this->baseCard->IsWagerEffect($index);
+	}
+
+	function SpecialName() {
+		return "Gut Shot";
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+}
