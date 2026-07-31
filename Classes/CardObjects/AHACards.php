@@ -28,9 +28,9 @@ class hala_base extends BaseCard {
 }
 
 class hala_bladesaint_of_the_vow extends Card {
-  function __construct($controller) {
-    $this->cardID = "hala_bladesaint_of_the_vow";
-    $this->controller = $controller;
+	function __construct($controller) {
+		$this->cardID = "hala_bladesaint_of_the_vow";
+		$this->controller = $controller;
 		$this->baseCard = new hala_base($this->cardID, $this->controller);
 	}
 
@@ -286,14 +286,14 @@ class paragon_plate extends Card {
 }
 
 class anticipating_gaze extends Card {
-  function __construct($controller) {
-    $this->cardID = "anticipating_gaze";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "anticipating_gaze";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function DefaultActiveState() {
 		return 1;
@@ -328,14 +328,14 @@ class anticipating_gaze extends Card {
 }
 
 class reverent_rerebrace extends Card {
-  function __construct($controller) {
-    $this->cardID = "reverent_rerebrace";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "reverent_rerebrace";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+  	}
 
 	function DefaultActiveState() {
 		return 1;
@@ -362,14 +362,14 @@ class reverent_rerebrace extends Card {
 }
 
 class silverstride_dodgers extends Card {
-  function __construct($controller) {
-    $this->cardID = "silverstride_dodgers";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "silverstride_dodgers";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
 		return SearchAurasForCard("flurry", $this->controller, false) != "" ? 1 : 0;
@@ -377,17 +377,17 @@ class silverstride_dodgers extends Card {
 }
 
 class brimming_blade_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "brimming_blade_red";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $uid = explode("-", $target)[1] ?? -1;
+	function __construct($controller) {
+		$this->cardID = "brimming_blade_red";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$uid = explode("-", $target)[1] ?? -1;
 		$index = SearchCharacterForUniqueID($uid, $this->controller);
 		if ($index != -1) Sharpen("MYCHAR-$index", $this->controller, 2);
 		return "";
-  }
+	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		if (SearchCharacterAliveSubtype($this->controller, "Sword")) return false;
@@ -402,18 +402,18 @@ class brimming_blade_red extends Card {
 
 class gleam_of_the_blade_red extends Card {
 	public $archetype;
-  function __construct($controller) {
-    $this->cardID = "gleam_of_the_blade_red";
-    $this->controller = $controller;
-	$this->archetype = new windup($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain;
-	if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
-		AddEffectToCurrentAttack($this->cardID);
-	return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "gleam_of_the_blade_red";
+		$this->controller = $controller;
+		$this->archetype = new windup($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CombatChain;
+		if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
+			AddEffectToCurrentAttack($this->cardID);
+		return "";
+	}
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 3;
@@ -522,6 +522,31 @@ class sharp_incline_yellow extends Card {
 	
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$this->baseCard->PlayAbility($target, 2);
+		return "";
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
+	}
+
+	function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+		return $this->baseCard->CurrentEffectCostModifier($index, $playIndex, $remove);
+	}
+	
+	function SpecificLogic() {
+		return $this->baseCard->SpecificLogic();
+	}
+}
+
+class sharp_incline_blue extends Card {
+  	function __construct($controller) {
+		$this->cardID = "sharp_incline_blue";
+		$this->controller = $controller;
+		$this->baseCard = new sharp_incline($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility($target, 1);
 		return "";
 	}
 
@@ -670,7 +695,7 @@ class backside_of_the_blade_blue extends Card {
 			if ($Weapon->Status() == 1) $Weapon->SetUsed(2);
 		}
 		return "";
-  }
+  	}
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 1;
@@ -689,14 +714,14 @@ class backside_of_the_blade_blue extends Card {
 }
 
 class visit_the_dawnsmith_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "visit_the_dawnsmith_blue";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "visit_the_dawnsmith_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function StartTurnAbility($index) {
 		$Aura = new AuraCard($index, $this->controller);
@@ -713,7 +738,7 @@ class visit_the_dawnsmith_blue extends Card {
 			if (SubtypeContains($CharacterCard->CardID(), "Sword"))
 				Sharpen("MYCHAR-" . $CharacterCard->Index(), $this->controller);
 		}
-}
+	}
 }
 
 class toe_the_line_red extends Card {
@@ -921,16 +946,16 @@ class swordmasters_path extends BaseCard {
 }
 
 class swordmasters_path_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "swordmasters_path_red";
-    $this->controller = $controller;
+	function __construct($controller) {
+		$this->cardID = "swordmasters_path_red";
+		$this->controller = $controller;
 		$this->baseCard = new swordmasters_path($this->cardID, $this->controller);
-  }
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	$this->baseCard->PlayAbility();
 		return "";
-  }
+  	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		return $this->baseCard->CombatEffectActive($parameter);
@@ -945,17 +970,42 @@ class swordmasters_path_red extends Card {
 	}
 }
 
-class swordmasters_path_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "swordmasters_path_blue";
-    $this->controller = $controller;
+class swordmasters_path_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "swordmasters_path_yellow";
+		$this->controller = $controller;
 		$this->baseCard = new swordmasters_path($this->cardID, $this->controller);
-  }
+  	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
 		return "";
-  }
+  	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive($parameter);
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+}
+
+class swordmasters_path_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "swordmasters_path_blue";
+		$this->controller = $controller;
+		$this->baseCard = new swordmasters_path($this->cardID, $this->controller);
+  	}
+  
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+		return "";
+  	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		return $this->baseCard->CombatEffectActive($parameter);
@@ -971,14 +1021,14 @@ class swordmasters_path_blue extends Card {
 }
 
 class flurry_foot_dance_yellow extends Card {
-  function __construct($controller) {
-    $this->cardID = "flurry_foot_dance_yellow";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "flurry_foot_dance_yellow";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
 		return SearchAurasForCard("flurry", $this->controller, false) != "" ? 2 : 0;
@@ -986,13 +1036,13 @@ class flurry_foot_dance_yellow extends Card {
 }
 
 class ole_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "ole_blue";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "ole_blue";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $combatChainState, $CCS_WeaponIndex, $ChainLinks;
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	global $combatChainState, $CCS_WeaponIndex, $ChainLinks;
 		if (!str_contains($target, "COMBATCHAINATTACKS")) {
 			$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
 			if ($Weapon->NumPowerCounters() > 0) {
@@ -1015,7 +1065,7 @@ class ole_blue extends Card {
 			}
 		}
 		return "";
-  }
+  	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain;
@@ -1030,13 +1080,13 @@ class ole_blue extends Card {
 }
 
 class polished_blade_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "polished_blade_red";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $combatChainState, $CCS_WeaponIndex;
+	function __construct($controller) {
+		$this->cardID = "polished_blade_red";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	global $combatChainState, $CCS_WeaponIndex;
 		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
 		$modes = explode(",", $additionalCosts);
 		foreach ($modes as $mode) {
@@ -1056,7 +1106,7 @@ class polished_blade_red extends Card {
 			}
 		}
 		return "";
-  }
+  	}
 
 	function PayAdditionalCosts($from, $index = '-') {
 		global $combatChainState, $CCS_WeaponIndex;

@@ -311,13 +311,19 @@ function CardSubType($cardID, $uniqueID = -1)
     case "undead_grasp": // temporary
       return "Arms";
     case "corrupted_crown":
+    case "olde_leather_helm":
       return "Head";
     case "prizeworn_pathfinders":
     case "longsword_leggings":
+    case "vigilant_dodgers":
+    case "olde_leather_boots":
       return "Legs";
     case "prizeworn_plating":
+    case "olde_leather_plate":
       return "Chest";
     case "prizeworn_gauntlet":
+    case "clip_flexor":
+    case "olde_leather_gloves":
       return "Arms";
     default:
       break;

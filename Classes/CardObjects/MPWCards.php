@@ -3115,3 +3115,207 @@ class slice_up_red extends Card {
 		PummelHit($defPlayer);
 	}
 }
+
+class jive_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "jive_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		PlayAura("blade_dance", $this->controller);
+    return "";
+  }
+}
+
+class showdown extends BaseCard {
+	function PlayAbility() {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive() {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function OnAttackEffect($i) {
+		global $CombatChain;
+		$Effect = new CurrentEffect($i);
+		if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword") && $Effect->EffectID() == $this->cardID)
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+		return false;
+	}
+
+	function ProcessTrigger() {
+		AddCurrentTurnEffect("$this->cardID-WAGER", $this->controller, from:"PLAY"); // contains the wager effect
+		AddOnWagerEffects();
+	}
+
+	function WonWager($wonWager, $amount) {
+    PlayAura("flurry", $wonWager, $amount);
+	}
+
+	function IsWagerEffect($index) {
+		$Effect = new CurrentEffect($index);
+		return $Effect->EffectID() == "$this->cardID-WAGER"; // no -WAGER or -BUFF
+	}
+}
+
+class showdown_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "showdown_red";
+    $this->controller = $controller;
+    $this->baseCard = new showdown($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 3 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		$this->baseCard->OnAttackEffect($i);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function IsWagerEffect($index) {
+		return $this->baseCard->IsWagerEffect($index);
+	}
+}
+
+class showdown_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "showdown_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new showdown($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 2 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		$this->baseCard->OnAttackEffect($i);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function IsWagerEffect($index) {
+		return $this->baseCard->IsWagerEffect($index);
+	}
+}
+
+class showdown_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "showdown_blue";
+    $this->controller = $controller;
+    $this->baseCard = new showdown($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "WAGER" ? 1 : 0;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		$this->baseCard->OnAttackEffect($i);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function IsWagerEffect($index) {
+		return $this->baseCard->IsWagerEffect($index);
+	}
+}
+
+class heavy_swing_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "heavy_swing_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function StartTurnAbility($index) {
+		$AuraCard = new AuraCard($index, $this->controller);
+		AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Auras = new Auras($this->controller);
+		$AuraCard = $Auras->FindCardUID($uniqueID);
+		$AuraCard->Destroy();
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function SpecialSubType() {
+		return "Aura";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function SpecialName() {
+		return "Heavy Swing";
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+}
