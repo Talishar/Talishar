@@ -2665,7 +2665,7 @@ function EffectPlayCardConstantRestriction($cardID, &$restriction, $phase, $moda
   return $restriction != "";
 }
 
-function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, $resolutionCheck = false)
+function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, $resolutionCheck = false, $index = -1)
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
@@ -2689,6 +2689,11 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $commaPos = strpos($currentTurnEffects[$i], ',');
       $effectID = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
+      $card = GetClass($currentTurnEffects[$i], $currentPlayer);
+      if ($card != "-") {
+        $restriction = $card->EffectPlayCardRestricted($cardID, $from, $index, $i);
+        if ($restriction != "") $restrictedBy = $restriction;
+      }
       switch ($effectID) {
         case "chains_of_eminence_red":
           $effectParam = $commaPos !== false ? substr($currentTurnEffects[$i], $commaPos + 1) : '';

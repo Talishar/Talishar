@@ -1548,7 +1548,7 @@ function InstantRestricted($cardID, $from, $index, $zone="-", $type="-") {
 // checks for stuff like warmongers
 function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type="-", $AQCheck=false)
 {
-  global $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $layers;
+  global $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $layers, $CurrentTurnEffects;
   if (SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer)) return false;
   $type = $type == "-" ? CardType($cardID, $from) : $type;
   if (EffectAttackRestricted($cardID, $type, $from, index:$index, overrideType:$type) != "") return false;
@@ -1557,6 +1557,10 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
   if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
   if ($layerCount > LayerPieces()) return false;
   if ($isWeapon && SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) return false;
+  if (TypeContains($cardID, "Sword") && $index != -1) {
+    $Weapon = new CharacterCard($index, $mainPlayer);
+    if ($CurrentTurnEffects->FindSpecificEffect("a_moments_peace_blue", $Weapon->UniqueID()) != -1) return false;
+  }
   if ($index != -1) {
     switch($zone) {
       case "MYCHAR":
@@ -2308,7 +2312,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $restriction = "Themai";
       return true;
     }
-    if (EffectPlayCardRestricted($cardID, $type, $from, resolutionCheck: $resolutionCheck) != "") {
+    if (EffectPlayCardRestricted($cardID, $type, $from, resolutionCheck: $resolutionCheck, index: $index) != "") {
       $restriction = true;
       return true;
     }

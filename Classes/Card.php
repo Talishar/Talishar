@@ -847,4 +847,8 @@ class Card {
     // used for convenience in default ordering
     return false;
   }
+
+  function EffectPlayCardRestricted($cardID, $from, $playIndex, $effectIndex) {
+    return "";
+  }
 }

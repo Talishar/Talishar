@@ -2729,3 +2729,32 @@ class shatter_the_weakpoint_red extends Card {
 		Await($this->controller, "MZDestroy", final:true);
 	}
 }
+
+class a_moments_peace_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "a_moments_peace_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+		global $CombatChain;
+		if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
+			AddLayer("TRIGGER", $this->controller, $this->cardID, $CombatChain->AttackCard()->OriginUniqueID());
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $mainPlayer, $CombatChain;
+		AddCurrentTurnEffect($this->cardID, $mainPlayer, uniqueID:$target);
+	}
+
+	function EffectPlayCardRestricted($cardID, $from, $playIndex, $effectIndex) {
+		$Weapon = new CharacterCard($playIndex, $this->controller);
+		$Effect = new CurrentEffect($effectIndex);
+		if ($Weapon->UniqueID() == $Effect->AppliestoUniqueID()) return $this->cardID;
+		return "";
+	}
+}
