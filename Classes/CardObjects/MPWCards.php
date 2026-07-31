@@ -2644,3 +2644,88 @@ class crimson_waltz_yellow extends Card {
 		DrawAndPutBack($this->controller, $this->cardID);
 	}
 }
+
+class off_beat_blue extends Card {
+	private $search;
+  function __construct($controller) {
+    $this->cardID = "off_beat_blue";
+    $this->controller = $controller;
+		$this->search = "MYCHAR:subtype=Sword";
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		foreach (["blade_dance", "flurry"] as $token) {
+			Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS:isSameName=$token", subsequent:0);
+			Await($this->controller, "ChooseMultiZone", "MZInd", may:true, context:"Destroy a " . CardLink($token) . " to sharpen your sword?");
+			Await($this->controller, "MZDestroy");
+			Await($this->controller, $this->cardID, target:$target, final:true);
+		}
+    return "";
+  }
+
+	function SpecificLogic() {
+		global $dqVars;
+		$target = explode("-", $dqVars["target"])[1] ?? "-";
+		$Character = new PlayerCharacter($this->controller);
+		$Sword = $Character->FindCardUID($target);
+		if ($Sword->Index() != -1)
+			Sharpen("MYCHAR-" . $Sword->Index(), $this->controller);
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		AddDecisionQueue("MULTIZONEINDICES", $this->controller, $this->search, 1);
+		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a sword to sharpen", 1);
+		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+		AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+		AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return MultiZoneIndices($this->controller, $this->search) == "";
+	}
+}
+
+class shatter_the_weakpoint_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shatter_the_weakpoint_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		global $defPlayer;
+		$DefHeroChar = new CharacterCard(0, $defPlayer);
+		if (ClassContains($DefHeroChar->CardID(), "WARRIOR", $defPlayer))
+			return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+		else
+			return false;
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $defPlayer;
+		$inds = [];
+		$defChar = new PlayerCharacter($defPlayer);
+		for ($i = 0; $i < $defChar->NumCards(); ++$i) {
+			$CharCard = $defChar->Card($i, true);
+			$defVal = BlockValue($CharCard->CardID()) + $CharCard->NumDefenseCounters();
+			// technically should also check for any effects like shred applying
+			if ($defVal <= 0 && BlockValue($CharCard->CardID()) > -1)
+				$inds[] = "THEIRCHAR-" . $CharCard->Index();
+		}
+		Await($this->controller, "ChooseMultiZone", "MZInd", indices:implode(",", $inds), context:"Destroy an equipment");
+		Await($this->controller, "MZDestroy", final:true);
+	}
+}
