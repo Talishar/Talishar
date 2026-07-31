@@ -2810,7 +2810,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
     $effectID = $Effect->EffectID();
     $effectPlayerID = $Effect->PlayerID();
     $card = GetClass(ExtractCardID($effectID), $effectPlayerID);
-    if ($card != "-") $blockModifier += $card->EffectBlockModifier($index, $from);
+    if ($card != "-") $blockModifier += $card->EffectBlockModifier($index, $from, $Effect->Index());
     if ($effectPlayerID == $defPlayer) {
       switch ($effectID) { // effects on the def player
         case "art_of_war_yellow-1":

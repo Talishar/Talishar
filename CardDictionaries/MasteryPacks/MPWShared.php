@@ -19,3 +19,19 @@ function TargetSwordAttack($player) {
   }
   return implode(",", $choices);
 }
+
+function DrawAndPutBack($player, $cardID) {
+  Draw($player, effectSource:$cardID);
+  $hand = GetHand($player);
+  Await($player, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
+  Await($player, "ChooseMultiZone", "MZIndex", context:"Put a card from hand back on top");
+  Await($player, "MZRemove", "cardID");
+  Await($player, "AddTopDeck", final:true);
+  if (count($hand) == 1) { //handle case where the game automates putting a card back
+    AddDecisionQueue("DECKCARDS", $player, "0", 1);
+    AddDecisionQueue("SETDQVAR", $player, "1", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "you drew <1> and placed it back on top", 1);
+    AddDecisionQueue("OK", $player, "-", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "-");
+  }
+}

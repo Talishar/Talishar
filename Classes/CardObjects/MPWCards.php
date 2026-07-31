@@ -766,19 +766,7 @@ class raise_blades_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		Draw($this->controller, effectSource:$this->cardID);
-		$hand = GetHand($this->controller);
-		Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
-		Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Put a card from hand back on top");
-		Await($this->controller, "MZRemove", "cardID");
-		Await($this->controller, "AddTopDeck", final:true);
-		if (count($hand) == 1) { //handle case where the game automates putting a card back
-			AddDecisionQueue("DECKCARDS", $this->controller, "0", 1);
-			AddDecisionQueue("SETDQVAR", $this->controller, "1", 1);
-			AddDecisionQueue("SETDQCONTEXT", $this->controller, "you drew <1> and placed it back on top", 1);
-			AddDecisionQueue("OK", $this->controller, "-", 1);
-			AddDecisionQueue("SETDQCONTEXT", $this->controller, "-");
-		}
+		DrawAndPutBack($this->controller, $this->cardID);
 		AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
   }
@@ -2329,7 +2317,7 @@ class duelist_gauntlets extends Card {
 		return $this->GetTargets() == "";
 	}
 
-	function EffectBlockModifier($index, $from) {
+	function EffectBlockModifier($index, $from, $effectInd) {
 		global $CombatChain;
 		if (is_numeric($index)) {
 			$BlockingCard = $CombatChain->Card($index);
@@ -2446,5 +2434,213 @@ class dealers_grip extends Card {
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CCS_WagersThisLink, $combatChainState;
 		return $combatChainState[$CCS_WagersThisLink] == 0;
+	}
+}
+
+class display_of_artistry extends BaseCard {
+	function PlayAbility() {
+		global $CurrentTurnEffects, $CombatChain, $defPlayer;
+		$AttackCard = $CombatChain->AttackCard();
+		$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $AttackCard->OriginUniqueID());
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		if ($foundSharpen->Index() != -1) 
+			AddCurrentTurnEffect("$this->cardID-SHARP", $defPlayer);
+	}
+
+	function CombatEffectActive() {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $val) {
+		return $param != "SHARP" ? $val : 0;
+	}
+
+	function EffectBlockModifier($index, $effectInd) {
+		global $CombatChain;
+		$Effect = new CurrentEffect($effectInd);
+		if ($Effect->EffectID() != "$this->cardID-SHARP") return 0;
+		if (is_numeric($index)) {
+			$BlockingCard = $CombatChain->Card($index);
+			return TypeContains($BlockingCard->ID(), "AR") || TypeContains($BlockingCard->ID(), "DR") ? -1 : 0;
+		}
+		return 0;
+	}
+
+	function IsPlayRestricted() {
+		return !IsWeaponAttack();
+	}
+}
+
+class display_of_artistry_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "display_of_artistry_red";
+    $this->controller = $controller;
+    $this->baseCard = new display_of_artistry($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier($param, 3);
+	}
+
+	function EffectBlockModifier($index, $from, $effectInd) {
+		$ret = $this->baseCard->EffectBlockModifier($index, $effectInd);
+		return $ret;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+}
+
+class display_of_artistry_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "display_of_artistry_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new display_of_artistry($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier($param, 2);
+	}
+
+	function EffectBlockModifier($index, $from, $effectInd) {
+		$ret = $this->baseCard->EffectBlockModifier($index, $effectInd);
+		return $ret;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+}
+
+class display_of_artistry_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "display_of_artistry_blue";
+    $this->controller = $controller;
+    $this->baseCard = new display_of_artistry($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier($param, 1);
+	}
+
+	function EffectBlockModifier($index, $from, $effectInd) {
+		$ret = $this->baseCard->EffectBlockModifier($index, $effectInd);
+		return $ret;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+}
+
+class quicksilver_dance_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "quicksilver_dance_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CombatChain, $ChainLinks;
+		$obj = MZIndexToObject($this->controller, $target);
+		if ($obj != "" && method_exists($obj, "OriginUniqueID")) {
+			$uid = $obj->OriginUniqueID();
+			if (TypeContains($obj->ID(), "W")) {
+				$Character = new PlayerCharacter($this->controller);
+				$Weapon = $Character->FindCardUID($uid);
+			}
+			elseif (SubtypeContains($obj->ID(), "Aura")) {
+				$Auras = new Auras($this->controller);
+				$Weapon = $Auras->FindCardUID($uid);
+			}
+			if ($Weapon->NumPowerCounters() > 0) {
+				$Weapon->AddPowerCounters(-1);
+				PlayAura("blade_dance", $this->controller);
+				Draw($this->controller);
+			}
+		}
+    return "";
+  }
+
+	private
+	function GetTargets() {
+		$attacks = TargetAttack($this->controller);
+		$targets = [];
+		foreach ($attacks as $attack) {
+			$obj = MZIndexToObject($this->controller, $attack);
+			if ($obj == "") continue;
+			if (TypeContains($obj->ID(), "W"))
+				$targets[] = $attack;
+			// account for auras here sometime
+		}
+		return $targets;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return count($this->GetTargets()) == 0;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+    $targets = implode(",", $this->GetTargets());
+    Await($this->controller, "ChooseMultiZone", "index", indices:$targets, context: "Choose target weapon attack", subsequent:0);
+    Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
+  }
+}
+
+class crimson_waltz_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "crimson_waltz_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+
+	function OnAttackEffect($cardID, $i) {
+		global $CombatChain;
+		if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
+			AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		DrawAndPutBack($this->controller, $this->cardID);
 	}
 }

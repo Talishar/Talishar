@@ -562,7 +562,7 @@ class Card {
     return GeneratedGoAgain($this->cardID);
   }
 
-  function EffectBlockModifier($index, $from) {
+  function EffectBlockModifier($index, $from, $effectInd) {
     return 0;
   }
 

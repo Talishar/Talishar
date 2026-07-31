@@ -2635,7 +2635,7 @@ class staunch_response_red extends Card {
     return $this->baseCard->SpecificLogic();
   }
 
-  function EffectBlockModifier($index, $from) {
+  function EffectBlockModifier($index, $from, $effectInd) {
     return $this->baseCard->EffectBlockModifier($index);
   }
 }
@@ -2661,7 +2661,7 @@ class staunch_response_yellow extends Card {
     return $this->baseCard->SpecificLogic();
   }
 
-  function EffectBlockModifier($index, $from) {
+  function EffectBlockModifier($index, $from, $effectInd) {
     return $this->baseCard->EffectBlockModifier($index);
   }
 }
@@ -2687,7 +2687,7 @@ class staunch_response_blue extends Card {
     return $this->baseCard->SpecificLogic();
   }
 
-  function EffectBlockModifier($index, $from) {
+  function EffectBlockModifier($index, $from, $effectInd) {
     return $this->baseCard->EffectBlockModifier($index);
   }
 }
