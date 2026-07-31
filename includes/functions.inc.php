@@ -259,8 +259,17 @@ function ShouldSkipRustCountersForContributors()
 	return IsUserContributor($p1uid) || IsUserContributor($p2uid);
 }
 
+$disableRustCounters = false;
+
+function AreRustCountersDisabled()
+{
+	global $disableRustCounters;
+	return $disableRustCounters;
+}
+
 function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
 {
+	if (AreRustCountersDisabled()) return true;
 	if (IsDevEnvironment()) return false;
 	if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron) && $p2IsAI !== "1") {
 		WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight: true, highlightColor: "green", path: "../");
