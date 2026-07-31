@@ -489,10 +489,6 @@ class blade_rush_yellow extends Card {
 	function EffectPowerModifier($param, $attached = false) {
 		return $param != "GOAGAIN" ? 1 : 0;
 	}
-
-	function SpecialType() {
-		return "A";
-	}
 }
 
 class steel_on_steel_red extends Card {
@@ -1483,22 +1479,6 @@ class all_in_red extends Card {
 		if ($combatChainState[$CCS_DamageDealt] == 0)
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "FAILURE");
 	}
-
-	function SpecialName() {
-		return "All In";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
 }
 
 
@@ -1570,26 +1550,6 @@ class big_slick_red extends Card {
 	function IsWagerEffect($index) {
 		return $this->baseCard->IsWagerEffect($index);
 	}
-
-	function SpecialName() {
-		return "Big Slick";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialCost() {
-		return 3;
-	}
 }
 
 class big_slick_yellow extends Card {
@@ -1626,30 +1586,6 @@ class big_slick_yellow extends Card {
 
 	function IsWagerEffect($index) {
 		return $this->baseCard->IsWagerEffect($index);
-	}
-
-	function SpecialName() {
-		return "Big Slick";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialPitch() {
-		return 2;
-	}
-
-	function SpecialCost() {
-		return 3;
 	}
 }
 
@@ -1688,30 +1624,6 @@ class big_slick_blue extends Card {
 	function IsWagerEffect($index) {
 		return $this->baseCard->IsWagerEffect($index);
 	}
-
-	function SpecialName() {
-		return "Big Slick";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialPitch() {
-		return 3;
-	}
-
-	function SpecialCost() {
-		return 3;
-	}
 }
 
 class check_raise extends BaseCard {
@@ -1746,22 +1658,6 @@ class check_raise_red extends Card {
 	function EffectPowerModifier($param, $attached = false) {
 		return 4;
 	}
-
-	function SpecialName() {
-		return "Check Raise";
-	}
-
-	function SpecialType() { 
-		return "A";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
 }
 
 class check_raise_yellow extends Card {
@@ -1783,26 +1679,6 @@ class check_raise_yellow extends Card {
 	function EffectPowerModifier($param, $attached = false) {
 		return 3;
 	}
-
-	function SpecialName() {
-		return "Check Raise";
-	}
-
-	function SpecialType() { 
-		return "A";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialPitch() {
-		return 2;
-	}
 }
 
 class check_raise_blue extends Card {
@@ -1823,26 +1699,6 @@ class check_raise_blue extends Card {
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 2;
-	}
-
-	function SpecialName() {
-		return "Check Raise";
-	}
-
-	function SpecialType() { 
-		return "A";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialPitch() {
-		return 3;
 	}
 }
 
@@ -1933,26 +1789,6 @@ class steel_to_the_dome_red extends Card {
 		global $defPlayer;
 		PummelHit($defPlayer);
 	}
-
-	function SpecialName() {
-		return "Below the Belt";
-	}
-
-	function SpecialCost() {
-		return 1;
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
 }
 
 class peaceful_sanctuary_red extends Card {
@@ -2017,30 +1853,6 @@ class rest_before_battle_yellow extends Card {
 			Draw($this->controller, false);
 		}
 	}
-
-	function SpecialName() {
-		return "Rest Before Battle";
-	}
-
-	function SpecialPitch() {
-		return 2;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function SpecialSubType() {
-		return "Aura";
-	}
-
-	function SpecialBlock() {
-		return 3;
-	}
 }
 
 class lessons_learned_blue extends Card {
@@ -2090,26 +1902,6 @@ class lessons_learned_blue extends Card {
 			$deck->Shuffle("-");
 		}
 	}
-
-	function SpecialName() {
-		return "Lessons Learned";
-	}
-
-	function SpecialPitch() {
-		return 3;
-	}
-
-	function SpecialType() {
-		return "I";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialBlock() {
-		return -2;
-	}
 }
 
 class longsword_leggings extends Card {
@@ -2131,22 +1923,6 @@ class longsword_leggings extends Card {
 
 	function AbilityType($index = -1, $from = '-') {
 		return "A";
-	}
-
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialName() {
-		return "Longsword Leggings";
-	}
-
-	function SpecialBlock() {
-		return 1;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
 	}
 }
 
@@ -2215,22 +1991,6 @@ class take_the_lead_red extends Card {
 		}
 		return $prevented;
 	}
-
-	function SpecialName() {
-		return "Take the Lead";
-	}
-
-	function SpecialType() {
-		return "I";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialBlock() {
-		return -2;
-	}
 }
 
 class sharp_n_shine extends BaseCard {
@@ -2283,22 +2043,6 @@ class sharp_n_shine_red extends Card {
 	function SpecificLogic() {
 		return $this->baseCard->SpecificLogic();
 	}
-
-	function SpecialName() {
-		return "Sharp 'N Shine";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
 }
 
 class sharp_n_shine_yellow extends Card {
@@ -2320,26 +2064,6 @@ class sharp_n_shine_yellow extends Card {
 	function SpecificLogic() {
 		return $this->baseCard->SpecificLogic();
 	}
-
-	function SpecialName() {
-		return "Sharp 'N Shine";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialPitch() {
-		return 2;
-	}
 }
 
 class sharp_n_shine_blue extends Card {
@@ -2360,26 +2084,6 @@ class sharp_n_shine_blue extends Card {
 
 	function SpecificLogic() {
 		return $this->baseCard->SpecificLogic();
-	}
-
-	function SpecialName() {
-		return "Sharp 'N Shine";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialPitch() {
-		return 3;
 	}
 }
 
@@ -2451,26 +2155,6 @@ class gutshot_red extends Card {
 	function IsWagerEffect($index) {
 		return $this->baseCard->IsWagerEffect($index);
 	}
-
-	function SpecialName() {
-		return "Gut Shot";
-	}
-
-	function SpecialCost() {
-		return 1;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
 }
 
 class gutshot_yellow extends Card {
@@ -2508,30 +2192,6 @@ class gutshot_yellow extends Card {
 	function IsWagerEffect($index) {
 		return $this->baseCard->IsWagerEffect($index);
 	}
-
-	function SpecialName() {
-		return "Gut Shot";
-	}
-
-	function SpecialCost() {
-		return 1;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialPitch() {
-		return 2;
-	}
 }
 
 class gutshot_blue extends Card {
@@ -2568,29 +2228,5 @@ class gutshot_blue extends Card {
 
 	function IsWagerEffect($index) {
 		return $this->baseCard->IsWagerEffect($index);
-	}
-
-	function SpecialName() {
-		return "Gut Shot";
-	}
-
-	function SpecialCost() {
-		return 1;
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialPitch() {
-		return 3;
 	}
 }
