@@ -625,6 +625,9 @@ function MirageLayer($target)
 
 function ResolveTransformHero($player, $cardID, $parameter)
 {
+  global $CS_OriginalHero;
+  $Hero = new CharacterCard(0, $player);
+  SetClassState($player, $CS_OriginalHero, $Hero->CardID());
   $permIndex = SearchPermanentsForCard($player, "levia_redeemed");
   if($permIndex != "") RemovePermanent($player, $permIndex);
   $inventoryIndex = SearchInventoryForCard($player, "blasmophet_levia_consumed");

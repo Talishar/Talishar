@@ -1056,6 +1056,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
 	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated, $CardStats_TimesPassiveTriggered;
+	global $CS_OriginalHero;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -1073,9 +1074,13 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	if($winner == "1" || $winner == "2") $deck["winner"] = intval($winner);
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
-	if($opposingHero != "") $deck["opponentStartingLife"] = intval(CharacterHealth($opposingHero));
+	$playerOriginalHero = GetClassState($player, $CS_OriginalHero);
+	if ($playerOriginalHero == "-") $playerOriginalHero = $playerHero;
+	$opposingOriginalHero = GetClassState($player == 1 ? 2 : 1, $CS_OriginalHero);
+	if ($opposingOriginalHero == "-") $opposingOriginalHero = $opposingHero;
+	if($opposingHero != "") $deck["opponentStartingLife"] = intval(CharacterHealth($opposingOriginalHero));
 	if($playerHero != "") $deck["playerHero"] = $playerHero;
-	if($playerHero != "") $deck["startingLife"] = intval(CharacterHealth($playerHero));
+	if($playerHero != "") $deck["startingLife"] = intval(CharacterHealth($playerOriginalHero));
 	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
 	$deck["cardResults"] = [];
 	$deck["character"] = [];
