@@ -2383,7 +2383,7 @@ class sharp_n_shine_blue extends Card {
 	}
 }
 
-class gut_shot extends BaseCard {
+class gutshot extends BaseCard {
 	function PlayAbility() {
 		AddCurrentTurnEffect($this->cardID, $this->controller);
 	}
@@ -2416,11 +2416,11 @@ class gut_shot extends BaseCard {
 	}
 }
 
-class gut_shot_red extends Card {
+class gutshot_red extends Card {
   function __construct($controller) {
-    $this->cardID = "gut_shot_red";
+    $this->cardID = "gutshot_red";
     $this->controller = $controller;
-    $this->baseCard = new gut_shot($this->cardID, $this->controller);
+    $this->baseCard = new gutshot($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -2473,11 +2473,11 @@ class gut_shot_red extends Card {
 	}
 }
 
-class gut_shot_yellow extends Card {
+class gutshot_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "gut_shot_yellow";
+    $this->cardID = "gutshot_yellow";
     $this->controller = $controller;
-    $this->baseCard = new gut_shot($this->cardID, $this->controller);
+    $this->baseCard = new gutshot($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -2534,11 +2534,11 @@ class gut_shot_yellow extends Card {
 	}
 }
 
-class gut_shot_blue extends Card {
+class gutshot_blue extends Card {
   function __construct($controller) {
-    $this->cardID = "gut_shot_blue";
+    $this->cardID = "gutshot_blue";
     $this->controller = $controller;
-    $this->baseCard = new gut_shot($this->cardID, $this->controller);
+    $this->baseCard = new gutshot($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
