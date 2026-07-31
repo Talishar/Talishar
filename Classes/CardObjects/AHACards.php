@@ -550,21 +550,35 @@ class shuck_blue extends Card {
 	}
 }
 
+class silverdrop_downpour extends BaseCard {
+	function PlayAbility() {
+		global $CombatChain;
+		if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
+			AddEffectToCurrentAttack($this->cardID);
+	}
+	function SelfCostModifier() {
+		return SearchCurrentTurnEffects("SHARPEN", $this->controller) ? -1 : 0;
+	}
+
+	function IsPlayRestricted() {
+		return !IsWeaponAttack();
+	}
+}
+
 class silverdrop_downpour_red extends Card {
 	function __construct($controller) {
 		$this->cardID = "silverdrop_downpour_red";
 		$this->controller = $controller;
+		$this->baseCard = new silverdrop_downpour($this->cardID, $this->controller);
 	}
 
 	function SelfCostModifier($from) {
-		return SearchCurrentTurnEffects("SHARPEN", $this->controller) ? -1 : 0;
+		return $this->baseCard->SelfCostModifier();
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    	global $CombatChain;
-		if (TypeContains($CombatChain->AttackCard()->ID(), "W"))
-			AddEffectToCurrentAttack($this->cardID);
-		return "";
+		$this->baseCard->PlayAbility();
+    	return "";
   	}
 
 	function EffectPowerModifier($param, $attached = false) {
@@ -572,14 +586,69 @@ class silverdrop_downpour_red extends Card {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		global $CombatChain;
-		return TypeContains($CombatChain->AttackCard()->ID(), "W");
+		return true;
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		global $CombatChain;
-		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
-		return false;
+		return $this->baseCard->IsPlayRestricted();
+	}
+}
+
+class silverdrop_downpour_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "silverdrop_downpour_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new silverdrop_downpour($this->cardID, $this->controller);
+	}
+
+	function SelfCostModifier($from) {
+		return $this->baseCard->SelfCostModifier();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    	return "";
+  	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+}
+
+class silverdrop_downpour_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "silverdrop_downpour_blue";
+		$this->controller = $controller;
+		$this->baseCard = new silverdrop_downpour($this->cardID, $this->controller);
+	}
+
+	function SelfCostModifier($from) {
+		return $this->baseCard->SelfCostModifier();
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    	return "";
+  	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
 	}
 }
 
@@ -731,9 +800,7 @@ class deadly_display extends BaseCard {
 	}
 
 	function IsPlayRestricted() {
-		global $CombatChain;
-		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) return true;
-		return false;
+		return !IsWeaponAttack();
 	}
 
 	function AddEffectHitTrigger($parameter, $check) {
@@ -746,15 +813,15 @@ class deadly_display extends BaseCard {
 }
 
 class deadly_display_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "deadly_display_red";
-    $this->controller = $controller;
+  	function __construct($controller) {
+		$this->cardID = "deadly_display_red";
+		$this->controller = $controller;
 		$this->baseCard = new deadly_display($this->cardID, $this->controller);
-  }
+  	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility();
-  }
+    	return $this->baseCard->PlayAbility();
+  	}
 
 	function EffectPowerModifier($param, $attached = false) {
 		return $param == "ONHIT" ? 0 : 3;
@@ -777,16 +844,48 @@ class deadly_display_red extends Card {
 	}
 }
 
-class deadly_display_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "deadly_display_blue";
-    $this->controller = $controller;
+class deadly_display_yellow extends Card {
+  	function __construct($controller) {
+		$this->cardID = "deadly_display_yellow";
+		$this->controller = $controller;
 		$this->baseCard = new deadly_display($this->cardID, $this->controller);
-  }
+  	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility();
-  }
+    	return $this->baseCard->PlayAbility();
+  	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "ONHIT" ? 0 : 2;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return $this->baseCard->AddEffectHitTrigger($parameter, $check);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
+		PlayAura("flurry", $this->controller);
+	}
+}
+
+class deadly_display_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "deadly_display_blue";
+		$this->controller = $controller;
+		$this->baseCard = new deadly_display($this->cardID, $this->controller);
+  	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return $this->baseCard->PlayAbility();
+	}
 
 	function EffectPowerModifier($param, $attached = false) {
 		return $param == "ONHIT" ? 0 : 1;

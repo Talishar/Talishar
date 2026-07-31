@@ -2758,3 +2758,360 @@ class a_moments_peace_blue extends Card {
 		return "";
 	}
 }
+
+class big_blinder extends BaseCard {
+	function PlayAbility() {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		AddOnWagerEffects();
+	}
+
+	function WonWager($wonWager, $amount) {
+		PlayAura("flurry", $wonWager, $amount);
+	}
+
+	function IsPlayRestricted() {
+		return TargetSwordAttack($this->controller) == "";
+	}
+}
+
+class big_blinder_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "big_blinder_red";
+    $this->controller = $controller;
+    $this->baseCard = new big_blinder($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+
+	function IsWagerEffect($index) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class big_blinder_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "big_blinder_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new big_blinder($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function IsWagerEffect($index) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class big_blinder_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "big_blinder_blue";
+    $this->controller = $controller;
+    $this->baseCard = new big_blinder($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function IsWagerEffect($index) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class small_blinder extends BaseCard {
+	function PlayAbility() {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		AddOnWagerEffects();
+	}
+
+	function WonWager($wonWager, $amount) {
+		PlayAura("blade_dance", $wonWager, $amount);
+	}
+
+	function IsPlayRestricted() {
+		return TargetSwordAttack($this->controller) == "";
+	}
+}
+
+class small_blinder_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "small_blinder_red";
+    $this->controller = $controller;
+    $this->baseCard = new small_blinder($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+
+	function IsWagerEffect($index) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class small_blinder_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "small_blinder_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new small_blinder($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function IsWagerEffect($index) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class small_blinder_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "small_blinder_blue";
+    $this->controller = $controller;
+    $this->baseCard = new small_blinder($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function IsWagerEffect($index) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function WonWager($wonWager, $amount) {
+		$this->baseCard->WonWager($wonWager, $amount);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class carve_up_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "carve_up_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return !IsWeaponAttack();
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $CCS_WeaponIndex, $combatChainState;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		if ($Weapon->NumPowerCounters() > 0) {
+			$message = "if_you_want_to_destroy_arsenal";
+			$context = "Choose if you want to remove a counter from your weapon to destroy their arsenal";
+			Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+			Await($this->controller, $this->cardID, final:true);
+		}
+	}
+
+	function SpecificLogic() {
+		global $CCS_WeaponIndex, $combatChainState, $dqVars;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon->AddPowerCounters(-1);
+		ArsenalChooseAndDestroy($this->controller);
+	}
+}
+
+class dice_up_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "dice_up_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return !IsWeaponAttack();
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $CCS_WeaponIndex, $combatChainState;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		if ($Weapon->NumPowerCounters() > 0) {
+			$message = "if_you_want_to_destroy_an_aura";
+			$context = "Choose if you want to remove a counter from your weapon to destroy their arsenal";
+			Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+			Await($this->controller, "MultiZoneIndices", "indices", search:"THEIRAURAS");
+			Await($this->controller, "ChooseMultiZone", "MZInd", context: "Destroy an Aura");
+			Await($this->controller, "MZDestroy");
+			Await($this->controller, $this->cardID, final:true);
+		}
+	}
+
+	function SpecificLogic() {
+		global $CCS_WeaponIndex, $combatChainState, $dqVars;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon->AddPowerCounters(-1);
+		ArsenalChooseAndDestroy($this->controller);
+	}
+}
+
+class slice_up_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "slice_up_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return !IsWeaponAttack();
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $CCS_WeaponIndex, $combatChainState;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		if ($Weapon->NumPowerCounters() > 0) {
+			$message = "if_you_want_to_pummel";
+			$context = "Choose if you want to remove a counter from your weapon to have the defending player discard";
+			Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+			Await($this->controller, $this->cardID, final:true);
+		}
+	}
+
+	function SpecificLogic() {
+		global $CCS_WeaponIndex, $combatChainState, $dqVars, $defPlayer;
+		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon->AddPowerCounters(-1);
+		PummelHit($defPlayer);
+	}
+}
