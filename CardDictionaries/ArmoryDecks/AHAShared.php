@@ -10,6 +10,7 @@ function Sharpen($MZIndex, $player, $num=1) {
     if ($Effect->PlayerID() != $player) continue;
     switch ($Effect->EffectID()) {
       case "swordmasters_path_red-SHARP":
+      case "swordmasters_path_yellow-SHARP":
       case "swordmasters_path_blue-SHARP":
         ++$num;
         $Effect->Remove();

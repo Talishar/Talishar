@@ -993,6 +993,26 @@ class swordmasters_path_yellow extends Card {
 	function SpecialType() {
 		return "A";
 	}
+
+	function SpecialName() {
+		return "Swordmasters Path";
+	}
+
+	function SpecialPitch() {
+		return 2;
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
 }
 
 class swordmasters_path_blue extends Card {
