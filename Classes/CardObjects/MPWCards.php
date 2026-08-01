@@ -904,7 +904,7 @@ class rake_back_blue extends Card {
 			elseif (str_contains($cardSubtype, "Arms"))
 				$subType = "Arms";
 			if (!SearchCharacterAliveSubtype($this->controller, $subType)) {
-				EquipEquipment($this->controller, $Card->CardID(), from:"DISCARD");
+				EquipEquipment($this->controller, $Card->CardID(), from:"MYDISCARD");
 				$Card->Remove();
 			}
 		}
