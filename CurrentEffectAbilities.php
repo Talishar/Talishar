@@ -2354,7 +2354,6 @@ function IsCombatEffectPersistent($cardID)
     case "outland_skirmish_red-1":
     case "outland_skirmish_yellow-1":
     case "outland_skirmish_blue-1":
-    case "rain_razors_yellow":
     case "this_rounds_on_me_blue":
     case "high_striker_red":
     case "high_striker_yellow":

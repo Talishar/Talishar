@@ -1789,18 +1789,6 @@ class peaceful_sanctuary_red extends Card {
     return "";
   }
 
-	function SpecialName() {
-		return "Peaceful Sanctuary";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function SpecialSubType() {
-		return "Aura";
-	}
-
 	function BeginningActionPhaseAbility($index) {
 		$AuraCard = new AuraCard($index, $this->controller);
 		AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID: $AuraCard->UniqueID());
@@ -1945,18 +1933,6 @@ class thwart_yellow extends Card {
 			if ($combatChainState[$CCS_NumPowerCounters] > 0)
 				$combatChainState[$CCS_NumPowerCounters] = 0;
 		}
-	}
-
-	function SpecialName() {
-		return "Thwart";
-	}
-
-	function SpecialPitch() {
-		return 2;
-	}
-
-	function SpecialType() {
-		return "B";
 	}
 }
 
@@ -3302,22 +3278,6 @@ class heavy_swing_red extends Card {
 	function EffectPowerModifier($param, $attached = false) {
 		return 3;
 	}
-
-	function SpecialSubType() {
-		return "Aura";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function SpecialName() {
-		return "Heavy Swing";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
 }
 
 class clip_flexor extends Card {
@@ -3348,18 +3308,6 @@ class clip_flexor extends Card {
 	function PayAdditionalCosts($from, $index = '-') {
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		$CharacterCard->Destroy();
-	}
-
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialBlock() {
-		return 0;
-	}
-
-	function SpecialName() {
-		return "Clip Flexor";
 	}
 }
 
@@ -3395,18 +3343,6 @@ class vigilant_dodgers extends Card {
 	function AbilityType($index = -1, $from = '-') {
 		return "I";
 	}
-
-	function SpecialName() {
-		return "Vigilant Dodgers";
-	}
-
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialBlock() {
-		return 0;
-	}
 }
 
 class olde_leather_helm extends Card {
@@ -3422,18 +3358,6 @@ class olde_leather_helm extends Card {
 	function CardBlockModifier($from, $resourcesPaid, $index) {
 		global $CS_NumTimesAttacked, $mainPlayer;
 		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
-	}
-
-	function SpecialName() {
-		return "Olde Leather Helm";
-	}
-
-	function SpecialBlock() {
-		return 0;
-	}
-
-	function SpecialType() {
-		return "E";
 	}
 }
 
@@ -3451,18 +3375,6 @@ class olde_leather_plate extends Card {
 		global $CS_NumTimesAttacked, $mainPlayer;
 		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
 	}
-
-	function SpecialName() {
-		return "Olde Leather Plate";
-	}
-
-	function SpecialBlock() {
-		return 0;
-	}
-
-	function SpecialType() {
-		return "E";
-	}
 }
 
 class olde_leather_gloves extends Card {
@@ -3479,18 +3391,6 @@ class olde_leather_gloves extends Card {
 		global $CS_NumTimesAttacked, $mainPlayer;
 		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
 	}
-
-	function SpecialName() {
-		return "Olde Leather Gloves";
-	}
-
-	function SpecialBlock() {
-		return 0;
-	}
-
-	function SpecialType() {
-		return "E";
-	}
 }
 
 class olde_leather_boots extends Card {
@@ -3506,18 +3406,6 @@ class olde_leather_boots extends Card {
 	function CardBlockModifier($from, $resourcesPaid, $index) {
 		global $CS_NumTimesAttacked, $mainPlayer;
 		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
-	}
-
-	function SpecialName() {
-		return "Olde Leather Boots";
-	}
-
-	function SpecialBlock() {
-		return 0;
-	}
-
-	function SpecialType() {
-		return "E";
 	}
 }
 
@@ -3538,22 +3426,6 @@ class overbear_red extends Card {
 
 	function DoesEffectGrantDominate($effectIndex) {
 		return true;
-	}
-
-	function SpecialName() {
-		return "Overbear";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
-	}
-
-	function SpecialBlock() {
-		return 2;
 	}
 }
 
