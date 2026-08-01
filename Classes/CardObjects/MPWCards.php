@@ -3319,3 +3319,240 @@ class heavy_swing_red extends Card {
 		return "WARRIOR";
 	}
 }
+
+class clip_flexor extends Card {
+  function __construct($controller) {
+    $this->cardID = "clip_flexor";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND:type=AR", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Add an attack reaction as a blocking card");
+		Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+	function SpecificLogic() {
+		global $dqVars;
+		$choice = $dqVars["choice"];
+		$ind = explode("-", $choice)[1] ?? -1;
+		if ($ind != -1)
+			AddBlockingFromHand($this->controller, $ind);
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "DR";
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->Destroy();
+	}
+
+	function SpecialType() {
+		return "E";
+	}
+
+	function SpecialBlock() {
+		return 0;
+	}
+
+	function SpecialName() {
+		return "Clip Flexor";
+	}
+}
+
+class vigilant_dodgers extends Card {
+  function __construct($controller) {
+    $this->cardID = "vigilant_dodgers";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+		return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
+	}
+
+	function CurrentTurnEffectUses() {
+		return 1;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->Destroy();
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CS_WeaponsAttackedWith;
+		return GetClassState(1, $CS_WeaponsAttackedWith) == "-" && GetClassState(2, $CS_WeaponsAttackedWith) == "-";
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "I";
+	}
+
+	function SpecialName() {
+		return "Vigilant Dodgers";
+	}
+
+	function SpecialType() {
+		return "E";
+	}
+
+	function SpecialBlock() {
+		return 0;
+	}
+}
+
+class olde_leather_helm extends Card {
+  function __construct($controller) {
+    $this->cardID = "olde_leather_helm";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function CardBlockModifier($from, $resourcesPaid, $index) {
+		global $CS_NumTimesAttacked, $mainPlayer;
+		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+	}
+
+	function SpecialName() {
+		return "Olde Leather Helm";
+	}
+
+	function SpecialBlock() {
+		return 0;
+	}
+
+	function SpecialType() {
+		return "E";
+	}
+}
+
+class olde_leather_plate extends Card {
+  function __construct($controller) {
+    $this->cardID = "olde_leather_plate";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function CardBlockModifier($from, $resourcesPaid, $index) {
+		global $CS_NumTimesAttacked, $mainPlayer;
+		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+	}
+
+	function SpecialName() {
+		return "Olde Leather Plate";
+	}
+
+	function SpecialBlock() {
+		return 0;
+	}
+
+	function SpecialType() {
+		return "E";
+	}
+}
+
+class olde_leather_gloves extends Card {
+  function __construct($controller) {
+    $this->cardID = "olde_leather_gloves";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function CardBlockModifier($from, $resourcesPaid, $index) {
+		global $CS_NumTimesAttacked, $mainPlayer;
+		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+	}
+
+	function SpecialName() {
+		return "Olde Leather Gloves";
+	}
+
+	function SpecialBlock() {
+		return 0;
+	}
+
+	function SpecialType() {
+		return "E";
+	}
+}
+
+class olde_leather_boots extends Card {
+  function __construct($controller) {
+    $this->cardID = "olde_leather_boots";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function CardBlockModifier($from, $resourcesPaid, $index) {
+		global $CS_NumTimesAttacked, $mainPlayer;
+		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+	}
+
+	function SpecialName() {
+		return "Olde Leather Boots";
+	}
+
+	function SpecialBlock() {
+		return 0;
+	}
+
+	function SpecialType() {
+		return "E";
+	}
+}
+
+class overbear_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "overbear_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return IsWeaponAttack();
+	}
+
+	function DoesEffectGrantDominate($effectIndex) {
+		return true;
+	}
+
+	function SpecialName() {
+		return "Overbear";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialBlock() {
+		return 2;
+	}
+}

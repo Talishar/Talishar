@@ -3362,6 +3362,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       }
       return true;
     case "bunker_beard":
+    case "clip_flexor": // equipment that *don't* go on combat chain when activated
       return $phase == "B";
     case "oldhim":
     case "oldhim_grandfather_of_eternity":
@@ -3413,6 +3414,10 @@ function HasBladeBreak($cardID)
     case $CID_TekloLegs:
     case "mask_of_malicious_manifestations":
     case "corrupted_crown": //temporary
+    case "olde_leather_helm":
+    case "olde_leather_plate":
+    case "olde_leather_gloves":
+    case "olde_leather_boots":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);

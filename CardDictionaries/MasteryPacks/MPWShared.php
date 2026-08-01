@@ -35,3 +35,16 @@ function DrawAndPutBack($player, $cardID) {
     AddDecisionQueue("SETDQCONTEXT", $player, "-");
   }
 }
+
+function AddBlockingFromHand($player, $handInd) {
+  $hand = &GetHand($player);
+  $cardID = $hand[$handInd];
+  $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
+  $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() && (TypeContains($cardID, "A") || TypeContains($cardID, "AA")) >= 1;
+  if (!$dominateRestricted && !$overpowerRestricted) {
+    AddCombatChain($cardID, $player, "HAND", 0, -1);
+    OnBlockResolveEffects($cardID);
+    array_splice($hand, $handInd, 1);
+  }
+  else WriteLog(CardLink($cardID, $cardID) . " could not be added as a blocking card");
+}
