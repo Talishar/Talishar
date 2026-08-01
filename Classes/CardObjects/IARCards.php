@@ -1575,3 +1575,186 @@ class hex_gauntlet extends Card {
     BanishCardForPlayer($this->cardID, $this->controller, "EQUIP");
   }
 }
+
+class appalling_bearers extends Card {
+  function __construct($controller) {
+    $this->cardID = "appalling_bearers";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 2;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  private
+  function GetInds() {
+    $Hand = new Hand($this->controller);
+    $inds = [];
+    for($i = 0; $i < $Hand->NumCards(); ++$i) {
+      if (SubtypeContains($Hand->Card($i, true), "Zombie"))
+        $inds[] = $i;
+    }
+    return $inds;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return count($this->GetInds()) == 0;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $inds = $this->GetInds();
+    if (count($inds) == 0) {
+      WriteLog("No Zombie to discard, reverting gamestate", highlight:true);
+      RevertGamestate();
+      return;
+    }
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $inds));
+    AddDecisionQueue("CHOOSEHAND", $this->controller, "<-", 1);
+    AddDecisionQueue("MULTIREMOVEHAND", $this->controller, "-", 1);
+    AddDecisionQueue("DISCARDCARD", $this->controller, "HAND-" . $this->controller, 1);
+  }
+}
+
+class grasp_of_the_darknight extends Card {
+  function __construct($controller) {
+    $this->cardID = "grasp_of_the_darknight";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Opt($this->cardID, 1);
+    Await($this->controller, "PlayAura", cardID:"runechant");
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+}
+
+class grille_of_repentance extends Card {
+  function __construct($controller) {
+    $this->cardID = "grille_of_repentance";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYBANISH:bloodDebtOnly=1", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", contenxt:"Turn a card with blood debt in your banish face down");
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"];
+    $ind = explode("-", $choice)[1] ?? -1;
+    if ($ind != -1) {
+      $BanishCard = new BanishCard($this->controller, $ind);
+      $BanishCard->SetModifier("DOWN");
+    }
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+}
+
+class robe_of_repentance extends Card {
+  function __construct($controller) {
+    $this->cardID = "robe_of_repentance";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYBANISH:bloodDebtOnly=1", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", contenxt:"Turn a card with blood debt in your banish face down");
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"];
+    $ind = explode("-", $choice)[1] ?? -1;
+    if ($ind != -1) {
+      $BanishCard = new BanishCard($this->controller, $ind);
+      $BanishCard->SetModifier("DOWN");
+    }
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+}
+
+class path_of_repentance extends Card {
+  function __construct($controller) {
+    $this->cardID = "path_of_repentance";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYBANISH:bloodDebtOnly=1", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", contenxt:"Turn a card with blood debt in your banish face down");
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"];
+    $ind = explode("-", $choice)[1] ?? -1;
+    if ($ind != -1) {
+      $BanishCard = new BanishCard($this->controller, $ind);
+      $BanishCard->SetModifier("DOWN");
+    }
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+}

@@ -19,6 +19,10 @@ class Hand {
   function Remove($index) {
     return RemoveHand($this->playerID, $index);
   }
+
+  function Card($index, $cardNumber=false) {
+    return $this->hand[$index];
+  }
 }
 
 class PitchZone {
