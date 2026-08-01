@@ -1444,9 +1444,12 @@ class all_in_red extends Card {
 				WriteLog("🪙Player $this->controller is going all in!🪙");
 				$Effect = $CurrentTurnEffects->FindEffect($this->cardID);
 				$goldIndices = explode(",", GetGoldIndices($this->controller));
-				$num = count($goldIndices);
-				for ($i = $num - 1; $i >=0; --$i) {
-					MZDestroy($this->controller, $goldIndices[$i]);
+				$num = 0;
+				for ($i = count($goldIndices) - 1; $i >=0; --$i) {
+					if ($goldIndices[$i] != "") {
+						MZDestroy($this->controller, $goldIndices[$i]);
+						++$num;
+					}
 				}
 				$Effect->Replace("$this->cardID-$num");
 			}
