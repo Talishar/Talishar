@@ -1752,7 +1752,7 @@ function DestroyAllThisAura($player, $cardID)
   $countAuras = count($auras);
   $aurasPieces = AuraPieces();
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
-    if (($cardID == "runechant" && IsRunechant($cardID)) || $auras[$i] == $cardID) {
+    if (($cardID == "runechant" && IsRunechant($auras[$i])) || $auras[$i] == $cardID) {
       DestroyAura($player, $i);
       ++$count;
     }
