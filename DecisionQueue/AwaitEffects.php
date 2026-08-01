@@ -379,6 +379,10 @@ function ResolveGoAgainAwait($player) {
   ResolveGoAgain($cardID, $player, $from, additionalCosts: $additionalCosts, uniqueID:$uniqueID);
 }
 
+function CacheCombatResultAwait($player) {
+  CacheCombatResult();
+}
+
 function AfterResolveEffectsAwait($player) {
   CopyCurrentTurnEffectsFromAfterResolveEffects();
 }

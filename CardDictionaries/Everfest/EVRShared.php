@@ -110,7 +110,6 @@
       case "rotary_ram_yellow": return 2;
       case "rotary_ram_blue": return 1;
       case "dreadbore": return 1;
-      case "rain_razors_yellow": return 2;
       case "release_the_tension_red": return 3;
       case "release_the_tension_yellow": return 2;
       case "release_the_tension_blue": return 1;
@@ -163,7 +162,6 @@
       case "teklo_pounder_blue": return true;
       case "rotary_ram_red": case "rotary_ram_yellow": case "rotary_ram_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "dreadbore": return CardSubType($attackID) == "Arrow";
-      case "rain_razors_yellow": return CardSubType($attackID) == "Arrow";
       case "release_the_tension_red": case "release_the_tension_yellow": case "release_the_tension_blue": return CardSubType($attackID) == "Arrow";
       case "release_the_tension_red-1": case "release_the_tension_yellow-1": case "release_the_tension_blue-1": return CardSubType($attackID) == "Arrow";
       case "fatigue_shot_red": case "fatigue_shot_yellow": case "fatigue_shot_blue": return CardType($attackID) == "AA";
@@ -330,10 +328,6 @@
         AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON,Bow");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMZUSES", $currentPlayer, 2, 1);
-        return "";
-      case "rain_razors_yellow":
-        AddCurrentTurnEffect($cardID, 1);
-        AddCurrentTurnEffect($cardID, 2);
         return "";
       case "release_the_tension_red": case "release_the_tension_yellow": case "release_the_tension_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);

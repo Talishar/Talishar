@@ -1551,17 +1551,33 @@ class pierce_reality_blue extends Card {
 // }
 
 
-// class rain_razors_yellow extends Card {
+class rain_razors_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "rain_razors_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "rain_razors_yellow";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $mainPlayer, $defPlayer;
+    AddCurrentTurnEffect($this->cardID, $mainPlayer);
+		AddCurrentTurnEffect($this->cardID, $defPlayer);
+		return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Arrow");
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return true;
+	}
+}
 
 
 // class read_the_glide_path_red extends Card {
