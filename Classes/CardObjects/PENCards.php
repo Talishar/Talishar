@@ -6828,8 +6828,9 @@ class smoldering_steel_red extends Card {
   }
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
-    global $defPlayer;
-    LoseHealth(1, $defPlayer);
+    global $defPlayer, $CombatChain;
+    SetDamageSourceUID($CombatChain->AttackCard()->OriginUniqueID());
+    DamageTrigger($defPlayer, 1, "DAMAGE", $CombatChain->AttackCard()->ID(), $this->controller);
   }
 }
 
