@@ -321,7 +321,7 @@ class belly_buster extends BaseCard {
 
   function OnAttackEffect() {
     global $CombatChain;
-    if (ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $this->controller))
+    if (ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $this->controller) && IsHeroAttackTarget())
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
