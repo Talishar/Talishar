@@ -1463,8 +1463,8 @@ class all_in_red extends Card {
 	}
 
 	function ResolutionStepEffectTriggers($parameter, $index) {
-		global $CCS_DamageDealt, $combatChainState;
-		if ($combatChainState[$CCS_DamageDealt] == 0)
+		global $CCS_DamageDealt, $combatChainState, $CombatChain;
+		if (IsCombatEffectActive($this->cardID) && $combatChainState[$CCS_DamageDealt] == 0)
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "FAILURE");
 	}
 }
