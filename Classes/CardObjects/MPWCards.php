@@ -3556,3 +3556,90 @@ class overbear_red extends Card {
 		return 2;
 	}
 }
+
+class engage_steel extends BaseCard {
+	function PlayAbility() {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive() {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+
+	function EffectPowerModifier($val) {
+		global $CombatChain;
+		$defByWarriorCard = false;
+		for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+			$LinkCard = $CombatChain->Card($i, true);
+			if (ClassContains($LinkCard->ID(), "WARRIOR", $LinkCard->PlayerID())) {
+				$defByWarriorCard = true;
+				break;
+			}
+		}
+		return $defByWarriorCard ? $val + 1 : $val;
+	}
+}
+
+class engage_steel_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "engage_steel_red";
+    $this->controller = $controller;
+    $this->baseCard = new engage_steel($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier(3);
+	}
+}
+
+class engage_steel_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "engage_steel_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new engage_steel($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier(2);
+	}
+}
+
+class engage_steel_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "engage_steel_blue";
+    $this->controller = $controller;
+    $this->baseCard = new engage_steel($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $this->baseCard->CombatEffectActive();
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $this->baseCard->EffectPowerModifier(1);
+	}
+}
