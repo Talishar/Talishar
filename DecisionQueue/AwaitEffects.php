@@ -186,7 +186,7 @@ function DiscardAwait($player) {
 
 function MZRemoveAwait($player) {
   global $dqVars;
-  $MZIndex = $dqVars["MZIndex"];
+  $MZIndex = $dqVars["MZIndex"] ?? "-";
   $parameter = $dqVars["parameter"] ?? "-";
   return MZRemove($player, $MZIndex, $parameter);
 }

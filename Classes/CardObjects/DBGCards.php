@@ -86,3 +86,55 @@ class shapeshifter extends Card {
     return "T";
   }
 }
+
+class DISCARDACARD extends Card {
+  function __construct($controller) {
+    $this->cardID = "DISCARD";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "MZIndex", may:true, context:"Delete a card from your hand");
+    Await($this->controller, "MZRemove", final:true);
+    return "";
+  }
+
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    return "-";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialName() {
+    return "Manual Mode Discard";
+  }
+}
+
+class DELPERM extends Card {
+  function __construct($controller) {
+    $this->cardID = "DISCARD";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS&MYITEMS&MYCHAR&MYALLY&MYPERMANENTS", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "MZIndex", may:true, context:"Delete a card from the arena");
+    Await($this->controller, "MZRemove", final:true);
+    return "";
+  }
+
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    return "-";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialName() {
+    return "Manual Mode Delete";
+  }
+}

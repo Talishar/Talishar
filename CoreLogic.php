@@ -3291,10 +3291,8 @@ function SelfCostModifier($cardID, $from)
   global $CS_NumCharged, $currentPlayer, $combatChain, $layers, $CS_NumVigorDestroyed, $CS_NumCardsDrawn;
   global $CS_CheeredThisTurn, $mainPlayer;
   $otherPlayer = ($currentPlayer == 1) ? 2 : 1;
-  if (class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
-    return $card->SelfCostModifier($from);
-  }
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") return $card->SelfCostModifier($from);
   switch ($cardID) {
     case "arknight_ascendancy_red":
     case "ninth_blade_of_the_blood_oath_yellow":

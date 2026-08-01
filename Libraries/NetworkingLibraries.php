@@ -710,7 +710,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           elseif (CardName($cardID . "_purple") != "")
             $cardID .= "_purple";
         }
-        if (TypeContains($cardID, "C")) {
+        if ($cardID == "discard") {
+          PlayCardEffect("DISCARDACARD", "MANUALMODE", 0);
+        }
+        elseif ($cardID == "delete") {
+          PlayCardEffect("DELPERM", "MANUALMODE", 0);
+        }
+        elseif (TypeContains($cardID, "C")) {
           WriteLog("Player " . $playerID . " transformed their hero", highlight: true);
           $char = &GetPlayerCharacter($playerID);
           $char[0] = $cardID;
