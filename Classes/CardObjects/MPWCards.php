@@ -3036,7 +3036,7 @@ class dice_up_blue extends Card {
 		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
 		if ($Weapon->NumPowerCounters() > 0) {
 			$message = "if_you_want_to_destroy_an_aura";
-			$context = "Choose if you want to remove a counter from your weapon to destroy their arsenal";
+			$context = "Choose if you want to remove a counter from your weapon to destroy an aura they control";
 			Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
 			Await($this->controller, "MultiZoneIndices", "indices", search:"THEIRAURAS");
 			Await($this->controller, "ChooseMultiZone", "MZInd", context: "Destroy an Aura");
