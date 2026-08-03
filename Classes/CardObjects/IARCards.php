@@ -1788,9 +1788,9 @@ class herald_of_hope_red extends Card {
     $this->baseCard->HitEffect();
   }
  
-  function SpecialName() {
-    return "Herald of Hope";
-  }
+  // function SpecialName() {
+  //   return "Herald of Hope";
+  // }
 
   function SpecialCost() {
     return 1;
