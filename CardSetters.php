@@ -782,11 +782,11 @@ function AddCharacterEffect($player, $index, $effect)
   }
 }
 
-function AddGraveyard($cardID, $player, $from, $effectController = "", $cardController = "")
+function AddGraveyard($cardID, $player, $from, $effectController = "", $cardController = "", $additionalCosts = "-")
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $CS_NumAllyPutInGraveyard;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
-  global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext, $CS_NumInstantsPutInGrave;
+  global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext, $CS_NumInstantsPutInGrave, $Stack;
   if (str_contains($from, "DECK") && str_starts_with($cardID, 'back_alley_breakline_') && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "E", $player))) {
     if ($player == $mainPlayer) {
       WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
@@ -801,8 +801,11 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   if (!SearchCurrentTurnEffects($hero, $player) && ColorContains($cardID, 3, $player) && ($hero == "gravy_bones_shipwrecked_looter" || $hero == "gravy_bones")) {
     AddCurrentTurnEffect($hero, $player);
   }
-  if (TypeContains($cardID, "I", $player, from:"DISCARD"))
-    IncrementClassState($player, $CS_NumInstantsPutInGrave);
+  if (TypeContains($cardID, "I", $player, from:$from)) {
+    // 3.0.7a, meld cards aren't instants put into the grave if they are played unless melded
+    if ($additionalCosts == "-" || !HasMeld($cardID) || !IsMeldActionName($additionalCosts))
+      IncrementClassState($player, $CS_NumInstantsPutInGrave);
+  }
   // Code for equipped evos+ going to GY, then Scrapped and it makes them unplayable.
   // this may not be required anymore
   if ($from == "CHAR" && str_ends_with($cardID, '_equip')) {

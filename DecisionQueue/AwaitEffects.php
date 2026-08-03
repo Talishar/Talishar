@@ -296,7 +296,8 @@ function ResolveGoesWhereAwait($player) {
   $from = $dqVars["from"] ?? "-";
   $effectController = $dqVars["effectController"] ?? "";
   $modifier = $dqVars["modifier"] ?? "NA";
-  ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController, $modifier);
+  $additionalCosts = $dqVars["additionalCosts"] ?? "-";
+  ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController, $modifier, $additionalCosts);
 }
 
 function MZDestroyAwait($player) {

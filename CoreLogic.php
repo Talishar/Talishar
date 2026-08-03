@@ -4385,13 +4385,13 @@ function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
     else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W" && $definedCardType != "Macro") {
       $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
       // make sure the card goes to the graveyard after it resolves
-      Await($currentPlayer, "ResolveGoesWhere", cardID:$cardID, goesWhere:$goesWhere, from:$from, final:true, subsequent:false);
+      Await($currentPlayer, "ResolveGoesWhere", cardID:$cardID, goesWhere:$goesWhere, from:$from, additionalCosts:$additionalCosts, final:true, subsequent:false);
     }
   }
   Await($currentPlayer, "AfterResolveEffects", subsequent:0, final:true);
 }
 
-function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController = "", $modifier = "NA")
+function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController = "", $modifier = "NA", $additionalCosts = "-")
 {
   if($effectController == "") $effectController = $player;
   $otherPlayer = 3 - $player;
@@ -4407,7 +4407,7 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
       if ($from == "CC") break; //Things that would go to the GY stay on till the chain is closing and the close step.
       if ($from == "CHAINCLOSING") $from = "CC";
       if (DelimStringContains(CardSubType($cardID), "Affliction") && $from != "CC") $destPlayer = $otherPlayer;
-      return AddGraveyard($cardID, $destPlayer, $from, $effectController, $player);
+      return AddGraveyard($cardID, $destPlayer, $from, $effectController, $player, $additionalCosts);
     case "SOUL":
       AddSoul($cardID, $player, $from);
       break;

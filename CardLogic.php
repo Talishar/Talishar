@@ -4924,6 +4924,6 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $fro
   ResolveGoAgain($cardID, $player, "MELD", additionalCosts: $additionalCosts);
   $goesWhere = GoesWhereAfterResolving($cardID, $from, $player);
   $goesWhere = $goesWhere == -1 ? "GY" : $goesWhere;
-  if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD") 
+  if(GetClassState($player, $CS_AdditionalCosts) == "Both" || $additionalCosts == "MELD")
     Await($player, "ResolveGoesWhere", goesWhere:$goesWhere, cardID:$cardID, from:$from);
 }
