@@ -1295,26 +1295,6 @@ class point_of_escalation_yellow extends Card {
 	function PayAdditionalCosts($from, $index = '-') {
 		return $this->archetype->PayAdditionalCosts();
 	}
-
-	function SpecialName() {
-		return "Point of Escalation";
-	}
-
-	function SpecialPitch() {
-		return 2;
-	}
-
-	function SpecialCost() {
-		return 1;
-	}
-
-	function SpecialType() {
-		return "AR";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
 }
 
 class zane_broadly_beloved extends Card {
@@ -1724,26 +1704,6 @@ class below_the_belt_red extends Card {
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
 		ArsenalChooseAndDestroy($this->controller);
-	}
-
-	function SpecialName() {
-		return "Below the Belt";
-	}
-
-	function SpecialCost() {
-		return 1;
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function HasGoAgain($from) {
-		return true;
 	}
 }
 

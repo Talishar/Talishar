@@ -67,26 +67,6 @@ class prizeworn_pathfinders extends Card {
     if ($Equipment->NumDefenseCounters() < 0)
       $Equipment->AddDefCounters(1);
   }
-
-  function SpecialName() {
-    return "Prizeworn Pathfinders";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Legs";
-  }
-
-  function SpecialClass() {
-    return "WARRIOR,GUARDIAN";
-  }
 }
 
 class heads_up_red extends Card {
@@ -125,26 +105,6 @@ class heads_up_red extends Card {
     $param = explode("-", $Effect->EffectID())[1] ?? "";
     return $param == "DOMINATE";
   }
-
-  function SpecialName() {
-    return "Heads Up";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "WARRIOR";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
 }
 
 class visit_the_prize_room_blue extends Card {
@@ -175,34 +135,6 @@ class visit_the_prize_room_blue extends Card {
         $Inventory->Remove($ind);
       }
     }
-  }
-
-  function SpecialName() {
-    return "Visit the Prize Room";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "WARRIOR";
-  }
-
-  function SpecialBlock() {
-    return 2;
   }
 }
 
@@ -238,26 +170,6 @@ class prizeworn_plating extends Card {
     $Hero->Tap();
     PlayAura("vigor", $this->controller);
   }
-
-  function SpecialName() {
-    return "Prizeworn Plating";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "WARRIOR";
-  }
-
-  function HasGuardwell() {
-    return true;
-  }
 }
 
 class prizeworn_gauntlet extends Card {
@@ -291,26 +203,6 @@ class prizeworn_gauntlet extends Card {
     $Hero = new CharacterCard(0, $this->controller);
     $Hero->Tap();
     PlayAura("courage", $this->controller);
-  }
-
-  function SpecialName() {
-    return "Prizeworn Gauntlet";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "WARRIOR";
-  }
-
-  function HasGuardwell() {
-    return true;
   }
 }
 
@@ -383,26 +275,6 @@ class belly_buster_red extends Card {
 	function EffectPowerModifier($param, $attached = false) {
 		return $this->baseCard->EffectPowerModifier($param, 3);
 	}
-
-  function SpecialName() {
-    return "Belly Buster";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "WARRIOR";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
 }
 
 class belly_buster_blue extends Card {
@@ -440,28 +312,4 @@ class belly_buster_blue extends Card {
 	function EffectPowerModifier($param, $attached = false) {
 		return $this->baseCard->EffectPowerModifier($param, 1);
 	}
-
-  function SpecialName() {
-    return "Belly Buster";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "WARRIOR";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
 }

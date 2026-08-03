@@ -919,10 +919,6 @@ class blood_harvest extends Card {
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     GainResources($this->controller, 3);
   }
-
-  function SpecialBlock() {
-    return 0;
-  }
 }
 
 class sinspeaker_gloomblade_red extends Card {
@@ -1756,5 +1752,159 @@ class path_of_repentance extends Card {
 
   function AbilityType($index = -1, $from = '-') {
     return "I";
+  }
+}
+
+class herald_of_hope extends BaseCard {
+  function AddOnHitTrigger($check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect() {
+    global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+    if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
+    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+    AddSoul($this->cardID, $this->controller, "CC");
+    GainHealth(1, $this->controller);
+  }
+}
+
+class herald_of_hope_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "herald_of_hope_red";
+    $this->controller = $controller;
+    $this->baseCard = new herald_of_hope($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+ 
+  function SpecialName() {
+    return "Herald of Hope";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialClass() {
+    return "ILLUSIONIST";
+  }
+
+  function SpecialTalent() {
+    return "LIGHT";
+  }
+
+  function HasPhantasm() {
+    return true;
+  }
+}
+
+class herald_of_hope_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "herald_of_hope_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new herald_of_hope($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+ 
+  function SpecialName() {
+    return "Herald of Hope";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialClass() {
+    return "ILLUSIONIST";
+  }
+
+  function SpecialTalent() {
+    return "LIGHT";
+  }
+
+  function HasPhantasm() {
+    return true;
+  }
+}
+
+class herald_of_hope_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "herald_of_hope_blue";
+    $this->controller = $controller;
+    $this->baseCard = new herald_of_hope($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+ 
+  function SpecialName() {
+    return "Herald of Hope";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialClass() {
+    return "ILLUSIONIST";
+  }
+
+  function SpecialTalent() {
+    return "LIGHT";
+  }
+
+  function HasPhantasm() {
+    return true;
   }
 }
