@@ -796,6 +796,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
     else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
     else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
     else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
+    else if (SubtypeContains($cardID, "Quiver") || SubtypeContains($cardID, "Off-Hand") || SubtypeContains($cardID, "Companion")) $slot = "Off-Hand";
     else if (TypeContains($cardID, "W")) {
       for ($i = 0; $i < $Character->NumCards(); ++$i) {
         $CharCard = $Character->Card($i, true);
@@ -803,6 +804,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
       }
       if ($slot == "") $slot = "LWep";
     }
+    if ($slot == "") $slot = "-";
   }
   if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (PreachModestyActive())) { 
     if (TypeContains($cardID, "T", $player, true)) {
