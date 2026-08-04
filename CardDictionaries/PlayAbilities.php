@@ -200,20 +200,10 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       Draw($currentPlayer);
       return "";
-    case "edge_ahead_red":
-    case "edge_ahead_yellow":
-    case "edge_ahead_blue":
-      AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
-      return "";
     case "engaged_swiftblade_red":
     case "engaged_swiftblade_yellow":
     case "engaged_swiftblade_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "hold_em_red":
-    case "hold_em_yellow":
-    case "hold_em_blue":
-      AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       return "";
     case "gauntlet_of_might":
       PlayAura("might", $currentPlayer); 
@@ -319,11 +309,6 @@ function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "performance_bonus_yellow":
     case "performance_bonus_blue":
       if ($from == "ARS") GiveAttackGoAgain();
-      return "";
-    case "money_where_ya_mouth_is_red":
-    case "money_where_ya_mouth_is_yellow":
-    case "money_where_ya_mouth_is_blue":
-      AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       return "";
     case "starting_stake_yellow":
       if (CountItem("gold", $currentPlayer, false) == 0) {

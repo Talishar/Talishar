@@ -411,12 +411,6 @@
       case "up_the_ante_blue-3":
         PlayAura("vigor", $wonWager, $amount, effectSource:"up_the_ante_blue");
         break;
-      case "edge_ahead_red": case "edge_ahead_yellow": case "edge_ahead_blue":
-        PlayAura("agility", $wonWager, $amount);
-        break;
-      case "hold_em_red": case "hold_em_yellow": case "hold_em_blue":
-        PlayAura("vigor", $wonWager, $amount, effectSource:$attackCard);
-        break;
       case "wage_might_red": case "wage_might_yellow": case "wage_might_blue":
         PlayAura("might", $wonWager, $amount);
         break;
@@ -428,9 +422,6 @@
         break;
       case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
         PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
-        break;
-      case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
-        PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer, effectSource:$attackCard);
         break;
       case "drink_em_under_the_table_red":
         Draw($wonWager);
@@ -491,13 +482,10 @@
           case "up_the_ante_blue-1":
           case "up_the_ante_blue-2":
           case "up_the_ante_blue-3":
-          case "edge_ahead_red": case "edge_ahead_yellow": case "edge_ahead_blue":
-          case "hold_em_red": case "hold_em_yellow": case "hold_em_blue":
           case "wage_might_red": case "wage_might_yellow": case "wage_might_blue":
           case "wage_agility_red": case "wage_agility_yellow": case "wage_agility_blue":
           case "wage_vigor_red": case "wage_vigor_yellow": case "wage_vigor_blue":
           case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
-          case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
           case "drink_em_under_the_table_red":
             if (!$chainClosed) {
               $triggerCardID = $currentTurnEffects[$i];

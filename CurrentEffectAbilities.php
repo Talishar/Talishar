@@ -811,21 +811,8 @@ function OnAttackEffects($cardID)
         case "bigger_than_big_red-BUFF":
         case "bigger_than_big_yellow-BUFF":
         case "bigger_than_big_blue-BUFF":
-        case "edge_ahead_red-BUFF":
-        case "edge_ahead_yellow-BUFF":
-        case "edge_ahead_blue-BUFF":
-        case "money_where_ya_mouth_is_red-BUFF":
-        case "money_where_ya_mouth_is_yellow-BUFF":
-        case "money_where_ya_mouth_is_blue-BUFF":
           if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
             AskWager(ExtractCardID($currentTurnEffects[$i]));
-          }
-          break;
-        case "hold_em_red-BUFF":
-        case "hold_em_yellow-BUFF":
-        case "hold_em_blue-BUFF":
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
-            AddLayer("TRIGGER", $mainPlayer, ExtractCardID($currentTurnEffects[$i]), "-", "ATTACKTRIGGER");
           }
           break;
         case "shifting_winds_of_the_mystic_beast_blue":
