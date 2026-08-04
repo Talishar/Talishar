@@ -381,7 +381,7 @@ function AddSuspense($player, $MZIndex)
   $AuraCard->AddCounters(1);
 }
 
-function TargetDefendingAction($player, $cardID, $setTarget=false) {
+function TargetDefendingAction($player, $cardID, $setTarget=false, $may=false) {
   global $CombatChain, $defPlayer;
   if (!$CombatChain->HasCurrentLink()) return;
   $AOptions = GetChainLinkCards($defPlayer, "A", "C");
@@ -395,7 +395,8 @@ function TargetDefendingAction($player, $cardID, $setTarget=false) {
     foreach ($numOptions as $num) $options[] = "COMBATCHAINLINK-$num";
     $options = implode(",", $options);
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a defending action card to buff");
-    AddDecisionQueue("CHOOSEMULTIZONE", $player, $options, 1);
+    if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $options, 1);
+    else AddDecisionQueue("CHOOSEMULTIZONE", $player, $options, 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $player, "-", 1);
     if ($setTarget) AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
   }

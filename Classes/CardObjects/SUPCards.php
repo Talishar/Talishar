@@ -4517,23 +4517,14 @@ class shining_courage_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $index = explode("-", $target)[1];
-    CombatChainDefenseModifier($index, 3);
+    $index = explode("-", $target)[1] ?? "-";
+    if ($index != "-")
+      CombatChainDefenseModifier($index, 3);
     Cheer($this->controller);
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    TargetDefendingAction($this->controller, $this->cardID, true);
-  }
-
-  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $combatChain;
-    $combatChainPieces = CombatChainPieces();
-    $combatChainCount = count($combatChain);
-    for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
-      if ((TypeContains($combatChain[$i], "A") || TypeContains($combatChain[$i], "AA"))) return false;
-    }
-    return true;
+    TargetDefendingAction($this->controller, $this->cardID, true, true);
   }
 }
 
