@@ -716,6 +716,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         elseif ($cardID == "delete") {
           PlayCardEffect("DELPERM", "MANUALMODE", 0);
         }
+        elseif ($cardID == "mill") {
+          $numMilled = intval($num) ?? 1;
+          PlayCardEffect("MILL", "MANUALMODE", $numMilled);
+        }
         elseif (TypeContains($cardID, "C")) {
           WriteLog("Player " . $playerID . " transformed their hero", highlight: true);
           $char = &GetPlayerCharacter($playerID);

@@ -138,3 +138,31 @@ class DELPERM extends Card {
     return "Manual Mode Delete";
   }
 }
+
+class MILL extends Card {
+  function __construct($controller) {
+    $this->cardID = "DISCARD";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Deck = new Deck($this->controller);
+    $inds = implode(",", range(0, $resourcesPaid-1));
+    $cardIDs = $Deck->Remove($inds);
+    foreach (explode(",", $cardIDs) as $cardID)
+      AddGraveyard($cardID, $this->controller, "DECK");
+    return "";
+  }
+
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    return "-";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialName() {
+    return "Manual Mode Mill";
+  }
+}
