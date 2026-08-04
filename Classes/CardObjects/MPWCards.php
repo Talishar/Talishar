@@ -1322,9 +1322,9 @@ class zane_broadly_beloved extends Card {
 			AddLayer("TRIGGER", $this->cardID, $this->controller, "-", "CHEER");
   }
 
-  // function SpecialName() {
-	// 	return "Zane Broadly Beloved";
-  // }
+  function SpecialName() {
+		return "Zane Broadly Beloved";
+  }
 
   function SpecialTalent() {
 		return "REVERED";

@@ -4213,10 +4213,11 @@ function HasLegendary($cardID): bool
   return GeneratedHasLegendary($cardID);
 }
 
-function Is1H($cardID): bool|int
+function Is1H($cardID, $hero="-"): bool|int
 {
   static $oneHandedCache = [];
   if (isset($oneHandedCache[$cardID])) return $oneHandedCache[$cardID];
+  if ($hero == "zane_broadly_beloved" && SubtypeContains($cardID, "Sword")) return $oneHandedCache[$cardID] = true;
   switch ($cardID) {
     case "claw_of_vynserakai": 
     case "gavel_of_natural_order":

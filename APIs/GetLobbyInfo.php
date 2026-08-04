@@ -109,7 +109,7 @@ if($handler) {
     else {
       $handItem = new stdClass();
       $handItem->id = $cardID;
-      $is1H = Is1H($cardID); // compute once; used twice below
+      $is1H = Is1H($cardID, $character[0]); // compute once; used twice below
       $numHands = 2;
       if(DelimStringContains($subtype, "Quiver")) {
         $numHands = 0;
@@ -173,7 +173,7 @@ if($handler) {
     $handItem = new stdClass();
     $handItem->id = $handsSB[$i];
     $subtype = CardSubtype($handItem->id);
-    $is1H = Is1H($handItem->id); // compute once; used twice below
+    $is1H = Is1H($handItem->id, $character[0]); // compute once; used twice below
     $numHands = 2;
     if(DelimStringContains($subtype, "Quiver")) {
       $numHands = 0;
