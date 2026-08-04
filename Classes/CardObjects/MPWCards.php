@@ -1308,6 +1308,7 @@ class zane_broadly_beloved extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		// WriteLog("HERE: $additionalCosts");
 		if ($additionalCosts == "CHEER") {
 			Draw($this->controller);
 			Draw($this->controller == 1 ? 2 : 1);
@@ -1319,7 +1320,7 @@ class zane_broadly_beloved extends Card {
   function CheerTrigger() {
 		global $CS_CheeredThisTurn;
 		if (GetClassState($this->controller, $CS_CheeredThisTurn) == 1)
-			AddLayer("TRIGGER", $this->cardID, $this->controller, "-", "CHEER");
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "CHEER");
   }
 
   function SpecialName() {

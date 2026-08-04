@@ -4531,7 +4531,7 @@ class shining_courage_red extends Card {
     $combatChainPieces = CombatChainPieces();
     $combatChainCount = count($combatChain);
     for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
-      if ($combatChain[$i + 1] == $this->controller && (TypeContains($combatChain[$i], "A") || TypeContains($combatChain[$i], "AA"))) return false;
+      if ((TypeContains($combatChain[$i], "A") || TypeContains($combatChain[$i], "AA"))) return false;
     }
     return true;
   }
