@@ -52,9 +52,10 @@ function DiscardPieces()
 //12 - Face up/down
 //13 - Marked (1 = yes, 0 = no)
 //14 - Tapped (1 = yes, 0 = no)
+//15 - Slot
 function CharacterPieces()
 {
-  return 15;
+  return 16;
 }
 
 //0 - Card ID

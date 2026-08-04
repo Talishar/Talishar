@@ -13,8 +13,7 @@
 //10 - Subcards , delimited
 //11 - Unique ID
 //12 - Face Up/Down
-class Character
-{
+class Character {
   // property declaration
   public $cardID = "";
   public $status = 2;
@@ -31,6 +30,7 @@ class Character
   public $facing = "UP";
   public $marked = 0;
   public $tapped = 0;
+  public $slot = "-";
 
 
   private $player = null;
@@ -57,6 +57,7 @@ class Character
     $this->facing = $array[$index + 12];
     $this->marked = $array[$index + 13];
     $this->tapped = $array[$index + 14];
+    $this->slot = $array[$index + 15];
   }
 
   public function Finished()
@@ -77,6 +78,7 @@ class Character
     $array[$this->arrIndex + 12] = $this->facing;
     $array[$this->arrIndex + 13] = $this->marked;
     $array[$this->arrIndex + 14] = $this->tapped;
+    $array[$this->arrIndex + 15] = $this->slot;
   }
 }
 
@@ -99,6 +101,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   $char[] = HasCloaked($cardID, $player); //12 - Face up/down
   $char[] = 0; //13 - Marked (1 = yes, 0 = no)
   $char[] = 0; //14 - Tapped (1 = yes, 0 = no)
+  $char[] = "-"; // slot
   return $index;
 }
 
@@ -786,12 +789,20 @@ function CharacterCostModifier($cardID, $from, $cost)
 function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAgent="")
 {
   global $EffectContext, $CS_NumAuras;
+  $Character = new PlayerCharacter($player);
   if ($effectAgent == "") $effectAgent = $player;
   if ($slot == "") {
     if (SubtypeContains($cardID, "Head")) $slot = "Head";
     else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
     else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
     else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
+    else if (TypeContains($cardID, "W")) {
+      for ($i = 0; $i < $Character->NumCards(); ++$i) {
+        $CharCard = $Character->Card($i, true);
+        if ($CharCard->Slot() == "LWep") $slot = "RWep";
+      }
+      if ($slot == "") $slot = "LWep";
+    }
   }
   if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (PreachModestyActive())) { 
     if (TypeContains($cardID, "T", $player, true)) {
@@ -833,6 +844,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
       $char[$i + 12] = HasCloaked($cardID, $player);
       $char[$i + 13] = 0;
       $char[$i + 14] = 0;
+      $char[$i + 15] = $slot;
       $replaced = 1;
     }
   }
@@ -852,6 +864,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
     $char[] = HasCloaked($cardID, $player); //12 - Face up/down
     $char[] = 0; //13 - Marked
     $char[] = 0; //14 - Tapped
+    $char[] = $slot; // 15 - Slot
   }
   if ($cardID == "adaptive_plating") AddCurrentTurnEffect("adaptive_plating-" . $uniqueID . "," . $slot, $player);
   if ($cardID == "adaptive_dissolver") AddCurrentTurnEffect("adaptive_dissolver-" . $uniqueID . ",Base," . $slot, $player);
@@ -960,6 +973,20 @@ function EquipWeapon($player, $cardID, $source = "-")
   $charCount = count($char);
   $characterPieces = CharacterPieces();
   $is1H = Is1H($cardID);
+  $occupied_slots = [];
+  $Character = new PlayerCharacter($player);
+  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $CharacterCard = $Character->Card($i, true);
+    if ($CharacterCard->Slot() == "LWep")
+      $occupied_slots[] = "LWep";
+    elseif ($CharacterCard->Slot() == "RWep")
+      $occupied_slots[] = "RWep";
+  }
+  $slot = "-";
+  if (!in_array("RWep", $occupied_slots))
+    $slot = "LWep";
+  elseif (!in_array("LWep", $occupied_slots))
+    $slot = "RWep";
   //check if you have enough hands to equip it
   if ($is1H && $numHands < 2 || !$is1H && $numHands == 0){
     //Replace the first destroyed weapon; if none you can't re-equip
@@ -982,6 +1009,7 @@ function EquipWeapon($player, $cardID, $source = "-")
           $char[$i + 12] = HasCloaked($cardID, $player);
           $char[$i + 13] = 0;
           $char[$i + 14] = 0;
+          $char[$i + 15] = $slot;
           $replaced = 1;
         }
       }
@@ -1003,6 +1031,7 @@ function EquipWeapon($player, $cardID, $source = "-")
     $char[] = HasCloaked($cardID, $player); //12 - Face up/down
     $char[] = 0; //13 - Marked
     $char[] = 0; //14 - Tapped
+    $char[] = $slot; //15 - slot
   }
   return $uniqueID;
 }

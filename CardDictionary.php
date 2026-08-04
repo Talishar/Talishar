@@ -4498,6 +4498,29 @@ function IsModular($cardID)
   return GeneratedHasModular($cardID);
 }
 
+function GetSlot($cardID, &$numWeapons) {
+  if (TypeContains($cardID, "C"))
+    return "Hero";
+  elseif (TypeContains($cardID, "W")) {
+    ++$numWeapons;
+    if ($numWeapons == 1)
+      return "LWep";
+    else
+      return "RWep";
+  }
+  elseif (SubtypeContains($cardID, "Legs"))
+    return "Legs";
+  elseif (SubtypeContains($cardID, "Arms"))
+    return "Arms";
+  elseif (SubtypeContains($cardID, "Chest"))
+    return "Chest";
+  elseif (SubtypeContains($cardID, "Head"))
+    return "Head";
+  elseif (SubtypeContains($cardID, "Quiver") || SubtypeContains($cardID, "Off-Hand") || SubtypeContains($cardID, "Companion"))
+    return "Off-Hand";
+  return "-";
+}
+
 function HasCloaked($cardID, $player = "", $hero = "")
 {
 	$HeroCard = new CharacterCard(0, $player);

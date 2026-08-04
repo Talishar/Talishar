@@ -222,4 +222,8 @@ class CharacterCard {
     $this->AddUse();
     $this->SetUsed(2);
   }
+
+  function Slot() {
+    return $this->pieces[$this->index+15] ?? "-";
+  }
 }

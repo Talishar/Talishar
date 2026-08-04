@@ -600,7 +600,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         numUses: $theirCharacter[$i + 5],
         subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
         marked: $theirCharacter[$i + 13] == 1,
-        tapped: $theirCharacter[$i + 14] == 1
+        tapped: $theirCharacter[$i + 14] == 1,
+        slot: $theirCharacter[$i + 15] ?? "-"
         );
       }
     } else {
@@ -617,7 +618,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           facing: $theirCharacter[$i + 12],
           subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
           marked: $theirCharacter[$i + 13] == 1,
-          tapped: $theirCharacter[$i + 14] == 1
+          tapped: $theirCharacter[$i + 14] == 1,
+          slot: $theirCharacter[$i + 15] ?? "-"
           );
     }
   }
@@ -849,7 +851,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           numUses: $myCharacter[$i + 5] ?? 0,
           subcard: isSubcardEmpty($myCharacter, $i) ? NULL : ($myCharacter[$i+10] ?? null),
           marked: ($myCharacter[$i + 13] ?? 0) == 1,
-          tapped: ($myCharacter[$i + 14] ?? 0) == 1);
+          tapped: ($myCharacter[$i + 14] ?? 0) == 1,
+          slot: ($myCharacter[$i + 15] ?? "-"));
       }
     }
   }

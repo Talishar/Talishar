@@ -21,10 +21,12 @@ function initializePlayerState($handler, $deckHandler, $player)
   $hero = "";
   $charEquipCount = count($charEquip);
   $equipParts = [];
+  $numWeapons = 0;
   for ($i = 0; $i < $charEquipCount; ++$i) {
     if(TypeContains($charEquip[$i], "C")) $hero = $charEquip[$i];
     if (IsModular($charEquip[$i])) $charEquip[$i] = "NONE00";
-    $equipParts[] = $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0 0 " . CharacterDefaultActiveState($charEquip[$i]) . " - " . GetUniqueId() . " " . HasCloaked($charEquip[$i], hero:$hero) . " 0 0";
+    $slot = GetSlot($charEquip[$i], $numWeapons);
+    $equipParts[] = $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0 0 " . CharacterDefaultActiveState($charEquip[$i]) . " - " . GetUniqueId() . " " . HasCloaked($charEquip[$i], hero:$hero) . " 0 0 $slot";
   }
   if ($charEquipCount > 0) {
     fwrite($handler, implode(" ", $equipParts) . "\r\n");
