@@ -354,9 +354,9 @@ function MainCharacterBeginEndPhaseTriggers()
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $mainCharCount; $i += $characterPieces) {
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
-    if ($mainCharacter[$i + 1] != 2) continue; //Do not process ability if it is disabled (e.g. Humble)
     $card = GetClass($characterID, $mainPlayer);
     if ($card != "-") $card->PermanentEndPhaseAbility($i);
+    if ($mainCharacter[$i + 1] != 2) continue; //Do not process ability if it is disabled (e.g. Humble)
     switch ($characterID) {
       case "terra":
         AddLayer("TRIGGER", $mainPlayer, $characterID);
