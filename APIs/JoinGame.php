@@ -418,7 +418,10 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $weapon2 = "";
    $weaponSideboard = "";
    $totalCards = 0;
-   $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY", "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "HER", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP"];
+   $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY",
+                   "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX",
+                   "HER", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP", "SUP", "APS", "PEN", "AHA",
+                   "OMN", "AZS", "MPW", "AOL"];
 
    if (is_countable($cards)) {
      $cardCount = count($cards);
@@ -962,7 +965,7 @@ function isSpecialUsePromo($cardID) {
       "runechant_of_pride_yellow", "runechant_of_wrath_yellow", "runechant_of_lust_yellow",
       "runechant_of_sloth_yellow", "runic_reaving_red"
     ]);
-    $unreleasedSetNames = array_flip(["MPW", "AOL", "DDD", "IAR", "AMA", ""]);
+    $unreleasedSetNames = array_flip(["DDD", "IAR", "AMA", ""]);
   }
   if (isset($releaseSet[$cardID])) return false;
   return isset($promoSet[$cardID]) || isset($unreleasedSetNames[CardSet($cardID)]);
@@ -971,8 +974,6 @@ function isSpecialUsePromo($cardID) {
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
-    case "MPW":
-    case "AOL":
     case "DDD":
     case "IAR":
     case "AMA":
