@@ -3478,3 +3478,100 @@ class engage_steel_blue extends Card {
 		return $this->baseCard->EffectPowerModifier(1);
 	}
 }
+
+class cutpurse_rapier extends Card {
+  function __construct($controller) {
+    $this->cardID = "cutpurse_rapier";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AA";
+	}
+
+	function AbilityCost() {
+		return 1;
+	}
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRITEMS:type=T;cardID=gold");
+		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+		AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
+	}
+
+	// function SpecialName() {
+	// 	return "Cutpurse Rapier";
+	// }
+
+	function SpecialClass() {
+		return "WARRIOR,THIEF";
+	}
+
+	function SpecialType() {
+		return "W";
+	}
+
+	function SpecialSubType() {
+		return "Sword";
+	}
+
+	function SpecialPower() {
+		return 3;
+	}
+}
+
+class celebrant_broadsword extends Card {
+  function __construct($controller) {
+    $this->cardID = "celebrant_broadsword";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AA";
+	}
+
+	function AbilityCost() {
+		return 2;
+	}
+
+	function DoesAttackHaveGoAgain() {
+		global $CS_CheeredThisTurn;
+		return GetClassState($this->controller, $CS_CheeredThisTurn) > 0;
+	}
+
+	// function SpecialName() {
+	// 	return "Celebrant Broadsword";
+	// }
+
+	function SpecialClass() {
+		return "WARRIOR";
+	}
+
+	function SpecialTalent() {
+		return "REVERED";
+	}
+
+	function SpecialType() {
+		return "W";
+	}
+
+	function SpecialSubType() {
+		return "Sword";
+	}
+
+	function SpecialPower() {
+		return 3;
+	}
+}
