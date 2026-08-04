@@ -954,14 +954,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       return false;
-    case "dawnblade":
-      //checking whether dawnblade *will* trigger is a little trickier
-      if(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 2) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
-        return false;
-      }
-      elseif(GetClassState($mainPlayer, $CS_HitsWDawnblade) == 1) return true;
-      else return false;
     case "breaking_point_red":
       if(IsHeroAttackTarget() && RuptureActive()) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");

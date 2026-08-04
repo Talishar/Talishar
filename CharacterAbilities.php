@@ -393,9 +393,6 @@ function MainCharacterEndTurnAbilities()
   for ($i = 0; $i < $mainCharCount; $i += $characterPieces) {
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     switch ($characterID) {
-      case "dawnblade":
-        if (GetClassState($mainPlayer, $CS_HitsWDawnblade) == 0) $mainCharacter[$i + 3] = 0;
-        break;
       case "kassai_cintari_sellsword":
         if ($mainCharacter[$i + 1] == 1) break; //Do not process ability if it is disabled (e.g. Humble)
         KassaiEndTurnAbility();

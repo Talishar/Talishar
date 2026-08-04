@@ -1647,7 +1647,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
     if (IsWeaponAttack()) {
       ++$combatChainState[$CCS_HitsWithWeapon];
       IncrementClassState($mainPlayer, $CS_HitsWithWeapon);
-      if ($cardID == "dawnblade")
+      if ($cardID == "dawnblade") // deprecated
         IncrementClassState($mainPlayer, $CS_HitsWDawnblade);
       if (SubtypeContains($cardID, "Sword", $mainPlayer))
         IncrementClassState($mainPlayer, $CS_HitsWithSword);

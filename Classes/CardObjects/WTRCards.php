@@ -650,17 +650,57 @@ class breaking_scales extends Card {
 // }
 
 
-// class dawnblade extends Card {
+class dawnblade extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "dawnblade";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "dawnblade";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $CombatChain, $CurrentTurnEffects;
+    $uid = $CombatChain->AttackCard()->OriginUniqueID();
+    if (!$check) {
+      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+      if ($CurrentTurnEffects->CountSpecificEffect($this->cardID, $uid, $this->controller) == 2)
+        return AnyHitTrigger($this->controller, $this->cardID, $check);
+      else
+        return false;
+    }
+    elseif ($CurrentTurnEffects->CountSpecificEffect($this->cardID, $uid, $this->controller) == 1)
+      return AnyHitTrigger($this->controller, $this->cardID, $check);
+    return false;
+  }
+
+  function PermanentEndPhaseAbility($index) {
+    global $CurrentTurnEffects;
+    $Weapon = new CharacterCard($index, $this->controller);
+    $uid = $Weapon->UniqueID();
+    if ($CurrentTurnEffects->CountSpecificEffect($this->cardID, $uid, $this->controller) == 0) {
+      $Weapon->AddPowerCounters(-$Weapon->NumPowerCounters());
+    }
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $CombatChain;
+    $uid = $CombatChain->AttackCard()->OriginUniqueID();
+    $Character = new PlayerCharacter($this->controller);
+    $Weapon = $Character->FindCardUID($uid);
+    $Weapon->AddPowerCounters(1);
+  }
+}
 
 
 // class debilitate_red extends Card {

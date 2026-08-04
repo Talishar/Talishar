@@ -63,6 +63,18 @@ class CurrentTurnEffects {
     return new CurrentEffect(-1);
   }
 
+  function CountSpecificEffect($cardID, $uid, $player=-1) {
+    $count = count($this->effects);
+    $ret = 0;
+    if ($count == 0) return $ret;
+    $currentTurnEffectPieces = CurrentTurnEffectPieces();
+    for ($i = 0; $i < $count; $i += $currentTurnEffectPieces) {
+      if ($player != -1 && ($this->effects[$i+1] ?? -1) != $player) continue;
+      if ($this->effects[$i] == $cardID && isset($this->effects[$i + 2]) && $this->effects[$i + 2] == $uid) ++$ret;
+    }
+    return $ret;
+  }
+
   function NumEffects() {
     return intdiv(count($this->effects), CurrentTurnEffectPieces());
   }

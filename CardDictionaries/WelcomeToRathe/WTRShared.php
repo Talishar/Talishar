@@ -10,7 +10,6 @@
       case "tectonic_plating": return 1;
       case "helm_of_isens_peak": return 1;
       case "harmonized_kodachi": return 1;
-      case "dawnblade": return 1;
       case "braveforge_bracers": return 1;
       default: return 0;
     }
@@ -27,7 +26,6 @@
       case "anothos": return "AA";
       case "tectonic_plating": case "helm_of_isens_peak": return "A";
       case "harmonized_kodachi": return "AA";
-      case "dawnblade": return "AA";
       case "braveforge_bracers": return "A";
       case "fyendals_spring_tunic": return "I";
       case "heartened_cross_strap": return "A";
@@ -462,11 +460,6 @@
         break;
       case "whelming_gustwave_red": case "whelming_gustwave_yellow": case "whelming_gustwave_blue": 
         Draw($mainPlayer);
-        break;
-      case "dawnblade":
-        $mainCharacter = &GetPlayerCharacter($mainPlayer);
-        $index = FindCharacterIndex($mainPlayer, $cardID);
-        ++$mainCharacter[$index+3];
         break;
       case "snatch_red": case "snatch_yellow": case "snatch_blue": Draw($mainPlayer); break;
       default: break;
