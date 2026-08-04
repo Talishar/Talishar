@@ -406,7 +406,7 @@ class cutting_couriers extends Card {
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		$message = "if_you_want_to_buff_next_sword";
+		$message = "if_you_want_to_give_the_attack_go_again";
 		$context = "Choose if you want to destroy " . CardLink($this->cardID) . " to give your attack go again";
 		Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
 		Await($this->controller, $this->cardID, index: $target, final:true);
@@ -415,7 +415,7 @@ class cutting_couriers extends Card {
 	function SpecificLogic() {
 		global $dqVars;
 		$index = $dqVars["index"];
-		AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+		AddCurrentTurnEffect($this->cardID, $this->controller, from:"PLAY");
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		$CharacterCard->Destroy();
 	}
