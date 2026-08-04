@@ -817,7 +817,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
       if($allyInd != -1) $allies[$allyInd + 10] += $damage;
     }
     // add ally tracking  here
-    if ($type !== "COMBAT") SetClassState($otherPlayer, $CS_DamageDealt, GetClassState($otherPlayer, $CS_DamageDealt) + $damage);
+    if ($type !== "COMBAT") SetClassState($playerSource, $CS_DamageDealt, GetClassState($playerSource, $CS_DamageDealt) + $damage);
     else SetClassState($otherPlayer, $CS_PowDamageDealt, GetClassState($otherPlayer, $CS_PowDamageDealt) + $damage);
     if ($player == $defPlayer && $type == "COMBAT" || $type == "ATTACKHIT") $combatChainState[$CCS_AttackTotalDamage] += $damage;
     if ($type == "ARCANE") $classState[$CS_ArcaneDamageTaken] += $damage;
