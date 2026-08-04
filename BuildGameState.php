@@ -580,14 +580,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     // hide opponent's equipment while deciding on adaptive stuff
     $facing = ($i != 0 && $hideOpponentEquipment) ? "DOWN" : $theirCharacter[$i + 12];
     if($isGameOver) $theirCharacter[$i + 12] = "UP";
-    if ($theirCharacter[$i + 12] ?? "UP" == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
-      if($theirCharacter[$i + 1] ?? 0 > 0) {
+    if ($theirCharacter[$i + 12] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
+      if($theirCharacter[$i + 1] > 0) {
       $characterContents[] = JSONRenderedCard(
         $theirChar,
         borderColor: $border,
         overlay: $theirCharacter[$i + 1] != 2 && $theirChar != "DUMMYDISHONORED" ? 1 : 0,
         counters: $counters,
-        defCounters: $theirCharacter[$i + 4] ?? 0,
+        defCounters: $theirCharacter[$i + 4],
         powerCounters: $powerCounters,
         controller: $otherPlayer,
         type: $type,
@@ -597,28 +597,28 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         isBroken: $theirCharacter[$i + 1] == 0,
         label: $label,
         facing: $facing,
-        numUses: $theirCharacter[$i + 5] ?? 0,
+        numUses: $theirCharacter[$i + 5],
         subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-        marked: $theirCharacter[$i + 13] ?? 0 == 1,
-        tapped: $theirCharacter[$i + 14] ?? 0 == 1,
+        marked: $theirCharacter[$i + 13] == 1,
+        tapped: $theirCharacter[$i + 14] == 1,
         slot: $theirCharacter[$i + 15] ?? "-"
         );
       }
     } else {
       $characterContents[] = JSONRenderedCard(
           $TheirCardBack,
-          overlay: $theirCharacter[$i + 1] ?? 1 != 2 ? 1 : 0,
+          overlay: $theirCharacter[$i + 1] != 2 ? 1 : 0,
           counters: $counters,
-          defCounters: $theirCharacter[$i + 4] ?? 0,
+          defCounters: $theirCharacter[$i + 4],
           powerCounters: $powerCounters,
           controller: $otherPlayer,
           type: $type,
           sType: $sType,
           label: $label,
-          facing: $theirCharacter[$i + 12] ?? "UP",
+          facing: $theirCharacter[$i + 12],
           subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-          marked: $theirCharacter[$i + 13] ?? 0 == 1,
-          tapped: $theirCharacter[$i + 14] ?? 0 == 1,
+          marked: $theirCharacter[$i + 13] == 1,
+          tapped: $theirCharacter[$i + 14] == 1,
           slot: $theirCharacter[$i + 15] ?? "-"
           );
     }
