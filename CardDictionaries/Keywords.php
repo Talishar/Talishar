@@ -439,9 +439,9 @@
       default:
         break;
     }
+    $Hero = new CharacterCard(0, $mainPlayer);
+    $hero = ShiyanaCharacter($Hero->CardID());
     if($wonWager == $mainPlayer) {
-      $Hero = new CharacterCard(0, $mainPlayer);
-      $hero = ShiyanaCharacter($Hero->CardID());
       if($Hero->Status() == 2 && ($hero == "olympia_prized_fighter" || $hero == "olympia")) {
         $Hero->SetUsed(1);
         AddLayer("TRIGGER", $mainPlayer, $hero);
