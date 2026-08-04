@@ -3508,9 +3508,9 @@ class cutpurse_rapier extends Card {
 		AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
 	}
 
-	// function SpecialName() {
-	// 	return "Cutpurse Rapier";
-	// }
+	function SpecialName() {
+		return "Cutpurse Rapier";
+	}
 
 	function SpecialClass() {
 		return "WARRIOR,THIEF";
@@ -3552,9 +3552,9 @@ class celebrant_broadsword extends Card {
 		return GetClassState($this->controller, $CS_CheeredThisTurn) > 0;
 	}
 
-	// function SpecialName() {
-	// 	return "Celebrant Broadsword";
-	// }
+	function SpecialName() {
+		return "Celebrant Broadsword";
+	}
 
 	function SpecialClass() {
 		return "WARRIOR";
