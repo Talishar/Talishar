@@ -592,7 +592,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $skip = $params[1] ?? "-";
       }
       CombatChainPowerModifier($lastResult, $val);
-      $cardID = str_starts_with($lastResult, "COMBATCHAINLINK") ? $combatChain[(int)substr($lastResult, 16)] : $combatChain[$lastResult];
+      $chainIndex = str_starts_with($lastResult, "COMBATCHAINLINK") ? (int)substr($lastResult, 16) : $lastResult;
+      $cardID = is_numeric($chainIndex) && isset($combatChain[(int)$chainIndex]) ? $combatChain[(int)$chainIndex] : "";
       if ($skip == "-") {
         if ($val > 0) WriteLog(CardLink($cardID, $cardID) . " gets +" . $val . " power");
         else if ($val < 0) WriteLog(CardLink($cardID, $cardID) . " loses " . -$val . " power");
@@ -648,6 +649,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $discard = &GetDiscard($player);
       $cardsArr = [];
       if (!is_array($lastResult)) $lastResult = explode(",", $lastResult);
+      $lastResult = array_values(array_filter($lastResult, fn($index) => is_numeric($index) && isset($discard[(int)$index])));
       $lastResultCount = count($lastResult);
       $logDiscard = $parameter == "1";
       for ($i = 0; $i < $lastResultCount; ++$i) {
@@ -675,6 +677,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "ADDHANDOWNER":
+      if (!is_numeric($lastResult)) return $lastResult;
+      $lastResult = intval($lastResult);
+      if (!isset($combatChain[$lastResult], $combatChain[$lastResult + 2])) return $lastResult;
       $otherPlayer = 3 - $player;
       if (str_starts_with($combatChain[$lastResult + 2], "THEIR")) AddPlayerHand($combatChain[$lastResult], $otherPlayer, "CC");
       else AddPlayerHand($combatChain[$lastResult], $player, "CC");
@@ -824,6 +829,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "MZOP":
+      if ($lastResult === "PASS" || $lastResult === "") return $lastResult;
       $paramArr = explode(",", $parameter);
       $parameter = $paramArr[0];
       switch ($parameter) {
@@ -1275,7 +1281,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog("<b>$lastResult</b> was selected.");
       return $lastResult;
     case "WRITELOGCOMBATCHAIN":
-      $cardID = str_contains($lastResult, "COMBATCHAINLINK") ? $combatChain[(int)substr($lastResult, 16)] : $combatChain[$lastResult];
+      $chainIndex = str_contains($lastResult, "COMBATCHAINLINK") ? (int)substr($lastResult, 16) : $lastResult;
+      if (!is_numeric($chainIndex) || !isset($combatChain[(int)$chainIndex])) return $lastResult;
+      $cardID = $combatChain[(int)$chainIndex];
       WriteLog(GamestateUnsanitize(CardLink($cardID) . " " . $parameter));
       return $lastResult;
     case "ADDCURRENTTURNEFFECT":
@@ -3264,9 +3272,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $ItemCard->AddCounters(-1 * $numToRemove);
       return $cardID;
     case "REMOVESOUL":
-      $char = &GetPlayerCharacter($player);
-      for ($i = count($lastResult) - 1; $i >= 0; $i--) {
-        RemoveSoul($player, SearchSoulForIndex($lastResult[$i], $player));
+      $selectedCards = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
+      $selectedCards = array_values(array_filter($selectedCards, fn($cardID) => $cardID !== "" && $cardID !== "PASS"));
+      for ($i = count($selectedCards) - 1; $i >= 0; $i--) {
+        $soulIndex = SearchSoulForIndex($selectedCards[$i], $player);
+        if ($soulIndex != -1) RemoveSoul($player, $soulIndex);
       }
       return $lastResult;
     case "REMOVECOUNTERAURAORDESTROY":

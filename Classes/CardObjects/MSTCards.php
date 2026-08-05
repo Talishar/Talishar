@@ -1744,13 +1744,14 @@ class restless_coalescence_yellow extends Card {
 		}
 		if ($abilityType != "I") return "";
 
-		if (SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID") != -1) {
+		$paidEffectIndex = -1;
+		if (isset($auras[$index + 6])) {
+			$paidEffectIndex = SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID");
+		}
+		if ($paidEffectIndex == -1) $paidEffectIndex = SearchCurrentTurnEffectsForPartialId("PAID");
+		if ($paidEffectIndex != -1) {
 			PlayAura("spectral_shield", $this->controller);
-			RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID"));
-		} elseif (SearchCurrentTurnEffectsForPartialId("PAID")) //It needs to check if the auras was destroy, but it's already paid for
-		{
-			PlayAura("spectral_shield", $this->controller);
-			RemoveCurrentTurnEffect(SearchCurrentTurnEffectsForUniqueID($auras[$index + 6] . "-PAID"));
+			RemoveCurrentTurnEffect($paidEffectIndex);
 		} else {
 			WriteLog("You do not have the counters to pay for " . CardLink($this->cardID) . " ability.", highlight: true);
 		}

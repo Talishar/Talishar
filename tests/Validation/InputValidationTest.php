@@ -248,7 +248,7 @@ class InputValidationTest extends TestCase
             'WTR456',
             'ARC789',
             'a', // Minimum length
-            str_repeat('a', 100) // Maximum length
+            str_repeat('a', 500) // Maximum compound-input length
         ];
 
         foreach ($validCardIDs as $cardID) {
@@ -261,7 +261,7 @@ class InputValidationTest extends TestCase
         // Invalid card IDs
         $invalidCardIDs = [
             '', // Empty
-            str_repeat('a', 101), // Too long (101 characters)
+            str_repeat('a', 501), // Too long (501 characters)
             null, // Null value
             123, // Non-string
             [], // Array

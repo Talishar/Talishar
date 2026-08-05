@@ -125,13 +125,23 @@ $hostIP = GetClientIP();
 $gameGUID = GenerateGameGUID();
 
 $filename = "../Games/" . $gameName . "/GameFile.txt";
-$gameFileHandler = fopen($filename, "w");
+$gameFileHandler = @fopen($filename, "w");
+if ($gameFileHandler === false) {
+  $response->error = "Game file could not be initialized.";
+  echo json_encode($response);
+  exit;
+}
 include "../MenuFiles/WriteGamefile.php";
 WriteGameFile();
 
 $filename = "../Games/" . $gameName . "/gamelog.txt";
-$handler = fopen($filename, "w");
-if ($handler !== false) fclose($handler);
+$handler = @fopen($filename, "w");
+if ($handler === false) {
+  $response->error = "Game log could not be initialized.";
+  echo json_encode($response);
+  exit;
+}
+fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
 $cacheVisibility = ($visibility == "public" ? "1" : ($visibility == "friends-only" ? "2" : "0"));

@@ -2,10 +2,6 @@
 
 error_reporting(E_ALL);
 
-// Limit script execution time to 1 second to avoid long-running requests
-@set_time_limit(1);
-@ini_set('max_execution_time', '1');
-
 include "WriteLog.php";
 include "GameLogic.php";
 include "GameTerms.php";
@@ -24,6 +20,9 @@ include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
 include_once "./Libraries/ValidationLibraries.php";
+
+@set_time_limit(1);
+@ini_set('max_execution_time', '1');
 
 //We should always have a player ID as a URL parameter
 $gameName = $_GET["gameName"] ?? "";

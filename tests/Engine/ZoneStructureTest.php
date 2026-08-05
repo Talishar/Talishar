@@ -18,9 +18,9 @@ class ZoneStructureTest extends TestCase
         $this->assertSame(1, DeckPieces());
     }
 
-    public function testPitchPiecesIsOne(): void
+    public function testPitchPiecesIsTwo(): void
     {
-        $this->assertSame(1, PitchPieces());
+        $this->assertSame(2, PitchPieces());
     }
 
     public function testDiscardPiecesIsThree(): void
@@ -38,9 +38,9 @@ class ZoneStructureTest extends TestCase
         $this->assertSame(7, ArsenalPieces());
     }
 
-    public function testCharacterPiecesIsFifteen(): void
+    public function testCharacterPiecesIsSixteen(): void
     {
-        $this->assertSame(15, CharacterPieces());
+        $this->assertSame(16, CharacterPieces());
     }
 
     public function testCombatChainPiecesIsTwelve(): void

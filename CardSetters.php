@@ -212,7 +212,11 @@ function RemoveBanish($player, $index)
 function TurnBanishFaceDown($player, $index)
 {
   $banish = &GetBanish($player);
+  if (!is_numeric($index)) return false;
+  $index = intval($index);
+  if (!array_key_exists($index + 1, $banish)) return false;
   $banish[$index + 1] = "DOWN";
+  return true;
 }
 
 function TurnDiscardFaceDown($player, $index)

@@ -321,7 +321,8 @@ function deleteDirectory($dir) {
         return @unlink($dir) || !file_exists($dir);
     }
 
-    $dirContents = scandir($dir);
+    $dirContents = @scandir($dir);
+    if ($dirContents === false && !is_dir($dir)) return true;
     if ($dirContents === false) return false;
     foreach ($dirContents as $item) {
         if ($item == '.' || $item == '..') {

@@ -1023,7 +1023,7 @@ function MarkHero($player): string
 function CheckMarked($player): bool
 {
   $character = &GetPlayerCharacter($player);
-  return $character[13] == 1;
+  return ($character[13] ?? 0) == 1;
 }
 
 function RemoveMark($player)

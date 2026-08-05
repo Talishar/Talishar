@@ -308,7 +308,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       } else if (!str_starts_with($turn[0], "MULTICHOOSE") && !str_starts_with($turn[0], "MAYMULTICHOOSE")) break;
       $params = explode("-", $turn[2]);
       $maxSelect = intval($params[0]);
-      $options = explode(",", $params[1]);
+      $optionString = $params[1] ?? "";
+      $options = $optionString === "" ? [] : explode(",", $optionString);
       $minSelect = (count($params) > 2) ? intval($params[2]) : -1;
       $chkInputCount = count($chkInput);
       if ($chkInputCount > $maxSelect) {

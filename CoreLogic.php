@@ -37,7 +37,8 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
     }
   }
   // check +1 counters
-  if ($canGainAttack && $combatChainState[$CCS_NumPowerCounters] > 0) $totalPower += $combatChainState[$CCS_NumPowerCounters];
+  $numPowerCounters = intval($combatChainState[$CCS_NumPowerCounters] ?? 0);
+  if ($canGainAttack && $numPowerCounters > 0) $totalPower += $numPowerCounters;
   //Now check current turn effects
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
@@ -345,8 +346,8 @@ function StartTurnAbilities()
   ChangeSetting($defPlayer, $SET_SkipDRs, "0");
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $defCharacter = &GetPlayerCharacter($defPlayer);
-  if($mainCharacter[13]) AddCurrentTurnEffect("marked", $mainPlayer);  //Marked stays between turns
-  if($defCharacter[13]) AddCurrentTurnEffect("marked", $defPlayer); //Marked stays between turns
+  if($mainCharacter[13] ?? false) AddCurrentTurnEffect("marked", $mainPlayer);  //Marked stays between turns
+  if($defCharacter[13] ?? false) AddCurrentTurnEffect("marked", $defPlayer); //Marked stays between turns
   CurrentEffectStartTurnAbilities();
   $charPieces = CharacterPieces();
   $itemPieces = ItemPieces();
@@ -3316,7 +3317,9 @@ function SelfCostModifier($cardID, $from)
     case "blinding_beam_red":
     case "blinding_beam_yellow":
     case "blinding_beam_blue":
-      return TalentContains($combatChain[$layers[3]], "SHADOW") ? -1 : 0;
+      $targetIndex = $layers[3] ?? -1;
+      if (!is_numeric($targetIndex) || !isset($combatChain[(int)$targetIndex])) return 0;
+      return TalentContains($combatChain[(int)$targetIndex], "SHADOW") ? -1 : 0;
     case "jump_start_red":
     case "jump_start_yellow":
     case "jump_start_blue":

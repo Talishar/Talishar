@@ -72,3 +72,4 @@ WriteGamestateCache($gameName, $gamestate);
 
 header("Location: NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
 //header("Location: http://localhost:5173/game/play?gameName=$gameName&playerID=1&authKey=$p1Key");
+*/

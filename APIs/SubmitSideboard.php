@@ -239,7 +239,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   fclose($handler);
 
   //Write initial gamestate to memory
-  $gamestate = file_get_contents("../Games/" . $gameName . "/gamestate.txt");
+  $gamestate = @file_get_contents("../Games/" . $gameName . "/gamestate.txt");
   if ($gamestate === false) {
     error_log("SubmitSideboard: gamestate.txt missing for game $gameName — directory may have been cleaned up");
     $response->error = "Game files not found; the game may have been closed due to inactivity";
