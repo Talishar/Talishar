@@ -64,8 +64,10 @@ class prizeworn_pathfinders extends Card {
   function SpecificLogic() {
     $Character = new PlayerCharacter($this->controller);
     $Equipment = $Character->FindCardID($this->cardID);
-    if ($Equipment->NumDefenseCounters() < 0)
+    if ($Equipment->NumDefenseCounters() < 0){
       $Equipment->AddDefCounters(1);
+      LogPlayCardStats($this->controller, "prizeworn_pathfinders", "EQUIP", "PASSIVE");
+    }
   }
 }
 
