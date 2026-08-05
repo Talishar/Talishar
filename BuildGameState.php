@@ -15,6 +15,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $currentTurnEffects, $nextTurnEffects, $dqVars, $lastPlayed, $events;
   global $p1Key, $p2Key, $myHealth, $theirHealth, $winner;
   global $CombatChain, $CCS_AttackTargetUID, $CCS_WeaponIndex, $CCS_RequiredEquipmentBlock, $CCS_RequiredNegCounterEquipmentBlock, $CCS_CachedPreBlockValue;
+  global $CCS_DamageDealt, $CCS_HitThisLink;
   global $AIHasInfiniteHP, $practiceDummyWeaponPower, $EffectContext, $CS_NumCardsDrawn;
   global $p1IsPatron, $p2IsPatron, $p1MetafyTiers, $p2MetafyTiers, $p1IsAI, $p2IsAI;
   global $roguelikeGameID, $gameGUID, $p1uid, $p2uid;
@@ -1409,6 +1410,31 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
     }
   }
+
+  // Mask of Momentum visual effect
+  if (FindCharacterIndex($mainPlayer, "mask_of_momentum") != -1) {
+    $maskHitStreak = HitsInRow();
+    $isFinalizingCurrentLink = !empty($combatChain) && SearchLayersForPhase("FINALIZECHAINLINK") != -1;
+    if ($isFinalizingCurrentLink) {
+      $currentLinkHit = intval($combatChainState[$CCS_DamageDealt] ?? 0) > 0
+        || intval($combatChainState[$CCS_HitThisLink] ?? 0) > 0;
+      $maskHitStreak = $currentLinkHit ? $maskHitStreak + 1 : 0;
+    }
+    $maskHitStreak = min(3, $maskHitStreak);
+
+    if ($maskHitStreak > 0) {
+      $isFriendly = $playerID == $mainPlayer || $playerID == 3 && $otherPlayer != $mainPlayer;
+      $maskEffect = JSONRenderedCard(
+        cardNumber: "mask_of_momentum",
+        borderColor: $isFriendly ? "blue" : "red",
+        counters: $maskHitStreak,
+        lightningPlayed: "SKIP"
+      );
+      if ($isFriendly) $playerEffects[] = $maskEffect;
+      else $opponentEffects[] = $maskEffect;
+    }
+  }
+
   $response->opponentEffects = $opponentEffects;
   $response->playerEffects = $playerEffects;
 
