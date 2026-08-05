@@ -271,7 +271,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   include "../ParseGamestate.php";
   include "../StartEffects.php";
 
-  AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI);
+  InitializeRustCounterAccrualForGame($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI);
 
   //Update the game file to show that the game has started and other players can join to spectate
   $gameStatus = $MGS_GameStarted;

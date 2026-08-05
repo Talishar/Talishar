@@ -259,19 +259,103 @@ function ShouldSkipRustCountersForContributors()
 	return IsUserContributor($p1uid) || IsUserContributor($p2uid);
 }
 
-function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
+function GetRustCounterAccrualStatePath()
 {
-	if (IsDevEnvironment()) return false;
+	global $gameName;
+	if (!isset($gameName) || !is_numeric($gameName)) return null;
+	return dirname(__DIR__) . "/Games/" . $gameName . "/rustCounterAccrual.json";
+}
+
+function WriteRustCounterAccrualState($handle, $state)
+{
+	$json = json_encode($state);
+	if ($json === false) return false;
+	rewind($handle);
+	if (!ftruncate($handle, 0)) return false;
+	if (fwrite($handle, $json) === false) return false;
+	return fflush($handle);
+}
+
+function InitializeRustCounterAccrualForGame($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
+{
+	$statePath = GetRustCounterAccrualStatePath();
+	if ($statePath === null) return false;
+
+	$players = [];
+	$skipGame = IsDevEnvironment();
+	if ($skipGame) {
+		$state = ["status" => "skipped", "players" => []];
+		return file_put_contents($statePath, json_encode($state), LOCK_EX) !== false;
+	}
+
 	if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron) && $p2IsAI !== "1") {
 		WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight: true, highlightColor: "green", path: "../");
-		return true;
+		$skipGame = true;
 	}
 	elseif (ShouldSkipRustCountersForContributors() && $p2IsAI !== "1") {
 		WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight: true, highlightColor: "green", path: "../");
+		$skipGame = true;
+	}
+
+	if (!$skipGame) {
+		$candidates = [
+			[
+				"userId" => intval($p1id),
+				"isPatron" => ($p1IsPatron === "1"),
+				"isAI" => ($p1IsAI === "1"),
+			],
+			[
+				"userId" => intval($p2id),
+				"isPatron" => ($p2IsPatron === "1"),
+				"isAI" => ($p2IsAI === "1"),
+			],
+		];
+
+		foreach ($candidates as $player) {
+			if ($player["isAI"] || $player["isPatron"] || $player["userId"] <= 0 || $player["userId"] == 465 || $player["userId"] == 9474 || $player["userId"] == 203) {
+				continue;
+			}
+			$players[] = ["userId" => $player["userId"], "processed" => false];
+		}
+	}
+
+	$state = [
+		"status" => $skipGame ? "skipped" : "pending",
+		"players" => $players,
+	];
+	return file_put_contents($statePath, json_encode($state), LOCK_EX) !== false;
+}
+
+function AddRustCountersAfterTurnZero()
+{
+	$statePath = GetRustCounterAccrualStatePath();
+	if ($statePath === null || !file_exists($statePath)) return false;
+
+	$handle = @fopen($statePath, "r+");
+	if ($handle === false) return false;
+	if (!flock($handle, LOCK_EX)) {
+		fclose($handle);
+		return false;
+	}
+
+	$state = json_decode(stream_get_contents($handle), true);
+	if (!is_array($state) || ($state["status"] ?? "") !== "pending" || !is_array($state["players"] ?? null)) {
+		flock($handle, LOCK_UN);
+		fclose($handle);
 		return true;
 	}
-	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_GAME_START);
+	if (count($state["players"]) === 0) {
+		$state["status"] = "complete";
+		WriteRustCounterAccrualState($handle, $state);
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return true;
+	}
+
+	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_AFTER_TURN_ZERO);
 	if (!$conn) {
+		flock($handle, LOCK_UN);
+		fclose($handle);
 		return false;
 	}
 
@@ -279,33 +363,29 @@ function AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPa
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_close($conn);
+		flock($handle, LOCK_UN);
+		fclose($handle);
 		return false;
 	}
 
-	$players = [
-		[
-			"userId" => intval($p1id),
-			"isPatron" => ($p1IsPatron === "1"),
-			"isAI" => ($p1IsAI === "1"),
-		],
-		[
-			"userId" => intval($p2id),
-			"isPatron" => ($p2IsPatron === "1"),
-			"isAI" => ($p2IsAI === "1"),
-		],
-	];
+	foreach ($state["players"] as $index => $player) {
+		if (($player["processed"] ?? false) === true) continue;
 
-	foreach ($players as $player) {
-		if ($player["isAI"] || $player["isPatron"] || $player["userId"] <= 0 || $player["userId"] == 465 || $player["userId"] == 9474 || $player["userId"] == 203) {
-			continue;
-		}
+		$state["players"][$index]["processed"] = true;
+		if (!WriteRustCounterAccrualState($handle, $state)) break;
 
-		mysqli_stmt_bind_param($stmt, "i", $player["userId"]);
+		$userId = intval($player["userId"] ?? 0);
+		if ($userId <= 0) continue;
+		mysqli_stmt_bind_param($stmt, "i", $userId);
 		mysqli_stmt_execute($stmt);
 	}
 
+	$state["status"] = "complete";
+	WriteRustCounterAccrualState($handle, $state);
 	mysqli_stmt_close($stmt);
 	mysqli_close($conn);
+	flock($handle, LOCK_UN);
+	fclose($handle);
 	return true;
 }
 

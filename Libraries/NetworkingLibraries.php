@@ -2134,7 +2134,11 @@ function FinalizeTurn()
   AuraEndTurnCleanup();
   DoGamestateUpdate();
   //Update all the player neutral stuff
-  if ($mainPlayer == $firstPlayer && !$extraTurn) $currentTurn += 1;
+  if ($mainPlayer == $firstPlayer && !$extraTurn) {
+    $advancedPastTurnZero = intval($currentTurn) === 0;
+    $currentTurn += 1;
+    if ($advancedPastTurnZero && !IsGameOver()) AddRustCountersAfterTurnZero();
+  }
   $turn[0] = "M";
   $turn[2] = "";
   $turn[3] = "";

@@ -141,7 +141,7 @@ ob_start();
 include "ParseGamestate.php";
 include "StartEffects.php";
 ob_end_clean();
-AddRustCountersForGameStart($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI);
+InitializeRustCounterAccrualForGame($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI);
 
 $gameStatus = $MGS_GameStarted;
 WriteGameFile();
