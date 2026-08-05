@@ -3527,6 +3527,10 @@ class cutpurse_rapier extends Card {
 	function SpecialPower() {
 		return 3;
 	}
+
+	function SpecialBlock() {
+		return -2;
+	}
 }
 
 class celebrant_broadsword extends Card {
@@ -3574,5 +3578,9 @@ class celebrant_broadsword extends Card {
 
 	function SpecialPower() {
 		return 3;
+	}
+
+	function SpecialBlock() {
+		return -2;
 	}
 }
