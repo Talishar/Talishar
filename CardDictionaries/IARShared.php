@@ -7,26 +7,33 @@ function Usurp($cardID, $player, $from) {
 		$theirInds = SearchAurasForCard("runechant", $otherPlayer, false);
 		if ($inds != "" || $theirInds != "") {
 			$MZInds = [];
-			$includedCardIDs = [];
+			$includedRunechants = [];
 			$inds = $inds != "" ? explode(",", $inds) : [];
 			foreach ($inds as $ind) {
 				$Aura = new AuraCard($ind, $player);
-				if (!in_array($Aura->CardID(), $includedCardIDs)) {
+				$choiceKey = $Aura->CardID() == "runechant" ? "runechant" : $player . "-" . $Aura->CardID();
+				if (!in_array($choiceKey, $includedRunechants)) {
 					$MZInds[] = "MYAURAS-$ind";
-					$includedCardIDs[] = $Aura->CardID();
+					$includedRunechants[] = $choiceKey;
 				}
 			}
 			$theirInds = $theirInds != "" ? explode(",", $theirInds) : [];
-			$includedCardIDs = [];
 			foreach ($theirInds as $ind) {
 				$Aura = new AuraCard($ind, $otherPlayer);
-				if (!in_array($Aura->CardID(), $includedCardIDs)) {
+				$choiceKey = $Aura->CardID() == "runechant" ? "runechant" : $otherPlayer . "-" . $Aura->CardID();
+				if (!in_array($choiceKey, $includedRunechants)) {
 					$MZInds[] = "THEIRAURAS-$ind";
-					$includedCardIDs[] = $Aura->CardID();
+					$includedRunechants[] = $choiceKey;
 				}
 			}
-			$context = "Usurp a " . CardLink("runechant");
-			Await($player, "ChooseMultiZone", "choice", indices:implode(",", $MZInds), context:$context);
+			if (count($MZInds) == 1) {
+				AddDecisionQueue("PASSPARAMETER", $player, $MZInds[0], 1);
+				AddDecisionQueue("SETDQVAR", $player, "choice", 1);
+			}
+			else {
+				$context = "Usurp a " . CardLink("runechant");
+				Await($player, "ChooseMultiZone", "choice", indices:implode(",", $MZInds), context:$context);
+			}
 			Await($player, "Usurp", cardID:$cardID, final:true);
 		}
 	}
