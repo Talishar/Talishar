@@ -311,20 +311,9 @@ function CardSubType($cardID, $uniqueID = -1)
     case "undead_grasp": // temporary
       return "Arms";
     case "corrupted_crown":
-    case "olde_leather_helm":
       return "Head";
-    case "prizeworn_pathfinders":
-    case "longsword_leggings":
-    case "vigilant_dodgers":
-    case "olde_leather_boots":
-      return "Legs";
-    case "prizeworn_plating":
-    case "olde_leather_plate":
-      return "Chest";
-    case "prizeworn_gauntlet":
-    case "clip_flexor":
-    case "olde_leather_gloves":
-      return "Arms";
+    case "celebrant_broadsword":
+      return "Sword";
     default:
       break;
   }
@@ -1079,7 +1068,6 @@ function HasGoAgain($cardID, $from="-"): bool|int
     "dual_threat_yellow" => 1, "relentless_pursuit_blue" => 1, "outed_red" => 1, "trot_along_blue" => 1,
     "public_bounty_red" => 1, "public_bounty_yellow" => 1, "public_bounty_blue" => 1,
     "roiling_fissure_blue" => 1, "spur_locked_blue" => 1,
-    "money_where_ya_mouth_is_red" => 1, "money_where_ya_mouth_is_yellow" => 1, "money_where_ya_mouth_is_blue" => 1,
     "jack_o_lantern_red" => 1, "jack_o_lantern_yellow" => 1, "jack_o_lantern_blue" => 1,
     "flying_high_red" => 1, "flying_high_yellow" => 1, "flying_high_blue" => 1,
   ];
