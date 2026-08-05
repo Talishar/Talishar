@@ -14,7 +14,7 @@ if (!isset($_SESSION["userid"])) {
 }
 
 if (!isset($_SESSION["useruid"])) {
-  echo ("Please login to view this page.");
+  echo ("Please log in to view this page.");
   exit;
 }
 $useruid = $_SESSION["useruid"];

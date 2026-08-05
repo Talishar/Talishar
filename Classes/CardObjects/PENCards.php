@@ -3849,7 +3849,7 @@ class become_the_cup extends BaseCard {
   function PayAdditionalCosts() {
     AddDecisionQueue("BUTTONINPUT", $this->controller, "Red,Yellow,Blue", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", subsequent: 1);
-    AddDecisionQueue("WRITELOG", $this->controller, CardLink($this->cardID) . " gains the color <b>{0}</b>", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, CardLink($this->cardID) . " gains the color <b style='color:{0};'>{0}</b>", 1);
     AddDecisionQueue("SPECIFICCARD", $this->controller, "BECOMETHECUP", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $this->controller, $this->cardID . "-", 1);
     AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "<-", 1);

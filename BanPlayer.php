@@ -24,7 +24,7 @@ if (!isset($_SESSION["userid"])) {
 }
 
 if (!isset($_SESSION["useruid"])) {
-  echo json_encode(["status" => "error", "message" => "Please login to view this page."]);
+  echo json_encode(["status" => "error", "message" => "Please log in to view this page."]);
   http_response_code(401);
   exit;
 }
