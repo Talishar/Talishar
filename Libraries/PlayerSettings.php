@@ -92,11 +92,21 @@ function IsPatron($player)
   return $settings[$SET_IsPatron] ?? "0" == "1";
 }
 
+function ResetFavoriteDeckCosmeticOverrideCache()
+{
+  global $favoriteDeckCosmeticOverrideCache;
+  $favoriteDeckCosmeticOverrideCache = [];
+}
+
 function GetFavoriteDeckCosmeticOverride($player)
 {
-  global $p1id, $p2id, $p1DeckLink, $p2DeckLink;
-  static $cache = [];
-  if (array_key_exists($player, $cache)) return $cache[$player];
+  global $p1id, $p2id, $p1DeckLink, $p2DeckLink, $favoriteDeckCosmeticOverrideCache;
+  if (!isset($favoriteDeckCosmeticOverrideCache) || !is_array($favoriteDeckCosmeticOverrideCache)) {
+    $favoriteDeckCosmeticOverrideCache = [];
+  }
+  if (array_key_exists($player, $favoriteDeckCosmeticOverrideCache)) {
+    return $favoriteDeckCosmeticOverrideCache[$player];
+  }
 
   $userId = ($player == 1) ? ($p1id ?? '') : ($p2id ?? '');
   $deckLink = ($player == 1) ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
@@ -105,11 +115,11 @@ function GetFavoriteDeckCosmeticOverride($player)
     empty($userId) || $userId === '-' || empty($deckLink) ||
     !function_exists('GetDBConnection') || !defined('DBL_BUILD_GAME_STATE')
   ) {
-    return $cache[$player] = null;
+    return $favoriteDeckCosmeticOverrideCache[$player] = null;
   }
 
   $conn = GetDBConnection(DBL_BUILD_GAME_STATE);
-  if (!$conn) return $cache[$player] = null;
+  if (!$conn) return $favoriteDeckCosmeticOverrideCache[$player] = null;
 
   $result = null;
   $sql = "SELECT cardBack, playmat FROM favoritedeck WHERE decklink = ? AND usersId = ? LIMIT 1";
@@ -129,7 +139,7 @@ function GetFavoriteDeckCosmeticOverride($player)
   }
   mysqli_close($conn);
 
-  return $cache[$player] = $result;
+  return $favoriteDeckCosmeticOverrideCache[$player] = $result;
 }
 
 function GetDeckAltArtOverride($userId, $deckLink)

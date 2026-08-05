@@ -22,6 +22,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $p1TotalTime, $p2TotalTime, $ChainLinks;
   global $p1id, $p2id, $p1DeckLink, $p2DeckLink;
 
+  ResetFavoriteDeckCosmeticOverrideCache();
+
   // Variables that will be set locally and need to be accessible to BuildPlayerInputPopup
   global $MyCardBack, $TheirCardBack, $otherPlayer, $isReactFE, $isGameOver, $isCasterMode, $isReplay, $isHideHandFromFriends, $viewerIsFriendOfOpponent;
 
@@ -150,6 +152,16 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
     $initialLoad->gameFormat = $format;
+
+    if ($playerID == 1 || $playerID == 2) {
+      $initialLoad->deckLink = $playerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+      $deckCosmetics = GetFavoriteDeckCosmeticOverride($playerID);
+      $initialLoad->canCustomizeDeck = $deckCosmetics !== null;
+      if ($deckCosmetics !== null) {
+        $initialLoad->deckCardBackId = $deckCosmetics['cardBack'];
+        $initialLoad->deckPlaymatId = $deckCosmetics['playmat'];
+      }
+    }
 
     $initialLoad->altArts = [];
     $initialLoad->opponentAltArts = [];

@@ -48,12 +48,13 @@ $_POST = json_decode(file_get_contents('php://input'), true) ?? [];
 $decklink = TryPOST("decklink", "");
 $cardBackId = strval(TryPOST("cardBackId", "0"));
 $playmatId = strval(TryPOST("playmatId", "0"));
-$altArts = TryPOST("altArts", []);
+$hasAltArts = array_key_exists("altArts", $_POST);
+$altArts = $hasAltArts ? TryPOST("altArts", []) : null;
 
 if (empty($decklink)) {
   DeckCosmeticsError("Deck link is required.");
 }
-if (!is_array($altArts)) {
+if ($hasAltArts && !is_array($altArts)) {
   DeckCosmeticsError("Invalid alt art selection.");
 }
 
@@ -90,9 +91,9 @@ if (!in_array($playmatId, $entitledPlaymatIds, true)) {
   DeckCosmeticsError("You have not unlocked that playmat.", 403);
 }
 
-$altArtEntitlements = GetUserAltArtEntitlements($userName);
+$altArtEntitlements = $hasAltArts ? GetUserAltArtEntitlements($userName) : [];
 $validatedAltArts = [];
-foreach ($altArts as $entry) {
+foreach (($altArts ?? []) as $entry) {
   $cardId = strval($entry['cardId'] ?? '');
   $altPath = strval($entry['altPath'] ?? '');
   if ($cardId === '' || $altPath === '') {
@@ -108,7 +109,9 @@ foreach ($altArts as $entry) {
 
 mysqli_begin_transaction($conn);
 try {
-  $sql = "UPDATE favoritedeck SET cardBack = ?, playmat = ?, altArtsCustomized = 1 WHERE decklink = ? AND usersId = ?";
+  $sql = $hasAltArts
+    ? "UPDATE favoritedeck SET cardBack = ?, playmat = ?, altArtsCustomized = 1 WHERE decklink = ? AND usersId = ?"
+    : "UPDATE favoritedeck SET cardBack = ?, playmat = ? WHERE decklink = ? AND usersId = ?";
   $stmt = mysqli_stmt_init($conn);
   if (!mysqli_stmt_prepare($stmt, $sql)) throw new Exception("prepare failed");
   mysqli_stmt_bind_param($stmt, "ssss", $cardBackId, $playmatId, $decklink, $userID);
@@ -118,17 +121,19 @@ try {
   }
   mysqli_stmt_close($stmt);
 
-  $sql = "DELETE FROM deck_alt_arts WHERE usersId = ? AND decklink = ?";
-  $stmt = mysqli_stmt_init($conn);
-  if (!mysqli_stmt_prepare($stmt, $sql)) throw new Exception("prepare failed");
-  mysqli_stmt_bind_param($stmt, "ss", $userID, $decklink);
-  if (!mysqli_stmt_execute($stmt)) {
+  if ($hasAltArts) {
+    $sql = "DELETE FROM deck_alt_arts WHERE usersId = ? AND decklink = ?";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) throw new Exception("prepare failed");
+    mysqli_stmt_bind_param($stmt, "ss", $userID, $decklink);
+    if (!mysqli_stmt_execute($stmt)) {
+      mysqli_stmt_close($stmt);
+      throw new Exception("delete failed");
+    }
     mysqli_stmt_close($stmt);
-    throw new Exception("delete failed");
   }
-  mysqli_stmt_close($stmt);
 
-  if (count($validatedAltArts) > 0) {
+  if ($hasAltArts && count($validatedAltArts) > 0) {
     $sql = "INSERT INTO deck_alt_arts (usersId, decklink, cardId, altPath) VALUES (?, ?, ?, ?)";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) throw new Exception("prepare failed");
@@ -152,10 +157,12 @@ try {
 mysqli_close($conn);
 session_write_close();
 
-echo json_encode([
+echo json_encode(array_filter([
   "success" => true,
   "message" => "Deck customization saved.",
   "cardBackId" => $cardBackId,
   "playmatId" => $playmatId,
-  "altArts" => array_map(fn($pair) => ["cardId" => $pair[0], "altPath" => $pair[1]], $validatedAltArts)
-]);
+  "altArts" => $hasAltArts
+    ? array_map(fn($pair) => ["cardId" => $pair[0], "altPath" => $pair[1]], $validatedAltArts)
+    : null
+], fn($value) => $value !== null));
