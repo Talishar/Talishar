@@ -440,7 +440,7 @@
     }
     $winningHero = new CharacterCard(0, $wonWager);
     if ($winningHero->CardID() == "zane_broadly_beloved")
-      AddLayer("TRIGGER", $wonWager, $winningHero);
+      AddLayer("TRIGGER", $wonWager, $winningHero->CardID());
     $WinnerCharacter = new PlayerCharacter($wonWager);
     for ($i = 0; $i < $WinnerCharacter->NumCards(); ++$i) {
       $CharCard = $WinnerCharacter->Card($i, true);
