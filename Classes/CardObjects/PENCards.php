@@ -3023,7 +3023,7 @@ class courageous_crossing_blue extends Card {
       AddDecisionQueue("SETDQCONTEXT", $this->controller, $context, 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
     }
   }
 
