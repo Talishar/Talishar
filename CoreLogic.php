@@ -2919,6 +2919,10 @@ function NumNegCounterEquipBlock()
 function CanPassPhase($phase)
 {
   global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer, $CCS_RequiredNegCounterEquipmentBlock;
+  if ($phase == "PAYGOLDORPITCH") {
+    $resources = &GetResources($currentPlayer);
+    return ($resources[0] ?? 0) >= 2;
+  }
   if ($phase == "B" && HaveUnblockedEquip($currentPlayer) && NumEquipBlock("EQUIP") < $combatChainState[$CCS_RequiredEquipmentBlock]) {
     return false;
   }
@@ -2955,7 +2959,6 @@ function CanPassPhase($phase)
     case "BUTTONINPUT":
     case "NUMBERINPUT":
     case "MULTICHOOSETHEIRDISCARD":
-    case "PAYGOLDORPITCH":
     case "CHOOSEGOLDTOPAY":
       return 0;
     default:

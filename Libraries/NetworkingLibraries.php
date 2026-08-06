@@ -1367,7 +1367,8 @@ function PassInput($autopass = true, $doublePass = false)
   }
   static $passOptions = ["ENDPHASE" => true, "MAYMULTICHOOSETEXT" => true, "MAYCHOOSECOMBATCHAIN" => true, "MAYCHOOSEMULTIZONE" => true, "MAYMULTICHOOSEHAND" => true,
     "MAYCHOOSEHAND" => true, "MAYCHOOSEDISCARD" => true, "MAYCHOOSEARSENAL" => true, "MAYCHOOSEPERMANENT" => true, "MAYCHOOSEDECK" => true, "MAYCHOOSEMYSOUL" => true,
-    "INSTANT" => true, "MULTISHOWCARDSDECK" => true, "OK" => true, "MULTISHOWCARDSTHEIRDECK" => true, "MAYCHOOSECARD" => true, "STARTTURN" => true, "MAYCHOOSEHANDHEAVE" => true];
+    "INSTANT" => true, "MULTISHOWCARDSDECK" => true, "OK" => true, "MULTISHOWCARDSTHEIRDECK" => true, "MAYCHOOSECARD" => true, "STARTTURN" => true, "MAYCHOOSEHANDHEAVE" => true,
+    "PAYGOLDORPITCH" => true];
   if (isset($passOptions[$turn[0]])) {
     ContinueDecisionQueue("PASS");
   }
