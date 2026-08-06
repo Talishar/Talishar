@@ -82,7 +82,7 @@ class Character {
   }
 }
 
-function PutCharacterIntoPlayForPlayer($cardID, $player)
+function PutCharacterIntoPlayForPlayer($cardID, $player, $slot="-")
 {
   $char = &GetPlayerCharacter($player);
   $index = count($char);
@@ -101,7 +101,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player)
   $char[] = HasCloaked($cardID, $player); //12 - Face up/down
   $char[] = 0; //13 - Marked (1 = yes, 0 = no)
   $char[] = 0; //14 - Tapped (1 = yes, 0 = no)
-  $char[] = "-"; // slot
+  $char[] = $slot; // slot
   return $index;
 }
 

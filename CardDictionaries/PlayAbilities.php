@@ -522,6 +522,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $char[11] = GetUniqueId("teklovossen_the_mechropotent", $currentPlayer);
       $char[13] = 0;
       $char[14] = 0; //assuming transforming untaps
+      $char[15] = "HERO";
       $mechropotentIndex = 0; // we pushed it, so should be the last element
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
         $charCard = $char[$i];
@@ -530,7 +531,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
           RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $mechropotentIndex);
         }
       }
-      PutCharacterIntoPlayForPlayer("teklovossen_the_mechropotentb", $currentPlayer);
+      PutCharacterIntoPlayForPlayer("teklovossen_the_mechropotentb", $currentPlayer, "Chest");
       AddEvent("HERO_TRANSFORM", $currentPlayer . ":teklovossen_the_mechropotent");
       return "";
     case "adaptive_plating":
