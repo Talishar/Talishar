@@ -320,6 +320,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $combatChainCount = count($combatChain);
   $combatChainPieceCount = CombatChainPieces();
   $turnPhase = $turn[0];
+  $isGoldPaymentChoice = $turnPhase == "PAYGOLDORPITCH" || $turnPhase == "CHOOSEGOLDTOPAY";
+  $goldOrPitchChoices = $isGoldPaymentChoice
+    ? array_fill_keys(array_filter(explode(",", $turn[2] ?? "")), true)
+    : [];
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieceCount) {
     $action = $currentPlayer == $playerID && $turnPhase != "P" &&
       $currentPlayer == $combatChain[$i + 1] &&
@@ -645,6 +649,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $resourceRestrictedCard = "";
   if(isset($turn[3])) $resourceRestrictedCard = $turn[3];
   if (strpos($turnPhase, "CHOOSEHAND") !== false && ($turnPhase != "MULTICHOOSEHAND" || $turnPhase != "MAYMULTICHOOSEHAND")) $actionType = 16;
+  if ($isGoldPaymentChoice) $actionType = 16;
   $myHandContents = [];
   $myHandCount = count($myHand);
   $handPieces = HandPieces();
@@ -654,14 +659,16 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if($spectatorCanSeeP2Hand) $myHandContents[] = JSONRenderedCard(cardNumber: $myHand[$i], controller: 2);
       else $myHandContents[] = JSONRenderedCard(cardNumber: $MyCardBack, controller: 2);
     } else {
-      $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || $actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "" : false;
+      $goldOrPitchChoice = isset($goldOrPitchChoices["MYHAND-$i"]);
+      if ($isGoldPaymentChoice) $playable = $playerID == $currentPlayer && $goldOrPitchChoice;
+      else $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || $actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "" : false;
       if ($restriction == "" && str_contains(GetAbilityTypes($myHand[$i], -1, "HAND"), "I") && InstantRestricted($myHand[$i], "HAND", -1) && !$playable) {
         $restriction = "Instant cannot be played.";
       }
       $border = CardBorderColor($myHand[$i], "HAND", $playable, $playerID);
       $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? $actionType : 0;
       if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
-      $actionDataOverride = ($actionType == 16 || $actionType == 27) ? strval($i) : $myHand[$i];
+      $actionDataOverride = $goldOrPitchChoice ? "MYHAND-$i" : (($actionType == 16 || $actionType == 27) ? strval($i) : $myHand[$i]);
       
       if (isset($myHand[$i + $handPieces - 1])) {
         $label = GetCardEffectLabel($myHand[$i + $handPieces - 1], $currentTurnEffects);
@@ -798,7 +805,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $myChar = $myCharacter[$i] ?? "-";
     if (($myCharacter[$i + 1] ?? 0) == 4) $myChar = "DUMMYDISHONORED";
     if (($myCharacter[$i + 2] ?? 0) > 0) $counters = $myCharacter[$i + 2];
-    $playable = $playerID == $currentPlayer && ($myCharacter[$i + 1] ?? 0) > 0 && IsPlayable($myChar, $turnPhase, "CHAR", $i, $restriction);
+    $goldOrPitchChoice = isset($goldOrPitchChoices["MYCHAR-$i"]);
+    $playable = $playerID == $currentPlayer && ($myCharacter[$i + 1] ?? 0) > 0
+      && ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myChar, $turnPhase, "CHAR", $i, $restriction));
     $border = CardBorderColor($myChar, "CHAR", $playable, $playerID);
     $type = CardType($myChar);
     if (TypeContains($myChar, "D")) $type = "C";
@@ -843,11 +852,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if(($myCharacter[$i + 1] ?? 0) > 0) {
         $myCharData[] = JSONRenderedCard(
           $myChar,
-          $currentPlayer == $playerID && $playable ? 3 : 0,
+          $currentPlayer == $playerID && $playable ? ($goldOrPitchChoice ? 16 : 3) : 0,
           ($myCharacter[$i + 1] ?? 0) != 2 && $myChar != "DUMMYDISHONORED"? 1 : 0,
           $border,
           ($myCharacter[$i + 1] ?? 0) != 0 ? $counters : 0,
-          strval($i),
+          $goldOrPitchChoice ? "MYCHAR-$i" : strval($i),
           0,
           $myCharacter[$i + 4] ?? "",
           $powerCounters,
@@ -1193,12 +1202,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   for ($i = 0; $i + $itemPieces - 1 < $myItemsCount; $i += $itemPieces) {
     $type = CardType($myItems[$i]);
     $sType = CardSubType($myItems[$i]);
-    $playable = $currentPlayer == $playerID ? IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction) : false;
+    $goldOrPitchChoice = isset($goldOrPitchChoices["MYITEMS-$i"]);
+    $playable = $currentPlayer == $playerID ? ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction)) : false;
     $border = CardBorderColor($myItems[$i], "PLAY", $playable, $playerID);
-    $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? 10 : 0;
+    $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? ($goldOrPitchChoice ? 16 : 10) : 0;
     $label = "";
     if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
-    $actionDataOverride = strval($i);
+    $actionDataOverride = $goldOrPitchChoice ? "MYITEMS-$i" : strval($i);
     $gem = $myItems[$i + 5] != 2 ? $myItems[$i + 5] : NULL;
     $rustCounters = null;
     $verseCounters = null;
@@ -1292,6 +1302,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $counters = NULL;
   $friendlyCounts = [];
   $opponentCounts = [];
+  $friendlyComponentCounts = [];
+  $opponentComponentCounts = [];
   $friendlyRenderedEffects = [];
   $opponentRenderedEffects = [];
   $currentTurnEffectsCount = count($currentTurnEffects);
@@ -1317,9 +1329,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if ($isFriendly) {
           if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
           $friendlyCounts[$cardID]++;
+          if (!isset($friendlyComponentCounts[$cardID][$raw])) $friendlyComponentCounts[$cardID][$raw] = 0;
+          $friendlyComponentCounts[$cardID][$raw]++;
       } else {
           if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
           $opponentCounts[$cardID]++;
+          if (!isset($opponentComponentCounts[$cardID][$raw])) $opponentComponentCounts[$cardID][$raw] = 0;
+          $opponentComponentCounts[$cardID][$raw]++;
       }
   }
   if (!empty($staticBuffsArr)) {
@@ -1330,12 +1346,23 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         if ($isFriendly) {
           if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
           $friendlyCounts[$cardID]++;
+          if (!isset($friendlyComponentCounts[$cardID]["STATIC_BUFF"])) $friendlyComponentCounts[$cardID]["STATIC_BUFF"] = 0;
+          $friendlyComponentCounts[$cardID]["STATIC_BUFF"]++;
         } else {
           if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
           $opponentCounts[$cardID]++;
+          if (!isset($opponentComponentCounts[$cardID]["STATIC_BUFF"])) $opponentComponentCounts[$cardID]["STATIC_BUFF"] = 0;
+          $opponentComponentCounts[$cardID]["STATIC_BUFF"]++;
         }
       }
     }
+  }
+
+  foreach ($friendlyCounts as $cardID => $count) {
+    $friendlyCounts[$cardID] = GetEffectUIStackCount($cardID, $count, $friendlyComponentCounts[$cardID] ?? []);
+  }
+  foreach ($opponentCounts as $cardID => $count) {
+    $opponentCounts[$cardID] = GetEffectUIStackCount($cardID, $count, $opponentComponentCounts[$cardID] ?? []);
   }
 
   $skipStackCache = [];
@@ -1511,6 +1538,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $helpText .= $turnPhase == "P" ? " (" . $myResources[0] . " of " . $myResources[1] . ")" : "";
         $promptButtons[] = CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px");
       }
+      if ($turnPhase == "PAYGOLDORPITCH" && ($myResources[0] ?? 0) >= 2) {
+        $promptButtons[] = CreateButtonAPI($playerID, "Use resources", 106, 0, "16px");
+      }
       if (CanPassPhase($turnPhase)) {
         if ($turnPhase == "B") {
           $promptButtons[] = CreateButtonAPI($playerID, "Undo Block", 10001, 0, "16px");
@@ -1650,6 +1680,17 @@ function skipEffectUIStacking($cardID) {
   $card = GetClass($cardID, 0);
   if ($card != "-" && $card->DisplayRemainingPrevention()) return false;
   return true;
+}
+
+function GetEffectUIStackCount($cardID, $totalEffectCount, $componentCounts) {
+  // These cards create multiple internal effects per play. Their UI counter should
+  // show copies played instead of the number of total effects
+  static $componentAwareCards = [
+    "savor_bloodshed_red" => true,
+  ];
+
+  if (!isset($componentAwareCards[$cardID]) || empty($componentCounts)) return $totalEffectCount;
+  return max($componentCounts);
 }
 
 

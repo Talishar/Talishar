@@ -68,7 +68,7 @@ class golden_grail extends Card {
 		return "AA";
 	}
 
-	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+	function AddPostTargetDecisionQueue($from, $index = -1, $facing = '-') {
 		PayGoldInstead($this->controller, $this->cardID);
 	}
 
@@ -149,7 +149,7 @@ class stand_tall_yellow extends Card {
 }
 
 class golden_company extends BaseCard {
-	function PrePitchDecsions() {
+	function PostTargetDecisions() {
 		PayGoldInstead($this->controller, $this->cardID);
 	}
 
@@ -170,8 +170,8 @@ class golden_company_red extends Card {
 		return "";
 	}
 
-	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
-		return $this->baseCard->PrePitchDecsions();
+	function AddPostTargetDecisionQueue($from, $index = -1, $facing = '-') {
+		return $this->baseCard->PostTargetDecisions();
 	}
 
 	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
@@ -190,8 +190,8 @@ class golden_company_yellow extends Card {
 		return "";
 	}
 
-	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
-		return $this->baseCard->PrePitchDecsions();
+	function AddPostTargetDecisionQueue($from, $index = -1, $facing = '-') {
+		return $this->baseCard->PostTargetDecisions();
 	}
 
 	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
@@ -214,8 +214,8 @@ class golden_company_blue extends Card {
 		return "";
 	}
 
-	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
-		return $this->baseCard->PrePitchDecsions();
+	function AddPostTargetDecisionQueue($from, $index = -1, $facing = '-') {
+		return $this->baseCard->PostTargetDecisions();
 	}
 
 	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
@@ -870,7 +870,7 @@ class rake_back_blue extends Card {
 		AddOnWagerEffects();
 	}
 
-	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+	function AddPostTargetDecisionQueue($from, $index = -1, $facing = '-') {
 		PayGoldInstead($this->controller, $this->cardID);
 	}
 
@@ -1191,7 +1191,7 @@ class bluff_catcher_yellow extends Card {
 		return "";
 	}
 
-	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+	function AddPostTargetDecisionQueue($from, $index = -1, $facing = '-') {
 		PayGoldInstead($this->controller, $this->cardID);
 	}
 

@@ -561,6 +561,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 105: //Skip all runechants
       SetClassState($playerID, $CS_SkipAllRunechants, 1);
       break;
+    case 106: //Use floating resources instead of the Gold alternative payment
+      if ($turn[0] == "PAYGOLDORPITCH") {
+        $resources = &GetResources($playerID);
+        if (($resources[0] ?? 0) >= 2) ContinueDecisionQueue("PASS");
+      }
+      break;
     case 10000: //Undo
       if (IsReplay()) {
         break;
@@ -2384,6 +2390,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if ($turn[0] != "B" || ($layersCount > 0 && $layers[0] != "")) GetLayerTarget($cardID, $from);
       //CR 5.1.4b Declare target of attack
       if ($turn[0] == "M" && $actionPoints > 0) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
+      // Alternative Gold payment is chosen after targets
+      if ($playingCard) AddPostTargetDecisionQueue($cardID, $from, $index, $facing);
       if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
       else AddDecisionQueue("GETCLASSSTATE", $currentPlayer, $CS_LastDynCost);
       AddDecisionQueue("RESUMEPAYING", $currentPlayer, $cardID . "-" . $from . "-" . $index . "-" . $uniqueID . "-" . $zone);
@@ -3321,6 +3329,13 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
     default:
       break;
   }
+}
+
+function AddPostTargetDecisionQueue($cardID, $from, $index = -1, $facing="-")
+{
+  global $currentPlayer;
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") $card->AddPostTargetDecisionQueue($from, $index, $facing);
 }
 
 function AddAttackLayer($cardID, $from, $uniqueID="-", $zone="-")
