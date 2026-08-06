@@ -561,12 +561,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 105: //Skip all runechants
       SetClassState($playerID, $CS_SkipAllRunechants, 1);
       break;
-    case 106: //Use floating resources instead of the Gold alternative payment
-      if ($turn[0] == "PAYGOLDORPITCH") {
-        $resources = &GetResources($playerID);
-        if (($resources[0] ?? 0) >= 2) ContinueDecisionQueue("PASS");
-      }
-      break;
     case 10000: //Undo
       if (IsReplay()) {
         break;
