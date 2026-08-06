@@ -326,7 +326,7 @@ class shove_off_blue extends Card {
 		global $defPlayer;
 		$options = GetChainLinkCards($defPlayer, "", "E,C");
 		if($options != "") {
-			AddDecisionQueue("MAYCHOOSECOMBATCHAIN", $this->controller, $options);
+			AddDecisionQueue("CHOOSECOMBATCHAIN", $this->controller, $options);
 			AddDecisionQueue("ADDHANDOWNER", $defPlayer, "-", 1);
 			AddDecisionQueue("REMOVECOMBATCHAIN", $this->controller, "-", 1);
 		}
