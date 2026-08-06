@@ -195,6 +195,10 @@ class Card {
     return;
   }
 
+  function AddPostTargetDecisionQueue($from, $index=-1, $facing="-") {
+    return;
+  }
+
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
     return false;
   }
