@@ -3216,12 +3216,7 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
     case "double_down_red":
-      AddDecisionQueue("COUNTITEM", $currentPlayer, "gold"); 
-      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1");
-      AddDecisionQueue("YESNO", $currentPlayer, "if_you_want_to_pay_1_" . CardLink("gold", "gold"), 1);
-      AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
-      QueueDestroyGold($currentPlayer);
-      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "double_down_red-PAID", 1);
+      PayGoldInstead($currentPlayer, $cardID);
       break;
     case "10000_year_reunion_red":
       $count = CountAuraPowerCounters($currentPlayer);
