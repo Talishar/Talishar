@@ -630,6 +630,7 @@ function ContinueDecisionQueue($lastResult = "")
       if ($lastResult == "") $lastResult = 0;
       // If a meld card was returned to hand (action mode chosen during resolution step)
       if (GetClassState($player, $CS_AdditionalCosts) == "CHAINCLOSING") {
+        ResolvePendingGoldOrPitch($player, $params[0], false);
         $layerPlayIndex = GetClassState($player, $CS_LayerPlayIndex);
         $layerStartIndex = count($layers) - $layerPlayIndex;
         if ($layerStartIndex >= 0 && count($layers) >= LayerPieces()) {
@@ -645,6 +646,7 @@ function ContinueDecisionQueue($lastResult = "")
         ProcessInput($player, 99, "", $params[0], 0, "");
         return;
       }
+      ResolvePendingGoldOrPitch($player, $params[0]);
       CloseDecisionQueue();
       if ($currentPlayer != $player) {
         $currentPlayer = $player;

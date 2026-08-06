@@ -24,6 +24,10 @@ function TypeToPlay($phase)
       return "a reaction";
     case "P":
       return "a card to pitch";
+    case "PAYGOLDORPITCH":
+      return "a Gold to destroy or a card to pitch";
+    case "CHOOSEGOLDTOPAY":
+      return "a Gold to destroy";
     case "ARS":
     case "MAYCHOOSEHANDHEAVE":
       return "a card to add to arsenal";

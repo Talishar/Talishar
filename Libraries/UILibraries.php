@@ -369,6 +369,9 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
   //WriteLog($dqState[4] . " - " . $turn[0]);
   // Early exits for global conditions
 
+  $isOwnGoldPaymentZone = $from == "HAND" || $from == "PLAY" || $from == "CHAR";
+  if ($isPlayable && $isOwnGoldPaymentZone && ($turn[0] == "PAYGOLDORPITCH" || $turn[0] == "CHOOSEGOLDTOPAY")) return 8;
+
   switch ($cardID) {
     case "florian_rotwood_harbinger":
     case "verdance_thorn_of_the_rose":
@@ -395,6 +398,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
       $dqState[4] == "Choose_a_card_to_sink_(or_Pass)" ||
       $turn[0] == "ARS" ||
       $turn[0] == "P" ||
+      $turn[0] == "PAYGOLDORPITCH" ||
       $turn[0] == "CHOOSEHANDCANCEL"
     ) return 8;
     if (
