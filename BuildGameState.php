@@ -311,9 +311,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $defCardBack = GetCardBack($defPlayer);
   $borderColor = 0;
 
-  $response->MyPlaymat = IsColorblindMode($playerID) ? 0 : GetPlaymat($playerID);
-  if(isset($initialLoad) && $initialLoad->isOpponentAI) $response->TheirPlaymat = IsColorblindMode($playerID) ? 0 : 2;
-  else $response->TheirPlaymat = IsColorblindMode($playerID) ? 0 : GetPlaymat($otherPlayer);
+  $isColorblindMode = IsColorblindMode($playerID);
+  $response->MyPlaymat = $isColorblindMode ? 0 : GetPlaymat($playerID);
+  if(isset($initialLoad) && $initialLoad->isOpponentAI) $response->TheirPlaymat = $isColorblindMode ? 0 : 2;
+  else $response->TheirPlaymat = $isColorblindMode ? 0 : GetPlaymat($otherPlayer);
   if ($response->MyPlaymat == 0) $response->TheirPlaymat = 0;
 
   //Display active chain link
@@ -366,8 +367,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $chainPowerModifiers = [];
     EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
   }
-  $blockVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
-  $powVal = $turn[0] == "B" && ($playerID == $mainPlayer || $playerID == 3) ? ($combatChainState[$CCS_CachedPreBlockValue] ?? $totalPower) : $totalPower;
+  $blockVal = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
+  $powVal = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? ($combatChainState[$CCS_CachedPreBlockValue] ?? $totalPower) : $totalPower;
   $activeChainLink->totalPower = $powVal;
 
   $activeChainLink->totalDefense = $blockVal;
@@ -1128,8 +1129,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $label = "";
     $type = CardType($myAllies[$i]);
     $sType = CardSubType($myAllies[$i]);
-    $playable = $currentPlayer == $playerID ? IsPlayable($myAllies[$i], $turn[0], "PLAY", $i, $restriction) && ($myAllies[$i + 1] == 2 || !CheckTapped("MYALLY-".$i, $currentPlayer)) : false;
-    $actionType = ($currentPlayer == $playerID && $turn[0] != "P" && $playable) ? 24 : 0;
+    $playable = $currentPlayer == $playerID ? IsPlayable($myAllies[$i], $turnPhase, "PLAY", $i, $restriction) && ($myAllies[$i + 1] == 2 || !CheckTapped("MYALLY-".$i, $currentPlayer)) : false;
+    $actionType = ($currentPlayer == $playerID && $turnPhase != "P" && $playable) ? 24 : 0;
     $border = CardBorderColor($myAllies[$i], "PLAY", $playable, $playerID);
     $actionDataOverride = $actionType == 24 ? strval($i) : "";
     $uniqueID = $myAllies[$i+5];
@@ -1205,7 +1206,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($myItems[$i]);
     $sType = CardSubType($myItems[$i]);
     $goldOrPitchChoice = isset($goldOrPitchChoices["MYITEMS-$i"]);
-    $playable = $currentPlayer == $playerID ? ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myItems[$i], $turn[0], "PLAY", $i, $restriction)) : false;
+    $playable = $currentPlayer == $playerID ? ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myItems[$i], $turnPhase, "PLAY", $i, $restriction)) : false;
     $border = CardBorderColor($myItems[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? ($goldOrPitchChoice ? 16 : 10) : 0;
     $label = "";
@@ -1277,7 +1278,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $landmarksCount = count($landmarks);
   $landmarkPieces = LandmarkPieces();
   for ($i = 0; $i + $landmarkPieces - 1 < $landmarksCount; $i += $landmarkPieces) {
-    $playable = $currentPlayer == $playerID ? IsPlayable($landmarks[$i], $turn[0], "PLAY", $i, $restriction) : false;
+    $playable = $currentPlayer == $playerID ? IsPlayable($landmarks[$i], $turnPhase, "PLAY", $i, $restriction) : false;
     $action = $playable && $currentPlayer == $playerID ? 25 : 0;
     $border = CardBorderColor($landmarks[$i], "PLAY", $playable, $playerID);
     $counters = $landmarks[$i + 3];
@@ -1562,18 +1563,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   // Build player input popup
   $response->playerInputPopUp = BuildPlayerInputPopup($playerID, $turnPhase, $turn, $gameName);
 
-  $canPassPhaseForPlayer = (CanPassPhase($turn[0]) && $currentPlayer == $playerID) || ($isReplay && $playerID == 3);
+  $canPassPhaseForPlayer = (CanPassPhase($turnPhase) && $currentPlayer == $playerID) || ($isReplay && $playerID == 3);
   $response->canPassPhase = $canPassPhaseForPlayer;
 
   $response->preventPassPrompt = "";
   if ($canPassPhaseForPlayer) {
-    if ($turn[0] == "ARS" && count($myHand) > 0 && !ArsenalFull($playerID) && !$isReplay) {
+    if ($turnPhase == "ARS" && $myHandCount > 0 && !ArsenalFull($playerID) && !$isReplay) {
       $response->preventPassPrompt = "Are you sure you want to skip arsenal?";
     }
   }
 
   if ($canPassPhaseForPlayer) {
-    if ($turn[0] == "M" && SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $actionPoints > 0 && !$isReplay) {
+    if ($turnPhase == "M" && SearchLayersForPhase("RESOLUTIONSTEP") != -1 && $actionPoints > 0 && !$isReplay) {
       global $p1Settings, $p2Settings;
       $pSettings = ($playerID == 1 ? $p1Settings : $p2Settings);
       if (intval($pSettings[0] ?? 0) === 1) {
