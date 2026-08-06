@@ -207,14 +207,16 @@ function storeFabraryId($uid, $fabraryId)
 function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 {
 	$conn = GetDBConnection(DBL_STORE_LAST_GAME_INFO);
-	$sql = "UPDATE users SET lastGameName=?, lastPlayerId=?, lastAuthKey=? WHERE usersId=?";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ssss", $gameName, $playerID, $authKey, $uid);
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
+	if ($conn) {
+		$sql = "UPDATE users SET lastGameName=?, lastPlayerId=?, lastAuthKey=? WHERE usersId=?";
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_bind_param($stmt, "ssss", $gameName, $playerID, $authKey, $uid);
+			mysqli_stmt_execute($stmt);
+			mysqli_stmt_close($stmt);
+		}
+		mysqli_close($conn);
 	}
-	mysqli_close($conn);
 
 	if(session_status() !== PHP_SESSION_ACTIVE) session_start();
 	$_SESSION["lastGameName"] = $gameName;
@@ -1717,6 +1719,7 @@ function IsIPBanned($ip = null)
 			} catch (\Exception $e) {
 				error_log("IsIPBanned: query failed: " . $e->getMessage());
 			}
+			mysqli_close($conn);
 		}
 	}
 
@@ -1768,6 +1771,7 @@ function LogIPHistory($usersId, $ip = null)
 	} catch (\Exception $e) {
 		error_log("LogIPHistory: query failed: " . $e->getMessage());
 	}
+	mysqli_close($conn);
 }
 
 if (!function_exists('GenerateGameGUID')) {
