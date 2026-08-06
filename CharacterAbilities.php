@@ -865,13 +865,8 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
     $char[] = 0; //14 - Tapped
     $char[] = $slot; // 15 - Slot
   }
-  if ($cardID == "adaptive_plating") AddCurrentTurnEffect("adaptive_plating-" . $uniqueID . "," . $slot, $player);
-  if ($cardID == "adaptive_dissolver") AddCurrentTurnEffect("adaptive_dissolver-" . $uniqueID . ",Base," . $slot, $player);
-  if ($cardID == "adaptive_alpha_mold") AddCurrentTurnEffect("adaptive_alpha_mold-" . $uniqueID . ",Base," . $slot, $player);
-  if ($cardID == "frostbite") {
-    AddCurrentTurnEffect("frostbite-" . $uniqueID . "," . $slot, $player);
+  if (SubtypeContains($cardID, "Aura"))
     IncrementClassState($effectAgent, $CS_NumAuras);
-  }
   AddEquipTrigger($cardID, $player);
 }
 
@@ -1802,17 +1797,13 @@ function CharacterBoostAbilities($player)
 
 function ListExposedEquipSlots($player)
 {
-  $character = &GetPlayerCharacter($player);
-  $charCount = count($character);
-  $characterPieces = CharacterPieces();
+  $Character = new PlayerCharacter($player);
   $exposedSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
-  for ($i = 0; $i < $charCount; $i += $characterPieces) {
-    if ($character[$i + 1] == 0) continue;
-    $subtypeString = CardSubType($character[$i], $character[$i + 11]);
-    if ($subtypeString == null) continue;
-    foreach (explode(",", $subtypeString) as $subtype) {
-      if (isset($exposedSlots[$subtype])) $exposedSlots[$subtype] = false;
-    }
+  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $CharacterCard = $Character->Card($i, true);
+    if ($CharacterCard->Status() == 0) continue;
+    $slot = $CharacterCard->Slot();
+    if (isset($exposedSlots[$slot])) $exposedSlots[$slot] = false;
   }
   $available = [];
   foreach ($exposedSlots as $slot => $isExposed) {

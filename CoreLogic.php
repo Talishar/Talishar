@@ -2179,17 +2179,6 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
 {
   global $currentTurnEffects;
   $cardSubtype = CardSubtype($cardID);
-  if ($cardID == "adaptive_plating" || $cardID == "adaptive_dissolver" || $cardID == "adaptive_alpha_mold") {
-    if ($cardID !== "adaptive_plating" && $subtype == "Base") return true;
-    $currentTurnEffectsCount = count($currentTurnEffects);
-    $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-    $target = $cardID . "-" . $uniqueID;
-    for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-      $commaPos = strpos($currentTurnEffects[$i], ',');
-      $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
-      if ($effectBase == $target) return DelimStringContains($currentTurnEffects[$i], $subtype, true);
-    }
-  }
   return DelimStringContains($cardSubtype, $subtype);
 }
 
@@ -4038,7 +4027,7 @@ function EvoHandling($cardID, $player, $from)
   $charPieces = CharacterPieces();
   for ($i = 0; $i < $charCount; $i += $charPieces) {
     $CharacterCard = new CharacterCard($i, $player);
-    if (!$replaced && SubtypeContains($char[$i], $slot, uniqueID:$CharacterCard->UniqueID())) {
+    if (!$replaced && $CharacterCard->Slot() == $slot) {
       if (SubtypeContains($char[$i], "Base") && $CharacterCard->Status() != 0) {
         $ChainCard = $CombatChain->FindCardOriginUID($CharacterCard->UniqueID());
         $ChainCard->Remove();

@@ -318,22 +318,18 @@ function CardSubType($cardID, $uniqueID = -1)
       break;
   }
   //equipment that could go in any zone
-  static $adaptiveMap = ["adaptive_plating" => 0, "adaptive_dissolver" => 1, "adaptive_alpha_mold" => 2, "frostbite" => 3];
-  if ($uniqueID > -1 && (IsModular($cardID) || $cardID == "frostbite")) {
-    global $currentTurnEffects;
-    $countCurrentTurnEffects = count($currentTurnEffects);
-    $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-    for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
-      $firstChar = $currentTurnEffects[$i][0];
-      if ($firstChar !== 'a' && $firstChar !== 'f') continue;
-      $effectArr = explode("-", $currentTurnEffects[$i], 2);
-      if (!isset($adaptiveMap[$effectArr[0]])) continue;
-      $effectArr = explode(",", $effectArr[1]);
-      if ($effectArr[0] != $uniqueID) continue;
-      if($effectArr[1] == "Base") return $effectArr[2];
-      return $effectArr[1];
+  if ($uniqueID > -1 && (IsModular($cardID))) {
+    global $mainPlayer, $defPlayer;
+    $subtype = "";
+    foreach ([$mainPlayer, $defPlayer] as $player) {
+      $mainChar = new PlayerCharacter($player);
+      $foundEquip = $mainChar->FindCardUID($uniqueID);
+      if ($foundEquip->Index() != -1) $subtype = $foundEquip->Slot();
     }
-    return "";
+    if ($cardID = "adaptive_dissolver" || $cardID == "adaptive_alpha_mold")
+      return "$subtype,Base";
+    else
+      return $subtype;
   }
   static $subTypeCache = [];
   if (isset($subTypeCache[$cardID])) return $subTypeCache[$cardID];
