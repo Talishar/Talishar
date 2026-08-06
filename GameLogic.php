@@ -3778,17 +3778,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return implode(",", $equipmentsArr);
     case "LISTEMPTYEQUIPSLOTS":
-      $character = &GetPlayerCharacter($player);
-      $charCount = count($character);
-      $charPieces = CharacterPieces();
+      $character = new PlayerCharacter($player);
       $filledSlots = [];
       $equipmentSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
-      for ($i = 0; $i < $charCount; $i += $charPieces) {
-        $subtypeString = CardSubType($character[$i], $character[$i + 11]);
-        if ($subtypeString == null) continue;
-        foreach (explode(",", $subtypeString) as $subtype) {
-          if (isset($equipmentSlots[$subtype])) $filledSlots[$subtype] = true;
-        }
+      for ($i = 0; $i < $character->NumCards(); ++$i) {
+        $CharacterCard = $character->Card($i, true);
+        $slot = $CharacterCard->Slot();
+        if ($subtypeString == "-") continue;
+        if (isset($equipmentSlots[$slot])) $filledSlots[$slot] = true;
       }
       $available = [];
       if (!isset($filledSlots["Head"])) $available[] = "Head";
