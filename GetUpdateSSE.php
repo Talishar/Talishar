@@ -120,8 +120,12 @@ $lastPresenceState = null;
 $initialCacheArr = ReadCacheArray($gameName);
 $cacheVal = intval($initialCacheArr[0] ?? ""); // piece 1
 $lastUpdate = $cacheVal;
+$inactivityTimeoutMs = 60 * 1000;
+$lastUpdateTime = $initialCacheArr[5] ?? "";
+$previouslyInactive = $lastUpdateTime !== ""
+  && 1000 * microtime(true) - intval($lastUpdateTime) > $inactivityTimeoutMs;
 
-$initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, false, $initialCacheArr);
+$initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, $previouslyInactive, $initialCacheArr);
 if (is_string($initialState)) {
   // Error occurred
   echo ("data: " . json_encode(["error" => $initialState]) . "\n\n");
@@ -193,10 +197,9 @@ while (true) {
 
   // Check for game state updates
   $cacheVal = intval($cacheStr);
-  $timeout = 60 * 1000; //seconds
-  $inactive = 1000 * $currentRealTime - intval($lastUpdateTime) > $timeout;
-  $previouslyInactive = $cacheArr[16] ?? "";
-  if ($cacheVal > $lastUpdate || $inactive && $previouslyInactive == 0) {
+  $inactive = $lastUpdateTime !== ""
+    && 1000 * $currentRealTime - intval($lastUpdateTime) > $inactivityTimeoutMs;
+  if ($cacheVal > $lastUpdate || $inactive !== $previouslyInactive) {
     // Build and send full game state
     $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive, $cacheArr);
     if (is_string($gameState)) {
@@ -221,8 +224,7 @@ while (true) {
     }
     $buildFailureStreak = 0;
     $lastUpdate = $cacheVal;
-    if ($inactive) SetCachePiece($gameName, 17, 1);
-    else SetCachePiece($gameName, 17, 0);
+    $previouslyInactive = $inactive;
     SendContent($gameState);
     unset($gameState);
     if (++$buildsSinceCycleCollection >= 25) {

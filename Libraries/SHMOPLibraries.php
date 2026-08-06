@@ -17,7 +17,7 @@
 14 - Game status (see $MGS_ constants)
 15 - Player 1 is chat enabled
 16 - Player 2 is chat enabled
-17 - currentPlayer Inactive
+17 - Reserved (legacy shared inactivity flag)
 */
 
 function WriteCache($name, $data)

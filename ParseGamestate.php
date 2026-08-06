@@ -12,7 +12,7 @@ if(!is_numeric($gameName)) exit;
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 if(!isset($filepath)) $filepath = "./Games/" . $gameName . "/";
 
-ParseGamestate();
+ParseGamestate($parseGamestateHistoricalStats ?? true);
 
 function GamestateSanitize($input)
 {
@@ -24,7 +24,7 @@ function GamestateUnsanitize($input)
   return str_replace(["<44>", "_"], [",", " "], $input);
 }
 
-function ParseGamestate()
+function ParseGamestate($parseHistoricalStats = true)
 {
   global $gameName, $playerHealths;
   global $p1Hand, $p1Deck, $p1CharEquip, $p1Resources, $p1Arsenal, $p1Items, $p1Auras, $p1Discard, $p1Pitch, $p1Banish;
@@ -150,13 +150,25 @@ function ParseGamestate()
   $p1IsAI = trim($gamestateContent[74+$numChainLinks]);
   $p2IsAI = trim($gamestateContent[75+$numChainLinks]);
   $AIHasInfiniteHP = isset($gamestateContent[76+$numChainLinks]) ? trim($gamestateContent[76+$numChainLinks]) == "1" : false;
-  $p1CardTurnLog = isset($gamestateContent[77+$numChainLinks]) ? json_decode(trim($gamestateContent[77+$numChainLinks]), true) ?? [] : [];
-  $p2CardTurnLog = isset($gamestateContent[78+$numChainLinks]) ? json_decode(trim($gamestateContent[78+$numChainLinks]), true) ?? [] : [];
+  if ($parseHistoricalStats) {
+    $p1CardTurnLog = isset($gamestateContent[77+$numChainLinks]) ? json_decode(trim($gamestateContent[77+$numChainLinks]), true) ?? [] : [];
+    $p2CardTurnLog = isset($gamestateContent[78+$numChainLinks]) ? json_decode(trim($gamestateContent[78+$numChainLinks]), true) ?? [] : [];
+  } else {
+    $p1CardTurnLog = [];
+    $p2CardTurnLog = [];
+  }
   $attackQueue = GetStringArray($gamestateContent[79+$numChainLinks] ?? "");
-  $p1LifeHistory = isset($gamestateContent[80+$numChainLinks]) ? json_decode(trim($gamestateContent[80+$numChainLinks]), true) ?? [] : [];
-  $p2LifeHistory = isset($gamestateContent[81+$numChainLinks]) ? json_decode(trim($gamestateContent[81+$numChainLinks]), true) ?? [] : [];
-  $p1ArcaneDamageDealt = isset($gamestateContent[82+$numChainLinks]) ? json_decode(trim($gamestateContent[82+$numChainLinks]), true) ?? [] : [];
-  $p2ArcaneDamageDealt = isset($gamestateContent[83+$numChainLinks]) ? json_decode(trim($gamestateContent[83+$numChainLinks]), true) ?? [] : [];
+  if ($parseHistoricalStats) {
+    $p1LifeHistory = isset($gamestateContent[80+$numChainLinks]) ? json_decode(trim($gamestateContent[80+$numChainLinks]), true) ?? [] : [];
+    $p2LifeHistory = isset($gamestateContent[81+$numChainLinks]) ? json_decode(trim($gamestateContent[81+$numChainLinks]), true) ?? [] : [];
+    $p1ArcaneDamageDealt = isset($gamestateContent[82+$numChainLinks]) ? json_decode(trim($gamestateContent[82+$numChainLinks]), true) ?? [] : [];
+    $p2ArcaneDamageDealt = isset($gamestateContent[83+$numChainLinks]) ? json_decode(trim($gamestateContent[83+$numChainLinks]), true) ?? [] : [];
+  } else {
+    $p1LifeHistory = [];
+    $p2LifeHistory = [];
+    $p1ArcaneDamageDealt = [];
+    $p2ArcaneDamageDealt = [];
+  }
   $practiceDummyWeaponPower = isset($gamestateContent[84+$numChainLinks])
     ? max(0, min(100, intval($gamestateContent[84+$numChainLinks])))
     : 4;

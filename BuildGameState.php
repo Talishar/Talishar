@@ -62,9 +62,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $cacheVal = intval($buildCacheArr[0] ?? 0);
 
   if (!function_exists("ParseGamestate")) {
+    // Historical stat blobs are not part of the live state response.
+    $parseGamestateHistoricalStats = false;
     include_once "ParseGamestate.php";
   } else {
-    ParseGamestate();
+    ParseGamestate(false);
   }
 
   if (empty($p1uid) || empty($p2uid)) {
