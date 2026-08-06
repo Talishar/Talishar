@@ -1302,6 +1302,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $counters = NULL;
   $friendlyCounts = [];
   $opponentCounts = [];
+  $friendlyComponentCounts = [];
+  $opponentComponentCounts = [];
   $friendlyRenderedEffects = [];
   $opponentRenderedEffects = [];
   $currentTurnEffectsCount = count($currentTurnEffects);
@@ -1327,9 +1329,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if ($isFriendly) {
           if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
           $friendlyCounts[$cardID]++;
+          if (!isset($friendlyComponentCounts[$cardID][$raw])) $friendlyComponentCounts[$cardID][$raw] = 0;
+          $friendlyComponentCounts[$cardID][$raw]++;
       } else {
           if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
           $opponentCounts[$cardID]++;
+          if (!isset($opponentComponentCounts[$cardID][$raw])) $opponentComponentCounts[$cardID][$raw] = 0;
+          $opponentComponentCounts[$cardID][$raw]++;
       }
   }
   if (!empty($staticBuffsArr)) {
@@ -1340,12 +1346,23 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         if ($isFriendly) {
           if (!isset($friendlyCounts[$cardID])) $friendlyCounts[$cardID] = 0;
           $friendlyCounts[$cardID]++;
+          if (!isset($friendlyComponentCounts[$cardID]["STATIC_BUFF"])) $friendlyComponentCounts[$cardID]["STATIC_BUFF"] = 0;
+          $friendlyComponentCounts[$cardID]["STATIC_BUFF"]++;
         } else {
           if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
           $opponentCounts[$cardID]++;
+          if (!isset($opponentComponentCounts[$cardID]["STATIC_BUFF"])) $opponentComponentCounts[$cardID]["STATIC_BUFF"] = 0;
+          $opponentComponentCounts[$cardID]["STATIC_BUFF"]++;
         }
       }
     }
+  }
+
+  foreach ($friendlyCounts as $cardID => $count) {
+    $friendlyCounts[$cardID] = GetEffectUIStackCount($cardID, $count, $friendlyComponentCounts[$cardID] ?? []);
+  }
+  foreach ($opponentCounts as $cardID => $count) {
+    $opponentCounts[$cardID] = GetEffectUIStackCount($cardID, $count, $opponentComponentCounts[$cardID] ?? []);
   }
 
   $skipStackCache = [];
@@ -1663,6 +1680,17 @@ function skipEffectUIStacking($cardID) {
   $card = GetClass($cardID, 0);
   if ($card != "-" && $card->DisplayRemainingPrevention()) return false;
   return true;
+}
+
+function GetEffectUIStackCount($cardID, $totalEffectCount, $componentCounts) {
+  // These cards create multiple internal effects per play. Their UI counter should
+  // show copies played instead of the number of total effects
+  static $componentAwareCards = [
+    "savor_bloodshed_red" => true,
+  ];
+
+  if (!isset($componentAwareCards[$cardID]) || empty($componentCounts)) return $totalEffectCount;
+  return max($componentCounts);
 }
 
 
