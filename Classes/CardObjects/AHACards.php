@@ -546,7 +546,7 @@ class sharp_incline_blue extends Card {
 	}
 	
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility($target, 1);
+		$this->baseCard->PlayAbility($target, 3);
 		return "";
 	}
 
