@@ -973,7 +973,7 @@ function EquipWeapon($player, $cardID, $source = "-")
     $CharacterCard = $Character->Card($i, true);
     if ($CharacterCard->Slot() == "LWep")
       $occupied_slots[] = "LWep";
-    elseif ($CharacterCard->Slot() == "RWep")
+    elseif ($CharacterCard->Slot() == "RWep" || $CharacterCard->Slot() == "Off-Hand")
       $occupied_slots[] = "RWep";
   }
   $slot = "-";
