@@ -4650,7 +4650,7 @@ function IsGold($cardID) {
 }
 
 function GetClass($cardID, $player, $from="-", $uniqueID="-") {
-	global $currentTurnEffects;
+	global $CurrentTurnEffects;
   if ($cardID !== null && str_contains($cardID, "BLIND")) return "-";
   if ($cardID == "LAYER" || $cardID == "TRIGGER") return "-";
   $cardID = ExtractCardID($cardID);

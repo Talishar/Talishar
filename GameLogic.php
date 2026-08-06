@@ -764,10 +764,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           }
         }
       }
-      if ($removeKeys) {
-        foreach ($removeKeys as $index => $_) unset($hand[$index]);
-        $hand = array_values($hand);
-      }
+      if ($removeKeys) $hand = array_values(array_diff_key($hand, $removeKeys));
       return implode(",", $cardsArr);
     case "DESTROYCHARACTER":
       DestroyCharacter($player, $lastResult);

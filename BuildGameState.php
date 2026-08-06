@@ -336,11 +336,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $borderColor = $action == 21 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2);
     if($playerID == 3) $borderColor = $combatChain[$i + 1] == $otherPlayer ? 2 : 1;
 
-    $countersMap = null;
-    if ($i == 0 && HasAimCounter()) {
-      $countersMap = new stdClass();
-      $countersMap->aim = 1;
-    }
+    $countersMap = new stdClass();
+    if ($i == 0 && HasAimCounter()) $countersMap->aim = 1;
 
     if ($i == 0) {
       $activeChainLink->attackingCard = JSONRenderedCard(
@@ -1315,14 +1312,16 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $effectCardIds = [];
+  $adminEffectIdx = [];
   $fancyCountersCache = [];
 
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
       $raw = $currentTurnEffects[$i];
       $cardIDLength = strcspn($raw, '-,');
       $cardID = $cardIDLength === strlen($raw) ? $raw : substr($raw, 0, $cardIDLength);
+      $effectCardIds[$i] = $cardID;
       $isAdmin = AdministrativeEffect($cardID) || $cardID === "luminaris_angels_glow-1" || $cardID === "luminaris_angels_glow-2";
-      $effectCardIds[] = $isAdmin ? null : $cardID;
+      $adminEffectIdx[$i] = $isAdmin;
       if ($isAdmin) continue;
       if (!isset($fancyCountersCache[$cardID])) {
           $fancyCountersCache[$cardID] = HasFancyCounters($cardID);
@@ -1370,10 +1369,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $skipStackCache = [];
-  $effectPosition = 0;
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-      $cardID = $effectCardIds[$effectPosition++];
-      if ($cardID === null) continue;
+      $cardID = $effectCardIds[$i];
+      if ($adminEffectIdx[$i]) continue;
       $isFriendly = $playerID == $currentTurnEffects[$i + 1] || $playerID == 3 && $otherPlayer != $currentTurnEffects[$i + 1];
       $BorderColor = $isFriendly ? "blue" : "red";
       $counters = $isFriendly ? $friendlyCounts[$cardID] ?? 0 : $opponentCounts[$cardID] ?? 0;

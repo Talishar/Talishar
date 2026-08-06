@@ -87,7 +87,8 @@ function CheckUnique($player) {
 		if (count($conflicts) > 1) {
 			// for now don't let people kill themselves on accident
 			if (($key = array_search('MYCHAR-0', $conflicts)) !== false)
-				array_splice($conflicts, $key, 1);
+				unset($conflicts[$key]);
+			$conflicts = array_values($conflicts);
 
 			$conflicts = implode(",", $conflicts);
 			Await($player, "ChooseMultiZone", "choice", indices:$conflicts, context:"Sacrifice a $uniqueCard to the Unique Rule", subsequent:0);

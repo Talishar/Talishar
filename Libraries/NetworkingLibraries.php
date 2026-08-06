@@ -4003,9 +4003,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "lumina_lance_yellow":
       $soul = &GetSoul($currentPlayer);
       if (!TalentContains($CombatChain->AttackCard()->ID(), "LIGHT", $currentPlayer)) break;
-      $soulPieces = SoulPieces();
-      $soulCardCount = count($soul) / $soulPieces;
-      $numModes = $soulCardCount < 3 ? $soulCardCount : 3;
+      $numModes = count($soul) / SoulPieces() < 3 ? count($soul) / SoulPieces() : 3;
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose up to $numModes modes");
       AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "$numModes-+2_Attack,Draw_on_hit,Go_again_on_hit");
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
