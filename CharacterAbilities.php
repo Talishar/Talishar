@@ -983,9 +983,9 @@ function EquipWeapon($player, $cardID, $source = "-")
   }
   $slot = "-";
   if (!in_array("RWep", $occupied_slots))
-    $slot = "LWep";
-  elseif (!in_array("LWep", $occupied_slots))
     $slot = "RWep";
+  elseif (!in_array("LWep", $occupied_slots))
+    $slot = "LWep";
   //check if you have enough hands to equip it
   if ($is1H && $numHands < 2 || !$is1H && $numHands == 0){
     //Replace the first destroyed weapon; if none you can't re-equip
