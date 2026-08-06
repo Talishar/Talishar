@@ -562,22 +562,23 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $characterPieces = CharacterPieces();
   $hideOpponentEquipment = $theirCharacterCount > $characterPieces && SearchCurrentTurnEffects("HIDEOPEQUIP", $playerID);
   for ($i = 0; $i < $theirCharacterCount; $i += $characterPieces) {
+    $CharacterCard = new CharacterCard($i, $otherPlayer);
     $label = "";
     $border = 0;
-    $theirChar = $theirCharacter[$i];
-    if ($theirCharacter[$i + 1] == 4) $theirChar = "DUMMYDISHONORED";
+    $theirChar = $CharacterCard->CardID();
+    if ($CharacterCard->Status() == 4) $theirChar = "DUMMYDISHONORED";
     $powerCounters = 0;
     $counters = 0;
     $type = CardType($theirChar);
     if (TypeContains($theirChar, "D")) $type = "C";
-    $sTypeArr = explode(",", CardSubType($theirChar, $theirCharacter[$i+11]));
+    $sTypeArr = explode(",", CardSubType($theirChar, $CharacterCard->UniqueID()));
     $sType = $sTypeArr[0];
     static $equipSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
     foreach ($sTypeArr as $st) {
       if (isset($equipSlots[$st])) { $sType = $st; break; }
     }
     $border = CardBorderColor($theirChar, "THEIRCHAR", true, $otherPlayer);
-    if (TypeContains($theirCharacter[$i], "W", $playerID)) {
+    if (TypeContains($CharacterCard->CardID(), "W", $playerID)) {
       ++$numWeapons;
       if ($numWeapons > 1) {
         $type = "E";
@@ -585,61 +586,61 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       $label = WeaponHasGoAgainLabel($i, $otherPlayer) ? "Go Again" : "";
       $weaponPowerModifiers = [];
-      $powerCounters = $theirCharacter[$i + 3];
+      $powerCounters = $CharacterCard->NumPowerCounters();
       if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0 ||
-        SearchCurrentTurnEffectsForPartialId($theirCharacter[$i + 11] ?? "-")) $border = 5;
+        SearchCurrentTurnEffectsForPartialId($CharacterCard->UniqueID() ?? "-")) $border = 5;
     }
     if($i == 0 && $otherPlayer == $mainPlayer) {
-      $heroCard = $theirCharacter[$i];
+      $heroCard = $CharacterCard->CardID();
       if (($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai") && GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 1) {
         $border = 5;
       }
     }
-    if ($theirCharacter[$i + 2] > 0) $counters = $theirCharacter[$i + 2];
-    $counters = $theirCharacter[$i + 1] != 0 ? $counters : 0;
+    if ($CharacterCard->NumCounters() > 0) $counters = $CharacterCard->NumCounters();
+    $counters = $CharacterCard->Status() != 0 ? $counters : 0;
     // hide opponent's equipment while deciding on adaptive stuff
-    $facing = ($i != 0 && $hideOpponentEquipment) ? "DOWN" : $theirCharacter[$i + 12];
-    if($isGameOver) $theirCharacter[$i + 12] = "UP";
-    if ($theirCharacter[$i + 12] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
-      if($theirCharacter[$i + 1] > 0) {
+    $facing = ($i != 0 && $hideOpponentEquipment) ? "DOWN" : $CharacterCard->Facing();
+    if($isGameOver) $CharacterCard->Flip("UP");
+    if ($CharacterCard->Facing() == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
+      if($CharacterCard->Status() > 0) {
       $characterContents[] = JSONRenderedCard(
         $theirChar,
         borderColor: $border,
-        overlay: $theirCharacter[$i + 1] != 2 && $theirChar != "DUMMYDISHONORED" ? 1 : 0,
+        overlay: $CharacterCard->Status() != 2 && $theirChar != "DUMMYDISHONORED" ? 1 : 0,
         counters: $counters,
-        defCounters: $theirCharacter[$i + 4],
+        defCounters: $CharacterCard->NumDefenseCounters(),
         powerCounters: $powerCounters,
         controller: $otherPlayer,
         type: $type,
         sType: $sType,
         isFrozen: IsFrozenMZ($theirCharacter, "CHAR", $i, $otherPlayer),
-        onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) && SearchCombatChainForIndex($theirCharacter[$i], $otherPlayer) != -1 ? 0 : $theirCharacter[$i + 6] == 1,
+        onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) && SearchCombatChainForIndex($CharacterCard->CardID(), $otherPlayer) != -1 ? 0 : $CharacterCard->OnChain() == 1,
         isBroken: $theirCharacter[$i + 1] == 0,
         label: $label,
         facing: $facing,
-        numUses: $theirCharacter[$i + 5],
-        subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-        marked: $theirCharacter[$i + 13] == 1,
-        tapped: $theirCharacter[$i + 14] == 1,
-        slot: $theirCharacter[$i + 15] ?? "-"
+        numUses: $CharacterCard->NumUses(),
+        subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $CharacterCard->Subcards(),
+        marked: $CharacterCard->Marked() == 1,
+        tapped: $CharacterCard->Tapped() == 1,
+        slot: $CharacterCard->Slot() ?? "-"
         );
       }
     } else {
       $characterContents[] = JSONRenderedCard(
           $TheirCardBack,
-          overlay: $theirCharacter[$i + 1] != 2 ? 1 : 0,
+          overlay: $CharacterCard->Status() != 2 ? 1 : 0,
           counters: $counters,
-          defCounters: $theirCharacter[$i + 4],
+          defCounters: $CharacterCard->NumDefenseCounters(),
           powerCounters: $powerCounters,
           controller: $otherPlayer,
           type: $type,
           sType: $sType,
           label: $label,
-          facing: $theirCharacter[$i + 12],
-          subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $theirCharacter[$i+10],
-          marked: $theirCharacter[$i + 13] == 1,
-          tapped: $theirCharacter[$i + 14] == 1,
-          slot: $theirCharacter[$i + 15] ?? "-"
+          facing: $CharacterCard->Facing(),
+          subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $CharacterCard->Subcards(),
+          marked: $CharacterCard->Marked() == 1,
+          tapped: $CharacterCard->Tapped() == 1,
+          slot: $CharacterCard->Slot() ?? "-"
           );
     }
   }
