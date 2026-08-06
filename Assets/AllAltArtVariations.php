@@ -332,6 +332,7 @@ function GetAllAltArtVariations(): array
     "zyggy_starlight_red=OMN001-T", "zyggy_starlight_yellow=OMN002-T", "scar_for_a_scar_red=1HP396-T",
     "trot_along_blue=DDD016-T", "gravy_bones_shipwrecked_looter=AGB001-T", "fate_foreseen_red=1HP405-T",
     "vynnset_iron_maiden=CON007-MV", "ser_boltyn_breaker_of_dawn=CON005-MV", "flail_of_agony=CON008-MV", "raydn_duskbane=CON006-MV",
-    "scabskin_leathers=scabskin_leathers-RIP"
+    "scabskin_leathers=scabskin_leathers-RIP", "blade_dance=MPW134-T", "dorinthea=MPW155-T", "flurry=MPW135-T",
+    "hala_bladesaint_of_the_vow=MPW003-T", "point_of_escalation_yellow=MPW025-T", "prized_galea=AOL003-T",
   ];
 }
