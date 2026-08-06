@@ -615,7 +615,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         sType: $sType,
         isFrozen: IsFrozenMZ($theirCharacter, "CHAR", $i, $otherPlayer),
         onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) && SearchCombatChainForIndex($CharacterCard->CardID(), $otherPlayer) != -1 ? 0 : $CharacterCard->OnChain() == 1,
-        isBroken: $theirCharacter[$i + 1] == 0,
+        isBroken: $CharacterCard->Status() == 0,
         label: $label,
         facing: $facing,
         numUses: $CharacterCard->NumUses(),
