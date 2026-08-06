@@ -190,10 +190,9 @@
         $layerType = $layers[$i];
         if($layerType == "DEFENDSTEP" || ($layerType == "TRIGGER" && $layers[$i+2] == "PHANTASM"))
         {
-          for($j=$i; $j<$i+$layerPieces; ++$j) unset($layers[$j]);
+          array_splice($layers, $i, $layerPieces);
         }
       }
-      $layers = array_values($layers);
     }
   }
 
