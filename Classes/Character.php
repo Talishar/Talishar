@@ -226,4 +226,8 @@ class CharacterCard {
   function Slot() {
     return $this->pieces[$this->index+15] ?? "-";
   }
+
+  function Move($slot) {
+    if (isset($this->pieces[$this->index+15])) $this->pieces[$this->index+15] = $slot;
+  }
 }

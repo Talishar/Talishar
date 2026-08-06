@@ -3157,19 +3157,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       StealEquipment($targetPlayer, $index, $player, $trueSteal);
       return "";
     case "MODULARMOVE":
-      $effectIndex = -1;
-      $ctePieces = CurrentTurnEffectPieces();
-      $cteCount = count($currentTurnEffects);
-      for ($i = 0; $i < $cteCount; $i += $ctePieces) {
-        if (DelimStringContains($currentTurnEffects[$i], $parameter, partial:true)) {
-          $effectIndex = $i;
-          break;
-        }
-      }
-      if ($effectIndex == -1) { WriteLog("Something went horribly wrong, please submit a bug report"); return $lastResult; }
-      $effectArr = explode(",", $currentTurnEffects[$effectIndex]);
-      $effectArr[count($effectArr) - 1] = $lastResult;
-      $currentTurnEffects[$effectIndex] = implode(",", $effectArr);
+      $Character = new PlayerCharacter($player);
+      $modularCard = $Character->FindCardUID($parameter);
+      $modularCard->Move($lastResult);
       return $lastResult;
     case "GETTARGETOFATTACK":
       $params = explode(",", $parameter);
