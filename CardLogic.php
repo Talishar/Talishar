@@ -4720,7 +4720,7 @@ function HasEnergyCounters($array, $index)
 function HasPowerCounters($zone, $array, $index)
 {
   return match ($zone) {
-    "AURAS" => $array[$index + 3] > 0,
+    "AURAS", "CHAR" => $array[$index + 3] > 0,
     default => false,
   };
 }
