@@ -94,7 +94,9 @@ function handleSendToPlayer($conn, $input) {
     return;
   }
 
-  $sql = "UPDATE users SET systemMessage = ? WHERE usersUid = ?";
+  $expiresAt = ComputeSystemMessageExpiry($input);
+
+  $sql = "UPDATE users SET systemMessage = ?, systemMessageExpiresAt = ? WHERE usersUid = ?";
   $stmt = mysqli_stmt_init($conn);
 
   if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -103,7 +105,7 @@ function handleSendToPlayer($conn, $input) {
     return;
   }
 
-  mysqli_stmt_bind_param($stmt, "ss", $message, $username);
+  mysqli_stmt_bind_param($stmt, "sss", $message, $expiresAt, $username);
   mysqli_stmt_execute($stmt);
 
   if (mysqli_stmt_affected_rows($stmt) === 0) {
@@ -118,7 +120,7 @@ function handleSendToPlayer($conn, $input) {
 }
 
 function handleAcknowledge($conn, $useruid) {
-  $sql = "UPDATE users SET systemMessage = NULL WHERE usersUid = ?";
+  $sql = "UPDATE users SET systemMessage = NULL, systemMessageExpiresAt = NULL WHERE usersUid = ?";
   $stmt = mysqli_stmt_init($conn);
 
   if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -155,7 +157,9 @@ function handleSendToAll($conn, $input) {
     return;
   }
 
-  $sql = "UPDATE users SET systemMessage = ? WHERE isBanned = 0";
+  $expiresAt = ComputeSystemMessageExpiry($input);
+
+  $sql = "UPDATE users SET systemMessage = ?, systemMessageExpiresAt = ? WHERE isBanned = 0";
   $stmt = mysqli_stmt_init($conn);
 
   if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -164,12 +168,29 @@ function handleSendToAll($conn, $input) {
     return;
   }
 
-  mysqli_stmt_bind_param($stmt, "s", $message);
+  mysqli_stmt_bind_param($stmt, "ss", $message, $expiresAt);
   mysqli_stmt_execute($stmt);
   $affected = mysqli_stmt_affected_rows($stmt);
   mysqli_stmt_close($stmt);
 
   echo json_encode(["success" => true, "message" => "System message sent to $affected users"]);
+}
+
+// Allowed expiry windows, in hours. Absent/invalid/non-positive values mean "never expires".
+function ComputeSystemMessageExpiry($input) {
+  $allowedHours = [1, 6, 24, 72, 168];
+
+  if (!isset($input['expiresInHours'])) {
+    return null;
+  }
+
+  $hours = $input['expiresInHours'];
+
+  if (!is_numeric($hours) || !in_array((int)$hours, $allowedHours, true)) {
+    return null;
+  }
+
+  return date('Y-m-d H:i:s', time() + ((int)$hours * 3600));
 }
 
 ?>

@@ -218,7 +218,7 @@ function ProcessSpecificCardMacros()
       ContinueDecisionQueue($firstChoice);
       return true;
     }
-    if ($EffectContext == "raise_an_army_yellow" || $EffectContext == "golden_anvil_blue" || $EffectContext == "gravy_bones" || $EffectContext == "gravy_bones_shipwrecked_looter"
+    if ($EffectContext == "raise_an_army_yellow" || $EffectContext == "visit_the_golden_anvil_blue" || $EffectContext == "gravy_bones" || $EffectContext == "gravy_bones_shipwrecked_looter"
       || $EffectContext == "puffin_hightail" || $EffectContext == "puffin" || $EffectContext == "marlynn_treasure_hunter" || $EffectContext == "marlynn" || $EffectContext == "scurv_stowaway")
     {
       $firstCard = GetMZCard($currentPlayer, $firstChoice);

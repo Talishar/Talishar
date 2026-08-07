@@ -78,11 +78,10 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   // Check if user has an active subscription to the Talishar community via Metafy API
   $response->isMetafySupporter = false;
   $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
-  
+
   if (!empty($metafyAccessToken)) {
     // Get this user's metafyID — first from DB, then live from Metafy API if null
     $user_metafy_id = $row['metafyID'] ?? null;
-    $metafy_id_source = 'db';
 
     if (empty($user_metafy_id)) {
       // Fetch live from Metafy /me using stored access token
@@ -97,11 +96,9 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
       $me_raw = curl_exec($ch_me);
       $me_code = curl_getinfo($ch_me, CURLINFO_HTTP_CODE);
       curl_close($ch_me);
-      $response->debug_me_fetch = ['http_code' => $me_code, 'raw' => substr($me_raw, 0, 500)];
       if ($me_code === 200) {
         $me_data = json_decode($me_raw, true);
         $user_metafy_id = $me_data['user']['id'] ?? null;
-        $metafy_id_source = 'live_api';
         // Save it to DB for future calls
         if ($user_metafy_id) {
           $stmt_save = mysqli_stmt_init($conn);
@@ -114,69 +111,10 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
       }
     }
 
-    $response->debug_metafy_id = ['id' => $user_metafy_id, 'source' => $metafy_id_source];
-
-    // Check paid Talishar subscription: use client_id as Bearer to call the community subscribers endpoint
-    // (per Metafy docs - community owner endpoints authenticate with client_id)
-    $talishar_client_id = '4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI';
-    $subscribers_url = 'https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100';
-
-    $ch = curl_init($subscribers_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-      'Authorization: Bearer ' . $talishar_client_id,
-      'Content-Type: application/json'
-    ]);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-
-    $api_response = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    $response->debug_subscribers = [
-      'http_code' => $http_code,
-      'user_metafy_id' => $user_metafy_id,
-      'raw' => substr($api_response, 0, 800)
-    ];
-
-    if ($http_code === 200 && !empty($api_response)) {
-      $data = json_decode($api_response, true);
-      $subscriber_ids = array_column($data['subscribers'] ?? [], 'user_id');
-      $response->debug_subscribers['count'] = count($subscriber_ids);
-      $response->debug_subscribers['ids_sample'] = array_slice($subscriber_ids, 0, 5);
-      if ($user_metafy_id && in_array($user_metafy_id, $subscriber_ids)) {
+    foreach ($response->metafyCommunities as $community) {
+      if (isset($community['id']) && $community['id'] === $talishar_community_id) {
         $response->isMetafySupporter = true;
-      }
-    }
-
-    // If confirmed subscriber, make sure Talishar is in the communities list
-    if ($response->isMetafySupporter) {
-      $talishar_in_list = false;
-      foreach ($response->metafyCommunities as $c) {
-        if (($c['id'] ?? null) === $talishar_community_id) {
-          $talishar_in_list = true;
-          break;
-        }
-      }
-      if (!$talishar_in_list) {
-        $response->metafyCommunities[] = [
-          'id' => $talishar_community_id,
-          'title' => 'Talishar',
-          'description' => 'Flesh and Blood TCG — get exclusive card backs, playmats, and alt arts.',
-          'logo_url' => null,
-          'url' => 'https://talishar.net',
-          'type' => 'supported'
-        ];
-      }
-    }
-    else {
-      // Fallback: check the DB-cached communities for isMetafySupporter
-      foreach ($response->metafyCommunities as $community) {
-        if (isset($community['id']) && $community['id'] === $talishar_community_id) {
-          $response->isMetafySupporter = true;
-          break;
-        }
+        break;
       }
     }
   }

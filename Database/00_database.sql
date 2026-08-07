@@ -80,6 +80,7 @@ CREATE TABLE `users` (
   `rust_counters` int(11) NOT NULL DEFAULT 0,
   `lastActivity` TIMESTAMP NULL DEFAULT NULL,
   `systemMessage` TEXT DEFAULT NULL,
+  `systemMessageExpiresAt` DATETIME DEFAULT NULL,
   `metafyAccessToken` VARCHAR(500) DEFAULT NULL,
   `metafyRefreshToken` VARCHAR(500) DEFAULT NULL,
   `metafyCommunities` LONGTEXT DEFAULT NULL,

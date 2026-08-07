@@ -1422,7 +1422,7 @@ class all_in_red extends Card {
 		}
 		else {
 			if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword")) {
-				WriteLog("🪙Player $this->controller is going all in!🪙");
+				WriteLog("🪙Player $this->controller is going all in!");
 				$Effect = $CurrentTurnEffects->FindEffect($this->cardID);
 				$goldIndices = explode(",", GetGoldIndices($this->controller));
 				$num = 0;
