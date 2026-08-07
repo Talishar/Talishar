@@ -210,11 +210,15 @@ class flurry extends Card {
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
 		global $CurrentTurnEffects;
+		$Auras = new Auras($this->controller);
 		$Char = new PlayerCharacter($this->controller);
 		$targetWep = $Char->FindCardUID($target);
+		if ($targetWep->Index() == -1) { //check if it's applying to an aura
+			$targetWep = $Auras->FindCardUID($target);
+		}
 		// has flurry already been applied to the weapon?
 		$otherFlurry = $CurrentTurnEffects->FindSpecificEffect($this->cardID, $target);
-		if ($targetWep != "" && $otherFlurry->Index() == -1) {
+		if ($targetWep->Index() != -1 && $otherFlurry->Index() == -1) {
 			AddCurrentTurnEffect($this->cardID, $this->controller, "", $target);
 			$targetWep->SetUsed(2);
 			$targetWep->AddUse();
@@ -222,7 +226,7 @@ class flurry extends Card {
 		elseif ($otherFlurry != "") {
 			WriteLog(CardLink($targetWep->CardID(), $targetWep->CardID()) . " has already been flurried!");
 		}
-		$Auras = new Auras($this->controller);
+		
 		$AuraCard = $Auras->FindCardUID($uniqueID);
 		if ($AuraCard != "") $AuraCard->Destroy();
 	}

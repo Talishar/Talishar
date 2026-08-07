@@ -90,6 +90,10 @@ class AuraCard {
     if (isset($this->pieces[$this->index+1])) $this->pieces[$this->index+1] = $status;
   }
 
+  function SetUsed($status) { //alias for SetStatus
+    $this->SetStatus($status);
+  }
+
   function NumCounters() {
     return $this->pieces[$this->index+2] ?? 0;
   }
@@ -119,6 +123,10 @@ class AuraCard {
   function AddUses($n=1) {
     if (isset($this->pieces[$this->index+5]))
       $this->pieces[$this->index+5] += $n;
+  }
+
+  function AddUse($n=1) { // alias for AddUses
+    $this->AddUses($n);
   }
 
 
