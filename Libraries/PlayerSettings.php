@@ -98,6 +98,62 @@ function ResetFavoriteDeckCosmeticOverrideCache()
   $favoriteDeckCosmeticOverrideCache = [];
 }
 
+function NormalizeDeckLinkForMatch($deckLink)
+{
+  $link = trim(strval($deckLink));
+  if ($link === '') return '';
+  $link = preg_replace('/[?#].*$/', '', $link);                      // "?tab=edit", "#cards"
+  $link = preg_replace('#^[a-zA-Z][a-zA-Z0-9+.\-]*://#', '', $link); // http:// vs https://
+  $link = preg_replace('#^www\.#i', '', $link);
+  $link = rtrim($link, '/');
+  $hostEnd = strpos($link, '/');
+  if ($hostEnd === false) return strtolower($link);
+  return strtolower(substr($link, 0, $hostEnd)) . substr($link, $hostEnd);
+}
+
+function FindFavoriteDeckRow($conn, $userId, $deckLink, $columns = [])
+{
+  if (!$conn || empty($userId) || $userId === '-' || trim(strval($deckLink)) === '') return null;
+
+  $select = ['decklink'];
+  foreach ($columns as $column) {
+    if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $column)) $select[] = $column;
+  }
+  $select = implode(', ', array_unique($select));
+
+  $sql = "SELECT $select FROM favoritedeck WHERE decklink = ? AND usersId = ? LIMIT 1";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "ss", $deckLink, $userId);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $row = $res ? mysqli_fetch_assoc($res) : null;
+    mysqli_stmt_close($stmt);
+    if ($row) return $row;
+  }
+
+  $wanted = NormalizeDeckLinkForMatch($deckLink);
+  if ($wanted === '') return null;
+
+  $match = null;
+  $sql = "SELECT $select FROM favoritedeck WHERE usersId = ?";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "s", $userId);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    while ($res && ($row = mysqli_fetch_assoc($res))) {
+      if (NormalizeDeckLinkForMatch($row['decklink'] ?? '') === $wanted) {
+        $match = $row;
+        break;
+      }
+    }
+    if ($res) mysqli_free_result($res);
+    mysqli_stmt_close($stmt);
+  }
+  return $match;
+}
+
 function GetFavoriteDeckCosmeticOverride($player)
 {
   global $p1id, $p2id, $p1DeckLink, $p2DeckLink, $favoriteDeckCosmeticOverrideCache;
@@ -121,23 +177,13 @@ function GetFavoriteDeckCosmeticOverride($player)
   $conn = GetDBConnection(DBL_BUILD_GAME_STATE);
   if (!$conn) return $favoriteDeckCosmeticOverrideCache[$player] = null;
 
-  $result = null;
-  $sql = "SELECT cardBack, playmat FROM favoritedeck WHERE decklink = ? AND usersId = ? LIMIT 1";
-  $stmt = mysqli_stmt_init($conn);
-  if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, "ss", $deckLink, $userId);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $row = $res ? mysqli_fetch_assoc($res) : null;
-    mysqli_stmt_close($stmt);
-    if ($row) {
-      $result = [
-        'cardBack' => strval($row['cardBack'] ?? '0'),
-        'playmat' => strval($row['playmat'] ?? '0')
-      ];
-    }
-  }
+  $row = FindFavoriteDeckRow($conn, $userId, $deckLink, ['cardBack', 'playmat']);
   mysqli_close($conn);
+
+  $result = $row === null ? null : [
+    'cardBack' => strval($row['cardBack'] ?? '0'),
+    'playmat' => strval($row['playmat'] ?? '0')
+  ];
 
   return $favoriteDeckCosmeticOverrideCache[$player] = $result;
 }
@@ -158,24 +204,16 @@ function GetDeckAltArtOverride($userId, $deckLink)
   $conn = GetDBConnection(DBL_BUILD_GAME_STATE);
   if (!$conn) return $cache[$cacheKey] = null;
 
-  $customized = false;
-  $sql = "SELECT altArtsCustomized FROM favoritedeck WHERE decklink = ? AND usersId = ? LIMIT 1";
-  $stmt = mysqli_stmt_init($conn);
-  if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, "ss", $deckLink, $userId);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $row = $res ? mysqli_fetch_assoc($res) : null;
-    mysqli_stmt_close($stmt);
-    $customized = $row && intval($row['altArtsCustomized'] ?? 0) === 1;
-  }
+  $row = FindFavoriteDeckRow($conn, $userId, $deckLink, ['altArtsCustomized']);
+  $customized = $row && intval($row['altArtsCustomized'] ?? 0) === 1;
+  $storedLink = $row === null ? $deckLink : strval($row['decklink']);
 
   $map = [];
   if ($customized) {
     $sql = "SELECT cardId, altPath FROM deck_alt_arts WHERE decklink = ? AND usersId = ?";
     $stmt = mysqli_stmt_init($conn);
     if (mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_stmt_bind_param($stmt, "ss", $deckLink, $userId);
+      mysqli_stmt_bind_param($stmt, "ss", $storedLink, $userId);
       mysqli_stmt_execute($stmt);
       $res = mysqli_stmt_get_result($stmt);
       while ($row = mysqli_fetch_assoc($res)) {
@@ -189,11 +227,6 @@ function GetDeckAltArtOverride($userId, $deckLink)
   return $cache[$cacheKey] = ['customized' => $customized, 'map' => $map];
 }
 
-// If the player has explicitly customized alt arts for the deck they're playing,
-// their saved per-card selections replace the auto-assembled campaign/community
-// pool entirely (unselected cards fall back to base art). Otherwise the pool is
-// left untouched so players who never visited the customization page keep the
-// legacy behavior.
 function ApplyDeckAltArtOverride($poolAltArts, $userId, $deckLink)
 {
   $override = GetDeckAltArtOverride($userId, $deckLink);

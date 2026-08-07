@@ -63,20 +63,12 @@ if (!$conn) {
   DeckCosmeticsError("Service temporarily unavailable. Please try again later.", 503);
 }
 
-$sql = "SELECT 1 FROM favoritedeck WHERE decklink=? AND usersId=?";
-$stmt = mysqli_stmt_init($conn);
-$owned = false;
-if (mysqli_stmt_prepare($stmt, $sql)) {
-  mysqli_stmt_bind_param($stmt, "ss", $decklink, $userID);
-  mysqli_stmt_execute($stmt);
-  mysqli_stmt_store_result($stmt);
-  $owned = mysqli_stmt_num_rows($stmt) > 0;
-  mysqli_stmt_close($stmt);
-}
-if (!$owned) {
+$favoriteRow = FindFavoriteDeckRow($conn, $userID, $decklink);
+if ($favoriteRow === null) {
   mysqli_close($conn);
   DeckCosmeticsError("Deck not found in your favorites.", 404);
 }
+$decklink = strval($favoriteRow['decklink']);
 
 $entitlements = GetUserCosmeticsEntitlements($userName);
 $entitledCardBackIds = array_map(fn($cb) => strval($cb->id), $entitlements->cardBacks);
