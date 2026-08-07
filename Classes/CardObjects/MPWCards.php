@@ -3010,7 +3010,6 @@ class dice_up_blue extends Card {
 		global $CCS_WeaponIndex, $combatChainState, $dqVars;
 		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
 		$Weapon->AddPowerCounters(-1);
-		ArsenalChooseAndDestroy($this->controller);
 	}
 }
 
