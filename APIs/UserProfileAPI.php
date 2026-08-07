@@ -118,36 +118,54 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
 
     // Check paid Talishar subscription: use client_id as Bearer to call the community subscribers endpoint
     // (per Metafy docs - community owner endpoints authenticate with client_id)
+    // Paginated: the community can have more than 100 subscribers, and a single
+    // per_page=100 page was silently excluding anyone past page 1 (e.g. recent joiners).
     $talishar_client_id = '4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI';
-    $subscribers_url = 'https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100';
+    $subscriber_ids = [];
+    $http_code = null;
+    $subscribers_page = 1;
+    $subscribers_max_pages = 50;
 
-    $ch = curl_init($subscribers_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-      'Authorization: Bearer ' . $talishar_client_id,
-      'Content-Type: application/json'
-    ]);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
+    while ($subscribers_page <= $subscribers_max_pages) {
+      $subscribers_url = 'https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100&page=' . $subscribers_page;
 
-    $api_response = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+      $ch = curl_init($subscribers_url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $talishar_client_id,
+        'Content-Type: application/json'
+      ]);
+      curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
+
+      $api_response = curl_exec($ch);
+      $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      curl_close($ch);
+
+      if ($http_code !== 200 || empty($api_response)) break;
+
+      $data = json_decode($api_response, true);
+      $page_subscribers = $data['subscribers'] ?? [];
+      if (empty($page_subscribers)) break;
+
+      foreach (array_column($page_subscribers, 'user_id') as $sid) {
+        $subscriber_ids[] = $sid;
+      }
+
+      if (count($page_subscribers) < 100) break;
+      $subscribers_page++;
+    }
 
     $response->debug_subscribers = [
       'http_code' => $http_code,
       'user_metafy_id' => $user_metafy_id,
-      'raw' => substr($api_response, 0, 800)
+      'count' => count($subscriber_ids),
+      'ids_sample' => array_slice($subscriber_ids, 0, 5),
+      'pages_fetched' => $subscribers_page
     ];
 
-    if ($http_code === 200 && !empty($api_response)) {
-      $data = json_decode($api_response, true);
-      $subscriber_ids = array_column($data['subscribers'] ?? [], 'user_id');
-      $response->debug_subscribers['count'] = count($subscriber_ids);
-      $response->debug_subscribers['ids_sample'] = array_slice($subscriber_ids, 0, 5);
-      if ($user_metafy_id && in_array($user_metafy_id, $subscriber_ids)) {
-        $response->isMetafySupporter = true;
-      }
+    if ($user_metafy_id && in_array($user_metafy_id, $subscriber_ids)) {
+      $response->isMetafySupporter = true;
     }
 
     // If confirmed subscriber, make sure Talishar is in the communities list

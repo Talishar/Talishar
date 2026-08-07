@@ -214,25 +214,42 @@ if (empty($user_metafy_id)) {
 }
 
 // Check paid subscriber list via Talishar client_id
+// Paginated: the community can have more than 100 subscribers, and a single
+// per_page=100 page was silently excluding anyone past page 1 (e.g. recent joiners).
 $talishar_client_id = '4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI';
-$ch_sub = curl_init('https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100');
-curl_setopt($ch_sub, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch_sub, CURLOPT_TIMEOUT, 5);
-curl_setopt($ch_sub, CURLOPT_HTTPHEADER, [
-  'Authorization: Bearer ' . $talishar_client_id,
-  'Content-Type: application/json'
-]);
-curl_setopt($ch_sub, CURLOPT_USERAGENT, 'Talishar-App');
-$sub_raw  = curl_exec($ch_sub);
-$sub_code = curl_getinfo($ch_sub, CURLINFO_HTTP_CODE);
-curl_close($ch_sub);
+$subscriber_ids = [];
+$subscribers_page = 1;
+$subscribers_max_pages = 50;
 
-if ($sub_code === 200 && !empty($sub_raw)) {
-  $sub_data       = json_decode($sub_raw, true);
-  $subscriber_ids = array_column($sub_data['subscribers'] ?? [], 'user_id');
-  if ($user_metafy_id && in_array($user_metafy_id, $subscriber_ids)) {
-    $is_metafy_supporter = true;
+while ($subscribers_page <= $subscribers_max_pages) {
+  $ch_sub = curl_init('https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100&page=' . $subscribers_page);
+  curl_setopt($ch_sub, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch_sub, CURLOPT_TIMEOUT, 5);
+  curl_setopt($ch_sub, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $talishar_client_id,
+    'Content-Type: application/json'
+  ]);
+  curl_setopt($ch_sub, CURLOPT_USERAGENT, 'Talishar-App');
+  $sub_raw  = curl_exec($ch_sub);
+  $sub_code = curl_getinfo($ch_sub, CURLINFO_HTTP_CODE);
+  curl_close($ch_sub);
+
+  if ($sub_code !== 200 || empty($sub_raw)) break;
+
+  $sub_data = json_decode($sub_raw, true);
+  $page_subscribers = $sub_data['subscribers'] ?? [];
+  if (empty($page_subscribers)) break;
+
+  foreach (array_column($page_subscribers, 'user_id') as $sid) {
+    $subscriber_ids[] = $sid;
   }
+
+  if (count($page_subscribers) < 100) break;
+  $subscribers_page++;
+}
+
+if ($user_metafy_id && in_array($user_metafy_id, $subscriber_ids)) {
+  $is_metafy_supporter = true;
 }
 
 // If confirmed subscriber, ensure Talishar community is in the list
