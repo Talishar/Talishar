@@ -29,7 +29,7 @@ if (!$conn) {
   exit;
 }
 
-$sql = "SELECT systemMessage FROM users WHERE usersUid = ?";
+$sql = "SELECT systemMessage, systemMessageExpiresAt FROM users WHERE usersUid = ?";
 $stmt = mysqli_stmt_init($conn);
 
 if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -44,10 +44,24 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $row = mysqli_fetch_assoc($result);
 mysqli_stmt_close($stmt);
+
+$hasMessage = $row && !empty($row['systemMessage']);
+$isExpired = $hasMessage && !empty($row['systemMessageExpiresAt'])
+  && strtotime($row['systemMessageExpiresAt']) <= time();
+
+if ($isExpired) {
+  $clearStmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($clearStmt, "UPDATE users SET systemMessage = NULL, systemMessageExpiresAt = NULL WHERE usersUid = ?")) {
+    mysqli_stmt_bind_param($clearStmt, 's', $userName);
+    mysqli_stmt_execute($clearStmt);
+    mysqli_stmt_close($clearStmt);
+  }
+}
+
 mysqli_close($conn);
 
 $response = new stdClass();
-$response->systemMessage = ($row && !empty($row['systemMessage'])) ? $row['systemMessage'] : null;
+$response->systemMessage = ($hasMessage && !$isExpired) ? $row['systemMessage'] : null;
 
 echo json_encode($response);
 
