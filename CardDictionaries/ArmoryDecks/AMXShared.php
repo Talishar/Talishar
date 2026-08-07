@@ -68,7 +68,7 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($conditionsMet != "") return $conditionsMet;
       $char = &GetPlayerCharacter($currentPlayer);
       // Add the new weapon stuff so we can put cards under it
-      PutCharacterIntoPlayForPlayer("bank_breaker", $currentPlayer);
+      PutCharacterIntoPlayForPlayer("bank_breaker", $currentPlayer, "LWep");
       // We don't want function calls in every iteration check
       $charCount = count($char);
       $charPieces = CharacterPieces();
