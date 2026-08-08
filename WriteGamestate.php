@@ -114,20 +114,26 @@ array_push($gamestateLines,
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
 
 $previousAbortSetting = ignore_user_abort(true);
+$previousTimeLimit = ini_get('max_execution_time');
 @set_time_limit(0);
+
+$restoreExecutionGuards = static function () use ($previousAbortSetting, $previousTimeLimit) {
+  ignore_user_abort($previousAbortSetting);
+  if ($previousTimeLimit !== false) @set_time_limit((int)$previousTimeLimit);
+};
 
 $lockPath = $dir . "/gamestate.lock";
 $lockHandler = fopen($lockPath, "c");
 
 if ($lockHandler === false) {
-  ignore_user_abort($previousAbortSetting);
+  $restoreExecutionGuards();
   error_log("ERROR: Failed to open gamestate lock file: " . $lockPath . " (from game: " . $gameName . ")");
   exit;
 }
 
 if (!flock($lockHandler, LOCK_EX)) {
   fclose($lockHandler);
-  ignore_user_abort($previousAbortSetting);
+  $restoreExecutionGuards();
   error_log("ERROR: WriteGamestate could not lock " . $lockPath . " — action not persisted (game: " . $gameName . ")");
   exit;
 }
@@ -159,7 +165,7 @@ if ($handler === false) {
 
 flock($lockHandler, LOCK_UN);
 fclose($lockHandler);
-ignore_user_abort($previousAbortSetting);
+$restoreExecutionGuards();
 
 if (!$writeSucceeded) exit;
 
