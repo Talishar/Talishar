@@ -179,6 +179,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $firstPlayerChooser = ($winner == 1 ? 2 : 1);
   $p1SideboardSubmitted = "0";
   $p2SideboardSubmitted = ($p2IsAILocal ? "1" : "0");
+  TruncateLogAboveMarker(["sent a rematch invitation."]); // fresh log for the new game
   WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
   WriteGameFile();
   $turn[0] = "REMATCH";
@@ -216,6 +217,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $firstPlayerChooser = ($winner == 1 ? 2 : 1);
   $p1SideboardSubmitted = "0";
   $p2SideboardSubmitted = ($p2IsAILocal ? "1" : "0");
+  TruncateLogAboveMarker(["offered to swap heroes and rematch."]); // fresh log for the new game
   WriteLog("🔁 Heroes swapped! Player $firstPlayerChooser will choose who goes first.", highlight: true, highlightColor: "darkblue");
   WriteGameFile();
   $turn[0] = "REMATCH";
