@@ -8,6 +8,9 @@ include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Libraries/LegalHeroesHelper.php";
+include_once "../includes/dbh.inc.php";
+include_once "../Libraries/CosmeticsLibrary.php";
+include_once "../Assets/MetafyDictionary.php";
 
 // Set headers immediately after includes
 SetHeaders();
@@ -38,6 +41,7 @@ if (!function_exists("SubtypeContains")) {
 $_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = TryPOST("gameName", 0);
 $playerID = TryPOST("playerID", 0);
+if (session_status() === PHP_SESSION_NONE) session_start();
 if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
 else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 else $authKey = TryPOST("authKey");
@@ -76,6 +80,8 @@ $response->nameColor = ($contentCreator != null ? $contentCreator->NameColor() :
 $response->displayName = ($yourName != "-" ? $yourName : "Player " . $playerID);
 
 
+
+$response->altArts = [];
 
 $deckFile = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $handler = @fopen($deckFile, "r");
@@ -266,6 +272,14 @@ if($handler) {
       $response->deck->cardDictionary[] = $dictionaryCard;
     }
   }
+
+  $myUid = $playerID == 1 ? $p1uid : $p2uid;
+  $myMetafyCommunities = $playerID == 1 ? $p1MetafyCommunities : $p2MetafyCommunities;
+  $response->altArts = GetOwnAltArtList($myUid, $response->deck->hero, $myMetafyCommunities);
+
+  $myUserId = $playerID == 1 ? ($p1id ?? '') : ($p2id ?? '');
+  $myDeckLink = $playerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+  $response->altArts = ApplyDeckAltArtOverride($response->altArts, $myUserId, $myDeckLink);
 
   fclose($handler);
 }

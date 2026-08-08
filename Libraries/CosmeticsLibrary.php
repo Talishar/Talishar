@@ -224,6 +224,53 @@ function GetUserAltArtEntitlements($userName)
   return $altArtMap;
 }
 
+function GetOwnAltArtList($userName, $heroCardId, $metafyCommunities)
+{
+  $altArts = [];
+
+  $addEntries = function ($entries, $sourceName) use (&$altArts) {
+    $count = count($entries);
+    for ($i = 0; $i < $count; ++$i) {
+      $parts = explode("=", $entries[$i], 2);
+      if (count($parts) !== 2) continue;
+      $altArt = new stdClass();
+      $altArt->name = $sourceName . ($count > 1 ? " " . ($i + 1) : "");
+      $altArt->cardId = trim($parts[0]);
+      $altArt->altPath = trim($parts[1]);
+      $altArts[] = $altArt;
+    }
+  };
+
+  foreach (PatreonCampaign::cases() as $campaign) {
+    $sessionID = $campaign->SessionID();
+    $isEntitled = isset($_SESSION[$sessionID]) || $campaign->IsTeamMember($userName ?? '');
+    if ($sessionID == "isPvtVoidPatron") {
+      $isEntitled = $isEntitled || ($userName ?? '') == "PvtVoid";
+    }
+    if (!$isEntitled) continue;
+
+    $campaignAltArts = $campaign->AltArts($heroCardId);
+    if ($campaignAltArts === "") continue;
+    $addEntries(explode(",", $campaignAltArts), $campaign->CampaignName());
+  }
+
+  $metafyCommunityMap = [];
+  foreach (MetafyCommunity::cases() as $case) {
+    $metafyCommunityMap[$case->value] = $case;
+  }
+
+  foreach ((array)$metafyCommunities as $community) {
+    $communityId = $community['id'] ?? null;
+    $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
+    if ($metafyCommunity === null) continue;
+    $communityAltArts = $metafyCommunity->AltArts();
+    if (empty($communityAltArts)) continue;
+    $addEntries($communityAltArts, $metafyCommunity->CommunityName());
+  }
+
+  return $altArts;
+}
+
 function GetPlaymatName($id)
 {
   switch ($id) {
