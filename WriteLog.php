@@ -113,6 +113,30 @@ function ClearLog($n=500)
   fclose($handle);
 }
 
+// Used when people rematch and start a new lobby
+function TruncateLogAboveMarker($markers)
+{
+  global $gameName;
+
+  FlushLogBuffer(); // buffered lines must be in the file before we slice it
+  $filename = "./Games/$gameName/gamelog.txt";
+  if (!file_exists($filename)) return;
+  $lines = file($filename);
+  if ($lines === false) return;
+
+  $keepFrom = count($lines); // no marker found -> keep nothing
+  for ($i = count($lines) - 1; $i >= 0; --$i) {
+    foreach ($markers as $marker) {
+      if (strpos($lines[$i], $marker) !== false) {
+        $keepFrom = $i;
+        break 2;
+      }
+    }
+  }
+
+  file_put_contents($filename, implode("", array_slice($lines, $keepFrom)));
+}
+
 function WriteSystemMessage($text, $path="./")
 {
   global $gameName;

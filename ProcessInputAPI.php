@@ -333,6 +333,7 @@ if ($inGameStatus == $GameStatus_Rematch) {
   $firstPlayerChooser = ($winner == 1 ? 2 : 1);
   $p1SideboardSubmitted = "0";
   $p2SideboardSubmitted = (IsPlayerAI(2) ? "1" : "0");
+  TruncateLogAboveMarker(["sent a rematch invitation."]); // fresh log for the new game
   WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
   WriteGameFile();
   $turn[0] = "REMATCH";
