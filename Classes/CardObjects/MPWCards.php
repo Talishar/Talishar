@@ -1417,7 +1417,7 @@ class all_in_red extends Card {
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
 		global $CombatChain, $CurrentTurnEffects;
 		if ($additionalCosts == "FAILURE") {
-			WriteLog("The house always wins", highlight:true);
+			WriteLog("🎰The house always wins", highlight:true);
 			LoseHealth(GetHealth($this->controller), $this->controller);
 		}
 		else {
