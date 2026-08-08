@@ -6052,8 +6052,7 @@ class reckless_arithmetic_blue extends Card {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     RollDie($this->controller);
-    Await($this->controller, $this->cardID, final:true);
-    
+    Await($this->controller, $this->cardID, final:true, subsequent:0);
   }
 
   function SpecificLogic() {
