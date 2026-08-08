@@ -506,6 +506,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
   global $dqVars, $CS_DamageDealt, $CS_AdditionalCosts, $EffectContext, $CombatChain, $CS_PlayCCIndex, $CS_PowDamageDealt;
   global $combatChain, $mainPlayer, $CS_ArcaneDamageTaken, $defPlayer, $currentTurnEffects, $CS_NumBluePlayed, $CS_NumRedPlayed;
   global $combatChainState, $CCS_LinkBasePower, $ChainLinks, $Stack, $CS_HealthGained;
+  global $CS_ArcaneDamageDealt;
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch ($params[0]) {
@@ -1040,7 +1041,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         BanishFromSoul($player);
       return $lastResult;
     case "SIGILOFSUFFERING":
-      if (GetClassState($mainPlayer, $CS_ArcaneDamageTaken) > 0) {
+      if (GetClassState($defPlayer, $CS_ArcaneDamageDealt) > 0) {
         $index = count($combatChain) - CombatChainPieces();
         CombatChainDefenseModifier($index, 1);
       }
