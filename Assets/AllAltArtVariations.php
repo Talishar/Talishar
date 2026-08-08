@@ -1,5 +1,18 @@
 <?php
 
+// Alt arts that are unlocked but must never be applied automatically
+function GetOptInOnlyAltArts(): array
+{
+  return [
+    "scabskin_leathers-RIP" => true,
+  ];
+}
+
+function IsOptInOnlyAltArt(string $altPath): bool
+{
+  return isset(GetOptInOnlyAltArts()[$altPath]);
+}
+
 function GetAllAltArtVariations(): array
 {
   return [

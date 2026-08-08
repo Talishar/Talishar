@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . '/../Assets/AllAltArtVariations.php';
+
 $SET_AlwaysHoldPriority = 0;
 $SET_TryUI2 = 1;
 $SET_DarkMode = 2;
@@ -230,7 +232,12 @@ function GetDeckAltArtOverride($userId, $deckLink)
 function ApplyDeckAltArtOverride($poolAltArts, $userId, $deckLink)
 {
   $override = GetDeckAltArtOverride($userId, $deckLink);
-  if ($override === null || !$override['customized']) return $poolAltArts;
+  if ($override === null || !$override['customized']) {
+    if (!function_exists('IsOptInOnlyAltArt')) return $poolAltArts;
+    return array_values(array_filter($poolAltArts, function ($altArt) {
+      return !IsOptInOnlyAltArt($altArt->altPath ?? '');
+    }));
+  }
 
   $result = [];
   foreach ($override['map'] as $cardId => $altPath) {
