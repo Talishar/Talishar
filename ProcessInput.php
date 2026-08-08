@@ -30,9 +30,9 @@ if (!IsGameNameValid($gameName)) {
   echo "Invalid game name.";
   exit;
 }
-$playerID = $_GET["playerID"];
-$authKey = $_GET["authKey"];
-$mode = $_GET["mode"];
+$playerID = $_GET["playerID"] ?? "";
+$authKey = $_GET["authKey"] ?? "";
+$mode = $_GET["mode"] ?? "";
 
 // Validate player ID
 if (!validatePlayerID($playerID)) {
@@ -124,7 +124,6 @@ $makeCheckpoint = 0;
 $makeBlockBackup = 0;
 $MakeStartTurnBackup = false;
 $MakeStartGameBackup = false;
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
 $randomSeeded = false;
 
@@ -138,9 +137,9 @@ if(!IsReplay()) {
   if (($playerID == 1 || $playerID == 2) && $authKey == "") {
     if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
   }
-  if ($playerID != 3 && $authKey !== $targetAuth) {
-    // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
-    $authKey = $targetAuth;
+  if (!validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key)) {
+    echo "Invalid auth key.";
+    exit;
   }
 }
 

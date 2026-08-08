@@ -27,6 +27,7 @@ require_once "Libraries/CoreLibraries.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
+include_once "./Libraries/ValidationLibraries.php";
 
 @set_time_limit(1);
 @ini_set('max_execution_time', '1');
@@ -76,7 +77,6 @@ $makeCheckpoint = 0;
 $makeBlockBackup = 0;
 $MakeStartTurnBackup = false;
 $MakeStartGameBackup = false;
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
 $randomSeeded = false;
 
@@ -86,7 +86,7 @@ try {
     if (($playerID == 1 || $playerID == 2) && $authKey == "") {
       if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
     }
-    if ($playerID != 3 && $authKey !== $targetAuth) exit;
+    if (!validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key)) exit;
     if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
     if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
       $currentTime = round(microtime(true) * 1000);

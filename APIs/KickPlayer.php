@@ -3,6 +3,7 @@
 include "../WriteLog.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/ValidationLibraries.php";
 
 SetHeaders();
 
@@ -39,8 +40,7 @@ include "../HostFiles/Redirector.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$targetAuth = $p1Key;
-if ($authKey !== $targetAuth) {
+if (!validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key)) {
   $response->error = "Authentication failed";
   echo json_encode($response);
   exit;

@@ -12,6 +12,7 @@ include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";
 include_once "../includes/MatchupHelpers.php";
 include_once "../includes/ModeratorList.inc.php";
+include_once "../Libraries/ValidationLibraries.php";
 
 SetHeaders();
 
@@ -107,10 +108,11 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-if ($playerID != 3 && $authKey !== $targetAuth) {
-  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
-  $authKey = $targetAuth;
+// Spectators carry no key of their own; validateGameAuthKey passes them through.
+if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
+  $response->error = "Authentication failed";
+  echo json_encode($response);
+  exit;
 }
 
 if ($kickPlayerTwo) {

@@ -84,6 +84,30 @@ function validatePlayerID($playerID) {
     return ($playerID >= 1 && $playerID <= 3);
 }
 
+function validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key) {
+    if (filter_var($playerID, FILTER_VALIDATE_INT) === false) {
+        return false;
+    }
+    if (!validatePlayerID($playerID)) {
+        return false;
+    }
+
+    $playerID = intval($playerID);
+    if ($playerID === 3) {
+        return true;
+    }
+
+    $targetAuth = ($playerID === 1 ? $p1Key : $p2Key);
+    if (!is_string($authKey) || $authKey === '') {
+        return false;
+    }
+    if (!is_string($targetAuth) || $targetAuth === '') {
+        return false;
+    }
+
+    return hash_equals($targetAuth, $authKey);
+}
+
 function validateCardID($cardID) {
     if (empty($cardID) || !is_string($cardID)) {
         return false;
