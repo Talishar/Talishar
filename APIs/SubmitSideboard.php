@@ -15,6 +15,7 @@ include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";
 include_once "../MenuFiles/StartHelper.php";
 include_once "../WriteLog.php";
+include_once "../Libraries/ValidationLibraries.php";
 SetHeaders();
 
 $response = new stdClass();
@@ -53,10 +54,10 @@ if ($submissionString === null) {
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-if ($authKey !== $targetAuth) {
-  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
-  $authKey = $targetAuth;
+if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
+  $response->error = "Authentication failed";
+  echo json_encode($response);
+  exit;
 }
 
 $submission = json_decode($submissionString);

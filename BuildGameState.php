@@ -1,5 +1,6 @@
 <?php
 include_once "Libraries/PlayerSettings.php";
+include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
 if (!function_exists('IsHideHandFromFriends')) {
     function IsHideHandFromFriends($player) { return false; }
@@ -1611,6 +1612,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $response->inactive = $inactive;
+
+  // Inactivity countdown
+  $lastActionTime = intval($buildCacheArr[5] ?? 0);
+  if ($lastActionTime > 0) {
+    $response->inactivityDeadline = $lastActionTime + INACTIVITY_TIMEOUT_MS;
+    $response->serverTime = intval(round(microtime(true) * 1000));
+  }
+
   return $response;
 }
 
