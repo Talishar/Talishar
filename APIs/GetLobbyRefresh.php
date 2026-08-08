@@ -145,6 +145,9 @@ if ($kickPlayerTwo) {
   SetCachePiece($gameName, 14, $gameStatus);
 
   if ($disconnectedPlayer == 2) {
+    if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("../Games/" . $gameName . "/p2Deck.txt");
+    if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("../Games/" . $gameName . "/p2DeckOrig.txt");
+
     $p2Data = [];
     $p2uid = "";
     $p2DisplayName = "";
@@ -219,8 +222,10 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 
   $otherHero = "CardBack";
   $otherPlayer = $otherP; // $otherP already computed above
+  $otherUid = ($playerID == 1 ? $p2uid : $p1uid);
+  $otherSeatOccupied = ($otherUid !== "" && $otherUid !== "-");
   $deckFile = "../Games/" . $gameName . "/p" . $otherPlayer . "Deck.txt";
-  if (file_exists($deckFile)) {
+  if ($otherSeatOccupied && file_exists($deckFile)) {
     $handler = fopen($deckFile, "r");
     $firstLine = trim(fgets($handler));
     fclose($handler);
