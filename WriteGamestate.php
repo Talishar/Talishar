@@ -3,22 +3,9 @@
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 $dir = dirname($filename);
 if (!is_dir($dir)) mkdir($dir, 0700, true);
-$handler = fopen($filename, "c");
 
-if ($handler === false) {
-  error_log("ERROR: Failed to open gamestate file: " . $filename . " (from game: " . $gameName . ")");
-  exit;
-}
-
-if (!flock($handler, LOCK_EX)) {
-  fclose($handler);
-  error_log("ERROR: WriteGamestate could not lock " . $filename . " — action not persisted (game: " . $gameName . ")");
-  exit;
-}
-
-ftruncate($handler, 0);
-rewind($handler);
-
+// Serialize in full before opening any handle. A partial gamestate.txt is
+// unrecoverable and readers do not take a shared lock.
 $gamestateLines = [
   implode(" ", $playerHealths),
   
@@ -126,9 +113,55 @@ array_push($gamestateLines,
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
 
-fwrite($handler, $gamestateContent);
-flock($handler, LOCK_UN);
-fclose($handler);
+$previousAbortSetting = ignore_user_abort(true);
+@set_time_limit(0);
+
+$lockPath = $dir . "/gamestate.lock";
+$lockHandler = fopen($lockPath, "c");
+
+if ($lockHandler === false) {
+  ignore_user_abort($previousAbortSetting);
+  error_log("ERROR: Failed to open gamestate lock file: " . $lockPath . " (from game: " . $gameName . ")");
+  exit;
+}
+
+if (!flock($lockHandler, LOCK_EX)) {
+  fclose($lockHandler);
+  ignore_user_abort($previousAbortSetting);
+  error_log("ERROR: WriteGamestate could not lock " . $lockPath . " — action not persisted (game: " . $gameName . ")");
+  exit;
+}
+
+$tempPath = $filename . "." . getmypid() . "." . uniqid("", true) . ".tmp";
+$writeSucceeded = false;
+$handler = fopen($tempPath, "wb");
+
+if ($handler === false) {
+  error_log("ERROR: Failed to open temp gamestate file: " . $tempPath . " (from game: " . $gameName . ")");
+} else {
+  $bytesWritten = fwrite($handler, $gamestateContent);
+  // Flush before close so a short write is caught before we rename over a good file.
+  $flushed = fflush($handler);
+  fclose($handler);
+
+  if ($bytesWritten === strlen($gamestateContent) && $flushed) {
+    if (rename($tempPath, $filename)) {
+      $writeSucceeded = true;
+    } else {
+      error_log("ERROR: Failed to move gamestate into place: " . $tempPath . " -> " . $filename . " (game: " . $gameName . ")");
+    }
+  } else {
+    error_log("ERROR: Short write to temp gamestate file: " . $tempPath . " (game: " . $gameName . ")");
+  }
+
+  if (!$writeSucceeded && file_exists($tempPath)) @unlink($tempPath);
+}
+
+flock($lockHandler, LOCK_UN);
+fclose($lockHandler);
+ignore_user_abort($previousAbortSetting);
+
+if (!$writeSucceeded) exit;
 
 WriteGamestateCache($gameName, $gamestateContent);
 
