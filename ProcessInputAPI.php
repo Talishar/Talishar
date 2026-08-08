@@ -111,6 +111,22 @@ $events = []; //Clear events each time so it's only updated ones that get sent
 $isSimulation = false;
 $response = new stdClass();
 
+function ValidateLayerReorder($submittedLayers, $layerPieces, $maxLayerID)
+{
+  if (!is_array($submittedLayers)) return "Layers must be a list.";
+  if (count($submittedLayers) < $maxLayerID / $layerPieces) return "Not enough layers.";
+  $seenLayerIDs = [];
+  foreach ($submittedLayers as $submittedID) {
+    if (!is_numeric($submittedID)) return "Not a layer ID.";
+    $layerID = intval($submittedID);
+    if ($layerID % $layerPieces != 0) return "Not a layer ID.";
+    if ($layerID < 0 || $layerID > $maxLayerID) return "Layer ID out of range.";
+    if (isset($seenLayerIDs[$layerID])) return "Layer ID is duplicated.";
+    $seenLayerIDs[$layerID] = true;
+  }
+  return null;
+}
+
 //Now we can process the command
 try {
   switch ($mode) {
@@ -160,37 +176,16 @@ try {
       break;
   case 33: //Fully re-order layers
     //First validate
-    $isValid = true;
     $layerPieces = LayerPieces();
-    $submittedLayers = $submission->layers;
-    $submittedLayersCount = count($submittedLayers);
-    $layersCount = count($layers);
-    if ($submittedLayersCount < $dqState[8] / $layerPieces) {
-      $response->error = "Not enough layers.";
-      $isValid = false;
+    $submittedLayers = $submission->layers ?? null;
+    $reorderError = ValidateLayerReorder($submittedLayers, $layerPieces, $dqState[8]);
+    if ($reorderError !== null) {
+      $response->error = $reorderError;
       break;
     }
-    $seenLayerIDs = [];
-    for ($i = 0; $i < $submittedLayersCount; ++$i) {
-      $layerID = $submittedLayers[$i];
-      if ($layerID % $layerPieces != 0) {
-        $response->error = "Not a layer ID.";
-        $isValid = false;
-        break;
-      }
-      if ($layerID < 0 || $layerID > $dqState[8]) {
-        $response->error = "Layer ID out of range.";
-        $isValid = false;
-        break;
-      }
-      if (isset($seenLayerIDs[$layerID])) {
-        $response->error = "Layer ID is duplicated.";
-        $isValid = false;
-        break;
-      }
-      $seenLayerIDs[$layerID] = true;
-    }
-    //Now if it's valid, do the swap
+    $submittedLayersCount = count($submittedLayers);
+    $layersCount = count($layers);
+    //Now that it's valid, do the swap
     $newLayers = [];
     for($i = 0; $i < $submittedLayersCount; ++$i) {
       for($j = $submittedLayers[$i]; $j < $submittedLayers[$i] + $layerPieces; ++$j) {
@@ -297,7 +292,6 @@ try {
   case 100011: //Resume adventure (roguelike)
     if($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";
-      $isValid = false;
       break;
     }
     $response->redirectLink = $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1);
