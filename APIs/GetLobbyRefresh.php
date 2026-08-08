@@ -87,6 +87,9 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $oppLastTime  = $cacheArr[$oppTimeIdx] ?? "";
   $oppStatus    = strval($cacheArr[$oppStatIdx] ?? "");
 
+  $myLastTime = $cacheArr[$myTimeIdx] ?? "";
+  if ($myLastTime !== "" && ($currentTime - (int)$myLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS) break;
+
   $cacheArr[$myTimeIdx] = $currentTime;
   WriteCache($gameName, implode("!", $cacheArr));
 
@@ -94,7 +97,7 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   if ($count == 20) break;
 
   if ($oppStatus !== "-1" && $oppLastTime !== "") {
-    if (($currentTime - (int)$oppLastTime) > 30000 && $oppStatus === "0") {
+    if (($currentTime - (int)$oppLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS && $oppStatus === "0") {
       $cacheArr[$oppStatIdx] = "-1";
       if ($otherP == 2) $cacheArr[$otherP + 5] = "";
       WriteCache($gameName, implode("!", $cacheArr));

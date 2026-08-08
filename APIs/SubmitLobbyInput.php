@@ -46,6 +46,21 @@ if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
   exit;
 }
 
+if ($action == "Leave Lobby")
+{
+  $cacheArr = ReadCacheArray($gameName);
+  if ($cacheArr !== null) {
+    $cacheArr[$playerID] = (int)(microtime(true) * 1000) - (LOBBY_DISCONNECT_TIMEOUT_MS + 1000);
+    $cacheArr[$playerID + 2] = "0";
+    WriteCache($gameName, implode("!", $cacheArr));
+  }
+
+  UnlockGamefile();
+  $response->success = true;
+  echo json_encode($response);
+  exit;
+}
+
 if($action == "Request Chat")
 {
   $myName = substr($playerID == 1 ? $p1uid : $p2uid, 0, 20);
