@@ -1908,3 +1908,109 @@ class herald_of_hope_blue extends Card {
     return true;
   }
 }
+
+class shadowrealm_strength_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_strength_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYBANISH", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Move a card in your banish to your graveyard");
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"] ?? "";
+    $ind = explode("-", $choice)[1] ?? -1;
+    if ($ind != -1) {
+      $BanishCard = new BanishCard($this->controller, $ind);
+      AddGraveyard($BanishCard->ID(), $this->controller, "MYBANISH");
+      if (SubtypeContains($BanishCard->ID(), "Zombie"))
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+      $BanishCard->Remove();
+    }
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Strength";
+  // }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+
+class otherworldly_sins_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "otherworldly_sins_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("runechant", $this->controller);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackCard = $CombatChain->AttackCard()->ID();
+    return TalentContains($attackCard, "SHADOW", $this->controller) || ClassContains($attackCard, "RUNEBLADE", $this->controller);
+  }
+
+  // function SpecialName() {
+  //   return "Otherworldly Sins";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
