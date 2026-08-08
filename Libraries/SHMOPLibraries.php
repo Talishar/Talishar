@@ -200,6 +200,9 @@ function IncrementCachePiece($gameName, $piece)
   return $newVal;
 }
 
+// Milliseconds without a gamestate update from the priority player before that player counts as inactive
+if (!defined('INACTIVITY_TIMEOUT_MS')) define('INACTIVITY_TIMEOUT_MS', 60 * 1000);
+
 function GamestateUpdated($gameName, $resetTimer = true)
 {
   if (function_exists('FlushLogBuffer')) FlushLogBuffer();

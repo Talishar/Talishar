@@ -120,7 +120,7 @@ $lastPresenceState = null;
 $initialCacheArr = ReadCacheArray($gameName);
 $cacheVal = intval($initialCacheArr[0] ?? ""); // piece 1
 $lastUpdate = $cacheVal;
-$inactivityTimeoutMs = 60 * 1000;
+$inactivityTimeoutMs = INACTIVITY_TIMEOUT_MS;
 $lastUpdateTime = $initialCacheArr[5] ?? "";
 $previouslyInactive = $lastUpdateTime !== ""
   && 1000 * microtime(true) - intval($lastUpdateTime) > $inactivityTimeoutMs;
