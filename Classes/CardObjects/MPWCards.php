@@ -2693,9 +2693,11 @@ class a_moments_peace_blue extends Card {
 	}
 
 	function EffectPlayCardRestricted($cardID, $from, $playIndex, $effectIndex) {
-		$Weapon = new CharacterCard($playIndex, $this->controller);
-		$Effect = new CurrentEffect($effectIndex);
-		if ($Weapon->UniqueID() == $Effect->AppliestoUniqueID()) return $this->cardID;
+		if (is_numeric($playIndex)) {
+			$Weapon = new CharacterCard($playIndex, $this->controller);
+			$Effect = new CurrentEffect($effectIndex);
+			if ($Weapon->UniqueID() == $Effect->AppliestoUniqueID()) return $this->cardID;
+		}
 		return "";
 	}
 }
