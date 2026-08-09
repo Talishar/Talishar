@@ -336,7 +336,7 @@ class blast_to_oblivion extends BaseCard {
     $AuraCard = $Auras->FindCardUID($uID);
     $cardID = $AuraCard->CardID();
     $cardOwner = substr($AuraCard->From(), 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
-    if (!$AuraCard->IsToken())
+    if (!$AuraCard->IsToken() && $AuraCard->Index() != -1)
       AddPlayerHand($cardID, $cardOwner, "-");
     $lastResult = $AuraCard->Remove();
     return $lastResult;
