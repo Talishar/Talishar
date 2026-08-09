@@ -4126,7 +4126,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           }
         }
         $numToChoose = count($names) >= 2 ? 2 : 1;
-        AddDecisionQueue("FINDINDICES", $player, "MYDISCARDATTACKS");
+        AddDecisionQueue("FINDINDICES", $player, "MYDISCARDATTACKS"); // With a different names
         AddDecisionQueue("PREPENDLASTRESULT", $player, "$numToChoose-", 1);
         AddDecisionQueue("APPENDLASTRESULT", $player, "-$numToChoose", 1);
         AddDecisionQueue("MULTICHOOSEDISCARD", $player, "<-", 1);

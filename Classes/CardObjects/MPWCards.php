@@ -1812,7 +1812,8 @@ class lessons_learned_blue extends Card {
 			}
 		}
 		$maxChoosable = (SearchCurrentTurnEffects("amnesia_red", $this->controller)) ? 1 : 3;
-		AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $inds));
+		$inds = RemoveCardSameNames($this->controller, implode(",", $inds), $discard);
+		AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
 		AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "$maxChoosable-", 1);
 		AddDecisionQueue("MULTICHOOSEDISCARD", $this->controller, "<-", 1);
 		AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $this->controller, "DISCARD", 1);

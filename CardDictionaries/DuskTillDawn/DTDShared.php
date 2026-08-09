@@ -303,7 +303,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "spoiled_skull":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIACTIONSBANISH");
+      AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIACTIONSBANISH"); // With a different names
       AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
       AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-3", 1);
       AddDecisionQueue("MULTICHOOSEBANISH", $currentPlayer, "<-", 1);

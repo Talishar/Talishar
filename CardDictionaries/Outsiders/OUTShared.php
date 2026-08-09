@@ -268,7 +268,7 @@ function OUTAbilityCost($cardID)
         GainResources($currentPlayer, 1);
         return "";
       case "quiver_of_abyssal_depths":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDISCARDARROW");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDISCARDARROW"); // With a different names
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $currentPlayer, "DISCARD", 1);
