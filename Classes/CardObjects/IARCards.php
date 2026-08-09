@@ -1943,9 +1943,9 @@ class shadowrealm_strength_red extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Strength";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Strength";
+  }
 
   function SpecialTalent() {
     return "SHADOW";
@@ -1986,9 +1986,9 @@ class otherworldly_sins_red extends Card {
     return TalentContains($attackCard, "SHADOW", $this->controller) || ClassContains($attackCard, "RUNEBLADE", $this->controller);
   }
 
-  // function SpecialName() {
-  //   return "Otherworldly Sins";
-  // }
+  function SpecialName() {
+    return "Otherworldly Sins";
+  }
 
   function SpecialCost() {
     return 1;
