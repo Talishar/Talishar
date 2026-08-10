@@ -44779,9 +44779,11 @@ return match($cardID) {
 default => false
 };
 }
-function GeneratedHasUrusp($cardID) {
+function GeneratedHasUsurp($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
+"demonbound_gloomblade_red" => true,
+"sinspeaker_gloomblade_red" => true,
 default => false
 };
 }
@@ -44804,6 +44806,20 @@ return match($cardID) {
 "meteoric_impact_red" => true,
 "meteoric_impact_yellow" => true,
 "meteoric_impact_blue" => true,
+default => false
+};
+}
+function GeneratedHasDecay($cardID) {
+if(is_int($cardID)) return false;
+return match($cardID) {
+"restless_magister_red" => true,
+default => false
+};
+}
+function GeneratedHasIncarnate($cardID) {
+if(is_int($cardID)) return false;
+return match($cardID) {
+"corrupted_corpse" => true,
 default => false
 };
 }

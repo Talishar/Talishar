@@ -60,7 +60,7 @@
     "Spectra", "Spellvoid", "Steal", "Stealth", "Surge", "Suspense", "Temper",
     "The Crowd Boos", "The Crowd Cheers", "Tower", "Transcend", "Transform",
     "Unfreeze", "Unity", "Universal", "Unlimited", "Wager", "Ward", "Watery Grave",
-    "Fragment", "Quickstrike", "Urusp", "Starfall"
+    "Fragment", "Quickstrike", "Usurp", "Starfall", "Decay", "Incarnate"
   ];
 
   $hasKeywordAmount = [ "Amp", "Arcane Barrier", "Arcane Shelter", "Heave", "Opt", "Quell", "Spellvoid", "Ward"];
