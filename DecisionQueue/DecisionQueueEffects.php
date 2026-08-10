@@ -1460,7 +1460,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
   }
 
 }
-// set "forCost" to false for effects asking for pitch during the resolution of a layer for clearer UI
+// Set "forCost" to false when a multizone pitch selector is specifically required.
 function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAND:realPitch=3&MYHAND:realPitch=4", $skipGain=false, $forCost=true)
 {
   if(!$skipGain) PrependDecisionQueue("GAINPITCHVALUE", $player, "-", 1);

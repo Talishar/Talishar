@@ -252,7 +252,7 @@ Function YesNoAwait($player) {
 }
 
 
-// Use this one during the resolution of an effect for clearer UI
+// Use this one during the resolution of an effect.
 function PayResourcesEffectAwait($player) {
   global $dqVars;
   $amount = $dqVars["amount"];
