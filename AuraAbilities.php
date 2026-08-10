@@ -775,28 +775,7 @@ function AuraStartTurnAbilities()
         if (count($AurasArray) > 1) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "channel_mount_isen_blue":
-        $character = &GetPlayerCharacter($mainPlayer);
-        $eqFrostbiteCount = 0;
-        $countCharacter = count($character);
-        $characterPieces = CharacterPieces();
-        $countCurrentTurnEffects = count($currentTurnEffects);
-        $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-        for ($k = 0; $k < $countCharacter; $k += $characterPieces) {
-          if ($character[$k] == "frostbite") {
-            $frostbiteKey = "frostbite-" . $character[$k + 11];
-            for ($j = 0; $j < $countCurrentTurnEffects; $j += $currentTurnEffectsPieces) {
-              if (strpos($currentTurnEffects[$j], $frostbiteKey) === 0) {
-                $slot = explode(",", $currentTurnEffects[$j])[1];
-                if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") { // Only count these Frostbites if they are in an equipment slot.
-                  $eqFrostbiteCount += 1;
-                }
-                break;
-              }
-            }
-          }
-        }
-        LoseHealth($eqFrostbiteCount, $mainPlayer);
-        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
+        MountIsenTrigger($mainPlayer);
         break;
       case "agility_stance_yellow":
         if (!SearchCurrentTurnEffects($auras[$i], $mainPlayer)) AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY"); 
@@ -862,28 +841,7 @@ function AuraStartTurnAbilities()
     if ($card != "-") $card->OppStartTurnAbility($i);
     switch ($cardID) {
       case "channel_mount_isen_blue":
-        $character = &GetPlayerCharacter($mainPlayer);
-        $eqFrostbiteCount = 0;
-        $countCharacter = count($character);
-        $characterPieces = CharacterPieces();
-        $countCurrentTurnEffects = count($currentTurnEffects);
-        $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-        for ($k = 0; $k < $countCharacter; $k += $characterPieces) {
-          if ($character[$k] == "frostbite") {
-            $frostbiteKey = "frostbite-" . $character[$k + 11];
-            for ($j = 0; $j < $countCurrentTurnEffects; $j += $currentTurnEffectsPieces) {
-              if (strpos($currentTurnEffects[$j], $frostbiteKey) === 0) {
-                $slot = explode(",", $currentTurnEffects[$j])[1];
-                if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") { // Only count these Frostbites if they are in an equipment slot.
-                  $eqFrostbiteCount += 1;
-                }
-                break;
-              }
-            }
-          }
-        }
-        LoseHealth($eqFrostbiteCount, $mainPlayer);
-        WriteLog("Player $mainPlayer loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
+        MountIsenTrigger($mainPlayer);
         break;
       case "toughness":
         AddCurrentTurnEffect($defPlayerAuras[$i], $defPlayer, "PLAY");

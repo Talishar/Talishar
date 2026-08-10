@@ -4266,19 +4266,17 @@ function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer)
   $hasArms = false;
   $hasLegs = false;
   $hasWeapon = false;
-  $char = &GetPlayerCharacter($currentPlayer);
-  $charCount = count($char);
-  $charPieces = CharacterPieces();
-  for ($i = 0; $i < $charCount; $i += $charPieces) {
-    $characterCardID = $char[$i];
-    if ($char[$i + 1] == 0) continue;
-    if (!ClassContains($characterCardID, "MECHANOLOGIST", $currentPlayer)) continue;
-    if (CardType($characterCardID) == "W") $hasWeapon = true;
+  $char = new PlayerCharacter($currentPlayer);
+  for ($i = 0; $i < $char->NumCards(); $i += 1) {
+    $characterCard = $char->Card($i, true);
+    if ($characterCard->Status() == 0) continue;
+    if (!ClassContains($characterCard->CardID(), "MECHANOLOGIST", $currentPlayer)) continue;
+    if (CardType($characterCard->CardID()) == "W") $hasWeapon = true;
     else {
-      if (SubtypeContains($characterCardID, "Head", $currentPlayer, $char[$i + 11])) $hasHead = true;
-      if (SubtypeContains($characterCardID, "Chest", $currentPlayer, $char[$i + 11])) $hasChest = true;
-      if (SubtypeContains($characterCardID, "Arms", $currentPlayer, $char[$i + 11])) $hasArms = true;
-      if (SubtypeContains($characterCardID, "Legs", $currentPlayer, $char[$i + 11])) $hasLegs = true;
+      if ($characterCard->Slot() == "Head") $hasHead = true;
+      if ($characterCard->Slot() == "Chest") $hasChest = true;
+      if ($characterCard->Slot() == "Arms") $hasArms = true;
+      if ($characterCard->Slot() == "Legs") $hasLegs = true;
     }
   }
   if (!$hasHead || !$hasChest || !$hasArms || !$hasLegs || !$hasWeapon) return "You do not meet the equipment requirement";

@@ -136,3 +136,18 @@ function CheckHeavy($player) {
   // $numOffHands = $offHands != "" ? count(explode(",", $offHands)) : 0;
   // return $numWeapons + $numOffHands == 1;
 }
+
+function MountIsenTrigger($player) {
+  $character = new PlayerCharacter($player);
+  $eqFrostbiteCount = 0;
+  for ($k = 0; $k < $character->NumCards(); $k += 1) {
+    $CharCard = $character->Card($k, true);
+    if ($CharCard->CardID() == "frostbite") {
+      $slot = $CharCard->Slot();
+      if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") // Only count these Frostbites if they are in an equipment slot.
+        $eqFrostbiteCount += 1;
+    }
+  }
+  LoseHealth($eqFrostbiteCount, $player);
+  WriteLog("Player $player loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
+}

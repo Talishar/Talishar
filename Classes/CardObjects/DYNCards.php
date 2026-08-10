@@ -639,9 +639,9 @@
 
 class construct_nitro_mechanoid_yellow extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "construct_nitro_mechanoid_yellow";
-    $this->controller = $controller;
+	function __construct($controller) {
+		$this->cardID = "construct_nitro_mechanoid_yellow";
+		$this->controller = $controller;
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -649,7 +649,7 @@ class construct_nitro_mechanoid_yellow extends Card {
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $conditionsMet = CheckIfConstructNitroMechanoidConditionsAreMet($this->controller);
+    	$conditionsMet = CheckIfConstructNitroMechanoidConditionsAreMet($this->controller);
 		if ($conditionsMet != "") return $conditionsMet;
 		$Items = new Items($this->controller);
 		// Add the new item so we can put cards under it
