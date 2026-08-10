@@ -361,7 +361,15 @@ function AddRustCountersAfterTurnZero()
 		return false;
 	}
 
-	$sql = "UPDATE users SET rust_counters = COALESCE(rust_counters, 0) + 1 WHERE usersId=?";
+	$sql = "UPDATE users
+		SET rust_counters = CASE
+				WHEN rust_counters_last_played IS NULL
+					OR rust_counters_last_played <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
+				THEN 1
+				ELSE COALESCE(rust_counters, 0) + 1
+			END,
+			rust_counters_last_played = CURRENT_TIMESTAMP
+		WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_close($conn);

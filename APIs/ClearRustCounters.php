@@ -47,6 +47,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   if (mysqli_stmt_execute($stmt)) {
     $response->success = true;
     $response->rustCounters = 0;
+    $_SESSION["rust_counters"] = 0;
   } else {
     $response->success = false;
     $response->message = "Failed to clear rust counters.";

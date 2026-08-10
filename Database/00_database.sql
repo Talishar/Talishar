@@ -78,6 +78,7 @@ CREATE TABLE `users` (
   `lastAuthKey` varchar(128) DEFAULT NULL,
   `numSpectates` int(11) NOT NULL DEFAULT 0,
   `rust_counters` int(11) NOT NULL DEFAULT 0,
+  `rust_counters_last_played` TIMESTAMP NULL DEFAULT NULL,
   `lastActivity` TIMESTAMP NULL DEFAULT NULL,
   `systemMessage` TEXT DEFAULT NULL,
   `systemMessageExpiresAt` DATETIME DEFAULT NULL,
