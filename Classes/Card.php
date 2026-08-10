@@ -766,7 +766,6 @@ class Card {
     return false;
   }
   
-  
   function CurrentEffectDamageBuffs($source, $type, $index, &$remove, $player) {
     return 0;
   }
