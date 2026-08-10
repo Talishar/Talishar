@@ -18,7 +18,7 @@ $path = "../Games";
 
 session_start();
 SetHeaders();
-$conn = GetDBConnection(DBL_GET_GAME_LIST);
+$conn = null;
 
 if(!IsUserLoggedIn()) {
   if(isset($_COOKIE["rememberMeToken"])) {
@@ -54,9 +54,14 @@ if(IsUserLoggedIn()) {
   $userId = LoggedInUser();
   $now = time();
   $cacheTTL = 300; // 5 minutes
+  $refreshBlockedUsers = !isset($_SESSION['_blockedCache']) || ($now - ($_SESSION['_blockedCacheAt'] ?? 0)) > $cacheTTL;
+  $refreshFriends = !isset($_SESSION['_friendNamesCache']) || ($now - ($_SESSION['_friendNamesCacheAt'] ?? 0)) > $cacheTTL;
+  if ($refreshBlockedUsers || $refreshFriends) {
+    $conn = GetDBConnection(DBL_GET_GAME_LIST);
+  }
 
-  // Blocked users — refresh at most every 60 seconds per session
-  if (!isset($_SESSION['_blockedCache']) || ($now - ($_SESSION['_blockedCacheAt'] ?? 0)) > $cacheTTL) {
+  // Blocked users — refresh at most every five minutes per session.
+  if ($refreshBlockedUsers) {
     if ($conn) {
       $query = "SELECT u.usersUid FROM blocked_users b
                 JOIN users u ON b.blockedUserId = u.usersId WHERE b.userId = ?
@@ -76,7 +81,6 @@ if(IsUserLoggedIn()) {
         }
       } catch (\Exception $e) {
         error_log("GetGameList: blocked users query failed: " . $e->getMessage());
-        $conn = GetDBConnection(DBL_GET_GAME_LIST);
       }
     }
     $_SESSION['_blockedCache'] = $blockedUserNames;
@@ -85,8 +89,8 @@ if(IsUserLoggedIn()) {
     $blockedUserNames = $_SESSION['_blockedCache'];
   }
 
-  // Friends list — refresh at most every 60 seconds per session
-  if (!isset($_SESSION['_friendNamesCache']) || ($now - ($_SESSION['_friendNamesCacheAt'] ?? 0)) > $cacheTTL) {
+  // Friends list — refresh at most every five minutes per session.
+  if ($refreshFriends) {
     $friends = GetUserFriends($userId);
     $friendUserNames = array_column($friends, 'username');
     $_SESSION['_friendNamesCache'] = $friendUserNames;
@@ -97,6 +101,10 @@ if(IsUserLoggedIn()) {
 
   $blockedUserSet = array_flip($blockedUserNames);
   $friendUserSet = array_flip($friendUserNames);
+}
+if ($conn) {
+  mysqli_close($conn);
+  $conn = null;
 }
 // Release the session file lock before the filesystem loop
 session_write_close();

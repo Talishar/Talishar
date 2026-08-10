@@ -1623,6 +1623,8 @@ function BanIP($ip, $bannedBy = "")
 		$success = mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
+	mysqli_close($conn);
+	if ($success) InvalidateIPBanCache($ip);
 	return $success;
 }
 
@@ -1695,13 +1697,36 @@ function GetClientIP()
 	return $remoteAddr;
 }
 
-function IsIPBanned($ip = null)
+function IPBanCacheKey($ip)
 {
+	return "ip_banned_" . hash("sha256", strval($ip));
+}
+
+function IsIPBanCacheAvailable()
+{
+	return extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_fetch');
+}
+
+function InvalidateIPBanCache($ip)
+{
+	global $ipBanRequestCache;
+	if (isset($ipBanRequestCache) && is_array($ipBanRequestCache)) unset($ipBanRequestCache[$ip]);
+	if (IsIPBanCacheAvailable()) @apcu_delete(IPBanCacheKey($ip));
+}
+
+function IsIPBanned($ip = null, $connection = null)
+{
+	global $ipBanRequestCache;
 	if ($ip === null) $ip = GetClientIP();
 	if ($ip == "") return false;
 
-	static $cache = [];
-	if (isset($cache[$ip])) return $cache[$ip];
+	if (!isset($ipBanRequestCache) || !is_array($ipBanRequestCache)) $ipBanRequestCache = [];
+	if (array_key_exists($ip, $ipBanRequestCache)) return $ipBanRequestCache[$ip];
+	if (IsIPBanCacheAvailable()) {
+		$cacheHit = false;
+		$cached = @apcu_fetch(IPBanCacheKey($ip), $cacheHit);
+		if ($cacheHit) return $ipBanRequestCache[$ip] = (bool)$cached;
+	}
 
 	$banned = false;
 
@@ -1712,7 +1737,12 @@ function IsIPBanned($ip = null)
 	}
 
 	if (!$banned) {
-		$conn = GetDBConnection(DBL_IS_IP_BANNED);
+		$ownsConnection = false;
+		$conn = $connection;
+		if (!$conn) {
+			$conn = GetDBConnection(DBL_IS_IP_BANNED);
+			$ownsConnection = true;
+		}
 		if ($conn) {
 			$sql = "SELECT 1 FROM banned_ips WHERE ip = ? LIMIT 1";
 			$stmt = mysqli_stmt_init($conn);
@@ -1727,11 +1757,12 @@ function IsIPBanned($ip = null)
 			} catch (\Exception $e) {
 				error_log("IsIPBanned: query failed: " . $e->getMessage());
 			}
-			mysqli_close($conn);
+			if ($ownsConnection) mysqli_close($conn);
 		}
 	}
 
-	$cache[$ip] = $banned;
+	$ipBanRequestCache[$ip] = $banned;
+	if (IsIPBanCacheAvailable()) @apcu_store(IPBanCacheKey($ip), $banned, 60);
 	return $banned;
 }
 
