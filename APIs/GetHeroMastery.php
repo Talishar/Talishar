@@ -3,6 +3,7 @@
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
+include_once "../includes/functions.inc.php";
 include_once "../includes/dbh.inc.php";
 include_once "../Libraries/HeroMastery.php";
 include_once "../CardDictionary.php";
