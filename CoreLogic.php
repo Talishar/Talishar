@@ -1208,6 +1208,12 @@ function PlayerWon($playerID, $conceded = false)
   else WriteLog("Player " . $winner . " won! 🎉");
   if (isPlayerAI(2)) return;
   try {
+    include_once "./Libraries/HeroMastery.php";
+    AwardHeroMastery($conceded);
+  } catch (Throwable $e) {
+    error_log("PlayerWon: AwardHeroMastery threw: " . $e->getMessage());
+  }
+  try {
     logCompletedGameStats($conceded);
   } catch (Exception $e) {
     error_log("PlayerWon: logCompletedGameStats threw: " . $e->getMessage());
