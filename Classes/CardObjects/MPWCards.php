@@ -893,7 +893,14 @@ class rake_back_blue extends Card {
 		global $dqVars;
 		$Card = MZIndexToObject($this->controller, $dqVars["MZInd"] ?? "");
 		if (is_object($Card)) {
-			$cardSubtype = CardSubType($Card->CardID());
+			$cardID = $Card->CardID();
+			if (IsModular($cardID)) {
+				WriteLog("Raking Back module equipment is not yet supported", highlight:true);
+				return;
+			}
+			if (SubtypeContains($cardID, "Evo"))
+				$cardID .= "_equip";
+			$cardSubtype = CardSubType($cardID);
 			$subType = "-";
 			if (str_contains($cardSubtype, "Head"))
 				$subType = "Head";
@@ -904,7 +911,7 @@ class rake_back_blue extends Card {
 			elseif (str_contains($cardSubtype, "Arms"))
 				$subType = "Arms";
 			if (!SearchCharacterAliveSubtype($this->controller, $subType)) {
-				EquipEquipment($this->controller, $Card->CardID(), from:"MYDISCARD");
+				EquipEquipment($this->controller, $cardID, from:"MYDISCARD");
 				$Card->Remove();
 			}
 		}
