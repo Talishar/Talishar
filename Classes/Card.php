@@ -746,20 +746,12 @@ class Card {
     return GeneratedHasQuickstrike($this->cardID);
   }
 
-  function hasUsurp() {
-    return GeneratedHasUsurp($this->cardID);
+  function hasUrusp() {
+    return GeneratedHasUrusp($this->cardID);
   }
 
   function HasStarfall() {
     return GeneratedHasStarfall($this->cardID);
-  }
-
-  function HasDecay() {
-    return GeneratedHasDecay($this->cardID);
-  }
-
-  function HasIncarnate() {
-    return GeneratedHasIncarnate($this->cardID);
   }
 
   function DisplayRemainingPrevention() {
