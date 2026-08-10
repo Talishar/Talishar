@@ -228,7 +228,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "MULTIACTIONSBANISH": // With a different names
           $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
-          $rv = RemoveCardSameNames($player, $index, GetBanish($player));
+          $rv = RemoveDuplicateCards($player, $index, GetBanish($player));
           break;
         case "MULTITRAPSBANISH":
           $rv = SearchDiscard($player, subtype: "Trap");
@@ -1805,7 +1805,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         PitchCard($player, skipGain: true);
       }
       return $parameter;
-    case "PAYRESOURCESEFFECT": //Use this for costs imposed by resolution of a layer for clearer UI
+    case "PAYRESOURCESEFFECT": // Use this for costs imposed by resolution of a layer
       $resources = &GetResources($player);
       $lastResult = intval($lastResult);
       if ($lastResult < 0) $resources[0] += -1 * $lastResult;
@@ -1831,7 +1831,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         PrependDecisionQueue("PAYRESOURCESEFFECT", $player, $parameter, 1);
         PrependDecisionQueue("SUBPITCHVALUE", $player, $lastResult, 1);
-        PitchCard($player, skipGain: true, forCost: false);
+        PitchCard($player, skipGain: true);
       }
       return $parameter;
     case "ADDCLASSSTATE":

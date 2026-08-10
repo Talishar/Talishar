@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS hero_mastery (
+  userId INT NOT NULL,
+  heroId VARCHAR(32) NOT NULL,
+  qualifyingGames INT UNSIGNED NOT NULL DEFAULT 0,
+  createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (userId, heroId),
+  CONSTRAINT fk_hero_mastery_user
+    FOREIGN KEY (userId) REFERENCES users(usersId) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS hero_mastery_awards (
+  gameKey VARCHAR(128) NOT NULL,
+  userId INT NOT NULL,
+  heroId VARCHAR(32) NOT NULL,
+  gamesBefore INT UNSIGNED NOT NULL,
+  gamesAfter INT UNSIGNED NOT NULL,
+  createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (gameKey, userId),
+  INDEX idx_mastery_awards_user_created (userId, createdAt),
+  CONSTRAINT fk_hero_mastery_award_user
+    FOREIGN KEY (userId) REFERENCES users(usersId) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
