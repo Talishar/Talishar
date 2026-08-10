@@ -1247,11 +1247,10 @@ function SearchArsenalForUniqueID($uniqueID, $player)
 
 function SearchCharacterForUniqueID($uniqueID, $player)
 {
-  $char = &GetPlayerCharacter($player);
-  $count = count($char);
-  $pieces = CharacterPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($char[$i + 11] == $uniqueID && $char[$i + 1] != 0) return $i;
+  $char = new PlayerCharacter($player);
+  for ($i = 0; $i < $char->NumCards(); $i += 1) {
+    $CharCard = $char->Card($i, true);
+    if ($CharCard->UniqueID() == $uniqueID && $CharCard->Status() != 0) return $i;
   }
   return -1;
 }
