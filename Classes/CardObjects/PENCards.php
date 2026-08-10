@@ -3019,7 +3019,7 @@ class courageous_crossing_blue extends Card {
   function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     if (HasIncreasedAttack()) {
       $context = "Choose a target to remove a counter from";
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYAURAS:hasPowerCounters=true&THEIRAURAS:hasPowerCounters=true&MYCHAR:type=W;hasPowerCounters=true&THEIRCHAR:type=W;hasPowerCounters=true");
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYAURAS:hasPowerCounters=true&THEIRAURAS:hasPowerCounters=true&MYCHAR:type=W;hasPowerCounters=true&THEIRCHAR:type=W;hasPowerCounters=true&THEIRALLY:hasPowerCounters=true&MYALLY:hasPowerCounters=true");
       AddDecisionQueue("SETDQCONTEXT", $this->controller, $context, 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
