@@ -1134,6 +1134,53 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	return json_encode($deck);
 }
 
+function ExtractStartingHeroFromCharacterLine($character)
+{
+	$cards = preg_split('/\s+/', trim($character), -1, PREG_SPLIT_NO_EMPTY);
+	return count($cards) > 0 ? $cards[0] : "";
+}
+
+function AddStartingHeroToDetailedResult(&$deck, $character)
+{
+	$startingHero = ExtractStartingHeroFromCharacterLine($character);
+	if ($startingHero != "") $deck["startingHero"] = $startingHero;
+}
+
+function ExcludePrivateDetailedGameResultFields(&$deck)
+{
+	unset($deck["deckbuilderID"]);
+	unset($deck["cardResults"]);
+	unset($deck["character"]);
+	unset($deck["yourTime"]);
+	unset($deck["turnResults"]);
+	unset($deck["totalDamageThreatened"]);
+	unset($deck["totalDamageDealt"]);
+	unset($deck["totalLifeGained"]);
+	unset($deck["totalDamageBlocked"]);
+	unset($deck["totalDamagePrevented"]);
+	unset($deck["totalLifeLost"]);
+	unset($deck["averageDamageThreatenedPerTurn"]);
+	unset($deck["averageDamageDealtPerTurn"]);
+	unset($deck["averageDamageThreatenedPerCard"]);
+	unset($deck["averageResourcesUsedPerTurn"]);
+	unset($deck["averageCardsLeftOverPerTurn"]);
+	unset($deck["averageCombatValuePerTurn"]);
+	unset($deck["averageValuePerTurn"]);
+	unset($deck["totalDamageThreatened_NoLast"]);
+	unset($deck["totalDamageDealt_NoLast"]);
+	unset($deck["totalLifeGained_NoLast"]);
+	unset($deck["totalDamageBlocked_NoLast"]);
+	unset($deck["totalDamagePrevented_NoLast"]);
+	unset($deck["totalLifeLost_NoLast"]);
+	unset($deck["averageDamageThreatenedPerTurn_NoLast"]);
+	unset($deck["averageDamageDealtPerTurn_NoLast"]);
+	unset($deck["averageDamageThreatenedPerCard_NoLast"]);
+	unset($deck["averageResourcesUsedPerTurn_NoLast"]);
+	unset($deck["averageCardsLeftOverPerTurn_NoLast"]);
+	unset($deck["averageCombatValuePerTurn_NoLast"]);
+	unset($deck["averageValuePerTurn_NoLast"]);
+}
+
 function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerHero = "", $excludePrivateFields = false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
@@ -1148,6 +1195,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$character = $deckAfterSB[0];
 	$deckAfterSB = $deckAfterSB[1];
 	$deck = [];
+	AddStartingHeroToDetailedResult($deck, $character);
 	if($gameID != "") $deck["gameId"] = $gameID;
 	if($gameName != "") $deck["gameName"] = $gameName;
 	$deck["deckId"] = $DeckLink;
@@ -1253,37 +1301,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 
 	// Exclude private fields if stats are disabled
 	if ($excludePrivateFields) {
-		unset($deck["deckbuilderID"]);
-		unset($deck["cardResults"]);
-		unset($deck["character"]);
-		unset($deck["yourTime"]);
-		unset($deck["turnResults"]);
-		unset($deck["totalDamageThreatened"]);
-		unset($deck["totalDamageDealt"]);
-		unset($deck["totalLifeGained"]);
-		unset($deck["totalDamageBlocked"]);
-		unset($deck["totalDamagePrevented"]);
-		unset($deck["totalLifeLost"]);
-		unset($deck["averageDamageThreatenedPerTurn"]);
-		unset($deck["averageDamageDealtPerTurn"]);
-		unset($deck["averageDamageThreatenedPerCard"]);
-		unset($deck["averageResourcesUsedPerTurn"]);
-		unset($deck["averageCardsLeftOverPerTurn"]);
-		unset($deck["averageCombatValuePerTurn"]);
-		unset($deck["averageValuePerTurn"]);
-		unset($deck["totalDamageThreatened_NoLast"]);
-		unset($deck["totalDamageDealt_NoLast"]);
-		unset($deck["totalLifeGained_NoLast"]);
-		unset($deck["totalDamageBlocked_NoLast"]);
-		unset($deck["totalDamagePrevented_NoLast"]);
-		unset($deck["totalLifeLost_NoLast"]);
-		unset($deck["averageDamageThreatenedPerTurn_NoLast"]);
-		unset($deck["averageDamageDealtPerTurn_NoLast"]);
-		unset($deck["averageDamageThreatenedPerCard_NoLast"]);
-		unset($deck["averageResourcesUsedPerTurn_NoLast"]);
-		unset($deck["averageCardsLeftOverPerTurn_NoLast"]);
-		unset($deck["averageCombatValuePerTurn_NoLast"]);
-		unset($deck["averageValuePerTurn_NoLast"]);
+		ExcludePrivateDetailedGameResultFields($deck);
 	}
 
 	return json_encode($deck);
