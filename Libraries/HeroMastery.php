@@ -52,7 +52,7 @@ function HeroMasteryEligiblePlayers(bool $conceded, int $winner, int $currentTur
 
 function AwardHeroMastery(bool $conceded = false): void
 {
-  global $winner, $currentTurn, $gameName, $gameGUID, $p1id, $p2id, $p2IsAI;
+  global $winner, $currentTurn, $gameName, $gameGUID, $p1id, $p2id, $p2IsAI, $CS_OriginalHero;
 
   if (($p2IsAI ?? "0") === "1") return;
   $cache = ReadCacheArray(intval($gameName));
@@ -70,7 +70,11 @@ function AwardHeroMastery(bool $conceded = false): void
     $userId = intval($player === 1 ? $p1id : $p2id);
     if ($userId <= 0) continue;
     $character = &GetPlayerCharacter($player);
-    $heroId = isset($character[0]) ? SetID($character[0]) : "";
+    $originalHero = GetClassState($player, $CS_OriginalHero);
+    $hero = $originalHero !== "" && $originalHero !== "-"
+      ? $originalHero
+      : ($character[0] ?? "");
+    $heroId = $hero !== "" ? SetID($hero) : "";
     if ($heroId === "") continue;
 
     try {
