@@ -818,14 +818,6 @@ class Card {
     return GeneratedHasBloodDebt($this->cardID);
   }
 
-  function HasIncarnate() {
-    return false;
-  }
-
-  function HasDecay() {
-    return false;
-  }
-
   function PermanentEndPhaseAbility($index) {
     return;
   }
