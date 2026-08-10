@@ -160,6 +160,7 @@ class CharacterCard {
 
   function ToggleGem($player=0) {
     $offset = 9;
+    if (!is_numeric($this->index)) return;
     if (isset($this->pieces[$this->index+$offset])) {
       $state = $this->pieces[$this->index+$offset]  == "1" ? "0" : "1";
       $this->pieces[$this->index+$offset] = $state;
