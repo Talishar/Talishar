@@ -140,6 +140,7 @@ try {
   }
 
   mysqli_commit($conn);
+  InvalidateDeckCosmeticCache($userID, $decklink);
 } catch (Exception $e) {
   mysqli_rollback($conn);
   mysqli_close($conn);

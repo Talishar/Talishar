@@ -96,8 +96,9 @@ function IsPatron($player)
 
 function ResetFavoriteDeckCosmeticOverrideCache()
 {
-  global $favoriteDeckCosmeticOverrideCache;
+  global $favoriteDeckCosmeticOverrideCache, $deckCosmeticDataCache;
   $favoriteDeckCosmeticOverrideCache = [];
+  $deckCosmeticDataCache = [];
 }
 
 function NormalizeDeckLinkForMatch($deckLink)
@@ -156,6 +157,98 @@ function FindFavoriteDeckRow($conn, $userId, $deckLink, $columns = [])
   return $match;
 }
 
+function DeckCosmeticCacheKey($userId, $deckLink)
+{
+  return 'deck_cosmetics_' . hash('sha256', intval($userId) . '|' . NormalizeDeckLinkForMatch($deckLink));
+}
+
+function IsDeckCosmeticCacheAvailable()
+{
+  return extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_fetch');
+}
+
+function InvalidateDeckCosmeticCache($userId, $deckLink)
+{
+  global $favoriteDeckCosmeticOverrideCache, $deckCosmeticDataCache;
+  $favoriteDeckCosmeticOverrideCache = [];
+  $deckCosmeticDataCache = [];
+  if (IsDeckCosmeticCacheAvailable()) {
+    @apcu_delete(DeckCosmeticCacheKey($userId, $deckLink));
+  }
+}
+
+function GetDeckCosmeticData($userId, $deckLink)
+{
+  global $deckCosmeticDataCache;
+  $requestKey = intval($userId) . '|' . NormalizeDeckLinkForMatch($deckLink);
+  if (!isset($deckCosmeticDataCache) || !is_array($deckCosmeticDataCache)) {
+    $deckCosmeticDataCache = [];
+  }
+  if (array_key_exists($requestKey, $deckCosmeticDataCache)) {
+    return $deckCosmeticDataCache[$requestKey];
+  }
+
+  if (
+    empty($userId) || $userId === '-' || empty($deckLink) ||
+    !function_exists('GetDBConnection') || !defined('DBL_BUILD_GAME_STATE')
+  ) {
+    return $deckCosmeticDataCache[$requestKey] = null;
+  }
+
+  $sharedKey = DeckCosmeticCacheKey($userId, $deckLink);
+  if (IsDeckCosmeticCacheAvailable()) {
+    $cacheHit = false;
+    $cached = @apcu_fetch($sharedKey, $cacheHit);
+    if ($cacheHit && is_array($cached) && array_key_exists('value', $cached)) {
+      return $deckCosmeticDataCache[$requestKey] = $cached['value'];
+    }
+  }
+
+  $conn = GetDBConnection(DBL_BUILD_GAME_STATE);
+  if (!$conn) return $deckCosmeticDataCache[$requestKey] = null;
+
+  $row = FindFavoriteDeckRow(
+    $conn,
+    $userId,
+    $deckLink,
+    ['cardBack', 'playmat', 'altArtsCustomized']
+  );
+  $data = null;
+  if ($row !== null) {
+    $customized = intval($row['altArtsCustomized'] ?? 0) === 1;
+    $storedLink = strval($row['decklink']);
+    $map = [];
+    if ($customized) {
+      $sql = "SELECT cardId, altPath FROM deck_alt_arts WHERE decklink = ? AND usersId = ?";
+      $stmt = mysqli_stmt_init($conn);
+      if (mysqli_stmt_prepare($stmt, $sql)) {
+        mysqli_stmt_bind_param($stmt, "ss", $storedLink, $userId);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        while ($res && ($altArtRow = mysqli_fetch_assoc($res))) {
+          $map[$altArtRow['cardId']] = $altArtRow['altPath'];
+        }
+        if ($res) mysqli_free_result($res);
+        mysqli_stmt_close($stmt);
+      }
+    }
+    $data = [
+      'cardBack' => strval($row['cardBack'] ?? '0'),
+      'playmat' => strval($row['playmat'] ?? '0'),
+      'altArtsCustomized' => $customized,
+      'altArts' => $map,
+    ];
+  }
+  mysqli_close($conn);
+
+  if (IsDeckCosmeticCacheAvailable()) {
+    // SaveDeckCosmetics invalidates this immediately; the TTL is a safety net
+    // for changes made outside the application.
+    @apcu_store($sharedKey, ['value' => $data], 300);
+  }
+  return $deckCosmeticDataCache[$requestKey] = $data;
+}
+
 function GetFavoriteDeckCosmeticOverride($player)
 {
   global $p1id, $p2id, $p1DeckLink, $p2DeckLink, $favoriteDeckCosmeticOverrideCache;
@@ -169,22 +262,10 @@ function GetFavoriteDeckCosmeticOverride($player)
   $userId = ($player == 1) ? ($p1id ?? '') : ($p2id ?? '');
   $deckLink = ($player == 1) ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
 
-  if (
-    empty($userId) || $userId === '-' || empty($deckLink) ||
-    !function_exists('GetDBConnection') || !defined('DBL_BUILD_GAME_STATE')
-  ) {
-    return $favoriteDeckCosmeticOverrideCache[$player] = null;
-  }
-
-  $conn = GetDBConnection(DBL_BUILD_GAME_STATE);
-  if (!$conn) return $favoriteDeckCosmeticOverrideCache[$player] = null;
-
-  $row = FindFavoriteDeckRow($conn, $userId, $deckLink, ['cardBack', 'playmat']);
-  mysqli_close($conn);
-
-  $result = $row === null ? null : [
-    'cardBack' => strval($row['cardBack'] ?? '0'),
-    'playmat' => strval($row['playmat'] ?? '0')
+  $data = GetDeckCosmeticData($userId, $deckLink);
+  $result = $data === null ? null : [
+    'cardBack' => $data['cardBack'],
+    'playmat' => $data['playmat']
   ];
 
   return $favoriteDeckCosmeticOverrideCache[$player] = $result;
@@ -192,41 +273,12 @@ function GetFavoriteDeckCosmeticOverride($player)
 
 function GetDeckAltArtOverride($userId, $deckLink)
 {
-  static $cache = [];
-  $cacheKey = $userId . '|' . $deckLink;
-  if (array_key_exists($cacheKey, $cache)) return $cache[$cacheKey];
-
-  if (
-    empty($userId) || $userId === '-' || empty($deckLink) ||
-    !function_exists('GetDBConnection') || !defined('DBL_BUILD_GAME_STATE')
-  ) {
-    return $cache[$cacheKey] = null;
-  }
-
-  $conn = GetDBConnection(DBL_BUILD_GAME_STATE);
-  if (!$conn) return $cache[$cacheKey] = null;
-
-  $row = FindFavoriteDeckRow($conn, $userId, $deckLink, ['altArtsCustomized']);
-  $customized = $row && intval($row['altArtsCustomized'] ?? 0) === 1;
-  $storedLink = $row === null ? $deckLink : strval($row['decklink']);
-
-  $map = [];
-  if ($customized) {
-    $sql = "SELECT cardId, altPath FROM deck_alt_arts WHERE decklink = ? AND usersId = ?";
-    $stmt = mysqli_stmt_init($conn);
-    if (mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_stmt_bind_param($stmt, "ss", $storedLink, $userId);
-      mysqli_stmt_execute($stmt);
-      $res = mysqli_stmt_get_result($stmt);
-      while ($row = mysqli_fetch_assoc($res)) {
-        $map[$row['cardId']] = $row['altPath'];
-      }
-      mysqli_stmt_close($stmt);
-    }
-  }
-  mysqli_close($conn);
-
-  return $cache[$cacheKey] = ['customized' => $customized, 'map' => $map];
+  $data = GetDeckCosmeticData($userId, $deckLink);
+  if ($data === null) return null;
+  return [
+    'customized' => $data['altArtsCustomized'],
+    'map' => $data['altArts'],
+  ];
 }
 
 function ApplyDeckAltArtOverride($poolAltArts, $userId, $deckLink)

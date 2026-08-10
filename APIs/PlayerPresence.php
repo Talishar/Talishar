@@ -75,7 +75,7 @@ if (extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_
       exit;
     }
 
-    @apcu_store($cacheKey, $presence, 5);
+    @apcu_store($cacheKey, $presence, 8);
   }
 }
 

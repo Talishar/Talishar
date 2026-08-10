@@ -43,7 +43,13 @@ function GetBannedPlayers() {
     }
   }
 
-  $conn = ValidateConnOrReturnEmpty() ? $GLOBALS['conn'] : (function_exists('GetDBConnection') ? GetDBConnection() : null);
+  $ownsConnection = false;
+  if (ValidateConnOrReturnEmpty()) {
+    $conn = $GLOBALS['conn'];
+  } else {
+    $conn = function_exists('GetDBConnection') ? GetDBConnection() : null;
+    $ownsConnection = $conn !== null && $conn !== false;
+  }
   if ($conn) {
     // banned_players may not exist yet on a fresh install; users.isBanned always does
     try {
@@ -70,6 +76,7 @@ function GetBannedPlayers() {
   if (function_exists('apcu_store')) {
     apcu_store('talishar_banned_players', $bannedPlayers, 60);
   }
+  if ($ownsConnection && method_exists($conn, 'close')) $conn->close();
 
   return $bannedPlayers;
 }
@@ -104,6 +111,21 @@ function IsPvtVoidPatron($username) {
   return $username === "PvtVoid";
 }
 
+function FriendAuthorizationCacheKey($userId) {
+  return 'friend_authorization_' . intval($userId);
+}
+
+function IsFriendAuthorizationCacheAvailable() {
+  return extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_fetch');
+}
+
+function InvalidateFriendAuthorizationCache(...$userIds) {
+  if (!IsFriendAuthorizationCacheAvailable()) return;
+  foreach ($userIds as $userId) {
+    if (is_numeric($userId)) @apcu_delete(FriendAuthorizationCacheKey($userId));
+  }
+}
+
 /**
  * Get accepted friend account handles for spectator visibility checks.
  *
@@ -117,6 +139,13 @@ function IsPvtVoidPatron($username) {
 function GetUserFriendUsernames($userId, $connection = null) {
   if (!is_numeric($userId)) {
     return [];
+  }
+
+  $userId = (int)$userId;
+  if (IsFriendAuthorizationCacheAvailable()) {
+    $cacheHit = false;
+    $cached = @apcu_fetch(FriendAuthorizationCacheKey($userId), $cacheHit);
+    if ($cacheHit && is_array($cached)) return $cached;
   }
 
   $ownsConnection = false;
@@ -146,7 +175,6 @@ function GetUserFriendUsernames($userId, $connection = null) {
       return [];
     }
 
-    $userId = (int)$userId;
     $stmt->bind_param("i", $userId);
     if (!$stmt->execute()) {
       return [];
@@ -158,6 +186,9 @@ function GetUserFriendUsernames($userId, $connection = null) {
       if (!empty($row['usersUid'])) {
         $usernames[] = $row['usersUid'];
       }
+    }
+    if (IsFriendAuthorizationCacheAvailable()) {
+      @apcu_store(FriendAuthorizationCacheKey($userId), $usernames, 300);
     }
     return $usernames;
   } catch (\Throwable $e) {
@@ -379,6 +410,8 @@ function RemoveFriend($userId, $friendUserId) {
   if ($affectedRows === 0) {
     return ['success' => false, 'message' => 'Friendship not found'];
   }
+  InvalidateFriendAuthorizationCache($userId, $friendUserId);
+  unset($_SESSION['_friendNamesCache'], $_SESSION['_friendNamesCacheAt']);
   
   return ['success' => true, 'message' => 'Friend removed successfully'];
 }
@@ -449,6 +482,8 @@ function AcceptFriendRequest($userId, $requesterUserId) {
     return ['success' => false, 'message' => 'Database error'];
   }
   $stmt->close();
+  InvalidateFriendAuthorizationCache($userId, $requesterUserId);
+  unset($_SESSION['_friendNamesCache'], $_SESSION['_friendNamesCacheAt']);
   
   return ['success' => true, 'message' => 'Friend request accepted'];
 }

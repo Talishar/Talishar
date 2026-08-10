@@ -133,6 +133,7 @@ function BlockUser($userId, $blockedUserId) {
   $stmt->bind_param("ii", $userId, $blockedUserId);
   $stmt->execute();
   $stmt->close();
+  unset($_SESSION['_blockedCache'], $_SESSION['_blockedCacheAt']);
   
   return ['success' => true, 'message' => 'User blocked successfully'];
 }
@@ -169,6 +170,7 @@ function UnblockUser($userId, $blockedUserId) {
   if ($affectedRows === 0) {
     return ['success' => false, 'message' => 'Block record not found'];
   }
+  unset($_SESSION['_blockedCache'], $_SESSION['_blockedCacheAt']);
   
   return ['success' => true, 'message' => 'User unblocked successfully'];
 }

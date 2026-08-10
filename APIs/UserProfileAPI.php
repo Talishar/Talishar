@@ -53,7 +53,13 @@ if ($conn === false) {
   echo json_encode($response);
   exit;
 }
-$sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, rust_counters, displayName, lastNameChange FROM users WHERE usersUid=?";
+$sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, rust_counters,
+               (rust_counters > 0 AND (
+                 rust_counters_last_played IS NULL OR
+                 rust_counters_last_played <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
+               )) AS rust_counters_expired,
+               displayName, lastNameChange
+        FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 
 if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -70,7 +76,22 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   $response->nextChangeAllowed = $nextChangeTime > time() ? date("c", $nextChangeTime) : null;
 
   $metafyAccessToken = $row['metafyAccessToken'] ?? null;
-  $response->rustCounters = intval($row['rust_counters'] ?? 0);
+  $rustCountersExpired = intval($row['rust_counters_expired'] ?? 0) === 1;
+  $response->rustCounters = $rustCountersExpired ? 0 : intval($row['rust_counters'] ?? 0);
+  if ($rustCountersExpired) {
+    $expireStmt = mysqli_stmt_init($conn);
+    $expireSql = "UPDATE users SET rust_counters = 0
+                  WHERE usersUid=? AND rust_counters > 0 AND (
+                    rust_counters_last_played IS NULL OR
+                    rust_counters_last_played <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
+                  )";
+    if (mysqli_stmt_prepare($expireStmt, $expireSql)) {
+      mysqli_stmt_bind_param($expireStmt, 's', $userName);
+      mysqli_stmt_execute($expireStmt);
+      mysqli_stmt_close($expireStmt);
+    }
+    $_SESSION['rust_counters'] = 0;
+  }
   $response->isMetafyLinked = !empty($metafyAccessToken);
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = isset($row['metafyCommunities']) ? json_decode($row['metafyCommunities'], true) : [];
