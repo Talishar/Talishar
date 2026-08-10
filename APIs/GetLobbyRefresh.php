@@ -204,8 +204,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     $response->amIChoosingFirstPlayer = ($playerID == $firstPlayerChooser);
   }
 
+  $response->isPrivateLobby = ($visibility == "private");
   if ($playerID == 1 && $gameStatus < $MGS_Player2Joined) {
-    $response->isPrivateLobby = ($visibility == "private");
     $response->format = $format;
     $response->gameDescription = $gameDescription;
 
