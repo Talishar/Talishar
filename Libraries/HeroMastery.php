@@ -62,10 +62,7 @@ function AwardHeroMastery(bool $conceded = false): void
   if (empty($eligiblePlayers)) return;
   $gameKey = "talishar:" . (string)$gameName;
 
-  include_once __DIR__ . '/../includes/dbh.inc.php';
-  $conn = GetDBConnection();
-  if ($conn === false) return;
-
+  $awardCandidates = [];
   foreach ($eligiblePlayers as $player) {
     $userId = intval($player === 1 ? $p1id : $p2id);
     if ($userId <= 0) continue;
@@ -76,33 +73,48 @@ function AwardHeroMastery(bool $conceded = false): void
       : ($character[0] ?? "");
     $heroId = $hero !== "" ? SetID($hero) : "";
     if ($heroId === "") continue;
+    $awardCandidates[] = ["userId" => $userId, "heroId" => $heroId];
+  }
+  if (empty($awardCandidates)) return;
 
+  include_once __DIR__ . '/../includes/dbh.inc.php';
+  $conn = GetDBConnection();
+  if ($conn === false) return;
+
+  try {
+    $seed = $conn->prepare("INSERT IGNORE INTO hero_mastery (userId, heroId, qualifyingGames) VALUES (?, ?, 0)");
+    $read = $conn->prepare("SELECT qualifyingGames FROM hero_mastery WHERE userId = ? AND heroId = ? FOR UPDATE");
+    $award = $conn->prepare("INSERT IGNORE INTO hero_mastery_awards (gameKey, userId, heroId, gamesBefore, gamesAfter) VALUES (?, ?, ?, ?, ?)");
+    $update = $conn->prepare("UPDATE hero_mastery SET qualifyingGames = ? WHERE userId = ? AND heroId = ?");
+  } catch (Throwable $e) {
+    error_log("Hero Mastery could not prepare award statements: " . $e->getMessage());
+    mysqli_close($conn);
+    return;
+  }
+
+  foreach ($awardCandidates as $candidate) {
+    $userId = $candidate["userId"];
+    $heroId = $candidate["heroId"];
     try {
       mysqli_begin_transaction($conn);
-      $seed = $conn->prepare("INSERT IGNORE INTO hero_mastery (userId, heroId, qualifyingGames) VALUES (?, ?, 0)");
       $seed->bind_param("is", $userId, $heroId);
       $seed->execute();
-      $seed->close();
 
-      $read = $conn->prepare("SELECT qualifyingGames FROM hero_mastery WHERE userId = ? AND heroId = ? FOR UPDATE");
       $read->bind_param("is", $userId, $heroId);
       $read->execute();
-      $row = $read->get_result()->fetch_assoc();
+      $readResult = $read->get_result();
+      $row = $readResult->fetch_assoc();
       $gamesBefore = intval($row["qualifyingGames"] ?? 0);
-      $read->close();
+      $readResult->free();
       $gamesAfter = $gamesBefore + 1;
 
-      $award = $conn->prepare("INSERT IGNORE INTO hero_mastery_awards (gameKey, userId, heroId, gamesBefore, gamesAfter) VALUES (?, ?, ?, ?, ?)");
       $award->bind_param("sisii", $gameKey, $userId, $heroId, $gamesBefore, $gamesAfter);
       $award->execute();
       $isNewAward = $award->affected_rows === 1;
-      $award->close();
 
       if ($isNewAward) {
-        $update = $conn->prepare("UPDATE hero_mastery SET qualifyingGames = ? WHERE userId = ? AND heroId = ?");
         $update->bind_param("iis", $gamesAfter, $userId, $heroId);
         $update->execute();
-        $update->close();
       }
       mysqli_commit($conn);
     } catch (Throwable $e) {
@@ -110,5 +122,9 @@ function AwardHeroMastery(bool $conceded = false): void
       error_log("Hero Mastery award failed for game " . $gameKey . ": " . $e->getMessage());
     }
   }
+  $seed->close();
+  $read->close();
+  $award->close();
+  $update->close();
   mysqli_close($conn);
 }

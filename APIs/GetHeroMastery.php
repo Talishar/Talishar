@@ -6,8 +6,6 @@ include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../includes/functions.inc.php";
 include_once "../includes/dbh.inc.php";
 include_once "../Libraries/HeroMastery.php";
-include_once "../CardDictionary.php";
-include_once "../Libraries/LegalHeroesHelper.php";
 SetHeaders();
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -23,32 +21,28 @@ if (!IsUserLoggedIn()) {
 }
 
 $userId = intval(LoggedInUser());
+$scope = trim((string)($_GET["scope"] ?? "account"));
+$includeAccount = !in_array($scope, ["game", "award"], true);
 $response = [
   "milestones" => HeroMasteryMilestones(),
   "heroes" => [],
-  "heroGroups" => GetMasteryHeroGroups(),
+  "heroGroups" => [
+    "classicConstructed" => [],
+    "silverAge" => [],
+    "livingLegend" => [],
+  ],
 ];
-$conn = GetDBConnection();
-if ($conn === false) {
-  http_response_code(503);
-  echo json_encode(["error" => "Hero Mastery is temporarily unavailable."]);
-  exit;
-}
 
-$stmt = $conn->prepare("SELECT heroId, qualifyingGames FROM hero_mastery WHERE userId = ?");
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$result = $stmt->get_result();
-while ($row = $result->fetch_assoc()) {
-  $progress = HeroMasteryProgress(intval($row["qualifyingGames"]));
-  $progress["heroId"] = $row["heroId"];
-  $response["heroes"][] = $progress;
+if ($includeAccount) {
+  include_once "../CardDictionary.php";
+  include_once "../Libraries/LegalHeroesHelper.php";
+  $response["heroGroups"] = GetMasteryHeroGroups();
 }
-$stmt->close();
 
 // In a live game, expose only the two cosmetic levels to its participants.
 // This lets both lobby/versus portraits render the earned frame without
 // exposing account statistics or accepting hero/account IDs from the client.
+$gamePlayers = null;
 $gameName = trim((string)($_GET["gameName"] ?? ""));
 if ($gameName !== "" && ctype_digit($gameName)) {
   $gameFile = "../Games/" . $gameName . "/GameFile.txt";
@@ -58,26 +52,68 @@ if ($gameName !== "" && ctype_digit($gameName)) {
     $p2GameUser = intval($lines[12] ?? 0);
     if ($userId === $p1GameUser || $userId === $p2GameUser) {
       $response["gamePlayers"] = [];
+      $gamePlayers = [];
       foreach ([1 => $p1GameUser, 2 => $p2GameUser] as $slot => $gameUserId) {
         $deckFile = "../Games/" . $gameName . "/p" . $slot . "Deck.txt";
         $firstLine = is_file($deckFile) ? strtok((string)file_get_contents($deckFile), "\r\n") : "";
         $heroId = explode(" ", trim((string)$firstLine))[0] ?? "";
-        $level = 0;
-        if ($gameUserId > 0 && $heroId !== "") {
-          $gameProgress = $conn->prepare("SELECT qualifyingGames FROM hero_mastery WHERE userId = ? AND heroId = ? LIMIT 1");
-          $gameProgress->bind_param("is", $gameUserId, $heroId);
-          $gameProgress->execute();
-          $gameRow = $gameProgress->get_result()->fetch_assoc();
-          $level = HeroMasteryLevel(intval($gameRow["qualifyingGames"] ?? 0));
-          $gameProgress->close();
-        }
-        $response["gamePlayers"][(string)$slot] = ["heroId" => $heroId, "level" => $level];
+        $gamePlayers[$slot] = ["userId" => $gameUserId, "heroId" => $heroId];
+        $response["gamePlayers"][(string)$slot] = ["heroId" => $heroId, "level" => 0];
       }
     }
   }
 }
 
 $gameKey = trim((string)($_GET["gameKey"] ?? ""));
+$needsDatabase = $includeAccount || $gamePlayers !== null || $gameKey !== "";
+$conn = $needsDatabase ? GetDBConnection() : null;
+if ($needsDatabase && $conn === false) {
+  http_response_code(503);
+  echo json_encode(["error" => "Hero Mastery is temporarily unavailable."]);
+  exit;
+}
+
+if ($includeAccount) {
+  $stmt = $conn->prepare("SELECT heroId, qualifyingGames FROM hero_mastery WHERE userId = ?");
+  $stmt->bind_param("i", $userId);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  while ($row = $result->fetch_assoc()) {
+    $progress = HeroMasteryProgress(intval($row["qualifyingGames"]));
+    $progress["heroId"] = $row["heroId"];
+    $response["heroes"][] = $progress;
+  }
+  $stmt->close();
+}
+
+if ($gamePlayers !== null) {
+  $gameProgress = $conn->prepare(
+    "SELECT userId, heroId, qualifyingGames
+     FROM hero_mastery
+     WHERE (userId = ? AND heroId = ?) OR (userId = ? AND heroId = ?)"
+  );
+  $gameProgress->bind_param(
+    "isis",
+    $gamePlayers[1]["userId"],
+    $gamePlayers[1]["heroId"],
+    $gamePlayers[2]["userId"],
+    $gamePlayers[2]["heroId"]
+  );
+  $gameProgress->execute();
+  $gameResult = $gameProgress->get_result();
+  while ($gameRow = $gameResult->fetch_assoc()) {
+    foreach ($gamePlayers as $slot => $gamePlayer) {
+      if (
+        intval($gameRow["userId"]) === $gamePlayer["userId"] &&
+        $gameRow["heroId"] === $gamePlayer["heroId"]
+      ) {
+        $response["gamePlayers"][(string)$slot]["level"] = HeroMasteryLevel(intval($gameRow["qualifyingGames"]));
+      }
+    }
+  }
+  $gameProgress->close();
+}
+
 if ($gameKey !== "") {
   $award = $conn->prepare("SELECT heroId, gamesBefore, gamesAfter FROM hero_mastery_awards WHERE gameKey = ? AND userId = ? LIMIT 1");
   $award->bind_param("si", $gameKey, $userId);
@@ -98,6 +134,6 @@ if ($gameKey !== "") {
   $award->close();
 }
 
-mysqli_close($conn);
+if ($conn instanceof mysqli) mysqli_close($conn);
 header('Content-Type: application/json');
 echo json_encode($response);
