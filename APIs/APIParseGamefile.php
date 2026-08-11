@@ -77,6 +77,11 @@ $p1DisplayName = trim(fgets($gameFileHandler) ?: '');
 $p2DisplayName = trim(fgets($gameFileHandler) ?: '');
 if ($p1DisplayName === '') $p1DisplayName = $p1uid;
 if ($p2DisplayName === '') $p2DisplayName = $p2uid;
+// Must stay in sync with MenuFiles/ParseGamefile.php and WriteGamefile.php: several
+// endpoints include this parser and then call WriteGameFile(), which would otherwise
+// write these globals back as empty strings and wipe the cached URLs.
+$p1WebhookUrl = trim(fgets($gameFileHandler) ?: '');
+$p2WebhookUrl = trim(fgets($gameFileHandler) ?: '');
 
 $MGS_Initial = 0;
 $MGS_Player2Joined = 1;

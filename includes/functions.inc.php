@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Assets/patreon-php-master/src/PatreonLibraries.php';
+require_once __DIR__ . '/WebhookSecurity.php';
 
 use SendGrid\Mail\Mail;
 
@@ -669,7 +670,7 @@ function logCompletedGameStats($conceded = false)
 	else
 		WriteLog("No game stats sent as both players have disabled stats", highlight:true);
 
-	SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2Json, $winner, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic);
+	SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2Json, $winner, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic, $p1StatsDisabled, $p2StatsDisabled);
 }
 
 function PrepareFabraryRequest($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $format, $gameGUID = "", $conceded = false, $isPublic = true)
@@ -838,24 +839,26 @@ function GetWebhookUrlForUser(string $uid): string
 	return $url ?? "";
 }
 
-function PrepareUserWebhookRequest(string $webhookUrl, $gameID, string $detailedResult1Json, string $detailedResult2Json, string $p1uid, string $p2uid, int $winner, $format, string $gameGUID, bool $conceded, int $countWinnerDeck, int $countLoserDeck, bool $isPublic)
+// Deliberately untyped, matching PrepareFaBInsightsRequest: this runs while a match is
+// being finalised, and a TypeError here would abort completion for both players.
+function PrepareUserWebhookRequest($webhookUrl, $gameID, $detailedResult1Json, $detailedResult2Json, $player1Name, $player2Name, $winner, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0, $isPublic = true)
 {
 	global $gameName;
 
 	$payloadArr = [];
 	$payloadArr['gameID'] = $gameID;
 	$payloadArr['gameName'] = $gameName;
-	$payloadArr['player1Name'] = $p1uid;
-	$payloadArr['player2Name'] = $p2uid;
-	$payloadArr['deck1'] = json_decode($detailedResult1Json);
-	$payloadArr['deck2'] = json_decode($detailedResult2Json);
+	$payloadArr['player1Name'] = $player1Name;
+	$payloadArr['player2Name'] = $player2Name;
+	$payloadArr['deck1'] = json_decode((string)$detailedResult1Json);
+	$payloadArr['deck2'] = json_decode((string)$detailedResult2Json);
 	$payloadArr['format'] = $format;
 	$payloadArr['gameGUID'] = $gameGUID;
-	$payloadArr['conceded'] = $conceded;
-	$payloadArr['winner'] = $winner;
-	$payloadArr['countWinnerDeck'] = $countWinnerDeck;
-	$payloadArr['countLoserDeck'] = $countLoserDeck;
-	$payloadArr['isPublic'] = $isPublic;
+	$payloadArr['conceded'] = (bool)$conceded;
+	$payloadArr['winner'] = intval($winner);
+	$payloadArr['countWinnerDeck'] = intval($countWinnerDeck);
+	$payloadArr['countLoserDeck'] = intval($countLoserDeck);
+	$payloadArr['isPublic'] = (bool)$isPublic;
 
 	$ch = curl_init($webhookUrl);
 	curl_setopt($ch, CURLOPT_POST, true);
@@ -864,7 +867,19 @@ function PrepareUserWebhookRequest(string $webhookUrl, $gameID, string $detailed
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 	curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+	// Never chase a redirect: it would be resolved and connected to without passing
+	// through the SSRF checks below. PHP defaults this off; set it explicitly so the
+	// guarantee does not depend on the default.
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+
+	// The URL was vetted when it was saved, but DNS can have changed since. Re-check
+	// every address the host resolves to now and pin the vetted one onto the handle.
+	if (!ApplyWebhookConnectionPinning($ch, $webhookUrl)) {
+		curl_close($ch);
+		return null;
+	}
+
 	return $ch;
 }
 
@@ -901,20 +916,38 @@ function executeWebhookRequests(array $handles): array
 	return $results;
 }
 
-function SendUserWebhooks($gameResultID, string $detailedResult1Json, string $detailedResult2Json, int $winner, $format, string $gameGUID, bool $conceded, int $countWinnerDeck, int $countLoserDeck, bool $isPublic): void
+function SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2Json, $winner, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0, $isPublic = true, $p1StatsDisabled = false, $p2StatsDisabled = false)
 {
-	global $p1uid, $p2uid, $p1WebhookUrl, $p2WebhookUrl;
+	global $p1uid, $p2uid, $p1WebhookUrl, $p2WebhookUrl, $playerHashSalt;
+
+	// The recipient's own name is sent in the clear — it is their own data. The opponent
+	// never agreed to have their handle posted to a third-party endpoint, so honour the
+	// same stats opt-out that already redacts their deck from $detailedResultNJson.
+	$opponentName = function ($uid, $statsDisabled) use ($playerHashSalt) {
+		return $statsDisabled ? HashPlayerName($uid, $playerHashSalt) : $uid;
+	};
+
+	$recipients = [
+		1 => [$p1WebhookUrl ?? "", $p1uid, $opponentName($p2uid, $p2StatsDisabled)],
+		2 => [$p2WebhookUrl ?? "", $opponentName($p1uid, $p1StatsDisabled), $p2uid],
+	];
 
 	$handles = [];
-	foreach ([1 => [$p1uid, $p1WebhookUrl ?? ""], 2 => [$p2uid, $p2WebhookUrl ?? ""]] as $playerID => [$uid, $url]) {
+	foreach ($recipients as $playerID => [$url, $name1, $name2]) {
 		if (empty($url)) continue;
 		$ch = PrepareUserWebhookRequest(
 			$url, $gameResultID,
 			$detailedResult1Json, $detailedResult2Json,
-			$p1uid, $p2uid, $winner, $format, $gameGUID,
+			$name1, $name2, $winner, $format, $gameGUID,
 			$conceded, $countWinnerDeck, $countLoserDeck, $isPublic
 		);
-		if ($ch) $handles[$playerID] = $ch;
+		if ($ch) {
+			$handles[$playerID] = $ch;
+		} else {
+			// Rejected by the send-time SSRF re-check rather than by the remote host.
+			error_log("User webhook for player $playerID in game $gameResultID blocked: URL no longer resolves to a public address");
+			WriteLog("⚠️ Match result webhook for Player $playerID was blocked (URL no longer resolves to a public address)", highlight:true, highlightColor:"red");
+		}
 	}
 
 	if (empty($handles)) return;
@@ -930,6 +963,7 @@ function SendUserWebhooks($gameResultID, string $detailedResult1Json, string $de
 		}
 	}
 }
+
 
 function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnStats, $player, $useIntval = false)
 {
