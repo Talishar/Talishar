@@ -5,7 +5,6 @@ function Usurp($cardID, $player, $from) {
 		$otherPlayer = 3 - $player;
 		$inds = SearchAurasForCard("runechant", $player, false);
 		$theirInds = SearchAurasForCard("runechant", $otherPlayer, false);
-		WriteLog("HERE: $theirInds");
 		if ($inds != "" || $theirInds != "") {
 			$MZInds = [];
 			$includedRunechants = [];
@@ -27,7 +26,6 @@ function Usurp($cardID, $player, $from) {
 					$includedRunechants[] = $choiceKey;
 				}
 			}
-			WriteLog("HERE2: " . implode(",", $MZInds));
 			if (count($MZInds) == 1) {
 				AddDecisionQueue("PASSPARAMETER", $player, $MZInds[0], 1);
 				AddDecisionQueue("SETDQVAR", $player, "choice", 1);
