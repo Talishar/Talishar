@@ -545,31 +545,101 @@
 //   }
 // }
 
+class chane_base extends BaseCard {
+  function IsPlayRestricted() {
+    return !CanPlayAura("soul_shackle", $this->controller, $this->cardID);
+  }
 
-// class chane extends Card {
+  function CurrentEffectGrantsNAAGoAgain($cardID, &$remove) {
+    if ((ClassContains($cardID, "RUNEBLADE", $this->controller) || TalentContains($cardID, "SHADOW", $this->controller)) && $cardID != $this->cardID) {
+      $remove = true;
+      return true;
+    }
+    return false;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "chane";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility() {
+    PlayAura("soul_shackle", $this->controller, 1, true);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function CombatEffectActive() {
+    global $CombatChain;
+    // need to check if it's attached
+    if (!IsAttackStep() && !DelimStringContains($CombatChain->AttackCard()->StaticBuffs(), SetID($this->cardID))) return false;
+    return ClassContains($CombatChain->AttackCard()->ID(), "RUNEBLADE", $this->controller) || TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $this->controller);
+  }
+
+  function CurrentEffectGrantsGoAgain() {
+    return true;
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    global $Stack;
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer($cardID);
+    $isRuneblade = ClassContains($TopLayer->ID(), "RUNEBLADE", $this->controller);
+    $isShadow = ClassContains($TopLayer->ID(), "SHADOW", $this->controller);
+    if ($TopLayer == "-") return;
+    if ($TopLayer->PlayerID() != $this->controller) return;
+    if (TypeContains($TopLayer->ID(), "A") && ($isRuneblade || $isShadow))
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+    elseif (TypeContains($TopLayer->ID(), "AA") && ($isRuneblade || $isShadow))
+      $Effect->ApplyToUniqueID("ATTACK");
+  }
+}
+
+class chane extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "chane";
+    $this->controller = $controller;
+    $this->baseCard = new chane_base($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, $remove);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $this->baseCard->CurrentEffectGrantsGoAgain();
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 1);
+  }
+}
 
 
-// class chane_bound_by_shadow extends Card {
+class chane_bound_by_shadow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "chane_bound_by_shadow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "chane_bound_by_shadow";
+    $this->controller = $controller;
+    $this->baseCard = new chane_base($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}
 
 
 // class consuming_aftermath_red extends Card {

@@ -3044,7 +3044,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
       if (SearchCurrentTurnEffects("current_funnel_blue", $mainPlayer, remove: true)) $hasGoAgain = true;
     }
     if ($cardType == "AA" && SearchCurrentTurnEffectsAny(["blizzard_blue", "rainbow_goo_trap_red"], $player)) $hasGoAgain = false;
-    if ($cardTypeIsAction) $hasGoAgain = $hasGoAgain || CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID);
+    if ($cardTypeIsAction) $hasGoAgain = CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID) || $hasGoAgain;
     if ($cardTypeIsAction && $hasGoAgain && (SearchAuras("fog_down_yellow", 1) || SearchAuras("fog_down_yellow", 2))) $hasGoAgain = false;
     if ($cardTypeIsInstant && !$hasMeld){
       $hasGoAgain = $hasGoAgain || CurrentEffectGrantsInstantGoAgain($cardID, $from);

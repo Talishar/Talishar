@@ -1707,7 +1707,7 @@ function CurrentEffectPlayAbility($cardID, $from)
   return false;
 }
 
-function CurrentEffectPlayOrActivateAbility($cardID, $from)
+function CurrentEffectPlayOrActivateAbility($cardID, $from) // currently deprecated
 {
   global $currentTurnEffects, $currentPlayer;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
@@ -1716,21 +1716,6 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from)
       $remove = false;
       $commaPos = strpos($currentTurnEffects[$i], ',');
       $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
-      switch ($effectBase) {
-        case "chane_bound_by_shadow":
-        case "chane":
-          $cardType = CardType($cardID);
-          $abilityType = GetResolvedAbilityType($cardID, $from);
-          if ($abilityType == "AA" || $abilityType == "") {
-            if (($cardType == "AA" || $cardType == "W" || $cardType == "T") && (ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer))) {
-              GiveAttackGoAgain();
-              $remove = true;
-            }
-          }
-          break;
-        default:
-          break;
-      }
       if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
@@ -1814,13 +1799,6 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
         case "goldkiss_rum":
           $hasGoAgain = true;
           $remove = true;
-          break;
-        case "chane_bound_by_shadow":
-        case "chane":
-          if ((ClassContains($cardID, "RUNEBLADE", $currentPlayer) || TalentContains($cardID, "SHADOW", $currentPlayer)) && $cardID != $currentTurnEffects[$i]) {
-            $hasGoAgain = true;
-            $remove = true;
-          }
           break;
         case "flash_red":
           if (CardCost($cardID) >= 0) {

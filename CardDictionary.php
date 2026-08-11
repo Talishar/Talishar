@@ -2443,10 +2443,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ser_boltyn_breaker_of_dawn":
     case "boltyn":
       return count($mySoul) == 0 || !HasIncreasedAttack();
-    case "chane_bound_by_shadow":
-    case "chane":
-      if (!CanPlayAura("soul_shackle", $player, $cardID)) return true;
-      return false;
     case "beacon_of_victory_yellow":
     case "radiant_view":
     case "radiant_raiment":

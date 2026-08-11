@@ -6,10 +6,6 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
-      case "chane_bound_by_shadow": case "chane":
-        PlayAura("soul_shackle", $currentPlayer, 1, true);
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "invert_existence_blue":
         AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
         AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
