@@ -37,9 +37,8 @@ class Card {
   }
 
   function IsType($types) {
-    $typesArr = explode(",", $types);
-    for($i=0; $i<count($typesArr); ++$i) {
-      if(TypeContains($this->cardID, $typesArr[$i], $this->controller)) return true;
+    foreach (explode(",", $types) as $type) {
+      if (TypeContains($this->cardID, $type, $this->controller)) return true;
     }
     return false;
   }
@@ -113,14 +112,14 @@ class Card {
   }
 
   function NumUses() {
-    return 0;
+    return 1;
   }
 
   function GetAbilityTypes($index=-1, $from="-") {
     return "";
   }
 
-  function GetAbilityNames($index=-1, $from="-", $foundNullTime=false, $layerCount=0, $facing="-") {
+  function GetAbilityNames($index=-1, $from="-", $foundNullTime=false, $layerCount=0, $facing="-", $allNames=false) {
     return "";
   }
 
@@ -132,7 +131,7 @@ class Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = "-", $effectSource  = "-", $param = "-", $mode="-") {
+  function EffectHitEffect($from, $source = "-", $effectSource  = "-", $param = "-", $mode="-", $target="-") {
     return;
   }
 
@@ -172,6 +171,10 @@ class Card {
     return GeneratedHasTemper($this->cardID) == "true";
   }
 
+  function HasGuardwell() {
+    return GeneratedHasGuardwell($this->cardID);
+  }
+
   function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     return;
   }
@@ -189,6 +192,10 @@ class Card {
   }
 
   function AddPrePitchDecisionQueue($from, $index=-1, $facing="-") {
+    return;
+  }
+
+  function AddPostTargetDecisionQueue($from, $index=-1, $facing="-") {
     return;
   }
 
@@ -240,7 +247,7 @@ class Card {
     return;
   }
 
-  function AddGraveyardEffect($from, $effectController) {
+  function AddGraveyardEffect($from, $effectController, $cardController) {
     return false;
   }
 
@@ -459,11 +466,15 @@ class Card {
     return;
   }
 
+  function BooTrigger() {
+    return;
+  }
+
   function PlayableFromBanish($mod, $nonLimitedOnly) {
     return false;
   }
 
-  function ArcaneBarrier() {
+  function ArcaneBarrier($index) {
     return GeneratedArcaneBarrierAmount($this->cardID);
   }
 
@@ -471,7 +482,7 @@ class Card {
     return;
   }
 
-  function PlayCardEffectAbility($cardID, $from, &$remove) {
+  function PlayCardEffectAbility($cardID, $from, &$remove, $index=-1) {
     return;
   }
 
@@ -535,7 +546,7 @@ class Card {
     return;
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return false;
   }
 
@@ -555,7 +566,7 @@ class Card {
     return GeneratedGoAgain($this->cardID);
   }
 
-  function EffectBlockModifier($index, $from) {
+  function EffectBlockModifier($index, $from, $effectInd) {
     return 0;
   }
 
@@ -617,6 +628,8 @@ class Card {
   }
 
   function HasFragment() {
+    foreach ($this->addedAbilities as $ability) 
+      if ($ability->HasFragment()) return true;
     return GeneratedHasFragment($this->cardID);
   }
 
@@ -658,7 +671,7 @@ class Card {
     return;
 	}
 
-  function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1) {
+  function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1, $effectIndex=-1) {
     return false;
   }
 
@@ -675,6 +688,8 @@ class Card {
   }
 
   function FragmentTrigger() {
+    foreach ($this->addedAbilities as $ability)
+      $ability->FragmentTrigger();
     return;
   }
 
@@ -690,7 +705,7 @@ class Card {
     return false;
   }
 
-  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove) {
+  function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached = false) {
     return;
   }
 
@@ -721,5 +736,123 @@ class Card {
 
   function CardPlayedAbility($cardID, $from) {
     return;
+  }
+
+  function IsAttackLayer() {
+    return false;
+  }
+
+  function hasQuickstrike() {
+    return GeneratedHasQuickstrike($this->cardID);
+  }
+
+  function hasUsurp() {
+    return GeneratedHasUsurp($this->cardID);
+  }
+
+  function HasStarfall() {
+    return GeneratedHasStarfall($this->cardID);
+  }
+  
+  function HasDecay() {
+    return GeneratedHasDecay($this->cardID);
+  }
+
+  function HasIncarnate() {
+    return GeneratedHasIncarnate($this->cardID);
+  }
+
+  function DisplayRemainingPrevention() {
+    return false;
+  }
+  
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove, $player) {
+    return 0;
+  }
+
+  function EquipAbilities() {
+    return;
+  }
+
+  function UsurpedEffect() {
+    return;
+  }
+
+  function IsRunechant() {
+    return false;
+  }
+
+  function PermanentPitchCardAbility($pitchIndex) {
+    return;
+  }
+
+  function PermanentPowerModifier(&$powerModifiers) {
+    return 0;
+  }
+
+  function DoesEffectGrantOverpower() {
+    return false;
+  }
+
+  function CombatChainBlockModifier($cardID, $from, $index, $sourceIndex) {
+    return 0;
+  }
+
+  function PlayTrigger($from) {
+    return;
+  }
+
+  function Backside() {
+    return "-";
+  }
+
+  function Frontside() {
+    return $this->cardID;
+  }
+  
+  function SpecialHealth() {
+    return GeneratedCharacterHealth($this->cardID);
+  }
+
+  function HasBloodDebt() {
+    return GeneratedHasBloodDebt($this->cardID);
+  }
+
+  function PermanentEndPhaseAbility($index) {
+    return;
+  }
+
+  function DefenderPermanentEndPhaseAbility($index) {
+    return;
+  }
+
+  function GetBanishedEffect($from, $banisher, $banishedBy) {
+    return;
+  }
+
+  function AwakenAbility() {
+    return;
+  }
+
+  function IsUnique() {
+    return false;
+  }
+
+  function WinWagerTrigger() {
+    return;
+  }
+
+  function EffectIntellectModifier($i, $remove) {
+    return 0;
+  }
+
+  function OnAttackEffectEarly($cardID, $i) {
+    // used for effects that by default should trigger before other effects
+    // used for convenience in default ordering
+    return false;
+  }
+
+  function EffectPlayCardRestricted($cardID, $from, $playIndex, $effectIndex) {
+    return "";
   }
 }

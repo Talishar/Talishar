@@ -1,8 +1,13 @@
 <?php
 
+session_start();
+$sessionUserUid = $_SESSION['useruid'] ?? null;
+session_write_close();
+
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/CacheLibraries.php";
+include_once "../includes/ModeratorList.inc.php";
 
 SetHeaders();
 
@@ -18,7 +23,10 @@ if (!IsGameNameValid($gameName)) {
 }
 
 $playerID = $_GET["playerID"] ?? $_POST["playerID"] ?? null;
-if (!is_numeric($playerID) || ($playerID != 1 && $playerID != 2)) {
+
+$isMod = $sessionUserUid !== null && IsUserModerator($sessionUserUid);
+
+if (!is_numeric($playerID) || ($playerID != 1 && $playerID != 2 && !($playerID == 3 && $isMod))) {
   $response->errorMessage = "Invalid player ID.";
   http_response_code(400);
   echo json_encode($response);

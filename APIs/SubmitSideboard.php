@@ -14,6 +14,8 @@ include "../AI/CombatDummy.php";
 include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";
 include_once "../MenuFiles/StartHelper.php";
+include_once "../WriteLog.php";
+include_once "../Libraries/ValidationLibraries.php";
 SetHeaders();
 
 $response = new stdClass();
@@ -42,18 +44,28 @@ if (!IsGameNameValid($gameName)) {
   echo json_encode($response);
   exit;
 }
-$submissionString = $_POST["submission"];
+$submissionString = $_POST["submission"] ?? null;
+if ($submissionString === null) {
+  $response->error = "Submission data is missing";
+  echo json_encode($response);
+  exit;
+}
 
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-if ($authKey !== $targetAuth) {
-  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
-  $authKey = $targetAuth;
+if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
+  $response->error = "Authentication failed";
+  echo json_encode($response);
+  exit;
 }
 
 $submission = json_decode($submissionString);
+if ($submission === null || !isset($submission->hero)) {
+  $response->error = "Invalid submission data";
+  echo json_encode($response);
+  exit;
+}
 $character = $submission->hero;
 if(!isset($submission->hands)) $hands = "";
 else $hands = implode(" ", $submission->hands);
@@ -136,7 +148,7 @@ foreach ($inventory as $item) {
     $quiverSB[] = $item;
   } else if (in_array("Off-Hand", $subtypeArr) || HasPerched($item)) {
     $offhandSB[] = $item;
-  } else if (CardType($item) === "W" || CardType($item) === "E") {
+  } else if (($itemType = CardType($item)) === "W" || $itemType === "E") {
     $weaponSB[] = $item;
   } else {
     $cardsSB[] = $item;
@@ -162,7 +174,7 @@ fclose($deckFile);
 if($playerID == 1) $p1SideboardSubmitted = "1";
 else if($playerID == 2) $p2SideboardSubmitted = "1";
 
-if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
+if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus < $MGS_GameStarted) {
   $gameStatus = $MGS_ReadyToStart;
 
   //First initialize the initial state of the game
@@ -171,13 +183,17 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, "20 20\r\n"); //Player life totals
 
   //Player 1
-  $p1DeckHandler = fopen("../Games/" . $gameName . "/p1Deck.txt", "r");
+  $p1DeckPath = "../Games/" . $gameName . "/p1Deck.txt";
+  if (!file_exists($p1DeckPath)) { fclose($handler); die(json_encode(["error" => "Game deck files not found; the game may have been closed due to inactivity"])); }
+  $p1DeckHandler = fopen($p1DeckPath, "r");
   if (!$p1DeckHandler) { fclose($handler); die(json_encode(["error" => "Game deck files not found"])); }
   initializePlayerState($handler, $p1DeckHandler, 1);
   fclose($p1DeckHandler);
 
   //Player 2
-  $p2DeckHandler = fopen("../Games/" . $gameName . "/p2Deck.txt", "r");
+  $p2DeckPath = "../Games/" . $gameName . "/p2Deck.txt";
+  if (!file_exists($p2DeckPath)) { fclose($handler); die(json_encode(["error" => "Game deck files not found; the game may have been closed due to inactivity"])); }
+  $p2DeckHandler = fopen($p2DeckPath, "r");
   if (!$p2DeckHandler) { fclose($handler); die(json_encode(["error" => "Game deck files not found"])); }
   initializePlayerState($handler, $p2DeckHandler, 2);
   fclose($p2DeckHandler);
@@ -190,7 +206,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fwrite($handler, "M 1\r\n"); //What phase/player is active
   fwrite($handler, "1\r\n"); //Action points
   fwrite($handler, "\r\n"); //Combat Chain
-  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0\r\n"); //Combat Chain State
+  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0\r\n"); //Combat Chain State
   fwrite($handler, "\r\n"); //Current Turn Effects
   fwrite($handler, "\r\n"); //Current Turn Effects From Combat
   fwrite($handler, "\r\n"); //Next Turn Effects
@@ -224,30 +240,39 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1") {
   fclose($handler);
 
   //Write initial gamestate to memory
-  $gamestate = file_get_contents("../Games/" . $gameName . "/gamestate.txt");
+  $gamestate = @file_get_contents("../Games/" . $gameName . "/gamestate.txt");
+  if ($gamestate === false) {
+    error_log("SubmitSideboard: gamestate.txt missing for game $gameName — directory may have been cleaned up");
+    $response->error = "Game files not found; the game may have been closed due to inactivity";
+    echo json_encode($response);
+    exit;
+  }
   WriteGamestateCache($gameName, $gamestate);
 
   //Set up log file
   $filename = "../Games/" . $gameName . "/gamelog.txt";
   $filepath = "../Games/" . $gameName . "/";
   $handler = fopen($filename, "w");
-  fclose($handler);
+  if ($handler !== false) fclose($handler);
 
   $currentTime = strval(round(microtime(true) * 1000));
-  $currentUpdate = GetCachePiece($gameName, 1);
-  $p1Hero = GetCachePiece($gameName, 7);
-  $p2Hero = GetCachePiece($gameName, 8);
-  $visibility = GetCachePiece($gameName, 9);
-  $format = GetCachePiece($gameName, 13);
-  $p1chatEnabled = GetCachePiece($gameName, 15);
-  $p2chatEnabled = GetCachePiece($gameName, 16);
+  $cacheArr = ReadCacheArray($gameName); // one shmop read
+  $currentUpdate = $cacheArr[0] ?? ""; 
+  $p1Hero = $cacheArr[6] ?? "";        
+  $p2Hero = $cacheArr[7] ?? "";       
+  $visibility = $cacheArr[8] ?? "";    
+  $format = $cacheArr[12] ?? "";        
+  $p1chatEnabled = $cacheArr[14] ?? ""; 
+  $p2chatEnabled = $cacheArr[15] ?? ""; 
   $currentPlayer = 0;
   $isReplay = 0;
-  WriteCache($gameName, $currentUpdate + 1 . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!" . $p1chatEnabled . "!" . $p2chatEnabled); //Initialize SHMOP cache for this game
+  WriteCache($gameName, ((int)$currentUpdate + 1) . "!" . $currentTime . "!" . $currentTime . "!-1!-1!" . $currentTime . "!"  . $p1Hero . "!" . $p2Hero . "!" . $visibility . "!" . $isReplay . "!0!0!" . $format . "!" . $MGS_GameStarted . "!" . $p1chatEnabled . "!" . $p2chatEnabled); //Initialize SHMOP cache for this game
 
   $filename = "../Games/" . $gameName . "/gamestate.txt";
   include "../ParseGamestate.php";
   include "../StartEffects.php";
+
+  InitializeRustCounterAccrualForGame($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI);
 
   //Update the game file to show that the game has started and other players can join to spectate
   $gameStatus = $MGS_GameStarted;

@@ -70,7 +70,7 @@ $ALL_HEROES_OF_RATHE = [
   ['heroId' => 'professor_teklovossen', 'name' => 'Professor Teklovossen', 'young' => true],
   ['heroId' => 'brevant_civic_protector', 'name' => 'Brevant Civic Protector', 'young' => true],
   ['heroId' => 'melody_sing-along', 'name' => 'Melody Sing-along', 'young' => true],
-  ['heroId' => 'dash_i/o', 'name' => 'Dash I/O', 'young' => false],
+  ['heroId' => 'dash_io', 'name' => 'Dash I/O', 'young' => false],
   ['heroId' => 'dash_database', 'name' => 'Dash Database', 'young' => true],
   ['heroId' => 'maxx_the_hype_nitro', 'name' => 'Maxx The Hype Nitro', 'young' => false],
   ['heroId' => 'maxx_nitro', 'name' => 'Maxx Nitro', 'young' => true],
@@ -109,7 +109,7 @@ $ALL_HEROES_OF_RATHE = [
   ['heroId' => 'cindra', 'name' => 'Cindra', 'young' => true],
   ['heroId' => 'fang_dracai_of_blades', 'name' => 'Fang Dracai of Blades', 'young' => false],
   ['heroId' => 'fang', 'name' => 'Fang', 'young' => true],
-  ['heroId' => 'arakni_5l!p3d_7hru_7h3_cr4x', 'name' => 'Arakni 5L!p3d 7hRu 7h3 cR4X', 'young' => false],
+  ['heroId' => 'arakni_5lp3d_7hru_7h3_cr4x', 'name' => 'Arakni 5L!p3d 7hRu 7h3 cR4X', 'young' => false],
   ['heroId' => 'puffin_hightail', 'name' => 'Puffin Hightail', 'young' => false],
   ['heroId' => 'puffin', 'name' => 'Puffin', 'young' => true],
   ['heroId' => 'gravy_bones_shipwrecked_looter', 'name' => 'Gravy Bones Shipwrecked Looter', 'young' => false],
@@ -131,6 +131,19 @@ $ALL_HEROES_OF_RATHE = [
   ['heroId' => 'enigma_new_moon', 'name' => 'Enigma New Moon', 'young' => true],
   ['heroId' => 'hala_bladesaint_of_the_vow', 'name' => 'Hala Bladesaint of the Vow', 'young' => false],
   ['heroId' => 'hala', 'name' => 'Hala', 'young' => true],
+  ['heroId' => 'zyggy_starlight', 'name' => 'Zyggy Starlight', 'young' => false],
+  ['heroId' => 'zyggy', 'name' => 'Zyggy', 'young' => true],
+  ['heroId' => 'aurora_legacy_of_tempest', 'name' => 'Aurora, Legacy of Tempest', 'young' => false],
+  ['heroId' => 'aurora_emissary_of_lightning', 'name' => 'Aurora, Emissary of Lightning', 'young' => true],
+  ['heroId' => 'oscilio_forked_continuum', 'name' => 'Oscilio, Forked Continuum', 'young' => false],
+  ['heroId' => 'oscilio_scion_of_the_third_age', 'name' => 'Oscilio, Scion of the Third Age', 'young' => true],
+  ['heroId' => 'baalghor_omen_of_the_end', 'name' => 'Baalghor, Omen of the End', 'young' => true],
+  ['heroId' => 'malice_domina_of_the_dead', 'name' => 'Malice, Domina of the Dead', 'young' => false],
+  ['heroId' => 'malice', 'name' => 'Malice', 'young' => true],
+  ['heroId' => 'viserai_the_forsaken', 'name' => 'Viserai, the Forsaken', 'young' => false],
+  ['heroId' => 'viserai_between_worlds', 'name' => 'Viserai, Between Worlds', 'young' => true],
+  ['heroId' => 'killjoy_the_crooked_blade', 'name' => 'Killjoy, the Crooked Blade', 'young' => true],
+  ['heroId' => 'zane_broadly_beloved', 'name' => 'Zane, Broadly Beloved', 'young' => true],
 ];
 
 // Hero-specific ban check.
@@ -140,7 +153,6 @@ $ALL_HEROES_OF_RATHE = [
 // include()d safely (side effects), so we duplicate the bits that matter
 // for heroes:
 //   - Living Legends (Constants.php $livingLegends) are banned in CC
-//   - Format-specific hero bans live in $heroBansByFormat below
 //
 // TODO: refactor isBannedInFormat() out of JoinGame.php into a Libraries/
 // file so this can call it directly and we can drop the duplication.
@@ -158,12 +170,7 @@ function isHeroBannedInFormat($heroId, $format) {
     return true;
   }
 
-  // Other format-specific hero bans (none currently — placeholder for future)
-  $heroBansByFormat = [
-    // 'cc'    => [],
-    // 'blitz' => [],
-  ];
-  return isset($heroBansByFormat[$format]) && in_array($heroId, $heroBansByFormat[$format], true);
+  return false;
 }
 
 // Returns the format-legal heroes (young/adult split applied, banned heroes
@@ -171,7 +178,7 @@ function isHeroBannedInFormat($heroId, $format) {
 // GetLobbyRefresh.php; surfaces as `legalHeroes: LegalHero[]` on the lobby
 // response payload.
 function GetLegalHeroes($format) {
-  global $ALL_HEROES_OF_RATHE;
+  global $ALL_HEROES_OF_RATHE, $benched;
 
   // Format-tier filter: young heroes for Blitz/Sage/Commoner/Clash formats,
   // adult heroes for everything else (CC, LL CC, Draft, Sealed, Gage, etc.)
@@ -186,7 +193,20 @@ function GetLegalHeroes($format) {
   $legal = [];
   foreach ($ALL_HEROES_OF_RATHE as $h) {
     if ($h['young'] !== $useYoung) continue;
-    if (isHeroBannedInFormat($h['heroId'], $format)) continue;
+
+    if ($useYoung && in_array($format, ['sage', 'compsage', 'opensage', 'futuresage'], true)) {
+      $futureSageException = $format === 'futuresage' && (
+        (is_array($benched ?? null) && in_array($h['heroId'], $benched, true))
+        || in_array($h['heroId'], ['prism_advent_of_thrones', 'dorinthea_quicksilver_prodigy'], true)
+      );
+      if (!$futureSageException) {
+        if (isHeroBannedInFormat($h['heroId'], $format)) continue;
+        $rarity = function_exists('Rarity') ? Rarity($h['heroId']) : '';
+        if (!in_array($rarity, ['R', 'C', 'T', 'B'], true)) continue;
+      }
+    } else if (isHeroBannedInFormat($h['heroId'], $format)) {
+      continue;
+    }
 
     // Class string from CardClass() in CardDictionary.php: "RUNEBLADE",
     // "WIZARD", "ASSASSIN", etc. Empty string if unknown.
@@ -200,4 +220,19 @@ function GetLegalHeroes($format) {
     ];
   }
   return $legal;
+}
+
+function GetMasteryHeroGroups() {
+  $toSetIds = function ($heroes) {
+    return array_values(array_unique(array_filter(array_map(
+      fn($hero) => function_exists('SetID') ? SetID($hero['heroId']) : '',
+      $heroes
+    ))));
+  };
+
+  return [
+    'classicConstructed' => $toSetIds(GetLegalHeroes('cc')),
+    'silverAge' => $toSetIds(GetLegalHeroes('futuresage')),
+    'livingLegend' => $toSetIds(GetLegalHeroes('llcc')),
+  ];
 }

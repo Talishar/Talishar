@@ -15,9 +15,9 @@ function LoadUserData($username) {
 		mysqli_stmt_close($stmt);
 		mysqli_close($conn);
 	}
-	catch (\Exception $e) { }
+	catch (\Exception $e) { error_log("LoadUserData: query failed for user lookup: " . $e->getMessage()); }
 
-  return $row;
+  return $row ?? null;
 }
 
 
@@ -26,14 +26,14 @@ function PasswordLogin($username, $password, $rememberMe) {
 	try {
 		$userData = LoadUserData($username);
 	}
-	catch (\Exception $e) { }
+	catch (\Exception $e) { error_log("PasswordLogin: LoadUserData threw: " . $e->getMessage()); }
 
   if($userData == NULL) return false;
 
   try {
   	$passwordValid = password_verify($password, $userData["usersPwd"]);
   }
-  catch (\Exception $e) { }
+  catch (\Exception $e) { error_log("PasswordLogin: password_verify threw: " . $e->getMessage()); }
 
   if($passwordValid)
   {
@@ -47,10 +47,14 @@ function PasswordLogin($username, $password, $rememberMe) {
 		$_SESSION["patreonEnum"] = $userData["patreonEnum"];
 		$_SESSION["isBanned"] = $userData["isBanned"];
 		$_SESSION["metafyID"] = $userData["metafyID"] ?? "";
+		$_SESSION["rust_counters"] = intval($userData["rust_counters"] ?? 0);
+		$_SESSION["displayName"] = $userData["displayName"] ?? "";
+
+		LogIPHistory($userData["usersId"]);
 
 		try {
 			PatreonLogin($patreonAccessToken);
-		} catch (\Exception $e) { }
+		} catch (\Exception $e) { error_log("PasswordLogin: PatreonLogin threw: " . $e->getMessage()); }
 
 		if($rememberMe)
 		{

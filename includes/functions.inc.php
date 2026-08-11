@@ -4,35 +4,41 @@ require_once __DIR__ . '/../Assets/patreon-php-master/src/PatreonLibraries.php';
 
 use SendGrid\Mail\Mail;
 
+if (!function_exists('IsDevEnvironment')) {
+  function IsDevEnvironment() {
+    $domain = getenv("DOMAIN");
+    if ($domain === "localhost") return true;
+    if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') return true;
+    return false;
+  }
+}
+
 // Check for empty input signup
 function emptyInputSignup($username, $email, $pwd, $pwdRepeat)
 {
-	$result = (empty($username) || empty($email) || empty($pwd) || empty($pwdRepeat)) ? true : false;
-	return $result;
+	return empty($username) || empty($email) || empty($pwd) || empty($pwdRepeat);
 }
 
 // Check invalid username
 function invalidUid($username)
 {
-	$result = (!ctype_alnum($username)) ? true : false;
-	return $result;
+	return !ctype_alnum($username);
 }
 
 // Check invalid email
 function invalidEmail($email)
 {
-	$result = (!filter_var($email, FILTER_VALIDATE_EMAIL)) ? true : false;
-	return $result;
+	return !filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
 // Check if passwords matches
 function pwdMatch($pwd, $pwdrepeat)
 {
-	$result = ($pwd !== $pwdrepeat) ? true : false;
-	return $result;
+	return $pwd !== $pwdrepeat;
 }
 
 // Check if username is in database, if so then return data
+// Also matches display names so a new signup can't take a name another player displays as
 function uidExists($conn, $username)
 {
 	$conn = GetDBConnection(DBL_UID_EXISTS);
@@ -40,14 +46,14 @@ function uidExists($conn, $username)
 		header("location: ../Signup.php?error=db_unavailable");
 		exit();
 	}
-	$sql = "SELECT * FROM users WHERE usersUid = ?;";
+	$sql = "SELECT * FROM users WHERE usersUid = ? OR displayName = ?;";
 	$stmt = mysqli_stmt_init($conn);
 	if (!mysqli_stmt_prepare($stmt, $sql)) {
 		header("location: ../Signup.php?error=stmtfailed");
 		exit();
 	}
 
-	mysqli_stmt_bind_param($stmt, "s", $username);
+	mysqli_stmt_bind_param($stmt, "ss", $username, $username);
 	mysqli_stmt_execute($stmt);
 
 	// "Get result" returns the results from a prepared statement
@@ -113,8 +119,10 @@ function CreateUserAPI($conn, $username, $email, $pwd)
 
 	mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashedPwd);
 	mysqli_stmt_execute($stmt);
+	$newUserId = mysqli_insert_id($conn);
 	mysqli_stmt_close($stmt);
 	mysqli_close($conn);
+	return $newUserId > 0 ? $newUserId : false;
 }
 
 function loginFromCookie()
@@ -125,7 +133,7 @@ function loginFromCookie()
         if (!$conn) {
             return; // Silently fail if database unavailable
         }
-        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey, metafyID FROM users WHERE rememberMeToken=?";
+        $sql = "SELECT usersId, usersUid, usersEmail, patreonAccessToken, patreonRefreshToken, patreonEnum, isBanned, lastGameName, lastPlayerId, lastAuthKey, metafyID, rust_counters, displayName FROM users WHERE rememberMeToken=?";
         $stmt = mysqli_stmt_init($conn);
         
         if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -152,10 +160,13 @@ function loginFromCookie()
                 $_SESSION["lastPlayerId"] = $row[8];
                 $_SESSION["lastAuthKey"] = $row[9];
                 $_SESSION["metafyID"] = $row[10] ?? "";
+                $_SESSION["rust_counters"] = intval($row[11] ?? 0);
+                $_SESSION["displayName"] = $row[12] ?? "";
+                LogIPHistory($row[0]);
                 try {
                     PatreonLogin($patreonAccessToken);
                 } catch (\Throwable $e) {
-                    // Handle exception (if any)
+                    error_log("functions.inc.php: PatreonLogin threw: " . $e->getMessage());
                 }
             } else {
                 // Unset session variables if token doesn't match
@@ -168,6 +179,8 @@ function loginFromCookie()
                 unset($_SESSION["lastPlayerId"]);
                 unset($_SESSION["lastAuthKey"]);
                 unset($_SESSION["metafyID"]);
+                unset($_SESSION["rust_counters"]);
+                unset($_SESSION["displayName"]);
             }
             session_write_close();
         }
@@ -194,14 +207,16 @@ function storeFabraryId($uid, $fabraryId)
 function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 {
 	$conn = GetDBConnection(DBL_STORE_LAST_GAME_INFO);
-	$sql = "UPDATE users SET lastGameName=?, lastPlayerId=?, lastAuthKey=? WHERE usersId=?";
-	$stmt = mysqli_stmt_init($conn);
-	if (mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_stmt_bind_param($stmt, "ssss", $gameName, $playerID, $authKey, $uid);
-		mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
+	if ($conn) {
+		$sql = "UPDATE users SET lastGameName=?, lastPlayerId=?, lastAuthKey=? WHERE usersId=?";
+		$stmt = mysqli_stmt_init($conn);
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_bind_param($stmt, "ssss", $gameName, $playerID, $authKey, $uid);
+			mysqli_stmt_execute($stmt);
+			mysqli_stmt_close($stmt);
+		}
+		mysqli_close($conn);
 	}
-	mysqli_close($conn);
 
 	if(session_status() !== PHP_SESSION_ACTIVE) session_start();
 	$_SESSION["lastGameName"] = $gameName;
@@ -210,11 +225,184 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 	session_write_close();
 }
 
+function GetLastGameInfo($uid)
+{
+	$conn = GetDBConnection(DBL_GET_LAST_GAME_INFO);
+	if (!$conn) {
+		return null;
+	}
+	$result = null;
+	$sql = "SELECT lastGameName, lastPlayerId, lastAuthKey FROM users WHERE usersId=?";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $uid);
+		mysqli_stmt_execute($stmt);
+		$data = mysqli_stmt_get_result($stmt);
+		$row = mysqli_fetch_assoc($data);
+		mysqli_free_result($data);
+		mysqli_stmt_close($stmt);
+		if ($row != null && intval($row["lastGameName"]) > 0 && !empty($row["lastAuthKey"])) {
+			$result = $row;
+		}
+	}
+	mysqli_close($conn);
+	return $result;
+}
+
+function ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)
+{
+	return $p1IsPatron === "1" || $p2IsPatron === "1";
+}
+
+function ShouldSkipRustCountersForContributors()
+{
+	global $p1uid, $p2uid;
+	include_once __DIR__ . '/ModeratorList.inc.php';
+	return IsUserContributor($p1uid) || IsUserContributor($p2uid);
+}
+
+function GetRustCounterAccrualStatePath()
+{
+	global $gameName;
+	if (!isset($gameName) || !is_numeric($gameName)) return null;
+	return dirname(__DIR__) . "/Games/" . $gameName . "/rustCounterAccrual.json";
+}
+
+function WriteRustCounterAccrualState($handle, $state)
+{
+	$json = json_encode($state);
+	if ($json === false) return false;
+	rewind($handle);
+	if (!ftruncate($handle, 0)) return false;
+	if (fwrite($handle, $json) === false) return false;
+	return fflush($handle);
+}
+
+function InitializeRustCounterAccrualForGame($p1id, $p1IsPatron, $p1IsAI, $p2id, $p2IsPatron, $p2IsAI)
+{
+	$statePath = GetRustCounterAccrualStatePath();
+	if ($statePath === null) return false;
+
+	$players = [];
+	$skipGame = IsDevEnvironment();
+	if ($skipGame) {
+		$state = ["status" => "skipped", "players" => []];
+		return file_put_contents($statePath, json_encode($state), LOCK_EX) !== false;
+	}
+
+	if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron) && $p2IsAI !== "1") {
+		WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight: true, highlightColor: "green", path: "../");
+		$skipGame = true;
+	}
+	elseif (ShouldSkipRustCountersForContributors() && $p2IsAI !== "1") {
+		WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight: true, highlightColor: "green", path: "../");
+		$skipGame = true;
+	}
+
+	if (!$skipGame) {
+		$candidates = [
+			[
+				"userId" => intval($p1id),
+				"isPatron" => ($p1IsPatron === "1"),
+				"isAI" => ($p1IsAI === "1"),
+			],
+			[
+				"userId" => intval($p2id),
+				"isPatron" => ($p2IsPatron === "1"),
+				"isAI" => ($p2IsAI === "1"),
+			],
+		];
+
+		foreach ($candidates as $player) {
+			if ($player["isAI"] || $player["isPatron"] || $player["userId"] <= 0 || $player["userId"] == 465 || $player["userId"] == 9474 || $player["userId"] == 203) {
+				continue;
+			}
+			$players[] = ["userId" => $player["userId"], "processed" => false];
+		}
+	}
+
+	$state = [
+		"status" => $skipGame ? "skipped" : "pending",
+		"players" => $players,
+	];
+	return file_put_contents($statePath, json_encode($state), LOCK_EX) !== false;
+}
+
+function AddRustCountersAfterTurnZero()
+{
+	$statePath = GetRustCounterAccrualStatePath();
+	if ($statePath === null || !file_exists($statePath)) return false;
+
+	$handle = @fopen($statePath, "r+");
+	if ($handle === false) return false;
+	if (!flock($handle, LOCK_EX)) {
+		fclose($handle);
+		return false;
+	}
+
+	$state = json_decode(stream_get_contents($handle), true);
+	if (!is_array($state) || ($state["status"] ?? "") !== "pending" || !is_array($state["players"] ?? null)) {
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return true;
+	}
+	if (count($state["players"]) === 0) {
+		$state["status"] = "complete";
+		WriteRustCounterAccrualState($handle, $state);
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return true;
+	}
+
+	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_AFTER_TURN_ZERO);
+	if (!$conn) {
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return false;
+	}
+
+	$sql = "UPDATE users
+		SET rust_counters = CASE
+				WHEN rust_counters_last_played IS NULL
+					OR rust_counters_last_played <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
+				THEN 1
+				ELSE COALESCE(rust_counters, 0) + 1
+			END,
+			rust_counters_last_played = CURRENT_TIMESTAMP
+		WHERE usersId=?";
+	$stmt = mysqli_stmt_init($conn);
+	if (!mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_close($conn);
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return false;
+	}
+
+	foreach ($state["players"] as $index => $player) {
+		if (($player["processed"] ?? false) === true) continue;
+
+		$state["players"][$index]["processed"] = true;
+		if (!WriteRustCounterAccrualState($handle, $state)) break;
+
+		$userId = intval($player["userId"] ?? 0);
+		if ($userId <= 0) continue;
+		mysqli_stmt_bind_param($stmt, "i", $userId);
+		mysqli_stmt_execute($stmt);
+	}
+
+	$state["status"] = "complete";
+	WriteRustCounterAccrualState($handle, $state);
+	mysqli_stmt_close($stmt);
+	mysqli_close($conn);
+	flock($handle, LOCK_UN);
+	fclose($handle);
+	return true;
+}
+
 function GetDeckBuilderId($uid, $decklink)
 {
 	$conn = GetDBConnection(DBL_GET_DECK_BUILDER_ID);
 	if (!$conn) {
-        echo json_encode(["error" => "Database connection failed in getting deckbuilder ID"]);
         return "";
 	}
 	$sql = "SELECT fabraryId,fabdbId FROM users WHERE usersId=?";
@@ -244,8 +432,7 @@ function GetDeckBuilderId($uid, $decklink)
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format = "")
 {
 	$conn = GetDBConnection(DBL_ADD_FAVORITE_DECK);
-	$deckName = implode("", explode("\"", $deckName));
-	$deckName = implode("", explode("'", $deckName));
+	$deckName = str_replace(['"', "'"], '', $deckName);
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "','" . $format . "'";
 	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero, format) VALUES (?, ?, ?, ?, ?);";
 	$stmt = mysqli_stmt_init($conn);
@@ -262,7 +449,7 @@ function LoadFavoriteDecks($userID)
 	if ($userID == "") return [];
 	$conn = GetDBConnection(DBL_LOAD_FAVORITE_DECKS);
 	if (!$conn) return [];
-	$sql = "SELECT decklink, name, hero, format from favoritedeck where usersId=?";
+	$sql = "SELECT decklink, name, hero, format, cardBack, playmat, altArtsCustomized from favoritedeck where usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	$output = [];
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -270,7 +457,7 @@ function LoadFavoriteDecks($userID)
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 		while ($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			for ($i = 0; $i < 4; ++$i) array_push($output, $row[$i]);
+			for ($i = 0; $i < 7; ++$i) $output[] = $row[$i];
 		}
 		mysqli_free_result($data);  // FREE RESULT BEFORE CLOSING STATEMENT
 		mysqli_stmt_close($stmt);
@@ -279,17 +466,109 @@ function LoadFavoriteDecks($userID)
 	return $output;
 }
 
-function ConvertDeck($deck) {
-	$ret = "";
-	foreach(explode("\n", $deck) as $line) {
-		foreach (explode(" ", $line) as $card) {
-			$ret .= SetID($card) . " ";
-		}
-        $ret = substr($ret, 0, -1);
-		$ret .= "\n";
+function FetchDeckFromDeckbuilder($decklink)
+{
+	global $FaBraryKey;
+
+	$curl = curl_init();
+	$isFaBDB = str_contains($decklink, "fabdb");
+	$isFaBMeta = str_contains($decklink, "fabmeta") && !str_contains($decklink, "fabtcgmeta");
+
+	if ($isFaBDB) {
+		$decklinkArr = explode("/", $decklink);
+		$slug = $decklinkArr[count($decklinkArr) - 1];
+		$apiLink = "https://api.fabdb.net/decks/" . $slug;
+	} else if (str_contains($decklink, "fabrary")) {
+		$headers = [
+			"x-api-key: " . $FaBraryKey,
+			"Content-Type: application/json",
+		];
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		// Extract slug: https://fabrary.net/decks/SLUG or https://fabrary.net/decks/SLUG?matchupId=...
+		$urlWithoutQuery = explode("?", $decklink)[0];
+		$decklinkArr = explode("/", $urlWithoutQuery);
+		$slug = $decklinkArr[count($decklinkArr) - 1];
+		$apiLink = "https://atofkpq0x8.execute-api.us-east-2.amazonaws.com/prod/v1/decks/" . $slug;
+	} else {
+		$decklinkArr = explode("/", $decklink);
+		$slug = $decklinkArr[count($decklinkArr) - 1];
+		$apiLink = "https://api.fabmeta.net/deck/" . $slug;
 	}
-    $ret = substr($ret, 0, -1);
-	return $ret;
+
+	curl_setopt($curl, CURLOPT_URL, $apiLink);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	$apiDeck = curl_exec($curl);
+	$apiInfo = curl_getinfo($curl);
+	curl_close($curl);
+
+	if ($apiDeck === FALSE) return null;
+
+	$result = new stdClass();
+	$result->deckObj = json_decode($apiDeck);
+	$result->isFaBDB = $isFaBDB;
+	$result->isFaBMeta = $isFaBMeta;
+	$result->httpCode = $apiInfo['http_code'];
+	return $result;
+}
+
+function ResolveDeckCardIds($deckObj, $isFaBDB, $isFaBMeta)
+{
+	$cardIds = [];
+	$cards = isset($deckObj->{'cards'}) ? $deckObj->{'cards'} : [];
+
+	if (!is_array($cards)) return $cardIds;
+
+	foreach ($cards as $card) {
+		$cardID = "";
+		if ($isFaBDB) {
+			if (isset($card->{'printings'}[0]->{'sku'}->{'sku'})) {
+				$setID = explode("-", $card->{'printings'}[0]->{'sku'}->{'sku'})[0];
+				$internalID = GeneratedSetIDtoCardID($setID);
+				$cardID = !empty($internalID) ? $internalID : $setID;
+			}
+		} else if ($isFaBMeta) {
+			$cardID = $card->{'identifier'} ?? "";
+		} else if (isset($card->{'identifier'})) {
+			$cardID = str_replace("-", "_", $card->{'identifier'});
+		} else if (isset($card->{'cardIdentifier'})) {
+			$cardID = $card->{'cardIdentifier'};
+		}
+
+		if (empty($cardID)) continue;
+		if (!in_array($cardID, $cardIds)) $cardIds[] = $cardID;
+	}
+
+	return $cardIds;
+}
+
+function GetDemiHeroForms($cardID)
+{
+	$arakniAgents = [
+		"arakni_black_widow",
+		"arakni_funnel_web",
+		"arakni_orb_weaver",
+		"arakni_redback",
+		"arakni_tarantula",
+		"arakni_trap_door"
+	];
+	return match ($cardID) {
+		"arakni_marionette", "arakni_web_of_deceit" => $arakniAgents,
+		default => []
+	};
+}
+
+function ConvertDeck($deck) {
+	$lines = explode("\n", $deck);
+	$convertedLines = [];
+	foreach ($lines as $line) {
+		$cards = explode(" ", $line);
+		$convertedCards = [];
+		foreach ($cards as $card) {
+			$convertedCards[] = SetID($card);
+		}
+		$convertedLines[] = implode(" ", $convertedCards);
+	}
+	return implode("\n", $convertedLines);
 }
 
 //Challenge ID 1 = sigil of solace blue
@@ -333,8 +612,10 @@ function logCompletedGameStats($conceded = false)
 	$gameResultID = $gameName;
 
 	// Pre-compute shared data to avoid redundant work
-	$format = GetCachePiece(intval($gameName), 13);
-	$isPublic = (GetCachePiece(intval($gameName), 9) === "1");
+	$gameCacheArr = ReadCacheArray(intval($gameName));
+	$format = $gameCacheArr[12] ?? "";
+	if ($format == 7 || $format == 6) return; // Don't send stats for draft (7) or sealed (6) formats
+	$isPublic = (($gameCacheArr[8] ?? "") === "1"); 
 	$hashedP1Deck = "-";
 	$hashedP2Deck = "-";
 	$detailedResult1Json = SerializeDetailedGameResult(1, $hashedP1Deck, $p1Deck, $gameResultID, $p2Hero, $gameName, $p1deckbuilderID, $p1Hero, $p1StatsDisabled);
@@ -444,6 +725,8 @@ function PrepareFaBInsightsRequest($gameID, $detailedResult1Json, $detailedResul
 	$payloadArr['player2Name'] = $hashedP2Name;
 	$payloadArr['deck1'] = json_decode($detailedResult1Json);
 	$payloadArr['deck2'] = json_decode($detailedResult2Json);
+	if (isset($payloadArr['deck1']->turnResults)) $payloadArr['deck1']->turnLog = GetCardTurnLog(1);
+	if (isset($payloadArr['deck2']->turnResults)) $payloadArr['deck2']->turnLog = GetCardTurnLog(2);
 	$payloadArr["format"] = $format;
 	$payloadArr['gameGUID'] = $gameGUID;
 	$payloadArr['conceded'] = $conceded;
@@ -654,12 +937,19 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	global $TurnStats_CardsPlayedDefense, $TurnStats_CardsPitched, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_ResourcesLeft, $TurnStats_LifeGained;
 	global $TurnStats_LifeLost, $TurnStats_DamagePrevented, $TurnStats_CardsDiscarded, $p1TotalTime, $p2TotalTime;
+	global $p1LifeHistory, $p2LifeHistory;
+	global $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
+	$lifeHistory = $player == 1 ? $p1LifeHistory : $p2LifeHistory;
+	$opponentLifeHistory = $player == 1 ? $p2LifeHistory : $p1LifeHistory;
+	$arcaneDealt = ($player == 1 ? $p1ArcaneDamageDealt : $p2ArcaneDamageDealt) ?? [];
+	$arcaneTaken = ($player == 1 ? $p2ArcaneDamageDealt : $p1ArcaneDamageDealt) ?? [];
 
 	$countTurnStats = count($turnStats);
+	$tsp = TurnStatPieces();
 
 	// Populate turn results - only include turns that have actually occurred
-	for($i = 0; $i < $countTurnStats && intval($i / TurnStatPieces()) <= $currentTurn; $i += TurnStatPieces()) {
-		$turnNo = intval($i / TurnStatPieces());
+	$turnNo = 0;
+	for($i = 0; $i < $countTurnStats && $turnNo <= $currentTurn; $i += $tsp, ++$turnNo) {
 		$turnKey = "turn_" . $turnNo;
 		
 		$cardsUsed = $turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense];
@@ -678,41 +968,47 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 		$lifeLost = $turnStats[$i + $TurnStats_LifeLost];
 
 		if($useIntval) {
-			$cardsUsed = intval($cardsUsed);
-			$cardsBlocked = intval($cardsBlocked);
-			$cardsPitched = intval($cardsPitched);
-			$cardsDiscarded = intval($cardsDiscarded);
-			$resourcesUsed = intval($resourcesUsed);
-			$resourcesLeft = intval($resourcesLeft);
-			$cardsLeft = intval($cardsLeft);
-			$damageThreatened = intval($damageThreatened);
-			$damageDealt = intval($damageDealt);
-			$damageBlocked = intval($damageBlocked);
-			$damagePrevented = intval($damagePrevented);
-			$damageTaken = intval($damageTaken);
-			$lifeGained = intval($lifeGained);
-			$lifeLost = intval($lifeLost);
+			$cardsUsed = (int)$cardsUsed;
+			$cardsBlocked = (int)$cardsBlocked;
+			$cardsPitched = (int)$cardsPitched;
+			$cardsDiscarded = (int)$cardsDiscarded;
+			$resourcesUsed = (int)$resourcesUsed;
+			$resourcesLeft = (int)$resourcesLeft;
+			$cardsLeft = (int)$cardsLeft;
+			$damageThreatened = (int)$damageThreatened;
+			$damageDealt = (int)$damageDealt;
+			$damageBlocked = (int)$damageBlocked;
+			$damagePrevented = (int)$damagePrevented;
+			$damageTaken = (int)$damageTaken;
+			$lifeGained = (int)$lifeGained;
+			$lifeLost = (int)$lifeLost;
 		}
 
-		$deck["turnResults"][$turnKey]["cardsUsed"] = $cardsUsed;
-		$deck["turnResults"][$turnKey]["cardsBlocked"] = $cardsBlocked;
-		$deck["turnResults"][$turnKey]["cardsPitched"] = $cardsPitched;
-		$deck["turnResults"][$turnKey]["cardsDiscarded"] = $cardsDiscarded;
-		$deck["turnResults"][$turnKey]["resourcesUsed"] = $resourcesUsed;
-		$deck["turnResults"][$turnKey]["resourcesLeft"] = $resourcesLeft;
-		$deck["turnResults"][$turnKey]["cardsLeft"] = $cardsLeft;
-		$deck["turnResults"][$turnKey]["damageThreatened"] = $damageThreatened;
-		$deck["turnResults"][$turnKey]["damageDealt"] = $damageDealt;
-		$deck["turnResults"][$turnKey]["damageBlocked"] = $damageBlocked;
-		$deck["turnResults"][$turnKey]["damagePrevented"] = $damagePrevented;
-		$deck["turnResults"][$turnKey]["damageTaken"] = $damageTaken;
-		$deck["turnResults"][$turnKey]["lifeGained"] = $lifeGained;
-		$deck["turnResults"][$turnKey]["lifeLost"] = $lifeLost;
+		$entry = &$deck["turnResults"][$turnKey];
+		$entry["cardsUsed"] = $cardsUsed;
+		$entry["cardsBlocked"] = $cardsBlocked;
+		$entry["cardsPitched"] = $cardsPitched;
+		$entry["cardsDiscarded"] = $cardsDiscarded;
+		$entry["resourcesUsed"] = $resourcesUsed;
+		$entry["resourcesLeft"] = $resourcesLeft;
+		$entry["cardsLeft"] = $cardsLeft;
+		$entry["damageThreatened"] = $damageThreatened;
+		$entry["damageDealt"] = $damageDealt;
+		$entry["damageBlocked"] = $damageBlocked;
+		$entry["damagePrevented"] = $damagePrevented;
+		$entry["damageTaken"] = $damageTaken;
+		$entry["arcaneDamageDealt"] = isset($arcaneDealt[$turnNo]) ? (int)$arcaneDealt[$turnNo] : 0;
+		$entry["arcaneDamageTaken"] = isset($arcaneTaken[$turnNo]) ? (int)$arcaneTaken[$turnNo] : 0;
+		$entry["lifeGained"] = $lifeGained;
+		$entry["lifeLost"] = $lifeLost;
+		$entry["lifeAtTurnEnd"] = isset($lifeHistory[$turnNo]) ? (int)$lifeHistory[$turnNo] : null;
+		$entry["opponentLifeAtTurnEnd"] = isset($opponentLifeHistory[$turnNo]) ? (int)$opponentLifeHistory[$turnNo] : null;
 
 		// SerializeGameResult has turnNo, SerializeDetailedGameResult doesn't - only add if not using intval
 		if(!$useIntval) {
-			$deck["turnResults"][$turnKey]["turnNo"] = $turnNo;
+			$entry["turnNo"] = $turnNo;
 		}
+		unset($entry);
 	}
 
 	// Set time information
@@ -725,6 +1021,10 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 {
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented;
+
+	$tsp = TurnStatPieces();
+	$countTurnStats = count($turnStats);
+	if (empty($turnStats) || $countTurnStats < $tsp) return;
 
 	$totalDamageThreatened = 0;
 	$totalDamageDealt = 0;
@@ -749,11 +1049,11 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$totalLifeLost += $turnStats[$TurnStats_LifeLost];
 
 	// Skip turn 0 for average calculations
-	$start = TurnStatPieces();
-	$endIndex = count($turnStats) - TurnStatPieces();
+	$start = $tsp;
+	$endIndex = $countTurnStats - $tsp;
 	if($endIndex < $start) $endIndex = $start;
 
-	for($i = $start; $i < $endIndex; $i += TurnStatPieces()) {
+	for($i = $start; $i < $endIndex; $i += $tsp) {
 		$totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
 		$totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
 		$totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
@@ -797,8 +1097,8 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$numTurns_NoLast = $numTurnsCount - 1; // Exclude last turn
 
 	// Subtract the last turn from NoLast values
-	if($endIndex - TurnStatPieces() >= $start) {
-		$lastTurnIndex = $endIndex - TurnStatPieces();
+	if($endIndex - $tsp >= $start) {
+		$lastTurnIndex = $endIndex - $tsp;
 		$totalDamageThreatened_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_DamageThreatened];
 		$totalDamageDealt_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_DamageDealt];
 		$totalResourcesUsed_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_ResourcesUsed];
@@ -832,7 +1132,7 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
-	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded;
+	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated, $CardStats_TimesPassiveTriggered;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -859,49 +1159,34 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	if(count($characterCards) > 0) {
 		$yourHeroCardID = $characterCards[0];
 		$deck["yourHero"] = $yourHeroCardID;
+		$deck["startingLife"] = CharacterHealth($yourHeroCardID);
 	}
-	
+
 	// Add opponent's hero if provided
 	if($opposingHero != "") {
 		$deck["opponentHero"] = $opposingHero;
+		$deck["opponentStartingLife"] = CharacterHealth($opposingHero);
 	}
-	
+
 	$deck["cardResults"] = [];
 	$deck["character"] = [];
 
 	$character = explode(" ", $character);
-	$deduplicatedCharacter = [];
-	for($i = 0; $i < count($character); ++$i) {
-		$card = $character[$i];
-		if (array_key_exists($card, $deduplicatedCharacter)) {
-			$deduplicatedCharacter[$card]++;
-		} else {
-			$deduplicatedCharacter[$card] = 1;
-		}
-	}
+	$deduplicatedCharacter = array_count_values($character);
 
 	foreach ($deduplicatedCharacter as $card => $numCopies) {
-		$cardResult = [
+		$deck["character"][] = [
 			"cardId" => $card,
 			"cardName" => CardName($card),
 			"numCopies" => $numCopies,
 		];
-		array_push($deck["character"], $cardResult);
 	}
 
 	$deckAfterSB = explode(" ", $deckAfterSB);
-	$deduplicatedDeck = [];
-	for($i = 0; $i < count($deckAfterSB); ++$i) {
-		$card = $deckAfterSB[$i];
-		if (array_key_exists($card, $deduplicatedDeck)) {
-			$deduplicatedDeck[$card]++;
-		} else {
-			$deduplicatedDeck[$card] = 1;
-		}
-	}
+	$deduplicatedDeck = array_count_values($deckAfterSB);
 
 	foreach ($deduplicatedDeck as $card => $numCopies) {
-		$cardResult = [
+		$deck["cardResults"][] = [
 			"cardId" => $card,
 			"played" => 0,
 			"blocked" => 0,
@@ -913,46 +1198,54 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 			"pitchValue" => PitchValue($card),
 			"numCopies" => $numCopies,
 		];
-		array_push($deck["cardResults"], $cardResult);
 	}
 
 	$cardStats = &GetCardStats($player);
 	$deck["tokenResults"] = [];
 	$deck["arenaCardResults"] = [];
-	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
-		$found = false;
-		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
-			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
-				$deck["cardResults"][$j]["played"] = $cardStats[$i + $CardStats_TimesPlayed];
-				$deck["cardResults"][$j]["blocked"] = $cardStats[$i + $CardStats_TimesBlocked];
-				$deck["cardResults"][$j]["pitched"] = $cardStats[$i + $CardStats_TimesPitched];
-				$deck["cardResults"][$j]["hits"] = $cardStats[$i + $CardStats_TimesHit];
-				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
-				$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
-				$deck["cardResults"][$j]["discarded"] = $cardStats[$i + $CardStats_TimesDiscarded];
-				$found = true;
-				break;
-			}
-		}
-		// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
-		if (!$found) {
-			$cardType = CardType($cardStats[$i]);
+
+	// Build a cardId → index map to avoid O(n*m) inner-loop lookups
+	$cardResultIndex = [];
+	foreach ($deck["cardResults"] as $j => $cr) {
+		$cardResultIndex[$cr["cardId"]] = $j;
+	}
+
+	$csp = CardStatPieces();
+	$countCardStats = count($cardStats);
+	for($i = 0; $i < $countCardStats; $i += $csp) {
+		$cardId = $cardStats[$i];
+		if (isset($cardResultIndex[$cardId])) {
+			$j = $cardResultIndex[$cardId];
+			$deck["cardResults"][$j]["played"] = $cardStats[$i + $CardStats_TimesPlayed];
+			$deck["cardResults"][$j]["blocked"] = $cardStats[$i + $CardStats_TimesBlocked];
+			$deck["cardResults"][$j]["pitched"] = $cardStats[$i + $CardStats_TimesPitched];
+			$deck["cardResults"][$j]["hits"] = $cardStats[$i + $CardStats_TimesHit];
+			$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesCharged];
+			$deck["cardResults"][$j]["charged"] = $cardStats[$i + $CardStats_TimesKatsuDiscard];
+			$deck["cardResults"][$j]["discarded"] = $cardStats[$i + $CardStats_TimesDiscarded];
+			$deck["cardResults"][$j]["activated"] = $cardStats[$i + $CardStats_TimesActivated];
+			$deck["cardResults"][$j]["passiveTriggered"] = $cardStats[$i + $CardStats_TimesPassiveTriggered];
+		} else {
+			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon/character/companion or if activated from play (e.g. ally tokens), otherwise tokenResults
+			$cardType = CardType($cardId);
 			$cardResult = [
-				"cardId" => $cardStats[$i],
+				"cardId" => $cardId,
 				"played" => $cardStats[$i + $CardStats_TimesPlayed],
 				"blocked" => $cardStats[$i + $CardStats_TimesBlocked],
 				"pitched" => $cardStats[$i + $CardStats_TimesPitched],
 				"hits" => $cardStats[$i + $CardStats_TimesHit],
 				"discarded" => $cardStats[$i + $CardStats_TimesDiscarded],
 				"charged" => $cardStats[$i + $CardStats_TimesCharged],
-				"cardName" => CardName($cardStats[$i]),
-				"pitchValue" => PitchValue($cardStats[$i]),
+				"cardName" => CardName($cardId),
+				"pitchValue" => PitchValue($cardId),
 				"katsuDiscard" => $cardStats[$i + $CardStats_TimesKatsuDiscard],
+				"activated" => $cardStats[$i + $CardStats_TimesActivated],
+				"passiveTriggered" => $cardStats[$i + $CardStats_TimesPassiveTriggered],
 			];
-			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
-				array_push($deck["arenaCardResults"], $cardResult);
+			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion") || $cardStats[$i + $CardStats_TimesActivated] > 0 || $cardStats[$i + $CardStats_TimesPassiveTriggered] > 0 || $cardStats[$i + $CardStats_TimesPitched] > 0) {
+				$deck["arenaCardResults"][] = $cardResult;
 			} else {
-				array_push($deck["tokenResults"], $cardResult);
+				$deck["tokenResults"][] = $cardResult;
 			}
 		}
 	}
@@ -972,7 +1265,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $playerHero = "", $excludePrivateFields = false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
-	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded;
+	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated, $CardStats_TimesPassiveTriggered;
+	global $CS_OriginalHero;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -990,44 +1284,33 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	if($winner == "1" || $winner == "2") $deck["winner"] = intval($winner);
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);
 	if($opposingHero != "") $deck["opposingHero"] = $opposingHero;
+	$playerOriginalHero = GetClassState($player, $CS_OriginalHero);
+	if ($playerOriginalHero == "-") $playerOriginalHero = $playerHero;
+	$opposingOriginalHero = GetClassState($player == 1 ? 2 : 1, $CS_OriginalHero);
+	if ($opposingOriginalHero == "-") $opposingOriginalHero = $opposingHero;
+	if($opposingHero != "") $deck["opponentStartingLife"] = intval(CharacterHealth($opposingOriginalHero));
 	if($playerHero != "") $deck["playerHero"] = $playerHero;
+	if($playerHero != "") $deck["startingLife"] = intval(CharacterHealth($playerOriginalHero));
 	if($deckbuilderID != "") $deck["deckbuilderID"] = $deckbuilderID;
 	$deck["cardResults"] = [];
 	$deck["character"] = [];
 
 	$character = explode(" ", $character);
-	$deduplicatedCharacter = [];
-	for($i = 0; $i < count($character); ++$i) {
-		$card = $character[$i];
-		if (array_key_exists($card, $deduplicatedCharacter)) {
-			$deduplicatedCharacter[$card]++;
-		} else {
-			$deduplicatedCharacter[$card] = 1;
-		}
-	}
+	$deduplicatedCharacter = array_count_values($character);
 
 	foreach ($deduplicatedCharacter as $card => $numCopies) {
-		$cardResult = [
+		$deck["character"][] = [
 			"cardId" => $card,
 			"cardName" => CardName($card),
 			"numCopies" => $numCopies,
 		];
-		array_push($deck["character"], $cardResult);
 	}
 
 	$deckAfterSB = explode(" ", $deckAfterSB);
-	$deduplicatedDeck = [];
-	for($i = 0; $i < count($deckAfterSB); ++$i) {
-		$card = $deckAfterSB[$i];
-		if (array_key_exists($card, $deduplicatedDeck)) {
-			$deduplicatedDeck[$card]++;
-		} else {
-			$deduplicatedDeck[$card] = 1;
-		}
-	}
+	$deduplicatedDeck = array_count_values($deckAfterSB);
 
 	foreach ($deduplicatedDeck as $card => $numCopies) {
-		$cardResult = [
+		$deck["cardResults"][] = [
 			"cardId" => $card,
 			"played" => 0,
 			"blocked" => 0,
@@ -1039,46 +1322,54 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 			"pitchValue" => PitchValue($card),
 			"numCopies" => $numCopies,
 		];
-		array_push($deck["cardResults"], $cardResult);
 	}
 
 	$cardStats = &GetCardStats($player);
 	$deck["tokenResults"] = [];
 	$deck["arenaCardResults"] = [];
-	for($i = 0; $i < count($cardStats); $i += CardStatPieces()) {
-		$found = false;
-		for($j = 0; $j < count($deck["cardResults"]); ++$j) {
-			if($deck["cardResults"][$j]["cardId"] == $cardStats[$i]) {
-				$deck["cardResults"][$j]["played"] = intval($cardStats[$i + $CardStats_TimesPlayed]);
-				$deck["cardResults"][$j]["blocked"] = intval($cardStats[$i + $CardStats_TimesBlocked]);
-				$deck["cardResults"][$j]["pitched"] = intval($cardStats[$i + $CardStats_TimesPitched]);
-				$deck["cardResults"][$j]["hits"] = intval($cardStats[$i + $CardStats_TimesHit]);
-				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesCharged]);
-				$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesKatsuDiscard]);
-				$deck["cardResults"][$j]["discarded"] = intval($cardStats[$i + $CardStats_TimesDiscarded]);
-				$found = true;
-				break;
-			}
-		}
-		// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon, otherwise tokenResults
-		if (!$found) {
-			$cardType = CardType($cardStats[$i]);
+
+	// Build a cardId → index map to avoid O(n*m) inner-loop lookups
+	$cardResultIndex = [];
+	foreach ($deck["cardResults"] as $j => $cr) {
+		$cardResultIndex[$cr["cardId"]] = $j;
+	}
+
+	$csp = CardStatPieces();
+	$countCardStats = count($cardStats);
+	for($i = 0; $i < $countCardStats; $i += $csp) {
+		$cardId = $cardStats[$i];
+		if (isset($cardResultIndex[$cardId])) {
+			$j = $cardResultIndex[$cardId];
+			$deck["cardResults"][$j]["played"] = intval($cardStats[$i + $CardStats_TimesPlayed]);
+			$deck["cardResults"][$j]["blocked"] = intval($cardStats[$i + $CardStats_TimesBlocked]);
+			$deck["cardResults"][$j]["pitched"] = intval($cardStats[$i + $CardStats_TimesPitched]);
+			$deck["cardResults"][$j]["hits"] = intval($cardStats[$i + $CardStats_TimesHit]);
+			$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesCharged]);
+			$deck["cardResults"][$j]["charged"] = intval($cardStats[$i + $CardStats_TimesKatsuDiscard]);
+			$deck["cardResults"][$j]["discarded"] = intval($cardStats[$i + $CardStats_TimesDiscarded]);
+			$deck["cardResults"][$j]["activated"] = intval($cardStats[$i + $CardStats_TimesActivated]);
+			$deck["cardResults"][$j]["passiveTriggered"] = intval($cardStats[$i + $CardStats_TimesPassiveTriggered]);
+		} else {
+			// If card has stats but wasn't in the decklist, route to arenaCardResults if equipment/weapon/character/companion or if activated from play (e.g. ally tokens), otherwise tokenResults
+			$cardType = CardType($cardId);
 			$cardResult = [
-				"cardId" => $cardStats[$i],
+				"cardId" => $cardId,
 				"played" => intval($cardStats[$i + $CardStats_TimesPlayed]),
 				"blocked" => intval($cardStats[$i + $CardStats_TimesBlocked]),
 				"pitched" => intval($cardStats[$i + $CardStats_TimesPitched]),
 				"hits" => intval($cardStats[$i + $CardStats_TimesHit]),
 				"discarded" => intval($cardStats[$i + $CardStats_TimesDiscarded]),
 				"charged" => intval($cardStats[$i + $CardStats_TimesCharged]),
-				"cardName" => CardName($cardStats[$i]),
-				"pitchValue" => PitchValue($cardStats[$i]),
+				"cardName" => CardName($cardId),
+				"pitchValue" => PitchValue($cardId),
 				"katsuDiscard" => intval($cardStats[$i + $CardStats_TimesKatsuDiscard]),
+				"activated" => intval($cardStats[$i + $CardStats_TimesActivated]),
+				"passiveTriggered" => intval($cardStats[$i + $CardStats_TimesPassiveTriggered]),
 			];
-			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion")) {
-				array_push($deck["arenaCardResults"], $cardResult);
+			if (DelimStringContains($cardType, "C") || DelimStringContains($cardType, "E") || DelimStringContains($cardType, "W") || DelimStringContains($cardType, "Companion") || intval($cardStats[$i + $CardStats_TimesActivated]) > 0 || intval($cardStats[$i + $CardStats_TimesPassiveTriggered]) > 0 || intval($cardStats[$i + $CardStats_TimesPitched]) > 0) {
+				$deck["arenaCardResults"][] = $cardResult;
 			} else {
-				array_push($deck["tokenResults"], $cardResult);
+				$deck["tokenResults"][] = $cardResult;
 			}
 		}
 	}
@@ -1173,8 +1464,8 @@ function LoadSavedSettings($playerId)
 		mysqli_stmt_execute($stmt);
 		$data = mysqli_stmt_get_result($stmt);
 		while($row = mysqli_fetch_array($data, MYSQLI_NUM)) {
-			array_push($output, $row[0]);
-			array_push($output, $row[1]);
+			$output[] = $row[0];
+			$output[] = $row[1];
 		}
 		mysqli_free_result($data);  // FREE RESULT BEFORE CLOSING STATEMENT
 		mysqli_stmt_close($stmt);
@@ -1343,9 +1634,59 @@ function SendEmailAPICurlFallback($userEmail, $url, $email, $sendgridKey)
 	}
 }
 
-function BanPlayer($uid)
+// Returns the player's display name, falling back to the account handle when unset.
+function GetDisplayNameByUid($uid)
 {
+	if ($uid == "" || $uid == "-") return $uid;
+	$conn = GetDBConnection(DBL_GET_DISPLAY_NAME);
+	if (!$conn) return $uid;
+	$displayName = null;
+	$sql = "SELECT displayName FROM users WHERE usersUid = ?";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "s", $uid);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_bind_result($stmt, $displayName);
+		mysqli_stmt_fetch($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	return ($displayName !== null && $displayName !== "") ? $displayName : $uid;
+}
+
+function ResolveNameToAccount($name)
+{
+	if ($name == "") return null;
+	$conn = GetDBConnection(DBL_RESOLVE_NAME_TO_ACCOUNT);
+	if (!$conn) return null;
+
+	$queries = [
+		"SELECT usersId, usersUid FROM users WHERE usersUid = ? LIMIT 1",
+		"SELECT usersId, usersUid FROM users WHERE displayName = ? LIMIT 1",
+		"SELECT u.usersId, u.usersUid FROM name_history h JOIN users u ON u.usersId = h.usersId
+		 WHERE h.oldName = ? OR h.newName = ? ORDER BY h.changedAt DESC LIMIT 1"
+	];
+	foreach ($queries as $i => $sql) {
+		$stmt = mysqli_stmt_init($conn);
+		if (!mysqli_stmt_prepare($stmt, $sql)) continue;
+		if ($i == 2) mysqli_stmt_bind_param($stmt, "ss", $name, $name);
+		else mysqli_stmt_bind_param($stmt, "s", $name);
+		mysqli_stmt_execute($stmt);
+		$usersId = null;
+		$usersUid = null;
+		mysqli_stmt_bind_result($stmt, $usersId, $usersUid);
+		$found = mysqli_stmt_fetch($stmt);
+		mysqli_stmt_close($stmt);
+		if ($found) return ["usersId" => $usersId, "usersUid" => $usersUid];
+	}
+	return null;
+}
+
+function BanPlayer($uid, $bannedBy = "")
+{
+	$account = ResolveNameToAccount($uid);
+	if ($account !== null) $uid = $account["usersUid"];
 	$conn = GetDBConnection(DBL_BAN_PLAYER);
+	if (!$conn) return $uid;
 	$sql = "UPDATE users SET isBanned = true WHERE usersUid = ?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -1353,6 +1694,243 @@ function BanPlayer($uid)
 		mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
 	}
+	EnsureBannedPlayersTable($conn);
+	$sql = "INSERT INTO banned_players (name, bannedBy) VALUES (?, ?) ON DUPLICATE KEY UPDATE name = name";
+	$stmt = mysqli_stmt_init($conn);
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ss", $uid, $bannedBy);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	if (function_exists('apcu_delete')) @apcu_delete('talishar_banned_players');
+	return $uid;
+}
+
+function EnsureBannedPlayersTable($conn)
+{
+	$sql = "CREATE TABLE IF NOT EXISTS banned_players (
+		name VARCHAR(255) NOT NULL PRIMARY KEY,
+		bannedBy VARCHAR(255) DEFAULT NULL,
+		createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+	if (!mysqli_query($conn, $sql)) {
+		error_log("Failed to create banned_players table: " . mysqli_error($conn));
+	}
+}
+
+function EnsureBannedIPsTable($conn)
+{
+	$sql = "CREATE TABLE IF NOT EXISTS banned_ips (
+		ip VARCHAR(45) NOT NULL PRIMARY KEY,
+		bannedBy VARCHAR(255) DEFAULT NULL,
+		createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+	if (!mysqli_query($conn, $sql)) {
+		error_log("Failed to create banned_ips table: " . mysqli_error($conn));
+	}
+}
+
+function BanIP($ip, $bannedBy = "")
+{
+	$conn = GetDBConnection(DBL_BAN_PLAYER);
+	if (!$conn) return false;
+	EnsureBannedIPsTable($conn);
+	$sql = "INSERT INTO banned_ips (ip, bannedBy) VALUES (?, ?) ON DUPLICATE KEY UPDATE ip = ip";
+	$stmt = mysqli_stmt_init($conn);
+	$success = false;
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, "ss", $ip, $bannedBy);
+		$success = mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+	mysqli_close($conn);
+	if ($success) InvalidateIPBanCache($ip);
+	return $success;
+}
+
+function IsIPInCIDR($ip, $cidr)
+{
+	if (strpos($cidr, '/') === false) return $ip === $cidr;
+	list($subnet, $bits) = explode('/', $cidr);
+	$bits = (int)$bits;
+	$ipBin = @inet_pton($ip);
+	$subnetBin = @inet_pton($subnet);
+	if ($ipBin === false || $subnetBin === false || strlen($ipBin) !== strlen($subnetBin)) {
+		return false;
+	}
+	$bytes = intdiv($bits, 8);
+	$remainderBits = $bits % 8;
+	if ($bytes > 0 && substr($ipBin, 0, $bytes) !== substr($subnetBin, 0, $bytes)) {
+		return false;
+	}
+	if ($remainderBits > 0) {
+		$mask = ~(0xFF >> $remainderBits) & 0xFF;
+		if ((ord($ipBin[$bytes]) & $mask) !== (ord($subnetBin[$bytes]) & $mask)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+function IsCloudflareIP($ip)
+{
+	// Official ranges: https://www.cloudflare.com/ips/
+	static $cfRanges = [
+		'173.245.48.0/20',
+		'103.21.244.0/22',
+		'103.22.200.0/22',
+		'103.31.4.0/22',
+		'141.101.64.0/18',
+		'108.162.192.0/18',
+		'190.93.240.0/20',
+		'188.114.96.0/20',
+		'197.234.240.0/22',
+		'198.41.128.0/17',
+		'162.158.0.0/15',
+		'104.16.0.0/13',
+		'104.24.0.0/14',
+		'172.64.0.0/13',
+		'131.0.72.0/22',
+		'2400:cb00::/32',
+		'2606:4700::/32',
+		'2803:f800::/32',
+		'2405:b500::/32',
+		'2405:8100::/32',
+		'2a06:98c0::/29',
+		'2c0f:f248::/32',
+	];
+	foreach ($cfRanges as $range) {
+		if (IsIPInCIDR($ip, $range)) return true;
+	}
+	return false;
+}
+
+function GetClientIP()
+{
+	$remoteAddr = $_SERVER['REMOTE_ADDR'] ?? "";
+	if ($remoteAddr !== "" && IsCloudflareIP($remoteAddr) && !empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+		$cfIP = $_SERVER['HTTP_CF_CONNECTING_IP'];
+		if (filter_var($cfIP, FILTER_VALIDATE_IP)) {
+			return $cfIP;
+		}
+	}
+	return $remoteAddr;
+}
+
+function IPBanCacheKey($ip)
+{
+	return "ip_banned_" . hash("sha256", strval($ip));
+}
+
+function IsIPBanCacheAvailable()
+{
+	return extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_fetch');
+}
+
+function InvalidateIPBanCache($ip)
+{
+	global $ipBanRequestCache;
+	if (isset($ipBanRequestCache) && is_array($ipBanRequestCache)) unset($ipBanRequestCache[$ip]);
+	if (IsIPBanCacheAvailable()) @apcu_delete(IPBanCacheKey($ip));
+}
+
+function IsIPBanned($ip = null, $connection = null)
+{
+	global $ipBanRequestCache;
+	if ($ip === null) $ip = GetClientIP();
+	if ($ip == "") return false;
+
+	if (!isset($ipBanRequestCache) || !is_array($ipBanRequestCache)) $ipBanRequestCache = [];
+	if (array_key_exists($ip, $ipBanRequestCache)) return $ipBanRequestCache[$ip];
+	if (IsIPBanCacheAvailable()) {
+		$cacheHit = false;
+		$cached = @apcu_fetch(IPBanCacheKey($ip), $cacheHit);
+		if ($cacheHit) return $ipBanRequestCache[$ip] = (bool)$cached;
+	}
+
+	$banned = false;
+
+	$bannedIPsFile = dirname(__DIR__) . "/HostFiles/bannedIPs.txt";
+	if (file_exists($bannedIPsFile)) {
+		$lines = @file($bannedIPsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+		if ($lines && in_array($ip, array_map('trim', $lines))) $banned = true;
+	}
+
+	if (!$banned) {
+		$ownsConnection = false;
+		$conn = $connection;
+		if (!$conn) {
+			$conn = GetDBConnection(DBL_IS_IP_BANNED);
+			$ownsConnection = true;
+		}
+		if ($conn) {
+			$sql = "SELECT 1 FROM banned_ips WHERE ip = ? LIMIT 1";
+			$stmt = mysqli_stmt_init($conn);
+			try {
+				if (mysqli_stmt_prepare($stmt, $sql)) {
+					mysqli_stmt_bind_param($stmt, "s", $ip);
+					mysqli_stmt_execute($stmt);
+					$result = mysqli_stmt_get_result($stmt);
+					$banned = ($result && mysqli_fetch_row($result) != null);
+					mysqli_stmt_close($stmt);
+				}
+			} catch (\Exception $e) {
+				error_log("IsIPBanned: query failed: " . $e->getMessage());
+			}
+			if ($ownsConnection) mysqli_close($conn);
+		}
+	}
+
+	$ipBanRequestCache[$ip] = $banned;
+	if (IsIPBanCacheAvailable()) @apcu_store(IPBanCacheKey($ip), $banned, 60);
+	return $banned;
+}
+
+function EnsureIPHistoryTable($conn)
+{
+	$sql = "CREATE TABLE IF NOT EXISTS ip_history (
+		usersId INT NOT NULL,
+		ip VARCHAR(45) NOT NULL,
+		firstSeen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		lastSeen TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		timesSeen INT NOT NULL DEFAULT 1,
+		PRIMARY KEY (usersId, ip),
+		INDEX idx_ip (ip)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+	if (!mysqli_query($conn, $sql)) {
+		error_log("Failed to create ip_history table: " . mysqli_error($conn));
+	}
+}
+
+function LogIPHistory($usersId, $ip = null)
+{
+	if ($ip === null) $ip = GetClientIP();
+	if ($ip == "" || $usersId == null || $usersId === "") return;
+	// Never record a Cloudflare edge address as a player's IP -- it's shared
+	// by unrelated visitors and would poison ban-evasion IP matching.
+	if (IsCloudflareIP($ip)) return;
+
+	static $logged = [];
+	$key = $usersId . "|" . $ip;
+	if (isset($logged[$key])) return;
+	$logged[$key] = true;
+
+	$conn = GetDBConnection(DBL_LOG_IP_HISTORY);
+	if (!$conn) return;
+	EnsureIPHistoryTable($conn);
+	$sql = "INSERT INTO ip_history (usersId, ip) VALUES (?, ?)
+		ON DUPLICATE KEY UPDATE lastSeen = CURRENT_TIMESTAMP, timesSeen = timesSeen + 1";
+	$stmt = mysqli_stmt_init($conn);
+	try {
+		if (mysqli_stmt_prepare($stmt, $sql)) {
+			mysqli_stmt_bind_param($stmt, "is", $usersId, $ip);
+			mysqli_stmt_execute($stmt);
+			mysqli_stmt_close($stmt);
+		}
+	} catch (\Exception $e) {
+		error_log("LogIPHistory: query failed: " . $e->getMessage());
+	}
+	mysqli_close($conn);
 }
 
 if (!function_exists('GenerateGameGUID')) {

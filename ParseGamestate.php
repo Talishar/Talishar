@@ -1,5 +1,6 @@
 <?php
 
+global $gameName;
 function GetStringArray($line)
 {
   $line = trim($line);
@@ -11,45 +12,55 @@ if(!is_numeric($gameName)) exit;
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 if(!isset($filepath)) $filepath = "./Games/" . $gameName . "/";
 
-ParseGamestate();
+ParseGamestate($parseGamestateHistoricalStats ?? true);
 
 function GamestateSanitize($input)
 {
-  $output = str_replace(",", "<44>", $input);
-  $output = str_replace(" ", "_", $output);
-  return $output;
+  return str_replace([",", " "], ["<44>", "_"], $input);
 }
 
 function GamestateUnsanitize($input)
 {
-  $output = str_replace("<44>", ",", $input);
-  $output = str_replace("_", " ", $output);
-  return $output;
+  return str_replace(["<44>", "_"], [",", " "], $input);
 }
 
-function ParseGamestate()
+function ParseGamestate($parseHistoricalStats = true)
 {
   global $gameName, $playerHealths;
   global $p1Hand, $p1Deck, $p1CharEquip, $p1Resources, $p1Arsenal, $p1Items, $p1Auras, $p1Discard, $p1Pitch, $p1Banish;
   global $p1ClassState, $p1CharacterEffects, $p1Soul, $p1CardStats, $p1TurnStats, $p1Allies, $p1Permanents, $p1Settings;
   global $p2Hand, $p2Deck, $p2CharEquip, $p2Resources, $p2Arsenal, $p2Items, $p2Auras, $p2Discard, $p2Pitch, $p2Banish;
   global $p2ClassState, $p2CharacterEffects, $p2Soul, $p2CardStats, $p2TurnStats, $p2Allies, $p2Permanents, $p2Settings;
-  global $p1CardTurnLog, $p2CardTurnLog;
+  global $p1CardTurnLog, $p2CardTurnLog, $p1LifeHistory, $p2LifeHistory, $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
   global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity;
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $EffectContext;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
-  global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI, $AIHasInfiniteHP;
+  global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI, $AIHasInfiniteHP, $attackQueue, $practiceDummyWeaponPower;
 
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
   $myStateBuiltFor = -1;
 
-  $gamestateContent = ReadCache(GamestateID($gameName));
-  $gamestateContent = explode("\r\n", $gamestateContent);
-  if(count($gamestateContent) < 60) exit;
+  // explode once; avoids a redundant O(n) substr_count scan on the same string
+  $gamestateContent = explode("\r\n", ReadGamestateCache($gameName));
+  $gamestateLineCount = count($gamestateContent);
+  if ($gamestateLineCount < 60) {
+    global $filename;
+    $gsFile = (isset($filename) && str_contains($filename, "gamestate.txt"))
+      ? $filename : "./Games/" . $gameName . "/gamestate.txt";
+    $fileContent = @file_get_contents($gsFile);
+    if ($fileContent !== false) {
+      $gamestateContent = explode("\r\n", $fileContent);
+      $gamestateLineCount = count($gamestateContent);
+      if ($gamestateLineCount >= 60) {
+        WriteGamestateCache($gameName, $fileContent);
+      }
+    }
+  }
+  if ($gamestateLineCount < 60) exit;
 
   $playerHealths = GetStringArray($gamestateContent[0]); // 1
 
@@ -117,8 +128,7 @@ function ParseGamestate()
   if (!is_numeric($numChainLinks)) $numChainLinks = 0;
   $chainLinks = [];
   for ($i = 0; $i < $numChainLinks; ++$i) {
-    $chainLink = GetStringArray($gamestateContent[57+$i]);
-    array_push($chainLinks, $chainLink);
+    $chainLinks[] = GetStringArray($gamestateContent[57+$i]);
   }
   $chainLinkSummary = GetStringArray($gamestateContent[57+$numChainLinks]);
   $p1Key = trim($gamestateContent[58+$numChainLinks]);
@@ -140,8 +150,28 @@ function ParseGamestate()
   $p1IsAI = trim($gamestateContent[74+$numChainLinks]);
   $p2IsAI = trim($gamestateContent[75+$numChainLinks]);
   $AIHasInfiniteHP = isset($gamestateContent[76+$numChainLinks]) ? trim($gamestateContent[76+$numChainLinks]) == "1" : false;
-  $p1CardTurnLog = isset($gamestateContent[77+$numChainLinks]) ? json_decode(trim($gamestateContent[77+$numChainLinks]), true) ?? [] : [];
-  $p2CardTurnLog = isset($gamestateContent[78+$numChainLinks]) ? json_decode(trim($gamestateContent[78+$numChainLinks]), true) ?? [] : [];
+  if ($parseHistoricalStats) {
+    $p1CardTurnLog = isset($gamestateContent[77+$numChainLinks]) ? json_decode(trim($gamestateContent[77+$numChainLinks]), true) ?? [] : [];
+    $p2CardTurnLog = isset($gamestateContent[78+$numChainLinks]) ? json_decode(trim($gamestateContent[78+$numChainLinks]), true) ?? [] : [];
+  } else {
+    $p1CardTurnLog = [];
+    $p2CardTurnLog = [];
+  }
+  $attackQueue = GetStringArray($gamestateContent[79+$numChainLinks] ?? "");
+  if ($parseHistoricalStats) {
+    $p1LifeHistory = isset($gamestateContent[80+$numChainLinks]) ? json_decode(trim($gamestateContent[80+$numChainLinks]), true) ?? [] : [];
+    $p2LifeHistory = isset($gamestateContent[81+$numChainLinks]) ? json_decode(trim($gamestateContent[81+$numChainLinks]), true) ?? [] : [];
+    $p1ArcaneDamageDealt = isset($gamestateContent[82+$numChainLinks]) ? json_decode(trim($gamestateContent[82+$numChainLinks]), true) ?? [] : [];
+    $p2ArcaneDamageDealt = isset($gamestateContent[83+$numChainLinks]) ? json_decode(trim($gamestateContent[83+$numChainLinks]), true) ?? [] : [];
+  } else {
+    $p1LifeHistory = [];
+    $p2LifeHistory = [];
+    $p1ArcaneDamageDealt = [];
+    $p2ArcaneDamageDealt = [];
+  }
+  $practiceDummyWeaponPower = isset($gamestateContent[84+$numChainLinks])
+    ? max(0, min(100, intval($gamestateContent[84+$numChainLinks])))
+    : 4;
 
   BuildMyGamestate($playerID);
 }
@@ -169,40 +199,77 @@ function BuildMyGamestate($playerID)
   DoGamestateUpdate();
   $mainPlayerGamestateStillBuilt = 0;
   $myStateBuiltFor = $playerID == 1 ? 1 : 2;
-  $myHand = $playerID == 1 ? $p1Hand : $p2Hand;
-  $myDeck = $playerID == 1 ? $p1Deck : $p2Deck;
-  $myResources = $playerID == 1 ? $p1Resources : $p2Resources;
-  $myCharacter = $playerID == 1 ? $p1CharEquip : $p2CharEquip;
-  $myArsenal = $playerID == 1 ? $p1Arsenal : $p2Arsenal;
-  $myHealth = $playerID == 1 ? $playerHealths[0] : $playerHealths[1];
-  $myItems = $playerID == 1 ? $p1Items : $p2Items;
-  $myAuras = $playerID == 1 ? $p1Auras : $p2Auras;
-  $myDiscard = $playerID == 1 ? $p1Discard : $p2Discard;
-  $myPitch = $playerID == 1 ? $p1Pitch : $p2Pitch;
-  $myBanish = $playerID == 1 ? $p1Banish : $p2Banish;
-  $myClassState = $playerID == 1 ? $p1ClassState : $p2ClassState;
-  $myCharacterEffects = $playerID == 1 ? $p1CharacterEffects : $p2CharacterEffects;
-  $mySoul = $playerID == 1 ? $p1Soul : $p2Soul;
-  $myCardStats = $playerID == 1 ? $p1CardStats : $p2CardStats;
-  $myTurnStats = $playerID == 1 ? $p1TurnStats : $p2TurnStats;
-  $theirHand = $playerID == 1 ? $p2Hand : $p1Hand;
-  $theirDeck = $playerID == 1 ? $p2Deck : $p1Deck;
-  $theirResources = $playerID == 1 ? $p2Resources : $p1Resources;
-  $theirCharacter = $playerID == 1 ? $p2CharEquip : $p1CharEquip;
-  $theirArsenal = $playerID == 1 ? $p2Arsenal : $p1Arsenal;
-  $theirHealth = $playerID == 1 ? $playerHealths[1] : $playerHealths[0];
-  $theirItems = $playerID == 1 ? $p2Items : $p1Items;
-  $theirAuras = $playerID == 1 ? $p2Auras : $p1Auras;
-  $theirDiscard = $playerID == 1 ? $p2Discard : $p1Discard;
-  $theirPitch = $playerID == 1 ? $p2Pitch : $p1Pitch;
-  $theirBanish = $playerID == 1 ? $p2Banish : $p1Banish;
-  $theirClassState = $playerID == 1 ? $p2ClassState : $p1ClassState;
-  $theirCharacterEffects = $playerID == 1 ? $p2CharacterEffects : $p1CharacterEffects;
-  $theirSoul = $playerID == 1 ? $p2Soul : $p1Soul;
-  $theirCardStats = $playerID == 1 ? $p2CardStats : $p1CardStats;
-  $theirTurnStats = $playerID == 1 ? $p2TurnStats : $p1TurnStats;
-  $myCardTurnLog = $playerID == 1 ? $p1CardTurnLog : $p2CardTurnLog;
-  $theirCardTurnLog = $playerID == 1 ? $p2CardTurnLog : $p1CardTurnLog;
+  if ($playerID == 1) {
+    $myHand = $p1Hand;
+    $myDeck = $p1Deck;
+    $myResources = $p1Resources;
+    $myCharacter = $p1CharEquip;
+    $myArsenal = $p1Arsenal;
+    $myHealth = $playerHealths[0];
+    $myItems = $p1Items;
+    $myAuras = $p1Auras;
+    $myDiscard = $p1Discard;
+    $myPitch = $p1Pitch;
+    $myBanish = $p1Banish;
+    $myClassState = $p1ClassState;
+    $myCharacterEffects = $p1CharacterEffects;
+    $mySoul = $p1Soul;
+    $myCardStats = $p1CardStats;
+    $myTurnStats = $p1TurnStats;
+    $myCardTurnLog = $p1CardTurnLog;
+    $theirHand = $p2Hand;
+    $theirDeck = $p2Deck;
+    $theirResources = $p2Resources;
+    $theirCharacter = $p2CharEquip;
+    $theirArsenal = $p2Arsenal;
+    $theirHealth = $playerHealths[1];
+    $theirItems = $p2Items;
+    $theirAuras = $p2Auras;
+    $theirDiscard = $p2Discard;
+    $theirPitch = $p2Pitch;
+    $theirBanish = $p2Banish;
+    $theirClassState = $p2ClassState;
+    $theirCharacterEffects = $p2CharacterEffects;
+    $theirSoul = $p2Soul;
+    $theirCardStats = $p2CardStats;
+    $theirTurnStats = $p2TurnStats;
+    $theirCardTurnLog = $p2CardTurnLog;
+  } else {
+    $myHand = $p2Hand;
+    $myDeck = $p2Deck;
+    $myResources = $p2Resources;
+    $myCharacter = $p2CharEquip;
+    $myArsenal = $p2Arsenal;
+    $myHealth = $playerHealths[1];
+    $myItems = $p2Items;
+    $myAuras = $p2Auras;
+    $myDiscard = $p2Discard;
+    $myPitch = $p2Pitch;
+    $myBanish = $p2Banish;
+    $myClassState = $p2ClassState;
+    $myCharacterEffects = $p2CharacterEffects;
+    $mySoul = $p2Soul;
+    $myCardStats = $p2CardStats;
+    $myTurnStats = $p2TurnStats;
+    $myCardTurnLog = $p2CardTurnLog;
+    $theirHand = $p1Hand;
+    $theirDeck = $p1Deck;
+    $theirResources = $p1Resources;
+    $theirCharacter = $p1CharEquip;
+    $theirArsenal = $p1Arsenal;
+    $theirHealth = $playerHealths[0];
+    $theirItems = $p1Items;
+    $theirAuras = $p1Auras;
+    $theirDiscard = $p1Discard;
+    $theirPitch = $p1Pitch;
+    $theirBanish = $p1Banish;
+    $theirClassState = $p1ClassState;
+    $theirCharacterEffects = $p1CharacterEffects;
+    $theirSoul = $p1Soul;
+    $theirCardStats = $p1CardStats;
+    $theirTurnStats = $p1TurnStats;
+    $theirCardTurnLog = $p1CardTurnLog;
+  }
 }
 
 function BuildMainPlayerGameState()
@@ -220,40 +287,77 @@ function BuildMainPlayerGameState()
   global $p1CardTurnLog, $p2CardTurnLog, $mainCardTurnLog, $defCardTurnLog;
   DoGamestateUpdate();
   $mpgBuiltFor = $mainPlayer;
-  $mainHand = $mainPlayer == 1 ? $p1Hand : $p2Hand;
-  $mainDeck = $mainPlayer == 1 ? $p1Deck : $p2Deck;
-  $mainResources = $mainPlayer == 1 ? $p1Resources : $p2Resources;
-  $mainCharacter = $mainPlayer == 1 ? $p1CharEquip : $p2CharEquip;
-  $mainArsenal = $mainPlayer == 1 ? $p1Arsenal : $p2Arsenal;
-  $mainHealth = $mainPlayer == 1 ? $playerHealths[0] : $playerHealths[1];
-  $mainItems = $mainPlayer == 1 ? $p1Items : $p2Items;
-  $mainAuras = $mainPlayer == 1 ? $p1Auras : $p2Auras;
-  $mainPitch = $mainPlayer == 1 ? $p1Pitch : $p2Pitch;
-  $mainBanish = $mainPlayer == 1 ? $p1Banish : $p2Banish;
-  $mainClassState = $mainPlayer == 1 ? $p1ClassState : $p2ClassState;
-  $mainCharacterEffects = $mainPlayer == 1 ? $p1CharacterEffects : $p2CharacterEffects;
-  $mainDiscard = $mainPlayer == 1 ? $p1Discard : $p2Discard;
-  $mainSoul = $mainPlayer == 1 ? $p1Soul : $p2Soul;
-  $mainCardStats = $mainPlayer == 1 ? $p1CardStats : $p2CardStats;
-  $mainTurnStats = $mainPlayer == 1 ? $p1TurnStats : $p2TurnStats;
-  $defHand = $mainPlayer == 1 ? $p2Hand : $p1Hand;
-  $defDeck = $mainPlayer == 1 ? $p2Deck : $p1Deck;
-  $defResources = $mainPlayer == 1 ? $p2Resources : $p1Resources;
-  $defCharacter = $mainPlayer == 1 ? $p2CharEquip : $p1CharEquip;
-  $defArsenal = $mainPlayer == 1 ? $p2Arsenal : $p1Arsenal;
-  $defHealth = $mainPlayer == 1 ? $playerHealths[1] : $playerHealths[0];
-  $defItems = $mainPlayer == 1 ? $p2Items : $p1Items;
-  $defAuras = $mainPlayer == 1 ? $p2Auras : $p1Auras;
-  $defPitch = $mainPlayer == 1 ? $p2Pitch : $p1Pitch;
-  $defBanish = $mainPlayer == 1 ? $p2Banish : $p1Banish;
-  $defClassState = $mainPlayer == 1 ? $p2ClassState : $p1ClassState;
-  $defCharacterEffects = $mainPlayer == 1 ? $p2CharacterEffects : $p1CharacterEffects;
-  $defDiscard = $mainPlayer == 1 ? $p2Discard : $p1Discard;
-  $defSoul = $mainPlayer == 1 ? $p2Soul : $p1Soul;
-  $defCardStats = $mainPlayer == 1 ? $p2CardStats : $p1CardStats;
-  $defTurnStats = $mainPlayer == 1 ? $p2TurnStats : $p1TurnStats;
-  $mainCardTurnLog = $mainPlayer == 1 ? $p1CardTurnLog : $p2CardTurnLog;
-  $defCardTurnLog = $mainPlayer == 1 ? $p2CardTurnLog : $p1CardTurnLog;
+  if ($mainPlayer == 1) {
+    $mainHand = $p1Hand;
+    $mainDeck = $p1Deck;
+    $mainResources = $p1Resources;
+    $mainCharacter = $p1CharEquip;
+    $mainArsenal = $p1Arsenal;
+    $mainHealth = $playerHealths[0];
+    $mainItems = $p1Items;
+    $mainAuras = $p1Auras;
+    $mainPitch = $p1Pitch;
+    $mainBanish = $p1Banish;
+    $mainClassState = $p1ClassState;
+    $mainCharacterEffects = $p1CharacterEffects;
+    $mainDiscard = $p1Discard;
+    $mainSoul = $p1Soul;
+    $mainCardStats = $p1CardStats;
+    $mainTurnStats = $p1TurnStats;
+    $mainCardTurnLog = $p1CardTurnLog;
+    $defHand = $p2Hand;
+    $defDeck = $p2Deck;
+    $defResources = $p2Resources;
+    $defCharacter = $p2CharEquip;
+    $defArsenal = $p2Arsenal;
+    $defHealth = $playerHealths[1];
+    $defItems = $p2Items;
+    $defAuras = $p2Auras;
+    $defPitch = $p2Pitch;
+    $defBanish = $p2Banish;
+    $defClassState = $p2ClassState;
+    $defCharacterEffects = $p2CharacterEffects;
+    $defDiscard = $p2Discard;
+    $defSoul = $p2Soul;
+    $defCardStats = $p2CardStats;
+    $defTurnStats = $p2TurnStats;
+    $defCardTurnLog = $p2CardTurnLog;
+  } else {
+    $mainHand = $p2Hand;
+    $mainDeck = $p2Deck;
+    $mainResources = $p2Resources;
+    $mainCharacter = $p2CharEquip;
+    $mainArsenal = $p2Arsenal;
+    $mainHealth = $playerHealths[1];
+    $mainItems = $p2Items;
+    $mainAuras = $p2Auras;
+    $mainPitch = $p2Pitch;
+    $mainBanish = $p2Banish;
+    $mainClassState = $p2ClassState;
+    $mainCharacterEffects = $p2CharacterEffects;
+    $mainDiscard = $p2Discard;
+    $mainSoul = $p2Soul;
+    $mainCardStats = $p2CardStats;
+    $mainTurnStats = $p2TurnStats;
+    $mainCardTurnLog = $p2CardTurnLog;
+    $defHand = $p1Hand;
+    $defDeck = $p1Deck;
+    $defResources = $p1Resources;
+    $defCharacter = $p1CharEquip;
+    $defArsenal = $p1Arsenal;
+    $defHealth = $playerHealths[0];
+    $defItems = $p1Items;
+    $defAuras = $p1Auras;
+    $defPitch = $p1Pitch;
+    $defBanish = $p1Banish;
+    $defClassState = $p1ClassState;
+    $defCharacterEffects = $p1CharacterEffects;
+    $defDiscard = $p1Discard;
+    $defSoul = $p1Soul;
+    $defCardStats = $p1CardStats;
+    $defTurnStats = $p1TurnStats;
+    $defCardTurnLog = $p1CardTurnLog;
+  }
 
   $mainPlayerGamestateStillBuilt = 1;
 }
@@ -361,72 +465,115 @@ function UpdateMainPlayerGameStateInner()
   global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
   global $p1CardTurnLog, $p2CardTurnLog, $mainCardTurnLog, $defCardTurnLog;
 
-  $p1Deck = $mpgBuiltFor == 1 ? $mainDeck : $defDeck;
-  $p1Hand = $mpgBuiltFor == 1 ? $mainHand : $defHand;
-  $p1Resources = $mpgBuiltFor == 1 ? $mainResources : $defResources;
-  $p1CharEquip = $mpgBuiltFor == 1 ? $mainCharacter : $defCharacter;
-  $p1Arsenal = $mpgBuiltFor == 1 ? $mainArsenal : $defArsenal;
-  $playerHealths[0] = $mpgBuiltFor == 1 ? $mainHealth : $defHealth;
-  $p1Items = $mpgBuiltFor == 1 ? $mainItems : $defItems;
-  $p1Auras = $mpgBuiltFor == 1 ? $mainAuras : $defAuras;
-  $p1Pitch = $mpgBuiltFor == 1 ? $mainPitch : $defPitch;
-  $p1Banish = $mpgBuiltFor == 1 ? $mainBanish : $defBanish;
-  $p1ClassState = $mpgBuiltFor == 1 ? $mainClassState : $defClassState;
-  $p1CharacterEffects = $mpgBuiltFor == 1 ? $mainCharacterEffects : $defCharacterEffects;
-  $p1Discard = $mpgBuiltFor == 1 ? $mainDiscard : $defDiscard;
-  $p1Soul = $mpgBuiltFor == 1 ? $mainSoul : $defSoul;
-  $p1CardStats = $mpgBuiltFor == 1 ? $mainCardStats : $defCardStats;
-  $p1TurnStats = $mpgBuiltFor == 1 ? $mainTurnStats : $defTurnStats;
-  $p1CardTurnLog = $mpgBuiltFor == 1 ? $mainCardTurnLog : $defCardTurnLog;
-  $p2Deck = $mpgBuiltFor == 2 ? $mainDeck : $defDeck;
-  $p2Hand = $mpgBuiltFor == 2 ? $mainHand : $defHand;
-  $p2Resources = $mpgBuiltFor == 2 ? $mainResources : $defResources;
-  $p2CharEquip = $mpgBuiltFor == 2 ? $mainCharacter : $defCharacter;
-  $p2Arsenal = $mpgBuiltFor == 2 ? $mainArsenal : $defArsenal;
-  $playerHealths[1] = $mpgBuiltFor == 2 ? $mainHealth : $defHealth;
-  $p2Items = $mpgBuiltFor == 2 ? $mainItems : $defItems;
-  $p2Auras = $mpgBuiltFor == 2 ? $mainAuras : $defAuras;
-  $p2Pitch = $mpgBuiltFor == 2 ? $mainPitch : $defPitch;
-  $p2Banish = $mpgBuiltFor == 2 ? $mainBanish : $defBanish;
-  $p2ClassState = $mpgBuiltFor == 2 ? $mainClassState : $defClassState;
-  $p2CharacterEffects = $mpgBuiltFor == 2 ? $mainCharacterEffects : $defCharacterEffects;
-  $p2Discard = $mpgBuiltFor == 2 ? $mainDiscard : $defDiscard;
-  $p2Soul = $mpgBuiltFor == 2 ? $mainSoul : $defSoul;
-  $p2CardStats = $mpgBuiltFor == 2 ? $mainCardStats : $defCardStats;
-  $p2TurnStats = $mpgBuiltFor == 2 ? $mainTurnStats : $defTurnStats;
-  $p2CardTurnLog = $mpgBuiltFor == 2 ? $mainCardTurnLog : $defCardTurnLog;
+  if ($mpgBuiltFor == 1) {
+    $p1Deck = $mainDeck;
+    $p1Hand = $mainHand;
+    $p1Resources = $mainResources;
+    $p1CharEquip = $mainCharacter;
+    $p1Arsenal = $mainArsenal;
+    $playerHealths[0] = $mainHealth;
+    $p1Items = $mainItems;
+    $p1Auras = $mainAuras;
+    $p1Pitch = $mainPitch;
+    $p1Banish = $mainBanish;
+    $p1ClassState = $mainClassState;
+    $p1CharacterEffects = $mainCharacterEffects;
+    $p1Discard = $mainDiscard;
+    $p1Soul = $mainSoul;
+    $p1CardStats = $mainCardStats;
+    $p1TurnStats = $mainTurnStats;
+    $p1CardTurnLog = $mainCardTurnLog;
+    $p2Deck = $defDeck;
+    $p2Hand = $defHand;
+    $p2Resources = $defResources;
+    $p2CharEquip = $defCharacter;
+    $p2Arsenal = $defArsenal;
+    $playerHealths[1] = $defHealth;
+    $p2Items = $defItems;
+    $p2Auras = $defAuras;
+    $p2Pitch = $defPitch;
+    $p2Banish = $defBanish;
+    $p2ClassState = $defClassState;
+    $p2CharacterEffects = $defCharacterEffects;
+    $p2Discard = $defDiscard;
+    $p2Soul = $defSoul;
+    $p2CardStats = $defCardStats;
+    $p2TurnStats = $defTurnStats;
+    $p2CardTurnLog = $defCardTurnLog;
+  } else {
+    $p1Deck = $defDeck;
+    $p1Hand = $defHand;
+    $p1Resources = $defResources;
+    $p1CharEquip = $defCharacter;
+    $p1Arsenal = $defArsenal;
+    $playerHealths[0] = $defHealth;
+    $p1Items = $defItems;
+    $p1Auras = $defAuras;
+    $p1Pitch = $defPitch;
+    $p1Banish = $defBanish;
+    $p1ClassState = $defClassState;
+    $p1CharacterEffects = $defCharacterEffects;
+    $p1Discard = $defDiscard;
+    $p1Soul = $defSoul;
+    $p1CardStats = $defCardStats;
+    $p1TurnStats = $defTurnStats;
+    $p1CardTurnLog = $defCardTurnLog;
+    $p2Deck = $mainDeck;
+    $p2Hand = $mainHand;
+    $p2Resources = $mainResources;
+    $p2CharEquip = $mainCharacter;
+    $p2Arsenal = $mainArsenal;
+    $playerHealths[1] = $mainHealth;
+    $p2Items = $mainItems;
+    $p2Auras = $mainAuras;
+    $p2Pitch = $mainPitch;
+    $p2Banish = $mainBanish;
+    $p2ClassState = $mainClassState;
+    $p2CharacterEffects = $mainCharacterEffects;
+    $p2Discard = $mainDiscard;
+    $p2Soul = $mainSoul;
+    $p2CardStats = $mainCardStats;
+    $p2TurnStats = $mainTurnStats;
+    $p2CardTurnLog = $mainCardTurnLog;
+  }
+}
+
+function SaveGamestateSnapshot($destination)
+{
+  global $filepath, $lastWrittenGamestate;
+  if (isset($lastWrittenGamestate)) {
+    return file_put_contents($destination, $lastWrittenGamestate) !== false;
+  }
+  return copy($filepath . "gamestate.txt", $destination);
 }
 
 function MakeGamestateBackup($filename = "gamestateBackup.txt")
 {
-  global $filepath;
-  if(!file_exists($filepath . "gamestate.txt")) WriteLog("Cannot copy gamestate file; it does not exist.");
-  
+  global $filepath, $lastWrittenGamestate;
+  if(!isset($lastWrittenGamestate) && !file_exists($filepath . "gamestate.txt")) WriteLog("Cannot copy gamestate file; it does not exist.");
+
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, etc.)
   if ($filename != "gamestateBackup.txt") {
-    $result = copy($filepath . "gamestate.txt", $filepath . $filename);
+    $result = SaveGamestateSnapshot($filepath . $filename);
     if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
     return;
   }
   
   // Multi-level undo: Rotate backups
   // Shift all existing backups: 0->1, 1->2, 2->3, 3->4, delete 4
+  $backupPrefix = $filepath . "gamestateBackup_";
   for ($i = MAX_UNDO_BACKUPS - 1; $i > 0; $i--) {
-    $oldFile = $filepath . "gamestateBackup_" . ($i - 1) . ".txt";
-    $newFile = $filepath . "gamestateBackup_" . $i . ".txt";
-    if (file_exists($oldFile)) {
-      copy($oldFile, $newFile);
-    }
+    @rename($backupPrefix . ($i - 1) . ".txt", $backupPrefix . $i . ".txt");
   }
   
   // Save current state as backup 0 (most recent)
-  $result = copy($filepath . "gamestate.txt", $filepath . "gamestateBackup_0.txt");
+  $result = SaveGamestateSnapshot($filepath . "gamestateBackup_0.txt");
   if(!$result) WriteLog("Copy of gamestate into gamestateBackup_0.txt failed.");
 }
 
 function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
 {
-  global $gameName, $skipWriteGamestate, $filepath, $p1Settings, $p2Settings;
+  global $gameName, $skipWriteGamestate, $filepath, $p1Settings, $p2Settings, $CS_NumUndoesThisTurn;
   
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
   if ($filename != "gamestateBackup.txt") {
@@ -435,6 +582,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     $skipWriteGamestate = true;
     $gamestate = file_get_contents($filepath . $filename);
     WriteGamestateCache($gameName, $gamestate);
+    $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
     return;
   }
   
@@ -443,19 +591,40 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $backupFile = $filepath . "gamestateBackup_" . $targetBackup . ".txt";
   
   if(!file_exists($backupFile)) {
-    WriteLog("Cannot undo further: Please revert to start of this/previousturn instead.");
+    WriteLog("Cannot undo further: Please revert to start of this/previous turn instead.");
     return;
   }
   // apply current settings to the backup
   $gamestateBackup = file($backupFile);
   $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
   $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
-  file_put_contents($backupFile, $gamestateBackup);
+  // don't reset the number of undoes used
+  $p1ClassState = explode(" ", substr($gamestateBackup[11] ?? "", 0, -2));
+  $p2ClassState = explode(" ", substr($gamestateBackup[29] ?? "", 0, -2));
+  $p1ClassState[$CS_NumUndoesThisTurn] = GetClassState(1, $CS_NumUndoesThisTurn);
+  $p2ClassState[$CS_NumUndoesThisTurn] = GetClassState(2, $CS_NumUndoesThisTurn);
+  $gamestateBackup[11] = implode(" ", $p1ClassState) . "\r\n";
+  $gamestateBackup[29] = implode(" ", $p2ClassState) . "\r\n";
+  // Clear pending NAA from both players on undo
+  // p1ClassState = line 11, p2ClassState = line 29, CS_PendingNAACard = index 122.
+  foreach ([11, 29] as $csLine) {
+    if (isset($gamestateBackup[$csLine])) {
+      $csParts = explode(" ", trim($gamestateBackup[$csLine]));
+      if (isset($csParts[122])) $csParts[122] = "-";
+      $gamestateBackup[$csLine] = implode(" ", $csParts) . "\r\n";
+    }
+  }
+  $gamestate = implode('', $gamestateBackup);
+  file_put_contents($backupFile, $gamestate);
+  if (!file_exists($backupFile)) {
+    WriteLog("Cannot undo further: the game session was cleaned up before the undo could complete.");
+    return;
+  }
   // Restore the target backup as current gamestate
   copy($backupFile, $filepath . "gamestate.txt");
   $skipWriteGamestate = true;
-  $gamestate = file_get_contents($backupFile);
   WriteGamestateCache($gameName, $gamestate);
+  $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
   
   // Shift backups: Remove the reverted backups and shift remaining ones
   // If we reverted 2 steps, backups 0 and 1 are gone, backup 2 becomes 0, backup 3 becomes 1, etc.
@@ -463,17 +632,14 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     $sourceIndex = $i + $stepsBack;
     $sourceFile = $filepath . "gamestateBackup_" . $sourceIndex . ".txt";
     $targetFile = $filepath . "gamestateBackup_" . $i . ".txt";
-    
-    if ($sourceIndex < MAX_UNDO_BACKUPS && file_exists($sourceFile)) {
-      copy($sourceFile, $targetFile);
-    } else {
+
+    $renamed = $sourceIndex < MAX_UNDO_BACKUPS && @rename($sourceFile, $targetFile);
+    if (!$renamed) {
       // No more backups to shift, delete this slot
-      if (file_exists($targetFile)) {
-        unlink($targetFile);
-      }
+      @unlink($targetFile);
     }
   }
-  $result = copy($filepath . "gamestate.txt", $filepath . $filename);
+  $result = SaveGamestateSnapshot($filepath . $filename);
   if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
 }
 
@@ -481,20 +647,26 @@ function SaveReplay() {
   return true;
 }
 
+function MakeStartChainLinkBackup()
+{
+  global $filepath;
+  SaveGamestateSnapshot($filepath . "startChainLinkGamestate.txt");
+}
+
 function MakeStartTurnBackup()
 {
   global $mainPlayer, $currentTurn, $filepath;
   $lastTurnFN = $filepath . "lastTurnGamestate.txt";
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
-  if (file_exists($thisTurnFN)) copy($thisTurnFN, $lastTurnFN);
-  copy($filepath . "gamestate.txt", $thisTurnFN);
+  @rename($thisTurnFN, $lastTurnFN);
+  SaveGamestateSnapshot($thisTurnFN);
   $startGameFN = $filepath . "startGamestate.txt";
   if ((IsPatron(1) || IsPatron(2)) && $currentTurn == 0 && !file_exists($startGameFN)) {
-    copy($filepath . "gamestate.txt", $startGameFN);
+    SaveGamestateSnapshot($startGameFN);
   }
   if (SaveReplay()) {
     $numberedTurnFN = $filepath . "turn_$mainPlayer-$currentTurn" . "_Gamestate.txt";
-    copy($filepath . "gamestate.txt", $numberedTurnFN);
+    SaveGamestateSnapshot($numberedTurnFN);
     $commandFile = fopen("$filepath/commandfile.txt", "a");
     fwrite($commandFile, "$mainPlayer StartTurn $currentTurn 0\r\n");
     fclose($commandFile);

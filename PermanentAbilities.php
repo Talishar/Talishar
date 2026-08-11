@@ -4,13 +4,12 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
 {
   global $EffectContext;
   $permanents = &GetPermanents($player);
-  $otherPlayer = $player == 1 ? 2 : 1;
-  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+  $otherPlayer = 3 - $player;
+  if (TypeContains($EffectContext, "C", $player) && (PreachModestyActive())) {
     WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
   }
   if(TypeContains($cardID, "T", $player)) $isToken = true;
-  $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) {
     $number -= $numMinusTokens;
@@ -20,29 +19,35 @@ function PutPermanentIntoPlay($player, $cardID, $number=1, $isToken=false, $from
       WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of " . CardLink($cardID) . " tokens");
     }
   }
-  for($i = 0; $i < $number; ++$i) {
-    array_push($permanents, $cardID);
-    array_push($permanents, $from);
-    array_push($permanents, $subCards);
-    array_push($permanents, $uniqueID == "-" ? GetUniqueId($cardID, $player) : $uniqueID);
+  if ($uniqueID === "-") {
+    for ($i = 0; $i < $number; ++$i) {
+      $permanents[] = $cardID;
+      $permanents[] = $from;
+      $permanents[] = $subCards;
+      $permanents[] = GetUniqueId($cardID, $player);
+    }
+  } else {
+    for ($i = 0; $i < $number; ++$i) {
+      $permanents[] = $cardID;
+      $permanents[] = $from;
+      $permanents[] = $subCards;
+      $permanents[] = $uniqueID;
+    }
   }
   return count($permanents) - PermanentPieces();
 }
 
 function RemovePermanent($player, $index)
 {
+  if ($index == -1) return "-";
   $index = intval($index);
   $permanents = &GetPermanents($player);
   $PermanentCard = new PermanentCard($index, $player);
-  $cardID = $permanents[$index];
+  $cardID = $permanents[$index] ?? "-";
   if ($cardID == "UPR439" || $cardID == "UPR440" || $cardID == "UPR441") {
-    $cardID = explode(",", $PermanentCard->Subcards())[0];
+    $cardID = explode(",", $PermanentCard->Subcards(), 2)[0];
   }
-  $permanentPieces = PermanentPieces();
-  for($j = $index + $permanentPieces - 1; $j >= $index; --$j) {
-    unset($permanents[$j]);
-  }
-  $permanents = array_values($permanents);
+  array_splice($permanents, $index, PermanentPieces());
   return $cardID;
 }
 
@@ -54,26 +59,14 @@ function DestroyPermanent($player, $index)
   $cardID = $permanents[$index];
   $isToken = isset($permanents[$index + 4]) ? ($permanents[$index + 4] == 1) : false;
   PermanentDestroyed($player, $cardID, $isToken);
-  $permanentPieces = PermanentPieces();
-  for ($j = $index + $permanentPieces - 1; $j >= $index; --$j) {
-    unset($permanents[$j]);
-  }
-  $permanents = array_values($permanents);
+  array_splice($permanents, $index, PermanentPieces());
 }
 
 function PermanentDestroyed($player, $cardID, $isToken = false)
 {
-  $permanents = &GetPermanents($player);
-  $countPermanents = count($permanents);
-  $permanentPieces = PermanentPieces();
-  for ($i = 0; $i < $countPermanents; $i += $permanentPieces) {
-    switch ($permanents[$i]) {
-      default:
-        break;
-    }
-  }
   $goesWhere = GoesWhereAfterResolving($cardID);
-  if (CardType($cardID) == "T" || $isToken || CardType($cardID) == "Macro") return; //Don't need to add to anywhere if it's a token
+  $permanentType = CardType($cardID);
+  if ($permanentType == "T" || $isToken || $permanentType == "Macro") return; //Don't need to add to anywhere if it's a token
   ResolveGoesWhere($goesWhere, $cardID, $player, "PLAY");
 }
 
@@ -87,7 +80,7 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        $origMaterial = explode(",", $permanents[$i+2])[0];
+        $origMaterial = explode(",", $permanents[$i+2], 2)[0];
         if ($origMaterial != "-") PutPermanentIntoPlay($mainPlayer, $origMaterial);
         $remove = 1;
         break;
@@ -103,7 +96,7 @@ function PermanentBeginEndPhaseEffects()
     $remove = 0;
     switch ($permanents[$i]) {
       case "UPR439": case "UPR440": case "UPR441":
-        $origMaterial = explode(",", $permanents[$i+2])[0];
+        $origMaterial = explode(",", $permanents[$i+2], 2)[0];
         if ($origMaterial != "-") PutPermanentIntoPlay($defPlayer, $origMaterial);
         $remove = 1;
         break;
@@ -142,44 +135,40 @@ function PermanentTakeDamageAbilities($player, $index, $damage, $preventable, $t
   $preventedDamage = 0;
   $countPermanents = count($permanents);
   $permanentPieces = PermanentPieces();
-  for ($i = $countPermanents - $permanentPieces; $i >= 0; $i -= $permanentPieces) {
-    $remove = 0;
-    switch ($permanents[$i]) {
-      case "UPR439":
-        if ($damage > 0) {
+  if ($damage > 0) {
+    for ($i = $countPermanents - $permanentPieces; $i >= 0; $i -= $permanentPieces) {
+      $remove = false;
+      switch ($permanents[$i]) {
+        case "UPR439":
           if ($preventable) $preventedDamage += 4;
-          $remove = 1;
-        }
-        break;
-      case "UPR440":
-        if ($damage > 0) {
+          $remove = true;
+          break;
+        case "UPR440":
           if ($preventable) $preventedDamage += 3;
-          $remove = 1;
-        }
-        break;
-      case "UPR441":
-        if ($damage > 0) {
+          $remove = true;
+          break;
+        case "UPR441":
           if ($preventable) $preventedDamage += 2;
-          $remove = 1;
-        }
-        break;
-      default:
-        break;
-    }
-    if ($remove == 1) {
-      if (HasWard($permanents[$i], $player) && SearchCharacterActive($player, "celestial_kimono") && CardType($permanents[$i]) != "T") {
-        $index = FindCharacterIndex($player, "celestial_kimono");
-        $char[$index + 1] = 1;
-        GainResources($player, 1);
-        WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono", "celestial_kimono"));
+          $remove = true;
+          break;
+        default:
+          break;
       }
-      DestroyPermanent($player, $i);
+      if ($remove) {
+        if (HasWard($permanents[$i], $player) && SearchCharacterActive($player, "celestial_kimono") && CardType($permanents[$i]) != "T") {
+          $index = FindCharacterIndex($player, "celestial_kimono");
+          $char[$index + 1] = 1;
+          GainResources($player, 1);
+          WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono", "celestial_kimono"));
+        }
+        DestroyPermanent($player, $i);
+      }
     }
   }
-  if (SearchCurrentTurnEffects("vambrace_of_determination", $player) != "" && $preventedDamage > 0) {//vambrace
+  if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true)) {
     $preventedDamage -= 1;
-    SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true);
   }
+  
   $damage -= $preventedDamage;
   if ($damage <= 0) $damage = 0;
   return $damage;

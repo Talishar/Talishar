@@ -158,18 +158,56 @@ if (!function_exists('GetMetafyCommunitiesFromDatabase')) {
   }
 }
 
+if (!function_exists('IsTalisharMetafySupporter')) {
+  function IsTalisharMetafySupporter($communities)
+  {
+    if (!is_array($communities)) return false;
+    $talisharCommunityId = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
+    foreach ($communities as $community) {
+      if (($community['id'] ?? null) === $talisharCommunityId) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
 function IsValidMetafyTier($tierName)
 {
-  $supportedTiers = [
-    'Fyendal Supporters',
-    'Seers of Ophidia',
-    'Arknight Shards',
-    'Lover of Grandeur',
-    'Sponsors of Trōpal-Dhani',
-    'Light of Sol Gemini Circle'
+  static $supportedTiersMap = null;
+  if ($supportedTiersMap === null) {
+    $supportedTiersMap = array_flip([
+      'Fyendal Supporters',
+      'Seers of Ophidia',
+      'Arknight Shards',
+      'Lover of Grandeur',
+      'Sponsors of Trōpal-Dhani',
+      'Light of Sol Gemini Circle',
+    ]);
+  }
+  return isset($supportedTiersMap[$tierName]);
+}
+
+// Replay save slots granted per Metafy tier, on top of the base patron allotment.
+// Higher tiers grant more slots as a subscriber incentive.
+function GetMaxReplaySlotsForTiers($metafyTiers)
+{
+  $tierSlotMap = [
+    'Fyendal Supporters' => 5,
+    'Seers of Ophidia' => 8,
+    'Arknight Shards' => 10,
+    'Light of Sol Gemini Circle' => 12,
+    'Lover of Grandeur' => 15,
+    'Sponsors of Trōpal-Dhani' => 20,
   ];
-  
-  return in_array($tierName, $supportedTiers);
+  $maxSlots = MAX_REPLAYS_SAVED;
+  if (!is_array($metafyTiers)) return $maxSlots;
+  foreach ($metafyTiers as $tierName) {
+    if (isset($tierSlotMap[$tierName]) && $tierSlotMap[$tierName] > $maxSlots) {
+      $maxSlots = $tierSlotMap[$tierName];
+    }
+  }
+  return $maxSlots;
 }
 
 ?>

@@ -22,7 +22,7 @@ function GetBlockedUsers($userId) {
   }
   
   $query = "
-    SELECT b.blockedUserId, u.usersUid, u.usersId
+    SELECT b.blockedUserId, u.usersUid, u.usersId, u.displayName
     FROM blocked_users b
     JOIN users u ON b.blockedUserId = u.usersId
     WHERE b.userId = ?
@@ -42,7 +42,8 @@ function GetBlockedUsers($userId) {
   while ($row = $result->fetch_assoc()) {
     $blockedUsers[] = [
       'blockedUserId' => $row['usersId'],
-      'username' => $row['usersUid']
+      'username' => $row['usersUid'],
+      'displayName' => ($row['displayName'] ?? "") !== "" ? $row['displayName'] : $row['usersUid']
     ];
   }
   
@@ -132,6 +133,7 @@ function BlockUser($userId, $blockedUserId) {
   $stmt->bind_param("ii", $userId, $blockedUserId);
   $stmt->execute();
   $stmt->close();
+  unset($_SESSION['_blockedCache'], $_SESSION['_blockedCacheAt']);
   
   return ['success' => true, 'message' => 'User blocked successfully'];
 }
@@ -168,6 +170,7 @@ function UnblockUser($userId, $blockedUserId) {
   if ($affectedRows === 0) {
     return ['success' => false, 'message' => 'Block record not found'];
   }
+  unset($_SESSION['_blockedCache'], $_SESSION['_blockedCacheAt']);
   
   return ['success' => true, 'message' => 'User unblocked successfully'];
 }

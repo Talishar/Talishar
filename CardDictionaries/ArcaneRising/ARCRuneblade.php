@@ -75,13 +75,7 @@
 
   function NumRunechants($player)
   {
-    $auras = &GetAuras($player);
-    $count = 0;
-    for($i=0; $i<count($auras); $i+=AuraPieces())
-    {
-      if(CardNameContains($auras[$i], "Runechant", $player)) ++$count;
-    }
-    return $count;
+    return SearchCount(SearchAurasForCard("runechant", $player, false));
   }
 
   function ViseraiPlayCard($cardID)

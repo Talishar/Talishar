@@ -3,13 +3,12 @@
 //Player == currentplayer
 function &GetMZZone($player, $zone)
 {
-  global $layers, $combatChain, $chainLinks;
-  $rv = "";
+  global $layers, $combatChain, $chainLinks, $attackQueue;
+  $rv = [];
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
   else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
-  else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
-  else if ($zone == "MYARSENAL" || $zone == "THEIRARSENAL") $rv = &GetArsenal($player);
+  else if ($zone == "MYARS" || $zone == "THEIRARS" || $zone == "MYARSENAL" || $zone == "THEIRARSENAL") $rv = &GetArsenal($player);
   else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = &GetHand($player);
   else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = &GetPitch($player);
   else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
@@ -20,6 +19,7 @@ function &GetMZZone($player, $zone)
   else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = &GetItems($player);
   else if ($zone == "LAYER") return $layers;
   else if ($zone == "CC" || $zone == "COMBATCHAINLINK") return $combatChain;
+  else if ($zone == "ATTACKQUEUE") return $attackQueue;
   else if ($zone == "COMBATCHAINATTACKS") {
     $attacks = GetCombatChainAttacks();
     return $attacks;
@@ -30,24 +30,24 @@ function &GetMZZone($player, $zone)
 
 function GetMZZonePieces($zone)
 {
-  $rv = 0;
-  if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = CharacterPieces();
-  else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = AuraPieces();
-  else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = AllyPieces();
-  else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = ArsenalPieces();
-  else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = HandPieces();
-  else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = PitchPieces();
-  else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = DiscardPieces();
-  else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = PermanentPieces();
-  else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = BanishPieces();
-  else if ($zone == "DECK" || $zone == "MYDECK" || $zone == "THEIRDECK") $rv = DeckPieces();
-  else if ($zone == "SOUL" || $zone == "MYSOUL" || $zone == "THEIRSOUL") $rv = SoulPieces();
-  else if ($zone == "ITEMS" || $zone == "MYITEMS" || $zone == "THEIRITEMS") $rv = ItemPieces();
-  else if ($zone == "LAYER") return LayerPieces();
-  else if ($zone == "CC" || $zone == "COMBATCHAINLINK") $rv = CombatChainPieces();
-  else if ($zone == "COMBATCHAINATTACKS") $rv = ChainLinksPieces();
-  else if ($zone == "PASTCHAINLINK") $rv = ChainLinksPieces();
-  return $rv;
+  return match($zone) {
+    "MYCHAR", "THEIRCHAR" => CharacterPieces(),
+    "MYAURAS", "THEIRAURAS" => AuraPieces(),
+    "ALLY", "MYALLY", "THEIRALLY" => AllyPieces(),
+    "MYARS", "THEIRARS" => ArsenalPieces(),
+    "MYHAND", "THEIRHAND" => HandPieces(),
+    "MYPITCH", "THEIRPITCH" => PitchPieces(),
+    "MYDISCARD", "THEIRDISCARD" => DiscardPieces(),
+    "PERM", "MYPERM", "THEIRPERM" => PermanentPieces(),
+    "BANISH", "MYBANISH", "THEIRBANISH" => BanishPieces(),
+    "DECK", "MYDECK", "THEIRDECK" => DeckPieces(),
+    "SOUL", "MYSOUL", "THEIRSOUL" => SoulPieces(),
+    "ITEMS", "MYITEMS", "THEIRITEMS" => ItemPieces(),
+    "LAYER" => LayerPieces(),
+    "CC", "COMBATCHAINLINK" => CombatChainPieces(),
+    "COMBATCHAINATTACKS", "PASTCHAINLINK" => ChainLinksPieces(),
+    default => 0,
+  };
 }
 
 function GetMZZoneUIDIndex($zone)
@@ -139,20 +139,20 @@ function GetClassState($player, $piece)
   if ($mainPlayerGamestateStillBuilt) {
     if ($player == $mainPlayer) {
       if (!isset($mainClassState)) return "";
-      return $mainClassState[$piece];
+      return $mainClassState[$piece] ?? "";
     }
     else {
       if (!isset($defClassState)) return "";
-      return $defClassState[$piece];
+      return $defClassState[$piece] ?? "";
     }
   } else {
     if ($player == $myStateBuiltFor) {
       if (!isset($myClassState)) return "";
-      return $myClassState[$piece];
+      return $myClassState[$piece] ?? "";
     }
     else {
       if (!isset($theirClassState)) return "";
-      return $theirClassState[$piece];
+      return $theirClassState[$piece] ?? "";
     }
   }
 }
@@ -229,7 +229,7 @@ function &GetHealth($player)
 
 function &GetResources($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myResources, $theirResources, $mainResources, $defResources;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -243,7 +243,7 @@ function &GetResources($player)
 
 function &GetItems($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myItems, $theirItems, $mainItems, $defItems;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -257,7 +257,7 @@ function &GetItems($player)
 
 function &GetSoul($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $mySoul, $theirSoul, $mainSoul, $defSoul;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -271,7 +271,7 @@ function &GetSoul($player)
 
 function &GetDiscard($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -285,7 +285,7 @@ function &GetDiscard($player)
 
 function &GetArsenal($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myArsenal, $theirArsenal, $mainArsenal, $defArsenal;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -299,25 +299,25 @@ function &GetArsenal($player)
 
 function &GetAuras($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myAuras, $theirAuras, $mainAuras, $defAuras;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
     if ($player == $mainPlayer) {
-      $mainAuras = array_values($mainAuras);//It seems like there's a bug with things not being removed correctly
+      if (!array_is_list($mainAuras)) $mainAuras = array_values($mainAuras);
       return $mainAuras;
     }
     else {
-      $defAuras = array_values($defAuras);
+      if (!array_is_list($defAuras)) $defAuras = array_values($defAuras);
       return $defAuras;
     }
   } else {
     if ($player == $myStateBuiltFor) {
-      $myAuras = array_values($myAuras);
+      if (!array_is_list($myAuras)) $myAuras = array_values($myAuras);
       return $myAuras;
     }
     else {
-      $theirAuras = array_values($theirAuras);
+      if (!array_is_list($theirAuras)) $theirAuras = array_values($theirAuras);
       return $theirAuras;
     }
   }
@@ -325,7 +325,7 @@ function &GetAuras($player)
 
 function &GetCardStats($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myCardStats, $theirCardStats, $mainCardStats, $defCardStats;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -353,7 +353,7 @@ function &GetCardTurnLog($player)
 
 function &GetTurnStats($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myTurnStats, $theirTurnStats, $mainTurnStats, $defTurnStats;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -395,7 +395,7 @@ function &GetSettings($player)
 
 function &GetMainCharacterEffects($player)
 {
-  global $currentPlayer, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt;
   global $myCharacterEffects, $theirCharacterEffects, $mainCharacterEffects, $defCharacterEffects;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
@@ -411,8 +411,12 @@ function &GetMainCharacterEffects($player)
 function GetPreLayers() {
   global $layers;
   $preLayers = [];
-  for ($i = 0; $i < count($layers); $i += LayerPieces()) {
-    if ($layers[$i] == "PRETRIGGER") $preLayers = array_merge($preLayers, array_slice($layers, $i, LayerPieces()));
+  $layerPieces = LayerPieces();
+  $layerCount = count($layers);
+  for ($i = 0; $i < $layerCount; $i += $layerPieces) {
+    if ($layers[$i] == "PRETRIGGER") {
+      for ($j = 0; $j < $layerPieces; ++$j) $preLayers[] = $layers[$i + $j];
+    }
   }
   return $preLayers;
 }
@@ -420,18 +424,16 @@ function GetPreLayers() {
 function GetCombatChainAttacks()
 {
   global $chainLinks, $ChainLinks;
-  $attacks = [];
-  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
-    $LinkCard = $ChainLinks->GetLink($i)->AttackCard();
-    $link = $chainLinks[$i];
-    if ($LinkCard->StillOnChain()) {
-      for ($j = 0; $j < ChainLinksPieces(); ++$j)
-        $attacks[] = $link[$j];
+  $chainLinksPieces = ChainLinksPieces();
+  $chainLinksCount = $ChainLinks->NumLinks();
+  $attacks = array_fill(0, $chainLinksCount * $chainLinksPieces, "-");
+  $idx = 0;
+  for ($i = 0; $i < $chainLinksCount; ++$i) {
+    if ($ChainLinks->GetLink($i)->AttackCard()->StillOnChain()) {
+      $link = $chainLinks[$i];
+      for ($j = 0; $j < $chainLinksPieces; ++$j) $attacks[$idx + $j] = $link[$j];
     }
-    else {
-      //can't find something that's gone
-      for ($j = 0; $j < ChainLinksPieces(); ++$j) array_push($attacks, "-");
-    }
+    $idx += $chainLinksPieces;
   }
   return $attacks;
 }
@@ -445,7 +447,9 @@ function HasTakenDamage($player)
 function ArsenalHasFaceDownCard($player)
 {
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  $arsenalCount = count($arsenal);
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     if ($arsenal[$i + 1] == "DOWN") return true;
   }
   return false;
@@ -454,7 +458,9 @@ function ArsenalHasFaceDownCard($player)
 function ArsenalHasFaceUpCard($player)
 {
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  $arsenalCount = count($arsenal);
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     if ($arsenal[$i + 1] == "UP") return true;
   }
   return false;
@@ -463,7 +469,9 @@ function ArsenalHasFaceUpCard($player)
 function ArsenalHasArrowCardFacing($player, $facing)
 {
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  $arsenalCount = count($arsenal);
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == $facing) return true;
   }
   return false;
@@ -472,7 +480,9 @@ function ArsenalHasArrowCardFacing($player, $facing)
 function ArsenalHasArrowFacingColor($player, $facing, $color)
 {
   $arsenal = &GetArsenal($player);
-  for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  $arsenalCount = count($arsenal);
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == $facing && ColorContains($arsenal[$i], $color, $player)) return true;
   }
   return false;
@@ -481,7 +491,8 @@ function ArsenalHasArrowFacingColor($player, $facing, $color)
 function ArsenalFull($player)
 {
   $arsenal = &GetArsenal($player);
-  $fullCount = SearchCharacterActive($player, "new_horizon") && ArsenalHasFaceUpCard($player) ? ArsenalPieces() * 2 : ArsenalPieces();
+  $pieces = ArsenalPieces();
+  $fullCount = SearchCharacterActive($player, "new_horizon") && ArsenalHasFaceUpCard($player) ? $pieces * 2 : $pieces;
   return count($arsenal) >= $fullCount;
 }
 
@@ -495,7 +506,9 @@ function NumEquipment($player)
 {
   $character = &GetPlayerCharacter($player);
   $numEquip = 0;
-  for ($i = 0; $i < count($character); $i += CharacterPieces()) {
+  $characterPieces = CharacterPieces();
+  $characterCount = count($character);
+  for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if (CardType($character[$i]) == "E" && $character[$i + 1] != 0) ++$numEquip;
   }
   return $numEquip;

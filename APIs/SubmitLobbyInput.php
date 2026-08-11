@@ -3,6 +3,7 @@
 include "../WriteLog.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/ValidationLibraries.php";
 
 SetHeaders();
 
@@ -39,25 +40,49 @@ include "../HostFiles/Redirector.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-if ($authKey !== $targetAuth) {
-  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
-  $authKey = $targetAuth;
+if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
+  $response->error = "Authentication failed";
+  echo json_encode($response);
+  exit;
+}
+
+if ($action == "Leave Lobby")
+{
+  $cacheArr = ReadCacheArray($gameName);
+  if ($cacheArr !== null) {
+    $cacheArr[$playerID] = (int)(microtime(true) * 1000) - (LOBBY_DISCONNECT_TIMEOUT_MS + 1000);
+    $cacheArr[$playerID + 2] = "0";
+    WriteCache($gameName, implode("!", $cacheArr));
+  }
+
+  UnlockGamefile();
+  $response->success = true;
+  echo json_encode($response);
+  exit;
 }
 
 if($action == "Request Chat")
 {
   $myName = substr($playerID == 1 ? $p1uid : $p2uid, 0, 20);
   $theirName = ($playerID == 1 ? $p2uid : $p1uid);
-  if(!str_contains($myName, "Omegaeclipse") && !str_contains($theirName, "Omegaeclipse")) {
-    if($playerID == 1) SetCachePiece($gameName, 15, 1);
-    else if($playerID == 2) SetCachePiece($gameName, 16, 1);
-  }
-  if(GetCachePiece($gameName, 15) != 1 || GetCachePiece($gameName, 16) != 1)
-  {
-    WriteLog($myName . " wants to enable chat", path: "../");
+
+  $cacheArr = ReadCacheArray($gameName);
+  if ($cacheArr !== null) {
+    if (!str_contains($myName, "Omegaeclipse") && !str_contains($theirName, "Omegaeclipse")) {
+      if ($playerID == 1) $cacheArr[14] = 1;
+      else $cacheArr[15] = 1;
+      WriteCache($gameName, implode("!", $cacheArr));
+    }
+    if (($cacheArr[14] ?? "") != 1 || ($cacheArr[15] ?? "") != 1) {
+      WriteLog($myName . " wants to enable chat", path: "../");
+    }
   }
   GamestateUpdated($gameName);
+
+  UnlockGamefile();
+  $response->success = true;
+  echo json_encode($response);
+  exit;
 }
 
 if ($action == "Unready Sideboard") {
@@ -71,17 +96,26 @@ if ($action == "Unready Sideboard") {
     $didChangeSideboardState = true;
   }
 
-  if ($didChangeSideboardState && $gameStatus == $MGS_ReadyToStart) {
-    $gameStatus = $MGS_P2Sideboard;
-    SetCachePiece($gameName, 14, $gameStatus);
-  }
-
   if ($didChangeSideboardState) {
-    GamestateUpdated($gameName);
+    $gameStatusChanged = ($gameStatus == $MGS_ReadyToStart);
+    if ($gameStatusChanged) {
+      $gameStatus = $MGS_P2Sideboard;
+    }
+
+    if (function_exists('FlushLogBuffer')) FlushLogBuffer();
+    $cacheArr = ReadCacheArray($gameName);
+    if ($cacheArr !== null) {
+      $cacheArr[0] = (int)($cacheArr[0]) + 1;
+      $cacheArr[5] = round(microtime(true) * 1000);
+      if ($gameStatusChanged) {
+        $cacheArr[13] = $gameStatus;
+      }
+      WriteCache($gameName, implode("!", $cacheArr));
+    }
   }
 }
 
 WriteGameFile();
 
 $response->success = true;
-echo (json_encode($response));
+echo json_encode($response);

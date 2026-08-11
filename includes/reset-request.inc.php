@@ -66,6 +66,6 @@ if (isset($_POST['reset-request-submit'])) {
   // Finally we send them back to a page telling them to check their e-mail.
   header("Location: ../ResetPassword.php?reset=success");
 } else {
-  header("Location: ../MainMenu.php");
+  header("Location: /"); // React app home (legacy MainMenu.php no longer exists)
   exit();
 }

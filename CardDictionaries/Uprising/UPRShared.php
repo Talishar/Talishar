@@ -57,9 +57,7 @@
 
   function UPREffectPowerModifier($cardID)
   {
-    $params = explode("-", $cardID);
-    $cardID = $params[0];
-    if(count($params) > 1) $subparam = $params[1];
+    if (($pos = strpos($cardID, "-")) !== false) $cardID = substr($cardID, 0, $pos);
     switch($cardID)
     {
       case "skittering_sands_red": return 3;
@@ -83,8 +81,7 @@
   function UPRCombatEffectActive($cardID, $attackID)
   {
     global $mainPlayer;
-    $params = explode("-", $cardID);
-    $cardID = $params[0];
+    if (($pos = strpos($cardID, "-")) !== false) $cardID = substr($cardID, 0, $pos);
     switch($cardID)
     {
       case "skittering_sands_red": case "skittering_sands_yellow": case "skittering_sands_blue": return true;
@@ -149,16 +146,17 @@ function UPRDealDamageEffect($cardID)
 
   function QuellChoices($player, $damage)
   {
+    $damage = (int)$damage;
     $character = &GetPlayerCharacter($player);
     $quellAmount = 0;
-    for($i=0; $i<count($character); $i+=CharacterPieces()) {
+    $charCount = count($character);
+    $charPieces = CharacterPieces();
+    for($i=0; $i<$charCount; $i+=$charPieces) {
       if($character[$i+1] == "0" || $character[$i+9] == "0") continue;
       $quellAmount += QuellAmount($character[$i]);
     }
     if($quellAmount > $damage) $quellAmount = $damage;
-    $rv = "0";
-    for($i=1; $i<=$quellAmount; ++$i) $rv .= "," . $i;
-    return $rv;
+    return implode(",", range(0, $quellAmount));
   }
 
   function QuellEndPhase($player)
@@ -177,17 +175,18 @@ function UPRDealDamageEffect($cardID)
   function QuellIndices($player)
   {
     $character = &GetPlayerCharacter($player);
-    $indices = "";
-    for($i=0; $i<count($character); $i+=CharacterPieces())
+    $indicesArr = [];
+    $charCount = count($character);
+    $charPieces = CharacterPieces();
+    for($i=0; $i<$charCount; $i+=$charPieces)
     {
       if($character[$i+1] == "0") continue;
       if(QuellAmount($character[$i]) > 0)
       {
-        if($indices != "") $indices .= ",";
-        $indices .= SearchMultizoneFormat($i, "MYCHAR");
+        $indicesArr[] = SearchMultizoneFormat($i, "MYCHAR");
       }
     }
-    return $indices;
+    return implode(",", $indicesArr);
   }
 
 ?>

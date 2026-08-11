@@ -59,7 +59,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $mainPlayer, $chainLinkSummary;
   global $CombatChain;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     case "punching_gloves":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -77,7 +77,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer, $uid);
       }
       else {
-        $targetIndex = intval(explode("-", $target)[1]);
+        $targetIndex = intval(explode("-", $target, 2)[1]);
         $uid = $CombatChain->Card($targetIndex)->UniqueID();
         AddCurrentTurnEffect($cardID, $currentPlayer, "", $uid);
         ReEvalCombatChain();
@@ -114,7 +114,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "thespian_charm_yellow":
       $params = explode(",", $additionalCosts);
-      for($i = 0; $i < count($params); ++$i) {
+      $paramsCount = count($params);
+      for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Destroy_a_Might_or_Vigor":
             $search = "THEIRAURAS:cardID=might;cardID=vigor";
@@ -139,7 +140,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "liars_charm_yellow":
       $params = explode(",", $additionalCosts);
-      for($i = 0; $i < count($params); ++$i) {
+      $paramsCount = count($params);
+      for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Steal_a_Toughness_or_Vigor":
             $search = "THEIRAURAS:cardID=vigor;cardID=toughness";
@@ -170,7 +172,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "numbskull_charm_yellow":
       $params = explode(",", $additionalCosts);
-      for($i = 0; $i < count($params); ++$i) {
+      $paramsCount = count($params);
+      for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Destroy_a_Confidence_or_Might":
             $search = "THEIRAURAS:cardID=confidence;cardID=might";
@@ -196,7 +199,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "cheaters_charm_yellow":
       $params = explode(",", $additionalCosts);
-      for($i = 0; $i < count($params); ++$i) {
+      $paramsCount = count($params);
+      for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Steal_a_Confidence_or_Toughness":
             $search = "THEIRAURAS:cardID=confidence;cardID=toughness";
@@ -214,8 +218,10 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             $condition = false;
             if ($currentPlayer == $mainPlayer) {
               if (CachedTotalPower() >= 6) $condition = true;
-              for ($j = 0; $j < count($chainLinkSummary); $j += ChainLinkSummaryPieces()) {
-                if ($chainLinkSummary[$j + 1] >= 6) $condition = true;
+              $chainLinksummaryCount = count($chainLinkSummary);
+              $chainLinksummaryPieces = ChainLinkSummaryPieces();
+              for ($j = 0; $j < $chainLinksummaryCount; $j += $chainLinksummaryPieces) {
+                if ($chainLinkSummary[$j + 1] >= 6) { $condition = true; break; }
               }
               if ($condition) {
                 Deal2OrDiscard($targetPlayer);
@@ -277,12 +283,14 @@ function Deal2OrDiscard($targetPlayer, $effectSource="-")
 
 function BOO($player)
 {
-  $ClassState = new ClassState($player);
-  $ClassState->SetBooedThisTurn(1);
+  global $CS_BooedThisTurn;
+  IncrementClassState($player, $CS_BooedThisTurn);
   $char = GetPlayerCharacter($player);
   $heroID = ShiyanaCharacter($char[0], $player);
   WriteLog("🍅<b>BOOOOO!</b> The crowd jeers at " . CardLink($char[0], $char[0]) . "!");
   if ($char[1] < 3) {
+    $card = GetClass($char[0], $player);
+    if ($card != "-") $card->BooTrigger();
     switch($heroID) {
       case "lyath_goldmane":
       case "lyath_goldmane_vile_savant":
@@ -298,11 +306,13 @@ function BOO($player)
 
 function Cheer($player)
 {
-  $ClassState = new ClassState($player);
-  $ClassState->SetCheeredThisTurn(1);
+  global $CS_CheeredThisTurn;
+  IncrementClassState($player, $CS_CheeredThisTurn);
   $char = GetPlayerCharacter($player);
   WriteLog("👏Let's go! The crowd <b>cheers</b> for " . CardLink($char[0], $char[0]) . "!");
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $charCount = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $charPieces) {
     $card = GetClass($char[$i], $player);
     if ($card != "-") $card->CheerTrigger();
     if ($char[$i + 1] < 3) {
@@ -330,20 +340,32 @@ function HasSuspense($cardID)
 
 function GetSuspenseAuras($player, $hasCounter = false)
 {
+  global $CombatChain;
   $auras = GetAuras($player);
   $susp = [];
-  for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-    if (HasSuspense($auras[$i]) && (!$hasCounter || $auras[$i + 2])) array_push($susp, "MYAURAS-$i");
+  $auraCount = count($auras);
+  $auraPieces = AuraPieces();
+  for ($i = 0; $i < $auraCount; $i += $auraPieces) {
+    if (HasSuspense($auras[$i]) && (!$hasCounter || $auras[$i + 2])) $susp[] = "MYAURAS-$i";
+  }
+  if (!$hasCounter) {
+    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+      $LinkCard = $CombatChain->Card($i, true);
+      if ($LinkCard->PlayerID() == $player && HasSuspense($LinkCard->ID())) $susp[] = "COMBATCHAIN-" . $LinkCard->Index();
+    }
   }
   return $susp;
 }
 
 function RemoveSuspense($player, $MZIndex, $mainPhase = true)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
   $auras = &GetAuras($targetPlayer);
-  $ind = explode("-", $MZIndex)[1];
+  $parts = explode("-", $MZIndex, 2);
+  if (!isset($parts[1])) return;
+  $ind = $parts[1];
+  if (!isset($auras[$ind + 2])) return; // aura no longer exists
   --$auras[$ind + 2];
   if ($auras[$ind + 2] <= 0) {
     AddLayer("TRIGGER", $targetPlayer, "$auras[$ind]", $auras[$ind + 6], "DESTROY");
@@ -352,14 +374,14 @@ function RemoveSuspense($player, $MZIndex, $mainPhase = true)
 
 function AddSuspense($player, $MZIndex)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
-  $auras = &GetAuras($targetPlayer);
-  $ind = explode("-", $MZIndex)[1];
-  ++$auras[$ind + 2];
+  $ind = explode("-", $MZIndex, 2)[1];
+  $AuraCard = new AuraCard($ind, $targetPlayer);
+  $AuraCard->AddCounters(1);
 }
 
-function TargetDefendingAction($player, $cardID, $setTarget=false) {
+function TargetDefendingAction($player, $cardID, $setTarget=false, $may=false) {
   global $CombatChain, $defPlayer;
   if (!$CombatChain->HasCurrentLink()) return;
   $AOptions = GetChainLinkCards($defPlayer, "A", "C");
@@ -370,14 +392,37 @@ function TargetDefendingAction($player, $cardID, $setTarget=false) {
   if ($numOptions != "") {
     $numOptions = explode(",", $numOptions);
     $options = [];
-    foreach ($numOptions as $num) array_push($options, "COMBATCHAINLINK-$num");
+    foreach ($numOptions as $num) $options[] = "COMBATCHAINLINK-$num";
     $options = implode(",", $options);
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose a defending action card to buff");
-    AddDecisionQueue("CHOOSEMULTIZONE", $player, $options, 1);
+    if ($may) AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $options, 1);
+    else AddDecisionQueue("CHOOSEMULTIZONE", $player, $options, 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $player, "-", 1);
     if ($setTarget) AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
   }
   else {
     WriteLog(CardLink($cardID, $cardID) . " is targeting a prior chain link (this  won't have any effect for now)");
   }
+}
+
+function CuttingIndicesAwait($player) {
+  global $dqVars, $defPlayer;
+  $lastResult = $dqVars["currentIDs"] ?? "";
+  $currentNamesMap = [];
+  foreach (explode(",", $lastResult) as $cardID) {
+    if ($cardID != "") $currentNamesMap[CardName($cardID)] = true;
+  }
+  $auras = GetAuras($defPlayer);
+  $rv = [];
+  $auraCount = count($auras);
+  $auraPieces = AuraPieces();
+  //remove any choices that have already been targeted
+  for($i = 0; $i < $auraCount; $i += $auraPieces) {
+    $auraID = $auras[$i];
+    if (TypeContains($auraID, "T", $defPlayer) && !isset($currentNamesMap[CardName($auraID)])) {
+      $rv[] = "THEIRAURAS-$i";
+    }
+  }
+  $rv = implode(",", $rv);
+  return $rv == "" ? "PASS" : $rv;
 }

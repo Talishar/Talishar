@@ -54,7 +54,7 @@
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         } else {
           WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
-          return "FAILED";
+          return "";
         }
         return "";
       case "tome_of_harvests_blue":
@@ -93,7 +93,7 @@
         else {
           WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
           ResolveGoesWhere("GY", $cardID, $currentPlayer, $from);
-          return "FAILED";
+          return "";
         }
         return "";
       case "amulet_of_earth_blue":
@@ -108,7 +108,7 @@
       case "blizzard_blue":
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again");
         AddDecisionQueue("BUTTONINPUT", $mainPlayer, "0,2", 0, 1);
-        AddDecisionQueue("PAYRESOURCES", $mainPlayer, "<-", 1);
+        AddDecisionQueue("PAYRESOURCESEFFECT", $mainPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $mainPlayer, "0", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, $cardID, 1);
         return "";
@@ -123,9 +123,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "polar_blast_red": case "polar_blast_yellow": case "polar_blast_blue":
-        if($cardID == "polar_blast_red") $cost = 3;
-        else if($cardID == "polar_blast_yellow") $cost = 2;
-        else $cost = 1;
+        $cost = match($cardID) { "polar_blast_red" => 3, "polar_blast_yellow" => 2, default => 1 };
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_".$cost."_to_prevent_Dominate");
         AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
@@ -136,10 +134,8 @@
           WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         }
         return "";
-      case "winters_bite_red": case "winters_bite_yellow": case "winters_bite_blue": 
-        if($cardID == "winters_bite_red") $pay = 3;
-        else if($cardID == "winters_bite_yellow") $pay = 2;
-        else $pay = 1;
+      case "winters_bite_red": case "winters_bite_yellow": case "winters_bite_blue":
+        $pay = match($cardID) { "winters_bite_red" => 3, "winters_bite_yellow" => 2, default => 1 };
         if(ShouldAutotargetOpponent($currentPlayer)) {
           AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
           AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "WINTERSBITE-" . $pay, 1);
@@ -165,16 +161,18 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "lightning_press_red": case "lightning_press_yellow": case "lightning_press_blue":
-        $amount = 3;
-        if($cardID == "lightning_press_yellow") $amount = 2;
-        else if($cardID == "lightning_press_blue") $amount = 1;
-        $index = explode("-", $target)[1];
-        if (explode("-", $target)[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
-          if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return "FAILED";
+        $amount = match($cardID) { "lightning_press_yellow" => 2, "lightning_press_blue" => 1, default => 3 };
+        $targetParts = explode("-", $target, 2);
+        $index = $targetParts[1];
+        if ($targetParts[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
+          if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") {
+            WriteLog(CardLink($cardID, $cardID) . " layer fails as the target is no longer valid.");
+            return "";
+          }
           CombatChainPowerModifier($index, $amount);
           AddCurrentTurnEffect($cardID."-VISUAL", $currentPlayer);//For Visual Effect only
         }
-        elseif (explode("-", $target)[0] == "PASTCHAINLINK") {
+        elseif ($targetParts[0] == "PASTCHAINLINK") {
           // targeting a past chain link, do nothing for now
         }
         //only add current turn effect if there's no target (ie. played in layer step)
@@ -239,9 +237,7 @@
 
   function SowTomorrowIndices($player, $cardID)
   {
-    if($cardID == "sow_tomorrow_red") $minCost = 0;
-    else if($cardID == "sow_tomorrow_yellow") $minCost = 1;
-    else $minCost = 2;
+    $minCost = match($cardID) { "sow_tomorrow_red" => 0, "sow_tomorrow_yellow" => 1, default => 2 };
     $earth = CombineSearches(SearchDiscard($player, "A", "", -1, $minCost, "", "EARTH"), SearchDiscard($player, "AA", "", -1, $minCost, "", "EARTH"));
     $elemental = CombineSearches(SearchDiscard($player, "A", "", -1, $minCost, "", "ELEMENTAL"), SearchDiscard($player, "AA", "", -1, $minCost, "", "ELEMENTAL"));
     return CombineSearches($earth, $elemental);
@@ -254,7 +250,7 @@
 
   function ExposedToTheElementsEarth($player)
   {
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       PrependDecisionQueue("MODDEFCOUNTER", $otherPlayer, "-1", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to put a -1 counter", 1);
@@ -263,7 +259,7 @@
 
   function ExposedToTheElementsIce($player)
   {
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       PrependDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
       PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
       PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy", 1);

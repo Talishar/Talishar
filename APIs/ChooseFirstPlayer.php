@@ -3,6 +3,7 @@
 include "../WriteLog.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/ValidationLibraries.php";
 
 SetHeaders();
 
@@ -41,10 +42,10 @@ include "../HostFiles/Redirector.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-if ($authKey !== $targetAuth) {
-  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
-  $authKey = $targetAuth;
+if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
+  $response->error = "Authentication failed";
+  echo json_encode($response);
+  exit;
 }
 
 if ($action == "Go First") {

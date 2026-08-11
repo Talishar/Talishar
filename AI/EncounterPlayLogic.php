@@ -63,9 +63,10 @@ function CardIsPlayable($storedPriorityNode, $hand, $resources)
   }
   $finalCost = $baseCost;
   $totalPitch = $resources[0];
-  for($i = 0; $i < count($hand); ++$i)
+  $handCount = count($hand);
+  for($i = 0; $i < $handCount; ++$i)
   {
-    if($i != $index) $totalPitch = $totalPitch + PitchValue($hand[$i]);
+    if($i != $index) $totalPitch += PitchValue($hand[$i]);
   }
   return $finalCost <= $totalPitch;
 }
@@ -78,7 +79,8 @@ function ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)
 function CardIsPitchable($storedPriorityNode)
 {
   global $currentTurnEffects, $currentPlayer;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "frost_lock_blue": return CardCost($storedPriorityNode[0]) != 0;
@@ -98,7 +100,8 @@ function CardIsArsenalable($storedPriorityNode)
 function CardIsPrevented($cardID)
 {
   global $currentTurnEffects, $currentPlayer;
-  for ($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "crush_the_weak_red":
@@ -255,9 +258,10 @@ function FixHand($currentPlayer)
 {
   $hand = &GetHand($currentPlayer);
   $fix = [];
-  for($i = 0; $i < count($hand); ++$i)
+  $handCount = count($hand);
+  for($i = 0; $i < $handCount; ++$i)
   {
-    if($hand[$i] != "") array_push($fix, $hand[$i]);
+    if($hand[$i] != "") $fix[] = $hand[$i];
   }
   $hand = $fix;
 }

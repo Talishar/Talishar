@@ -4,7 +4,7 @@ Talishar is in no way affiliated with Legend Story Studios. Legend Story Studios
 Talishar is a "Rules enforcement application" for the Flesh and Blood™ TCG created by Legend Story Studios®. The related IP is used in accordance with the <a href='https://fabtcg.com/resources/terms-use-licensed-assets/'>Terms of Use for Game and Studio Assets and IP</a>.
 
 <h1>Remember Me Cookie</h1>
-If you use the Remember Me function on the Login page to keep yourself logged in to your browser, a code is generated and associated with your account. That code is saved in your browser as a cookie. It allows your browser to login once your session on the server expires. To opt out of this cookie, do not use the Remember Me function.
+If you use the Remember Me function on the page where you log in to keep yourself logged in to your browser, a code is generated and associated with your account. That code is saved in your browser as a cookie. It allows your browser to log in once your session on the server expires. To opt out of this cookie, do not use the Remember Me function.
 
 <h1>Authorization Key Cookie</h1>
 When you play a game on Talishar, an "authorization key" is generated for you to use to authentication your actions on that game. This is what prevents others on the internet from executing game actions on your behalf. This authentication key is stored as a cookie in your browser. It is necessary for the operation of the game. In order to not receive this cookie, you must not play the game.

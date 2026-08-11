@@ -38,20 +38,26 @@
       $MZZone = &GetItems($player);
       $steamInd = 1;
     }
-    if($MZZone[$index+$steamInd] <= 0) return;
+    if(!isset($MZZone[$index+$steamInd]) || $MZZone[$index+$steamInd] <= 0) return;
     --$MZZone[$index+$steamInd];
     if($mainPhase) GainActionPoints(1, $player);
     WriteLog("Player $player cranked");
     IncrementClassState($player, $CS_NumCranked);
-    $char = GetPlayerCharacter($player);
-    for ($i = 0; $i < count($char); $i += CharacterPieces()){
-      switch ($char[$i]) {
-        case "puffin_hightail":
-        case "puffin":
-          if (GetClassState($player, $CS_NumCranked) == 2 && SearchCharacterActive($player, $char[$i])) AddLayer("TRIGGER", $player, $char[$i]);
-          break;
-        default:
-          break;
+    $numCranked = GetClassState($player, $CS_NumCranked);
+    if ($numCranked == 2) {
+      $char = &GetPlayerCharacter($player);
+      $charCount = count($char);
+      $charPieces = CharacterPieces();
+      for ($i = 0; $i < $charCount; $i += $charPieces) {
+        $charCard = $char[$i];
+        switch ($charCard) {
+          case "puffin_hightail":
+          case "puffin":
+            if (SearchCharacterActive($player, $charCard)) AddLayer("TRIGGER", $player, $charCard);
+            break;
+          default:
+            break;
+        }
       }
     }
     if(CardName($MZZone[$index]) == "Hyper Driver" && ($MZZone[$index+$steamInd] <= 0)) DestroyItemForPlayer($player, $index);
@@ -59,7 +65,7 @@
 
   function ProcessTowerEffect($cardID)
   {
-    global $CombatChain, $mainPlayer, $defPlayer, $layers;
+    global $mainPlayer, $defPlayer, $layers;
     if(!IsHeroAttackTarget()) return;
     if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
       WriteLog("Tower effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
@@ -99,13 +105,16 @@
   {
     global $mainPlayer, $defPlayer, $dqVars;
     $p1Power = ""; $p2Power = "";
-    $switched = SearchCurrentTurnEffects("the_old_switcheroo_blue", 1) || SearchCurrentTurnEffects("the_old_switcheroo_blue", 2);
+    $switched = SearchCurrentTurnEffectsEitherPlayer("the_old_switcheroo_blue");
     for($i=1; $i<=2; ++$i) {
       $playerID = $switched ? 3 - $i : $i;
       $deck = new Deck($playerID);
       if($deck->Reveal(1, $switched, true)) {
-        $power = $deck->Empty() ? 0 : ModifiedPowerValue($deck->Top(), $playerID, "DECK", source:$cardID);
-        if(!TypeContains($deck->Top(), "AA") && $power == 0) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
+        if(!$deck->Empty()) {
+          $topCard = $deck->Top();
+          $power = ModifiedPowerValue($topCard, $playerID, "DECK", source:$cardID);
+          if(!TypeContains($topCard, "AA") && $power == 0) $power = ""; //If you reveal a card with {p} and the opponent reveals a card without {p}, you win the clash.
+        } else { $power = 0; }
         if($i == 1) $p1Power = $power;
         else $p2Power = $power;
       }
@@ -167,20 +176,21 @@
   }
 
   function WonClashAbility($playerID, $cardID, $effectController="", $switchedPlayers=[false, false]) {
-    global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $dqVars, $defPlayer;
+    global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $defPlayer;
     $otherPlayer = $playerID == 1 ? 2 : 1;
     
-    $deck = new Deck($playerID);
     $switched = $switchedPlayers[0] || $switchedPlayers[1];
     if (!$switched) {
-      switch ($deck->Top()) {
+      $deck = new Deck($playerID);
+      $deckTop = $deck->Top();
+      switch ($deckTop) {
         case "the_golden_son_yellow":
         case "thunk_red": case "thunk_yellow": case "thunk_blue":
         case "wallop_red": case "wallop_yellow": case "wallop_blue":
-          AddLayer("TRIGGER", $playerID, $deck->Top());
+          AddLayer("TRIGGER", $playerID, $deckTop);
           break;
         default:
-          $topCard = GetClass($deck->Top(), $playerID);
+          $topCard = GetClass($deckTop, $playerID);
           if ($topCard != "-") $topCard->WonClashWithAbility($playerID);
           break;
       }
@@ -193,7 +203,6 @@
     switch($cardID)
     {
       case "millers_grindstone":
-        $otherPlayer = $playerID == 1 ? 2 : 1;
         $otherDeck = new Deck($otherPlayer);
         if($otherDeck->Empty()) {
           break;
@@ -298,8 +307,7 @@
     $otherPlayer = $playerID == 1 ? 2 : 1;
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
-    $goldIndices = GetGoldIndices($playerID);
-    if(($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0 && $char[1] == 2) {
+    if($char[1] == 2 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0) {
       $char[1] = 1;
       //This all has to be prepend for the case where it's a Victor mirror, one player wins, then the re-do causes that player to win
       PrependDecisionQueue("SETDQVAR", $playerID, "1"); //reset the dqvar
@@ -314,11 +322,7 @@
       PrependDecisionQueue("SETDQVAR", $playerID, "1");
       PrependDecisionQueue("BUTTONINPUT", $playerID, "Target_Opponent,Target_Yourself", 1);
       PrependDecisionQueue("SETDQCONTEXT", $playerID, "Choose target hero", 1);
-      if(str_contains($goldIndices, "MYCHAR")) {
-        PrependDecisionQueue("MZDESTROY", $playerID, "-", 1);
-        PrependDecisionQueue("MAYCHOOSEMULTIZONE", $playerID, "<-", 1);
-        PrependDecisionQueue("PASSPARAMETER", $playerID, $goldIndices, 1);
-      } else PrependDecisionQueue("FINDANDDESTROYITEM", $playerID, "gold-1", 1);
+      QueueDestroyGold($playerID, prepend:true);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, $hero."-2", 1);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $otherPlayer, "the_old_switcheroo_blue", 1);
       PrependDecisionQueue("REMOVECURRENTTURNEFFECT", $playerID, "the_old_switcheroo_blue", 1);
@@ -368,7 +372,7 @@
     $lostWager = $wonWager == 1 ? 2 : 1;
     $hand = GetHand($mainPlayer);
     if($lostWager == $mainPlayer && SearchCurrentTurnEffects("cheating_scoundrel_red-WAGER", $mainPlayer, true) && count($hand) > 0) {
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You're about to lose a wager! Discard a card to win it instead?");
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You're about to lose a wager! Do you want to discard a card to win it instead?");
       AddDecisionQueue("YESNO", $mainPlayer, "-");
       AddDecisionQueue("NOPASS", $mainPlayer, "-",1);
       PummelHit($mainPlayer, true);
@@ -407,12 +411,6 @@
       case "up_the_ante_blue-3":
         PlayAura("vigor", $wonWager, $amount, effectSource:"up_the_ante_blue");
         break;
-      case "edge_ahead_red": case "edge_ahead_yellow": case "edge_ahead_blue":
-        PlayAura("agility", $wonWager, $amount);
-        break;
-      case "hold_em_red": case "hold_em_yellow": case "hold_em_blue":
-        PlayAura("vigor", $wonWager, $amount, effectSource:$attackCard);
-        break;
       case "wage_might_red": case "wage_might_yellow": case "wage_might_blue":
         PlayAura("might", $wonWager, $amount);
         break;
@@ -425,9 +423,6 @@
       case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
         PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer);
         break;
-      case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
-        PutItemIntoPlayForPlayer("gold", $wonWager, number:$amount, effectController:$mainPlayer, effectSource:$attackCard);
-        break;
       case "drink_em_under_the_table_red":
         Draw($wonWager);
         PummelHit($lostWager);
@@ -435,13 +430,22 @@
       default:
         break;
     }
+    $Hero = new CharacterCard(0, $mainPlayer);
+    $hero = ShiyanaCharacter($Hero->CardID());
     if($wonWager == $mainPlayer) {
-      $Hero = new CharacterCard(0, $mainPlayer);
-      $hero = ShiyanaCharacter($Hero->CardID());
       if($Hero->Status() == 2 && ($hero == "olympia_prized_fighter" || $hero == "olympia")) {
         $Hero->SetUsed(1);
         AddLayer("TRIGGER", $mainPlayer, $hero);
       }
+    }
+    $winningHero = new CharacterCard(0, $wonWager);
+    if ($winningHero->CardID() == "zane_broadly_beloved")
+      AddLayer("TRIGGER", $wonWager, $winningHero->CardID());
+    $WinnerCharacter = new PlayerCharacter($wonWager);
+    for ($i = 0; $i < $WinnerCharacter->NumCards(); ++$i) {
+      $CharCard = $WinnerCharacter->Card($i, true);
+      $card = GetClass($CharCard->CardID(), $wonWager);
+      if ($card != "-") $card->WinWagerTrigger();
     }
   }
 
@@ -449,25 +453,28 @@
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects, $EffectContext, $combatChain;
     if ($wonWager == "-") $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
     $MainHero = new CharacterCard(0, $mainPlayer);
-    if ($MainHero->Status() < 3 && ($MainHero->CardID() == "olympia" || $MainHero->CardID() == "olympia_prized_fighter")) //ability is once per attack, not once per turn
+    $mainHeroCardID = $MainHero->CardID();
+    if ($MainHero->Status() < 3 && ($mainHeroCardID == "olympia" || $mainHeroCardID == "olympia_prized_fighter")) //ability is once per attack, not once per turn
       $MainHero->SetUsed(2);
     $numWagersWon = 0;
-    $amount = 1;
     if(isset($combatChain[0])) $EffectContext = $combatChain[0];
-    for($i = count($currentTurnEffects) - CurrentTurnEffectsPieces(); $i >= 0; $i -= CurrentTurnEffectsPieces()) {
-      $hasWager = $chainClosed ? false : true;
+    $effectPieces = CurrentTurnEffectsPieces();
+    for($i = count($currentTurnEffects) - $effectPieces; $i >= 0; $i -= $effectPieces) {
+      $hasWager = !$chainClosed;
       if (!isset($currentTurnEffects[$i])) continue;
-      $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+      $effectCardID = $currentTurnEffects[$i];
+      $card = GetClass($effectCardID, $currentTurnEffects[$i+1] ?? 0);
       if ($card != "-" && $card->IsWagerEffect($i)) {
-        for($j = 0; $j < $amount; ++$j) {
-          if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, ExtractCardID($currentTurnEffects[$i]), $wonWager, "WAGER");
+        if (!$chainClosed) {
+          $triggerCardID = ExtractCardID($effectCardID);
+          AddLayer("TRIGGER", $mainPlayer, $triggerCardID, $wonWager, "WAGER");
         }
-        // if (IsCombatEffectActive($currentTurnEffects[$i]))
+        // if (IsCombatEffectActive($effectCardID))
         RemoveCurrentTurnEffect($i);
         $hasWager = true;
       }
       else {
-        switch($currentTurnEffects[$i]) {
+        switch($effectCardID) {
           case "good_time_chapeau":
           case "bet_big_red":
           case "big_bop_red": case "big_bop_yellow": case "big_bop_blue":
@@ -476,21 +483,18 @@
           case "up_the_ante_blue-1":
           case "up_the_ante_blue-2":
           case "up_the_ante_blue-3":
-          case "edge_ahead_red": case "edge_ahead_yellow": case "edge_ahead_blue":
-          case "hold_em_red": case "hold_em_yellow": case "hold_em_blue":
           case "wage_might_red": case "wage_might_yellow": case "wage_might_blue":
           case "wage_agility_red": case "wage_agility_yellow": case "wage_agility_blue":
           case "wage_vigor_red": case "wage_vigor_yellow": case "wage_vigor_blue":
           case "wage_gold_red": case "wage_gold_yellow": case "wage_gold_blue":
-          case "money_where_ya_mouth_is_red": case "money_where_ya_mouth_is_yellow": case "money_where_ya_mouth_is_blue":
           case "drink_em_under_the_table_red":
-            for($j = 0; $j < $amount; ++$j) {
-              if (!$chainClosed) AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], $wonWager, "WAGER");
+            if (!$chainClosed) {
+              $triggerCardID = $currentTurnEffects[$i];
+              AddLayer("TRIGGER", $mainPlayer, $triggerCardID, $wonWager, "WAGER");
             }
             RemoveCurrentTurnEffect($i);
             break;
           default:
-            $hasWager = $hasWager || false;
             break;
         }
       }
@@ -505,21 +509,20 @@
 
   function Transcend($player, $cardID, $from)
   {
-    global $currentPlayer, $CS_Transcended;
-    $otherplayer = $player == 1 ? 2 : 1;
+    global $CS_Transcended;
+    $otherPlayer = 3 - $player;
     SetClassState($player, $CS_Transcended, 1);
     if(SearchCharacterAlive($player, "twelve_petal_kasaya")) {
       AddDecisionQueue("YESNO", $player, "if you want to gain a resource");
       AddDecisionQueue("NOPASS", $player, "-");
       AddDecisionQueue("GAINRESOURCES", $player, "1", 1);
     }
-    if(substr($from, 0, 5) == "THEIR") AddPlayerHand($cardID, $otherplayer, "-");
+    if(str_starts_with($from, "THEIR")) AddPlayerHand($cardID, $otherPlayer, "-");
     else AddPlayerHand($cardID, $player, "-");
   }
 
   /**
    * Decompose is a keyword added in ROS. Per LSS decompose gives you an option to banishes 2 earth and 1 action card for a bonus effect
-   *
    * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
    */
   function Decompose($player, $specificCardDQ, $target = "") {
@@ -527,30 +530,31 @@
     $earthBanishes = 2;
     $totalBanishes = 3;
     // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
+    $earthDiscard = SearchDiscard($player, talent: "EARTH");
     $countInDiscard = SearchCount(
       SearchRemoveDuplicates(
         CombineSearches(
-          SearchDiscard($player, talent: "EARTH"),
+          $earthDiscard,
           CombineSearches(
             SearchDiscard($player, "A"),
-            SearchDiscard($player
-            , "AA"))
+            SearchDiscard($player, "AA"))
           )
         )
       );
       // Must have the minimum # of earth cards too.
-      $earthCountInDiscard = SearchCount(SearchDiscard($player, talent: "EARTH"));
+      $earthCountInDiscard = SearchCount($earthDiscard);
       if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
+        $earthColorCode = GetElementColorCode("EARTH");
         // Earth Banishes
         for($i = 0; $i < $earthBanishes; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
       switch ($earthBanishes - $i) {
         case 1:
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose 1 {{element|Earth|" . GetElementColorCode("EARTH") . "}} card to banish", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose 1 {{element|Earth|" . $earthColorCode . "}} card to banish", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           break;
         default:
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $earthBanishes . " {{element|Earth|" . GetElementColorCode("EARTH") . "}} cards to banish (or pass)", 1);
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $earthBanishes . " {{element|Earth|" . $earthColorCode . "}} cards to banish (or pass)", 1);
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           break;
       }
@@ -561,7 +565,7 @@
         // Action banishes.
         for($i = 0; $i < $actionBanishes; $i++) {
           AddDecisionQueue("GETCARDSFORDECOMPOSE", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1); // Modified MULTIZONEINDICES so if there are no actions it can be sent to the next dq and it will revert gamestate. Can't use "PASS" because YESNO "PASS" result is already present.
-          AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different {{element|Earth|" . GetElementColorCode("EARTH") . "}} cards.", 1);
+          AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different {{element|Earth|" . $earthColorCode . "}} cards.", 1);
           AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($actionBanishes - $i) . " action card(s) to banish", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, "GY,-", 1);

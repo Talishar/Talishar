@@ -46,6 +46,7 @@ SaveFile($source, $target, "gamestate.txt");
 SaveFile($source, $target, "gamestateBackup.txt");
 SaveFile($source, $target, "beginTurnGamestate.txt");
 SaveFile($source, $target, "lastTurnGamestate.txt");
+SaveFile($source, $target, "startChainLinkGamestate.txt");
 
 // Load undo gamestate backups
 for ($i = 0; $i <= 4; $i++) {

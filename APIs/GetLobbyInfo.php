@@ -8,6 +8,9 @@ include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Libraries/LegalHeroesHelper.php";
+include_once "../includes/dbh.inc.php";
+include_once "../Libraries/CosmeticsLibrary.php";
+include_once "../Assets/MetafyDictionary.php";
 
 // Set headers immediately after includes
 SetHeaders();
@@ -15,13 +18,15 @@ SetHeaders();
 if (!function_exists("DelimStringContains")) {
   function DelimStringContains($str, $find, $partial=false)
   {
-    $arr = explode(",", $str);
-    for($i=0; $i<count($arr); ++$i)
-    {
-      if($partial && str_contains($arr[$i], $find)) return true;
-      else if($arr[$i] == $find) return true;
+    if ($partial) {
+      $arr = explode(",", $str);
+      $len = count($arr);
+      for ($i = 0; $i < $len; ++$i) {
+        if (str_contains($arr[$i], $find)) return true;
+      }
+      return false;
     }
-    return false;
+    return str_contains(',' . $str . ',', ',' . $find . ',');
   }
 }
 
@@ -36,6 +41,7 @@ if (!function_exists("SubtypeContains")) {
 $_POST = json_decode(file_get_contents('php://input'), true);
 $gameName = TryPOST("gameName", 0);
 $playerID = TryPOST("playerID", 0);
+if (session_status() === PHP_SESSION_NONE) session_start();
 if($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
 else if($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 else $authKey = TryPOST("authKey");
@@ -58,8 +64,8 @@ ob_start();
 include "./APIParseGamefile.php";
 ob_end_clean();
 
-$yourName = ($playerID == 1 ? $p1uid : $p2uid);
-$theirName = ($playerID == 1 ? $p2uid : $p1uid);
+$yourName = ($playerID == 1 ? $p1DisplayName : $p2DisplayName);
+$theirName = ($playerID == 1 ? $p2DisplayName : $p1DisplayName);
 
 $response->badges = [];
 
@@ -74,6 +80,8 @@ $response->nameColor = ($contentCreator != null ? $contentCreator->NameColor() :
 $response->displayName = ($yourName != "-" ? $yourName : "Player " . $playerID);
 
 
+
+$response->altArts = [];
 
 $deckFile = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
 $handler = @fopen($deckFile, "r");
@@ -94,19 +102,20 @@ if($handler) {
   $response->deck->hands = [];
   $response->deck->demiHero = [];
   $response->deck->modular = [];
-  for($i = 1; $i < count($character); ++$i) {
+  $charCount = count($character);
+  for($i = 1; $i < $charCount; ++$i) {
     if (!isset($character[$i])) continue;
     $cardID = $character[$i];
-    if (SubtypeContains($cardID, "Head")) array_push($response->deck->head, $cardID);
-    else if (SubtypeContains($cardID, "Chest")) array_push($response->deck->chest, $cardID);
-    else if (SubtypeContains($cardID, "Arms")) array_push($response->deck->arms, $cardID);
-    else if (SubtypeContains($cardID, "Legs")) array_push($response->deck->legs, $cardID);
-    else if (IsModular($cardID)) array_push($response->deck->modular, $cardID);
+    $subtype = CardSubtype($cardID); // compute once; reused for all slot checks
+    if (DelimStringContains($subtype, "Head")) $response->deck->head[] = $cardID;
+    else if (DelimStringContains($subtype, "Chest")) $response->deck->chest[] = $cardID;
+    else if (DelimStringContains($subtype, "Arms")) $response->deck->arms[] = $cardID;
+    else if (DelimStringContains($subtype, "Legs")) $response->deck->legs[] = $cardID;
+    else if (IsModular($cardID)) $response->deck->modular[] = $cardID;
     else {
       $handItem = new stdClass();
       $handItem->id = $cardID;
-      $handItem->is1H = Is1H($handItem->id);
-      $subtype = CardSubtype($handItem->id);
+      $is1H = Is1H($cardID, $character[0]); // compute once; used twice below
       $numHands = 2;
       if(DelimStringContains($subtype, "Quiver")) {
         $numHands = 0;
@@ -121,10 +130,11 @@ if($handler) {
         $numHands = 1;
         $handItem->isOffhand = true;
       }
-      else if(Is1H($handItem->id)) $numHands = 1;
+      else if($is1H) $numHands = 1;
       $handItem->numHands = $numHands;
-      array_push($response->deck->weapons, $handItem);
-      array_push($response->deck->hands, $handItem);
+      $handItem->is1H = $is1H;
+      $response->deck->weapons[] = $handItem;
+      $response->deck->hands[] = $handItem;
     }
   }
 
@@ -133,15 +143,15 @@ if($handler) {
 
   $response->deck->cards = GetArray($handler);
   //Remove deck cards that don't belong
-  for($i=count($response->deck->cards)-1; $i>=0; --$i)
-  {
-    if(CardType($response->deck->cards[$i]) == "D")
-    {
-      array_push($response->deck->demiHero, $response->deck->cards[$i]);
-      unset($response->deck->cards[$i]);
+  $filteredCards = [];
+  foreach ($response->deck->cards as $card) {
+    if (CardType($card) === "D") {
+      $response->deck->demiHero[] = $card;
+    } else {
+      $filteredCards[] = $card;
     }
   }
-  $response->deck->cards = array_values($response->deck->cards);
+  $response->deck->cards = $filteredCards;
 
   $response->deck->headSB = GetArray($handler);
   $response->deck->chestSB = GetArray($handler);
@@ -151,23 +161,25 @@ if($handler) {
   $weaponSB = GetArray($handler);
   $response->deck->cardsSB = GetArray($handler);
   //Remove deck cards that don't belong
-  for($i=count($response->deck->cardsSB)-1; $i>=0; --$i)
-  {
-    if(CardType($response->deck->cardsSB[$i]) == "D")
-    {
-      array_push($response->deck->demiHero, $response->deck->cardsSB[$i]);
-      unset($response->deck->cardsSB[$i]);
+  $filteredCardsSB = [];
+  foreach ($response->deck->cardsSB as $card) {
+    if (CardType($card) === "D") {
+      $response->deck->demiHero[] = $card;
+    } else {
+      $filteredCardsSB[] = $card;
     }
   }
-  $response->deck->cardsSB = array_values($response->deck->cardsSB);
+  $response->deck->cardsSB = $filteredCardsSB;
 
   $quiverSB = GetArray($handler);
   $handsSB = array_merge($weaponSB, $offhandSB, $quiverSB);
   $response->deck->handsSB = [];
-  for ($i = 0; $i < count($handsSB); ++$i) {
+  $handsSBCount = count($handsSB);
+  for ($i = 0; $i < $handsSBCount; ++$i) {
     $handItem = new stdClass();
     $handItem->id = $handsSB[$i];
     $subtype = CardSubtype($handItem->id);
+    $is1H = Is1H($handItem->id, $character[0]); // compute once; used twice below
     $numHands = 2;
     if(DelimStringContains($subtype, "Quiver")) {
       $numHands = 0;
@@ -182,10 +194,10 @@ if($handler) {
       $numHands = 1;
       $handItem->isOffhand = true;
     }
-    else if(Is1H($handItem->id)) $numHands = 1;
+    else if($is1H) $numHands = 1;
     $handItem->numHands = $numHands;
-    $handItem->is1H = Is1H($handItem->id);
-    array_push($response->deck->handsSB, $handItem);
+    $handItem->is1H = $is1H;
+    $response->deck->handsSB[] = $handItem;
   }
 
   $response->deck->modular = GetArray($handler);
@@ -209,15 +221,13 @@ if($handler) {
     $heroCard->hasEssenceOfIce = GeneratedHasEssenceOfIce($heroId);
     $heroCard->hasEssenceOfEarth = GeneratedHasEssenceOfEarth($heroId);
     $heroCard->hasEssenceOfLightning = GeneratedHasEssenceOfLightning($heroId);
-    array_push($response->deck->cardDictionary, $heroCard);
+    $response->deck->cardDictionary[] = $heroCard;
     $cardIndex[$heroId] = "1";
   }
-  
   // Include both main deck and sideboard cards in the dictionary
-  $allCards = array_merge($response->deck->cards, $response->deck->cardsSB);
-  
-  foreach($allCards as $card) {
-    if(!array_key_exists($card, $cardIndex)) {
+
+  foreach ($response->deck->cards as $card) {
+    if (!isset($cardIndex[$card])) {
       $cardIndex[$card] = "1";
       $dictionaryCard = new stdClass();
       $dictionaryCard->id = $card;
@@ -236,9 +246,40 @@ if($handler) {
       $dictionaryCard->hasMark = GeneratedHasMark($card);
       $dictionaryCard->hasCharge = GeneratedHasCharge($card);
       $dictionaryCard->hasSuspense = hasSuspense($card);
-      array_push($response->deck->cardDictionary, $dictionaryCard);
+      $response->deck->cardDictionary[] = $dictionaryCard;
     }
   }
+  foreach ($response->deck->cardsSB as $card) {
+    if (!isset($cardIndex[$card])) {
+      $cardIndex[$card] = "1";
+      $dictionaryCard = new stdClass();
+      $dictionaryCard->id = $card;
+      $dictionaryCard->pitch = PitchValue($card);
+      $dictionaryCard->power = GeneratedPowerValue($card);
+      $dictionaryCard->blockValue = GeneratedBlockValue($card);
+      $dictionaryCard->class = CardClass($card);
+      $dictionaryCard->talent = CardTalent($card);
+      $dictionaryCard->type = CardType($card);
+      $dictionaryCard->subtype = CardSubtype($card);
+      $dictionaryCard->cost = GeneratedCardCost($card);
+      $dictionaryCard->hasStealth = GeneratedHasStealth($card);
+      $dictionaryCard->hasBloodDebt = GeneratedHasBloodDebt($card);
+      $dictionaryCard->hasBoost = GeneratedHasBoost($card);
+      $dictionaryCard->hasDecompose = GeneratedHasDecompose($card);
+      $dictionaryCard->hasMark = GeneratedHasMark($card);
+      $dictionaryCard->hasCharge = GeneratedHasCharge($card);
+      $dictionaryCard->hasSuspense = hasSuspense($card);
+      $response->deck->cardDictionary[] = $dictionaryCard;
+    }
+  }
+
+  $myUid = $playerID == 1 ? $p1uid : $p2uid;
+  $myMetafyCommunities = $playerID == 1 ? $p1MetafyCommunities : $p2MetafyCommunities;
+  $response->altArts = GetOwnAltArtList($myUid, $response->deck->hero, $myMetafyCommunities);
+
+  $myUserId = $playerID == 1 ? ($p1id ?? '') : ($p2id ?? '');
+  $myDeckLink = $playerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+  $response->altArts = ApplyDeckAltArtOverride($response->altArts, $myUserId, $myDeckLink);
 
   fclose($handler);
 }

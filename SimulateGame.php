@@ -43,7 +43,7 @@ $playerID = $commands[0][0];
 copy("./Games/" . $gameName . "/startGamestate.txt", "./Games/" . $gameName . "/gamestate.txt");
 
 include "ParseGamestate.php";
-$otherPlayer = $currentPlayer == 1 ? 2 : 1;
+$otherPlayer = 3 - $currentPlayer;
 $skipWriteGamestate = false;
 $mainPlayerGamestateStillBuilt = 0;
 $makeCheckpoint = 0;

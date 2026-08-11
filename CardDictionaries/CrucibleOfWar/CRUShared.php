@@ -317,9 +317,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "teklovossens_workshop_red": case "teklovossens_workshop_yellow": case "teklovossens_workshop_blue":
-      if($cardID == "teklovossens_workshop_red") $maxCost = 2;
-      else if($cardID == "teklovossens_workshop_yellow") $maxCost = 1;
-      else if($cardID == "teklovossens_workshop_blue") $maxCost = 0;
+      $maxCost = match($cardID) { "teklovossens_workshop_red" => 2, "teklovossens_workshop_yellow" => 1, default => 0 };
       Opt($cardID, GetClassState($currentPlayer, $CS_NumBoosted));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
@@ -382,7 +380,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       } 
       else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
-        return "FAILED";
+        return "";
       }
       return "";
     case "runeblood_barrier_yellow":
@@ -393,15 +391,13 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "sutcliffes_research_notes_red": case "sutcliffes_research_notes_yellow": case "sutcliffes_research_notes_blue":
-      if($cardID == "sutcliffes_research_notes_red") $count = 3;
-      else if($cardID == "sutcliffes_research_notes_yellow") $count = 2;
-      else $count = 1;
+      $count = match($cardID) { "sutcliffes_research_notes_red" => 3, "sutcliffes_research_notes_yellow" => 2, default => 1 };
       $deck = new Deck($currentPlayer);
       $numRunechants = 0;
       if($deck->Reveal($count)) {
         $cards = explode(",", $deck->Top(remove:true, amount:$count));
         $count = count($cards);
-        for($i=0; $i<$count; ++$i) if(ClassContains($cards[$i], "RUNEBLADE", $currentPlayer) && CardType($cards[$i]) == "AA") ++$numRunechants;
+        for($i=0; $i<$count; ++$i) { $card = $cards[$i]; if(ClassContains($card, "RUNEBLADE", $currentPlayer) && CardType($card) == "AA") ++$numRunechants; }
         if($numRunechants > 0) PlayAura("runechant", $currentPlayer, number:$numRunechants);
         AddDecisionQueue("CHOOSETOP", $currentPlayer, implode(",", $cards));
       }
@@ -423,9 +419,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       NegateLayer($target);
       return "";
     case "cindering_foresight_red": case "cindering_foresight_yellow": case "cindering_foresight_blue":
-      if($cardID == "cindering_foresight_red") $optAmount = 3;
-      else if($cardID == "cindering_foresight_yellow") $optAmount = 2;
-      else $optAmount = 1;
+      $optAmount = match($cardID) { "cindering_foresight_red" => 3, "cindering_foresight_yellow" => 2, default => 1 };
       AddCurrentTurnEffect($cardID, $currentPlayer);
       PlayerOpt($currentPlayer, $optAmount);
       return "";
@@ -441,7 +435,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD",$cardID, resolvedTarget: $target);
       return "";
     case "gorganian_tome":
-      $count = SearchCount(CombineSearches(SearchDiscardForCard(1, "gorganian_tome"), SearchDiscardForCard(2, "gorganian_tome")));
+      $count = SearchCount(CombineSearches(SearchDiscardForCard(1, "gorganian_tome"), SearchDiscardForCard(2, "gorganian_tome"))) + 1;
       $count = $count == 0 ? 1 : $count;
       Draw($currentPlayer, num: $count);
       return "Drew " . $count . " card" . ($count > 1 ? "s" : "");

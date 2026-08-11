@@ -15,7 +15,7 @@ class Discard {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * DiscardPieces();
+    if($cardNumber) $index *= DiscardPieces();
     return new DiscardCard($index, $this->playerID);
   }
 
@@ -25,10 +25,16 @@ class Discard {
 
   function NumCards() {
     $count = 0;
-    for ($i=0; $i < count($this->discard); $i += DiscardPieces()) {
+    $total = count($this->discard);
+    $discardPieces = DiscardPieces();
+    for ($i = 0; $i < $total; $i += $discardPieces) {
       if($this->discard[$i+2] != "DOWN") $count++;
     }
     return $count;
+  }
+
+  function NumTotalCards() {
+    return intdiv(count($this->discard), DiscardPieces());
   }
 
   function TotalCards() { //includes facedown cards in the count
@@ -36,32 +42,18 @@ class Discard {
   }
 
   function RemoveRandom($count=1) {
-    $cards = "";
+    $cards = [];
+    $discardPieces = DiscardPieces();
     for($i = 0; $i < $count && !$this->Empty(); $i++) {
-      $index = (GetRandom() % $this->NumCards()) * DiscardPieces();
-      if($cards != "") $cards .= ",";
-      $cards .= $this->discard[$index];
-      for ($j = DiscardPieces() - 1; $j >= 0; --$j) {
-        unset($this->discard[$index + $j]);
-      }
-      $this->discard = array_values($this->discard);
+      $index = (GetRandom() % $this->NumCards()) * $discardPieces;
+      $cards[] = $this->discard[$index];
+      array_splice($this->discard, $index, $discardPieces);
     }
-    return $cards;
+    return implode(",", $cards);
   }
 
   function Remove($index) {
-    if (isset($this->discard[$index])) {
-      $cardID = $this->discard[$index];
-      for ($i = DiscardPieces() - 1; $i >= 0; --$i) {
-        unset($this->discard[$index+$i]);
-      }
-      $this->discard = array_values($this->discard);
-      return $cardID;
-    }
-    else {
-      WriteLog("Something went wrong with removing a card from the graveyard, please submit a bug report");
-      return "";
-    }
+    return RemoveGraveyard($this->playerID, $index);
   }
 
   function RemoveTop() {
@@ -69,18 +61,21 @@ class Discard {
   }
 
   function Add($cardID, $from="GY", $mods="-") {
-    array_push($this->discard, $cardID);
-    array_push($this->discard, GetUniqueId());
-    array_push($this->discard, "-");
+    $this->discard[] = $cardID;
+    $this->discard[] = GetUniqueId();
+    $this->discard[] = "-";
   }
 
   function TopCard() {
-    return count($this->discard) > 0 ? $this->discard[count($this->discard) - DiscardPieces()] : "";
+    $count = count($this->discard);
+    return $count > 0 ? $this->discard[$count - DiscardPieces()] : "";
   }
 
   function FindCardUID($uid) {
-    if (count($this->discard) == 0) return new DiscardCard(-1, $this->playerID);
-    for ($i = 0; $i < count($this->discard); $i += DiscardPieces()) {
+    $count = count($this->discard);
+    if ($count == 0) return new DiscardCard(-1, $this->playerID);
+    $discardPieces = DiscardPieces();
+    for ($i = 0; $i < $count; $i += $discardPieces) {
       if ($this->discard[$i + 1] == $uid) return new DiscardCard($i, $this->playerID);
     }
     return new DiscardCard(-1, $this->playerID);

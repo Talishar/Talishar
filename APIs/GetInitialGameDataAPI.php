@@ -8,6 +8,7 @@ include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../Assets/MetafyDictionary.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
+include_once "../includes/ModeratorList.inc.php";
 
 // Set headers immediately after includes
 SetHeaders();
@@ -27,15 +28,15 @@ if (!file_exists("../Games/" . $gameName . "/GameFile.txt")) {
 
 include "./APIParseGamefile.php";
 
-$response->p1Name = $p1uid;
-$response->p2Name = $p2uid;
-$contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
+// p1Name/p2Name are display-only; perk and contributor checks key off the immutable handles
+$response->p1Name = $p1DisplayName;
+$response->p2Name = $p2DisplayName;
 $response->p1IsPatron = $p1IsPatron == "" ? false : true;
-$response->p1IsContributor = in_array($response->p1Name, $contributors);
+$response->p1IsContributor = IsUserContributor($p1uid);
 $response->p2IsPatron = $p2IsPatron == "" ? false : true;
-$response->p2IsContributor = in_array($response->p2Name, $contributors);
-$response->p1IsPvtVoidPatron = $response->p1Name == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
-$response->p2IsPvtVoidPatron = $response->p2Name == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
+$response->p2IsContributor = IsUserContributor($p2uid);
+$response->p1IsPvtVoidPatron = $p1uid == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
+$response->p2IsPvtVoidPatron = $p2uid == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
 $response->roguelikeGameID = $roguelikeGameID;
 
 $response->altArts = [];
@@ -43,17 +44,21 @@ $response->altArts = [];
 //Get Alt arts
 if(!AltArtsDisabled($playerID))
 {
+  $heroCacheArr = ReadCacheArray($gameName) ?? [];
+  $playerHero = $playerID == 1 ? ($heroCacheArr[6] ?? "") : ($heroCacheArr[7] ?? "");
+
   foreach(PatreonCampaign::cases() as $campaign) {
     if(isset($_SESSION[$campaign->SessionID()]) || (IsUserLoggedIn() && $campaign->IsTeamMember(LoggedInUserName()))) {
-      $altArts = $campaign->AltArts($playerID);
-      $altArts = explode(",", $altArts);
-      for($i = 0; $i < count($altArts); ++$i) {
+      $altArts = explode(",", $campaign->AltArts($playerHero));
+      $altCount = count($altArts);
+      $campaignName = $campaign->CampaignName();
+      for($i = 0; $i < $altCount; ++$i) {
         $arr = explode("=", $altArts[$i]);
         $altArt = new stdClass();
-        $altArt->name = $campaign->CampaignName() . (count($cardBacks) > 1 ? " " . ($i + 1) : "");
+        $altArt->name = $campaignName . (count($cardBacks) > 1 ? " " . ($i + 1) : "");
         $altArt->cardId = $arr[0];
         $altArt->altPath = $arr[1];
-        array_push($response->altArts, $altArt);
+        $response->altArts[] = $altArt;
       }
     }
   }
@@ -83,15 +88,17 @@ if(!AltArtsDisabled($playerID))
                   // Add alt arts
                   $altArts = $metafyCommunity->AltArts();
                   if (!empty($altArts)) {
-                    $altArtIds = $altArts;//explode(",", $altArts);
-                    for($i = 0; $i < count($altArtIds); ++$i) {
+                    $altArtIds = $altArts;
+                    $aaidCount = count($altArtIds);
+                    $communityName = $metafyCommunity->CommunityName();
+                    for($i = 0; $i < $aaidCount; ++$i) {
                       $arr = explode("=", trim($altArtIds[$i]));
                       if (count($arr) === 2) {
                         $altArt = new stdClass();
-                        $altArt->name = $metafyCommunity->CommunityName();
+                        $altArt->name = $communityName;
                         $altArt->cardId = trim($arr[0]);
                         $altArt->altPath = trim($arr[1]);
-                        array_push($response->altArts, $altArt);
+                        $response->altArts[] = $altArt;
                       }
                     }
                   }

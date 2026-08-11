@@ -399,6 +399,11 @@ class ClassState {
 		return $this->classState[$CS_HaveIntimidated] ?? 0;
 	}
 
+	function HaveIntimidatedOpponent() {
+		global $CS_HaveIntimidatedOpponent;
+		return $this->classState[$CS_HaveIntimidatedOpponent] ?? 0;
+	}
+
 	function ModalAbilityChoosen() {
 		global $CS_ModalAbilityChoosen;
 		return $this->classState[$CS_ModalAbilityChoosen] ?? "-";

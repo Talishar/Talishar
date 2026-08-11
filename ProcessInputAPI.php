@@ -2,10 +2,6 @@
 
 error_reporting(E_ALL);
 
-// Limit script execution time to 1 second to avoid long-running requests
-@set_time_limit(1);
-@ini_set('max_execution_time', '1');
-
 session_start();
 
 // CRITICAL: Capture session data immediately and release the lock
@@ -31,6 +27,10 @@ require_once "Libraries/CoreLibraries.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
+include_once "./Libraries/ValidationLibraries.php";
+
+@set_time_limit(1);
+@ini_set('max_execution_time', '1');
 
 SetHeaders();
 $_POST = json_decode(file_get_contents('php://input'), true) ?? [];
@@ -70,14 +70,13 @@ if ($playerID != 0) {
   $p2Key = "";
 }
 
-$otherPlayer = $currentPlayer == 1 ? 2 : 1;
+$otherPlayer = 3 - $currentPlayer;
 $skipWriteGamestate = false;
 $mainPlayerGamestateStillBuilt = 0;
 $makeCheckpoint = 0;
 $makeBlockBackup = 0;
 $MakeStartTurnBackup = false;
 $MakeStartGameBackup = false;
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
 $conceded = false;
 $randomSeeded = false;
 
@@ -87,12 +86,11 @@ try {
     if (($playerID == 1 || $playerID == 2) && $authKey == "") {
       if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
     }
-    if ($playerID != 3 && $authKey !== $targetAuth) exit;
+    if (!validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key)) exit;
     if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
     if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
       $currentTime = round(microtime(true) * 1000);
-      SetCachePiece($gameName, 2, $currentTime);
-      SetCachePiece($gameName, 3, $currentTime);
+      SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
       exit;
     }
   }
@@ -112,6 +110,22 @@ $events = []; //Clear events each time so it's only updated ones that get sent
 
 $isSimulation = false;
 $response = new stdClass();
+
+function ValidateLayerReorder($submittedLayers, $layerPieces, $maxLayerID)
+{
+  if (!is_array($submittedLayers)) return "Layers must be a list.";
+  if (count($submittedLayers) < $maxLayerID / $layerPieces) return "Not enough layers.";
+  $seenLayerIDs = [];
+  foreach ($submittedLayers as $submittedID) {
+    if (!is_numeric($submittedID)) return "Not a layer ID.";
+    $layerID = intval($submittedID);
+    if ($layerID % $layerPieces != 0) return "Not a layer ID.";
+    if ($layerID < 0 || $layerID > $maxLayerID) return "Layer ID out of range.";
+    if (isset($seenLayerIDs[$layerID])) return "Layer ID is duplicated.";
+    $seenLayerIDs[$layerID] = true;
+  }
+  return null;
+}
 
 //Now we can process the command
 try {
@@ -162,43 +176,26 @@ try {
       break;
   case 33: //Fully re-order layers
     //First validate
-    $isValid = true;
     $layerPieces = LayerPieces();
-    if (count($submission->layers) < $dqState[8] / $layerPieces) {
-      $response->error = "Not enough layers.";
-      $isValid = false;
+    $submittedLayers = $submission->layers ?? null;
+    $reorderError = ValidateLayerReorder($submittedLayers, $layerPieces, $dqState[8]);
+    if ($reorderError !== null) {
+      $response->error = $reorderError;
       break;
     }
-    for ($i = 0; $i < count($submission->layers); ++$i) {
-      $layerID = $submission->layers[$i];
-      if ($layerID % $layerPieces != 0) {
-        $response->error = "Not a layer ID.";
-        $isValid = false;
-        break;
-      }
-      if ($layerID < 0 || $layerID > $dqState[8]) {
-        $response->error = "Layer ID out of range.";
-        $isValid = false;
-        break;
-      }
-      for ($j = $i + 1; $j < count($submission->layers); ++$j) {
-        if ($layerID == $submission->layers[$j]) {
-          $response->error = "Layer ID is duplicated.";
-          $isValid = false;
-          break;
-        }
-      }
-    }
-    //Now if it's valid, do the swap
+    $submittedLayersCount = count($submittedLayers);
+    $layersCount = count($layers);
+    //Now that it's valid, do the swap
     $newLayers = [];
-    for($i = 0; $i < count($submission->layers); ++$i) {
-      for($j = $submission->layers[$i]; $j < $submission->layers[$i] + $layerPieces; ++$j) {
-        if(isset($layers[$j])) array_push($newLayers, $layers[$j]);
+    for($i = 0; $i < $submittedLayersCount; ++$i) {
+      for($j = $submittedLayers[$i]; $j < $submittedLayers[$i] + $layerPieces; ++$j) {
+        if(isset($layers[$j])) $newLayers[] = $layers[$j];
       }
     }
-    if(count($layers) > count($newLayers)) {
-      for($i = $dqState[8] + $layerPieces; $i < $dqState[8] + $layerPieces * count($layers); ++$i) {
-        if(isset($layers[$i])) array_push($newLayers, $layers[$i]);
+    if($layersCount > count($newLayers)) {
+      $upperBound = $dqState[8] + $layerPieces * $layersCount;
+      for($i = $dqState[8] + $layerPieces; $i < $upperBound; ++$i) {
+        if(isset($layers[$i])) $newLayers[] = $layers[$i];
       }
     }
     $layers = $newLayers;
@@ -262,21 +259,20 @@ try {
         }
       foreach ($cardList as $card) {
         $index = -1;
-        for ($i = 0; $i < count($layers); $i += $layerPieces) {
+        $layersCount = count($layers);
+        for ($i = 0; $i < $layersCount; $i += $layerPieces) {
           if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID && $layers[$i+2] == $card) {
             $index = $i;
           }
         }
         if ($index != -1) {
-          $pretrigger = array_slice($layers, $index, $layerPieces);
+          $pretrigger = array_splice($layers, $index, $layerPieces);
           $pretrigger[0] = "TRIGGER";
-          for ($j = $index + $layerPieces - 1; $j >= $index; --$j) {
-            unset($layers[$j]);
-          }
-          $layers = array_merge($pretrigger, $layers);
+          array_unshift($layers, ...$pretrigger);
         }
       }
-      for ($i = 0; $i < count($layers); $i += $layerPieces) {
+      $layersCount = count($layers);
+      for ($i = 0; $i < $layersCount; $i += $layerPieces) {
         if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID) {
           WriteLog("Something went wrong with adding triggers and we missed adding " . $layers[$i+2] . " to the stack", highlight: true);
           $layers[$i] = "TRIGGER";
@@ -296,7 +292,6 @@ try {
   case 100011: //Resume adventure (roguelike)
     if($roguelikeGameID == "") {
       $response->error = "Cannot resume adventure - not a roguelike game.";
-      $isValid = false;
       break;
     }
     $response->redirectLink = $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1);
@@ -318,58 +313,5 @@ if ($playerID == 0) {
   exit;
 }
 
-ProcessMacros();
-if ($inGameStatus == $GameStatus_Rematch) {
-  $origDeck = "./Games/" . $gameName . "/p1DeckOrig.txt";
-  if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p1Deck.txt");
-  $origDeck = "./Games/" . $gameName . "/p2DeckOrig.txt";
-  if (file_exists($origDeck)) copy($origDeck, "./Games/" . $gameName . "/p2Deck.txt");
-  include "MenuFiles/ParseGamefile.php";
-  include "MenuFiles/WriteGamefile.php";
-  $gameStatus = (IsPlayerAI(2) ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
-  SetCachePiece($gameName, 14, $gameStatus);
-  $firstPlayer = 1;
-  $firstPlayerChooser = ($winner == 1 ? 2 : 1);
-  $p1SideboardSubmitted = "0";
-  $p2SideboardSubmitted = (IsPlayerAI(2) ? "1" : "0");
-  WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
-  WriteGameFile();
-  $turn[0] = "REMATCH";
-  include "WriteGamestate.php";
-  $currentTime = round(microtime(true) * 1000);
-  SetCachePiece($gameName, 2, $currentTime);
-  SetCachePiece($gameName, 3, $currentTime);
-  GamestateUpdated($gameName);
-  exit;
-} else if ($winner != 0 && $turn[0] != "YESNO") {
-  $inGameStatus = $GameStatus_Over;
-  $turn[0] = "OVER";
-  $currentPlayer = 1;
-}
-
-CombatDummyAI(); //Only does anything if applicable
-if ($p2IsAI == "1") {
-  EncounterAI();
-}
-CacheCombatResult();
-
-if (!IsGameOver()) {
-  if ($playerID == 1) $p1TotalTime += time() - intval($lastUpdateTime);
-  else if ($playerID == 2) $p2TotalTime += time() - intval($lastUpdateTime);
-  $lastUpdateTime = time();
-}
-
-//Now write out the game state
-if (!$skipWriteGamestate) {
-  DoGamestateUpdate();
-  include "WriteGamestate.php";
-}
-
-if ($makeCheckpoint) MakeGamestateBackup();
-if ($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
-if ($MakeStartTurnBackup) MakeStartTurnBackup();
-if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
-
-GamestateUpdated($gameName);
-
-exit;
+// Rematch handling, AI turns, clock accumulation, persistence and backups.
+include "Libraries/GameFinalization.php";

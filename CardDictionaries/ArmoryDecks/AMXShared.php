@@ -53,7 +53,7 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "bank_breaker":
       $character = &GetPlayerCharacter($currentPlayer);
       $index = GetClassState($currentPlayer, $CS_CharacterIndex);
-      if (count(explode(",", $character[$index + 10])) > 0 && $character[$index + 10] != "-") {
+      if ($character[$index + 10] != "-") {
         CharacterChooseSubcard($currentPlayer, $index, isMandatory:false);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "bank_breaker", 1);
@@ -68,14 +68,15 @@ function AMXPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if ($conditionsMet != "") return $conditionsMet;
       $char = &GetPlayerCharacter($currentPlayer);
       // Add the new weapon stuff so we can put cards under it
-      PutCharacterIntoPlayForPlayer("bank_breaker", $currentPlayer);
+      PutCharacterIntoPlayForPlayer("bank_breaker", $currentPlayer, "LWep");
       // We don't want function calls in every iteration check
       $charCount = count($char);
       $charPieces = CharacterPieces();
       $bankBreakerIndex = $charCount - $charPieces; // we pushed it, so should be the last element
       //Congrats, you have met the requirement to build the wrench! Let's remove the old stuff
       for ($i = $charCount - $charPieces; $i >= 0; $i -= $charPieces) {
-        if(CardType($char[$i]) == "W" && SubtypeContains($char[$i], "Wrench") && $i != $bankBreakerIndex) {
+        $charCard = $char[$i];
+        if(CardType($charCard) == "W" && SubtypeContains($charCard, "Wrench") && $i != $bankBreakerIndex) {
           RemoveCharacterAndAddAsSubcardToCharacter($currentPlayer, $i, $bankBreakerIndex);
         }
       }
@@ -104,7 +105,9 @@ function CheckIfConstructBankBreakerConditionsAreMet($player)
 {
   $hasWrench = false;
   $char = &GetPlayerCharacter($player);
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+  $charCount = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $charPieces) {
     $characterCardID = $char[$i];
     if ($char[$i + 1] == 0) continue;
     if (CardType($characterCardID) == "W" && SubtypeContains($characterCardID, "Wrench")) $hasWrench = true;

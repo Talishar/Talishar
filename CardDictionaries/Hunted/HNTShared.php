@@ -72,7 +72,7 @@ function HNTAbilityHasGoAgain($cardID): bool
 function HNTEffectPowerModifier($cardID, $attached=False): int
 {
   global $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   return match ($cardID) {
     "arakni_black_widow" => 3,
     "arakni_funnel_web" => 3,
@@ -172,7 +172,8 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
-  if ($cardID == "long_whisker_loyalty_red" & count($dashArr) > 1) {
+  $hasSuffix = count($dashArr) > 1;
+  if ($cardID == "long_whisker_loyalty_red" & $hasSuffix) {
     if ($dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
     if (DelimStringContains($dashArr[1], "MARK", true)) {
       $id = str_contains($dashArr[1], ",") ? explode(",", $dashArr[1])[1] : -1;
@@ -180,14 +181,14 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
       return $character[$combatChainState[$CCS_WeaponIndex] + 11] == $id;
     }
   }
-  if ($cardID == "arakni_black_widow" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
-  if ($cardID == "arakni_funnel_web" && count($dashArr) > 1 && $dashArr[1] == "HIT") return HasStealth($attackID);
-  if ($cardID == "fealty" && count($dashArr) > 1 && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
-  if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
-  if ($cardID == "dual_threat_yellow" && count($dashArr) > 1 && $dashArr[1] == "WEAPON") return IsWeaponAttack();
-  if (($cardID == "public_bounty_red" || $cardID == "public_bounty_yellow" || $cardID == "public_bounty_blue") && count($dashArr) > 1 && $dashArr[1] == "UNSET") return false;
-  if (($cardID == "knife_through_butter_red" || $cardID == "knife_through_butter_yellow" || $cardID == "knife_through_butter_blue") && count($dashArr) > 1 && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
-  if (($cardID == "point_of_engagement_red" || $cardID == "point_of_engagement_yellow" || $cardID == "point_of_engagement_blue") && count($dashArr) > 1) {
+  if ($cardID == "arakni_black_widow" && $hasSuffix && $dashArr[1] == "HIT") return HasStealth($attackID);
+  if ($cardID == "arakni_funnel_web" && $hasSuffix && $dashArr[1] == "HIT") return HasStealth($attackID);
+  if ($cardID == "fealty" && $hasSuffix && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
+  if ($cardID == "dual_threat_yellow" && $hasSuffix && $dashArr[1] == "AA") return DelimStringContains(CardType($attackID), "AA");
+  if ($cardID == "dual_threat_yellow" && $hasSuffix && $dashArr[1] == "WEAPON") return IsWeaponAttack();
+  if (($cardID == "public_bounty_red" || $cardID == "public_bounty_yellow" || $cardID == "public_bounty_blue") && $hasSuffix && $dashArr[1] == "UNSET") return false;
+  if (($cardID == "knife_through_butter_red" || $cardID == "knife_through_butter_yellow" || $cardID == "knife_through_butter_blue") && $hasSuffix && $dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
+  if (($cardID == "point_of_engagement_red" || $cardID == "point_of_engagement_yellow" || $cardID == "point_of_engagement_blue") && $hasSuffix) {
     switch ($dashArr[1]) {
       case "NEXTDAGGER":
         return SubtypeContains($attackID, "Dagger", $mainPlayer);
@@ -197,7 +198,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
         break;
     }
   }
-  if ($cardID == "imperial_seal_of_command_red" && count($dashArr) > 1 && $dashArr[1] == "HIT") return true;
+  if ($cardID == "imperial_seal_of_command_red" && $hasSuffix && $dashArr[1] == "HIT") return true;
   return match ($cardID) {
     "arakni_black_widow" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
     "arakni_funnel_web" => ClassContains($attackID, "ASSASSIN", $mainPlayer),
@@ -343,7 +344,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if ($additionalCosts == "Reduce_Block" || $additionalCosts == "Both") {
           if ($target != "-") {
             $targetCardID = GetMZCard($currentPlayer, $target);
-            $targetInd = explode("-", $target)[1];
+            $targetInd = explode("-", $target, 2)[1];
             $TargetCard =$CombatChain->Card($targetInd);
             if (TypeContains($targetCardID, "E") && $TargetCard->From() == "EQUIP") {
               $uid = $TargetCard->OriginUniqueID();
@@ -362,7 +363,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "anaphylactic_shock_blue":
       if (GetClassState($otherPlayer, $CS_DamageDealtToOpponent)) LoseHealth(1, $otherPlayer);
       $allies = GetAllies($otherPlayer);
-      for ($j = 0; $j < count($allies); $j += AllyPieces()) {
+      $alliesCount = count($allies);
+      $alliesPieces = AllyPieces();
+      for ($j = 0; $j < $alliesCount; $j += $alliesPieces) {
         if ($allies[$j + 10] > 0) {
           LogDamageStats($otherPlayer, 0, 1);
           --$allies[$j+2];
@@ -493,8 +496,9 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "fire_and_brimstone_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       $character = &GetPlayerCharacter($currentPlayer);
-      $weaponIndex1 = CharacterPieces();
-      $weaponIndex2 = CharacterPieces() * 2;
+      $charPieces = CharacterPieces();
+      $weaponIndex1 = $charPieces;
+      $weaponIndex2 = $charPieces * 2;
       if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($currentPlayer, $weaponIndex1, 1);
       if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($currentPlayer, $weaponIndex2, 1);
       break;
@@ -565,9 +569,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $subtype = SubtypeContains($targetID, "Ally", $currentPlayer);
       if($type) {
         $character = &GetPlayerCharacter($currentPlayer);
+        $charPieces = CharacterPieces();
+        $charCount = count($character);
         $index = -1;
-        for ($i = 0; $i < count($character); $i += CharacterPieces()) {
-          if ($character[$i + 11] == $targetUID) $index = $i;
+        for ($i = 0; $i < $charCount; $i += $charPieces) {
+          if ($character[$i + 11] == $targetUID) { $index = $i; break; }
         }
         if ($index != -1) {
           ++$character[$index + 5];
@@ -722,25 +728,34 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "quickdodge_flexors":
       $successfullyBlocked = false;
-      for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
+      $combatChainCount = count($combatChain);
+      $combatChainPieces = CombatChainPieces();
+      for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
         if ($combatChain[$i] == "quickdodge_flexors") $successfullyBlocked = true;
       }
       if ($successfullyBlocked) {
         $char = &GetPlayerCharacter($currentPlayer);
         // remove flexors from its previous link
-        for ($i = 0; $i < count($chainLinks); ++$i) {
-          for ($j = ChainLinksPieces(); $j < count($chainLinks[$i]); $j += ChainLinksPieces()) {
+        $chainLinksPieces = ChainLinksPieces();
+        $chainLinksCount = count($chainLinks);
+        for ($i = 0; $i < $chainLinksCount; ++$i) {
+          $linkCount = count($chainLinks[$i]);
+          for ($j = $chainLinksPieces; $j < $linkCount; $j += $chainLinksPieces) {
             if ($chainLinks[$i][$j] == "quickdodge_flexors") {
               $chainLinks[$i][$j+2] = 0;
             }
           }
         }
-        for ($i = 0; $i < count($char); $i += CharacterPieces()) {
+        $ind = -1;
+        $countChar = count($char);
+        $characterPieces = CharacterPieces();
+        for ($i = 0; $i < $countChar; $i += $characterPieces) {
           if ($char[$i] == "quickdodge_flexors") {
             $ind = $i;
             break;
           }
         }
+        if ($ind == -1) break;
         if (!SearchCurrentTurnEffects("quickdodge_flexors", $currentPlayer)) {
           AddCurrentTurnEffect("quickdodge_flexors", $currentPlayer);
           AddDecisionQueue("CHARFLAGDESTROY", $currentPlayer, $ind, 1);
@@ -769,7 +784,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer . ",1", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD:maxAttack=1;minAttack=1");
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD:maxAttack=1;minAttack=1", 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer . ",1", 1);
@@ -785,8 +800,10 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if(IsHeroAttackTarget()){
         $hand = GetHand($otherPlayer);
         $foundAreact = false;
-        for ($i = 0; $i < count($hand); $i += HandPieces()) {
-          if (TypeContains($hand[$i], "AR", $otherPlayer)) $foundAreact = true;
+        $handCount = count($hand);
+        $handPieces = HandPieces();
+        for ($i = 0; $i < $handCount; $i += $handPieces) {
+          if (TypeContains($hand[$i], "AR", $otherPlayer)) { $foundAreact = true; break; }
         }
         AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
         AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
@@ -837,7 +854,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       IncrementClassState($currentPlayer, $CS_ArcaneDamagePrevention, $prevent);
       return CardLink($cardID, $cardID) . " prevent your next arcane damage by " . $prevent;
     case "roiling_fissure_blue":
-      $maxSeismicCount = count(explode(",", SearchAurasForCard("seismic_surge", $currentPlayer)))+1;
+      $maxSeismicCount = substr_count(SearchAurasForCard("seismic_surge", $currentPlayer), ",") + 2;
       $maxCost = $resourcesPaid - 1;
       for($i=0; $i < $maxSeismicCount; ++$i) {
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:minCost=0;maxCost=".$maxCost."&MYAURAS:minCost=0;maxCost=".$maxCost, 1);
@@ -919,7 +936,8 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
   switch ($cardID) {
     case "hunters_klaive":
     case "hunters_klaive_r":
-      MarkHero($defPlayer);
+      $target = $target == "-" ? $defPlayer : $target;
+      MarkHero($target);
       break;
     case "mark_of_the_huntsman":
     case "mark_of_the_huntsman_r":
@@ -928,8 +946,9 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
     case "kiss_of_death_red":
-      WriteLog("Player $defPlayer loses 1 life.");
-      LoseHealth(1, $defPlayer);
+      $target = $target == "-" ? $defPlayer : $target;
+      WriteLog("Player $target loses 1 life.");
+      LoseHealth(1, $target);
       break;
     case "mark_of_the_black_widow_red":
     case "mark_of_the_black_widow_yellow":
@@ -1004,7 +1023,7 @@ function MarkHero($player): string
 function CheckMarked($player): bool
 {
   $character = &GetPlayerCharacter($player);
-  return $character[13] == 1;
+  return ($character[13] ?? 0) == 1;
 }
 
 function RemoveMark($player)
@@ -1021,23 +1040,25 @@ function RecurDagger($player) //$mode == 0 for left, and 1 for right
   AddDecisionQueue("LISTDRACDAGGERGRAVEYARD", $player, "-");
   AddDecisionQueue("NULLPASS", $player, "-", 1);
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
-  AddDecisionQueue("MAYCHOOSECARD", $player, "<-", 1);
+  AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
 }
 
 function ListDracDaggersGraveyard($player) {
-  $weapons = "";
+  $weaponsArr = [];
   $char = &GetPlayerCharacter($player);
   $graveyard = &GetDiscard($player);
-  for ($i = 0; $i < count($graveyard); $i += DiscardPieces()) {
+  $graveyardCount = count($graveyard);
+  $discardPieces = DiscardPieces();
+  for ($i = 0; $i < $graveyardCount; $i += $discardPieces) {
     $cardID = $graveyard[$i];
     if (TypeContains($cardID, "W", $player) && SubtypeContains($cardID, "Dagger") && !isFaceDownMod($graveyard[$i+2])) {
       if (TalentContains($cardID, "DRACONIC", $player)) {
-        if ($weapons != "") $weapons .= ",";
-        $weapons .= $cardID;
+        $weaponsArr[] = "CARDID-$cardID";
       }
     }
   }
+  $weapons = implode(",", $weaponsArr);
   if ($weapons == "") {
     WriteLog("Player " . $player . " doesn't have any dagger in their graveyard");
   }
@@ -1076,6 +1097,7 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
     SetClassState($mainPlayer, $CS_OriginalHero, "-");
   }
   $char[0] = $transformTarget;
+  AddEvent("HERO_TRANSFORM", $mainPlayer . ":" . $transformTarget);
   //don't trigger trap_door if you transfrom from trap_door into trap_door
   if ($transformTarget == "arakni_trap_door" && $characterID != "arakni_trap_door") {
     AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_banish_a_card_to_".CardLink("arakni_trap_door", "arakni_trap_door")."?");
@@ -1113,7 +1135,7 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
 
 function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves to a card, even if it transforms
   //for now only tracking dagger buffs, ideally we'd want to track all static buffs
-  $cardID = explode(",", $cardID)[0];
+  $cardID = explode(",", $cardID, 2)[0];
   return match($cardID) {
     "plunge_red" => true,
     "plunge_yellow" => true,
@@ -1144,6 +1166,10 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "fasting_carcass_blue" => true,
     "growl_red" => true,
     "growl_yellow" => true,
+    "leech_vitality_red" => true,
+    "leech_memory_red" => true,
+    "leech_renown_red" => true,
+    "arc_lightning_yellow-GOAGAIN" => true,
     default => false
   };
 }
@@ -1154,17 +1180,16 @@ function BubbleToTheSurface()
   if(!CanRevealCards($currentPlayer)) return "";
     $cardRemoved = "";
     $deck = &GetDeck($currentPlayer);
-    $cardsToReveal = "";
-    for($i=0; $i<count($deck); ++$i)
+    $cardsToRevealArr = [];
+    $deckCount = count($deck);
+    for($i=0; $i<$deckCount; ++$i)
     {
-      if($cardsToReveal != "") $cardsToReveal .= ",";
-      $cardsToReveal .= $deck[$i];
+      $cardsToRevealArr[] = $deck[$i];
       if(PitchValue($deck[$i]) == 1)
             {
         $cardRemoved = $deck[$i];
-        unset($deck[$i]);
-        $deck = array_values($deck);
-        RevealCards($cardsToReveal);
+        array_splice($deck, $i, 1);
+        RevealCards(implode(",", $cardsToRevealArr));
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         return $cardRemoved;
       }
@@ -1179,7 +1204,7 @@ function BubbleToTheSurface()
       AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_resource_to_retrieve_a_$subtype");
       AddDecisionQueue("NOPASS", $player, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
-      AddDecisionQueue("WRITELOG", $player, "<b>Pitch cards to pay to retrieve</b>", 1);
+      AddDecisionQueue("WRITELOG", $player, "Player " . $player . " is pitching to pay for retrieve", 1);
       AddDecisionQueue("PAYRESOURCESEFFECT", $player, "<-", 1);
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=$subtype;type=W", 1);
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);

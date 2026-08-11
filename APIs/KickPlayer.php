@@ -3,6 +3,7 @@
 include "../WriteLog.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/ValidationLibraries.php";
 
 SetHeaders();
 
@@ -39,8 +40,7 @@ include "../HostFiles/Redirector.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$targetAuth = $p1Key;
-if ($authKey !== $targetAuth) {
+if (!validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key)) {
   $response->error = "Authentication failed";
   echo json_encode($response);
   exit;
@@ -74,17 +74,21 @@ if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("../Games/"
 
 // Reset game state back to waiting for opponent
 $gameStatus = $MGS_Initial;
-SetCachePiece($gameName, 14, $gameStatus);
-SetCachePiece($gameName, 8, "");
-SetCachePiece($gameName, 5, "-1");
-SetCachePiece($gameName, 11, 0);
-SetCachePiece($gameName, 17, "kicked");
-SetCachePiece($gameName, 18, $kickedName);
+SetCachePieces($gameName, [
+  14 => $gameStatus,
+  8 => "",
+  5 => "-1",
+  11 => 0,
+  17 => "kicked",
+  18 => $kickedName,
+]);
 
 $p2Data = [];
 $p2uid = "";
+$p2DisplayName = "";
 $p2id = "";
 $p2SideboardSubmitted = "0";
+$p1SideboardSubmitted = "0";
 
 WriteGameFile();
 

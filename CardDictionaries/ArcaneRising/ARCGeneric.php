@@ -38,9 +38,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       }
       return $rv;
     case "eirinas_prayer_red": case "eirinas_prayer_yellow": case "eirinas_prayer_blue":
-      if($cardID == "eirinas_prayer_red") $prevent = 6;
-      else if($cardID == "eirinas_prayer_yellow") $prevent = 5;
-      else $prevent = 4;
+      $prevent = match($cardID) { "eirinas_prayer_red" => 6, "eirinas_prayer_yellow" => 5, default => 4 };
       $deck = new Deck($currentPlayer);
       if($deck->Reveal(1)) {
         $prevent -= PitchValue($deck->Top());
@@ -70,16 +68,12 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       else $cost = 2;
       return "";
     case "sun_kiss_red": case "sun_kiss_yellow": case "sun_kiss_blue":
-      if($cardID == "sun_kiss_red") $health = 3;
-      else if($cardID == "sun_kiss_yellow") $health = 2;
-      else $health = 1;
+      $health = match($cardID) { "sun_kiss_red" => 3, "sun_kiss_yellow" => 2, default => 1 };
       GainHealth($health, $currentPlayer);
       if(SearchCurrentTurnEffects("moon_wish_red-GA", $currentPlayer)) Draw($currentPlayer);
       return "";
     case "whisper_of_the_oracle_red": case "whisper_of_the_oracle_yellow": case "whisper_of_the_oracle_blue":
-      if($cardID == "whisper_of_the_oracle_red") $opt = 4;
-      else if($cardID == "whisper_of_the_oracle_yellow") $opt = 3;
-      else $opt = 2;
+      $opt = match($cardID) { "whisper_of_the_oracle_red" => 4, "whisper_of_the_oracle_yellow" => 3, default => 2 };
       PlayerOpt($currentPlayer, $opt);
       return "";
     default: return "";

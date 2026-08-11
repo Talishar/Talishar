@@ -1374,7 +1374,7 @@ class ice_eternal_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_LastDynCost;
     $otherPlayer = ($this->controller == 1 ? 2 : 1);
-    $numFrostBite = GetClassState($this->controller, $CS_LastDynCost)/2;
+    $numFrostBite = intval(GetClassState($this->controller, $CS_LastDynCost))/2;
     PlayAura("frostbite", $otherPlayer, $numFrostBite, effectController: $this->controller);
     Await($this->controller, $this->cardID, target:$target, additionalCosts:$additionalCosts, final:true, subsequent:0);
     return "";
@@ -1391,7 +1391,7 @@ class ice_eternal_blue extends Card {
   }
 
   function DynamicCost() {
-    return implode(",", range(0, 10, 2));
+    return implode(",", range(0, 20, 2));
   }
 
   function ArcaneTargeting($from) {
@@ -1457,7 +1457,7 @@ class inflame_red extends Card {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     global $CS_NumRedPlayed;
-    if(GetClassState($this->controller, $CS_NumRedPlayed) > 1) MZMoveCard($this->controller, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND");
+    if(GetClassState($this->controller, $CS_NumRedPlayed) > 1) MZMoveCard($this->controller, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND", true);
   }
 }
 
@@ -1775,7 +1775,7 @@ class liquefy_red extends Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $defPlayer;
     AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
     AddDecisionQueue("CHOOSETHEIRCHARACTER", $this->controller, "<-", 1);
@@ -1855,9 +1855,13 @@ class liquefy_red extends Card {
 
 class oasis_respite extends BaseCard {
   function CurrentEffectDamagePrevention($damage, $source, $index, &$remove, $amount) {
-    global $EffectContextUID, $CS_ResolvingLayerUniqueID;
+    global $CS_ResolvingLayerUniqueID, $CombatChain;
     $Effect = new CurrentEffect($index);
     $prevAmount = $Effect->NumUses();
+    if ($amount && $CombatChain->HasCurrentLink() && $source == $CombatChain->AttackCard()->ID()) {
+      if ($CombatChain->AttackCard()->UniqueID() == $Effect->AppliestoUniqueID() || $CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID())
+        return min($damage, $prevAmount);
+    }
     if (GetClassState(1, $CS_ResolvingLayerUniqueID) == $Effect->AppliestoUniqueID()) {
       if (!$amount) {
         $Effect->AddUses(-$damage);
@@ -1875,7 +1879,7 @@ class oasis_respite extends BaseCard {
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a damage source for " . CardLink($this->cardID));
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
-    Await($this->controller, $this->cardID, final:true);
+    Await($this->controller, $this->cardID, targetHero:$targetHero, final:true);
     if(PlayerHasLessHealth($targetHero)) GainHealth(1, $targetHero);
     return "";
   }
@@ -1883,22 +1887,25 @@ class oasis_respite extends BaseCard {
   function SpecificLogic() {
     global $dqVars;
     $choice = $dqVars["LASTRESULT"];
+    $targetHero = $dqVars["targetHero"];
     $object = MZIndexToObject($this->controller, $choice);
     if ($object == "") {
       WriteLog("Something odd happened with oasis respite, please submit a bug report", highlight:true);
       return;
     }
     if (is_a($object, "Layer")) {
-      $from = explode("|", $object->Parameter())[0];
+      $from = explode("|", $object->Parameter(), 2)[0];
       $cardType = CardType($object->ID());
       if ($object->ID() == "TRIGGER" || IsStaticType($cardType, $from))
         $uid = $object->UniqueID();
       else
         $uid = $object->LayerUniqueID();
     }
+    elseif (is_a($object, "LinkCard"))
+      $uid = $object->OriginUniqueID();
     else
       $uid = $object->UniqueID();
-    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+    AddCurrentTurnEffect($this->cardID, $targetHero, uniqueID:$uid);
   }
 
   function PayAdditionalCosts() {

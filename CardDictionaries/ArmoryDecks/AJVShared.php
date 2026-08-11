@@ -36,7 +36,7 @@ function AJVPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (DelimStringContains($additionalCosts, "ICE")) {
         Mangle();
       }
-      $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+      $otherPlayer = 3 - $currentPlayer;
       FrostbiteExposed($otherPlayer, $currentPlayer);
       return "";
     default:
@@ -113,8 +113,9 @@ function FrostbiteExposed($otherPlayer, $player, $may=false) {
       AddDecisionQueue("EQUIPCARD", $player, "frostbite-{1}-{0}", 1);
     }
     else {
+      $dest = $player == $otherPlayer ? "MY" : "THEIR";
       AddDecisionQueue("SETDQVAR", $player, "0", 1);
-      AddDecisionQueue("EQUIPCARD", $otherPlayer, "frostbite-{0}", 1);
+      AddDecisionQueue("EQUIPCARD", $player, "frostbite-{0}-$dest", 1);
     }
   }
 }
@@ -122,8 +123,11 @@ function FrostbiteExposed($otherPlayer, $player, $may=false) {
 function CheckHeavy($player) {
   $count = 0;
   $char = GetPlayerCharacter($player);
-  for ($i = 0; $i < count($char); $i += CharacterPieces()) {
-    if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand", $player)) ++$count;
+  $charCount = count($char);
+  $charPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $charPieces) {
+    $charCard = $char[$i];
+    if (TypeContains($charCard, "W", $player) || SubtypeContains($charCard, "Off-Hand", $player)) ++$count;
   }
   return $count == 1;
   // $weapons = SearchCharacter($player, type:"W");
@@ -131,4 +135,19 @@ function CheckHeavy($player) {
   // $offHands = SearchCharacter($player, subtype:"Off-Hand");
   // $numOffHands = $offHands != "" ? count(explode(",", $offHands)) : 0;
   // return $numWeapons + $numOffHands == 1;
+}
+
+function MountIsenTrigger($player) {
+  $character = new PlayerCharacter($player);
+  $eqFrostbiteCount = 0;
+  for ($k = 0; $k < $character->NumCards(); $k += 1) {
+    $CharCard = $character->Card($k, true);
+    if ($CharCard->CardID() == "frostbite") {
+      $slot = $CharCard->Slot();
+      if ($slot == "Arms" || $slot == "Legs" || $slot == "Head" || $slot == "Chest") // Only count these Frostbites if they are in an equipment slot.
+        $eqFrostbiteCount += 1;
+    }
+  }
+  LoseHealth($eqFrostbiteCount, $player);
+  WriteLog("Player $player loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
 }

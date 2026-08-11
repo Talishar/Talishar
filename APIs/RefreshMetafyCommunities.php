@@ -74,10 +74,10 @@ $community_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 // If token is expired/invalid, tell the frontend to re-auth via OAuth
-if ($community_http_code === 401) {
+if (in_array($community_http_code, [401, 403], true)) {
   http_response_code(401);
   $response->error = 'token_expired';
-  $response->message = 'Metafy access token expired. Please re-connect your Metafy account.';
+  $response->message = 'Metafy access token expired or missing required permissions. Please re-connect your Metafy account.';
   echo json_encode($response);
   exit;
 }
@@ -111,6 +111,14 @@ curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
 $memberships_response = curl_exec($ch);
 $memberships_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
+
+if (in_array($memberships_http_code, [401, 403], true)) {
+  http_response_code(401);
+  $response->error = 'token_expired';
+  $response->message = 'Metafy access token expired or missing required permissions. Please re-connect your Metafy account.';
+  echo json_encode($response);
+  exit;
+}
 
 $added_community_ids = array_filter(array_column($all_communities, 'id'));
 
@@ -169,11 +177,9 @@ if ($memberships_http_code === 200 && !empty($memberships_response)) {
   }
 }
 
-// --- Check Talishar subscriber status directly (using client_id as Bearer) ---
+// --- Resolve this user's Metafy ID (from DB, or live if not yet cached) ---
 $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
-$is_metafy_supporter   = false;
 
-// Get Metafy user ID (needed for subscriber check)
 $user_metafy_id = null;
 $stmt_id = mysqli_stmt_init($conn);
 if (mysqli_stmt_prepare($stmt_id, "SELECT metafyID FROM users WHERE usersUid=?")) {
@@ -185,7 +191,6 @@ if (mysqli_stmt_prepare($stmt_id, "SELECT metafyID FROM users WHERE usersUid=?")
   $user_metafy_id = $row_id['metafyID'] ?? null;
 }
 
-// If no metafyID cached, fetch it live
 if (empty($user_metafy_id)) {
   $ch_me = curl_init('https://metafy.gg/irk/api/v1/me');
   curl_setopt($ch_me, CURLOPT_RETURNTRANSFER, true);
@@ -213,54 +218,11 @@ if (empty($user_metafy_id)) {
   }
 }
 
-// Check paid subscriber list via Talishar client_id
-$talishar_client_id = '4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI';
-$ch_sub = curl_init('https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100');
-curl_setopt($ch_sub, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch_sub, CURLOPT_TIMEOUT, 5);
-curl_setopt($ch_sub, CURLOPT_HTTPHEADER, [
-  'Authorization: Bearer ' . $talishar_client_id,
-  'Content-Type: application/json'
-]);
-curl_setopt($ch_sub, CURLOPT_USERAGENT, 'Talishar-App');
-$sub_raw  = curl_exec($ch_sub);
-$sub_code = curl_getinfo($ch_sub, CURLINFO_HTTP_CODE);
-curl_close($ch_sub);
-
-if ($sub_code === 200 && !empty($sub_raw)) {
-  $sub_data       = json_decode($sub_raw, true);
-  $subscriber_ids = array_column($sub_data['subscribers'] ?? [], 'user_id');
-  if ($user_metafy_id && in_array($user_metafy_id, $subscriber_ids)) {
+$is_metafy_supporter = false;
+foreach ($all_communities as $community) {
+  if (isset($community['id']) && $community['id'] === $talishar_community_id) {
     $is_metafy_supporter = true;
-  }
-}
-
-// If confirmed subscriber, ensure Talishar community is in the list
-if ($is_metafy_supporter) {
-  $talishar_in_list = false;
-  foreach ($all_communities as $c) {
-    if (($c['id'] ?? null) === $talishar_community_id) {
-      $talishar_in_list = true;
-      break;
-    }
-  }
-  if (!$talishar_in_list) {
-    $all_communities[] = [
-      'id'          => $talishar_community_id,
-      'title'       => 'Talishar',
-      'description' => 'Flesh and Blood TCG — get exclusive card backs, playmats, and alt arts.',
-      'logo_url'    => null,
-      'url'         => 'https://talishar.net',
-      'type'        => 'supported'
-    ];
-  }
-} else {
-  // Fallback: check communities list for Talishar
-  foreach ($all_communities as $community) {
-    if (isset($community['id']) && $community['id'] === $talishar_community_id) {
-      $is_metafy_supporter = true;
-      break;
-    }
+    break;
   }
 }
 

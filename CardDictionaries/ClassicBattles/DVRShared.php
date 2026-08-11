@@ -47,8 +47,7 @@
 
 function DVREffectPowerModifier($cardID)
 {
-  $params = explode(",", $cardID);
-  $cardID = $params[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   switch($cardID) {
     case "en_garde_red": return 3;
     case "thrust_red": return 3;
@@ -60,8 +59,7 @@ function DVREffectPowerModifier($cardID)
 function DVRCombatEffectActive($cardID, $attackID)
 {
   global $mainPlayer;
-  $params = explode(",", $cardID);
-  $cardID = $params[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   switch($cardID) {
     case "glistening_steelblade_yellow": case "glistening_steelblade_yellow-1": return CardNameContains($attackID, "Dawnblade", $mainPlayer, true); 
     case "en_garde_red": return TypeContains($attackID, "W", $mainPlayer);

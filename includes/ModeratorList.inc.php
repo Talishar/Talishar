@@ -29,13 +29,46 @@ function GetCardEditorList() {
   ];
 }
 
+function GetContributorList() {
+  return [
+    "sugitime",
+    "OotTheMonk",
+    "Launch",
+    "LaustinSpayce",
+    "Star_Seraph",
+    "Tower",
+    "Etasus",
+    "scary987",
+    "Celenar",
+    "DKGaming",
+    "Aegisworn",
+    "PvtVoid",
+    "Bluffkin",
+    "Bluffkin1"
+  ];
+}
+
+function IsUserContributor($useruid) {
+  static $contributorMap = null;
+  if ($contributorMap === null) {
+    $contributorMap = array_flip(GetContributorList());
+  }
+  return $useruid !== null && $useruid !== "" && isset($contributorMap[$useruid]);
+}
+
 function IsUserModerator($useruid) {
-  $modList = GetModeratorList();
-  return in_array($useruid, $modList);
+  static $modMap = null;
+  if ($modMap === null) {
+    $modMap = array_flip(GetModeratorList());
+  }
+  return isset($modMap[$useruid]);
 }
 
 function IsCardEditor($useruid) {
-  $editorList = GetCardEditorList();
-  return in_array($useruid, $editorList);
+  static $editorMap = null;
+  if ($editorMap === null) {
+    $editorMap = array_flip(GetCardEditorList());
+  }
+  return isset($editorMap[$useruid]);
 }
 

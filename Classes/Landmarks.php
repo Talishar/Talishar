@@ -15,7 +15,7 @@ class Landmarks {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * LandmarkPieces();
+    if($cardNumber) $index *= LandmarkPieces();
     return new LandmarkCard($index);
   }
 
@@ -32,7 +32,7 @@ class LandmarkCard {
   // Constructor
   function __construct($index) {
     global $landmarks;
-		$this->pieces = $landmarks;
+		$this->pieces = &$landmarks;
     $this->index = $index;
   }
 

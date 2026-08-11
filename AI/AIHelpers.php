@@ -183,8 +183,8 @@ function EstimateDamageOutput($playerID)
   $hand = &GetHand($playerID);
   $totalDamage = 0;
   $resources = &GetResources($playerID);
-  
-  for($i = 0; $i < count($hand); ++$i) {
+  $handCount = count($hand);
+  for($i = 0; $i < $handCount; ++$i) {
     $cost = CardCost($hand[$i]);
     if($cost <= $resources[0] + PitchValue($hand[$i])) {
       $totalDamage += PowerValue($hand[$i]);

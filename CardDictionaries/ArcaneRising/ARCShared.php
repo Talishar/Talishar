@@ -12,9 +12,6 @@
       case "induction_chamber_red":
         $abilityType = GetResolvedAbilityType($cardID);
         return $CombatChain->HasCurrentLink() ? 0 : 1;
-      case "aether_sink_yellow":
-        $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0 ? 0 : 1);
       case "death_dealer": return 1;
       case "nebula_blade": return 2;
       case "grasp_of_the_arknight": return 2 + NumRunechants($currentPlayer);
@@ -39,10 +36,6 @@
       case "teklo_foundry_heart": return "A";
       case "achilles_accelerator": return "I";
       case "induction_chamber_red": return $CombatChain->HasCurrentLink() ? "AR" : "A";
-      case "aether_sink_yellow":
-        if($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        if(isset($items[$index + 1])) return ($items[$index+1] > 0 ? "I" : "A");
-        else return "A";
       case "convection_amplifier_red": return "A";
       case "dissipation_shield_yellow": return "I";
       case "optekal_monocle_blue": return "A";
@@ -69,9 +62,6 @@
       case "teklo_foundry_heart": return true;
       case "induction_chamber_red":
         return !$CombatChain->HasCurrentLink();
-      case "aether_sink_yellow":
-        $items = &GetItems($currentPlayer);
-        return ($items[GetClassState($currentPlayer, $CS_PlayIndex)+1] > 0 ? true : false);
       case "convection_amplifier_red": return true;
       case "optekal_monocle_blue": return true;
       case "azalea_ace_in_the_hole": case "azalea": case "death_dealer": case "skullbone_crosswrap": case "bulls_eye_bracers": return true;

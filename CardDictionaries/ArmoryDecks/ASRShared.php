@@ -47,30 +47,25 @@ function ASRAbilityCost($cardID): int
 function ASRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $combatChain;
-    switch ($cardID) {
-      case "legacy_of_ikaru_blue":
-        AddEffectToCurrentAttack($cardID);
-        return "";
-      case "enact_vengeance_red":
-        if(ComboActive($cardID)) AddCurrentTurnEffect("enact_vengeance_red", $currentPlayer);
-        return "";
-      case "okana_scar_wraps":
-        $attackID = $combatChain[0];
-        if (ClassContains($attackID, "NINJA", $currentPlayer) && TypeContains($attackID, "AA", $currentPlayer)) {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-        }
-        return "";
-      case "iris_of_the_blossom":
-        $search = "MYDECK:cardID=whirling_mist_blossom_yellow";
-        $fromMod = "Deck,TT"; //pull it out of the deck, playable "This Turn"
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search, 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZBANISH", $currentPlayer, $fromMod, 1);
-        AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-        return "";
-      default:
-        return "";
+  switch ($cardID) {
+    case "legacy_of_ikaru_blue":
+      AddEffectToCurrentAttack($cardID);
+      return "";
+    case "enact_vengeance_red":
+      if(ComboActive($cardID)) AddCurrentTurnEffect("enact_vengeance_red", $currentPlayer);
+      return "";
+    case "okana_scar_wraps":
+      $attackID = $combatChain[0];
+      if (ClassContains($attackID, "NINJA", $currentPlayer) && TypeContains($attackID, "AA", $currentPlayer)) {
+        AddCurrentTurnEffect($cardID, $currentPlayer);
+      }
+      return "";
+    case "iris_of_the_blossom":
+      $search = "cardID=whirling_mist_blossom_yellow";
+      MaySearchDeck($currentPlayer, $search, "MYBANISH", mod:"TT", may:false);
+      return "";
+    default:
+      return "";
   }
 }
 

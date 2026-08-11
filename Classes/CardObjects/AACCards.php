@@ -82,9 +82,10 @@ class rage_baiters extends Card {
 		global $CombatChain, $chainLinks;
 		Tap("MYCHAR-$index", $this->controller);
 		$options = [];
-		if (HasStealth($CombatChain->AttackCard()->ID())) array_push($options, "COMBATCHAINLINK-0");
-		for ($i = 0; $i < count($chainLinks); ++$i) {
-			if (HasStealth($chainLinks[$i][0])) array_push($options, "PASTCHAINLINK-0-$i");
+		if (HasStealth($CombatChain->AttackCard()->ID())) $options[] = "COMBATCHAINLINK-0";
+		$chainLinksCount = count($chainLinks);
+			for ($i = 0; $i < $chainLinksCount; ++$i) {
+			if (HasStealth($chainLinks[$i][0])) $options[] = "PASTCHAINLINK-0-$i";
 		}
 		$options = implode(",", $options);
 		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card with stealth to give on-hit mark", 1);
@@ -106,7 +107,7 @@ class rage_baiters extends Card {
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		if ($target == "COMBATCHAINLINK-0") AddEffectToCurrentAttack($this->cardID);
 		else {
-			$index = intval(explode("-", $target)[1]);
+			$index = intval(explode("-", $target, 2)[1]);
 			AddEffectToPastAttack($index, $this->cardID);
 		}
 	}
@@ -119,7 +120,7 @@ class rage_baiters extends Card {
 		return false;
 	}
 
-	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
 		global $defPlayer;
 		MarkHero($defPlayer);
 	}
@@ -191,7 +192,7 @@ class horrors_of_the_past_yellow extends Card {
 	}
 
 	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-		$copiedText = explode("-", $parameter)[1] ?? "-";
+		$copiedText = explode("-", $parameter, 2)[1] ?? "-";
 		if ($copiedText != "-") {
 			if (!$check) AddOnHitTrigger($copiedText, $this->cardID, $target);
 			return true;
@@ -259,7 +260,7 @@ class stalkers_steps extends Card {
 		}
 	}
 
-	function ArcaneBarrier() {
+	function ArcaneBarrier($index) {
 		return 1;
 	}
 
@@ -314,7 +315,7 @@ class inverters_nightcowl extends Card {
 		return true;
 	}
 
-	function PlayCardEffectAbility($cardID, $from, &$remove) {
+	function PlayCardEffectAbility($cardID, $from, &$remove, $index=-1) {
 		if (HasStealth($cardID)) AddLayer("TRIGGER", $this->controller, $this->cardID);
 	}
 

@@ -16,13 +16,15 @@ class CombatChain {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * CombatChainPieces();
+    if($cardNumber) $index *= CombatChainPieces();
     return new ChainCard($index);
   }
 
   function FindCardUID($uid) {
     if (!$this->HasCurrentLink()) return new ChainCard(-1);
-    for ($i = 0; $i < count($this->chain); $i += CombatChainPieces()) {
+    $count = count($this->chain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = 0; $i < $count; $i += $combatChainPieces) {
       if ($this->chain[$i + 7] == $uid) return new ChainCard($i);
     }
     return new ChainCard(-1);
@@ -30,7 +32,9 @@ class CombatChain {
 
   function FindCardOriginUID($uid) {
     if (!$this->HasCurrentLink()) return new ChainCard(-1);
-    for ($i = 0; $i < count($this->chain); $i += CombatChainPieces()) {
+    $count = count($this->chain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = 0; $i < $count; $i += $combatChainPieces) {
       if ($this->chain[$i + 8] == $uid) return new ChainCard($i);
     }
     return new ChainCard(-1);
@@ -38,7 +42,9 @@ class CombatChain {
 
   function FindCardID($id) {
     if (!$this->HasCurrentLink()) return new ChainCard(-1);
-    for ($i = 0; $i < count($this->chain); $i += CombatChainPieces()) {
+    $count = count($this->chain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = 0; $i < $count; $i += $combatChainPieces) {
       if ($this->chain[$i] == $id) return new ChainCard($i);
     }
     return new ChainCard(-1);
@@ -54,17 +60,17 @@ class CombatChain {
   }
 
   function Remove($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * CombatChainPieces();
+    $combatChainPieces = CombatChainPieces();
+    if($cardNumber) $index *= $combatChainPieces;
     if($index < 0 || $index >= count($this->chain)) return "";
     $cardID = $this->chain[$index];
-    RemoveEffectsFromCombatChain($cardID);
-    for($i = CombatChainPieces() - 1; $i >= 0; --$i) unset($this->chain[$index+$i]);
-    $this->chain = array_values($this->chain);
+    // RemoveEffectsFromCombatChain($cardID); I think this function call is no longer necessary
+    array_splice($this->chain, $index, $combatChainPieces);
     return $cardID;
   }
 
   function NumCardsActiveLink() {
-    return count($this->chain) / CombatChainPieces();
+    return intdiv(count($this->chain), CombatChainPieces());
   }
 
   function HasCurrentLink() {
@@ -140,10 +146,11 @@ class ChainCard {
     function TotalPower() {
       $powerModifiers = [];
       $player = $this->PlayerID();
-      if(PowerCantBeModified($this->ID())) return PowerValue($this->ID(), $player, "CC");
-      $powerValue = $this->index == 0 ? LinkBasePower() : ModifiedPowerValue($this->ID(), $player, "CC", $this->ID(), $this->index);
+      $cardID = $this->ID();
+      if(PowerCantBeModified($cardID)) return PowerValue($cardID, $player, "CC");
+      $powerValue = $this->index == 0 ? LinkBasePower() : ModifiedPowerValue($cardID, $player, "CC", $cardID, $this->index);
       $powerValue += AuraPowerModifiers($this->index, $powerModifiers, onBlock: true);
-      $powerValue += ItemsPowerModifiers($this->ID(), $player, "CC");
+      $powerValue += ItemsPowerModifiers($cardID, $player, "CC");
       $powerValue += $this->PowerValue();//Combat chain power modifier
       return $powerValue;
     }
@@ -179,6 +186,13 @@ class ChainCard {
       return isset($this->chain[$this->index+8]) ? $this->chain[$this->index+8] : null;
     }
 
+    function UpdateSource($uid) {
+      if (isset($this->chain[$this->index+7]))
+        $this->chain[$this->index+7] = $uid;
+      if (isset($this->chain[$this->index+8]))
+        $this->chain[$this->index+8] = $uid;
+    }
+
     function StaticBuffs() {
       return isset($this->chain[$this->index+10]) ? $this->chain[$this->index+10] : "";
     }
@@ -210,5 +224,13 @@ class ChainCard {
     function Remove() {
       global $CombatChain;
       return $CombatChain->Remove($this->Index());
+    }
+
+    function StillThere() {
+      global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+      if ($this->index != 0 && isset($this->chain[$this->index])) return true;
+      elseif ($this->index == 0)
+        return $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-";
+      return false;
     }
 }

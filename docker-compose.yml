@@ -1,5 +1,3 @@
-version: "3.7"
-
 # Production SSL Configuration Notes:
 # For production deployments with SSL, ensure your Apache/Nginx reverse proxy has:
 # 1. Valid SSL certificate matching all server names (talishar.net, www.talishar.net, api.talishar.net, fe.talishar.net, legacy.talishar.net)
@@ -23,6 +21,8 @@ services:
       - "../Talishar-FE:/opt/project/Talishar-FE" # Frontend project for ad-hoc running of zzCardCodeGenerator.php
       - "./docker/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini" # Xdebug configuration
       - "./docker/docker-php-ext-opcache.ini:/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini" # OPCache configuration
+      - "./docker/docker-php-apcu-tuning.ini:/usr/local/etc/php/conf.d/zz-talishar-apcu-tuning.ini" # APCu cache size (gamestate cache)
+      - "./docker/apache-performance.conf:/etc/apache2/conf-enabled/zz-talishar-performance.conf" # gzip for JSON + SSE worker headroom
 #      - "./.tmp:/tmp" # Temporary files for debugging
     command: apache2-foreground
     ports:
@@ -43,6 +43,7 @@ services:
   mysql-server:
     image: mysql:lts
     restart: always
+    command: --max_connections=500
     environment:
       PHP_FPM_CLEAR_ENV: "no"
       MYSQL_ROOT_PASSWORD: "secret"

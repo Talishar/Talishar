@@ -61,7 +61,7 @@
         }
         else {
           WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
-          return "FAILED";
+          return "";
         }
         return "";
       default: return "";
@@ -84,7 +84,8 @@
   {
     global $CombatChain, $defPlayer;
     $found = false;
-    for($i=1; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
+    $numActiveLink = $CombatChain->NumCardsActiveLink();
+    for($i=1; $i<$numActiveLink; ++$i) {
       $card = $CombatChain->Card($i, cardNumber:true);
       $powerValue = ModifiedPowerValue($card->ID(), $defPlayer, "CC", source:"exude_confidence_red");
       if(IsHeroAttackTarget() && $card->PlayerID() == $defPlayer && $powerValue >= CachedTotalPower()) $found = true;

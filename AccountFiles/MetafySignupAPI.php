@@ -7,6 +7,7 @@ include_once '../APIKeys/APIKeys.php';
 include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once '../Libraries/HTTPLibraries.php';
+include_once '../Libraries/FriendLibraries.php';
 
 CheckSession();
 
@@ -72,11 +73,12 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         $_SESSION['useruid'] = $existingUsername ?? ($user_profile['username'] ?? $user_profile['email'] ?? $userID);
         $_SESSION['isPatron'] = CheckIfMetafySupporter($userID);
         $_SESSION['metafyID'] = $user_profile['id'] ?? '';
+        $_SESSION['displayName'] = GetExistingDisplayName($userID) ?? '';
 
         ApplyRememberMeCookie($userID);
 
         $response->message = 'ok';
-        $response->redirect = '/game/MainMenu.php';
+        $response->redirect = '/'; // React app home (legacy MainMenu.php no longer exists)
         $response->isUserLoggedIn = true;
         $response->loggedInUserID = $userID;
         $response->loggedInUserName = $_SESSION['useruid'];
@@ -188,7 +190,7 @@ function CreateOrUpdateMetafyUser($user_profile, $access_token, $refresh_token)
   // Check if username already exists, generate unique one if needed
   $base_username = $username;
   $counter = 1;
-  while (UsernameExists($username, $conn)) {
+  while (UsernameExists($username, $conn) || IsBannedPlayer($username)) {
     $username = $base_username . $counter;
     $counter++;
   }
@@ -461,7 +463,30 @@ function GetExistingUsername($userID)
       return $row['usersUid'];
     }
   }
-  
+
+  mysqli_close($conn);
+  return null;
+}
+
+function GetExistingDisplayName($userID)
+{
+  $conn = GetDBConnection(DBL_METAFY_SIGNUP_API);
+  $sql = "SELECT displayName FROM users WHERE usersid=?";
+  $stmt = mysqli_stmt_init($conn);
+
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, 's', $userID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+
+    if ($row && isset($row['displayName'])) {
+      mysqli_close($conn);
+      return $row['displayName'];
+    }
+  }
+
   mysqli_close($conn);
   return null;
 }

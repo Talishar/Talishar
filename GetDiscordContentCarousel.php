@@ -46,10 +46,7 @@ try {
         echo json_encode($cachedResult);
         exit;
     }
-    
-    $maxMessages = isset($_GET['maxMessages']) ? (int)$_GET['maxMessages'] : 100;
-    $maxMessages = min($maxMessages, 100);
-    
+
     // Get credentials
     $botToken = getenv('DISCORD_BOT_TOKEN') ?: ($_ENV['DISCORD_BOT_TOKEN'] ?? null);
     $channelId = getenv('DISCORD_CONTENT_CHANNEL_ID') ?: ($_ENV['DISCORD_CONTENT_CHANNEL_ID'] ?? null);
@@ -64,18 +61,15 @@ try {
         ];
         
         foreach ($envPaths as $envFile) {
-            if (file_exists($envFile) && is_readable($envFile)) {
-                foreach (file($envFile, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES) as $line) {
-                    if (strpos($line, 'DISCORD_BOT_TOKEN=') === 0) {
-                        $botToken = trim(str_replace('DISCORD_BOT_TOKEN=', '', $line), '"\'');
-                    } elseif (strpos($line, 'DISCORD_CONTENT_CHANNEL_ID=') === 0) {
-                        $channelId = trim(str_replace('DISCORD_CONTENT_CHANNEL_ID=', '', $line), '"\'');
-                    }
-                }
-                if ($botToken && $channelId) {
-                    break; // Found both values, stop searching
+            if (!file_exists($envFile) || !is_readable($envFile)) continue;
+            foreach (file($envFile, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES) as $line) {
+                if (!$botToken && strpos($line, 'DISCORD_BOT_TOKEN=') === 0) {
+                    $botToken = trim(substr($line, 18), '"\'');
+                } elseif (!$channelId && strpos($line, 'DISCORD_CONTENT_CHANNEL_ID=') === 0) {
+                    $channelId = trim(substr($line, 27), '"\'');
                 }
             }
+            if ($botToken && $channelId) break;
         }
     }
     
@@ -83,98 +77,87 @@ try {
         echo json_encode(['success' => true, 'count' => 0, 'videos' => [], 'channelName' => '#talishar-content']);
         exit;
     }
-    
-    // Fetch channel info to get the channel name
-    $channelInfo = null;
-    $channelUrl = "https://discord.com/api/v10/channels/{$channelId}";
-    
-    $ch = curl_init($channelUrl);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bot {$botToken}", "User-Agent: Talishar"]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    
-    $channelResponse = curl_exec($ch);
-    $channelHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    
-    if ($channelHttpCode === 200) {
-        $channelInfo = json_decode($channelResponse, true);
-    }
-    
-    // Fetch from Discord with pagination to get more messages
+
+    $headers = ["Authorization: Bot {$botToken}", "User-Agent: Talishar"];
+    $curlOpts = [
+        CURLOPT_HTTPHEADER     => $headers,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 5,
+    ];
+
+    $chChannel  = curl_init("https://discord.com/api/v10/channels/{$channelId}");
+    $chMessages = curl_init("https://discord.com/api/v10/channels/{$channelId}/messages?limit=100");
+    curl_setopt_array($chChannel, $curlOpts);
+    curl_setopt_array($chMessages, $curlOpts);
+
+    $mh = curl_multi_init();
+    curl_multi_add_handle($mh, $chChannel);
+    curl_multi_add_handle($mh, $chMessages);
+
+    do {
+        $status = curl_multi_exec($mh, $stillRunning);
+        if ($stillRunning) curl_multi_select($mh);
+    } while ($stillRunning && $status === CURLM_OK);
+
+    $channelHttpCode  = curl_getinfo($chChannel, CURLINFO_HTTP_CODE);
+    $messagesHttpCode = curl_getinfo($chMessages, CURLINFO_HTTP_CODE);
+    $channelResponse  = curl_multi_getcontent($chChannel);
+    $messagesResponse = curl_multi_getcontent($chMessages);
+
+    curl_multi_remove_handle($mh, $chChannel);
+    curl_multi_remove_handle($mh, $chMessages);
+    curl_multi_close($mh);
+    curl_close($chChannel);
+    curl_close($chMessages);
+
+    $channelInfo = ($channelHttpCode === 200) ? json_decode($channelResponse, true) : null;
+    $channelName = $channelInfo ? '#' . $channelInfo['name'] : '#talishar-content';
+
     $messages = [];
-    $before = null;
-    $totalFetched = 0;
-    $maxTotal = 50; // Fetch up to 100 messages total
-    
-    while ($totalFetched < $maxTotal) {
-        $url = "https://discord.com/api/v10/channels/{$channelId}/messages?limit=100";
-        if ($before) {
-            $url .= "&before={$before}";
+    if ($messagesHttpCode === 200) {
+        $batch = json_decode($messagesResponse, true);
+        if (is_array($batch) && count($batch) > 0) {
+            $messages = $batch;
         }
-        
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bot {$botToken}", "User-Agent: Talishar"]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        
-        if ($httpCode !== 200) {
-            break;
-        }
-        
-        $batch = json_decode($response, true);
-        if (!is_array($batch) || count($batch) === 0) {
-            break;
-        }
-        
-        $messages = array_merge($messages, $batch);
-        $totalFetched += count($batch);
-        $before = $batch[count($batch) - 1]['id'];
     }
-    
-    if (!is_array($messages)) {
-        echo json_encode(['success' => true, 'count' => 0, 'videos' => [], 'channelName' => $channelInfo ? '#' . $channelInfo['name'] : '#talishar-content']);
+
+    if (empty($messages)) {
+        echo json_encode(['success' => true, 'count' => 0, 'videos' => [], 'channelName' => $channelName]);
         exit;
     }
     
     // Extract content items
     $videos = [];
-    $ytRegex = '/(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9_-]{11})/';
-    $twRegex = '/twitch\.tv\/(?:videos\/(\d+)|([a-zA-Z0-9_]+))/';
+    $ytRegex     = '/(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9_-]{11})/';
+    $twRegex     = '/twitch\.tv\/(?:videos\/(\d+)|([a-zA-Z0-9_]+))/';
     $metafyRegex = '/https?:\/\/(?:www\.)?metafy\.gg\/guides(?:\/view)?\/[^\s]+/i';
 
-    $normalizeGuideUrl = function ($url) {
-        return preg_replace('/\?.*$/', '', $url);
-    };
-    
+    // Batch both channel ID substitutions into a single str_replace call
+    $channelSearch  = ['<#868488473378684938>',  '<#1014193064736194691>'];
+    $channelReplace = ['#release-notes', '#talishar-content'];
     foreach ($messages as $msg) {
         if (!is_array($msg)) continue;
-        $content = $msg['content'] ?? '';
-        $content = str_replace('<#868488473378684938>', '#release-notes', $content);
-        $content = str_replace('<#1014193064736194691>', '#talishar-content', $content);
-        
-        $author = $msg['author']['username'] ?? 'Unknown';
-        $timestamp = $msg['timestamp'] ?? date('c');
-        $embeds = is_array($msg['embeds'] ?? null) ? $msg['embeds'] : [];
 
-        $metafyUrl = null;
+        $content   = str_replace($channelSearch, $channelReplace, $msg['content'] ?? '');
+        $author    = $msg['author']['username'] ?? 'Unknown';
+        $timestamp = $msg['timestamp'] ?? date('c');
+        // Pre-compute once per message; reused in both the byAuthor dedup and usort
+        $tsInt     = strtotime($timestamp);
+        $embeds    = is_array($msg['embeds'] ?? null) ? $msg['embeds'] : [];
+
+        $metafyUrl   = null;
         $metafyEmbed = null;
 
         if (preg_match($metafyRegex, $content, $metafyMatch)) {
-            $metafyUrl = $normalizeGuideUrl($metafyMatch[0]);
+            $metafyUrl = preg_replace('/\?.*$/', '', $metafyMatch[0]);
         }
 
         foreach ($embeds as $embed) {
-            if (!is_array($embed)) {
-                continue;
-            }
 
+            if (!is_array($embed)) continue;
             $embedUrl = $embed['url'] ?? '';
             if (!$metafyUrl && is_string($embedUrl) && preg_match($metafyRegex, $embedUrl)) {
-                $metafyUrl = $normalizeGuideUrl($embedUrl);
+                $metafyUrl = preg_replace('/\?.*$/', '', $embedUrl);
             }
 
             if ($metafyUrl && !$metafyEmbed && is_string($embedUrl) && stripos($embedUrl, 'metafy.gg') !== false) {
@@ -184,43 +167,52 @@ try {
 
         if ($metafyUrl) {
             $videos[] = [
-                'videoId' => $msg['id'] ?? md5($metafyUrl . $timestamp),
-                'type' => 'metafy',
-                'title' => $metafyEmbed['title'] ?? $content,
-                'author' => $author,
+                'videoId'     => $msg['id'] ?? md5($metafyUrl . $timestamp),
+                'type'        => 'metafy',
+                'title'       => $metafyEmbed['title'] ?? $content,
+                'author'      => $author,
                 'description' => $metafyEmbed['description'] ?? '',
-                'thumbnail' => $metafyEmbed['thumbnail']['url'] ?? $metafyEmbed['image']['url'] ?? null,
-                'timestamp' => $timestamp,
-                'messageUrl' => $metafyUrl,
-                'url' => $metafyUrl,
+                'thumbnail'   => $metafyEmbed['thumbnail']['url'] ?? $metafyEmbed['image']['url'] ?? null,
+                'timestamp'   => $timestamp,
+                'tsInt'       => $tsInt,
+                'messageUrl'  => $metafyUrl,
+                'url'         => $metafyUrl,
             ];
             continue;
         }
         
         if (preg_match($ytRegex, $content, $m)) {
-            $videos[] = ['videoId' => $m[1], 'type' => 'youtube', 'title' => $content, 'author' => $author, 'timestamp' => $timestamp];
+            $videos[] = ['videoId' => $m[1], 'type' => 'youtube', 'title' => $content, 'author' => $author, 'timestamp' => $timestamp, 'tsInt' => $tsInt];
         } elseif (preg_match($twRegex, $content, $m)) {
             $vid = $m[1] ?? $m[2] ?? null;
-            if ($vid) $videos[] = ['videoId' => $vid, 'type' => 'twitch', 'title' => $content, 'author' => $author, 'timestamp' => $timestamp];
+            if ($vid) {
+                $videos[] = ['videoId' => $vid, 'type' => 'twitch', 'title' => $content, 'author' => $author, 'timestamp' => $timestamp, 'tsInt' => $tsInt];
+            }
         }
     }
     
     // Limit to 1 per author, most recent first
     $byAuthor = [];
     foreach ($videos as $v) {
-        if (!isset($byAuthor[$v['author']]) || strtotime($v['timestamp']) > strtotime($byAuthor[$v['author']]['timestamp'])) {
+        if (!isset($byAuthor[$v['author']]) || $v['tsInt'] > $byAuthor[$v['author']]['tsInt']) {
             $byAuthor[$v['author']] = $v;
         }
     }
     
     $final = array_values($byAuthor);
-    usort($final, fn($a, $b) => strtotime($b['timestamp'] ?? '0') - strtotime($a['timestamp'] ?? '0'));
-    
+    // Integer subtraction instead of strtotime() on every usort comparison
+    usort($final, fn($a, $b) => $b['tsInt'] - $a['tsInt']);
+
+    $sliced = array_slice($final, 0, 12);
+    // Strip internal tsInt field before output so the JSON response is unchanged
+    foreach ($sliced as &$v) unset($v['tsInt']);
+    unset($v);
+
     $result = [
-        'success' => true,
-        'count' => count($final),
-        'videos' => array_slice($final, 0, 12),
-        'channelName' => $channelInfo ? '#' . $channelInfo['name'] : '#talishar-content'
+        'success'     => true,
+        'count'       => count($final),
+        'videos'      => $sliced,
+        'channelName' => $channelName,
     ];
     
     // Cache the result for 10 minutes

@@ -2935,43 +2935,101 @@ class courageous_steelhand_blue extends Card {
 // }
 
 
-// class seeds_of_agony_red extends Card {
+class seeds_of_agony extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "seeds_of_agony_red";
-//     $this->controller = $controller;
-//     }
+  function OnAttackEffect($cardID, $cost) {
+    if (TypeContains($cardID, "AA") && CardCost($cardID) <= $cost) {
+      SetArcaneTarget($this->controller, $cardID, "any_hero");
+      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
+      return true;
+    }
+    return false;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function ProcessTrigger($target) {
+    global $CombatChain;
+    SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
+    DealArcane(1, 1, source:$CombatChain->AttackCard()->ID(), resolvedTarget:$target);
+  }
+}
 
+class seeds_of_agony_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "seeds_of_agony_red";
+    $this->controller = $controller;
+    $this->baseCard = new seeds_of_agony($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
 
-// class seeds_of_agony_yellow extends Card {
+  function OnAttackEffect($cardID, $i) {
+    return $this->baseCard->OnAttackEffect($cardID, 2);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "seeds_of_agony_yellow";
-//     $this->controller = $controller;
-//     }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
 
+class seeds_of_agony_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "seeds_of_agony_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new seeds_of_agony($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
 
-// class seeds_of_agony_blue extends Card {
+  function OnAttackEffect($cardID, $i) {
+    return $this->baseCard->OnAttackEffect($cardID, 1);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "seeds_of_agony_blue";
-//     $this->controller = $controller;
-//     }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
+
+class seeds_of_agony_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "seeds_of_agony_blue";
+    $this->controller = $controller;
+    $this->baseCard = new seeds_of_agony($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function OnAttackEffect($cardID, $i) {
+    return $this->baseCard->OnAttackEffect($cardID, 0);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger($target);
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
 
 
 // class seek_enlightenment_red extends Card {
@@ -3190,7 +3248,7 @@ class sonata_arcanix_red extends Card {
   }
 
   function DynamicCost() {
-    if(SearchCurrentTurnEffects("bloodsheath_skeleta-NAA", $this->controller) || SearchCurrentTurnEffects("bloodsheath_skeleta-AA", $this->controller))
+    if(SearchCurrentTurnEffectsAny(["bloodsheath_skeleta-NAA", "bloodsheath_skeleta-AA"], $this->controller))
       $end = 100;
     else $end = 20;
     return implode(",", range(0, $end, 2));
@@ -3219,8 +3277,8 @@ class sonata_arcanix_red extends Card {
     Await($this->controller, "MultiChooseDeck", "indices");
     Await($this->controller, "MultiRemoveDeck", "cardIDs");
     Await($this->controller, "MultiAddHand");
-    Await($this->controller, $this->cardID, mode:"deal_arcane", target:$target);
-    Await($this->controller, "ShuffleDeck", final:true);
+    Await($this->controller, $this->cardID, mode:"deal_arcane", target:$target, final:true);
+    Await($this->controller, "ShuffleDeck", subsequent:0, final:true);
     return "";
   }
 
@@ -3231,16 +3289,17 @@ class sonata_arcanix_red extends Card {
         $cards = explode(",", $dqVars["cardIDs"]);
         $numAA = 0;
         $numNAA = 0;
-        $AAIndices = "";
-        for ($i = 0; $i < count($cards); ++$i) {
+        $AAIndicesArr = [];
+        $cardsCount = count($cards);
+        for ($i = 0; $i < $cardsCount; ++$i) {
           $cardType = CardType($cards[$i]);
           if (DelimStringContains($cardType, "A")) ++$numNAA;
           else if ($cardType == "AA") {
             ++$numAA;
-            if ($AAIndices != "") $AAIndices .= ",";
-            $AAIndices .= $i;
+            $AAIndicesArr[] = $i;
           }
         }
+        $AAIndices = implode(",", $AAIndicesArr);
         $numMatch = $numAA > $numNAA ? $numNAA : $numAA;
         if ($numMatch == 0) return "PASS";
         $dqVars["maxNumber"] = $numMatch;
@@ -3248,8 +3307,10 @@ class sonata_arcanix_red extends Card {
         $dqVars["indices"] = $AAIndices;
         break;
       case "deal_arcane":
-        $numArcane = count(explode(",", $dqVars["cardIDs"]));
+        $numArcane = substr_count($dqVars["cardIDs"], ",") + 1;
         DealArcane($numArcane, 0, "PLAYCARD", "sonata_arcanix_red", true, resolvedTarget:$dqVars["target"]);
+        $deck = new Deck($this->controller);
+        $deck->Shuffle("-");
         break;
       default:
         break;

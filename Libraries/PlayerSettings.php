@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . '/../Assets/AllAltArtVariations.php';
+
 $SET_AlwaysHoldPriority = 0;
 $SET_TryUI2 = 1;
 $SET_DarkMode = 2;
@@ -39,7 +41,7 @@ $SET_DisableFabInsights = 28; //Did the player disable global stat tracking
 $SET_DisableHeroIntro = 29; //Did the player disable hero intro animation
 $SET_MirroredBoardLayout = 30; //Did the player enable mirrored board layout (opponent)
 $SET_MirroredPlayerBoardLayout = 31; //Did the player enable mirrored board layout (player)
-$SET_AlwaysShowCounters = 32; //Always show counters on cards
+$SET_AlwaysShowCounters = 32; //Always show counters on zones
 $SET_HideHandFromFriends = 33; //Hide your hand content from friends
 
 function HoldPrioritySetting($player)
@@ -92,9 +94,221 @@ function IsPatron($player)
   return $settings[$SET_IsPatron] ?? "0" == "1";
 }
 
+function ResetFavoriteDeckCosmeticOverrideCache()
+{
+  global $favoriteDeckCosmeticOverrideCache, $deckCosmeticDataCache;
+  $favoriteDeckCosmeticOverrideCache = [];
+  $deckCosmeticDataCache = [];
+}
+
+function NormalizeDeckLinkForMatch($deckLink)
+{
+  $link = trim(strval($deckLink));
+  if ($link === '') return '';
+  $link = preg_replace('/[?#].*$/', '', $link);                      // "?tab=edit", "#cards"
+  $link = preg_replace('#^[a-zA-Z][a-zA-Z0-9+.\-]*://#', '', $link); // http:// vs https://
+  $link = preg_replace('#^www\.#i', '', $link);
+  $link = rtrim($link, '/');
+  $hostEnd = strpos($link, '/');
+  if ($hostEnd === false) return strtolower($link);
+  return strtolower(substr($link, 0, $hostEnd)) . substr($link, $hostEnd);
+}
+
+function FindFavoriteDeckRow($conn, $userId, $deckLink, $columns = [])
+{
+  if (!$conn || empty($userId) || $userId === '-' || trim(strval($deckLink)) === '') return null;
+
+  $select = ['decklink'];
+  foreach ($columns as $column) {
+    if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $column)) $select[] = $column;
+  }
+  $select = implode(', ', array_unique($select));
+
+  $sql = "SELECT $select FROM favoritedeck WHERE decklink = ? AND usersId = ? LIMIT 1";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "ss", $deckLink, $userId);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $row = $res ? mysqli_fetch_assoc($res) : null;
+    mysqli_stmt_close($stmt);
+    if ($row) return $row;
+  }
+
+  $wanted = NormalizeDeckLinkForMatch($deckLink);
+  if ($wanted === '') return null;
+
+  $match = null;
+  $sql = "SELECT $select FROM favoritedeck WHERE usersId = ?";
+  $stmt = mysqli_stmt_init($conn);
+  if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "s", $userId);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    while ($res && ($row = mysqli_fetch_assoc($res))) {
+      if (NormalizeDeckLinkForMatch($row['decklink'] ?? '') === $wanted) {
+        $match = $row;
+        break;
+      }
+    }
+    if ($res) mysqli_free_result($res);
+    mysqli_stmt_close($stmt);
+  }
+  return $match;
+}
+
+function DeckCosmeticCacheKey($userId, $deckLink)
+{
+  return 'deck_cosmetics_' . hash('sha256', intval($userId) . '|' . NormalizeDeckLinkForMatch($deckLink));
+}
+
+function IsDeckCosmeticCacheAvailable()
+{
+  return extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_fetch');
+}
+
+function InvalidateDeckCosmeticCache($userId, $deckLink)
+{
+  global $favoriteDeckCosmeticOverrideCache, $deckCosmeticDataCache;
+  $favoriteDeckCosmeticOverrideCache = [];
+  $deckCosmeticDataCache = [];
+  if (IsDeckCosmeticCacheAvailable()) {
+    @apcu_delete(DeckCosmeticCacheKey($userId, $deckLink));
+  }
+}
+
+function GetDeckCosmeticData($userId, $deckLink)
+{
+  global $deckCosmeticDataCache;
+  $requestKey = intval($userId) . '|' . NormalizeDeckLinkForMatch($deckLink);
+  if (!isset($deckCosmeticDataCache) || !is_array($deckCosmeticDataCache)) {
+    $deckCosmeticDataCache = [];
+  }
+  if (array_key_exists($requestKey, $deckCosmeticDataCache)) {
+    return $deckCosmeticDataCache[$requestKey];
+  }
+
+  if (
+    empty($userId) || $userId === '-' || empty($deckLink) ||
+    !function_exists('GetDBConnection') || !defined('DBL_BUILD_GAME_STATE')
+  ) {
+    return $deckCosmeticDataCache[$requestKey] = null;
+  }
+
+  $sharedKey = DeckCosmeticCacheKey($userId, $deckLink);
+  if (IsDeckCosmeticCacheAvailable()) {
+    $cacheHit = false;
+    $cached = @apcu_fetch($sharedKey, $cacheHit);
+    if ($cacheHit && is_array($cached) && array_key_exists('value', $cached)) {
+      return $deckCosmeticDataCache[$requestKey] = $cached['value'];
+    }
+  }
+
+  $conn = GetDBConnection(DBL_BUILD_GAME_STATE);
+  if (!$conn) return $deckCosmeticDataCache[$requestKey] = null;
+
+  $row = FindFavoriteDeckRow(
+    $conn,
+    $userId,
+    $deckLink,
+    ['cardBack', 'playmat', 'altArtsCustomized']
+  );
+  $data = null;
+  if ($row !== null) {
+    $customized = intval($row['altArtsCustomized'] ?? 0) === 1;
+    $storedLink = strval($row['decklink']);
+    $map = [];
+    if ($customized) {
+      $sql = "SELECT cardId, altPath FROM deck_alt_arts WHERE decklink = ? AND usersId = ?";
+      $stmt = mysqli_stmt_init($conn);
+      if (mysqli_stmt_prepare($stmt, $sql)) {
+        mysqli_stmt_bind_param($stmt, "ss", $storedLink, $userId);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        while ($res && ($altArtRow = mysqli_fetch_assoc($res))) {
+          $map[$altArtRow['cardId']] = $altArtRow['altPath'];
+        }
+        if ($res) mysqli_free_result($res);
+        mysqli_stmt_close($stmt);
+      }
+    }
+    $data = [
+      'cardBack' => strval($row['cardBack'] ?? '0'),
+      'playmat' => strval($row['playmat'] ?? '0'),
+      'altArtsCustomized' => $customized,
+      'altArts' => $map,
+    ];
+  }
+  mysqli_close($conn);
+
+  if (IsDeckCosmeticCacheAvailable()) {
+    // SaveDeckCosmetics invalidates this immediately; the TTL is a safety net
+    // for changes made outside the application.
+    @apcu_store($sharedKey, ['value' => $data], 300);
+  }
+  return $deckCosmeticDataCache[$requestKey] = $data;
+}
+
+function GetFavoriteDeckCosmeticOverride($player)
+{
+  global $p1id, $p2id, $p1DeckLink, $p2DeckLink, $favoriteDeckCosmeticOverrideCache;
+  if (!isset($favoriteDeckCosmeticOverrideCache) || !is_array($favoriteDeckCosmeticOverrideCache)) {
+    $favoriteDeckCosmeticOverrideCache = [];
+  }
+  if (array_key_exists($player, $favoriteDeckCosmeticOverrideCache)) {
+    return $favoriteDeckCosmeticOverrideCache[$player];
+  }
+
+  $userId = ($player == 1) ? ($p1id ?? '') : ($p2id ?? '');
+  $deckLink = ($player == 1) ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+
+  $data = GetDeckCosmeticData($userId, $deckLink);
+  $result = $data === null ? null : [
+    'cardBack' => $data['cardBack'],
+    'playmat' => $data['playmat']
+  ];
+
+  return $favoriteDeckCosmeticOverrideCache[$player] = $result;
+}
+
+function GetDeckAltArtOverride($userId, $deckLink)
+{
+  $data = GetDeckCosmeticData($userId, $deckLink);
+  if ($data === null) return null;
+  return [
+    'customized' => $data['altArtsCustomized'],
+    'map' => $data['altArts'],
+  ];
+}
+
+function ApplyDeckAltArtOverride($poolAltArts, $userId, $deckLink)
+{
+  $override = GetDeckAltArtOverride($userId, $deckLink);
+  if ($override === null || !$override['customized']) {
+    if (!function_exists('IsOptInOnlyAltArt')) return $poolAltArts;
+    return array_values(array_filter($poolAltArts, function ($altArt) {
+      return !IsOptInOnlyAltArt($altArt->altPath ?? '');
+    }));
+  }
+
+  $result = [];
+  foreach ($override['map'] as $cardId => $altPath) {
+    $altArt = new stdClass();
+    $altArt->name = 'My Deck';
+    $altArt->cardId = $cardId;
+    $altArt->altPath = $altPath;
+    $result[] = $altArt;
+  }
+  return $result;
+}
+
 function GetPlaymat($player)
 {
   global $SET_Playmat;
+  $override = GetFavoriteDeckCosmeticOverride($player);
+  if ($override !== null && $override['playmat'] !== '0') {
+    return $override['playmat'];
+  }
   $settings = GetSettings($player);
   return $settings[$SET_Playmat] ?? 0;
 }
@@ -103,148 +317,160 @@ function GetCardBack($player)
 {
   global $SET_Cardback;
   $settings = GetSettings($player);
- switch($settings[$SET_Cardback] ?? 0) {
-    case 1: return "CBBlack";
-    case 2: return "CBCreamWhite";
-    case 3: return "CBGold";
-    case 4: return "CBWhite";
-    case 5: return "CBRed";
-    case 6: return "CBParchment";
-    case 7: return "CBBlue";
-    case 8: return "CBRuneblood";
-    case 9: return "CBPushThePoint";
-    case 10: return "CBGoAgainGaming";
-    case 11: return "CBGAG_AzaleaCult";
-    case 12: return "CBGAG_Azalea";
-    case 13: return "CBGAG_AzaleaShot";
-    case 14: return "CBGAG_Dorinthea";
-    case 15: return "CBGAG_Dromai";
-    case 16: return "CBGAG_Kassai";
-    case 17: return "CBRedZoneRogue";
-    case 18: return "CBRZR_10k";
-    case 19: return "CBRZR_KadikosLibrary";
-    case 20: return "CBRZR_Vehya";
-    case 21: return "CBFabrary1";
-    case 22: return "CBFabrary2";
-    case 23: return "CBManSant";
-    case 24: return "CBAttackActionPodcast";
-    case 25: return "CBArsenalPass";
-    case 26: return "CBTekloFoundry";
-    case 27: return "CBPummelowanko";
-    case 28: return "CBDragonShieldProTeamWB";
-    case 29: return "CBFleshAndCommonBlood";
-    case 30: return "CBSinOnStream";
-    case 31: return "CBFreshAndBuds";
-    case 32: return "CBSloopdoop";
-    case 33: return "CBDMArmada";
-    case 34: return "CBInstantSpeed";
-    case 35: return "CBTheCardGuyz";
-    case 36: return "CBHomeTownTCG";
-    case 37: return "CBAscentGaming";
-    case 38: return "CBFleshAndPod";
-    case 39: return "CBKappolo";
-    case 40: return "CBLibrariansOfSolana";
-    case 41: return "CBTheMetrixMetagame";
-    case 42: return "CBEternalOracles";
-    case 43: return "CBTheTablePit";
-    case 44: return "CBTCGTed";
-    case 45: return "CBLuminaris";
-    case 46: return "CBFaBLab";
-    case 47: return "CBCardAdvantage";
-    case 48: return "CBOnHit";
-    case 49: return "CBSecondCycle";
-    case 50: return "CBRavenousBabble";
-    case 51: return "CBBlackWingStudio";
-    case 52: return "CBManSantBlack";
-    case 53: return "CBOnHitEffect";
-    case 54: return "CBDaganWhite";
-    case 55: return "CBSonicDoom";
-    case 56: return "CBBrandao";
-    case 57: return "CBFabrary3";
-    case 58: return "CBFabrary4";
-    case 59: return "CBFabrary5";
-    case 60: return "CBFabrary6";
-    case 61: return "CBFabrary7";
-    case 62: return "CBFabrary8";
-    case 63: return "CBOffTheRailsTCG";
-    case 64: return "CBPummel";
-    case 65: return "CBNxi";
-    case 66: return "CBPvtVoid";
-    case 67: return "CBEmperorsRome";
-    case 68: return "CBWeMakeBest";
-    case 69: return "CBWeMakeBest2";
-    case 70: return "CBSunflowerSamurai";
-    case 71: return "CBMnRCast";
-    case 72: return "CBOnTheBauble";
-    case 73: return "CBGorganianTome";
-    case 74: return "CBFABChaos";
-    case 75: return "CBColdFoilControl";
-    case 76: return "CBDailyFab";
-    case 77: return "CBRighteousGaming";
-    case 78: return "CBRighteousGaming2";
-    case 79: return "CBThePlagueHive";
-    case 80: return "CBDropcast";
-    case 81: return "CBSunflowerSamurai";
-    case 82: return "CBTalisharTeam";
-    case 83: return "CBTalisharTeam2";
-    case 84: return "CBTideBreakers";
-    case 85: return "CBCD1";
-    case 86: return "CBCD2";
-    case 87: return "CBCupofTCG";
-    case 88: return "CBScowlingFleshBag";
-    case 89: return "CBDazzyfizzle";
-    case 90: return "CBDazzyfizzle1";
-    case 91: return "CBDazzyfizzle2";
-    case 92: return "CBDazzyfizzle3";
-    case 93: return "CBDazzyfizzle4";
-    case 94: return "CBDazzyfizzle5";
-    case 95: return "CBDazzyfizzle6";
-    case 96: return "CBThaiCardsShop";
-    case 97: return "CBNikobru";
-    case 98: return "CBDazzyfizzle7";
-    case 99: return "CBDazzyfizzle8";
-    case 100: return "CBSmilingFleshBag";
-    case 101: return "CBDashciples";
-    case 102: return "CBBlitzkriegMeph";
-    case 103: return "CBHamMan215";
-    case 104: return "CBNewHorizons";
-    case 105: return "CBMetalFab";
-    case 106: return "CBPotatoSquad";
-    case 107: return "CBThreeFloating1";
-    case 108: return "CBThreeFloating2";
-    case 109: return "CBThreeFloating3";
-    case 110: return "CBSteelfur";
-    case 111: return "CBFleshAndBad";
-    case 112: return "CBFabledBrazil";
-    case 113: return "CBSilvarisGarden";
-    case 114: return "CBDazzyfizzle9";
-    case 115: return "CBDazzyfizzle10";
-    case 116: return "CBDazzyfizzle11";
-    case 117: return "CBDazzyfizzle12";
-    case 118: return "CBAggroBlaze";
-    case 119: return "CBFatAndFurious";
-    case 120: return "CBRighteousGaming3";
-    case 121: return "CBFreshAndBuds2";
-    case 122: return "CBNull";
-    case 123: return "CBPitchDevils";
-    case 124: return "CBMickz";
-    case 125: return "CBMickzValda";
-    case 126: return "CBOllinTogether";
-    case 127: return "CBSnapDragons";
-    case 128: return "CBFabDads";
-    case 129: return "CBFablazing";
-    case 130: return "CBScowlingFleshBag2";
-    case 131: return "CBSnow";
-    case 132: return "CBPitchDevils2";
-    default: return "CardBack";
-  };
+  static $cardBackMap = [
+    1 => "CBBlack",
+    2 => "CBCreamWhite",
+    3 => "CBGold",
+    4 => "CBWhite",
+    5 => "CBRed",
+    6 => "CBParchment",
+    7 => "CBBlue",
+    8 => "CBRuneblood",
+    9 => "CBPushThePoint",
+    10 => "CBGoAgainGaming",
+    11 => "CBGAG_AzaleaCult",
+    12 => "CBGAG_Azalea",
+    13 => "CBGAG_AzaleaShot",
+    14 => "CBGAG_Dorinthea",
+    15 => "CBGAG_Dromai",
+    16 => "CBGAG_Kassai",
+    17 => "CBRedZoneRogue",
+    18 => "CBRZR_10k",
+    19 => "CBRZR_KadikosLibrary",
+    20 => "CBRZR_Vehya",
+    21 => "CBFabrary1",
+    22 => "CBFabrary2",
+    23 => "CBManSant",
+    24 => "CBAttackActionPodcast",
+    25 => "CBArsenalPass",
+    26 => "CBTekloFoundry",
+    27 => "CBPummelowanko",
+    28 => "CBDragonShieldProTeamWB",
+    29 => "CBFleshAndCommonBlood",
+    30 => "CBSinOnStream",
+    31 => "CBFreshAndBuds",
+    32 => "CBSloopdoop",
+    33 => "CBDMArmada",
+    34 => "CBInstantSpeed",
+    35 => "CBTheCardGuyz",
+    36 => "CBHomeTownTCG",
+    37 => "CBAscentGaming",
+    38 => "CBFleshAndPod",
+    39 => "CBKappolo",
+    40 => "CBLibrariansOfSolana",
+    41 => "CBTheMetrixMetagame",
+    42 => "CBEternalOracles",
+    43 => "CBTheTablePit",
+    44 => "CBTCGTed",
+    45 => "CBLuminaris",
+    46 => "CBFaBLab",
+    47 => "CBCardAdvantage",
+    48 => "CBOnHit",
+    49 => "CBSecondCycle",
+    50 => "CBRavenousBabble",
+    51 => "CBBlackWingStudio",
+    52 => "CBManSantBlack",
+    53 => "CBOnHitEffect",
+    54 => "CBDaganWhite",
+    55 => "CBSonicDoom",
+    56 => "CBBrandao",
+    57 => "CBFabrary3",
+    58 => "CBFabrary4",
+    59 => "CBFabrary5",
+    60 => "CBFabrary6",
+    61 => "CBFabrary7",
+    62 => "CBFabrary8",
+    63 => "CBOffTheRailsTCG",
+    64 => "CBPummel",
+    65 => "CBNxi",
+    66 => "CBPvtVoid",
+    67 => "CBEmperorsRome",
+    68 => "CBWeMakeBest",
+    69 => "CBWeMakeBest2",
+    70 => "CBSunflowerSamurai",
+    71 => "CBMnRCast",
+    72 => "CBOnTheBauble",
+    73 => "CBGorganianTome",
+    74 => "CBFABChaos",
+    75 => "CBColdFoilControl",
+    76 => "CBDailyFab",
+    77 => "CBRighteousGaming",
+    78 => "CBRighteousGaming2",
+    79 => "CBThePlagueHive",
+    80 => "CBDropcast",
+    81 => "CBSunflowerSamurai",
+    82 => "CBTalisharTeam",
+    83 => "CBTalisharTeam2",
+    84 => "CBTideBreakers",
+    85 => "CBCD1",
+    86 => "CBCD2",
+    87 => "CBCupofTCG",
+    88 => "CBScowlingFleshBag",
+    89 => "CBDazzyfizzle",
+    90 => "CBDazzyfizzle1",
+    91 => "CBDazzyfizzle2",
+    92 => "CBDazzyfizzle3",
+    93 => "CBDazzyfizzle4",
+    94 => "CBDazzyfizzle5",
+    95 => "CBDazzyfizzle6",
+    96 => "CBThaiCardsShop",
+    97 => "CBNikobru",
+    98 => "CBDazzyfizzle7",
+    99 => "CBDazzyfizzle8",
+    100 => "CBSmilingFleshBag",
+    101 => "CBDashciples",
+    102 => "CBBlitzkriegMeph",
+    103 => "CBHamMan215",
+    104 => "CBNewHorizons",
+    105 => "CBMetalFab",
+    106 => "CBPotatoSquad",
+    107 => "CBThreeFloating1",
+    108 => "CBThreeFloating2",
+    109 => "CBThreeFloating3",
+    110 => "CBSteelfur",
+    111 => "CBFleshAndBad",
+    112 => "CBFabledBrazil",
+    113 => "CBSilvarisGarden",
+    114 => "CBDazzyfizzle9",
+    115 => "CBDazzyfizzle10",
+    116 => "CBDazzyfizzle11",
+    117 => "CBDazzyfizzle12",
+    118 => "CBAggroBlaze",
+    119 => "CBFatAndFurious",
+    120 => "CBRighteousGaming3",
+    121 => "CBFreshAndBuds2",
+    122 => "CBNull",
+    123 => "CBPitchDevils",
+    124 => "CBMickz",
+    125 => "CBMickzValda",
+    126 => "CBOllinTogether",
+    127 => "CBSnapDragons",
+    128 => "CBFabDads",
+    129 => "CBFablazing",
+    130 => "CBScowlingFleshBag2",
+    131 => "CBSnow",
+    132 => "CBPitchDevils2",
+    133 => "RedLine",
+    134 => "CBSkillIssue",
+    135 => "CBWingedHussars",
+    136 => "CBFabInsight",
+    137 => "CBNxi2",
+    138 => "CBOddwillows",
+    139 => "CBShine",
+    140 => "CB_IndyFab",
+  ];
+  $override = GetFavoriteDeckCosmeticOverride($player);
+  $cardBackId = ($override !== null && $override['cardBack'] !== '0')
+    ? $override['cardBack']
+    : ($settings[$SET_Cardback] ?? 0);
+  return $cardBackMap[$cardBackId] ?? "CardBack";
 }
 
 function IsManualMode($player)
 {
   global $SET_ManualMode;
   $settings = GetSettings($player);
-  return $settings[$SET_ManualMode];
+  return $settings[$SET_ManualMode] ?? 0;
 }
 
 function ShouldSkipARs($player)
@@ -258,7 +484,7 @@ function ShouldSkipDRs($player)
 {
   global $SET_SkipDRs, $SET_PassDRStep;
   $settings = GetSettings($player);
-  $skip = $settings[$SET_SkipDRs] || $settings[$SET_PassDRStep];
+  $skip = ($settings[$SET_SkipDRs] ?? false) || ($settings[$SET_PassDRStep] ?? false);
   ChangeSetting($player, $SET_PassDRStep, 0);
   return $skip;
 }
@@ -268,7 +494,7 @@ function ShouldAutotargetOpponent($player)
   //this is going to break in replays
   global $SET_AutotargetArcane;
   $settings = GetSettings($player);
-  return $settings[$SET_AutotargetArcane] == "1";
+  return ($settings[$SET_AutotargetArcane] ?? "0") == "1";
 }
 
 function IsColorblindMode($player)
@@ -276,7 +502,7 @@ function IsColorblindMode($player)
   global $SET_ColorblindMode;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_ColorblindMode] == "1";
+  return ($settings[$SET_ColorblindMode] ?? "0") == "1";
 }
 
 function ShortcutAttackThreshold($player)
@@ -293,7 +519,7 @@ function IsDynamicScalingEnabled($player)
   global $SET_EnableDynamicScaling;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_EnableDynamicScaling] == "1";
+  return ($settings[$SET_EnableDynamicScaling] ?? "0") == "1";
 }
 
 function IsMuted($player)
@@ -301,7 +527,7 @@ function IsMuted($player)
   global $SET_Mute;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_Mute] == "1";
+  return ($settings[$SET_Mute] ?? "0") == "1";
 }
 
 function IsChatMuted()
@@ -309,7 +535,7 @@ function IsChatMuted()
   global $SET_MuteChat;
   $p1Settings = GetSettings(1);
   $p2Settings = GetSettings(2);
-  return $p1Settings[$SET_MuteChat] == "1" || $p2Settings[$SET_MuteChat] == "1";
+  return ($p1Settings[$SET_MuteChat] ?? "0") == "1" || ($p2Settings[$SET_MuteChat] ?? "0") == "1";
 }
 
 function AreStatsDisabled($player)
@@ -318,7 +544,7 @@ function AreStatsDisabled($player)
   if (IsReplay() || IsPlayerAI(2) || IsPlayerAI(1)) return true;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_DisableStats] == "1";
+  return ($settings[$SET_DisableStats] ?? "0") == "1";
 }
 
 function AreGlobalStatsDisabled($player)
@@ -327,7 +553,7 @@ function AreGlobalStatsDisabled($player)
   if (IsReplay() || IsPlayerAI(2) || IsPlayerAI(1)) return true;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_DisableFabInsights] == "1";
+  return ($settings[$SET_DisableFabInsights] ?? "0") == "1";
 }
 
 function IsHeroIntroDisabled($player)
@@ -335,7 +561,7 @@ function IsHeroIntroDisabled($player)
   global $SET_DisableHeroIntro;
   $settings = GetSettings($player);
   if ($settings == null) return false;
-  return $settings[$SET_DisableHeroIntro] == "1";
+  return ($settings[$SET_DisableHeroIntro] ?? "0") == "1";
 }
 
 function IsCasterMode()
@@ -344,7 +570,7 @@ function IsCasterMode()
   $settings1 = GetSettings(1);
   $settings2 = GetSettings(2);
   if ($settings1 == null || $settings2 == null) return false;
-  return $settings1[$SET_CasterMode] == "1" && $settings2[$SET_CasterMode] == "1";
+  return ($settings1[$SET_CasterMode] ?? "0") == "1" && ($settings2[$SET_CasterMode] ?? "0") == "1";
 }
 
 function IsHideHandFromFriends($player)
@@ -382,7 +608,7 @@ function AltArtsDisabled($player)
 
 function ParseSettingsStringValueToIdInt(string $value)
 {
-  $settingsToId = [
+  static $settingsToId = [
     "HoldPrioritySetting" => 0,
     "TryReactUI" => 1,
     "DarkMode" => 2,
@@ -441,467 +667,268 @@ function ChangeSetting($player, $setting, $value, $playerId = "")
 
 function SaveSettingInDatabase($setting)
 {
-  global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
-  global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
-  global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_AlwaysShowCounters;
-  global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
-  switch($setting) {
-    case $SET_DarkMode:
-    case $SET_ColorblindMode:
-    case $SET_Mute:
-    case $SET_Cardback:
-    case $SET_DisableStats:
-    case $SET_Language:
-    case $SET_Format:
-    case $SET_FavoriteDeckIndex:
-    case $SET_GameVisibility:
-    case $SET_AlwaysHoldPriority:
-    case $SET_ManualMode:
-    case $SET_StreamerMode:
-    case $SET_AutotargetArcane:
-    case $SET_Playmat:
-    case $SET_AlwaysAllowUndo:
-    case $SET_DisableAltArts:
-    case $SET_ManualTunic:
-    case $SET_DisableFabInsights:
-    case $SET_DisableHeroIntro:
-    case $SET_MirroredBoardLayout:
-    case $SET_MirroredPlayerBoardLayout:
-    case $SET_AlwaysShowCounters:
-    case $SET_HideHandFromFriends:
-      return true;
-    default: return false;
+  static $persistable = null;
+  if ($persistable === null) {
+    global $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats, $SET_Language;
+    global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
+    global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_AlwaysShowCounters;
+    global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
+    $persistable = array_fill_keys([
+      $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
+      $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
+      $SET_ManualMode, $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo,
+      $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro,
+      $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_AlwaysShowCounters, $SET_HideHandFromFriends,
+    ], true);
   }
+  return isset($persistable[$setting]);
 }
 
 function FormatCode($format)
 {
-  switch($format) {
-    case "cc": return 0;
-    case "compcc": return 1;
-    case "blitz": return 2;
-    case "compblitz": return 3; //Currently not used
-    case "futurecc": return 4;
-    case "commoner": return 5;
-    case "sealed": return 6;
-    case "draft": return 7;
-    case "llcc": return 8;
-    case "llblitz": return 9; //Currently not used
-    case "openformatblitz": return 10; //Currently not used
-    case "clash": return -1;
-    case "futurell": return 11; //Currently not used
-    case "openformatllblitz": return 12; //Currently not used
-    case "compllcc": return 13;
-    case "sage": return 14;
-    case "compsage": return 15;
-    case "futuresage": return 16;
-    case "open": return 17;
-    case "gage": return 18;
-    case "precon": return -2;
-    default: return -1;
-  }
+  static $formatMap = [
+    "cc" => 0,
+    "compcc" => 1,
+    "blitz" => 2,
+    "compblitz" => 3,     //Currently not used
+    "futurecc" => 4,
+    "commoner" => 5,
+    "sealed" => 6,
+    "draft" => 7,
+    "llcc" => 8,
+    "llblitz" => 9,       //Currently not used
+    "openformatblitz" => 10, //Currently not used
+    "clash" => -1,
+    "futurell" => 11,     //Currently not used
+    "openformatllblitz" => 12, //Currently not used
+    "compllcc" => 13,
+    "sage" => 14,
+    "compsage" => 15,
+    "futuresage" => 16,
+    "open" => 17,
+    "gage" => 18,
+    "precon" => -2,
+  ];
+  return $formatMap[$format] ?? -1;
 }
 
 function FormatName($formatCode)
 {
-  switch($formatCode)
-  {
-    case 0: return "cc";
-    case 1: return "compcc";
-    case 2: return "blitz";
-    case 3: return "compblitz"; //Currently not  used
-    case 4: return "futurecc";
-    case 5: return "commoner";
-    case 6: return "sealed";
-    case 7: return "draft";
-    case 8: return "llcc";
-    case 9: return "llblitz"; //Currently not used
-    case 10: return "openformatblitz";
-    case -1: return "clash";
-    case 11: return "futurell";
-    case 12: return "openformatllblitz"; //Currently not used
-    case 13: return "compllcc";
-    case 14: return "sage";
-    case 15: return "compsage";
-    case 16: return "futuresage";
-    case 17: return "open";
-    case 18: return "gage";
-    case -2: return "precon";
-    default: return "-";
-  }
+  static $nameMap = [
+    0 => "cc",
+    1 => "compcc",
+    2 => "blitz",
+    3 => "compblitz",     //Currently not used
+    4 => "futurecc",
+    5 => "commoner",
+    6 => "sealed",
+    7 => "draft",
+    8 => "llcc",
+    9 => "llblitz",       //Currently not used
+    10 => "openformatblitz",
+    -1 => "clash",
+    11 => "futurell",
+    12 => "openformatllblitz", //Currently not used
+    13 => "compllcc",
+    14 => "sage",
+    15 => "compsage",
+    16 => "futuresage",
+    17 => "open",
+    18 => "gage",
+    -2 => "precon",
+  ];
+  return $nameMap[$formatCode] ?? "-";
 }
 
 function IsTeamCardAdvantage($userName)
 {
-  switch ($userName) {
-    case "JacobK": case "Pastry Boi": case "Brotworst": case "1nigoMontoya (Cody)": case "Motley":
-    case "jimmyhl1329": case "Stilltzkin": case "krav": case "infamousb": case "FatFabJesus": case "MisterPNP":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["JacobK" => 1, "Pastry Boi" => 1, "Brotworst" => 1, "1nigoMontoya (Cody)" => 1, "Motley" => 1,
+    "jimmyhl1329" => 1, "Stilltzkin" => 1, "krav" => 1, "infamousb" => 1, "FatFabJesus" => 1, "MisterPNP" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamSecondCycle($userName)
 {
-  switch($userName) {
-    case "The4thAWOL": case "Beserk": case "Dudebroski": case "deathstalker182": case "TryHardYeti": case "Fledermausmann":
-    case "Loganninty7": case "flamedog3": case "Swankypants": case "Blazing For Lethal?": case "Jeztus": case "gokkar":
-    case "Kernalxklink": case "Kymo13":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["The4thAWOL" => 1, "Beserk" => 1, "Dudebroski" => 1, "deathstalker182" => 1, "TryHardYeti" => 1, "Fledermausmann" => 1,
+    "Loganninty7" => 1, "flamedog3" => 1, "Swankypants" => 1, "Blazing For Lethal?" => 1, "Jeztus" => 1, "gokkar" => 1,
+    "Kernalxklink" => 1, "Kymo13" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamSonicDoom($userName)
 {
-  switch($userName) {
-    case "KanoSux": case "BestBoy": case "CRGrey": case "jujubeans": case "YodasUncle":
-    case "ravenklath": case "Blazing For Lethal?": case "DimGuy": case "JoeyReads": case "OompaLoompaTron": case "Ocean":
-    case "radiotoast": case "ThePitchStack": case "KanosWaterBottle": case "yamsandwic": case "ThatOneKano": case "YuutoSJ": case "ZorbyX": case "littlsnek":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["KanoSux" => 1, "BestBoy" => 1, "CRGrey" => 1, "jujubeans" => 1, "YodasUncle" => 1,
+    "ravenklath" => 1, "Blazing For Lethal?" => 1, "DimGuy" => 1, "JoeyReads" => 1, "OompaLoompaTron" => 1, "Ocean" => 1,
+    "radiotoast" => 1, "ThePitchStack" => 1, "KanosWaterBottle" => 1, "yamsandwic" => 1, "ThatOneKano" => 1, "YuutoSJ" => 1, "ZorbyX" => 1, "littlsnek" => 1,
+    "AWizardofEarthsea" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamPummel($userName)
 {
-  switch($userName) {
-    case "MkDk": case "Kutter": case "Smeoz": case "Fabio": case "JustFonta": case "M3X": case "Tommaso":
-    case "PDMPLB":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["MkDk" => 1, "Kutter" => 1, "Smeoz" => 1, "Fabio" => 1, "JustFonta" => 1, "M3X" => 1, "Tommaso" => 1, "PDMPLB" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamEmperorsRome($userName)
 {
-  switch($userName) {
-    case "Daniele90rm": case "Excelsa": case "kano90": case "Maalox10": case "TriangoloRotondo": case "Piervillo": case "Rean":
-    case "Jekpack": case "playboikrame": case "Danyr99": case "ZiFrank": case "Fevic":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["Daniele90rm" => 1, "Excelsa" => 1, "kano90" => 1, "Maalox10" => 1, "TriangoloRotondo" => 1, "Piervillo" => 1, "Rean" => 1,
+    "Jekpack" => 1, "playboikrame" => 1, "Danyr99" => 1, "ZiFrank" => 1, "Fevic" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamTalishar($userName)
 {
-  switch($userName) {
-    case "HelpMeJace2":
-    case "RainyDays":
-    case "Ragnell":
-    case "Hochi":
-    case "Cwaugh":
-    case "QZXK20":
-    case "VexingTie":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["HelpMeJace2" => 1, "RainyDays" => 1, "Ragnell" => 1, "Hochi" => 1, "Cwaugh" => 1, "QZXK20" => 1, "VexingTie" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamTideBreakers($userName)
 {
-  switch($userName) {
-    case "OotTheMonk": case "Yarandor": case "grossmaul2130": case "EggShot": case "Kasadoom": case "Gulto":
-    case "FinnElbe": case "Stardragon": case "DragonSlayer": case "TerranceSkill": case "TaddelDown":
-    case "Ilya": case "PastaPaul":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["OotTheMonk" => 1, "Yarandor" => 1, "grossmaul2130" => 1, "EggShot" => 1, "Kasadoom" => 1, "Gulto" => 1,
+    "FinnElbe" => 1, "Stardragon" => 1, "DragonSlayer" => 1, "TerranceSkill" => 1, "TaddelDown" => 1,
+    "Ilya" => 1, "PastaPaul" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamSunflowerSamurai($userName)
 {
-  switch($userName) {
-    case "Usagi":
-    case "HidaEishi":
-    case "kaikou":
-    case "Akuma":
-    case "Free":
-    case "yoeresel":
-    case "Kohs":
-    case "Ch3sh1r3":
-    case "NardoPotente":
-    case "dtitan":
-    case "Pokechtulhu":
-    case "CarlosGG":
-    case "N1MP0":
-    case "Clenyu":
-    case "juanmonzonf":
-    case "Raiswind":
-    case "Bossen":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["Usagi" => 1, "HidaEishi" => 1, "kaikou" => 1, "Akuma" => 1, "Free" => 1, "yoeresel" => 1, "Kohs" => 1,
+    "Ch3sh1r3" => 1, "NardoPotente" => 1, "dtitan" => 1, "Pokechtulhu" => 1, "CarlosGG" => 1, "N1MP0" => 1,
+    "Clenyu" => 1, "juanmonzonf" => 1, "Raiswind" => 1, "Bossen" => 1];
+  return isset($members[$userName]);
 }
 
 function isTeamCupofTCG($userName)
 {
-  switch($userName) {
-    case "Cody1304":
-    case "Glem":
-    case "parallaxdream":
-    case "2birds1stone":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["Cody1304" => 1, "Glem" => 1, "parallaxdream" => 1, "2birds1stone" => 1];
+  return isset($members[$userName]);
 }
 
 function isTeamScowlingFleshBag($userName)
 {
-  switch($userName) {
-    case "Scowling":
-    case "PvtVoid":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["Scowling" => 1, "PvtVoid" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamThaiCardsShop($userName)
 {
-  switch($userName) {
-    case "thaicards":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["thaicards" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamFABChaos($userName)
 {
-  switch($userName) {
-    case "SaXoChaos":
-    case "nakezuma":
-    case "Broken":
-    case "Atsacus":
-    case "rkntl":
-    case "SlyNight":
-    case "Elnor":
-    case "mythen":
-    case "Enegon":
-    case "Obnoxious":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["SaXoChaos" => 1, "nakezuma" => 1, "Broken" => 1, "Atsacus" => 1, "rkntl" => 1,
+    "SlyNight" => 1, "Elnor" => 1, "mythen" => 1, "Enegon" => 1, "Obnoxious" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamColdFoilControl($userName)
 {
-  switch($userName) {
-    case "Z-Gin":
-    case "Chaco":
-    case "Kentshero":
-    case "Ardent":
-    case "PurpleHaze":
-    case "luxas":
-    case "chefwheaton":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["Z-Gin" => 1, "Chaco" => 1, "Kentshero" => 1, "Ardent" => 1, "PurpleHaze" => 1, "luxas" => 1, "chefwheaton" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamRighteousGaming($userName)
 {
-  switch($userName) {
-    case "RighteousGaming":
-    case "Perodic":
-    case "zzdog":
-    case "krav":
-    case "Motley":
-    case "amodell":
-    case "TrentMcB":
-    case "pzych":
-    case "deragun":
-    case "Harvey0209":
-    case "f1av0r":
-    case "Vemnyx":
-    case "mclair":
-    case "FomToolery":
-    case "lostinspacefab":
-    case "SQJ":
-    case "magusoftheguild":
-    case "S1lverback55":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["RighteousGaming" => 1, "Perodic" => 1, "zzdog" => 1, "krav" => 1, "Motley" => 1, "amodell" => 1,
+    "TrentMcB" => 1, "pzych" => 1, "deragun" => 1, "Harvey0209" => 1, "f1av0r" => 1, "Vemnyx" => 1,
+    "mclair" => 1, "FomToolery" => 1, "lostinspacefab" => 1, "SQJ" => 1, "magusoftheguild" => 1, "S1lverback55" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamMetalFab($userName)
 {
-  switch($userName) {
-      case "deathstalker182":
-      case "Closetnerds":
-      case "Diene9":
-      case "acroriver":
-      case "ShadowGriffin":
-      case "Kentshero":
-      case "thekingg21":
-      case "Lupinefiasco":
-      case "onlyrunverynoob":
-      case "Brishen":
-      case "Sinthrandir":
-      case "killerbrews":
-      case "Z-Gin":
-      case "Obliterage":
-      case "RedBeard":
-      case "KillerBrews":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["deathstalker182" => 1, "Closetnerds" => 1, "Diene9" => 1, "acroriver" => 1, "ShadowGriffin" => 1,
+    "Kentshero" => 1, "thekingg21" => 1, "Lupinefiasco" => 1, "onlyrunverynoob" => 1, "Brishen" => 1,
+    "Sinthrandir" => 1, "killerbrews" => 1, "Z-Gin" => 1, "Obliterage" => 1, "RedBeard" => 1, "KillerBrews" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamPotatoSquad($userName)
 {
-  switch($userName) {
-    case "Corry":
-    case "Gibbie":
-    case "sycotik":
-    case "ruin":
-    case "Xandorion":
-    case "ObiJohn":
-    case "tader":
-    case "Wittman1":
-    case "enflames91":
-    case "SlimDrew23":
-    case "NoRaven":
-    case "middiekittie":
-    case "archangel224":
-    case "Nick56":
-    case "SCORPIO":
-    case "ArgentGrey":
-    case "SynThePanda93":
-    case "welpcakes":
-    case "RiptideRipper":
-    case "gilfab":
-    case "dautt":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["Corry" => 1, "Gibbie" => 1, "sycotik" => 1, "ruin" => 1, "Xandorion" => 1, "ObiJohn" => 1,
+    "tader" => 1, "Wittman1" => 1, "enflames91" => 1, "SlimDrew23" => 1, "NoRaven" => 1, "middiekittie" => 1,
+    "archangel224" => 1, "Nick56" => 1, "SCORPIO" => 1, "ArgentGrey" => 1, "SynThePanda93" => 1,
+    "welpcakes" => 1, "RiptideRipper" => 1, "gilfab" => 1, "dautt" => 1, "Grublo" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamFabledBrazil($userName)
 {
-  switch($userName) {
-    case "tetsuo":
-    case "hugodeoz":
-    case "diorge":
-    case "LGB":
-    case "mishel157":
-    case "DanielDertoni":
-    case "caduads":
-    case "DracaiBR":
-    case "gravebeat":
-    case "LiP":
-    case "DShima":
-    case "RodinhoTeclados":
-      return true;
-    default: break;
-  }
-  return false;
+  static $members = ["tetsuo" => 1, "hugodeoz" => 1, "diorge" => 1, "LGB" => 1, "mishel157" => 1, "DanielDertoni" => 1,
+    "caduads" => 1, "DracaiBR" => 1, "gravebeat" => 1, "LiP" => 1, "DShima" => 1, "RodinhoTeclados" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamFatAndFurious($userName)
 {
-  switch ($userName) {
-    case "OopsAllPummels":
-    case "AngelPillow":
-    case "stefchwan":
-    case "JK":
-    case "Astropeleki":
-    case "Debread":
-    case "Tilemachos27":
-    case "Intzah":
-    case "Cubacash":
-    case "karyo":
-    case "Ironclad":
-    case "Jorin":
-    case "anastaso73":
-    case "z4risu":
-      return true;
-    default:
-      break;
-  }
-  return false;
+  static $members = ["OopsAllPummels" => 1, "AngelPillow" => 1, "stefchwan" => 1, "JK" => 1, "Astropeleki" => 1,
+    "Debread" => 1, "Tilemachos27" => 1, "Intzah" => 1, "Cubacash" => 1, "karyo" => 1,
+    "Ironclad" => 1, "Jorin" => 1, "anastaso73" => 1, "z4risu" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamPitchDevils($userName)
 {
-  switch ($userName) {
-    case "Lestat":
-    case "elnino":
-    case "RTZ":
-    case "Schmax":
-    case "Belphegor":
-    case "FloJo":
-    case "MikeDwyer":
-    case "Dionysos":
-    case "Sosa":
-    case "TaddelDown":
-    case "inama":
-    case "Kanopterix":
-    case "PvtVoid":
-      return true;
-    default:
-      break;
-  }
-  return false;
+  static $members = ["Lestat" => 1, "elnino" => 1, "RTZ" => 1, "Schmax" => 1, "Belphegor" => 1, "FloJo" => 1,
+    "MikeDwyer" => 1, "Dionysos" => 1, "Sosa" => 1, "TaddelDown" => 1, "inama" => 1, "Kanopterix" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamSnapDragons($userName)
 {
-  switch ($userName) {
-    case "iamtherealdylanthompson":
-    case "SpoostingBendog":
-    case "EdgeOfAir":
-    case "Matt":
-    case "Diomedesau":
-    case "Nyjin":
-    case "Manavon":
-    case "Trouthammer":
-    case "N3ardeath":
-    case "Snaps":
-    case "TheGlib":
-    case "PvtVoid":
-    case "TheJudester":
-      return true;
-    default:
-      break;
-  }
-  return false;
+  static $members = ["iamtherealdylanthompson" => 1, "SpoostingBendog" => 1, "EdgeOfAir" => 1, "Matt" => 1,
+    "Diomedesau" => 1, "Nyjin" => 1, "Manavon" => 1, "Trouthammer" => 1, "N3ardeath" => 1,
+    "Snaps" => 1, "TheGlib" => 1, "TheJudester" => 1];
+  return isset($members[$userName]);
 }
 
 function IsTeamFabDads($userName)
 {
-  switch ($userName) {
-      case "LostInDaSpace":
-      case "Belazhul":
-      case "zaketanapareis":
-      case "thilakinos":
-      case "Debread":
-      case "mellone":
-      case "makvag":
-      case "Pitsirikos":
-      case "Alith0r0sKykl0pas":
-      case "Jim":
-      case "nikfabfanfatty":
-      case "PvtVoid":
-      return true;
-    default:
-      break;
-  }
-  return false;
+  static $members = ["LostInDaSpace" => 1, "Belazhul" => 1, "zaketanapareis" => 1, "thilakinos" => 1, "Debread" => 1,
+    "mellone" => 1, "makvag" => 1, "Pitsirikos" => 1, "Alith0r0sKykl0pas" => 1, "Jim" => 1, "nikfabfanfatty" => 1];
+  return isset($members[$userName]);
+}
+
+function IsTeamRedLine($userName)
+{
+  static $members = ["Aegisworn" => 1, "CornOnJacob" => 1, "jonam33" => 1, "Scribnibble" => 1, "Yuriiko" => 1,
+    "Sharp" => 1, "MXBloom" => 1, "Lazaeus" => 1, "bloodbit" => 1, "hurricanewes" => 1, "Aljo" => 1, "Flempa" => 1,
+    "redprairiedawn" => 1];
+  return isset($members[$userName]);
+}
+
+function IsTeamSkillIssue($userName)
+{
+  static $members = ["Vaxildan" => 1, "kk96" => 1, "Skoupakas69" => 1, "BreakingChaos" => 1, "TheCouncillor" => 1, "JaxC" => 1,
+    "Cubacash" => 1, "kungfoukios" => 1, "sudogreeko" => 1, "katsubina" => 1, "NikolasG" => 1, "LegenProMax" => 1,
+    "sadonEmsi" => 1, "DioReformed" => 1, "AggroBlazeNo1Fan" => 1, "kenobi" => 1, "Giannis92" => 1, "AssassinoCapuccino" => 1];
+  return isset($members[$userName]);
+}
+
+function IsTeamWingedHussars($userName)
+{
+  static $members = ["Calebovitsch" => 1, "Steve119" => 1, "Lucid" => 1, "Seba" => 1, "raskoks" => 1, "Chudy" => 1, "metatron" => 1,
+    "Dovi" => 1, "dssstefan" => 1, "makos" => 1, "RavenLemur" => 1, "XIR" => 1, "PvtVoid" => 1];
+  return isset($members[$userName]);
+}
+
+function IsTeamFabInsight($userName)
+{
+    static $members = ["FaBInsights" => 1, "PvtVoid" => 1];
+  return isset($members[$userName]);
+}
+
+function IsTeamOddwillows($userName)
+{
+  static $members = ["BenOddwillows" => 1, "PvtVoid" => 1, "Teari" => 1, "arcaneghost" => 1];
+  return isset($members[$userName]);
+}
+
+function IsTeamShine($userName)
+{
+  static $members = ["shine" => 1, "Baumfish" => 1, "Curryking" => 1, "DanielB" => 1, "Flixi" => 1, "malusNexx2" => 1, "Sleepless" => 1, "Thalric" => 1, "Nexre" => 1, "PvtVoid" => 1];
+  return isset($members[$userName]);
 }

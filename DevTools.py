@@ -13,7 +13,10 @@ for i, line in enumerate(constants):
         piece_name = line[len("function "):-len("Pieces()")-1]
         all_pieces[piece_name] = []
     if ("//" in line and piece_name != ""):
-        all_pieces[piece_name].append(line.split(" - ")[1][:-1])
+        try:
+            all_pieces[piece_name].append(line.split(" - ")[1][:-1])
+        except:
+            print(f"problem parsing {piece_name}, {line}")
     if line[:len("$CCS_")] == "$CCS_" or line[:len("$CCS_")] == "$CSS_":
         all_pieces["ccs"].append(line.split("=")[0].strip()[len("$CCS_"):])
     if line[:len("$CS_")] == "$CS_":
@@ -93,7 +96,7 @@ def parse_gamestate(gameid):
     results['p1']['items'] = unravel(lines[6], "Item")
     results['p1']['auras'] = unravel(lines[7], "Aura")
     results['p1']['discard'] = unravel(lines[8], "Discard")
-    results['p1']['pitch'] = lines[9].split(" ")
+    results['p1']['pitch'] = unravel(lines[9], "Pitch")
     results['p1']['banish'] = unravel(lines[10], "Banish")
     results['p1']['class state'] = unravel(lines[11], "cs")
     results['p1']['character effects'] = lines[12].split(" ")
@@ -112,7 +115,7 @@ def parse_gamestate(gameid):
     results['p2']['items'] = unravel(lines[24], "Item")
     results['p2']['auras'] = unravel(lines[25], "Aura")
     results['p2']['discard'] = unravel(lines[26], "Discard")
-    results['p2']['pitch'] = lines[27].split(" ")
+    results['p2']['pitch'] = unravel(lines[27], "Pitch")
     results['p2']['banish'] = unravel(lines[28], "Banish")
     results['p2']['class state'] = unravel(lines[29], "cs")
     results['p2']['character effects'] = lines[30].split(" ")
@@ -140,6 +143,10 @@ def parse_gamestate(gameid):
     
     results['p1']['inventory'] = lines[72 + num_chain_links].split(" ")
     results['p2']['inventory'] = lines[73 + num_chain_links].split(" ")
+    if len(lines) > 79 + num_chain_links:
+        results['Both']["attack queue"] = unravel(lines[79 + num_chain_links], "AttackQueue")
+    else:
+        results["Both"]["attack queue"] = []
     return results
 
 def FindFunction(function_name, search_root="./"):

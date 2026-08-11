@@ -14,24 +14,28 @@ class PlayerCharacter {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * CharacterPieces();
+    if($cardNumber) $index *= CharacterPieces();
     return new CharacterCard($index, $this->player);
   }
 
   function FindCardUID($uid) {
-    if (count($this->char) == 0) return new CharacterCard(-1, $this->player);
-    for ($i = 0; $i < count($this->char); $i += CharacterPieces()) {
+    $count = count($this->char);
+    if ($count == 0) return new CharacterCard(-1, $this->player);
+    $characterPieces = CharacterPieces();
+    for ($i = 0; $i < $count; $i += $characterPieces) {
       if ($this->char[$i + 11] == $uid) return new CharacterCard($i, $this->player);
     }
     return new CharacterCard(-1, $this->player);
   }
 
   function FindCardID($id) {
-    if (count($this->char) == 0) return "";
-    for ($i = 0; $i < count($this->char); $i += CharacterPieces()) {
+    $count = count($this->char);
+    if ($count == 0) return new CharacterCard(-1, $this->player);
+    $characterPieces = CharacterPieces();
+    for ($i = 0; $i < $count; $i += $characterPieces) {
       if ($this->char[$i] == $id) return new CharacterCard($i, $this->player);
     }
-    return "";
+    return new CharacterCard(-1, $this->player);
   }
 
   function NumCards() {
@@ -61,6 +65,10 @@ class CharacterCard {
 
   function CardID() {
     return $this->pieces[$this->index] ?? "-";
+  }
+
+  function ID() {
+    return $this->CardID();
   }
 
   function Become($cardID) {
@@ -104,7 +112,7 @@ class CharacterCard {
       $this->pieces[$this->index + 3] += $num;
   }
 
-  function NumDefenseCounters() {
+  function NumDefenseCounters() { //also tracks damage dealt to perched allies
     return $this->pieces[$this->index+4] ?? 0;
   }
 
@@ -152,6 +160,7 @@ class CharacterCard {
 
   function ToggleGem($player=0) {
     $offset = 9;
+    if (!is_numeric($this->index)) return;
     if (isset($this->pieces[$this->index+$offset])) {
       $state = $this->pieces[$this->index+$offset]  == "1" ? "0" : "1";
       $this->pieces[$this->index+$offset] = $state;
@@ -207,5 +216,19 @@ class CharacterCard {
 
   function Tap($tapState=1, $endStepUntap=false) {
     Tap("MYCHAR-" . $this->index, $this->controller, $tapState, $endStepUntap);
+  }
+
+  function TapForCost() { //used when tap is a cost instead of once per turn.
+    $this->Tap();
+    $this->AddUse();
+    $this->SetUsed(2);
+  }
+
+  function Slot() {
+    return $this->pieces[$this->index+15] ?? "-";
+  }
+
+  function Move($slot) {
+    if (isset($this->pieces[$this->index+15])) $this->pieces[$this->index+15] = $slot;
   }
 }

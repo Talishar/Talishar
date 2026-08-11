@@ -19,6 +19,7 @@ include_once "./Assets/MetafyDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
+include_once "Libraries/FriendLibraries.php";
 
 include_once 'GameLogic.php';
 include_once "GameTerms.php";
@@ -67,7 +68,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
 $sessionData['userLoggedIn'] = IsUserLoggedIn();
-$sessionData['userName'] = LoggedInUserName() ?: (TryGet('userName', '') ?: null);
+$sessionData['userName'] = LoggedInUserName();
+$sessionData['displayName'] = LoggedInDisplayName() ?: $sessionData['userName'];
 $sessionData['isPvtVoidPatron'] = isset($_SESSION["isPvtVoidPatron"]);
 
 // Capture all Patreon campaign session IDs
@@ -77,16 +79,11 @@ foreach(PatreonCampaign::cases() as $campaign) {
   $sessionData['patreonCampaigns'][$sessionID] = isset($_SESSION[$sessionID]);
 }
 
-// Load friend list if user is logged in (for friend hand visibility checks)
+// Friend hand/arsenal visibility is authorization data. Resolve it from the
+// database instead of relying on a client parameter that may be absent when
+// the long-lived SSE connection starts.
 $sessionData['friendList'] = [];
-$friendsListParam = TryGet("friendsList", "");
-if (!empty($friendsListParam)) {
-  try {
-    $sessionData['friendList'] = json_decode($friendsListParam, true) ?? [];
-  } catch (Exception $e) {
-    // friendsList parameter parsing failed
-  }
-}
+$viewerUserId = $playerID == 3 && $sessionData['userLoggedIn'] ? LoggedInUser() : null;
 
 // Release session lock BEFORE SSE loop to prevent deadlock
 if (session_status() === PHP_SESSION_ACTIVE) {
@@ -94,8 +91,18 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 }
 
 if ($playerID == 3) {
-  UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'Anonymous');
+  if (!$sessionData['userLoggedIn'] || empty($sessionData['userName'])) {
+    echo ("data: " . json_encode(["error" => "Authentication required to spectate."]) . "\n\n");
+    ob_flush();
+    flush();
+    exit;
+  }
+  if (is_numeric($viewerUserId)) {
+    $sessionData['friendList'] = GetUserFriendUsernames((int)$viewerUserId);
+  }
+  UpdateSpectatorPresence($gameName, $sessionData['displayName']);
 }
+$sessionData['friendSet'] = !empty($sessionData['friendList']) ? array_flip($sessionData['friendList']) : [];
 
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
@@ -103,16 +110,22 @@ header('Cache-Control: no-cache');
 $lastUpdate = 0;
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 
-// Typing state tracking — pushed via named SSE event, no polling needed
-$lastTypingCheckTime = 0.0;
-$typingCheckInterval = 1.5; // seconds between checks
+// Ephemeral activity state pushed via named SSE events.
+$lastActivityCheckTime = 0.0;
+$activityCheckInterval = 1.5; // seconds between APCu checks
 $lastTypingState = false;
+$lastPresenceState = null;
 
 // Send initial full game state
-$cacheVal = intval(GetCachePiece($gameName, 1));
+$initialCacheArr = ReadCacheArray($gameName);
+$cacheVal = intval($initialCacheArr[0] ?? ""); // piece 1
 $lastUpdate = $cacheVal;
+$inactivityTimeoutMs = INACTIVITY_TIMEOUT_MS;
+$lastUpdateTime = $initialCacheArr[5] ?? "";
+$previouslyInactive = $lastUpdateTime !== ""
+  && 1000 * microtime(true) - intval($lastUpdateTime) > $inactivityTimeoutMs;
 
-$initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true);
+$initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, $previouslyInactive, $initialCacheArr);
 if (is_string($initialState)) {
   // Error occurred
   echo ("data: " . json_encode(["error" => $initialState]) . "\n\n");
@@ -123,9 +136,15 @@ if (is_string($initialState)) {
 echo ("data: " . json_encode($initialState) . "\n\n");
 ob_flush();
 flush();
+unset($initialState);
+gc_collect_cycles();
 
 $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
+$typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;
+$presenceCacheKey = "presence_" . md5($gameName) . "_player_" . $otherP;
+$apcuAvailable = extension_loaded('apcu') && ini_get('apc.enabled');
+$lastSendTime = microtime(true); // last time anything was written to the client
 $lastFileCheckTime = microtime(true);
 $fileCheckInterval = 30.0;
 $gameFileExists = true;
@@ -135,7 +154,9 @@ $lastSpectatorRefresh = microtime(true);
 $spectatorRefreshInterval = 30.0;
 $rateLimitStartInterval = microtime(true);
 $rateLimitProcessCount = 0;
+$buildFailureStreak = 0;
 $loopStartTimeMs = round(microtime(true) * 1000);
+$buildsSinceCycleCollection = 0;
 
 while (true) {
   $currentRealTime = microtime(true);
@@ -147,12 +168,13 @@ while (true) {
   }
 
   if ($playerID == 3 && $currentRealTime - $lastSpectatorRefresh >= $spectatorRefreshInterval) {
-    UpdateSpectatorPresence($gameName, $sessionData['userName'] ?? 'Anonymous');
+    UpdateSpectatorPresence($gameName, $sessionData['displayName']);
     $lastSpectatorRefresh = $currentRealTime;
   }
 
-  $cacheStr = GetCachePiece($gameName, 1);
-  $lastUpdateTime = GetCachePiece($gameName, 6);
+  $cacheArr = ReadCacheArray($gameName);
+  $cacheStr = $cacheArr[0] ?? "";
+  $lastUpdateTime = $cacheArr[5] ?? "";
   // Check if game file still exists
   if ($currentRealTime - $lastFileCheckTime >= $fileCheckInterval || $lastUpdateTime == "" || $cacheStr === "") {
     if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
@@ -163,10 +185,10 @@ while (true) {
   }
 
   // Check if game is over (status 99)
-  $gameStatus = intval(GetCachePiece($gameName, 14));
+  $gameStatus = intval($cacheArr[13] ?? 0);
   if ($gameStatus == 99) {
     // Send final state before exiting
-    $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false);
+    $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, false, $cacheArr);
     if (!is_string($finalState)) {
       SendContent($finalState);
     }
@@ -175,33 +197,54 @@ while (true) {
 
   // Check for game state updates
   $cacheVal = intval($cacheStr);
-  $timeout = 60 * 1000; //seconds
-  $inactive = 1000 * $currentRealTime - intval($lastUpdateTime) > $timeout;
-  $previouslyInactive = GetCachePiece($gameName, 17);
-  if ($cacheVal > $lastUpdate || $inactive && $previouslyInactive == 0) {
-    $lastUpdate = $cacheVal;
-    if ($inactive) SetCachePiece($gameName, 17, 1);
-    else SetCachePiece($gameName, 17, 0);
+  $inactive = $lastUpdateTime !== ""
+    && 1000 * $currentRealTime - intval($lastUpdateTime) > $inactivityTimeoutMs;
+  if ($cacheVal > $lastUpdate || $inactive !== $previouslyInactive) {
     // Build and send full game state
-    $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive);
+    $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive, $cacheArr);
     if (is_string($gameState)) {
-      SendContent(["error" => $gameState]);
-      exit;
+      // Only kill the stream for genuinely fatal errors. Transient ones (e.g.
+      // "Game state reverted." mid-undo) resolve on a retry.
+      $fatal = str_contains($gameState, "no longer exists")
+        || str_contains($gameState, "Invalid Authkey")
+        || str_contains($gameState, "Spectators not allowed")
+        || str_contains($gameState, "Invalid game name")
+        || str_contains($gameState, "Invalid player ID");
+      if ($fatal) {
+        SendContent(["error" => $gameState]);
+        exit;
+      }
+      $buildFailureStreak++;
+      if ($buildFailureStreak > 100) {
+        SendContent(["error" => $gameState]);
+        exit;
+      }
+      usleep(intval($sleepMs * 1000));
+      continue;
     }
+    $buildFailureStreak = 0;
+    $lastUpdate = $cacheVal;
+    $previouslyInactive = $inactive;
     SendContent($gameState);
+    unset($gameState);
+    if (++$buildsSinceCycleCollection >= 25) {
+      gc_collect_cycles();
+      $buildsSinceCycleCollection = 0;
+    }
     set_time_limit(120);
   }
 
-  // Push typing state as a named SSE event so the frontend can update without
-  // any polling. Checks every $typingCheckInterval seconds; only emits when
-  // the state actually changes — zero cost for games where nobody is typing.
-  if ($isGamePlayer && ($currentRealTime - $lastTypingCheckTime >= $typingCheckInterval)) {
-    $lastTypingCheckTime = $currentRealTime;
-    $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;
+  // Push ephemeral activity as named SSE events so the frontend does not poll.
+  // Check APCu periodically and emit only when a state changes.
+  if ($isGamePlayer && ($currentRealTime - $lastActivityCheckTime >= $activityCheckInterval)) {
+    $lastActivityCheckTime = $currentRealTime;
     $opponentIsTyping = false;
+    $opponentPresence = null;
 
-    if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+    if ($apcuAvailable) {
       $opponentIsTyping = @apcu_fetch($typingCacheKey) !== false;
+      $cachedPresence = @apcu_fetch($presenceCacheKey);
+      if (is_array($cachedPresence)) $opponentPresence = $cachedPresence;
     }
 
     if ($opponentIsTyping !== $lastTypingState) {
@@ -210,23 +253,47 @@ while (true) {
       echo "data: " . json_encode(["opponentIsTyping" => $opponentIsTyping]) . "\n\n";
       ob_flush();
       flush();
+      $lastSendTime = $currentRealTime;
+    }
+
+    if ($opponentPresence !== $lastPresenceState) {
+      $lastPresenceState = $opponentPresence;
+      echo "event: presence\n";
+      echo "data: " . json_encode(["opponentPresence" => $opponentPresence]) . "\n\n";
+      ob_flush();
+      flush();
+      $lastSendTime = $currentRealTime;
     }
   }
 
+  if ($currentRealTime - $lastSendTime >= 15) {
+    echo "event: hb\n";
+    echo "data: {}\n\n";
+    ob_flush();
+    flush();
+    $lastSendTime = $currentRealTime;
+    if (connection_aborted()) exit;
+  }
+
+  $msSinceLastChange = 1000 * $currentRealTime - intval($lastUpdateTime);
+  $sleepMs = $msSinceLastChange > 5000 ? 150 : 50;
   usleep(intval($sleepMs * 1000));
 }
 
 function SendContent($jsonContent) {
-  global $rateLimitStartInterval, $rateLimitProcessCount;
+  global $rateLimitStartInterval, $rateLimitProcessCount, $lastSendTime;
   $currentRealTime = microtime(true);
+  $lastSendTime = $currentRealTime;
   if($currentRealTime - $rateLimitStartInterval > 1.0) {
     // Reset rate limit counters every second
     $rateLimitStartInterval = $currentRealTime;
     $rateLimitProcessCount = 0;
   } else {
     $rateLimitProcessCount++;
-    if($rateLimitProcessCount > 5) {
-      SendContent(["error" => "Too many game updates in last second. A likely logic error has occurred."]);
+    if($rateLimitProcessCount > 15) {
+      echo ("data: " . json_encode(["error" => "Too many game updates in last second. A likely logic error has occurred."]) . "\n\n");
+      ob_flush();
+      flush();
       exit;
     }
   }

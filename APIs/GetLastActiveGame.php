@@ -15,6 +15,8 @@
  */
 
 include "../HostFiles/Redirector.php";
+include_once "../includes/dbh.inc.php";
+include_once "../includes/functions.inc.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
 include "../Libraries/HTTPLibraries.php";
@@ -22,23 +24,31 @@ include_once "../Libraries/SHMOPLibraries.php";
 
 SetHeaders();
 
-session_start();
+$loggedIn = IsUserLoggedIn();
 
 session_write_close();
 
 $response = new stdClass();
 
-// Check if user is logged in and has a last game
-if (!isset($_SESSION["lastGameName"]) || !isset($_SESSION["lastPlayerId"]) || !isset($_SESSION["lastAuthKey"])) {
+$gameName = $_SESSION["lastGameName"] ?? "";
+$playerID = $_SESSION["lastPlayerId"] ?? "";
+$authKey = $_SESSION["lastAuthKey"] ?? "";
+
+if ($loggedIn && (intval($gameName) <= 0 || empty($authKey))) {
+    $lastGame = GetLastGameInfo(LoggedInUser());
+    if ($lastGame != null) {
+        $gameName = $lastGame["lastGameName"];
+        $playerID = $lastGame["lastPlayerId"];
+        $authKey = $lastGame["lastAuthKey"];
+    }
+}
+
+if (intval($gameName) <= 0 || empty($authKey) || $playerID === "" || $playerID === null) {
     $response->gameExists = false;
     $response->gameInProgress = false;
     echo json_encode($response);
     exit;
 }
-
-$gameName = $_SESSION["lastGameName"];
-$playerID = $_SESSION["lastPlayerId"];
-$authKey = $_SESSION["lastAuthKey"];
 
 // Spectators cannot use session recovery - only players 1 and 2
 if ($playerID == 3) {
@@ -80,7 +90,8 @@ include "./APIParseGamefile.php";
 // Check if game is still in progress
 // Cache piece 14 is set to 99 (MGS_GameOver) when game ends
 // If cache piece 14 is 99, the game is definitely over
-$cacheStatus = GetCachePiece($gameName, 14);
+$gameCacheArr = ReadCacheArray($gameName);
+$cacheStatus = $gameCacheArr[13] ?? "";
 $MGS_GameOver = 99;
 
 $response->gameInProgress = false;
@@ -96,12 +107,12 @@ if ($cacheStatus == $MGS_GameOver) {
 
 // Get opponent info
 $opponentID = ($playerID == 1 ? 2 : 1);
-$response->opponentName = ($opponentID == 1 ? ($p1uid != "-" ? $p1uid : "Player 1") : ($p2uid != "-" ? $p2uid : "Player 2"));
+$response->opponentName = ($opponentID == 1 ? ($p1uid != "-" ? $p1DisplayName : "Player 1") : ($p2uid != "-" ? $p2DisplayName : "Player 2"));
 
 // Check if opponent is currently disconnected
 // Cache piece structure: playerID+3 contains the connection status
 // 0 = connected, -1 = disconnected, 1 = just joined
-$opponentStatus = GetCachePiece($gameName, $opponentID + 3);
+$opponentStatus = $gameCacheArr[$opponentID + 2] ?? "";
 $response->opponentDisconnected = ($opponentStatus == "-1" || $opponentStatus == "");
 
 if ($playerID != 3) {

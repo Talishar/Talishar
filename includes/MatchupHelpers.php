@@ -25,25 +25,12 @@ function ExtractTurnOrderPreference($matchup) {
         return $matchup;
     }
     
-    // Initialize the preferredTurnOrder field if not present
-    if (!isset($matchup->preferredTurnOrder)) {
-        $matchup->preferredTurnOrder = null;
-    } else {
-        // Normalize the value - Fabrary sends "First", "Second", "NoPreference", or undefined
-        $turnOrder = $matchup->preferredTurnOrder;
-        
-        // Handle undefined/null cases
-        if ($turnOrder === 'undefined' || $turnOrder === null || $turnOrder === '' || $turnOrder === 'NoPreference') {
-            $matchup->preferredTurnOrder = null;
-        } else if ($turnOrder === 'First' || $turnOrder === 'first' || $turnOrder === '1st') {
-            $matchup->preferredTurnOrder = '1st';
-        } else if ($turnOrder === 'Second' || $turnOrder === 'second' || $turnOrder === '2nd') {
-            $matchup->preferredTurnOrder = '2nd';
-        } else {
-            // Fallback for any other value - treat as no preference
-            $matchup->preferredTurnOrder = null;
-        }
-    }
+    // Normalize preferredTurnOrder - Fabrary sends "First", "Second", "NoPreference", or undefined
+    $matchup->preferredTurnOrder = match($matchup->preferredTurnOrder ?? null) {
+        'First', 'first', '1st' => '1st',
+        'Second', 'second', '2nd' => '2nd',
+        default => null,
+    };
     
     // Ensure notes field exists (preserve from Fabrary if present)
     if (!isset($matchup->notes)) {

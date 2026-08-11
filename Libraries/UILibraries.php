@@ -39,7 +39,7 @@ function JSONRenderedCard(
   $onChain = NULL,
   $isFrozen = NULL,
   $gem = NULL,
-  $countersMap = new stdClass(), // new object for counters
+  $countersMap = NULL, // object containing named counters, allocated only when needed
   $label = NULL,
   $facing = NULL,
   $numUses = NULL,
@@ -69,77 +69,143 @@ function JSONRenderedCard(
   $tapped = NULL,
   $uniqueID = NULL,
   $isOpponent = NULL,
-  $holoCounters = NULL
+  $holoCounters = NULL,
+  $slot = NULL
 ) {
   $cardNumber = BlindCard($cardNumber, true);
   global $playerID, $CS_NumLightningPlayed;
-  $isSpectator = (isset($playerID) && intval($playerID) == 3 ? true : false);
+  $isSpectator = isset($playerID) && $playerID == 3;
   $otherPlayer = $playerID == 1 ? 2 : 1;
 
-  $counters = property_exists($countersMap, 'counters') ? $countersMap->counters : $counters;
-  if($counters != NULL) $countersMap->counters = $counters;
+  // isset() is a language construct (~3-5x faster than property_exists() function call).
+  // Counter values are always integers, never null, so isset() is semantically equivalent here.
+  $counters = isset($countersMap->counters) ? $countersMap->counters : $counters;
+  if($counters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->counters = $counters;
+  }
 
-  $lifeCounters = property_exists($countersMap, 'life') ? $countersMap->life : $lifeCounters;
-  if($lifeCounters != NULL) $countersMap->life = $lifeCounters;
+  $lifeCounters = isset($countersMap->life) ? $countersMap->life : $lifeCounters;
+  if($lifeCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->life = $lifeCounters;
+  }
 
-  $defCounters = property_exists($countersMap, 'defense') ? $countersMap->defense : $defCounters;
-  if($defCounters != NULL) $countersMap->defense = $defCounters;
+  $defCounters = isset($countersMap->defense) ? $countersMap->defense : $defCounters;
+  if($defCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->defense = $defCounters;
+  }
 
-  $powerCounters = property_exists($countersMap, 'attack') ? $powerCounters->attack : $powerCounters;
-  if($powerCounters != NULL) $countersMap->attack = $powerCounters;
+  $powerCounters = isset($countersMap->attack) ? $powerCounters->attack : $powerCounters;
+  if($powerCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->attack = $powerCounters;
+  }
 
-  $steamCounters = property_exists($countersMap, 'steam') ? $steamCounters->steam : $steamCounters;
-  if($steamCounters != NULL) $countersMap->steam = $steamCounters;
+  $steamCounters = isset($countersMap->steam) ? $steamCounters->steam : $steamCounters;
+  if($steamCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->steam = $steamCounters;
+  }
 
-  $energyCounters = property_exists($countersMap, 'energy') ? $energyCounters->energy : $energyCounters;
-  if($energyCounters != NULL) $countersMap->energy = $energyCounters;
+  $energyCounters = isset($countersMap->energy) ? $energyCounters->energy : $energyCounters;
+  if($energyCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->energy = $energyCounters;
+  }
 
-  $hauntCounters = property_exists($countersMap, 'haunt') ? $hauntCounters->haunt : $hauntCounters;
-  if($hauntCounters != NULL) $countersMap->haunt = $hauntCounters;
+  $hauntCounters = isset($countersMap->haunt) ? $hauntCounters->haunt : $hauntCounters;
+  if($hauntCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->haunt = $hauntCounters;
+  }
 
-  $verseCounters = property_exists($countersMap, 'verse') ? $verseCounters->verse : $verseCounters;
-  if($verseCounters != NULL) $countersMap->verse = $verseCounters;
+  $verseCounters = isset($countersMap->verse) ? $verseCounters->verse : $verseCounters;
+  if($verseCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->verse = $verseCounters;
+  }
 
-  $doomCounters = property_exists($countersMap, 'doom') ? $doomCounters->doom : $doomCounters;
-  if($doomCounters != NULL) $countersMap->doom = $doomCounters;
+  $doomCounters = isset($countersMap->doom) ? $doomCounters->doom : $doomCounters;
+  if($doomCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->doom = $doomCounters;
+  }
 
-  $lessonCounters = property_exists($countersMap, 'lesson') ? $lessonCounters->lesson : $lessonCounters;
-  if($lessonCounters != NULL) $countersMap->lesson = $lessonCounters;
+  $lessonCounters = isset($countersMap->lesson) ? $lessonCounters->lesson : $lessonCounters;
+  if($lessonCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->lesson = $lessonCounters;
+  }
 
-  $rustCounters = property_exists($countersMap, 'rust') ? $rustCounters->rust : $rustCounters;
-  if($rustCounters != NULL) $countersMap->rust = $rustCounters;
+  $rustCounters = isset($countersMap->rust) ? $rustCounters->rust : $rustCounters;
+  if($rustCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->rust = $rustCounters;
+  }
 
-  $flowCounters = property_exists($countersMap, 'flow') ? $flowCounters->flow : $flowCounters;
-  if($flowCounters != NULL) $countersMap->flow = $flowCounters;
+  $flowCounters = isset($countersMap->flow) ? $flowCounters->flow : $flowCounters;
+  if($flowCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->flow = $flowCounters;
+  }
 
-  $frostCounters = property_exists($countersMap, 'frost') ? $frostCounters->frost : $frostCounters;
-  if($frostCounters != NULL) $countersMap->frost = $frostCounters;
+  $frostCounters = isset($countersMap->frost) ? $frostCounters->frost : $frostCounters;
+  if($frostCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->frost = $frostCounters;
+  }
 
-  $balanceCounters = property_exists($countersMap, 'balance') ? $balanceCounters->balance : $balanceCounters;
-  if($balanceCounters != NULL) $countersMap->balance = $balanceCounters;
+  $balanceCounters = isset($countersMap->balance) ? $balanceCounters->balance : $balanceCounters;
+  if($balanceCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->balance = $balanceCounters;
+  }
 
-  $bindCounters = property_exists($countersMap, 'bind') ? $bindCounters->bind : $bindCounters;
-  if($bindCounters != NULL) $countersMap->bind = $bindCounters;
+  $bindCounters = isset($countersMap->bind) ? $bindCounters->bind : $bindCounters;
+  if($bindCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->bind = $bindCounters;
+  }
 
-  $stainCounters = property_exists($countersMap, 'stain') ? $stainCounters->stain : $stainCounters;
-  if($stainCounters != NULL) $countersMap->stain = $stainCounters;
+  $stainCounters = isset($countersMap->stain) ? $stainCounters->stain : $stainCounters;
+  if($stainCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->stain = $stainCounters;
+  }
 
-  $stormCounters = property_exists($countersMap, 'storm') ? $stormCounters->storm : $stormCounters;
-  if($stormCounters != NULL) $countersMap->storm = $stormCounters;
+  $stormCounters = isset($countersMap->storm) ? $stormCounters->storm : $stormCounters;
+  if($stormCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->storm = $stormCounters;
+  }
 
-  $goldCounters = property_exists($countersMap, 'gold') ? $goldCounters->gold : $goldCounters;
-  if($goldCounters != NULL) $countersMap->gold = $goldCounters;
+  $goldCounters = isset($countersMap->gold) ? $goldCounters->gold : $goldCounters;
+  if($goldCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->gold = $goldCounters;
+  }
 
-  $suspenseCounters = property_exists($countersMap, 'suspense') ? $suspenseCounters->suspense : $suspenseCounters;
-  if($suspenseCounters != NULL) $countersMap->suspense = $suspenseCounters;
+  $suspenseCounters = isset($countersMap->suspense) ? $suspenseCounters->suspense : $suspenseCounters;
+  if($suspenseCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->suspense = $suspenseCounters;
+  }
 
-  $sandCounters = property_exists($countersMap, 'sand') ? $sandCounters->sand : $sandCounters;
-  if($sandCounters != NULL) $countersMap->sand = $sandCounters;
+  $sandCounters = isset($countersMap->sand) ? $sandCounters->sand : $sandCounters;
+  if($sandCounters != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->sand = $sandCounters;
+  }
 
-  $wateryGraveIcon = property_exists($countersMap, 'wateryGrave') ? $wateryGraveIcon->wateryGrave : $wateryGraveIcon;
-  if($wateryGraveIcon != NULL) $countersMap->wateryGrave = $wateryGraveIcon;
+  $wateryGraveIcon = isset($countersMap->wateryGrave) ? $wateryGraveIcon->wateryGrave : $wateryGraveIcon;
+  if($wateryGraveIcon != NULL) {
+    $countersMap ??= new stdClass();
+    $countersMap->wateryGrave = $wateryGraveIcon;
+  }
 
-  if(property_exists($countersMap, 'counters') && $countersMap->counters > 0) {
+  if(isset($countersMap->counters) && $countersMap->counters > 0) {
     $class = CardClass($cardNumber);
     $type = CardType($cardNumber);
     $subtype = CardSubType($cardNumber);
@@ -225,28 +291,39 @@ function JSONRenderedCard(
   }
   
   //Volzar Amp icon
-  if($controller != NULL){
-    if($cardNumber == "volzar_the_lightning_rod" && $controller == $playerID && GetClassState($playerID, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
-      $countersMap->lightning = GetClassState($playerID, $CS_NumLightningPlayed);
-      $countersMap->counters = 0;
-    }
-    if($cardNumber == "volzar_the_lightning_rod" && $controller == $otherPlayer && GetClassState($otherPlayer, $CS_NumLightningPlayed) > 0 && $lightningPlayed == NULL) {
-      $countersMap->lightning = GetClassState($otherPlayer, $CS_NumLightningPlayed);
-      $countersMap->counters = 0;
+  if($controller != NULL && $cardNumber == "volzar_the_lightning_rod" && $lightningPlayed == NULL) {
+    if($controller == $playerID) {
+      $lightningCount = GetClassState($playerID, $CS_NumLightningPlayed);
+      if($lightningCount > 0) {
+        $countersMap ??= new stdClass();
+        $countersMap->lightning = $lightningCount;
+        $countersMap->counters = 0;
+      }
+    } elseif($controller == $otherPlayer) {
+      $lightningCount = GetClassState($otherPlayer, $CS_NumLightningPlayed);
+      if($lightningCount > 0) {
+        $countersMap ??= new stdClass();
+        $countersMap->lightning = $lightningCount;
+        $countersMap->counters = 0;
+      }
     }
   }
 
   //Current Turn Effects amp amount
-  if(substr($showAmpAmount, 0, 6) == "Effect") {
-    $index = explode("-", $showAmpAmount)[1];
-    if(ArcaneModifierAmount($cardNumber, $playerID, $index) > 0) {
-      $countersMap->amp = ArcaneModifierAmount($cardNumber, $playerID, $index);
+  if($showAmpAmount !== false && str_starts_with($showAmpAmount, "Effect")) {
+    $index = explode("-", $showAmpAmount, 2)[1];
+    $ampOwn = ArcaneModifierAmount($cardNumber, $playerID, $index);
+    if($ampOwn > 0) {
+      $countersMap ??= new stdClass();
+      $countersMap->amp = $ampOwn;
       $countersMap->counters = 0;
-    } 
-    if(ArcaneModifierAmount($cardNumber, $otherPlayer, $index) > 0) {
-      $countersMap->amp = ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
+    }
+    $ampOther = ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
+    if($ampOther > 0) {
+      $countersMap ??= new stdClass();
+      $countersMap->amp = $ampOther;
       $countersMap->counters = 0;
-    }   
+    }
   }
   
   if($isSpectator) $gem = NULL;
@@ -275,7 +352,7 @@ function JSONRenderedCard(
   if($onChain !== NULL) $card->onChain = $onChain;
   if($isFrozen !== NULL) $card->isFrozen = $isFrozen;
   if($holoCounters !== NULL) $card->holoCounters = $holoCounters;
-  if($countersMap != json_decode('{}')) $card->countersMap = $countersMap;
+  if(!empty((array)$countersMap)) $card->countersMap = $countersMap;
   if($label !== NULL) $card->label = $label;
   if($facing !== NULL) $card->facing = $facing;
   if($numUses !== NULL) $card->numUses = $numUses;
@@ -284,6 +361,7 @@ function JSONRenderedCard(
   if($tapped !== NULL) $card->tapped = $tapped;
   if($uniqueID !== NULL) $card->uniqueID = $uniqueID;
   if($isOpponent !== NULL) $card->isOpponent = $isOpponent;
+  if($slot !== NULL) $card->slot = $slot;
   return $card;
 }
 
@@ -337,10 +415,11 @@ function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = ""
   $result->canClose = $canClose;
   $result->additionalComments = $additionalComments;
   $cards = [];
-  for ($i = 0; $i < count($fromArr); $i += $arrElements) {
-    array_push($cards, JSONRenderedCard($fromArr[$i]));
+  $fromArrCount = count($fromArr);
+  for ($i = 0; $i < $fromArrCount; $i += $arrElements) {
+    $cards[] = JSONRenderedCard($fromArr[$i]);
   }
-  if (count($cardsArray) > 0) {
+  if (!empty($cardsArray)) {
     $cards = $cardsArray;
   }
   $result->cards = $cards;
@@ -356,6 +435,9 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
   
   //WriteLog($dqState[4] . " - " . $turn[0]);
   // Early exits for global conditions
+
+  $isOwnGoldPaymentZone = $from == "HAND" || $from == "PLAY" || $from == "CHAR";
+  if ($isPlayable && $isOwnGoldPaymentZone && ($turn[0] == "PAYGOLDORPITCH" || $turn[0] == "CHOOSEGOLDTOPAY")) return 8;
 
   switch ($cardID) {
     case "florian_rotwood_harbinger":
@@ -375,28 +457,30 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
     default:
       break;
   }
-
-  if ($from == "HAND" && $isPlayable && (
-    $dqState[4] == "Choose_a_card_to_charge" ||
-    $dqState[4] == "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" ||
-    $dqState[4] == "Choose_a_card_to_sink" ||
-    $dqState[4] == "Choose_a_card_to_sink_(or_Pass)" ||
-    $turn[0] == "ARS" ||
-    $turn[0] == "P" ||
-    $turn[0] == "CHOOSEHANDCANCEL"
-  )) return 8;
-  if ($from == "HAND" && $isPlayable && (
-    $dqState[4] == "Choose_a_card_to_discard_(or_pass_and_lose_2_health)" ||
-    $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
-    $dqState[4] == "Choose_a_card_to_discard" ||
-    $dqState[4] == "Choose_a_card_to_banish"
-  )) return 9;
-  if ($turn[0] == "B" && $from != "THEIRCHAR") return $isPlayable ? 6 : 0;
+  if ($from == "HAND" && $isPlayable) {
+    if (
+      $dqState[4] == "Choose_a_card_to_charge" ||
+      $dqState[4] == "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" ||
+      $dqState[4] == "Choose_a_card_to_sink" ||
+      $dqState[4] == "Choose_a_card_to_sink_(or_Pass)" ||
+      $turn[0] == "ARS" ||
+      $turn[0] == "P" ||
+      $turn[0] == "PAYGOLDORPITCH" ||
+      $turn[0] == "CHOOSEHANDCANCEL"
+    ) return 8;
+    if (
+      $dqState[4] == "Choose_a_card_to_discard_(or_pass_and_lose_2_health)" ||
+      $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
+      $dqState[4] == "Choose_a_card_to_discard" ||
+      $dqState[4] == "Choose_a_card_to_banish"
+    ) return 9;
+  }
+  if ($turn[0] == "B" && $isPlayable && $from != "THEIRCHAR") return $isPlayable ? 8 : 0;
 
   // Zone-specific logic
   if ($from == "BANISH") {
     if (HasBloodDebt($cardID)) return 2;
-    if (!$isPlayable && !PlayableFromBanish($cardID, $mod)) return 0;
+    if (!$isPlayable && !PlayableFromBanish($cardID, $mod, index:$index)) return 0;
     if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
     if ($isPlayable && ComboActive($cardID)) return 3;
     if ($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 3;
@@ -465,7 +549,8 @@ function CardLink($caption, $cardNumber="-", $recordMenu = false)
 
 function isFaceDownMod($mod)
 {
-  return $mod == "INT" || $mod == "DOWN" || $mod == "UZURI" || $mod == "NTSTONERAIN" || $mod == "STONERAIN" || $mod == "TRAPDOOR";
+  static $faceDownMods = ["INT" => true, "DOWN" => true, "UZURI" => true, "NTSTONERAIN" => true, "STONERAIN" => true, "TRAPDOOR" => true];
+  return isset($faceDownMods[$mod]);
 }
 
   function GetElementColorCode($element)

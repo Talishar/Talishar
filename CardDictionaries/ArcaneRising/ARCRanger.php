@@ -53,9 +53,7 @@
         return "";
       case "silver_the_tip_red": case "silver_the_tip_yellow": case "silver_the_tip_blue":
         if(!ArsenalEmpty($currentPlayer)) return "🏹 Your arsenal is full, " . CardLink($cardID, $cardID) . " does nothing.";
-        if($cardID == "silver_the_tip_red") $count = 4;
-        else if($cardID == "silver_the_tip_yellow") $count = 3;
-        else $count = 2;
+        $count = match($cardID) { "silver_the_tip_red" => 4, "silver_the_tip_yellow" => 3, default => 2 };
         AddDecisionQueue("PASSPARAMETER", $currentPlayer, $count);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Here are the top " . $count . " cards of your deck.", 1);

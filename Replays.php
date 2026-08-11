@@ -2,6 +2,8 @@
 include "HostFiles/Redirector.php";
 include_once 'MenuBar.php';
 include_once 'APIKeys/APIKeys.php';
+include_once 'includes/MetafyHelper.php';
+include_once 'Libraries/NetworkingLibraries.php';
 
 $userId = "";
 if(isset($_SESSION["userid"])) $userId = $_SESSION["userid"];
@@ -19,6 +21,9 @@ if(!$isPatron && $_SESSION["useruid"] != "OotTheMonk")
   echo("Replay functionality is only available to patrons.");
   exit;
 }
+
+$metafyTiers = GetMetafyTiersFromDatabase($_SESSION["useruid"] ?? "");
+$maxReplaySlots = GetMaxReplaySlotsForTiers($metafyTiers);
 
 $path = "./Replays/" . $userId . "/";
 if(!file_exists($path))
@@ -41,6 +46,7 @@ if(!file_exists($path))
 
 <section class="draft-form">
   <h2>Replays</h2>
+  <p>You can save up to <?php echo $maxReplaySlots; ?> replays. Higher Metafy support tiers unlock more save slots &mdash; check the <a href="/premium">Premium</a> page for details.</p>
   <?php
 
   if ($handle = opendir($path)) {

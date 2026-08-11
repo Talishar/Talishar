@@ -33,6 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
+// When true, users whose metafyID could not be resolved are cleared instead of skipped.
+$input = json_decode(file_get_contents('php://input'), true);
+$clear_no_metafy_id = !empty($input['clearNoMetafyId']);
+
 if (file_exists('../APIKeys/APIKeys.php')) {
   include_once '../APIKeys/APIKeys.php';
 }
@@ -208,7 +212,9 @@ $cleared = 0;
 $still_active = 0;
 $no_metafy_id = 0;
 $backfilled = 0;
+$cleared_no_metafy_id = 0;
 $cleared_users = [];
+$cleared_no_id_users = [];
 $skipped_users = [];
 
 while ($row = mysqli_fetch_assoc($result)) {
@@ -226,6 +232,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
   $checked++;
   $metafyID = $row['metafyID'] ?? null;
+  $forced_clear = false;
 
   if (empty($metafyID)) {
     if (!empty($row['metafyAccessToken'])) {
@@ -268,12 +275,16 @@ while ($row = mysqli_fetch_assoc($result)) {
 
     if (empty($metafyID)) {
       $no_metafy_id++;
-      $skipped_users[] = $row['usersUid'];
-      continue;
+      if (!$clear_no_metafy_id) {
+        $skipped_users[] = $row['usersUid'];
+        continue;
+      }
+      // Force mode: no way to verify this user, treat as expired and clear.
+      $forced_clear = true;
     }
   }
 
-  if (in_array($metafyID, $all_subscriber_ids)) {
+  if (!$forced_clear && in_array($metafyID, $all_subscriber_ids)) {
     $still_active++;
     continue;
   }
@@ -290,7 +301,12 @@ while ($row = mysqli_fetch_assoc($result)) {
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
     $cleared++;
-    $cleared_users[] = $row['usersUid'];
+    if ($forced_clear) {
+      $cleared_no_metafy_id++;
+      $cleared_no_id_users[] = $row['usersUid'];
+    } else {
+      $cleared_users[] = $row['usersUid'];
+    }
   }
 }
 
@@ -304,9 +320,13 @@ $response = [
   "usersChecked" => $checked,
   "stillActive" => $still_active,
   "cleared" => $cleared,
-  "skippedNoMetafyId" => $no_metafy_id,
+  "skippedNoMetafyId" => $clear_no_metafy_id ? 0 : $no_metafy_id,
+  "noMetafyIdFound" => $no_metafy_id,
+  "clearedNoMetafyId" => $cleared_no_metafy_id,
+  "forcedNoMetafyIdClear" => $clear_no_metafy_id,
   "backfilled" => $backfilled,
   "clearedUsers" => $cleared_users,
+  "clearedNoMetafyIdUsers" => $cleared_no_id_users,
   "skippedUsers" => $skipped_users
 ];
 

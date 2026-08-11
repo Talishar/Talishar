@@ -46,25 +46,12 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       }
       return $rv;
     case "pour_the_mold_red": case "pour_the_mold_yellow": case "pour_the_mold_blue":
-      if($cardID == "pour_the_mold_red") $maxCost = 2;
-      else if($cardID == "pour_the_mold_yellow") $maxCost = 1;
-      else $maxCost = 0;
+      $maxCost = match($cardID) { "pour_the_mold_red" => 2, "pour_the_mold_yellow" => 1, default => 0 };
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:subtype=Item;maxCost=$maxCost;class=MECHANOLOGIST");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("PUTPLAY", $currentPlayer, (GetClassState($currentPlayer, $CS_NumBoosted) > 0 ? 1 : 0), 1);
       return "";
-    case "aether_sink_yellow":
-      $index = GetClassState($currentPlayer, $CS_PlayIndex);
-      $items = &GetItems($currentPlayer);
-      if($index != -1) {
-        $items[$index+1] = ($items[$index + 1] == 0 ? 1 : 0);
-        if($items[$index+1] == 0) {
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          $items[$index+2] = 2;
-        }
-      }
-      return $rv;
     case "convection_amplifier_red":
       if ($from == "PLAY") {
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -126,7 +113,7 @@ function HasBoost($cardID, $player)
 function Boost($cardID)
 {
   global $currentPlayer;
-  if(SearchCurrentTurnEffects("evo_speedslip_blue", $currentPlayer, true) && HasBoost($cardID, $currentPlayer)) {
+  if(SearchCurrentTurnEffects("evo_speedslip_blue", $currentPlayer) && GeneratedHasBoost($cardID)) {
       $amountBoostChoices = "0,1,2";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many times you want to activate boost on " . CardLink($cardID, $cardID));
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $amountBoostChoices);
@@ -170,7 +157,9 @@ function DoBoost($player, $cardID, $boostCount=1)
       AddLayer("TRIGGER", $player, "viziertronic_model_i");
     }
     $char = GetPlayerCharacter($player);
-    for ($j = 0; $j < count($char); $j += CharacterPieces()) {
+    $charCount = count($char);
+    $charPieces = CharacterPieces();
+    for ($j = 0; $j < $charCount; $j += $charPieces) {
       if ($char[$j + 1] == 2) {
         switch ($char[$j]) {
           case "drive_brake":
@@ -236,16 +225,17 @@ function ItemBoostEffects()
   $Items = new Items($currentPlayer);
   for ($i = $Items->NumItems() - 1; $i >=0; $i -= 1) {
     $Item = $Items->Card($i, true);
-    switch ($Item->CardID()) {
+    $itemCardID = $Item->CardID();
+    switch ($itemCardID) {
       case "hyper_driver_red": case "hyper_driver_yellow": case "hyper_driver_blue": case "hyper_driver":
         if($Item->Status() == 2) {
-          AddLayer("TRIGGER", $currentPlayer, $Item->CardID(), $Item->Index(), "-", $Item->UniqueID());
+          AddLayer("TRIGGER", $currentPlayer, $itemCardID, $Item->Index(), "-", $Item->UniqueID());
           $Item->SetStatus(1);
         }
         break;
       case "teklo_pounder_blue":
         if($Item->Status() == 2) {
-          WriteLog(CardLink($Item->CardID(), $Item->CardID()) . " gives the attack +2");
+          WriteLog(CardLink($itemCardID, $itemCardID) . " gives the attack +2");
           $Item->AddCounters(-1);
           $Item->SetStatus(1);
           AddCurrentTurnEffect("teklo_pounder_blue", $currentPlayer, "PLAY");
@@ -253,7 +243,7 @@ function ItemBoostEffects()
         }
         break;
       case "hadron_collider_red": case "hadron_collider_yellow": case "hadron_collider_blue":
-        AddLayer("TRIGGER", $currentPlayer, $Item->CardID(), $Item->Index(), "-", $Item->UniqueID());
+        AddLayer("TRIGGER", $currentPlayer, $itemCardID, $Item->Index(), "-", $Item->UniqueID());
         break;
     }
   }
@@ -286,7 +276,7 @@ function OnBoostCardPutUnderCharacter(&$chars, $index, $charID, $player) {
 
 function AddSubcardToChar(&$chars, $index, $cardID) {
   if (isSubcardEmpty($chars, $index)) $chars[$index+10] = $cardID;
-  else $chars[$index+10] = $chars[$index+10] . "," . $cardID;
+  else $chars[$index+10] .= "," . $cardID;
   $chars[$index+2]++;
 }
 

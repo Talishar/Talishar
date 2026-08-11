@@ -46,7 +46,7 @@ function PENPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $mainPlayer, $combatChainState, $combatChain, $chainLinkSummary, $chainLinks, $defPlayer;
   global $CombatChain;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     default:
       return "";
@@ -80,13 +80,14 @@ function DoSolrayPlating($targetPlayer, $damage)
 
 function SuperFrozen($player, $MZIndex) {
   global $CurrentTurnEffects;
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $numEffects = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $numEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
     switch ($Effect->EffectID()) {
       case "channel_galcias_cradle_blue":
         $mzUID = CleanTarget($player, $MZIndex);
-        if ($mzUID == (explode(",", $Effect->AppliestoUniqueID())[0] ?? "-")) return true;
+        if ($mzUID == (explode(",", $Effect->AppliestoUniqueID(), 2)[0] ?? "-")) return true;
         break;
       case "crown_of_frozen_thoughts":
         if ($MZIndex == "MYCHAR-0")
@@ -99,7 +100,7 @@ function SuperFrozen($player, $MZIndex) {
 }
 
 function IcelochActive($player) {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if (SearchAurasForCard("channel_iceloch_glaze_blue", $otherPlayer) == "") return false;
   if (SearchAurasForCard("frostbite", $player) != "") return true;
   if (SearchCharacterForCard($player, "frostbite")) return true;
@@ -109,7 +110,7 @@ function IcelochActive($player) {
   return false;
 }
 
-function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource="", $effectController="", $slot="") {
+function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource="", $effectController="", $slot="", $effectAgent="") {
   switch ($cardID) {
     case "smoldering_scales":
       $Character = new PlayerCharacter($player);
@@ -120,7 +121,7 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
       break;
     case "smoldering_steel_red":
       $steelIndex = SearchDiscardForCard($player, $cardID);
-      $index = explode(",", $steelIndex)[0];
+      $index = explode(",", $steelIndex, 2)[0];
       if ($steelIndex == "" || SearchCurrentTurnEffects("smoldering_steel_red", $player))
         return false;
       break;
@@ -152,7 +153,11 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
   AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $cardID, 1);
   if ($zone == "AURAS")
     AddDecisionQueue("PLAYAURA", $player, "frostbite-$number-$effectSource-$effectController", 1);
-  elseif ($zone == "EQUIP")
-    AddDecisionQueue("EQUIPCARD", $player, "frostbite-$slot", 1);
+  elseif ($zone == "EQUIP") {
+    if ($effectAgent == $player)
+      AddDecisionQueue("EQUIPCARD", $player, "frostbite-$slot", 1);
+    else
+      AddDecisionQueue("EQUIPCARD", $effectAgent, "frostbite-$slot-THEIR", 1);
+  }
   return true;
 }

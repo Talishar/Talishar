@@ -34,7 +34,9 @@
         return "";
       case "honing_hood":
         $arsenal = &GetArsenal($currentPlayer);
-        for($i=0; $i < count($arsenal); $i+=ArsenalPieces()) {
+        $arsenalCount = count($arsenal);
+        $arsenalPieces = ArsenalPieces();
+        for($i=0; $i < $arsenalCount; $i+=$arsenalPieces) {
           AddPlayerHand($arsenal[$i], $currentPlayer, "ARS");
         }
         $arsenal = [];
@@ -70,12 +72,13 @@
   {
     if(!CanRevealCards($player)) { WriteLog("Cannot fuse because you cannot reveal cards"); return; }
     $elementArray = explode(",", $elements);
+    $elementCount = count($elementArray);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
-    for($i=0; $i<count($elementArray); ++$i)
+    for($i=0; $i<$elementCount; ++$i)
     {
       $element = $elementArray[$i];
-      $fullReveal = $i == count($elementArray) - 1;
+      $fullReveal = $i == $elementCount - 1;
       $subsequent = ($i > 0 && !$isAndOrFuse) ? 1 : 0;
       $context = "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion";
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=$element", $subsequent);
@@ -269,15 +272,17 @@
   {
     global $currentTurnEffects;
     $costModifier = 0;
-    for($i=count($currentTurnEffects)-CurrentTurnEffectsPieces(); $i>=0; $i-=CurrentTurnEffectsPieces())
+    $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+    for($i=count($currentTurnEffects)-$currentTurnEffectsPieces; $i>=0; $i-=$currentTurnEffectsPieces)
     {
       $remove = 0;
       if($player == $currentTurnEffects[$i+1]) {
-        switch($currentTurnEffects[$i]) {
+        $effectCardID = $currentTurnEffects[$i];
+        switch($effectCardID) {
           case "isenhowl_weathervane_red": case "isenhowl_weathervane_yellow": case "isenhowl_weathervane_blue":
             if($element == "ICE") {
-              $otherPlayer = $player == 1 ? 2 : 1;
-              AddLayer("TRIGGER", $player, $currentTurnEffects[$i], $otherPlayer);
+              $otherPlayer = 3 - $player;
+              AddLayer("TRIGGER", $player, $effectCardID, $otherPlayer);
               $remove = 1;
             }
             break;
@@ -292,11 +297,13 @@
   function AuraFuseEffects($player, $element)
   {
     $auras = &GetAuras($player);
-    $otherPlayer = $player == 1 ? 2 : 1;
-    for($i=count($auras)-AuraPieces(); $i>=0; $i-=AuraPieces()) {
-      switch($auras[$i]) {
+    $otherPlayer = 3 - $player;
+    $auraPieces = AuraPieces();
+    for($i=count($auras)-$auraPieces; $i>=0; $i-=$auraPieces) {
+      $auraCard = $auras[$i];
+      switch($auraCard) {
         case "insidious_chill_blue":
-          if($element == "ICE") AddLayer("TRIGGER", $player, $auras[$i], $otherPlayer, uniqueID:$auras[$i+6]);
+          if($element == "ICE") AddLayer("TRIGGER", $player, $auraCard, $otherPlayer, uniqueID:$auras[$i+6]);
           break;
         default: break;
       }

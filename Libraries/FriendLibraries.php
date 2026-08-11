@@ -5,39 +5,79 @@
  * Helper functions for friend list management
  */
 
+include_once __DIR__ . '/../includes/ModeratorList.inc.php';
+
 /**
  * Get banned player usernames from bannedPlayers.txt
  * @return array Set-like array of banned usernames (lowercase for case-insensitive comparison)
  */
 function GetBannedPlayers() {
   static $bannedPlayers = null;
-  
+
   if ($bannedPlayers !== null) {
     return $bannedPlayers;
   }
-  
-  $bannedPlayers = [];
-  $banFilePath = __DIR__ . '/../HostFiles/bannedPlayers.txt';
-  
-  if (!file_exists($banFilePath)) {
-    return $bannedPlayers;
-  }
-  
-  $banContent = file_get_contents($banFilePath);
-  if ($banContent === false) {
-    return $bannedPlayers;
-  }
-  
-  // Split by newlines and process each line
-  $lines = explode("\n", $banContent);
-  foreach ($lines as $line) {
-    $line = trim($line);
-    if (!empty($line)) {
-      // Store with lowercase for case-insensitive comparison
-      $bannedPlayers[strtolower($line)] = true;
+
+  if (function_exists('apcu_fetch')) {
+    $cached = apcu_fetch('talishar_banned_players');
+    if (is_array($cached)) {
+      $bannedPlayers = $cached;
+      return $bannedPlayers;
     }
   }
-  
+
+  $bannedPlayers = [];
+  $banFilePath = __DIR__ . '/../HostFiles/bannedPlayers.txt';
+
+  if (file_exists($banFilePath)) {
+    $banContent = file_get_contents($banFilePath);
+    if ($banContent !== false) {
+      $lines = explode("\n", $banContent);
+      foreach ($lines as $line) {
+        $line = trim($line);
+        if (!empty($line)) {
+          // Store with lowercase for case-insensitive comparison
+          $bannedPlayers[strtolower($line)] = true;
+        }
+      }
+    }
+  }
+
+  $ownsConnection = false;
+  if (ValidateConnOrReturnEmpty()) {
+    $conn = $GLOBALS['conn'];
+  } else {
+    $conn = function_exists('GetDBConnection') ? GetDBConnection() : null;
+    $ownsConnection = $conn !== null && $conn !== false;
+  }
+  if ($conn) {
+    // banned_players may not exist yet on a fresh install; users.isBanned always does
+    try {
+      $result = mysqli_query($conn, "SELECT name FROM banned_players");
+      if ($result) {
+        while ($row = mysqli_fetch_row($result)) {
+          if (!empty($row[0])) $bannedPlayers[strtolower($row[0])] = true;
+        }
+      }
+    } catch (\Exception $e) {
+    }
+    try {
+      $result = mysqli_query($conn, "SELECT usersUid FROM users WHERE isBanned = 1");
+      if ($result) {
+        while ($row = mysqli_fetch_row($result)) {
+          if (!empty($row[0])) $bannedPlayers[strtolower($row[0])] = true;
+        }
+      }
+    } catch (\Exception $e) {
+      error_log("GetBannedPlayers: query failed: " . $e->getMessage());
+    }
+  }
+
+  if (function_exists('apcu_store')) {
+    apcu_store('talishar_banned_players', $bannedPlayers, 60);
+  }
+  if ($ownsConnection && method_exists($conn, 'close')) $conn->close();
+
   return $bannedPlayers;
 }
 
@@ -71,6 +111,99 @@ function IsPvtVoidPatron($username) {
   return $username === "PvtVoid";
 }
 
+function FriendAuthorizationCacheKey($userId) {
+  return 'friend_authorization_' . intval($userId);
+}
+
+function IsFriendAuthorizationCacheAvailable() {
+  return extension_loaded('apcu') && ini_get('apc.enabled') && function_exists('apcu_fetch');
+}
+
+function InvalidateFriendAuthorizationCache(...$userIds) {
+  if (!IsFriendAuthorizationCacheAvailable()) return;
+  foreach ($userIds as $userId) {
+    if (is_numeric($userId)) @apcu_delete(FriendAuthorizationCacheKey($userId));
+  }
+}
+
+/**
+ * Get accepted friend account handles for spectator visibility checks.
+ *
+ * The optional connection makes this independently testable. When omitted,
+ * the function owns and closes the connection it creates.
+ *
+ * @param int $userId
+ * @param object|null $connection
+ * @return array
+ */
+function GetUserFriendUsernames($userId, $connection = null) {
+  if (!is_numeric($userId)) {
+    return [];
+  }
+
+  $userId = (int)$userId;
+  if (IsFriendAuthorizationCacheAvailable()) {
+    $cacheHit = false;
+    $cached = @apcu_fetch(FriendAuthorizationCacheKey($userId), $cacheHit);
+    if ($cacheHit && is_array($cached)) return $cached;
+  }
+
+  $ownsConnection = false;
+  if ($connection === null) {
+    if (!function_exists('GetDBConnection')) {
+      return [];
+    }
+    $connection = GetDBConnection();
+    $ownsConnection = true;
+  }
+
+  if (!$connection) {
+    return [];
+  }
+
+  $stmt = null;
+  try {
+    $query = "
+      SELECT u.usersUid
+      FROM friends f
+      JOIN users u ON f.friendUserId = u.usersId
+      WHERE f.userId = ? AND f.status = 'accepted'
+      ORDER BY u.usersUid ASC
+    ";
+    $stmt = $connection->prepare($query);
+    if (!$stmt) {
+      return [];
+    }
+
+    $stmt->bind_param("i", $userId);
+    if (!$stmt->execute()) {
+      return [];
+    }
+
+    $result = $stmt->get_result();
+    $usernames = [];
+    while ($row = $result->fetch_assoc()) {
+      if (!empty($row['usersUid'])) {
+        $usernames[] = $row['usersUid'];
+      }
+    }
+    if (IsFriendAuthorizationCacheAvailable()) {
+      @apcu_store(FriendAuthorizationCacheKey($userId), $usernames, 300);
+    }
+    return $usernames;
+  } catch (\Throwable $e) {
+    error_log("GetUserFriendUsernames: query failed: " . $e->getMessage());
+    return [];
+  } finally {
+    if ($stmt) {
+      $stmt->close();
+    }
+    if ($ownsConnection && method_exists($connection, 'close')) {
+      $connection->close();
+    }
+  }
+}
+
 /**
  * Get all accepted friends for a user
  * @param int $userId
@@ -86,37 +219,42 @@ function GetUserFriends($userId) {
   $userId = (int)$userId;
   
   $query = "
-    SELECT f.friendUserId, u.usersUid, u.usersId, f.nickname
+    SELECT f.friendUserId, u.usersUid, u.usersId, f.nickname, u.displayName
     FROM friends f
     JOIN users u ON f.friendUserId = u.usersId
     WHERE f.userId = ? AND f.status = 'accepted'
     ORDER BY u.usersUid ASC
   ";
   
-  $stmt = $conn->prepare($query);
+  try {
+    $stmt = $conn->prepare($query);
+  } catch (\Exception $e) {
+    error_log("GetUserFriends: prepare failed: " . $e->getMessage());
+    return [];
+  }
   if (!$stmt) {
     return [];
   }
-  
+
   $stmt->bind_param("i", $userId);
   if (!$stmt->execute()) {
     $stmt->close();
     return [];
   }
-  
+
   $result = $stmt->get_result();
-  
-  // List of contributors
-  $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
-  
+
   $friends = [];
   while ($row = $result->fetch_assoc()) {
     $username = $row['usersUid'];
     $friends[] = [
       'friendUserId' => (int)$row['usersId'],
+      // username stays the account handle — the frontend echoes it back for
+      // friend hand-visibility checks against game-file uids
       'username' => $username,
+      'displayName' => ($row['displayName'] ?? "") !== "" ? $row['displayName'] : $username,
       'nickname' => $row['nickname'] ?: null,
-      'isContributor' => in_array($username, $contributors),
+      'isContributor' => IsUserContributor($username),
       'isPatron' => false, // Would need database lookup of patron status
       'isPvtVoidPatron' => IsPvtVoidPatron($username), // Check against PvtVoid patron list
     ];
@@ -272,6 +410,8 @@ function RemoveFriend($userId, $friendUserId) {
   if ($affectedRows === 0) {
     return ['success' => false, 'message' => 'Friendship not found'];
   }
+  InvalidateFriendAuthorizationCache($userId, $friendUserId);
+  unset($_SESSION['_friendNamesCache'], $_SESSION['_friendNamesCacheAt']);
   
   return ['success' => true, 'message' => 'Friend removed successfully'];
 }
@@ -342,6 +482,8 @@ function AcceptFriendRequest($userId, $requesterUserId) {
     return ['success' => false, 'message' => 'Database error'];
   }
   $stmt->close();
+  InvalidateFriendAuthorizationCache($userId, $requesterUserId);
+  unset($_SESSION['_friendNamesCache'], $_SESSION['_friendNamesCacheAt']);
   
   return ['success' => true, 'message' => 'Friend request accepted'];
 }
@@ -361,7 +503,7 @@ function GetPendingRequests($userId) {
   $userId = (int)$userId;
   
   $query = "
-    SELECT f.friendshipId, f.userId as requesterUserId, u.usersUid as requesterUsername, f.createdAt
+    SELECT f.friendshipId, f.userId as requesterUserId, u.usersUid as requesterUsername, u.displayName as requesterDisplayName, f.createdAt
     FROM friends f
     JOIN users u ON f.userId = u.usersId
     WHERE f.friendUserId = ? AND f.status = 'pending'
@@ -387,6 +529,7 @@ function GetPendingRequests($userId) {
       'friendshipId' => (int)$row['friendshipId'],
       'requesterUserId' => (int)$row['requesterUserId'],
       'requesterUsername' => $row['requesterUsername'],
+      'requesterDisplayName' => ($row['requesterDisplayName'] ?? "") !== "" ? $row['requesterDisplayName'] : $row['requesterUsername'],
       'createdAt' => $row['createdAt']
     ];
   }
@@ -449,13 +592,14 @@ function FindUserByUsername($username) {
     return null;
   }
   
-  $query = "SELECT usersId, usersUid FROM users WHERE usersUid = ? LIMIT 1";
+  // Match by account handle first, then by display name (unique across both namespaces)
+  $query = "SELECT usersId, usersUid FROM users WHERE usersUid = ? OR displayName = ? LIMIT 1";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
     return null;
   }
-  
-  $stmt->bind_param("s", $username);
+
+  $stmt->bind_param("ss", $username, $username);
   if (!$stmt->execute()) {
     $stmt->close();
     return null;
@@ -491,7 +635,7 @@ function GetSentRequests($userId) {
   }
   
   $query = "
-    SELECT f.friendshipId, f.friendUserId, u.usersUid as recipientUsername, f.createdAt
+    SELECT f.friendshipId, f.friendUserId, u.usersUid as recipientUsername, u.displayName as recipientDisplayName, f.createdAt
     FROM friends f
     JOIN users u ON f.friendUserId = u.usersId
     WHERE f.userId = ? AND f.status = 'pending'
@@ -516,6 +660,7 @@ function GetSentRequests($userId) {
       'friendshipId' => (int)$row['friendshipId'],
       'recipientUserId' => (int)$row['friendUserId'],
       'recipientUsername' => $row['recipientUsername'],
+      'recipientDisplayName' => ($row['recipientDisplayName'] ?? "") !== "" ? $row['recipientDisplayName'] : $row['recipientUsername'],
       'createdAt' => $row['createdAt']
     ];
   }
@@ -588,30 +733,31 @@ function SearchUsers($searchTerm, $limit = 10) {
   $limit = max($limit, 1);
   
   $searchPattern = $searchTerm . '%';
-  $query = "SELECT usersId, usersUid FROM users WHERE usersUid LIKE ? LIMIT ?";
+  $query = "SELECT usersId, usersUid, displayName FROM users WHERE usersUid LIKE ? OR displayName LIKE ? LIMIT ?";
   $stmt = $conn->prepare($query);
   if (!$stmt) {
     return [];
   }
-  
-  $stmt->bind_param("si", $searchPattern, $limit);
+
+  $stmt->bind_param("ssi", $searchPattern, $searchPattern, $limit);
   if (!$stmt->execute()) {
     $stmt->close();
     return [];
   }
-  
+
   $result = $stmt->get_result();
-  
+
   // Pre-load banned players once instead of checking per result
   $bannedPlayers = GetBannedPlayers();
-  
+
   $users = [];
   while ($row = $result->fetch_assoc()) {
     // Check against pre-loaded banned list (O(1) lookup)
     if (!isset($bannedPlayers[strtolower($row['usersUid'])])) {
       $users[] = [
         'usersId' => (int)$row['usersId'],
-        'username' => $row['usersUid']
+        'username' => $row['usersUid'],
+        'displayName' => ($row['displayName'] ?? "") !== "" ? $row['displayName'] : $row['usersUid']
       ];
     }
   }

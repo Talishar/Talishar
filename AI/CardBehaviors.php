@@ -150,6 +150,7 @@ function GetFaiBehaviors()
     "brand_with_cinderclaw_red"    => [0.1, 0.99, 0.99, 0, 0, 1.1, 0.5, 0],
     "brand_with_cinderclaw_yellow" => [0.1, 0.99, 0.99, 0, 0, 1.1, 0.5, 0],
     "brand_with_cinderclaw_blue"   => [0.1, 0.99, 0.99, 0, 0, 1.1, 0.5, 0],
+    "fire_tenet_strike_first_red" => [0.1, 0.99, 0.99, 0, 0, 1.1, 0.5, 0],
     
     // ===== OTHER GOOD ATTACKS =====
     "rising_resentment_red"   => [0.1, 0.9, 0.9, 0, 0, 1.1, 0.5, 0],
@@ -158,7 +159,6 @@ function GetFaiBehaviors()
     "lava_burst_red"          => [0.1, 0.1, 0.1, 0, 0, 1.1, 0.7, 0],
     "phoenix_flame_red"       => [0, 0.7, 0.7, 0, 0, 0.1, 0.2, 0],
     "double_strike_red"       => [0.1, 0.8, 0.8, 0, 0, 1.1, 0.5, 0],
-    "ancestral_empowerment_red" => [0.1, 0.9, 0.9, 0, 0, 1.1, 0.5, 0],
     "snatch_red"              => [0.1, 0.1, 0.1, 0, 0, 1.1, 0.7, 0],
     "command_and_conquer_red" => [0.1, 0.1, 0.1, 0, 0, 1.1, 0.7, 0],
     "spreading_flames_red"    => [0.1, 1.0, 1.0, 0, 0, 1.1, 0.5, 0],

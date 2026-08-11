@@ -5,7 +5,7 @@ class alpha_rampage_red extends Card {
   function __construct($controller) {
     $this->cardID = "alpha_rampage_red";
     $this->controller = $controller;
-    }
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
@@ -37,17 +37,48 @@ class alpha_rampage_red extends Card {
 }
 
 
-// class ancestral_empowerment_red extends Card {
+class ancestral_empowerment_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "ancestral_empowerment_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "ancestral_empowerment_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddEffectToAttack($this->controller, $this->cardID, $target);
+    Draw($this->controller);
+    return "";
+  }
+
+  private
+  function GetTargets() {
+    $attacks = TargetAttack($this->controller);
+    $choices = [];
+    foreach($attacks as $attack) {
+      $cardID = GetMZCard($this->controller, $attack);
+      if (TypeContains($cardID, "AA") && ClassContains($cardID, "NINJA", $this->controller))
+        $choices[] = $attack;
+    }
+    return implode(",", $choices);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->GetTargets() == "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $targets = $this->GetTargets();
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 
 
 // class anothos extends Card {
@@ -619,17 +650,57 @@ class breaking_scales extends Card {
 // }
 
 
-// class dawnblade extends Card {
+class dawnblade extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "dawnblade";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "dawnblade";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function AbilityCost() {
+    return 1;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $CombatChain, $CurrentTurnEffects;
+    $uid = $CombatChain->AttackCard()->OriginUniqueID();
+    if (!$check) {
+      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+      if ($CurrentTurnEffects->CountSpecificEffect($this->cardID, $uid, $this->controller) == 2)
+        return AnyHitTrigger($this->controller, $this->cardID, $check);
+      else
+        return false;
+    }
+    elseif ($CurrentTurnEffects->CountSpecificEffect($this->cardID, $uid, $this->controller) == 1)
+      return AnyHitTrigger($this->controller, $this->cardID, $check);
+    return false;
+  }
+
+  function PermanentEndPhaseAbility($index) {
+    global $CurrentTurnEffects;
+    $Weapon = new CharacterCard($index, $this->controller);
+    $uid = $Weapon->UniqueID();
+    if ($CurrentTurnEffects->CountSpecificEffect($this->cardID, $uid, $this->controller) == 0) {
+      $Weapon->AddPowerCounters(-$Weapon->NumPowerCounters());
+    }
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $CombatChain;
+    $uid = $CombatChain->AttackCard()->OriginUniqueID();
+    $Character = new PlayerCharacter($this->controller);
+    $Weapon = $Character->FindCardUID($uid);
+    $Weapon->AddPowerCounters(1);
+  }
+}
 
 
 // class debilitate_red extends Card {
@@ -1061,17 +1132,49 @@ class breaking_scales extends Card {
 // }
 
 
-// class glint_the_quicksilver_blue extends Card {
+class glint_the_quicksilver_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "glint_the_quicksilver_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "glint_the_quicksilver_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddEffectToAttack($this->controller, $this->cardID, $target);
+    if(RepriseActive()) Draw($this->controller);
+    return "";
+  }
+
+  private
+  function GetTargets() {
+    $attacks = TargetAttack($this->controller);
+		$targets = [];
+		foreach($attacks as $attack) {
+			$Card = MZIndexToObject($this->controller, $attack);
+			if (is_object($Card) && TypeContains($Card->ID(), "W"))
+				$targets[] = $attack;
+		}
+		return implode(",", $targets);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->GetTargets() == "";
+  }
+
+  function GetLayerTarget($from) {
+    $targets = $this->GetTargets();
+    Await($this->controller, "ChooseMultiZone", "index", indices:$targets, context:"Target an attack to give go again", subsequent:0);
+		Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+}
 
 
 // class goliath_gauntlet extends Card {
@@ -2572,7 +2675,7 @@ class staunch_response_red extends Card {
     return $this->baseCard->SpecificLogic();
   }
 
-  function EffectBlockModifier($index, $from) {
+  function EffectBlockModifier($index, $from, $effectInd) {
     return $this->baseCard->EffectBlockModifier($index);
   }
 }
@@ -2598,7 +2701,7 @@ class staunch_response_yellow extends Card {
     return $this->baseCard->SpecificLogic();
   }
 
-  function EffectBlockModifier($index, $from) {
+  function EffectBlockModifier($index, $from, $effectInd) {
     return $this->baseCard->EffectBlockModifier($index);
   }
 }
@@ -2624,7 +2727,7 @@ class staunch_response_blue extends Card {
     return $this->baseCard->SpecificLogic();
   }
 
-  function EffectBlockModifier($index, $from) {
+  function EffectBlockModifier($index, $from, $effectInd) {
     return $this->baseCard->EffectBlockModifier($index);
   }
 }

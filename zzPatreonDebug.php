@@ -10,7 +10,7 @@ include_once './includes/functions.inc.php';
 include_once "./includes/dbh.inc.php";
 
 if (!isset($_SESSION["useruid"])) {
-  echo ("Please login to view this page.");
+  echo ("Please log in to view this page.");
   exit;
 }
 $useruid = $_SESSION["useruid"];
@@ -42,4 +42,4 @@ $access_token = $row["patreonAccessToken"];
 
 try {
   PatreonLogin($access_token, false, true);
-} catch (\Exception $e) { }
+} catch (\Exception $e) { error_log("zzPatreonDebug: PatreonLogin threw: " . $e->getMessage()); }

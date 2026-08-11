@@ -24,6 +24,10 @@ function TypeToPlay($phase)
       return "a reaction";
     case "P":
       return "a card to pitch";
+    case "PAYGOLDORPITCH":
+      return "a Gold to destroy or a card to pitch";
+    case "CHOOSEGOLDTOPAY":
+      return "a Gold to destroy";
     case "ARS":
     case "MAYCHOOSEHANDHEAVE":
       return "a card to add to arsenal";
@@ -80,7 +84,7 @@ function TypeToPlay($phase)
     case "MAYMULTICHOOSETEXT":
       return " options";
     case "CHOOSEARCANE":
-      return "an amount to pitch to Arcane Barrier:";
+      return "an amount to pitch to Arcane Barrier";
     case "MAYCHOOSEARSENAL":
       return "a card from arsenal";
     case "CHOOSEARSENAL":
@@ -110,13 +114,31 @@ function TypeToPlay($phase)
     case "INPUTCARDNAME":
       return "a card name";
     case "CHOOSENUMBER":
+    case "NUMBERINPUT":
       return "a number";
     case "STARTTURN":
       return "an order for trigger (enable Always Hold Priority to reorder)";
     case "ORDERTRIGGERS":
-      return "an order for triggers (spacebar/pass to accept default order)";
+      return "an order for triggers (spacebar/pass to accept default order). Triggers resolve right to left.";
     case "COERCIVE":
       return "an order for cards on top of the opponent's deck";
+  }
+}
+
+function WaitingMessage($phase)
+{
+  switch ($phase) {
+    case "YESNO":
+    case "OK":
+      return "Waiting for your opponent to respond";
+    case "BUTTONINPUT":
+    case "BUTTONINPUTNOPASS":
+    case "NUMBERINPUT":
+      return "Waiting for opponent to make a choice";
+    case "CHOOSEFIRSTPLAYER":
+      return "Waiting for opponent to choose who goes first";
+    default:
+      return "Waiting for other player to choose " . TypeToPlay($phase);
   }
 }
 

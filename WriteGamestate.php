@@ -1,21 +1,11 @@
 <?php
 
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
-$handler = fopen($filename, "w");
+$dir = dirname($filename);
+if (!is_dir($dir)) mkdir($dir, 0700, true);
 
-if ($handler === false) {
-  error_log("ERROR: Failed to open gamestate file: " . $filename . " (from game: " . $gameName . ")");
-  exit;
-}
-
-$lockTries = 0;
-while (!flock($handler, LOCK_EX) && $lockTries < 10) {
-  usleep(100000); //100ms
-  ++$lockTries;
-}
-
-if ($lockTries == 10) { fclose($handler); exit; }
-
+// Serialize in full before opening any handle. A partial gamestate.txt is
+// unrecoverable and readers do not take a shared lock.
 $gamestateLines = [
   implode(" ", $playerHealths),
   
@@ -84,10 +74,13 @@ $gamestateLines = [
 // Add chain links
 $chainLinksCount = count($chainLinks);
 for ($i = 0; $i < $chainLinksCount; ++$i) {
-  $gamestateLines[] = implode(" ", $chainLinks[$i]);
+  if (isset($chainLinks[$i]) && is_array($chainLinks[$i]))
+    $gamestateLines[] = implode(" ", $chainLinks[$i]);
+  else
+    $gamestateLines[] = "";
 }
 
-$gamestateLines = array_merge($gamestateLines, [
+array_push($gamestateLines,
   implode(" ", $chainLinkSummary),
   $p1Key,
   $p2Key,
@@ -110,13 +103,72 @@ $gamestateLines = array_merge($gamestateLines, [
   $AIHasInfiniteHP == "1" ? "1" : "0",
   json_encode($p1CardTurnLog),
   json_encode($p2CardTurnLog),
-]);
+  implode(" ", is_array($attackQueue ?? null) ? $attackQueue : []),
+  json_encode($p1LifeHistory ?? []),
+  json_encode($p2LifeHistory ?? []),
+  json_encode($p1ArcaneDamageDealt ?? []),
+  json_encode($p2ArcaneDamageDealt ?? []),
+  max(0, min(100, intval($practiceDummyWeaponPower ?? 4)))
+);
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
 
-fwrite($handler, $gamestateContent);
+$previousAbortSetting = ignore_user_abort(true);
+$previousTimeLimit = ini_get('max_execution_time');
+@set_time_limit(0);
 
-flock($handler, LOCK_UN);
-fclose($handler);
+$restoreExecutionGuards = static function () use ($previousAbortSetting, $previousTimeLimit) {
+  ignore_user_abort($previousAbortSetting);
+  if ($previousTimeLimit !== false) @set_time_limit((int)$previousTimeLimit);
+};
+
+$lockPath = $dir . "/gamestate.lock";
+$lockHandler = fopen($lockPath, "c");
+
+if ($lockHandler === false) {
+  $restoreExecutionGuards();
+  error_log("ERROR: Failed to open gamestate lock file: " . $lockPath . " (from game: " . $gameName . ")");
+  exit;
+}
+
+if (!flock($lockHandler, LOCK_EX)) {
+  fclose($lockHandler);
+  $restoreExecutionGuards();
+  error_log("ERROR: WriteGamestate could not lock " . $lockPath . " — action not persisted (game: " . $gameName . ")");
+  exit;
+}
+
+$tempPath = $filename . "." . getmypid() . "." . uniqid("", true) . ".tmp";
+$writeSucceeded = false;
+$handler = fopen($tempPath, "wb");
+
+if ($handler === false) {
+  error_log("ERROR: Failed to open temp gamestate file: " . $tempPath . " (from game: " . $gameName . ")");
+} else {
+  $bytesWritten = fwrite($handler, $gamestateContent);
+  // Flush before close so a short write is caught before we rename over a good file.
+  $flushed = fflush($handler);
+  fclose($handler);
+
+  if ($bytesWritten === strlen($gamestateContent) && $flushed) {
+    if (rename($tempPath, $filename)) {
+      $writeSucceeded = true;
+    } else {
+      error_log("ERROR: Failed to move gamestate into place: " . $tempPath . " -> " . $filename . " (game: " . $gameName . ")");
+    }
+  } else {
+    error_log("ERROR: Short write to temp gamestate file: " . $tempPath . " (game: " . $gameName . ")");
+  }
+
+  if (!$writeSucceeded && file_exists($tempPath)) @unlink($tempPath);
+}
+
+flock($lockHandler, LOCK_UN);
+fclose($lockHandler);
+$restoreExecutionGuards();
+
+if (!$writeSucceeded) exit;
 
 WriteGamestateCache($gameName, $gamestateContent);
+
+$lastWrittenGamestate = $gamestateContent;

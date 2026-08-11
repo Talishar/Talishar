@@ -5,34 +5,37 @@ $ChainLinks = new ChainLinks();
 
 class ChainLinks {
 
-  // Properties
-  private $chain = [];
+	// Properties
+	private $chain = [];
 
-  // Constructor
-  function __construct() {
-    global $chainLinks;
-    $this->chain = &$chainLinks;
-  }
+	// Constructor
+	function __construct() {
+		global $chainLinks;
+		$this->chain = &$chainLinks;
+	}
 
-  function GetLink($linkNum) {
-    return new ChainLink($linkNum);
-  }
+	function GetLink($linkNum) {
+		return new ChainLink($linkNum);
+	}
 
-  function NumLinks() {
-		return count($this->chain);
-  }
+	function NumLinks() {
+			return count($this->chain);
+	}
 
 	function LastLink() {
 		return new ChainLink($this->NumLinks() - 1);
 	}
 
-  function SearchChainLinks($type="-", $talent="-", $maxCost=-1) {
+  	function SearchChainLinks($type="-", $talent="-", $maxCost=-1) {
 		$found = [];
-		for ($i = 0; $i < $this->NumLinks(); ++$i) {
+		$numLinks = $this->NumLinks();
+		for ($i = 0; $i < $numLinks; ++$i) {
 			$Link = $this->GetLink($i);
-			for ($j = 0; $j < $Link->NumCards(); ++$j) {
-				$cardID = $Link->GetLinkCard($j, true)->ID();
-				$player = $Link->GetLinkCard($j, true)->PlayerID();
+			$numCards = $Link->NumCards();
+			for ($j = 0; $j < $numCards; ++$j) {
+				$Card = $Link->GetLinkCard($j, true);
+				$cardID = $Card->ID();
+				$player = $Card->PlayerID();
 				if ($type != "-" && !TypeContains($cardID, $type)) continue;
 				if ($talent != "-" && !TalentContains($cardID, $talent, $player)) continue;
 				if ($maxCost != -1 && CardCost($cardID) > $maxCost) continue;
@@ -43,9 +46,11 @@ class ChainLinks {
   }
 
 	function RemoveOriginUID($uid) {
-		for ($i = 0; $i < $this->NumLinks(); ++$i) {
+		$numLinks = $this->NumLinks();
+		for ($i = 0; $i < $numLinks; ++$i) {
 			$Link = $this->GetLink($i);
-			for ($j = 0; $j < $Link->NumCards(); ++$j) {
+			$numCards = $Link->NumCards();
+			for ($j = 0; $j < $numCards; ++$j) {
 				$Card = $Link->GetLinkCard($j, true);
 				if ($Card->OriginUniqueID() == $uid) {
 					$Card->Remove();
@@ -60,26 +65,36 @@ class ChainLinks {
 class ChainLink {
 
   // Properties
-  private $link = [];
-	private $linkSummary = [];
+  	private $link = [];
+	private $linkSummary = null;
 	private $linkNum;
 
   // Constructor
   function __construct($linkNum) {
-    global $chainLinks, $chainLinkSummary;
+    global $chainLinks;
     $this->linkNum = $linkNum;
-    $this->link = &$chainLinks[$linkNum];
-		$summaryIndex = $linkNum * ChainLinkSummaryPieces();
-		$this->linkSummary = array_slice($chainLinkSummary, $summaryIndex, ChainLinkSummaryPieces());
+    if (isset($chainLinks[$linkNum])) {
+      $this->link = &$chainLinks[$linkNum];
+    }
   }
+
+	private function LoadSummary() {
+		if ($this->linkSummary === null) {
+			global $chainLinkSummary;
+			$summaryPieces = ChainLinkSummaryPieces();
+			$this->linkSummary = array_slice($chainLinkSummary, $this->linkNum * $summaryPieces, $summaryPieces);
+		}
+	}
 
 	function NumCards() {
 		return intdiv(count($this->link), ChainLinksPieces());
 	}
 
 	function FindCardUID($uid) {
-		if (count($this->link) == 0) return new LinkCard($this->linkNum, -1);
-		for ($i = 0; $i < count($this->link); $i += ChainLinksPieces()) {
+		$count = count($this->link);
+		if ($count == 0) return new LinkCard($this->linkNum, -1);
+		$chainLinksPieces = ChainLinksPieces();
+		for ($i = 0; $i < $count; $i += $chainLinksPieces) {
 			if ($this->link[$i + 2] == 0) continue;
       if ($this->link[$i + 8] == $uid) return new LinkCard($this->linkNum, $i);
     }
@@ -87,8 +102,10 @@ class ChainLink {
 	}
 
 	function FindCardID($id, $player="-") {
-		if (count($this->link) == 0) return new LinkCard($this->linkNum, -1);
-		for ($i = 0; $i < count($this->link); $i += ChainLinksPieces()) {
+		$count = count($this->link);
+		if ($count == 0) return new LinkCard($this->linkNum, -1);
+		$chainLinksPieces = ChainLinksPieces();
+		for ($i = 0; $i < $count; $i += $chainLinksPieces) {
 			if ($player != "-" && $this->link[$i + 1] != $player) continue;
       if ($this->link[$i] == $id) return new LinkCard($this->linkNum, $i);
     }
@@ -96,7 +113,7 @@ class ChainLink {
 	}
 
 	function GetLinkCard($index, $cardNumber=false) {
-		if ($cardNumber) $index = $index * ChainLinksPieces();
+		if ($cardNumber) $index *= ChainLinksPieces();
 		return new LinkCard($this->linkNum, $index);
 	}
 
@@ -105,43 +122,53 @@ class ChainLink {
 	}
 
 	function DamageDealt() {
+		$this->LoadSummary();
 		return $this->linkSummary[0] ?? 0;
 	}
 
 	function TotalAttack() {
+		$this->LoadSummary();
 		return $this->linkSummary[1] ?? 0;
 	}
 
 	function Talents() {
+		$this->LoadSummary();
 		return $this->linkSummary[2] ?? "-";
 	}
 
 	function AddTalent($tal) {
+		$this->LoadSummary();
 		if ($this->linkSummary[2] == "-") $this->linkSummary[2] = $tal;
 		else $this->linkSummary[2] .= ",$tal";
 	}
 
 	function Class() {
+		$this->LoadSummary();
 		return $this->linkSummary[3] ?? "-";
 	}
 
 	function ListofNames() {
+		$this->LoadSummary();
 		return $this->linkSummary[4] ?? "";
 	}
 
 	function HitOnLink() {
+		$this->LoadSummary();
 		return $this->linkSummary[5] ?? 0;
 	}
 
 	function ModifiedBaseAttack() {
+		$this->LoadSummary();
 		return $this->linkSummary[6] ?? 0;
 	}
 
 	function ModalPlayAbility() {
+		$this->LoadSummary();
 		return $this->linkSummary[7] ?? "-";
 	}
 
 	function Colors() {
+		$this->LoadSummary();
 		return $this->linkSummary[8] ?? "-";
 	}
 }

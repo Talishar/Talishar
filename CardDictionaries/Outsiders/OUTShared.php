@@ -10,7 +10,6 @@ function OUTAbilityCost($cardID)
     case "redback_shroud": return 0;
     case "mask_of_many_faces": return 1;
     case "silverwind_shuriken_blue": return 0;
-    case "barbed_castaway": return 1;
     case "trench_of_sunken_treasure": return 0;
     case "quiver_of_abyssal_depths": return 3;
     case "quiver_of_rustling_leaves": return 3;
@@ -40,7 +39,6 @@ function OUTAbilityCost($cardID)
       case "redback_shroud": return "AR";
       case "mask_of_many_faces": return "I";
       case "silverwind_shuriken_blue": return "AR";
-      case "barbed_castaway": return "I";
       case "trench_of_sunken_treasure": return "I";
       case "quiver_of_abyssal_depths": return "I";
       case "quiver_of_rustling_leaves": return "I";
@@ -72,11 +70,14 @@ function OUTAbilityCost($cardID)
 
   function OUTEffectPowerModifier($cardID, $attached=false)
   {
-    $idArr = explode("-", $cardID);
-    $idArr2 = explode(",", $idArr[0]);
-    $cardID = $idArr2[0];
-    if ($cardID == "premeditate_red" && isset($idArr[1]) && $idArr[1] == "2") return 3;
-    if ($cardID == "silken_gi" && isset($idArr[1]) && $idArr[1] == "2") return -1;
+    $dashSuffix = '';
+    if (($dashPos = strpos($cardID, "-")) !== false) {
+      $dashSuffix = substr($cardID, $dashPos + 1);
+      $cardID = substr($cardID, 0, $dashPos);
+    }
+    if (($commaPos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $commaPos);
+    if ($cardID == "premeditate_red" && $dashSuffix === "2") return 3;
+    if ($cardID == "silken_gi" && $dashSuffix === "2") return -1;
     switch($cardID)
     {
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return 3;
@@ -106,7 +107,7 @@ function OUTAbilityCost($cardID)
       case "short_and_sharp_red": return 3;
       case "short_and_sharp_yellow": return 2;
       case "short_and_sharp_blue": return 1;
-      case "gore_belching_red": return (-1 * $idArr[1]);
+      case "gore_belching_red": return (-1 * $dashSuffix);
       case "looking_for_a_scrap_red": case "looking_for_a_scrap_yellow": case "looking_for_a_scrap_blue": return 1;
       case "spring_load_red": return 3;
       case "spring_load_yellow": return 2;
@@ -122,17 +123,22 @@ function OUTAbilityCost($cardID)
   function OUTCombatEffectActive($cardID, $attackID)
   {
     global $mainPlayer;
-    $dashArr = explode("-", $cardID);
-    $commaArr = explode(",", $cardID);
-    $cardID = $dashArr[0];
-    if(count($commaArr) > 1) $cardID = $commaArr[0];
+    $commaSuffix = '';
+    $dashSuffix = '';
+    if (($commaPos = strpos($cardID, ",")) !== false) {
+      $commaSuffix = substr($cardID, $commaPos + 1);
+      $cardID = substr($cardID, 0, $commaPos);
+    } elseif (($dashPos = strpos($cardID, "-")) !== false) {
+      $dashSuffix = substr($cardID, $dashPos + 1);
+      $cardID = substr($cardID, 0, $dashPos);
+    }
     switch ($cardID)
     {
       case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return true;
       case "prowl_red": case "prowl_yellow": case "prowl_blue": return HasStealth($attackID) && TypeContains($attackID, "AA");
       case "razors_edge_red": case "razors_edge_yellow": case "razors_edge_blue": return true;
       case "mask_of_many_faces": return CardType($attackID) == "AA";
-      case "head_leads_the_tail_red": return CardType($attackID) == "AA" && count($commaArr) > 1 && IsCurrentAttackName(GamestateUnsanitize($commaArr[1]));
+      case "head_leads_the_tail_red": return CardType($attackID) == "AA" && $commaSuffix !== '' && IsCurrentAttackName(GamestateUnsanitize($commaSuffix));
       case "be_like_water_red": case "be_like_water_yellow": case "be_like_water_blue": return true;
       case "deadly_duo_red": case "deadly_duo_yellow": case "deadly_duo_blue": return CardType($attackID) == "AA" && PowerValue($attackID, $mainPlayer, "LAYER") <= 2;//Base power
       case "buzzsaw_trap_blue": return true;
@@ -156,11 +162,11 @@ function OUTAbilityCost($cardID)
       case "toxic_tips": return CardType($attackID) == "AA";
       case "toxicity_red": case "toxicity_yellow": case "toxicity_blue": return CardType($attackID) == "AA" && (ClassContains($attackID, "ASSASSIN", $mainPlayer) || ClassContains($attackID, "RANGER", $mainPlayer));
       case "silken_gi":
-        return isset($dashArr[1]) && $dashArr[1] == "2" && CardType($attackID) == "AA";
+        return $dashSuffix === "2" && CardType($attackID) == "AA";
       case "gore_belching_red": return true;
       case "premeditate_red":
-        if (isset($dashArr[1]) && $dashArr[1] == "1") return CardType($attackID) == "AA";
-        else if (isset($dashArr[1]) && $dashArr[1] == "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
+        if ($dashSuffix === "1") return CardType($attackID) == "AA";
+        else if ($dashSuffix === "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
         else return false;
       case "looking_for_a_scrap_red": case "looking_for_a_scrap_yellow": case "looking_for_a_scrap_blue": return true;
       case "spring_load_red": case "spring_load_yellow": case "spring_load_blue": return true;
@@ -175,7 +181,7 @@ function OUTAbilityCost($cardID)
     global $currentPlayer, $CS_PlayIndex, $mainPlayer, $defPlayer, $combatChain, $combatChainState;
     global $CID_Frailty, $CID_BloodRotPox, $CID_Inertia, $CombatChain;
     $rv = "";
-    $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+    $otherPlayer = 3 - $currentPlayer;
     switch ($cardID)
     {
       case "silverwind_shuriken_blue":
@@ -193,7 +199,7 @@ function OUTAbilityCost($cardID)
         if (CardType($combatChain[0]) == "AA") $deck->AddBottom($combatChain[0], "CC");
         else {//chelicera
           $index = SearchCharacterForUniqueID($combatChain[8], $currentPlayer);
-          DestroyCharacter($currentPlayer, $index);
+          DestroyCharacter($currentPlayer, $index, skipClose:true);
         }
         AttackReplaced($card->ID(), $currentPlayer);
         $card->Remove();
@@ -202,7 +208,9 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "spreading_plague_yellow":
-        for($i=0; $i<count($combatChain); $i+=CombatChainPieces())
+        $combatChainCount = count($combatChain);
+        $combatChainPieces = CombatChainPieces();
+        for($i=0; $i<$combatChainCount; $i+=$combatChainPieces)
         {
           if(IsHeroAttackTarget() && $combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
         }
@@ -256,21 +264,11 @@ function OUTAbilityCost($cardID)
           AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         }
         return "";
-      case "barbed_castaway":
-        if($additionalCosts == "Load") LoadArrow($currentPlayer);
-        else if($additionalCosts == "Aim") {
-          if(ArsenalHasArrowCardFacing($currentPlayer, "DOWN")) {
-            SetArsenalFacing("UP", $currentPlayer);
-            $arsenal = &GetArsenal($currentPlayer);
-            $arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
-          }
-        }
-        return "";
       case "trench_of_sunken_treasure":
         GainResources($currentPlayer, 1);
         return "";
       case "quiver_of_abyssal_depths":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDISCARDARROW");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDISCARDARROW"); // With a different names
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
         AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1);
         AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $currentPlayer, "DISCARD", 1);
@@ -622,9 +620,11 @@ function OUTAbilityCost($cardID)
         break;
       case "stab_wound_blue":
         $numDaggerHits = 0;
-        for($i=0; $i<count($chainLinks); ++$i)
+        $chainLinksCount = count($chainLinks);
+        $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+        for($i=0; $i<$chainLinksCount; ++$i)
         {
-          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) ++$numDaggerHits;
+          if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) ++$numDaggerHits;
         }
         $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
         if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("stab_wound_blue", "stab_wound_blue"));
@@ -679,31 +679,31 @@ function OUTAbilityCost($cardID)
 
   function CodexOfFrailty($player)
   {
-    $otherPlayer = $player == 1 ? 2 : 1;
+    $otherPlayer = 3 - $player;
     $conditionPlayerMet = false;
     $conditionOtherPlayerMet = false;
     if(!ArsenalFull($player) && SearchDiscard($player, "AA") != "")
     {
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your graveyard.");
-      MZMoveCard($player, "MYDISCARD:type=AA", "MYARS,GY,DOWN");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your graveyard");
+      MZMoveCard($player, "MYDISCARD:type=AA", "MYARS,GY,DOWN", DQContext: "Choose a card from your graveyard");
       $conditionPlayerMet = true;
     }
     if(!ArsenalFull($otherPlayer) && SearchDiscard($otherPlayer, "AA") != "")
     {
       AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from your graveyard.");
-      MZMoveCard($otherPlayer, "MYDISCARD:type=AA", "MYARS,GY,DOWN");
+      MZMoveCard($otherPlayer, "MYDISCARD:type=AA", "MYARS,GY,DOWN", DQContext: "Choose a card from your graveyard");
       $conditionOtherPlayerMet = true;
     }
     if($conditionPlayerMet) {
       AddDecisionQueue("FINDINDICES", $player, "HAND");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your hand to discard.");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card from your hand to discard");
       AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $player, "-", 1);
       AddDecisionQueue("DISCARDCARD", $player, "HAND-".$player, 1);   
     }
     if($conditionOtherPlayerMet) {
       AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from your hand to discard.");
+      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from your hand to discard");
       AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
       AddDecisionQueue("REMOVEMYHAND", $otherPlayer, "-", 1);
       AddDecisionQueue("DISCARDCARD", $otherPlayer, "HAND-".$player, 1);   
@@ -753,6 +753,7 @@ function OUTAbilityCost($cardID)
         $weaponTargetInd = "MYCHAR-$index";
         $weaponUID = $char[$index + 11];
       }
+      SetDamageSourceUID($weaponUID);
       //Target Hero
       if(substr($targetHero, 0, 5) == "THEIR") {
         $index = SearchCharacterForUniqueID($targetHeroUniqueID, $otherPlayer);
@@ -763,7 +764,6 @@ function OUTAbilityCost($cardID)
         $heroTargetInd = "$targetHero-$index";
       }
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $weaponTargetInd, 1);
-
     }
     if ($destroy) AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
     else AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
@@ -787,9 +787,11 @@ function OUTAbilityCost($cardID)
   {
     global $chainLinks, $chainLinkSummary, $combatChainState, $CCS_FlickedDamage;
     $damage = 0;
-    for($i=0; $i<count($chainLinks); ++$i)
+    $chainLinksCount = count($chainLinks);
+    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+    for($i=0; $i<$chainLinksCount; ++$i)
     {
-      if(SubtypeContains($chainLinks[$i][0], $subtype)) $damage += $chainLinkSummary[$i*ChainLinkSummaryPieces()];
+      if(SubtypeContains($chainLinks[$i][0], $subtype)) $damage += $chainLinkSummary[$i*$chainLinkSummaryPieces];
     }
     if ($subtype == "Dagger") $damage += $combatChainState[$CCS_FlickedDamage];
     return $damage;
@@ -814,7 +816,7 @@ function OUTAbilityCost($cardID)
 
   function LookAtTopCard($player, $source, $showHand=false, $setPlayer="-")
   {
-    $otherPlayer = $player == 1 ? 2 : 1;
+    $otherPlayer = 3 - $player;
     if ($setPlayer == "-") {
       AddDecisionQueue("PASSPARAMETER", $player, "ELSE");
       AddDecisionQueue("SETDQVAR", $player, "1");
@@ -856,20 +858,19 @@ function OUTAbilityCost($cardID)
     if(!CanRevealCards($currentPlayer)) return "";
     $cardRemoved = "";
     $deck = &GetDeck($currentPlayer);
-    $cardsToReveal = "";
-    for($i=0; $i<count($deck); ++$i)
+    $cardsToRevealArr = [];
+    $deckCount = count($deck);
+    for($i=0; $i<$deckCount; ++$i)
     {
-      if($cardsToReveal != "") $cardsToReveal .= ",";
-      $cardsToReveal .= $deck[$i];
+      $cardsToRevealArr[] = $deck[$i];
       if(CardType($deck[$i]) == "AA")
       {
         $cardRemoved = $deck[$i];
-        unset($deck[$i]);
-        $deck = array_values($deck);
+        array_splice($deck, $i, 1);
         break;
       }
     }
-    RevealCards($cardsToReveal);
+    RevealCards(implode(",", $cardsToRevealArr));
     AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
     return $cardRemoved;
   }

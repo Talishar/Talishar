@@ -10,7 +10,7 @@
       if (isset($permanents[$targetIndex])) {
         $matID = $permanents[$targetIndex];
         if ($matID == "UPR439" || $matID == "UPR440" || $matID == "UPR441") { //untransform sand cover
-          $origMaterial = explode(",", $permanents[$targetIndex+2])[0];
+          $origMaterial = explode(",", $permanents[$targetIndex+2], 2)[0];
           DestroyPermanent($currentPlayer, $targetIndex);
           $targetIndex = PutPermanentIntoPlay($currentPlayer, $origMaterial);
           $target = "MYPERM-$targetIndex";
@@ -38,9 +38,7 @@
         return "";
       case "rake_the_embers_red": case "rake_the_embers_yellow": case "rake_the_embers_blue":
         PutPermanentIntoPlay($currentPlayer, "ash");
-        if($cardID == "rake_the_embers_red") $maxTransform = 3;
-        else if($cardID == "rake_the_embers_yellow") $maxTransform = 2;
-        else $maxTransform = 1;
+        $maxTransform = match($cardID) { "rake_the_embers_red" => 3, "rake_the_embers_yellow" => 2, default => 1 };
         for($i=0; $i<$maxTransform; ++$i) Transform($currentPlayer, "Ash", "aether_ashwing", true, ($i == 0 ? false : true), ($i == 0 ? false : true));
         return "";
       case "sand_cover_red":
@@ -140,7 +138,7 @@ function UPRIllusionistDealDamageEffect($cardID)
       }
       else {
         WriteLog("The target to transform is no longer there!", highlight:true);
-        return "FAILED";
+        return "";
       }
     } else if($materialType == "Ash") {
       AddDecisionQueue("FINDINDICES", $player, "PERMSUBTYPE," . $materialType, ($subsequent ? 1 : 0));

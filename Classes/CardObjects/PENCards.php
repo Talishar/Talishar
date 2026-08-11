@@ -327,6 +327,10 @@ class elemental_strike_red extends Card
       GiveAttackDominate();
     }
   }
+
+  function HasDominate() {
+    return false; //error in generated function
+  }
 }
 
 class colors_of_aria_red extends Card
@@ -781,8 +785,8 @@ class basalt_boots extends Card {
 
 class aggressive_pounce extends BaseCard {
   function HasIntimidated($controller) {
-    global $CS_HaveIntimidated;
-    return GetClassState($controller, $CS_HaveIntimidated) > 0;
+    global $CS_HaveIntimidatedOpponent;
+    return GetClassState($controller, $CS_HaveIntimidatedOpponent);
   }
 }
 
@@ -827,7 +831,9 @@ class bear_hug extends BaseCard {
     // this is *technically* not correct, it won't interact correctly with dpot
     // leaving it as is for now because no one will play d-pot kayo
     $pitch = GetPitch($this->controller);
-    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+    $pitchCount = count($pitch);
+    $pitchPieces = PitchPieces();
+    for ($i = 0; $i < $pitchCount; $i += $pitchPieces) {
       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return false;
     }
     return true;
@@ -1439,7 +1445,7 @@ class runebleed_robe extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     $Auras = new Auras($this->controller);
-    return $Auras->FindCardID("runechant") == "";
+    return $Auras->FindCardID("runechant")->Index() == -1;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
@@ -1476,11 +1482,13 @@ class beckoning_haunt extends Card {
   function DynamicCost() {
     $costs = [];
     $discard = GetDiscard($this->controller);
-    for ($i = 0; $i < count($discard); $i += DiscardPieces()) {
+    $discardCount = count($discard);
+    $discardPieces = DiscardPieces();
+    for ($i = 0; $i < $discardCount; $i += $discardPieces) {
       $cardCost = CardCost($discard[$i]);
       $cost = 2 * $cardCost + 1;
       if (SubtypeContains($discard[$i], "Aura", $this->controller) && !in_array($cost, $costs)) {
-        array_push($costs, $cost);
+        $costs[] = $cost;
       }
     }
     sort($costs);
@@ -1502,8 +1510,11 @@ class beckoning_haunt extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $Discard = new Discard($this->controller);
-    $targetCard = $Discard->FindCardUID(explode("-", $target)[1] ?? "-");
-    if ($targetCard == "") return "FAILED";
+    $targetCard = $Discard->FindCardUID(explode("-", $target, 2)[1] ?? "-");
+    if ($targetCard == "") {
+      WriteLog(CardLink($this->cardID, $this->cardID) . " layer fails as the target is no longer valid.");
+      return "";
+    }
     $targetIndex = $targetCard->Index();
     $cardID = RemoveGraveyard($this->controller, $targetIndex);
     AddPlayerHand($cardID, $this->controller, "DISCARD");
@@ -1521,7 +1532,7 @@ class engulfing_shadows_yellow extends Card {
     $this->controller = $controller;
   }
 
-  function AddGraveyardEffect($from, $effectController) {
+  function AddGraveyardEffect($from, $effectController, $cardController) {
     BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
     return true;
   }
@@ -1888,16 +1899,7 @@ class voltic_veil_red extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount=false) {
-    global $CurrentTurnEffects;
-    $Effect = $CurrentTurnEffects->Effect($index);
-    if ($damage >= $Effect->NumUses()) {
-      $remove = true;
-      return $Effect->NumUses();
-    }
-    else {
-      if (!$amount) $Effect->AddUses(-$damage);
-      return $damage;
-    }
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
   }
 
   function CurrentTurnEffectUses() {
@@ -1919,7 +1921,7 @@ class embody_greatness_yellow extends Card {
     global $livingLegends;
     $choices = [];
     foreach($livingLegends as $hero) {
-      array_push($choices, "CARDID-$hero");
+      $choices[] = "CARDID-$hero";
     }
     AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -2104,9 +2106,10 @@ class knife_through extends BaseCard {
     global $combatChainState, $CCS_FlickedDamage, $chainLinks, $chainLinkSummary;
     $numDaggerHits = 0;
     $count = count($chainLinks);
+    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
     for($i=0; $i<$count; ++$i)
     {
-      if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*ChainLinkSummaryPieces()] > 0) 
+      if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) 
         ++$numDaggerHits;
     }
     $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
@@ -2169,7 +2172,7 @@ class seeds_of_strength_red extends Card {
   }
 }
 
-class arc_bending_red extends Card { //untested
+class arc_bending_red extends Card {
   function __construct($controller) {
     $this->cardID = "arc_bending_red";
     $this->controller = $controller;
@@ -2187,6 +2190,12 @@ class arc_bending_red extends Card { //untested
 
   function RemoveEffectFromCombatChain() {
     return true;
+  }
+
+  function CurrentEffectDamageBuffs($source, $type, $index, &$remove, $player) {
+    global $defPlayer;
+    if ($player != $defPlayer) return 0; // non turn player can't ever control an "attack"
+    return TalentContainsAny($source, "LIGHTNING,ELEMENTAL", $this->controller) && (TypeContains($source, "A") || TypeContains($source, "AA")) ? 1 : 0;
   }
 }
 
@@ -2389,7 +2398,9 @@ class skera_strapping extends Card {
   function SpellVoidAmount($index=-1) {
     //this has an issue where it can actually gain spellvoid in the middle of preventing arcane damage
     $pitch = GetPitch($this->controller);
-    for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+    $pitchCount = count($pitch);
+    $pitchPieces = PitchPieces();
+    for ($i = 0; $i < $pitchCount; $i += $pitchPieces) {
       if (ModifiedPowerValue($pitch[$i], $this->controller, "PITCH") >= 6) return 3;
     }
     return 0;
@@ -2523,14 +2534,14 @@ class embraforged_gauntlet extends Card {
     $this->controller = $controller;
   }
 
-  function AddGraveyardEffect($from, $effectController) {
+  function AddGraveyardEffect($from, $effectController, $cardController) {
     BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
     return true;
   }
 }
 
 class depths_of_despair extends BaseCard {
-  function AddGraveyardEffect($from, $effectController) {
+  function AddGraveyardEffect($from, $effectController, $cardController) {
     global $defPlayer;
     if($from == "CC" && $this->controller == $defPlayer) {
       BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
@@ -2546,8 +2557,8 @@ class depths_of_despair_red extends Card {
     $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
   }
 
-  function AddGraveyardEffect($from, $effectController) {
-    return $this->baseCard->AddGraveyardEffect($from, $effectController);
+  function AddGraveyardEffect($from, $effectController, $cardController) {
+    return $this->baseCard->AddGraveyardEffect($from, $effectController, $cardController);
   }
 }
 
@@ -2558,8 +2569,8 @@ class depths_of_despair_yellow extends Card {
     $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
   }
 
-  function AddGraveyardEffect($from, $effectController) {
-    return $this->baseCard->AddGraveyardEffect($from, $effectController);
+  function AddGraveyardEffect($from, $effectController, $cardController) {
+    return $this->baseCard->AddGraveyardEffect($from, $effectController, $cardController);
   }
 }
 
@@ -2570,8 +2581,8 @@ class depths_of_despair_blue extends Card {
     $this->baseCard = new depths_of_despair($this->cardID, $this->controller);
   }
 
-  function AddGraveyardEffect($from, $effectController) {
-    return $this->baseCard->AddGraveyardEffect($from, $effectController);
+  function AddGraveyardEffect($from, $effectController, $cardController) {
+    return $this->baseCard->AddGraveyardEffect($from, $effectController, $cardController);
   }
 }
 
@@ -2595,6 +2606,7 @@ class fasting_carcass extends BaseCard {
     global $Stack;
     $Effect = new CurrentEffect($effectIndex);
     $TopLayer = $Stack->TopLayer($cardID);
+    if ($TopLayer == "-") return;
     if ($TopLayer->PlayerID() != $this->controller) return;
     if (IsActivated($cardID, $from)) return;
     if (TypeContains($TopLayer->ID(), "A") && ColorContains($TopLayer->ID(), $color, $this->controller))
@@ -2923,7 +2935,7 @@ class frail_swingline_blue extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     $choices = ["THEIRCHAR-0"];
-    if (!ShouldAutotargetOpponent($this->controller)) array_push($choices, "MYCHAR-0");
+    if (!ShouldAutotargetOpponent($this->controller)) $choices[] = "MYCHAR-0";
     AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a frailty", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -2956,8 +2968,7 @@ class quickening_sand_blue extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    $choices = ["THEIRCHAR-0"];
-    array_push($choices, "MYCHAR-0");
+    $choices = ["THEIRCHAR-0", "MYCHAR-0"];
     AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a quicken", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -2997,8 +3008,7 @@ class courageous_crossing_blue extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    $choices = ["THEIRCHAR-0"];
-    array_push($choices, "MYCHAR-0");
+    $choices = ["THEIRCHAR-0", "MYCHAR-0"];
     AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $choices));
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to give a courage", 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -3008,12 +3018,12 @@ class courageous_crossing_blue extends Card {
 
   function OnBlockResolveEffects($blockedFromHand, $i, $start) {
     if (HasIncreasedAttack()) {
-      $context = "Choose an a target to remove a counter from";
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYAURAS&THEIRAURAS&MYCHAR:type=W&THEIRCHAR:type=W");
+      $context = "Choose a target to remove a counter from";
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYAURAS:hasPowerCounters=true&THEIRAURAS:hasPowerCounters=true&MYCHAR:type=W;hasPowerCounters=true&THEIRCHAR:type=W;hasPowerCounters=true&THEIRALLY:hasPowerCounters=true&MYALLY:hasPowerCounters=true");
       AddDecisionQueue("SETDQCONTEXT", $this->controller, $context, 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
-      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+      AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
     }
   }
 
@@ -3021,7 +3031,7 @@ class courageous_crossing_blue extends Card {
     $targetPlayer = str_contains($target, "MY") ? $this->controller : ($this->controller == 1 ? 2 : 1);
     if (str_contains($target, "CHAR")) {
       $Character = new PlayerCharacter($targetPlayer);
-      $CharacterCard = $Character->FindCardUID(explode("-", $target)[1]);
+      $CharacterCard = $Character->FindCardUID(explode("-", $target, 2)[1]);
       if ($CharacterCard != "" && $CharacterCard->NumPowerCounters() > 0) $CharacterCard->AddPowerCounters(-1);
     }
     elseif (str_contains($target, "AURAS")) {
@@ -3239,7 +3249,9 @@ class skywarden_no161803_yellow extends Card {
     $myItems = GetItems($this->controller);
     // check to make sure it's still there before giving it a buff
     $foundSkywarden = false;
-    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    $combatChainCount = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
       if ($combatChain[$i] == $this->cardID) $foundSkywarden = true;
     }
 
@@ -3760,7 +3772,7 @@ class become_the_bottle extends BaseCard {
       for ($j = 0; $j < $Link->NumCards(); ++$j) {
         $LinkCard = $Link->GetLinkCard($j, true);
         $ind = $LinkCard->Index();
-        if (!TypeContains($LinkCard->ID(), "AR")) array_push($choices, "PASTCHAINLINK-$ind-$i");
+        if (!TypeContains($LinkCard->ID(), "AR")) $choices[] = "PASTCHAINLINK-$ind-$i";
       }
     }
     $choices = implode(",", $choices);
@@ -3837,7 +3849,7 @@ class become_the_cup extends BaseCard {
   function PayAdditionalCosts() {
     AddDecisionQueue("BUTTONINPUT", $this->controller, "Red,Yellow,Blue", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", subsequent: 1);
-    AddDecisionQueue("WRITELOG", $this->controller, CardLink($this->cardID) . " gains the color <b>{0}</b>", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, CardLink($this->cardID) . " gains the color <b style='color:{0};'>{0}</b>", 1);
     AddDecisionQueue("SPECIFICCARD", $this->controller, "BECOMETHECUP", 1);
     AddDecisionQueue("PREPENDLASTRESULT", $this->controller, $this->cardID . "-", 1);
     AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "<-", 1);
@@ -4146,7 +4158,7 @@ class rend_flesh_blue extends Card {
     return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $combatChainState, $CCS_WeaponIndex, $defPlayer;
     $CharCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
     if ($CharCard->NumPowerCounters() > 0) {
@@ -4174,13 +4186,41 @@ class deep_recesses_of_existence_blue extends Card {
     $this->cardID = "deep_recesses_of_existence_blue";
     $this->controller = $controller;
   }
+
+  function SpecificLogic() {
+    global $dqVars, $mainPlayer, $defPlayer, $CS_HealthLost;
+    $i = $dqVars["i"] ?? -1;
+    $j = $dqVars["j"] ?? -1;
+    if ($i == -1 || $j == -1) return;
+    $Link = new ChainLink($i);
+    $LinkCard = $Link->GetLinkCard($j);
+    $destPlayer = str_contains($LinkCard->From(), "THEIR") ? $defPlayer : $mainPlayer;
+    BanishCardForPlayer($LinkCard->OriginalCardID(), $destPlayer, "CC", mod:"DOWN");
+    $LinkCard->Remove();
+    if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
+      PrependDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+      PrependDecisionQueue("MZBANISH", $this->controller, "GY,-," . $this->controller, 1);
+      PrependDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRDISCARD", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card in your opponent's Graveyard to banish", 1);
+    }
+    if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
+      PrependDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+      PrependDecisionQueue("MZBANISH", $this->controller, "GY,-," . $this->controller, 1);
+      PrependDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card in your Graveyard to banish", 1);
+    }
+  }
 }
 
 class power_of_make_believe extends BaseCard {
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
     global $combatChain, $defPlayer, $CombatChain;
     $modifier = 0;
-    for ($i = CombatChainPieces(); $i < count($combatChain); $i += CombatChainPieces()) {
+    $combatChainCount = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
       if ($combatChain[$i + 1] == $defPlayer && $CombatChain->Card($i)->TotalPower() >= 6) $modifier += 1;
     }
     return $modifier;
@@ -4406,7 +4446,7 @@ class cut_n_carve_red extends Card {
     $this->baseCard->PlayAbility($target, 1);
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return true;
   }
 
@@ -4434,7 +4474,7 @@ class cut_n_carve_yellow extends Card {
     $this->baseCard->PlayAbility($target, 2);
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return true;
   }
 
@@ -4462,7 +4502,7 @@ class cut_n_carve_blue extends Card {
     $this->baseCard->PlayAbility($target, 3);
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return true;
   }
 
@@ -4678,7 +4718,7 @@ class bad_breath_red extends Card {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     PlayAura("might", $this->controller, 3);
     return 1;
   }
@@ -4707,7 +4747,7 @@ class bad_breath_yellow extends Card {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     PlayAura("might", $this->controller, 2);
     return 1;
   }
@@ -4736,7 +4776,7 @@ class bad_breath_blue extends Card {
     $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     PlayAura("might", $this->controller, 1);
     return 1;
   }
@@ -5189,7 +5229,7 @@ class herald_of_victoria_yellow extends Card {
     return $this->archetype->GetAbilityTypes($index, $from);
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-") {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
     return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
   }
 
@@ -5930,7 +5970,8 @@ class put_on_ice extends BaseCard {
     if ($from == "ARS") Draw($this->controller);
     //this card's targeting is a mess right now that I don't want to deal with anymore, this works and I'm happy
     $targetArr = explode(",", $target);
-    for ($i = 0; $i < count($targetArr); ++$i) {
+    $targetArrCount = count($targetArr);
+    for ($i = 0; $i < $targetArrCount; ++$i) {
       $targ = CleanTargetToIndex($this->controller, $targetArr[$i]);
       MZFreeze($targ);
     }
@@ -5998,8 +6039,7 @@ class reckless_arithmetic_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $roll = GetDieRoll($this->controller);
-    AddCurrentTurnEffect($this->cardID . "-" . $roll, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
   }
 
   function EffectPowerModifier($param, $attached = false) {
@@ -6008,6 +6048,16 @@ class reckless_arithmetic_blue extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    RollDie($this->controller);
+    Await($this->controller, $this->cardID, final:true, subsequent:0);
+  }
+
+  function SpecificLogic() {
+    $roll = GetDieRoll($this->controller);
+    AddCurrentTurnEffect($this->cardID . "-" . $roll, $this->controller);
   }
 }
 
@@ -6019,10 +6069,7 @@ class lay_down_the_challenge_yellow extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     Intimidate();
-    $hand = GetHand($this->controller);
-    $handOpponent = GetHand($this->controller == 1 ? 2 : 1);
-    if (count($hand) < count($handOpponent)-1) 
-      Draw($this->controller);
+    AddDecisionQueue("LAYDOWNTHECHALLENGE", $this->controller, "-", 1);
   }
 }
 
@@ -6233,9 +6280,9 @@ class wax_and_wane_blue extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     global $CS_AdditionalCosts;
     $modalities = [];
-    if (SearchAura($this->controller, pitch:3) != "") array_push($modalities, "Buff_blue_aura");
-    if (SearchAura($this->controller, hasWard:true) != "") array_push($modalities, "Buff_ward_aura");
-    if (count($modalities) == 2) array_push($modalities, "Both");
+    if (SearchAura($this->controller, pitch:3) != "") $modalities[] = "Buff_blue_aura";
+    if (SearchAura($this->controller, hasWard:true) != "") $modalities[] = "Buff_ward_aura";
+    if (count($modalities) == 2) $modalities[] = "Both";
     $modalities = implode(",", $modalities);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
     AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
@@ -6274,6 +6321,7 @@ class haboob_red extends Card {
   function Maintenence($index) {
     $AuraCard = new AuraCard($index, $this->controller);
     $AuraCard->AddCounters(1);
+    $uid = $AuraCard->UniqueID();
     $search = SearchPermanents($this->controller, subtype:"Ash");
     if (SearchCount($search) < $AuraCard->NumCounters()) $AuraCard->Destroy();
     else {
@@ -6287,9 +6335,16 @@ class haboob_red extends Card {
         AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
       }
       AddDecisionQueue("ELSE", $this->controller, "-");
-      AddDecisionQueue("PASSPARAMETER", $this->controller, "MYAURAS-".$AuraCard->Index(), 1);
-      AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
+      Await($this->controller, $this->cardID, uid:$uid, final:true);
     }
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $uid = $dqVars["uid"];
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardUID($uid);
+    $AuraCard->Destroy();
   }
 
   function StartTurnAbility($index) {
@@ -6305,8 +6360,8 @@ class haboob_red extends Card {
     global $CombatChain;
     $cardID = $CombatChain->Card($index)->ID();
     if (TypeContains($cardID, "AA")) {
-      array_push($powerModifier, $this->cardID);
-      array_push($powerModifier, -1);
+      $powerModifier[] = $this->cardID;
+      $powerModifier[] = -1;
       return -1;
     }
     return 0;
@@ -6359,7 +6414,8 @@ class ransack_and_raze_blue extends Card {
     $costs = [];
     for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
       $LM = $Landmarks->Card($i, true);
-      if (CardCost($LM->CardID()) != -1) array_push($costs, CardCost($LM->CardID()));
+      $landmarkCost = CardCost($LM->CardID());
+      if ($landmarkCost != -1) $costs[] = $landmarkCost;
     }
     return implode(",", $costs);
   }
@@ -6408,16 +6464,16 @@ class destructive_tendencies_blue extends Card {
       for ($i = 0; $i < $Items->NumItems(); ++$i) {
         $Item = $Items->Card($i, true);
         if (TypeContains($Item->CardID(), "T") && !in_array("Remove_from_item", $modalities))
-          array_push($modalities, "Remove_from_item");
+          $modalities[] = "Remove_from_item";
       }
       $Auras = new Auras($player);
       for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
         $Aura = $Auras->Card($i, true);
         if ((TypeContains($Aura->CardID(), "T") || $Aura->IsToken()) && !in_array("Remove_from_aura", $modalities))
-          array_push($modalities, "Remove_from_aura");
+          $modalities[] = "Remove_from_aura";
       }
     }
-    if (count($modalities) == 2) array_push($modalities, "Both");
+    if (count($modalities) == 2) $modalities[] = "Both";
     $modalities = implode(",", $modalities);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
     AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
@@ -6475,13 +6531,13 @@ class pilfer_the_tomb_blue extends Card {
       if ($Graveyard->NumCards() == 0) return False;
       for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
         $Card = $Graveyard->Card($i, true);
-        if (TypeContains($Card->ID(), "I", $player) && !in_array("Banish_Instant", $modalities)) 
-          array_push($modalities, "Banish_Instant");
+        if (TypeContains($Card->ID(), "I", $player) && !in_array("Banish_Instant", $modalities))
+          $modalities[] = "Banish_Instant";
         if (ColorContains($Card->ID(), "2", $player) && !in_array("Banish_Yellow", $modalities))
-          array_push($modalities, "Banish_Yellow");
+          $modalities[] = "Banish_Yellow";
       }
     }
-    if (count($modalities) == 2) array_push($modalities, "Both");
+    if (count($modalities) == 2) $modalities[] = "Both";
     $modalities = implode(",", $modalities);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
     AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
@@ -6527,11 +6583,11 @@ class shatter_sorcery_blue extends Card {
       for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
         $Aura = $Auras->Card($i, true);
         if (CardNameContains($Aura->CardID(), "Sigil", $player, true) && !in_array("Destroy_Sigil", $modalities))
-          array_push($modalities, "Destroy_Sigil");
+          $modalities[] = "Destroy_Sigil";
       }
     }
-    array_push($modalities, "Prevent_1_Arcane");
-    if (count($modalities) == 2) array_push($modalities, "Both");
+    $modalities[] = "Prevent_1_Arcane";
+    if (count($modalities) == 2) $modalities[] = "Both";
     $modalities = implode(",", $modalities);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode");
     AddDecisionQueue("BUTTONINPUT", $this->controller, $modalities);
@@ -6770,9 +6826,10 @@ class smoldering_steel_red extends Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
-    global $defPlayer;
-    LoseHealth(1, $defPlayer);
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
+    global $defPlayer, $CombatChain;
+    SetDamageSourceUID($CombatChain->AttackCard()->OriginUniqueID());
+    DamageTrigger($defPlayer, 1, "DAMAGE", $CombatChain->AttackCard()->ID(), $this->controller);
   }
 }
 
@@ -6816,10 +6873,10 @@ class monolith_of_galcia_blue extends Card {
     $auras = MultiZoneIndices($this->controller, "THEIRAURAS:frozenOnly=1&MYAURAS:frozenOnly=1");
     $equipment = MultiZoneIndices($this->controller, "THEIRCHAR:frozenOnly=1;type=E&MYCHAR:frozenOnly=1;type=E");
     $items = MultiZoneIndices($this->controller, "THEIRITEMS:frozenOnly=1&MYITEMS:frozenOnly=1");
-    if (SearchCount($allies) > 0) array_push($modalities, "Target_ally");
-    if (SearchCount($auras) > 0) array_push($modalities, "Target_aura");
-    if (SearchCount($equipment) > 0) array_push($modalities, "Target_equipment");
-    if (SearchCount($items) > 0) array_push($modalities, "Target_item");
+    if (SearchCount($allies) > 0) $modalities[] = "Target_ally";
+    if (SearchCount($auras) > 0) $modalities[] = "Target_aura";
+    if (SearchCount($equipment) > 0) $modalities[] = "Target_equipment";
+    if (SearchCount($items) > 0) $modalities[] = "Target_item";
     return $modalities;
   }
 
@@ -6865,7 +6922,7 @@ class sense_weakness_blue extends Card {
     return 1;
   }
 
-  function DoesEffectGrantDominate() {
+  function DoesEffectGrantDominate($effectIndex) {
     return true;
   }
 
@@ -6877,13 +6934,22 @@ class sense_weakness_blue extends Card {
     return false;
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-') {
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $combatChainState, $CCS_DamageDealt, $defPlayer;
     $Allies = new Allies($defPlayer);
     $damage = $combatChainState[$CCS_DamageDealt];
     for ($i = $Allies->NumAllies()-1; $i >= 0; --$i) {
       $AllyCard = $Allies->Card($i, true);
       $AllyCard->Damage($damage);
+    }
+    $Character = new PlayerCharacter($defPlayer);
+    for ($i = $Character->NumCards()-1; $i >=0; --$i) {
+      $CharacterCard = $Character->Card($i, true);
+      if (SubtypeContains($CharacterCard->CardID(), "Ally")) {
+        $CharacterCard->AddDefCounters(-$damage); // how life of perched allies is tracked
+        if (-$CharacterCard->NumDefenseCounters() > CharacterHealth($CharacterCard->CardID()))
+          $CharacterCard->Destroy();
+      }
     }
   }
 }
@@ -7365,7 +7431,7 @@ class lobotomy_red extends Card {
     if ($numHands < 2) { //Only Equip if there is a broken weapon/off-hand
       foreach ($inventory as $cardID) {
         if (NameOverride($cardID) == "Orbitoclast") {
-          array_push($weapons, "CARDID-$cardID");
+          $weapons[] = "CARDID-$cardID";
         };
       }
       $weapons = implode(",", $weapons);
@@ -7430,14 +7496,15 @@ class tigrine_reflex_red extends Card {
     return "AR,AA";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
     global $mainPlayer, $combatChain, $actionPoints, $CombatChain;
     $attackCard = $CombatChain->AttackCard()->ID();
     $names = (IsReactionPhase()) ? "Ability" : "-";
     $nameBlocked = NameBlocked($this->cardID, $index, $from);
     if($nameBlocked) return $names;
-    if (IsResolutionStep()) $layerCount -= LayerPieces();
-    if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
+    $layerPieces = LayerPieces();
+    if (IsResolutionStep()) $layerCount -= $layerPieces;
+    if ($this->controller == $mainPlayer && count($combatChain) == 0 && $layerCount <= $layerPieces && $actionPoints > 0){
       $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $this->controller);
       $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($this->cardID)), $this->controller);
       if (!$warmongersPeace && !$underEdict && CanAttack($this->cardID, $from, $index, type:"AA")) {
@@ -7802,7 +7869,7 @@ class touch_of_reality extends Card {
     global $currentTurnEffects;
     $ind = SearchCurrentTurnEffectsForIndex($this->cardID, $this->controller);
     if ($ind != -1) {
-      return intval(explode("-", $currentTurnEffects[$ind])[1] ?? 0);
+      return intval(explode("-", $currentTurnEffects[$ind], 2)[1] ?? 0);
     }
     return 0;
   }
@@ -7820,7 +7887,9 @@ class lunar_mirage_red extends Card {
 
   function AttackGetsBlockedEffect($start) {
     global $combatChain, $defPlayer;
-    for ($i = $start; $i < count($combatChain); $i += CombatChainPieces()) {
+    $combatChainCount = count($combatChain);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
       if ($combatChain[$i + 1] != $defPlayer) continue;
       if (ModifiedPowerValue($combatChain[$i], $defPlayer, "CC", "", $i) >=6) {
         AddLayer("TRIGGER", $this->controller, $combatChain[$i], $combatChain[$i+7], "LUNARMIRAGE");
@@ -7859,8 +7928,8 @@ class mind_meets_might_red extends Card {
     if (RevealHand($defPlayer)) {
       $num = SearchCount(SearchMultizone($defPlayer, "MYHAND:minAttack=6"));
       for ($i = 0; $i < $num; ++$i) {
-        $index = explode(",", SearchMultizone($defPlayer, "MYHAND:minAttack=6"))[0];
-        DiscardCard($defPlayer, explode("-", $index)[1], $this->cardID, $this->controller);
+        $index = explode(",", SearchMultizone($defPlayer, "MYHAND:minAttack=6"), 2)[0];
+        DiscardCard($defPlayer, explode("-", $index, 2)[1], $this->cardID, $this->controller);
       }
       Draw($defPlayer, effectSource:$this->cardID, num:$num);
     }
@@ -7973,6 +8042,10 @@ class boo_resident_spook_yellow extends Card {
     $Card = new AllyCard($index, $this->controller);
     return $Card->Tapped() ? 0 : 2;
   }
+
+  function SpecialHealth() {
+    return 2;
+  }
 }
 
 class bubba_lubba_run_aground_yellow extends Card {
@@ -8017,7 +8090,7 @@ class bubba_lubba_run_aground_yellow extends Card {
     return "A";
   }
 
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-') {
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
     $canAttack = CanAttack($this->cardID, "PLAY", $index, "MYALLY", type:"AA");
     $allies = &GetAllies($this->controller);
     $names = "";
@@ -8043,6 +8116,10 @@ class bubba_lubba_run_aground_yellow extends Card {
 
   function HasGoAgain($from) {
     return false;
+  }
+
+  function SpecialHealth() {
+    return 5;
   }
 }
 
@@ -8182,7 +8259,7 @@ class high_current_currency_blue extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     AddDecisionQueue("FINDINDICES", $this->controller, "OPPSENERGYPERMANENTS");
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
     AddDecisionQueue("ELSE", $this->controller, $this->cardID);
@@ -8273,5 +8350,9 @@ class gloves_of_azure_waves extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
+  }
+
+  function CardBlockModifier($from, $resourcesPaid, $index) {
+    return HighTideConditionMet($this->controller) >= 2 ? 3 : 0;
   }
 }

@@ -37,13 +37,17 @@ $response = [
 if (strlen($searchQuery) > 0) {
   $conn = GetDBConnection(DBL_SEARCH_USERNAMES);
   if ($conn) {
-    // Search for usernames containing the search query
-    $sql = "SELECT usersUid, usersEmail FROM users WHERE usersUid LIKE ? LIMIT 20";
+    // Search handles, current display names, and historical names so mods can
+    // find an account by any name it has ever used
+    $sql = "SELECT DISTINCT u.usersUid, u.usersEmail, u.displayName FROM users u
+            LEFT JOIN name_history h ON h.usersId = u.usersId
+            WHERE u.usersUid LIKE ? OR u.displayName LIKE ? OR h.oldName LIKE ? OR h.newName LIKE ?
+            LIMIT 20";
     $stmt = mysqli_stmt_init($conn);
 
     if (mysqli_stmt_prepare($stmt, $sql)) {
       $searchPattern = "{$searchQuery}%";
-      mysqli_stmt_bind_param($stmt, "s", $searchPattern);
+      mysqli_stmt_bind_param($stmt, "ssss", $searchPattern, $searchPattern, $searchPattern, $searchPattern);
       mysqli_stmt_execute($stmt);
       $userData = mysqli_stmt_get_result($stmt);
 
@@ -51,12 +55,33 @@ if (strlen($searchQuery) > 0) {
         if (!empty($row['usersUid'])) {
           $response["users"][] = [
             "username" => $row['usersUid'],
+            "displayName" => !empty($row['displayName']) ? $row['displayName'] : $row['usersUid'],
             "email" => $row['usersEmail']
           ];
         }
       }
 
       mysqli_stmt_close($stmt);
+    } else {
+      // name_history may not exist yet (pre-migration); fall back to handle-only search
+      $sql = "SELECT usersUid, usersEmail FROM users WHERE usersUid LIKE ? LIMIT 20";
+      $stmt = mysqli_stmt_init($conn);
+      if (mysqli_stmt_prepare($stmt, $sql)) {
+        $searchPattern = "{$searchQuery}%";
+        mysqli_stmt_bind_param($stmt, "s", $searchPattern);
+        mysqli_stmt_execute($stmt);
+        $userData = mysqli_stmt_get_result($stmt);
+        while ($row = mysqli_fetch_assoc($userData)) {
+          if (!empty($row['usersUid'])) {
+            $response["users"][] = [
+              "username" => $row['usersUid'],
+              "displayName" => $row['usersUid'],
+              "email" => $row['usersEmail']
+            ];
+          }
+        }
+        mysqli_stmt_close($stmt);
+      }
     }
 
     mysqli_close($conn);

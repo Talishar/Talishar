@@ -22,10 +22,9 @@ function MSTAbilityCost($cardID): int
 
 function MSTCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer, $combatChainState, $CombatChain;
+  global $mainPlayer, $CombatChain;
   $from = $CombatChain->AttackCard()->From();
-  $idArr = explode(",", $cardID);
-  $cardID = $idArr[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
     "mistcloak_gully" => IsHeroAttackTarget(),
     "beckoning_mistblade", "first_tenet_of_chi_moon_blue", "first_tenet_of_chi_tide_blue", "prismatic_leyline_yellow-BLUE" => ColorContains($attackID, 3, $mainPlayer),
@@ -41,6 +40,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
     "levels_of_enlightenment_blue", "dense_blue_mist_blue-HITPREVENTION", "dense_blue_mist_blue-DEBUFF", "deep_blue_sea_blue", "wide_blue_yonder_blue", "a_drop_in_the_ocean_blue", "the_grain_that_tips_the_scale_blue", "just_a_nick_red-BUFF",
     "just_a_nick_red-HIT", "maul_yellow-BUFF", "maul_yellow-HIT", "stonewall_gauntlet", "emissary_of_tides_red", "murky_water_red", "shadowrealm_horror_red-1", "shadowrealm_horror_red-2" => true,
     "cosmic_awakening_blue-1", "cosmic_awakening_blue-2", "cosmic_awakening_blue-3" => true,
+    "evo_speedslip_blue" => true,
     default => false,
   };
 }
@@ -48,8 +48,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
 function MSTEffectPowerModifier($cardID, $attached=false): int
 {
   global $mainPlayer;
-  $idArr = explode(",", $cardID);
-  $cardID = $idArr[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
     "a_drop_in_the_ocean_blue", "stonewall_gauntlet" => -1,
     "mistcloak_gully", "dense_blue_mist_blue-DEBUFF" => IsHeroAttackTarget() ? -1 : 0,
@@ -69,7 +68,7 @@ function MSTEffectPowerModifier($cardID, $attached=false): int
 
 function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer, $CS_PlayIndex;
+  global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer;
   global $combatChain, $defPlayer, $CombatChain, $chainLinks, $CS_NumAttacks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $hand = &GetHand($currentPlayer);
@@ -116,17 +115,21 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (!empty($defendingCards)) {
         $defendingCards = explode(",", $defendingCards);
         foreach (array_reverse($defendingCards) as $card) {
-          if (CardType($combatChain[$card]) === "AA") {
-            BanishCardForPlayer($combatChain[$card], $defPlayer, "CC", $mod, $cardID);
-            $index = GetCombatChainIndex($combatChain[$card], $defPlayer);
+          $combatChainCard = $combatChain[$card];
+          if (CardType($combatChainCard) === "AA") {
+            BanishCardForPlayer($combatChainCard, $defPlayer, "CC", $mod, $cardID);
+            $index = GetCombatChainIndex($combatChainCard, $defPlayer);
             $CombatChain->Remove($index);
           }
         }
       }
+      $chainLinksPieces = ChainLinksPieces();
       foreach ($chainLinks as &$link) {
-        for ($k = 0; $k < count($link); $k += ChainLinksPieces()) {
-          if (CardType($link[$k]) == "AA" && $link[$k + 1] == $defPlayer) {
-            BanishCardForPlayer($link[$k], $defPlayer, "CC", $mod, $cardID);
+        $linkCount = count($link);
+        for ($k = 0; $k < $linkCount; $k += $chainLinksPieces) {
+          $linkCard = $link[$k];
+          if (CardType($linkCard) == "AA" && $link[$k + 1] == $defPlayer) {
+            BanishCardForPlayer($linkCard, $defPlayer, "CC", $mod, $cardID);
             $link[$k + 2] = 0;
           }
         }
@@ -145,7 +148,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "sacred_art_undercurrent_desires_blue":
       if ($additionalCosts != "-") {
         $modes = explode(",", $additionalCosts);
-        for ($i = 0; $i < count($modes); ++$i) {
+        $modesCount = count($modes);
+        for ($i = 0; $i < $modesCount; ++$i) {
           switch ($modes[$i]) {
             case "Create_a_Fang_Strike_and_Slither":
               AddPlayerHand("fang_strike", $currentPlayer, $cardID, created:true); //Fang Strike
@@ -243,7 +247,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "sacred_art_immortal_lunar_shrine_blue":
       if ($additionalCosts != "-") {
         $modes = explode(",", $additionalCosts);
-        for ($i = 0; $i < count($modes); ++$i) {
+        $modesCount = count($modes);
+        for ($i = 0; $i < $modesCount; ++$i) {
           switch ($modes[$i]) {
             case "Create_2_Spectral_Shield":
               PlayAura("spectral_shield", $currentPlayer, 2);
@@ -290,7 +295,8 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "sacred_art_jade_tiger_domain_blue":
       if ($additionalCosts != "-") {
         $modes = explode(",", $additionalCosts);
-        for ($i = 0; $i < count($modes); ++$i) {
+        $modesCount = count($modes);
+        for ($i = 0; $i < $modesCount; ++$i) {
           switch ($modes[$i]) {
             case "Create_2_Crouching_Tigers":
               AddPlayerHand("crouching_tiger", $currentPlayer, "NA", 2, created:true);
@@ -455,7 +461,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
-        return "FAILED";
+        return "";
       }
       return "";
     case "single_minded_determination_red":
@@ -556,7 +562,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "supercell_blue":
       $cardList = SearchItemsByName($currentPlayer, "Hyper Driver");
-      $countHyperDriver = count(explode(",", $cardList));
+      $countHyperDriver = substr_count($cardList, ",") + 1;
       if ($resourcesPaid > $countHyperDriver) $resourcesPaid = $countHyperDriver;
       for ($i = 0; $i < $resourcesPaid; $i++) {
         if ($i == 0) {
@@ -598,7 +604,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function MSTHitEffect($cardID, $from): void
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CombatChain;
+  global $mainPlayer, $defPlayer, $CombatChain;
   $deck = new Deck($defPlayer);
   $discard = new Discard($defPlayer);
   $attackCard = $CombatChain->AttackCard()->ID();
@@ -744,15 +750,21 @@ function CountControlledAuras($player, $class="ILLUSIONIST") {
   global $chainLinks, $combatChain;
   $illusionistAuras = SearchAura($player, class: $class);
   $count = SearchCount($illusionistAuras);
+  $chainLinksPieces = ChainLinksPieces();
+  $combatChainPieces = CombatChainPieces();
   foreach ($chainLinks as $link) {
-    for ($i = 0; $i < count($link); $i += ChainLinksPieces()) {
-      if ($link[$i + 1] == $player && ClassContains($link[$i], $class, $player) && SubtypeContains($link[$i], "Aura")) {
+    $linkCount = count($link);
+    for ($i = 0; $i < $linkCount; $i += $chainLinksPieces) {
+      $linkCard = $link[$i];
+      if ($link[$i + 1] == $player && ClassContains($linkCard, $class, $player) && SubtypeContains($linkCard, "Aura")) {
         ++$count;
       }
     }
   }
-  for ($i = 0; $i < count($combatChain); $i += CombatChainPieces()) {
-    if ($combatChain[$i + 1] == $player && ClassContains($combatChain[$i], $class, $player) & SubtypeContains($combatChain[$i], "Aura")) {
+  $combatChainCount = count($combatChain);
+  for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
+    $ccCard = $combatChain[$i];
+    if ($combatChain[$i + 1] == $player && ClassContains($ccCard, $class, $player) && SubtypeContains($ccCard, "Aura")) {
       ++$count;
     }
   }

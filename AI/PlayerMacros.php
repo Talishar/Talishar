@@ -3,7 +3,7 @@
 function ProcessMacros()
 {
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
-  global $combatChainState, $CCS_RequiredEquipmentBlock, $EffectContext;
+  global $combatChainState, $CCS_RequiredEquipmentBlock, $EffectContext, $CS_PendingNAACard;
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for ($i = 0; $i < $numPass; ++$i) {
@@ -20,12 +20,13 @@ function ProcessMacros()
 
       // Cache expensive function calls and counts
       $layerCount = count($layers);
+      $layerPieces = LayerPieces();
       $decisionQueueCount = count($decisionQueue);
       $holdPrioritySetting = HoldPrioritySetting($currentPlayer);
       $choiceLength = strlen($turn[2] ?? "");
-      $firstLayer = $layerCount >= LayerPieces() ? $layers[0] : null;
-      $lastLayer = $layerCount >= LayerPieces() ? $layers[$layerCount - LayerPieces()] : null;
-      
+      $firstLayer = $layerCount >= $layerPieces ? $layers[0] : null;
+      $lastLayer = $layerCount >= $layerPieces ? $layers[$layerCount - $layerPieces] : null;
+
       switch ($turn[0]) {
         case "A":
           if (ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
@@ -72,7 +73,7 @@ function ProcessMacros()
         default:
           if (!ProcessSpecificCardMacros()) {
             if ($decisionQueueCount == 0 || $decisionQueue[0] == "INSTANT") {
-              if ($lastLayer == "ENDPHASE" && $layerCount < LayerPieces() * 3) {
+              if ($lastLayer == "ENDPHASE" && $layerCount < $layerPieces * 3) {
                 $somethingChanged = true;
                 PassInput();
               }
@@ -104,18 +105,45 @@ function ProcessMacros()
           }
         }
       }
-      if(!IsGameOver() && ($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
-        $somethingChanged = true; 
-        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
+      if (!IsGameOver()) {
+        $skipAllRunechants = GetClassState($currentPlayer, $CS_SkipAllRunechants);
+        if ($skipAllRunechants == 1) {
+          if ($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") {
+            $somethingChanged = true;
+            SetClassState($currentPlayer, $CS_SkipAllRunechants, 0);
+          } else if (($layers[2] ?? "-") == "runechant") {
+            $somethingChanged = true;
+            ContinueDecisionQueue("0");
+          } else {
+            SetClassState($currentPlayer, $CS_SkipAllRunechants, 0);
+            $somethingChanged = true;
+            ContinueDecisionQueue("0");
+          }
+        }
       }
-      else if (!IsGameOver() && ($layers[2] ?? "-") == "runechant" && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
-        $somethingChanged = true; 
-        ContinueDecisionQueue("0"); 
-      }
-      else if (!IsGameOver() && GetClassState($currentPlayer, $CS_SkipAllRunechants) == 1) { 
-        SetClassState($currentPlayer, $CS_SkipAllRunechants, 0); 
-        $somethingChanged = true; 
-        ContinueDecisionQueue("0"); 
+
+      if (!IsGameOver()
+          && $turn[0] == "M"
+          && $currentPlayer == $mainPlayer
+          && $actionPoints > 0
+          && SearchLayersForPhase("RESOLUTIONSTEP") == -1) {
+        $pendingCard = GetClassState($mainPlayer, $CS_PendingNAACard);
+        if ($pendingCard !== "-" && $pendingCard !== "" && $pendingCard !== null) {
+          SetClassState($mainPlayer, $CS_PendingNAACard, "-");
+
+          $hand = &GetHand($mainPlayer);
+          $found = -1;
+          $handCount = count($hand);
+          for ($j = 0; $j < $handCount; ++$j) {
+            if ($hand[$j] == $pendingCard) { $found = $j; break; }
+          }
+
+          if ($found >= 0 && IsPlayable($pendingCard, $turn[0], "HAND", $found)) {
+            array_splice($hand, $found, 1);
+            PlayCard($pendingCard, "HAND", zone: "MYHAND", index: $found);
+            $somethingChanged = true;
+          }
+        }
       }
     }
   }
@@ -123,7 +151,10 @@ function ProcessMacros()
 
 function NormalizeWeaponCard($cardName)
 {
-  return preg_replace('/_r$/', '', $cardName);
+  if (str_ends_with($cardName, '_r')) {
+    return substr($cardName, 0, -2);
+  }
+  return $cardName;
 }
 
 function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChanged)
@@ -131,8 +162,9 @@ function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChan
   global $currentPlayer, $turn, $layers, $Stack;
   
   // Cache whether there's a unique ID
-  $layerController = $Stack->TopLayer()->PlayerID();
-  $uid = $Stack->TopLayer()->UniqueID();
+  $topLayer = $Stack->TopLayer();
+  $layerController = $topLayer->PlayerID();
+  $uid = $topLayer->UniqueID();
   $hasUniqueID = $uid != "-";
   
   if ($firstLayer == "FINALIZECHAINLINK" || $firstLayer == "RESOLUTIONSTEP" || $firstLayer == "CLOSINGCHAIN") {
@@ -175,28 +207,78 @@ function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChan
 function ProcessSpecificCardMacros()
 {
   global $currentPlayer, $turn, $EffectContext;
-  
-  if ($turn[0] == "CHOOSEMULTIZONE" && GetMZCard($currentPlayer, explode(",", $turn[2])[0]) == "phoenix_flame_red" && 
-      ($EffectContext == "fai" || $EffectContext == "fai_rising_rebellion" || $EffectContext == "art_of_the_phoenix_war_red")) 
-  { 
-    ContinueDecisionQueue(explode(",", $turn[2])[0]); 
-    return true;
+
+  if ($turn[0] == "CHOOSEMULTIZONE") {
+    $choices = explode(",", $turn[2]);
+    $firstChoice = $choices[0];
+
+    if (GetMZCard($currentPlayer, $firstChoice) == "phoenix_flame_red" &&
+        ($EffectContext == "fai" || $EffectContext == "fai_rising_rebellion" || $EffectContext == "art_of_the_phoenix_war_red"))
+    {
+      ContinueDecisionQueue($firstChoice);
+      return true;
+    }
+    if ($EffectContext == "raise_an_army_yellow" || $EffectContext == "visit_the_golden_anvil_blue" || $EffectContext == "gravy_bones" || $EffectContext == "gravy_bones_shipwrecked_looter"
+      || $EffectContext == "puffin_hightail" || $EffectContext == "puffin" || $EffectContext == "marlynn_treasure_hunter" || $EffectContext == "marlynn" || $EffectContext == "scurv_stowaway")
+    {
+      $firstCard = GetMZCard($currentPlayer, $firstChoice);
+      $choiceCount = count($choices);
+      $allSame = true;
+      for ($k = 1; $k < $choiceCount; ++$k) {
+        if (GetMZCard($currentPlayer, $choices[$k]) != $firstCard) {
+          $allSame = false;
+          break;
+        }
+      }
+      if ($allSame) {
+        ContinueDecisionQueue($firstChoice);
+        return true;
+      }
+    }
+    if ($EffectContext == "blood_runs_deep_red")
+    {
+      $dagger1 = NormalizeWeaponCard(GetMZCard($currentPlayer, $firstChoice));
+      $dagger2 = NormalizeWeaponCard(GetMZCard($currentPlayer, $choices[1] ?? "-"));
+      if ($dagger1 == $dagger2)
+      {
+        ContinueDecisionQueue($firstChoice);
+        return true;
+      }
+    }
+    // Auto-resolve a cog tap/untap choice when every option is the same cog (card + steam counters + mod)
+    // identical cogs are interchangeable so don't make the player pick. Gated on the choice being a cog.
+    // Still prompts when the cogs differ (steam counters, a copper cog, a turn-stolen cog, etc.).
+    if (SubtypeContains(GetMZCard($currentPlayer, $firstChoice), "Cog", $currentPlayer)) {
+      $firstCog = MZIndexToObject($currentPlayer, $firstChoice);
+      if (is_object($firstCog) && method_exists($firstCog, 'CardID')) {
+        $allSameCog = true;
+        $choicesCount = count($choices);
+        for ($k = 1; $k < $choicesCount; ++$k) {
+          $cog = MZIndexToObject($currentPlayer, $choices[$k]);
+          if (!is_object($cog) || !method_exists($cog, 'CardID')
+            || $cog->CardID() != $firstCog->CardID()
+            || $cog->NumCounters() != $firstCog->NumCounters()
+            || $cog->Modalities() != $firstCog->Modalities()) { $allSameCog = false; break; }
+        }
+        if ($allSameCog) { ContinueDecisionQueue($firstChoice); return true; }
+      }
+    }
   }
-  if ($turn[0] == "CHOOSEMULTIZONE" && $EffectContext == "blood_runs_deep_red" || $turn[0] == "MAYCHOOSECARD" && ($EffectContext == "cindra_dracai_of_retribution" || $EffectContext == "cindra"))
-  { 
+  if ($turn[0] == "MAYCHOOSECARD" && ($EffectContext == "cindra_dracai_of_retribution" || $EffectContext == "cindra"))
+  {
     $daggers = explode(",", $turn[2]);
     $dagger1 = NormalizeWeaponCard(GetMZCard($currentPlayer, $daggers[0] ?? "-"));
     $dagger2 = NormalizeWeaponCard(GetMZCard($currentPlayer, $daggers[1] ?? "-"));
-    if ($dagger1 == $dagger2) 
-    { 
-      ContinueDecisionQueue($daggers[0]); 
+    if ($dagger1 == $dagger2)
+    {
+      ContinueDecisionQueue($daggers[0]);
       return true;
     }
   }
   if ($turn[0] == "BUTTONINPUT" && $EffectContext == "jarl_vetreidi")
   {
     if(GetCharacterGemState($currentPlayer, $EffectContext) != 0) {
-      ContinueDecisionQueue(explode(",", $turn[2])[0]); 
+      ContinueDecisionQueue(explode(",", $turn[2], 2)[0]);
       return true;
     }
   }
@@ -207,6 +289,7 @@ function AutopassPhaseWithOneOption($phase)
 {
   switch ($phase) {
     case "BUTTONINPUT":
+    case "NUMBERINPUT":
     case "CHOOSEMULTIZONE":
     case "CHOOSECHARACTER":
     case "CHOOSECOMBATCHAIN":
@@ -225,7 +308,7 @@ function HasPlayableCard($player, $phase)
 {
   global $CombatChain;
   $restriction = "";
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   
   // Cache piece sizes
   $characterPieces = CharacterPieces();
@@ -299,8 +382,9 @@ function HasPlayableCard($player, $phase)
   for($i=0; $i<$allyCount; $i+=$allyPieces) {
     if(IsPlayable($allies[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
   }
-  if(AbilityPlayableFromCombatChain($CombatChain->CurrentAttack()) && !IsPlayRestricted($CombatChain->CurrentAttack(), $restriction, "PLAY", 0, $player)) return true;
   
+  $currentAttack = $CombatChain->CurrentAttack();
+  if(AbilityPlayableFromCombatChain($currentAttack) && !IsPlayRestricted($currentAttack, $restriction, "PLAY", 0, $player)) return true;
   return false;
 }
 

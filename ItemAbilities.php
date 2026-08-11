@@ -4,17 +4,16 @@
 function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $number = 1, $effectController = "", $isToken = false, $mainPhase = "True", $from = "-", $effectAgent = "", $effectSource = "")
 {
   global $EffectContext, $CS_NumGoldCreated, $CS_CreatedCardsThisTurn;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($effectController == "") $effectController = $player;
   if ($effectAgent == "") $effectAgent = $effectController;
   if (!DelimStringContains(CardSubType($cardID), "Item") && $cardID != "levia_redeemed") return;
-  if (TypeContains($EffectContext, "C", $player) && (SearchAurasForCard("preach_modesty_red", 1) != "" || SearchAurasForCard("preach_modesty_red", 2) != "")) {
+  if (TypeContains($EffectContext, "C", $player) && (PreachModestyActive())) {
     WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
     return;
   }
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   if ($effectSource != "") $EffectContext = $effectSource;
-  $numMinusTokens = 0;
   $numMinusTokens = CountCurrentTurnEffects("ripple_away_blue", $player) + CountCurrentTurnEffects("ripple_away_blue", $otherPlayer);
   if ($numMinusTokens > 0 && $isToken && (TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "A", $player))) {
     $number -= $numMinusTokens;
@@ -34,23 +33,26 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     $uniqueID = GetUniqueId($cardID, $player);
     $steamCounters = SteamCounterLogic($cardID, $player, $uniqueID) + $steamCounterModifier;
     $index = count($items);
-    array_push($items, $cardID);
-    array_push($items, $steamCounters);
-    array_push($items, 2);
-    array_push($items, ItemUses($cardID));
-    array_push($items, $uniqueID);
-    array_push($items, $myHoldState);
-    array_push($items, $theirHoldState);
-    array_push($items, 0);
-    array_push($items, ItemModalities($cardID));
-    array_push($items, $from);
-    array_push($items, 0); //enters untapped
-    array_push($items, "-"); //subcards
-    array_push($items, 0); //def counters
-    array_push($items, 0); //on chain
+    $items[] = $cardID;
+    $items[] = $steamCounters;
+    $items[] = 2;
+    $items[] = ItemUses($cardID);
+    $items[] = $uniqueID;
+    $items[] = $myHoldState;
+    $items[] = $theirHoldState;
+    $items[] = 0;
+    $items[] = ItemModalities($cardID);
+    $items[] = $from;
+    $items[] = 0;
+    $items[] = "-";
+    $items[] = 0;
+    $items[] = 0;
     if (HasCrank($cardID, $player)) Crank($player, $index, $mainPhase);
+    if ($cardID == "hyper_driver" && $steamCounters == 0) {
+      WriteLog("A hyper driver with no counters is immediately destroyed");
+      DestroyItemForPlayer($player, count($items) - ItemPieces());
+    }
   }
-
   $char = &GetPlayerCharacter($player);
   $hero = ShiyanaCharacter($char[0], $player);
   if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($cardID, "MECHANOLOGIST", $player)) {
@@ -113,7 +115,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
   global $currentPlayer, $CS_PlayIndex, $combatChain, $CS_AdditionalCosts;
   $index = GetClassState($currentPlayer, $CS_PlayIndex);
   $items = &GetItems($currentPlayer);
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     case "crazy_brew_blue":
     case "energy_potion_blue":
@@ -139,6 +141,7 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "backup_protocol_blu_blue":
     case "imperial_seal_of_command_red":
     case "gold":
+    case "golden_skull_red":
     case "diamond_amulet_blue":
     case "amethyst_amulet_blue":
     case "onyx_amulet_blue":
@@ -165,8 +168,8 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
     case "amulet_of_echoes_blue":
       DestroyItemForPlayer($currentPlayer, $index);
       $legalTargets = [];
-      if (HasPlayerEchoed($otherPlayer)) array_push($legalTargets, "THEIRCHAR-0");
-      if (HasPlayerEchoed($currentPlayer)) array_push($legalTargets, "MYCHAR-0");
+      if (HasPlayerEchoed($otherPlayer)) $legalTargets[] = "THEIRCHAR-0";
+      if (HasPlayerEchoed($currentPlayer)) $legalTargets[] = "MYCHAR-0";
       $legalTargets = implode(",", $legalTargets);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for " . CardLink($cardID, $cardID));
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $legalTargets, 1);
@@ -273,6 +276,8 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
   global $CS_NumItemsDestroyed;
   if ($index != -1) {
     $items = &GetItems($player);
+    $itemPieces = ItemPieces();
+    if (count($items) < $index + $itemPieces) return "";
     if (!$skipDestroy) {
       if (str_contains($items[$index + 9], "THEIR")) $destPlayer = $player == 1 ? 2 : 1;
       else $destPlayer = $player;
@@ -282,19 +287,15 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
       IncrementClassState($player, $CS_NumItemsDestroyed);
     }
     $cardID = $items[$index];
-    $itemPieces = ItemPieces();
     $subCards = $items[$index + 11];
     if ($subCards != "-") {
       $subCards = explode(",", $subCards);
       foreach($subCards as $subCard)
         AddGraveyard($subCard, $player, "PLAY");
     }
-    for ($i = $index + $itemPieces - 1; $i >= $index; --$i) {
-      unset($items[$i]);
-    }
-    $items = array_values($items);
+    array_splice($items, $index, $itemPieces);
     if ($cardID == "stasis_cell_blue") {
-      $otherPlayer = $player == 1 ? 2 : 1;
+      $otherPlayer = 3 - $player;
       AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
       AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
@@ -314,6 +315,9 @@ function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
   if ($srcItems[$index] == "gold") {
     UndestroyHook($destPlayer);
     IncrementClassState($destPlayer, $CS_NumGoldCreated);
+    $Hero = new CharacterCard(0, $destPlayer);
+    if ($Hero->CardID() == "killjoy_the_crooked_blade")
+      AddLayer("TRIGGER", $destPlayer, $Hero->CardID());
   }
   $destItems = &GetItems($destPlayer);
   $itemPieces = ItemPieces();
@@ -324,23 +328,20 @@ function StealItem($srcPlayer, $index, $destPlayer, $from, $mod=0)
       $indexWeapon = FindCharacterIndex($srcPlayer, "nitro_mechanoida");
       RemoveCharacter($srcPlayer, $indexWeapon);
     }
-    if($i == 8 && $mod != 0) {//8 - Modalities or e.g "Temporary" for cards that get stolen for a turn.
-      $srcItems[$index + $i] = $srcItems[$index + $i] == "-" ? $mod : $srcItems[$index + $i] . ",$mod";
-    }
-    if($i == 9) //9 - Where it's played from ... Important for where it'll go when destroyed for example.
-    {
-      if (strpos($srcItems[$index + $i], 'MY') === 0) {
-          $srcItems[$index + $i] = 'THEIR' . substr($srcItems[$index + $i], 2);
-      } elseif (strpos($srcItems[$index + $i], 'THEIR') === 0) {
-          $srcItems[$index + $i] = 'MY' . substr($srcItems[$index + $i], 5);
-      } else {
-          $srcItems[$index + $i] = 'THEIR' . $srcItems[$index + $i];
-      }
-    }
-    array_unshift($destItems, $srcItems[$index + $i]);
-    unset($srcItems[$index + $i]);
   }
-  $srcItems = array_values($srcItems);
+  if ($mod != 0) {//8 - Modalities or e.g "Temporary" for cards that get stolen for a turn.
+    $srcItems[$index + 8] = ($srcItems[$index + 8] === "-") ? $mod : $srcItems[$index + 8] . ",$mod";
+  }
+  $fromVal = $srcItems[$index + 9]; //9 - Where it's played from ... Important for where it'll go when destroyed for example.
+  if (strpos($fromVal, 'MY') === 0) {
+    $srcItems[$index + 9] = 'THEIR' . substr($fromVal, 2);
+  } elseif (strpos($fromVal, 'THEIR') === 0) {
+    $srcItems[$index + 9] = 'MY' . substr($fromVal, 5);
+  } else {
+    $srcItems[$index + 9] = 'THEIR' . $fromVal;
+  }
+  $block = array_splice($srcItems, $index, $itemPieces);
+  array_splice($destItems, 0, 0, $block);
 }
 
 function GetItemGemState($player, $cardID, $index=-1)
@@ -552,14 +553,15 @@ function ItemEndTurnAbilities()
       default:
         break;
     }
-    if (ItemModalities($items[$i]) != "-") $items[$i + 8] = ItemModalities($items[$i]);
+    $modalities = ItemModalities($items[$i]);
+    if ($modalities !== "-") $items[$i + 8] = $modalities;
     if ($remove) DestroyItemForPlayer($mainPlayer, $i);
   }
 }
 
 function ItemDamageTakenAbilities($player, $damage)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $items = &GetItems($otherPlayer);
   $countItems = count($items);
   $itemPieces = ItemPieces();
@@ -592,7 +594,8 @@ function SteamCounterLogic($cardID, $playerID, $uniqueID)
     default:
       break;
   }
-  if (ClassContains($cardID, "MECHANOLOGIST", $playerID) && CardCost($cardID) >= 0 && CardCost($cardID) <= 2) {
+  $cost = CardCost($cardID);
+  if (ClassContains($cardID, "MECHANOLOGIST", $playerID) && $cost >= 0 && $cost <= 2) {
     $items = &GetItems($playerID);
     $countItems = count($items);
     $itemPieces = ItemPieces();
@@ -661,16 +664,16 @@ function ItemPowerModifiers(&$powerModifiers)
         $attackID = $CombatChain->AttackCard()->ID();
         if (CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) {
           $modifier += 1;
-          array_push($powerModifiers, $items[$i]);
-          array_push($powerModifiers, 1);
+          $powerModifiers[] = $items[$i];
+          $powerModifiers[] = 1;
         }
         break;
       case "clamp_press_blue":
         $attackID = $CombatChain->AttackCard()->ID();
         if (SubtypeContains($attackID, "Wrench")) {
           $modifier += 2;
-          array_push($powerModifiers, $items[$i]);
-          array_push($powerModifiers, 2);
+          $powerModifiers[] = $items[$i];
+          $powerModifiers[] = 2;
         }
         break;
       default:
@@ -704,9 +707,8 @@ function FindNullTime($cardName)
 {
   global $mainPlayer, $defPlayer;
   
-  $foundNullTime = SearchItemForModalities($cardName, $mainPlayer, "null_time_zone_blue") != -1;
-  $foundNullTime = $foundNullTime || SearchItemForModalities($cardName, $defPlayer, "null_time_zone_blue") != -1;
-  return $foundNullTime;
+  return SearchItemForModalities($cardName, $mainPlayer, "null_time_zone_blue") !== -1
+      || SearchItemForModalities($cardName, $defPlayer, "null_time_zone_blue") !== -1;
 }
 
 function ItemBeginEndTurnAbilities()

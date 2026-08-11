@@ -11,6 +11,8 @@ include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../includes/dbh.inc.php";
 include_once "../includes/functions.inc.php";
 include_once "../includes/MatchupHelpers.php";
+include_once "../includes/ModeratorList.inc.php";
+include_once "../Libraries/ValidationLibraries.php";
 
 SetHeaders();
 
@@ -20,7 +22,7 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 if($_POST == null) exit;
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
-$lastUpdate = $_POST["lastUpdate"];
+$lastUpdate = $_POST["lastUpdate"] ?? null;
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
 else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
@@ -51,43 +53,57 @@ include "../HostFiles/Redirector.php";
 include "../Libraries/UILibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 
-$currentTime = round(microtime(true) * 1000);
-SetCachePiece($gameName, $playerID + 1, $currentTime);
+$currentTime = (int)(microtime(true) * 1000);
 
 $count = 0;
-$cacheVal = GetCachePiece($gameName, 1);
+$otherP = $playerID == 1 ? 2 : 1;
+$myTimeIdx   = $playerID;
+$oppTimeIdx  = $otherP;
+$oppStatIdx  = $otherP + 2;
+$kickPlayerTwo = false;
+$sideboardWasReset = false;
+
+$cacheArr = ReadCacheArray($gameName);
+if ($cacheArr) {
+  $cacheArr[$myTimeIdx] = $currentTime;
+  WriteCache($gameName, implode("!", $cacheArr));
+}
+$cacheVal = $cacheArr ? (int)($cacheArr[0] ?? 0) : 0;
 if ($cacheVal > 10000000) {
   SetCachePiece($gameName, 1, 1);
   $lastUpdate = 0;
+  $cacheVal = 1;
 }
-$kickPlayerTwo = false;
-$sleepMs = 50; // Exponential backoff start
+
+$sleepUs = 50000;
 while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
-  usleep(intval($sleepMs * 1000));
-  $sleepMs = min($sleepMs * 1.5, 200); // Exponential backoff capped at 200ms
-  $currentTime = round(microtime(true) * 1000);
-  $cacheVal = GetCachePiece($gameName, 1);
-  SetCachePiece($gameName, $playerID + 1, $currentTime);
+  usleep($sleepUs);
+  $sleepUs = min((int)($sleepUs * 1.5), 200000);
+  $currentTime = (int)(microtime(true) * 1000);
+
+  $cacheArr = ReadCacheArray($gameName);
+  if (!$cacheArr) break;
+  $cacheVal     = (int)$cacheArr[0];
+  $oppLastTime  = $cacheArr[$oppTimeIdx] ?? "";
+  $oppStatus    = strval($cacheArr[$oppStatIdx] ?? "");
+
+  $myLastTime = $cacheArr[$myTimeIdx] ?? "";
+  if ($myLastTime !== "" && ($currentTime - (int)$myLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS) break;
+
+  $cacheArr[$myTimeIdx] = $currentTime;
+  WriteCache($gameName, implode("!", $cacheArr));
+
   ++$count;
   if ($count == 20) break;
-  $otherP = $playerID == 1 ? 2 : 1;
-  $oppLastTime = GetCachePiece($gameName, $otherP + 1);
-  $oppStatus = strval(GetCachePiece($gameName, $otherP + 3));
 
-  if($oppStatus != "-1" && $oppLastTime != "") {
-    if(($currentTime - $oppLastTime) > 10000 && $oppStatus == "0") {
-      $kickSignal = GetCachePiece($gameName, 17);
-      if ($otherP != 2 || $kickSignal !== "kicked") {
-        WriteLog("🔌 Your opponent has disconnected.", path: "../");
-      }
+  if ($oppStatus !== "-1" && $oppLastTime !== "") {
+    if (($currentTime - (int)$oppLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS && $oppStatus === "0") {
+      $cacheArr[$oppStatIdx] = "-1";
+      if ($otherP == 2) $cacheArr[$otherP + 5] = "";
+      WriteCache($gameName, implode("!", $cacheArr));
       GamestateUpdated($gameName);
-      SetCachePiece($gameName, $otherP + 3, "-1");
-      if ($otherP == 2) SetCachePiece($gameName, $otherP + 6, "");
       $kickPlayerTwo = true;
-      include "./APIParseGamefile.php";
-      include "../MenuFiles/WriteGamefile.php";
-      $p1SideboardSubmitted = "0";
-      WriteGameFile();
+      break;
     }
   }
 }
@@ -95,33 +111,66 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
-if ($playerID != 3 && $authKey !== $targetAuth) {
-  // Failsafe: Use game file's auth key if mismatch (lost on page refresh)
-  $authKey = $targetAuth;
+// Spectators carry no key of their own; validateGameAuthKey passes them through.
+if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
+  $response->error = "Authentication failed";
+  echo json_encode($response);
+  exit;
 }
 
 if ($kickPlayerTwo) {
-  // Only increment the disconnect counter for genuine disconnects, not manual kicks
+  // $playerID is the polling player, so the one who disconnected is the other one.
+  $disconnectedPlayer = ($playerID == 1 ? 2 : 1);
   $kickSignal = GetCachePiece($gameName, 17);
-  if ($kickSignal !== "kicked") {
+  $wasChoosingSideboard = $gameStatus >= $MGS_P2Sideboard && $gameStatus < $MGS_GameStarted;
+
+  if ($wasChoosingSideboard) {
+    $originalDeck = "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt";
+    $activeDeck = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+    if (file_exists($originalDeck)) {
+      copy($originalDeck, $activeDeck);
+      $sideboardWasReset = true;
+    }
+  }
+
+  if ($disconnectedPlayer != 2 || $kickSignal !== "kicked") {
+    WriteLog($wasChoosingSideboard ? "Your opponent has left the lobby." : "🔌 Your opponent has disconnected.", path: "../");
+  }
+
+  if ($disconnectedPlayer == 2 && $kickSignal !== "kicked") {
     $numP2Disconnects = IncrementCachePiece($gameName, 11);
     if ($numP2Disconnects >= 3) {
       WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
     }
   }
-  // Do not delete the deck file here — JoinGame.php overwrites it when a new player joins.
-  // Deleting it causes an empty lobby for players who reconnect before a new player joins.
+
   $gameStatus = $MGS_Initial;
   SetCachePiece($gameName, 14, $gameStatus);
-  $p2Data = [];
-  $p2uid = "";
-  $p2id = "";
-  $p2SideboardSubmitted = "0";
+
+  if ($disconnectedPlayer == 2) {
+    if (file_exists("../Games/" . $gameName . "/p2Deck.txt")) unlink("../Games/" . $gameName . "/p2Deck.txt");
+    if (file_exists("../Games/" . $gameName . "/p2DeckOrig.txt")) unlink("../Games/" . $gameName . "/p2DeckOrig.txt");
+
+    $p2Data = [];
+    $p2uid = "";
+    $p2DisplayName = "";
+    $p2id = "";
+    $p2SideboardSubmitted = "0";
+    $p1SideboardSubmitted = "0";
+  } else {
+    SetCachePiece($gameName, 7, "");
+    $p1uid = "-";
+    $p1DisplayName = "";
+    $p1id = "";
+    $p1SideboardSubmitted = "0";
+    $p2SideboardSubmitted = "0";
+  }
+
   WriteGameFile();
 }
 
 $response = new stdClass();
+$response->sideboardWasReset = $sideboardWasReset;
 
 if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   // Stale-state: cache hasn't advanced beyond what client already has.
@@ -137,10 +186,11 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   echo json_encode($response);
   exit;
 } else {
+  $cacheArr = ReadCacheArray($gameName);
 
   // Detect if player 2 was kicked: they are polling but the game slot is empty again
   if ($playerID == 2 && ($p2uid === "" || $p2uid === "-") && $gameStatus == $MGS_Initial) {
-    $kickSignal = GetCachePiece($gameName, 17);
+    $kickSignal = $cacheArr[16] ?? "";
     if ($kickSignal === "kicked") {
       SetCachePiece($gameName, 17, "");
       $response->wasKicked = true;
@@ -149,13 +199,24 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     }
   }
 
-  $response->lastUpdate = GetCachePiece($gameName, 1);
+  $response->lastUpdate = $cacheArr[0] ?? "";
   if ($gameStatus == $MGS_ChooseFirstPlayer) {
     $response->amIChoosingFirstPlayer = ($playerID == $firstPlayerChooser);
   }
 
+  $response->isPrivateLobby = ($visibility == "private");
   if ($playerID == 1 && $gameStatus < $MGS_Player2Joined) {
-    $response->isPrivateLobby = ($visibility == "private");
+    $response->format = $format;
+    $response->gameDescription = $gameDescription;
+
+    $lobbyCreatedAt = intval($cacheArr[5] ?? "");
+    $warningAlreadySent = $cacheArr[11] ?? ""; 
+    if ($lobbyCreatedAt > 0 && $warningAlreadySent != "1"
+        && ($currentTime - $lobbyCreatedAt) > 600000) { // 10 minutes in ms
+      SetCachePiece($gameName, 12, "1");
+      WriteLog("⏳ This lobby has been open for over 10 minutes with no opponent. If you keep having trouble finding a match, try creating a new game.", path: "../");
+      GamestateUpdated($gameName);
+    }
   }
 
   $response->gameLog = JSONLog($gameName, $playerID, "../");
@@ -163,28 +224,32 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->playAudio = ($playerID == 1 && $gameStatus == $MGS_ChooseFirstPlayer ? 1 : 0);
 
   $otherHero = "CardBack";
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = $otherP; // $otherP already computed above
+  $otherUid = ($playerID == 1 ? $p2uid : $p1uid);
+  $otherSeatOccupied = ($otherUid !== "" && $otherUid !== "-");
   $deckFile = "../Games/" . $gameName . "/p" . $otherPlayer . "Deck.txt";
-  if (file_exists($deckFile)) {
+  if ($otherSeatOccupied && file_exists($deckFile)) {
     $handler = fopen($deckFile, "r");
-    $otherCharacter = GetArray($handler);
+    $firstLine = trim(fgets($handler));
     fclose($handler);
-    
-    if (is_array($otherCharacter) && count($otherCharacter) > 0) {
-      $otherHero = $otherCharacter[0];
-    } else {
-      $otherHero = "CardBack";
+    if ($firstLine !== '') {
+      $spacePos = strpos($firstLine, ' ');
+      $otherHero = $spacePos !== false ? substr($firstLine, 0, $spacePos) : $firstLine;
     }
   }
   $response->theirHero = $otherHero;
   $response->theirHeroName = CardName($otherHero);
 
-  $theirName = ($playerID == 1 ? $p2uid : $p1uid);
-  if ($theirName == '-') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
-  $contentCreator = ContentCreators::tryFrom(($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID));
-  $nameColor = ($contentCreator != null ? $contentCreator->NameColor() : "");
-  $overlayURL = ($contentCreator != null ? $contentCreator->HeroOverlayURL($otherHero) : "");
-  $channelLink = ($contentCreator != null ? $contentCreator->ChannelLink() : "");
+  $theirName = ($playerID == 1 ? $p2DisplayName : $p1DisplayName);
+  if ($theirName == '-' || $theirName == '') $theirName = "Player " . ($playerID == 1 ? 2 : 1);
+  $contentCreator = ContentCreators::tryFrom($playerID == 1 ? $p2ContentCreatorID : $p1ContentCreatorID);
+  if ($contentCreator !== null) {
+    $nameColor = $contentCreator->NameColor();
+    $overlayURL = $contentCreator->HeroOverlayURL($otherHero);
+    $channelLink = $contentCreator->ChannelLink();
+  } else {
+    $nameColor = $overlayURL = $channelLink = "";
+  }
 
   $response->theirName = $theirName;
   $response->theirNameColor = $nameColor;
@@ -192,17 +257,16 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->theirChannelLink = $channelLink;
 
   // Patron/supporter info for opponent
-  $contributors = ["sugitime", "OotTheMonk", "Launch", "LaustinSpayce", "Star_Seraph", "Tower", "Etasus", "scary987", "Celenar", "DKGaming", "Aegisworn", "PvtVoid", "Bluffkin"];
   $theirUid = ($playerID == 1 ? $p2uid : $p1uid);
-  $response->theirIsContributor = in_array($theirUid, $contributors);
+  $response->theirIsContributor = IsUserContributor($theirUid);
   $response->theirIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
   $response->theirIsPvtVoidPatron = ($theirUid === "PvtVoid");
   $response->theirMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
-  $response->submitSideboard = ($playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none"));
+  $response->submitSideboard = $playerID == 1 ? ($gameStatus == $MGS_ReadyToStart ? "block" : "none") : ($gameStatus == $MGS_P2Sideboard ? "block" : "none");
 
   $response->myPriority = true;
-  if ($gameStatus == $MGS_ChooseFirstPlayer) $response->myPriority = ($playerID == $firstPlayerChooser ? true : false);
+  if ($gameStatus == $MGS_ChooseFirstPlayer) $response->myPriority = $playerID == $firstPlayerChooser;
   else if ($playerID == 1 && $gameStatus < $MGS_ReadyToStart) $response->myPriority = false;
   else if ($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $response->myPriority = false;
 
@@ -228,16 +292,15 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->legalHeroes = GetLegalHeroes($format);
 
   // If both players have enabled chat, is true, else false
-  $p1ChatStatus = intval(GetCachePiece($gameName, 15));
-  $p2ChatStatus = intval(GetCachePiece($gameName, 16));
+  $p1ChatStatus = intval($cacheArr[14] ?? "");
+  $p2ChatStatus = intval($cacheArr[15] ?? "");
   $response->chatEnabled = ($p1ChatStatus == 1 && $p2ChatStatus == 1 ? true : false);
   if($playerID == 1) $response->chatInvited = ($p1ChatStatus == 0 && $p2ChatStatus == 1);
   else if($playerID == 2) $response->chatInvited = ($p2ChatStatus == 0 && $p1ChatStatus == 1);
 
-  // Typing indicator — same APCu key used by ChatTyping.php / CheckOpponentTyping.php.
+  // Typing indicator — same APCu key used by ChatTyping.php.
   // Piggybacking on the existing lobby poll costs zero extra requests.
   if ($response->chatEnabled && ($playerID == 1 || $playerID == 2)) {
-    $otherP = $playerID == 1 ? 2 : 1;
     $typingCacheKey = "typing_" . md5($gameName) . "_player_" . $otherP;
     $opponentIsTyping = false;
     if (extension_loaded('apcu') && ini_get('apc.enabled')) {

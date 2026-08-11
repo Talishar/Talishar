@@ -6,12 +6,12 @@
   $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "TCC", "EVO", "HVY",
                    "MST", "AKO", "ASB", "AAZ", "ROS", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "LGS", "HER",
                    "FAB", "JDG", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP", "SUP", "APS", "ARR", "AAC", "AHA", 
-                   "PEN", "OMN", "AZS", "MPW", "AOL", "DDD"];
+                   "PEN", "OMN", "AZS", "MPW", "AOL", "DDD", "IAR", "AMA", "SAT", "SBW", "TNP"];
 
   // Main branch FAB Cube
   // $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
   // Feature branch FAB Cube
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/omens-of-the-third-age/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/usurp-the-shadow-throne/json/english/card.json";
 
   $curl = curl_init();
   $headers = [ "Content-Type: application/json" ];
@@ -60,10 +60,10 @@
     "Spectra", "Spellvoid", "Steal", "Stealth", "Surge", "Suspense", "Temper",
     "The Crowd Boos", "The Crowd Cheers", "Tower", "Transcend", "Transform",
     "Unfreeze", "Unity", "Universal", "Unlimited", "Wager", "Ward", "Watery Grave",
-    "Fragment"
+    "Fragment", "Quickstrike", "Usurp", "Starfall", "Decay", "Incarnate"
   ];
 
-  $hasKeywordAmount = [ "Amp", "Arcane Barrier", "Arcane Shelter", "Heave", "Opt", "Quell", "Spellvoid", "Ward" ];
+  $hasKeywordAmount = [ "Amp", "Arcane Barrier", "Arcane Shelter", "Heave", "Opt", "Quell", "Spellvoid", "Ward"];
 
   $essenceElements = ["Earth", "Ice", "Lightning"];
 
@@ -72,6 +72,8 @@
     GenerateKeywordFunction($cardArray, $handler, "Has" . $functionName, $keyword, false);
     if (in_array($keyword, $hasKeywordAmount)) GenerateKeywordFunction($cardArray, $handler, $functionName . "Amount", $keyword, true);
   }
+
+  GenerateCardTokensFunction($cardArray, $handler);
 
   fwrite($handler, "?>");
 
@@ -95,6 +97,8 @@
       "2" => "_yellow",
       3 => "_blue",
       "3" => "_blue",
+      4 => "_purple",
+      "4" => "_purple",
       default => ""
     };
     return $cardID . $suffix;
@@ -164,6 +168,8 @@
       }
       $set = substr($setID, 0, 3);
       $cardNumber = substr($setID, 3, 3);
+      if (!is_numeric($cardNumber))
+        $cardNumber = 0;
       // get lowest rarity printing
       for($j=0; $j<count($cardArray[$i]->printings); ++$j) {
         $printingRarity = $cardArray[$i]->printings[$j]->rarity;
@@ -329,6 +335,46 @@
       fwrite($handler, "default => false\r\n");
     }
     
+    fwrite($handler, "};\r\n}\r\n");
+  }
+
+  function GenerateCardTokensFunction(&$cardArray, $handler)
+  {
+    echo "<BR>CardTokens<BR>";
+    fwrite($handler, "function GeneratedCardTokens(\$cardID) {\r\n");
+    fwrite($handler, "if(is_int(\$cardID)) return \"\";\r\n");
+    fwrite($handler, "return match(\$cardID) {\r\n");
+
+    $tokens = [];
+    for ($i = 0; $i < count($cardArray); ++$i) {
+      if (!in_array("Token", $cardArray[$i]->types)) continue;
+      if (!isset($tokens[$cardArray[$i]->name])) {
+        $tokens[$cardArray[$i]->name] = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
+      }
+    }
+
+    $associativeArray = [];
+    for ($i = 0; $i < count($cardArray); ++$i) {
+      $cardID = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
+      if (isset($associativeArray[$cardID])) continue;
+      $text = $cardArray[$i]->functional_text_plain ?? "";
+      if ($text == "") continue;
+      $text = str_replace($cardArray[$i]->name, "", $text);
+      $matched = [];
+      foreach ($tokens as $tokenName => $tokenID) {
+        if ($tokenName == $cardArray[$i]->name) continue;
+        if (preg_match('/\b' . preg_quote($tokenName, '/') . 's?\b/u', $text)) $matched[] = $tokenID;
+      }
+      if (count($matched) == 0) continue;
+      $matched = array_unique($matched);
+      sort($matched);
+      $associativeArray[$cardID] = implode(",", $matched);
+    }
+
+    foreach ($associativeArray as $cID => $tokenList) {
+      fwrite($handler, "\"$cID\" => \"$tokenList\",\r\n");
+    }
+    fwrite($handler, "default => \"\"\r\n");
     fwrite($handler, "};\r\n}\r\n");
   }
 

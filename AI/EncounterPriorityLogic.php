@@ -88,68 +88,48 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
 {
   switch($zone) {
     case "Hand":
-      for($i = 0; $i < count($zoneArr); ++$i) {
-        array_push($priorityArray, [
-          $zoneArr[$i],
-          "Hand",
-          $i,
-          GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ]);
+      $zoneCount = count($zoneArr);
+      for($i = 0; $i < $zoneCount; ++$i) {
+        $priorityArray[] = [$zoneArr[$i], "Hand", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 
     case "Arsenal":
-      for ($i = 0; $i < count($zoneArr); $i += ArsenalPieces()) {
-        array_push($priorityArray, [
-          $zoneArr[$i],
-          "Arsenal",
-          $i,
-          GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ]);
+      $zoneCount = count($zoneArr);
+      $arsenalPieces = ArsenalPieces();
+      for ($i = 0; $i < $zoneCount; $i += $arsenalPieces) {
+        $priorityArray[] = [$zoneArr[$i], "Arsenal", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 
     case "Character":
-      for ($i = 0; $i < count($zoneArr); $i += CharacterPieces()) {
-        array_push($priorityArray, [
-          $zoneArr[$i],
-          "Character",
-          $i,
-          GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ]);
+      $zoneCount = count($zoneArr);
+      $characterPieces = CharacterPieces();
+      for ($i = 0; $i < $zoneCount; $i += $characterPieces) {
+        $priorityArray[] = [$zoneArr[$i], "Character", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 
     case "Items":
-      for ($i = 0; $i < count($zoneArr); $i += ItemPieces()) {
-        array_push($priorityArray, [
-          $zoneArr[$i],
-          "Item",
-          $i,
-          GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ]);
+      $zoneCount = count($zoneArr);
+      $itemPieces = ItemPieces();
+      for ($i = 0; $i < $zoneCount; $i += $itemPieces) {
+        $priorityArray[] = [$zoneArr[$i], "Item", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 
     case "Allies":
-      for ($i = 0; $i < count($zoneArr); $i += AllyPieces()) {
-        array_push($priorityArray, [
-          $zoneArr[$i],
-          "Ally",
-          $i,
-          GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ]);
+      $zoneCount = count($zoneArr);
+      $allyPieces = AllyPieces();
+      for ($i = 0; $i < $zoneCount; $i += $allyPieces) {
+        $priorityArray[] = [$zoneArr[$i], "Ally", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 
     case "Banish":
-      for ($i = 0; $i < count($zoneArr); ++$i) {
-        array_push($priorityArray, [
-          $zoneArr[$i],
-          "Banish",
-          $i,
-          GetPriority($zoneArr[$i], $character[0], $priorityIndex)
-        ]);
+      $zoneCount = count($zoneArr);
+      for ($i = 0; $i < $zoneCount; ++$i) {
+        $priorityArray[] = [$zoneArr[$i], "Banish", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
       }
       return $priorityArray;
 
@@ -195,12 +175,13 @@ function SortPriorityArray($priorityArray)
 function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destinationSecondary, $amount = 1)
 {
   // Find and resolve the highest-priority cards in range
+  $priorityArrayCount = count($priorityArray);
   for($i = 0; $i < $amount; $i++) {
     $index = -1;
     $maxPriority = $range + 0.09; // Just below range start
     
     // Find highest priority card in range
-    for($j = 0; $j < count($priorityArray); ++$j) {
+    for($j = 0; $j < $priorityArrayCount; ++$j) {
       if($priorityArray[$j][3] >= $range + 0.1 && 
          $priorityArray[$j][3] <= $range + 0.9 &&
          $priorityArray[$j][3] > $maxPriority) {
@@ -222,7 +203,7 @@ function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destin
   }
   
   // Resolve remaining cards in range
-  for($k = 0; $k < count($priorityArray); ++$k) {
+  for($k = 0; $k < $priorityArrayCount; ++$k) {
     if($priorityArray[$k][3] >= $range + 0.1 && $priorityArray[$k][3] <= $range + 0.9) {
       if($destinationSecondary == "Unplayed") {
         $priorityArray[$k][3] = 0;
@@ -245,7 +226,8 @@ function FirstTurnResolution($priorityArray, $character)
   global $currentTurn;
   
   if($currentTurn == 0 && EncounterBlocksFirstTurn($character[0])) {
-    for($i = 0; $i < count($priorityArray); ++$i) {
+    $priorityArrayCount = count($priorityArray);
+    for($i = 0; $i < $priorityArrayCount; ++$i) {
       // Boost hand cards but not equipment
       if($priorityArray[$i][3] != 0 && $priorityArray[$i][1] != "Character") {
         $decimalPart = $priorityArray[$i][3] - (int)$priorityArray[$i][3];

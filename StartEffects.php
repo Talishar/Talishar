@@ -6,8 +6,8 @@ include_once "AccountFiles/AccountSessionAPI.php";
 // Initialize game state
 AddLayer("STARTTURN", $mainPlayer, "-");
 $layerPriority = [];
-array_push($layerPriority, ShouldHoldPriority(1));
-array_push($layerPriority, ShouldHoldPriority(2));
+$layerPriority[] = ShouldHoldPriority(1);
+$layerPriority[] = ShouldHoldPriority(2);
 
 // Get player characters and health
 $p1Char = &GetPlayerCharacter(1);
@@ -21,8 +21,7 @@ $format = is_numeric($format) ? FormatName($format) : $format;
 if ($p1StartingHealth != "") $p1H = $p1StartingHealth;
 
 // Initialize game log
-$fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
-if (!file_exists($fullLog)) $fullLog = "../Games/" . $gameName . "/fullGamelog.txt";
+$fullLog = "../Games/{$gameName}/fullGamelog.txt";
 if (file_exists($fullLog)) {
   $handler = fopen($fullLog, "w+");
   fwrite($handler, "Player $firstPlayer is the first player and will begin play\r\n");
@@ -80,8 +79,8 @@ handleCogwerxEquipment($p1Char, $p2Char);
 
 //Macro for Limited
 if($format == "draft"){
-  AddDecisionQueue("PASSPARAMETER", "-", "omens_of_arcana");
-  AddDecisionQueue("PUTPLAY", "-", "-", 1);
+  AddDecisionQueue("PASSPARAMETER", $mainPlayer, "omens_of_arcana");
+  AddDecisionQueue("PUTPLAY", $mainPlayer, "-", 1);
 }
 
 // Add final game setup decisions
@@ -97,11 +96,11 @@ if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
 
 function handleCharacterStartAbilities()
 {
-  global $p1Char, $p2Char, $format;
+  global $p1Char, $p2Char;
 
   // Dash abilities
-  $p1IsDash = in_array($p1Char[0], ["dash_inventor_extraordinaire", "dash"]);
-  $p2IsDash = in_array($p2Char[0], ["dash_inventor_extraordinaire", "dash"]);
+  $p1IsDash = ($p1Char[0] === "dash_inventor_extraordinaire" || $p1Char[0] === "dash");
+  $p2IsDash = ($p2Char[0] === "dash_inventor_extraordinaire" || $p2Char[0] === "dash");
 
   if ($p1IsDash) {
     $items = SearchDeck(1, "", "Item", 2, -1, "MECHANOLOGIST");
@@ -123,14 +122,14 @@ function handleCharacterStartAbilities()
   }
 
   // Fai abilities
-  if (in_array($p1Char[0], ["fai_rising_rebellion", "fai"])) {
+  if ($p1Char[0] === "fai_rising_rebellion" || $p1Char[0] === "fai") {
     $cards = SearchDeckForCard(1, "phoenix_flame_red");
     if ($cards != "") {
       AddDecisionQueue("MAYCHOOSEDECK", 1, $cards);
       AddDecisionQueue("ADDDISCARD", 1, "DECK", 1);
     }
   }
-  if (in_array($p2Char[0], ["fai_rising_rebellion", "fai"])) {
+  if ($p2Char[0] === "fai_rising_rebellion" || $p2Char[0] === "fai") {
     $cards = SearchDeckForCard(2, "phoenix_flame_red");
     if ($cards != "") {
       AddDecisionQueue("MAYCHOOSEDECK", 2, $cards);
@@ -167,21 +166,21 @@ function handleCharacterStartAbilities()
   }
   
   // Barbed Castaway
-  if (($index = FindCharacterIndex(1, "barbed_castaway")) > 0) {
+  if (FindCharacterIndex(1, "barbed_castaway") > 0) {
     AddCurrentTurnEffect("barbed_castaway-Load", 1);
     AddCurrentTurnEffect("barbed_castaway-Aim", 1);
   }
-  if (($index = FindCharacterIndex(2, "barbed_castaway")) > 0) {
+  if (FindCharacterIndex(2, "barbed_castaway") > 0) {
     AddCurrentTurnEffect("barbed_castaway-Load", 2);
     AddCurrentTurnEffect("barbed_castaway-Aim", 2);
   }
 
   // Victor
   if (SearchCharacterForCard(1, "victor_goldmane_high_and_mighty") || SearchCharacterForCard(1, "victor_goldmane")) {
-    AddDecisionQueue("ADDCURRENTTURNEFFECT", 1, $p1Char[0] . "-1", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", 1, "{$p1Char[0]}-1", 1);
   }
   if (SearchCharacterForCard(2, "victor_goldmane_high_and_mighty") || SearchCharacterForCard(2, "victor_goldmane")) {
-    AddDecisionQueue("ADDCURRENTTURNEFFECT", 2, $p2Char[0] . "-1", 1);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", 2, "{$p2Char[0]}-1", 1);
   }
 }
 
@@ -215,11 +214,13 @@ function InventoryStartGameAbilities($player)
 {
   global $p1Inventory, $p2Inventory;
   $inventory = $player == 1 ? $p1Inventory : $p2Inventory;
-  for ($i = 0; $i < count($inventory); $i += InventoryPieces()) {
+  $inventoryPieceSize = InventoryPieces();
+  $accountedFor = [];
+  for ($i = count($inventory) - 1; $i >= 0; $i -= $inventoryPieceSize) {
     switch ($inventory[$i]) {
       case "levia_redeemed":
         PutPermanentIntoPlay($player, "levia_redeemed");
-        array_push($inventory, "blasmophet_levia_consumed");
+        $inventory[] = "blasmophet_levia_consumed";
         break;
       case "adaptive_plating":
         addAdaptiveEquipmentDecision($player, $inventory[$i], "ADAPTIVEPLATING");
@@ -230,6 +231,13 @@ function InventoryStartGameAbilities($player)
       case "adaptive_alpha_mold":
         addAdaptiveEquipmentDecision($player, $inventory[$i], "ADAPTIVEALPHAMOLD");
         break;
+    }
+    if (!in_array($inventory[$i], $accountedFor) && !IsModular($inventory[$i]) && TypeContains($inventory[$i], "E")) {
+      // remove anything in the inventory that got equipped
+      $accountedFor[] = $inventory[$i];
+      if (SearchCharacterForCard($player, $inventory[$i])) {
+        RemoveInventory($player, $i);
+      }
     }
   }
 }

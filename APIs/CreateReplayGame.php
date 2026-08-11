@@ -7,6 +7,7 @@ include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
+include_once '../includes/functions.inc.php';
 
 SetHeaders();
 
@@ -160,9 +161,19 @@ if (empty($p1Key) || empty($p2Key)) {
 
 $p1uid = "-";
 $p2uid = "-";
+$p1DisplayName = "";
+$p2DisplayName = "";
+$metadataPath = $replayPath . "replayMetadata.json";
+if (file_exists($metadataPath)) {
+  $replayMetadata = json_decode(file_get_contents($metadataPath), true);
+  if (is_array($replayMetadata)) {
+    $p1DisplayName = trim((string)($replayMetadata["p1DisplayName"] ?? ""));
+    $p2DisplayName = trim((string)($replayMetadata["p2DisplayName"] ?? ""));
+  }
+}
 $p1id = "-";
 $p2id = "-";
-$hostIP = $_SERVER['REMOTE_ADDR'];
+$hostIP = GetClientIP();
 $p1StartingHealth = $startingHealth;
 
 $filename = "../Games/$gameName/GameFile.txt";
@@ -195,6 +206,7 @@ WriteCache($gameName, 1 . "!" . $currentTime . "!" . $currentTime . "!0!-1!" . $
 // Copy replay files with error handling
 $origGamestateSource = $replayPath . "origGamestate.txt";
 $origGamestateDest = "../Games/$gameName/gamestate.txt";
+$replayStartGamestateDest = "../Games/$gameName/replayStartGamestate.txt";
 $commandFileSource = $replayPath . "commandfile.txt";
 $commandFileDest = "../Games/$gameName/replayCommands.txt";
 
@@ -203,6 +215,13 @@ $copyErrors = [];
 if (!@copy($origGamestateSource, $origGamestateDest)) {
   $copyErrors[] = "Failed to copy original gamestate from $origGamestateSource to $origGamestateDest";
 }
+if (!@copy($origGamestateSource, $replayStartGamestateDest)) {
+  $copyErrors[] = "Failed to create replay start snapshot from $origGamestateSource";
+}
+file_put_contents(
+  "../Games/$gameName/replaySource.json",
+  json_encode(["userId" => $userId, "replayNumber" => (int)$replayNumber])
+);
 
 if (!@copy($commandFileSource, $commandFileDest)) {
   $copyErrors[] = "Failed to copy command file from $commandFileSource to $commandFileDest";

@@ -29,8 +29,10 @@ function CombatDummyAI()
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer && !$canceled)//AIs turn
       {
         $character = &GetPlayerCharacter($currentPlayer);
+        $characterCount = count($character);
+        $characterPieces = CharacterPieces();
         $index = -1;
-        for($j=0; $j<count($character) && $index == -1; $j += CharacterPieces()) if(CardType($character[$j]) != "C") $index = $j;
+        for($j=0; $j<$characterCount && $index == -1; $j += $characterPieces) if(CardType($character[$j]) != "C") $index = $j;
         $cardID = $character[$index];
         $from = "EQUIP";
         $baseCost = AbilityCost($cardID);

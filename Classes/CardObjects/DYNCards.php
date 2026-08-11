@@ -639,9 +639,9 @@
 
 class construct_nitro_mechanoid_yellow extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "construct_nitro_mechanoid_yellow";
-    $this->controller = $controller;
+	function __construct($controller) {
+		$this->cardID = "construct_nitro_mechanoid_yellow";
+		$this->controller = $controller;
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -649,7 +649,7 @@ class construct_nitro_mechanoid_yellow extends Card {
 	}
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $conditionsMet = CheckIfConstructNitroMechanoidConditionsAreMet($this->controller);
+    	$conditionsMet = CheckIfConstructNitroMechanoidConditionsAreMet($this->controller);
 		if ($conditionsMet != "") return $conditionsMet;
 		$Items = new Items($this->controller);
 		// Add the new item so we can put cards under it
@@ -661,7 +661,8 @@ class construct_nitro_mechanoid_yellow extends Card {
 		$Character = new PlayerCharacter($this->controller);
 		for ($i = $Character->NumCards() - 1; $i >= 0; $i -= 1) {
 			$CharCard = $Character->Card($i, true);
-			if(CardType($CharCard->CardID()) != "C" && CardType($CharCard->CardID()) != "Companion") {
+			$charCardType = CardType($CharCard->CardID());
+			if($charCardType != "C" && $charCardType != "Companion") {
 				$Mechanoid->AddSubcard($CharCard->CardID());
 				$characterSubCards = $CharCard->Subcards();
 				if ($characterSubCards != "-") {
@@ -2686,82 +2687,170 @@ class nitro_mechanoidc extends Card {
 // }
 
 
-// class spectral_prowler_red extends Card {
+class spectral_prowler extends BaseCard {
+	function ProcessTrigger() {
+		if(SearchAuras("spectral_shield", $this->controller)) GiveAttackGoAgain();
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "spectral_prowler_red";
-//     $this->controller = $controller;
-//     }
+	function PlayTrigger() {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class spectral_prowler_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "spectral_prowler_red";
+		$this->controller = $controller;
+		$this->baseCard = new spectral_prowler($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function PlayTrigger($from) {
+		$this->baseCard->PlayTrigger();
+	}
+}
+
+class spectral_prowler_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "spectral_prowler_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new spectral_prowler($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function PlayTrigger($from) {
+		$this->baseCard->PlayTrigger();
+	}
+}
+
+class spectral_prowler_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "spectral_prowler_blue";
+		$this->controller = $controller;
+		$this->baseCard = new spectral_prowler($this->cardID, $this->controller);
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+
+	function PlayTrigger($from) {
+		$this->baseCard->PlayTrigger();
+	}
+}
 
 
-// class spectral_prowler_yellow extends Card {
+class spectral_rider extends BaseCard {
+	function ProcessTrigger() {
+		if(SearchAuras("spectral_shield", $this->controller)) AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "spectral_prowler_yellow";
-//     $this->controller = $controller;
-//     }
+	function PlayTrigger() {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class spectral_rider_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "spectral_rider_red";
+		$this->controller = $controller;
+		$this->baseCard = new spectral_rider($this->cardID, $this->controller);
+	}
+  
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
 
-// class spectral_prowler_blue extends Card {
+	function DoesEffectGrantOverpower() {
+		return true;
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "spectral_prowler_blue";
-//     $this->controller = $controller;
-//     }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayTrigger($from) {
+		$this->baseCard->PlayTrigger();
+	}
+}
 
+class spectral_rider_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "spectral_rider_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new spectral_rider($this->cardID, $this->controller);
+	}
+  
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-// class spectral_rider_red extends Card {
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "spectral_rider_red";
-//     $this->controller = $controller;
-//     }
+	function DoesEffectGrantOverpower() {
+		return true;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
 
+	function PlayTrigger($from) {
+		$this->baseCard->PlayTrigger();
+	}
+}
 
-// class spectral_rider_yellow extends Card {
+class spectral_rider_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "spectral_rider_blue";
+		$this->controller = $controller;
+		$this->baseCard = new spectral_rider($this->cardID, $this->controller);
+	}
+  
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "spectral_rider_yellow";
-//     $this->controller = $controller;
-//     }
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function DoesEffectGrantOverpower() {
+		return true;
+	}
 
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
 
-// class spectral_rider_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "spectral_rider_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayTrigger($from) {
+		$this->baseCard->PlayTrigger();
+	}
+}
 
 
 // class spell_fray_cloak extends Card {

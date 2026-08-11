@@ -43,6 +43,8 @@ function DualityPrePitch($cardID, $index, $from, $player) {
 		AddDecisionQueue("PASSPARAMETER", $player, $cardID, 1);
 	}
 	AddDecisionQueue("DISCARDCARD", $player, "HAND-$cardID", 1);
+	AddDecisionQueue("PASSPARAMETER", $player, $cardID, 1);
+	AddDecisionQueue("SETDQVAR", $player, "0", 1);
 	AddDecisionQueue("CONVERTLAYERTOABILITY", $player, $cardID, 1);
 	AddDecisionQueue("FINDINDICES", $player, "ARCANETARGET,0", 1);
 	AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target for <0>", 1);
@@ -54,7 +56,8 @@ function DualityPrePitch($cardID, $index, $from, $player) {
 function FindHoloAuras($player, $subtype="LIGHTNING", $holoState=0, $excludeFirstFlow=true) {
 	$Auras = new Auras($player);
 	$ret = [];
-	for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+	$numAuras = $Auras->NumAuras();
+	for ($i = 0; $i < $numAuras; ++$i) {
 		$AuraCard = $Auras->Card($i, true);
 		if ($excludeFirstFlow && $AuraCard->CardID() == "lightning_flow") {
 			$excludeFirstFlow = false;
@@ -67,6 +70,9 @@ function FindHoloAuras($player, $subtype="LIGHTNING", $holoState=0, $excludeFirs
 	return implode(",", $ret);
 }
 
+function FindHoloAurasAwait($player) {
+	return FindHoloAuras($player, excludeFirstFlow:false);
+}
 function ProcessFragmentOnBlock($index){
 	global $mainPlayer, $Stack;
 	if(IsFragmentActive() && DoesBlockTriggerFragment($index))
@@ -81,7 +87,7 @@ function ProcessFragmentOnBlock($index){
 function IsFragmentActive() {
 	global $CombatChain, $mainPlayer;
 	$AttackCard = $CombatChain->AttackCard();
-	$card = GetClass($AttackCard->ID(), $mainPlayer);
+	$card = GetClass($AttackCard->ID(), $mainPlayer, "CC", $AttackCard->UniqueID());
 	if ($card != "-") return $card->HasFragment();
 	return false;
 }
@@ -99,11 +105,12 @@ function DoesBlockTriggerFragment($index) {
 }
 
 function FragmentLayer($blockingCardUID) {
-	global $mainPlayer, $CombatChain, $mainPlayer;
+	global $mainPlayer, $CombatChain, $mainPlayer, $CS_NumFragmented;
 	if (IsFragmentStillActive($blockingCardUID)) {
 		AddCurrentTurnEffect("FRAGMENT", $mainPlayer);
-		$attackCard = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
+		$attackCard = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", $CombatChain->AttackCard()->UniqueID());
 		if ($attackCard != "-") $attackCard->FragmentTrigger();
+		IncrementClassState($mainPlayer, $CS_NumFragmented);
 	}
 }
 
@@ -114,7 +121,7 @@ function HasFragment($cardID) {
 
 function PayLightningFlowInstead($player, $cardID) {
 	if (CountAura("lightning_flow", $player) > 0) {
-		AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_" . CardLink("lightning_flow"), 1);
+		AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_a_" . "{{element|Lightning Flow|" . GetElementColorCode("LIGHTNING") . "|lightning_flow}}", 1);
 		AddDecisionQueue("NOPASS", $player, "-", 1);
 		$Auras = new Auras($player);
 		$AuraCard = $Auras->FindCardID("lightning_flow");
@@ -125,21 +132,23 @@ function PayLightningFlowInstead($player, $cardID) {
 }
 
 // Use for effects that say "Prevent the next X damage"
-function FloatingPrevention($index, $damage, $amount, &$remove) {
+function FloatingPrevention($index, $damage, $amount, &$remove, $preventable=true) {
 	global $CurrentTurnEffects;
 	$Effect = $CurrentTurnEffects->Effect($index);
-	if ($damage >= $Effect->NumUses()) {
+	if ($damage >= $Effect->NumUses() && $preventable) {
 		$remove = true;
 		return $Effect->NumUses();
 	}
-	else {
+	elseif($preventable) {
 		if (!$amount) $Effect->AddUses(-$damage);
 		return $damage;
 	}
+	return 0;
 }
 
 function HoloFlicker($player, $MZIndex) {
 	$Aura = MZIndexToObject($player, $MZIndex);
+	if ($Aura == "") return;
 	$banishInd = $Aura->Banish();
 	if ($banishInd != -1) {
 		$BanishCard = new BanishCard($player, $banishInd);
@@ -159,7 +168,7 @@ function FirstDamageTrigger($target, $cardID, $player, $effectID="-") {
 
 // returns a list of all attack action cards that could be targeted
 function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
-	global $Stack, $CombatChain, $ChainLinks;
+	global $Stack, $CombatChain, $ChainLinks, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
 	$targets = [];
 	if (IsLayerStep()) {
 		$botLayer = $Stack->BottomLayer();
@@ -169,24 +178,62 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 		elseif ($maxCost != -1 && CardCost($botLayer->ID(), "LAYER", $botLayer->Index()) > $maxCost) {}
 		else $targets[] = "LAYER-" . $botLayer->Index();
 	}
-	for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+	$numActiveLink = $CombatChain->NumCardsActiveLink();
+	for ($i = 0; $i < $numActiveLink; ++$i) {
 		$ChainCard = $CombatChain->Card($i, true);
+		if ($i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue;
 		if (!TypeContains($ChainCard->ID(), "AA")) continue;
 		if ($player != "" && $ChainCard->PlayerID() != $player) continue;
 		if ($talent != "" && !TalentContains($ChainCard->ID(), "LIGHTNING", $ChainCard->PlayerID())) continue;
 		if ($maxCost != -1 && CardCost($ChainCard->ID(), "CC", $ChainCard->Index()) > $maxCost) continue;
 		$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
 	}
-	for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+	$numLinks = $ChainLinks->NumLinks();
+	for ($i = 0; $i < $numLinks; ++$i) {
 		$Link = $ChainLinks->GetLink($i);
-		for ($j = 0; $j < $Link->NumCards(); ++$j) {
+		$numLinkCards = $Link->NumCards();
+		for ($j = 0; $j < $numLinkCards; ++$j) {
 			$ChainCard = $Link->GetLinkCard($j, true);
+			if (!$ChainCard->StillOnChain()) continue;
 			if (!TypeContains($ChainCard->ID(), "AA")) continue;
 			if ($player != "" && $ChainCard->PlayerID() != $player) continue;
 			if ($talent != "" && !TalentContains($ChainCard->ID(), "LIGHTNING", $ChainCard->PlayerID())) continue;
 			if ($maxCost != -1 && CardCost($ChainCard->ID(), "CC", $ChainCard->Index()) > $maxCost) continue;
 			$targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
 		}
+	}
+	return $targets;
+}
+
+// returns a list of any attack that can be targeted
+function TargetAttack($player) {
+	global $Stack, $CombatChain, $ChainLinks, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $AttackQueue;
+	$targets = [];
+	if (IsLayerStep()) {
+		$botLayer = $Stack->BottomLayer();
+		$targets[] = "LAYER-" . $botLayer->Index();
+	}
+
+	$i = 0;
+	if ($CombatChain->HasCurrentLink()) {
+		$ChainCard = $CombatChain->Card($i, true);
+		if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-")
+			$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
+	}
+
+	$numLinks = $ChainLinks->NumLinks();
+	for ($i = 0; $i < $numLinks; ++$i) {
+		$Link = $ChainLinks->GetLink($i);
+		$j = 0;
+		$ChainCard = $Link->GetLinkCard($j, true);
+		if ($ChainCard->StillOnChain())
+			$targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
+	}
+
+	$numAttacks = $AttackQueue->NumAttacks();
+	for ($i = 0; $i < $numAttacks; ++$i) {
+		$Card = $AttackQueue->Card($i, true);
+		$targets[] = "ATTACKQUEUE-" . $Card->Index();
 	}
 	return $targets;
 }

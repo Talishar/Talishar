@@ -13,14 +13,14 @@
 //   else AddDecisionQueue("SETDQVAR", $player, implode("|", $returnNames), $subsequent);
 // }
 
-function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, $final=false, $prepend=false, ...$args) {
+function Await($player, $function="",  $returnName="LASTRESULT", $lastResultName="LASTRESULT", $subsequent=1, $final=false, $prepend=false, ...$args) {
   if (!$prepend) {
     AddDecisionQueue("SETDQVAR", $player, $lastResultName, $subsequent);
     foreach ($args as $key => $value) {
       AddDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
       AddDecisionQueue("SETDQVAR", $player, $key, $subsequent);
     }
-    AddDecisionQueue("AWAIT", $player, $function, $subsequent);
+    if ($function != "") AddDecisionQueue("AWAIT", $player, $function, $subsequent);
     if ($final) {
       AddDecisionQueue("CLEARDQVARS", $player, "-");
       AddDecisionQueue("ELSE", $player, "-");
@@ -35,7 +35,7 @@ function Await($player, $function,  $returnName="LASTRESULT", $lastResultName="L
       PrependDecisionQueue("CLEARDQVARS", $player, "-");
     }
     else PrependDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
-    PrependDecisionQueue("AWAIT", $player, $function, $subsequent);
+    if ($function != "") PrependDecisionQueue("AWAIT", $player, $function, $subsequent);
     foreach ($args as $key => $value) {
       PrependDecisionQueue("SETDQVAR", $player, $key, $subsequent);
       PrependDecisionQueue("PASSPARAMETER", $player, $value, $subsequent);
@@ -98,15 +98,17 @@ function MultiAddHandAwait($player) {
   $loud = $dqVars["log"] ?? "1";
   $hand = &GetHand($player);
   $log = "";
-  for ($i = 0; $i < count($cards); ++$i) {
-    if ($loud == "1") {
-      if ($log != "") $log .= ", ";
-      if ($i != 0 && $i == count($cards) - 1) $log .= "and ";
+  $count = count($cards);
+  $lastIdx = $count - 1;
+  for ($i = 0; $i < $count; ++$i) {
+    if ($loud === "1") {
+      if ($log !== "") $log .= ", ";
+      if ($i !== 0 && $i === $lastIdx) $log .= "and ";
       $log .= CardLink($cards[$i], $cards[$i]);
     }
-    array_push($hand, $cards[$i]);
+    $hand[] = $cards[$i];
   }
-  if ($log != "") WriteLog("$log added to hand");
+  if ($log !== "") WriteLog("$log added to hand");
   return $dqVars["cardIDs"];
 }
 
@@ -122,9 +124,10 @@ function MultiTargetIndicesAwait($player) {
   $currentTargets = explode(",", $dqVars["currentTargets"] ?? "");
   $rvOrig = explode(",", SearchMultizone($player, $dqVars["search"]));
   $rv = [];
+  $currentTargetsFlip = array_flip($currentTargets);
   //remove any choices that have already been targeted
   foreach ($rvOrig as $ind) {
-    if (!in_array(CleanTarget($player, $ind), $currentTargets)) array_push($rv, $ind);
+    if (!isset($currentTargetsFlip[CleanTarget($player, $ind)])) $rv[] = $ind;
   }
   $rv = implode(",", $rv);
   return $rv == "" ? "PASS" : $rv;
@@ -135,9 +138,10 @@ function MultiChooseIndicesAwait($player) {
   $currentChoices = explode(",", $dqVars["currentChoices"] ?? "");
   $rvOrig = explode(",", SearchMultizone($player, $dqVars["search"]));
   $rv = [];
+  $currentChoicesFlip = array_flip($currentChoices);
   //remove any choices that have already been targeted
   foreach ($rvOrig as $ind) {
-    if (!in_array($ind, $currentChoices)) array_push($rv, $ind);
+    if (!isset($currentChoicesFlip[$ind])) $rv[] = $ind;
   }
   $rv = implode(",", $rv);
   return $rv == "" ? "PASS" : $rv;
@@ -153,7 +157,7 @@ function ChooseMultiZoneAwait($player) {
   global $dqVars;
   $may = $dqVars["may"] ?? false;
   $indices = $dqVars["indices"] ?? "";
-  if ($indices == "") return "PASS";
+  if ($indices == "" || $indices == "PASS") return "PASS";
   $notSubsequent = $dqVars["notSubsequent"] ?? false;
   if ($may)
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
@@ -162,11 +166,36 @@ function ChooseMultiZoneAwait($player) {
   PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose a card", !$notSubsequent);
 }
 
+function DiscardAwait($player) {
+  global $dqVars;
+  $MZIndex = $dqVars["MZIndex"] ?? "-";
+  $source = $dqVars["source"] ?? "";
+  $from = "HAND";
+  $effectController = $dqVars["effectController"] ?? "";
+  $cardController = $player;
+  if ($MZIndex != "-")
+    $index = explode("-", $MZIndex)[1] ?? -1;
+  else $index = $dqVars["index"] ?? -1;
+  if ($index != -1) {
+    $Hand = new Hand($player);
+    $cardID = $Hand->Remove($index);
+    CardDiscarded($player, $cardID, $source);
+    AddGraveyard($cardID, $player, $from, $effectController, $cardController);
+  }
+}
+
 function MZRemoveAwait($player) {
+  global $dqVars;
+  $MZIndex = $dqVars["MZIndex"] ?? "-";
+  $parameter = $dqVars["parameter"] ?? "-";
+  return MZRemove($player, $MZIndex, $parameter);
+}
+
+function MZBanishAwait($player) {
   global $dqVars;
   $MZIndex = $dqVars["MZIndex"];
   $parameter = $dqVars["parameter"] ?? "-";
-  return MZRemove($player, $MZIndex, $parameter);
+  return MZBanish($player, $parameter, $MZIndex);
 }
 
 function SetLayerTargetAwait($player) {
@@ -177,7 +206,8 @@ function SetLayerTargetAwait($player) {
   $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
   WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
   $cleanTarget = CleanTarget($player, $targ);
-  for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+  $numLayers = $Stack->NumLayers();
+  for ($i = 0; $i < $numLayers; ++$i) {
     $Layer = $Stack->Card($i, true);
     if ($Layer->ID() == $cardID) {
       $Layer->AddTarget($cleanTarget);
@@ -197,8 +227,8 @@ function DealDamageAwait($player) {
 
   $targetArr = explode("-", $target);
   $targetPlayer = $targetArr[0] == "MYCHAR" || $targetArr[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
-  if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
-    return DamageAlly($targetPlayer, $target[1], $damage, $type);
+  if ($targetArr[0] == "THEIRALLY" || $targetArr[0] == "MYALLY") {
+    return DamageAlly($targetPlayer, $targetArr[1], $damage, $type);
   } else {
     PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
     if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
@@ -222,7 +252,7 @@ Function YesNoAwait($player) {
 }
 
 
-// Use this one during the resolution of an effect for clearer UI
+// Use this one during the resolution of an effect.
 function PayResourcesEffectAwait($player) {
   global $dqVars;
   $amount = $dqVars["amount"];
@@ -240,6 +270,7 @@ function PayResourcesAwait($player) {
 function PlayAuraAwait($player) {
   global $dqVars;
   $cardID = strtolower($dqVars["cardID"]);
+  if (str_contains($cardID, "cardid-")) $cardID = explode("-", $cardID)[1];
   $number = $dqVars["number"] ?? 1;
   $isToken = $dqVars["isToken"] ?? false;
   $rogueHeronSpecial = $dqVars["rogueHeronSpecial"] ?? false;
@@ -265,12 +296,13 @@ function ResolveGoesWhereAwait($player) {
   $from = $dqVars["from"] ?? "-";
   $effectController = $dqVars["effectController"] ?? "";
   $modifier = $dqVars["modifier"] ?? "NA";
-  ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController, $modifier);
+  $additionalCosts = $dqVars["additionalCosts"] ?? "-";
+  ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController, $modifier, $additionalCosts);
 }
 
 function MZDestroyAwait($player) {
   global $dqVars;
-  $MZInd = $dqVars["MZInd"];
+  $MZInd = $dqVars["MZInd"] ?? "";
   $effectController = $dqVars["effectController"] ?? "";
   $allArsenal = $dqVars["allArsenal"] ?? true;
   MZDestroy($player, $MZInd, $effectController, $allArsenal);
@@ -301,7 +333,7 @@ function ChooseTextAwait($player) {
   $choices = $dqVars["choices"];
   $numChoices = $dqVars["numChoices"] ?? 0;
   if ($numChoices == 0)
-    $numChoices = count(explode(",", $choices));
+    $numChoices = substr_count($choices, ',') + 1;
   $maxChoices = $dqVars["maxChoices"] ?? $numChoices;
   $minChoices = $dqVars["minChoices"] ?? $numChoices;
   $choices = $dqVars["choices"];
@@ -348,6 +380,10 @@ function ResolveGoAgainAwait($player) {
   ResolveGoAgain($cardID, $player, $from, additionalCosts: $additionalCosts, uniqueID:$uniqueID);
 }
 
+function CacheCombatResultAwait($player) {
+  CacheCombatResult();
+}
+
 function AfterResolveEffectsAwait($player) {
   CopyCurrentTurnEffectsFromAfterResolveEffects();
 }
@@ -363,7 +399,8 @@ function AddTriggerAwait($player) {
   $additional = $dqVars["additional"] ?? "";
   $target = $dqVars["target"] ?? "";
   $cardID = $dqVars["cardID"];
-  $parameter = "$cardID|$additional";
+  $uniqueID = $dqVars["uniqueID"] ?? "-";
+  $parameter = "$cardID|$additional|$uniqueID";
   PrependDecisionQueue("ADDTRIGGER", $player, $parameter, 1);
   PrependDecisionQueue("PASSPARAMETER", $player, $target, 1);
 }
@@ -371,6 +408,52 @@ function AddTriggerAwait($player) {
 function MZTapAwait($player) {
   global $dqVars;
   $MZInd = $dqVars["MZIndex"];
-  $tapState = $dqVars["tapState"];
+  $tapState = $dqVars["tapState"] ?? 1;
   Tap($MZInd, $player, $tapState);
+}
+
+function AQTargetingAwait($player) {
+  global $dqVars, $defPlayer;
+  $targets = explode(",", $dqVars["target"] ?? "THEIRCHAR-0");
+  $cleanedTargets = [];
+  foreach($targets as $target) {
+    $cleanTarget = CleanTarget($player, $target);
+    $cleanedTargets[] = $cleanTarget;
+    $obj = CleanTargetToObject($player, $cleanTarget);
+    if (HasSpectra($obj->CardID())) {
+      AddLayer("TRIGGER", $defPlayer, "SPECTRA", "-", "-", $obj->UniqueID());
+    }
+  }
+  $targets = implode(",", $cleanedTargets);
+  return $targets;
+}
+
+function AddAttackQueueAwait($player) {
+  global $dqVars, $defPlayer;
+  $targets = $dqVars["target"];
+  $cardID = $dqVars["cardID"];
+  $from = $dqVars["from"] ?? "-";
+  $uniqueID = $dqVars["uniqueID"] ?? "-";
+  $zone = $dqVars["zone"] ?? "-";
+  $resourcesPaid = $dqVars["resourcesPaid"]  ?? 0;
+  switch($zone) {
+    case "MYCHAR":
+      $Character = new PlayerCharacter($player);
+      $CharacterCard = $Character->FindCardUID($uniqueID);
+      $index = $CharacterCard->Index();
+      break;
+    case "MYALLY":
+      $Allies = new Allies($player);
+      $AllyCard = $Allies->FindCardUID($uniqueID);
+      $index = $AllyCard->Index();
+    default:
+      $index = -1;
+      break;
+  }
+  $parameter = "$from|$resourcesPaid|$index|$uniqueID|$zone";	
+  AddAttackQueue($cardID, $player, $targets, $parameter, $uniqueID);
+}
+
+function CheckAttackQueueAwait($player) {
+  ResolveAttackQueue();
 }

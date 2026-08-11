@@ -312,43 +312,76 @@
 // }
 
 
-// class coalescence_mirage_red extends Card {
+class coalescence_mirage extends BaseCard {
+	function DestroyEffect() {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "coalescence_mirage_red";
-//     $this->controller = $controller;
-//     }
+	function ProcessTrigger() {
+		CoalescentMirageDestroyed();
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class coalescence_mirage_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "coalescence_mirage_red";
+    $this->controller = $controller;
+    $this->baseCard = new coalescence_mirage($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
+  function DestroyEffect() {
+		$this->baseCard->DestroyEffect();
+  }
 
-// class coalescence_mirage_yellow extends Card {
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "coalescence_mirage_yellow";
-//     $this->controller = $controller;
-//     }
+class coalescence_mirage_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "coalescence_mirage_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new coalescence_mirage($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function DestroyEffect() {
+		$this->baseCard->DestroyEffect();
+  }
 
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
 
-// class coalescence_mirage_blue extends Card {
+class coalescence_mirage_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "coalescence_mirage_blue";
+    $this->controller = $controller;
+    $this->baseCard = new coalescence_mirage($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "coalescence_mirage_blue";
-//     $this->controller = $controller;
-//     }
+  function DestroyEffect() {
+		$this->baseCard->DestroyEffect();
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger();
+	}
+}
+
 
 
 // class crown_of_reflection extends Card {
@@ -573,9 +606,9 @@
 
 
 class fractal_replication_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "fractal_replication_red";
-    $this->controller = $controller;
+	function __construct($controller) {
+		$this->cardID = "fractal_replication_red";
+		$this->controller = $controller;
 	}
 
 	function AbilitiesToAdd() {
@@ -585,8 +618,8 @@ class fractal_replication_red extends Card {
 		return implode(",", $addedAbilityIDs);
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $ChainLinks, $CombatChain;
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	global $ChainLinks, $CombatChain;
 		$addedAbilities = [];
 		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
 			$Link = $ChainLinks->GetLink($i);
@@ -608,13 +641,14 @@ class fractal_replication_red extends Card {
 			PlayAbility($ability, $from, $resourcesPaid, $target, $additionalCosts);
 		}
 		return "";
-  }
+  	}
 
 	function DoesAttackHaveGoAgain() {
 		global $CurrentTurnEffects;
 		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
 		$addedAbilities = explode(",", $Effect->EffectID());
-		for ($i = 1; $i < count($addedAbilities); ++$i) {
+		$addedAbilitiesCount = count($addedAbilities);
+		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
 			if (HasGoAgain($addedAbilities[$i])) return true;
 		}
 		return false;
@@ -628,7 +662,8 @@ class fractal_replication_red extends Card {
 		global $CurrentTurnEffects;
 		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
 		$addedAbilities = explode(",", $Effect->EffectID());
-		for ($i = 1; $i < count($addedAbilities); ++$i) {
+		$addedAbilitiesCount = count($addedAbilities);
+		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
 			if (HasPhantasm($addedAbilities[$i])) return true;
 		}
 		return false;
@@ -638,7 +673,8 @@ class fractal_replication_red extends Card {
 		global $CurrentTurnEffects;
 		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
 		$addedAbilities = explode(",", $Effect->EffectID());
-		for ($i = 1; $i < count($addedAbilities); ++$i) {
+		$addedAbilitiesCount = count($addedAbilities);
+		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
 			if (HasDominate($addedAbilities[$i])) return true;
 		}
 		return false;
@@ -647,7 +683,7 @@ class fractal_replication_red extends Card {
 	function GetStats($stat) {
 		global $ChainLinks, $CombatChain;
 		$highestAttack = 0;
-    $highestBlock = 0;
+    	$highestBlock = 0;
 		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
 			$Link = $ChainLinks->GetLink($i);
 			for ($j = 0; $j < $Link->NumCards(); ++$j) {
@@ -679,7 +715,7 @@ class fractal_replication_red extends Card {
 			if ($j != 0)
 				$power = ModifiedPowerValue($cardID, $LinkCard->PlayerID(), "CC", source:$this->cardID);
 			else
-				$power = $Link->ModifiedBaseAttack();
+				$power = LinkBasePower();
 			if($power > $highestAttack) $highestAttack = $power;
 			$block = BlockValue($cardID);
 			if($block > $highestBlock) $highestBlock = $block;
@@ -703,7 +739,8 @@ class fractal_replication_red extends Card {
 		global $CurrentTurnEffects;
 		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
 		$addedAbilities = explode(",", $Effect->EffectID());
-		for ($i = 1; $i < count($addedAbilities); ++$i) {
+		$addedAbilitiesCount = count($addedAbilities);
+		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
 			$availableOnhit = AddOnHitTrigger($addedAbilities[$i], $uniqueID, $source, $targetPlayer, $check);
 			if ($check && $availableOnhit) return true;
 		}
@@ -1349,17 +1386,26 @@ class in_the_swing_blue extends Card {
 // }
 
 
-// class pierce_reality_blue extends Card {
+class pierce_reality_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "pierce_reality_blue";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "pierce_reality_blue";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	return "";
+  	}
+
+	function AuraPowerModifiers($index, &$powerModifiers) {
+		global $CS_NumIllusionistActionCardAttacks, $CombatChain;
+		$powerModifiers[] = $this->cardID;
+		$isIlluAttack = TypeContains($CombatChain->AttackCard()->ID(), "AA") && ClassContains($CombatChain->AttackCard()->ID(), "ILLUSIONIST", $this->controller);
+		$mod = GetClassState($this->controller, $CS_NumIllusionistActionCardAttacks) == 1 && $isIlluAttack ? 2 : 0;
+		$powerModifiers[] = $mod;
+		return $mod;
+	}
+}
 
 
 // class potion_of_deja_vu_blue extends Card {
@@ -1505,17 +1551,33 @@ class in_the_swing_blue extends Card {
 // }
 
 
-// class rain_razors_yellow extends Card {
+class rain_razors_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "rain_razors_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "rain_razors_yellow";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $mainPlayer, $defPlayer;
+    AddCurrentTurnEffect($this->cardID, $mainPlayer);
+		AddCurrentTurnEffect($this->cardID, $defPlayer);
+		return "";
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Arrow");
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return true;
+	}
+}
 
 
 // class read_the_glide_path_red extends Card {

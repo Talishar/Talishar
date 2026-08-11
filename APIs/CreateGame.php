@@ -48,6 +48,7 @@ if (!isset($_SESSION["userid"])) {
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
 else if(isset($_SESSION["userid"])) $isShadowBanned = IsBanned($_SESSION["userid"]);
+if(!$isShadowBanned) $isShadowBanned = IsIPBanned();
 
 if ($visibility == "public" && $deckTestMode != "" && !isset($_SESSION["userid"])) {
   //Must be logged in to use matchmaking
@@ -116,20 +117,32 @@ $p2Key = hash("sha256", rand() . rand() . rand());
 $p1uid = "-";
 if($deckTestMode != "") $p2uid = "Practice Dummy";
 else $p2uid = "-";
+$p1DisplayName = "";
+$p2DisplayName = "";
 $p1id = "-";
 $p2id = "-";
 $p1WebhookUrl = "";
 $p2WebhookUrl = "";
-$hostIP = $_SERVER['REMOTE_ADDR'];
+$hostIP = GetClientIP();
 $gameGUID = GenerateGameGUID();
 
 $filename = "../Games/" . $gameName . "/GameFile.txt";
-$gameFileHandler = fopen($filename, "w");
+$gameFileHandler = @fopen($filename, "w");
+if ($gameFileHandler === false) {
+  $response->error = "Game file could not be initialized.";
+  echo json_encode($response);
+  exit;
+}
 include "../MenuFiles/WriteGamefile.php";
 WriteGameFile();
 
 $filename = "../Games/" . $gameName . "/gamelog.txt";
-$handler = fopen($filename, "w");
+$handler = @fopen($filename, "w");
+if ($handler === false) {
+  $response->error = "Game log could not be initialized.";
+  echo json_encode($response);
+  exit;
+}
 fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);

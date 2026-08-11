@@ -1,7 +1,9 @@
 <?php
 
 global $Stack;
+global $AttackQueue;
 $Stack = new Stack();
+$AttackQueue = new AttackQueue();
 
 class Stack {
 
@@ -16,28 +18,42 @@ class Stack {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * LayerPieces();
+    if($cardNumber) $index *= LayerPieces();
     return new Layer($index);
   }
 
   function FindCardUID($uid) {
     if ($this->StackEmpty()) return "";
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i + 6] == $uid) return new Layer($i);
     }
     return "";
   }
 
+  function FindCardSourceUID($uid) {
+    if ($this->StackEmpty()) return new Layer(-1);
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
+      if ($this->layers[$i + 5] == $uid) return new Layer($i);
+    }
+    return new Layer(-1);
+  }
+
   function FindCardID($cardID) {
     if ($this->StackEmpty()) return "";
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i] == $cardID) return new Layer($i);
     }
     return "";
   }
 
   function Negate($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * CombatChainPieces();
+    if($cardNumber) $index *= LayerPieces();
     if($index < 0 || $index >= count($this->layers)) return "";
     $cardID = $this->layers[$index];
     NegateLayer("LAYERS-$index");
@@ -55,16 +71,20 @@ class Stack {
 
   function TopLayer($cardID="-") {
     if ($cardID == "-") return $this->Card(0);
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i] == $cardID) return $this->Card($i);
     }
-    return "";
+    return new Layer(-1);
   }
 
   function FindTrigger($cardID) {
     if ($this->StackEmpty()) return "";
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
-      if (($this->layers[$i] == "TRIGGER" || $this->layers[$i] == "PRETRIGGER")&& $this->layers[$i+2] == $cardID) return new Layer($i);
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
+      if (($this->layers[$i] == "TRIGGER" || $this->layers[$i] == "PRETRIGGER") && $this->layers[$i+2] == $cardID) return new Layer($i);
     }
     return "";
   }
@@ -72,12 +92,14 @@ class Stack {
   function FindLayer($cardID, $player="-", $parameter="-", $target="-") {
     if ($this->StackEmpty()) return "";
     $rv = [];
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $count = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $count; $i += $layerPieces) {
       if ($this->layers[$i] != $cardID) continue;
       if ($player != "-" && $this->layers[$i + 1] != $player) continue;
       if ($parameter != "-" && $this->layers[$i + 2] != $parameter) continue;
       if ($target != "-" && $this->layers[$i + 3] != $target) continue;
-      array_push($rv, $i);
+      $rv[] = $i;
     }
     return implode(",", $rv);
   }
@@ -88,7 +110,9 @@ class Stack {
 
   function CountPlayedLayers() {
     $count = 0;
-    for ($i = 0; $i < count($this->layers); $i += LayerPieces()) {
+    $total = count($this->layers);
+    $layerPieces = LayerPieces();
+    for ($i = 0; $i < $total; $i += $layerPieces) {
       if (!isPriorityStep($this->layers[$i]) && $this->layers[$i] != "TRIGGER") ++$count;
     }
     return $count;
@@ -115,8 +139,7 @@ class Layer {
 	}
 
 	function ID() {
-		if(count($this->layers) == 0) return "";
-		return $this->layers[$this->index];
+		return $this->layers[$this->index] ?? "";
 	}
 
 	function PlayerID() {
@@ -127,8 +150,13 @@ class Layer {
 		return isset($this->layers[$this->index+2]) ? $this->layers[$this->index+2] : "-";
 	}
 
+  function UpdateParameter($param) {
+    if (isset($this->layers[$this->index+2]))
+      $this->layers[$this->index+2] = $param;
+  }
+
   function DynCost() {
-    return explode("|", $this->Parameter())[1] ?? 0;
+    return explode("|", $this->Parameter(), 2)[1] ?? 0;
   }
 
 	function Target() {
@@ -157,20 +185,129 @@ class Layer {
 		return $this->layers[$this->index+5] ?? "-";
 	}
 
+  function UpdateUID($uid) {
+    if (isset($this->layers[$this->index+5]))
+      $this->layers[$this->index+5] = $uid;
+  }
+
 	function LayerUniqueID() { //(the unique ID of the layer)
 		return $this->layers[$this->index+6] ?? "-";
 	}
 
   function Negate($goesWhere="-") {
-		$cardID = $this->layers[$this->index];
-		$player = $this->layers[$this->index + 1];
-		$otherPlayer = $player == 1 ? 2 : 1;
-		for ($i = $this->index + LayerPieces() - 1; $i >= $this->index; --$i) {
-			unset($this->layers[$i]);
-		}
-		$this->layers = array_values($this->layers);
-		if ($goesWhere != "-") {
-			ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
-		}
+    if ($this->index != -1 && isset($this->layers[$this->index])) {
+      $cardID = $this->layers[$this->index];
+      $player = $this->layers[$this->index + 1];
+      $otherPlayer = 3 - $player;
+      array_splice($this->layers, $this->index, LayerPieces());
+      if ($goesWhere != "-") {
+        ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
+      }
+    }
 	}
+
+  function IsCardLayer() {
+    if (isAdministrativeStep($this->ID())) return false;
+    static $nonCards = ["TRIGGER" => 1, "PRETRIGGER" => 1, "ABILITY" => 1];
+    if (isset($nonCards[$this->ID()])) return false;
+    $from = explode("|", $this->Parameter())[0];
+    if ($from == "PLAY" || $from == "EQUIP") return false;
+    return $this->ID() != "";
+  }
+}
+
+class AttackQueue {
+  private $attackQueue = [];
+
+  function __construct() {
+    global $attackQueue;
+    $this->attackQueue = &$attackQueue;
+  }
+
+  function Card($index, $cardNumber=false) {
+    if($cardNumber) $index *= AttackQueuePieces();
+    return new AttackLayer($index);
+  }
+
+  function FindCardUID($uid) {
+    if ($this->NumAttacks() == 0) return "";
+    $count = count($this->attackQueue);
+    $attackQueuePieces = AttackQueuePieces();
+    for ($i = 0; $i < $count; $i += $attackQueuePieces) {
+      if ($this->attackQueue[$i + 6] == $uid) return new AttackLayer($i);
+    }
+    return "";
+  }
+
+  function FindCardID($cardID) {
+    if ($this->NumAttacks() == 0) return "";
+    $count = count($this->attackQueue);
+    $attackQueuePieces = AttackQueuePieces();
+    for ($i = 0; $i < $count; $i += $attackQueuePieces) {
+      if ($this->attackQueue[$i] == $cardID) return new AttackLayer($i);
+    }
+    return "";
+  }
+
+  function NumAttacks() {
+    return intdiv(count($this->attackQueue), AttackQueuePieces());
+  }
+}
+
+class AttackLayer {
+	// Properties
+	private $attackQueue = [];
+	private $index;
+
+	// Constructor
+	function __construct($index) {
+		global $attackQueue;
+    if ($index != -1)
+  		$this->attackQueue = &$attackQueue;
+    else
+      $this->attackQueue = [];
+		$this->index = $index;
+	}
+
+	function Index() {
+		return $this->index;
+	}
+
+	function ID() {
+		if(count($this->attackQueue) == 0) return "";
+		return $this->attackQueue[$this->index];
+	}
+
+	function PlayerID() {
+		return isset($this->attackQueue[$this->index+1]) ? $this->attackQueue[$this->index+1] : 0;
+	}
+
+	function Parameter() {
+		return isset($this->attackQueue[$this->index+2]) ? $this->attackQueue[$this->index+2] : "-";
+	}
+
+  function DynCost() {
+    return explode("|", $this->Parameter(), 2)[1] ?? 0;
+  }
+
+	function Target() {
+		return isset($this->layers[$this->index+3]) ? $this->attackQueue[$this->index+3] : "-";
+	}
+
+  function QueuedBuffs() {
+    return $this->attackQueue[$this->index + 7] ?? "-";
+  }
+
+  function AddBuff($buff) {
+    if (isset($this->attackQueue[$this->index + 7])) {
+      if ($this->attackQueue[$this->index + 7] == "-")
+        $this->attackQueue[$this->index + 7] = $buff;
+      else
+        $this->attackQueue[$this->index + 7] .= ",$buff";
+    }
+  }
+
+  function SourceUniqueID() {
+    return $this->attackQueue[$this->index + 5] ?? "-";
+  }
 }

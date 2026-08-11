@@ -14,13 +14,15 @@ class Auras {
 
   // Methods
   function Card($index, $cardNumber=false) {
-    if($cardNumber) $index = $index * AuraPieces();
+    if($cardNumber) $index *= AuraPieces();
     return new AuraCard($index, $this->player);
   }
 
   function FindCardUID($uid) {
-    if (count($this->auras) == 0) return new AuraCard(-1, $this->player);
-    for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
+    $count = count($this->auras);
+    if ($count == 0) return new AuraCard(-1, $this->player);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
       if ($this->auras[$i + 6] == $uid) return new AuraCard($i, $this->player);
     }
     // return a null object AuraCard that has all the methods, but they do nothing
@@ -28,8 +30,10 @@ class Auras {
   }
 
   function SearchAurasForModality($mode, $cardID="-") {
-    if (count($this->auras) == 0) return "";
-    for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
+    $count = count($this->auras);
+    if ($count == 0) return "";
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
       if ($cardID != "-" && $this->auras[$i] != $cardID) continue;
       if (DelimStringContains($this->auras[$i + 10], $mode)) return new AuraCard($i, $this->player);
     }
@@ -41,8 +45,10 @@ class Auras {
   }
 
   function FindCardID($cardID) { //returns first AuraCard with a cardID
-    if (count($this->auras) == 0) return new AuraCard(-1, $this->player);
-    for ($i = 0; $i < count($this->auras); $i += AuraPieces()) {
+    $count = count($this->auras);
+    if ($count == 0) return new AuraCard(-1, $this->player);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
       if ($this->auras[$i] == $cardID) return new AuraCard($i, $this->player);
     }
     // return a null object AuraCard that has all the methods, but they do nothing
@@ -84,6 +90,10 @@ class AuraCard {
     if (isset($this->pieces[$this->index+1])) $this->pieces[$this->index+1] = $status;
   }
 
+  function SetUsed($status) { //alias for SetStatus
+    $this->SetStatus($status);
+  }
+
   function NumCounters() {
     return $this->pieces[$this->index+2] ?? 0;
   }
@@ -113,6 +123,10 @@ class AuraCard {
   function AddUses($n=1) {
     if (isset($this->pieces[$this->index+5]))
       $this->pieces[$this->index+5] += $n;
+  }
+
+  function AddUse($n=1) { // alias for AddUses
+    $this->AddUses($n);
   }
 
 
@@ -174,14 +188,26 @@ class AuraCard {
   }
 
   function RemoveAllCounters() {
-    foreach ([2, 3] as $i) {
-      if (isset($this->pieces[$this->index + $i]))
-        $this->pieces[$this->index + $i] = 0;
-    }
+    if (isset($this->pieces[$this->index + 2])) $this->pieces[$this->index + 2] = 0;
+    if (isset($this->pieces[$this->index + 3])) $this->pieces[$this->index + 3] = 0;
+  }
+
+  function IsFrozen() {
+    return $this->pieces[$this->index+11] ?? 0;
+  }
+
+  function FreezeState($state=0) {
+    if (isset($this->pieces[$this->index + 11]))
+      $this->pieces[$this->index + 11] = $state;
   }
 
   function IsTapped() {
-    return $this->pieces[$this->index+12] ?? "-";
+    return $this->pieces[$this->index+12] ?? 0;
+  }
+
+  function Tapped() {
+    //alias
+    return $this->IsTapped();
   }
 
   function Tap($tapState=1, $endStepUntap=false) {

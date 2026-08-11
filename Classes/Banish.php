@@ -18,19 +18,21 @@ class Banish {
   }
 
   function NumCards() {
-    return count($this->banish) / BanishPieces();
+    return intdiv(count($this->banish), BanishPieces());
   }
 
   function Card($index, $cardNumber = false)
   {
-    if($cardNumber) $index = $index * BanishPieces();
+    if($cardNumber) $index *= BanishPieces();
     return new BanishCard($this->playerID, $index);
   }
 
   function FirstCardWithModifier($modifier)
   {
     $index = -1;
-    for($i=0; $i<count($this->banish); $i+=BanishPieces()) {
+    $count = count($this->banish);
+    $banishPieces = BanishPieces();
+    for($i=0; $i<$count; $i+=$banishPieces) {
       if($this->banish[$i+1] == $modifier) $index = $i;
     }
     if($index == -1) return null;
@@ -39,15 +41,17 @@ class Banish {
 
   function Remove($index) {
     $cardID = $this->banish[$index];
-    for($i=0; $i<BanishPieces(); ++$i) unset($this->banish[$index+$i]);
-    $this->banish = array_values($this->banish);
+    array_splice($this->banish, $index, BanishPieces());
     return $cardID;
   }
 
   function UnsetBanishModifier($modifier, $newMod="-") {
-    for($i=0; $i<count($this->banish); $i+=BanishPieces()) {
-      $modArr = explode("-", $this->banish[$i+1]);
-      $cardModifier = $modArr[0];
+    $count = count($this->banish);
+    $banishPieces = BanishPieces();
+    for($i=0; $i<$count; $i+=$banishPieces) {
+      $mod = $this->banish[$i+1];
+      $dashPos = strpos($mod, "-");
+      $cardModifier = $dashPos !== false ? substr($mod, 0, $dashPos) : $mod;
       if ($modifier == "shadowrealm_horror_red" && str_contains($cardModifier, $modifier)) $this->banish[$i+1] = $newMod;
       else if($cardModifier == $modifier) $this->banish[$i+1] = $newMod;
       else if($cardModifier == "Source" && $modifier == "TCL") $this->banish[$i+1] = $newMod;
@@ -55,8 +59,10 @@ class Banish {
   }
 
   function FindCardUID($uid) {
-    if (count($this->banish) == 0) return "";
-    for ($i = 0; $i < count($this->banish); $i += BanishPieces()) {
+    $count = count($this->banish);
+    if ($count == 0) return "";
+    $banishPieces = BanishPieces();
+    for ($i = 0; $i < $count; $i += $banishPieces) {
       if ($this->banish[$i + 2] == $uid) return new BanishCard($this->playerID, $i);
     }
     return "";
@@ -113,8 +119,7 @@ class BanishCard {
     {
       if (isset($this->banish[$this->index])) {
         $cardID = $this->banish[$this->index];
-        for($i=0; $i<BanishPieces(); ++$i) unset($this->banish[$this->index+$i]);
-        $this->banish = array_values($this->banish);
+        array_splice($this->banish, $this->index, BanishPieces());
         return $cardID;
       }
       return "-";

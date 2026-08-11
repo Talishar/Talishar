@@ -51,11 +51,23 @@ const DBL_SAVE_PATREON_TOKENS          = 45;
 const DBL_SAVE_SETTING                 = 46;
 const DBL_LOAD_SAVED_SETTINGS          = 47;
 const DBL_BAN_PLAYER                   = 48;
-const DBL_MATCH_RESULT_WEBHOOK_API     = 49;
-const DBL_GET_USER_WEBHOOK_URLS        = 50;
+const DBL_SETUP_RUST_COUNTERS_COLUMN   = 49;
+const DBL_ADD_RUST_COUNTERS_AFTER_TURN_ZERO = 50;
+const DBL_IS_IP_BANNED                 = 51;
+const DBL_LOG_IP_HISTORY               = 52;
+const DBL_CLEAR_RUST_COUNTERS          = 53;
+const DBL_GET_DISPLAY_NAME             = 54;
+const DBL_RESOLVE_NAME_TO_ACCOUNT      = 55;
+const DBL_CHANGE_DISPLAY_NAME          = 56;
+const DBL_GET_DECK_CARDS               = 57;
+const DBL_SAVE_DECK_COSMETICS          = 58;
+const DBL_GET_LAST_GAME_INFO           = 59;
+const DBL_RESET_ALL_RUST_COUNTERS      = 60;
+const DBL_MATCH_RESULT_WEBHOOK_API     = 61;
+const DBL_GET_USER_WEBHOOK_URLS        = 62;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 50;
+const DBL_MAX_KEY = 62;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -107,6 +119,18 @@ const DBL_LABELS = [
     46 => 'includes/functions.inc.php::SaveSetting',
     47 => 'includes/functions.inc.php::LoadSavedSettings',
     48 => 'includes/functions.inc.php::BanPlayer',
-    49 => 'APIs/MatchResultWebhookAPI.php',
-    50 => 'includes/functions.inc.php::GetWebhookUrlForUser',
+    49 => 'SetupRustCountersColumn.php',
+    50 => 'includes/functions.inc.php::AddRustCountersAfterTurnZero',
+    51 => 'includes/functions.inc.php::IsIPBanned',
+    52 => 'includes/functions.inc.php::LogIPHistory',
+    53 => 'APIs/ClearRustCounters.php',
+    54 => 'includes/functions.inc.php::GetDisplayNameByUid',
+    55 => 'includes/functions.inc.php::ResolveNameToAccount',
+    56 => 'APIs/ChangeDisplayNameAPI.php',
+    57 => 'APIs/GetDeckCards.php',
+    58 => 'APIs/SaveDeckCosmetics.php',
+    59 => 'includes/functions.inc.php::GetLastGameInfo',
+    60 => 'APIs/ResetAllRustCounters.php',
+    61 => 'APIs/MatchResultWebhookAPI.php',
+    62 => 'includes/functions.inc.php::GetWebhookUrlForUser',
 ];

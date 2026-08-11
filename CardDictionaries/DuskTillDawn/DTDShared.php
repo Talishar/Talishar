@@ -61,11 +61,11 @@ function DTDAbilityHasGoAgain($cardID)
 
 function DTDEffectPowerModifier($cardID)
 {
-  $params = explode(",", $cardID);
-  $dashArr = explode(",", $cardID);
-  $cardID = $params[0];
-  if(count($params) > 1) $parameter = $params[1];
-  if(strlen($cardID) > 6) $cardID = $dashArr[0];
+  $parameter = '';
+  if (($pos = strpos($cardID, ",")) !== false) {
+    $parameter = substr($cardID, $pos + 1);
+    $cardID = substr($cardID, 0, $pos);
+  }
   switch($cardID) {
     case "figment_of_triumph_yellow": return -1;
     case "angelic_descent_red": return 3;
@@ -114,10 +114,7 @@ function DTDCombatEffectActive($cardID, $attackID)
 {
   global $combatChainState, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $CombatChain;
   global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate;
-  $params = explode(",", $cardID);
-  $dashArr = explode(",", $cardID);
-  $cardID = $params[0];
-  if(strlen($cardID) > 6) $cardID = $dashArr[0];
+  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   switch($cardID) {
     case "figment_of_tenacity_yellow": return true;
     case "figment_of_triumph_yellow": return CardType($attackID) == "AA";
@@ -165,7 +162,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   $rv = "";
   switch($cardID) {
     case "prism_awakener_of_sol": case "prism_advent_of_thrones":
-      $uniqueID = explode("-", $target)[1];
+      $uniqueID = explode("-", $target, 2)[1];
       $index = SearchPermanentsForUniqueID($uniqueID, $currentPlayer);
       if ($index != -1) {
         AddDecisionQueue("AWAKEN", $currentPlayer, "MYPERMS-$index", 1);
@@ -220,9 +217,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       break;
     case "celestial_reprimand_red": case "celestial_reprimand_yellow": case "celestial_reprimand_blue":
-      if($cardID == "celestial_reprimand_red") $amount = -3;
-      else if($cardID == "celestial_reprimand_yellow") $amount = -2;
-      else $amount = -1;
+      $amount = match($cardID) { "celestial_reprimand_red" => -3, "celestial_reprimand_yellow" => -2, default => -1 };
       if($target != "-") $CombatChain->Card(intval($target))->ModifyPower($amount);
       return "";
     case "celestial_resolve_red": case "celestial_resolve_yellow": case "celestial_resolve_blue":
@@ -258,7 +253,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "lumina_lance_yellow":
       if($additionalCosts != "-"){
         $modes = explode(",", $additionalCosts);
-        for($i=0; $i<count($modes); ++$i)
+        $modesCount = count($modes);
+        for($i=0; $i<$modesCount; ++$i)
         {
           switch($modes[$i])
           {
@@ -294,7 +290,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       } 
       else {
         WriteLog(CardLink($cardID, $cardID) . " layer fails as there are no remaining targets for the targeted effect.");
-        return "FAILED";
+        return "";
       }
       return "";
     case "blistering_assault_red": case "blistering_assault_yellow": case "blistering_assault_blue":
@@ -321,7 +317,8 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "blood_dripping_frenzy_blue":
       $cards = explode(",", $additionalCosts);
       $num6Pow = 0;
-      for($i=0; $i<count($cards); ++$i)
+      $cardsCount = count($cards);
+      for($i=0; $i<$cardsCount; ++$i)
       {
         if(HasBloodDebt($cards[$i])) Draw($currentPlayer);
         if(ModifiedPowerValue($cards[$i], $currentPlayer, "HAND", source:$cardID) >= 6) ++$num6Pow;
@@ -424,14 +421,16 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $cards = explode(",", $cardList);
       $num6plus = 0;
       if ($cardList != "") {
-        for($i=0; $i<count($cards); ++$i)
+        $cardsCount = count($cards);
+        for($i=0; $i<$cardsCount; ++$i)
         {
-          WriteLog(CardLink($cards[$i], $cards[$i]) . " chosen randomly");
-          if(ModifiedPowerValue($cards[$i], $currentPlayer, "GY", source:$cardID) >= 6) {
+          $card = $cards[$i];
+          WriteLog(CardLink($card, $card) . " chosen randomly");
+          if(ModifiedPowerValue($card, $currentPlayer, "GY", source:$cardID) >= 6) {
             ++$num6plus;
-            $deck->AddBottom($cards[$i], "GY");
+            $deck->AddBottom($card, "GY");
           }
-          else $discard->Add($cards[$i]);
+          else $discard->Add($card);
         }
         if($num6plus > 0) {
           GainHealth($num6plus, $currentPlayer);
@@ -503,6 +502,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function WarmongersDiplomacy($player)
 {
+  AddDecisionQueue("SETDQCONTEXT", $player, "Choose if you want to make {{element|War|5}} or {{element|Peace|6}}");
   AddDecisionQueue("BUTTONINPUT", $player, "War,Peace");
   AddDecisionQueue("SETDQVAR", $player, "0", 1);
   AddDecisionQueue("WRITELOG", $player, "Player $player chose <b>{0}</b>", 1);
@@ -574,8 +574,10 @@ function ProcessMirageOnBlock($index)
 function ProcessAllMirage()
 {
   global $CombatChain;
-  for($i=1; $i<$CombatChain->NumCardsActiveLink(); ++$i) {
-    ProcessMirageOnBlock($i*CombatChainPieces());
+  $numActiveLink = $CombatChain->NumCardsActiveLink();
+  $combatChainPieces = CombatChainPieces();
+  for($i=1; $i<$numActiveLink; ++$i) {
+    ProcessMirageOnBlock($i*$combatChainPieces);
   }
 }
 
@@ -593,7 +595,7 @@ function HasMirage($cardID)
 
 function MirageLayer($target)
 {
-  global $CombatChain, $mainPlayer, $combatChainState, $defPlayer, $turn, $layers;
+  global $CombatChain, $mainPlayer, $defPlayer, $turn, $layers;
   if(DoesAttackTriggerMirage())
   {
     $ChainCard = $CombatChain->FindCardUID($target);
@@ -608,11 +610,13 @@ function MirageLayer($target)
   else { //Aegisworn: I don't understand this block
     $turn[0] = "A";
     $currentPlayer = $mainPlayer;
-    for($i=count($layers)-LayerPieces(); $i >= 0; $i-=LayerPieces())
+    $layerPieces = LayerPieces();
+    for($i=count($layers)-$layerPieces; $i >= 0; $i-=$layerPieces)
     {
-      if($layers[$i] == "DEFENDSTEP" || ($layers[$i] == "LAYER" && $layers[$i+2] == "MIRAGE"))
+      $layerType = $layers[$i];
+      if($layerType == "DEFENDSTEP" || ($layerType == "LAYER" && $layers[$i+2] == "MIRAGE"))
       {
-        for($j=$i; $j<($i+LayerPieces()); ++$j) unset($layers[$j]);
+        for($j=$i; $j<($i+$layerPieces); ++$j) unset($layers[$j]);
       }
     }
     $layers = array_values($layers);
@@ -621,6 +625,9 @@ function MirageLayer($target)
 
 function ResolveTransformHero($player, $cardID, $parameter)
 {
+  global $CS_OriginalHero;
+  $Hero = new CharacterCard(0, $player);
+  SetClassState($player, $CS_OriginalHero, $Hero->CardID());
   $permIndex = SearchPermanentsForCard($player, "levia_redeemed");
   if($permIndex != "") RemovePermanent($player, $permIndex);
   $inventoryIndex = SearchInventoryForCard($player, "blasmophet_levia_consumed");
@@ -628,7 +635,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char = &GetPlayerCharacter($player);
   AddSoul($char[0], $player, "PLAY");
   $char[0] = $cardID;
-  $char[1] = 2; //When you transformm, You are no longer that hero, therefore you are not dishonored and reset your stats 🐝
+  $char[1] = 2; //When you transform, You are no longer that hero, therefore you are not dishonored and reset your stats 🐝
   $char[2] = CharacterCounters($cardID);
   $char[3] = 0;
   $char[4] = 0;
@@ -638,16 +645,19 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char[8] = 0;
   $char[9] = CharacterDefaultActiveState($cardID);
   $char[13] = 0;
-  $char[14] = 0; //assuming transform untaps
-  AddEvent("HERO_TRANSFORM", $cardID);
+  $char[14] = 0;
+  AddEvent("HERO_TRANSFORM", $player . ":" . $cardID);
   $health = &GetHealth($player);
   $health = DemiHeroHealth($cardID);
   $banish = new Banish($player);
-  CurrentEffectIntellectModifier(true); ///When you transformm, You are no longer that hero, therefore your intellect reset 🐝
+  CurrentEffectIntellectModifier(true); ///When you transform, You are no longer that hero, therefore your intellect reset 🐝
   switch($cardID)
   {
     case "levia_redeemed":
-      for($i=$banish->NumCards() - 1; $i >= 0; --$i) TurnBanishFaceDown($player, $i * BanishPieces());
+      $banishPieces = BanishPieces();
+      for($i=$banish->NumCards() - 1; $i >= 0; --$i) {
+        TurnBanishFaceDown($player, $i * $banishPieces);
+      }
       break;
     case "blasmophet_levia_consumed": // 3.0.3a A player may look at any private object they own, or is in a zone that they own, unless the object is in the deck zone.
       $deck = new Deck($player);
@@ -656,6 +666,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
       break;
     default: break;
   }
+  CheckUnique($player);
 }
 
 function DemiHeroHealth($cardID)

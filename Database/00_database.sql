@@ -34,7 +34,10 @@ CREATE TABLE `favoritedeck` (
   `usersId` int(11) NOT NULL,
   `name` varchar(128) NOT NULL,
   `hero` varchar(8) NOT NULL,
-  `format` varchar(32) DEFAULT NULL
+  `format` varchar(32) DEFAULT NULL,
+  `cardBack` varchar(32) NOT NULL DEFAULT '0',
+  `playmat` varchar(32) NOT NULL DEFAULT '0',
+  `altArtsCustomized` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
@@ -74,18 +77,46 @@ CREATE TABLE `users` (
   `lastPlayerId` int(11) NOT NULL DEFAULT 0,
   `lastAuthKey` varchar(128) DEFAULT NULL,
   `numSpectates` int(11) NOT NULL DEFAULT 0,
+  `rust_counters` int(11) NOT NULL DEFAULT 0,
+  `rust_counters_last_played` TIMESTAMP NULL DEFAULT NULL,
   `lastActivity` TIMESTAMP NULL DEFAULT NULL,
   `systemMessage` TEXT DEFAULT NULL,
+  `systemMessageExpiresAt` DATETIME DEFAULT NULL,
   `metafyAccessToken` VARCHAR(500) DEFAULT NULL,
   `metafyRefreshToken` VARCHAR(500) DEFAULT NULL,
   `metafyCommunities` LONGTEXT DEFAULT NULL,
   `metafyID` VARCHAR(128) DEFAULT NULL,
+  `displayName` varchar(50) DEFAULT NULL,
+  `lastNameChange` TIMESTAMP NULL DEFAULT NULL,
   `matchResultWebhookUrl` VARCHAR(2048) DEFAULT NULL,
   PRIMARY KEY (`usersId`),
   KEY `usersUid` (`usersUid`),
   KEY `idx_metafy_access_token` (`metafyAccessToken`),
-  KEY `idx_rememberMeToken` (`rememberMeToken`)
+  KEY `idx_rememberMeToken` (`rememberMeToken`),
+  UNIQUE KEY `idx_displayName` (`displayName`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS hero_mastery (
+  userId INT NOT NULL,
+  heroId VARCHAR(32) NOT NULL,
+  qualifyingGames INT UNSIGNED NOT NULL DEFAULT 0,
+  createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (userId, heroId),
+  FOREIGN KEY (userId) REFERENCES users(usersId) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS hero_mastery_awards (
+  gameKey VARCHAR(128) NOT NULL,
+  userId INT NOT NULL,
+  heroId VARCHAR(32) NOT NULL,
+  gamesBefore INT UNSIGNED NOT NULL,
+  gamesAfter INT UNSIGNED NOT NULL,
+  createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (gameKey, userId),
+  INDEX idx_mastery_awards_user_created (userId, createdAt),
+  FOREIGN KEY (userId) REFERENCES users(usersId) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 --
 -- Indexes for dumped tables
 --
@@ -103,6 +134,21 @@ ADD PRIMARY KEY (`GameID`),
 ALTER TABLE `favoritedeck`
 ADD PRIMARY KEY (`decklink`, `usersId`),
   ADD KEY `usersId` (`usersId`);
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `deck_alt_arts`
+--
+CREATE TABLE IF NOT EXISTS deck_alt_arts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  usersId INT NOT NULL,
+  -- Collation must match favoritedeck.decklink exactly for the FK below to be valid.
+  decklink VARCHAR(128) NOT NULL COLLATE utf8mb4_0900_ai_ci,
+  cardId VARCHAR(64) NOT NULL,
+  altPath VARCHAR(128) NOT NULL,
+  UNIQUE KEY idx_user_deck_card (usersId, decklink, cardId),
+  FOREIGN KEY (decklink, usersId) REFERENCES favoritedeck(decklink, usersId) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 --
@@ -160,6 +206,45 @@ CREATE TABLE IF NOT EXISTS blocked_users (
   CHECK (userId != blockedUserId),
   INDEX idx_user_id (userId),
   INDEX idx_blocked_user_id (blockedUserId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `name_history`
+--
+CREATE TABLE IF NOT EXISTS name_history (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  usersId INT NOT NULL,
+  oldName VARCHAR(128) NOT NULL,
+  newName VARCHAR(128) NOT NULL,
+  changedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_users (usersId),
+  INDEX idx_oldName (oldName),
+  FOREIGN KEY (usersId) REFERENCES users(usersId) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `banned_ips`
+--
+CREATE TABLE IF NOT EXISTS banned_ips (
+  ip VARCHAR(45) NOT NULL PRIMARY KEY,
+  bannedBy VARCHAR(255) DEFAULT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `ip_history`
+--
+CREATE TABLE IF NOT EXISTS ip_history (
+  usersId INT NOT NULL,
+  ip VARCHAR(45) NOT NULL,
+  firstSeen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  lastSeen TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  timesSeen INT NOT NULL DEFAULT 1,
+  PRIMARY KEY (usersId, ip),
+  INDEX idx_ip (ip)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

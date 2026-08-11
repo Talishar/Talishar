@@ -2,11 +2,12 @@
 
 function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = true)
 {
-  global $CombatChain, $chainLinks, $ChainLinks;
-  $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  global $CombatChain, $ChainLinks;
+  $lastResultArr = explode(",", $lastResult ?? "");
+  $otherPlayer = 3 - $player;
+  $chainLinksPieces = ChainLinksPieces();
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
-    $mzIndex = explode("-", $lastResultArr[$i]);
+    $mzIndex = explode("-", $lastResultArr[$i], 2);
     switch ($mzIndex[0]) {
       case "MYHAND":
         $lastResult = DiscardCard($player, $mzIndex[1], effectController: $effectController);
@@ -51,17 +52,18 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         $lastResult = $CombatChain->Remove($mzIndex[1]);
         break;
       case "COMBATCHAINATTACKS":
-        $ind = intdiv($mzIndex[1],ChainLinksPieces());
-        $lastResult = $chainLinks[$ind][0];
-        $chainLinks[$ind][2] = 0;
-        AddGraveyard($chainLinks[$ind][7], $player, "CC", $player);
+        $ind = intdiv($mzIndex[1], $chainLinksPieces);
+        $Link = new ChainLink($ind);
+        $LinkCard = $Link->AttackCard();
+        $lastResult = $LinkCard->ID();
+        $LinkCard->Destroy();
         break;
       case "MYPERM":
         $Perm = new PermanentCard($mzIndex[1], $player);
         $Perm->Destroy();
         break;
       case "PASTCHAINLINK":
-        $inds = explode("-", $lastResult);
+        $inds = explode("-", $lastResult, 3);
         $linkNum = $inds[2] ?? -1;
         $linkInd = $inds[1] ?? -1;
         if ($linkInd != -1 && $linkNum != -1) {
@@ -78,10 +80,10 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
 
 function MZRemove($player, $lastResult, $parameter="-")
 {
-  $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $lastResultArr = explode(",", $lastResult ?? "");
+  $otherPlayer = 3 - $player;
   for ($i = count($lastResultArr) - 1; $i >= 0; --$i) {
-    $mzIndex = explode("-", $lastResultArr[$i]);
+    $mzIndex = explode("-", $lastResultArr[$i], 2);
     switch ($mzIndex[0]) {
       case "MYDISCARD":
         $lastResult = RemoveGraveyard($player, $mzIndex[1]);
@@ -159,15 +161,15 @@ function MZRemove($player, $lastResult, $parameter="-")
 function MZDiscard($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $params = explode(",", $parameter);
+  $effectController = $params[1] ?? $player;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
-    $mzIndex = explode("-", $lastResultArr[$i]);
+    $mzIndex = explode("-", $lastResultArr[$i], 2);
     if (!isset($mzIndex[1])) continue;
-    $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
+    $cardOwner = (str_starts_with($mzIndex[0], "MY") ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     $cardID = $zone[$mzIndex[1]];
-    $effectController = $params[1] ?? $player;
     AddGraveyard($cardID, $cardOwner, $params[0], $effectController);
     if ($player == $cardOwner) CardDiscarded($player, $cardID);
     else WriteLog(CardLink($cardID, $cardID) . " was discarded");
@@ -178,11 +180,11 @@ function MZDiscard($player, $parameter, $lastResult)
 function MZReveal($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
-    $mzIndex = explode("-", $lastResultArr[$i]);
+    $mzIndex = explode("-", $lastResultArr[$i], 2);
     if (!isset($mzIndex[1])) continue;
-    $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
+    $cardOwner = (str_starts_with($mzIndex[0], "MY") ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     $cardID = $zone[$mzIndex[1]] ?? "-";
     if ($cardID != "-")
@@ -196,38 +198,39 @@ function MZReveal($player, $parameter, $lastResult)
 function MZAddZone($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   $params = explode(",", $parameter);
   $deckIndexModifier = 0;
   if (str_contains($params[0], "-")) {
-    $explodeArray = explode("-", $params[0]);
+    $explodeArray = explode("-", $params[0], 2);
     $deckIndexModifier = $explodeArray[1];
     $params[0] = $explodeArray[0];
   }
   $cardIDs = [];
   $cardOwners = [];
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
-    $mzIndex = explode("-", $lastResultArr[$i]);
-    $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
+    $mzIndex = explode("-", $lastResultArr[$i], 2);
+    $cardOwner = (str_starts_with($mzIndex[0], "MY") ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     if (!isset($mzIndex[1])) {
       WriteLog("There was an error, please submit a bug report.");
     }
     else if(isset($zone[$mzIndex[1]])) {
-      array_push($cardIDs, $zone[$mzIndex[1]]);
+      $cardIDs[] = $zone[$mzIndex[1]];
       $cardOwners[] = $cardOwner;
     }
   }
-  for ($i = 0; $i < count($cardIDs); ++$i) {
+  $cardCount = count($cardIDs);
+  for ($i = 0; $i < $cardCount; ++$i) {
     switch ($params[0]) {
       case "MYBANISH":
-        if (count($params) < 4) array_push($params, $player);
+        if (count($params) < 4) $params[] = $player;
         BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "THEIRBANISH":
         if (count($params) < 4)
-          array_push($params, $player);
+          $params[] = $player;
         BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
@@ -285,9 +288,9 @@ function MZUndestroy($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
   $params = explode(",", $parameter);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
-    $mzIndex = explode("-", $lastResultArr[$i]);
+    $mzIndex = explode("-", $lastResultArr[$i], 2);
     switch ($mzIndex[0]) {
       case "MYCHAR":
         UndestroyCharacter($player, $mzIndex[1]);
@@ -303,38 +306,54 @@ function MZBanish($player, $parameter, $lastResult)
 {
   $lastResultArr = explode(",", $lastResult);
   $params = explode(",", $parameter);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
+  $paramCount = count($params);
+  $modifier = $paramCount > 1 ? $params[1] : "-";
+  $banishedBy = $paramCount > 2 ? $params[2] : "";
+  $banisher = $params[3] ?? "-";
+  $banishedCards = [];
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
-    $mzIndex = explode("-", $lastResultArr[$i]);
-    $cardOwner = (substr($mzIndex[0], 0, 2) == "MY" ? $player : $otherPlayer);
+    $mzIndex = explode("-", $lastResultArr[$i], 2);
+    if (!isset($mzIndex[1]) || !is_numeric($mzIndex[1])) {
+      WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
+      continue;
+    }
+    $index = (int)$mzIndex[1];
+    $cardOwner = (str_starts_with($mzIndex[0], "MY") ? $player : $otherPlayer);
     $zone = &GetMZZone($cardOwner, $mzIndex[0]);
     if ($mzIndex[0] == "COMBATCHAINATTACKS") {
       $attacks = GetCombatChainAttacks();
-      $cardOwner = $attacks[$mzIndex[1] + 1];
+      if (!isset($attacks[$index + 1])) continue;
+      $cardOwner = $attacks[$index + 1];
     }
-    $modifier = count($params) > 1 ? $params[1] : "-";
-    $banishedBy = count($params) > 2 ? $params[2] : "";
-    $banisher = $params[3] ?? "-";
     if($params[0] == "-") {
-      if (strpos($mzIndex[0], "MY") === 0) {
+      if (str_starts_with($mzIndex[0], "MY")) {
         $params[0] = substr($mzIndex[0], 2);
-      } elseif (strpos($mzIndex[0], "THEIR") === 0) {
+      } elseif (str_starts_with($mzIndex[0], "THEIR")) {
         $params[0] = substr($mzIndex[0], 5);
       } else {
         $params[0] = $mzIndex[0];
       }
     }
-    if (!isset($mzIndex[1])) { WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true); continue; }
-    BanishCardForPlayer($zone[$mzIndex[1]], $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
+    if (!is_array($zone) || !array_key_exists($index, $zone)) {
+      WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
+      continue;
+    }
+    $cardID = $zone[$index];
+    $banishedCards[] = $cardID;
+    BanishCardForPlayer($cardID, $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
   }
-  if (count($params) <= 3 && isset($mzIndex[1])) WriteLog(CardLink($zone[$mzIndex[1]], $zone[$mzIndex[1]]) . " was banished.");
+  if ($paramCount <= 3 && count($banishedCards) > 0) {
+    $cardID = $banishedCards[count($banishedCards) - 1];
+    WriteLog(CardLink($cardID, $cardID) . " was banished.");
+  }
   return $lastResult;
 }
 
 function MZGainControl($player, $target, $temporary=0)
 {
-  $targetArr = explode("-", $target);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $targetArr = explode("-", $target, 2);
+  $otherPlayer = 3 - $player;
   switch ($targetArr[0]) {
     case "MYITEMS":
     case "THEIRITEMS":
@@ -356,21 +375,21 @@ function MZGainControl($player, $target, $temporary=0)
 function MZBounce($player, $lastResult, $allArsenal = true)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
-    $mzIndex = explode("-", $lastResultArr[$i]);
+    $mzIndex = explode("-", $lastResultArr[$i], 2);
     switch ($mzIndex[0]) {
       case "MYAURAS":
         $auras = &GetAuras($player);
         $cardID = $auras[$mzIndex[1]];
-        $cardOwner = substr($auras[$mzIndex[1]+9], 0, 5) == "THEIR"? $otherPlayer : $player;
+        $cardOwner = str_starts_with($auras[$mzIndex[1]+9], "THEIR") ? $otherPlayer : $player;
         $lastResult = RemoveAura($player, $mzIndex[1]);
         AddPlayerHand($cardID, $cardOwner, "-");
         break;
       case "THEIRAURAS":
         $auras = &GetAuras($otherPlayer);
         $cardID = $auras[$mzIndex[1]];
-        $cardOwner = substr($auras[$mzIndex[1]+9], 0, 5) == "THEIR"? $player : $otherPlayer;
+        $cardOwner = str_starts_with($auras[$mzIndex[1]+9], "THEIR") ? $player : $otherPlayer;
         $lastResult = RemoveAura($otherPlayer, $mzIndex[1]);
         AddPlayerHand($cardID, $cardOwner, "-");
         break;
@@ -384,16 +403,16 @@ function MZBounce($player, $lastResult, $allArsenal = true)
 function MZBottom($player, $lastResult, $allArsenal = true)
 {
   $lastResultArr = explode(",", $lastResult);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
-    $mzIndex = explode("-", $lastResultArr[$i]);
+    $mzIndex = explode("-", $lastResultArr[$i], 2);
     switch ($mzIndex[0]) {
       case "MYAURAS":
         $auras = &GetAuras($player);
         $cardID = $auras[$mzIndex[1]];
         $lastResult = RemoveAura($player, $mzIndex[1]);
         if (DelimStringContains(CardSubType($cardID), "Affliction")) {
-          $player = $player == 1 ? 2 : 1;
+          $player = 3 - $player;
         }
         AddBottomDeck($cardID, $player, "-");
         break;
@@ -402,7 +421,7 @@ function MZBottom($player, $lastResult, $allArsenal = true)
         $cardID = $auras[$mzIndex[1]];
         $lastResult = RemoveAura($otherPlayer, $mzIndex[1]);
         if (DelimStringContains(CardSubType($cardID), "Affliction")) {
-          $otherPlayer = ($otherPlayer == 1 ? 2 : 1);
+          $otherPlayer = 3 - $otherPlayer;
         }
         AddBottomDeck($cardID, $otherPlayer, "-");
         break;
@@ -429,8 +448,8 @@ function MZFreeze($target, $player="-", $freezeState=1)
 {
   global $currentPlayer;
   if ($player == "-") $player = $currentPlayer;
-  $pieces = explode("-", $target);
-  $player = (substr($pieces[0], 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1));
+  $pieces = explode("-", $target, 2);
+  $player = (str_starts_with($pieces[0], "MY") ? $player : ($player == 1 ? 2 : 1));
   $zone = &GetMZZone($player, $pieces[0]);
   if (!is_numeric($pieces[1] ?? "-"))
     return;
@@ -478,30 +497,14 @@ function UnfreezeMZ($player, $zone, $index)
 
 function FrozenOffsetMZ($zone)
 {
-  switch ($zone) {
-    case "ARS":
-    case "MYARS":
-    case "THEIRARS":
-      return 4;
-    case "ALLY":
-    case "MYALLY":
-    case "THEIRALLY":
-      return 3;
-    case "CHAR":
-    case "MYCHAR":
-    case "THEIRCHAR":
-      return 8;
-    case "AURAS":
-    case "MYAURAS":
-    case "THEIRAURAS":
-      return 11;
-    case "ITEMS":
-    case "MYITEMS":
-    case "THEIRITEMS":
-      return 7;
-    default:
-      return -1;
-  }
+  static $offsets = [
+    "ARS" => 4, "MYARS" => 4, "THEIRARS" => 4,
+    "ALLY" => 3, "MYALLY" => 3, "THEIRALLY" => 3,
+    "CHAR" => 8, "MYCHAR" => 8, "THEIRCHAR" => 8,
+    "AURAS" => 11, "MYAURAS" => 11, "THEIRAURAS" => 11,
+    "ITEMS" => 7, "MYITEMS" => 7, "THEIRITEMS" => 7,
+  ];
+  return $offsets[$zone] ?? -1;
 }
 
 function DefCounterOffsetMZ($zone) {
@@ -514,25 +517,25 @@ function DefCounterOffsetMZ($zone) {
 
 function MZIsPlayer($MZIndex)
 {
-  $indexArr = explode("-", $MZIndex);
-  if($indexArr[1] == 0 && (substr($indexArr[0], 0, 6) == "MYCHAR" || substr($indexArr[0], 0, 9) == "THEIRCHAR")) return true;
+  $indexArr = explode("-", $MZIndex, 2);
+  if($indexArr[1] == 0 && (str_starts_with($indexArr[0], "MYCHAR") || str_starts_with($indexArr[0], "THEIRCHAR"))) return true;
   return false;
 }
 
 function MZPlayerID($me, $MZIndex)
 {
-  $indexArr = explode("-", $MZIndex);
-  if (substr($indexArr[0], 0, 6) == "MYCHAR") return $me;
-  if (substr($indexArr[0], 0, 9) == "THEIRCHAR") return $me == 1 ? 2 : 1;
+  $indexArr = explode("-", $MZIndex, 2);
+  if (str_starts_with($indexArr[0], "MYCHAR")) return $me;
+  if (str_starts_with($indexArr[0], "THEIRCHAR")) return $me == 1 ? 2 : 1;
   return -1;
 }
 
 function GetMZCard($player, $MZIndex)
 {
-  $params = explode("-", $MZIndex ?? "");
+  $params = explode("-", $MZIndex ?? "", 3);
   if (count($params) < 2) return "";
-  if (substr($params[0], 0, 5) == "THEIR") $player = $player == 1 ? 2 : 1;
-  if (str_contains($params[0], "UID")) {
+  if (str_starts_with($params[0], "THEIR")) $player = 3 - $player;
+  if (str_ends_with($params[0], "UID")) {
     switch ($params[0]) {
       case "THEIRCHARUID":
       case "MYCHARUID":
@@ -558,14 +561,14 @@ function GetMZCards($player, $MZIndices)
 {
   $ret = [];
   foreach(explode(",", $MZIndices) as $MZIndex) {
-    array_push($ret, GetMZCard($player, $MZIndex));
+    $ret[] = GetMZCard($player, $MZIndex);
   }
   return implode(",", $ret);
 }
 
 function GetMZUID($player, $MZIndex)
 {
-  $mzArr = explode("-", $MZIndex);
+  $mzArr = explode("-", $MZIndex, 2);
   $zone = &GetMZZone($player, $mzArr[0]);
   switch ($mzArr[0]) {
     case "ALLY":
@@ -625,7 +628,7 @@ function MZStartTurnAbility($player, $MZIndex)
 
 function MZMoveCard($player, $search, $where, $may = false, $isReveal = false, $silent = false, $isSubsequent = false, $DQContext = "", $logText = "", $passSearch = true)
 {
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = 3 - $player;
   if ($logText == "") $logText = "Card chosen: <0>";
   if (str_contains($search, "DECK") && (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "")) {
     WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
@@ -694,21 +697,17 @@ function MZLastIndex($player, $zone)
 function MZSwitchPlayer($zoneStr)
 {
   $zoneArr = explode(",", $zoneStr);
-  $zoneStr = "";
-  foreach ($zoneArr as $zone) {
-    if (str_contains($zone, "MY")) $zone = str_replace("MY", "THEIR", $zone);
-    else if (str_contains($zone, "THEIR")) $zone = str_replace("THEIR", "MY", $zone);
-
-    if ($zoneStr != "") $zoneStr .= ",";
-    $zoneStr .= $zone;
+  foreach ($zoneArr as &$zone) {
+    if (str_starts_with($zone, "MY")) $zone = "THEIR" . substr($zone, 2);
+    elseif (str_starts_with($zone, "THEIR")) $zone = "MY" . substr($zone, 5);
   }
-  return $zoneStr;
+  return implode(",", $zoneArr);
 }
 
 function GetZoneObject($player,  $zone) {
-  global $Stack, $CombatChain, $ChainLinks;
-  $otherPlayer = $player == 1 ? 2 : 1;
-  if (str_contains($zone, "UID"))
+  global $Stack, $CombatChain, $ChainLinks, $AttackQueue;
+  $otherPlayer = 3 - $player;
+  if (str_ends_with($zone, "UID"))
     $zone = substr($zone, 0, -3);
   return match($zone) {
     "LAYER" => $Stack,
@@ -724,20 +723,26 @@ function GetZoneObject($player,  $zone) {
     "MYITEMS", "ITEMS" => new Items($player),
     "THEIRITEMS" => new Items($otherPlayer),
     "COMBATCHAINLINK", "CC" => $CombatChain,
+    "ATTACKQUEUE" => $AttackQueue,
     default => ""
   };
 }
 
 function MZIndexToObject($player, $MZIndex) {
-  $zone = explode("-", $MZIndex)[0];
-  $ind = explode("-", $MZIndex)[1] ?? -1;
+  global $ChainLinks;
+  $parts = explode("-", $MZIndex, 2);
+  $zone = $parts[0];
+  $ind = $parts[1] ?? -1;
   if (!is_numeric($ind)) return CleanTargetToObject($player, $MZIndex);
+  if ($zone == "COMBATCHAINATTACKS") { //this zone is wonky, handle separately
+    return $ChainLinks->GetLink($ind)->AttackCard();
+  }
   $Zone = GetZoneObject($player, $zone);
   return $Zone == "" ? "" : $Zone->Card($ind);
 }
 
 function CleanTargetToObject($player, $cleanTarget) {
-  $targArr = explode("-", $cleanTarget);
+  $targArr = explode("-", $cleanTarget, 2);
   $zone = GetZoneObject($player, $targArr[0]);
   $uid = $targArr[1] ?? "-";
   return $zone != "" ? $zone->FindCardUID($uid) : "";
@@ -745,8 +750,8 @@ function CleanTargetToObject($player, $cleanTarget) {
 
 function CleanTarget($player, $lastResult) { //converts a target to use unique ids
   global $layers, $CombatChain;
-  $targetArr = explode("-", $lastResult);
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $targetArr = explode("-", $lastResult, 2);
+  $otherPlayer = 3 - $player;
   switch($targetArr[0]) {
     case "LAYER":
       $cleanTarget = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
@@ -822,10 +827,11 @@ function CleanTarget($player, $lastResult) { //converts a target to use unique i
 }
 
 function CleanTargetToIndex($player, $target) {
-  $targetArr = explode("-", $target);
+  $targetArr = explode("-", $target, 2);
   $zone = $targetArr[0];
   $uid = $targetArr[1];
-  if (str_contains($zone, "UID")) $zone = substr($zone, 0, -3);
+  if (is_numeric($uid)) return $target; //it's already an mzindex
+  if (str_ends_with($zone, "UID")) $zone = substr($zone, 0, -3);
   $Zone = GetZoneObject($player, $zone);
   if ($Zone == "") return  "";
   $Card = $Zone->FindCardUID($uid);
@@ -837,29 +843,30 @@ function MultiZoneIndices($player, $parameter) {
   $searches = [];
   foreach (explode("&", $parameter) as $search) { //allow searching for stuff in unusual zones for its type
     $newSearch = $search;
-    $conds = explode(":", $search)[1] ?? "";
-    if (strpos($newSearch, "MYALLY") !== false) {
+    $conds = explode(":", $search, 2)[1] ?? "";
+    if (str_contains($search, "MYALLY")) {
       $newSearch = "MYCHAR:subtype=Ally;$conds&$newSearch";
-    } 
-    if (strpos($newSearch, "THEIRALLY") !== false) {
+    }
+    if (str_contains($search, "THEIRALLY")) {
       $newSearch = "THEIRCHAR:subtype=Ally;$conds&$newSearch";
     }
-    if (strpos($newSearch, "THEIRCHAR:type=E") !== false) {
+    if (str_contains($search, "THEIRCHAR:type=E")) {
       $newSearch = "THEIRITEMS:$conds&$newSearch";
     }
-    if (strpos($newSearch, "MYCHAR:type=E") !== false) {
+    if (str_contains($search, "MYCHAR:type=E")) {
       $newSearch = "MYITEMS:$conds&$newSearch";
     }
-    if (strpos($newSearch, "MYAURAS") !== false) {
+    if (str_contains($search, "MYAURAS")) {
       $newSearch = "MYCHAR:subtype=Aura;$conds&$newSearch";
     }
-    if (strpos($newSearch, "THEIRAURAS") !== false) {
+    if (str_contains($search, "THEIRAURAS")) {
       $newSearch = "THEIRCHAR:subtype=Aura;$conds&$newSearch";
     }
     $searches[] = $newSearch;
   }
   $parameter = implode("&", $searches);
   $rv = SearchMultizone($player, $parameter);
-  // we may want to dedupe this eventually, not pressing issue
+  // deduplicatess
+  $rv = implode(",", array_keys(array_flip(explode(",", $rv))));
   return $rv == "" ? "PASS" : $rv;
 }

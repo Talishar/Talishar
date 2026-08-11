@@ -26,17 +26,65 @@
 // }
 
 
-// class arc_lightning_yellow extends Card {
+class arc_lightning_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "arc_lightning_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "arc_lightning_yellow";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_ResolvingLayerUniqueID;
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:GetClassState($this->controller, $CS_ResolvingLayerUniqueID));
+    AddCurrentTurnEffect($this->cardID . "-GOAGAIN", $this->controller);
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    DealArcane(1, 2, "PLAYCARD", $this->cardID, resolvedTarget:$target);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain, $mainPlayer;
+    $attackID = $CombatChain->AttackCard()->ID();
+    if ($parameter == "GOAGAIN") {
+      if (!TypeContains($attackID, "AA", $mainPlayer)) return false;
+      // need to check if it's attached
+      if (!IsAttackStep() && !DelimStringContains($CombatChain->AttackCard()->StaticBuffs(), SetID($this->cardID) ."-GOAGAIN")) return false;
+      return true;
+    }
+    return false;
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    global $CS_AdditionalCosts;
+    if ($parameter != "GOAGAIN") return false;
+    if (IsStaticType(CardType($cardID), $from)) return false;
+    if(SearchCurrentTurnEffects("arc_lightning_yellow", $this->controller) && !IsMeldInstantName(GetClassState($this->controller, $CS_AdditionalCosts)) && (GetClassState($this->controller, $CS_AdditionalCosts) != "Both" || $from == "MELD")) {
+      // this is a bandaid fix, go again is getting checked twice for meld cards when only the left side is played
+      if ($cardID != "arc_lightning_yellow") $remove = true;
+      if (!HasMeld($cardID)) return true;
+    }
+    return false;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $param == "GOAGAIN";
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    global $Stack;
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer($cardID);
+    if ($TopLayer == "-") return;
+    if ($TopLayer->PlayerID() != $this->controller) return;
+    if (IsActivated($cardID, $from)) return;
+    if (TypeContains($TopLayer->ID(), "A"))
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+    elseif (TypeContains($TopLayer->ID(), "AA"))
+      $Effect->ApplyToUniqueID("ATTACK");
+  }
+}
 
 
 // class arcane_cussing_red extends Card {
@@ -280,20 +328,18 @@ class blast_to_oblivion extends BaseCard {
 
   function ProcessTrigger($target) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    $targetedPlayer = intval(explode("-", $target)[0]);
+    $targetParts = explode("-", $target);
+    $targetedPlayer = intval($targetParts[0]);
     $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
-    $uID = explode("-", $target)[1];
-    $auras = &GetAuras($targetedPlayer);
-    for ($i = 0; $i < count($auras); $i += AuraPieces()) {
-      if ($auras[$i + 6] == $uID) {
-        $cardID = $auras[$i];
-        $cardOwner = substr($auras[$i+9], 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
-        $lastResult = RemoveAura($targetedPlayer, $i);
-        AddPlayerHand($cardID, $cardOwner, "-");
-        return $lastResult;
-      }
-    }
-    WriteLog("The target for " . CardLink($this->cardID) . " has been removed, effect fizzling");
+    $uID = $targetParts[1];
+    $Auras = new Auras($targetedPlayer);
+    $AuraCard = $Auras->FindCardUID($uID);
+    $cardID = $AuraCard->CardID();
+    $cardOwner = substr($AuraCard->From(), 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
+    if (!$AuraCard->IsToken() && $AuraCard->Index() != -1)
+      AddPlayerHand($cardID, $cardOwner, "-");
+    $lastResult = $AuraCard->Remove();
+    return $lastResult;
   }
 
   function ActiveLinkPlayTrigger($cardID, $player, $from) {
@@ -380,17 +426,39 @@ class blast_to_oblivion_blue extends Card {
 }
 
 
-// class bloodtorn_bodice extends Card {
+class bloodtorn_bodice extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "bloodtorn_bodice";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "bloodtorn_bodice";
+    $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    GainResources($this->controller, 1);
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    Await($this->controller, "MultiZoneIndices", "indices",  search:"MYAURAS", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "MZInd", context:"Sacrifice an aura to " . CardLink($this->cardID));
+    Await($this->controller, "MZDestroy", final:true);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $auras = &GetAuras($this->controller);
+    return Count($auras) <= 0;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+}
 
 
 // class blossoming_decay_red extends Card {
@@ -865,7 +933,7 @@ class electromagnetic_somersault extends BaseCard {
     $options = SearchCombatChainLink($this->controller, "AA", minCost: $minCost);
     if($options != "") {
       $search = "COMBATCHAINLINK:type=AA;minCost=$minCost";
-      $max = count(explode(",", $options));
+      $max = substr_count($options, ",") + 1;
       $message = "Choose an attack action card to return to the owner's hand";
       Await($this->controller, "MultiChooseIndices", "indices", search:$search, subsequent:0);
     	Await($this->controller, "ChooseMultiZone", "currentChoices", context:$message, may:true);
@@ -3019,17 +3087,30 @@ class gone_in_a_flash_red extends Card {
 // }
 
 
-// class will_of_arcana_blue extends Card {
+class will_of_arcana_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "will_of_arcana_blue";
+    $this->controller = $controller;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "will_of_arcana_blue";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PitchAbility($from) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    WriteLog(CardLink($this->cardID, $this->cardID) . " Amp 1");
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    $Effect = new CurrentEffect($index);
+		return Amp($Effect->NumUses(), $remove, $player, $this->controller, $amount);
+  }
+}
 
 
 ?>

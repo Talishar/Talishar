@@ -13,6 +13,7 @@
 
   require_once "../includes/dbh.inc.php";
   require_once '../includes/functions.inc.php';
+  require_once '../Libraries/FriendLibraries.php';
 
   $response = new stdClass();
 
@@ -41,9 +42,15 @@
     echo(json_encode($response));
     exit;
   }
+  if (IsIPBanned()) {
+    $response->error = "Unable to create an account at this time. Please try again later.";
+    echo(json_encode($response));
+    exit;
+  }
   $conn = GetDBConnection(DBL_SIGNUP_API);
-  // Is the username taken already
-  if (uidExists($conn, $username) !== false) {
+  // Is the username taken already, or a banned name (banned names stay
+  // reserved even after the original account is deleted)
+  if (uidExists($conn, $username) !== false || IsBannedPlayer($username)) {
     $response->error = "The chosen username is taken.";
     echo(json_encode($response));
     mysqli_close($conn);
@@ -58,7 +65,8 @@
     exit;
   }
 
-  CreateUserAPI($conn, $username, $email, $pwd);
+  $newUserId = CreateUserAPI($conn, $username, $email, $pwd);
+  if ($newUserId !== false) LogIPHistory($newUserId);
 
   $response->message = "Success!";
   echo(json_encode($response));
