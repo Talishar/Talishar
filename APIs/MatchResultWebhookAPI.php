@@ -2,16 +2,19 @@
 
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
-include_once "../AccountFiles/AccountSessionAPI.php";
-include_once "../includes/dbh.inc.php";
-include_once "../includes/WebhookSecurity.php";
-
 SetHeaders();
 
+// Answer the preflight before pulling in anything heavier. Those includes start a
+// session and could emit output; any output before SetHeaders() would mean the CORS
+// headers never get sent, which surfaces in the browser as a CORS failure.
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
+
+include_once "../AccountFiles/AccountSessionAPI.php";
+include_once "../includes/dbh.inc.php";
+include_once "../includes/WebhookSecurity.php";
 
 header('Content-Type: application/json');
 
