@@ -58,6 +58,7 @@ include "CardDictionaries/ArmoryDecks/AHAShared.php";
 include "CardDictionaries/OmensOfTheThirdAge/OMNShared.php";
 include "CardDictionaries/IARShared.php";
 include "CardDictionaries/MasteryPacks/MPWShared.php";
+include "CardDictionaries/MasteryPacks/MPAShared.php";
 
 
 $CID_BloodRotPox = "bloodrot_pox";
@@ -314,6 +315,12 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Head";
     case "celebrant_broadsword":
       return "Sword";
+    case "bloodrot_pox":
+    case "inertia":
+    case "frailty":
+      return "Disease,Aura";
+    case "dr_mortimer":
+      return "Young";
     default:
       break;
   }
@@ -3448,6 +3455,8 @@ function HasGuardwell($cardID)
 
 function HasPiercing($cardID, $from = "")
 {
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->HasPiercing();
   switch ($cardID) {
      //Weapons with Piercing
     case "spiders_bite":
@@ -4202,6 +4211,7 @@ function Is1H($cardID, $hero="-"): bool|int
     case "claw_of_vynserakai": 
     case "gavel_of_natural_order":
     case "lionclaw_maul":
+    case "humour_plunge":
       return $oneHandedCache[$cardID] = true;
     default:
       break;

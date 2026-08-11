@@ -855,4 +855,8 @@ class Card {
   function EffectPlayCardRestricted($cardID, $from, $playIndex, $effectIndex) {
     return "";
   }
+
+  function HasPiercing() {
+    return GeneratedHasPiercing($this->cardID);
+  }
 }

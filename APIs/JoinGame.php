@@ -15,12 +15,10 @@ include_once "../Assets/MetafyDictionary.php";
 
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
-include_once "../Classes/CardObjects/MPWCards.php";
-include_once "../Classes/CardObjects/AHACards.php"; // needed for a bit since I added some MPW cards here
-include_once "../Classes/CardObjects/AOLCards.php";
-// include_once "../Classes/CardObjects/DDDCards.php"; this file hasn't been made yet
 include_once "../Classes/CardObjects/IARCards.php";
 include_once "../Classes/CardObjects/AMACards.php";
+include_once "../Classes/CardObjects/AMOCards.php";
+include_once "../Classes/CardObjects/MPACards.php";
 // promos for special formats
 include_once "../Classes/CardObjects/LGSCards.php";
 
@@ -965,7 +963,7 @@ function isSpecialUsePromo($cardID) {
       "runechant_of_pride_yellow", "runechant_of_wrath_yellow", "runechant_of_lust_yellow",
       "runechant_of_sloth_yellow", "runic_reaving_red"
     ]);
-    $unreleasedSetNames = array_flip(["DDD", "IAR", "AMA", "SPW", "SAT", "SBW", ""]);
+    $unreleasedSetNames = array_flip(["DDD", "IAR", "AMA", "SPW", "SAT", "SBW", "MPA", "AMO", ""]);
   }
   if (isset($releaseSet[$cardID])) return false;
   return isset($promoSet[$cardID]) || isset($unreleasedSetNames[CardSet($cardID)]);

@@ -282,6 +282,21 @@ function PlayAuraAwait($player) {
   PlayAura($cardID, $player, $number, $isToken, $rogueHeronSpecial, $numPowerCounters, $from, $additionalCosts, $effectController, $effectSource);
 }
 
+function PlayItemAwait($player) {
+  global $dqVars;
+  $cardID = strtolower($dqVars["cardID"]);
+  if (str_contains($cardID, "cardid-")) $cardID = explode("-", $cardID)[1];
+  $steamCounterModifier = $dqVars["steamCounters"] ?? 0;
+  $number = $dqVars["number"] ?? 1;
+  $isToken = $dqVars["isToken"] ?? false;
+  $from = $dqVars["from"] ?? "-";
+  $effectController = $dqVars["effectController"] ?? "-";
+  $effectSource = $dqVars["effectSource"] ?? "-";
+  $mainPhase = $dqVars["mainPhase"] ?? true;
+  $effectAgent = $dqVars["effectAgent"] ?? "";
+  PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier, $number, $effectController, $isToken, $mainPhase, $from, $effectAgent, $effectSource);
+}
+
 function CardChoicesAwait($player) {
   global $dqVars;
   $context = $dqVars["context"] ?? "";

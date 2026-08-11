@@ -581,7 +581,7 @@ function ResetCombatChainState()
   Await($mainPlayer, "CloseCombatChain", subsequent:false, final:true);
 }
 
-function AttackReplaced($cardID, $player)
+function AttackReplaced($cardID, $player, $from)
 {
   global $combatChainState, $currentTurnEffects, $mainPlayer;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_CachedDominateActive, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBasePower, $combatChain;
@@ -597,6 +597,7 @@ function AttackReplaced($cardID, $player)
 
   if (HasStealth($cardID)) IncrementClassState($player, $CS_NumStealthAttacks);
   $combatChain[0] = $cardID;
+  $combatChain[2] = $from;
   $combatChain[5] = 0;//Reset Power Modifiers
   $combatChain[6] = 0;//Reset Defense modifiers
   $combatChain[7] = GetUniqueId($cardID, $player); //new unique id

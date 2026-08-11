@@ -3486,7 +3486,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
   global $combatChain, $chainLinks;
   $cardSubtype = CardSubType($cardID);
   $card = GetClass($cardID, $currentPlayer, $from);
-  if ($card != "-") $card->PayAdditionalCosts($from, $index);
+  if ($card != "-" && $from != "COMBATCHAINATTACKS") $card->PayAdditionalCosts($from, $index);
   if ($from == "PLAY" && DelimStringContains($cardSubtype, "Item")) {
     PayItemAbilityAdditionalCosts($cardID, $from);
     return;

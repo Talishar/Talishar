@@ -201,7 +201,7 @@ function OUTAbilityCost($cardID)
           $index = SearchCharacterForUniqueID($combatChain[8], $currentPlayer);
           DestroyCharacter($currentPlayer, $index, skipClose:true);
         }
-        AttackReplaced($card->ID(), $currentPlayer);
+        AttackReplaced($card->ID(), $currentPlayer, "BANISH");
         $card->Remove();
         return "";
       case "redback_shroud":
