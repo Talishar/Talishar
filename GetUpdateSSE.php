@@ -109,7 +109,12 @@ header('Cache-Control: no-cache');
 
 $lastUpdate = 0;
 $isGamePlayer = $playerID == 1 || $playerID == 2;
-
+$responseCacheVariant = 'player:' . $playerID;
+if ($playerID == 3) {
+  $responseFriendList = $sessionData['friendList'] ?? [];
+  sort($responseFriendList, SORT_STRING);
+  $responseCacheVariant = 'spectator:' . hash('sha256', json_encode($responseFriendList));
+}
 // Ephemeral activity state pushed via named SSE events.
 $lastActivityCheckTime = 0.0;
 $activityCheckInterval = 1.5; // seconds between APCu checks
@@ -184,13 +189,43 @@ while (true) {
     $lastFileCheckTime = $currentRealTime;
   }
 
+  // Check if game is over (status 99)
+  $gameStatus = intval($cacheArr[13] ?? 0);
+  if ($gameStatus == 99) {
+    // Send final state before exiting
+    $finalCacheVal = intval($cacheStr);
+    $finalState = GetCachedGameStateResponse($gameName, $finalCacheVal, $responseCacheVariant, false);
+    if ($finalState === false) {
+      $buildStartedAt = microtime(true);
+      $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, false, $cacheArr);
+      RecordPerformanceMetric('build-game-state', (microtime(true) - $buildStartedAt) * 1000, [
+        'playerID' => (int)$playerID,
+        'final' => true,
+      ]);
+      StoreCachedGameStateResponse($gameName, $finalCacheVal, $responseCacheVariant, false, $finalState);
+    }
+    if (!is_string($finalState)) {
+      SendContent($finalState);
+    }
+    exit;
+  }
+
   // Check for game state updates
   $cacheVal = intval($cacheStr);
   $inactive = $lastUpdateTime !== ""
     && 1000 * $currentRealTime - intval($lastUpdateTime) > $inactivityTimeoutMs;
   if ($cacheVal > $lastUpdate || $inactive !== $previouslyInactive) {
     // Build and send full game state
-    $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive, $cacheArr);
+    $gameState = GetCachedGameStateResponse($gameName, $cacheVal, $responseCacheVariant, $inactive);
+    if ($gameState === false) {
+      $buildStartedAt = microtime(true);
+      $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive, $cacheArr);
+      RecordPerformanceMetric('build-game-state', (microtime(true) - $buildStartedAt) * 1000, [
+        'playerID' => (int)$playerID,
+        'final' => false,
+      ]);
+      StoreCachedGameStateResponse($gameName, $cacheVal, $responseCacheVariant, $inactive, $gameState);
+    }
     if (is_string($gameState)) {
       // Only kill the stream for genuinely fatal errors. Transient ones (e.g.
       // "Game state reverted." mid-undo) resolve on a retry.

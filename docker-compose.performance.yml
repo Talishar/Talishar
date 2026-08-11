@@ -1,0 +1,17 @@
+services:
+  web-server:
+    build:
+      args:
+        PHP_INI: production
+    environment:
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "0"
+      PERFORMANCE_METRICS_ENABLED: "true"
+      PERFORMANCE_METRICS_SAMPLE_RATE: "0.1"
+
+# Apply over the normal deployment configuration:
+# docker compose -f docker-compose.yml -f docker-compose.performance.yml up -d --build
+#
+# Production should deploy application files in the image rather than using
+# the developer bind mounts from docker-compose.yml. The overlay intentionally
+# limits itself to safe runtime tuning because production volume layout is
+# host-specific.

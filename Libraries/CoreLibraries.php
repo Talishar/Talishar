@@ -16,6 +16,18 @@ function DelimStringContains($str, $find, $partial=false)
   return false;
 }
 
+function StringContainsWholeWords($str, $find)
+{
+  if ($str === null || $find === null || $find === "") return false;
+
+  $wordCharacter = '[\p{L}\p{M}\p{N}]';
+  if (!preg_match_all('/' . $wordCharacter . '+/u', $find, $matches)) return false;
+
+  $words = array_map(fn($word) => preg_quote($word, '/'), $matches[0]);
+  $pattern = '/(?<!' . $wordCharacter . ')' . implode('[^\p{L}\p{M}\p{N}]+', $words) . '(?!' . $wordCharacter . ')/iu';
+  return preg_match($pattern, $str) === 1;
+}
+
 function GetRandom($low=-1, $high=-1, $reroll=false)
 {
   global $randomSeeded;

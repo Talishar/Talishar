@@ -15,6 +15,10 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+      args:
+        # The checked-in compose file is the local developer stack. Production
+        # builds should use PHP_INI=production and timestamp validation off.
+        PHP_INI: development
     restart: always
     volumes:
       - "./:/var/www/html/game"
@@ -37,6 +41,9 @@ services:
       MYSQL_SERVER_USER_NAME: "root"
       REDIS_HOST: "app_redis"
       REDIS_ENABLED: "true"
+      PERFORMANCE_METRICS_ENABLED: "false"
+      PERFORMANCE_METRICS_SAMPLE_RATE: "0.1"
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "1"
       DOMAIN: "localhost"
       METAFY_CLIENT_ID: "4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI"
       METAFY_LOGIN_CLIENT_ID: "2gAjeLUQxKdjOUaMP63CyoVHqedqkjQLa-WntE6UHss"
