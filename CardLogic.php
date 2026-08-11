@@ -4657,12 +4657,16 @@ function Intimidate($player = "")
 }
 
 function GamblersGlovesReroll($player, $target){
+  global $CS_DieRoll;
   $gamblersGlovesIndex = FindCharacterIndex($player, "gamblers_gloves");
   AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink("gamblers_gloves", "gamblers_gloves")."_to_reroll_the_result");
   AddDecisionQueue("NOPASS", $player, "-");
   AddDecisionQueue("PASSPARAMETER", $player, $gamblersGlovesIndex, 1);
   AddDecisionQueue("DESTROYCHARACTER", $player, "-", 1);
   AddDecisionQueue("REROLLDIE", $target, "gamblers_gloves", 1);
+  AddDecisionQueue("ELSE", $player, "-");
+  AddDecisionQueue("PASSPARAMETER", $player, GetDieRoll($player), 1);
+  AddDecisionQueue("SETCLASSSTATE", $player, $CS_DieRoll, 1);
 }
 
 function DestroyFrozenArsenal($player)

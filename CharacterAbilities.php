@@ -1111,7 +1111,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "nitro_mechanoida":
       --$character[$cardIndex + 2];
       break;
-    case "barkbone_strapping":
     case "helm_of_isens_peak":
     case "heartened_cross_strap":
     case "goliath_gauntlet":

@@ -925,7 +925,6 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     if ($card != "-") return $card->WeaponPowerModifier($basePower);
     switch ($cardID) {
       case "summit_the_unforgiving": return CheckHeavy($mainPlayer) ? $basePower + 2 : $basePower;
-      case "anothos": return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 2 ? $basePower+2 : $basePower;
       case "nebula_blade": return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0 ? $basePower+3 : $basePower;
       case "titans_fist": return SearchCount(SearchPitch($mainPlayer, minCost: 3)) >= 1 ? $basePower+1 : $basePower;
       case "hammer_of_havenhold": return SearchPitchForCard($mainPlayer, "chivalry_blue") > -1 ? $basePower+1 : $basePower;
@@ -4167,7 +4166,7 @@ function RequiresDieRoll($cardID, $from, $player): bool
   if ($type == "AA" && (GetResolvedAbilityType($cardID, $from, $player) == "" || GetResolvedAbilityType($cardID, $from, $player) == "AA") && PowerValue($cardID, $player, "LAYER") >= 6 && (SearchCharacterActive($player, "kayo_berserker_runt") || SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $player))) return true;
   return match ($cardID) {
     "crazy_brew_blue" => $from == "PLAY",
-    "scabskin_leathers", "barkbone_strapping", "bone_head_barrier_yellow", "argh_smash_yellow", "rolling_thunder_red", "bad_beats_red", "bad_beats_yellow", "bad_beats_blue", "knucklehead" => true,
+    "scabskin_leathers", "bone_head_barrier_yellow", "argh_smash_yellow", "rolling_thunder_red", "bad_beats_red", "bad_beats_yellow", "bad_beats_blue", "knucklehead" => true,
     "reckless_charge_blue" => true,
     default => false
   };

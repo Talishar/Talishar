@@ -6058,6 +6058,7 @@ class reckless_arithmetic_blue extends Card {
   function SpecificLogic() {
     $roll = GetDieRoll($this->controller);
     AddCurrentTurnEffect($this->cardID . "-" . $roll, $this->controller);
+    ClearDieRoll($this->controller);
   }
 }
 

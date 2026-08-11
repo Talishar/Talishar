@@ -6,7 +6,6 @@
     {
       case "romping_club": return 2;
       case "bravo_showstopper": case "bravo": return 2;
-      case "anothos": return 3;
       case "tectonic_plating": return 1;
       case "helm_of_isens_peak": return 1;
       case "harmonized_kodachi": return 1;
@@ -21,9 +20,7 @@
     {
       case "romping_club": return "AA";
       case "scabskin_leathers": return "A";
-      case "barkbone_strapping": return "I";
       case "bravo_showstopper": case "bravo": return "A";
-      case "anothos": return "AA";
       case "tectonic_plating": case "helm_of_isens_peak": return "A";
       case "harmonized_kodachi": return "AA";
       case "braveforge_bracers": return "A";
@@ -67,9 +64,6 @@
       case "barraging_beatdown_red": return NumNonEquipmentDefended() < 2 ? 4 : 0;
       case "barraging_beatdown_yellow": return NumNonEquipmentDefended() < 2 ? 3 : 0;
       case "barraging_beatdown_blue": return NumNonEquipmentDefended() < 2 ? 2 : 0;
-      case "awakening_bellow_red": return 3;
-      case "awakening_bellow_yellow": return 2;
-      case "awakening_bellow_blue": return 1;
       case "primeval_bellow_red": return 5;
       case "primeval_bellow_yellow": return 4;
       case "primeval_bellow_blue": return 3;
@@ -136,7 +130,6 @@
     {
       case "bloodrush_bellow_yellow": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "barraging_beatdown_red": case "barraging_beatdown_yellow": case "barraging_beatdown_blue": return ClassContains($attackID, "BRUTE", $mainPlayer);
-      case "awakening_bellow_red": case "awakening_bellow_yellow": case "awakening_bellow_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "primeval_bellow_red": case "primeval_bellow_yellow": case "primeval_bellow_blue": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "bravo_showstopper": case "bravo": return CardType($attackID) == "AA" && CardCost($attackID) >= 3;
       case "debilitate_red": case "debilitate_yellow": case "debilitate_blue": return true;
@@ -179,10 +172,6 @@
         $roll = GetDieRoll($currentPlayer);
         GainActionPoints(intval($roll/2), $currentPlayer);
         return "Rolled $roll and gained " . intval($roll/2) . " action points";
-      case "barkbone_strapping":
-        $roll = GetDieRoll($currentPlayer);
-        GainResources($currentPlayer, intval($roll/2));
-        return "Rolled $roll and gained " . intval($roll/2) . " resources";
       case "alpha_rampage_red":
         Intimidate();
         return "";
@@ -228,10 +217,6 @@
         Intimidate();
         return "";
       case "smash_instinct_red": case "smash_instinct_yellow": case "smash_instinct_blue":
-        Intimidate();
-        return "";
-      case "awakening_bellow_red": case "awakening_bellow_yellow": case "awakening_bellow_blue":
-        AddCurrentTurnEffect($cardID, $mainPlayer);
         Intimidate();
         return "";
       case "primeval_bellow_red": case "primeval_bellow_yellow": case "primeval_bellow_blue":

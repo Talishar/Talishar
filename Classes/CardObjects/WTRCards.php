@@ -81,69 +81,135 @@ class ancestral_empowerment_red extends Card {
 }
 
 
-// class anothos extends Card {
+class anothos extends Card {
+  function __construct($controller) {
+    $this->cardID = "anothos";
+    $this->controller = $controller;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "anothos";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function WeaponPowerModifier($basePower) {
+    return SearchCount(SearchPitch($this->controller, minCost: 3)) >= 2 ? $basePower+2 : $basePower;
+  }
 
+  function AbilityCost() {
+    return 3;
+  }
 
-// class awakening_bellow_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "awakening_bellow_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+}
 
 
-// class awakening_bellow_yellow extends Card {
+class awakening_bellow extends BaseCard {
+  function CombatEffectActive() {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $this->controller);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "awakening_bellow_yellow";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    Intimidate();
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class awakening_bellow_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "awakening_bellow_red";
+    $this->controller = $controller;
+    $this->baseCard = new awakening_bellow($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
 
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
 
-// class awakening_bellow_blue extends Card {
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "awakening_bellow_blue";
-//     $this->controller = $controller;
-//     }
+class awakening_bellow_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "awakening_bellow_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new awakening_bellow($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
 
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+}
 
-// class barkbone_strapping extends Card {
+class awakening_bellow_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "awakening_bellow_blue";
+    $this->controller = $controller;
+    $this->baseCard = new awakening_bellow($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "barkbone_strapping";
-//     $this->controller = $controller;
-//     }
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+}
+
+class barkbone_strapping extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "barkbone_strapping";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    RollDie($this->controller, true);
+    Await($this->controller, $this->cardID, final:true, subsequent:0);
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function SpecificLogic() {
+    $roll = GetDieRoll($this->controller);
+    GainResources($this->controller, intval($roll/2));
+    WriteLog("Player $this->controller rolled $roll and gained " . intval($roll/2) . " resources");
+    ClearDieRoll($this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+}
 
 
 // class barraging_beatdown_red extends Card {

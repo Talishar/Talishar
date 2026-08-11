@@ -1315,7 +1315,6 @@ class zane_broadly_beloved extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		// WriteLog("HERE: $additionalCosts");
 		if ($additionalCosts == "CHEER") {
 			Draw($this->controller);
 			Draw($this->controller == 1 ? 2 : 1);
