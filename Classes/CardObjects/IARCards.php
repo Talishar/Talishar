@@ -1253,8 +1253,8 @@ class blasmophet_the_insatiable_hunger extends Card {
       Await($this->controller, "ChooseMultiZone", "MZIndex", context:"Banish a card from your hand (or pass)", may:true, subsequent:0);
       Await($this->controller, "MZBanish");
       Await($this->controller, "MZRemove", final:true);
-      Await($this->controller, $this->cardID, index:$index, subsequent:0, final:true);
     }
+    Await($this->controller, $this->cardID, index:$index, subsequent:0, final:true);
   }
 
   function PermanentEndPhaseAbility($index) {
