@@ -184,6 +184,17 @@ while (true) {
     $lastFileCheckTime = $currentRealTime;
   }
 
+  // Check if game is over (status 99)
+  $gameStatus = intval($cacheArr[13] ?? 0);
+  if ($gameStatus == 99) {
+    // Send final state before exiting
+    $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, false, $cacheArr);
+    if (!is_string($finalState)) {
+      SendContent($finalState);
+    }
+    exit;
+  }
+
   // Check for game state updates
   $cacheVal = intval($cacheStr);
   $inactive = $lastUpdateTime !== ""
