@@ -50,6 +50,7 @@ if ($conn === false) {
   $response->metafyCommunities = [];
   $response->isMetafySupporter = false;
   $response->matchResultWebhookUrl = null;
+  $response->canUseMatchResultWebhook = false;
   header('Content-Type: application/json');
   echo json_encode($response);
   exit;
@@ -96,6 +97,7 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   $response->isMetafyLinked = !empty($metafyAccessToken);
   $response->metafyInfo = MetafyLink();
   $response->matchResultWebhookUrl = $row['matchResultWebhookUrl'] ?? null;
+  $response->canUseMatchResultWebhook = IsMatchResultWebhookEligible($userName);
   $response->metafyCommunities = isset($row['metafyCommunities']) ? json_decode($row['metafyCommunities'], true) : [];
     
   // Check if user has an active subscription to the Talishar community via Metafy API
@@ -149,6 +151,7 @@ else {
   $response->metafyCommunities = [];
   $response->isMetafySupporter = false;
   $response->matchResultWebhookUrl = null;
+  $response->canUseMatchResultWebhook = false;
 }
 
 mysqli_close($conn);

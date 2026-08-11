@@ -671,7 +671,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $p2MetafyTiers = GetMetafyTiersFromDatabase($p2uid);
      $p2MetafyCommunities = GetMetafyCommunitiesFromDatabase($p2uid);
      $p2IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) || IsTalisharMetafySupporter($p2MetafyCommunities) ? "1" : "");
-     $p2WebhookUrl = GetWebhookUrlForUser($p2uid);
+     $p2WebhookUrl = GetWebhookUrlForUser($p2uid, $p2MetafyTiers);
 
      $gameStatus = $MGS_Player2Joined;
      if (file_exists("../Games/" . $gameName . "/gamestate.txt"))
@@ -721,7 +721,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $p1MetafyTiers = GetMetafyTiersFromDatabase($p1uid);
      $p1MetafyCommunities = GetMetafyCommunitiesFromDatabase($p1uid);
      $p1IsPatron = (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false) || IsTalisharMetafySupporter($p1MetafyCommunities) ? "1" : "");
-     $p1WebhookUrl = GetWebhookUrlForUser($p1uid);
+     $p1WebhookUrl = GetWebhookUrlForUser($p1uid, $p1MetafyTiers);
    }
 
    // Only generate a fresh auth key for a true new join, not for a base-deck refresh.

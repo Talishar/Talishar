@@ -1,12 +1,50 @@
 <?php
 
-// Shared SSRF guard for user-configurable match result webhooks.
+// Shared policy for user-configurable match result webhooks: who may use the feature,
+// and where their URL is allowed to point.
+//
+// Eligibility is a supporter perk — a paid Metafy tier, a Patreon supporter, or a
+// Talishar contributor. Free Talishar community members do not qualify, which is why
+// this checks tiers rather than IsTalisharMetafySupporter().
 //
 // Validating only at save time is not sufficient: curl re-resolves the hostname when
 // the request is actually sent, so a low-TTL record can answer with a public address
 // during validation and a private one at send time (DNS rebinding). Every address the
 // host resolves to is therefore checked, and the vetted address is pinned onto the
 // curl handle via CURLOPT_RESOLVE so no second resolution can occur.
+
+if (!function_exists('IsMatchResultWebhookEligible')) {
+    /**
+     * Whether $uid may use match result webhooks.
+     *
+     * $metafyTiers is passed in rather than looked up so the join-time caller can reuse
+     * the tiers it has already fetched instead of issuing a second query. Pass null to
+     * have them fetched here (the profile/save path, which has no tiers to hand).
+     */
+    function IsMatchResultWebhookEligible(?string $uid, $metafyTiers = null): bool
+    {
+        if (empty($uid) || $uid === "-") return false;
+
+        include_once __DIR__ . '/MetafyHelper.php';
+        include_once __DIR__ . '/ModeratorList.inc.php';
+
+        if ($metafyTiers === null) {
+            $metafyTiers = GetMetafyTiersFromDatabase($uid);
+        }
+        if (HasPaidMetafyTier($metafyTiers)) return true;
+
+        // Patreon supporters keep the perk; they are treated as supporters everywhere
+        // else, so gating them out would read as losing something they already pay for.
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            if (($_SESSION["isPatron"] ?? false) || ($_SESSION["isPvtVoidPatron"] ?? false)) {
+                return true;
+            }
+        }
+
+        // Contributors, so the team can exercise the feature without a subscription.
+        return IsUserContributor($uid);
+    }
+}
 
 if (!function_exists('ResolveWebhookHostToPublicIp')) {
     /**

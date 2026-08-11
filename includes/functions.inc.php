@@ -814,9 +814,15 @@ function executeParallelCurlRequests($handles)
 	curl_multi_close($mh);
 }
 
-function GetWebhookUrlForUser(string $uid): string
+// Returns "" for anyone not entitled to the feature, so an ineligible player's URL never
+// reaches the game file and no webhook is sent. Gating here rather than at match end keeps
+// the entitlement check on the join path, where a DB query is already expected, and means a
+// lapsed subscription simply stops delivering. The saved row is left untouched so it starts
+// working again if they resubscribe.
+function GetWebhookUrlForUser(string $uid, $metafyTiers = null): string
 {
 	if (empty($uid) || $uid === "-") return "";
+	if (!IsMatchResultWebhookEligible($uid, $metafyTiers)) return "";
 	$conn = GetDBConnection(DBL_GET_USER_WEBHOOK_URLS);
 	if (!$conn) {
 		error_log("GetWebhookUrlForUser: DB connection failed");

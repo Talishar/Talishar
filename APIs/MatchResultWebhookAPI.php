@@ -44,6 +44,16 @@ if (!IsUserLoggedIn()) {
 $userName = LoggedInUserName();
 $webhookUrl = TryPOST("webhookUrl", "");
 
+// Clearing stays open to everyone: someone whose subscription lapsed should still be
+// able to remove a URL they previously saved, rather than being stuck with it.
+if (!empty($webhookUrl) && !IsMatchResultWebhookEligible($userName)) {
+    http_response_code(403);
+    $response->success = false;
+    $response->message = "Match result webhooks are available to Talishar supporters.";
+    echo json_encode($response);
+    exit;
+}
+
 if (!empty($webhookUrl)) {
     $validationError = ValidateWebhookUrl($webhookUrl);
     if ($validationError !== null) {
