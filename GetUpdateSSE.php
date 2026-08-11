@@ -189,27 +189,6 @@ while (true) {
     $lastFileCheckTime = $currentRealTime;
   }
 
-  // Check if game is over (status 99)
-  $gameStatus = intval($cacheArr[13] ?? 0);
-  if ($gameStatus == 99) {
-    // Send final state before exiting
-    $finalCacheVal = intval($cacheStr);
-    $finalState = GetCachedGameStateResponse($gameName, $finalCacheVal, $responseCacheVariant, false);
-    if ($finalState === false) {
-      $buildStartedAt = microtime(true);
-      $finalState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, false, $cacheArr);
-      RecordPerformanceMetric('build-game-state', (microtime(true) - $buildStartedAt) * 1000, [
-        'playerID' => (int)$playerID,
-        'final' => true,
-      ]);
-      StoreCachedGameStateResponse($gameName, $finalCacheVal, $responseCacheVariant, false, $finalState);
-    }
-    if (!is_string($finalState)) {
-      SendContent($finalState);
-    }
-    exit;
-  }
-
   // Check for game state updates
   $cacheVal = intval($cacheStr);
   $inactive = $lastUpdateTime !== ""
