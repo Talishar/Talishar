@@ -63,6 +63,43 @@ function InvalidateGamestateCache($gameName) {
   @apcu_delete("gamestate_" . $gameName);
 }
 
+/**
+ * Reuse a completed response when multiple connections share the same viewer
+ * and visibility variant for a game update.
+ */
+function GetCachedGameStateResponse($gameName, $updateNumber, $viewerVariant, $inactive) {
+  if (!_apcuAvailable() || !is_string($viewerVariant) || $viewerVariant === '') return false;
+  $key = "game_response_{$gameName}_" . hash('sha256', $viewerVariant);
+  $cached = @apcu_fetch($key);
+  if (!is_array($cached)) return false;
+  if (($cached['update'] ?? null) !== (int)$updateNumber) return false;
+  if (($cached['inactive'] ?? null) !== (bool)$inactive) return false;
+  return $cached['response'] ?? false;
+}
+
+function StoreCachedGameStateResponse($gameName, $updateNumber, $viewerVariant, $inactive, $response) {
+  if (!_apcuAvailable() || !is_string($viewerVariant) || $viewerVariant === '' || is_string($response)) return;
+  $key = "game_response_{$gameName}_" . hash('sha256', $viewerVariant);
+  @apcu_store($key, [
+    'update' => (int)$updateNumber,
+    'inactive' => (bool)$inactive,
+    'response' => $response,
+  ], 300);
+}
+
+function RecordPerformanceMetric($name, $durationMs, $context = []): void {
+  if (strtolower((string)getenv('PERFORMANCE_METRICS_ENABLED')) !== 'true') return;
+  $sampleRate = (float)(getenv('PERFORMANCE_METRICS_SAMPLE_RATE') ?: 1.0);
+  $sampleRate = max(0.0, min(1.0, $sampleRate));
+  if ($sampleRate < 1.0 && mt_rand() / mt_getrandmax() > $sampleRate) return;
+  error_log(json_encode([
+    'type' => 'performance',
+    'metric' => (string)$name,
+    'durationMs' => round((float)$durationMs, 3),
+    'context' => $context,
+  ], JSON_UNESCAPED_SLASHES));
+}
+
 function UpdateSpectatorPresence($gameName, $userName = null) {
   if (!_apcuAvailable()) return;
   if (!is_string($userName) || trim($userName) === '') return;
