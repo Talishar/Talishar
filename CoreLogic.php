@@ -2188,8 +2188,10 @@ function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
   return DelimStringContains($cardSubtype, $subtype);
 }
 
-function CardNameContains($cardID, $name, $player = "", $partial = false) // This isn't actually a contains operation. It's an equals unless you turn partial to true.
+function CardNameContains($cardID, $name, $player = "", $partial = false)
 {
+  // $partial is retained for compatibility; all card-name matches follow CR 2.7.5.
+  // 2.7.5 A name or part of a name is equal to another name or part of a name only if it is an exact case-insensitive match of each whole word in order.
   global $currentTurnEffects;
   $cardName = NameOverride($cardID, $player);
   $currentTurnEffectsCount = count($currentTurnEffects);
@@ -2201,13 +2203,10 @@ function CardNameContains($cardID, $name, $player = "", $partial = false) // Thi
     $effectBase = $dashPos !== false ? substr($eff, 0, $dashPos) : $eff;
     $effectParam = $dashPos !== false ? GamestateUnsanitize(substr($eff, $dashPos + 1)) : "N/A";
     $modName = CurrentEffectNameModifier($effectBase, $effectParam, $player, $cardID);
-    if ($partial && $modName !== "") $modName = str_replace(" ", ",", $modName);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
-    if ($modName != "" && DelimStringContains($modName, $name, $partial)) return true;
+    if ($modName != "" && StringContainsWholeWords($modName, $name)) return true;
   }
-  if ($partial) $cardName = str_replace(" ", ",", $cardName);
-  if ($cardName == $name) return true; //Card is breaking due to comma
-  return DelimStringContains($cardName, $name, $partial);
+  return StringContainsWholeWords($cardName, $name);
 }
 
 function TalentOverride($cardID, $player = "", $zone="-")

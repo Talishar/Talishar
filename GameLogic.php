@@ -3642,7 +3642,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $inventory = &GetInventory($currentPlayer);
       $equipmentsArr = [];
       foreach ($inventory as $cardID) {
-        if (TypeContains($cardID, "E", $currentPlayer) && CardNameContains($cardID, "Proto", $currentPlayer, true)) {
+        if (TypeContains($cardID, "E", $currentPlayer) && CardNameContains($cardID, "Proto", $currentPlayer)) {
           switch (CardSubType($cardID)) {
             case "Base,Head":
               if (!SearchCharacterAliveSubtype($currentPlayer, "Head")) $equipmentsArr[] = $cardID;
