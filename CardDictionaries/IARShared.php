@@ -5,13 +5,14 @@ function Usurp($cardID, $player, $from) {
 		$otherPlayer = 3 - $player;
 		$inds = SearchAurasForCard("runechant", $player, false);
 		$theirInds = SearchAurasForCard("runechant", $otherPlayer, false);
+		WriteLog("HERE: $theirInds");
 		if ($inds != "" || $theirInds != "") {
 			$MZInds = [];
 			$includedRunechants = [];
 			$inds = $inds != "" ? explode(",", $inds) : [];
 			foreach ($inds as $ind) {
 				$Aura = new AuraCard($ind, $player);
-				$choiceKey = $Aura->CardID() == "runechant" ? "runechant" : $player . "-" . $Aura->CardID();
+				$choiceKey = "$player-" . $Aura->CardID();//$Aura->CardID() == "runechant" ? "runechant" : $player . "-" . $Aura->CardID();
 				if (!in_array($choiceKey, $includedRunechants)) {
 					$MZInds[] = "MYAURAS-$ind";
 					$includedRunechants[] = $choiceKey;
@@ -20,12 +21,13 @@ function Usurp($cardID, $player, $from) {
 			$theirInds = $theirInds != "" ? explode(",", $theirInds) : [];
 			foreach ($theirInds as $ind) {
 				$Aura = new AuraCard($ind, $otherPlayer);
-				$choiceKey = $Aura->CardID() == "runechant" ? "runechant" : $otherPlayer . "-" . $Aura->CardID();
+				$choiceKey = "$otherPlayer-" . $Aura->CardID();
 				if (!in_array($choiceKey, $includedRunechants)) {
 					$MZInds[] = "THEIRAURAS-$ind";
 					$includedRunechants[] = $choiceKey;
 				}
 			}
+			WriteLog("HERE2: " . implode(",", $MZInds));
 			if (count($MZInds) == 1) {
 				AddDecisionQueue("PASSPARAMETER", $player, $MZInds[0], 1);
 				AddDecisionQueue("SETDQVAR", $player, "choice", 1);
