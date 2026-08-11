@@ -1964,15 +1964,28 @@ class shadowrealm_strength_red extends Card {
   }
 }
 
+class otherworldly_sins extends BaseCard {
+  function PlayAbility() {
+    PlayAura("runechant", $this->controller);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive() {
+    global $CombatChain;
+    $attackCard = $CombatChain->AttackCard()->ID();
+    return TalentContains($attackCard, "SHADOW", $this->controller) || ClassContains($attackCard, "RUNEBLADE", $this->controller);
+  }
+}
+
 class otherworldly_sins_red extends Card {
   function __construct($controller) {
     $this->cardID = "otherworldly_sins_red";
     $this->controller = $controller;
+    $this->baseCard = new otherworldly_sins($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    PlayAura("runechant", $this->controller);
-    AddCurrentTurnEffect($this->cardID, $this->controller);
+    $this->baseCard->PlayAbility();
     return "";
   }
 
@@ -1981,9 +1994,7 @@ class otherworldly_sins_red extends Card {
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    global $CombatChain;
-    $attackCard = $CombatChain->AttackCard()->ID();
-    return TalentContains($attackCard, "SHADOW", $this->controller) || ClassContains($attackCard, "RUNEBLADE", $this->controller);
+    return $this->baseCard->CombatEffectActive();
   }
 
   function SpecialName() {
@@ -2012,5 +2023,111 @@ class otherworldly_sins_red extends Card {
 
   function HasGoAgain($from) {
     return true;
+  }
+}
+
+class otherworldly_sins_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "otherworldly_sins_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new otherworldly_sins($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  // function SpecialName() {
+  //   return "Otherworldly Sins";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+}
+
+class otherworldly_sins_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "otherworldly_sins_blue";
+    $this->controller = $controller;
+    $this->baseCard = new otherworldly_sins($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  // function SpecialName() {
+  //   return "Otherworldly Sins";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialPitch() {
+    return 3;
   }
 }
