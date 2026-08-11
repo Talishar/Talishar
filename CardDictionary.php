@@ -256,7 +256,9 @@ function SetID($cardID)
       "wrenchtastic" => "DUM", // AI custom weapon
       "UPR551" => "UPR551", //ghostly touch
       "zane_broadly_beloved" => "SPW003", //temporary while waiting on fabcube
-      "killjoy_the_crooked_blade" => "SPW001"
+      "killjoy_the_crooked_blade" => "SPW001",
+      "dr_mortimer" => "MPA003",
+      "dr_mortimer_blight_of_the_pits" => "MPA002"
     ];
   }
 
