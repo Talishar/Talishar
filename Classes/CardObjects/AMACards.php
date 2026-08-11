@@ -212,20 +212,18 @@ class dig_for_souls_red extends Card {
 		if ($inds != "") {
 			Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a Zombie to put in the graveyard", subsequent:0);
 			Await($this->controller, $this->cardID, inds:$allInds);
-			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
-			Await($this->controller, final:true);
+			// avoid creating a call to CHOOSEBOTTOM with no choices
+			if (count(explode(",", $allInds)) > 1) AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
 
 			AddDecisionQueue("ELSE", $this->controller, "-");
 			Await($this->controller, $this->cardID, else:true, inds:$allInds);
 			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
-			Await($this->controller, final:true);
 		}
 		else {
 			Await($this->controller, $this->cardID, else:true, inds:$allInds);
 			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
-			Await($this->controller, final:true);
 		}
-
+		Await($this->controller, final:true);
 		AddCurrentTurnEffect($this->cardID, $this->controller);
     	return "";
   	}
@@ -234,6 +232,7 @@ class dig_for_souls_red extends Card {
 		global $dqVars;
 		$else = $dqVars["else"] ?? false;
 		$inds = array_filter(explode(",", $dqVars["inds"] ?? ""));
+		WriteLog("HERE!: $else, $inds");
 		$choice = $else ? "-" : ($dqVars["choice"] ?? "-");
 		if ($choice !== "-") {
 			$choiceParts = explode("-", $choice, 2);
