@@ -637,7 +637,32 @@ class chane_bound_by_shadow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
     return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->baseCard->IsPlayRestricted();
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, $remove);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $this->baseCard->CurrentEffectGrantsGoAgain();
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 1);
   }
 }
 
