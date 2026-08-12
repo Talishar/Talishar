@@ -92,6 +92,10 @@ class viral_diffusion_red extends Card {
     return "DR";
   }
 
+  function SpecialSubType() {
+    return "Trap";
+  }
+
   function SpecialBlock() {
     return 4;
   }
