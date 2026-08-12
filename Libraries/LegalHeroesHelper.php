@@ -144,6 +144,8 @@ $ALL_HEROES_OF_RATHE = [
   ['heroId' => 'viserai_between_worlds', 'name' => 'Viserai, Between Worlds', 'young' => true],
   ['heroId' => 'killjoy_the_crooked_blade', 'name' => 'Killjoy, the Crooked Blade', 'young' => true],
   ['heroId' => 'zane_broadly_beloved', 'name' => 'Zane, Broadly Beloved', 'young' => true],
+  ['heroId' => 'dr_mortimer_blight_of_the_pits', 'name' => 'Dr. Mortimer, Blight of the Pits'],
+  ['heroId' => 'dr_mortimer', 'name' => 'Dr. Mortimer', 'young' => true]
 ];
 
 // Hero-specific ban check.
