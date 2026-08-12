@@ -70,7 +70,7 @@ class dr_mortimer extends Card {
 	}
 	
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($from, $target);
 		return "";
 	}
 
@@ -127,7 +127,7 @@ class dr_mortimer_blight_of_the_pits extends Card {
 	}
 	
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($from, $target);
 		return "";
 	}
 
@@ -323,22 +323,22 @@ class prey_on_insecurity_red extends Card {
 }
 
 class mutually_assured_destruction_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "mutually_assured_destruction_red";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "mutually_assured_destruction_red";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-  function ContractType($chosenName = '') {
-    return "BANISHINFECTED";
-  }
+	function ContractType($chosenName = '') {
+		return "BANISHINFECTED";
+	}
 
-  function ContractCompleted() {
-    PutItemIntoPlayForPlayer("silver", $this->controller);
-  }
+	function ContractCompleted() {
+		PutItemIntoPlayForPlayer("silver", $this->controller);
+	}
 
 	function AttackPlayCardAbility($cardID, $from) {
 		global $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed;
