@@ -419,7 +419,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY",
                    "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX",
                    "HER", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP", "SUP", "APS", "PEN", "AHA",
-                   "OMN", "AZS", "MPW", "AOL"];
+                   "OMN", "AZS", "MPW", "DDD", "AOL"];
 
    if (is_countable($cards)) {
      $cardCount = count($cards);
