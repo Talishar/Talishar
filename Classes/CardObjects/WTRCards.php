@@ -2838,17 +2838,46 @@ class staunch_response_blue extends Card {
 // }
 
 
-// class steelblade_supremacy_red extends Card {
+class steelblade_supremacy_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "steelblade_supremacy_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "steelblade_supremacy_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $uid = explode("-", $target)[1] ?? -1;
+    if ($uid != -1)
+      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    Draw($this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYCHAR:type=W", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "index", context: "Target a sword");
+    Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
+  }
+}
 
 
 // class stonewall_confidence_red extends Card {

@@ -571,11 +571,6 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
     if ($player != -1 && !SearchCurrentTurnEffects(ExtractCardID($mainCharacterEffects[$i + 1]), $player)) return false;
     if ($mainCharacterEffects[$i] == $index && $attackIsWeapon) {
       switch ($mainCharacterEffects[$i + 1]) {
-        case "steelblade_supremacy_red":
-          $modifier += 2;
-          $powerModifiers[] = $mainCharacterEffects[$i + 1];
-          $powerModifiers[] = 2;
-          break;
         case "ironsong_determination_yellow":
         case "biting_blade_red":
         case "biting_blade_yellow":
@@ -644,7 +639,7 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   return $modifier;
 }
 
-function MainCharacterHitEffects($check = false): bool
+function MainCharacterHitEffects($check = false): bool // deprecated
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
@@ -652,10 +647,6 @@ function MainCharacterHitEffects($check = false): bool
   for ($i = 0; $i < $mainCharacterEffectsCount; $i += 2) {
     if ($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
       switch ($mainCharacterEffects[$i + 1]) {
-        case "steelblade_supremacy_red":
-          if ($check) return true;
-          AddLayer("TRIGGER", $mainPlayer, $mainCharacterEffects[$i + 1]);
-          break;
         default:
           break;
       }

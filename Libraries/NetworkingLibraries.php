@@ -3607,7 +3607,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
-    case "steelblade_supremacy_red":
     case "ironsong_determination_yellow":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose_target_weapon");

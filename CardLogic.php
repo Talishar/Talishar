@@ -2098,9 +2098,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddCurrentTurnEffect($parameter, $player);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
-      case "steelblade_supremacy_red":
-        Draw($mainPlayer);
-        break;
       case "scar_for_a_scar_red":
       case "scar_for_a_scar_yellow":
       case "scar_for_a_scar_blue":

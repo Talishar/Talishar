@@ -248,7 +248,7 @@
       case "braveforge_bracers":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "steelblade_supremacy_red": case "ironsong_determination_yellow":
+      case "ironsong_determination_yellow":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $targetMZInd = SearchCharacterForUniqueID(explode("-", $target, 2)[1], $currentPlayer);
         if ($targetMZInd != -1) {
