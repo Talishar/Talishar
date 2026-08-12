@@ -2207,6 +2207,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
   global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack, $CS_NumBloodDebtAttacksPlayed, $CS_IARGatesMadeorUsed;
+  global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed;
 
   $otherPlayer = 3 - $currentPlayer;
   $resources = &GetResources($currentPlayer);
@@ -2469,6 +2470,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       IncrementClassState($currentPlayer, $CS_NumWeaponsActivated);
     if (HasWateryGrave($cardID) && $from == "GY") IncrementClassState($currentPlayer, $CS_NumWateryGrave);
     if (CardName($cardID) == "Nimblism") IncrementClassState($currentPlayer, $CS_PlayedNimblism);
+    if (!IsActivated($cardID, $from)) {
+      if (TypeContains($cardID, "AR")) ++$combatChainState[$CCS_AttackReactionsPlayed];
+      if (TypeContains($cardID, "DR")) ++$combatChainState[$CCS_DefenseReactionsPlayed];
+    }
     if ($CombatChain->HasCurrentLink()) {
       $activeLinkID = $CombatChain->AttackCard()->ID();
       $attackcard = GetClass($activeLinkID, $mainPlayer, "CC", $CombatChain->AttackCard()->UniqueID());
@@ -2679,6 +2684,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       CurrentEffectPlayAbility($cardID, $from);
     }
     else CurrentEffectActivateAbility($cardID, $from);
+    CombatChainPlayCardAbilities($cardID, $from);
     if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID) && !IsActivated($cardID, $from)) EvoOnPlayHandling($currentPlayer);
   }
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . $cachedAbilityIndex . "|" . $cachedPlayUniqueID . "|" . $zone);

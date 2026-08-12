@@ -722,6 +722,7 @@ function CheckContract($contractType, $cardBanished, $player)
     case "NONACTION": return !IsActionCard($cardBanished);
     case "NAMEDCARD":
       return ShareName(NameOverride($cardBanished, $otherPlayer), GamestateUnsanitize($chosenName));
+    case "BANISHINFECTED": return IsInfected($otherPlayer);
     default: return false;
     }
 }

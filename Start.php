@@ -71,7 +71,7 @@ fwrite($memHandle,
   "M 1\r\n" . //What phase/player is active
   "1\r\n" . //Action points
   "\r\n" . //Combat Chain
-  "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0\r\n" . //Combat Chain State
+  "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0 0 0\r\n" . //Combat Chain State
   "\r\n" . //Current Turn Effects
   "\r\n" . //Current Turn Effects From Combat
   "\r\n" . //Next Turn Effects

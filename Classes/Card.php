@@ -859,4 +859,8 @@ class Card {
   function HasPiercing() {
     return GeneratedHasPiercing($this->cardID);
   }
+
+  function AttackPlayCardAbility($cardID, $from) {
+    return;
+  }
 }

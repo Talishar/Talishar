@@ -2276,3 +2276,10 @@ function IsPreDamageStep() { // condition to check if the combat chain should cl
   if (IsResolutionStep()) return false;
   return true;
 }
+
+function CombatChainPlayCardAbilities($cardID, $from) {
+  global $CombatChain, $mainPlayer;
+  $AttackCard = $CombatChain->AttackCard()->ID();
+  $card = GetClass($AttackCard, $mainPlayer);
+  if ($card != "-") $card->AttackPlayCardAbility($cardID, $from);
+}

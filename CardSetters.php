@@ -118,7 +118,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     $Item->Destroy(true);
   }
   $banisher = $banisher == "-" ? $mainPlayer : $banisher;
-  if ($banishedBy != "") CheckContracts($banisher, $cardID);
+  if ($banishedBy != "" && $banisher != $player) CheckContracts($banisher, $cardID);
   $rv = BanishByEffect($cardID, $player, $banishedBy, $rv);
   return $rv;
 }

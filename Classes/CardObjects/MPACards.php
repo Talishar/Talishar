@@ -322,3 +322,57 @@ class prey_on_insecurity_red extends Card {
 	}
 }
 
+class mutually_assured_destruction_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "mutually_assured_destruction_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ContractType($chosenName = '') {
+    return "BANISHINFECTED";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+
+	function AttackPlayCardAbility($cardID, $from) {
+		global $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed;
+		$piece = $currentPlayer == $mainPlayer ? $CCS_AttackReactionsPlayed : $CCS_DefenseReactionsPlayed;
+		if ($combatChainState[$piece] == 1 && !IsActivated($cardID, $from))
+			AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $mainPlayer, $defPlayer;
+		$players = [$mainPlayer, $defPlayer];
+		foreach ($players as $player) 
+			PlayAura("bloodrot_pox", $player);
+		foreach($players as $player) {
+			$deck = new Deck($player);
+			if($deck->Empty()) 
+				WriteLog("The deck is already depleted.");
+			else $deck->BanishTop(banishedBy:$this->cardID, banisher:$this->controller);
+		}
+	}
+
+	function SpecialName() {
+		return "Mutually Assured Destruction";
+	}
+
+	function SpecialClass() {
+		return "ASSASSIN";
+	}
+
+	function SpecialCost() {
+		return 2;
+	}
+
+	function SpecialPower() {
+		return 6;
+	}
+}
