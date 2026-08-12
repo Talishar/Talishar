@@ -467,18 +467,15 @@ function MZStartTurnIndices()
 
 function FindEmptyEquipmentSlots($player)
 {
-  $character = &GetPlayerCharacter($player);
-  $charCount = count($character);
-  $charPieces = CharacterPieces();
+  $character = new PlayerCharacter($player);
   $slots = ["Head", "Chest", "Arms", "Legs"];
   $occupied = [];
   $occupiedCount = 0;
-  for ($i = 0; $i < $charCount && $occupiedCount < 4; $i += $charPieces) {
-    if ($character[$i + 1] == 0) continue; // destroyed cards don't occupy a slot
-    $subtype = CardSubType($character[$i], $character[$i + 11]);
-    $subtypeSet = $subtype == null ? [] : array_flip(explode(",", $subtype));
+  for ($i = 0; $i < $character->NumCards() && $occupiedCount < 4; ++$i) {
+    $CharacterCard = $character->Card($i, true);
+    if ($CharacterCard->Status() == 0) continue; // destroyed cards don't occupy a slot
     foreach ($slots as $slot) {
-      if (!isset($occupied[$slot]) && isset($subtypeSet[$slot])) {
+      if (!isset($occupied[$slot]) && $CharacterCard->Slot() == $slot) {
         $occupied[$slot] = true;
         ++$occupiedCount;
         break;
