@@ -117,6 +117,10 @@ class dr_mortimer extends Card {
 	function SpecialHealth() {
 		return 20;
 	}
+
+	function SpecialBlock() {
+		return -2;
+	}
 }
 
 class dr_mortimer_blight_of_the_pits extends Card {
@@ -173,6 +177,10 @@ class dr_mortimer_blight_of_the_pits extends Card {
 
 	function SpecialHealth() {
 		return 40;
+	}
+
+	function SpecialBlock() {
+		return -2;
 	}
 }
 

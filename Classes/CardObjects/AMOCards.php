@@ -55,6 +55,10 @@ class humour_plunge extends Card {
   function SpecialSubType() {
     return "Dagger";
   }
+
+  function SpecialBlock() {
+    return -2;
+  }
 }
 
 class viral_diffusion_red extends Card {
