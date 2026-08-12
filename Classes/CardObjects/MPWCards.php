@@ -995,6 +995,7 @@ class honed_for_honor_blue extends Card {
 			if ($ind != -1) {
 				$DisCard = new DiscardCard($ind, $this->controller);
 				$Deck = new Deck($this->controller);
+				WriteLog(CardLink($DisCard->CardID()) . " was put back on top!");
 				$Deck->AddTop($DisCard->CardID());
 				$DisCard->Remove();
 			}
