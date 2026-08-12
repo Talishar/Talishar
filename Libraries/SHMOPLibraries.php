@@ -22,7 +22,7 @@
 
 // How long a lobby player's heartbeat may go stale before
 // the opponent's poll declares them disconnected. 
-if (!defined('LOBBY_DISCONNECT_TIMEOUT_MS')) define('LOBBY_DISCONNECT_TIMEOUT_MS', 12000);
+if (!defined('LOBBY_DISCONNECT_TIMEOUT_MS')) define('LOBBY_DISCONNECT_TIMEOUT_MS', 20000);
 
 function WriteCache($name, $data)
 {
