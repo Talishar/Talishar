@@ -51,6 +51,10 @@ class humour_plunge extends Card {
   function HasPiercing() {
     return true;
   }
+
+  function SpecialSubType() {
+    return "Dagger";
+  }
 }
 
 class viral_diffusion_red extends Card {
