@@ -485,6 +485,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $mainPlayer, $currentPlayer, $defPlayer, $combatChain, $CCS_RequiredNegCounterEquipmentBlock, $combatChainState;
   global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_NumItemsDestroyed, $currentTurnEffects, $CombatChain;
+  global $CS_OriginalHero;
   $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     case "maxx_the_hype_nitro":
@@ -509,6 +510,9 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddSoul($char[0], $currentPlayer, "-");
       if (isSubcardEmpty($char, 0)) $char[10] = $char[0];
       else $char[10] .= "," . $char[0];
+      if (GetClassState($currentPlayer, $CS_OriginalHero) == "-") {
+        SetClassState($currentPlayer, $CS_OriginalHero, $char[0]);
+      }
       $char[0] = "teklovossen_the_mechropotent";
       $char[1] = 2;
       $char[2] = 0;
