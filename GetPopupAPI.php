@@ -77,6 +77,14 @@ if ($playerID == 0 && !$profilePopup) {
   echo json_encode(["error" => "A game popup requires a valid player ID."]);
   exit;
 }
+
+if ($playerID == 0 && $profilePopup) {
+  include_once "./AccountFiles/AccountSessionAPI.php";
+  IsUserLoggedIn();
+  $sessionUserId = $_SESSION["userid"] ?? null;
+  session_write_close();
+}
+
 $response = new stdClass();
 switch ($popupType) {
   case "attackSummary":
