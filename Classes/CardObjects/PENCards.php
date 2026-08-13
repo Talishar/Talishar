@@ -137,7 +137,8 @@ class boltn_boots extends Card
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1)
   {
-    GiveAttackGoAgain();
+    if (HasIncreasedAttack())
+      GiveAttackGoAgain();
   }
 
   function EquipPayAdditionalCosts($cardIndex = '-')
