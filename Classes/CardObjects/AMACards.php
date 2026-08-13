@@ -200,30 +200,32 @@ class dig_for_souls_red extends Card {
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$Deck = new Deck($this->controller);
-		$cards = $Deck->Top(true, $resourcesPaid);
-		$inds = [];
-		$allInds = [];
-		foreach (explode(",", $cards) as $card) {
-			if (SubtypeContains($card, "Zombie")) $inds[] = "CARDID-$card";
-			$allInds[] = "CARDID-$card";
-		}
-		$inds = implode(",", $inds);
-		$allInds = implode(",", $allInds);
-		if ($inds != "") {
-			Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a Zombie to put in the graveyard", subsequent:0);
-			Await($this->controller, $this->cardID, inds:$allInds);
-			// avoid creating a call to CHOOSEBOTTOM with no choices
-			if (count(explode(",", $allInds)) > 1) AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+		if ($resourcesPaid > 0 != "") {
+			$cards = $Deck->Top(true, $resourcesPaid);
+			$inds = [];
+			$allInds = [];
+			foreach (explode(",", $cards) as $card) {
+				if (SubtypeContains($card, "Zombie")) $inds[] = "CARDID-$card";
+				$allInds[] = "CARDID-$card";
+			}
+			$inds = implode(",", $inds);
+			$allInds = implode(",", $allInds);
+			if ($inds != "") {
+				Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a Zombie to put in the graveyard", subsequent:0);
+				Await($this->controller, $this->cardID, inds:$allInds);
+				// avoid creating a call to CHOOSEBOTTOM with no choices
+				if (count(explode(",", $allInds)) > 1) AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
 
-			AddDecisionQueue("ELSE", $this->controller, "-");
-			Await($this->controller, $this->cardID, else:true, inds:$allInds);
-			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+				AddDecisionQueue("ELSE", $this->controller, "-");
+				Await($this->controller, $this->cardID, else:true, inds:$allInds);
+				AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+			}
+			else {
+				Await($this->controller, $this->cardID, else:true, inds:$allInds);
+				AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+			}
+			Await($this->controller, final:true);
 		}
-		else {
-			Await($this->controller, $this->cardID, else:true, inds:$allInds);
-			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
-		}
-		Await($this->controller, final:true);
 		AddCurrentTurnEffect($this->cardID, $this->controller);
     	return "";
   	}
