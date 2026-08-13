@@ -953,7 +953,7 @@ function GetDamagePrevention($player, $damage)
   $countCharacter = count($character);
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $countCharacter; $i += $characterPieces) {
-    if($character[$i + 12] == "UP") {
+    if (($character[$i + 12] ?? "DOWN") == "UP") {
       $preventionLeft += WardAmount($character[$i],$player);
       $preventionLeft += CharacterDamagePreventionAmount($player, $i, $damage, true, true);
     }

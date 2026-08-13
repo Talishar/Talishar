@@ -232,7 +232,6 @@ class dig_for_souls_red extends Card {
 		global $dqVars;
 		$else = $dqVars["else"] ?? false;
 		$inds = array_filter(explode(",", $dqVars["inds"] ?? ""));
-		WriteLog("HERE!: $else, $inds");
 		$choice = $else ? "-" : ($dqVars["choice"] ?? "-");
 		if ($choice !== "-") {
 			$choiceParts = explode("-", $choice, 2);

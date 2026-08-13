@@ -2143,9 +2143,8 @@ function FinalizeTurn()
   DoGamestateUpdate();
   //Update all the player neutral stuff
   if ($mainPlayer == $firstPlayer && !$extraTurn) {
-    $advancedPastTurnZero = intval($currentTurn) === 0;
     $currentTurn += 1;
-    if ($advancedPastTurnZero && !IsGameOver()) AddRustCountersAfterTurnZero();
+    if (!IsGameOver()) AddRustCountersAfterTurnZero();
   }
   $turn[0] = "M";
   $turn[2] = "";
@@ -2471,8 +2470,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (HasWateryGrave($cardID) && $from == "GY") IncrementClassState($currentPlayer, $CS_NumWateryGrave);
     if (CardName($cardID) == "Nimblism") IncrementClassState($currentPlayer, $CS_PlayedNimblism);
     if (!IsActivated($cardID, $from)) {
-      if (TypeContains($cardID, "AR")) ++$combatChainState[$CCS_AttackReactionsPlayed];
-      if (TypeContains($cardID, "DR")) ++$combatChainState[$CCS_DefenseReactionsPlayed];
+      if (TypeContains($cardID, "AR")) $combatChainState[$CCS_AttackReactionsPlayed] = ($combatChainState[$CCS_AttackReactionsPlayed] ?? 0) + 1;
+      if (TypeContains($cardID, "DR")) $combatChainState[$CCS_DefenseReactionsPlayed] = ($combatChainState[$CCS_DefenseReactionsPlayed] ?? 0) + 1;
     }
     if ($CombatChain->HasCurrentLink()) {
       $activeLinkID = $CombatChain->AttackCard()->ID();

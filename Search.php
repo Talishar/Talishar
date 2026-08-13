@@ -659,7 +659,7 @@ function FindCharacterIndexUniqueID($player, $uniqueID)
   $count = count($character);
   $pieces = CharacterPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (isset($character[$i]) && $character[$i+11] == $uniqueID) {
+    if (isset($character[$i], $character[$i + 11]) && $character[$i + 11] == $uniqueID) {
       if ($character[$i + 1] != 0) return $i;
     }
   }
