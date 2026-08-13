@@ -34,6 +34,7 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
     [$p1MetafyCommunities, $p2MetafyCommunities] = [$p2MetafyCommunities, $p1MetafyCommunities];
   }
 
+  $gameGUID = GenerateGameGUID(); // Generate a unique game GUID (e.g. for hero mastery)
   $p2IsAILocal = $p2IsAI == "1";
   $gameStatus = ($p2IsAILocal ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
   SetCachePiece($gameName, 14, $gameStatus);

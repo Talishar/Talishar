@@ -50,6 +50,13 @@ function HeroMasteryEligiblePlayers(bool $conceded, int $winner, int $currentTur
   return [1, 2];
 }
 
+function HeroMasteryGameKey($gameName, $gameGUID): string
+{
+  $gameIdentifier = trim((string)$gameGUID);
+  if ($gameIdentifier === "") $gameIdentifier = (string)$gameName;
+  return "talishar:" . $gameIdentifier;
+}
+
 function AwardHeroMastery(bool $conceded = false): void
 {
   global $winner, $currentTurn, $gameName, $gameGUID, $p1id, $p2id, $p2IsAI, $CS_OriginalHero;
@@ -60,7 +67,7 @@ function AwardHeroMastery(bool $conceded = false): void
 
   $eligiblePlayers = HeroMasteryEligiblePlayers($conceded, intval($winner), intval($currentTurn));
   if (empty($eligiblePlayers)) return;
-  $gameKey = "talishar:" . (string)$gameName;
+  $gameKey = HeroMasteryGameKey($gameName, $gameGUID);
 
   $awardCandidates = [];
   foreach ($eligiblePlayers as $player) {

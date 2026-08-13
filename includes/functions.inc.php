@@ -354,49 +354,59 @@ function AddRustCountersAfterTurnZero()
 		return true;
 	}
 
-	$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_AFTER_TURN_ZERO);
-	if (!$conn) {
-		flock($handle, LOCK_UN);
-		fclose($handle);
+	$conn = null;
+	$stmt = null;
+	$processingIndex = null;
+	try {
+		$conn = GetDBConnection(DBL_ADD_RUST_COUNTERS_AFTER_TURN_ZERO);
+		if (!$conn) return false;
+
+		$sql = "UPDATE users
+			SET rust_counters = CASE
+					WHEN rust_counters_last_played IS NULL
+						OR rust_counters_last_played <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
+					THEN 1
+					ELSE COALESCE(rust_counters, 0) + 1
+				END,
+				rust_counters_last_played = CURRENT_TIMESTAMP
+			WHERE usersId=?";
+		$stmt = mysqli_stmt_init($conn);
+		if (!$stmt || !mysqli_stmt_prepare($stmt, $sql)) return false;
+
+		foreach ($state["players"] as $index => $player) {
+			if (($player["processed"] ?? false) === true) continue;
+
+			$processingIndex = $index;
+			$state["players"][$index]["processed"] = true;
+			if (!WriteRustCounterAccrualState($handle, $state)) return false;
+
+			$userId = intval($player["userId"] ?? 0);
+			if ($userId <= 0) {
+				$processingIndex = null;
+				continue;
+			}
+			mysqli_stmt_bind_param($stmt, "i", $userId);
+			mysqli_stmt_execute($stmt);
+			$processingIndex = null;
+		}
+
+		$state["status"] = "complete";
+		return WriteRustCounterAccrualState($handle, $state);
+	}
+	catch (Throwable $e) {
+		if ($processingIndex !== null && in_array(intval($e->getCode()), [1205, 1213], true)) {
+			$state["players"][$processingIndex]["processed"] = false;
+			WriteRustCounterAccrualState($handle, $state);
+		}
+		error_log("Rust counter accrual failed for game " . ($GLOBALS['gameName'] ?? 'unknown') . ": " . $e->getMessage());
 		return false;
 	}
-
-	$sql = "UPDATE users
-		SET rust_counters = CASE
-				WHEN rust_counters_last_played IS NULL
-					OR rust_counters_last_played <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
-				THEN 1
-				ELSE COALESCE(rust_counters, 0) + 1
-			END,
-			rust_counters_last_played = CURRENT_TIMESTAMP
-		WHERE usersId=?";
-	$stmt = mysqli_stmt_init($conn);
-	if (!mysqli_stmt_prepare($stmt, $sql)) {
-		mysqli_close($conn);
+	finally {
+		if ($stmt instanceof mysqli_stmt) mysqli_stmt_close($stmt);
+		if ($conn instanceof mysqli) mysqli_close($conn);
 		flock($handle, LOCK_UN);
 		fclose($handle);
-		return false;
 	}
-
-	foreach ($state["players"] as $index => $player) {
-		if (($player["processed"] ?? false) === true) continue;
-
-		$state["players"][$index]["processed"] = true;
-		if (!WriteRustCounterAccrualState($handle, $state)) break;
-
-		$userId = intval($player["userId"] ?? 0);
-		if ($userId <= 0) continue;
-		mysqli_stmt_bind_param($stmt, "i", $userId);
-		mysqli_stmt_execute($stmt);
-	}
-
-	$state["status"] = "complete";
-	WriteRustCounterAccrualState($handle, $state);
-	mysqli_stmt_close($stmt);
-	mysqli_close($conn);
-	flock($handle, LOCK_UN);
-	fclose($handle);
-	return true;
 }
 
 function GetDeckBuilderId($uid, $decklink)

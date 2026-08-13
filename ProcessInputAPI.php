@@ -57,6 +57,13 @@ $submission = $_POST["submission"] ?? [];
 $submission = json_encode($submission);
 $submission = json_decode($submission); //I don't know why it's not correctly parsing as objects all the way down here
 
+if ($playerID == 0) {
+  include_once "./AccountFiles/AccountSessionAPI.php";
+  IsUserLoggedIn();
+  $sessionUserId = $_SESSION["userid"] ?? null;
+  session_write_close();
+}
+
 //First we need to parse the game state from the file
 // For profile settings updates (playerID == 0), skip gamestate parsing
 if ($playerID != 0) {
@@ -136,13 +143,13 @@ try {
         include_once "./includes/dbh.inc.php";
         include_once "./includes/functions.inc.php";
         if ($playerID == 0) {
-          // Profile settings update - prefer userID from frontend (more reliable than session)
-          // Only use POST userID if it's actually a valid numeric ID (guards against JS String(null) = "null")
-          $postUserID = $_POST["userID"] ?? "";
-          if (is_numeric($postUserID)) {
-            $userID = $postUserID;
-          } elseif ($sessionUserId !== null) {
+          // Profile settings can only be changed by the authenticated account.
+          if (is_numeric($sessionUserId)) {
             $userID = $sessionUserId;
+          } else {
+            http_response_code(401);
+            $response->error = "Authentication required to change profile settings.";
+            break;
           }
         } else {
           // In-game settings update - get userID from game file

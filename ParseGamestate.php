@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/Libraries/GamestateCompatibility.php';
+
 global $gameName;
 function GetStringArray($line)
 {
@@ -68,6 +70,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $p1Hand = GetStringArray($gamestateContent[1]); // 2
   $p1Deck = GetStringArray($gamestateContent[2]); // 3
   $p1CharEquip = GetStringArray($gamestateContent[3]); // 4
+  $p1CharEquip = NormalizeLegacyCharacterState($p1CharEquip);
   $p1Resources = GetStringArray($gamestateContent[4]); // 5
   $p1Arsenal = GetStringArray($gamestateContent[5]); // 6
   $p1Items = GetStringArray($gamestateContent[6]); // 7
@@ -88,6 +91,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $p2Hand = GetStringArray($gamestateContent[19]); // 20
   $p2Deck = GetStringArray($gamestateContent[20]); // 21
   $p2CharEquip = GetStringArray($gamestateContent[21]); // 22
+  $p2CharEquip = NormalizeLegacyCharacterState($p2CharEquip);
   $p2Resources = GetStringArray($gamestateContent[22]); // 23
   $p2Arsenal = GetStringArray($gamestateContent[23]); // 24
   $p2Items = GetStringArray($gamestateContent[24]); // 25
@@ -113,6 +117,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $actionPoints = trim($gamestateContent[43]);
   $combatChain = GetStringArray($gamestateContent[44]);
   $combatChainState = GetStringArray($gamestateContent[45]);
+  $combatChainState = NormalizeCombatChainState($combatChainState);
   $currentTurnEffects = GetStringArray($gamestateContent[46]);
   $currentTurnEffectsFromCombat = GetStringArray($gamestateContent[47]);
   $nextTurnEffects = GetStringArray($gamestateContent[48]);
