@@ -569,7 +569,7 @@ function ItemDamageTakenAbilities($player, $damage)
     $remove = false;
     switch ($items[$i]) {
       case "talisman_of_warfare_yellow":
-        if (IsHeroAttackTarget() && $damage == 2) {
+        if ($damage == 2) {
           WriteLog("Talisman of Warfare destroyed both player's arsenal");
           DestroyArsenal($player, effectController: $otherPlayer);
           DestroyArsenal($otherPlayer, effectController: $otherPlayer);
