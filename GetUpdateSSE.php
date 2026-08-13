@@ -125,9 +125,9 @@ $lastPresenceState = null;
 $initialCacheArr = ReadCacheArray($gameName);
 $cacheVal = intval($initialCacheArr[0] ?? ""); // piece 1
 $lastUpdate = $cacheVal;
-$inactivityTimeoutMs = INACTIVITY_TIMEOUT_MS;
+$inactivityTimeoutMs = InactivityTimeoutMs($initialCacheArr);
 $lastUpdateTime = $initialCacheArr[5] ?? "";
-$previouslyInactive = $lastUpdateTime !== ""
+$previouslyInactive = $inactivityTimeoutMs > 0 && $lastUpdateTime !== ""
   && 1000 * microtime(true) - intval($lastUpdateTime) > $inactivityTimeoutMs;
 
 $initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, $previouslyInactive, $initialCacheArr);
@@ -191,7 +191,7 @@ while (true) {
 
   // Check for game state updates
   $cacheVal = intval($cacheStr);
-  $inactive = $lastUpdateTime !== ""
+  $inactive = $inactivityTimeoutMs > 0 && $lastUpdateTime !== ""
     && 1000 * $currentRealTime - intval($lastUpdateTime) > $inactivityTimeoutMs;
   if ($cacheVal > $lastUpdate || $inactive !== $previouslyInactive) {
     // Build and send full game state

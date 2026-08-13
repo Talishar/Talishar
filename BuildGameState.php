@@ -1611,12 +1611,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $response->opponentPresence = $opponentPresence;
   }
 
-  $response->inactive = $inactive;
+  $inactivityTimeout = InactivityTimeoutMs($buildCacheArr);
+  $response->inactive = $inactivityTimeout > 0 ? $inactive : false;
 
-  // Inactivity countdown
   $lastActionTime = intval($buildCacheArr[5] ?? 0);
-  if ($lastActionTime > 0) {
-    $response->inactivityDeadline = $lastActionTime + INACTIVITY_TIMEOUT_MS;
+  if ($lastActionTime > 0 && $inactivityTimeout > 0) {
+    $response->inactivityDeadline = $lastActionTime + $inactivityTimeout;
     $response->serverTime = intval(round(microtime(true) * 1000));
   }
 
