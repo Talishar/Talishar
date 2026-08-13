@@ -14,6 +14,7 @@ include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
+include_once "../includes/MetafyHelper.php";
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -33,7 +34,7 @@ $userID   = $_SESSION['userid'];
 
 // Fetch stored access token from DB
 $conn = GetDBConnection(DBL_REFRESH_METAFY_COMMUNITIES);
-$sql = "SELECT metafyAccessToken, metafyRefreshToken FROM users WHERE usersUid=?";
+$sql = "SELECT metafyAccessToken, metafyRefreshToken, metafyCommunities FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt, $sql)) {
   http_response_code(500);
@@ -57,21 +58,15 @@ if (empty($accessToken)) {
   exit;
 }
 
+$stored_communities = json_decode($row['metafyCommunities'] ?? '', true);
+$stored_by_id = IndexMetafyCommunitiesById($stored_communities);
+
 // --- Fetch owned community ---
 $all_communities = [];
 
-$community_url = 'https://metafy.gg/irk/api/v1/me/community';
-$ch = curl_init($community_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 8);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-  'Authorization: Bearer ' . $accessToken,
-  'Content-Type: application/json'
-]);
-curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-$community_response = curl_exec($ch);
-$community_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+$community_result = MetafyApiGet('https://metafy.gg/irk/api/v1/me/community', $accessToken);
+$community_response  = $community_result['body'];
+$community_http_code = $community_result['code'];
 
 // If token is expired/invalid, tell the frontend to re-auth via OAuth
 if (in_array($community_http_code, [401, 403], true)) {
@@ -96,21 +91,18 @@ if ($community_http_code === 200 && !empty($community_response)) {
       'type'        => 'owned'
     ];
   }
+} elseif ($community_http_code !== 404) {
+  foreach ($stored_by_id as $stored_community) {
+    if (($stored_community['type'] ?? null) === 'owned') {
+      $all_communities[] = $stored_community;
+    }
+  }
 }
 
 // --- Fetch memberships (supported communities) ---
-$memberships_url = 'https://metafy.gg/irk/api/v1/me/community/memberships?per_page=100';
-$ch = curl_init($memberships_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 8);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-  'Authorization: Bearer ' . $accessToken,
-  'Content-Type: application/json'
-]);
-curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-$memberships_response = curl_exec($ch);
-$memberships_http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+$memberships_result = MetafyApiGet('https://metafy.gg/irk/api/v1/me/community/memberships?per_page=100', $accessToken);
+$memberships_response  = $memberships_result['body'];
+$memberships_http_code = $memberships_result['code'];
 
 if (in_array($memberships_http_code, [401, 403], true)) {
   http_response_code(401);
@@ -120,61 +112,67 @@ if (in_array($memberships_http_code, [401, 403], true)) {
   exit;
 }
 
+// The memberships list is the only authoritative source for which communities this
+// user supports. If it did not come back cleanly, nothing may be persisted: writing
+// a short list here is exactly what silently strips people of supporter status.
+$memberships_data = $memberships_http_code === 200 && !empty($memberships_response)
+  ? json_decode($memberships_response, true)
+  : null;
+
+if (!is_array($memberships_data) || !isset($memberships_data['communities'])) {
+  mysqli_close($conn);
+  http_response_code(503);
+  $response->error   = 'metafy_unavailable';
+  $response->message = 'Could not reach Metafy right now. Your existing status was kept, please try again in a moment.';
+  echo json_encode($response);
+  exit;
+}
+
 $added_community_ids = array_filter(array_column($all_communities, 'id'));
 
-if ($memberships_http_code === 200 && !empty($memberships_response)) {
-  $memberships_data = json_decode($memberships_response, true);
+foreach ($memberships_data['communities'] as $community) {
+  $community_id = $community['id'] ?? null;
+  if (!$community_id) continue;
+  if (in_array($community_id, $added_community_ids)) continue;
+  $added_community_ids[] = $community_id;
 
-  if (isset($memberships_data['communities'])) {
-    foreach ($memberships_data['communities'] as $community) {
-      $community_id = $community['id'] ?? null;
-      if (!$community_id) continue;
-      if (in_array($community_id, $added_community_ids)) continue;
-      $added_community_ids[] = $community_id;
-
-      $tier_map = [];
-      foreach (($community['tiers'] ?? []) as $tier) {
-        if (!empty($tier['id']) && !empty($tier['name'])) {
-          $tier_map[$tier['id']] = $tier['name'];
-        }
-      }
-
-      // Check active paid subscription for this community
-      $purchase_url = 'https://metafy.gg/irk/api/v1/me/purchases/communities/' . urlencode($community_id);
-      $ch_pur = curl_init($purchase_url);
-      curl_setopt($ch_pur, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch_pur, CURLOPT_TIMEOUT, 8);
-      curl_setopt($ch_pur, CURLOPT_HTTPHEADER, [
-        'Authorization: Bearer ' . $accessToken,
-        'Content-Type: application/json'
-      ]);
-      curl_setopt($ch_pur, CURLOPT_USERAGENT, 'Talishar-App');
-      $pur_response  = curl_exec($ch_pur);
-      $pur_http_code = curl_getinfo($ch_pur, CURLINFO_HTTP_CODE);
-      curl_close($ch_pur);
-
-      $community_info = [
-        'id'          => $community_id,
-        'title'       => $community['title'] ?? null,
-        'description' => $community['description'] ?? null,
-        'logo_url'    => $community['logo_url'] ?? null,
-        'cover_url'   => $community['cover_url'] ?? null,
-        'url'         => $community['url'] ?? null,
-        'type'        => 'supported'
-      ];
-
-      if ($pur_http_code === 200 && !empty($pur_response)) {
-        $pur_data   = json_decode($pur_response, true);
-        $has_access = $pur_data['community']['has_access'] ?? false;
-        $tier_id    = $pur_data['community']['tier_id'] ?? null;
-        if ($has_access && $tier_id && isset($tier_map[$tier_id])) {
-          $community_info['metafy_tier'] = $tier_map[$tier_id];
-        }
-      }
-
-      $all_communities[] = $community_info;
+  $tier_map = [];
+  foreach (($community['tiers'] ?? []) as $tier) {
+    if (!empty($tier['id']) && !empty($tier['name'])) {
+      $tier_map[$tier['id']] = $tier['name'];
     }
   }
+
+  // Check active paid subscription for this community
+  $purchase_url = 'https://metafy.gg/irk/api/v1/me/purchases/communities/' . urlencode($community_id);
+  $pur_result    = MetafyApiGet($purchase_url, $accessToken);
+  $pur_response  = $pur_result['body'];
+  $pur_http_code = $pur_result['code'];
+
+  $community_info = [
+    'id'          => $community_id,
+    'title'       => $community['title'] ?? null,
+    'description' => $community['description'] ?? null,
+    'logo_url'    => $community['logo_url'] ?? null,
+    'cover_url'   => $community['cover_url'] ?? null,
+    'url'         => $community['url'] ?? null,
+    'type'        => 'supported'
+  ];
+
+  if ($pur_http_code === 200 && !empty($pur_response)) {
+    $pur_data   = json_decode($pur_response, true);
+    $has_access = $pur_data['community']['has_access'] ?? false;
+    $tier_id    = $pur_data['community']['tier_id'] ?? null;
+    if ($has_access && $tier_id && isset($tier_map[$tier_id])) {
+      $community_info['metafy_tier'] = $tier_map[$tier_id];
+    }
+  } elseif (!empty($stored_by_id[$community_id]['metafy_tier'])) {
+    // This call failed, so it says nothing about whether they still have access.
+    // Keep the tier we already knew about instead of dropping their perks.
+    $community_info['metafy_tier'] = $stored_by_id[$community_id]['metafy_tier'];
+  }
+
+  $all_communities[] = $community_info;
 }
 
 // --- Resolve this user's Metafy ID (from DB, or live if not yet cached) ---

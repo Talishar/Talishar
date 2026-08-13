@@ -14,6 +14,60 @@ if (!function_exists('IsDevEnvironment')) {
   }
 }
 
+/**
+ * GET a Metafy API endpoint with the user's access token.
+ * Retries transient failures (connection error / timeout / 5xx) so a single blip
+ * does not end up persisted as "this user has nothing".
+ * Returns ['code' => int, 'body' => string]. Code 0 means the request never completed.
+ */
+if (!function_exists('MetafyApiGet')) {
+  function MetafyApiGet($url, $accessToken, $timeout = 8, $retries = 1)
+  {
+    $code = 0;
+    $body = '';
+
+    for ($attempt = 0; $attempt <= $retries; $attempt++) {
+      $ch = curl_init($url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $accessToken,
+        'Content-Type: application/json'
+      ]);
+      curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
+      $body = curl_exec($ch);
+      $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      curl_close($ch);
+
+      if ($body === false) $body = '';
+
+      $isTransient = ($code === 0 || $code >= 500);
+      if (!$isTransient) break;
+      if ($attempt < $retries) usleep(300000); // 300ms before retrying
+    }
+
+    return ['code' => $code, 'body' => $body];
+  }
+}
+
+/**
+ * Keys a stored community list by community id, so previously known values can be
+ * used as a fallback when a follow-up Metafy call fails.
+ */
+if (!function_exists('IndexMetafyCommunitiesById')) {
+  function IndexMetafyCommunitiesById($communities)
+  {
+    $indexed = [];
+    if (!is_array($communities)) return $indexed;
+    foreach ($communities as $community) {
+      if (!is_array($community)) continue;
+      $id = $community['id'] ?? null;
+      if ($id) $indexed[$id] = $community;
+    }
+    return $indexed;
+  }
+}
+
 function FetchMetafyCommunities($accessToken)
 {
   $url = 'https://dev.metafy.gg/v1/community/list-joined-communities';
