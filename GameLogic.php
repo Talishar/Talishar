@@ -222,13 +222,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MYHANDARROW":
           $rv = SearchHand($player, "", "Arrow");
           break;
-        case "MYDISCARDARROW": // With a different names
-          $rv = RemoveCardSameNames($player, SearchDiscard($player, "", "Arrow"), GetDiscard($player));
+        case "MYDISCARDARROW":
+          $rv = SearchDiscard($player, "", "Arrow");
           break;
         case "MYDISCARDATTACKS": // With a different names
           $rv = RemoveCardSameNames($player, SearchDiscard($player, "AA"), GetDiscard($player));
           break;
-        case "MULTIACTIONSBANISH": // With a different names
+        case "MULTIACTIONSBANISH":
           $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
           $rv = RemoveDuplicateCards($player, $index, GetBanish($player));
           break;
