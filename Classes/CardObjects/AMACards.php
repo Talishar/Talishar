@@ -200,7 +200,7 @@ class dig_for_souls_red extends Card {
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$Deck = new Deck($this->controller);
-		if ($resourcesPaid > 0 != "") {
+		if ($resourcesPaid > 0) {
 			$cards = $Deck->Top(true, $resourcesPaid);
 			$inds = [];
 			$allInds = [];
