@@ -188,6 +188,18 @@ function IsValidMetafyTier($tierName)
   return isset($supportedTiersMap[$tierName]);
 }
 
+// True when the user holds at least one paid Talishar tier. Note this is a stricter
+// test than IsTalisharMetafySupporter(), which only checks community membership and
+// is therefore also true for free members.
+function HasPaidMetafyTier($metafyTiers)
+{
+  if (!is_array($metafyTiers)) return false;
+  foreach ($metafyTiers as $tierName) {
+    if (IsValidMetafyTier($tierName)) return true;
+  }
+  return false;
+}
+
 // Replay save slots granted per Metafy tier, on top of the base patron allotment.
 // Higher tiers grant more slots as a subscriber incentive.
 function GetMaxReplaySlotsForTiers($metafyTiers)

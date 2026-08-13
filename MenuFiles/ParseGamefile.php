@@ -82,6 +82,9 @@
   $p2DisplayName        = $lines[$li++] ?? '';
   if ($p1DisplayName === '') $p1DisplayName = $p1uid;
   if ($p2DisplayName === '') $p2DisplayName = $p2uid;
+  // Match result webhook URLs cached at join time; older game files predate these
+  $p1WebhookUrl         = $lines[$li++] ?? '';
+  $p2WebhookUrl         = $lines[$li++] ?? '';
   unset($lines, $li, $line);
 
   $MGS_Initial = 0;

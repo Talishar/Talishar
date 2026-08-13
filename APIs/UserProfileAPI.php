@@ -49,6 +49,8 @@ if ($conn === false) {
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = [];
   $response->isMetafySupporter = false;
+  $response->matchResultWebhookUrl = null;
+  $response->canUseMatchResultWebhook = false;
   header('Content-Type: application/json');
   echo json_encode($response);
   exit;
@@ -58,7 +60,7 @@ $sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, rust_counters,
                  rust_counters_last_played IS NULL OR
                  rust_counters_last_played <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
                )) AS rust_counters_expired,
-               displayName, lastNameChange
+               displayName, lastNameChange, matchResultWebhookUrl
         FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 
@@ -94,6 +96,8 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   }
   $response->isMetafyLinked = !empty($metafyAccessToken);
   $response->metafyInfo = MetafyLink();
+  $response->matchResultWebhookUrl = $row['matchResultWebhookUrl'] ?? null;
+  $response->canUseMatchResultWebhook = IsMatchResultWebhookEligible($userName);
   $response->metafyCommunities = isset($row['metafyCommunities']) ? json_decode($row['metafyCommunities'], true) : [];
     
   // Check if user has an active subscription to the Talishar community via Metafy API
@@ -146,6 +150,8 @@ else {
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = [];
   $response->isMetafySupporter = false;
+  $response->matchResultWebhookUrl = null;
+  $response->canUseMatchResultWebhook = false;
 }
 
 mysqli_close($conn);
