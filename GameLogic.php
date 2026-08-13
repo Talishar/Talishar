@@ -225,8 +225,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "MYDISCARDARROW":
           $rv = SearchDiscard($player, "", "Arrow");
           break;
-        case "MYDISCARDATTACKS": // With a different names
-          $rv = RemoveCardSameNames($player, SearchDiscard($player, "AA"), GetDiscard($player));
+        case "MYDISCARDATTACKS":
+          $rv = SearchDiscard($player, "AA");
           break;
         case "MULTIACTIONSBANISH":
           $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
