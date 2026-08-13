@@ -55,7 +55,7 @@ include_once "../Libraries/SHMOPLibraries.php";
 
 $currentTime = (int)(microtime(true) * 1000);
 
-$count = 0;
+$longPollDeadline = $currentTime + 8000;
 $otherP = $playerID == 1 ? 2 : 1;
 $myTimeIdx   = $playerID;
 $oppTimeIdx  = $otherP;
@@ -93,9 +93,6 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $cacheArr[$myTimeIdx] = $currentTime;
   WriteCache($gameName, implode("!", $cacheArr));
 
-  ++$count;
-  if ($count == 20) break;
-
   if ($oppStatus !== "-1" && $oppLastTime !== "") {
     if (($currentTime - (int)$oppLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS && $oppStatus === "0") {
       $cacheArr[$oppStatIdx] = "-1";
@@ -106,6 +103,8 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
       break;
     }
   }
+
+  if ($currentTime >= $longPollDeadline) break;
 }
 
 include "./APIParseGamefile.php";
