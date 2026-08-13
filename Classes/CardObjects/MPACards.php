@@ -121,6 +121,10 @@ class dr_mortimer extends Card {
 	function SpecialBlock() {
 		return -2;
 	}
+
+	function DefaultActiveState() {
+		return 1;
+	}
 }
 
 class dr_mortimer_blight_of_the_pits extends Card {
@@ -181,6 +185,10 @@ class dr_mortimer_blight_of_the_pits extends Card {
 
 	function SpecialBlock() {
 		return -2;
+	}
+
+	function DefaultActiveState() {
+		return 1;
 	}
 }
 
