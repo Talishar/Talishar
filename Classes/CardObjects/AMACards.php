@@ -1,55 +1,59 @@
 <?php
 
 class restless_commander_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "restless_commander_red";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "restless_commander_red";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-  function HasDecay() {
-    return true;
-  }
+	function HasDecay() {
+		return true;
+	}
 
-  function SpecialSubType() {
-    return "Zombie,Ally";
-  }
+	function SpecialSubType() {
+		return "Zombie,Ally";
+	}
 
-  function SpecialPower() {
-    return 3;
-  }
+	function SpecialPower() {
+		return 3;
+	}
 
-  function SpecialHealth() {
-    return 3;
-  }
+	function SpecialHealth() {
+		return 3;
+	}
 
-  function SpecialType() {
-    return "A";
-  }
+	function SpecialType() {
+		return "A";
+	}
 
-  function SpecialName() {
-    return "Restless Commander";
-  }
+	function SpecialName() {
+		return "Restless Commander";
+	}
 
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
 
-  function SpecialTalent() {
-    return "SHADOW";
-  }
+	function SpecialTalent() {
+		return "SHADOW";
+	}
 
 	function PermanentPowerModifier(&$powerModifiers) {
 		global $CombatChain;
 		if (SubTypeContains($CombatChain->AttackCard()->ID(), "Zombie")) {
-      $powerModifiers[] = $this->cardID;
-      $powerModifiers[] = 1;
-      return 1;
-    }
-    return 0;
+		$powerModifiers[] = $this->cardID;
+		$powerModifiers[] = 1;
+		return 1;
+		}
+		return 0;
+	}
+
+	function SpecialBlock() {
+		return -2;
 	}
 }
 
@@ -106,15 +110,15 @@ class corrupted_crown extends Card {
 }
 
 class undead_grasp extends Card {
-  function __construct($controller) {
-    $this->cardID = "undead_grasp";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	function __construct($controller) {
+		$this->cardID = "undead_grasp";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
+		return "";
+	}
 
 	function AbilityCost() {
 		return 1;

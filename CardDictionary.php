@@ -3427,6 +3427,7 @@ function HasBattleworn($cardID)
     case "teklovossen_the_mechropotentb":
     case "prizeworn_pathfinders":
     case "longsword_leggings":
+    case "undead_grasp":
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);
