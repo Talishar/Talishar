@@ -1539,12 +1539,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   if ($turnPhase != "OVER") {
     $helpText .= $currentPlayer != $playerID ? WaitingMessage($turnPhase) : GetPhaseHelptext();
     if($currentPlayer == $playerID) { 
+      if ($turnPhase == "PAYGOLDORPITCH" && ($myResources[0] ?? 0) >= 2) {
+        $promptButtons[] = CreateButtonAPI($playerID, "Use resources", 106, 0, "16px");
+      }
       if ($turnPhase == "P" || $turnPhase == "CHOOSEHANDCANCEL" || $turnPhase == "CHOOSEDISCARDCANCEL" || $turnPhase == "PAYGOLDORPITCH" || $turnPhase == "CHOOSEGOLDTOPAY") {
         $helpText .= $turnPhase == "P" ? " (" . $myResources[0] . " of " . $myResources[1] . ")" : "";
         $promptButtons[] = CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px");
-      }
-      if ($turnPhase == "PAYGOLDORPITCH" && ($myResources[0] ?? 0) >= 2) {
-        $promptButtons[] = CreateButtonAPI($playerID, "Use resources", 106, 0, "16px");
       }
       if (CanPassPhase($turnPhase)) {
         if ($turnPhase == "B") {
