@@ -1306,14 +1306,14 @@ class point_of_escalation_yellow extends Card {
 }
 
 class zane_broadly_beloved extends Card {
-  function __construct($controller) {
-    $this->cardID = "zane_broadly_beloved";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "zane_broadly_beloved";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
 		if ($additionalCosts == "CHEER") {
@@ -1322,29 +1322,29 @@ class zane_broadly_beloved extends Card {
 		}
 		else
 			Cheer($this->controller);
-  }
+  	}
 
-  function CheerTrigger() {
+	function CheerTrigger() {
 		global $CS_CheeredThisTurn;
 		if (GetClassState($this->controller, $CS_CheeredThisTurn) == 1)
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "CHEER");
-  }
+	}
 
-  function SpecialName() {
+  	function SpecialName() {
 		return "Zane Broadly Beloved";
-  }
+  	}
 
-  function SpecialTalent() {
+  	function SpecialTalent() {
 		return "REVERED";
-  }
+  	}
 
-  function SpecialClass() {
+  	function SpecialClass() {
 		return "WARRIOR";
-  }
+  	}
 
-  function SpecialType() {
+ 	 function SpecialType() {
 		return "C";
-  }
+  	}
 
 	function SpecialSubType() {
 		return "Young";
@@ -1356,14 +1356,14 @@ class zane_broadly_beloved extends Card {
 }
 
 class killjoy_the_crooked_blade extends Card {
-  function __construct($controller) {
-    $this->cardID = "killjoy_the_crooked_blade";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "killjoy_the_crooked_blade";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
 		if ($additionalCosts == "BOO") {
@@ -1381,21 +1381,21 @@ class killjoy_the_crooked_blade extends Card {
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "BOO");
 	}
 
-  function SpecialName() {
+  	function SpecialName() {
 		return "Killjoy the Crooked Blade";
-  }
+  	}
 
-  function SpecialTalent() {
+  	function SpecialTalent() {
 		return "REVILED";
-  }
+  	}
 
-  function SpecialClass() {
+  	function SpecialClass() {
 		return "WARRIOR,THIEF";
-  }
+  	}
 
-  function SpecialType() {
+  	function SpecialType() {
 		return "C";
-  }
+  	}
 
 	function SpecialSubType() {
 		return "Young";

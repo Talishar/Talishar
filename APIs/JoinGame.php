@@ -18,6 +18,7 @@ include_once "../Classes/Card.php";
 include_once "../Classes/CardObjects/IARCards.php";
 include_once "../Classes/CardObjects/AMACards.php";
 include_once "../Classes/CardObjects/AMOCards.php";
+include_once "../Classes/CardObjects/MPWCards.php"; // for now just for the smash palace cards
 include_once "../Classes/CardObjects/MPACards.php";
 // promos for special formats
 include_once "../Classes/CardObjects/LGSCards.php";
@@ -974,6 +975,7 @@ function isUnimplemented($cardID) {
   switch (CardSet($cardID)) {
     case "IAR":
     case "AMA":
+    case "SPW":
     case "": // cards that don't have a set id yet
       $card = GetClass($cardID, 0);
       return $card == "-";
