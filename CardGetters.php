@@ -157,6 +157,11 @@ function GetClassState($player, $piece)
   }
 }
 
+function GetCombatChainState($piece) {
+  global $combatChainState;
+  return $combatChainState[$piece] ?? "";
+}
+
 function &GetDeck($player)
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt;

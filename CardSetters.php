@@ -774,6 +774,17 @@ function SetClassState($player, $piece, $value)
   }
 }
 
+function IncrementCombatChainState($piece, $amount=1) {
+  if (GetCombatChainState($piece) != "")
+    SetCombatChainState($piece, GetCombatChainState($piece) + $amount);
+}
+
+function SetCombatChainState($piece, $value) {
+  global $combatChainState;
+  if (!isset($combatChainState[$piece]) && IsReplay()) return; //avoid an error
+  $combatChainState[$piece] = $value;
+}
+
 function AddCharacterEffect($player, $index, $effect)
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt;
