@@ -4,7 +4,8 @@ include __DIR__ . '/zzImageConverter.php';
 include_once __DIR__ . '/Assets/AllAltArtVariations.php';
 
 // FAB Cube API endpoint for card data with all printing variations
-$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
+//$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
+$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/usurp-the-shadow-throne/json/english/card.json";
 
 $manualArtVariationOverrides = [
 /*    "fate_foreseen_red" => [
