@@ -754,11 +754,23 @@ function SetClassState($player, $piece, $value)
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor;
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) $mainClassState[$piece] = $value;
-    else $defClassState[$piece] = $value;
+    if ($player == $mainPlayer) {
+      if (!isset($mainClassState[$piece]) && IsReplay()) return; //avoid an error
+      $mainClassState[$piece] = $value;
+    }
+    else {
+      if (!isset($defClassState[$piece]) && IsReplay()) return; //avoid an error
+      $defClassState[$piece] = $value;
+    }
   } else {
-    if ($player == $myStateBuiltFor) $myClassState[$piece] = $value;
-    else $theirClassState[$piece] = $value;
+    if ($player == $myStateBuiltFor) {
+      if (!isset($myClassState[$piece]) && IsReplay()) return; //avoid an error
+      $myClassState[$piece] = $value;
+    }
+    else {
+      if (!isset($theirClassState[$piece]) && IsReplay()) return; //avoid an error
+      $theirClassState[$piece] = $value;
+    }
   }
 }
 
