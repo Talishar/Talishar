@@ -359,7 +359,7 @@ class mutually_assured_destruction_red extends Card {
 	function AttackPlayCardAbility($cardID, $from) {
 		global $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed;
 		$piece = $currentPlayer == $mainPlayer ? $CCS_AttackReactionsPlayed : $CCS_DefenseReactionsPlayed;
-		if ($combatChainState[$piece] == 1 && !IsActivated($cardID, $from))
+		if ($combatChainState[$piece] == 1 && !IsActivated($cardID, $from) && (TypeContains($cardID, "DR") || TypeContains($cardID, "AR")))
 			AddLayer("TRIGGER", $this->controller, $this->cardID);
 	}
 
