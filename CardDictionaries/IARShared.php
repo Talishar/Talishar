@@ -40,7 +40,7 @@ function Usurp($cardID, $player, $from) {
 }
 
 function UsurpAwait($player) {
-	global $dqVars, $CS_AdditionalCosts, $Stack;
+	global $dqVars, $CS_AdditionalCosts, $Stack, $CS_UsurpedThisTurn;
 	$choice = $dqVars["choice"];
 	$Runechant = MZIndexToObject($player, $choice);
 	$usurpedID = $Runechant->CardID();
@@ -53,6 +53,7 @@ function UsurpAwait($player) {
 	if ($card != "-") $card->UsurpedEffect();
 	WriteLog(CardLink($dqVars["cardID"]) . " usurped a runechant!");
 	SetClassState($player, $CS_AdditionalCosts, "USURPED");
+	IncrementClassState($player, $CS_UsurpedThisTurn);
 }
 
 function HasIncarnate($cardID) {

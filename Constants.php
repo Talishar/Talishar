@@ -433,6 +433,7 @@ $CS_NumRunechantsCreated = 127;
 $CS_NumBloodDebtAttacksPlayed = 128;
 $CS_IARGatesMadeorUsed = 129;
 $CS_NumBloodDebtBanished = 130;
+$CS_UsurpedThisTurn = 131;
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -702,7 +703,7 @@ function ResetMainClassState()
   global $CS_ArcaneDamageDealtToOpponent, $CS_EvosBoosted, $CS_NumWeaponsActivated, $CS_NumLightningFlowDestroyed, $CS_HoloAurasEntered;
   global $CS_NumInstantsPutInGrave, $CS_NumControlledAurasDestroyed, $CS_NumFragmented, $CS_WeaponsAttackedWith, $CS_PendingNAACard, $CS_HaveIntimidatedOpponent;
   global $CS_LayerResolved, $CS_PreventionCache, $CS_NumUndoesThisTurn, $CS_NumRunechantsCreated, $CS_NumBloodDebtAttacksPlayed;
-  global $CS_IARGatesMadeorUsed, $CS_NumBloodDebtBanished;
+  global $CS_IARGatesMadeorUsed, $CS_NumBloodDebtBanished, $CS_UsurpedThisTurn;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -833,6 +834,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumBloodDebtAttacksPlayed] = 0;
   $mainClassState[$CS_IARGatesMadeorUsed] = 0;
   $mainClassState[$CS_NumBloodDebtBanished] = 0;
+  $mainClassState[$CS_UsurpedThisTurn] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")

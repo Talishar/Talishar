@@ -92,8 +92,8 @@ class BanishCard {
 
     function Modifier()
     {
-        $key = $this->index + 1;
-        return $this->banish[$key] ?? null;
+      $key = $this->index + 1;
+      return $this->banish[$key] ?? null;
     }
 
     function Modify($mod) {

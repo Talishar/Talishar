@@ -2131,3 +2131,71 @@ class otherworldly_sins_blue extends Card {
     return 3;
   }
 }
+
+class usurp_the_shadow_throne_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "usurp_the_shadow_throne_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SelfCostModifier($from) {
+    global $CS_UsurpedThisTurn;
+    return GetClassState($this->controller, $CS_UsurpedThisTurn) > 0 ? -6 : 0;
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    global $CS_UsurpedThisTurn;
+    return GetClassState($this->controller, $CS_UsurpedThisTurn) > 0;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $Banish = new Banish($otherPlayer);
+    $num = 0;
+    for ($i = 0; $i < $Banish->NumCards(); ++$i) {
+      $BanishCard = $Banish->Card($i, true);
+      if (isFaceDownMod($BanishCard->Modifier())) {
+        $BanishCard->Modify("DOWN");
+        ++$num;
+      }
+    }
+    GainHealth($num, $this->controller);
+    LoseHealth($num, $otherPlayer);
+  }
+
+  function SpecialName() {
+    return "Usurp the Shadow Throne";
+  }
+
+  function SpecialCost() {
+    return 13;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 13;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
