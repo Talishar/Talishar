@@ -2,7 +2,7 @@
 
 function HeroMasteryMilestones(): array
 {
-  return [5, 15, 25, 50, 100, 150, 250, 500, 1000];
+  return [5, 10, 15, 25, 35, 50, 75, 100, 150, 200, 250, 350, 500, 750, 1000];
 }
 
 function HeroMasteryLevel(int $games): int
@@ -15,7 +15,15 @@ function HeroMasteryLevel(int $games): int
   return $level;
 }
 
-function HeroMasteryProgress(int $games): array
+function HeroMasteryFrameLevel(int $earnedLevel, $displayLevel): int
+{
+  if ($displayLevel === null || $displayLevel === "") return $earnedLevel;
+  $chosen = intval($displayLevel);
+  if ($chosen < 0) return $earnedLevel;
+  return min($chosen, $earnedLevel);
+}
+
+function HeroMasteryProgress(int $games, $displayLevel = null): array
 {
   $milestones = HeroMasteryMilestones();
   $level = HeroMasteryLevel($games);
@@ -23,6 +31,8 @@ function HeroMasteryProgress(int $games): array
   return [
     "qualifyingGames" => $games,
     "level" => $level,
+    "displayLevel" => $displayLevel === null ? null : intval($displayLevel),
+    "frameLevel" => HeroMasteryFrameLevel($level, $displayLevel),
     "asset" => $level > 0 ? "mastery_" . $level : null,
     "nextThreshold" => $nextThreshold,
     "gamesToNext" => $nextThreshold === null ? null : $nextThreshold - $games,

@@ -51,12 +51,18 @@ if ($gameName !== "" && ctype_digit($gameName)) {
     $p1GameUser = intval($lines[11] ?? 0);
     $p2GameUser = intval($lines[12] ?? 0);
     if ($userId === $p1GameUser || $userId === $p2GameUser) {
+      include_once "../CardDictionary.php";
       $response["gamePlayers"] = [];
       $gamePlayers = [];
       foreach ([1 => $p1GameUser, 2 => $p2GameUser] as $slot => $gameUserId) {
         $deckFile = "../Games/" . $gameName . "/p" . $slot . "Deck.txt";
         $firstLine = is_file($deckFile) ? strtok((string)file_get_contents($deckFile), "\r\n") : "";
-        $heroId = explode(" ", trim((string)$firstLine))[0] ?? "";
+        // Deck files name the hero by card ID (ira_crimson_haze) while
+        // hero_mastery keys by set ID (CRU046), so the lookup has to convert.
+        // SetID returns "" for the AI and unrevealed heroes, which simply
+        // matches no row and leaves the frame unornamented.
+        $deckHero = explode(" ", trim((string)$firstLine))[0] ?? "";
+        $heroId = $deckHero !== "" ? SetID($deckHero) : "";
         $gamePlayers[$slot] = ["userId" => $gameUserId, "heroId" => $heroId];
         $response["gamePlayers"][(string)$slot] = ["heroId" => $heroId, "level" => 0];
       }
@@ -74,12 +80,12 @@ if ($needsDatabase && $conn === false) {
 }
 
 if ($includeAccount) {
-  $stmt = $conn->prepare("SELECT heroId, qualifyingGames FROM hero_mastery WHERE userId = ?");
+  $stmt = $conn->prepare("SELECT heroId, qualifyingGames, displayLevel FROM hero_mastery WHERE userId = ?");
   $stmt->bind_param("i", $userId);
   $stmt->execute();
   $result = $stmt->get_result();
   while ($row = $result->fetch_assoc()) {
-    $progress = HeroMasteryProgress(intval($row["qualifyingGames"]));
+    $progress = HeroMasteryProgress(intval($row["qualifyingGames"]), $row["displayLevel"]);
     $progress["heroId"] = $row["heroId"];
     $response["heroes"][] = $progress;
   }
@@ -88,7 +94,7 @@ if ($includeAccount) {
 
 if ($gamePlayers !== null) {
   $gameProgress = $conn->prepare(
-    "SELECT userId, heroId, qualifyingGames
+    "SELECT userId, heroId, qualifyingGames, displayLevel
      FROM hero_mastery
      WHERE (userId = ? AND heroId = ?) OR (userId = ? AND heroId = ?)"
   );
@@ -107,7 +113,12 @@ if ($gamePlayers !== null) {
         intval($gameRow["userId"]) === $gamePlayer["userId"] &&
         $gameRow["heroId"] === $gamePlayer["heroId"]
       ) {
-        $response["gamePlayers"][(string)$slot]["level"] = HeroMasteryLevel(intval($gameRow["qualifyingGames"]));
+        // This level is cosmetic only - it drives the lobby and versus frames -
+        // so it is the frame the player chose, not necessarily their highest.
+        $response["gamePlayers"][(string)$slot]["level"] = HeroMasteryFrameLevel(
+          HeroMasteryLevel(intval($gameRow["qualifyingGames"])),
+          $gameRow["displayLevel"]
+        );
       }
     }
   }
