@@ -177,13 +177,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $altArtsPlayerID    = $playerID == 3 ? 1 : $playerID;
     $altArtsOpponentID  = $playerID == 3 ? 2 : $otherPlayer;
 
+    $altArtsDisabled = $playerID != 3 && AltArtsDisabled($playerID);
+
     $patreonCampaigns = PatreonCampaign::cases();
     $metafyCommunityMap = [];
     foreach (MetafyCommunity::cases() as $case) {
       $metafyCommunityMap[$case->value] = $case;
     }
 
-    if($playerID == 3 || !AltArtsDisabled($playerID))
+    if(!$altArtsDisabled)
     {
       foreach($patreonCampaigns as $campaign) {
         $sessionID = $campaign->SessionID();
@@ -239,7 +241,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
 
     // Get opponent's alt arts
-    if($playerID == 3 || !AltArtsDisabled($playerID))
+    if(!$altArtsDisabled)
     {
       foreach($patreonCampaigns as $campaign) {
         $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($altArtsOpponentName);
@@ -293,13 +295,16 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
     }
 
-    $myUserId = $altArtsPlayerID == 1 ? ($p1id ?? '') : ($p2id ?? '');
-    $myDeckLink = $altArtsPlayerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
-    $initialLoad->altArts = ApplyDeckAltArtOverride($initialLoad->altArts, $myUserId, $myDeckLink);
+    if(!$altArtsDisabled)
+    {
+      $myUserId = $altArtsPlayerID == 1 ? ($p1id ?? '') : ($p2id ?? '');
+      $myDeckLink = $altArtsPlayerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+      $initialLoad->altArts = ApplyDeckAltArtOverride($initialLoad->altArts, $myUserId, $myDeckLink);
 
-    $oppUserId = $altArtsOpponentID == 1 ? ($p1id ?? '') : ($p2id ?? '');
-    $oppDeckLink = $altArtsOpponentID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
-    $initialLoad->opponentAltArts = ApplyDeckAltArtOverride($initialLoad->opponentAltArts, $oppUserId, $oppDeckLink);
+      $oppUserId = $altArtsOpponentID == 1 ? ($p1id ?? '') : ($p2id ?? '');
+      $oppDeckLink = $altArtsOpponentID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+      $initialLoad->opponentAltArts = ApplyDeckAltArtOverride($initialLoad->opponentAltArts, $oppUserId, $oppDeckLink);
+    }
 
     $response->initialLoad = $initialLoad;
   }
