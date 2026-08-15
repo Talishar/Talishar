@@ -2046,9 +2046,9 @@ class otherworldly_sins_yellow extends Card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  // function SpecialName() {
-  //   return "Otherworldly Sins";
-  // }
+  function SpecialName() {
+    return "Otherworldly Sins";
+  }
 
   function SpecialCost() {
     return 1;
@@ -2099,9 +2099,9 @@ class otherworldly_sins_blue extends Card {
     return $this->baseCard->CombatEffectActive();
   }
 
-  // function SpecialName() {
-  //   return "Otherworldly Sins";
-  // }
+  function SpecialName() {
+    return "Otherworldly Sins";
+  }
 
   function SpecialCost() {
     return 1;
