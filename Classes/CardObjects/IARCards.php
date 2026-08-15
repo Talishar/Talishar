@@ -2139,6 +2139,7 @@ class usurp_the_shadow_throne_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    WriteLog("Kneel, Reaper. The time has come.", highlight:true, highlightColor:"purple");
     return "";
   }
 
