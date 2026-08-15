@@ -837,9 +837,12 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	$countTurnStats = count($turnStats);
 	$tsp = TurnStatPieces();
 
-	// Populate turn results - only include turns that have actually occurred
+	// Populate turn results - every block up to and including the last one that holds data
+	$usedBlocks = UsedTurnStatBlocks($turnStats);
+	$lastUsedBlock = empty($usedBlocks) ? -1 : $usedBlocks[count($usedBlocks) - 1];
+
 	$turnNo = 0;
-	for($i = 0; $i < $countTurnStats && $turnNo <= $currentTurn; $i += $tsp, ++$turnNo) {
+	for($i = 0; $i <= $lastUsedBlock; $i += $tsp, ++$turnNo) {
 		$turnKey = "turn_" . $turnNo;
 		
 		$cardsUsed = $turnStats[$i + $TurnStats_CardsPlayedOffense] + $turnStats[$i + $TurnStats_CardsPlayedDefense];
@@ -853,7 +856,7 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 		$damageDealt = $turnStats[$i + $TurnStats_DamageDealt];
 		$damageBlocked = $turnStats[$i + $TurnStats_DamageBlocked];
 		$damagePrevented = $turnStats[$i + $TurnStats_DamagePrevented];
-		$damageTaken = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt];
+		$damageTaken = $otherPlayerTurnStats[$i + $TurnStats_DamageDealt] ?? 0;
 		$lifeGained = $turnStats[$i + $TurnStats_LifeGained];
 		$lifeLost = $turnStats[$i + $TurnStats_LifeLost];
 
@@ -907,7 +910,21 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	$deck["yourTime"] = $time;
 	$deck["totalTime"] = $totalTime;
 }
-function PopulateAggregateStats(&$deck, &$turnStats)
+// Returns the offsets of every stat block that holds data for this player.
+function UsedTurnStatBlocks(&$turnStats)
+{
+	$tsp = TurnStatPieces();
+	$countTurnStats = count($turnStats);
+	$used = [];
+	for($i = 0; $i + $tsp <= $countTurnStats; $i += $tsp) {
+		for($j = 0; $j < $tsp; ++$j) {
+			if($turnStats[$i + $j] != 0) { $used[] = $i; break; }
+		}
+	}
+	return $used;
+}
+
+function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 {
 	global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
 	global $TurnStats_ResourcesUsed, $TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented;
@@ -916,107 +933,72 @@ function PopulateAggregateStats(&$deck, &$turnStats)
 	$countTurnStats = count($turnStats);
 	if (empty($turnStats) || $countTurnStats < $tsp) return;
 
-	$totalDamageThreatened = 0;
-	$totalDamageDealt = 0;
-	$totalResourcesUsed = 0;
-	$totalCardsLeft = 0;
-	$totalDefensiveCards = 0;
-	$totalDamageBlocked = 0;
-	$totalLifeGained = 0;
-	$totalLifeLost = 0;
-	$totalDamagePrevented = 0;
-	$numTurnsCount = 0;
+	$usedBlocks = UsedTurnStatBlocks($turnStats);
 
-	// First, accumulate turn 0 for total values (non-average)
-	$totalDamageThreatened += $turnStats[$TurnStats_DamageThreatened];
-	$totalDamageDealt += $turnStats[$TurnStats_DamageDealt];
-	$totalResourcesUsed += $turnStats[$TurnStats_ResourcesUsed];
-	$totalCardsLeft += $turnStats[$TurnStats_CardsLeft];
-	$totalDefensiveCards += $turnStats[$TurnStats_CardsPlayedDefense] + $turnStats[$TurnStats_CardsBlocked];
-	$totalDamageBlocked += $turnStats[$TurnStats_DamageBlocked];
-	$totalLifeGained += $turnStats[$TurnStats_LifeGained];
-	$totalDamagePrevented += $turnStats[$TurnStats_DamagePrevented];
-	$totalLifeLost += $turnStats[$TurnStats_LifeLost];
+	$attackingTurns = $player != 0 ? CountAttackingTurns($player) : 0;
+	if ($attackingTurns < 1) $attackingTurns = count($usedBlocks);
+	if ($attackingTurns < 1) $attackingTurns = 1;
+	$hasTrailingDefence = count($usedBlocks) > $attackingTurns;
 
-	// Skip turn 0 for average calculations
-	$start = $tsp;
-	$endIndex = $countTurnStats - $tsp;
-	if($endIndex < $start) $endIndex = $start;
-
-	for($i = $start; $i < $endIndex; $i += $tsp) {
-		$totalDamageThreatened += $turnStats[$i + $TurnStats_DamageThreatened];
-		$totalDamageDealt += $turnStats[$i + $TurnStats_DamageDealt];
-		$totalResourcesUsed += $turnStats[$i + $TurnStats_ResourcesUsed];
-		$totalCardsLeft += $turnStats[$i + $TurnStats_CardsLeft];
-		$totalDefensiveCards += $turnStats[$i + $TurnStats_CardsPlayedDefense] + $turnStats[$i + $TurnStats_CardsBlocked];
-		$totalDamageBlocked += $turnStats[$i + $TurnStats_DamageBlocked];
-		$totalLifeGained += $turnStats[$i + $TurnStats_LifeGained];
-		$totalDamagePrevented += $turnStats[$i + $TurnStats_DamagePrevented];
-		$totalLifeLost += $turnStats[$i + $TurnStats_LifeLost];
-		$numTurnsCount++;
+	// Hand size drives how many cards were available to attack with. Falls back
+	// to 4 when the hero is unknown (unit tests, replays of deleted games).
+	$handSize = 4;
+	if ($player != 0 && function_exists("CharacterIntellect") && function_exists("GetPlayerCharacter")) {
+		$character = &GetPlayerCharacter($player);
+		if (isset($character[0])) {
+			$intellect = intval(CharacterIntellect($character[0]));
+			if ($intellect > 0) $handSize = $intellect;
+		}
 	}
 
-	if($numTurnsCount == 0) $numTurnsCount = 1;
-	$totalOffensiveCards = 4 * $numTurnsCount - $totalDefensiveCards;
-	if($totalOffensiveCards == 0) $totalOffensiveCards = 1;
+	$totals = function($blocks) use (&$turnStats, $TurnStats_DamageThreatened, $TurnStats_DamageDealt,
+		$TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked, $TurnStats_ResourcesUsed,
+		$TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented) {
+		$t = ["threatened" => 0, "dealt" => 0, "resourcesUsed" => 0, "cardsLeft" => 0, "defensiveCards" => 0,
+			  "blocked" => 0, "lifeGained" => 0, "lifePrevented" => 0, "lifeLost" => 0];
+		foreach($blocks as $i) {
+			$t["threatened"]     += $turnStats[$i + $TurnStats_DamageThreatened];
+			$t["dealt"]          += $turnStats[$i + $TurnStats_DamageDealt];
+			$t["resourcesUsed"]  += $turnStats[$i + $TurnStats_ResourcesUsed];
+			$t["cardsLeft"]      += $turnStats[$i + $TurnStats_CardsLeft];
+			$t["defensiveCards"] += $turnStats[$i + $TurnStats_CardsPlayedDefense] + $turnStats[$i + $TurnStats_CardsBlocked];
+			$t["blocked"]        += $turnStats[$i + $TurnStats_DamageBlocked];
+			$t["lifeGained"]     += $turnStats[$i + $TurnStats_LifeGained];
+			$t["lifePrevented"]  += $turnStats[$i + $TurnStats_DamagePrevented];
+			$t["lifeLost"]       += $turnStats[$i + $TurnStats_LifeLost];
+		}
+		return $t;
+	};
 
-	$deck["totalDamageThreatened"] = $totalDamageThreatened;
-	$deck["totalDamageDealt"] = $totalDamageDealt;
-	$deck["totalLifeGained"] = $totalLifeGained;
-	$deck["totalDamageBlocked"] = $totalDamageBlocked;
-	$deck["totalDamagePrevented"] = $totalDamagePrevented;
-	$deck["totalLifeLost"] = $totalLifeLost;
-	$deck["averageDamageThreatenedPerTurn"] = round(($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened]) / $numTurnsCount, 2);
-	$deck["averageDamageDealtPerTurn"] = round(($totalDamageDealt - $turnStats[$TurnStats_DamageDealt]) / $numTurnsCount, 2);
-	$deck["averageDamageThreatenedPerCard"] = round(($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened]) / $totalOffensiveCards, 2);
-	$deck["averageResourcesUsedPerTurn"] = round(($totalResourcesUsed - $turnStats[$TurnStats_ResourcesUsed]) / $numTurnsCount, 2);
-	$deck["averageCardsLeftOverPerTurn"] = round(($totalCardsLeft - $turnStats[$TurnStats_CardsLeft]) / $numTurnsCount, 2);
-	$deck["averageCombatValuePerTurn"] = round(($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened] + $totalDamageBlocked - $turnStats[$TurnStats_DamageBlocked]) / $numTurnsCount, 2);
-	$deck["averageValuePerTurn"] = round(($totalDamageThreatened - $turnStats[$TurnStats_DamageThreatened] + $totalDamageBlocked - $turnStats[$TurnStats_DamageBlocked] + $totalLifeGained - $turnStats[$TurnStats_LifeGained] + $totalLifeLost - $turnStats[$TurnStats_LifeLost] + $totalDamagePrevented - $turnStats[$TurnStats_DamagePrevented]) / $numTurnsCount, 2);
+	// $suffix is "" for the full game and "_NoLast" for the same figures with
+	// the player's final turn dropped (the frontend's "exclude last turn" toggle).
+	$write = function($suffix, $blocks, $numTurns) use (&$deck, $totals, $handSize) {
+		$t = $totals($blocks);
+		if ($numTurns < 1) $numTurns = 1;
+		$offensiveCards = $handSize * $numTurns - $t["defensiveCards"];
+		if ($offensiveCards < 1) $offensiveCards = 1;
+		// $lifeLost is stored negative, so adding it subtracts the life you spent.
+		$combatValue = $t["threatened"] + $t["blocked"];
+		$value = $combatValue + $t["lifeGained"] + $t["lifeLost"] + $t["lifePrevented"];
 
-	// Calculate stats excluding last turn
-	$totalDamageThreatened_NoLast = $totalDamageThreatened;
-	$totalDamageDealt_NoLast = $totalDamageDealt;
-	$totalResourcesUsed_NoLast = $totalResourcesUsed;
-	$totalCardsLeft_NoLast = $totalCardsLeft;
-	$totalDefensiveCards_NoLast = $totalDefensiveCards;
-	$totalDamageBlocked_NoLast = $totalDamageBlocked;
-	$totalLifeGained_NoLast = $totalLifeGained;
-	$totalDamagePrevented_NoLast = $totalDamagePrevented;
-	$totalLifeLost_NoLast = $totalLifeLost;
-	$numTurns_NoLast = $numTurnsCount - 1; // Exclude last turn
-
-	// Subtract the last turn from NoLast values
-	if($endIndex - $tsp >= $start) {
-		$lastTurnIndex = $endIndex - $tsp;
-		$totalDamageThreatened_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_DamageThreatened];
-		$totalDamageDealt_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_DamageDealt];
-		$totalResourcesUsed_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_ResourcesUsed];
-		$totalCardsLeft_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_CardsLeft];
-		$totalDefensiveCards_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_CardsPlayedDefense] + $turnStats[$lastTurnIndex + $TurnStats_CardsBlocked];
-		$totalDamageBlocked_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_DamageBlocked];
-		$totalLifeGained_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_LifeGained];
-		$totalDamagePrevented_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_DamagePrevented];
-		$totalLifeLost_NoLast -= $turnStats[$lastTurnIndex + $TurnStats_LifeLost];
-	}
-
-	if($numTurns_NoLast < 1) $numTurns_NoLast = 1;
-	$totalOffensiveCards_NoLast = 4 * $numTurns_NoLast - $totalDefensiveCards_NoLast;
-	if($totalOffensiveCards_NoLast == 0) $totalOffensiveCards_NoLast = 1;
-
-	$deck["totalDamageThreatened_NoLast"] = $totalDamageThreatened_NoLast;
-	$deck["totalDamageDealt_NoLast"] = $totalDamageDealt_NoLast;
-	$deck["totalLifeGained_NoLast"] = $totalLifeGained_NoLast;
-	$deck["totalDamageBlocked_NoLast"] = $totalDamageBlocked_NoLast;
-	$deck["totalDamagePrevented_NoLast"] = $totalDamagePrevented_NoLast;
-	$deck["totalLifeLost_NoLast"] = $totalLifeLost_NoLast;
-	$deck["averageDamageThreatenedPerTurn_NoLast"] = round(($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened]) / $numTurns_NoLast, 2);
-	$deck["averageDamageDealtPerTurn_NoLast"] = round(($totalDamageDealt_NoLast - $turnStats[$TurnStats_DamageDealt]) / $numTurns_NoLast, 2);
-	$deck["averageDamageThreatenedPerCard_NoLast"] = round(($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened]) / $totalOffensiveCards_NoLast, 2);
-	$deck["averageResourcesUsedPerTurn_NoLast"] = round(($totalResourcesUsed_NoLast - $turnStats[$TurnStats_ResourcesUsed]) / $numTurns_NoLast, 2);
-	$deck["averageCardsLeftOverPerTurn_NoLast"] = round(($totalCardsLeft_NoLast - $turnStats[$TurnStats_CardsLeft]) / $numTurns_NoLast, 2);
-	$deck["averageCombatValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened] + $totalDamageBlocked_NoLast - $turnStats[$TurnStats_DamageBlocked]) / $numTurns_NoLast, 2);
-	$deck["averageValuePerTurn_NoLast"] = round(($totalDamageThreatened_NoLast - $turnStats[$TurnStats_DamageThreatened] + $totalDamageBlocked_NoLast - $turnStats[$TurnStats_DamageBlocked] + $totalLifeGained_NoLast - $turnStats[$TurnStats_LifeGained] + $totalLifeLost_NoLast - $turnStats[$TurnStats_LifeLost] + $totalDamagePrevented_NoLast - $turnStats[$TurnStats_DamagePrevented]) / $numTurns_NoLast, 2);
+		$deck["totalDamageThreatened$suffix"] = $t["threatened"];
+		$deck["totalDamageDealt$suffix"] = $t["dealt"];
+		$deck["totalLifeGained$suffix"] = $t["lifeGained"];
+		$deck["totalDamageBlocked$suffix"] = $t["blocked"];
+		$deck["totalDamagePrevented$suffix"] = $t["lifePrevented"];
+		$deck["totalLifeLost$suffix"] = $t["lifeLost"];
+		$deck["averageDamageThreatenedPerTurn$suffix"] = round($t["threatened"] / $numTurns, 2);
+		$deck["averageDamageDealtPerTurn$suffix"] = round($t["dealt"] / $numTurns, 2);
+		$deck["averageDamageThreatenedPerCard$suffix"] = round($t["threatened"] / $offensiveCards, 2);
+		$deck["averageResourcesUsedPerTurn$suffix"] = round($t["resourcesUsed"] / $numTurns, 2);
+		$deck["averageCardsLeftOverPerTurn$suffix"] = round($t["cardsLeft"] / $numTurns, 2);
+		$deck["averageCombatValuePerTurn$suffix"] = round($combatValue / $numTurns, 2);
+		$deck["averageValuePerTurn$suffix"] = round($value / $numTurns, 2);
+	};
+	$write("", $usedBlocks, $attackingTurns);
+	$blocksNoLast = $usedBlocks;
+	if (count($blocksNoLast) > 1) array_pop($blocksNoLast);
+	$write("_NoLast", $blocksNoLast, $hasTrailingDefence ? $attackingTurns : $attackingTurns - 1);
 }
 
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
@@ -1145,7 +1127,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 
 	// Use helper function to populate turn stats and aggregates (useIntval=false for SerializeGameResult)
 	PopulateTurnStatsAndAggregates($deck, $turnStats, $otherPlayerTurnStats, $player, false);
-	PopulateAggregateStats($deck, $turnStats);
+	PopulateAggregateStats($deck, $turnStats, $player);
 
 	if($includeFullLog) { $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", @file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : ""; }
 	
@@ -1267,7 +1249,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	$otherPlayerTurnStats = &GetTurnStats($player == 1 ? 2 : 1);
 
 	PopulateTurnStatsAndAggregates($deck, $turnStats, $otherPlayerTurnStats, $player, true);
-	PopulateAggregateStats($deck, $turnStats);
+	PopulateAggregateStats($deck, $turnStats, $player);
 
 	// Exclude private fields if stats are disabled
 	if ($excludePrivateFields) {

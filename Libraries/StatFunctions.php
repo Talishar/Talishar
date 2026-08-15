@@ -34,26 +34,15 @@ $TurnStats_CardsDiscarded = 14;
 function GetStatTurnIndex($player)
 {
   global $currentTurn, $mainPlayer, $firstPlayer;
-  // If player is the first player (goes first)
-  if ($player == $firstPlayer) {
-    return $currentTurn;
-  }
-  
-  // If player is NOT the first player (goes second, P2)
-  // Turn 0 is special: both players on index 0
-  if ($currentTurn == 0) {
-    return 0;
-  }
-  
-  // For turns 1+:
-  // When P2 IS attacking (is main player): log to current turn index
-  // When P2 is NOT attacking (defending): log to next turn index
-  // Turn 1: P2 attacks (index 1), P2 blocks later (index 2)
-  // Turn 2: P2 attacks (index 2), P2 blocks later (index 3)
-  if ($player != $mainPlayer) {
-    return $currentTurn + 1;
-  }
-  
+  if ($player == $firstPlayer) return $currentTurn;
+  if ($player != $mainPlayer) return $currentTurn + 1;
+  return $currentTurn;
+}
+
+function CountAttackingTurns($player)
+{
+  global $currentTurn, $mainPlayer, $firstPlayer;
+  if ($player == $firstPlayer) return $currentTurn + ($mainPlayer == $firstPlayer ? 1 : 0);
   return $currentTurn;
 }
 
