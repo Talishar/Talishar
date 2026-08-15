@@ -2162,7 +2162,7 @@ class usurp_the_shadow_throne_blue extends Card {
     $num = 0;
     for ($i = 0; $i < $Banish->NumCards(); ++$i) {
       $BanishCard = $Banish->Card($i, true);
-      if (isFaceDownMod($BanishCard->Modifier())) {
+      if (!isFaceDownMod($BanishCard->Modifier())) {
         $BanishCard->Modify("DOWN");
         ++$num;
       }
@@ -2171,9 +2171,9 @@ class usurp_the_shadow_throne_blue extends Card {
     LoseHealth($num, $otherPlayer);
   }
 
-  // function SpecialName() {
-  //   return "Usurp the Shadow Throne";
-  // }
+  function SpecialName() {
+    return "Usurp the Shadow Throne";
+  }
 
   function SpecialCost() {
     return 13;
