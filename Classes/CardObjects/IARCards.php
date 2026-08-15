@@ -2171,9 +2171,9 @@ class usurp_the_shadow_throne_blue extends Card {
     LoseHealth($num, $otherPlayer);
   }
 
-  function SpecialName() {
-    return "Usurp the Shadow Throne";
-  }
+  // function SpecialName() {
+  //   return "Usurp the Shadow Throne";
+  // }
 
   function SpecialCost() {
     return 13;
