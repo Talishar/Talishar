@@ -173,8 +173,8 @@ class ChainCard {
     }
 
     function ModifyDefense($amount) {
-      global $CombatChain;
-      if (!isset($this->chain[$this->index+6]) || !CanGainBlock($this->chain[$this->index+6], $this->index)) $amount = 0;
+      global $CombatChain, $ChainLinks;
+      if (!isset($this->chain[$this->index+6]) || !CanGainBlock($this->chain[$this->index+6], -1)) $amount = 0;
       if (isset($this->chain[$this->index+6])) $this->chain[$this->index+6] += $amount;
     }
 
