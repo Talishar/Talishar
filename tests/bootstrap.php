@@ -30,6 +30,7 @@ require_once ROOT_PATH . '/Libraries/CSRFLibraries.php';
 require_once ROOT_PATH . '/AccountFiles/AccountSessionAPI.php';
 
 require_once ROOT_PATH . '/Constants.php';
+require_once ROOT_PATH . '/Libraries/StatFunctions.php';
 foreach (get_defined_vars() as $__key => $__val) {
     if (!in_array($__key, ['__key', '__val'], true)) {
         $GLOBALS[$__key] = $__val;

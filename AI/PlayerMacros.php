@@ -65,7 +65,7 @@ function ProcessMacros()
               $somethingChanged = true;
               PassInput();
             }
-            elseif ($turn[0] == "INSTANT" && $layerCount > 0) {// I don't think this should ever be called after the above
+            elseif ($layerCount > 0 && ($turn[0] == "INSTANT" || $firstLayer == "RESOLUTIONSTEP")) {
               ProcessInstantMacros($firstLayer, $holdPrioritySetting, $somethingChanged);
             }
           }
@@ -159,8 +159,8 @@ function NormalizeWeaponCard($cardName)
 
 function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChanged)
 {
-  global $currentPlayer, $turn, $layers, $Stack;
-  
+  global $currentPlayer, $mainPlayer, $turn, $layers, $Stack;
+
   // Cache whether there's a unique ID
   $topLayer = $Stack->TopLayer();
   $layerController = $topLayer->PlayerID();
@@ -168,9 +168,11 @@ function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChan
   $hasUniqueID = $uid != "-";
   
   if ($firstLayer == "FINALIZECHAINLINK" || $firstLayer == "RESOLUTIONSTEP" || $firstLayer == "CLOSINGCHAIN") {
-    if ($holdPrioritySetting != "1" && !HasPlayableCard($currentPlayer, $turn[0])) {
+    $playableCard = "";
+    $hasPlayable = HasPlayableCard($currentPlayer, $turn[0], $playableCard);
+    if ($holdPrioritySetting != "1" && !$hasPlayable) {
       $somethingChanged = true;
-      PassInput();
+      PassInput(doublePass: $firstLayer == "RESOLUTIONSTEP" && $currentPlayer == $mainPlayer);
     }
   } else if ($firstLayer == "DEFENDSTEP" && $holdPrioritySetting != "1") {
     $somethingChanged = true;
