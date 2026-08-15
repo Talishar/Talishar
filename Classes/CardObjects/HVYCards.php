@@ -683,7 +683,7 @@ class coercive_tendency_blue extends Card {
     return true;
   }
 
-  function RemoveEffectFromCombatChain() {
+  function RemoveEffectFromCombatChain($effectIndex) {
     return true;
   }
 

@@ -2200,7 +2200,7 @@ class step_between_red extends Card {
     return $mode == "PREVENT";
   }
 
-  function RemoveEffectFromCombatChain() {
+  function RemoveEffectFromCombatChain($effectIndex) {
     return true;
   }
 
@@ -3604,7 +3604,7 @@ class razor_ring_blue extends Card {
     return false;
   }
 
-  function RemoveEffectFromCombatChain() {
+  function RemoveEffectFromCombatChain($effectIndex) {
     return true;
   }
 

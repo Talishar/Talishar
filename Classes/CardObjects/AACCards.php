@@ -158,7 +158,7 @@ class creep_red extends Card {
 		return HasStealth($attackID) && TypeContains($attackID, "AA", $this->controller);
 	}
 
-	function RemoveEffectFromCombatChain() {
+	function RemoveEffectFromCombatChain($effectIndex) {
 		return true;
 	}
 }

@@ -4689,10 +4689,23 @@ function CanGainAttack($cardID)
     || CardType($combatChain[0]) != "AA";
 }
 
-function CanGainBlock($cardID) {
-  global $CombatChain, $mainPlayer;
+function CanGainBlock($cardID, $index=-1) {
+  global $CombatChain, $mainPlayer, $CurrentTurnEffects, $ChainLinks;
   if ($CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow") return false;
-  if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-BLOCK", $mainPlayer)) return false;
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    if ($Effect->EffectID() == "beat_of_the_ironsong_blue-BLOCK") {
+      $linkNum = -1;
+      if (str_contains($index, ",")) { // it's on a past chain link
+        $indexParts = explode(",", $index, 2);
+        $linkNum = $indexParts[0];
+      }
+      else $linkNum = $ChainLinks->NumLinks(); // it's on the current chain link
+      if ($linkNum == $Effect->AppliestoUniqueID())
+        return false;
+    }
+  }
+  // if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-BLOCK", $mainPlayer)) return false;
   return true;
 }
 

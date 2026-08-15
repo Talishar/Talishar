@@ -670,7 +670,7 @@ function RemoveEffectsFromCombatChain($cardID = "")
       $searchedEffect = substr($raw, 0, strcspn($raw, '-,'));
     }
     $card = GetClass($searchedEffect, $currentTurnEffects[$i+1]);
-    if ($card != "-") $remove = $card->RemoveEffectFromCombatChain();
+    if ($card != "-") $remove = $card->RemoveEffectFromCombatChain($i);
     switch ($searchedEffect) {
       case "mask_of_momentum":
       case "high_speed_impact_red":
@@ -2755,7 +2755,7 @@ function AdministrativeEffect($effectID)
 
 function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
   global $CurrentTurnEffects, $defPlayer, $CombatChain, $chainLinks, $mainPlayer, $ChainLinks;
-  $noGain = !CanGainBlock($cardID);
+  $noGain = !CanGainBlock($cardID, $index);
   $totalBlockModifier = 0;
   $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
   $originUniqueID = $blockCard != "-" ? $blockCard->OriginUniqueID() : "-";

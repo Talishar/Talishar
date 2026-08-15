@@ -498,7 +498,7 @@ class Card {
     return;
   }
 
-  function RemoveEffectFromCombatChain() {
+  function RemoveEffectFromCombatChain($effectIndex) {
     return false;
   }
 

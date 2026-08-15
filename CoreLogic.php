@@ -224,7 +224,7 @@ function BlockingCardDefense($index)
   global $defPlayer, $CombatChain;
   $BlockCard = $CombatChain->Card($index);
   $cardID = $BlockCard->ID();
-  $canGainBlock = CanGainBlock($cardID);
+  $canGainBlock = CanGainBlock($cardID, $index);
   $from = $BlockCard->From();
   $baseCost = ($from == "PLAY" || $from == "EQUIP" ? AbilityCost($cardID) : (CardCost($cardID) + SelfCostModifier($cardID, $from)));
   $resourcesPaidValue = $BlockCard->ResourcesPaid();

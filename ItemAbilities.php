@@ -609,10 +609,10 @@ function SteamCounterLogic($cardID, $playerID, $uniqueID)
   return $counters;
 }
 
-function ItemBlockModifier($cardID)
+function ItemBlockModifier($cardID, $index)
 {
   global $mainPlayer, $defPlayer, $CombatChain;
-  $noGain = !CanGainBlock($cardID);
+  $noGain = !CanGainBlock($cardID, $index);
   $items = &GetItems($mainPlayer);
   $totalBlockModifier = 0;
   $countItems = count($items);

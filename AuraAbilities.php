@@ -1829,10 +1829,10 @@ function isSpectraAttackTarget() {
   return $isSpectraTarget;
 }
 
-function AuraBlockModifier($cardID, $from)
+function AuraBlockModifier($cardID, $from, $index)
 {
   global $defPlayer, $CombatChain;
-  $noGain = !CanGainBlock($cardID);
+  $noGain = !CanGainBlock($cardID, $index);
   $defAuras = &GetAuras($defPlayer);
   $totalBlockModifier = 0;
   $cardType = CardType($cardID, "CC");

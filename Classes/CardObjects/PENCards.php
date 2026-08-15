@@ -500,7 +500,7 @@ class enflame_the_firebrand_red extends Card {
     return $param == "BUFF" ? 2 : 0;
   }
 
-  function RemoveEffectFromCombatChain() {
+  function RemoveEffectFromCombatChain($effectIndex) {
     return true;
   }
 }
@@ -651,7 +651,7 @@ class teklo_trebuchet_2000_blue extends Card {
     return $this->baseCard->EffectPowerModifier($param);
   }
 
-  function RemoveEffectFromCombatChain() {
+  function RemoveEffectFromCombatChain($effectIndex) {
     return true;
   }
 }
@@ -2189,7 +2189,7 @@ class arc_bending_red extends Card {
       GiveAttackGoAgain();
   }
 
-  function RemoveEffectFromCombatChain() {
+  function RemoveEffectFromCombatChain($effectIndex) {
     return true;
   }
 

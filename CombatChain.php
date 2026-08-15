@@ -528,11 +528,11 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
   global $combatChain, $combatChainState, $CCS_CachedTotalPower;
   $blockModifier = 0;
-  $noGain = !CanGainBlock($cardID);
+  $noGain = !CanGainBlock($cardID, $index);
   $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
 
-  $blockModifier += AuraBlockModifier($cardID, $from);
-  $blockModifier += ItemBlockModifier($cardID);
+  $blockModifier += AuraBlockModifier($cardID, $from, $index);
+  $blockModifier += ItemBlockModifier($cardID, $index);
   $blockModifier += CurrentEffectBlockModifiers($cardID, $from, $index);
   $blockModifier += CombatChainBlockModifiers($cardID, $from, $index);
   $totalPower = GetCombatChainState($CCS_CachedTotalPower);

@@ -4185,7 +4185,7 @@ class beat_of_the_ironsong_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain;
+    global $CombatChain, $ChainLinks;
     foreach (explode(",", $additionalCosts) as $mode) {
       switch ($mode) {
         case "Buff_power":
@@ -4195,7 +4195,7 @@ class beat_of_the_ironsong_blue extends Card {
           GiveAttackGoAgain();
           break;
         case "Block_gaining_defense":
-          AddCurrentTurnEffect("$this->cardID-BLOCK", $this->controller);
+          AddCurrentTurnEffect("$this->cardID-BLOCK", $this->controller, "", $ChainLinks->NumLinks());
           break;
         case "Damage_can't_be_prevented":
           AddCurrentTurnEffect("$this->cardID-PREVENT", $this->controller);
@@ -4205,6 +4205,14 @@ class beat_of_the_ironsong_blue extends Card {
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return $mode == "BLOCK";
+  }
+
+  function RemoveEffectFromCombatChain($effectIndex) {
     return true;
   }
 }
