@@ -65,7 +65,7 @@
         PlayAura("runechant", $mainPlayer);
         break;
       case "arknight_ascendancy_red":
-        $damageDone = $combatChainState[$CCS_DamageDealt];
+        $damageDone = GetCombatChainState($CCS_DamageDealt);
         PlayAura("runechant", $mainPlayer, $damageDone);
         break;
       default: break;

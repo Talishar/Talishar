@@ -74,7 +74,7 @@ class golden_grail extends Card {
 
 	function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
 		global $combatChainState, $CCS_WagersThisLink;
-		return $combatChainState[$CCS_WagersThisLink] > 0 ? 1 : 0;
+		return GetCombatChainState($CCS_WagersThisLink) > 0 ? 1 : 0;
 	}
 
 	function AbilityCost() {
@@ -119,7 +119,7 @@ class sharpening_sparks_red extends Card {
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
 		global $combatChainState, $CCS_WeaponIndex;
-		Sharpen("MYCHAR-$combatChainState[$CCS_WeaponIndex]", $this->controller);
+		Sharpen("MYCHAR-GetCombatChainState($CCS_WeaponIndex)", $this->controller);
 	}
 }
 
@@ -955,7 +955,7 @@ class into_the_muck_red extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain, $combatChainState, $CCS_WagersThisLink;
-		return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
+		return !$CombatChain->HasCurrentLink() || GetCombatChainState($CCS_WagersThisLink) == 0;
 	}
 }
 
@@ -1455,7 +1455,7 @@ class all_in_red extends Card {
 
 	function ResolutionStepEffectTriggers($parameter, $index) {
 		global $CCS_DamageDealt, $combatChainState, $CombatChain;
-		if (IsCombatEffectActive($this->cardID) && $combatChainState[$CCS_DamageDealt] == 0)
+		if (IsCombatEffectActive($this->cardID) && GetCombatChainState($CCS_DamageDealt) == 0)
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "FAILURE");
 	}
 }
@@ -1614,7 +1614,7 @@ class check_raise extends BaseCard {
 		global $combatChainState, $CCS_WagersThisLink;
 		// technically wrong, it should trigger and create a new effect that's active, but I can't
 		// see any strategic difference
-		return $combatChainState[$CCS_WagersThisLink] > 0;
+		return GetCombatChainState($CCS_WagersThisLink) > 0;
 	}
 }
 
@@ -1803,12 +1803,12 @@ class rest_before_battle_yellow extends Card {
 }
 
 class lessons_learned_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "lessons_learned_blue";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "lessons_learned_blue";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$inds = [];
 		$discard = GetDiscard($this->controller);
 		$discardPieces = DiscardPieces();
@@ -1825,8 +1825,8 @@ class lessons_learned_blue extends Card {
 		AddDecisionQueue("MULTICHOOSEDISCARD", $this->controller, "<-", 1);
 		AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $this->controller, "DISCARD", 1);
 		Await($this->controller, $this->cardID, final:true);
-    return "";
-  }
+		return "";
+	}
 
 	function SpecificLogic() {
 		global $dqVars;
@@ -1834,19 +1834,19 @@ class lessons_learned_blue extends Card {
 		if ($lastResult != "") {
 			$lastResult = explode(",", $lastResult);
 			$cards = "";
-      $deck = new Deck($this->controller);
-      $discard = new Discard($this->controller);
-      sort($lastResult);
-      for ($i = count($lastResult) - 1; $i >= 0; --$i) {
-        $cardID = $discard->Remove($lastResult[$i]);
-        $deck->AddBottom($cardID, "GY");
-        if ($cards != "")
-          $cards .= ", ";
-        if ($i == 0)
-          $cards .= "and ";
-        $cards .= CardLink($cardID, $cardID);
-      }
-      WriteLog(CardLink($this->cardID) . " shuffled into your deck " . $cards);
+		$deck = new Deck($this->controller);
+		$discard = new Discard($this->controller);
+		sort($lastResult);
+		for ($i = count($lastResult) - 1; $i >= 0; --$i) {
+			$cardID = $discard->Remove($lastResult[$i]);
+			$deck->AddBottom($cardID, "GY");
+			if ($cards != "")
+			$cards .= ", ";
+			if ($i == 0)
+			$cards .= "and ";
+			$cards .= CardLink($cardID, $cardID);
+		}
+		WriteLog(CardLink($this->cardID) . " shuffled into your deck " . $cards);
 			$deck->Shuffle("-");
 		}
 	}
@@ -1902,8 +1902,8 @@ class thwart_yellow extends Card {
 				$Weapon->AddPowerCounters(-$Weapon->NumPowerCounters());
 		}
 		else {
-			if ($combatChainState[$CCS_NumPowerCounters] > 0)
-				$combatChainState[$CCS_NumPowerCounters] = 0;
+			if (GetCombatChainState($CCS_NumPowerCounters) > 0)
+				SetCombatChainState($CCS_NumPowerCounters, 0);
 		}
 	}
 }
@@ -2381,7 +2381,7 @@ class dealers_grip extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CCS_WagersThisLink, $combatChainState;
-		return $combatChainState[$CCS_WagersThisLink] == 0;
+		return GetCombatChainState($CCS_WagersThisLink) == 0;
 	}
 }
 
@@ -2962,7 +2962,7 @@ class carve_up_yellow extends Card {
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
 		global $CCS_WeaponIndex, $combatChainState;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		if ($Weapon->NumPowerCounters() > 0) {
 			$message = "if_you_want_to_destroy_arsenal";
 			$context = "Choose if you want to remove a counter from your weapon to destroy their arsenal";
@@ -2973,7 +2973,7 @@ class carve_up_yellow extends Card {
 
 	function SpecificLogic() {
 		global $CCS_WeaponIndex, $combatChainState, $dqVars;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		$Weapon->AddPowerCounters(-1);
 		ArsenalChooseAndDestroy($this->controller);
 	}
@@ -3004,7 +3004,7 @@ class dice_up_blue extends Card {
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
 		global $CCS_WeaponIndex, $combatChainState;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		if ($Weapon->NumPowerCounters() > 0) {
 			$message = "if_you_want_to_destroy_an_aura";
 			$context = "Choose if you want to remove a counter from your weapon to destroy an aura they control";
@@ -3018,7 +3018,7 @@ class dice_up_blue extends Card {
 
 	function SpecificLogic() {
 		global $CCS_WeaponIndex, $combatChainState, $dqVars;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		$Weapon->AddPowerCounters(-1);
 	}
 }
@@ -3048,7 +3048,7 @@ class slice_up_red extends Card {
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
 		global $CCS_WeaponIndex, $combatChainState;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		if ($Weapon->NumPowerCounters() > 0) {
 			$message = "if_you_want_to_pummel";
 			$context = "Choose if you want to remove a counter from your weapon to have the defending player discard";
@@ -3059,7 +3059,7 @@ class slice_up_red extends Card {
 
 	function SpecificLogic() {
 		global $CCS_WeaponIndex, $combatChainState, $dqVars, $defPlayer;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		$Weapon->AddPowerCounters(-1);
 		PummelHit($defPlayer);
 	}

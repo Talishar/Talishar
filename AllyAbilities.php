@@ -321,7 +321,7 @@ function SpecificAllyAttackAbilities($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_ArcaneTargetsSelected;
   $allies = &GetAllies($mainPlayer);
-  $i = $combatChainState[$CCS_WeaponIndex];
+  $i = GetCombatChainState($CCS_WeaponIndex);
   if (isset($allies[$i]) && $attackID == $allies[$i]) {
     switch ($allies[$i]) {
       case "dracona_optimai":

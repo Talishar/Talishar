@@ -1086,7 +1086,7 @@ class shadowrealm_harrower_blue extends Card {
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
     global $combatChainState, $CCS_DamageDealt;
-    GainHealth($combatChainState[$CCS_DamageDealt], $this->controller);
+    GainHealth(GetCombatChainState($CCS_DamageDealt), $this->controller);
   }
 
 }
@@ -1763,7 +1763,7 @@ class herald_of_hope extends BaseCard {
   function HitEffect() {
     global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
-    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+    SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
     AddSoul($this->cardID, $this->controller, "CC");
     GainHealth(1, $this->controller);
   }

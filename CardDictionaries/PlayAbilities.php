@@ -612,7 +612,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $evoUpgradeAmt = EvoUpgradeAmount($currentPlayer);
       $requiredEquip = ($numNegCounterEquip > $evoUpgradeAmt) ? $evoUpgradeAmt : $numNegCounterEquip;
       if ($numNegCounterEquip > 0 && $requiredEquip > 0 && IsHeroAttackTarget()) {
-        $combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = $requiredEquip;
+        SetCombatChainState($CCS_RequiredNegCounterEquipmentBlock, $requiredEquip);
         if ($requiredEquip > 1) $rv = CardLink($cardID, $cardID) . " requires you to block with " . $requiredEquip . " equipments";
         else $rv = CardLink($cardID, $cardID) . " requires you to block with " . $requiredEquip . " equipment";
         WriteLog($rv);

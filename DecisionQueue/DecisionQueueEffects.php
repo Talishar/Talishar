@@ -389,7 +389,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             break;
           case "Buff_Attack":
             global $CCS_WagersThisLink;
-            $CombatChain->AttackCard()->ModifyPower(intval($combatChainState[$CCS_WagersThisLink]) + $numNewWagers);
+            $CombatChain->AttackCard()->ModifyPower(intval(GetCombatChainState($CCS_WagersThisLink)) + $numNewWagers);
             break;
           default: break;
         }
@@ -845,7 +845,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "ALLURINGINDUCEMENT":
       //this is broken for now
       $combatChain[0] = $lastResult;
-      $combatChainState[$CCS_LinkBasePower] = PowerValue($combatChain[0], $mainPlayer, "CC");
+      SetCombatChainState($CCS_LinkBasePower, PowerValue($combatChain[0], $mainPlayer, "CC"));
       return $lastResult;
     case "CONSTRUCTNITROMECHANOID":
       sort($lastResult);

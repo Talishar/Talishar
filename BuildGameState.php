@@ -374,7 +374,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
   }
   $blockVal = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
-  $powVal = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? ($combatChainState[$CCS_CachedPreBlockValue] ?? $totalPower) : $totalPower;
+  $powVal = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? (GetCombatChainState($CCS_CachedPreBlockValue) ?? $totalPower) : $totalPower;
   $activeChainLink->totalPower = $powVal;
 
   $activeChainLink->totalDefense = $blockVal;
@@ -386,8 +386,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $activeChainLink->overpower = CachedOverpowerActive();
   $activeChainLink->confidence = SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence");
   $activeChainLink->activeOnHits = ActiveOnHits();
-  if ($combatChainState[$CCS_RequiredEquipmentBlock] > NumEquipBlock("EQUIP")) $activeChainLink->numRequiredEquipBlock = $combatChainState[$CCS_RequiredEquipmentBlock];
-  elseif ($combatChainState[$CCS_RequiredNegCounterEquipmentBlock] > NumNegCounterEquipBlock()) $activeChainLink->numRequiredEquipBlock = $combatChainState[$CCS_RequiredNegCounterEquipmentBlock];
+  if (GetCombatChainState($CCS_RequiredEquipmentBlock) > NumEquipBlock("EQUIP")) $activeChainLink->numRequiredEquipBlock = GetCombatChainState($CCS_RequiredEquipmentBlock);
+  elseif (GetCombatChainState($CCS_RequiredNegCounterEquipmentBlock) > NumNegCounterEquipBlock()) $activeChainLink->numRequiredEquipBlock = GetCombatChainState($CCS_RequiredNegCounterEquipmentBlock);
   $activeChainLink->wager = CachedWagerActive();
   $activeChainLink->phantasm = CachedPhantasmActive();
   $activeChainLink->fusion = CachedFusionActive();
@@ -1026,7 +1026,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
-    if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
+    if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
     else {
       $isTargeted = SearchLayersForTargetUniqueID($uniqueID) != -1;
       $hasActiveEffect = SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1;
@@ -1141,7 +1141,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $border = CardBorderColor($myAllies[$i], "PLAY", $playable, $playerID);
     $actionDataOverride = $actionType == 24 ? strval($i) : "";
     $uniqueID = $myAllies[$i+5];
-    if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
+    if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
     elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
     elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
     $myAlliesOutput[] = JSONRenderedCard(
@@ -1453,8 +1453,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $maskHitStreak = HitsInRow();
     $isFinalizingCurrentLink = !empty($combatChain) && SearchLayersForPhase("FINALIZECHAINLINK") != -1;
     if ($isFinalizingCurrentLink) {
-      $currentLinkHit = intval($combatChainState[$CCS_DamageDealt] ?? 0) > 0
-        || intval($combatChainState[$CCS_HitThisLink] ?? 0) > 0;
+      $currentLinkHit = intval(GetCombatChainState($CCS_DamageDealt) ?? 0) > 0
+        || intval(GetCombatChainState($CCS_HitThisLink) ?? 0) > 0;
       $maskHitStreak = $currentLinkHit ? $maskHitStreak + 1 : 0;
     }
     $maskHitStreak = min(3, $maskHitStreak);

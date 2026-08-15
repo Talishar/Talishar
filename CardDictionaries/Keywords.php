@@ -210,7 +210,7 @@
         if ($playerID == $mainPlayer) DestroyTopCard($otherPlayer);
         else {
           $character = &GetPlayerCharacter($mainPlayer);
-          $index = $combatChainState[$CCS_WeaponIndex];
+          $index = GetCombatChainState($CCS_WeaponIndex);
           --$character[$index + 3];
         }
         break;
@@ -451,7 +451,7 @@
 
   function ResolveWagers($chainClosed=false, $wonWager="-") {
     global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $currentTurnEffects, $EffectContext, $combatChain;
-    if ($wonWager == "-") $wonWager = $combatChainState[$CCS_DamageDealt] > 0 ? $mainPlayer : $defPlayer;
+    if ($wonWager == "-") $wonWager = GetCombatChainState($CCS_DamageDealt) > 0 ? $mainPlayer : $defPlayer;
     $MainHero = new CharacterCard(0, $mainPlayer);
     $mainHeroCardID = $MainHero->CardID();
     if ($MainHero->Status() < 3 && ($mainHeroCardID == "olympia" || $mainHeroCardID == "olympia_prized_fighter")) //ability is once per attack, not once per turn

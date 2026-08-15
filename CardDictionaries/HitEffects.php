@@ -7,7 +7,7 @@ function AKOHitEffect($cardID)
     case "strength_rules_all_red":
       if (IsHeroAttackTarget()) {
         SetArsenalFacing("UP", $defPlayer);
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS:type=AA;maxAttack=" . ($combatChainState[$CCS_DamageDealt] - 1));
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS:type=AA;maxAttack=" . (GetCombatChainState($CCS_DamageDealt) - 1));
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to BANISH", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZBANISH", $mainPlayer, "-", 1);
@@ -27,7 +27,7 @@ function TCCHitEffect($cardID)
       if (ComboActive()) DamageTrigger($defPlayer, damage: 1, type: "DAMAGE", source: $cardID, playerSource:$mainPlayer);
       break;
     case "under_loop_red":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BOTDECK");
       break;
     case "jinglewood_smash_hit":
       $charIndex = FindCharacterIndex($mainPlayer, $cardID);
@@ -117,7 +117,7 @@ function EVOHitEffect($cardID)
     case "under_loop_red":
     case "under_loop_yellow":
     case "under_loop_blue":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BOTDECK");
       break;
     case "already_dead_red":
       if (IsHeroAttackTarget()) {

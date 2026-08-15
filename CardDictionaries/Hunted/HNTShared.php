@@ -178,7 +178,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     if (DelimStringContains($dashArr[1], "MARK", true)) {
       $id = str_contains($dashArr[1], ",") ? explode(",", $dashArr[1])[1] : -1;
       $character = &GetPlayerCharacter($mainPlayer);
-      return $character[$combatChainState[$CCS_WeaponIndex] + 11] == $id;
+      return $character[GetCombatChainState($CCS_WeaponIndex) + 11] == $id;
     }
   }
   if ($cardID == "arakni_black_widow" && $hasSuffix && $dashArr[1] == "HIT") return HasStealth($attackID);
@@ -978,7 +978,7 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
       break;
     case "devotion_never_dies_red":
       if(isPreviousLinkDraconic()) {
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         BanishCardForPlayer("devotion_never_dies_red", $mainPlayer, "COMBATCHAIN", "TT", $mainPlayer); # throw Devotion Never Dies to banish. it can be played this turn (TT)
       }
       break;

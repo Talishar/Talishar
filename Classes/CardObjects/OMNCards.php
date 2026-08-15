@@ -2140,7 +2140,7 @@ class ominous_aggression_red extends Card {
     $index = $targetParts[1];
     $amount = GetClassState($this->controller, $CS_NumControlledAurasDestroyed) > 0 ? 4 : 2;
     if ($targetParts[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
-      if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") {
+      if ($index == 0 && GetCombatChainState($CCS_GoesWhereAfterLinkResolves) == "-") {
         WriteLog(CardLink($this->cardID, $this->cardID) . " layer fails as the target is no longer valid.");
         return "";
       }
@@ -2354,7 +2354,7 @@ class unmake_the_underlings_blue extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     global $CCS_AttackTargetUID, $combatChainState, $defPlayer;
-    $uidTarget = $combatChainState[$CCS_AttackTargetUID];
+    $uidTarget = GetCombatChainState($CCS_AttackTargetUID);
     $Allies = new Allies($defPlayer);
     $AllyCard = $Allies->FindCardUID($uidTarget);
     $AllyCard->Destroy();
@@ -4904,7 +4904,7 @@ class sigil_of_astral_flow_blue extends Card {
 class flittering_forcefield extends BaseCard {
   function BlockModifier() {
     global $CCS_NumInstantsPlayedByDefendingPlayer, $combatChainState;
-    return $combatChainState[$CCS_NumInstantsPlayedByDefendingPlayer] > 0 ? 1 : 0;
+    return GetCombatChainState($CCS_NumInstantsPlayedByDefendingPlayer) > 0 ? 1 : 0;
   }
 }
 
@@ -7368,7 +7368,7 @@ class astral_assault_blue extends Card {
 class flittering_spike extends BaseCard {
   function PowerModifier() {
     global $combatChainState, $CCS_NumInstantsPlayedByAttackingPlayer;
-    return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0 ? 2 : 0;
+    return GetCombatChainState($CCS_NumInstantsPlayedByAttackingPlayer) > 0 ? 2 : 0;
   }
 
   function AddOnHitTrigger($check) {
@@ -7543,7 +7543,7 @@ class stellar_glide_blue extends Card {
 class volatile_fluxor extends BaseCard {
   function PowerModifier($val) {
     global $combatChainState, $CCS_NumInstantsPlayedByAttackingPlayer;
-    return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0 ? $val : 0;
+    return GetCombatChainState($CCS_NumInstantsPlayedByAttackingPlayer) > 0 ? $val : 0;
   }
 
   function AddOnHitTrigger($check) {

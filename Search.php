@@ -212,7 +212,7 @@ function SearchInner(
     if ($isCharZone && (isset($array[$i + 1]) && $array[$i + 1] == 0 || isset($array[$i + 12]) && $array[$i + 12] == "DOWN") && !$faceDown) continue;
     if ($isBanishZone && isFaceDownMod($array[$i + 1] ?? "") && !$isIntimidated) continue;
     if ($isDiscardZone && isFaceDownMod($array[$i + 2] ?? "")) continue;
-    if ($isCCZone && $i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue;
+    if ($isCCZone && $i == 0 && GetCombatChainState($CCS_GoesWhereAfterLinkResolves) == "-") continue;
     $cardID = $array[$i];
     if (isset($skipSteps[$cardID])) continue;
 

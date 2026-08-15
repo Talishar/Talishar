@@ -1203,7 +1203,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         && ($player == $mainPlayer && isResolutionStep())
         && !IsInstantMod($mod)
         && $cardType != "I"
-        && (!$combatChainState[$CCS_EclecticMag]
+        && (!GetCombatChainState($CCS_EclecticMag)
         && (GetClassState($player, $CS_NextWizardNAAInstant) == 0 || !ClassContains($cardID, "WIZARD", $player))
         && GetClassState($player, $CS_NextNAAInstant) == 0
         && ($actionPoints < 1 || $player != $mainPlayer || $turn[0] == "INSTANT" || $turn[0] == "A" || SearchLayersForPhase("RESOLUTIONSTEP") != -1)
@@ -1544,7 +1544,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(CardLink($lastResult, $lastResult) . " was charged.");
       IncrementClassState($player, $CS_NumCharged);
       LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
-      if ((CardType($EffectContext) == "AA" || isset($layers[0]) && CardType($layers[0]) == "AA") && $parameter != "NOTCOST") ++$combatChainState[$CCS_AttackNumCharged];
+      if ((CardType($EffectContext) == "AA" || isset($layers[0]) && CardType($layers[0]) == "AA") && $parameter != "NOTCOST") IncrementCombatChainState($CCS_AttackNumCharged);
       return $lastResult;
     case "DEALDAMAGE":
       $target = is_array($parameter) ? $parameter : explode("-", $parameter);
@@ -1947,13 +1947,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else if ($parameter == "AA") GiveAttackGoAgain();
       return 1;
     case "PROCESSATTACKTARGET":
-      if ($combatChainState[$CCS_AttackTarget] == "NA") {
+      if (GetCombatChainState($CCS_AttackTarget) == "NA") {
         $additionalTarget = false;
-        $combatChainState[$CCS_AttackTarget] = $lastResult;
+        SetCombatChainState($CCS_AttackTarget, $lastResult);
       }
       else {
         $additionalTarget = true;
-        $combatChainState[$CCS_AttackTarget] .= ",$lastResult";
+        AppendCombatChainState($CCS_AttackTarget, ",$lastResult");
       }
       $mzArr = explode("-", $lastResult, 2);
       $zone = &GetMZZone($defPlayer, $mzArr[0]);
@@ -1971,10 +1971,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
       }
       if (!$additionalTarget) {
-        $combatChainState[$CCS_AttackTargetUID] = $uid;
+        SetCombatChainState($CCS_AttackTargetUID, $uid);
       }
       else {
-        $combatChainState[$CCS_AttackTargetUID] .= ",$uid";
+        AppendCombatChainState($CCS_AttackTargetUID, ",$uid");
       }
       WriteLog("🎯" . GetMZCardLink($defPlayer, $lastResult) . " was chosen as the target.");
       if (isset($mzArr[1]) && is_numeric($mzArr[1]) && isset($zone[$mzArr[1]])) {

@@ -728,7 +728,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
       break;
     case "palantir_aeronought_red":
-      if($from != "PLAY" && $from != "COMBATCHAINATTACKS" && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
+      if($from != "PLAY" && $from != "COMBATCHAINATTACKS" && IsHeroAttackTarget()) SetCombatChainState($CCS_RequiredEquipmentBlock, 1);
       elseif($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
         $numUsed = 0;
         if ($from == "PLAY") {

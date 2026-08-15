@@ -1595,7 +1595,7 @@ function CanPlayNAA($cardID, $from, $index=-1)
 
   //check for if you can play at instant speed
   if (ClassContains($cardID, "WIZARD", $currentPlayer) && GetClassState($currentPlayer, $CS_NextWizardNAAInstant)) return true;
-  if ($combatChainState[$CCS_EclecticMag]) return true;
+  if (GetCombatChainState($CCS_EclecticMag)) return true;
   if ($from == "BANISH") {
     $banishCard = new BanishCard($currentPlayer, $index);
     return PlayableFromBanish($banishCard->ID(), $banishCard->Modifier(), index:$index);
@@ -1778,17 +1778,17 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player) || $cardID == "down_and_dirty_red" || HasAmbush($cardID, $defPlayer))) return false;
   if ($phase == "B" || $phase == "D") {
     if ($cardType == "AA") {
-      $baseAttackMax = $combatChainState[$CCS_BaseAttackDefenseMax];
+      $baseAttackMax = GetCombatChainState($CCS_BaseAttackDefenseMax);
       if ($baseAttackMax > -1 && PowerValue($cardID, $mainPlayer, "LAYER") > $baseAttackMax) return false;
     }
     if ($CombatChain->AttackCard()->ID() == "regicide_blue" && $phase == "B" && SearchBanishForCardName($player, $cardID) > -1) return false;
-    $resourceMin = $combatChainState[$CCS_ResourceCostDefenseMin];
+    $resourceMin = GetCombatChainState($CCS_ResourceCostDefenseMin);
     if ($phase == "B") {
       if ($resourceMin > -1 && CardCost($cardID, $from) < $resourceMin && $cardType != "E") return false;
     }
     elseif ($resourceMin > -1 && CardCost($cardID, $from) < $resourceMin && $cardType == "DR") return false;
-    if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Attack_Action" && $cardType != "AA") return false;
-    if ($combatChainState[$CCS_CardTypeDefenseRequirement] == "Non-attack_Action" && $cardType != "A") return false;
+    if (GetCombatChainState($CCS_CardTypeDefenseRequirement) == "Attack_Action" && $cardType != "AA") return false;
+    if (GetCombatChainState($CCS_CardTypeDefenseRequirement) == "Non-attack_Action" && $cardType != "A") return false;
   }
   if ($CombatChain->AttackCard()->ID() == "regicide_blue" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   if ($phase == "B" && $cardID == "nitro_mechanoidc") {
@@ -1835,7 +1835,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     && $player == $defPlayer
     && ($abilityType == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
     $restriction = "Exude Confidance";
-    $exudeAttack = $combatChainState[$CCS_CachedTotalPower];
+    $exudeAttack = GetCombatChainState($CCS_CachedTotalPower);
     $countCombatChain = count($combatChain);
     $combatChainPieces = CombatChainPieces();
     for ($i = $combatChainPieces; $i < $countCombatChain; $i += $combatChainPieces) {
@@ -2379,14 +2379,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $subtype = CardSubtype($attackID);
       $isClub = SubtypeContains($attackID, "Club");
       $isHammer = SubtypeContains($attackID, "Hammer");
-      if ($isClub || $isHammer || CardType($attackID) == "AA" && CardCost($attackID, "CC") >= 2 || $combatChainState[$CCS_AttackCost] >= 2) return false;
+      if ($isClub || $isHammer || CardType($attackID) == "AA" && CardCost($attackID, "CC") >= 2 || GetCombatChainState($CCS_AttackCost) >= 2) return false;
       return true;
     case "razor_reflex_red":
     case "razor_reflex_yellow":
     case "razor_reflex_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($attackID);
-      $attackCost = $combatChainState[$CCS_AttackCost] == -1 ? CardCost($attackID, "CC") : $combatChainState[$CCS_AttackCost];
+      $attackCost = GetCombatChainState($CCS_AttackCost) == -1 ? CardCost($attackID, "CC") : GetCombatChainState($CCS_AttackCost);
       if ($subtype == "Sword" || $subtype == "Dagger" || CardType($attackID) == "AA" && $attackCost <= 1) return false;
       return true;
     case "teklo_plasma_pistol":
@@ -3045,7 +3045,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       return false;
     case "starting_point":
-      return $combatChainState[$CCS_NumUsedInReactions] == 0;
+      return GetCombatChainState($CCS_NumUsedInReactions) == 0;
     case "perforate_yellow":
       // make sure you have at least one dagger equipped
       $mainCharacter = &GetPlayerCharacter($mainPlayer);
@@ -3706,7 +3706,7 @@ function DoesEffectGrantsDominate($cardID, $i): bool
     case "weave_ice_red":
     case "weave_ice_yellow":
     case "weave_ice_blue":
-      return $combatChainState[$CCS_AttackFused] == 1;
+      return GetCombatChainState($CCS_AttackFused) == 1;
     default:
       return false;
   }

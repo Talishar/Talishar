@@ -129,8 +129,8 @@
       case "push_forward_red-1": case "push_forward_yellow-1": case "push_forward_blue-1": return TypeContains($attackID, "W", $mainPlayer);
       case "push_forward_red-2": case "push_forward_yellow-2": case "push_forward_blue-2": return true;
       case "plasma_purifier_red": return TypeContains($attackID, "W", $mainPlayer) && CardSubtype($attackID) == "Pistol" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
-      case "high_speed_impact_red": case "high_speed_impact_yellow": case "high_speed_impact_blue": return $combatChainState[$CCS_IsBoosted] == "1";
-      case "combustible_courier_red": case "combustible_courier_yellow": case "combustible_courier_blue": return $combatChainState[$CCS_IsBoosted] == "1";
+      case "high_speed_impact_red": case "high_speed_impact_yellow": case "high_speed_impact_blue": return GetCombatChainState($CCS_IsBoosted) == "1";
+      case "combustible_courier_red": case "combustible_courier_yellow": case "combustible_courier_blue": return GetCombatChainState($CCS_IsBoosted) == "1";
       case "perch_grapplers": return $CombatChain->AttackCard()->From() == "ARS" && GetClassState($mainPlayer, $CS_ArsenalFacing) == "UP" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
       case "remorseless_red": return $attackID == "remorseless_red";
       case "poison_the_tips_yellow": return CardSubtype($attackID) == "Arrow";
@@ -191,7 +191,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "find_center_blue":
       if(ComboActive()) {
         $numLinks = NumChainLinks();
-        $combatChainState[$CCS_ResourceCostDefenseMin] = $numLinks;
+        SetCombatChainState($CCS_ResourceCostDefenseMin, $numLinks);
         $rv = "Cannot be defended by cards with cost less than " . $numLinks;
       }
       return $rv;
@@ -216,7 +216,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "crane_dance_red": case "crane_dance_yellow": case "crane_dance_blue":
       if(ComboActive()) {
         $numLinks = NumChainLinks();
-        $combatChainState[$CCS_BaseAttackDefenseMax] = $numLinks;
+        SetCombatChainState($CCS_BaseAttackDefenseMax, $numLinks);
         $rv = "Cannot be defended by attacks with greater than " . $numLinks . " base attack";
       }
       return $rv;
@@ -225,9 +225,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "twinning_blade_yellow":
       $character = &GetPlayerCharacter($currentPlayer);
-      if(SubtypeContains($character[$combatChainState[$CCS_WeaponIndex]], "Sword", $currentPlayer)) {
-        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
-        if($character[$combatChainState[$CCS_WeaponIndex] + 1] == 1) $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
+      if(SubtypeContains($character[GetCombatChainState($CCS_WeaponIndex)], "Sword", $currentPlayer)) {
+        ++$character[GetCombatChainState($CCS_WeaponIndex) + 5];
+        if($character[GetCombatChainState($CCS_WeaponIndex) + 1] == 1) $character[GetCombatChainState($CCS_WeaponIndex) + 1] = 2;
       }
       else {
         $weaponIndex = SearchCharacterIndexSubtype($currentPlayer, "Sword");
@@ -298,10 +298,10 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "meganetic_shockwave_blue":
-      if($combatChainState[$CCS_NumBoosted] && IsHeroAttackTarget()) {
-        if ($combatChainState[$CCS_NumBoosted] > 1 && IsOverpowerActive()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
-        else $combatChainState[$CCS_RequiredEquipmentBlock] = $combatChainState[$CCS_NumBoosted];
-        $rv .= "Requires you to block with " . $combatChainState[$CCS_NumBoosted] . " equipment if able";
+      if(GetCombatChainState($CCS_NumBoosted) && IsHeroAttackTarget()) {
+        if (GetCombatChainState($CCS_NumBoosted) > 1 && IsOverpowerActive()) SetCombatChainState($CCS_RequiredEquipmentBlock, 1);
+        else SetCombatChainState($CCS_RequiredEquipmentBlock, GetCombatChainState($CCS_NumBoosted));
+        $rv .= "Requires you to block with " . GetCombatChainState($CCS_NumBoosted) . " equipment if able";
       }
       return $rv;
     case "plasma_purifier_red":

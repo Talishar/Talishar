@@ -562,11 +562,11 @@ function OUTAbilityCost($cardID)
         if(ComboActive()) {
           if(substr($from, 0, 5) != "THEIR") {
             AddBottomDeck($cardID, $mainPlayer, "CC");
-            $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+            SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
           }
           else {
             AddBottomDeck($cardID, $defPlayer, "CC");
-            $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+            SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
           }
         }
         break;
@@ -626,7 +626,7 @@ function OUTAbilityCost($cardID)
         {
           if(CardSubType($chainLinks[$i][0]) == "Dagger" && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) ++$numDaggerHits;
         }
-        $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
+        $numDaggerHits += GetCombatChainState($CCS_FlickedDamage);
         if($numDaggerHits > 0) WriteLog("Player " . $defPlayer . " lost " . $numDaggerHits . " life from " . CardLink("stab_wound_blue", "stab_wound_blue"));
         LoseHealth($numDaggerHits, $defPlayer);
         break;
@@ -793,14 +793,14 @@ function OUTAbilityCost($cardID)
     {
       if(SubtypeContains($chainLinks[$i][0], $subtype)) $damage += $chainLinkSummary[$i*$chainLinkSummaryPieces];
     }
-    if ($subtype == "Dagger") $damage += $combatChainState[$CCS_FlickedDamage];
+    if ($subtype == "Dagger") $damage += GetCombatChainState($CCS_FlickedDamage);
     return $damage;
   }
 
   function NumAttackReactionsPlayed()
   {
     global $CCS_NumReactionPlayedActivated, $combatChainState;
-    return $combatChainState[$CCS_NumReactionPlayedActivated];
+    return GetCombatChainState($CCS_NumReactionPlayedActivated);
   }
 
   function TrapTriggered($cardID) //deprecated

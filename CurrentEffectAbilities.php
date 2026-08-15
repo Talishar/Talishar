@@ -87,7 +87,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "seek_enlightenment_red":
     case "seek_enlightenment_yellow":
     case "seek_enlightenment_blue":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+      SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "SOUL");
       break;
     case "dusk_path_pilgrimage_red":
     case "dusk_path_pilgrimage_yellow":
@@ -106,8 +106,8 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "warmongers_recital_red":
     case "warmongers_recital_yellow":
     case "warmongers_recital_blue":
-      if (substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-      else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
+      if (substr($from, 0, 5) != "THEIR") SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BOTDECK");
+      else SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "THEIRBOTDECK");
       break;
     case "oaken_old_red":
       if (IsHeroAttackTarget()) {
@@ -242,7 +242,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "glistening_steelblade_yellow-1":
       $char = &GetPlayerCharacter($mainPlayer);
       if (IsHeroAttackTarget()) {
-        ++$char[$combatChainState[$CCS_WeaponIndex] + 3];
+        ++$char[GetCombatChainState($CCS_WeaponIndex) + 3];
       }
       break;
     case "buckle_blue":
@@ -253,7 +253,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       if (strlen($indices) > 0) {
         //remove the current target from the list of choices
         $filtIndices = [];
-        $targetUID = $combatChainState[$CCS_AttackTargetUID];
+        $targetUID = GetCombatChainState($CCS_AttackTargetUID);
         $allies = GetAllies($defPlayer);
         foreach(explode(",", $indices) as $index) {
           $ind = explode("-", $index, 2)[1];
@@ -261,9 +261,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         }
         $indices = implode(",", $filtIndices);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $indices);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target to deal " . $combatChainState[$CCS_DamageDealt] . " damage.");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target to deal " . GetCombatChainState($CCS_DamageDealt) . " damage.");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZDAMAGE", $mainPlayer, $combatChainState[$CCS_DamageDealt] . ",DAMAGE," . $cardID, 1);
+        AddDecisionQueue("MZDAMAGE", $mainPlayer, GetCombatChainState($CCS_DamageDealt) . ",DAMAGE," . $cardID, 1);
       }
       break;
     case "dead_eye_yellow":
@@ -397,7 +397,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       return 1;
     case "hack_to_reality_yellow-HIT":
       if (IsHeroAttackTarget()) {
-        MZChooseAndDestroy($mainPlayer, "THEIRAURAS:type=A;maxCost=" . $combatChainState[$CCS_DamageDealt] . "&THEIRAURAS:type=I;maxCost=" . $combatChainState[$CCS_DamageDealt]);
+        MZChooseAndDestroy($mainPlayer, "THEIRAURAS:type=A;maxCost=" . GetCombatChainState($CCS_DamageDealt) . "&THEIRAURAS:type=I;maxCost=" . GetCombatChainState($CCS_DamageDealt));
         return 1;
       }
       break;
@@ -414,7 +414,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       if (IsHeroAttackTarget()) PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController: $mainPlayer);
       return 1;
     case "talk_a_big_game_blue":
-      if ($combatChainState[$CCS_DamageDealt] >= $effectArr[1]) {
+      if (GetCombatChainState($CCS_DamageDealt) >= $effectArr[1]) {
         PlayAura("might", $mainPlayer, $effectArr[1]);
         return 1;
       }
@@ -458,7 +458,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       break;
     case "long_whisker_loyalty_red-MARK":
       $character = &GetPlayerCharacter($mainPlayer);
-      if (IsHeroAttackTarget() && $character[$combatChainState[$CCS_WeaponIndex] + 11] == $effectArr[1]) {
+      if (IsHeroAttackTarget() && $character[GetCombatChainState($CCS_WeaponIndex) + 11] == $effectArr[1]) {
         MarkHero($defPlayer);
         return 1;
       }
@@ -471,9 +471,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "twist_and_turn_yellow":
     case "twist_and_turn_blue":
       $character = &GetPlayerCharacter($mainPlayer);
-      if ($combatChainState[$CCS_WeaponIndex] != -1) {
-        $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
-        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+      if (GetCombatChainState($CCS_WeaponIndex) != -1) {
+        $character[GetCombatChainState($CCS_WeaponIndex) + 1] = 2;
+        ++$character[GetCombatChainState($CCS_WeaponIndex) + 5];
       }
       else WriteLog("A strange error has happened with twist and turn. Please submit a bug report", highlight: true);
       return 0;
@@ -500,8 +500,8 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       //don't add attacks if it wasn't a weapon
       if (TypeContains($CombatChain->AttackCard()->ID(), "W")) {
         $character = &GetPlayerCharacter($mainPlayer);
-        $character[$combatChainState[$CCS_WeaponIndex] + 1] = 2;
-        ++$character[$combatChainState[$CCS_WeaponIndex] + 5];
+        $character[GetCombatChainState($CCS_WeaponIndex) + 1] = 2;
+        ++$character[GetCombatChainState($CCS_WeaponIndex) + 5];
       }
       return 1;
     case "imperial_seal_of_command_red-HIT":
@@ -755,7 +755,7 @@ function RemoveThisLinkEffects($cardID="")
     }
     if ($remove && (!$validCardID || SearchCurrentTurnEffectsForIndex($searchedEffect, $currentTurnEffects[$i + 1]) != -1)) RemoveCurrentTurnEffect($i);
   }
-  $combatChainState[$CCS_EclecticMag] = 0;
+  SetCombatChainState($CCS_EclecticMag, 0);
 }
 
 function OnAttackEffects($cardID)
@@ -1957,11 +1957,11 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
     case "weave_lightning_red":
     case "weave_lightning_yellow":
     case "weave_lightning_blue":
-      if ($combatChainState[$CCS_AttackFused] == 1) return true;
+      if (GetCombatChainState($CCS_AttackFused) == 1) return true;
       else break;
     case "luminaris_angels_glow-1":
     case "luminaris_angels_glow-2":
-      if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") break;
+      if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) == "-") break;
       if (SearchPitchForColor($mainPlayer, 2) > 0) return true;
       else break;
     case "machinations_of_dominion_blue":

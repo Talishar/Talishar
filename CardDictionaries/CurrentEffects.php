@@ -54,7 +54,7 @@ function EVOCombatEffectActive($cardID, $attackID)
   if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
     "cogwerx_base_arms", "gigawatt_red", "gigawatt_yellow", "gigawatt_blue" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
-    "gas_up_red", "gas_up_yellow", "gas_up_blue", "quickfire_red", "quickfire_yellow", "quickfire_blue", "re_charge_red", "re_charge_yellow", "re_charge_blue" => $combatChainState[$CCS_IsBoosted],
+    "gas_up_red", "gas_up_yellow", "gas_up_blue", "quickfire_red", "quickfire_yellow", "quickfire_blue", "re_charge_red", "re_charge_yellow", "re_charge_blue" => GetCombatChainState($CCS_IsBoosted),
     "emboldened_blade_blue", "evo_command_center_yellow_equip", "evo_smoothbore_yellow_equip" => TypeContains($attackID, "W", $mainPlayer),
     "evo_whizz_bang_yellow", "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue", "hydraulic_press_red", "hydraulic_press_yellow", "hydraulic_press_blue", "ratchet_up_red", "ratchet_up_yellow", "ratchet_up_blue", "junkyard_dogg_red",
     "junkyard_dogg_yellow", "junkyard_dogg_blue", "moonshot_yellow", "fabricate_red", "big_shot_red", "burn_rubber_red", "smash_and_grab_red", "sprocket_rocket_red", "sprocket_rocket_yellow", "sprocket_rocket_blue",

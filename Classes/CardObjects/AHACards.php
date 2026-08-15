@@ -274,7 +274,7 @@ class paragon_plate extends Card {
 		$CharCard = new CharacterCard($index, $this->controller);
 		if ($CharCard->Tapped()) return true;
 		//current chain  link
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		if (SubTypeContains($CombatChain->AttackCard()->ID(), "Sword", $this->controller) && $Weapon->NumPowerCounters() > 0) return false;
 		//past chain links
 		$Character = new PlayerCharacter($this->controller);
@@ -312,7 +312,7 @@ class anticipating_gaze extends Card {
 
 	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
 		global $CCS_WeaponIndex, $combatChainState;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		if ($Weapon->NumPowerCounters() > 0) {
 			$message = "if_you_want_to_draw";
 			$context = "Choose if you want to destroy " . CardLink($this->cardID) . " and remove a counter from your sword to draw a card";
@@ -323,7 +323,7 @@ class anticipating_gaze extends Card {
 
 	function SpecificLogic() {
 		global $CCS_WeaponIndex, $combatChainState, $dqVars;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		$Gaze = new CharacterCard($dqVars["index"], $this->controller);
 		$Weapon->AddPowerCounters(-1);
 		$Gaze->Destroy();
@@ -694,7 +694,7 @@ class backside_of_the_blade_blue extends Card {
 		if (TypeContains($CombatChain->AttackCard()->ID(), "W") && DoesAttackHaveGoAgain()) {
 			// this can do some funny things with targeting previous chain links
 			// for now I'm skipping it
-			$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+			$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 			$Weapon->AddUse();
 			if ($Weapon->Status() == 1) $Weapon->SetUsed(2);
 		}
@@ -1068,7 +1068,7 @@ class ole_blue extends Card {
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     	global $combatChainState, $CCS_WeaponIndex, $ChainLinks;
 		if (!str_contains($target, "COMBATCHAINATTACKS")) {
-			$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+			$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 			if ($Weapon->NumPowerCounters() > 0) {
 				$Weapon->AddPowerCounters(-1);
 				Draw($this->controller);
@@ -1111,7 +1111,7 @@ class polished_blade_red extends Card {
 	
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     	global $combatChainState, $CCS_WeaponIndex;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		$modes = explode(",", $additionalCosts);
 		foreach ($modes as $mode) {
 			switch($mode) {
@@ -1134,7 +1134,7 @@ class polished_blade_red extends Card {
 
 	function PayAdditionalCosts($from, $index = '-') {
 		global $combatChainState, $CCS_WeaponIndex;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex],  $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex),  $this->controller);
 		$modalities = "Go_again,Additional_attack,Discount_attack";
 		$range = implode(",", range(1, $Weapon->NumPowerCounters()));
 		Await($this->controller, "CardChoices", "num", choices:$range, subsequent:0, context:"Choose a number of counters to remove");
@@ -1145,7 +1145,7 @@ class polished_blade_red extends Card {
 
 	function SpecificLogic() {
 		global $dqVars, $Stack, $combatChainState, $CCS_WeaponIndex;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex],  $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex),  $this->controller);
 		$num = $dqVars["num"];
 		$Weapon->AddPowerCounters(-1 * $num);
 		return min($num + 1, 3);
@@ -1154,7 +1154,7 @@ class polished_blade_red extends Card {
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain, $combatChainState, $CCS_WeaponIndex;
 		if (!SubTypeContains($CombatChain->AttackCard()->ID(), "Sword")) return true;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex],  $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex),  $this->controller);
 		if ($Weapon->NumPowerCounters() == 0) return true;
 		return false;
 	}

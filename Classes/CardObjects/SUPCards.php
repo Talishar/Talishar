@@ -2709,7 +2709,7 @@ class battlefield_beacon_yellow extends Card {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     global $combatChainState, $CCS_SoulBanishedThisChain;
-    $count = isset($combatChainState[$CCS_SoulBanishedThisChain]) ? intval($combatChainState[$CCS_SoulBanishedThisChain]) : 0;
+    $count = intval(GetCombatChainState($CCS_SoulBanishedThisChain));
     if ($count <= 0) return;
     if ($count > 9) $count = 9;
     if ($count == 1) { //Max 1 option of any
@@ -2963,7 +2963,7 @@ class strongest_survive extends BaseCard{
 
   function OnHitEffect() {
     global $CCS_DamageDealt, $combatChainState, $defPlayer;
-    $minAttack = $combatChainState[$CCS_DamageDealt] + 1;
+    $minAttack = GetCombatChainState($CCS_DamageDealt) + 1;
     if (CanRevealCards($defPlayer)) {
       AddDecisionQueue("MULTIZONEINDICES", $defPlayer, "MYHAND:minAttack=$minAttack");
       AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card with at least $minAttack power or discard a card", 1);
@@ -4174,7 +4174,7 @@ class beat_of_the_ironsong_blue extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     global $combatChainState, $CCS_WeaponIndex, $CS_AdditionalCosts;
     $char = GetPlayerCharacter($this->controller);
-    $ind = $combatChainState[$CCS_WeaponIndex];
+    $ind = GetCombatChainState($CCS_WeaponIndex);
     $numModes = $char[$ind + 3] + 1;
     $message = $numModes > 1 ? "Choose $numModes modes" : "Choose a mode";
     $modes = "Buff_power,Go_again,Block_gaining_defense,Damage_can't_be_prevented";

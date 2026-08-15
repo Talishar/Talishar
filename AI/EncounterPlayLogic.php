@@ -17,11 +17,11 @@ function CardIsBlockable($storedPriorityNode)
   }
   switch($combatChain[0])
   {
-    case "find_center_blue": return !(ComboActive() && CardCost($storedPriorityNode[0]) < $combatChainState[$CCS_NumChainLinks]);
+    case "find_center_blue": return !(ComboActive() && CardCost($storedPriorityNode[0]) < GetCombatChainState($CCS_NumChainLinks));
     case "herons_flight_red": return false; //I have no idea how to make Heron's Flight work, so I'm just gonna say it's unblockable. This is so edge case that no one will know for a while lmfaooooo
     case "crane_dance_red":
     case "crane_dance_yellow":
-    case "crane_dance_blue": return !(ComboActive() && PowerValue($storedPriorityNode[0]) > $combatChainState[$CCS_NumChainLinks]);
+    case "crane_dance_blue": return !(ComboActive() && PowerValue($storedPriorityNode[0]) > GetCombatChainState($CCS_NumChainLinks));
     default: return true;
   }
 }

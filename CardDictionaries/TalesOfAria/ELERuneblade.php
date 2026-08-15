@@ -41,7 +41,7 @@
         if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)
         {
           $character = &GetPlayerCharacter($currentPlayer);
-          ++$character[$combatChainState[$CCS_WeaponIndex]+3];
+          ++$character[GetCombatChainState($CCS_WeaponIndex)+3];
         }
         return $rv;
       case "spellbound_creepers":

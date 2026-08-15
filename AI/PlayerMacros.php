@@ -89,7 +89,7 @@ function ProcessMacros()
       if($turn[0] == "B" || $turn[0] == "D")
       {
         $threshold = ShortcutAttackThreshold($currentPlayer);
-        if ($combatChainState[$CCS_RequiredEquipmentBlock] == 0) {
+        if (GetCombatChainState($CCS_RequiredEquipmentBlock) == 0) {
           switch ($threshold) {
             case "99":
               $somethingChanged = true;

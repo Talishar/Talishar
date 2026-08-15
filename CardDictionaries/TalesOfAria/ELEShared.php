@@ -96,9 +96,9 @@
       case "invigorate_yellow": return 3;
       case "invigorate_blue": return 2;
       case "pulse_of_volthaven_red": return 4;
-      case "weave_earth_red": return 3 + ($combatChainState[$CCS_AttackFused] ? 1 : 0);
-      case "weave_earth_yellow": return 2 + ($combatChainState[$CCS_AttackFused] ? 1 : 0);
-      case "weave_earth_blue": return 1 + ($combatChainState[$CCS_AttackFused] ? 1 : 0);
+      case "weave_earth_red": return 3 + (GetCombatChainState($CCS_AttackFused) ? 1 : 0);
+      case "weave_earth_yellow": return 2 + (GetCombatChainState($CCS_AttackFused) ? 1 : 0);
+      case "weave_earth_blue": return 1 + (GetCombatChainState($CCS_AttackFused) ? 1 : 0);
       case "earthlore_surge_red": return 5;
       case "earthlore_surge_yellow": return 4;
       case "earthlore_surge_blue": return 3;
@@ -163,7 +163,7 @@
       case "fulminate_yellow-BUFF": case "fulminate_yellow-GA": return CardType($attackID) == "AA";
       case "flashfreeze_red-DOM": case "flashfreeze_red-DOMATK": case "flashfreeze_red-BUFF": return true;
       case "entwine_ice_red": case "entwine_ice_yellow": case "entwine_ice_blue": return true;
-      case "invigorate_red": case "invigorate_yellow": case "invigorate_blue": return $combatChainState[$CCS_AttackFused] == 1;
+      case "invigorate_red": case "invigorate_yellow": case "invigorate_blue": return GetCombatChainState($CCS_AttackFused) == 1;
       case "pulse_of_volthaven_red": return TalentContainsAny($attackID, "ICE,LIGHTNING,ELEMENTAL", $mainPlayer);
       case "weave_earth_red": case "weave_earth_yellow": case "weave_earth_blue":
         return TalentContainsAny($attackID, "EARTH,ELEMENTAL",$mainPlayer) && CardType($attackID) == "AA";

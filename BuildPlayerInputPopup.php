@@ -566,7 +566,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $turnDataStartsWithMyDeck = (substr($turnData, 0, 6) === "MYDECK");
         $singleMyDeckInTurnData = (substr_count($turnData, "MYDECK") == 1);
         $hasCombatChainLink = $CombatChain->HasCurrentLink();
-        $weaponIndexValue = intval($combatChainState[$CCS_WeaponIndex]);
+        $weaponIndexValue = intval(GetCombatChainState($CCS_WeaponIndex));
         $otherIsMain = ($otherPlayer == $mainPlayer);
         $layerPieces = LayerPieces();
         $layersActive = ($layerCheckCount > 0 && $layers[0] != "");

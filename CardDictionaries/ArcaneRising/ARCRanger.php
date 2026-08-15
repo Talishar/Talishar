@@ -90,15 +90,15 @@
         if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "endless_arrow_red":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
         AddPlayerHand($cardID, $mainPlayer, "CC");
         break;
       case "hamstring_shot_red": case "hamstring_shot_yellow": case "hamstring_shot_blue":
         if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
         break;
       case "salvage_shot_red": case "salvage_shot_yellow": case "salvage_shot_blue":
-        if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-        else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
+        if(substr($from, 0, 5) != "THEIR") SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BOTDECK");
+        else SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "THEIRBOTDECK");
           break;
       case "searing_shot_red": case "searing_shot_yellow": case "searing_shot_blue":
         if(IsHeroAttackTarget()) LoseHealth(1, $defPlayer);

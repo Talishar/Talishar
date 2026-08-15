@@ -2113,7 +2113,7 @@ class knife_through extends BaseCard {
       if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) 
         ++$numDaggerHits;
     }
-    $numDaggerHits += $combatChainState[$CCS_FlickedDamage];
+    $numDaggerHits += GetCombatChainState($CCS_FlickedDamage);
     return $numDaggerHits > 0;
   }
 }
@@ -3731,7 +3731,7 @@ class dyed_silk_sleeves extends Card {
 
   function ResolutionStepEffectTriggers($parameter, $index) {
     global $combatChainState, $CCS_DamageDealt;
-    if ($combatChainState[$CCS_DamageDealt] == 0) {
+    if (GetCombatChainState($CCS_DamageDealt) == 0) {
       $Character = new PlayerCharacter($this->controller);
       $CharacterCard = $Character->FindCardID($this->cardID);
       $CharacterCard->Destroy();
@@ -4161,7 +4161,7 @@ class rend_flesh_blue extends Card {
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $combatChainState, $CCS_WeaponIndex, $defPlayer;
-    $CharCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+    $CharCard = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
     if ($CharCard->NumPowerCounters() > 0) {
       AddDecisionQueue("YESNO", $this->controller, "if_you_want_to_remove_a_counter_from_" . CardLink($CharCard->CardID()) . "?");
       AddDecisionQueue("NOPASS", $this->controller, "-", 1);
@@ -4300,7 +4300,7 @@ class display_of_craftsmanship extends BaseCard {
       $ClassState = new ClassState($this->controller);
       $originUID = $CombatChain->AttackCard()->OriginUniqueID();
       $foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $originUID);
-      $WeaponCard = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+      $WeaponCard = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
       if ($foundSharpen->Index() != -1) $WeaponCard->AddPowerCounters(1);
     }
   }
@@ -5471,7 +5471,7 @@ class ion_charged_yellow extends Card {
 class overcharge extends BaseCard {
   function PowerModifier($param, $attached = false) {
     global $combatChainState, $CCS_NumInstantsPlayedByAttackingPlayer;
-    return $combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] > 0 ? $param : 0;
+    return GetCombatChainState($CCS_NumInstantsPlayedByAttackingPlayer) > 0 ? $param : 0;
   }
 }
 
@@ -6939,7 +6939,7 @@ class sense_weakness_blue extends Card {
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
     global $combatChainState, $CCS_DamageDealt, $defPlayer;
     $Allies = new Allies($defPlayer);
-    $damage = $combatChainState[$CCS_DamageDealt];
+    $damage = GetCombatChainState($CCS_DamageDealt);
     for ($i = $Allies->NumAllies()-1; $i >= 0; --$i) {
       $AllyCard = $Allies->Card($i, true);
       $AllyCard->Damage($damage);

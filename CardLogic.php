@@ -212,8 +212,8 @@ function IsCombatEffectLimited($index)
   $attackSubType = CardSubType($combatChain[0]);
   if (DelimStringContains($attackSubType, "Ally")) {
     $allies = &GetAllies($mainPlayer);
-    if (count($allies) < $combatChainState[$CCS_WeaponIndex] + 5) return false;
-    if ($allies[$combatChainState[$CCS_WeaponIndex] + 5] != $currentTurnEffects[$index + 2]) return true;
+    if (count($allies) < GetCombatChainState($CCS_WeaponIndex) + 5) return false;
+    if ($allies[GetCombatChainState($CCS_WeaponIndex) + 5] != $currentTurnEffects[$index + 2]) return true;
   } else {
     if ($CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID()) return false;
     else return $CombatChain->AttackCard()->UniqueID() != $Effect->AppliestoUniqueID();
@@ -261,9 +261,9 @@ function ResolveAttackQueue() {
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $params = explode("|", $parameter);
     if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]), AQCheck:true)) return; 
-    $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
+    SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");
     $MZIndex = CleanTargetToIndex($player, $target);
-    $combatChainState[$CCS_AttackTarget] = $MZIndex;
+    SetCombatChainState($CCS_AttackTarget, $MZIndex);
     $turn[0] = "M";
     if ($buffs != "-") {
       foreach(explode(",", $buffs) as $buff)
@@ -492,9 +492,9 @@ function ContinueDecisionQueue($lastResult = "")
             foreach(explode(",", $buffs) as $buff)
               AddCurrentTurnEffectNextAttack($buff, $player);
           }
-          $combatChainState[$CCS_AttackTargetUID] = explode("-", $target, 2)[1] ?? "-";
+          SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");
           $MZIndex = CleanTargetToIndex($currentPlayer, $target);
-          $combatChainState[$CCS_AttackTarget] = $MZIndex;
+          SetCombatChainState($CCS_AttackTarget, $MZIndex);
           EndResolutionStep();
         }
         else {
@@ -945,7 +945,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     case "entangle_red":
     case "entangle_yellow":
     case "entangle_blue":
-      if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) {
+      if(IsHeroAttackTarget() && GetCombatChainState($CCS_AttackFused)) {
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
         return true;
       }
@@ -1746,7 +1746,7 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
       DestroyItemForPlayer($player, SearchItemsForUniqueID($uniqueID, $player));
       return true;
     case "autosave_script_blue":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
+      SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BOTDECK");
       return true;
     default:
       return false;
@@ -1975,7 +1975,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "cintari_saber":
       case "cintari_saber_r":
         $attackID = $CombatChain->AttackCard()->ID();
-        AddCharacterEffect($player, $combatChainState[$CCS_WeaponIndex], $attackID);
+        AddCharacterEffect($player, GetCombatChainState($CCS_WeaponIndex), $attackID);
         WriteLog(CardLink($attackID) . " got +1 for the rest of the turn.");
         break;
       case "evo_steel_soul_memory_blue":
@@ -2748,7 +2748,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($deck->Reveal()) {
           if (CardSubType($deck->Top()) == "Arrow") {
             if (IsAllyAttacking()) {
-              $allyIndex = "THEIRALLY-" . $combatChainState[$CCS_WeaponIndex];
+              $allyIndex = "THEIRALLY-" . GetCombatChainState($CCS_WeaponIndex);
               $indices = "THEIRCHAR-0,$allyIndex";
             } else $indices = "THEIRCHAR-0";
             AddDecisionQueue("PASSPARAMETER", $player, $indices);
@@ -4383,13 +4383,13 @@ function ShouldHoldPriority($player, $layerCard = "")
 function GiveAttackGoAgain()
 {
   global $combatChainState, $CCS_CurrentAttackGainedGoAgain;
-  $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 1;
+  SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 1);
 }
 
 function GiveAttackDominate()
 {
   global $combatChainState, $CCS_CachedDominateActive;
-  $combatChainState[$CCS_CachedDominateActive] = 1;
+  SetCombatChainState($CCS_CachedDominateActive, 1);
 }
 
 function TopDeckToArsenal($player)

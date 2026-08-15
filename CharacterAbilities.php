@@ -459,7 +459,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1, $flicked = f
         break;
       case "dorinthea_ironsong":
       case "dorinthea":
-        $weapon = $Character->Card($combatChainState[$CCS_WeaponIndex]);
+        $weapon = $Character->Card(GetCombatChainState($CCS_WeaponIndex));
         if ($character->Status() == 2 && TypeContains($attackID, "W", $mainPlayer) && $weapon->Status() != 0) {
           $character->SetUsed();
           $weapon->SetUsed(2);
@@ -562,7 +562,7 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
-  if ($index == -1) $index = $combatChainState[$CCS_WeaponIndex];
+  if ($index == -1) $index = GetCombatChainState($CCS_WeaponIndex);
   $mainCharacterEffectsCount = count($mainCharacterEffects);
   $characterEffectPieces = CharacterEffectPieces();
   $attackIsWeapon = TypeContains($CombatChain->AttackCard()->ID(), "W");
@@ -645,7 +645,7 @@ function MainCharacterHitEffects($check = false): bool // deprecated
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   $mainCharacterEffectsCount = count($mainCharacterEffects);
   for ($i = 0; $i < $mainCharacterEffectsCount; $i += 2) {
-    if ($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
+    if ($mainCharacterEffects[$i] == GetCombatChainState($CCS_WeaponIndex)) {
       switch ($mainCharacterEffects[$i + 1]) {
         default:
           break;
@@ -658,11 +658,11 @@ function MainCharacterHitEffects($check = false): bool // deprecated
 function MainCharacterGrantsGoAgain()
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
-  if ($combatChainState[$CCS_WeaponIndex] == -1) return false;
+  if (GetCombatChainState($CCS_WeaponIndex) == -1) return false;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
   $mainCharacterEffectsCount = count($mainCharacterEffects);
   for ($i = 0; $i < $mainCharacterEffectsCount; $i += 2) {
-    if ($mainCharacterEffects[$i] == $combatChainState[$CCS_WeaponIndex]) {
+    if ($mainCharacterEffects[$i] == GetCombatChainState($CCS_WeaponIndex)) {
       switch ($mainCharacterEffects[$i + 1]) {
         case "blood_on_her_hands_yellow-2":
           return true;

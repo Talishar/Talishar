@@ -1495,9 +1495,9 @@ class gone_in_a_flash_red extends Card {
   function SpecificLogic() {
     global $combatChainState, $CCS_CurrentAttackGainedGoAgain, $CCS_GoesWhereAfterLinkResolves, $CombatChain, $defPlayer, $mainPlayer;
     if (!DoesAttackHaveGoAgain()) //lock in last known information
-      $combatChainState[$CCS_CurrentAttackGainedGoAgain] = 0;
+      SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 0);
     CleanUpCombatEffects();
-    $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+    SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
     $destPlayer = str_contains($CombatChain->AttackCard()->From(), "THEIR") ? $defPlayer : $mainPlayer;
     AddPlayerHand($CombatChain->AttackCard()->ID(), $destPlayer, "CC");
     if (SearchLayersForPhase("FINALIZECHAINLINK") == -1) {
@@ -1517,7 +1517,7 @@ class gone_in_a_flash_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain, $CCS_GoesWhereAfterLinkResolves, $combatChainState;
-    if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-") {
+    if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-") {
       $message = "if_you_want_to_bounce_the_attack";
       $context = "Choose if you want to return " . CardLink($CombatChain->AttackCard()->ID()) . " to the owner's hand";
       Await($this->controller,  "YesNo", message:$message, context:$context, subsequent:false);

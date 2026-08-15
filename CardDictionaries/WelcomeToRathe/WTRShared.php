@@ -434,13 +434,13 @@
       case "hurricane_technique_yellow":
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $cardID);
         if(ComboActive()) {
-          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+          SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
           AddDecisionQueue("ADDHAND", $mainPlayer, "-");
         }
         break;
       case "pounding_gale_red":
         if(IsHeroAttackTarget() && ComboActive()) {
-          LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
+          LoseHealth(GetCombatChainState($CCS_DamageDealt), $defPlayer);
         }
         break;
       case "whelming_gustwave_red": case "whelming_gustwave_yellow": case "whelming_gustwave_blue": 
@@ -606,7 +606,7 @@
         AddNextTurnEffect("chokeslam_red", $defPlayer);
         break;
       case "star_struck_yellow":
-        $damageDone = $combatChainState[$CCS_DamageDealt];
+        $damageDone = GetCombatChainState($CCS_DamageDealt);
         AddNextTurnEffect("star_struck_yellow," . $damageDone, $defPlayer);
         break;
       case "boulder_drop_yellow": case "boulder_drop_blue": case "boulder_drop_red":

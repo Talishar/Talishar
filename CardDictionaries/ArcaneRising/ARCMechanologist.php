@@ -96,8 +96,8 @@ function ARCMechanologistHitEffect($cardID, $from)
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
       break;
     case "over_loop_red": case "over_loop_yellow": case "over_loop_blue":
-      if(substr($from, 0, 5) != "THEIR") $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BOTDECK";
-      else $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "THEIRBOTDECK";
+      if(substr($from, 0, 5) != "THEIR") SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BOTDECK");
+      else SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "THEIRBOTDECK");
       break;
     default: break;
   }
@@ -184,8 +184,8 @@ function DoBoost($player, $cardID, $boostCount=1)
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
     WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " <b>go again</b>.");
     IncrementClassState($player, $CS_NumBoosted);
-    ++$combatChainState[$CCS_NumBoosted];
-    $combatChainState[$CCS_IsBoosted] = 1;
+    IncrementCombatChainState($CCS_NumBoosted);
+    SetCombatChainState($CCS_IsBoosted, 1);
     if($grantsGA) {
       GiveAttackGoAgain();
       $isGoAgainGranted = true;

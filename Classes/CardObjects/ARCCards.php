@@ -546,8 +546,8 @@ class cognition_nodes_blue extends Card {
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
 		global $CCS_GoesWhereAfterLinkResolves, $combatChainState, $CombatChain;
 		$otherPlayer = $this->controller == 1 ? 2 : 1;
-		if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-") {
-			$combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+		if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-") {
+			SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
 			$destPlayer = (substr($from, 0, 5) == "THEIR") ? $otherPlayer : $this->controller;
 			AddBottomDeck($CombatChain->AttackCard()->ID(), $destPlayer, "CC");
 			WriteLog("⬇️ Adding " . CardLink($CombatChain->AttackCard()->ID()) . " to the bottom of the deck");

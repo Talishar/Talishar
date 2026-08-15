@@ -297,11 +297,11 @@
         }
         return $rv;
       case "t_bone_red": case "t_bone_yellow": case "t_bone_blue":
-        if($combatChainState[$CCS_NumBoosted] && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
+        if(GetCombatChainState($CCS_NumBoosted) && IsHeroAttackTarget()) SetCombatChainState($CCS_RequiredEquipmentBlock, 1);
         return "";
       case "zoom_in_red": case "zoom_in_yellow": case "zoom_in_blue":
-        Opt($cardID, $combatChainState[$CCS_NumBoosted]);
-        return "Lets you opt " . $combatChainState[$CCS_NumBoosted];
+        Opt($cardID, GetCombatChainState($CCS_NumBoosted));
+        return "Lets you opt " . GetCombatChainState($CCS_NumBoosted);
       case "rotary_ram_red": case "rotary_ram_yellow": case "rotary_ram_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

@@ -128,7 +128,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "glaring_impact_red": case "glaring_impact_yellow": case "glaring_impact_blue": return true;//Glaring Impact
     case "light_the_way_red": case "light_the_way_yellow": case "light_the_way_blue": return true;
     case "resounding_courage_red": case "resounding_courage_yellow": case "resounding_courage_blue": return true;//Resounding Courage
-    case "charge_of_the_light_brigade_red": case "charge_of_the_light_brigade_yellow": case "charge_of_the_light_brigade_blue": return $combatChainState[$CCS_AttackNumCharged] > 0;//Charge of the Light Brigade
+    case "charge_of_the_light_brigade_red": case "charge_of_the_light_brigade_yellow": case "charge_of_the_light_brigade_blue": return GetCombatChainState($CCS_AttackNumCharged) > 0;//Charge of the Light Brigade
     case "lumina_lance_yellow-1": case "lumina_lance_yellow-2": case "lumina_lance_yellow-3": return true;
     case "lay_to_rest_red": case "lay_to_rest_yellow": case "lay_to_rest_blue": return true;
     case "defender_of_daybreak_red": case "defender_of_daybreak_yellow": case "defender_of_daybreak_blue": return true;
@@ -136,8 +136,8 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "shaden_scream_red": case "shaden_scream_yellow": case "shaden_scream_blue": return ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
     case "tribute_to_demolition_red": case "tribute_to_demolition_yellow": case "tribute_to_demolition_blue": return true;
     case "tribute_to_the_legions_of_doom_red": case "tribute_to_the_legions_of_doom_yellow": case "tribute_to_the_legions_of_doom_blue": return true;
-    case "envelop_in_darkness_red": case "envelop_in_darkness_yellow": case "envelop_in_darkness_blue": return $combatChainState[$CCS_WasRuneGate] == 1;
-    case "putrid_stirrings_red": case "putrid_stirrings_yellow": case "putrid_stirrings_blue": return $combatChainState[$CCS_WasRuneGate] == 1;
+    case "envelop_in_darkness_red": case "envelop_in_darkness_yellow": case "envelop_in_darkness_blue": return GetCombatChainState($CCS_WasRuneGate) == 1;
+    case "putrid_stirrings_red": case "putrid_stirrings_yellow": case "putrid_stirrings_blue": return GetCombatChainState($CCS_WasRuneGate) == 1;
     case "anthem_of_spring_blue": return CardType($attackID) == "AA";//Anthem of Spring
     case "call_down_the_lightning_yellow": return true;//Call Down the Lightning
     case "ironsong_versus": return SubtypeContains($attackID, "Sword", $mainPlayer);//Ironsong Versus

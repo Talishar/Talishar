@@ -542,7 +542,7 @@ function BanishFromSoul($player, $index = 0)
     else BanishFromSpecificSoul($theirSoul, $player, $index);
   }
   if ($player == $mainPlayer) {
-    ++$combatChainState[$CCS_SoulBanishedThisChain];
+    IncrementCombatChainState($CCS_SoulBanishedThisChain);
   }
 }
 
@@ -777,6 +777,11 @@ function SetClassState($player, $piece, $value)
 function IncrementCombatChainState($piece, $amount=1) {
   if (GetCombatChainState($piece) != "")
     SetCombatChainState($piece, GetCombatChainState($piece) + $amount);
+}
+
+function AppendCombatChainState($piece, $value) {
+  if (GetCombatChainState($piece) != "")
+    SetCombatChainState($piece, GetCombatChainState($piece) . $value);
 }
 
 function SetCombatChainState($piece, $value) {

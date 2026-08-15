@@ -2805,7 +2805,7 @@ class stadium_centerpiece extends Card {
 class take_the_upper_hand extends BaseCard {
   function IsPlayRestricted() {
     global $CombatChain, $combatChainState, $CCS_WagersThisLink;
-    return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
+    return !$CombatChain->HasCurrentLink() || GetCombatChainState($CCS_WagersThisLink) == 0;
   }
 
   function PlayAbility() {

@@ -161,7 +161,7 @@ function FirstDamageTrigger($target, $cardID, $player, $effectID="-") {
 	global $CombatChain, $combatChainState, $CCS_AttackDamageDealtToHero;
 	$triggeringCard = $effectID == "-" ? $cardID : $effectID;
 	if ($CombatChain->AttackCard()->ID() != $cardID) return; // for now only make this work when it's the active link
-	if (is_numeric($target) && $combatChainState[$CCS_AttackDamageDealtToHero] == 0) {
+	if (is_numeric($target) && GetCombatChainState($CCS_AttackDamageDealtToHero) == 0) {
 		AddLayer("TRIGGER", $player, $triggeringCard, $target);
 	}
 }
@@ -181,7 +181,7 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 	$numActiveLink = $CombatChain->NumCardsActiveLink();
 	for ($i = 0; $i < $numActiveLink; ++$i) {
 		$ChainCard = $CombatChain->Card($i, true);
-		if ($i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue;
+		if ($i == 0 && GetCombatChainState($CCS_GoesWhereAfterLinkResolves) == "-") continue;
 		if (!TypeContains($ChainCard->ID(), "AA")) continue;
 		if ($player != "" && $ChainCard->PlayerID() != $player) continue;
 		if ($talent != "" && !TalentContains($ChainCard->ID(), "LIGHTNING", $ChainCard->PlayerID())) continue;
@@ -217,7 +217,7 @@ function TargetAttack($player) {
 	$i = 0;
 	if ($CombatChain->HasCurrentLink()) {
 		$ChainCard = $CombatChain->Card($i, true);
-		if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-")
+		if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-")
 			$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
 	}
 

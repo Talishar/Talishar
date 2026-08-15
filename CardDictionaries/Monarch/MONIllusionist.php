@@ -35,7 +35,7 @@
     {
       case "herald_of_erudition_yellow":
         if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         AddSoul($attackCard, $mainPlayer, "CC");
         Draw($mainPlayer, num:2);
         break;
@@ -43,24 +43,24 @@
         AddCurrentTurnEffect($cardID, $defPlayer);
         AddNextTurnEffect($cardID, $defPlayer);
         if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         AddSoul($attackCard, $mainPlayer, "CC");
         break;
       case "herald_of_triumph_red": case "herald_of_triumph_yellow": case "herald_of_triumph_blue":
         if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         AddSoul($attackCard, $mainPlayer, "CC");
         break;
       case "herald_of_protection_red": case "herald_of_protection_yellow": case "herald_of_protection_blue":
         if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         AddSoul($attackCard, $mainPlayer, "CC");
         PlayAura("spectral_shield", $mainPlayer);
         break;
       case "herald_of_ravages_red": case "herald_of_ravages_yellow": case "herald_of_ravages_blue":
         DealArcane(1, 0, "PLAYCARD", $cardID, false, $mainPlayer);
         if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         AddSoul($attackCard, $mainPlayer, "CC");
         break;
       case "herald_of_rebirth_red": case "herald_of_rebirth_yellow": case "herald_of_rebirth_blue":
@@ -71,17 +71,17 @@
         AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $mainPlayer, "<0> was selected.", 1);
         if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         AddSoul($attackCard, $mainPlayer, "CC");
         break;
       case "herald_of_tenacity_red": case "herald_of_tenacity_yellow": case "herald_of_tenacity_blue": 
         if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         AddSoul($attackCard, $mainPlayer, "CC");
         break;
       case "wartune_herald_red": case "wartune_herald_yellow": case "wartune_herald_blue": 
         if (DoesAttackHaveGoAgain()) GiveAttackGoAgain();
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         AddSoul($attackCard, $mainPlayer, "CC");
         break;
       default: break;
@@ -108,17 +108,17 @@
     if(SearchCurrentTurnEffectsForCycle("veiled_intentions_red", "veiled_intentions_yellow", "veiled_intentions_blue", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("phantasmify_red", "phantasmify_yellow", "phantasmify_blue", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("transmogrify_red", "transmogrify_yellow", "transmogrify_blue", $mainPlayer)) return true;
-    if($combatChainState[$CCS_WeaponIndex] != "-1" && DelimStringContains(CardSubType($attackID), "Ally"))
+    if(GetCombatChainState($CCS_WeaponIndex) != "-1" && DelimStringContains(CardSubType($attackID), "Ally"))
     {
       $allies = &GetAllies($mainPlayer);
-      if(isset($allies[$combatChainState[$CCS_WeaponIndex] + 4])){
-        if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "ash")) return true;
-        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "dust_from_the_golden_plains_red") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Themai")) return true;
-        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "dust_from_the_red_desert_red") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Vynserakai")) return true;
-        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "dust_from_the_shadow_crypts_red") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Nekria")) return true;
-        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "dust_from_the_chrome_caverns_red") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Cromai")) return true;
-        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "dust_from_stillwater_shrine_red") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Miragai")) return true;  
-        else if(DelimStringContains($allies[$combatChainState[$CCS_WeaponIndex] + 4], "dust_from_the_fertile_fields_red") && !CardNameContains($allies[$combatChainState[$CCS_WeaponIndex]], "Ouvia")) return true;
+      if(isset($allies[GetCombatChainState($CCS_WeaponIndex) + 4])){
+        if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "ash")) return true;
+        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_golden_plains_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Themai")) return true;
+        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_red_desert_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Vynserakai")) return true;
+        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_shadow_crypts_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Nekria")) return true;
+        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_chrome_caverns_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Cromai")) return true;
+        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_stillwater_shrine_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Miragai")) return true;  
+        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_fertile_fields_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Ouvia")) return true;
       }
     }
     return HasPhantasm($attackID);
@@ -177,7 +177,7 @@
       if(CardType($attackID) == "AA") {
         IncrementClassState($mainPlayer, $CS_NumPhantasmAADestroyed);
       } else if(SubtypeContains($attackID, "Aura", $mainPlayer)) {
-        DestroyAura($mainPlayer, $combatChainState[$CCS_WeaponIndex]);
+        DestroyAura($mainPlayer, GetCombatChainState($CCS_WeaponIndex));
       }
       $combatChain[10] = "PHANTASM"; //indicates that the attack has been destroyed
       CloseCombatChain();
@@ -218,7 +218,7 @@
       $uid = "-";
       if ($numMercifulRetribution > 0 && TalentContains($cardID, "LIGHT", $player)) {
         AddGraveyard($cardID, $player, "COMBATCHAIN");
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
         $grave = GetDiscard($player);
         $uid = $grave[count($grave) - DiscardPieces() + 1];
       }

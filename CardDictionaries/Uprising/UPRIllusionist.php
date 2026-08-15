@@ -93,7 +93,7 @@
         }
         break;
       case "nekria":
-        $index = $combatChainState[$CCS_WeaponIndex];
+        $index = GetCombatChainState($CCS_WeaponIndex);
         $allies = &GetAllies($mainPlayer);
         $allies[$index+2] -= 1;
         $allies[$index+7] -= 1;
@@ -109,7 +109,7 @@ function UPRIllusionistDealDamageEffect($cardID)
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   switch ($cardID) {
     case "nekria":
-      $index = $combatChainState[$CCS_WeaponIndex];
+      $index = GetCombatChainState($CCS_WeaponIndex);
       $allies = &GetAllies($mainPlayer);
       $allies[$index + 2] -= 1;
       $allies[$index + 7] -= 1;

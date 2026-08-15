@@ -80,7 +80,7 @@ class CombatChain {
   function HasCurrentAttack() {
     global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     if (!$this->HasCurrentLink()) return false;
-    if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return false;
+    if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) == "-") return false;
     return true;
   }
 
@@ -230,7 +230,7 @@ class ChainCard {
       global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
       if ($this->index != 0 && isset($this->chain[$this->index])) return true;
       elseif ($this->index == 0)
-        return $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-";
+        return GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-";
       return false;
     }
 }

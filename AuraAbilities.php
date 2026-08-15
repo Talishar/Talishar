@@ -479,7 +479,7 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
   if ($CombatChain->HasCurrentLink() && $player == $mainPlayer) {
     $attackCard = $CombatChain->AttackCard();
     if (DelimStringContains(CardSubtype($attackCard->ID()), "Aura")) {
-      $combatChainState[$CCS_WeaponIndex] = SearchAurasForUniqueID($attackCard->OriginUniqueID(), $player);
+      SetCombatChainState($CCS_WeaponIndex, SearchAurasForUniqueID($attackCard->OriginUniqueID(), $player));
     }
   }
   if ($cardID == "passing_mirage_blue") ReEvalCombatChain(); //check if phantasm should trigger
@@ -517,7 +517,7 @@ function RemoveAura($player, $index, $uniqueID = "", $location = "AURAS", $skipT
 
     // if it's on the combat chain, remove it
     if ($CombatChain->AttackCard()->OriginUniqueID() == $uniqueID)
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+      SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
     $numLinks = $ChainLinks->NumLinks();
     for ($i = 0; $i < $numLinks; ++$i) {
       $AttackCard = $ChainLinks->GetLink($i)->AttackCard();
@@ -1652,7 +1652,7 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
           }
           break;
         case $CID_Frailty:
-          if ($index == 0 && (IsWeaponAttack() || $combatChainState[$CCS_AttackPlayedFrom] == "ARS")) {
+          if ($index == 0 && (IsWeaponAttack() || GetCombatChainState($CCS_AttackPlayedFrom) == "ARS")) {
             $modifier -= 1;
             $powerModifiers[] = $myAuras[$i];
             $powerModifiers[] = -1;
@@ -1811,8 +1811,8 @@ function isSpectraAttackTarget() {
 
   global $defPlayer, $currentPlayer, $combatChainState, $CCS_AttackTarget, $CCS_AttackTargetUID;
   $isSpectraTarget = false;
-  $targetArr = explode(",", $combatChainState[$CCS_AttackTarget]);
-  $uidArr = explode(",", $combatChainState[$CCS_AttackTargetUID]);
+  $targetArr = explode(",", GetCombatChainState($CCS_AttackTarget));
+  $uidArr = explode(",", GetCombatChainState($CCS_AttackTargetUID));
   for ($i = count($targetArr) - 1; $i >= 0; --$i) {
     $dashPos = strpos($targetArr[$i], '-');
     if (($dashPos === false ? $targetArr[$i] : substr($targetArr[$i], 0, $dashPos)) == "THEIRAURAS") {

@@ -211,7 +211,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "eclectic_magnetism_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      $combatChainState[$CCS_EclecticMag] = 1;
+      SetCombatChainState($CCS_EclecticMag, 1);
       return "";
     case "high_voltage_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);

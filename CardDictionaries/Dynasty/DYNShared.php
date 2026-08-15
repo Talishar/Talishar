@@ -134,7 +134,7 @@ function DYNCombatEffectActive($cardID, $attackID)
       return ($subtype == "Sword") || ($subtype == "Dagger");
     case "felling_swing_red": case "felling_swing_yellow": case "felling_swing_blue": return CardSubType($attackID) == "Axe";
     case "visit_the_imperial_forge_red": case "visit_the_imperial_forge_yellow": case "visit_the_imperial_forge_blue": $cardSubType = CardSubType($attackID); return ($cardSubType == "Sword" || $cardSubType == "Dagger");
-    case "bios_update_red-1": return $combatChainState[$CCS_IsBoosted];
+    case "bios_update_red-1": return GetCombatChainState($CCS_IsBoosted);
     case "cut_to_the_chase_red": case "cut_to_the_chase_yellow": case "cut_to_the_chase_blue": return true;
     case "immobilizing_shot_red": return true;
     case "dead_eye_yellow": return CardSubType($attackID) == "Arrow";
@@ -240,7 +240,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "pulsewave_harpoon_red":
-      $numBoosted = $combatChainState[$CCS_NumBoosted];
+      $numBoosted = GetCombatChainState($CCS_NumBoosted);
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
       $otherPlayerHand = GetHand($otherPlayer);
       if(IsHeroAttackTarget() && $numBoosted > 0 && count($otherPlayerHand) > 0)
@@ -485,15 +485,15 @@ function DYNHitEffect($cardID, $from, $attackID)
     case "flex_claws_red": case "flex_claws_yellow": case "flex_claws_blue": BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true); break;
     case "jubeel_spellbane": if(IsHeroAttackTarget() && !SearchAuras("spellbane_aegis", $mainPlayer)) PlayAura("spellbane_aegis", $mainPlayer); break;
     case "urgent_delivery_red": case "urgent_delivery_yellow": case "urgent_delivery_blue":
-      MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . $combatChainState[$CCS_NumBoosted], "MYITEMS", may:true);
+      MZMoveCard($mainPlayer, "MYHAND:subtype=Item;class=MECHANOLOGIST;maxCost=" . GetCombatChainState($CCS_NumBoosted), "MYITEMS", may:true);
       break;
     case "spiders_bite": AddCurrentTurnEffect($cardID, $defPlayer); break;
     case "eradicate_yellow":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        if($deck->RemainingCards() < $combatChainState[$CCS_DamageDealt]) $deck->BanishTop(banishedBy:$cardID, amount:$deck->RemainingCards());
-        else $deck->BanishTop(banishedBy:$cardID, amount:$combatChainState[$CCS_DamageDealt]);
+        if($deck->RemainingCards() < GetCombatChainState($CCS_DamageDealt)) $deck->BanishTop(banishedBy:$cardID, amount:$deck->RemainingCards());
+        else $deck->BanishTop(banishedBy:$cardID, amount:GetCombatChainState($CCS_DamageDealt));
       }
       break;
     case "leave_no_witnesses_red":
