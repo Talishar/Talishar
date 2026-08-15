@@ -893,7 +893,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
     AddLayer("TRIGGER", $player, "WATERYGRAVE", target:$DisCard->UniqueID());
   }
   $Hero = new CharacterCard(0, $player);
-  if (SubtypeContains($cardID, "Zombie") && $from == "PLAY" && ($Hero->CardID() == "malice" || $Hero->CardID() == "malice_domina_of_the_dead"))
+  if (SubtypeContains($cardID, "Zombie") && $from == "PLAY" && $Hero->Status() == 2 && ($Hero->CardID() == "malice" || $Hero->CardID() == "malice_domina_of_the_dead"))
     AddLayer("TRIGGER", $player, $Hero->CardID(), $DisCard->UniqueID());
   return $grave[$graveLastIndex];
 }
