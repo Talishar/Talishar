@@ -2395,3 +2395,75 @@ class battle_clearing_bellow_blue extends Card {
     return true;
   }
 }
+
+class bone_barrier_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "bone_barrier_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    global $CombatChain;
+    $ChainCard = $CombatChain->Card($CombatChain->NumCardsActiveLink() -1, true);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID: $ChainCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Ally&MYALLY", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Destroy an Ally or discard an Ally to gain 2 block");
+    Await($this->controller, $this->cardID, uniqueID: $uniqueID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"] ?? "-";
+    WriteLog("HERE: $choice");
+    $zone = explode("-", $choice)[0];
+    $index = explode("-", $choice)[1] ?? "";
+    $uniqueID = $dqVars["uniqueID"];
+    if ($index != "") {
+      switch ($zone) {
+        case "MYHAND":
+          DiscardCard($this->controller, $index, "", $this->controller);
+          break;
+        case "MYALLY":
+          $AllyCard = new AllyCard($index, $this->controller);
+          $AllyCard->Destroy();
+          break;
+        default:
+          break;
+      }
+    }
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uniqueID);
+  }
+
+  function EffectBlockModifier($index, $from, $effectInd) {
+    $Effect = new CurrentEffect($effectInd);
+    $ChainCard = new ChainCard($index);
+    return $Effect->AppliestoUniqueID() == $ChainCard->UniqueID() ? 2 : 0;
+  }
+
+  // function SpecialName() {
+  //   return "Bone Barrier";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialType() {
+    return "DR";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+}
