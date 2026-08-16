@@ -663,7 +663,7 @@ function AbilityCost($cardID)
   }
   $auraAttackCosts = AuraAttackCosts($currentPlayer, $cardID);
   if ($auraAttackCosts != -1) return $auraAttackCosts;
-  if (GetResolvedAbilityType($cardID) == "AA") {
+  if (GetResolvedAbilityType($cardID, "PLAY") == "AA") {
     $allyAttackCosts = AllyAttackCosts($currentPlayer, $cardID);
     if ($allyAttackCosts != -1) return $allyAttackCosts;
   }
