@@ -2457,7 +2457,21 @@ class ravenous_rabble_blue extends Card {
 
 
 class stir_the_aetherwinds extends BaseCard {
+	function PlayAbility() {
+		global $CS_NextWizardNAAInstant;
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		SetClassState($this->controller, $CS_NextWizardNAAInstant, 1);
+	}
 
+	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		global $Stack;
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer($cardID);
+    if ($TopLayer->PlayerID() != $this->controller) return;
+    if (IsActivated($cardID, $from)) return;
+    if (ClassContains($TopLayer->ID(), "WIZARD", $this->controller) && TypeContains($TopLayer->ID(), "A"))
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+	}
 }
 
 class stir_the_aetherwinds_red extends Card {
@@ -2468,24 +2482,16 @@ class stir_the_aetherwinds_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CS_NextWizardNAAInstant;
- 	AddCurrentTurnEffect($this->cardID, $this->controller);
-	SetClassState($this->controller, $CS_NextWizardNAAInstant, 1);
-	return "";
+    $this->baseCard->PlayAbility();
+		return "";
   }
 
   function CardEffectArcaneBonus() {
-	return 3;
+		return 3;
   }
 
   function AssignEffectToCard($cardID, $effectIndex, $from) {
-	global $Stack;
-    $Effect = new CurrentEffect($effectIndex);
-    $TopLayer = $Stack->TopLayer($cardID);
-    if ($TopLayer->PlayerID() != $this->controller) return;
-    if (IsActivated($cardID, $from)) return;
-    if (ClassContains($TopLayer->ID(), "WIZARD", $this->controller) && TypeContains($TopLayer->ID(), "A"))
-      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
   }
 }
 
@@ -2497,7 +2503,16 @@ class stir_the_aetherwinds_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
+    $this->baseCard->PlayAbility();
+		return "";
+  }
+
+  function CardEffectArcaneBonus() {
+		return 2;
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
   }
 }
 
@@ -2509,7 +2524,16 @@ class stir_the_aetherwinds_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
+    $this->baseCard->PlayAbility();
+		return "";
+  }
+
+  function CardEffectArcaneBonus() {
+		return 1;
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
   }
 }
 
