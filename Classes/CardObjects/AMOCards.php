@@ -27,6 +27,11 @@ class humour_plunge extends Card {
     $CharacterCard->TapForCost();
   }
 
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    return $CharacterCard->Tapped();
+  }
+
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
     global $defPlayer;
     return IsHeroAttackTarget() && IsInfected($defPlayer) ? 1 : 0;
