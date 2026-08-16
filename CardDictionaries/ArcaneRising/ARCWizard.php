@@ -93,12 +93,6 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
       AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
       return "";
-    case "stir_the_aetherwinds_red":
-    case "stir_the_aetherwinds_yellow":
-    case "stir_the_aetherwinds_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
-      return "";
     case "aether_flare_red":
     case "aether_flare_yellow":
     case "aether_flare_blue":
@@ -512,7 +506,11 @@ function ArcaneModifierAmount($source, $player, $index)
     if ($currentTurnEffects[$index + 1] != $player || $source != $effectArr[0]) return 0;
     $remove = false;
     $card = GetClass($effectArr[0], $player);
-    if ($card != "-") return $card->ArcaneModifier($remove, $player, $index, amount:true);
+    if ($card != "-") {
+      $ret = $card->ArcaneModifier($remove, $player, $index, amount:true);
+      if ($ret == 0) $ret = $card->CardEffectArcaneBonus();
+      return $ret;
+    }
     switch ($effectArr[0]) {
       case "crucible_of_aetherweave":
         return 1;
@@ -522,12 +520,6 @@ function ArcaneModifierAmount($source, $player, $index)
       case "absorb_in_aether_yellow":
       case "absorb_in_aether_blue":
         return 2;
-      case "stir_the_aetherwinds_red":
-        return 3;
-      case "stir_the_aetherwinds_yellow":
-        return 2;
-      case "stir_the_aetherwinds_blue":
-        return 1;
       case "aether_flare_red":
       case "aether_flare_yellow":
       case "aether_flare_blue":

@@ -863,4 +863,8 @@ class Card {
   function AttackPlayCardAbility($cardID, $from) {
     return;
   }
+
+  function CardEffectArcaneBonus() {
+    return 0;
+  }
 }

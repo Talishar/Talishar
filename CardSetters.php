@@ -573,6 +573,8 @@ function EffectArcaneBonus($source)
   $idArr = explode(",", $source);
   $source = $idArr[0];
   $modifier = (count($idArr) > 1 ? $idArr[1] : 0);
+  $card = GetClass($source, 0);
+  if ($card != "-") return $card->CardEffectArcaneBonus();
   switch ($source) {
     case "crucible_of_aetherweave":
       return 1;
@@ -582,12 +584,6 @@ function EffectArcaneBonus($source)
     case "absorb_in_aether_yellow":
     case "absorb_in_aether_blue":
       return 2;
-    case "stir_the_aetherwinds_red":
-      return 3;
-    case "stir_the_aetherwinds_yellow":
-      return 2;
-    case "stir_the_aetherwinds_blue":
-      return 1;
     case "aether_flare_red":
     case "aether_flare_yellow":
     case "aether_flare_blue":
@@ -636,7 +632,8 @@ function AssignArcaneBonus($playerID, $layerIndex=0)
   global $currentTurnEffects, $layers;
   //not a damage bonus, but needs to be associated with the first card played
   $ind = SearchCurrentTurnEffectsForIndex("conduit_of_frostburn", $playerID);
-  if ($ind != -1) $currentTurnEffects[$ind + 2] = $layers[$layerIndex + 6];
+  $Layer = new Layer($layerIndex);
+  if ($ind != -1) $currentTurnEffects[$ind + 2] = $Layer->UniqueID();
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
@@ -651,11 +648,6 @@ function AssignArcaneBonus($playerID, $layerIndex=0)
           break;
         case "tempest_aurora_blue":
           if (CardCost($layers[$layerIndex]) > 0) $skip = true;
-          break;
-        case "stir_the_aetherwinds_red":
-        case "stir_the_aetherwinds_yellow":
-        case "stir_the_aetherwinds_blue":
-          if (!TypeContains($layers[$layerIndex], "A", $playerID)) $skip = true;
           break;
         default:
           break;

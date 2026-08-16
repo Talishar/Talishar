@@ -2456,43 +2456,62 @@ class ravenous_rabble_blue extends Card {
 // }
 
 
-// class stir_the_aetherwinds_red extends Card {
+class stir_the_aetherwinds extends BaseCard {
 
-//   function __construct($controller) {
-//     $this->cardID = "stir_the_aetherwinds_red";
-//     $this->controller = $controller;
-//     }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class stir_the_aetherwinds_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "stir_the_aetherwinds_red";
+    $this->controller = $controller;
+    $this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NextWizardNAAInstant;
+ 	AddCurrentTurnEffect($this->cardID, $this->controller);
+	SetClassState($this->controller, $CS_NextWizardNAAInstant, 1);
+	return "";
+  }
 
+  function CardEffectArcaneBonus() {
+	return 3;
+  }
 
-// class stir_the_aetherwinds_yellow extends Card {
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+	global $Stack;
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer($cardID);
+    if ($TopLayer->PlayerID() != $this->controller) return;
+    if (IsActivated($cardID, $from)) return;
+    if (ClassContains($TopLayer->ID(), "WIZARD", $this->controller) && TypeContains($TopLayer->ID(), "A"))
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "stir_the_aetherwinds_yellow";
-//     $this->controller = $controller;
-//     }
+class stir_the_aetherwinds_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "stir_the_aetherwinds_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class stir_the_aetherwinds_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "stir_the_aetherwinds_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class stir_the_aetherwinds_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "stir_the_aetherwinds_blue";
+    $this->controller = $controller;
+    $this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}
 
 
 // class storm_striders extends Card {
