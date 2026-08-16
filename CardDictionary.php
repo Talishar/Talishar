@@ -257,6 +257,7 @@ function SetID($cardID)
       "UPR551" => "UPR551", //ghostly touch
       "zane_broadly_beloved" => "SPW003", //temporary while waiting on fabcube
       "killjoy_the_crooked_blade" => "SPW001",
+      "battle_clearing_bellow_blue" => "IAR040",
     ];
   }
 
@@ -273,7 +274,10 @@ function ConvertToSetID($cardID) {
 
 function SetIDtoCardID($setID)
 {
-  return GeneratedSetIDtoCardID($setID);
+  return match($setID) {
+    "IAR040" => "battle_clearing_bellow_blue",
+    default => GeneratedSetIDtoCardID($setID)
+  };
 }
 
 function ConvertToCardID($setID) {

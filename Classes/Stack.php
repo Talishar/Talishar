@@ -150,6 +150,10 @@ class Layer {
 		return isset($this->layers[$this->index+2]) ? $this->layers[$this->index+2] : "-";
 	}
 
+  function From() {
+    return explode("|", $this->Parameter())[0];
+  }
+
   function UpdateParameter($param) {
     if (isset($this->layers[$this->index+2]))
       $this->layers[$this->index+2] = $param;

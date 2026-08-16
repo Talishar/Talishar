@@ -867,4 +867,8 @@ class Card {
   function CardEffectArcaneBonus() {
     return 0;
   }
+
+  function IsLayerContinuousBuff() {
+    return false;
+  }
 }

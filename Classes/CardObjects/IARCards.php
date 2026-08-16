@@ -2322,3 +2322,64 @@ class usurp_the_shadow_throne_blue extends Card {
     return true;
   }
 }
+
+class battle_clearing_bellow_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "battle_clearing_bellow_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    global $Stack;
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer($cardID);
+    if (TypeContains($TopLayer->ID(), "AA") && (ModifiedPowerValue($TopLayer->ID(), $this->controller, $TopLayer->From()) >= 6))
+      $Effect->ApplyToUniqueID("ATTACK");
+    elseif (TypeContains($TopLayer->ID(), "AA")) // make sure it does not apply to an attack it "missed" but still let it apply in the future
+      $Effect->ApplyToUniqueID("MISSED");
+  }
+
+  function IsLayerContinuousBuff() {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $attached ? 6 : 0;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    if ($CombatChain->HasCurrentLink())
+      return LinkBasePower(true) >= 6;
+    return false;
+  }
+
+  // function SpecialName() {
+  //   return "Battle Clearing Bellow";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}

@@ -621,7 +621,7 @@ function AssignEffectToCard($cardID, $player, $from) {
   for ($i = 0; $i < $numEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
-    if ($Effect->AppliestoUniqueID() != -1) continue;
+    if ($Effect->AppliestoUniqueID() != -1 && $Effect->AppliestoUniqueID() != "MISSED") continue;
     $card = GetClass($Effect->EffectID(), $player);
     if ($card != "-") $card->AssignEffectToCard($cardID, $Effect->Index(), $from);
   }
