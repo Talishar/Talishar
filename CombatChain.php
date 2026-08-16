@@ -2035,6 +2035,45 @@ function AfterDamage()
   return false;
 }
 
+function LayerStepBasePower() {
+  global $CurrentTurnEffects, $mainPlayer, $Stack;
+  if (!IsLayerStep()) return 0;
+  $Attack = $Stack->BottomLayer();
+  $basePower = PowerValue($Attack->ID(), $Attack->PlayerID(), "STACK", $Attack->Index(), true);
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
+    if ($card != "-") $basePower = $card->EffectSetBasePower($basePower);
+    $effects = explode("-", $Effect->EffectID(), 2);
+    switch ($effects[0]) {
+      case "kayo_underhanded_cheat":
+      case "kayo_strong_arm":
+        if ($mainPlayer == $Effect->PlayerID()) $basePower = 6;
+        break;
+      case "transmogrify_red":
+        $basePower = 8;
+        break;
+      case "transmogrify_yellow":
+        $basePower = 7;
+        break;
+      case "transmogrify_blue":
+        $basePower = 6;
+        break;
+      case "cosmic_awakening_blue":
+        $basePower = match($effects[1]) {
+          "1" => 10, "2" => 15, "3" => 20,
+        };
+        break;
+      case "ghostly_touch":
+        if ($attackID == "UPR551") $basePower = $effects[1];
+        break;
+      default:
+        break;
+    }
+  }
+  return $basePower;
+}
+
 function LinkBasePower($check=false)
 {
   global $CombatChain, $currentTurnEffects, $mainPlayer, $combatChain, $CS_Num6PowBan, $ChainLinks;
