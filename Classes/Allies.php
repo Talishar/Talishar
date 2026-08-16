@@ -143,6 +143,13 @@ class AllyCard {
       $this->pieces[$this->index + 11] = $tapState;
   }
 
+  public function TapForCost(int $tapState = 1): void {
+    if (isset($this->pieces[$this->index + 11]))
+      $this->pieces[$this->index + 11] = $tapState;
+    $this->AddUses(1);
+    $this->SetStatus(2);
+  }
+
   public function SteamCounters(): int {
     return $this->pieces[$this->index + 12] ?? 0;
   }

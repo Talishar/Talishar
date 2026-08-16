@@ -171,9 +171,73 @@ class restless_magister_red extends Card {
     AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
     AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-", 1);
   }
+}
+
+class restless_cleric_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_cleric_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A")
+      GainHealth(1, $this->controller);
+    return "";
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "A,AA";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if ($from != "PLAY") return false;
+    $AllyCard = new AllyCard($index, $this->controller);
+    return $AllyCard->Tapped();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $AllyCard = new AllyCard($index, $this->controller);
+    if ($from == "PLAY") $AllyCard->TapForCost();
+  }
+
+  function AbilityHasGoAgain($from) {
+    return GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A";
+  }
+
+  // function SpecialName() {
+  //   return "Restless Cleric";
+  // }
+
+  function SpecialHealth() {
+    return 3;
+  }
 
   function HasDecay() {
     return true;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialSubType() {
+    return "Zombie,Ally";
   }
 }
 
