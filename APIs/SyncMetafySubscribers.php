@@ -6,6 +6,8 @@ SetHeaders();
 
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
+include_once "../APIKeys/APIKeys.php";
+include_once "../includes/MetafyHelper.php";
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -33,163 +35,72 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
-// When true, users whose metafyID could not be resolved are cleared instead of skipped.
+// When true, users who cannot be matched against the roster at all are revoked
+// instead of skipped. Email matching makes this rarely necessary.
 $input = json_decode(file_get_contents('php://input'), true);
-$clear_no_metafy_id = !empty($input['clearNoMetafyId']);
+$clear_unmatched = !empty($input['clearNoMetafyId']);
 
-if (file_exists('../APIKeys/APIKeys.php')) {
-  include_once '../APIKeys/APIKeys.php';
+$conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);
+if (!$conn) {
+  echo json_encode(["error" => "DB connection failed"]);
+  exit;
 }
 
-$talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
-// $metafyClientID and $metafyClientSecret are set as variables by APIKeys.php (included above)
-$oauthClientID     = $metafyClientID     ?? getenv('METAFY_CLIENT_ID')     ?: '';
-$oauthClientSecret = $metafyClientSecret ?? getenv('METAFY_CLIENT_SECRET') ?: '';
+$modAuth = MetafyLoadAuth($conn, null, $useruid);
+if ($modAuth === null || empty($modAuth['access_token'])) {
+  mysqli_close($conn);
+  echo json_encode([
+    "error" => "Could not fetch any subscribers from Metafy. Sync aborted to avoid clearing valid supporters.",
+    "apiError" => "No Metafy account linked to this moderator. Connect your Metafy account via the profile page.",
+  ]);
+  exit;
+}
 
-// Load moderator's stored Metafy OAuth tokens
-$modMetafyToken        = '';
-$modMetafyRefreshToken = '';
-$modUserDbId           = null;
-$conn_mod = GetDBConnection();
-if ($conn_mod) {
-  $stmt_mod = mysqli_stmt_init($conn_mod);
-  if (mysqli_stmt_prepare($stmt_mod, "SELECT usersid, metafyAccessToken, metafyRefreshToken FROM users WHERE usersUid=? LIMIT 1")) {
-    mysqli_stmt_bind_param($stmt_mod, 's', $useruid);
-    mysqli_stmt_execute($stmt_mod);
-    $res_mod = mysqli_stmt_get_result($stmt_mod);
-    $row_mod = mysqli_fetch_assoc($res_mod);
-    mysqli_stmt_close($stmt_mod);
-    $modMetafyToken        = $row_mod['metafyAccessToken']  ?? '';
-    $modMetafyRefreshToken = $row_mod['metafyRefreshToken'] ?? '';
-    $modUserDbId           = $row_mod['usersid']            ?? null;
+$subscriber_ids    = [];
+$subscriber_emails = [];
+$api_error         = null;
+$api_source        = '';
+$page              = 1;
+$max_pages         = 50;
+
+while ($page <= $max_pages) {
+  $res = MetafyAuthedGet($modAuth, $conn, '/v1/me/community/subscribers?per_page=100&page=' . $page, 15);
+
+  if ($res['code'] === 401 || $res['code'] === 403) {
+    $api_error = $res['code'] === 403
+      ? "Metafy returned HTTP 403: the linked account is missing the `community` scope, or does not own the Talishar community."
+      : "Metafy returned HTTP 401 and the token could not be renewed (please re-link your Metafy account on the profile page).";
+    break;
   }
-  mysqli_close($conn_mod);
-}
-
-/**
- * Attempt to refresh the Metafy OAuth access token using the stored refresh token.
- * Saves the new token to DB on success. Returns new access token or empty string.
- */
-function RefreshMetafyAccessToken($refreshToken, $clientID, $clientSecret, $userDbId) {
-  if (empty($refreshToken) || empty($clientID) || empty($clientSecret)) return '';
-
-  $ch = curl_init('https://metafy.gg/irk/oauth/token');
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_POST, true);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-    'grant_type'    => 'refresh_token',
-    'refresh_token' => $refreshToken,
-    'client_id'     => $clientID,
-    'client_secret' => $clientSecret,
-  ]));
-  curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-  curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-  curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-  $raw      = curl_exec($ch);
-  $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-  curl_close($ch);
-
-  if ($httpCode !== 200) return '';
-
-  $tokens = json_decode($raw, true);
-  $newAccess  = $tokens['access_token']  ?? '';
-  $newRefresh = $tokens['refresh_token'] ?? $refreshToken;
-
-  if (!empty($newAccess) && !empty($userDbId)) {
-    $conn = GetDBConnection();
-    $stmt = mysqli_stmt_init($conn);
-    if (mysqli_stmt_prepare($stmt, "UPDATE users SET metafyAccessToken=?, metafyRefreshToken=? WHERE usersid=?")) {
-      mysqli_stmt_bind_param($stmt, 'ssi', $newAccess, $newRefresh, $userDbId);
-      mysqli_stmt_execute($stmt);
-      mysqli_stmt_close($stmt);
-    }
-    mysqli_close($conn);
+  if ($res['code'] !== 200 || empty($res['body'])) {
+    $api_error = "Metafy returned HTTP " . $res['code'];
+    break;
   }
 
-  return $newAccess;
-}
-
-$all_subscriber_ids = [];
-$api_source = '';
-$api_error  = null;
-$max_pages  = 50;
-
-if (empty($modMetafyToken)) {
-  $api_error = "No Metafy account linked to this moderator. Connect your Metafy account via the profile page.";
-}
-
-// --- Fetch subscribers from metafy.gg/irk/api/v1/me/community/subscribers ---
-// This is the only real API endpoint for community subscriber lists.
-// It uses the community owner's OAuth token as Bearer.
-if (!empty($modMetafyToken)) {
-  $auth_token  = $modMetafyToken;
-  $token_refreshed = false;
-  $page = 1;
-
-  while ($page <= $max_pages) {
-    $url = "https://metafy.gg/irk/api/v1/me/community/subscribers?per_page=100&page=" . intval($page);
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-      'Authorization: Bearer ' . $auth_token,
-      'Content-Type: application/json'
-    ]);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
-    $raw      = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curl_err = curl_error($ch);
-    curl_close($ch);
-
-    // Token expired — try to refresh once and retry
-    if ($http_code === 401 && !$token_refreshed) {
-      $newToken = RefreshMetafyAccessToken($modMetafyRefreshToken, $oauthClientID, $oauthClientSecret, $modUserDbId);
-      if (!empty($newToken)) {
-        $auth_token      = $newToken;
-        $token_refreshed = true;
-        continue; // retry same page with new token
-      }
-      $api_error = "metafy.gg/irk returned HTTP 401 and token refresh failed (refresh token may be expired — please re-link your Metafy account on the profile page)";
-      break;
-    }
-
-    if ($http_code !== 200) {
-      $api_error = "metafy.gg/irk returned HTTP $http_code" . ($curl_err ? " ($curl_err)" : "");
-      break;
-    }
-
-    $data        = json_decode($raw, true);
-    $subscribers = $data['subscribers'] ?? [];
-    if (empty($subscribers)) {
-      if ($page === 1 && empty($all_subscriber_ids)) {
-        $raw_preview = substr($raw, 0, 400);
-        $api_error = "metafy.gg/irk returned 200 but no subscribers found. Response keys: [" . implode(', ', array_keys($data ?? [])) . "] | Preview: $raw_preview";
-      }
-      break;
-    }
-
-    foreach ($subscribers as $sub) {
-      $uid = $sub['user_id'] ?? $sub['id'] ?? null;
-      if ($uid) {
-        $all_subscriber_ids[] = $uid;
-        $uname = strtolower($sub['username'] ?? $sub['slug'] ?? $sub['name'] ?? '');
-        if (!empty($uname)) {
-          $subscriber_usernames[$uname] = $uid;
-        }
-      }
-    }
-
-    $api_source = 'metafy.gg/irk/api/v1/me/community/subscribers';
-    if (count($subscribers) < 100) break;
-    $page++;
+  $data        = json_decode($res['body'], true);
+  $subscribers = $data['subscribers'] ?? null;
+  if (!is_array($subscribers)) {
+    $api_error = "Metafy returned 200 but no subscribers array. Response keys: ["
+      . implode(', ', array_keys(is_array($data) ? $data : [])) . "]";
+    break;
   }
+
+  foreach ($subscribers as $sub) {
+    $uid = $sub['user_id'] ?? $sub['id'] ?? null;
+    if ($uid) $subscriber_ids[$uid] = true;
+    $email = strtolower(trim($sub['email'] ?? ''));
+    if ($email !== '') $subscriber_emails[$email] = true;
+  }
+
+  $api_source = '/v1/me/community/subscribers';
+  $total_pages = intval($data['meta']['pagination']['total_pages'] ?? 1);
+  if ($page >= $total_pages) break;
+  $page++;
 }
 
-$all_subscriber_ids  = array_unique($all_subscriber_ids);
-$subscriber_usernames = $subscriber_usernames ?? [];
-
-// Safety: abort if API returned zero subscribers to avoid clearing everyone
-if (empty($all_subscriber_ids)) {
+// Safety: never reconcile against an empty roster, that would revoke everyone.
+if (empty($subscriber_ids) && empty($subscriber_emails)) {
+  mysqli_close($conn);
   echo json_encode([
     "error" => "Could not fetch any subscribers from Metafy. Sync aborted to avoid clearing valid supporters.",
     "apiError" => $api_error ?? 'No subscribers returned.',
@@ -197,116 +108,61 @@ if (empty($all_subscriber_ids)) {
   exit;
 }
 
-// Cross-reference DB
-$conn = GetDBConnection();
-if (!$conn) {
-  echo json_encode(["error" => "DB connection failed"]);
-  exit;
-}
-
-$sql = "SELECT usersId, usersUid, metafyID, metafyCommunities, metafyAccessToken FROM users WHERE metafyCommunities IS NOT NULL AND metafyCommunities != '' AND metafyCommunities != '[]'";
+// Only accounts that have some Metafy connection can be reconciled.
+$sql = "SELECT usersId, usersUid, usersEmail, metafyID, metafyCommunities
+        FROM users
+        WHERE (metafyID IS NOT NULL AND metafyID != '')
+           OR (metafyCommunities IS NOT NULL AND metafyCommunities != '' AND metafyCommunities != '[]')";
 $result = mysqli_query($conn, $sql);
 
-$checked = 0;
-$cleared = 0;
-$still_active = 0;
-$no_metafy_id = 0;
-$backfilled = 0;
-$cleared_no_metafy_id = 0;
-$cleared_users = [];
-$cleared_no_id_users = [];
-$skipped_users = [];
+$checked        = 0;
+$granted        = 0;
+$still_active   = 0;
+$cleared        = 0;
+$unmatched      = 0;
+$granted_users  = [];
+$cleared_users  = [];
+$skipped_users  = [];
 
 while ($row = mysqli_fetch_assoc($result)) {
-  $communities = json_decode($row['metafyCommunities'], true);
-  if (!is_array($communities)) continue;
+  $communities  = json_decode($row['metafyCommunities'] ?? '', true);
+  if (!is_array($communities)) $communities = [];
+  $wasSupporter = IsTalisharMetafySupporter($communities);
 
-  $has_talishar = false;
-  foreach ($communities as $c) {
-    if (($c['id'] ?? '') === $talishar_community_id) {
-      $has_talishar = true;
-      break;
+  $metafyID = $row['metafyID'] ?? '';
+  $email    = strtolower(trim($row['usersEmail'] ?? ''));
+
+  $matchedById    = $metafyID !== '' && isset($subscriber_ids[$metafyID]);
+  $matchedByEmail = $email !== ''    && isset($subscriber_emails[$email]);
+  $isSubscriber   = $matchedById || $matchedByEmail;
+
+  // Only a known metafyID makes a *negative* result meaningful: a Talishar email that
+  // does not appear in the roster may simply differ from the one used on Metafy, which
+  // is not evidence that the subscription lapsed. Email is a positive match only.
+  if (!$isSubscriber && $metafyID === '') {
+    $unmatched++;
+    if (!$clear_unmatched) {
+      if ($wasSupporter) $skipped_users[] = $row['usersUid'];
+      continue;
     }
   }
-  if (!$has_talishar) continue;
 
   $checked++;
-  $metafyID = $row['metafyID'] ?? null;
-  $forced_clear = false;
 
-  if (empty($metafyID)) {
-    if (!empty($row['metafyAccessToken'])) {
-      $ch_me = curl_init('https://metafy.gg/irk/api/v1/me');
-      curl_setopt($ch_me, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch_me, CURLOPT_TIMEOUT, 5);
-      curl_setopt($ch_me, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $row['metafyAccessToken'], 'Content-Type: application/json']);
-      curl_setopt($ch_me, CURLOPT_USERAGENT, 'Talishar-App');
-      $me_raw  = curl_exec($ch_me);
-      $me_code = curl_getinfo($ch_me, CURLINFO_HTTP_CODE);
-      curl_close($ch_me);
-      if ($me_code === 200) {
-        $me_data  = json_decode($me_raw, true);
-        $metafyID = $me_data['user']['id'] ?? null;
-        if (!empty($metafyID)) {
-          $stmt_bf = mysqli_stmt_init($conn);
-          if (mysqli_stmt_prepare($stmt_bf, 'UPDATE users SET metafyID=? WHERE usersId=?')) {
-            mysqli_stmt_bind_param($stmt_bf, 'si', $metafyID, $row['usersId']);
-            mysqli_stmt_execute($stmt_bf);
-            mysqli_stmt_close($stmt_bf);
-            $backfilled++;
-          }
-        }
-      }
-    }
-
-    if (empty($metafyID) && !empty($subscriber_usernames)) {
-      $talishar_username_lower = strtolower($row['usersUid']);
-      if (isset($subscriber_usernames[$talishar_username_lower])) {
-        $metafyID = $subscriber_usernames[$talishar_username_lower];
-        $stmt_bf = mysqli_stmt_init($conn);
-        if (mysqli_stmt_prepare($stmt_bf, 'UPDATE users SET metafyID=? WHERE usersId=?')) {
-          mysqli_stmt_bind_param($stmt_bf, 'si', $metafyID, $row['usersId']);
-          mysqli_stmt_execute($stmt_bf);
-          mysqli_stmt_close($stmt_bf);
-          $backfilled++;
-        }
-      }
-    }
-
-    if (empty($metafyID)) {
-      $no_metafy_id++;
-      if (!$clear_no_metafy_id) {
-        $skipped_users[] = $row['usersUid'];
-        continue;
-      }
-      // Force mode: no way to verify this user, treat as expired and clear.
-      $forced_clear = true;
-    }
-  }
-
-  if (!$forced_clear && in_array($metafyID, $all_subscriber_ids)) {
-    $still_active++;
+  if ($isSubscriber === $wasSupporter) {
+    if ($wasSupporter) $still_active++;
     continue;
   }
 
-  // User is no longer a subscriber - remove Talishar community from their list
-  $updated_communities = array_values(array_filter($communities, function($c) use ($talishar_community_id) {
-    return ($c['id'] ?? '') !== $talishar_community_id;
-  }));
+  $updated = MetafyApplyTalisharAccess($communities, $isSubscriber);
+  if (!MetafySaveCommunities($conn, $row['usersId'], $updated)) continue;
 
-  $updated_json = json_encode($updated_communities);
-  $stmt = mysqli_stmt_init($conn);
-  if (mysqli_stmt_prepare($stmt, 'UPDATE users SET metafyCommunities=? WHERE usersId=?')) {
-    mysqli_stmt_bind_param($stmt, 'si', $updated_json, $row['usersId']);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
+  if ($isSubscriber) {
+    $granted++;
+    $granted_users[] = $row['usersUid'];
+  } else {
     $cleared++;
-    if ($forced_clear) {
-      $cleared_no_metafy_id++;
-      $cleared_no_id_users[] = $row['usersUid'];
-    } else {
-      $cleared_users[] = $row['usersUid'];
-    }
+    $cleared_users[] = $row['usersUid'];
   }
 }
 
@@ -314,20 +170,19 @@ mysqli_free_result($result);
 mysqli_close($conn);
 
 $response = [
-  "message" => "Sync complete",
-  "apiSource" => $api_source,
-  "subscribersFetched" => count($all_subscriber_ids),
-  "usersChecked" => $checked,
-  "stillActive" => $still_active,
-  "cleared" => $cleared,
-  "skippedNoMetafyId" => $clear_no_metafy_id ? 0 : $no_metafy_id,
-  "noMetafyIdFound" => $no_metafy_id,
-  "clearedNoMetafyId" => $cleared_no_metafy_id,
-  "forcedNoMetafyIdClear" => $clear_no_metafy_id,
-  "backfilled" => $backfilled,
-  "clearedUsers" => $cleared_users,
-  "clearedNoMetafyIdUsers" => $cleared_no_id_users,
-  "skippedUsers" => $skipped_users
+  "message"            => "Sync complete",
+  "apiSource"          => $api_source,
+  "subscribersFetched" => count($subscriber_ids),
+  "subscriberEmails"   => count($subscriber_emails),
+  "usersChecked"       => $checked,
+  "stillActive"        => $still_active,
+  "granted"            => $granted,
+  "cleared"            => $cleared,
+  "unmatched"          => $unmatched,
+  "forcedUnmatchedClear" => $clear_unmatched,
+  "grantedUsers"       => $granted_users,
+  "clearedUsers"       => $cleared_users,
+  "skippedUsers"       => $skipped_users
 ];
 
 if ($api_error) {
