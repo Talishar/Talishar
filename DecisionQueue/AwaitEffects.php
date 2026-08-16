@@ -150,7 +150,9 @@ function MultiChooseIndicesAwait($player) {
 function MultiZoneIndicesAwait($player) {
   global $dqVars;
   $search = $dqVars["search"];
-  return MultiZoneIndices($player, $search);
+  $ret = MultiZoneIndices($player, $search);
+  PrependDecisionQueue("SETDQVAR", $player, "indices", 1); //set a default place to save the last result
+  return $ret;
 }
 
 function ChooseMultiZoneAwait($player) {
@@ -159,6 +161,7 @@ function ChooseMultiZoneAwait($player) {
   $indices = $dqVars["indices"] ?? "";
   if ($indices == "" || $indices == "PASS") return "PASS";
   $notSubsequent = $dqVars["notSubsequent"] ?? false;
+  PrependDecisionQueue("SETDQVAR", $player, "MZIndex", 1); //set a default place to save the last result
   if ($may)
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
   else
@@ -196,6 +199,18 @@ function MZBanishAwait($player) {
   $MZIndex = $dqVars["MZIndex"];
   $parameter = $dqVars["parameter"] ?? "-";
   return MZBanish($player, $parameter, $MZIndex);
+}
+
+function MZRemoveAndBanishAwait($player) {
+  global $dqVars;
+  $MZIndex = $dqVars["MZIndex"] ?? "-";
+  $from = $dqVars["from"] ?? explode("-", $MZIndex)[0];
+  $modifier = $dqVars["modifier"] ?? "-";
+  $banishedBy = $dqVars["banishedBy"] ?? "-";
+  $banisher = $dqVars["banisher"] ?? $player;
+  $parameter = "$from,$modifier,$banishedBy,$banisher";
+  MZBanish($player, $parameter, $MZIndex);
+  return MZRemove($player, $MZIndex);
 }
 
 function SetLayerTargetAwait($player) {

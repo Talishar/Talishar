@@ -173,6 +173,64 @@ class restless_magister_red extends Card {
   }
 }
 
+class restless_quartermaster_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_quartermaster_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    Await($otherPlayer, "MultiZoneIndices", search:"MYARS", subsequent:0);
+    Await($otherPlayer, "ChooseMultiZone", context:"Banish a card from your arsenal");
+    Await($otherPlayer, "MZRemoveAndBanish", banishedBy:$this->cardID, final:true);
+  }
+
+  // function SpecialName() {
+  //   return "Restless Quartermaster";
+  // }
+
+  function SpecialHealth() {
+    return 3;
+  }
+
+  function HasDecay() {
+    return true;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialSubType() {
+    return "Zombie,Ally";
+  }
+}
+
 class restless_cleric_red extends Card {
   function __construct($controller) {
     $this->cardID = "restless_cleric_red";
