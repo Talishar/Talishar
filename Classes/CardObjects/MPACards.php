@@ -106,22 +106,6 @@ class dr_mortimer extends Card {
 		return "Dr. Mortimer";
 	}
 
-	function SpecialClass() {
-		return "ASSASSIN";
-	}
-
-	function SpecialType() {
-		return "C";
-	}
-
-	function SpecialHealth() {
-		return 20;
-	}
-
-	function SpecialBlock() {
-		return -2;
-	}
-
 	function DefaultActiveState() {
 		return 1;
 	}
@@ -167,26 +151,6 @@ class dr_mortimer_blight_of_the_pits extends Card {
 		$this->baseCard->PayAdditionalCosts($from, $index);
 	}
 
-	function SpecialName() {
-		return "Dr. Mortimer";
-	}
-
-	function SpecialClass() {
-		return "ASSASSIN";
-	}
-
-	function SpecialType() {
-		return "C";
-	}
-
-	function SpecialHealth() {
-		return 40;
-	}
-
-	function SpecialBlock() {
-		return -2;
-	}
-
 	function DefaultActiveState() {
 		return 1;
 	}
@@ -213,26 +177,6 @@ class remember_the_mists_blue extends Card {
 	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
 		global $mainPlayer;
 		MZMoveCard($mainPlayer, "THEIRHAND", "THEIRBANISH,HAND,NT,$cardID,$mainPlayer");
-	}
-
-	function SpecialName() {
-		return "Remember the Mists";
-	}
-
-	function SpecialCost() {
-		return 2;
-	}
-
-	function SpecialPitch() {
-		return 3;
-	}
-
-	function SpecialPower() {
-		return 4;
-	}
-
-	function SpecialClass() {
-		return "ASSASSIN";
 	}
 }
 
@@ -320,22 +264,6 @@ class prey_on_insecurity_red extends Card {
 			Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
 		}
 	}
-
-	function HasStealth() {
-		return true;
-	}
-
-	function SpecialName() {
-		return "Prey on Insecurity";
-	}
-
-	function SpecialPower() {
-		return 3;
-	}
-
-	function SpecialClass() {
-		return "ASSASSIN";
-	}
 }
 
 class mutually_assured_destruction_red extends Card {
@@ -374,21 +302,5 @@ class mutually_assured_destruction_red extends Card {
 				WriteLog("The deck is already depleted.");
 			else $deck->BanishTop(banishedBy:$this->cardID, banisher:$this->controller);
 		}
-	}
-
-	function SpecialName() {
-		return "Mutually Assured Destruction";
-	}
-
-	function SpecialClass() {
-		return "ASSASSIN";
-	}
-
-	function SpecialCost() {
-		return 2;
-	}
-
-	function SpecialPower() {
-		return 6;
 	}
 }
