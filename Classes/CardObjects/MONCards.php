@@ -590,7 +590,6 @@ class chane_base extends BaseCard {
 }
 
 class chane extends Card {
-
   function __construct($controller) {
     $this->cardID = "chane";
     $this->controller = $controller;
@@ -608,6 +607,10 @@ class chane extends Card {
 
   function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
     return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, $remove);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
   }
 
   function AbilityHasGoAgain($from) {
@@ -647,6 +650,10 @@ class chane_bound_by_shadow extends Card {
 
   function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
     return $this->baseCard->CurrentEffectGrantsNAAGoAgain($cardID, $remove);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
   }
 
   function AbilityHasGoAgain($from) {

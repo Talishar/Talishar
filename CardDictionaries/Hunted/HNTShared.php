@@ -1173,7 +1173,7 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "leech_renown_red" => true,
     "arc_lightning_yellow-GOAGAIN" => true,
     "chane" => true,
-    "chane_bound_by_shadows" => true,
+    "chane_bound_by_shadow" => true,
     default => false
   };
 }

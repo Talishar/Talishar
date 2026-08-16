@@ -12,7 +12,6 @@
       case "hatchet_of_body": case "hatchet_of_mind": return 1;
       case "gallantry_gold": return 1;
       case "hexagore_the_death_hydra": return 2;
-      case "chane_bound_by_shadow": case "chane": return 0;
       case "galaxxi_black": return 1;
       case "ebon_fold": return 1;
       case "guardian_of_the_shadowrealm_red": return 2;
@@ -41,7 +40,6 @@
       case "hatchet_of_body": case "hatchet_of_mind": return "AA";
       case "gallantry_gold": return "A";
       case "hexagore_the_death_hydra": return "AA";
-      case "chane_bound_by_shadow": case "chane": return "A";
       case "galaxxi_black": return "AA";
       case "ebon_fold": return "I";
       case "guardian_of_the_shadowrealm_red": return "A";
@@ -69,7 +67,6 @@
       case "great_library_of_solana": return true;
       case "dream_weavers": return true;
       case "gallantry_gold": return true;
-      case "chane_bound_by_shadow": case "chane": return true;
       case "aether_ironweave": return true;
       case "stubby_hammerers": return true;
       default: return false;
@@ -164,7 +161,6 @@
       case "convulsions_from_the_bellows_of_hell_red": case "convulsions_from_the_bellows_of_hell_yellow": case "convulsions_from_the_bellows_of_hell_blue": return CardType($attackID) == "AA";
       case "dread_screamer_red": case "dread_screamer_yellow": case "dread_screamer_blue": return true;
       case "unworldly_bellow_red": case "unworldly_bellow_yellow": case "unworldly_bellow_blue": return CardType($attackID) == "AA" && (ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer));
-      case "chane_bound_by_shadow": case "chane": return ClassContains($attackID, "RUNEBLADE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
       case "seeping_shadows_red": return CardType($attackID) == "AA" && CardCost($attackID) <= 2;
       case "seeping_shadows_yellow": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "seeping_shadows_blue": return CardType($attackID) == "AA" && CardCost($attackID) == 0;
