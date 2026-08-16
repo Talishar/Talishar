@@ -47,7 +47,7 @@ class Stack {
     $count = count($this->layers);
     $layerPieces = LayerPieces();
     for ($i = 0; $i < $count; $i += $layerPieces) {
-      if ($this->layers[$i] == $cardID) return new Layer($i);
+      if (($this->layers[$i] ?? "-") == $cardID) return new Layer($i);
     }
     return "";
   }

@@ -419,7 +419,7 @@ function GetPreLayers() {
   $layerPieces = LayerPieces();
   $layerCount = count($layers);
   for ($i = 0; $i < $layerCount; $i += $layerPieces) {
-    if ($layers[$i] == "PRETRIGGER") {
+    if (($layers[$i] ?? "-") == "PRETRIGGER") {
       for ($j = 0; $j < $layerPieces; ++$j) $preLayers[] = $layers[$i + $j];
     }
   }

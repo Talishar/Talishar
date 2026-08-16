@@ -1985,7 +1985,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   if (($cardType == "DR" || $abilityType == "DR" && $isStaticType) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   if ($from == "DECK" && (SearchCharacterActive($currentPlayer, "dash_io") || SearchCharacterActive($currentPlayer, "dash_database"))) return true;
 
-  if (!$secondCheck || $layers[0] == "ABILITY") { // when checking if something *was* played at instant speed, this check only makes sense if the ability was used
+  if (!$secondCheck || ($layers[0] ?? "-") == "ABILITY") { // when checking if something *was* played at instant speed, this check only makes sense if the ability was used
     if ($card != "-") return $card->CanActivateAsInstant($index, $from); //rename this function to "CanActivateAsInstant"
     // cards that can be *activated* at instant speed
     if (in_array($cardID, WINDUP_STYLE_CARDS, true) || in_array($cardID, ARCANE_ABILITY_ACTION_CARDS, true)) {

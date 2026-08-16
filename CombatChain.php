@@ -2015,7 +2015,7 @@ function IsLayerStep()
     "LAYER", "PRELAYERS", "TRIGGER", "PRETRIGGER", "ABILITY", "MELD", "RESUMETURN" => true,
     default => false
   }) return false;
-  if ($layers[$layerInd + 1] != $mainPlayer) return false;
+  if (($layers[$layerInd + 1] ?? "-") != $mainPlayer) return false;
   $layerFrom = explode("|", $layers[$layerInd + 2], 2)[0];
   return GoesOnCombatChain("M", $layers[$layerInd], $layerFrom, $mainPlayer);
 }

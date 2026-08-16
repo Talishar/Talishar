@@ -2117,7 +2117,7 @@ function SearchLayersForPhase($phase)
   $count = count($layers);
   $pieces = LayerPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($layers[$i] == $phase) return $i;
+    if (($layers[$i] ?? "-") == $phase) return $i;
   }
   return -1;
 }

@@ -512,7 +512,7 @@ function ContinueDecisionQueue($lastResult = "")
         }
         if ($currentPlayer != $player) {
           $currentPlayer = $player;
-          $otherPlayer = 3 - $currentPlayer;
+          $otherPlayer = $currentPlayer == 1 ? 2 : 1;
           BuildMyGamestate($currentPlayer);
         }
         $layerPriority[0] = ShouldHoldPriority(1);
@@ -619,8 +619,8 @@ function ContinueDecisionQueue($lastResult = "")
         $additionalCosts = GetClassState($currentPlayer, $CS_AdditionalCosts);
         if ($additionalCosts == "") $additionalCosts = "-";
         $layerIndex = count($layers) - GetClassState($currentPlayer, $CS_LayerPlayIndex);
-        if ($layers[$layerIndex] != "ABILITY") $layers[$layerIndex + 2] = $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4] . "|" . $params[5];
-        $layers[$layerIndex + 4] = $additionalCosts;
+        if (isset($layers[$layerIndex]) && $layers[$layerIndex] != "ABILITY") $layers[$layerIndex + 2] = $params[1] . "|" . $params[2] . "|" . $params[3] . "|" . $params[4] . "|" . $params[5];
+        if (isset($layers[$layerIndex])) $layers[$layerIndex + 4] = $additionalCosts;
         ProcessDecisionQueue();
         return;
       }
@@ -691,7 +691,7 @@ function ContinueDecisionQueue($lastResult = "")
       if (str_contains($parameter, "<2>")) $parameter = str_replace("<2>", CardLink($dqVars[2], $dqVars[2]), $parameter);
     }
   }
-  if (count($layers) > 0 && $layers[0] == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
+  if (count($layers) > 0 && ($layers[0] ?? "-") == "RESOLUTIONSTEP" && $player == $mainPlayer && $phase == "INSTANT") {
     $phase = "M";
   }
   $turn[0] = $phase;
