@@ -5,6 +5,7 @@ include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
 include_once "../Libraries/HTTPLibraries.php";
+include_once "../includes/MetafyHelper.php";
 
 SetHeaders();
 
@@ -44,35 +45,5 @@ mysqli_close($conn);
 echo json_encode($response);
 exit;
 
-function MetafyLink()
-{
-  global $metafyClientID;
-  $client_id = $metafyClientID;
-  
-  // Use new Metafy OAuth endpoint
-  $oauth_host = 'https://metafy.gg/auth/authorize';
-  
-  // Determine redirect URI based on environment
-  $is_local = $_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === 'localhost:8000' || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false;
-  $redirect_uri = $is_local ? 'http://localhost:5173/user/profile/linkmetafy' : 'https://talishar.net/user/profile/linkmetafy';
-  
-  $response_type = 'code';
-  $scope = 'profile community products purchases';
-  
-  // Create state parameter with redirect URL
-  $state = [
-    'redirect_uri' => $redirect_uri
-  ];
-  $state_json = json_encode($state);
-  $state_encoded = base64_encode($state_json);
-  
-  $href = $oauth_host . '?' .
-    'response_type=' . urlencode($response_type) .
-    '&client_id=' . urlencode($client_id) .
-    '&redirect_uri=' . urlencode($redirect_uri) .
-    '&scope=' . urlencode($scope) .
-    '&state=' . urlencode($state_encoded);
-  
-  return $href;
-}
+// MetafyLink() lives in includes/MetafyHelper.php.
 

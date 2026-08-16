@@ -17,6 +17,7 @@ include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
 include_once "../includes/ModeratorList.inc.php";
+include_once "../includes/MetafyHelper.php";
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -49,11 +50,12 @@ if ($conn === false) {
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = [];
   $response->isMetafySupporter = false;
+  $response->metafyNeedsReauth = false;
   header('Content-Type: application/json');
   echo json_encode($response);
   exit;
 }
-$sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, rust_counters,
+$sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, usersId, rust_counters,
                (rust_counters > 0 AND (
                  rust_counters_last_played IS NULL OR
                  rust_counters_last_played <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
@@ -95,50 +97,33 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   $response->isMetafyLinked = !empty($metafyAccessToken);
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = isset($row['metafyCommunities']) ? json_decode($row['metafyCommunities'], true) : [];
-    
-  // Check if user has an active subscription to the Talishar community via Metafy API
-  $response->isMetafySupporter = false;
-  $talishar_community_id = 'be5e01c0-02d1-4080-b601-c056d69b03f6';
+  if (!is_array($response->metafyCommunities)) $response->metafyCommunities = [];
+  $response->metafyNeedsReauth = false;
 
   if (!empty($metafyAccessToken)) {
-    // Get this user's metafyID — first from DB, then live from Metafy API if null
-    $user_metafy_id = $row['metafyID'] ?? null;
+    // Release the session lock before talking to Metafy. Everything still needed from
+    // the session has been read, and holding the lock across a network call would block
+    // every other request this user makes until Metafy answers.
+    session_write_close();
 
-    if (empty($user_metafy_id)) {
-      // Fetch live from Metafy /me using stored access token
-      $ch_me = curl_init('https://metafy.gg/irk/api/v1/me');
-      curl_setopt($ch_me, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch_me, CURLOPT_TIMEOUT, 5);
-      curl_setopt($ch_me, CURLOPT_HTTPHEADER, [
-        'Authorization: Bearer ' . $metafyAccessToken,
-        'Content-Type: application/json'
-      ]);
-      curl_setopt($ch_me, CURLOPT_USERAGENT, 'Talishar-App');
-      $me_raw = curl_exec($ch_me);
-      $me_code = curl_getinfo($ch_me, CURLINFO_HTTP_CODE);
-      curl_close($ch_me);
-      if ($me_code === 200) {
-        $me_data = json_decode($me_raw, true);
-        $user_metafy_id = $me_data['user']['id'] ?? null;
-        // Save it to DB for future calls
-        if ($user_metafy_id) {
-          $stmt_save = mysqli_stmt_init($conn);
-          if (mysqli_stmt_prepare($stmt_save, 'UPDATE users SET metafyID=? WHERE usersUid=?')) {
-            mysqli_stmt_bind_param($stmt_save, 'ss', $user_metafy_id, $userName);
-            mysqli_stmt_execute($stmt_save);
-            mysqli_stmt_close($stmt_save);
-          }
-        }
-      }
-    }
+    $auth = MetafyLoadAuth($conn, $row['usersId'] ?? null);
+    if ($auth !== null) {
+      // A subscription started since the last check is the whole complaint: someone pays
+      // on Metafy and Talishar still shows them as free. One throttled request per user
+      // settles it here, so nobody has to know the refresh link exists.
+      MetafyQuickSupporterCheck($conn, $auth);
+      $response->metafyCommunities = $auth['communities'];
 
-    foreach ($response->metafyCommunities as $community) {
-      if (isset($community['id']) && $community['id'] === $talishar_community_id) {
-        $response->isMetafySupporter = true;
-        break;
-      }
+      // A token issued by the "Sign in with Metafy" app cannot read subscriptions.
+      // Surface that so the UI can ask the user to re-connect rather than showing
+      // a linked account that will never resolve to supporter status. Recorded scopes
+      // catch it up front; a 401/403 during the check catches tokens predating them.
+      $response->metafyNeedsReauth = !MetafyScopesAreSufficient($auth['scopes'] ?? null)
+        || !empty($auth['needs_reauth']);
     }
   }
+
+  $response->isMetafySupporter = IsTalisharMetafySupporter($response->metafyCommunities);
 }
 else {
   $response->rustCounters = 0;
@@ -146,10 +131,11 @@ else {
   $response->metafyInfo = MetafyLink();
   $response->metafyCommunities = [];
   $response->isMetafySupporter = false;
+  $response->metafyNeedsReauth = false;
 }
 
 mysqli_close($conn);
-session_write_close();
+if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
 
 if (!isset($response->displayName)) {
   $response->displayName = $userName;
@@ -184,44 +170,6 @@ function PatreonLink()
   return $href;
 }
 
-function MetafyLink()
-{
-  global $metafyClientID;
-  if (empty($metafyClientID)) {
-    return null;
-  }
-  $client_id = $metafyClientID;
-
-  // Check environment variable first, then fall back to detecting by host
-  $metafy_dev_mode = getenv('METAFY_DEV_MODE');
-  $use_dev = $metafy_dev_mode === 'true' || $metafy_dev_mode === '1';
-  if (!$use_dev) {
-    $is_local = $_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === 'localhost:8000' || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false;
-    $use_dev = $is_local;
-  }
-
-  // Use new Metafy OAuth endpoint
-  $oauth_host = 'https://metafy.gg/auth/authorize';
-
-  // Set appropriate redirect URI based on environment
-  $redirect_uri = $use_dev ? 'http://localhost:5173/user/profile/linkmetafy' : 'https://talishar.net/user/profile/linkmetafy';
-  $response_type = 'code';
-  $scope = 'profile community products purchases';
-
-  // Create state parameter with redirect URL
-  $state = [
-    'redirect_uri' => $redirect_uri
-  ];
-  $state_json = json_encode($state);
-  $state_encoded = base64_encode($state_json);
-  
-  $href = $oauth_host . '?' .
-    'response_type=' . urlencode($response_type) .
-    '&client_id=' . urlencode($client_id) .
-    '&redirect_uri=' . urlencode($redirect_uri) .
-    '&scope=' . urlencode($scope) .
-    '&state=' . urlencode($state_encoded);
-  
-  return $href;
-}
+// MetafyLink() lives in includes/MetafyHelper.php so the profile page and MetafyAPI
+// cannot drift apart on redirect URI or scopes.
 
