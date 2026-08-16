@@ -647,9 +647,7 @@ function PayAllyAbilityAdditionalCosts($cardID, $index, $from) {
   if (GetResolvedAbilityType($cardID, $from) == "AA") {
     if (SearchCharacterAlive($currentPlayer, "vox_necropolis") && SubtypeContains($cardID, "Zombie")) {
       $AllyCard = new AllyCard($index, $currentPlayer);
-      $AllyCard->SetStatus(2);
-      $AllyCard->AddUses(1);
-      $AllyCard->Tap();
+      $AllyCard->TapForCost();
     }
   }
 }

@@ -663,8 +663,10 @@ function AbilityCost($cardID)
   }
   $auraAttackCosts = AuraAttackCosts($currentPlayer, $cardID);
   if ($auraAttackCosts != -1) return $auraAttackCosts;
-  $allyAttackCosts = AllyAttackCosts($currentPlayer, $cardID);
-  if ($allyAttackCosts != -1) return $allyAttackCosts;
+  if (GetResolvedAbilityType($cardID) == "AA") {
+    $allyAttackCosts = AllyAttackCosts($currentPlayer, $cardID);
+    if ($allyAttackCosts != -1) return $allyAttackCosts;
+  }
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($currentPlayer, "storm_of_sandikai")) return 0;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") {
@@ -1128,7 +1130,9 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
   }
   if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry") && HasWard($cardID, $player) && $player == $mainPlayer) return "AA";
   if (DelimStringContains($subtype, "Dragon") && SearchCharacterActive($player, "storm_of_sandikai")) return "AA";
-  if ($from == "PLAY" && SubtypeContains($cardID, "Zombie", $player) && SearchCharacterForCard($player, "vox_necropolis")) return "AA";
+  if ($from == "PLAY" && SubtypeContains($cardID, "Zombie", $player) && SearchCharacterForCard($player, "vox_necropolis")) {
+    return "AA";
+  }
   $setResult = match($set) {
     "WTR" => WTRAbilityType($cardID, $index, $from),
     "ARC" => ARCAbilityType($cardID, $index),
@@ -1182,7 +1186,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
 
 function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 {
-
+  global $currentPlayer;
   $card = GetClass($cardID, 1);
   if ($card != "-") $abilityTypes = $card->GetAbilityTypes($index, $from);
   else $abilityTypes = match ($cardID) {
@@ -1221,6 +1225,8 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "cogwerx_blunderbuss" => "I,AA",
     default => "",
   };
+  if ($abilityTypes != "" && SearchCharacterAlive($currentPlayer, "vox_necropolis") && SubtypeContains($cardID, "Zombie"))
+    $abilityTypes .= ",AA";
   return $abilityTypes;
 }
 
@@ -1303,7 +1309,14 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
   if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
   if ($index == -1) $index = GetClassState($currentPlayer, $CS_PlayIndex);
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") return $card->GetAbilityNames($index, $from, $nameBlocked, $layerCount, $facing, $allNames);
+  if ($card != "-") {
+    $names = $card->GetAbilityNames($index, $from, $nameBlocked, $layerCount, $facing, $allNames);
+    if ($names == "") return $names;
+    if (SearchCharacterAlive($currentPlayer, "vox_necropolis") && SubtypeContains($cardID, "Zombie") && CanAttack($cardID, $from, $index)) {
+      $names .= ",Attack";
+    }
+    return $names;
+  }
   $instantRestricted = InstantRestricted($cardID, $from, $index);
   switch ($cardID) {
     case "teklo_plasma_pistol":

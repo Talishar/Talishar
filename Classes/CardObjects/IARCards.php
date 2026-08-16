@@ -243,8 +243,16 @@ class restless_cleric_red extends Card {
     return "";
   }
 
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
   function GetAbilityTypes($index = -1, $from = '-') {
-    return "A,AA";
+    return "A";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return "Gain_Life";
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -260,6 +268,10 @@ class restless_cleric_red extends Card {
 
   function AbilityHasGoAgain($from) {
     return GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A";
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return GetResolvedAbilityType($this->cardID, $from) == "AA";
   }
 
   // function SpecialName() {
