@@ -261,7 +261,10 @@ function ResolveAttackQueue() {
   if (count($attackQueue) > 0) {
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $params = explode("|", $parameter);
-    if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]), AQCheck:true)) return; 
+    if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]), AQCheck:true)) {
+      WriteLog("Attack Prevented!", highlight:true);
+      return;
+    }
     SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");
     $MZIndex = CleanTargetToIndex($player, $target);
     SetCombatChainState($CCS_AttackTarget, $MZIndex);
