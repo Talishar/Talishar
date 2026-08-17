@@ -1559,10 +1559,10 @@ function InstantRestricted($cardID, $from, $index, $zone="-", $type="-") {
 }
 
 // checks for stuff like warmongers
-
 function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type="-", $AQCheck=false)
 {
   global $currentPlayer, $mainPlayer, $combatChain, $actionPoints, $layers, $CurrentTurnEffects;
+  // Effects that stop you from activating or playing attacks do not stop Queued attacks
   if (!$AQCheck && SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer)) return false;
   $type = $type == "-" ? CardType($cardID, $from) : $type;
   if (!$AQCheck && EffectAttackRestricted($cardID, $type, $from, index:$index, overrideType:$type) != "") return false;
@@ -1570,6 +1570,7 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
   $layerCount = count($layers);
   if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
   if ($layerCount > LayerPieces()) return false;
+  // kabuto stops attacking in general, so it can stop activated or queued attacks
   if ($isWeapon && SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) return false;
   if (TypeContains($cardID, "Sword") && $index != -1) {
     $Weapon = new CharacterCard($index, $mainPlayer);
