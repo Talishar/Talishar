@@ -450,7 +450,7 @@ function AQTargetingAwait($player) {
     $cleanTarget = CleanTarget($player, $target);
     $cleanedTargets[] = $cleanTarget;
     $obj = CleanTargetToObject($player, $cleanTarget);
-    if (HasSpectra($obj->CardID())) {
+    if ($obj != "" && HasSpectra($obj->CardID())) {
       AddLayer("TRIGGER", $defPlayer, "SPECTRA", "-", "-", $obj->UniqueID());
     }
   }

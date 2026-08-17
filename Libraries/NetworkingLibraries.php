@@ -1875,14 +1875,18 @@ function FinalizeChainLink($chainClosed = false)
     ResetChainLinkState();
   }
   ProcessDecisionQueue();
-  if ($Stack->StackEmpty() && $AttackQueue->NumAttacks() > 0) {
-    global $CCS_AttackTarget, $CCS_AttackTargetUID;
+  if ($Stack->StackEmpty() && $AttackQueue->NumAttacks() > 0) { // resolving AttackQueue
+    global $CCS_AttackTarget, $CCS_AttackTargetUID, $CS_AbilityIndex;
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $params = explode("|", $parameter);
     if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]), AQCheck:true)) return; 
     if ($buffs != "-") {
       foreach(explode(",", $buffs) as $buff)
         AddCurrentTurnEffectNextAttack($buff, $player);
+    }
+    $abilityTypes = explode(",", GetAbilityTypes($cardID, from: "PLAY"));
+    for ($i = 0; $i < count($abilityTypes); ++$i) {
+      if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
     SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");
     $MZIndex = CleanTargetToIndex($currentPlayer, $target);

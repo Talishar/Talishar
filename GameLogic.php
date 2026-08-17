@@ -3168,6 +3168,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $attackQueue = $params[2] ?? 0;
       if (CardType($params[0]) == "AA" && GetResolvedAbilityType($params[0], $params[1]) == "" || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack($params[0], $attackQueue);
       return $lastResult;
+    case "GETATTACKQUEUETARGET":
+      $params = explode(",", $parameter);
+      $attackQueue = $params[2] ?? 0;
+      GetTargetOfAttack($params[0], $attackQueue);
+      return $lastResult;
     case "INTIMIDATE":
       $otherPlayer = 3 - $player;
       $sourcePlayer = $player;

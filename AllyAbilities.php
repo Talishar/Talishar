@@ -62,7 +62,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   if ($from == "GY" || $from == "BANISH") {
     if (SearchCharacterAlive($player, "vox_necropolis")) {
       $AllyCard = new AllyCard($index, $player);
-      AddDecisionQueue("GETTARGETOFATTACK", $player, $AllyCard->CardID() . ",PLAY,1");
+      AddDecisionQueue("GETATTACKQUEUETARGET", $player, $AllyCard->CardID() . ",PLAY,1");
       Await($player, "AQTargeting", "target", lastResultName:"target");
       Await($player, "AddTrigger", uniqueID:$AllyCard->UniqueID(), cardID:"vox_necropolis", final:true);
     }

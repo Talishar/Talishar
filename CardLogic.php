@@ -256,7 +256,8 @@ function AddAttackQueue($cardID, $player, $targets, $parameter="-", $uniqueID="-
 }
 
 function ResolveAttackQueue() {
-  global $attackQueue, $combatChainState, $CCS_AttackTargetUID, $CCS_AttackTarget, $turn;
+  // resolving AttackQueue
+  global $attackQueue, $combatChainState, $CCS_AttackTargetUID, $CCS_AttackTarget, $CS_AbilityIndex, $turn;
   if (count($attackQueue) > 0) {
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $params = explode("|", $parameter);
@@ -268,6 +269,10 @@ function ResolveAttackQueue() {
     if ($buffs != "-") {
       foreach(explode(",", $buffs) as $buff)
         AddCurrentTurnEffect($buff, $player);
+    }
+    $abilityTypes = explode(",", GetAbilityTypes($cardID, from: "PLAY"));
+    for ($i = 0; $i < count($abilityTypes); ++$i) {
+      if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
     PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
   }
@@ -484,13 +489,17 @@ function ContinueDecisionQueue($lastResult = "")
           return;
         }
         CloseDecisionQueue();
-        if (IsResolutionStep() && count($layers) == LayerPieces() && count($attackQueue) > 0) {
+        if (IsResolutionStep() && count($layers) == LayerPieces() && count($attackQueue) > 0) { // resolving AttackQueue
           [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
           $params = explode("|", $parameter);
           if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]), AQCheck:true)) return; 
           if ($buffs != "-") {
             foreach(explode(",", $buffs) as $buff)
               AddCurrentTurnEffectNextAttack($buff, $player);
+          }
+          $abilityTypes = explode(",", GetAbilityTypes($cardID, from: "PLAY"));
+          for ($i = 0; $i < count($abilityTypes); ++$i) {
+            if ($abilityTypes[$i] == "AA") $params[2] = $i;
           }
           SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");
           $MZIndex = CleanTargetToIndex($currentPlayer, $target);
@@ -499,8 +508,8 @@ function ContinueDecisionQueue($lastResult = "")
         }
         else {
           [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID] = array_splice($layers, 0, LayerPieces());
+          $params = explode("|", $parameter);
         }
-        $params = explode("|", $parameter);
         $from = $params[0];
         if ($cardID == "TRIGGER" || IsStaticType(CardType($cardID), $from)) {
           SetClassState(1, $CS_ResolvingLayerUniqueID, $uniqueID);
