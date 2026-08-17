@@ -935,11 +935,6 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 
 	$usedBlocks = UsedTurnStatBlocks($turnStats);
 
-	$attackingTurns = $player != 0 ? CountAttackingTurns($player) : 0;
-	if ($attackingTurns < 1) $attackingTurns = count($usedBlocks);
-	if ($attackingTurns < 1) $attackingTurns = 1;
-	$hasTrailingDefence = count($usedBlocks) > $attackingTurns;
-
 	// Hand size drives how many cards were available to attack with. Falls back
 	// to 4 when the hero is unknown (unit tests, replays of deleted games).
 	$handSize = 4;
@@ -995,10 +990,10 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 		$deck["averageCombatValuePerTurn$suffix"] = round($combatValue / $numTurns, 2);
 		$deck["averageValuePerTurn$suffix"] = round($value / $numTurns, 2);
 	};
-	$write("", $usedBlocks, $attackingTurns);
+	$write("", $usedBlocks, count($usedBlocks));
 	$blocksNoLast = $usedBlocks;
-	if (count($blocksNoLast) > 1) array_pop($blocksNoLast);
-	$write("_NoLast", $blocksNoLast, $hasTrailingDefence ? $attackingTurns : $attackingTurns - 1);
+	if (count($blocksNoLast) > 0) array_pop($blocksNoLast);
+	$write("_NoLast", $blocksNoLast, count($blocksNoLast));
 }
 
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
