@@ -238,7 +238,7 @@ class restless_cleric_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A")
+    if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A" && $from == "PLAY")
       GainHealth(1, $this->controller);
     return "";
   }
