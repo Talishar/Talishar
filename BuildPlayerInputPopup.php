@@ -571,6 +571,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $layerPieces = LayerPieces();
         $layersActive = ($layerCheckCount > 0 && $layers[0] != "");
         $isMayChooseMultizone = ($turnPhase === "MAYCHOOSEMULTIZONE");
+        $hideTopDeckCard = $isMayChooseMultizone
+          && $singleMyDeckInTurnData
+          && str_contains(GetDQHelpText(), "destroy_from_the_top_of_your_deck");
         for ($i = 0; $i < $optionsCount; ++$i) {
           $option = explode("-", $options[$i], 3);
           $option0 = $option[0]; // cache zone key — accessed 30+ times per iteration
@@ -878,7 +881,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $subtitles = "(You can click your deck to see its content during this card resolution)";
           }
 
-          if($option0 == "MYDECK" && $option[1] == "0" && $isMayChooseMultizone && $singleMyDeckInTurnData) {
+          if($option0 == "MYDECK" && $option[1] == "0" && $hideTopDeckCard) {
             $card = $MyCardBack;
           }
           if ($showZoneLabels && $label == "" && $option0 != "MYHAND") {

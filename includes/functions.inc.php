@@ -935,11 +935,6 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 
 	$usedBlocks = UsedTurnStatBlocks($turnStats);
 
-	$attackingTurns = $player != 0 ? CountAttackingTurns($player) : 0;
-	if ($attackingTurns < 1) $attackingTurns = count($usedBlocks);
-	if ($attackingTurns < 1) $attackingTurns = 1;
-	$hasTrailingDefence = count($usedBlocks) > $attackingTurns;
-
 	// Hand size drives how many cards were available to attack with. Falls back
 	// to 4 when the hero is unknown (unit tests, replays of deleted games).
 	$handSize = 4;
@@ -972,14 +967,16 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 
 	// $suffix is "" for the full game and "_NoLast" for the same figures with
 	// the player's final turn dropped (the frontend's "exclude last turn" toggle).
-	$write = function($suffix, $blocks, $numTurns) use (&$deck, $totals, $handSize) {
-		$t = $totals($blocks);
+	$write = function($suffix, $totalBlocks, $averageBlocks) use (&$deck, $totals, $handSize) {
+		$t = $totals($totalBlocks);
+		$average = $totals($averageBlocks);
+		$numTurns = count($averageBlocks);
 		if ($numTurns < 1) $numTurns = 1;
-		$offensiveCards = $handSize * $numTurns - $t["defensiveCards"];
+		$offensiveCards = $handSize * $numTurns - $average["defensiveCards"];
 		if ($offensiveCards < 1) $offensiveCards = 1;
 		// $lifeLost is stored negative, so adding it subtracts the life you spent.
-		$combatValue = $t["threatened"] + $t["blocked"];
-		$value = $combatValue + $t["lifeGained"] + $t["lifeLost"] + $t["lifePrevented"];
+		$combatValue = $average["threatened"] + $average["blocked"];
+		$value = $combatValue + $average["lifeGained"] + $average["lifeLost"] + $average["lifePrevented"];
 
 		$deck["totalDamageThreatened$suffix"] = $t["threatened"];
 		$deck["totalDamageDealt$suffix"] = $t["dealt"];
@@ -987,18 +984,20 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 		$deck["totalDamageBlocked$suffix"] = $t["blocked"];
 		$deck["totalDamagePrevented$suffix"] = $t["lifePrevented"];
 		$deck["totalLifeLost$suffix"] = $t["lifeLost"];
-		$deck["averageDamageThreatenedPerTurn$suffix"] = round($t["threatened"] / $numTurns, 2);
-		$deck["averageDamageDealtPerTurn$suffix"] = round($t["dealt"] / $numTurns, 2);
-		$deck["averageDamageThreatenedPerCard$suffix"] = round($t["threatened"] / $offensiveCards, 2);
-		$deck["averageResourcesUsedPerTurn$suffix"] = round($t["resourcesUsed"] / $numTurns, 2);
-		$deck["averageCardsLeftOverPerTurn$suffix"] = round($t["cardsLeft"] / $numTurns, 2);
+		$deck["averageDamageThreatenedPerTurn$suffix"] = round($average["threatened"] / $numTurns, 2);
+		$deck["averageDamageDealtPerTurn$suffix"] = round($average["dealt"] / $numTurns, 2);
+		$deck["averageDamageThreatenedPerCard$suffix"] = round($average["threatened"] / $offensiveCards, 2);
+		$deck["averageResourcesUsedPerTurn$suffix"] = round($average["resourcesUsed"] / $numTurns, 2);
+		$deck["averageCardsLeftOverPerTurn$suffix"] = round($average["cardsLeft"] / $numTurns, 2);
 		$deck["averageCombatValuePerTurn$suffix"] = round($combatValue / $numTurns, 2);
 		$deck["averageValuePerTurn$suffix"] = round($value / $numTurns, 2);
 	};
-	$write("", $usedBlocks, $attackingTurns);
+	$averageBlocks = array_values(array_filter($usedBlocks, fn($block) => $block != 0));
+	$write("", $usedBlocks, $averageBlocks);
 	$blocksNoLast = $usedBlocks;
-	if (count($blocksNoLast) > 1) array_pop($blocksNoLast);
-	$write("_NoLast", $blocksNoLast, $hasTrailingDefence ? $attackingTurns : $attackingTurns - 1);
+	if (count($blocksNoLast) > 0) array_pop($blocksNoLast);
+	$averageBlocksNoLast = array_values(array_filter($blocksNoLast, fn($block) => $block != 0));
+	$write("_NoLast", $blocksNoLast, $averageBlocksNoLast);
 }
 
 function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)

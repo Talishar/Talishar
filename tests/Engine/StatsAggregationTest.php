@@ -15,8 +15,8 @@ use PHPUnit\Framework\TestCase;
  * The invariants that must hold for every seat and every ending:
  *   - totals equal what the player actually did (nothing is ever dropped)
  *   - the per-turn table sums to the totals
- *   - "per turn" divides by turns taken, not by stat blocks stored
- *   - the same play produces the same numbers on the play and on the draw
+ *   - "per turn" divides by populated contributing rows after turn 0
+ *   - each seat uses the same populated-row accounting
  *
  * A failure here means the stats no longer add up, not that a threshold moved.
  */
@@ -160,6 +160,23 @@ class StatsAggregationTest extends TestCase
         return $deck;
     }
 
+    /** @return array<int,int> populated blocks used by an average calculation */
+    private function averageBlocksFor(int $player, bool $excludeLast = false): array
+    {
+        $turnStats = &GetTurnStats($player);
+        $blocks = UsedTurnStatBlocks($turnStats);
+        if ($excludeLast && count($blocks) > 0) array_pop($blocks);
+        return array_values(array_filter($blocks, fn($block) => $block != 0));
+    }
+
+    private function sumStatForBlocks(int $player, array $blocks, int $statOffset): int
+    {
+        $turnStats = &GetTurnStats($player);
+        $sum = 0;
+        foreach ($blocks as $block) $sum += $turnStats[$block + $statOffset];
+        return $sum;
+    }
+
     /** @return array<array{0:int,1:int}> firstPlayer / lethalBy combinations */
     public static function seatProvider(): array
     {
@@ -225,51 +242,49 @@ class StatsAggregationTest extends TestCase
     /**
      * @dataProvider seatProvider
      */
-    public function testAveragesDivideByTurnsTaken(int $firstPlayer, int $lethalBy): void
+    public function testAveragesDivideByRecordedTurnRows(int $firstPlayer, int $lethalBy): void
     {
         $this->playGame($firstPlayer, 6, $lethalBy);
 
         foreach ([1, 2] as $player) {
             $stats = $this->aggregatesFor($player);
-            $turns = $this->attacks[$player];
-            $threatened = $turns * self::THREAT;
-            $blocked = $this->defences[$player] * self::BLOCK;
+            $rows = count($this->averageBlocksFor($player));
+            $threatened = $this->sumStatForBlocks($player, $this->averageBlocksFor($player), $GLOBALS['TurnStats_DamageThreatened']);
+            $blocked = $this->sumStatForBlocks($player, $this->averageBlocksFor($player), $GLOBALS['TurnStats_DamageBlocked']);
 
-            $this->assertEqualsWithDelta(round($threatened / $turns, 2),
+            $this->assertEqualsWithDelta(round($threatened / $rows, 2),
                 $stats['averageDamageThreatenedPerTurn'], 0.001,
-                "P$player: averageDamageThreatenedPerTurn is not per turn taken");
-            $this->assertEqualsWithDelta(round(($threatened + $blocked) / $turns, 2),
+                "P$player: averageDamageThreatenedPerTurn did not omit turn 0");
+            $this->assertEqualsWithDelta(round(($threatened + $blocked) / $rows, 2),
                 $stats['averageCombatValuePerTurn'], 0.001,
-                "P$player: averageCombatValuePerTurn is not per turn taken");
-            $this->assertEqualsWithDelta(round(($threatened + $blocked) / $turns, 2),
+                "P$player: averageCombatValuePerTurn did not omit turn 0");
+            $this->assertEqualsWithDelta(round(($threatened + $blocked) / $rows, 2),
                 $stats['averageValuePerTurn'], 0.001,
-                "P$player: averageValuePerTurn is not per turn taken");
+                "P$player: averageValuePerTurn did not omit turn 0");
         }
     }
 
     /**
-     * Identical play must score identically whether you were on the play or on
-     * the draw. This is the regression that made the player going second read
-     * roughly 10% low.
+     * Both seats must use their own populated rows as the denominator. The
+     * player who dies while defending can legitimately have one more row, so
+     * their result need not equal the other player's result.
      */
-    public function testSeatDoesNotChangeTheResult(): void
+    public function testEachSeatUsesItsRecordedRows(): void
     {
-        $results = [];
         foreach ([1, 2] as $firstPlayer) {
-            // Whoever goes second wins here, so both players take 6 turns and
-            // block 6 times in either arrangement.
             $this->playGame($firstPlayer, 6, 3 - $firstPlayer);
             foreach ([1, 2] as $player) {
-                $this->assertSame(6, $this->attacks[$player], 'scenario should be symmetric');
-                $this->assertSame(6, $this->defences[$player], 'scenario should be symmetric');
-                $results[] = $this->aggregatesFor($player)['averageValuePerTurn'];
+                $stats = $this->aggregatesFor($player);
+                $blocks = $this->averageBlocksFor($player);
+                $rows = count($blocks);
+                $expected = round(
+                    ($this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageThreatened'])
+                    + $this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageBlocked'])) / $rows,
+                    2
+                );
+                $this->assertEqualsWithDelta($expected, $stats['averageValuePerTurn'], 0.001,
+                    "P$player: seat-specific average did not omit turn 0");
             }
-        }
-
-        $this->assertCount(4, $results);
-        foreach ($results as $value) {
-            $this->assertEqualsWithDelta($results[0], $value, 0.001,
-                'seat or first-player choice changed the reported value per turn');
         }
     }
 
@@ -279,9 +294,12 @@ class StatsAggregationTest extends TestCase
 
         foreach ([1, 2] as $player) {
             $stats = $this->aggregatesFor($player);
+            $blocks = $this->averageBlocksFor($player);
+            $rows = count($blocks);
             $expected = round(
-                ($this->attacks[$player] * self::THREAT + $this->defences[$player] * self::BLOCK)
-                / $this->attacks[$player], 2);
+                ($this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageThreatened'])
+                + $this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageBlocked'])) / $rows,
+                2);
             $this->assertEqualsWithDelta($expected, $stats['averageValuePerTurn'], 0.001,
                 "P$player: short game average is wrong");
         }
@@ -346,13 +364,54 @@ class StatsAggregationTest extends TestCase
         $stats = $this->aggregatesFor(1);
         $turns = $this->attacks[1];
         $threatened = $turns * self::THREAT;
+        $averageBlocks = $this->averageBlocksFor(1, true);
+        $expectedThreat = $this->sumStatForBlocks(1, $averageBlocks, $GLOBALS['TurnStats_DamageThreatened']);
 
         $this->assertSame($threatened - self::THREAT, (int)$stats['totalDamageThreatened_NoLast'],
             'excluding the last turn should remove exactly one turn of damage');
         $this->assertEqualsWithDelta(
-            round(($threatened - self::THREAT) / ($turns - 1), 2),
+            round($expectedThreat / count($averageBlocks), 2),
             $stats['averageDamageThreatenedPerTurn_NoLast'], 0.001,
             'excluding the last turn should also drop one turn from the denominator');
+    }
+
+    public function testTrailingDefenceCountsAsOneDisplayedTurn(): void
+    {
+        $this->startGame(1);
+
+        // P2 takes one complete turn, then is left with a final defensive row
+        // when P1 attacks again. Both rows contribute value and must therefore
+        // be included in the full-game per-turn denominator.
+        $this->playTurn();
+        $this->endTurn();
+        $this->playTurn();
+        $this->endTurn();
+        $this->playTurn();
+
+        $stats = $this->aggregatesFor(2);
+        $p2Stats = &GetTurnStats(2);
+        $this->assertSame(2, count(UsedTurnStatBlocks($p2Stats)));
+        $this->assertSame(10, (int)$stats['totalDamageThreatened']);
+        $this->assertSame(10, (int)$stats['totalDamageBlocked']);
+        $this->assertEqualsWithDelta(10.0, $stats['averageValuePerTurn'], 0.001,
+            'the final defensive row must not inflate the average by being omitted from its denominator');
+        $this->assertEqualsWithDelta(15.0, $stats['averageValuePerTurn_NoLast'], 0.001,
+            'excluding the final defensive row should retain only the complete preceding row');
+    }
+
+    public function testTurnZeroIsExcludedFromAveragesButRetainedInTotals(): void
+    {
+        $this->startGame(1);
+        $this->playTurn(); // P1's turn 0: 10 threatened
+        $this->endTurn();
+        $this->playTurn(); // P2's turn 1: P1 blocks 5
+
+        $stats = $this->aggregatesFor(1);
+        $this->assertSame(10, (int)$stats['totalDamageThreatened']);
+        $this->assertSame(5, (int)$stats['totalDamageBlocked']);
+        $this->assertEqualsWithDelta(0.0, $stats['averageDamageThreatenedPerTurn'], 0.001);
+        $this->assertEqualsWithDelta(5.0, $stats['averageValuePerTurn'], 0.001,
+            'turn 0 must not contribute to averages for the starting player');
     }
 
     // ---------------------------------------------------------------- guards
@@ -400,7 +459,7 @@ class StatsAggregationTest extends TestCase
 
         $stats = $this->aggregatesFor(1);
         $this->assertSame(self::THREAT, (int)$stats['totalDamageThreatened']);
-        $this->assertEqualsWithDelta((float)self::THREAT, $stats['averageDamageThreatenedPerTurn'], 0.001);
+        $this->assertEqualsWithDelta(0.0, $stats['averageDamageThreatenedPerTurn'], 0.001);
     }
 
     // ---------------------------------------------------------------- model canary
