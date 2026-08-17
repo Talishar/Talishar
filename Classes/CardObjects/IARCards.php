@@ -262,8 +262,10 @@ class restless_cleric_red extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    $AllyCard = new AllyCard($index, $this->controller);
-    if ($from == "PLAY") $AllyCard->TapForCost();
+    if ($from == "PLAY") {
+      $AllyCard = new AllyCard($index, $this->controller);
+      $AllyCard->TapForCost();
+    }
   }
 
   function AbilityHasGoAgain($from) {
