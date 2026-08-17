@@ -2469,3 +2469,84 @@ class bone_barrier_blue extends Card {
     return "NECROMANCER";
   }
 }
+
+class consuming_strength_yellow extends Card {
+  public $archetype;
+
+  function __construct($controller) {
+    $this->cardID = "consuming_strength_yellow";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
+    return 2;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
+    $names = explode(",", $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount));
+    if (count($names) > 1 && !ControlsBlasmo($this->controller)) return $names[0];
+    return implode(",", $names);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index, dest:"BANISH");
+  }
+
+  // function SpecialName() {
+  //   return "Consuming Strength";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  // function SpecialCost() {
+  //   return 2;
+  // }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}

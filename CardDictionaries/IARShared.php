@@ -109,3 +109,16 @@ function ProcessUniqueAwait($player) {
 	}
 	CheckUnique($player);
 }
+
+function ControlsBlasmo($player) {
+	$Character = new PlayerCharacter($player);
+	if (CardNameContains($Character->Card(0)->ID(), "Blasmophet", $player))
+		return true;
+	$Allies = new Allies($player);
+	for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+		$AllyCard = $Allies->Card($i, true);
+		if (CardNameContains($AllyCard->CardID(), "Blasmophet", $player))
+			return true;
+	}
+	return false;
+}
