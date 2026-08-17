@@ -248,7 +248,7 @@ class restless_cleric_red extends Card {
   }
 
   function GetAbilityTypes($index = -1, $from = '-') {
-    return "A";
+    return $from == "PLAY" ? "A" : "";
   }
 
   function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
@@ -2530,9 +2530,6 @@ class consuming_strength_yellow extends Card {
     return 2;
   }
 
-  // function SpecialCost() {
-  //   return 2;
-  // }
 
   function SpecialPower() {
     return 6;
