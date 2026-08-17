@@ -194,9 +194,9 @@ class restless_quartermaster_red extends Card {
     Await($otherPlayer, "MZRemoveAndBanish", banishedBy:$this->cardID, final:true);
   }
 
-  // function SpecialName() {
-  //   return "Restless Quartermaster";
-  // }
+  function SpecialName() {
+    return "Restless Quartermaster";
+  }
 
   function SpecialHealth() {
     return 3;
@@ -274,9 +274,9 @@ class restless_cleric_red extends Card {
     return GetResolvedAbilityType($this->cardID, $from) == "AA";
   }
 
-  // function SpecialName() {
-  //   return "Restless Cleric";
-  // }
+  function SpecialName() {
+    return "Restless Cleric";
+  }
 
   function SpecialHealth() {
     return 3;
@@ -2371,9 +2371,9 @@ class battle_clearing_bellow_blue extends Card {
     return false;
   }
 
-  // function SpecialName() {
-  //   return "Battle Clearing Bellow";
-  // }
+  function SpecialName() {
+    return "Battle Clearing Bellow";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -2447,9 +2447,9 @@ class bone_barrier_blue extends Card {
     return $Effect->AppliestoUniqueID() == $ChainCard->UniqueID() ? 2 : 0;
   }
 
-  // function SpecialName() {
-  //   return "Bone Barrier";
-  // }
+  function SpecialName() {
+    return "Bone Barrier";
+  }
 
   function SpecialPitch() {
     return 3;
