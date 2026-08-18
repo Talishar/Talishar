@@ -48,8 +48,10 @@ $bannedPlayers = GetBannedPlayers();
 // Get blocked users list for filtering
 $blockedUserNames = [];
 $friendUserNames = [];
+$hiddenByFriendNames = [];
 $friendUserSet = []; 
 $blockedUserSet = []; 
+$hiddenByFriendSet = [];
 if(IsUserLoggedIn()) {
   $userId = LoggedInUser();
   $now = time();
@@ -93,14 +95,18 @@ if(IsUserLoggedIn()) {
   if ($refreshFriends) {
     $friends = GetUserFriends($userId);
     $friendUserNames = array_column($friends, 'username');
+    $hiddenByFriendNames = GetFriendsHidingGamesFromFriends($friends);
     $_SESSION['_friendNamesCache'] = $friendUserNames;
+    $_SESSION['_friendHiddenGamesCache'] = $hiddenByFriendNames;
     $_SESSION['_friendNamesCacheAt'] = $now;
   } else {
     $friendUserNames = $_SESSION['_friendNamesCache'];
+    $hiddenByFriendNames = $_SESSION['_friendHiddenGamesCache'] ?? [];
   }
 
   $blockedUserSet = array_flip($blockedUserNames);
   $friendUserSet = array_flip($friendUserNames);
+  $hiddenByFriendSet = array_flip($hiddenByFriendNames);
 }
 if ($conn) {
   mysqli_close($conn);
@@ -208,6 +214,11 @@ if ($handle = opendir($path)) {
           continue;
         }
 
+        // Don't show games belonging to a friend who hides their games from friends
+        if(isset($hiddenByFriendSet[$gameCreator]) || isset($hiddenByFriendSet[$p2Username])) {
+          continue;
+        }
+
         $gameInProgress = new stdClass();
         $gameInProgress->p1Hero = $cacheArr[6] ?? "";
         $gameInProgress->p2Hero = $cacheArr[7] ?? "";
@@ -279,6 +290,11 @@ if ($handle = opendir($path)) {
 
         // Don't show open games from blocked users
         if(isset($blockedUserSet[$p1uid])) {
+          continue;
+        }
+
+        // Don't show open games from a friend who hides their games from friends
+        if(isset($hiddenByFriendSet[$p1uid])) {
           continue;
         }
 

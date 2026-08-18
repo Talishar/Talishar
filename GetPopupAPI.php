@@ -158,6 +158,7 @@ switch ($popupType) {
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode, $SET_AlwaysShowCounters;
     global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
     global $SET_GemsOffByDefault;
+    global $SET_HideGamesFromFriends;
     
     $response->Settings = [];
     
@@ -203,6 +204,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "AlwaysShowCounters", 32, $dbSettings);
       AddSettingFromDB($response->Settings, "HideHandFromFriends", 33, $dbSettings);
       AddSettingFromDB($response->Settings, "GemsOffByDefault", 34, $dbSettings);
+      AddSettingFromDB($response->Settings, "HideGamesFromFriends", 35, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -233,6 +235,7 @@ switch ($popupType) {
       AddSetting($response->Settings, "AlwaysShowCounters", $SET_AlwaysShowCounters, $playerSettings);
       AddSetting($response->Settings, "HideHandFromFriends", $SET_HideHandFromFriends, $playerSettings);
       AddSetting($response->Settings, "GemsOffByDefault", $SET_GemsOffByDefault, $playerSettings);
+      AddSetting($response->Settings, "HideGamesFromFriends", $SET_HideGamesFromFriends, $playerSettings);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;

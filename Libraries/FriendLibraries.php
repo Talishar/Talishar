@@ -264,6 +264,67 @@ function GetUserFriends($userId) {
   return $friends;
 }
 
+function GetFriendsHidingGamesFromFriends($friends, $connection = null) {
+  global $SET_HideGamesFromFriends;
+
+  if (!is_array($friends) || count($friends) === 0) {
+    return [];
+  }
+
+  if ($connection === null) {
+    $connection = $GLOBALS['conn'] ?? null;
+  }
+  if (!$connection) {
+    return [];
+  }
+
+  $namesById = [];
+  foreach ($friends as $friend) {
+    $friendUserId = $friend['friendUserId'] ?? null;
+    $username = $friend['username'] ?? "";
+    if (!is_numeric($friendUserId) || $username === "") continue;
+    $namesById[(string)(int)$friendUserId] = $username;
+  }
+  if (count($namesById) === 0) {
+    return [];
+  }
+
+  $ids = array_keys($namesById);
+  $placeholders = implode(",", array_fill(0, count($ids), "?"));
+  $settingNumber = (string)($SET_HideGamesFromFriends ?? 35);
+
+  $stmt = null;
+  try {
+    $query = "SELECT playerId FROM savedsettings
+              WHERE settingNumber = ? AND settingValue = '1' AND playerId IN ($placeholders)";
+    $stmt = $connection->prepare($query);
+    if (!$stmt) {
+      return [];
+    }
+
+    $params = array_merge([$settingNumber], $ids);
+    $stmt->bind_param(str_repeat("s", count($params)), ...$params);
+    if (!$stmt->execute()) {
+      return [];
+    }
+
+    $result = $stmt->get_result();
+    $hidden = [];
+    while ($row = $result->fetch_assoc()) {
+      $playerId = (string)(int)$row['playerId'];
+      if (isset($namesById[$playerId])) $hidden[] = $namesById[$playerId];
+    }
+    return $hidden;
+  } catch (\Throwable $e) {
+    error_log("GetFriendsHidingGamesFromFriends: query failed: " . $e->getMessage());
+    return [];
+  } finally {
+    if ($stmt) {
+      $stmt->close();
+    }
+  }
+}
+
 /**
  * Check if two users are friends
  * @param int $userId
@@ -411,7 +472,7 @@ function RemoveFriend($userId, $friendUserId) {
     return ['success' => false, 'message' => 'Friendship not found'];
   }
   InvalidateFriendAuthorizationCache($userId, $friendUserId);
-  unset($_SESSION['_friendNamesCache'], $_SESSION['_friendNamesCacheAt']);
+  unset($_SESSION['_friendNamesCache'], $_SESSION['_friendHiddenGamesCache'], $_SESSION['_friendNamesCacheAt']);
   
   return ['success' => true, 'message' => 'Friend removed successfully'];
 }
@@ -483,7 +544,7 @@ function AcceptFriendRequest($userId, $requesterUserId) {
   }
   $stmt->close();
   InvalidateFriendAuthorizationCache($userId, $requesterUserId);
-  unset($_SESSION['_friendNamesCache'], $_SESSION['_friendNamesCacheAt']);
+  unset($_SESSION['_friendNamesCache'], $_SESSION['_friendHiddenGamesCache'], $_SESSION['_friendNamesCacheAt']);
   
   return ['success' => true, 'message' => 'Friend request accepted'];
 }
