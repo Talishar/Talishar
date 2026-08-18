@@ -134,17 +134,6 @@
           WriteLog(CardLink($cardID, $cardID) . " draw a card.");
         }
         return "";
-      case "winters_bite_red": case "winters_bite_yellow": case "winters_bite_blue":
-        $pay = match($cardID) { "winters_bite_red" => 3, "winters_bite_yellow" => 2, default => 1 };
-        if(ShouldAutotargetOpponent($currentPlayer)) {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
-          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "WINTERSBITE-" . $pay, 1);
-        } else {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
-          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "WINTERSBITE-" . $pay, 1);
-        }
-        return "";
       case "amulet_of_ice_blue":
         if($from == "PLAY") PayOrDiscard($otherPlayer, 2);
         return "";

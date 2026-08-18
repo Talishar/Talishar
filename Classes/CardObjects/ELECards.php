@@ -2977,43 +2977,73 @@
 // }
 
 
-// class winters_bite_red extends Card {
+class winters_bite extends BaseCard {
+    function PlayAbility($pay, $target) {
+        $targetChoice = str_contains($target, "MY") ? "Target_Yourself" : "Target_Opponent";
+        AddDecisionQueue("PASSPARAMETER", $this->controller, $targetChoice);
+        AddDecisionQueue("PLAYERTARGETEDABILITY", $this->controller, "WINTERSBITE-$pay", 1);
+        return "";
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "winters_bite_red";
-//     $this->controller = $controller;
-//     }
+    function PayAdditionalCosts() {
+        if (ShouldAutotargetOpponent($this->controller))
+            $search = "THEIRCHAR:type=C";
+        else
+            $search = "THEIRCHAR:type=C&MYCHAR:type=C";
+        SetTargets($this->controller, $this->cardID, $search);
+    }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class winters_bite_red extends Card {
+    function __construct($controller) {
+        $this->cardID = "winters_bite_red";
+        $this->controller = $controller;
+        $this->baseCard = new winters_bite($this->cardID, $this->controller);
+    }
+    
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        $this->baseCard->PlayAbility(3, $target);
+        return "";
+    }
 
+    function PayAdditionalCosts($from, $index = '-') {
+        $this->baseCard->PayAdditionalCosts();
+    }
+}
 
-// class winters_bite_yellow extends Card {
+class winters_bite_yellow extends Card {
+    function __construct($controller) {
+        $this->cardID = "winters_bite_yellow";
+        $this->controller = $controller;
+        $this->baseCard = new winters_bite($this->cardID, $this->controller);
+    }
+    
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        $this->baseCard->PlayAbility(2, $target);
+        return "";
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "winters_bite_yellow";
-//     $this->controller = $controller;
-//     }
+    function PayAdditionalCosts($from, $index = '-') {
+        $this->baseCard->PayAdditionalCosts();
+    }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class winters_bite_blue extends Card {
+    function __construct($controller) {
+        $this->cardID = "winters_bite_blue";
+        $this->controller = $controller;
+        $this->baseCard = new winters_bite($this->cardID, $this->controller);
+    }
+    
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        $this->baseCard->PlayAbility(1, $target);
+        return "";
+    }
 
-
-// class winters_bite_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "winters_bite_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function PayAdditionalCosts($from, $index = '-') {
+        $this->baseCard->PayAdditionalCosts();
+    }
+}
 
 
 // class winters_grasp_red extends Card {

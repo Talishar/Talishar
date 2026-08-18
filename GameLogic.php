@@ -34,6 +34,7 @@ include "Classes/CardObjects/LGSCards.php";
 include "Classes/CardObjects/WTRCards.php";
 include "Classes/CardObjects/ARCCards.php";
 include "Classes/CardObjects/MONCards.php";
+include "Classes/CardObjects/ELECards.php";
 include "Classes/CardObjects/EVRCards.php";
 include "Classes/CardObjects/UPRCards.php";
 include "Classes/CardObjects/DYNCards.php";
