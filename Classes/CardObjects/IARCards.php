@@ -2523,9 +2523,9 @@ class consuming_strength_yellow extends Card {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index, dest:"BANISH");
   }
 
-  // function SpecialName() {
-  //   return "Consuming Strength";
-  // }
+  function SpecialName() {
+    return "Consuming Strength";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -2601,9 +2601,9 @@ class consuming_lash_yellow extends Card {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index, dest:"BANISH");
   }
 
-  // function SpecialName() {
-  //   return "Consuming Lash";
-  // }
+  function SpecialName() {
+    return "Consuming Lash";
+  }
 
   function SpecialPitch() {
     return 2;
