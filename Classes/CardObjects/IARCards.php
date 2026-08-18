@@ -252,6 +252,7 @@ class restless_cleric_red extends Card {
   }
 
   function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-";
     return "Gain_Life";
   }
 
