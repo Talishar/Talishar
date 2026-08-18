@@ -43,12 +43,28 @@ $SET_MirroredBoardLayout = 30; //Did the player enable mirrored board layout (op
 $SET_MirroredPlayerBoardLayout = 31; //Did the player enable mirrored board layout (player)
 $SET_AlwaysShowCounters = 32; //Always show counters on zones
 $SET_HideHandFromFriends = 33; //Hide your hand content from friends
+$SET_GemsOffByDefault = 34; //Should gems start switched off instead of using each card's default
+$SET_HideGamesFromFriends = 35; //Hide your games from your friends in the open game and spectate lists
 
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
   $settings = GetSettings($player);
   return $settings[$SET_AlwaysHoldPriority] ?? 0;
+}
+
+function GemsOffByDefaultSetting($player)
+{
+  global $SET_GemsOffByDefault;
+  if ($player != 1 && $player != 2) return 0;
+  $settings = GetSettings($player);
+  if ($settings == null) return 0;
+  return ($settings[$SET_GemsOffByDefault] ?? 0) == 1 ? 1 : 0;
+}
+
+function ApplyGemsOffDefault($state, $player)
+{
+  return ($state == 1 && GemsOffByDefaultSetting($player) == 1) ? 0 : $state;
 }
 
 function ManualTunicSetting($player)
@@ -581,6 +597,14 @@ function IsHideHandFromFriends($player)
   return isset($settings[$SET_HideHandFromFriends]) && $settings[$SET_HideHandFromFriends] == "1";
 }
 
+function IsHideGamesFromFriends($player)
+{
+  global $SET_HideGamesFromFriends;
+  $settings = GetSettings($player);
+  if ($settings == null) return false;
+  return isset($settings[$SET_HideGamesFromFriends]) && $settings[$SET_HideGamesFromFriends] == "1";
+}
+
 function IsStreamerMode($player)
 {
   global $SET_StreamerMode;
@@ -635,6 +659,8 @@ function ParseSettingsStringValueToIdInt(string $value)
     "MirroredPlayerBoardLayout" => 31,
     "AlwaysShowCounters" => 32,
     "HideHandFromFriends" => 33,
+    "GemsOffByDefault" => 34,
+    "HideGamesFromFriends" => 35,
   ];
   return $settingsToId[$value];
 }
@@ -646,6 +672,12 @@ function ChangeSetting($player, $setting, $value, $playerId = "")
   if($player != "" && $player != 0) {
     $settings = &GetSettings($player);
     if (($settings[$setting] ?? null) === $value) return; // Already at this value, skip write and any DB call
+    if (is_numeric($setting)) {
+      for ($i = 0; $i < $setting; ++$i) {
+        if (!isset($settings[$i])) $settings[$i] = "0";
+      }
+      ksort($settings);
+    }
     $settings[$setting] = $value;
     if($setting == $SET_MuteChat) {
       if($value == "1") {
@@ -673,12 +705,15 @@ function SaveSettingInDatabase($setting)
     global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
     global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_AlwaysShowCounters;
     global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
+    global $SET_HideGamesFromFriends;
+    global $SET_GemsOffByDefault;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
       $SET_ManualMode, $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo,
       $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro,
       $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_AlwaysShowCounters, $SET_HideHandFromFriends,
+      $SET_GemsOffByDefault, $SET_HideGamesFromFriends,
     ], true);
   }
   return isset($persistable[$setting]);

@@ -209,7 +209,7 @@ function GetAllAltArtVariations(): array
     "nitro_mechanoida=GEM519-T", "nitro_mechanoidb=GEM519-T", "nitro_mechanoidc=GEM519-T", "not_so_fast_yellow=SEA149-T",
     "nourishing_emptiness_red=JDG027-T", "nourishing_glow_blue=OMN038-T", "nullrune_boots=FAB248-T", "nullrune_gloves=FAB247-T",
     "nullrune_hood=FAB245-T", "nullrune_robe=FAB246-T", "numbskull_charm_yellow=FAB370-T", "numbskull_charm_yellow=LGS422-T",
-    "nuu=MST402-T", "nuu_alluring_desire=HER128-T", "oasis_respite_red=ANQ035-T", "oasis_respite_red=FAB231-T",
+    "nuu_alluring_desire=HER128-T", "oasis_respite_red=ANQ035-T", "oasis_respite_red=FAB231-T",
     "oath_of_loyalty_red=HNT149-T", "off_cuts_blue=LSS022-T", "offensive_behavior_blue=LGS420-T", "old_leather_and_vim_red=LGS418-T",
     "oldhim=ELE002-T", "oldhim=PEN345-T", "olympia_prized_fighter=HER170-T", "omens_of_arcana_red=FAB467-T",
     "on_the_horizon_red=GEM067-T", "onyx_amulet_blue=SEA191-T", "opal_amulet_blue=SEA192-T", "orb_weaver_spinneret_red=FAB323-T",

@@ -3,7 +3,7 @@
 function initializePlayerState($handler, $deckHandler, $player)
 {
   global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive, $p1id, $p2id;
-  global $SET_Mute, $SET_IsPatron, $p1Inventory, $p2Inventory;
+  global $SET_Mute, $SET_IsPatron, $SET_GemsOffByDefault, $p1Inventory, $p2Inventory;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
   // Lines 3-11 are sideboard slots (headSB, chestSB, armsSB, legsSB, offhandSB,
@@ -18,6 +18,10 @@ function initializePlayerState($handler, $deckHandler, $player)
 
   fwrite($handler, implode(" ", $deckCards) . "\r\n");
 
+  $userId = ($player == 1 ? $p1id : $p2id);
+  $savedSettings = LoadSavedSettings($userId);
+  $gemsOffByDefault = SavedSettingValue($savedSettings, $SET_GemsOffByDefault) == "1";
+
   $hero = "";
   $charEquipCount = count($charEquip);
   $equipParts = [];
@@ -26,7 +30,9 @@ function initializePlayerState($handler, $deckHandler, $player)
     if(TypeContains($charEquip[$i], "C")) $hero = $charEquip[$i];
     if (IsModular($charEquip[$i])) $charEquip[$i] = "NONE00";
     $slot = GetSlot($charEquip[$i], $numWeapons);
-    $equipParts[] = $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0 0 " . CharacterDefaultActiveState($charEquip[$i]) . " - " . GetUniqueId() . " " . HasCloaked($charEquip[$i], hero:$hero) . " 0 0 $slot";
+    $activeState = CharacterDefaultActiveState($charEquip[$i]);
+    if ($gemsOffByDefault && $activeState == 1) $activeState = 0;
+    $equipParts[] = $charEquip[$i] . " 2 0 0 0 " . CharacterNumUsesPerTurn($charEquip[$i]) . " 0 0 0 " . $activeState . " - " . GetUniqueId() . " " . HasCloaked($charEquip[$i], hero:$hero) . " 0 0 $slot";
   }
   if ($charEquipCount > 0) {
     fwrite($handler, implode(" ", $equipParts) . "\r\n");
@@ -55,10 +61,8 @@ function initializePlayerState($handler, $deckHandler, $player)
   $holdPriority = "0"; //Auto-pass layers
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron) ?: "0";
   $mute = 0;
-  $userId = ($player == 1 ? $p1id : $p2id);
-  $savedSettings = LoadSavedSettings($userId);
   $settingArray = [];
-  for($i=0; $i<=32; ++$i) // Settings: This need to go up when we put a new settings
+  for($i=0; $i<=35; ++$i) // Settings: This need to go up when we put a new settings
   {
     $settingArray[] = SettingDefaultValue($i, $charEquip[0]);
   }
@@ -70,6 +74,15 @@ function initializePlayerState($handler, $deckHandler, $player)
     $settingArray[$savedSettings[$i]] = $savedSettings[$i+1]; 
   }
   fwrite($handler, implode(" ", $settingArray) . "\r\n"); //Settings
+}
+
+function SavedSettingValue($savedSettings, $setting)
+{
+  $count = count($savedSettings);
+  for ($i = 0; $i < $count; $i += 2) {
+    if ($savedSettings[$i] == $setting) return $savedSettings[$i + 1];
+  }
+  return "";
 }
 
 function SettingDefaultValue($setting, $hero)

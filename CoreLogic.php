@@ -4046,7 +4046,7 @@ function EvoHandling($cardID, $player, $from)
         $char[$i] = $cardID . "_equip";
         $char[$i + 7] = 0;//Should not be flagged for destruction
         $char[$i + 8] = 0;//Should not be frozen
-        $char[$i + 9] = CharacterDefaultActiveState($char[$i]);
+        $char[$i + 9] = ApplyGemsOffDefault(CharacterDefaultActiveState($char[$i]), $player);
         $char[$i + 11] = GetUniqueId($char[$i], $player);//new object, so old effects shouldn't track it
         $char[$i + 12] = "UP"; // should be faceup
         $char[$i + 13] = 0; // removes mark

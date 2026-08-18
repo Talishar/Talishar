@@ -643,7 +643,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char[6] = 0;
   $char[7] = 0;
   $char[8] = 0;
-  $char[9] = CharacterDefaultActiveState($cardID);
+  $char[9] = ApplyGemsOffDefault(CharacterDefaultActiveState($cardID), $player);
   $char[13] = 0;
   $char[14] = 0;
   AddEvent("HERO_TRANSFORM", $player . ":" . $cardID);

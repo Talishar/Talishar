@@ -27,8 +27,10 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   $items = &GetItems($player);
   $myHoldState = ItemDefaultHoldTriggerState($cardID, $player);
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
+  $myHoldState = ApplyGemsOffDefault($myHoldState, $player);
   $theirHoldState = ItemDefaultHoldTriggerState($cardID, $otherPlayer);
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
+  $theirHoldState = ApplyGemsOffDefault($theirHoldState, $otherPlayer);
   for ($i = 0; $i < $number; ++$i) {
     $uniqueID = GetUniqueId($cardID, $player);
     $steamCounters = SteamCounterLogic($cardID, $player, $uniqueID) + $steamCounterModifier;

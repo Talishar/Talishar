@@ -103,8 +103,10 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $defaultHoldState = AuraDefaultHoldTriggerState($cardID);
   $myHoldState = $defaultHoldState;
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
+  $myHoldState = ApplyGemsOffDefault($myHoldState, $player);
   $theirHoldState = $defaultHoldState;
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
+  $theirHoldState = ApplyGemsOffDefault($theirHoldState, $otherPlayer);
   
   // Cache loop-invariant values outside loop to avoid repeated function calls
   $cachedAuraPlayCounters = AuraPlayCounters($cardID);

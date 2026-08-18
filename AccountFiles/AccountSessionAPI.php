@@ -169,6 +169,12 @@
     if (!empty($_SESSION['obsolete'])) {
       if (($_SESSION['obsolete_expires'] ?? 0) < time()) {
         session_unset();
+        if (isset($_COOKIE['rememberMeToken'])) {
+          RestoreRegularSession($_COOKIE['rememberMeToken']);
+        }
+        if (empty($_SESSION['userid']) && isset($_COOKIE['metafyRememberToken'])) {
+          RestoreMetafySession($_COOKIE['metafyRememberToken']);
+        }
       }
       return;
     }
