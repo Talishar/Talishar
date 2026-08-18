@@ -4049,6 +4049,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   if (!$nonLimitedOnly && $char[0] == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
   if ($CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $banishCard->UniqueID(), $player)->Index() != -1) return true;
   if (!$nonLimitedOnly && $CurrentTurnEffects->FindEffect("blasmophet_the_insatiable_hunger", $player)->Index() != -1 && HasBloodDebt($cardID) && (TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) return true;
+  if (!$nonLimitedOnly && $CurrentTurnEffects->FindEffect("embrace_sin_yellow-SIN", $player)->Index() != -1 && IsRunechant($cardID)) return true;
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromBanish($mod, $nonLimitedOnly);
   switch ($cardID) {

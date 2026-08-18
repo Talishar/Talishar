@@ -2772,3 +2772,93 @@ class tribute_to_greater_power_red extends Card {
     return 2;
   }
 }
+
+class embrace_sin extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffectNextAttack("$this->cardID-BUFF", $this->controller);
+    AddCurrentTurnEffect("$this->cardID-SIN", $this->controller);
+  }
+
+  function CombatEffectActive($parameter) {
+    return $parameter == "BUFF";
+  }
+
+  function PlayCardEffectAbility($cardID, $index) {
+    $Effect = new CurrentEffect($index);
+    if (IsRunechant($cardID) && str_contains($Effect->EffectID(), "SIN"))
+      $remove = true;
+  }
+}
+
+// class embrace_sin_red extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "embrace_sin_red";
+//     $this->controller = $controller;
+//     $this->baseCard = new embrace_sin($this->cardID, $this->controller);
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
+// }
+
+class embrace_sin_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "embrace_sin_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new embrace_sin($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive($parameter);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
+    $this->baseCard->PlayCardEffectAbility($cardID, $index);
+  }
+
+  // function SpecialName() {
+  //   return "Embrace Sin";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+
+// class embrace_sin_blue extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "embrace_sin_blue";
+//     $this->controller = $controller;
+//     $this->baseCard = new embrace_sin($this->cardID, $this->controller);
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
+// }
