@@ -667,6 +667,7 @@ function AllyPowerModifiers(&$powerModifiers, $index = -1)
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain, $CS_NumCharged, $CS_NumAttacks;
   $modifier = 0;
+  if (!is_numeric($mainPlayer)) return $modifier;
   $Allies = new Allies($mainPlayer);
   for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
     $AllyCard = $Allies->Card($i, true);
