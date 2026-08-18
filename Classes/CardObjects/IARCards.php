@@ -2701,3 +2701,74 @@ class harbinger_of_destruction_red extends Card {
     return true;
   }
 }
+
+class tribute_to_greater_power_red extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "tribute_to_greater_power_red";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 2;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index, dest:"BANISH");
+  }
+
+  // function SpecialName() {
+  //   return "Tribute to Greater Power";
+  // }
+
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
