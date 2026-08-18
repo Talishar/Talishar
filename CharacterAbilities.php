@@ -95,7 +95,7 @@ function PutCharacterIntoPlayForPlayer($cardID, $player, $slot="-")
   $char[] = 0; //6 - On chain (1 = yes, 0 = no)
   $char[] = 0; //7 - Flagged for destruction (1 = yes, 0 = no)
   $char[] = 0; //8 - Frozen (1 = yes, 0 = no)
-  $char[] = CharacterDefaultActiveState($cardID); //9 - Is Active (2 = always active, 1 = yes, 0 = no)
+  $char[] = ApplyGemsOffDefault(CharacterDefaultActiveState($cardID), $player); //9 - Is Active (2 = always active, 1 = yes, 0 = no)
   $char[] = "-"; //10 - Subcards , delimited
   $char[] = GetUniqueId($cardID, $player); //11 - Unique ID
   $char[] = HasCloaked($cardID, $player); //12 - Face up/down
@@ -828,7 +828,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
       $char[$i + 6] = 0;
       $char[$i + 7] = 0;
       $char[$i + 8] = 0;
-      $char[$i + 9] = CharacterDefaultActiveState($cardID);
+      $char[$i + 9] = ApplyGemsOffDefault(CharacterDefaultActiveState($cardID), $player);
       $char[$i + 10] = "-";
       $char[$i + 11] = $uniqueID;
       $char[$i + 12] = HasCloaked($cardID, $player);
@@ -988,7 +988,7 @@ function EquipWeapon($player, $cardID, $source = "-")
           $char[$i + 6] = 0;
           $char[$i + 7] = 0;
           $char[$i + 8] = 0;
-          $char[$i + 9] = CharacterDefaultActiveState($cardID);
+          $char[$i + 9] = ApplyGemsOffDefault(CharacterDefaultActiveState($cardID), $player);
           $char[$i + 10] = "-";
           $char[$i + 11] = $uniqueID;
           $char[$i + 12] = HasCloaked($cardID, $player);
