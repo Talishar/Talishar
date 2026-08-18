@@ -2626,3 +2626,78 @@ class consuming_lash_yellow extends Card {
     return true;
   }
 }
+
+class harbinger_of_destruction_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "harbinger_of_destruction_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $hand = new Hand($this->controller);
+    $count = $from == "HAND" ? 2 : 1;
+    return $hand->NumCards() < $count;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $hand = new Hand($this->controller);
+    if ($hand->NumCards() == 0) {
+      WriteLog("No card in hand to banish, reverting gamestate", highlight:true);
+      RevertGamestate();
+      return;
+    }
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", context:"Banish a card from your hand");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"];
+    $index = explode("-", $choice)[1] ?? -1;
+    if ($index != -1) {
+      $hand = new Hand($this->controller);
+      $cardID = $hand->Card($index);
+      BanishCardForPlayer($cardID, $this->controller, "HAND");
+      if (TalentContains($cardID, "SHADOW", $this->controller))
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+      $hand->Remove($index);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    PlayAura("gate_to_iarathael", $this->controller, 2);
+  }
+
+  // function SpecialName() {
+  //   return "Harbinger of Destruction";
+  // }
+
+  function SpecialCost() {
+    return 8;
+  }
+
+  function SpecialPower() {
+    return 13;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
