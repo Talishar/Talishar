@@ -247,7 +247,8 @@ echo json_encode($response);
 
 function AddSettingFromDB(&$response, $name, $settingID, $dbSettings)
 {
-  $response[] = ["name" => $name, "value" => $dbSettings[$settingID] ?? null];
+  $value = $dbSettings[$settingID] ?? null;
+  $response[] = ["name" => $name, "value" => $value === null ? null : (string)$value];
 }
 
 function AddSetting(&$response, $name, $setting, $preloadedSettings = null)
