@@ -246,8 +246,12 @@ class dig_for_souls_red extends Card {
 			}
 		}
 		$newInds = [];
+		$found = false;
 		foreach($inds as $ind) {
-			if ($ind === $choice) continue;
+			if ($ind === $choice && !$found) {
+				$found = true; // only exclude the first copy of the chosen card
+				continue;
+			}
 			$indParts = explode("-", $ind, 2);
 			if (isset($indParts[1]) && $indParts[1] !== "") $newInds[] = $indParts[1];
 		}
