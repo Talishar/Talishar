@@ -2862,3 +2862,124 @@ class embrace_sin_yellow extends Card {
 //     return "";
 //   }
 // }
+
+class vexing_gloomblade extends BaseCard {
+  function PlayAbility($additionalCosts) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier() {
+    return 2;
+  }
+
+  function CombatEffectActive() {
+    return true;
+  }
+
+  function PayAdditionalCosts($from) {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function AddOnHitTrigger($check) {
+    global $CombatChain;
+    if (IsHeroAttackTarget()) {
+      if (!$check) {
+        $uid = $CombatChain->AttackCard()->UniqueID();
+        SetArcaneTarget($this->controller, $this->cardID, "any");
+        Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, uniqueID:$uid, additional: "ONHHITEFFECT", final:true);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($target) {
+    DealArcane(2, resolvedTarget:$target);
+  }
+}
+
+class vexing_gloomblade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "vexing_gloomblade_red";
+    $this->controller = $controller;
+    $this->baseCard = new vexing_gloomblade($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($additionalCosts);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    return $this->baseCard->PayAdditionalCosts($from);
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect($target);
+  }
+
+  // function SpecialName() {
+  //   return "Vexing Gloomblade";
+  // }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+// class vexing_gloomblade_yellow extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "vexing_gloomblade_yellow";
+//     $this->controller = $controller;
+//     $this->baseCard = new vexing_gloomblade($this->cardID, $this->controller);
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
+// }
+
+// class vexing_gloomblade_blue extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "vexing_gloomblade_blue";
+//     $this->controller = $controller;
+//     $this->baseCard = new vexing_gloomblade($this->cardID, $this->controller);
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
+// }
