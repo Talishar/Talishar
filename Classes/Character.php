@@ -214,6 +214,15 @@ class CharacterCard {
     DestroyCharacter($this->controller, $this->index, $skipDestroy, $wasBanished);
   }
 
+  function Banish($mod="-", $banishedBy="", $banisher="-") {
+    if ($this->index != -1) {
+      $cardID = $this->CardID();
+      $this->Remove();
+      return BanishCardForPlayer($cardID, $this->controller, "EQUIP", $mod, $banishedBy, $banisher);
+    }
+    return -1;
+  }
+
   function Tap($tapState=1, $endStepUntap=false) {
     Tap("MYCHAR-" . $this->index, $this->controller, $tapState, $endStepUntap);
   }

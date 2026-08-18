@@ -4493,7 +4493,7 @@ function TurnArsenalFaceUp($player) {
   }
 }
 
-function SetTargets($player, $cardID, $search, $N=1, $may=false) {
+function SetTargets($player, $cardID, $search, $N=1, $may=false, $playCard=true) {
   for ($i = 0; $i < $N; ++$i) {
     $nLeft = $N - $i;
     if ($N == 1) {
@@ -4510,7 +4510,7 @@ function SetTargets($player, $cardID, $search, $N=1, $may=false) {
     }
     Await($player, "MultiTargetIndices", "indices", search:$search, subsequent:$i != 0);
     Await($player, "ChooseMultiZone", "index", may:$may, context:$message);
-    Await($player, "SetLayerTarget", "currentTargets", layerID:$cardID, final:$nLeft == 1);
+    if ($playCard) Await($player, "SetLayerTarget", "currentTargets", layerID:$cardID, final:$nLeft == 1);
   }
 }
 
