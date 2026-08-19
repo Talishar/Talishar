@@ -193,42 +193,6 @@ class restless_quartermaster_red extends Card {
     Await($otherPlayer, "ChooseMultiZone", context:"Banish a card from your arsenal");
     Await($otherPlayer, "MZRemoveAndBanish", banishedBy:$this->cardID, final:true);
   }
-
-  function SpecialName() {
-    return "Restless Quartermaster";
-  }
-
-  function SpecialHealth() {
-    return 3;
-  }
-
-  function HasDecay() {
-    return true;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialSubType() {
-    return "Zombie,Ally";
-  }
 }
 
 class restless_cleric_red extends Card {
@@ -275,42 +239,6 @@ class restless_cleric_red extends Card {
 
   function GoesOnCombatChain($phase, $from) {
     return GetResolvedAbilityType($this->cardID, $from) == "AA";
-  }
-
-  function SpecialName() {
-    return "Restless Cleric";
-  }
-
-  function SpecialHealth() {
-    return 3;
-  }
-
-  function HasDecay() {
-    return true;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialSubType() {
-    return "Zombie,Ally";
   }
 }
 
@@ -2079,26 +2007,6 @@ class shadowrealm_strength_red extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
-
-  function SpecialName() {
-    return "Shadowrealm Strength";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
 }
 
 class otherworldly_sins extends BaseCard {
@@ -2133,34 +2041,6 @@ class otherworldly_sins_red extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return $this->baseCard->CombatEffectActive();
   }
-
-  function SpecialName() {
-    return "Otherworldly Sins";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
 }
 
 class otherworldly_sins_yellow extends Card {
@@ -2182,38 +2062,6 @@ class otherworldly_sins_yellow extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return $this->baseCard->CombatEffectActive();
   }
-
-  function SpecialName() {
-    return "Otherworldly Sins";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
 }
 
 class otherworldly_sins_blue extends Card {
@@ -2234,38 +2082,6 @@ class otherworldly_sins_blue extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return $this->baseCard->CombatEffectActive();
-  }
-
-  function SpecialName() {
-    return "Otherworldly Sins";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialPitch() {
-    return 3;
   }
 }
 
@@ -2307,34 +2123,6 @@ class usurp_the_shadow_throne_blue extends Card {
     }
     GainHealth($num, $this->controller);
     LoseHealth($num, $otherPlayer);
-  }
-
-  function SpecialName() {
-    return "Usurp the Shadow Throne";
-  }
-
-  function SpecialCost() {
-    return 13;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 13;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
   }
 }
 
