@@ -10,38 +10,6 @@ class restless_commander_red extends Card {
 		return "";
 	}
 
-	function HasDecay() {
-		return true;
-	}
-
-	function SpecialSubType() {
-		return "Zombie,Ally";
-	}
-
-	function SpecialPower() {
-		return 3;
-	}
-
-	function SpecialHealth() {
-		return 3;
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function SpecialName() {
-		return "Restless Commander";
-	}
-
-	function SpecialClass() {
-		return "NECROMANCER";
-	}
-
-	function SpecialTalent() {
-		return "SHADOW";
-	}
-
 	function PermanentPowerModifier(&$powerModifiers) {
 		global $CombatChain;
 		if (SubTypeContains($CombatChain->AttackCard()->ID(), "Zombie")) {
@@ -50,10 +18,6 @@ class restless_commander_red extends Card {
 		return 1;
 		}
 		return 0;
-	}
-
-	function SpecialBlock() {
-		return -2;
 	}
 }
 
@@ -86,26 +50,6 @@ class corrupted_crown extends Card {
 		MZBanish($this->controller, "HAND", $choice);
 		MZRemove($this->controller, $choice);
 		$ChainCard->ModifyDefense(1);
-	}
-
-	function SpecialName() {
-		return "Corrupted Crown";
-	}
-
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialTalent() {
-		return "SHADOW";
-	}
-
-	function SpecialSubType() {
-		return "Head";
-	}
-
-	function SpecialBlock() {
-		return 1;
 	}
 }
 
@@ -169,30 +113,6 @@ class undead_grasp extends Card {
 		$Allies = new Allies($this->controller);
 		$Ally = $Allies->FindCardUID($CombatChain->AttackCard()->OriginUniqueID());
 		$Ally->Destroy();
-	}
-
-	function SpecialName() {
-		return "Undead Grasp";
-	}
-
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialTalent() {
-		return "SHADOW";
-	}
-
-	function SpecialClass() {
-		return "NECROMANCER";
-	}
-
-	function SpecialSubType() {
-		return "Arms";
-	}
-
-	function SpecialBlock() {
-		return 1;
 	}
 }
 
@@ -280,29 +200,5 @@ class dig_for_souls_red extends Card {
 		$Allies = new Allies($this->controller);
 		$Ally = $Allies->FindCardUID($CombatChain->AttackCard()->OriginUniqueID());
 		$Ally->Destroy();
-	}
-
-	function SpecialName() {
-		return "Dig for Souls";
-	}
-
-	function SpecialBlock() {
-		return 3;
-	}
-
-	function SpecialClass() {
-		return "NECROMANCER";
-	}
-
-	function SpecialTalent() {
-		return "SHADOW";
-	}
-
-	function SpecialType() {
-		return "A";
-	}
-
-	function HasGoAgain($from) {
-		return true;
 	}
 }

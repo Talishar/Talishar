@@ -2373,30 +2373,6 @@ class battle_clearing_bellow_blue extends Card {
       return LinkBasePower(true) >= 6;
     return false;
   }
-
-  function SpecialName() {
-    return "Battle Clearing Bellow";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "BRUTE";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
 }
 
 class bone_barrier_blue extends Card {
@@ -2448,26 +2424,6 @@ class bone_barrier_blue extends Card {
     $Effect = new CurrentEffect($effectInd);
     $ChainCard = new ChainCard($index);
     return $Effect->AppliestoUniqueID() == $ChainCard->UniqueID() ? 2 : 0;
-  }
-
-  function SpecialName() {
-    return "Bone Barrier";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialType() {
-    return "DR";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
   }
 }
 
@@ -2522,31 +2478,6 @@ class consuming_strength_yellow extends Card {
   function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index, dest:"BANISH");
   }
-
-  function SpecialName() {
-    return "Consuming Strength";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialClass() {
-    return "BRUTE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
 }
 
 class consuming_lash_yellow extends Card {
@@ -2599,31 +2530,6 @@ class consuming_lash_yellow extends Card {
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index, dest:"BANISH");
-  }
-
-  function SpecialName() {
-    return "Consuming Lash";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialClass() {
-    return "BRUTE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
   }
 }
 
@@ -2680,26 +2586,6 @@ class harbinger_of_destruction_red extends Card {
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
     PlayAura("gate_to_iarathael", $this->controller, 2);
   }
-
-  // function SpecialName() {
-  //   return "Harbinger of Destruction";
-  // }
-
-  function SpecialCost() {
-    return 8;
-  }
-
-  function SpecialPower() {
-    return 13;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
 }
 
 class tribute_to_greater_power_red extends Card {
@@ -2750,27 +2636,6 @@ class tribute_to_greater_power_red extends Card {
   function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index, dest:"BANISH");
   }
-
-  // function SpecialName() {
-  //   return "Tribute to Greater Power";
-  // }
-
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
 }
 
 class embrace_sin extends BaseCard {
@@ -2789,18 +2654,6 @@ class embrace_sin extends BaseCard {
       $remove = true;
   }
 }
-
-// class embrace_sin_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "embrace_sin_red";
-//     $this->controller = $controller;
-//     $this->baseCard = new embrace_sin($this->cardID, $this->controller);
-//   }
-  
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
 
 class embrace_sin_yellow extends Card {
   function __construct($controller) {
@@ -2825,43 +2678,7 @@ class embrace_sin_yellow extends Card {
   function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
     $this->baseCard->PlayCardEffectAbility($cardID, $index);
   }
-
-  // function SpecialName() {
-  //   return "Embrace Sin";
-  // }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
 }
-
-// class embrace_sin_blue extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "embrace_sin_blue";
-//     $this->controller = $controller;
-//     $this->baseCard = new embrace_sin($this->cardID, $this->controller);
-//   }
-  
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
 
 class vexing_gloomblade extends BaseCard {
   function PlayAbility($additionalCosts) {
@@ -2934,30 +2751,6 @@ class vexing_gloomblade_red extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect($target);
   }
-
-  // function SpecialName() {
-  //   return "Vexing Gloomblade";
-  // }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
 }
 
 class vexing_gloomblade_yellow extends Card {
@@ -2995,34 +2788,6 @@ class vexing_gloomblade_yellow extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect($target);
   }
-
-  // function SpecialName() {
-  //   return "Vexing Gloomblade";
-  // }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
 }
 
 class vexing_gloomblade_blue extends Card {
@@ -3059,34 +2824,6 @@ class vexing_gloomblade_blue extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect($target);
-  }
-
-  // function SpecialName() {
-  //   return "Vexing Gloomblade";
-  // }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
-
-  function SpecialPitch() {
-    return 3;
   }
 }
 
@@ -3161,13 +2898,12 @@ class bloodsong_gloomblade_red extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    WriteLog("HERE0: $target");
     $this->baseCard->HitEffect($target);
   }
 
-  // function SpecialName() {
-  //   return "Bloodsong Gloomblade";
-  // }
+  function SpecialName() {
+    return "Bloodsong Gloomblade";
+  }
 
   function SpecialCost() {
     return 0;
@@ -3187,137 +2923,5 @@ class bloodsong_gloomblade_red extends Card {
 
   function HasBloodDebt() {
     return true;
-  }
-}
-
-class bloodsong_gloomblade_yellow extends Card {
-  function __construct($controller) {
-    $this->cardID = "bloodsong_gloomblade_yellow";
-    $this->controller = $controller;
-    $this->baseCard = new bloodsong_gloomblade($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($additionalCosts);
-    return "";
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return $this->baseCard->EffectPowerModifier();
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return $this->baseCard->CombatEffectActive();
-  }
-
-  function PayAdditionalCosts($from, $index = '-') {
-    return $this->baseCard->PayAdditionalCosts($from);
-  }
-
-  function PlayableFromBanish($mod, $nonLimitedOnly) {
-    return true;
-  }
-
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return $this->baseCard->AddOnHitTrigger($check);
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    WriteLog("HERE0: $target");
-    $this->baseCard->HitEffect($target);
-  }
-
-  // function SpecialName() {
-  //   return "Bloodsong Gloomblade";
-  // }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialPower() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-}
-
-class bloodsong_gloomblade_gloomblade_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "bloodsong_gloomblade_gloomblade_blue";
-    $this->controller = $controller;
-    $this->baseCard = new bloodsong_gloomblade($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($additionalCosts);
-    return "";
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return $this->baseCard->EffectPowerModifier();
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return $this->baseCard->CombatEffectActive();
-  }
-
-  function PayAdditionalCosts($from, $index = '-') {
-    return $this->baseCard->PayAdditionalCosts($from);
-  }
-
-  function PlayableFromBanish($mod, $nonLimitedOnly) {
-    return true;
-  }
-
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return $this->baseCard->AddOnHitTrigger($check);
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    WriteLog("HERE0: $target");
-    $this->baseCard->HitEffect($target);
-  }
-
-  // function SpecialName() {
-  //   return "Bloodsong Gloomblade";
-  // }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialPower() {
-    return 0;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
-
-  function SpecialPitch() {
-    return 3;
   }
 }
