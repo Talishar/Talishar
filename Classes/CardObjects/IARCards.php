@@ -240,6 +240,10 @@ class restless_cleric_red extends Card {
   function GoesOnCombatChain($phase, $from) {
     return GetResolvedAbilityType($this->cardID, $from) == "AA";
   }
+
+  function HasGoAgain($from) {
+    return false;
+  }
 }
 
 class corrupted_corpse extends Card {
