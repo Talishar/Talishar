@@ -2036,17 +2036,11 @@ class herald_of_hope_blue extends Card {
   }
 }
 
-class shadowrealm_strength_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "shadowrealm_strength_red";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+class shadowrealm_strength extends BaseCard {
+  function PlayAbility() {
     Await($this->controller, "MultiZoneIndices", "indices", search:"MYBANISH", subsequent:0);
     Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Move a card in your banish to your graveyard");
     Await($this->controller, $this->cardID, final:true);
-    return "";
   }
 
   function SpecificLogic() {
@@ -2061,6 +2055,24 @@ class shadowrealm_strength_red extends Card {
       $BanishCard->Remove();
     }
   }
+}
+
+class shadowrealm_strength_red extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_strength_red";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_strength($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
 
   function EffectPowerModifier($param, $attached = false) {
     return 3;
@@ -2068,6 +2080,56 @@ class shadowrealm_strength_red extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
+  }
+}
+
+class shadowrealm_strength_blue extends Card {
+  public $baseCard;
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_strength_blue";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_strength($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function SpecialName() {
+    return "Shadowrealm Strength";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
   }
 }
 
