@@ -1070,6 +1070,64 @@ class demonbound_gloomblade_red extends Card {
   }
 }
 
+class demonbound_gloomblade_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "demonbound_gloomblade_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new demonbound_gloomblade($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($additionalCosts);
+    return "";
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts($from);
+  }
+}
+
+class demonbound_gloomblade_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "demonbound_gloomblade_blue";
+    $this->controller = $controller;
+    $this->baseCard = new demonbound_gloomblade($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($additionalCosts);
+    return "";
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts($from);
+  }
+}
+
 class corrupt_and_conquer_red extends Card {
   function __construct($controller) {
     $this->cardID = "corrupt_and_conquer_red";
