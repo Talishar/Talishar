@@ -36,34 +36,6 @@ class humour_plunge extends Card {
     global $defPlayer;
     return IsHeroAttackTarget() && IsInfected($defPlayer) ? 1 : 0;
   }
-
-  function SpecialName() {
-    return "Humour Plunge";
-  }
-
-  function SpecialType() {
-    return "W";
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialPower() {
-    return 1;
-  }
-
-  function HasPiercing() {
-    return true;
-  }
-
-  function SpecialSubType() {
-    return "Dagger";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
 }
 
 class viral_diffusion_red extends Card {
@@ -87,29 +59,5 @@ class viral_diffusion_red extends Card {
     PlayAura("bloodrot_pox", $mainPlayer);
     PlayAura("frailty", $mainPlayer);
     PlayAura("inertia", $mainPlayer);
-  }
-
-  function SpecialName() {
-    return "Viral Diffusion";
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "DR";
-  }
-
-  function SpecialSubType() {
-    return "Trap";
-  }
-
-  function SpecialBlock() {
-    return 4;
   }
 }
