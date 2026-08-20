@@ -1554,6 +1554,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $parameters[0] ?? 0;
       $source = $parameters[1] ?? "-";
       $type = $parameters[2] ?? "DAMAGE";
+      $preventable = CanDamageBePrevented($player, $damage, $type, $source);
       $playerSource = $parameters[3] ?? $player; //!! Important for end games stats
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
         return DamageAlly($targetPlayer, $target[1], $damage, $type);
@@ -1563,7 +1564,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $Character = new PlayerCharacter($targetPlayer);
         $Solray = $Character->FindCardID("solray_plating");
         if ($Solray != "" && $Solray->IsActive()) DoSolrayPlating($targetPlayer, $damage);
-        DoQuell($targetPlayer, $damage);
+        DoQuell($targetPlayer, $damage, $preventable);
         if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
       }
       return $damage;
@@ -1630,6 +1631,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $sourceID = ExtractCardID($source);
         $type = $parameters[2] ?? "-";
         $sourceType = CardType($sourceID);
+        $preventable = CanDamageBePrevented($player, $damage, $type, $source);
         if ($type == "PLAYCARD") {
           $damage += ConsumeArcaneBonus($player);
           if (DelimStringContains($sourceType, "A") || $sourceType == "AA") $damage += CountCurrentTurnEffects("flicker_wisp_yellow", $player);
@@ -1705,7 +1707,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           DoSolrayPlating($targetPlayer, $damage);
         }
         PrependDecisionQueue("INCREMENTCLASSSTATEBY", $target, $CS_PreventionCache, 1);
-        DoQuell($target, $damage);
+        DoQuell($target, $damage, $preventable);
         PrependDecisionQueue("INCREMENTCLASSSTATEBY", $target, $CS_PreventionCache, 1);
         PrependDecisionQueue("PAYRESOURCES", $target, "<-", 1);
         PrependDecisionQueue("ARCANECHOSEN", $target, $source, 1);

@@ -874,12 +874,18 @@ function DamageDealtAbilities($target, $damage, $type, $source)
   if ($card != "-") $card->DamageDealtAbilities($target, $damage, $type);
 }
 
-function DoQuell($targetPlayer, $damage)
+function DoQuell($targetPlayer, $damage, $preventable = true)
 {
   $quellChoices = QuellChoices($targetPlayer, $damage);
   if ($quellChoices != "0") {
-    PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
-    PrependDecisionQueue("AFTERQUELL", $targetPlayer, "-", 1);
+    if ($preventable) {
+      PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
+      PrependDecisionQueue("AFTERQUELL", $targetPlayer, "-", 1);
+    }
+    else {
+      PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 0, 1);
+      PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
+    }
     PrependDecisionQueue("BUTTONINPUT", $targetPlayer, $quellChoices);
     PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an amount to pay for Quell");
   } else {

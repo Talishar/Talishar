@@ -239,7 +239,7 @@ function DealDamageAwait($player) {
   $source = $dqVars["source"] ?? "-";
   $type = $dqVars["type"] ?? "DAMAGE";
   $playerSource = $dqVars["playerSource"] ?? $player;
-
+  $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   $targetArr = explode("-", $target);
   $targetPlayer = $targetArr[0] == "MYCHAR" || $targetArr[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
   if ($targetArr[0] == "THEIRALLY" || $targetArr[0] == "MYALLY") {
@@ -250,7 +250,7 @@ function DealDamageAwait($player) {
     $Character = new PlayerCharacter($targetPlayer);
     $Solray = $Character->FindCardID("solray_plating");
     if ($Solray != "" && $Solray->IsActive()) DoSolrayPlating($targetPlayer, $damage);
-    DoQuell($targetPlayer, $damage);
+    DoQuell($targetPlayer, $damage, $preventable);
     if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
   }
   return $damage;
