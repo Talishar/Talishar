@@ -2866,9 +2866,9 @@ class battle_prep_red extends Card {
     return 3;
   }
 
-  // function SpecialName() {
-  //   return "Battle Prep";
-  // }
+  function SpecialName() {
+    return "Battle Prep";
+  }
 
   function SpecialType() {
     return "A";
@@ -2899,9 +2899,9 @@ class battle_prep_yellow extends Card {
     return 2;
   }
 
-  // function SpecialName() {
-  //   return "Battle Prep";
-  // }
+  function SpecialName() {
+    return "Battle Prep";
+  }
 
   function SpecialType() {
     return "A";
@@ -2936,9 +2936,9 @@ class battle_prep_blue extends Card {
     return 1;
   }
 
-  // function SpecialName() {
-  //   return "Battle Prep";
-  // }
+  function SpecialName() {
+    return "Battle Prep";
+  }
 
   function SpecialType() {
     return "A";
