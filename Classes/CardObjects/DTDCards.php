@@ -338,17 +338,29 @@
 // }
 
 
-// class bequest_the_vast_beyond_red extends Card {
+class bequest_the_vast_beyond_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "bequest_the_vast_beyond_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "bequest_the_vast_beyond_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$num =  CountAura("runechant", $this->controller);
+		AddCurrentTurnEffect("$this->cardID-$num", $this->controller);
+		return "";
+	}
+
+	function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+		if (TypeContains($cardID, "AA") && ClassContains($cardID, "RUNEBLADE", $this->controller)) {
+			$Effect = new CurrentEffect($index);
+			$num = intval(explode("-", $Effect->EffectID())[1] ?? 0);
+			$remove = true;
+			return -1 * $num;
+		}
+		return 0;
+	}
+}
 
 class beseech_the_demigon extends BaseCard {
 	function PlayAbility($value) {

@@ -451,9 +451,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       DealArcane(1, 3, "ABILITY", $cardID, resolvedTarget:$target);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SCEPTEROFPAIN");
       return "";
-    case "bequest_the_vast_beyond_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "runic_reckoning_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

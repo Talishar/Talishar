@@ -994,12 +994,6 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
             $remove = true;
           }
           break;
-        case "bequest_the_vast_beyond_red":
-          if ($cardType == "AA" && ClassContains($cardID, "RUNEBLADE", $currentPlayer)) {
-            $costModifier -= CountAura("runechant", $currentPlayer);
-            $remove = true;
-          }
-          break;
         case "earthlore_empowerment_red":
         case "earthlore_empowerment_yellow":
           if (ClassContains($cardID, "GUARDIAN", $currentPlayer) && $cardType == "AA") $costModifier -= 1;
