@@ -2837,3 +2837,118 @@ class bloodsong_gloomblade_red extends Card {
     return true;
   }
 }
+
+class battle_prep extends BaseCard {
+  function PlayAbility($from) {
+    Opt($this->cardID, 2);
+    if ($from == "ARS")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
+
+class battle_prep_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "battle_prep_red";
+    $this->controller = $controller;
+    $this->baseCard = new battle_prep($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  // function SpecialName() {
+  //   return "Battle Prep";
+  // }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+
+class battle_prep_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "battle_prep_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new battle_prep($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  // function SpecialName() {
+  //   return "Battle Prep";
+  // }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+  
+  function SpecialPitch() {
+    return 2;
+  }
+}
+
+class battle_prep_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "battle_prep_blue";
+    $this->controller = $controller;
+    $this->baseCard = new battle_prep($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($from);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  // function SpecialName() {
+  //   return "Battle Prep";
+  // }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+}
