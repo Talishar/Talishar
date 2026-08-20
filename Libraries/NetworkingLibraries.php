@@ -1692,9 +1692,17 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
         CheckHitContracts($mainPlayer, $otherPlayer);
       }
 
+      // Cards listed here get their AddEffectHitTrigger call deferred until
+      // after MainCharacterHitTrigger runs, so their trigger lands on the
+      // stack later and resolves first
+      static $queueAfterMainCharHitTriggers = [
+        "steelblade_supremacy_red" => true,
+      ];
+
       $count = count($currentTurnEffects);
       for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
         if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
+        if (isset($queueAfterMainCharHitTriggers[$currentTurnEffects[$i]])) continue;
         if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
           AddEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget); // Effects that gives effect to the attack
         }
@@ -1713,6 +1721,17 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       $targetPlayer = $damageTarget == "HERO" ? $defPlayer : -1;
       MainCharacterHitTrigger($cardID, $targetPlayer);
       MainCharacterHitEffects();
+
+      // Late queue for effects opted into $queueAfterMainCharHitTriggers above.
+      $count = count($currentTurnEffects);
+      for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
+        if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
+        if (!isset($queueAfterMainCharHitTriggers[$currentTurnEffects[$i]])) continue;
+        if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+          AddEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget);
+        }
+      }
+
       ArsenalHitEffects();
       AuraHitEffects($cardID);
       ItemHitTrigger($cardID);
