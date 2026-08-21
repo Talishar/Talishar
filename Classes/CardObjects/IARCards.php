@@ -2986,9 +2986,9 @@ class crushing_headache_red extends Card {
     }
   }
 
-  // function SpecialName() {
-  //   return "Crushing Headache";
-  // }
+  function SpecialName() {
+    return "Crushing Headache";
+  }
 
   function SpecialCost() {
     return 6;
@@ -3052,9 +3052,9 @@ class ice_aged_oak_blue extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Ice Aged Oak";
-  // }
+  function SpecialName() {
+    return "Ice Aged Oak";
+  }
 
   function SpecialCost() {
     return 3;
@@ -3123,9 +3123,9 @@ class ancient_earth_oak_red extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Ancient Earth Oak";
-  // }
+  function SpecialName() {
+    return "Ancient Earth Oak";
+  }
 
   function SpecialCost() {
     return 3;
