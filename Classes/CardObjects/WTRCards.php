@@ -2868,6 +2868,10 @@ class steelblade_supremacy_red extends Card {
     return AnyHitTrigger($this->controller, $this->cardID, $check, true);
   }
 
+  function LateEffect() {
+    return true;
+  }
+
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
     Draw($this->controller);
   }

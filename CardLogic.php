@@ -1352,6 +1352,18 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
   }
 }
 
+function AddLateEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-") {
+  global $mainPlayer;
+  $effects = explode(',', $cardID);
+  $sourceIsAA = CardType($source) == "AA";
+  if ($sourceIsAA && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2)
+    || SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer))) return false;
+  $effectID = ExtractCardID($cardID);
+  $card = GetClass($effectID, $mainPlayer);
+  if ($card != "-" && $card->LateEffect())
+    return $card->AddEffectHitTrigger($source, $fromCombat, $target, $cardID, false);
+}
+
 function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-", $check=false): bool // Effects that gives effect to the attack (keywords "attack gains/gets")
 {
   global $mainPlayer, $Card_LifeBanner, $Card_ResourceBanner, $layers, $defPlayer, $combatChain;
@@ -1363,7 +1375,8 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
   $effectID = ExtractCardID($cardID);
   if (class_exists($effectID)) {
     $card = new $effectID($mainPlayer);
-    return $card->AddEffectHitTrigger($source, $fromCombat, $target, $cardID, $check);
+    if ($check || !$card->LateEffect())
+      return $card->AddEffectHitTrigger($source, $fromCombat, $target, $cardID, $check);
   }
   switch ($effects[0]) {
     case "pummel_red":

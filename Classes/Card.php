@@ -871,4 +871,9 @@ class Card {
   function IsLayerContinuousBuff() {
     return false;
   }
+
+  function LateEffect() {
+    // if true, the card will trigger "late" after other cards by default
+    return false;
+  }
 }

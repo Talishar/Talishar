@@ -1708,7 +1708,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
           AddCharacterGetHitTrigger($CharCard->CardID(), "CURRENTATTACK");
         }
       }
-
+      
       $currentTurnEffects = array_values($currentTurnEffects);
       $targetPlayer = $damageTarget == "HERO" ? $defPlayer : -1;
       MainCharacterHitTrigger($cardID, $targetPlayer);
@@ -1735,8 +1735,15 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
           AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
         }
       }
-    }
 
+      for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) { //"late" effects, effects that by default will  be on top
+        if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
+        if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+          AddLateEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget);
+        }
+      }
+    }
+    
     if (IsHeroAttackTarget()) {
       $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
       if (CheckMarked($otherPlayer)) {
