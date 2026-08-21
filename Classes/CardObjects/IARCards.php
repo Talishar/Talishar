@@ -2986,6 +2986,10 @@ class crushing_headache_red extends Card {
     }
   }
 
+  function HasCrush() {
+    return true;
+  }
+
   function SpecialName() {
     return "Crushing Headache";
   }
