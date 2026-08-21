@@ -46,6 +46,7 @@ include "Classes/CardObjects/ROSCards.php";
 include "Classes/CardObjects/AJVCards.php";
 include "Classes/CardObjects/HNTCards.php";
 include "Classes/CardObjects/SEACards.php";
+include "Classes/CardObjects/AGBCards.php";
 include "Classes/CardObjects/SUPCards.php";
 include "Classes/CardObjects/APSCards.php";
 include "Classes/CardObjects/ARRCards.php";

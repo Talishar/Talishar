@@ -4017,16 +4017,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $grave[$index + 2] = "DOWN";
         }
         break;
-      case "tricorn_of_saltwater_death":
-        if (SearchHand($player, hasWateryGrave: true) != "") {
-            AddDecisionQueue("FINDINDICES", $player, "HANDWATERYGRAVE,-,NOPASS");
-            AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with watery grave to discard");
-            AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-            AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-            AddDecisionQueue("DISCARDCARD", $player, "HAND-" . $player, 1);
-            AddDecisionQueue("DRAW", $player, "-", 1);
-        }
-        break;
     case "light_it_up_yellow":
         AddCurrentTurnEffect("light_it_up_yellow", $player);
         AddNextTurnEffect("light_it_up_yellow", $player);

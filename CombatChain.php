@@ -1064,7 +1064,6 @@ function OnBlockResolveEffects($cardID = "")
         case "on_the_horizon_blue":
         case "helmsmans_peak":
         case "lost_in_transit_yellow":
-        case "tricorn_of_saltwater_death":
         case "dig_in_red":
         case "dig_in_yellow":
         case "dig_in_blue":
