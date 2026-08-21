@@ -181,6 +181,9 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 } else if ($gameStatus == $MGS_GameStarted) {
   $response->lastUpdate = "1";
   $response->isMainGameReady = true;
+  $response->isSideboarding = false;
+  $response->mySideboardSubmitted = true;
+  $response->opponentSideboardSubmitted = true;
   if(IsUserLoggedIn() && ($lastAuthKey == null || $lastAuthKey !== $authKey)) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
   echo json_encode($response);
   exit;
@@ -270,6 +273,9 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   else if ($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $response->myPriority = false;
 
   $response->isMainGameReady = ($gameStatus == $MGS_ReadyToStart && $p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1");
+  $response->isSideboarding = $gameStatus > $MGS_ChooseFirstPlayer && $gameStatus < $MGS_GameStarted;
+  $response->mySideboardSubmitted = ($playerID == 1 ? $p1SideboardSubmitted == "1" : $p2SideboardSubmitted == "1");
+  $response->opponentSideboardSubmitted = ($playerID == 1 ? $p2SideboardSubmitted == "1" : $p1SideboardSubmitted == "1");
   $opponentIsAI = ($playerID == 1 ? $p2IsAI == "1" : $p1IsAI == "1");
   $response->isOpponentAI = $opponentIsAI;
   if($p1IsAI || $p2IsAI) {
