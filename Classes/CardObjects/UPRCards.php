@@ -1854,10 +1854,11 @@ class liquefy_red extends Card {
 // }
 
 class oasis_respite extends BaseCard {
-  function CurrentEffectDamagePrevention($damage, $source, $index, &$remove, $amount) {
+  function CurrentEffectDamagePrevention($damage, $source, $index, &$remove, $preventable, $amount) {
     global $CS_ResolvingLayerUniqueID, $CombatChain;
     $Effect = new CurrentEffect($index);
     $prevAmount = $Effect->NumUses();
+    if (!$preventable) return 0;
     if ($amount && $CombatChain->HasCurrentLink() && $source == $CombatChain->AttackCard()->ID()) {
       if ($CombatChain->AttackCard()->UniqueID() == $Effect->AppliestoUniqueID() || $CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID())
         return min($damage, $prevAmount);
@@ -1940,7 +1941,7 @@ class oasis_respite_red extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $amount);
+    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $preventable, $amount);
   }
 
   function SpecificLogic() {
@@ -1970,7 +1971,7 @@ class oasis_respite_yellow extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $amount);
+    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $preventable, $amount);
   }
 
   function SpecificLogic() {
@@ -2000,7 +2001,7 @@ class oasis_respite_blue extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $amount);
+    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $preventable, $amount);
   }
 
   function SpecificLogic() {
