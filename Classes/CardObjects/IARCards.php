@@ -2952,3 +2952,190 @@ class battle_prep_blue extends Card {
     return 3;
   }
 }
+
+class crushing_headache_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "crushing_headache_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddCrushEffectTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "CRUSHEFFECT");
+  }
+
+  function ProcessCrushEffect() {
+    global $defPlayer;
+    if (CanRevealCards($defPlayer)) {
+      RevealHand($defPlayer);
+      $Arsenal = new Arsenal($defPlayer);
+      for ($i = 0; $i < $Arsenal->NumCards(); ++$i) {
+        $Card = $Arsenal->Card($i, true);
+        RevealCards($Card->CardID());
+        if (TypeContains($Card->CardID(), "A"))
+          $Card->Destroy($this->controller);
+      }
+      $Hand = new Hand($defPlayer);
+      for ($i = $Hand->NumCards() - 1; $i >= 0; --$i) {
+        if (TypeContains($Hand->Card($i, true), "A"))
+          DiscardCard($defPlayer, $i);
+      }
+    }
+  }
+
+  // function SpecialName() {
+  //   return "Crushing Headache";
+  // }
+
+  function SpecialCost() {
+    return 6;
+  }
+
+  function SpecialPower() {
+    return 10;
+  }
+
+  function SpecialClass() {
+    return "GUARDIAN";
+  }
+}
+
+class ice_aged_oak_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "ice_aged_oak_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    foreach (explode(",", $additionalCosts) as $pitchedCard) {
+      if (TalentContains($pitchedCard, "ICE", $this->controller)) {
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+        break;
+      }
+    }
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function DoesEffectGrantDominate($effectIndex) {
+    return true;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    PlayAura("embodiment_of_earth", $this->controller);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $defPlayer;
+    $zones = ListExposedEquipSlots($defPlayer);
+    if ($zones != "") {
+      foreach (explode(",", $zones) as $zone)
+        EquipEquipment($defPlayer, "frostbite", $zone, "-", effectAgent:$this->controller);
+    }
+  }
+
+  function CardCaresAboutPitch() {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Ice Aged Oak";
+  // }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialTalent() {
+    return "EARTH";
+  }
+}
+
+class ancient_earth_oak_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "ancient_earth_oak_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    foreach (explode(",", $additionalCosts) as $pitchedCard) {
+      if (TalentContains($pitchedCard, "EARTH", $this->controller)) {
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+        break;
+      }
+    }
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    PlayAura("frostbite", $defPlayer, effectAgent:$this->controller);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $CombatChain, $CCS_GoesWhereAfterLinkResolves, $defPlayer, $mainPlayer;
+    SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
+    $origCardID = $CombatChain->AttackCard()->OriginalID();
+    $destPlayer = str_contains($CombatChain->AttackCard()->From(), "THEIR") ? $defPlayer : $mainPlayer;
+    WriteLog(CardLink($origCardID) . " was put on the bottom of player $destPlayer's deck");
+    AddBottomDeck($origCardID, $destPlayer, "CC");
+  }
+
+  function CardCaresAboutPitch() {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Ancient Earth Oak";
+  // }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialTalent() {
+    return "ICE";
+  }
+}
