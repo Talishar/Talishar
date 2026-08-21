@@ -2068,9 +2068,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "stamp_authority_blue":
       case "runeblood_barrier_yellow":
       case "embodiment_of_earth":
-      case "pyroglyphic_protection_red":
-      case "pyroglyphic_protection_yellow":
-      case "pyroglyphic_protection_blue":
       case "fog_down_yellow":
       // sigils are destroyed at the start of the action phase
       case "sigil_of_protection_red":

@@ -876,4 +876,8 @@ class Card {
     // if true, the card will trigger "late" after other cards by default
     return false;
   }
+
+  function PermanentDamagePrevention($damage, $type, $source, $index) {
+    return 0;
+  }
 }

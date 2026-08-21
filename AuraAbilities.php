@@ -910,9 +910,6 @@ function AuraBeginningActionPhaseAbilities(){
       case "runeblood_incantation_red":
       case "runeblood_incantation_yellow":
       case "runeblood_incantation_blue":
-      case "pyroglyphic_protection_red":
-      case "pyroglyphic_protection_yellow":
-      case "pyroglyphic_protection_blue":
       case "fog_down_yellow":
       case "sigil_of_protection_red":
       case "sigil_of_protection_yellow":
@@ -1269,15 +1266,6 @@ function AuraDamagePreventionAmount($player, $index, $type, $damage = 0, $active
         $preventedDamage = 0;
       }
       break;
-    case "pyroglyphic_protection_red":
-      if ($type == "ARCANE" && $preventable) $preventedDamage += 3;
-      break;
-    case "pyroglyphic_protection_yellow":
-      if ($type == "ARCANE" && $preventable) $preventedDamage += 2;
-      break;
-    case "pyroglyphic_protection_blue":
-      if ($type == "ARCANE" && $preventable) $preventedDamage += 1;
-      break;
     default:
       break;
   }
@@ -1305,11 +1293,6 @@ function AuraTakeDamageAbility($player, $index, $damage, $preventable, $type)
     case "to_be_continued_blue":
       --$auras[$index + 5];
       $cancelRemove = true;
-    case "pyroglyphic_protection_red":
-    case "pyroglyphic_protection_yellow":
-    case "pyroglyphic_protection_blue":
-      $cancelRemove = true;
-      break;
     default:
       break;
   }
@@ -1332,6 +1315,8 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
       $preventedDamage = $damage;
       break;
     }
+    $card = GetClass($auras[$i], $player);
+    if ($card != "-") $preventedDamage += $card->PermanentDamagePrevention($damage, $type, $source, $i);
     switch ($auras[$i]) {
       case "zen_state":
         if ($preventable) $preventedDamage += 1;

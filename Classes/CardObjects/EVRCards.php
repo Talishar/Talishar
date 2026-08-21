@@ -1512,43 +1512,94 @@ class pierce_reality_blue extends Card {
 // }
 
 
-// class pyroglyphic_protection_red extends Card {
+class pyroglyphic_protection extends BaseCard {
+	function PermanentDamagePrevention($type, $val) {
+		return $type == "ARCANE" ? $val : 0;
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "pyroglyphic_protection_red";
-//     $this->controller = $controller;
-//     }
+	function BeginningActionPhaseAbility($index) {
+		$AuraCard = new AuraCard($index, $this->controller);
+		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID) {
+		$Auras = new Auras($this->controller);
+		$AuraCard = $Auras->FindCardUID($uniqueID);
+		$AuraCard->Destroy();
+	}
+}
 
+class pyroglyphic_protection_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "pyroglyphic_protection_red";
+    $this->controller = $controller;
+    $this->baseCard = new pyroglyphic_protection($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-// class pyroglyphic_protection_yellow extends Card {
+	function PermanentDamagePrevention($damage, $type, $source, $index) {
+		return $this->baseCard->PermanentDamagePrevention($type, 3);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "pyroglyphic_protection_yellow";
-//     $this->controller = $controller;
-//     }
+	function BeginningActionPhaseAbility($index) {
+		$this->baseCard->BeginningActionPhaseAbility($index);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger($uniqueID);
+	}
+}
 
+class pyroglyphic_protection_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "pyroglyphic_protection_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new pyroglyphic_protection($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-// class pyroglyphic_protection_blue extends Card {
+	function PermanentDamagePrevention($damage, $type, $source, $index) {
+		return $this->baseCard->PermanentDamagePrevention($type, 2);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "pyroglyphic_protection_blue";
-//     $this->controller = $controller;
-//     }
+	function BeginningActionPhaseAbility($index) {
+		$this->baseCard->BeginningActionPhaseAbility($index);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger($uniqueID);
+	}
+}
+
+class pyroglyphic_protection_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "pyroglyphic_protection_blue";
+    $this->controller = $controller;
+    $this->baseCard = new pyroglyphic_protection($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function PermanentDamagePrevention($damage, $type, $source, $index) {
+		return $this->baseCard->PermanentDamagePrevention($type, 1);
+	}
+
+	function BeginningActionPhaseAbility($index) {
+		$this->baseCard->BeginningActionPhaseAbility($index);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->baseCard->ProcessTrigger($uniqueID);
+	}
+}
 
 
 class rain_razors_yellow extends Card {

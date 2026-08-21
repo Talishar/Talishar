@@ -3917,6 +3917,7 @@ class to_be_continued_blue extends Card {
   }
 
   function PermDamagePreventionAmount($index, $type, $damage, $active, &$cancelRemove, $check) {
+    // may want to refactor this to use PermanentDamagePrevention?
     global $CS_DamageTaken;
     $cancelRemove = true;
     $auras = &GetAuras($this->controller);
