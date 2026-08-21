@@ -1301,7 +1301,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, "-,Source-$cardID,$cardID,$player", 1);
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $otherPlayer, "-", 1);
+          AddDecisionQueue("SHUFFLEDECK", $mainPlayer, "-", 1);
         }
       }
       return $lastResult;

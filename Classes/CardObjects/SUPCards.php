@@ -399,9 +399,9 @@ class hunter_or_hunted_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    $count = count(GetDeck($mainPlayer));
     $player = $this->controller;
-    $opponent = 3 - $player;
-    $count = count(GetDeck($opponent));
     $parameter = $this->cardID;
     if($count > 0) 
     {
@@ -419,23 +419,23 @@ class hunter_or_hunted_blue extends Card {
       AddDecisionQueue("SETDQVAR", $player, 1, 1);
       AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
       // show their hand, arsenal, and deck
-      if(count(GetHand($opponent)) > 0 || count(GetArsenal($opponent)) > 0) {
+      if(count(GetHand($mainPlayer)) > 0 || count(GetArsenal($mainPlayer)) > 0) {
         AddDecisionQueue("WRITELOG", $player, CardLink($parameter, $parameter) . " shows opponent's hand and arsenal", 1);
-        AddDecisionQueue("SHOWHANDWRITELOG", $opponent, "-", 1);
-        AddDecisionQueue("SHOWARSENALWRITELOG", $opponent, "-", 1);
+        AddDecisionQueue("SHOWHANDWRITELOG", $mainPlayer, "-", 1);
+        AddDecisionQueue("SHOWARSENALWRITELOG", $mainPlayer, "-", 1);
       }
 
-      AddDecisionQueue("FINDINDICES", $opponent, "DECKTOPXINDICES," . $count, 1);
-      AddDecisionQueue("DECKCARDS", $opponent, "<-", 1);
-      AddDecisionQueue("SETDQCONTEXT", $player, CardLink($parameter, $parameter) . " shows your opponent's deck", 1);
+      AddDecisionQueue("FINDINDICES", $mainPlayer, "DECKTOPXINDICES," . $count, 1);
+      AddDecisionQueue("DECKCARDS", $mainPlayer, "<-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, CardLink($parameter, $parameter) . " shows the your opponents deck are", 1);
       AddDecisionQueue("MULTISHOWCARDSTHEIRDECK", $player, "<-", 1);
-      // Acknowledging MULTISHOWCARDSTHEIRDECK returns PASS. Restore the revealed
-      // card name unconditionally so a popup/priority pass cannot collapse the effect.
-      AddDecisionQueue("PASSPARAMETER", $player, "{1}");
+      //MULTISHOWCARDSTHEIRDECK seems to return PASS, so we need this else and need to repeat the check
+      AddDecisionQueue("ELSE", $player, "-");
+      AddDecisionQueue("PASSPARAMETER", $player, "{1}", 1);
       AddDecisionQueue("NOTEQUALNAMEPASS", $player, "{0}", 1);
       AddDecisionQueue("SPECIFICCARD", $player, "HUNTERORHUNTED", 1);
     }
-    else WriteLog("Player $opponent deck is empty. Nothing was revealed.");
+    else WriteLog("Player $mainPlayer deck is empty. Nothing was revealed.");
   }
 
   function OnDefenseReactionResolveEffects($from, $blockedFromHand) {

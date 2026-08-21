@@ -2967,7 +2967,6 @@ function CanPassPhase($phase)
     case "OVER":
     case "BUTTONINPUT":
     case "NUMBERINPUT":
-    case "INPUTCARDNAME":
     case "MULTICHOOSETHEIRDISCARD":
     case "CHOOSEGOLDTOPAY":
       return 0;
