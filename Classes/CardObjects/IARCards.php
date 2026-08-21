@@ -3181,6 +3181,12 @@ class head_banging_chorus_yellow extends Card {
     }
   }
 
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY") {
+      DestroyAuraUniqueID($this->controller, $target);
+    }
+  }
+
   function SpecialName() {
     return "Head Banging Chorus";
   }

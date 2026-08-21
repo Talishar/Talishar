@@ -361,14 +361,13 @@ function RemoveSuspense($player, $MZIndex, $mainPhase = true)
 {
   $otherPlayer = 3 - $player;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
-  $auras = &GetAuras($targetPlayer);
   $parts = explode("-", $MZIndex, 2);
   if (!isset($parts[1])) return;
   $ind = $parts[1];
-  if (!isset($auras[$ind + 2])) return; // aura no longer exists
-  --$auras[$ind + 2];
-  if ($auras[$ind + 2] <= 0) {
-    AddLayer("TRIGGER", $targetPlayer, "$auras[$ind]", $auras[$ind + 6], "DESTROY");
+  $Aura = new AuraCard($ind, $player);
+  $Aura->AddCounters(-1);
+  if ($Aura->NumCounters() <= 0) {
+    AddLayer("TRIGGER", $targetPlayer, $Aura->CardID(), $Aura->UniqueID(), "DESTROY");
   }
 }
 
