@@ -3139,3 +3139,73 @@ class ancient_earth_oak_red extends Card {
     return "ICE";
   }
 }
+
+class head_banging_chorus_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "head_banging_chorus_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function StartTurnAbility($index) {
+    RemoveSuspense($this->controller, "MYAURAS-$index", mainPhase: false);
+  }
+
+  function HasSuspense() {
+    return true;
+  }
+
+  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+    global $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn, $CombatChain;
+    if (!IsHeroAttackTarget()) return;
+    $attackCard = $CombatChain->AttackCard()->ID();
+    if (ClassContains($attackCard, "GUARDIAN", $this->controller)) {
+      if (GetClassState($this->controller, $CS_GuardianAACThisTurn) == 1) {
+        AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+      }
+    }
+    elseif (TalentContains($attackCard, "REVERED", $this->controller)) {
+      if (GetClassState($this->controller, $CS_ReveredAACThisTurn) == 1) {
+        AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+      }
+    }
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $hand = new Hand($this->controller);
+    if ($hand->NumCards() == 0) {
+      Draw($this->controller);
+    }
+  }
+
+  function SpecialName() {
+    return "Head Banging Chorus";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialClass() {
+    return "GUARDIAN";
+  }
+
+  function SpecialTalent() {
+    return "REVERED";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+}

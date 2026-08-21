@@ -2217,7 +2217,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
   global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack, $CS_NumBloodDebtAttacksPlayed, $CS_IARGatesMadeorUsed;
-  global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed;
+  global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
 
   $otherPlayer = 3 - $currentPlayer;
   $resources = &GetResources($currentPlayer);
@@ -2638,6 +2638,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
     if (HasBloodDebt($cardID) && TypeContains($cardID, "AA") && !IsActivated($cardID, $from)) IncrementClassState($currentPlayer, $CS_NumBloodDebtAttacksPlayed);
     if ($cardID == "gate_to_iarathael") IncrementClassState($currentPlayer, $CS_IARGatesMadeorUsed);
+    if (TalentContains($cardID, "REVERED", $currentPlayer) && TypeContains($cardID, "AA") && !IsActivated($cardID, $from))
+      IncrementClassState($currentPlayer, $CS_ReveredAACThisTurn);
+    if (ClassContains($cardID, "GUARDIAN", $currentPlayer) && TypeContains($cardID, "AA") && !IsActivated($cardID, $from))
+      IncrementClassState($currentPlayer, $CS_GuardianAACThisTurn);
     if (ColorContains($cardID, 1, $currentPlayer) && $from != "PLAY" && $resolvedAbilityType != "I") IncrementClassState($currentPlayer, $CS_NumRedPlayed);
     if (ColorContains($cardID, 3, $currentPlayer) && $from != "PLAY" && $resolvedAbilityType != "I") IncrementClassState($currentPlayer, $CS_NumBluePlayed);
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && $resolvedAbilityType != "I") {
