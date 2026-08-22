@@ -337,7 +337,7 @@ function CardSubType($cardID, $uniqueID = -1)
       $foundEquip = $mainChar->FindCardUID($uniqueID);
       if ($foundEquip->Index() != -1) $subtype = $foundEquip->Slot();
     }
-    if ($cardID = "adaptive_dissolver" || $cardID == "adaptive_alpha_mold")
+    if ($cardID == "adaptive_dissolver" || $cardID == "adaptive_alpha_mold")
       return "$subtype,Base";
     else
       return $subtype;
