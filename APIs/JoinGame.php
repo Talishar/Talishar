@@ -914,8 +914,12 @@ function IsCardBanned($cardID, $format, $character)
       if (in_array($cardID, $benched)) return false;
       switch($cardID) {
         case "prism_advent_of_thrones":
-        case "dorinthea_quicksilver_prodigy":
-        case "dawnblade_resplendent":
+        case "runechant_of_envy_yellow":
+        case "runechant_of_gluttony_yellow":
+        case "runechant_of_pride_yellow":
+        case "runechant_of_wrath_yellow":
+        case "runechant_of_lust_yellow":
+        case "runechant_of_sloth_yellow":
           return false;
         default:
           break;
