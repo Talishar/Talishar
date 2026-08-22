@@ -492,11 +492,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Display their discard, pitch, deck, and banish
   $opponentDiscardArray = [];
+  $theirGYSubtypes = IsNecromancerHero($theirCharacter[0] ?? "", $otherPlayer);
   for ($i = 0; $i < $theirDiscardCount; $i += $discardPieces) {
     if (isset($theirDiscard[$i + 2])) {
       $mod = $theirDiscard[$i + 2];
-      $cardID = isFaceDownMod($mod) ? $TheirCardBack : $theirDiscard[$i];
-      $opponentDiscardArray[] = JSONRenderedCard($cardID);
+      $isFaceDown = isFaceDownMod($mod);
+      $cardID = $isFaceDown ? $TheirCardBack : $theirDiscard[$i];
+      $sType = ($theirGYSubtypes && !$isFaceDown) ? CardSubType($cardID) : "";
+      $opponentDiscardArray[] = JSONRenderedCard($cardID, sType: $sType !== "" ? $sType : NULL);
     }
   }
   $response->opponentDiscard = $opponentDiscardArray;
@@ -705,6 +708,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //My Discard
   $playerDiscardArr = [];
   $myDiscardCount = count($myDiscard);
+  $myGYSubtypes = IsNecromancerHero($myCharacter[0] ?? "", $playerID == 1 ? 1 : 2);
   for($i = 0; $i < $myDiscardCount; $i += $discardPieces) {
     if (isset($myDiscard[$i+2])) {
       $overlay = 0;
@@ -717,7 +721,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $border = 0;
       }
       elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = $MyCardBack;
-      $playerDiscardArr[] = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i));
+      $sType = ($myGYSubtypes && $overlay != 1 && $cardID != $MyCardBack) ? CardSubType($cardID) : "";
+      $playerDiscardArr[] = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i), sType: $sType !== "" ? $sType : NULL);
     }
   }
   $myBlessingsCount = SearchCount(SearchDiscardForCard($playerID, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));
