@@ -4473,6 +4473,7 @@ function Rarity($cardID)
   if ($cardID == "baalghor_omen_of_the_end") return $rarityCache[$cardID] = "R";
   if ($cardID == "raydn_duskbane") return $rarityCache[$cardID] = "R"; //downshift
   if ($cardID == "blaze_firemind") return $rarityCache[$cardID] = "R"; //downshift
+  if ($cardID == "embrace_sin_yellow") return $rarityCache[$cardID] = "R"; //database mistake
   if ($set != "DUM") {
     return $rarityCache[$cardID] = GeneratedRarity($cardID);
   }
