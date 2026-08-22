@@ -20,11 +20,18 @@ function StringContainsWholeWords($str, $find)
 {
   if ($str === null || $find === null || $find === "") return false;
 
-  $wordCharacter = '[\p{L}\p{M}\p{N}]';
-  if (!preg_match_all('/' . $wordCharacter . '+/u', $find, $matches)) return false;
+  static $patternCache = [];
+  if (!array_key_exists($find, $patternCache)) {
+    $wordCharacter = '[\p{L}\p{M}\p{N}]';
+    if (!preg_match_all('/' . $wordCharacter . '+/u', $find, $matches)) $patternCache[$find] = null;
+    else {
+      $words = array_map(fn($word) => preg_quote($word, '/'), $matches[0]);
+      $patternCache[$find] = '/(?<!' . $wordCharacter . ')' . implode('[^\p{L}\p{M}\p{N}]+', $words) . '(?!' . $wordCharacter . ')/iu';
+    }
+  }
 
-  $words = array_map(fn($word) => preg_quote($word, '/'), $matches[0]);
-  $pattern = '/(?<!' . $wordCharacter . ')' . implode('[^\p{L}\p{M}\p{N}]+', $words) . '(?!' . $wordCharacter . ')/iu';
+  $pattern = $patternCache[$find];
+  if ($pattern === null) return false;
   return preg_match($pattern, $str) === 1;
 }
 

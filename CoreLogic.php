@@ -2200,6 +2200,7 @@ function CardNameContains($cardID, $name, $player = "", $partial = false)
   // 2.7.5 A name or part of a name is equal to another name or part of a name only if it is an exact case-insensitive match of each whole word in order.
   global $currentTurnEffects;
   $cardName = NameOverride($cardID, $player);
+  if (StringContainsWholeWords($cardName, $name)) return true;
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
