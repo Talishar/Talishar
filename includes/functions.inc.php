@@ -524,6 +524,7 @@ function FetchDeckFromDeckbuilder($decklink)
 function ResolveDeckCardIds($deckObj, $isFaBDB, $isFaBMeta)
 {
 	$cardIds = [];
+	$cardIdSet = [];
 	$cards = isset($deckObj->{'cards'}) ? $deckObj->{'cards'} : [];
 
 	if (!is_array($cards)) return $cardIds;
@@ -545,7 +546,9 @@ function ResolveDeckCardIds($deckObj, $isFaBDB, $isFaBMeta)
 		}
 
 		if (empty($cardID)) continue;
-		if (!in_array($cardID, $cardIds)) $cardIds[] = $cardID;
+		if (isset($cardIdSet[$cardID])) continue;
+		$cardIdSet[$cardID] = true;
+		$cardIds[] = $cardID;
 	}
 
 	return $cardIds;

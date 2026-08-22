@@ -43,20 +43,13 @@ if (!IsGameNameValid($gameName)) {
 
 // Validate player ID
 $playerID = TryGet("playerID", 3);
-if (!is_numeric($playerID)) {
+$playerID = filter_var($playerID, FILTER_VALIDATE_INT);
+if (!in_array($playerID, [1, 2, 3], true)) {
   echo json_encode(["errorMessage" => "Invalid player ID."]);
   exit;
 }
 
-// Check spectator permission
 $cacheArr = null;
-if ($playerID == 3) {
-  $cacheArr = ReadCacheArray($gameName) ?? [];
-  if (($cacheArr[8] ?? "") != "1") {
-    header('HTTP/1.0 403 Forbidden');
-    exit;
-  }
-}
 
 // Get auth key
 $authKey = TryGet("authKey", "");

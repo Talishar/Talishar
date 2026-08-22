@@ -405,20 +405,21 @@ function SearchArsenalForCard($player, $card, $facing = "-")
   return implode(",", $indices);
 }
 
-function SearchDeckForCard($player, $card1, $card2 = "", $card3 = "")
+function SearchDeckForCard($player, ...$cards)
 {
   $otherPlayer = 3 - $player;
   if (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "") {
     WriteLog("Deck search prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";
   }
+  $cardSet = CardIDSet($cards);
+  if (!$cardSet) return "";
   $deck = &GetDeck($player);
   $count = count($deck);
   $pieces = DeckPieces();
   $cardList = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    $id = $deck[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
+    if (isset($cardSet[$deck[$i]])) {
       $cardList[] = $i;
     }
   }
@@ -505,29 +506,31 @@ function SearchBanishByName($player, $name)
   return implode(",", $cardList);
 }
 
-function SearchDiscardForCard($player, $card1, $card2 = "", $card3 = "")
+function SearchDiscardForCard($player, ...$cards)
 {
+  $cardSet = CardIDSet($cards);
+  if (!$cardSet) return "";
   $discard = &GetDiscard($player);
   $count = count($discard);
   $pieces = DiscardPieces();
   $cardList = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    $id = $discard[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "" && !isFaceDownMod($discard[$i+2])) {
+    if (isset($cardSet[$discard[$i]]) && !isFaceDownMod($discard[$i+2])) {
       $cardList[] = $i;
     }
   }
   return implode(",", $cardList);
 }
 
-function SearchAlliesActive($player, $card1, $card2 = "", $card3 = "")
+function SearchAlliesActive($player, ...$cards)
 {
+  $cardSet = CardIDSet($cards);
+  if (!$cardSet) return false;
   $allies = &GetAllies($player);
   $countAllies = count($allies);
   $allyPieces = AllyPieces();
   for ($i = 0; $i < $countAllies; $i += $allyPieces) {
-    $id = $allies[$i];
-    if (($id == $card1 || $id == $card2 || $id == $card3) && $id != "") {
+    if (isset($cardSet[$allies[$i]])) {
       return true;
     }
   }
@@ -684,6 +687,15 @@ function CombineSearches($search1, $search2)
   if ($search2 == "") return $search1;
   else if ($search1 == "") return $search2;
   return $search1 . "," . $search2;
+}
+
+function CardIDSet(array $cards)
+{
+  $set = [];
+  foreach ($cards as $card) {
+    if ($card !== "" && $card !== null) $set[$card] = true;
+  }
+  return $set;
 }
 
 function SearchRemoveDuplicates($search)
@@ -976,42 +988,48 @@ function SearchBanishForCardName($playerID, $cardID)
   return -1;
 }
 
-function SearchBanishForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
+function SearchBanishForCardMulti($playerID, ...$cards)
 {
+  $cardSet = CardIDSet($cards);
+  if (!$cardSet) return "";
   $banish = GetBanish($playerID);
   $count = count($banish);
   $pieces = BanishPieces();
   $cardList = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($banish[$i] == $card1 || $banish[$i] == $card2 || $banish[$i] == $card3) {
+    if (isset($cardSet[$banish[$i]])) {
       $cardList[] = $i;
     }
   }
   return implode(",", $cardList);
 }
 
-function SearchItemsForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
+function SearchItemsForCardMulti($playerID, ...$cards)
 {
+  $cardSet = CardIDSet($cards);
+  if (!$cardSet) return "";
   $items = GetItems($playerID);
   $count = count($items);
   $pieces = ItemPieces();
   $cardList = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($items[$i] == $card1 || $items[$i] == $card2 || $items[$i] == $card3) {
+    if (isset($cardSet[$items[$i]])) {
       $cardList[] = $i;
     }
   }
   return implode(",", $cardList);
 }
 
-function SearchCharacterForCardMulti($playerID, $card1, $card2 = "", $card3 = "")
+function SearchCharacterForCardMulti($playerID, ...$cards)
 {
+  $cardSet = CardIDSet($cards);
+  if (!$cardSet) return "";
   $char = GetPlayerCharacter($playerID);
   $count = count($char);
   $pieces = CharacterPieces();
   $cardList = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (($char[$i] == $card1 || $char[$i] == $card2 || $char[$i] == $card3) && $char[$i + 1] != 0 && $char[$i + 12] != "DOWN") {
+    if (isset($cardSet[$char[$i]]) && $char[$i + 1] != 0 && $char[$i + 12] != "DOWN") {
       $cardList[] = $i;
     }
   }
@@ -1110,6 +1128,23 @@ function SearchAurasForCard($cardID, $player, $selfReferential = true)
   $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
     if ($auras[$i] == $cardID || $cardID == "runechant" && IsRunechant($auras[$i])) {
+      $indices[] = $i;
+    }
+  }
+  return implode(",", $indices);
+}
+
+function SearchAurasForCardMulti($player, ...$cards)
+{
+  $cardSet = CardIDSet($cards);
+  if (!$cardSet) return "";
+  $wantsRunechant = isset($cardSet["runechant"]);
+  $auras = &GetAuras($player);
+  $count = count($auras);
+  $pieces = AuraPieces();
+  $indices = [];
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if (isset($cardSet[$auras[$i]]) || ($wantsRunechant && IsRunechant($auras[$i]))) {
       $indices[] = $i;
     }
   }
@@ -1774,68 +1809,40 @@ function SearchMultizone($player, $searches)
             break;
           case "cardID":
             $cards = explode(",", $condition[1]);
+            $searchResult = "";
             switch ($zone) {
               case "MYDECK":
-                if (count($cards) == 1) $searchResult = SearchDeckForCard($player, $cards[0]);
-                else if (count($cards) == 2) $searchResult = SearchDeckForCard($player, $cards[0], $cards[1]);
-                else if (count($cards) == 3) $searchResult = SearchDeckForCard($player, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Deck multizone search only supports 3 cards -- report bug.");
+                $searchResult = SearchDeckForCard($player, ...$cards);
                 break;
               case "MYDISCARD":
-                if (count($cards) == 1) $searchResult = SearchDiscardForCard($player, $cards[0]);
-                else if (count($cards) == 2) $searchResult = SearchDiscardForCard($player, $cards[0], $cards[1]);
-                else if (count($cards) == 3) $searchResult = SearchDiscardForCard($player, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
+                $searchResult = SearchDiscardForCard($player, ...$cards);
                 break;
               case "THEIRDISCARD":
-                if (count($cards) == 1) $searchResult = SearchDiscardForCard($otherPlayer, $cards[0]);
-                else if (count($cards) == 2) $searchResult = SearchDiscardForCard($otherPlayer, $cards[0], $cards[1]);
-                else if (count($cards) == 3) $searchResult = SearchDiscardForCard($otherPlayer, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Discard multizone search only supports 3 cards -- report bug.");
+                $searchResult = SearchDiscardForCard($otherPlayer, ...$cards);
                 break;
               case "MYBANISH":
-                if (count($cards) == 1) $searchResult = SearchBanishForCardMulti($player, $cards[0]);
-                else if (count($cards) == 2) $searchResult = SearchBanishForCardMulti($player, $cards[0], $cards[1]);
-                else if (count($cards) == 3) $searchResult = SearchBanishForCardMulti($player, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Banish multizone search only supports 3 cards -- report bug.");
+                $searchResult = SearchBanishForCardMulti($player, ...$cards);
                 break;
               case "THEIRBANISH":
-                if (count($cards) == 1) $searchResult = SearchBanishForCardMulti($otherPlayer, $cards[0]);
-                else if (count($cards) == 2) $searchResult = SearchBanishForCardMulti($otherPlayer, $cards[0], $cards[1]);
-                else if (count($cards) == 3) $searchResult = SearchBanishForCardMulti($otherPlayer, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Banish multizone search only supports 3 cards -- report bug.");
+                $searchResult = SearchBanishForCardMulti($otherPlayer, ...$cards);
                 break;
               case "MYITEMS":
-                if (count($cards) == 1) $searchResult = SearchItemsForCardMulti($player, $cards[0]);
-                else if (count($cards) == 2) $searchResult = SearchItemsForCardMulti($player, $cards[0], $cards[1]);
-                else if (count($cards) == 3) $searchResult = SearchItemsForCardMulti($player, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Items multizone search only supports 3 cards -- report bug.");
+                $searchResult = SearchItemsForCardMulti($player, ...$cards);
                 break;
               case "THEIRITEMS":
-                if (count($cards) == 1) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0]);
-                else if (count($cards) == 2) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0], $cards[1]);
-                else if (count($cards) == 3) $searchResult = SearchItemsForCardMulti($otherPlayer, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Items multizone search only supports 3 cards -- report bug.");
+                $searchResult = SearchItemsForCardMulti($otherPlayer, ...$cards);
                 break;
               case "MYAURAS":
-                if (count($cards) == 1) $searchResult = SearchAurasForCard($cards[0], $player);
-                else WriteLog("aura multizone search only supports 1 card -- report bug.");
+                $searchResult = SearchAurasForCardMulti($player, ...$cards);
                 break;
               case "THEIRAURAS":
-                if (count($cards) == 1) $searchResult = SearchAurasForCard($cards[0], $otherPlayer);
-                else WriteLog("aura multizone search only supports 1 card -- report bug.");
+                $searchResult = SearchAurasForCardMulti($otherPlayer, ...$cards);
                 break;
               case "MYCHAR":
-                if (count($cards) == 1) $searchResult = SearchCharacterForCardMulti($player, $cards[0]);
-                else if (count($cards) == 2) $searchResult = SearchCharacterForCardMulti($player, $cards[0], $cards[1]);
-                else if (count($cards) == 3) $searchResult = SearchCharacterForCardMulti($player, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Character multizone search only supports 3 cards -- report bug.");
+                $searchResult = SearchCharacterForCardMulti($player, ...$cards);
                 break;
               case "THEIRCHAR":
-                if (count($cards) == 1) $searchResult = SearchCharacterForCardMulti($otherPlayer, $cards[0]);
-                else if (count($cards) == 2) $searchResult = SearchCharacterForCardMulti($otherPlayer, $cards[0], $cards[1]);
-                else if (count($cards) == 3) $searchResult = SearchCharacterForCardMulti($otherPlayer, $cards[0], $cards[1], $cards[2]);
-                else WriteLog("Character multizone search only supports 3 cards -- report bug.");
+                $searchResult = SearchCharacterForCardMulti($otherPlayer, ...$cards);
                 break;
               default:
                 break;

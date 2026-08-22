@@ -126,12 +126,17 @@ switch ($action) {
     
     // Get friends list ONCE instead of per-user filtering
     $userFriends = GetUserFriends($userId);
-    $friendIds = array_map(fn($f) => $f['friendUserId'], $userFriends);
+    $friendIdSet = [];
+    foreach ($userFriends as $friend) {
+      $friendIdSet[(int)$friend['friendUserId']] = true;
+    }
+    $currentUserId = (int)$userId;
     
     // Filter out current user and already-friends
-    $filteredUsers = array_filter($users, fn($user) => 
-      (int)$user['usersId'] !== (int)$userId && !in_array((int)$user['usersId'], array_map('intval', $friendIds))
-    );
+    $filteredUsers = array_filter($users, function ($user) use ($currentUserId, $friendIdSet) {
+      $candidateId = (int)$user['usersId'];
+      return $candidateId !== $currentUserId && !isset($friendIdSet[$candidateId]);
+    });
     
     $response->users = array_values($filteredUsers);
     $response->success = true;

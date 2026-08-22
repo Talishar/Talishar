@@ -1207,10 +1207,8 @@ function ProcessSurge($cardID, $player, $target)
       $numToDraw = $handCount - 1;
       if ($numToDraw < 0) $numToDraw = 0;
       $deck = &GetDeck($targetPlayer);
-      while ($handCount > 0) {
-        $deck[] = array_shift($hand);
-        --$handCount;
-      }
+      foreach ($hand as $card) $deck[] = $card;
+      $hand = [];
       Draw($targetPlayer, effectSource: $cardID, num:$numToDraw);
       AddDecisionQueue("SHUFFLEDECK", $targetPlayer, "-");
       break;

@@ -324,102 +324,162 @@ enum PatreonCampaign : string
     }
   }
 
-  public function IsTeamMember($userName): string
+  private static function TeamRosters(): array
   {
-    switch($this->value)
-    {
-      case "0": return $userName == "MrShub" || $userName == "duofanel" || $userName == "Matiisen" ||  $userName == "Pepowski" ||  $userName == "Seba_stian" ||  $userName == "NatAlien" ||  $userName == "dvooyas" || $userName == "Lukashu" || $userName == "Qwak" || $userName == "NatAlien";
-      case "1": return $userName == "TwitchTvFabschool" || $userName == "MattRogers" || $userName == "TariqPatel";
-      case "2": return $userName == "hometowntcg" || $userName == "ProfessorKibosh" || $userName == "criticalclover8" || $userName == "bomberman" || $userName == "woodjp64" || $userName == "TealWater" || $userName == "Bravosaur" || $userName == "DaganTheZookeeper" || $userName == "Dratylis" || $userName == "MoBogsly";
-      case "3": return $userName == "DeadSummer";
-      case "4": return $userName == "LeoLeo";
-      case "5": return $userName == "XIR";
-      case "6": return $userName == "wackzitt" || $userName == "RainyDays" || $userName == "HelpMeJace2" || $userName == "S1lverback55" || $userName == "VexingTie" || $userName == "Ragnell";
-      case "7": return IsTeamSecondCycle($userName);
-      case "8": return IsTeamSonicDoom($userName);
-      case "9": return IsTeamPummel($userName);
-      case "10": return IsTeamEmperorsRome($userName);
-      case "11": return IsTeamSunflowerSamurai($userName);
-      case "12": return IsTeamColdFoilControl($userName);
-      case "13": return IsTeamRighteousGaming($userName);
-      case "14": return IsTeamTalishar($userName) || $userName == "Aegisworn";
-      case "15": return IsTeamTideBreakers($userName);
-      case "16": return IsTeamCupofTCG($userName);
-      case "14707687": return IsTeamScowlingFleshBag($userName);
-      case "18": return IsTeamThaiCardsShop($userName);
-      case "19": return IsTeamMetalFab($userName);
-      case "20": return IsTeamPotatoSquad($userName);
-      case "21": return IsTeamFabledBrazil($userName);
-      case "22": return $userName == "AggroBlaze96";
-      case "23": return $userName == "Null";
-      case "24": return IsTeamPitchDevils($userName);
-      case "25": return $userName == "Mickz";
-      case "26": return IsTeamSnapDragons($userName);
-      case "27": return $userName == "AggroBlaze96" || $userName == "PvtVoid";
-      case "28": return $userName == "Snow";
-      case "29": return IsTeamRedLine($userName);
-      case "30": return IsTeamSkillIssue($userName);
-      case "31": return IsTeamWingedHussars($userName);
-      case "32": return IsTeamFabInsight($userName);
-      case "33": return IsTeamOddwillows($userName);
-      case "34": return IsTeamShine($userName);
-      case "35": return $userName == "jtbruhn94" || $userName == "PvtVoid";
-      case "7198186": return $userName == "OotTheMonk" || $userName == "Aegisworn" || $userName == "PvtVoid" || $userName == "Bluffkin1";
-      case "7579026": return $userName == "Hamsack" || $userName == "BigMedSi" || $userName == "Tripp";
-      case "7329070": return $userName == "GoAgainGamingAz";
-      case "1787491": return $userName == "RedZoneRogue";
-      case "8997252": return $userName == "phillip";
-      case "8955846": return $userName == "Man_Sant" || $userName == "PollyCranka" || $userName == "Aegisworn" || $userName == "PEN15";
-      case "6839952": return $userName == "chonigman" || $userName == "Ijaque";
-      case "7285727": return $userName == "Brendan" || $userName == "TheClub";
-      case "8635931": return $userName == "TheTekloFoundry";
-      case "8736344": return $userName == "Smithel";
-      case "7593240": return $userName == "SinOnStream";
-      case "8458487": return $userName == "Freshlord";
-      case "6996822": return $userName == "Sloopdoop";
-      case "1919413": return $userName == "DMArmada";
-      case "7733166": return $userName == "NamVoTCGz" || $userName == "AlexTheCardGuy" || $userName == "RegularDegular" || $userName == "joshlau7" || $userName == "WillyB" || $userName == "Spoofy" || $userName == "ItsSebBruh" || $userName == "Knight";
-      case "7009853": return $userName == "hometowntcg";
-      case "8338817": return $userName == "imjorman" || $userName == "ADavis83" || $userName == "loganpetersen";
-      case "9361474": return $userName == "kappolo";
-      case "3828539": return $userName == "Tee";
-      case "8951973": return $userName == "Wes" || $userName == "Brandon";
-      case "9370276": return $userName == "TheTablePitYT" || $userName == "TunaTCG";
-      case "9404423": return $userName == "TCGTed";
-      case "8040288": return IsTeamCardAdvantage($userName);
-      case "10147920": return $userName == "RavenousBabble" || $userName == "Arty" || $userName == "jargowsky" || $userName == "Nick52cost" || $userName == "Boomerang" || $userName == "matthias" || $userName == "Repas801";
-      case "4006023": return $userName == "BlackWingStudio";
-      case "10811477": return $userName == "Mezzo";
-      case "9851977": return $userName == "DaganTheZookeeper" || $userName == "OotTheMonk";
-      case "279086": return $userName == "brandaotcg" || $userName == "OotTheMonk" || $userName == "Aegisworn";
-      case "11184392": return $userName == "PatSmashGood" || $userName == "OotTheMonk";
-      case "11481720": return $userName == "nxi" || $userName == "PvtVoid";
-      case "9408649": return $userName == "Aegisworn";
-      case "9734205": return $userName == "tog" || $userName == "bnet" || $userName == "balakay";
-      case "9574942": return $userName == "Azor";
-      case "11561507": return "";
-      case "9555916": return $userName == "Cathardigan" || $userName == "GorganianTome";
-      case "8716783": return IsTeamFABChaos($userName);
-      case "11266104": return $userName == "Lupinefiasco";
-      case "12144126": return $userName == "Pentregarth" || $userName == "Archon Alters";
-      case "12245100": return $userName == "Smithel" || $userName == "Poopking" || $userName == "HeyLookItsBrice";
-      case "12300349": return "";
-      case "10956423": return $userName == "ChantsAndDaggers" || $userName == "OotTheMonk";
-      case "12977197": return $userName == "dazzyfizzle";
-      case "13586904": return $userName == "Nikobru";
-      case "13136013": return $userName == "WuntrikAkali";
-      case "13969806": return $userName == "BlitzkriegMeph";
-      case "13035399": return $userName == "HamMan215";
-      case "13905903": return $userName == "Towelie" || $userName == "Abyssion" || $userName == "Siege" || $userName == "Alithos";
-      case "11527692": return $userName == "Bones503" || $userName == "kwasneski" || $userName == "Hymoshi";
-      case "7330270": return $userName == "Steelfur";
-      case "13518995": return $userName == "Tegunn" || $userName == "AurOraOraOraOraORA";
-      case "14460977": return $userName == "AlpacaSciatrice";
-      case "14951942": return IsTeamFatAndFurious($userName);
-      case "15323388": return $userName == "OllinTogether";
-      case "15431936": return IsTeamFabDads($userName);
-      default: return "";
+    static $rosters = null;
+    if ($rosters !== null) return $rosters;
+
+    $rosters = [
+      "0" => ["MrShub", "duofanel", "Matiisen", "Pepowski", "Seba_stian", "NatAlien", "dvooyas", "Lukashu", "Qwak"],
+      "1" => ["TwitchTvFabschool", "MattRogers", "TariqPatel"],
+      "2" => ["hometowntcg", "ProfessorKibosh", "criticalclover8", "bomberman", "woodjp64", "TealWater", "Bravosaur",
+        "DaganTheZookeeper", "Dratylis", "MoBogsly"],
+      "3" => ["DeadSummer"],
+      "4" => ["LeoLeo"],
+      "5" => ["XIR"],
+      "6" => ["wackzitt", "RainyDays", "HelpMeJace2", "S1lverback55", "VexingTie", "Ragnell"],
+      //Second Cycle
+      "7" => ["The4thAWOL", "Beserk", "Dudebroski", "deathstalker182", "TryHardYeti", "Fledermausmann", "Loganninty7",
+        "flamedog3", "Swankypants", "Blazing For Lethal?", "Jeztus", "gokkar", "Kernalxklink", "Kymo13"],
+      //Sonic Doom
+      "8" => ["KanoSux", "BestBoy", "CRGrey", "jujubeans", "YodasUncle", "ravenklath", "Blazing For Lethal?", "DimGuy",
+        "JoeyReads", "OompaLoompaTron", "Ocean", "radiotoast", "ThePitchStack", "KanosWaterBottle", "yamsandwic",
+        "ThatOneKano", "YuutoSJ", "ZorbyX", "littlsnek", "AWizardofEarthsea"],
+      //Pummel
+      "9" => ["MkDk", "Kutter", "Smeoz", "Fabio", "JustFonta", "M3X", "Tommaso", "PDMPLB"],
+      //Emperors Rome
+      "10" => ["Daniele90rm", "Excelsa", "kano90", "Maalox10", "TriangoloRotondo", "Piervillo", "Rean", "Jekpack",
+        "playboikrame", "Danyr99", "ZiFrank", "Fevic"],
+      //Sunflower Samurai
+      "11" => ["Usagi", "HidaEishi", "kaikou", "Akuma", "Free", "yoeresel", "Kohs", "Ch3sh1r3", "NardoPotente",
+        "dtitan", "Pokechtulhu", "CarlosGG", "N1MP0", "Clenyu", "juanmonzonf", "Raiswind", "Bossen"],
+      //Cold Foil Control
+      "12" => ["Z-Gin", "Chaco", "Kentshero", "Ardent", "PurpleHaze", "luxas", "chefwheaton"],
+      //Righteous Gaming
+      "13" => ["RighteousGaming", "Perodic", "zzdog", "krav", "Motley", "amodell", "TrentMcB", "pzych", "deragun",
+        "Harvey0209", "f1av0r", "Vemnyx", "mclair", "FomToolery", "lostinspacefab", "SQJ", "magusoftheguild", "S1lverback55"],
+      //Team Talishar
+      "14" => ["HelpMeJace2", "RainyDays", "Ragnell", "Hochi", "Cwaugh", "QZXK20", "VexingTie", "Aegisworn"],
+      //Tide Breakers
+      "15" => ["OotTheMonk", "Yarandor", "grossmaul2130", "EggShot", "Kasadoom", "Gulto", "FinnElbe", "Stardragon",
+        "DragonSlayer", "TerranceSkill", "TaddelDown", "Ilya", "PastaPaul"],
+      //Cup of TCG
+      "16" => ["Cody1304", "Glem", "parallaxdream", "2birds1stone"],
+      //Thai Cards Shop
+      "18" => ["thaicards"],
+      //Metal Fab
+      "19" => ["deathstalker182", "Closetnerds", "Diene9", "acroriver", "ShadowGriffin", "Kentshero", "thekingg21",
+        "Lupinefiasco", "onlyrunverynoob", "Brishen", "Sinthrandir", "killerbrews", "Z-Gin", "Obliterage", "RedBeard",
+        "KillerBrews"],
+      //Potato Squad
+      "20" => ["Corry", "Gibbie", "sycotik", "ruin", "Xandorion", "ObiJohn", "tader", "Wittman1", "enflames91",
+        "SlimDrew23", "NoRaven", "middiekittie", "archangel224", "Nick56", "SCORPIO", "ArgentGrey", "SynThePanda93",
+        "welpcakes", "RiptideRipper", "gilfab", "dautt", "Grublo"],
+      //Fabled Brazil
+      "21" => ["tetsuo", "hugodeoz", "diorge", "LGB", "mishel157", "DanielDertoni", "caduads", "DracaiBR", "gravebeat",
+        "LiP", "DShima", "RodinhoTeclados"],
+      "22" => ["AggroBlaze96"],
+      "23" => ["Null"],
+      //Pitch Devils
+      "24" => ["Lestat", "elnino", "RTZ", "Schmax", "Belphegor", "FloJo", "MikeDwyer", "Dionysos", "Sosa", "TaddelDown",
+        "inama", "Kanopterix"],
+      "25" => ["Mickz"],
+      //Snap Dragons
+      "26" => ["iamtherealdylanthompson", "SpoostingBendog", "EdgeOfAir", "Matt", "Diomedesau", "Nyjin", "Manavon",
+        "Trouthammer", "N3ardeath", "Snaps", "TheGlib", "TheJudester"],
+      "27" => ["AggroBlaze96", "PvtVoid"],
+      "28" => ["Snow"],
+      //Red Line
+      "29" => ["Aegisworn", "CornOnJacob", "jonam33", "Scribnibble", "Yuriiko", "Sharp", "MXBloom", "Lazaeus",
+        "bloodbit", "hurricanewes", "Aljo", "Flempa", "redprairiedawn"],
+      //Skill Issue
+      "30" => ["Vaxildan", "kk96", "Skoupakas69", "BreakingChaos", "TheCouncillor", "JaxC", "Cubacash", "kungfoukios",
+        "sudogreeko", "katsubina", "NikolasG", "LegenProMax", "sadonEmsi", "DioReformed", "AggroBlazeNo1Fan", "kenobi",
+        "Giannis92", "AssassinoCapuccino"],
+      //Winged Hussars
+      "31" => ["Calebovitsch", "Steve119", "Lucid", "Seba", "raskoks", "Chudy", "metatron", "Dovi", "dssstefan",
+        "makos", "RavenLemur", "XIR", "PvtVoid"],
+      //FaB Insight
+      "32" => ["FaBInsights", "PvtVoid"],
+      //Oddwillows
+      "33" => ["BenOddwillows", "PvtVoid", "Teari", "arcaneghost", "RadicusMaximus"],
+      //Shine
+      "34" => ["shine", "Baumfish", "Curryking", "DanielB", "Flixi", "malusNexx2", "Sleepless", "Thalric", "Nexre", "PvtVoid"],
+      //IndyFab
+      "35" => ["jtbruhn94", "PvtVoid"],
+      "279086" => ["brandaotcg", "OotTheMonk", "Aegisworn"],
+      "1787491" => ["RedZoneRogue"],
+      "1919413" => ["DMArmada"],
+      "3828539" => ["Tee"],
+      "4006023" => ["BlackWingStudio"],
+      "6839952" => ["chonigman", "Ijaque"],
+      "6996822" => ["Sloopdoop"],
+      "7009853" => ["hometowntcg"],
+      "7198186" => ["OotTheMonk", "Aegisworn", "PvtVoid", "Bluffkin1"],
+      "7285727" => ["Brendan", "TheClub"],
+      "7329070" => ["GoAgainGamingAz"],
+      "7330270" => ["Steelfur"],
+      "7579026" => ["Hamsack", "BigMedSi", "Tripp"],
+      "7593240" => ["SinOnStream"],
+      "7733166" => ["NamVoTCGz", "AlexTheCardGuy", "RegularDegular", "joshlau7", "WillyB", "Spoofy", "ItsSebBruh", "Knight"],
+      //Team Card Advantage
+      "8040288" => ["JacobK", "Pastry Boi", "Brotworst", "1nigoMontoya (Cody)", "Motley", "jimmyhl1329", "Stilltzkin",
+        "krav", "infamousb", "FatFabJesus", "MisterPNP"],
+      "8338817" => ["imjorman", "ADavis83", "loganpetersen"],
+      "8458487" => ["Freshlord"],
+      "8635931" => ["TheTekloFoundry"],
+      //FAB Chaos
+      "8716783" => ["SaXoChaos", "nakezuma", "Broken", "Atsacus", "rkntl", "SlyNight", "Elnor", "mythen", "Enegon", "Obnoxious"],
+      "8736344" => ["Smithel"],
+      "8951973" => ["Wes", "Brandon"],
+      "8955846" => ["Man_Sant", "PollyCranka", "Aegisworn", "PEN15"],
+      "8997252" => ["phillip"],
+      "9361474" => ["kappolo"],
+      "9370276" => ["TheTablePitYT", "TunaTCG"],
+      "9404423" => ["TCGTed"],
+      "9408649" => ["Aegisworn"],
+      "9555916" => ["Cathardigan", "GorganianTome"],
+      "9574942" => ["Azor"],
+      "9734205" => ["tog", "bnet", "balakay"],
+      "9851977" => ["DaganTheZookeeper", "OotTheMonk"],
+      "10147920" => ["RavenousBabble", "Arty", "jargowsky", "Nick52cost", "Boomerang", "matthias", "Repas801"],
+      "10811477" => ["Mezzo"],
+      "10956423" => ["ChantsAndDaggers", "OotTheMonk"],
+      "11184392" => ["PatSmashGood", "OotTheMonk"],
+      "11266104" => ["Lupinefiasco"],
+      "11481720" => ["nxi", "PvtVoid"],
+      "11527692" => ["Bones503", "kwasneski", "Hymoshi"],
+      "12144126" => ["Pentregarth", "Archon Alters"],
+      "12245100" => ["Smithel", "Poopking", "HeyLookItsBrice"],
+      "12977197" => ["dazzyfizzle"],
+      "13035399" => ["HamMan215"],
+      "13136013" => ["WuntrikAkali"],
+      "13518995" => ["Tegunn", "AurOraOraOraOraORA"],
+      "13586904" => ["Nikobru"],
+      "13905903" => ["Towelie", "Abyssion", "Siege", "Alithos"],
+      "13969806" => ["BlitzkriegMeph"],
+      "14460977" => ["AlpacaSciatrice"],
+      //Scowling Flesh Bag
+      "14707687" => ["Scowling", "PvtVoid"],
+      //Fat and Furious
+      "14951942" => ["OopsAllPummels", "AngelPillow", "stefchwan", "JK", "Astropeleki", "Debread", "Tilemachos27",
+        "Intzah", "Cubacash", "karyo", "Ironclad", "Jorin", "anastaso73", "z4risu"],
+      "15323388" => ["OllinTogether"],
+      //Fab Dads
+      "15431936" => ["LostInDaSpace", "Belazhul", "zaketanapareis", "thilakinos", "Debread", "mellone", "makvag",
+        "Pitsirikos", "Alith0r0sKykl0pas", "Jim", "nikfabfanfatty"],
+    ];
+
+    foreach ($rosters as $campaignId => $members) {
+      $rosters[$campaignId] = array_flip($members);
     }
+    return $rosters;
+  }
+
+  public function IsTeamMember($userName): bool
+  {
+    $rosters = self::TeamRosters();
+    return isset($rosters[$this->value][$userName]);
   }
 
   public function AltArts($heroCardNumber = ""): string

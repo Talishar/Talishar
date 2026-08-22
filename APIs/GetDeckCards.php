@@ -113,11 +113,13 @@ foreach ($cardIds as $cardId) {
 
 if (function_exists('GeneratedCardTokens')) {
   $tokenIds = [];
+  $tokenIdSet = [];
   $queue = $cardIds;
   if (!empty($deckHero)) $queue[] = $deckHero;
   $processed = [];
-  while (count($queue) > 0) {
-    $cid = array_shift($queue);
+  $queueIndex = 0;
+  while (isset($queue[$queueIndex])) {
+    $cid = $queue[$queueIndex++];
     if (isset($processed[$cid])) continue;
     $processed[$cid] = true;
     $refs = GeneratedCardTokens($cid);
@@ -125,10 +127,10 @@ if (function_exists('GeneratedCardTokens')) {
     foreach (GetDemiHeroForms($cid) as $form) $refList[] = $form;
     foreach ($refList as $tokenId) {
       if ($tokenId === "") continue;
-      if (!in_array($tokenId, $tokenIds)) {
-        $tokenIds[] = $tokenId;
-        $queue[] = $tokenId;
-      }
+      if (isset($tokenIdSet[$tokenId])) continue;
+      $tokenIdSet[$tokenId] = true;
+      $tokenIds[] = $tokenId;
+      $queue[] = $tokenId;
     }
   }
   sort($tokenIds);

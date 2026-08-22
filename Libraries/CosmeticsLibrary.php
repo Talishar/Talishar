@@ -156,10 +156,11 @@ function GetUserCosmeticsEntitlements($userName)
 function GetUserAltArtEntitlements($userName)
 {
   $altArtMap = [];
+  $altArtSet = [];
 
   if (empty($userName)) return $altArtMap;
 
-  $addAltArtString = function ($altArtsString) use (&$altArtMap) {
+  $addAltArtString = function ($altArtsString) use (&$altArtMap, &$altArtSet) {
     if (empty($altArtsString)) return;
     foreach (explode(",", $altArtsString) as $entry) {
       $entry = trim($entry);
@@ -169,8 +170,9 @@ function GetUserAltArtEntitlements($userName)
       $cardId = trim($parts[0]);
       $altPath = trim($parts[1]);
       if ($cardId === "" || $altPath === "") continue;
-      if (!isset($altArtMap[$cardId])) $altArtMap[$cardId] = [];
-      if (!in_array($altPath, $altArtMap[$cardId])) $altArtMap[$cardId][] = $altPath;
+      if (isset($altArtSet[$cardId][$altPath])) continue;
+      $altArtSet[$cardId][$altPath] = true;
+      $altArtMap[$cardId][] = $altPath;
     }
   };
 
