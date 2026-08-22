@@ -63,7 +63,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       return;
     if (Smoldering($player, "smoldering_steel_red", number:$number, effectSource:$effectSource, effectController:$effectController))
       return;
-    RemoveCurrentTurnEffectsMulti(["smoldering_scales", "smoldering_steel_red"], $player);
+    RemoveCurrentTurnEffectsMulti(["smoldering_scales-SMOLDER", "smoldering_steel_red-SMOLDER"], $player);
   }
   if (!CanPlayAura($cardID, $player, $EffectContext, $effectController, $isToken)) return;
   $effectSource = $effectSource == "-" ? $EffectContext : $effectSource;

@@ -2312,7 +2312,6 @@ class bone_barrier_blue extends Card {
   function SpecificLogic() {
     global $dqVars;
     $choice = $dqVars["choice"] ?? "-";
-    WriteLog("HERE: $choice");
     $zone = explode("-", $choice)[0];
     $index = explode("-", $choice)[1] ?? "";
     $uniqueID = $dqVars["uniqueID"];

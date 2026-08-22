@@ -805,7 +805,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
       return;
     if (Smoldering($player, "smoldering_steel_red", "EQUIP", slot:$slot, effectAgent:$effectAgent))
       return;
-    RemoveCurrentTurnEffectsMulti(["smoldering_scales", "smoldering_steel_red"], $player);
+    RemoveCurrentTurnEffectsMulti(["smoldering_scales-SMOLDER", "smoldering_steel_red-SMOLDER"], $player);
   }
   $char = &GetPlayerCharacter($player);
   $uniqueID = GetUniqueId($cardID, $player);

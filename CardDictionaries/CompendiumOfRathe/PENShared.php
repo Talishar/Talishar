@@ -116,13 +116,13 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
       $Character = new PlayerCharacter($player);
       $Scales = $Character->FindCardID($cardID);
       $scaleIndex = $Scales != "" ? $Scales->Index() : -1;
-      if (!SearchCharacterActive($player, $cardID) || SearchCurrentTurnEffects($cardID, $player))
+      if (!SearchCharacterActive($player, $cardID) || SearchCurrentTurnEffects("$cardID-SMOLDER", $player))
         return false;
       break;
     case "smoldering_steel_red":
       $steelIndex = SearchDiscardForCard($player, $cardID);
       $index = explode(",", $steelIndex, 2)[0];
-      if ($steelIndex == "" || SearchCurrentTurnEffects("smoldering_steel_red", $player))
+      if ($steelIndex == "" || SearchCurrentTurnEffects("smoldering_steel_red-SMOLDER", $player))
         return false;
       break;
     default:
@@ -142,7 +142,7 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
       //need to remove this if its there, always call smoldering steel replacement last
       //add more REMOVECURRENTTURNEFFECT if we get more smoldering effects
-      AddDecisionQueue("REMOVECURRENTTURNEFFECT", $player, "smoldering_scales", 1);
+      AddDecisionQueue("REMOVECURRENTTURNEFFECT", $player, "smoldering_scales-SMOLDER", 1);
       break;
     default:
       break;
@@ -150,7 +150,7 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
   AddDecisionQueue("WRITELOG", $player, $message, 1);
   AddDecisionQueue("ELSE", $player, "-");
   // track whether to skip this check next time
-  AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $cardID, 1);
+  AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "$cardID-SMOLDER", 1);
   if ($zone == "AURAS")
     AddDecisionQueue("PLAYAURA", $player, "frostbite-$number-$effectSource-$effectController", 1);
   elseif ($zone == "EQUIP") {

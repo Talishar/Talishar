@@ -848,7 +848,6 @@ function RemoveCurrentTurnEffectsMulti(array $cardIDs, $player): void
       --$remaining;
     }
   }
-  WriteLog("HERE: " . implode(",", $toRemove));
   for ($j = count($toRemove) - 1; $j >= 0; --$j) {
     RemoveCurrentTurnEffect($toRemove[$j]);
   }
