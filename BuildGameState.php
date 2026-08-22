@@ -33,7 +33,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     return "Invalid game name.";
   }
 
-  if (!is_numeric($playerID)) {
+  $playerID = filter_var($playerID, FILTER_VALIDATE_INT);
+  if (!in_array($playerID, [1, 2, 3], true)) {
     return "Invalid player ID.";
   }
 
@@ -658,7 +659,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $actionType = $turnPhase == "ARS" ? 4 : 27;
   $resourceRestrictedCard = "";
   if(isset($turn[3])) $resourceRestrictedCard = $turn[3];
-  if (strpos($turnPhase, "CHOOSEHAND") !== false && ($turnPhase != "MULTICHOOSEHAND" || $turnPhase != "MAYMULTICHOOSEHAND")) $actionType = 16;
+  if (strpos($turnPhase, "CHOOSEHAND") !== false && !in_array($turnPhase, ["MULTICHOOSEHAND", "MAYMULTICHOOSEHAND"], true)) $actionType = 16;
   if ($isGoldPaymentChoice) $actionType = 16;
   $myHandContents = [];
   $myHandCount = count($myHand);
@@ -853,7 +854,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $gem = ($myCharacter[$i + 9] ?? 0) == 1 ? 1 : 2;
     }
     if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
-    if($isGameOver) ($myCharacter[$i + 12] ?? "-") == "UP";
+    $facing = $isGameOver ? "UP" : ($myCharacter[$i + 12] ?? "-");
     if($playerID == 3 &&( $myCharacter[$i + 12] ?? "-") == "DOWN" && !$isGameOver) {
       $myCharData[] = JSONRenderedCard(
         $MyCardBack);
@@ -879,7 +880,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           ($myCharacter[$i + 8] ?? 0) == 1,
           $gem,
           label: $label,
-          facing: $myCharacter[$i + 12] ?? "-",
+          facing: $facing,
           numUses: $myCharacter[$i + 5] ?? 0,
           subcard: isSubcardEmpty($myCharacter, $i) ? NULL : ($myCharacter[$i+10] ?? null),
           marked: ($myCharacter[$i + 13] ?? 0) == 1,

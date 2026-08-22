@@ -137,7 +137,7 @@ function DeleteCache($name)
   if($id) {
     shmop_delete($id);
   }
-  $gsID = @shmop_open(GamestateID($name), "c", 0666, 32768);
+  $gsID = @shmop_open(GamestateID($name), "w", 0, 0);
   if($gsID) {
     shmop_delete($gsID);
   }
