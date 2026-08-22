@@ -2,6 +2,7 @@
 const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
 const MAX_REPLAYS_SAVED = 3;
 const UNDO_PER_TURN_LIMIT = 25;
+const MAX_PLAYER_REPORTS = 5;
 
 function deleteDir(string $dirPath): void {
   //https://stackoverflow.com/questions/3349753/delete-directory-with-files-in-it
@@ -73,7 +74,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 5: //Card Played from Arsenal
       $index = $cardID;
       $arsenal = &GetArsenal($playerID);
-      if ($index < count($arsenal)) {
+      if (IsValidZoneIndex($arsenal, $index, ArsenalPieces())) {
         $cardToPlay = $arsenal[$index];
         if (!IsPlayable($cardToPlay, $turn[0], "ARS", $index)) break;
         $uniqueID = $arsenal[$index + 5];
@@ -144,7 +145,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10: //Item ability
       $index = $cardID; //Overridden to be index instead
       $items = &GetItems($playerID);
-      if ($index >= count($items)) break; //Item doesn't exist
+      if (!IsValidZoneIndex($items, $index, ItemPieces())) break; //Item doesn't exist
       $cardID = $items[$index];
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Item not playable
       --$items[$index + 3];
@@ -153,7 +154,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 11: //CHOOSEDECK
       if ($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK" || $turn[0] == "CHOOSETHEIRDECK") {
-        $player = ($turn[0] == "CHOOSETHEIRDECK") ? $playerID - 3 : $playerID;
+        $player = ($turn[0] == "CHOOSETHEIRDECK") ? 3 - $playerID : $playerID;
         $deck = new Deck($player);
         $index = $cardID;
         $cardID = $deck->Remove($index);
@@ -163,10 +164,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 12: //HANDTOP
       if ($turn[0] == "HANDTOPBOTTOM") {
         $hand = &GetHand($playerID);
-        $deck = new Deck($playerID);
-        $deck->AddTop($buttonInput);
         $index = SearchHandForCard($playerID, $buttonInput);
         if (str_contains($index, ",")) $index = intval(explode(",", $index, 2)[0]);
+        if (!IsValidZoneIndex($hand, $index, HandPieces())) break;
+        $deck = new Deck($playerID);
+        $deck->AddTop($buttonInput);
         array_splice($hand, $index, 1);
         ContinueDecisionQueue($buttonInput);
         WriteLog("⬆️ Player " . $playerID . " put a card on the top of the deck.");
@@ -175,10 +177,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 13: //HANDBOTTOM
       if ($turn[0] == "HANDTOPBOTTOM") {
         $hand = &GetHand($playerID);
-        $deck = new Deck($playerID);
-        $deck->AddBottom($buttonInput);
         $index = SearchHandForCard($playerID, $buttonInput);
         if (str_contains($index, ",")) $index = intval(explode(",", $index, 2)[0]);
+        if (!IsValidZoneIndex($hand, $index, HandPieces())) break;
+        $deck = new Deck($playerID);
+        $deck->AddBottom($buttonInput);
         array_splice($hand, $index, 1);
         ContinueDecisionQueue($buttonInput);
         WriteLog("⬇️ Player " . $playerID . " put a card on the bottom of the deck.");
@@ -345,7 +348,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 21: //Combat chain ability
       $index = $cardID; //Overridden to be index instead
-      if ($index >= count($combatChain)) break; //Combat chain index doesn't exist
+      if (!IsValidZoneIndex($combatChain, $index, CombatChainPieces())) break; //Combat chain index doesn't exist
       $cardID = $combatChain[$index];
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "PLAY", $index)) {
         SetClassState($playerID, $CS_PlayIndex, $index);
@@ -355,7 +358,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 22: //Aura ability
       $index = $cardID; //Overridden to be index instead
       $auras = &GetAuras($playerID);
-      if ($index >= count($auras)) break; //Item doesn't exist
+      if (!IsValidZoneIndex($auras, $index, AuraPieces())) break; //Aura doesn't exist
       $cardID = $auras[$index];
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Aura ability not playable
       $names = GetAbilityNames($cardID, $index);
@@ -375,7 +378,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 24: //Ally Ability
       $allies = &GetAllies($currentPlayer);
       $index = $cardID; //Overridden to be index instead
-      if ($index >= count($allies)) break; //Ally doesn't exist
+      if (!IsValidZoneIndex($allies, $index, AllyPieces())) break; //Ally doesn't exist
       $cardID = $allies[$index];
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Ally not playable
       $allies[$index + 1] = 1;
@@ -443,8 +446,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 31: //Move layer deeper
       $index = $buttonInput;
-      if ($index >= $dqState[8]) break;
       $layerPieces = LayerPieces();
+      if (!IsValidZoneIndex($layers, $index, $layerPieces) ||
+          !IsValidZoneIndex($layers, (int)$index + $layerPieces, $layerPieces) ||
+          (int)$index >= (int)($dqState[8] ?? 0)) break;
+      $index = (int)$index;
       $layer = array_slice($layers, $index, $layerPieces);
       for ($i = $index + $layerPieces; $i < $index + $layerPieces * 2; ++$i) {
         $layers[$i - $layerPieces] = $layers[$i];
@@ -453,8 +459,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 32: //Move layer up
       $index = $buttonInput;
-      if ($index == 0) break;
       $layerPieces = LayerPieces();
+      if (!IsValidZoneIndex($layers, $index, $layerPieces) || (int)$index < $layerPieces ||
+          !IsValidZoneIndex($layers, (int)$index - $layerPieces, $layerPieces)) break;
+      $index = (int)$index;
       $layer = array_slice($layers, $index, $layerPieces);
       for ($i = $index - $layerPieces; $i < $index; ++$i) {
         $layers[$i + $layerPieces] = $layers[$i];
@@ -466,7 +474,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 34: //Permanent ability
       $index = $cardID; //Overridden to be index instead
       $permanents = &GetPermanents($playerID);
-      if ($index >= count($permanents)) break; //Permanent doesn't exist
+      if (!IsValidZoneIndex($permanents, $index, PermanentPieces())) break; //Permanent doesn't exist
       $cardID = $permanents[$index];
       if (!IsPlayable($cardID, $turn[0], "PLAY", $index)) break; //Permanent not playable
       SetClassState($playerID, $CS_PlayIndex, $index);
@@ -475,7 +483,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 35: //Play card from deck
       $index = $cardID; //Overridden to be index instead
       $deck = &GetDeck($playerID);
-      if ($index >= count($deck)) break;
+      if (!IsValidZoneIndex($deck, $index, DeckPieces())) break;
       $cardID = $deck[$index];
       if (!IsPlayable($cardID, $turn[0], "DECK", $index)) break;
       array_splice($deck, $index, 1);
@@ -500,7 +508,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 37: // Their Arsenal
       $index = $cardID;
       $theirArs = &GetArsenal($otherPlayer);
-      if ($index < 0 || $index >= count($theirArs)) {
+      if (!IsValidZoneIndex($theirArs, $index, ArsenalPieces())) {
         echo ("Arsenal Index " . $index . " Invalid Input<BR>");
         return false;
       }
@@ -571,7 +579,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (IsReplay()) {
         break;
       }
-      if (GetClassState($playerID, $CS_NumUndoesThisTurn) > UNDO_PER_TURN_LIMIT && !IsDevEnvironment()) {
+      if (GetClassState($playerID, $CS_NumUndoesThisTurn) >= UNDO_PER_TURN_LIMIT && !IsDevEnvironment()) {
         WriteLog("Player $playerID has reverted the gamestate too many times this turn. Proceed with the game", highlight:true);
         break;
       }
@@ -610,10 +618,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $undoCacheArr = ReadCacheArray($gameName);
       $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
-      if (GetClassState($playerID, $CS_NumUndoesThisTurn) > UNDO_PER_TURN_LIMIT && !IsDevEnvironment()) {
+      if (GetClassState($playerID, $CS_NumUndoesThisTurn) >= UNDO_PER_TURN_LIMIT && !IsDevEnvironment()) {
         WriteLog("Player $playerID has reverted the gamestate too many times this turn. Proceed with the game", highlight:true);
         break;
       }
+      IncrementClassState($playerID, $CS_NumUndoesThisTurn);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
         RevertGamestate($buttonInput);
         if ($buttonInput == "startChainLinkGamestate.txt")
@@ -1139,12 +1148,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       $reportCount = 0;
       $folderName = "./BugReports/" . $gameName . "-" . $reportCount;
-      while ($reportCount < 5 && file_exists($folderName)) {
+      while ($reportCount < MAX_PLAYER_REPORTS && file_exists($folderName)) {
         ++$reportCount;
         $folderName = "./BugReports/" . $gameName . "-" . $reportCount;
       }
-      if ($reportCount == 3) {
+      if ($reportCount >= MAX_PLAYER_REPORTS) {
         WriteLog("⚠️ Report file is full for this game. Please use discord for further reports.", highlight: true);
+        break;
       }
       if (!is_dir($folderName)) mkdir($folderName, 0700, true);
       copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");

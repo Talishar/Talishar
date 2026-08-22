@@ -34,7 +34,7 @@ function GetMZZonePieces($zone)
     "MYCHAR", "THEIRCHAR" => CharacterPieces(),
     "MYAURAS", "THEIRAURAS" => AuraPieces(),
     "ALLY", "MYALLY", "THEIRALLY" => AllyPieces(),
-    "MYARS", "THEIRARS" => ArsenalPieces(),
+    "MYARS", "THEIRARS", "MYARSENAL", "THEIRARSENAL" => ArsenalPieces(),
     "MYHAND", "THEIRHAND" => HandPieces(),
     "MYPITCH", "THEIRPITCH" => PitchPieces(),
     "MYDISCARD", "THEIRDISCARD" => DiscardPieces(),
@@ -56,7 +56,7 @@ function GetMZZoneUIDIndex($zone)
     "MYCHAR", "THEIRCHAR" => 11,
     "MYAURAS", "THEIRAURAS" => 6,
     "ALLY", "MYALLY", "THEIRALLY" => 5,
-    "MYARS", "THEIRARS" => 5,
+    "MYARS", "THEIRARS", "MYARSENAL", "THEIRARSENAL" => 5,
     "MYDISCARD", "THEIRDISCARD" => 1,
     "PERM", "MYPERM", "THEIRPERM" => 0, //not currently tracked
     "BANISH", "MYBANISH", "THEIRBANISH" => 2,
@@ -76,7 +76,7 @@ function &GetRelativeMZZone($player, $zone)
   if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
   else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
   else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
-  else if ($zone == "MYARS" || $zone == "THEIRARS") $rv = &GetArsenal($player);
+  else if ($zone == "MYARS" || $zone == "THEIRARS" || $zone == "MYARSENAL" || $zone == "THEIRARSENAL") $rv = &GetArsenal($player);
   else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = &GetHand($player);
   else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = &GetPitch($player);
   else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
@@ -87,6 +87,16 @@ function &GetRelativeMZZone($player, $zone)
   else if ($zone == "LAYER") return $layers;
   else if ($zone == "CC") return $combatChain;
   return $rv;
+}
+
+function IsValidZoneIndex($zone, $index, $pieces)
+{
+  if (!is_int($pieces) || $pieces <= 0) return false;
+  if (is_int($index)) $validatedIndex = $index;
+  else if (is_string($index) && preg_match('/^\d+$/D', $index)) $validatedIndex = (int)$index;
+  else return false;
+
+  return $validatedIndex % $pieces === 0 && $validatedIndex + $pieces <= count($zone);
 }
 
 function &GetPlayerCharacter($player)

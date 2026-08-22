@@ -18,14 +18,8 @@ header('Content-Type: application/json');
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $allowedDomains = ['localhost', 'talishar.net', 'legacy.talishar.net', 'preview.talishar.net'];
-$isAllowed = false;
-
-foreach ($allowedDomains as $domain) {
-    if (strpos($origin, $domain) !== false) {
-        $isAllowed = true;
-        break;
-    }
-}
+$originHost = parse_url($origin, PHP_URL_HOST);
+$isAllowed = is_string($originHost) && in_array(strtolower($originHost), $allowedDomains, true);
 
 if ($isAllowed) {
     header('Access-Control-Allow-Origin: ' . $origin);
@@ -67,7 +61,7 @@ try {
         exit;
     }
 
-    $maxMessages = min(isset($_GET['maxMessages']) ? (int)$_GET['maxMessages'] : 5, 10);
+    $maxMessages = max(1, min(isset($_GET['maxMessages']) ? (int)$_GET['maxMessages'] : 5, 10));
 
     // Try to get from environment, then from $_ENV, then from direct file
     $botToken  = getenv('DISCORD_BOT_TOKEN') ?: ($_ENV['DISCORD_BOT_TOKEN'] ?? null);
