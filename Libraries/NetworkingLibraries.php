@@ -4606,14 +4606,17 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     $EffectContext = $cardID;
     $playText = "";
+    $repriseInactive = false;
     if (!$chainClosed) {
       if (IsModular($cardID)) $additionalCosts = $uniqueID; //to track which one to remove
+      $repriseInactive = HasReprise($cardID) && !RepriseActive();
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       if ($definedCardType == "AA" && ($resolvedAbilityType == "AA" || $resolvedAbilityType == "")) IncrementClassState($currentPlayer, $CS_NumAttackCardsAttacked); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();
     if ($from != "EQUIP" && $from != "PLAY" && $from != "COMBATCHAINATTACKS") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     else if ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
+    if ($repriseInactive) WriteLog(CardLink($cardID, $cardID) . " does not get its <b>reprise</b> effect.");
     if (!$openedChain) {
       Await($currentPlayer, "ResolveGoAgain", cardID:$cardID, from:$from, additionalCosts:$additionalCosts, uniqueID:$uniqueID, subsequent:0, final:true);
       
