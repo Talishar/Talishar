@@ -840,7 +840,7 @@ function RemoveCurrentTurnEffectsMulti(array $cardIDs, $player): void
   $toRemove = [];
   $remaining = count($cardIDs);
   for ($i = 0; $i < $count && $remaining > 0; $i += $pieces) {
-    if ($currentTurnEffects[$i + 1] !== $player) continue;
+    if ($currentTurnEffects[$i + 1] != $player) continue;
     $eff = $currentTurnEffects[$i];
     if (isset($lookup[$eff])) {
       $toRemove[] = $i;
@@ -848,6 +848,7 @@ function RemoveCurrentTurnEffectsMulti(array $cardIDs, $player): void
       --$remaining;
     }
   }
+  WriteLog("HERE: " . implode(",", $toRemove));
   for ($j = count($toRemove) - 1; $j >= 0; --$j) {
     RemoveCurrentTurnEffect($toRemove[$j]);
   }
