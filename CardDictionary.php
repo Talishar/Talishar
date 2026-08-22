@@ -1708,11 +1708,14 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $restriction = "";
   $cardType = CardType($cardID, $from, $currentPlayer);
   $subtype = CardSubType($cardID);
-  $abilityType = GetAbilityType($cardID, $index, $from);
+
+  // Get type and name only below when needed
+  $abilityType = null;
+  $abilityNames = null;
+
   $abilityTypes = GetAbilityTypes($cardID, $index, $from);
-  $abilityNames = GetAbilityNames($cardID, $index, $from);
   // modal card where none of the modes are live
-  if ($abilityTypes != "" && $abilityNames == "-" && $phase != "P" && $phase != "B") return false;
+  if ($abilityTypes != "" && $phase != "P" && $phase != "B" && ($abilityNames ??= GetAbilityNames($cardID, $index, $from)) == "-") return false;
   if ($phase == "P" && $from != "HAND") return false;
   if ($phase == "B" && $from == "BANISH") return false;
   if ($phase == "B" && $from == "THEIRBANISH") return false;
@@ -1827,9 +1830,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   elseif ($phase == "P") return true;
   if ($from != "PLAY" && $phase == "P" && PitchValue($cardID) > 0) return true;
   $isStaticType = IsStaticType($cardType, $from, $cardID);
-  if ($isStaticType) $cardType = GetAbilityType($cardID, $index, $from);
+  if ($isStaticType) $cardType = ($abilityType ??= GetAbilityType($cardID, $index, $from));
   // don't block cards with multiple abilities where one hasn't been decided yet
-  if ($cardType == "" && $abilityNames == "") return false;
+  if ($cardType == "" && ($abilityNames ??= GetAbilityNames($cardID, $index, $from)) == "") return false;
   if (RequiresDiscard($cardID) || $cardID == "enlightened_strike_red") {
     if ($from == "HAND" && count($myHand) < 2) return false;
     else if (count($myHand) < 1) return false;
@@ -1850,7 +1853,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($CombatChain->HasCurrentLink()
     && $CombatChain->AttackCard()->ID() == "exude_confidence_red"
     && $player == $defPlayer
-    && ($abilityType == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
+    && (($abilityType ??= GetAbilityType($cardID, $index, $from)) == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
     $restriction = "Exude Confidance";
     $exudeAttack = GetCombatChainState($CCS_CachedTotalPower);
     $countCombatChain = count($combatChain);
@@ -1865,7 +1868,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     }
     if ($restriction == "Exude Confidance") return false;
   }
-  if (SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer) && $player == $defPlayer && ($abilityType == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I")) && !str_contains($phase, "CHOOSE")) {
+  if (SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer) && $player == $defPlayer && (($abilityType ??= GetAbilityType($cardID, $index, $from)) == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I")) && !str_contains($phase, "CHOOSE")) {
     $restriction = "Exude Confidance";
     return false;
   }
