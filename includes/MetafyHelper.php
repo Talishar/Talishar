@@ -523,12 +523,12 @@ if (!function_exists('MetafySyncCommunities')) {
       return $result;
     }
 
-    $seen = array_filter(array_column($all, 'id'));
+    $seenSet = array_fill_keys(array_filter(array_column($all, 'id')), true);
 
     foreach ($memberships as $community) {
       $communityId = $community['id'];
-      if (in_array($communityId, $seen, true)) continue;
-      $seen[] = $communityId;
+      if (isset($seenSet[$communityId])) continue;
+      $seenSet[$communityId] = true;
 
       $storedCommunity = $storedById[$communityId] ?? null;
       $tierMap         = MetafyBuildTierMap($community, $storedCommunity);
@@ -568,7 +568,7 @@ if (!function_exists('MetafySyncCommunities')) {
     // --- Talishar subscription, checked directly ---
     // Independent of the membership list: an active subscription is what grants
     // supporter perks, and `has_access` is the only authoritative answer for that.
-    if (!in_array(METAFY_TALISHAR_COMMUNITY_ID, $seen, true)) {
+    if (!isset($seenSet[METAFY_TALISHAR_COMMUNITY_ID])) {
       $subscription = MetafyCheckSubscription($auth, $conn, METAFY_TALISHAR_COMMUNITY_ID);
       $storedTalishar = $storedById[METAFY_TALISHAR_COMMUNITY_ID] ?? null;
 
