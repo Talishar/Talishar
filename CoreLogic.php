@@ -941,10 +941,13 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
     "MYALLY" => GetAllies($player),
     default => [],
   };
-  if ($zone == "MYCHAR" && $source[$index + 1] == 0) return;
-  if (!isset($source[$index])) WriteLog("Please report this bug to the developers. " . $zone . " " . $index, highlight:true);
-    $cardID = $source[$index];
-    $spellVoidAmount = SpellVoidAmount($cardID, $player, $index);
+  if (!isset($source[$index])) {
+    WriteLog("Please report this bug to the developers. " . $zone . " " . $index, highlight:true);
+    return $prevented;
+  }
+  if ($zone == "MYCHAR" && ($source[$index + 1] ?? 0) == 0) return $prevented;
+  $cardID = $source[$index];
+  $spellVoidAmount = SpellVoidAmount($cardID, $player, $index);
   if ($spellVoidAmount > 0) {
     if ($zone == "MYCHAR") DestroyCharacter($player, $index);
     else if ($zone == "MYITEMS") DestroyItemForPlayer($player, $index);
@@ -1850,12 +1853,12 @@ function ClearDieRoll($player)
 function GetBanishModifier($index)
 {
   global $currentPlayer;
-    $banish = GetBanish($currentPlayer);
-    if ($index < count($banish)) {
-      $meta = $banish[$index + 1];
-      $dashPos = strpos($meta, '-');
-      return $dashPos !== false ? substr($meta, 0, $dashPos) : $meta;
-    }
+  $banish = GetBanish($currentPlayer);
+  if (isset($banish[$index + 1])) {
+    $meta = $banish[$index + 1];
+    $dashPos = strpos($meta, '-');
+    return $dashPos !== false ? substr($meta, 0, $dashPos) : $meta;
+  }
   return "";
 }
 
@@ -1929,15 +1932,8 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     if (SearchCharacterEffects($currentPlayer, $index, "INSTANT")) return true;
   }
   if ($from == "BANISH") {
-    $banish = GetBanish($currentPlayer);
-    if ($index > -1 && $index < count($banish)) {
-      if ($banish[$index + 1] !== null) {
-        $banishMeta = $banish[$index + 1];
-        $dashPos = strpos($banishMeta, "-");
-        $mod = $dashPos !== false ? substr($banishMeta, 0, $dashPos) : $banishMeta;
-        if (DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || str_contains($mod, "shadowrealm_horror_red")) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
-      }
-    }
+    $mod = GetBanishModifier($index);
+    if (DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || str_contains($mod, "shadowrealm_horror_red")) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
   }
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if (SearchCurrentTurnEffects("meridian_pathway", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
