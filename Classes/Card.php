@@ -667,8 +667,8 @@ class Card {
     return;
   }
 
-  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
-    return;
+  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+    return false;
 	}
 
   function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1, $effectIndex=-1) {

@@ -303,11 +303,12 @@ class anticipating_gaze extends Card {
 		return 1;
 	}
 
-	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
 		global $CombatChain;
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		if ($CharacterCard->IsActive() && SubTypeContains($CombatChain->AttackCard()->ID(), "Sword"))
 			AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+		return false;
 	}
 
 	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {

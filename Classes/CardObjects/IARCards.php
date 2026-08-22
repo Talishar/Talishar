@@ -3162,20 +3162,25 @@ class head_banging_chorus_yellow extends Card {
     return true;
   }
 
-  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
     global $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn, $CombatChain;
     if (!IsHeroAttackTarget()) return;
     $attackCard = $CombatChain->AttackCard()->ID();
     if (ClassContains($attackCard, "GUARDIAN", $this->controller)) {
       if (GetClassState($this->controller, $CS_GuardianAACThisTurn) == 1) {
-        AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+        if (!$check)
+          AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+        return true;
       }
     }
     elseif (TalentContains($attackCard, "REVERED", $this->controller)) {
       if (GetClassState($this->controller, $CS_ReveredAACThisTurn) == 1) {
-        AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+        if (!$check)
+          AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+        return true;
       }
     }
+    return false;
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {

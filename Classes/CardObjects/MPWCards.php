@@ -353,11 +353,12 @@ class squires_bracers extends Card {
 		return 1;
 	}
 
-	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
 		global $CombatChain;
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		if ($CharacterCard->IsActive() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
 			AddLayer("TRIGGER", $this->controller, $this->cardID, $index);
+		return false;
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -399,11 +400,12 @@ class cutting_couriers extends Card {
 		return 1;
 	}
 
-	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
 		global $CombatChain;
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		if ($CharacterCard->IsActive() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
 			AddLayer("TRIGGER", $this->controller, $this->cardID, $index);
+		return false;
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {

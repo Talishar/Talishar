@@ -1599,7 +1599,10 @@ function AuraHitEffects($attackID, $check = false): bool
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
     $remove = 0;
     $card = GetClass($auras[$i], $mainPlayer);
-    if ($card != "-") $card->PermanentHitEffect($i, $attackID, $defPlayer, false);
+    if ($card != "-") {
+      $foundTrigger = $card->PermanentHitEffect($i, $attackID, $defPlayer, false, $check);
+      if ($foundTrigger && $check) return true;
+    }
     switch ($auras[$i]) {
       case "bloodspill_invocation_red":
       case "bloodspill_invocation_yellow":

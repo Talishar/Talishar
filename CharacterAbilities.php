@@ -442,7 +442,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1, $flicked = f
     if ($characterID != "arakni_tarantula" && $characterID != "cindra_dracai_of_retribution" && $characterID != "cindra" && (TypeContains($mainCharacter[$i], "W", $mainPlayer) || $mainCharacter[$i + 1] != "2")) continue;
     $character = $Character->Card($i);
     $card = GetClass($characterID, $mainPlayer, "EQUIP", $character->UniqueID());
-    if ($card != "-") $card->PermanentHitEffect($i, $damageSource, $targetPlayer, $flicked);
+    if ($card != "-") $card->PermanentHitEffect($i, $damageSource, $targetPlayer, $flicked, false);
     switch ($characterID) {
       case "katsu_the_wanderer":
       case "katsu":
