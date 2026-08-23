@@ -325,6 +325,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Disease,Aura";
     case "dr_mortimer":
       return "Young";
+    case "danse_macabre":
+      return "Legs";
     default:
       break;
   }
@@ -3426,6 +3428,7 @@ function HasBladeBreak($cardID)
     case "olde_leather_plate":
     case "olde_leather_gloves":
     case "olde_leather_boots":
+    case "danse_macabre":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);

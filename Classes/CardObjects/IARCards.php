@@ -138,6 +138,15 @@ class vox_necropolis extends Card {
     $this->controller = $controller;
   }
 
+  function PermanentAllyPlayAbility($allyIndex, $charIndex, $from) {
+    $AllyCard = new AllyCard($allyIndex, $this->controller);
+    if ($from != "GY" && $from != "BANISH") return;
+    if (!SubtypeContains($AllyCard->CardID(), "Zombie")) return;
+    AddDecisionQueue("GETATTACKQUEUETARGET", $this->controller, $AllyCard->CardID() . ",PLAY,1");
+    Await($this->controller, "AQTargeting", "target", lastResultName:"target");
+    Await($this->controller, "AddTrigger", uniqueID:$AllyCard->UniqueID(), cardID:"vox_necropolis", final:true);
+  }
+
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $Allies = new Allies($this->controller);
     $AllyCard = $Allies->FindCardUID($uniqueID);
@@ -3331,5 +3340,86 @@ class apex_buster_yellow extends Card {
 
   function SpecialClass() {
     return "BRUTE";
+  }
+}
+
+class danse_macabre extends Card {
+  function __construct($controller) {
+    $this->cardID = "danse_macabre";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PermanentAllyPlayAbility($allyIndex, $charIndex, $from) {
+    $CharacterCard = new CharacterCard($charIndex, $this->controller);
+    if (!$CharacterCard->IsActive() || $CharacterCard->Tapped()) return;
+    $AllyCard = new AllyCard($allyIndex, $this->controller);
+    Await($this->controller, "AddTrigger", uniqueID:$AllyCard->UniqueID(), cardID:$this->cardID, subsequent:0, final:true);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Character = new PlayerCharacter($this->controller);
+    $CharacterCard = $Character->FindCardID($this->cardID);
+    if ($CharacterCard->Index() != -1) {
+      $message = "if_you_want_to_accelerate_your_zombie";
+      $context = "Choose if you want to pay 2 and tap " . CardLink($this->cardID) . " to accelerate your zombie";
+      Await($this->controller, "YesNo", message:$message, context:$context, subsequent:0);
+      Await($this->controller, "PayResources", amount:2);
+      Await($this->controller, $this->cardID, uniqueID:$uniqueID, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $uid = $dqVars["uniqueID"];
+    $Character = new PlayerCharacter($this->controller);
+    $CharacterCard = $Character->FindCardID($this->cardID);
+    $CharacterCard->Tap();
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+    AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller, uniqueID:$uid);
+  }
+
+  function CurrentEffectEndTurnAbilities($i, &$remove) {
+    $Effect = new CurrentEffect($i);
+    if (str_contains($Effect->EffectID(), "GOAGAIN")) return;
+    $Allies = new Allies($this->controller);
+    $Ally = $Allies->FindCardUID($Effect->AppliestoUniqueID());
+    $Ally->Destroy();
+    $remove = true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $parameter == "GOAGAIN";
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $param == "GOAGAIN";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Danse Macabre";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialSubType() {
+    return "Lges";
+  }
+
+  function SpecialBlock() {
+    return 1;
   }
 }

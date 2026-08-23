@@ -880,4 +880,8 @@ class Card {
   function PermanentDamagePrevention($damage, $type, $source, $index) {
     return 0;
   }
+
+  function PermanentAllyPlayAbility($allyIndex, $charIndex, $from) {
+    return;
+  }
 }

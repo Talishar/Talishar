@@ -59,13 +59,11 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $number);
   }
   $index = count($allies) - $allyPieces;
-  if ($from == "GY" || $from == "BANISH") {
-    if (SearchCharacterAlive($player, "vox_necropolis")) {
-      $AllyCard = new AllyCard($index, $player);
-      AddDecisionQueue("GETATTACKQUEUETARGET", $player, $AllyCard->CardID() . ",PLAY,1");
-      Await($player, "AQTargeting", "target", lastResultName:"target");
-      Await($player, "AddTrigger", uniqueID:$AllyCard->UniqueID(), cardID:"vox_necropolis", final:true);
-    }
+  $Character = new PlayerCharacter($player);
+  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $CharacterCard = $Character->Card($i, true);
+    $card = GetClass($CharacterCard->ID(), $player);
+    if ($card != "-") $card->PermanentAllyPlayAbility($index, $CharacterCard->Index(), $from);
   }
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->EntersArenaAbility();
