@@ -1011,7 +1011,8 @@ class gloves_of_erasure extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS:type=T&MYAURAS:type=T");
+    $tokenAuras = TargetTokenAuras();
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $tokenAuras);
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a token aura to destroy, or pass", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZDESTROY", $this->controller, "-", 1);
@@ -8058,7 +8059,8 @@ class bubba_lubba_run_aground_yellow extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if ($from == "PLAY" && GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A") {
-      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS:isToken=true&MYAURAS:isToken=true");
+      $tokenAuras = TargetTokenAuras();
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $tokenAuras);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Destroy an aura token", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
       AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);

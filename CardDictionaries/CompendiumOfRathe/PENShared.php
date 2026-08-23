@@ -161,3 +161,20 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
   }
   return true;
 }
+
+function TargetTokenAuras($player="-") {
+  global $currentPlayer;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $players = $player == "-" ? [$currentPlayer, $otherPlayer] : [$player];
+  $ret = [];
+  foreach ($players as $player) {
+    $prefix = $player == $currentPlayer ? "MYAURAS" : "THEIRAURAS";
+    $Auras = new Auras($player);
+    for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+      $AuraCard = $Auras->Card($i, true);
+      if ($AuraCard->IsToken() || TypeContains($AuraCard->CardID(), "T"))
+        $ret[] = "$prefix-" . $AuraCard->Index();
+    }
+  }
+  return implode(",", $ret);
+}
