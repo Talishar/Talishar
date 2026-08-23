@@ -32,8 +32,10 @@ class SessionManagementTest extends TestCase
 
     protected function tearDown(): void
     {
-        parent::tearDown();
-        
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
         // Clean up after each test
         $_SESSION = [];
         $_COOKIE = [];
@@ -43,6 +45,9 @@ class SessionManagementTest extends TestCase
         ini_restore('session.cookie_secure');
         ini_restore('session.use_strict_mode');
         ini_restore('session.cookie_samesite');
+        session_id(session_create_id('talishar-test-'));
+
+        parent::tearDown();
     }
 
     /**

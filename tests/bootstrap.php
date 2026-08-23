@@ -58,7 +58,10 @@ if (!function_exists('GetLocalMySQLConnection')) {
 // Mock other functions that might be called during tests
 if (!function_exists('IsGameNameValid')) {
     function IsGameNameValid($gameName) {
-        return !empty($gameName) && ctype_alnum($gameName) && strlen($gameName) >= 3 && strlen($gameName) <= 50;
+        return is_string($gameName)
+            && strlen($gameName) >= 3
+            && strlen($gameName) <= 50
+            && ctype_alnum($gameName);
     }
 }
 
