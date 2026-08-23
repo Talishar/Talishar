@@ -3208,13 +3208,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $player, "golden_cog", 1);
         AddDecisionQueue("PUTPLAY", $player, "0", 1);
         break;
-      case "stasis_cell_blue":
-        $index = SearchCharacterForUniqueID($target, $otherPlayer);
-        if ($index != -1) {
-          AddDecisionQueue("PASSPARAMETER", $otherPlayer, $index);
-          AddDecisionQueue("ADDSTASISTURNEFFECT", $otherPlayer, "stasis_cell_blue-", 1);
-        }
-        break;
       case "evo_circuit_breaker_red_equip":
         $i = SearchCharacterForUniqueID($target, $player);
         if ($i != -1 && EvoHasUnderCard($player, $i)) {

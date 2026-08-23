@@ -4515,6 +4515,7 @@ function SetTargets($player, $cardID, $search, $N=1, $may=false, $playCard=true)
     Await($player, "MultiTargetIndices", "indices", search:$search, subsequent:$i != 0);
     Await($player, "ChooseMultiZone", "index", may:$may, context:$message);
     if ($playCard) Await($player, "SetLayerTarget", "currentTargets", layerID:$cardID, final:$nLeft == 1);
+    else AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
   }
 }
 

@@ -1214,7 +1214,7 @@ class leave_them_hanging_red extends Card {
     return true;
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $context = "Choose who to intimidate";
     if(ShouldAutotargetOpponent($this->controller)) {
       AddDecisionQueue("PASSPARAMETER", $this->controller, "THEIRCHAR-0");
@@ -2754,7 +2754,7 @@ class cheers_blue extends Card {
     $this->controller = $controller;
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -2777,7 +2777,7 @@ class booze_blue extends Card {
     $this->controller = $controller;
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -3439,7 +3439,7 @@ class up_on_a_pedestal_blue extends Card {
     $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -3479,7 +3479,7 @@ class in_the_palm_of_your_hand_red extends Card {
     $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -5678,7 +5678,7 @@ class dramatic_pause_red extends Card {
     $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     TargetDefendingAction($this->controller, $this->cardID);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
   }
@@ -5711,7 +5711,7 @@ class dramatic_pause_yellow extends Card {
     $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     TargetDefendingAction($this->controller, $this->cardID);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
   }
@@ -5744,7 +5744,7 @@ class dramatic_pause_blue extends Card {
     $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     TargetDefendingAction($this->controller, $this->cardID);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
   }

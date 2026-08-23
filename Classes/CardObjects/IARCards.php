@@ -1410,7 +1410,7 @@ class blasmophet_the_insatiable_hunger extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 

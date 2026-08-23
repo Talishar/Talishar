@@ -635,13 +635,6 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("PUTPLAY", $currentPlayer, "0", 1);
       }
       break;
-    case "stasis_cell_blue":
-      if ($from == "PLAY") {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=E");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("EQUIPCANTDEFEND", $currentPlayer, "stasis_cell_blue-B-", 1);
-      }
-      break;
     case "fuel_injector_blue":
       if ($from == "PLAY") GainResources($currentPlayer, 1);
       return "";

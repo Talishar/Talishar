@@ -349,7 +349,7 @@ class Card {
     return $basePower;
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     return;
   }
 

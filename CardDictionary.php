@@ -1082,7 +1082,7 @@ function HasGoAgain($cardID, $from="-"): bool|int
   static $goAgainFalse = [
     "healing_potion_blue" => 1, "potion_of_strength_blue" => 1, "imperial_seal_of_command_red" => 1,
     "optekal_monocle_blue" => 1, "imperial_edict_red" => 1, "induction_chamber_red" => 1,
-    "convection_amplifier_red" => 1, "stasis_cell_blue" => 1, "crazy_brew_blue" => 1,
+    "convection_amplifier_red" => 1, "crazy_brew_blue" => 1,
     "plasma_purifier_red" => 1, "teklo_plasma_pistol" => 1,
     "great_library_of_solana" => 1, "plasma_barrel_shot" => 1,
     "kelpie_tangled_mess_yellow" => 1, "cutty_shark_quick_clip_yellow" => 1,
@@ -3738,7 +3738,7 @@ function CharacterNumUsesPerTurn($cardID)
   if ($card != "-") return $card->NumUses();
   static $unlimitedUses = [
     "bravo_showstopper" => 1, "bravo" => 1, "helios_mitre" => 1, "emperor_dracai_of_aesir" => 1,
-    "seerstone" => 1, "nitro_mechanoida" => 1, "stasis_cell_blue" => 1, "teklovossen_the_mechropotent" => 1,
+    "seerstone" => 1, "nitro_mechanoida" => 1, "teklovossen_the_mechropotent" => 1,
     "nuu_alluring_desire" => 1, "nuu" => 1, "enigma_new_moon" => 1, "sanctuary_of_aria" => 1,
     "quickdodge_flexors" => 1, "bravo_flattering_showman" => 1, "redspine_manta" => 1,
     "sealace_sarong" => 1, "cogwerx_blunderbuss" => 1, "dead_threads" => 1, "puffin" => 1,

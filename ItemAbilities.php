@@ -74,15 +74,9 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   if ($isToken) 
     IncrementClassState($effectAgent, $CS_CreatedCardsThisTurn, $number);
   //enters the arena triggers
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->EntersArenaAbility($index);
   switch ($cardID) {
-    case "stasis_cell_blue":
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRCHAR-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
-      AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
-      break;
     case "null_time_zone_blue":
       AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
@@ -211,11 +205,6 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       RemoveItem($currentPlayer, $index);
       $deck->AddBottom($cardID, from: "PLAY");
       break;
-    case "stasis_cell_blue":
-      RemoveItem($currentPlayer, $index);
-      $deck = new Deck($currentPlayer);
-      $deck->AddBottom($cardID, from: "PLAY");
-      break;
     case "dissolving_shield_red":
     case "dissolving_shield_yellow":
     case "dissolving_shield_blue":
@@ -278,6 +267,8 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
   global $CS_NumItemsDestroyed;
   if ($index != -1) {
     $items = &GetItems($player);
+    $Item = new ItemCard($index, $player);
+    $uid = $Item->UniqueID();
     $itemPieces = ItemPieces();
     if (count($items) < $index + $itemPieces) return "";
     if (!$skipDestroy) {
@@ -296,15 +287,8 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
         AddGraveyard($subCard, $player, "PLAY");
     }
     array_splice($items, $index, $itemPieces);
-    if ($cardID == "stasis_cell_blue") {
-      $otherPlayer = 3 - $player;
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRCHAR-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
-      AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
-    }
+    $card = GetClass($cardID, $player);
+    if ($card != "-") $card->LeavesPlayAbility($index, $uid, "ITEMS", true);
     return $cardID;
   }
   else return "";

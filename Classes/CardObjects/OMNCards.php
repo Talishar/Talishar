@@ -1298,7 +1298,7 @@ class auric_shards_red extends Card {
     return "";
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $this->baseCard->PlayAbility(4);
   }
 
@@ -1326,7 +1326,7 @@ class auric_shards_yellow extends Card {
     return "";
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $this->baseCard->PlayAbility(3);
   }
 
@@ -1354,7 +1354,7 @@ class auric_shards_blue extends Card {
     return "";
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $this->baseCard->PlayAbility(2);
   }
 
@@ -4742,7 +4742,7 @@ class crackle_from_afar_blue extends Card {
     return "";
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $indices = implode(",", TargetAttack($this->controller));
     Await($this->controller, "ChooseMultizone", "target", indices:$indices, context:"Target an attack to give +1 power", may:true, subsequent:0);
     Await($this->controller, "AddTrigger", cardID:$this->cardID, final:true);
@@ -4778,7 +4778,7 @@ class fleeing_starbreeze_blue extends Card {
     return "";
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $indices = implode(",", TargetAttack($this->controller));
     Await($this->controller, "ChooseMultizone", "target", indices:$indices, context:"Target an attack to give go again", may:true, subsequent:0);
     Await($this->controller, "AddTrigger", cardID:$this->cardID, final:true);
@@ -5752,7 +5752,7 @@ class nucleus_aetherbolt_red extends Card {
 }
 
 class haven_veil extends BaseCard {
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID, additionalCosts:"ENTERS");
   }
 
@@ -5788,7 +5788,7 @@ class haven_veil_red extends Card {
     return "";
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $this->baseCard->EntersArenaAbility();
   }
 
@@ -5824,7 +5824,7 @@ class haven_veil_yellow extends Card {
     return "";
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $this->baseCard->EntersArenaAbility();
   }
 
@@ -5860,7 +5860,7 @@ class haven_veil_blue extends Card {
     return "";
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $this->baseCard->EntersArenaAbility();
   }
 
@@ -6045,7 +6045,7 @@ class nourishing_glow_blue extends Card {
     return "";
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 

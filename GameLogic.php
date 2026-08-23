@@ -40,6 +40,7 @@ include "Classes/CardObjects/UPRCards.php";
 include "Classes/CardObjects/DYNCards.php";
 include "Classes/CardObjects/OUTCards.php";
 include "Classes/CardObjects/DTDCards.php";
+include "Classes/CardObjects/EVOCards.php";
 include "Classes/CardObjects/HVYCards.php";
 include "Classes/CardObjects/MSTCards.php";
 include "Classes/CardObjects/ROSCards.php";
@@ -3447,9 +3448,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
               AddLayer("TRIGGER", $mainPlayer, $params[0], implode(",", $targetUids), $additional, $CombatChain->AttackCard()->UniqueID());
             }
           }
-          break;
-        case "stasis_cell_blue":
-          AddLayer("TRIGGER", $player, $params[0], GetMZUID($targetedPlayer, $target));
           break;
         case "blast_to_oblivion_red":
         case "blast_to_oblivion_yellow":

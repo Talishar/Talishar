@@ -1372,7 +1372,7 @@ class sigil_of_silphidae_blue extends Card {
     AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_ArcaneTargetsSelected);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     global $CS_ArcaneTargetsSelected;
     SetArcaneTarget($this->controller, $this->cardID, 0, 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
@@ -2833,7 +2833,7 @@ class distant_rumbling_red extends Card {
     $this->baseCard->ProcessTrigger($uniqueID, 3, $additionalCosts, $from);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $this->baseCard->EntersAbility();
   }
 }
@@ -2857,7 +2857,7 @@ class distant_rumbling_yellow extends Card {
     $this->baseCard->ProcessTrigger($uniqueID, 2, $additionalCosts, $from);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $this->baseCard->EntersAbility();
   }
 }
@@ -2881,7 +2881,7 @@ class distant_rumbling_blue extends Card {
     $this->baseCard->ProcessTrigger($uniqueID, 1, $additionalCosts, $from);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $this->baseCard->EntersAbility();
   }
 }
@@ -3343,7 +3343,7 @@ class sigil_of_voltaris_blue extends Card {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     global $CS_ArcaneTargetsSelected;
     SetArcaneTarget($this->controller, $this->cardID, 0);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
@@ -5571,7 +5571,7 @@ class blessing_of_themis_yellow extends Card {
     $this->controller = $controller;
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $Auras = new Auras($this->controller);
     $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true);
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "-", $AuraCard->UniqueID());
@@ -5665,7 +5665,7 @@ class channel_galcias_cradle_blue extends Card {
     AddDecisionQueue("GALCIASCRADLE", $this->controller, $uniqueID, 1);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $Auras = new Auras($this->controller);
     $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true);
     $this->SetTargets($AuraCard->UniqueID());
@@ -7049,7 +7049,7 @@ class leave_em_speechless_blue extends Card {
     return PlayerHasLessHealth($otherPlayer);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     $Auras = new Auras($this->controller);
     $AuraCard = $Auras->Card($Auras->NumAuras() - 1, true);
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "-", $AuraCard->UniqueID());
@@ -7173,7 +7173,7 @@ class channel_the_skybreaker_yellow extends Card {
     $this->controller = $controller;
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 

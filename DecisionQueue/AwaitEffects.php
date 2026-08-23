@@ -122,7 +122,7 @@ function ShuffleDeckAwait($player) {
 function MultiTargetIndicesAwait($player) {
   global $dqVars;
   $currentTargets = explode(",", $dqVars["currentTargets"] ?? "");
-  $rvOrig = explode(",", SearchMultizone($player, $dqVars["search"]));
+  $rvOrig = explode(",", MultiZoneIndices($player, $dqVars["search"]));
   $rv = [];
   $currentTargetsFlip = array_flip($currentTargets);
   //remove any choices that have already been targeted

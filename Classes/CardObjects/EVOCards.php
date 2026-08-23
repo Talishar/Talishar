@@ -2444,17 +2444,75 @@
 // }
 
 
-// class stasis_cell_blue extends Card {
+class stasis_cell_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "stasis_cell_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "stasis_cell_blue";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if ($from == "PLAY") {
+			AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRCHAR:type=E");
+			AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+			AddDecisionQueue("EQUIPCANTDEFEND", $this->controller, "stasis_cell_blue-B-", 1);
+		}
+    return "";
+  }
+
+	private
+	function TriggerAbility() {
+		SetTargets($this->controller, $this->cardID, "THEIRCHAR:type=E", playCard:false);
+		Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, final:true);
+	}
+
+	function EntersArenaAbility($index=-1) {
+		$this->TriggerAbility();
+	}
+
+	function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+		$this->TriggerAbility();
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $mainPlayer;
+		$otherPlayer = $this->controller == 1 ? 2 : 1;
+		$Target = CleanTargetToObject($this->controller, $target);
+		if ($Target != "") {
+			$targetPlayer = str_contains($target, "THEIR") ? $otherPlayer : $this->controller;
+			$targetID = $Target->CardID();
+			WriteLog(CardLink($targetID) . " can't be activated this turn.");
+			$effect = "$this->cardID-$targetID";
+			AddCurrentTurnEffect($effect, $targetPlayer);
+			AddNextTurnEffect($effect, $targetPlayer);
+			if ($this->controller == $mainPlayer) AddNextTurnEffect($effect, $targetPlayer, numTurns: 2); //If played at instant speed from Dash
+		}
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		if ($from == "PLAY") {
+			RemoveItem($this->controller, $index);
+      $deck = new Deck($this->controller);
+      $deck->AddBottom($this->cardID, from: "PLAY");
+		}
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "A";
+	}
+
+	function AbilityHasGoAgain($from) {
+		return $from == "PLAY";
+	}
+
+	function HasGoAgain($from) {
+		return $from == "PLAY";
+	}
+
+	function NumUses() {
+		return 1;
+	}
+}
 
 
 // class steam_canister_blue extends Card {
