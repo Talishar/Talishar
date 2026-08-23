@@ -3403,9 +3403,9 @@ class danse_macabre extends Card {
     return 1;
   }
 
-  function SpecialName() {
-    return "Danse Macabre";
-  }
+  // function SpecialName() {
+  //   return "Danse Macabre";
+  // }
 
   function SpecialType() {
     return "E";
@@ -3455,9 +3455,9 @@ class hellbound_assault_red extends Card {
     $this->baseCard->HitEffect();
   }
 
-  function SpecialName() {
-    return "Hellbound Assault";
-  }
+  // function SpecialName() {
+  //   return "Hellbound Assault";
+  // }
 
   function SpecialCost() {
     return 2;
@@ -3495,9 +3495,9 @@ class hellbound_assault_yellow extends Card {
     $this->baseCard->HitEffect();
   }
 
-  function SpecialName() {
-    return "Hellbound Assault";
-  }
+  // function SpecialName() {
+  //   return "Hellbound Assault";
+  // }
 
   function SpecialCost() {
     return 2;
@@ -3539,9 +3539,9 @@ class hellbound_assault_blue extends Card {
     $this->baseCard->HitEffect();
   }
 
-  function SpecialName() {
-    return "Hellbound Assault";
-  }
+  // function SpecialName() {
+  //   return "Hellbound Assault";
+  // }
 
   function SpecialCost() {
     return 2;
@@ -3561,5 +3561,59 @@ class hellbound_assault_blue extends Card {
 
   function SpecialPitch() {
     return 3;
+  }
+}
+
+class ingest_the_unknown_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "ingest_the_unknown_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $Deck = new Deck($this->controller);
+    $cardID = $Deck->BanishTop();
+    if ($cardID != "") {
+      $power = PowerValue($cardID, $this->controller, "BANISH", base:true);
+      AddCurrentTurnEffect("$this->cardID-$power", $this->controller);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    if (!is_numeric($param)) return 0;
+    return intval($param);
+  }
+
+  // function SpecialName() {
+  //   return "Ingest the Unknown";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 0;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
   }
 }
