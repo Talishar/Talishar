@@ -593,8 +593,8 @@ function ContractCompleted($player, $cardID)
   WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID));
   IncrementClassState($player, $CS_NumContractsCompleted);
   if($EffectContext == "coercive_tendency_blue") AddCurrentTurnEffect("coercive_tendency_blue", $player);
-  if (class_exists($cardID)) {
-    $card = new $cardID($player);
+  $card = GetClass($cardID, $player);
+  if ($card != "-") {
     return $card->ContractCompleted();
   }
   switch($cardID)
