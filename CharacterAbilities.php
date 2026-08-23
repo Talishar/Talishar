@@ -1039,8 +1039,8 @@ function EquipPayAdditionalCosts($cardIndex)
   $character = &GetPlayerCharacter($currentPlayer);
   $cardID = $character[$cardIndex];
   $cardID = ShiyanaCharacter($cardID);
-  if ($cardID && class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
+  $card = $cardID ? GetClass($cardID, $currentPlayer) : "-";
+  if ($card != "-") {
     return $card->EquipPayAdditionalCosts($cardIndex);
   }
   $CharacterCard = new CharacterCard($cardIndex, $currentPlayer);

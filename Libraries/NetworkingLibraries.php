@@ -3445,8 +3445,8 @@ function GetTargetOfAttack($cardID = "", $attackQueue=false)
 function PayAbilityAdditionalCosts($cardID, $index, $from="-", $zoneIndex=-1)
 {
   global $currentPlayer;
-  if (class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") {
     $ret = $card->PayAbilityAdditionalCosts($index, $from, $zoneIndex);
     return $ret;
   }

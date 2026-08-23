@@ -111,8 +111,8 @@ function PowerModifier($attackCardID, $from = "", $resourcesPaid = 0, $repriseAc
           break;
       }
     }
-    if (class_exists($cardID)) {
-      $card = new $cardID($mainPlayer);
+    $card = GetClass($cardID, $mainPlayer);
+    if ($card != "-") {
       $power += $card->PowerModifier($from, $resourcesPaid, $repriseActive, $attackID);
     }
     switch ($cardID) {
@@ -761,8 +761,8 @@ function OnDefenseReactionResolveEffects($from, $cardID)
     default:
       break;
   }
-  if (class_exists($cardID)) {
-    $card = new $cardID($defPlayer);
+  $card = GetClass($cardID, $defPlayer);
+  if ($card != "-") {
     $card->OnDefenseReactionResolveEffects($from, $blockedFromHand);
   }
   switch ($cardID) {

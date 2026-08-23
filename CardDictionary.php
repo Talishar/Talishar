@@ -3602,8 +3602,8 @@ function AbilityHasGoAgain($cardID, $from)
   $subtype = CardSubtype($cardID);
   $abilityType = GetResolvedAbilityType($cardID);
   if ($class == "ILLUSIONIST" && DelimStringContains($subtype, "Aura") && SearchCharacterForCard($currentPlayer, "iris_of_reality") && $abilityType == "AA") return true;
-  if (class_exists($cardID)) {
-    $card = new $cardID($currentPlayer);
+  $card = GetClass($cardID, $currentPlayer);
+  if ($card != "-") {
     return $card->AbilityHasGoAgain($from);
   }
   if ($set == "SEA") return SEAAbilityHasGoAgain($cardID, $from);
@@ -4672,8 +4672,8 @@ function IsGrantedBuff($cardID) {
 
 // equipment that count as gold
 function IsGold($cardID) {
-  if (class_exists($cardID)) {
-    $card = new $cardID(1);
+  $card = GetClass($cardID, 1);
+  if ($card != "-") {
     return $card->IsGold();
   }
   return match ($cardID) {
