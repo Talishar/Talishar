@@ -3223,3 +3223,113 @@ class head_banging_chorus_yellow extends Card {
     return "Aura";
   }
 }
+
+class apex_buster_yellow extends Card {
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "apex_buster_yellow";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Target = CleanTargetToObject($this->controller, $target);
+    if ($Target != "")
+      $Target->Destroy();
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 2;
+    return 3;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  private
+  function GetTargets() {
+    global $CombatChain, $ChainLinks, $mainPlayer;
+    $targets = [];
+    if ($this->controller != $mainPlayer) return $targets;
+    if ($CombatChain->HasCurrentLink()) {
+      if (LinkBasePower() >= 6) {
+        for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+          $ChainCard = $CombatChain->Card($i, true);
+          $targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
+        }
+      }
+    }
+    $numLinks = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $numLinks; ++$i) {
+      $Link = $ChainLinks->GetLink($i);
+      if (PowerValue($Link->AttackCard()->ID(), $mainPlayer, "CC", $i, true, true) >= 6) {
+        for ($j = 0; $j < $Link->NumCards(); ++$j) {
+          $ChainCard = $Link->GetLinkCard($j, true);
+          $targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
+        }
+      }
+    }
+    return $targets;
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
+    $names = explode(",", $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount));
+    if (count($names) > 1 && count($this->GetTargets()) == 0) return "-,$names[1]";
+    return implode(",", $names);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    global $CS_NumActionsPlayed;
+    $names = GetAbilityNames($this->cardID, $index, $from);
+    $names = str_replace("-,", "", $names);
+    if (SearchCurrentTurnEffects("red_in_the_ledger_red", $this->controller) && GetClassState($this->controller, $CS_NumActionsPlayed) >= 1) {
+      AddDecisionQueue("SETABILITYTYPEABILITY", $this->controller, $this->cardID);
+    } elseif ($names != "" && $from == "HAND") {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose to play the ability or attack");
+      AddDecisionQueue("BUTTONINPUT", $this->controller, $names);
+      AddDecisionQueue("SETABILITYTYPE", $this->controller, $this->cardID);
+    } else {
+      AddDecisionQueue("SETABILITYTYPEATTACK", $this->controller, $this->cardID);
+    }
+    AddDecisionQueue("NOTEQUALPASS", $this->controller, "Ability");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("DISCARDCARD", $this->controller, "HAND-$this->cardID", 1);
+    // targetting a blocking card
+    AddDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $this->GetTargets()), 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a defending card to destroy", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+
+    AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  // function SpecialName() {
+  //   return "Apex Buster";
+  // }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+}

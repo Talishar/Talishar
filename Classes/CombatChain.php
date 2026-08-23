@@ -233,4 +233,29 @@ class ChainCard {
         return GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-";
       return false;
     }
+
+    function Destroy($skipTrigger=false, $skipClose=false, $agent="-") {
+      global $currentPlayer;
+      //eventually it would be nice to loop phantasm in here
+      //right now this only handles defending cards
+      if ($agent == "-") $agent = $currentPlayer;
+      if (!isset($this->chain[$this->index])) return;
+      $targetCard = $this->ID();
+      if (TypeContains($targetCard, "E") && $this->From() == "EQUIP") {
+        $DefChar = new PlayerCharacter($this->PlayerID());
+        $DefCard = $DefChar->FindCardUID($this->OriginUniqueID());
+        $DefCard->Destroy();
+      }
+      elseif (TypeContains($targetCard, "E") && $this->From() == "PLAY") {
+        $uid = $this->OriginUniqueID();
+        $Items = new Items($this->PlayerID());
+        $TargetItem = $Items->FindCardUID($uid);
+        $TargetItem->Destroy();
+        $this->Remove();
+      }
+      else {
+        AddGraveyard($targetCard, $this->PlayerID(), "COMBATCHAINLINK", $agent);
+        $this->Remove();
+      }
+    }
 }

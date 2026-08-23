@@ -251,11 +251,25 @@ class LinkCard {
 		$this->Remove();
 	}
 
-	function Destroy() {
-		if ($this->index == -1) return;
-		$otherPlayer = $this->PlayerID() == 1 ? 2 : 1;
-		$destPlayer = str_contains($this->From(), "THEIR") ? $otherPlayer : $this->PlayerID();
-		AddGraveyard($this->OriginalCardID(), $destPlayer, "CC");
-		$this->Remove();
+	function Destroy($agent = "-") {
+		global $currentPlayer;
+		if ($agent == "-") $agent = $currentPlayer;
+		if ($this->ID() == "-" || !$this->StillOnChain()) return;
+		if (TypeContains($this->ID(), "E")) {
+			if (SubtypeContains($this->ID(), "Item")) {
+				$uid = $this->OriginUniqueID();
+				$Items = new Items($this->PlayerID());
+				$TargetItem = $Items->FindCardUID($uid);
+				$TargetItem->Destroy();
+			}
+			else {
+				$index = FindCharacterIndex($this->PlayerID(), $this->ID());
+				DestroyCharacter($this->PlayerID(), $index);
+			}
+		}
+		else {
+			AddGraveyard($this->ID(), $this->PlayerID(), "CC", $agent);
+			$this->Remove();
+		}
 	}
 }
