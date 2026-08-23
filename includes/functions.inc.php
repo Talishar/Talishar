@@ -1624,14 +1624,17 @@ function BanIP($ip, $bannedBy = "")
 
 function IsIPInCIDR($ip, $cidr)
 {
+	if (!is_string($ip) || !is_string($cidr)) return false;
 	if (strpos($cidr, '/') === false) return $ip === $cidr;
-	list($subnet, $bits) = explode('/', $cidr);
+	list($subnet, $bits) = explode('/', $cidr, 2);
+	if ($bits === '' || !ctype_digit($bits)) return false;
 	$bits = (int)$bits;
 	$ipBin = @inet_pton($ip);
 	$subnetBin = @inet_pton($subnet);
 	if ($ipBin === false || $subnetBin === false || strlen($ipBin) !== strlen($subnetBin)) {
 		return false;
 	}
+	if ($bits > strlen($ipBin) * 8) return false;
 	$bytes = intdiv($bits, 8);
 	$remainderBits = $bits % 8;
 	if ($bytes > 0 && substr($ipBin, 0, $bytes) !== substr($subnetBin, 0, $bytes)) {
