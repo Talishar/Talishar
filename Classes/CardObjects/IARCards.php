@@ -3423,3 +3423,143 @@ class danse_macabre extends Card {
     return 1;
   }
 }
+
+class hellbound_assault extends BaseCard {
+  function AddOnHitTrigger($check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect() {
+    global $CombatChain;
+    BanishCardForPlayer($this->cardID, $this->controller, "CC");
+    $CombatChain->AttackCard()->Remove();
+  }
+}
+
+class hellbound_assault_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "hellbound_assault_red";
+    $this->controller = $controller;
+    $this->baseCard = new hellbound_assault($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  function SpecialName() {
+    return "Hellbound Assault";
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 7;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+}
+
+class hellbound_assault_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "hellbound_assault_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new hellbound_assault($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  function SpecialName() {
+    return "Hellbound Assault";
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+}
+
+class hellbound_assault_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "hellbound_assault_blue";
+    $this->controller = $controller;
+    $this->baseCard = new hellbound_assault($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  function SpecialName() {
+    return "Hellbound Assault";
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+}
