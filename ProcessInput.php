@@ -146,6 +146,7 @@ if(!IsReplay()) {
 $afterResolveEffects = [];
 
 $animations = [];
+$priorEvents = $events;//Kept so a still pending undo request can be reissued with a reason
 $events = [];//Clear events each time so it's only updated ones that get sent
 
 if ($mode == 27) { //TODO add this to other play/activate modes

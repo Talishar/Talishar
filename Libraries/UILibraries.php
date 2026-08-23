@@ -553,6 +553,11 @@ function isFaceDownMod($mod)
   return isset($faceDownMods[$mod]);
 }
 
+function IsNecromancerHero($heroID, $player)
+{
+  return DelimStringContains(CardClass(ShiyanaCharacter($heroID, $player)), "NECROMANCER");
+}
+
   function GetElementColorCode($element)
   {
     // Return color codes in the format {{element|name|colorCode}}

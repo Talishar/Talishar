@@ -601,8 +601,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           AddEvent("UNDODENIEDNOTICE", $playerID);
         }
         else {
+          $undoReason = NormalizeUndoReason($inputText);
           WriteLog("Player " . $playerID . " requests to undo the last action");
-          AddEvent("REQUESTUNDO", $playerID);
+          AddEvent("REQUESTUNDO", $playerID . ":" . $undoReason);
         }
       }
       break;
@@ -639,15 +640,19 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           WriteLog("Player " . $playerID . " requested to undo but opponent has declined too many undo requests this turn");
         }
         else {
+          $undoReason = NormalizeUndoReason($inputText);
           WriteLog("Player " . $playerID . " requests to undo the last action");
           if ($buttonInput == "beginTurnGamestate.txt")
-            AddEvent("REQUESTTHISTURNUNDO", $playerID);
+            AddEvent("REQUESTTHISTURNUNDO", $playerID . ":" . $undoReason);
           else if ($buttonInput == "lastTurnGamestate.txt")
-            AddEvent("REQUESTLASTTURNUNDO", $playerID);
+            AddEvent("REQUESTLASTTURNUNDO", $playerID . ":" . $undoReason);
           else if ($buttonInput == "startChainLinkGamestate.txt")
-            AddEvent("REQUESTCHAINLINKUNDO", $playerID);
+            AddEvent("REQUESTCHAINLINKUNDO", $playerID . ":" . $undoReason);
         }
       }
+      break;
+    case 10021: //Add a reason to an undo request the opponent has not answered yet
+      ReissueUndoRequestWithReason($playerID, NormalizeUndoReason($inputText));
       break;
     case 10004:
       if ($actionPoints > 0) {
@@ -1281,7 +1286,7 @@ function IsModeAsync($mode)
 {
   static $asyncModes = [
   26 => true, 102 => true, 103 => true, 104 => true, 10000 => true,
-  10003 => true, 100000 => true, 100001 => true, 100002 => true,
+  10003 => true, 10021 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true,
   100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true
@@ -4606,14 +4611,17 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     $EffectContext = $cardID;
     $playText = "";
+    $repriseInactive = false;
     if (!$chainClosed) {
       if (IsModular($cardID)) $additionalCosts = $uniqueID; //to track which one to remove
+      $repriseInactive = HasReprise($cardID) && !RepriseActive();
       $playText = PlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts);
       if ($definedCardType == "AA" && ($resolvedAbilityType == "AA" || $resolvedAbilityType == "")) IncrementClassState($currentPlayer, $CS_NumAttackCardsAttacked); //Played or blocked
     }
     CurrentEffectAfterPlayOrActivateAbility();
     if ($from != "EQUIP" && $from != "PLAY" && $from != "COMBATCHAINATTACKS") WriteLog("Resolving play ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
     else if ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS") WriteLog("Resolving activated ability of " . CardLink($cardID, $cardID) . ($playText != "" ? ": " : ".") . $playText);
+    if ($repriseInactive) WriteLog(CardLink($cardID, $cardID) . " does not get its <b>reprise</b> effect.");
     if (!$openedChain) {
       Await($currentPlayer, "ResolveGoAgain", cardID:$cardID, from:$from, additionalCosts:$additionalCosts, uniqueID:$uniqueID, subsequent:0, final:true);
       
@@ -4777,13 +4785,33 @@ function AddEvent($type, $value)
   $events[] = $value;
 }
 
-function ConsumeUndoRequestEvents()
+function UndoRequestEventTypes()
 {
-  global $events;
   static $undoRequestTypes = [
     "REQUESTUNDO" => true, "REQUESTTHISTURNUNDO" => true,
     "REQUESTLASTTURNUNDO" => true, "REQUESTCHAINLINKUNDO" => true,
   ];
+  return $undoRequestTypes;
+}
+
+function ReissueUndoRequestWithReason($playerID, $reason)
+{
+  $priorEvents = $GLOBALS['priorEvents'] ?? [];
+  $undoRequestTypes = UndoRequestEventTypes();
+  $eventPieces = EventPieces();
+  $eventsCount = count($priorEvents);
+  for ($i = 0; $i < $eventsCount; $i += $eventPieces) {
+    if (!isset($undoRequestTypes[$priorEvents[$i]])) continue;
+    if (intval($priorEvents[$i + 1] ?? "") != $playerID) continue;
+    AddEvent($priorEvents[$i], $playerID . ":" . $reason);
+    return;
+  }
+}
+
+function ConsumeUndoRequestEvents()
+{
+  global $events;
+  $undoRequestTypes = UndoRequestEventTypes();
   $filtered = [];
   $eventPieces = EventPieces();
   $eventsCount = count($events);

@@ -621,6 +621,20 @@ function AlwaysAllowUndo($player)
   return $settings[$SET_AlwaysAllowUndo] == "1";
 }
 
+$UNDO_REASON_LABELS = [
+  1 => "Misclick",
+  2 => "Passed too fast",
+  3 => "Forgot a trigger",
+  4 => "Wrong target"
+];
+
+function NormalizeUndoReason($reason)
+{
+  global $UNDO_REASON_LABELS;
+  $code = intval($reason);
+  return isset($UNDO_REASON_LABELS[$code]) ? $code : 0;
+}
+
 function AltArtsDisabled($player)
 {
   global $SET_DisableAltArts;

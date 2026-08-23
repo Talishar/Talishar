@@ -13,6 +13,7 @@ include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once '../Libraries/BlockedUserLibraries.php';
 include_once '../Libraries/FriendLibraries.php';
+include_once '../Libraries/FeaturedGameLibraries.php';
 
 $path = "../Games";
 
@@ -134,6 +135,7 @@ if(IsUserLoggedIn()) {
 }
 
 $gameInProgressCount = 0;
+$featuredCandidates = [];
 if ($handle = opendir($path)) {
   $checkFileCreationTime = random_int(1, 1000) == 42;
   $currentTime = round(microtime(true) * 1000);
@@ -170,6 +172,8 @@ if ($handle = opendir($path)) {
         $gameFilePath = $folder . "GameFile.txt";
         $gameCreator = "";
         $p2Username = "";
+        $p1AccountId = 0;
+        $p2AccountId = 0;
         $p1ShownName = "";
         $p2ShownName = "";
         if (file_exists($gameFilePath)) {
@@ -179,8 +183,10 @@ if ($handle = opendir($path)) {
             for ($i = 0; $i < 9; $i++) { if (fgets($fh) === false) break; }
             $gameCreator = trim((string)fgets($fh));  // line 10: p1uid
             $p2Username  = trim((string)fgets($fh));  // line 11: p2uid
+            $p1AccountId = intval(trim((string)fgets($fh)));  // line 12: p1id
+            $p2AccountId = intval(trim((string)fgets($fh)));  // line 13: p2id
             // Skip to the trailing display-name lines (43-44); missing on older game files
-            for ($i = 0; $i < 31; $i++) { if (fgets($fh) === false) break; }
+            for ($i = 0; $i < 29; $i++) { if (fgets($fh) === false) break; }
             $p1ShownName = trim((string)fgets($fh));  // line 43: p1DisplayName
             $p2ShownName = trim((string)fgets($fh));  // line 44: p2DisplayName
             fclose($fh);
@@ -229,8 +235,24 @@ if ($handle = opendir($path)) {
         $gameInProgress->gameCreator = $p1ShownName;
         $gameInProgress->p2Username = $p2ShownName;
         $gameInProgress->visibility = $visibility;
-        
-        if($gameInProgress->p1Hero != "" && $gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") $response->gamesInProgress[] = $gameInProgress;
+        $gameInProgress->spectatorCount = GetActiveSpectators($gameToken)['count'];
+
+        if($gameInProgress->p1Hero != "" && $gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") {
+          $response->gamesInProgress[] = $gameInProgress;
+          // Only public games can be pinned; a friends-only match is invisible
+          // to most of the people the featured slot is meant to reach.
+          if($visibility == "1") {
+            $featuredCandidates[] = [
+              'gameName' => $gameToken,
+              'spectators' => $gameInProgress->spectatorCount,
+              'secondsIdle' => $gameInProgress->secondsSinceLastUpdate,
+              'p1id' => $p1AccountId,
+              'p2id' => $p2AccountId,
+              'p1Hero' => $gameInProgress->p1Hero,
+              'p2Hero' => $gameInProgress->p2Hero,
+            ];
+          }
+        }
       }
       else if ($currentTime - $lastGamestateUpdate > 300000) //~5 minutes?
       {
@@ -332,6 +354,21 @@ if ($handle = opendir($path)) {
     }
   }
   $response->gameInProgressCount = $gameInProgressCount;
+
+  // The pick is shared server-wide, so confirm it survived this viewer's own
+  // ban, block and friend filtering before pinning it.
+  $featured = SelectFeaturedGame($featuredCandidates);
+  if($featured !== null) {
+    foreach($response->gamesInProgress as $game) {
+      if((string)$game->gameName === $featured['gameName']) {
+        $response->featuredGame = $featured['gameName'];
+        $response->featuredMasteryLevel = $featured['masteryLevel'];
+        $response->featuredSpectators = $featured['spectators'];
+        break;
+      }
+    }
+  }
+
   closedir($handle);
   echo json_encode($response);
 }
