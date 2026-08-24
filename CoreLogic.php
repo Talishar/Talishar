@@ -4193,13 +4193,6 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
     case "evo_heartdrive_blue_equip":
       AddCurrentTurnEffect("evo_heartdrive_blue", $player);
       break;
-    case "evo_shortcircuit_blue":
-    case "evo_shortcircuit_blue_equip":
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a target to deal 1 damage");
-      AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZDAMAGE", $player, "1,DAMAGE," . $toCardID, 1);
-      break;
     case "evo_speedslip_blue":
     case "evo_speedslip_blue_equip":
       AddCurrentTurnEffectNextAttack("evo_speedslip_blue", $player);

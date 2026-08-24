@@ -1001,11 +1001,6 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
         ++$barrierArray[1];
         $total += 1;
         break;
-      case "evo_shortcircuit_blue":
-      case "evo_shortcircuit_blue_equip":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
       case "evo_speedslip_blue":
       case "evo_speedslip_blue_equip":
         ++$barrierArray[1];

@@ -858,17 +858,57 @@
 // }
 
 
-// class evo_shortcircuit_blue extends Card {
+class evo_shortcircuit_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_shortcircuit_blue";
+		$this->controller = $controller;
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "evo_shortcircuit_blue";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function EquipAbilities() {
+		SetArcaneTarget($this->controller, $this->cardID, "any");
+		Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, final:true);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$toCardID = "$this->cardID " . "_equip";
+		$target = CleanTargetToIndex($this->controller, $target);
+		AddDecisionQueue("PASSPARAMETER", $this->controller, $target);
+		AddDecisionQueue("MZDAMAGE", $this->controller, "1,DAMAGE,$toCardID", 1);
+	}
+
+	function ArcaneBarrier($index) {
+		return 1;
+	}
+}
+
+class evo_shortcircuit_blue_equip extends Card {
+	private $origCard;
+	function __construct($controller) {
+		$this->cardID = "evo_shortcircuit_blue";
+		$this->controller = $controller;
+		$this->origCard = new evo_shortcircuit_blue($this->controller);
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function EquipAbilities() {
+		$this->origCard->EquipAbilities();
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->origCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+	}
+
+	function ArcaneBarrier($index) {
+		return $this->origCard->ArcaneBarrier($index);
+	}
+}
 
 
 // class evo_speedslip_blue extends Card {
