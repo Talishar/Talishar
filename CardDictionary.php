@@ -313,20 +313,6 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Dagger,Attack";
     case "suraya_archangel_of_knowledge":
       return "Angel,Ally";
-    case "undead_grasp": // temporary
-      return "Arms";
-    case "corrupted_crown":
-      return "Head";
-    case "celebrant_broadsword":
-      return "Sword";
-    case "bloodrot_pox":
-    case "inertia":
-    case "frailty":
-      return "Disease,Aura";
-    case "dr_mortimer":
-      return "Young";
-    case "danse_macabre":
-      return "Legs";
     default:
       break;
   }
@@ -3423,12 +3409,6 @@ function HasBladeBreak($cardID)
     case $CID_TekloArms:
     case $CID_TekloLegs:
     case "mask_of_malicious_manifestations":
-    case "corrupted_crown": //temporary
-    case "olde_leather_helm":
-    case "olde_leather_plate":
-    case "olde_leather_gloves":
-    case "olde_leather_boots":
-    case "danse_macabre":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
