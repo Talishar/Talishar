@@ -99,6 +99,7 @@ class AuraCard {
   }
 
 	function AddCounters($n=1) {
+    if ($this->index == -1) return;
 		if (isset($this->pieces[$this->index+2])) $this->pieces[$this->index+2] += $n;
 		return $this->NumCounters();
 	}

@@ -375,7 +375,7 @@ function AddSuspense($player, $MZIndex)
 {
   $otherPlayer = 3 - $player;
   $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
-  $ind = explode("-", $MZIndex, 2)[1];
+  $ind = explode("-", $MZIndex, 2)[1] ?? -1;
   $AuraCard = new AuraCard($ind, $targetPlayer);
   $AuraCard->AddCounters(1);
 }
