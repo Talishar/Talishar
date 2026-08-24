@@ -3491,3 +3491,90 @@ class forsaken_strike_yellow extends Card {
     return 3;
   }
 }
+
+class restless_corporal_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_corporal_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A" && $from == "PLAY")
+      MZMoveCard($this->controller, "MYBANISH", "MYDISCARD");
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $from == "PLAY" ? "A" : "";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-";
+    return "Gain_Life";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if ($from != "PLAY") return false;
+    $AllyCard = new AllyCard($index, $this->controller);
+    return $AllyCard->Tapped();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") {
+      $AllyCard = new AllyCard($index, $this->controller);
+      $AllyCard->TapForCost();
+    }
+  }
+
+  function AbilityHasGoAgain($from) {
+    return GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A";
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+
+  function HasGoAgain($from) {
+    return false;
+  }
+
+  function SpecialName() {
+    return "Restless Corporal";
+  }
+
+  function SpecialHealth() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialSubType() {
+    return "Zombie,Ally";
+  }
+
+  function HasDecay() {
+    return true;
+  }
+}
