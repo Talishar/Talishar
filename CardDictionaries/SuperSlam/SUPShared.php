@@ -373,9 +373,24 @@ function RemoveSuspense($player, $MZIndex, $mainPhase = true)
 
 function AddSuspense($player, $MZIndex)
 {
+  // MAYCHOOSEMULTIZONE submits an empty result when the player passes.
+  if ($MZIndex === "" || $MZIndex === "PASS") return;
+
+  $parts = explode("-", $MZIndex, 2);
+  if (count($parts) != 2 || !is_numeric($parts[1])) return;
+
   $otherPlayer = 3 - $player;
-  $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
-  $ind = explode("-", $MZIndex, 2)[1] ?? -1;
+  $targetPlayer = match ($parts[0]) {
+    "MYAURAS" => $player,
+    "THEIRAURAS" => $otherPlayer,
+    default => 0
+  };
+  if ($targetPlayer == 0) return;
+
+  $ind = intval($parts[1]);
+  $auras = &GetAuras($targetPlayer);
+  if (!isset($auras[$ind]) || !HasSuspense($auras[$ind])) return;
+
   $AuraCard = new AuraCard($ind, $targetPlayer);
   $AuraCard->AddCounters(1);
 }
