@@ -3361,25 +3361,14 @@ class forsaken_strike_yellow extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     $zombiePlayInds = MultiZoneIndices($this->controller, "MYALLY:subtype=Zombie");
-    $num = SearchCount($zombiePlayInds);
-    $iters = min($num, 3);
-    for ($i = 0; $i < $iters; ++$i) {
-      $sub = $i != 0;
-      $remaining = $iters - $i;
-      Await($this->controller, "MultiZoneIndices", search:"MYALLY:subtype=Zombie", subsequent:$sub);
-      Await($this->controller, "ChooseMultiZone", may:true, context:"Destroy up to $remaining more Zombies (or pass)");
-      Await($this->controller, $this->cardID, "numModes");
-    }
-
     $zombieHandInds = MultiZoneIndices($this->controller, "MYHAND:subtype=Zombie");
-    $num = SearchCount($zombieHandInds);
-    $iters = min($num, 3);
+    $iters = min(SearchCount($zombiePlayInds), 3) + min(SearchCount($zombieHandInds), 3);
     for ($i = 0; $i < $iters; ++$i) {
       $sub = $i != 0;
       $remaining = $iters - $i;
-      Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Zombie", subsequent:$sub);
-      Await($this->controller, "ChooseMultiZone", may:true, context:"Discard up to $remaining more Zombies (or pass)");
-      Await($this->controller, $this->cardID, "numModes");
+      Await($this->controller, $this->cardID, "indices", mode:"indices", subsequent:$sub);
+      Await($this->controller, "ChooseMultiZone", may:true, context:"Destroy or Discard up to $remaining more Zombies (or pass)");
+      Await($this->controller, $this->cardID, "numModes", mode:"destroy");
     }
 
     Await($this->controller, $this->cardID, mode:"selection", subsequent:false, final:true);
@@ -3387,12 +3376,45 @@ class forsaken_strike_yellow extends Card {
 
   function SpecificLogic() {
     global $dqVars, $CS_AdditionalCosts;
-    $numModes = GetClassState($this->controller, $CS_AdditionalCosts);
-    if (!is_numeric($numModes)) $numModes = 0;
+    $numSac = GetClassState($this->controller, $CS_AdditionalCosts);
+    $numDestroyed = explode("-", $numSac)[0];
+    if (!is_numeric($numDestroyed)) $numDestroyed = 0;
+    $numDiscarded = explode("-", $numSac)[1] ?? 0;
+    if (!is_numeric($numDiscarded)) $numDiscarded = 0;
     $mode = $dqVars["mode"] ?? "-";
     switch($mode) {
+      case "indices":
+        $search = [];
+        if ($numDestroyed < 3)
+          $search[] = "MYALLY:subtype=Zombie";
+        if ($numDiscarded < 3)
+          $search[] = "MYHAND:subtype=Zombie";
+        $search = implode("&", $search);
+        return MultiZoneIndices($this->controller, $search);
+      case "destroy":
+        $choice = $dqVars["MZIndex"] ?? "";
+        $zone = explode("-", $choice)[0];
+        $ind = explode("-", $choice)[1] ?? -1;
+        if ($ind != -1) {
+          switch ($zone) {
+            case "MYALLY":
+              $AllyCard = new AllyCard($ind, $this->controller);
+              $AllyCard->Destroy();
+              ++$numDestroyed;
+              break;
+            case "MYHAND":
+              DiscardCard($this->controller, $ind);
+              ++$numDiscarded;
+              break;
+            default:
+              break;
+          }
+        }
+        SetClassState($this->controller, $CS_AdditionalCosts, "$numDestroyed-$numDiscarded");
+        return "$numDestroyed-$numDiscarded";
       case "selection":
         $modalities = "Create_a_gate,Buff_Power,Go_again";
+        $numModes = $numDestroyed + $numDiscarded;
         if ($numModes >= 3) {
           AddDecisionQueue("PASSPARAMETER", $this->controller, $modalities);
           AddDecisionQueue("MODAL", $this->controller, $this->cardID, 1);
@@ -3403,28 +3425,9 @@ class forsaken_strike_yellow extends Card {
           AddDecisionQueue("MODAL", $this->controller, $this->cardID, 1);
           AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
         }
-        break;
+        return "";
       default:
-        $choice = $dqVars["MZIndex"] ?? "";
-        $zone = explode("-", $choice)[0];
-        $ind = explode("-", $choice)[1] ?? -1;
-        if ($ind != -1) {
-          switch ($zone) {
-            case "MYALLY":
-              $AllyCard = new AllyCard($ind, $this->controller);
-              $AllyCard->Destroy();
-              ++$numModes;
-              break;
-            case "MYHAND":
-              DiscardCard($this->controller, $ind);
-              ++$numModes;
-              break;
-            default:
-              break;
-          }
-        }
-        SetClassState($this->controller, $CS_AdditionalCosts, $numModes);
-        return $numModes;
+        return "";
     }
   }
 
