@@ -3290,6 +3290,10 @@ function IsAction($cardID, $from="")
     $abilityType = GetAbilityType($cardID, from: $from);
     if ($abilityType == "A" || $abilityType == "AA") return true;
   }
+  elseif (IsActivated($cardID, $from)) {
+    $cardType = GetResolvedAbilityType($cardID, $from);
+    return (DelimStringContains($cardType, "A") || $cardType == "AA");
+  }
   else {
     $cardType = CardType($cardID, $from);
     if (DelimStringContains($cardType, "A") || $cardType == "AA") return true;
