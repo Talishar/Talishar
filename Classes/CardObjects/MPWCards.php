@@ -1332,30 +1332,6 @@ class zane_broadly_beloved extends Card {
 		if (GetClassState($this->controller, $CS_CheeredThisTurn) == 1)
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "CHEER");
 	}
-
-  	function SpecialName() {
-		return "Zane Broadly Beloved";
-  	}
-
-  	function SpecialTalent() {
-		return "REVERED";
-  	}
-
-  	function SpecialClass() {
-		return "WARRIOR";
-  	}
-
- 	 function SpecialType() {
-		return "C";
-  	}
-
-	function SpecialSubType() {
-		return "Young";
-	}
-
-	function SpecialBlock() {
-		return -2;
-	}
 }
 
 class killjoy_the_crooked_blade extends Card {
@@ -1382,30 +1358,6 @@ class killjoy_the_crooked_blade extends Card {
 		global $CS_BooedThisTurn;
 		if (GetClassState($this->controller, $CS_BooedThisTurn) == 1)
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "BOO");
-	}
-
-  	function SpecialName() {
-		return "Killjoy the Crooked Blade";
-  	}
-
-  	function SpecialTalent() {
-		return "REVILED";
-  	}
-
-  	function SpecialClass() {
-		return "WARRIOR,THIEF";
-  	}
-
-  	function SpecialType() {
-		return "C";
-  	}
-
-	function SpecialSubType() {
-		return "Young";
-	}
-
-	function SpecialBlock() {
-		return -2;
 	}
 }
 
@@ -3519,30 +3471,6 @@ class cutpurse_rapier extends Card {
 		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
 		AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
 	}
-
-	function SpecialName() {
-		return "Cutpurse Rapier";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR,THIEF";
-	}
-
-	function SpecialType() {
-		return "W";
-	}
-
-	function SpecialSubType() {
-		return "Sword";
-	}
-
-	function SpecialPower() {
-		return 3;
-	}
-
-	function SpecialBlock() {
-		return -2;
-	}
 }
 
 class celebrant_broadsword extends Card {
@@ -3566,33 +3494,5 @@ class celebrant_broadsword extends Card {
 	function DoesAttackHaveGoAgain() {
 		global $CS_CheeredThisTurn;
 		return GetClassState($this->controller, $CS_CheeredThisTurn) > 0;
-	}
-
-	function SpecialName() {
-		return "Celebrant Broadsword";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialTalent() {
-		return "REVERED";
-	}
-
-	function SpecialType() {
-		return "W";
-	}
-
-	function SpecialSubType() {
-		return "Sword";
-	}
-
-	function SpecialPower() {
-		return 3;
-	}
-
-	function SpecialBlock() {
-		return -2;
 	}
 }

@@ -2116,30 +2116,6 @@ class shadowrealm_strength_blue extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
-
-  function SpecialName() {
-    return "Shadowrealm Strength";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
 }
 
 class otherworldly_sins extends BaseCard {
@@ -2820,30 +2796,6 @@ class bloodsong_gloomblade_red extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect($target);
   }
-
-  function SpecialName() {
-    return "Bloodsong Gloomblade";
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
 }
 
 class battle_prep extends BaseCard {
@@ -2873,18 +2825,6 @@ class battle_prep_red extends Card {
   function EffectPowerModifier($param, $attached = false) {
     return 3;
   }
-
-  function SpecialName() {
-    return "Battle Prep";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
 }
 
 class battle_prep_yellow extends Card {
@@ -2904,22 +2844,6 @@ class battle_prep_yellow extends Card {
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return 2;
-  }
-
-  function SpecialName() {
-    return "Battle Prep";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-  
-  function SpecialPitch() {
     return 2;
   }
 }
@@ -2942,22 +2866,6 @@ class battle_prep_blue extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return 1;
-  }
-
-  function SpecialName() {
-    return "Battle Prep";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialPitch() {
-    return 3;
   }
 }
 
@@ -2996,22 +2904,6 @@ class crushing_headache_red extends Card {
 
   function HasCrush() {
     return true;
-  }
-
-  function SpecialName() {
-    return "Crushing Headache";
-  }
-
-  function SpecialCost() {
-    return 6;
-  }
-
-  function SpecialPower() {
-    return 10;
-  }
-
-  function SpecialClass() {
-    return "GUARDIAN";
   }
 }
 
@@ -3063,26 +2955,6 @@ class ice_aged_oak_blue extends Card {
   function CardCaresAboutPitch() {
     return true;
   }
-
-  function SpecialName() {
-    return "Ice Aged Oak";
-  }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialTalent() {
-    return "EARTH";
-  }
 }
 
 class ancient_earth_oak_red extends Card {
@@ -3133,22 +3005,6 @@ class ancient_earth_oak_red extends Card {
 
   function CardCaresAboutPitch() {
     return true;
-  }
-
-  function SpecialName() {
-    return "Ancient Earth Oak";
-  }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialTalent() {
-    return "ICE";
   }
 }
 
@@ -3202,34 +3058,6 @@ class head_banging_chorus_yellow extends Card {
     if ($additionalCosts == "DESTROY") {
       DestroyAuraUniqueID($this->controller, $target);
     }
-  }
-
-  function SpecialName() {
-    return "Head Banging Chorus";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialClass() {
-    return "GUARDIAN";
-  }
-
-  function SpecialTalent() {
-    return "REVERED";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
   }
 }
 
@@ -3325,22 +3153,6 @@ class apex_buster_yellow extends Card {
 
     AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  // function SpecialName() {
-  //   return "Apex Buster";
-  // }
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialClass() {
-    return "BRUTE";
-  }
 }
 
 class danse_macabre extends Card {
@@ -3402,26 +3214,6 @@ class danse_macabre extends Card {
   function DefaultActiveState() {
     return 1;
   }
-
-  // function SpecialName() {
-  //   return "Danse Macabre";
-  // }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialSubType() {
-    return "Lges";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
 }
 
 class hellbound_assault extends BaseCard {
@@ -3454,26 +3246,6 @@ class hellbound_assault_red extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect();
   }
-
-  // function SpecialName() {
-  //   return "Hellbound Assault";
-  // }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 7;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialClass() {
-    return "BRUTE";
-  }
 }
 
 class hellbound_assault_yellow extends Card {
@@ -3494,30 +3266,6 @@ class hellbound_assault_yellow extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect();
   }
-
-  // function SpecialName() {
-  //   return "Hellbound Assault";
-  // }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialClass() {
-    return "BRUTE";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
 }
 
 class hellbound_assault_blue extends Card {
@@ -3537,30 +3285,6 @@ class hellbound_assault_blue extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect();
-  }
-
-  // function SpecialName() {
-  //   return "Hellbound Assault";
-  // }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialClass() {
-    return "BRUTE";
-  }
-
-  function SpecialPitch() {
-    return 3;
   }
 }
 
@@ -3591,29 +3315,5 @@ class ingest_the_unknown_yellow extends Card {
   function EffectPowerModifier($param, $attached = false) {
     if (!is_numeric($param)) return 0;
     return intval($param);
-  }
-
-  // function SpecialName() {
-  //   return "Ingest the Unknown";
-  // }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 0;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialClass() {
-    return "BRUTE";
   }
 }
