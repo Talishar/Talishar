@@ -3342,3 +3342,144 @@ class ingest_the_unknown_yellow extends Card {
     return intval($param);
   }
 }
+
+class forsaken_strike_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "forsaken_strike_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "GATE")
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $zombiePlayInds = MultiZoneIndices($this->controller, "MYALLY:subtype=Zombie");
+    $num = SearchCount($zombiePlayInds);
+    $iters = min($num, 3);
+    for ($i = 0; $i < $iters; ++$i) {
+      $sub = $i != 0;
+      $remaining = $iters - $i;
+      Await($this->controller, "MultiZoneIndices", search:"MYALLY:subtype=Zombie", subsequent:$sub);
+      Await($this->controller, "ChooseMultiZone", may:true, context:"Destroy up to $remaining more Zombies (or pass)");
+      Await($this->controller, $this->cardID, "numModes");
+    }
+
+    $zombieHandInds = MultiZoneIndices($this->controller, "MYHAND:subtype=Zombie");
+    $num = SearchCount($zombieHandInds);
+    $iters = min($num, 3);
+    for ($i = 0; $i < $iters; ++$i) {
+      $sub = $i != 0;
+      $remaining = $iters - $i;
+      Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Zombie", subsequent:$sub);
+      Await($this->controller, "ChooseMultiZone", may:true, context:"Discard up to $remaining more Zombies (or pass)");
+      Await($this->controller, $this->cardID, "numModes");
+    }
+
+    Await($this->controller, $this->cardID, mode:"selection", subsequent:false, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $CS_AdditionalCosts;
+    $numModes = GetClassState($this->controller, $CS_AdditionalCosts);
+    if (!is_numeric($numModes)) $numModes = 0;
+    $mode = $dqVars["mode"] ?? "-";
+    switch($mode) {
+      case "selection":
+        $modalities = "Create_a_gate,Buff_Power,Go_again";
+        if ($numModes >= 3) {
+          AddDecisionQueue("PASSPARAMETER", $this->controller, $modalities);
+          AddDecisionQueue("MODAL", $this->controller, $this->cardID, 1);
+          AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+        } elseif ($numModes < 3 && $numModes > 0) {
+          AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose $numModes modes");
+          AddDecisionQueue("MULTICHOOSETEXT", $this->controller, "$numModes-$modalities-$numModes");
+          AddDecisionQueue("MODAL", $this->controller, $this->cardID, 1);
+          AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+        }
+        break;
+      default:
+        $choice = $dqVars["MZIndex"] ?? "";
+        $zone = explode("-", $choice)[0];
+        $ind = explode("-", $choice)[1] ?? -1;
+        if ($ind != -1) {
+          switch ($zone) {
+            case "MYALLY":
+              $AllyCard = new AllyCard($ind, $this->controller);
+              $AllyCard->Destroy();
+              ++$numModes;
+              break;
+            case "MYHAND":
+              DiscardCard($this->controller, $ind);
+              ++$numModes;
+              break;
+            default:
+              break;
+          }
+        }
+        SetClassState($this->controller, $CS_AdditionalCosts, $numModes);
+        return $numModes;
+    }
+  }
+
+  function ModalAbility($lastResult, $index) {
+    global $CS_AdditionalCosts;
+    if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
+    $countLastResult = count($lastResult);
+    for($i = 0; $i < $countLastResult; ++$i) {
+      switch($lastResult[$i]) {
+        case "Create_a_gate": {
+          SetClassState($this->controller, $CS_AdditionalCosts, "GATE");
+          break;
+        }
+        case "Buff_Power": {
+          AddCurrentTurnEffect("$this->cardID-BUFF", $this->controller);
+          break;
+        }
+        case "Go_again": {
+          AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
+          break;
+        }
+      }
+    }
+    return $lastResult;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 2 : 0;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $param == "GOAGAIN";
+  }
+
+  // function SpecialName() {
+  //   return "Forsaken Strike";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}

@@ -884,4 +884,8 @@ class Card {
   function PermanentAllyPlayAbility($allyIndex, $charIndex, $from) {
     return;
   }
+
+  function ModalAbility($lastResult, $index) {
+    return;
+  }
 }

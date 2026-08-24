@@ -5,6 +5,8 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
   global $combatChain, $defPlayer, $CombatChain, $combatChainState, $CS_ModalAbilityChoosen;
   if(isset($lastResult[0])) SetClassState($player, $CS_ModalAbilityChoosen, $card."-".$lastResult[0]);
   AddDecisionQueue("CURRENTEFFECTAFTERPLAYORACTIVATEABILITY", $player, "<-");
+  $cardObject = GetClass($card, $player);
+  if ($cardObject != "-") return $cardObject->ModalAbility($lastResult, $index);
   switch($card)
   {
     case "ESTRIKE":
