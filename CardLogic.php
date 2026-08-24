@@ -1373,8 +1373,8 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
   if ($sourceIsAA && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2)
     || SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer))) return false;
   $effectID = ExtractCardID($cardID);
-  if (class_exists($effectID)) {
-    $card = new $effectID($mainPlayer);
+  $card = GetClass($effectID, $mainPlayer);
+  if ($card != "-") {
     if ($check || !$card->LateEffect())
       return $card->AddEffectHitTrigger($source, $fromCombat, $target, $cardID, $check);
   }
@@ -1989,8 +1989,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
   }
   else {
-    if (class_exists($parameter)) {
-      $card = new $parameter($player);
+    $card = GetClass($parameter, $player);
+    if ($card != "-") {
       return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
     }
     switch ($parameter) {
