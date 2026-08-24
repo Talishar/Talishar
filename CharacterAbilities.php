@@ -779,6 +779,7 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
   global $EffectContext, $CS_NumAuras;
   $Character = new PlayerCharacter($player);
   if ($effectAgent == "") $effectAgent = $player;
+  if ($slot == "PASS") return;
   if ($slot == "") {
     if (SubtypeContains($cardID, "Head")) $slot = "Head";
     else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
