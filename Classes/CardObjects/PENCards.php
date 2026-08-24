@@ -2596,6 +2596,7 @@ class fasting_carcass extends BaseCard {
   function CombatEffectActive() {
     global $CombatChain;
     // need to check if it's attached
+    if (IsAttackStep() && !TypeContains($CombatChain->AttackCard()->ID(), "AA")) return false; // it can't ever be active for non-AAs
     if (!IsAttackStep() && !DelimStringContains($CombatChain->AttackCard()->StaticBuffs(), SetID($this->cardID))) return false;
     return ColorContains($CombatChain->AttackCard()->ID(), PitchValue($this->cardID), $this->controller);
   }

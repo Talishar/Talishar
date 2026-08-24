@@ -2465,76 +2465,76 @@ class stir_the_aetherwinds extends BaseCard {
 
 	function AssignEffectToCard($cardID, $effectIndex, $from) {
 		global $Stack;
-    $Effect = new CurrentEffect($effectIndex);
-    $TopLayer = $Stack->TopLayer($cardID);
-    if ($TopLayer->PlayerID() != $this->controller) return;
-    if (IsActivated($cardID, $from)) return;
-    if (ClassContains($TopLayer->ID(), "WIZARD", $this->controller) && TypeContains($TopLayer->ID(), "A"))
-      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+		$Effect = new CurrentEffect($effectIndex);
+		$TopLayer = $Stack->TopLayer($cardID);
+		if ($TopLayer->PlayerID() != $this->controller) return;
+		if (IsActivated($cardID, $from)) return;
+		if (ClassContains($TopLayer->ID(), "WIZARD", $this->controller) && TypeContains($TopLayer->ID(), "A"))
+			$Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
 	}
 }
 
 class stir_the_aetherwinds_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "stir_the_aetherwinds_red";
-    $this->controller = $controller;
-    $this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
-  }
+	function __construct($controller) {
+		$this->cardID = "stir_the_aetherwinds_red";
+		$this->controller = $controller;
+		$this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	$this->baseCard->PlayAbility();
 		return "";
-  }
+  	}
 
-  function CardEffectArcaneBonus() {
+  	function CardEffectArcaneBonus() {
 		return 3;
-  }
+  	}
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  	function AssignEffectToCard($cardID, $effectIndex, $from) {
 		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
-  }
+  	}
 }
 
 class stir_the_aetherwinds_yellow extends Card {
-  function __construct($controller) {
-    $this->cardID = "stir_the_aetherwinds_yellow";
-    $this->controller = $controller;
-    $this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
-  }
+	function __construct($controller) {
+		$this->cardID = "stir_the_aetherwinds_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
 		return "";
-  }
+  	}
 
-  function CardEffectArcaneBonus() {
-		return 2;
-  }
+	function CardEffectArcaneBonus() {
+			return 2;
+	}
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  	function AssignEffectToCard($cardID, $effectIndex, $from) {
 		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
-  }
+  	}
 }
 
 class stir_the_aetherwinds_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "stir_the_aetherwinds_blue";
-    $this->controller = $controller;
-    $this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
-  }
+	function __construct($controller) {
+		$this->cardID = "stir_the_aetherwinds_blue";
+		$this->controller = $controller;
+		$this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
 		return "";
-  }
+  	}
 
-  function CardEffectArcaneBonus() {
+ 	function CardEffectArcaneBonus() {
 		return 1;
-  }
+  	}
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  	function AssignEffectToCard($cardID, $effectIndex, $from) {
 		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
-  }
+  	}
 }
 
 
