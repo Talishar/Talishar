@@ -2174,8 +2174,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "dissipation_shield_yellow":
         $index = SearchItemsForUniqueID($uniqueID, $player);
-        --$items[$index + 1];
-        if ($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
+        if ($index != -1) {
+          --$items[$index + 1];
+          if ($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
+        }
         break;
       case "viserai_rune_blood":
       case "viserai":
