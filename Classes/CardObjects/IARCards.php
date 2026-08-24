@@ -3500,7 +3500,7 @@ class restless_corporal_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A" && $from == "PLAY")
-      MZMoveCard($this->controller, "MYBANISH", "MYDISCARD");
+      MZMoveCard($this->controller, "MYBANISH", "MYDISCARD", DQContext:"Move a card from banish to graveyard");
     return "";
   }
 
