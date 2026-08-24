@@ -2116,6 +2116,30 @@ class shadowrealm_strength_blue extends Card {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
+
+  function SpecialName() {
+    return "Shadowrealm Strength";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
 }
 
 class otherworldly_sins extends BaseCard {
