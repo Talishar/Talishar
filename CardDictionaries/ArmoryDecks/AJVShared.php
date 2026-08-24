@@ -107,7 +107,10 @@ function FrostbiteExposed($otherPlayer, $player, $may=false) {
     }
     else AddDecisionQueue("LISTEXPOSEDEQUIPSLOTS", $otherPlayer, "-");
     AddDecisionQueue("SETDQCONTEXT", $player, "Choose an exposed equipment zone to " . CardLink("frostbite", "frostbite"), 1);
-    AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
+    if (ShouldAutotargetOpponent($player))
+      AddDecisionQueue("BUTTONINPUT", $player, "<-", 1);
+    else
+      AddDecisionQueue("BUTTONINPUTNOPASS", $player, "<-", 1);
     if ($otherPlayer == "-") {
       AddDecisionQueue("SETDQVAR", $player, "1", 1);
       AddDecisionQueue("EQUIPCARD", $player, "frostbite-{1}-{0}", 1);
