@@ -3048,9 +3048,10 @@ class head_banging_chorus_yellow extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $CombatChain;
     $hand = new Hand($this->controller);
     if ($hand->NumCards() == 0) {
-      Draw($this->controller);
+      Draw($this->controller, effectSource:$CombatChain->AttackCard()->ID());
     }
   }
 
