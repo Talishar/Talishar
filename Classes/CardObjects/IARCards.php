@@ -2979,6 +2979,10 @@ class ice_aged_oak_blue extends Card {
   function CardCaresAboutPitch() {
     return true;
   }
+
+  function HasDominate() {
+    return false;
+  }
 }
 
 class ancient_earth_oak_red extends Card {
