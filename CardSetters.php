@@ -964,12 +964,15 @@ function NegateLayer($MZIndex, $goesWhere = "GY")
 {
   global $layers;
   $params = explode("-", $MZIndex, 2);
-  $index = $params[1];
-  if (!is_numeric($index)) return;
+  $index = filter_var($params[1] ?? null, FILTER_VALIDATE_INT);
+  $layerPieces = LayerPieces();
+  if ($index === false || $index < 0 || $index % $layerPieces != 0 || $index + $layerPieces > count($layers)) return;
   $cardID = $layers[$index];
   $player = $layers[$index + 1];
+  if (!in_array($player, [1, 2, "1", "2"], true)) return;
+  $player = intval($player);
   $otherPlayer = 3 - $player;
-  array_splice($layers, $index, LayerPieces());
+  array_splice($layers, $index, $layerPieces);
   if ($goesWhere != "-") {
     ResolveGoesWhere($goesWhere, $cardID, $player, "LAYER", $otherPlayer);
   }

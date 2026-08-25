@@ -1344,7 +1344,7 @@ function OptAndLog($deck, $player, $cardListTop, $cardListBottom)
   WriteLog("Player " . $player . " has put " . $message . " of their deck.");
 }
 
-function PassInput($autopass = true, $doublePass = false)
+function PassInput($autopass = true, $doublePass = false, $resolutionStepRetry = false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
   $layerPieces = LayerPieces();
@@ -1457,8 +1457,8 @@ function PassInput($autopass = true, $doublePass = false)
       // without this line the turn player needs to pass twice to break the chain
       // but including the line makes auto-passers automatically pass through the resolution step
       // for now only turn enable this line if you aren't on always pass
-      if (count($layers) == $layerPieces && $layers[0] == "RESOLUTIONSTEP" && $currentPlayer == $mainPlayer)
-        PassInput($autopass);
+      if (!$resolutionStepRetry && count($layers) == $layerPieces && $layers[0] == "RESOLUTIONSTEP" && $currentPlayer == $mainPlayer)
+        PassInput($autopass, resolutionStepRetry: true);
     }
   }
 }
