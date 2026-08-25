@@ -152,17 +152,17 @@ function JSONLog($gameName, $playerID, $path="./")
 {
   FlushLogBuffer(); // make any lines buffered in this process visible to the read
   $filename = "{$path}Games/$gameName/gamelog.txt";
-  clearstatcache(true, $filename); // Clear file stat cache to get fresh file size
-  if (!file_exists($filename)) return "";
-  $filesize = filesize($filename);
-  if ($filesize <= 0) return "";
   $maxRead = 131072; // 128 KB cap — prevents OOM when log file grows large
-  $truncated = $filesize > $maxRead;
-  $handler = fopen($filename, "r");
+  $handler = @fopen($filename, "r");
   if ($handler === false) return "";
-  if ($truncated) {
-    fseek($handler, -$maxRead, SEEK_END);
+  fseek($handler, 0, SEEK_END);
+  $filesize = ftell($handler);
+  if ($filesize <= 0) {
+    fclose($handler);
+    return "";
   }
+  $truncated = $filesize > $maxRead;
+  fseek($handler, $truncated ? $filesize - $maxRead : 0, SEEK_SET);
   $line = fread($handler, $truncated ? $maxRead : $filesize);
   fclose($handler);
   if ($truncated && ($nl = strpos($line, "\n")) !== false) {

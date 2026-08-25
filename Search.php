@@ -261,7 +261,7 @@ function SearchInner(
 
     if ($pitch !== -1 && !ColorContains($cardID, $pitch, $player)) continue;
     if ($realPitch !== "-" && !PitchContains($cardID, $realPitch)) continue;
-    if ($maxAttack !== -1 || $minAttack !== -1) {
+    if ($maxAttack !== -1 || ($minAttack !== -1 && $minAttack !== false)) {
       $power = ModifiedPowerValue($cardID, $player, $zone);
       if ($maxAttack !== -1 && $power > $maxAttack) continue;
       if ($minAttack !== -1 && $power < $minAttack) continue;
