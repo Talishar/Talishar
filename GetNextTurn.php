@@ -19,6 +19,7 @@ include_once "./Assets/MetafyDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php";
 include_once "includes/dbh.inc.php";
+include_once "includes/functions.inc.php";
 include_once "includes/MetafyHelper.php";
 include_once "Libraries/FriendLibraries.php";
 include_once 'GameLogic.php';
@@ -94,6 +95,7 @@ if ($playerID == 3 && (!$sessionData['userLoggedIn'] || empty($sessionData['user
 if (is_numeric($viewerUserId)) {
   $sessionData['friendList'] = GetUserFriendUsernames((int)$viewerUserId);
 }
+$sessionData['viewerColorblindMode'] = LoadViewerColorblindMode($viewerUserId);
 $sessionData['friendSet'] = !empty($sessionData['friendList']) ? array_flip($sessionData['friendList']) : [];
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;

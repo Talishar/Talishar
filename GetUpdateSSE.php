@@ -18,6 +18,7 @@ include_once "./Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "./Assets/MetafyDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "includes/dbh.inc.php";
+include_once "includes/functions.inc.php";
 include_once "includes/MetafyHelper.php";
 include_once "Libraries/FriendLibraries.php";
 
@@ -100,6 +101,7 @@ if ($playerID == 3) {
   if (is_numeric($viewerUserId)) {
     $sessionData['friendList'] = GetUserFriendUsernames((int)$viewerUserId);
   }
+  $sessionData['viewerColorblindMode'] = LoadViewerColorblindMode($viewerUserId);
   UpdateSpectatorPresence($gameName, $sessionData['displayName']);
 }
 $sessionData['friendSet'] = !empty($sessionData['friendList']) ? array_flip($sessionData['friendList']) : [];
@@ -113,7 +115,10 @@ $responseCacheVariant = 'player:' . $playerID;
 if ($playerID == 3) {
   $responseFriendList = $sessionData['friendList'] ?? [];
   sort($responseFriendList, SORT_STRING);
-  $responseCacheVariant = 'spectator:' . hash('sha256', json_encode($responseFriendList));
+  $responseCacheVariant = 'spectator:' . hash('sha256', json_encode([
+    $responseFriendList,
+    !empty($sessionData['viewerColorblindMode']),
+  ]));
 }
 // Ephemeral activity state pushed via named SSE events.
 $lastActivityCheckTime = 0.0;

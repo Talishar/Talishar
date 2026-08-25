@@ -513,6 +513,23 @@ function ShouldAutotargetOpponent($player)
   return ($settings[$SET_AutotargetArcane] ?? "0") == "1";
 }
 
+/**
+ * A spectator's accessibility preferences are their own, not either player's.
+ * Their in-game settings are not part of the game state, so read them from the
+ * account that is doing the spectating.
+ */
+function LoadViewerColorblindMode($viewerUserId)
+{
+  global $SET_ColorblindMode;
+  if (!is_numeric($viewerUserId) || !function_exists("LoadSavedSettings")) return false;
+  $flat = LoadSavedSettings((string)$viewerUserId);
+  $count = count($flat);
+  for ($i = 0; $i + 1 < $count; $i += 2) {
+    if (intval($flat[$i]) === $SET_ColorblindMode) return $flat[$i + 1] == "1";
+  }
+  return false;
+}
+
 function IsColorblindMode($player)
 {
   global $SET_ColorblindMode;

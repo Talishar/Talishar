@@ -61,6 +61,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerInventory = [];
 
   $otherPlayer = $playerID == 1 ? 2 : 1;
+  $viewerSlotPlayerID = $playerID == 1 ? 1 : 2;
   $cacheVal = intval($buildCacheArr[0] ?? 0);
 
   if (!function_exists("ParseGamestate")) {
@@ -153,8 +154,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->opponentMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
     $initialLoad->roguelikeGameID = $roguelikeGameID;
-    $initialLoad->playerIsPvtVoidPatron = $playerUid == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
-    $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
+    $initialLoad->playerIsPvtVoidPatron = $playerUid == "PvtVoid" || ($playerID != 3 && $sessionIsPvtVoidPatron);
+    $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid";
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
     $initialLoad->gameFormat = $format;
 
@@ -171,12 +172,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->altArts = [];
     $initialLoad->opponentAltArts = [];
 
-    // For spectators (playerID==3), resolve alt arts from the game file usernames directly.
-    // p1uid maps to the "player" (altArts) slot; p2uid maps to the "opponent" (opponentAltArts) slot.
-    $altArtsPlayerName  = $playerID == 3 ? $p1uid : $playerUid;
-    $altArtsOpponentName = $playerID == 3 ? $p2uid : $opponentUid;
-    $altArtsPlayerID    = $playerID == 3 ? 1 : $playerID;
-    $altArtsOpponentID  = $playerID == 3 ? 2 : $otherPlayer;
+    $altArtsPlayerID    = $viewerSlotPlayerID;
+    $altArtsOpponentID  = $otherPlayer;
+    $altArtsPlayerName  = $altArtsPlayerID == 1 ? $p1uid : $p2uid;
+    $altArtsOpponentName = $altArtsOpponentID == 1 ? $p1uid : $p2uid;
+
+    $viewerOwnsPlayerSlot = $playerID != 3;
+    $altArtsSessionName = $viewerOwnsPlayerSlot ? ($sessionUserName ?? '') : '';
 
     $altArtsDisabled = $playerID != 3 && AltArtsDisabled($playerID);
 
@@ -190,13 +192,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     {
       foreach($patreonCampaigns as $campaign) {
         $sessionID = $campaign->SessionID();
-        $isPatronOfCampaign = $playerID != 3 && ($sessionPatreonCampaigns[$sessionID] ?? false);
+        $isPatronOfCampaign = $viewerOwnsPlayerSlot && ($sessionPatreonCampaigns[$sessionID] ?? false);
 
-        if ($playerID != 3 && $sessionID == "isPvtVoidPatron") {
-          $isPatronOfCampaign = $sessionUserName == "PvtVoid" || ($sessionPatreonCampaigns[$sessionID] ?? false);
+        if ($sessionID == "isPvtVoidPatron") {
+          $isPatronOfCampaign = $altArtsPlayerName == "PvtVoid"
+            || ($viewerOwnsPlayerSlot && ($sessionUserName == "PvtVoid" || ($sessionPatreonCampaigns[$sessionID] ?? false)));
         }
 
-        if($isPatronOfCampaign || $campaign->IsTeamMember($sessionUserName ?? '') || $campaign->IsTeamMember($altArtsPlayerName)) {
+        if($isPatronOfCampaign || ($altArtsSessionName !== '' && $campaign->IsTeamMember($altArtsSessionName)) || $campaign->IsTeamMember($altArtsPlayerName)) {
           $altArtsHero = $altArtsPlayerID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
           $altArts = $campaign->AltArts($altArtsHero);
           if($altArts == "") continue;
@@ -215,7 +218,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
 
       // Add Metafy community alt arts from cached game file data
-      $playerCommunities = $playerID == 3 ? ($p1MetafyCommunities ?? []) : ($playerID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []));
+      $playerCommunities = $altArtsPlayerID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []);
       if (is_array($playerCommunities)) {
         foreach ($playerCommunities as $community) {
           $communityId = $community['id'] ?? null;
@@ -270,7 +273,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
 
       // Add opponent's Metafy community alt arts from cached game file data
-      $opponentCommunities = $playerID == 3 ? ($p2MetafyCommunities ?? []) : ($playerID == 1 ? ($p2MetafyCommunities ?? []) : ($p1MetafyCommunities ?? []));
+      $opponentCommunities = $altArtsOpponentID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []);
       if (is_array($opponentCommunities)) {
         foreach ($opponentCommunities as $community) {
           $communityId = $community['id'] ?? null;
@@ -313,16 +316,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $blankZone = 'blankZone';
 
   //Choose Cardback
-  $MyCardBack = GetCardBack($playerID);
+  $MyCardBack = GetCardBack($viewerSlotPlayerID);
   $TheirCardBack = GetCardBack($otherPlayer);
   $defCardBack = GetCardBack($defPlayer);
   $borderColor = 0;
 
-  $isColorblindMode = IsColorblindMode($playerID);
-  $response->MyPlaymat = $isColorblindMode ? 0 : GetPlaymat($playerID);
+  $isColorblindMode = $playerID == 3
+    ? !empty($sessionData['viewerColorblindMode'])
+    : IsColorblindMode($playerID);
+  $response->MyPlaymat = $isColorblindMode ? 0 : GetPlaymat($viewerSlotPlayerID);
   if(isset($initialLoad) && $initialLoad->isOpponentAI) $response->TheirPlaymat = $isColorblindMode ? 0 : 2;
   else $response->TheirPlaymat = $isColorblindMode ? 0 : GetPlaymat($otherPlayer);
-  if ($response->MyPlaymat == 0) $response->TheirPlaymat = 0;
+  if ($playerID != 3 && $response->MyPlaymat == 0) $response->TheirPlaymat = 0;
 
   //Display active chain link
   $activeChainLink = new stdClass();

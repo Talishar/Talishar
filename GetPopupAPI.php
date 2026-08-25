@@ -63,6 +63,9 @@ if ($playerID == 3) {
           exit;
       }
   }
+
+  $sessionUserId = $_SESSION["userid"] ?? $sessionUserId;
+  if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
 }
 
 // CORS etc *must* be set for all endpoints
@@ -163,7 +166,7 @@ switch ($popupType) {
     $response->Settings = [];
     
     // For profile settings (playerID == 0), load from database
-    if ($playerID == 0) {
+    if ($playerID == 0 || $playerID == 3) {
       include_once "./includes/functions.inc.php";
       // Use captured session data (session already closed to prevent deadlock)
       $userID = $sessionUserId ?? "";
