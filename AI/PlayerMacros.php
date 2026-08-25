@@ -284,6 +284,21 @@ function ProcessSpecificCardMacros()
       return true;
     }
   }
+  if ($turn[0] == "YESNO" && $turn[2] == "if_you_want_to_accelerate_your_zombie")
+  {
+    $resources = &GetResources($currentPlayer);
+    $available = intval($resources[0]);
+    $hand = &GetHand($currentPlayer);
+    $handCount = count($hand);
+    $handPieces = HandPieces();
+    for ($i = 0; $i < $handCount && $available < 2; $i += $handPieces) {
+      $available += PitchValue($hand[$i]);
+    }
+    if ($available < 2) {
+      ContinueDecisionQueue("NO");
+      return true;
+    }
+  }
   return false;
 }
 
