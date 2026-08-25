@@ -4393,6 +4393,7 @@ function HasDominate($cardID)
     case "drowning_dire_blue":
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
     case "elemental_strike":
+    case "ice_aged_oak_blue":
       return false; //error in GeneratedFunction
     default:
       break;
