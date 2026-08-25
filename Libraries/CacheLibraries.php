@@ -64,8 +64,9 @@ function InvalidateGamestateCache($gameName) {
 }
 
 /**
- * Reuse a completed response when multiple connections share the same viewer
- * and visibility variant for a game update.
+ * Reuse an encoded response when multiple connections share the same viewer
+ * and visibility variant for a game update. Caching the wire representation
+ * avoids rebuilding it with json_encode() on every equivalent SSE connection.
  */
 function GetCachedGameStateResponse($gameName, $updateNumber, $viewerVariant, $inactive) {
   if (!_apcuAvailable() || !is_string($viewerVariant) || $viewerVariant === '') return false;
@@ -74,11 +75,12 @@ function GetCachedGameStateResponse($gameName, $updateNumber, $viewerVariant, $i
   if (!is_array($cached)) return false;
   if (($cached['update'] ?? null) !== (int)$updateNumber) return false;
   if (($cached['inactive'] ?? null) !== (bool)$inactive) return false;
-  return $cached['response'] ?? false;
+  $response = $cached['response'] ?? false;
+  return is_string($response) ? $response : false;
 }
 
 function StoreCachedGameStateResponse($gameName, $updateNumber, $viewerVariant, $inactive, $response) {
-  if (!_apcuAvailable() || !is_string($viewerVariant) || $viewerVariant === '' || is_string($response)) return;
+  if (!_apcuAvailable() || !is_string($viewerVariant) || $viewerVariant === '' || !is_string($response)) return;
   $key = "game_response_{$gameName}_" . hash('sha256', $viewerVariant);
   @apcu_store($key, [
     'update' => (int)$updateNumber,

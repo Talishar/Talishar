@@ -1339,16 +1339,20 @@ function isUntappedPrevented($MZindex, $zoneName, $player, $endStepUntap=false):
 
 function HasWateryGrave($cardID): bool
 {
+  static $generatedWateryGraveCache = [];
+  if (isset($generatedWateryGraveCache[$cardID])) return $generatedWateryGraveCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasWateryGrave();
-  return GeneratedHasWateryGrave($cardID);
+  return $generatedWateryGraveCache[$cardID] = GeneratedHasWateryGrave($cardID);
 }
 
 function HasHighTide($cardID): bool
 {
+  static $generatedHighTideCache = [];
+  if (isset($generatedHighTideCache[$cardID])) return $generatedHighTideCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasHighTide();
-  return GeneratedHasHighTide($cardID);
+  return $generatedHighTideCache[$cardID] = GeneratedHasHighTide($cardID);
 }
 
 function HighTideConditionMet($player) 

@@ -553,6 +553,8 @@ function CardCost($cardID, $from="-", $index=-1)
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
+  static $generatedCostCache = [];
+  if (isset($generatedCostCache[$cardID])) return $generatedCostCache[$cardID];
   $set = CardSet($cardID);
   switch ($cardID) {
     case "imposing_visage_blue":
@@ -634,7 +636,7 @@ function CardCost($cardID, $from="-", $index=-1)
     return $card->CardCost($from);
   }
   if ($set != "DUM") {
-    return GeneratedCardCost($cardID);
+    return $generatedCostCache[$cardID] = GeneratedCardCost($cardID);
   }
 }
 
@@ -3407,6 +3409,8 @@ function IsActivated($cardID, $from) {
 function HasBladeBreak($cardID)
 {
   global $defPlayer, $CID_TekloHead, $CID_TekloChest, $CID_TekloArms, $CID_TekloLegs;
+  static $generatedBladeBreakCache = [];
+  if (isset($generatedBladeBreakCache[$cardID])) return $generatedBladeBreakCache[$cardID];
   switch ($cardID) {
     case $CID_TekloHead:
     case $CID_TekloChest:
@@ -3423,13 +3427,15 @@ function HasBladeBreak($cardID)
     case "glove_of_azure_waves":
       return HighTideConditionMet($defPlayer);
     default:
-      return GeneratedHasBladeBreak($cardID);
+      return $generatedBladeBreakCache[$cardID] = GeneratedHasBladeBreak($cardID);
   }
 }
 
 function HasBattleworn($cardID)
 {
   global $defPlayer;
+  static $generatedBattlewornCache = [];
+  if (isset($generatedBattlewornCache[$cardID])) return $generatedBattlewornCache[$cardID];
   switch ($cardID) {
     case "teklovossen_the_mechropotentb":
     case "prizeworn_pathfinders":
@@ -3441,30 +3447,36 @@ function HasBattleworn($cardID)
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
     default:
-      return GeneratedHasBattleworn($cardID);
+      return $generatedBattlewornCache[$cardID] = GeneratedHasBattleworn($cardID);
   }
 }
 
 function HasTemper($cardID)
 {
+  static $generatedTemperCache = [];
+  if (isset($generatedTemperCache[$cardID])) return $generatedTemperCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasTemper();
   switch ($cardID) {
     case "trampling_trackers":
       return true;
   }
-  return GeneratedHasTemper($cardID);
+  return $generatedTemperCache[$cardID] = GeneratedHasTemper($cardID);
 }
 
 function HasGuardwell($cardID)
 {
+  static $generatedGuardwellCache = [];
+  if (isset($generatedGuardwellCache[$cardID])) return $generatedGuardwellCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasGuardwell();
-  return GeneratedHasGuardwell($cardID);
+  return $generatedGuardwellCache[$cardID] = GeneratedHasGuardwell($cardID);
 }
 
 function HasPiercing($cardID, $from = "")
 {
+  static $generatedPiercingCache = [];
+  if (isset($generatedPiercingCache[$cardID])) return $generatedPiercingCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasPiercing();
   switch ($cardID) {
@@ -3496,15 +3508,17 @@ function HasPiercing($cardID, $from = "")
     case "drill_shot_blue":
       return HasAimCounter();
     default:
-      return GeneratedHasPiercing($cardID);
+      return $generatedPiercingCache[$cardID] = GeneratedHasPiercing($cardID);
   }
 }
 
 function HasTower($cardID)
 {
+  static $generatedTowerCache = [];
+  if (isset($generatedTowerCache[$cardID])) return $generatedTowerCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasTower();
-  return GeneratedHasTower($cardID);
+  return $generatedTowerCache[$cardID] = GeneratedHasTower($cardID);
 }
 
 function RequiresDiscard($cardID)
@@ -3540,9 +3554,11 @@ function RequiresBanish($cardID)
 
 function HasBeatChest($cardID)
 {
+  static $generatedBeatChestCache = [];
+  if (isset($generatedBeatChestCache[$cardID])) return $generatedBeatChestCache[$cardID];
   $card = GetClass($cardID, 1);
   if ($card != "-") return $card->HasBeatChest();
-  return GeneratedHasBeatChest($cardID);
+  return $generatedBeatChestCache[$cardID] = GeneratedHasBeatChest($cardID);
 }
 
 function ETASteamCounters($cardID)
@@ -3859,9 +3875,11 @@ function RepriseActive()
 
 function HasCombo($cardID)
 {
+  static $generatedComboCache = [];
+  if (isset($generatedComboCache[$cardID])) return $generatedComboCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasCombo();
-  return GeneratedHasCombo($cardID);
+  return $generatedComboCache[$cardID] = GeneratedHasCombo($cardID);
 }
 
 function ComboActive($cardID = "")
@@ -4013,9 +4031,11 @@ function HasBloodDebt($cardID)
   global $currentPlayer;
   $char = GetPlayerCharacter($currentPlayer);
   if ($char[0] == "levia_redeemed") return false;
+  static $generatedBloodDebtCache = [];
+  if (isset($generatedBloodDebtCache[$cardID])) return $generatedBloodDebtCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasBloodDebt();
-  return GeneratedHasBloodDebt($cardID);
+  return $generatedBloodDebtCache[$cardID] = GeneratedHasBloodDebt($cardID);
 }
 
 function HasRunegate($cardID)
@@ -4322,6 +4342,8 @@ function WardAmount($cardID, $player, $index = -1)
 
 function HasWard($cardID, $player)
 {
+  static $generatedWardCache = [];
+  if (isset($generatedWardCache[$cardID])) return $generatedWardCache[$cardID];
   $card = GetClass($cardID, $player);
   if ($card != "-" && method_exists($card, 'HasWard')) return $card->HasWard();
   switch ($cardID) {
@@ -4342,7 +4364,7 @@ function HasWard($cardID, $player)
     case "three_visits_red":
       return true;
     default:
-      return GeneratedHasWard($cardID);
+      return $generatedWardCache[$cardID] = GeneratedHasWard($cardID);
   }
 }
 
@@ -4360,6 +4382,8 @@ function HasDominate($cardID)
 {
   global $mainPlayer, $combatChainState, $CombatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
+  static $generatedDominateCache = [];
+  if (isset($generatedDominateCache[$cardID])) return $generatedDominateCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-" && $card->HasDominate()) return true;
   switch ($cardID) {
@@ -4406,14 +4430,18 @@ function HasDominate($cardID)
     default:
       break;
   }
-  return GeneratedHasDominate($cardID);
+  $generatedResult = GeneratedHasDominate($cardID);
+  if ($card != "-") return $generatedResult;
+  return $generatedDominateCache[$cardID] = $generatedResult;
 }
 
 function HasAmbush($cardID, $player)
 {
+  static $generatedAmbushCache = [];
+  if (isset($generatedAmbushCache[$cardID])) return $generatedAmbushCache[$cardID];
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->HasAmbush();
-  return GeneratedHasAmbush($cardID);
+  return $generatedAmbushCache[$cardID] = GeneratedHasAmbush($cardID);
 }
 
 function HasScrap($cardID)
@@ -4429,9 +4457,11 @@ function HasGalvanize($cardID)
 
 function HasStealth($cardID)
 {
+  static $generatedStealthCache = [];
+  if (isset($generatedStealthCache[$cardID])) return $generatedStealthCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasStealth();
-  return GeneratedHasStealth($cardID);
+  return $generatedStealthCache[$cardID] = GeneratedHasStealth($cardID);
 }
 
 function PowerCantBeModified($cardID)

@@ -199,42 +199,49 @@ while (true) {
   $inactive = $inactivityTimeoutMs > 0 && $lastUpdateTime !== ""
     && 1000 * $currentRealTime - intval($lastUpdateTime) > $inactivityTimeoutMs;
   if ($cacheVal > $lastUpdate || $inactive !== $previouslyInactive) {
-    // Build and send full game state
-    $gameState = GetCachedGameStateResponse($gameName, $cacheVal, $responseCacheVariant, $inactive);
-    if ($gameState === false) {
+    // Build and encode once, then reuse the exact payload for equivalent viewers.
+    $gameStatePayload = GetCachedGameStateResponse($gameName, $cacheVal, $responseCacheVariant, $inactive);
+    if ($gameStatePayload === false) {
       $buildStartedAt = microtime(true);
       $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive, $cacheArr);
       RecordPerformanceMetric('build-game-state', (microtime(true) - $buildStartedAt) * 1000, [
         'playerID' => (int)$playerID,
         'final' => false,
       ]);
-      StoreCachedGameStateResponse($gameName, $cacheVal, $responseCacheVariant, $inactive, $gameState);
-    }
-    if (is_string($gameState)) {
-      // Only kill the stream for genuinely fatal errors. Transient ones (e.g.
-      // "Game state reverted." mid-undo) resolve on a retry.
-      $fatal = str_contains($gameState, "no longer exists")
-        || str_contains($gameState, "Invalid Authkey")
-        || str_contains($gameState, "Spectators not allowed")
-        || str_contains($gameState, "Invalid game name")
-        || str_contains($gameState, "Invalid player ID");
-      if ($fatal) {
-        SendContent(["error" => $gameState]);
-        exit;
+      if (is_string($gameState)) {
+        // Only kill the stream for genuinely fatal errors. Transient ones (e.g.
+        // "Game state reverted." mid-undo) resolve on a retry.
+        $fatal = str_contains($gameState, "no longer exists")
+          || str_contains($gameState, "Invalid Authkey")
+          || str_contains($gameState, "Spectators not allowed")
+          || str_contains($gameState, "Invalid game name")
+          || str_contains($gameState, "Invalid player ID");
+        if ($fatal) {
+          SendContent(["error" => $gameState]);
+          exit;
+        }
+        $buildFailureStreak++;
+        if ($buildFailureStreak > 100) {
+          SendContent(["error" => $gameState]);
+          exit;
+        }
+        usleep(intval($sleepMs * 1000));
+        continue;
       }
-      $buildFailureStreak++;
-      if ($buildFailureStreak > 100) {
-        SendContent(["error" => $gameState]);
-        exit;
-      }
-      usleep(intval($sleepMs * 1000));
-      continue;
+
+      $encodeStartedAt = microtime(true);
+      $gameStatePayload = json_encode($gameState);
+      RecordPerformanceMetric('encode-game-state', (microtime(true) - $encodeStartedAt) * 1000, [
+        'playerID' => (int)$playerID,
+      ]);
+      StoreCachedGameStateResponse($gameName, $cacheVal, $responseCacheVariant, $inactive, $gameStatePayload);
+      unset($gameState);
     }
     $buildFailureStreak = 0;
     $lastUpdate = $cacheVal;
     $previouslyInactive = $inactive;
-    SendContent($gameState);
-    unset($gameState);
+    SendContent($gameStatePayload, true);
+    unset($gameStatePayload);
     if (++$buildsSinceCycleCollection >= 25) {
       gc_collect_cycles();
       $buildsSinceCycleCollection = 0;
@@ -288,7 +295,7 @@ while (true) {
   usleep(intval($sleepMs * 1000));
 }
 
-function SendContent($jsonContent) {
+function SendContent($jsonContent, $alreadyEncoded = false) {
   global $rateLimitStartInterval, $rateLimitProcessCount, $lastSendTime;
   $currentRealTime = microtime(true);
   $lastSendTime = $currentRealTime;
@@ -305,7 +312,8 @@ function SendContent($jsonContent) {
       exit;
     }
   }
-  echo ("data: " . json_encode($jsonContent) . "\n\n");
+  $payload = $alreadyEncoded ? $jsonContent : json_encode($jsonContent);
+  echo ("data: " . $payload . "\n\n");
   ob_flush();
   flush();
 }

@@ -73,31 +73,31 @@ function JSONRenderedCard(
   $slot = NULL
 ) {
   $cardNumber = BlindCard($cardNumber, true);
-  global $playerID, $CS_NumLightningPlayed;
-  $isSpectator = isset($playerID) && $playerID == 3;
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  global $playerID, $CS_NumLightningPlayed, $isReplay;
 
-  $hasCounterData = $countersMap !== null
-    || $counters !== null
-    || $lifeCounters !== null
-    || $defCounters !== null
-    || $powerCounters !== null
-    || $steamCounters !== null
-    || $energyCounters !== null
-    || $hauntCounters !== null
-    || $verseCounters !== null
-    || $doomCounters !== null
-    || $lessonCounters !== null
-    || $rustCounters !== null
-    || $flowCounters !== null
-    || $frostCounters !== null
-    || $balanceCounters !== null
-    || $bindCounters !== null
-    || $stainCounters !== null
-    || $stormCounters !== null
-    || $goldCounters !== null
-    || $suspenseCounters !== null
-    || $sandCounters !== null
+  // Null coalescing avoids a long comparison chain on the common no-counter
+  // path. !== null deliberately treats supplied 0/false values as data.
+  $hasCounterData = ($countersMap
+    ?? $counters
+    ?? $lifeCounters
+    ?? $defCounters
+    ?? $powerCounters
+    ?? $steamCounters
+    ?? $energyCounters
+    ?? $hauntCounters
+    ?? $verseCounters
+    ?? $doomCounters
+    ?? $lessonCounters
+    ?? $rustCounters
+    ?? $flowCounters
+    ?? $frostCounters
+    ?? $balanceCounters
+    ?? $bindCounters
+    ?? $stainCounters
+    ?? $stormCounters
+    ?? $goldCounters
+    ?? $suspenseCounters
+    ?? $sandCounters) !== null
     || $wateryGraveIcon != null;
   if ($hasCounterData) {
     $counters = isset($countersMap->counters) ? $countersMap->counters : $counters;
@@ -314,6 +314,7 @@ function JSONRenderedCard(
   
   //Volzar Amp icon
   if($controller != NULL && $cardNumber == "volzar_the_lightning_rod" && $lightningPlayed == NULL) {
+    $otherPlayer = $playerID == 1 ? 2 : 1;
     if($controller == $playerID) {
       $lightningCount = GetClassState($playerID, $CS_NumLightningPlayed);
       if($lightningCount > 0) {
@@ -333,6 +334,7 @@ function JSONRenderedCard(
 
   //Current Turn Effects amp amount
   if($showAmpAmount !== false && str_starts_with($showAmpAmount, "Effect")) {
+    $otherPlayer = $playerID == 1 ? 2 : 1;
     $index = explode("-", $showAmpAmount, 2)[1];
     $ampOwn = ArcaneModifierAmount($cardNumber, $playerID, $index);
     if($ampOwn > 0) {
@@ -348,7 +350,7 @@ function JSONRenderedCard(
     }
   }
   
-  if($isSpectator) $gem = NULL;
+  if($gem !== NULL && isset($playerID) && $playerID == 3) $gem = NULL;
   if($subcard != NULL) {
     $subcard = explode(',', $subcard);
   }
@@ -357,7 +359,7 @@ function JSONRenderedCard(
 
   if($gem !== NULL) $card->gem = $gem;
   if($cardNumber !== NULL) $card->cardNumber = $cardNumber;
-  if($action !== NULL && !IsReplay()) $card->action = $action;
+  if($action !== NULL && !(isset($isReplay) ? (bool)$isReplay : IsReplay())) $card->action = $action;
   if($overlay !== NULL) $card->overlay = $overlay;
   if($borderColor !== NULL) $card->borderColor = $borderColor;
   if($counters !== NULL) $card->counters = $counters;
@@ -374,7 +376,7 @@ function JSONRenderedCard(
   if($onChain !== NULL) $card->onChain = $onChain;
   if($isFrozen !== NULL) $card->isFrozen = $isFrozen;
   if($holoCounters !== NULL) $card->holoCounters = $holoCounters;
-  if(!empty((array)$countersMap)) $card->countersMap = $countersMap;
+  if($countersMap !== NULL && !empty((array)$countersMap)) $card->countersMap = $countersMap;
   if($label !== NULL) $card->label = $label;
   if($facing !== NULL) $card->facing = $facing;
   if($numUses !== NULL) $card->numUses = $numUses;

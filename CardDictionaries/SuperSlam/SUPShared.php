@@ -333,9 +333,11 @@ function Cheer($player)
 
 function HasSuspense($cardID)
 {
+  static $generatedSuspenseCache = [];
+  if (isset($generatedSuspenseCache[$cardID])) return $generatedSuspenseCache[$cardID];
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->HasSuspense();
-  return GeneratedHasSuspense($cardID);
+  return $generatedSuspenseCache[$cardID] = GeneratedHasSuspense($cardID);
 }
 
 function GetSuspenseAuras($player, $hasCounter = false)

@@ -318,7 +318,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //Choose Cardback
   $MyCardBack = GetCardBack($viewerSlotPlayerID);
   $TheirCardBack = GetCardBack($otherPlayer);
-  $defCardBack = GetCardBack($defPlayer);
+  $defCardBack = $defPlayer == $viewerSlotPlayerID ? $MyCardBack : $TheirCardBack;
   $borderColor = 0;
 
   $isColorblindMode = $playerID == 3

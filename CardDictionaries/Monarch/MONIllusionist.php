@@ -90,9 +90,11 @@
 
   function HasPhantasm($cardID, $from="CC")
   {
+    static $generatedPhantasmCache = [];
+    if (isset($generatedPhantasmCache[$cardID])) return $generatedPhantasmCache[$cardID];
     $card = GetClass($cardID, 0);
     if ($card != "-") return $card->HasPhantasm();
-    return GeneratedHasPhantasm($cardID);
+    return $generatedPhantasmCache[$cardID] = GeneratedHasPhantasm($cardID);
   }
 
   function IsPhantasmActive()
