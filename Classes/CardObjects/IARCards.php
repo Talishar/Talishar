@@ -3578,3 +3578,59 @@ class restless_corporal_red extends Card {
     return true;
   }
 }
+
+class restless_outlaw_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_outlaw_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddGraveyardEffect($from, $effectController, $cardController) {
+    if ($from == "PLAY") 
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    BanishCardForPlayer("corrupted_corpse", $this->controller, "-", created:true);
+  }
+
+  function SpecialName() {
+    return "Restless Outlaw";
+  }
+
+  function SpecialHealth() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialSubType() {
+    return "Zombie,Ally";
+  }
+
+  function HasDecay() {
+    return true;
+  }
+}
