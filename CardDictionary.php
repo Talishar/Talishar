@@ -4027,7 +4027,6 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan, $CurrentTurnEffects;
   if ($player == "") $player = $currentPlayer;
-  $banishCard = new BanishCard($player, $index);
   $mod = explode("-", $mod ?? "", 2)[0];
   if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
   if (isFaceDownMod($mod)) return false;
@@ -4037,7 +4036,10 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   $char = &GetPlayerCharacter($player);
   if (SubtypeContains($cardID, "Evo") && ($char[0] == "professor_teklovossen" || $char[0] == "teklovossen_esteemed_magnate" || $char[0] == "teklovossen") && $char[1] < 3) return true;
   if (!$nonLimitedOnly && $char[0] == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $banishCard->UniqueID(), $player)->Index() != -1) return true;
+  if ($CurrentTurnEffects->NumEffects() > 0) {
+    $banishCard = new BanishCard($player, $index);
+    if ($CurrentTurnEffects->HasAnySpecificEffect(["gate_to_iarathael"], $banishCard->UniqueID(), $player)) return true;
+  }
   if (!$nonLimitedOnly && $CurrentTurnEffects->FindEffect("blasmophet_the_insatiable_hunger", $player)->Index() != -1 && HasBloodDebt($cardID) && (TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) return true;
   if (!$nonLimitedOnly && $CurrentTurnEffects->FindEffect("embrace_sin_yellow-SIN", $player)->Index() != -1 && IsRunechant($cardID)) return true;
   $card = GetClass($cardID, $player);
@@ -4156,13 +4158,17 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
   if ($hasWateryGrave && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter") && $player == $currentPlayer) return true;
   if ($hasWateryGrave && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")  && $player == $currentPlayer) return true;
   if (HasSuspense($cardID) && SearchCurrentTurnEffects("cries_of_encore_red", $player)) return true;
-  $DiscardCard = new DiscardCard($index, $player);
-  $discardUniqueID = $DiscardCard->UniqueID();
-  if ($CurrentTurnEffects->FindSpecificEffect("oscilio_forked_continuum", $discardUniqueID)->Index() != -1) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("oscilio_scion_of_the_third_age", $discardUniqueID)->Index() != -1) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("astral_bridge_red", $discardUniqueID)->Index() != -1) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("malice", $discardUniqueID)->Index() != -1) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("malice_domina_of_the_dead", $discardUniqueID)->Index() != -1) return true;
+  if ($CurrentTurnEffects->NumEffects() > 0) {
+    static $graveyardPlayEffectIDs = [
+      "oscilio_forked_continuum",
+      "oscilio_scion_of_the_third_age",
+      "astral_bridge_red",
+      "malice",
+      "malice_domina_of_the_dead",
+    ];
+    $DiscardCard = new DiscardCard($index, $player);
+    if ($CurrentTurnEffects->HasAnySpecificEffect($graveyardPlayEffectIDs, $DiscardCard->UniqueID())) return true;
+  }
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromGraveyard($index);
   return match ($cardID) {

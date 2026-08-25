@@ -105,6 +105,7 @@ function ClearLog($n=500)
         $lines[] = fgets($handle);
     }
     fclose($handle);
+    if (count($lines) <= $n) return;
     $lines = array_slice($lines, -$n);
   }
 
