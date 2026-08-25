@@ -2548,13 +2548,26 @@ function EffectDefenderPowerModifiers($cardID)
 function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1, $overrideType = "-")
 {
   global $mainPlayer, $currentTurnEffects, $p2IsAI;
+  if ($p2IsAI) return false;
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $hasRestrictingEffect = false;
+  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
+    if (($currentTurnEffects[$i + 1] ?? null) != $mainPlayer) continue;
+    $commaPos = strpos($currentTurnEffects[$i], ',');
+    $effectID = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
+    if ($effectID === "star_struck_yellow" || $effectID === "crush_the_weak_red" || $effectID === "WarmongersPeace") {
+      $hasRestrictingEffect = true;
+      break;
+    }
+  }
+  // Matches the loop below falling through without ever setting $restrictedBy.
+  if (!$hasRestrictingEffect) return "";
+
   $powerValue = PowerValue($cardID, $mainPlayer, "LAYER", $index, base:true);
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
   $resolvedAbilityType = $overrideType == "-" ? GetResolvedAbilityType($cardID) : $overrideType;
   $abilityType = GetAbilityType($cardID, from: $from);
-  if ($p2IsAI) return false;
   $restrictedBy = "";
-  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
       $commaPos = strpos($currentTurnEffects[$i], ',');

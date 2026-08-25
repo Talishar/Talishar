@@ -4151,16 +4151,18 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
 {
   global $currentPlayer, $mainPlayer, $CurrentTurnEffects;
   if ($player == "") $player = $currentPlayer;
-  $DiscardCard = new DiscardCard($index, $player);
   if (isFaceDownMod($mod)) return false;
-  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter") && $player == $currentPlayer) return true;
-  if (HasWateryGrave($cardID) && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")  && $player == $currentPlayer) return true;
+  $hasWateryGrave = HasWateryGrave($cardID);
+  if ($hasWateryGrave && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter") && $player == $currentPlayer) return true;
+  if ($hasWateryGrave && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")  && $player == $currentPlayer) return true;
   if (HasSuspense($cardID) && SearchCurrentTurnEffects("cries_of_encore_red", $player)) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("oscilio_forked_continuum", $DiscardCard->UniqueID())->Index() != -1) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("oscilio_scion_of_the_third_age", $DiscardCard->UniqueID())->Index() != -1) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("astral_bridge_red", $DiscardCard->UniqueID())->Index() != -1) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("malice", $DiscardCard->UniqueID())->Index() != -1) return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("malice_domina_of_the_dead", $DiscardCard->UniqueID())->Index() != -1) return true;
+  $DiscardCard = new DiscardCard($index, $player);
+  $discardUniqueID = $DiscardCard->UniqueID();
+  if ($CurrentTurnEffects->FindSpecificEffect("oscilio_forked_continuum", $discardUniqueID)->Index() != -1) return true;
+  if ($CurrentTurnEffects->FindSpecificEffect("oscilio_scion_of_the_third_age", $discardUniqueID)->Index() != -1) return true;
+  if ($CurrentTurnEffects->FindSpecificEffect("astral_bridge_red", $discardUniqueID)->Index() != -1) return true;
+  if ($CurrentTurnEffects->FindSpecificEffect("malice", $discardUniqueID)->Index() != -1) return true;
+  if ($CurrentTurnEffects->FindSpecificEffect("malice_domina_of_the_dead", $discardUniqueID)->Index() != -1) return true;
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromGraveyard($index);
   return match ($cardID) {
