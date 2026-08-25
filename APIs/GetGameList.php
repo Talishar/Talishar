@@ -167,7 +167,8 @@ if ($handle = opendir($path)) {
       if ($currentTime - $lastGamestateUpdate < 30000) {
         $visibility = $cacheArr[8] ?? "";  // piece 9
         $gameInProgressCount += 1;
-        
+        if ($visibility != "1" && $visibility != "2") continue;
+
         // Get both player usernames from the GameFile.txt
         $gameFilePath = $folder . "GameFile.txt";
         $gameCreator = "";
@@ -176,21 +177,18 @@ if ($handle = opendir($path)) {
         $p2AccountId = 0;
         $p1ShownName = "";
         $p2ShownName = "";
-        if (file_exists($gameFilePath)) {
-          // Read only the needed lines instead of parsing the whole file
-          $fh = fopen($gameFilePath, "r");
-          if ($fh) {
-            for ($i = 0; $i < 9; $i++) { if (fgets($fh) === false) break; }
-            $gameCreator = trim((string)fgets($fh));  // line 10: p1uid
-            $p2Username  = trim((string)fgets($fh));  // line 11: p2uid
-            $p1AccountId = intval(trim((string)fgets($fh)));  // line 12: p1id
-            $p2AccountId = intval(trim((string)fgets($fh)));  // line 13: p2id
-            // Skip to the trailing display-name lines (43-44); missing on older game files
-            for ($i = 0; $i < 29; $i++) { if (fgets($fh) === false) break; }
-            $p1ShownName = trim((string)fgets($fh));  // line 43: p1DisplayName
-            $p2ShownName = trim((string)fgets($fh));  // line 44: p2DisplayName
-            fclose($fh);
-          }
+        $fh = @fopen($gameFilePath, "r");
+        if ($fh) {
+          for ($i = 0; $i < 9; $i++) { if (fgets($fh) === false) break; }
+          $gameCreator = trim((string)fgets($fh));  // line 10: p1uid
+          $p2Username  = trim((string)fgets($fh));  // line 11: p2uid
+          $p1AccountId = intval(trim((string)fgets($fh)));  // line 12: p1id
+          $p2AccountId = intval(trim((string)fgets($fh)));  // line 13: p2id
+          // Skip to the trailing display-name lines (43-44); missing on older game files
+          for ($i = 0; $i < 29; $i++) { if (fgets($fh) === false) break; }
+          $p1ShownName = trim((string)fgets($fh));  // line 43: p1DisplayName
+          $p2ShownName = trim((string)fgets($fh));  // line 44: p2DisplayName
+          fclose($fh);
         }
         if ($p1ShownName === "") $p1ShownName = $gameCreator;
         if ($p2ShownName === "") $p2ShownName = $p2Username;
