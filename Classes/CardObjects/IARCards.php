@@ -3475,9 +3475,9 @@ class forsaken_strike_yellow extends Card {
     return $param == "GOAGAIN";
   }
 
-  // function SpecialName() {
-  //   return "Forsaken Strike";
-  // }
+  function SpecialName() {
+    return "Forsaken Strike";
+  }
 
   function SpecialPitch() {
     return 2;
