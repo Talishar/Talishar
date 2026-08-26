@@ -413,6 +413,8 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
             AddDecisionQueue("MZBANISH", $player, $fromMod, 1);
             AddDecisionQueue("MZREMOVE", $player, "-", 1);
             AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
+            AddDecisionQueue("ELSE", $player, "-");
+            AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
             break;
           case "Buff_your_next_attack":
             AddCurrentTurnEffectNextAttack("skyward_serenade_yellow", $player);
