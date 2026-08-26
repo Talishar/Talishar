@@ -2558,6 +2558,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
   $resolvedAbilityType = $overrideType == "-" ? GetResolvedAbilityType($cardID) : $overrideType;
   $abilityType = GetAbilityType($cardID, from: $from);
+  $abilityTypes = GetAbilityTypes($cardID, from:$from);
   $restrictedBy = "";
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $mainPlayer) {
@@ -2576,7 +2577,7 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
           }
           break;
         case "WarmongersPeace":
-          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID, from:$from), "I") || (TypeContains($cardID, "W", $mainPlayer) && $resolvedAbilityType != "I"))) $restrictedBy = "warmongers_diplomacy_blue";
+          if (($type == "AA" && !str_contains($abilityTypes, "I") && !DelimStringContains($abilityTypes, "A") || (TypeContains($cardID, "W", $mainPlayer) && $resolvedAbilityType != "I"))) $restrictedBy = "warmongers_diplomacy_blue";
           break;
         default:
           break;
@@ -2632,6 +2633,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $hasBrandOrEnflame = false;
   $currentTurnEffectsCount = count($currentTurnEffects);
+  $abilityTypes = GetAbilityTypes($cardID, from:$from);
   for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
     switch ($currentTurnEffects[$j]) {
       case "brand_with_cinderclaw_red":
@@ -2668,7 +2670,8 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           break;
         case "WarmongersPeace":
           // str_contains(GetAbilityTypes($cardID, from:$from), "I") should allow discarding attack actions for instant abilities under peace
-          if (($type == "AA" && !str_contains(GetAbilityTypes($cardID, from:$from), "I")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I")) $restrictedBy = "warmongers_diplomacy_blue";
+          if (($type == "AA" && !str_contains($abilityTypes, "I") && !DelimStringContains($abilityTypes, "A")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I"))
+            $restrictedBy = "warmongers_diplomacy_blue";
           break;
         case "kabuto_of_imperial_authority":
           if (IsWeapon($cardID, $from) && !WeaponWithNonAttack($cardID, $from)) $restrictedBy = "kabuto_of_imperial_authority";
