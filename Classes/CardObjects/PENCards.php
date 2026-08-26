@@ -4602,7 +4602,20 @@ class shapeless_form_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function PastLinkPlayTrigger($cardID, $player, $from) {
+    if (HasEphemeral($cardID) && TypeContains($cardID, "AA", $this->controller))
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("INPUTCARDNAME", $this->controller, "-");
+    AddDecisionQueue("SETDQVAR", $this->controller, "0");
+    AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "crouching_tiger-");
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "<-");
+    AddDecisionQueue("WRITELOG", $this->controller, "📣<b>{0}</b> was chosen");
   }
 }
 

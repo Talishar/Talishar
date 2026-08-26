@@ -835,15 +835,6 @@ function OnAttackEffects($cardID)
             AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], additionalCosts:"ATTACKTRIGGER");
           }
           break;
-        case "shapeless_form_blue":
-          if (HasEphemeral($cardID) && TypeContains($cardID, "AA", $mainPlayer)) {
-            AddDecisionQueue("INPUTCARDNAME", $mainPlayer, "-");
-            AddDecisionQueue("SETDQVAR", $mainPlayer, "0");
-            AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "crouching_tiger-");
-            AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, "<-");
-            AddDecisionQueue("WRITELOG", $mainPlayer, "📣<b>{0}</b> was chosen");
-          }
-          break;
         default:
           break;
       }

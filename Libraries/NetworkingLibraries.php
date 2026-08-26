@@ -2233,6 +2233,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
   global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack, $CS_NumBloodDebtAttacksPlayed, $CS_IARGatesMadeorUsed;
   global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
+  global $ChainLinks;
 
   $otherPlayer = 3 - $currentPlayer;
   $resources = &GetResources($currentPlayer);
@@ -2508,7 +2509,13 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         $Card = $CombatChain->Card($i, true);
         $blockcard = GetClass($Card->ID(), $Card->PlayerID());
         if ($blockcard != "-") $blockcard->WhileBlockPlayTrigger($Card->Index(), $cardID, $from);
-      }    
+      }
+    }
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $pastLinkCard = $ChainLinks->GetLink($i)->AttackCard();
+      $stillThere = $pastLinkCard->StillOnChain();
+      $card = GetClass($pastLinkCard->ID(), $mainPlayer, "CC", $pastLinkCard->OriginUniqueID());
+      if ($card != "-" && $stillThere) $card->PastLinkPlayTrigger($cardID, $currentPlayer, $from);
     }
     CharacterCardPlayedAbilities($currentPlayer, $cardID, $from);
     if (SearchCurrentTurnEffects("lightning_greaves", $mainPlayer) && DelimStringContains($cardType, "I")) {

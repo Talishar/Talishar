@@ -888,4 +888,8 @@ class Card {
   function ModalAbility($lastResult, $index) {
     return;
   }
+
+  function PastLinkPlayTrigger($cardID, $player, $from) {
+    return;
+  }
 }
