@@ -41,7 +41,7 @@ SetHeaders();
 
 $response = new stdClass();
 
-$gameName = $_GET["gameName"];
+$gameName = $_GET["gameName"] ?? "-";
 if (!IsGameNameValid($gameName)) {
   echo ("data: " . json_encode(["error" => "Invalid gamename"]) . "\n\n");
   ob_flush();
