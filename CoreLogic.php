@@ -2116,7 +2116,7 @@ function ColorOverride($cardID, $player = "")
       case "become_the_cup_blue":
         if ($cardID != $effectBase) break;
         $pitchToAdd = match ($effectParam) {
-        "Red" => 1, "Yellow" => 2, "Blue" => 3, default => 0
+        "Red" => 1, "Yellow" => 2, "Blue" => 3, "Purple" => 4, default => 0
         };
         if ($pitchToAdd != 0) {
           if ($pitch == 0) $pitch = $pitchToAdd;

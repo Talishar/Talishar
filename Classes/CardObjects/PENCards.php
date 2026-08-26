@@ -3850,7 +3850,7 @@ class become_the_bottle_blue extends Card {
 
 class become_the_cup extends BaseCard {
   function PayAdditionalCosts() {
-    AddDecisionQueue("BUTTONINPUT", $this->controller, "Red,Yellow,Blue", 1);
+    AddDecisionQueue("BUTTONINPUT", $this->controller, "Red,Yellow,Blue,Purple", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", subsequent: 1);
     AddDecisionQueue("WRITELOG", $this->controller, CardLink($this->cardID) . " gains the color <b style='color:{0};'>{0}</b>", 1);
     AddDecisionQueue("SPECIFICCARD", $this->controller, "BECOMETHECUP", 1);
