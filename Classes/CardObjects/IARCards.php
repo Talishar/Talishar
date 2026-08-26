@@ -195,10 +195,7 @@ class restless_quartermaster_red extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
-    Await($otherPlayer, "MultiZoneIndices", search:"MYARS", subsequent:0);
-    Await($otherPlayer, "ChooseMultiZone", context:"Banish a card from your arsenal");
-    Await($otherPlayer, "MZRemoveAndBanish", banishedBy:$this->cardID, final:true);
+    BanishFromOppsArsenal($this->controller, $this->cardID);
   }
 }
 
@@ -4237,5 +4234,61 @@ class planar_chaos_red extends Card {
 
   function SpecialTalent() {
     return "SHADOW";
+  }
+}
+
+class plundersong_gloomblade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "plundersong_gloomblade_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    BanishFromOppsArsenal($this->controller, $this->cardID);
+  }
+
+  function SpecialName() {
+    return "Plundersong Gloomblade";
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
   }
 }
