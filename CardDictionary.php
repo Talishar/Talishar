@@ -1562,7 +1562,7 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
   if ($layerCount > LayerPieces()) return false;
   // kabuto stops attacking in general, so it can stop activated or queued attacks
   if ($isWeapon && SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) return false;
-  if (TypeContains($cardID, "Sword") && $index != -1) {
+  if (SubtypeContains($cardID, "Sword") && $index != -1) {
     $Weapon = new CharacterCard($index, $mainPlayer);
     if ($CurrentTurnEffects->FindSpecificEffect("a_moments_peace_blue", $Weapon->UniqueID()) != -1) return false;
   }
@@ -3456,7 +3456,7 @@ function HasTemper($cardID)
   static $generatedTemperCache = [];
   if (isset($generatedTemperCache[$cardID])) return $generatedTemperCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasTemper();
+  if ($card != "-") return $generatedTemperCache[$cardID] = $card->HasTemper();
   switch ($cardID) {
     case "trampling_trackers":
       return true;
@@ -3469,7 +3469,7 @@ function HasGuardwell($cardID)
   static $generatedGuardwellCache = [];
   if (isset($generatedGuardwellCache[$cardID])) return $generatedGuardwellCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasGuardwell();
+  if ($card != "-") return $generatedGuardwellCache[$cardID] = $card->HasGuardwell();
   return $generatedGuardwellCache[$cardID] = GeneratedHasGuardwell($cardID);
 }
 
@@ -3478,7 +3478,7 @@ function HasPiercing($cardID, $from = "")
   static $generatedPiercingCache = [];
   if (isset($generatedPiercingCache[$cardID])) return $generatedPiercingCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasPiercing();
+  if ($card != "-") return $generatedPiercingCache[$cardID] = $card->HasPiercing();
   switch ($cardID) {
      //Weapons with Piercing
     case "spiders_bite":
@@ -3517,7 +3517,7 @@ function HasTower($cardID)
   static $generatedTowerCache = [];
   if (isset($generatedTowerCache[$cardID])) return $generatedTowerCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasTower();
+  if ($card != "-") return $generatedTowerCache[$cardID] = $card->HasTower();
   return $generatedTowerCache[$cardID] = GeneratedHasTower($cardID);
 }
 
@@ -3557,7 +3557,7 @@ function HasBeatChest($cardID)
   static $generatedBeatChestCache = [];
   if (isset($generatedBeatChestCache[$cardID])) return $generatedBeatChestCache[$cardID];
   $card = GetClass($cardID, 1);
-  if ($card != "-") return $card->HasBeatChest();
+  if ($card != "-") return $generatedBeatChestCache[$cardID] = $card->HasBeatChest();
   return $generatedBeatChestCache[$cardID] = GeneratedHasBeatChest($cardID);
 }
 
@@ -3878,7 +3878,7 @@ function HasCombo($cardID)
   static $generatedComboCache = [];
   if (isset($generatedComboCache[$cardID])) return $generatedComboCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasCombo();
+  if ($card != "-") return $generatedComboCache[$cardID] = $card->HasCombo();
   return $generatedComboCache[$cardID] = GeneratedHasCombo($cardID);
 }
 
@@ -4034,7 +4034,7 @@ function HasBloodDebt($cardID)
   static $generatedBloodDebtCache = [];
   if (isset($generatedBloodDebtCache[$cardID])) return $generatedBloodDebtCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasBloodDebt();
+  if ($card != "-") return $generatedBloodDebtCache[$cardID] = $card->HasBloodDebt();
   return $generatedBloodDebtCache[$cardID] = GeneratedHasBloodDebt($cardID);
 }
 
@@ -4056,12 +4056,13 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   $char = &GetPlayerCharacter($player);
   if (SubtypeContains($cardID, "Evo") && ($char[0] == "professor_teklovossen" || $char[0] == "teklovossen_esteemed_magnate" || $char[0] == "teklovossen") && $char[1] < 3) return true;
   if (!$nonLimitedOnly && $char[0] == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
-  if ($CurrentTurnEffects->NumEffects() > 0) {
+  static $gateToIarathael = ["gate_to_iarathael"];
+  if ($CurrentTurnEffects->NumEffects() > 0 && $CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
     $banishCard = new BanishCard($player, $index);
-    if ($CurrentTurnEffects->HasAnySpecificEffect(["gate_to_iarathael"], $banishCard->UniqueID(), $player)) return true;
+    if ($CurrentTurnEffects->HasAnySpecificEffect($gateToIarathael, $banishCard->UniqueID(), $player)) return true;
   }
-  if (!$nonLimitedOnly && $CurrentTurnEffects->FindEffect("blasmophet_the_insatiable_hunger", $player)->Index() != -1 && HasBloodDebt($cardID) && (TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) return true;
-  if (!$nonLimitedOnly && $CurrentTurnEffects->FindEffect("embrace_sin_yellow-SIN", $player)->Index() != -1 && IsRunechant($cardID)) return true;
+  if (!$nonLimitedOnly && SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $player) && HasBloodDebt($cardID) && (TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) return true;
+  if (!$nonLimitedOnly && SearchCurrentTurnEffects("embrace_sin_yellow-SIN", $player) && IsRunechant($cardID)) return true;
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromBanish($mod, $nonLimitedOnly);
   switch ($cardID) {
@@ -4186,8 +4187,10 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
       "malice",
       "malice_domina_of_the_dead",
     ];
-    $DiscardCard = new DiscardCard($index, $player);
-    if ($CurrentTurnEffects->HasAnySpecificEffect($graveyardPlayEffectIDs, $DiscardCard->UniqueID())) return true;
+    if ($CurrentTurnEffects->HasAnyEffectID($graveyardPlayEffectIDs)) {
+      $DiscardCard = new DiscardCard($index, $player);
+      if ($CurrentTurnEffects->HasAnySpecificEffect($graveyardPlayEffectIDs, $DiscardCard->UniqueID())) return true;
+    }
   }
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromGraveyard($index);
@@ -4460,7 +4463,7 @@ function HasStealth($cardID)
   static $generatedStealthCache = [];
   if (isset($generatedStealthCache[$cardID])) return $generatedStealthCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasStealth();
+  if ($card != "-") return $generatedStealthCache[$cardID] = $card->HasStealth();
   return $generatedStealthCache[$cardID] = GeneratedHasStealth($cardID);
 }
 

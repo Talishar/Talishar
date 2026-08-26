@@ -302,8 +302,9 @@ function ApplyDeckAltArtOverride($poolAltArts, $userId, $deckLink)
   $override = GetDeckAltArtOverride($userId, $deckLink);
   if ($override === null || !$override['customized']) {
     if (!function_exists('IsOptInOnlyAltArt')) return $poolAltArts;
-    return array_values(array_filter($poolAltArts, function ($altArt) {
-      return !IsOptInOnlyAltArt($altArt->altPath ?? '');
+    $optInOnly = GetOptInOnlyAltArts();
+    return array_values(array_filter($poolAltArts, static function ($altArt) use ($optInOnly) {
+      return !isset($optInOnly[$altArt->altPath ?? '']);
     }));
   }
 

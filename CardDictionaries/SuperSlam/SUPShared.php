@@ -336,7 +336,7 @@ function HasSuspense($cardID)
   static $generatedSuspenseCache = [];
   if (isset($generatedSuspenseCache[$cardID])) return $generatedSuspenseCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasSuspense();
+  if ($card != "-") return $generatedSuspenseCache[$cardID] = $card->HasSuspense();
   return $generatedSuspenseCache[$cardID] = GeneratedHasSuspense($cardID);
 }
 

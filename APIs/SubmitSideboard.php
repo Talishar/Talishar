@@ -76,6 +76,11 @@ if(isset($submission->chest) && $submission->chest != "") $character .= " " . $s
 if(isset($submission->arms) && $submission->arms != "") $character .= " " . $submission->arms;
 if(isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
 if(isset($submission->offhand) && $submission->offhand != "") $character .= " " . $submission->offhand;
+if (isset($submission->deck))
+  $submission->deck = array_values(array_filter($submission->deck, fn($card) => !HasIncarnate($card)));
+if (isset($submission->inventory))
+  $submission->inventory = array_values(array_filter($submission->inventory, fn($card) => !HasIncarnate($card)));
+
 $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 
 if ($playerID == 1) {
