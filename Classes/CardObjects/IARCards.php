@@ -3844,3 +3844,356 @@ class runic_disposition_red extends Card {
     return "RUNEBLADE";
   }
 }
+
+class countdown_to_extinction extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+
+  function AddOnHitTrigger($check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect() {
+    MaySearchDeck($this->controller, "isSameName=darkest_hour_red", "MYBANISH", 0, "-", "Banish a Darkest Hour (or pass)");
+  }
+}
+
+class countdown_to_extinction_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "countdown_to_extinction_red";
+    $this->controller = $controller;
+    $this->baseCard = new countdown_to_extinction($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  function SpecialName() {
+    return "Countdown to Extinction";
+  }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class countdown_to_extinction_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "countdown_to_extinction_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new countdown_to_extinction($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  function SpecialName() {
+    return "Countdown to Extinction";
+  }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class countdown_to_extinction_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "countdown_to_extinction_blue";
+    $this->controller = $controller;
+    $this->baseCard = new countdown_to_extinction($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  function SpecialName() {
+    return "Countdown to Extinction";
+  }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class darkest_hour extends BaseCard {
+  function PlayAbility() {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive() {
+    global $CombatChain;
+    return TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $this->controller);
+  }
+
+  function AddPrePitchDecisionQueue() {
+    HandToTopDeck($this->controller);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "$this->cardID-PAID", 1);
+  }
+
+  function CurrentTurnEffectPaid(&$remove, $index) {
+    $Effect = new CurrentEffect($index);
+    if ($Effect->EffectID() == "$this->cardID-PAID") {
+      $remove = true;
+      return true;
+    }
+    return false;
+  }
+}
+
+class darkest_hour_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "darkest_hour_red";
+    $this->controller = $controller;
+    $this->baseCard = new darkest_hour($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 4;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    $this->baseCard->AddPrePitchDecisionQueue();
+  }
+
+  function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+    return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
+  }
+
+  function SpecialName() {
+    return "Darkest Hour";
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class darkest_hour_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "darkest_hour_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new darkest_hour($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    $this->baseCard->AddPrePitchDecisionQueue();
+  }
+
+  function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+    return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
+  }
+
+  function SpecialName() {
+    return "Darkest Hour";
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class darkest_hour_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "darkest_hour_blue";
+    $this->controller = $controller;
+    $this->baseCard = new darkest_hour($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $this->baseCard->CombatEffectActive();
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    $this->baseCard->AddPrePitchDecisionQueue();
+  }
+
+  function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+    return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
+  }
+
+  function SpecialName() {
+    return "Darkest Hour";
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}

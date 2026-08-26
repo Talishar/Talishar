@@ -37,6 +37,7 @@ function ArsenalChooseAndDestroy($player) {
 function HandToTopDeck($player)
 {
   AddDecisionQueue("FINDINDICES", $player, "HAND");
+  AddDecisionQueue("SETDQCONTEXT", $player, "Put a card from your hand on top of your deck (or pass)", 1);
   AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
   AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
   AddDecisionQueue("MULTIADDTOPDECK", $player, "-", 1);

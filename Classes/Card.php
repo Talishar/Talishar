@@ -77,7 +77,7 @@ class Card {
   }
 
   function PayAbilityAdditionalCosts($index, $from="-", $zoneIndex=-1) {
-    return;
+    return "";
   }
 
   function EquipPayAdditionalCosts($cardIndex="-") {
