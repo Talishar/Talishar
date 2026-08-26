@@ -1430,7 +1430,7 @@ class truth_or_trickery_yellow extends Card {
   function SpecificLogic() {
     global $mainPlayer;
     LookAtTopCard($this->controller, $this->cardID, setPlayer:$this->controller);
-    AddDecisionQueue("PASSPARAMETER", $this->controller, "Red,Yellow,Blue");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "Red,Yellow,Blue,Purple");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a color", 1);
     AddDecisionQueue("BUTTONINPUT", $this->controller, "<-", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);

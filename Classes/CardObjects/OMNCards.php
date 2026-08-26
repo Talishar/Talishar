@@ -8022,7 +8022,7 @@ class induce_panic_yellow extends Card {
                  "CHOOSE A COLOR", "Why are you taking so long to choose a color?",
                  "I think you should pick red, but what do I know?"];
     $roll =  GetRandom(0, count($messages)-1);
-    Await($this->controller, "CardChoices", "choice", choices:"Red,Yellow,Blue", context:$messages[$roll], subsequent:false);
+    Await($this->controller, "CardChoices", "choice", choices:"Red,Yellow,Blue,Purple", context:$messages[$roll], subsequent:false);
     Await($this->controller, $this->cardID, final:true);
   }
 
