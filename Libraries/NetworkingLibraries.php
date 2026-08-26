@@ -30,6 +30,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
   global $roguelikeGameID, $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects;
   global $p1MetafyTiers, $p2MetafyTiers;
+  global $CS_OriginalHero;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
     case 0:
@@ -1078,8 +1079,16 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!is_dir($replayPath)) mkdir($replayPath, 0777, true);
       copy("$gamePath/origGamestate.txt", "$replayPath/origGamestate.txt");
       copy("$gamePath/commandfile.txt", "$replayPath/commandfile.txt");
-      $p1Hero = GetPlayerCharacter(1)[0] ?? "";
-      $p2Hero = GetPlayerCharacter(2)[0] ?? "";
+      $p1Character = &GetPlayerCharacter(1);
+      $p2Character = &GetPlayerCharacter(2);
+      $p1OriginalHero = GetClassState(1, $CS_OriginalHero);
+      $p2OriginalHero = GetClassState(2, $CS_OriginalHero);
+      $p1Hero = $p1OriginalHero !== "" && $p1OriginalHero !== "-"
+        ? $p1OriginalHero
+        : ($p1Character[0] ?? "");
+      $p2Hero = $p2OriginalHero !== "" && $p2OriginalHero !== "-"
+        ? $p2OriginalHero
+        : ($p2Character[0] ?? "");
       $replayMetadata = [
         "p1DisplayName" => trim($gameFile[42] ?? ""),
         "p2DisplayName" => trim($gameFile[43] ?? ""),
