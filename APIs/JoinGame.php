@@ -289,6 +289,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $isFaBDB = str_contains($decklink, "fabdb");
    $isFaBMeta = str_contains($decklink, "fabmeta");
    $isFaBTCGMeta = str_contains($decklink, "fabtcgmeta");
+   $isFaBBazaar = IsFaBBazaarHostLink($decklink);
    if ($isFaBDB) {
      $decklinkArr = explode("/", $decklink);
      $slug = $decklinkArr[count($decklinkArr) - 1];
@@ -300,14 +301,13 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
      $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
    }
-   else if (str_contains($decklink, "fabbazaar.app")) {
-     preg_match('/fabbazaar\.app\/decks\/([a-zA-Z0-9_-]+)/', $decklink, $matches);
-     if (!isset($matches[1])) {
+   else if ($isFaBBazaar) {
+     $deckId = ExtractFaBBazaarDeckId($decklink);
+     if ($deckId === '') {
        $response->error = "Invalid FaB Bazaar deck URL format. Expected: https://fabbazaar.app/decks/DECK_ID";
        echo (json_encode($response));
        exit;
      }
-     $deckId = $matches[1];
      $headers = array(
        "x-api-key: " . $FaBBazaarKey,
        "Content-Type: application/json",
@@ -352,15 +352,15 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      exit;
    }
    $deckObj = json_decode($apiDeck);
-   if ($apiInfo['http_code'] == 401 && str_contains($decklink, "fabbazaar.app")) {
+   if ($apiInfo['http_code'] == 401 && $isFaBBazaar) {
      $response->error = "API UNAUTHORIZED! FaB Bazaar API key is missing. Contact site administrator.";
      echo (json_encode($response));
      die();
-   } elseif ($apiInfo['http_code'] == 404 && str_contains($decklink, "fabbazaar.app")) {
+   } elseif ($apiInfo['http_code'] == 404 && $isFaBBazaar) {
      $response->error = "Deck not found on FaB Bazaar. The deck may be private, deleted, or the URL is incorrect.";
      echo (json_encode($response));
      die();
-   } elseif ($apiInfo['http_code'] == 429 && str_contains($decklink, "fabbazaar.app")) {
+   } elseif ($apiInfo['http_code'] == 429 && $isFaBBazaar) {
      $response->error = "FaB Bazaar rate limit exceeded. Please wait a minute and try again.";
      echo (json_encode($response));
      die();

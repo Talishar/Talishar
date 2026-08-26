@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Assets/patreon-php-master/src/PatreonLibraries.php';
+require_once __DIR__ . '/DeckProviderHelpers.php';
 
 use SendGrid\Mail\Mail;
 
@@ -428,13 +429,9 @@ function GetDeckBuilderId($uid, $decklink)
 	mysqli_close($conn);
 	$dbId = "";
 	if (count($row) == 0) return "";
-	if (str_contains($decklink, "fabrary")) $dbId = $row[0];
+	if (IsFaBBazaarDeckLink($decklink)) $dbId = ExtractFaBBazaarDeckId($decklink);
+	else if (str_contains($decklink, "fabrary")) $dbId = $row[0];
 	else if (str_contains($decklink, "fabdb")) $dbId = $row[1];
-	else if (str_contains($decklink, "fabbazaar")) {
-		if (preg_match('/fabbazaar[^\/]*\/decks\/([a-zA-Z0-9_-]+)/', $decklink, $matches)) {
-			$dbId = $matches[1];
-		}
-	}
 	if ($dbId == "NULL") $dbId = "";
 	return $dbId;
 }
@@ -652,7 +649,10 @@ function logCompletedGameStats($conceded = false)
 	$ch = PrepareFaBInsightsRequest($gameResultID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic);
 	if ($ch) $curlHandles[] = $ch;
 
-	$bazaarHandle = PrepareFaBBazaarRequest($gameResultID, $p1DeckLink, $p2DeckLink, $p1deckbuilderID, $p2deckbuilderID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic);
+	$bazaarHandle = null;
+	if (IsFaBBazaarDeckLink($p1DeckLink) || IsFaBBazaarDeckLink($p2DeckLink)) {
+		$bazaarHandle = PrepareFaBBazaarRequest($gameResultID, $p1DeckLink, $p2DeckLink, $p1deckbuilderID, $p2deckbuilderID, $detailedResult1Json, $detailedResult2Json, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic);
+	}
 	$wasFaBBazaarResultsSent = ($bazaarHandle !== null);
 	if ($bazaarHandle) $curlHandles[] = $bazaarHandle;
 
@@ -762,8 +762,8 @@ function PrepareFaBBazaarRequest($gameID, $p1DeckLink, $p2DeckLink, $p1deckbuild
 {
 	global $gameName, $FaBBazaarKey;
 
-	$deckId = (str_contains($p1DeckLink, "fabbazaar") ? $p1deckbuilderID : null)
-		?: (str_contains($p2DeckLink, "fabbazaar") ? $p2deckbuilderID : null);
+	$deckId = (IsFaBBazaarDeckLink($p1DeckLink) ? $p1deckbuilderID : null)
+		?: (IsFaBBazaarDeckLink($p2DeckLink) ? $p2deckbuilderID : null);
 	if (empty($deckId)) return null; // Only send if a FaBBazaar deck is used
 
 	$p1TurnLog = &GetCardTurnLog(1);
