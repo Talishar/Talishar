@@ -4056,12 +4056,13 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   $char = &GetPlayerCharacter($player);
   if (SubtypeContains($cardID, "Evo") && ($char[0] == "professor_teklovossen" || $char[0] == "teklovossen_esteemed_magnate" || $char[0] == "teklovossen") && $char[1] < 3) return true;
   if (!$nonLimitedOnly && $char[0] == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
-  if ($CurrentTurnEffects->NumEffects() > 0) {
+  static $gateToIarathael = ["gate_to_iarathael"];
+  if ($CurrentTurnEffects->NumEffects() > 0 && $CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
     $banishCard = new BanishCard($player, $index);
-    if ($CurrentTurnEffects->HasAnySpecificEffect(["gate_to_iarathael"], $banishCard->UniqueID(), $player)) return true;
+    if ($CurrentTurnEffects->HasAnySpecificEffect($gateToIarathael, $banishCard->UniqueID(), $player)) return true;
   }
-  if (!$nonLimitedOnly && $CurrentTurnEffects->FindEffect("blasmophet_the_insatiable_hunger", $player)->Index() != -1 && HasBloodDebt($cardID) && (TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) return true;
-  if (!$nonLimitedOnly && $CurrentTurnEffects->FindEffect("embrace_sin_yellow-SIN", $player)->Index() != -1 && IsRunechant($cardID)) return true;
+  if (!$nonLimitedOnly && SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $player) && HasBloodDebt($cardID) && (TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) return true;
+  if (!$nonLimitedOnly && SearchCurrentTurnEffects("embrace_sin_yellow-SIN", $player) && IsRunechant($cardID)) return true;
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromBanish($mod, $nonLimitedOnly);
   switch ($cardID) {
@@ -4186,8 +4187,10 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
       "malice",
       "malice_domina_of_the_dead",
     ];
-    $DiscardCard = new DiscardCard($index, $player);
-    if ($CurrentTurnEffects->HasAnySpecificEffect($graveyardPlayEffectIDs, $DiscardCard->UniqueID())) return true;
+    if ($CurrentTurnEffects->HasAnyEffectID($graveyardPlayEffectIDs)) {
+      $DiscardCard = new DiscardCard($index, $player);
+      if ($CurrentTurnEffects->HasAnySpecificEffect($graveyardPlayEffectIDs, $DiscardCard->UniqueID())) return true;
+    }
   }
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromGraveyard($index);
