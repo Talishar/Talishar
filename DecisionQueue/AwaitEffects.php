@@ -333,6 +333,7 @@ function ResolveGoesWhereAwait($player) {
 function MZDestroyAwait($player) {
   global $dqVars;
   $MZInd = $dqVars["MZInd"] ?? "";
+  if ($MZInd ==  "") $MZInd = $dqVars["MZIndex"] ?? "";
   $effectController = $dqVars["effectController"] ?? "";
   $allArsenal = $dqVars["allArsenal"] ?? true;
   MZDestroy($player, $MZInd, $effectController, $allArsenal);

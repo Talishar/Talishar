@@ -174,11 +174,7 @@ class restless_magister_red extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish", 1);
-    AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
-    AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-    AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-", 1);
+    BanishFromHand($otherPlayer);
   }
 }
 
@@ -3636,5 +3632,215 @@ class restless_outlaw_red extends Card {
 
   function HasDecay() {
     return true;
+  }
+}
+
+class cullingsong_gloomblade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "cullingsong_gloomblade_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    BanishFromHand($defPlayer);
+  }
+
+  function SpecialName() {
+    return "Cullingsong Gloomblade";
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class sonata_dystopia_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sonata_dystopia_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect("$this->cardID-$resourcesPaid", $this->controller);
+    return "";
+  }
+
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
+
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+    if (TypeContains($cardID, "AA") && !IsActivated($cardID, $from)) {
+      $Effect = new CurrentEffect($index);
+      $amount = explode("-", $Effect->EffectID())[1] ?? 0;
+      return -$amount;
+    }
+    return 0;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TypeContains($CombatChain->AttackCard()->ID(), "AA");
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    // need to pass parameter instead of cardID to make sure the number of runechants follows through
+    if (!$check) AddLayer("TRIGGER", $this->controller, $parameter, $parameter, "EFFECTHITEFFECT");
+    return true;
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $CombatChain;
+    $amount = intval($mode);
+    if ($amount > 0) PlayAura("runechant", $this->controller, $amount, effectSource:$CombatChain->AttackCard()->ID());
+  }
+
+  function DynamicCost() {
+    $end = CountAura("runechant", $this->controller);
+    return implode(",", range(0, $end));
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CS_DynCostResolved;
+    $numRunechants = GetClassState($this->controller, $CS_DynCostResolved);
+    for ($i = 0; $i < $numRunechants; ++$i) {
+      Await($this->controller, "RunechantIndices", "indices", subsequent:$i > 0);
+      Await($this->controller, "ChooseMultiZone", context:"Destroy a runechant");
+      Await($this->controller, "MZDestroy", final: $i == $numRunechants-1);
+    }
+  }
+
+  function SpecialName() {
+    return "Sonata Dystopia";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+
+class runic_disposition_red extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runic_disposition_red";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("runechant", $this->controller, effectSource:$this->cardID);
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 2;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function SpecialName() {
+    return "Runic Disposition";
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
   }
 }

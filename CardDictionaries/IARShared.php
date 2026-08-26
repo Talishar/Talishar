@@ -1,5 +1,24 @@
 <?php
 
+function RunechantIndicesAwait($player) {
+	$inds = SearchAurasForCard("runechant", $player, false);
+	if ($inds != "") {
+		$MZInds = [];
+		$includedRunechants = [];
+		$inds = $inds != "" ? explode(",", $inds) : [];
+		foreach ($inds as $ind) {
+			$Aura = new AuraCard($ind, $player);
+			$choiceKey = "$player-" . $Aura->CardID();
+			if (!in_array($choiceKey, $includedRunechants)) {
+				$MZInds[] = "MYAURAS-$ind";
+				$includedRunechants[] = $choiceKey;
+			}
+		}
+		return implode(",", $MZInds);
+	}
+	return "PASS";
+}
+
 function Usurp($cardID, $player, $from) {
 	if (!IsActivated($cardID, $from)) {
 		$otherPlayer = 3 - $player;
@@ -121,4 +140,12 @@ function ControlsBlasmo($player) {
 			return true;
 	}
 	return false;
+}
+
+function BanishFromHand($player) {
+	AddDecisionQueue("FINDINDICES", $player, "HAND");
+	AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to banish", 1);
+	AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+	AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+	AddDecisionQueue("BANISHCARD", $player, "HAND,-", 1);
 }

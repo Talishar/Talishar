@@ -95,11 +95,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "mask_of_recurring_nightmares":
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card to banish", 1);
-      AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
-      AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-      AddDecisionQueue("BANISHCARD", $otherPlayer, "HAND,-", 1);
+      BanishFromHand($otherPlayer);
       return "";
     case "arousing_wave":
       AddPlayerHand("fang_strike", $currentPlayer, $cardID, created:true); //Fang Strike
