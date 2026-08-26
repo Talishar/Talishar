@@ -88,7 +88,8 @@ include "ParseGamestate.php";
 if (IsReplay() && $mode == 99) {
   $filename = "./Games/$gameName/replayCommands.txt";
   $commands = file($filename);
-  $pointer = intval(trim($commands[0] ?? "0")) + 1;
+  $currentPointer = intval(trim($commands[0] ?? "0"));
+  $pointer = $currentPointer + 1;
   $line = $commands[$pointer] ?? "";
   $params = explode(" ", $line);
   $playerID = $params[0] ?? "";
@@ -110,6 +111,17 @@ if (IsReplay() && $mode == 99) {
     $cardID = $params[3] ?? "";
     $chkCount = $params[4] ?? "0";
     $chkInput = isset($params[5]) ? array_map('trim', explode("|", $params[5])) : [];
+  }
+  global $filepath;
+  $snapshotName = "replayStep_$currentPointer.txt";
+  if (SaveGamestateSnapshot($filepath . $snapshotName)) {
+    $historyFilename = $filepath . "replayStepHistory.json";
+    $history = file_exists($historyFilename)
+      ? json_decode(file_get_contents($historyFilename), true)
+      : [];
+    if (!is_array($history)) $history = [];
+    $history[(string)$pointer] = $currentPointer;
+    file_put_contents($historyFilename, json_encode($history), LOCK_EX);
   }
   $commands[0] = "$pointer\r\n";
   file_put_contents($filename, $commands);
