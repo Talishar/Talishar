@@ -145,7 +145,9 @@ if($handler) {
   //Remove deck cards that don't belong
   $filteredCards = [];
   foreach ($response->deck->cards as $card) {
-    if (CardType($card) === "D") {
+    if (HasIncarnate($card)) {
+      continue; //Incarnate cards can never start in the deck
+    } else if (CardType($card) === "D") {
       $response->deck->demiHero[] = $card;
     } else {
       $filteredCards[] = $card;
@@ -163,7 +165,9 @@ if($handler) {
   //Remove deck cards that don't belong
   $filteredCardsSB = [];
   foreach ($response->deck->cardsSB as $card) {
-    if (CardType($card) === "D") {
+    if (HasIncarnate($card)) {
+      continue; //Incarnate cards can never start in the sideboard
+    } else if (CardType($card) === "D") {
       $response->deck->demiHero[] = $card;
     } else {
       $filteredCardsSB[] = $card;
