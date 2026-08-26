@@ -462,7 +462,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   for ($i=0; $i < $myBanishCount; $i += $banishPieces) {
-    if(PlayableFromOtherPlayerBanish($myBanish[$i], $myBanish[$i+1], $otherPlayer)) {
+    if(PlayableFromOtherPlayerBanish($myBanish[$i], $myBanish[$i+1], $otherPlayer, $i)) {
       $theirHandContents[] = JSONRenderedCard($myBanish[$i], borderColor:7);
     }
   }

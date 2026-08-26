@@ -791,16 +791,27 @@ class runechant_of_wrath_yellow extends Card {
 }
 
 class gate_to_iarathael extends Card {
-  private $targetSearch;
   function __construct($controller) {
     $this->cardID = "gate_to_iarathael";
     $this->controller = $controller;
-    $this->targetSearch = "MYBANISH:bloodDebtOnly=true;type=A&MYBANISH:bloodDebtOnly=true;type=AA";
+  }
+
+  private
+  function TargetSearch($remove=false) {
+    $search = "MYBANISH:bloodDebtOnly=true;type=A&MYBANISH:bloodDebtOnly=true;type=AA";
+    if (SearchCurrentTurnEffects("planar_chaos_red", $this->controller, $remove)) {
+      $search .= "&THEIRBANISH:bloodDebtOnly=true;type=A&THEIRBANISH:bloodDebtOnly=true;type=AA";
+    }
+    return $search;
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $uid = explode("-", $target)[1] ?? "-";
-    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+    $zone = explode("-", $target)[0];
+    if ($zone == "THEIRBANISH")
+      AddCurrentTurnEffect("$this->cardID-CHAOS", $this->controller, uniqueID:$uid);
+    else
+      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
     return "";
   }
 
@@ -813,13 +824,13 @@ class gate_to_iarathael extends Card {
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    SetTargets($this->controller, $this->cardID, $this->targetSearch);
+    SetTargets($this->controller, $this->cardID, $this->TargetSearch(true));
     $AuraCard = new AuraCard($index, $this->controller);
     $AuraCard->Destroy();
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    $targets = SearchMultizone($this->controller, $this->targetSearch);
+    $targets = SearchMultizone($this->controller, $this->TargetSearch());
     return $targets == "";
   }
 }
@@ -3889,9 +3900,9 @@ class countdown_to_extinction_red extends Card {
     $this->baseCard->HitEffect();
   }
 
-  function SpecialName() {
-    return "Countdown to Extinction";
-  }
+  // function SpecialName() {
+  //   return "Countdown to Extinction";
+  // }
 
   function SpecialCost() {
     return 3;
@@ -3934,9 +3945,9 @@ class countdown_to_extinction_yellow extends Card {
     $this->baseCard->HitEffect();
   }
 
-  function SpecialName() {
-    return "Countdown to Extinction";
-  }
+  // function SpecialName() {
+  //   return "Countdown to Extinction";
+  // }
 
   function SpecialCost() {
     return 3;
@@ -3983,9 +3994,9 @@ class countdown_to_extinction_blue extends Card {
     $this->baseCard->HitEffect();
   }
 
-  function SpecialName() {
-    return "Countdown to Extinction";
-  }
+  // function SpecialName() {
+  //   return "Countdown to Extinction";
+  // }
 
   function SpecialCost() {
     return 3;
@@ -4061,9 +4072,9 @@ class darkest_hour_red extends Card {
     return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
   }
 
-  function SpecialName() {
-    return "Darkest Hour";
-  }
+  // function SpecialName() {
+  //   return "Darkest Hour";
+  // }
 
   function SpecialCost() {
     return 2;
@@ -4114,9 +4125,9 @@ class darkest_hour_yellow extends Card {
     return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
   }
 
-  function SpecialName() {
-    return "Darkest Hour";
-  }
+  // function SpecialName() {
+  //   return "Darkest Hour";
+  // }
 
   function SpecialCost() {
     return 2;
@@ -4171,9 +4182,9 @@ class darkest_hour_blue extends Card {
     return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
   }
 
-  function SpecialName() {
-    return "Darkest Hour";
-  }
+  // function SpecialName() {
+  //   return "Darkest Hour";
+  // }
 
   function SpecialCost() {
     return 2;
@@ -4197,5 +4208,34 @@ class darkest_hour_blue extends Card {
 
   function HasBloodDebt() {
     return true;
+  }
+}
+
+class planar_chaos_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "planar_chaos_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    PlayAura("gate_to_iarathael", $this->controller);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Planar Chaos";
+  // }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
   }
 }

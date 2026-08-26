@@ -1719,7 +1719,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($from == "THEIRBANISH") {
     $theirBanish = new Banish($otherPlayer);
     $banishCard = $theirBanish->Card($index);
-    if (!(PlayableFromOtherPlayerBanish($banishCard->ID(), $banishCard->Modifier()))) return false;
+    if (!(PlayableFromOtherPlayerBanish($banishCard->ID(), $banishCard->Modifier(), $player, $index))) return false;
   } else if ($from == "THEIRARS") {
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
@@ -4149,15 +4149,20 @@ function AbilityPlayableFromBanish($cardID, $mod = "")
   }
 }
 
-function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "")
+function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "", $index = -1)
 {
-  global $currentPlayer;
+  global $currentPlayer, $CurrentTurnEffects;
   $mod = explode("-", $mod ?? "", 2)[0];
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
   if (isFaceDownMod($mod)) return false;
   if (ColorContains($cardID, 3, $otherPlayer) && SearchCurrentTurnEffectsAny(["nuu_alluring_desire", "nuu"], $player)) return true;
   if ($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
+  static $gateToIarathael = ["gate_to_iarathael-CHAOS"];
+  if ($CurrentTurnEffects->NumEffects() > 0 && $CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
+    $banishCard = new BanishCard($otherPlayer, $index);
+    if ($CurrentTurnEffects->HasAnySpecificEffect($gateToIarathael, $banishCard->UniqueID(), $player)) return true;
+  }
   else return false;
 }
 
