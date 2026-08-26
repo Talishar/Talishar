@@ -3456,7 +3456,7 @@ function HasTemper($cardID)
   static $generatedTemperCache = [];
   if (isset($generatedTemperCache[$cardID])) return $generatedTemperCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasTemper();
+  if ($card != "-") return $generatedTemperCache[$cardID] = $card->HasTemper();
   switch ($cardID) {
     case "trampling_trackers":
       return true;
@@ -3469,7 +3469,7 @@ function HasGuardwell($cardID)
   static $generatedGuardwellCache = [];
   if (isset($generatedGuardwellCache[$cardID])) return $generatedGuardwellCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasGuardwell();
+  if ($card != "-") return $generatedGuardwellCache[$cardID] = $card->HasGuardwell();
   return $generatedGuardwellCache[$cardID] = GeneratedHasGuardwell($cardID);
 }
 
@@ -3478,7 +3478,7 @@ function HasPiercing($cardID, $from = "")
   static $generatedPiercingCache = [];
   if (isset($generatedPiercingCache[$cardID])) return $generatedPiercingCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasPiercing();
+  if ($card != "-") return $generatedPiercingCache[$cardID] = $card->HasPiercing();
   switch ($cardID) {
      //Weapons with Piercing
     case "spiders_bite":
@@ -3517,7 +3517,7 @@ function HasTower($cardID)
   static $generatedTowerCache = [];
   if (isset($generatedTowerCache[$cardID])) return $generatedTowerCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasTower();
+  if ($card != "-") return $generatedTowerCache[$cardID] = $card->HasTower();
   return $generatedTowerCache[$cardID] = GeneratedHasTower($cardID);
 }
 
@@ -3557,7 +3557,7 @@ function HasBeatChest($cardID)
   static $generatedBeatChestCache = [];
   if (isset($generatedBeatChestCache[$cardID])) return $generatedBeatChestCache[$cardID];
   $card = GetClass($cardID, 1);
-  if ($card != "-") return $card->HasBeatChest();
+  if ($card != "-") return $generatedBeatChestCache[$cardID] = $card->HasBeatChest();
   return $generatedBeatChestCache[$cardID] = GeneratedHasBeatChest($cardID);
 }
 
@@ -3878,7 +3878,7 @@ function HasCombo($cardID)
   static $generatedComboCache = [];
   if (isset($generatedComboCache[$cardID])) return $generatedComboCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasCombo();
+  if ($card != "-") return $generatedComboCache[$cardID] = $card->HasCombo();
   return $generatedComboCache[$cardID] = GeneratedHasCombo($cardID);
 }
 
@@ -4034,7 +4034,7 @@ function HasBloodDebt($cardID)
   static $generatedBloodDebtCache = [];
   if (isset($generatedBloodDebtCache[$cardID])) return $generatedBloodDebtCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasBloodDebt();
+  if ($card != "-") return $generatedBloodDebtCache[$cardID] = $card->HasBloodDebt();
   return $generatedBloodDebtCache[$cardID] = GeneratedHasBloodDebt($cardID);
 }
 
@@ -4460,7 +4460,7 @@ function HasStealth($cardID)
   static $generatedStealthCache = [];
   if (isset($generatedStealthCache[$cardID])) return $generatedStealthCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasStealth();
+  if ($card != "-") return $generatedStealthCache[$cardID] = $card->HasStealth();
   return $generatedStealthCache[$cardID] = GeneratedHasStealth($cardID);
 }
 

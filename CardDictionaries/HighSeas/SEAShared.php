@@ -1342,7 +1342,7 @@ function HasWateryGrave($cardID): bool
   static $generatedWateryGraveCache = [];
   if (isset($generatedWateryGraveCache[$cardID])) return $generatedWateryGraveCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasWateryGrave();
+  if ($card != "-") return $generatedWateryGraveCache[$cardID] = $card->HasWateryGrave();
   return $generatedWateryGraveCache[$cardID] = GeneratedHasWateryGrave($cardID);
 }
 
@@ -1351,7 +1351,7 @@ function HasHighTide($cardID): bool
   static $generatedHighTideCache = [];
   if (isset($generatedHighTideCache[$cardID])) return $generatedHighTideCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasHighTide();
+  if ($card != "-") return $generatedHighTideCache[$cardID] = $card->HasHighTide();
   return $generatedHighTideCache[$cardID] = GeneratedHasHighTide($cardID);
 }
 
