@@ -78,7 +78,7 @@ function UsurpAwait($player) {
 function HasIncarnate($cardID) {
 	$card = GetClass($cardID, 0);
 	if ($card != "-") return $card->HasIncarnate();
-	return false;
+	return GeneratedHasIncarnate($cardID);
 }
 
 function CheckUnique($player) {

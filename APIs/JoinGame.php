@@ -1119,6 +1119,8 @@ function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modul
   
   // uncomment on 4/1
   // $id = $id == "titanium_bauble_blue" && !str_contains($format, "comp") ? "fangs_a_lot_blue" : $id;
+  if (HasIncarnate($id)) return;
+
   $cardName = CardName($id);
   if ($cardName == "" || isUnimplemented($id)) {
       echo "$id - $cardName";
