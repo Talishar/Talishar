@@ -1346,6 +1346,12 @@ function SearchCurrentTurnEffectsForPartialId($partial)
   return false;
 }
 
+function CurrentTurnEffectHasUniqueID($uniqueID)
+{
+  if ($uniqueID === null || $uniqueID === "" || $uniqueID === "-" || $uniqueID === -1) return false;
+  return SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1;
+}
+
 function SearchUniqueIDForCurrentTurnEffects($index)
 {
   global $currentTurnEffects;

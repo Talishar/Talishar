@@ -1615,6 +1615,7 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
       KatsuHit();
       break;
     case "refraction_bolters":
+      if (DoesAttackHaveGoAgain()) break; //the attack already has go again, no reason to ask
       $index = FindCharacterIndex($player, $cardID);
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_".Cardlink($cardID, $cardID)."_to_get_Go_Again");
       AddDecisionQueue("NOPASS", $player, "-", 1);

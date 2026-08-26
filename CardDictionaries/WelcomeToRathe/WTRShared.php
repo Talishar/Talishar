@@ -521,9 +521,11 @@
   {
     global $mainPlayer;
     if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer) && TypeContains($cardID, "AA")) return true;
+    static $generatedCrushCache = [];
+    if (isset($generatedCrushCache[$cardID])) return $generatedCrushCache[$cardID];
     $card = GetClass($cardID, $mainPlayer);
     if ($card != "-") return $card->HasCrush();
-    return GeneratedHasCrush($cardID);
+    return $generatedCrushCache[$cardID] = GeneratedHasCrush($cardID);
   }
 
   function Mangle($player="-", $target="-")

@@ -318,7 +318,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //Choose Cardback
   $MyCardBack = GetCardBack($viewerSlotPlayerID);
   $TheirCardBack = GetCardBack($otherPlayer);
-  $defCardBack = GetCardBack($defPlayer);
+  $defCardBack = $defPlayer == $viewerSlotPlayerID ? $MyCardBack : $TheirCardBack;
   $borderColor = 0;
 
   $isColorblindMode = $playerID == 3
@@ -603,7 +603,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $weaponPowerModifiers = [];
       $powerCounters = $CharacterCard->NumPowerCounters();
       if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0 ||
-        SearchCurrentTurnEffectsForPartialId($CharacterCard->UniqueID() ?? "-")) $border = 5;
+        CurrentTurnEffectHasUniqueID($CharacterCard->UniqueID() ?? "-")) $border = 5;
     }
     if($i == 0 && $otherPlayer == $mainPlayer) {
       $heroCard = $CharacterCard->CardID();
@@ -847,7 +847,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $weaponPowerModifiers = [];
       if (!$playable) {
           if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $playerID) > 0 ||
-              SearchCurrentTurnEffectsForPartialId($myCharacter[$i + 11] ?? "-")) {
+              CurrentTurnEffectHasUniqueID($myCharacter[$i + 11] ?? "-")) {
               $border = 5;
           }
 
