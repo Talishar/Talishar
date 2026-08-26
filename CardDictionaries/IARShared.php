@@ -150,9 +150,8 @@ function BanishFromHand($player) {
 	AddDecisionQueue("BANISHCARD", $player, "HAND,-", 1);
 }
 
-function BanishFromOppsArsenal($player, $cardID) {
-	$otherPlayer = $player == 1 ? 2 : 1;
-    Await($otherPlayer, "MultiZoneIndices", search:"MYARS", subsequent:0);
-    Await($otherPlayer, "ChooseMultiZone", context:"Banish a card from your arsenal");
-    Await($otherPlayer, "MZRemoveAndBanish", banishedBy:$cardID, final:true);
+function BanishFromArsenal($player, $cardID) {
+    Await($player, "MultiZoneIndices", search:"MYARS", subsequent:0);
+    Await($player, "ChooseMultiZone", context:"Banish a card from your arsenal");
+    Await($player, "MZRemoveAndBanish", banishedBy:$cardID, final:true);
 }

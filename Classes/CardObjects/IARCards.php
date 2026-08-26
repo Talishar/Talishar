@@ -195,7 +195,8 @@ class restless_quartermaster_red extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    BanishFromOppsArsenal($this->controller, $this->cardID);
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    BanishFromArsenal($otherPlayer, $this->cardID);
   }
 }
 
@@ -4269,7 +4270,8 @@ class plundersong_gloomblade_red extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    BanishFromOppsArsenal($this->controller, $this->cardID);
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    BanishFromArsenal($otherPlayer, $this->cardID);
   }
 
   function SpecialName() {
