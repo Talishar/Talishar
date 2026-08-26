@@ -11,8 +11,10 @@ class DECAY extends card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $Allies = new Allies($this->controller);
     $DecayingAlly = $Allies->FindCardUID($target);
-    $DecayingAlly->AddLifeCounters(-1);
-    WriteLog(CardLink($DecayingAlly->CardID()) . " decays!");
+    if ($DecayingAlly->Index() != -1) {
+      $DecayingAlly->AddLifeCounters(-1);
+      WriteLog(CardLink($DecayingAlly->CardID()) . " decays!");
+    }
   }
 }
 
