@@ -203,7 +203,7 @@ function SearchInner(
     "ENDTURN" => 1, "RESUMETURN" => 1, "FINALIZECHAINLINK" => 1, "DEFENDSTEP" => 1,
     "ENDPHASE" => 1, "ATTACKSTEP" => 1, "RESOLUTIONSTEP" => 1, "CLOSINGCHAIN" => 1,
     "STARTTURN" => 1, "PHANTASM" => 1, "MIRAGE" => 1, "BLOODDEBT" => 1,
-    "SPECTRA" => 1, "FRAGMENT" => 1,
+    "SPECTRA" => 1, "FRAGMENT" => 1, "DECAY" => 1
   ];
 
   $arrayCount = count($array);
@@ -341,6 +341,7 @@ function isAdministrativeStep($cardID)
     case "BLOODDEBT":
     case "SPECTRA":
     case "FRAGMENT":
+    case "DECAY":
       return true;
     default:
       return false;
