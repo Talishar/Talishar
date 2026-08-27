@@ -15,7 +15,7 @@
         Draw($currentPlayer);
         $card = DiscardRandom();
         if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
-          MZMoveCard($currentPlayer, "MYDECK:bloodDebtOnly=true", "MYBANISH,DECK,-", may:true);
+          MZMoveCard($currentPlayer, "MYDECK:bloodDebtOnly=true", "MYBANISH,DECK,-,$cardID,$currentPlayer", may:true);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
         return "";
