@@ -56,7 +56,7 @@ function GetAllAltArtVariations(): array
     "boneyard_marauder_red=FAB023-T", "boo_resident_spook_yellow=PEN156-T", "booze_blue=LGS433-T", "boulder_trap_yellow=LGS138-T",
     "braveforge_bracers=MPW011-T", "bravo=MPG529-T", "bravo_flattering_showman=BDD001-T", "bravo_flattering_showman=HER154-T",
     "bravo_star_of_the_show=EVR417-T", "break_of_dawn_blue=LGS171-T", "break_of_dawn_red=LGS169-T", "break_of_dawn_yellow=LGS170-T",
-    "breaking_point_red=FAB091-T", "briar_warden_of_thorns=ROS254-T", "brimming_blade_red=GEM164-T",
+    "breaking_point_red=FAB091-T", "brimming_blade_red=GEM164-T",
     "brothers_in_arms_blue=FAB093-T", "browbeat_blue=OMN213-T",
     "bubba_lubba_run_aground_yellow=PEN157-T", "bubble_to_the_surface_red=HNT154-T", "buckwild_red=GEM101-T", "bully_tactics_red=FAB380-T",
     "burgeoning_blue=LGS071-T", "burgeoning_red=LGS069-T", "burgeoning_yellow=LGS070-T", "call_to_the_grave_blue=ANQ019-T",
