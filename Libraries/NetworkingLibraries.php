@@ -30,6 +30,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
   global $roguelikeGameID, $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects;
   global $p1MetafyTiers, $p2MetafyTiers;
+  global $CS_OriginalHero;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
     case 0:
@@ -886,6 +887,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $commands = file($filename);
           $commands[0] = "0\r\n";
           file_put_contents($filename, $commands);
+          file_put_contents($filepath . "replayStepHistory.json", "{}", LOCK_EX);
           RevertGamestate($startBackup);
           WriteLog("Returning to the start of the replay", highlight: true);
           break;
@@ -920,6 +922,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           // $pointer += 1;
           $commands[0] = "$pointer\r\n";
           file_put_contents($filename, $commands);
+          file_put_contents($filepath . "replayStepHistory.json", "{}", LOCK_EX);
         }
         else {
           WriteLog("Could not find the turn in the command file!", highlight: true);
@@ -929,6 +932,36 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         RevertGamestate($backupFname);
         WriteLog("Moving to player $turnPlayer's turn $turnNumber", highlight: true);
       }
+      break;
+    case 10023: // Step back one input while reviewing a replay
+      if (!IsReplay()) break;
+      global $filepath;
+      $commandsFilename = $filepath . "replayCommands.txt";
+      $historyFilename = $filepath . "replayStepHistory.json";
+      if (!file_exists($commandsFilename) || !file_exists($historyFilename)) {
+        $skipWriteGamestate = true;
+        break;
+      }
+      $commands = file($commandsFilename);
+      $currentPointer = intval(trim($commands[0] ?? "0"));
+      $history = json_decode(file_get_contents($historyFilename), true);
+      $previousPointer = is_array($history)
+        ? ($history[(string)$currentPointer] ?? null)
+        : null;
+      if (!is_int($previousPointer) && !ctype_digit((string)$previousPointer)) {
+        $skipWriteGamestate = true;
+        break;
+      }
+      $previousPointer = intval($previousPointer);
+      $snapshotName = "replayStep_$previousPointer.txt";
+      if (!file_exists($filepath . $snapshotName)) {
+        $skipWriteGamestate = true;
+        break;
+      }
+      $commands[0] = "$previousPointer\r\n";
+      file_put_contents($commandsFilename, $commands, LOCK_EX);
+      RevertGamestate($snapshotName);
+      $skipWriteGamestate = true;
       break;
     case 10019:
       global $AIHasInfiniteHP;
@@ -1078,8 +1111,16 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!is_dir($replayPath)) mkdir($replayPath, 0777, true);
       copy("$gamePath/origGamestate.txt", "$replayPath/origGamestate.txt");
       copy("$gamePath/commandfile.txt", "$replayPath/commandfile.txt");
-      $p1Hero = GetPlayerCharacter(1)[0] ?? "";
-      $p2Hero = GetPlayerCharacter(2)[0] ?? "";
+      $p1Character = &GetPlayerCharacter(1);
+      $p2Character = &GetPlayerCharacter(2);
+      $p1OriginalHero = GetClassState(1, $CS_OriginalHero);
+      $p2OriginalHero = GetClassState(2, $CS_OriginalHero);
+      $p1Hero = $p1OriginalHero !== "" && $p1OriginalHero !== "-"
+        ? $p1OriginalHero
+        : ($p1Character[0] ?? "");
+      $p2Hero = $p2OriginalHero !== "" && $p2OriginalHero !== "-"
+        ? $p2OriginalHero
+        : ($p2Character[0] ?? "");
       $replayMetadata = [
         "p1DisplayName" => trim($gameFile[42] ?? ""),
         "p2DisplayName" => trim($gameFile[43] ?? ""),
