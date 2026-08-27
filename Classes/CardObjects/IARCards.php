@@ -3856,6 +3856,158 @@ class runic_disposition_red extends Card {
   }
 }
 
+class runic_disposition_yellow extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runic_disposition_yellow";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("runechant", $this->controller, effectSource:$this->cardID);
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 2;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function SpecialName() {
+    return "Runic Disposition";
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+}
+
+class runic_disposition_blue extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runic_disposition_blue";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("runechant", $this->controller, effectSource:$this->cardID);
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 2;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function SpecialName() {
+    return "Runic Disposition";
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+}
+
 class countdown_to_extinction extends BaseCard {
   function PlayAbility() {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
@@ -3898,9 +4050,9 @@ class countdown_to_extinction_red extends Card {
     $this->baseCard->HitEffect();
   }
 
-  // function SpecialName() {
-  //   return "Countdown to Extinction";
-  // }
+  function SpecialName() {
+    return "Countdown to Extinction";
+  }
 
   function SpecialCost() {
     return 3;
@@ -3943,9 +4095,9 @@ class countdown_to_extinction_yellow extends Card {
     $this->baseCard->HitEffect();
   }
 
-  // function SpecialName() {
-  //   return "Countdown to Extinction";
-  // }
+  function SpecialName() {
+    return "Countdown to Extinction";
+  }
 
   function SpecialCost() {
     return 3;
@@ -3992,9 +4144,9 @@ class countdown_to_extinction_blue extends Card {
     $this->baseCard->HitEffect();
   }
 
-  // function SpecialName() {
-  //   return "Countdown to Extinction";
-  // }
+  function SpecialName() {
+    return "Countdown to Extinction";
+  }
 
   function SpecialCost() {
     return 3;
@@ -4070,9 +4222,9 @@ class darkest_hour_red extends Card {
     return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
   }
 
-  // function SpecialName() {
-  //   return "Darkest Hour";
-  // }
+  function SpecialName() {
+    return "Darkest Hour";
+  }
 
   function SpecialCost() {
     return 2;
@@ -4123,9 +4275,9 @@ class darkest_hour_yellow extends Card {
     return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
   }
 
-  // function SpecialName() {
-  //   return "Darkest Hour";
-  // }
+  function SpecialName() {
+    return "Darkest Hour";
+  }
 
   function SpecialCost() {
     return 2;
@@ -4180,9 +4332,9 @@ class darkest_hour_blue extends Card {
     return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
   }
 
-  // function SpecialName() {
-  //   return "Darkest Hour";
-  // }
+  function SpecialName() {
+    return "Darkest Hour";
+  }
 
   function SpecialCost() {
     return 2;
@@ -4221,9 +4373,9 @@ class planar_chaos_red extends Card {
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Planar Chaos";
-  // }
+  function SpecialName() {
+    return "Planar Chaos";
+  }
 
   function SpecialType() {
     return "A";
