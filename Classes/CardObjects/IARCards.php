@@ -4446,3 +4446,59 @@ class plundersong_gloomblade_red extends Card {
     return true;
   }
 }
+
+class dimenxxional_ferryman_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "dimenxxional_ferryman_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $search = "MYBANISH:type=A;bloodDebtOnly=true&MYBANISH:type=AA;bloodDebtOnly=true";
+    $choices = MultiZoneIndices($this->controller, $search);
+    if (SearchCount($choices) > 0) {
+      Await($this->controller, "ChooseMultiZone", indices:$choices, context: "Put a blood debt action on the bottom of your deck", subsequent:0);
+      Await($this->controller, $this->cardID, final:true);
+    }
+    else
+      Await($this->controller, $this->cardID, subsequent:0, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $BanishCard = MZIndexToObject($this->controller, $choice);
+    if ($BanishCard != "") {
+      $cards = "$this->cardID," . $BanishCard->CardID();
+      $BanishCard->Remove();
+      AddDecisionQueue("CHOOSEBOTTOM", $this->controller, $cards);
+    }
+    else
+      AddBottomDeck($this->cardID, $this->controller, "LAYERS");
+  }
+
+  function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
+    return "-";
+  }
+
+  // function SpecialName() {
+  //   return "Dimenxxional Ferryman";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}

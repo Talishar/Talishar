@@ -90,6 +90,11 @@ class BanishCard {
       return $this->banish[$this->index] ?? "-";
     }
 
+    function CardID() //alias for ID
+    {
+      return $this->ID();
+    }
+
     function Modifier()
     {
       $key = $this->index + 1;

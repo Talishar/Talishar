@@ -713,6 +713,8 @@ function GetZoneObject($player,  $zone) {
     "LAYER" => $Stack,
     "MYDISCARD" => new Discard($player),
     "THEIRDISCARD" => new Discard($otherPlayer),
+    "MYBANISH" => new Banish($player),
+    "THEIRBANISH" => new Banish($otherPlayer),
     "MYAURAS" => new Auras($player),
     "THEIRAURAS" => new Auras($otherPlayer),
     "MYCHAR" => new PlayerCharacter($player),
