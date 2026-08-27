@@ -3738,7 +3738,7 @@ class sonata_dystopia_blue extends Card {
 
   function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
     // need to pass parameter instead of cardID to make sure the number of runechants follows through
-    if (!$check) AddLayer("TRIGGER", $this->controller, $parameter, $parameter, "EFFECTHITEFFECT");
+    if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $parameter, "EFFECTHITEFFECT");
     return true;
   }
 
