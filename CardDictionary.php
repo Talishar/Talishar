@@ -4026,10 +4026,11 @@ function ComboActive($cardID = "")
   return false;
 }
 
-function HasBloodDebt($cardID)
+function HasBloodDebt($cardID, $player="-")
 {
   global $currentPlayer;
-  $char = GetPlayerCharacter($currentPlayer);
+  $player = $player == "-" ? $currentPlayer : $player;
+  $char = GetPlayerCharacter($player);
   if ($char[0] == "levia_redeemed") return false;
   static $generatedBloodDebtCache = [];
   if (isset($generatedBloodDebtCache[$cardID])) return $generatedBloodDebtCache[$cardID];

@@ -2381,7 +2381,7 @@ function DoesAttackHaveGoAgain()
   $characterCount = count($character);
   $characterPieces = CharacterPieces();
   $isFirstStealthAttack = HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1;
-  $isFirstBloodDebtAttack = HasBloodDebt($attackID) && TypeContains($attackID, "AA") && GetClassState($mainPlayer, $CS_NumBloodDebtAttacksPlayed) == 1;
+  $isFirstBloodDebtAttack = HasBloodDebt($attackID, $mainPlayer) && TypeContains($attackID, "AA") && GetClassState($mainPlayer, $CS_NumBloodDebtAttacksPlayed) == 1;
   for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
