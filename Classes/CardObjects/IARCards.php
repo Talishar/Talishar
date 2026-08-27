@@ -2575,9 +2575,9 @@ class embrace_sin extends BaseCard {
     return $parameter == "BUFF";
   }
 
-  function PlayCardEffectAbility($cardID, $index, &$remove) {
+  function PlayCardEffectAbility($cardID, $index, &$remove, $from) {
     $Effect = new CurrentEffect($index);
-    if (IsRunechant($cardID) && str_contains($Effect->EffectID(), "SIN"))
+    if (IsRunechant($cardID) && str_contains($Effect->EffectID(), "SIN") && $from == "BANISH")
       $remove = true;
   }
 }
@@ -2603,7 +2603,7 @@ class embrace_sin_yellow extends Card {
   }
 
   function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
-    $this->baseCard->PlayCardEffectAbility($cardID, $index, $remove);
+    $this->baseCard->PlayCardEffectAbility($cardID, $index, $remove, $from);
   }
 }
 
