@@ -4373,9 +4373,9 @@ class planar_chaos_red extends Card {
     return "";
   }
 
-  function SpecialName() {
-    return "Planar Chaos";
-  }
+  // function SpecialName() {
+  //   return "Planar Chaos";
+  // }
 
   function SpecialType() {
     return "A";
