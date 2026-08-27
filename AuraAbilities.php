@@ -143,7 +143,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       AddLayer("TRIGGER", $effectAgent, $Hero->CardID());
   }
   if ($cardID == "gate_to_iarathael")
-    IncrementClassState($effectAgent, $CS_IARGatesMadeorUsed);
+    IncrementClassState($effectAgent, $CS_IARGatesMadeorUsed, $number);
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->EntersArenaAbility();
   if ($isToken)
