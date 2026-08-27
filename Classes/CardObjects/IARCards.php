@@ -4502,3 +4502,61 @@ class dimenxxional_ferryman_blue extends Card {
     return "SHADOW";
   }
 }
+
+class echoing_trap_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "echoing_trap_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $CS_NamesOfCardsPlayed, $mainPlayer, $CombatChain;
+    if(GetClassState($mainPlayer, $CS_NamesOfCardsPlayed) == "-") return;
+    $cardsPlayed = explode(",", GetClassState($mainPlayer, $CS_NamesOfCardsPlayed) ?? "");
+    $echoCount = 0;
+    $attackingCard = $CombatChain->AttackCard()->ID();
+    foreach ($cardsPlayed as $card) {
+      if (CardNameContains($attackingCard, CardName($card), $mainPlayer))
+        ++$echoCount;
+    }
+    if ($echoCount >= 2)
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $mainPlayer;
+    PummelHit($mainPlayer);
+  }
+
+  // function SpecialName() {
+  //   return "Echoing Trap";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return -1;
+  }
+
+  function SpecialType() {
+    return "B";
+  }
+
+  function SpecialSubType() {
+    return "Trap";
+  }
+
+  function SpecialClass() {
+    return "RANGER";
+  }
+
+  function HasAmbush() {
+    return true;
+  }
+}
