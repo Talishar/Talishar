@@ -1165,7 +1165,7 @@ class scorpio_comet_tail extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     $Weapon = new CharacterCard($index, $this->controller);
-    $Weapon->Tap();
+    $Weapon->TapForCost();
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
