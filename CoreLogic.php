@@ -3296,7 +3296,6 @@ function SelfCostModifier($cardID, $from)
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->SelfCostModifier($from);
   switch ($cardID) {
-    case "arknight_ascendancy_red":
     case "ninth_blade_of_the_blood_oath_yellow":
     case "reduce_to_runechant_red":
     case "reduce_to_runechant_yellow":

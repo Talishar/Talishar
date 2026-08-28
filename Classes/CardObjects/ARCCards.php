@@ -266,17 +266,34 @@ class aether_sink_yellow extends Card {
 // }
 
 
-// class arknight_ascendancy_red extends Card {
+class arknight_ascendancy_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "arknight_ascendancy_red";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "arknight_ascendancy_red";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function HasDominate() {
+		return true;
+	}
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function SelfCostModifier($from) {
+		return -1 * NumRunechants($this->controller);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		global $CCS_DamageDealt;
+		$damageDone = GetCombatChainState($CCS_DamageDealt);
+        PlayAura("runechant", $this->controller, $damageDone);
+	}
+}
 
 
 // class art_of_war_yellow extends Card {

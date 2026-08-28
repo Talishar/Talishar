@@ -64,10 +64,6 @@
       case "nebula_blade":
         PlayAura("runechant", $mainPlayer);
         break;
-      case "arknight_ascendancy_red":
-        $damageDone = GetCombatChainState($CCS_DamageDealt);
-        PlayAura("runechant", $mainPlayer, $damageDone);
-        break;
       default: break;
     }
     return "";

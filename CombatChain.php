@@ -1506,7 +1506,6 @@ function IsDominateActive()
       case "demolition_crew_red":
       case "demolition_crew_yellow":
       case "demolition_crew_blue":
-      case "arknight_ascendancy_red":
       case "herald_of_erudition_yellow":
       case "herald_of_tenacity_red":
       case "herald_of_tenacity_yellow":

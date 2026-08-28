@@ -796,7 +796,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "red_in_the_ledger_red"=>true,"endless_arrow_red"=>true,
     "hamstring_shot_red"=>true,"hamstring_shot_yellow"=>true,"hamstring_shot_blue"=>true,
     "salvage_shot_red"=>true,"salvage_shot_yellow"=>true,"salvage_shot_blue"=>true,
-    "nebula_blade"=>true,"arknight_ascendancy_red"=>true,
+    "nebula_blade"=>true,
     "life_for_a_life_red"=>true,"life_for_a_life_yellow"=>true,"life_for_a_life_blue"=>true,
     "pursuit_of_knowledge_blue"=>true,
     "cadaverous_contraband_red"=>true,"cadaverous_contraband_yellow"=>true,"cadaverous_contraband_blue"=>true,

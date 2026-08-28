@@ -1655,7 +1655,6 @@ function ResolveChainLink()
         if (isset($allies[$index + 2])) {
           $allyHealthBefore = max(0, intval($allies[$index + 2]));
           $allies[$index + 2] = intval($allies[$index + 2]) - (int)$allyDamageThreatened;
-          IncrementCombatChainState($CCS_DamageDealt, $allyDamageThreatened);
           if ($allyDamageThreatened > 0) {
             LogDamagePreventedStats($defPlayer, $allyDamageThreatened);
             AllyDamageTakenAbilities($defPlayer, $index);
@@ -1705,6 +1704,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   }
   if ($wasHit) {
     LogPlayCardStats($mainPlayer, $cardID, "CC", "HIT");
+    WriteLog("HERE! Incrementing damagedealt by $damageDone main hit");
     IncrementCombatChainState($CCS_DamageDealt, $damageDone);
     IncrementClassState($mainPlayer, $CS_HitCounter);
     // Handle weapon hit effects
