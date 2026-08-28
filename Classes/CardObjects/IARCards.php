@@ -4776,3 +4776,73 @@ class stoke_vengeance_red extends Card {
     return "NINJA";
   }
 }
+
+class chains_of_consecration_yellow extends Card {
+  private $search;
+  function __construct($controller) {
+    $this->cardID = "chains_of_consecration_yellow";
+    $this->controller = $controller;
+    $this->search = "THEIRALLY&MYALLY";
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $targetPlayer = str_contains($target, "THEIR") ? $this->controller : $otherPlayer;
+    $uid = explode("-", $target)[1] ?? "-";
+    if ($uid != "-")
+      AddCurrentTurnEffect($this->cardID, $targetPlayer, uniqueID:$uid);
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return MultiZoneIndices($this->controller, $this->search) == "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetTargets($this->controller, $this->cardID, $this->search);
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    global $CS_ResolvingLayerUniqueID, $CombatChain;
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $Effect = new CurrentEffect($index);
+    if (!$preventable) return 0;
+    if ($amount && $CombatChain->HasCurrentLink() && $source == $CombatChain->AttackCard()->ID() && $type == "COMBAT") { //this block is mostly for displaying prevention
+      if ($CombatChain->AttackCard()->UniqueID() == $Effect->AppliestoUniqueID() || $CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID())
+        return $damage;
+    }
+    if (GetClassState(1, $CS_ResolvingLayerUniqueID) == $Effect->AppliestoUniqueID()) {
+      if (!$amount) {
+        $TheirAllies = new Allies($otherPlayer);
+        $AllyCard = $TheirAllies->FindCardUID($Effect->AppliestoUniqueID());
+        // potential issue here if this destroys an ally before the damage step
+        if (TalentContains($AllyCard->CardID(), "SHADOW", $otherPlayer)) {
+          WriteLog(CardLink($AllyCard->CardID()) . " was consecrated!");
+          $AllyCard->Destroy(toBanished:true, skipClose:true, mod:"DOWN");
+        }
+      }
+      return $damage;
+    }
+    return 0;
+  }
+
+  function SpecialName() {
+    return "Chains of Consecration";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialTalent() {
+    return "LIGHT";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+}

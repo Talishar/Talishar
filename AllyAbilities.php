@@ -81,7 +81,7 @@ function CheckAllyDeath($player)
   }
 }
 
-function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false)
+function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false, $skipClose = false, $mod = "-")
 {
   if ($index < 0) return "";
   $allies = &GetAllies($player);
@@ -91,11 +91,11 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   $cardID = $allies[$index];
   RemoveAllyEffects($player, $cardID, $uniqueID);
-  if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep()) {
+  if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep() && !$skipClose) {
     CloseCombatChain();
   }
-  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished);
-  AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished);
+  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished, mod:$mod);
+  AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished, mod:$mod);
   array_splice($allies, $index, $allyPieces);
   return $cardID;
 }
@@ -107,7 +107,7 @@ function RemoveAllyEffects($player, $cardID, $uniqueID)
   if ($uniqueID == SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, true);
 }
 
-function AllyAddGraveyard($player, $cardID, $toBanished=false)
+function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-")
 {
   if ($cardID == "-") return;
   if (!TypeContains($cardID, "T")) {
@@ -141,7 +141,7 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false)
       default => $cardID
     };
     if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player);
-    else BanishCardForPlayer($id, $player, "PLAY");
+    else BanishCardForPlayer($id, $player, "PLAY", $mod);
   }
 }
 

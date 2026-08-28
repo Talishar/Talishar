@@ -162,7 +162,7 @@ class AllyCard {
     return $this->pieces[$this->index + 14] ?? "-";
   }
 
-  public function Destroy(bool $skipDestroy = false, bool $fromCombat = false, string $uniqueID = "", bool $toBanished = false): void {
-    DestroyAlly($this->controller, $this->index, $skipDestroy, $fromCombat, $uniqueID, $toBanished);
+  public function Destroy(bool $skipDestroy = false, bool $fromCombat = false, string $uniqueID = "", bool $toBanished = false, $skipClose = false, $mod = "-"): void {
+    DestroyAlly($this->controller, $this->index, $skipDestroy, $fromCombat, $uniqueID, $toBanished, $skipClose, $mod);
   }
 }
