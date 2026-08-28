@@ -72,9 +72,7 @@ $CID_TekloLegs = "teklo_base_legs";
 
 function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $index=-1)
 {
-  global $CS_AdditionalCosts, $currentPlayer, $Stack;
   $cardID = BlindCard($cardID, true);
-  $controller = $controller == "-" ? $currentPlayer : $controller;
 
   static $adminCards = [
     "TRIGGER" => 1, "-" => 1, "FINALIZECHAINLINK" => 1, "RESOLUTIONSTEP" => 1,
@@ -99,11 +97,15 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
   if (isset($meldCards[$cardID])) {
     if ($from == "DECK" || $from == "DISCARD" || $from == "BANISH" || $from == "HAND" || $from == "ARS" || $from == "CC") return "A,I";
     if ($index == -1) {
-      if (function_exists("GetClassState"))
+      if (function_exists("GetClassState")) {
+        global $CS_AdditionalCosts, $currentPlayer;
+        $controller = $controller == "-" ? $currentPlayer : $controller;
         $additionalCosts = $additionalCosts == "-" ? GetClassState($controller, $CS_AdditionalCosts) : $additionalCosts;
+      }
       else $additionalCosts = "-";
     }
     else {
+      global $Stack;
       $Layer = $Stack->Card($index);
       $additionalCosts = $Layer->AdditionalCosts();
     }
@@ -1685,17 +1687,15 @@ function GetResolvedAbilityName($cardID, $from = "-"): string
 
 function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $player = "", $pitchRestriction = ""): bool
 {
-  global $currentPlayer, $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
-  global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer, $CCS_NumUsedInReactions;
-  global $CombatChain, $combatChain, $layers, $CCS_CachedTotalPower;
+  global $currentPlayer;
+  $restriction = "";
+  if ($phase == "P") {
+    if ($from != "HAND") return false;
+  }
+  elseif ($phase == "B" && ($from == "BANISH" || $from == "THEIRBANISH")) return false;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
-  $myArsenal = &GetArsenal($player);
-  $myAllies = &GetAllies($player);
-  $myAuras = &GetAuras($player);
   $character = &GetPlayerCharacter($player);
-  $myHand = &GetHand($player);
-  $restriction = "";
   $cardType = CardType($cardID, $from, $currentPlayer);
   $subtype = CardSubType($cardID);
 
@@ -1706,9 +1706,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $abilityTypes = GetAbilityTypes($cardID, $index, $from);
   // modal card where none of the modes are live
   if ($abilityTypes != "" && $phase != "P" && $phase != "B" && ($abilityNames ??= GetAbilityNames($cardID, $index, $from)) == "-") return false;
-  if ($phase == "P" && $from != "HAND") return false;
-  if ($phase == "B" && $from == "BANISH") return false;
-  if ($phase == "B" && $from == "THEIRBANISH") return false;
   if ($from == "BANISH") {
     $banish = new Banish($player);
     $banishCard = $banish->Card($index);
@@ -1739,25 +1736,34 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $restriction = "Frozen";
     return false;
   }
-  if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && IsFrozenMZ($myAllies, "ALLY", $index, $player)) {
-    $restriction = "Frozen";
-    return false;
-  }
-  if ($from == "PLAY" && DelimStringContains($subtype, "Ally") && $phase != "B" && isset($myAllies[$index + 1]) && $myAllies[$index + 1] == "1") {
-    switch ($cardID) {
-      case "cutty_shark_quick_clip_yellow":
-        //has a once per turn and a non-once per turn ability
-        break;
-      default:
-        $restriction = "Already used";
+  if ($from == "PLAY" && $phase != "B") {
+    if (DelimStringContains($subtype, "Ally")) {
+      $myAllies = &GetAllies($player);
+      if (IsFrozenMZ($myAllies, "ALLY", $index, $player)) {
+        $restriction = "Frozen";
         return false;
+      }
+      if (isset($myAllies[$index + 1]) && $myAllies[$index + 1] == "1") {
+        switch ($cardID) {
+          case "cutty_shark_quick_clip_yellow":
+            //has a once per turn and a non-once per turn ability
+            break;
+          default:
+            $restriction = "Already used";
+            return false;
+        }
+      }
+    }
+    if (DelimStringContains($subtype, "Aura")) {
+      $myAuras = &GetAuras($player);
+      if (isset($myAuras[$index + 11]) && $myAuras[$index + 11] == "1") {
+        $restriction = "Frozen";
+        return false;
+      }
     }
   }
-  if ($from == "PLAY" && DelimStringContains($subtype, "Aura") && $phase != "B" && isset($myAuras[$index + 11]) && $myAuras[$index + 11] == "1") {
-    $restriction = "Frozen";
-    return false;
-  }
   if ($from == "ARS" && $phase != "B") {
+    $myArsenal = &GetArsenal($player);
     if (IsFrozenMZ($myArsenal, "ARS", $index, $currentPlayer)) {
       $restriction = "Frozen";
       return false;
@@ -1767,6 +1773,9 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       return false;
     }
   }
+  global $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
+  global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer, $CCS_NumUsedInReactions;
+  global $CombatChain, $combatChain, $layers, $CCS_CachedTotalPower;
   if ($phase != "P" && $cardType == "DR" && !IsHeroAttackTarget() && $abilityTypes == "") return false;
   if ($phase == "D" && $cardType == "DR" && !IsHeroAttackTarget() && $currentPlayer != $mainPlayer) return false;
   if ($CombatChain->HasCurrentLink() && ($phase == "B" || ($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) {
@@ -1824,6 +1833,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   // don't block cards with multiple abilities where one hasn't been decided yet
   if ($cardType == "" && ($abilityNames ??= GetAbilityNames($cardID, $index, $from)) == "") return false;
   if (RequiresDiscard($cardID) || $cardID == "enlightened_strike_red") {
+    $myHand = &GetHand($player);
     if ($from == "HAND" && count($myHand) < 2) return false;
     else if (count($myHand) < 1) return false;
   }
@@ -2259,7 +2269,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
 
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "", $resolutionCheck = false)
 {
-  global $CS_NumBoosted, $combatChain, $CombatChain, $combatChainState, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
+  global $CS_NumBoosted, $combatChain, $CombatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
   global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_NumNonAttackCards, $defPlayer, $CS_NumCardsPlayed, $CS_NumLightningPlayed;
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
@@ -3884,7 +3894,7 @@ function HasCombo($cardID)
 
 function ComboActive($cardID = "")
 {
-  global $CombatChain, $chainLinkSummary, $mainPlayer, $chainLinks, $ChainLinks;
+  global $CombatChain, $chainLinkSummary, $mainPlayer, $ChainLinks;
   if ($cardID == "" && $CombatChain->HasCurrentLink()) $cardID = $CombatChain->AttackCard()->ID();
   if ($cardID == "") return false;
   if (count($chainLinkSummary) == 0) return false;//No combat active if no previous chain links
@@ -4055,10 +4065,11 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   if (str_contains($mod, "shadowrealm_horror_red") && SearchCurrentTurnEffects("shadowrealm_horror_red-3", $player) && CardType($cardID) != "E") return true;
   if (HasRunegate($cardID) && NumRunechants($player) >= CardCost($cardID, "BANISH")) return true;
   $char = &GetPlayerCharacter($player);
-  if (SubtypeContains($cardID, "Evo") && ($char[0] == "professor_teklovossen" || $char[0] == "teklovossen_esteemed_magnate" || $char[0] == "teklovossen") && $char[1] < 3) return true;
-  if (!$nonLimitedOnly && $char[0] == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
-  static $gateToIarathael = ["gate_to_iarathael"];
-  if ($CurrentTurnEffects->NumEffects() > 0 && $CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
+  $banishHero = $char[0] ?? "";
+  if (($banishHero == "professor_teklovossen" || $banishHero == "teklovossen_esteemed_magnate" || $banishHero == "teklovossen") && $char[1] < 3 && SubtypeContains($cardID, "Evo")) return true;
+  if (!$nonLimitedOnly && $banishHero == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
+  static $gateToIarathael = ["gate_to_iarathael" => true];
+  if ($CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
     $banishCard = new BanishCard($player, $index);
     if ($CurrentTurnEffects->HasAnySpecificEffect($gateToIarathael, $banishCard->UniqueID(), $player)) return true;
   }
@@ -4159,8 +4170,8 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "", $index 
   if (isFaceDownMod($mod)) return false;
   if (ColorContains($cardID, 3, $otherPlayer) && SearchCurrentTurnEffectsAny(["nuu_alluring_desire", "nuu"], $player)) return true;
   if ($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
-  static $gateToIarathael = ["gate_to_iarathael-CHAOS"];
-  if ($CurrentTurnEffects->NumEffects() > 0 && $CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
+  static $gateToIarathael = ["gate_to_iarathael-CHAOS" => true];
+  if ($CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
     $banishCard = new BanishCard($otherPlayer, $index);
     if ($CurrentTurnEffects->HasAnySpecificEffect($gateToIarathael, $banishCard->UniqueID(), $player)) return true;
   }
@@ -4181,22 +4192,21 @@ function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
   global $currentPlayer, $mainPlayer, $CurrentTurnEffects;
   if ($player == "") $player = $currentPlayer;
   if (isFaceDownMod($mod)) return false;
-  $hasWateryGrave = HasWateryGrave($cardID);
-  if ($hasWateryGrave && SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter") && $player == $currentPlayer) return true;
-  if ($hasWateryGrave && SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")  && $player == $currentPlayer) return true;
+  if ($player == $currentPlayer && HasWateryGrave($cardID)) {
+    if (SearchCurrentTurnEffects("gravy_bones_shipwrecked_looter", $player) && SearchCharacterActive($player, "gravy_bones_shipwrecked_looter")) return true;
+    if (SearchCurrentTurnEffects("gravy_bones", $player) && SearchCharacterActive($player, "gravy_bones")) return true;
+  }
   if (HasSuspense($cardID) && SearchCurrentTurnEffects("cries_of_encore_red", $player)) return true;
-  if ($CurrentTurnEffects->NumEffects() > 0) {
-    static $graveyardPlayEffectIDs = [
-      "oscilio_forked_continuum",
-      "oscilio_scion_of_the_third_age",
-      "astral_bridge_red",
-      "malice",
-      "malice_domina_of_the_dead",
-    ];
-    if ($CurrentTurnEffects->HasAnyEffectID($graveyardPlayEffectIDs)) {
-      $DiscardCard = new DiscardCard($index, $player);
-      if ($CurrentTurnEffects->HasAnySpecificEffect($graveyardPlayEffectIDs, $DiscardCard->UniqueID())) return true;
-    }
+  static $graveyardPlayEffectIDs = [
+    "oscilio_forked_continuum" => true,
+    "oscilio_scion_of_the_third_age" => true,
+    "astral_bridge_red" => true,
+    "malice" => true,
+    "malice_domina_of_the_dead" => true,
+  ];
+  if ($CurrentTurnEffects->HasAnyEffectID($graveyardPlayEffectIDs)) {
+    $DiscardCard = new DiscardCard($index, $player);
+    if ($CurrentTurnEffects->HasAnySpecificEffect($graveyardPlayEffectIDs, $DiscardCard->UniqueID())) return true;
   }
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromGraveyard($index);
@@ -4560,16 +4570,12 @@ function GetSlot($cardID, &$numWeapons) {
     else
       return "RWep";
   }
-  elseif (SubtypeContains($cardID, "Legs"))
-    return "Legs";
-  elseif (SubtypeContains($cardID, "Arms"))
-    return "Arms";
-  elseif (SubtypeContains($cardID, "Chest"))
-    return "Chest";
-  elseif (SubtypeContains($cardID, "Head"))
-    return "Head";
-  elseif (SubtypeContains($cardID, "Quiver") || SubtypeContains($cardID, "Off-Hand") || SubtypeContains($cardID, "Companion"))
-    return "Off-Hand";
+  $subtype = CardSubType($cardID);
+  if (DelimStringContains($subtype, "Legs")) return "Legs";
+  if (DelimStringContains($subtype, "Arms")) return "Arms";
+  if (DelimStringContains($subtype, "Chest")) return "Chest";
+  if (DelimStringContains($subtype, "Head")) return "Head";
+  if (DelimStringContains($subtype, "Quiver") || DelimStringContains($subtype, "Off-Hand") || DelimStringContains($subtype, "Companion")) return "Off-Hand";
   return "-";
 }
 
@@ -4685,11 +4691,12 @@ function HasEffectActive($cardID) {
 }
 
 function BlindCard($cardID, $unblind=false, $excludeEquips=false) {
-  if (!$unblind && $excludeEquips && TypeContains($cardID, "E")) return $cardID;
-  if ($cardID === null) return "";
   if ($unblind) {
+    if ($cardID === null) return "";
     return str_contains($cardID, "BLIND") ? substr($cardID, 0, -6) : $cardID;
   }
+  if ($excludeEquips && TypeContains($cardID, "E")) return $cardID;
+  if ($cardID === null) return "";
   return str_contains($cardID, "BLIND") ? $cardID : "$cardID~BLIND";
 }
 
@@ -4716,32 +4723,44 @@ function IsGold($cardID) {
 }
 
 function GetClass($cardID, $player, $from="-", $uniqueID="-") {
-	global $CurrentTurnEffects;
-  if ($cardID !== null && str_contains($cardID, "BLIND")) return "-";
-  if ($cardID == "LAYER" || $cardID == "TRIGGER") return "-";
-  $cardID = ExtractCardID($cardID);
-  static $classNameCache = [];
-  $className = $classNameCache[$cardID] ?? null;
+  static $classNameByRawID = [];
+  $className = $classNameByRawID[$cardID] ?? null;
   if ($className === null) {
-    $className = match($cardID) {
-      "10000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
-      default => $cardID
-    };
-    if ($className === "" || !class_exists($className) || !is_a($className, "Card", true)) $className = "-";
-    $classNameCache[$cardID] = $className;
+    $className = ResolveCardClassName($cardID);
+    if (count($classNameByRawID) < 65536) $classNameByRawID[$cardID] = $className;
   }
   if ($className === "-") return "-";
   $rv = new $className($player);
-	if ($from == "CC") {
-		for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
-			$Effect = $CurrentTurnEffects->Effect($i, true);
-			$effectID = ExtractCardID($Effect->EffectID());
-			if ($Effect->AppliestoUniqueID() != $uniqueID) continue;
-			$effect = GetClass($effectID, $Effect->PlayerID());
-			if ($effect != "-") $rv->AddAbilities($effect->AbilitiesToAdd());
-		}
-	}
+  if ($from === "CC") {
+    global $CurrentTurnEffects;
+    $numEffects = $CurrentTurnEffects->NumEffects();
+    for ($i = 0; $i < $numEffects; ++$i) {
+      $Effect = $CurrentTurnEffects->Effect($i, true);
+      if ($Effect->AppliestoUniqueID() != $uniqueID) continue;
+      $effect = GetClass(ExtractCardID($Effect->EffectID()), $Effect->PlayerID());
+      if ($effect !== "-") $rv->AddAbilities($effect->AbilitiesToAdd());
+    }
+  }
   return $rv;
+}
+
+function ResolveCardClassName($cardID) {
+  if ($cardID === null || $cardID === "") return "-";
+  $cardID = (string)$cardID;
+  if (str_contains($cardID, "BLIND")) return "-";
+  if ($cardID === "LAYER" || $cardID === "TRIGGER") return "-";
+  static $classNameCache = [];
+  $extracted = ExtractCardID($cardID);
+  $className = $classNameCache[$extracted] ?? null;
+  if ($className === null) {
+    $className = match($extracted) {
+      "10000_year_reunion" => "tenk_year_reunion", //class name can't start with digits
+      default => $extracted
+    };
+    if ($className === "" || !class_exists($className) || !is_a($className, "Card", true)) $className = "-";
+    $classNameCache[$extracted] = $className;
+  }
+  return $className;
 }
 
 function IsInstantMod($mod) {

@@ -1866,7 +1866,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers, $CombatChain;
-  global $combatChainState, $CCS_EclecticMag, $CS_ArcaneDamageDealt, $currentTurnEffects;
+  global $CCS_EclecticMag, $CS_ArcaneDamageDealt, $currentTurnEffects;
   $otherPlayer = 3 - $currentPlayer;
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
@@ -2185,9 +2185,7 @@ function TypeContains($cardID, $type, $player = "", $partial = false, $from = "-
 
 function SubtypeContains($cardID, $subtype, $player = "", $uniqueID = "")
 {
-  global $currentTurnEffects;
-  $cardSubtype = CardSubtype($cardID);
-  return DelimStringContains($cardSubtype, $subtype);
+  return DelimStringContains(CardSubtype($cardID), $subtype);
 }
 
 function CardNameContains($cardID, $name, $player = "", $partial = false)
