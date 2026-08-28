@@ -4860,8 +4860,8 @@ class deadly_spinneret_red extends Card {
   }
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    EquipWeapon($this->controller, "graphene_chelicera", $this->cardID);
-    EquipWeapon($this->controller, "graphene_chelicera", $this->cardID);
+    $numZones = 2 - NumOccupiedHands($this->controller);
+    EquipWeapon($this->controller, "graphene_chelicera", $this->cardID, num:$numZones);
   }
 
   function CardCost($from = '-') {

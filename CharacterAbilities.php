@@ -935,14 +935,17 @@ function NumOccupiedHands($player)
   return $numHands;
 }
 
-function EquipWeapon($player, $cardID, $source = "-")
+function EquipWeapon($player, $cardID, $source = "-", $num=1)
 {
   global $EffectContext;
   $otherPlayer = 3 - $player;
   if (SearchCurrentTurnEffects("ripple_away_blue", $player) != "" || (SearchCurrentTurnEffects("ripple_away_blue", $otherPlayer)) != "") {
     if (TypeContains($cardID, "T", $player, true) && ($cardType = CardType($source)) && ($cardType == "A" || $cardType == "AA")) {
-      WriteLog("🌊 You can't equip token weapons from an action card under " . CardLink("ripple_away_blue", "ripple_away_blue"));
-      return;
+      --$num;
+      if ($num == 0) {
+        WriteLog("🌊 You can't equip token weapons from an action card under " . CardLink("ripple_away_blue", "ripple_away_blue"));
+        return;
+      }
     }
   }
   if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (PreachModestyActive())) { 
@@ -951,73 +954,75 @@ function EquipWeapon($player, $cardID, $source = "-")
       return;
     }
   }
-  $char = &GetPlayerCharacter($player);
-  $lastWeapon = 0;
-  $replaced = 0;
-  $numHands = NumOccupiedHands($player);
-  $uniqueID = GetUniqueId($cardID, $player);
-  $charCount = count($char);
-  $characterPieces = CharacterPieces();
-  $is1H = Is1H($cardID);
-  $occupied_slots = [];
-  $Character = new PlayerCharacter($player);
-  for ($i = 0; $i < $Character->NumCards(); ++$i) {
-    $CharacterCard = $Character->Card($i, true);
-    if ($CharacterCard->Slot() == "LWep")
-      $occupied_slots[] = "LWep";
-    elseif ($CharacterCard->Slot() == "RWep" || $CharacterCard->Slot() == "Off-Hand")
-      $occupied_slots[] = "RWep";
-  }
-  $slot = "-";
-  if (!in_array("LWep", $occupied_slots))
-    $slot = "LWep";
-  elseif (!in_array("RWep", $occupied_slots))
-    $slot = "RWep";
-  //check if you have enough hands to equip it
-  if ($is1H && $numHands < 2 || !$is1H && $numHands == 0){
-    //Replace the first destroyed weapon; if none you can't re-equip
-    for ($i = $characterPieces; $i < $charCount && !$replaced; $i += $characterPieces) {
-      if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand")) {
-        $lastWeapon = $i;
-        if ($char[$i + 1] == 0) {
-          $char[$i] = $cardID;
-          $char[$i + 1] = 2;
-          $char[$i + 2] = 0;
-          $char[$i + 3] = 0;
-          $char[$i + 4] = 0;
-          $char[$i + 5] = 1;
-          $char[$i + 6] = 0;
-          $char[$i + 7] = 0;
-          $char[$i + 8] = 0;
-          $char[$i + 9] = ApplyGemsOffDefault(CharacterDefaultActiveState($cardID), $player);
-          $char[$i + 10] = "-";
-          $char[$i + 11] = $uniqueID;
-          $char[$i + 12] = HasCloaked($cardID, $player);
-          $char[$i + 13] = 0;
-          $char[$i + 14] = 0;
-          $char[$i + 15] = $slot;
-          $replaced = 1;
+  for ($i = 0; $i < $num; ++$i) {
+    $char = &GetPlayerCharacter($player);
+    $lastWeapon = 0;
+    $replaced = 0;
+    $numHands = NumOccupiedHands($player);
+    $uniqueID = GetUniqueId($cardID, $player);
+    $charCount = count($char);
+    $characterPieces = CharacterPieces();
+    $is1H = Is1H($cardID);
+    $occupied_slots = [];
+    $Character = new PlayerCharacter($player);
+    for ($i = 0; $i < $Character->NumCards(); ++$i) {
+      $CharacterCard = $Character->Card($i, true);
+      if ($CharacterCard->Slot() == "LWep")
+        $occupied_slots[] = "LWep";
+      elseif ($CharacterCard->Slot() == "RWep" || $CharacterCard->Slot() == "Off-Hand")
+        $occupied_slots[] = "RWep";
+    }
+    $slot = "-";
+    if (!in_array("LWep", $occupied_slots))
+      $slot = "LWep";
+    elseif (!in_array("RWep", $occupied_slots))
+      $slot = "RWep";
+    //check if you have enough hands to equip it
+    if ($is1H && $numHands < 2 || !$is1H && $numHands == 0){
+      //Replace the first destroyed weapon; if none you can't re-equip
+      for ($i = $characterPieces; $i < $charCount && !$replaced; $i += $characterPieces) {
+        if (TypeContains($char[$i], "W", $player) || SubtypeContains($char[$i], "Off-Hand")) {
+          $lastWeapon = $i;
+          if ($char[$i + 1] == 0) {
+            $char[$i] = $cardID;
+            $char[$i + 1] = 2;
+            $char[$i + 2] = 0;
+            $char[$i + 3] = 0;
+            $char[$i + 4] = 0;
+            $char[$i + 5] = 1;
+            $char[$i + 6] = 0;
+            $char[$i + 7] = 0;
+            $char[$i + 8] = 0;
+            $char[$i + 9] = ApplyGemsOffDefault(CharacterDefaultActiveState($cardID), $player);
+            $char[$i + 10] = "-";
+            $char[$i + 11] = $uniqueID;
+            $char[$i + 12] = HasCloaked($cardID, $player);
+            $char[$i + 13] = 0;
+            $char[$i + 14] = 0;
+            $char[$i + 15] = $slot;
+            $replaced = 1;
+          }
         }
       }
     }
-  }
-  if ($numHands < 2 && !$replaced) {
-    $char[] = $cardID; //0 - Card ID
-    $char[] = 2; //1 - Status
-    $char[] = 0; //2 - Num counters
-    $char[] = 0; //3 - Num power counters
-    $char[] = 0; //4 - Num defense counters
-    $char[] = 1; //5 - Num uses
-    $char[] = 0; //6 - On chain
-    $char[] = 0; //7 - Flagged for destruction
-    $char[] = 0; //8 - Frozen
-    $char[] = 2; //9 - Is Active
-    $char[] = "-"; //10 - Subcards
-    $char[] = $uniqueID; //11 - Unique ID
-    $char[] = HasCloaked($cardID, $player); //12 - Face up/down
-    $char[] = 0; //13 - Marked
-    $char[] = 0; //14 - Tapped
-    $char[] = $slot; //15 - slot
+    if ($numHands < 2 && !$replaced) {
+      $char[] = $cardID; //0 - Card ID
+      $char[] = 2; //1 - Status
+      $char[] = 0; //2 - Num counters
+      $char[] = 0; //3 - Num power counters
+      $char[] = 0; //4 - Num defense counters
+      $char[] = 1; //5 - Num uses
+      $char[] = 0; //6 - On chain
+      $char[] = 0; //7 - Flagged for destruction
+      $char[] = 0; //8 - Frozen
+      $char[] = 2; //9 - Is Active
+      $char[] = "-"; //10 - Subcards
+      $char[] = $uniqueID; //11 - Unique ID
+      $char[] = HasCloaked($cardID, $player); //12 - Face up/down
+      $char[] = 0; //13 - Marked
+      $char[] = 0; //14 - Tapped
+      $char[] = $slot; //15 - slot
+    }
   }
   return $uniqueID;
 }
