@@ -12,8 +12,9 @@ class DECAY extends card {
     $Allies = new Allies($this->controller);
     $DecayingAlly = $Allies->FindCardUID($target);
     if ($DecayingAlly->Index() != -1) {
+      $cardID = $DecayingAlly->CardID();
       $DecayingAlly->AddLifeCounters(-1);
-      WriteLog(CardLink($DecayingAlly->CardID()) . " decays!");
+      WriteLog(CardLink($cardID) . " decays!");
     }
   }
 }
