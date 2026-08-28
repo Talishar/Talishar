@@ -453,7 +453,7 @@ function CreatePopupAPI($id, $fromArr, $canClose, $defaultState = 0, $title = ""
   return $result;
 }
 
-function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $index = -1)
+function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $index = -1, $zonePlayable = null)
 {
   global $turn, $dqState;
   
@@ -504,7 +504,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
   // Zone-specific logic
   if ($from == "BANISH") {
     if (HasBloodDebt($cardID)) return 2;
-    if (!$isPlayable && !PlayableFromBanish($cardID, $mod, index:$index)) return 0;
+    if (!$isPlayable && !($zonePlayable ?? PlayableFromBanish($cardID, $mod, index:$index))) return 0;
     if ($isPlayable && HasReprise($cardID) && RepriseActive()) return 3;
     if ($isPlayable && ComboActive($cardID)) return 3;
     if ($isPlayable && HasRupture($cardID) && RuptureActive(true)) return 3;
@@ -512,7 +512,7 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
   }
   
   if ($from == "GY") {
-    if ($isPlayable || PlayableFromGraveyard($cardID, player:$playerID, index:$index)) return 7;
+    if ($isPlayable || ($zonePlayable ?? PlayableFromGraveyard($cardID, player:$playerID, index:$index))) return 7;
     $hero = GetPlayerCharacter($playerID)[0];
     if (($hero == "gravy_bones" || $hero == "gravy_bones_shipwrecked_looter") && HasWateryGrave($cardID)) return 7;
     if (SearchCurrentTurnEffects("cries_of_encore_red", $playerID) && HasSuspense($cardID)) return 7;

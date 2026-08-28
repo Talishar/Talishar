@@ -11,16 +11,14 @@ function NormalizeLegacyCharacterState(array $characters): array
     return $characters;
   }
 
+  $hasGetSlot = function_exists('GetSlot');
   $normalized = [];
   $numWeapons = 0;
   for ($i = 0; $i < $count; $i += $legacyPieces) {
-    $record = array_slice($characters, $i, $legacyPieces);
-    if (count($record) !== $legacyPieces) return $characters;
-
-    array_push($normalized, ...$record);
-    $normalized[] = function_exists('GetSlot')
-      ? GetSlot((string)$record[0], $numWeapons)
-      : "-";
+    $end = $i + $legacyPieces;
+    if ($end > $count) return $characters;
+    for ($j = $i; $j < $end; ++$j) $normalized[] = $characters[$j];
+    $normalized[] = $hasGetSlot ? GetSlot((string)$characters[$i], $numWeapons) : "-";
   }
 
   return $normalized;
