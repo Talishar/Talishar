@@ -4561,3 +4561,68 @@ class echoing_trap_blue extends Card {
     return true;
   }
 }
+
+class stoke_vengeance_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "stoke_vengeance_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasCombo() {
+    return true;
+  }
+
+  function ComboActive($lastAttackName) {
+    if ($lastAttackName == "Edge of Autumn") return true;
+  }
+
+  function DoesAttackHaveGoAgain() {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    return ComboActive($attackID);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    if (ComboActive($attackID))
+      return AnyHitTrigger($this->controller, $this->cardID, $check);
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+  }
+
+  function RemoveEffectFromCombatChain($effectIndex) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  // function SpecialName() {
+  //   return "Stoke Vengeance";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialClass() {
+    return "NINJA";
+  }
+}
