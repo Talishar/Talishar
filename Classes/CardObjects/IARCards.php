@@ -429,6 +429,156 @@ class runic_reaving_red extends Card {
   }
 }
 
+class runic_reaving_yellow extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runic_reaving_yellow";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("runechant", $this->controller, effectSource:$this->cardID);
+  }
+
+  function CardCost($from = '-') {
+    return 0;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function SpecialName() {
+    return "Runic Reaving";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+}
+
+class runic_reaving_blue extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "runic_reaving_blue";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("runechant", $this->controller, effectSource:$this->cardID);
+  }
+
+  function CardCost($from = '-') {
+    return 0;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function SpecialName() {
+    return "Runic Reaving";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+}
+
 class runechant_of {
   public $cardID;
   public $controller;
