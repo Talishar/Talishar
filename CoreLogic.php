@@ -3862,6 +3862,11 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     }
   }
   if ($num == 0) return "";
+  if ($mainPhase && (SearchAurasForCard("sigil_of_the_muse_red", $otherPlayer) != "" || SearchAurasForCard("sigil_of_the_muse_red", $player) != "")) {
+    WriteLog("Draw replaced with " . CardLink("ponder") . " creation by " . CardLink("sigil_of_the_muse_red"));
+    PlayAura("ponder", $player, $num, effectSource:$effectSource);
+    return "";
+  }
   if ($fromCardEffect && (SearchAurasForCard("channel_the_bleak_expanse_blue", $otherPlayer) != "" || SearchAurasForCard("channel_the_bleak_expanse_blue", $player) != "")) {
     WriteLog("Draw prevented by " . CardLink("channel_the_bleak_expanse_blue", "channel_the_bleak_expanse_blue"));
     return "";

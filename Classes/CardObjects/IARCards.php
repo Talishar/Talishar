@@ -4908,3 +4908,55 @@ class deadly_spinneret_red extends Card {
     return true;
   }
 }
+
+class sigil_of_the_muse_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "sigil_of_the_muse_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CS_ArcaneTargetsSelected;
+    if ($additionalCosts == "DESTROY") {
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      if ($AuraCard != "") $AuraCard->Destroy();
+    }
+    else {
+      PlayAura("ponder", $this->controller);
+    }
+  }
+
+  // function SpecialName() {
+  //   return "Sigil of the Muse";
+  // }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "WIZARD";
+  }
+}
