@@ -4960,3 +4960,60 @@ class sigil_of_the_muse_red extends Card {
     return "WIZARD";
   }
 }
+
+class rush_of_knowledge_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rush_of_knowledge_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $Auras = new Auras($this->controller);
+    $Ponder = $Auras->FindCardID("ponder");
+    if ($Ponder->Index() != -1) {
+      $choice = "MYAURAS-" . $Ponder->Index();
+      $context = "Destroy a ponder to draw a card and gain an action point (or pass)";
+      Await($this->controller, "ChooseMultiZone", indices:$choice, may:true, context:$context, subsequent:0);
+      Await($this->controller, $this->cardID, final:true);
+    }
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $Ponder = MZIndexToObject($this->controller, $dqVars["MZIndex"]);
+    if ($Ponder != "") {
+      $Ponder->Destroy();
+      GainActionPoints(1, $this->controller);
+      Draw($this->controller); 
+    }
+  }
+
+  function SpecialName() {
+    return "Rush of Knowledge";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialClass() {
+    return "ILLUSIONIST,WIZARD";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasPhantasm() {
+    return true;
+  }
+}
