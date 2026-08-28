@@ -4373,9 +4373,9 @@ class planar_chaos_red extends Card {
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Planar Chaos";
-  // }
+  function SpecialName() {
+    return "Planar Chaos";
+  }
 
   function SpecialType() {
     return "A";
@@ -4482,9 +4482,9 @@ class dimenxxional_ferryman_blue extends Card {
     return "-";
   }
 
-  // function SpecialName() {
-  //   return "Dimenxxional Ferryman";
-  // }
+  function SpecialName() {
+    return "Dimenxxional Ferryman";
+  }
 
   function SpecialPitch() {
     return 3;
