@@ -67,6 +67,17 @@ if ($playerID == 0) {
 //First we need to parse the game state from the file
 // For profile settings updates (playerID == 0), skip gamestate parsing
 if ($playerID != 0) {
+  $gameActionLock = AcquireGameActionLock($gameName);
+  if ($gameActionLock === false) {
+    http_response_code(503);
+    echo json_encode(['error' => 'Unable to lock game for processing.']);
+    exit;
+  }
+  register_shutdown_function(static function () use (&$gameActionLock): void {
+    ReleaseGameActionLock($gameActionLock);
+    $gameActionLock = null;
+  });
+
   include "ParseGamestate.php";
 } else {
   // Initialize minimal state for profile-only operations

@@ -72,3 +72,28 @@ function SeedRandom($reroll=false)
   mt_srand(crc32($seedString));
   $randomSeeded = true;
 }
+
+function AcquireGameActionLock(string $gameName, ?string $gamesRoot = null)
+{
+  if (!IsGameNameValid($gameName)) return false;
+
+  $gamesRoot ??= dirname(__DIR__) . DIRECTORY_SEPARATOR . "Games";
+  $gameDirectory = $gamesRoot . DIRECTORY_SEPARATOR . $gameName;
+  if (!is_dir($gameDirectory)) return false;
+
+  $lockHandler = fopen($gameDirectory . DIRECTORY_SEPARATOR . "action.lock", "c");
+  if ($lockHandler === false) return false;
+  if (!flock($lockHandler, LOCK_EX)) {
+    fclose($lockHandler);
+    return false;
+  }
+
+  return $lockHandler;
+}
+
+function ReleaseGameActionLock($lockHandler): void
+{
+  if (!is_resource($lockHandler)) return;
+  flock($lockHandler, LOCK_UN);
+  fclose($lockHandler);
+}

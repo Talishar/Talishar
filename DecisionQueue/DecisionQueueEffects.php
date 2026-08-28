@@ -1337,6 +1337,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         "Red" => 1,
         "Yellow" => 2,
         "Blue" => 3,
+        "Purple" => 4,
       };
       if ($topColor == $chosenColor && $lastResult == "NO") {
         PummelHit($player, context: "You should have believed them... Discard card.");

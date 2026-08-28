@@ -83,6 +83,17 @@ SetHeaders();
 
 $numPass = 0;
 //First we need to parse the game state from the file
+$gameActionLock = AcquireGameActionLock($gameName);
+if ($gameActionLock === false) {
+  http_response_code(503);
+  echo "Unable to lock game for processing.";
+  exit;
+}
+register_shutdown_function(static function () use (&$gameActionLock): void {
+  ReleaseGameActionLock($gameActionLock);
+  $gameActionLock = null;
+});
+
 include "ParseGamestate.php";
 
 if (IsReplay() && $mode == 99) {
