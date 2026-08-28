@@ -4846,3 +4846,65 @@ class chains_of_consecration_yellow extends Card {
     return -2;
   }
 }
+
+class deadly_spinneret_red extends Card {
+  private $archetype;
+  function __construct($controller) {
+    $this->cardID = "deadly_spinneret_red";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    EquipWeapon($this->controller, "graphene_chelicera", $this->cardID);
+    EquipWeapon($this->controller, "graphene_chelicera", $this->cardID);
+  }
+
+  function CardCost($from = '-') {
+    return 0;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  // function SpecialName() {
+  //   return "Deadly Spinneret";
+  // }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
