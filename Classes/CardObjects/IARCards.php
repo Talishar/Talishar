@@ -4683,9 +4683,9 @@ class echoing_trap_blue extends Card {
     PummelHit($mainPlayer);
   }
 
-  // function SpecialName() {
-  //   return "Echoing Trap";
-  // }
+  function SpecialName() {
+    return "Echoing Trap";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -4760,9 +4760,9 @@ class stoke_vengeance_red extends Card {
     return 2;
   }
 
-  // function SpecialName() {
-  //   return "Stoke Vengeance";
-  // }
+  function SpecialName() {
+    return "Stoke Vengeance";
+  }
 
   function SpecialCost() {
     return 1;
@@ -4888,9 +4888,9 @@ class deadly_spinneret_red extends Card {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
 
-  // function SpecialName() {
-  //   return "Deadly Spinneret";
-  // }
+  function SpecialName() {
+    return "Deadly Spinneret";
+  }
 
   function SpecialPower() {
     return 3;
