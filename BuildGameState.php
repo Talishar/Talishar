@@ -189,132 +189,144 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
     $altArtsDisabled = $playerID != 3 && AltArtsDisabled($playerID);
 
-    $patreonCampaigns = PatreonCampaign::cases();
-    $metafyCommunityMap = [];
-    foreach (MetafyCommunity::cases() as $case) {
-      $metafyCommunityMap[$case->value] = $case;
-    }
-
     if(!$altArtsDisabled)
     {
-      foreach($patreonCampaigns as $campaign) {
-        $sessionID = $campaign->SessionID();
-        $isPatronOfCampaign = $viewerOwnsPlayerSlot && ($sessionPatreonCampaigns[$sessionID] ?? false);
-
-        if ($sessionID == "isPvtVoidPatron") {
-          $isPatronOfCampaign = $altArtsPlayerName == "PvtVoid"
-            || ($viewerOwnsPlayerSlot && ($sessionUserName == "PvtVoid" || ($sessionPatreonCampaigns[$sessionID] ?? false)));
-        }
-
-        if($isPatronOfCampaign || ($altArtsSessionName !== '' && $campaign->IsTeamMember($altArtsSessionName)) || $campaign->IsTeamMember($altArtsPlayerName)) {
-          $altArtsHero = $altArtsPlayerID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
-          $altArts = $campaign->AltArts($altArtsHero);
-          if($altArts == "") continue;
-          $altArts = explode(",", $altArts);
-          $altArtsCount = count($altArts);
-          $campaignName = $campaign->CampaignName();
-          for($i = 0; $i < $altArtsCount; ++$i) {
-            $arr = explode("=", $altArts[$i]);
-            $altArt = new stdClass();
-            $altArt->name = $campaignName . ($altArtsCount > 1 ? " " . $i + 1 : "");
-            $altArt->cardId = $arr[0];
-            $altArt->altPath = $arr[1];
-            $initialLoad->altArts[] = $altArt;
-          }
-        }
+      $patreonCampaigns = PatreonCampaign::cases();
+      $metafyCommunityMap = [];
+      foreach (MetafyCommunity::cases() as $case) {
+        $metafyCommunityMap[$case->value] = $case;
       }
+      $optInOnlyAltArts = function_exists('GetOptInOnlyAltArts') ? GetOptInOnlyAltArts() : [];
 
-      // Add Metafy community alt arts from cached game file data
-      $playerCommunities = $altArtsPlayerID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []);
-      if (is_array($playerCommunities)) {
-        foreach ($playerCommunities as $community) {
-          $communityId = $community['id'] ?? null;
-          $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
-          if ($metafyCommunity !== null) {
-            $metafyAltArts = $metafyCommunity->AltArts();
-            if (!empty($metafyAltArts)) {
-              $metafyAltArtsCount = count($metafyAltArts);
-              $communityName = $metafyCommunity->CommunityName();
-              for($i = 0; $i < $metafyAltArtsCount; ++$i) {
-                $arr = explode("=", $metafyAltArts[$i]);
-                if (count($arr) === 2) {
-                  $altArt = new stdClass();
-                  $altArt->name = $communityName . ($metafyAltArtsCount > 1 ? " " . $i + 1 : "");
-                  $altArt->cardId = trim($arr[0]);
-                  $altArt->altPath = trim($arr[1]);
-                  $initialLoad->altArts[] = $altArt;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // Get opponent's alt arts
-    if(!$altArtsDisabled)
-    {
-      foreach($patreonCampaigns as $campaign) {
-        $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($altArtsOpponentName);
-
-        if ($campaign->SessionID() == "isPvtVoidPatron") {
-          $isOpponentSupporterOfCampaign = $altArtsOpponentName == "PvtVoid" || $campaign->IsTeamMember($altArtsOpponentName);
-        }
-
-        if($isOpponentSupporterOfCampaign) {
-          $opponentAltArtsHero = $altArtsOpponentID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
-          $opponentAltArts = $campaign->AltArts($opponentAltArtsHero);
-          if($opponentAltArts == "") continue;
-          $opponentAltArts = explode(",", $opponentAltArts);
-          $opponentAltArtsCount = count($opponentAltArts);
-          $campaignName = $campaign->CampaignName();
-          for($i = 0; $i < $opponentAltArtsCount; ++$i) {
-            $arr = explode("=", $opponentAltArts[$i]);
-            $opponentAltArt = new stdClass();
-            $opponentAltArt->name = $campaignName . ($opponentAltArtsCount > 1 ? " " . $i + 1 : "");
-            $opponentAltArt->cardId = $arr[0];
-            $opponentAltArt->altPath = $arr[1];
-            $initialLoad->opponentAltArts[] = $opponentAltArt;
-          }
-        }
-      }
-
-      // Add opponent's Metafy community alt arts from cached game file data
-      $opponentCommunities = $altArtsOpponentID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []);
-      if (is_array($opponentCommunities)) {
-        foreach ($opponentCommunities as $community) {
-          $communityId = $community['id'] ?? null;
-          $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
-          if ($metafyCommunity !== null) {
-            $opponentMetafyAltArts = $metafyCommunity->AltArts();
-            if (!empty($opponentMetafyAltArts)) {
-              $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
-              $communityName = $metafyCommunity->CommunityName();
-              for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
-                $arr = explode("=", $opponentMetafyAltArts[$i]);
-                if (count($arr) === 2) {
-                  $opponentAltArt = new stdClass();
-                  $opponentAltArt->name = $communityName . ($opponentMetafyAltArtsCount > 1 ? " " . $i + 1 : "");
-                  $opponentAltArt->cardId = trim($arr[0]);
-                  $opponentAltArt->altPath = trim($arr[1]);
-                  $initialLoad->opponentAltArts[] = $opponentAltArt;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if(!$altArtsDisabled)
-    {
       $myUserId = $altArtsPlayerID == 1 ? ($p1id ?? '') : ($p2id ?? '');
       $myDeckLink = $altArtsPlayerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
-      $initialLoad->altArts = ApplyDeckAltArtOverride($initialLoad->altArts, $myUserId, $myDeckLink);
-
       $oppUserId = $altArtsOpponentID == 1 ? ($p1id ?? '') : ($p2id ?? '');
       $oppDeckLink = $altArtsOpponentID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
-      $initialLoad->opponentAltArts = ApplyDeckAltArtOverride($initialLoad->opponentAltArts, $oppUserId, $oppDeckLink);
+      $myDeckOverride = GetDeckAltArtOverride($myUserId, $myDeckLink);
+      $oppDeckOverride = GetDeckAltArtOverride($oppUserId, $oppDeckLink);
+
+      if ($myDeckOverride !== null && $myDeckOverride['customized']) {
+        foreach ($myDeckOverride['map'] as $cardId => $altPath) {
+          $initialLoad->altArts[] = ['name' => 'My Deck', 'cardId' => $cardId, 'altPath' => $altPath];
+        }
+      }
+      else {
+        foreach($patreonCampaigns as $campaign) {
+          $sessionID = $campaign->SessionID();
+          $isPatronOfCampaign = $viewerOwnsPlayerSlot && ($sessionPatreonCampaigns[$sessionID] ?? false);
+
+          if ($sessionID == "isPvtVoidPatron") {
+            $isPatronOfCampaign = $altArtsPlayerName == "PvtVoid"
+              || ($viewerOwnsPlayerSlot && ($sessionUserName == "PvtVoid" || ($sessionPatreonCampaigns[$sessionID] ?? false)));
+          }
+
+          if($isPatronOfCampaign || ($altArtsSessionName !== '' && $campaign->IsTeamMember($altArtsSessionName)) || $campaign->IsTeamMember($altArtsPlayerName)) {
+            $altArtsHero = $altArtsPlayerID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
+            $altArts = $campaign->AltArtsList($altArtsHero);
+            $altArtsCount = count($altArts);
+            if($altArtsCount == 0) continue;
+            $campaignName = $campaign->CampaignName();
+            $isMultiArt = $altArtsCount > 1;
+            for($i = 0; $i < $altArtsCount; ++$i) {
+              $arr = explode("=", $altArts[$i]);
+              $altPath = $arr[1];
+              if (isset($optInOnlyAltArts[$altPath])) continue;
+              $initialLoad->altArts[] = [
+                'name' => $isMultiArt ? $campaignName . " " . ($i + 1) : $campaignName,
+                'cardId' => $arr[0],
+                'altPath' => $altPath,
+              ];
+            }
+          }
+        }
+
+        // Add Metafy community alt arts from cached game file data
+        $playerCommunities = $altArtsPlayerID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []);
+        if (is_array($playerCommunities)) {
+          foreach ($playerCommunities as $community) {
+            $communityId = $community['id'] ?? null;
+            $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
+            if ($metafyCommunity === null) continue;
+            $metafyAltArts = $metafyCommunity->AltArts();
+            $metafyAltArtsCount = count($metafyAltArts);
+            if ($metafyAltArtsCount === 0) continue;
+            $communityName = $metafyCommunity->CommunityName();
+            $isMultiArt = $metafyAltArtsCount > 1;
+            for($i = 0; $i < $metafyAltArtsCount; ++$i) {
+              $arr = explode("=", $metafyAltArts[$i]);
+              if (count($arr) !== 2) continue;
+              $altPath = trim($arr[1]);
+              if (isset($optInOnlyAltArts[$altPath])) continue;
+              $initialLoad->altArts[] = [
+                'name' => $isMultiArt ? $communityName . " " . ($i + 1) : $communityName,
+                'cardId' => trim($arr[0]),
+                'altPath' => $altPath,
+              ];
+            }
+          }
+        }
+      }
+
+      // Get opponent's alt arts
+      if ($oppDeckOverride !== null && $oppDeckOverride['customized']) {
+        foreach ($oppDeckOverride['map'] as $cardId => $altPath) {
+          $initialLoad->opponentAltArts[] = ['name' => 'My Deck', 'cardId' => $cardId, 'altPath' => $altPath];
+        }
+      }
+      else {
+        foreach($patreonCampaigns as $campaign) {
+          $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($altArtsOpponentName);
+
+          if ($campaign->SessionID() == "isPvtVoidPatron") {
+            $isOpponentSupporterOfCampaign = $altArtsOpponentName == "PvtVoid" || $campaign->IsTeamMember($altArtsOpponentName);
+          }
+
+          if($isOpponentSupporterOfCampaign) {
+            $opponentAltArtsHero = $altArtsOpponentID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
+            $opponentAltArts = $campaign->AltArtsList($opponentAltArtsHero);
+            $opponentAltArtsCount = count($opponentAltArts);
+            if($opponentAltArtsCount == 0) continue;
+            $campaignName = $campaign->CampaignName();
+            $isMultiArt = $opponentAltArtsCount > 1;
+            for($i = 0; $i < $opponentAltArtsCount; ++$i) {
+              $arr = explode("=", $opponentAltArts[$i]);
+              $altPath = $arr[1];
+              if (isset($optInOnlyAltArts[$altPath])) continue;
+              $initialLoad->opponentAltArts[] = [
+                'name' => $isMultiArt ? $campaignName . " " . ($i + 1) : $campaignName,
+                'cardId' => $arr[0],
+                'altPath' => $altPath,
+              ];
+            }
+          }
+        }
+
+        // Add opponent's Metafy community alt arts from cached game file data
+        $opponentCommunities = $altArtsOpponentID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []);
+        if (is_array($opponentCommunities)) {
+          foreach ($opponentCommunities as $community) {
+            $communityId = $community['id'] ?? null;
+            $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
+            if ($metafyCommunity === null) continue;
+            $opponentMetafyAltArts = $metafyCommunity->AltArts();
+            $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
+            if ($opponentMetafyAltArtsCount === 0) continue;
+            $communityName = $metafyCommunity->CommunityName();
+            $isMultiArt = $opponentMetafyAltArtsCount > 1;
+            for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
+              $arr = explode("=", $opponentMetafyAltArts[$i]);
+              if (count($arr) !== 2) continue;
+              $altPath = trim($arr[1]);
+              if (isset($optInOnlyAltArts[$altPath])) continue;
+              $initialLoad->opponentAltArts[] = [
+                'name' => $isMultiArt ? $communityName . " " . ($i + 1) : $communityName,
+                'cardId' => trim($arr[0]),
+                'altPath' => $altPath,
+              ];
+            }
+          }
+        }
+      }
     }
 
     $response->initialLoad = $initialLoad;
