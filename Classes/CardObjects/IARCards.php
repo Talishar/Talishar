@@ -143,7 +143,7 @@ class vox_necropolis extends Card {
 
   function PermanentAllyPlayAbility($allyIndex, $charIndex, $from) {
     $AllyCard = new AllyCard($allyIndex, $this->controller);
-    if ($from != "GY" && $from != "BANISH") return;
+    if ($from != "GY" && $from != "BANISH" && $from != "THEIRBANISH") return;
     if (!SubtypeContains($AllyCard->CardID(), "Zombie")) return;
     AddDecisionQueue("GETATTACKQUEUETARGET", $this->controller, $AllyCard->CardID() . ",PLAY,1");
     Await($this->controller, "AQTargeting", "target", lastResultName:"target");

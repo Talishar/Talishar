@@ -29,7 +29,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   $hasCrank = HasCrank($cardID, $player);
   $isOuvia = ($cardID == "ouvia");
   $index = count($allies);
-  if (($from == "GY" || $from == "BANISH") && SearchCharacterAlive($player, "vox_necropolis"))
+  if (($from == "GY" || $from == "BANISH" || $from == "THEIRBANISH") && SearchCharacterAlive($player, "vox_necropolis"))
     $tapped = true;
   for ($i = 0; $i < $number; ++$i) {
     $allies[] = $cardID;
