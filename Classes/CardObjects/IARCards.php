@@ -5096,3 +5096,55 @@ class astral_ambience_yellow extends Card {
     return "ILLUSIONIST";
   }
 }
+
+class ominous_toll_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "ominous_toll_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Zombie", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", context:"Discard a zombie to make a gate (or pass)", may:true);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $index = explode("-", $choice)[1] ?? -1;
+    if ($index != "-") {
+      DiscardCard($this->controller, $index);
+      PlayAura("gate_to_iarathael", $this->controller);
+    }
+  }
+
+  // function SpecialName() {
+  //   return "Ominous Toll";
+  // }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
