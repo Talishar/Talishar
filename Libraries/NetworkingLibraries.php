@@ -1704,7 +1704,6 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   }
   if ($wasHit) {
     LogPlayCardStats($mainPlayer, $cardID, "CC", "HIT");
-    WriteLog("HERE! Incrementing damagedealt by $damageDone main hit");
     IncrementCombatChainState($CCS_DamageDealt, $damageDone);
     IncrementClassState($mainPlayer, $CS_HitCounter);
     // Handle weapon hit effects
