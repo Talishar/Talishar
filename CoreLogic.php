@@ -2,6 +2,7 @@
 
 include "CardSetters.php";
 include "CardGetters.php";
+require_once __DIR__ . "/Libraries/TalentLibrary.php";
 
 function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = [], $secondNeedleCheck = false)
 {
@@ -2026,57 +2027,56 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
 function ClassOverride($cardID, $player)
 {
   global $currentTurnEffects;
-  $classes = [];
   if (!is_numeric($player) || (int)$player < 1 || (int)$player > 2) return CardClass($cardID);
   $player = (int)$player;
-  $otherPlayer = 3 - $player;
-  $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  $mainCharacter = &GetPlayerCharacter($player);
 
+  $prefix = "";
   // With the rules as of today it's correct. HVY Release Notes Disclaimer. CR2.6 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not removeproperties, or parts of properties, that were added by another effect.
   if (HasUniversal($cardID)) { //Universal
-    $classes[] = CardClass($mainCharacter[0]);
+    $mainCharacter = GetPlayerCharacter($player);
+    $prefix = CardClass($mainCharacter[0]) . ",";
   }
-  if (SearchCurrentTurnEffects("phantasmal_symbiosis_yellow-" . GamestateSanitize(CardName($cardID)), $player)) { //Phantasmal Symbiosis
-    $classes[] = "ILLUSIONIST";
+  if (SearchCurrentTurnEffectsForIndex("phantasmal_symbiosis_yellow", $player) != -1
+    && SearchCurrentTurnEffects("phantasmal_symbiosis_yellow-" . GamestateSanitize(CardName($cardID)), $player)) { //Phantasmal Symbiosis
+    $prefix .= "ILLUSIONIST,";
   }
-  $currentTurnEffectsCount = count($currentTurnEffects);
-  $currentTurnEffectPieces = CurrentTurnEffectPieces();
-  $shiyanaTarget = $otherCharacter[0] . "-SHIYANA";
+
+  $count = count($currentTurnEffects);
   $eraseFaceRed = false;
-  $shiyanaFound = false;
-  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
-    if (!isset($currentTurnEffects[$i + 1])) continue;
-    if ($currentTurnEffects[$i + 1] != $player) continue;
-    $effectID = $currentTurnEffects[$i];
-    switch ($effectID) {
-      case "phantasmify_red":
-      case "phantasmify_yellow":
-      case "phantasmify_blue":
-      case "veiled_intentions_red":
-      case "veiled_intentions_yellow":
-      case "veiled_intentions_blue":
-      case "transmogrify_red":
-      case "transmogrify_yellow":
-      case "transmogrify_blue":
-        $classes[] = "ILLUSIONIST";
-        break;
-      case "erase_face_red":
-        $eraseFaceRed = true;
-        break;
-      default:
-        if ($effectID === $shiyanaTarget) $shiyanaFound = true;
-        break;
+  if ($count > 0) {
+    $pieces = CurrentTurnEffectPieces();
+    $otherCharacter = GetPlayerCharacter(3 - $player);
+    $shiyanaTarget = $otherCharacter[0] . "-SHIYANA";
+    $shiyanaFound = false;
+    for ($i = 0; $i < $count; $i += $pieces) {
+      if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $player) continue;
+      $effectID = $currentTurnEffects[$i];
+      switch ($effectID) {
+        case "phantasmify_red":
+        case "phantasmify_yellow":
+        case "phantasmify_blue":
+        case "veiled_intentions_red":
+        case "veiled_intentions_yellow":
+        case "veiled_intentions_blue":
+        case "transmogrify_red":
+        case "transmogrify_yellow":
+        case "transmogrify_blue":
+          $prefix .= "ILLUSIONIST,";
+          break;
+        case "erase_face_red":
+          $eraseFaceRed = true;
+          break;
+        default:
+          if ($effectID === $shiyanaTarget) $shiyanaFound = true;
+          break;
+      }
     }
+    if ($shiyanaFound) $prefix .= CardClass($otherCharacter[0]) . ",SHAPESHIFTER,";
   }
-  if ($shiyanaFound) {
-    $classes[] = CardClass($otherCharacter[0]) . ",SHAPESHIFTER";
-  }
-  if (!$eraseFaceRed) {
-    $classes[] = CardClass($cardID);
-  }
-  if (empty($classes)) return "NONE";
-  return implode(",", $classes);
+
+  if ($prefix === "") return $eraseFaceRed ? "NONE" : CardClass($cardID);
+  if ($eraseFaceRed) return substr($prefix, 0, -1);
+  return $prefix . CardClass($cardID);
 }
 
 function NameOverride($cardID, $player = "")
@@ -2133,8 +2133,8 @@ function ColorOverride($cardID, $player = "")
 function ClassContains($cardID, $class, $player)
 {
   $cardClass = ClassOverride($cardID, $player);
-  if ($cardClass != "GENERIC" && $player != "" && SearchPermanentsForCard($player, "shapeshifter") != "") return true;
-  return DelimStringContains($cardClass, $class);
+  if (DelimStringContains($cardClass, $class)) return true;
+  return $cardClass != "GENERIC" && $player != "" && PermanentsContainCard($player, "shapeshifter");
 }
 
 function ColorContains($cardID, $color, $player)
@@ -2210,74 +2210,65 @@ function CardNameContains($cardID, $name, $player = "", $partial = false)
   return StringContainsWholeWords($cardName, $name);
 }
 
-function TalentOverride($cardID, $player = "", $zone="-")
+function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false)
 {
   global $currentTurnEffects;
-  $talents = [];
+
+  if ($cardID === "colors_of_aria_red" && ($zone === "HAND" || $zone === "DECK")) return "ELEMENTAL";
+
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectPieces();
+  $draconic = 0;
   $erasedFace = false;
-  $currentTurnEffectsCount = count($currentTurnEffects);
-  $currentTurnEffectPieces = CurrentTurnEffectPieces();
-  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectPieces) {
-    if (!isset($currentTurnEffects[$i + 1])) continue;
-    if ($currentTurnEffects[$i + 1] != $player) continue;
+
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if (!isset($currentTurnEffects[$i + 1]) || $currentTurnEffects[$i + 1] != $player) continue;
     switch ($currentTurnEffects[$i]) {
       case "brand_with_cinderclaw_red":
       case "brand_with_cinderclaw_yellow":
       case "brand_with_cinderclaw_blue":
       case "enflame_the_firebrand_red":
-        if (TypeContains($cardID, "AA") || TypeContains($cardID, "W") || SubtypeContains($cardID, "Ally")) {
-          $talents[] = "DRACONIC";
-        }
+        if ($dedupe && $draconic !== 0) break;
+        if (TypeContains($cardID, "AA") || TypeContains($cardID, "W") || SubtypeContains($cardID, "Ally")) ++$draconic;
         break;
       case "blessing_of_vynserakai_red":
-        $talents[] = "DRACONIC";
+        if ($dedupe && $draconic !== 0) break;
+        ++$draconic;
         break;
       case "fealty":
-        $cardType = CardType($cardID);
-        if (!TypeContains($cardID, "W") && !TypeContains($cardID, "AA") && !IsStaticType($cardType)) { // We'll need to add cases for Allies and Emperor Attacking
-          $talents[] = "DRACONIC";
-        }
+        if ($dedupe && $draconic !== 0) break;
+        if (!TypeContains($cardID, "W") && !TypeContains($cardID, "AA") && !IsStaticType(CardType($cardID))) ++$draconic; // We'll need to add cases for Allies and Emperor Attacking
         break;
       case "fealty-ATTACK":
-        if (!TypeContains($cardID, "W") && TypeContains($cardID, "AA")) {
-          $talents[] = "DRACONIC";
-        }
+        if ($dedupe && $draconic !== 0) break;
+        if (!TypeContains($cardID, "W") && TypeContains($cardID, "AA")) ++$draconic;
         break;
       case "erase_face_red":
         $erasedFace = true;
         break;
-      default:
-        break;
     }
   }
-  if (!$erasedFace) {
-    $talents[] = CardTalent($cardID, $zone);
-  }
-  if ($cardID == "colors_of_aria_red" && ($zone == "HAND"|| $zone == "DECK")) {
-    return "ELEMENTAL";
-  }
-  if (empty($talents)) return "NONE";
-  return implode(",", $talents);
+
+  if ($draconic === 0) return $erasedFace ? "NONE" : CardTalent($cardID, $zone);
+  if ($erasedFace) return $draconic === 1 ? "DRACONIC" : substr(str_repeat("DRACONIC,", $draconic), 0, -1);
+  return str_repeat("DRACONIC,", $draconic) . CardTalent($cardID, $zone);
 }
 
 function TalentContains($cardID, $talent, $player = "")
 {
-  $cardTalent = TalentOverride($cardID, $player);
-  if ($cardTalent != "NONE" && $player != "" && SearchPermanentsForCard($player, "shapeshifter") != "") return true;
-  return DelimStringContains($cardTalent, $talent);
+  $cardTalent = TalentOverride($cardID, $player, "-", true);
+  if (DelimStringContains($cardTalent, $talent)) return true;
+  return $cardTalent != "NONE" && $player != "" && PermanentsContainCard($player, "shapeshifter");
 }
 
 //talents = comma delimited list of talents to check
 function TalentContainsAny($cardID, $talents, $player = "", $zone="-")
 {
-  $cardTalent = TalentOverride($cardID, $player, $zone);
-  if (strpos($talents, ",") === false) {
-    return DelimStringContains($cardTalent, $talents);
-  }
-  $talentArr = explode(",", $talents);
-  $talentArrCount = count($talentArr);
-  for ($i = 0; $i < $talentArrCount; ++$i) {
-    if (DelimStringContains($cardTalent, $talentArr[$i])) return true;
+  $cardTalent = TalentOverride($cardID, $player, $zone, true);
+  if (strpos($cardTalent, ",") === false) return DelimStringContains($talents, $cardTalent);
+  if (strpos($talents, ",") === false) return DelimStringContains($cardTalent, $talents);
+  foreach (explode(",", $talents) as $t) {
+    if (DelimStringContains($cardTalent, $t)) return true;
   }
   return false;
 }

@@ -94,23 +94,54 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./", $highli
 
 function ClearLog($n=500)
 {
-  global $gameName;
+  global $gameName, $logWriteBuffer;
 
-  FlushLogBuffer(); // buffered lines must be in the file before we slice it
+  if (!empty($logWriteBuffer)) FlushLogBuffer();
   $filename = "./Games/$gameName/gamelog.txt";
-  $handle = fopen($filename, "r");
-  $lines = [];
-  if ($handle) {
-    while (!feof($handle)) {
-        $lines[] = fgets($handle);
-    }
+  $handle = @fopen($filename, "rb");
+  if ($handle === false) return;
+
+  fseek($handle, 0, SEEK_END);
+  $filesize = ftell($handle);
+  if ($filesize <= 0) {
     fclose($handle);
-    if (count($lines) <= $n) return;
-    $lines = array_slice($lines, -$n);
+    return;
   }
 
-  $handle = fopen($filename, "w");
-  fwrite($handle, implode("", $lines));
+  $chunkSize = 65536;
+  $offset = $filesize;
+  $newlines = 0;
+  $tailChunks = [];
+  while ($offset > 0 && $newlines <= $n) {
+    $readLen = (int)min($chunkSize, $offset);
+    $offset -= $readLen;
+    fseek($handle, $offset, SEEK_SET);
+    $chunk = fread($handle, $readLen);
+    if ($chunk === false) {
+      fclose($handle);
+      return;
+    }
+    $newlines += substr_count($chunk, "\n");
+    $tailChunks[] = $chunk;
+  }
+  fclose($handle);
+
+  // Whole file scanned and still at or under the cap: nothing to trim.
+  if ($offset === 0 && $newlines <= $n) return;
+
+  $tail = count($tailChunks) === 1 ? $tailChunks[0] : implode("", array_reverse($tailChunks));
+  $excess = $newlines - $n;
+  $cut = 0;
+  for ($i = 0; $i < $excess; ++$i) {
+    $nl = strpos($tail, "\n", $cut);
+    if ($nl === false) break;
+    $cut = $nl + 1;
+  }
+  if ($cut > 0) $tail = substr($tail, $cut);
+
+  $handle = @fopen($filename, "wb");
+  if ($handle === false) return;
+  fwrite($handle, $tail);
   fclose($handle);
 }
 
@@ -151,10 +182,12 @@ function WriteSystemMessage($text, $path="./")
 
 function JSONLog($gameName, $playerID, $path="./")
 {
-  FlushLogBuffer(); // make any lines buffered in this process visible to the read
+  global $logWriteBuffer;
   $filename = "{$path}Games/$gameName/gamelog.txt";
+  if (!empty($logWriteBuffer)) FlushLogBuffer();
+
   $maxRead = 131072; // 128 KB cap — prevents OOM when log file grows large
-  $handler = @fopen($filename, "r");
+  $handler = @fopen($filename, "rb");
   if ($handler === false) return "";
   fseek($handler, 0, SEEK_END);
   $filesize = ftell($handler);
@@ -169,6 +202,7 @@ function JSONLog($gameName, $playerID, $path="./")
   if ($truncated && ($nl = strpos($line, "\n")) !== false) {
     $line = substr($line, $nl + 1);
   }
+
   $red = "#cb0202";
   $blue = "#128ee5";
   $player1Color = ($playerID === 1 || $playerID === 3) ? $blue : $red;

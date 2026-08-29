@@ -2625,28 +2625,33 @@ function EffectPlayCardConstantRestriction($cardID, &$restriction, $phase, $moda
   return $restriction != "";
 }
 
+function HasBrandOrEnflameEffect(): bool
+{
+  global $currentTurnEffects;
+  $count = count($currentTurnEffects);
+  $pieces = CurrentTurnEffectsPieces();
+  for ($i = 0; $i < $count; $i += $pieces) {
+    switch ($currentTurnEffects[$i]) {
+      case "brand_with_cinderclaw_red":
+      case "brand_with_cinderclaw_yellow":
+      case "brand_with_cinderclaw_blue":
+      case "enflame_the_firebrand_red":
+        return true;
+    }
+  }
+  return false;
+}
+
 function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, $resolutionCheck = false, $index = -1)
 {
   global $currentTurnEffects, $currentPlayer;
   $restrictedBy = "";
   $otherPlayer = 3 - $currentPlayer;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  $hasBrandOrEnflame = false;
   $currentTurnEffectsCount = count($currentTurnEffects);
-  $abilityTypes = GetAbilityTypes($cardID, from:$from);
-  for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
-    switch ($currentTurnEffects[$j]) {
-      case "brand_with_cinderclaw_red":
-      case "brand_with_cinderclaw_yellow":
-      case "brand_with_cinderclaw_blue":
-      case "enflame_the_firebrand_red":
-        $hasBrandOrEnflame = true;
-        break 2;
-      default:
-        break;
-    }
-  }
-  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
+  $hasBrandOrEnflame = null;
+  $abilityTypes = null;
+  for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       $commaPos = strpos($currentTurnEffects[$i], ',');
       $effectID = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
@@ -2670,6 +2675,7 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           break;
         case "WarmongersPeace":
           // str_contains(GetAbilityTypes($cardID, from:$from), "I") should allow discarding attack actions for instant abilities under peace
+          $abilityTypes ??= GetAbilityTypes($cardID, from:$from);
           if (($type == "AA" && !str_contains($abilityTypes, "I") && !DelimStringContains($abilityTypes, "A")) || (TypeContains($cardID, "W", $currentPlayer) && GetResolvedAbilityType($cardID) != "I"))
             $restrictedBy = "warmongers_diplomacy_blue";
           break;
@@ -2679,9 +2685,11 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
         case "coat_of_allegiance":
         case "oath_of_loyalty_red":
           if (!$resolutionCheck) {
-            if (!SearchCurrentTurnEffects("fealty", $currentPlayer) && !TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains(GetAbilityTypes($cardID, from:$from), "I")) {
+            $abilityTypes ??= GetAbilityTypes($cardID, from:$from);
+            if (!SearchCurrentTurnEffects("fealty", $currentPlayer) && !TalentContains($cardID, "DRACONIC", $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "CHAR" && !str_contains($abilityTypes, "I")) {
               if (TypeContains($cardID, "AA")) {
                 // this case is needed because brand with cinderclaw isn't set to become active until after the attack is played
+                $hasBrandOrEnflame ??= HasBrandOrEnflameEffect();
                 if (!$hasBrandOrEnflame) $restrictedBy = $effectID;
               }
               else $restrictedBy = $effectID;
@@ -2693,9 +2701,8 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
       }
     }
   }
-  $nameBlocked = NameBlocked($cardID, 0, $from);
   // handle discarded modal cards elsewhere
-  if($nameBlocked && GetAbilityTypes($cardID, from:$from) == ""){
+  if (NameBlocked($cardID, 0, $from) && ($abilityTypes ??= GetAbilityTypes($cardID, from:$from)) == ""){
     $restrictedBy = "Name Blocked";
     return true;
   }

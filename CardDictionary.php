@@ -2278,12 +2278,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $currentPlayer;
   $character = &GetPlayerCharacter($player);
-  $myHand = &GetHand($player);
-  $myArsenal = &GetArsenal($player);
-  $myItems = &GetItems($player);
-  $mySoul = &GetSoul($player);
-  $otherPlayerDiscard = &GetDiscard($otherPlayer);
-  $attackID = $CombatChain->AttackCard()->ID();
   $type = CardType($cardID);
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if (!$resolutionCheck) { //when running a resoulution check, only check for targets
@@ -2307,7 +2301,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $restriction = "frost_lock_blue";
       return true;
     }
-    if (SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $player)) {
+    if (SearchCurrentTurnEffectsForIndex("imperial_edict_red", $player) != -1
+      && SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $player)) {
       if ($from != "PLAY" && $from != "EQUIP" && !DelimStringContains(GetAbilityNames($cardID, $from), "Ability", true) && GetAbilityNames($cardID, $index, $from) == "") {
         $restriction = "imperial_edict_red";
         return true;
@@ -2348,6 +2343,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if ($card != "-") {
     return $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
   }
+  $myHand = &GetHand($player);
+  $myArsenal = &GetArsenal($player);
+  $myItems = &GetItems($player);
+  $mySoul = &GetSoul($player);
+  $otherPlayerDiscard = &GetDiscard($otherPlayer);
+  $attackID = $CombatChain->AttackCard()->ID();
   switch ($cardID) {
     case "braveforge_bracers":
       return GetClassState($player, $CS_HitsWithWeapon) == 0;
