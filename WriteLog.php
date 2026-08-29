@@ -207,5 +207,5 @@ function JSONLog($gameName, $playerID, $path="./")
   $blue = "#128ee5";
   $player1Color = ($playerID === 1 || $playerID === 3) ? $blue : $red;
   $player2Color = ($playerID === 2) ? $blue : $red;
-  return str_replace(["\r\n", "<PLAYER1COLOR>", "<PLAYER2COLOR>"], ["<br>", $player1Color, $player2Color], $line);
+  return strtr($line, ["\r\n" => "<br>", "<PLAYER1COLOR>" => $player1Color, "<PLAYER2COLOR>" => $player2Color]);
 }

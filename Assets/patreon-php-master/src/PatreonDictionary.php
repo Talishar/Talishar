@@ -482,7 +482,7 @@ enum PatreonCampaign : string
     return isset($rosters[$this->value][$userName]);
   }
 
-  public function AltArts($heroCardNumber = ""): string
+  public function AltArtsList($heroCardNumber = ""): array
   {
     $altArts = [];
 
@@ -502,16 +502,25 @@ enum PatreonCampaign : string
       }
     }
 
-    // Add campaign-specific alt arts
-    $campaignAltArts = $this->getCampaignAltArts();
-    if (!empty($campaignAltArts)) {
-      $altArts[] = $campaignAltArts;
+    $campaignAltArts = $this->getCampaignAltArtsList();
+    if ($campaignAltArts) {
+      foreach ($campaignAltArts as $entry) $altArts[] = $entry;
     }
 
-    return implode(",", $altArts);
+    return $altArts;
+  }
+
+  public function AltArts($heroCardNumber = ""): string
+  {
+    return implode(",", $this->AltArtsList($heroCardNumber));
   }
 
   private function getCampaignAltArts(): string
+  {
+    return implode(",", $this->getCampaignAltArtsList());
+  }
+
+  private function getCampaignAltArtsList(): array
   {
     $altArts = [];
     
@@ -560,7 +569,7 @@ enum PatreonCampaign : string
         break;
     }
 
-    return implode(",", $altArts);
+    return $altArts;
   }
 
   public function CardBacks(): string
