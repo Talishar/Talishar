@@ -181,20 +181,20 @@ class remember_the_mists_blue extends Card {
 }
 
 class prey_on_insecurity_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "prey_on_insecurity_red";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "prey_on_insecurity_red";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		if ($from == "COMBATCHAINATTACKS") {
 			if (str_contains($target, "COMBATCHAINLINK"))
 				AddCurrentTurnEffect($this->cardID, $this->controller, "PLAY");
 			elseif (str_contains($target, "ATTACKQUEUE"))
 				WriteLog("Targeting attack queue not yet supported for $this->cardID", highlight:true);
 		}
-    return "";
-  }
+    	return "";
+  	}
 
 	function AbilityType($index = -1, $from = '-') {
 		return ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "AR": "AA";

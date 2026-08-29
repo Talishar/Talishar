@@ -5017,3 +5017,82 @@ class rush_of_knowledge_blue extends Card {
     return true;
   }
 }
+
+class astral_ambience_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "astral_ambience_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+      if ($from == "PLAY")
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function AbilityPlayableFromCombatChain($index = '-') {
+    global $mainPlayer;
+    return $this->controller == $mainPlayer;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+		return ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA";
+	}
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $inds = GetUntapped($this->controller, "MYAURAS", "isSameName=spectral_shield");
+    if($inds != "") {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZTAP", $this->controller, "<-", 1);
+    }
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if ($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
+      $inds = GetUntapped($this->controller, "MYAURAS", "isSameName=spectral_shield");
+      return $inds == "";
+    }
+    return false;
+  }
+
+  function HasFragment() {
+    return true;
+  }
+
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("spectral_shield", $this->controller);
+  }
+
+  // function SpecialName() {
+  //   return "Astral Ambience";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialClass() {
+    return "ILLUSIONIST";
+  }
+}
