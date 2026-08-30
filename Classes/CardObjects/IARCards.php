@@ -5227,6 +5227,15 @@ class consuming_appetite_yellow extends Card {
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return CardNameContains($CombatChain->AttackCard()->ID(), "Blasmophet, the Insatiable Hunger");
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
     return true;
   }
 
