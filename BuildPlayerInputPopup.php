@@ -473,15 +473,23 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         for ($i = 0; $i < $optionsCount; ++$i) {
           if ($options[$i] != "" && $options[$i] != "PASS" && $options[$i] != "NOPASS") {
             if ($isMultiChooseDiscard) {
-              $wateryGraveCounter = SearchLayersForTargetUniqueID($myDiscard[$options[$i]+1]) != -1;
-              $cardsArray[] = JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i, wateryGraveIcon: $wateryGraveCounter);
+              $optionIndex = (int)$options[$i];
+              $discardUID = $myDiscard[$optionIndex + 1] ?? null;
+              $wateryGraveCounter = $discardUID !== null && SearchLayersForTargetUniqueID($discardUID) != -1;
+              $cardsArray[] = JSONRenderedCard($myDiscard[$optionIndex] ?? "", actionDataOverride: $i, wateryGraveIcon: $wateryGraveCounter);
             } else if ($isMultiChooseSubcards) {
               $cardsArray[] = JSONRenderedCard($options[$i], actionDataOverride: $i);
             } else if ($isMultiChooseItems) {
-              $cardsArray[] = JSONRenderedCard($myItems[$options[$i]], overlay:$myItems[$options[$i]+2] != 2 ? 'disabled' : 'none', counters: $myItems[$options[$i]+1], actionDataOverride: $i);
+              $optionIndex = (int)$options[$i];
+              $cardsArray[] = JSONRenderedCard(
+                $myItems[$optionIndex] ?? "",
+                overlay: ($myItems[$optionIndex + 2] ?? 0) != 2 ? 'disabled' : 'none',
+                counters: $myItems[$optionIndex + 1] ?? null,
+                actionDataOverride: $i,
+              );
             } else if ($multiZoneRef !== null) {
               $isTheirZone = $turnPhase == "MULTICHOOSETHEIRDISCARD" || $turnPhase == "MULTICHOOSETHEIRDECK";
-              $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone);
+              $cardsArray[] = JSONRenderedCard($multiZoneRef[(int)$options[$i]] ?? "", actionDataOverride: $i, isOpponent: $isTheirZone);
             }
           }
         }
