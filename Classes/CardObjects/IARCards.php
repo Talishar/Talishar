@@ -4826,9 +4826,9 @@ class chains_of_consecration_yellow extends Card {
     return 0;
   }
 
-  // function SpecialName() {
-  //   return "Chains of Consecration";
-  // }
+  function SpecialName() {
+    return "Chains of Consecration";
+  }
 
   function SpecialPitch() {
     return 2;
