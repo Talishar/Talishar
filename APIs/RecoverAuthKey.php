@@ -1,11 +1,9 @@
 <?php
 
-include "../HostFiles/Redirector.php";
-include "../Libraries/HTTPLibraries.php";
-include_once "../Libraries/SHMOPLibraries.php";
-include_once "../Libraries/ValidationLibraries.php";
-include_once "../Libraries/GameAuthLibraries.php";
-include_once "../AccountFiles/AccountSessionAPI.php";
+include 'Libraries/HTTPLibraries.php';
+include "HostFiles/Redirector.php";
+include_once "Libraries/SHMOPLibraries.php";
+include_once "./AccountFiles/AccountSessionAPI.php";
 
 SetHeaders();
 header('Content-Type: application/json; charset=utf-8');
@@ -15,10 +13,7 @@ $response->success = false;
 $response->error = '';
 $response->authKey = '';
 
-$body = json_decode(file_get_contents('php://input'), true);
-if (!is_array($body)) $body = [];
-$input = array_merge($_GET, $_POST, $body);
-
+// Check if user is logged in
 if (!IsUserLoggedIn()) {
   $response->error = "User not logged in";
   http_response_code(401);
@@ -26,65 +21,80 @@ if (!IsUserLoggedIn()) {
   exit;
 }
 
-$accountUid = LoggedInUserName();
-session_write_close();
+$gameName = TryGet("gameName", "");
+$playerID = TryGet("playerID", 0);
 
-$gameName = strval($input["gameName"] ?? "");
-$requestedPlayerID = intval($input["playerID"] ?? 0);
-
-if ($gameName === "" || !IsGameNameValid($gameName)) {
+// Validate inputs
+if (empty($gameName) || !IsGameNameValid($gameName)) {
   $response->error = "Invalid game name";
   http_response_code(400);
   echo json_encode($response);
   exit;
 }
 
-if (!file_exists("../Games/" . $gameName . "/GameFile.txt")) {
+if (!is_numeric($playerID) || ($playerID !== "1" && $playerID !== "2")) {
+  $response->error = "Invalid player ID";
+  http_response_code(400);
+  echo json_encode($response);
+  exit;
+}
+
+// Check if game exists
+$gameFolder = "./Games/" . $gameName;
+if (!is_dir($gameFolder)) {
   $response->error = "Game does not exist";
   http_response_code(404);
   echo json_encode($response);
   exit;
 }
 
-include "./APIParseGamefile.php";
-UnlockGamefile();
-
-// The seat is owned by whichever account is recorded in the game file, so the
-// account handle alone is enough to hand the key back on a new device.
-$playerID = GameSeatForAccount($p1uid, $p2uid, $accountUid);
-if ($playerID === 0) {
-  $response->error = "You are not a player in this game";
-  http_response_code(403);
-  echo json_encode($response);
-  exit;
-}
-
-if ($requestedPlayerID === 1 || $requestedPlayerID === 2) {
-  if ($requestedPlayerID !== $playerID) {
-    $response->error = "You are not that player in this game";
-    http_response_code(403);
-    echo json_encode($response);
-    exit;
-  }
-}
-
-$authKey = ResolveGameAuthKey($playerID, null, $p1Key, $p2Key, $p1uid, $p2uid, $accountUid);
-if ($authKey === null || $authKey === '') {
-  $response->error = "No auth key on file for this game";
+// Check if game file exists
+$gameFile = $gameFolder . "/gamestate.txt";
+if (!file_exists($gameFile)) {
+  $response->error = "Game file not found";
   http_response_code(404);
   echo json_encode($response);
   exit;
 }
 
-if (!empty($_SESSION["userid"])) {
-  include_once "../includes/dbh.inc.php";
-  include_once "../includes/functions.inc.php";
-  StoreLastGameInfo($_SESSION["userid"], $gameName, $playerID, $authKey);
+// Check that this player is part of the game by verifying game is still active
+// and the player was one of the original players
+$gameStatus = intval(GetCachePiece($gameName, 14));
+if ($gameStatus == 0) {
+  // Game hasn't started yet, can't recover
+  $response->error = "Game has not started";
+  http_response_code(400);
+  echo json_encode($response);
+  exit;
 }
 
-$response->success = true;
-$response->authKey = $authKey;
-$response->playerID = $playerID;
-$response->gameName = $gameName;
+// IMPORTANT: Store auth keys in session when game is joined
+// In Start.php and JoinGame.php, we already set $_SESSION["p1AuthKey"] and $_SESSION["p2AuthKey"]
+// However, if the session was lost, we can't recover it from this endpoint alone.
+// The auth keys need to be stored securely when the game is created/joined.
+
+// Try to get the auth key from session (if still available)
+$authKey = "";
+if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) {
+  $authKey = $_SESSION["p1AuthKey"];
+} else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) {
+  $authKey = $_SESSION["p2AuthKey"];
+}
+
+// If session auth key exists, return it
+if (!empty($authKey)) {
+  $response->success = true;
+  $response->authKey = $authKey;
+  //WriteLog("🔑 Auth key recovered from session for game $gameName, player $playerID");
+  echo json_encode($response);
+  exit;
+}
+
+// If we can't find it in session, we can't recover it from this endpoint
+// This is a limitation of the current architecture - auth keys are ephemeral
+// To make this more robust, the backend needs to store encrypted auth keys
+// in persistent storage (database or file) when games are created
+$response->error = "Auth key not found in session. Please rejoin the game or contact support.";
+http_response_code(410); // 410 Gone - resource is no longer available
 echo json_encode($response);
 exit;

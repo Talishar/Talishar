@@ -27,7 +27,6 @@ include_once "GameTerms.php";
 include_once "Libraries/UILibraries.php";
 include_once "Libraries/StatFunctions.php";
 include_once "Libraries/PlayerSettings.php";
-include_once "Libraries/GameAuthLibraries.php";
 include_once "BuildGameState.php";
 include_once "BuildPlayerInputPopup.php";
 
@@ -102,22 +101,6 @@ $sessionData['friendSet'] = !empty($sessionData['friendList']) ? array_flip($ses
 $isGamePlayer = $playerID == 1 || $playerID == 2;
 $currentTime = round(microtime(true) * 1000);
 $cacheArr ??= ReadCacheArray($gameName) ?? [];
-
-$gameIsReplay = ($cacheArr[9] ?? "") === "1";
-if ($isGamePlayer && !$gameIsReplay) {
-  list($gameP1Key, $gameP2Key, $gameP1Uid, $gameP2Uid) = ReadGameFileSeatAuth($gameName, "./");
-  $authKeyCandidates = [$authKey, $_COOKIE["lastAuthKey"] ?? ""];
-  $resolvedAuthKey = ResolveGameAuthKey($playerID, $authKeyCandidates, $gameP1Key, $gameP2Key, $gameP1Uid, $gameP2Uid, $sessionData['userName']);
-  if ($resolvedAuthKey === null) {
-    if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
-      echo json_encode(["errorMessage" => "Game no longer exists on the server."]);
-      exit;
-    }
-    echo json_encode(["errorMessage" => "Invalid Authkey"]);
-    exit;
-  }
-  $authKey = $resolvedAuthKey;
-}
 
 // Track player connection status
 if ($isGamePlayer) {

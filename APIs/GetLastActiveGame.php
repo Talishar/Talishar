@@ -21,13 +21,10 @@ include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
-include_once "../Libraries/ValidationLibraries.php";
-include_once "../Libraries/GameAuthLibraries.php";
 
 SetHeaders();
 
 $loggedIn = IsUserLoggedIn();
-$accountUid = $loggedIn ? LoggedInUserName() : null;
 
 session_write_close();
 
@@ -118,13 +115,13 @@ $response->opponentName = ($opponentID == 1 ? ($p1uid != "-" ? $p1DisplayName : 
 $opponentStatus = $gameCacheArr[$opponentID + 2] ?? "";
 $response->opponentDisconnected = ($opponentStatus == "-1" || $opponentStatus == "");
 
-$resolvedAuthKey = ResolveGameAuthKey($playerID, $authKey, $p1Key, $p2Key, $p1uid, $p2uid, $accountUid);
-if ($resolvedAuthKey === null) {
-    $response->gameInProgress = false;
-    $response->authKeyMismatch = true;
-    $response->authKey = '';
-} else {
-    $response->authKey = $resolvedAuthKey;
+if ($playerID != 3) {
+    $targetAuth = ($playerID == 1 ? $p1Key : $p2Key);
+    if ($authKey !== $targetAuth) {
+        // Auth key mismatch - don't allow recovery
+        $response->gameInProgress = false;
+        $response->authKeyMismatch = true;
+    }
 }
 
 echo json_encode($response);

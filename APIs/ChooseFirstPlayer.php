@@ -4,7 +4,6 @@ include "../WriteLog.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/ValidationLibraries.php";
-include_once "../Libraries/GameAuthLibraries.php";
 
 SetHeaders();
 
@@ -43,13 +42,11 @@ include "../HostFiles/Redirector.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$resolvedAuthKey = ResolveGameAuthKey($playerID, [$authKey ?? null, $_POST["authKey"] ?? null], $p1Key, $p2Key, $p1uid, $p2uid, CurrentAccountUid());
-if ($resolvedAuthKey === null) {
+if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
   $response->error = "Authentication failed";
   echo json_encode($response);
   exit;
 }
-$authKey = $resolvedAuthKey;
 
 if ($action == "Go First") {
   $firstPlayer = $playerID;
