@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
@@ -441,16 +438,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $layersCount = count($layers);
   $chainLinksCount = count($chainLinks);
 
-  // Index effect targets once
-  $currentTurnEffectsCount = count($currentTurnEffects);
-  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  $currentTurnEffectUIDSet = [];
-  for ($effectIndex = 2; $effectIndex < $currentTurnEffectsCount; $effectIndex += $currentTurnEffectsPieces) {
-    $effectUID = $currentTurnEffects[$effectIndex];
-    if ($effectUID === null || $effectUID === "" || $effectUID === "-" || $effectUID === -1) continue;
-    $currentTurnEffectUIDSet[(string)$effectUID] = true;
-  }
-
   // Tracker State — deprecated, no longer used
   // $tracker = new stdClass();
   // $tracker->color = $playerID == $currentPlayer ? "blue" : "red";
@@ -639,7 +626,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $weaponPowerModifiers = [];
       $powerCounters = $CharacterCard->NumPowerCounters();
       if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0 ||
-        isset($currentTurnEffectUIDSet[(string)($CharacterCard->UniqueID() ?? "-")])) $border = 5;
+        CurrentTurnEffectHasUniqueID($CharacterCard->UniqueID() ?? "-")) $border = 5;
     }
     if($i == 0 && $otherPlayer == $mainPlayer) {
       $heroCard = $CharacterCard->CardID();
@@ -885,7 +872,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $weaponPowerModifiers = [];
       if (!$playable) {
           if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $playerID) > 0 ||
-              isset($currentTurnEffectUIDSet[(string)($myCharacter[$i + 11] ?? "-")])) {
+              CurrentTurnEffectHasUniqueID($myCharacter[$i + 11] ?? "-")) {
               $border = 5;
           }
 
@@ -1078,7 +1065,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
     else {
       $isTargeted = SearchLayersForTargetUniqueID($uniqueID) != -1;
-      $hasActiveEffect = isset($currentTurnEffectUIDSet[(string)$uniqueID]);
+      $hasActiveEffect = SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1;
       if ($isTargeted && $hasActiveEffect) $label = "Targeted/Effect Active";
       elseif ($hasActiveEffect) $label = "Effect Active";
       elseif ($isTargeted) $label = "Targeted";
@@ -1192,7 +1179,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $uniqueID = $myAllies[$i+5];
     if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
     elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
-    elseif(isset($currentTurnEffectUIDSet[(string)$uniqueID])) $label = "Effect Active";
+    elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
     $myAlliesOutput[] = JSONRenderedCard(
       cardNumber: $myAllies[$i],
       action: $actionType,
@@ -1365,6 +1352,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $opponentComponentCounts = [];
   $friendlyRenderedEffects = [];
   $opponentRenderedEffects = [];
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $effectCardIds = [];
   $adminEffectIdx = [];
   $fancyCountersCache = [];
