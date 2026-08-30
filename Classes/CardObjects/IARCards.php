@@ -4940,9 +4940,9 @@ class sigil_of_the_muse_red extends Card {
     }
   }
 
-  // function SpecialName() {
-  //   return "Sigil of the Muse";
-  // }
+  function SpecialName() {
+    return "Sigil of the Muse";
+  }
 
   function SpecialType() {
     return "A";
@@ -5076,9 +5076,9 @@ class astral_ambience_yellow extends Card {
     PlayAura("spectral_shield", $this->controller);
   }
 
-  // function SpecialName() {
-  //   return "Astral Ambience";
-  // }
+  function SpecialName() {
+    return "Astral Ambience";
+  }
 
   function SpecialPitch() {
     return 2;
