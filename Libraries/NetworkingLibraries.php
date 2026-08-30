@@ -1,6 +1,5 @@
 <?php
 const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
-const MAX_REPLAYS_SAVED = 3;
 const UNDO_PER_TURN_LIMIT = 25;
 const MAX_PLAYER_REPORTS = 5;
 

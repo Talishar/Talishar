@@ -73,6 +73,13 @@ function JSONRenderedCard(
   $slot = NULL
 ) {
   $cardNumber = BlindCard($cardNumber, true);
+
+  if (func_num_args() === 1) {
+    $card = new stdClass();
+    if ($cardNumber !== NULL) $card->cardNumber = $cardNumber;
+    return $card;
+  }
+
   global $playerID, $CS_NumLightningPlayed, $isReplay;
 
   // Null coalescing avoids a long comparison chain on the common no-counter
