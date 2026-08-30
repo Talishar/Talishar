@@ -13,7 +13,6 @@ include_once "../includes/functions.inc.php";
 include_once "../includes/MatchupHelpers.php";
 include_once "../includes/ModeratorList.inc.php";
 include_once "../Libraries/ValidationLibraries.php";
-include_once "../Libraries/GameAuthLibraries.php";
 
 SetHeaders();
 
@@ -24,13 +23,10 @@ if($_POST == null) exit;
 $gameName = $_POST["gameName"];
 $playerID = $_POST["playerID"];
 $lastUpdate = $_POST["lastUpdate"] ?? null;
-$authKeyCandidates = [
-  $_POST["authKey"] ?? null,
-  $playerID == 1 ? ($_SESSION["p1AuthKey"] ?? null) : ($_SESSION["p2AuthKey"] ?? null),
-  $_COOKIE["lastAuthKey"] ?? null
-];
+if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
+else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
+else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
 $lastAuthKey = $_SESSION["lastAuthKey"] ?? null;
-$sessionAccountUid = $_SESSION["useruid"] ?? null;
 
 session_write_close();
 
@@ -114,8 +110,8 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
-$authKey = ResolveGameAuthKey($playerID, $authKeyCandidates, $p1Key, $p2Key, $p1uid, $p2uid, $sessionAccountUid);
-if ($authKey === null) {
+// Spectators carry no key of their own; validateGameAuthKey passes them through.
+if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
   $response->error = "Authentication failed";
   echo json_encode($response);
   exit;
@@ -174,7 +170,6 @@ if ($kickPlayerTwo) {
 
 $response = new stdClass();
 $response->sideboardWasReset = $sideboardWasReset;
-if ($playerID != 3) $response->authKey = $authKey;
 
 if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   // Stale-state: cache hasn't advanced beyond what client already has.
