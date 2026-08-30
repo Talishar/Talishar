@@ -5148,3 +5148,64 @@ class ominous_toll_red extends Card {
     return "SHADOW";
   }
 }
+
+class embrace_ursur_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "embrace_ursur_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", context:"Banish a card (or pass)", may:true);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $index = explode("-", $choice)[1] ?? -1;
+    if ($index != "-") {
+      $Hand = new Hand($this->controller);
+      $cardID = $Hand->Remove($index);
+      BanishCardForPlayer($cardID, $this->controller, "HAND");
+      if (ClassContains($cardID, "RUNEBLADE", $this->controller))
+        PlayAura("runechant", $this->controller);
+      if (TalentContains($cardID, "SHADOW", $this->controller))
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  // function SpecialName() {
+  //   return "Embrace Ursur";
+  // }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
