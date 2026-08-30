@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * GetUpdateSSE.php
  *
@@ -149,6 +147,7 @@ echo ("data: " . json_encode($initialState) . "\n\n");
 ob_flush();
 flush();
 unset($initialState);
+gc_collect_cycles();
 
 $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
@@ -167,6 +166,7 @@ $rateLimitStartInterval = microtime(true);
 $rateLimitProcessCount = 0;
 $buildFailureStreak = 0;
 $loopStartTimeMs = round(microtime(true) * 1000);
+$buildsSinceCycleCollection = 0;
 
 while (true) {
   $currentRealTime = microtime(true);
@@ -242,6 +242,10 @@ while (true) {
     $previouslyInactive = $inactive;
     SendContent($gameStatePayload, true);
     unset($gameStatePayload);
+    if (++$buildsSinceCycleCollection >= 25) {
+      gc_collect_cycles();
+      $buildsSinceCycleCollection = 0;
+    }
     set_time_limit(120);
   }
 
