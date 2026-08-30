@@ -8,6 +8,7 @@ session_start();
 // PHP sessions use exclusive file locks - holding the lock during game processing
 // blocks all other requests from this user, causing session deadlock.
 $sessionUserId = $_SESSION["userid"] ?? null;
+$sessionUserName = $_SESSION["useruid"] ?? null;
 
 // Release session lock NOW - before any file I/O or game processing
 session_write_close();
@@ -28,6 +29,7 @@ include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
 include_once "APIKeys/APIKeys.php";
 include_once "./Libraries/ValidationLibraries.php";
+include_once "./Libraries/GameAuthLibraries.php";
 
 @set_time_limit(1);
 @ini_set('max_execution_time', '1');
@@ -61,6 +63,7 @@ if ($playerID == 0) {
   include_once "./AccountFiles/AccountSessionAPI.php";
   IsUserLoggedIn();
   $sessionUserId = $_SESSION["userid"] ?? null;
+  $sessionUserName = $_SESSION["useruid"] ?? null;
   session_write_close();
 }
 
@@ -101,10 +104,11 @@ $randomSeeded = false;
 // Skip auth and game checks for profile operations (playerID == 0)
 try {
   if (!IsReplay() && $playerID != 0) {
-    if (($playerID == 1 || $playerID == 2) && $authKey == "") {
-      if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
-    }
-    if (!validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key)) exit;
+    $authKeyCandidates = [$authKey, $_COOKIE["lastAuthKey"] ?? ""];
+    list($gameP1Uid, $gameP2Uid) = ReadGameFileAccountUids($gameName, "./");
+    $resolvedAuthKey = ResolveGameAuthKey($playerID, $authKeyCandidates, $p1Key, $p2Key, $gameP1Uid, $gameP2Uid, $sessionUserName);
+    if ($resolvedAuthKey === null) exit;
+    $authKey = $resolvedAuthKey;
     if ($playerID == 3 && !IsModeAllowedForSpectators($mode)) exit;
     if (!IsModeAsync($mode) && $currentPlayer != $playerID) {
       $currentTime = round(microtime(true) * 1000);

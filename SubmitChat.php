@@ -24,6 +24,7 @@ include "Libraries/HTTPLibraries.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
+include_once "Libraries/GameAuthLibraries.php";
 SetHeaders();
 
 $gameName = $_GET["gameName"];
@@ -67,20 +68,22 @@ if (in_array($origin, $allowedOrigins)) {
 }
 
 if ($playerID === 1 || $playerID === 2) {
-  $targetAuthKey = "";
-  if ($playerID == 1 && $p1Key !== null) $targetAuthKey = $p1Key;
-  else if ($playerID == 2 && $p2Key !== null) $targetAuthKey = $p2Key;
-  if($targetAuthKey === "" || $targetAuthKey === null) {
+  $targetAuthKey = ($playerID == 1 ? $p1Key : $p2Key);
+  if ($targetAuthKey === "" || $targetAuthKey === null) {
     http_response_code(400);
     die("Game does not exist.");
   }
-  if ($authKey !== $targetAuthKey) {
-    if (isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
-    if ($authKey !== $targetAuthKey) {
-      http_response_code(403);
-      die("Invalid auth key: " . htmlspecialchars($authKey));
-    }
+  $authKeyCandidates = [
+    $authKey,
+    $playerID == 1 ? $sessionP1AuthKey : $sessionP2AuthKey,
+    $_COOKIE["lastAuthKey"] ?? null
+  ];
+  $resolvedAuthKey = ResolveGameAuthKey($playerID, $authKeyCandidates, $p1Key, $p2Key, $p1uid, $p2uid, $sessionUserUid);
+  if ($resolvedAuthKey === null) {
+    http_response_code(403);
+    die("Invalid auth key.");
   }
+  $authKey = $resolvedAuthKey;
 } else {
   if (!file_exists("./Games/" . $gameName . "/GameFile.txt")) {
     http_response_code(400);

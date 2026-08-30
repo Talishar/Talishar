@@ -5,6 +5,7 @@ declare(strict_types=1);
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
+include_once __DIR__ . "/Libraries/GameAuthLibraries.php";
 if (!function_exists('IsHideHandFromFriends')) {
     function IsHideHandFromFriends($player) { return false; }
 }
@@ -91,9 +92,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   // Auth validation
-  $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
-  if (!$isReplay && $playerID != 3 && $authKey !== $targetAuth) {
-    return "Invalid Authkey";
+  if (!$isReplay && $playerID != 3) {
+    $resolvedAuthKey = ResolveGameAuthKey($playerID, $authKey, $p1Key, $p2Key, $p1uid, $p2uid, $sessionData['userName'] ?? null);
+    if ($resolvedAuthKey === null) {
+      return "Invalid Authkey";
+    }
+    $authKey = $resolvedAuthKey;
   }
 
   $turnCount = count($turn);
