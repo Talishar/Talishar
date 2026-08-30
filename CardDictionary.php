@@ -59,12 +59,6 @@ include "CardDictionaries/OmensOfTheThirdAge/OMNShared.php";
 include "CardDictionaries/IARShared.php";
 include "CardDictionaries/MasteryPacks/MPWShared.php";
 include "CardDictionaries/MasteryPacks/MPAShared.php";
-include_once "Classes/Card.php";
-// only include for unreleased sets that are being actively worked on
-include_once "Classes/CardObjects/IARCards.php";
-include_once "Classes/CardObjects/MPACards.php";
-include_once "Classes/CardObjects/AMOCards.php";
-include_once "Classes/CardObjects/AMACards.php";
 
 
 $CID_BloodRotPox = "bloodrot_pox";
