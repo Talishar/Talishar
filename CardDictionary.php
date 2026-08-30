@@ -1125,6 +1125,9 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
   if ($from == "PLAY" && SubtypeContains($cardID, "Zombie", $player) && SearchCharacterForCard($player, "vox_necropolis")) {
     return "AA";
   }
+  if ($from == "PLAY" && SearchCurrentTurnEffects("consuming_appetite_yellow", $player) && NameOverride($cardID, $player) == "Blasmophet, the Insatiable Hunger") {
+    return "AA";
+  }
   $setResult = match($set) {
     "WTR" => WTRAbilityType($cardID, $index, $from),
     "ARC" => ARCAbilityType($cardID, $index),
