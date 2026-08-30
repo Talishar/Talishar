@@ -637,6 +637,8 @@ function DamageAlly($targetPlayer, $targetInd, $damage, $type) {
 function AllyAttackCosts($player, $cardID) {
   if (SearchCharacterAlive($player, "vox_necropolis") && SubtypeContains($cardID, "Zombie"))
     return 1;
+  if (SearchCurrentTurnEffects("consuming_appetite_yellow", $player) && NameOverride($cardID, $player) == "Blasmophet, the Insatiable Hunger")
+    return 0;
   return -1;
 }
 
@@ -647,6 +649,10 @@ function PayAllyAbilityAdditionalCosts($cardID, $index, $from) {
       $AllyCard = new AllyCard($index, $currentPlayer);
       $AllyCard->TapForCost();
     }
+    if (SearchCurrentTurnEffects("consuming_appetite_yellow", $currentPlayer) && NameOverride($cardID, $currentPlayer) == "Blasmophet, the Insatiable Hunger") {
+      $AllyCard = new AllyCard($index, $currentPlayer);
+      $AllyCard->TapForCost();
+    }
   }
 }
 
@@ -654,6 +660,10 @@ function AllyAbilityRestricted($cardID, $index, $from) {
   global $currentPlayer;
   if (GetResolvedAbilityType($cardID, $from) == "AA") {
     if (SearchCharacterAlive($currentPlayer, "vox_necropolis") && SubtypeContains($cardID, "Zombie")) {
+      $AllyCard = new AllyCard($index, $currentPlayer);
+      return $AllyCard->Tapped();
+    }
+    if (SearchCurrentTurnEffects("consuming_appetite_yellow", $currentPlayer) && NameOverride($cardID, $currentPlayer) == "Blasmophet, the Insatiable Hunger") {
       $AllyCard = new AllyCard($index, $currentPlayer);
       return $AllyCard->Tapped();
     }
