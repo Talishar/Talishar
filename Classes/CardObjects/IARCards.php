@@ -5202,7 +5202,7 @@ class embrace_ursur_red extends Card {
   }
 
   function SpecialClass() {
-    return "NECROMANCER";
+    return "RUNEBLADE";
   }
 
   function SpecialTalent() {

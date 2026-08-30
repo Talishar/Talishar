@@ -11,7 +11,7 @@ include "CharacterAbilities.php";
 include "WeaponLogic.php";
 include "MZLogic.php";
 include "Classes/Banish.php";
-include "Classes/Card.php";
+include_once "Classes/Card.php";
 include "Classes/CombatChain.php";
 include "Classes/Stack.php";
 include "Classes/ChainLinks.php";
