@@ -5193,9 +5193,9 @@ class embrace_ursur_red extends Card {
     return 1;
   }
 
-  function SpecialName() {
-    return "Embrace Ursur";
-  }
+  // function SpecialName() {
+  //   return "Embrace Ursur";
+  // }
 
   function SpecialPower() {
     return 3;
