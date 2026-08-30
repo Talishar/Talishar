@@ -17,6 +17,8 @@
  *   GET /v1/me/purchases/communities/{id}         scope: purchases
  */
 
+if (!defined('MAX_REPLAYS_SAVED')) define('MAX_REPLAYS_SAVED', 3);
+
 if (!defined('METAFY_API_BASE')) {
   define('METAFY_API_BASE', 'https://metafy.gg/irk/api');
   define('METAFY_TOKEN_URL', 'https://metafy.gg/irk/oauth/token');
@@ -868,9 +870,9 @@ function IsValidMetafyTier($tierName)
 
 // Replay save slots granted per Metafy tier, on top of the base patron allotment.
 // Higher tiers grant more slots as a subscriber incentive.
-function GetMaxReplaySlotsForTiers($metafyTiers)
+function GetReplaySlotTierMap()
 {
-  $tierSlotMap = [
+  return [
     'Fyendal Supporters' => 5,
     'Seers of Ophidia' => 8,
     'Arknight Shards' => 10,
@@ -878,6 +880,11 @@ function GetMaxReplaySlotsForTiers($metafyTiers)
     'Lover of Grandeur' => 15,
     'Sponsors of Trōpal-Dhani' => 20,
   ];
+}
+
+function GetMaxReplaySlotsForTiers($metafyTiers)
+{
+  $tierSlotMap = GetReplaySlotTierMap();
   $maxSlots = MAX_REPLAYS_SAVED;
   if (!is_array($metafyTiers)) return $maxSlots;
   foreach ($metafyTiers as $tierName) {
@@ -886,6 +893,15 @@ function GetMaxReplaySlotsForTiers($metafyTiers)
     }
   }
   return $maxSlots;
+}
+
+function GetNextReplaySlotTier($metafyTiers)
+{
+  $currentSlots = GetMaxReplaySlotsForTiers($metafyTiers);
+  foreach (GetReplaySlotTierMap() as $tierName => $slots) {
+    if ($slots > $currentSlots) return ["tierName" => $tierName, "slots" => $slots];
+  }
+  return null;
 }
 
 ?>

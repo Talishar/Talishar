@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
 1 - Update Number
 2 - P1 Last Connection Time
@@ -27,10 +29,10 @@ if (!defined('LOBBY_DISCONNECT_TIMEOUT_MS')) define('LOBBY_DISCONNECT_TIMEOUT_MS
 function WriteCache($name, $data)
 {
   if ($name == 0) return;
-  $serData = serialize(trim($data));
+  $serData = serialize(trim((string)$data));
   // 0666: segments must stay writable even if first created by a root CLI
   // script — 0644 left Apache unable to update the cache (game stuck forever).
-  $id = @shmop_open($name, "c", 0666, 128);
+  $id = @shmop_open((int)$name, "c", 0666, 128);
   if ($id == false) {
     exit;
   } else {
@@ -42,35 +44,39 @@ function WriteCache($name, $data)
 function WriteGamestateCache($name, $data)
 {
   if ($name == 0) return;
-  $serData = serialize(trim($data));
-  $needed = strlen($serData) + 16; // payload + seqlock header
+  $data = trim((string)$data);
+  $dataLength = strlen($data);
+  $needed = $dataLength + 32;
   $key = GamestateID($name);
 
   $size = 32768;
   $seq = 0;
-  $existing = @shmop_open($key, "a", 0, 0);
+  $gsID = false;
+  // Open an existing segment read/write once and reuse the handle. The old
+  // path opened it read-only for sizing and then opened it again for writing.
+  $existing = @shmop_open((int)$key, "w", 0, 0);
   if ($existing !== false) {
     $size = shmop_size($existing);
     $head = shmop_read($existing, 0, 16);
-    if (strlen($head) === 16 && ctype_digit($head)) $seq = (int)$head;
+    if (is_string($head) && strlen($head) === 16 && ctype_digit($head)) $seq = (int)$head;
     if ($size < $needed) {
       shmop_delete($existing);
       $size = max(32768, 1 << (int)ceil(log($needed + 1, 2)));
       $seq = 0;
-    }
+    } else $gsID = $existing;
   } else if ($needed >= $size) {
     $size = 1 << (int)ceil(log($needed + 1, 2));
   }
 
-  $gsID = @shmop_open($key, "c", 0666, $size);
+  if ($gsID === false) $gsID = @shmop_open((int)$key, "c", 0666, $size);
   if ($gsID == false) {
     exit;
   }
   $writeSeq = $seq + ($seq % 2 === 0 ? 1 : 2); // next odd: write in progress
   shmop_write($gsID, sprintf("%016d", $writeSeq), 0);
-  // Serialized strings carry their own byte length. Stale bytes after the
-  // payload are ignored by the length-aware reader below.
-  shmop_write($gsID, $serData, 16);
+  // Keep the header and payload in one system call. This transient string is
+  // cheaper for Zend to build than PHP's serialized-string representation.
+  shmop_write($gsID, sprintf("%016d", $dataLength) . $data, 16);
   shmop_write($gsID, sprintf("%016d", $writeSeq + 1), 0); // even: stable
 }
 
@@ -78,12 +84,14 @@ function ReadGamestateCache($name)
 {
   $key = GamestateID($name);
   for ($try = 0; $try < 10; $try++) {
-    $id = @shmop_open($key, "a", 0, 0);
+    $id = @shmop_open((int)$key, "a", 0, 0);
     if ($id === false) return "";
     $size = shmop_size($id);
     $head = shmop_read($id, 0, 16);
-    if (strlen($head) !== 16 || !ctype_digit($head)) {
-      $raw = trim(shmop_read($id, 0, $size));
+    if (!is_string($head) || strlen($head) !== 16 || !ctype_digit($head)) {
+      $legacyData = shmop_read($id, 0, $size);
+      if (!is_string($legacyData)) return "";
+      $raw = trim($legacyData);
       $un = @unserialize($raw);
       return $un === false ? "" : $un;
     }
@@ -91,6 +99,17 @@ function ReadGamestateCache($name)
     if ($s1 % 2 === 1) { usleep(1000); continue; } // write in progress
     $available = $size - 16;
     $prefix = shmop_read($id, 16, min(64, $available));
+    if (!is_string($prefix)) return "";
+
+    if (strlen($prefix) >= 16 && ctype_digit(substr($prefix, 0, 16))) {
+      $contentLength = (int)substr($prefix, 0, 16);
+      if ($contentLength < 0 || $contentLength > $size - 32) return "";
+      $raw = $contentLength === 0 ? "" : shmop_read($id, 32, $contentLength);
+      $s2 = (int)shmop_read($id, 0, 16);
+      if ($s1 !== $s2) { usleep(1000); continue; }
+      return is_string($raw) ? $raw : "";
+    }
+
     $raw = false;
     if (preg_match('/^s:(\d+):"/', $prefix, $matches)) {
       $contentLength = (int)$matches[1];
@@ -100,7 +119,11 @@ function ReadGamestateCache($name)
         $raw = shmop_read($id, 16, $serializedLength);
       }
     }
-    if ($raw === false) $raw = trim(shmop_read($id, 16, $available));
+    if ($raw === false) {
+      $legacyData = shmop_read($id, 16, $available);
+      if (!is_string($legacyData)) return "";
+      $raw = trim($legacyData);
+    }
     $s2 = (int)shmop_read($id, 0, 16);
     if ($s1 !== $s2) { usleep(1000); continue; } // torn — retry
     $un = @unserialize($raw);
@@ -114,30 +137,32 @@ function ReadCache($name)
   if ($name == 0) return "";
   $data = ShmopReadCache($name);
   if (empty($data)) return "";
+
   $unserialized = @unserialize($data);
   return $unserialized === false ? "" : $unserialized;
 }
 
 function ShmopReadCache($name)
 {
-  if (!trim($name)) {
+  if (!trim((string)$name)) {
     return "";
   }
-  @$id = shmop_open($name, "a", 0, 0);
+  @$id = shmop_open((int)$name, "a", 0, 0);
   if (empty($id) || $id == false) {
     return "";
   }
-  return trim(shmop_read($id, 0, shmop_size($id)));
+  $data = shmop_read($id, 0, shmop_size($id));
+  return is_string($data) ? trim($data) : "";
 }
 
 function DeleteCache($name)
 {
   //Always try to delete shmop
-  $id = @shmop_open($name, "w", 0666, 128);
+  $id = @shmop_open((int)$name, "w", 0666, 128);
   if($id) {
     shmop_delete($id);
   }
-  $gsID = @shmop_open(GamestateID($name), "w", 0, 0);
+  $gsID = @shmop_open((int)GamestateID($name), "w", 0, 0);
   if($gsID) {
     shmop_delete($gsID);
   }
@@ -150,7 +175,7 @@ function SHMOPDelimiter()
 
 function GamestateID($gameName)
 {
-  return $gameName + 1000000;
+  return (int)$gameName + 1000000;
 }
 
 function SetCachePiece($name, $piece, $value)

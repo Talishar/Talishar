@@ -2088,43 +2088,42 @@ function NameOverride($cardID, $player = "")
 
 function ColorOverride($cardID, $player = "")
 {
-  global $CurrentTurnEffects, $currentTurnEffects;
+  global $currentTurnEffects;
   $pitch = PitchValue($cardID);
   if ($cardID == "goldfin_harpoon_yellow") $pitch = 2;
-  $currentTurnEffectsCount  = count($currentTurnEffects);
+  $currentTurnEffectsCount = count($currentTurnEffects);
+  if ($currentTurnEffectsCount === 0) return $pitch;
+
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
-  $blanched  = false;
-  for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
-    if (!isset($currentTurnEffects[$j + 1]) || $currentTurnEffects[$j + 1] != $player) continue;
-    $eff = $currentTurnEffects[$j];
-    if ($eff === "blanch_red" || $eff === "blanch_yellow" || $eff === "blanch_blue") {
+  $isBecomeTheCup = $cardID === "become_the_cup_red"
+    || $cardID === "become_the_cup_yellow"
+    || $cardID === "become_the_cup_blue";
+  $parameterizedCardID = $isBecomeTheCup ? $cardID . "-" : null;
+  $parameterOffset = $isBecomeTheCup ? strlen($cardID) + 1 : 0;
+  $blanched = false;
+  $pitchAdditions = $isBecomeTheCup ? [] : null;
+
+  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
+    $effectID = $currentTurnEffects[$i];
+
+    if (($currentTurnEffects[$i + 1] ?? null) == $player
+      && ($effectID === "blanch_red" || $effectID === "blanch_yellow" || $effectID === "blanch_blue")) {
       $blanched = true;
-      break;
     }
+
+    if ($parameterizedCardID === null || !str_starts_with($effectID, $parameterizedCardID)) continue;
+    $effectParam = substr($effectID, $parameterOffset);
+    $pitchToAdd = match ($effectParam) {
+      "Red" => 1, "Yellow" => 2, "Blue" => 3, "Purple" => 4, default => 0
+    };
+    if ($pitchToAdd != 0) $pitchAdditions[] = $pitchToAdd;
   }
+
   if ($blanched) $pitch = 0;
-  $numCurrentTurnEffects = $CurrentTurnEffects->NumEffects();
-  for ($i = 0; $i < $numCurrentTurnEffects; ++$i) {
-    $Effect = $CurrentTurnEffects->Effect($i, true);
-    $effectID = $Effect->EffectID();
-    $dashPos = strpos($effectID, '-');
-    $effectBase = $dashPos !== false ? substr($effectID, 0, $dashPos) : $effectID;
-    $effectParam = $dashPos !== false ? substr($effectID, $dashPos + 1) : "-";
-    switch ($effectBase) {
-      case "become_the_cup_red":
-      case "become_the_cup_yellow":
-      case "become_the_cup_blue":
-        if ($cardID != $effectBase) break;
-        $pitchToAdd = match ($effectParam) {
-        "Red" => 1, "Yellow" => 2, "Blue" => 3, "Purple" => 4, default => 0
-        };
-        if ($pitchToAdd != 0) {
-          if ($pitch == 0) $pitch = $pitchToAdd;
-          else $pitch = "$pitch,$pitchToAdd";
-        }
-        break;
-      default:
-      break;
+  if ($pitchAdditions !== null) {
+    foreach ($pitchAdditions as $pitchToAdd) {
+      if ($pitch == 0) $pitch = $pitchToAdd;
+      else $pitch = "$pitch,$pitchToAdd";
     }
   }
   return $pitch;
