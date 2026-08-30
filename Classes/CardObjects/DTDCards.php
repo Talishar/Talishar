@@ -312,17 +312,43 @@
 // }
 
 
-// class beckoning_light_red extends Card {
+class beckoning_light_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "beckoning_light_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "beckoning_light_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		MZMoveCard($this->controller, "MYDISCARD:type=AA", "MYTOPDECK", may: true);
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return true;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$attackID = $CombatChain->AttackCard()->ID();
+		return CardType($attackID) == "AA";
+	}
+
+	function RemoveEffectFromCombatChain($effectIndex) {
+		return true;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		IfChargedYellow($this->controller, $this->cardID);
+	}
+}
 
 
 // class bellona_archangel_of_war extends Card {
@@ -1510,17 +1536,43 @@ class beseech_the_demigon_blue extends Card {
 // }
 
 
-// class ironsong_versus extends Card {
+class ironsong_versus extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "ironsong_versus";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "ironsong_versus";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		PlayAura("courage", $this->controller);
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "A";
+	}
+
+	function AbilityCost() {
+		return 1;
+	}
+
+	function AbilityHasGoAgain($from) {
+		return true;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+}
 
 
 // class lay_to_rest_red extends Card {

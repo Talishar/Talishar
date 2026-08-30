@@ -374,9 +374,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         return 1;
       }
       break;
-    case "beckoning_light_red":
-      MZMoveCard($mainPlayer, "MYDISCARD:type=AA", "MYTOPDECK", may: true);
-      break;
     case "spirit_of_war_red":
       PlayAura("courage", $mainPlayer);
       break;
@@ -385,9 +382,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "hood_of_red_sand":
     case "target_totalizer":
       Draw($mainPlayer);
-      break;
-    case "ironsong_versus":
-      if (IsHeroAttackTarget()) PlayAura("courage", $mainPlayer);
       break;
     case $Card_LifeBanner:
       GainHealth(1, $mainPlayer);
@@ -2327,7 +2321,6 @@ function IsCombatEffectPersistent($cardID)
     case "knives_out_blue":
     case "premeditate_red-1":
     case "figment_of_triumph_yellow":
-    case "beckoning_light_red":
     case "spirit_of_war_red":
     case "blood_dripping_frenzy_blue":
     case "call_down_the_lightning_yellow":

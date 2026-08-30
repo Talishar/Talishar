@@ -1118,7 +1118,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
       if (IsHeroAttackTarget()) {
         if (!$check) {
           $subtype = "Dagger";
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
+          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:subtype=$subtype&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
           AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $mainPlayer, "<-", 1);
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_a_dagger_to_poke_with", 1);
           AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
@@ -1454,14 +1454,12 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "melting_point_red":
     case "concealed_blade_blue":
     case "toxic_tips":
-    case "beckoning_light_red":
     case "spirit_of_war_red":
     case "light_the_way_red":
     case "light_the_way_yellow":
     case "light_the_way_blue":
     case "lumina_lance_yellow-2":
     case "lumina_lance_yellow-3":
-    case "ironsong_versus":
     case $Card_LifeBanner:
     case $Card_ResourceBanner:
     case "smash_and_grab_red":

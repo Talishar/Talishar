@@ -4060,7 +4060,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-BANISH1ATTACK", 1);
       break;
-    case "beckoning_light_red":
     case "spirit_of_war_red":
     case "beaming_bravado_red":
     case "beaming_bravado_yellow":
@@ -4071,9 +4070,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "light_the_way_red":
     case "light_the_way_yellow":
     case "light_the_way_blue":
-      Charge();
-      AddDecisionQueue("ALLCARDPITCHORPASS", $currentPlayer, "2", 1);
-      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
+      IfChargedYellow($currentPlayer, $cardID);
       break;
     case "lumina_lance_yellow":
       $soul = &GetSoul($currentPlayer);
