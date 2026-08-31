@@ -454,7 +454,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $label = NULL;
     if ($layerName == "USURPED") {
       $layerName = $layers[$i + 4] . "-USURPED";
-      $label = "USURPED";
+      $label = "Usurped";
     }
     $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label);
 
