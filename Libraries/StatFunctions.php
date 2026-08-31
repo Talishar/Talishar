@@ -35,6 +35,9 @@ function GetStatTurnIndex($player)
 {
   global $currentTurn, $mainPlayer, $firstPlayer;
   if ($player == $firstPlayer) return $currentTurn;
+  // Turn 0 belongs to the opening turn for both players. Instants, pitches,
+  // blocks, and other defensive activity here must not spill into turn 1.
+  if ($currentTurn == 0) return 0;
   if ($player != $mainPlayer) return $currentTurn + 1;
   return $currentTurn;
 }

@@ -308,10 +308,10 @@ class StatsAggregationTest extends TestCase
     // ---------------------------------------------------------------- block layout
 
     /**
-     * Every stat block from the first to the last must belong to a turn the
-     * player took, so that counting blocks and counting turns agree. The only
-     * allowed extra is the final defence of a player who was killed while
-     * blocking, which has no turn of its own.
+     * Every stat block from the first to the last must belong to a game turn.
+     * The player on the draw has an additional turn-0 defensive row, and a
+     * player killed while blocking can have a final row with no turn of their
+     * own.
      *
      * @dataProvider seatProvider
      */
@@ -328,29 +328,31 @@ class StatsAggregationTest extends TestCase
                 "P$player: CountAttackingTurns disagrees with the turns actually played");
 
             $killedWhileBlocking = ($player != $lethalBy);
-            $this->assertSame($turns + ($killedWhileBlocking ? 1 : 0), $used,
+            $hasOpeningDefence = ($player != $firstPlayer);
+            $this->assertSame($turns + ($killedWhileBlocking ? 1 : 0) + ($hasOpeningDefence ? 1 : 0), $used,
                 "P$player: unexpected number of populated stat blocks");
         }
     }
 
-    /**
-     * The player on the draw has no cycle before their first turn, so their
-     * block 0 must stay empty rather than absorbing their first block set,
-     * which used to hide that blocking from every average.
-     */
-    public function testSecondPlayerFirstDefenceIsNotStrandedInBlockZero(): void
+    /** Activity by the player on the draw during the opening turn is turn 0. */
+    public function testSecondPlayerOpeningTurnActivityStaysInTurnZero(): void
     {
-        $this->playGame(1, 3, 1);
+        $this->startGame(1);
+
+        LogPlayCardStats(2, 'instant_card', 'HAND', 'I');
+        LogPlayCardStats(2, 'pitch_card', 'HAND', 'P');
+        LogResourcesUsedStats(2, 3);
 
         $secondPlayerStats = &GetTurnStats(2);
         $pieces = TurnStatPieces();
         $blockZero = array_slice($secondPlayerStats, 0, $pieces);
-        $this->assertSame(array_fill(0, $pieces, 0), $blockZero,
-            'block 0 of the player on the draw should be empty');
+        $blockOne = array_slice($secondPlayerStats, $pieces, $pieces);
 
-        $stats = $this->aggregatesFor(2);
-        $this->assertSame($this->defences[2] * self::BLOCK, (int)$stats['totalDamageBlocked'],
-            'the first block set of the player on the draw was not counted');
+        $this->assertSame(1, $blockZero[$GLOBALS['TurnStats_CardsPlayedDefense']]);
+        $this->assertSame(1, $blockZero[$GLOBALS['TurnStats_CardsPitched']]);
+        $this->assertSame(3, $blockZero[$GLOBALS['TurnStats_ResourcesUsed']]);
+        $this->assertSame([], $blockOne,
+            'opening-turn activity for the player on the draw spilled into turn 1');
     }
 
     // ---------------------------------------------------------------- exclude last turn
@@ -379,9 +381,9 @@ class StatsAggregationTest extends TestCase
     {
         $this->startGame(1);
 
-        // P2 takes one complete turn, then is left with a final defensive row
-        // when P1 attacks again. Both rows contribute value and must therefore
-        // be included in the full-game per-turn denominator.
+        // P2 defends on turn 0, takes one complete turn, then is left with a
+        // final defensive row when P1 attacks again. Turn 0 remains displayed
+        // but is omitted from averages; the other two rows contribute value.
         $this->playTurn();
         $this->endTurn();
         $this->playTurn();
@@ -390,13 +392,13 @@ class StatsAggregationTest extends TestCase
 
         $stats = $this->aggregatesFor(2);
         $p2Stats = &GetTurnStats(2);
-        $this->assertSame(2, count(UsedTurnStatBlocks($p2Stats)));
+        $this->assertSame(3, count(UsedTurnStatBlocks($p2Stats)));
         $this->assertSame(10, (int)$stats['totalDamageThreatened']);
         $this->assertSame(10, (int)$stats['totalDamageBlocked']);
-        $this->assertEqualsWithDelta(10.0, $stats['averageValuePerTurn'], 0.001,
-            'the final defensive row must not inflate the average by being omitted from its denominator');
-        $this->assertEqualsWithDelta(15.0, $stats['averageValuePerTurn_NoLast'], 0.001,
-            'excluding the final defensive row should retain only the complete preceding row');
+        $this->assertEqualsWithDelta(7.5, $stats['averageValuePerTurn'], 0.001,
+            'turn 0 must be omitted while the final defensive row remains in the denominator');
+        $this->assertEqualsWithDelta(10.0, $stats['averageValuePerTurn_NoLast'], 0.001,
+            'excluding the final defensive row should retain only the preceding non-zero turn');
     }
 
     public function testTurnZeroIsExcludedFromAveragesButRetainedInTotals(): void
