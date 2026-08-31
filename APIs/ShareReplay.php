@@ -4,8 +4,6 @@ session_start();
 
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
-include_once "../AccountFiles/AccountSessionAPI.php";
-include_once "../includes/dbh.inc.php";
 
 SetHeaders();
 
@@ -20,26 +18,22 @@ if ($userId === "" || !preg_match('/^[A-Za-z0-9_-]+$/', $userId)) {
     exit;
 }
 
-$isPatron = IsLoggedInUserPatron();
 session_write_close();
 
-if (!$isPatron) {
-    $response->error = "Replay sharing is only available to patrons.";
-    http_response_code(403);
-    echo json_encode($response);
-    exit;
-}
+$request = json_decode(file_get_contents('php://input'), true) ?: [];
+$rawReplayNumber = $request["replayNumber"] ?? null;
 
-$_POST = json_decode(file_get_contents('php://input'), true);
-$replayNumber = $_POST["replayNumber"] ?? null;
-
-if ($replayNumber === null || !is_numeric($replayNumber)) {
+if (
+    !(is_int($rawReplayNumber) || (is_string($rawReplayNumber) && ctype_digit($rawReplayNumber))) ||
+    (int)$rawReplayNumber < 1
+) {
     $response->error = "Invalid or missing replayNumber.";
     http_response_code(400);
     echo json_encode($response);
     exit;
 }
 
+$replayNumber = (int)$rawReplayNumber;
 $replayPath = "../Replays/$userId/$replayNumber/";
 if (!file_exists($replayPath . "origGamestate.txt") || !file_exists($replayPath . "commandfile.txt")) {
     $response->error = "Replay not found or missing required files.";

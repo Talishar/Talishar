@@ -187,5 +187,12 @@ if (SaveReplay() && !IsReplay()) {
 //Now we can process the command
 ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, false, $inputText);
 
+if ((int)$mode === 100012) {
+  echo json_encode($replaySaveResult ?? [
+    "success" => false,
+    "message" => "Replay could not be saved. Please try again."
+  ]);
+}
+
 // Rematch handling, AI turns, clock accumulation, persistence and backups.
 include "Libraries/GameFinalization.php";
