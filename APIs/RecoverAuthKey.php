@@ -86,7 +86,7 @@ if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) {
 if (!empty($authKey)) {
   $response->success = true;
   $response->authKey = $authKey;
-  //WriteLog("🔑 Auth key recovered from session for game $gameName, player $playerID");
+  //WriteLog("🔑 Auth key recovered from session for game $gameName, Player $playerID");
   echo json_encode($response);
   exit;
 }

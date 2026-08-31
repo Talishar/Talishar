@@ -930,7 +930,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
         //load the gamestate
         RevertGamestate($backupFname);
-        WriteLog("Moving to player $turnPlayer's turn $turnNumber", highlight: true);
+        WriteLog("Moving to Player $turnPlayer's turn $turnNumber", highlight: true);
       }
       break;
     case 10023: // Step back one input while reviewing a replay
