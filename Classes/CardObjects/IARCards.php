@@ -5498,9 +5498,9 @@ class consuming_appetite_yellow extends Card {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index, dest:"BANISH");
   }
 
-  // function SpecialName() {
-  //   return "Consuming Appetite";
-  // }
+  function SpecialName() {
+    return "Consuming Appetite";
+  }
 
   function SpecialPitch() {
     return 2;
