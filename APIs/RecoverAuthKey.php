@@ -1,19 +1,45 @@
 <?php
 
-include 'Libraries/HTTPLibraries.php';
-include "HostFiles/Redirector.php";
-include_once "Libraries/SHMOPLibraries.php";
-include_once "./AccountFiles/AccountSessionAPI.php";
+require_once __DIR__ . '/../Libraries/HTTPLibraries.php';
+require_once __DIR__ . '/../includes/dbh.inc.php';
+require_once __DIR__ . '/../includes/functions.inc.php';
+require_once __DIR__ . '/../AccountFiles/AccountSessionAPI.php';
+require_once __DIR__ . '/../Libraries/GameAuthLibraries.php';
 
 SetHeaders();
 header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store');
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') exit;
 
 $response = new stdClass();
 $response->success = false;
 $response->error = '';
 $response->authKey = '';
 
-// Check if user is logged in
+$body = json_decode(file_get_contents('php://input'), true);
+if (!is_array($body)) $body = [];
+$input = array_merge($_GET, $_POST, $body);
+
+$gameName = trim((string)($input['gameName'] ?? ''));
+$requestedPlayerID = 0;
+if (array_key_exists('playerID', $input) && $input['playerID'] !== '') {
+  $validatedPlayerID = filter_var($input['playerID'], FILTER_VALIDATE_INT);
+  if ($validatedPlayerID !== 1 && $validatedPlayerID !== 2) {
+    $response->error = "Invalid player ID";
+    http_response_code(400);
+    echo json_encode($response);
+    exit;
+  }
+  $requestedPlayerID = $validatedPlayerID;
+}
+
+if ($gameName === '' || !ctype_digit($gameName) || (int)$gameName <= 0) {
+  $response->error = "Invalid game name";
+  http_response_code(400);
+  echo json_encode($response);
+  exit;
+}
+
 if (!IsUserLoggedIn()) {
   $response->error = "User not logged in";
   http_response_code(401);
@@ -21,80 +47,69 @@ if (!IsUserLoggedIn()) {
   exit;
 }
 
-$gameName = TryGet("gameName", "");
-$playerID = TryGet("playerID", 0);
+$accountUserId = LoggedInUser();
+$accountGameName = $_SESSION['lastGameName'] ?? '';
+$accountPlayerID = $_SESSION['lastPlayerId'] ?? 0;
+$accountAuthKey = $_SESSION['lastAuthKey'] ?? '';
+$cookieAuthKey = $_COOKIE['lastAuthKey'] ?? '';
+session_write_close();
 
-// Validate inputs
-if (empty($gameName) || !IsGameNameValid($gameName)) {
-  $response->error = "Invalid game name";
-  http_response_code(400);
-  echo json_encode($response);
-  exit;
-}
-
-if (!is_numeric($playerID) || ($playerID !== "1" && $playerID !== "2")) {
-  $response->error = "Invalid player ID";
-  http_response_code(400);
-  echo json_encode($response);
-  exit;
-}
-
-// Check if game exists
-$gameFolder = "./Games/" . $gameName;
-if (!is_dir($gameFolder)) {
+$seatAuth = ReadGameFileSeatAuth($gameName, __DIR__ . '/../Games');
+if ($seatAuth === null) {
   $response->error = "Game does not exist";
   http_response_code(404);
   echo json_encode($response);
   exit;
 }
 
-// Check if game file exists
-$gameFile = $gameFolder . "/gamestate.txt";
-if (!file_exists($gameFile)) {
-  $response->error = "Game file not found";
-  http_response_code(404);
+$resolvedAuth = ResolvePresentedGameAuth(
+  $requestedPlayerID,
+  $cookieAuthKey,
+  $seatAuth[0],
+  $seatAuth[1]
+);
+
+if ($resolvedAuth === null) {
+  $resolvedAuth = ResolveStoredAccountGameAuth(
+    $gameName,
+    $requestedPlayerID,
+    $accountGameName,
+    $accountPlayerID,
+    $accountAuthKey,
+    $seatAuth[0],
+    $seatAuth[1]
+  );
+}
+
+// A session on another browser may predate this game. Only then perform the
+// single account-table lookup and validate the stored fallback again.
+if ($resolvedAuth === null) {
+  $lastGame = GetLastGameInfo($accountUserId);
+  if (is_array($lastGame)) {
+    $resolvedAuth = ResolveStoredAccountGameAuth(
+      $gameName,
+      $requestedPlayerID,
+      $lastGame['lastGameName'] ?? '',
+      $lastGame['lastPlayerId'] ?? 0,
+      $lastGame['lastAuthKey'] ?? '',
+      $seatAuth[0],
+      $seatAuth[1]
+    );
+  }
+}
+
+if ($resolvedAuth === null) {
+  $response->error = "No matching game authentication found on your account";
+  http_response_code(403);
   echo json_encode($response);
   exit;
 }
 
-// Check that this player is part of the game by verifying game is still active
-// and the player was one of the original players
-$gameStatus = intval(GetCachePiece($gameName, 14));
-if ($gameStatus == 0) {
-  // Game hasn't started yet, can't recover
-  $response->error = "Game has not started";
-  http_response_code(400);
-  echo json_encode($response);
-  exit;
-}
+[$playerID, $authKey] = $resolvedAuth;
 
-// IMPORTANT: Store auth keys in session when game is joined
-// In Start.php and JoinGame.php, we already set $_SESSION["p1AuthKey"] and $_SESSION["p2AuthKey"]
-// However, if the session was lost, we can't recover it from this endpoint alone.
-// The auth keys need to be stored securely when the game is created/joined.
-
-// Try to get the auth key from session (if still available)
-$authKey = "";
-if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) {
-  $authKey = $_SESSION["p1AuthKey"];
-} else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) {
-  $authKey = $_SESSION["p2AuthKey"];
-}
-
-// If session auth key exists, return it
-if (!empty($authKey)) {
-  $response->success = true;
-  $response->authKey = $authKey;
-  //WriteLog("🔑 Auth key recovered from session for game $gameName, player $playerID");
-  echo json_encode($response);
-  exit;
-}
-
-// If we can't find it in session, we can't recover it from this endpoint
-// This is a limitation of the current architecture - auth keys are ephemeral
-// To make this more robust, the backend needs to store encrypted auth keys
-// in persistent storage (database or file) when games are created
-$response->error = "Auth key not found in session. Please rejoin the game or contact support.";
-http_response_code(410); // 410 Gone - resource is no longer available
+$response->success = true;
+$response->authKey = $authKey;
+$response->playerID = $playerID;
+$response->gameName = (int)$gameName;
 echo json_encode($response);
 exit;

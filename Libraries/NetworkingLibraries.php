@@ -930,7 +930,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
         //load the gamestate
         RevertGamestate($backupFname);
-        WriteLog("Moving to player $turnPlayer's turn $turnNumber", highlight: true);
+        WriteLog("Moving to Player $turnPlayer's turn $turnNumber", highlight: true);
       }
       break;
     case 10023: // Step back one input while reviewing a replay
@@ -1089,7 +1089,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!is_array($ownerMetafyTiers)) {
         $ownerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
       }
-      $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers);
+      $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers, IsUserContributor($pid));
       $savedReplayDirectories = glob($path . "[0-9]*", GLOB_ONLYDIR) ?: [];
       if (count($savedReplayDirectories) >= $maxReplaysSaved) {
         $allSavedReplaysAreFavorites = true;
@@ -1124,6 +1124,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $replayMetadata = [
         "p1DisplayName" => trim($gameFile[42] ?? ""),
         "p2DisplayName" => trim($gameFile[43] ?? ""),
+        "savedByPlayerID" => (int)$playerID,
         "p1HeroCardId" => $p1Hero,
         "p2HeroCardId" => $p2Hero,
         "p1HeroName" => $p1Hero === "" ? "" : CardName($p1Hero),
@@ -1826,6 +1827,7 @@ function FinalizeChainLink($chainClosed = false)
   global $layerPriority, $Stack, $AttackQueue, $attackQueue, $CurrentTurnEffects;
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
+    $attackID = $combatChain[0] ?? "";
     if (SearchCurrentTurnEffects("arc_lightning_yellow", $currentPlayer)) {
       $numEffects = $CurrentTurnEffects->NumEffects();
       for ($i = 0; $i < $numEffects; ++$i) {
@@ -1837,10 +1839,10 @@ function FinalizeChainLink($chainClosed = false)
       }
     }
     GainActionPoints(1, $mainPlayer);
-    if ($combatChain[0] == "dawnblade_resplendent" && SearchCharacterActive($mainPlayer, "dorinthea_quicksilver_prodigy"))
+    if ($attackID == "dawnblade_resplendent" && SearchCharacterActive($mainPlayer, "dorinthea_quicksilver_prodigy"))
       DoriQuicksilverProdigyEffect();
-    if (TypeContains($combatChain[0], "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-")
-      SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
+    if ($attackID != "" && TypeContains($attackID, "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-")
+      SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $attackID);
   }
   $chainLinkSummary[] = GetCombatChainState($CCS_DamageDealt);
   $chainLinkSummary[] = GetCombatChainState($CCS_LinkTotalPower);

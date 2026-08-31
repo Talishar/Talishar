@@ -163,12 +163,21 @@ $p1uid = "-";
 $p2uid = "-";
 $p1DisplayName = "";
 $p2DisplayName = "";
+$replayPlayerID = 1;
 $metadataPath = $replayPath . "replayMetadata.json";
 if (file_exists($metadataPath)) {
   $replayMetadata = json_decode(file_get_contents($metadataPath), true);
   if (is_array($replayMetadata)) {
     $p1DisplayName = trim((string)($replayMetadata["p1DisplayName"] ?? ""));
     $p2DisplayName = trim((string)($replayMetadata["p2DisplayName"] ?? ""));
+    $savedByPlayerID = (int)($replayMetadata["savedByPlayerID"] ?? 0);
+    if ($savedByPlayerID === 1 || $savedByPlayerID === 2) {
+      $replayPlayerID = $savedByPlayerID;
+    }
+    elseif ($p2DisplayName !== "" && strcasecmp($p2DisplayName, $userId) === 0) {
+      // Replays saved before savedByPlayerID was added can often be matched by name.
+      $replayPlayerID = 2;
+    }
   }
 }
 $p1id = "-";
@@ -282,9 +291,9 @@ if ($gamestate === false) {
 
 WriteGamestateCache($gameName, $gamestate);
 
-$response->playerID = 1;
+$response->playerID = $replayPlayerID;
 $response->gameName = $gameName;
-$response->authKey = $p1Key;
+$response->authKey = $replayPlayerID === 2 ? $p2Key : $p1Key;
 $response->message = "Replay game created successfully!";
 $response->success = true;
 

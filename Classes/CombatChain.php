@@ -102,6 +102,8 @@ class ChainCard {
     // Constructor
     function __construct($index) {
       global $combatChain;
+      $index = filter_var($index, FILTER_VALIDATE_INT);
+      if ($index === false) $index = -1;
       if ($index != -1)
         $this->chain = &$combatChain;
       else

@@ -2330,12 +2330,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $restriction = "Themai";
       return true;
     }
-    if (EffectPlayCardRestricted($cardID, $type, $from, resolutionCheck: $resolutionCheck, index: $index) != "") {
-      $restriction = true;
+    $effectPlayRestriction = EffectPlayCardRestricted($cardID, $type, $from, resolutionCheck: $resolutionCheck, index: $index);
+    if ($effectPlayRestriction != "") {
+      $restriction = $effectPlayRestriction;
       return true;
     }
-    if (EffectAttackRestricted($cardID, $type, $from, index:$index) != "" && $currentPlayer == $mainPlayer) {
-      $restriction = true;
+    $effectAttackRestriction = EffectAttackRestricted($cardID, $type, $from, index:$index);
+    if ($effectAttackRestriction != "" && $currentPlayer == $mainPlayer) {
+      $restriction = $effectAttackRestriction;
       return true;
     }
   }

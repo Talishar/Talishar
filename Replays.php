@@ -3,6 +3,7 @@ include "HostFiles/Redirector.php";
 include_once 'MenuBar.php';
 include_once 'APIKeys/APIKeys.php';
 include_once 'includes/MetafyHelper.php';
+include_once 'includes/ModeratorList.inc.php';
 include_once 'Libraries/NetworkingLibraries.php';
 
 $userId = "";
@@ -23,7 +24,7 @@ if(!$isPatron && $_SESSION["useruid"] != "OotTheMonk")
 }
 
 $metafyTiers = GetMetafyTiersFromDatabase($_SESSION["useruid"] ?? "");
-$maxReplaySlots = GetMaxReplaySlotsForTiers($metafyTiers);
+$maxReplaySlots = GetMaxReplaySlotsForTiers($metafyTiers, IsUserContributor($_SESSION["useruid"] ?? ""));
 
 $path = "./Replays/" . $userId . "/";
 if(!file_exists($path))
