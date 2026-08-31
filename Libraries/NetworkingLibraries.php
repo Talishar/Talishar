@@ -1124,6 +1124,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $replayMetadata = [
         "p1DisplayName" => trim($gameFile[42] ?? ""),
         "p2DisplayName" => trim($gameFile[43] ?? ""),
+        "savedByPlayerID" => (int)$playerID,
         "p1HeroCardId" => $p1Hero,
         "p2HeroCardId" => $p2Hero,
         "p1HeroName" => $p1Hero === "" ? "" : CardName($p1Hero),
