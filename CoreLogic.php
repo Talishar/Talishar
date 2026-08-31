@@ -3252,7 +3252,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
 
 function GetDamagePreventionTargetIndices()
 {
-  global $combatChain, $currentPlayer, $Stack;
+  global $combatChain, $currentPlayer, $Stack, $ChainLinks;
   $otherPlayer = 3 - $currentPlayer;
   $rv = [];
   $numLayers = $Stack->NumLayers();
@@ -3273,7 +3273,11 @@ function GetDamagePreventionTargetIndices()
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchItems($otherPlayer), "THEIRITEMS"));
   if (ArsenalHasFaceUpCard($otherPlayer)) $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS"));
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "C"), "THEIRCHAR"));
-  $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCombatChainAttacks($otherPlayer), "COMBATCHAINATTACKS"));
+  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $LinkAttack = $ChainLinks->GetLink($i)->AttackCard();
+    if ($LinkAttack->StillOnChain())
+      $rv = CombineSearches($rv, "PASTCHAINLINK-0-$i");
+  }
   return $rv;
 }
 

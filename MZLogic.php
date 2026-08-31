@@ -737,12 +737,17 @@ function GetZoneObject($player,  $zone) {
 
 function MZIndexToObject($player, $MZIndex) {
   global $ChainLinks;
-  $parts = explode("-", $MZIndex, 2);
+  $parts = explode("-", $MZIndex, 3);
   $zone = $parts[0];
   $ind = $parts[1] ?? -1;
   if (!is_numeric($ind)) return CleanTargetToObject($player, $MZIndex);
   if ($zone == "COMBATCHAINATTACKS") { //this zone is wonky, handle separately
     return $ChainLinks->GetLink($ind)->AttackCard();
+  }
+  elseif ($zone == "PASTCHAINLINK") {
+    $linkInd = $parts[2] ?? -1;
+    if ($linkInd == -1) return "";
+    return $ChainLinks->GetLink($linkInd)->GetLinkCard($ind);
   }
   $Zone = GetZoneObject($player, $zone);
   return $Zone == "" ? "" : $Zone->Card($ind);
