@@ -5288,3 +5288,47 @@ class consuming_appetite_yellow extends Card {
     return true;
   }
 }
+
+class reach_of_the_abyss extends Card {
+  function __construct($controller) {
+    $this->cardID = "reach_of_the_abyss";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CombatChainCloseAbility($chainLink) {
+    global $ChainLinks;
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $Link = $ChainLinks->GetLink($i);
+      for ($j = 1; $j < $Link->NumCards(); ++$j) {
+        $LinkCard = $Link->GetLinkCard($j, true);
+        $cardID = $LinkCard->ID();
+        BanishCardForPlayer($cardID, $this->controller, "CC");
+        $LinkCard->Remove();
+      }
+    }
+  }
+
+  // function SpecialName() {
+  //   return "Reach of the Abyss";
+  // }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Arms";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
