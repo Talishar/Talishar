@@ -1,9 +1,10 @@
 <?php
 
-include 'Libraries/HTTPLibraries.php';
-include "HostFiles/Redirector.php";
-include_once "Libraries/SHMOPLibraries.php";
-include_once "./AccountFiles/AccountSessionAPI.php";
+require_once __DIR__ . '/../Libraries/HTTPLibraries.php';
+require_once __DIR__ . '/../HostFiles/Redirector.php';
+require_once __DIR__ . '/../Libraries/SHMOPLibraries.php';
+require_once __DIR__ . '/../includes/dbh.inc.php';
+require_once __DIR__ . '/../AccountFiles/AccountSessionAPI.php';
 
 SetHeaders();
 header('Content-Type: application/json; charset=utf-8');
@@ -40,7 +41,7 @@ if (!is_numeric($playerID) || ($playerID !== "1" && $playerID !== "2")) {
 }
 
 // Check if game exists
-$gameFolder = "./Games/" . $gameName;
+$gameFolder = __DIR__ . "/../Games/" . $gameName;
 if (!is_dir($gameFolder)) {
   $response->error = "Game does not exist";
   http_response_code(404);

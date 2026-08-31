@@ -8028,7 +8028,7 @@ class induce_panic_yellow extends Card {
 
   function SpecificLogic() {
     global $dqVars;
-    $color = match($dqVars["choice"]) {"Red" => 1, "Yellow" => 2, "Blue" => 3};
+    $color = match($dqVars["choice"]) {"Red" => 1, "Yellow" => 2, "Blue" => 3, "Purple" => 4};
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     foreach ([$this->controller, $otherPlayer] as $player) {
       if (!CanRevealCards($player)) continue;

@@ -1826,6 +1826,7 @@ function FinalizeChainLink($chainClosed = false)
   global $layerPriority, $Stack, $AttackQueue, $attackQueue, $CurrentTurnEffects;
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
+    $attackID = $combatChain[0] ?? "";
     if (SearchCurrentTurnEffects("arc_lightning_yellow", $currentPlayer)) {
       $numEffects = $CurrentTurnEffects->NumEffects();
       for ($i = 0; $i < $numEffects; ++$i) {
@@ -1837,10 +1838,10 @@ function FinalizeChainLink($chainClosed = false)
       }
     }
     GainActionPoints(1, $mainPlayer);
-    if ($combatChain[0] == "dawnblade_resplendent" && SearchCharacterActive($mainPlayer, "dorinthea_quicksilver_prodigy"))
+    if ($attackID == "dawnblade_resplendent" && SearchCharacterActive($mainPlayer, "dorinthea_quicksilver_prodigy"))
       DoriQuicksilverProdigyEffect();
-    if (TypeContains($combatChain[0], "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-")
-      SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $combatChain[0]);
+    if ($attackID != "" && TypeContains($attackID, "W", $mainPlayer) && GetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain) == "-")
+      SetClassState($mainPlayer, $CS_AnotherWeaponGainedGoAgain, $attackID);
   }
   $chainLinkSummary[] = GetCombatChainState($CCS_DamageDealt);
   $chainLinkSummary[] = GetCombatChainState($CCS_LinkTotalPower);

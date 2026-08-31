@@ -314,7 +314,7 @@ function AddDecisionQueue($phase, $player, $parameter, $subsequent = 0, $makeChe
 
   if ($parameter === null) {
     $parameter = "";
-  } elseif (str_contains($parameter, ' ')) {
+  } elseif (is_string($parameter) && str_contains($parameter, ' ')) {
     $parameter = str_replace(' ', '_', $parameter);
   }
 
@@ -334,7 +334,7 @@ function PrependDecisionQueue($phase, $player, $parameter, $subsequent = 0, $mak
   global $decisionQueue;
   if ($parameter === null) {
     $parameter = "";
-  } elseif (str_contains($parameter, ' ')) {
+  } elseif (is_string($parameter) && str_contains($parameter, ' ')) {
     $parameter = str_replace(' ', '_', $parameter);
   }
   array_unshift($decisionQueue, $phase, $player, $parameter, $subsequent, $makeCheckpoint);
@@ -690,7 +690,7 @@ function ContinueDecisionQueue($lastResult = "")
   // WriteLog($phase . " " . $player . " " . $parameter . " " . $lastResult); // Uncomment this to visualize decision queue execution
   $dqVarsCount = count($dqVars);
   // Guard: skip all substitution when $parameter has no template markers (the common case)
-  if ($dqVarsCount > 0 && (str_contains($parameter, '{') || str_contains($parameter, '<'))) {
+  if (is_string($parameter) && $dqVarsCount > 0 && (str_contains($parameter, '{') || str_contains($parameter, '<'))) {
     if (isset($dqVars[0])) {
       if (str_contains($parameter, "{0}")) $parameter = str_replace("{0}", $dqVars[0], $parameter);
       if (str_contains($parameter, "<0>")) $parameter = str_replace("<0>", CardLink($dqVars[0], $dqVars[0]), $parameter);

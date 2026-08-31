@@ -5,6 +5,11 @@ function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = 
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
   global $myStateBuiltFor, $CS_NumCrouchingTigerCreatedThisTurn, $CS_CardsBanished;
+  if (!in_array($player, [1, 2, "1", "2"], true)) {
+    WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
+    return -1;
+  }
+  $player = intval($player);
   if (CardNameContains($cardID, "Crouching Tiger", $player) && $from == "-") IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
   if ($mainPlayerGamestateStillBuilt) {
     if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created);

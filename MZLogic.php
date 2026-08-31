@@ -326,6 +326,11 @@ function MZBanish($player, $parameter, $lastResult)
       if (!isset($attacks[$index + 1])) continue;
       $cardOwner = $attacks[$index + 1];
     }
+    if (!in_array($cardOwner, [1, 2, "1", "2"], true)) {
+      WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
+      continue;
+    }
+    $cardOwner = intval($cardOwner);
     if($params[0] == "-") {
       if (str_starts_with($mzIndex[0], "MY")) {
         $params[0] = substr($mzIndex[0], 2);
