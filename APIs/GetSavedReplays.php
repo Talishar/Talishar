@@ -7,6 +7,7 @@ include "../Libraries/HTTPLibraries.php";
 include_once "../APIKeys/APIKeys.php";
 include_once "../includes/dbh.inc.php";
 include_once "../includes/MetafyHelper.php";
+include_once "../includes/ModeratorList.inc.php";
 
 SetHeaders();
 
@@ -34,8 +35,9 @@ if (!preg_match('/^[A-Za-z0-9_-]+$/', $userId)) {
 
 $response->loggedIn = true;
 $metafyTiers = GetMetafyTiersFromDatabase($userId);
-$response->maxSlots = GetMaxReplaySlotsForTiers($metafyTiers);
-$nextSlotTier = GetNextReplaySlotTier($metafyTiers);
+$isContributor = IsUserContributor($userId);
+$response->maxSlots = GetMaxReplaySlotsForTiers($metafyTiers, $isContributor);
+$nextSlotTier = GetNextReplaySlotTier($metafyTiers, $isContributor);
 if ($nextSlotTier !== null) $response->nextSlotTier = (object)$nextSlotTier;
 $replayRoot = "../Replays/$userId/";
 if (!is_dir($replayRoot)) {

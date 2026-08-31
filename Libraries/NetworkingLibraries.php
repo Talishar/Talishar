@@ -1089,7 +1089,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!is_array($ownerMetafyTiers)) {
         $ownerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
       }
-      $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers);
+      $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers, IsUserContributor($pid));
       $savedReplayDirectories = glob($path . "[0-9]*", GLOB_ONLYDIR) ?: [];
       if (count($savedReplayDirectories) >= $maxReplaysSaved) {
         $allSavedReplaysAreFavorites = true;

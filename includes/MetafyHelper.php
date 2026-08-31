@@ -882,10 +882,10 @@ function GetReplaySlotTierMap()
   ];
 }
 
-function GetMaxReplaySlotsForTiers($metafyTiers)
+function GetMaxReplaySlotsForTiers($metafyTiers, $isContributor = false)
 {
   $tierSlotMap = GetReplaySlotTierMap();
-  $maxSlots = MAX_REPLAYS_SAVED;
+  $maxSlots = $isContributor ? 10 : MAX_REPLAYS_SAVED;
   if (!is_array($metafyTiers)) return $maxSlots;
   foreach ($metafyTiers as $tierName) {
     if (isset($tierSlotMap[$tierName]) && $tierSlotMap[$tierName] > $maxSlots) {
@@ -895,9 +895,9 @@ function GetMaxReplaySlotsForTiers($metafyTiers)
   return $maxSlots;
 }
 
-function GetNextReplaySlotTier($metafyTiers)
+function GetNextReplaySlotTier($metafyTiers, $isContributor = false)
 {
-  $currentSlots = GetMaxReplaySlotsForTiers($metafyTiers);
+  $currentSlots = GetMaxReplaySlotsForTiers($metafyTiers, $isContributor);
   foreach (GetReplaySlotTierMap() as $tierName => $slots) {
     if ($slots > $currentSlots) return ["tierName" => $tierName, "slots" => $slots];
   }
