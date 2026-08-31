@@ -62,7 +62,10 @@ foreach (scandir($replayRoot) ?: [] as $entry) {
 
   $replay = new stdClass();
   $replay->replayNumber = (int)$entry;
-  $replay->savedAt = filemtime($replayPath) ?: 0;
+  $metadataSavedAt = $metadata["savedAt"] ?? null;
+  $replay->savedAt = is_numeric($metadataSavedAt)
+    ? (int)$metadataSavedAt
+    : (filemtime($replayPath . "origGamestate.txt") ?: 0);
   $replay->p1DisplayName = trim((string)($metadata["p1DisplayName"] ?? ""));
   $replay->p2DisplayName = trim((string)($metadata["p2DisplayName"] ?? ""));
   $replay->p1HeroCardId = trim((string)($metadata["p1HeroCardId"] ?? ""));
