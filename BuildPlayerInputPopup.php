@@ -234,6 +234,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $layerParts = explode("|", $layer);
           $ID = $layerParts[0] ?? "-";
           $UID = $layerParts[1] ?? "-";
+          $additionalCosts = $layerParts[2] ?? "-";
+          if ($ID == "USURPED") $ID = "$additionalCosts-$ID";
           $orderedLayers[] = JSONRenderedCard($ID, uniqueID:$UID, action: 0);
         }
 

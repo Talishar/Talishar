@@ -451,6 +451,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $reorderableLayers = [];
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
     $layerName = isset($specialLayersSet[$layers[$i]]) ? $layers[$i+2] : $layers[$i];
+    if ($layerName == "USURPED") $layerName = $layers[$i + 4] . "-USURPED";
     $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
 
     $layer = new stdClass();

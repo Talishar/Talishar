@@ -359,7 +359,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = [];
           $layerPieces = LayerPieces();
           for ($i = count($preLayers) - $layerPieces; $i >= 0; $i -= $layerPieces) {
-            if ($preLayers[$i + 1] == $player) $rv[] = $preLayers[$i+2] . "|" . $preLayers[$i+6];
+            if ($preLayers[$i + 1] == $player) $rv[] = $preLayers[$i+2] . "|" . $preLayers[$i+6] . "|" . $preLayers[$i+4];
           }
           $rv = implode(",", $rv);
           break;

@@ -604,7 +604,7 @@ class runechant_of {
   }
 
   function UsurpedEffect() {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "USURPED");
+    AddLayer("TRIGGER", $this->controller, "USURPED", "-", $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $additionalCosts) {

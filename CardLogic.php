@@ -1936,6 +1936,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   $EffectContext = $parameter;
   // $EffectContextUID = $uniqueID;
   $otherPlayer = 3 - $player;
+  if ($parameter == "USURPED") {
+    // usurp triggers are stored with parameter and additional costs swapped to allow re-ordering
+    $parameter = $additionalCosts;
+    $additionalCosts = "USURPED";
+  }
   if ($additionalCosts == "ONHITEFFECT") {
     ProcessHitEffect($parameter, $combatChain[2] ?? "-", $uniqueID, target:$target);
     return;

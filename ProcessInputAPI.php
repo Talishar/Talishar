@@ -278,6 +278,7 @@ try {
       foreach ($cardList as $card) {
         $index = -1;
         $layersCount = count($layers);
+        if (str_contains($card, "USURPED")) $card = "USURPED";
         for ($i = 0; $i < $layersCount; $i += $layerPieces) {
           if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID && $layers[$i+2] == $card) {
             $index = $i;
