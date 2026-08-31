@@ -48,7 +48,7 @@ if ($resetRequested) {
   .count { text-align: right; font-weight: bold; color: #7cf; }
   .zero { color: #555; }
   .reset-btn { margin-top: 16px; padding: 8px 18px; background: #a33; color: #fff;
-               border: none; cursor: pointer; border-radius: 4px; font-size: 14px; }
+               border: none; cursor: pointer; border-radius: 5px; font-size: 14px; }
   .reset-btn:hover { background: #c44; }
   .note { color: #888; font-size: 12px; margin-top: 8px; }
 </style>
