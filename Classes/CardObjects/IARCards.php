@@ -5097,18 +5097,12 @@ class astral_ambience_yellow extends Card {
   }
 }
 
-class ominous_toll_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "ominous_toll_red";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+class ominous_toll extends BaseCard {
+  function PlayAbility() {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
-    return "";
   }
 
-  function ProcessAttackTrigger($target, $uniqueID) {
+  function ProcessAttackTrigger() {
     Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Zombie", subsequent:0);
     Await($this->controller, "ChooseMultiZone", context:"Discard a zombie to make a gate (or pass)", may:true);
     Await($this->controller, $this->cardID, final:true);
@@ -5123,10 +5117,31 @@ class ominous_toll_red extends Card {
       PlayAura("gate_to_iarathael", $this->controller);
     }
   }
+}
 
-  // function SpecialName() {
-  //   return "Ominous Toll";
-  // }
+class ominous_toll_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "ominous_toll_red";
+    $this->controller = $controller;
+    $this->baseCard = new ominous_toll($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+  
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function SpecialName() {
+    return "Ominous Toll";
+  }
 
   function SpecialPower() {
     return 3;
@@ -5149,18 +5164,110 @@ class ominous_toll_red extends Card {
   }
 }
 
-class embrace_ursur_red extends Card {
+class ominous_toll_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "embrace_ursur_red";
+    $this->cardID = "ominous_toll_yellow";
     $this->controller = $controller;
+    $this->baseCard = new ominous_toll($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    $this->baseCard->PlayAbility();
     return "";
   }
-
+  
   function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function SpecialName() {
+    return "Ominous Toll";
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+}
+
+class ominous_toll_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "ominous_toll_blue";
+    $this->controller = $controller;
+    $this->baseCard = new ominous_toll($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+  
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function SpecialName() {
+    return "Ominous Toll";
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+}
+
+class embrace_ursur extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
     Await($this->controller, "MultiZoneIndices", search:"MYHAND", subsequent:0);
     Await($this->controller, "ChooseMultiZone", context:"Banish a card (or pass)", may:true);
     Await($this->controller, $this->cardID, final:true);
@@ -5180,6 +5287,27 @@ class embrace_ursur_red extends Card {
         AddCurrentTurnEffect($this->cardID, $this->controller);
     }
   }
+}
+
+class embrace_ursur_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "embrace_ursur_red";
+    $this->controller = $controller;
+    $this->baseCard = new embrace_ursur($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
@@ -5193,11 +5321,117 @@ class embrace_ursur_red extends Card {
     return 1;
   }
 
-  // function SpecialName() {
-  //   return "Embrace Ursur";
-  // }
+  function SpecialName() {
+    return "Embrace Ursur";
+  }
 
   function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class embrace_ursur_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "embrace_ursur_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new embrace_ursur($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Embrace Ursur";
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class embrace_ursur_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "embrace_ursur_blue";
+    $this->controller = $controller;
+    $this->baseCard = new embrace_ursur($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Embrace Ursur";
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function SpecialPitch() {
     return 3;
   }
 
