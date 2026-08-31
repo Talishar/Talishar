@@ -240,6 +240,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $ID = "$additionalCosts-USURPED";
             $label = "USURPED";
           }
+          elseif (str_ends_with($ID, "-USURPED")) {
+            $label = "USURPED";
+          }
           $orderedLayers[] = JSONRenderedCard($ID, uniqueID:$UID, action: 0, label:$label);
         }
 
