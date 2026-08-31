@@ -451,13 +451,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $reorderableLayers = [];
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
     $layerName = isset($specialLayersSet[$layers[$i]]) ? $layers[$i+2] : $layers[$i];
-    if ($layerName == "USURPED") $layerName = $layers[$i + 4] . "-USURPED";
-    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
+    $label = NULL;
+    if ($layerName == "USURPED") {
+      $layerName = $layers[$i + 4] . "-USURPED";
+      $label = "USURPED";
+    }
+    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label);
 
     $layer = new stdClass();
     $borderColor = null;
     if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 9;
-    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor);
+    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor, label:$label);
     $layer->layerID = $i;
     $layer->isReorderable = false;
     $reorderableLayers[] = $layer;

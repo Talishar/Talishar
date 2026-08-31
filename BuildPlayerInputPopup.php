@@ -235,8 +235,12 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $ID = $layerParts[0] ?? "-";
           $UID = $layerParts[1] ?? "-";
           $additionalCosts = $layerParts[2] ?? "-";
-          if ($ID == "USURPED") $ID = "$additionalCosts-$ID";
-          $orderedLayers[] = JSONRenderedCard($ID, uniqueID:$UID, action: 0);
+          $label = NULL;
+          if ($ID == "USURPED") {
+            $ID = "$additionalCosts-USURPED";
+            $label = "USURPED";
+          }
+          $orderedLayers[] = JSONRenderedCard($ID, uniqueID:$UID, action: 0, label:$label);
         }
 
         $playerInputPopup->popup = CreatePopupAPI("TRIGGERORDER", [], 0, 1, GetPhaseHelptext(), 1, "Order your triggers. The rightmost trigger will resolve first.", topCards: $orderedLayers);
