@@ -1907,7 +1907,7 @@ class appalling_bearers extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     $inds = $this->GetInds();
     if (count($inds) == 0) {
-      WriteLog("No Zombie to discard, reverting gamestate", highlight:true);
+      WriteLog("No zombie to discard, reverting gamestate", highlight:true);
       RevertGamestate();
       return;
     }
@@ -3534,7 +3534,7 @@ class forsaken_strike_yellow extends Card {
       $sub = $i != 0;
       $remaining = $iters - $i;
       Await($this->controller, $this->cardID, "indices", mode:"indices", subsequent:$sub);
-      Await($this->controller, "ChooseMultiZone", may:true, context:"Destroy or Discard up to $remaining more Zombies (or pass)");
+      Await($this->controller, "ChooseMultiZone", may:true, context:"Destroy or discard up to $remaining more zombies (or pass)");
       Await($this->controller, $this->cardID, "numModes", mode:"destroy");
     }
 

@@ -2229,9 +2229,21 @@ function CanPlayInstant($phase)
 
 function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pitchRestriction = "", $phase = "P")
 {
-  global $playerID, $currentTurnEffects;
+  global $playerID, $currentTurnEffects, $layers;
   $resources = &GetResources($playerID);
   if(PitchValue($cardID) <= 0) return true; //Can't pitch mentors or landmarks
+  if (
+    $from == "HAND"
+    && ($layers[0] ?? "") == "undead_grasp"
+    && ($layers[1] ?? -1) == $playerID
+    && SubtypeContains($cardID, "Zombie")
+  ) {
+    $zombiesInHand = SearchHand($playerID, subtype: "Zombie");
+    if ($zombiesInHand != "" && !str_contains($zombiesInHand, ",")) {
+      $restrictedBy = "undead_grasp";
+      return true;
+    }
+  }
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {

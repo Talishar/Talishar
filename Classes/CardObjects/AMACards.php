@@ -85,7 +85,7 @@ class undead_grasp extends Card {
 			RevertGamestate();
 		}
 		else {
-			Await($this->controller, "ChooseMultiZone", "MZIndex", indices:$inds, context: "Discard a Zombie", subsequent:0);
+			Await($this->controller, "ChooseMultiZone", "MZIndex", indices:$inds, context: "Discard a zombie", subsequent:0);
 			Await($this->controller, "Discard", effectController:$this->controller, final:true);
 		}
 	}
@@ -135,7 +135,7 @@ class dig_for_souls_red extends Card {
 			$inds = implode(",", $inds);
 			$allInds = implode(",", $allInds);
 			if ($inds != "") {
-				Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a Zombie to put in the graveyard", subsequent:0);
+				Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a zombie to put in the graveyard", subsequent:0);
 				Await($this->controller, $this->cardID, inds:$allInds);
 				// avoid creating a call to CHOOSEBOTTOM with no choices
 				if (count(explode(",", $allInds)) > 1) AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
