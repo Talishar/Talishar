@@ -3216,6 +3216,7 @@ class head_banging_chorus_yellow extends Card {
     global $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn, $CombatChain;
     if (!IsHeroAttackTarget()) return;
     $attackCard = $CombatChain->AttackCard()->ID();
+    if (!TypeContains($attackCard, "AA", $this->controller)) return false;
     if (ClassContains($attackCard, "GUARDIAN", $this->controller)) {
       if (GetClassState($this->controller, $CS_GuardianAACThisTurn) == 1) {
         if (!$check)
