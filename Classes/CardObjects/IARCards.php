@@ -5569,3 +5569,58 @@ class reach_of_the_abyss extends Card {
     return "SHADOW";
   }
 }
+
+class blessing_of_suraya_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "blessing_of_suraya_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function StartTurnAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $AuraCard->UniqueID());
+  }
+
+  function PermanentAddSoulAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "SOUL");
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "SOUL")
+      PlayAura("ponder", $this->controller);
+    else {
+      AddSoul($this->cardID, $this->controller, "AURAS", false);
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      $AuraCard->Remove();
+    }
+  }
+
+  function SpecialName() {
+    return "Blessing of Suraya";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialTalent() {
+    return "LIGHT";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
