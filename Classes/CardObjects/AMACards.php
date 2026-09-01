@@ -80,14 +80,8 @@ class undead_grasp extends Card {
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		$CharacterCard->Destroy();
 		$inds = SearchMultizone($this->controller, "MYHAND:subtype=Zombie");
-		if ($inds == "") {
-			WriteLog("No zombie to discard, reverting gamestate", highlight:true);
-			RevertGamestate();
-		}
-		else {
-			Await($this->controller, "ChooseMultiZone", "MZIndex", indices:$inds, context: "Discard a zombie", subsequent:0);
-			Await($this->controller, "Discard", effectController:$this->controller, final:true);
-		}
+		Await($this->controller, "ChooseMultiZone", "MZIndex", indices:$inds, context: "Discard a zombie", subsequent:0);
+		Await($this->controller, "Discard", effectController:$this->controller, final:true);
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {

@@ -2227,23 +2227,35 @@ function CanPlayInstant($phase)
   return isset($validPhases[$phase]);
 }
 
+function IsCardSpecificPitchRestricted($cardID, $player, $from, &$restrictedBy): bool
+{
+  global $layers;
+  if ($from != "HAND" || ($layers[1] ?? -1) != $player) return false;
+  $source = $layers[0] ?? "";
+  switch ($source) {
+    case "undead_grasp":
+      $restricted = SubtypeContains($cardID, "Zombie")
+        && SearchCount(SearchHand($player, subtype: "Zombie")) == 1;
+      break;
+    case "art_of_the_phoenix_war_red":
+      $restricted = CardName($cardID) == CardName("phoenix_flame_red")
+        && SearchCount(SearchMultizone($player, "MYHAND:isSameName=phoenix_flame_red")) == 1;
+      break;
+    default:
+      return false;
+  }
+
+  if (!$restricted) return false;
+  $restrictedBy = $source;
+  return true;
+}
+
 function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pitchRestriction = "", $phase = "P")
 {
-  global $playerID, $currentTurnEffects, $layers;
+  global $playerID, $currentTurnEffects;
   $resources = &GetResources($playerID);
   if(PitchValue($cardID) <= 0) return true; //Can't pitch mentors or landmarks
-  if (
-    $from == "HAND"
-    && ($layers[0] ?? "") == "undead_grasp"
-    && ($layers[1] ?? -1) == $playerID
-    && SubtypeContains($cardID, "Zombie")
-  ) {
-    $zombiesInHand = SearchHand($playerID, subtype: "Zombie");
-    if ($zombiesInHand != "" && !str_contains($zombiesInHand, ",")) {
-      $restrictedBy = "undead_grasp";
-      return true;
-    }
-  }
+  if (IsCardSpecificPitchRestricted($cardID, $playerID, $from, $restrictedBy)) return true;
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
