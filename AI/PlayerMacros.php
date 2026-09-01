@@ -412,16 +412,16 @@ function HasPlayableCard($player, $phase)
     if(IsPlayable($hand[$i], $phase, "HAND", $i, $restriction, $player)) return true;
   }
 
-  $character = &GetPlayerCharacter($player);
-  $characterPieces = CharacterPieces();
-  for($i=0, $count=count($character); $i<$count; $i+=$characterPieces) {
-    if($character[$i+1] == 2 && GetCharacterGemState($player, $character[$i]) && IsPlayable($character[$i], $phase, "CHAR", $i, $restriction, $player)) return true;
-  }
-
   $arsenal = &GetArsenal($player);
   $arsenalPieces = ArsenalPieces();
   for($i=0, $count=count($arsenal); $i<$count; $i+=$arsenalPieces) {
     if(IsPlayable($arsenal[$i], $phase, "ARS", $i, $restriction, $player)) return true;
+  }
+
+  $character = &GetPlayerCharacter($player);
+  $characterPieces = CharacterPieces();
+  for($i=0, $count=count($character); $i<$count; $i+=$characterPieces) {
+    if($character[$i+1] == 2 && GetCharacterGemState($player, $character[$i]) && IsPlayable($character[$i], $phase, "CHAR", $i, $restriction, $player)) return true;
   }
 
   $allies = GetAllies($player);
