@@ -1060,7 +1060,7 @@ function ListDracDaggersGraveyard($player) {
   }
   $weapons = implode(",", $weaponsArr);
   if ($weapons == "") {
-    WriteLog("Player " . $player . " doesn't have any dagger in their graveyard");
+    WriteLog("Player " . $player . " doesn't have any daggers in their graveyard.");
   }
   return $weapons;
 }

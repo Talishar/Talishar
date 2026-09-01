@@ -344,7 +344,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         }
         $weapons = implode(",", $weaponsArr);
         if ($weapons == "") {
-          WriteLog("Player " . $mainPlayer . " doesn't have any dagger in their inventory");
+          WriteLog("Player " . $mainPlayer . " doesn't have any daggers in their inventory.");
           return;
         }
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a dagger to equip");

@@ -1257,7 +1257,7 @@ function ProcessSurge($cardID, $player, $target)
     case "etchings_of_arcana_red":
     case "etchings_of_arcana_yellow":
     case "etchings_of_arcana_blue":
-      WriteLog(CardLink($cardID, $cardID) . " returns a sigil from graveyard to hand");
+      WriteLog(CardLink($cardID, $cardID) . " returns a Sigil from graveyard to hand");
       MZMoveCard($player, "MYDISCARD:subtype=Aura;nameIncludes=Sigil", "MYHAND", may: true);
       break;
     case "open_the_flood_gates_red": 

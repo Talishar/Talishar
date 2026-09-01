@@ -288,7 +288,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $skipWriteGamestate = true;
           break;
         } else if ($selectionCount < $minSelect) {
-          WriteLog("Player " . $playerID . " selected " . $selectionCount . " items, but a minimum of " . $maxSelect . " is requested.", highlight: true);
+          WriteLog("Player " . $playerID . " selected " . $selectionCount . " items, but a minimum of " . $minSelect . " is required.", highlight: true);
           $skipWriteGamestate = true;
           break;
         }
@@ -300,7 +300,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $index = intval($chkInput[$i]);
           if ($index < 0 || $index >= $optionsCount) {
             WriteLog($selectionCount);
-            WriteLog("An unvalid option was selected. Please try selecting the items again, if you feel experienced a bug please report it.", highlight: true);
+            WriteLog("An invalid option was selected. Please try selecting the items again. If you believe you encountered a bug, please report it.", highlight: true);
             $skipWriteGamestate = true;
             break;
           }
@@ -441,7 +441,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($cardName != "") $inputText = $cardName;
       if (($turn[2] ?? "") == "head_leads_the_tail_red" && $inputText == "Head Leads the Tail") //Validate the name
       {
-        WriteLog(CardLink($turn[2], $turn[2]) . " cannot name itself, your must name another card", highlight: true);
+        WriteLog(CardLink($turn[2], $turn[2]) . " cannot name itself; you must name another card.", highlight: true);
         break;
       }
       ContinueDecisionQueue(GamestateSanitize($inputText));
@@ -1050,7 +1050,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $otherPlayer = $playerID == 1 ? 2 : 1;
       if (!IsGameOver())
         PlayerWon($playerID);
-      WriteLog("🚩The opponent forfeit due to inactivity.");
+      WriteLog("🚩 The opponent forfeited due to inactivity.");
       break;
     case 100011: //Resume adventure (roguelike)
       if ($roguelikeGameID == "")
@@ -2440,7 +2440,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     }
     else if ($from == "THEIRARS" && $turn[0] != "B") {
-      WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from their opponnent's arsenal", $turn[0] != "P" ? $currentPlayer : 0);
+      WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from their opponent's arsenal", $turn[0] != "P" ? $currentPlayer : 0);
     }
     else if ($from == "DECK" && (SearchCharacterActive($currentPlayer, "dash_io") || SearchCharacterActive($currentPlayer, "dash_database"))) {
       WriteLog("Player " . $currentPlayer . " " . PlayTerm($turn[0]) . " " . CardLink($cardID, $cardID) . " from the top of their deck", $turn[0] != "P" ? $currentPlayer : 0);
@@ -4290,7 +4290,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "oscilio_constella_intelligence":
     case "oscilio":
       if(SearchCount(SearchMultiZone($currentPlayer, "MYHAND:type=I")) == 0) {
-        WriteLog("No instant card in hand pay the discard cost of " . CardLink($cardID, $cardID) . ". Reverting the gamestate.", highlight:true);
+        WriteLog("No instant card in hand can pay the discard cost of " . CardLink($cardID, $cardID) . ". Reverting the game state.", highlight:true);
         RevertGamestate();
       }
       $index = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -4541,7 +4541,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if (($definedCardType == "DR" || ($definedCardType == "E" && GetAbilityType($cardID) == "DR")) && SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2 && IsCombatEffectActive("confidence")) {
       $discard = new Discard($currentPlayer);
       $discard->Add($cardID, "LAYER");
-      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because " . CardLink("confidence") . " is active and there are already 2 non-block card defending.");
+      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because " . CardLink("confidence") . " is active and there are already 2 non-block cards defending.");
       $skipDRResolution = true;
     }
     // dreacts that can only defend specific things

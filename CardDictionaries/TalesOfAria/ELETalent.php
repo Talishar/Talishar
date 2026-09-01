@@ -86,7 +86,7 @@
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
           if($from == "ARS") {
             AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-            WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+            WriteLog(CardLink($cardID, $cardID) . " drew a card.");
           }
           ResolveGoesWhere("BANISH", $cardID, $currentPlayer, $from);
         } 
@@ -131,7 +131,7 @@
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
         if($from == "ARS") {
           Draw($currentPlayer);
-          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+          WriteLog(CardLink($cardID, $cardID) . " drew a card.");
         }
         return "";
       case "amulet_of_ice_blue":
@@ -178,7 +178,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if($from == "ARS") {
           Draw($currentPlayer);
-          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+          WriteLog(CardLink($cardID, $cardID) . " drew a card.");
         }
         return "";
       case "amulet_of_lightning_blue":

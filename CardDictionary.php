@@ -2227,6 +2227,7 @@ function CanPlayInstant($phase)
   return isset($validPhases[$phase]);
 }
 
+// function to prevent players from pitching a card that they need to pay the cost
 function IsCardSpecificPitchRestricted($cardID, $player, $from, &$restrictedBy): bool
 {
   global $layers;

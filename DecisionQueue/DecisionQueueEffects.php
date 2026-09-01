@@ -105,7 +105,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
           break;
         case "Draw_then_top_deck":
           if(!$deck->Empty()) {
-            WriteLog(Cardlink("micro_processor_blue","micro_processor_blue") . " let you draw a card then put one on top");
+            WriteLog(Cardlink("micro_processor_blue","micro_processor_blue") . " lets you draw a card, then put one on top");
             Draw($player);
             }
           HandToTopDeck($player);
@@ -477,10 +477,10 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       return "";
     case "BURDENSOFTHEPAST":
       $defenseReactionsInDiscard = SearchDiscard($target, "DR", getDistinctCardNames: true);
-      WriteLog("Player {$target} was targeted. Burdens of the Past prevents the play of the folowing defense reactions: <b>" . (str_replace("_", " ", $defenseReactionsInDiscard)) . "</b>");
+      WriteLog("Player {$target} was targeted. Burdens of the Past prevents the play of the following defense reactions: <b>" . (str_replace("_", " ", $defenseReactionsInDiscard)) . "</b>");
       AddCurrentTurnEffect("burdens_of_the_past_blue", $target);
       if (SearchCount(SearchDiscard($target, "DR")) >= 10) {
-        WriteLog("Player {$player} draws a card as target hero has at least 10 defense reactions in their graveyard.");
+        WriteLog("Player {$player} draws a card because Player {" . (3 - $player) . "} has at least 10 defense reactions in their graveyard.");
         Draw($player);
       }
       return "";

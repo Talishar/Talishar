@@ -8299,7 +8299,7 @@ class stormweavers_aegis extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     if ($from == "PLAY") {
       if(SearchCount(SearchMultiZone($this->controller, "MYHAND:type=I")) == 0) {
-        WriteLog("No instant card in hand pay the discard cost of " . CardLink($this->cardID, $this->cardID) . ". Reverting the gamestate.", highlight:true);
+        WriteLog("No instant card in hand can pay the discard cost of " . CardLink($this->cardID, $this->cardID) . ". Reverting the game state.", highlight:true);
         RevertGamestate();
       }
       MZMoveCard($this->controller, "MYHAND:type=I", "MYDISCARD," . $this->controller);

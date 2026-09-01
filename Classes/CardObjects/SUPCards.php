@@ -159,7 +159,7 @@ class blood_follows_blade_yellow extends Card {
       GiveAttackGoAgain();
       AddCurrentTurnEffect($this->cardID, $this->controller);
     }
-    else WriteLog("A previous chain link was targetted for no effect");
+    else WriteLog("A previous chain link was targeted to no effect.");
     return "";
   }
 

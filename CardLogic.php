@@ -2895,7 +2895,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           LoseHealth($numName, $mainPlayer);
           WriteLog(Cardlink($topDeck, $topDeck) . " was put in the graveyard. Player $mainPlayer lost $numName life");
         }
-        else WriteLog("No card from deck to put into graveyayrd");
+        else WriteLog("No card from the deck could be put into the graveyard.");
         break;
       case "boulder_trap_yellow":
         AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
@@ -3424,7 +3424,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "second_tenet_of_chi_moon_blue":
         Draw($player, effectSource:$parameter);
-        WriteLog(CardLink($parameter, $parameter) . " draw a card.");
+        WriteLog(CardLink($parameter, $parameter) . " drew a card.");
         break;
       case "essence_of_ancestry_body_red":
       case "essence_of_ancestry_soul_yellow":
