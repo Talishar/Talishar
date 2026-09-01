@@ -1612,6 +1612,7 @@ class circlet_of_eternal_end extends Card {
     $ind = explode("-", $choice)[1] ?? -1;
     if ($ind != -1) {
       $BanishCard = new BanishCard($mainPlayer, $ind);
+      WriteLog(CardLink($BanishCard->CardID()) . " was turned face down!");
       $BanishCard->SetModifier("DOWN");
     }
   }
