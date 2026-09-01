@@ -117,6 +117,6 @@ foreach ($deckCardIds as $cardID) {
 addFavoriteDeck($userID, $decklink, $deckName, $heroID, $deckFormat);
 
 $response->success = true;
-$response->message = "Deck added to favorites successfully!";
+$response->message = "Deck added to favorites.";
 
 echo json_encode($response);

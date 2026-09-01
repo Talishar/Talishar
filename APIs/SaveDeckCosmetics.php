@@ -55,7 +55,7 @@ if (empty($decklink)) {
   DeckCosmeticsError("Deck link is required.");
 }
 if ($hasAltArts && !is_array($altArts)) {
-  DeckCosmeticsError("Invalid alt art selection.");
+  DeckCosmeticsError("Invalid alternate art selection.");
 }
 
 $conn = GetDBConnection(DBL_SAVE_DECK_COSMETICS);
@@ -90,11 +90,11 @@ foreach (($altArts ?? []) as $entry) {
   $altPath = strval($entry['altPath'] ?? '');
   if ($cardId === '' || $altPath === '') {
     mysqli_close($conn);
-    DeckCosmeticsError("Invalid alt art selection.");
+    DeckCosmeticsError("Invalid alternate art selection.");
   }
   if (!isset($altArtEntitlements[$cardId]) || !in_array($altPath, $altArtEntitlements[$cardId], true)) {
     mysqli_close($conn);
-    DeckCosmeticsError("You have not unlocked that alt art for " . $cardId . ".", 403);
+    DeckCosmeticsError("You have not unlocked that alternate art for " . $cardId . ".", 403);
   }
   $validatedAltArts[] = [$cardId, $altPath];
 }
