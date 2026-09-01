@@ -220,11 +220,32 @@ function ProcessSpecificCardMacros()
       ContinueDecisionQueue($firstChoice);
       return true;
     }
-    // Auto choose a choice when every option is the same card (card + mod)
-    if ($EffectContext == "raise_an_army_yellow" || $EffectContext == "visit_the_golden_anvil_blue"
-      || $EffectContext == "deadwood_dirge_red" || $EffectContext == "deadwood_dirge_yellow" || $EffectContext == "deadwood_dirge_blue"
-      || $EffectContext == "gravy_bones" || $EffectContext == "gravy_bones_shipwrecked_looter"
-      || $EffectContext == "puffin_hightail" || $EffectContext == "puffin" || $EffectContext == "marlynn_treasure_hunter" || $EffectContext == "marlynn" || $EffectContext == "scurv_stowaway")
+    // Auto choose mandatory selections when every option has the same card ID.
+    static $autoChooseAllSameContexts = [
+      "raise_an_army_yellow", "visit_the_golden_anvil_blue",
+      "deadwood_dirge_red", "deadwood_dirge_yellow", "deadwood_dirge_blue",
+      "gravy_bones", "gravy_bones_shipwrecked_looter",
+      "puffin_hightail", "puffin", "marlynn_treasure_hunter", "marlynn", "scurv_stowaway",
+      "pay_up_red",
+      "mutiny_on_the_battalion_barque_blue", "mutiny_on_the_nimbus_sovereign_blue", "mutiny_on_the_swiftwater_blue",
+      "sticky_fingers", "sticky_fingers_ally",
+      "money_or_your_life_red", "money_or_your_life_yellow", "money_or_your_life_blue",
+      "cutpurse_rapier",
+      "not_so_mighty_blue", "not_so_tuff_blue",
+      "dr_mortimer", "dr_mortimer_blight_of_the_pits",
+      "break_stature_yellow",
+      "thespian_charm_yellow", "liars_charm_yellow", "numbskull_charm_yellow", "cheaters_charm_yellow",
+      "gang_robbery_yellow", "steal_victory_blue", "tempt_over_yellow",
+      "destructive_fleetfoot_red", "destructive_fleetfoot_yellow", "destructive_fleetfoot_blue",
+      "bash_guardian_red", "bash_brute_red",
+      "clash_of_bravado_yellow",
+      "condemn_to_slaughter_red", "condemn_to_slaughter_yellow", "condemn_to_slaughter_blue",
+      "annexation_of_grandeur_yellow", "roiling_fissure_blue", "bloodtorn_bodice",
+      "arcanic_reproach_blue", "caress_of_the_reaper_red", "dice_up_blue",
+      "small_problem_yellow", "disturb_the_peace_red", "who_blinks_first_blue",
+      "doomsaying_red"
+    ];
+    if (in_array($EffectContext, $autoChooseAllSameContexts, true))
     {
       $firstCard = GetMZCard($currentPlayer, $firstChoice);
       $choiceCount = count($choices);
