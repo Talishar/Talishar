@@ -5600,9 +5600,9 @@ class blessing_of_suraya_yellow extends Card {
     }
   }
 
-  function SpecialName() {
-    return "Blessing of Suraya";
-  }
+  // function SpecialName() {
+  //   return "Blessing of Suraya";
+  // }
 
   function SpecialPitch() {
     return 2;
@@ -5622,5 +5622,51 @@ class blessing_of_suraya_yellow extends Card {
 
   function HasGoAgain($from) {
     return true;
+  }
+}
+
+class bravery_of_the_blade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bravery_of_the_blade_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function DoesAttackHaveGoAgain() {
+    global $CS_NumCharged;
+    return GetClassState($this->controller, $CS_NumCharged) > 0;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Charge();
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $CS_NumCharged;
+    if (GetClassState($this->controller, $CS_NumCharged) == 0) return false;
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    PlayAura("courage", $this->controller);
+  }
+
+  // function SpecialName() {
+  //   return "Bravery of the Blade";
+  // }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "WARRIOR";
+  }
+
+  function SpecialTalent() {
+    return "LIGHT";
   }
 }
