@@ -1194,6 +1194,8 @@ function AuraEndTurnAbilities()
   $countAuras = count($auras);
   $aurasPieces = AuraPieces();
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
+    $AuraCard = new AuraCard($i, $mainPlayer);
+    if ($AuraCard->Tapped()) $AuraCard->Tap(0, true);
     $remove = false;
     switch ($auras[$i]) {
       case "enchanting_melody_red":
@@ -1217,6 +1219,7 @@ function AuraEndTurnAbilities()
         break;
     }
     if ($remove) DestroyAura($mainPlayer, $i);
+
   }
 }
 

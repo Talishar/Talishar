@@ -5049,11 +5049,13 @@ class astral_ambience_yellow extends Card {
 	}
 
   function PayAdditionalCosts($from, $index = '-') {
-    $inds = GetUntapped($this->controller, "MYAURAS", "isSameName=spectral_shield");
-    if($inds != "") {
-      AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
-      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("MZTAP", $this->controller, "<-", 1);
+    if ($from == "PLAY") {
+      $inds = GetUntapped($this->controller, "MYAURAS", "isSameName=spectral_shield");
+      if($inds != "") {
+        AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
+        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+        AddDecisionQueue("MZTAP", $this->controller, "<-", 1);
+      }
     }
   }
 
