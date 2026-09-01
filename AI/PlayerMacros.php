@@ -23,7 +23,6 @@ function ProcessMacros()
       $layerPieces = LayerPieces();
       $decisionQueueCount = count($decisionQueue);
       $holdPrioritySetting = HoldPrioritySetting($currentPlayer);
-      $choiceLength = strlen($turn[2] ?? "");
       $firstLayer = $layerCount >= $layerPieces ? $layers[0] : null;
       $lastLayer = $layerCount >= $layerPieces ? $layers[$layerCount - $layerPieces] : null;
 
@@ -39,16 +38,24 @@ function ProcessMacros()
           break;
         case "CHOOSECARDID":
         case "CHOOSECARD":
-          if ($choiceLength <= 6) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+          if (SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+          break;
+        case "CHOOSETOP":
+        case "CHOOSEBOTTOM":
+          if (SearchCount($turn[2]) == 1) {
+            $somethingChanged = true;
+            $mode = $turn[0] == "CHOOSETOP" ? 8 : 9;
+            ProcessInput($currentPlayer, $mode, $turn[2], $turn[2], 0, "");
+          }
           break;
         case "CHOOSETHEIRHAND":
-          if ($choiceLength <= 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+          if (SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
           break;
         case "CHOOSETHEIRCHARACTER":
-          if ($choiceLength <= 2) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
+          if (SearchCount($turn[2]) == 1) { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
           break;
         case "CHOOSETOPOPPONENT":
-          if ($choiceLength <= 6) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
+          if (SearchCount($turn[2]) == 1) { $somethingChanged = true; ProcessInput($currentPlayer, 29, $turn[2], $turn[2], 0, ""); }
           break;
         case "ENDPHASE":
         case "STARTTURN":
@@ -212,6 +219,30 @@ function ProcessSpecificCardMacros()
 
   if ($turn[0] == "CHOOSEMULTIZONE") {
     $choices = explode(",", $turn[2]);
+
+    // If a mandatory multi-select requires every available option, there is no choice to make we can skip the player popup.
+    $minimumCount = null;
+    $limitOffset = 0;
+    while ($limitOffset < count($choices)) {
+      $limit = explode("-", $choices[$limitOffset], 2);
+      if ($limit[0] == "MINCOUNT") {
+        $minimumCount = intval($limit[1] ?? 0);
+        ++$limitOffset;
+      }
+      else if ($limit[0] == "MAXCOUNT") {
+        ++$limitOffset;
+      }
+      else break;
+    }
+    if ($limitOffset > 0) {
+      $selectableChoices = array_slice($choices, $limitOffset);
+      if ($minimumCount !== null && $minimumCount > 0 && count($selectableChoices) == $minimumCount) {
+        ContinueDecisionQueue(implode(",", $selectableChoices));
+        return true;
+      }
+      return false;
+    }
+
     $firstChoice = $choices[0];
 
     if (GetMZCard($currentPlayer, $firstChoice) == "phoenix_flame_red" &&
@@ -290,6 +321,15 @@ function ProcessSpecificCardMacros()
       }
     }
   }
+  if (str_starts_with($turn[0], "MULTICHOOSE") && !str_starts_with($turn[0], "MAYMULTICHOOSE")) {
+    $params = explode("-", $turn[2]);
+    $minimumCount = count($params) > 2 ? intval($params[2]) : 0;
+    $choices = ($params[1] ?? "") === "" ? [] : explode(",", $params[1]);
+    if ($minimumCount > 0 && count($choices) == $minimumCount) {
+      ContinueDecisionQueue($choices);
+      return true;
+    }
+  }
   if ($turn[0] == "MAYCHOOSECARD" && ($EffectContext == "cindra_dracai_of_retribution" || $EffectContext == "cindra"))
   {
     $daggers = explode(",", $turn[2]);
@@ -308,17 +348,31 @@ function ProcessSpecificCardMacros()
       return true;
     }
   }
-  if ($turn[0] == "YESNO" && $turn[2] == "if_you_want_to_accelerate_your_zombie")
-  {
+  if ($turn[0] == "YESNO") {
     $resources = &GetResources($currentPlayer);
-    $available = intval($resources[0]);
     $hand = &GetHand($currentPlayer);
     $handCount = count($hand);
     $handPieces = HandPieces();
-    for ($i = 0; $i < $handCount && $available < 2; $i += $handPieces) {
-      $available += PitchValue($hand[$i]);
+
+    if ($EffectContext == "danse_macabre") {
+      $available = intval($resources[0]);
+      for ($i = 0; $i < $handCount && $available < 2; $i += $handPieces) {
+        $available += PitchValue($hand[$i]);
+      }
+      if ($available < 2) {
+        ContinueDecisionQueue("NO");
+        return true;
+      }
     }
-    if ($available < 2) {
+
+    $cardsInHand = intdiv($handCount, $handPieces);
+    $publicMaximumResources = intval($resources[0]) + (3 * $cardsInHand);
+    if ($EffectContext == "prizeworn_pathfinders" && $publicMaximumResources < 1) {
+      ContinueDecisionQueue("NO");
+      return true;
+    }
+    if (($EffectContext == "staunch_response_red" || $EffectContext == "staunch_response_yellow" || $EffectContext == "staunch_response_blue")
+      && $publicMaximumResources < 4) {
       ContinueDecisionQueue("NO");
       return true;
     }
@@ -330,6 +384,8 @@ function AutopassPhaseWithOneOption($phase)
 {
   switch ($phase) {
     case "BUTTONINPUT":
+    case "BUTTONINPUTNOPASS":
+    case "CHOOSENUMBER":
     case "NUMBERINPUT":
     case "CHOOSEMULTIZONE":
     case "CHOOSECHARACTER":
