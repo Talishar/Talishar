@@ -5104,7 +5104,7 @@ class ominous_toll extends BaseCard {
 
   function ProcessAttackTrigger() {
     Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Zombie", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", context:"Discard a zombie to make a gate (or pass)", may:true);
+    Await($this->controller, "ChooseMultiZone", context:"Discard a zombie to make a ".CardLink("gate_to_iarathael")." (or pass)", may:true);
     Await($this->controller, $this->cardID, final:true);
   }
 
