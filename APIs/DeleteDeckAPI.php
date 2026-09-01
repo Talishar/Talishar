@@ -24,7 +24,7 @@ if (IsUserLoggedIn() && $decklink != "") {
   mysqli_close($conn);
 
   $response = new stdClass();
-  $response->message = "Deck deleted successfully.";
+  $response->message = "Deck deleted.";
   echo (json_encode($response));
 }
 

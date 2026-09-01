@@ -7290,10 +7290,6 @@ class art_of_the_phoenix_war_red extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     $hand = GetHand($this->controller);
     $indices = SearchMultizone($this->controller, "MYHAND:isSameName=phoenix_flame_red");
-    if ($indices == "") {
-      WriteLog("You don't have a " . CardLink("phoenix_flame_red") . " to discard! Reverting gamestate");
-      RevertGamestate();
-    }
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYHAND:isSameName=phoenix_flame_red");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Discard a " . CardLink("phoenix_flame_red", "phoenix_flame_red"), 1);
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -8303,7 +8299,7 @@ class stormweavers_aegis extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     if ($from == "PLAY") {
       if(SearchCount(SearchMultiZone($this->controller, "MYHAND:type=I")) == 0) {
-        WriteLog("No instant card in hand pay the discard cost of " . CardLink($this->cardID, $this->cardID) . ". Reverting the gamestate.", highlight:true);
+        WriteLog("No instant card in hand can pay the discard cost of " . CardLink($this->cardID, $this->cardID) . ". Reverting the game state.", highlight:true);
         RevertGamestate();
       }
       MZMoveCard($this->controller, "MYHAND:type=I", "MYDISCARD," . $this->controller);

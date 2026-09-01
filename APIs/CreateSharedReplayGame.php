@@ -180,5 +180,5 @@ $response->success = true;
 $response->gameName = $gameName;
 $response->playerID = 3;
 $response->authKey = $p1Key;
-$response->message = "Shared replay loaded successfully.";
+$response->message = "Shared replay loaded.";
 echo json_encode($response);

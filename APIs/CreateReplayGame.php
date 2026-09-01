@@ -294,7 +294,7 @@ WriteGamestateCache($gameName, $gamestate);
 $response->playerID = $replayPlayerID;
 $response->gameName = $gameName;
 $response->authKey = $replayPlayerID === 2 ? $p2Key : $p1Key;
-$response->message = "Replay game created successfully!";
+$response->message = "Replay game created.";
 $response->success = true;
 
 echo json_encode($response);

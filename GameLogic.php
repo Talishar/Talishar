@@ -707,7 +707,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddArsenal($deck->Top(), $player, $from, $facing);
         return $lastResult;
       } else {
-        WriteLog("Player $player arsenal is full, no card was put in arsenal");
+        WriteLog("Player $player arsenal is full; no card was put into their arsenal.");
         return "PASS";
       }
     case "ADDARSENALFROMDECK": //needed for schism so pass doesn't skip the other player
@@ -2466,7 +2466,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         WriteLog(CardLink("bingo_red", "bingo_red") . " gained go again");
         GiveAttackGoAgain();
       } else if (DelimStringContains($cardType, "A")) {
-        WriteLog(CardLink("bingo_red", "bingo_red") . " draw a card");
+        WriteLog(CardLink("bingo_red", "bingo_red") . " drew a card.");
         Draw($player);
       } else WriteLog(CardLink("bingo_red", "bingo_red") . "... did not hit the mark");
       return $lastResult;
@@ -3671,7 +3671,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
       }
       if (empty($equipmentsArr)) {
-        WriteLog("🚫Proto Equipments not found in your inventory");
+        WriteLog("🚫 Proto equipment was not found in your inventory.");
         return "PASS";
       }
       $equipments = implode(",", $equipmentsArr);
@@ -3819,7 +3819,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "BLAZEPAYCOST":
       $character = &GetPlayerCharacter($player);
       $character[2] = intval($character[2]) - intval($lastResult);
-      WriteLog("Player $player removed $lastResult counter to activate ".CardLink("blaze_firemind")." ability");
+      WriteLog("Player $player removed $lastResult counter to activate ".CardLink("blaze_firemind")."'s ability.");
       return $lastResult;
     case "LOGPLAYCARDSTATS":
       $param = explode(",", $parameter);
@@ -3889,7 +3889,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       AddCurrentTurnEffect("under_the_trap_door_blue", $currentPlayer, "", $parameter);
       return $lastResult;
     case "CURRENTATTACKBECOMES":
-      WriteLog(CardLink($combatChain[0], $combatChain[0]) . " copy and become " . CardLink($lastResult, $lastResult));
+      WriteLog(CardLink($combatChain[0], $combatChain[0]) . " was copied and became " . CardLink($lastResult, $lastResult) . ".");
       $combatChain[0] = $lastResult;
       return $lastResult;
     case "EXTRAATTACK":

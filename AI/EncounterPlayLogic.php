@@ -58,7 +58,7 @@ function CardIsPlayable($storedPriorityNode, $hand, $resources)
       $baseCost = CardCost($storedPriorityNode[0]);
       break;
     default:
-      WriteLog("ERROR: AI is storedPriorityNode an uncheckable card for playability. Please log a bug report.");
+      WriteLog("ERROR: The AI's stored priority node is not a card that can be checked for playability. Please submit a bug report.");
       return false;
   }
   $finalCost = $baseCost;

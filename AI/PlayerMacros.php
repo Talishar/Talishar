@@ -220,7 +220,10 @@ function ProcessSpecificCardMacros()
       ContinueDecisionQueue($firstChoice);
       return true;
     }
-    if ($EffectContext == "raise_an_army_yellow" || $EffectContext == "visit_the_golden_anvil_blue" || $EffectContext == "gravy_bones" || $EffectContext == "gravy_bones_shipwrecked_looter"
+    // Auto choose a choice when every option is the same card (card + mod)
+    if ($EffectContext == "raise_an_army_yellow" || $EffectContext == "visit_the_golden_anvil_blue"
+      || $EffectContext == "deadwood_dirge_red" || $EffectContext == "deadwood_dirge_yellow" || $EffectContext == "deadwood_dirge_blue"
+      || $EffectContext == "gravy_bones" || $EffectContext == "gravy_bones_shipwrecked_looter"
       || $EffectContext == "puffin_hightail" || $EffectContext == "puffin" || $EffectContext == "marlynn_treasure_hunter" || $EffectContext == "marlynn" || $EffectContext == "scurv_stowaway")
     {
       $firstCard = GetMZCard($currentPlayer, $firstChoice);

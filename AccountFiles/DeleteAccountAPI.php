@@ -163,7 +163,7 @@ try {
   if ($isModDeletion) {
     $response->message = "User '$userNameToDelete' and all related data has been deleted from the database.";
   } else {
-    $response->message = "Account deleted successfully. Your session has been cleared.";
+    $response->message = "Account deleted. Your session has been cleared.";
   }
   
 } catch (Exception $e) {

@@ -1072,7 +1072,7 @@ function SEAHitEffect($cardID): void
       PutItemIntoPlayForPlayer("gold", $mainPlayer, number:$count, effectController:$mainPlayer, isToken:true);
       break;
     case "cogwerx_dovetail_red":
-      WriteLog(CardLink($cardID, $cardID) . " untap all the cogs Player " . $mainPlayer . " control.");
+      WriteLog(CardLink($cardID, $cardID) . " untaps all the Cogs Player " . $mainPlayer . " controls.");
       AddDecisionQueue("UNTAPALL", $mainPlayer, "MYITEMS:subtype=Cog", 1);
       break;
     case "hms_barracuda_yellow":

@@ -56,7 +56,7 @@ try {
     if (mysqli_stmt_execute($stmt)) {
       if (mysqli_stmt_affected_rows($stmt) > 0) {
         $response->success = true;
-        $response->message = "Deck hero updated successfully.";
+        $response->message = "Deck hero updated.";
       } else {
         $response->success = false;
         $response->message = "Deck not found or hero not changed.";
