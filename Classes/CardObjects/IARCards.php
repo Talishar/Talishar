@@ -5547,9 +5547,9 @@ class reach_of_the_abyss extends Card {
     }
   }
 
-  // function SpecialName() {
-  //   return "Reach of the Abyss";
-  // }
+  function SpecialName() {
+    return "Reach of the Abyss";
+  }
 
   function SpecialType() {
     return "E";
