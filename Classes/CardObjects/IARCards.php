@@ -407,26 +407,6 @@ class runic_reaving_red extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     Usurp($this->cardID, $this->controller, $from);
   }
-
-  function SpecialName() {
-    return "Runic Reaving";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
 }
 
 class runic_reaving_yellow extends Card {
@@ -482,26 +462,6 @@ class runic_reaving_yellow extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     Usurp($this->cardID, $this->controller, $from);
   }
-
-  function SpecialName() {
-    return "Runic Reaving";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
 }
 
 class runic_reaving_blue extends Card {
@@ -556,26 +516,6 @@ class runic_reaving_blue extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     Usurp($this->cardID, $this->controller, $from);
-  }
-
-  function SpecialName() {
-    return "Runic Reaving";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
   }
 }
 
@@ -3634,26 +3574,6 @@ class forsaken_strike_yellow extends Card {
   function CurrentEffectGrantsGoAgain($param) {
     return $param == "GOAGAIN";
   }
-
-  function SpecialName() {
-    return "Forsaken Strike";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
 }
 
 class restless_corporal_red extends Card {
@@ -3705,42 +3625,6 @@ class restless_corporal_red extends Card {
   function HasGoAgain($from) {
     return false;
   }
-
-  function SpecialName() {
-    return "Restless Corporal";
-  }
-
-  function SpecialHealth() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialSubType() {
-    return "Zombie,Ally";
-  }
-
-  function HasDecay() {
-    return true;
-  }
 }
 
 class restless_outlaw_red extends Card {
@@ -3760,42 +3644,6 @@ class restless_outlaw_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     BanishCardForPlayer("corrupted_corpse", $this->controller, "-", created:true);
-  }
-
-  function SpecialName() {
-    return "Restless Outlaw";
-  }
-
-  function SpecialHealth() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialSubType() {
-    return "Zombie,Ally";
-  }
-
-  function HasDecay() {
-    return true;
   }
 }
 
@@ -3833,26 +3681,6 @@ class cullingsong_gloomblade_red extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     global $defPlayer;
     BanishFromHand($defPlayer);
-  }
-
-  function SpecialName() {
-    return "Cullingsong Gloomblade";
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
   }
 }
 
@@ -3915,26 +3743,6 @@ class sonata_dystopia_blue extends Card {
       Await($this->controller, "MZDestroy", final: $i == $numRunechants-1);
     }
   }
-
-  function SpecialName() {
-    return "Sonata Dystopia";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
 }
 
 class runic_disposition_red extends Card {
@@ -3990,22 +3798,6 @@ class runic_disposition_red extends Card {
 
   function PayAdditionalCosts($from, $index = '-') {
     Usurp($this->cardID, $this->controller, $from);
-  }
-
-  function SpecialName() {
-    return "Runic Disposition";
-  }
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
   }
 }
 
@@ -4063,26 +3855,6 @@ class runic_disposition_yellow extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     Usurp($this->cardID, $this->controller, $from);
   }
-
-  function SpecialName() {
-    return "Runic Disposition";
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
 }
 
 class runic_disposition_blue extends Card {
@@ -4139,26 +3911,6 @@ class runic_disposition_blue extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     Usurp($this->cardID, $this->controller, $from);
   }
-
-  function SpecialName() {
-    return "Runic Disposition";
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
 }
 
 class countdown_to_extinction extends BaseCard {
@@ -4202,26 +3954,6 @@ class countdown_to_extinction_red extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect();
   }
-
-  function SpecialName() {
-    return "Countdown to Extinction";
-  }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
 }
 
 class countdown_to_extinction_yellow extends Card {
@@ -4247,30 +3979,6 @@ class countdown_to_extinction_yellow extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect();
   }
-
-  function SpecialName() {
-    return "Countdown to Extinction";
-  }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
 }
 
 class countdown_to_extinction_blue extends Card {
@@ -4295,30 +4003,6 @@ class countdown_to_extinction_blue extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect();
-  }
-
-  function SpecialName() {
-    return "Countdown to Extinction";
-  }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
   }
 }
 
@@ -4374,30 +4058,6 @@ class darkest_hour_red extends Card {
   function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
     return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
   }
-
-  function SpecialName() {
-    return "Darkest Hour";
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
 }
 
 class darkest_hour_yellow extends Card {
@@ -4426,34 +4086,6 @@ class darkest_hour_yellow extends Card {
 
   function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
     return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
-  }
-
-  function SpecialName() {
-    return "Darkest Hour";
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
   }
 }
 
@@ -4484,34 +4116,6 @@ class darkest_hour_blue extends Card {
   function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
     return $this->baseCard->CurrentTurnEffectPaid($remove, $index);
   }
-
-  function SpecialName() {
-    return "Darkest Hour";
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
 }
 
 class planar_chaos_red extends Card {
@@ -4524,22 +4128,6 @@ class planar_chaos_red extends Card {
     PlayAura("gate_to_iarathael", $this->controller);
     AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
-  }
-
-  function SpecialName() {
-    return "Planar Chaos";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
   }
 }
 
@@ -4578,26 +4166,6 @@ class plundersong_gloomblade_red extends Card {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     BanishFromArsenal($otherPlayer, $this->cardID);
   }
-
-  function SpecialName() {
-    return "Plundersong Gloomblade";
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasBloodDebt() {
-    return true;
-  }
 }
 
 class dimenxxional_ferryman_blue extends Card {
@@ -4634,26 +4202,6 @@ class dimenxxional_ferryman_blue extends Card {
   function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
     return "-";
   }
-
-  function SpecialName() {
-    return "Dimenxxional Ferryman";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
 }
 
 class echoing_trap_blue extends Card {
@@ -4683,34 +4231,6 @@ class echoing_trap_blue extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
     PummelHit($mainPlayer);
-  }
-
-  function SpecialName() {
-    return "Echoing Trap";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return -1;
-  }
-
-  function SpecialType() {
-    return "B";
-  }
-
-  function SpecialSubType() {
-    return "Trap";
-  }
-
-  function SpecialClass() {
-    return "RANGER";
-  }
-
-  function HasAmbush() {
-    return true;
   }
 }
 
@@ -4760,22 +4280,6 @@ class stoke_vengeance_red extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return 2;
-  }
-
-  function SpecialName() {
-    return "Stoke Vengeance";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialClass() {
-    return "NINJA";
   }
 }
 
@@ -4827,26 +4331,6 @@ class chains_of_consecration_yellow extends Card {
     }
     return 0;
   }
-
-  function SpecialName() {
-    return "Chains of Consecration";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialTalent() {
-    return "LIGHT";
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
 }
 
 class deadly_spinneret_red extends Card {
@@ -4889,26 +4373,6 @@ class deadly_spinneret_red extends Card {
   function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
-
-  function SpecialName() {
-    return "Deadly Spinneret";
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function HasStealth() {
-    return true;
-  }
 }
 
 class sigil_of_the_muse_red extends Card {
@@ -4940,26 +4404,6 @@ class sigil_of_the_muse_red extends Card {
     else {
       PlayAura("ponder", $this->controller);
     }
-  }
-
-  function SpecialName() {
-    return "Sigil of the Muse";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "WIZARD";
   }
 }
 
@@ -4993,30 +4437,6 @@ class rush_of_knowledge_blue extends Card {
       GainActionPoints(1, $this->controller);
       Draw($this->controller); 
     }
-  }
-
-  function SpecialName() {
-    return "Rush of Knowledge";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialClass() {
-    return "ILLUSIONIST,WIZARD";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function HasPhantasm() {
-    return true;
   }
 }
 
@@ -5067,38 +4487,6 @@ class astral_ambience_yellow extends Card {
     }
     return false;
   }
-
-  function HasFragment() {
-    return true;
-  }
-
-  function FragmentTrigger() {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
-  }
-
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PlayAura("spectral_shield", $this->controller);
-  }
-
-  function SpecialName() {
-    return "Astral Ambience";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialClass() {
-    return "ILLUSIONIST";
-  }
 }
 
 class ominous_toll extends BaseCard {
@@ -5142,30 +4530,6 @@ class ominous_toll_red extends Card {
   function SpecificLogic() {
     $this->baseCard->SpecificLogic();
   }
-
-  function SpecialName() {
-    return "Ominous Toll";
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
 }
 
 class ominous_toll_yellow extends Card {
@@ -5187,34 +4551,6 @@ class ominous_toll_yellow extends Card {
   function SpecificLogic() {
     $this->baseCard->SpecificLogic();
   }
-
-  function SpecialName() {
-    return "Ominous Toll";
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
 }
 
 class ominous_toll_blue extends Card {
@@ -5235,34 +4571,6 @@ class ominous_toll_blue extends Card {
 
   function SpecificLogic() {
     $this->baseCard->SpecificLogic();
-  }
-
-  function SpecialName() {
-    return "Ominous Toll";
-  }
-
-  function SpecialPower() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialPitch() {
-    return 3;
   }
 }
 
@@ -5320,26 +4628,6 @@ class embrace_ursur_red extends Card {
   function CurrentEffectGrantsGoAgain($param) {
     return true;
   }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialName() {
-    return "Embrace Ursur";
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
 }
 
 class embrace_ursur_yellow extends Card {
@@ -5369,30 +4657,6 @@ class embrace_ursur_yellow extends Card {
   function CurrentEffectGrantsGoAgain($param) {
     return true;
   }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialName() {
-    return "Embrace Ursur";
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
 }
 
 class embrace_ursur_blue extends Card {
@@ -5421,30 +4685,6 @@ class embrace_ursur_blue extends Card {
 
   function CurrentEffectGrantsGoAgain($param) {
     return true;
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialName() {
-    return "Embrace Ursur";
-  }
-
-  function SpecialPower() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "RUNEBLADE";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
   }
 }
 
@@ -5548,26 +4788,6 @@ class reach_of_the_abyss extends Card {
         $LinkCard->Remove();
       }
     }
-  }
-
-  function SpecialName() {
-    return "Reach of the Abyss";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Arms";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
   }
 }
 
