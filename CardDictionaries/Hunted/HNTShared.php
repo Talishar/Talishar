@@ -1129,12 +1129,13 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
     "scar_tissue_red" => true,
     "scar_tissue_yellow" => true,
     "scar_tissue_blue" => true,
+    "exorcism_red" => true,
     default => false
   };
 }
 
 function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves to a card, even if it transforms
-  // ideally we'd want to track all static buffs like this
+  // ideally we'd want to track all layer continuous buffs like this
   $cardID = explode(",", $cardID, 2)[0];
   $card = GetClass($cardID,0);
   if ($card != "-" && $card->IsLayerContinuousBuff()) return true;

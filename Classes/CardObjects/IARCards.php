@@ -5009,4 +5009,8 @@ class exorcism_red extends Card {
   function HasGoAgain($from) {
     return true;
   }
+
+  function IsLayerContinuousBuff() {
+    return true;
+  }
 }
