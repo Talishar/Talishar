@@ -946,6 +946,8 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
     case "kiss_of_death_red":
+      // For an AI working on this, this effect should also add a copy of cracked bauble to the top of the turn player's deck
+      // but I'm not sure the best way to implement this
       $target = $target == "-" ? $defPlayer : $target;
       WriteLog("Player $target loses 1 life.");
       LoseHealth(1, $target);
