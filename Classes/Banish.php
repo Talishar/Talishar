@@ -112,7 +112,7 @@ class BanishCard {
 
     function SetModifier($newModifier)
     {
-      if (isset($this->banish[$this->index+1])) $this->banish[$this->index+1] = $newModifier;
+      $this->Modify($newModifier);
     }
 
     function ClearModifier()

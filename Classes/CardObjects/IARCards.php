@@ -4936,9 +4936,9 @@ class channel_stormgarden_yellow extends Card {
 		return Amp($Effect->NumUses(), $remove, $player, $this->controller, $amount);
   }
 
-  function SpecialName() {
-    return "Channel Stormgarden";
-  }
+  // function SpecialName() {
+  //   return "Channel Stormgarden";
+  // }
 
   function SpecialPitch() {
     return 2;
@@ -4958,5 +4958,55 @@ class channel_stormgarden_yellow extends Card {
 
   function SpecialSubType() {
     return "Aura";
+  }
+}
+
+class exorcism_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "exorcism_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    $defPlayer = $this->controller == 1 ? 2 : 1;
+    $Banish = new Banish($defPlayer);
+    for ($i = 0; $i < $Banish->NumCards(); ++$i) {
+      $BanishCard = $Banish->Card($i, true);
+      if (!isFaceDownMod($BanishCard->Modifier()))
+        $BanishCard->Modify("DOWN");
+    }
+  }
+
+  // function SpecialName() {
+  //   return "Exorcism";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
   }
 }
