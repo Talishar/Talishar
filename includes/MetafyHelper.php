@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . '/ModeratorList.inc.php';
+
 /**
  * MetafyHelper.php - Helper functions for Metafy OAuth + community tier integration
  * Note: This file should be included after APIKeys.php and dbh.inc.php
