@@ -1,6 +1,7 @@
 <?php
 
 function LoadUserData($username) {
+	$conn = null;
 	try {
 		$conn = GetLocalMySQLConnection();
 	  $sql = "SELECT * FROM users WHERE usersUid = ?";
@@ -13,16 +14,17 @@ function LoadUserData($username) {
 		$result = mysqli_stmt_get_result($stmt);
 	  $row = mysqli_fetch_assoc($result);
 		mysqli_stmt_close($stmt);
-		mysqli_close($conn);
 	}
 	catch (\Exception $e) { error_log("LoadUserData: query failed for user lookup: " . $e->getMessage()); }
+	finally {
+		if ($conn !== null) mysqli_close($conn);
+	}
 
   return $row ?? null;
 }
 
 
 function PasswordLogin($username, $password, $rememberMe) {
-	$conn = GetLocalMySQLConnection();
 	try {
 		$userData = LoadUserData($username);
 	}
