@@ -4891,3 +4891,72 @@ class bravery_of_the_blade_red extends Card {
     return "LIGHT";
   }
 }
+
+class channel_stormgarden_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "channel_stormgarden_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PermanentDestroyedTrigger($cardID) {
+    global $CS_NumLightningFlowDestroyed;
+    if ($cardID == "lightning_flow" && GetClassState($this->controller, $CS_NumLightningFlowDestroyed) == 0)
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function EntersArenaAbility($index=-1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ENTERS");
+  }
+
+  function BeginEndTurnAbilities($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $AuraCard->CardID(), "-", "CHANNEL", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    switch ($additionalCosts) {
+      case "CHANNEL":
+        ChannelTalent($uniqueID, "LIGHTNING");
+        break;
+      case "ENTERS":
+        PlayAura("lightning_flow", $this->controller);
+        break;
+      default:
+        AddAmp($this->cardID, $this->controller);
+        break;
+    }
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    $Effect = new CurrentEffect($index);
+		return Amp($Effect->NumUses(), $remove, $player, $this->controller, $amount);
+  }
+
+  function SpecialName() {
+    return "Channel Stormgarden";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+}

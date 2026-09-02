@@ -892,4 +892,8 @@ class Card {
   function PastLinkPlayTrigger($cardID, $player, $from) {
     return;
   }
+
+  function PermanentDestroyedTrigger($cardID) {
+    return;
+  }
 }

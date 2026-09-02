@@ -243,3 +243,10 @@ function SetDamageSourceUID($uid) {
 	SetClassState(1, $CS_ResolvingLayerUniqueID, $uid);
 	SetClassState(2, $CS_ResolvingLayerUniqueID, $uid);
 }
+
+function AddAmp($cardID, $player, $amount=1) {
+	global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->FindEffect($cardID, $player);
+    if ($Effect->Index() == -1) AddCurrentTurnEffect($cardID, $player);
+	else $Effect->AddUses($amount);
+}

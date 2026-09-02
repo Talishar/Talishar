@@ -1005,10 +1005,7 @@ class volzar_meteor_storm extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CurrentTurnEffects;
-    $Effect = $CurrentTurnEffects->FindEffect($this->cardID, $this->controller);
-    if ($Effect->Index() == -1) AddCurrentTurnEffect($this->cardID, $this->controller);
-		else $Effect->AddUses(1);
+    AddAmp($this->cardID, $this->controller);
   }
 
   function PayAdditionalCosts($from, $index = '-') {

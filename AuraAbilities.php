@@ -233,6 +233,8 @@ function AuraDestroyed($player, $cardID, $isToken = false, $from = "HAND")
   $aurasPieces = AuraPieces();
   for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
     $EffectContext = $auras[$i];
+    $card = GetClass($auras[$i], $player);
+    if ($card != "-") $card->PermanentDestroyedTrigger($cardID);
     switch ($auras[$i]) {
       case "haze_bending_blue":
         if (!$isToken && $auras[$i + 5] > 0 && ClassContains($cardID, "ILLUSIONIST", $player)) {
