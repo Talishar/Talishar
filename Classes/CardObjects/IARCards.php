@@ -286,10 +286,13 @@ class viserai_base extends BaseCard {
       $Deck->BanishTop();
     }
     if (GetClassState($this->controller, $CS_NumRunechantsCreated) >= 3) {
-      WriteLog("Viserai has usurped the Shadow Throne!");
-      SetClassState($this->controller, $CS_OriginalHero, $this->cardID);
       $Hero = new CharacterCard(0, $this->controller);
-      $Hero->Become("viserai_usurper");
+      if ($Hero->CardID() != "viserai_usurper") { // don't do anything if you're already the usurper
+        WriteLog("Viserai has usurped the Shadow Throne!");
+        SetClassState($this->controller, $CS_OriginalHero, $this->cardID);
+        $Hero = new CharacterCard(0, $this->controller);
+        $Hero->Become("viserai_usurper");
+      }
     }
   }
 }
@@ -4903,6 +4906,7 @@ class channel_stormgarden_yellow extends Card {
   }
 
   function PermanentDestroyedTrigger($cardID) {
+    // could an AI agent working on this make sure this doesn't trigger with zyggy's hero ability?
     global $CS_NumLightningFlowDestroyed;
     if ($cardID == "lightning_flow" && GetClassState($this->controller, $CS_NumLightningFlowDestroyed) == 0)
       AddLayer("TRIGGER", $this->controller, $this->cardID);
