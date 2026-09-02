@@ -496,53 +496,72 @@ function AcceptFriendRequest($userId, $requesterUserId) {
     return ['success' => false, 'message' => 'Invalid request'];
   }
   
-  // Check if pending request exists (requester sent request to user)
-  $checkQuery = "SELECT friendshipId FROM friends WHERE userId = ? AND friendUserId = ? AND status = 'pending' LIMIT 1";
-  $stmt = $conn->prepare($checkQuery);
-  if (!$stmt) {
-    return ['success' => false, 'message' => 'Database error'];
-  }
-  $stmt->bind_param("ii", $requesterUserId, $userId);
-  if (!$stmt->execute()) {
+  $stmt = null;
+  try {
+    if (!$conn->begin_transaction()) {
+      throw new RuntimeException('Could not start transaction');
+    }
+
+    // Lock the pending request so concurrent accepts cannot both process it.
+    $checkQuery = "SELECT friendshipId FROM friends WHERE userId = ? AND friendUserId = ? AND status = 'pending' LIMIT 1 FOR UPDATE";
+    $stmt = $conn->prepare($checkQuery);
+    if (!$stmt) {
+      throw new RuntimeException('Could not prepare pending request query');
+    }
+    $stmt->bind_param("ii", $requesterUserId, $userId);
+    if (!$stmt->execute()) {
+      throw new RuntimeException('Could not query pending request');
+    }
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+      $stmt->close();
+      $stmt = null;
+      $conn->rollback();
+      return ['success' => false, 'message' => 'Friend request not found'];
+    }
+
+    $row = $result->fetch_assoc();
+    $friendshipId = (int)$row['friendshipId'];
     $stmt->close();
-    return ['success' => false, 'message' => 'Database error'];
-  }
-  $result = $stmt->get_result();
-  
-  if ($result->num_rows === 0) {
+    $stmt = null;
+
+    $updateQuery = "UPDATE friends SET status = 'accepted' WHERE friendshipId = ? AND status = 'pending'";
+    $stmt = $conn->prepare($updateQuery);
+    if (!$stmt) {
+      throw new RuntimeException('Could not prepare friend request update');
+    }
+    $stmt->bind_param("i", $friendshipId);
+    if (!$stmt->execute() || $stmt->affected_rows !== 1) {
+      throw new RuntimeException('Pending friend request was not updated');
+    }
     $stmt->close();
-    return ['success' => false, 'message' => 'Friend request not found'];
-  }
-  
-  $row = $result->fetch_assoc();
-  $friendshipId = (int)$row['friendshipId'];
-  $stmt->close();
-  
-  // Update the pending request to accepted
-  $updateQuery = "UPDATE friends SET status = 'accepted' WHERE friendshipId = ?";
-  $stmt = $conn->prepare($updateQuery);
-  if (!$stmt) {
-    return ['success' => false, 'message' => 'Database error'];
-  }
-  $stmt->bind_param("i", $friendshipId);
-  if (!$stmt->execute()) {
+    $stmt = null;
+
+    $insertQuery = "INSERT INTO friends (userId, friendUserId, status) VALUES (?, ?, 'accepted')";
+    $stmt = $conn->prepare($insertQuery);
+    if (!$stmt) {
+      throw new RuntimeException('Could not prepare reverse friendship insert');
+    }
+    $stmt->bind_param("ii", $userId, $requesterUserId);
+    if (!$stmt->execute() || $stmt->affected_rows !== 1) {
+      throw new RuntimeException('Reverse friendship was not inserted');
+    }
     $stmt->close();
+    $stmt = null;
+
+    if (!$conn->commit()) {
+      throw new RuntimeException('Could not commit friend request acceptance');
+    }
+  } catch (Throwable $e) {
+    if ($stmt) {
+      $stmt->close();
+    }
+    $conn->rollback();
+    error_log('AcceptFriendRequest failed: ' . $e->getMessage());
     return ['success' => false, 'message' => 'Database error'];
   }
-  $stmt->close();
-  
-  // Add reverse direction as accepted
-  $insertQuery = "INSERT INTO friends (userId, friendUserId, status) VALUES (?, ?, 'accepted')";
-  $stmt = $conn->prepare($insertQuery);
-  if (!$stmt) {
-    return ['success' => false, 'message' => 'Database error'];
-  }
-  $stmt->bind_param("ii", $userId, $requesterUserId);
-  if (!$stmt->execute()) {
-    $stmt->close();
-    return ['success' => false, 'message' => 'Database error'];
-  }
-  $stmt->close();
+
   InvalidateFriendAuthorizationCache($userId, $requesterUserId);
   unset($_SESSION['_friendNamesCache'], $_SESSION['_friendHiddenGamesCache'], $_SESSION['_friendNamesCacheAt']);
   
