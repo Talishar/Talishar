@@ -1662,6 +1662,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $response->serverTime = intval(round(microtime(true) * 1000));
   }
 
+  global $autoDeleteGames;
+  if ($lastActionTime > 0 && !empty($autoDeleteGames)) {
+    $response->gameDeleteDeadline = $lastActionTime + GAME_DELETE_TIMEOUT_MS;
+    $response->serverTime = intval(round(microtime(true) * 1000));
+  }
+
   return $response;
 }
 

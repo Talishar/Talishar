@@ -252,7 +252,7 @@ if ($handle = opendir($path)) {
           }
         }
       }
-      else if ($currentTime - $lastGamestateUpdate > 300000) //~5 minutes?
+      else if ($currentTime - $lastGamestateUpdate > GAME_DELETE_TIMEOUT_MS)
       {
         if ($autoDeleteGames) {
           deleteDirectory($folder);

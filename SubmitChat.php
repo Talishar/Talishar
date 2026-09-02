@@ -98,8 +98,10 @@ else if ($sessionUserUid === null && ($playerID === 1 || $playerID === 2)) $show
 $displayName = ($shownName != "-" && $shownName != "" ? substr($shownName, 0, 20) : "Player " . $playerID);
 
 $chatText = "";
+$isGameDeleteKeepalive = false;
 if (tryGet("quickChat")) {
   $chatText = parseQuickChat($_GET["quickChat"]);
+  $isGameDeleteKeepalive = (string)$_GET["quickChat"] === "25";
 } elseif (isset($_GET["chatText"]) && $_GET["chatText"] !== "") {
   $chatText = htmlspecialchars($_GET["chatText"]);
 }
@@ -170,6 +172,7 @@ if (!empty($gamestateCacheContent)) {
         $resetTimer = ($playerID === $currentPlayerNum);
     }
 }
+if ($isGameDeleteKeepalive) $resetTimer = true;
 GamestateUpdated($gameName, $resetTimer);
 if ($playerID == 1) SetCachePiece($gameName, 11, 0);
 
@@ -200,6 +203,7 @@ function parseQuickChat($inputEnum)
     case "22": return "Whoops!";
     case "23": return "Yes";
     case "24": return "Hello, good luck have fun!";
+    case "25": return "I'm still here!";
     default: return "";
   };
 }

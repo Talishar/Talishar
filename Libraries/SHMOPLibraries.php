@@ -206,6 +206,7 @@ function IncrementCachePiece($gameName, $piece)
 
 // Milliseconds without a gamestate update from the priority player before that player counts as inactive
 if (!defined('INACTIVITY_TIMEOUT_MS')) define('INACTIVITY_TIMEOUT_MS', 60 * 1000);
+if (!defined('GAME_DELETE_TIMEOUT_MS')) define('GAME_DELETE_TIMEOUT_MS', 5 * 60 * 1000);
 
 function InactivityTimeoutMs($cacheArr)
 {
