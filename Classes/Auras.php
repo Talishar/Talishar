@@ -54,6 +54,17 @@ class Auras {
     // return a null object AuraCard that has all the methods, but they do nothing
     return new AuraCard(-1, $this->player);
   }
+
+  function FindBoundAuras($uid, $zone="MYALLY") {
+    $ret = [];
+    $count = count($this->auras);
+    if ($count == 0) return [];
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
+      if ($this->auras[$i+14] == "$zone-$uid") $ret[] = new AuraCard($i, $this->player);
+    }
+    return $ret;
+  }
 }
 
 class AuraCard {

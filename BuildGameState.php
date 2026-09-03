@@ -1057,8 +1057,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
   $theirAlliesCount = count($theirAllies);
   $allyPieces = AllyPieces();
-
+  $theirAurasObj = new Auras($playerID == 1 ? 2 : 1);
   for ($i = 0; $i + $allyPieces - 1 < $theirAlliesCount; $i += $allyPieces) {
+    $AllyCard = new AllyCard($i, $playerID == 1 ? 2 : 1);
     $label = "";
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
@@ -1071,6 +1072,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       elseif ($hasActiveEffect) $label = "Effect Active";
       elseif ($isTargeted) $label = "Targeted";
     }
+    $subcards = $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL;
+    $boundAuras = $theirAurasObj->FindBoundAuras($AllyCard->UniqueID());
+    if (count($boundAuras) > 0) {
+      $boundIDs = [];
+      foreach ($boundAuras as $boundAura)
+        $boundIDs[] = $boundAura->CardID();
+      $boundIDs = implode(",",  $boundIDs);
+      $subcards = isset($subcards) ? "$subcards,$boundIDs" : $boundIDs;
+    }
     $theirAlliesOutput[] = JSONRenderedCard(
         cardNumber: $theirAllies[$i],
         overlay: $theirAllies[$i + 1] != 2 ? 1 : 0,
@@ -1080,7 +1090,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         type: $type,
         sType: $sType,
         isFrozen: IsFrozenMZ($theirAllies, "ALLY", $i, $otherPlayer),
-        subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL,
+        subcard: $subcards,
         powerCounters:$theirAllies[$i+9],
         label: $label,
         tapped: $theirAllies[$i+11] == 1,
@@ -1094,6 +1104,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $auraPieces = AuraPieces();
   static $labeledAurasSet = ["blessing_of_themis_yellow" => true, "leave_em_speechless_blue" => true];
   for ($i = 0; $i + $auraPieces - 1 < $theirAurasCount; $i += $auraPieces) {
+    $AuraCard = new AuraCard($i, $playerID == 1 ? 2 : 1);
+    if ($AuraCard->BoundTo() != "-") continue; //display bound auras elsewhere
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
     $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
@@ -1169,7 +1181,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myAlliesOutput = [];
   $myAllies = GetAllies($playerID == 1 ? 1 : 2);
   $myAlliesCount = count($myAllies);
+  $myAurasObj = new Auras($playerID);
   for ($i = 0; $i + $allyPieces - 1 < $myAlliesCount; $i += $allyPieces) {
+    $AllyCard = new AllyCard($i, $playerID);
     $label = "";
     $type = CardType($myAllies[$i]);
     $sType = CardSubType($myAllies[$i]);
@@ -1181,6 +1195,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
     elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
     elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
+    $subcards = $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL;
+    $boundAuras = $myAurasObj->FindBoundAuras($AllyCard->UniqueID());
+    if (count($boundAuras) > 0) {
+      $boundIDs = [];
+      foreach ($boundAuras as $boundAura)
+        $boundIDs[] = $boundAura->CardID();
+      $boundIDs = implode(",",  $boundIDs);
+      $subcards = isset($subcards) ? "$subcards,$boundIDs" : $boundIDs;
+    }
     $myAlliesOutput[] = JSONRenderedCard(
       cardNumber: $myAllies[$i],
       action: $actionType,
@@ -1193,7 +1216,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       type: $type,
       sType: $sType,
       isFrozen:IsFrozenMZ($myAllies, "ALLY", $i, $playerID),
-      subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL,
+      subcard: $subcards,
       powerCounters: $myAllies[$i+9],
       label: $label,
       tapped: $myAllies[$i + 11] == 1,
@@ -1206,6 +1229,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myAurasOutput = [];
   $myAurasCount = count($myAuras);
   for ($i = 0; $i + $auraPieces - 1 < $myAurasCount; $i += $auraPieces) {
+    $AuraCard = new AuraCard($i, $playerID);
+    if ($AuraCard->BoundTo() != "-") continue; //display bound auras elsewhere
     $playable = $currentPlayer == $playerID ? $myAuras[$i + 1] == 2 && IsPlayable($myAuras[$i], $turnPhase, "PLAY", $i, $restriction) : false;
     if($myAuras[$i] == "restless_coalescence_yellow" && $currentPlayer == $playerID && IsPlayable($myAuras[$i], $turnPhase, "PLAY", $i, $restriction)) $playable = true;
     $border = CardBorderColor($myAuras[$i], "PLAY", $playable, $playerID);
