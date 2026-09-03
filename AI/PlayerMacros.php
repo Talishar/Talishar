@@ -2,7 +2,7 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $defPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
   global $combatChainState, $CCS_RequiredEquipmentBlock, $EffectContext, $CS_PendingNAACard;
   $somethingChanged = true;
   $lastPhase = $turn[0];
@@ -28,13 +28,26 @@ function ProcessMacros()
 
       switch ($turn[0]) {
         case "A":
-          if (ShouldSkipARs($currentPlayer)) { $somethingChanged = true; PassInput(); }
+          if ($currentPlayer == $mainPlayer
+              && (ShouldSkipARs($mainPlayer) || AutoPassTurnSetting($mainPlayer))) {
+            $somethingChanged = true;
+            PassInput();
+          }
           break;
         case "D":
-          if (ShouldSkipDRs($currentPlayer)) { $somethingChanged = true; PassInput(); }
+          if ($currentPlayer == $defPlayer
+              && (ShouldSkipDRs($defPlayer) || AutoPassTurnSetting($defPlayer))) {
+            $somethingChanged = true;
+            PassInput();
+          }
           break;
         case "B":
-          if (!IsHeroAttackTarget()) { $somethingChanged = true; PassInput(); }
+          if (!IsHeroAttackTarget()
+              || ($currentPlayer == $defPlayer && AutoPassTurnSetting($defPlayer)
+                  && GetCombatChainState($CCS_RequiredEquipmentBlock) == 0)) {
+            $somethingChanged = true;
+            PassInput();
+          }
           break;
         case "CHOOSECARDID":
         case "CHOOSECARD":
@@ -68,7 +81,11 @@ function ProcessMacros()
         case "INSTANT":
         case "M":
           if ($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer))) {
-            if ($holdPrioritySetting == 0 && !HasPlayableCard($currentPlayer, $turn[0])) {
+            if (AutoPassTurnSetting($currentPlayer)) {
+              $somethingChanged = true;
+              PassInput();
+            }
+            elseif ($holdPrioritySetting == 0 && !HasPlayableCard($currentPlayer, $turn[0])) {
               $somethingChanged = true;
               PassInput();
             }

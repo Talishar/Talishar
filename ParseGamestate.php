@@ -583,9 +583,13 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
   if ($filename != "gamestateBackup.txt") {
     if(!file_exists($filepath . $filename)) return;
-    copy($filepath . $filename, $filepath . "gamestate.txt");
+    // apply current settings to the backup, they are preferences and not game state
+    $gamestateBackup = file($filepath . $filename);
+    if (isset($gamestateBackup[18])) $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
+    if (isset($gamestateBackup[36])) $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
+    $gamestate = implode('', $gamestateBackup);
+    file_put_contents($filepath . "gamestate.txt", $gamestate);
     $skipWriteGamestate = true;
-    $gamestate = file_get_contents($filepath . $filename);
     WriteGamestateCache($gameName, $gamestate);
     $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
     return;

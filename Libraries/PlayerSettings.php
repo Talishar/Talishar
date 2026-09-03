@@ -45,6 +45,17 @@ $SET_AlwaysShowCounters = 32; //Always show counters on zones
 $SET_HideHandFromFriends = 33; //Hide your hand content from friends
 $SET_GemsOffByDefault = 34; //Should gems start switched off instead of using each card's default
 $SET_HideGamesFromFriends = 35; //Hide your games from your friends in the open game and spectate lists
+$SET_AutoPassTurn = 36; //Pass button held down: auto-pass this player's windows for the rest of the turn
+
+// Deliberately absent from SaveSettingInDatabase: this is an in-game state
+// StartTurnAbilities clears it, so it can never outlive the turn it was set in.
+function AutoPassTurnSetting($player)
+{
+  global $SET_AutoPassTurn;
+  if ($player != 1 && $player != 2) return 0;
+  $settings = GetSettings($player);
+  return ($settings[$SET_AutoPassTurn] ?? "0") == "1";
+}
 
 function HoldPrioritySetting($player)
 {
@@ -693,13 +704,14 @@ function ParseSettingsStringValueToIdInt(string $value)
     "HideHandFromFriends" => 33,
     "GemsOffByDefault" => 34,
     "HideGamesFromFriends" => 35,
+    "AutoPassTurn" => 36,
   ];
   return $settingsToId[$value];
 }
 
 function ChangeSetting($player, $setting, $value, $playerId = "")
 {
-  global $SET_MuteChat, $SET_AlwaysHoldPriority, $SET_CasterMode, $layerPriority, $gameName;
+  global $SET_MuteChat, $SET_AlwaysHoldPriority, $SET_AutoPassTurn, $SET_CasterMode, $layerPriority, $gameName;
   // Only update game state if not in profile context
   if($player != "" && $player != 0) {
     $settings = &GetSettings($player);
@@ -719,7 +731,9 @@ function ChangeSetting($player, $setting, $value, $playerId = "")
         WriteLog("Chat enabled by player " . $player);
       }
     } else if($setting == $SET_AlwaysHoldPriority) {
-      $layerPriority[$player - 1] = "1";
+      $layerPriority[$player - 1] = ($value == 4 ? "0" : "1");
+    } else if($setting == $SET_AutoPassTurn) {
+      $layerPriority[$player - 1] = ($value == "1" ? "0" : "1");
     } else if($setting == $SET_CasterMode) {
       if(IsCasterMode()) SetCachePiece($gameName, 9, "1");
     }

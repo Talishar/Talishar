@@ -4387,6 +4387,7 @@ function ShouldHoldPriority($player, $layerCard = "")
   global $mainPlayer, $layers;
   $prioritySetting = HoldPrioritySetting($player);
   if ($player == $mainPlayer && count($layers) == LayerPieces() && $layers[0] == "RESOLUTIONSTEP") return 1;
+  if (AutoPassTurnSetting($player)) return 0;
   if ($prioritySetting == 0 || $prioritySetting == 1) return 1;
   if (($prioritySetting == 2 || $prioritySetting == 3) && $player != $mainPlayer) return 1;
   return 0;
