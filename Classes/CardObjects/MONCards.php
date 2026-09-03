@@ -404,6 +404,7 @@
 
 
 class bounding_demigon extends BaseCard {
+  // This card should probably get go again if played from banish, could an AI figure out the best way to do that?
   function PlayTrigger($from) {
     global $CS_NumNonAttackCards;
     if (GetClassState($this->controller, $CS_NumNonAttackCards) > 0 && $from == "BANISH")
