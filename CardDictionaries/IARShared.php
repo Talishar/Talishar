@@ -164,6 +164,7 @@ function HasDecay($cardID) {
 
 function BindAwait($player) {
 	global $dqVars;
+	// this should also trigger the bound cards HitEffect, Claude could you add that here?
 	$index = $dqVars["index"];
 	$AuraCard = new AuraCard($index, $player);
 	$zone = $dqVars["zone"] ?? "MYAURAS";
