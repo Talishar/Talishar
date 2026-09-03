@@ -91,6 +91,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   $cardID = $allies[$index];
   RemoveAllyEffects($player, $cardID, $uniqueID);
+  RemoveAllyBoundAuras($player, $index);
   if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep() && !$skipClose) {
     CloseCombatChain();
   }
@@ -105,6 +106,17 @@ function RemoveAllyEffects($player, $cardID, $uniqueID)
   $otherPlayer = 3 - $player;
   if ($cardID == "blasmophet_the_insatiable_hunger") SearchCurrentTurnEffects($cardID, $player, true);
   if ($uniqueID == SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, true);
+}
+
+function RemoveAllyBoundAuras($player, $index) {
+  $AllyCard = new AllyCard($index, $player);
+  $Auras = new Auras($player);
+  $uid = "MYALLY-" . $AllyCard->UniqueID();
+  for ($i = $Auras->NumAuras() - 1; $i >=0 ; --$i) {
+    $AuraCard = $Auras->Card($i, true);
+    if ($AuraCard->BoundTo() == $uid)
+      $AuraCard->Destroy(skipTrigger:true);
+  }
 }
 
 function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-")

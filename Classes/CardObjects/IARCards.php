@@ -5089,3 +5089,48 @@ class restless_templar_red extends Card {
     return 3;
   }
 }
+
+class mark_of_ushering_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "mark_of_ushering_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function Binding($index) {
+    Await($this->controller, "MultiZoneIndices", search:"MYALLY", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", context:"Bind " . CardLink($this->cardID) . " to an ally");
+    Await($this->controller, "Bind", index:$index, final:true);
+  }
+
+  function SpecialName() {
+    return "Mark of Ushering";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+}

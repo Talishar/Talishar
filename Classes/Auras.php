@@ -224,4 +224,13 @@ class AuraCard {
     if ($this->index != -1)
       $this->pieces[$this->index + 13] += $n;
   }
+
+  function Bind($val) {
+    if ($this->index != -1 && isset($this->pieces[$this->index + 14]))
+      $this->pieces[$this->index + 14] = $val;
+  }
+
+  function BoundTo() {
+    return $this->pieces[$this->index + 14] ?? "-";
+  }
 }

@@ -161,3 +161,18 @@ function HasDecay($cardID) {
 	if ($card != "-") return $card->HasDecay();
 	return false;
 }
+
+function BindAwait($player) {
+	global $dqVars;
+	$index = $dqVars["index"];
+	$zone = $dqVars["zone"] ?? "MYAURAS";
+	$MZindex = $dqVars["MZIndex"] ?? "-";
+	if ($MZindex == "-") return; // clear the aura?
+	$CleanIndex = CleanTarget($player, $MZindex);
+	if ($zone == "MYAURAS") {
+		$AuraCard = new AuraCard($index, $player);
+		$AuraCard->Bind($CleanIndex);
+		$obj = MZIndexToObject($player, $MZindex);
+		WriteLog(CardLink($AuraCard->CardID()) . " was bound to " . CardLink($obj->CardID()));
+	}
+}

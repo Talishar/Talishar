@@ -128,6 +128,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $auras[] = 0; // frozen, (0 = no, 1 = yes)
     $auras[] = 0; // tapped (0 = no, 1 = yes)
     $auras[] = $holoCounters; // holo counters
+    $auras[] = "-"; //bound to
   }
   if ($holoCounters > 0) IncrementClassState($player, $CS_HoloAurasEntered, $number);
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
@@ -144,8 +145,12 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   }
   if ($cardID == "gate_to_iarathael")
     IncrementClassState($effectAgent, $CS_IARGatesMadeorUsed, $number);
+  $auraIndex = count($auras) - AuraPieces();
   $card = GetClass($cardID, $player);
-  if ($card != "-") $card->EntersArenaAbility();
+  if ($card != "-") {
+    $card->Binding($auraIndex);
+    $card->EntersArenaAbility();
+  }
   if ($isToken)
     IncrementClassState($effectController, $CS_CreatedCardsThisTurn, $number);
 }

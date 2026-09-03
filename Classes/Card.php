@@ -900,4 +900,8 @@ class Card {
   function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from) {
     return;
   }
+
+  function Binding($index) {
+    return;
+  }
 }
