@@ -46,6 +46,7 @@ $SET_HideHandFromFriends = 33; //Hide your hand content from friends
 $SET_GemsOffByDefault = 34; //Should gems start switched off instead of using each card's default
 $SET_HideGamesFromFriends = 35; //Hide your games from your friends in the open game and spectate lists
 $SET_AutoPassTurn = 36; //Pass button held down: auto-pass this player's windows for the rest of the turn
+$SET_DisableHoldToAutoPass = 37; //Accessibility: turn off the hold space/PASS gesture that arms auto-pass
 
 // Deliberately absent from SaveSettingInDatabase: this is an in-game state
 // StartTurnAbilities clears it, so it can never outlive the turn it was set in.
@@ -55,6 +56,14 @@ function AutoPassTurnSetting($player)
   if ($player != 1 && $player != 2) return 0;
   $settings = GetSettings($player);
   return ($settings[$SET_AutoPassTurn] ?? "0") == "1";
+}
+
+function HoldToAutoPassDisabled($player)
+{
+  global $SET_DisableHoldToAutoPass;
+  if ($player != 1 && $player != 2) return false;
+  $settings = GetSettings($player);
+  return ($settings[$SET_DisableHoldToAutoPass] ?? "0") == "1";
 }
 
 function HoldPrioritySetting($player)
@@ -705,6 +714,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "GemsOffByDefault" => 34,
     "HideGamesFromFriends" => 35,
     "AutoPassTurn" => 36,
+    "DisableHoldToAutoPass" => 37,
   ];
   return $settingsToId[$value];
 }
@@ -712,6 +722,8 @@ function ParseSettingsStringValueToIdInt(string $value)
 function ChangeSetting($player, $setting, $value, $playerId = "")
 {
   global $SET_MuteChat, $SET_AlwaysHoldPriority, $SET_AutoPassTurn, $SET_CasterMode, $layerPriority, $gameName;
+  global $SET_DisableHoldToAutoPass;
+  if ($setting == $SET_AutoPassTurn && $value == "1" && HoldToAutoPassDisabled($player)) return;
   // Only update game state if not in profile context
   if($player != "" && $player != 0) {
     $settings = &GetSettings($player);
@@ -752,14 +764,14 @@ function SaveSettingInDatabase($setting)
     global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_AlwaysShowCounters;
     global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
     global $SET_HideGamesFromFriends;
-    global $SET_GemsOffByDefault;
+    global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
       $SET_ManualMode, $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo,
       $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro,
       $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_AlwaysShowCounters, $SET_HideHandFromFriends,
-      $SET_GemsOffByDefault, $SET_HideGamesFromFriends,
+      $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass,
     ], true);
   }
   return isset($persistable[$setting]);

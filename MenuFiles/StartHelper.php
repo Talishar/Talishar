@@ -62,7 +62,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron) ?: "0";
   $mute = 0;
   $settingArray = [];
-  for($i=0; $i<=35; ++$i) // Settings: This need to go up when we put a new settings
+  for($i=0; $i<=37; ++$i) // Settings: This need to go up when we put a new settings
   {
     $settingArray[] = SettingDefaultValue($i, $charEquip[0]);
   }
