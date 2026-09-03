@@ -896,4 +896,8 @@ class Card {
   function PermanentDestroyedTrigger($cardID) {
     return;
   }
+
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from) {
+    return;
+  }
 }

@@ -155,3 +155,9 @@ function BanishFromArsenal($player, $cardID) {
     Await($player, "ChooseMultiZone", context:"Banish a card from your arsenal");
     Await($player, "MZRemoveAndBanish", banishedBy:$cardID, final:true);
 }
+
+function HasDecay($cardID) {
+	$card = GetClass($cardID, 1);
+	if ($card != "-") return $card->HasDecay();
+	return false;
+}

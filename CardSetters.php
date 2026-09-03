@@ -889,9 +889,20 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   if ((HasWateryGrave($cardID) && $from == "PLAY") || ($cardID == "beneath_the_surface_yellow" && $from == "CC")) {
     AddLayer("TRIGGER", $player, "WATERYGRAVE", target:$DisCard->UniqueID());
   }
+  $Character = new PlayerCharacter($player);
+  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $CharacterCard = $Character->Card($i, true);
+    $card = GetClass($CharacterCard->CardID(), $player);
+    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $CharacterCard->Index(), $from);
+  }
+  $Allies = new Allies($player);
+  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+    $AllyCard = $Allies->Card($i, true);
+    $card = GetClass($AllyCard->CardID(), $player);
+    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $AllyCard->Index(), $from);
+  }
   $Hero = new CharacterCard(0, $player);
-  if (SubtypeContains($cardID, "Zombie") && $from == "PLAY" && $Hero->Status() == 2 && ($Hero->CardID() == "malice" || $Hero->CardID() == "malice_domina_of_the_dead"))
-    AddLayer("TRIGGER", $player, $Hero->CardID(), $DisCard->UniqueID());
+  
   return $grave[$graveLastIndex];
 }
 

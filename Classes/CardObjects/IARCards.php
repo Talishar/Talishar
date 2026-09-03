@@ -57,6 +57,14 @@ class malice_base extends BaseCard {
     }
     BanishCardForPlayer("corrupted_corpse", $this->controller, "-", created:true);
   }
+
+  function PermanentAddGraveyardAbility($discardIndex, $charIndex, $from) {
+    $DisCard = new DiscardCard($discardIndex, $this->controller);
+    $Hero = new CharacterCard($charIndex, $this->controller);
+    $cardID = $DisCard->CardID();
+    if (SubtypeContains($cardID, "Zombie") && $from == "PLAY" && $Hero->Status() == 2)
+      AddLayer("TRIGGER", $this->controller, $this->cardID, $DisCard->UniqueID());
+  }
 }
 
 class malice extends Card {
@@ -95,6 +103,10 @@ class malice extends Card {
   function AbilityHasGoAgain($from) {
     return true;
   }
+
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from) {
+    $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from);
+  }
 }
 
 class malice_domina_of_the_dead extends Card {
@@ -132,6 +144,10 @@ class malice_domina_of_the_dead extends Card {
 
   function AbilityHasGoAgain($from) {
     return true;
+  }
+
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from) {
+    $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from);
   }
 }
 
@@ -5016,5 +5032,60 @@ class exorcism_red extends Card {
 
   function IsLayerContinuousBuff() {
     return true;
+  }
+}
+
+class restless_templar_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_templar_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from) {
+    $DisCard = new DiscardCard($discardIndex, $this->controller);
+    $cardID = $DisCard->CardID();
+    // this probably shouldn't trigger when restless templar itself dies, could an AI fix this?
+    if (SubtypeContains($cardID, "Zombie") && HasDecay($cardID) && $from == "PLAY")
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+
+  // function SpecialName() {
+  //   return "Restless Templar";
+  // }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialSubType() {
+    return "Zombie,Ally";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasDecay() {
+    return true;
+  }
+
+  function SpecialHealth() {
+    return 3;
   }
 }
