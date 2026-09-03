@@ -897,7 +897,11 @@ class Card {
     return;
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from) {
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
+    return;
+  }
+
+  function Binding($index) {
     return;
   }
 }

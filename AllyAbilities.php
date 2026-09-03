@@ -94,8 +94,9 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep() && !$skipClose) {
     CloseCombatChain();
   }
-  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished, mod:$mod);
+  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished, mod:$mod, index:$index);
   AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished, mod:$mod);
+  RemoveAllyBoundAuras($player, $index);
   array_splice($allies, $index, $allyPieces);
   return $cardID;
 }
@@ -107,9 +108,22 @@ function RemoveAllyEffects($player, $cardID, $uniqueID)
   if ($uniqueID == SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, true);
 }
 
-function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-")
+function RemoveAllyBoundAuras($player, $index) {
+  $AllyCard = new AllyCard($index, $player);
+  $Auras = new Auras($player);
+  $uid = "MYALLY-" . $AllyCard->UniqueID();
+  for ($i = $Auras->NumAuras() - 1; $i >=0 ; --$i) {
+    $AuraCard = $Auras->Card($i, true);
+    if ($AuraCard->BoundTo() == $uid)
+      $AuraCard->Destroy(skipTrigger:true);
+  }
+}
+
+function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-", $index=-1)
 {
   if ($cardID == "-") return;
+  $AllyCard = new AllyCard($index, $player);
+  $uid = $AllyCard->Index() != -1 ? $AllyCard->UniqueID() : "-";
   if (!TypeContains($cardID, "T")) {
     if (SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
     $card = GetClass($cardID, $player);
@@ -140,7 +154,7 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-")
       "sticky_fingers_ally" => "sticky_fingers",
       default => $cardID
     };
-    if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player);
+    if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player, uniqueID:$uid);
     else BanishCardForPlayer($id, $player, "PLAY", $mod);
   }
 }

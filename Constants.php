@@ -97,9 +97,10 @@ function CombatChainPieces()
 //11 - Frozen (1 = yes, 0 = no)
 //12 - Tapped (1 = yes, 0 = no)
 //13 - Holo Counters
+//14 - Bound to
 function AuraPieces()
 {
-  return 14;
+  return 15;
 }
 
 //0 - Item ID

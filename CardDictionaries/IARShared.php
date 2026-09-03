@@ -161,3 +161,23 @@ function HasDecay($cardID) {
 	if ($card != "-") return $card->HasDecay();
 	return false;
 }
+
+function BindAwait($player) {
+	global $dqVars;
+	// this should also trigger the bound cards HitEffect, Claude could you add that here?
+	$index = $dqVars["index"];
+	$AuraCard = new AuraCard($index, $player);
+	$zone = $dqVars["zone"] ?? "MYAURAS";
+	$MZindex = $dqVars["MZIndex"] ?? "-";
+	if ($MZindex == "-") {
+		WriteLog(CardLink($AuraCard->CardID()) . " had no choices to bind to, and so was cleared.");
+		$AuraCard->Destroy(true); // clear the aura if it fails to bind
+		return;
+	}
+	$CleanIndex = CleanTarget($player, $MZindex);
+	if ($zone == "MYAURAS") {
+		$AuraCard->Bind($CleanIndex);
+		$obj = MZIndexToObject($player, $MZindex);
+		WriteLog(CardLink($AuraCard->CardID()) . " was bound to " . CardLink($obj->CardID()));
+	}
+}
