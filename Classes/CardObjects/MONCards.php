@@ -439,10 +439,6 @@ class bounding_demigon_red extends Card {
     return 1;
   }
 
-  function CurrentEffectGrantsGoAgain($param) {
-    return true;
-  }
-
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
@@ -471,10 +467,6 @@ class bounding_demigon_yellow extends Card {
     return 1;
   }
 
-  function CurrentEffectGrantsGoAgain($param) {
-    return true;
-  }
-
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
@@ -501,10 +493,6 @@ class bounding_demigon_blue extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return 1;
-  }
-
-  function CurrentEffectGrantsGoAgain($param) {
-    return true;
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
