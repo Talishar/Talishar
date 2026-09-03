@@ -75,6 +75,22 @@
     $elementCount = count($elementArray);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
+
+    // For an "and" fusion, let one multi talent card satisfy every match.
+    // CONTINUEFUSE only asks for another card when an element remains to be revealed.
+    if (!$isAndOrFuse && $elementCount > 1) {
+      $element = $elementArray[0];
+      $context = "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion";
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=$element");
+      AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
+      AddDecisionQueue("REVEALCARDS", $player, false, 1);
+      AddDecisionQueue("CONTINUEFUSE", $player, $cardID . "-" . implode(",", array_slice($elementArray, 1)), 1);
+      AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
+      return;
+    }
+
     for($i=0; $i<$elementCount; ++$i)
     {
       $element = $elementArray[$i];
@@ -96,15 +112,6 @@
     if(!$isAndOrFuse) {
       $elements = implode(",", $elementArray);
       AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
-    }
-  }
-
-  function IsAndOrFuse($cardID)
-  {
-    switch($cardID)
-    {
-      case "fulminate_yellow": case "flashfreeze_red": case "exposed_to_the_elements_blue": return true;
-      default: return false;
     }
   }
 

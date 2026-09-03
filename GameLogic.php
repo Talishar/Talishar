@@ -1878,6 +1878,33 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $lastPlayed[3] = GetClassState($player, $CS_AdditionalCosts) == HasFusion($card) || IsAndOrFuse($card) ? "FUSED" : "UNFUSED";
       }
       return $lastResult;
+    case "CONTINUEFUSE":
+      $params = explode("-", $parameter, 2);
+      $remainingElements = $params[1] == "" ? [] : explode(",", $params[1]);
+      $missingElements = [];
+      foreach ($remainingElements as $element) {
+        if (!TalentContains($lastResult, $element, $player)) $missingElements[] = $element;
+      }
+      if (count($missingElements) == 0) {
+        if (SearchLandmark("korshem_crossroad_of_elements")) KorshemRevealAbility($player);
+        return $lastResult;
+      }
+
+      $element = array_shift($missingElements);
+      if (count($missingElements) > 0) {
+        PrependDecisionQueue("CONTINUEFUSE", $player, $params[0] . "-" . implode(",", $missingElements), 1);
+      }
+      else {
+        // This replaces fullReveal=true on the final REVEALCARDS call.
+        PrependDecisionQueue("CONTINUEFUSE", $player, $params[0] . "-", 1);
+      }
+      PrependDecisionQueue("REVEALCARDS", $player, false, 1);
+      PrependDecisionQueue("MZOP", $player, "GETCARDID", 1);
+      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      $context = "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion";
+      PrependDecisionQueue("SETDQCONTEXT", $player, $context, 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=$element");
+      return $lastResult;
     case "SUBPITCHVALUE":
       if (PitchValue($lastResult) == "") {
         WriteLog("Something strange happened, please submit a bug report", highlight:true);

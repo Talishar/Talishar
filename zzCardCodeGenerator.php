@@ -72,6 +72,7 @@
     GenerateKeywordFunction($cardArray, $handler, "Has" . $functionName, $keyword, false);
     if (in_array($keyword, $hasKeywordAmount)) GenerateKeywordFunction($cardArray, $handler, $functionName . "Amount", $keyword, true);
   }
+  GenerateKeywordFunction($cardArray, $handler, "IsAndOrFuse", "and/or", false);
 
   GenerateCardTokensFunction($cardArray, $handler);
 
