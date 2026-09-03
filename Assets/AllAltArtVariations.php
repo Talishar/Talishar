@@ -417,5 +417,9 @@ function GetAllAltArtVariations(): array
     "swordmasters_shine_red=LGS446-T",
     "usurp_the_shadow_throne_blue=IAR110-T",
     "uzuri=MPA004-T",
+    "deadly_spinneret_red=IAR243-T",
+    "restless_corporal_red=IAR085-T",
+    "restless_outlaw_red=IAR086-T",
+    "rush_of_knowledge_blue=IAR252-T",
   ];
 }
