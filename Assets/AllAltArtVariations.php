@@ -333,7 +333,7 @@ function GetAllAltArtVariations(): array
     "warriors_valor_yellow=TNP011-T", "wartune_herald_blue=DTD031-T", "wartune_herald_blue=FAB037-T", "wartune_herald_red=DTD029-T",
     "wartune_herald_red=FAB035-T", "wartune_herald_yellow=DTD030-T", "wartune_herald_yellow=FAB036-T", "weave_lightning_blue=LGS077-T",
     "weave_lightning_red=LGS075-T", "weave_lightning_yellow=LGS076-T", "weeping_battleground_red=GEM123-T", "what_happens_next_blue=SUP209-T",
-    "whelming_gustwave_blue=LGS028-T", "whelming_gustwave_red=FAB249-T", "whelming_gustwave_red=LGS007-T", "whelming_gustwave_red=LGS026-T",
+    "whelming_gustwave_blue=LGS028-T", "whelming_gustwave_red=FAB249-T", "whelming_gustwave_red=LGS026-T",
     "whelming_gustwave_yellow=LGS027-T", "whispering_mist_blue=PEN267-T", "whittle_from_bone_red=GEM026-T", "wide_blue_yonder_blue=FAB239-T",
     "widespread_annihilation_blue=DTD137-T", "widespread_destruction_yellow=DTD138-T", "widespread_ruin_red=DTD139-T", "wild_ride_blue=TNP003-T",
     "wild_ride_red=TNP001-T", "wild_ride_yellow=TNP002-T", "wind_up_the_crowd_blue=GEM085-T", "winds_of_eternity_blue=EVR040-T",
@@ -421,5 +421,14 @@ function GetAllAltArtVariations(): array
     "restless_corporal_red=IAR085-T",
     "restless_outlaw_red=IAR086-T",
     "rush_of_knowledge_blue=IAR252-T",
+    "embrace_ursur_red=IAR129-T",
+    "humble_red=OUT189-T",
+    "savor_bloodshed_red=HNT198-T",
+    "starworld_warning_yellow=OMN188-T",
+    "unbound_by_shadow_red=IAR178-T",
+    "blessing_of_suraya_yellow=IAR258-T",
+    "channel_stormgarden_yellow=IAR257-T",
+    "consuming_appetite_yellow=GEM193-T",
+    "ominous_toll_red=GEM198-T",
   ];
 }
