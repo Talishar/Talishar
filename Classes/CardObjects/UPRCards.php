@@ -3092,17 +3092,33 @@ class rapid_reflex_blue extends Card {
 // }
 
 
-// class tome_of_duplicity_blue extends Card {
+class tome_of_duplicity_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "tome_of_duplicity_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "tome_of_duplicity_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("FINDINDICES", $this->controller, "DECKTOPXINDICES,2");
+    AddDecisionQueue("CHOOSEDECK", $this->controller, "<-", 1);
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $lastResult = $dqVars["LASTRESULT"] ?? "-";
+    $cards = explode(",", $lastResult);
+    $mod = (TypeContains($cards[0], "A") ? "INST" : "-");
+    $countCards = count($cards);
+    for ($i = 0; $i < $countCards; ++$i) {
+      $index = BanishCardForPlayer($cards[$i], $this->controller, "DECK", $mod);
+      WriteLog(CardLink($cards[$i]) . " was banished.");
+    }
+    return $lastResult;
+  }
+}
 
 
 // class tome_of_firebrand_red extends Card {

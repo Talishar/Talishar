@@ -670,18 +670,6 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if ($PMIndex != -1 && --$items[$PMIndex + 1] == 0)
         DestroyItemForPlayer($player, $PMIndex);
       return $lastResult;
-    case "TOMEOFDUPLICITY":
-      $cards = explode(",", $lastResult);
-      $mzParts = [];
-      $mod = (CardType($cards[0]) == "A" ? "INST" : "-");
-      $countCards = count($cards);
-      for ($i = 0; $i < $countCards; ++$i) {
-        $index = BanishCardForPlayer($cards[$i], $player, "DECK", $mod);
-        WriteLog(CardLink($cards[$i], $cards[$i]) . " was banished.");
-        $mzParts[] = "BANISH-" . $index;
-      }
-      $dqState[5] = implode(",", $mzParts);
-      return $lastResult;
     case "SANDSCOURGREATBOW":
       if ($lastResult == "NO")
         LoadArrow($player);
