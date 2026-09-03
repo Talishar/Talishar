@@ -187,6 +187,16 @@ class AuraCard {
     return -1;
   }
 
+  function Bounce() {
+    $cardID = $this->CardID();
+    $targetedPlayer = $this->Player();
+    $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
+    $cardOwner = substr($this->From(), 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
+    if (!$this->IsToken() && $this->Index() != -1)
+      AddPlayerHand($cardID, $cardOwner, "-");
+    return $this->Remove();
+  }
+
   function GetModalities() {
     return $this->pieces[$this->index+10] ?? "-";
   }

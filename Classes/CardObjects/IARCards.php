@@ -5352,3 +5352,72 @@ class mark_of_pathstone_blue extends Card {
     return -2;
   }
 }
+
+
+class violent_gusto_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "violent_gusto_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $defPlayer;
+    if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) return;
+    Await($this->controller, "MultiZoneIndices", search:"THEIRAURAS", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", may:true, context:"Choose an aura to name and return to hand (or pass)");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $CombatChain;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $AuraCard = MZIndexToObject($this->controller, $choice);
+    if ($AuraCard != "") {
+      $name = CardName($AuraCard->CardID());
+      WriteLog("$name was named!");
+      $AuraCard->Bounce();
+      $CombatChain->AttackCard()->AddBuff("$this->cardID|" . GamestateSanitize($name));
+    }
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $CombatChain, $defPlayer;
+    $AttackCard = $CombatChain->AttackCard();
+    $buffs = explode(",", $AttackCard->StaticBuffs());
+    foreach ($buffs as $buff) {
+      $buffID = explode("|", $buff)[0];
+      if ($buffID != $this->cardID && $buffID != SetID($this->cardID)) continue;
+      $chosenName = explode("|", $buff, 2)[1] ?? "-";
+      break;
+    }
+    $chosenName = GamestateUnsanitize($chosenName);
+    $Auras = new Auras($defPlayer);
+    for ($i = $Auras->NumAuras()-1; $i >=0; --$i){
+      $AuraCard = $Auras->Card($i, true);
+      if (CardNameContains($AuraCard->CardID(), $chosenName, $defPlayer))
+        $AuraCard->Bounce();
+    }
+  }
+
+  // function SpecialName() {
+  //   return "Violent Gusto";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
