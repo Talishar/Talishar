@@ -3,7 +3,7 @@
 // Paste card image URLs here to force their full card, square (concat), and crop
 // images to be generated when this script or zzCardCodeGenerator.php is run.
 $manualImageURLs = [
-  //"https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/IAR254.webp",
+  "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/IAR257.webp" => "channel_stormgarden_yellow",
 ];
 
 function CheckImage($setID, $cardID, $isDuplicate=false, $manualImageURL="")
@@ -143,7 +143,9 @@ function RunManualImageDownload($input, $outputCardID="")
   }
 }
 
-foreach($manualImageURLs as $manualImageURL) RunManualImageDownload($manualImageURL);
+foreach($manualImageURLs as $manualImageURL => $outputCardID) {
+  RunManualImageDownload($manualImageURL, $outputCardID);
+}
 
 // Run this file directly to force an image download. Including it from the card
 // code generator continues to only define the functions above.

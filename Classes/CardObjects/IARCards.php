@@ -4824,9 +4824,9 @@ class blessing_of_suraya_yellow extends Card {
     }
   }
 
-  // function SpecialName() {
-  //   return "Blessing of Suraya";
-  // }
+  function SpecialName() {
+    return "Blessing of Suraya";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -4878,9 +4878,9 @@ class bravery_of_the_blade_red extends Card {
     PlayAura("courage", $this->controller);
   }
 
-  // function SpecialName() {
-  //   return "Bravery of the Blade";
-  // }
+  function SpecialName() {
+    return "Bravery of the Blade";
+  }
 
   function SpecialPower() {
     return 3;
@@ -4940,9 +4940,9 @@ class channel_stormgarden_yellow extends Card {
 		return Amp($Effect->NumUses(), $remove, $player, $this->controller, $amount);
   }
 
-  // function SpecialName() {
-  //   return "Channel Stormgarden";
-  // }
+  function SpecialName() {
+    return "Channel Stormgarden";
+  }
 
   function SpecialPitch() {
     return 2;
