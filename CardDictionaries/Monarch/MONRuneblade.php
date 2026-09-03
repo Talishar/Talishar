@@ -37,9 +37,6 @@
       case "seeping_shadows_red": case "seeping_shadows_yellow": case "seeping_shadows_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "bounding_demigon_red": case "bounding_demigon_yellow": case "bounding_demigon_blue":
-        if($from == "BANISH") AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "rift_bind_red": case "rift_bind_yellow": case "rift_bind_blue":
         if($from == "BANISH") AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

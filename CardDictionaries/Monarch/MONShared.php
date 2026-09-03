@@ -112,7 +112,6 @@
       case "unworldly_bellow_yellow": return 3;
       case "unworldly_bellow_blue": return 2;
       case "seeping_shadows_red": case "seeping_shadows_yellow": case "seeping_shadows_blue": return 1;
-      case "bounding_demigon_red": case "bounding_demigon_yellow": case "bounding_demigon_blue": return 1;
       case "rift_bind_red": case "rift_bind_yellow": case "rift_bind_blue": return GetClassState($mainPlayer, $CS_NumNonAttackCards);
       case "shadow_puppetry_red": return 1;
       case "soul_harvest_blue": return $suffix;
@@ -164,7 +163,6 @@
       case "seeping_shadows_red": return CardType($attackID) == "AA" && CardCost($attackID) <= 2;
       case "seeping_shadows_yellow": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "seeping_shadows_blue": return CardType($attackID) == "AA" && CardCost($attackID) == 0;
-      case "bounding_demigon_red": case "bounding_demigon_yellow": case "bounding_demigon_blue": return true;
       case "rift_bind_red": case "rift_bind_yellow": case "rift_bind_blue": return true;
       case "shadow_puppetry_red": return CardType($attackID) == "AA";
       case "consuming_aftermath_red": case "consuming_aftermath_yellow": case "consuming_aftermath_blue": return true;

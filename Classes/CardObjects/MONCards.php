@@ -403,43 +403,114 @@
 // }
 
 
-// class bounding_demigon_red extends Card {
+class bounding_demigon extends BaseCard {
+  function PlayTrigger($from) {
+    global $CS_NumNonAttackCards;
+    if (GetClassState($this->controller, $CS_NumNonAttackCards) > 0 && $from == "BANISH")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "bounding_demigon_red";
-//     $this->controller = $controller;
-//     }
+  function PlayableFromBanish() {
+    global $CS_NumNonAttackCards;
+    return GetClassState($this->controller, $CS_NumNonAttackCards) > 0;
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class bounding_demigon_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bounding_demigon_red";
+    $this->controller = $controller;
+    $this->baseCard = new bounding_demigon($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+  
+  function PlayTrigger($from) {
+    $this->baseCard->PlayTrigger($from);
+  }
 
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return $this->baseCard->PlayableFromBanish();
+  }
 
-// class bounding_demigon_yellow extends Card {
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "bounding_demigon_yellow";
-//     $this->controller = $controller;
-//     }
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 
+class bounding_demigon_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "bounding_demigon_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new bounding_demigon($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-// class bounding_demigon_blue extends Card {
+  function PlayTrigger($from) {
+    $this->baseCard->PlayTrigger($from);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "bounding_demigon_blue";
-//     $this->controller = $controller;
-//     }
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return $this->baseCard->PlayableFromBanish();
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
+
+class bounding_demigon_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "bounding_demigon_blue";
+    $this->controller = $controller;
+    $this->baseCard = new bounding_demigon($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PlayTrigger($from) {
+    $this->baseCard->PlayTrigger($from);
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return $this->baseCard->PlayableFromBanish();
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+}
 
 
 // class brandish_red extends Card {
