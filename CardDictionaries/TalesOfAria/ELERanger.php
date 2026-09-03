@@ -115,6 +115,11 @@
     }
   }
 
+  function IsAndOrFuse($cardID)
+  {
+    return GeneratedIsAndOrFuse($cardID);
+  }
+
   function FuseAbility($cardID, $player, $element)
   {
     global $CS_NextNAAInstant, $CS_PlayCCIndex, $CombatChain;
