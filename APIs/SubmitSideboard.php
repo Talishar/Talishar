@@ -257,8 +257,18 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   //Set up log file
   $filename = "../Games/" . $gameName . "/gamelog.txt";
   $filepath = "../Games/" . $gameName . "/";
-  $handler = fopen($filename, "w");
-  if ($handler !== false) fclose($handler);
+  if (!is_dir($filepath)) {
+    $response->error = "Game files not found; the game may have been closed due to inactivity";
+    echo json_encode($response);
+    exit;
+  }
+  $handler = @fopen($filename, "w");
+  if ($handler === false) {
+    $response->error = "Unable to initialize the game log";
+    echo json_encode($response);
+    exit;
+  }
+  fclose($handler);
 
   $currentTime = strval(round(microtime(true) * 1000));
   $cacheArr = ReadCacheArray($gameName); // one shmop read
