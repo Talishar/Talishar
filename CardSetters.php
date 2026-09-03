@@ -811,7 +811,7 @@ function AddCharacterEffect($player, $index, $effect)
   }
 }
 
-function AddGraveyard($cardID, $player, $from, $effectController = "", $cardController = "", $additionalCosts = "-")
+function AddGraveyard($cardID, $player, $from, $effectController = "", $cardController = "", $additionalCosts = "-", $uniqueID = "-")
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $CS_NumAllyPutInGraveyard;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
@@ -893,15 +893,20 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   for ($i = 0; $i < $Character->NumCards(); ++$i) {
     $CharacterCard = $Character->Card($i, true);
     $card = GetClass($CharacterCard->CardID(), $player);
-    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $CharacterCard->Index(), $from);
+    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $CharacterCard->Index(), $from, $uniqueID);
   }
   $Allies = new Allies($player);
   for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
     $AllyCard = $Allies->Card($i, true);
     $card = GetClass($AllyCard->CardID(), $player);
-    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $AllyCard->Index(), $from);
+    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $AllyCard->Index(), $from, $uniqueID);
   }
-  $Hero = new CharacterCard(0, $player);
+  $Auras = new Auras($player);
+  for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+    $AuraCard = $Auras->Card($i, true);
+    $card = GetClass($AuraCard->CardID(), $player);
+    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $AuraCard->Index(), $from, $uniqueID);
+  }
   
   return $grave[$graveLastIndex];
 }

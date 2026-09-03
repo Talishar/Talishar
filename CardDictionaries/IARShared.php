@@ -165,12 +165,16 @@ function HasDecay($cardID) {
 function BindAwait($player) {
 	global $dqVars;
 	$index = $dqVars["index"];
+	$AuraCard = new AuraCard($index, $player);
 	$zone = $dqVars["zone"] ?? "MYAURAS";
 	$MZindex = $dqVars["MZIndex"] ?? "-";
-	if ($MZindex == "-") return; // clear the aura?
+	if ($MZindex == "-") {
+		WriteLog(CardLink($AuraCard->CardID()) . " had no choices to bind to, and so was cleared.");
+		$AuraCard->Destroy(true); // clear the aura if it fails to bind
+		return;
+	}
 	$CleanIndex = CleanTarget($player, $MZindex);
 	if ($zone == "MYAURAS") {
-		$AuraCard = new AuraCard($index, $player);
 		$AuraCard->Bind($CleanIndex);
 		$obj = MZIndexToObject($player, $MZindex);
 		WriteLog(CardLink($AuraCard->CardID()) . " was bound to " . CardLink($obj->CardID()));

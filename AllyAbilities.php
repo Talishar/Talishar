@@ -91,12 +91,12 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   $cardID = $allies[$index];
   RemoveAllyEffects($player, $cardID, $uniqueID);
-  RemoveAllyBoundAuras($player, $index);
   if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep() && !$skipClose) {
     CloseCombatChain();
   }
-  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished, mod:$mod);
+  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished, mod:$mod, index:$index);
   AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished, mod:$mod);
+  RemoveAllyBoundAuras($player, $index);
   array_splice($allies, $index, $allyPieces);
   return $cardID;
 }
@@ -119,9 +119,11 @@ function RemoveAllyBoundAuras($player, $index) {
   }
 }
 
-function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-")
+function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-", $index=-1)
 {
   if ($cardID == "-") return;
+  $AllyCard = new AllyCard($index, $player);
+  $uid = $AllyCard->Index() != -1 ? $AllyCard->UniqueID() : "-";
   if (!TypeContains($cardID, "T")) {
     if (SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
     $card = GetClass($cardID, $player);
@@ -152,7 +154,7 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-")
       "sticky_fingers_ally" => "sticky_fingers",
       default => $cardID
     };
-    if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player);
+    if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player, uniqueID:$uid);
     else BanishCardForPlayer($id, $player, "PLAY", $mod);
   }
 }

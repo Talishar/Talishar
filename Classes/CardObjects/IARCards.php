@@ -104,7 +104,7 @@ class malice extends Card {
     return true;
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from) {
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
     $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from);
   }
 }
@@ -146,7 +146,7 @@ class malice_domina_of_the_dead extends Card {
     return true;
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from) {
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
     $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from);
   }
 }
@@ -5045,7 +5045,7 @@ class restless_templar_red extends Card {
     return "";
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from) {
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
     $DisCard = new DiscardCard($discardIndex, $this->controller);
     $cardID = $DisCard->CardID();
     // this probably shouldn't trigger when restless templar itself dies, could an AI fix this?
@@ -5103,7 +5103,34 @@ class mark_of_ushering_blue extends Card {
   function Binding($index) {
     Await($this->controller, "MultiZoneIndices", search:"MYALLY", subsequent:0);
     Await($this->controller, "ChooseMultiZone", context:"Bind " . CardLink($this->cardID) . " to an ally");
-    Await($this->controller, "Bind", index:$index, final:true);
+    Await($this->controller, "Bind", index:$index, subsequent:0, final:true);
+  }
+
+  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+    global $CombatChain;
+    if (!IsHeroAttackTarget()) return;
+    $AuraCard = new AuraCard($index, $this->controller);
+
+    if ($AuraCard->BoundTo() != "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) return false;
+    if (!$check)
+      AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+    return true;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->ProcessTrigger("-");
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
+    if ($from == "PLAY") {
+      $AuraCard = new AuraCard($permIndex, $this->controller);
+      if ($AuraCard->BoundTo() == "MYALLY-$uniqueID")
+        AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
   }
 
   function SpecialName() {
