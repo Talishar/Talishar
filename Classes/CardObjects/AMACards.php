@@ -139,8 +139,18 @@ class dig_for_souls_red extends Card {
 				AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
 			}
 			else {
-				Await($this->controller, $this->cardID, else:true, inds:$allInds);
-				AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+				if (SearchCount($allInds) == 1) {
+					$cardID = explode("-", $allInds)[1];
+					AddBottomDeck($cardID, $this->controller, "DECK");
+					AddDecisionQueue("PASSPARAMETER", $this->controller, $cardID, 1);
+					AddDecisionQueue("SETDQVAR", $this->controller, "1", 1);
+					AddDecisionQueue("SETDQCONTEXT", $this->controller, "The top card was <1> and it was placed on the bottom", 1);
+					AddDecisionQueue("OK", $this->controller, "-", 1);
+				}
+				else {
+					Await($this->controller, $this->cardID, else:true, inds:$allInds);
+					AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+				}
 			}
 			Await($this->controller, final:true);
 		}

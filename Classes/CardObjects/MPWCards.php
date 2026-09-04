@@ -763,16 +763,16 @@ class durendal extends Card {
 }
 
 class raise_blades_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "raise_blades_red";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "raise_blades_red";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		DrawAndPutBack($this->controller, $this->cardID);
 		AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
+    	return "";
+ 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		global $CombatChain;
