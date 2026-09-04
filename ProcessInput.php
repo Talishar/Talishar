@@ -15,6 +15,7 @@ include "Libraries/CacheLibraries.php";
 include_once "includes/MetafyHelper.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
+include_once "Libraries/ReplayLibraries.php";
 require_once "Libraries/CoreLibraries.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
@@ -96,32 +97,32 @@ register_shutdown_function(static function () use (&$gameActionLock): void {
 
 include "ParseGamestate.php";
 
+$isReplayAdvance = false;
+$replayUndoHasRecordedResponse = false;
+if (IsReplay()) {
+  $requestedReplayMode = intval($mode);
+  $isReplayAdvance = $requestedReplayMode === 99;
+
+  if (!IsReplayControlMode($requestedReplayMode)) {
+    http_response_code(403);
+    echo "Only replay controls can be used while reviewing a replay.";
+    exit;
+  }
+}
+
 if (IsReplay() && $mode == 99) {
   $filename = "./Games/$gameName/replayCommands.txt";
   $commands = file($filename);
   $currentPointer = intval(trim($commands[0] ?? "0"));
-  $pointer = $currentPointer + 1;
-  $line = $commands[$pointer] ?? "";
-  $params = explode(" ", $line);
+  [$pointer, $params] = NextReplayCommand($commands, $currentPointer);
   $playerID = $params[0] ?? "";
   $mode = $params[1] ?? "";
   $buttonInput = $params[2] ?? "";
   $cardID = $params[3] ?? "";
   $chkCount = $params[4] ?? "0";
   $chkInput = isset($params[5]) ? array_map('trim', explode("|", $params[5])) : [];
-  while (
-    ($mode == "StartTurn" || $playerID != $currentPlayer) &&
-    $pointer < count($commands) - 1
-  ) {
-    ++$pointer;
-    $line = $commands[$pointer] ?? "";
-    $params = explode(" ", $line);
-    $playerID = $params[0] ?? "";
-    $mode = $params[1] ?? "";
-    $buttonInput = $params[2] ?? "";
-    $cardID = $params[3] ?? "";
-    $chkCount = $params[4] ?? "0";
-    $chkInput = isset($params[5]) ? array_map('trim', explode("|", $params[5])) : [];
+  if (intval($mode) === 10000 || intval($mode) === 10003) {
+    $replayUndoHasRecordedResponse = ReplayUndoHasRecordedResponse($commands, $pointer);
   }
   global $filepath;
   $snapshotName = "replayStep_$currentPointer.txt";

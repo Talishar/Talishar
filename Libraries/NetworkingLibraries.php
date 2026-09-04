@@ -1,4 +1,6 @@
 <?php
+include_once __DIR__ . "/ReplayLibraries.php";
+
 const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
 const MAX_REPLAYS_SAVED = 3;
 const UNDO_PER_TURN_LIMIT = 25;
@@ -32,6 +34,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $p1MetafyTiers, $p2MetafyTiers;
   global $CS_OriginalHero;
   global $replaySaveResult;
+  global $isReplayAdvance, $replayUndoHasRecordedResponse;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
     case 0:
@@ -578,7 +581,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 10000: //Undo
-      if (IsReplay()) {
+      if (!ShouldProcessReplayUndo(
+        IsReplay(),
+        (bool)($isReplayAdvance ?? false),
+        (bool)($replayUndoHasRecordedResponse ?? false)
+      )) {
         break;
       }
       if (GetClassState($playerID, $CS_NumUndoesThisTurn) >= UNDO_PER_TURN_LIMIT && !IsDevEnvironment()) {
@@ -618,6 +625,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       ++$actionPoints;
       break;
     case 10003: //Undo/Revert to prior turn
+      if (!ShouldProcessReplayUndo(
+        IsReplay(),
+        (bool)($isReplayAdvance ?? false),
+        (bool)($replayUndoHasRecordedResponse ?? false)
+      )) {
+        break;
+      }
       $undoCacheArr = ReadCacheArray($gameName);
       $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
