@@ -42,9 +42,9 @@ function ProcessMacros()
           }
           break;
         case "B":
-          if (!IsHeroAttackTarget()
-              || ($currentPlayer == $defPlayer && AutoPassTurnSetting($defPlayer)
-                  && GetCombatChainState($CCS_RequiredEquipmentBlock) == 0)) {
+          // Auto-pass only passes priority windows. Declaring blockers is a game
+          // decision, and silently passing here can cause irreversible damage.
+          if (!IsHeroAttackTarget()) {
             $somethingChanged = true;
             PassInput();
           }
@@ -261,11 +261,19 @@ function ProcessSpecificCardMacros()
 
     $firstChoice = $choices[0];
 
-    if (GetMZCard($currentPlayer, $firstChoice) == "phoenix_flame_red" &&
-        ($EffectContext == "fai" || $EffectContext == "fai_rising_rebellion" || $EffectContext == "art_of_the_phoenix_war_red"))
+    if ($EffectContext == "fai" || $EffectContext == "fai_rising_rebellion" || $EffectContext == "art_of_the_phoenix_war_red")
     {
-      ContinueDecisionQueue($firstChoice);
-      return true;
+      $allPhoenixFlames = true;
+      foreach ($choices as $choice) {
+        if (explode("-", $choice, 2)[0] != "MYDISCARD" || GetMZCard($currentPlayer, $choice) != "phoenix_flame_red") {
+          $allPhoenixFlames = false;
+          break;
+        }
+      }
+      if ($allPhoenixFlames) {
+        ContinueDecisionQueue($firstChoice);
+        return true;
+      }
     }
     // Auto choose mandatory selections when every option has the same card ID.
     static $autoChooseAllSameContexts = [
