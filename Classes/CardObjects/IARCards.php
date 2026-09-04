@@ -4918,43 +4918,43 @@ class channel_stormgarden_yellow extends Card {
   }
 }
 
-// class exorcism_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "exorcism_red";
-//     $this->controller = $controller;
-//   }
+class exorcism_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "exorcism_red";
+    $this->controller = $controller;
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     AddCurrentTurnEffect($this->cardID, $this->controller);
-//     return "";
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
 
-//   function EffectPowerModifier($param, $attached = false) {
-//     return 3;
-//   }
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
 
-//   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-//     return true;
-//   }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-//   function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-//     return HeroHitTrigger($this->controller, $this->cardID, $check, true);
-//   }
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+  }
 
-//   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
-//     $defPlayer = $this->controller == 1 ? 2 : 1;
-//     $Banish = new Banish($defPlayer);
-//     for ($i = 0; $i < $Banish->NumCards(); ++$i) {
-//       $BanishCard = $Banish->Card($i, true);
-//       if (!isFaceDownMod($BanishCard->Modifier()))
-//         $BanishCard->Modify("DOWN");
-//     }
-//   }
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    $defPlayer = $this->controller == 1 ? 2 : 1;
+    $Banish = new Banish($defPlayer);
+    for ($i = 0; $i < $Banish->NumCards(); ++$i) {
+      $BanishCard = $Banish->Card($i, true);
+      if (!isFaceDownMod($BanishCard->Modifier()))
+        $BanishCard->Modify("DOWN");
+    }
+  }
 
-//   function IsLayerContinuousBuff() {
-//     return true;
-//   }
-// }
+  function IsLayerContinuousBuff() {
+    return true;
+  }
+}
 
 // class restless_templar_red extends Card {
 //   function __construct($controller) {
@@ -5159,61 +5159,61 @@ class channel_stormgarden_yellow extends Card {
 // }
 
 
-// class violent_gusto_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "violent_gusto_red";
-//     $this->controller = $controller;
-//   }
+class violent_gusto_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "violent_gusto_red";
+    $this->controller = $controller;
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     if (IsHeroAttackTarget())
-//       AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
-//     return "";
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
 
-//   function ProcessAttackTrigger($target, $uniqueID) {
-//     global $defPlayer;
-//     if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) return;
-//     Await($this->controller, "MultiZoneIndices", search:"THEIRAURAS", subsequent:0);
-//     Await($this->controller, "ChooseMultiZone", may:true, context:"Choose an aura to name and return to hand (or pass)");
-//     Await($this->controller, $this->cardID, final:true);
-//   }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $defPlayer;
+    if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) return;
+    Await($this->controller, "MultiZoneIndices", search:"THEIRAURAS", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", may:true, context:"Choose an aura to name and return to hand (or pass)");
+    Await($this->controller, $this->cardID, final:true);
+  }
 
-//   function SpecificLogic() {
-//     global $dqVars, $CombatChain;
-//     $choice = $dqVars["MZIndex"] ?? "-";
-//     $AuraCard = MZIndexToObject($this->controller, $choice);
-//     if ($AuraCard != "") {
-//       $name = CardName($AuraCard->CardID());
-//       WriteLog("$name was named!");
-//       $AuraCard->Bounce();
-//       $CombatChain->AttackCard()->AddBuff("$this->cardID|" . GamestateSanitize($name));
-//     }
-//   }
+  function SpecificLogic() {
+    global $dqVars, $CombatChain;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $AuraCard = MZIndexToObject($this->controller, $choice);
+    if ($AuraCard != "") {
+      $name = CardName($AuraCard->CardID());
+      WriteLog("$name was named!");
+      $AuraCard->Bounce();
+      $CombatChain->AttackCard()->AddBuff("$this->cardID|" . GamestateSanitize($name));
+    }
+  }
 
-//   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-//     return HeroHitTrigger($this->controller, $this->cardID, $check);
-//   }
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
 
-//   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-//     global $CombatChain, $defPlayer;
-//     $AttackCard = $CombatChain->AttackCard();
-//     $buffs = explode(",", $AttackCard->StaticBuffs());
-//     foreach ($buffs as $buff) {
-//       $buffID = explode("|", $buff)[0];
-//       if ($buffID != $this->cardID && $buffID != SetID($this->cardID)) continue;
-//       $chosenName = explode("|", $buff, 2)[1] ?? "-";
-//       break;
-//     }
-//     $chosenName = GamestateUnsanitize($chosenName);
-//     $Auras = new Auras($defPlayer);
-//     for ($i = $Auras->NumAuras()-1; $i >=0; --$i){
-//       $AuraCard = $Auras->Card($i, true);
-//       if (CardNameContains($AuraCard->CardID(), $chosenName, $defPlayer))
-//         $AuraCard->Bounce();
-//     }
-//   }
-// }
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $CombatChain, $defPlayer;
+    $AttackCard = $CombatChain->AttackCard();
+    $buffs = explode(",", $AttackCard->StaticBuffs());
+    foreach ($buffs as $buff) {
+      $buffID = explode("|", $buff)[0];
+      if ($buffID != $this->cardID && $buffID != SetID($this->cardID)) continue;
+      $chosenName = explode("|", $buff, 2)[1] ?? "-";
+      break;
+    }
+    $chosenName = GamestateUnsanitize($chosenName);
+    $Auras = new Auras($defPlayer);
+    for ($i = $Auras->NumAuras()-1; $i >=0; --$i){
+      $AuraCard = $Auras->Card($i, true);
+      if (CardNameContains($AuraCard->CardID(), $chosenName, $defPlayer))
+        $AuraCard->Bounce();
+    }
+  }
+}
 
 // class tome_of_necrosis_red extends Card {
 //   function __construct($controller) {
