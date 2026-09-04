@@ -241,7 +241,7 @@ switch ($popupType) {
       AddSetting($response->Settings, "HideHandFromFriends", $SET_HideHandFromFriends, $playerSettings);
       AddSetting($response->Settings, "GemsOffByDefault", $SET_GemsOffByDefault, $playerSettings);
       AddSetting($response->Settings, "HideGamesFromFriends", $SET_HideGamesFromFriends, $playerSettings);
-      AddSetting($response->Settings, "DisableHoldToAutoPass", $SET_DisableHoldToAutoPass, $playerSettings);
+      $response->Settings[] = ["name" => "DisableHoldToAutoPass", "value" => (($playerSettings[$SET_DisableHoldToAutoPass] ?? "1") == "1") ? "1" : "0"];
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;

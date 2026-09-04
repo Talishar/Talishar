@@ -88,9 +88,11 @@ function SavedSettingValue($savedSettings, $setting)
 function SettingDefaultValue($setting, $hero)
 {
   global $SET_TryUI2, $SET_AutotargetArcane, $SET_Playmat, $SET_MirroredBoardLayout;
+  global $SET_DisableHoldToAutoPass;
   switch($setting)
   {
     case $SET_TryUI2: return "1";
+    case $SET_DisableHoldToAutoPass: return "1";
     case $SET_AutotargetArcane: return "1";
     case $SET_Playmat: return $hero == "DUMMY" ? 2 : 0;
     case $SET_MirroredBoardLayout: return "1";

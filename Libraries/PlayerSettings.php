@@ -63,7 +63,7 @@ function HoldToAutoPassDisabled($player)
   global $SET_DisableHoldToAutoPass;
   if ($player != 1 && $player != 2) return false;
   $settings = GetSettings($player);
-  return ($settings[$SET_DisableHoldToAutoPass] ?? "0") == "1";
+  return ($settings[$SET_DisableHoldToAutoPass] ?? "1") == "1";
 }
 
 function HoldPrioritySetting($player)
