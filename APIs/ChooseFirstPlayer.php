@@ -7,6 +7,8 @@ include_once "../Libraries/ValidationLibraries.php";
 
 SetHeaders();
 
+if (session_status() === PHP_SESSION_NONE) session_start();
+
 $response = new stdClass();
 
 $_POST = json_decode(file_get_contents('php://input'), true);
@@ -31,6 +33,7 @@ if (!$authKey) {
   if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
   else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 }
+session_write_close();
 $action = $_POST["action"]; //"Go First" to choose to go first, anything else will choose to go second
 
 if (!IsGameNameValid($gameName)) {
