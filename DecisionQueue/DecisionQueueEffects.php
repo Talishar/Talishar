@@ -1293,7 +1293,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
           AddDecisionQueue("MZBANISH", $player, "-,Source-$cardID,$cardID,$player", 1);
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $otherPlayer, "-", 1);
+          if ($i == 2) AddDecisionQueue("SHUFFLEDECK", $otherPlayer, "-", 1); // Just shuffle once
         }
       }
       return $lastResult;
