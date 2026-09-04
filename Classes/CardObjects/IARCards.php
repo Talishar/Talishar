@@ -5254,3 +5254,48 @@ class channel_stormgarden_yellow extends Card {
 //     }
 //   }
 // }
+
+// class restless_looter_red extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "restless_looter_red";
+//     $this->controller = $controller;
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "I" && $from == "PLAY") {
+//       PummelHit($this->controller);
+//       Await($this->controller, "Draw", effectSource: $this->cardID, final:true);
+//     }
+//     return "";
+//   }
+
+//   function AbilityType($index = -1, $from = '-') {
+//     return "I";
+//   }
+
+//   function GetAbilityTypes($index = -1, $from = '-') {
+//     return $from == "PLAY" ? "I" : "";
+//   }
+
+//   function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+//     if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-";
+//     return "Loot";
+//   }
+
+//   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+//     if ($from != "PLAY") return false;
+//     $AllyCard = new AllyCard($index, $this->controller);
+//     return $AllyCard->Tapped();
+//   }
+
+//   function PayAdditionalCosts($from, $index = '-') {
+//     if ($from == "PLAY") {
+//       $AllyCard = new AllyCard($index, $this->controller);
+//       $AllyCard->TapForCost();
+//     }
+//   }
+
+//   function GoesOnCombatChain($phase, $from) {
+//     return GetResolvedAbilityType($this->cardID, $from) == "AA";
+//   }
+// }

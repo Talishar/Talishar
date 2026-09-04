@@ -488,3 +488,12 @@ function AddAttackQueueAwait($player) {
 function CheckAttackQueueAwait($player) {
   ResolveAttackQueue();
 }
+
+function DrawAwait($player) {
+  global $dqVars;
+  $num = $dqVars["num"] ?? 1;
+  $mainPhase = $dqVars["mainPhase"] ?? true;
+  $fromCardEffect = $dqVars["fromCardEffect"] ?? true;
+  $effectSource = $dqVars["effectSource"] ?? "-";
+  Draw($player, $mainPhase, $fromCardEffect, $effectSource, $num);
+}
