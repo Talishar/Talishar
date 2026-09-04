@@ -4030,8 +4030,9 @@ class darkest_hour extends BaseCard {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
-  function CombatEffectActive() {
+  function CombatEffectActive($parameter) {
     global $CombatChain;
+    if ($parameter == "PAID") return false;
     return TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $this->controller);
   }
 
@@ -4067,7 +4068,7 @@ class darkest_hour_red extends Card {
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return $this->baseCard->CombatEffectActive();
+    return $this->baseCard->CombatEffectActive($parameter);
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
@@ -4096,7 +4097,7 @@ class darkest_hour_yellow extends Card {
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return $this->baseCard->CombatEffectActive();
+    return $this->baseCard->CombatEffectActive($parameter);
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
@@ -4125,7 +4126,7 @@ class darkest_hour_blue extends Card {
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return $this->baseCard->CombatEffectActive();
+    return $this->baseCard->CombatEffectActive($parameter);
   }
 
   function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
