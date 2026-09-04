@@ -486,10 +486,10 @@ function MZFreeze($target, $player="-", $freezeState=1)
 
 function IsFrozenMZ(&$array, $zone, $i, $player)
 {
-  if ($zone == "ARS" && IcelochActive($player)) return true;
   $offset = FrozenOffsetMZ($zone);
   if ($offset == -1) return false;
-  return ($array[$i + $offset] ?? "-") == "1";
+  if (($array[$i + $offset] ?? "-") == "1") return true;
+  return $zone == "ARS" && IcelochActive($player);
 }
 
 function UnfreezeMZ($player, $zone, $index)

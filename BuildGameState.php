@@ -698,6 +698,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $handPieces = HandPieces();
   $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay);
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
+    $label = "";
     if ($playerID == 3) {
       if($spectatorCanSeeP2Hand) $myHandContents[] = JSONRenderedCard(cardNumber: $myHand[$i], controller: 2);
       else $myHandContents[] = JSONRenderedCard(cardNumber: $MyCardBack, controller: 2);
@@ -1058,6 +1059,20 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $theirAlliesCount = count($theirAllies);
   $allyPieces = AllyPieces();
   $theirAurasObj = new Auras($playerID == 1 ? 2 : 1);
+  $theirAurasObj->BuildBoundIndex();
+
+  $layerTargetHaystack = "";
+  $layerScanCount = count($layers);
+  for ($li = 0; $li < $layerScanCount; $li += $layerPieces) {
+    $layerTargetHaystack .= ($layers[$li + 3] ?? "") . "\x00";
+  }
+  $effectUIDSet = [];
+  $effectScanCount = count($currentTurnEffects);
+  $effectScanPieces = CurrentTurnEffectPieces();
+  for ($ei = 0; $ei < $effectScanCount; $ei += $effectScanPieces) {
+    if (isset($currentTurnEffects[$ei + 2])) $effectUIDSet[(string)$currentTurnEffects[$ei + 2]] = true;
+  }
+
   for ($i = 0; $i + $allyPieces - 1 < $theirAlliesCount; $i += $allyPieces) {
     $AllyCard = new AllyCard($i, $playerID == 1 ? 2 : 1);
     $label = "";
@@ -1066,8 +1081,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $uniqueID = $theirAllies[$i+5];
     if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
     else {
-      $isTargeted = SearchLayersForTargetUniqueID($uniqueID) != -1;
-      $hasActiveEffect = SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1;
+      $isTargeted = $layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID);
+      $hasActiveEffect = isset($effectUIDSet[(string)$uniqueID]);
       if ($isTargeted && $hasActiveEffect) $label = "Targeted/Effect Active";
       elseif ($hasActiveEffect) $label = "Effect Active";
       elseif ($isTargeted) $label = "Targeted";
@@ -1182,6 +1197,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myAllies = GetAllies($playerID == 1 ? 1 : 2);
   $myAlliesCount = count($myAllies);
   $myAurasObj = new Auras($playerID);
+  $myAurasObj->BuildBoundIndex();
   for ($i = 0; $i + $allyPieces - 1 < $myAlliesCount; $i += $allyPieces) {
     $AllyCard = new AllyCard($i, $playerID);
     $label = "";
@@ -1193,8 +1209,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $actionDataOverride = $actionType == 24 ? strval($i) : "";
     $uniqueID = $myAllies[$i+5];
     if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
-    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
-    elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
+    elseif($layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID)) $label = "Targeted";
+    elseif(isset($effectUIDSet[(string)$uniqueID])) $label = "Effect Active";
     $subcards = $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL;
     $boundAuras = $myAurasObj->FindBoundAuras($AllyCard->UniqueID());
     if (count($boundAuras) > 0) {

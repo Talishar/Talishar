@@ -5,6 +5,7 @@ class Auras {
   // Properties
   private $auras = [];
   private $player = 0;
+  private $boundIndex = null;
 
   // Constructor
   function __construct($player) {
@@ -55,10 +56,23 @@ class Auras {
     return new AuraCard(-1, $this->player);
   }
 
+  function BuildBoundIndex() {
+    $this->boundIndex = [];
+    $count = count($this->auras);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
+      if (isset($this->auras[$i+14])) $this->boundIndex[$this->auras[$i+14]][] = $i;
+    }
+  }
+
   function FindBoundAuras($uid, $zone="MYALLY") {
     $ret = [];
     $count = count($this->auras);
     if ($count == 0) return [];
+    if ($this->boundIndex !== null) {
+      foreach ($this->boundIndex["$zone-$uid"] ?? [] as $i) $ret[] = new AuraCard($i, $this->player);
+      return $ret;
+    }
     $auraPieces = AuraPieces();
     for ($i = 0; $i < $count; $i += $auraPieces) {
       if ($this->auras[$i+14] == "$zone-$uid") $ret[] = new AuraCard($i, $this->player);

@@ -118,109 +118,109 @@ function JSONRenderedCard(
       $countersMap->defense = $defCounters;
     }
 
-    $powerCounters = isset($countersMap->attack) ? $powerCounters->attack : $powerCounters;
+    $powerCounters = isset($countersMap->attack) ? $countersMap->attack : $powerCounters;
     if($powerCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->attack = $powerCounters;
     }
 
-    $steamCounters = isset($countersMap->steam) ? $steamCounters->steam : $steamCounters;
+    $steamCounters = isset($countersMap->steam) ? $countersMap->steam : $steamCounters;
     if($steamCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->steam = $steamCounters;
     }
 
-    $energyCounters = isset($countersMap->energy) ? $energyCounters->energy : $energyCounters;
+    $energyCounters = isset($countersMap->energy) ? $countersMap->energy : $energyCounters;
     if($energyCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->energy = $energyCounters;
     }
 
-    $hauntCounters = isset($countersMap->haunt) ? $hauntCounters->haunt : $hauntCounters;
+    $hauntCounters = isset($countersMap->haunt) ? $countersMap->haunt : $hauntCounters;
     if($hauntCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->haunt = $hauntCounters;
     }
 
-    $verseCounters = isset($countersMap->verse) ? $verseCounters->verse : $verseCounters;
+    $verseCounters = isset($countersMap->verse) ? $countersMap->verse : $verseCounters;
     if($verseCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->verse = $verseCounters;
     }
 
-    $doomCounters = isset($countersMap->doom) ? $doomCounters->doom : $doomCounters;
+    $doomCounters = isset($countersMap->doom) ? $countersMap->doom : $doomCounters;
     if($doomCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->doom = $doomCounters;
     }
 
-    $lessonCounters = isset($countersMap->lesson) ? $lessonCounters->lesson : $lessonCounters;
+    $lessonCounters = isset($countersMap->lesson) ? $countersMap->lesson : $lessonCounters;
     if($lessonCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->lesson = $lessonCounters;
     }
 
-    $rustCounters = isset($countersMap->rust) ? $rustCounters->rust : $rustCounters;
+    $rustCounters = isset($countersMap->rust) ? $countersMap->rust : $rustCounters;
     if($rustCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->rust = $rustCounters;
     }
 
-    $flowCounters = isset($countersMap->flow) ? $flowCounters->flow : $flowCounters;
+    $flowCounters = isset($countersMap->flow) ? $countersMap->flow : $flowCounters;
     if($flowCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->flow = $flowCounters;
     }
 
-    $frostCounters = isset($countersMap->frost) ? $frostCounters->frost : $frostCounters;
+    $frostCounters = isset($countersMap->frost) ? $countersMap->frost : $frostCounters;
     if($frostCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->frost = $frostCounters;
     }
 
-    $balanceCounters = isset($countersMap->balance) ? $balanceCounters->balance : $balanceCounters;
+    $balanceCounters = isset($countersMap->balance) ? $countersMap->balance : $balanceCounters;
     if($balanceCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->balance = $balanceCounters;
     }
 
-    $bindCounters = isset($countersMap->bind) ? $bindCounters->bind : $bindCounters;
+    $bindCounters = isset($countersMap->bind) ? $countersMap->bind : $bindCounters;
     if($bindCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->bind = $bindCounters;
     }
 
-    $stainCounters = isset($countersMap->stain) ? $stainCounters->stain : $stainCounters;
+    $stainCounters = isset($countersMap->stain) ? $countersMap->stain : $stainCounters;
     if($stainCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->stain = $stainCounters;
     }
 
-    $stormCounters = isset($countersMap->storm) ? $stormCounters->storm : $stormCounters;
+    $stormCounters = isset($countersMap->storm) ? $countersMap->storm : $stormCounters;
     if($stormCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->storm = $stormCounters;
     }
 
-    $goldCounters = isset($countersMap->gold) ? $goldCounters->gold : $goldCounters;
+    $goldCounters = isset($countersMap->gold) ? $countersMap->gold : $goldCounters;
     if($goldCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->gold = $goldCounters;
     }
 
-    $suspenseCounters = isset($countersMap->suspense) ? $suspenseCounters->suspense : $suspenseCounters;
+    $suspenseCounters = isset($countersMap->suspense) ? $countersMap->suspense : $suspenseCounters;
     if($suspenseCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->suspense = $suspenseCounters;
     }
 
-    $sandCounters = isset($countersMap->sand) ? $sandCounters->sand : $sandCounters;
+    $sandCounters = isset($countersMap->sand) ? $countersMap->sand : $sandCounters;
     if($sandCounters != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->sand = $sandCounters;
     }
 
-    $wateryGraveIcon = isset($countersMap->wateryGrave) ? $wateryGraveIcon->wateryGrave : $wateryGraveIcon;
+    $wateryGraveIcon = isset($countersMap->wateryGrave) ? $countersMap->wateryGrave : $wateryGraveIcon;
     if($wateryGraveIcon != NULL) {
       $countersMap ??= new stdClass();
       $countersMap->wateryGrave = $wateryGraveIcon;
