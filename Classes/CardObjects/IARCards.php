@@ -4467,8 +4467,8 @@ class astral_ambience_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-      if ($from == "PLAY")
-        AddCurrentTurnEffect($this->cardID, $this->controller);
+    if ($from == "PLAY")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
   }
 
@@ -4506,6 +4506,14 @@ class astral_ambience_yellow extends Card {
       return $inds == "";
     }
     return false;
+  }
+
+  function FragmentTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("spectral_shield", $this->controller);
   }
 }
 
