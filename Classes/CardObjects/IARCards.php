@@ -5341,4 +5341,8 @@ class devouring_doomwake_red extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
