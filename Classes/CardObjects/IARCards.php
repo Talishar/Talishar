@@ -4840,30 +4840,6 @@ class blessing_of_suraya_yellow extends Card {
       $AuraCard->Remove();
     }
   }
-
-  function SpecialName() {
-    return "Blessing of Suraya";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialTalent() {
-    return "LIGHT";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
 }
 
 class bravery_of_the_blade_red extends Card {
@@ -4893,22 +4869,6 @@ class bravery_of_the_blade_red extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     PlayAura("courage", $this->controller);
-  }
-
-  function SpecialName() {
-    return "Bravery of the Blade";
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "WARRIOR";
-  }
-
-  function SpecialTalent() {
-    return "LIGHT";
   }
 }
 
@@ -4956,469 +4916,312 @@ class channel_stormgarden_yellow extends Card {
     $Effect = new CurrentEffect($index);
 		return Amp($Effect->NumUses(), $remove, $player, $this->controller, $amount);
   }
-
-  function SpecialName() {
-    return "Channel Stormgarden";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialTalent() {
-    return "LIGHTNING";
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
-  }
 }
 
-class exorcism_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "exorcism_red";
-    $this->controller = $controller;
-  }
+// class exorcism_red extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "exorcism_red";
+//     $this->controller = $controller;
+//   }
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     AddCurrentTurnEffect($this->cardID, $this->controller);
+//     return "";
+//   }
 
-  function EffectPowerModifier($param, $attached = false) {
-    return 3;
-  }
+//   function EffectPowerModifier($param, $attached = false) {
+//     return 3;
+//   }
 
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
+//   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+//     return true;
+//   }
 
-  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
-  }
+//   function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+//     return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+//   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
-    $defPlayer = $this->controller == 1 ? 2 : 1;
-    $Banish = new Banish($defPlayer);
-    for ($i = 0; $i < $Banish->NumCards(); ++$i) {
-      $BanishCard = $Banish->Card($i, true);
-      if (!isFaceDownMod($BanishCard->Modifier()))
-        $BanishCard->Modify("DOWN");
-    }
-  }
+//   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+//     $defPlayer = $this->controller == 1 ? 2 : 1;
+//     $Banish = new Banish($defPlayer);
+//     for ($i = 0; $i < $Banish->NumCards(); ++$i) {
+//       $BanishCard = $Banish->Card($i, true);
+//       if (!isFaceDownMod($BanishCard->Modifier()))
+//         $BanishCard->Modify("DOWN");
+//     }
+//   }
 
-  // function SpecialName() {
-  //   return "Exorcism";
-  // }
+//   function IsLayerContinuousBuff() {
+//     return true;
+//   }
+// }
 
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-
-  function IsLayerContinuousBuff() {
-    return true;
-  }
-}
-
-class restless_templar_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "restless_templar_red";
-    $this->controller = $controller;
-  }
+// class restless_templar_red extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "restless_templar_red";
+//     $this->controller = $controller;
+//   }
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
-    $DisCard = new DiscardCard($discardIndex, $this->controller);
-    $cardID = $DisCard->CardID();
-    // this probably shouldn't trigger when restless templar itself dies, could an AI fix this?
-    if (SubtypeContains($cardID, "Zombie") && HasDecay($cardID) && $from == "PLAY")
-      AddLayer("TRIGGER", $this->controller, $this->cardID);
-  }
+//   function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
+//     $DisCard = new DiscardCard($discardIndex, $this->controller);
+//     $cardID = $DisCard->CardID();
+//     // this probably shouldn't trigger when restless templar itself dies, could an AI fix this?
+//     if (SubtypeContains($cardID, "Zombie") && HasDecay($cardID) && $from == "PLAY")
+//       AddLayer("TRIGGER", $this->controller, $this->cardID);
+//   }
 
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PlayAura("gate_to_iarathael", $this->controller);
-  }
+//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+//     PlayAura("gate_to_iarathael", $this->controller);
+//   }
+// }
 
-  // function SpecialName() {
-  //   return "Restless Templar";
-  // }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialSubType() {
-    return "Zombie,Ally";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function HasDecay() {
-    return true;
-  }
-
-  function SpecialHealth() {
-    return 3;
-  }
-}
-
-class mark_of_ushering_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "mark_of_ushering_blue";
-    $this->controller = $controller;
-  }
+// class mark_of_ushering_blue extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "mark_of_ushering_blue";
+//     $this->controller = $controller;
+//   }
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
 
-  function Binding($index) {
-    Await($this->controller, "MultiZoneIndices", search:"MYALLY", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", context:"Bind " . CardLink($this->cardID) . " to an ally");
-    Await($this->controller, "Bind", index:$index, subsequent:0, final:true);
-  }
+//   function Binding($index) {
+//     Await($this->controller, "MultiZoneIndices", search:"MYALLY", subsequent:0);
+//     Await($this->controller, "ChooseMultiZone", context:"Bind " . CardLink($this->cardID) . " to an ally");
+//     Await($this->controller, "Bind", index:$index, subsequent:0, final:true);
+//   }
 
-  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
-    global $CombatChain;
-    if (!IsHeroAttackTarget()) return;
-    $AuraCard = new AuraCard($index, $this->controller);
+//   function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+//     global $CombatChain;
+//     if (!IsHeroAttackTarget()) return;
+//     $AuraCard = new AuraCard($index, $this->controller);
 
-    if ($AuraCard->BoundTo() != "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) return false;
-    if (!$check)
-      AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
-    return true;
-  }
+//     if ($AuraCard->BoundTo() != "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) return false;
+//     if (!$check)
+//       AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+//     return true;
+//   }
 
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $this->ProcessTrigger("-");
-  }
+//   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+//     $this->ProcessTrigger("-");
+//   }
 
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PlayAura("gate_to_iarathael", $this->controller);
-  }
+//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+//     PlayAura("gate_to_iarathael", $this->controller);
+//   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
-    if ($from == "PLAY") {
-      $AuraCard = new AuraCard($permIndex, $this->controller);
-      if ($AuraCard->BoundTo() == "MYALLY-$uniqueID")
-        AddLayer("TRIGGER", $this->controller, $this->cardID);
-    }
-  }
+//   function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
+//     if ($from == "PLAY") {
+//       $AuraCard = new AuraCard($permIndex, $this->controller);
+//       if ($AuraCard->BoundTo() == "MYALLY-$uniqueID")
+//         AddLayer("TRIGGER", $this->controller, $this->cardID);
+//     }
+//   }
 
-  function AuraPowerModifiers($index, &$powerModifiers) {
-    global $CombatChain;
-    $AuraCard = new AuraCard($index, $this->controller);
-    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
-      $powerModifiers[] = $this->cardID;
-      $powerModifiers[] = 1;
-      return 1;
-    }
-    return 0;
-  }
+//   function AuraPowerModifiers($index, &$powerModifiers) {
+//     global $CombatChain;
+//     $AuraCard = new AuraCard($index, $this->controller);
+//     if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
+//       $powerModifiers[] = $this->cardID;
+//       $powerModifiers[] = 1;
+//       return 1;
+//     }
+//     return 0;
+//   }
+// }
 
-  // function SpecialName() {
-  //   return "Mark of Ushering";
-  // }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-}
-
-class mark_of_neverrest_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "mark_of_neverrest_blue";
-    $this->controller = $controller;
-  }
+// class mark_of_neverrest_blue extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "mark_of_neverrest_blue";
+//     $this->controller = $controller;
+//   }
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
 
-  function Binding($index) {
-    Await($this->controller, "MultiZoneIndices", search:"MYALLY", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", context:"Bind " . CardLink($this->cardID) . " to an ally");
-    Await($this->controller, "Bind", index:$index, subsequent:0, final:true);
-  }
+//   function Binding($index) {
+//     Await($this->controller, "MultiZoneIndices", search:"MYALLY", subsequent:0);
+//     Await($this->controller, "ChooseMultiZone", context:"Bind " . CardLink($this->cardID) . " to an ally");
+//     Await($this->controller, "Bind", index:$index, subsequent:0, final:true);
+//   }
 
-  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
-    global $CombatChain;
-    if (!IsHeroAttackTarget()) return;
-    $AuraCard = new AuraCard($index, $this->controller);
+//   function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+//     global $CombatChain;
+//     if (!IsHeroAttackTarget()) return;
+//     $AuraCard = new AuraCard($index, $this->controller);
 
-    if ($AuraCard->BoundTo() != "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) return false;
-    if (!$check)
-      AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
-    return true;
-  }
+//     if ($AuraCard->BoundTo() != "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) return false;
+//     if (!$check)
+//       AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+//     return true;
+//   }
 
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $this->ProcessTrigger("-");
-  }
+//   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+//     $this->ProcessTrigger("-");
+//   }
 
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $context = "turn a card in banish facedown to make a " . CardLink("corrupted_corpse") . " (or pass)";
-    Await($this->controller, "MultiZoneIndices", search:"MYBANISH", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", may:true, context: $context);
-    Await($this->controller, $this->cardID, final:true);
-  }
+//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+//     $context = "turn a card in banish facedown to make a " . CardLink("corrupted_corpse") . " (or pass)";
+//     Await($this->controller, "MultiZoneIndices", search:"MYBANISH", subsequent:0);
+//     Await($this->controller, "ChooseMultiZone", may:true, context: $context);
+//     Await($this->controller, $this->cardID, final:true);
+//   }
 
-  function SpecificLogic() {
-    global $dqVars;
-    $choice = $dqVars["MZIndex"] ?? "-";
-    $BanishCard = MZIndexToObject($this->controller, $choice);
-    if ($BanishCard != "") {
-      WriteLog(CardLink($BanishCard->CardID()) . " was turned face-down");
-      $BanishCard->Modify("DOWN");
-      BanishCardForPlayer("corrupted_corpse", $this->controller, "BANISH", created:true);
-    }
-  }
+//   function SpecificLogic() {
+//     global $dqVars;
+//     $choice = $dqVars["MZIndex"] ?? "-";
+//     $BanishCard = MZIndexToObject($this->controller, $choice);
+//     if ($BanishCard != "") {
+//       WriteLog(CardLink($BanishCard->CardID()) . " was turned face-down");
+//       $BanishCard->Modify("DOWN");
+//       BanishCardForPlayer("corrupted_corpse", $this->controller, "BANISH", created:true);
+//     }
+//   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
-    if ($from == "PLAY") {
-      $AuraCard = new AuraCard($permIndex, $this->controller);
-      if ($AuraCard->BoundTo() == "MYALLY-$uniqueID")
-        AddLayer("TRIGGER", $this->controller, $this->cardID);
-    }
-  }
+//   function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
+//     if ($from == "PLAY") {
+//       $AuraCard = new AuraCard($permIndex, $this->controller);
+//       if ($AuraCard->BoundTo() == "MYALLY-$uniqueID")
+//         AddLayer("TRIGGER", $this->controller, $this->cardID);
+//     }
+//   }
 
-  function AuraPowerModifiers($index, &$powerModifiers) {
-    global $CombatChain;
-    $AuraCard = new AuraCard($index, $this->controller);
-    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
-      $powerModifiers[] = $this->cardID;
-      $powerModifiers[] = 1;
-      return 1;
-    }
-    return 0;
-  }
+//   function AuraPowerModifiers($index, &$powerModifiers) {
+//     global $CombatChain;
+//     $AuraCard = new AuraCard($index, $this->controller);
+//     if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
+//       $powerModifiers[] = $this->cardID;
+//       $powerModifiers[] = 1;
+//       return 1;
+//     }
+//     return 0;
+//   }
+// }
 
-  // function SpecialName() {
-  //   return "Mark of Neverrest";
-  // }
+// class mark_of_pathstone_blue extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "mark_of_pathstone_blue";
+//     $this->controller = $controller;
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     return "";
+//   }
 
-  function SpecialPitch() {
-    return 3;
-  }
+//   function Binding($index) {
+//     Await($this->controller, "MultiZoneIndices", search:"MYALLY", subsequent:0);
+//     Await($this->controller, "ChooseMultiZone", context:"Bind " . CardLink($this->cardID) . " to an ally");
+//     Await($this->controller, "Bind", index:$index, subsequent:0, final:true);
+//   }
 
-  function SpecialType() {
-    return "I";
-  }
+//   function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+//     global $CombatChain;
+//     if (!IsHeroAttackTarget()) return;
+//     $AuraCard = new AuraCard($index, $this->controller);
 
-  function SpecialSubType() {
-    return "Aura";
-  }
+//     if ($AuraCard->BoundTo() != "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) return false;
+//     if (!$check)
+//       AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
+//     return true;
+//   }
 
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
+//   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+//     $this->ProcessTrigger("-");
+//   }
 
-  function SpecialTalent() {
-    return "SHADOW";
-  }
+//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+//     GainHealth(1, $this->controller);
+//   }
 
-  function SpecialBlock() {
-    return -2;
-  }
-}
+//   function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
+//     if ($from == "PLAY") {
+//       $AuraCard = new AuraCard($permIndex, $this->controller);
+//       if ($AuraCard->BoundTo() == "MYALLY-$uniqueID")
+//         AddLayer("TRIGGER", $this->controller, $this->cardID);
+//     }
+//   }
 
-class mark_of_pathstone_blue extends Card {
+//   function AuraPowerModifiers($index, &$powerModifiers) {
+//     global $CombatChain;
+//     $AuraCard = new AuraCard($index, $this->controller);
+//     if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
+//       $powerModifiers[] = $this->cardID;
+//       $powerModifiers[] = 1;
+//       return 1;
+//     }
+//     return 0;
+//   }
+// }
+
+
+// class violent_gusto_red extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "violent_gusto_red";
+//     $this->controller = $controller;
+//   }
+  
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     if (IsHeroAttackTarget())
+//       AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+//     return "";
+//   }
+
+//   function ProcessAttackTrigger($target, $uniqueID) {
+//     global $defPlayer;
+//     if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) return;
+//     Await($this->controller, "MultiZoneIndices", search:"THEIRAURAS", subsequent:0);
+//     Await($this->controller, "ChooseMultiZone", may:true, context:"Choose an aura to name and return to hand (or pass)");
+//     Await($this->controller, $this->cardID, final:true);
+//   }
+
+//   function SpecificLogic() {
+//     global $dqVars, $CombatChain;
+//     $choice = $dqVars["MZIndex"] ?? "-";
+//     $AuraCard = MZIndexToObject($this->controller, $choice);
+//     if ($AuraCard != "") {
+//       $name = CardName($AuraCard->CardID());
+//       WriteLog("$name was named!");
+//       $AuraCard->Bounce();
+//       $CombatChain->AttackCard()->AddBuff("$this->cardID|" . GamestateSanitize($name));
+//     }
+//   }
+
+//   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+//     return HeroHitTrigger($this->controller, $this->cardID, $check);
+//   }
+
+//   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+//     global $CombatChain, $defPlayer;
+//     $AttackCard = $CombatChain->AttackCard();
+//     $buffs = explode(",", $AttackCard->StaticBuffs());
+//     foreach ($buffs as $buff) {
+//       $buffID = explode("|", $buff)[0];
+//       if ($buffID != $this->cardID && $buffID != SetID($this->cardID)) continue;
+//       $chosenName = explode("|", $buff, 2)[1] ?? "-";
+//       break;
+//     }
+//     $chosenName = GamestateUnsanitize($chosenName);
+//     $Auras = new Auras($defPlayer);
+//     for ($i = $Auras->NumAuras()-1; $i >=0; --$i){
+//       $AuraCard = $Auras->Card($i, true);
+//       if (CardNameContains($AuraCard->CardID(), $chosenName, $defPlayer))
+//         $AuraCard->Bounce();
+//     }
+//   }
+// }
+
+class tome_of_necrosis_red extends Card {
   function __construct($controller) {
-    $this->cardID = "mark_of_pathstone_blue";
+    $this->cardID = "tome_of_necrosis_red";
     $this->controller = $controller;
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
-  }
-
-  function Binding($index) {
-    Await($this->controller, "MultiZoneIndices", search:"MYALLY", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", context:"Bind " . CardLink($this->cardID) . " to an ally");
-    Await($this->controller, "Bind", index:$index, subsequent:0, final:true);
-  }
-
-  function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
-    global $CombatChain;
-    if (!IsHeroAttackTarget()) return;
-    $AuraCard = new AuraCard($index, $this->controller);
-
-    if ($AuraCard->BoundTo() != "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) return false;
-    if (!$check)
-      AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
-    return true;
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $this->ProcessTrigger("-");
-  }
-
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    GainHealth(1, $this->controller);
-  }
-
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
-    if ($from == "PLAY") {
-      $AuraCard = new AuraCard($permIndex, $this->controller);
-      if ($AuraCard->BoundTo() == "MYALLY-$uniqueID")
-        AddLayer("TRIGGER", $this->controller, $this->cardID);
-    }
-  }
-
-  function AuraPowerModifiers($index, &$powerModifiers) {
-    global $CombatChain;
-    $AuraCard = new AuraCard($index, $this->controller);
-    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
-      $powerModifiers[] = $this->cardID;
-      $powerModifiers[] = 1;
-      return 1;
-    }
-    return 0;
-  }
-
-  // function SpecialName() {
-  //   return "Mark of Pathstone";
-  // }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialSubType() {
-    return "Aura";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-}
-
-
-class violent_gusto_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "violent_gusto_red";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    if (IsHeroAttackTarget())
-      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
-    return "";
-  }
-
-  function ProcessAttackTrigger($target, $uniqueID) {
-    global $defPlayer;
-    if (SearchCurrentTurnEffects("amnesia_red", $defPlayer)) return;
-    Await($this->controller, "MultiZoneIndices", search:"THEIRAURAS", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", may:true, context:"Choose an aura to name and return to hand (or pass)");
-    Await($this->controller, $this->cardID, final:true);
-  }
-
-  function SpecificLogic() {
-    global $dqVars, $CombatChain;
-    $choice = $dqVars["MZIndex"] ?? "-";
-    $AuraCard = MZIndexToObject($this->controller, $choice);
-    if ($AuraCard != "") {
-      $name = CardName($AuraCard->CardID());
-      WriteLog("$name was named!");
-      $AuraCard->Bounce();
-      $CombatChain->AttackCard()->AddBuff("$this->cardID|" . GamestateSanitize($name));
-    }
-  }
-
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return HeroHitTrigger($this->controller, $this->cardID, $check);
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    global $CombatChain, $defPlayer;
-    $AttackCard = $CombatChain->AttackCard();
-    $buffs = explode(",", $AttackCard->StaticBuffs());
-    foreach ($buffs as $buff) {
-      $buffID = explode("|", $buff)[0];
-      if ($buffID != $this->cardID && $buffID != SetID($this->cardID)) continue;
-      $chosenName = explode("|", $buff, 2)[1] ?? "-";
-      break;
-    }
-    $chosenName = GamestateUnsanitize($chosenName);
-    $Auras = new Auras($defPlayer);
-    for ($i = $Auras->NumAuras()-1; $i >=0; --$i){
-      $AuraCard = $Auras->Card($i, true);
-      if (CardNameContains($AuraCard->CardID(), $chosenName, $defPlayer))
-        $AuraCard->Bounce();
-    }
-  }
-
-  // function SpecialName() {
-  //   return "Violent Gusto";
-  // }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
