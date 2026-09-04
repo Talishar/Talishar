@@ -5299,3 +5299,46 @@ class violent_gusto_red extends Card {
 //     return GetResolvedAbilityType($this->cardID, $from) == "AA";
 //   }
 // }
+
+class devouring_doomwake_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "devouring_doomwake_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $CombatChain;
+    for ($i = $CombatChain->NumCardsActiveLink() - 1; $i >= 0; --$i) {
+      $LinkCard = $CombatChain->Card($i, true);
+      $LinkCard->Destroy(banish:true);
+    }
+  }
+
+  // function SpecialName() {
+  //   return "Devouring Doomwake";
+  // }
+
+  function SpecialCost() {
+    return 6;
+  }
+
+  function SpecialPower() {
+    return 11;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
