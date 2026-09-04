@@ -5354,3 +5354,46 @@ class devouring_doomwake_red extends Card {
     return true;
   }
 }
+
+class boneseer_skullcap extends Card {
+  function __construct($controller) {
+    $this->cardID = "boneseer_skullcap";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $deck = new Deck($this->controller);
+    if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $this->controller, "DECK", source: $this->cardID) < 6) {
+      $card = $deck->AddBottom($deck->Top(remove: true), "DECK");
+      WriteLog("⬇️ " . CardLink($this->cardID) . " put " . CardLink($card) . " on the bottom of your deck");
+    }
+  }
+
+  function SpecialName() {
+    return "Boneseer Skullcap";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasTemper() {
+    return true;
+  }
+
+  function SpecialSubType() {
+    return "Head";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+}

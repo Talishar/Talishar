@@ -315,6 +315,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Dagger,Attack";
     case "suraya_archangel_of_knowledge":
       return "Angel,Ally";
+    case "boneseer_skullcap":
+      return "Head"; // temporary
     default:
       break;
   }
