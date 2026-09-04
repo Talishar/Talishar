@@ -5215,13 +5215,42 @@ class channel_stormgarden_yellow extends Card {
 //   }
 // }
 
-class tome_of_necrosis_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "tome_of_necrosis_red";
-    $this->controller = $controller;
-  }
+// class tome_of_necrosis_red extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "tome_of_necrosis_red";
+//     $this->controller = $controller;
+//   }
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
-}
+//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+//     Draw($this->controller);
+//     $Hero = new CharacterCard(0, $this->controller);
+//     $Hero->Tap(0);
+//     return "";
+//   }
+
+//   function PayAdditionalCosts($from, $index = '-') {
+//     Await($this->controller, "MultiZoneIndices", search:"MYALLY&MYHAND:subtype=Ally", subsequent:0);
+//     Await($this->controller, "ChooseMultiZone", context:"Destroy or discard up an ally");
+//     Await($this->controller, $this->cardID, final:true);
+//   }
+
+//   function SpecificLogic() {
+//     global $dqVars;
+//     $choice = $dqVars["MZIndex"] ?? "-";
+//     $zone = explode("-", $choice)[0];
+//     $index = explode("-", $choice)[1] ?? -1;
+//     if ($index != -1) {
+//       switch($zone) {
+//         case "MYHAND":
+//           DiscardCard($this->controller, $index);
+//           break;
+//         case "MYALLY":
+//           $AllyCard = new AllyCard($index, $this->controller);
+//           $AllyCard->Destroy();
+//           break;
+//         default:
+//           break;
+//       }
+//     }
+//   }
+// }
