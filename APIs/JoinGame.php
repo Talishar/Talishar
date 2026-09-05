@@ -920,6 +920,7 @@ function IsCardBanned($cardID, $format, $character)
         case "runechant_of_wrath_yellow":
         case "runechant_of_lust_yellow":
         case "runechant_of_sloth_yellow":
+        case "the_hand_that_pulls_the_strings":
           return false;
         default:
           break;
