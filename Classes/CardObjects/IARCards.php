@@ -4964,28 +4964,28 @@ class exorcism_red extends Card {
   }
 }
 
-// class restless_templar_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "restless_templar_red";
-//     $this->controller = $controller;
-//   }
+class restless_templar_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_templar_red";
+    $this->controller = $controller;
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
-//     $DisCard = new DiscardCard($discardIndex, $this->controller);
-//     $cardID = $DisCard->CardID();
-//     // this probably shouldn't trigger when restless templar itself dies, could an AI fix this?
-//     if (SubtypeContains($cardID, "Zombie") && HasDecay($cardID) && $from == "PLAY")
-//       AddLayer("TRIGGER", $this->controller, $this->cardID);
-//   }
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
+    $DisCard = new DiscardCard($discardIndex, $this->controller);
+    $cardID = $DisCard->CardID();
+    // this probably shouldn't trigger when restless templar itself dies, could an AI fix this?
+    if (SubtypeContains($cardID, "Zombie") && HasDecay($cardID) && $from == "PLAY")
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
 
-//   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-//     PlayAura("gate_to_iarathael", $this->controller);
-//   }
-// }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+}
 
 // class mark_of_ushering_blue extends Card {
 //   function __construct($controller) {
@@ -5223,90 +5223,90 @@ class violent_gusto_red extends Card {
   }
 }
 
-// class tome_of_necrosis_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "tome_of_necrosis_red";
-//     $this->controller = $controller;
-//   }
+class tome_of_necrosis_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tome_of_necrosis_red";
+    $this->controller = $controller;
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     Draw($this->controller);
-//     $Hero = new CharacterCard(0, $this->controller);
-//     $Hero->Tap(0);
-//     return "";
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Draw($this->controller);
+    $Hero = new CharacterCard(0, $this->controller);
+    $Hero->Tap(0);
+    return "";
+  }
 
-//   function PayAdditionalCosts($from, $index = '-') {
-//     Await($this->controller, "MultiZoneIndices", search:"MYALLY&MYHAND:subtype=Ally", subsequent:0);
-//     Await($this->controller, "ChooseMultiZone", context:"Destroy or discard up an ally");
-//     Await($this->controller, $this->cardID, final:true);
-//   }
+  function PayAdditionalCosts($from, $index = '-') {
+    Await($this->controller, "MultiZoneIndices", search:"MYALLY&MYHAND:subtype=Ally", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", context:"Destroy or discard up an ally");
+    Await($this->controller, $this->cardID, final:true);
+  }
 
-//   function SpecificLogic() {
-//     global $dqVars;
-//     $choice = $dqVars["MZIndex"] ?? "-";
-//     $zone = explode("-", $choice)[0];
-//     $index = explode("-", $choice)[1] ?? -1;
-//     if ($index != -1) {
-//       switch($zone) {
-//         case "MYHAND":
-//           DiscardCard($this->controller, $index);
-//           break;
-//         case "MYALLY":
-//           $AllyCard = new AllyCard($index, $this->controller);
-//           $AllyCard->Destroy();
-//           break;
-//         default:
-//           break;
-//       }
-//     }
-//   }
-// }
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $zone = explode("-", $choice)[0];
+    $index = explode("-", $choice)[1] ?? -1;
+    if ($index != -1) {
+      switch($zone) {
+        case "MYHAND":
+          DiscardCard($this->controller, $index);
+          break;
+        case "MYALLY":
+          $AllyCard = new AllyCard($index, $this->controller);
+          $AllyCard->Destroy();
+          break;
+        default:
+          break;
+      }
+    }
+  }
+}
 
-// class restless_looter_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "restless_looter_red";
-//     $this->controller = $controller;
-//   }
+class restless_looter_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_looter_red";
+    $this->controller = $controller;
+  }
   
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "I" && $from == "PLAY") {
-//       PummelHit($this->controller);
-//       Await($this->controller, "Draw", effectSource: $this->cardID, final:true);
-//     }
-//     return "";
-//   }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "I" && $from == "PLAY") {
+      PummelHit($this->controller);
+      Await($this->controller, "Draw", effectSource: $this->cardID, final:true);
+    }
+    return "";
+  }
 
-//   function AbilityType($index = -1, $from = '-') {
-//     return "I";
-//   }
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
 
-//   function GetAbilityTypes($index = -1, $from = '-') {
-//     return $from == "PLAY" ? "I" : "";
-//   }
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $from == "PLAY" ? "I" : "";
+  }
 
-//   function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
-//     if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-";
-//     return "Loot";
-//   }
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-";
+    return "Loot";
+  }
 
-//   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-//     if ($from != "PLAY") return false;
-//     $AllyCard = new AllyCard($index, $this->controller);
-//     return $AllyCard->Tapped();
-//   }
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if ($from != "PLAY") return false;
+    $AllyCard = new AllyCard($index, $this->controller);
+    return $AllyCard->Tapped();
+  }
 
-//   function PayAdditionalCosts($from, $index = '-') {
-//     if ($from == "PLAY") {
-//       $AllyCard = new AllyCard($index, $this->controller);
-//       $AllyCard->TapForCost();
-//     }
-//   }
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") {
+      $AllyCard = new AllyCard($index, $this->controller);
+      $AllyCard->TapForCost();
+    }
+  }
 
-//   function GoesOnCombatChain($phase, $from) {
-//     return GetResolvedAbilityType($this->cardID, $from) == "AA";
-//   }
-// }
+  function GoesOnCombatChain($phase, $from) {
+    return GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+}
 
 class devouring_doomwake_red extends Card {
   function __construct($controller) {
