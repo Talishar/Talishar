@@ -5556,3 +5556,164 @@ class peak_power_blue extends Card {
     return 3;
   }
 }
+
+class shadowrealm_bloodhound extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    BanishFromHand($this->controller, true, "Banish a card from hand, Shadow cards give go again (or pass)");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["LASTRESULT"] ?? "-";
+    if (TalentContains($choice, "SHADOW", $this->controller))
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
+
+class shadowrealm_bloodhound_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_bloodhound_red";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_bloodhound($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Bloodhound";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class shadowrealm_bloodhound_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_bloodhound_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_bloodhound($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Bloodhound";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+}
+
+class shadowrealm_bloodhound_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_bloodhound_blue";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_bloodhound($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Bloodhound";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+}

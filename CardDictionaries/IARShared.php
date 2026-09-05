@@ -142,10 +142,12 @@ function ControlsBlasmo($player) {
 	return false;
 }
 
-function BanishFromHand($player) {
+function BanishFromHand($player, $may=false, $context="") {
+	if ($context == "") $context = "Choose a card to banish";
 	AddDecisionQueue("FINDINDICES", $player, "HAND");
-	AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to banish", 1);
-	AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
+	AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
+	if ($may) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
+	else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
 	AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
 	AddDecisionQueue("BANISHCARD", $player, "HAND,-", 1);
 }
