@@ -223,6 +223,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               for ($j = 0; $j < $chainLinksummaryCount; $j += $chainLinksummaryPieces) {
                 if ($chainLinkSummary[$j + 1] >= 6) { $condition = true; break; }
               }
+              if (IsLayerStep() && LayerStepBasePower() >= 6)
+                $condition = true;
               if ($condition) {
                 Deal2OrDiscard($targetPlayer);
               }
