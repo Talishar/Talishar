@@ -41,22 +41,36 @@ if (!defined('METAFY_API_BASE')) {
  * for `profile` and its tokens can never answer whether someone is subscribed.
  */
 if (!function_exists('MetafyLink')) {
+  function GetMetafyRedirectUri($flow = 'link')
+  {
+    $environmentKey = $flow === 'signup'
+      ? 'METAFY_LOGIN_REDIRECT_URI'
+      : 'METAFY_LINK_REDIRECT_URI';
+    $configuredUri = trim((string)getenv($environmentKey));
+    if ($configuredUri !== '') return $configuredUri;
+
+    if ($flow === 'link') {
+      $metafyDevMode = getenv('METAFY_DEV_MODE');
+      $useDev = $metafyDevMode === 'true' || $metafyDevMode === '1';
+      if (!$useDev) {
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        $useDev = $host === 'localhost' || $host === 'localhost:8000'
+          || strpos($host, '127.0.0.1') !== false;
+      }
+      if ($useDev) return 'http://localhost:5173/user/profile/linkmetafy';
+    }
+
+    return $flow === 'signup'
+      ? 'https://talishar.net/auth/metafy-signup'
+      : 'https://talishar.net/user/profile/linkmetafy';
+  }
+
   function MetafyLink()
   {
     global $metafyClientID;
     if (empty($metafyClientID)) return null;
 
-    // Check environment variable first, then fall back to detecting by host
-    $metafy_dev_mode = getenv('METAFY_DEV_MODE');
-    $use_dev = $metafy_dev_mode === 'true' || $metafy_dev_mode === '1';
-    if (!$use_dev) {
-      $host = $_SERVER['HTTP_HOST'] ?? '';
-      $use_dev = $host === 'localhost' || $host === 'localhost:8000' || strpos($host, '127.0.0.1') !== false;
-    }
-
-    $redirect_uri = $use_dev
-      ? 'http://localhost:5173/user/profile/linkmetafy'
-      : 'https://talishar.net/user/profile/linkmetafy';
+    $redirect_uri = GetMetafyRedirectUri('link');
 
     $state = base64_encode(json_encode(['redirect_uri' => $redirect_uri]));
 
