@@ -5397,3 +5397,162 @@ class boneseer_skullcap extends Card {
     return "E";
   }
 }
+
+class peak_power extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    if (CanRevealCards($this->controller)) {
+      $Deck = new Deck($this->controller);
+      $cardID = $Deck->Top();
+      $Deck->Reveal(1);
+      if (ModifiedPowerValue($cardID, $this->controller, "DECK") >= 6)
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+}
+
+class peak_power_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "peak_power_red";
+    $this->controller = $controller;
+    $this->baseCard = new peak_power($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Peak Power";
+  // }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 7;
+  }
+}
+
+class peak_power_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "peak_power_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new peak_power($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Peak Power";
+  // }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+}
+
+class peak_power_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "peak_power_blue";
+    $this->controller = $controller;
+    $this->baseCard = new peak_power($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Peak Power";
+  // }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+}
