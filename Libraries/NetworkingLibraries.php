@@ -4631,7 +4631,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       $chainClosed = $target == "MISSINGTARGET";
       if ($chainClosed) CloseCombatChain();
       $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID, $mainPlayer, "CC", $index);
-      if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
+      // I believe this should be accounted for elsewhere, right now this is false flagging attack queue attacks
+      // if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
       SetCombatChainState($CCS_AttackUniqueID, $uniqueID);
       if ($definedCardType == "AA" && $powerValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
       $resolvedAbilityTypeNoFrom = GetResolvedAbilityType($cardID);
