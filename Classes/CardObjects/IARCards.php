@@ -6749,3 +6749,243 @@ class headstrong_stampede_blue extends Card {
     return "BRUTE";
   }
 }
+
+class cleave_the_heavens extends BaseCard {
+  function GetAbilityTypes() {
+    return "I,AA";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-') {
+    return GetEasyAbilityNames($this->cardID, $index, $from);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    global $layers;
+    return ($phase == "B" && count($layers) == 0) || GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return ($from == "HAND");
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 2;
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1) {
+    global $CS_NumActionsPlayed;
+    $names = GetAbilityNames($this->cardID, $index, $from);
+    $names = str_replace("-,", "", $names);
+    if (SearchCurrentTurnEffects("red_in_the_ledger_red", $this->controller) && GetClassState($this->controller, $CS_NumActionsPlayed) >= 1) {
+      AddDecisionQueue("SETABILITYTYPEABILITY", $this->controller, $this->cardID);
+    } elseif ($names != "" && $from == "HAND") {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose to play the ability or attack");
+      AddDecisionQueue("BUTTONINPUT", $this->controller, $names);
+      AddDecisionQueue("SETABILITYTYPE", $this->controller, $this->cardID);
+    } else {
+      AddDecisionQueue("SETABILITYTYPEATTACK", $this->controller, $this->cardID);
+    }
+    AddDecisionQueue("NOTEQUALPASS", $this->controller, "Ability");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("BANISHCARD", $this->controller, "HAND", 1);
+    AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
+  }
+
+  function ProcessAbility() {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+}
+
+class cleave_the_heavens_red extends Card {
+  public $archetype;
+  function __construct($controller) {
+    $this->cardID = "cleave_the_heavens_red";
+    $this->controller = $controller;
+    $this->baseCard = new cleave_the_heavens($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->baseCard->GetAbilityTypes();
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->baseCard->GetAbilityNames($index, $from);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->baseCard->GoesOnCombatChain($phase, $from);
+  }
+
+  function CardCost($from = '-') {
+    return $this->baseCard->CardCost($from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    $this->baseCard->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessAbility();
+  }
+
+  // function SpecialName() {
+  //   return "Cleave the Heavens";
+  // }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class cleave_the_heavens_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "cleave_the_heavens_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new cleave_the_heavens($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->baseCard->GetAbilityTypes();
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->baseCard->GetAbilityNames($index, $from);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->baseCard->GoesOnCombatChain($phase, $from);
+  }
+
+  function CardCost($from = '-') {
+    return $this->baseCard->CardCost($from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    $this->baseCard->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessAbility();
+  }
+
+  // function SpecialName() {
+  //   return "Cleave the Heavens";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class cleave_the_heavens_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "cleave_the_heavens_blue";
+    $this->controller = $controller;
+    $this->baseCard = new cleave_the_heavens($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->baseCard->GetAbilityTypes();
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->baseCard->GetAbilityNames($index, $from);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->baseCard->GoesOnCombatChain($phase, $from);
+  }
+
+  function CardCost($from = '-') {
+    return $this->baseCard->CardCost($from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    $this->baseCard->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessAbility();
+  }
+
+  // function SpecialName() {
+  //   return "Cleave the Heavens";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
