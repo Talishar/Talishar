@@ -420,17 +420,8 @@ function &GetSettings($player)
 
 function &GetMainCharacterEffects($player)
 {
-  global $mainPlayerGamestateStillBuilt;
-  if ($mainPlayerGamestateStillBuilt) {
-    global $mainPlayer;
-    if ($player == $mainPlayer) { global $mainCharacterEffects; return $mainCharacterEffects; }
-    global $defCharacterEffects;
-    return $defCharacterEffects;
-  }
-  global $myStateBuiltFor;
-  if ($player == $myStateBuiltFor) { global $myCharacterEffects; return $myCharacterEffects; }
-  global $theirCharacterEffects;
-  return $theirCharacterEffects;
+  $characterEffects = &GetCharacterEffects($player);
+  return $characterEffects;
 }
 
 

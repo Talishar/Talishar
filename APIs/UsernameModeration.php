@@ -43,10 +43,6 @@ if (empty($_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-function TryPOSTData($key, $default = "", $data = []) {
-    return isset($data[$key]) ? $data[$key] : $default;
-}
-
 $action = TryPOSTData("action", "getOffensiveUsernames", $postData);
 
 // List of offensive terms/patterns (case-insensitive)

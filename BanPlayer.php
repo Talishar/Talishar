@@ -57,10 +57,6 @@ if (empty($_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-function TryPOSTData($key, $default = "", $data = []) {
-    return $data[$key] ?? $default;
-}
-
 $playerToBan = trim(TryPOSTData("playerToBan", "", $postData));
 $ipToBan = trim(TryPOSTData("ipToBan", "", $postData));
 $playerNumberToBan = trim(TryPOSTData("playerNumberToBan", "", $postData));

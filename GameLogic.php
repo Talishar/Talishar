@@ -67,6 +67,71 @@ include "DecisionQueue/AwaitEffects.php";
 include "CurrentEffectAbilities.php";
 include "CombatChain.php";
 
+function RemoveMatchingSubcards($subcards, $lastResult)
+{
+  $subcardsCount = count($subcards);
+  $cardID = "";
+  if (is_array($lastResult)) {
+    $lookupMap = array_count_values($lastResult);
+    $lookupRemaining = count($lastResult);
+    $newSubcards = [];
+    for ($i = 0; $i < $subcardsCount; $i++) {
+      $sc = $subcards[$i];
+      if (isset($lookupMap[$sc]) && $lookupMap[$sc] > 0) {
+        $cardID = ($cardID == "") ? $sc : $cardID . "," . $sc;
+        $lookupMap[$sc]--;
+        if (--$lookupRemaining === 0) {
+          for ($j = $i + 1; $j < $subcardsCount; $j++) {
+            $newSubcards[] = $subcards[$j];
+          }
+          break;
+        }
+      } else {
+        $newSubcards[] = $sc;
+      }
+    }
+    $subcards = $newSubcards;
+  } else {
+    for ($i = 0; $i < $subcardsCount; $i++) {
+      if ($subcards[$i] == $lastResult) {
+        $cardID = $subcards[$i];
+        array_splice($subcards, $i, 1);
+        break;
+      }
+    }
+  }
+  return [$subcards, $cardID];
+}
+
+function PayResourcesFromPool($player, $parameter, $lastResult, $dqCommand)
+{
+  $resources = &GetResources($player);
+  $lastResult = intval($lastResult);
+  if ($lastResult < 0) $resources[0] += -1 * $lastResult;
+  else if ($resources[0] > 0) {
+    $res = $resources[0];
+    $resources[0] -= $lastResult;
+    $lastResult -= $res;
+    if ($resources[0] < 0) $resources[0] = 0;
+  }
+  if ($lastResult > 0) {
+    $hand = &GetHand($player);
+    $handPitch = 0;
+    $handCount = count($hand);
+    $handPieces = HandPieces();
+    for ($i = 0; $i < $handCount; $i += $handPieces) {
+      $handPitch += PitchValue($hand[$i]);
+      if ($handPitch > 0) break;
+    }
+    if ($handPitch == 0 && !IsPlayerAI($player)) {
+      WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.", highlight: true);
+      RevertGamestate();
+    }
+    PrependDecisionQueue($dqCommand, $player, $parameter, 1);
+    PrependDecisionQueue("SUBPITCHVALUE", $player, $lastResult, 1);
+    PitchCard($player, skipGain: true);
+  }
+}
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
 {
   global $redirectPath, $playerID, $gameName, $currentPlayer, $combatChain, $CombatChain, $defPlayer, $combatChainState, $EffectContext, $chainLinks;
@@ -1793,62 +1858,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqVars[0] = $damage;
       return $damage;
     case "PAYRESOURCES":
-      $resources = &GetResources($player);
-      $lastResult = intval($lastResult);
-      if ($lastResult < 0) $resources[0] += -1 * $lastResult;
-      else if ($resources[0] > 0) {
-        $res = $resources[0];
-        $resources[0] -= $lastResult;
-        $lastResult -= $res;
-        if ($resources[0] < 0) $resources[0] = 0;
-      }
-      if ($lastResult > 0) {
-        $hand = &GetHand($player);
-        $char = &GetPlayerCharacter($player);
-        $handPitch = 0;
-        $handCount = count($hand);
-        $handPieces = HandPieces();
-        for ($i = 0; $i < $handCount; $i += $handPieces) {
-          $handPitch += PitchValue($hand[$i]);
-          if ($handPitch > 0) break;
-        }
-        if ($handPitch == 0 && !IsPlayerAI($player)) {
-          WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.", highlight: true);
-          RevertGamestate();
-        }
-        PrependDecisionQueue("PAYRESOURCES", $player, $parameter, 1);
-        PrependDecisionQueue("SUBPITCHVALUE", $player, $lastResult, 1);
-        PitchCard($player, skipGain: true);
-      }
+      PayResourcesFromPool($player, $parameter, $lastResult, "PAYRESOURCES");
       return $parameter;
     case "PAYRESOURCESEFFECT": // Use this for costs imposed by resolution of a layer
-      $resources = &GetResources($player);
-      $lastResult = intval($lastResult);
-      if ($lastResult < 0) $resources[0] += -1 * $lastResult;
-      else if ($resources[0] > 0) {
-        $res = $resources[0];
-        $resources[0] -= $lastResult;
-        $lastResult -= $res;
-        if ($resources[0] < 0) $resources[0] = 0;
-      }
-      if ($lastResult > 0) {
-        $hand = &GetHand($player);
-        $char = &GetPlayerCharacter($player);
-        $handPitch = 0;
-        $handCount = count($hand);
-        $handPieces = HandPieces();
-        for ($i = 0; $i < $handCount; $i += $handPieces) {
-          $handPitch += PitchValue($hand[$i]);
-          if ($handPitch > 0) break;
-        }
-        if ($handPitch == 0 && !IsPlayerAI($player)) {
-          WriteLog("You have resources to pay for, but have no cards to pitch. Reverting gamestate prior to that declaration.", highlight: true);
-          RevertGamestate();
-        }
-        PrependDecisionQueue("PAYRESOURCESEFFECT", $player, $parameter, 1);
-        PrependDecisionQueue("SUBPITCHVALUE", $player, $lastResult, 1);
-        PitchCard($player, skipGain: true);
-      }
+      PayResourcesFromPool($player, $parameter, $lastResult, "PAYRESOURCESEFFECT");
       return $parameter;
     case "ADDCLASSSTATE":
       $parameters = explode("-", $parameter);
@@ -3231,79 +3244,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $player;
     case "REMOVESUBCARD":
       $char = &GetPlayerCharacter($player);
-      $subcards = explode(",", $char[$parameter + 10]);
-      $subcardsCount = count($subcards);
-      $cardID = "";
-      if (is_array($lastResult)) {
-        // O(n+m) hash-based match instead of O(n*m) array_search+splice per element
-        $lookupMap = array_count_values($lastResult);
-        $lookupRemaining = count($lastResult);
-        $newSubcards = [];
-        for ($i = 0; $i < $subcardsCount; $i++) {
-          $sc = $subcards[$i];
-          if (isset($lookupMap[$sc]) && $lookupMap[$sc] > 0) {
-            $cardID = ($cardID == "") ? $sc : $cardID . "," . $sc;
-            $lookupMap[$sc]--;
-            if (--$lookupRemaining === 0) {
-              for ($j = $i + 1; $j < $subcardsCount; $j++) {
-                $newSubcards[] = $subcards[$j];
-              }
-              break;
-            }
-          } else {
-            $newSubcards[] = $sc;
-          }
-        }
-        $subcards = $newSubcards;
-      } else {
-        for ($i = 0; $i < $subcardsCount; $i++) {
-          if ($subcards[$i] == $lastResult) {
-            $cardID = $subcards[$i];
-            array_splice($subcards, $i, 1);
-            break;
-          }
-        }
-      }
+      [$subcards, $cardID] = RemoveMatchingSubcards(explode(",", $char[$parameter + 10]), $lastResult);
       $char[$parameter + 10] = implode(",", $subcards);
       UpdateSubcardCounterCount($currentPlayer, $parameter);
       if ($char[$parameter + 10] == "") $char[$parameter + 10] = "-";
       return $cardID;
     case "REMOVEITEMSUBCARD":
       $ItemCard = new ItemCard($parameter, $player);
-      $subcards = explode(",", $ItemCard->SubCards());
-      $subcardsCount = count($subcards);
       $numToRemove = is_array($lastResult) ? count($lastResult) : 1;
-      $cardID = "";
-      if (is_array($lastResult)) {
-        // O(n+m) hash-based match instead of O(n*m) array_search+splice per element
-        $lookupMap = array_count_values($lastResult);
-        $lookupRemaining = $numToRemove;
-        $newSubcards = [];
-        for ($i = 0; $i < $subcardsCount; $i++) {
-          $sc = $subcards[$i];
-          if (isset($lookupMap[$sc]) && $lookupMap[$sc] > 0) {
-            $cardID = ($cardID == "") ? $sc : $cardID . "," . $sc;
-            $lookupMap[$sc]--;
-            if (--$lookupRemaining === 0) {
-              for ($j = $i + 1; $j < $subcardsCount; $j++) {
-                $newSubcards[] = $subcards[$j];
-              }
-              break;
-            }
-          } else {
-            $newSubcards[] = $sc;
-          }
-        }
-        $subcards = $newSubcards;
-      } else {
-        for ($i = 0; $i < $subcardsCount; $i++) {
-          if ($subcards[$i] == $lastResult) {
-            $cardID = $subcards[$i];
-            array_splice($subcards, $i, 1);
-            break;
-          }
-        }
-      }
+      [$subcards, $cardID] = RemoveMatchingSubcards(explode(",", $ItemCard->SubCards()), $lastResult);
       $subcards = count($subcards) == 0 ? "-" : implode(",", $subcards);
       $ItemCard->SetSubcards($subcards);
       if ($ItemCard->CardID() == "nitro_mechanoidc")

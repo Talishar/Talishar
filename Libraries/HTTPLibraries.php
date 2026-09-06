@@ -9,6 +9,11 @@ function TryPOST($key, $default = "")
   return $_POST[$key] ?? $default;
 }
 
+function TryPOSTData($key, $default = "", $data = [])
+{
+  return $data[$key] ?? $default;
+}
+
 function IsGameNameValid($gameName)
 {
   return is_numeric($gameName);
