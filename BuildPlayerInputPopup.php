@@ -719,6 +719,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $tapped = false;
           $overlay = 0;
           $holoCounters = null;
+          $bindsOverlay = null;
           //Add indication for token copies
           if (str_contains($option0, "AURAS")) {
             $Card = MZIndexToObject($playerID, $options[$i]);
@@ -846,23 +847,27 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
                 $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue($allyArr[$index], $player, "ALLY");
             }
+            //Show binds overlay on allies in the popups
+            $allyCard = new AllyCard($index, $player);
+            $allyAuras = $isTheirPrefix ? new Auras($otherPlayer) : new Auras($playerID);
+            $bindsOverlay = count($allyAuras->FindBoundAuras($allyCard->UniqueID())) > 0;
           }
 
           if ($option0 == "THEIRAURAS" || $option0 == "MYAURAS") {
-            $AuraCard = $isTheirPrefix ? new AuraCard($index, $otherPlayer) : new AuraCard($index, $playerID);
+            $auraCard = $isTheirPrefix ? new AuraCard($index, $otherPlayer) : new AuraCard($index, $playerID);
             //Show power counters on Auras in the popups
-            $powerCounters = $AuraCard->NumPowerCounters();
+            $powerCounters = $auraCard->NumPowerCounters();
             //Show various counters on Auras in the popups
-            $counters = $AuraCard->NumCounters();
+            $counters = $auraCard->NumCounters();
             //Show holo counters on Auras in the popups
-            $holoCounters = $AuraCard->HoloCounters() > 0 ? true : null;
+            $holoCounters = $auraCard->HoloCounters() > 0 ? true : null;
             //Show "stolen" modifier
-            if ($AuraCard->GetModalities() == "Temporary") $label = "stolen";
+            if ($auraCard->GetModalities() == "Temporary") $label = "stolen";
             //Show if it's been targeted
             $numStackLayers = $Stack->NumLayers();
             for ($j = 0; $j < $numStackLayers; ++$j) {
               $Layer = $Stack->Card($j, true);
-              if (str_contains($Layer->Target(), $AuraCard->UniqueID())) {
+              if (str_contains($Layer->Target(), $auraCard->UniqueID())) {
                 $label = "Targeted";
                 break;
               }
@@ -897,9 +902,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $label = $optionCategories[$i];
           }
           if ($maxCount < 2)
-            $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters);
+            $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters, hasBoundAura: $bindsOverlay);
           else
-            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label, isOpponent: $isTheirPrefix);
+            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label, isOpponent: $isTheirPrefix, hasBoundAura: $bindsOverlay);
         }
         if ($maxCount >= 2) {
           $formOptions = new stdClass();
