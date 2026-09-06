@@ -3,33 +3,27 @@
 if (!function_exists('GetCardEffectLabel')) {
   function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
     if ($uniqueID == "" || $uniqueID == "-") return "";
-    
-    $effectName = "";
-    $effectsCount = count($currentTurnEffects);
-    $effectPieces = CurrentTurnEffectPieces();
-    for ($j = 0; $j < $effectsCount; $j += $effectPieces) {
-      $effect = $currentTurnEffects[$j];
-      $p1 = strpos($effect, "-");
-      if ($p1 === false) continue;
-      $p2 = strpos($effect, "-", $p1 + 1);
-      $effectID = ($p2 !== false) ? substr($effect, $p1 + 1, $p2 - $p1 - 1) : substr($effect, $p1 + 1);
-      if ($effectID == $uniqueID) {
-        $effectName = substr($effect, 0, $p1);
-        break;
-      }
-    }
 
-    if ($effectName === "") return "";
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->FindEffectUID($uniqueID);
+    if ($Effect->Index() == -1) return "";
+
+    $effectName = $Effect->EffectID();
 
     switch ($effectName) {
       case "beseech_the_demigon_red":
       case "beseech_the_demigon_yellow":
       case "beseech_the_demigon_blue":
+      case "painful_passage_red-buff":
         return "Power +" . EffectPowerModifier($effectName);
       case "tear_through_the_portal_red":
       case "tear_through_the_portal_yellow":
       case "tear_through_the_portal_blue":
+      case "painful_passage_red-go_again":
         return "Go Again";
+      case "gate_to_iarathael":
+      case "gate_to_iarathael-CHAOS":
+        return "Gated";
       default:
         return "";
     }
@@ -576,7 +570,6 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $singleMyDeckInTurnData = (substr_count($turnData, "MYDECK") == 1);
         $hasCombatChainLink = $CombatChain->HasCurrentLink();
         $weaponIndexValue = intval(GetCombatChainState($CCS_WeaponIndex));
-        $otherIsMain = ($otherPlayer == $mainPlayer);
         $layerPieces = LayerPieces();
         $layersActive = ($layerCheckCount > 0 && $layers[0] != "");
         $isMayChooseMultizone = ($turnPhase === "MAYCHOOSEMULTIZONE");
@@ -728,7 +721,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
           
           //Add indication for attacking Allies and Auras with an open combat chain
-          if (isset($attackingPermanentsSet[$option0]) && intval($option[1]) == $weaponIndexValue && $hasCombatChainLink && $otherIsMain) {
+          $permanentController = $isTheirPrefix ? $otherPlayer : $playerID;
+          if (isset($attackingPermanentsSet[$option0]) && intval($option[1]) == $weaponIndexValue && $hasCombatChainLink && $permanentController == $mainPlayer) {
             $AttackingCard = $CombatChain->AttackCard();
             $Card = MZIndexToObject($playerID, $options[$i]);
             if ($AttackingCard->OriginUniqueID() == $Card->UniqueID())
@@ -738,7 +732,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           //Add indication for attacking Allies and Auras in the layer step
           if ($layersActive && (DelimStringContains($option0, "ALLY", true) || DelimStringContains($option0, "AURAS", true))) {
             $searchType = str_contains($option0, "ALLY") ? "Ally" : "Aura";
-            $index = explode(",", SearchLayer($otherPlayer, subtype: $searchType));
+            $index = explode(",", SearchLayer($permanentController, subtype: $searchType));
             if (count($index) > 0) {
               $params = explode("|", $layers[intval($index[0]) + 2]);
               $originUID = $params[3] ?? "-";
@@ -791,7 +785,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $mod = explode("-", $theirBanish[$index + 1], 2)[0];
             $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
             $borderColor = CardBorderColor($card, "BANISH", $action > 0, $playerID, $mod);
-            if($borderColor == 7) $label = "Playable";
+            $label = GetCardEffectLabel($theirBanish[$index + 2], $currentTurnEffects);
+            if ($label == "" && $borderColor == 7) $label = "Playable";
             if (isFaceDownMod($source[$index + 1])) $card = $TheirCardBack;
           }
           else if ($isMyPrefix) $borderColor = 1;

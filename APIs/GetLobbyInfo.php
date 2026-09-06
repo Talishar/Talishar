@@ -230,30 +230,7 @@ if($handler) {
   }
   // Include both main deck and sideboard cards in the dictionary
 
-  foreach ($response->deck->cards as $card) {
-    if (!isset($cardIndex[$card])) {
-      $cardIndex[$card] = "1";
-      $dictionaryCard = new stdClass();
-      $dictionaryCard->id = $card;
-      $dictionaryCard->pitch = PitchValue($card);
-      $dictionaryCard->power = GeneratedPowerValue($card);
-      $dictionaryCard->blockValue = GeneratedBlockValue($card);
-      $dictionaryCard->class = CardClass($card);
-      $dictionaryCard->talent = CardTalent($card);
-      $dictionaryCard->type = CardType($card);
-      $dictionaryCard->subtype = CardSubtype($card);
-      $dictionaryCard->cost = GeneratedCardCost($card);
-      $dictionaryCard->hasStealth = GeneratedHasStealth($card);
-      $dictionaryCard->hasBloodDebt = GeneratedHasBloodDebt($card);
-      $dictionaryCard->hasBoost = GeneratedHasBoost($card);
-      $dictionaryCard->hasDecompose = GeneratedHasDecompose($card);
-      $dictionaryCard->hasMark = GeneratedHasMark($card);
-      $dictionaryCard->hasCharge = GeneratedHasCharge($card);
-      $dictionaryCard->hasSuspense = hasSuspense($card);
-      $response->deck->cardDictionary[] = $dictionaryCard;
-    }
-  }
-  foreach ($response->deck->cardsSB as $card) {
+  foreach (array_merge($response->deck->cards, $response->deck->cardsSB) as $card) {
     if (!isset($cardIndex[$card])) {
       $cardIndex[$card] = "1";
       $dictionaryCard = new stdClass();
