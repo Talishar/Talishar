@@ -2945,7 +2945,7 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "silken_form": //Invocations must target Ash
+    case "silken_form": // Must target Ash
     case "invoke_dracona_optimai_red":
     case "invoke_tomeltai_red":
     case "invoke_dominia_red":
@@ -2966,7 +2966,7 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "sand_cover_red": //sand cover
+    case "sand_cover_red":
     case "sand_cover_yellow":
     case "sand_cover_blue":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Ash");
