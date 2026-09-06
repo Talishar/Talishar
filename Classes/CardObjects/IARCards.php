@@ -5207,12 +5207,14 @@ class violent_gusto_red extends Card {
     global $CombatChain, $defPlayer;
     $AttackCard = $CombatChain->AttackCard();
     $buffs = explode(",", $AttackCard->StaticBuffs());
+    $chosenName = "-";
     foreach ($buffs as $buff) {
       $buffID = explode("|", $buff)[0];
       if ($buffID != $this->cardID && $buffID != SetID($this->cardID)) continue;
       $chosenName = explode("|", $buff, 2)[1] ?? "-";
       break;
     }
+    if ($chosenName === "-" || $chosenName === "") return;
     $chosenName = GamestateUnsanitize($chosenName);
     $Auras = new Auras($defPlayer);
     for ($i = $Auras->NumAuras()-1; $i >=0; --$i){

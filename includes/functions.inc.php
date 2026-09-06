@@ -211,12 +211,19 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 	if ($conn) {
 		$sql = "UPDATE users SET lastGameName=?, lastPlayerId=?, lastAuthKey=? WHERE usersId=?";
 		$stmt = mysqli_stmt_init($conn);
-		if (mysqli_stmt_prepare($stmt, $sql)) {
-			mysqli_stmt_bind_param($stmt, "ssss", $gameName, $playerID, $authKey, $uid);
-			mysqli_stmt_execute($stmt);
+		try {
+			if (mysqli_stmt_prepare($stmt, $sql)) {
+				mysqli_stmt_bind_param($stmt, "ssss", $gameName, $playerID, $authKey, $uid);
+				mysqli_stmt_execute($stmt);
+			}
+		} catch (mysqli_sql_exception $e) {
+			if (!in_array($e->getCode(), [1205, 1213], true)) throw $e;
+			// Joining can still succeed using the session when this metadata row is locked.
+			error_log("StoreLastGameInfo: database lock prevented saving last-game metadata (errno: " . $e->getCode() . ")");
+		} finally {
 			mysqli_stmt_close($stmt);
+			mysqli_close($conn);
 		}
-		mysqli_close($conn);
 	}
 
 	if(session_status() !== PHP_SESSION_ACTIVE) session_start();
@@ -1019,7 +1026,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	if($gameID != "") $deck["gameId"] = $gameID;
 	if($gameName != "") $deck["gameName"] = $gameName;
 	$deck["deckId"] = $DeckLink;
-	$deck["turns"] = intval($currentTurn);
+	$deck["turns"] = CountAttackingTurns($player);
 	$deck["result"] = ($player == $winner ? 1 : 0);
 	if($winner == "1" || $winner == "2") {
 		$deck["winner"] = intval($winner);
@@ -1153,7 +1160,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	if($gameID != "") $deck["gameId"] = $gameID;
 	if($gameName != "") $deck["gameName"] = $gameName;
 	$deck["deckId"] = $DeckLink;
-	$deck["turns"] = intval($currentTurn);
+	$deck["turns"] = CountAttackingTurns($player);
 	$deck["result"] = ($player == $winner ? 1 : 0);
 	if($winner == "1" || $winner == "2") $deck["winner"] = intval($winner);
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);

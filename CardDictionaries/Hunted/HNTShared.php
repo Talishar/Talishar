@@ -454,10 +454,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "art_of_the_dragon_fire_red":
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=C&THEIRALLY&MYCHAR:type=C&MY&MYALLY", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
+        $mzTarget = $target != "-" ? CleanTargetToIndex($currentPlayer, $target) : "";
+        if($mzTarget != "") {
+          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $mzTarget);
+          AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
+        }
       }
       break;
     case "art_of_the_dragon_scale_red":

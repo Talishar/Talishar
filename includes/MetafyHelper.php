@@ -735,11 +735,17 @@ if (!function_exists('MetafyApplyTalisharAccess')) {
 if (!function_exists('MetafyTouchLastSync')) {
   function MetafyTouchLastSync($conn, $usersId)
   {
-    if (!$conn || empty($usersId) || !MetafyHasTokenMetaColumns($conn)) return;
+    if (!$conn || empty($usersId) || !MetafyHasTokenMetaColumns($conn)) return false;
     $stmt = mysqli_stmt_init($conn);
-    if (mysqli_stmt_prepare($stmt, 'UPDATE users SET metafyLastSync=CURRENT_TIMESTAMP WHERE usersId=?')) {
+    try {
+      if (!mysqli_stmt_prepare($stmt, 'UPDATE users SET metafyLastSync=CURRENT_TIMESTAMP WHERE usersId=?')) return false;
       mysqli_stmt_bind_param($stmt, 's', $usersId);
-      mysqli_stmt_execute($stmt);
+      return mysqli_stmt_execute($stmt);
+    } catch (mysqli_sql_exception $e) {
+      if (!in_array($e->getCode(), [1205, 1213], true)) throw $e;
+      error_log("MetafyTouchLastSync: database lock prevented recording sync time (errno: " . $e->getCode() . ")");
+      return false;
+    } finally {
       mysqli_stmt_close($stmt);
     }
   }

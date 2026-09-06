@@ -875,208 +875,48 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
   }
 }
 
-// TODO: Optimize with GeneratedHasArcaneBarrier and GeneratedArcaneBarrierAmount function for automation
 function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
 {
-  global $currentTurnEffects;
-  $barrierArray = [];
-  for ($i = 0; $i < 4; ++$i) $barrierArray[$i] = 0;
+  $barrierArray = [0, 0, 0, 0];
+  $total = 0;
   $character = GetPlayerCharacter($playerID);
   $characterCount = count($character);
   $characterPieces = CharacterPieces();
-  $total = 0;
   for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if ($character[$i + 1] == 0 || $character[$i + 12] == "DOWN") continue;
-    $card = GetClass($character[$i], $playerID);
-    if ($card != "-") {
-      $abAmount = $card->ArcaneBarrier($i);
-      ++$barrierArray[$abAmount];
-      $total += $abAmount;
-    }
-    switch ($character[$i]) {
-      case "achilles_accelerator":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "skullbone_crosswrap":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "bulls_eye_bracers":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "crown_of_dichotomy":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "storm_striders":
-        ++$barrierArray[2];
-        $total += 2;
-        break;
-      case "robe_of_rapture":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "arcanite_skullcap":
-        if (PlayerHasLessHealth($playerID)) {
-          ++$barrierArray[3];
-          $total += 3;
-        }
-        break;
-      case "nullrune_hood":
-      case "nullrune_robe":
-      case "nullrune_gloves":
-      case "nullrune_boots":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "skullhorn":
-        ++$barrierArray[2];
-        $total += 2;
-        break;
-      case "viziertronic_model_i":
-        ++$barrierArray[2];
-        $total += 2;
-        break;
-      case "metacarpus_node":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "heart_of_ice":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "vexing_quillhand":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "crown_of_reflection":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "arcane_lantern":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "silent_stilettos":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "tide_flippers":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "alluvion_constellas":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "spellfire_cloak":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "trench_of_sunken_treasure":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "spoiled_skull":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "grimoire_of_the_haunt":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "dyadic_carapace":
-        ++$barrierArray[2];
-        $total += 2;
-        break;
-      case "evo_recall_blue":
-      case "evo_recall_blue_equip":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "evo_heartdrive_blue":
-      case "evo_heartdrive_blue_equip":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "evo_speedslip_blue":
-      case "evo_speedslip_blue_equip":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "hidden_agenda":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "lightning_greaves":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "widow_veil_respirator":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "widow_back_abdomen":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "widow_claw_tarsus":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "widow_web_crawler":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "adaptive_dissolver":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "calming_cloak":
-      case "calming_gesture":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      case "robe_of_autumns_fall":
-        ++$barrierArray[1];
-        $total += 1;
-      default:
-        break;
-    }
+    $cardID = $character[$i];
+    $card = GetClass($cardID, $playerID);
+    if ($card != "-") $abAmount = $card->ArcaneBarrier($i);
+    else if ($cardID == "arcanite_skullcap") $abAmount = PlayerHasLessHealth($playerID) ? 3 : 0;
+    else if (GeneratedHasArcaneBarrier($cardID)) $abAmount = GeneratedArcaneBarrierAmount($cardID);
+    else continue;
+    if ($abAmount === 0) continue;
+    $barrierArray[$abAmount] = ($barrierArray[$abAmount] ?? 0) + 1;
+    $total += $abAmount;
   }
   $items = GetItems($playerID);
   $itemsCount = count($items);
   $itemPieces = ItemPieces();
   for ($i = 0; $i < $itemsCount; $i += $itemPieces) {
-    $card = GetClass($items[$i], $playerID);
-    if ($card != "-") {
-      $abAmount = $card->ArcaneBarrier($i);
-      ++$barrierArray[$abAmount];
-      $total += $abAmount;
-    }
-    switch ($items[$i]) {
-      case "rusted_relic_blue":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      default:
-        break;
-    }
+    $cardID = $items[$i];
+    $card = GetClass($cardID, $playerID);
+    if ($card != "-") $abAmount = $card->ArcaneBarrier($i);
+    else if (GeneratedHasArcaneBarrier($cardID)) $abAmount = GeneratedArcaneBarrierAmount($cardID);
+    else continue;
+    if ($abAmount === 0) continue;
+    $barrierArray[$abAmount] = ($barrierArray[$abAmount] ?? 0) + 1;
+    $total += $abAmount;
   }
   $allies = GetAllies($playerID);
   $alliesCount = count($allies);
   $allyPieces = AllyPieces();
   for ($i = 0; $i < $alliesCount; $i += $allyPieces) {
-    switch ($allies[$i]) {
-      case "aether_ashwing":
-        ++$barrierArray[1];
-        $total += 1;
-        break;
-      default:
-        break;
-    }
+    $cardID = $allies[$i];
+    if (!GeneratedHasArcaneBarrier($cardID)) continue;
+    $abAmount = GeneratedArcaneBarrierAmount($cardID);
+    if ($abAmount === 0) continue;
+    $barrierArray[$abAmount] = ($barrierArray[$abAmount] ?? 0) + 1;
+    $total += $abAmount;
   }
   $Auras = new Auras($playerID);
   $numAuras = $Auras->NumAuras();

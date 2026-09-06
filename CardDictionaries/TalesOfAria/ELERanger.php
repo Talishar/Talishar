@@ -221,63 +221,26 @@
     }
   }
 
-  // TODO: Optimize with GeneratedHasFusion function for automation
   function HasFusion($cardID)
   {
     $card = GetClass($cardID, 0);
     if ($card != "-") return $card->HasFusion();
+    // The generated dictionaries only record one element per card, so dual-element fusions stay listed here
     switch($cardID)
     {
-      case "endless_winter_red": return "ICE";
       case "oaken_old_red": return "EARTH,ICE";
-      case "awakening_blue": return "EARTH";
-      case "biting_gale_red": case "biting_gale_yellow": case "biting_gale_blue": return "ICE";
-      case "turn_timber_red": case "turn_timber_yellow": case "turn_timber_blue": return "EARTH";
-      case "entangle_red": case "entangle_yellow": case "entangle_blue": return "EARTH";
-      case "glacial_footsteps_red": case "glacial_footsteps_yellow": case "glacial_footsteps_blue": return "ICE";
-      case "mulch_red": case "mulch_yellow": case "mulch_blue": return "EARTH";
-      case "snow_under_red": case "snow_under_yellow": case "snow_under_blue": return "ICE";
-      case "emerging_avalanche_red": case "emerging_avalanche_yellow": case "emerging_avalanche_blue": return "ICE";
-      case "strength_of_sequoia_red": case "strength_of_sequoia_yellow": case "strength_of_sequoia_blue": return "EARTH";
-      case "frost_lock_blue": return "ICE";
-      case "light_it_up_yellow": return "LIGHTNING";
-      case "ice_storm_red": return "ICE,LIGHTNING";
-      case "cold_wave_red": case "cold_wave_yellow": case "cold_wave_blue": return "ICE";
-      case "snap_shot_red": case "snap_shot_yellow": case "snap_shot_blue": return "LIGHTNING";
-      case "blizzard_bolt_red": case "blizzard_bolt_yellow": case "blizzard_bolt_blue": return "ICE";
-      case "buzz_bolt_red": case "buzz_bolt_yellow": case "buzz_bolt_blue": return "LIGHTNING";
-      case "chilling_icevein_red": case "chilling_icevein_yellow": case "chilling_icevein_blue": return "ICE";
-      case "dazzling_crescendo_red": case "dazzling_crescendo_yellow": case "dazzling_crescendo_blue": return "LIGHTNING";
-      case "flake_out_red": case "flake_out_yellow": case "flake_out_blue": return "ICE";
-      case "frazzle_red": case "frazzle_yellow": case "frazzle_blue": return "LIGHTNING";
-      case "blossoming_spellblade_red": return "EARTH,LIGHTNING";
-      case "flicker_wisp_yellow": return "LIGHTNING";
-      case "force_of_nature_blue": return "EARTH";
-      case "explosive_growth_red": case "explosive_growth_yellow": case "explosive_growth_blue": return "EARTH";
-      case "rites_of_lightning_red": case "rites_of_lightning_yellow": case "rites_of_lightning_blue": return "LIGHTNING";
-      case "arcanic_shockwave_red": case "arcanic_shockwave_yellow": case "arcanic_shockwave_blue": return "LIGHTNING";
-      case "vela_flash_red": case "vela_flash_yellow": case "vela_flash_blue": return "LIGHTNING";
-      case "rites_of_replenishment_red": case "rites_of_replenishment_yellow": case "rites_of_replenishment_blue": return "EARTH";
-      case "stir_the_wildwood_red": case "stir_the_wildwood_yellow": case "stir_the_wildwood_blue": return "EARTH";
-      case "bramble_spark_red": case "bramble_spark_yellow": case "bramble_spark_blue": return "EARTH";
-      case "inspire_lightning_red": case "inspire_lightning_yellow": case "inspire_lightning_blue": return "LIGHTNING";
-      case "fulminate_yellow": return "EARTH,LIGHTNING";
-      case "flashfreeze_red": return "ICE,LIGHTNING";
       case "exposed_to_the_elements_blue": return "EARTH,ICE";
-      case "entwine_earth_red": case "entwine_earth_yellow": case "entwine_earth_blue": return "EARTH";
-      case "entwine_ice_red": case "entwine_ice_yellow": case "entwine_ice_blue": return "ICE";
-      case "entwine_lightning_red": case "entwine_lightning_yellow": case "entwine_lightning_blue": return "LIGHTNING";
-      case "encase_red": return "ICE";
-      case "freezing_point_red": return "ICE";
-      case "sigil_of_permafrost_red": case "sigil_of_permafrost_yellow": case "sigil_of_permafrost_blue": return "ICE";
-      case "succumb_to_winter_red": case "succumb_to_winter_yellow": case "succumb_to_winter_blue": return "ICE";
-      case "aether_icevein_red": case "aether_icevein_yellow": case "aether_icevein_blue": return "ICE";
-      case "brain_freeze_red": case "brain_freeze_yellow": case "brain_freeze_blue": return "ICE";
-      case "icebind_red": case "icebind_yellow": case "icebind_blue": return "ICE";
-      case "polar_cap_red": case "polar_cap_yellow": case "polar_cap_blue": return "ICE";
-      case "frozen_to_death_blue": return "ICE";
-      default: return "";
+      case "blossoming_spellblade_red": return "EARTH,LIGHTNING";
+      case "fulminate_yellow": return "EARTH,LIGHTNING";
+      case "ice_storm_red": return "ICE,LIGHTNING";
+      case "flashfreeze_red": return "ICE,LIGHTNING";
+      default: break;
     }
+    $elements = "";
+    if (GeneratedHasEarthFusion($cardID)) $elements .= "EARTH";
+    if (GeneratedHasIceFusion($cardID)) $elements .= ($elements != "" ? ",ICE" : "ICE");
+    if (GeneratedHasLightningFusion($cardID)) $elements .= ($elements != "" ? ",LIGHTNING" : "LIGHTNING");
+    return $elements;
   }
 
   function CurrentTurnFuseEffects($player, $element)

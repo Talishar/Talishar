@@ -707,7 +707,7 @@ function SearchRemoveDuplicates($search)
 
 function SearchCount($search)
 {
-  if ($search === "" || $search === "PASS") return 0;
+  if ($search === null || $search === "" || $search === "PASS") return 0;
   return substr_count($search, ',') + 1;
 }
 

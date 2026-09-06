@@ -1625,8 +1625,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         //and one may die before the second gets damaged
         //if it's already an MZIndex, this should have no effect
         $target = GetArcaneTargetFromUID($player, $lastResult);
+        if ($target == "-") return "";
         $target = explode("-", $target);
         $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
+        if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
+          $allies = &GetAllies($targetPlayer);
+          $targetIndex = intval($target[1]);
+          if ($targetIndex < 0 || $targetIndex % AllyPieces() != 0 || !isset($allies[$targetIndex + AllyPieces() - 1])) return "";
+          $targetUID = $allies[$targetIndex + 5];
+        }
         $parameters = explode("-", $parameter);
         $damage = $parameters[0];
         $source = $parameters[1] ?? "-";
@@ -1656,8 +1663,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             DamageDealtAbilities("ALLY", $damage, "ARCANE", $sourceID);
             CurrentEffectDamageEffects(implode("-", $target), $source, "ARCANE", $damage, $player);
           }
-          if ($allies[$target[1] + 2] <= 0) {
-            DestroyAlly($targetPlayer, $target[1], uniqueID: $allies[$target[1] + 5]);
+          $targetIndex = SearchAlliesForUniqueID($targetUID, $targetPlayer);
+          if ($targetIndex == -1) return "";
+          if ($allies[$targetIndex + 2] <= 0) {
+            DestroyAlly($targetPlayer, $targetIndex, uniqueID: $targetUID);
           } else {
             AppendClassState($player, $CS_ArcaneTargetsSelected, $lastResult);
           }

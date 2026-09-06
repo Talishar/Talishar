@@ -102,7 +102,7 @@ function ProcessMacros()
                 PassInput();
               }
             }
-            if (!$somethingChanged && AutopassPhaseWithOneOption($turn[0]) && SearchCount($turn[2]) == 1) {
+            if (!$somethingChanged && AutopassPhaseWithOneOption($turn[0]) && SearchCount($turn[2] ?? "") == 1) {
               $somethingChanged = true;
               ContinueDecisionQueue($turn[2]);
             }
@@ -204,34 +204,39 @@ function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChan
     $uid = $topLayer->UniqueID();
     if ($uid == "-") return;
 
-    $subtype = CardSubType($layers[2]);
-    if (DelimStringContains($subtype, "Aura") && $holdPrioritySetting != "1") {
-      // TODO: move this gem checking to its own function so we can do all zones checking in one spot
-      $Auras = new Auras($layerController);
-      $AuraCard = $Auras->FindCardUID($uid);
-      $gemStatus = $currentPlayer == $layerController ? $AuraCard->MyGemStatus() : $AuraCard->TheirGemStatus();
-      if ($gemStatus === "0") {
-        $somethingChanged = true;
-        PassInput();
-      }
-    } else if (DelimStringContains($subtype, "Item") && $holdPrioritySetting != "1") {
-      $Items = new Items($layerController);
-      $ItemCard = $Items->FindCardUID($uid);
-      $gemStatus = $currentPlayer == $layerController ? $ItemCard->MyGemStatus() : $ItemCard->TheirGemStatus();
-      if ($gemStatus === "0") {
-        $somethingChanged = true;
-        PassInput();
-      }
-    } else if ($layers[2] == "blasmophet_levia_consumed" && GetCharacterGemState($currentPlayer, $layers[2]) == 0 && $holdPrioritySetting != "1") {
+    if ($holdPrioritySetting == "1") return;
+    if (GetLayerGemStatus($layers[2], $uid, $layerController, $currentPlayer) === "0") {
       $somethingChanged = true;
       PassInput();
     }
   }
 }
 
+function GetLayerGemStatus($cardID, $uid, $layerController, $viewingPlayer)
+{
+  $subtype = CardSubType($cardID);
+
+  if (DelimStringContains($subtype, "Aura")) {
+    $Auras = new Auras($layerController);
+    $card = $Auras->FindCardUID($uid);
+  } else if (DelimStringContains($subtype, "Item")) {
+    $Items = new Items($layerController);
+    $card = $Items->FindCardUID($uid);
+  } else if ($cardID == "blasmophet_levia_consumed") {
+    return strval(GetCharacterGemState($viewingPlayer, $cardID));
+  } else {
+    return null;
+  }
+
+  if ($card->CardID() == "-") return null;
+  return strval($viewingPlayer == $layerController ? $card->MyGemStatus() : $card->TheirGemStatus());
+}
+
 function ProcessSpecificCardMacros()
 {
   global $currentPlayer, $turn, $EffectContext;
+
+  if (!isset($turn[2]) || $turn[2] === "" || $turn[2] === "PASS") return false;
 
   if ($turn[0] == "CHOOSEMULTIZONE") {
     $choices = explode(",", $turn[2]);

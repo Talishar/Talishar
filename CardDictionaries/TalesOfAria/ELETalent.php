@@ -267,5 +267,4 @@
     AddDecisionQueue("BUTTONINPUT", $player, "Gain_a_resource,Gain_a_life,1_Attack,1_Defense");
     AddDecisionQueue("MODAL", $player, "KORSHEM", 1);
   }
-
-?>
+  

@@ -2314,8 +2314,9 @@ function FinalizeTurn()
     $currentPlayer = $mainPlayer;
     BuildMainPlayerGameState();
   }
+  IncrementTurnCount($mainPlayer);
+  StatsStartTurn();
   //Start of turn effects
-  if ($mainPlayer == 1) StatsStartTurn();
   AddLayer("STARTTURN", $mainPlayer, $mainPlayer);
   StartTurnAbilities();
   $MakeStartTurnBackup = true;
@@ -2945,7 +2946,7 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "silken_form": //Invocations must target Ash
+    case "silken_form": // Must target Ash
     case "invoke_dracona_optimai_red":
     case "invoke_tomeltai_red":
     case "invoke_dominia_red":
@@ -2966,11 +2967,35 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
-    case "sand_cover_red": //sand cover
+    case "sand_cover_red":
     case "sand_cover_yellow":
     case "sand_cover_blue":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Ash");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Ash to grant ward");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
+    case "searing_touch_red":
+      if (!RuptureActive(true, CardType($cardID) != "AA")) break;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=C&THEIRALLY&MYCHAR:type=C&MYALLY");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage with " . CardLink($cardID, $cardID) . " ability");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
+    case "art_of_the_dragon_fire_red":
+      if (!TalentContains($cardID, "DRACONIC", $currentPlayer)) break;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=C&THEIRALLY&MYCHAR:type=C&MYALLY");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage with " . CardLink($cardID, $cardID) . " ability");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
+    case "red_hot_red":
+      if (!RuptureActive(true, CardType($cardID) != "AA")) break;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal damage with " . CardLink($cardID, $cardID) . " ability");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
@@ -4602,6 +4627,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "display_of_craftsmanship_red":
         case "display_of_craftsmanship_yellow":
         case "display_of_craftsmanship_blue":
+        case "searing_touch_red":
+        case "red_hot_red":
+        case "art_of_the_dragon_fire_red":
           break;
         default:
           $target = (GetCombatChainState($CCS_AttackTarget) == "" || GetCombatChainState($CCS_AttackTarget) == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());
