@@ -5601,6 +5601,10 @@ class shadowrealm_bloodhound_red extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class shadowrealm_bloodhound_yellow extends Card {
@@ -5650,6 +5654,10 @@ class shadowrealm_bloodhound_yellow extends Card {
   function SpecialPitch() {
     return 2;
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class shadowrealm_bloodhound_blue extends Card {
@@ -5698,6 +5706,10 @@ class shadowrealm_bloodhound_blue extends Card {
 
   function SpecialPitch() {
     return 3;
+  }
+
+  function HasBloodDebt() {
+    return true;
   }
 }
 
@@ -7036,6 +7048,10 @@ class shadowrealm_walker_red extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class shadowrealm_walker_yellow extends Card {
@@ -7073,6 +7089,10 @@ class shadowrealm_walker_yellow extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class shadowrealm_walker_blue extends Card {
@@ -7109,6 +7129,10 @@ class shadowrealm_walker_blue extends Card {
 
   function SpecialTalent() {
     return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
   }
 }
 
@@ -7159,6 +7183,10 @@ class shadowrealm_ripper_red extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class shadowrealm_ripper_yellow extends Card {
@@ -7208,6 +7236,10 @@ class shadowrealm_ripper_yellow extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class shadowrealm_ripper_blue extends Card {
@@ -7256,5 +7288,9 @@ class shadowrealm_ripper_blue extends Card {
 
   function SpecialTalent() {
     return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
   }
 }
