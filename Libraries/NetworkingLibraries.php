@@ -2975,6 +2975,22 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "searing_touch_red":
+      if (!RuptureActive(true, CardType($cardID) != "AA")) break;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=C&THEIRALLY&MYCHAR:type=C&MYALLY");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage with " . CardLink($cardID, $cardID) . " ability");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
+    case "red_hot_red":
+      if (!RuptureActive(true, CardType($cardID) != "AA")) break;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal damage with " . CardLink($cardID, $cardID) . " ability");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     case "helios_mitre":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "DAMAGEPREVENTIONTARGET");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a damage source for " . CardLink($cardID, $cardID));
@@ -4602,6 +4618,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "display_of_craftsmanship_red":
         case "display_of_craftsmanship_yellow":
         case "display_of_craftsmanship_blue":
+        case "searing_touch_red":
+        case "red_hot_red":
           break;
         default:
           $target = (GetCombatChainState($CCS_AttackTarget) == "" || GetCombatChainState($CCS_AttackTarget) == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());

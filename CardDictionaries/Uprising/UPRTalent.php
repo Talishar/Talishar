@@ -34,11 +34,12 @@
             $cardsCount = count($cards);
             for($j = 0; $j < $cardsCount; ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
             if($numRed > 0) {
-              AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
-              AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
-              AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-              AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
-              AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
+              $mzTarget = $target != "-" ? CleanTargetToIndex($currentPlayer, $target) : "";
+              if($mzTarget != "") {
+                AddDecisionQueue("PASSPARAMETER", $currentPlayer, $mzTarget);
+                AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
+              }
+              AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
             }
           }
         }
@@ -54,10 +55,11 @@
         return "";
       case "searing_touch_red":
         if(RuptureActive()) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=C&THEIRALLY&MYCHAR:type=C&MY&MYALLY", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
+          $mzTarget = $target != "-" ? CleanTargetToIndex($currentPlayer, $target) : "";
+          if($mzTarget != "") {
+            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $mzTarget);
+            AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
+          }
         }
         return "";
       case "coronet_peak":
