@@ -373,7 +373,7 @@ class Card {
     return false;
   }
 
-  function AuraPowerModifiers($index, &$powerModifiers) {
+  function AuraPowerModifiers($index, &$powerModifiers, $auraIndex) {
     return 0;
   }
 

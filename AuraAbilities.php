@@ -1644,7 +1644,7 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
   if (!$onBlock) {//This codeblock was counting CMH twice on block
     for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
       $card = GetClass($myAuras[$i], $player);
-      if ($card != "-") $modifier += $card->AuraPowerModifiers($index, $powerModifiers);
+      if ($card != "-") $modifier += $card->AuraPowerModifiers($index, $powerModifiers, $i);
       switch ($myAuras[$i]) {
         case "channel_mount_heroic_red":
           if ($attackIsAA) {
