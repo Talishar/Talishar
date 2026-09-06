@@ -720,6 +720,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $overlay = 0;
           $holoCounters = null;
           $bindsOverlay = null;
+          $subcards = null;
           //Add indication for token copies
           if (str_contains($option0, "AURAS")) {
             $Card = MZIndexToObject($playerID, $options[$i]);
@@ -847,10 +848,19 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
                 $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue($allyArr[$index], $player, "ALLY");
             }
-            //Show binds overlay on allies in the popups
+            //Show binds overlay and bound auras as subcards on allies in the popups
             $allyCard = new AllyCard($index, $player);
             $allyAuras = $isTheirPrefix ? new Auras($otherPlayer) : new Auras($playerID);
-            $bindsOverlay = count($allyAuras->FindBoundAuras($allyCard->UniqueID())) > 0;
+            $boundAuras = $allyAuras->FindBoundAuras($allyCard->UniqueID());
+            $bindsOverlay = count($boundAuras) > 0;
+            $subcards = ($allyArr[$index + 4] ?? "-") != "-" ? $allyArr[$index + 4] : NULL;
+            if ($bindsOverlay) {
+              $boundIDs = [];
+              foreach ($boundAuras as $boundAura)
+                $boundIDs[] = $boundAura->CardID();
+              $boundIDs = implode(",", $boundIDs);
+              $subcards = isset($subcards) ? "$boundIDs,$subcards" : $boundIDs;
+            }
           }
 
           if ($option0 == "THEIRAURAS" || $option0 == "MYAURAS") {
@@ -902,9 +912,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $label = $optionCategories[$i];
           }
           if ($maxCount < 2)
-            $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters, hasBoundAura: $bindsOverlay);
+            $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters, hasBoundAura: $bindsOverlay, subcard: $subcards);
           else
-            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label, isOpponent: $isTheirPrefix, hasBoundAura: $bindsOverlay);
+            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label, isOpponent: $isTheirPrefix, hasBoundAura: $bindsOverlay, subcard: $subcards);
         }
         if ($maxCount >= 2) {
           $formOptions = new stdClass();
