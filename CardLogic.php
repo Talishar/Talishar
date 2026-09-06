@@ -4791,7 +4791,7 @@ function HasFlowCounters($cardID)
     "channel_the_millennium_tree_red" => true, "channel_lightning_valley_yellow" => true,
     "channel_mount_isen_blue" => true, "channel_the_tranquil_domain_yellow" => true,
     "channel_the_skybreaker_yellow" => true, "channel_iceloch_glaze_blue" => true,
-    "channel_galcias_cradle_blue" => true,
+    "channel_galcias_cradle_blue" => true, "channel_stormgarden_yellow" => true
   ];
   return isset($cards[$cardID]);
 }

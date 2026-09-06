@@ -53,18 +53,6 @@ if ($authKey === "" && ($playerID == 1 || $playerID == 2)) {
 // Load game file to get Metafy tiers - this populates $p1MetafyTiers and $p2MetafyTiers
 include "MenuFiles/ParseGamefile.php";
 
-$allowedOrigins = ['https://talishar.net', 'https://www.talishar.net'];
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-
-if (in_array($origin, $allowedOrigins)) {
-    header("Access-Control-Allow-Origin: $origin");
-} else {
-    // If it's a cross-origin request from an unauthorized site
-    if (!empty($origin)) {
-        http_response_code(403);
-        die("CORS policy: Origin not allowed: $origin");
-    }
-}
 
 if ($playerID === 1 || $playerID === 2) {
   $targetAuthKey = "";

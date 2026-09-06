@@ -1283,7 +1283,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(GetMZCardLink($player, $parameter) . " was chosen");
       return $lastResult;
     case "WRITELOGLASTRESULT":
-      WriteLog("<b>$lastResult</b> was selected.");
+      WriteLog(GamestateUnsanitize("<b>$lastResult</b> was selected."));
       return $lastResult;
     case "WRITELOGCOMBATCHAIN":
       $chainIndex = str_contains($lastResult, "COMBATCHAINLINK") ? (int)substr($lastResult, 16) : $lastResult;

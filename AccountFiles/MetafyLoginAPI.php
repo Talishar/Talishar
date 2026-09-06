@@ -15,10 +15,7 @@ $response = new stdClass();
 $client_id = $metafyClientID ?? '';
 $client_secret = $metafyClientSecret ?? '';
 
-// Must exactly match the redirect URI registered in the Metafy OAuth app 
-$allowed_redirect_uris = [
-  'https://talishar.net/user/profile/linkmetafy'
-];
+$allowed_redirect_uris = [GetMetafyRedirectUri('link')];
 $redirect_uri = $allowed_redirect_uris[0];
 if (isset($_GET['redirect_uri']) && in_array($_GET['redirect_uri'], $allowed_redirect_uris, true)) {
   $redirect_uri = $_GET['redirect_uri'];

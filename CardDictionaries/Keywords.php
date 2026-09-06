@@ -574,6 +574,6 @@
         if ($specificCardDQ == "SOWINGTHORNS") AddDecisionQueue("BUTTONINPUT", $player, "Search,No_search", 1);
         AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ . "-" . $target, 1);
       }
-      else WriteLog("Insufficient cards to decompose");
+      else WriteLog("Insufficient cards to <b>decompose</b>");
       return "";
   }
