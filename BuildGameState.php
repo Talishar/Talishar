@@ -1775,9 +1775,6 @@ if (!function_exists('GetCardEffectLabel')) {
       case "tear_through_the_portal_blue":
       case "painful_passage_red-go_again":
         return "Go Again";
-      case "gate_to_iarathael":
-      case "gate_to_iarathael-CHAOS":
-        return "Gated";
       default:
         return "";
     }
