@@ -6094,3 +6094,502 @@ class breach_flesh_blue extends Card {
     return "SHADOW";
   }
 }
+
+class zombie_jab extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($context) {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Zombie", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", context:$context, may:true);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $MZIndex = $dqVars["MZIndex"] ?? "";
+    $ind = explode("-", $MZIndex)[1] ?? -1;
+    if ($ind == -1) return;
+    DiscardCard($this->controller, $ind);
+    $mode = implode("_", array_splice(explode("_", $this->cardID), 0, 2));
+    switch ($mode) {
+      case "bone_mass":
+        AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+        break;
+      case "malignant_migration":
+        MZMoveCard($this->controller, "MYBANISH", "MYDISCARD", DQContext:"Move a card from banish to graveyard");
+        break;
+      case "acrid_stench":
+        BanishCardForPlayer("corrupted_corpse", $this->controller, "-", created:true);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+class bone_mass_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bone_mass_red";
+    $this->controller = $controller;
+    $this->baseCard = new zombie_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Discard a zombie to give your next attack +1 (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  // function SpecialName() {
+  //   return "Bone Mass";
+  // }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
+
+class bone_mass_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "bone_mass_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new zombie_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Discard a zombie to give your next attack +1 (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  // function SpecialName() {
+  //   return "Bone Mass";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
+
+class bone_mass_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "bone_mass_blue";
+    $this->controller = $controller;
+    $this->baseCard = new zombie_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Discard a zombie to give your next attack +1 (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  // function SpecialName() {
+  //   return "Bone Mass";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
+
+class malignant_migration_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "malignant_migration_red";
+    $this->controller = $controller;
+    $this->baseCard = new zombie_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Discard a zombie to move a card from banish to graveyard (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  // function SpecialName() {
+  //   return "Malignant Migration";
+  // }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
+
+class malignant_migration_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "malignant_migration_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new zombie_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Discard a zombie to move a card from banish to graveyard (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  // function SpecialName() {
+  //   return "Malignant Migration";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
+
+class malignant_migration_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "malignant_migration_blue";
+    $this->controller = $controller;
+    $this->baseCard = new zombie_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Discard a zombie to move a card from banish to graveyard (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  // function SpecialName() {
+  //   return "Malignant Migration";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
+
+class acrid_stench_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "acrid_stench_red";
+    $this->controller = $controller;
+    $this->baseCard = new zombie_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Discard a zombie to create a corrupted corpse (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  // function SpecialName() {
+  //   return "Acrid Stench";
+  // }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
+
+class acrid_stench_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "acrid_stench_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new zombie_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Discard a zombie to create a corrupted corpse (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  // function SpecialName() {
+  //   return "Acrid Stench";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
+
+class acrid_stench_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "acrid_stench_blue";
+    $this->controller = $controller;
+    $this->baseCard = new zombie_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Discard a zombie to create a corrupted corpse (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  // function SpecialName() {
+  //   return "Acrid Stench";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+}
