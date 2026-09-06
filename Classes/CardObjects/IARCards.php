@@ -5166,7 +5166,6 @@ class mark_of_pathstone_blue extends Card {
   }
 }
 
-
 class violent_gusto_red extends Card {
   function __construct($controller) {
     $this->cardID = "violent_gusto_red";
@@ -5909,8 +5908,6 @@ class corporeal_chasm_red extends Card {
   }
 }
 
-
-
 class corporeal_chasm_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "corporeal_chasm_yellow";
@@ -6591,5 +6588,164 @@ class acrid_stench_blue extends Card {
 
   function SpecialBlock() {
     return 2;
+  }
+}
+
+class headstrong extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger() {
+    $deck = new Deck($this->controller);
+    if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $this->controller, "DECK", source: $this->cardID) >= 6)
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
+
+class headstrong_stampede_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "headstrong_stampede_red";
+    $this->controller = $controller;
+    $this->baseCard = new headstrong($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Headstrong Stampede";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+}
+
+class headstrong_stampede_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "headstrong_stampede_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new headstrong($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Headstrong Stampede";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
+  }
+}
+
+class headstrong_stampede_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "headstrong_stampede_blue";
+    $this->controller = $controller;
+    $this->baseCard = new headstrong($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Headstrong Stampede";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "BRUTE";
   }
 }
