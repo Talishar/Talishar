@@ -5762,7 +5762,7 @@ class arknight_descendancy_blue extends Card {
   }
 
   function SpecialPower() {
-    return 5;
+    return 6;
   }
 
   function SpecialClass() {
