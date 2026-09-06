@@ -1022,9 +1022,11 @@ function AuraBeginEndPhaseTriggers()
       case "geyser_of_seismic_stirrings_red":
       case "geyser_of_seismic_stirrings_yellow":
       case "geyser_of_seismic_stirrings_blue":
-        --$auras[$i + 2];
-        PlayAura("seismic_surge", $mainPlayer, 1, true, effectController:$mainPlayer, effectSource:$auras[$i]);
-        if ($auras[$i + 2] == 0) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
+        if($auras[$i + 2] > 0) {
+          --$auras[$i + 2];
+          PlayAura("seismic_surge", $mainPlayer, 1, true, effectController:$mainPlayer, effectSource:$auras[$i]);
+        }
+        if ($auras[$i + 2] <= 0) DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
       case "parched_terrain_red":
         AddLayer("TRIGGER", $mainPlayer, $auras[$i], "parched_terrain_red-1", uniqueID: $auras[$i + 6]);
