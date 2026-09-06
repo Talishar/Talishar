@@ -6827,6 +6827,10 @@ class cleave_the_heavens_red extends Card {
     $this->baseCard->ProcessAbility();
   }
 
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->baseCard->CanActivateAsInstant($index, $from);
+  }
+
   function SpecialName() {
     return "Cleave the Heavens";
   }
@@ -6891,6 +6895,10 @@ class cleave_the_heavens_yellow extends Card {
     $this->baseCard->ProcessAbility();
   }
 
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->baseCard->CanActivateAsInstant($index, $from);
+  }
+
   function SpecialName() {
     return "Cleave the Heavens";
   }
@@ -6953,6 +6961,10 @@ class cleave_the_heavens_blue extends Card {
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $this->baseCard->ProcessAbility();
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->baseCard->CanActivateAsInstant($index, $from);
   }
 
   function SpecialName() {
