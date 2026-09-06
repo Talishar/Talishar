@@ -5193,7 +5193,7 @@ class violent_gusto_red extends Card {
     $AuraCard = MZIndexToObject($this->controller, $choice);
     if ($AuraCard != "") {
       $name = CardName($AuraCard->CardID());
-      WriteLog("$name was named!");
+      WriteLog("<b>📣$name</b> was named!");
       $AuraCard->Bounce();
       $CombatChain->AttackCard()->AddBuff("$this->cardID|" . GamestateSanitize($name));
     }
