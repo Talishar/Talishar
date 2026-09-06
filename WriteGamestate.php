@@ -108,7 +108,9 @@ array_push($gamestateLines,
   json_encode($p2LifeHistory ?? []),
   json_encode($p1ArcaneDamageDealt ?? []),
   json_encode($p2ArcaneDamageDealt ?? []),
-  max(0, min(100, intval($practiceDummyWeaponPower ?? 4)))
+  max(0, min(100, intval($practiceDummyWeaponPower ?? 4))),
+  isset($p1TurnCount) ? intval($p1TurnCount) : "", // Turns player 1 has begun
+  isset($p2TurnCount) ? intval($p2TurnCount) : ""  // Turns player 2 has begun
 );
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";

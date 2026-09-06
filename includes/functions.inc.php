@@ -1026,7 +1026,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	if($gameID != "") $deck["gameId"] = $gameID;
 	if($gameName != "") $deck["gameName"] = $gameName;
 	$deck["deckId"] = $DeckLink;
-	$deck["turns"] = intval($currentTurn);
+	$deck["turns"] = CountAttackingTurns($player);
 	$deck["result"] = ($player == $winner ? 1 : 0);
 	if($winner == "1" || $winner == "2") {
 		$deck["winner"] = intval($winner);
@@ -1160,7 +1160,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	if($gameID != "") $deck["gameId"] = $gameID;
 	if($gameName != "") $deck["gameName"] = $gameName;
 	$deck["deckId"] = $DeckLink;
-	$deck["turns"] = intval($currentTurn);
+	$deck["turns"] = CountAttackingTurns($player);
 	$deck["result"] = ($player == $winner ? 1 : 0);
 	if($winner == "1" || $winner == "2") $deck["winner"] = intval($winner);
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);

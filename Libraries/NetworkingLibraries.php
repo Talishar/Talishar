@@ -2314,8 +2314,9 @@ function FinalizeTurn()
     $currentPlayer = $mainPlayer;
     BuildMainPlayerGameState();
   }
+  IncrementTurnCount($mainPlayer);
+  StatsStartTurn();
   //Start of turn effects
-  if ($mainPlayer == 1) StatsStartTurn();
   AddLayer("STARTTURN", $mainPlayer, $mainPlayer);
   StartTurnAbilities();
   $MakeStartTurnBackup = true;

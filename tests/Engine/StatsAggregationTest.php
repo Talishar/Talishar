@@ -95,6 +95,9 @@ class StatsAggregationTest extends TestCase
         $GLOBALS['mainPlayer'] = $firstPlayer;
         $GLOBALS['defPlayer'] = 3 - $firstPlayer;
         $GLOBALS['turn'] = ['M'];
+        $GLOBALS['p1TurnCount'] = 0;
+        $GLOBALS['p2TurnCount'] = 0;
+        IncrementTurnCount($firstPlayer);
         $this->attacks = [1 => 0, 2 => 0];
         $this->defences = [1 => 0, 2 => 0];
 
@@ -127,7 +130,8 @@ class StatsAggregationTest extends TestCase
         if ($GLOBALS['mainPlayer'] == $GLOBALS['firstPlayer']) $GLOBALS['currentTurn'] += 1;
         $GLOBALS['defPlayer'] = $GLOBALS['mainPlayer'];
         $GLOBALS['mainPlayer'] = 3 - $GLOBALS['mainPlayer'];
-        if ($GLOBALS['mainPlayer'] == 1) StatsStartTurn();
+        IncrementTurnCount($GLOBALS['mainPlayer']);
+        StatsStartTurn();
     }
 
     /**
@@ -483,10 +487,10 @@ class StatsAggregationTest extends TestCase
             . 'GetStatTurnIndex(), CountAttackingTurns() and the turn model in this test all assume it does.'
         );
         $this->assertMatchesRegularExpression(
-            '/if\s*\(\s*\$mainPlayer\s*==\s*1\s*\)\s*StatsStartTurn\(\)\s*;/',
+            '/IncrementTurnCount\(\$mainPlayer\)\s*;\s*StatsStartTurn\(\)\s*;/',
             $networking,
-            'FinalizeTurn no longer appends a stat block when player 1 takes the turn. '
-            . 'The block layout these tests assert depends on it.'
+            'FinalizeTurn no longer counts the incoming turn player\'s turn before opening '
+            . 'their stat block. The block layout these tests assert depends on it.'
         );
         $this->assertStringContainsString('StatsStartTurn();', $startEffects,
             'StartEffects.php no longer creates the opening stat block.');

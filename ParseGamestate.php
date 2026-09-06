@@ -41,6 +41,7 @@ function ParseGamestate($parseHistoricalStats = true)
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $EffectContext;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
   global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI, $AIHasInfiniteHP, $attackQueue, $practiceDummyWeaponPower;
+  global $p1TurnCount, $p2TurnCount;
 
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
@@ -179,6 +180,14 @@ function ParseGamestate($parseHistoricalStats = true)
     ? max(0, min(100, intval($gamestateContent[84+$numChainLinks])))
     : 4;
 
+  // for replays and current games as of this push
+  $legacyTurnCount = function($player) use ($currentTurn, $mainPlayer, $firstPlayer) {
+    if ($player == $firstPlayer) return intval($currentTurn) + ($mainPlayer == $firstPlayer ? 1 : 0);
+    return intval($currentTurn);
+  };
+
+  $p1TurnCount = is_numeric(trim($gamestateContent[85+$numChainLinks] ?? "")) ? intval($gamestateContent[85+$numChainLinks]) : $legacyTurnCount(1);
+  $p2TurnCount = is_numeric(trim($gamestateContent[86+$numChainLinks] ?? "")) ? intval($gamestateContent[86+$numChainLinks]) : $legacyTurnCount(2);
   BuildMyGamestate($playerID);
 }
 
