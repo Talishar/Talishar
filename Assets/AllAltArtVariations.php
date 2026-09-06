@@ -385,7 +385,6 @@ function GetAllAltArtVariations(): array
     "grasp_of_the_darknight=IAR109-T",
     "levia=IAR002-T",
     "malice=IAR054-T",
-    "restless_magister_red=IAR064-T",
     "soul_of_existence=IAR666-T",
     "viserai_between_worlds=IAR107-T",
     "viserai_the_forsaken=IAR106-T",
@@ -410,7 +409,6 @@ function GetAllAltArtVariations(): array
     "phoenix_bannerman_head_red=FAB430-T",
     "phoenix_bannerman_legs_red=FAB433-T",
     "pleiades_superstar=HER153-T",
-    "restless_quartermaster_red=IAR065-T",
     "rockyard_rodeo_blue=LGS448-T",
     "scurv_stowaway=HER143-T",
     "sticky_fingers=JDG045-T",
@@ -420,6 +418,8 @@ function GetAllAltArtVariations(): array
     "deadly_spinneret_red=IAR243-T",
     "restless_corporal_red=IAR085-T",
     "restless_outlaw_red=IAR086-T",
+    "restless_magister_red=IAR064-T",
+    "restless_quartermaster_red=IAR065-T",
     "rush_of_knowledge_blue=IAR252-T",
     "embrace_ursur_red=IAR129-T",
     "humble_red=OUT189-T",
@@ -430,5 +430,9 @@ function GetAllAltArtVariations(): array
     "channel_stormgarden_yellow=IAR257-T",
     "consuming_appetite_yellow=GEM193-T",
     "ominous_toll_red=GEM198-T",
+    "restless_commander_red=AMA014-T",
+    "restless_templar_red=IAR059-T",
+    "restless_looter_red=IAR063-T",
+    "restless_cleric_red=IAR084-T"
   ];
 }
