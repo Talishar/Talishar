@@ -5719,3 +5719,142 @@ class shadowrealm_bloodhound_blue extends Card {
     return 3;
   }
 }
+
+class arknight_descendancy_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "arknight_descendancy_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SelfCostModifier($from) {
+    return -1 * NumRunechants($this->controller);
+  }
+
+  function GetBanishedEffect($from, $banisher, $banishedBy) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Await($this->controller, "ButtonInput", buttons:"0,1,2,3", context:"Lose life to create runechants", subsequent:0);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $life = $dqVars["buttonChoice"] ?? 0;
+    LoseHealth($life, $this->controller);
+    PlayAura("runechant", $this->controller, $life, effectSource:$this->cardID);
+  }
+
+  function SpecialName() {
+    return "Arknight Descendancy";
+  }
+
+  function SpecialCost() {
+    return 5;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
+  }
+}
+
+class forbidden_harvest_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "forbidden_harvest_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Banish = new Banish($this->controller);
+    $num = min(3, $Banish->NumCards());
+    for ($i = 0; $i < $num; ++$i) {
+      Await($this->controller, "MultiZoneIndices", search:"MYBANISH", subsequent:$i != 0);
+      Await($this->controller, "ChooseMultiZone", may:true, context:"Turn a card in banish facedown, Shadow cards make runechants (or pass)");
+      Await($this->controller, $this->cardID, mode:"aggregate");
+    }
+    Await($this->controller, $this->cardID, mode:"final", final:true, subsequent:0);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $CS_AdditionalCosts;
+    $mode = $dqVars["mode"] ?? "-";
+    $chosenCardIDs = GetClassState($this->controller, $CS_AdditionalCosts);
+    $chosenCardIDs = $chosenCardIDs == "-" ? [] : explode(",", $chosenCardIDs);
+    switch ($mode) {
+      case "aggregate":
+        $MZIndex = $dqVars["MZIndex"] ?? "-";
+        $BanishCard = MZIndexToObject($this->controller, $MZIndex);
+        if ($BanishCard != "") {
+          $chosenCardIDs[] = $BanishCard->CardID();
+          $BanishCard->Modify("DOWN");
+          SetClassState($this->controller, $CS_AdditionalCosts, implode(",", $chosenCardIDs));
+        }
+        break;
+      case "final":
+        $num = 0;
+        foreach ($chosenCardIDs as $cardID) {
+          if (TalentContains($cardID, "SHADOW", $this->controller))
+            ++$num;
+        }
+        PlayAura("runechant", $this->controller, $num, effectSource:$this->cardID);
+        SetClassState($this->controller, $CS_AdditionalCosts, "-");
+        break;
+      default:
+        break;
+    }
+  }
+
+  function SpecialName() {
+    return "Forbidden Harvest";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialClass() {
+    return "RUNEBLADE";
+  }
+}
