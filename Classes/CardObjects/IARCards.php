@@ -6989,3 +6989,289 @@ class cleave_the_heavens_blue extends Card {
     return true;
   }
 }
+
+class shadowrealm_jab extends BaseCard {
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($context) {
+    BanishFromHand($this->controller, true, $context);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $cardID = $dqVars["LASTRESULT"] ?? "";
+    if (!TalentContains($cardID, "SHADOW", $this->controller)) return;
+    $mode = implode("_", array_splice(explode("_", $this->cardID), 0, 2));
+    switch ($mode) {
+      case "shadowrealm_walker":
+        PlayAura("gate_to_iarathael", $this->controller);
+        break;
+      case "shadowrealm_ripper":
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+class shadowrealm_walker_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_walker_red";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Banish a card from hand, Shadow cards make a " . CardLink("gate_to_iarathael") . " (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Walker";
+  // }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class shadowrealm_walker_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_walker_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Banish a card from hand, Shadow cards make a " . CardLink("gate_to_iarathael") . " (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Walker";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class shadowrealm_walker_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_walker_blue";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Banish a card from hand, Shadow cards make a " . CardLink("gate_to_iarathael") . " (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Walker";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class shadowrealm_ripper_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_ripper_red";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Banish a card from hand, Shadow cards give +2 (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Ripper";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class shadowrealm_ripper_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_ripper_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Banish a card from hand, Shadow cards give +2 (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Ripper";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class shadowrealm_ripper_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_ripper_blue";
+    $this->controller = $controller;
+    $this->baseCard = new shadowrealm_jab($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility();
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->baseCard->ProcessAttackTrigger("Banish a card from hand, Shadow cards give +2 (or pass)");
+  }
+
+  function SpecificLogic() {
+    $this->baseCard->SpecificLogic();
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  // function SpecialName() {
+  //   return "Shadowrealm Ripper";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
