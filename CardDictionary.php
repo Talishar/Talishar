@@ -4714,6 +4714,7 @@ function HasEffectActive($cardID) {
   global $CS_NumCardsDrawn, $playerID;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($cardID) {
+    case "phoenix_form_red": return NumChainLinksWithName("Phoenix Flame") >= 3;
     case "hold_the_line_blue": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
   default:
     return false;
