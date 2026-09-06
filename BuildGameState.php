@@ -1089,12 +1089,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
     $subcards = $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL;
     $boundAuras = $theirAurasObj->FindBoundAuras($AllyCard->UniqueID());
-    if (count($boundAuras) > 0) {
+    $hasBoundAura = count($boundAuras) > 0;
+    if ($hasBoundAura) {
       $boundIDs = [];
       foreach ($boundAuras as $boundAura)
         $boundIDs[] = $boundAura->CardID();
       $boundIDs = implode(",",  $boundIDs);
-      $subcards = isset($subcards) ? "$subcards,$boundIDs" : $boundIDs;
+      $subcards = isset($subcards) ? "$boundIDs,$subcards" : $boundIDs;
     }
     $theirAlliesOutput[] = JSONRenderedCard(
         cardNumber: $theirAllies[$i],
@@ -1105,6 +1106,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         type: $type,
         sType: $sType,
         isFrozen: IsFrozenMZ($theirAllies, "ALLY", $i, $otherPlayer),
+        hasBoundAura: $hasBoundAura,
         subcard: $subcards,
         powerCounters:$theirAllies[$i+9],
         label: $label,
@@ -1213,12 +1215,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     elseif(isset($effectUIDSet[(string)$uniqueID])) $label = "Effect Active";
     $subcards = $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL;
     $boundAuras = $myAurasObj->FindBoundAuras($AllyCard->UniqueID());
-    if (count($boundAuras) > 0) {
+    $hasBoundAura = count($boundAuras) > 0;
+    if ($hasBoundAura) {
       $boundIDs = [];
       foreach ($boundAuras as $boundAura)
         $boundIDs[] = $boundAura->CardID();
       $boundIDs = implode(",",  $boundIDs);
-      $subcards = isset($subcards) ? "$subcards,$boundIDs" : $boundIDs;
+      $subcards = isset($subcards) ? "$boundIDs,$subcards" : $boundIDs;
     }
     $myAlliesOutput[] = JSONRenderedCard(
       cardNumber: $myAllies[$i],
@@ -1232,6 +1235,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       type: $type,
       sType: $sType,
       isFrozen:IsFrozenMZ($myAllies, "ALLY", $i, $playerID),
+      hasBoundAura: $hasBoundAura,
       subcard: $subcards,
       powerCounters: $myAllies[$i+9],
       label: $label,
