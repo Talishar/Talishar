@@ -5859,7 +5859,7 @@ class forbidden_harvest_yellow extends Card {
   }
 }
 
-class corporeal_chasm extends BaseCard {
+class gate_hit extends BaseCard {
   function AddOnHitTrigger($check) {
     return AnyHitTrigger($this->controller, $this->cardID, $check);
   }
@@ -5873,7 +5873,7 @@ class corporeal_chasm_red extends Card {
   function __construct($controller) {
     $this->cardID = "corporeal_chasm_red";
     $this->controller = $controller;
-    $this->baseCard = new corporeal_chasm($this->cardID, $this->controller);
+    $this->baseCard = new gate_hit($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -5909,11 +5909,13 @@ class corporeal_chasm_red extends Card {
   }
 }
 
+
+
 class corporeal_chasm_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "corporeal_chasm_yellow";
     $this->controller = $controller;
-    $this->baseCard = new corporeal_chasm($this->cardID, $this->controller);
+    $this->baseCard = new gate_hit($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -5953,7 +5955,7 @@ class corporeal_chasm_blue extends Card {
   function __construct($controller) {
     $this->cardID = "corporeal_chasm_blue";
     $this->controller = $controller;
-    $this->baseCard = new corporeal_chasm($this->cardID, $this->controller);
+    $this->baseCard = new gate_hit($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -5982,6 +5984,110 @@ class corporeal_chasm_blue extends Card {
 
   function SpecialPower() {
     return 5;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class breach_flesh_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "breach_flesh_red";
+    $this->controller = $controller;
+    $this->baseCard = new gate_hit($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  // function SpecialName() {
+  //   return "Breach Flesh";
+  // }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class breach_flesh_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "breach_flesh_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new gate_hit($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  // function SpecialName() {
+  //   return "Breach Flesh";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+}
+
+class breach_flesh_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "breach_flesh_blue";
+    $this->controller = $controller;
+    $this->baseCard = new gate_hit($this->cardID, $this->controller);
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->baseCard->HitEffect();
+  }
+
+  // function SpecialName() {
+  //   return "Breach Flesh";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 2;
   }
 
   function SpecialTalent() {
