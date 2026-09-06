@@ -2983,6 +2983,14 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "art_of_the_dragon_fire_red":
+      if (!TalentContains($cardID, "DRACONIC", $currentPlayer)) break;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=C&THEIRALLY&MYCHAR:type=C&MYALLY");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage with " . CardLink($cardID, $cardID) . " ability");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     case "red_hot_red":
       if (!RuptureActive(true, CardType($cardID) != "AA")) break;
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY");
@@ -4620,6 +4628,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         case "display_of_craftsmanship_blue":
         case "searing_touch_red":
         case "red_hot_red":
+        case "art_of_the_dragon_fire_red":
           break;
         default:
           $target = (GetCombatChainState($CCS_AttackTarget) == "" || GetCombatChainState($CCS_AttackTarget) == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());
