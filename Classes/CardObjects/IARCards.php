@@ -5332,9 +5332,9 @@ class devouring_doomwake_red extends Card {
     }
   }
 
-  // function SpecialName() {
-  //   return "Devouring Doomwake";
-  // }
+  function SpecialName() {
+    return "Devouring Doomwake";
+  }
 
   function SpecialCost() {
     return 6;
@@ -5440,9 +5440,9 @@ class peak_power_red extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Peak Power";
-  // }
+  function SpecialName() {
+    return "Peak Power";
+  }
 
   function SpecialCost() {
     return 3;
@@ -5485,9 +5485,9 @@ class peak_power_yellow extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Peak Power";
-  // }
+  function SpecialName() {
+    return "Peak Power";
+  }
 
   function SpecialCost() {
     return 3;
@@ -5534,9 +5534,9 @@ class peak_power_blue extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Peak Power";
-  // }
+  function SpecialName() {
+    return "Peak Power";
+  }
 
   function SpecialCost() {
     return 3;
