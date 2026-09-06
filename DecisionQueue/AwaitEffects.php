@@ -497,3 +497,11 @@ function DrawAwait($player) {
   $effectSource = $dqVars["effectSource"] ?? "-";
   Draw($player, $mainPhase, $fromCardEffect, $effectSource, $num);
 }
+
+function ButtonInputAwait($player) {
+  global $dqVars;
+  $notSubsequent = $dqVars["notSubsequent"] ?? false;
+  PrependDecisionQueue("SETDQVAR", $player, "buttonChoice", !$notSubsequent);
+  PrependDecisionQueue("BUTTONINPUT", $player, $dqVars["buttons"] ?? "-", !$notSubsequent);
+  PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose", !$notSubsequent);
+}

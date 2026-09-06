@@ -3880,7 +3880,7 @@ class the_suspense_is_killing_me_blue extends Card {
     return $this->baseCard->StartTurnAbility($index);
   }
 
-  function AuraPowerModifiers($index, &$powerModifiers) {
+  function AuraPowerModifiers($index, &$powerModifiers, $auraIndex) {
     global $CS_NumAttacks;
     if (GetClassState($this->controller, $CS_NumAttacks) == 1) {
       $powerModifiers[] = $this->cardID;

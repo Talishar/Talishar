@@ -6388,7 +6388,7 @@ class haboob_red extends Card {
     return $this->PowerMod($index, $powerModifiers);
   }
 
-  function AuraPowerModifiers($index, &$powerModifiers) { //Applies to own cards
+  function AuraPowerModifiers($index, &$powerModifiers, $auraIndex) { //Applies to own cards
     return $this->PowerMod($index, $powerModifiers);
   }
 }
