@@ -102,7 +102,7 @@ function ProcessMacros()
                 PassInput();
               }
             }
-            if (!$somethingChanged && AutopassPhaseWithOneOption($turn[0]) && SearchCount($turn[2]) == 1) {
+            if (!$somethingChanged && AutopassPhaseWithOneOption($turn[0]) && SearchCount($turn[2] ?? "") == 1) {
               $somethingChanged = true;
               ContinueDecisionQueue($turn[2]);
             }
@@ -232,6 +232,8 @@ function ProcessInstantMacros($firstLayer, $holdPrioritySetting, &$somethingChan
 function ProcessSpecificCardMacros()
 {
   global $currentPlayer, $turn, $EffectContext;
+
+  if (!isset($turn[2]) || $turn[2] === "" || $turn[2] === "PASS") return false;
 
   if ($turn[0] == "CHOOSEMULTIZONE") {
     $choices = explode(",", $turn[2]);

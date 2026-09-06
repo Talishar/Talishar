@@ -114,6 +114,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $currentPlayer = trim($gamestateContent[40]);
   $currentTurn = trim($gamestateContent[41]);
   $turn = GetStringArray($gamestateContent[42]);
+  $turn[2] ??= "";
   $actionPoints = trim($gamestateContent[43]);
   $combatChain = GetStringArray($gamestateContent[44]);
   $combatChainState = GetStringArray($gamestateContent[45]);

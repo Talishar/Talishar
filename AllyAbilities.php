@@ -86,6 +86,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   if ($index < 0) return "";
   $allies = &GetAllies($player);
   $allyPieces = AllyPieces();
+  if ($index % $allyPieces != 0 || !isset($allies[$index + $allyPieces - 1])) return "";
   $otherPlayer = 3 - $player;
   $owner = (($allies[$index+14] ?? "") == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);

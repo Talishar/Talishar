@@ -754,6 +754,7 @@ function MZIndexToObject($player, $MZIndex) {
 }
 
 function CleanTargetToObject($player, $cleanTarget) {
+  if ($cleanTarget === null || $cleanTarget === "" || $cleanTarget === "-") return "";
   $targArr = explode("-", $cleanTarget, 2);
   $zone = GetZoneObject($player, $targArr[0]);
   $uid = $targArr[1] ?? "-";
