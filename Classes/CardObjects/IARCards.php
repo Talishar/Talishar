@@ -5558,29 +5558,11 @@ class peak_power_blue extends Card {
   }
 }
 
-class shadowrealm_bloodhound extends BaseCard {
-  function PlayAbility() {
-    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
-  }
-
-  function ProcessAttackTrigger() {
-    BanishFromHand($this->controller, true, "Banish a card from hand, Shadow cards give go again (or pass)");
-    Await($this->controller, $this->cardID, final:true);
-  }
-
-  function SpecificLogic() {
-    global $dqVars;
-    $choice = $dqVars["LASTRESULT"] ?? "-";
-    if (TalentContains($choice, "SHADOW", $this->controller))
-      AddCurrentTurnEffect($this->cardID, $this->controller);
-  }
-}
-
 class shadowrealm_bloodhound_red extends Card {
   function __construct($controller) {
     $this->cardID = "shadowrealm_bloodhound_red";
     $this->controller = $controller;
-    $this->baseCard = new shadowrealm_bloodhound($this->cardID, $this->controller);
+    $this->baseCard = new shadowrealm_jab($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -5604,9 +5586,9 @@ class shadowrealm_bloodhound_red extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Bloodhound";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Bloodhound";
+  }
 
   function SpecialCost() {
     return 2;
@@ -5625,7 +5607,7 @@ class shadowrealm_bloodhound_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "shadowrealm_bloodhound_yellow";
     $this->controller = $controller;
-    $this->baseCard = new shadowrealm_bloodhound($this->cardID, $this->controller);
+    $this->baseCard = new shadowrealm_jab($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -5649,9 +5631,9 @@ class shadowrealm_bloodhound_yellow extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Bloodhound";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Bloodhound";
+  }
 
   function SpecialCost() {
     return 2;
@@ -5674,7 +5656,7 @@ class shadowrealm_bloodhound_blue extends Card {
   function __construct($controller) {
     $this->cardID = "shadowrealm_bloodhound_blue";
     $this->controller = $controller;
-    $this->baseCard = new shadowrealm_bloodhound($this->cardID, $this->controller);
+    $this->baseCard = new shadowrealm_jab($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -5698,9 +5680,9 @@ class shadowrealm_bloodhound_blue extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Bloodhound";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Bloodhound";
+  }
 
   function SpecialCost() {
     return 2;
@@ -5887,9 +5869,9 @@ class corporeal_chasm_red extends Card {
     $this->baseCard->HitEffect();
   }
 
-  // function SpecialName() {
-  //   return "Corporeal Chasm";
-  // }
+  function SpecialName() {
+    return "Corporeal Chasm";
+  }
 
   function SpecialCost() {
     return 3;
@@ -5927,9 +5909,9 @@ class corporeal_chasm_yellow extends Card {
     $this->baseCard->HitEffect();
   }
 
-  // function SpecialName() {
-  //   return "Corporeal Chasm";
-  // }
+  function SpecialName() {
+    return "Corporeal Chasm";
+  }
 
   function SpecialCost() {
     return 3;
@@ -5967,9 +5949,9 @@ class corporeal_chasm_blue extends Card {
     $this->baseCard->HitEffect();
   }
 
-  // function SpecialName() {
-  //   return "Corporeal Chasm";
-  // }
+  function SpecialName() {
+    return "Corporeal Chasm";
+  }
 
   function SpecialCost() {
     return 3;
@@ -6007,9 +5989,9 @@ class breach_flesh_red extends Card {
     $this->baseCard->HitEffect();
   }
 
-  // function SpecialName() {
-  //   return "Breach Flesh";
-  // }
+  function SpecialName() {
+    return "Breach Flesh";
+  }
 
   function SpecialPower() {
     return 4;
@@ -6039,9 +6021,9 @@ class breach_flesh_yellow extends Card {
     $this->baseCard->HitEffect();
   }
 
-  // function SpecialName() {
-  //   return "Breach Flesh";
-  // }
+  function SpecialName() {
+    return "Breach Flesh";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -6075,9 +6057,9 @@ class breach_flesh_blue extends Card {
     $this->baseCard->HitEffect();
   }
 
-  // function SpecialName() {
-  //   return "Breach Flesh";
-  // }
+  function SpecialName() {
+    return "Breach Flesh";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -6154,9 +6136,9 @@ class bone_mass_red extends Card {
     return 1;
   }
 
-  // function SpecialName() {
-  //   return "Bone Mass";
-  // }
+  function SpecialName() {
+    return "Bone Mass";
+  }
 
   function SpecialPitch() {
     return 1;
@@ -6211,9 +6193,9 @@ class bone_mass_yellow extends Card {
     return 1;
   }
 
-  // function SpecialName() {
-  //   return "Bone Mass";
-  // }
+  function SpecialName() {
+    return "Bone Mass";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -6268,9 +6250,9 @@ class bone_mass_blue extends Card {
     return 1;
   }
 
-  // function SpecialName() {
-  //   return "Bone Mass";
-  // }
+  function SpecialName() {
+    return "Bone Mass";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -6317,9 +6299,9 @@ class malignant_migration_red extends Card {
     $this->baseCard->SpecificLogic();
   }
 
-  // function SpecialName() {
-  //   return "Malignant Migration";
-  // }
+  function SpecialName() {
+    return "Malignant Migration";
+  }
 
   function SpecialPitch() {
     return 1;
@@ -6366,9 +6348,9 @@ class malignant_migration_yellow extends Card {
     $this->baseCard->SpecificLogic();
   }
 
-  // function SpecialName() {
-  //   return "Malignant Migration";
-  // }
+  function SpecialName() {
+    return "Malignant Migration";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -6415,9 +6397,9 @@ class malignant_migration_blue extends Card {
     $this->baseCard->SpecificLogic();
   }
 
-  // function SpecialName() {
-  //   return "Malignant Migration";
-  // }
+  function SpecialName() {
+    return "Malignant Migration";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -6464,9 +6446,9 @@ class acrid_stench_red extends Card {
     $this->baseCard->SpecificLogic();
   }
 
-  // function SpecialName() {
-  //   return "Acrid Stench";
-  // }
+  function SpecialName() {
+    return "Acrid Stench";
+  }
 
   function SpecialPitch() {
     return 1;
@@ -6513,9 +6495,9 @@ class acrid_stench_yellow extends Card {
     $this->baseCard->SpecificLogic();
   }
 
-  // function SpecialName() {
-  //   return "Acrid Stench";
-  // }
+  function SpecialName() {
+    return "Acrid Stench";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -6562,9 +6544,9 @@ class acrid_stench_blue extends Card {
     $this->baseCard->SpecificLogic();
   }
 
-  // function SpecialName() {
-  //   return "Acrid Stench";
-  // }
+  function SpecialName() {
+    return "Acrid Stench";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -6627,9 +6609,9 @@ class headstrong_stampede_red extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Headstrong Stampede";
-  // }
+  function SpecialName() {
+    return "Headstrong Stampede";
+  }
 
   function SpecialCost() {
     return 2;
@@ -6676,9 +6658,9 @@ class headstrong_stampede_yellow extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Headstrong Stampede";
-  // }
+  function SpecialName() {
+    return "Headstrong Stampede";
+  }
 
   function SpecialCost() {
     return 2;
@@ -6725,9 +6707,9 @@ class headstrong_stampede_blue extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Headstrong Stampede";
-  // }
+  function SpecialName() {
+    return "Headstrong Stampede";
+  }
 
   function SpecialCost() {
     return 2;
@@ -6833,9 +6815,9 @@ class cleave_the_heavens_red extends Card {
     $this->baseCard->ProcessAbility();
   }
 
-  // function SpecialName() {
-  //   return "Cleave the Heavens";
-  // }
+  function SpecialName() {
+    return "Cleave the Heavens";
+  }
 
   function SpecialPitch() {
     return 1;
@@ -6897,9 +6879,9 @@ class cleave_the_heavens_yellow extends Card {
     $this->baseCard->ProcessAbility();
   }
 
-  // function SpecialName() {
-  //   return "Cleave the Heavens";
-  // }
+  function SpecialName() {
+    return "Cleave the Heavens";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -6961,9 +6943,9 @@ class cleave_the_heavens_blue extends Card {
     $this->baseCard->ProcessAbility();
   }
 
-  // function SpecialName() {
-  //   return "Cleave the Heavens";
-  // }
+  function SpecialName() {
+    return "Cleave the Heavens";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -7010,6 +6992,7 @@ class shadowrealm_jab extends BaseCard {
         PlayAura("gate_to_iarathael", $this->controller);
         break;
       case "shadowrealm_ripper":
+      case "shadowrealm_bloodhound":
         AddCurrentTurnEffect($this->cardID, $this->controller);
         break;
       default:
@@ -7038,9 +7021,9 @@ class shadowrealm_walker_red extends Card {
     $this->baseCard->SpecificLogic();
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Walker";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Walker";
+  }
 
   function SpecialPitch() {
     return 1;
@@ -7075,9 +7058,9 @@ class shadowrealm_walker_yellow extends Card {
     $this->baseCard->SpecificLogic();
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Walker";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Walker";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -7112,9 +7095,9 @@ class shadowrealm_walker_blue extends Card {
     $this->baseCard->SpecificLogic();
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Walker";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Walker";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -7157,9 +7140,9 @@ class shadowrealm_ripper_red extends Card {
     return 2;
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Ripper";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Ripper";
+  }
 
   function SpecialCost() {
     return 1;
@@ -7206,9 +7189,9 @@ class shadowrealm_ripper_yellow extends Card {
     return 2;
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Ripper";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Ripper";
+  }
 
   function SpecialCost() {
     return 1;
@@ -7255,9 +7238,9 @@ class shadowrealm_ripper_blue extends Card {
     return 2;
   }
 
-  // function SpecialName() {
-  //   return "Shadowrealm Ripper";
-  // }
+  function SpecialName() {
+    return "Shadowrealm Ripper";
+  }
 
   function SpecialCost() {
     return 1;
