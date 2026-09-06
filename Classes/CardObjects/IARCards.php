@@ -5571,7 +5571,7 @@ class shadowrealm_bloodhound_red extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    $this->baseCard->ProcessAttackTrigger();
+    $this->baseCard->ProcessAttackTrigger("Banish a card from your hand, Shadow gives go again (or pass)");
   }
 
   function SpecificLogic() {
@@ -5620,7 +5620,7 @@ class shadowrealm_bloodhound_yellow extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    $this->baseCard->ProcessAttackTrigger();
+    $this->baseCard->ProcessAttackTrigger("Banish a card from your hand, Shadow gives go again (or pass)");
   }
 
   function SpecificLogic() {
@@ -5673,7 +5673,7 @@ class shadowrealm_bloodhound_blue extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    $this->baseCard->ProcessAttackTrigger();
+    $this->baseCard->ProcessAttackTrigger("Banish a card from your hand, Shadow gives go again (or pass)");
   }
 
   function SpecificLogic() {
