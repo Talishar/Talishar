@@ -24,26 +24,6 @@
       case "tome_of_firebrand_red":
         Draw($currentPlayer, num:2);
         return "";
-      case "red_hot_red":
-        if(RuptureActive()) {
-          $deck = new Deck($currentPlayer);
-          $num = NumDraconicChainLinks();
-          if($deck->Reveal($num)) {
-            $cards = explode(",", $deck->Top(amount:$num));
-            $numRed = 0;
-            $cardsCount = count($cards);
-            for($j = 0; $j < $cardsCount; ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
-            if($numRed > 0) {
-              $mzTarget = $target != "-" ? CleanTargetToIndex($currentPlayer, $target) : "";
-              if($mzTarget != "") {
-                AddDecisionQueue("PASSPARAMETER", $currentPlayer, $mzTarget);
-                AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
-              }
-              AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-            }
-          }
-        }
-        return "";
       case "rise_up_red":
         if(RuptureActive()) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -52,15 +32,6 @@
         return "";
       case "flamecall_awakening_red":
         AddLayer("TRIGGER", $currentPlayer, $cardID);
-        return "";
-      case "searing_touch_red":
-        if(RuptureActive()) {
-          $mzTarget = $target != "-" ? CleanTargetToIndex($currentPlayer, $target) : "";
-          if($mzTarget != "") {
-            AddDecisionQueue("PASSPARAMETER", $currentPlayer, $mzTarget);
-            AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
-          }
-        }
         return "";
       case "coronet_peak":
         $targ = (str_contains($target, "THEIRCHAR")) ? "Target_Opponent" : "Target_Yourself";

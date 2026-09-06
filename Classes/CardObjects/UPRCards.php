@@ -2338,17 +2338,43 @@ class rapid_reflex_blue extends Card {
 // }
 
 
-// class red_hot_red extends Card {
+class red_hot_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "red_hot_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "red_hot_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if(RuptureActive()) {
+      $AttackCard = $CombatChain->AttackCard();
+			SetArcaneTarget($this->controller, $this->cardID, "any");
+			//need to specify unique id here to make sure oasis respite works
+			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, uniqueID:$AttackCard->UniqueID(), additional:"ATTACKTRIGGER", final:true);
+    }
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $deck = new Deck($this->controller);
+    $num = NumDraconicChainLinks();
+    if($deck->Reveal($num)) {
+      $cards = explode(",", $deck->Top(amount:$num));
+      $numRed = 0;
+      $cardsCount = count($cards);
+      for($j = 0; $j < $cardsCount; ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+      if($numRed > 0) {
+        $mzTarget = $target != "-" ? CleanTargetToIndex($this->controllerr, $target) : "";
+        if($mzTarget != "") {
+          AddDecisionQueue("PASSPARAMETER", $this->controller, $mzTarget);
+          AddDecisionQueue("MZDAMAGE", $this->controller, "$numRed,DAMAGE,$this->cardID", 1);
+        }
+        AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
+      }
+    }
+  }
+}
 
 
 // class rewind_blue extends Card {
@@ -2559,17 +2585,32 @@ class rapid_reflex_blue extends Card {
 // }
 
 
-// class searing_touch_red extends Card {
+class searing_touch_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "searing_touch_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "searing_touch_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if(RuptureActive()) {
+      $AttackCard = $CombatChain->AttackCard();
+			SetArcaneTarget($this->controller, $this->cardID, "any");
+			//need to specify unique id here to make sure oasis respite works
+			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, uniqueID:$AttackCard->UniqueID(), additional:"ATTACKTRIGGER", final:true);
+    }
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $mzTarget = $target != "-" ? CleanTargetToIndex($this->controller, $target) : "";
+    if($mzTarget != "") {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $mzTarget);
+      AddDecisionQueue("MZDAMAGE", $this->controller, "2,DAMAGE,$this->cardID", 1);
+    }
+  }
+}
 
 
 // class semblance_blue extends Card {

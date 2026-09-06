@@ -182,17 +182,28 @@
 // }
 
 
-// class art_of_the_dragon_fire_red extends Card {
+class art_of_the_dragon_fire_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "art_of_the_dragon_fire_red";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "art_of_the_dragon_fire_red";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CombatChain;
+		if(TalentContains($this->cardID, "DRACONIC", $this->controller)) {
+			$AttackCard = $CombatChain->AttackCard();
+			SetArcaneTarget($this->controller, $this->cardID, "any");
+			//need to specify unique id here to make sure oasis respite works
+			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, uniqueID:$AttackCard->UniqueID(), additional:"ATTACKTRIGGER", final:true);
+		}
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessAttackTrigger($target, $uniqueID) {
+		AddDecisionQueue("PASSPARAMETER", $this->controller, CleanTargetToIndex($this->controller, $target));
+		AddDecisionQueue("MZDAMAGE", $this->controller, "2,DAMAGE,$this->cardID", 1);
+	}
+}
 
 
 // class art_of_the_dragon_scale_red extends Card {

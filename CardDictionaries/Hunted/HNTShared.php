@@ -217,7 +217,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "wrath_of_retribution_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "art_of_the_dragon_blood_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "art_of_the_dragon_claw_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
-    "art_of_the_dragon_fire_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "art_of_the_dragon_scale_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "dragon_power_red" => true,
     "dragon_power_yellow" => true,
@@ -450,15 +449,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "art_of_the_dragon_claw_red":
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      break;
-    case "art_of_the_dragon_fire_red":
-      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
-        $mzTarget = $target != "-" ? CleanTargetToIndex($currentPlayer, $target) : "";
-        if($mzTarget != "") {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $mzTarget);
-          AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
-        }
       }
       break;
     case "art_of_the_dragon_scale_red":
