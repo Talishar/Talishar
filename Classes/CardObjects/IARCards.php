@@ -7381,7 +7381,7 @@ class murmuring_gloomblade_red extends Card {
   }
 
   function SpecialName() {
-    return "Murmuring Glooblade";
+    return "Murmuring Gloomblade";
   }
 
   function SpecialPitch() {
@@ -7450,7 +7450,7 @@ class murmuring_gloomblade_yellow extends Card {
   }
 
   function SpecialName() {
-    return "Murmuring Glooblade";
+    return "Murmuring Gloomblade";
   }
 
   function SpecialPitch() {
@@ -7519,7 +7519,7 @@ class murmuring_gloomblade_blue extends Card {
   }
 
   function SpecialName() {
-    return "Murmuring Glooblade";
+    return "Murmuring Gloomblade";
   }
 
   function SpecialPitch() {
@@ -7596,7 +7596,7 @@ class bloodfrenzy_gloomblade_red extends Card {
   }
 
   function SpecialName() {
-    return "Bloodfrenzy Glooblade";
+    return "Bloodfrenzy Gloomblade";
   }
 
   function SpecialPitch() {
@@ -7657,7 +7657,7 @@ class bloodfrenzy_gloomblade_yellow extends Card {
   }
 
   function SpecialName() {
-    return "Bloodfrenzy Glooblade";
+    return "Bloodfrenzy Gloomblade";
   }
 
   function SpecialPitch() {
@@ -7665,7 +7665,7 @@ class bloodfrenzy_gloomblade_yellow extends Card {
   }
 
   function SpecialPower() {
-    return 3;
+    return 2;
   }
 
   function SpecialCost() {
@@ -7718,7 +7718,7 @@ class bloodfrenzy_gloomblade_blue extends Card {
   }
 
   function SpecialName() {
-    return "Bloodfrenzy Glooblade";
+    return "Bloodfrenzy Gloomblade";
   }
 
   function SpecialPitch() {
@@ -7726,7 +7726,7 @@ class bloodfrenzy_gloomblade_blue extends Card {
   }
 
   function SpecialPower() {
-    return 3;
+    return 1;
   }
 
   function SpecialCost() {
