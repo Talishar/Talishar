@@ -5,6 +5,34 @@ include_once __DIR__ . "/includes/ModeratorList.inc.php";
 if (!function_exists('IsHideHandFromFriends')) {
     function IsHideHandFromFriends($player) { return false; }
 }
+function GetChainCardSubcards($controller, ...$uniqueIDs) {
+  if ($controller != 1 && $controller != 2) return NULL;
+  $Auras = new Auras($controller);
+  foreach ($uniqueIDs as $uniqueID) {
+    if ($uniqueID === NULL || $uniqueID === "" || $uniqueID === "-" || $uniqueID == -1) continue;
+    $subcards = NULL;
+    $AllyCard = (new Allies($controller))->FindCardUID($uniqueID);
+    if ($AllyCard->Index() != -1) $subcards = $AllyCard->Subcards();
+    else {
+      $CharacterCard = (new PlayerCharacter($controller))->FindCardUID($uniqueID);
+      if ($CharacterCard->Index() != -1) $subcards = $CharacterCard->Subcards();
+      else {
+        $ItemCard = (new Items($controller))->FindCardUID($uniqueID);
+        if ($ItemCard->Index() != -1) $subcards = $ItemCard->SubCards();
+      }
+    }
+    if ($subcards === "-" || $subcards === "") $subcards = NULL;
+    $boundIDs = [];
+    foreach ($Auras->FindBoundAuras($uniqueID) as $boundAura) $boundIDs[] = $boundAura->CardID();
+    if (count($boundIDs) > 0) {
+      $boundIDs = implode(",", $boundIDs);
+      $subcards = $subcards !== NULL ? "$boundIDs,$subcards" : $boundIDs;
+    }
+    if ($subcards !== NULL) return $subcards;
+  }
+  return NULL;
+}
+
 function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false, $cacheSnapshot = null) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $p1CharEquip, $p2CharEquip;
@@ -378,6 +406,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         actionDataOverride: '0',
         borderColor: $borderColor,
         countersMap: $countersMap,
+        subcard: GetChainCardSubcards($combatChain[$i + 1], $combatChain[$i + 8] ?? NULL, $combatChain[$i + 7] ?? NULL),
       );
       continue;
     }
