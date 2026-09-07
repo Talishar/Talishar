@@ -1,14 +1,6 @@
 <?php
 
-if (!function_exists("GetArray")) {
-  function GetArray($handler)
-  {
-    if (!$handler) return false;
-    $line = trim(fgets($handler));
-    if ($line == "") return [];
-    return explode(" ", $line);
-  }
-}
+include_once __DIR__ . "/../Libraries/IOLibraries.php";
 
 $gameName = isset($gameName) ? trim((string) $gameName) : '';
 $filename = "../Games/" . $gameName . "/GameFile.txt";
@@ -90,11 +82,3 @@ $FORMAT_CompCC = 1;
 $FORMAT_CompBlitz = 3;
 $FORMAT_CompLL = 13;
 $FORMAT_CompSage = 15;
-
-if (!function_exists("UnlockGamefile")) {
-  function UnlockGamefile()
-  {
-    global $gameFileHandler;
-    fclose($gameFileHandler);
-  }
-}

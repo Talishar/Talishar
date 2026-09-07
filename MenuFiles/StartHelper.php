@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . "/../Libraries/IOLibraries.php";
+
 function initializePlayerState($handler, $deckHandler, $player)
 {
   global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive, $p1id, $p2id;
@@ -98,11 +100,4 @@ function SettingDefaultValue($setting, $hero)
     case $SET_MirroredBoardLayout: return "1";
     default: return "0";
   }
-}
-
-function GetArray($handler)
-{
-  $line = trim(fgets($handler));
-  if ($line === "") return [];
-  return explode(" ", $line);
 }
