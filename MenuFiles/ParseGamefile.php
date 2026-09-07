@@ -1,6 +1,15 @@
 <?php
 
-  include_once __DIR__ . "/../Libraries/IOLibraries.php";
+  if(!function_exists("GetArray"))
+  {
+    function GetArray($handler)
+    {
+      if(!$handler) return false;
+      $line = trim(fgets($handler));
+      if($line=="") return [];
+      return explode(" ", $line);
+    }
+  }
 
   $filename = "./Games/" . $gameName . "/GameFile.txt";
   if(!file_exists($filename)) exit;
@@ -87,6 +96,15 @@
   $FORMAT_CompBlitz = 3;
   $FORMAT_CompLL = 13;
   $FORMAT_CompSage = 15;
+
+  if(!function_exists("UnlockGamefile"))
+  {
+    function UnlockGamefile()
+    {
+      global $gameFileHandler;
+      fclose($gameFileHandler);
+    }
+  }
 /*
   if(isset($playerID) && $gameStatus == $MGS_GameStarted)
   {

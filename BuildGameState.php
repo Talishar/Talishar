@@ -2,6 +2,9 @@
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
+if (!function_exists('IsHideHandFromFriends')) {
+    function IsHideHandFromFriends($player) { return false; }
+}
 function GetChainCardSubcards($controller, ...$uniqueIDs) {
   if ($controller != 1 && $controller != 2) return NULL;
   $Auras = new Auras($controller);
@@ -1779,6 +1782,32 @@ function GetPhaseHelptext()
   $defaultText = "Choose " . TypeToPlay($turn[0]);
   $DQText = GetDQHelpText();
   return $DQText != "-" ? GamestateUnsanitize($DQText) : $defaultText;
+}
+
+if (!function_exists('GetCardEffectLabel')) {
+  function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
+    if ($uniqueID == "" || $uniqueID == "-") return "";
+    
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->FindEffectUID($uniqueID);
+    if ($Effect->Index() == -1) return "";
+    
+    $effectName = $Effect->EffectID();
+    switch ($effectName) {
+      case "beseech_the_demigon_red":
+      case "beseech_the_demigon_yellow":
+      case "beseech_the_demigon_blue":
+      case "painful_passage_red-buff":
+        return "Power +" . EffectPowerModifier($effectName);
+      case "tear_through_the_portal_red":
+      case "tear_through_the_portal_yellow":
+      case "tear_through_the_portal_blue":
+      case "painful_passage_red-go_again":
+        return "Go Again";
+      default:
+        return "";
+    }
+  }
 }
 
 function skipEffectUIStacking($cardID) {
