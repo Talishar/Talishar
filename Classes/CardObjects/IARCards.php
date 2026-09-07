@@ -5237,10 +5237,23 @@ class tome_of_necrosis_red extends Card {
     return "";
   }
 
+  private
+  function GetAllies() {
+    return SearchMultizone($this->controller, "MYALLY&MYHAND:subtype=Ally");
+  }
+
   function PayAdditionalCosts($from, $index = '-') {
+    if ($this->GetAllies() == "") {
+      WriteLog("No allies to destroy or discard, reverting gamestate", highlight:true);
+      RevertGamestate();
+    }
     Await($this->controller, "MultiZoneIndices", search:"MYALLY&MYHAND:subtype=Ally", subsequent:0);
     Await($this->controller, "ChooseMultiZone", context:"Destroy or discard up an ally");
     Await($this->controller, $this->cardID, final:true);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->GetAllies() == "";
   }
 
   function SpecificLogic() {
