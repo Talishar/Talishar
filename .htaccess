@@ -1,6 +1,11 @@
 # Case-insensitive routing for game API files
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Lobby refresh is a JSON POST endpoint. Reject crawler/probe methods before
+  # PHP boots; OPTIONS remains available for approved cross-origin previews.
+  RewriteCond %{REQUEST_METHOD} !^(POST|OPTIONS)$ [NC]
+  RewriteRule ^APIs/GetLobbyRefresh\.php$ - [R=405,L,NC]
   
   # Allow direct access to AccountFiles directory (OAuth callbacks, etc)
   RewriteCond %{REQUEST_URI} ^/AccountFiles/ [OR]
