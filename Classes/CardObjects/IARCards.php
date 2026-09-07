@@ -5015,18 +5015,22 @@ class mark_of_ushering_blue extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $this->ProcessTrigger("-");
+    global $CombatChain;
+    $this->ProcessTrigger($CombatChain->AttackCard()->ID());
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PlayAura("gate_to_iarathael", $this->controller, effectSource:"MYALLY-$uniqueID");
+    PlayAura("gate_to_iarathael", $this->controller, effectSource:$uniqueID);
   }
 
   function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
     if ($from == "PLAY") {
       $AuraCard = new AuraCard($permIndex, $this->controller);
-      if ($AuraCard->BoundTo() == "MYALLY-$uniqueID")
-        AddLayer("TRIGGER", $this->controller, $this->cardID);
+      if ($AuraCard->BoundTo() == "MYALLY-$uniqueID") {
+        $AllyCard = CleanTargetToObject($this->controller, $AuraCard->BoundTo());
+        $source = $AllyCard != "" ? $AllyCard->CardID() : "-";
+        AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID: $source);
+      }
     }
   }
 
