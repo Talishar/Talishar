@@ -31,7 +31,7 @@ class CombatChainState {
 
 	function SetCurrentAttackGainedGoAgain($value) {
 		global $CCS_CurrentAttackGainedGoAgain;
-		if (isset($this->combatChainState[$CCS_CurrentAttackGainedGoAgain])) $this->combatChainState[$CCS_CurrentAttackGainedGoAgain] = $value;
+		$this->SetState($CCS_CurrentAttackGainedGoAgain, $value);
 	}
 
 	function WeaponIndex() {
@@ -41,7 +41,7 @@ class CombatChainState {
 
 	function SetWeaponIndex($value) {
 		global $CCS_WeaponIndex;
-		if (isset($this->combatChainState[$CCS_WeaponIndex])) $this->combatChainState[$CCS_WeaponIndex] = $value;
+		$this->SetState($CCS_WeaponIndex, $value);
 	}
 
 	function HasAimCounter() {
@@ -51,7 +51,7 @@ class CombatChainState {
 
 	function SetHasAimCounter($value) {
 		global $CCS_HasAimCounter;
-		if (isset($this->combatChainState[$CCS_HasAimCounter])) $this->combatChainState[$CCS_HasAimCounter] = $value;
+		$this->SetState($CCS_HasAimCounter, $value);
 	}
 
 	function AttackNumCharged() {
@@ -61,7 +61,7 @@ class CombatChainState {
 
 	function SetAttackNumCharged($value) {
 		global $CCS_AttackNumCharged;
-		if (isset($this->combatChainState[$CCS_AttackNumCharged])) $this->combatChainState[$CCS_AttackNumCharged] = $value;
+		$this->SetState($CCS_AttackNumCharged, $value);
 	}
 
 	function DamageDealt() {
@@ -71,7 +71,7 @@ class CombatChainState {
 
 	function SetDamageDealt($value) {
 		global $CCS_DamageDealt;
-		if (isset($this->combatChainState[$CCS_DamageDealt])) $this->combatChainState[$CCS_DamageDealt] = $value;
+		$this->SetState($CCS_DamageDealt, $value);
 	}
 
 	function WasRuneGate() {
@@ -81,7 +81,7 @@ class CombatChainState {
 
 	function SetWasRuneGate($value) {
 		global $CCS_WasRuneGate;
-		if (isset($this->combatChainState[$CCS_WasRuneGate])) $this->combatChainState[$CCS_WasRuneGate] = $value;
+		$this->SetState($CCS_WasRuneGate, $value);
 	}
 
 	function HitsWithWeapon() {
@@ -91,7 +91,7 @@ class CombatChainState {
 
 	function SetHitsWithWeapon($value) {
 		global $CCS_HitsWithWeapon;
-		if (isset($this->combatChainState[$CCS_HitsWithWeapon])) $this->combatChainState[$CCS_HitsWithWeapon] = $value;
+		$this->SetState($CCS_HitsWithWeapon, $value);
 	}
 
 	function GoesWhereAfterLinkResolves() {
@@ -101,7 +101,7 @@ class CombatChainState {
 
 	function SetGoesWhereAfterLinkResolves($value) {
 		global $CCS_GoesWhereAfterLinkResolves;
-		if (isset($this->combatChainState[$CCS_GoesWhereAfterLinkResolves])) $this->combatChainState[$CCS_GoesWhereAfterLinkResolves] = $value;
+		$this->SetState($CCS_GoesWhereAfterLinkResolves, $value);
 	}
 
 	function AttackPlayedFrom() {
@@ -111,7 +111,7 @@ class CombatChainState {
 
 	function SetAttackPlayedFrom($value) {
 		global $CCS_AttackPlayedFrom;
-		if (isset($this->combatChainState[$CCS_AttackPlayedFrom])) $this->combatChainState[$CCS_AttackPlayedFrom] = $value;
+		$this->SetState($CCS_AttackPlayedFrom, $value);
 	}
 
 	function WagersThisLink() {
@@ -121,7 +121,7 @@ class CombatChainState {
 
 	function SetWagersThisLink($value) {
 		global $CCS_WagersThisLink;
-		if (isset($this->combatChainState[$CCS_WagersThisLink])) $this->combatChainState[$CCS_WagersThisLink] = $value;
+		$this->SetState($CCS_WagersThisLink, $value);
 	}
 
 	function ChainLinkHitEffectsPrevented() {
@@ -131,7 +131,7 @@ class CombatChainState {
 
 	function SetChainLinkHitEffectsPrevented($value) {
 		global $CCS_ChainLinkHitEffectsPrevented;
-		if (isset($this->combatChainState[$CCS_ChainLinkHitEffectsPrevented])) $this->combatChainState[$CCS_ChainLinkHitEffectsPrevented] = $value;
+		$this->SetState($CCS_ChainLinkHitEffectsPrevented, $value);
 	}
 
 	function NumBoosted() {
@@ -141,7 +141,7 @@ class CombatChainState {
 
 	function SetNumBoosted($value) {
 		global $CCS_NumBoosted;
-		if (isset($this->combatChainState[$CCS_NumBoosted])) $this->combatChainState[$CCS_NumBoosted] = $value;
+		$this->SetState($CCS_NumBoosted, $value);
 	}
 
 	function AttackFused() {
@@ -151,7 +151,7 @@ class CombatChainState {
 
 	function SetAttackFused($value) {
 		global $CCS_AttackFused;
-		if (isset($this->combatChainState[$CCS_AttackFused])) $this->combatChainState[$CCS_AttackFused] = $value;
+		$this->SetState($CCS_AttackFused, $value);
 	}
 
 	function AttackTarget() {
@@ -161,7 +161,7 @@ class CombatChainState {
 
 	function SetAttackTarget($value) {
 		global $CCS_AttackTarget;
-		if (isset($this->combatChainState[$CCS_AttackTarget])) $this->combatChainState[$CCS_AttackTarget] = $value;
+		$this->SetState($CCS_AttackTarget, $value);
 	}
 
 	function LinkTotalPower() {
@@ -171,7 +171,7 @@ class CombatChainState {
 
 	function SetLinkTotalPower($value) {
 		global $CCS_LinkTotalPower;
-		if (isset($this->combatChainState[$CCS_LinkTotalPower])) $this->combatChainState[$CCS_LinkTotalPower] = $value;
+		$this->SetState($CCS_LinkTotalPower, $value);
 	}
 
 	function BaseAttackDefenseMax() {
@@ -181,7 +181,7 @@ class CombatChainState {
 
 	function SetBaseAttackDefenseMax($value) {
 		global $CCS_BaseAttackDefenseMax;
-		if (isset($this->combatChainState[$CCS_BaseAttackDefenseMax])) $this->combatChainState[$CCS_BaseAttackDefenseMax] = $value;
+		$this->SetState($CCS_BaseAttackDefenseMax, $value);
 	}
 
 	function ResourceCostDefenseMin() {
@@ -191,7 +191,7 @@ class CombatChainState {
 
 	function SetResourceCostDefenseMin($value) {
 		global $CCS_ResourceCostDefenseMin;
-		if (isset($this->combatChainState[$CCS_ResourceCostDefenseMin])) $this->combatChainState[$CCS_ResourceCostDefenseMin] = $value;
+		$this->SetState($CCS_ResourceCostDefenseMin, $value);
 	}
 
 	function CardTypeDefenseRequirement() {
@@ -201,7 +201,7 @@ class CombatChainState {
 
 	function SetCardTypeDefenseRequirement($value) {
 		global $CCS_CardTypeDefenseRequirement;
-		if (isset($this->combatChainState[$CCS_CardTypeDefenseRequirement])) $this->combatChainState[$CCS_CardTypeDefenseRequirement] = $value;
+		$this->SetState($CCS_CardTypeDefenseRequirement, $value);
 	}
 
 	function CachedTotalPower() {
@@ -211,7 +211,7 @@ class CombatChainState {
 
 	function SetCachedTotalPower($value) {
 		global $CCS_CachedTotalPower;
-		if (isset($this->combatChainState[$CCS_CachedTotalPower])) $this->combatChainState[$CCS_CachedTotalPower] = $value;
+		$this->SetState($CCS_CachedTotalPower, $value);
 	}
 
 	function CachedTotalBlock() {
@@ -221,7 +221,7 @@ class CombatChainState {
 
 	function SetCachedTotalBlock($value) {
 		global $CCS_CachedTotalBlock;
-		if (isset($this->combatChainState[$CCS_CachedTotalBlock])) $this->combatChainState[$CCS_CachedTotalBlock] = $value;
+		$this->SetState($CCS_CachedTotalBlock, $value);
 	}
 
 	function CombatDamageReplaced() {
@@ -231,7 +231,7 @@ class CombatChainState {
 
 	function SetCombatDamageReplaced($value) {
 		global $CCS_CombatDamageReplaced;
-		if (isset($this->combatChainState[$CCS_CombatDamageReplaced])) $this->combatChainState[$CCS_CombatDamageReplaced] = $value;
+		$this->SetState($CCS_CombatDamageReplaced, $value);
 	}
 
 	function AttackUniqueID() {
@@ -241,7 +241,7 @@ class CombatChainState {
 
 	function SetAttackUniqueID($value) {
 		global $CCS_AttackUniqueID;
-		if (isset($this->combatChainState[$CCS_AttackUniqueID])) $this->combatChainState[$CCS_AttackUniqueID] = $value;
+		$this->SetState($CCS_AttackUniqueID, $value);
 	}
 
 	function RequiredEquipmentBlock() {
@@ -251,7 +251,7 @@ class CombatChainState {
 
 	function SetRequiredEquipmentBlock($value) {
 		global $CCS_RequiredEquipmentBlock;
-		if (isset($this->combatChainState[$CCS_RequiredEquipmentBlock])) $this->combatChainState[$CCS_RequiredEquipmentBlock] = $value;
+		$this->SetState($CCS_RequiredEquipmentBlock, $value);
 	}
 
 	function CachedDominateActive() {
@@ -261,7 +261,7 @@ class CombatChainState {
 
 	function SetCachedDominateActive($value) {
 		global $CCS_CachedDominateActive;
-		if (isset($this->combatChainState[$CCS_CachedDominateActive])) $this->combatChainState[$CCS_CachedDominateActive] = $value;
+		$this->SetState($CCS_CachedDominateActive, $value);
 	}
 
 	function IsBoosted() {
@@ -271,7 +271,7 @@ class CombatChainState {
 
 	function SetIsBoosted($value) {
 		global $CCS_IsBoosted;
-		if (isset($this->combatChainState[$CCS_IsBoosted])) $this->combatChainState[$CCS_IsBoosted] = $value;
+		$this->SetState($CCS_IsBoosted, $value);
 	}
 
 	function AttackTargetUID() {
@@ -281,7 +281,7 @@ class CombatChainState {
 
 	function SetAttackTargetUID($value) {
 		global $CCS_AttackTargetUID;
-		if (isset($this->combatChainState[$CCS_AttackTargetUID])) $this->combatChainState[$CCS_AttackTargetUID] = $value;
+		$this->SetState($CCS_AttackTargetUID, $value);
 	}
 
 	function CachedOverpowerActive() {
@@ -291,7 +291,7 @@ class CombatChainState {
 
 	function SetCachedOverpowerActive($value) {
 		global $CCS_CachedOverpowerActive;
-		if (isset($this->combatChainState[$CCS_CachedOverpowerActive])) $this->combatChainState[$CCS_CachedOverpowerActive] = $value;
+		$this->SetState($CCS_CachedOverpowerActive, $value);
 	}
 
 	function CachedNumActionBlocked() {
@@ -301,7 +301,7 @@ class CombatChainState {
 
 	function SetCachedNumActionBlocked($value) {
 		global $CCS_CachedNumActionBlocked;
-		if (isset($this->combatChainState[$CCS_CachedNumActionBlocked])) $this->combatChainState[$CCS_CachedNumActionBlocked] = $value;
+		$this->SetState($CCS_CachedNumActionBlocked, $value);
 	}
 
 	function CachedNumDefendedFromHand() {
@@ -311,7 +311,7 @@ class CombatChainState {
 
 	function SetCachedNumDefendedFromHand($value) {
 		global $CCS_CachedNumDefendedFromHand;
-		if (isset($this->combatChainState[$CCS_CachedNumDefendedFromHand])) $this->combatChainState[$CCS_CachedNumDefendedFromHand] = $value;
+		$this->SetState($CCS_CachedNumDefendedFromHand, $value);
 	}
 
 	function HitThisLink() {
@@ -321,7 +321,7 @@ class CombatChainState {
 
 	function SetHitThisLink($value) {
 		global $CCS_HitThisLink;
-		if (isset($this->combatChainState[$CCS_HitThisLink])) $this->combatChainState[$CCS_HitThisLink] = $value;
+		$this->SetState($CCS_HitThisLink, $value);
 	}
 
 	function PhantasmThisLink() {
@@ -331,7 +331,7 @@ class CombatChainState {
 
 	function SetPhantasmThisLink($value) {
 		global $CCS_PhantasmThisLink;
-		if (isset($this->combatChainState[$CCS_PhantasmThisLink])) $this->combatChainState[$CCS_PhantasmThisLink] = $value;
+		$this->SetState($CCS_PhantasmThisLink, $value);
 	}
 
 	function RequiredNegCounterEquipmentBlock() {
@@ -341,7 +341,7 @@ class CombatChainState {
 
 	function SetRequiredNegCounterEquipmentBlock($value) {
 		global $CCS_RequiredNegCounterEquipmentBlock;
-		if (isset($this->combatChainState[$CCS_RequiredNegCounterEquipmentBlock])) $this->combatChainState[$CCS_RequiredNegCounterEquipmentBlock] = $value;
+		$this->SetState($CCS_RequiredNegCounterEquipmentBlock, $value);
 	}
 
 	function NumInstantsPlayedByAttackingPlayer() {
@@ -351,7 +351,7 @@ class CombatChainState {
 
 	function SetNumInstantsPlayedByAttackingPlayer($value) {
 		global $CCS_NumInstantsPlayedByAttackingPlayer;
-		if (isset($this->combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer])) $this->combatChainState[$CCS_NumInstantsPlayedByAttackingPlayer] = $value;
+		$this->SetState($CCS_NumInstantsPlayedByAttackingPlayer, $value);
 	}
 
 	function NextInstantBouncesAura() {
@@ -361,7 +361,7 @@ class CombatChainState {
 
 	function SetNextInstantBouncesAura($value) {
 		global $CCS_NextInstantBouncesAura;
-		if (isset($this->combatChainState[$CCS_NextInstantBouncesAura])) $this->combatChainState[$CCS_NextInstantBouncesAura] = $value;
+		$this->SetState($CCS_NextInstantBouncesAura, $value);
 	}
 
 	function EclecticMag() {
@@ -371,7 +371,7 @@ class CombatChainState {
 
 	function SetEclecticMag($value) {
 		global $CCS_EclecticMag;
-		if (isset($this->combatChainState[$CCS_EclecticMag])) $this->combatChainState[$CCS_EclecticMag] = $value;
+		$this->SetState($CCS_EclecticMag, $value);
 	}
 
 	function FlickedDamage() {
@@ -381,7 +381,7 @@ class CombatChainState {
 
 	function SetFlickedDamage($value) {
 		global $CCS_FlickedDamage;
-		if (isset($this->combatChainState[$CCS_FlickedDamage])) $this->combatChainState[$CCS_FlickedDamage] = $value;
+		$this->SetState($CCS_FlickedDamage, $value);
 	}
 
 	function NumUsedInReactions() {
@@ -391,7 +391,7 @@ class CombatChainState {
 
 	function SetNumUsedInReactions($value) {
 		global $CCS_NumUsedInReactions;
-		if (isset($this->combatChainState[$CCS_NumUsedInReactions])) $this->combatChainState[$CCS_NumUsedInReactions] = $value;
+		$this->SetState($CCS_NumUsedInReactions, $value);
 	}
 
 	function NumReactionPlayedActivated() {
@@ -401,7 +401,7 @@ class CombatChainState {
 
 	function SetNumReactionPlayedActivated($value) {
 		global $CCS_NumReactionPlayedActivated;
-		if (isset($this->combatChainState[$CCS_NumReactionPlayedActivated])) $this->combatChainState[$CCS_NumReactionPlayedActivated] = $value;
+		$this->SetState($CCS_NumReactionPlayedActivated, $value);
 	}
 
 	function NumCardsBlocking() {
@@ -411,7 +411,7 @@ class CombatChainState {
 
 	function SetNumCardsBlocking($value) {
 		global $CCS_NumCardsBlocking;
-		if (isset($this->combatChainState[$CCS_NumCardsBlocking])) $this->combatChainState[$CCS_NumCardsBlocking] = $value;
+		$this->SetState($CCS_NumCardsBlocking, $value);
 	}
 
 	function NumPowerCounters() {
@@ -421,7 +421,7 @@ class CombatChainState {
 
 	function SetNumPowerCounters($value) {
 		global $CCS_NumPowerCounters;
-		if (isset($this->combatChainState[$CCS_NumPowerCounters])) $this->combatChainState[$CCS_NumPowerCounters] = $value;
+		$this->SetState($CCS_NumPowerCounters, $value);
 	}
 
 	function SoulBanishedThisChain() {
@@ -431,7 +431,7 @@ class CombatChainState {
 
 	function SetSoulBanishedThisChain($value) {
 		global $CCS_SoulBanishedThisChain;
-		if (isset($this->combatChainState[$CCS_SoulBanishedThisChain])) $this->combatChainState[$CCS_SoulBanishedThisChain] = $value;
+		$this->SetState($CCS_SoulBanishedThisChain, $value);
 	}
 
 	function AttackCost() {
@@ -441,6 +441,6 @@ class CombatChainState {
 
 	function SetAttackCost($value) {
 		global $CCS_AttackCost;
-		if (isset($this->combatChainState[$CCS_AttackCost])) $this->combatChainState[$CCS_AttackCost] = $value;
+		$this->SetState($CCS_AttackCost, $value);
 	}
 }

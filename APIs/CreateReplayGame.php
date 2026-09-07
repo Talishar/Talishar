@@ -98,12 +98,6 @@ if (!empty($missingFiles)) {
   exit;
 }
 
-// if (!file_exists("./Replays/" . $userId . "/" . $replayNumber . "/")) {
-//   echo ("That replay file does not exist.");
-//   exit;
-// }
-
-
 $gameName = GetGameCounter("../");
 
 if (!file_exists("../Games/$gameName") && !mkdir("../Games/$gameName", 0700, true)) {
@@ -303,5 +297,4 @@ $response->success = true;
 
 echo json_encode($response);
 
-// // header("Location: NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
 // header("Location: http://127.0.0.1/:5173/game/play?gameName=$gameName&playerID=1&authKey=$p1Key");
