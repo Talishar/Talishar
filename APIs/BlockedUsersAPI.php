@@ -88,14 +88,7 @@ switch ($action) {
     
     // Block user
     $result = BlockUser($userId, $blockedUser['usersId']);
-    if ($result['success']) {
-      $response->success = true;
-      $response->message = $result['message'];
-      $response->blockedUser = $blockedUser;
-    } else {
-      http_response_code(400);
-      $response->error = $result['message'];
-    }
+    if (ApplyActionResult($response, $result)) $response->blockedUser = $blockedUser;
     break;
 
   case 'unblockUser':
@@ -108,13 +101,7 @@ switch ($action) {
     }
     
     $result = UnblockUser($userId, $blockedUserId);
-    if ($result['success']) {
-      $response->success = true;
-      $response->message = $result['message'];
-    } else {
-      http_response_code(400);
-      $response->error = $result['message'];
-    }
+    ApplyActionResult($response, $result);
     break;
 
   default:

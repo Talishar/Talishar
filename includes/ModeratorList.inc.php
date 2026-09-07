@@ -72,3 +72,24 @@ function IsCardEditor($useruid) {
   return isset($editorMap[$useruid]);
 }
 
+/**
+ * Shared JSON gate for moderator-only endpoints.
+ * Emits the 401/403 response and exits when the session is not a moderator,
+ * otherwise returns the moderator's useruid.
+ */
+function RequireModeratorSession() {
+  if (!isset($_SESSION["useruid"])) {
+    http_response_code(401);
+    echo json_encode(["error" => "Not logged in"]);
+    exit;
+  }
+
+  $useruid = $_SESSION["useruid"];
+  if (!IsUserModerator($useruid)) {
+    http_response_code(403);
+    echo json_encode(["error" => "Not authorized"]);
+    exit;
+  }
+
+  return $useruid;
+}

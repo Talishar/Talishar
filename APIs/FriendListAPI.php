@@ -79,14 +79,7 @@ switch ($action) {
     
     // Add friend
     $result = AddFriend($userId, $friend['usersId']);
-    if ($result['success']) {
-      $response->success = true;
-      $response->message = $result['message'];
-      $response->friend = $friend;
-    } else {
-      http_response_code(400);
-      $response->error = $result['message'];
-    }
+    if (ApplyActionResult($response, $result)) $response->friend = $friend;
     break;
 
   case 'removeFriend':
@@ -99,13 +92,7 @@ switch ($action) {
     }
     
     $result = RemoveFriend($userId, $friendUserId);
-    if ($result['success']) {
-      $response->success = true;
-      $response->message = $result['message'];
-    } else {
-      http_response_code(400);
-      $response->error = $result['message'];
-    }
+    ApplyActionResult($response, $result);
     break;
 
   case 'searchUsers':
@@ -158,13 +145,7 @@ switch ($action) {
     }
     
     $result = AcceptFriendRequest($userId, $requesterUserId);
-    if ($result['success']) {
-      $response->success = true;
-      $response->message = $result['message'];
-    } else {
-      http_response_code(400);
-      $response->error = $result['message'];
-    }
+    ApplyActionResult($response, $result);
     break;
 
   case 'rejectRequest':
@@ -177,13 +158,7 @@ switch ($action) {
     }
     
     $result = RejectFriendRequest($userId, $requesterUserId);
-    if ($result['success']) {
-      $response->success = true;
-      $response->message = $result['message'];
-    } else {
-      http_response_code(400);
-      $response->error = $result['message'];
-    }
+    ApplyActionResult($response, $result);
     break;
 
   case 'getSentRequests':
@@ -202,13 +177,7 @@ switch ($action) {
     }
     
     $result = CancelFriendRequest($userId, $recipientUserId);
-    if ($result['success']) {
-      $response->success = true;
-      $response->message = $result['message'];
-    } else {
-      http_response_code(400);
-      $response->error = $result['message'];
-    }
+    ApplyActionResult($response, $result);
     break;
 
   case 'updateNickname':
@@ -222,13 +191,7 @@ switch ($action) {
     }
     
     $result = UpdateFriendNickname($userId, $friendUserId, $nickname);
-    if ($result['success']) {
-      $response->success = true;
-      $response->message = $result['message'];
-    } else {
-      http_response_code(400);
-      $response->error = $result['message'];
-    }
+    ApplyActionResult($response, $result);
     break;
 
   default:

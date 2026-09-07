@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
+include_once '../includes/ModeratorList.inc.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -19,29 +20,10 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION["useruid"])) {
-  http_response_code(401);
-  echo json_encode(["error" => "Not logged in"]);
-  exit;
-}
-
-$useruid = $_SESSION["useruid"];
-include_once '../includes/ModeratorList.inc.php';
-if (!IsUserModerator($useruid)) {
-  http_response_code(403);
-  echo json_encode(["error" => "Not authorized"]);
-  exit;
-}
+$useruid = RequireModeratorSession();
 
 // Handle both form-encoded and JSON POST data
-$postData = $_POST;
-if (empty($_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-    if (strpos($contentType, 'application/json') !== false) {
-        $jsonData = json_decode(file_get_contents('php://input'), true);
-        $postData = $jsonData ?? [];
-    }
-}
+$postData = ReadPostData();
 
 $action = TryPOSTData("action", "getOffensiveUsernames", $postData);
 

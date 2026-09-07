@@ -9,9 +9,32 @@ function TryPOST($key, $default = "")
   return $_POST[$key] ?? $default;
 }
 
+// Reads the request body for endpoints that accept either a form-encoded or a JSON POST.
+function ReadPostData()
+{
+  if (!empty($_POST) || $_SERVER['REQUEST_METHOD'] !== 'POST') return $_POST;
+  $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+  if (strpos($contentType, 'application/json') === false) return $_POST;
+  return json_decode(file_get_contents('php://input'), true) ?? [];
+}
+
 function TryPOSTData($key, $default = "", $data = [])
 {
   return $data[$key] ?? $default;
+}
+
+// Copies a library action's {success, message} result onto a JSON response object,
+// answering 400 with the message on failure. Returns whether the action succeeded.
+function ApplyActionResult($response, $result)
+{
+  if ($result['success']) {
+    $response->success = true;
+    $response->message = $result['message'];
+    return true;
+  }
+  http_response_code(400);
+  $response->error = $result['message'];
+  return false;
 }
 
 function IsGameNameValid($gameName)

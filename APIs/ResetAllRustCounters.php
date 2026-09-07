@@ -25,17 +25,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION["useruid"])) {
-  http_response_code(401);
-  echo json_encode(["error" => "Not logged in"]);
-  exit;
-}
-
-if (!IsUserModerator($_SESSION["useruid"])) {
-  http_response_code(403);
-  echo json_encode(["error" => "Not authorized"]);
-  exit;
-}
+RequireModeratorSession();
 
 $conn = GetDBConnection(DBL_RESET_ALL_RUST_COUNTERS);
 if (!$conn) {
