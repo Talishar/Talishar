@@ -5019,7 +5019,7 @@ class mark_of_ushering_blue extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PlayAura("gate_to_iarathael", $this->controller);
+    PlayAura("gate_to_iarathael", $this->controller, effectSource:"MYALLY-$uniqueID");
   }
 
   function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
