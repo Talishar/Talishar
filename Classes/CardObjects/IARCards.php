@@ -7722,7 +7722,7 @@ class bloodfrenzy_gloomblade_blue extends Card {
   }
 
   function SpecialPitch() {
-    return 1;
+    return 3;
   }
 
   function SpecialPower() {
