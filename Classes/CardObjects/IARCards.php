@@ -5917,6 +5917,10 @@ class corporeal_chasm_red extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class corporeal_chasm_yellow extends Card {
@@ -5956,6 +5960,10 @@ class corporeal_chasm_yellow extends Card {
 
   function SpecialTalent() {
     return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
   }
 }
 
@@ -5997,6 +6005,10 @@ class corporeal_chasm_blue extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class breach_flesh_red extends Card {
@@ -6028,6 +6040,10 @@ class breach_flesh_red extends Card {
 
   function SpecialTalent() {
     return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
   }
 }
 
@@ -6065,6 +6081,10 @@ class breach_flesh_yellow extends Card {
   function SpecialTalent() {
     return "SHADOW";
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class breach_flesh_blue extends Card {
@@ -6100,6 +6120,10 @@ class breach_flesh_blue extends Card {
 
   function SpecialTalent() {
     return "SHADOW";
+  }
+
+  function HasBloodDebt() {
+    return true;
   }
 }
 
