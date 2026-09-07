@@ -2538,6 +2538,7 @@ class embraforged_gauntlet extends Card {
 
   function AddGraveyardEffect($from, $effectController, $cardController) {
     BanishCardForPlayer($this->cardID, $this->controller, $from, "NA");
+    WriteLog(CardLink($this->cardID, $this->cardID) . " was banished instead of being put into the graveyard.");
     return true;
   }
 }
