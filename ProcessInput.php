@@ -97,6 +97,10 @@ register_shutdown_function(static function () use (&$gameActionLock): void {
 
 include "ParseGamestate.php";
 
+$replayCommandCountBefore = IsReplay()
+  ? 0
+  : ReplayCommandCount($filepath . "commandfile.txt");
+
 $isReplayAdvance = false;
 $replayUndoHasRecordedResponse = false;
 if (IsReplay()) {
@@ -110,6 +114,110 @@ if (IsReplay()) {
   }
 }
 
+if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== null) {
+  $filename = "./Games/$gameName/replayCommands.txt";
+  $commands = file($filename);
+  if (!is_array($commands)) {
+    http_response_code(500);
+    echo "Replay command index is unavailable.";
+    exit;
+  }
+  $currentPointer = intval(trim($commands[0] ?? "0"));
+
+  $finishReplayStateLoad = static function (string $gamestate) use ($filepath, $filename, &$commands, $gameName): void {
+    file_put_contents($filepath . "gamestate.txt", $gamestate, LOCK_EX);
+    WriteGamestateCache($gameName, $gamestate);
+    $currentTime = (int)(microtime(true) * 1000);
+    SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
+    InvalidateGamestateCache($gameName);
+    GamestateUpdated($gameName);
+  };
+
+  if ((int)$mode === 99) {
+    $pointer = NextReplayStatePointer($filepath, $currentPointer);
+    if ($pointer === null) exit;
+    $gamestate = ReadReplayStateSnapshot($filepath, $pointer);
+    if ($gamestate === null) {
+      http_response_code(409);
+      echo "Replay state verification failed.";
+      exit;
+    }
+
+    $snapshotName = "replayStep_$currentPointer.txt";
+    if (SaveGamestateSnapshot($filepath . $snapshotName)) {
+      $historyFilename = $filepath . "replayStepHistory.json";
+      $history = file_exists($historyFilename)
+        ? json_decode(file_get_contents($historyFilename), true)
+        : [];
+      if (!is_array($history)) $history = [];
+      $history[(string)$pointer] = $currentPointer;
+      file_put_contents($historyFilename, json_encode($history), LOCK_EX);
+    }
+    $commands[0] = "$pointer\r\n";
+    file_put_contents($filename, $commands, LOCK_EX);
+    $finishReplayStateLoad($gamestate);
+    exit;
+  }
+
+  if ((int)$mode === 10023) {
+    $historyFilename = $filepath . "replayStepHistory.json";
+    $history = file_exists($historyFilename)
+      ? json_decode(file_get_contents($historyFilename), true)
+      : [];
+    $previousPointer = is_array($history) ? ($history[(string)$currentPointer] ?? null) : null;
+    if (!is_int($previousPointer) && !ctype_digit((string)$previousPointer)) exit;
+    $previousPointer = (int)$previousPointer;
+    $gamestate = @file_get_contents($filepath . "replayStep_$previousPointer.txt");
+    if (!is_string($gamestate)) exit;
+    $commands[0] = "$previousPointer\r\n";
+    file_put_contents($filename, $commands, LOCK_EX);
+    $finishReplayStateLoad($gamestate);
+    exit;
+  }
+
+  // Jump to an exact turn-boundary snapshot.
+  $turnPlayer = $playerID;
+  $turnNumber = $cardID;
+  if (str_contains((string)$cardID, "-")) {
+    [$turnPlayer, $turnNumber] = array_pad(explode("-", (string)$cardID, 3), 2, "");
+  }
+  if ($turnPlayer == 3) $turnPlayer = $mainPlayer;
+  if (!is_numeric($turnPlayer) || !is_numeric($turnNumber)) exit;
+  $turnPlayer = (int)$turnPlayer;
+  $turnNumber = (int)$turnNumber;
+
+  if ($turnNumber === 0) {
+    $pointer = 0;
+    $gamestate = ReadReplayInitialStateSnapshot($filepath);
+  } else {
+    if (!str_contains((string)$cardID, "-")) {
+      foreach ([1, 2] as $candidatePlayer) {
+        if (file_exists($filepath . "turn_$candidatePlayer-$turnNumber" . "_Gamestate.txt")) {
+          $turnPlayer = $candidatePlayer;
+          break;
+        }
+      }
+    }
+    $pointer = null;
+    foreach ($commands as $index => $command) {
+      $params = explode(" ", $command);
+      if (($params[1] ?? "") === "StartTurn" && (int)($params[0] ?? 0) === $turnPlayer && (int)($params[2] ?? -1) === $turnNumber) {
+        $pointer = $index;
+        break;
+      }
+    }
+    $gamestate = ReadReplayTurnSnapshot($filepath, $turnPlayer, $turnNumber);
+  }
+  if (!is_string($gamestate) || !is_int($pointer)) exit;
+  $commands[0] = "$pointer\r\n";
+  file_put_contents($filename, $commands, LOCK_EX);
+  file_put_contents($filepath . "replayStepHistory.json", "{}", LOCK_EX);
+  $finishReplayStateLoad($gamestate);
+  exit;
+}
+
+// Backward compatibility for saved command-only replays. New replays take the
+// state-based branch above; legacy ones continue to re-simulate their commands.
 if (IsReplay() && $mode == 99) {
   $filename = "./Games/$gameName/replayCommands.txt";
   $commands = file($filename);
@@ -124,7 +232,6 @@ if (IsReplay() && $mode == 99) {
   if (intval($mode) === 10000 || intval($mode) === 10003) {
     $replayUndoHasRecordedResponse = ReplayUndoHasRecordedResponse($commands, $pointer);
   }
-  global $filepath;
   $snapshotName = "replayStep_$currentPointer.txt";
   if (SaveGamestateSnapshot($filepath . $snapshotName)) {
     $historyFilename = $filepath . "replayStepHistory.json";

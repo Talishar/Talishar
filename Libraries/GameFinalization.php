@@ -97,6 +97,15 @@ if (!$skipWriteGamestate) {
   include "WriteGamestate.php";
 }
 
+if (!IsReplay() && isset($replayCommandCountBefore)) {
+  $replayCommandCountAfter = ReplayCommandCount($filepath . "commandfile.txt");
+  if ($replayCommandCountAfter > $replayCommandCountBefore) {
+    if (SaveReplayStateSnapshot($filepath) === null) {
+      WriteLog("Replay state capture failed for input $replayCommandCountAfter.", highlight: true);
+    }
+  }
+}
+
 if ($makeCheckpoint) MakeGamestateBackup();
 if ($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
 if ($MakeStartTurnBackup) MakeStartTurnBackup();

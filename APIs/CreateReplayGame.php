@@ -6,6 +6,7 @@ include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
+include_once "../Libraries/ReplayLibraries.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once '../includes/functions.inc.php';
 
@@ -234,6 +235,9 @@ file_put_contents(
 
 if (!@copy($commandFileSource, $commandFileDest)) {
   $copyErrors[] = "Failed to copy command file from $commandFileSource to $commandFileDest";
+}
+if (ReadReplayFormat($replayPath) !== null && !CopyReplayStateFiles($replayPath, "../Games/$gameName/")) {
+  $copyErrors[] = "Failed to copy or verify replay state snapshots";
 }
 
 for ($player = 1; $player < 3; ++$player) {

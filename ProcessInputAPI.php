@@ -79,6 +79,9 @@ if ($playerID != 0) {
   });
 
   include "ParseGamestate.php";
+  $replayCommandCountBefore = IsReplay()
+    ? 0
+    : ReplayCommandCount($filepath . "commandfile.txt");
 } else {
   // Initialize minimal state for profile-only operations
   $currentPlayer = 0;
@@ -86,6 +89,13 @@ if ($playerID != 0) {
   $p2id = "";
   $p1Key = "";
   $p2Key = "";
+  $replayCommandCountBefore = 0;
+}
+
+if ($playerID != 0 && IsReplay()) {
+  http_response_code(403);
+  echo json_encode(['error' => 'Game inputs cannot be submitted while reviewing a replay.']);
+  exit;
 }
 
 $otherPlayer = 3 - $currentPlayer;

@@ -1153,6 +1153,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog($replaySaveResult["message"], highlight: true);
         break;
       }
+      if (!WriteReplayFormat($gamePath, $replayPath)) {
+        deleteDir($replayPath . "/");
+        $replaySaveResult["message"] = "Replay could not be saved because its state history is incomplete.";
+        WriteLog($replaySaveResult["message"], highlight: true);
+        break;
+      }
       $p1Character = &GetPlayerCharacter(1);
       $p2Character = &GetPlayerCharacter(2);
       $p1OriginalHero = GetClassState(1, $CS_OriginalHero);
@@ -1171,6 +1177,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         "p2HeroCardId" => $p2Hero,
         "p1HeroName" => $p1Hero === "" ? "" : CardName($p1Hero),
         "p2HeroName" => $p2Hero === "" ? "" : CardName($p2Hero),
+        "formatVersion" => REPLAY_FORMAT_VERSION,
+        "stateCount" => count(ReplayStatePointers($replayPath)),
         "favorite" => false,
         "savedAt" => time()
       ];

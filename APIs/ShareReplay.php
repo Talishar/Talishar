@@ -4,6 +4,7 @@ session_start();
 
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
+include_once "../Libraries/ReplayLibraries.php";
 
 SetHeaders();
 
@@ -41,7 +42,6 @@ if (!file_exists($replayPath . "origGamestate.txt") || !file_exists($replayPath 
     echo json_encode($response);
     exit;
 }
-
 $token = bin2hex(random_bytes(32));
 
 $sharedDir = "../Replays/shared/";
