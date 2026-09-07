@@ -4,6 +4,7 @@ include "../HostFiles/Redirector.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
 include "../Libraries/HTTPLibraries.php";
+include_once "../Libraries/CoreLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
@@ -14,21 +15,6 @@ include_once "../Assets/MetafyDictionary.php";
 
 // Set headers immediately after includes
 SetHeaders();
-
-if (!function_exists("DelimStringContains")) {
-  function DelimStringContains($str, $find, $partial=false)
-  {
-    if ($partial) {
-      $arr = explode(",", $str);
-      $len = count($arr);
-      for ($i = 0; $i < $len; ++$i) {
-        if (str_contains($arr[$i], $find)) return true;
-      }
-      return false;
-    }
-    return str_contains(',' . $str . ',', ',' . $find . ',');
-  }
-}
 
 if (!function_exists("SubtypeContains")) {
   function SubtypeContains($cardID, $subtype, $player="")

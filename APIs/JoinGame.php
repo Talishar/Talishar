@@ -2,6 +2,7 @@
 
 include_once "../WriteLog.php";
 include_once "../Libraries/HTTPLibraries.php";
+include_once "../Libraries/CoreLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/BlockedUserLibraries.php";
 include_once "../APIKeys/APIKeys.php";
@@ -25,16 +26,6 @@ include_once "../Classes/CardObjects/LGSCards.php";
 
 
 // GetMetafyTiersFromDatabase is defined in includes/MetafyHelper.php (included above)
-
-if (!function_exists("DelimStringContains")) {
-  function DelimStringContains($str, $find, $partial=false)
-  {
-    foreach (explode(",", $str) as $item) {
-      if ($partial ? str_contains($item, $find) : $item == $find) return true;
-    }
-    return false;
-  }
-}
 
 if (!function_exists("SubtypeContains")) {
   function SubtypeContains($cardID, $subtype, $player = "")

@@ -1827,13 +1827,3 @@ function GetEffectUIStackCount($cardID, $totalEffectCount, $componentCounts) {
   if (!isset($componentAwareCards[$cardID]) || empty($componentCounts)) return $totalEffectCount;
   return max($componentCounts);
 }
-
-
-if (!function_exists('IsDevEnvironment')) {
-  function IsDevEnvironment() {
-    $domain = getenv("DOMAIN");
-    if ($domain === "localhost") return true;
-    if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') return true;
-    return false;
-  }
-}
