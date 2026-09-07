@@ -688,11 +688,18 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   if ($type == "COMBAT" && SearchCurrentTurnEffectsAny(["chorus_of_ironsong_yellow", "jagged_edge_red"], $mainPlayer)) return false;
   static $unpreventable = ["rok" => true, "malign_red" => true, "malign_yellow" => true, "malign_blue" => true, "murkmire_grapnel_red" => true, "murkmire_grapnel_yellow" => true, "murkmire_grapnel_blue" => true];
   if (isset($unpreventable[$source]) || isset($unpreventable[$extraText])) return false;
-  if (($source == "pick_to_pieces_red" || $source == "pick_to_pieces_yellow" || $source == "pick_to_pieces_blue" || $extraText == "pick_to_pieces_red" || $extraText == "pick_to_pieces_yellow" || $extraText == "pick_to_pieces_blue") && NumAttackReactionsPlayed() > 0) return false;
+  static $pickToPieces = ["pick_to_pieces_red" => true, "pick_to_pieces_yellow" => true, "pick_to_pieces_blue" => true];
+  if ((isset($pickToPieces[$source]) || isset($pickToPieces[$extraText])) && NumAttackReactionsPlayed() > 0) return false;
   if ($source == "war_cry_of_bellona_yellow") return false;
   if ($damage >= 4 && $source == "batter_to_a_pulp_red") return false;
   if (SearchCurrentTurnEffects("step_between_red-PREVENT", $mainPlayer) && $type == "COMBAT") return false;
   return true;
+}
+
+function GetDamagePreventionWarning($player, $damage, $type, $source = "-", $separator = "")
+{
+  if (CanDamageBePrevented($player, $damage, $type, $source)) return "<br>";
+  return $separator . "<span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
 }
 
 function DealDamageAsync($player, $damage, $type, $source, $playerSource)

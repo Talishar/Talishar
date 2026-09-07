@@ -954,11 +954,7 @@ function CheckSpellvoid($player, $damage, $source = "-")
 {
   global $dqVars;
   $caption = "Choose a card with Spellvoid to prevent damage (or pass)";
-  if(!CanDamageBePrevented($player, $damage, "ARCANE", $source)) {
-    $caption .= " <span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
-  } else {
-    $caption .= "<br>";
-  }
+  $caption .= GetDamagePreventionWarning($player, $damage, "ARCANE", $source, " ");
   PrependDecisionQueue("SPELLVOIDCHOICES", $player, $damage, 1);
   PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, $caption, 1);
