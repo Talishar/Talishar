@@ -742,6 +742,7 @@ function RemoveThisLinkEffects($cardID="")
       case "blast_to_oblivion_red":
       case "blast_to_oblivion_yellow":
       case "blast_to_oblivion_blue":
+      case "bone_barrier_blue":
         $remove = 1;
         break;
       default:
