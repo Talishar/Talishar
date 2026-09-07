@@ -574,7 +574,7 @@ class runechant_of {
         $AuraCard->Destroy();
         break;
       case "DESTROYED":
-        PlayAura("runechant", $this->controller);
+        PlayAura("runechant", $this->controller, effectSource:$this->cardID);
         break;
       default:
         break;
@@ -753,7 +753,7 @@ class runechant_of_lust_yellow extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     if ($additionalCosts == "USURPED")
-      PlayAura("runechant", $this->controller);
+      PlayAura("runechant", $this->controller, effectSource:$this->cardID);
     else
       $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
   }
