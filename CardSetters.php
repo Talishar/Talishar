@@ -824,9 +824,6 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
       GainActionPoints(1);
     }
   }
-  if (SubtypeContains($cardID, "Ally", $player)) {
-    IncrementClassState($player, $CS_NumAllyPutInGraveyard);
-  }
   $char = GetPlayerCharacter($player);
   $hero = $char[0];
   if (!SearchCurrentTurnEffects($hero, $player) && ColorContains($cardID, 3, $player) && ($hero == "gravy_bones_shipwrecked_looter" || $hero == "gravy_bones")) {
@@ -843,6 +840,9 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
     $cardID = GetCardIDBeforeTransform($cardID);
   }
   if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow" || (HasIncarnate($cardID) && $from == "PLAY")) return;
+  if (SubtypeContains($cardID, "Ally", $player)) {
+    IncrementClassState($player, $CS_NumAllyPutInGraveyard);
+  }
   $card = GetClass($cardID, $player);
   $ret = false;
   if ($card != "-") $ret = $card->AddGraveyardEffect($from, $effectController, $cardController);
