@@ -2365,7 +2365,7 @@ class red_hot_red extends Card {
       $cardsCount = count($cards);
       for($j = 0; $j < $cardsCount; ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
       if($numRed > 0) {
-        $mzTarget = $target != "-" ? CleanTargetToIndex($this->controllerr, $target) : "";
+        $mzTarget = $target != "-" ? CleanTargetToIndex($this->controller, $target) : "";
         if($mzTarget != "") {
           AddDecisionQueue("PASSPARAMETER", $this->controller, $mzTarget);
           AddDecisionQueue("MZDAMAGE", $this->controller, "$numRed,DAMAGE,$this->cardID", 1);

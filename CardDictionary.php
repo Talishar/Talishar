@@ -2406,7 +2406,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!RepriseActive()) return false;
       return !TypeContains($attackID, "W", $mainPlayer);
     case "fyendals_spring_tunic":
-      if ($character[$index + 2] == 3) return false;
+      if (($character[$index + 2] ?? 0) == 3) return false;
       if ($currentPlayer != $mainPlayer) return true; //only tick up on your own turn
       if (ManualTunicSetting($player) && GetClassState($player, piece: $CS_TunicTicks) == 0) {
         if (GetClassState($player, $CS_NumCardsPlayed) == 0) return false;
@@ -4294,7 +4294,8 @@ function Is1H($cardID, $hero="-"): bool|int
 {
   static $oneHandedCache = [];
   if (isset($oneHandedCache[$cardID])) return $oneHandedCache[$cardID];
-  if ($hero == "zane_broadly_beloved" && SubtypeContains($cardID, "Sword")) return $oneHandedCache[$cardID] = true;
+  $subtype = CardSubtype($cardID);
+  if ($hero == "zane_broadly_beloved" && DelimStringContains($subtype, "Sword")) return $oneHandedCache[$cardID] = true;
   switch ($cardID) {
     case "claw_of_vynserakai": 
     case "gavel_of_natural_order":
@@ -4304,7 +4305,7 @@ function Is1H($cardID, $hero="-"): bool|int
     default:
       break;
   }
-  if (SubtypeContains($cardID, "Off-Hand")) return $oneHandedCache[$cardID] = true;
+  if (DelimStringContains($subtype, "Off-Hand")) return $oneHandedCache[$cardID] = true;
   return $oneHandedCache[$cardID] = GeneratedIs1H($cardID);
 }
 

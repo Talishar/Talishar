@@ -6116,7 +6116,7 @@ class zombie_jab extends BaseCard {
     $ind = explode("-", $MZIndex)[1] ?? -1;
     if ($ind == -1) return;
     DiscardCard($this->controller, $ind);
-    $mode = implode("_", array_splice(explode("_", $this->cardID), 0, 2));
+    $mode = implode("_", array_slice(explode("_", $this->cardID), 0, 2));
     switch ($mode) {
       case "bone_mass":
         AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
@@ -7023,7 +7023,7 @@ class shadowrealm_jab extends BaseCard {
     global $dqVars;
     $cardID = $dqVars["LASTRESULT"] ?? "";
     if (!TalentContains($cardID, "SHADOW", $this->controller)) return;
-    $mode = implode("_", array_splice(explode("_", $this->cardID), 0, 2));
+    $mode = implode("_", array_slice(explode("_", $this->cardID), 0, 2));
     switch ($mode) {
       case "shadowrealm_walker":
         PlayAura("gate_to_iarathael", $this->controller);
