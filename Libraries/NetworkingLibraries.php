@@ -4419,7 +4419,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       {
         $soul = GetSoul($currentPlayer);
         if (count($soul) > 0) {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES");
+          AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES0");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
           AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
           AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
