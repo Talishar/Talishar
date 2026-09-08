@@ -264,7 +264,7 @@ class LinkCard {
 			}
 			else {
 				$index = FindCharacterIndex($this->PlayerID(), $this->ID());
-				DestroyCharacter($this->PlayerID(), $index);
+				DestroyCharacter($this->PlayerID(), $index, animateDestroy: $agent != $this->PlayerID());
 			}
 		}
 		else {

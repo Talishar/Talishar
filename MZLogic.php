@@ -19,7 +19,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         $lastResult = DestroyCharacter($player, $mzIndex[1]);
         break;
       case "THEIRCHAR":
-        $lastResult = DestroyCharacter($otherPlayer, $mzIndex[1]);
+        $lastResult = DestroyCharacter($otherPlayer, $mzIndex[1], animateDestroy: true);
         break;
       case "MYALLY":
         $lastResult = DestroyAlly($player, $mzIndex[1]);

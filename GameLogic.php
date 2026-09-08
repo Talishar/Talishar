@@ -845,7 +845,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $baseBlock = BlockValue($cardID, $defPlayer, "EQUIP", false);
       if ($baseBlock + $character[$lastResult + 4] + BlockModifier($cardID, "EQUIP", 0, $lastResult)<= 0 && $baseBlock != -1) {
         WriteLog(CardLink($character[$lastResult], $character[$lastResult]) . " was destroyed");
-        DestroyCharacter($defPlayer, $lastResult);
+        DestroyCharacter($defPlayer, $lastResult, animateDestroy: true);
       }
       return "";
     case "CHARFLAGDESTROY":

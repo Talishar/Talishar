@@ -65,7 +65,7 @@ function EVOHitEffect($cardID)
             $cardVal = $combatChain[$defendingCard];
             WriteLog($cardLink . " destroyed " . CardLink($cardVal, $cardVal) . ".");
             if (CardType($cardVal) == "E") {
-              DestroyCharacter($defPlayer, FindCharacterIndex($defPlayer, $cardVal));
+              DestroyCharacter($defPlayer, FindCharacterIndex($defPlayer, $cardVal), animateDestroy: true);
             } else {
               AddGraveyard($cardVal, $defPlayer, "CC");
               $CombatChain->Remove($defendingCard);
