@@ -146,13 +146,13 @@ function BanishFromHand($player, $may=false, $context="", $final=false) {
 	if ($context == "") $context = "Choose a card to banish";
 	Await($player, "MultiZoneIndices", search:"MYHAND", subsequent:0);
 	Await($player, "ChooseMultiZone", may:$may, context:$context);
-	Await($player, "MZRemoveAndBanish", final:$final);
+	Await($player, "MZRemoveAndBanish", from:"HAND", final:$final);
 }
 
 function BanishFromArsenal($player, $cardID) {
     Await($player, "MultiZoneIndices", search:"MYARS", subsequent:0);
     Await($player, "ChooseMultiZone", context:"Banish a card from your arsenal");
-    Await($player, "MZRemoveAndBanish", banishedBy:$cardID, final:true);
+    Await($player, "MZRemoveAndBanish", banishedBy:$cardID, from:"ARS", final:true);
 }
 
 function HasDecay($cardID) {
