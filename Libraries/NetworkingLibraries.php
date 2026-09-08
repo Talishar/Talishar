@@ -768,7 +768,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         }
         elseif (CardType($cardID) == "E" || CardType($cardID) == "W") {
           $countSuffix = $count > 1 ? " x" . $count : "";
-          if ($destination == "inv") {
+          if ($destination == "inv" || $destination == "inventory") {
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their inventory", highlight: true, highlightColor: "darkblue");
             $inventory = &GetInventory($playerID);
             for ($i = 0; $i < $count; ++$i) $inventory[] = $cardID;
@@ -777,7 +777,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their banish", highlight: true, highlightColor: "darkblue");
             for ($i = 0; $i < $count; ++$i) BanishCardForPlayer($cardID, $playerID, "MANUAL");
           }
-          elseif ($destination == "grave") {
+          elseif ($destination == "grave" || $destination == "gy" || $destination == "discard" || $destination == "graveyard") {
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their graveyard", highlight: true, highlightColor: "darkblue");
             for ($i = 0; $i < $count; ++$i) AddGraveyard($cardID, $playerID, "MANUAL");
           }
@@ -801,7 +801,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their banish", highlight: true, highlightColor: "darkblue");
             for ($i = 0; $i < $count; ++$i) BanishCardForPlayer($cardID, $playerID, "MANUAL");
           }
-          elseif ($destination == "grave") {
+          elseif ($destination == "grave" || $destination == "gy" || $destination == "discard" || $destination == "graveyard") {
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their graveyard", highlight: true, highlightColor: "darkblue");
             for ($i = 0; $i < $count; ++$i) AddGraveyard($cardID, $playerID, "MANUAL");
           }
@@ -809,7 +809,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
             WriteLog("⬆️ Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to the top of their deck", highlight: true, highlightColor: "darkblue");
             for ($i = 0; $i < $count; ++$i) AddTopDeck($cardID, $playerID, "MANUAL");
           }
-          elseif ($destination == "inv") {
+          elseif ($destination == "inv" || $destination == "inventory") {
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their inventory", highlight: true, highlightColor: "darkblue");
             $inventory = &GetInventory($playerID);
             for ($i = 0; $i < $count; ++$i) $inventory[] = $cardID;
