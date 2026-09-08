@@ -87,6 +87,17 @@ if ($playerID != 3) {
 // Parse game file to check status and opponent info
 include "./APIParseGamefile.php";
 
+// Never offer session recovery for single player games against the bot
+$opponentIsAI = ($playerID == 1 ? $p2IsAI : $p1IsAI) === "1";
+$opponentIsDummy = ($playerID == 1 ? $p2uid : $p1uid) === "Practice Dummy";
+if ($opponentIsAI || $opponentIsDummy) {
+    $response = new stdClass();
+    $response->gameExists = false;
+    $response->gameInProgress = false;
+    echo json_encode($response);
+    exit;
+}
+
 // Check if game is still in progress
 // Cache piece 14 is set to 99 (MGS_GameOver) when game ends
 // If cache piece 14 is 99, the game is definitely over
