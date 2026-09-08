@@ -7,7 +7,7 @@ class hala_base extends BaseCard {
 		return true;
 	}
 
-	function PayAdditionalCosts($index) {
+	function PayAbilityAdditionalCosts($index) {
 		Tap("MYCHAR-$index", $this->controller);
 		$search = "MYCHAR:subtype=Sword";
 		AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search, 1);
@@ -51,7 +51,7 @@ class hala_bladesaint_of_the_vow extends Card {
 	}
 
 	function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
-		return $this->baseCard->PayAdditionalCosts($index);
+		return $this->baseCard->PayAbilityAdditionalCosts($index);
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {

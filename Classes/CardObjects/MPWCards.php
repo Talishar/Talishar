@@ -46,7 +46,7 @@ class hala extends Card {
 	}
 
 	function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
-		return $this->baseCard->PayAdditionalCosts($index);
+		return $this->baseCard->PayAbilityAdditionalCosts($index);
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
