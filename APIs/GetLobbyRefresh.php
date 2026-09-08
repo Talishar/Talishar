@@ -155,7 +155,9 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
     $cacheArr[$myTimeIdx] = $currentTime;
     WriteCache($gameName, implode("!", $cacheArr));
 
-    if ($oppStatus !== "-1" && $oppLastTime !== "") {
+    $inLobbyPhase = ((int)($cacheArr[13] ?? 0)) < 5;
+
+    if ($inLobbyPhase && $oppStatus !== "-1" && $oppLastTime !== "") {
       if (($currentTime - (int)$oppLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS && $oppStatus === "0") {
         $cacheArr[$oppStatIdx] = "-1";
         if ($otherP == 2) $cacheArr[$otherP + 5] = "";
@@ -178,7 +180,7 @@ if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
   SendLobbyRefreshError(403, "Authentication failed");
 }
 
-if ($kickPlayerTwo) {
+if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
   // $playerID is the polling player, so the one who disconnected is the other one.
   $disconnectedPlayer = ($playerID == 1 ? 2 : 1);
   $kickSignal = GetCachePiece($gameName, 17);
