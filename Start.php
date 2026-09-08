@@ -95,7 +95,7 @@ fwrite($memHandle,
   "0\r\n" . //Player 1 total time
   "0\r\n" . //Player 2 total time
   time() . "\r\n" . //Last update time
-  $roguelikeGameID . "\r\n" . //Roguelike game id
+  "\r\n" . // Reserved for backward-compatible field alignment
   "\r\n" . //Events
   "-\r\n" . //Effect Context
   implode(" ", $p1Inventory) . "\r\n" . //p1 Inventory

@@ -45,7 +45,7 @@ $p1Matchups = json_decode(trim(fgets($gameFileHandler)));
 $p2Matchups = json_decode(trim(fgets($gameFileHandler)));
 $p1deckbuilderID = trim(fgets($gameFileHandler));
 $p2deckbuilderID = trim(fgets($gameFileHandler));
-$roguelikeGameID = trim(fgets($gameFileHandler));
+fgets($gameFileHandler); // Reserved for backward-compatible field alignment
 $p1StartingHealth = trim(fgets($gameFileHandler));
 $p1ContentCreatorID = trim(fgets($gameFileHandler));
 $p2ContentCreatorID = trim(fgets($gameFileHandler));

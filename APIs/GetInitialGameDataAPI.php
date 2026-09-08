@@ -37,8 +37,6 @@ $response->p2IsPatron = $p2IsPatron == "" ? false : true;
 $response->p2IsContributor = IsUserContributor($p2uid);
 $response->p1IsPvtVoidPatron = $p1uid == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
 $response->p2IsPvtVoidPatron = $p2uid == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
-$response->roguelikeGameID = $roguelikeGameID;
-
 $response->altArts = [];
 
 //Get Alt arts

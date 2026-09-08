@@ -235,7 +235,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   fwrite($handler, "0\r\n"); //Player 1 total time
   fwrite($handler, "0\r\n"); //Player 2 total time
   fwrite($handler, time() . "\r\n"); //Last update time
-  fwrite($handler, $roguelikeGameID . "\r\n"); //Roguelike game ID
+  fwrite($handler, "\r\n"); // Reserved for backward-compatible field alignment
   fwrite($handler, "\r\n");//Events
   fwrite($handler, "-\r\n");//Effect Context
   fwrite($handler, implode(" ", $p1Inventory) . "\r\n"); //p1 Inventory
