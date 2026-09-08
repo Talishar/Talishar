@@ -3189,11 +3189,11 @@ class tome_of_duplicity_blue extends Card {
 
 
 class trade_in extends BaseCard {
-  function PlayAbility() {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
   }
 
-  function ProcessAttackTrigger() {
+  function ProcessAttackTrigger($target, $uniqueID) {
     Await($this->controller, "MultiZoneIndices", search:"MYHAND");
     Await($this->controller, "ChooseMultiZone", may:true, context:"Discard a card to draw a card (or pass)");
     Await($this->controller, "Discard");
@@ -3212,19 +3212,6 @@ class trade_in_red extends Card {
     $this->controller = $controller;
     $this->baseCard = new trade_in($this->cardID, $this->controller);
   }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
-    return "";
-  }
-
-  function ProcessAttackTrigger($target, $uniqueID) {
-    return $this->baseCard->ProcessAttackTrigger();
-  }
-
-  function DoesAttackHaveGoAgain() {
-    return $this->baseCard->DoesAttackHaveGoAgain();
-  }
 }
 
 class trade_in_yellow extends Card {
@@ -3233,19 +3220,6 @@ class trade_in_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new trade_in($this->cardID, $this->controller);
   }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
-    return "";
-  }
-
-  function ProcessAttackTrigger($target, $uniqueID) {
-    return $this->baseCard->ProcessAttackTrigger();
-  }
-
-  function DoesAttackHaveGoAgain() {
-    return $this->baseCard->DoesAttackHaveGoAgain();
-  }
 }
 
 class trade_in_blue extends Card {
@@ -3253,19 +3227,6 @@ class trade_in_blue extends Card {
     $this->cardID = "trade_in_blue";
     $this->controller = $controller;
     $this->baseCard = new trade_in($this->cardID, $this->controller);
-  }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
-    return "";
-  }
-
-  function ProcessAttackTrigger($target, $uniqueID) {
-    return $this->baseCard->ProcessAttackTrigger();
-  }
-
-  function DoesAttackHaveGoAgain() {
-    return $this->baseCard->DoesAttackHaveGoAgain();
   }
 }
 
