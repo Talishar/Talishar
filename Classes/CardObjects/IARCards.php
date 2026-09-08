@@ -980,6 +980,10 @@ class figment_of_hope_yellow extends Card {
   function SpecialBlock() {
     return -2;
   }
+
+  function SpecialTalent() {
+    return "LIGHT";
+  }
 }
 
 class suraya_archangel_of_endless_hope extends Card {
@@ -1038,6 +1042,10 @@ class suraya_archangel_of_endless_hope extends Card {
 
   function HasWard() {
     return true;
+  }
+
+  function SpecialTalent() {
+    return "LIGHT";
   }
 }
 
