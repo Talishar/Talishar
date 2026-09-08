@@ -86,7 +86,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   //Do additional effects
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->GetBanishedEffect($from, $banisher, $banishedBy);
-  if ($cardID == "slithering_shadowpede_red" && $from == "HAND" && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
+  if ($cardID == "slithering_shadowpede_red" && ($from == "HAND" || $from == "MYHAND") && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
   if (($mod == "BOOST" || $from == "DECK")
   && str_starts_with($cardID, 'back_alley_breakline_')
   && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetAbilityType($EffectContext) != "")
