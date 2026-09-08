@@ -113,14 +113,6 @@
         AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from " . CardLink($cardID), 1);
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "trade_in_red": case "trade_in_yellow": case "trade_in_blue":
-        if($from == "ARS") GiveAttackGoAgain();
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-".$currentPlayer, 1);
-        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-        return "";
       case "healing_balm_red": case "healing_balm_yellow": case "healing_balm_blue":
         $amount = match($cardID) { "healing_balm_red" => 3, "healing_balm_yellow" => 2, default => 1 };
         GainHealth($amount, $currentPlayer);
