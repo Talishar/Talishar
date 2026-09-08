@@ -17,18 +17,6 @@ function GetModeratorList() {
   ];
 }
 
-function GetCardEditorList() {
-  return [
-    "OotTheMonk",
-    "LaustinSpayce",  
-    "Tower",
-    "PvtVoid",
-    "thatzachary",
-    "DKGaming",
-    "Bluffkin"
-  ];
-}
-
 function GetContributorList() {
   return [
     "sugitime",
@@ -62,14 +50,6 @@ function IsUserModerator($useruid) {
     $modMap = array_flip(GetModeratorList());
   }
   return isset($modMap[$useruid]);
-}
-
-function IsCardEditor($useruid) {
-  static $editorMap = null;
-  if ($editorMap === null) {
-    $editorMap = array_flip(GetCardEditorList());
-  }
-  return isset($editorMap[$useruid]);
 }
 
 /**
