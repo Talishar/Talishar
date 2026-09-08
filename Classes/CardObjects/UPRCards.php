@@ -3188,43 +3188,47 @@ class tome_of_duplicity_blue extends Card {
 // }
 
 
-// class trade_in_red extends Card {
+class trade_in extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "trade_in_red";
-//     $this->controller = $controller;
-//     }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND");
+    Await($this->controller, "ChooseMultiZone", may:true, context:"Discard a card to draw a card (or pass)");
+    Await($this->controller, "Discard");
+    Await($this->controller, "Draw");
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function DoesAttackHaveGoAgain() {
+    global $CombatChain;
+    return $CombatChain->AttackCard()->From() == "ARS";
+  }
+}
 
+class trade_in_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "trade_in_red";
+    $this->controller = $controller;
+    $this->baseCard = new trade_in($this->cardID, $this->controller);
+  }
+}
 
-// class trade_in_yellow extends Card {
+class trade_in_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "trade_in_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new trade_in($this->cardID, $this->controller);
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "trade_in_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class trade_in_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "trade_in_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class trade_in_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "trade_in_blue";
+    $this->controller = $controller;
+    $this->baseCard = new trade_in($this->cardID, $this->controller);
+  }
+}
 
 
 // class transmogrify_red extends Card {
