@@ -44,7 +44,6 @@ class Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1) {
-    if (method_exists($this->baseCard, "PlayAbility")) return $this->baseCard->PlayAbility($from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1);
     if (CardType($this->cardID) == "AA") return "";
     if (SubtypeContains($this->cardID, "Item")) return "";
     if (SubtypeContains($this->cardID, "Aura")) return "";
@@ -137,8 +136,6 @@ class Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    if (method_exists($this->baseCard, "ProcessAttackTrigger"))
-      return $this->baseCard->ProcessAttackTrigger($target, $uniqueID);
     return;
   }
 
@@ -267,8 +264,6 @@ class Card {
   }
 
   function DoesAttackHaveGoAgain() {
-    if (method_exists($this->baseCard, "DoesAttackHaveGoAgain"))
-      return $this->baseCard->DoesAttackHaveGoAgain();
     return false;
   }
 
