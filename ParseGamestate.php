@@ -577,6 +577,12 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
   // Multi-level undo: Rotate backups
   // Shift all existing backups: 0->1, 1->2, 2->3, 3->4, delete 4
   $backupPrefix = $filepath . "gamestateBackup_";
+  // Don't burn an undo slot on a state identical to the newest backup (would make undo a no-op)
+  $currentGamestate = $lastWrittenGamestate ?? @file_get_contents($filepath . "gamestate.txt");
+  if ($currentGamestate !== false && $currentGamestate !== null
+    && file_exists($backupPrefix . "0.txt") && @file_get_contents($backupPrefix . "0.txt") === $currentGamestate) {
+    return;
+  }
   for ($i = MAX_UNDO_BACKUPS - 1; $i > 0; $i--) {
     @rename($backupPrefix . ($i - 1) . ".txt", $backupPrefix . $i . ".txt");
   }
@@ -678,6 +684,7 @@ function MakeStartTurnBackup()
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
   @rename($thisTurnFN, $lastTurnFN);
   SaveGamestateSnapshot($thisTurnFN);
+  MakeGamestateBackup();
   $startGameFN = $filepath . "startGamestate.txt";
   if ((IsPatron(1) || IsPatron(2)) && $currentTurn == 0 && !file_exists($startGameFN)) {
     SaveGamestateSnapshot($startGameFN);
