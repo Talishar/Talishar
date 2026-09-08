@@ -180,3 +180,12 @@ function BindAwait($player) {
 		WriteLog(CardLink($AuraCard->CardID()) . " was bound to " . CardLink($obj->CardID()));
 	}
 }
+
+function DiscardAllyInstead($player, $cardID, $may=true) {
+	if (SearchCount(SearchMultizone($player, "MYHAND:subtype=Ally")) > 0) {
+		Await($player, "MultiZoneIndices", search:"MYHAND:subtype=Ally", subsequent:0);
+		Await($player, "ChooseMultiZone", may:$may, context:"Discard an Ally instead of paying " . CardLink($cardID) . "'s cost?");
+		Await($player, "Discard");
+		Await($player, "AddCurrentTurnEffect", $player, effectID:"$cardID-PAID", final:true);
+	}
+}

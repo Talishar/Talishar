@@ -206,3 +206,496 @@ class dig_for_souls_red extends Card {
 		$Ally->Destroy();
 	}
 }
+
+class drop_dead_bodice extends Card {
+	function __construct($controller) {
+		$this->cardID = "drop_dead_bodice";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "I";
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->Destroy();
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		GainResources($this->controller, 1);
+	}
+
+	function DefaultActiveState() {
+		return 1;
+	}
+
+	function SpecialName() {
+		return "Drop Dead Bodice";
+	}
+
+	function SpecialType() {
+		return "E";
+	}
+
+	function SpecialBlock() {
+		return 0;
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+
+	function SpecialSubType() {
+		return "Chest";
+	}
+
+	function ArcaneBarrier($index) {
+		return 1;
+	}
+}
+
+class commit_to_corruption extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		BanishCardForPlayer("corrupted_corpse", $this->controller, "-", created:true);
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function SpecialName() {
+		return "Commit to Corruption";
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+}
+
+class commit_to_corruption_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "commit_to_corruption_red";
+		$this->controller = $controller;
+		$this->baseCard = new commit_to_corruption($this->cardID, $this->controller);
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function SpecialPitch() {
+		return 1;
+	}
+}
+
+// class commit_to_corruption_yellow extends Card {
+// 	function __construct($controller) {
+// 		$this->cardID = "commit_to_corruption_yellow";
+// 		$this->controller = $controller;
+// 		$this->baseCard = new commit_to_corruption($this->cardID, $this->controller);
+// 	}
+  
+//   function EffectPowerModifier($param, $attached = false) {
+// 		return 2;
+// 	}
+
+// 	function SpecialPitch() {
+// 		return 2;
+// 	}
+// }
+
+// class commit_to_corruption_blue extends Card {
+//   function __construct($controller) {
+//     $this->cardID = "commit_to_corruption_blue";
+//     $this->controller = $controller;
+//     $this->baseCard = new commit_to_corruption($this->cardID, $this->controller);
+//   }
+  
+//   function EffectPowerModifier($param, $attached = false) {
+// 		return 1;
+// 	}
+
+// 	function SpecialPitch() {
+// 		return 3;
+// 	}
+// }
+
+class skeletal_puppetry extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Ally");
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return $param != "PAID";
+	}
+
+	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+		DiscardAllyInstead($this->controller, $this->cardID);
+	}
+
+	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+		$Effect = new CurrentEffect($index);
+		$param = explode("-", $Effect->EffectID())[1] ?? "-";
+		if ($param == "PAID") {
+			$remove = true;
+			return true;
+		}
+		return false;
+	}
+
+	function SpecialName() {
+		return "Skeletal Puppetry";
+	}
+
+	function SpecialCost() {
+		return 2;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+
+	function SpecialBlock() {
+		return 2;
+	}
+}
+
+class skeletal_puppetry_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "skeletal_puppetry_red";
+		$this->controller = $controller;
+		$this->baseCard = new skeletal_puppetry($this->cardID, $this->controller);
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+}
+
+// class skeletal_puppetry_yellow extends Card {
+// 	function __construct($controller) {
+// 		$this->cardID = "skeletal_puppetry_yellow";
+// 		$this->controller = $controller;
+// 		$this->baseCard = new skeletal_puppetry($this->cardID, $this->controller);
+// 	}
+
+// 	function EffectPowerModifier($param, $attached = false) {
+// 		return 2;
+// 	}
+
+// 	function SpecialPitch() {
+// 		return 2;
+// 	}
+// }
+
+class skeletal_puppetry_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "skeletal_puppetry_blue";
+		$this->controller = $controller;
+		$this->baseCard = new skeletal_puppetry($this->cardID, $this->controller);
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+}
+
+class restless_steed_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "restless_steed_red";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		GiveAttackGoAgain();
+	}
+
+	function SpecialName() {
+		return "Restless Steed";
+	}
+
+	function SpecialPower() {
+		return 3;
+	}
+
+	function SpecialHealth() {
+		return 3;
+	}
+
+	function SpecialBlock() {
+		return -2;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+
+	function SpecialSubType() {
+		return "Zombie,Ally";
+	}
+
+	function HasDecay() {
+		return true;
+	}
+}
+
+class clambering_corpses_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "clambering_corpses_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+		return "";
+	}
+	
+	function ProcessAttackTrigger($target, $uniqueID) {
+		Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Ally", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", may:true, context:"Discard an Ally to get +3 and go again?");
+		Await($this->controller, "Discard");
+		Await($this->controller, "AddCurrentTurnEffect", effectID:$this->cardID, final:true);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		if ($parameter == "SWARM") return SubtypeContains($CombatChain->AttackCard()->ID(), "Zombie");
+		else return true;
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return $mode == "SWARM";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "SWARM" ? 3 : 0;
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return true;
+	}
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		AddCurrentTurnEffect("$this->cardID-SWARM", $this->controller);
+	}
+
+	function SpecialName() {
+		return "Clambering Corpses";
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialPower() {
+		return 1;
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+}
+
+class otherworldly_ossuary_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "otherworldly_ossuary_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		BanishCardForPlayer("corrupted_corpse", $this->controller, "-", created:true);
+		return "";
+	}
+
+	function SpecialName() {
+		return "Otherworldly Ossuary";
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+}
+
+class rites_of_nightfall_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "rites_of_nightfall_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		PlayAura("gate_to_iarathael", $this->controller);
+		return "";
+	}
+
+	function SpecialName() {
+		return "Rites of Nightfall";
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+}
+
+class shadowrealm_solace_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "shadowrealm_solace_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		Await($this->controller, "MultiZoneIndices", search:"MYBANISH", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", may:true, context:"Move a card from banish to graveyard. Zombies gain 1 life");
+		Await($this->controller, $this->cardID, final:true);
+		return "";
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$choice = $dqVars["MZIndex"] ?? "-";
+		$object = MZIndexToObject($this->controller, $choice);
+		if ($object != "-") {
+			$cardID = $object->CardID();
+			AddGraveyard($cardID, $this->controller, "BANISH");
+			$object->Remove();
+			if (SubtypeContains($cardID, "Zombie"))
+				GainHealth(1, $this->controller);
+		}
+	}
+
+	function SpecialName() {
+		return "Shadowrealm Solace";
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialType() {
+		return "A";
+	}
+
+	function HasGoAgain($from) {
+		return true;
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+}
+

@@ -47,14 +47,12 @@ cycle_template = """class {cardID} extends Card {{
     $this->controller = $controller;
     $this->baseCard = new {cardName}($this->cardID, $this->controller);
   }}
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {{
-    return "";
-  }}
 }}"""
 
 base_template = """class {cardName} extends BaseCard {{
-
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {{
+    return "";
+  }}
 }}
 """
 

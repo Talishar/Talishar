@@ -317,6 +317,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Angel,Ally";
     case "boneseer_skullcap":
       return "Head"; // temporary
+    case "drop_dead_bodice":
+      return "Chest"; // temporary
     default:
       break;
   }

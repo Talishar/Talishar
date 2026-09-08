@@ -844,6 +844,8 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   if (SubtypeContains($cardID, "Ally", $player)) {
     IncrementClassState($player, $CS_NumAllyPutInGraveyard);
   }
+  if (SubtypeContains($cardID, "Zombie", $player) && SearchCurrentTurnEffects("drop_dead_bodice", $player))
+    AddLayer("TRIGGER", $player, "drop_dead_bodice");
   $card = GetClass($cardID, $player);
   $ret = false;
   if ($card != "-") $ret = $card->AddGraveyardEffect($from, $effectController, $cardController);
