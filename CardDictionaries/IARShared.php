@@ -142,14 +142,11 @@ function ControlsBlasmo($player) {
 	return false;
 }
 
-function BanishFromHand($player, $may=false, $context="") {
+function BanishFromHand($player, $may=false, $context="", $final=false) {
 	if ($context == "") $context = "Choose a card to banish";
-	AddDecisionQueue("FINDINDICES", $player, "HAND");
-	AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
-	if ($may) AddDecisionQueue("MAYCHOOSEHAND", $player, "<-", 1);
-	else AddDecisionQueue("CHOOSEHAND", $player, "<-", 1);
-	AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-	AddDecisionQueue("BANISHCARD", $player, "HAND,-", 1);
+	Await($player, "MultiZoneIndices", search:"MYHAND", subsequent:0);
+	Await($player, "ChooseMultiZone", may:$may, context:$context);
+	Await($player, "MZRemoveAndBanish", final:$final);
 }
 
 function BanishFromArsenal($player, $cardID) {
