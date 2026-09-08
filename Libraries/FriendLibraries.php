@@ -326,41 +326,6 @@ function GetFriendsHidingGamesFromFriends($friends, $connection = null) {
 }
 
 /**
- * Check if two users are friends
- * @param int $userId
- * @param int $friendUserId
- * @return bool
- */
-function AreFriends($userId, $friendUserId) {
-  global $conn;
-  
-  if (!$conn || !is_numeric($userId) || !is_numeric($friendUserId)) {
-    return false;
-  }
-  
-  $userId = (int)$userId;
-  $friendUserId = (int)$friendUserId;
-  
-  $query = "SELECT 1 FROM friends WHERE userId = ? AND friendUserId = ? AND status = 'accepted' LIMIT 1";
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return false;
-  }
-  
-  $stmt->bind_param("ii", $userId, $friendUserId);
-  if (!$stmt->execute()) {
-    $stmt->close();
-    return false;
-  }
-  
-  $result = $stmt->get_result();
-  $isFriend = $result->num_rows > 0;
-  $stmt->close();
-  
-  return $isFriend;
-}
-
-/**
  * Send a friend request (one-way pending request)
  * @param int $userId
  * @param int $friendUserId

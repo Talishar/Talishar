@@ -143,11 +143,6 @@ function DeleteCache($name)
   }
 }
 
-function SHMOPDelimiter()
-{
-  return "!";
-}
-
 function GamestateID($gameName)
 {
   return $gameName + 1000000;

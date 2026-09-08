@@ -14,12 +14,6 @@ if (!function_exists('IsDevEnvironment')) {
   }
 }
 
-// Check for empty input signup
-function emptyInputSignup($username, $email, $pwd, $pwdRepeat)
-{
-	return empty($username) || empty($email) || empty($pwd) || empty($pwdRepeat);
-}
-
 // Check invalid username
 function invalidUid($username)
 {
@@ -30,12 +24,6 @@ function invalidUid($username)
 function invalidEmail($email)
 {
 	return !filter_var($email, FILTER_VALIDATE_EMAIL);
-}
-
-// Check if passwords matches
-function pwdMatch($pwd, $pwdrepeat)
-{
-	return $pwd !== $pwdrepeat;
 }
 
 // Check if username is in database, if so then return data
@@ -1296,38 +1284,6 @@ function LoadSavedSettings($playerId)
 	}
 	mysqli_close($conn);
 	return $output;
-}
-
-function SendEmail($userEmail, $url)
-{
-	include "../APIKeys/APIKeys.php";
-	require '../vendor/autoload.php';
-
-	$email = new Mail();
-	$email->setFrom("noreply@sendgrid.net", "Talishar");
-	$email->addTo($userEmail);
-	$email->addContent(
-		"text/html",
-		"
-        <p>
-          We recieved a password reset request. The link to reset your password is below.
-          If you did not make this request, you can ignore this email
-        </p>
-        <p>
-          Here is your password reset link: </br>
-          <a href=$url>Password Reset</a>
-        </p>
-      "
-	);
-	$sendgrid = new \SendGrid($sendgridKey);
-	try {
-		$response = $sendgrid->send($email);
-		print $response->statusCode() . "\n";
-		print_r($response->headers());
-		print $response->body() . "\n";
-	} catch (Exception $e) {
-		echo 'Caught exception: ' . $e->getMessage() . "\n";
-	}
 }
 
 function SendEmailAPI($userEmail, $url)

@@ -94,34 +94,6 @@ function ManualTunicSetting($player)
   return $settings[$SET_ManualTunic] ?? 0;
 }
 
-function UseNewUI($player)
-{
-  global $SET_TryUI2;
-  $settings = GetSettings($player);
-  return $settings[$SET_TryUI2] == 1;
-}
-
-function IsDarkMode($player)
-{
-  global $SET_DarkMode;
-  $settings = GetSettings($player);
-  return $settings[$SET_DarkMode] ?? 0 == 1 || $settings[$SET_DarkMode] ?? 0 == 3;
-}
-
-function IsPlainMode($player)
-{
-  global $SET_DarkMode;
-  $settings = GetSettings($player);
-  return $settings[$SET_DarkMode] ?? 0 == 2;
-}
-
-function IsDarkPlainMode($player)
-{
-  global $SET_DarkMode;
-  $settings = GetSettings($player);
-  return $settings[$SET_DarkMode] ?? 0 == 3;
-}
-
 function IsPatron($player)
 {
   global $SET_IsPatron;
@@ -503,13 +475,6 @@ function GetCardBack($player)
   return $cardBackMap[$cardBackId] ?? "CardBack";
 }
 
-function IsManualMode($player)
-{
-  global $SET_ManualMode;
-  $settings = GetSettings($player);
-  return $settings[$SET_ManualMode] ?? 0;
-}
-
 function ShouldSkipARs($player)
 {
   global $SET_SkipARs;
@@ -567,31 +532,6 @@ function ShortcutAttackThreshold($player)
   return $settings[$SET_ShortcutAttackThreshold];
 }
 
-function IsDynamicScalingEnabled($player)
-{
-  if (!function_exists("GetSettings")) return false;
-  global $SET_EnableDynamicScaling;
-  $settings = GetSettings($player);
-  if ($settings == null) return false;
-  return ($settings[$SET_EnableDynamicScaling] ?? "0") == "1";
-}
-
-function IsMuted($player)
-{
-  global $SET_Mute;
-  $settings = GetSettings($player);
-  if ($settings == null) return false;
-  return ($settings[$SET_Mute] ?? "0") == "1";
-}
-
-function IsChatMuted()
-{
-  global $SET_MuteChat;
-  $p1Settings = GetSettings(1);
-  $p2Settings = GetSettings(2);
-  return ($p1Settings[$SET_MuteChat] ?? "0") == "1" || ($p2Settings[$SET_MuteChat] ?? "0") == "1";
-}
-
 function AreStatsDisabled($player)
 {
   global $SET_DisableStats;
@@ -610,14 +550,6 @@ function AreGlobalStatsDisabled($player)
   return ($settings[$SET_DisableFabInsights] ?? "0") == "1";
 }
 
-function IsHeroIntroDisabled($player)
-{
-  global $SET_DisableHeroIntro;
-  $settings = GetSettings($player);
-  if ($settings == null) return false;
-  return ($settings[$SET_DisableHeroIntro] ?? "0") == "1";
-}
-
 function IsCasterMode()
 {
   global $SET_CasterMode;
@@ -633,14 +565,6 @@ function IsHideHandFromFriends($player)
   $settings = GetSettings($player);
   if ($settings == null) return false;
   return isset($settings[$SET_HideHandFromFriends]) && $settings[$SET_HideHandFromFriends] == "1";
-}
-
-function IsHideGamesFromFriends($player)
-{
-  global $SET_HideGamesFromFriends;
-  $settings = GetSettings($player);
-  if ($settings == null) return false;
-  return isset($settings[$SET_HideGamesFromFriends]) && $settings[$SET_HideGamesFromFriends] == "1";
 }
 
 function IsStreamerMode($player)

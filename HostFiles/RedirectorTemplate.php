@@ -13,6 +13,4 @@
   $redirectPath = $uri . "/game";
   $autoDeleteGames = false;
 
-  $gameUIPath = $redirectPath . "/NextTurn4.php";
-
 ?>

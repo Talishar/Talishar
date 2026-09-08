@@ -32,29 +32,6 @@ function _apcuAvailable(): bool {
 }
 
 /**
- * Get gamestate with APCu caching
- * Caches for 1 second (plenty of time for concurrent requests)
- */
-function GetCachedGamestate($gameName) {
-  $cacheKey = "gamestate_" . $gameName;
-
-  if (_apcuAvailable()) {
-    $cached = @apcu_fetch($cacheKey);
-    if ($cached !== false) {
-      return $cached;
-    }
-  }
-
-  $content = ReadGamestateCache($gameName);
-
-  if (_apcuAvailable()) {
-    @apcu_store($cacheKey, $content, 1);
-  }
-
-  return $content;
-}
-
-/**
  * Invalidate gamestate cache when it changes
  * Call this after WriteGamestate
  */

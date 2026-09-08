@@ -874,22 +874,6 @@ if (!function_exists('IsTalisharMetafySupporter')) {
   }
 }
 
-function IsValidMetafyTier($tierName)
-{
-  static $supportedTiersMap = null;
-  if ($supportedTiersMap === null) {
-    $supportedTiersMap = array_flip([
-      'Fyendal Supporters',
-      'Seers of Ophidia',
-      'Arknight Shards',
-      'Lover of Grandeur',
-      'Sponsors of Trōpal-Dhani',
-      'Light of Sol Gemini Circle',
-    ]);
-  }
-  return isset($supportedTiersMap[$tierName]);
-}
-
 // Replay save slots granted per Metafy tier, on top of the base patron allotment.
 // Higher tiers grant more slots as a subscriber incentive.
 function GetReplaySlotTierMap()
