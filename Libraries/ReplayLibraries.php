@@ -3,6 +3,32 @@
 const REPLAY_FORMAT_VERSION = 2;
 const REPLAY_FORMAT_FILENAME = "replayFormat.json";
 
+function ReplaySessionUserId(): string
+{
+  return (string)($_SESSION["useruid"] ?? "");
+}
+
+function IsValidReplayUserId(string $userId): bool
+{
+  return $userId !== "" && preg_match('/^[A-Za-z0-9_-]+$/', $userId) === 1;
+}
+
+function ParsePositiveReplayNumber($rawReplayNumber): ?int
+{
+  if (
+    !(is_int($rawReplayNumber) || (is_string($rawReplayNumber) && ctype_digit($rawReplayNumber))) ||
+    (int)$rawReplayNumber < 1
+  ) return null;
+
+  return (int)$rawReplayNumber;
+}
+
+function UserReplayPath(string $userId, int $replayNumber, bool $trailingSlash = true): string
+{
+  $path = "../Replays/$userId/$replayNumber";
+  return $trailingSlash ? $path . "/" : $path;
+}
+
 function ReplayStateFilename(string $directory, int $pointer): string
 {
   return rtrim($directory, "/\\") . "/replayState_$pointer.txt.gz";

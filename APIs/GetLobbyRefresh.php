@@ -23,7 +23,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
   SendLobbyRefreshError(405, "Method not allowed");
 }
 
-$requestData = json_decode(file_get_contents('php://input'), true);
+$requestData = ReadJsonBody();
 if (!is_array($requestData)) {
   SendLobbyRefreshError(400, "Invalid JSON request body");
 }

@@ -44,7 +44,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $CCS_DamageDealt, $CCS_HitThisLink;
   global $AIHasInfiniteHP, $practiceDummyWeaponPower, $EffectContext, $CS_NumCardsDrawn;
   global $p1IsPatron, $p2IsPatron, $p1MetafyTiers, $p2MetafyTiers, $p1IsAI, $p2IsAI;
-  global $roguelikeGameID, $gameGUID, $p1uid, $p2uid;
+  global $gameGUID, $p1uid, $p2uid;
   global $p1MetafyCommunities, $p2MetafyCommunities;
   global $p1TotalTime, $p2TotalTime, $ChainLinks;
   global $p1id, $p2id, $p1DeckLink, $p2DeckLink;
@@ -185,7 +185,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
     $initialLoad->opponentMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
-    $initialLoad->roguelikeGameID = $roguelikeGameID;
     $initialLoad->playerIsPvtVoidPatron = $playerUid == "PvtVoid" || ($playerID != 3 && $sessionIsPvtVoidPatron);
     $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid";
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");

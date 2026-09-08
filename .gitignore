@@ -1,6 +1,5 @@
 /CardImages/
 /Games/
-/Roguelike/Games/
 HostFiles/Redirector.php
 /HostFiles/Redirector.php
 DraftFiles/Games/46/gamelog.txt
@@ -25,8 +24,6 @@ Images/.DS_Store
 vendor
 .DS_Store
 CardDictionaries/.DS_Store
-Roguelike/HostFiles
-RogueLike/Games
 /mysql-data/
 /APIKeys/ApiKeys.php
 /APIKeys/APIKeys.php

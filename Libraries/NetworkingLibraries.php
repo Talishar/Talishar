@@ -30,7 +30,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
-  global $roguelikeGameID, $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects;
+  global $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects;
   global $p1MetafyTiers, $p2MetafyTiers;
   global $CS_OriginalHero;
   global $replaySaveResult;
@@ -1088,11 +1088,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!IsGameOver())
         PlayerWon($playerID);
       WriteLog("🚩 The opponent forfeited due to inactivity.");
-      break;
-    case 100011: //Resume adventure (roguelike)
-      if ($roguelikeGameID == "")
-        break;
-      header("Location: {$redirectPath}/Roguelike/ContinueAdventure.php?gameName={$roguelikeGameID}&playerID=1&health=" . GetHealth(1));
       break;
     case 100012: //Create Replay
       $replaySaveResult = [

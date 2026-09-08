@@ -7,7 +7,7 @@ include "../CardDictionary.php";
 
 SetHeaders();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $gameName = TryPOST("gameName", "");
 
 $response = new stdClass();

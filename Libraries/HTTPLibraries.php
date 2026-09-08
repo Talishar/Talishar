@@ -9,13 +9,38 @@ function TryPOST($key, $default = "")
   return $_POST[$key] ?? $default;
 }
 
+// Decodes a JSON request body without imposing method or Content-Type rules.
+// This matches the legacy API endpoints that read php://input directly.
+function ReadJsonBody()
+{
+  return json_decode(file_get_contents('php://input'), true);
+}
+
+function WriteJsonResponse($payload, $statusCode = null)
+{
+  if ($statusCode !== null) http_response_code($statusCode);
+  echo json_encode($payload);
+}
+
+function ExitJsonResponse($payload, $statusCode = null)
+{
+  WriteJsonResponse($payload, $statusCode);
+  exit;
+}
+
+function SetJsonError($response, $message, $statusCode = 400)
+{
+  http_response_code($statusCode);
+  $response->error = $message;
+}
+
 // Reads the request body for endpoints that accept either a form-encoded or a JSON POST.
 function ReadPostData()
 {
   if (!empty($_POST) || $_SERVER['REQUEST_METHOD'] !== 'POST') return $_POST;
   $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
   if (strpos($contentType, 'application/json') === false) return $_POST;
-  return json_decode(file_get_contents('php://input'), true) ?? [];
+  return ReadJsonBody() ?? [];
 }
 
 function TryPOSTData($key, $default = "", $data = [])
@@ -35,6 +60,31 @@ function ApplyActionResult($response, $result)
   http_response_code(400);
   $response->error = $result['message'];
   return false;
+}
+
+// Shared setup for authenticated JSON APIs after their dependencies are loaded.
+function InitializeAuthenticatedJsonApi($databaseLogKey)
+{
+  if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+  header('Content-Type: application/json');
+
+  if (!IsUserLoggedIn()) {
+    ExitJsonResponse(["error" => "Not logged in"], 401);
+  }
+
+  $postData = ReadJsonBody();
+  if (!$postData) $postData = [];
+
+  $userId = LoggedInUser();
+  $connection = GetDBConnection($databaseLogKey);
+  if (
+    !$connection ||
+    (is_object($connection) && isset($connection->connect_error) && $connection->connect_error)
+  ) {
+    ExitJsonResponse(["error" => "Database connection failed"], 500);
+  }
+
+  return [$postData, $userId, $connection];
 }
 
 function IsGameNameValid($gameName)

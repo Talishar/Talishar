@@ -11,7 +11,7 @@ include_once '../APIKeys/APIKeys.php';
 
 SetHeaders();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $deckbuilderType = TryPOST("deckbuilder", "");
 $deckbuilderID = TryPOST("user", "");
 $apiKey = TryPOST("apiKey", "");

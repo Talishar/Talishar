@@ -38,7 +38,7 @@ function ParseGamestate($parseHistoricalStats = true)
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity;
-  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $EffectContext;
+  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $events, $EffectContext;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
   global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI, $AIHasInfiniteHP, $attackQueue, $practiceDummyWeaponPower;
   global $p1TurnCount, $p2TurnCount;
@@ -149,7 +149,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $p1TotalTime = trim($gamestateContent[66+$numChainLinks]); //Player 1 total time
   $p2TotalTime = trim($gamestateContent[67+$numChainLinks]); //Player 2 total time
   $lastUpdateTime = trim($gamestateContent[68+$numChainLinks]); //Last update time
-  $roguelikeGameID = trim($gamestateContent[69+$numChainLinks]); //Roguelike game id
+  // 69 + numChainLinks reserved for backward-compatible field alignment
   $events = GetStringArray($gamestateContent[70+$numChainLinks]); //Events
   $EffectContext = trim($gamestateContent[71+$numChainLinks]);
   $p1Inventory = GetStringArray($gamestateContent[72+$numChainLinks]);

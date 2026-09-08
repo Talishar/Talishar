@@ -33,7 +33,7 @@ include_once "./Libraries/ValidationLibraries.php";
 @ini_set('max_execution_time', '1');
 
 SetHeaders();
-$_POST = json_decode(file_get_contents('php://input'), true) ?? [];
+$_POST = ReadJsonBody() ?? [];
 
 // Start output buffering to catch any accidental output
 ob_start();
@@ -317,13 +317,6 @@ try {
       $deck->AddTop($cardList[$i]);
     }
     ContinueDecisionQueue();
-    break;
-  case 100011: //Resume adventure (roguelike)
-    if($roguelikeGameID == "") {
-      $response->error = "Cannot resume adventure - not a roguelike game.";
-      break;
-    }
-    $response->redirectLink = $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1);
     break;
   default:
     break;

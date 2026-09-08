@@ -15,7 +15,7 @@ session_write_close();
 
 $response = new stdClass();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $token = $_POST["shareToken"] ?? null;
 
 if ($token === null || $token === "") {

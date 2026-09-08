@@ -93,7 +93,7 @@ array_push($gamestateLines,
   $p1TotalTime, // Player 1 total time
   $p2TotalTime, // Player 2 total time
   $lastUpdateTime, // Last update time
-  $roguelikeGameID, // Roguelike game ID
+  "", // Reserved for backward-compatible field alignment
   implode(" ", $events), // Events
   $EffectContext, // Update number the gamestate is for
   implode(" ", $p1Inventory),

@@ -52,6 +52,25 @@ class ReplayLibrariesTest extends TestCase
         self::assertFalse(ValidateReplayStateFiles($this->replayDirectory));
     }
 
+    public function testReplayRequestIdentifiersKeepExistingValidationRules(): void
+    {
+        self::assertTrue(IsValidReplayUserId('Player_1-test'));
+        self::assertFalse(IsValidReplayUserId(''));
+        self::assertFalse(IsValidReplayUserId('../Player'));
+
+        self::assertSame(12, ParsePositiveReplayNumber(12));
+        self::assertSame(12, ParsePositiveReplayNumber('12'));
+        self::assertNull(ParsePositiveReplayNumber(0));
+        self::assertNull(ParsePositiveReplayNumber('1.5'));
+        self::assertNull(ParsePositiveReplayNumber('-1'));
+    }
+
+    public function testUserReplayPathHasTheEndpointCompatibleShape(): void
+    {
+        self::assertSame('../Replays/Player_1/12/', UserReplayPath('Player_1', 12));
+        self::assertSame('../Replays/Player_1/12', UserReplayPath('Player_1', 12, false));
+    }
+
     public function testFormatPackagesAndVerifiesExactStates(): void
     {
         $commands = "1 StartTurn 1 0\r\n1 99 0 0 0\r\n";

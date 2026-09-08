@@ -14,7 +14,7 @@ include_once "../includes/ModeratorList.inc.php";
 SetHeaders();
 
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $gameName = TryPOST("gameName", 0);
 $playerID = TryPOST("playerID", 0);
 
@@ -37,8 +37,6 @@ $response->p2IsPatron = $p2IsPatron == "" ? false : true;
 $response->p2IsContributor = IsUserContributor($p2uid);
 $response->p1IsPvtVoidPatron = $p1uid == "PvtVoid" || ($playerID == 1 && isset($_SESSION["isPvtVoidPatron"]));
 $response->p2IsPvtVoidPatron = $p2uid == "PvtVoid" || ($playerID == 2 && isset($_SESSION["isPvtVoidPatron"]));
-$response->roguelikeGameID = $roguelikeGameID;
-
 $response->altArts = [];
 
 //Get Alt arts

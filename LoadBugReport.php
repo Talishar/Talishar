@@ -15,7 +15,7 @@ if ($_SERVER['SERVER_NAME'] !== 'localhost' && $_SERVER['SERVER_NAME'] !== '127.
   exit();
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+$data = ReadJsonBody();
 $source = $data['source'];
 $target = $data['target'];
 

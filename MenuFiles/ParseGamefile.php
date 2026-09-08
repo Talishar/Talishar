@@ -49,7 +49,7 @@
   $p2Matchups           = json_decode($lines[$li++] ?? '');
   $p1deckbuilderID      = $lines[$li++] ?? '';
   $p2deckbuilderID      = $lines[$li++] ?? '';
-  $roguelikeGameID      = $lines[$li++] ?? '';
+  ++$li; // Reserved for backward-compatible field alignment
   $p1StartingHealth     = $lines[$li++] ?? '';
   $p1ContentCreatorID   = $lines[$li++] ?? '';
   $p2ContentCreatorID   = $lines[$li++] ?? '';

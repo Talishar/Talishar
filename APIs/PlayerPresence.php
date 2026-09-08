@@ -6,7 +6,7 @@ include_once "../Libraries/CacheLibraries.php";
 
 SetHeaders();
 
-$jsonInput = json_decode(file_get_contents('php://input'), true);
+$jsonInput = ReadJsonBody();
 if (is_array($jsonInput)) $_POST = $jsonInput;
 
 header('Content-Type: application/json; charset=utf-8');

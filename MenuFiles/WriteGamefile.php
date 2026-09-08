@@ -10,7 +10,7 @@
       global $gameFileHandler;
       global $p1Data, $p2Data, $gameStatus, $format, $visibility, $firstPlayerChooser, $firstPlayer, $p1Key, $p2Key, $p1uid, $p2uid, $p1id, $p2id;
       global $gameDescription, $hostIP, $p1IsPatron, $p2IsPatron, $p1DeckLink, $p2DeckLink;
-      global $p1IsChallengeActive, $p2IsChallengeActive, $joinerIP, $p1deckbuilderID, $p2deckbuilderID, $roguelikeGameID;
+      global $p1IsChallengeActive, $p2IsChallengeActive, $joinerIP, $p1deckbuilderID, $p2deckbuilderID;
       global $p1Matchups, $p2Matchups, $p1StartingHealth, $p1ContentCreatorID, $p2ContentCreatorID;
       global $p1SideboardSubmitted, $p2SideboardSubmitted, $p1StartingEquipment, $p2StartingEquipment, $p1IsAI, $p2IsAI, $gameGUID;
       global $p1MetafyTiers, $p2MetafyTiers;
@@ -45,7 +45,7 @@
           . json_encode($p2Matchups)          . "\r\n"
           . $p1deckbuilderID    . "\r\n"
           . $p2deckbuilderID    . "\r\n"
-          . $roguelikeGameID    . "\r\n"
+          . "\r\n" // Reserved for backward-compatible field alignment
           . $p1StartingHealth   . "\r\n"
           . $p1ContentCreatorID . "\r\n"
           . $p2ContentCreatorID . "\r\n"

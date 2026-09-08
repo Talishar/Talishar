@@ -20,7 +20,7 @@ if ($userId == "") {
 }
 $response = new stdClass();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 
 $replayNumber = $_POST["replayNumber"] ?? null;
 

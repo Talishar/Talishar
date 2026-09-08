@@ -24,7 +24,7 @@ $loggedInUserName = LoggedInUserName();
 $isModerator = IsUserModerator($loggedInUserName);
 
 // Get JSON input
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $confirmationUsername = isset($_POST["confirmationUsername"]) ? $_POST["confirmationUsername"] : "";
 
 // Determine if this is self-deletion or mod deletion
