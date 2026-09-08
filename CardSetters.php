@@ -31,6 +31,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   $amount = 1;
   $isFaceDown = isFaceDownMod($mod);
   AddEvent("BANISH", $player . ":" . ($isFaceDown ? "CardBack" : $cardID));
+  if ($from == "ARS" && !$isFaceDown) AddEvent("ARSENALBANISH", $player . ":" . $cardID);
   //Effects that change the modifier
   if ($characterID == "blasmophet_levia_consumed" && $character[1] < 3) {
     AddLayer("TRIGGER", $player, $characterID);

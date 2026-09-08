@@ -1649,7 +1649,7 @@ function CombatChainClosedCharacterEffects()
               $equipCharacter[$charIndex + 6] = 0;
             }
             if (ModifiedBlockValue($equipCharacter[$charIndex], $defPlayer, "CC", "", $chainLinks[$i][$j + 8]) + $equipCharacter[$charIndex + 4] + BlockModifier($equipCharacter[$charIndex], "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5] <= 0) {
-              DestroyCharacter($equipPlayer, $charIndex);
+              DestroyCharacter($equipPlayer, $charIndex, animateDestroy: true);
             }
           }
         }
@@ -1670,12 +1670,12 @@ function CombatChainClosedCharacterEffects()
         $equipCharacter[$charIndex + 4] -= $blockModifier;
       } 
       elseif (HasBladeBreak($chainLinks[$i][$j]) && $equipCharacter[$charIndex + 1] != 0) {
-        DestroyCharacter($equipPlayer, $charIndex);
+        DestroyCharacter($equipPlayer, $charIndex, animateDestroy: true);
       }
       switch ($chainLinks[$i][$j]) {
         case "phantasmal_footsteps":
           if (!DelimStringContains($chainLinkSummary[$i * $chainLinkSummaryPieces + 3], "ILLUSIONIST") && $chainLinkSummary[$i * $chainLinkSummaryPieces + 1] >= 6) {
-            DestroyCharacter($defPlayer, FindCharacterIndex($defPlayer, "phantasmal_footsteps"));
+            DestroyCharacter($defPlayer, FindCharacterIndex($defPlayer, "phantasmal_footsteps"), animateDestroy: true);
           }
           break;
         case "ironhide_helm":
@@ -1683,7 +1683,7 @@ function CombatChainClosedCharacterEffects()
         case "ironhide_gauntlet":
         case "ironhide_legs":
           $charIndex = FindCharacterIndex($defPlayer, $chainLinks[$i][$j]);
-          if (SearchCurrentTurnEffects($chainLinks[$i][$j], $defPlayer, true)) DestroyCharacter($defPlayer, $charIndex); //Ironhide
+          if (SearchCurrentTurnEffects($chainLinks[$i][$j], $defPlayer, true)) DestroyCharacter($defPlayer, $charIndex, animateDestroy: true); //Ironhide
           break;
         case "bone_vizier":
           $deck = new Deck($defPlayer);
@@ -2693,7 +2693,7 @@ function UndestroyCharacter($player, $index, $resetCounters=true)
   if ($resetCounters) $char[$index + 4] = 0;
 }
 
-function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = false, $skipClose = false)
+function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = false, $skipClose = false, $animateDestroy = false)
 {
   if ($index == -1) return "";
   global $CombatChain;
@@ -2717,6 +2717,10 @@ function DestroyCharacter($player, $index, $skipDestroy = false, $wasBanished = 
   }
   $char[$index + 10] = "-";
   if (!$skipDestroy) {
+    $destroyedSlot = $char[$index + 15] ?? "-";
+    if ($animateDestroy && $index != 0 && $destroyedSlot != "-" && $destroyedSlot != "Hero") {
+      AddEvent("EQUIPDESTROY", $player . ":" . $cardID . ":" . $destroyedSlot);
+    }
     if (HasWard($cardID, $player)) WardPoppedAbility($player, $char[$index]);
     if (HasWard($cardID, $player) && ClassContains($cardID, "ILLUSIONIST", $player)) PhantomTidemawDestroy($player);
     if (!$wasBanished) AddGraveyard($cardID, $player, "CHAR");

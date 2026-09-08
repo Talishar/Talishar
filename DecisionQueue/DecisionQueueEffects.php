@@ -1150,7 +1150,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
             $defCharCount = count($defChar);
             for ($i = 0; $i < $defCharCount; $i += $defCharPieces) {
               if ($defChar[$i + 11] == $combatChain[$ind + 8]) {
-                DestroyCharacter($defPlayer, $i);
+                DestroyCharacter($defPlayer, $i, animateDestroy: true);
                 break;
               }
             }
@@ -1187,7 +1187,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
           }
           else {
             $index = FindCharacterIndex($defPlayer, $card->ID());
-            DestroyCharacter($defPlayer, $index);
+            DestroyCharacter($defPlayer, $index, animateDestroy: true);
           }
         }
         else {
