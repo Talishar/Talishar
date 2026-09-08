@@ -712,13 +712,18 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $cardList = explode(";", $cardID);
       foreach ($cardList as $card) {
         $cardID = trim($card);
+        $num = 1;
+        $destination = "";
         if (str_contains($cardID, "|")) {
           $cardIDParts = explode("|", $cardID);
-          $num = $cardIDParts[1];
-          $cardID = $cardIDParts[0];
+          $cardID = trim(array_shift($cardIDParts));
+          foreach ($cardIDParts as $cardIDPart) {
+            $cardIDPart = trim($cardIDPart);
+            if (is_numeric($cardIDPart)) $num = $cardIDPart;
+            elseif ($cardIDPart != "") $destination = strtolower($cardIDPart);
+          }
         }
-        else
-          $num = 1;
+        $count = max(1, intval($num));
         if (SetIDtoCardID(strtoupper($cardID)) != "")
           $cardID = SetIDtoCardID(strtoupper($cardID));
         if (str_contains($cardID, ' ')) $cardID = str_replace(' ', '_', $cardID);
@@ -754,8 +759,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           PlayCardEffect("DELPERM", "MANUALMODE", 0);
         }
         elseif ($cardID == "mill") {
-          $numMilled = intval($num) ?? 1;
-          PlayCardEffect("MILL", "MANUALMODE", $numMilled);
+          PlayCardEffect("MILL", "MANUALMODE", $count);
         }
         elseif (TypeContains($cardID, "C")) {
           WriteLog("Player " . $playerID . " transformed their hero", highlight: true);
@@ -763,52 +767,71 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $char[0] = $cardID;
         }
         elseif (CardType($cardID) == "E" || CardType($cardID) == "W") {
-          if ($num == "inv") {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true, highlightColor: "darkblue");
+          $countSuffix = $count > 1 ? " x" . $count : "";
+          if ($destination == "inv") {
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their inventory", highlight: true, highlightColor: "darkblue");
             $inventory = &GetInventory($playerID);
-            $inventory[] = $cardID;
+            for ($i = 0; $i < $count; ++$i) $inventory[] = $cardID;
+          }
+          elseif ($destination == "banish") {
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their banish", highlight: true, highlightColor: "darkblue");
+            for ($i = 0; $i < $count; ++$i) BanishCardForPlayer($cardID, $playerID, "MANUAL");
+          }
+          elseif ($destination == "grave") {
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their graveyard", highlight: true, highlightColor: "darkblue");
+            for ($i = 0; $i < $count; ++$i) AddGraveyard($cardID, $playerID, "MANUAL");
+          }
+          elseif ($destination == "deck") {
+            WriteLog("⬆️ Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to the top of their deck", highlight: true, highlightColor: "darkblue");
+            for ($i = 0; $i < $count; ++$i) AddTopDeck($cardID, $playerID, "MANUAL");
+          }
+          elseif ($destination == "hand") {
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their hand", highlight: true, highlightColor: "darkblue");
+            $hand = &GetHand($playerID);
+            for ($i = 0; $i < $count; ++$i) $hand[] = $cardID;
           }
           else {
-            WriteLog("Player " . $playerID . " manually equipped " . CardLink($cardID), highlight: true, highlightColor: "darkblue");
-            EquipEquipment($playerID, $cardID);
+            WriteLog("Player " . $playerID . " manually equipped " . CardLink($cardID) . $countSuffix, highlight: true, highlightColor: "darkblue");
+            for ($i = 0; $i < $count; ++$i) EquipEquipment($playerID, $cardID);
           }
         }
         elseif (!TypeContains($cardID, "T") && !TypeContains($cardID, "Macro")) {
-          if ($num == "banish") {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their banish", highlight: true, highlightColor: "darkblue");
-            BanishCardForPlayer($cardID, $playerID, "MANUAL");
+          $countSuffix = $count > 1 ? " x" . $count : "";
+          if ($destination == "banish") {
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their banish", highlight: true, highlightColor: "darkblue");
+            for ($i = 0; $i < $count; ++$i) BanishCardForPlayer($cardID, $playerID, "MANUAL");
           }
-          elseif ($num == "grave") {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their graveyard", highlight: true, highlightColor: "darkblue");
-            AddGraveyard($cardID, $playerID, "MANUAL");
+          elseif ($destination == "grave") {
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their graveyard", highlight: true, highlightColor: "darkblue");
+            for ($i = 0; $i < $count; ++$i) AddGraveyard($cardID, $playerID, "MANUAL");
           }
-          elseif ($num == "deck") {
-            WriteLog("⬆️ Player " . $playerID . " manually added " . CardLink($cardID) . " to the top of their deck", highlight: true, highlightColor: "darkblue");
-            AddTopDeck($cardID, $playerID, "MANUAL");
+          elseif ($destination == "deck") {
+            WriteLog("⬆️ Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to the top of their deck", highlight: true, highlightColor: "darkblue");
+            for ($i = 0; $i < $count; ++$i) AddTopDeck($cardID, $playerID, "MANUAL");
           }
-          elseif ($num == "inv") {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their inventory", highlight: true, highlightColor: "darkblue");
+          elseif ($destination == "inv") {
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their inventory", highlight: true, highlightColor: "darkblue");
             $inventory = &GetInventory($playerID);
-            $inventory[] = $cardID;
+            for ($i = 0; $i < $count; ++$i) $inventory[] = $cardID;
           }
           else {
-            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . " to their hand", highlight: true, highlightColor: "darkblue");
+            WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their hand", highlight: true, highlightColor: "darkblue");
             $hand = &GetHand($playerID);
-            $hand[] = $cardID;
+            for ($i = 0; $i < $count; ++$i) $hand[] = $cardID;
           }
         }
         else {
-          WriteLog("Player " . $playerID . " manually created " . CardLink($cardID), highlight: true, highlightColor: "darkblue");
+          WriteLog("Player " . $playerID . " manually created " . CardLink($cardID) . ($count > 1 ? " x" . $count : ""), highlight: true, highlightColor: "darkblue");
           if (SubtypeContains($cardID, "Aura"))
-            PlayAura($cardID, $playerID, $num, from: "MANUAL");
+            PlayAura($cardID, $playerID, $count, from: "MANUAL");
           elseif (SubtypeContains($cardID, "Item"))
-            PutItemIntoPlayForPlayer($cardID, $playerID, number: $num, from: "MANUAL");
+            PutItemIntoPlayForPlayer($cardID, $playerID, number: $count, from: "MANUAL");
           elseif (SubtypeContains($cardID, "Landmark"))
-            PlayLandmark($cardID, $playerID, "MANUAL");
+            for ($i = 0; $i < $count; ++$i) PlayLandmark($cardID, $playerID, "MANUAL");
           elseif (SubtypeContains($cardID, "Ally"))
-            PlayAlly($cardID, $playerID, from:"MANUAL");
+            for ($i = 0; $i < $count; ++$i) PlayAlly($cardID, $playerID, from:"MANUAL");
           else
-            PutPermanentIntoPlay($playerID, $cardID, from: "MANUAL");
+            for ($i = 0; $i < $count; ++$i) PutPermanentIntoPlay($playerID, $cardID, from: "MANUAL");
         }
       }
       break;
