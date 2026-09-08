@@ -205,6 +205,8 @@ function MZRemoveAndBanishAwait($player) {
   global $dqVars;
   $MZIndex = $dqVars["MZIndex"] ?? "-";
   $from = $dqVars["from"] ?? explode("-", $MZIndex)[0];
+  if (str_contains($from, "MY"))
+    $from = substr($from, 2);
   $modifier = $dqVars["modifier"] ?? "-";
   $banishedBy = $dqVars["banishedBy"] ?? "-";
   $banisher = $dqVars["banisher"] ?? $player;
