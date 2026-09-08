@@ -2,6 +2,7 @@
 
 // Shared processing for ProcessInput.php and ProcessInputAPI.php
 include_once "Libraries/CacheLibraries.php";
+include_once "Libraries/RematchLibraries.php";
 
 ProcessMacros();
 
@@ -34,7 +35,7 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
     [$p1MetafyCommunities, $p2MetafyCommunities] = [$p2MetafyCommunities, $p1MetafyCommunities];
   }
 
-  $gameGUID = GenerateGameGUID(); // Generate a unique game GUID (e.g. for hero mastery)
+  $gameGUID = ResetGameGUIDForRematch(); // Required for distinct hero mastery awards.
   $p2IsAILocal = $p2IsAI == "1";
   $gameStatus = ($p2IsAILocal ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
   SetCachePiece($gameName, 14, $gameStatus);
