@@ -642,10 +642,6 @@ class rites_of_nightfall_blue extends Card {
 	function SpecialTalent() {
 		return "SHADOW";
 	}
-
-	function SpecialClass() {
-		return "NECROMANCER";
-	}
 }
 
 class shadowrealm_solace_blue extends Card {
