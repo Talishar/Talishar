@@ -16,7 +16,7 @@ include_once "../Assets/MetafyDictionary.php";
 // Set headers immediately after includes
 SetHeaders();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $gameName = TryPOST("gameName", 0);
 $playerID = TryPOST("playerID", 0);
 if (session_status() === PHP_SESSION_NONE) session_start();

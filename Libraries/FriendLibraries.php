@@ -702,6 +702,20 @@ function FindUserByUsername($username) {
 }
 
 /**
+ * Resolves a username used by a friend/block action while rejecting self-targets.
+ * Callers retain control of endpoint-specific error wording.
+ */
+function ResolveOtherUserByUsername($username, $currentUserId) {
+  if (empty($username)) return ["user" => null, "error" => "missing"];
+
+  $user = FindUserByUsername($username);
+  if (!$user) return ["user" => null, "error" => "not_found"];
+  if ($user['usersId'] == $currentUserId) return ["user" => null, "error" => "self"];
+
+  return ["user" => $user, "error" => null];
+}
+
+/**
  * Get sent friend requests from a user
  * @param int $userId
  * @return array List of sent requests

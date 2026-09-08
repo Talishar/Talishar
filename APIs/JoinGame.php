@@ -132,7 +132,7 @@ $response = new stdClass();
 
 session_start();
 if (!isset($gameName)) {
-  $_POST = json_decode(file_get_contents('php://input'), true);
+  $_POST = ReadJsonBody();
   if($_POST == NULL) {
     $response->error = "Parameters were not passed";
     echo json_encode($response);

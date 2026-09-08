@@ -12,7 +12,7 @@ SetHeaders();
 
 $response = new stdClass();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $decklink = TryPOST("fabdb", "");
 
 if (empty($decklink)) {

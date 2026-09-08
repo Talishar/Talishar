@@ -33,7 +33,7 @@ include_once "./Libraries/ValidationLibraries.php";
 @ini_set('max_execution_time', '1');
 
 SetHeaders();
-$_POST = json_decode(file_get_contents('php://input'), true) ?? [];
+$_POST = ReadJsonBody() ?? [];
 
 // Start output buffering to catch any accidental output
 ob_start();

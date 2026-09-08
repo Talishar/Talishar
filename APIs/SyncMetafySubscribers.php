@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // When true, users who cannot be matched against the roster at all are revoked
 // instead of skipped. Email matching makes this rarely necessary.
-$input = json_decode(file_get_contents('php://input'), true);
+$input = ReadJsonBody();
 $clear_unmatched = !empty($input['clearNoMetafyId']);
 
 $conn = GetDBConnection(DBL_SYNC_METAFY_SUBSCRIBERS);

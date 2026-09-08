@@ -7,7 +7,7 @@ SetHeaders();
 
 $response = new stdClass();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $userEmail = isset($_POST["email"]) ? $_POST["email"] : null;
 if (empty($userEmail)) {
     $response->error = "Email is required.";

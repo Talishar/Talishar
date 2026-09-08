@@ -6,7 +6,7 @@ include_once "../includes/dbh.inc.php";
 
 SetHeaders();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $decklink = isset($_POST["deckLink"]) ? $_POST["deckLink"] : "";
 
 if (IsUserLoggedIn() && $decklink != "") {

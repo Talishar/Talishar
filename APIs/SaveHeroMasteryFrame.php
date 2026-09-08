@@ -25,9 +25,7 @@ header('Content-Type: application/json');
 
 function MasteryFrameError($message, $code = 400)
 {
-  http_response_code($code);
-  echo json_encode(["success" => false, "message" => $message]);
-  exit;
+  ExitJsonResponse(["success" => false, "message" => $message], $code);
 }
 
 if (!IsUserLoggedIn()) {
@@ -35,7 +33,7 @@ if (!IsUserLoggedIn()) {
 }
 
 $userId = intval(LoggedInUser());
-$body = json_decode(file_get_contents('php://input'), true) ?? [];
+$body = ReadJsonBody() ?? [];
 $heroId = trim(strval($body["heroId"] ?? ""));
 $rawLevel = $body["level"] ?? null;
 

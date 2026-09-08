@@ -27,32 +27,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 if (!IsUserLoggedIn()) {
-    http_response_code(401);
-    echo json_encode(['error' => 'User not authenticated']);
-    exit;
+    ExitJsonResponse(['error' => 'User not authenticated'], 401);
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = ReadJsonBody();
 $appId = $input['app_id'] ?? null;
 $redirectUri = $input['redirect_uri'] ?? null;
 
 if (!$appId) {
-    http_response_code(400);
-    echo json_encode(['error' => 'app_id is required']);
-    exit;
+    ExitJsonResponse(['error' => 'app_id is required'], 400);
 }
 
 $appConfig = GetOAuthApp($appId);
 if (!$appConfig) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Invalid application ID']);
-    exit;
+    ExitJsonResponse(['error' => 'Invalid application ID'], 400);
 }
 
 if (!$redirectUri || !IsValidRedirectUri($appId, $redirectUri)) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Invalid redirect_uri']);
-    exit;
+    ExitJsonResponse(['error' => 'Invalid redirect_uri'], 400);
 }
 
 $userId = LoggedInUser();
@@ -88,4 +80,4 @@ $payload = [
 
 $token = GenerateJWT($payload, $appConfig['secret']);
 
-echo json_encode(['token' => $token]);
+WriteJsonResponse(['token' => $token]);

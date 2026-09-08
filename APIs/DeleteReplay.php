@@ -4,39 +4,31 @@ session_start();
 
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
+include_once "../Libraries/ReplayLibraries.php";
 
 SetHeaders();
 
 $response = new stdClass();
-$userId = $_SESSION["useruid"] ?? "";
+$userId = ReplaySessionUserId();
 session_write_close();
 
-if ($userId === "" || !preg_match('/^[A-Za-z0-9_-]+$/', $userId)) {
+if (!IsValidReplayUserId($userId)) {
   $response->error = "You must be logged in to delete replays.";
-  http_response_code(401);
-  echo json_encode($response);
-  exit;
+  ExitJsonResponse($response, 401);
 }
 
-$request = json_decode(file_get_contents('php://input'), true) ?: [];
+$request = ReadJsonBody() ?: [];
 $rawReplayNumber = $request["replayNumber"] ?? null;
-if (
-  !(is_int($rawReplayNumber) || (is_string($rawReplayNumber) && ctype_digit($rawReplayNumber))) ||
-  (int)$rawReplayNumber < 1
-) {
+$replayNumber = ParsePositiveReplayNumber($rawReplayNumber);
+if ($replayNumber === null) {
   $response->error = "Invalid or missing replayNumber.";
-  http_response_code(400);
-  echo json_encode($response);
-  exit;
+  ExitJsonResponse($response, 400);
 }
 
-$replayNumber = (int)$rawReplayNumber;
-$replayPath = "../Replays/$userId/$replayNumber";
+$replayPath = UserReplayPath($userId, $replayNumber, false);
 if (!is_dir($replayPath) || is_link($replayPath)) {
   $response->error = "Replay not found.";
-  http_response_code(404);
-  echo json_encode($response);
-  exit;
+  ExitJsonResponse($response, 404);
 }
 
 function DeleteReplayDirectory(string $directory): bool
@@ -61,11 +53,9 @@ function DeleteReplayDirectory(string $directory): bool
 
 if (!DeleteReplayDirectory($replayPath)) {
   $response->error = "Failed to delete replay.";
-  http_response_code(500);
-  echo json_encode($response);
-  exit;
+  ExitJsonResponse($response, 500);
 }
 
 $response->success = true;
 $response->replayNumber = $replayNumber;
-echo json_encode($response);
+WriteJsonResponse($response);

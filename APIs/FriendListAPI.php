@@ -15,33 +15,7 @@ include_once "../includes/dbh.inc.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../Libraries/FriendLibraries.php";
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-  session_start();
-}
-
-header('Content-Type: application/json');
-
-// Check if user is logged in
-if (!IsUserLoggedIn()) {
-  http_response_code(401);
-  echo json_encode(["error" => "Not logged in"]);
-  exit;
-}
-
-$_POST = json_decode(file_get_contents('php://input'), true);
-if (!$_POST) {
-  $_POST = [];
-}
-
-$userId = LoggedInUser();
-$conn = GetDBConnection(DBL_FRIEND_LIST_API);
-
-// Single, comprehensive connection check
-if (!$conn || $conn === false || (is_object($conn) && isset($conn->connect_error) && $conn->connect_error)) {
-  http_response_code(500);
-  echo json_encode(["error" => "Database connection failed"]);
-  exit;
-}
+[$_POST, $userId, $conn] = InitializeAuthenticatedJsonApi(DBL_FRIEND_LIST_API);
 
 $action = $_POST['action'] ?? '';
 $response = new stdClass();
@@ -55,28 +29,21 @@ switch ($action) {
 
   case 'addFriend':
     $friendUsername = $_POST['friendUsername'] ?? '';
-    
-    if (empty($friendUsername)) {
-      http_response_code(400);
-      $response->error = "Friend username is required";
+
+    $resolvedUser = ResolveOtherUserByUsername($friendUsername, $userId);
+    if ($resolvedUser['error'] !== null) {
+      $messages = [
+        'missing' => "Friend username is required",
+        'not_found' => "User not found",
+        'self' => "Cannot add yourself as a friend"
+      ];
+      $statusCode = $resolvedUser['error'] === 'not_found' ? 404 : 400;
+      SetJsonError($response, $messages[$resolvedUser['error']], $statusCode);
       break;
     }
-    
-    // Find friend by username
-    $friend = FindUserByUsername($friendUsername);
-    if (!$friend) {
-      http_response_code(404);
-      $response->error = "User not found";
-      break;
-    }
-    
-    // Don't allow adding yourself
-    if ($friend['usersId'] == $userId) {
-      http_response_code(400);
-      $response->error = "Cannot add yourself as a friend";
-      break;
-    }
-    
+
+    $friend = $resolvedUser['user'];
+
     // Add friend
     $result = AddFriend($userId, $friend['usersId']);
     if (ApplyActionResult($response, $result)) $response->friend = $friend;
@@ -86,8 +53,7 @@ switch ($action) {
     $friendUserId = $_POST['friendUserId'] ?? '';
     
     if (empty($friendUserId) || !is_numeric($friendUserId)) {
-      http_response_code(400);
-      $response->error = "Invalid friend user ID";
+      SetJsonError($response, "Invalid friend user ID");
       break;
     }
     
@@ -100,8 +66,7 @@ switch ($action) {
     $limit = $_POST['limit'] ?? 10;
     
     if (empty($searchTerm)) {
-      http_response_code(400);
-      $response->error = "Search term is required";
+      SetJsonError($response, "Search term is required");
       break;
     }
     
@@ -139,8 +104,7 @@ switch ($action) {
     $requesterUserId = $_POST['requesterUserId'] ?? '';
     
     if (empty($requesterUserId) || !is_numeric($requesterUserId)) {
-      http_response_code(400);
-      $response->error = "Invalid requester user ID";
+      SetJsonError($response, "Invalid requester user ID");
       break;
     }
     
@@ -152,8 +116,7 @@ switch ($action) {
     $requesterUserId = $_POST['requesterUserId'] ?? '';
     
     if (empty($requesterUserId) || !is_numeric($requesterUserId)) {
-      http_response_code(400);
-      $response->error = "Invalid requester user ID";
+      SetJsonError($response, "Invalid requester user ID");
       break;
     }
     
@@ -171,8 +134,7 @@ switch ($action) {
     $recipientUserId = $_POST['recipientUserId'] ?? '';
     
     if (empty($recipientUserId) || !is_numeric($recipientUserId)) {
-      http_response_code(400);
-      $response->error = "Invalid recipient user ID";
+      SetJsonError($response, "Invalid recipient user ID");
       break;
     }
     
@@ -185,8 +147,7 @@ switch ($action) {
     $nickname = $_POST['nickname'] ?? '';
     
     if (empty($friendUserId) || !is_numeric($friendUserId)) {
-      http_response_code(400);
-      $response->error = "Invalid friend user ID";
+      SetJsonError($response, "Invalid friend user ID");
       break;
     }
     
@@ -195,8 +156,7 @@ switch ($action) {
     break;
 
   default:
-    http_response_code(400);
-    $response->error = "Invalid action";
+    SetJsonError($response, "Invalid action");
 }
 
 // Apply smart caching headers based on action type
@@ -231,5 +191,5 @@ if ($conn && $conn !== false) {
 }
 
 header('Content-Type: application/json');
-echo json_encode($response);
+WriteJsonResponse($response);
 exit;

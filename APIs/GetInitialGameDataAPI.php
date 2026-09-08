@@ -14,7 +14,7 @@ include_once "../includes/ModeratorList.inc.php";
 SetHeaders();
 
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $gameName = TryPOST("gameName", 0);
 $playerID = TryPOST("playerID", 0);
 

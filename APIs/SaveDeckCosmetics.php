@@ -32,9 +32,7 @@ header('Content-Type: application/json');
 
 function DeckCosmeticsError($message, $code = 400)
 {
-  http_response_code($code);
-  echo json_encode(["success" => false, "message" => $message]);
-  exit;
+  ExitJsonResponse(["success" => false, "message" => $message], $code);
 }
 
 if (!IsUserLoggedIn()) {
@@ -44,7 +42,7 @@ if (!IsUserLoggedIn()) {
 $userID = LoggedInUser();
 $userName = LoggedInUserName();
 
-$_POST = json_decode(file_get_contents('php://input'), true) ?? [];
+$_POST = ReadJsonBody() ?? [];
 $decklink = TryPOST("decklink", "");
 $cardBackId = strval(TryPOST("cardBackId", "0"));
 $playmatId = strval(TryPOST("playmatId", "0"));
