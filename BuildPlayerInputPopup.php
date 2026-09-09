@@ -480,7 +480,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
               $cardsArray[] = JSONRenderedCard($myItems[$options[$i]], overlay:$myItems[$options[$i]+2] != 2 ? 'disabled' : 'none', counters: $myItems[$options[$i]+1], actionDataOverride: $i);
             } else if ($multiZoneRef !== null) {
               $isTheirZone = $turnPhase == "MULTICHOOSETHEIRDISCARD" || $turnPhase == "MULTICHOOSETHEIRDECK";
-              $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone);
+              $label = SearchLayersForTargetUniqueID($multiZoneRef[$options[$i]+1]) != -1 ? "TARGETED" : "";
+              $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone, label:$label);
             }
           }
         }
