@@ -1604,13 +1604,16 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->newEvents = $newEvents;
 
   // Phase of the turn
+  $publicTurnPhase = $turnPhase;
+  $isConcealedHeaveChoice = ($turnPhase == "ARSENALORHEAVE" || (($dqState[3] ?? "-") == "HEAVECHOSEN" && IsDecisionQueueActive()));
+  if ($isConcealedHeaveChoice && $currentPlayer != $playerID) $publicTurnPhase = "ARS";
   $turnPhaseObj = new stdClass();
-  $turnPhaseObj->turnPhase = $turnPhase;
+  $turnPhaseObj->turnPhase = $publicTurnPhase;
   if ($layersCount > 0) {
     $turnPhaseObj->layer = $layers[0];
   }
   $isItMeOrThem = $currentPlayer == $playerID ? "Choose " : "Your opponent is choosing ";
-  $turnPhaseObj->caption = $isItMeOrThem . TypeToPlay($turnPhase);
+  $turnPhaseObj->caption = $isItMeOrThem . TypeToPlay($publicTurnPhase);
   $response->turnPhase = $turnPhaseObj;
 
   // Do we have priority?
@@ -1649,7 +1652,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $helpText = "";
   // Reminder text box highlight thing
   if ($turnPhase != "OVER") {
-    $helpText .= $currentPlayer != $playerID ? WaitingMessage($turnPhase) : GetPhaseHelptext();
+    $helpText .= $currentPlayer != $playerID ? WaitingMessage($publicTurnPhase) : GetPhaseHelptext();
     if($currentPlayer == $playerID) { 
       if ($turnPhase == "PAYGOLDORPITCH" && ($myResources[0] ?? 0) >= 2) {
         $promptButtons[] = CreateButtonAPI($playerID, "Use resources", 106, 0, "16px");

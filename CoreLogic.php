@@ -2956,6 +2956,7 @@ function CanPassPhase($phase)
     case "CHOOSEBANISH":
     case "MULTICHOOSEBANISH":
     case "BUTTONINPUTNOPASS":
+    case "ARSENALORHEAVE":
     case "CHOOSEFIRSTPLAYER":
     case "MULTICHOOSEDECK":
     case "CHOOSEPERMANENT":

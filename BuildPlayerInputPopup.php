@@ -83,6 +83,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "BUTTONINPUTNOPASS":
     case "CHOOSEARCANE":
     case "CHOOSETRIGGERS":
+    case "ARSENALORHEAVE":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $options = explode(",", $turn[2]);
@@ -101,7 +102,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $playerInputButtons[] = CreateButtonAPI($playerID, "Skip All Runechants", 105, 0, "24px");
         }
 
-        $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
+        $popupType = $turnPhase == "ARSENALORHEAVE" ? "ARSENALORHEAVE" : "BUTTONINPUT";
+        $playerInputPopup->popup = CreatePopupAPI($popupType, [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
       }
       break;
 

@@ -246,7 +246,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 17: //BUTTONINPUT
-      if ($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER" || $turn[0] == "CHOOSETRIGGERS") {
+      if ($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER" || $turn[0] == "CHOOSETRIGGERS" || $turn[0] == "ARSENALORHEAVE") {
         ContinueDecisionQueue($buttonInput);
       }
       break;
@@ -2123,7 +2123,7 @@ function EndStep()
   AllyBeginEndPhaseTriggers();
   OpponentsAuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
-  if (HeaveIndices() != "") AddLayer("TRIGGER", $mainPlayer, "HEAVE");
+  // Heave is offered later as part of the concealed arsenal decision.
   UndoIntimidate(1);
   UndoIntimidate(2);
   RemoveBanishedCardFromGraveyard();
@@ -2214,9 +2214,21 @@ function PassTurn()
   $MainHand = GetHand($mainPlayer);
   $otherPlayer = $playerID == 1 ? 2 : 1;
   if (EndTurnPitchHandling($playerID) && EndTurnPitchHandling($otherPlayer)) {
-    if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
+    $heaveChoiceResolved = ($turn[2] ?? "-") == "HEAVECHOSEN";
+    // Asking here makes the Heave pause indistinguishable from the normal arsenal pause.
+    if (!$heaveChoiceResolved && $turn[0] != "ARS" && HeaveIndices() != "") {
       $currentPlayer = $mainPlayer;
       $turn[0] = "ARS";
+      $turn[2] = "-";
+      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to heave or arsenal a card?");
+      AddDecisionQueue("ARSENALORHEAVE", $mainPlayer, "Heave_a_card,Arsenal_a_card,Skip_arsenal", 1);
+      AddDecisionQueue("RESOLVEARSENALORHEAVE", $mainPlayer, "<-", 1);
+      ProcessDecisionQueue();
+    }
+    else if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
+      $currentPlayer = $mainPlayer;
+      $turn[0] = "ARS";
+      $turn[2] = "-";
     } else {
       FinalizeTurn();
     }
