@@ -183,8 +183,8 @@ class dig_for_souls_red extends Card {
 	}
 
 	function DynamicCost() {
-    return implode(",", range(0, 20, 1));
-  }
+		return implode(",", range(0, 20, 1));
+	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		global $CombatChain;
@@ -536,6 +536,7 @@ class clambering_corpses_blue extends Card {
 	}
 
 	function CurrentEffectGrantsGoAgain($param) {
+		// Could an AI fix this so that when the $param is "SWARM" it only gives go again on hit?
 		return true;
 	}
 
