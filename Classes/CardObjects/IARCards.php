@@ -7584,7 +7584,7 @@ class murmuring_gloomblade_blue extends Card {
 }
 
 class bloodfrenzy_gloomblade extends BaseCard {
-  function PlayAbility($additionalCosts) {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if ($additionalCosts == "USURPED")
       AddCurrentTurnEffect($this->cardID, $this->controller);
   }
@@ -7594,25 +7594,8 @@ class bloodfrenzy_gloomblade extends BaseCard {
     return GetClassState($this->controller, $CS_DamageDealtToOpponent) > 0;
   }
 
-  function PayAdditionalCosts($from) {
+  function PayAdditionalCosts($from, $index = '-') {
     Usurp($this->cardID, $this->controller, $from);
-  }
-}
-
-class bloodfrenzy_gloomblade_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "bloodfrenzy_gloomblade_red";
-    $this->controller = $controller;
-    $this->baseCard = new bloodfrenzy_gloomblade($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($additionalCosts);
-    return "";
-  }
-
-  function DoesAttackHaveGoAgain() {
-    return $this->baseCard->HasGoAgain();
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -7623,12 +7606,17 @@ class bloodfrenzy_gloomblade_red extends Card {
     return 2;
   }
 
-  function PayAdditionalCosts($from, $index = '-') {
-    $this->baseCard->PayAdditionalCosts($from);
-  }
-
   function PlayableFromBanish($mod, $nonLimitedOnly) {
     return true;
+  }
+
+}
+
+class bloodfrenzy_gloomblade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bloodfrenzy_gloomblade_red";
+    $this->controller = $controller;
+    $this->baseCard = new bloodfrenzy_gloomblade($this->cardID, $this->controller);
   }
 
   function SpecialName() {
@@ -7666,38 +7654,13 @@ class bloodfrenzy_gloomblade_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new bloodfrenzy_gloomblade($this->cardID, $this->controller);
   }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($additionalCosts);
-    return "";
-  }
-
-  function DoesAttackHaveGoAgain() {
-    return $this->baseCard->HasGoAgain();
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return 2;
-  }
-
-  function PayAdditionalCosts($from, $index = '-') {
-    $this->baseCard->PayAdditionalCosts($from);
-  }
-
-  function PlayableFromBanish($mod, $nonLimitedOnly) {
-    return true;
-  }
 
   function SpecialName() {
     return "Bloodfrenzy Gloomblade";
   }
 
   function SpecialPitch() {
-    return 1;
+    return 2;
   }
 
   function SpecialPower() {
@@ -7726,31 +7689,6 @@ class bloodfrenzy_gloomblade_blue extends Card {
     $this->cardID = "bloodfrenzy_gloomblade_blue";
     $this->controller = $controller;
     $this->baseCard = new bloodfrenzy_gloomblade($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($additionalCosts);
-    return "";
-  }
-
-  function DoesAttackHaveGoAgain() {
-    return $this->baseCard->HasGoAgain();
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return 2;
-  }
-
-  function PayAdditionalCosts($from, $index = '-') {
-    $this->baseCard->PayAdditionalCosts($from);
-  }
-
-  function PlayableFromBanish($mod, $nonLimitedOnly) {
-    return true;
   }
 
   function SpecialName() {
