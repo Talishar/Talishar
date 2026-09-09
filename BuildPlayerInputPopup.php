@@ -122,8 +122,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $myPitchCount = count($myPitch);
         $pitchPieces = PitchPieces();
         for ($i = 0; $i < $myPitchCount; $i += $pitchPieces) {
-          $card = $myPitch[$i];
-          $uniqueID = $myPitch[$i+1];
+          $card = $myPitch[$i] ?? "-";
+          $uniqueID = $myPitch[$i+1] ?? "-";
           $pitchingCards[] = JSONRenderedCard($card, action: 6, actionDataOverride: $card, uniqueID:$uniqueID);
         }
         $playerInputPopup->popup = CreatePopupAPI("PITCH", [], 0, 1, "Choose a card to place on the bottom of your deck, or pass to shortcut", 1, cardsArray: $pitchingCards);
