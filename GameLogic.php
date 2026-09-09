@@ -346,6 +346,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HEAVE":
           $rv = HeaveIndices();
           break;
+        case "ENDPHASEHEAVE":
+          $rv = EndPhaseHeaveIndices();
+          break;
         case "BRAVOSTARSHOW":
           $rv = BravoStarOfTheShowIndices();
           break;
@@ -2552,6 +2555,34 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PlayAura("seismic_surge", $player, HeaveValue($lastResult));
       WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this");
       return HeaveValue($lastResult);
+    case "RESOLVEARSENALORHEAVE":
+      if ($parameter == "Arsenal_a_card") {
+        $dqState[1] = "ARS";
+        $dqState[3] = "-";
+        return "PASS";
+      }
+      if ($parameter == "Skip_arsenal") {
+        $dqState[1] = "ARS";
+        $dqState[3] = "-";
+        AddDecisionQueue("PASSTURN", $player, "-");
+        return $parameter;
+      }
+      if ($parameter == "Heave_a_card" && EndPhaseHeaveIndices() != "") {
+        // Keep the Heave card selection under the concealed arsenal interaction.
+        $dqState[1] = "ENDPHASE";
+        $dqState[3] = "HEAVECHOSEN";
+        AddDecisionQueue("FINDINDICES", $player, "ENDPHASEHEAVE");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to heave", 1);
+        AddDecisionQueue("CHOOSEHAND", $player, "<-", 1, 1);
+        AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
+        AddDecisionQueue("HEAVE", $player, "-", 1);
+        AddDecisionQueue("PASSTURN", $player, "-");
+        return $parameter;
+      }
+      // Invalid or stale input falls back to the ordinary arsenal choice.
+      $dqState[1] = "ARS";
+      $dqState[3] = "-";
+      return "PASS";
     case "BRAVOSTARSHOW":
       $hand = &GetHand($player);
       $cardsArr = [];
