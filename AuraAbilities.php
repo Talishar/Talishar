@@ -100,12 +100,13 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     }
   }
 
-  $defaultHoldState = AuraDefaultHoldTriggerState($cardID);
+  $activeStateTracked = AuraActiveStateTracked($cardID);
+  $defaultHoldState = $activeStateTracked ? AuraDefaultActiveState($cardID) : AuraDefaultHoldTriggerState($cardID);
   $myHoldState = $defaultHoldState;
-  if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
+  if (!$activeStateTracked && $myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
   $myHoldState = ApplyGemsOffDefault($myHoldState, $player);
   $theirHoldState = $defaultHoldState;
-  if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
+  if (!$activeStateTracked && $theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   $theirHoldState = ApplyGemsOffDefault($theirHoldState, $otherPlayer);
   
   // Cache loop-invariant values outside loop to avoid repeated function calls
@@ -1725,10 +1726,11 @@ function DestroyAllThisAura($player, $cardID)
   return $count;
 }
 
-function GetAuraGemState($player, $cardID)
+function GetAuraGemState($player, $cardID, $index = -1)
 {
   global $currentPlayer;
   $auras = &GetAuras($player);
+  if ($index != -1) return $auras[$index + 7];
   $offset = $currentPlayer == $player ? 7 : 8;
   $state = 0;
   $countAuras = count($auras);

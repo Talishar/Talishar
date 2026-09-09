@@ -471,7 +471,9 @@ function HasPlayableCard($player, $phase)
   $auras = &GetAuras($player);
   $auraPieces = AuraPieces();
   for($i=0, $count=count($auras); $i<$count; $i+=$auraPieces) {
-    if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
+    if (!AuraActiveStateTracked($auras[$i]) || GetAuraGemState($player, $auras[$i], $i) != 0) {
+      if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
+    }
   }
 
   for ($i = 0, $count = $CombatChain->NumCardsActiveLink(); $i < $count; ++$i) {
