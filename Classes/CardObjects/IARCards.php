@@ -7357,35 +7357,10 @@ class shadowrealm_ripper_blue extends Card {
 }
 
 class murmuring_gloomblade extends BaseCard {
-  function PlayAbility($additionalCosts) {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
     if ($additionalCosts == "USURPED")
       AddCurrentTurnEffect($this->cardID, $this->controller);
-  }
-
-  function AddOnHitTrigger($check) {
-    return AnyHitTrigger($this->controller, $this->cardID, $check);
-  }
-
-  function ProcessTrigger() {
-    PlayAura("runechant", $this->controller);
-  }
-
-  function PayAdditionalCosts($from) {
-    Usurp($this->cardID, $this->controller, $from);
-  }
-}
-
-class murmuring_gloomblade_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "murmuring_gloomblade_red";
-    $this->controller = $controller;
-    $this->baseCard = new murmuring_gloomblade($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($additionalCosts);
-    return "";
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -7397,23 +7372,35 @@ class murmuring_gloomblade_red extends Card {
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return $this->baseCard->AddOnHitTrigger($check);
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
   }
 
-  function ProcessAttackTrigger($target, $uniqueID) {
-    $this->baseCard->ProcessTrigger();
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $this->baseCard->ProcessTrigger();
+  function ProcessCardTrigger() {
+    PlayAura("runechant", $this->controller);
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    $this->baseCard->PayAdditionalCosts($from);
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $this->ProcessCardTrigger();
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->ProcessCardTrigger();
   }
 
   function PlayableFromBanish($mod, $nonLimitedOnly) {
     return true;
+  }
+}
+
+class murmuring_gloomblade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "murmuring_gloomblade_red";
+    $this->controller = $controller;
+    $this->baseCard = new murmuring_gloomblade($this->cardID, $this->controller);
   }
 
   function SpecialName() {
@@ -7451,39 +7438,6 @@ class murmuring_gloomblade_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new murmuring_gloomblade($this->cardID, $this->controller);
   }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($additionalCosts);
-    return "";
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return 2;
-  }
-
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return $this->baseCard->AddOnHitTrigger($check);
-  }
-
-  function ProcessAttackTrigger($target, $uniqueID) {
-    $this->baseCard->ProcessTrigger();
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $this->baseCard->ProcessTrigger();
-  }
-
-  function PayAdditionalCosts($from, $index = '-') {
-    $this->baseCard->PayAdditionalCosts($from);
-  }
-
-  function PlayableFromBanish($mod, $nonLimitedOnly) {
-    return true;
-  }
 
   function SpecialName() {
     return "Murmuring Gloomblade";
@@ -7519,39 +7473,6 @@ class murmuring_gloomblade_blue extends Card {
     $this->cardID = "murmuring_gloomblade_blue";
     $this->controller = $controller;
     $this->baseCard = new murmuring_gloomblade($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility($additionalCosts);
-    return "";
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return 2;
-  }
-
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return $this->baseCard->AddOnHitTrigger($check);
-  }
-
-  function ProcessAttackTrigger($target, $uniqueID) {
-    $this->baseCard->ProcessTrigger();
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    $this->baseCard->ProcessTrigger();
-  }
-
-  function PayAdditionalCosts($from, $index = '-') {
-    $this->baseCard->PayAdditionalCosts($from);
-  }
-
-  function PlayableFromBanish($mod, $nonLimitedOnly) {
-    return true;
   }
 
   function SpecialName() {
