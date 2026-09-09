@@ -7510,7 +7510,7 @@ class bloodfrenzy_gloomblade extends BaseCard {
       AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
-  function HasGoAgain() {
+  function DoesAttackHaveGoAgain() {
     global $CS_DamageDealtToOpponent;
     return GetClassState($this->controller, $CS_DamageDealtToOpponent) > 0;
   }
