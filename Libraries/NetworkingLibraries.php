@@ -2124,6 +2124,7 @@ function EndStep()
   OpponentsAuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
   // Heave is offered later as part of the concealed arsenal decision.
+  SnapshotEndPhaseHeaveCards();
   UndoIntimidate(1);
   UndoIntimidate(2);
   RemoveBanishedCardFromGraveyard();
@@ -2216,7 +2217,7 @@ function PassTurn()
   if (EndTurnPitchHandling($playerID) && EndTurnPitchHandling($otherPlayer)) {
     $heaveChoiceResolved = ($turn[2] ?? "-") == "HEAVECHOSEN";
     // Asking here makes the Heave pause indistinguishable from the normal arsenal pause.
-    if (!$heaveChoiceResolved && $turn[0] != "ARS" && HeaveIndices() != "") {
+    if (!$heaveChoiceResolved && $turn[0] != "ARS" && EndPhaseHeaveIndices() != "") {
       $currentPlayer = $mainPlayer;
       $turn[0] = "ARS";
       $turn[2] = "-";

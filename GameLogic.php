@@ -346,6 +346,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "HEAVE":
           $rv = HeaveIndices();
           break;
+        case "ENDPHASEHEAVE":
+          $rv = EndPhaseHeaveIndices();
+          break;
         case "BRAVOSTARSHOW":
           $rv = BravoStarOfTheShowIndices();
           break;
@@ -2564,11 +2567,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddDecisionQueue("PASSTURN", $player, "-");
         return $parameter;
       }
-      if ($parameter == "Heave_a_card") {
+      if ($parameter == "Heave_a_card" && EndPhaseHeaveIndices() != "") {
         // Keep the Heave card selection under the concealed arsenal interaction.
         $dqState[1] = "ENDPHASE";
         $dqState[3] = "HEAVECHOSEN";
-        AddDecisionQueue("FINDINDICES", $player, "HEAVE");
+        AddDecisionQueue("FINDINDICES", $player, "ENDPHASEHEAVE");
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to heave", 1);
         AddDecisionQueue("CHOOSEHAND", $player, "<-", 1, 1);
         AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
