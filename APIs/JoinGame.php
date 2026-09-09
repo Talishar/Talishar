@@ -203,6 +203,7 @@ $preconDecklinks = [
   "https://fabrary.net/decks/01KNHHE1MY39BC4PXYXMTJVT1M", //hala
   "https://fabrary.net/decks/01KREWW7RJS0GZ2PCCD4BM47QY", //zyggy
   "https://fabrary.net/decks/01KP7ZJNFZZD8YNGP438FT8SFG", //olympia
+  "https://fabrary.net/decks/01KXQF1YZHCHP2KAMDBS5WC5Q9", //malice
 ];
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
