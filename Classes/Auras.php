@@ -75,6 +75,7 @@ class Auras {
     }
     $auraPieces = AuraPieces();
     for ($i = 0; $i < $count; $i += $auraPieces) {
+      if (!isset($this->auras[$i + 14])) continue;
       if ($this->auras[$i+14] == "$zone-$uid") $ret[] = new AuraCard($i, $this->player);
     }
     return $ret;
