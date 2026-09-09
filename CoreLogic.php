@@ -4367,7 +4367,7 @@ function ResolvePermanent($cardID, $from, $additionalCosts) {
         ++$holoCounters;
         $Veil->Remove();
       }
-      PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts, holoCounters:$holoCounters);
+      PlayAura($cardID, $currentPlayer, from: $from, additionalCosts: $additionalCosts, holoCounters:$holoCounters, uniqueID:$uniqueID);
     }
     else if (DelimStringContains($cardSubtype, "Ally")) PlayAlly($cardID, $currentPlayer, from: $from);
     else if (DelimStringContains($cardSubtype, "Item")) PutItemIntoPlayForPlayer($cardID, $currentPlayer, from: $from);

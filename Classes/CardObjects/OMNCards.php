@@ -2458,12 +2458,12 @@ class corrosive_space_dust extends BaseCard {
     return ($AuraCard->HoloCounters() > 0) ? $amount : 1;
   }
 
-  function LeavesPlayAbility() {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
     SetArcaneTarget($this->controller, $this->cardID, "any_hero");
-    AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
+    Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, uniqueID:$uniqueID, final:true);
   }
 
-  function ProcessTrigger($target) {
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     DealArcane(1, 0, source:$this->cardID, resolvedTarget:$target);
   }
 }
@@ -2486,14 +2486,6 @@ class corrosive_space_dust_red extends Card {
   function WardAmount($index) {
     return $this->baseCard->WardAmount($index, 4);
   }
-
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
-    return $this->baseCard->LeavesPlayAbility();
-  }
-
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    return $this->baseCard->ProcessTrigger($target);
-  }
 }
 
 class corrosive_space_dust_yellow extends Card {
@@ -2514,14 +2506,6 @@ class corrosive_space_dust_yellow extends Card {
   function WardAmount($index) {
     return $this->baseCard->WardAmount($index, 3);
   }
-
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
-    return $this->baseCard->LeavesPlayAbility();
-  }
-
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    return $this->baseCard->ProcessTrigger($target);
-  }
 }
 
 class corrosive_space_dust_blue extends Card {
@@ -2541,14 +2525,6 @@ class corrosive_space_dust_blue extends Card {
 
   function WardAmount($index) {
     return $this->baseCard->WardAmount($index, 2);
-  }
-
-  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
-    return $this->baseCard->LeavesPlayAbility();
-  }
-
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    return $this->baseCard->ProcessTrigger($target);
   }
 }
 

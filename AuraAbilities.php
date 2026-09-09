@@ -28,7 +28,7 @@ function CanPlayAura($cardID, $player, $effectSource="-", $effectController="-",
   return true;
 }
 
-function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0, $effectAgent = "-")
+function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSpecial = false, $numPowerCounters = 0, $from = "-", $additionalCosts = "-", $effectController = "-", $effectSource = "-", $holoCounters=0, $effectAgent = "-", $uniqueID = "-")
 {
   global $CS_NumAuras, $EffectContext, $defPlayer, $CS_FealtyCreated, $currentTurnEffects, $CS_SeismicSurgesCreated, $CS_HoloAurasEntered;
   global $CS_CreatedCardsThisTurn, $CS_NumRunechantsCreated, $CS_IARGatesMadeorUsed, $mainPlayer;
@@ -114,13 +114,15 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $isTokenFlag = $isToken ? 1 : 0;
   
   for ($i = 0; $i < $number; ++$i) {
+    if ($uniqueID == "-")
+      $uniqueID = GetUniqueId($cardID, $player);
     $auras[] = $cardID; // 0: Card ID
     $auras[] = 2; // 1: Status
     $auras[] = $rogueHeronSpecial ? 0 : $cachedAuraPlayCounters; // 2: Miscellaneous Counters
     $auras[] = $numPowerCounters; // 3: Power counters
     $auras[] = $isTokenFlag; // 4: Is token 0=No, 1=Yes
     $auras[] = $cachedAuraNumUses; // 5: Number of uses
-    $auras[] = GetUniqueId($cardID, $player); // 6: Unique ID
+    $auras[] = $uniqueID; // 6: Unique ID
     $auras[] = $myHoldState; // 7: My Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
     $auras[] = $theirHoldState; // 8: Opponent Hold priority for triggers setting 2=Always hold, 1=Hold, 0=Don't hold
     $auras[] = $from; // 9: Where it's played from
@@ -129,6 +131,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $auras[] = 0; // tapped (0 = no, 1 = yes)
     $auras[] = $holoCounters; // holo counters
     $auras[] = "-"; //bound to
+    $uniqueID = "-"; // reset the unique ID
   }
   if ($holoCounters > 0) IncrementClassState($player, $CS_HoloAurasEntered, $number);
   if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
