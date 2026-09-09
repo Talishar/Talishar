@@ -3866,8 +3866,23 @@ function AuraDefaultHoldTriggerState($cardID): int
     "pyroglyphic_protection_yellow", "pyroglyphic_protection_blue", "emerging_avalanche_red", "emerging_avalanche_yellow", "emerging_avalanche_blue", "strength_of_sequoia_red", "strength_of_sequoia_yellow", "strength_of_sequoia_blue", "embolden_red", "embolden_yellow", "embolden_blue",
     "embodiment_of_earth", "embodiment_of_lightning", "frostbite", "stamp_authority_blue", "towering_titan_red", "towering_titan_yellow", "towering_titan_blue", "emerging_dominance_red", "emerging_dominance_yellow", "emerging_dominance_blue", "zen_state", "preach_modesty_red",
     "runeblood_barrier_yellow", "soul_shackle", "channel_mount_isen_blue" => 0,
-    "runechant", "spellbane_aegis", "gate_to_iarathael" => 1,
+    "runechant", "spellbane_aegis" => 1,
     default => 2
+  };
+}
+
+//Active (2 = Always Active, 1 = Yes, 0 = No)
+function AuraDefaultActiveState($cardID): int
+{
+  $card = GetClass($cardID, 0);
+  if ($card != "-") return $card->DefaultActiveState();
+  return 2;
+}
+
+function AuraActiveStateTracked($cardID) {
+  return match($cardID) {
+    "gate_to_iarathael" => true,
+    default => false,
   };
 }
 

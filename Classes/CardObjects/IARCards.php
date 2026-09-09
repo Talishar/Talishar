@@ -904,6 +904,10 @@ class gate_to_iarathael extends Card {
     $this->controller = $controller;
   }
 
+  function DefaultActiveState() {
+    return 1;
+  }
+
   private
   function TargetSearch($remove=false) {
     $search = "MYBANISH:bloodDebtOnly=true;type=A&MYBANISH:bloodDebtOnly=true;type=AA";
