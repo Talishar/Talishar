@@ -798,7 +798,7 @@ function PitchValue($cardID)
 
 function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 {
-  global $defPlayer, $combatChain;
+  global $defPlayer, $combatChain, $CS_Num6PowBan;
   $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
@@ -850,6 +850,8 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
       }
       $block = $blockVal;
       break;
+    case "diabolic_offering_blue":
+      $block = GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
     default:
       break;
   }

@@ -607,9 +607,6 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
     case "shield_wall_blue":
       $blockModifier += SearchCharacter($defPlayer, subtype: "Off-Hand", class: "GUARDIAN") != "" ? 4 : 0;
       break;
-    case "diabolic_offering_blue":
-      $blockModifier += GetClassState($defPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
-      break;
     case "bastion_of_unity":
       $blockModifier += CountCurrentTurnEffects($cardID, $defPlayer);
       break;
