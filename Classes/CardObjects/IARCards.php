@@ -2900,7 +2900,7 @@ class bloodsong_gloomblade extends BaseCard {
     if (IsHeroAttackTarget()) {
       if (!$check) {
         $uid = $CombatChain->AttackCard()->UniqueID();
-        SetTargets($this->controller, $this->cardID, "THEIRAURAS", playCard:false);
+        SetTargets($this->controller, $this->cardID, "THEIRAURAS", playCard:false, may:true);
         Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, uniqueID:$uid, additional: "ONHITEFFECT", final:true);
       }
       return true;

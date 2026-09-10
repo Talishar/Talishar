@@ -4506,7 +4506,7 @@ function SetTargets($player, $cardID, $search, $N=1, $may=false, $playCard=true)
   for ($i = 0; $i < $N; ++$i) {
     $nLeft = $N - $i;
     if ($N == 1) {
-      $message = "Choose a target";
+      $message = "Choose a target for " . CardLink($cardID);
       if ($may) $message .= " or pass";
     }
     elseif ($nLeft == 1) {
