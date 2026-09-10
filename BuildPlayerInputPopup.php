@@ -460,6 +460,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $isMultiChooseSubcards = ($turnPhase === "MULTICHOOSESUBCARDS");
         $isMultiChooseItems    = ($turnPhase === "MULTICHOOSEITEMS");
         $multiZoneRef = null;
+        $uniqueIDOffset = -1;
         if (!$isMultiChooseDiscard && !$isMultiChooseSubcards && !$isMultiChooseItems) {
           $multiZoneRef = match($turnPhase) {
             "MULTICHOOSETHEIRDISCARD" => $theirDiscard,
@@ -468,6 +469,11 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             "MULTICHOOSETHEIRDECK" => $theirDeck,
             "MULTICHOOSEBANISH" => $myBanish,
             default => null,
+          };
+          $uniqueIDOffset = match($turnPhase) {
+            "MULTICHOOSETHEIRDISCARD" => 1,
+            "MULTICHOOSEBANISH" => 2,
+            default => -1,
           };
         }
 
@@ -482,7 +488,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
               $cardsArray[] = JSONRenderedCard($myItems[$options[$i]], overlay:$myItems[$options[$i]+2] != 2 ? 'disabled' : 'none', counters: $myItems[$options[$i]+1], actionDataOverride: $i);
             } else if ($multiZoneRef !== null) {
               $isTheirZone = $turnPhase == "MULTICHOOSETHEIRDISCARD" || $turnPhase == "MULTICHOOSETHEIRDECK";
-              $label = SearchLayersForTargetUniqueID($multiZoneRef[$options[$i]+1]) != -1 ? "TARGETED" : "";
+              $uniqueID = $uniqueIDOffset >= 0 ? ($multiZoneRef[$options[$i]+$uniqueIDOffset] ?? "") : "";
+              $label = $uniqueID !== "" && SearchLayersForTargetUniqueID($uniqueID) != -1 ? "TARGETED" : "";
               $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone, label:$label);
             }
           }

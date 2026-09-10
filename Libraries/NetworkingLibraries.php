@@ -246,7 +246,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 17: //BUTTONINPUT
-      if ($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER" || $turn[0] == "CHOOSETRIGGERS" || $turn[0] == "ARSENALORHEAVE") {
+      if ($turn[0] == "BUTTONINPUT" || $turn[0] == "BUTTONINPUTNOPASS") {
+        if (in_array((string)$buttonInput, explode(",", $turn[2]), true)) ContinueDecisionQueue($buttonInput);
+      }
+      elseif ($turn[0] == "CHOOSEARCANE" || $turn[0] == "CHOOSEFIRSTPLAYER" || $turn[0] == "CHOOSETRIGGERS" || $turn[0] == "ARSENALORHEAVE") {
         ContinueDecisionQueue($buttonInput);
       }
       break;
@@ -610,9 +613,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           AddEvent("UNDODENIEDNOTICE", $playerID);
         }
         else {
-          $undoReason = NormalizeUndoReason($inputText);
           WriteLog("Player " . $playerID . " requests to undo the last action");
-          AddEvent("REQUESTUNDO", $playerID . ":" . $undoReason);
+          AddEvent("REQUESTUNDO", $playerID);
         }
       }
       break;
@@ -621,8 +623,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $skipWriteGamestate = true;
       break;
     case 10002:
-      WriteLog("Player " . $playerID . " manually added 1 action point", highlight: true, highlightColor: "darkblue");
-      ++$actionPoints;
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . $manualCount . " action point" . ($manualCount > 1 ? "s" : ""), highlight: true, highlightColor: "darkblue");
+      $actionPoints += $manualCount;
       break;
     case 10003: //Undo/Revert to prior turn
       if (!ShouldProcessReplayUndo(
@@ -656,57 +659,60 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           WriteLog("Player " . $playerID . " requested to undo but opponent has declined too many undo requests this turn");
         }
         else {
-          $undoReason = NormalizeUndoReason($inputText);
           WriteLog("Player " . $playerID . " requests to undo the last action");
           if ($buttonInput == "beginTurnGamestate.txt")
-            AddEvent("REQUESTTHISTURNUNDO", $playerID . ":" . $undoReason);
+            AddEvent("REQUESTTHISTURNUNDO", $playerID);
           else if ($buttonInput == "lastTurnGamestate.txt")
-            AddEvent("REQUESTLASTTURNUNDO", $playerID . ":" . $undoReason);
+            AddEvent("REQUESTLASTTURNUNDO", $playerID);
           else if ($buttonInput == "startChainLinkGamestate.txt")
-            AddEvent("REQUESTCHAINLINKUNDO", $playerID . ":" . $undoReason);
+            AddEvent("REQUESTCHAINLINKUNDO", $playerID);
         }
       }
       break;
-    case 10021: //Add a reason to an undo request the opponent has not answered yet
-      ReissueUndoRequestWithReason($playerID, NormalizeUndoReason($inputText));
-      break;
     case 10004:
-      if ($actionPoints > 0) {
-        WriteLog("Player " . $playerID . " manually subtracted 1 action point.", highlight: true, highlightColor: "darkblue");
-        --$actionPoints;
+      $manualCount = min(ManualModeCount($buttonInput), $actionPoints);
+      if ($manualCount > 0) {
+        WriteLog("Player " . $playerID . " manually subtracted " . $manualCount . " action point" . ($manualCount > 1 ? "s" : "") . ".", highlight: true, highlightColor: "darkblue");
+        $actionPoints -= $manualCount;
       }
       break;
     case 10005:
-      WriteLog("Player " . $playerID . " manually subtracted 1 life from themself", highlight: true, highlightColor: "darkblue");
-      PlayerLoseHealth(1, $playerID);
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually subtracted " . $manualCount . " life from themself", highlight: true, highlightColor: "darkblue");
+      PlayerLoseHealth($manualCount, $playerID);
       break;
     case 10006:
-      WriteLog("Player " . $playerID . " manually added 1 life to themself", highlight: true, highlightColor: "darkblue");
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . $manualCount . " life to themself", highlight: true, highlightColor: "darkblue");
       $health = &GetHealth($playerID);
-      $health += 1;
+      $health += $manualCount;
       break;
     case 10007:
       $targetPlayer = $playerID == 1 ? 2 : 1;
       if (IsPlayerAI($targetPlayer)) {
-        WriteLog("Manually subtracting 1 life from AI opponent", highlight: true, highlightColor: "darkblue");
+        $manualCount = ManualModeCount($buttonInput);
+        WriteLog("Manually subtracting " . $manualCount . " life from AI opponent", highlight: true, highlightColor: "darkblue");
         $health = &GetHealth($targetPlayer);
-        --$health;
+        $health -= $manualCount;
       }
       else
         WriteLog("Subtracting life from your opponent is not allowed", highlight: true, highlightColor: "darkblue");
       break;
     case 10008:
-      WriteLog("Player " . $playerID . " manually added 1 life to their opponent", highlight: true, highlightColor: "darkblue");
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . $manualCount . " life to their opponent", highlight: true, highlightColor: "darkblue");
       $health = &GetHealth($playerID == 1 ? 2 : 1);
-      $health += 1;
+      $health += $manualCount;
       break;
     case 10009:
-      WriteLog("Player " . $playerID . " manually drew a card for themself", highlight: true, highlightColor: "darkblue");
-      Draw($playerID, false);
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually drew " . ($manualCount > 1 ? $manualCount . " cards" : "a card") . " for themself", highlight: true, highlightColor: "darkblue");
+      for ($i = 0; $i < $manualCount; ++$i) Draw($playerID, false);
       break;
     case 10010:
-      WriteLog("Player " . $playerID . " manually drew a card for their opponent", highlight: true, highlightColor: "darkblue");
-      Draw(($playerID == 1 ? 2 : 1), false);
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually drew " . ($manualCount > 1 ? $manualCount . " cards" : "a card") . " for their opponent", highlight: true, highlightColor: "darkblue");
+      for ($i = 0; $i < $manualCount; ++$i) Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
       $cardList = explode(";", $cardID);
@@ -836,24 +842,28 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 10012:
-      WriteLog("Player " . $playerID . " manually added a resource to their pool", highlight: true, highlightColor: "darkblue");
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " to their pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID);
-      $resources[0] += 1;
+      $resources[0] += $manualCount;
       break;
     case 10013:
-      WriteLog("Player " . $playerID . " manually added a resource to their opponent's pool", highlight: true, highlightColor: "darkblue");
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " to their opponent's pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID == 1 ? 2 : 1);
-      $resources[0] += 1;
+      $resources[0] += $manualCount;
       break;
     case 10014:
-      WriteLog("Player " . $playerID . " manually removed a resource from their opponent's pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID == 1 ? 2 : 1);
-      $resources[0] -= 1;
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually removed " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " from their opponent's pool", highlight: true, highlightColor: "darkblue");
+      $resources[0] -= $manualCount;
       break;
     case 10015:
-      WriteLog("Player " . $playerID . " manually removed a resource from their pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID);
-      $resources[0] -= 1;
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually removed " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " from their pool", highlight: true, highlightColor: "darkblue");
+      $resources[0] -= $manualCount;
       break;
     case 10016:
       WriteLog("Player " . $playerID . " manually removed their arsenal", highlight: true, highlightColor: "darkblue");
@@ -1359,6 +1369,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       OptAndLog($deck, $playerID, $cardListTop, $cardListBottom);
       ContinueDecisionQueue();
       break;
+    case "MANUALDECK": // should only show up in replays
+      $deck = &GetDeck($playerID);
+      $order = ParseDeckOrder(array_filter(explode(",", $buttonInput), fn($index) => $index !== ""), count($deck));
+      unset($deck);
+      if ($order !== null) ReorderDeck($playerID, $order);
+      break;
     case "REORDER": // should only show up in replays
       $cardList = explode(",", $buttonInput);
       $layerPiecesReorder = LayerPieces();
@@ -1414,11 +1430,41 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   return true;
 }
 
+function ParseDeckOrder($submittedOrder, $deckSize)
+{
+  if (!is_array($submittedOrder) || count($submittedOrder) != $deckSize) return null;
+  $order = [];
+  $seen = [];
+  foreach ($submittedOrder as $submittedIndex) {
+    if (!is_numeric($submittedIndex)) return null;
+    $index = intval($submittedIndex);
+    if ($index < 0 || $index >= $deckSize || isset($seen[$index])) return null;
+    $seen[$index] = true;
+    $order[] = $index;
+  }
+  return $order;
+}
+
+function ReorderDeck($playerID, $order)
+{
+  $deck = &GetDeck($playerID);
+  $newDeck = [];
+  foreach ($order as $index) $newDeck[] = $deck[$index];
+  $deck = $newDeck;
+}
+
+function ManualModeCount($input)
+{
+  $count = intval($input);
+  if ($count < 1) return 1;
+  return min($count, 999);
+}
+
 function IsModeAsync($mode)
 {
   static $asyncModes = [
-  26 => true, 102 => true, 103 => true, 104 => true, 10000 => true,
-  10003 => true, 10021 => true, 100000 => true, 100001 => true, 100002 => true,
+  26 => true, 102 => true, 103 => true, 104 => true, 111 => true, 10000 => true,
+  10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true,
   100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true
@@ -4943,20 +4989,6 @@ function UndoRequestEventTypes()
     "REQUESTLASTTURNUNDO" => true, "REQUESTCHAINLINKUNDO" => true,
   ];
   return $undoRequestTypes;
-}
-
-function ReissueUndoRequestWithReason($playerID, $reason)
-{
-  $priorEvents = $GLOBALS['priorEvents'] ?? [];
-  $undoRequestTypes = UndoRequestEventTypes();
-  $eventPieces = EventPieces();
-  $eventsCount = count($priorEvents);
-  for ($i = 0; $i < $eventsCount; $i += $eventPieces) {
-    if (!isset($undoRequestTypes[$priorEvents[$i]])) continue;
-    if (intval($priorEvents[$i + 1] ?? "") != $playerID) continue;
-    AddEvent($priorEvents[$i], $playerID . ":" . $reason);
-    return;
-  }
 }
 
 function ConsumeUndoRequestEvents()
