@@ -45,7 +45,7 @@ class meet_madness_red extends Card {
 				AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
 				AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
 				//including $cardID as the third param makes it count for contracts
-				AddDecisionQueue("BANISHCARD", $defPlayer, "THEIRHAND,-,$cardID", 1);
+				AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-,$cardID", 1);
 				break;
 			case 2:
 				//including $cardID as the third param makes it count for contracts
