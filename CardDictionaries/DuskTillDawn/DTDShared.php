@@ -100,7 +100,6 @@ function DTDEffectPowerModifier($cardID)
     case "chorus_of_ironsong_yellow": return 1;
     case "runic_reckoning_red": return 3;
     case "hack_to_reality_yellow": return 2;
-    case "courage": return 1;//Courage
     case "victoria_archangel_of_triumph": return -1;
     default:
       return 0;
@@ -140,7 +139,6 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "runic_reckoning_red": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "hack_to_reality_yellow": return true;
     case "hack_to_reality_yellow-HIT": return true;
-    case "courage": return true;//Courage
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
     case "metis_archangel_of_tenacity": return true;

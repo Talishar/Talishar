@@ -847,17 +847,44 @@ class beseech_the_demigon_blue extends Card {
 // }
 
 
-// class courage extends Card {
+class courage extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "courage";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "courage";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function PermanentPlayAbility($cardID, $from, $i) {
+		$cardType = CardType($cardID);
+		$cardSubType = CardSubType($cardID);
+		$resolvedAbilityType = GetResolvedAbilityType($cardID, $from);
+		$AuraCard = new AuraCard($i, $this->controller);
+		if (($cardType == "AA" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA")
+			|| (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from))
+			|| (TypeContains($cardID, "W", $this->controller) && $resolvedAbilityType!= "A")) && $resolvedAbilityType!= "I") {
+			AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
+        }
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Auras = new Auras($this->controller);
+		$AuraCard = $Auras->FindCardUID($uniqueID);
+		$AuraCard->Destroy();
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+}
 
 
 // class dabble_in_darkness_red extends Card {

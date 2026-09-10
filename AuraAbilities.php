@@ -1502,14 +1502,6 @@ function AuraPlayAbilities($cardID, $from = "")
           AddLayer("TRIGGER", $currentPlayer, $auras[$i], $cardType, "-", $auras[$i + 6]);
         }
         break;
-      case "courage":
-        if (($cardType == "AA" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA")
-          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from))
-          || (TypeContains($cardID, "W", $currentPlayer) && $resolvedAbilityType!= "A")) && $resolvedAbilityType!= "I") {
-          AddCurrentTurnEffect("courage", $currentPlayer);
-          $remove = 1;
-        }
-        break;
       case "eloquence":
         if (DelimStringContains($cardType, "A") && $from != "PLAY") {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the next non-attack action card go again");
