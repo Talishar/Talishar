@@ -489,7 +489,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             } else if ($multiZoneRef !== null) {
               $isTheirZone = $turnPhase == "MULTICHOOSETHEIRDISCARD" || $turnPhase == "MULTICHOOSETHEIRDECK";
               $uniqueID = $uniqueIDOffset >= 0 ? ($multiZoneRef[$options[$i]+$uniqueIDOffset] ?? "") : "";
-              $label = $uniqueID !== "" && SearchLayersForTargetUniqueID($uniqueID) != -1 ? "TARGETED" : "";
+              $label = $uniqueID !== "" && SearchLayersForTargetUniqueID($uniqueID) != -1 ? "Targeted" : "";
               $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone, label:$label);
             }
           }

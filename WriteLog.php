@@ -74,6 +74,10 @@ function FlushLogBuffer()
 function WriteLog($text, $playerColor = 0, $highlight=false, $path="./", $highlightColor="brown")
 {
   global $gameName;
+  switch ($highlightColor) {
+    case "darkpurple": $highlightColor = "#1c0333"; break;
+    case "darkgreen": $highlightColor = "#005900"; break;
+  }
   if ($playerColor === 0) {
     $output = $highlight
       ? "<p style='background: $highlightColor;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>$text</span></p>"

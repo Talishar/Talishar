@@ -304,7 +304,7 @@ class viserai_base extends BaseCard {
     if (GetClassState($this->controller, $CS_NumRunechantsCreated) >= 3) {
       $Hero = new CharacterCard(0, $this->controller);
       if ($Hero->CardID() != "viserai_usurper") { // don't do anything if you're already the usurper
-        WriteLog("Viserai has usurped the Shadow Throne!");
+        WriteLog(CardLink($Hero->CardID())." has usurped the Shadow Throne!");
         SetClassState($this->controller, $CS_OriginalHero, $this->cardID);
         $Hero = new CharacterCard(0, $this->controller);
         $Hero->Become("viserai_usurper");
@@ -2355,7 +2355,7 @@ class usurp_the_shadow_throne_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    WriteLog("Kneel, Reaper. The time has come, and I am unbound.", highlight:true, highlightColor:"purple");
+    WriteLog("Kneel, Reaper. The time has come, and I am unbound.", highlight:true, highlightColor:"darkpurple");
     return "";
   }
 
