@@ -1724,6 +1724,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
           $allies = &GetAllies($targetPlayer);
           $damage = AllyDamagePrevention($targetPlayer, $target[1], $damage, "ARCANE");
+          $allyHealthBefore = isset($allies[$target[1] + 2]) ? max(0, intval($allies[$target[1] + 2])) : 0;
           $allies[$target[1] + 2] -= $damage;
           $dqVars[0] = $damage;
           $dqVars["ARCANEDEALT"] = $damage;
@@ -1732,6 +1733,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             AllyDamageTakenAbilities($targetPlayer, $target[1]);
             DamageDealtAbilities("ALLY", $damage, "ARCANE", $sourceID);
             CurrentEffectDamageEffects(implode("-", $target), $source, "ARCANE", $damage, $player);
+            LogDamageStats($targetPlayer, $damage, min($damage, $allyHealthBefore));
           }
           $targetIndex = SearchAlliesForUniqueID($targetUID, $targetPlayer);
           if ($targetIndex == -1) return "";
@@ -1748,7 +1750,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($damage > 0 && $index > 0) {
             $dqVars["ARCANEDEALT"] = $damage;
             $char = &GetPlayerCharacter($targetPlayer);
+            $healthBefore = max(0, CharacterHealth($char[$index]) + $char[$index + 4]);
             $char[$index + 4] -= $damage;
+            LogDamageStats($targetPlayer, $damage, min($damage, $healthBefore));
             if (-$char[$index + 4] > CharacterHealth($char[$index])) {
               DestroyCharacter($targetPlayer, $index);
             }
@@ -1761,7 +1765,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if ($damage > 0 && $index > 0) {
             $dqVars["ARCANEDEALT"] = $damage;
             $char = &GetPlayerCharacter($targetPlayer);
+            $healthBefore = max(0, CharacterHealth($char[$index]) + $char[$index + 4]);
             $char[$index + 4] -= $damage;
+            LogDamageStats($targetPlayer, $damage, min($damage, $healthBefore));
             if (-$char[$index + 4] >= CharacterHealth($char[$index])) {
               DestroyCharacter($targetPlayer, $index);
             }
