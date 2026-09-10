@@ -7728,3 +7728,41 @@ class fallen_herald_yellow extends Card {
     return -2;
   }
 }
+
+class dam_the_shadowake_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "dam_the_shadowake_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $mainPlayer;
+    $mainHero = new CharacterCard(0, $mainPlayer);
+    if (TalentContains($mainHero->CardID(), "SHADOW", $mainPlayer))
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+
+  function SpecialName() {
+    return "Dam the Shadowake";
+  }
+
+  function SpecialType() {
+    return "B";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 4;
+  }
+}
