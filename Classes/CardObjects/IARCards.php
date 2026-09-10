@@ -299,7 +299,7 @@ class viserai_base extends BaseCard {
     global $CS_NumRunechantsCreated, $CS_OriginalHero;
     $Deck = new Deck($this->controller);
     if (!$Deck->Empty()) {
-      $Deck->BanishTop();
+      $Deck->BanishTop(banisher:$this->controller);
     }
     if (GetClassState($this->controller, $CS_NumRunechantsCreated) >= 3) {
       $Hero = new CharacterCard(0, $this->controller);
