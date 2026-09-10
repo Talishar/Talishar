@@ -400,8 +400,9 @@ function &GetAllies($player)
 function &GetPermanents($player)
 {
   global $p1Permanents, $p2Permanents;
-  if ($player == 1) return $p1Permanents;
-  else return $p2Permanents;
+  if ($player === 1 || $player === "1") return $p1Permanents;
+  elseif ($player === 2 || $player === "2") return $p2Permanents;
+  else return [];
 }
 
 function &GetInventory($player)
