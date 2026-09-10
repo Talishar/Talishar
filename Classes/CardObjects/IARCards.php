@@ -1861,6 +1861,10 @@ class appalling_bearers extends Card {
     return "I";
   }
 
+  function DisplayRemainingPrevention() {
+    return true;
+  }
+
   private
   function GetInds() {
     $Hand = new Hand($this->controller);
