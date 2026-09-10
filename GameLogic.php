@@ -2078,7 +2078,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChainState[$parameter] += $lastResult;
       return $lastResult;
     case "INCREMENTCLASSSTATEBY":
-      WriteLog("HERE incrementing class state by $lastResult");
       IncrementClassState($player, $parameter, intval($lastResult));
       return $lastResult;
     case "SETLAYERTARGET":
