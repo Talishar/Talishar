@@ -1630,6 +1630,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return DamageAlly($targetPlayer, $target[1], $damage, $type);
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
+        $sourceHero = new CharacterCard(0, $playerSource);
+        if (TalentContains($sourceHero->CardID(), "SHADOW", $sourceHero)) CheckShadowResist($targetPlayer, $damage, $source, $type, $preventable);
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         $Character = new PlayerCharacter($targetPlayer);
         $Solray = $Character->FindCardID("solray_plating");
@@ -1770,6 +1772,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $target = $targetPlayer;
         $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
         PrependDecisionQueue("TAKEARCANE", $target, "$damage-$source-$player");
+        $sourceHero = new CharacterCard(0, $player);
+        if (TalentContains($sourceHero->CardID(), "SHADOW", $sourceHero)) CheckShadowResist($target, $damage, $source, "ARCANE", $preventable);
         CheckSpellvoid($target, $damage, $source);
         $Character = new PlayerCharacter($targetPlayer);
         if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier", checkGem:true) && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) {
@@ -2068,6 +2072,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChainState[$parameter] += $lastResult;
       return $lastResult;
     case "INCREMENTCLASSSTATEBY":
+      WriteLog("HERE incrementing class state by $lastResult");
       IncrementClassState($player, $parameter, intval($lastResult));
       return $lastResult;
     case "SETLAYERTARGET":

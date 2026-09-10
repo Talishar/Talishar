@@ -8133,3 +8133,89 @@ class shadowrealm_solace_blue extends Card {
 		return "NECROMANCER";
 	}
 }
+
+class dark_arcanite_boots extends Card {
+  function __construct($controller) {
+    $this->cardID = "dark_arcanite_boots";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+
+  function ShadowResistAmount($index) {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Dark Arcanite Boots";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Legs";
+  }
+  
+  function SpecialBlock() {
+    return 0;
+  }
+}
+
+class restless_shieldmaiden_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_shieldmaiden_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ShadowResistAmount($index) {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialSubType() {
+    return "Zombie,Ally";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialHealth() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Restless Shieldmaiden";
+  }
+
+  function HasDecay() {
+    return true;
+  }
+}
