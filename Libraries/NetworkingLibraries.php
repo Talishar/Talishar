@@ -246,7 +246,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 17: //BUTTONINPUT
-      if ($turn[0] == "BUTTONINPUT" || $turn[0] == "CHOOSEARCANE" || $turn[0] == "BUTTONINPUTNOPASS" || $turn[0] == "CHOOSEFIRSTPLAYER" || $turn[0] == "CHOOSETRIGGERS" || $turn[0] == "ARSENALORHEAVE") {
+      if ($turn[0] == "BUTTONINPUT" || $turn[0] == "BUTTONINPUTNOPASS") {
+        if (in_array((string)$buttonInput, explode(",", $turn[2]), true)) ContinueDecisionQueue($buttonInput);
+      }
+      elseif ($turn[0] == "CHOOSEARCANE" || $turn[0] == "CHOOSEFIRSTPLAYER" || $turn[0] == "CHOOSETRIGGERS" || $turn[0] == "ARSENALORHEAVE") {
         ContinueDecisionQueue($buttonInput);
       }
       break;

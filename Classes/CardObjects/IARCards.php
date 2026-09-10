@@ -5767,7 +5767,8 @@ class arknight_descendancy_blue extends Card {
 
   function SpecificLogic() {
     global $dqVars;
-    $life = $dqVars["buttonChoice"] ?? 0;
+    $life = intval($dqVars["buttonChoice"] ?? 0);
+    if ($life <= 0) return;
     LoseHealth($life, $this->controller);
     PlayAura("runechant", $this->controller, $life, effectSource:$this->cardID);
   }
