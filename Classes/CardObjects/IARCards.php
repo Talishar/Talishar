@@ -5813,7 +5813,7 @@ class forbidden_harvest_yellow extends Card {
     $num = min(3, $Banish->NumCards());
     for ($i = 0; $i < $num; ++$i) {
       Await($this->controller, "MultiZoneIndices", search:"MYBANISH", subsequent:$i != 0);
-      Await($this->controller, "ChooseMultiZone", may:true, context:"Turn a card in banish facedown, Shadow cards make runechants (or pass)");
+      Await($this->controller, "ChooseMultiZone", may:true, context:"Turn a card in banish facedown, Shadow cards make runechants (or pass) (" . ($i + 1) . " of " . $num . ")");
       Await($this->controller, $this->cardID, mode:"aggregate");
     }
     Await($this->controller, $this->cardID, mode:"final", final:true, subsequent:0);
@@ -5840,6 +5840,12 @@ class forbidden_harvest_yellow extends Card {
         foreach ($chosenCardIDs as $cardID) {
           if (TalentContains($cardID, "SHADOW", $this->controller))
             ++$num;
+        }
+        if (count($chosenCardIDs) > 0) {
+          $cardLinks = array_map(fn($cardID) => CardLink($cardID), $chosenCardIDs);
+          $last = array_pop($cardLinks);
+          $list = count($cardLinks) > 0 ? implode(", ", $cardLinks) . " and " . $last : $last;
+          WriteLog(CardLink($this->cardID) . " turned " . $list . " face down");
         }
         PlayAura("runechant", $this->controller, $num, effectSource:$this->cardID);
         SetClassState($this->controller, $CS_AdditionalCosts, "-");
