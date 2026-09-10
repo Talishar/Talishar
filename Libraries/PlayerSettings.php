@@ -606,6 +606,15 @@ function AltArtsDisabled($player)
   return $settings[$SET_DisableAltArts] == "1";
 }
 
+function IsManualMode($player)
+{
+  global $SET_ManualMode;
+  if ($player != 1 && $player != 2) return false;
+  $settings = GetSettings($player);
+  if ($settings == null || count($settings) <= $SET_ManualMode) return false;
+  return $settings[$SET_ManualMode] == "1";
+}
+
 function ParseSettingsStringValueToIdInt(string $value)
 {
   static $settingsToId = [

@@ -621,8 +621,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $skipWriteGamestate = true;
       break;
     case 10002:
-      WriteLog("Player " . $playerID . " manually added 1 action point", highlight: true, highlightColor: "darkblue");
-      ++$actionPoints;
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . $manualCount . " action point" . ($manualCount > 1 ? "s" : ""), highlight: true, highlightColor: "darkblue");
+      $actionPoints += $manualCount;
       break;
     case 10003: //Undo/Revert to prior turn
       if (!ShouldProcessReplayUndo(
@@ -671,42 +672,49 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       ReissueUndoRequestWithReason($playerID, NormalizeUndoReason($inputText));
       break;
     case 10004:
-      if ($actionPoints > 0) {
-        WriteLog("Player " . $playerID . " manually subtracted 1 action point.", highlight: true, highlightColor: "darkblue");
-        --$actionPoints;
+      $manualCount = min(ManualModeCount($buttonInput), $actionPoints);
+      if ($manualCount > 0) {
+        WriteLog("Player " . $playerID . " manually subtracted " . $manualCount . " action point" . ($manualCount > 1 ? "s" : "") . ".", highlight: true, highlightColor: "darkblue");
+        $actionPoints -= $manualCount;
       }
       break;
     case 10005:
-      WriteLog("Player " . $playerID . " manually subtracted 1 life from themself", highlight: true, highlightColor: "darkblue");
-      PlayerLoseHealth(1, $playerID);
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually subtracted " . $manualCount . " life from themself", highlight: true, highlightColor: "darkblue");
+      PlayerLoseHealth($manualCount, $playerID);
       break;
     case 10006:
-      WriteLog("Player " . $playerID . " manually added 1 life to themself", highlight: true, highlightColor: "darkblue");
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . $manualCount . " life to themself", highlight: true, highlightColor: "darkblue");
       $health = &GetHealth($playerID);
-      $health += 1;
+      $health += $manualCount;
       break;
     case 10007:
       $targetPlayer = $playerID == 1 ? 2 : 1;
       if (IsPlayerAI($targetPlayer)) {
-        WriteLog("Manually subtracting 1 life from AI opponent", highlight: true, highlightColor: "darkblue");
+        $manualCount = ManualModeCount($buttonInput);
+        WriteLog("Manually subtracting " . $manualCount . " life from AI opponent", highlight: true, highlightColor: "darkblue");
         $health = &GetHealth($targetPlayer);
-        --$health;
+        $health -= $manualCount;
       }
       else
         WriteLog("Subtracting life from your opponent is not allowed", highlight: true, highlightColor: "darkblue");
       break;
     case 10008:
-      WriteLog("Player " . $playerID . " manually added 1 life to their opponent", highlight: true, highlightColor: "darkblue");
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . $manualCount . " life to their opponent", highlight: true, highlightColor: "darkblue");
       $health = &GetHealth($playerID == 1 ? 2 : 1);
-      $health += 1;
+      $health += $manualCount;
       break;
     case 10009:
-      WriteLog("Player " . $playerID . " manually drew a card for themself", highlight: true, highlightColor: "darkblue");
-      Draw($playerID, false);
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually drew " . ($manualCount > 1 ? $manualCount . " cards" : "a card") . " for themself", highlight: true, highlightColor: "darkblue");
+      for ($i = 0; $i < $manualCount; ++$i) Draw($playerID, false);
       break;
     case 10010:
-      WriteLog("Player " . $playerID . " manually drew a card for their opponent", highlight: true, highlightColor: "darkblue");
-      Draw(($playerID == 1 ? 2 : 1), false);
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually drew " . ($manualCount > 1 ? $manualCount . " cards" : "a card") . " for their opponent", highlight: true, highlightColor: "darkblue");
+      for ($i = 0; $i < $manualCount; ++$i) Draw(($playerID == 1 ? 2 : 1), false);
       break;
     case 10011:
       $cardList = explode(";", $cardID);
@@ -836,24 +844,28 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 10012:
-      WriteLog("Player " . $playerID . " manually added a resource to their pool", highlight: true, highlightColor: "darkblue");
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " to their pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID);
-      $resources[0] += 1;
+      $resources[0] += $manualCount;
       break;
     case 10013:
-      WriteLog("Player " . $playerID . " manually added a resource to their opponent's pool", highlight: true, highlightColor: "darkblue");
+      $manualCount = ManualModeCount($buttonInput);
+      WriteLog("Player " . $playerID . " manually added " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " to their opponent's pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID == 1 ? 2 : 1);
-      $resources[0] += 1;
+      $resources[0] += $manualCount;
       break;
     case 10014:
-      WriteLog("Player " . $playerID . " manually removed a resource from their opponent's pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID == 1 ? 2 : 1);
-      $resources[0] -= 1;
+      $manualCount = min(ManualModeCount($buttonInput), max(0, $resources[0]));
+      WriteLog("Player " . $playerID . " manually removed " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " from their opponent's pool", highlight: true, highlightColor: "darkblue");
+      $resources[0] -= $manualCount;
       break;
     case 10015:
-      WriteLog("Player " . $playerID . " manually removed a resource from their pool", highlight: true, highlightColor: "darkblue");
       $resources = &GetResources($playerID);
-      $resources[0] -= 1;
+      $manualCount = min(ManualModeCount($buttonInput), max(0, $resources[0]));
+      WriteLog("Player " . $playerID . " manually removed " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " from their pool", highlight: true, highlightColor: "darkblue");
+      $resources[0] -= $manualCount;
       break;
     case 10016:
       WriteLog("Player " . $playerID . " manually removed their arsenal", highlight: true, highlightColor: "darkblue");
@@ -1359,6 +1371,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       OptAndLog($deck, $playerID, $cardListTop, $cardListBottom);
       ContinueDecisionQueue();
       break;
+    case "MANUALDECK": // should only show up in replays
+      $newDeck = array_values(array_filter(explode(",", $buttonInput), fn($card) => $card !== ""));
+      $currentDeck = &GetDeck($playerID);
+      if (IsSameDeckContents($newDeck, $currentDeck)) $currentDeck = $newDeck;
+      unset($currentDeck);
+      break;
     case "REORDER": // should only show up in replays
       $cardList = explode(",", $buttonInput);
       $layerPiecesReorder = LayerPieces();
@@ -1412,6 +1430,23 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
   }
   return true;
+}
+
+function IsSameDeckContents($newDeck, $currentDeck)
+{
+  if (count($newDeck) != count($currentDeck)) return false;
+  $sortedNew = $newDeck;
+  $sortedCurrent = $currentDeck;
+  sort($sortedNew);
+  sort($sortedCurrent);
+  return $sortedNew === $sortedCurrent;
+}
+
+function ManualModeCount($input)
+{
+  $count = intval($input);
+  if ($count < 1) return 1;
+  return min($count, 999);
 }
 
 function IsModeAsync($mode)
