@@ -7728,6 +7728,10 @@ class fallen_herald_yellow extends Card {
   function SpecialBlock() {
     return -2;
   }
+
+  function HasBloodDebt() {
+    return true;
+  }
 }
 
 class dam_the_shadowake extends BaseCard {
