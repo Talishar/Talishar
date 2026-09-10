@@ -610,9 +610,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           AddEvent("UNDODENIEDNOTICE", $playerID);
         }
         else {
-          $undoReason = NormalizeUndoReason($inputText);
           WriteLog("Player " . $playerID . " requests to undo the last action");
-          AddEvent("REQUESTUNDO", $playerID . ":" . $undoReason);
+          AddEvent("REQUESTUNDO", $playerID);
         }
       }
       break;
@@ -657,19 +656,15 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           WriteLog("Player " . $playerID . " requested to undo but opponent has declined too many undo requests this turn");
         }
         else {
-          $undoReason = NormalizeUndoReason($inputText);
           WriteLog("Player " . $playerID . " requests to undo the last action");
           if ($buttonInput == "beginTurnGamestate.txt")
-            AddEvent("REQUESTTHISTURNUNDO", $playerID . ":" . $undoReason);
+            AddEvent("REQUESTTHISTURNUNDO", $playerID);
           else if ($buttonInput == "lastTurnGamestate.txt")
-            AddEvent("REQUESTLASTTURNUNDO", $playerID . ":" . $undoReason);
+            AddEvent("REQUESTLASTTURNUNDO", $playerID);
           else if ($buttonInput == "startChainLinkGamestate.txt")
-            AddEvent("REQUESTCHAINLINKUNDO", $playerID . ":" . $undoReason);
+            AddEvent("REQUESTCHAINLINKUNDO", $playerID);
         }
       }
-      break;
-    case 10021: //Add a reason to an undo request the opponent has not answered yet
-      ReissueUndoRequestWithReason($playerID, NormalizeUndoReason($inputText));
       break;
     case 10004:
       $manualCount = min(ManualModeCount($buttonInput), $actionPoints);
@@ -857,13 +852,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10014:
       $resources = &GetResources($playerID == 1 ? 2 : 1);
-      $manualCount = min(ManualModeCount($buttonInput), max(0, $resources[0]));
+      $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually removed " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " from their opponent's pool", highlight: true, highlightColor: "darkblue");
       $resources[0] -= $manualCount;
       break;
     case 10015:
       $resources = &GetResources($playerID);
-      $manualCount = min(ManualModeCount($buttonInput), max(0, $resources[0]));
+      $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually removed " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " from their pool", highlight: true, highlightColor: "darkblue");
       $resources[0] -= $manualCount;
       break;
@@ -1453,7 +1448,7 @@ function IsModeAsync($mode)
 {
   static $asyncModes = [
   26 => true, 102 => true, 103 => true, 104 => true, 10000 => true,
-  10003 => true, 10021 => true, 100000 => true, 100001 => true, 100002 => true,
+  10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true,
   100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true
@@ -4978,20 +4973,6 @@ function UndoRequestEventTypes()
     "REQUESTLASTTURNUNDO" => true, "REQUESTCHAINLINKUNDO" => true,
   ];
   return $undoRequestTypes;
-}
-
-function ReissueUndoRequestWithReason($playerID, $reason)
-{
-  $priorEvents = $GLOBALS['priorEvents'] ?? [];
-  $undoRequestTypes = UndoRequestEventTypes();
-  $eventPieces = EventPieces();
-  $eventsCount = count($priorEvents);
-  for ($i = 0; $i < $eventsCount; $i += $eventPieces) {
-    if (!isset($undoRequestTypes[$priorEvents[$i]])) continue;
-    if (intval($priorEvents[$i + 1] ?? "") != $playerID) continue;
-    AddEvent($priorEvents[$i], $playerID . ":" . $reason);
-    return;
-  }
 }
 
 function ConsumeUndoRequestEvents()
