@@ -7715,6 +7715,10 @@ class fallen_herald_yellow extends Card {
     return 4;
   }
 
+  function DisplayRemainingPrevention() {
+    return true;
+  }
+
   function SpecialName() {
     return "Fallen Herald";
   }
