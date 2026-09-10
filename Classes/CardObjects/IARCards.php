@@ -7714,7 +7714,7 @@ class fallen_herald_yellow extends Card {
   }
 
   function SpecialTalent() {
-    return "Shadow";
+    return "SHADOW";
   }
 
   function SpecialPitch() {
