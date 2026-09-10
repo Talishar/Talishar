@@ -8168,3 +8168,54 @@ class dark_arcanite_boots extends Card {
     return 0;
   }
 }
+
+class restless_shieldmaiden_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_shieldmaiden_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ShadowResistAmount($index) {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialSubType() {
+    return "Zombie,Ally";
+  }
+
+  function SpecialClass() {
+    return "NECROMANCER";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialHealth() {
+    return 3;
+  }
+
+  function SpecialName() {
+    return "Restless Shieldmaiden";
+  }
+
+  function HasDecay() {
+    return true;
+  }
+}

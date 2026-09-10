@@ -190,14 +190,40 @@ function DiscardAllyInstead($player, $cardID, $may=true) {
 	}
 }
 
-function CheckShadowResist($player, $damage, $source = "-", $type="-") {
+function CheckShadowResist($player, $damage, $source = "-", $type="-", $preventable=true) {
 	$caption = "Choose a card with Shadow Resist to prevent damage (or pass)";
-	PrependDecisionQueue("ADDTOLASTRESULT", $player, "{0}", 1);
-	PrependDecisionQueue("PASSPARAMETER", $player, 1, 1);
-	PrependDecisionQueue("SHADOWRESISTCHOICES", $player, $damage, 1);
-	PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-	PrependDecisionQueue("SETDQCONTEXT", $player, $caption, 1);
-	PrependDecisionQueue("FINDINDICES", $player, "SHADOWRESIST,$damage", 1);
+	if (!$preventable)
+		$caption .= GetDamagePreventionWarning($player, $damage, $type, $source, " ");
+	Await($player, "ProcessShadowResist", source:$source, type:$type, preventable:$preventable, prepend:true);
+	Await($player, "ChooseMultiZone", may:true, context:$caption, prepend:true);
+	Await($player, "SearchShadowResist", "indices", damage:$damage, subsequent:0, prepend:true);
+}
+
+function ProcessShadowResistAwait($player) {
+	global $dqVars, $CS_PreventionCache;
+	$damage = $dqVars["damage"] ?? 0;
+	$preventable = $dqVars["preventable"] ?? true;
+	$source = $dqVars["source"] ?? "-";
+	$type = $dqVars["type"] ?? "-";
+	$prevented = 0;
+	$choice = $dqVars["MZIndex"] ?? "PASS";
+	if ($choice != "PASS") {
+		$permanentObject = MZIndexToObject($player, $choice);
+		$prevented = ShadowResistAmount($permanentObject->CardID(), $player, $permanentObject->Index());
+		$permanentObject->Destroy();
+		if($prevented > 0) LogDamagePreventedStats($player, min($damage, $prevented));
+		if ($preventable) $damage -= $prevented;
+		if ($damage < 0) $damage = 0;
+		if ($damage > 0) CheckShadowResist($player, $damage, $source, $type, $preventable);
+		PrependDecisionQueue("INCREMENTCLASSSTATEBY", $player, $CS_PreventionCache, 1);
+		PrependDecisionQueue("PASSPARAMETER", $player, $prevented, 1);
+	}
+}
+
+function SearchShadowResistAwait($player) {
+	global $dqVars;
+	$damage = $dqVars["damage"] ?? 0;
+	return SearchShadowResistIndices($player, $damage);
 }
 
 function SearchShadowResistIndices($player, $damage) {
