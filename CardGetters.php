@@ -403,6 +403,7 @@ function &GetPermanents($player)
   if ($player === 1 || $player === "1") return $p1Permanents;
   elseif ($player === 2 || $player === "2") return $p2Permanents;
   else {
+    WriteLog("Something weird is happening, please submit a bug report so I can see what's causing it", highlight:true);
     $ret = [];
     return $ret;
   }
