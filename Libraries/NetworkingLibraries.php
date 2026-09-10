@@ -1367,10 +1367,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       ContinueDecisionQueue();
       break;
     case "MANUALDECK": // should only show up in replays
-      $newDeck = array_values(array_filter(explode(",", $buttonInput), fn($card) => $card !== ""));
-      $currentDeck = &GetDeck($playerID);
-      if (IsSameDeckContents($newDeck, $currentDeck)) $currentDeck = $newDeck;
-      unset($currentDeck);
+      $deck = &GetDeck($playerID);
+      $order = ParseDeckOrder(array_filter(explode(",", $buttonInput), fn($index) => $index !== ""), count($deck));
+      unset($deck);
+      if ($order !== null) ReorderDeck($playerID, $order);
       break;
     case "REORDER": // should only show up in replays
       $cardList = explode(",", $buttonInput);
@@ -1427,14 +1427,27 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   return true;
 }
 
-function IsSameDeckContents($newDeck, $currentDeck)
+function ParseDeckOrder($submittedOrder, $deckSize)
 {
-  if (count($newDeck) != count($currentDeck)) return false;
-  $sortedNew = $newDeck;
-  $sortedCurrent = $currentDeck;
-  sort($sortedNew);
-  sort($sortedCurrent);
-  return $sortedNew === $sortedCurrent;
+  if (!is_array($submittedOrder) || count($submittedOrder) != $deckSize) return null;
+  $order = [];
+  $seen = [];
+  foreach ($submittedOrder as $submittedIndex) {
+    if (!is_numeric($submittedIndex)) return null;
+    $index = intval($submittedIndex);
+    if ($index < 0 || $index >= $deckSize || isset($seen[$index])) return null;
+    $seen[$index] = true;
+    $order[] = $index;
+  }
+  return $order;
+}
+
+function ReorderDeck($playerID, $order)
+{
+  $deck = &GetDeck($playerID);
+  $newDeck = [];
+  foreach ($order as $index) $newDeck[] = $deck[$index];
+  $deck = $newDeck;
 }
 
 function ManualModeCount($input)
@@ -1447,7 +1460,7 @@ function ManualModeCount($input)
 function IsModeAsync($mode)
 {
   static $asyncModes = [
-  26 => true, 102 => true, 103 => true, 104 => true, 10000 => true,
+  26 => true, 102 => true, 103 => true, 104 => true, 111 => true, 10000 => true,
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true,

@@ -310,37 +310,24 @@ try {
       ContinueDecisionQueue();
       break;
   case 111: // manual mode: reorder your own deck
-    if (!IsManualMode($playerID)) {
-      $response->error = "Manual mode is not enabled.";
+    $deck = &GetDeck($playerID);
+    $deckSize = count($deck);
+    unset($deck);
+    $order = ParseDeckOrder($submission->deckOrder ?? null, $deckSize);
+    if ($order === null) {
+      $response->error = "Your deck changed while you were organizing it. Reopen the deck organizer and try again.";
       break;
     }
-    $submittedDeck = $submission->cardListTop ?? null;
-    if (!is_array($submittedDeck)) {
-      $response->error = "Deck order must be a list.";
-      break;
-    }
-    $newDeck = [];
-    foreach ($submittedDeck as $submittedCard) {
-      if (!is_string($submittedCard)) {
-        $newDeck = null;
-        break;
-      }
-      $newDeck[] = $submittedCard;
-    }
-    $currentDeck = &GetDeck($playerID);
-    if ($newDeck === null || !IsSameDeckContents($newDeck, $currentDeck)) {
-      $response->error = "Deck order does not match the cards in your deck.";
-      break;
-    }
-    $currentDeck = $newDeck;
+    ReorderDeck($playerID, $order);
     WriteLog("Player " . $playerID . " manually reordered their deck", highlight: true, highlightColor: "darkblue");
     if (!IsReplay()) {
       $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
       if ($commandFile !== false) {
-        fwrite($commandFile, "$playerID MANUALDECK " . implode(",", $newDeck) . " 0 0\r\n");
+        fwrite($commandFile, "$playerID MANUALDECK " . implode(",", $order) . " 0 0\r\n");
         fclose($commandFile);
       }
     }
+    $response->message = "Deck reordered.";
     break;
   case 110: // rearranging the top card of the opponent's deck
     $otherPlayer = $playerID == 1 ? 2 : 1;
