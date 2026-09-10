@@ -319,6 +319,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Head"; // temporary
     case "drop_dead_bodice":
       return "Chest"; // temporary
+    case "dark_arcanite_boots":
+      return "Legs";
     default:
       break;
   }

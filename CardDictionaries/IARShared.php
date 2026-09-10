@@ -189,3 +189,39 @@ function DiscardAllyInstead($player, $cardID, $may=true) {
 		Await($player, "AddCurrentTurnEffect", $player, effectID:"$cardID-PAID", final:true);
 	}
 }
+
+function CheckShadowResist($player, $damage, $source = "-", $type="-") {
+	$caption = "Choose a card with Shadow Resist to prevent damage (or pass)";
+	PrependDecisionQueue("ADDTOLASTRESULT", $player, "{0}", 1);
+	PrependDecisionQueue("PASSPARAMETER", $player, 1, 1);
+	PrependDecisionQueue("SHADOWRESISTCHOICES", $player, $damage, 1);
+	PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+	PrependDecisionQueue("SETDQCONTEXT", $player, $caption, 1);
+	PrependDecisionQueue("FINDINDICES", $player, "SHADOWRESIST,$damage", 1);
+}
+
+function SearchShadowResistIndices($player, $damage) {
+	$inds = [];
+	$Character = new PlayerCharacter($player);
+	for ($i = 0; $i < $Character->NumCards(); ++$i) {
+		$CharacterCard = $Character->Card($i, true);
+		if (!$CharacterCard->IsActive()) continue;
+		$index = $CharacterCard->Index();
+		if (ShadowResistAmount($CharacterCard->CardID(), $player, $index) > 0)
+			$inds[] = "MYCHAR-$index";
+	}
+	$Allies = new Allies($player);
+	for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+		$AllyCard = $Allies->Card($i, true);
+		$index = $AllyCard->Index();
+		if (ShadowResistAmount($AllyCard->CardID(), $player, $index) > 0)
+			$inds[] = "MYALLY-$index";
+	}
+	return implode(",", $inds);
+}
+
+function ShadowResistAmount($cardID, $player, $index) {
+	$card = GetClass($cardID, $player);
+	if ($card != "-") return $card->ShadowResistAmount($index);
+	else return 0;
+}

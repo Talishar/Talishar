@@ -503,6 +503,13 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $prevention = GetClassState($player, $CS_PreventionCache) ?? 0;
           if($damage > $prevention) $rv = SearchSpellvoidIndices($player, $subparam);
           break;
+        case "SHADOWRESIST":
+          $dqVal = $dqVars[0] ?? $subparam;
+          $dashPos = strpos($dqVal, '-');
+          $damage = $dashPos !== false ? substr($dqVal, 0, $dashPos) : $dqVal;
+          $prevention = GetClassState($player, $CS_PreventionCache) ?? 0;
+          if($damage > $prevention) $rv = SearchShadowResistIndices($player, $subparam);
+          break;
         case "OPPSENERGYPERMANENTS":
           $rv = [];
           $playerID = $player == 1 ? 2 : 1;
@@ -1630,6 +1637,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return DamageAlly($targetPlayer, $target[1], $damage, $type);
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
+        $sourceHero = new CharacterCard(0, $playerSource);
+        if (TalentContains($sourceHero->CardID(), "SHADOW", $sourceHero)) CheckShadowResist($targetPlayer, $damage, $preventable, $type);
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         $Character = new PlayerCharacter($targetPlayer);
         $Solray = $Character->FindCardID("solray_plating");
@@ -1669,6 +1678,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $damage -= $prevented;
         if ($damage < 0) $damage = 0;
         if ($damage > 0) CheckSpellvoid($player, $parameter);
+      }
+      PrependDecisionQueue("INCREMENTCLASSSTATEBY", $player, $CS_PreventionCache, 1);
+      return $prevented;
+    case "SHADOWRESISTCHOICES":
+      $damage = $parameter;
+      if ($lastResult != "PASS") {
+        $permanentObject = MZIndexToObject($player, $lastResult);
+        $prevented = ShadowResistAmount($permanentObject->CardID(), $player, $permanentObject->Index());
+        $permanentObject->Destroy();
+        if($prevented > 0) LogDamagePreventedStats($player, min($damage, $prevented));
+        $damage -= $prevented;
+        if ($damage < 0) $damage = 0;
+        if ($damage > 0) CheckShadowResist($player, $parameter);
       }
       PrependDecisionQueue("INCREMENTCLASSSTATEBY", $player, $CS_PreventionCache, 1);
       return $prevented;
@@ -1770,6 +1792,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $target = $targetPlayer;
         $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
         PrependDecisionQueue("TAKEARCANE", $target, "$damage-$source-$player");
+        if (TalentContains($sourceHero->CardID(), "SHADOW", $sourceHero)) CheckShadowResist($target, $damage, $preventable, "ARCANE");
         CheckSpellvoid($target, $damage, $source);
         $Character = new PlayerCharacter($targetPlayer);
         if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier", checkGem:true) && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) {

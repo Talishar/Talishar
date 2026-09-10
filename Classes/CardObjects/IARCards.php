@@ -7728,3 +7728,76 @@ class fallen_herald_yellow extends Card {
     return -2;
   }
 }
+
+class dam_the_shadowake_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "dam_the_shadowake_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $mainPlayer;
+    $mainHero = new CharacterCard(0, $mainPlayer);
+    if (TalentContains($mainHero->CardID(), "SHADOW", $mainPlayer))
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+
+  function SpecialName() {
+    return "Dam the Shadowake";
+  }
+
+  function SpecialType() {
+    return "B";
+  }
+
+  function SpecialTalent() {
+    return "SHADOW";
+  }
+
+  function SpecialBlock() {
+    return 4;
+  }
+}
+
+class dark_arcanite_boots extends Card {
+  function __construct($controller) {
+    $this->cardID = "dark_arcanite_boots";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+
+  function ShadowResistAmount($index) {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Dark Arcanite Boots";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Legs";
+  }
+  
+  function SpecialBlock() {
+    return 0;
+  }
+}

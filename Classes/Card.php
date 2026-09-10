@@ -1318,4 +1318,10 @@ class Card {
       return $this->baseCard->Binding($index);
     return;
   }
+
+  function ShadowResistAmount($index) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "ShadowResistAmount"))
+      return $this->baseCard->ShadowResistAmount($index);
+    return 0;
+  }
 }
