@@ -6350,6 +6350,10 @@ class cleave_the_heavens extends BaseCard {
   function ProcessAbility() {
     PlayAura("gate_to_iarathael", $this->controller);
   }
+
+  function SpecialBlock() {
+    return 2; //fabcube error
+  }
 }
 
 class cleave_the_heavens_red extends Card {
