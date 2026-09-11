@@ -43,7 +43,8 @@ services:
       REDIS_ENABLED: "true"
       PERFORMANCE_METRICS_ENABLED: "false"
       PERFORMANCE_METRICS_SAMPLE_RATE: "0.1"
-      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "1"
+      # Faster local runtime; restart web-server after PHP edits to load them.
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "0"
       DOMAIN: "localhost"
       METAFY_CLIENT_ID: "4gIw_YYtamUjZ0yadyy3gYaL_BJkaRnPOa5SKCLbEPI"
       METAFY_LOGIN_CLIENT_ID: "2gAjeLUQxKdjOUaMP63CyoVHqedqkjQLa-WntE6UHss"
