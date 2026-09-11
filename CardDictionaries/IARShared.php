@@ -149,9 +149,9 @@ function BanishFromHand($player, $may=false, $context="", $final=false) {
 	Await($player, "MZRemoveAndBanish", from:"HAND", final:$final);
 }
 
-function BanishFromArsenal($player, $cardID) {
+function BanishFromArsenal($player, $cardID, $may=false) {
     Await($player, "MultiZoneIndices", search:"MYARS", subsequent:0);
-    Await($player, "ChooseMultiZone", context:"Banish a card from your arsenal");
+    Await($player, "ChooseMultiZone", may:$may, context:"Banish a card from your arsenal");
     Await($player, "MZRemoveAndBanish", banishedBy:$cardID, from:"ARS", final:true);
 }
 

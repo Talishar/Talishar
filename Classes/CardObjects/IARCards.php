@@ -7473,3 +7473,231 @@ class shadowake_gloomblade_blue extends Card {
     $this->baseCard = new shadowake_gloomblade($this->cardID, $this->controller);
   }
 }
+
+class step_through_realms extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    return TalentContains($attackID, "SHADOW", $this->controller);
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $CombatChain;
+    $this->ProcessTrigger($this->cardID, $CombatChain->AttackCard()->ID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("gate_to_iarathael", $this->controller, effectSource:$uniqueID);
+  }
+}
+
+class step_through_realms_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "step_through_realms_red";
+    $this->controller = $controller;
+    $this->baseCard = new step_through_realms($this->cardID, $this->controller);
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 4;
+	}
+}
+
+class step_through_realms_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "step_through_realms_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new step_through_realms($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;  
+  }
+}
+
+class step_through_realms_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "step_through_realms_blue";
+    $this->controller = $controller;
+    $this->baseCard = new step_through_realms($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;  
+  }
+}
+
+class rally_the_shadow_horde extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_PlayIndex;
+    if ($from != "PLAY") return "";
+    $index = GetClassState($this->controller, $CS_PlayIndex);
+    if ($index == -1) $index = GetCombatChainIndex($this->cardID, $this->controller);
+    if ($index != -1) CombatChainDefenseModifier($index, 2);
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return $from == "PLAY" ? "I" : "AA";
+  }
+
+  function AbilityPlayableFromCombatChain($index = '-') {
+    global $mainPlayer;
+    return $this->controller != $mainPlayer;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $combatChain;
+    if ($from == "PLAY") {
+      if ($index == 0) return true;
+      if (isset($combatChain[$index + 7])) return SearchCurrentTurnEffects($this->cardID, $this->controller, false, true) == $combatChain[$index + 7];
+      return false;
+    }
+    return $from == "COMBATCHAINATTACKS";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $combatChain, $CS_PlayIndex;
+    if ($from != "PLAY") return;
+    $Hand = new Hand($this->controller);
+    if ($Hand->NumCards() == 0) {
+      WriteLog("This ability requires banishing a card as an additional cost, but you have no cards to banish. Reverting gamestate prior to the card declaration.", highlight: true);
+      RevertGamestate();
+    }
+    $playIndex = GetClassState($this->controller, $CS_PlayIndex);
+    AddCurrentTurnEffect($this->cardID, $this->controller, "CC", $combatChain[$playIndex + 7]);
+    ++$combatChain[$playIndex + 11];
+    MZMoveCard($this->controller, "MYHAND", "MYBANISH,HAND,-", DQContext: "Choose a card to banish for " . CardLink($this->cardID, $this->cardID));
+  }
+}
+
+class rally_the_shadow_horde_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rally_the_shadow_horde_red";
+    $this->controller = $controller;
+    $this->baseCard = new rally_the_shadow_horde($this->cardID, $this->controller);
+  }
+}
+
+class rally_the_shadow_horde_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rally_the_shadow_horde_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rally_the_shadow_horde($this->cardID, $this->controller);
+  }
+}
+
+class rally_the_shadow_horde_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rally_the_shadow_horde_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rally_the_shadow_horde($this->cardID, $this->controller);
+  }
+}
+
+class corpse_cover extends BaseCard {
+  private function GetAllies() {
+    return SearchMultizone($this->controller, "MYALLY&MYHAND:subtype=Ally");
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "PLAY") AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    return FloatingPrevention($index, $damage, $amount, $remove, $preventable);
+  }
+
+  function CurrentTurnEffectUses() {
+    return 2;
+  }
+
+  function DisplayRemainingPrevention() {
+    return true;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return $from == "PLAY" ? "I" : "B";
+  }
+
+  function AbilityPlayableFromCombatChain($index = '-') {
+    global $mainPlayer;
+    return $this->controller != $mainPlayer;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    if ($from == "PLAY") {
+      if ($index == 0) return true;
+      if ($this->GetAllies() == "") return true;
+      return $CombatChain->Card($index)->NumTimesUsed() >= 1;
+    }
+    return $from == "COMBATCHAINATTACKS";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CombatChain, $CS_PlayIndex;
+    if ($from != "PLAY") return;
+    if ($this->GetAllies() == "") {
+      WriteLog("No allies to destroy or discard, reverting gamestate", highlight: true);
+      RevertGamestate();
+    }
+    $CombatChain->Card(GetClassState($this->controller, $CS_PlayIndex))->AddUse(1);
+    Await($this->controller, "MultiZoneIndices", search: "MYALLY&MYHAND:subtype=Ally", subsequent: 0);
+    Await($this->controller, "ChooseMultiZone", context: "Destroy or discard an ally");
+    Await($this->controller, $this->cardID, final: true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $zone = explode("-", $choice)[0];
+    $index = explode("-", $choice)[1] ?? -1;
+    if ($index != -1) {
+      switch ($zone) {
+        case "MYHAND":
+          DiscardCard($this->controller, $index);
+          break;
+        case "MYALLY":
+          $AllyCard = new AllyCard($index, $this->controller);
+          $AllyCard->Destroy();
+          break;
+        default:
+          break;
+      }
+    }
+  }
+}
+
+class corpse_cover_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "corpse_cover_red";
+    $this->controller = $controller;
+    $this->baseCard = new corpse_cover($this->cardID, $this->controller);
+  }
+}
+
+class corpse_cover_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "corpse_cover_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new corpse_cover($this->cardID, $this->controller);
+  }
+}
+
+class corpse_cover_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "corpse_cover_blue";
+    $this->controller = $controller;
+    $this->baseCard = new corpse_cover($this->cardID, $this->controller);
+  }
+}

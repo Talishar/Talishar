@@ -2130,6 +2130,9 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
       case "rally_the_coast_guard_red":
       case "rally_the_coast_guard_yellow":
       case "rally_the_coast_guard_blue":
+      case "rally_the_shadow_horde_red":
+      case "rally_the_shadow_horde_yellow":
+      case "rally_the_shadow_horde_blue":
         $effectsToRemove[] = $i;
         break;
       case "tarpit_trap_yellow":
