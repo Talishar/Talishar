@@ -217,6 +217,57 @@ class restless_quartermaster_red extends Card {
   }
 }
 
+class restless_plowman_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "restless_plowman_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A" && $from == "PLAY")
+      GainResources(1, $this->controller);
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $from == "PLAY" ? "A" : "";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) return "-";
+    return "Gain_Resource";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if ($from != "PLAY") return false;
+    $AllyCard = new AllyCard($index, $this->controller);
+    return $AllyCard->Tapped();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "PLAY") {
+      $AllyCard = new AllyCard($index, $this->controller);
+      $AllyCard->TapForCost();
+    }
+  }
+
+  function AbilityHasGoAgain($from) {
+    return GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A";
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return GetResolvedAbilityType($this->cardID, $from) == "AA";
+  }
+
+  function HasGoAgain($from) {
+    return false;
+  }
+}
+
 class restless_cleric_red extends Card {
   function __construct($controller) {
     $this->cardID = "restless_cleric_red";
@@ -374,6 +425,8 @@ class viserai_usurper extends Card {
 }
 
 class runic_reaving_base extends Card {
+  public $archetype;
+
   function __construct($cardID, $controller) {
     $this->cardID = $cardID;
     $this->controller = $controller;
@@ -640,7 +693,7 @@ class runechant_of_gluttony_yellow extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     if ($additionalCosts == "USURPED")
-      GainResources($this->controller, 1);
+      GainResources(1, $this->controller);
     else
       $this->archetype->ProcessTrigger($uniqueID, $additionalCosts);
   }
@@ -1047,7 +1100,7 @@ class blood_harvest extends Card {
   }
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    GainResources($this->controller, 3);
+    GainResources(3, $this->controller);
   }
 }
 
@@ -2099,6 +2152,42 @@ class herald_of_hope_blue extends Card {
 
   function HasPhantasm() {
     return true;
+  }
+}
+
+class shadowrealm_swiftness_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowrealm_swiftness_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Await($this->controller, "MultiZoneIndices", "indices", search:"MYBANISH", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Move a card in your banish to your graveyard");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"] ?? "";
+    $ind = explode("-", $choice)[1] ?? -1;
+    if ($ind != -1) {
+      $BanishCard = new BanishCard($this->controller, $ind);
+      AddGraveyard($BanishCard->ID(), $this->controller, "MYBANISH");
+      if (SubtypeContains($BanishCard->ID(), "Zombie"))
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+      $BanishCard->Remove();
+    }
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+		return true;
+	}
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackCard = $CombatChain->AttackCard()->ID();
+    return SubtypeContains($attackCard, "Zombie", $this->controller);
   }
 }
 
@@ -7190,5 +7279,127 @@ class goremass_summoning_blue extends Card {
       PlayAlly("blasmophet_the_insatiable_hunger", $this->controller);
     }
     return "";
+  }
+}
+
+class bonded_burial extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Ally&MYALLY", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Destroy an Ally or discard an Ally");
+    Await($this->controller, $this->cardID, uniqueID: $uniqueID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"] ?? "-";
+    $zone = explode("-", $choice)[0];
+    $index = explode("-", $choice)[1] ?? "";
+    $uniqueID = $dqVars["uniqueID"];
+    if ($index != "") {
+      switch ($zone) {
+        case "MYHAND":
+          DiscardCard($this->controller, $index, "", $this->controller);
+          break;
+        case "MYALLY":
+          $AllyCard = new AllyCard($index, $this->controller);
+          $AllyCard->Destroy();
+          break;
+        default:
+          break;
+      }
+    }
+    PummelHit($otherPlayer = 3 - $this->controller);
+  }
+}
+
+class bonded_burial_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bonded_burial_red";
+    $this->controller = $controller;
+    $this->baseCard = new bonded_burial($this->cardID, $this->controller);
+  }
+}
+
+class bonded_burial_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "bonded_burial_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new bonded_burial($this->cardID, $this->controller);
+  }
+}
+
+class bonded_burial_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "bonded_burial_blue";
+    $this->controller = $controller;
+    $this->baseCard = new bonded_burial($this->cardID, $this->controller);
+  }
+}
+
+class mutual_sacrifice extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Ally&MYALLY");
+    Await($this->controller, "ChooseMultiZone", "choice", may:true, context:"Destroy an Ally or discard an Ally");
+    Await($this->controller, $this->cardID, uniqueID: $uniqueID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["choice"] ?? "-";
+    $zone = explode("-", $choice)[0];
+    $index = explode("-", $choice)[1] ?? "";
+    if ($index != "") {
+      switch ($zone) {
+        case "MYHAND":
+          DiscardCard($this->controller, $index, "", $this->controller);
+          break;
+        case "MYALLY":
+          $AllyCard = new AllyCard($index, $this->controller);
+          $AllyCard->Destroy();
+          break;
+        default:
+          break;
+      }
+    }
+    LoseHealth(2, $this->controller);
+  }
+}
+
+class mutual_sacrifice_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "mutual_sacrifice_red";
+    $this->controller = $controller;
+    $this->baseCard = new mutual_sacrifice($this->cardID, $this->controller);
+  }
+}
+
+class mutual_sacrifice_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "mutual_sacrifice_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new mutual_sacrifice($this->cardID, $this->controller);
+  }
+}
+
+class mutual_sacrifice_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "mutual_sacrifice_blue";
+    $this->controller = $controller;
+    $this->baseCard = new mutual_sacrifice($this->cardID, $this->controller);
   }
 }

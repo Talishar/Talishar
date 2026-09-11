@@ -19,6 +19,7 @@ class Card {
   public $cardID;
   public $controller;
   public $baseCard;
+  public $archetype;
   public $addedAbilities = [];
 
   // Constructor
