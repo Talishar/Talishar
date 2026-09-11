@@ -5467,6 +5467,179 @@ class peak_power_blue extends Card {
   }
 }
 
+class rocktop_bellow extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Deck = new Deck($this->controller);
+    if ($Deck->Reveal()) {
+      $cardID = $Deck->Top();
+      if (ModifiedPowerValue($cardID, $this->controller, "DECK") >= 6)
+        AddCurrentTurnEffectNextAttack($this->cardID . "-OVERPOWER", $this->controller);
+      else {
+        $Deck->AddBottom($Deck->Top(remove: true), "DECK");
+        WriteLog("⬇️ " . CardLink($this->cardID) . " put " . CardLink($cardID) . " on the bottom of your deck");
+      }
+    }
+    AddCurrentTurnEffectNextAttack($this->cardID . "-BUFF", $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $parameter == "BUFF" || $parameter == "OVERPOWER";
+  }
+
+  function DoesEffectGrantOverpower() {
+    return SearchCurrentTurnEffects($this->cardID . "-OVERPOWER", $this->controller);
+  }
+}
+
+class rocktop_bellow_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rocktop_bellow_red";
+    $this->controller = $controller;
+    $this->baseCard = new rocktop_bellow($this->cardID, $this->controller);
+  }
+
+    function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 4 : 0;
+  }
+}
+
+class rocktop_bellow_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rocktop_bellow_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rocktop_bellow($this->cardID, $this->controller);
+  }
+
+    function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 3 : 0;
+  }
+}
+
+class rocktop_bellow_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rocktop_bellow_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rocktop_bellow($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 2 : 0;
+  }
+}
+
+class rise_to_the_challenge extends BaseCard {
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    $ChainCard = new ChainCard($i);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID: $ChainCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Deck = new Deck($this->controller);
+    if (!$Deck->Reveal()) return;
+    $cardID = $Deck->Top();
+    if (ModifiedPowerValue($cardID, $this->controller, "DECK") >= 6)
+      AddCurrentTurnEffect($this->cardID . "-DEFENSE", $this->controller, uniqueID: $uniqueID);
+    else {
+      $Deck->AddBottom($Deck->Top(remove: true), "DECK");
+      WriteLog("⬇️ " . CardLink($this->cardID) . " put " . CardLink($cardID) . " on the bottom of your deck");
+    }
+  }
+
+  function EffectBlockModifier($index, $from, $effectInd) {
+    $Effect = new CurrentEffect($effectInd);
+    if (!str_contains($Effect->EffectID(), "DEFENSE")) return 0;
+    $ChainCard = new ChainCard($index);
+    return $Effect->AppliestoUniqueID() == $ChainCard->UniqueID() ? 2 : 0;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffectNextAttack($this->cardID . "-BUFF", $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $parameter == "BUFF";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 2 : 0;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "B,I";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    global $turn, $layers;
+    if ($allNames) return "Block,Ability";
+    $names = ["-", "-"];
+    if ($turn[0] == "B" && count($layers) == 0) $names[0] = "Block";
+    if ($from == "HAND" && !InstantRestricted($this->cardID, $from, $index)) $names[1] = "Ability";
+    if ($names[0] == "-") return $names[1];
+    if ($names[1] == "-") return $names[0];
+    return implode(",", $names);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
+    $names = GetAbilityNames($this->cardID, $index, $from);
+    if (str_contains($names, ",")) {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose to play the ability or block");
+      AddDecisionQueue("BUTTONINPUT", $this->controller, $names);
+      AddDecisionQueue("SETABILITYTYPE", $this->controller, $this->cardID);
+    } elseif ($names == "Ability") {
+      AddDecisionQueue("SETABILITYTYPEABILITY", $this->controller, $this->cardID);
+    } else {
+      AddDecisionQueue("SETABILITYTYPEBLOCK", $this->controller, $this->cardID);
+    }
+    AddDecisionQueue("NOTEQUALPASS", $this->controller, "Ability");
+    AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("DISCARDCARD", $this->controller, "HAND-$this->cardID", 1);
+    AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
+  }
+}
+
+class rise_to_the_challenge_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rise_to_the_challenge_red";
+    $this->controller = $controller;
+    $this->baseCard = new rise_to_the_challenge($this->cardID, $this->controller);
+  }
+}
+
+class rise_to_the_challenge_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rise_to_the_challenge_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rise_to_the_challenge($this->cardID, $this->controller);
+  }
+}
+
+class rise_to_the_challenge_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rise_to_the_challenge_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rise_to_the_challenge($this->cardID, $this->controller);
+  }
+}
+
 class shadowrealm_bloodhound_red extends Card {
   function __construct($controller) {
     $this->cardID = "shadowrealm_bloodhound_red";

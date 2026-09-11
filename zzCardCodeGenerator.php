@@ -22,6 +22,13 @@
 
   $cardArray = json_decode($cardData);
 
+  $manualPrintings = [
+    "rise_to_the_challenge_red" => ["id" => "IAR050", "rarity" => "C"],
+    "rise_to_the_challenge_yellow" => ["id" => "IAR051", "rarity" => "C"],
+    "rise_to_the_challenge_blue" => ["id" => "IAR052", "rarity" => "C"]
+  ];
+  PatchMissingPrintings($cardArray, $manualPrintings);
+
   if(!is_dir(__DIR__ . "/GeneratedCode")) mkdir(__DIR__ . "/GeneratedCode", 777, true);
 
   $filename = __DIR__ . "/GeneratedCode/GeneratedCardDictionaries.php";
@@ -103,6 +110,27 @@
       default => ""
     };
     return $cardID . $suffix;
+  }
+
+  function PatchMissingPrintings(&$cardArray, $manualPrintings)
+  {
+    for($i=0; $i<count($cardArray); ++$i)
+    {
+      if(count($cardArray[$i]->printings) > 0) continue;
+      $cardID = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
+      if(!isset($manualPrintings[$cardID])) continue;
+      $setID = $manualPrintings[$cardID]["id"];
+      $cardArray[$i]->printings[] = (object)[
+        "id" => $setID,
+        "set_id" => substr($setID, 0, 3),
+        "rarity" => $manualPrintings[$cardID]["rarity"],
+        "edition" => "N",
+        "foiling" => "S",
+        "art_variations" => [],
+        "image_url" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/" . $setID . ".webp"
+      ];
+      echo "Patched missing printing " . $setID . " onto " . $cardID . "<BR>";
+    }
   }
 
   function ValidSet($setID)
