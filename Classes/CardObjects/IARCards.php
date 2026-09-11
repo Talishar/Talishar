@@ -8365,3 +8365,53 @@ class permanent_interment_blue extends Card {
     $this->baseCard = new permanent_interment($this->cardID, $this->controller);
   }
 }
+
+class enshrine_sin extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Opt($this->cardID, 1);
+    Await($this->controller, "PlayAura", cardID: "runechant", effectSource: $this->cardID);
+    return "";
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function SelfCostModifier($from) {
+    global $CS_PlayedFromGateUID, $CS_PlayUniqueID;
+    if ($from != "BANISH") return 0;
+    $gateUniqueID = GetClassState($this->controller, $CS_PlayedFromGateUID);
+    $playUniqueID = GetClassState($this->controller, $CS_PlayUniqueID);
+    if ($gateUniqueID !== "" && $gateUniqueID != "-" && $gateUniqueID == $playUniqueID) return 0;
+    return match ($this->cardID) {
+      "enshrine_sin_red" => 1,
+      "enshrine_sin_yellow" => 2,
+      "enshrine_sin_blue" => 3,
+      default => 0,
+    };
+  }
+}
+
+class enshrine_sin_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "enshrine_sin_red";
+    $this->controller = $controller;
+    $this->baseCard = new enshrine_sin($this->cardID, $this->controller);
+  }
+}
+
+class enshrine_sin_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "enshrine_sin_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new enshrine_sin($this->cardID, $this->controller);
+  }
+}
+
+class enshrine_sin_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "enshrine_sin_blue";
+    $this->controller = $controller;
+    $this->baseCard = new enshrine_sin($this->cardID, $this->controller);
+  }
+}

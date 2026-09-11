@@ -439,6 +439,7 @@ $CS_UsurpedThisTurn = 131;
 $CS_GuardianAACThisTurn = 132;
 $CS_ReveredAACThisTurn = 133;
 $CS_HeaveEligibleAtEndPhase = 134; // Heave card IDs in hand at the beginning of the end phase
+$CS_PlayedFromGateUID = 135; // Unique ID of the banished card most recently played by using a Gate to i'Arathael
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -662,7 +663,7 @@ function ResetMainClassState()
   global $CS_NumInstantsPutInGrave, $CS_NumControlledAurasDestroyed, $CS_NumFragmented, $CS_WeaponsAttackedWith, $CS_PendingNAACard, $CS_HaveIntimidatedOpponent;
   global $CS_LayerResolved, $CS_PreventionCache, $CS_NumUndoesThisTurn, $CS_NumRunechantsCreated, $CS_NumBloodDebtAttacksPlayed;
   global $CS_IARGatesMadeorUsed, $CS_NumBloodDebtBanished, $CS_UsurpedThisTurn, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
-  global $CS_HeaveEligibleAtEndPhase;
+  global $CS_HeaveEligibleAtEndPhase, $CS_PlayedFromGateUID;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -797,6 +798,7 @@ function ResetMainClassState()
   $mainClassState[$CS_GuardianAACThisTurn] = 0;
   $mainClassState[$CS_ReveredAACThisTurn] = 0;
   $mainClassState[$CS_HeaveEligibleAtEndPhase] = "-";
+  $mainClassState[$CS_PlayedFromGateUID] = "-";
 }
 
 function ResetCardPlayed($cardID, $from="-")

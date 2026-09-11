@@ -2428,6 +2428,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
   global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack, $CS_NumBloodDebtAttacksPlayed, $CS_IARGatesMadeorUsed;
+  global $CS_PlayedFromGateUID;
   global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
   global $ChainLinks;
 
@@ -2521,6 +2522,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($from == "BANISH") {
     $Effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $currentPlayer);
+    if ($Effect->Index() != -1) SetClassState($currentPlayer, $CS_PlayedFromGateUID, $uniqueID);
     $Effect->Remove();
     if (TypeContains($cardID, "AA") && SearchCurrentTurnEffects("promise_of_power_yellow", $currentPlayer, remove: true)) {
       PlayAura("runechant", $currentPlayer, 2);
