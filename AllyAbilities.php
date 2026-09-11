@@ -67,7 +67,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     if ($card != "-") $card->PermanentAllyPlayAbility($index, $CharacterCard->Index(), $from);
   }
   $card = GetClass($cardID, $player);
-  if ($card != "-") $card->EntersArenaAbility();
+  if ($card != "-") $card->EntersArenaAbility($index);
   CheckUnique($player);
   return $index;
 }
@@ -92,6 +92,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   $owner = (($allies[$index+14] ?? "") == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   $cardID = $allies[$index];
+  WriteLog("HERE clearing $cardID, $uniqueID");
   RemoveAllyEffects($player, $cardID, $uniqueID);
   if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep() && !$skipClose) {
     CloseCombatChain();
@@ -105,8 +106,12 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
 
 function RemoveAllyEffects($player, $cardID, $uniqueID)
 {
+  global $CurrentTurnEffects;
   $otherPlayer = 3 - $player;
-  if ($cardID == "blasmophet_the_insatiable_hunger") SearchCurrentTurnEffects($cardID, $player, true);
+  if ($cardID == "blasmophet_the_insatiable_hunger") {
+    $Effect = $CurrentTurnEffects->FindSpecificEffect($cardID, $uniqueID);
+    $Effect->Remove();
+  }
   if ($uniqueID == SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, true);
 }
 

@@ -163,6 +163,7 @@ class AllyCard {
   }
 
   public function Destroy(bool $skipDestroy = false, bool $fromCombat = false, string $uniqueID = "", bool $toBanished = false, $skipClose = false, $mod = "-"): void {
+    if ($uniqueID == "") $uniqueID = $this->UniqueID();
     DestroyAlly($this->controller, $this->index, $skipDestroy, $fromCombat, $uniqueID, $toBanished, $skipClose, $mod);
   }
 }

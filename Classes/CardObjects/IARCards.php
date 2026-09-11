@@ -1517,16 +1517,23 @@ class blasmophet_the_insatiable_hunger extends Card {
     }
   }
 
+  private
+  function GenerateEffect($index) {
+    $AllyCard = new AllyCard($index, $this->controller);
+    WriteLog("HERE! $index");
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$AllyCard->UniqueID());
+  }
+
   function StartTurnAbility($index) { // give the once per turn ability to play from banish
-    AddCurrentTurnEffect($this->cardID, $this->controller);
+    $this->GenerateEffect($index);
   }
 
   function OppStartTurnAbility($index) { // give the once per turn ability to play from banish
-    AddCurrentTurnEffect($this->cardID, $this->controller);
+    $this->GenerateEffect($index);
   }
 
   function EntersArenaAbility($index=-1) {
-    AddCurrentTurnEffect($this->cardID, $this->controller);
+    $this->GenerateEffect($index);
   }
 
   function IsUnique() {
