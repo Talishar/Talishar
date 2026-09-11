@@ -7628,6 +7628,15 @@ class promise_of_power_yellow extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return AddCurrentTurnEffect($this->cardID, $this->controller);
   }
+
+  function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
+    if ($from == "BANISH" && TypeContains($cardID, "AA"))
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("runechant", $this->controller, 2);
+  }
 }
 
 class shadowake_gloomblade extends BaseCard {
