@@ -8210,10 +8210,17 @@ class fresh_from_the_forge_red extends Card {
     return "";
   }
 
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger");
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
   function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-    if ($target != "HERO") return false;
-    if (!SubtypeContains($source, "Dagger", $this->controller)) return false;
-    return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
   }
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
