@@ -198,13 +198,92 @@ function BotHeroAdjustment($cardID, $heroID, $context, $playerID)
   }
 
   if (($heroID == "fai_rising_rebellion" || $heroID == "fai") && $context == "Action") {
+    if ($cardID === $heroID) return BotFaiHeroAdjustment($cardID, $playerID);
     if (str_starts_with($cardID, "brand_with_cinderclaw_") && $attacksThisTurn == 0) $adjustment += 8;
     if ($cardID == "spreading_flames_red" && $attacksThisTurn == 0) $adjustment += 9;
     if ($cardID == "lava_burst_red" && $attacksThisTurn < 3) $adjustment -= 6;
     if ($cardID == "phoenix_flame_red" && $attacksThisTurn == 0) $adjustment -= 4;
+    $adjustment += BotFaiSupportAdjustment($cardID, $playerID);
   }
 
   return $adjustment;
+}
+
+function BotEndOfTurnAbilityThreshold()
+{
+  return 5.0;
+}
+
+function BotIsFaiPump($cardID)
+{
+  return str_starts_with($cardID, "rise_from_the_ashes_");
+}
+
+function BotFaiPumpValue($cardID)
+{
+  return match ($cardID) {
+    "rise_from_the_ashes_red" => 4,
+    "rise_from_the_ashes_yellow" => 3,
+    default => 2,
+  };
+}
+
+function BotFaiPumpActive($playerID)
+{
+  foreach (["rise_from_the_ashes_red", "rise_from_the_ashes_yellow", "rise_from_the_ashes_blue"] as $variant) {
+    if (SearchCurrentTurnEffects($variant, $playerID)) return true;
+  }
+  return false;
+}
+
+function BotDraconicAttacksAvailable($playerID, $exceptCardID = null)
+{
+  $skipped = false;
+  $count = 0;
+  foreach (BotOffensiveCards($playerID) as $candidate) {
+    if (!$skipped && $exceptCardID !== null && $candidate === $exceptCardID) {
+      $skipped = true;
+      continue;
+    }
+    if (CardType($candidate) == "AA" && TalentContains($candidate, "DRACONIC", $playerID)) ++$count;
+  }
+  return $count;
+}
+
+function BotFaiSupportAdjustment($cardID, $playerID)
+{
+  global $currentTurn, $CS_NumAttacks;
+  if (!BotIsFaiPump($cardID)) return 0.0;
+  if (BotFaiPumpActive($playerID)) return 0.0;
+  if (BotDraconicAttacksAvailable($playerID, $cardID) == 0) return 0.0;
+
+  $opponent = 3 - $playerID;
+  $opponentHand = &GetHand($opponent);
+  $response = BotEvaluateOpponentResponse(
+    BotFaiPumpValue($cardID),
+    max(1, intval(GetHealth($opponent))),
+    count($opponentHand),
+    BotEquipmentDefense($opponent),
+    intval($currentTurn) + 1
+  );
+  $score = BotResponseWeightedDamage($response) * 10;
+  $attacksThisTurn = isset($CS_NumAttacks) ? intval(GetClassState($playerID, $CS_NumAttacks)) : 0;
+  if ($attacksThisTurn == 0) $score += 12;
+  return $score;
+}
+
+function BotFaiHeroAdjustment($cardID, $playerID)
+{
+  if (SearchDiscardForCard($playerID, "phoenix_flame_red") === "") return -100.0;
+  if (SearchCurrentTurnEffects("amnesia_red", $playerID)) return -100.0;
+  $hand = &GetHand($playerID);
+  $intellect = max(1, intval(CharacterIntellect($cardID)));
+  if (count($hand) >= $intellect) return -100.0;
+  $cost = BotNumericCost(AbilityCost($cardID));
+  if ($cost <= 0) return 8.0;
+  $resources = &GetResources($playerID);
+  if (max(0, intval($resources[0] ?? 0)) >= $cost) return 2.0;
+  return -100.0;
 }
 
 function BotActionPriority($cardID, $heroID, $playerID, $zone = "Hand")
@@ -237,6 +316,7 @@ function BotActionPriority($cardID, $heroID, $playerID, $zone = "Hand")
       $score += $followUp * 8;
     }
     if ($cost == 0) $score += 3;
+    if ($type == "W" && $isActivatedPermanent) $score += BotWeaponActivationBonus();
     if ($attack >= $opponentHealth) $score += 100000;
   } else if ($type == "A") {
     $score = $roles["playValue"] + 2 - $cost;
@@ -268,6 +348,8 @@ function BotEquipmentWearCost($cardID, $defense)
 
 function BotCardOpportunity($cardID, $playerID)
 {
+  if (BotIsFaiPump($cardID)) return floatval(BotFaiPumpValue($cardID));
+  if ($cardID == "phoenix_flame_red") return 1.0;
   $type = CardType($cardID);
   if ($type == "DR") return 5.0;
   if ($type == "AR") return str_starts_with($cardID, "razor_reflex_") ? 7.0 : 5.0;
@@ -494,6 +576,10 @@ function BotReactionPriority($cardID, $playerID, $zone = "Hand")
       $isVengeanceAttack = str_contains($attackID, "vengeance");
       return $isVengeanceAttack && CachedTotalPower() >= CachedTotalBlock() ? 22 : 0;
     }
+    $character = &GetPlayerCharacter($playerID);
+    if ($cardID === ($character[0] ?? "") && ($cardID == "fai" || $cardID == "fai_rising_rebellion")) {
+      return max(0.0, 4.0 + BotFaiHeroAdjustment($cardID, $playerID));
+    }
     if (function_exists("GetResolvedAbilityType") && GetResolvedAbilityType($cardID, "EQUIP", $playerID) == "AR") {
       return 8;
     }
@@ -514,6 +600,7 @@ function BotArsenalPriority($cardID, $playerID)
 
 function BotPitchPriority($cardID, $playerID)
 {
+  if (BotIsFaiPump($cardID)) return 1.0;
   return 100.0 + intval(PitchValue($cardID)) * 10 - BotCardOpportunity($cardID, $playerID) * 2;
 }
 
@@ -547,6 +634,36 @@ function BotCardFromDecisionOption($phase, $option, $playerID)
   return null;
 }
 
+function BotWeaponActivationBonus()
+{
+  return 14.0;
+}
+
+function BotCurrentAttackPower($playerID)
+{
+  global $combatChain;
+  $power = intval(CachedTotalPower());
+  if ($power > 0) return $power;
+  $attackID = $combatChain[0] ?? "";
+  return $attackID === "" ? 0 : max(0, intval(PowerValue($attackID, $playerID, "CC")));
+}
+
+function BotAttackTargetScore($option, $playerID)
+{
+  $opponent = 3 - $playerID;
+  $power = BotCurrentAttackPower($playerID);
+  if (str_starts_with($option, "THEIRCHAR")) {
+    return $power >= max(1, intval(GetHealth($opponent))) ? 100000.0 : 10.0;
+  }
+  if (str_starts_with($option, "THEIRALLY")) {
+    $allies = &GetAllies($opponent);
+    $index = intval(substr($option, strrpos($option, "-") + 1));
+    return $power >= max(1, intval($allies[$index + 2] ?? 0)) ? 30.0 : 14.0;
+  }
+  if (str_starts_with($option, "THEIRAURAS")) return 12.0;
+  return 1.0;
+}
+
 function BotWarOrPeace($playerID)
 {
   $cards = BotOffensiveCards($playerID);
@@ -569,6 +686,20 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
   $peaceIndex = array_search("peace", $normalized, true);
   if ($warIndex !== false && $peaceIndex !== false) {
     return $options[BotWarOrPeace($playerID) == "War" ? $warIndex : $peaceIndex];
+  }
+
+  $helpText = strtolower(str_replace("_", " ", strval(GetDQHelpText())));
+  if (str_contains($helpText, "target for the attack")) {
+    $bestTarget = 0;
+    $bestTargetScore = -INF;
+    foreach ($options as $index => $option) {
+      $score = BotAttackTargetScore(trim(strval($option)), $playerID);
+      if ($score > $bestTargetScore) {
+        $bestTargetScore = $score;
+        $bestTarget = $index;
+      }
+    }
+    return $options[$bestTarget];
   }
 
   $yesIndex = array_search("yes", $normalized, true);

@@ -144,6 +144,28 @@ function EncounterAI()
           PassInput();
         }
       }
+      else if($turn[0] == "M" && $mainPlayer == $currentPlayer)//out of action points, last window to use an instant speed hero ability
+      {
+        if($AIDebug) WriteLog("AI Branch - End of Turn Hero Ability");
+        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Action");
+        $found = false;
+        while (count($priortyArray) > 0 && !$found) {
+          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
+          array_pop($priortyArray);
+          if($storedPriorityNode[1] != "Character" || $storedPriorityNode[2] != 0) continue;
+          if($storedPriorityNode[3] <= BotEndOfTurnAbilityThreshold()) continue;
+          if(CardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
+        }
+        if($found == true)
+        {
+          PlayCardAttempt($storedPriorityNode);
+          CacheCombatResult();
+        }
+        else
+        {
+          PassInput();
+        }
+      }
       else if($turn[0] == "A" && $mainPlayer == $currentPlayer)//attack reaction phase
       {
         if($AIDebug) WriteLog("AI Branch - Attack Reactions");
