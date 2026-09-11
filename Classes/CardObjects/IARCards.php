@@ -8320,20 +8320,32 @@ class permanent_interment extends BaseCard {
   function SpecificLogic() {
     global $dqVars;
     if (($dqVars["mode"] ?? "-") == "FACEDOWN") {
-      $index = explode("-", $dqVars["MZIndex"] ?? "-")[1] ?? -1;
-      if ($index == -1) return;
-      $BanishCard = new BanishCard($this->controller, $index);
-      WriteLog(CardLink($BanishCard->CardID()) . " was turned face down in the banished zone.");
-      $BanishCard->SetModifier("DOWN");
-      AddCurrentTurnEffect($this->cardID, $this->controller);
+      $chosen = $dqVars["LASTRESULT"] ?? "";
+      if (is_array($chosen)) $chosen = implode(",", $chosen);
+      if ($chosen == "" || $chosen == "PASS") return;
+      $names = [];
+      foreach (explode(",", $chosen) as $index) {
+        if (!is_numeric($index)) continue;
+        $BanishCard = new BanishCard($this->controller, intval($index));
+        $names[] = CardLink($BanishCard->CardID());
+        $BanishCard->SetModifier("DOWN");
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+      }
+      $numNames = count($names);
+      if ($numNames == 0) return;
+      $last = array_pop($names);
+      $list = $numNames > 1 ? implode(", ", $names) . " and " . $last : $last;
+      WriteLog($list . ($numNames > 1 ? " were" : " was") . " turned face down in the banished zone.");
       return;
     }
-    $amount = intval($dqVars["amount"] ?? 0);
-    for ($i = 0; $i < $amount; ++$i) {
-      Await($this->controller, "MultiZoneIndices", search: "MYBANISH:talent=SHADOW", subsequent: 0);
-      Await($this->controller, "ChooseMultiZone", context: "Turn a Shadow card in your banished zone face-down");
-      Await($this->controller, $this->cardID, mode: "FACEDOWN", final: true);
-    }
+    $amount = intval($dqVars["LASTRESULT"] ?? 0);
+    if ($amount <= 0) return;
+    $indices = SearchBanish($this->controller, talent: "SHADOW");
+    if ($indices == "") return;
+    $amount = min($amount, SearchCount($indices));
+    Await($this->controller, $this->cardID, mode: "FACEDOWN", final: true, prepend: true);
+    PrependDecisionQueue("MULTICHOOSEBANISH", $this->controller, "$amount-$indices-$amount", 1);
+    PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose Shadow cards in your banished zone to turn face-down", 1);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
