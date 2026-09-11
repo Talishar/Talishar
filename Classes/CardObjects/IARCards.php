@@ -1802,7 +1802,7 @@ class hex_gauntlet extends Card {
     $ind = explode("-", $choice)[1] ?? -1;
     if ($ind != -1) {
       $BanishCard = new BanishCard($this->controller, $ind);
-      $BanishCard->SetModifier("DOWN");
+      if (!isFaceDownMod($BanishCard->Modifier())) $BanishCard->SetModifier("DOWN");
     }
   }
 
@@ -2483,8 +2483,8 @@ class bone_barrier_blue extends Card {
         default:
           break;
       }
+      AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uniqueID);
     }
-    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uniqueID);
   }
 
   function EffectBlockModifier($index, $from, $effectInd) {
@@ -3251,7 +3251,25 @@ class apex_buster_yellow extends Card {
   }
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $Target = CleanTargetToObject($this->controller, $target);
+    global $CombatChain, $ChainLinks, $mainPlayer;
+    $targetArr = explode("-", $target);
+    if ($targetArr[0] == "PASTCHAINLINK") {
+      $linkInd = $targetArr[2] ?? -1;
+      if ($linkInd == -1 || $linkInd >= $ChainLinks->NumLinks()) return;
+      $Link = $ChainLinks->GetLink($linkInd);
+      if (ModifiedPowerValue($Link->AttackCard()->ID(), $mainPlayer, "CC", $linkInd, true, true) < 6) {
+        WriteLog(CardLink($this->cardID) . " did not destroy its target because the attack it is defending no longer has 6 or more base power");
+        return;
+      }
+      $Target = MZIndexToObject($this->controller, $target);
+    }
+    else {
+      if (!$CombatChain->HasCurrentLink() || LinkBasePower() < 6) {
+        WriteLog(CardLink($this->cardID) . " did not destroy its target because the attack it is defending no longer has 6 or more base power");
+        return;
+      }
+      $Target = CleanTargetToObject($this->controller, $target);
+    }
     if ($Target != "")
       $Target->Destroy();
   }
@@ -3281,7 +3299,7 @@ class apex_buster_yellow extends Card {
     $numLinks = $ChainLinks->NumLinks();
     for ($i = 0; $i < $numLinks; ++$i) {
       $Link = $ChainLinks->GetLink($i);
-      if (PowerValue($Link->AttackCard()->ID(), $mainPlayer, "CC", $i, true, true) >= 6) {
+      if (ModifiedPowerValue($Link->AttackCard()->ID(), $mainPlayer, "CC", $i, true, true) >= 6) {
         for ($j = 0; $j < $Link->NumCards(); ++$j) {
           $ChainCard = $Link->GetLinkCard($j, true);
           $targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
@@ -3485,7 +3503,7 @@ class ingest_the_unknown_yellow extends Card {
     $Deck = new Deck($this->controller);
     $cardID = $Deck->BanishTop();
     if ($cardID != "") {
-      $power = PowerValue($cardID, $this->controller, "BANISH", base:true);
+      $power = ModifiedPowerValue($cardID, $this->controller, "BANISH", base:true);
       AddCurrentTurnEffect("$this->cardID-$power", $this->controller);
     }
   }
@@ -5093,7 +5111,7 @@ class mark_of_neverest_blue extends Card {
     global $dqVars;
     $choice = $dqVars["MZIndex"] ?? "-";
     $BanishCard = MZIndexToObject($this->controller, $choice);
-    if ($BanishCard != "") {
+    if ($BanishCard != "" && !isFaceDownMod($BanishCard->Modifier())) {
       WriteLog(CardLink($BanishCard->CardID()) . " was turned face-down");
       $BanishCard->Modify("DOWN");
       BanishCardForPlayer("corrupted_corpse", $this->controller, "BANISH", created:true);
@@ -7504,8 +7522,8 @@ class bonded_burial extends BaseCard {
         default:
           break;
       }
+      PummelHit($otherPlayer = 3 - $this->controller);
     }
-    PummelHit($otherPlayer = 3 - $this->controller);
   }
 }
 
@@ -7565,8 +7583,8 @@ class mutual_sacrifice extends BaseCard {
         default:
           break;
       }
+      LoseHealth(2, 3 - $this->controller);
     }
-    LoseHealth(2, $this->controller);
   }
 }
 
