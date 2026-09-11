@@ -99,9 +99,25 @@ $p2Data = [2];
 $p1SideboardSubmitted = "0";
 $p1IsAI = "0";
 if ($deckTestMode != "") {
-  $gameStatus = 4; //Ready to start
-  if($deckTestDeck != "") $opponentDeck = "../Assets/" . $deckTestDeck . ".txt";
-  else $opponentDeck = "../Assets/Dummy.txt";
+  $gameStatus = 2; //Choose first player - the human always wins the roll against a bot
+  //The practice dummy has no deck size requirements, so it is allowed in every
+  //format; open format is unrestricted, so every bot deck is allowed there.
+  $soloDecks = [
+    "Dummy" => ["Dummy.txt", null],
+    "IraCC" => ["IraCC.txt", false],
+    "FaiCC" => ["FaiCC.txt", false],
+    "BriarSAGE" => ["BriarSAGE.txt", true],
+    "BravoSAGE" => ["BravoSAGE.txt", true],
+    "IraSAGE" => ["Ira.txt", true],
+    "Ira" => ["IraCC.txt", false],
+  ];
+  $isSmallDeckFormat = str_contains($format, "sage") || str_contains($format, "blitz") || $format == "commoner";
+  $isOpenFormat = $format == "open";
+  $selectedSoloDeck = $soloDecks[$deckTestDeck] ?? null;
+  if ($selectedSoloDeck === null || ($selectedSoloDeck[1] !== null && !$isOpenFormat && $selectedSoloDeck[1] != $isSmallDeckFormat)) {
+    $selectedSoloDeck = $soloDecks["Dummy"];
+  }
+  $opponentDeck = "../Assets/" . $selectedSoloDeck[0];
   copy($opponentDeck, "../Games/" . $gameName . "/p2Deck.txt");
   $p2SideboardSubmitted = "1";
   $p2IsAI = "1";
@@ -110,7 +126,7 @@ if ($deckTestMode != "") {
   $p2SideboardSubmitted = "0";
   $p2IsAI = "0";
 }
-$firstPlayerChooser = "";
+$firstPlayerChooser = ($deckTestMode != "" ? "1" : "");
 $firstPlayer = 1;
 $p1Key = hash("sha256", rand() . rand());
 $p2Key = hash("sha256", rand() . rand() . rand());

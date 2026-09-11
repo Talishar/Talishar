@@ -1,5 +1,7 @@
 <?php
 
+include_once "BotLogic.php";
+
 /**
  * EncounterPriorityLogic.php - Refactored AI priority system
  * 
@@ -10,7 +12,7 @@
  *   [0] -> CardID
  *   [1] -> Zone (Hand, Arsenal, Character, Item, Ally, Banish)
  *   [2] -> Index in that zone
- *   [3] -> Priority Value (0-0.9 normal, 10.1-10.9 computed)
+ *   [3] -> Priority Value (from the bot policy; higher is better)
  */
 
 /**
@@ -32,12 +34,10 @@ function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $b
   
   switch($type) {
     case "Block":
-      // For blocking: Hand cards + Equipment, resolve computed values, sort
+      // For blocking: score every legal hand/equipment candidate against the
+      // remaining damage and its future-turn opportunity cost.
       $priorityArray = PushArray($priorityArray, "Hand", $hand, $character, 0);
       $priorityArray = PushArray($priorityArray, "Character", $character, $character, 0);
-      $priorityArray = ResolvePriorityArray($priorityArray, 10, 0, 2);
-      $priorityArray = ResolvePriorityArray($priorityArray, 11, 0, 2);
-      $priorityArray = FirstTurnResolution($priorityArray, $character);
       return SortPriorityArray($priorityArray);
       
     case "Action":
@@ -48,7 +48,6 @@ function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $b
       $priorityArray = PushArray($priorityArray, "Items", $items, $character, 7);
       $priorityArray = PushArray($priorityArray, "Allies", $allies, $character, 7);
       $priorityArray = PushArray($priorityArray, "Banish", $banish, $character, 5);
-      $priorityArray = ResolvePriorityArray($priorityArray, 10, "Unplayed", 0);
       return SortPriorityArray($priorityArray);
       
     case "Pitch":
@@ -66,7 +65,6 @@ function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $b
       $priorityArray = PushArray($priorityArray, "Hand", $hand, $character, 3);
       $priorityArray = PushArray($priorityArray, "Character", $character, $character, 3);
       $priorityArray = PushArray($priorityArray, "Arsenal", $arsenal, $character, 4);
-      $priorityArray = ResolvePriorityArray($priorityArray, 10, "Unplayed", 0);
       return SortPriorityArray($priorityArray);
       
     default:
@@ -82,7 +80,7 @@ function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $b
  * - The card ID
  * - The zone name
  * - The index in that zone
- * - The priority value (fetched from CardBehaviors.php)
+ * - The priority value (from BotLogic.php)
  */
 function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
 {
@@ -90,7 +88,7 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
     case "Hand":
       $zoneCount = count($zoneArr);
       for($i = 0; $i < $zoneCount; ++$i) {
-        $priorityArray[] = [$zoneArr[$i], "Hand", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
+        $priorityArray[] = [$zoneArr[$i], "Hand", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex, "Hand")];
       }
       return $priorityArray;
 
@@ -98,7 +96,7 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
       $zoneCount = count($zoneArr);
       $arsenalPieces = ArsenalPieces();
       for ($i = 0; $i < $zoneCount; $i += $arsenalPieces) {
-        $priorityArray[] = [$zoneArr[$i], "Arsenal", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
+        $priorityArray[] = [$zoneArr[$i], "Arsenal", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex, "Arsenal")];
       }
       return $priorityArray;
 
@@ -106,7 +104,7 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
       $zoneCount = count($zoneArr);
       $characterPieces = CharacterPieces();
       for ($i = 0; $i < $zoneCount; $i += $characterPieces) {
-        $priorityArray[] = [$zoneArr[$i], "Character", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
+        $priorityArray[] = [$zoneArr[$i], "Character", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex, "Character")];
       }
       return $priorityArray;
 
@@ -114,7 +112,7 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
       $zoneCount = count($zoneArr);
       $itemPieces = ItemPieces();
       for ($i = 0; $i < $zoneCount; $i += $itemPieces) {
-        $priorityArray[] = [$zoneArr[$i], "Item", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
+        $priorityArray[] = [$zoneArr[$i], "Item", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex, "Item")];
       }
       return $priorityArray;
 
@@ -122,14 +120,14 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
       $zoneCount = count($zoneArr);
       $allyPieces = AllyPieces();
       for ($i = 0; $i < $zoneCount; $i += $allyPieces) {
-        $priorityArray[] = [$zoneArr[$i], "Ally", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
+        $priorityArray[] = [$zoneArr[$i], "Ally", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex, "Ally")];
       }
       return $priorityArray;
 
     case "Banish":
       $zoneCount = count($zoneArr);
       for ($i = 0; $i < $zoneCount; ++$i) {
-        $priorityArray[] = [$zoneArr[$i], "Banish", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex)];
+        $priorityArray[] = [$zoneArr[$i], "Banish", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex, "Banish")];
       }
       return $priorityArray;
 
@@ -138,104 +136,20 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
   }
 }
 
-/**
- * Sort priority array using bubble sort
- * Sorts in ascending order (lowest priority first, highest priority last)
- * This allows AI to pop from the end for highest-priority cards
- */
 function SortPriorityArray($priorityArray)
 {
-  do {
-    $swapped = false;
-    for ($i = 0, $c = count($priorityArray) - 1; $i < $c; ++$i) {
-      if ($priorityArray[$i][3] > $priorityArray[$i + 1][3]) {
-        [$priorityArray[$i + 1], $priorityArray[$i]] = [$priorityArray[$i], $priorityArray[$i + 1]];
-        $swapped = true;
-      }
-    }
-  } while($swapped);
-  
+  usort($priorityArray, fn($left, $right) => $left[3] <=> $right[3]);
   return $priorityArray;
 }
 
 /**
- * Resolve computed priority values (10.1-10.9 range) to final priorities
- * 
- * This function handles the "computed priority" system where cards marked
- * with 10.1-10.9 get dynamically resolved based on their order:
- * - First $amount cards in range resolve to $destinationPrime
- * - Remaining cards in range resolve to $destinationSecondary
- * 
- * @param array $priorityArray - Array of priority nodes
- * @param float $range - Range to look for (e.g., 10 for 10.1-10.9)
- * @param float|string $destinationPrime - Where to resolve first cards to (or "Unplayed" for 0)
- * @param float|string $destinationSecondary - Where to resolve remaining cards to
- * @param int $amount - How many cards get the prime destination
+ * Priority value for a card in a given context. Every value comes from the
+ * shared bot policy in BotLogic.php.
  */
-function ResolvePriorityArray($priorityArray, $range, $destinationPrime, $destinationSecondary, $amount = 1)
+function GetPriority($cardID, $heroID, $type, $zone = "Hand")
 {
-  // Find and resolve the highest-priority cards in range
-  $priorityArrayCount = count($priorityArray);
-  for($i = 0; $i < $amount; $i++) {
-    $index = -1;
-    $maxPriority = $range + 0.09; // Just below range start
-    
-    // Find highest priority card in range
-    for($j = 0; $j < $priorityArrayCount; ++$j) {
-      if($priorityArray[$j][3] >= $range + 0.1 && 
-         $priorityArray[$j][3] <= $range + 0.9 &&
-         $priorityArray[$j][3] > $maxPriority) {
-        $index = $j;
-        $maxPriority = $priorityArray[$j][3];
-      }
-    }
-    
-    // Not found, stop
-    if($index == -1) return $priorityArray;
-    
-    // Resolve this card
-    if($destinationPrime == "Unplayed") {
-      $priorityArray[$index][3] = 0;
-    } else {
-      $decimalPart = $priorityArray[$index][3] - (int)$priorityArray[$index][3];
-      $priorityArray[$index][3] = $destinationPrime + $decimalPart;
-    }
-  }
-  
-  // Resolve remaining cards in range
-  for($k = 0; $k < $priorityArrayCount; ++$k) {
-    if($priorityArray[$k][3] >= $range + 0.1 && $priorityArray[$k][3] <= $range + 0.9) {
-      if($destinationSecondary == "Unplayed") {
-        $priorityArray[$k][3] = 0;
-      } else {
-        $decimalPart = $priorityArray[$k][3] - (int)$priorityArray[$k][3];
-        $priorityArray[$k][3] = $destinationSecondary + $decimalPart;
-      }
-    }
-  }
-  
-  return $priorityArray;
+  global $currentPlayer;
+  return BotPriority($cardID, $heroID, $type, $currentPlayer, $zone);
 }
 
-/**
- * On first turn, boost block priority for cards that should block early
- * Encounters often need to block early to prevent huge onhits
- */
-function FirstTurnResolution($priorityArray, $character)
-{
-  global $currentTurn;
-  
-  if($currentTurn == 0 && EncounterBlocksFirstTurn($character[0])) {
-    $priorityArrayCount = count($priorityArray);
-    for($i = 0; $i < $priorityArrayCount; ++$i) {
-      // Boost hand cards but not equipment
-      if($priorityArray[$i][3] != 0 && $priorityArray[$i][1] != "Character") {
-        $decimalPart = $priorityArray[$i][3] - (int)$priorityArray[$i][3];
-        $priorityArray[$i][3] = 2.0 + $decimalPart;
-      }
-    }
-  }
-  
-  return $priorityArray;
-}
-
+?>

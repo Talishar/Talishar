@@ -1,6 +1,5 @@
 <?php
 
-include "EncounterPriorityValues.php";
 include "EncounterPriorityLogic.php";
 include "EncounterPlayLogic.php";
 include_once "PlayerMacros.php";
@@ -72,15 +71,17 @@ function EncounterAI()
         }
         else
         {
-          if($AIDebug) WriteLog("AI Branch - DQ First Option");
-          $options = explode(",", $turn[2]);
-          $choice = $options[0];
+          if($AIDebug) WriteLog("AI Branch -  Decision Policy");
+          $isYesNo = $turn[0] == "YESNO" || $turn[0] == "DOCRANK";
+          $options = $isYesNo ? ["YES", "NO"] : explode(",", $turn[2]);
+          $decisionContext = $isYesNo ? $turn[2] : ($EffectContext ?? "");
+          $choice = BotChooseDecisionOption($turn[0], $options, $currentPlayer, $decisionContext);
           //Some things automatically adjust the data
           if($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") {
             $deck = &GetDeck($currentPlayer);
             $choice = $deck[$choice*DeckPieces()];
           }
-          ContinueDecisionQueue($choice);//Just pick the first option
+          ContinueDecisionQueue($choice);
         }
       }
       else if($turn[0] == "B")//The player is attacking the AI
@@ -111,6 +112,12 @@ function EncounterAI()
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer && $actionPoints > 0)//AIs turn
       {
         if($AIDebug) WriteLog("AI Branch - AI's Turn");
+        if (BotShouldPreserveOpeningHandForPlayer($currentPlayer)) {
+          PassInput();
+          ProcessMacros();
+          $currentPlayerIsAI = ($currentPlayer == 2);
+          continue;
+        }
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Action");
         //LogPriorityArray($priortyArray);
         $found = false;
@@ -249,7 +256,7 @@ function EncounterAI()
       else if($turn[0] == "CHOOSEBOTTOM"){
         if($AIDebug) WriteLog("AI Branch - Hand Choose Bottom");
         $options = explode(",", $turn[2]);
-        ContinueDecisionQueue($options[0]);//Just pick the first option
+        ContinueDecisionQueue(BotChooseDecisionOption($turn[0], $options, $currentPlayer, "bottom"));
       }
       else
       {
@@ -278,35 +285,7 @@ function IsEncounterAI($enemyHero)
 
 function ShouldBlock($found, $storedPriorityNode)
 {
-  global $currentPlayer;
-  $health = &GetHealth($currentPlayer);
-  $threatened = CachedTotalPower() - CachedTotalBlock();
-  
-  if(!$found || $threatened == 0) return false;
-  
-  // Check if equipment block is REQUIRED by the current chain link
-  // If so, force the block with equipment
-  if($storedPriorityNode[1] == "Character" && NumEquipBlock() == 0 && HaveUnblockedEquip($currentPlayer)) {
-    // Equipment is required to block, and this is an equipment - force it
-    return true;
-  }
-  
-  // Normal block logic
-  if(IsFirstTurn() && ($threatened > 1 || !DoesAttackHaveGoAgain())) return true;
-  
-  if($storedPriorityNode[3] != 0 &&
-((CachedTotalPower() - CachedTotalBlock() >= $health && $storedPriorityNode[3] != 0) || (CachedTotalPower() - CachedTotalBlock() >= BlockValue($storedPriorityNode[0]) && 2.1 <= $storedPriorityNode[3] && $storedPriorityNode[3] <= 2.9)))
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  if(!$found || CachedTotalPower() - CachedTotalBlock() == 0) return false;
+  return floatval($storedPriorityNode[3]) > 0;
 }
 
-function IsFirstTurn()
-{
-  global $mainPlayer, $firstPlayer, $currentTurn;
-  return $mainPlayer == $firstPlayer && $currentTurn == 0;
-}

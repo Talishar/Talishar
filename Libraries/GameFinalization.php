@@ -37,10 +37,10 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
 
   $gameGUID = ResetGameGUIDForRematch(); // Required for distinct hero mastery awards.
   $p2IsAILocal = $p2IsAI == "1";
-  $gameStatus = ($p2IsAILocal ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+  $gameStatus = $MGS_ChooseFirstPlayer;
   SetCachePiece($gameName, 14, $gameStatus);
   $firstPlayer = 1;
-  $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+  $firstPlayerChooser = ($p2IsAILocal ? 1 : ($winner == 1 ? 2 : 1));
   $p1SideboardSubmitted = "0";
   $p2SideboardSubmitted = ($p2IsAILocal ? "1" : "0");
 
@@ -49,7 +49,8 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
     WriteLog("🔁 Heroes swapped! Player $firstPlayerChooser will choose who goes first.", highlight: true, highlightColor: "darkblue");
   } else {
     TruncateLogAboveMarker(["sent a rematch invitation."]);
-    WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
+    if ($p2IsAILocal) WriteLog("You get to choose who goes first for the rematch.");
+    else WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
   }
 
   WriteGameFile();
