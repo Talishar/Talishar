@@ -1589,7 +1589,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "FINISHCHARGE":
       $otherPlayer = 3 - $player;
       //Abilities when you charge it
-      global $Card_CourageBanner, $Card_QuickenBanner, $Card_SpellbaneBanner, $Card_LifeBanner, $Card_BlockBanner, $Card_ResourceBanner, $CS_DamageDealt;
+      global $Card_CourageBanner, $Card_QuickenBanner, $Card_SpellbaneBanner, $Card_LifeBanner, $Card_BlockBanner, $Card_ResourceBanner, $CS_DamageDealt, $CardFlurryBanner;
       switch ($lastResult) {
         case $Card_CourageBanner:
           AddLayer("TRIGGER", $player, $lastResult);
@@ -1607,6 +1607,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           AddLayer("TRIGGER", $player, $lastResult);
           break;
         case $Card_ResourceBanner:
+          AddLayer("TRIGGER", $player, $lastResult);
+          break;
+        case $CardFlurryBanner:
           AddLayer("TRIGGER", $player, $lastResult);
           break;
         default:

@@ -6,6 +6,7 @@ $Card_SpellbaneBanner = "banneret_of_protection_yellow";
 $Card_BlockBanner = "banneret_of_resilience_yellow";
 $Card_LifeBanner = "banneret_of_salvation_yellow";
 $Card_ResourceBanner = "banneret_of_vigor_yellow";
+$CardFlurryBanner = "banneret_of_swordsmanship_yellow";
 
 $GameStatus_Over = 2;
 $GameStatus_Rematch = 3;

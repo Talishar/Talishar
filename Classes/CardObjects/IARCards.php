@@ -6987,3 +6987,14 @@ class restless_shieldmaiden_red extends Card {
     return 1;
   }
 }
+
+class banneret_of_swordsmanship_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "banneret_of_swordsmanship_yellow";
+    $this->controller = $controller;
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("flurry", $this->controller);
+  }
+}
