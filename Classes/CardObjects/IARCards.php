@@ -1,6 +1,7 @@
 <?php
 include_once  __DIR__ . "/HVYCards.php";
 include_once  __DIR__ . "/SUPCards.php";
+include_once  __DIR__ . "/OMNCards.php";
 
 class DECAY extends card {
   function __construct($controller) {
