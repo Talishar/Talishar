@@ -7878,3 +7878,233 @@ class corpse_cover_blue extends Card {
     $this->baseCard = new corpse_cover($this->cardID, $this->controller);
   }
 }
+
+class whispers_within extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    return Opt($this->cardID, 1);
+  }
+}
+
+class whispers_within_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "whispers_within_red";
+    $this->controller = $controller;
+    $this->baseCard = new whispers_within($this->cardID, $this->controller);
+  }
+}
+
+class whispers_within_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "whispers_within_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new whispers_within($this->cardID, $this->controller);
+  }
+}
+
+class whispers_within_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "whispers_within_blue";
+    $this->controller = $controller;
+    $this->baseCard = new whispers_within($this->cardID, $this->controller);
+  }
+}
+
+class abyssal_bite_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "abyssal_bite_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
+
+class abyssal_force_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "abyssal_force_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $this->controller);
+  }
+
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
+
+class abyssal_rush_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "abyssal_rush_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $this->controller);
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    GiveAttackGoAgain();
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
+
+class murmur_of_iarathael_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "murmur_of_iarathael_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function DoesAttackHaveGoAgain() {
+    global $CS_CardsBanished;
+    return GetClassState($this->controller, $CS_CardsBanished) > 0;
+  }
+}
+
+class rumbling_of_iarathael_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rumbling_of_iarathael_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function HasOverpower() {
+    global $CS_CardsBanished;
+    return GetClassState($this->controller, $CS_CardsBanished) > 0;
+  }
+}
+
+class cogwerx_prong_bot_yellow extends Card {
+  public $archetype;
+
+  function __construct($controller) {
+    $this->cardID = "cogwerx_prong_bot_yellow";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYITEMS:hasCrank=true");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "You may choose a card with Crank to get a steam counter", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZADDCOUNTER", $this->controller, "-", 1);
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PutItemIntoPlayForPlayer("golden_cog", $this->controller, isToken: true);
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
+    return 3;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames: $allNames);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = "-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index, $facing);
+  }
+}
+
+class favorable_winds_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "favorable_winds_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    Draw($this->controller, num: 2);
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return SearchMultizone($this->controller, "MYHAND:isSameName=goldfin_harpoon_yellow") == "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if (SearchMultizone($this->controller, "MYHAND:isSameName=goldfin_harpoon_yellow") == "") {
+      WriteLog("No " . CardLink("goldfin_harpoon_yellow") . " in hand to discard, reverting gamestate", highlight: true);
+      RevertGamestate();
+      return;
+    }
+    Await($this->controller, "MultiZoneIndices", search: "MYHAND:isSameName=goldfin_harpoon_yellow", subsequent: 0);
+    Await($this->controller, "ChooseMultiZone", context: "Discard a " . CardName("goldfin_harpoon_yellow"));
+    Await($this->controller, "Discard", final: true);
+  }
+}

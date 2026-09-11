@@ -1557,6 +1557,8 @@ function IsOverpowerActive()
     if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red-BUFF" && $wagerActive) return true;
   }
   $overpowerAttackID = $CombatChain->AttackCard()->ID();
+  $attackCard = GetClass($overpowerAttackID, $mainPlayer);
+  if ($attackCard != "-" && $attackCard->HasOverpower()) return true;
   if (HasHighTide($combatChain[0]) && HighTideConditionMet($mainPlayer)) {
     switch ($overpowerAttackID) {
     case "hms_barracuda_yellow":

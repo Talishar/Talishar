@@ -1148,6 +1148,12 @@ class Card {
     return 0;
   }
 
+  function HasOverpower() {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "HasOverpower"))
+      return $this->baseCard->HasOverpower();
+    return false;
+  }
+
   function DoesEffectGrantOverpower() {
     if (isset($this->baseCard) && method_exists($this->baseCard, "DoesEffectGrantOverpower"))
       return $this->baseCard->DoesEffectGrantOverpower();
