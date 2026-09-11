@@ -1520,7 +1520,6 @@ class blasmophet_the_insatiable_hunger extends Card {
   private
   function GenerateEffect($index) {
     $AllyCard = new AllyCard($index, $this->controller);
-    WriteLog("HERE! $index");
     AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$AllyCard->UniqueID());
   }
 
