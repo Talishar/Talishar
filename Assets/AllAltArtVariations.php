@@ -433,6 +433,13 @@ function GetAllAltArtVariations(): array
     "restless_commander_red=AMA014-T",
     "restless_templar_red=IAR059-T",
     "restless_looter_red=IAR063-T",
-    "restless_cleric_red=IAR084-T"
+    "restless_cleric_red=IAR084-T",
+    "banneret_of_swordsmanship_yellow=IAR253-T",
+    "cogwerx_prong_bot_yellow=IAR247-T",
+    "corrupted_corpse=IAR090-T",
+    "cracked_bauble_yellow=IAR242-T",
+    "restless_plowman_red=IAR087-T",
+    "restless_shieldmaiden_red=IAR088-T",
+    "restless_steed_red=IAR089-T",
   ];
 }
