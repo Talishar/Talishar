@@ -523,10 +523,11 @@ function CombatChainBlockModifiers($cardID, $from, $index) {
   return $block;
 }
 
-function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
+function BlockModifier($cardID, $from, $resourcesPaid, $index=-1, $player="-")
 {
   global $defPlayer, $CS_CardsBanished, $mainPlayer, $CombatChain, $chainLinks, $CS_NumClashesWon, $CS_Num6PowBan, $CS_NumCrouchingTigerCreatedThisTurn;
   global $combatChain, $combatChainState, $CCS_CachedTotalPower;
+  $player = $player == "-" ? $defPlayer : $player;
   $blockModifier = 0;
   $noGain = !CanGainBlock($cardID, $index);
   $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
@@ -582,7 +583,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1)
       $blockModifier += $from == "ARS" ? 1 : 0;
       break;
     case "arcanite_skullcap":
-      $blockModifier += (PlayerHasLessHealth($defPlayer) ? 1 : 0);
+      $blockModifier += (PlayerHasLessHealth($player) ? 1 : 0);
       break;
     case "springboard_somersault_yellow":
       $blockModifier += ($from == "ARS" ? 2 : 0);

@@ -237,29 +237,6 @@
     return CombineSearches(SearchDiscard($player, "A", "", -1, -1, "", "EARTH,LIGHTNING,ELEMENTAL"), SearchDiscard($player, "AA", "", -1, -1, "", "EARTH,LIGHTNING,ELEMENTAL"));
   }
 
-  function ExposedToTheElementsEarth($player)
-  {
-      $otherPlayer = 3 - $player;
-      PrependDecisionQueue("MODDEFCOUNTER", $otherPlayer, "-1", 1);
-      PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to put a -1 counter", 1);
-      PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-  }
-
-  function ExposedToTheElementsIce($player)
-  {
-      $otherPlayer = 3 - $player;
-      PrependDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
-      PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy", 1);
-      PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
-      PrependDecisionQueue("WRITELOG", $player, "Player $otherPlayer declined_to_pay_for_".CardLink("exposed_to_the_elements_blue", "exposed_to_the_elements_blue").".", 1);
-      PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
-      PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-      PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0);
-      PrependDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_2_to_prevent_an_equipment_with_0_defense_from_being_destroyed.");
-  }
-
   function KorshemRevealAbility($player)
   {
     WriteLog("Korshem triggered by revealing a card");

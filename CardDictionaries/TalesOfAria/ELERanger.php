@@ -173,10 +173,6 @@
         if(DelimStringContains($element, "LIGHTNING")) AddCurrentTurnEffect($cardID . "-BUFF", $player);
         if(DelimStringContains($element, "ICE")) AddCurrentTurnEffect($cardID . "-DOM", $player);
         break;
-      case "exposed_to_the_elements_blue":
-        if(DelimStringContains($element, "ICE")) ExposedToTheElementsIce($player);
-        if(DelimStringContains($element, "EARTH")) ExposedToTheElementsEarth($player);
-        break;
       case "entwine_earth_red": case "entwine_earth_yellow": case "entwine_earth_blue":
         $index = GetClassState($player, $CS_PlayCCIndex);
         $CombatChain->Card($index)->ModifyPower(2);
@@ -229,7 +225,6 @@
     switch($cardID)
     {
       case "oaken_old_red": return "EARTH,ICE";
-      case "exposed_to_the_elements_blue": return "EARTH,ICE";
       case "blossoming_spellblade_red": return "EARTH,LIGHTNING";
       case "fulminate_yellow": return "EARTH,LIGHTNING";
       case "ice_storm_red": return "ICE,LIGHTNING";

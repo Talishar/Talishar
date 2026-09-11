@@ -4502,21 +4502,25 @@ function TurnArsenalFaceUp($player) {
   }
 }
 
-function SetTargets($player, $cardID, $search, $N=1, $may=false, $playCard=true) {
+function SetTargets($player, $cardID, $search, $N=1, $may=false, $playCard=true, $context="") {
   for ($i = 0; $i < $N; ++$i) {
     $nLeft = $N - $i;
-    if ($N == 1) {
-      $message = "Choose a target for " . CardLink($cardID);
-      if ($may) $message .= " or pass";
+    if ($context == "") {
+      if ($N == 1) {
+        $message = "Choose a target for " . CardLink($cardID);
+        if ($may) $message .= " or pass";
+      }
+      elseif ($nLeft == 1) {
+        if ($may) $message = "Choose up to one more target";
+        else $message = "Choose one more target";
+      }
+      else {
+        if ($may) $message = "Choose up to $nLeft more targets";
+        else $message = "Choose $nLeft more targets";
+      }
     }
-    elseif ($nLeft == 1) {
-      if ($may) $message = "Choose up to one more target";
-      else $message = "Choose one more target";
-    }
-    else {
-      if ($may) $message = "Choose up to $nLeft more targets";
-      else $message = "Choose $nLeft more targets";
-    }
+    else
+      $message = $context;
     Await($player, "MultiTargetIndices", "indices", search:$search, subsequent:$i != 0);
     Await($player, "ChooseMultiZone", "index", may:$may, context:$message);
     if ($playCard) Await($player, "SetLayerTarget", "currentTargets", layerID:$cardID, final:$nLeft == 1);
