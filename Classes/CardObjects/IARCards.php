@@ -5346,10 +5346,19 @@ class devouring_doomwake_red extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    global $CombatChain;
+    global $CombatChain, $ChainLinks;
     for ($i = $CombatChain->NumCardsActiveLink() - 1; $i >= 0; --$i) {
       $LinkCard = $CombatChain->Card($i, true);
       $LinkCard->Destroy(banish:true);
+    }
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $Link = $ChainLinks->GetLink($i);
+      for ($j = $Link->NumCards() -1; $j >= 1; --$j) {
+        $LinkCard = $Link->GetLinkCard($j, true);
+        $cardID = $LinkCard->ID();
+        BanishCardForPlayer($cardID, $this->controller, "CC");
+        $LinkCard->Remove();
+      }
     }
   }
 }
