@@ -6898,6 +6898,62 @@ class shadowrealm_solace_blue extends Card {
 	}
 }
 
+class dark_arcanite_helm extends Card {
+  function __construct($controller) {
+    $this->cardID = "dark_arcanite_helm";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+
+  function ShadowResistAmount($index) {
+    return 1;
+  }
+}
+
+class dark_arcanite_plating extends Card {
+  function __construct($controller) {
+    $this->cardID = "dark_arcanite_plating";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+
+  function ShadowResistAmount($index) {
+    return 1;
+  }
+}
+class dark_arcanite_gloves extends Card {
+  function __construct($controller) {
+    $this->cardID = "dark_arcanite_gloves";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+
+  function ShadowResistAmount($index) {
+    return 1;
+  }
+}
+
 class dark_arcanite_boots extends Card {
   function __construct($controller) {
     $this->cardID = "dark_arcanite_boots";
