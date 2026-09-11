@@ -847,7 +847,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $uniqueID = $allyArr[$index + 5] ?? "-";
             $tapped = ($allyArr[$index + 11] ?? 0) == 1;
             if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
-                $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue($allyArr[$index], $player, "ALLY");
+              $modifier = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID));
+              if ($modifier > 0) $powerCounters = $modifier + PowerValue($allyArr[$index], $player, "ALLY");
+              else $label = "Effect Active";
             }
             //Show binds overlay and bound auras as subcards on allies in the popups
             $allyCard = new AllyCard($index, $player);
