@@ -979,6 +979,8 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     case "rockyard_rodeo_blue":
       $basePower = GetHighestBaseWeaponPower($player);
       break;
+    case "blasmophets_boon_blue":
+      $basePower = ControlsBlasmo($player) ? 6 : 0;
     default:
       break;
   }
@@ -1133,7 +1135,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
   if ($from == "PLAY" && SubtypeContains($cardID, "Zombie", $player) && SearchCharacterForCard($player, "vox_necropolis")) {
     return "AA";
   }
-  if ($from == "PLAY" && SearchCurrentTurnEffects("consuming_appetite_yellow", $player) && NameOverride($cardID, $player) == "Blasmophet, the Insatiable Hunger") {
+  if ($from == "PLAY" && (SearchCurrentTurnEffects("consuming_appetite_yellow", $player ) || SearchCurrentTurnEffects("consuming_command_blue", $player )) && NameOverride($cardID, $player) == "Blasmophet, the Insatiable Hunger") {
     return "AA";
   }
   $setResult = match($set) {

@@ -373,168 +373,81 @@ class viserai_usurper extends Card {
   }
 }
 
-class runic_reaving_red extends Card {
-  private $archetype;
+class runic_reaving_base extends Card {
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("runechant", $this->controller, effectSource:$this->cardID);
+  }
+
+  function CardCost($from = '-') {
+    return 0;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+}
+
+class runic_reaving_red extends runic_reaving_base {
   function __construct($controller) {
     $this->cardID = "runic_reaving_red";
     $this->controller = $controller;
-    $this->archetype = new windup($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    if ($additionalCosts == "USURPED")
-      AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return 2;
-  }
-
-  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PlayAura("runechant", $this->controller, effectSource:$this->cardID);
-  }
-
-  function CardCost($from = '-') {
-    return 0;
-  }
-
-  function GetAbilityTypes($index = -1, $from = '-') {
-    return $this->archetype->GetAbilityTypes($index, $from);
-  }
-
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
-    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
-  }
-
-  function GoesOnCombatChain($phase, $from) {
-    return $this->archetype->GoesOnCombatChain($phase, $from);
-  }
-
-  function CanActivateAsInstant($index = -1, $from = '') {
-    return $this->archetype->CanActivateAsInstant($index, $from);
-  }
-
-  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
-    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
-  }
-
-  function PayAdditionalCosts($from, $index = '-') {
-    Usurp($this->cardID, $this->controller, $from);
+    $this->archetype = new runic_reaving_base($this->cardID, $this->controller);
   }
 }
 
-class runic_reaving_yellow extends Card {
-  private $archetype;
+class runic_reaving_yellow extends runic_reaving_base {
   function __construct($controller) {
     $this->cardID = "runic_reaving_yellow";
     $this->controller = $controller;
-    $this->archetype = new windup($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    if ($additionalCosts == "USURPED")
-      AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return 2;
-  }
-
-  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PlayAura("runechant", $this->controller, effectSource:$this->cardID);
-  }
-
-  function CardCost($from = '-') {
-    return 0;
-  }
-
-  function GetAbilityTypes($index = -1, $from = '-') {
-    return $this->archetype->GetAbilityTypes($index, $from);
-  }
-
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
-    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
-  }
-
-  function GoesOnCombatChain($phase, $from) {
-    return $this->archetype->GoesOnCombatChain($phase, $from);
-  }
-
-  function CanActivateAsInstant($index = -1, $from = '') {
-    return $this->archetype->CanActivateAsInstant($index, $from);
-  }
-
-  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
-    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
-  }
-
-  function PayAdditionalCosts($from, $index = '-') {
-    Usurp($this->cardID, $this->controller, $from);
+    $this->archetype = new runic_reaving_base($this->cardID, $this->controller);
   }
 }
 
-class runic_reaving_blue extends Card {
-  private $archetype;
+class runic_reaving_blue extends runic_reaving_base {
   function __construct($controller) {
     $this->cardID = "runic_reaving_blue";
     $this->controller = $controller;
-    $this->archetype = new windup($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    if ($additionalCosts == "USURPED")
-      AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
-
-  function EffectPowerModifier($param, $attached = false) {
-    return 2;
-  }
-
-  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PlayAura("runechant", $this->controller, effectSource:$this->cardID);
-  }
-
-  function CardCost($from = '-') {
-    return 0;
-  }
-
-  function GetAbilityTypes($index = -1, $from = '-') {
-    return $this->archetype->GetAbilityTypes($index, $from);
-  }
-
-  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
-    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
-  }
-
-  function GoesOnCombatChain($phase, $from) {
-    return $this->archetype->GoesOnCombatChain($phase, $from);
-  }
-
-  function CanActivateAsInstant($index = -1, $from = '') {
-    return $this->archetype->CanActivateAsInstant($index, $from);
-  }
-
-  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
-    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
-  }
-
-  function PayAdditionalCosts($from, $index = '-') {
-    Usurp($this->cardID, $this->controller, $from);
+    $this->archetype = new runic_reaving_base($this->cardID, $this->controller);
   }
 }
 
@@ -7024,18 +6937,6 @@ class rumbling_hunger_red extends Card {
     $this->controller = $controller;
     $this->baseCard = new rumbling_hunger($this->cardID, $this->controller);
   }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
-  }
-
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return $this->baseCard->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    return $this->baseCard->HitEffect($cardID, $from, $uniqueID, $target);
-  }
 }
 
 class rumbling_hunger_yellow extends Card {
@@ -7043,18 +6944,6 @@ class rumbling_hunger_yellow extends Card {
     $this->cardID = "rumbling_hunger_yellow";
     $this->controller = $controller;
     $this->baseCard = new rumbling_hunger($this->cardID, $this->controller);
-  }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
-  }
-
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return $this->baseCard->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    return $this->baseCard->HitEffect($cardID, $from, $uniqueID, $target);
   }
 }
 
@@ -7064,16 +6953,242 @@ class rumbling_hunger_blue extends Card {
     $this->controller = $controller;
     $this->baseCard = new rumbling_hunger($this->cardID, $this->controller);
   }
+}
 
+class feasting_shadowbeast extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ATTACKTRIGGER");
+    return "";
   }
 
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return $this->baseCard->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $Deck = new Deck($this->controller);
+    $cardID = $Deck->BanishTop();
   }
 
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    return $this->baseCard->HitEffect($cardID, $from, $uniqueID, $target);
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    global $CS_Num6PowBan;
+    return GetClassState($this->controller, $CS_Num6PowBan) > 0 ? 2 : 0;
+  }
+
+  function HasGoAgain($from) {
+    global $CS_Num6PowBan;
+    return GetClassState($this->controller, $CS_Num6PowBan) > 0;
+  }
+}
+
+class feasting_shadowbeast_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "feasting_shadowbeast_red";
+    $this->controller = $controller;
+    $this->baseCard = new feasting_shadowbeast($this->cardID, $this->controller);
+  }
+}
+
+class feasting_shadowbeast_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "feasting_shadowbeast_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new feasting_shadowbeast($this->cardID, $this->controller);
+  }
+}
+
+class feasting_shadowbeast_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "feasting_shadowbeast_blue";
+    $this->controller = $controller;
+    $this->baseCard = new feasting_shadowbeast($this->cardID, $this->controller);
+  }
+}
+
+class feeding_frenzy extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $Deck = new Deck($this->controller);
+    $cardID = $Deck->BanishTop();
+  }
+
+  function DoesAttackHaveGoAgain() {
+    global $CS_Num6PowBan;
+    return GetClassState($this->controller, $CS_Num6PowBan) > 0;
+  }
+}
+
+class feeding_frenzy_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "feeding_frenzy_red";
+    $this->controller = $controller;
+    $this->baseCard = new feeding_frenzy($this->cardID, $this->controller);
+  }
+}
+
+class feeding_frenzy_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "feeding_frenzy_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new feeding_frenzy($this->cardID, $this->controller);
+  }
+}
+
+class feeding_frenzy_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "feeding_frenzy_blue";
+    $this->controller = $controller;
+    $this->baseCard = new feeding_frenzy($this->cardID, $this->controller);
+  }
+}
+
+class gorging_shadowbeast extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $Deck = new Deck($this->controller);
+    $cardID = $Deck->BanishTop();
+  }
+}
+
+class gorging_shadowbeast_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "gorging_shadowbeast_red";
+    $this->controller = $controller;
+    $this->baseCard = new gorging_shadowbeast($this->cardID, $this->controller);
+  }
+}
+
+class gorging_shadowbeast_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "gorging_shadowbeast_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new gorging_shadowbeast($this->cardID, $this->controller);
+  }
+}
+
+class gorging_shadowbeast_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "gorging_shadowbeast_blue";
+    $this->controller = $controller;
+    $this->baseCard = new gorging_shadowbeast($this->cardID, $this->controller);
+  }
+}
+
+class satiate_bloodthirst extends BaseCard {
+  function __construct($cardID, $controller) {
+    $this->cardID = $cardID;
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function CardCost($from = '-') {
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 3;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    GainHealth(1, $this->controller);
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount, allNames:$allNames);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index, $facing, "BANISH");
+  }
+}
+
+class satiate_bloodthirst_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "satiate_bloodthirst_red";
+    $this->controller = $controller;
+    $this->baseCard = new satiate_bloodthirst($this->cardID, $this->controller);
+  }
+}
+
+class satiate_bloodthirst_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "satiate_bloodthirst_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new satiate_bloodthirst($this->cardID, $this->controller);
+  }
+}
+
+class satiate_bloodthirst_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "satiate_bloodthirst_blue";
+    $this->controller = $controller;
+    $this->baseCard = new satiate_bloodthirst($this->cardID, $this->controller);
+  }
+}
+
+class blasmophets_boon_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "blasmophets_boon_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+}
+
+class consuming_command_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "consuming_command_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return CardNameContains($CombatChain->AttackCard()->ID(), "Blasmophet, the Insatiable Hunger");
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+}
+
+class goremass_summoning_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "goremass_summoning_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_Num6PowBan;
+    if (GetClassState($this->controller, $CS_Num6PowBan) > 0) {
+      PlayAlly("blasmophet_the_insatiable_hunger", $this->controller);
+    }
+    return "";
   }
 }
