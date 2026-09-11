@@ -19,8 +19,7 @@ function PracticeDummyAI()
   for ($logicCount = 0; $logicCount <= 30 && $currentPlayerIsAI; ++$logicCount) {
     if (IsGameOver()) break;
     if (count($decisionQueue) > 0) {
-      $isYesNo = $turn[0] == "YESNO" || $turn[0] == "DOCRANK";
-      ContinueDecisionQueue($isYesNo ? "NO" : "0");
+      ContinueDecisionQueue(PracticeDummyDecision());
     } else if ($turn[0] == "M" && $mainPlayer == $currentPlayer && $actionPoints > 0) {
       $weaponIndex = FindCharacterIndex(2, "wrenchtastic");
       if ($weaponIndex >= 0) ProcessInput($currentPlayer, 3, "", $weaponIndex, 0, "");
@@ -30,6 +29,25 @@ function PracticeDummyAI()
     }
     ProcessMacros();
     $currentPlayerIsAI = ($currentPlayer == 2);
+  }
+}
+
+//A zone choice needs a real multizone target, so "0" makes the swing fizzle as soon as the opponent has an ally or a spectra aura alongside their hero.
+function PracticeDummyDecision()
+{
+  global $turn;
+  switch ($turn[0]) {
+    case "YESNO":
+    case "DOCRANK":
+      return "NO";
+    case "CHOOSEMULTIZONE":
+    case "MAYCHOOSEMULTIZONE":
+      $options = array_values(array_filter(explode(",", $turn[2] ?? ""), fn($option) => $option !== "" && !str_starts_with($option, "MAXCOUNT-") && !str_starts_with($option, "MINCOUNT-")));
+      if (count($options) == 0) return "0";
+      foreach ($options as $option) if (str_starts_with($option, "THEIRCHAR")) return $option;
+      return $options[0];
+    default:
+      return "0";
   }
 }
 
