@@ -7403,3 +7403,14 @@ class mutual_sacrifice_blue extends Card {
     $this->baseCard = new mutual_sacrifice($this->cardID, $this->controller);
   }
 }
+
+class promise_of_power_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "promise_of_power_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
