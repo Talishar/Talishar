@@ -4557,7 +4557,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
   WriteLog(CardLink($discarded, $discarded) . " was discarded");
 }
 
-function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
+function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1, $base=false)
 {
   global $CS_Num6PowBan, $CombatChain, $currentTurnEffects;
   if ($cardID == "") return 0;
@@ -4591,7 +4591,7 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
       foreach(explode(",", $subcards) as $subcard) {
         switch ($subcard) {
           case "galvanic_bender":
-            ++$power;
+            if (!$base) ++$power;
             break;
           default:
             break;
@@ -4603,9 +4603,9 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1)
     $char = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($char[0]);
     if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $char[1] < 3 && CardType($cardID) == "AA") ++$power;
-    $power += ItemsPowerModifiers($cardID, $player, $from);
+    if (!$base) $power += ItemsPowerModifiers($cardID, $player, $from);
   } else {
-    $power += EffectDefenderPowerModifiers($cardID);
+    if (!$base) $power += EffectDefenderPowerModifiers($cardID);
   }
   return $power;
 }
