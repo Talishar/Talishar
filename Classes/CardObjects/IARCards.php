@@ -6826,6 +6826,7 @@ class dam_the_shadowake_red extends Card {
   function __construct($controller) {
     $this->cardID = "dam_the_shadowake_red";
     $this->controller = $controller;
+    $this->baseCard = new dam_the_shadowake($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -6841,6 +6842,7 @@ class dam_the_shadowake_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "dam_the_shadowake_yellow";
     $this->controller = $controller;
+    $this->baseCard = new dam_the_shadowake($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -6860,6 +6862,7 @@ class dam_the_shadowake_blue extends Card {
   function __construct($controller) {
     $this->cardID = "dam_the_shadowake_blue";
     $this->controller = $controller;
+    $this->baseCard = new dam_the_shadowake($this->cardID, $this->controller);
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
