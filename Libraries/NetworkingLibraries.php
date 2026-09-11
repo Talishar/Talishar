@@ -2517,11 +2517,10 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
   }
   if ($from == "BANISH") {
-    $Effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $playerID);
+    $Effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $currentPlayer);
     $Effect->Remove();
-    if(SearchCurrentTurnEffects("promise_of_power_yellow", $currentPlayer) && TypeContains($cardID, "AA")){
+    if (TypeContains($cardID, "AA") && SearchCurrentTurnEffects("promise_of_power_yellow", $currentPlayer, remove: true)) {
       PlayAura("runechant", $currentPlayer, 2);
-      RemoveCurrentTurnEffect("promise_of_power_yellow", $currentPlayer);
     }
   }
   if ($dynCostResolved == -1) {

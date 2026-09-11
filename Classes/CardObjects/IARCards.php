@@ -7414,3 +7414,62 @@ class promise_of_power_yellow extends Card {
     return AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 }
+
+class shadowake_gloomblade extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($additionalCosts == "USURPED")
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function ProcessCardTrigger() {
+    PlayAura("gate_to_iarathael", $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Usurp($this->cardID, $this->controller, $from);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $this->ProcessCardTrigger();
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+}
+
+class shadowake_gloomblade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowake_gloomblade_red";
+    $this->controller = $controller;
+    $this->baseCard = new shadowake_gloomblade($this->cardID, $this->controller);
+  }
+}
+
+class shadowake_gloomblade_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowake_gloomblade_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new shadowake_gloomblade($this->cardID, $this->controller);
+  }
+}
+
+class shadowake_gloomblade_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "shadowake_gloomblade_blue";
+    $this->controller = $controller;
+    $this->baseCard = new shadowake_gloomblade($this->cardID, $this->controller);
+  }
+}
