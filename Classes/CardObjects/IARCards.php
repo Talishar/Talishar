@@ -653,6 +653,16 @@ class baalghor_omen_of_the_end extends Card {
     }
     return 0;
   }
+
+  function DefPermanentPowerModifier(&$powerModifiers) {
+    global $CombatChain;
+    if ($CombatChain->AttackCard()->From() == "THEIRBANISH") {
+      $powerModifiers[] = $this->cardID;
+      $powerModifiers[] = 3;
+      return 3;
+    }
+    return 0;
+  }
 }
 
 class runechant_of_envy_yellow extends Card {

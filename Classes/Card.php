@@ -1324,4 +1324,10 @@ class Card {
       return $this->baseCard->ShadowResistAmount($index);
     return 0;
   }
+
+  function DefPermanentPowerModifier(&$powerModifiers) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "DefPermanentPowerModifier"))
+      return $this->baseCard->DefPermanentPowerModifier($powerModifiers);
+    return 0;
+  }
 }

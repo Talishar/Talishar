@@ -636,6 +636,13 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
         break;
     }
   }
+  $defCharacter = new PlayerCharacter($otherPlayer);
+  for ($i = 0; $i < $defCharacter->NumCards(); ++$i) {
+    $CharacterCard = $defCharacter->Card($i);
+    if (!$CharacterCard->IsActive()) continue;
+    $card = GetClass($CharacterCard->CardID(), $mainPlayer);
+    if ($card != "-") $modifier += $card->DefPermanentPowerModifier($powerModifiers);
+  }
   return $modifier;
 }
 
