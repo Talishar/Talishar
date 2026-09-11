@@ -265,7 +265,7 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "trench_of_sunken_treasure":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         return "";
       case "quiver_of_abyssal_depths":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MYDISCARDARROW"); // With a different names
@@ -432,7 +432,7 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffectNextAttack($cardID . "-2", $currentPlayer);
         return "";
       case "threadbare_tunic":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         break;
       case "fleet_foot_sandals":
         GiveAttackGoAgain();

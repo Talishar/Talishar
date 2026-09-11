@@ -320,6 +320,6 @@ class inverters_nightcowl extends Card {
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		GainResources($this->controller, 1);
+		GainResources(1, $this->controller);
 	}
 }

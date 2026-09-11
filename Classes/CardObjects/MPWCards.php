@@ -2157,7 +2157,7 @@ class edge_laden_plate extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    GainResources($this->controller, 1);
+    GainResources(1, $this->controller);
 		return "";
   }
 

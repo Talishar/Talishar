@@ -200,7 +200,7 @@ class barkbone_strapping extends Card {
 
   function SpecificLogic() {
     $roll = GetDieRoll($this->controller);
-    GainResources($this->controller, intval($roll/2));
+    GainResources(intval($roll/2), $this->controller);
     WriteLog("Player $this->controller rolled $roll and gained " . intval($roll/2) . " resources");
     ClearDieRoll($this->controller);
   }

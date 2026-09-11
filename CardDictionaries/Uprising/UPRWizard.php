@@ -84,7 +84,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "spellfire_cloak":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         return "Gain 1 resource.";
       case "rewind_blue":
         $index = intval(explode("-", $target, 2)[1]);

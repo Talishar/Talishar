@@ -2013,7 +2013,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         WriteLog("🧠" . CardLink("$parameter") . " gained +1 intellect");
         break;
       case "evo_steel_soul_processor_blue":
-        GainResources($player, 3);
+        GainResources(3, $player);
         WriteLog("🩶" . CardLink("$parameter") . " gained +3 resources");
         break;
       case "evo_steel_soul_tower_blue":
@@ -2174,7 +2174,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "teklo_core_blue":
         $index = SearchItemsForUniqueID($uniqueID, $player);
         --$items[$index + 1];
-        GainResources($player, 2);
+        GainResources(2, $player);
         if ($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);
         break;
       case "dissipation_shield_yellow":
@@ -2695,7 +2695,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "skull_crack_red":
       case "scurv_stowaway":
-        GainResources($player, 1);
+        GainResources(1, $player);
         break;
       case "berserk_yellow":
         $deck = new Deck($player);

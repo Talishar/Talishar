@@ -267,7 +267,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($from == "PLAY") GainHealth(2, $currentPlayer);
       break;
     case "ruby_amulet_blue":
-      if($from == "PLAY") GainResources($currentPlayer, 2);
+      if($from == "PLAY") GainResources(2, $currentPlayer);
       break;
     case "sapphire_amulet_blue":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -303,7 +303,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "rust_belt":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       break;
     case "unicycle":
       $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");   
@@ -324,7 +324,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       Draw($currentPlayer);
       break;
     case "buccaneers_bounty":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       break;
     case "fish_fingers":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -372,7 +372,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PummelHit($currentPlayer);
       break;
     case "dead_threads":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       break;
     case "blood_in_the_water_red":
       AddLayer("TRIGGER", $currentPlayer, $cardID, SearchCombatChainForIndex($cardID, $currentPlayer));
@@ -966,7 +966,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "old_knocker":
     case "captains_coat":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       break;
     case "swiftstrike_bracers":
       AddCurrentTurnEffect($cardID, $currentPlayer);

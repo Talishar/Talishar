@@ -467,7 +467,7 @@ function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       Draw($currentPlayer);
       return "";
     case "blood_scent":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       return "";
     case "pouncing_paws":
       BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer, created:true);
@@ -636,7 +636,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "fuel_injector_blue":
-      if ($from == "PLAY") GainResources($currentPlayer, 1);
+      if ($from == "PLAY") GainResources(1, $currentPlayer);
       return "";
     case "medkit_blue":
       if ($from == "PLAY") GainHealth(2, $currentPlayer);
@@ -681,7 +681,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       else $scrappedHyperDriverAmount = 0;
       if ($scrappedHyperDriverAmount >= 3) {
-        GainResources($currentPlayer, 6);
+        GainResources(6, $currentPlayer);
         GiveAttackGoAgain();
       }
       $CombatChain->AttackCard()->ModifyPower(+$resourcesPaid);
@@ -691,7 +691,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $costAry = explode(",", $additionalCosts);
       $costAryCount = count($costAry);
       for ($i = 0; $i < $costAryCount; ++$i) if (DelimStringContains($costAry[$i], "SCRAP", true)) ++$numScrap;
-      if ($numScrap > 0) GainResources($currentPlayer, $numScrap * 2);
+      if ($numScrap > 0) GainResources($numScrap * 2, $currentPlayer);
       return "";
     case "hydraulic_press_red":
     case "hydraulic_press_yellow":
@@ -731,7 +731,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "scrap_prospector_red":
     case "scrap_prospector_yellow":
     case "scrap_prospector_blue":
-      if (DelimStringContains($additionalCosts, "SCRAP", true)) GainResources($currentPlayer, 1);
+      if (DelimStringContains($additionalCosts, "SCRAP", true)) GainResources(1, $currentPlayer);
       return "";
     case "moonshot_yellow":
       $moonCount = intval($resourcesPaid / 2);

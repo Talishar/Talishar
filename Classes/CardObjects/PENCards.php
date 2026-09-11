@@ -531,7 +531,7 @@ class double_cross_strap extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    GainResources($this->controller, 1);
+    GainResources(1, $this->controller);
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -760,7 +760,7 @@ class predatory_plating extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    GainResources($this->controller, 1);
+    GainResources(1, $this->controller);
   }
 
   function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
@@ -996,7 +996,7 @@ class robe_of_resourcefulness extends Card {
   }
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
-    GainResources($this->controller, 2);
+    GainResources(2, $this->controller);
   }
 }
 

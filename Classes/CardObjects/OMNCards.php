@@ -1184,7 +1184,7 @@ class pulsing_cardia extends BaseCard {
   }
 
   function ProcessTrigger() {
-    GainResources($this->controller, 1);
+    GainResources(1, $this->controller);
   }
 }
 
@@ -3327,7 +3327,7 @@ class flowshard_elemental_red extends Card {
 
 class cosmic_flare extends BaseCard {
   function PlayAbility($num) {
-    GainResources($this->controller, $num);
+    GainResources($num, $this->controller);
   }
 }
 
@@ -3743,7 +3743,7 @@ class draco_fire_red extends Card {
         $Card->Banish();
         ++$num;
         if ($num == 2) {
-          GainResources($this->controller, 1);
+          GainResources(1, $this->controller);
           return;
         }
       }
@@ -4386,7 +4386,7 @@ class plutonic_starplate extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    GainResources($this->controller, 1);
+    GainResources(1, $this->controller);
     LogPlayCardStats($this->controller, $this->cardID, "PASSIVE");
   }
 }

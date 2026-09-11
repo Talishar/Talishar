@@ -71,7 +71,7 @@ function ASTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (GetClassState($currentPlayer, $CS_ArcaneDamageDealt) > 0) Draw($currentPlayer, effectSource:$cardID);
       return "";
     case "shock_frock":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       return "";
     case "cap_of_quick_thinking":
       AddCurrentTurnEffect($cardID, $currentPlayer);

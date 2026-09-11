@@ -587,7 +587,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "coat_of_allegiance":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "oath_of_loyalty_red":
@@ -607,7 +607,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       break;
     case "drop_of_dragon_blood_red":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       Draw($currentPlayer, effectSource:$cardID);
       break;
     case "rake_over_the_coals_red":
@@ -631,7 +631,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $otherChar = &GetPlayerCharacter($otherPlayer);
       MarkHero($otherPlayer);
       if (CardNameContains($otherChar[0], "Arakni")) {
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
       }
       break;
     case "tooth_of_the_dragon_red":

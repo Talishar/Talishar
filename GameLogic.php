@@ -2837,11 +2837,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "MZSWITCHPLAYER":
       return MZSwitchPlayer($lastResult);
     case "GAINRESOURCES":
-      GainResources($player, $parameter);
+      GainResources($parameter, $player);
       return $lastResult;
     case "GAINRESOURCESLASTRESULT":
       WriteLog("Player $player gained " . PitchValue($lastResult) . " resources.");
-      GainResources($player, PitchValue($lastResult));
+      GainResources(PitchValue($lastResult), $player);
       return $lastResult;
     case "TRANSFORM":
       $materialIndex = is_numeric($lastResult) ? $lastResult : SearchPermanentsForUniqueID($lastResult, $player);
@@ -2947,7 +2947,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "HYPERDRIVER":
       $index = SearchItemsForUniqueID($parameter, $player);
       $items = &GetItems($player);
-      GainResources($player, 1);
+      GainResources(1, $player);
       if ($index == -1) return $lastResult;
       --$items[$index + 1];
       if ($items[$index + 1] <= 0) DestroyItemForPlayer($player, $index);

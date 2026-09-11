@@ -282,7 +282,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect("aether_bindings_of_the_third_age,0", $currentPlayer);
       return "";
     case "ink_lined_cloak":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       return "";
     case "hold_focus":
       AddCurrentTurnEffect($cardID, $currentPlayer);

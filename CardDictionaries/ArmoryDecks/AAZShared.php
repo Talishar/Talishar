@@ -50,7 +50,7 @@ function AAZPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "hidden_agenda":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       return "";
     case "stone_rain_red":
       if (HasAimCounter()) {

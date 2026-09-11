@@ -5,7 +5,7 @@
     global $currentPlayer, $CombatChain, $CS_PlayIndex;
     switch($cardID)
     {
-      case "blood_drop_brocade": GainResources($currentPlayer, 1); return "";
+      case "blood_drop_brocade": GainResources(1, $currentPlayer); return "";
       case "stubby_hammerers": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
       case "time_skippers": GainActionPoints(2, $currentPlayer); return "";
       case "exude_confidence_red":

@@ -45,7 +45,7 @@ function TERPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "blossom_of_spring":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       return "";
     case "bracken_rap_red": case "bracken_rap_yellow":
       if (SearchCardList($additionalCosts, $currentPlayer, talent: "EARTH") != "") PlayAura("might", $currentPlayer); 

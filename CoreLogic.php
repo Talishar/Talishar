@@ -3746,7 +3746,7 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     $index = count($pitch) - PitchPieces();
   $pitchValue = PitchValue($cardID);
   if (GetClassState($currentPlayer, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($currentPlayer, "vestige_of_sol") && TalentContains($cardID, "LIGHT", $currentPlayer)) {
-    GainResources($currentPlayer, 1);
+    GainResources(1, $currentPlayer);
     LogPlayCardStats($currentPlayer, "vestige_of_sol", "PASSIVE");
   }
   if ($pitchValue == 1) {
@@ -3754,7 +3754,7 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     if ($talismanOfRecompenseIndex > -1) {
       WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1 and destroyed itself");
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
-      GainResources($currentPlayer, 2);
+      GainResources(2, $currentPlayer);
     }
     if (ColorContains($cardID, 1, $currentPlayer)) {
       $char = GetPlayerCharacter($currentPlayer);
@@ -4000,7 +4000,7 @@ function ChooseToPay($player, $cardID, $amounts)
 function WardPoppedAbility($player, $cardID)
 {
   if (SearchCharacterActive($player, "celestial_kimono", setInactive: true)) {
-    GainResources($player, 1);
+    GainResources(1, $player);
     WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono", "celestial_kimono"));
   }
   if (SearchCharacterActive($player, "diadem_of_dreamstate", setInactive: true) || $cardID == "diadem_of_dreamstate") {
@@ -4181,7 +4181,7 @@ function EvoTransformAbility($toCardID, $fromCardID, $player = "")
       break;
     case "evo_buzz_hive_yellow":
     case "evo_buzz_hive_yellow_equip":
-      GainResources($player, 1);
+      GainResources(1, $player);
       break;
     case "evo_whizz_bang_yellow":
     case "evo_whizz_bang_yellow_equip":

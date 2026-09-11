@@ -320,7 +320,7 @@
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "fyendals_spring_tunic":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         return "";
       case "heartened_cross_strap":
         AddCurrentTurnEffect($cardID, $mainPlayer);
@@ -361,7 +361,7 @@
           } else {
             $resources = &GetResources($currentPlayer);
             AddCurrentTurnEffect($cardID, $currentPlayer);
-            GainResources($currentPlayer, 2);
+            GainResources(2, $currentPlayer);
             GainActionPoints(2, $currentPlayer);
             $rv .= " and gained 2 action points, resources, and power.";
           }
@@ -378,7 +378,7 @@
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "energy_potion_blue":
-        if($from == "PLAY") GainResources($currentPlayer, 2);
+        if($from == "PLAY") GainResources(2, $currentPlayer);
         return "";
       case "potion_of_strength_blue":
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);

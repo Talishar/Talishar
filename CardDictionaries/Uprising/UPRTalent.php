@@ -13,10 +13,10 @@
         $pitchCount = count($pitch);
         $pitchPieces = PitchPieces();
         for($i=0; $i<$pitchCount; $i+=$pitchPieces) if(PitchValue($pitch[$i]) == 1) ++$numRed;
-        GainResources($currentPlayer, $numRed);
+        GainResources($numRed, $currentPlayer);
         return "";
       case "sash_of_sandikai":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         return "";
       case "uprising_red":
         AddCurrentTurnEffect($cardID, $currentPlayer);

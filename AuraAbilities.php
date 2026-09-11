@@ -747,7 +747,7 @@ function AuraStartTurnAbilities()
         ++$mightCount;
         break;
       case "vigor":
-        GainResources($mainPlayer, 1);
+        GainResources(1, $mainPlayer);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         IncrementClassState($mainPlayer, $CS_NumVigorDestroyed, 1);
         ++$vigorCount;

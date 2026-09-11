@@ -30,7 +30,7 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
       return "";
     case "robe_of_rapture":
-      GainResources($currentPlayer, 3);
+      GainResources(3, $currentPlayer);
       return "";
     case "blazing_aether_red":
       $damage = GetClassState($otherPlayer, $CS_ArcaneDamageTaken);
@@ -1106,7 +1106,7 @@ function ProcessSurge($cardID, $player, $target)
     case "overflow_the_aetherwell_yellow":
     case "overflow_the_aetherwell_blue":
       WriteLog(CardLink($cardID, $cardID) . " gains 2 resources");
-      GainResources($player, 2);
+      GainResources(2, $player);
       break;
     case "perennial_aetherbloom_red":
     case "perennial_aetherbloom_yellow":

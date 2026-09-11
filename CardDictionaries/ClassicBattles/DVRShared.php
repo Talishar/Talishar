@@ -21,7 +21,7 @@
     switch($cardID)
     {
       case "blossom_of_spring":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         return "";
       case "glistening_steelblade_yellow":
         AddCurrentTurnEffect($cardID, $currentPlayer);

@@ -318,7 +318,7 @@ function RemoveDiscard($player, $index)
   return RemoveGraveyard($player, $index);
 }
 
-function GainResources($player, $amount)
+function GainResources($amount, $player)
 {
   $resources = &GetResources($player);
   $resources[0] += $amount;

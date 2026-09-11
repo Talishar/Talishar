@@ -47,7 +47,7 @@
         DealArcane(1, 1, "PLAYCARD", $cardID);
         return "";
       case "aether_ironweave":
-        GainResources($currentPlayer, 2);
+        GainResources(2, $currentPlayer);
         return "";
       case "vexing_malice_red": case "vexing_malice_yellow": case "vexing_malice_blue":
         AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER", $CombatChain->AttackCard()->UniqueID());

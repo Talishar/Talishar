@@ -197,7 +197,7 @@
         AddDecisionQueue("OPT", $currentPlayer, "<-");
         return "";
       case "deep_blue":
-        GainResources($currentPlayer, 3);
+        GainResources(3, $currentPlayer);
         return "";
       case "cracker_jax":
         AddCurrentTurnEffect($cardID, $currentPlayer);

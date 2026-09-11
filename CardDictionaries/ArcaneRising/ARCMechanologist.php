@@ -20,7 +20,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       $deck = new Deck($currentPlayer);
       for($i = 0; $i < 2 && !$deck->Empty(); ++$i) {
         $banished = $deck->BanishTop();
-        if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) GainResources($currentPlayer, 1);
+        if(ClassContains($banished, "MECHANOLOGIST", $currentPlayer)) GainResources(1, $currentPlayer);
       }
       return "";
     case "achilles_accelerator":
@@ -133,7 +133,7 @@ function DoBoost($player, $cardID, $boostCount=1)
   for ($i = 0; $i < $boostCount; $i++) {
     if($deck->Empty()) { WriteLog("⚠️ Cannot boost!"); return; }
     GainActionPoints(CountCurrentTurnEffects("high_octane_red", $player), $player);
-    GainResources($player, CountCurrentTurnEffects("heavy_industry_power_plant", $player));
+    GainResources(CountCurrentTurnEffects("heavy_industry_power_plant", $player), $player);
     $boostedCardID = $deck->Top(remove:true);
     ItemBoostEffects();
     SelfBoostEffects($player, $boostedCardID, $cardID);

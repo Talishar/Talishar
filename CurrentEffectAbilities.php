@@ -387,7 +387,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       GainHealth(1, $mainPlayer);
       return 1;
     case $Card_ResourceBanner:
-      GainResources($mainPlayer, 1);
+      GainResources(1, $mainPlayer);
       return 1;
     case "hack_to_reality_yellow-HIT":
       if (IsHeroAttackTarget()) {

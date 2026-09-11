@@ -156,7 +156,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       return $lastResult;
     case "KORSHEM":
       switch($lastResult) {
-          case "Gain_a_resource": GainResources($player, 1); return 1;
+          case "Gain_a_resource": GainResources(1, $player); return 1;
           case "Gain_a_life": GainHealth(1, $player); return 2;
           case "1_Attack":
             if ($CombatChain->HasCurrentLink() || IsLayerStep())
@@ -689,7 +689,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         if (HasBloodDebt($cards[$i])) {
           ++$numBloodDebt;
         }
-      GainResources($player, $numBloodDebt);
+      GainResources($numBloodDebt, $player);
       return 1;
     case "DIMENXXIONALGATEWAY":
       if (ClassContains($lastResult, "RUNEBLADE", $player))
@@ -1019,7 +1019,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $char = &GetPlayerCharacter($player);
       $index = FindCharacterIndex($player, "blood_splattered_vest");
       if ($index != -1) {
-        GainResources($player, 1);
+        GainResources(1, $player);
         WriteLog("Player " . $player . " gained 1 resource from " . CardLink("blood_splattered_vest", "blood_splattered_vest"));
         if (++$char[$index + 2] >= 3) {
           DestroyCharacter($player, $index); # If it has three counters blow it up

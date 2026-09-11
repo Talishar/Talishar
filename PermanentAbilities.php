@@ -158,7 +158,7 @@ function PermanentTakeDamageAbilities($player, $index, $damage, $preventable, $t
         if (HasWard($permanents[$i], $player) && SearchCharacterActive($player, "celestial_kimono") && CardType($permanents[$i]) != "T") {
           $index = FindCharacterIndex($player, "celestial_kimono");
           $char[$index + 1] = 1;
-          GainResources($player, 1);
+          GainResources(1, $player);
           WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono", "celestial_kimono"));
         }
         DestroyPermanent($player, $i);
