@@ -4599,13 +4599,14 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1, $b
       }
     }
   }
+  if ($base) return $power;
   if ($from != "CC") {
     $char = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($char[0]);
     if (($characterID == "kayo_armed_and_dangerous" || $characterID == "kayo") && $char[1] < 3 && CardType($cardID) == "AA") ++$power;
-    if (!$base) $power += ItemsPowerModifiers($cardID, $player, $from);
+    $power += ItemsPowerModifiers($cardID, $player, $from);
   } else {
-    if (!$base) $power += EffectDefenderPowerModifiers($cardID);
+    $power += EffectDefenderPowerModifiers($cardID);
   }
   return $power;
 }
