@@ -591,7 +591,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       )) {
         break;
       }
-      if (GetClassState($playerID, $CS_NumUndoesThisTurn) >= UNDO_PER_TURN_LIMIT && !IsDevEnvironment()) {
+      $isBotGame = IsPlayerAI(1) || IsPlayerAI(2);
+      if (GetClassState($playerID, $CS_NumUndoesThisTurn) >= UNDO_PER_TURN_LIMIT && !IsDevEnvironment() &&!$isBotGame) {
         WriteLog("Player $playerID has reverted the gamestate too many times this turn. Proceed with the game", highlight:true);
         break;
       }
