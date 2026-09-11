@@ -7275,11 +7275,6 @@ class feasting_shadowbeast extends BaseCard {
     global $CS_Num6PowBan;
     return GetClassState($this->controller, $CS_Num6PowBan) > 0 ? 2 : 0;
   }
-
-  function HasGoAgain($from) {
-    global $CS_Num6PowBan;
-    return GetClassState($this->controller, $CS_Num6PowBan) > 0;
-  }
 }
 
 class feasting_shadowbeast_red extends Card {
