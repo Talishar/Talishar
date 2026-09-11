@@ -6892,6 +6892,10 @@ class commit_to_corruption extends BaseCard {
 	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
 		return AnyHitTrigger($this->controller, $this->cardID, $check, true);
 	}
+  
+  function SpecialBlock() {
+    return 3;
+  }
 }
 
 class commit_to_corruption_red extends Card {
