@@ -4,52 +4,32 @@ include_once "EncounterAI.php";
 
 function CombatDummyAI()
 {
-  global $currentPlayer, $p2CharEquip, $decisionQueue, $turn, $mainPlayer, $p2IsAI;
-  $currentPlayerIsAI = IsPlayerAI($currentPlayer) ? true : false;
-  $canceled = false;
-  if($p2CharEquip[0] != "DUMMY") {
-    // Only call EncounterAI if P2 is actually AI
-    if ($p2IsAI == "1") {
-      EncounterAI();
-    }
-    return;
-  }
-  if(!IsGameOver() && $currentPlayerIsAI)
-  {
-    for($i=0; $i<100 && $currentPlayerIsAI; ++$i)
-    {
-      if(count($decisionQueue) > 0)
-      {
-        if($turn[2] == "if_you_want_to_pay_3_to_avoid_taking_2_damage") ContinueDecisionQueue("NO");
-        else {
-          $options = explode(",", $turn[2]);
-          ContinueDecisionQueue($options[0]);//Just pick the first option
-        }
-      }
-      else if($turn[0] == "M" && $mainPlayer == $currentPlayer && !$canceled)//AIs turn
-      {
-        $character = &GetPlayerCharacter($currentPlayer);
-        $characterCount = count($character);
-        $characterPieces = CharacterPieces();
-        $index = -1;
-        for($j=0; $j<$characterCount && $index == -1; $j += $characterPieces) if(CardType($character[$j]) != "C") $index = $j;
-        $cardID = $character[$index];
-        $from = "EQUIP";
-        $baseCost = AbilityCost($cardID);
-        $frostbitesPaid = AuraCostModifier($cardID);
-        $cost = $baseCost + CurrentEffectCostModifiers($cardID, $from) + $frostbitesPaid + CharacterCostModifier($cardID, $from, CardCost($cardID, $from));
+  global $p2IsAI;
+  if ($p2IsAI != "1") return;
+  $p2Char = &GetPlayerCharacter(2);
+  if ($p2Char[0] == "DUMMY") PracticeDummyAI();
+  else EncounterAI();
+}
 
-        if($index != -1 && $cost == 0)
-        {
-          $wasSuccessful = ProcessInput($currentPlayer, 3, "", CharacterPieces(), $index, "");
-          if($wasSuccessful) CacheCombatResult();
-          else PassInput();
-        }
-        else PassInput();
-      }
-      ProcessMacros();
-      $currentPlayerIsAI = IsPlayerAI($currentPlayer) ? true : false;
+//The practice dummy doesn't use BotLogic at all - it just swings its weapon each turn and never blocks.
+function PracticeDummyAI()
+{
+  global $currentPlayer, $mainPlayer, $actionPoints, $decisionQueue, $turn;
+  $currentPlayerIsAI = ($currentPlayer == 2);
+  for ($logicCount = 0; $logicCount <= 30 && $currentPlayerIsAI; ++$logicCount) {
+    if (IsGameOver()) break;
+    if (count($decisionQueue) > 0) {
+      $isYesNo = $turn[0] == "YESNO" || $turn[0] == "DOCRANK";
+      ContinueDecisionQueue($isYesNo ? "NO" : "0");
+    } else if ($turn[0] == "M" && $mainPlayer == $currentPlayer && $actionPoints > 0) {
+      $weaponIndex = FindCharacterIndex(2, "wrenchtastic");
+      if ($weaponIndex >= 0) ProcessInput($currentPlayer, 3, "", $weaponIndex, 0, "");
+      else PassInput();
+    } else {
+      PassInput();
     }
+    ProcessMacros();
+    $currentPlayerIsAI = ($currentPlayer == 2);
   }
 }
 

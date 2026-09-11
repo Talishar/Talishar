@@ -28,39 +28,47 @@ function CardIsBlockable($storedPriorityNode)
 
 function CardIsPlayable($storedPriorityNode, $hand, $resources)
 {
+  global $turn;
   if(CardIsPrevented($storedPriorityNode[0])) return false;
   switch($storedPriorityNode[1])
   {
     case "Hand":
       $index = $storedPriorityNode[2];
       $baseCost = CardCost($storedPriorityNode[0]);
+      $from = "HAND";
       break;
     case "Arsenal":
       if(ArsenalIsFrozen($storedPriorityNode)) return false;
       $index = -1;
       $baseCost = CardCost($storedPriorityNode[0]);
+      $from = "ARS";
       break;
     case "Character":
       if(CharacterIsUsed($storedPriorityNode)) return false;
       $index = -1;
       $baseCost = AbilityCost($storedPriorityNode[0]);
+      $from = "CHAR";
       break;
     case "Item":
       $index = -1;
       $baseCost = AbilityCost($storedPriorityNode[0]);
+      $from = "PLAY";
       break;
     case "Ally":
       $index = -1;
       $baseCost = AbilityCost($storedPriorityNode[0]);
+      $from = "PLAY";
       break;
     case "Banish":
       $index = $storedPriorityNode[2];
       $baseCost = CardCost($storedPriorityNode[0]);
+      $from = "BANISH";
       break;
     default:
       WriteLog("ERROR: The AI's stored priority node is not a card that can be checked for playability. Please submit a bug report.");
       return false;
   }
+  if(!IsPlayable($storedPriorityNode[0], $turn[0], $from, $storedPriorityNode[2])) return false;
   $finalCost = $baseCost;
   $totalPitch = $resources[0];
   $handCount = count($hand);
