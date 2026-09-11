@@ -4820,6 +4820,10 @@ class consuming_appetite_yellow extends Card {
   function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index, dest:"BANISH");
   }
+
+  function HasGoAgain($from) {
+    return false; // generated script error
+  }
 }
 
 class reach_of_the_abyss extends Card {
