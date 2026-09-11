@@ -2192,9 +2192,7 @@ class shadowrealm_swiftness_yellow extends Card {
 	}
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    global $CombatChain;
-    $attackCard = $CombatChain->AttackCard()->ID();
-    return SubtypeContains($attackCard, "Zombie", $this->controller);
+    return true;
   }
 }
 
