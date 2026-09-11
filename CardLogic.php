@@ -4561,7 +4561,7 @@ function ModifiedPowerValue($cardID, $player, $from, $source = "", $index=-1, $b
 {
   global $CS_Num6PowBan, $CombatChain, $currentTurnEffects;
   if ($cardID == "") return 0;
-  $power = PowerValue($cardID, $player, $from);
+  $power = PowerValue($cardID, $player, $from, base:$base);
   if ($cardID == "mutated_mass_blue") $power = SearchPitchForNumCosts($player) * 2;
   else if ($cardID == "fractal_replication_red") {
     $card = new fractal_replication_red($player);
