@@ -30,7 +30,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
-  global $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects;
+  global $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
   global $p1MetafyTiers, $p2MetafyTiers;
   global $CS_OriginalHero;
   global $replaySaveResult;
@@ -533,9 +533,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $combatChainAttacks = GetCombatChainAttacks();
       if (!isset($combatChainAttacks[$index])) break;
       $cardID = $combatChainAttacks[$index];
+      WriteLog("HERE! $cardID, $index");
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "COMBATCHAINATTACKS", intdiv($index, ChainLinksPieces()))) {
         SetClassState($playerID, $CS_PlayIndex, $index);
         PlayCard($cardID, "COMBATCHAINATTACKS", -1, $index, "-", zone: "COMBATCHAINATTACKS");
+      }
+      break;
+    case 39: // past defending card
+      $index = $cardID; //Overridden to be index instead
+      $LinkNum = explode("-", $index)[1] ?? -1;
+      $ind = explode("-", $index)[0];
+      $LinkCard = $ChainLinks->GetLink($LinkNum)->GetLinkCard($ind);
+      $cardID = $LinkCard->ID();
+      if (AbilityPlayableFromCombatChain($cardID, $index) && IsPlayable($cardID, $turn[0], "PASTCHAINLINK", $index)) {
+        SetClassState($playerID, $CS_PlayIndex, $index);
+        PlayCard($cardID, "PASTCHAINLINK|$LinkNum", -1, $ind, "-", zone: "PASTCHAINLINK|$LinkNum");
       }
       break;
     case 99: //Pass
