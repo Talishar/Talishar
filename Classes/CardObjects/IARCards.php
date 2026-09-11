@@ -6998,3 +6998,82 @@ class banneret_of_swordsmanship_yellow extends Card {
     PlayAura("flurry", $this->controller);
   }
 }
+
+class rumbling_hunger extends BaseCard {
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $CS_Num6PowBan;
+    if(GetClassState($this->controller, $CS_Num6PowBan) > 0) {
+      PlayAlly("blasmophet_the_insatiable_hunger", $this->controller);
+		  GiveAttackGoAgain();
+    }
+	}
+}
+
+class rumbling_hunger_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rumbling_hunger_red";
+    $this->controller = $controller;
+    $this->baseCard = new rumbling_hunger($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    return $this->baseCard->HitEffect($cardID, $from, $uniqueID, $target);
+  }
+}
+
+class rumbling_hunger_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rumbling_hunger_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rumbling_hunger($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    return $this->baseCard->HitEffect($cardID, $from, $uniqueID, $target);
+  }
+}
+
+class rumbling_hunger_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rumbling_hunger_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rumbling_hunger($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return $this->baseCard->PlayAbility($from, $resourcesPaid, $target, $additionalCosts, $uniqueID, $layerIndex);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return $this->baseCard->AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    return $this->baseCard->HitEffect($cardID, $from, $uniqueID, $target);
+  }
+}
