@@ -7824,7 +7824,7 @@ class corpse_cover extends BaseCard {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    if ($from == "PLAY") AddCurrentTurnEffect($this->cardID, $this->controller);
+    if ($from == "PLAY" || str_contains($from, "PASTCHAINLINK")) AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
   }
 
@@ -7850,23 +7850,41 @@ class corpse_cover extends BaseCard {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $CombatChain;
+    global $CombatChain, $ChainLinks;
     if ($from == "PLAY") {
       if ($index == 0) return true;
       if ($this->GetAllies() == "") return true;
       return $CombatChain->Card($index)->NumTimesUsed() >= 1;
     }
-    return $from == "COMBATCHAINATTACKS";
+    if ($from == "PASTCHAINLINK") {
+      $LinkNum = explode("-", $index)[1] ?? -1;
+      $ind = explode("-", $index)[0];
+      if ($ind == 0) return true;
+      if ($LinkNum == -1) return true;
+      if ($this->GetAllies() == "") return true;
+      $LinkCard = $ChainLinks->GetLink($LinkNum)->GetLinkCard($ind);
+      return $LinkCard->NumTimesUsed() >= 1;
+    }
+    return false;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    global $CombatChain, $CS_PlayIndex;
-    if ($from != "PLAY") return;
+    global $CombatChain, $ChainLinks, $CS_PlayIndex;
+    if ($from != "PLAY" && !str_contains($from, "PASTCHAINLINK")) return;
     if ($this->GetAllies() == "") {
       WriteLog("No allies to destroy or discard, reverting gamestate", highlight: true);
       RevertGamestate();
     }
-    $CombatChain->Card(GetClassState($this->controller, $CS_PlayIndex))->AddUse(1);
+    if ($from == "PLAY")
+      $CombatChain->Card(GetClassState($this->controller, $CS_PlayIndex))->AddUse(1);
+    else {
+      $LinkNum = explode("|", $from)[1] ?? -1;
+      $ind = explode("-", $index)[0];
+      if ($LinkNum != -1) {
+        $LinkCard = $ChainLinks->GetLink($LinkNum)->GetLinkCard($ind);
+        $LinkCard->AddUse(1);
+      }
+    }
     Await($this->controller, "MultiZoneIndices", search: "MYALLY&MYHAND:subtype=Ally", subsequent: 0);
     Await($this->controller, "ChooseMultiZone", context: "Destroy or discard an ally");
     Await($this->controller, $this->cardID, final: true);

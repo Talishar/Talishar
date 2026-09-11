@@ -432,7 +432,7 @@ function AutopassPhaseWithOneOption($phase)
 
 function HasPlayableCard($player, $phase)
 {
-  global $CombatChain;
+  global $CombatChain, $ChainLinks;
   $restriction = "";
   $otherPlayer = 3 - $player;
 
@@ -473,6 +473,13 @@ function HasPlayableCard($player, $phase)
   for($i=0, $count=count($auras); $i<$count; $i+=$auraPieces) {
     if (!AuraActiveStateTracked($auras[$i]) || GetAuraGemState($player, $auras[$i], $i) != 0) {
       if(IsPlayable($auras[$i], $phase, "PLAY", $i, $restriction, $player)) return true;
+    }
+  }
+
+  for ($linkNum = 0; $linkNum < $ChainLinks->NumLinks(); ++$linkNum) {
+    $Link = $ChainLinks->GetLink($linkNum);
+    for ($i = 0; $i < $Link->NumCards(); ++$i) {
+      if(IsPlayable($Link->GetLinkCard($i, true)->ID(), $phase, "PASTCHAINLINK", "$i-$linkNum", $restriction, $player)) return true;
     }
   }
 

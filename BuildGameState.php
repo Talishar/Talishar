@@ -48,6 +48,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $p1MetafyCommunities, $p2MetafyCommunities;
   global $p1TotalTime, $p2TotalTime, $ChainLinks;
   global $p1id, $p2id, $p1DeckLink, $p2DeckLink;
+  global $ChainLinks;
 
   ResetFavoriteDeckCosmeticOverrideCache();
 
@@ -956,6 +957,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Now display any previous chain links that can be activated
   $playablePastLinks = [];
+  $chainLinksPieces = ChainLinksPieces();
+  // attacker's cards
   $attacks = GetCombatChainAttacks();
   $attacksCount = count($attacks);
   $chainLinksPieces = ChainLinksPieces();
@@ -967,6 +970,24 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $border = CardBorderColor($attacks[$i], "BANISH", $action > 0, $playerID);
     $cardID = $attacks[$i];
     if ($action != 0) $playablePastLinks[] = JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: strval($i), label: $label);
+  }
+  // defender's cards
+  for ($linkNum = 0; $linkNum < $ChainLinks->NumLinks(); ++$linkNum) {
+    $label = "Chain Link " . $linkNum + 1;
+    $Link = $ChainLinks->GetLink($linkNum);
+    for ($i = 1; $i < $Link->NumCards(); ++$i) {
+      $LinkCard = $Link->GetLinkCard($i, true);
+      if ($LinkCard->PlayerID() != $currentPlayer || $currentPlayer != $playerID) continue;
+      if (!$LinkCard->StillOnChain()) continue;
+      $index = $LinkCard->Index() . "-$linkNum";
+      $zone = "PASTCHAINLINK";
+      $linkCardID = $LinkCard->ID();
+      $overlay = 0;
+      $action = IsPlayable($linkCardID, $turnPhase, $zone, $index) ? 39 : 0;
+      $border = CardBorderColor($linkCardID, "BANISH", $action > 0, $playerID);
+      $cardID = $linkCardID;
+      if ($action != 0) $playablePastLinks[] = JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: $index, label: $label);
+    }
   }
   if (!empty($playablePastLinks)) {
     $response->playerBanish = [...$response->playerBanish, ...$playablePastLinks];
