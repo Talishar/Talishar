@@ -1464,7 +1464,7 @@ function ManualModeCount($input)
 function IsModeAsync($mode)
 {
   static $asyncModes = [
-  26 => true, 102 => true, 103 => true, 104 => true, 111 => true, 10000 => true,
+  26 => true, 102 => true, 103 => true, 104 => true, 111 => true, 112 => true, 10000 => true,
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true,

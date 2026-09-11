@@ -131,6 +131,18 @@ try {
   }
 }
 
+// Manual deck organization happens client-side until the player saves. Keep
+// the priority player's inactivity timer alive without rewriting gamestate or
+// creating replay commands while the organizer is open.
+if ($mode == 112) {
+  if ($currentPlayer == $playerID) {
+    SetCachePiece($gameName, 6, round(microtime(true) * 1000));
+  }
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode(['message' => 'Activity recorded.']);
+  exit;
+}
+
 $afterResolveEffects = [];
 
 $animations = [];
