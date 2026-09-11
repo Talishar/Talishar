@@ -203,6 +203,7 @@ function BotHeroAdjustment($cardID, $heroID, $context, $playerID)
     if ($cardID == "spreading_flames_red" && $attacksThisTurn == 0) $adjustment += 9;
     if ($cardID == "lava_burst_red" && $attacksThisTurn < 3) $adjustment -= 6;
     if ($cardID == "phoenix_flame_red" && $attacksThisTurn == 0) $adjustment -= 4;
+    $adjustment += BotFaiSupportAdjustment($cardID, $playerID);
   }
 
   return $adjustment;
@@ -211,6 +212,64 @@ function BotHeroAdjustment($cardID, $heroID, $context, $playerID)
 function BotEndOfTurnAbilityThreshold()
 {
   return 5.0;
+}
+
+function BotIsFaiPump($cardID)
+{
+  return str_starts_with($cardID, "rise_from_the_ashes_");
+}
+
+function BotFaiPumpValue($cardID)
+{
+  return match ($cardID) {
+    "rise_from_the_ashes_red" => 4,
+    "rise_from_the_ashes_yellow" => 3,
+    default => 2,
+  };
+}
+
+function BotFaiPumpActive($playerID)
+{
+  foreach (["rise_from_the_ashes_red", "rise_from_the_ashes_yellow", "rise_from_the_ashes_blue"] as $variant) {
+    if (SearchCurrentTurnEffects($variant, $playerID)) return true;
+  }
+  return false;
+}
+
+function BotDraconicAttacksAvailable($playerID, $exceptCardID = null)
+{
+  $skipped = false;
+  $count = 0;
+  foreach (BotOffensiveCards($playerID) as $candidate) {
+    if (!$skipped && $exceptCardID !== null && $candidate === $exceptCardID) {
+      $skipped = true;
+      continue;
+    }
+    if (CardType($candidate) == "AA" && TalentContains($candidate, "DRACONIC", $playerID)) ++$count;
+  }
+  return $count;
+}
+
+function BotFaiSupportAdjustment($cardID, $playerID)
+{
+  global $currentTurn, $CS_NumAttacks;
+  if (!BotIsFaiPump($cardID)) return 0.0;
+  if (BotFaiPumpActive($playerID)) return 0.0;
+  if (BotDraconicAttacksAvailable($playerID, $cardID) == 0) return 0.0;
+
+  $opponent = 3 - $playerID;
+  $opponentHand = &GetHand($opponent);
+  $response = BotEvaluateOpponentResponse(
+    BotFaiPumpValue($cardID),
+    max(1, intval(GetHealth($opponent))),
+    count($opponentHand),
+    BotEquipmentDefense($opponent),
+    intval($currentTurn) + 1
+  );
+  $score = BotResponseWeightedDamage($response) * 10;
+  $attacksThisTurn = isset($CS_NumAttacks) ? intval(GetClassState($playerID, $CS_NumAttacks)) : 0;
+  if ($attacksThisTurn == 0) $score += 12;
+  return $score;
 }
 
 function BotFaiHeroAdjustment($cardID, $playerID)
@@ -289,6 +348,8 @@ function BotEquipmentWearCost($cardID, $defense)
 
 function BotCardOpportunity($cardID, $playerID)
 {
+  if (BotIsFaiPump($cardID)) return floatval(BotFaiPumpValue($cardID));
+  if ($cardID == "phoenix_flame_red") return 1.0;
   $type = CardType($cardID);
   if ($type == "DR") return 5.0;
   if ($type == "AR") return str_starts_with($cardID, "razor_reflex_") ? 7.0 : 5.0;
@@ -539,6 +600,7 @@ function BotArsenalPriority($cardID, $playerID)
 
 function BotPitchPriority($cardID, $playerID)
 {
+  if (BotIsFaiPump($cardID)) return 1.0;
   return 100.0 + intval(PitchValue($cardID)) * 10 - BotCardOpportunity($cardID, $playerID) * 2;
 }
 
