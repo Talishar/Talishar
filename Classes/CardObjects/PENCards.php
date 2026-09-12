@@ -5265,7 +5265,7 @@ class herald_of_victoria_yellow extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    return TypeContains($CombatChain->AttackCard()->ID(), "AA");
+    return TypeContains($defendingCard == '' ? $CombatChain->AttackCard()->ID() : $defendingCard, "AA");
   }
 
   function IsCombatEffectPersistent($mode) {
