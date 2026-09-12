@@ -325,11 +325,16 @@ class shove_off_blue extends Card {
   
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		global $defPlayer;
-		$options = GetChainLinkCards($defPlayer, "", "E,C");
-		if($options != "") {
-			AddDecisionQueue("CHOOSECOMBATCHAIN", $this->controller, $options);
-			AddDecisionQueue("ADDHANDOWNER", $defPlayer, "-", 1);
-			AddDecisionQueue("REMOVECOMBATCHAIN", $this->controller, "-", 1);
+		$currentChoices = GetChainLinkCards($defPlayer, "", "E,C", asMZInd: true);
+		$pastChoices = GetPastChainLinkCards($defPlayer, "", "E,C", asMZInd: true);
+		if ($currentChoices == "") $choices = $pastChoices;
+		elseif ($pastChoices == "") $choices = $currentChoices;
+		else $choices = "$pastChoices,$currentChoices";
+		if ($choices != "") {
+			AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
+			AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a defending card to return to its owner's hand", 1);
+			AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+			AddDecisionQueue("SPECIFICCARD", $this->controller, "RETURNCHAINLINKCARDTOHAND", 1);
 		}
     	return "";
 	}
@@ -1861,6 +1866,19 @@ class thwart_yellow extends Card {
 				SetCombatChainState($CCS_NumPowerCounters, 0);
 		}
 	}
+
+	private
+	function AttackingWeapon() {
+		global $CombatChain, $mainPlayer;
+		$MainCharacter = new PlayerCharacter($mainPlayer);
+		$Auras = new Auras($mainPlayer);
+		$AttackingCard = $CombatChain->AttackCard();
+		if (TypeContains($AttackingCard->ID(), "W"))
+			return $MainCharacter->FindCardUID($AttackingCard->OriginUniqueID());
+		elseif (SubtypeContains($AttackingCard->ID(), "Aura"))
+			return $Auras->FindCardUID($AttackingCard->OriginUniqueID());
+		return null;
+	}
 }
 
 class take_the_lead_red extends Card {
@@ -2683,9 +2701,18 @@ class a_moments_peace_blue extends Card {
 }
 
 class big_blinder extends BaseCard {
-	function PlayAbility() {
-		AddCurrentTurnEffect($this->cardID, $this->controller);
-		AddOnWagerEffects();
+	function __construct($cardID, $controller) {
+		parent::__construct($cardID, $controller);
+		$this->archetype = new sword_attack_reaction($cardID, $controller);
+	}
+
+	function PlayAbility($target) {
+		if (explode("-", $target, 2)[0] == "COMBATCHAINLINK") {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+			AddOnWagerEffects();
+		}
+		else
+			WriteLog("A past chain link was targeted");
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2693,7 +2720,11 @@ class big_blinder extends BaseCard {
 	}
 
 	function IsPlayRestricted() {
-		return TargetSwordAttack($this->controller) == "";
+		return $this->archetype->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts() {
+		return $this->archetype->PayAdditionalCosts();
 	}
 }
 
@@ -2705,7 +2736,7 @@ class big_blinder_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2719,6 +2750,10 @@ class big_blinder_red extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2738,7 +2773,7 @@ class big_blinder_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2752,6 +2787,10 @@ class big_blinder_yellow extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2771,7 +2810,7 @@ class big_blinder_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2787,6 +2826,10 @@ class big_blinder_blue extends Card {
 		return $this->baseCard->IsPlayRestricted();
 	}
 
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
+	}
+
 	function WonWager($wonWager, $amount) {
 		$this->baseCard->WonWager($wonWager, $amount);
 	}
@@ -2797,9 +2840,18 @@ class big_blinder_blue extends Card {
 }
 
 class small_blinder extends BaseCard {
-	function PlayAbility() {
-		AddCurrentTurnEffect($this->cardID, $this->controller);
-		AddOnWagerEffects();
+	function __construct($cardID, $controller) {
+		parent::__construct($cardID, $controller);
+		$this->archetype = new sword_attack_reaction($cardID, $controller);
+	}
+
+	function PlayAbility($target) {
+		if (explode("-", $target, 2)[0] == "COMBATCHAINLINK") {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+			AddOnWagerEffects();
+		}
+		else
+			WriteLog("A past chain link was targeted");
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2807,7 +2859,11 @@ class small_blinder extends BaseCard {
 	}
 
 	function IsPlayRestricted() {
-		return TargetSwordAttack($this->controller) == "";
+		return $this->archetype->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts() {
+		return $this->archetype->PayAdditionalCosts();
 	}
 }
 
@@ -2819,7 +2875,7 @@ class small_blinder_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2833,6 +2889,10 @@ class small_blinder_red extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2852,7 +2912,7 @@ class small_blinder_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2866,6 +2926,10 @@ class small_blinder_yellow extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2885,7 +2949,7 @@ class small_blinder_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2899,6 +2963,10 @@ class small_blinder_blue extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {

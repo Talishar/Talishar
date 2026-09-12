@@ -1420,6 +1420,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddCurrentTurnEffect("bone_puppetry", $player, "", $Ally->UniqueID());
       break;
     case "RIPPLINGWAVE":
+    case "RETURNCHAINLINKCARDTOHAND":
       $lastResultArr = explode("-", $lastResult, 3);
       $zone = $lastResultArr[0];
       $ind = $lastResultArr[1] ?? "-";
@@ -1433,7 +1434,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         case "PASTCHAINLINK":
           $linkNum = $lastResultArr[2] ?? "-";
           if ($linkNum == "-") {
-            WriteLog("Something went wrong with rippling wave, please submit a bug report", highlight:true);
+            WriteLog("Something went wrong returning a card from a past chain link, please submit a bug report", highlight:true);
           }
           $Link = new ChainLink($linkNum);
           $LinkCard = $Link->GetLinkCard($ind);
