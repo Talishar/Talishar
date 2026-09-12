@@ -3773,8 +3773,12 @@ class become_the_bottle extends BaseCard {
   }
 
   function ProcessAttackTrigger() {
-    global $ChainLinks;
+    global $ChainLinks, $CombatChain;
     $choices = [];
+    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+      $LinkCard = $CombatChain->Card($i, true);
+      if (!TypeContains($LinkCard->ID(), "AR")) $choices[] = "COMBATCHAINLINK-" . $LinkCard->Index();
+    }
     for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
       $Link = $ChainLinks->GetLink($i);
       for ($j = 0; $j < $Link->NumCards(); ++$j) {
@@ -3783,8 +3787,8 @@ class become_the_bottle extends BaseCard {
         if (!TypeContains($LinkCard->ID(), "AR")) $choices[] = "PASTCHAINLINK-$ind-$i";
       }
     }
-    $choices = implode(",", $choices);
-    if($ChainLinks->NumLinks() > 0) {
+    if(count($choices) > 0) {
+      $choices = implode(",", $choices);
       AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card for " . CardLink($this->cardID), 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
