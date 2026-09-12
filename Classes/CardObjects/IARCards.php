@@ -6358,10 +6358,6 @@ class cleave_the_heavens extends BaseCard {
   function ProcessAbility() {
     PlayAura("gate_to_iarathael", $this->controller);
   }
-
-  function SpecialBlock() {
-    return 2; //fabcube error
-  }
 }
 
 class cleave_the_heavens_red extends Card {
@@ -6872,10 +6868,6 @@ class dam_the_shadowake_red extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
-
-  function SpecialBlock() {
-    return 4;
-  }
 }
 
 class dam_the_shadowake_yellow extends Card {
@@ -6888,14 +6880,6 @@ class dam_the_shadowake_yellow extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
 }
 
 class dam_the_shadowake_blue extends Card {
@@ -6907,14 +6891,6 @@ class dam_the_shadowake_blue extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialPitch() {
-    return 3;
   }
 }
 
@@ -7137,22 +7113,6 @@ class dark_arcanite_helm extends Card {
   function ShadowResistAmount($index) {
     return 1;
   }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialName() {
-    return "Dark Arcanite Helm";
-  }
-
-  function SpecialSubType() {
-    return "Head";
-  }
-
-  function SpecialBlock() {
-    return 0;
-  }
 }
 
 class dark_arcanite_plating extends Card {
@@ -7172,22 +7132,6 @@ class dark_arcanite_plating extends Card {
   function ShadowResistAmount($index) {
     return 1;
   }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialName() {
-    return "Dark Arcanite Plating";
-  }
-
-  function SpecialSubType() {
-    return "Chest";
-  }
-
-  function SpecialBlock() {
-    return 0;
-  }
 }
 class dark_arcanite_gloves extends Card {
   function __construct($controller) {
@@ -7205,22 +7149,6 @@ class dark_arcanite_gloves extends Card {
 
   function ShadowResistAmount($index) {
     return 1;
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialName() {
-    return "Dark Arcanite Gloves";
-  }
-
-  function SpecialSubType() {
-    return "Arms";
-  }
-
-  function SpecialBlock() {
-    return 0;
   }
 }
 
@@ -7770,10 +7698,6 @@ class step_through_realms extends BaseCard {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     PlayAura("gate_to_iarathael", $this->controller, effectSource:$uniqueID);
-  }
-
-  function SpecialBlock() {
-    return 2; // database error
   }
 }
 
