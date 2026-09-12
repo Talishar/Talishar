@@ -3108,7 +3108,7 @@ class spellbane_trap_yellow extends Card {
   }
 
   function EffectPowerModifier($param, $attached = false) {
-    return 3;
+    return 2;
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
