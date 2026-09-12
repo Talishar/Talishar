@@ -4960,7 +4960,7 @@ class burnished_bunkerplate extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     global $CombatChain;
     if (!$CombatChain->HasCurrentLink()) return true;
-    return SearchArsenal($this->controller, type:"A") == "" && SearchArsenal($this->controller, type:"AA");
+    return SearchArsenal($this->controller, type:"A") == "" && SearchArsenal($this->controller, type:"AA") == "";
   }
 
   function AbilityType($index = -1, $from = '-') {
