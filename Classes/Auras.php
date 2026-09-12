@@ -186,9 +186,9 @@ class AuraCard {
       return RemoveAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase, $destinationUID);
 	}
 
-	function Destroy($skipTrigger = false, $skipClose = false, $mainPhase = true) { //don't call this for removing auras in the equipment
+	function Destroy($skipTrigger = false, $skipClose = false, $mainPhase = true, $destroyedBy = -1) { //don't call this for removing auras in the equipment
     if ($this->index != -1)
-      return DestroyAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase);
+      return DestroyAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase, $destroyedBy);
 	}
 
   function Banish($mod="-", $banishedBy="", $banisher="-") {

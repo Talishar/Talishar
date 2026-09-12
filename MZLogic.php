@@ -5,6 +5,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
   global $CombatChain, $ChainLinks;
   $lastResultArr = explode(",", $lastResult ?? "");
   $otherPlayer = 3 - $player;
+  $destroyer = ($effectController !== "" && $effectController != "-") ? $effectController : $player;
   $chainLinksPieces = ChainLinksPieces();
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i], 2);
@@ -28,10 +29,10 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         $lastResult = DestroyAlly($otherPlayer, $mzIndex[1]);
         break;
       case "MYAURAS":
-        $lastResult = DestroyAura($player, $mzIndex[1]);
+        $lastResult = DestroyAura($player, $mzIndex[1], destroyedBy: $destroyer);
         break;
       case "THEIRAURAS":
-        $lastResult = DestroyAura($otherPlayer, $mzIndex[1]);
+        $lastResult = DestroyAura($otherPlayer, $mzIndex[1], destroyedBy: $destroyer);
         break;
       case "MYITEMS":
         $lastResult = DestroyItemForPlayer($player, $mzIndex[1]);

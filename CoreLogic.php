@@ -962,7 +962,7 @@ function ArcaneDamagePrevented($player, $cardMZIndex)
   if ($spellVoidAmount > 0) {
     if ($zone == "MYCHAR") DestroyCharacter($player, $index);
     else if ($zone == "MYITEMS") DestroyItemForPlayer($player, $index);
-    else if ($zone == "MYAURAS") DestroyAura($player, $index);
+    else if ($zone == "MYAURAS") DestroyAura($player, $index, destroyedBy: $player);
     else if ($zone == "MYALLY") DestroyAlly($player, $index);
     $prevented += $spellVoidAmount;
     WriteLog(CardLink($cardID, $cardID) . " was destroyed and prevented " . $spellVoidAmount . " arcane damage.");
