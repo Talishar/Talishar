@@ -961,7 +961,7 @@ function SearchBanishForCard($playerID, $cardID)
   $count = count($banish);
   $pieces = BanishPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($banish[$i] == $cardID && $banish[$i + 1] != "DOWN") return $i;
+    if ($banish[$i] == $cardID && !isFaceDownMod($banish[$i + 1])) return $i;
   }
   return -1;
 }
@@ -972,7 +972,7 @@ function SearchBanishForUID($playerID, $UID)
   $count = count($banish);
   $pieces = BanishPieces();
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($banish[$i + 2] == $UID && $banish[$i + 1] != "DOWN") return $i;
+    if ($banish[$i + 2] == $UID && !isFaceDownMod($banish[$i + 1])) return $i;
   }
   return -1;
 }
@@ -984,7 +984,7 @@ function SearchBanishForCardName($playerID, $cardID)
   $pieces = BanishPieces();
   $targetName = CardName($cardID);
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (CardName($banish[$i]) == $targetName) return $i;
+    if (CardName($banish[$i]) == $targetName && !isFaceDownMod($banish[$i + 1])) return $i;
   }
   return -1;
 }
@@ -998,7 +998,7 @@ function SearchBanishForCardMulti($playerID, ...$cards)
   $pieces = BanishPieces();
   $cardList = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if (isset($cardSet[$banish[$i]])) {
+    if (isset($cardSet[$banish[$i]]) && !isFaceDownMod($banish[$i + 1])) {
       $cardList[] = $i;
     }
   }
