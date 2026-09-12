@@ -2886,13 +2886,15 @@ class glide_through_starlight extends BaseCard {
     return $this->archetype->CanActivateAsInstant($index, $from);
   }
 
-  function CurrentEffectDamagePrevention($amount, $preventable, &$remove) {
-    $prevented = 1;
-    if (!$amount) {
-      if ($preventable) PlayAura("lightning_flow", $this->controller);
-      $remove = true;
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+    if ($preventable && $damage > 0) {
+      if (!$amount) {
+        PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
+        $remove = true;
+      }
+      return 1;
     }
-    return $prevented;
+    return 0;
   }
 
   function GoesOnCombatChain($phase, $from) {
