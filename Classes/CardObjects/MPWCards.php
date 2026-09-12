@@ -1855,16 +1855,10 @@ class thwart_yellow extends Card {
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		global $CombatChain, $mainPlayer, $combatChainState, $CCS_NumPowerCounters;
-		$MainCharacter = new PlayerCharacter($mainPlayer);
-		$Auras = new Auras($mainPlayer);
-		$AttackingCard = $CombatChain->AttackCard();
+		global $combatChainState, $CCS_NumPowerCounters;
 		if (IsWeaponAttack()) {
-			if (TypeContains($AttackingCard->ID(), "W"))
-				$Weapon = $MainCharacter->FindCardUID($AttackingCard->OriginUniqueID());
-			elseif (SubtypeContains($AttackingCard->ID(), "Aura")) 
-				$Weapon = $Auras->FindCardUID($AttackingCard->OriginUniqueID());
-			if ($Weapon->NumPowerCounters() > 0)
+			$Weapon = $this->AttackingWeapon();
+			if ($Weapon != null && $Weapon->NumPowerCounters() > 0)
 				$Weapon->AddPowerCounters(-$Weapon->NumPowerCounters());
 		}
 		else {
