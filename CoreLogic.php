@@ -887,8 +887,10 @@ function DamageDealtAbilities($target, $damage, $type, $source)
 
 function DoQuell($targetPlayer, $damage, $preventable = true)
 {
+  global $CS_PreventionCache;
   $quellChoices = QuellChoices($targetPlayer, $damage);
   if ($quellChoices != "0") {
+    PrependDecisionQueue("INCREMENTCLASSSTATEBY", $targetPlayer, $CS_PreventionCache, 1);
     if ($preventable) {
       PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
       PrependDecisionQueue("AFTERQUELL", $targetPlayer, "-", 1);

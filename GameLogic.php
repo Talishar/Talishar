@@ -1650,8 +1650,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $source = $params[1] ?? "-";
       $type = $params[2] ?? "DAMAGE";
       $playerSource = $params[3] ?? $player;
-      if (!CanDamageBePrevented($player, $damage, "DAMAGE", $source)) $lastResult = 0;
-      $damage -= intval($lastResult);
+      $prevention = GetClassState($player, $CS_PreventionCache) ?? 0;
+      SetClassState($player, $CS_PreventionCache, 0);
+      if (!CanDamageBePrevented($player, $damage, "DAMAGE", $source)) $prevention = 0;
+      $damage -= intval($prevention);
       $damage = DealDamageAsync($player, $damage, $type, $source, $playerSource);
       if ($type == "COMBAT") $dqState[6] = $damage;
       $treasureID = SearchLandmarksForID("treasure_island");

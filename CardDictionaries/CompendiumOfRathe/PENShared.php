@@ -64,8 +64,9 @@ function PENHitEffect($cardID): void
 
 function DoSolrayPlating($targetPlayer, $damage)
 {
+  global $CS_PreventionCache;
   if ($damage > 0) {
-    PrependDecisionQueue("ADDTOLASTRESULT", $targetPlayer, "{0}", 1);
+    PrependDecisionQueue("INCREMENTCLASSSTATEBY", $targetPlayer, $CS_PreventionCache, 1);
     PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 1, 1); //prevent 1 damage
     if (!SearchCurrentTurnEffects("solray_plating", $targetPlayer))
       PrependDecisionQueue("CHARFLAGDESTROY", $targetPlayer, FindCharacterIndex($targetPlayer, "solray_plating"), 1);

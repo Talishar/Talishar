@@ -194,7 +194,7 @@ function CheckShadowResist($player, $damage, $source = "-", $type="-", $preventa
 	$caption = "Choose a card with Shadow Resist to prevent damage (or pass)";
 	if (!$preventable)
 		$caption .= GetDamagePreventionWarning($player, $damage, $type, $source, " ");
-	Await($player, "ProcessShadowResist", source:$source, type:$type, preventable:$preventable, prepend:true);
+	Await($player, "ProcessShadowResist", damage:$damage, source:$source, type:$type, preventable:$preventable, prepend:true);
 	Await($player, "ChooseMultiZone", may:true, context:$caption, prepend:true);
 	Await($player, "SearchShadowResist", "indices", damage:$damage, subsequent:0, prepend:true);
 }

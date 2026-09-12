@@ -44,7 +44,9 @@ function ASTAbilityCost($cardID): int
 
 function DoCapQuickThinking($targetPlayer, $damage)
 {
+  global $CS_PreventionCache;
   if ($damage > 0) {
+    PrependDecisionQueue("INCREMENTCLASSSTATEBY", $targetPlayer, $CS_PreventionCache, 1);
     PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 1, 1); //prevent 1 damage
     PrependDecisionQueue("DRAW", $targetPlayer, 1, 1);
     PrependDecisionQueue("MZREMOVE", $targetPlayer, "HAND", 1);
