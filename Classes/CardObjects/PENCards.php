@@ -5828,10 +5828,7 @@ class conquer_the_icy_terrain extends BaseCard {
     AddDecisionQueue("ELSE", $defPlayer, "-");
     //don't do auras for now
     $choices = SearchMultizone($this->controller, "THEIRCHAR:frozenOnly=1&THEIRALLY:frozenOnly=1&THEIRITEMS:frozenOnly=1&THEIRARS:frozenOnly=1");
-    function NotHero($mzind) {
-      return $mzind != "THEIRCHAR-0";
-    }
-    $choices = implode(",", array_filter(explode(",", $choices), "NotHero"));
+    $choices = implode(",", array_filter(explode(",", $choices), fn($mzind) => $mzind != "THEIRCHAR-0"));
     AddDecisionQueue("PASSPARAMETER", $this->controller, $choices, 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
