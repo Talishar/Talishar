@@ -4949,7 +4949,7 @@ class snap_fingers extends Card {
     $rv = [];
     for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
       $ChainCard = $CombatChain->Card($i, true);
-      if ($ChainCard->PlayerID() == $this->controller && TypeContains($ChainCard->ID(), "AA"))
+      if ($ChainCard->PlayerID() == $this->controller && TypeContains($ChainCard->ID(), "AA") && TalentContains($ChainCard->ID(), "LIGHTNING"))
         $rv[] = "COMBATCHAINLINK-" . $ChainCard->Index();
     }
     return $rv;
