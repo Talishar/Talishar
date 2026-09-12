@@ -1485,7 +1485,7 @@ class arc_ramp extends BaseCard {
 
   function SpecificLogic() {
     global $dqVars;
-    if ($dqVars["choice"] ?? "NO" == "YES") {
+    if (($dqVars["choice"] ?? "NO") == "YES") {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardID("lightning_flow");
       $AuraCard->Destroy(destroyedBy: $this->controller);
