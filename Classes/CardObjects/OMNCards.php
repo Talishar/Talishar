@@ -2571,8 +2571,9 @@ class arcanic_reproach_blue extends Card {
     global $CS_DamageDealtToOpponent;
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     $selfInflicted = $source == "bloodrot_pox" || $player == $playerSource;
-    if(GetClassState($otherPlayer, $CS_DamageDealtToOpponent) == 0 && $damage > 0)
+    if(GetClassState($otherPlayer, $CS_DamageDealtToOpponent) == 0 && $damage > 0 && !$selfInflicted) {
       AddLayer("TRIGGER", $this->controller, $this->cardID, "-");
+    }
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
