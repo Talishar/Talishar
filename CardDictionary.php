@@ -3474,7 +3474,7 @@ function HasBladeBreak($cardID)
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
-    case "glove_of_azure_waves":
+    case "gloves_of_azure_waves":
       return HighTideConditionMet($defPlayer);
     default:
       return $generatedBladeBreakCache[$cardID] = GeneratedHasBladeBreak($cardID);

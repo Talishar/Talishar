@@ -7791,9 +7791,9 @@ class sigil_of_gravespawning_blue extends Card {
   }
 }
 
-class glove_of_azure_waves extends Card {
+class gloves_of_azure_waves extends Card {
   function __construct($controller) {
-    $this->cardID = "glove_of_azure_waves";
+    $this->cardID = "gloves_of_azure_waves";
     $this->controller = $controller;
   }
 
