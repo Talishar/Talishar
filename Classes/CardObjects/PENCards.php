@@ -3400,7 +3400,7 @@ class phoenix_bannerman extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if(CanRevealCards($this->controller)) {
       MZMoveCard($this->controller, "MYDECK:isSameName=phoenix_flame_red", "MYHAND", may:true);
-      AddDecisionQueue("SHUFFLEDECK", $this->controller, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
     }
   }
 }
