@@ -3765,6 +3765,7 @@ class caress_of_the_reaper_red extends Card {
   }
 
   function DamageDealtAbilities($target, $damage, $type) {
+    if (!IsHeroDamageTarget($target)) return;
     $search = $target == $this->controller ? "MYAURAS" : "THEIRAURAS";
     $context = "Target an aura to destroy";
     Await($this->controller, "MultiZoneIndices", "indices", search:$search, subsequent:0);
@@ -6841,7 +6842,7 @@ class leech_memory_red extends Card {
   }
 
   function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
-    if ($attached)
+    if ($attached && IsHeroDamageTarget($target))
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -6886,7 +6887,7 @@ class leech_renown_red extends Card {
   }
 
   function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
-    if ($attached)
+    if ($attached && IsHeroDamageTarget($target))
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -6919,7 +6920,7 @@ class leech_vitality_red extends Card {
   }
 
   function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {
-    if ($attached)
+    if ($attached && IsHeroDamageTarget($target))
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 

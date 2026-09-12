@@ -161,7 +161,7 @@ function FirstDamageTrigger($target, $cardID, $player, $effectID="-") {
 	global $CombatChain, $combatChainState, $CCS_AttackDamageDealtToHero;
 	$triggeringCard = $effectID == "-" ? $cardID : $effectID;
 	if ($CombatChain->AttackCard()->ID() != $cardID) return; // for now only make this work when it's the active link
-	if (is_numeric($target) && GetCombatChainState($CCS_AttackDamageDealtToHero) == 0) {
+	if (IsHeroDamageTarget($target) && GetCombatChainState($CCS_AttackDamageDealtToHero) == 0) {
 		AddLayer("TRIGGER", $player, $triggeringCard, $target);
 	}
 }

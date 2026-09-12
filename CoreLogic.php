@@ -3108,6 +3108,12 @@ function IsHeroAttackTarget()
   return false;
 }
 
+// Damage callbacks pass the player number when a hero was damaged, and a zone string ("ALLY", "THEIRALLY-0") otherwise.
+function IsHeroDamageTarget($target)
+{
+  return is_numeric($target) && (intval($target) === 1 || intval($target) === 2);
+}
+
 function IsHeroLightning($player)
 {
   $char = &GetPlayerCharacter($player);
