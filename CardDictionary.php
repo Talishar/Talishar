@@ -1334,8 +1334,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       return $rv;
     case "plasma_barrel_shot":
       if ($allNames) return "Add_a_steam_counter,Attack";
-      $CharacterCard = new CharacterCard($index, $currentPlayer);
       if ($index == -1) return "";
+      $CharacterCard = new CharacterCard($index, $currentPlayer);
       $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
       if ($CharacterCard->NumCounters() > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer) && $CharacterCard->NumUses() > 0) $rv .= ",Attack";
       return $rv;
@@ -2567,7 +2567,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "rally_the_coast_guard_yellow":
     case "rally_the_coast_guard_blue":
       if ($index == 0 && $from == "PLAY") return true;
-      else if (isset($combatChain[$index + 7]) && $from == "PLAY") return SearchCurrentTurnEffects($cardID, $player, false, true) == $combatChain[$index + 7];
+      else if ($from == "PLAY" && is_numeric($index) && isset($combatChain[$index + 7])) return SearchCurrentTurnEffects($cardID, $player, false, true) == $combatChain[$index + 7];
       if ($from == "COMBATCHAINATTACKS") {
         return true; // for now block these from being activated on later chain links
       }
@@ -3476,7 +3476,7 @@ function HasBladeBreak($cardID)
       $char = &GetPlayerCharacter($defPlayer);
       $index = FindCharacterIndex($defPlayer, $cardID);
       return $char[$index + 12] == "UP";
-    case "glove_of_azure_waves":
+    case "gloves_of_azure_waves":
       return HighTideConditionMet($defPlayer);
     default:
       return $generatedBladeBreakCache[$cardID] = GeneratedHasBladeBreak($cardID);

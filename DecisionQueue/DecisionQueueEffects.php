@@ -1391,7 +1391,16 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $params = explode("-", $lastResult, 3);
       $linkNum = $params[2] ?? "-";
       $ind = $params[1] ?? "-";
-      if ($linkNum != "-" && $ind != "-") {
+      if (($params[0] ?? "") == "COMBATCHAINLINK" && $ind != "-") {
+        $LinkCard = $CombatChain->Card($ind);
+        $names = GamestateSanitize(NameOverride($LinkCard->ID(), $player));
+        $namesWithSpaces = str_replace(",", ", ", $names);
+        $nameCount = substr_count($names, ',') + 1;
+        $nameLabel = ($nameCount == 1) ? "name" : "names";
+        WriteLog(CardLink($attackID) . " gains the " . $nameLabel . " <b>" . GamestateUnsanitize($namesWithSpaces) . "</b>");
+        AddCurrentTurnEffect("$attackID-$names", $player);
+      }
+      elseif ($linkNum != "-" && $ind != "-") {
         $Link = $ChainLinks->GetLink($linkNum);
         $LinkCard = $Link->GetLinkCard($ind);
         $names = ($ind == 0) ? $Link->ListofNames() : GamestateSanitize(NameOverride($LinkCard->ID(), $player));
