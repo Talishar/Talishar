@@ -8358,18 +8358,3 @@ class stormweavers_aegis extends Card {
     return 0;
   }
 }
-
-class gloves_of_azure_waves extends Card {
-  function __construct($controller) {
-    $this->cardID = "gloves_of_azure_waves";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
-
-  function CardBlockModifier($from, $resourcesPaid, $index) {
-    return HighTideConditionMet($this->controller) >= 2 ? 3 : 0;
-  }
-}
