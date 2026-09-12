@@ -1475,7 +1475,7 @@ class rift_breaker_blue extends Card {
 }
 
 class arc_ramp extends BaseCard {
-  function PlayAbility() {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddCurrentTurnEffect($this->cardID, $this->controller);
     if (SearchAuras("lightning_flow", $this->controller)) {
       Await($this->controller, "YesNo", "choice", subsequent:0, context:"Do you want to destroy a " . "{{element|Lightning Flow|" . GetElementColorCode("LIGHTNING") . "}}" . " to get <b>go again</b>?");
@@ -1485,21 +1485,25 @@ class arc_ramp extends BaseCard {
 
   function SpecificLogic() {
     global $dqVars;
-    if (($dqVars["choice"] ?? "NO") == "YES") {
-      $Auras = new Auras($this->controller);
-      $AuraCard = $Auras->FindCardID("lightning_flow");
-      $AuraCard->Destroy(destroyedBy: $this->controller);
-      AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
-    }
+    $Auras = new Auras($this->controller);
+    $AuraCard = $Auras->FindCardID("lightning_flow");
+    $AuraCard->Destroy(destroyedBy: $this->controller);
+    AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
   }
 
-  function ArcaneModifier($val, &$remove, $player, $index, $amount) {
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
     $Effect = new CurrentEffect($index);
     if (str_contains($Effect->EffectID(), "GOAGAIN")) return;
+    $val = match($this->cardID) {
+      "arc_ramp_red" => 3,
+      "arc_ramp_yellow" => 2,
+      "arc_ramp_blue" => 1,
+      default => 0
+    };
     return Amp($val, $remove, $player, $this->controller, $amount);
   }
 
-  function CurrentEffectGrantsNAAGoAgain(&$remove, $parameter) {
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
     if ($parameter == "GOAGAIN") {
       $remove = true;
       return true;
@@ -1514,23 +1518,6 @@ class arc_ramp_red extends Card {
     $this->controller = $controller;
     $this->baseCard = new arc_ramp($this->cardID, $this->controller);
   }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
-    return "";
-  }
-
-  function SpecificLogic() {
-    return $this->baseCard->SpecificLogic();
-  }
-
-  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
-    return $this->baseCard->ArcaneModifier(3, $remove, $player, $index, $amount);
-  }
-
-  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
-  }
 }
 
 class arc_ramp_yellow extends Card {
@@ -1539,23 +1526,6 @@ class arc_ramp_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new arc_ramp($this->cardID, $this->controller);
   }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
-    return "";
-  }
-
-  function SpecificLogic() {
-    return $this->baseCard->SpecificLogic();
-  }
-
-  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
-    return $this->baseCard->ArcaneModifier(2, $remove, $player, $index, $amount);
-  }
-
-  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
-  }
 }
 
 class arc_ramp_blue extends Card {
@@ -1563,23 +1533,6 @@ class arc_ramp_blue extends Card {
     $this->cardID = "arc_ramp_blue";
     $this->controller = $controller;
     $this->baseCard = new arc_ramp($this->cardID, $this->controller);
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $this->baseCard->PlayAbility();
-    return "";
-  }
-
-  function SpecificLogic() {
-    return $this->baseCard->SpecificLogic();
-  }
-
-  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
-    return $this->baseCard->ArcaneModifier(1, $remove, $player, $index, $amount);
-  }
-
-  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-    return $this->baseCard->CurrentEffectGrantsNAAGoAgain($remove, $parameter);
   }
 }
 
