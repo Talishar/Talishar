@@ -2293,6 +2293,7 @@ function PassTurn()
       $turn[0] = "ARS";
       $turn[2] = "-";
     } else {
+      ResolveDeferredLeyLines($mainPlayer);
       FinalizeTurn();
     }
   }

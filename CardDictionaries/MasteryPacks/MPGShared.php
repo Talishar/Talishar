@@ -213,3 +213,26 @@ function BlindPlayer($player, $unblind=false, $excludeEquips=false)
     unset($link);
   }
 }
+
+function DeferLeyLineDestruction($player, $uniqueID): void
+{
+  global $CS_DeferredLeyLineUIDs;
+  $deferredUIDs = GetClassState($player, $CS_DeferredLeyLineUIDs);
+  $uids = ($deferredUIDs == "-" || $deferredUIDs == "") ? [] : explode(",", $deferredUIDs);
+  if (!in_array($uniqueID, $uids)) $uids[] = $uniqueID;
+  SetClassState($player, $CS_DeferredLeyLineUIDs, implode(",", $uids));
+}
+
+function ResolveDeferredLeyLines($player): void
+{
+  global $CS_DeferredLeyLineUIDs;
+  $deferredUIDs = GetClassState($player, $CS_DeferredLeyLineUIDs);
+  if ($deferredUIDs == "-" || $deferredUIDs == "") return;
+
+  SetClassState($player, $CS_DeferredLeyLineUIDs, "-");
+  if (CountAura("seismic_surge", $player) > 0) return;
+
+  foreach (explode(",", $deferredUIDs) as $uniqueID) {
+    DestroyAuraUniqueID($player, $uniqueID);
+  }
+}

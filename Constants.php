@@ -442,6 +442,7 @@ $CS_HeaveEligibleAtEndPhase = 134; // Heave card IDs in hand at the beginning of
 $CS_PlayedFromGateUID = 135; // Unique ID of the banished card most recently played by using a Gate to i'Arathael
 $CS_NumTimesHeroAttacked = 136; //number of attacks this turn that targeted this player's hero, distinct from $CS_NumTimesAttacked
 $CS_NumLightningFlowsIDestroyed = 137; //number of Lightning Flow tokens this player destroyed this turn, whoever controlled them, distinct from $CS_NumLightningFlowDestroyed
+$CS_DeferredLeyLineUIDs = 138; // Ley Line triggers waiting for the concealed end-phase Heave choice
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -665,7 +666,7 @@ function ResetMainClassState()
   global $CS_NumInstantsPutInGrave, $CS_NumControlledAurasDestroyed, $CS_NumFragmented, $CS_WeaponsAttackedWith, $CS_PendingNAACard, $CS_HaveIntimidatedOpponent;
   global $CS_LayerResolved, $CS_PreventionCache, $CS_NumUndoesThisTurn, $CS_NumRunechantsCreated, $CS_NumBloodDebtAttacksPlayed;
   global $CS_IARGatesMadeorUsed, $CS_NumBloodDebtBanished, $CS_UsurpedThisTurn, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
-  global $CS_HeaveEligibleAtEndPhase, $CS_PlayedFromGateUID, $CS_NumTimesHeroAttacked, $CS_NumLightningFlowsIDestroyed;
+  global $CS_HeaveEligibleAtEndPhase, $CS_PlayedFromGateUID, $CS_NumTimesHeroAttacked, $CS_NumLightningFlowsIDestroyed, $CS_DeferredLeyLineUIDs;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -803,6 +804,7 @@ function ResetMainClassState()
   $mainClassState[$CS_PlayedFromGateUID] = "-";
   $mainClassState[$CS_NumTimesHeroAttacked] = 0;
   $mainClassState[$CS_NumLightningFlowsIDestroyed] = 0;
+  $mainClassState[$CS_DeferredLeyLineUIDs] = "-";
 }
 
 function ResetCardPlayed($cardID, $from="-")

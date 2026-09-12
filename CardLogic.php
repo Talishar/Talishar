@@ -4096,7 +4096,11 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "ley_line_of_the_old_ones_blue":
         if ($uniqueID == "-") PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:$parameter);
-        else if (CountAura("seismic_surge", $player) == 0) DestroyAuraUniqueID($player, explode("-", $uniqueID, 2)[1]);
+        else if (CountAura("seismic_surge", $player) == 0) {
+          $auraUniqueID = explode("-", $uniqueID, 2)[1];
+          if (EndPhaseHeaveIndices() != "") DeferLeyLineDestruction($player, $auraUniqueID);
+          else DestroyAuraUniqueID($player, $auraUniqueID);
+        }
         break;
       case "sunkwater_lookout":
       case "sunkwater_exoshell":
