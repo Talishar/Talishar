@@ -5435,10 +5435,7 @@ class mbrio_base_digits extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $index = SearchCombatChainForIndex($this->cardID, $this->controller);
-    if ($index != "") {
-      AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
-    }
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
   }
 
   function CardBlockModifier($from, $resourcesPaid, $index) {
