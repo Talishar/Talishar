@@ -151,6 +151,6 @@ function MountIsenTrigger($player) {
         $eqFrostbiteCount += 1;
     }
   }
-  LoseHealth($eqFrostbiteCount, $player);
+  PlayerLoseHealth($eqFrostbiteCount, $player, true); //Your own card, logged as life lost instead of opponent damage
   WriteLog("Player $player loses " . $eqFrostbiteCount . " life due to ". CardLink("channel_mount_isen_blue", "channel_mount_isen_blue") .".");
 }

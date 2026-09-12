@@ -3922,7 +3922,8 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "riddle_with_regret_red":
         WriteLog("You are riddled with the regret of $additionalCosts auras");
-        LoseHealth($additionalCosts, $player);
+        if(str_contains($uniqueID, "MYAURAS")) PlayerLoseHealth($additionalCosts, $player, true);
+        else LoseHealth($additionalCosts, $player);
         if($additionalCosts >= 3) {
           $controller = str_contains($uniqueID, "MYAURAS") ? $player : $otherPlayer;
           $uniqueID = str_contains($uniqueID, "-") ? explode("-", $uniqueID, 2)[1] : "-";

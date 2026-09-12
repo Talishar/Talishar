@@ -1380,7 +1380,7 @@ class all_in_red extends Card {
 		global $CombatChain, $CurrentTurnEffects;
 		if ($additionalCosts == "FAILURE") {
 			WriteLog("🎰The house always wins", highlight:true);
-			LoseHealth(GetHealth($this->controller), $this->controller);
+			PlayerLoseHealth(GetHealth($this->controller), $this->controller, true); //Your own gamble, logged as life lost instead of opponent damage
 		}
 		else {
 			if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword")) {

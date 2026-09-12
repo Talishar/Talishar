@@ -1045,7 +1045,7 @@ class soul_of_existence_purple extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    LoseHealth(1, $this->controller);
+    PlayerLoseHealth(1, $this->controller, true); //Self inflicted, logged as life lost instead of opponent damage
   }
 }
 
@@ -5790,7 +5790,7 @@ class arknight_descendancy_blue extends Card {
     global $dqVars;
     $life = intval($dqVars["buttonChoice"] ?? 0);
     if ($life <= 0) return;
-    LoseHealth($life, $this->controller);
+    PlayerLoseHealth($life, $this->controller, true); //Life paid as a cost, logged as life lost instead of opponent damage
     PlayAura("runechant", $this->controller, $life, effectSource:$this->cardID);
   }
 }
