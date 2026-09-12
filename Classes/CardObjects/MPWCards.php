@@ -2137,16 +2137,32 @@ class blunt_retort extends Card {
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Weapon = $this->AttackingWeapon();
+		if ($Weapon != null && $Weapon->NumPowerCounters() > 0) {
+			$message = "if_you_want_to_remove_a_counter_from_the_weapon";
+			$context = "Choose if you want to remove a +1 counter from the weapon";
+			Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+			Await($this->controller, $this->cardID, final:true);
+		}
+	}
+
+	function SpecificLogic() {
+		$Weapon = $this->AttackingWeapon();
+		if ($Weapon != null && $Weapon->NumPowerCounters() > 0)
+			$Weapon->AddPowerCounters(-1);
+	}
+
+	private
+	function AttackingWeapon() {
 		global $CombatChain, $mainPlayer;
 		$MainCharacter = new PlayerCharacter($mainPlayer);
 		$Auras = new Auras($mainPlayer);
 		$AttackingCard = $CombatChain->AttackCard();
 		if (TypeContains($AttackingCard->ID(), "W"))
-			$Weapon = $MainCharacter->FindCardUID($AttackingCard->OriginUniqueID());
-		elseif (SubtypeContains($AttackingCard->ID(), "Aura")) 
-			$Weapon = $Auras->FindCardUID($AttackingCard->OriginUniqueID());
-		if ($Weapon->NumPowerCounters() > 0)
-			$Weapon->AddPowerCounters(-$Weapon->NumPowerCounters());
+			return $MainCharacter->FindCardUID($AttackingCard->OriginUniqueID());
+		elseif (SubtypeContains($AttackingCard->ID(), "Aura"))
+			return $Auras->FindCardUID($AttackingCard->OriginUniqueID());
+		return null;
 	}
 }
 
