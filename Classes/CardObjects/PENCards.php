@@ -1369,7 +1369,7 @@ class sigil_of_silphidae_blue extends Card {
 
   function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
     global $CS_ArcaneTargetsSelected;
-    SetArcaneTarget($this->controller, $this->cardID, 0);
+    SetArcaneTarget($this->controller, $this->cardID, 0, 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
     AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, "-");
