@@ -4589,7 +4589,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_CharacterIndex, $CS_PlayCCIndex;
   global $CCS_WeaponIndex, $EffectContext, $CCS_AttackFused, $CCS_AttackUniqueID, $CS_NumLess3PowAAPlayed, $layers;
   global $CS_NumDragonAttacks, $CS_NumAttackCardsAttacked, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
-  global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked;
+  global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked, $CS_NumTimesHeroAttacked;
   global $currentTurnEffects, $CCS_AttackTarget, $CCS_AttackTargetUID;
   global $landmarks, $CS_WeaponsAttackedWith;
   $cardType = CardType($cardID);
@@ -4761,6 +4761,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           SetClassState($currentPlayer, $CS_WeaponsAttackedWith, $weaponsAttacked);
         }
         IncrementClassState($currentPlayer, $CS_NumTimesAttacked);
+        if (IsHeroAttackTarget()) IncrementClassState($defPlayer, $CS_NumTimesHeroAttacked);
         if (DelimStringContains($definedCardSubType, "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
         $isIllusionist = ClassContains($cardID, "ILLUSIONIST", $currentPlayer);
         if ($isIllusionist) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);

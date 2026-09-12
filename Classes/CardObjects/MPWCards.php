@@ -3369,8 +3369,8 @@ class olde_leather_helm extends Card {
   }
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CS_NumTimesAttacked, $mainPlayer;
-		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+		global $CS_NumTimesHeroAttacked;
+		return GetClassState($this->controller, $CS_NumTimesHeroAttacked) >= 2 ? 2 : 0;
 	}
 }
 
@@ -3385,8 +3385,8 @@ class olde_leather_plate extends Card {
   }
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CS_NumTimesAttacked, $mainPlayer;
-		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+		global $CS_NumTimesHeroAttacked;
+		return GetClassState($this->controller, $CS_NumTimesHeroAttacked) >= 2 ? 2 : 0;
 	}
 }
 
@@ -3401,8 +3401,8 @@ class olde_leather_gloves extends Card {
   }
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CS_NumTimesAttacked, $mainPlayer;
-		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+		global $CS_NumTimesHeroAttacked;
+		return GetClassState($this->controller, $CS_NumTimesHeroAttacked) >= 2 ? 2 : 0;
 	}
 }
 
@@ -3417,8 +3417,8 @@ class olde_leather_boots extends Card {
   }
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CS_NumTimesAttacked, $mainPlayer;
-		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+		global $CS_NumTimesHeroAttacked;
+		return GetClassState($this->controller, $CS_NumTimesHeroAttacked) >= 2 ? 2 : 0;
 	}
 }
 
