@@ -7137,6 +7137,22 @@ class dark_arcanite_helm extends Card {
   function ShadowResistAmount($index) {
     return 1;
   }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialName() {
+    return "Dark Arcanite Helm";
+  }
+
+  function SpecialSubType() {
+    return "Head";
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
 }
 
 class dark_arcanite_plating extends Card {
@@ -7156,6 +7172,22 @@ class dark_arcanite_plating extends Card {
   function ShadowResistAmount($index) {
     return 1;
   }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialName() {
+    return "Dark Arcanite Plating";
+  }
+
+  function SpecialSubType() {
+    return "Chest";
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
 }
 class dark_arcanite_gloves extends Card {
   function __construct($controller) {
@@ -7173,6 +7205,22 @@ class dark_arcanite_gloves extends Card {
 
   function ShadowResistAmount($index) {
     return 1;
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialName() {
+    return "Dark Arcanite Gloves";
+  }
+
+  function SpecialSubType() {
+    return "Arms";
+  }
+
+  function SpecialBlock() {
+    return 0;
   }
 }
 

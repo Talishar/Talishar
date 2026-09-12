@@ -315,12 +315,14 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Dagger,Attack";
     case "suraya_archangel_of_knowledge":
       return "Angel,Ally";
-    case "boneseer_skullcap":
+    case "dark_arcanite_helm":
       return "Head"; // temporary
     case "drop_dead_bodice":
       return "Chest"; // temporary
-    case "dark_arcanite_boots":
-      return "Legs";
+    case "dark_arcanite_gloves":
+      return "Arms";
+    case "dark_arcanite_plating":
+      return "Chest";
     default:
       break;
   }
