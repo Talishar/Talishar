@@ -6124,4 +6124,67 @@ class right_behind_you_blue extends Card {
     $this->baseCard->ProcessTrigger($target);
   }
 }
+
+class liars_charm_yellow extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "liars_charm_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $params = explode(",", $additionalCosts);
+    $paramsCount = count($params);
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    for($i = 0; $i < $paramsCount; ++$i) {
+      switch($params[$i]) {
+        case "Steal_a_Toughness_or_Vigor":
+          $search = "THEIRAURAS:cardID=vigor;cardID=toughness";
+          AddDecisionQueue("MULTIZONEINDICES", $this->controller, $search);
+          AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an aura to steal", 1);
+          AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+          AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
+          break;
+        case "Boo":
+          Boo($this->controller);
+          break;
+        case "Remove_hero_abilities":
+          $targetPlayer = str_contains($target, "MY") ? $this->controller : $otherPlayer;
+          $hand = GetHand($targetPlayer);
+          if (count($hand) > 0) {
+            Await($targetPlayer, "MultiZoneIndices", search:"MYHAND");
+            Await($targetPlayer, "ChooseMultiZone", may:true, context:"Discard a card to draw a card (or pass)");
+            Await($targetPlayer, "Discard");
+            AddDecisionQueue("ELSE", $targetPlayer, "-");
+          }
+          Await($targetPlayer, $this->cardID);
+          break;
+        default: break;
+      }
+    }
+    return "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CS_AdditionalCosts;
+    $modes = "3-Steal_a_Toughness_or_Vigor,Boo,Remove_hero_abilities";
+    $targets = "MYCHAR-0,THEIRCHAR-0";
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose any number of options");
+    AddDecisionQueue("MAYMULTICHOOSETEXT", $this->controller, $modes, 1);
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+    AddDecisionQueue("MODENOTCHOSENPASS", $this->controller, "Remove_hero_abilities", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Target a hero to lose abilities", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $targets, 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+
+  function SpecificLogic() {
+    $char = &GetPlayerCharacter($this->controller);
+    $char[1] = 3;
+    AddCurrentTurnEffect("liars_charm_yellow", $this->controller);
+    ReEvalCombatChain();
+  }
+}
 ?>

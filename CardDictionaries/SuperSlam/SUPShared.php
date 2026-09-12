@@ -138,38 +138,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       break;
-    case "liars_charm_yellow":
-      $params = explode(",", $additionalCosts);
-      $paramsCount = count($params);
-      for($i = 0; $i < $paramsCount; ++$i) {
-        switch($params[$i]) {
-          case "Steal_a_Toughness_or_Vigor":
-            $search = "THEIRAURAS:cardID=vigor;cardID=toughness";
-            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to steal", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-            AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
-            break;
-          case "Boo":
-            Boo($currentPlayer);
-            break;
-          case "Remove_hero_abilities":
-            $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
-            $hand = GetHand($targetPlayer);
-            if (count($hand) > 0) {
-              AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND");
-              AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else lose your hero ability", 1);
-              AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
-              AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
-              AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
-              AddDecisionQueue("ELSE", $targetPlayer, "-");
-            }
-            AddDecisionQueue("SPECIFICCARD", $targetPlayer, "LIAR", 1);
-            break;
-          default: break;
-        }
-      }
-      break;
     case "numbskull_charm_yellow":
       $params = explode(",", $additionalCosts);
       $paramsCount = count($params);

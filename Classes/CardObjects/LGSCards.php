@@ -91,19 +91,6 @@ class gesture_of_goodwill_blue extends Card {
 // }
 
 
-// class liars_charm_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "liars_charm_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
 // class numbskull_charm_yellow extends Card {
 
 //   function __construct($controller) {

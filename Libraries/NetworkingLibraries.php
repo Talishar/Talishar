@@ -4541,19 +4541,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
       break;
-    case "liars_charm_yellow":
-      $modes = "3-Steal_a_Toughness_or_Vigor,Boo,Remove_hero_abilities";
-      $targets = "MYCHAR-0,THEIRCHAR-0";
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of options");
-      AddDecisionQueue("MAYMULTICHOOSETEXT", $currentPlayer, $modes, 1);
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
-      AddDecisionQueue("MODENOTCHOSENPASS", $currentPlayer, "Remove_hero_abilities", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Target a hero to lose abilities", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $targets, 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
     case "numbskull_charm_yellow":
       $modes = "3-Destroy_a_Confidence_or_Might,Cheer,Pitch_top_card";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose any number of options");
