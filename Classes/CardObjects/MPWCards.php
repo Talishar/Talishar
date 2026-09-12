@@ -1042,12 +1042,19 @@ class terms_of_combat_red extends Card {
 	}
 
 	function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
-		if (IsActivated($cardID, $from)) {
-			if (GetResolvedAbilityType($cardID, $from) == "DR")
-				AddLayer("TRIGGER", $this->controller, $this->cardID);
+		global $CombatChain;
+		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) {
+			return;
 		}
-		elseif (TypeContains($cardID, "DR"))
+		$isActivated = IsActivated($cardID, $from);
+		
+		$shouldTrigger =
+			($isActivated && GetResolvedAbilityType($cardID, $from) == "DR") ||
+			(!$isActivated && TypeContains($cardID, "DR"));
+
+		if ($shouldTrigger) {
 			AddLayer("TRIGGER", $this->controller, $this->cardID);
+		}
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
