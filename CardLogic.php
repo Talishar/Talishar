@@ -385,7 +385,7 @@ function CloseDecisionQueue($skip=false)
 function ShouldHoldPriorityNow($player)
 {
   global $layerPriority, $Stack, $AttackQueue;
-  if ($layerPriority[$player - 1] != "1") return false;
+  if (($layerPriority[$player - 1] ?? "0") != "1") return false;
   if (match($Stack->BottomLayer()->ID()) {
     "ENDPHASE", "STARTTURN", "CLOSESTEP" => true, default => false
   }) return false;
