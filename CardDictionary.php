@@ -1577,9 +1577,8 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
   if ($layerCount > LayerPieces()) return false;
   // kabuto stops attacking in general, so it can stop activated or queued attacks
   if ($isWeapon && SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) return false;
-  if (SubtypeContains($cardID, "Sword") && $index != -1) {
-    $Weapon = new CharacterCard($index, $mainPlayer);
-    if ($CurrentTurnEffects->FindSpecificEffect("a_moments_peace_blue", $Weapon->UniqueID()) != -1) return false;
+  if (SubtypeContains($cardID, "Sword") && $index != -1 && MomentsPeaceStopsWeapon($index, $mainPlayer, $cardID)) {
+    if (!HasNonHeroAttackTarget($mainPlayer == 1 ? 2 : 1)) return false;
   }
   if ($index != -1) {
     switch($zone) {

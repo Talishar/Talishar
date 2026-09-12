@@ -3594,11 +3594,12 @@ function AddAttackLayer($cardID, $from, $uniqueID="-", $zone="-")
 
 function GetTargetOfAttack($cardID = "", $attackQueue=false)
 {
-  global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects;
+  global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects, $CS_PlayIndex;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $numTargets = 0;
   $currentTargets = $attackQueue ? "-" : GetCombatChainState($CCS_AttackTarget);
-  if (!str_contains($currentTargets, "THEIRCHAR-0")) {
+  $heroRestricted = MomentsPeaceStopsWeapon(GetClassState($mainPlayer, $CS_PlayIndex), $mainPlayer, $cardID);
+  if (!$heroRestricted && !str_contains($currentTargets, "THEIRCHAR-0")) {
     $targets = "THEIRCHAR-0";
     ++$numTargets;
   }

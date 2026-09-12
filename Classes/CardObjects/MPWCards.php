@@ -2677,10 +2677,12 @@ class a_moments_peace_blue extends Card {
 	}
 
 	function EffectPlayCardRestricted($cardID, $from, $playIndex, $effectIndex) {
-		if (is_numeric($playIndex)) {
+		if (($from == "CHAR" || $from == "EQUIP") && is_numeric($playIndex) && $playIndex >= 0) {
 			$Weapon = new CharacterCard($playIndex, $this->controller);
 			$Effect = new CurrentEffect($effectIndex);
-			if ($Weapon->UniqueID() == $Effect->AppliestoUniqueID()) return $this->cardID;
+			// the weapon can still attack the allies they control
+			if ($Weapon->UniqueID() == $Effect->AppliestoUniqueID() && !HasNonHeroAttackTarget($this->controller == 1 ? 2 : 1))
+				return $this->cardID;
 		}
 		return "";
 	}

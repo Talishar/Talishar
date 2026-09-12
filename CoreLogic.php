@@ -4321,6 +4321,30 @@ function CanOnlyTargetHeroes($cardID)
   };
 }
 
+// Are there any legal attack targets other than $player's hero?
+function HasNonHeroAttackTarget($player)
+{
+  $auras = &GetAuras($player);
+  $auraPieces = AuraPieces();
+  $countAuras = count($auras);
+  for ($i = 0; $i < $countAuras; $i += $auraPieces) {
+    if (HasSpectra($auras[$i])) return true;
+  }
+  $allies = &GetAllies($player);
+  return count($allies) > 0;
+}
+
+// A Moment's Peace stops the weapon attacking its controller, but not their allies
+function MomentsPeaceStopsWeapon($index, $player, $cardID = "-")
+{
+  global $CurrentTurnEffects;
+  if (!is_numeric($index) || $index < 0) return false;
+  $Weapon = new CharacterCard($index, $player);
+  if ($cardID != "-" && $Weapon->CardID() != $cardID) return false;
+  if (!SubtypeContains($Weapon->CardID(), "Sword", $player)) return false;
+  return $CurrentTurnEffects->FindSpecificEffect("a_moments_peace_blue", $Weapon->UniqueID())->Index() != -1;
+}
+
 function NonHitEffects($cardID)
 {
   global $mainPlayer, $defPlayer, $currentTurnEffects;
