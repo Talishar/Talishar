@@ -1057,7 +1057,7 @@ function PopulateCardStatResults(&$deck, $cardStats, $useIntval)
 			$deck["cardResults"][$j]["pitched"] = $stat($CardStats_TimesPitched);
 			$deck["cardResults"][$j]["hits"] = $stat($CardStats_TimesHit);
 			$deck["cardResults"][$j]["charged"] = $stat($CardStats_TimesCharged);
-			$deck["cardResults"][$j]["charged"] = $stat($CardStats_TimesKatsuDiscard);
+			$deck["cardResults"][$j]["katsuDiscard"] = $stat($CardStats_TimesKatsuDiscard);
 			$deck["cardResults"][$j]["discarded"] = $stat($CardStats_TimesDiscarded);
 			$deck["cardResults"][$j]["activated"] = $stat($CardStats_TimesActivated);
 			$deck["cardResults"][$j]["passiveTriggered"] = $stat($CardStats_TimesPassiveTriggered);

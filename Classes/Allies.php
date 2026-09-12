@@ -77,9 +77,9 @@ class AllyCard {
     return $this->pieces[$this->index + 2] ?? 0;
   }
 
-  public function Damage(int $damage, string $type = "DAMAGE"): int {
+  public function Damage(int $damage, string $type = "DAMAGE", int $countAsDamageDealtBy = 0): int {
     if (isset($this->pieces[$this->index + 2]))
-      return DamageAlly($this->controller, $this->index, $damage, $type);
+      return DamageAlly($this->controller, $this->index, $damage, $type, $countAsDamageDealtBy);
     return 0;
   }
 

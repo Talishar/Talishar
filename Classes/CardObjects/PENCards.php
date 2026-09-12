@@ -6958,13 +6958,15 @@ class sense_weakness_blue extends Card {
     $damage = GetCombatChainState($CCS_DamageDealt);
     for ($i = $Allies->NumAllies()-1; $i >= 0; --$i) {
       $AllyCard = $Allies->Card($i, true);
-      $AllyCard->Damage($damage);
+      $AllyCard->Damage($damage, countAsDamageDealtBy: $this->controller);
     }
     $Character = new PlayerCharacter($defPlayer);
     for ($i = $Character->NumCards()-1; $i >=0; --$i) {
       $CharacterCard = $Character->Card($i, true);
       if (SubtypeContains($CharacterCard->CardID(), "Ally")) {
+        $healthBefore = max(0, CharacterHealth($CharacterCard->CardID()) + $CharacterCard->NumDefenseCounters());
         $CharacterCard->AddDefCounters(-$damage); // how life of perched allies is tracked
+        if ($damage > 0) LogDamageStats($defPlayer, $damage, min($damage, $healthBefore));
         if (-$CharacterCard->NumDefenseCounters() > CharacterHealth($CharacterCard->CardID()))
           $CharacterCard->Destroy();
       }

@@ -57,10 +57,10 @@ function GetStatTurnIndex($player)
   if ($player == $mainPlayer) {
     return $player == $firstPlayer ? ($count > 0 ? $count - 1 : 0) : $count;
   }
-  if ($player == $firstPlayer) return $count;
-  // Turn 0 belongs to the opening turn for both players. Instants, pitches,
-  // blocks, and other defensive activity here must not spill into turn 1.
-  return $count == 0 ? 0 : $count + 1;
+  // Defending. A player has always attacked as many times as the turn they are
+  // defending on, so their own turn count is the block both seats are writing
+  // to. Turn 0 falls out of this: the player on the draw has not attacked yet.
+  return $count;
 }
 
 function EnsureTurnStatBlock($player)
@@ -140,7 +140,7 @@ function LogPlayCardStats($player, $cardID, $from, $type = "")
       else
       {
         ++$cardStats[$i + $CardStats_TimesPlayed];
-        $offDefIndex = $baseIndex + ($player === $mainPlayer ? $TurnStats_CardsPlayedOffense : $TurnStats_CardsPlayedDefense);
+        $offDefIndex = $baseIndex + (intval($player) === intval($mainPlayer) ? $TurnStats_CardsPlayedOffense : $TurnStats_CardsPlayedDefense);
         if (isset($turnStats[$offDefIndex])) ++$turnStats[$offDefIndex];
       }
       break;

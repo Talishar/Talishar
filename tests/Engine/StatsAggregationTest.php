@@ -313,9 +313,13 @@ class StatsAggregationTest extends TestCase
 
     /**
      * Every stat block from the first to the last must belong to a game turn.
-     * The player on the draw has an additional turn-0 defensive row, and a
-     * player killed while blocking can have a final row with no turn of their
-     * own.
+     * The player on the draw has an additional turn-0 defensive row.
+     *
+     * A displayed turn runs "the player on the draw attacks, then the player on
+     * the play attacks", so the player on the play always opens a fresh block
+     * when they start defending: being killed there leaves them one row with no
+     * attack of their own. The player on the draw defends on the row they have
+     * already attacked on, so dying there adds no row.
      *
      * @dataProvider seatProvider
      */
@@ -331,7 +335,7 @@ class StatsAggregationTest extends TestCase
             $this->assertSame($this->attacks[$player], $turns,
                 "P$player: CountAttackingTurns disagrees with the turns actually played");
 
-            $killedWhileBlocking = ($player != $lethalBy);
+            $killedWhileBlocking = ($player != $lethalBy) && ($player == $firstPlayer);
             $hasOpeningDefence = ($player != $firstPlayer);
             $this->assertSame($turns + ($killedWhileBlocking ? 1 : 0) + ($hasOpeningDefence ? 1 : 0), $used,
                 "P$player: unexpected number of populated stat blocks");
@@ -385,9 +389,10 @@ class StatsAggregationTest extends TestCase
     {
         $this->startGame(1);
 
-        // P2 defends on turn 0, takes one complete turn, then is left with a
-        // final defensive row when P1 attacks again. Turn 0 remains displayed
-        // but is omitted from averages; the other two rows contribute value.
+        // P2 defends on turn 0, takes one complete turn, then defends again
+        // when P1 attacks a second time. That second block belongs to the same
+        // displayed turn as P2's own attack, so it lands on the row P2 already
+        // has: two rows, not three. Turn 0 is displayed but omitted from averages.
         $this->playTurn();
         $this->endTurn();
         $this->playTurn();
@@ -396,13 +401,13 @@ class StatsAggregationTest extends TestCase
 
         $stats = $this->aggregatesFor(2);
         $p2Stats = &GetTurnStats(2);
-        $this->assertSame(3, count(UsedTurnStatBlocks($p2Stats)));
+        $this->assertSame(2, count(UsedTurnStatBlocks($p2Stats)));
         $this->assertSame(10, (int)$stats['totalDamageThreatened']);
         $this->assertSame(10, (int)$stats['totalDamageBlocked']);
-        $this->assertEqualsWithDelta(7.5, $stats['averageValuePerTurn'], 0.001,
-            'turn 0 must be omitted while the final defensive row remains in the denominator');
-        $this->assertEqualsWithDelta(10.0, $stats['averageValuePerTurn_NoLast'], 0.001,
-            'excluding the final defensive row should retain only the preceding non-zero turn');
+        $this->assertEqualsWithDelta(15.0, $stats['averageValuePerTurn'], 0.001,
+            'turn 0 must be omitted, leaving P2 one row holding its attack and both of its blocks');
+        $this->assertEqualsWithDelta(0.0, $stats['averageValuePerTurn_NoLast'], 0.001,
+            'dropping that row leaves only turn 0, which averages omit');
     }
 
     public function testTurnZeroIsExcludedFromAveragesButRetainedInTotals(): void

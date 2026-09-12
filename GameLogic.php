@@ -2785,10 +2785,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         else {
           $allies = &GetAllies($target);
-          $damage = AllyDamagePrevention($target, $mzIndex[1], $damage);
-          $allies[$mzIndex[1] + 2] = intval($allies[$mzIndex[1] + 2]) - $damage;
-          if ($damage > 0) {
-            LogDamagePreventedStats($target, $damage);
+          $allyDamage = AllyDamagePrevention($target, $mzIndex[1], $damage);
+          $allyHealthBefore = max(0, intval($allies[$mzIndex[1] + 2]));
+          $allies[$mzIndex[1] + 2] = $allyHealthBefore - $allyDamage;
+          if ($allyDamage > 0) {
+            LogDamagePreventedStats($target, $allyDamage);
+            if ($player != $target) LogDamageStats($target, $allyDamage, min($allyDamage, $allyHealthBefore));
             AllyDamageTakenAbilities($target, $mzIndex[1]);
           }
           if ($allies[$mzIndex[1] + 2] <= 0) DestroyAlly($target, $mzIndex[1], false, false, $allies[$mzIndex[1] + 5]);
