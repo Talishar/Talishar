@@ -7073,7 +7073,7 @@ class leave_em_speechless_blue extends Card {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "-", $AuraCard->UniqueID());
   }
 
-  function StartTurnAbility($index) {
+  function BeginningActionPhaseAbility($index) {
     $AuraCard = new AuraCard($index, $this->controller);
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $AuraCard->UniqueID());
   }
@@ -7125,7 +7125,7 @@ class by_the_book_blue extends Card {
     return PlayerHasLessHealth($this->controller);
   }
 
-  function StartTurnAbility($index) {
+  function BeginningActionPhaseAbility($index) {
     $AuraCard = new AuraCard($index, $this->controller);
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "STARTTURN", $AuraCard->UniqueID());
   }
@@ -7195,7 +7195,7 @@ class channel_the_skybreaker_yellow extends Card {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
-  function StartTurnAbility($index) {
+  function BeginningActionPhaseAbility($index) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -7772,7 +7772,7 @@ class sigil_of_gravespawning_blue extends Card {
     $this->controller = $controller;
   }
 
-  function StartTurnAbility($index) {
+  function BeginningActionPhaseAbility($index) {
     $AuraCard = new AuraCard($index, $this->controller);
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
   }
