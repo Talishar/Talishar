@@ -618,7 +618,7 @@ class fire_that_burns_within_red extends Card {
 
 class teklo_trebuchet_2000 extends BaseCard {
   function PlayAbility() {
-    AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+    AddCurrentTurnEffectFromCombat($this->cardID, $this->controller);
   }
 
   function CombatEffectActive() {
