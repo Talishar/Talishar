@@ -16,6 +16,7 @@ header('Content-Type: application/json');
 $useruid = RequireModeratorSession();
 
 $response = [
+  "topSpectators" => null,
   "bannedPlayers" => [],
   "bannedIPs" => [],
   "recentAccounts" => [],
@@ -50,6 +51,25 @@ if (file_exists($bannedIPsFile)) {
 
 $conn = GetDBConnection(DBL_GET_MOD_PAGE_DATA);
 if ($conn) {
+  try {
+    $spectatorResult = mysqli_query($conn, "SELECT usersUid AS username, numSpectates AS gameCount
+      FROM users WHERE numSpectates > 0
+      ORDER BY numSpectates DESC, usersUid ASC LIMIT 20");
+    if ($spectatorResult) {
+      $response['topSpectators'] = [];
+      while ($row = mysqli_fetch_assoc($spectatorResult)) {
+        $row['gameCount'] = (int)$row['gameCount'];
+        $response['topSpectators'][] = $row;
+      }
+      mysqli_free_result($spectatorResult);
+    } else {
+      $response['topSpectators'] = null;
+    }
+  } catch (Exception $e) {
+    $response['topSpectators'] = null;
+    error_log('GetModPageData spectator totals: ' . $e->getMessage());
+  }
+
   $sql = "SELECT usersUid FROM users WHERE isBanned = 1 ORDER BY usersUid";
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
