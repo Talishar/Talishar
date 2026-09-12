@@ -5382,7 +5382,7 @@ class devouring_doomwake_red extends Card {
       for ($j = $Link->NumCards() -1; $j >= 1; --$j) {
         $LinkCard = $Link->GetLinkCard($j, true);
         $cardID = $LinkCard->ID();
-        BanishCardForPlayer($cardID, $this->controller, "CC");
+        BanishCardForPlayer($cardID, $LinkCard->PlayerID(), "CC");
         $LinkCard->Remove();
       }
     }
@@ -7628,6 +7628,17 @@ class promise_of_power_yellow extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return AddCurrentTurnEffect($this->cardID, $this->controller);
   }
+
+  function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
+    if ($from == "BANISH" && TypeContains($cardID, "AA")) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+      $remove = true;
+    }
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("runechant", $this->controller, 2);
+  }
 }
 
 class shadowake_gloomblade extends BaseCard {
@@ -7711,6 +7722,10 @@ class step_through_realms extends BaseCard {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     PlayAura("gate_to_iarathael", $this->controller, effectSource:$uniqueID);
+  }
+
+  function SpecialBlock() {
+    return 2; // database error
   }
 }
 

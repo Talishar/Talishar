@@ -2536,9 +2536,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     $Effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $currentPlayer);
     if ($Effect->Index() != -1) SetClassState($currentPlayer, $CS_PlayedFromGateUID, $uniqueID);
     $Effect->Remove();
-    if (TypeContains($cardID, "AA") && SearchCurrentTurnEffects("promise_of_power_yellow", $currentPlayer, remove: true)) {
-      PlayAura("runechant", $currentPlayer, 2);
-    }
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
