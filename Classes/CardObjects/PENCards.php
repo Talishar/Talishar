@@ -6419,8 +6419,8 @@ class ransack_and_raze_blue extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     global $Landmarks;
     for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
-      $LM = $Landmarks->Card($i, true);
-      if (CardCost($LM->CardID()) != -1) return false;
+      $LandmarkTarget = $Landmarks->Card($i, true);
+      if (CardCost($LandmarkTarget->CardID()) != -1) return false;
     }
     return true;
   }
@@ -6429,21 +6429,28 @@ class ransack_and_raze_blue extends Card {
     global $Landmarks;
     $costs = [];
     for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
-      $LM = $Landmarks->Card($i, true);
-      $landmarkCost = CardCost($LM->CardID());
+      $LandmarkTarget = $Landmarks->Card($i, true);
+      $landmarkCost = CardCost($LandmarkTarget->CardID());
       if ($landmarkCost != -1) $costs[] = $landmarkCost;
     }
     return implode(",", $costs);
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    // I'm gonna be lazy and assume there's only one landmark
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "LANDMARK", 1);
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a landmark to destroy", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $Landmarks;
-    $LM = $Landmarks->Card(0,true);
-    $LM->Destroy();
+    $targetParts = explode("-", $target, 2);
+    if (($targetParts[0] ?? "") == "LANDMARK" && isset($targetParts[1])) {
+      $Landmarks = new Landmarks();
+      $LandmarkTarget = $Landmarks->Card($targetParts[1], true);
+      if ($LandmarkTarget != "") $LandmarkTarget->Destroy();
+    }
     PutItemIntoPlayForPlayer("gold", $this->controller, 0, $resourcesPaid, $this->controller, true);
   }
 }
