@@ -7013,7 +7013,7 @@ class tempest_dancers extends Card {
     $this->controller = $controller;
   }
 
-  function DestroyEffect() {
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID="-"): void {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
