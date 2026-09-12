@@ -3739,6 +3739,7 @@ class dyed_silk_sleeves extends Card {
       $CharacterCard = $Character->FindCardID($this->cardID);
       $CharacterCard->Destroy();
     }
+    return true;
   }
 }
 
