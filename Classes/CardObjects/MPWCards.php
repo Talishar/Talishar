@@ -1047,7 +1047,7 @@ class terms_of_combat_red extends Card {
 			return;
 		}
 		$isActivated = IsActivated($cardID, $from);
-		
+
 		$shouldTrigger =
 			($isActivated && GetResolvedAbilityType($cardID, $from) == "DR") ||
 			(!$isActivated && TypeContains($cardID, "DR"));
@@ -2580,7 +2580,7 @@ class off_beat_blue extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		foreach (["blade_dance", "flurry"] as $token) {
-			Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS:isSameName=$token", subsequent:0);
+			Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS:isSameName=$token&THEIRAURAS:isSameName=$token", subsequent:0);
 			Await($this->controller, "ChooseMultiZone", "MZInd", may:true, context:"Destroy a " . CardLink($token) . " to sharpen your sword?");
 			Await($this->controller, "MZDestroy");
 			Await($this->controller, $this->cardID, target:$target, final:true);
