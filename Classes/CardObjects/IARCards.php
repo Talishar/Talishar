@@ -7630,8 +7630,10 @@ class promise_of_power_yellow extends Card {
   }
 
   function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
-    if ($from == "BANISH" && TypeContains($cardID, "AA"))
+    if ($from == "BANISH" && TypeContains($cardID, "AA")) {
       AddLayer("TRIGGER", $this->controller, $this->cardID);
+      $remove = true;
+    }
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
