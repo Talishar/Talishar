@@ -3101,7 +3101,7 @@ class ominous_excavation_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    $context = "Return an Aura from your graveyard to your deck (or pass)";
+    $context = "Return an instant card from your graveyard to your deck (or pass)";
     Await($this->controller, "MultiZoneIndices", "indices", search:"MYDISCARD:type=I", subsequent:0);
     Await($this->controller, "ChooseMultiZone", "choice", context:$context, may:true);
     Await($this->controller, $this->cardID, subsequent:0, final:true);
@@ -3113,7 +3113,7 @@ class ominous_excavation_blue extends Card {
     $choice = $dqVars["choice"] ?? "-";
     if ($choice != "-") {
       $obj = MZIndexToObject($this->controller, $choice);
-      WriteLog(CardLink($obj->CardID()) . " was put on the bottom of the deck!");
+      WriteLog(CardLink($obj->CardID()) . " was shuffled into the deck!");
       AddBottomDeck($obj->CardID(), $this->controller, "DISCARD");
       $obj->Remove();
       $deck = new Deck($this->controller);
