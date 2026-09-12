@@ -5382,7 +5382,7 @@ class devouring_doomwake_red extends Card {
       for ($j = $Link->NumCards() -1; $j >= 1; --$j) {
         $LinkCard = $Link->GetLinkCard($j, true);
         $cardID = $LinkCard->ID();
-        BanishCardForPlayer($cardID, $this->controller, "CC");
+        BanishCardForPlayer($cardID, $LinkCard->PlayerID(), "CC");
         $LinkCard->Remove();
       }
     }
