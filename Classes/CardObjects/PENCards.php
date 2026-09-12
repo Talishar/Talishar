@@ -7714,7 +7714,7 @@ class farflight_longbow extends Card {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    CheckTapped("MYCHAR-$index", $this->controller);
+    return CheckTapped("MYCHAR-$index", $this->controller);
   }
 
   function EquipPayAdditionalCosts($index = '-') {
