@@ -7723,6 +7723,10 @@ class step_through_realms extends BaseCard {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     PlayAura("gate_to_iarathael", $this->controller, effectSource:$uniqueID);
   }
+
+  function SpecialBlock() {
+    return 2; // database error
+  }
 }
 
 class step_through_realms_red extends Card {
