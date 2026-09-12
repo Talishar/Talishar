@@ -1140,9 +1140,12 @@ class laden_with_frost_red extends Card {
     global $defPlayer;
     AddCurrentTurnEffect("laden_with_frost_red", $this->controller);
     if (SearchCardList($additionalCosts, $this->controller, talent: "ICE") != ""){
-      //Technically wrong, should be "target hero". I don't think there is currently a reason to give yourself the Frostbite.
-      PlayAura("frostbite", $defPlayer);
+      PlayAura("frostbite", str_starts_with($target, "MYCHAR") ? $this->controller : $defPlayer);
     }
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    SetArcaneTarget($this->controller, $this->cardID, "any_hero", setTarget:true, context:"Choose a hero to create a Frostbite token under");
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
