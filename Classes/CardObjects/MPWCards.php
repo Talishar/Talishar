@@ -818,8 +818,7 @@ class overwhelming_swing_yellow extends Card {
 		return $param;
 	}
 
-	private
-	function GetTargets() {
+	private	function GetTargets() {
 		$attacks = TargetAttack($this->controller);
 		$targets = [];
 		foreach($attacks as $attack) {
@@ -1785,7 +1784,7 @@ class lessons_learned_blue extends Card {
 				$inds[] = $i;
 			}
 		}
-		$maxChoosable = (SearchCurrentTurnEffects("amnesia_red", $this->controller)) ? 1 : 3;
+		$maxChoosable = (SearchCurrentTurnEffects("amnesia_red", $this->controller)) ? 0 : 3;
 		$inds = RemoveDuplicateCards($this->controller, implode(",", $inds), $discard);
 		AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
 		AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "$maxChoosable-", 1);
