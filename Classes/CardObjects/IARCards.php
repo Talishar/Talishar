@@ -8431,7 +8431,7 @@ class permanent_interment_blue extends Card {
 class enshrine_sin extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     Opt($this->cardID, 1);
-    Await($this->controller, "PlayAura", cardID: "runechant", effectSource: $this->cardID);
+    Await($this->controller, "PlayAura", cardID: "runechant", effectSource: $this->cardID, subsequent:0);
     return "";
   }
 
