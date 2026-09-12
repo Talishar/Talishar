@@ -70,11 +70,6 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   // only modify the event if there is an event
   if ($number > 0) $number += CharacterModifiesPlayAura($player, $isToken, $effectAgent);
 
-  $countVerdantTide = CountCurrentTurnEffects("verdant_tide_red", $player);
-  if ($countVerdantTide > 0 && (ClassContains($cardID, "RUNEBLADE", $player) || TalentContains($cardID, "ELEMENTAL", $player))) {
-    if ($isToken) $number += $countVerdantTide;
-  }
-
   if ($numMinusTokens > 0 && $isToken && (TypeContains($effectSource, "AA", $player) || TypeContains($effectSource, "A", $player))) {
     $number -= $numMinusTokens;
     if ($number <= 0) {
@@ -82,6 +77,10 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     } else {
       WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of " . CardLink($cardID) . " tokens");
     }
+  }
+  $countVerdantTide = CountCurrentTurnEffects("verdant_tide_red", $player);
+  if ($number > 0 && $countVerdantTide > 0 && $isToken && (ClassContains($cardID, "RUNEBLADE", $player) || TalentContains($cardID, "ELEMENTAL", $player))) {
+    $number += $countVerdantTide;
   }
   if ($cardID == "runechant") $number += CountCurrentTurnEffects("mordred_tide_red", $player);
   if ($cardID == "seismic_surge" && $number > 0) $number += CountAura("promising_terrain_blue", $player);
