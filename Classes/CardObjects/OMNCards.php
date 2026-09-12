@@ -35,7 +35,7 @@ class twoscilio extends BaseCard {
     $CharacterCard->SetUsed(2);
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
-    $Flow->Destroy();
+    $Flow->Destroy(destroyedBy: $this->controller);
   }
 }
 
@@ -63,7 +63,7 @@ class bauroralegacy extends BaseCard {
     $CharacterCard->SetUsed(2);
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
-    $Flow->Destroy();
+    $Flow->Destroy(destroyedBy: $this->controller);
   }
 }
 
@@ -764,8 +764,8 @@ class astral_strike_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CS_NumLightningFlowDestroyed;
-    if (GetClassState($this->controller, $CS_NumLightningFlowDestroyed) > 0) {
+    global $CS_NumLightningFlowsIDestroyed;
+    if (GetClassState($this->controller, $CS_NumLightningFlowsIDestroyed) > 0) {
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode for " . CardLink($this->cardID));
       AddDecisionQueue("BUTTONINPUT", $this->controller, "Draw_a_Card,Buff_Power,Go_Again");
       AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
@@ -1410,7 +1410,7 @@ class rift_breaker extends BaseCard {
     global $defPlayer;
     $Auras = new Auras($defPlayer);
     $AuraCard = $Auras->FindCardID("lightning_flow");
-    $AuraCard->Destroy();
+    $AuraCard->Destroy(destroyedBy: $this->controller);
   }
 }
 
@@ -1488,7 +1488,7 @@ class arc_ramp extends BaseCard {
     if ($dqVars["choice"] ?? "NO" == "YES") {
       $Auras = new Auras($this->controller);
       $AuraCard = $Auras->FindCardID("lightning_flow");
-      $AuraCard->Destroy();
+      $AuraCard->Destroy(destroyedBy: $this->controller);
       AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
     }
   }
@@ -2014,7 +2014,7 @@ class mercurial_skies extends BaseCard {
     $target = $dqVars["target"];
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
-    $Flow->Destroy();
+    $Flow->Destroy(destroyedBy: $this->controller);
     SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
     DealArcane($damage, 0, source:$CombatChain->AttackCard()->ID());
   }
@@ -4299,7 +4299,7 @@ class fortitude_of_anvilheim extends Card {
       $Link = $ChainLinks->GetLink($i);
       if (TypeContains($Link->AttackCard()->ID(), "W")) {
         for ($j = 1; $j < $Link->NumCards(); ++$j) {
-          $blockingCard = $Link->GetLinkCard($i, true);
+          $blockingCard = $Link->GetLinkCard($j, true);
           if ($blockingCard->StillOnChain() && (TypeContains($blockingCard->ID(), "A") || TypeContains($blockingCard->ID(), "AA")))
             $choices[] = "PASTCHAINLINK-" . $blockingCard->Index() . "-$i";
         }
