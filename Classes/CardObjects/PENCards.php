@@ -5136,7 +5136,7 @@ class tentacular_toll_red extends Card {
 
 class tentacular_toll_yellow extends Card {
   function __construct($controller) {
-    $this->cardID = "tentacular_toll_red";
+    $this->cardID = "tentacular_toll_yellow";
     $this->controller = $controller;
     $this->baseCard = new tentacular_toll($this->cardID, $this->controller);
   }
@@ -5148,7 +5148,7 @@ class tentacular_toll_yellow extends Card {
 
 class tentacular_toll_blue extends Card {
   function __construct($controller) {
-    $this->cardID = "tentacular_toll_red";
+    $this->cardID = "tentacular_toll_blue";
     $this->controller = $controller;
     $this->baseCard = new tentacular_toll($this->cardID, $this->controller);
   }
