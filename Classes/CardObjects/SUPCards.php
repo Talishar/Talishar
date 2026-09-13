@@ -5910,10 +5910,14 @@ class who_blinks_first_blue extends Card {
     }
     else {
       $otherPlayer = $this->controller == 1 ? 2 : 1;
+      $myChar = GetPlayerCharacter($this->controller);
       $otherChar = GetPlayerCharacter($otherPlayer);
-      if (ClassContains($otherChar[0], "GUARDIAN", $otherPlayer)) {
-        AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
-        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      $search = [];
+      if (ClassContains($myChar[0], "GUARDIAN", $this->controller)) $search[] = "MYAURAS";
+      if (ClassContains($otherChar[0], "GUARDIAN", $otherPlayer)) $search[] = "THEIRAURAS";
+      if (count($search) > 0) {
+        AddDecisionQueue("MULTIZONEINDICES", $this->controller, implode("&", $search));
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
         AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
         AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
       }
