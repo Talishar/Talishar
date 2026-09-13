@@ -118,7 +118,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Destroy_a_Might_or_Vigor":
-            $search = "THEIRAURAS:cardID=might;cardID=vigor";
+            $search = "MYAURAS:cardID=might;cardID=vigor&THEIRAURAS:cardID=might;cardID=vigor";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search, 1);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -144,7 +144,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Destroy_a_Confidence_or_Might":
-            $search = "THEIRAURAS:cardID=confidence;cardID=might";
+            $search = "MYAURAS:cardID=confidence;cardID=might&THEIRAURAS:cardID=confidence;cardID=might";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
