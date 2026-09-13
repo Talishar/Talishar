@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ . "/ReplayLibraries.php";
+include_once __DIR__ . "/RematchLibraries.php";
 
 const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
 const MAX_REPLAYS_SAVED = 3;
@@ -1080,6 +1081,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         break;
       $otherPlayer = $playerID == 1 ? 2 : 1;
       WriteLog("Player $playerID sent a rematch invitation.", highlight: true, highlightColor: "darkblue");
+      if (IsPlayerAI($otherPlayer)) {
+        StartRematch();
+        break;
+      }
       AddDecisionQueue("YESNO", $otherPlayer, "if you want a <b>Rematch</b>?");
       AddDecisionQueue("REMATCH", $otherPlayer, "-");
       ProcessDecisionQueue();
@@ -1091,6 +1096,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         break;
       $otherPlayer = $playerID == 1 ? 2 : 1;
       WriteLog("Player $playerID offered to swap heroes and rematch.", highlight: true, highlightColor: "darkblue");
+      if (IsPlayerAI($otherPlayer)) {
+        StartRematch(true);
+        break;
+      }
       AddDecisionQueue("YESNO", $otherPlayer, "if you want to <b>Swap Heroes</b> and rematch?");
       AddDecisionQueue("SWAPREMATCH", $otherPlayer, "-");
       ProcessDecisionQueue();

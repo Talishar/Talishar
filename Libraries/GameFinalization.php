@@ -14,6 +14,10 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
   $p1OrigPath = "./Games/{$gameName}/p1DeckOrig.txt";
   $p2OrigPath = "./Games/{$gameName}/p2DeckOrig.txt";
 
+  if ($isSwapRematch && $p2IsAI == "1" && !file_exists($p2OrigPath) && file_exists("./Games/{$gameName}/p2Deck.txt")) {
+    copy("./Games/{$gameName}/p2Deck.txt", $p2OrigPath);
+  }
+
   if ($isSwapRematch && file_exists($p1OrigPath) && file_exists($p2OrigPath)) {
     $tempPath = "./Games/{$gameName}/p_swap_temp.txt";
     rename($p1OrigPath, $tempPath);
