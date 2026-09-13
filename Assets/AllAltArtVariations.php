@@ -441,5 +441,7 @@ function GetAllAltArtVariations(): array
     "restless_plowman_red=IAR087-T",
     "restless_shieldmaiden_red=IAR088-T",
     "restless_steed_red=IAR089-T",
+    "outed_red=HNT235-T",
+    "levia_shadowborn_abomination=MON119-T",
   ];
 }
