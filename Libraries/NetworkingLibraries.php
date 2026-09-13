@@ -3369,11 +3369,12 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
         && (GetClassState($currentPlayer, $CS_NextWizardNAAInstant) == 0 || !ClassContains($cardID, "WIZARD", $currentPlayer))
         && GetClassState($currentPlayer, $CS_NextNAAInstant) == 0
         && ($actionPoints < 1 || $currentPlayer != $mainPlayer || $turn[0] == "INSTANT" || $turn[0] == "A" || SearchLayersForPhase("RESOLUTIONSTEP") != -1)
-        || SearchCurrentTurnEffects("WarmongersWar", $currentPlayer)
       ))
     ) {
         $names[0] = "-";
     }
+    if (SearchCurrentTurnEffects("WarmongersWar", $currentPlayer))
+      $names[0] = "-";
     $option = "-";
     if ($names[0] == "-" && $names[1] == "-") {
       WriteLog("Both sides of the meld card are blocked, reverting play", highlight: true);
