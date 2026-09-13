@@ -2307,7 +2307,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
-  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter;
+  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter, $ChainLinks;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $currentPlayer;
   $character = &GetPlayerCharacter($player);
@@ -2562,8 +2562,14 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "rally_the_coast_guard_blue":
       if ($index == 0 && $from == "PLAY") return true;
       else if ($from == "PLAY" && is_numeric($index) && isset($combatChain[$index + 7])) return SearchCurrentTurnEffects($cardID, $player, false, true) == $combatChain[$index + 7];
-      if ($from == "COMBATCHAINATTACKS") {
-        return true; // for now block these from being activated on later chain links
+      else if ($from == "PASTCHAINLINK") {
+        return true;
+        // $LinkNum = explode("-", $index)[1] ?? -1;
+        // $ind = explode("-", $index)[0];
+        // if ($ind == 0) return true;
+        // if ($LinkNum == -1) return true;
+        // $LinkCard = $ChainLinks->GetLink($LinkNum)->GetLinkCard($ind);
+        // return $LinkCard->NumTimesUsed() >= 1;
       }
       else return false;
     case "memorial_ground_red":

@@ -1244,12 +1244,6 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
     case "VALAHAIRIVEN":
       PlayAura("seismic_surge", $player, $lastResult, true, effectController: $player, effectSource: $initiator);
       return "";
-    case "LIAR":
-      $char = &GetPlayerCharacter($player);
-      $char[1] = 3;
-      AddCurrentTurnEffect("liars_charm_yellow", $player);
-      ReEvalCombatChain();
-      return "";
     case "BREAKSTATURE":
       $id = NameOverride($lastResult, $otherPlayer) == "" ? "" : $lastResult;
       AddNextTurnEffect("break_stature_yellow", $otherPlayer, uniqueID: $id);

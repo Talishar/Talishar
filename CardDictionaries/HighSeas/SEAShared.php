@@ -50,7 +50,7 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "diamond_amulet_blue", "opal_amulet_blue",  "platinum_amulet_blue", "ruby_amulet_blue", "amethyst_amulet_blue" => $from == "PLAY" ? "I" : "A",
     "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue", "sapphire_amulet_blue"=> "A",
-    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => $from == "PLAY" ? "I" : "AA",
+    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => ($from == "PLAY" || $from == "PASTCHAINLINK") ? "I" : "AA",
 
     "goldkiss_rum" => "I",
     "scurv_stowaway" => "A",
@@ -956,6 +956,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         //in case the card gets destroyed
         if($index != -1) CombatChainDefenseModifier($index, 3);
       }
+      elseif (str_contains($from, "PASTCHAINLINK"))
+        return "";
       return "";
     case "bandana_of_the_blue_beyond":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:pitch=3");
