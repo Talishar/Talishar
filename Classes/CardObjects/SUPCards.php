@@ -6153,7 +6153,7 @@ class liars_charm_yellow extends Card {
           $hand = GetHand($targetPlayer);
           if (count($hand) > 0) {
             Await($targetPlayer, "MultiZoneIndices", search:"MYHAND");
-            Await($targetPlayer, "ChooseMultiZone", may:true, context:"Discard a card to draw a card (or pass)");
+            Await($targetPlayer, "ChooseMultiZone", may:true, context:"Discard a card or lose your hero abilities this action phase");
             Await($targetPlayer, "Discard");
             AddDecisionQueue("ELSE", $targetPlayer, "-");
           }
