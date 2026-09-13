@@ -747,7 +747,7 @@ class fight_fair_red extends Card {
 
 class fight_dirty_red extends Card {
   function __construct($controller) {
-    $this->cardID = "fight_dirty_rred";
+    $this->cardID = "fight_dirty_red";
     $this->controller = $controller;
   }
 
