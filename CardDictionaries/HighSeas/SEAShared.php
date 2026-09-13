@@ -38,7 +38,7 @@ function SEAAbilityType($cardID, $from="-"): string
     
     "sky_skimmer_red", "sky_skimmer_yellow", "sky_skimmer_blue" => ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA",
     "cloud_skiff_red", "cloud_skiff_yellow", "cloud_skiff_blue" => ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA",
-    "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => $from == "PLAY" ? "I": "AA",
+    "cloud_city_steamboat_red", "cloud_city_steamboat_yellow", "cloud_city_steamboat_blue" => ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA",
     "palantir_aeronought_red", "jolly_bludger_yellow", "cogwerx_dovetail_red" => ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA",
     "cogwerx_zeppelin_red", "cogwerx_zeppelin_yellow", "cogwerx_zeppelin_blue" => ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA",
     "polly_cranka", "polly_cranka_ally" => "A",
