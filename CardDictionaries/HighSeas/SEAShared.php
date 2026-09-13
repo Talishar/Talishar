@@ -889,7 +889,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deck = new Deck($currentPlayer);
       if($deck->Empty()) break;
       $deck->Reveal(1);
-      $pitchValue = pitchValue($deck->Top());
+      $pitchValue = max(PitchValue($deck->Top()), 0);
       AddCurrentTurnEffect("$cardID-$pitchValue", $currentPlayer);
       WriteLog(CardLink($cardID, $cardID) . " prevents the next <b>$pitchValue damage</b>");
       break;
