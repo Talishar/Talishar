@@ -4583,7 +4583,7 @@ class ominous_toll extends BaseCard {
     global $dqVars;
     $choice = $dqVars["MZIndex"] ?? "-";
     $index = explode("-", $choice)[1] ?? -1;
-    if ($index != "-") {
+    if ($index >= 0) {
       DiscardCard($this->controller, $index);
       PlayAura("gate_to_iarathael", $this->controller);
     }
@@ -4668,7 +4668,7 @@ class embrace_ursur extends BaseCard {
     global $dqVars;
     $choice = $dqVars["MZIndex"] ?? "-";
     $index = explode("-", $choice)[1] ?? -1;
-    if ($index != "-") {
+    if ($index >= 0) {
       $Hand = new Hand($this->controller);
       $cardID = $Hand->Remove($index);
       BanishCardForPlayer($cardID, $this->controller, "HAND");
@@ -7086,7 +7086,7 @@ class shadowrealm_solace_blue extends Card {
 		global $dqVars;
 		$choice = $dqVars["MZIndex"] ?? "-";
 		$object = MZIndexToObject($this->controller, $choice);
-		if ($object != "-") {
+		if (is_object($object)) {
 			$cardID = $object->CardID();
 			AddGraveyard($cardID, $this->controller, "BANISH");
 			$object->Remove();
