@@ -386,6 +386,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "scrub_the_deck_blue":
       $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
+      if (count(GetDeck($targetPlayer)) == 0) break;
       $topCard = GetDeck($targetPlayer)[0];
       DestroyTopCard($targetPlayer);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $topCard);
