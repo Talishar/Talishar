@@ -348,7 +348,7 @@ function MainCharacterBeginEndPhaseAbilities()
 
 function MainCharacterBeginEndPhaseTriggers()
 {
-  global $mainPlayer, $defPlayer;
+  global $mainPlayer, $defPlayer, $CS_AttacksWithWeapon;
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainCharacter);
   $characterPieces = CharacterPieces();
@@ -358,6 +358,12 @@ function MainCharacterBeginEndPhaseTriggers()
     if ($card != "-") $card->PermanentEndPhaseAbility($i);
     if ($mainCharacter[$i + 1] != 2) continue; //Do not process ability if it is disabled (e.g. Humble)
     switch ($characterID) {
+      case "valiant_dynamo":
+        if (ManualDynamoSetting($mainPlayer) && GetClassState($mainPlayer, $CS_AttacksWithWeapon) >= 2 && $mainCharacter[$i + 4] < 0
+          && !SearchNextTurnEffects("valiant_dynamo-MANUALREFRESH", $mainPlayer)) {
+          AddNextTurnEffect("valiant_dynamo-MANUALREFRESH", $mainPlayer);
+        }
+        break;
       case "terra":
         AddLayer("TRIGGER", $mainPlayer, $characterID);
         break;
@@ -398,7 +404,7 @@ function MainCharacterEndTurnAbilities()
         KassaiEndTurnAbility();
         break;
       case "valiant_dynamo":
-        if ($mainClassState[$CS_AttacksWithWeapon] >= 2 && $mainCharacter[$i + 4] < 0) {
+        if (!ManualDynamoSetting($mainPlayer) && $mainClassState[$CS_AttacksWithWeapon] >= 2 && $mainCharacter[$i + 4] < 0) {
           ++$mainCharacter[$i + 4];
           LogPlayCardStats($mainPlayer, "valiant_dynamo", "EQUIP", "PASSIVE");
         }
@@ -421,6 +427,47 @@ function MainCharacterEndTurnAbilities()
         break;
     }
   }
+}
+
+function CanManuallyRefreshValiantDynamo($player, $index): bool
+{
+  global $currentPlayer, $mainPlayer, $turn, $CS_NumActionsPlayed, $CS_NumCardsPlayed;
+  if (!ManualDynamoSetting($player)) return false;
+  $character = &GetPlayerCharacter($player);
+  if (($character[$index] ?? "-") != "valiant_dynamo" || ($character[$index + 1] ?? 0) < 2
+    || ($character[$index + 4] ?? 0) >= 0) return false;
+
+  if ($player == $mainPlayer && ($turn[0] ?? "") == "ENDPHASE") {
+    return SearchNextTurnEffects("valiant_dynamo-MANUALREFRESH", $player);
+  }
+
+  return $player != $currentPlayer
+    && SearchCurrentTurnEffectsForIndex("valiant_dynamo-MANUALREFRESH", $player) != -1
+    && GetClassState($currentPlayer, $CS_NumActionsPlayed) == 0
+    && GetClassState($currentPlayer, $CS_NumCardsPlayed) == 0;
+}
+
+function ManuallyRefreshValiantDynamo($player, $index): bool
+{
+  global $mainPlayer, $turn, $nextTurnEffects;
+  if (!CanManuallyRefreshValiantDynamo($player, $index)) return false;
+
+  $character = &GetPlayerCharacter($player);
+  ++$character[$index + 4];
+  if ($player == $mainPlayer && ($turn[0] ?? "") == "ENDPHASE") {
+    $pieces = NextTurnPieces();
+    for ($i = 0; $i < count($nextTurnEffects); $i += $pieces) {
+      if ($nextTurnEffects[$i] == "valiant_dynamo-MANUALREFRESH" && $nextTurnEffects[$i + 1] == $player) {
+        array_splice($nextTurnEffects, $i, $pieces);
+        break;
+      }
+    }
+  } else {
+    $effectIndex = SearchCurrentTurnEffectsForIndex("valiant_dynamo-MANUALREFRESH", $player);
+    if ($effectIndex != -1) RemoveCurrentTurnEffect($effectIndex);
+  }
+  LogPlayCardStats($player, "valiant_dynamo", "EQUIP", "PASSIVE");
+  return true;
 }
 
 function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1, $flicked = false)

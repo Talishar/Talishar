@@ -160,7 +160,7 @@ switch ($popupType) {
     global $SET_PassDRStep, $SET_AutotargetArcane, $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_AutoPassTurn;
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode, $SET_AlwaysShowCounters;
     global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
-    global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass;
+    global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     global $SET_HideGamesFromFriends;
     
     $response->Settings = [];
@@ -209,6 +209,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "GemsOffByDefault", 34, $dbSettings);
       AddSettingFromDB($response->Settings, "HideGamesFromFriends", 35, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableHoldToAutoPass", 37, $dbSettings);
+      AddSettingFromDB($response->Settings, "ManualDynamo", 38, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -233,6 +234,7 @@ switch ($popupType) {
       AddSetting($response->Settings, "Playmat", $SET_Playmat, $playerSettings);
       AddSetting($response->Settings, "AlwaysAllowUndo", $SET_AlwaysAllowUndo, $playerSettings);
       AddSetting($response->Settings, "ManualTunic", $SET_ManualTunic, $playerSettings);
+      AddSetting($response->Settings, "ManualDynamo", $SET_ManualDynamo, $playerSettings);
       AddSetting($response->Settings, "DisableFabInsights", $SET_DisableFabInsights, $playerSettings);
       AddSetting($response->Settings, "DisableHeroIntro", $SET_DisableHeroIntro, $playerSettings);
       AddSetting($response->Settings, "MirroredBoardLayout", $SET_MirroredBoardLayout, $playerSettings);

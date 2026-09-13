@@ -47,6 +47,7 @@ $SET_GemsOffByDefault = 34; //Should gems start switched off instead of using ea
 $SET_HideGamesFromFriends = 35; //Hide your games from your friends in the open game and spectate lists
 $SET_AutoPassTurn = 36; //Pass button held down: auto-pass this player's windows for the rest of the turn
 $SET_DisableHoldToAutoPass = 37; //Accessibility: turn off the hold space/PASS gesture that arms auto-pass
+$SET_ManualDynamo = 38; //Do you want to manually refresh Valiant Dynamo
 
 // Deliberately absent from SaveSettingInDatabase: this is an in-game state
 // StartTurnAbilities clears it, so it can never outlive the turn it was set in.
@@ -92,6 +93,13 @@ function ManualTunicSetting($player)
   global $SET_ManualTunic;
   $settings = GetSettings($player);
   return $settings[$SET_ManualTunic] ?? 0;
+}
+
+function ManualDynamoSetting($player)
+{
+  global $SET_ManualDynamo;
+  $settings = GetSettings($player);
+  return $settings[$SET_ManualDynamo] ?? 0;
 }
 
 function IsPatron($player)
@@ -625,6 +633,7 @@ function ParseSettingsStringValueToIdInt(string $value)
     "HideGamesFromFriends" => 35,
     "AutoPassTurn" => 36,
     "DisableHoldToAutoPass" => 37,
+    "ManualDynamo" => 38,
   ];
   return $settingsToId[$value];
 }
@@ -674,14 +683,14 @@ function SaveSettingInDatabase($setting)
     global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_AlwaysShowCounters;
     global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
     global $SET_HideGamesFromFriends;
-    global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass;
+    global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
       $SET_ManualMode, $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo,
       $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro,
       $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_AlwaysShowCounters, $SET_HideHandFromFriends,
-      $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass,
+      $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
     ], true);
   }
   return isset($persistable[$setting]);
