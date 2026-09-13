@@ -6059,7 +6059,7 @@ class unwavering_resolve_red extends Card {
   }
 
   function DoesAttackHaveGoAgain() {
-    return NumCardsDefended() > 3;
+    return NumCardsDefended() >= 3;
   }
 }
 
