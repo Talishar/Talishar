@@ -766,7 +766,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       return "";
     case "jolly_bludger_yellow":
-      if ($from != "PLAY") {
+      if ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+      elseif ($from != "PLAY") {
         $inds = GetUntapped($currentPlayer, "MYITEMS", "subtype=Cog");
         if(empty($inds)) break;
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "You may tap a cog to gain overpower (or pass)");
@@ -774,7 +775,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MZTAP", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "jolly_bludger_yellow-OP", 1);
       }
-      elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
       else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "cogwerx_dovetail_red":
