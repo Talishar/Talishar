@@ -333,8 +333,20 @@
     }
   }
 
+  function AlwaysWagerActive($player) {
+    $char = &GetPlayerCharacter($player);
+    if (!isset($char[0])) return false;
+    if ($char[0] != "olympia" && $char[0] != "olympia_prized_fighter") return false;
+    return ($char[9] ?? 0) == 1;
+  }
+
   function AskWager($cardID) {
     global $currentPlayer;
+    if (AlwaysWagerActive($currentPlayer)) {
+      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID . "!PLAY");
+      AddOnWagerEffects();
+      return;
+    }
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID);
     AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
     AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to wager for <0>?");
