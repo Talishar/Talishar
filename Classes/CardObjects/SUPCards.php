@@ -2168,7 +2168,11 @@ class aura_of_suspense extends BaseCard{
   function ProcessTrigger($target, $additionalCosts) {
     global $CombatChain;
     if ($additionalCosts == "DESTROY") {
-      DestroyAuraUniqueID($this->controller, $target);
+      $index = SearchAurasForUniqueID($target, $this->controller);
+      if ($index != -1) {
+        $Aura = new AuraCard($index, $this->controller);
+        if ($Aura->NumCounters() <= 0) DestroyAuraUniqueID($this->controller, $target);
+      }
     }
     else {
       if (!$CombatChain->HasCurrentLink() && !IsLayerStep()) {
@@ -5870,7 +5874,11 @@ class turn_heads_blue extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
     if ($additionalCosts == "DESTROY") {
-      DestroyAuraUniqueID($this->controller, $target);
+      $index = SearchAurasForUniqueID($target, $this->controller);
+      if ($index != -1) {
+        $Aura = new AuraCard($index, $this->controller);
+        if ($Aura->NumCounters() <= 0) DestroyAuraUniqueID($this->controller, $target);
+      }
     }
     else {
       $otherPlayer = $this->controller == 1 ? 2 : 1;
