@@ -146,6 +146,10 @@ class Layer {
 		return isset($this->layers[$this->index+1]) ? $this->layers[$this->index+1] : 0;
 	}
 
+  function SetPlayerID($player) {
+    if (isset($this->layers[$this->index + 1])) $this->layers[$this->index + 1] = $player;
+  }
+
 	function Parameter() {
 		return isset($this->layers[$this->index+2]) ? $this->layers[$this->index+2] : "-";
 	}
