@@ -1213,7 +1213,8 @@ class exposed_to_the_elements_blue extends Card {
     private
     function ExposedToTheElementsEarth($targetEquip) {
         $CharacterCard = CleanTargetToObject($this->controller, $targetEquip);
-        $CharacterCard->AddDefCounters(-1);
+        if ($CharacterCard != "")
+            $CharacterCard->AddDefCounters(-1);
     }
 
     private
@@ -1238,12 +1239,12 @@ class exposed_to_the_elements_blue extends Card {
     function PayAdditionalCosts($from, $index = '-') {
         $search = "THEIRCHAR:type=E";
         $Earth = "{{element|Earth|" . GetElementColorCode("EARTH") . "}}";
-        if (ShouldAutotargetOpponent($this->controller))
-            $search .= ",MYCHAR:type=E";
+        if (!ShouldAutotargetOpponent($this->controller))
+            $search .= "&MYCHAR:type=E";
         SetTargets($this->controller, $this->cardID, $search, context:"Target an Equipment for the $Earth fuse ability");
         $search = "THEIRCHAR:type=C";
-        if (ShouldAutotargetOpponent($this->controller))
-            $search .= ",MYCHAR:type=C";
+        if (!ShouldAutotargetOpponent($this->controller))
+            $search .= "&MYCHAR:type=C";
         $Ice = "{{element|Ice|" . GetElementColorCode("ICE") . "}}";
         SetTargets($this->controller, $this->cardID, $search, context:"Target a player for the $Ice fuse ability");
     }
