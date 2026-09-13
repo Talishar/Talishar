@@ -1227,7 +1227,7 @@ class exposed_to_the_elements_blue extends Card {
         PrependDecisionQueue("WRITELOG", $this->controller, "Player $targetPlayer declined_to_pay_for_".CardLink("exposed_to_the_elements_blue", "exposed_to_the_elements_blue").".", 1);
         PrependDecisionQueue("GREATERTHANPASS", $targetPlayer, "0", 1);
         PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
-        PrependDecisionQueue("BUTTONINPUT", $targetPlayer, "0,2", 0);
+        PrependPayPrompt("BUTTONINPUT", $targetPlayer, "0,2", 0);
         PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose_if_you_want_to_pay_2_to_prevent_an_equipment_with_0_defense_from_being_destroyed.");
     }
 

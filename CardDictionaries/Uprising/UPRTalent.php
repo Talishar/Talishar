@@ -58,7 +58,7 @@
       case "cold_snap_red": case "cold_snap_yellow": case "cold_snap_blue":
         $cost = match($cardID) { "cold_snap_red" => 3, "cold_snap_yellow" => 2, default => 1 };
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
-        AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
+        AddPayPrompt("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY&THEIRARS", 1);

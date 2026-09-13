@@ -8357,7 +8357,7 @@ class permanent_interment extends BaseCard {
     $max = min(3, SearchCount(SearchMultizone($this->controller, "MYBANISH:talent=SHADOW")));
     if ($max <= 0) return;
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose how much you want to pay to turn Shadow cards face-down");
-    AddDecisionQueue("BUTTONINPUT", $this->controller, implode(",", range(0, $max)));
+    AddPayPrompt("BUTTONINPUT", $this->controller, implode(",", range(0, $max)));
     AddDecisionQueue("PAYRESOURCESEFFECT", $this->controller, "<-", 1);
     Await($this->controller, $this->cardID, "amount");
   }

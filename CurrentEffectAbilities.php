@@ -782,7 +782,7 @@ function OnAttackEffects($cardID)
           break;
         case "flashfreeze_red-DOM":
           AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Do you want to pay 2 to prevent this attack from getting dominate?", 1);
-          AddDecisionQueue("BUTTONINPUT", $defPlayer, "0,2", 0, 1);
+          AddPayPrompt("BUTTONINPUT", $defPlayer, "0,2", 0, 1);
           AddDecisionQueue("PAYRESOURCES", $defPlayer, "<-", 1);
           AddDecisionQueue("GREATERTHANPASS", $defPlayer, "0", 1);
           AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, $currentTurnEffects[$i] . "ATK!PLAY", 1);

@@ -107,7 +107,7 @@
         return "";
       case "blizzard_blue":
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again");
-        AddDecisionQueue("BUTTONINPUT", $mainPlayer, "0,2", 0, 1);
+        AddPayPrompt("BUTTONINPUT", $mainPlayer, "0,2", 0, 1);
         AddDecisionQueue("PAYRESOURCESEFFECT", $mainPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $mainPlayer, "0", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $mainPlayer, $cardID, 1);
@@ -125,7 +125,7 @@
       case "polar_blast_red": case "polar_blast_yellow": case "polar_blast_blue":
         $cost = match($cardID) { "polar_blast_red" => 3, "polar_blast_yellow" => 2, default => 1 };
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_".$cost."_to_prevent_Dominate");
-        AddDecisionQueue("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
+        AddPayPrompt("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
         AddDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);

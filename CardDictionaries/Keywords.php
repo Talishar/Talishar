@@ -366,7 +366,7 @@
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $cardID, $canPass ? 1 : 0);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to pay 2 for <0> to give overpower and +1?", 1);
-      AddDecisionQueue("YESNO", $currentPlayer, "-", 1, 1);
+      AddPayPrompt("YESNO", $currentPlayer, "-", 1, 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, 2, 1);
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "-", 1);

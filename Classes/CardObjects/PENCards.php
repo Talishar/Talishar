@@ -180,7 +180,7 @@ class magmatic_carapace extends Card
     if (CheckTapped("MYCHAR-$index", $this->controller))
       return;
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "if you want to tap " . CardLink("magmatic_carapace", "magmatic_carapace") . " and pay 1 to create a " . CardLink("seismic_surge", "seismic_surge"));
-    AddDecisionQueue("YESNO", $this->controller, "-", 1);
+    AddPayPrompt("YESNO", $this->controller, "-", 1);
     AddDecisionQueue("NOPASS", $this->controller, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $this->controller, "MYCHAR-$index", 1);
     AddDecisionQueue("MZTAP", $this->controller, "-", 1);
@@ -5825,7 +5825,7 @@ class conquer_the_icy_terrain extends BaseCard {
   function HitEffect() {
     global $defPlayer;
     AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to pay 2 to avoid a frozen card being destroyed");
-    AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_pay_2_to_avoid_discarding", 1);
+    AddPayPrompt("YESNO", $defPlayer, "if_you_want_to_pay_2_to_avoid_discarding", 1);
     AddDecisionQueue("NOPASS", $defPlayer, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $defPlayer, 2, 1);
     AddDecisionQueue("PAYRESOURCES", $defPlayer, "-", 1);
@@ -6405,7 +6405,7 @@ class valahai_riven_yellow extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
-    AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
+    AddPayPrompt("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
     AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
     AddDecisionQueue("SPECIFICCARD", $this->controller, "VALAHAIRIVEN,seismic_surge", 1);
   }

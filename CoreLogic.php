@@ -899,7 +899,7 @@ function DoQuell($targetPlayer, $damage, $preventable = true)
       PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 0, 1);
       PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
     }
-    PrependDecisionQueue("BUTTONINPUT", $targetPlayer, $quellChoices);
+    PrependPayPrompt("BUTTONINPUT", $targetPlayer, $quellChoices);
     PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose an amount to pay for Quell");
   } else {
     PrependDecisionQueue("PASSPARAMETER", $targetPlayer, "0"); //If no quell, we need to discard the previous last result
@@ -3998,10 +3998,40 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   return $index >= 0 ? $hand[$index] : -1;
 }
 
+function CanPayResources($player)
+{
+  $resources = &GetResources($player);
+  if ($resources[0] > 0) return true;
+  $hand = &GetHand($player);
+  $handCount = count($hand);
+  $handPieces = HandPieces();
+  for ($i = 0; $i < $handCount; $i += $handPieces) {
+    if (PitchValue($hand[$i]) > 0) return true;
+  }
+  return false;
+}
+
+function AutoPayResult($phase)
+{
+  return $phase == "YESNO" ? "NO" : "0";
+}
+
+function AddPayPrompt($phase, $player, $parameter, $subsequent = 0, $makeCheckpoint = 0)
+{
+  if (CanPayResources($player)) AddDecisionQueue($phase, $player, $parameter, $subsequent, $makeCheckpoint);
+  else AddDecisionQueue("PASSPARAMETER", $player, AutoPayResult($phase), $subsequent);
+}
+
+function PrependPayPrompt($phase, $player, $parameter, $subsequent = 0, $makeCheckpoint = 0)
+{
+  if (CanPayResources($player)) PrependDecisionQueue($phase, $player, $parameter, $subsequent, $makeCheckpoint);
+  else PrependDecisionQueue("PASSPARAMETER", $player, AutoPayResult($phase), $subsequent);
+}
+
 function ChooseToPay($player, $cardID, $amounts)
 {
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($cardID, $cardID));
-  AddDecisionQueue("BUTTONINPUT", $player, $amounts);
+  AddPayPrompt("BUTTONINPUT", $player, $amounts);
   AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
   AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
 }
@@ -4013,7 +4043,7 @@ function WardPoppedAbility($player, $cardID)
     WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono", "celestial_kimono"));
   }
   if (SearchCharacterActive($player, "diadem_of_dreamstate", setInactive: true) || $cardID == "diadem_of_dreamstate") {
-    AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_create_a_".CardLink("ponder", "ponder"));
+    AddPayPrompt("YESNO", $player, "if_you_want_to_pay_1_to_create_a_".CardLink("ponder", "ponder"));
     AddDecisionQueue("NOPASS", $player, "-");
     AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
     AddDecisionQueue("PLAYAURA", $player, "ponder-1", 1);
