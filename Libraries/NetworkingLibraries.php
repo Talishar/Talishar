@@ -2452,7 +2452,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $cardType = CardType($cardID);
   $layersCount = count($layers);
   $playingCard = $turn[0] != "P" && ($turn[0] != "B" || $layersCount > 0);  
-  $mod = "";
   
   // Cache frequently accessed class state values to reduce GetClassState() calls
   $cachedPlayIndex = GetClassState($currentPlayer, $CS_PlayIndex);
@@ -2675,7 +2674,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $isStaticType        = IsStaticType($cardType, $from, $cardID);
   $abilityTypes        = GetAbilityTypes($cardID, $index, $from);
   $isActivated         = IsActivated($cardID, $from);
+  $hasMeld             = HasMeld($cardID);
   $isDelimAction       = DelimStringContains($cardType, "A");
+  $isInstantType       = DelimStringContains($cardType, "I");
   $isActionType        = $isDelimAction || $cardType == "AA";
   $abilityType = "";
   $playType = $cardType;
@@ -2686,9 +2687,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   if ($zone == "MYALLY") AllyPayAdditionalCosts($index, $from);
   //We've paid resources, now pay action points if applicable
   if ($playingCard) {
-    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from, true) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
+    $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from, true) || ($isInstantType && $turn[0] != "M");
     if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) {
-      if(!HasMeld($cardID) && !$isActivated || (HasMeld($cardID) && ($cachedAdditionalCosts != "Life" && $cachedAdditionalCosts != "Null")))
+      if(!$hasMeld && !$isActivated || ($hasMeld && ($cachedAdditionalCosts != "Life" && $cachedAdditionalCosts != "Null")))
       {
         AssignArcaneBonus($currentPlayer, $layerIndex);
       }
@@ -2724,7 +2725,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if ($card != "-" && $stillThere) $card->PastLinkPlayTrigger($cardID, $currentPlayer, $from);
     }
     CharacterCardPlayedAbilities($currentPlayer, $cardID, $from);
-    if (SearchCurrentTurnEffects("lightning_greaves", $mainPlayer) && DelimStringContains($cardType, "I")) {
+    if (SearchCurrentTurnEffects("lightning_greaves", $mainPlayer) && $isInstantType) {
       // check whether lightning greaves has been activated *before* the card is played
       AddCurrentTurnEffect("lightning_greaves", $currentPlayer, "", $cardID);
     }
@@ -2863,8 +2864,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if ($resolvedAbilityType != "I") IncrementClassState($currentPlayer, $CS_NumActionsPlayed);
     }
     if ($from == "BANISH" || $from == "THEIRBANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
-    if (HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
-    if (HasBloodDebt($cardID) && TypeContains($cardID, "AA") && !$isActivated) IncrementClassState($currentPlayer, $CS_NumBloodDebtAttacksPlayed);
+    $hasBloodDebt = HasBloodDebt($cardID);
+    if ($hasBloodDebt) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
+    if ($hasBloodDebt && TypeContains($cardID, "AA") && !$isActivated) IncrementClassState($currentPlayer, $CS_NumBloodDebtAttacksPlayed);
     if ($cardID == "gate_to_iarathael") IncrementClassState($currentPlayer, $CS_IARGatesMadeorUsed);
     if (TalentContains($cardID, "REVERED", $currentPlayer) && TypeContains($cardID, "AA") && !$isActivated)
       IncrementClassState($currentPlayer, $CS_ReveredAACThisTurn);
@@ -2875,8 +2877,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && $resolvedAbilityType != "I") {
       IncrementClassState($currentPlayer, $CS_NumLightningPlayed);
     }
-    if(DelimStringContains($cardType, "I")) {
-      if(!HasMeld($cardID)) IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
+    if($isInstantType) {
+      if(!$hasMeld) IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
       elseif($from != "MELD") IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
     }
     if(DelimStringContains($cardType, "AR") || DelimStringContains($abilityType, "AR")) {
@@ -2895,8 +2897,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     PayAdditionalCosts($cardID, $from, $index);
     if (!$isStaticType) ResetCardPlayed($cardID, $from);
   }
-  $resolvedAbilityTypeB = $resolvedAbilityType;
-  if ($turn[0] == "B" && $cardType == "AA" && ($resolvedAbilityTypeB == "AA" || $resolvedAbilityTypeB == "")) {
+  if ($turn[0] == "B" && $cardType == "AA" && ($resolvedAbilityType == "AA" || $resolvedAbilityType == "")) {
     IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     IncrementClassState($currentPlayer, $CS_NumAttackCardsBlocked); //Played or blocked
   }
