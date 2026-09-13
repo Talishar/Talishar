@@ -5281,6 +5281,7 @@ class tome_of_necrosis_red extends Card {
     if ($this->GetAllies() == "") {
       WriteLog("No allies to destroy or discard, reverting gamestate", highlight:true);
       RevertGamestate();
+      return;
     }
     Await($this->controller, "MultiZoneIndices", search:"MYALLY&MYHAND:subtype=Ally", subsequent:0);
     Await($this->controller, "ChooseMultiZone", context:"Destroy or discard up an ally");
@@ -7773,6 +7774,7 @@ class rally_the_shadow_horde extends BaseCard {
     if ($Hand->NumCards() == 0) {
       WriteLog("This ability requires banishing a card as an additional cost, but you have no cards to banish. Reverting gamestate prior to the card declaration.", highlight: true);
       RevertGamestate();
+      return;
     }
     $playIndex = GetClassState($this->controller, $CS_PlayIndex);
     AddCurrentTurnEffect($this->cardID, $this->controller, "CC", $combatChain[$playIndex + 7]);
@@ -7861,6 +7863,7 @@ class corpse_cover extends BaseCard {
     if ($this->GetAllies() == "") {
       WriteLog("No allies to destroy or discard, reverting gamestate", highlight: true);
       RevertGamestate();
+      return;
     }
     if ($from == "PLAY")
       $CombatChain->Card(GetClassState($this->controller, $CS_PlayIndex))->AddUse(1);
