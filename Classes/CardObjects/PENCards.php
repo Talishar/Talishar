@@ -7584,7 +7584,9 @@ class wind_cutter extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:subtype=Shuriken;subtype=Item");
+    // multizone indices can't handle searching for multiple subtypes, for now just search for shurikens
+    // if in the future we get non-item shurikens, this will need to be fixed.
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDECK:subtype=Shuriken");
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a Shuriken to play", 1);
     AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("MZREMOVE", $this->controller, "<-", 1);
