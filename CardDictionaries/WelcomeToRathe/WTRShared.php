@@ -704,6 +704,8 @@
         AddDecisionQueue("STEALEQUIPMENT", $mainPlayer, "-", 1);
         break;
       case "annexation_of_all_things_known_yellow":
+        AddCurrentTurnEffect($cardID, $defPlayer);
+        AddCurrentTurnEffect("$cardID-MAIN", $mainPlayer);
         AddNextTurnEffect($cardID, $defPlayer);
         AddNextTurnEffect("$cardID-MAIN", $mainPlayer);
         break;
