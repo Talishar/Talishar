@@ -1168,8 +1168,11 @@ function OnBlockResolveEffects($cardID = "")
         default:
           break;
       }
-      if (SearchAuras("daily_grind_blue", $defPlayer) && TypeContains($defendingCard, "AA")) {
-        AddLayer("TRIGGER", $defPlayer, "daily_grind_blue", $defendingCard);
+      $dailyGrinds = CountAura("daily_grind_blue", $defPlayer);
+      if ($dailyGrinds > 0 && TypeContains($defendingCard, "AA")) {
+        for ($j = 0; $j < $dailyGrinds; ++$j) {
+          AddLayer("TRIGGER", $defPlayer, "daily_grind_blue", $defendingCard);
+        }
       }
       IncrementCombatChainState($CCS_NumCardsBlocking);
       $blockingCards[] = CardLink($defendingCard, $defendingCard);
