@@ -3210,13 +3210,8 @@ class head_banging_chorus_yellow extends Card {
     if (!IsHeroAttackTarget()) return;
     $attackCard = $CombatChain->AttackCard()->ID();
     if (!TypeContains($attackCard, "AA", $this->controller)) return false;
-        if (!$check)
-          AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
-        return true;
-      }
-    }
-    elseif (TalentContains($attackCard, "REVERED", $this->controller)) {
     if (ClassContains($attackCard, "GUARDIAN", $this->controller) || ClassContains($attackCard, "REVERED", $this->controller)) {
+      if (GetClassState($this->controller, $CS_GuardianAACThisTurn) + GetClassState($this->controller, $CS_ReveredAACThisTurn) == 1) {
         if (!$check)
           AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
         return true;
