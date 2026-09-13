@@ -942,7 +942,7 @@ class turn_the_crowd_grateful {
   }
 
   function HitEffect() {
-    BOO($this->controller);
+    Cheer($this->controller);
   }
 }
 
