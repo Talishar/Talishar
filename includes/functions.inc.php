@@ -280,17 +280,17 @@ function InitializeRustCounterAccrualForGame($p1id, $p1IsPatron, $p1IsAI, $p2id,
 	if ($statePath === null) return false;
 
 	$players = [];
-	$skipGame = IsDevEnvironment();
+	$skipGame = IsDevEnvironment() || $p1IsAI === "1" || $p2IsAI === "1";
 	if ($skipGame) {
 		$state = ["status" => "skipped", "players" => []];
 		return file_put_contents($statePath, json_encode($state), LOCK_EX) !== false;
 	}
 
-	if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron) && $p2IsAI !== "1") {
+	if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)) {
 		WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight: true, highlightColor: "green", path: "../");
 		$skipGame = true;
 	}
-	elseif (ShouldSkipRustCountersForContributors() && $p2IsAI !== "1") {
+	elseif (ShouldSkipRustCountersForContributors()) {
 		WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight: true, highlightColor: "green", path: "../");
 		$skipGame = true;
 	}
