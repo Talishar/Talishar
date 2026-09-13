@@ -5010,7 +5010,7 @@ class not_so_tuff_blue extends Card {
     global $mainPlayer;
     $mainChar = GetPlayerCharacter($mainPlayer);
     if (!IsAllyAttacking() && TalentContains($mainChar[0], "REVERED", $mainPlayer)) {
-      AddLayer("REVERED", $this->controller, $this->cardID);
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
     }
   }
 
