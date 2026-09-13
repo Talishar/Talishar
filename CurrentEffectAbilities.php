@@ -1056,7 +1056,7 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
   $Effect = new CurrentEffect($index);
   $source = explode("|", $source, 2)[0] ?? $source;
   $card = GetClass($effects[0], $player);
-  if ($type == "COMBAT" && IsHeroAttackTarget()) { // prevention to players
+  if (($type == "COMBAT" && IsHeroAttackTarget()) || $type != "COMBAT") { // prevention to players
     if ($card != "-") {
       $remove = false;
       return $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, true);
