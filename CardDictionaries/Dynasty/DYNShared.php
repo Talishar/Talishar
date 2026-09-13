@@ -526,7 +526,7 @@ function DYNHitEffect($cardID, $from, $attackID)
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop(banishedBy:$cardID);
+        $deck->BanishTop(banishedBy:$cardID, banisher:$mainPlayer);
       }
       break;
     case "heat_seeker_red": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;
