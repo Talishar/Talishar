@@ -37,12 +37,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $isReplayAdvance, $replayUndoHasRecordedResponse;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
-    case 0:
-    case 1:
-    case 2: //DEPRECATED
-    case 18:
-    case 28:
-      break;
     case 3: //Play equipment/hero ability
       $index = intval($cardID);
       $character = &GetPlayerCharacter($playerID);
@@ -2680,6 +2674,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $resolvedAbilityType = GetResolvedAbilityType($cardID, $from);
   $isStaticType        = IsStaticType($cardType, $from, $cardID);
   $abilityTypes        = GetAbilityTypes($cardID, $index, $from);
+  $isActivated         = IsActivated($cardID, $from);
   $isDelimAction       = DelimStringContains($cardType, "A");
   $isActionType        = $isDelimAction || $cardType == "AA";
   $abilityType = "";
@@ -2693,7 +2688,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   if ($playingCard) {
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from, true) || (DelimStringContains($cardType, "I") && $turn[0] != "M");
     if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) {
-      if(!HasMeld($cardID) && (!IsActivated($cardID, $from)) || (HasMeld($cardID) && ($cachedAdditionalCosts != "Life" && $cachedAdditionalCosts != "Null")))
+      if(!HasMeld($cardID) && !$isActivated || (HasMeld($cardID) && ($cachedAdditionalCosts != "Life" && $cachedAdditionalCosts != "Null")))
       {
         AssignArcaneBonus($currentPlayer, $layerIndex);
       }
@@ -2703,11 +2698,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     AssignEffectToCard($cardID, $currentPlayer, $from);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
-    if (TypeContains($cardID, "W", $currentPlayer) && IsActivated($cardID, $from))
+    if (TypeContains($cardID, "W", $currentPlayer) && $isActivated)
       IncrementClassState($currentPlayer, $CS_NumWeaponsActivated);
     if (HasWateryGrave($cardID) && $from == "GY") IncrementClassState($currentPlayer, $CS_NumWateryGrave);
     if (CardName($cardID) == "Nimblism") IncrementClassState($currentPlayer, $CS_PlayedNimblism);
-    if (!IsActivated($cardID, $from)) {
+    if (!$isActivated) {
       if (TypeContains($cardID, "AR")) SetCombatChainState($CCS_AttackReactionsPlayed, (GetCombatChainState($CCS_AttackReactionsPlayed) ?? 0) + 1);
       if (TypeContains($cardID, "DR")) SetCombatChainState($CCS_DefenseReactionsPlayed, (GetCombatChainState($CCS_DefenseReactionsPlayed) ?? 0) + 1);
     }
@@ -2753,7 +2748,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     // Cached card cost
     $cardCost = CardCost($cardID, $from);
 
-    if (IsActivated($cardID, $from)) {
+    if ($isActivated) {
       $playType = $resolvedAbilityType;
       $abilityType = $playType;
       PayAbilityAdditionalCosts($cardID, $cachedAbilityIndex, $from, $index);
@@ -2869,11 +2864,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     if ($from == "BANISH" || $from == "THEIRBANISH") IncrementClassState($currentPlayer, $CS_NumPlayedFromBanish);
     if (HasBloodDebt($cardID)) IncrementClassState($currentPlayer, $CS_NumBloodDebtPlayed);
-    if (HasBloodDebt($cardID) && TypeContains($cardID, "AA") && !IsActivated($cardID, $from)) IncrementClassState($currentPlayer, $CS_NumBloodDebtAttacksPlayed);
+    if (HasBloodDebt($cardID) && TypeContains($cardID, "AA") && !$isActivated) IncrementClassState($currentPlayer, $CS_NumBloodDebtAttacksPlayed);
     if ($cardID == "gate_to_iarathael") IncrementClassState($currentPlayer, $CS_IARGatesMadeorUsed);
-    if (TalentContains($cardID, "REVERED", $currentPlayer) && TypeContains($cardID, "AA") && !IsActivated($cardID, $from))
+    if (TalentContains($cardID, "REVERED", $currentPlayer) && TypeContains($cardID, "AA") && !$isActivated)
       IncrementClassState($currentPlayer, $CS_ReveredAACThisTurn);
-    if (ClassContains($cardID, "GUARDIAN", $currentPlayer) && TypeContains($cardID, "AA") && !IsActivated($cardID, $from))
+    if (ClassContains($cardID, "GUARDIAN", $currentPlayer) && TypeContains($cardID, "AA") && !$isActivated)
       IncrementClassState($currentPlayer, $CS_GuardianAACThisTurn);
     if (ColorContains($cardID, 1, $currentPlayer) && $from != "PLAY" && $resolvedAbilityType != "I") IncrementClassState($currentPlayer, $CS_NumRedPlayed);
     if (ColorContains($cardID, 3, $currentPlayer) && $from != "PLAY" && $resolvedAbilityType != "I") IncrementClassState($currentPlayer, $CS_NumBluePlayed);
@@ -2890,7 +2885,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($cardType == "AA" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA")) {
       IncrementClassState($currentPlayer, $CS_NumAttackCards); //Played or blocked
     }
-    if (($CombatChain->HasCurrentLink() && !IsResolutionStep()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && !IsActivated($cardID, $from)) {
+    if (($CombatChain->HasCurrentLink() && !IsResolutionStep()) && $from != "EQUIP" && $from != "PLAY" && DelimStringContains($playType, "I") && !$isActivated) {
       if ($mainPlayer == $currentPlayer)
         IncrementCombatChainState($CCS_NumInstantsPlayedByAttackingPlayer);
       else
@@ -2932,7 +2927,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     }
     else CurrentEffectActivateAbility($cardID, $from);
     CombatChainPlayCardAbilities($cardID, $from);
-    if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID) && !IsActivated($cardID, $from)) EvoOnPlayHandling($currentPlayer);
+    if (SubtypeContains($cardID, "Evo", $currentPlayer, $uniqueID) && !$isActivated) EvoOnPlayHandling($currentPlayer);
   }
   AddDecisionQueue("RESUMEPLAY", $currentPlayer, $cardID . "|" . $from . "|" . $resourcesPaid . "|" . $cachedAbilityIndex . "|" . $cachedPlayUniqueID . "|" . $zone);
   ProcessDecisionQueue();
