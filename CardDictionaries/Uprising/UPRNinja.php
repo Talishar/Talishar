@@ -12,9 +12,6 @@
       case "heat_wave":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "spreading_flames_red":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "rise_from_the_ashes_red": case "rise_from_the_ashes_yellow": case "rise_from_the_ashes_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         MZMoveCard($currentPlayer, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND", may:true);

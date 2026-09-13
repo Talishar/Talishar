@@ -2222,7 +2222,7 @@ function CardNameContains($cardID, $name, $player = "", $partial = false)
   return StringContainsWholeWords($cardName, $name);
 }
 
-function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false)
+function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false, $from="-")
 {
   global $currentTurnEffects;
 
@@ -2241,7 +2241,8 @@ function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false)
       case "brand_with_cinderclaw_blue":
       case "enflame_the_firebrand_red":
         if ($dedupe && $draconic !== 0) break;
-        if (TypeContains($cardID, "AA") || TypeContains($cardID, "W") || SubtypeContains($cardID, "Ally")) ++$draconic;
+        if (GetResolvedAbilityType($cardID, $from, $player) == "AA") ++$draconic;
+        elseif (TypeContains($cardID, "AA") || TypeContains($cardID, "W") || SubtypeContains($cardID, "Ally")) ++$draconic;
         break;
       case "blessing_of_vynserakai_red":
         if ($dedupe && $draconic !== 0) break;
@@ -2266,9 +2267,9 @@ function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false)
   return str_repeat("DRACONIC,", $draconic) . CardTalent($cardID, $zone);
 }
 
-function TalentContains($cardID, $talent, $player = "")
+function TalentContains($cardID, $talent, $player = "", $from = "-")
 {
-  $cardTalent = TalentOverride($cardID, $player, "-", true);
+  $cardTalent = TalentOverride($cardID, $player, "-", true, $from);
   if (DelimStringContains($cardTalent, $talent)) return true;
   return $cardTalent != "NONE" && $player != "" && PermanentsContainCard($player, "shapeshifter");
 }

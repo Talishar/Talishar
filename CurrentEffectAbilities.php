@@ -678,7 +678,6 @@ function RemoveEffectsFromCombatChain($cardID = "")
       case "explosive_growth_red":
       case "explosive_growth_yellow":
       case "explosive_growth_blue":
-      case "spreading_flames_red":
       case "brand_with_cinderclaw_red":
       case "brand_with_cinderclaw_yellow":
       case "brand_with_cinderclaw_blue":
@@ -2323,7 +2322,6 @@ function IsCombatEffectPersistent($cardID)
     case "skittering_sands_yellow":
     case "skittering_sands_blue":
     case "heat_wave":
-    case "spreading_flames_red":
     case "berserk_yellow":
     case "roar_of_the_tiger_yellow":
     case "visit_the_imperial_forge_red":

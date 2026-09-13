@@ -2899,17 +2899,44 @@ class searing_touch_red extends Card {
 // }
 
 
-// class spreading_flames_red extends Card {
+class spreading_flames_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "spreading_flames_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "spreading_flames_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    $from = $CombatChain->AttackCard()->From();
+    $isDraconic = TalentContains($attackID, "DRACONIC", $this->controller, $from);
+    return $isDraconic && PowerValue($attackID, $this->controller, "CC") < NumDraconicChainLinks();
+  }
+
+  function RemoveEffectFromCombatChain($effectIndex) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+
+}
 
 
 // class stoke_the_flames_red extends Card {
