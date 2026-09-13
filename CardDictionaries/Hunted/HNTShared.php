@@ -135,7 +135,6 @@ function HNTEffectPowerModifier($cardID, $attached=False): int
     "sworn_vengeance_yellow" => 2,
     "sworn_vengeance_blue" => 1,
     "hand_of_vengeance" => 1,
-    "rake_over_the_coals_red" => 1,
     "tooth_of_the_dragon_red" => 3,
     "blessing_of_vynserakai_red" => 3,
     "up_sticks_and_run_red" => $attached ? 4 : 0,
@@ -259,7 +258,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "vow_of_vengeance" => true,
     "hand_of_vengeance" => true,
     "path_of_vengeance" => true,
-    "rake_over_the_coals_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "blessing_of_vynserakai_red" => true,
     "tooth_of_the_dragon_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "up_sticks_and_run_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -609,10 +607,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "drop_of_dragon_blood_red":
       GainResources(1, $currentPlayer);
       Draw($currentPlayer, effectSource:$cardID);
-      break;
-    case "rake_over_the_coals_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      AddCurrentTurnEffect($cardID, $otherPlayer);
       break;
     case "for_the_dracai_red": case "for_the_emperor_red": case "for_the_realm_red":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {

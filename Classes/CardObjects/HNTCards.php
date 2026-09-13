@@ -2375,17 +2375,35 @@ class jagged_edge_red extends Card {
 // }
 
 
-// class rake_over_the_coals_red extends Card {
+class rake_over_the_coals_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "rake_over_the_coals_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "rake_over_the_coals_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+      	AddCurrentTurnEffect($this->cardID, $this->controller == 1 ? 2 : 1);
+		return "";
+  	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return true;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$attackID = $CombatChain->AttackCard()->ID();
+		$from = $CombatChain->AttackCard()->From();
+		$isDraconic = TalentContains($attackID, "DRACONIC", $this->controller, $from);
+		return $isDraconic;
+	}
+}
 
 
 // class reapers_call_red extends Card {
