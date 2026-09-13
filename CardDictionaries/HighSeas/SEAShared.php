@@ -1149,23 +1149,7 @@ function SEAHitEffect($cardID): void
     case "money_or_your_life_blue":
       $hero = GetPlayerCharacter($mainPlayer);
       $repeat = ClassContains($hero[0], "THIEF", $mainPlayer) ? 2 : 1;
-      $theirNumGold = CountItem("gold", $defPlayer);
-      for ($i = 0; $i < $repeat; $i++) {
-        if($theirNumGold > 0) {
-          AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to give " . CardLink($cardID, $cardID));
-          AddDecisionQueue("BUTTONINPUT", $defPlayer, "Gold,Life");
-          AddDecisionQueue("EQUALPASS", $defPlayer, "Life");
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
-        }
-        else {
-          AddDecisionQueue("PASSPARAMETER", $defPlayer, "PASS");
-        }
-        AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
-        AddDecisionQueue("PASSPARAMETER", $mainPlayer, 2 . "-" . $combatChain[0] . "-" . "TRIGGER-" . $mainPlayer, 1);
-        AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
-      }
+      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "MONEYORYOURLIFE-$cardID-$repeat", 1);
       break;
     case "blow_for_a_blow_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);

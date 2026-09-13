@@ -514,6 +514,24 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
   $otherPlayer = ($player == 1) ? 2 : 1;
   $params = explode("-", $card);
   switch ($params[0]) {
+    case "MONEYORYOURLIFE":
+      $cardID = $params[1];
+      $repeat = intval($params[2]);
+      if (CountItem("gold", $defPlayer) > 0) {
+        AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose if you want to give " . CardLink($cardID, $cardID));
+        AddDecisionQueue("BUTTONINPUT", $defPlayer, "Gold,Life");
+        AddDecisionQueue("EQUALPASS", $defPlayer, "Life");
+        AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRITEMS:type=T;cardID=gold", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("MZOP", $player, "GAINCONTROL", 1);
+      } else {
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, "PASS");
+      }
+      AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
+      AddDecisionQueue("PASSPARAMETER", $player, "2-" . $combatChain[0] . "-TRIGGER-" . $player, 1);
+      AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
+      if ($repeat > 1) AddDecisionQueue("SPECIFICCARD", $player, "MONEYORYOURLIFE-$cardID-" . ($repeat - 1), 1);
+      return "";
     case "RIGHTEOUSCLEANSING":
       $numBanished = SearchCount($lastResult);
       $numLeft = 5 - $numBanished;
