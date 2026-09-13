@@ -5246,7 +5246,7 @@ class violent_gusto_red extends Card {
     $Auras = new Auras($defPlayer);
     for ($i = $Auras->NumAuras()-1; $i >=0; --$i){
       $AuraCard = $Auras->Card($i, true);
-      if (CardNameContains($AuraCard->CardID(), $chosenName, $defPlayer))
+      if (NameOverride($AuraCard->CardID(), $defPlayer) == $chosenName)
         $AuraCard->Bounce();
     }
   }

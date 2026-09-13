@@ -2371,7 +2371,6 @@ function IsCombatEffectPersistent($cardID)
     case "point_of_engagement_red-MARKEDBUFF":
     case "point_of_engagement_yellow-MARKEDBUFF":
     case "point_of_engagement_blue-MARKEDBUFF":
-    case "rake_over_the_coals_red":
     case "poisoned_blade_red":
     case "poisoned_blade_yellow":
     case "poisoned_blade_blue":
