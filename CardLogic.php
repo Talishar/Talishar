@@ -4121,7 +4121,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
           AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
           AddDecisionQueue("DRAW", $player, "-", 1);
-          CombatChainDefenseModifier($target, 1);
+          $targetIndex = str_contains($target, "COMBATCHAINLINK") ? (int)substr($target, 16) : $target;
+          $chainCard = $CombatChain->Card($targetIndex);
+          $characterIndex = SearchCharacterForUniqueID($chainCard->OriginUniqueID(), $player);
+          if ($characterIndex != -1) (new CharacterCard($characterIndex, $player))->AddDefCounters(1);
         }
         break;
       case "call_for_backup_red":
