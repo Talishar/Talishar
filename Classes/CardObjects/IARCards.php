@@ -3210,15 +3210,8 @@ class head_banging_chorus_yellow extends Card {
     if (!IsHeroAttackTarget()) return;
     $attackCard = $CombatChain->AttackCard()->ID();
     if (!TypeContains($attackCard, "AA", $this->controller)) return false;
-    if (ClassContains($attackCard, "GUARDIAN", $this->controller)) {
-      if (GetClassState($this->controller, $CS_GuardianAACThisTurn) == 1) {
-        if (!$check)
-          AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
-        return true;
-      }
-    }
-    elseif (TalentContains($attackCard, "REVERED", $this->controller)) {
-      if (GetClassState($this->controller, $CS_ReveredAACThisTurn) == 1) {
+    if (ClassContains($attackCard, "GUARDIAN", $this->controller) || ClassContains($attackCard, "REVERED", $this->controller)) {
+      if (GetClassState($this->controller, $CS_GuardianAACThisTurn) + GetClassState($this->controller, $CS_ReveredAACThisTurn) == 1) {
         if (!$check)
           AddLayer("TRIGGER", $this->controller, $this->cardID, $index, "ONHITEFFECT");
         return true;
@@ -4583,7 +4576,7 @@ class ominous_toll extends BaseCard {
     global $dqVars;
     $choice = $dqVars["MZIndex"] ?? "-";
     $index = explode("-", $choice)[1] ?? -1;
-    if ($index != "-") {
+    if ($index >= 0) {
       DiscardCard($this->controller, $index);
       PlayAura("gate_to_iarathael", $this->controller);
     }
@@ -4668,7 +4661,7 @@ class embrace_ursur extends BaseCard {
     global $dqVars;
     $choice = $dqVars["MZIndex"] ?? "-";
     $index = explode("-", $choice)[1] ?? -1;
-    if ($index != "-") {
+    if ($index >= 0) {
       $Hand = new Hand($this->controller);
       $cardID = $Hand->Remove($index);
       BanishCardForPlayer($cardID, $this->controller, "HAND");
@@ -5137,7 +5130,7 @@ class mark_of_neverest_blue extends Card {
   function AuraPowerModifiers($index, &$powerModifiers, $auraIndex) {
     global $CombatChain;
     $AuraCard = new AuraCard($auraIndex, $this->controller);
-    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
+    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) {
       $powerModifiers[] = $this->cardID;
       $powerModifiers[] = 1;
       return 1;
@@ -5192,7 +5185,7 @@ class mark_of_pathstone_blue extends Card {
   function AuraPowerModifiers($index, &$powerModifiers, $auraIndex) {
     global $CombatChain;
     $AuraCard = new AuraCard($auraIndex, $this->controller);
-    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
+    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) {
       $powerModifiers[] = $this->cardID;
       $powerModifiers[] = 1;
       return 1;
@@ -5281,6 +5274,7 @@ class tome_of_necrosis_red extends Card {
     if ($this->GetAllies() == "") {
       WriteLog("No allies to destroy or discard, reverting gamestate", highlight:true);
       RevertGamestate();
+      return;
     }
     Await($this->controller, "MultiZoneIndices", search:"MYALLY&MYHAND:subtype=Ally", subsequent:0);
     Await($this->controller, "ChooseMultiZone", context:"Destroy or discard up an ally");
@@ -5320,6 +5314,8 @@ class restless_looter_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "I" && $from == "PLAY") {
+      $Hand = new Hand($this->controller);
+      if ($Hand->NumCards() == 0) return "";
       PummelHit($this->controller);
       Await($this->controller, "Draw", effectSource: $this->cardID, final:true);
     }
@@ -7086,7 +7082,7 @@ class shadowrealm_solace_blue extends Card {
 		global $dqVars;
 		$choice = $dqVars["MZIndex"] ?? "-";
 		$object = MZIndexToObject($this->controller, $choice);
-		if ($object != "-") {
+		if (is_object($object)) {
 			$cardID = $object->CardID();
 			AddGraveyard($cardID, $this->controller, "BANISH");
 			$object->Remove();
@@ -7773,6 +7769,7 @@ class rally_the_shadow_horde extends BaseCard {
     if ($Hand->NumCards() == 0) {
       WriteLog("This ability requires banishing a card as an additional cost, but you have no cards to banish. Reverting gamestate prior to the card declaration.", highlight: true);
       RevertGamestate();
+      return;
     }
     $playIndex = GetClassState($this->controller, $CS_PlayIndex);
     AddCurrentTurnEffect($this->cardID, $this->controller, "CC", $combatChain[$playIndex + 7]);
@@ -7861,6 +7858,7 @@ class corpse_cover extends BaseCard {
     if ($this->GetAllies() == "") {
       WriteLog("No allies to destroy or discard, reverting gamestate", highlight: true);
       RevertGamestate();
+      return;
     }
     if ($from == "PLAY")
       $CombatChain->Card(GetClassState($this->controller, $CS_PlayIndex))->AddUse(1);

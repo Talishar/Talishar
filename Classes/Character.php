@@ -95,7 +95,7 @@ class CharacterCard {
   }
 
   function NumCounters() {
-    return $this->pieces[$this->index+2] ?? 0;
+    return intval($this->pieces[$this->index+2] ?? 0);
   }
 
   function AddCounters($num) {

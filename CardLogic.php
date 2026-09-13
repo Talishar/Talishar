@@ -1576,7 +1576,7 @@ function AddCharacterPlayCardTrigger($cardID, $playType, $from)
   $charPieces = CharacterPieces();
   $mainChar = GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainChar);
-  for ($i = 0; $i < $mainCharCount; $i += $charPieces) {
+  for ($i = 0; $i < $mainCharCount && isset($mainChar[$i]); $i += $charPieces) {
     switch ($mainChar[$i]) {
       default:
         break;
@@ -1584,7 +1584,7 @@ function AddCharacterPlayCardTrigger($cardID, $playType, $from)
   }
   $otherChar = GetPlayerCharacter($otherPlayer);
   $otherCharCount = count($otherChar);
-  for ($i = 0; $i < $otherCharCount; $i += $charPieces) {
+  for ($i = 0; $i < $otherCharCount && isset($otherChar[$i]); $i += $charPieces) {
     switch ($otherChar[$i]) {
       case "leap_frog_vocal_sac":
       case "leap_frog_slime_skin":
@@ -4121,7 +4121,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("MZREMOVE", $player, "-", 1);
           AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
           AddDecisionQueue("DRAW", $player, "-", 1);
-          CombatChainDefenseModifier($target, 1);
+          $targetIndex = str_contains($target, "COMBATCHAINLINK") ? (int)substr($target, 16) : $target;
+          $chainCard = $CombatChain->Card($targetIndex);
+          $characterIndex = SearchCharacterForUniqueID($chainCard->OriginUniqueID(), $player);
+          if ($characterIndex != -1) (new CharacterCard($characterIndex, $player))->AddDefCounters(1);
         }
         break;
       case "call_for_backup_red":

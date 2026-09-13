@@ -2,7 +2,7 @@
 
 function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = true)
 {
-  global $CombatChain, $ChainLinks;
+  global $CombatChain, $ChainLinks, $Stack;
   $lastResultArr = explode(",", $lastResult ?? "");
   $otherPlayer = 3 - $player;
   $destroyer = ($effectController !== "" && $effectController != "-") ? $effectController : $player;
@@ -51,6 +51,9 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         break;
       case "COMBATCHAINLINK":
         $lastResult = $CombatChain->Remove($mzIndex[1]);
+        break;
+      case "LAYER":
+        $lastResult = $Stack->Negate($mzIndex[1]);
         break;
       case "COMBATCHAINATTACKS":
         $ind = intdiv($mzIndex[1], $chainLinksPieces);
@@ -358,6 +361,7 @@ function MZBanish($player, $parameter, $lastResult)
 
 function MZGainControl($player, $target, $temporary=0)
 {
+  global $CombatChain, $Stack;
   $targetArr = explode("-", $target, 2);
   $otherPlayer = 3 - $player;
   switch ($targetArr[0]) {
@@ -372,6 +376,22 @@ function MZGainControl($player, $target, $temporary=0)
     case "MYAURAS":
     case "THEIRAURAS":
       StealAura($otherPlayer, $targetArr[1], $player, $targetArr[0]);
+      break;
+    case "COMBATCHAINLINK":
+      $ChainCard = $CombatChain->Card($targetArr[1]);
+      $cardID = $ChainCard->ID();
+      $from = $ChainCard->From();
+      $uniqueID = $ChainCard->OriginUniqueID();
+      if ($cardID != "-" && DelimStringContains(CardSubType($cardID), "Aura")) {
+        $CombatChain->Remove($targetArr[1]);
+        PlayAura($cardID, $player, from:"THEIR$from", effectController:$player, uniqueID:$uniqueID);
+      }
+      break;
+    case "LAYER":
+      $Layer = $Stack->Card($targetArr[1]);
+      if ($Layer->ID() != "" && DelimStringContains(CardSubType($Layer->ID()), "Aura")) {
+        $Layer->SetPlayerID($player);
+      }
       break;
     default:
       break;

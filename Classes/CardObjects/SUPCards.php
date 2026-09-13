@@ -736,7 +736,7 @@ class fight_fair_red extends Card {
   }
 
   function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
-    if (SearchCurrentTurnEffects($this->cardID, $this->controller)) return "BOTDECK";
+    if (SearchCurrentTurnEffects($this->cardID, $this->controller, true)) return "BOTDECK";
     else return "GY";
   }
 
@@ -747,7 +747,7 @@ class fight_fair_red extends Card {
 
 class fight_dirty_red extends Card {
   function __construct($controller) {
-    $this->cardID = "fight_dirty_rred";
+    $this->cardID = "fight_dirty_red";
     $this->controller = $controller;
   }
 
@@ -942,7 +942,7 @@ class turn_the_crowd_grateful {
   }
 
   function HitEffect() {
-    BOO($this->controller);
+    Cheer($this->controller);
   }
 }
 
@@ -1314,7 +1314,7 @@ class kick_the_hornets_nest_yellow extends Card {
     PlayAura("might", $this->controller);
     PlayAura("toughness", $this->controller);
     PlayAura("vigor", $this->controller);
-    WriteLog(CardLink($this->controller, $this->cardID) . " created an " . CardLink("confidence", "confidence") . ", " . CardLink("might", "might") . ", " . CardLink("toughness", "toughness") . " and " . CardLink("vigor", "vigor") . " tokens.");
+    WriteLog(CardLink($this->cardID, $this->cardID) . " created an " . CardLink("confidence", "confidence") . ", " . CardLink("might", "might") . ", " . CardLink("toughness", "toughness") . " and " . CardLink("vigor", "vigor") . " tokens.");
   }
 
   function AddGraveyardEffect($from, $effectController, $cardController) {
@@ -2168,7 +2168,11 @@ class aura_of_suspense extends BaseCard{
   function ProcessTrigger($target, $additionalCosts) {
     global $CombatChain;
     if ($additionalCosts == "DESTROY") {
-      DestroyAuraUniqueID($this->controller, $target);
+      $index = SearchAurasForUniqueID($target, $this->controller);
+      if ($index != -1) {
+        $Aura = new AuraCard($index, $this->controller);
+        if ($Aura->NumCounters() <= 0) DestroyAuraUniqueID($this->controller, $target);
+      }
     }
     else {
       if (!$CombatChain->HasCurrentLink() && !IsLayerStep()) {
@@ -2802,7 +2806,7 @@ class hit_the_gas_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     //eventually we'll want to make this check if it should draw only after you finish flipping cards
-    $search = "MYBANISH:isSameName=hyper_driver_red";
+    $search = "MYBANISH:cardID=hyper_driver_red";
     $count = SearchCount(SearchMultizone($this->controller, $search));
     // AddDecisionQueue("PASSPARAMETER", $this->controller, 1);
     // AddDecisionQueue("SETDQVAR", $this->controller, 0, 1); // number of cards flipped
@@ -5010,7 +5014,7 @@ class not_so_tuff_blue extends Card {
     global $mainPlayer;
     $mainChar = GetPlayerCharacter($mainPlayer);
     if (!IsAllyAttacking() && TalentContains($mainChar[0], "REVERED", $mainPlayer)) {
-      AddLayer("REVERED", $this->controller, $this->cardID);
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
     }
   }
 
@@ -5870,7 +5874,11 @@ class turn_heads_blue extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $mainPlayer;
     if ($additionalCosts == "DESTROY") {
-      DestroyAuraUniqueID($this->controller, $target);
+      $index = SearchAurasForUniqueID($target, $this->controller);
+      if ($index != -1) {
+        $Aura = new AuraCard($index, $this->controller);
+        if ($Aura->NumCounters() <= 0) DestroyAuraUniqueID($this->controller, $target);
+      }
     }
     else {
       $otherPlayer = $this->controller == 1 ? 2 : 1;
@@ -5910,10 +5918,14 @@ class who_blinks_first_blue extends Card {
     }
     else {
       $otherPlayer = $this->controller == 1 ? 2 : 1;
+      $myChar = GetPlayerCharacter($this->controller);
       $otherChar = GetPlayerCharacter($otherPlayer);
-      if (ClassContains($otherChar[0], "GUARDIAN", $otherPlayer)) {
-        AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRAURAS");
-        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      $search = [];
+      if (ClassContains($myChar[0], "GUARDIAN", $this->controller)) $search[] = "MYAURAS";
+      if (ClassContains($otherChar[0], "GUARDIAN", $otherPlayer)) $search[] = "THEIRAURAS";
+      if (count($search) > 0) {
+        AddDecisionQueue("MULTIZONEINDICES", $this->controller, implode("&", $search));
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
         AddDecisionQueue("SHOWCHOSENCARD", $this->controller, "<-", 1);
         AddDecisionQueue("MZDESTROY", $this->controller, "<-", 1);
       }
@@ -6059,7 +6071,7 @@ class unwavering_resolve_red extends Card {
   }
 
   function DoesAttackHaveGoAgain() {
-    return NumCardsDefended() > 3;
+    return NumCardsDefended() >= 3;
   }
 }
 
@@ -6153,7 +6165,7 @@ class liars_charm_yellow extends Card {
           $hand = GetHand($targetPlayer);
           if (count($hand) > 0) {
             Await($targetPlayer, "MultiZoneIndices", search:"MYHAND");
-            Await($targetPlayer, "ChooseMultiZone", may:true, context:"Discard a card to draw a card (or pass)");
+            Await($targetPlayer, "ChooseMultiZone", may:true, context:"Discard a card or lose your hero abilities this action phase");
             Await($targetPlayer, "Discard");
             AddDecisionQueue("ELSE", $targetPlayer, "-");
           }

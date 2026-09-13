@@ -659,7 +659,7 @@ function DamageAlly($targetPlayer, $targetInd, $damage, $type, $countAsDamageDea
 function AllyAttackCosts($player, $cardID) {
   if (SearchCharacterAlive($player, "vox_necropolis") && SubtypeContains($cardID, "Zombie"))
     return 1;
-  if (SearchCurrentTurnEffects("consuming_appetite_yellow", $player || SearchCurrentTurnEffects("consuming_command_blue", $player)) && NameOverride($cardID, $player) == "Blasmophet, the Insatiable Hunger")
+  if ((SearchCurrentTurnEffects("consuming_appetite_yellow", $player) || SearchCurrentTurnEffects("consuming_command_blue", $player)) && NameOverride($cardID, $player) == "Blasmophet, the Insatiable Hunger")
     return 0;
   return -1;
 }

@@ -8,11 +8,16 @@ include_once __DIR__ . '/Assets/AllAltArtVariations.php';
 $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/usurp-the-shadow-throne/json/english/card.json";
 
 $manualArtVariationOverrides = [
-/*   "blessing_of_suraya_yellow" => [
+/*    "outed_red" => [
     ["artVariation" => "EA", 
-    "setID" => "IAR258", 
-    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/IAR258-CF.webp"],
-  ], */
+    "setID" => "HNT235", 
+    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/FAB517-RF.webp"],
+  ], 
+     "levia_shadowborn_abomination" => [
+    ["artVariation" => "MV", 
+    "setID" => "MON119", 
+    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/HER175-MV.webp"],
+  ],  */
 ];
 
 echo "=== Starting Art Variations Download ===\n";

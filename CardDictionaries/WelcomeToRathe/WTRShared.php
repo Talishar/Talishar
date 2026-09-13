@@ -517,13 +517,14 @@
   }
 
 
-  function HasCrush($cardID)
+  function HasCrush($cardID, $player = "")
   {
     global $mainPlayer;
-    if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer) && TypeContains($cardID, "AA")) return true;
+    if ($player === "") $player = $mainPlayer;
+    if (SearchCurrentTurnEffects("leave_a_dent_blue", $player) && ClassContains($cardID, "GUARDIAN", $player) && TypeContains($cardID, "AA")) return true;
     static $generatedCrushCache = [];
     if (isset($generatedCrushCache[$cardID])) return $generatedCrushCache[$cardID];
-    $card = GetClass($cardID, $mainPlayer);
+    $card = GetClass($cardID, $player);
     if ($card != "-") return $card->HasCrush();
     return $generatedCrushCache[$cardID] = GeneratedHasCrush($cardID);
   }
@@ -636,7 +637,7 @@
         MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRCHAR:type=E;hasNegCounters=true"), $mainPlayer); 
         break;
       case "disenchantment_of_the_old_ones_red":
-        MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS"), $mainPlayer); 
+        MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS&COMBATCHAINLINK:subtype=Aura&LAYER:subtype=Aura"), $mainPlayer); 
         break;
       case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
         $deck = new Deck($defPlayer);
@@ -691,7 +692,7 @@
         PummelHit($defPlayer, effectController:$mainPlayer);
         break;
       case "annexation_of_grandeur_yellow":
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS");
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS&COMBATCHAINLINK:subtype=Aura&LAYER:subtype=Aura");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an aura to gain control");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
@@ -703,6 +704,8 @@
         AddDecisionQueue("STEALEQUIPMENT", $mainPlayer, "-", 1);
         break;
       case "annexation_of_all_things_known_yellow":
+        AddCurrentTurnEffect($cardID, $defPlayer);
+        AddCurrentTurnEffect("$cardID-MAIN", $mainPlayer);
         AddNextTurnEffect($cardID, $defPlayer);
         AddNextTurnEffect("$cardID-MAIN", $mainPlayer);
         break;
