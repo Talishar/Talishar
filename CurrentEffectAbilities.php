@@ -2760,6 +2760,7 @@ function AdministrativeEffect($effectID)
     case "adaptive_alpha_mold":
     case "marked":
     case "HIDEOPEQUIP":
+    case "valiant_dynamo":
       return true;
     default:
       return false;
