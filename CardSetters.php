@@ -26,6 +26,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
+  $banisher = $banisher == "-" ? $player : $banisher;
   $character = &GetPlayerCharacter($player);
   $characterID = ShiyanaCharacter($character[0]);
   $amount = 1;
@@ -102,7 +103,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer && ($characterID == "levia_shadowborn_abomination" || $characterID == "levia") && $character[1] == 2) { // Levia
       WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose life from Blood Debt this turn.");
     }
-    ++$classState[$CS_Num6PowBan];
+    IncrementClassState($banisher, $CS_Num6PowBan);
     $index = FindCharacterIndex($player, "hooves_of_the_shadowbeast");
     if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && SearchLayersForCardID("hooves_of_the_shadowbeast") == -1) {
       AddLayer("TRIGGER", $player, $character[$index]);
