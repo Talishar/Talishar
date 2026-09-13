@@ -19,6 +19,7 @@ include_once "./Assets/MetafyDictionary.php";
 include_once "./AccountFiles/AccountSessionAPI.php";
 include_once "Libraries/CacheLibraries.php";
 include_once "includes/dbh.inc.php";
+include_once "includes/functions.inc.php";
 include_once "includes/MetafyHelper.php";
 include_once "Libraries/FriendLibraries.php";
 include_once 'GameLogic.php';
@@ -43,20 +44,13 @@ if (!IsGameNameValid($gameName)) {
 
 // Validate player ID
 $playerID = TryGet("playerID", 3);
-if (!is_numeric($playerID)) {
+$playerID = filter_var($playerID, FILTER_VALIDATE_INT);
+if (!in_array($playerID, [1, 2, 3], true)) {
   echo json_encode(["errorMessage" => "Invalid player ID."]);
   exit;
 }
 
-// Check spectator permission
 $cacheArr = null;
-if ($playerID == 3) {
-  $cacheArr = ReadCacheArray($gameName) ?? [];
-  if (($cacheArr[8] ?? "") != "1") {
-    header('HTTP/1.0 403 Forbidden');
-    exit;
-  }
-}
 
 // Get auth key
 $authKey = TryGet("authKey", "");
@@ -101,6 +95,7 @@ if ($playerID == 3 && (!$sessionData['userLoggedIn'] || empty($sessionData['user
 if (is_numeric($viewerUserId)) {
   $sessionData['friendList'] = GetUserFriendUsernames((int)$viewerUserId);
 }
+$sessionData['viewerColorblindMode'] = LoadViewerColorblindMode($viewerUserId);
 $sessionData['friendSet'] = !empty($sessionData['friendList']) ? array_flip($sessionData['friendList']) : [];
 
 $isGamePlayer = $playerID == 1 || $playerID == 2;

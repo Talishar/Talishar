@@ -6,6 +6,7 @@ include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
+include_once "../Libraries/ReplayLibraries.php";
 include_once '../includes/functions.inc.php';
 
 SetHeaders();
@@ -14,7 +15,7 @@ session_write_close();
 
 $response = new stdClass();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $token = $_POST["shareToken"] ?? null;
 
 if ($token === null || $token === "") {
@@ -111,6 +112,7 @@ if (file_exists($metadataPath)) {
         $p2DisplayName = trim((string)($replayMetadata["p2DisplayName"] ?? ""));
     }
 }
+
 $p1id = "-";
 $p2id = "-";
 $hostIP = GetClientIP();
@@ -140,8 +142,14 @@ $copyErrors = [];
 if (!@copy($replayPath . "origGamestate.txt", "../Games/$gameName/gamestate.txt")) {
     $copyErrors[] = "origGamestate.txt";
 }
+if (!@copy($replayPath . "origGamestate.txt", "../Games/$gameName/replayStartGamestate.txt")) {
+    $copyErrors[] = "replayStartGamestate.txt";
+}
 if (!@copy($replayPath . "commandfile.txt", "../Games/$gameName/replayCommands.txt")) {
     $copyErrors[] = "commandfile.txt";
+}
+if (ReadReplayFormat($replayPath) !== null && !CopyReplayStateFiles($replayPath, "../Games/$gameName/")) {
+    $copyErrors[] = "replay state snapshots";
 }
 
 for ($player = 1; $player < 3; ++$player) {
@@ -180,5 +188,5 @@ $response->success = true;
 $response->gameName = $gameName;
 $response->playerID = 3;
 $response->authKey = $p1Key;
-$response->message = "Shared replay loaded successfully.";
+$response->message = "Shared replay loaded.";
 echo json_encode($response);

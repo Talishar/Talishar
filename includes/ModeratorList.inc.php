@@ -17,18 +17,6 @@ function GetModeratorList() {
   ];
 }
 
-function GetCardEditorList() {
-  return [
-    "OotTheMonk",
-    "LaustinSpayce",  
-    "Tower",
-    "PvtVoid",
-    "thatzachary",
-    "DKGaming",
-    "Bluffkin"
-  ];
-}
-
 function GetContributorList() {
   return [
     "sugitime",
@@ -64,11 +52,24 @@ function IsUserModerator($useruid) {
   return isset($modMap[$useruid]);
 }
 
-function IsCardEditor($useruid) {
-  static $editorMap = null;
-  if ($editorMap === null) {
-    $editorMap = array_flip(GetCardEditorList());
+/**
+ * Shared JSON gate for moderator-only endpoints.
+ * Emits the 401/403 response and exits when the session is not a moderator,
+ * otherwise returns the moderator's useruid.
+ */
+function RequireModeratorSession() {
+  if (!isset($_SESSION["useruid"])) {
+    http_response_code(401);
+    echo json_encode(["error" => "Not logged in"]);
+    exit;
   }
-  return isset($editorMap[$useruid]);
-}
 
+  $useruid = $_SESSION["useruid"];
+  if (!IsUserModerator($useruid)) {
+    http_response_code(403);
+    echo json_encode(["error" => "Not authorized"]);
+    exit;
+  }
+
+  return $useruid;
+}

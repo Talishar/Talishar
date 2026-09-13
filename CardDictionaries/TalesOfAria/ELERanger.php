@@ -59,7 +59,7 @@
     switch($cardID)
     {
       case "light_it_up_yellow":
-        if(IsHeroAttackTarget() && $combatChainState[$CCS_AttackFused]) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT", $cardID, $mainPlayer);
+        if(IsHeroAttackTarget() && GetCombatChainState($CCS_AttackFused)) DamageTrigger($defPlayer, NumEquipment($defPlayer), "ATTACKHIT", $cardID, $mainPlayer);
         break;
       case "boltn_shot_red": case "boltn_shot_yellow": case "boltn_shot_blue":
          Reload($mainPlayer);
@@ -75,6 +75,22 @@
     $elementCount = count($elementArray);
     $elementText = "";
     $isAndOrFuse = IsAndOrFuse($cardID);
+
+    // For an "and" fusion, let one multi talent card satisfy every match.
+    // CONTINUEFUSE only asks for another card when an element remains to be revealed.
+    if (!$isAndOrFuse && $elementCount > 1) {
+      $element = $elementArray[0];
+      $context = "Choose which {{element|" . ucfirst(strtolower($element)) . "|" . GetElementColorCode($element) . "}} card to reveal for Fusion";
+      AddDecisionQueue("MULTIZONEINDICES", $player, "MYHAND:talent=$element");
+      AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
+      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      AddDecisionQueue("MZOP", $player, "GETCARDID", 1);
+      AddDecisionQueue("REVEALCARDS", $player, false, 1);
+      AddDecisionQueue("CONTINUEFUSE", $player, $cardID . "-" . implode(",", array_slice($elementArray, 1)), 1);
+      AddDecisionQueue("AFTERFUSE", $player, $cardID . "-" . $elements, 1);
+      return;
+    }
+
     for($i=0; $i<$elementCount; ++$i)
     {
       $element = $elementArray[$i];
@@ -101,11 +117,7 @@
 
   function IsAndOrFuse($cardID)
   {
-    switch($cardID)
-    {
-      case "fulminate_yellow": case "flashfreeze_red": case "exposed_to_the_elements_blue": return true;
-      default: return false;
-    }
+    return GeneratedIsAndOrFuse($cardID);
   }
 
   function FuseAbility($cardID, $player, $element)
@@ -161,10 +173,6 @@
         if(DelimStringContains($element, "LIGHTNING")) AddCurrentTurnEffect($cardID . "-BUFF", $player);
         if(DelimStringContains($element, "ICE")) AddCurrentTurnEffect($cardID . "-DOM", $player);
         break;
-      case "exposed_to_the_elements_blue":
-        if(DelimStringContains($element, "ICE")) ExposedToTheElementsIce($player);
-        if(DelimStringContains($element, "EARTH")) ExposedToTheElementsEarth($player);
-        break;
       case "entwine_earth_red": case "entwine_earth_yellow": case "entwine_earth_blue":
         $index = GetClassState($player, $CS_PlayCCIndex);
         $CombatChain->Card($index)->ModifyPower(2);
@@ -209,63 +217,25 @@
     }
   }
 
-  // TODO: Optimize with GeneratedHasFusion function for automation
   function HasFusion($cardID)
   {
     $card = GetClass($cardID, 0);
     if ($card != "-") return $card->HasFusion();
+    // The generated dictionaries only record one element per card, so dual-element fusions stay listed here
     switch($cardID)
     {
-      case "endless_winter_red": return "ICE";
       case "oaken_old_red": return "EARTH,ICE";
-      case "awakening_blue": return "EARTH";
-      case "biting_gale_red": case "biting_gale_yellow": case "biting_gale_blue": return "ICE";
-      case "turn_timber_red": case "turn_timber_yellow": case "turn_timber_blue": return "EARTH";
-      case "entangle_red": case "entangle_yellow": case "entangle_blue": return "EARTH";
-      case "glacial_footsteps_red": case "glacial_footsteps_yellow": case "glacial_footsteps_blue": return "ICE";
-      case "mulch_red": case "mulch_yellow": case "mulch_blue": return "EARTH";
-      case "snow_under_red": case "snow_under_yellow": case "snow_under_blue": return "ICE";
-      case "emerging_avalanche_red": case "emerging_avalanche_yellow": case "emerging_avalanche_blue": return "ICE";
-      case "strength_of_sequoia_red": case "strength_of_sequoia_yellow": case "strength_of_sequoia_blue": return "EARTH";
-      case "frost_lock_blue": return "ICE";
-      case "light_it_up_yellow": return "LIGHTNING";
-      case "ice_storm_red": return "ICE,LIGHTNING";
-      case "cold_wave_red": case "cold_wave_yellow": case "cold_wave_blue": return "ICE";
-      case "snap_shot_red": case "snap_shot_yellow": case "snap_shot_blue": return "LIGHTNING";
-      case "blizzard_bolt_red": case "blizzard_bolt_yellow": case "blizzard_bolt_blue": return "ICE";
-      case "buzz_bolt_red": case "buzz_bolt_yellow": case "buzz_bolt_blue": return "LIGHTNING";
-      case "chilling_icevein_red": case "chilling_icevein_yellow": case "chilling_icevein_blue": return "ICE";
-      case "dazzling_crescendo_red": case "dazzling_crescendo_yellow": case "dazzling_crescendo_blue": return "LIGHTNING";
-      case "flake_out_red": case "flake_out_yellow": case "flake_out_blue": return "ICE";
-      case "frazzle_red": case "frazzle_yellow": case "frazzle_blue": return "LIGHTNING";
       case "blossoming_spellblade_red": return "EARTH,LIGHTNING";
-      case "flicker_wisp_yellow": return "LIGHTNING";
-      case "force_of_nature_blue": return "EARTH";
-      case "explosive_growth_red": case "explosive_growth_yellow": case "explosive_growth_blue": return "EARTH";
-      case "rites_of_lightning_red": case "rites_of_lightning_yellow": case "rites_of_lightning_blue": return "LIGHTNING";
-      case "arcanic_shockwave_red": case "arcanic_shockwave_yellow": case "arcanic_shockwave_blue": return "LIGHTNING";
-      case "vela_flash_red": case "vela_flash_yellow": case "vela_flash_blue": return "LIGHTNING";
-      case "rites_of_replenishment_red": case "rites_of_replenishment_yellow": case "rites_of_replenishment_blue": return "EARTH";
-      case "stir_the_wildwood_red": case "stir_the_wildwood_yellow": case "stir_the_wildwood_blue": return "EARTH";
-      case "bramble_spark_red": case "bramble_spark_yellow": case "bramble_spark_blue": return "EARTH";
-      case "inspire_lightning_red": case "inspire_lightning_yellow": case "inspire_lightning_blue": return "LIGHTNING";
       case "fulminate_yellow": return "EARTH,LIGHTNING";
+      case "ice_storm_red": return "ICE,LIGHTNING";
       case "flashfreeze_red": return "ICE,LIGHTNING";
-      case "exposed_to_the_elements_blue": return "EARTH,ICE";
-      case "entwine_earth_red": case "entwine_earth_yellow": case "entwine_earth_blue": return "EARTH";
-      case "entwine_ice_red": case "entwine_ice_yellow": case "entwine_ice_blue": return "ICE";
-      case "entwine_lightning_red": case "entwine_lightning_yellow": case "entwine_lightning_blue": return "LIGHTNING";
-      case "encase_red": return "ICE";
-      case "freezing_point_red": return "ICE";
-      case "sigil_of_permafrost_red": case "sigil_of_permafrost_yellow": case "sigil_of_permafrost_blue": return "ICE";
-      case "succumb_to_winter_red": case "succumb_to_winter_yellow": case "succumb_to_winter_blue": return "ICE";
-      case "aether_icevein_red": case "aether_icevein_yellow": case "aether_icevein_blue": return "ICE";
-      case "brain_freeze_red": case "brain_freeze_yellow": case "brain_freeze_blue": return "ICE";
-      case "icebind_red": case "icebind_yellow": case "icebind_blue": return "ICE";
-      case "polar_cap_red": case "polar_cap_yellow": case "polar_cap_blue": return "ICE";
-      case "frozen_to_death_blue": return "ICE";
-      default: return "";
+      default: break;
     }
+    $elements = "";
+    if (GeneratedHasEarthFusion($cardID)) $elements .= "EARTH";
+    if (GeneratedHasIceFusion($cardID)) $elements .= ($elements != "" ? ",ICE" : "ICE");
+    if (GeneratedHasLightningFusion($cardID)) $elements .= ($elements != "" ? ",LIGHTNING" : "LIGHTNING");
+    return $elements;
   }
 
   function CurrentTurnFuseEffects($player, $element)

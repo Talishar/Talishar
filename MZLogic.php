@@ -2,9 +2,10 @@
 
 function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = true)
 {
-  global $CombatChain, $ChainLinks;
+  global $CombatChain, $ChainLinks, $Stack;
   $lastResultArr = explode(",", $lastResult ?? "");
   $otherPlayer = 3 - $player;
+  $destroyer = ($effectController !== "" && $effectController != "-") ? $effectController : $player;
   $chainLinksPieces = ChainLinksPieces();
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i], 2);
@@ -19,7 +20,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         $lastResult = DestroyCharacter($player, $mzIndex[1]);
         break;
       case "THEIRCHAR":
-        $lastResult = DestroyCharacter($otherPlayer, $mzIndex[1]);
+        $lastResult = DestroyCharacter($otherPlayer, $mzIndex[1], animateDestroy: true);
         break;
       case "MYALLY":
         $lastResult = DestroyAlly($player, $mzIndex[1]);
@@ -28,10 +29,10 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         $lastResult = DestroyAlly($otherPlayer, $mzIndex[1]);
         break;
       case "MYAURAS":
-        $lastResult = DestroyAura($player, $mzIndex[1]);
+        $lastResult = DestroyAura($player, $mzIndex[1], destroyedBy: $destroyer);
         break;
       case "THEIRAURAS":
-        $lastResult = DestroyAura($otherPlayer, $mzIndex[1]);
+        $lastResult = DestroyAura($otherPlayer, $mzIndex[1], destroyedBy: $destroyer);
         break;
       case "MYITEMS":
         $lastResult = DestroyItemForPlayer($player, $mzIndex[1]);
@@ -50,6 +51,9 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         break;
       case "COMBATCHAINLINK":
         $lastResult = $CombatChain->Remove($mzIndex[1]);
+        break;
+      case "LAYER":
+        $lastResult = $Stack->Negate($mzIndex[1]);
         break;
       case "COMBATCHAINATTACKS":
         $ind = intdiv($mzIndex[1], $chainLinksPieces);
@@ -225,7 +229,7 @@ function MZAddZone($player, $parameter, $lastResult)
     switch ($params[0]) {
       case "MYBANISH":
         if (count($params) < 4) $params[] = $player;
-        BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "");
+        BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "-");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "THEIRBANISH":
@@ -326,6 +330,11 @@ function MZBanish($player, $parameter, $lastResult)
       if (!isset($attacks[$index + 1])) continue;
       $cardOwner = $attacks[$index + 1];
     }
+    if (!in_array($cardOwner, [1, 2, "1", "2"], true)) {
+      WriteLog("Something went wrong when trying to banish a card, please submit a bug report", highlight: true);
+      continue;
+    }
+    $cardOwner = intval($cardOwner);
     if($params[0] == "-") {
       if (str_starts_with($mzIndex[0], "MY")) {
         $params[0] = substr($mzIndex[0], 2);
@@ -352,6 +361,7 @@ function MZBanish($player, $parameter, $lastResult)
 
 function MZGainControl($player, $target, $temporary=0)
 {
+  global $CombatChain, $Stack;
   $targetArr = explode("-", $target, 2);
   $otherPlayer = 3 - $player;
   switch ($targetArr[0]) {
@@ -366,6 +376,22 @@ function MZGainControl($player, $target, $temporary=0)
     case "MYAURAS":
     case "THEIRAURAS":
       StealAura($otherPlayer, $targetArr[1], $player, $targetArr[0]);
+      break;
+    case "COMBATCHAINLINK":
+      $ChainCard = $CombatChain->Card($targetArr[1]);
+      $cardID = $ChainCard->ID();
+      $from = $ChainCard->From();
+      $uniqueID = $ChainCard->OriginUniqueID();
+      if ($cardID != "-" && DelimStringContains(CardSubType($cardID), "Aura")) {
+        $CombatChain->Remove($targetArr[1]);
+        PlayAura($cardID, $player, from:"THEIR$from", effectController:$player, uniqueID:$uniqueID);
+      }
+      break;
+    case "LAYER":
+      $Layer = $Stack->Card($targetArr[1]);
+      if ($Layer->ID() != "" && DelimStringContains(CardSubType($Layer->ID()), "Aura")) {
+        $Layer->SetPlayerID($player);
+      }
       break;
     default:
       break;
@@ -481,10 +507,10 @@ function MZFreeze($target, $player="-", $freezeState=1)
 
 function IsFrozenMZ(&$array, $zone, $i, $player)
 {
-  if ($zone == "ARS" && IcelochActive($player)) return true;
   $offset = FrozenOffsetMZ($zone);
   if ($offset == -1) return false;
-  return ($array[$i + $offset] ?? "-") == "1";
+  if (($array[$i + $offset] ?? "-") == "1") return true;
+  return $zone == "ARS" && IcelochActive($player);
 }
 
 function UnfreezeMZ($player, $zone, $index)
@@ -713,6 +739,8 @@ function GetZoneObject($player,  $zone) {
     "LAYER" => $Stack,
     "MYDISCARD" => new Discard($player),
     "THEIRDISCARD" => new Discard($otherPlayer),
+    "MYBANISH" => new Banish($player),
+    "THEIRBANISH" => new Banish($otherPlayer),
     "MYAURAS" => new Auras($player),
     "THEIRAURAS" => new Auras($otherPlayer),
     "MYCHAR" => new PlayerCharacter($player),
@@ -730,18 +758,24 @@ function GetZoneObject($player,  $zone) {
 
 function MZIndexToObject($player, $MZIndex) {
   global $ChainLinks;
-  $parts = explode("-", $MZIndex, 2);
+  $parts = explode("-", $MZIndex, 3);
   $zone = $parts[0];
   $ind = $parts[1] ?? -1;
   if (!is_numeric($ind)) return CleanTargetToObject($player, $MZIndex);
   if ($zone == "COMBATCHAINATTACKS") { //this zone is wonky, handle separately
     return $ChainLinks->GetLink($ind)->AttackCard();
   }
+  elseif ($zone == "PASTCHAINLINK") {
+    $linkInd = $parts[2] ?? -1;
+    if ($linkInd == -1) return "";
+    return $ChainLinks->GetLink($linkInd)->GetLinkCard($ind);
+  }
   $Zone = GetZoneObject($player, $zone);
   return $Zone == "" ? "" : $Zone->Card($ind);
 }
 
 function CleanTargetToObject($player, $cleanTarget) {
+  if ($cleanTarget === null || $cleanTarget === "" || $cleanTarget === "-") return "";
   $targArr = explode("-", $cleanTarget, 2);
   $zone = GetZoneObject($player, $targArr[0]);
   $uid = $targArr[1] ?? "-";

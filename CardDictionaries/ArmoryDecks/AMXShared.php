@@ -31,7 +31,7 @@ function AMXCombatEffectActive($cardID, $attackID): bool
   global $combatChainState, $CCS_IsBoosted;
   return match($cardID) {
     "bank_breaker" => true,
-    "twintek_charging_station_red" => $combatChainState[$CCS_IsBoosted],
+    "twintek_charging_station_red" => GetCombatChainState($CCS_IsBoosted),
     "fist_pump-ATTACK" => true,
     "fist_pump-WEAPON" => SubtypeContains($attackID, "Wrench") && TypeContains($attackID, "W"),
     default => false

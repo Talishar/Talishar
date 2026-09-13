@@ -24,7 +24,7 @@ $loggedInUserName = LoggedInUserName();
 $isModerator = IsUserModerator($loggedInUserName);
 
 // Get JSON input
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $confirmationUsername = isset($_POST["confirmationUsername"]) ? $_POST["confirmationUsername"] : "";
 
 // Determine if this is self-deletion or mod deletion
@@ -163,7 +163,7 @@ try {
   if ($isModDeletion) {
     $response->message = "User '$userNameToDelete' and all related data has been deleted from the database.";
   } else {
-    $response->message = "Account deleted successfully. Your session has been cleared.";
+    $response->message = "Account deleted. Your session has been cleared.";
   }
   
 } catch (Exception $e) {

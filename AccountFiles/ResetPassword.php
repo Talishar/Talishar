@@ -4,7 +4,7 @@ include_once '../Libraries/HTTPLibraries.php';
 include_once './AccountSessionAPI.php';
 include_once '../includes/dbh.inc.php';
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 
 $selector = isset($_POST['selector']) ? $_POST['selector'] : null;
 $validator = isset($_POST['validator']) ? $_POST['validator'] : null;

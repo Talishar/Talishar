@@ -6,7 +6,6 @@
     {
       case "romping_club": return 2;
       case "bravo_showstopper": case "bravo": return 2;
-      case "anothos": return 3;
       case "tectonic_plating": return 1;
       case "helm_of_isens_peak": return 1;
       case "harmonized_kodachi": return 1;
@@ -21,9 +20,7 @@
     {
       case "romping_club": return "AA";
       case "scabskin_leathers": return "A";
-      case "barkbone_strapping": return "I";
       case "bravo_showstopper": case "bravo": return "A";
-      case "anothos": return "AA";
       case "tectonic_plating": case "helm_of_isens_peak": return "A";
       case "harmonized_kodachi": return "AA";
       case "braveforge_bracers": return "A";
@@ -67,9 +64,6 @@
       case "barraging_beatdown_red": return NumNonEquipmentDefended() < 2 ? 4 : 0;
       case "barraging_beatdown_yellow": return NumNonEquipmentDefended() < 2 ? 3 : 0;
       case "barraging_beatdown_blue": return NumNonEquipmentDefended() < 2 ? 2 : 0;
-      case "awakening_bellow_red": return 3;
-      case "awakening_bellow_yellow": return 2;
-      case "awakening_bellow_blue": return 1;
       case "primeval_bellow_red": return 5;
       case "primeval_bellow_yellow": return 4;
       case "primeval_bellow_blue": return 3;
@@ -136,7 +130,6 @@
     {
       case "bloodrush_bellow_yellow": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "barraging_beatdown_red": case "barraging_beatdown_yellow": case "barraging_beatdown_blue": return ClassContains($attackID, "BRUTE", $mainPlayer);
-      case "awakening_bellow_red": case "awakening_bellow_yellow": case "awakening_bellow_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "BRUTE", $mainPlayer);
       case "primeval_bellow_red": case "primeval_bellow_yellow": case "primeval_bellow_blue": return ClassContains($attackID, "BRUTE", $mainPlayer);
       case "bravo_showstopper": case "bravo": return CardType($attackID) == "AA" && CardCost($attackID) >= 3;
       case "debilitate_red": case "debilitate_yellow": case "debilitate_blue": return true;
@@ -179,10 +172,6 @@
         $roll = GetDieRoll($currentPlayer);
         GainActionPoints(intval($roll/2), $currentPlayer);
         return "Rolled $roll and gained " . intval($roll/2) . " action points";
-      case "barkbone_strapping":
-        $roll = GetDieRoll($currentPlayer);
-        GainResources($currentPlayer, intval($roll/2));
-        return "Rolled $roll and gained " . intval($roll/2) . " resources";
       case "alpha_rampage_red":
         Intimidate();
         return "";
@@ -230,10 +219,6 @@
       case "smash_instinct_red": case "smash_instinct_yellow": case "smash_instinct_blue":
         Intimidate();
         return "";
-      case "awakening_bellow_red": case "awakening_bellow_yellow": case "awakening_bellow_blue":
-        AddCurrentTurnEffect($cardID, $mainPlayer);
-        Intimidate();
-        return "";
       case "primeval_bellow_red": case "primeval_bellow_yellow": case "primeval_bellow_blue":
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
@@ -263,7 +248,7 @@
       case "braveforge_bracers":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "steelblade_supremacy_red": case "ironsong_determination_yellow":
+      case "ironsong_determination_yellow":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $targetMZInd = SearchCharacterForUniqueID(explode("-", $target, 2)[1], $currentPlayer);
         if ($targetMZInd != -1) {
@@ -335,7 +320,7 @@
         AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "fyendals_spring_tunic":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         return "";
       case "heartened_cross_strap":
         AddCurrentTurnEffect($cardID, $mainPlayer);
@@ -376,7 +361,7 @@
           } else {
             $resources = &GetResources($currentPlayer);
             AddCurrentTurnEffect($cardID, $currentPlayer);
-            GainResources($currentPlayer, 2);
+            GainResources(2, $currentPlayer);
             GainActionPoints(2, $currentPlayer);
             $rv .= " and gained 2 action points, resources, and power.";
           }
@@ -393,7 +378,7 @@
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
         return "";
       case "energy_potion_blue":
-        if($from == "PLAY") GainResources($currentPlayer, 2);
+        if($from == "PLAY") GainResources(2, $currentPlayer);
         return "";
       case "potion_of_strength_blue":
         if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -449,13 +434,13 @@
       case "hurricane_technique_yellow":
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $cardID);
         if(ComboActive()) {
-          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+          SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
           AddDecisionQueue("ADDHAND", $mainPlayer, "-");
         }
         break;
       case "pounding_gale_red":
         if(IsHeroAttackTarget() && ComboActive()) {
-          LoseHealth($combatChainState[$CCS_DamageDealt], $defPlayer);
+          LoseHealth(GetCombatChainState($CCS_DamageDealt), $defPlayer);
         }
         break;
       case "whelming_gustwave_red": case "whelming_gustwave_yellow": case "whelming_gustwave_blue": 
@@ -532,13 +517,16 @@
   }
 
 
-  function HasCrush($cardID)
+  function HasCrush($cardID, $player = "")
   {
     global $mainPlayer;
-    if (SearchCurrentTurnEffects("leave_a_dent_blue", $mainPlayer) && ClassContains($cardID, "GUARDIAN", $mainPlayer) && TypeContains($cardID, "AA")) return true;
-    $card = GetClass($cardID, $mainPlayer);
+    if ($player === "") $player = $mainPlayer;
+    if (SearchCurrentTurnEffects("leave_a_dent_blue", $player) && ClassContains($cardID, "GUARDIAN", $player) && TypeContains($cardID, "AA")) return true;
+    static $generatedCrushCache = [];
+    if (isset($generatedCrushCache[$cardID])) return $generatedCrushCache[$cardID];
+    $card = GetClass($cardID, $player);
     if ($card != "-") return $card->HasCrush();
-    return GeneratedHasCrush($cardID);
+    return $generatedCrushCache[$cardID] = GeneratedHasCrush($cardID);
   }
 
   function Mangle($player="-", $target="-")
@@ -621,7 +609,7 @@
         AddNextTurnEffect("chokeslam_red", $defPlayer);
         break;
       case "star_struck_yellow":
-        $damageDone = $combatChainState[$CCS_DamageDealt];
+        $damageDone = GetCombatChainState($CCS_DamageDealt);
         AddNextTurnEffect("star_struck_yellow," . $damageDone, $defPlayer);
         break;
       case "boulder_drop_yellow": case "boulder_drop_blue": case "boulder_drop_red":
@@ -649,7 +637,7 @@
         MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRCHAR:type=E;hasNegCounters=true"), $mainPlayer); 
         break;
       case "disenchantment_of_the_old_ones_red":
-        MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS"), $mainPlayer); 
+        MZDestroy($mainPlayer, SearchMultizone($mainPlayer, "THEIRAURAS&COMBATCHAINLINK:subtype=Aura&LAYER:subtype=Aura"), $mainPlayer); 
         break;
       case "grind_them_down_red": case "grind_them_down_yellow": case "grind_them_down_blue":
         $deck = new Deck($defPlayer);
@@ -704,7 +692,7 @@
         PummelHit($defPlayer, effectController:$mainPlayer);
         break;
       case "annexation_of_grandeur_yellow":
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS");
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRAURAS&COMBATCHAINLINK:subtype=Aura&LAYER:subtype=Aura");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an aura to gain control");
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
@@ -716,6 +704,8 @@
         AddDecisionQueue("STEALEQUIPMENT", $mainPlayer, "-", 1);
         break;
       case "annexation_of_all_things_known_yellow":
+        AddCurrentTurnEffect($cardID, $defPlayer);
+        AddCurrentTurnEffect("$cardID-MAIN", $mainPlayer);
         AddNextTurnEffect($cardID, $defPlayer);
         AddNextTurnEffect("$cardID-MAIN", $mainPlayer);
         break;

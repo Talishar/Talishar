@@ -297,11 +297,11 @@
         }
         return $rv;
       case "t_bone_red": case "t_bone_yellow": case "t_bone_blue":
-        if($combatChainState[$CCS_NumBoosted] && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
+        if(GetCombatChainState($CCS_NumBoosted) && IsHeroAttackTarget()) SetCombatChainState($CCS_RequiredEquipmentBlock, 1);
         return "";
       case "zoom_in_red": case "zoom_in_yellow": case "zoom_in_blue":
-        Opt($cardID, $combatChainState[$CCS_NumBoosted]);
-        return "Lets you opt " . $combatChainState[$CCS_NumBoosted];
+        Opt($cardID, GetCombatChainState($CCS_NumBoosted));
+        return "Lets you opt " . GetCombatChainState($CCS_NumBoosted);
       case "rotary_ram_red": case "rotary_ram_yellow": case "rotary_ram_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -712,6 +712,40 @@
       }
     }
     return implode(",", $heaveIndicesArr);
+  }
+
+  function SnapshotEndPhaseHeaveCards()
+  {
+    global $mainPlayer, $CS_HeaveEligibleAtEndPhase;
+    $indices = HeaveIndices();
+    if ($indices == "") {
+      SetClassState($mainPlayer, $CS_HeaveEligibleAtEndPhase, "-");
+      return;
+    }
+    $hand = &GetHand($mainPlayer);
+    $cardIDs = [];
+    foreach (explode(",", $indices) as $index) {
+      $cardID = $hand[$index];
+      if (!in_array($cardID, $cardIDs)) $cardIDs[] = $cardID;
+    }
+    SetClassState($mainPlayer, $CS_HeaveEligibleAtEndPhase, implode(",", $cardIDs));
+  }
+
+  //Only cards that were already heaveable at the beginning of the end phase may be heaved
+  function EndPhaseHeaveIndices()
+  {
+    global $mainPlayer, $CS_HeaveEligibleAtEndPhase;
+    $snapshot = GetClassState($mainPlayer, $CS_HeaveEligibleAtEndPhase);
+    if ($snapshot == "-" || $snapshot == "") return "";
+    $eligibleIDs = explode(",", $snapshot);
+    $indices = HeaveIndices();
+    if ($indices == "") return "";
+    $hand = &GetHand($mainPlayer);
+    $filtered = [];
+    foreach (explode(",", $indices) as $index) {
+      if (in_array($hand[$index], $eligibleIDs)) $filtered[] = $index;
+    }
+    return implode(",", $filtered);
   }
 
   function Heave()

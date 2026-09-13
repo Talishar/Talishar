@@ -206,26 +206,4 @@ function validateIP($ip) {
     return filter_var($ip, FILTER_VALIDATE_IP) !== false;
 }
 
-function validateFileExtension($filename, $allowedExtensions) {
-    if (empty($filename) || !is_string($filename)) {
-        return false;
-    }
-    
-    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-    return in_array($extension, $allowedExtensions, true);
-}
-
-function validateFileSize($fileSize, $maxSize) {
-    return $fileSize <= $maxSize;
-}
-
-function validateMimeType($filePath, $allowedMimeTypes) {
-    if (!file_exists($filePath)) {
-        return false;
-    }
-    
-    $mimeType = mime_content_type($filePath);
-    return in_array($mimeType, $allowedMimeTypes, true);
-}
-
 ?>

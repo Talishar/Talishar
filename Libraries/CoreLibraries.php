@@ -16,6 +16,25 @@ function DelimStringContains($str, $find, $partial=false)
   return false;
 }
 
+function StringContainsWholeWords($str, $find)
+{
+  if ($str === null || $find === null || $find === "") return false;
+
+  static $patternCache = [];
+  if (!array_key_exists($find, $patternCache)) {
+    $wordCharacter = '[\p{L}\p{M}\p{N}]';
+    if (!preg_match_all('/' . $wordCharacter . '+/u', $find, $matches)) $patternCache[$find] = null;
+    else {
+      $words = array_map(fn($word) => preg_quote($word, '/'), $matches[0]);
+      $patternCache[$find] = '/(?<!' . $wordCharacter . ')' . implode('[^\p{L}\p{M}\p{N}]+', $words) . '(?!' . $wordCharacter . ')/iu';
+    }
+  }
+
+  $pattern = $patternCache[$find];
+  if ($pattern === null) return false;
+  return preg_match($pattern, $str) === 1;
+}
+
 function GetRandom($low=-1, $high=-1, $reroll=false)
 {
   global $randomSeeded;
@@ -52,4 +71,29 @@ function SeedRandom($reroll=false)
   $seedString = hash("sha256", $seedString);
   mt_srand(crc32($seedString));
   $randomSeeded = true;
+}
+
+function AcquireGameActionLock(string $gameName, ?string $gamesRoot = null)
+{
+  if (!IsGameNameValid($gameName)) return false;
+
+  $gamesRoot ??= dirname(__DIR__) . DIRECTORY_SEPARATOR . "Games";
+  $gameDirectory = $gamesRoot . DIRECTORY_SEPARATOR . $gameName;
+  if (!is_dir($gameDirectory)) return false;
+
+  $lockHandler = fopen($gameDirectory . DIRECTORY_SEPARATOR . "action.lock", "c");
+  if ($lockHandler === false) return false;
+  if (!flock($lockHandler, LOCK_EX)) {
+    fclose($lockHandler);
+    return false;
+  }
+
+  return $lockHandler;
+}
+
+function ReleaseGameActionLock($lockHandler): void
+{
+  if (!is_resource($lockHandler)) return;
+  flock($lockHandler, LOCK_UN);
+  fclose($lockHandler);
 }

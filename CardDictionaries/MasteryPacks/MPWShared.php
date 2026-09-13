@@ -115,7 +115,7 @@ function DrawAndPutBack($player, $cardID) {
   if (count($hand) == 1) { //handle case where the game automates putting a card back
     AddDecisionQueue("DECKCARDS", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
-    AddDecisionQueue("SETDQCONTEXT", $player, "you drew <1> and placed it back on top", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "You drew <1> and placed it back on top", 1);
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, "-");
   }

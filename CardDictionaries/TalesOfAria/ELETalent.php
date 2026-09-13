@@ -86,7 +86,7 @@
           AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
           if($from == "ARS") {
             AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
-            WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+            WriteLog(CardLink($cardID, $cardID) . " drew a card.");
           }
           ResolveGoesWhere("BANISH", $cardID, $currentPlayer, $from);
         } 
@@ -131,18 +131,7 @@
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
         if($from == "ARS") {
           Draw($currentPlayer);
-          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
-        }
-        return "";
-      case "winters_bite_red": case "winters_bite_yellow": case "winters_bite_blue":
-        $pay = match($cardID) { "winters_bite_red" => 3, "winters_bite_yellow" => 2, default => 1 };
-        if(ShouldAutotargetOpponent($currentPlayer)) {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, "Target_Opponent");
-          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "WINTERSBITE-" . $pay, 1);
-        } else {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
-          AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
-          AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "WINTERSBITE-" . $pay, 1);
+          WriteLog(CardLink($cardID, $cardID) . " drew a card.");
         }
         return "";
       case "amulet_of_ice_blue":
@@ -165,7 +154,7 @@
         $targetParts = explode("-", $target, 2);
         $index = $targetParts[1];
         if ($targetParts[0] == "COMBATCHAINLINK" && $CombatChain->HasCurrentLink() && $index != -1) {
-          if ($index == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") {
+          if ($index == 0 && GetCombatChainState($CCS_GoesWhereAfterLinkResolves) == "-") {
             WriteLog(CardLink($cardID, $cardID) . " layer fails as the target is no longer valid.");
             return "";
           }
@@ -189,7 +178,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         if($from == "ARS") {
           Draw($currentPlayer);
-          WriteLog(CardLink($cardID, $cardID) . " draw a card.");
+          WriteLog(CardLink($cardID, $cardID) . " drew a card.");
         }
         return "";
       case "amulet_of_lightning_blue":
@@ -208,7 +197,7 @@
         AddDecisionQueue("OPT", $currentPlayer, "<-");
         return "";
       case "deep_blue":
-        GainResources($currentPlayer, 3);
+        GainResources(3, $currentPlayer);
         return "";
       case "cracker_jax":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -248,29 +237,6 @@
     return CombineSearches(SearchDiscard($player, "A", "", -1, -1, "", "EARTH,LIGHTNING,ELEMENTAL"), SearchDiscard($player, "AA", "", -1, -1, "", "EARTH,LIGHTNING,ELEMENTAL"));
   }
 
-  function ExposedToTheElementsEarth($player)
-  {
-      $otherPlayer = 3 - $player;
-      PrependDecisionQueue("MODDEFCOUNTER", $otherPlayer, "-1", 1);
-      PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to put a -1 counter", 1);
-      PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-  }
-
-  function ExposedToTheElementsIce($player)
-  {
-      $otherPlayer = 3 - $player;
-      PrependDecisionQueue("DESTROYCHARACTER", $otherPlayer, "-", 1);
-      PrependDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an equipment to destroy", 1);
-      PrependDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP0", 1);
-      PrependDecisionQueue("WRITELOG", $player, "Player $otherPlayer declined_to_pay_for_".CardLink("exposed_to_the_elements_blue", "exposed_to_the_elements_blue").".", 1);
-      PrependDecisionQueue("GREATERTHANPASS", $otherPlayer, "0", 1);
-      PrependDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
-      PrependDecisionQueue("BUTTONINPUT", $otherPlayer, "0,2", 0);
-      PrependDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_2_to_prevent_an_equipment_with_0_defense_from_being_destroyed.");
-  }
-
   function KorshemRevealAbility($player)
   {
     WriteLog("Korshem triggered by revealing a card");
@@ -278,5 +244,4 @@
     AddDecisionQueue("BUTTONINPUT", $player, "Gain_a_resource,Gain_a_life,1_Attack,1_Defense");
     AddDecisionQueue("MODAL", $player, "KORSHEM", 1);
   }
-
-?>
+  

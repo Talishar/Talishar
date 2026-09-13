@@ -22,7 +22,7 @@
 
 // How long a lobby player's heartbeat may go stale before
 // the opponent's poll declares them disconnected. 
-if (!defined('LOBBY_DISCONNECT_TIMEOUT_MS')) define('LOBBY_DISCONNECT_TIMEOUT_MS', 12000);
+if (!defined('LOBBY_DISCONNECT_TIMEOUT_MS')) define('LOBBY_DISCONNECT_TIMEOUT_MS', 20000);
 
 function WriteCache($name, $data)
 {
@@ -137,15 +137,10 @@ function DeleteCache($name)
   if($id) {
     shmop_delete($id);
   }
-  $gsID = @shmop_open(GamestateID($name), "c", 0666, 32768);
+  $gsID = @shmop_open(GamestateID($name), "w", 0, 0);
   if($gsID) {
     shmop_delete($gsID);
   }
-}
-
-function SHMOPDelimiter()
-{
-  return "!";
 }
 
 function GamestateID($gameName)
@@ -206,6 +201,14 @@ function IncrementCachePiece($gameName, $piece)
 
 // Milliseconds without a gamestate update from the priority player before that player counts as inactive
 if (!defined('INACTIVITY_TIMEOUT_MS')) define('INACTIVITY_TIMEOUT_MS', 60 * 1000);
+if (!defined('GAME_DELETE_TIMEOUT_MS')) define('GAME_DELETE_TIMEOUT_MS', 5 * 60 * 1000);
+
+function InactivityTimeoutMs($cacheArr)
+{
+  if (!is_array($cacheArr)) return 0;
+  $visibility = trim((string)($cacheArr[8] ?? ""));
+  return $visibility === "1" ? INACTIVITY_TIMEOUT_MS : 0;
+}
 
 function GamestateUpdated($gameName, $resetTimer = true)
 {

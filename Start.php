@@ -71,7 +71,7 @@ fwrite($memHandle,
   "M 1\r\n" . //What phase/player is active
   "1\r\n" . //Action points
   "\r\n" . //Combat Chain
-  "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0\r\n" . //Combat Chain State
+  "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0 0 0\r\n" . //Combat Chain State
   "\r\n" . //Current Turn Effects
   "\r\n" . //Current Turn Effects From Combat
   "\r\n" . //Next Turn Effects
@@ -95,7 +95,7 @@ fwrite($memHandle,
   "0\r\n" . //Player 1 total time
   "0\r\n" . //Player 2 total time
   time() . "\r\n" . //Last update time
-  $roguelikeGameID . "\r\n" . //Roguelike game id
+  "\r\n" . // Reserved for backward-compatible field alignment
   "\r\n" . //Events
   "-\r\n" . //Effect Context
   implode(" ", $p1Inventory) . "\r\n" . //p1 Inventory

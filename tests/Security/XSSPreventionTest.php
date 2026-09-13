@@ -107,7 +107,7 @@ class XSSPreventionTest extends TestCase
         ];
 
         foreach ($maliciousInputs as $input) {
-            $sanitized = $this->sanitizeHTML($input);
+            $sanitized = sanitizeHTML($input);
             
             // Check that dangerous unescaped HTML tags are gone
             $this->assertStringNotContainsString('<script>', $sanitized, "Script tags should be escaped");
@@ -188,7 +188,7 @@ class XSSPreventionTest extends TestCase
         $this->assertEquals('', htmlspecialchars('', ENT_QUOTES, 'UTF-8'));
         
         // Test null
-        $this->assertEquals('', htmlspecialchars(null, ENT_QUOTES, 'UTF-8'));
+        $this->assertEquals('', sanitizeHTML(null));
         
         // Test numeric input
         $this->assertEquals('123', htmlspecialchars(123, ENT_QUOTES, 'UTF-8'));
@@ -207,15 +207,4 @@ class XSSPreventionTest extends TestCase
         $this->assertStringContainsString('&#039;', $escaped);
     }
 
-    /**
-     * Helper method to sanitize HTML (mimics our sanitization function)
-     */
-    private function sanitizeHTML($input)
-    {
-        if (!is_string($input)) {
-            return '';
-        }
-        
-        return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
-    }
 }

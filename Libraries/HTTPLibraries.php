@@ -9,6 +9,84 @@ function TryPOST($key, $default = "")
   return $_POST[$key] ?? $default;
 }
 
+// Decodes a JSON request body without imposing method or Content-Type rules.
+// This matches the legacy API endpoints that read php://input directly.
+function ReadJsonBody()
+{
+  return json_decode(file_get_contents('php://input'), true);
+}
+
+function WriteJsonResponse($payload, $statusCode = null)
+{
+  if ($statusCode !== null) http_response_code($statusCode);
+  echo json_encode($payload);
+}
+
+function ExitJsonResponse($payload, $statusCode = null)
+{
+  WriteJsonResponse($payload, $statusCode);
+  exit;
+}
+
+function SetJsonError($response, $message, $statusCode = 400)
+{
+  http_response_code($statusCode);
+  $response->error = $message;
+}
+
+// Reads the request body for endpoints that accept either a form-encoded or a JSON POST.
+function ReadPostData()
+{
+  if (!empty($_POST) || $_SERVER['REQUEST_METHOD'] !== 'POST') return $_POST;
+  $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+  if (strpos($contentType, 'application/json') === false) return $_POST;
+  return ReadJsonBody() ?? [];
+}
+
+function TryPOSTData($key, $default = "", $data = [])
+{
+  return $data[$key] ?? $default;
+}
+
+// Copies a library action's {success, message} result onto a JSON response object,
+// answering 400 with the message on failure. Returns whether the action succeeded.
+function ApplyActionResult($response, $result)
+{
+  if ($result['success']) {
+    $response->success = true;
+    $response->message = $result['message'];
+    return true;
+  }
+  http_response_code(400);
+  $response->error = $result['message'];
+  return false;
+}
+
+// Shared setup for authenticated JSON APIs after their dependencies are loaded.
+function InitializeAuthenticatedJsonApi($databaseLogKey)
+{
+  if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+  header('Content-Type: application/json');
+
+  if (!IsUserLoggedIn()) {
+    ExitJsonResponse(["error" => "Not logged in"], 401);
+  }
+
+  $postData = ReadJsonBody();
+  if (!$postData) $postData = [];
+
+  $userId = LoggedInUser();
+  $connection = GetDBConnection($databaseLogKey);
+  if (
+    !$connection ||
+    (is_object($connection) && isset($connection->connect_error) && $connection->connect_error)
+  ) {
+    ExitJsonResponse(["error" => "Database connection failed"], 500);
+  }
+
+  return [$postData, $userId, $connection];
+}
+
 function IsGameNameValid($gameName)
 {
   return is_numeric($gameName);
@@ -96,53 +174,3 @@ function SetHeaders()
   header('X-Accel-Buffering: no');
 }
 
-function isMobile()
-{
-  $tablet_browser = 0;
-  $mobile_browser = 0;
-
-  $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
-
-  if ($userAgent !== '' && preg_match('/(tablet|ipad|playbook)|(android(?!.*(mobi|opera mini)))/i', $userAgent)) {
-    $tablet_browser++;
-  }
-
-  if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|iemobile)/i', $userAgent)) {
-    $mobile_browser++;
-  }
-
-  if (isset($_SERVER['HTTP_ACCEPT']) && strpos(strtolower($_SERVER['HTTP_ACCEPT']), 'application/vnd.wap.xhtml+xml') > 0 or (isset($_SERVER['HTTP_X_WAP_PROFILE']) or isset($_SERVER['HTTP_PROFILE']))) {
-    $mobile_browser++;
-  }
-
-  if ($userAgent !== '') {
-    $mobile_ua = substr($userAgent, 0, 4);
-    $mobile_agents = [
-      'w3c ', 'acs-', 'alav', 'alca', 'amoi', 'audi', 'avan', 'benq', 'bird', 'blac',
-      'blaz', 'brew', 'cell', 'cldc', 'cmd-', 'dang', 'doco', 'eric', 'hipt', 'inno',
-      'ipaq', 'java', 'jigs', 'kddi', 'keji', 'leno', 'lg-c', 'lg-d', 'lg-g', 'lge-',
-      'maui', 'maxo', 'midp', 'mits', 'mmef', 'mobi', 'mot-', 'moto', 'mwbp', 'nec-',
-      'newt', 'noki', 'palm', 'pana', 'pant', 'phil', 'play', 'port', 'prox',
-      'qwap', 'sage', 'sams', 'sany', 'sch-', 'sec-', 'send', 'seri', 'sgh-', 'shar',
-      'sie-', 'siem', 'smal', 'smar', 'sony', 'sph-', 'symb', 't-mo', 'teli', 'tim-',
-      'tosh', 'tsm-', 'upg1', 'upsi', 'vk-v', 'voda', 'wap-', 'wapa', 'wapi', 'wapp',
-      'wapr', 'webc', 'winw', 'winw', 'xda ', 'xda-'
-    ];
-
-    if (in_array($mobile_ua, $mobile_agents)) {
-      $mobile_browser++;
-    }
-
-    if (strpos($userAgent, 'opera mini') > 0) {
-      $mobile_browser++;
-      //Check for tablets on opera mini alternative headers
-      $stock_ua = strtolower($_SERVER['HTTP_X_OPERAMINI_PHONE_UA'] ?? ($_SERVER['HTTP_DEVICE_STOCK_UA'] ?? ''));
-      if (preg_match('/(tablet|ipad|playbook)|(android(?!.*mobile))/i', $stock_ua)) {
-        $tablet_browser++;
-      }
-    }
-  }
-
-  if ($tablet_browser > 0) return false;
-  return $mobile_browser > 0;
-}

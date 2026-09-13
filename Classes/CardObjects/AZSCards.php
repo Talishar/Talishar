@@ -16,7 +16,7 @@ class stardust_spike_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
 		global $CurrentTurnEffects;
-    GainResources($this->controller, 1);
+    GainResources(1, $this->controller);
 		$Effect = $CurrentTurnEffects->FindEffect($this->cardID, $this->controller);
     if ($Effect->Index() == -1) AddCurrentTurnEffect($this->cardID, $this->controller);
 		else $Effect->AddUses(1);

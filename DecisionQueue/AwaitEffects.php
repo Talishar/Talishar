@@ -122,7 +122,7 @@ function ShuffleDeckAwait($player) {
 function MultiTargetIndicesAwait($player) {
   global $dqVars;
   $currentTargets = explode(",", $dqVars["currentTargets"] ?? "");
-  $rvOrig = explode(",", SearchMultizone($player, $dqVars["search"]));
+  $rvOrig = explode(",", MultiZoneIndices($player, $dqVars["search"]));
   $rv = [];
   $currentTargetsFlip = array_flip($currentTargets);
   //remove any choices that have already been targeted
@@ -150,7 +150,9 @@ function MultiChooseIndicesAwait($player) {
 function MultiZoneIndicesAwait($player) {
   global $dqVars;
   $search = $dqVars["search"];
-  return MultiZoneIndices($player, $search);
+  $ret = MultiZoneIndices($player, $search);
+  PrependDecisionQueue("SETDQVAR", $player, "indices", 1); //set a default place to save the last result
+  return $ret;
 }
 
 function ChooseMultiZoneAwait($player) {
@@ -159,6 +161,7 @@ function ChooseMultiZoneAwait($player) {
   $indices = $dqVars["indices"] ?? "";
   if ($indices == "" || $indices == "PASS") return "PASS";
   $notSubsequent = $dqVars["notSubsequent"] ?? false;
+  PrependDecisionQueue("SETDQVAR", $player, "MZIndex", 1); //set a default place to save the last result
   if ($may)
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
   else
@@ -198,6 +201,18 @@ function MZBanishAwait($player) {
   return MZBanish($player, $parameter, $MZIndex);
 }
 
+function MZRemoveAndBanishAwait($player) {
+  global $dqVars;
+  $MZIndex = $dqVars["MZIndex"] ?? "-";
+  $from = $dqVars["from"] ?? explode("-", $MZIndex)[0];
+  $modifier = $dqVars["modifier"] ?? "-";
+  $banishedBy = $dqVars["banishedBy"] ?? "-";
+  $banisher = $dqVars["banisher"] ?? $player;
+  $parameter = "$from,$modifier,$banishedBy,$banisher";
+  MZBanish($player, $parameter, $MZIndex);
+  return MZRemove($player, $MZIndex);
+}
+
 function SetLayerTargetAwait($player) {
   global $dqVars, $Stack;
   $cardID = $dqVars["layerID"] ?? "-";
@@ -224,7 +239,7 @@ function DealDamageAwait($player) {
   $source = $dqVars["source"] ?? "-";
   $type = $dqVars["type"] ?? "DAMAGE";
   $playerSource = $dqVars["playerSource"] ?? $player;
-
+  $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   $targetArr = explode("-", $target);
   $targetPlayer = $targetArr[0] == "MYCHAR" || $targetArr[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
   if ($targetArr[0] == "THEIRALLY" || $targetArr[0] == "MYALLY") {
@@ -235,7 +250,7 @@ function DealDamageAwait($player) {
     $Character = new PlayerCharacter($targetPlayer);
     $Solray = $Character->FindCardID("solray_plating");
     if ($Solray != "" && $Solray->IsActive()) DoSolrayPlating($targetPlayer, $damage);
-    DoQuell($targetPlayer, $damage);
+    DoQuell($targetPlayer, $damage, $preventable);
     if (SearchCurrentTurnEffects("morlock_hill_blue", $targetPlayer, true) && $damage >= GetHealth($targetPlayer)) PreventLethal($targetPlayer, $damage);
   }
   return $damage;
@@ -282,6 +297,21 @@ function PlayAuraAwait($player) {
   PlayAura($cardID, $player, $number, $isToken, $rogueHeronSpecial, $numPowerCounters, $from, $additionalCosts, $effectController, $effectSource);
 }
 
+function PlayItemAwait($player) {
+  global $dqVars;
+  $cardID = strtolower($dqVars["cardID"]);
+  if (str_contains($cardID, "cardid-")) $cardID = explode("-", $cardID)[1];
+  $steamCounterModifier = $dqVars["steamCounters"] ?? 0;
+  $number = $dqVars["number"] ?? 1;
+  $isToken = $dqVars["isToken"] ?? false;
+  $from = $dqVars["from"] ?? "-";
+  $effectController = $dqVars["effectController"] ?? "-";
+  $effectSource = $dqVars["effectSource"] ?? "-";
+  $mainPhase = $dqVars["mainPhase"] ?? true;
+  $effectAgent = $dqVars["effectAgent"] ?? "";
+  PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier, $number, $effectController, $isToken, $mainPhase, $from, $effectAgent, $effectSource);
+}
+
 function CardChoicesAwait($player) {
   global $dqVars;
   $context = $dqVars["context"] ?? "";
@@ -303,6 +333,7 @@ function ResolveGoesWhereAwait($player) {
 function MZDestroyAwait($player) {
   global $dqVars;
   $MZInd = $dqVars["MZInd"] ?? "";
+  if ($MZInd ==  "") $MZInd = $dqVars["MZIndex"] ?? "";
   $effectController = $dqVars["effectController"] ?? "";
   $allArsenal = $dqVars["allArsenal"] ?? true;
   MZDestroy($player, $MZInd, $effectController, $allArsenal);
@@ -420,7 +451,7 @@ function AQTargetingAwait($player) {
     $cleanTarget = CleanTarget($player, $target);
     $cleanedTargets[] = $cleanTarget;
     $obj = CleanTargetToObject($player, $cleanTarget);
-    if (HasSpectra($obj->CardID())) {
+    if ($obj != "" && HasSpectra($obj->CardID())) {
       AddLayer("TRIGGER", $defPlayer, "SPECTRA", "-", "-", $obj->UniqueID());
     }
   }
@@ -456,4 +487,21 @@ function AddAttackQueueAwait($player) {
 
 function CheckAttackQueueAwait($player) {
   ResolveAttackQueue();
+}
+
+function DrawAwait($player) {
+  global $dqVars;
+  $num = $dqVars["num"] ?? 1;
+  $mainPhase = $dqVars["mainPhase"] ?? true;
+  $fromCardEffect = $dqVars["fromCardEffect"] ?? true;
+  $effectSource = $dqVars["effectSource"] ?? "-";
+  Draw($player, $mainPhase, $fromCardEffect, $effectSource, $num);
+}
+
+function ButtonInputAwait($player) {
+  global $dqVars;
+  $notSubsequent = $dqVars["notSubsequent"] ?? false;
+  PrependDecisionQueue("SETDQVAR", $player, "buttonChoice", !$notSubsequent);
+  PrependDecisionQueue("BUTTONINPUT", $player, $dqVars["buttons"] ?? "-", !$notSubsequent);
+  PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose", !$notSubsequent);
 }

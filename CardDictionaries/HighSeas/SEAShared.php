@@ -50,7 +50,7 @@ function SEAAbilityType($cardID, $from="-"): string
 
     "diamond_amulet_blue", "opal_amulet_blue",  "platinum_amulet_blue", "ruby_amulet_blue", "amethyst_amulet_blue" => $from == "PLAY" ? "I" : "A",
     "onyx_amulet_blue", "pearl_amulet_blue", "pounamu_amulet_blue", "sapphire_amulet_blue"=> "A",
-    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => $from == "PLAY" ? "I" : "AA",
+    "rally_the_coast_guard_red", "rally_the_coast_guard_yellow", "rally_the_coast_guard_blue" => ($from == "PLAY" || $from == "PASTCHAINLINK") ? "I" : "AA",
 
     "goldkiss_rum" => "I",
     "scurv_stowaway" => "A",
@@ -267,7 +267,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if($from == "PLAY") GainHealth(2, $currentPlayer);
       break;
     case "ruby_amulet_blue":
-      if($from == "PLAY") GainResources($currentPlayer, 2);
+      if($from == "PLAY") GainResources(2, $currentPlayer);
       break;
     case "sapphire_amulet_blue":
       if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -303,7 +303,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "rust_belt":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       break;
     case "unicycle":
       $inds = GetTapped($currentPlayer, "MYITEMS", "subtype=Cog");   
@@ -324,7 +324,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       Draw($currentPlayer);
       break;
     case "buccaneers_bounty":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       break;
     case "fish_fingers":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -372,7 +372,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       PummelHit($currentPlayer);
       break;
     case "dead_threads":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       break;
     case "blood_in_the_water_red":
       AddLayer("TRIGGER", $currentPlayer, $cardID, SearchCombatChainForIndex($cardID, $currentPlayer));
@@ -728,7 +728,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       elseif ($from == "COMBATCHAINATTACKS") WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
       break;
     case "palantir_aeronought_red":
-      if($from != "PLAY" && $from != "COMBATCHAINATTACKS" && IsHeroAttackTarget()) $combatChainState[$CCS_RequiredEquipmentBlock] = 1;
+      if($from != "PLAY" && $from != "COMBATCHAINATTACKS" && IsHeroAttackTarget()) SetCombatChainState($CCS_RequiredEquipmentBlock, 1);
       elseif($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
         $numUsed = 0;
         if ($from == "PLAY") {
@@ -956,6 +956,8 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         //in case the card gets destroyed
         if($index != -1) CombatChainDefenseModifier($index, 3);
       }
+      elseif (str_contains($from, "PASTCHAINLINK"))
+        return "";
       return "";
     case "bandana_of_the_blue_beyond":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:pitch=3");
@@ -966,7 +968,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "old_knocker":
     case "captains_coat":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       break;
     case "swiftstrike_bracers":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -1072,7 +1074,7 @@ function SEAHitEffect($cardID): void
       PutItemIntoPlayForPlayer("gold", $mainPlayer, number:$count, effectController:$mainPlayer, isToken:true);
       break;
     case "cogwerx_dovetail_red":
-      WriteLog(CardLink($cardID, $cardID) . " untap all the cogs Player " . $mainPlayer . " control.");
+      WriteLog(CardLink($cardID, $cardID) . " untaps all the Cogs Player " . $mainPlayer . " controls.");
       AddDecisionQueue("UNTAPALL", $mainPlayer, "MYITEMS:subtype=Cog", 1);
       break;
     case "hms_barracuda_yellow":
@@ -1339,16 +1341,20 @@ function isUntappedPrevented($MZindex, $zoneName, $player, $endStepUntap=false):
 
 function HasWateryGrave($cardID): bool
 {
+  static $generatedWateryGraveCache = [];
+  if (isset($generatedWateryGraveCache[$cardID])) return $generatedWateryGraveCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasWateryGrave();
-  return GeneratedHasWateryGrave($cardID);
+  if ($card != "-") return $generatedWateryGraveCache[$cardID] = $card->HasWateryGrave();
+  return $generatedWateryGraveCache[$cardID] = GeneratedHasWateryGrave($cardID);
 }
 
 function HasHighTide($cardID): bool
 {
+  static $generatedHighTideCache = [];
+  if (isset($generatedHighTideCache[$cardID])) return $generatedHighTideCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasHighTide();
-  return GeneratedHasHighTide($cardID);
+  if ($card != "-") return $generatedHighTideCache[$cardID] = $card->HasHighTide();
+  return $generatedHighTideCache[$cardID] = GeneratedHasHighTide($cardID);
 }
 
 function HighTideConditionMet($player) 

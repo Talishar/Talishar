@@ -2,9 +2,34 @@
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
-if (!function_exists('IsHideHandFromFriends')) {
-    function IsHideHandFromFriends($player) { return false; }
+function GetChainCardSubcards($controller, ...$uniqueIDs) {
+  if ($controller != 1 && $controller != 2) return NULL;
+  $Auras = new Auras($controller);
+  foreach ($uniqueIDs as $uniqueID) {
+    if ($uniqueID === NULL || $uniqueID === "" || $uniqueID === "-" || $uniqueID == -1) continue;
+    $subcards = NULL;
+    $AllyCard = (new Allies($controller))->FindCardUID($uniqueID);
+    if ($AllyCard->Index() != -1) $subcards = $AllyCard->Subcards();
+    else {
+      $CharacterCard = (new PlayerCharacter($controller))->FindCardUID($uniqueID);
+      if ($CharacterCard->Index() != -1) $subcards = $CharacterCard->Subcards();
+      else {
+        $ItemCard = (new Items($controller))->FindCardUID($uniqueID);
+        if ($ItemCard->Index() != -1) $subcards = $ItemCard->SubCards();
+      }
+    }
+    if ($subcards === "-" || $subcards === "") $subcards = NULL;
+    $boundIDs = [];
+    foreach ($Auras->FindBoundAuras($uniqueID) as $boundAura) $boundIDs[] = $boundAura->CardID();
+    if (count($boundIDs) > 0) {
+      $boundIDs = implode(",", $boundIDs);
+      $subcards = $subcards !== NULL ? "$boundIDs,$subcards" : $boundIDs;
+    }
+    if ($subcards !== NULL) return $subcards;
+  }
+  return NULL;
 }
+
 function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false, $cacheSnapshot = null) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $p1CharEquip, $p2CharEquip;
@@ -19,10 +44,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $CCS_DamageDealt, $CCS_HitThisLink;
   global $AIHasInfiniteHP, $practiceDummyWeaponPower, $EffectContext, $CS_NumCardsDrawn;
   global $p1IsPatron, $p2IsPatron, $p1MetafyTiers, $p2MetafyTiers, $p1IsAI, $p2IsAI;
-  global $roguelikeGameID, $gameGUID, $p1uid, $p2uid;
+  global $gameGUID, $p1uid, $p2uid;
   global $p1MetafyCommunities, $p2MetafyCommunities;
   global $p1TotalTime, $p2TotalTime, $ChainLinks;
   global $p1id, $p2id, $p1DeckLink, $p2DeckLink;
+  global $ChainLinks;
 
   ResetFavoriteDeckCosmeticOverrideCache();
 
@@ -33,7 +59,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     return "Invalid game name.";
   }
 
-  if (!is_numeric($playerID)) {
+  $playerID = filter_var($playerID, FILTER_VALIDATE_INT);
+  if (!in_array($playerID, [1, 2, 3], true)) {
     return "Invalid player ID.";
   }
 
@@ -60,6 +87,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerInventory = [];
 
   $otherPlayer = $playerID == 1 ? 2 : 1;
+  $viewerSlotPlayerID = $playerID == 1 ? 1 : 2;
   $cacheVal = intval($buildCacheArr[0] ?? 0);
 
   if (!function_exists("ParseGamestate")) {
@@ -71,7 +99,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   if (empty($p1uid) || empty($p2uid)) {
-    $gameFileLines = @file("./Games/" . $gameName . "/GameFile.txt", FILE_IGNORE_NEW_LINES);
+    $gameFilePath = "./Games/" . $gameName . "/GameFile.txt";
+    $gameFileHead = @file_get_contents($gameFilePath, false, null, 0, 8192);
+    $gameFileLines = false;
+    if ($gameFileHead !== false) {
+      $headLines = explode("\n", $gameFileHead, 12);
+      if (count($headLines) >= 12 || strlen($gameFileHead) < 8192) $gameFileLines = $headLines;
+    }
+    if ($gameFileLines === false) $gameFileLines = @file($gameFilePath, FILE_IGNORE_NEW_LINES);
     if ($gameFileLines !== false && count($gameFileLines) >= 11) {
       if (empty($p1uid)) $p1uid = trim($gameFileLines[9]);
       if (empty($p2uid)) $p2uid = trim($gameFileLines[10]);
@@ -151,9 +186,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->opponentIsPatron = ($playerID == 1 ? $p2IsPatron : $p1IsPatron) ?: "";
     $initialLoad->opponentMetafyTiers = ($playerID == 1 ? $p2MetafyTiers : $p1MetafyTiers) ?: [];
 
-    $initialLoad->roguelikeGameID = $roguelikeGameID;
-    $initialLoad->playerIsPvtVoidPatron = $playerUid == "PvtVoid" || $playerID == 1 && $sessionIsPvtVoidPatron;
-    $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid" || $playerID == 2 && $sessionIsPvtVoidPatron;
+    $initialLoad->playerIsPvtVoidPatron = $playerUid == "PvtVoid" || ($playerID != 3 && $sessionIsPvtVoidPatron);
+    $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid";
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
     $initialLoad->gameFormat = $format;
 
@@ -170,136 +204,155 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->altArts = [];
     $initialLoad->opponentAltArts = [];
 
-    // For spectators (playerID==3), resolve alt arts from the game file usernames directly.
-    // p1uid maps to the "player" (altArts) slot; p2uid maps to the "opponent" (opponentAltArts) slot.
-    $altArtsPlayerName  = $playerID == 3 ? $p1uid : $playerUid;
-    $altArtsOpponentName = $playerID == 3 ? $p2uid : $opponentUid;
-    $altArtsPlayerID    = $playerID == 3 ? 1 : $playerID;
-    $altArtsOpponentID  = $playerID == 3 ? 2 : $otherPlayer;
+    $altArtsPlayerID    = $viewerSlotPlayerID;
+    $altArtsOpponentID  = $otherPlayer;
+    $altArtsPlayerName  = $altArtsPlayerID == 1 ? $p1uid : $p2uid;
+    $altArtsOpponentName = $altArtsOpponentID == 1 ? $p1uid : $p2uid;
 
-    $patreonCampaigns = PatreonCampaign::cases();
-    $metafyCommunityMap = [];
-    foreach (MetafyCommunity::cases() as $case) {
-      $metafyCommunityMap[$case->value] = $case;
-    }
+    $viewerOwnsPlayerSlot = $playerID != 3;
+    $altArtsSessionName = $viewerOwnsPlayerSlot ? ($sessionUserName ?? '') : '';
 
-    if($playerID == 3 || !AltArtsDisabled($playerID))
+    $altArtsDisabled = $playerID != 3 && AltArtsDisabled($playerID);
+
+    if(!$altArtsDisabled)
     {
-      foreach($patreonCampaigns as $campaign) {
-        $sessionID = $campaign->SessionID();
-        $isPatronOfCampaign = $playerID != 3 && ($sessionPatreonCampaigns[$sessionID] ?? false);
+      $patreonCampaigns = PatreonCampaign::cases();
+      $metafyCommunityMap = [];
+      foreach (MetafyCommunity::cases() as $case) {
+        $metafyCommunityMap[$case->value] = $case;
+      }
+      $optInOnlyAltArts = function_exists('GetOptInOnlyAltArts') ? GetOptInOnlyAltArts() : [];
 
-        if ($playerID != 3 && $sessionID == "isPvtVoidPatron") {
-          $isPatronOfCampaign = $sessionUserName == "PvtVoid" || ($sessionPatreonCampaigns[$sessionID] ?? false);
-        }
+      $myUserId = $altArtsPlayerID == 1 ? ($p1id ?? '') : ($p2id ?? '');
+      $myDeckLink = $altArtsPlayerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+      $oppUserId = $altArtsOpponentID == 1 ? ($p1id ?? '') : ($p2id ?? '');
+      $oppDeckLink = $altArtsOpponentID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
+      $myDeckOverride = GetDeckAltArtOverride($myUserId, $myDeckLink);
+      $oppDeckOverride = GetDeckAltArtOverride($oppUserId, $oppDeckLink);
 
-        if($isPatronOfCampaign || $campaign->IsTeamMember($sessionUserName ?? '') || $campaign->IsTeamMember($altArtsPlayerName)) {
-          $altArtsHero = $altArtsPlayerID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
-          $altArts = $campaign->AltArts($altArtsHero);
-          if($altArts == "") continue;
-          $altArts = explode(",", $altArts);
-          $altArtsCount = count($altArts);
-          $campaignName = $campaign->CampaignName();
-          for($i = 0; $i < $altArtsCount; ++$i) {
-            $arr = explode("=", $altArts[$i]);
-            $altArt = new stdClass();
-            $altArt->name = $campaignName . ($altArtsCount > 1 ? " " . $i + 1 : "");
-            $altArt->cardId = $arr[0];
-            $altArt->altPath = $arr[1];
-            $initialLoad->altArts[] = $altArt;
-          }
+      if ($myDeckOverride !== null && $myDeckOverride['customized']) {
+        foreach ($myDeckOverride['map'] as $cardId => $altPath) {
+          $initialLoad->altArts[] = ['name' => 'My Deck', 'cardId' => $cardId, 'altPath' => $altPath];
         }
       }
+      else {
+        foreach($patreonCampaigns as $campaign) {
+          $sessionID = $campaign->SessionID();
+          $isPatronOfCampaign = $viewerOwnsPlayerSlot && ($sessionPatreonCampaigns[$sessionID] ?? false);
 
-      // Add Metafy community alt arts from cached game file data
-      $playerCommunities = $playerID == 3 ? ($p1MetafyCommunities ?? []) : ($playerID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []));
-      if (is_array($playerCommunities)) {
-        foreach ($playerCommunities as $community) {
-          $communityId = $community['id'] ?? null;
-          $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
-          if ($metafyCommunity !== null) {
+          if ($sessionID == "isPvtVoidPatron") {
+            $isPatronOfCampaign = $altArtsPlayerName == "PvtVoid"
+              || ($viewerOwnsPlayerSlot && ($sessionUserName == "PvtVoid" || ($sessionPatreonCampaigns[$sessionID] ?? false)));
+          }
+
+          if($isPatronOfCampaign || ($altArtsSessionName !== '' && $campaign->IsTeamMember($altArtsSessionName)) || $campaign->IsTeamMember($altArtsPlayerName)) {
+            $altArtsHero = $altArtsPlayerID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
+            $altArts = $campaign->AltArtsList($altArtsHero);
+            $altArtsCount = count($altArts);
+            if($altArtsCount == 0) continue;
+            $campaignName = $campaign->CampaignName();
+            $isMultiArt = $altArtsCount > 1;
+            for($i = 0; $i < $altArtsCount; ++$i) {
+              $arr = explode("=", $altArts[$i]);
+              $altPath = $arr[1];
+              if (isset($optInOnlyAltArts[$altPath])) continue;
+              $initialLoad->altArts[] = [
+                'name' => $isMultiArt ? $campaignName . " " . ($i + 1) : $campaignName,
+                'cardId' => $arr[0],
+                'altPath' => $altPath,
+              ];
+            }
+          }
+        }
+
+        // Add Metafy community alt arts from cached game file data
+        $playerCommunities = $altArtsPlayerID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []);
+        if (is_array($playerCommunities)) {
+          foreach ($playerCommunities as $community) {
+            $communityId = $community['id'] ?? null;
+            $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
+            if ($metafyCommunity === null) continue;
             $metafyAltArts = $metafyCommunity->AltArts();
-            if (!empty($metafyAltArts)) {
-              $metafyAltArtsCount = count($metafyAltArts);
-              $communityName = $metafyCommunity->CommunityName();
-              for($i = 0; $i < $metafyAltArtsCount; ++$i) {
-                $arr = explode("=", $metafyAltArts[$i]);
-                if (count($arr) === 2) {
-                  $altArt = new stdClass();
-                  $altArt->name = $communityName . ($metafyAltArtsCount > 1 ? " " . $i + 1 : "");
-                  $altArt->cardId = trim($arr[0]);
-                  $altArt->altPath = trim($arr[1]);
-                  $initialLoad->altArts[] = $altArt;
-                }
-              }
+            $metafyAltArtsCount = count($metafyAltArts);
+            if ($metafyAltArtsCount === 0) continue;
+            $communityName = $metafyCommunity->CommunityName();
+            $isMultiArt = $metafyAltArtsCount > 1;
+            for($i = 0; $i < $metafyAltArtsCount; ++$i) {
+              $arr = explode("=", $metafyAltArts[$i]);
+              if (count($arr) !== 2) continue;
+              $altPath = trim($arr[1]);
+              if (isset($optInOnlyAltArts[$altPath])) continue;
+              $initialLoad->altArts[] = [
+                'name' => $isMultiArt ? $communityName . " " . ($i + 1) : $communityName,
+                'cardId' => trim($arr[0]),
+                'altPath' => $altPath,
+              ];
             }
           }
         }
       }
-    }
 
-    // Get opponent's alt arts
-    if($playerID == 3 || !AltArtsDisabled($playerID))
-    {
-      foreach($patreonCampaigns as $campaign) {
-        $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($altArtsOpponentName);
-
-        if ($campaign->SessionID() == "isPvtVoidPatron") {
-          $isOpponentSupporterOfCampaign = $altArtsOpponentName == "PvtVoid" || $campaign->IsTeamMember($altArtsOpponentName);
-        }
-
-        if($isOpponentSupporterOfCampaign) {
-          $opponentAltArtsHero = $altArtsOpponentID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
-          $opponentAltArts = $campaign->AltArts($opponentAltArtsHero);
-          if($opponentAltArts == "") continue;
-          $opponentAltArts = explode(",", $opponentAltArts);
-          $opponentAltArtsCount = count($opponentAltArts);
-          $campaignName = $campaign->CampaignName();
-          for($i = 0; $i < $opponentAltArtsCount; ++$i) {
-            $arr = explode("=", $opponentAltArts[$i]);
-            $opponentAltArt = new stdClass();
-            $opponentAltArt->name = $campaignName . ($opponentAltArtsCount > 1 ? " " . $i + 1 : "");
-            $opponentAltArt->cardId = $arr[0];
-            $opponentAltArt->altPath = $arr[1];
-            $initialLoad->opponentAltArts[] = $opponentAltArt;
-          }
+      // Get opponent's alt arts
+      if ($oppDeckOverride !== null && $oppDeckOverride['customized']) {
+        foreach ($oppDeckOverride['map'] as $cardId => $altPath) {
+          $initialLoad->opponentAltArts[] = ['name' => 'My Deck', 'cardId' => $cardId, 'altPath' => $altPath];
         }
       }
+      else {
+        foreach($patreonCampaigns as $campaign) {
+          $isOpponentSupporterOfCampaign = $campaign->IsTeamMember($altArtsOpponentName);
 
-      // Add opponent's Metafy community alt arts from cached game file data
-      $opponentCommunities = $playerID == 3 ? ($p2MetafyCommunities ?? []) : ($playerID == 1 ? ($p2MetafyCommunities ?? []) : ($p1MetafyCommunities ?? []));
-      if (is_array($opponentCommunities)) {
-        foreach ($opponentCommunities as $community) {
-          $communityId = $community['id'] ?? null;
-          $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
-          if ($metafyCommunity !== null) {
+          if ($campaign->SessionID() == "isPvtVoidPatron") {
+            $isOpponentSupporterOfCampaign = $altArtsOpponentName == "PvtVoid" || $campaign->IsTeamMember($altArtsOpponentName);
+          }
+
+          if($isOpponentSupporterOfCampaign) {
+            $opponentAltArtsHero = $altArtsOpponentID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
+            $opponentAltArts = $campaign->AltArtsList($opponentAltArtsHero);
+            $opponentAltArtsCount = count($opponentAltArts);
+            if($opponentAltArtsCount == 0) continue;
+            $campaignName = $campaign->CampaignName();
+            $isMultiArt = $opponentAltArtsCount > 1;
+            for($i = 0; $i < $opponentAltArtsCount; ++$i) {
+              $arr = explode("=", $opponentAltArts[$i]);
+              $altPath = $arr[1];
+              if (isset($optInOnlyAltArts[$altPath])) continue;
+              $initialLoad->opponentAltArts[] = [
+                'name' => $isMultiArt ? $campaignName . " " . ($i + 1) : $campaignName,
+                'cardId' => $arr[0],
+                'altPath' => $altPath,
+              ];
+            }
+          }
+        }
+
+        // Add opponent's Metafy community alt arts from cached game file data
+        $opponentCommunities = $altArtsOpponentID == 1 ? ($p1MetafyCommunities ?? []) : ($p2MetafyCommunities ?? []);
+        if (is_array($opponentCommunities)) {
+          foreach ($opponentCommunities as $community) {
+            $communityId = $community['id'] ?? null;
+            $metafyCommunity = $communityId ? ($metafyCommunityMap[$communityId] ?? null) : null;
+            if ($metafyCommunity === null) continue;
             $opponentMetafyAltArts = $metafyCommunity->AltArts();
-            if (!empty($opponentMetafyAltArts)) {
-              $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
-              $communityName = $metafyCommunity->CommunityName();
-              for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
-                $arr = explode("=", $opponentMetafyAltArts[$i]);
-                if (count($arr) === 2) {
-                  $opponentAltArt = new stdClass();
-                  $opponentAltArt->name = $communityName . ($opponentMetafyAltArtsCount > 1 ? " " . $i + 1 : "");
-                  $opponentAltArt->cardId = trim($arr[0]);
-                  $opponentAltArt->altPath = trim($arr[1]);
-                  $initialLoad->opponentAltArts[] = $opponentAltArt;
-                }
-              }
+            $opponentMetafyAltArtsCount = count($opponentMetafyAltArts);
+            if ($opponentMetafyAltArtsCount === 0) continue;
+            $communityName = $metafyCommunity->CommunityName();
+            $isMultiArt = $opponentMetafyAltArtsCount > 1;
+            for($i = 0; $i < $opponentMetafyAltArtsCount; ++$i) {
+              $arr = explode("=", $opponentMetafyAltArts[$i]);
+              if (count($arr) !== 2) continue;
+              $altPath = trim($arr[1]);
+              if (isset($optInOnlyAltArts[$altPath])) continue;
+              $initialLoad->opponentAltArts[] = [
+                'name' => $isMultiArt ? $communityName . " " . ($i + 1) : $communityName,
+                'cardId' => trim($arr[0]),
+                'altPath' => $altPath,
+              ];
             }
           }
         }
       }
     }
-
-    $myUserId = $altArtsPlayerID == 1 ? ($p1id ?? '') : ($p2id ?? '');
-    $myDeckLink = $altArtsPlayerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
-    $initialLoad->altArts = ApplyDeckAltArtOverride($initialLoad->altArts, $myUserId, $myDeckLink);
-
-    $oppUserId = $altArtsOpponentID == 1 ? ($p1id ?? '') : ($p2id ?? '');
-    $oppDeckLink = $altArtsOpponentID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
-    $initialLoad->opponentAltArts = ApplyDeckAltArtOverride($initialLoad->opponentAltArts, $oppUserId, $oppDeckLink);
 
     $response->initialLoad = $initialLoad;
   }
@@ -307,16 +360,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $blankZone = 'blankZone';
 
   //Choose Cardback
-  $MyCardBack = GetCardBack($playerID);
+  $MyCardBack = GetCardBack($viewerSlotPlayerID);
   $TheirCardBack = GetCardBack($otherPlayer);
-  $defCardBack = GetCardBack($defPlayer);
+  $defCardBack = $defPlayer == $viewerSlotPlayerID ? $MyCardBack : $TheirCardBack;
   $borderColor = 0;
 
-  $isColorblindMode = IsColorblindMode($playerID);
-  $response->MyPlaymat = $isColorblindMode ? 0 : GetPlaymat($playerID);
+  $isColorblindMode = $playerID == 3
+    ? !empty($sessionData['viewerColorblindMode'])
+    : IsColorblindMode($playerID);
+  $response->MyPlaymat = $isColorblindMode ? 0 : GetPlaymat($viewerSlotPlayerID);
   if(isset($initialLoad) && $initialLoad->isOpponentAI) $response->TheirPlaymat = $isColorblindMode ? 0 : 2;
   else $response->TheirPlaymat = $isColorblindMode ? 0 : GetPlaymat($otherPlayer);
-  if ($response->MyPlaymat == 0) $response->TheirPlaymat = 0;
+  if ($playerID != 3 && $response->MyPlaymat == 0) $response->TheirPlaymat = 0;
 
   //Display active chain link
   $activeChainLink = new stdClass();
@@ -348,6 +403,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         actionDataOverride: '0',
         borderColor: $borderColor,
         countersMap: $countersMap,
+        subcard: GetChainCardSubcards($combatChain[$i + 1], $combatChain[$i + 8] ?? NULL, $combatChain[$i + 7] ?? NULL),
       );
       continue;
     }
@@ -369,7 +425,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     EvaluateCombatChain($totalPower, $totalDefense, $chainPowerModifiers);
   }
   $blockVal = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? 0 : $totalDefense;
-  $powVal = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? ($combatChainState[$CCS_CachedPreBlockValue] ?? $totalPower) : $totalPower;
+  $powVal = $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) ? (GetCombatChainState($CCS_CachedPreBlockValue) ?? $totalPower) : $totalPower;
   $activeChainLink->totalPower = $powVal;
 
   $activeChainLink->totalDefense = $blockVal;
@@ -381,8 +437,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $activeChainLink->overpower = CachedOverpowerActive();
   $activeChainLink->confidence = SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence");
   $activeChainLink->activeOnHits = ActiveOnHits();
-  if ($combatChainState[$CCS_RequiredEquipmentBlock] > NumEquipBlock("EQUIP")) $activeChainLink->numRequiredEquipBlock = $combatChainState[$CCS_RequiredEquipmentBlock];
-  elseif ($combatChainState[$CCS_RequiredNegCounterEquipmentBlock] > NumNegCounterEquipBlock()) $activeChainLink->numRequiredEquipBlock = $combatChainState[$CCS_RequiredNegCounterEquipmentBlock];
+  if (GetCombatChainState($CCS_RequiredEquipmentBlock) > NumEquipBlock("EQUIP")) $activeChainLink->numRequiredEquipBlock = GetCombatChainState($CCS_RequiredEquipmentBlock);
+  elseif (GetCombatChainState($CCS_RequiredNegCounterEquipmentBlock) > NumNegCounterEquipBlock()) $activeChainLink->numRequiredEquipBlock = GetCombatChainState($CCS_RequiredNegCounterEquipmentBlock);
   $activeChainLink->wager = CachedWagerActive();
   $activeChainLink->phantasm = CachedPhantasmActive();
   $activeChainLink->fusion = CachedFusionActive();
@@ -421,12 +477,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $reorderableLayers = [];
   for ($i = $layersCount - $layerPieces; $i >= 0; $i -= $layerPieces) {
     $layerName = isset($specialLayersSet[$layers[$i]]) ? $layers[$i+2] : $layers[$i];
-    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1]);
+    $label = NULL;
+    if ($layerName == "USURPED") {
+      $layerName = $layers[$i + 4] . "-USURPED";
+      $label = "Usurped";
+    }
+    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label);
 
     $layer = new stdClass();
     $borderColor = null;
     if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 9;
-    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor);
+    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor, label:$label);
     $layer->layerID = $i;
     $layer->isReorderable = false;
     $reorderableLayers[] = $layer;
@@ -451,7 +512,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   for ($i=0; $i < $myBanishCount; $i += $banishPieces) {
-    if(PlayableFromOtherPlayerBanish($myBanish[$i], $myBanish[$i+1], $otherPlayer)) {
+    if(PlayableFromOtherPlayerBanish($myBanish[$i], $myBanish[$i+1], $otherPlayer, $i)) {
       $theirHandContents[] = JSONRenderedCard($myBanish[$i], borderColor:7);
     }
   }
@@ -486,11 +547,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Display their discard, pitch, deck, and banish
   $opponentDiscardArray = [];
+  $theirGYSubtypes = IsNecromancerHero($theirCharacter[0] ?? "", $otherPlayer);
   for ($i = 0; $i < $theirDiscardCount; $i += $discardPieces) {
     if (isset($theirDiscard[$i + 2])) {
       $mod = $theirDiscard[$i + 2];
-      $cardID = isFaceDownMod($mod) ? $TheirCardBack : $theirDiscard[$i];
-      $opponentDiscardArray[] = JSONRenderedCard($cardID);
+      $isFaceDown = isFaceDownMod($mod);
+      $cardID = $isFaceDown ? $TheirCardBack : $theirDiscard[$i];
+      $sType = ($theirGYSubtypes && !$isFaceDown) ? CardSubType($cardID) : "";
+      $opponentDiscardArray[] = JSONRenderedCard($cardID, sType: $sType !== "" ? $sType : NULL);
     }
   }
   $response->opponentDiscard = $opponentDiscardArray;
@@ -589,7 +653,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $weaponPowerModifiers = [];
       $powerCounters = $CharacterCard->NumPowerCounters();
       if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0 ||
-        SearchCurrentTurnEffectsForPartialId($CharacterCard->UniqueID() ?? "-")) $border = 5;
+        CurrentTurnEffectHasUniqueID($CharacterCard->UniqueID() ?? "-")) $border = 5;
     }
     if($i == 0 && $otherPlayer == $mainPlayer) {
       $heroCard = $CharacterCard->CardID();
@@ -653,13 +717,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $actionType = $turnPhase == "ARS" ? 4 : 27;
   $resourceRestrictedCard = "";
   if(isset($turn[3])) $resourceRestrictedCard = $turn[3];
-  if (strpos($turnPhase, "CHOOSEHAND") !== false && ($turnPhase != "MULTICHOOSEHAND" || $turnPhase != "MAYMULTICHOOSEHAND")) $actionType = 16;
+  if (strpos($turnPhase, "CHOOSEHAND") !== false && !in_array($turnPhase, ["MULTICHOOSEHAND", "MAYMULTICHOOSEHAND"], true)) $actionType = 16;
   if ($isGoldPaymentChoice) $actionType = 16;
   $myHandContents = [];
   $myHandCount = count($myHand);
   $handPieces = HandPieces();
   $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay);
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
+    $label = "";
     if ($playerID == 3) {
       if($spectatorCanSeeP2Hand) $myHandContents[] = JSONRenderedCard(cardNumber: $myHand[$i], controller: 2);
       else $myHandContents[] = JSONRenderedCard(cardNumber: $MyCardBack, controller: 2);
@@ -699,19 +764,23 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //My Discard
   $playerDiscardArr = [];
   $myDiscardCount = count($myDiscard);
+  $myGYSubtypes = IsNecromancerHero($myCharacter[0] ?? "", $playerID == 1 ? 1 : 2);
   for($i = 0; $i < $myDiscardCount; $i += $discardPieces) {
     if (isset($myDiscard[$i+2])) {
       $overlay = 0;
-      $action = $currentPlayer == $playerID && (PlayableFromGraveyard($myDiscard[$i], $myDiscard[$i+2], $playerID, $i) || AbilityPlayableFromGraveyard($myDiscard[$i], $i)) && IsPlayable($myDiscard[$i], $turnPhase, "GY", $i) ? 36 : 0;
-      $mod = strstr($myDiscard[$i + 2], '-', true) ?: $myDiscard[$i + 2];
-      $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $playerID, $mod, $i);
+      $facing = $myDiscard[$i + 2];
+      $playableFromGraveyard = PlayableFromGraveyard($myDiscard[$i], "-", $playerID, $i);
+      $action = $currentPlayer == $playerID && (($playableFromGraveyard && !isFaceDownMod($facing)) || AbilityPlayableFromGraveyard($myDiscard[$i], $i)) && IsPlayable($myDiscard[$i], $turnPhase, "GY", $i) ? 36 : 0;
+      $mod = strstr($facing, '-', true) ?: $facing;
+      $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $playerID, $mod, $i, $playableFromGraveyard);
       $cardID = $myDiscard[$i];
       if($mod == "DOWN") {
         $overlay = 1;
         $border = 0;
       }
       elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = $MyCardBack;
-      $playerDiscardArr[] = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i));
+      $sType = ($myGYSubtypes && $overlay != 1 && $cardID != $MyCardBack) ? CardSubType($cardID) : "";
+      $playerDiscardArr[] = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i), sType: $sType !== "" ? $sType : NULL);
     }
   }
   $myBlessingsCount = SearchCount(SearchDiscardForCard($playerID, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));
@@ -814,6 +883,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $playable = $playerID == $currentPlayer && ($myCharacter[$i + 1] ?? 0) > 0
       && ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myChar, $turnPhase, "CHAR", $i, $restriction));
     $border = CardBorderColor($myChar, "CHAR", $playable, $playerID);
+    if ($myChar == "fyendals_spring_tunic" && ManualTunicSetting($playerID)) $border = 0;
+    $manualDynamoRefresh = CanManuallyRefreshValiantDynamo($playerID, $i);
     $type = CardType($myChar);
     if (TypeContains($myChar, "D")) $type = "C";
     $sTypeArr = explode(",", CardSubType($myChar, $myCharacter[$i+11] ?? ""));
@@ -831,7 +902,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $weaponPowerModifiers = [];
       if (!$playable) {
           if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $playerID) > 0 ||
-              SearchCurrentTurnEffectsForPartialId($myCharacter[$i + 11] ?? "-")) {
+              CurrentTurnEffectHasUniqueID($myCharacter[$i + 11] ?? "-")) {
               $border = 5;
           }
 
@@ -848,7 +919,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $gem = ($myCharacter[$i + 9] ?? 0) == 1 ? 1 : 2;
     }
     if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
-    if($isGameOver) ($myCharacter[$i + 12] ?? "-") == "UP";
+    $facing = $isGameOver ? "UP" : ($myCharacter[$i + 12] ?? "-");
     if($playerID == 3 &&( $myCharacter[$i + 12] ?? "-") == "DOWN" && !$isGameOver) {
       $myCharData[] = JSONRenderedCard(
         $MyCardBack);
@@ -857,7 +928,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if(($myCharacter[$i + 1] ?? 0) > 0) {
         $myCharData[] = JSONRenderedCard(
           $myChar,
-          $currentPlayer == $playerID && $playable ? ($goldOrPitchChoice ? 16 : 3) : 0,
+          $manualDynamoRefresh ? 40 : ($currentPlayer == $playerID && $playable ? ($goldOrPitchChoice ? 16 : 3) : 0),
           ($myCharacter[$i + 1] ?? 0) != 2 && $myChar != "DUMMYDISHONORED"? 1 : 0,
           $border,
           ($myCharacter[$i + 1] ?? 0) != 0 ? $counters : 0,
@@ -874,7 +945,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           ($myCharacter[$i + 8] ?? 0) == 1,
           $gem,
           label: $label,
-          facing: $myCharacter[$i + 12] ?? "-",
+          facing: $facing,
           numUses: $myCharacter[$i + 5] ?? 0,
           subcard: isSubcardEmpty($myCharacter, $i) ? NULL : ($myCharacter[$i+10] ?? null),
           marked: ($myCharacter[$i + 13] ?? 0) == 1,
@@ -888,6 +959,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Now display any previous chain links that can be activated
   $playablePastLinks = [];
+  $chainLinksPieces = ChainLinksPieces();
+  // attacker's cards
   $attacks = GetCombatChainAttacks();
   $attacksCount = count($attacks);
   $chainLinksPieces = ChainLinksPieces();
@@ -899,6 +972,24 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $border = CardBorderColor($attacks[$i], "BANISH", $action > 0, $playerID);
     $cardID = $attacks[$i];
     if ($action != 0) $playablePastLinks[] = JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: strval($i), label: $label);
+  }
+  // defender's cards
+  for ($linkNum = 0; $linkNum < $ChainLinks->NumLinks(); ++$linkNum) {
+    $label = "Chain Link " . $linkNum + 1;
+    $Link = $ChainLinks->GetLink($linkNum);
+    for ($i = 1; $i < $Link->NumCards(); ++$i) {
+      $LinkCard = $Link->GetLinkCard($i, true);
+      if ($LinkCard->PlayerID() != $currentPlayer || $currentPlayer != $playerID) continue;
+      if (!$LinkCard->StillOnChain()) continue;
+      $index = $LinkCard->Index() . "-$linkNum";
+      $zone = "PASTCHAINLINK";
+      $linkCardID = $LinkCard->ID();
+      $overlay = 0;
+      $action = IsPlayable($linkCardID, $turnPhase, $zone, $index) ? 39 : 0;
+      $border = CardBorderColor($linkCardID, "BANISH", $action > 0, $playerID);
+      $cardID = $linkCardID;
+      if ($action != 0) $playablePastLinks[] = JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: $index, label: $label);
+    }
   }
   if (!empty($playablePastLinks)) {
     $response->playerBanish = [...$response->playerBanish, ...$playablePastLinks];
@@ -1015,19 +1106,44 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
   $theirAlliesCount = count($theirAllies);
   $allyPieces = AllyPieces();
+  $theirAurasObj = new Auras($playerID == 1 ? 2 : 1);
+  $theirAurasObj->BuildBoundIndex();
+
+  $layerTargetHaystack = "";
+  $layerScanCount = count($layers);
+  for ($li = 0; $li < $layerScanCount; $li += $layerPieces) {
+    $layerTargetHaystack .= ($layers[$li + 3] ?? "") . "\x00";
+  }
+  $effectUIDSet = [];
+  $effectScanCount = count($currentTurnEffects);
+  $effectScanPieces = CurrentTurnEffectPieces();
+  for ($ei = 0; $ei < $effectScanCount; $ei += $effectScanPieces) {
+    if (isset($currentTurnEffects[$ei + 2])) $effectUIDSet[(string)$currentTurnEffects[$ei + 2]] = true;
+  }
 
   for ($i = 0; $i + $allyPieces - 1 < $theirAlliesCount; $i += $allyPieces) {
+    $AllyCard = new AllyCard($i, $playerID == 1 ? 2 : 1);
     $label = "";
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
-    if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
+    if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
     else {
-      $isTargeted = SearchLayersForTargetUniqueID($uniqueID) != -1;
-      $hasActiveEffect = SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1;
+      $isTargeted = $layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID);
+      $hasActiveEffect = isset($effectUIDSet[(string)$uniqueID]);
       if ($isTargeted && $hasActiveEffect) $label = "Targeted/Effect Active";
       elseif ($hasActiveEffect) $label = "Effect Active";
       elseif ($isTargeted) $label = "Targeted";
+    }
+    $subcards = $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL;
+    $boundAuras = $theirAurasObj->FindBoundAuras($AllyCard->UniqueID());
+    $hasBoundAura = count($boundAuras) > 0;
+    if ($hasBoundAura) {
+      $boundIDs = [];
+      foreach ($boundAuras as $boundAura)
+        $boundIDs[] = $boundAura->CardID();
+      $boundIDs = implode(",",  $boundIDs);
+      $subcards = isset($subcards) ? "$boundIDs,$subcards" : $boundIDs;
     }
     $theirAlliesOutput[] = JSONRenderedCard(
         cardNumber: $theirAllies[$i],
@@ -1038,7 +1154,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         type: $type,
         sType: $sType,
         isFrozen: IsFrozenMZ($theirAllies, "ALLY", $i, $otherPlayer),
-        subcard: $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL,
+        hasBoundAura: $hasBoundAura,
+        subcard: $subcards,
         powerCounters:$theirAllies[$i+9],
         label: $label,
         tapped: $theirAllies[$i+11] == 1,
@@ -1052,6 +1169,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $auraPieces = AuraPieces();
   static $labeledAurasSet = ["blessing_of_themis_yellow" => true, "leave_em_speechless_blue" => true];
   for ($i = 0; $i + $auraPieces - 1 < $theirAurasCount; $i += $auraPieces) {
+    $AuraCard = new AuraCard($i, $playerID == 1 ? 2 : 1);
+    if ($AuraCard->BoundTo() != "-") continue; //display bound auras elsewhere
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
     $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
@@ -1127,7 +1246,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myAlliesOutput = [];
   $myAllies = GetAllies($playerID == 1 ? 1 : 2);
   $myAlliesCount = count($myAllies);
+  $myAurasObj = new Auras($playerID);
+  $myAurasObj->BuildBoundIndex();
   for ($i = 0; $i + $allyPieces - 1 < $myAlliesCount; $i += $allyPieces) {
+    $AllyCard = new AllyCard($i, $playerID);
     $label = "";
     $type = CardType($myAllies[$i]);
     $sType = CardSubType($myAllies[$i]);
@@ -1136,9 +1258,19 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $border = CardBorderColor($myAllies[$i], "PLAY", $playable, $playerID);
     $actionDataOverride = $actionType == 24 ? strval($i) : "";
     $uniqueID = $myAllies[$i+5];
-    if($combatChainState[$CCS_AttackTargetUID] == $uniqueID) $label = "Targeted";
-    elseif(SearchLayersForTargetUniqueID($uniqueID) != -1) $label = "Targeted";
-    elseif(SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) $label = "Effect Active";
+    if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
+    elseif($layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID)) $label = "Targeted";
+    elseif(isset($effectUIDSet[(string)$uniqueID])) $label = "Effect Active";
+    $subcards = $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL;
+    $boundAuras = $myAurasObj->FindBoundAuras($AllyCard->UniqueID());
+    $hasBoundAura = count($boundAuras) > 0;
+    if ($hasBoundAura) {
+      $boundIDs = [];
+      foreach ($boundAuras as $boundAura)
+        $boundIDs[] = $boundAura->CardID();
+      $boundIDs = implode(",",  $boundIDs);
+      $subcards = isset($subcards) ? "$boundIDs,$subcards" : $boundIDs;
+    }
     $myAlliesOutput[] = JSONRenderedCard(
       cardNumber: $myAllies[$i],
       action: $actionType,
@@ -1151,7 +1283,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       type: $type,
       sType: $sType,
       isFrozen:IsFrozenMZ($myAllies, "ALLY", $i, $playerID),
-      subcard: $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL,
+      hasBoundAura: $hasBoundAura,
+      subcard: $subcards,
       powerCounters: $myAllies[$i+9],
       label: $label,
       tapped: $myAllies[$i + 11] == 1,
@@ -1164,6 +1297,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myAurasOutput = [];
   $myAurasCount = count($myAuras);
   for ($i = 0; $i + $auraPieces - 1 < $myAurasCount; $i += $auraPieces) {
+    $AuraCard = new AuraCard($i, $playerID);
+    if ($AuraCard->BoundTo() != "-") continue; //display bound auras elsewhere
     $playable = $currentPlayer == $playerID ? $myAuras[$i + 1] == 2 && IsPlayable($myAuras[$i], $turnPhase, "PLAY", $i, $restriction) : false;
     if($myAuras[$i] == "restless_coalescence_yellow" && $currentPlayer == $playerID && IsPlayable($myAuras[$i], $turnPhase, "PLAY", $i, $restriction)) $playable = true;
     $border = CardBorderColor($myAuras[$i], "PLAY", $playable, $playerID);
@@ -1448,8 +1583,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $maskHitStreak = HitsInRow();
     $isFinalizingCurrentLink = !empty($combatChain) && SearchLayersForPhase("FINALIZECHAINLINK") != -1;
     if ($isFinalizingCurrentLink) {
-      $currentLinkHit = intval($combatChainState[$CCS_DamageDealt] ?? 0) > 0
-        || intval($combatChainState[$CCS_HitThisLink] ?? 0) > 0;
+      $currentLinkHit = intval(GetCombatChainState($CCS_DamageDealt) ?? 0) > 0
+        || intval(GetCombatChainState($CCS_HitThisLink) ?? 0) > 0;
       $maskHitStreak = $currentLinkHit ? $maskHitStreak + 1 : 0;
     }
     $maskHitStreak = min(3, $maskHitStreak);
@@ -1492,13 +1627,16 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->newEvents = $newEvents;
 
   // Phase of the turn
+  $publicTurnPhase = $turnPhase;
+  $isConcealedHeaveChoice = ($turnPhase == "ARSENALORHEAVE" || (($dqState[3] ?? "-") == "HEAVECHOSEN" && IsDecisionQueueActive()));
+  if ($isConcealedHeaveChoice && $currentPlayer != $playerID) $publicTurnPhase = "ARS";
   $turnPhaseObj = new stdClass();
-  $turnPhaseObj->turnPhase = $turnPhase;
+  $turnPhaseObj->turnPhase = $publicTurnPhase;
   if ($layersCount > 0) {
     $turnPhaseObj->layer = $layers[0];
   }
   $isItMeOrThem = $currentPlayer == $playerID ? "Choose " : "Your opponent is choosing ";
-  $turnPhaseObj->caption = $isItMeOrThem . TypeToPlay($turnPhase);
+  $turnPhaseObj->caption = $isItMeOrThem . TypeToPlay($publicTurnPhase);
   $response->turnPhase = $turnPhaseObj;
 
   // Do we have priority?
@@ -1537,14 +1675,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $helpText = "";
   // Reminder text box highlight thing
   if ($turnPhase != "OVER") {
-    $helpText .= $currentPlayer != $playerID ? WaitingMessage($turnPhase) : GetPhaseHelptext();
+    $helpText .= $currentPlayer != $playerID ? WaitingMessage($publicTurnPhase) : GetPhaseHelptext();
     if($currentPlayer == $playerID) { 
-      if ($turnPhase == "P" || $turnPhase == "CHOOSEHANDCANCEL" || $turnPhase == "CHOOSEDISCARDCANCEL") {
-        $helpText .= $turnPhase == "P" ? " (" . $myResources[0] . " of " . $myResources[1] . ")" : "";
-        $promptButtons[] = CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px");
-      }
       if ($turnPhase == "PAYGOLDORPITCH" && ($myResources[0] ?? 0) >= 2) {
         $promptButtons[] = CreateButtonAPI($playerID, "Use resources", 106, 0, "16px");
+      }
+      if ($turnPhase == "P" || $turnPhase == "CHOOSEHANDCANCEL" || $turnPhase == "CHOOSEDISCARDCANCEL" || $turnPhase == "PAYGOLDORPITCH" || $turnPhase == "CHOOSEGOLDTOPAY") {
+        $helpText .= $turnPhase == "P" ? " (" . $myResources[0] . " of " . $myResources[1] . ")" : "";
+        $promptButtons[] = CreateButtonAPI($playerID, "Cancel", 10000, 0, "16px");
       }
       if (CanPassPhase($turnPhase)) {
         if ($turnPhase == "B") {
@@ -1611,12 +1749,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $response->opponentPresence = $opponentPresence;
   }
 
-  $response->inactive = $inactive;
+  $inactivityTimeout = InactivityTimeoutMs($buildCacheArr);
+  $response->inactive = $inactivityTimeout > 0 ? $inactive : false;
 
-  // Inactivity countdown
   $lastActionTime = intval($buildCacheArr[5] ?? 0);
-  if ($lastActionTime > 0) {
-    $response->inactivityDeadline = $lastActionTime + INACTIVITY_TIMEOUT_MS;
+  if ($lastActionTime > 0 && $inactivityTimeout > 0) {
+    $response->inactivityDeadline = $lastActionTime + $inactivityTimeout;
+    $response->serverTime = intval(round(microtime(true) * 1000));
+  }
+
+  global $autoDeleteGames;
+  if ($lastActionTime > 0 && !empty($autoDeleteGames)) {
+    $response->gameDeleteDeadline = $lastActionTime + GAME_DELETE_TIMEOUT_MS;
     $response->serverTime = intval(round(microtime(true) * 1000));
   }
 
@@ -1662,32 +1806,6 @@ function GetPhaseHelptext()
   return $DQText != "-" ? GamestateUnsanitize($DQText) : $defaultText;
 }
 
-if (!function_exists('GetCardEffectLabel')) {
-  function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
-    if ($uniqueID == "" || $uniqueID == "-") return "";
-    
-    global $CurrentTurnEffects;
-    $Effect = $CurrentTurnEffects->FindEffectUID($uniqueID);
-    if ($Effect->Index() == -1) return "";
-    
-    $effectName = $Effect->EffectID();
-    switch ($effectName) {
-      case "beseech_the_demigon_red":
-      case "beseech_the_demigon_yellow":
-      case "beseech_the_demigon_blue":
-      case "painful_passage_red-buff":
-        return "Power +" . EffectPowerModifier($effectName);
-      case "tear_through_the_portal_red":
-      case "tear_through_the_portal_yellow":
-      case "tear_through_the_portal_blue":
-      case "painful_passage_red-go_again":
-        return "Go Again";
-      default:
-        return "";
-    }
-  }
-}
-
 function skipEffectUIStacking($cardID) {
   if (HasFancyCounters($cardID) || $cardID == "shelter_from_the_storm_red" || $cardID == "calming_breeze_red") return false;
   $card = GetClass($cardID, 0);
@@ -1704,14 +1822,4 @@ function GetEffectUIStackCount($cardID, $totalEffectCount, $componentCounts) {
 
   if (!isset($componentAwareCards[$cardID]) || empty($componentCounts)) return $totalEffectCount;
   return max($componentCounts);
-}
-
-
-if (!function_exists('IsDevEnvironment')) {
-  function IsDevEnvironment() {
-    $domain = getenv("DOMAIN");
-    if ($domain === "localhost") return true;
-    if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') return true;
-    return false;
-  }
 }

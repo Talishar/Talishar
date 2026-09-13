@@ -17,50 +17,58 @@ function CardIsBlockable($storedPriorityNode)
   }
   switch($combatChain[0])
   {
-    case "find_center_blue": return !(ComboActive() && CardCost($storedPriorityNode[0]) < $combatChainState[$CCS_NumChainLinks]);
+    case "find_center_blue": return !(ComboActive() && CardCost($storedPriorityNode[0]) < GetCombatChainState($CCS_NumChainLinks));
     case "herons_flight_red": return false; //I have no idea how to make Heron's Flight work, so I'm just gonna say it's unblockable. This is so edge case that no one will know for a while lmfaooooo
     case "crane_dance_red":
     case "crane_dance_yellow":
-    case "crane_dance_blue": return !(ComboActive() && PowerValue($storedPriorityNode[0]) > $combatChainState[$CCS_NumChainLinks]);
+    case "crane_dance_blue": return !(ComboActive() && PowerValue($storedPriorityNode[0]) > GetCombatChainState($CCS_NumChainLinks));
     default: return true;
   }
 }
 
 function CardIsPlayable($storedPriorityNode, $hand, $resources)
 {
+  global $turn;
   if(CardIsPrevented($storedPriorityNode[0])) return false;
   switch($storedPriorityNode[1])
   {
     case "Hand":
       $index = $storedPriorityNode[2];
       $baseCost = CardCost($storedPriorityNode[0]);
+      $from = "HAND";
       break;
     case "Arsenal":
       if(ArsenalIsFrozen($storedPriorityNode)) return false;
       $index = -1;
       $baseCost = CardCost($storedPriorityNode[0]);
+      $from = "ARS";
       break;
     case "Character":
       if(CharacterIsUsed($storedPriorityNode)) return false;
       $index = -1;
       $baseCost = AbilityCost($storedPriorityNode[0]);
+      $from = "CHAR";
       break;
     case "Item":
       $index = -1;
       $baseCost = AbilityCost($storedPriorityNode[0]);
+      $from = "PLAY";
       break;
     case "Ally":
       $index = -1;
       $baseCost = AbilityCost($storedPriorityNode[0]);
+      $from = "PLAY";
       break;
     case "Banish":
       $index = $storedPriorityNode[2];
       $baseCost = CardCost($storedPriorityNode[0]);
+      $from = "BANISH";
       break;
     default:
-      WriteLog("ERROR: AI is storedPriorityNode an uncheckable card for playability. Please log a bug report.");
+      WriteLog("ERROR: The AI's stored priority node is not a card that can be checked for playability. Please submit a bug report.");
       return false;
   }
+  if(!IsPlayable($storedPriorityNode[0], $turn[0], $from, $storedPriorityNode[2])) return false;
   $finalCost = $baseCost;
   $totalPitch = $resources[0];
   $handCount = count($hand);

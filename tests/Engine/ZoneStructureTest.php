@@ -48,9 +48,9 @@ class ZoneStructureTest extends TestCase
         $this->assertSame(12, CombatChainPieces());
     }
 
-    public function testAuraPiecesIsFourteen(): void
+    public function testAuraPiecesIsFifteen(): void
     {
-        $this->assertSame(14, AuraPieces());
+        $this->assertSame(15, AuraPieces());
     }
 
     public function testItemPiecesIsFourteen(): void

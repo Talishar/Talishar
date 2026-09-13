@@ -20,7 +20,7 @@ SetHeaders();
 
 $response = new stdClass();
 session_start();
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 if($_POST == NULL) {
   $response->error = "Parameters were not passed";
   echo json_encode($response);
@@ -76,6 +76,11 @@ if(isset($submission->chest) && $submission->chest != "") $character .= " " . $s
 if(isset($submission->arms) && $submission->arms != "") $character .= " " . $submission->arms;
 if(isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
 if(isset($submission->offhand) && $submission->offhand != "") $character .= " " . $submission->offhand;
+if (isset($submission->deck))
+  $submission->deck = array_values(array_filter($submission->deck, fn($card) => !HasIncarnate($card)));
+if (isset($submission->inventory))
+  $submission->inventory = array_values(array_filter($submission->inventory, fn($card) => !HasIncarnate($card)));
+
 $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 
 if ($playerID == 1) {
@@ -206,7 +211,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   fwrite($handler, "M 1\r\n"); //What phase/player is active
   fwrite($handler, "1\r\n"); //Action points
   fwrite($handler, "\r\n"); //Combat Chain
-  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0\r\n"); //Combat Chain State
+  fwrite($handler, "0 0 0 0 0 0 0 GY NA 0 0 0 0 0 0 0 NA 0 0 -1 -1 NA 0 0 0 -1 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0 0 0\r\n"); //Combat Chain State
   fwrite($handler, "\r\n"); //Current Turn Effects
   fwrite($handler, "\r\n"); //Current Turn Effects From Combat
   fwrite($handler, "\r\n"); //Next Turn Effects
@@ -230,7 +235,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   fwrite($handler, "0\r\n"); //Player 1 total time
   fwrite($handler, "0\r\n"); //Player 2 total time
   fwrite($handler, time() . "\r\n"); //Last update time
-  fwrite($handler, $roguelikeGameID . "\r\n"); //Roguelike game ID
+  fwrite($handler, "\r\n"); // Reserved for backward-compatible field alignment
   fwrite($handler, "\r\n");//Events
   fwrite($handler, "-\r\n");//Effect Context
   fwrite($handler, implode(" ", $p1Inventory) . "\r\n"); //p1 Inventory
@@ -252,8 +257,18 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   //Set up log file
   $filename = "../Games/" . $gameName . "/gamelog.txt";
   $filepath = "../Games/" . $gameName . "/";
-  $handler = fopen($filename, "w");
-  if ($handler !== false) fclose($handler);
+  if (!is_dir($filepath)) {
+    $response->error = "Game files not found; the game may have been closed due to inactivity";
+    echo json_encode($response);
+    exit;
+  }
+  $handler = @fopen($filename, "w");
+  if ($handler === false) {
+    $response->error = "Unable to initialize the game log";
+    echo json_encode($response);
+    exit;
+  }
+  fclose($handler);
 
   $currentTime = strval(round(microtime(true) * 1000));
   $cacheArr = ReadCacheArray($gameName); // one shmop read

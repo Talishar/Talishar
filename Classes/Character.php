@@ -95,12 +95,12 @@ class CharacterCard {
   }
 
   function NumCounters() {
-    return $this->pieces[$this->index+2] ?? 0;
+    return intval($this->pieces[$this->index+2] ?? 0);
   }
 
   function AddCounters($num) {
     if (isset($this->pieces[$this->index + 2]))
-      $this->pieces[$this->index + 2] += $num;
+      $this->pieces[$this->index + 2] = intval($this->pieces[$this->index + 2]) + intval($num);
   }
 
   function NumPowerCounters() {
@@ -109,7 +109,7 @@ class CharacterCard {
 
   function AddPowerCounters($num) {
     if (isset($this->pieces[$this->index + 3]))
-      $this->pieces[$this->index + 3] += $num;
+      $this->pieces[$this->index + 3] = intval($this->pieces[$this->index + 3]) + intval($num);
   }
 
   function NumDefenseCounters() { //also tracks damage dealt to perched allies
@@ -118,7 +118,7 @@ class CharacterCard {
 
   function AddDefenseCounters($num) {
     if (isset($this->pieces[$this->index + 4]))
-      $this->pieces[$this->index + 4] += $num;
+      $this->pieces[$this->index + 4] = intval($this->pieces[$this->index + 4]) + intval($num);
   }
 
   function AddDefCounters($num) { //alias
@@ -130,7 +130,7 @@ class CharacterCard {
   }
 
   function AddUse($n=1) {
-    if (isset($this->pieces[$this->index+5])) $this->pieces[$this->index+5] += $n;
+    if (isset($this->pieces[$this->index+5])) $this->pieces[$this->index+5] = intval($this->pieces[$this->index+5]) + intval($n);
   }
 
   function OnChain() {
@@ -212,6 +212,15 @@ class CharacterCard {
 
   function Destroy($skipDestroy = false, $wasBanished = false) {
     DestroyCharacter($this->controller, $this->index, $skipDestroy, $wasBanished);
+  }
+
+  function Banish($mod="-", $banishedBy="", $banisher="-") {
+    if ($this->index != -1) {
+      $cardID = $this->CardID();
+      $this->Remove();
+      return BanishCardForPlayer($cardID, $this->controller, "EQUIP", $mod, $banishedBy, $banisher);
+    }
+    return -1;
   }
 
   function Tap($tapState=1, $endStepUntap=false) {

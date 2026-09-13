@@ -47,7 +47,7 @@ class Stack {
     $count = count($this->layers);
     $layerPieces = LayerPieces();
     for ($i = 0; $i < $count; $i += $layerPieces) {
-      if ($this->layers[$i] == $cardID) return new Layer($i);
+      if (($this->layers[$i] ?? "-") == $cardID) return new Layer($i);
     }
     return "";
   }
@@ -146,9 +146,17 @@ class Layer {
 		return isset($this->layers[$this->index+1]) ? $this->layers[$this->index+1] : 0;
 	}
 
+  function SetPlayerID($player) {
+    if (isset($this->layers[$this->index + 1])) $this->layers[$this->index + 1] = $player;
+  }
+
 	function Parameter() {
 		return isset($this->layers[$this->index+2]) ? $this->layers[$this->index+2] : "-";
 	}
+
+  function From() {
+    return explode("|", $this->Parameter())[0];
+  }
 
   function UpdateParameter($param) {
     if (isset($this->layers[$this->index+2]))

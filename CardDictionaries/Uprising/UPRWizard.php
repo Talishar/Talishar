@@ -84,13 +84,8 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "spellfire_cloak":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         return "Gain 1 resource.";
-      case "tome_of_duplicity_blue":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKTOPXINDICES,2");
-        AddDecisionQueue("CHOOSEDECK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "TOMEOFDUPLICITY", 1);
-        return "";
       case "rewind_blue":
         $index = intval(explode("-", $target, 2)[1]);
         $targetPlayer = $layers[$index + 1];

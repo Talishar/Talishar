@@ -1,0 +1,2 @@
+ALTER TABLE hero_mastery
+  ADD COLUMN displayLevel TINYINT UNSIGNED NULL DEFAULT NULL AFTER qualifyingGames;

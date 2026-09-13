@@ -39,17 +39,17 @@
 // }
 
 
-// class gesture_of_goodwill_blue extends Card {
+class gesture_of_goodwill_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "gesture_of_goodwill_blue";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "gesture_of_goodwill_blue";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+}
 
 
 // class jack_o_lantern_red extends Card {
@@ -82,19 +82,6 @@
 
 //   function __construct($controller) {
 //     $this->cardID = "jack_o_lantern_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class liars_charm_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "liars_charm_yellow";
 //     $this->controller = $controller;
 //     }
 

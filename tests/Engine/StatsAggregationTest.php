@@ -1,0 +1,503 @@
+<?php
+
+declare(strict_types=1);
+
+use PHPUnit\Framework\TestCase;
+
+/**
+ * End-of-game stat aggregation.
+ *
+ * These tests drive the real logging functions from Libraries/StatFunctions.php
+ * and the real aggregation in includes/functions.inc.php through a scripted
+ * game where every number is known in advance, then check the reported figures
+ * against that ground truth.
+ *
+ * The invariants that must hold for every seat and every ending:
+ *   - totals equal what the player actually did (nothing is ever dropped)
+ *   - the per-turn table sums to the totals
+ *   - "per turn" divides by populated contributing rows after turn 0
+ *   - each seat uses the same populated-row accounting
+ *
+ * A failure here means the stats no longer add up, not that a threshold moved.
+ */
+
+// Engine accessors the stat functions need. CardGetters.php is not loaded in
+// the test bootstrap, so provide the minimum they touch.
+if (!function_exists('GetTurnStats')) {
+    function &GetTurnStats($player) {
+        if ($player == 1) return $GLOBALS['p1TurnStats'];
+        return $GLOBALS['p2TurnStats'];
+    }
+}
+if (!function_exists('GetCardStats')) {
+    function &GetCardStats($player) {
+        if ($player == 1) return $GLOBALS['p1CardStats'];
+        return $GLOBALS['p2CardStats'];
+    }
+}
+if (!function_exists('GetCardTurnLog')) {
+    function &GetCardTurnLog($player) {
+        if ($player == 1) return $GLOBALS['p1CardTurnLog'];
+        return $GLOBALS['p2CardTurnLog'];
+    }
+}
+if (!function_exists('GetResources')) {
+    function &GetResources($player) {
+        if ($player == 1) return $GLOBALS['p1Resources'];
+        return $GLOBALS['p2Resources'];
+    }
+}
+if (!function_exists('GetHand')) {
+    function &GetHand($player) {
+        if ($player == 1) return $GLOBALS['p1Hand'];
+        return $GLOBALS['p2Hand'];
+    }
+}
+if (!function_exists('GetHealth')) {
+    function GetHealth($player) { return $GLOBALS['p' . $player . 'Health']; }
+}
+if (!function_exists('WriteLog')) {
+    function WriteLog(...$args) { }
+}
+
+class StatsAggregationTest extends TestCase
+{
+    private const THREAT = 10;   // damage threatened on each attacking turn
+    private const BLOCK  = 5;    // damage blocked on each defending turn
+
+    /** @var array<int,int> attacking turns actually played, by player */
+    private array $attacks = [1 => 0, 2 => 0];
+    /** @var array<int,int> defensive phases actually played, by player */
+    private array $defences = [1 => 0, 2 => 0];
+
+    // ---------------------------------------------------------------- engine model
+
+    /**
+     * Mirrors the turn flow the stat functions depend on. If this drifts from
+     * the engine these tests stop meaning anything, so testTurnFlowModelMatchesEngine()
+     * guards the two facts it relies on.
+     */
+    private function startGame(int $firstPlayer): void
+    {
+        foreach ([1, 2] as $p) {
+            $GLOBALS["p{$p}TurnStats"] = [];
+            $GLOBALS["p{$p}CardStats"] = [];
+            $GLOBALS["p{$p}CardTurnLog"] = [];
+            $GLOBALS["p{$p}Resources"] = [0, 0];
+            $GLOBALS["p{$p}Hand"] = [];
+            $GLOBALS["p{$p}Health"] = 40;
+            $GLOBALS["p{$p}LifeHistory"] = [];
+            $GLOBALS["p{$p}ArcaneDamageDealt"] = [];
+            $GLOBALS["p{$p}TotalTime"] = 0;
+        }
+        $GLOBALS['currentTurn'] = 0;
+        $GLOBALS['firstPlayer'] = $firstPlayer;
+        $GLOBALS['mainPlayer'] = $firstPlayer;
+        $GLOBALS['defPlayer'] = 3 - $firstPlayer;
+        $GLOBALS['turn'] = ['M'];
+        $GLOBALS['p1TurnCount'] = 0;
+        $GLOBALS['p2TurnCount'] = 0;
+        IncrementTurnCount($firstPlayer);
+        $this->attacks = [1 => 0, 2 => 0];
+        $this->defences = [1 => 0, 2 => 0];
+
+        StatsStartTurn(); // StartEffects.php does this once at game start
+    }
+
+    /** One attacking turn: attacker threatens THREAT, defender blocks BLOCK. */
+    private function playTurn(): void
+    {
+        $main = $GLOBALS['mainPlayer'];
+        $def  = $GLOBALS['defPlayer'];
+
+        LogPlayCardStats($main, 'attack_card', 'HAND', 'A');
+        LogResourcesUsedStats($main, 1);
+        LogPlayCardStats($def, 'block_card', 'HAND', 'B');
+        LogCombatResolutionStats(self::THREAT, self::BLOCK);
+        if (self::THREAT > self::BLOCK) {
+            LogDamageStats($def, self::THREAT - self::BLOCK, self::THREAT - self::BLOCK);
+        }
+
+        $this->attacks[$main]++;
+        $this->defences[$def]++;
+    }
+
+    /** FinalizeTurn: end-of-turn logging, turn counter, seat swap, next block. */
+    private function endTurn(): void
+    {
+        LogEndTurnStats($GLOBALS['mainPlayer']);
+        LogEndLifeStats();
+        if ($GLOBALS['mainPlayer'] == $GLOBALS['firstPlayer']) $GLOBALS['currentTurn'] += 1;
+        $GLOBALS['defPlayer'] = $GLOBALS['mainPlayer'];
+        $GLOBALS['mainPlayer'] = 3 - $GLOBALS['mainPlayer'];
+        IncrementTurnCount($GLOBALS['mainPlayer']);
+        StatsStartTurn();
+    }
+
+    /**
+     * Plays until both players have had $attacksEach turns, then stops on
+     * $lethalBy's turn without finalizing it, which is what happens when a
+     * player is killed mid-turn.
+     */
+    private function playGame(int $firstPlayer, int $attacksEach, int $lethalBy): void
+    {
+        $this->startGame($firstPlayer);
+        $guard = 0;
+        while (true) {
+            $this->playTurn();
+            if ($this->attacks[1] >= $attacksEach && $this->attacks[2] >= $attacksEach
+                && $GLOBALS['mainPlayer'] == $lethalBy) {
+                break;
+            }
+            $this->endTurn();
+            $this->assertLessThan(100, ++$guard, 'simulated game did not terminate');
+        }
+    }
+
+    private function aggregatesFor(int $player): array
+    {
+        $deck = [];
+        $turnStats = &GetTurnStats($player);
+        $otherTurnStats = &GetTurnStats(3 - $player);
+        PopulateTurnStatsAndAggregates($deck, $turnStats, $otherTurnStats, $player, true);
+        PopulateAggregateStats($deck, $turnStats, $player);
+        return $deck;
+    }
+
+    /** @return array<int,int> populated blocks used by an average calculation */
+    private function averageBlocksFor(int $player, bool $excludeLast = false): array
+    {
+        $turnStats = &GetTurnStats($player);
+        $blocks = UsedTurnStatBlocks($turnStats);
+        if ($excludeLast && count($blocks) > 0) array_pop($blocks);
+        return array_values(array_filter($blocks, fn($block) => $block != 0));
+    }
+
+    private function sumStatForBlocks(int $player, array $blocks, int $statOffset): int
+    {
+        $turnStats = &GetTurnStats($player);
+        $sum = 0;
+        foreach ($blocks as $block) $sum += $turnStats[$block + $statOffset];
+        return $sum;
+    }
+
+    /** @return array<array{0:int,1:int}> firstPlayer / lethalBy combinations */
+    public static function seatProvider(): array
+    {
+        return [
+            'P1 on the play, P1 wins'  => [1, 1],
+            'P1 on the play, P2 wins'  => [1, 2],
+            'P2 on the play, P1 wins'  => [2, 1],
+            'P2 on the play, P2 wins'  => [2, 2],
+        ];
+    }
+
+    // ---------------------------------------------------------------- totals
+
+    /**
+     * @dataProvider seatProvider
+     */
+    public function testTotalsCountEveryTurnPlayed(int $firstPlayer, int $lethalBy): void
+    {
+        $this->playGame($firstPlayer, 6, $lethalBy);
+
+        foreach ([1, 2] as $player) {
+            $stats = $this->aggregatesFor($player);
+            $this->assertSame(
+                $this->attacks[$player] * self::THREAT,
+                (int)$stats['totalDamageThreatened'],
+                "P$player lost an attacking turn from totalDamageThreatened"
+            );
+            $this->assertSame(
+                $this->defences[$player] * self::BLOCK,
+                (int)$stats['totalDamageBlocked'],
+                "P$player lost a defending turn from totalDamageBlocked"
+            );
+        }
+    }
+
+    /**
+     * The end game screen shows both a per-turn table and headline totals. If
+     * they disagree, one of them is dropping turns.
+     *
+     * @dataProvider seatProvider
+     */
+    public function testPerTurnTableSumsToTheTotals(int $firstPlayer, int $lethalBy): void
+    {
+        $this->playGame($firstPlayer, 6, $lethalBy);
+
+        foreach ([1, 2] as $player) {
+            $stats = $this->aggregatesFor($player);
+            $tableThreatened = 0;
+            $tableBlocked = 0;
+            foreach ($stats['turnResults'] as $turn) {
+                $tableThreatened += $turn['damageThreatened'];
+                $tableBlocked += $turn['damageBlocked'];
+            }
+            $this->assertSame((int)$stats['totalDamageThreatened'], $tableThreatened,
+                "P$player: per-turn table does not sum to totalDamageThreatened");
+            $this->assertSame((int)$stats['totalDamageBlocked'], $tableBlocked,
+                "P$player: per-turn table does not sum to totalDamageBlocked");
+        }
+    }
+
+    // ---------------------------------------------------------------- averages
+
+    /**
+     * @dataProvider seatProvider
+     */
+    public function testAveragesDivideByRecordedTurnRows(int $firstPlayer, int $lethalBy): void
+    {
+        $this->playGame($firstPlayer, 6, $lethalBy);
+
+        foreach ([1, 2] as $player) {
+            $stats = $this->aggregatesFor($player);
+            $rows = count($this->averageBlocksFor($player));
+            $threatened = $this->sumStatForBlocks($player, $this->averageBlocksFor($player), $GLOBALS['TurnStats_DamageThreatened']);
+            $blocked = $this->sumStatForBlocks($player, $this->averageBlocksFor($player), $GLOBALS['TurnStats_DamageBlocked']);
+
+            $this->assertEqualsWithDelta(round($threatened / $rows, 2),
+                $stats['averageDamageThreatenedPerTurn'], 0.001,
+                "P$player: averageDamageThreatenedPerTurn did not omit turn 0");
+            $this->assertEqualsWithDelta(round(($threatened + $blocked) / $rows, 2),
+                $stats['averageCombatValuePerTurn'], 0.001,
+                "P$player: averageCombatValuePerTurn did not omit turn 0");
+            $this->assertEqualsWithDelta(round(($threatened + $blocked) / $rows, 2),
+                $stats['averageValuePerTurn'], 0.001,
+                "P$player: averageValuePerTurn did not omit turn 0");
+        }
+    }
+
+    /**
+     * Both seats must use their own populated rows as the denominator. The
+     * player who dies while defending can legitimately have one more row, so
+     * their result need not equal the other player's result.
+     */
+    public function testEachSeatUsesItsRecordedRows(): void
+    {
+        foreach ([1, 2] as $firstPlayer) {
+            $this->playGame($firstPlayer, 6, 3 - $firstPlayer);
+            foreach ([1, 2] as $player) {
+                $stats = $this->aggregatesFor($player);
+                $blocks = $this->averageBlocksFor($player);
+                $rows = count($blocks);
+                $expected = round(
+                    ($this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageThreatened'])
+                    + $this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageBlocked'])) / $rows,
+                    2
+                );
+                $this->assertEqualsWithDelta($expected, $stats['averageValuePerTurn'], 0.001,
+                    "P$player: seat-specific average did not omit turn 0");
+            }
+        }
+    }
+
+    public function testShortGamesAreNotDiluted(): void
+    {
+        $this->playGame(1, 2, 2);
+
+        foreach ([1, 2] as $player) {
+            $stats = $this->aggregatesFor($player);
+            $blocks = $this->averageBlocksFor($player);
+            $rows = count($blocks);
+            $expected = round(
+                ($this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageThreatened'])
+                + $this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageBlocked'])) / $rows,
+                2);
+            $this->assertEqualsWithDelta($expected, $stats['averageValuePerTurn'], 0.001,
+                "P$player: short game average is wrong");
+        }
+    }
+
+    // ---------------------------------------------------------------- block layout
+
+    /**
+     * Every stat block from the first to the last must belong to a game turn.
+     * The player on the draw has an additional turn-0 defensive row.
+     *
+     * A displayed turn runs "the player on the draw attacks, then the player on
+     * the play attacks", so the player on the play always opens a fresh block
+     * when they start defending: being killed there leaves them one row with no
+     * attack of their own. The player on the draw defends on the row they have
+     * already attacked on, so dying there adds no row.
+     *
+     * @dataProvider seatProvider
+     */
+    public function testBlockCountMatchesTurnCount(int $firstPlayer, int $lethalBy): void
+    {
+        $this->playGame($firstPlayer, 6, $lethalBy);
+
+        foreach ([1, 2] as $player) {
+            $turnStats = &GetTurnStats($player);
+            $used = count(UsedTurnStatBlocks($turnStats));
+            $turns = CountAttackingTurns($player);
+
+            $this->assertSame($this->attacks[$player], $turns,
+                "P$player: CountAttackingTurns disagrees with the turns actually played");
+
+            $killedWhileBlocking = ($player != $lethalBy) && ($player == $firstPlayer);
+            $hasOpeningDefence = ($player != $firstPlayer);
+            $this->assertSame($turns + ($killedWhileBlocking ? 1 : 0) + ($hasOpeningDefence ? 1 : 0), $used,
+                "P$player: unexpected number of populated stat blocks");
+        }
+    }
+
+    /** Activity by the player on the draw during the opening turn is turn 0. */
+    public function testSecondPlayerOpeningTurnActivityStaysInTurnZero(): void
+    {
+        $this->startGame(1);
+
+        LogPlayCardStats(2, 'instant_card', 'HAND', 'I');
+        LogPlayCardStats(2, 'pitch_card', 'HAND', 'P');
+        LogResourcesUsedStats(2, 3);
+
+        $secondPlayerStats = &GetTurnStats(2);
+        $pieces = TurnStatPieces();
+        $blockZero = array_slice($secondPlayerStats, 0, $pieces);
+        $blockOne = array_slice($secondPlayerStats, $pieces, $pieces);
+
+        $this->assertSame(1, $blockZero[$GLOBALS['TurnStats_CardsPlayedDefense']]);
+        $this->assertSame(1, $blockZero[$GLOBALS['TurnStats_CardsPitched']]);
+        $this->assertSame(3, $blockZero[$GLOBALS['TurnStats_ResourcesUsed']]);
+        $this->assertSame([], $blockOne,
+            'opening-turn activity for the player on the draw spilled into turn 1');
+    }
+
+    // ---------------------------------------------------------------- exclude last turn
+
+    public function testExcludeLastTurnDropsExactlyOneTurn(): void
+    {
+        // Winner: their last stat block is a full turn, so dropping it costs a
+        // turn of offence and one from the denominator.
+        $this->playGame(1, 5, 1);
+
+        $stats = $this->aggregatesFor(1);
+        $turns = $this->attacks[1];
+        $threatened = $turns * self::THREAT;
+        $averageBlocks = $this->averageBlocksFor(1, true);
+        $expectedThreat = $this->sumStatForBlocks(1, $averageBlocks, $GLOBALS['TurnStats_DamageThreatened']);
+
+        $this->assertSame($threatened - self::THREAT, (int)$stats['totalDamageThreatened_NoLast'],
+            'excluding the last turn should remove exactly one turn of damage');
+        $this->assertEqualsWithDelta(
+            round($expectedThreat / count($averageBlocks), 2),
+            $stats['averageDamageThreatenedPerTurn_NoLast'], 0.001,
+            'excluding the last turn should also drop one turn from the denominator');
+    }
+
+    public function testTrailingDefenceCountsAsOneDisplayedTurn(): void
+    {
+        $this->startGame(1);
+
+        // P2 defends on turn 0, takes one complete turn, then defends again
+        // when P1 attacks a second time. That second block belongs to the same
+        // displayed turn as P2's own attack, so it lands on the row P2 already
+        // has: two rows, not three. Turn 0 is displayed but omitted from averages.
+        $this->playTurn();
+        $this->endTurn();
+        $this->playTurn();
+        $this->endTurn();
+        $this->playTurn();
+
+        $stats = $this->aggregatesFor(2);
+        $p2Stats = &GetTurnStats(2);
+        $this->assertSame(2, count(UsedTurnStatBlocks($p2Stats)));
+        $this->assertSame(10, (int)$stats['totalDamageThreatened']);
+        $this->assertSame(10, (int)$stats['totalDamageBlocked']);
+        $this->assertEqualsWithDelta(15.0, $stats['averageValuePerTurn'], 0.001,
+            'turn 0 must be omitted, leaving P2 one row holding its attack and both of its blocks');
+        $this->assertEqualsWithDelta(0.0, $stats['averageValuePerTurn_NoLast'], 0.001,
+            'dropping that row leaves only turn 0, which averages omit');
+    }
+
+    public function testTurnZeroIsExcludedFromAveragesButRetainedInTotals(): void
+    {
+        $this->startGame(1);
+        $this->playTurn(); // P1's turn 0: 10 threatened
+        $this->endTurn();
+        $this->playTurn(); // P2's turn 1: P1 blocks 5
+
+        $stats = $this->aggregatesFor(1);
+        $this->assertSame(10, (int)$stats['totalDamageThreatened']);
+        $this->assertSame(5, (int)$stats['totalDamageBlocked']);
+        $this->assertEqualsWithDelta(0.0, $stats['averageDamageThreatenedPerTurn'], 0.001);
+        $this->assertEqualsWithDelta(5.0, $stats['averageValuePerTurn'], 0.001,
+            'turn 0 must not contribute to averages for the starting player');
+    }
+
+    // ---------------------------------------------------------------- guards
+
+    /**
+     * A player who blocks with everything can spend more cards defending than
+     * the hand-size model assumes are available, which must not produce a
+     * negative "per card" denominator.
+     */
+    public function testPerCardAverageIsNeverNegative(): void
+    {
+        $this->startGame(1);
+        for ($i = 0; $i < 3; $i++) {
+            $main = $GLOBALS['mainPlayer'];
+            $def = $GLOBALS['defPlayer'];
+            LogPlayCardStats($main, 'attack_card', 'HAND', 'A');
+            for ($c = 0; $c < 9; $c++) LogPlayCardStats($def, "block_$c", 'HAND', 'B');
+            LogCombatResolutionStats(self::THREAT, self::BLOCK);
+            $this->attacks[$main]++;
+            $this->defences[$def]++;
+            $this->endTurn();
+        }
+
+        foreach ([1, 2] as $player) {
+            $stats = $this->aggregatesFor($player);
+            $this->assertGreaterThanOrEqual(0, $stats['averageDamageThreatenedPerCard'],
+                "P$player: damage threatened per card went negative");
+            $this->assertGreaterThanOrEqual(0, $stats['averageDamageThreatenedPerCard_NoLast'],
+                "P$player: damage threatened per card (excluding last turn) went negative");
+        }
+    }
+
+    public function testEmptyStatsDoNotProduceOutput(): void
+    {
+        $empty = [];
+        $deck = [];
+        PopulateAggregateStats($deck, $empty, 1);
+        $this->assertSame([], $deck, 'no stats should produce no aggregates');
+    }
+
+    public function testSingleTurnGame(): void
+    {
+        $this->startGame(1);
+        $this->playTurn();
+
+        $stats = $this->aggregatesFor(1);
+        $this->assertSame(self::THREAT, (int)$stats['totalDamageThreatened']);
+        $this->assertEqualsWithDelta(0.0, $stats['averageDamageThreatenedPerTurn'], 0.001);
+    }
+
+    // ---------------------------------------------------------------- model canary
+
+    /**
+     * The simulation above encodes two engine facts. If either changes, the
+     * numbers these tests assert stop describing real games, so fail loudly and
+     * point at what needs updating rather than silently passing.
+     */
+    public function testTurnFlowModelMatchesEngine(): void
+    {
+        $networking = file_get_contents(ROOT_PATH . '/Libraries/NetworkingLibraries.php');
+        $startEffects = file_get_contents(ROOT_PATH . '/StartEffects.php');
+
+        $this->assertMatchesRegularExpression(
+            '/if\s*\(\s*\$mainPlayer\s*==\s*\$firstPlayer\s*&&\s*!\$extraTurn\s*\)\s*\{\s*\$currentTurn\s*\+=\s*1\s*;/',
+            $networking,
+            'FinalizeTurn no longer advances $currentTurn only after the first player\'s turn. '
+            . 'GetStatTurnIndex(), CountAttackingTurns() and the turn model in this test all assume it does.'
+        );
+        $this->assertMatchesRegularExpression(
+            '/IncrementTurnCount\(\$mainPlayer\)\s*;\s*StatsStartTurn\(\)\s*;/',
+            $networking,
+            'FinalizeTurn no longer counts the incoming turn player\'s turn before opening '
+            . 'their stat block. The block layout these tests assert depends on it.'
+        );
+        $this->assertStringContainsString('StatsStartTurn();', $startEffects,
+            'StartEffects.php no longer creates the opening stat block.');
+    }
+}

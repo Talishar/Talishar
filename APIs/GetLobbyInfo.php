@@ -4,6 +4,7 @@ include "../HostFiles/Redirector.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";
 include "../Libraries/HTTPLibraries.php";
+include_once "../Libraries/CoreLibraries.php";
 include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
@@ -15,30 +16,7 @@ include_once "../Assets/MetafyDictionary.php";
 // Set headers immediately after includes
 SetHeaders();
 
-if (!function_exists("DelimStringContains")) {
-  function DelimStringContains($str, $find, $partial=false)
-  {
-    if ($partial) {
-      $arr = explode(",", $str);
-      $len = count($arr);
-      for ($i = 0; $i < $len; ++$i) {
-        if (str_contains($arr[$i], $find)) return true;
-      }
-      return false;
-    }
-    return str_contains(',' . $str . ',', ',' . $find . ',');
-  }
-}
-
-if (!function_exists("SubtypeContains")) {
-  function SubtypeContains($cardID, $subtype, $player="")
-  {
-    $cardSubtype = CardSubtype($cardID);
-    return DelimStringContains($cardSubtype, $subtype);
-  }
-}
-
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $gameName = TryPOST("gameName", 0);
 $playerID = TryPOST("playerID", 0);
 if (session_status() === PHP_SESSION_NONE) session_start();
@@ -145,7 +123,9 @@ if($handler) {
   //Remove deck cards that don't belong
   $filteredCards = [];
   foreach ($response->deck->cards as $card) {
-    if (CardType($card) === "D") {
+    if (HasIncarnate($card)) {
+      continue; //Incarnate cards can never start in the deck
+    } else if (CardType($card) === "D") {
       $response->deck->demiHero[] = $card;
     } else {
       $filteredCards[] = $card;
@@ -163,7 +143,9 @@ if($handler) {
   //Remove deck cards that don't belong
   $filteredCardsSB = [];
   foreach ($response->deck->cardsSB as $card) {
-    if (CardType($card) === "D") {
+    if (HasIncarnate($card)) {
+      continue; //Incarnate cards can never start in the sideboard
+    } else if (CardType($card) === "D") {
       $response->deck->demiHero[] = $card;
     } else {
       $filteredCardsSB[] = $card;
@@ -226,30 +208,7 @@ if($handler) {
   }
   // Include both main deck and sideboard cards in the dictionary
 
-  foreach ($response->deck->cards as $card) {
-    if (!isset($cardIndex[$card])) {
-      $cardIndex[$card] = "1";
-      $dictionaryCard = new stdClass();
-      $dictionaryCard->id = $card;
-      $dictionaryCard->pitch = PitchValue($card);
-      $dictionaryCard->power = GeneratedPowerValue($card);
-      $dictionaryCard->blockValue = GeneratedBlockValue($card);
-      $dictionaryCard->class = CardClass($card);
-      $dictionaryCard->talent = CardTalent($card);
-      $dictionaryCard->type = CardType($card);
-      $dictionaryCard->subtype = CardSubtype($card);
-      $dictionaryCard->cost = GeneratedCardCost($card);
-      $dictionaryCard->hasStealth = GeneratedHasStealth($card);
-      $dictionaryCard->hasBloodDebt = GeneratedHasBloodDebt($card);
-      $dictionaryCard->hasBoost = GeneratedHasBoost($card);
-      $dictionaryCard->hasDecompose = GeneratedHasDecompose($card);
-      $dictionaryCard->hasMark = GeneratedHasMark($card);
-      $dictionaryCard->hasCharge = GeneratedHasCharge($card);
-      $dictionaryCard->hasSuspense = hasSuspense($card);
-      $response->deck->cardDictionary[] = $dictionaryCard;
-    }
-  }
-  foreach ($response->deck->cardsSB as $card) {
+  foreach (array_merge($response->deck->cards, $response->deck->cardsSB) as $card) {
     if (!isset($cardIndex[$card])) {
       $cardIndex[$card] = "1";
       $dictionaryCard = new stdClass();

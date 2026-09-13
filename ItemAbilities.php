@@ -27,8 +27,10 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   $items = &GetItems($player);
   $myHoldState = ItemDefaultHoldTriggerState($cardID, $player);
   if ($myHoldState == 0 && HoldPrioritySetting($player) == 1) $myHoldState = 1;
+  $myHoldState = ApplyGemsOffDefault($myHoldState, $player);
   $theirHoldState = ItemDefaultHoldTriggerState($cardID, $otherPlayer);
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
+  $theirHoldState = ApplyGemsOffDefault($theirHoldState, $otherPlayer);
   for ($i = 0; $i < $number; ++$i) {
     $uniqueID = GetUniqueId($cardID, $player);
     $steamCounters = SteamCounterLogic($cardID, $player, $uniqueID) + $steamCounterModifier;
@@ -72,15 +74,9 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   if ($isToken) 
     IncrementClassState($effectAgent, $CS_CreatedCardsThisTurn, $number);
   //enters the arena triggers
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->EntersArenaAbility($index);
   switch ($cardID) {
-    case "stasis_cell_blue":
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRCHAR-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
-      AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
-      break;
     case "null_time_zone_blue":
       AddLayer("TRIGGER", $player, $cardID, "-", "-", $uniqueID);
       break;
@@ -209,11 +205,6 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
       RemoveItem($currentPlayer, $index);
       $deck->AddBottom($cardID, from: "PLAY");
       break;
-    case "stasis_cell_blue":
-      RemoveItem($currentPlayer, $index);
-      $deck = new Deck($currentPlayer);
-      $deck->AddBottom($cardID, from: "PLAY");
-      break;
     case "dissolving_shield_red":
     case "dissolving_shield_yellow":
     case "dissolving_shield_blue":
@@ -276,6 +267,8 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
   global $CS_NumItemsDestroyed;
   if ($index != -1) {
     $items = &GetItems($player);
+    $Item = new ItemCard($index, $player);
+    $uid = $Item->UniqueID();
     $itemPieces = ItemPieces();
     if (count($items) < $index + $itemPieces) return "";
     if (!$skipDestroy) {
@@ -294,15 +287,8 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
         AddGraveyard($subCard, $player, "PLAY");
     }
     array_splice($items, $index, $itemPieces);
-    if ($cardID == "stasis_cell_blue") {
-      $otherPlayer = 3 - $player;
-      AddDecisionQueue("FINDINDICES", $otherPlayer, "EQUIP");
-      AddDecisionQueue("SETDQCONTEXT", $player, "Choose target equipment, it cannot be activated until the end of its controller next turn");
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-      AddDecisionQueue("PREPENDLASTRESULT", $player, "THEIRCHAR-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
-      AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
-    }
+    $card = GetClass($cardID, $player);
+    if ($card != "-") $card->LeavesPlayAbility($index, $uid, "ITEMS", true);
     return $cardID;
   }
   else return "";
@@ -569,7 +555,7 @@ function ItemDamageTakenAbilities($player, $damage)
     $remove = false;
     switch ($items[$i]) {
       case "talisman_of_warfare_yellow":
-        if (IsHeroAttackTarget() && $damage == 2) {
+        if ($damage == 2) {
           WriteLog("Talisman of Warfare destroyed both player's arsenal");
           DestroyArsenal($player, effectController: $otherPlayer);
           DestroyArsenal($otherPlayer, effectController: $otherPlayer);
@@ -609,10 +595,10 @@ function SteamCounterLogic($cardID, $playerID, $uniqueID)
   return $counters;
 }
 
-function ItemBlockModifier($cardID)
+function ItemBlockModifier($cardID, $index)
 {
   global $mainPlayer, $defPlayer, $CombatChain;
-  $noGain = !CanGainBlock($cardID);
+  $noGain = !CanGainBlock($cardID, $index);
   $items = &GetItems($mainPlayer);
   $totalBlockModifier = 0;
   $countItems = count($items);

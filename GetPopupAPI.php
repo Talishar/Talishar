@@ -63,6 +63,9 @@ if ($playerID == 3) {
           exit;
       }
   }
+
+  $sessionUserId = $_SESSION["userid"] ?? $sessionUserId;
+  if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
 }
 
 // CORS etc *must* be set for all endpoints
@@ -77,6 +80,14 @@ if ($playerID == 0 && !$profilePopup) {
   echo json_encode(["error" => "A game popup requires a valid player ID."]);
   exit;
 }
+
+if ($playerID == 0 && $profilePopup) {
+  include_once "./AccountFiles/AccountSessionAPI.php";
+  IsUserLoggedIn();
+  $sessionUserId = $_SESSION["userid"] ?? null;
+  session_write_close();
+}
+
 $response = new stdClass();
 switch ($popupType) {
   case "attackSummary":
@@ -146,14 +157,16 @@ switch ($popupType) {
     break;
   case "mySettings":
     global $SET_AlwaysHoldPriority, $SET_TryUI2, $SET_DarkMode, $SET_ManualMode, $SET_SkipARs, $SET_SkipDRs;
-    global $SET_PassDRStep, $SET_AutotargetArcane, $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling;
+    global $SET_PassDRStep, $SET_AutotargetArcane, $SET_ColorblindMode, $SET_ShortcutAttackThreshold, $SET_EnableDynamicScaling, $SET_AutoPassTurn;
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode, $SET_AlwaysShowCounters;
     global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
+    global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
+    global $SET_HideGamesFromFriends;
     
     $response->Settings = [];
     
     // For profile settings (playerID == 0), load from database
-    if ($playerID == 0) {
+    if ($playerID == 0 || $playerID == 3) {
       include_once "./includes/functions.inc.php";
       // Use captured session data (session already closed to prevent deadlock)
       $userID = $sessionUserId ?? "";
@@ -193,6 +206,10 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "MirroredPlayerBoardLayout", 31, $dbSettings);
       AddSettingFromDB($response->Settings, "AlwaysShowCounters", 32, $dbSettings);
       AddSettingFromDB($response->Settings, "HideHandFromFriends", 33, $dbSettings);
+      AddSettingFromDB($response->Settings, "GemsOffByDefault", 34, $dbSettings);
+      AddSettingFromDB($response->Settings, "HideGamesFromFriends", 35, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableHoldToAutoPass", 37, $dbSettings);
+      AddSettingFromDB($response->Settings, "ManualDynamo", 38, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -202,6 +219,7 @@ switch ($popupType) {
       AddSetting($response->Settings, "ManualMode", $SET_ManualMode, $playerSettings);
       AddSetting($response->Settings, "SkipARWindow", $SET_SkipARs, $playerSettings);
       AddSetting($response->Settings, "SkipDRWindow", $SET_SkipDRs, $playerSettings);
+      AddSetting($response->Settings, "AutoPassTurn", $SET_AutoPassTurn, $playerSettings);
       AddSetting($response->Settings, "AutoTargetOpponent", $SET_AutotargetArcane, $playerSettings);
       AddSetting($response->Settings, "ColorblindMode", $SET_ColorblindMode, $playerSettings);
       AddSetting($response->Settings, "ShortcutAttackThreshold", $SET_ShortcutAttackThreshold, $playerSettings);
@@ -216,12 +234,16 @@ switch ($popupType) {
       AddSetting($response->Settings, "Playmat", $SET_Playmat, $playerSettings);
       AddSetting($response->Settings, "AlwaysAllowUndo", $SET_AlwaysAllowUndo, $playerSettings);
       AddSetting($response->Settings, "ManualTunic", $SET_ManualTunic, $playerSettings);
+      AddSetting($response->Settings, "ManualDynamo", $SET_ManualDynamo, $playerSettings);
       AddSetting($response->Settings, "DisableFabInsights", $SET_DisableFabInsights, $playerSettings);
       AddSetting($response->Settings, "DisableHeroIntro", $SET_DisableHeroIntro, $playerSettings);
       AddSetting($response->Settings, "MirroredBoardLayout", $SET_MirroredBoardLayout, $playerSettings);
       AddSetting($response->Settings, "MirroredPlayerBoardLayout", $SET_MirroredPlayerBoardLayout, $playerSettings);
       AddSetting($response->Settings, "AlwaysShowCounters", $SET_AlwaysShowCounters, $playerSettings);
       AddSetting($response->Settings, "HideHandFromFriends", $SET_HideHandFromFriends, $playerSettings);
+      AddSetting($response->Settings, "GemsOffByDefault", $SET_GemsOffByDefault, $playerSettings);
+      AddSetting($response->Settings, "HideGamesFromFriends", $SET_HideGamesFromFriends, $playerSettings);
+      $response->Settings[] = ["name" => "DisableHoldToAutoPass", "value" => (($playerSettings[$SET_DisableHoldToAutoPass] ?? "1") == "1") ? "1" : "0"];
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;
@@ -233,7 +255,8 @@ echo json_encode($response);
 
 function AddSettingFromDB(&$response, $name, $settingID, $dbSettings)
 {
-  $response[] = ["name" => $name, "value" => $dbSettings[$settingID] ?? null];
+  $value = $dbSettings[$settingID] ?? null;
+  $response[] = ["name" => $name, "value" => $value === null ? null : (string)$value];
 }
 
 function AddSetting(&$response, $name, $setting, $preloadedSettings = null)

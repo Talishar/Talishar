@@ -41,18 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
 }
 
 // Handle both form-encoded and JSON POST data
-$postData = $_POST;
-if (empty($_POST) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-    if (strpos($contentType, 'application/json') !== false) {
-        $jsonData = json_decode(file_get_contents('php://input'), true);
-        $postData = $jsonData ?? [];
-    }
-}
-
-function TryPOSTData($key, $default = "", $data = []) {
-    return isset($data[$key]) ? $data[$key] : $default;
-}
+$postData = ReadPostData();
 
 $gameToken = trim(TryPOSTData("gameToClose", "", $postData));
 if (empty($gameToken)) {

@@ -4,11 +4,19 @@ session_start();
 
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
+include_once "../APIKeys/APIKeys.php";
+include_once "../includes/dbh.inc.php";
+include_once "../includes/MetafyHelper.php";
+include_once "../includes/ModeratorList.inc.php";
 
 SetHeaders();
 
 $response = new stdClass();
 $response->replays = [];
+$response->maxSlots = MAX_REPLAYS_SAVED;
+$response->usedSlots = 0;
+$response->favoriteSlots = 0;
+$response->nextSlotTier = null;
 $userId = $_SESSION["useruid"] ?? "";
 session_write_close();
 
@@ -26,6 +34,11 @@ if (!preg_match('/^[A-Za-z0-9_-]+$/', $userId)) {
 }
 
 $response->loggedIn = true;
+$metafyTiers = GetMetafyTiersFromDatabase($userId);
+$isContributor = IsUserContributor($userId);
+$response->maxSlots = GetMaxReplaySlotsForTiers($metafyTiers, $isContributor);
+$nextSlotTier = GetNextReplaySlotTier($metafyTiers, $isContributor);
+if ($nextSlotTier !== null) $response->nextSlotTier = (object)$nextSlotTier;
 $replayRoot = "../Replays/$userId/";
 if (!is_dir($replayRoot)) {
   echo json_encode($response);
@@ -49,7 +62,10 @@ foreach (scandir($replayRoot) ?: [] as $entry) {
 
   $replay = new stdClass();
   $replay->replayNumber = (int)$entry;
-  $replay->savedAt = filemtime($replayPath) ?: 0;
+  $metadataSavedAt = $metadata["savedAt"] ?? null;
+  $replay->savedAt = is_numeric($metadataSavedAt)
+    ? (int)$metadataSavedAt
+    : (filemtime($replayPath . "origGamestate.txt") ?: 0);
   $replay->p1DisplayName = trim((string)($metadata["p1DisplayName"] ?? ""));
   $replay->p2DisplayName = trim((string)($metadata["p2DisplayName"] ?? ""));
   $replay->p1HeroCardId = trim((string)($metadata["p1HeroCardId"] ?? ""));
@@ -57,8 +73,11 @@ foreach (scandir($replayRoot) ?: [] as $entry) {
   $replay->p1HeroName = trim((string)($metadata["p1HeroName"] ?? ""));
   $replay->p2HeroName = trim((string)($metadata["p2HeroName"] ?? ""));
   $replay->favorite = ($metadata["favorite"] ?? false) === true;
+  if ($replay->favorite) ++$response->favoriteSlots;
   $response->replays[] = $replay;
 }
+
+$response->usedSlots = count($response->replays);
 
 usort($response->replays, fn($a, $b) => $b->replayNumber <=> $a->replayNumber);
 echo json_encode($response);

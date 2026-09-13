@@ -1,4 +1,6 @@
-FROM php:8.3-apache-bookworm 
+FROM php:8.3-apache-bookworm
+
+ARG PHP_INI=production
 
 RUN apt-get update && apt-get install -y libbz2-dev
 RUN apt-get update && apt-get install -y libc-client-dev libkrb5-dev && rm -r /var/lib/apt/lists/*
@@ -37,6 +39,6 @@ RUN pecl install apcu \
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug # Debugger
 
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+RUN cp "/usr/local/etc/php/php.ini-${PHP_INI}" /usr/local/etc/php/php.ini
 
 RUN a2enmod proxy proxy_http proxy_wstunnel

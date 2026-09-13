@@ -53,7 +53,7 @@ class superstar_blue extends Card {
     $this->baseCard = new aura_of_suspense($this->cardID, $this->controller);
   }
 
-  function EntersArenaAbility() {
+  function EntersArenaAbility($index=-1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 

@@ -98,7 +98,7 @@ class heads_up_red extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $combatChainState, $CCS_WagersThisLink;
-    if (intval($combatChainState[$CCS_WagersThisLink]) > 0)
+    if (intval(GetCombatChainState($CCS_WagersThisLink)) > 0)
       AddCurrentTurnEffect("$this->cardID-DOMINATE", $this->controller, from:"PLAY");
   }
 

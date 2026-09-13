@@ -211,7 +211,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "eclectic_magnetism_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      $combatChainState[$CCS_EclecticMag] = 1;
+      SetCombatChainState($CCS_EclecticMag, 1);
       return "";
     case "high_voltage_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -282,7 +282,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect("aether_bindings_of_the_third_age,0", $currentPlayer);
       return "";
     case "ink_lined_cloak":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       return "";
     case "hold_focus":
       AddCurrentTurnEffect($cardID, $currentPlayer);

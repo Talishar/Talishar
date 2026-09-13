@@ -1854,11 +1854,12 @@ class liquefy_red extends Card {
 // }
 
 class oasis_respite extends BaseCard {
-  function CurrentEffectDamagePrevention($damage, $source, $index, &$remove, $amount) {
+  function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount) {
     global $CS_ResolvingLayerUniqueID, $CombatChain;
     $Effect = new CurrentEffect($index);
     $prevAmount = $Effect->NumUses();
-    if ($amount && $CombatChain->HasCurrentLink() && $source == $CombatChain->AttackCard()->ID()) {
+    if (!$preventable) return 0;
+    if ($amount && $CombatChain->HasCurrentLink() && $source == $CombatChain->AttackCard()->ID() && $type == "COMBAT") { //this block is mostly for displaying prevention
       if ($CombatChain->AttackCard()->UniqueID() == $Effect->AppliestoUniqueID() || $CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID())
         return min($damage, $prevAmount);
     }
@@ -1940,7 +1941,7 @@ class oasis_respite_red extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $amount);
+    return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, $amount);
   }
 
   function SpecificLogic() {
@@ -1970,7 +1971,7 @@ class oasis_respite_yellow extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $amount);
+    return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, $amount);
   }
 
   function SpecificLogic() {
@@ -2000,7 +2001,7 @@ class oasis_respite_blue extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($damage, $source, $index, $remove, $amount);
+    return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, $amount);
   }
 
   function SpecificLogic() {
@@ -2337,17 +2338,43 @@ class rapid_reflex_blue extends Card {
 // }
 
 
-// class red_hot_red extends Card {
+class red_hot_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "red_hot_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "red_hot_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if(RuptureActive()) {
+      $AttackCard = $CombatChain->AttackCard();
+			SetArcaneTarget($this->controller, $this->cardID, "any");
+			//need to specify unique id here to make sure oasis respite works
+			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, uniqueID:$AttackCard->UniqueID(), additional:"ATTACKTRIGGER", final:true);
+    }
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $deck = new Deck($this->controller);
+    $num = NumDraconicChainLinks();
+    if($deck->Reveal($num)) {
+      $cards = explode(",", $deck->Top(amount:$num));
+      $numRed = 0;
+      $cardsCount = count($cards);
+      for($j = 0; $j < $cardsCount; ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
+      if($numRed > 0) {
+        $mzTarget = $target != "-" ? CleanTargetToIndex($this->controller, $target) : "";
+        if($mzTarget != "") {
+          AddDecisionQueue("PASSPARAMETER", $this->controller, $mzTarget);
+          AddDecisionQueue("MZDAMAGE", $this->controller, "$numRed,DAMAGE,$this->cardID", 1);
+        }
+        AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
+      }
+    }
+  }
+}
 
 
 // class rewind_blue extends Card {
@@ -2558,17 +2585,32 @@ class rapid_reflex_blue extends Card {
 // }
 
 
-// class searing_touch_red extends Card {
+class searing_touch_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "searing_touch_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "searing_touch_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if(RuptureActive()) {
+      $AttackCard = $CombatChain->AttackCard();
+			SetArcaneTarget($this->controller, $this->cardID, "any");
+			//need to specify unique id here to make sure oasis respite works
+			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, uniqueID:$AttackCard->UniqueID(), additional:"ATTACKTRIGGER", final:true);
+    }
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    $mzTarget = $target != "-" ? CleanTargetToIndex($this->controller, $target) : "";
+    if($mzTarget != "") {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $mzTarget);
+      AddDecisionQueue("MZDAMAGE", $this->controller, "2,DAMAGE,$this->cardID", 1);
+    }
+  }
+}
 
 
 // class semblance_blue extends Card {
@@ -2857,17 +2899,44 @@ class rapid_reflex_blue extends Card {
 // }
 
 
-// class spreading_flames_red extends Card {
+class spreading_flames_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "spreading_flames_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "spreading_flames_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    $from = $CombatChain->AttackCard()->From();
+    $isDraconic = TalentContains($attackID, "DRACONIC", $this->controller, $from);
+    return $isDraconic && PowerValue($attackID, $this->controller, "CC") < NumDraconicChainLinks();
+  }
+
+  function RemoveEffectFromCombatChain($effectIndex) {
+    return true;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+
+}
 
 
 // class stoke_the_flames_red extends Card {
@@ -3091,17 +3160,33 @@ class rapid_reflex_blue extends Card {
 // }
 
 
-// class tome_of_duplicity_blue extends Card {
+class tome_of_duplicity_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "tome_of_duplicity_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "tome_of_duplicity_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("FINDINDICES", $this->controller, "DECKTOPXINDICES,2");
+    AddDecisionQueue("CHOOSEDECK", $this->controller, "<-", 1);
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $lastResult = $dqVars["LASTRESULT"] ?? "-";
+    $cards = explode(",", $lastResult);
+    $mod = (TypeContains($cards[0], "A") ? "INST" : "-");
+    $countCards = count($cards);
+    for ($i = 0; $i < $countCards; ++$i) {
+      $index = BanishCardForPlayer($cards[$i], $this->controller, "DECK", $mod);
+      WriteLog(CardLink($cards[$i]) . " was banished.");
+    }
+    return $lastResult;
+  }
+}
 
 
 // class tome_of_firebrand_red extends Card {
@@ -3130,43 +3215,47 @@ class rapid_reflex_blue extends Card {
 // }
 
 
-// class trade_in_red extends Card {
+class trade_in extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "trade_in_red";
-//     $this->controller = $controller;
-//     }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND");
+    Await($this->controller, "ChooseMultiZone", may:true, context:"Discard a card to draw a card (or pass)");
+    Await($this->controller, "Discard");
+    Await($this->controller, "Draw");
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function DoesAttackHaveGoAgain() {
+    global $CombatChain;
+    return $CombatChain->AttackCard()->From() == "ARS";
+  }
+}
 
+class trade_in_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "trade_in_red";
+    $this->controller = $controller;
+    $this->baseCard = new trade_in($this->cardID, $this->controller);
+  }
+}
 
-// class trade_in_yellow extends Card {
+class trade_in_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "trade_in_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new trade_in($this->cardID, $this->controller);
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "trade_in_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class trade_in_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "trade_in_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class trade_in_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "trade_in_blue";
+    $this->controller = $controller;
+    $this->baseCard = new trade_in($this->cardID, $this->controller);
+  }
+}
 
 
 // class transmogrify_red extends Card {

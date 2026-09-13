@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/Libraries/GamestateCompatibility.php';
+
 global $gameName;
 function GetStringArray($line)
 {
@@ -36,9 +38,10 @@ function ParseGamestate($parseHistoricalStats = true)
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
   global $permanentUniqueIDCounter, $inGameStatus, $animations, $currentPlayerActivity;
-  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $roguelikeGameID, $events, $EffectContext;
+  global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $events, $EffectContext;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
   global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI, $AIHasInfiniteHP, $attackQueue, $practiceDummyWeaponPower;
+  global $p1TurnCount, $p2TurnCount;
 
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
@@ -68,6 +71,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $p1Hand = GetStringArray($gamestateContent[1]); // 2
   $p1Deck = GetStringArray($gamestateContent[2]); // 3
   $p1CharEquip = GetStringArray($gamestateContent[3]); // 4
+  $p1CharEquip = NormalizeLegacyCharacterState($p1CharEquip);
   $p1Resources = GetStringArray($gamestateContent[4]); // 5
   $p1Arsenal = GetStringArray($gamestateContent[5]); // 6
   $p1Items = GetStringArray($gamestateContent[6]); // 7
@@ -88,6 +92,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $p2Hand = GetStringArray($gamestateContent[19]); // 20
   $p2Deck = GetStringArray($gamestateContent[20]); // 21
   $p2CharEquip = GetStringArray($gamestateContent[21]); // 22
+  $p2CharEquip = NormalizeLegacyCharacterState($p2CharEquip);
   $p2Resources = GetStringArray($gamestateContent[22]); // 23
   $p2Arsenal = GetStringArray($gamestateContent[23]); // 24
   $p2Items = GetStringArray($gamestateContent[24]); // 25
@@ -110,9 +115,11 @@ function ParseGamestate($parseHistoricalStats = true)
   $currentPlayer = trim($gamestateContent[40]);
   $currentTurn = trim($gamestateContent[41]);
   $turn = GetStringArray($gamestateContent[42]);
+  $turn[2] ??= "";
   $actionPoints = trim($gamestateContent[43]);
   $combatChain = GetStringArray($gamestateContent[44]);
   $combatChainState = GetStringArray($gamestateContent[45]);
+  $combatChainState = NormalizeCombatChainState($combatChainState);
   $currentTurnEffects = GetStringArray($gamestateContent[46]);
   $currentTurnEffectsFromCombat = GetStringArray($gamestateContent[47]);
   $nextTurnEffects = GetStringArray($gamestateContent[48]);
@@ -142,7 +149,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $p1TotalTime = trim($gamestateContent[66+$numChainLinks]); //Player 1 total time
   $p2TotalTime = trim($gamestateContent[67+$numChainLinks]); //Player 2 total time
   $lastUpdateTime = trim($gamestateContent[68+$numChainLinks]); //Last update time
-  $roguelikeGameID = trim($gamestateContent[69+$numChainLinks]); //Roguelike game id
+  // 69 + numChainLinks reserved for backward-compatible field alignment
   $events = GetStringArray($gamestateContent[70+$numChainLinks]); //Events
   $EffectContext = trim($gamestateContent[71+$numChainLinks]);
   $p1Inventory = GetStringArray($gamestateContent[72+$numChainLinks]);
@@ -173,6 +180,14 @@ function ParseGamestate($parseHistoricalStats = true)
     ? max(0, min(100, intval($gamestateContent[84+$numChainLinks])))
     : 4;
 
+  // for replays and current games as of this push
+  $legacyTurnCount = function($player) use ($currentTurn, $mainPlayer, $firstPlayer) {
+    if ($player == $firstPlayer) return intval($currentTurn) + ($mainPlayer == $firstPlayer ? 1 : 0);
+    return intval($currentTurn);
+  };
+
+  $p1TurnCount = is_numeric(trim($gamestateContent[85+$numChainLinks] ?? "")) ? intval($gamestateContent[85+$numChainLinks]) : $legacyTurnCount(1);
+  $p2TurnCount = is_numeric(trim($gamestateContent[86+$numChainLinks] ?? "")) ? intval($gamestateContent[86+$numChainLinks]) : $legacyTurnCount(2);
   BuildMyGamestate($playerID);
 }
 
@@ -562,6 +577,12 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
   // Multi-level undo: Rotate backups
   // Shift all existing backups: 0->1, 1->2, 2->3, 3->4, delete 4
   $backupPrefix = $filepath . "gamestateBackup_";
+  // Don't burn an undo slot on a state identical to the newest backup (would make undo a no-op)
+  $currentGamestate = $lastWrittenGamestate ?? @file_get_contents($filepath . "gamestate.txt");
+  if ($currentGamestate !== false && $currentGamestate !== null
+    && file_exists($backupPrefix . "0.txt") && @file_get_contents($backupPrefix . "0.txt") === $currentGamestate) {
+    return;
+  }
   for ($i = MAX_UNDO_BACKUPS - 1; $i > 0; $i--) {
     @rename($backupPrefix . ($i - 1) . ".txt", $backupPrefix . $i . ".txt");
   }
@@ -578,9 +599,13 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
   if ($filename != "gamestateBackup.txt") {
     if(!file_exists($filepath . $filename)) return;
-    copy($filepath . $filename, $filepath . "gamestate.txt");
+    // apply current settings to the backup, they are preferences and not game state
+    $gamestateBackup = file($filepath . $filename);
+    if (isset($gamestateBackup[18])) $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
+    if (isset($gamestateBackup[36])) $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
+    $gamestate = implode('', $gamestateBackup);
+    file_put_contents($filepath . "gamestate.txt", $gamestate);
     $skipWriteGamestate = true;
-    $gamestate = file_get_contents($filepath . $filename);
     WriteGamestateCache($gameName, $gamestate);
     $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
     return;
@@ -615,13 +640,12 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     }
   }
   $gamestate = implode('', $gamestateBackup);
-  file_put_contents($backupFile, $gamestate);
   if (!file_exists($backupFile)) {
     WriteLog("Cannot undo further: the game session was cleaned up before the undo could complete.");
     return;
   }
   // Restore the target backup as current gamestate
-  copy($backupFile, $filepath . "gamestate.txt");
+  file_put_contents($filepath . "gamestate.txt", $gamestate);
   $skipWriteGamestate = true;
   WriteGamestateCache($gameName, $gamestate);
   $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
@@ -660,6 +684,7 @@ function MakeStartTurnBackup()
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
   @rename($thisTurnFN, $lastTurnFN);
   SaveGamestateSnapshot($thisTurnFN);
+  MakeGamestateBackup();
   $startGameFN = $filepath . "startGamestate.txt";
   if ((IsPatron(1) || IsPatron(2)) && $currentTurn == 0 && !file_exists($startGameFN)) {
     SaveGamestateSnapshot($startGameFN);

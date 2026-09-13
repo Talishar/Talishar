@@ -6,10 +6,6 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
-      case "chane_bound_by_shadow": case "chane":
-        PlayAura("soul_shackle", $currentPlayer, 1, true);
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "invert_existence_blue":
         AddDecisionQueue("FINDINDICES", $otherPlayer, $cardID);
         AddDecisionQueue("MULTICHOOSETHEIRDISCARD", $currentPlayer, "<-", 1);
@@ -41,9 +37,6 @@
       case "seeping_shadows_red": case "seeping_shadows_yellow": case "seeping_shadows_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "bounding_demigon_red": case "bounding_demigon_yellow": case "bounding_demigon_blue":
-        if($from == "BANISH") AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "rift_bind_red": case "rift_bind_yellow": case "rift_bind_blue":
         if($from == "BANISH") AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -54,7 +47,7 @@
         DealArcane(1, 1, "PLAYCARD", $cardID);
         return "";
       case "aether_ironweave":
-        GainResources($currentPlayer, 2);
+        GainResources(2, $currentPlayer);
         return "";
       case "vexing_malice_red": case "vexing_malice_yellow": case "vexing_malice_blue":
         AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER", $CombatChain->AttackCard()->UniqueID());

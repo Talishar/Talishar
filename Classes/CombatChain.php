@@ -60,6 +60,11 @@ class CombatChain {
   }
 
   function Remove($index, $cardNumber=false) {
+    global $CCS_GoesWhereAfterLinkResolves;
+    if ($index == 0) {
+      SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
+      return;
+    }
     $combatChainPieces = CombatChainPieces();
     if($cardNumber) $index *= $combatChainPieces;
     if($index < 0 || $index >= count($this->chain)) return "";
@@ -80,7 +85,7 @@ class CombatChain {
   function HasCurrentAttack() {
     global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     if (!$this->HasCurrentLink()) return false;
-    if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") return false;
+    if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) == "-") return false;
     return true;
   }
 
@@ -102,6 +107,8 @@ class ChainCard {
     // Constructor
     function __construct($index) {
       global $combatChain;
+      $index = filter_var($index, FILTER_VALIDATE_INT);
+      if ($index === false) $index = -1;
       if ($index != -1)
         $this->chain = &$combatChain;
       else
@@ -173,8 +180,8 @@ class ChainCard {
     }
 
     function ModifyDefense($amount) {
-      global $CombatChain;
-      if (!isset($this->chain[$this->index+6]) || !CanGainBlock($this->chain[$this->index+6])) $amount = 0;
+      global $CombatChain, $ChainLinks;
+      if (!isset($this->chain[$this->index+6]) || !CanGainBlock($this->chain[$this->index+6], -1)) $amount = 0;
       if (isset($this->chain[$this->index+6])) $this->chain[$this->index+6] += $amount;
     }
 
@@ -230,7 +237,43 @@ class ChainCard {
       global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
       if ($this->index != 0 && isset($this->chain[$this->index])) return true;
       elseif ($this->index == 0)
-        return $combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-";
+        return GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-";
       return false;
+    }
+
+    function Destroy($skipTrigger=false, $skipClose=false, $agent="-", $banish=false) {
+      global $currentPlayer;
+      //eventually it would be nice to loop phantasm in here
+      //right now this only handles defending cards
+      if ($agent == "-") $agent = $currentPlayer;
+      if (!isset($this->chain[$this->index])) return;
+      $targetCard = $this->ID();
+      if (TypeContains($targetCard, "E") && $this->From() == "EQUIP") {
+        $DefChar = new PlayerCharacter($this->PlayerID());
+        $DefCard = $DefChar->FindCardUID($this->OriginUniqueID());
+        if ($banish) {
+          $DefCard->Banish();
+          $this->Remove();
+        }
+        else
+          $DefCard->Destroy();
+      }
+      elseif (TypeContains($targetCard, "E") && $this->From() == "PLAY") {
+        $uid = $this->OriginUniqueID();
+        $Items = new Items($this->PlayerID());
+        $TargetItem = $Items->FindCardUID($uid);
+        if ($banish)
+          $TargetItem->Banish();
+        else
+          $TargetItem->Destroy();
+        $this->Remove();
+      }
+      else {
+        if ($banish)
+          BanishCardForPlayer($targetCard, $this->PlayerID(), "COMBATCHAINLINK", banisher:$agent);
+        else
+          AddGraveyard($targetCard, $this->PlayerID(), "COMBATCHAINLINK", $agent);
+        $this->Remove();
+      }
     }
 }

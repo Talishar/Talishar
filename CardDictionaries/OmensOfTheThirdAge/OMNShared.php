@@ -161,14 +161,15 @@ function FirstDamageTrigger($target, $cardID, $player, $effectID="-") {
 	global $CombatChain, $combatChainState, $CCS_AttackDamageDealtToHero;
 	$triggeringCard = $effectID == "-" ? $cardID : $effectID;
 	if ($CombatChain->AttackCard()->ID() != $cardID) return; // for now only make this work when it's the active link
-	if (is_numeric($target) && $combatChainState[$CCS_AttackDamageDealtToHero] == 0) {
+	if (IsHeroDamageTarget($target) && GetCombatChainState($CCS_AttackDamageDealtToHero) == 0) {
 		AddLayer("TRIGGER", $player, $triggeringCard, $target);
 	}
 }
 
 // returns a list of all attack action cards that could be targeted
+// past chain links are excluded: nothing that uses this can apply an effect to a link that has already resolved
 function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
-	global $Stack, $CombatChain, $ChainLinks, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+	global $Stack, $CombatChain, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
 	$targets = [];
 	if (IsLayerStep()) {
 		$botLayer = $Stack->BottomLayer();
@@ -181,26 +182,12 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 	$numActiveLink = $CombatChain->NumCardsActiveLink();
 	for ($i = 0; $i < $numActiveLink; ++$i) {
 		$ChainCard = $CombatChain->Card($i, true);
-		if ($i == 0 && $combatChainState[$CCS_GoesWhereAfterLinkResolves] == "-") continue;
+		if ($i == 0 && GetCombatChainState($CCS_GoesWhereAfterLinkResolves) == "-") continue;
 		if (!TypeContains($ChainCard->ID(), "AA")) continue;
 		if ($player != "" && $ChainCard->PlayerID() != $player) continue;
 		if ($talent != "" && !TalentContains($ChainCard->ID(), "LIGHTNING", $ChainCard->PlayerID())) continue;
 		if ($maxCost != -1 && CardCost($ChainCard->ID(), "CC", $ChainCard->Index()) > $maxCost) continue;
 		$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
-	}
-	$numLinks = $ChainLinks->NumLinks();
-	for ($i = 0; $i < $numLinks; ++$i) {
-		$Link = $ChainLinks->GetLink($i);
-		$numLinkCards = $Link->NumCards();
-		for ($j = 0; $j < $numLinkCards; ++$j) {
-			$ChainCard = $Link->GetLinkCard($j, true);
-			if (!$ChainCard->StillOnChain()) continue;
-			if (!TypeContains($ChainCard->ID(), "AA")) continue;
-			if ($player != "" && $ChainCard->PlayerID() != $player) continue;
-			if ($talent != "" && !TalentContains($ChainCard->ID(), "LIGHTNING", $ChainCard->PlayerID())) continue;
-			if ($maxCost != -1 && CardCost($ChainCard->ID(), "CC", $ChainCard->Index()) > $maxCost) continue;
-			$targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
-		}
 	}
 	return $targets;
 }
@@ -217,7 +204,7 @@ function TargetAttack($player) {
 	$i = 0;
 	if ($CombatChain->HasCurrentLink()) {
 		$ChainCard = $CombatChain->Card($i, true);
-		if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-")
+		if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-")
 			$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
 	}
 
@@ -242,4 +229,11 @@ function SetDamageSourceUID($uid) {
 	global $CS_ResolvingLayerUniqueID;
 	SetClassState(1, $CS_ResolvingLayerUniqueID, $uid);
 	SetClassState(2, $CS_ResolvingLayerUniqueID, $uid);
+}
+
+function AddAmp($cardID, $player, $amount=1) {
+	global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->FindEffect($cardID, $player);
+    if ($Effect->Index() == -1) AddCurrentTurnEffect($cardID, $player);
+	else $Effect->AddUses($amount);
 }

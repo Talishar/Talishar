@@ -15,7 +15,7 @@
         Draw($currentPlayer);
         $card = DiscardRandom();
         if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
-          MZMoveCard($currentPlayer, "MYDECK:bloodDebtOnly=true", "MYBANISH,DECK,-", may:true);
+          MZMoveCard($currentPlayer, "MYDECK:bloodDebtOnly=true", "MYBANISH,DECK,-,$cardID,$currentPlayer", may:true);
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
         return "";
@@ -72,6 +72,11 @@
     $discardPieces = DiscardPieces();
     for($i = 0; $i < 3; $i++) {
       $banishMod = $modifier;
+      if (count($discard) == 0) {
+        WriteLog("Not enough cards to banish, reverting gamestate!", highlight:true);
+        RevertGamestate();
+        return;
+      }
       $index = GetRandom(0, count($discard)/$discardPieces-1) * $discardPieces;
       $facing = $discard[$index + 2];
       if($facing == "DOWN") $banishMod = "DOWN";

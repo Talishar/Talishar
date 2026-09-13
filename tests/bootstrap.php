@@ -30,6 +30,7 @@ require_once ROOT_PATH . '/Libraries/CSRFLibraries.php';
 require_once ROOT_PATH . '/AccountFiles/AccountSessionAPI.php';
 
 require_once ROOT_PATH . '/Constants.php';
+require_once ROOT_PATH . '/Libraries/StatFunctions.php';
 foreach (get_defined_vars() as $__key => $__val) {
     if (!in_array($__key, ['__key', '__val'], true)) {
         $GLOBALS[$__key] = $__val;
@@ -57,7 +58,10 @@ if (!function_exists('GetLocalMySQLConnection')) {
 // Mock other functions that might be called during tests
 if (!function_exists('IsGameNameValid')) {
     function IsGameNameValid($gameName) {
-        return !empty($gameName) && ctype_alnum($gameName) && strlen($gameName) >= 3 && strlen($gameName) <= 50;
+        return is_string($gameName)
+            && strlen($gameName) >= 3
+            && strlen($gameName) <= 50
+            && ctype_alnum($gameName);
     }
 }
 

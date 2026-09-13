@@ -149,6 +149,11 @@ class ItemCard {
     DestroyItemForPlayer($this->controller, $this->index, $skipDestroy);
   }
 
+  function Banish() {
+    BanishCardForPlayer($this->CardID(), $this->controller, "-");
+    DestroyItemForPlayer($this->controller, $this->index, true);
+  }
+
   function SubCards() {
     return $this->pieces[$this->index + 11] ?? "-";
   }

@@ -15,7 +15,7 @@ include_once '../Libraries/HTTPLibraries.php';
 SetHeaders();
 $response = new stdClass();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 
 if($_POST == NULL) {
   $response->error = "Parameters were not passed";

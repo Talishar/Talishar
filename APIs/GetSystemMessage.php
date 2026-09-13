@@ -15,28 +15,22 @@ session_write_close();
 header('Content-Type: application/json');
 
 if (!IsUserLoggedIn()) {
-  http_response_code(401);
-  echo json_encode(["error" => "Not logged in"]);
-  exit;
+  ExitJsonResponse(["error" => "Not logged in"], 401);
 }
 
 $userName = LoggedInUserName();
 
 $conn = GetDBConnection(DBL_GET_SYSTEM_MESSAGE);
 if (!$conn) {
-  http_response_code(500);
-  echo json_encode(["error" => "Database connection failed"]);
-  exit;
+  ExitJsonResponse(["error" => "Database connection failed"], 500);
 }
 
 $sql = "SELECT systemMessage, systemMessageExpiresAt FROM users WHERE usersUid = ?";
 $stmt = mysqli_stmt_init($conn);
 
 if (!mysqli_stmt_prepare($stmt, $sql)) {
-  http_response_code(500);
-  echo json_encode(["error" => "Database error"]);
   mysqli_close($conn);
-  exit;
+  ExitJsonResponse(["error" => "Database error"], 500);
 }
 
 mysqli_stmt_bind_param($stmt, 's', $userName);
@@ -63,6 +57,6 @@ mysqli_close($conn);
 $response = new stdClass();
 $response->systemMessage = ($hasMessage && !$isExpired) ? $row['systemMessage'] : null;
 
-echo json_encode($response);
+WriteJsonResponse($response);
 
 ?>

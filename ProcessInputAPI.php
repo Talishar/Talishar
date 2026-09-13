@@ -33,7 +33,7 @@ include_once "./Libraries/ValidationLibraries.php";
 @ini_set('max_execution_time', '1');
 
 SetHeaders();
-$_POST = json_decode(file_get_contents('php://input'), true) ?? [];
+$_POST = ReadJsonBody() ?? [];
 
 // Start output buffering to catch any accidental output
 ob_start();
@@ -57,10 +57,31 @@ $submission = $_POST["submission"] ?? [];
 $submission = json_encode($submission);
 $submission = json_decode($submission); //I don't know why it's not correctly parsing as objects all the way down here
 
+if ($playerID == 0) {
+  include_once "./AccountFiles/AccountSessionAPI.php";
+  IsUserLoggedIn();
+  $sessionUserId = $_SESSION["userid"] ?? null;
+  session_write_close();
+}
+
 //First we need to parse the game state from the file
 // For profile settings updates (playerID == 0), skip gamestate parsing
 if ($playerID != 0) {
+  $gameActionLock = AcquireGameActionLock($gameName);
+  if ($gameActionLock === false) {
+    http_response_code(503);
+    echo json_encode(['error' => 'Unable to lock game for processing.']);
+    exit;
+  }
+  register_shutdown_function(static function () use (&$gameActionLock): void {
+    ReleaseGameActionLock($gameActionLock);
+    $gameActionLock = null;
+  });
+
   include "ParseGamestate.php";
+  $replayCommandCountBefore = IsReplay()
+    ? 0
+    : ReplayCommandCount($filepath . "commandfile.txt");
 } else {
   // Initialize minimal state for profile-only operations
   $currentPlayer = 0;
@@ -68,6 +89,13 @@ if ($playerID != 0) {
   $p2id = "";
   $p1Key = "";
   $p2Key = "";
+  $replayCommandCountBefore = 0;
+}
+
+if ($playerID != 0 && IsReplay()) {
+  http_response_code(403);
+  echo json_encode(['error' => 'Game inputs cannot be submitted while reviewing a replay.']);
+  exit;
 }
 
 $otherPlayer = 3 - $currentPlayer;
@@ -103,6 +131,18 @@ try {
   }
 }
 
+// Manual deck organization happens client-side until the player saves. Keep
+// the priority player's inactivity timer alive without rewriting gamestate or
+// creating replay commands while the organizer is open.
+if ($mode == 112) {
+  if ($currentPlayer == $playerID) {
+    SetCachePiece($gameName, 6, round(microtime(true) * 1000));
+  }
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode(['message' => 'Activity recorded.']);
+  exit;
+}
+
 $afterResolveEffects = [];
 
 $animations = [];
@@ -136,13 +176,13 @@ try {
         include_once "./includes/dbh.inc.php";
         include_once "./includes/functions.inc.php";
         if ($playerID == 0) {
-          // Profile settings update - prefer userID from frontend (more reliable than session)
-          // Only use POST userID if it's actually a valid numeric ID (guards against JS String(null) = "null")
-          $postUserID = $_POST["userID"] ?? "";
-          if (is_numeric($postUserID)) {
-            $userID = $postUserID;
-          } elseif ($sessionUserId !== null) {
+          // Profile settings can only be changed by the authenticated account.
+          if (is_numeric($sessionUserId)) {
             $userID = $sessionUserId;
+          } else {
+            http_response_code(401);
+            $response->error = "Authentication required to change profile settings.";
+            break;
           }
         } else {
           // In-game settings update - get userID from game file
@@ -260,6 +300,7 @@ try {
       foreach ($cardList as $card) {
         $index = -1;
         $layersCount = count($layers);
+        if (str_contains($card, "USURPED")) $card = "USURPED";
         for ($i = 0; $i < $layersCount; $i += $layerPieces) {
           if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID && $layers[$i+2] == $card) {
             $index = $i;
@@ -280,6 +321,26 @@ try {
       }
       ContinueDecisionQueue();
       break;
+  case 111: // manual mode: reorder your own deck
+    $deck = &GetDeck($playerID);
+    $deckSize = count($deck);
+    unset($deck);
+    $order = ParseDeckOrder($submission->deckOrder ?? null, $deckSize);
+    if ($order === null) {
+      $response->error = "Your deck changed while you were organizing it. Reopen the deck organizer and try again.";
+      break;
+    }
+    ReorderDeck($playerID, $order);
+    WriteLog("Player " . $playerID . " manually reordered their deck", highlight: true, highlightColor: "darkblue");
+    if (!IsReplay()) {
+      $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
+      if ($commandFile !== false) {
+        fwrite($commandFile, "$playerID MANUALDECK " . implode(",", $order) . " 0 0\r\n");
+        fclose($commandFile);
+      }
+    }
+    $response->message = "Deck reordered.";
+    break;
   case 110: // rearranging the top card of the opponent's deck
     $otherPlayer = $playerID == 1 ? 2 : 1;
     $deck = new Deck($otherPlayer);
@@ -288,13 +349,6 @@ try {
       $deck->AddTop($cardList[$i]);
     }
     ContinueDecisionQueue();
-    break;
-  case 100011: //Resume adventure (roguelike)
-    if($roguelikeGameID == "") {
-      $response->error = "Cannot resume adventure - not a roguelike game.";
-      break;
-    }
-    $response->redirectLink = $redirectPath . "/Roguelike/ContinueAdventure.php?gameName=" . $roguelikeGameID . "&playerID=1&health=" . GetHealth(1);
     break;
   default:
     break;

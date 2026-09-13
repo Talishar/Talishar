@@ -1196,17 +1196,58 @@
 // }
 
 
-// class exposed_to_the_elements_blue extends Card {
+class exposed_to_the_elements_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "exposed_to_the_elements_blue";
-//     $this->controller = $controller;
-//     }
+    function __construct($controller) {
+        $this->cardID = "exposed_to_the_elements_blue";
+        $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        $targets = explode(",", $target);
+        if(DelimStringContains($additionalCosts, "ICE")) $this->ExposedToTheElementsIce($targets[1] ?? "-");
+        if(DelimStringContains($additionalCosts, "EARTH")) $this->ExposedToTheElementsEarth($targets[0] ?? "-");
+        return "";
+    }
+
+    private
+    function ExposedToTheElementsEarth($targetEquip) {
+        $CharacterCard = CleanTargetToObject($this->controller, $targetEquip);
+        if ($CharacterCard != "") $CharacterCard->AddDefCounters(-1);
+    }
+
+    private
+    function ExposedToTheElementsIce($target) {
+        $otherPlayer = $this->controller == 1 ? 2 : 1;
+        $targetPlayer = str_contains($target, "MY") ? $this->controller : $otherPlayer;
+        PrependDecisionQueue("DESTROYCHARACTER", $targetPlayer, "-", 1);
+        PrependDecisionQueue("CHOOSETHEIRCHARACTER", $this->controller, "<-", 1);
+        PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an equipment to destroy", 1);
+        PrependDecisionQueue("FINDINDICES", $targetPlayer, "EQUIP0", 1);
+        PrependDecisionQueue("WRITELOG", $this->controller, "Player $targetPlayer declined_to_pay_for_".CardLink("exposed_to_the_elements_blue", "exposed_to_the_elements_blue").".", 1);
+        PrependDecisionQueue("GREATERTHANPASS", $targetPlayer, "0", 1);
+        PrependDecisionQueue("PAYRESOURCES", $targetPlayer, "<-", 1);
+        PrependDecisionQueue("BUTTONINPUT", $targetPlayer, "0,2", 0);
+        PrependDecisionQueue("SETDQCONTEXT", $targetPlayer, "Choose_if_you_want_to_pay_2_to_prevent_an_equipment_with_0_defense_from_being_destroyed.");
+    }
+
+    function HasFusion() {
+        return "EARTH,ICE";
+    }
+
+    function PayAdditionalCosts($from, $index = '-') {
+        $search = "THEIRCHAR:type=E";
+        $Earth = "{{element|Earth|" . GetElementColorCode("EARTH") . "}}";
+        if (!ShouldAutotargetOpponent($this->controller))
+            $search .= "&MYCHAR:type=E";
+        SetTargets($this->controller, $this->cardID, $search, context:"Target an Equipment for the $Earth fuse ability");
+        $search = "THEIRCHAR:type=C";
+        if (!ShouldAutotargetOpponent($this->controller))
+            $search .= "&MYCHAR:type=C";
+        $Ice = "{{element|Ice|" . GetElementColorCode("ICE") . "}}";
+        SetTargets($this->controller, $this->cardID, $search, context:"Target a player for the $Ice fuse ability");
+    }
+}
 
 
 // class flake_out_red extends Card {
@@ -2977,43 +3018,73 @@
 // }
 
 
-// class winters_bite_red extends Card {
+class winters_bite extends BaseCard {
+    function PlayAbility($pay, $target) {
+        $targetChoice = str_contains($target, "MY") ? "Target_Yourself" : "Target_Opponent";
+        AddDecisionQueue("PASSPARAMETER", $this->controller, $targetChoice);
+        AddDecisionQueue("PLAYERTARGETEDABILITY", $this->controller, "WINTERSBITE-$pay", 1);
+        return "";
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "winters_bite_red";
-//     $this->controller = $controller;
-//     }
+    function PayAdditionalCosts() {
+        if (ShouldAutotargetOpponent($this->controller))
+            $search = "THEIRCHAR:type=C";
+        else
+            $search = "THEIRCHAR:type=C&MYCHAR:type=C";
+        SetTargets($this->controller, $this->cardID, $search);
+    }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class winters_bite_red extends Card {
+    function __construct($controller) {
+        $this->cardID = "winters_bite_red";
+        $this->controller = $controller;
+        $this->baseCard = new winters_bite($this->cardID, $this->controller);
+    }
+    
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        $this->baseCard->PlayAbility(3, $target);
+        return "";
+    }
 
+    function PayAdditionalCosts($from, $index = '-') {
+        $this->baseCard->PayAdditionalCosts();
+    }
+}
 
-// class winters_bite_yellow extends Card {
+class winters_bite_yellow extends Card {
+    function __construct($controller) {
+        $this->cardID = "winters_bite_yellow";
+        $this->controller = $controller;
+        $this->baseCard = new winters_bite($this->cardID, $this->controller);
+    }
+    
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        $this->baseCard->PlayAbility(2, $target);
+        return "";
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "winters_bite_yellow";
-//     $this->controller = $controller;
-//     }
+    function PayAdditionalCosts($from, $index = '-') {
+        $this->baseCard->PayAdditionalCosts();
+    }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class winters_bite_blue extends Card {
+    function __construct($controller) {
+        $this->cardID = "winters_bite_blue";
+        $this->controller = $controller;
+        $this->baseCard = new winters_bite($this->cardID, $this->controller);
+    }
+    
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        $this->baseCard->PlayAbility(1, $target);
+        return "";
+    }
 
-
-// class winters_bite_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "winters_bite_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function PayAdditionalCosts($from, $index = '-') {
+        $this->baseCard->PayAdditionalCosts();
+    }
+}
 
 
 // class winters_grasp_red extends Card {

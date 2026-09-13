@@ -4,12 +4,19 @@ include __DIR__ . '/zzImageConverter.php';
 include_once __DIR__ . '/Assets/AllAltArtVariations.php';
 
 // FAB Cube API endpoint for card data with all printing variations
-$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
+//$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
+$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/usurp-the-shadow-throne/json/english/card.json";
 
 $manualArtVariationOverrides = [
-/*    "fate_foreseen_red" => [
-   "artVariation" => "AA",
-   "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/ZH_FAB024-RF.webp"
+/*    "outed_red" => [
+    ["artVariation" => "EA", 
+    "setID" => "HNT235", 
+    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/FAB517-RF.webp"],
+  ], 
+     "levia_shadowborn_abomination" => [
+    ["artVariation" => "MV", 
+    "setID" => "MON119", 
+    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/HER175-MV.webp"],
   ],  */
 ];
 

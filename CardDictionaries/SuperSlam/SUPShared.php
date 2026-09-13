@@ -118,7 +118,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Destroy_a_Might_or_Vigor":
-            $search = "THEIRAURAS:cardID=might;cardID=vigor";
+            $search = "MYAURAS:cardID=might;cardID=vigor&THEIRAURAS:cardID=might;cardID=vigor";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search, 1);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -138,45 +138,13 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       break;
-    case "liars_charm_yellow":
-      $params = explode(",", $additionalCosts);
-      $paramsCount = count($params);
-      for($i = 0; $i < $paramsCount; ++$i) {
-        switch($params[$i]) {
-          case "Steal_a_Toughness_or_Vigor":
-            $search = "THEIRAURAS:cardID=vigor;cardID=toughness";
-            AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
-            AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to steal", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-            AddDecisionQueue("MZOP", $currentPlayer, "GAINCONTROL", 1);
-            break;
-          case "Boo":
-            Boo($currentPlayer);
-            break;
-          case "Remove_hero_abilities":
-            $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
-            $hand = GetHand($targetPlayer);
-            if (count($hand) > 0) {
-              AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND");
-              AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else lose your hero ability", 1);
-              AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
-              AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
-              AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
-              AddDecisionQueue("ELSE", $targetPlayer, "-");
-            }
-            AddDecisionQueue("SPECIFICCARD", $targetPlayer, "LIAR", 1);
-            break;
-          default: break;
-        }
-      }
-      break;
     case "numbskull_charm_yellow":
       $params = explode(",", $additionalCosts);
       $paramsCount = count($params);
       for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Destroy_a_Confidence_or_Might":
-            $search = "THEIRAURAS:cardID=confidence;cardID=might";
+            $search = "MYAURAS:cardID=confidence;cardID=might&THEIRAURAS:cardID=confidence;cardID=might";
             AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
             AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an aura to destroy", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -223,6 +191,8 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
               for ($j = 0; $j < $chainLinksummaryCount; $j += $chainLinksummaryPieces) {
                 if ($chainLinkSummary[$j + 1] >= 6) { $condition = true; break; }
               }
+              if (IsLayerStep() && LayerStepBasePower() >= 6)
+                $condition = true;
               if ($condition) {
                 Deal2OrDiscard($targetPlayer);
               }
@@ -333,14 +303,15 @@ function Cheer($player)
 
 function HasSuspense($cardID)
 {
+  static $generatedSuspenseCache = [];
+  if (isset($generatedSuspenseCache[$cardID])) return $generatedSuspenseCache[$cardID];
   $card = GetClass($cardID, 0);
-  if ($card != "-") return $card->HasSuspense();
-  return GeneratedHasSuspense($cardID);
+  if ($card != "-") return $generatedSuspenseCache[$cardID] = $card->HasSuspense();
+  return $generatedSuspenseCache[$cardID] = GeneratedHasSuspense($cardID);
 }
 
 function GetSuspenseAuras($player, $hasCounter = false)
 {
-  global $CombatChain;
   $auras = GetAuras($player);
   $susp = [];
   $auraCount = count($auras);
@@ -348,35 +319,50 @@ function GetSuspenseAuras($player, $hasCounter = false)
   for ($i = 0; $i < $auraCount; $i += $auraPieces) {
     if (HasSuspense($auras[$i]) && (!$hasCounter || $auras[$i + 2])) $susp[] = "MYAURAS-$i";
   }
-  if (!$hasCounter) {
-    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
-      $LinkCard = $CombatChain->Card($i, true);
-      if ($LinkCard->PlayerID() == $player && HasSuspense($LinkCard->ID())) $susp[] = "COMBATCHAIN-" . $LinkCard->Index();
-    }
-  }
   return $susp;
 }
 
 function RemoveSuspense($player, $MZIndex, $mainPhase = true)
 {
-  $otherPlayer = 3 - $player;
-  $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
-  $auras = &GetAuras($targetPlayer);
   $parts = explode("-", $MZIndex, 2);
-  if (!isset($parts[1])) return;
-  $ind = $parts[1];
-  if (!isset($auras[$ind + 2])) return; // aura no longer exists
-  --$auras[$ind + 2];
-  if ($auras[$ind + 2] <= 0) {
-    AddLayer("TRIGGER", $targetPlayer, "$auras[$ind]", $auras[$ind + 6], "DESTROY");
+  if (count($parts) != 2 || !is_numeric($parts[1])) return;
+  $otherPlayer = 3 - $player;
+  $targetPlayer = match ($parts[0]) {
+    "MYAURAS" => $player,
+    "THEIRAURAS" => $otherPlayer,
+    default => 0
+  };
+  if ($targetPlayer == 0) return;
+  $ind = intval($parts[1]);
+  $auras = &GetAuras($targetPlayer);
+  if (!isset($auras[$ind]) || !HasSuspense($auras[$ind])) return;
+  $Aura = new AuraCard($ind, $targetPlayer);
+  $Aura->AddCounters(-1);
+  if ($Aura->NumCounters() <= 0) {
+    AddLayer("TRIGGER", $targetPlayer, $Aura->CardID(), $Aura->UniqueID(), "DESTROY");
   }
 }
 
 function AddSuspense($player, $MZIndex)
 {
+  // MAYCHOOSEMULTIZONE submits an empty result when the player passes.
+  if ($MZIndex === "" || $MZIndex === "PASS") return;
+
+  $parts = explode("-", $MZIndex, 2);
+  if (count($parts) != 2 || !is_numeric($parts[1])) return;
+
   $otherPlayer = 3 - $player;
-  $targetPlayer = str_contains($MZIndex, "MY") ? $player : $otherPlayer;
-  $ind = explode("-", $MZIndex, 2)[1];
+  $targetPlayer = match ($parts[0]) {
+    "MYAURAS" => $player,
+    "THEIRAURAS" => $otherPlayer,
+    default => 0
+  };
+  if ($targetPlayer == 0) return;
+
+  $ind = intval($parts[1]);
+  $auras = &GetAuras($targetPlayer);
+  if (!isset($auras[$ind]) || !HasSuspense($auras[$ind])) return;
+
   $AuraCard = new AuraCard($ind, $targetPlayer);
   $AuraCard->AddCounters(1);
 }

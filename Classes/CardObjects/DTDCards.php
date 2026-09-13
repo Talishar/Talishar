@@ -312,17 +312,43 @@
 // }
 
 
-// class beckoning_light_red extends Card {
+class beckoning_light_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "beckoning_light_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "beckoning_light_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		MZMoveCard($this->controller, "MYDISCARD:type=AA", "MYTOPDECK", may: true);
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return true;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$attackID = $CombatChain->AttackCard()->ID();
+		return CardType($attackID) == "AA";
+	}
+
+	function RemoveEffectFromCombatChain($effectIndex) {
+		return true;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		IfChargedYellow($this->controller, $this->cardID);
+	}
+}
 
 
 // class bellona_archangel_of_war extends Card {
@@ -338,17 +364,29 @@
 // }
 
 
-// class bequest_the_vast_beyond_red extends Card {
+class bequest_the_vast_beyond_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "bequest_the_vast_beyond_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "bequest_the_vast_beyond_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$num =  CountAura("runechant", $this->controller);
+		AddCurrentTurnEffect("$this->cardID-$num", $this->controller);
+		return "";
+	}
+
+	function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+		if (TypeContains($cardID, "AA") && ClassContains($cardID, "RUNEBLADE", $this->controller)) {
+			$Effect = new CurrentEffect($index);
+			$num = intval(explode("-", $Effect->EffectID())[1] ?? 0);
+			$remove = true;
+			return -1 * $num;
+		}
+		return 0;
+	}
+}
 
 class beseech_the_demigon extends BaseCard {
 	function PlayAbility($value) {
@@ -809,17 +847,44 @@ class beseech_the_demigon_blue extends Card {
 // }
 
 
-// class courage extends Card {
+class courage extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "courage";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "courage";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function PermanentPlayAbility($cardID, $from, $i) {
+		$cardType = CardType($cardID);
+		$cardSubType = CardSubType($cardID);
+		$resolvedAbilityType = GetResolvedAbilityType($cardID, $from);
+		$AuraCard = new AuraCard($i, $this->controller);
+		if (($cardType == "AA" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA")
+			|| (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && IsWeapon($cardID, $from))
+			|| (TypeContains($cardID, "W", $this->controller) && $resolvedAbilityType!= "A")) && $resolvedAbilityType!= "I") {
+			AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$AuraCard->UniqueID());
+        }
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Auras = new Auras($this->controller);
+		$AuraCard = $Auras->FindCardUID($uniqueID);
+		$AuraCard->Destroy();
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 1;
+	}
+}
 
 
 // class dabble_in_darkness_red extends Card {
@@ -1498,17 +1563,43 @@ class beseech_the_demigon_blue extends Card {
 // }
 
 
-// class ironsong_versus extends Card {
+class ironsong_versus extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "ironsong_versus";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "ironsong_versus";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		PlayAura("courage", $this->controller);
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "A";
+	}
+
+	function AbilityCost() {
+		return 1;
+	}
+
+	function AbilityHasGoAgain($from) {
+		return true;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		return SubtypeContains($CombatChain->AttackCard()->ID(), "Sword");
+	}
+}
 
 
 // class lay_to_rest_red extends Card {

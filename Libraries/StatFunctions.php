@@ -31,30 +31,48 @@ $TurnStats_DamagePrevented = 12;
 $TurnStats_LifeLost = 13;
 $TurnStats_CardsDiscarded = 14;
 
+function &GetTurnCount($player)
+{
+  global $p1TurnCount, $p2TurnCount;
+  if ($player == 1) return $p1TurnCount;
+  return $p2TurnCount;
+}
+
+function CountAttackingTurns($player)
+{
+  $count = &GetTurnCount($player);
+  return intval($count);
+}
+
+function IncrementTurnCount($player)
+{
+  $count = &GetTurnCount($player);
+  $count = intval($count) + 1;
+}
+
 function GetStatTurnIndex($player)
 {
-  global $currentTurn, $mainPlayer, $firstPlayer;
-  // If player is the first player (goes first)
-  if ($player == $firstPlayer) {
-    return $currentTurn;
+  global $mainPlayer, $firstPlayer;
+  $count = CountAttackingTurns($player);
+  if ($player == $mainPlayer) {
+    return $player == $firstPlayer ? ($count > 0 ? $count - 1 : 0) : $count;
   }
-  
-  // If player is NOT the first player (goes second, P2)
-  // Turn 0 is special: both players on index 0
-  if ($currentTurn == 0) {
-    return 0;
-  }
-  
-  // For turns 1+:
-  // When P2 IS attacking (is main player): log to current turn index
-  // When P2 is NOT attacking (defending): log to next turn index
-  // Turn 1: P2 attacks (index 1), P2 blocks later (index 2)
-  // Turn 2: P2 attacks (index 2), P2 blocks later (index 3)
-  if ($player != $mainPlayer) {
-    return $currentTurn + 1;
-  }
-  
-  return $currentTurn;
+  // Defending. A player has always attacked as many times as the turn they are
+  // defending on, so their own turn count is the block both seats are writing
+  // to. Turn 0 falls out of this: the player on the draw has not attacked yet.
+  return $count;
+}
+
+function EnsureTurnStatBlock($player)
+{
+  $turnStats = &GetTurnStats($player);
+  $required = (GetStatTurnIndex($player) + 1) * TURN_STAT_PIECES;
+  for ($i = count($turnStats); $i < $required; ++$i) $turnStats[] = 0;
+}
+
+function AddTurnStat(&$turnStats, $slot, $amount)
+{
+  $turnStats[$slot] = intval($turnStats[$slot] ?? 0) + intval($amount);
 }
 
 function LogPlayCardStats($player, $cardID, $from, $type = "")
@@ -75,7 +93,7 @@ function LogPlayCardStats($player, $cardID, $from, $type = "")
   $cardStats = &GetCardStats($player);
   $turnStats = &GetTurnStats($player);
   $baseIndex = GetStatTurnIndex($player) * TURN_STAT_PIECES;
-  if (count($turnStats) <= $baseIndex) StatsStartTurn();
+  EnsureTurnStatBlock($player);
 
   $cardStatsCount = count($cardStats);
   $found = false;
@@ -122,7 +140,7 @@ function LogPlayCardStats($player, $cardID, $from, $type = "")
       else
       {
         ++$cardStats[$i + $CardStats_TimesPlayed];
-        $offDefIndex = $baseIndex + ($player === $mainPlayer ? $TurnStats_CardsPlayedOffense : $TurnStats_CardsPlayedDefense);
+        $offDefIndex = $baseIndex + (intval($player) === intval($mainPlayer) ? $TurnStats_CardsPlayedOffense : $TurnStats_CardsPlayedDefense);
         if (isset($turnStats[$offDefIndex])) ++$turnStats[$offDefIndex];
       }
       break;
@@ -134,8 +152,8 @@ function LogResourcesUsedStats($player, $resourcesUsed)
   global $TurnStats_ResourcesUsed;
   $turnStats = &GetTurnStats($player);
   $baseIndex = GetStatTurnIndex($player) * TURN_STAT_PIECES;
-  if (count($turnStats) <= $baseIndex) StatsStartTurn();
-  $turnStats[$baseIndex + $TurnStats_ResourcesUsed] += $resourcesUsed;
+  EnsureTurnStatBlock($player);
+  AddTurnStat($turnStats, $baseIndex + $TurnStats_ResourcesUsed, $resourcesUsed);
 }
 
 function LogDamageStats($player, $damageThreatened, $damageDealt)
@@ -145,9 +163,9 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
   $baseIndex    = GetStatTurnIndex($playerSource) * TURN_STAT_PIECES;
   $damagerStats = &GetTurnStats($playerSource);
   //WriteLog("DEBUG: Logging damage for player $playerSource at turn " . (GetStatTurnIndex($playerSource)) . " with damage threatened $damageThreatened and damage dealt $damageDealt", highlight:true, highlightColor:"blue");
-  if (count($damagerStats) <= $baseIndex) StatsStartTurn();
-  $damagerStats[$baseIndex + $TurnStats_DamageThreatened] += $damageThreatened;
-  $damagerStats[$baseIndex + $TurnStats_DamageDealt] += $damageDealt;
+  EnsureTurnStatBlock($playerSource);
+  AddTurnStat($damagerStats, $baseIndex + $TurnStats_DamageThreatened, $damageThreatened);
+  AddTurnStat($damagerStats, $baseIndex + $TurnStats_DamageDealt, $damageDealt);
 }
 
 // Called on FinalizeDamage() and $damageDealt is $type == ARCANE only tracks damage dealt to opposing players
@@ -157,11 +175,9 @@ function LogArcaneDamageStats($player, $damageDealt)
   $playerSource = $player == 1 ? 2 : 1;
   $turnIndex = GetStatTurnIndex($playerSource);
   if ($playerSource == 1) {
-    if (!isset($p1ArcaneDamageDealt[$turnIndex])) $p1ArcaneDamageDealt[$turnIndex] = 0;
-    $p1ArcaneDamageDealt[$turnIndex] += $damageDealt;
+    AddTurnStat($p1ArcaneDamageDealt, $turnIndex, $damageDealt);
   } else {
-    if (!isset($p2ArcaneDamageDealt[$turnIndex])) $p2ArcaneDamageDealt[$turnIndex] = 0;
-    $p2ArcaneDamageDealt[$turnIndex] += $damageDealt;
+    AddTurnStat($p2ArcaneDamageDealt, $turnIndex, $damageDealt);
   }
 }
 
@@ -171,8 +187,8 @@ function LogLifeGainedStats($player, $healthGained)
   $baseIndex   = GetStatTurnIndex($player) * TURN_STAT_PIECES;
   $healerStats = &GetTurnStats($player);
   //WriteLog("DEBUG: Logging life gain for player $player at turn " . (GetStatTurnIndex($player)) . " with health gained $healthGained", highlight:true, highlightColor:"blue");
-  if (count($healerStats) <= $baseIndex) StatsStartTurn();
-  $healerStats[$baseIndex + $TurnStats_LifeGained] += $healthGained;
+  EnsureTurnStatBlock($player);
+  AddTurnStat($healerStats, $baseIndex + $TurnStats_LifeGained, $healthGained);
 }
 
 function LogLifeLossStats($player, $healthLost)
@@ -181,8 +197,8 @@ function LogLifeLossStats($player, $healthLost)
   $baseIndex   = GetStatTurnIndex($player) * TURN_STAT_PIECES;
   $healerStats = &GetTurnStats($player);
   //WriteLog("DEBUG: Logging life loss for player $player at turn " . (GetStatTurnIndex($player)) . " with health lost $healthLost", highlight:true, highlightColor:"blue");
-  if (count($healerStats) <= $baseIndex) StatsStartTurn();
-  $healerStats[$baseIndex + $TurnStats_LifeLost] -= $healthLost;
+  EnsureTurnStatBlock($player);
+  AddTurnStat($healerStats, $baseIndex + $TurnStats_LifeLost, -intval($healthLost));
 }
 
 function LogDamagePreventedStats($player, $damagePrevented)
@@ -191,7 +207,7 @@ function LogDamagePreventedStats($player, $damagePrevented)
   $baseIndex      = GetStatTurnIndex($player) * TURN_STAT_PIECES;
   $preventedStats = &GetTurnStats($player);
   //WriteLog("DEBUG: Logging damage prevented for player $player at turn " . (GetStatTurnIndex($player)) . " with damage prevented $damagePrevented", highlight:true, highlightColor:"blue");
-  if (count($preventedStats) <= $baseIndex) StatsStartTurn();
+  EnsureTurnStatBlock($player);
   $slot = $baseIndex + $TurnStats_DamagePrevented;
   $preventedStats[$slot] = ($preventedStats[$slot] ?? 0) + (int)$damagePrevented;
 }
@@ -203,13 +219,15 @@ function LogCombatResolutionStats($damageThreatened, $damageBlocked)
   $defBaseIndex  = GetStatTurnIndex($defPlayer)  * TURN_STAT_PIECES;
   $mainStats     = &GetTurnStats($mainPlayer);
   $defStats      = &GetTurnStats($defPlayer);
-  if (count($mainStats) <= $mainBaseIndex) StatsStartTurn();
-  if (count($defStats)  <= $defBaseIndex)  StatsStartTurn();
+  EnsureTurnStatBlock($mainPlayer);
+  EnsureTurnStatBlock($defPlayer);
   //WriteLog("DEBUG: Logging combat resolution stats for turn " . GetStatTurnIndex($mainPlayer) . " Main player, and turn " . GetStatTurnIndex($defPlayer) . " Def player, Damage Threatened: $damageThreatened, Damage Blocked: " . min($damageThreatened, $damageBlocked), highlight:true, highlightColor:"blue");
+  $damageThreatened = intval($damageThreatened);
+  $damageBlocked    = intval($damageBlocked);
   $capped = $damageThreatened < $damageBlocked ? $damageThreatened : $damageBlocked;
-  $mainStats[$mainBaseIndex + $TurnStats_DamageThreatened] += $capped; //Excess is logged in the damage function
-  $defStats[$defBaseIndex   + $TurnStats_DamageBlocked]    += $capped; // If I block 3 on a 2 damage attack, I blocked 2 damage, not 3
-  $defStats[$defBaseIndex   + $TurnStats_Overblock]        += $damageBlocked > $damageThreatened ? $damageBlocked - $damageThreatened : 0;
+  AddTurnStat($mainStats, $mainBaseIndex + $TurnStats_DamageThreatened, $capped); //Excess is logged in the damage function
+  AddTurnStat($defStats, $defBaseIndex + $TurnStats_DamageBlocked, $capped); // If I block 3 on a 2 damage attack, I blocked 2 damage, not 3
+  AddTurnStat($defStats, $defBaseIndex + $TurnStats_Overblock, $damageBlocked > $damageThreatened ? $damageBlocked - $damageThreatened : 0);
 }
 
 function LogEndTurnStats($player)
@@ -217,7 +235,7 @@ function LogEndTurnStats($player)
   global $TurnStats_ResourcesLeft, $TurnStats_CardsLeft;
   $turnStats = &GetTurnStats($player);
   $baseIndex = GetStatTurnIndex($player) * TURN_STAT_PIECES;
-  if (count($turnStats) <= $baseIndex) StatsStartTurn();
+  EnsureTurnStatBlock($player);
   $resources = &GetResources($player);
   $turnStats[$baseIndex + $TurnStats_ResourcesLeft] = $resources[0];
   $hand = &GetHand($player);
@@ -226,20 +244,13 @@ function LogEndTurnStats($player)
 
 function LogEndLifeStats()
 {
-  global $p1LifeHistory, $p2LifeHistory, $currentTurn;
-  $p1LifeHistory[$currentTurn] = GetHealth(1);
-  $p2LifeHistory[$currentTurn] = GetHealth(2);
+  global $p1LifeHistory, $p2LifeHistory;
+  $p1LifeHistory[GetStatTurnIndex(1)] = GetHealth(1);
+  $p2LifeHistory[GetStatTurnIndex(2)] = GetHealth(2);
 }
 
 function StatsStartTurn()
 {
-  $p1Stats = &GetTurnStats(1);
-  $p2Stats = &GetTurnStats(2);
-  $z = 0;
-  $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z;
-  $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z;
-  $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z; $p1Stats[] = $z;
-  $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z;
-  $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z;
-  $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z; $p2Stats[] = $z;
+  EnsureTurnStatBlock(1);
+  EnsureTurnStatBlock(2);
 }

@@ -43,12 +43,49 @@ $SET_MirroredBoardLayout = 30; //Did the player enable mirrored board layout (op
 $SET_MirroredPlayerBoardLayout = 31; //Did the player enable mirrored board layout (player)
 $SET_AlwaysShowCounters = 32; //Always show counters on zones
 $SET_HideHandFromFriends = 33; //Hide your hand content from friends
+$SET_GemsOffByDefault = 34; //Should gems start switched off instead of using each card's default
+$SET_HideGamesFromFriends = 35; //Hide your games from your friends in the open game and spectate lists
+$SET_AutoPassTurn = 36; //Pass button held down: auto-pass this player's windows for the rest of the turn
+$SET_DisableHoldToAutoPass = 37; //Accessibility: turn off the hold space/PASS gesture that arms auto-pass
+$SET_ManualDynamo = 38; //Do you want to manually refresh Valiant Dynamo
+
+// Deliberately absent from SaveSettingInDatabase: this is an in-game state
+// StartTurnAbilities clears it, so it can never outlive the turn it was set in.
+function AutoPassTurnSetting($player)
+{
+  global $SET_AutoPassTurn;
+  if ($player != 1 && $player != 2) return 0;
+  $settings = GetSettings($player);
+  return ($settings[$SET_AutoPassTurn] ?? "0") == "1";
+}
+
+function HoldToAutoPassDisabled($player)
+{
+  global $SET_DisableHoldToAutoPass;
+  if ($player != 1 && $player != 2) return false;
+  $settings = GetSettings($player);
+  return ($settings[$SET_DisableHoldToAutoPass] ?? "1") == "1";
+}
 
 function HoldPrioritySetting($player)
 {
   global $SET_AlwaysHoldPriority;
   $settings = GetSettings($player);
   return $settings[$SET_AlwaysHoldPriority] ?? 0;
+}
+
+function GemsOffByDefaultSetting($player)
+{
+  global $SET_GemsOffByDefault;
+  if ($player != 1 && $player != 2) return 0;
+  $settings = GetSettings($player);
+  if ($settings == null) return 0;
+  return ($settings[$SET_GemsOffByDefault] ?? 0) == 1 ? 1 : 0;
+}
+
+function ApplyGemsOffDefault($state, $player)
+{
+  return ($state == 1 && GemsOffByDefaultSetting($player) == 1) ? 0 : $state;
 }
 
 function ManualTunicSetting($player)
@@ -58,40 +95,19 @@ function ManualTunicSetting($player)
   return $settings[$SET_ManualTunic] ?? 0;
 }
 
-function UseNewUI($player)
+function ManualDynamoSetting($player)
 {
-  global $SET_TryUI2;
+  global $SET_ManualDynamo;
   $settings = GetSettings($player);
-  return $settings[$SET_TryUI2] == 1;
-}
-
-function IsDarkMode($player)
-{
-  global $SET_DarkMode;
-  $settings = GetSettings($player);
-  return $settings[$SET_DarkMode] ?? 0 == 1 || $settings[$SET_DarkMode] ?? 0 == 3;
-}
-
-function IsPlainMode($player)
-{
-  global $SET_DarkMode;
-  $settings = GetSettings($player);
-  return $settings[$SET_DarkMode] ?? 0 == 2;
-}
-
-function IsDarkPlainMode($player)
-{
-  global $SET_DarkMode;
-  $settings = GetSettings($player);
-  return $settings[$SET_DarkMode] ?? 0 == 3;
+  return $settings[$SET_ManualDynamo] ?? 0;
 }
 
 function IsPatron($player)
 {
   global $SET_IsPatron;
   $settings = GetSettings($player);
-  if(count($settings) < $SET_IsPatron) return false;
-  return $settings[$SET_IsPatron] ?? "0" == "1";
+  if (!is_array($settings)) return false;
+  return ($settings[$SET_IsPatron] ?? "0") == "1";
 }
 
 function ResetFavoriteDeckCosmeticOverrideCache()
@@ -286,8 +302,9 @@ function ApplyDeckAltArtOverride($poolAltArts, $userId, $deckLink)
   $override = GetDeckAltArtOverride($userId, $deckLink);
   if ($override === null || !$override['customized']) {
     if (!function_exists('IsOptInOnlyAltArt')) return $poolAltArts;
-    return array_values(array_filter($poolAltArts, function ($altArt) {
-      return !IsOptInOnlyAltArt($altArt->altPath ?? '');
+    $optInOnly = GetOptInOnlyAltArts();
+    return array_values(array_filter($poolAltArts, static function ($altArt) use ($optInOnly) {
+      return !isset($optInOnly[$altArt->altPath ?? '']);
     }));
   }
 
@@ -466,13 +483,6 @@ function GetCardBack($player)
   return $cardBackMap[$cardBackId] ?? "CardBack";
 }
 
-function IsManualMode($player)
-{
-  global $SET_ManualMode;
-  $settings = GetSettings($player);
-  return $settings[$SET_ManualMode] ?? 0;
-}
-
 function ShouldSkipARs($player)
 {
   global $SET_SkipARs;
@@ -497,6 +507,23 @@ function ShouldAutotargetOpponent($player)
   return ($settings[$SET_AutotargetArcane] ?? "0") == "1";
 }
 
+/**
+ * A spectator's accessibility preferences are their own, not either player's.
+ * Their in-game settings are not part of the game state, so read them from the
+ * account that is doing the spectating.
+ */
+function LoadViewerColorblindMode($viewerUserId)
+{
+  global $SET_ColorblindMode;
+  if (!is_numeric($viewerUserId) || !function_exists("LoadSavedSettings")) return false;
+  $flat = LoadSavedSettings((string)$viewerUserId);
+  $count = count($flat);
+  for ($i = 0; $i + 1 < $count; $i += 2) {
+    if (intval($flat[$i]) === $SET_ColorblindMode) return $flat[$i + 1] == "1";
+  }
+  return false;
+}
+
 function IsColorblindMode($player)
 {
   global $SET_ColorblindMode;
@@ -511,31 +538,6 @@ function ShortcutAttackThreshold($player)
   $settings = GetSettings($player);
   if (count($settings) < $SET_ShortcutAttackThreshold) return "0";
   return $settings[$SET_ShortcutAttackThreshold];
-}
-
-function IsDynamicScalingEnabled($player)
-{
-  if (!function_exists("GetSettings")) return false;
-  global $SET_EnableDynamicScaling;
-  $settings = GetSettings($player);
-  if ($settings == null) return false;
-  return ($settings[$SET_EnableDynamicScaling] ?? "0") == "1";
-}
-
-function IsMuted($player)
-{
-  global $SET_Mute;
-  $settings = GetSettings($player);
-  if ($settings == null) return false;
-  return ($settings[$SET_Mute] ?? "0") == "1";
-}
-
-function IsChatMuted()
-{
-  global $SET_MuteChat;
-  $p1Settings = GetSettings(1);
-  $p2Settings = GetSettings(2);
-  return ($p1Settings[$SET_MuteChat] ?? "0") == "1" || ($p2Settings[$SET_MuteChat] ?? "0") == "1";
 }
 
 function AreStatsDisabled($player)
@@ -554,14 +556,6 @@ function AreGlobalStatsDisabled($player)
   $settings = GetSettings($player);
   if ($settings == null) return false;
   return ($settings[$SET_DisableFabInsights] ?? "0") == "1";
-}
-
-function IsHeroIntroDisabled($player)
-{
-  global $SET_DisableHeroIntro;
-  $settings = GetSettings($player);
-  if ($settings == null) return false;
-  return ($settings[$SET_DisableHeroIntro] ?? "0") == "1";
 }
 
 function IsCasterMode()
@@ -635,17 +629,30 @@ function ParseSettingsStringValueToIdInt(string $value)
     "MirroredPlayerBoardLayout" => 31,
     "AlwaysShowCounters" => 32,
     "HideHandFromFriends" => 33,
+    "GemsOffByDefault" => 34,
+    "HideGamesFromFriends" => 35,
+    "AutoPassTurn" => 36,
+    "DisableHoldToAutoPass" => 37,
+    "ManualDynamo" => 38,
   ];
   return $settingsToId[$value];
 }
 
 function ChangeSetting($player, $setting, $value, $playerId = "")
 {
-  global $SET_MuteChat, $SET_AlwaysHoldPriority, $SET_CasterMode, $layerPriority, $gameName;
+  global $SET_MuteChat, $SET_AlwaysHoldPriority, $SET_AutoPassTurn, $SET_CasterMode, $layerPriority, $gameName;
+  global $SET_DisableHoldToAutoPass;
+  if ($setting == $SET_AutoPassTurn && $value == "1" && HoldToAutoPassDisabled($player)) return;
   // Only update game state if not in profile context
   if($player != "" && $player != 0) {
     $settings = &GetSettings($player);
     if (($settings[$setting] ?? null) === $value) return; // Already at this value, skip write and any DB call
+    if (is_numeric($setting)) {
+      for ($i = 0; $i < $setting; ++$i) {
+        if (!isset($settings[$i])) $settings[$i] = "0";
+      }
+      ksort($settings);
+    }
     $settings[$setting] = $value;
     if($setting == $SET_MuteChat) {
       if($value == "1") {
@@ -655,7 +662,9 @@ function ChangeSetting($player, $setting, $value, $playerId = "")
         WriteLog("Chat enabled by player " . $player);
       }
     } else if($setting == $SET_AlwaysHoldPriority) {
-      $layerPriority[$player - 1] = "1";
+      $layerPriority[$player - 1] = ($value == 4 ? "0" : "1");
+    } else if($setting == $SET_AutoPassTurn) {
+      $layerPriority[$player - 1] = ($value == "1" ? "0" : "1");
     } else if($setting == $SET_CasterMode) {
       if(IsCasterMode()) SetCachePiece($gameName, 9, "1");
     }
@@ -673,12 +682,15 @@ function SaveSettingInDatabase($setting)
     global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
     global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_AlwaysShowCounters;
     global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
+    global $SET_HideGamesFromFriends;
+    global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
       $SET_ManualMode, $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo,
       $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro,
       $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_AlwaysShowCounters, $SET_HideHandFromFriends,
+      $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
     ], true);
   }
   return isset($persistable[$setting]);
@@ -740,195 +752,4 @@ function FormatName($formatCode)
   return $nameMap[$formatCode] ?? "-";
 }
 
-function IsTeamCardAdvantage($userName)
-{
-  static $members = ["JacobK" => 1, "Pastry Boi" => 1, "Brotworst" => 1, "1nigoMontoya (Cody)" => 1, "Motley" => 1,
-    "jimmyhl1329" => 1, "Stilltzkin" => 1, "krav" => 1, "infamousb" => 1, "FatFabJesus" => 1, "MisterPNP" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamSecondCycle($userName)
-{
-  static $members = ["The4thAWOL" => 1, "Beserk" => 1, "Dudebroski" => 1, "deathstalker182" => 1, "TryHardYeti" => 1, "Fledermausmann" => 1,
-    "Loganninty7" => 1, "flamedog3" => 1, "Swankypants" => 1, "Blazing For Lethal?" => 1, "Jeztus" => 1, "gokkar" => 1,
-    "Kernalxklink" => 1, "Kymo13" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamSonicDoom($userName)
-{
-  static $members = ["KanoSux" => 1, "BestBoy" => 1, "CRGrey" => 1, "jujubeans" => 1, "YodasUncle" => 1,
-    "ravenklath" => 1, "Blazing For Lethal?" => 1, "DimGuy" => 1, "JoeyReads" => 1, "OompaLoompaTron" => 1, "Ocean" => 1,
-    "radiotoast" => 1, "ThePitchStack" => 1, "KanosWaterBottle" => 1, "yamsandwic" => 1, "ThatOneKano" => 1, "YuutoSJ" => 1, "ZorbyX" => 1, "littlsnek" => 1,
-    "AWizardofEarthsea" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamPummel($userName)
-{
-  static $members = ["MkDk" => 1, "Kutter" => 1, "Smeoz" => 1, "Fabio" => 1, "JustFonta" => 1, "M3X" => 1, "Tommaso" => 1, "PDMPLB" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamEmperorsRome($userName)
-{
-  static $members = ["Daniele90rm" => 1, "Excelsa" => 1, "kano90" => 1, "Maalox10" => 1, "TriangoloRotondo" => 1, "Piervillo" => 1, "Rean" => 1,
-    "Jekpack" => 1, "playboikrame" => 1, "Danyr99" => 1, "ZiFrank" => 1, "Fevic" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamTalishar($userName)
-{
-  static $members = ["HelpMeJace2" => 1, "RainyDays" => 1, "Ragnell" => 1, "Hochi" => 1, "Cwaugh" => 1, "QZXK20" => 1, "VexingTie" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamTideBreakers($userName)
-{
-  static $members = ["OotTheMonk" => 1, "Yarandor" => 1, "grossmaul2130" => 1, "EggShot" => 1, "Kasadoom" => 1, "Gulto" => 1,
-    "FinnElbe" => 1, "Stardragon" => 1, "DragonSlayer" => 1, "TerranceSkill" => 1, "TaddelDown" => 1,
-    "Ilya" => 1, "PastaPaul" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamSunflowerSamurai($userName)
-{
-  static $members = ["Usagi" => 1, "HidaEishi" => 1, "kaikou" => 1, "Akuma" => 1, "Free" => 1, "yoeresel" => 1, "Kohs" => 1,
-    "Ch3sh1r3" => 1, "NardoPotente" => 1, "dtitan" => 1, "Pokechtulhu" => 1, "CarlosGG" => 1, "N1MP0" => 1,
-    "Clenyu" => 1, "juanmonzonf" => 1, "Raiswind" => 1, "Bossen" => 1];
-  return isset($members[$userName]);
-}
-
-function isTeamCupofTCG($userName)
-{
-  static $members = ["Cody1304" => 1, "Glem" => 1, "parallaxdream" => 1, "2birds1stone" => 1];
-  return isset($members[$userName]);
-}
-
-function isTeamScowlingFleshBag($userName)
-{
-  static $members = ["Scowling" => 1, "PvtVoid" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamThaiCardsShop($userName)
-{
-  static $members = ["thaicards" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamFABChaos($userName)
-{
-  static $members = ["SaXoChaos" => 1, "nakezuma" => 1, "Broken" => 1, "Atsacus" => 1, "rkntl" => 1,
-    "SlyNight" => 1, "Elnor" => 1, "mythen" => 1, "Enegon" => 1, "Obnoxious" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamColdFoilControl($userName)
-{
-  static $members = ["Z-Gin" => 1, "Chaco" => 1, "Kentshero" => 1, "Ardent" => 1, "PurpleHaze" => 1, "luxas" => 1, "chefwheaton" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamRighteousGaming($userName)
-{
-  static $members = ["RighteousGaming" => 1, "Perodic" => 1, "zzdog" => 1, "krav" => 1, "Motley" => 1, "amodell" => 1,
-    "TrentMcB" => 1, "pzych" => 1, "deragun" => 1, "Harvey0209" => 1, "f1av0r" => 1, "Vemnyx" => 1,
-    "mclair" => 1, "FomToolery" => 1, "lostinspacefab" => 1, "SQJ" => 1, "magusoftheguild" => 1, "S1lverback55" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamMetalFab($userName)
-{
-  static $members = ["deathstalker182" => 1, "Closetnerds" => 1, "Diene9" => 1, "acroriver" => 1, "ShadowGriffin" => 1,
-    "Kentshero" => 1, "thekingg21" => 1, "Lupinefiasco" => 1, "onlyrunverynoob" => 1, "Brishen" => 1,
-    "Sinthrandir" => 1, "killerbrews" => 1, "Z-Gin" => 1, "Obliterage" => 1, "RedBeard" => 1, "KillerBrews" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamPotatoSquad($userName)
-{
-  static $members = ["Corry" => 1, "Gibbie" => 1, "sycotik" => 1, "ruin" => 1, "Xandorion" => 1, "ObiJohn" => 1,
-    "tader" => 1, "Wittman1" => 1, "enflames91" => 1, "SlimDrew23" => 1, "NoRaven" => 1, "middiekittie" => 1,
-    "archangel224" => 1, "Nick56" => 1, "SCORPIO" => 1, "ArgentGrey" => 1, "SynThePanda93" => 1,
-    "welpcakes" => 1, "RiptideRipper" => 1, "gilfab" => 1, "dautt" => 1, "Grublo" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamFabledBrazil($userName)
-{
-  static $members = ["tetsuo" => 1, "hugodeoz" => 1, "diorge" => 1, "LGB" => 1, "mishel157" => 1, "DanielDertoni" => 1,
-    "caduads" => 1, "DracaiBR" => 1, "gravebeat" => 1, "LiP" => 1, "DShima" => 1, "RodinhoTeclados" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamFatAndFurious($userName)
-{
-  static $members = ["OopsAllPummels" => 1, "AngelPillow" => 1, "stefchwan" => 1, "JK" => 1, "Astropeleki" => 1,
-    "Debread" => 1, "Tilemachos27" => 1, "Intzah" => 1, "Cubacash" => 1, "karyo" => 1,
-    "Ironclad" => 1, "Jorin" => 1, "anastaso73" => 1, "z4risu" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamPitchDevils($userName)
-{
-  static $members = ["Lestat" => 1, "elnino" => 1, "RTZ" => 1, "Schmax" => 1, "Belphegor" => 1, "FloJo" => 1,
-    "MikeDwyer" => 1, "Dionysos" => 1, "Sosa" => 1, "TaddelDown" => 1, "inama" => 1, "Kanopterix" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamSnapDragons($userName)
-{
-  static $members = ["iamtherealdylanthompson" => 1, "SpoostingBendog" => 1, "EdgeOfAir" => 1, "Matt" => 1,
-    "Diomedesau" => 1, "Nyjin" => 1, "Manavon" => 1, "Trouthammer" => 1, "N3ardeath" => 1,
-    "Snaps" => 1, "TheGlib" => 1, "TheJudester" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamFabDads($userName)
-{
-  static $members = ["LostInDaSpace" => 1, "Belazhul" => 1, "zaketanapareis" => 1, "thilakinos" => 1, "Debread" => 1,
-    "mellone" => 1, "makvag" => 1, "Pitsirikos" => 1, "Alith0r0sKykl0pas" => 1, "Jim" => 1, "nikfabfanfatty" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamRedLine($userName)
-{
-  static $members = ["Aegisworn" => 1, "CornOnJacob" => 1, "jonam33" => 1, "Scribnibble" => 1, "Yuriiko" => 1,
-    "Sharp" => 1, "MXBloom" => 1, "Lazaeus" => 1, "bloodbit" => 1, "hurricanewes" => 1, "Aljo" => 1, "Flempa" => 1,
-    "redprairiedawn" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamSkillIssue($userName)
-{
-  static $members = ["Vaxildan" => 1, "kk96" => 1, "Skoupakas69" => 1, "BreakingChaos" => 1, "TheCouncillor" => 1, "JaxC" => 1,
-    "Cubacash" => 1, "kungfoukios" => 1, "sudogreeko" => 1, "katsubina" => 1, "NikolasG" => 1, "LegenProMax" => 1,
-    "sadonEmsi" => 1, "DioReformed" => 1, "AggroBlazeNo1Fan" => 1, "kenobi" => 1, "Giannis92" => 1, "AssassinoCapuccino" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamWingedHussars($userName)
-{
-  static $members = ["Calebovitsch" => 1, "Steve119" => 1, "Lucid" => 1, "Seba" => 1, "raskoks" => 1, "Chudy" => 1, "metatron" => 1,
-    "Dovi" => 1, "dssstefan" => 1, "makos" => 1, "RavenLemur" => 1, "XIR" => 1, "PvtVoid" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamFabInsight($userName)
-{
-    static $members = ["FaBInsights" => 1, "PvtVoid" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamOddwillows($userName)
-{
-  static $members = ["BenOddwillows" => 1, "PvtVoid" => 1, "Teari" => 1, "arcaneghost" => 1];
-  return isset($members[$userName]);
-}
-
-function IsTeamShine($userName)
-{
-  static $members = ["shine" => 1, "Baumfish" => 1, "Curryking" => 1, "DanielB" => 1, "Flixi" => 1, "malusNexx2" => 1, "Sleepless" => 1, "Thalric" => 1, "Nexre" => 1, "PvtVoid" => 1];
-  return isset($members[$userName]);
-}
+//Campaign supporter rosters live in PatreonDictionary.php

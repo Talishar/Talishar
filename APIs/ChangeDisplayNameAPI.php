@@ -28,9 +28,7 @@ header('Content-Type: application/json');
 
 function DisplayNameError($message, $code = 400, $extra = [])
 {
-  http_response_code($code);
-  echo json_encode(array_merge(["status" => "error", "message" => $message], $extra));
-  exit;
+  ExitJsonResponse(array_merge(["status" => "error", "message" => $message], $extra), $code);
 }
 
 if (!IsUserLoggedIn()) {
@@ -47,7 +45,7 @@ if (!IsLoggedInUserPatron()) {
 $userId = intval(LoggedInUser());
 $userUid = LoggedInUserName();
 
-$_POST = json_decode(file_get_contents('php://input'), true) ?? [];
+$_POST = ReadJsonBody() ?? [];
 $newName = trim(TryPOST("displayName", ""));
 
 $isClearing = ($newName === "");

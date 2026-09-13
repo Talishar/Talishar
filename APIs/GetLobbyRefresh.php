@@ -1,8 +1,53 @@
 <?php
 
+include '../Libraries/HTTPLibraries.php';
+
+SetHeaders();
+header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store');
+
+function SendLobbyRefreshError($status, $message)
+{
+  http_response_code($status);
+  echo json_encode(["error" => $message]);
+  exit;
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+  http_response_code(204);
+  exit;
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+  header('Allow: POST, OPTIONS');
+  SendLobbyRefreshError(405, "Method not allowed");
+}
+
+$requestData = ReadJsonBody();
+if (!is_array($requestData)) {
+  SendLobbyRefreshError(400, "Invalid JSON request body");
+}
+
+if (!array_key_exists("gameName", $requestData) || !is_numeric($requestData["gameName"])) {
+  SendLobbyRefreshError(400, "Invalid game name");
+}
+if (!array_key_exists("playerID", $requestData) || !is_numeric($requestData["playerID"])) {
+  SendLobbyRefreshError(400, "Invalid player ID");
+}
+
+$gameName = $requestData["gameName"];
+$playerID = (int)$requestData["playerID"];
+if ($playerID < 1 || $playerID > 3) {
+  SendLobbyRefreshError(400, "Invalid player ID");
+}
+$isLobbyPlayer = $playerID === 1 || $playerID === 2;
+
+$lastUpdate = $requestData["lastUpdate"] ?? null;
+if ($lastUpdate !== null && $lastUpdate !== "NaN" && !is_numeric($lastUpdate)) {
+  SendLobbyRefreshError(400, "Invalid last update value");
+}
 
 include "../CardDictionary.php";
-include '../Libraries/HTTPLibraries.php';
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Libraries/CacheLibraries.php";
 include_once "../Libraries/LegalHeroesHelper.php";
@@ -14,34 +59,50 @@ include_once "../includes/MatchupHelpers.php";
 include_once "../includes/ModeratorList.inc.php";
 include_once "../Libraries/ValidationLibraries.php";
 
-SetHeaders();
-
 session_start();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
-if($_POST == null) exit;
-$gameName = $_POST["gameName"];
-$playerID = $_POST["playerID"];
-$lastUpdate = $_POST["lastUpdate"] ?? null;
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
 else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
-else if (isset($_POST["authKey"])) $authKey = $_POST["authKey"];
+else if (isset($requestData["authKey"])) $authKey = $requestData["authKey"];
 $lastAuthKey = $_SESSION["lastAuthKey"] ?? null;
+$spectatorLoggedIn = $playerID !== 3 || (IsUserLoggedIn() && !empty(LoggedInUserName()));
 
 session_write_close();
 
 $response = new stdClass();
 
 if (!IsGameNameValid($gameName)) {
-  $response->error = "Invalid game name";
-  echo (json_encode($response));
-  exit;
+  SendLobbyRefreshError(400, "Invalid game name");
 }
 
 if (!file_exists("../Games/" . $gameName . "/")) {
-  $response->error = "Game file does not exist";
-  echo (json_encode($response));
-  exit;
+  SendLobbyRefreshError(404, "Game file does not exist");
+}
+
+if (!$spectatorLoggedIn) {
+  SendLobbyRefreshError(401, "Authentication required to spectate.");
+}
+
+// Reject invalid player credentials before touching heartbeat state or entering the long poll.
+if ($isLobbyPlayer) {
+  $gameFilePath = "../Games/" . $gameName . "/GameFile.txt";
+  $authFile = @fopen($gameFilePath, "r");
+  if ($authFile === false) {
+    SendLobbyRefreshError(404, "Game file does not exist");
+  }
+  if (!flock($authFile, LOCK_SH)) {
+    fclose($authFile);
+    SendLobbyRefreshError(503, "Lobby is temporarily unavailable");
+  }
+  for ($line = 0; $line < 7; ++$line) fgets($authFile);
+  $p1AuthKey = trim((string)fgets($authFile));
+  $p2AuthKey = trim((string)fgets($authFile));
+  flock($authFile, LOCK_UN);
+  fclose($authFile);
+
+  if (!validateGameAuthKey($playerID, $authKey ?? null, $p1AuthKey, $p2AuthKey)) {
+    SendLobbyRefreshError(403, "Authentication failed");
+  }
 }
 
 if ($lastUpdate == "NaN") $lastUpdate = 0;
@@ -55,16 +116,16 @@ include_once "../Libraries/SHMOPLibraries.php";
 
 $currentTime = (int)(microtime(true) * 1000);
 
-$count = 0;
+$longPollDeadline = $currentTime + 8000;
 $otherP = $playerID == 1 ? 2 : 1;
-$myTimeIdx   = $playerID;
+$myTimeIdx   = $isLobbyPlayer ? $playerID : null;
 $oppTimeIdx  = $otherP;
 $oppStatIdx  = $otherP + 2;
 $kickPlayerTwo = false;
 $sideboardWasReset = false;
 
 $cacheArr = ReadCacheArray($gameName);
-if ($cacheArr) {
+if ($cacheArr && $isLobbyPlayer) {
   $cacheArr[$myTimeIdx] = $currentTime;
   WriteCache($gameName, implode("!", $cacheArr));
 }
@@ -87,25 +148,28 @@ while ($lastUpdate != 0 && $cacheVal <= $lastUpdate) {
   $oppLastTime  = $cacheArr[$oppTimeIdx] ?? "";
   $oppStatus    = strval($cacheArr[$oppStatIdx] ?? "");
 
-  $myLastTime = $cacheArr[$myTimeIdx] ?? "";
-  if ($myLastTime !== "" && ($currentTime - (int)$myLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS) break;
+  if ($isLobbyPlayer) {
+    $myLastTime = $cacheArr[$myTimeIdx] ?? "";
+    if ($myLastTime !== "" && ($currentTime - (int)$myLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS) break;
 
-  $cacheArr[$myTimeIdx] = $currentTime;
-  WriteCache($gameName, implode("!", $cacheArr));
+    $cacheArr[$myTimeIdx] = $currentTime;
+    WriteCache($gameName, implode("!", $cacheArr));
 
-  ++$count;
-  if ($count == 20) break;
+    $inLobbyPhase = ((int)($cacheArr[13] ?? 0)) < 5;
 
-  if ($oppStatus !== "-1" && $oppLastTime !== "") {
-    if (($currentTime - (int)$oppLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS && $oppStatus === "0") {
-      $cacheArr[$oppStatIdx] = "-1";
-      if ($otherP == 2) $cacheArr[$otherP + 5] = "";
-      WriteCache($gameName, implode("!", $cacheArr));
-      GamestateUpdated($gameName);
-      $kickPlayerTwo = true;
-      break;
+    if ($inLobbyPhase && $oppStatus !== "-1" && $oppLastTime !== "") {
+      if (($currentTime - (int)$oppLastTime) > LOBBY_DISCONNECT_TIMEOUT_MS && $oppStatus === "0") {
+        $cacheArr[$oppStatIdx] = "-1";
+        if ($otherP == 2) $cacheArr[$otherP + 5] = "";
+        WriteCache($gameName, implode("!", $cacheArr));
+        GamestateUpdated($gameName);
+        $kickPlayerTwo = true;
+        break;
+      }
     }
   }
+
+  if ($currentTime >= $longPollDeadline) break;
 }
 
 include "./APIParseGamefile.php";
@@ -113,12 +177,10 @@ include "../MenuFiles/WriteGamefile.php";
 
 // Spectators carry no key of their own; validateGameAuthKey passes them through.
 if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
-  $response->error = "Authentication failed";
-  echo json_encode($response);
-  exit;
+  SendLobbyRefreshError(403, "Authentication failed");
 }
 
-if ($kickPlayerTwo) {
+if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
   // $playerID is the polling player, so the one who disconnected is the other one.
   $disconnectedPlayer = ($playerID == 1 ? 2 : 1);
   $kickSignal = GetCachePiece($gameName, 17);
@@ -182,6 +244,9 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 } else if ($gameStatus == $MGS_GameStarted) {
   $response->lastUpdate = "1";
   $response->isMainGameReady = true;
+  $response->isSideboarding = false;
+  $response->mySideboardSubmitted = true;
+  $response->opponentSideboardSubmitted = true;
   if(IsUserLoggedIn() && ($lastAuthKey == null || $lastAuthKey !== $authKey)) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
   echo json_encode($response);
   exit;
@@ -204,7 +269,8 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     $response->amIChoosingFirstPlayer = ($playerID == $firstPlayerChooser);
   }
 
-  $response->isPrivateLobby = ($visibility == "private");
+  $response->visibility = $visibility;
+  $response->isPrivateLobby = ($visibility != "public");
   if ($playerID == 1 && $gameStatus < $MGS_Player2Joined) {
     $response->format = $format;
     $response->gameDescription = $gameDescription;
@@ -271,6 +337,9 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   else if ($playerID == 2 && $gameStatus >= $MGS_ReadyToStart) $response->myPriority = false;
 
   $response->isMainGameReady = ($gameStatus == $MGS_ReadyToStart && $p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1");
+  $response->isSideboarding = $gameStatus > $MGS_ChooseFirstPlayer && $gameStatus < $MGS_GameStarted;
+  $response->mySideboardSubmitted = ($playerID == 1 ? $p1SideboardSubmitted == "1" : $p2SideboardSubmitted == "1");
+  $response->opponentSideboardSubmitted = ($playerID == 1 ? $p2SideboardSubmitted == "1" : $p1SideboardSubmitted == "1");
   $opponentIsAI = ($playerID == 1 ? $p2IsAI == "1" : $p1IsAI == "1");
   $response->isOpponentAI = $opponentIsAI;
   if($p1IsAI || $p2IsAI) {

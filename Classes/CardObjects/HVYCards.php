@@ -35,7 +35,7 @@ class windup {
     return 3;
   }
 
-  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-", $dest="DISCARD") {
     global $CS_NumActionsPlayed;
     $names = GetAbilityNames($this->cardID, $index, $from);
     $names = str_replace("-,", "", $names);
@@ -50,7 +50,11 @@ class windup {
     }
     AddDecisionQueue("NOTEQUALPASS", $this->controller, "Ability");
     AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
-    AddDecisionQueue("DISCARDCARD", $this->controller, "HAND-$this->cardID", 1);
+    if ($dest == "DISCARD") AddDecisionQueue("DISCARDCARD", $this->controller, "HAND-$this->cardID", 1);
+    elseif ($dest == "BANISH") {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $this->cardID, 1);
+      AddDecisionQueue("BANISHCARD", $this->controller, "HAND,-", 1);
+    }
     AddDecisionQueue("CONVERTLAYERTOABILITY", $this->controller, $this->cardID, 1);
   }
 }
@@ -683,7 +687,7 @@ class coercive_tendency_blue extends Card {
     return true;
   }
 
-  function RemoveEffectFromCombatChain() {
+  function RemoveEffectFromCombatChain($effectIndex) {
     return true;
   }
 
@@ -2805,7 +2809,7 @@ class stadium_centerpiece extends Card {
 class take_the_upper_hand extends BaseCard {
   function IsPlayRestricted() {
     global $CombatChain, $combatChainState, $CCS_WagersThisLink;
-    return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
+    return !$CombatChain->HasCurrentLink() || GetCombatChainState($CCS_WagersThisLink) == 0;
   }
 
   function PlayAbility() {

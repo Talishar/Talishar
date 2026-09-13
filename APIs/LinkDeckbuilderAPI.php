@@ -11,7 +11,7 @@ include_once '../APIKeys/APIKeys.php';
 
 SetHeaders();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 $deckbuilderType = TryPOST("deckbuilder", "");
 $deckbuilderID = TryPOST("user", "");
 $apiKey = TryPOST("apiKey", "");
@@ -26,7 +26,7 @@ if(IsUserLoggedIn()) {
      if($apiKey == $fabraryOutgoingKey)
      {
        storeFabraryId(LoggedInUser(), $deckbuilderID);
-       $response->message = "Linked successfully to Talishar user: " . LoggedInUser();
+       $response->message = "Linked to Talishar account: " . LoggedInUser();
      }
      else $response->message = "Invalid fabrary auth key";
   }

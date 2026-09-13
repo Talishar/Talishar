@@ -108,8 +108,8 @@ function ARCCombatEffectActive($cardID, $attackID)
     case "pedal_to_the_metal_red": case "pedal_to_the_metal_yellow": case "pedal_to_the_metal_blue": return true;
     case "convection_amplifier_red": return CardType($attackID) == "AA";
     case "locked_and_loaded_red": case "locked_and_loaded_yellow": case "locked_and_loaded_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
-    case "azalea_ace_in_the_hole": case "azalea": return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";
-    case "bulls_eye_bracers": return CardSubType($attackID) == "Arrow" && $combatChainState[$CCS_AttackPlayedFrom] == "ARS";
+    case "azalea_ace_in_the_hole": case "azalea": return CardSubType($attackID) == "Arrow" && GetCombatChainState($CCS_AttackPlayedFrom) == "ARS";
+    case "bulls_eye_bracers": return CardSubType($attackID) == "Arrow" && GetCombatChainState($CCS_AttackPlayedFrom) == "ARS";
     case "rapid_fire_yellow": return CardSubType($attackID) == "Arrow";
     case "take_aim_red": case "take_aim_yellow": case "take_aim_blue": return ClassContains($attackID, "RANGER", $mainPlayer) && CardType($attackID) == "AA";
     case "head_shot_red": case "head_shot_yellow": case "head_shot_blue": return $cardID == $attackID;

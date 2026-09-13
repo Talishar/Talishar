@@ -13,35 +13,16 @@
         $pitchCount = count($pitch);
         $pitchPieces = PitchPieces();
         for($i=0; $i<$pitchCount; $i+=$pitchPieces) if(PitchValue($pitch[$i]) == 1) ++$numRed;
-        GainResources($currentPlayer, $numRed);
+        GainResources($numRed, $currentPlayer);
         return "";
       case "sash_of_sandikai":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         return "";
       case "uprising_red":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "tome_of_firebrand_red":
         Draw($currentPlayer, num:2);
-        return "";
-      case "red_hot_red":
-        if(RuptureActive()) {
-          $deck = new Deck($currentPlayer);
-          $num = NumDraconicChainLinks();
-          if($deck->Reveal($num)) {
-            $cards = explode(",", $deck->Top(amount:$num));
-            $numRed = 0;
-            $cardsCount = count($cards);
-            for($j = 0; $j < $cardsCount; ++$j) if(PitchValue($cards[$j]) == 1) ++$numRed;
-            if($numRed > 0) {
-              AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
-              AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal ". $numRed ." damage.");
-              AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-              AddDecisionQueue("MZDAMAGE", $currentPlayer, $numRed . ",DAMAGE," . $cardID, 1);
-              AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
-            }
-          }
-        }
         return "";
       case "rise_up_red":
         if(RuptureActive()) AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -51,14 +32,6 @@
         return "";
       case "flamecall_awakening_red":
         AddLayer("TRIGGER", $currentPlayer, $cardID);
-        return "";
-      case "searing_touch_red":
-        if(RuptureActive()) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=C&THEIRALLY&MYCHAR:type=C&MY&MYALLY", 1);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
-        }
         return "";
       case "coronet_peak":
         $targ = (str_contains($target, "THEIRCHAR")) ? "Target_Opponent" : "Target_Yourself";
@@ -139,14 +112,6 @@
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
         AddDecisionQueue("WRITELOG", $currentPlayer, "<1> recurred from " . CardLink($cardID), 1);
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
-      case "trade_in_red": case "trade_in_yellow": case "trade_in_blue":
-        if($from == "ARS") GiveAttackGoAgain();
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
-        AddDecisionQueue("MAYCHOOSEHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("REMOVEMYHAND", $currentPlayer, "-", 1);
-        AddDecisionQueue("DISCARDCARD", $currentPlayer, "HAND-".$currentPlayer, 1);
-        AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
         return "";
       case "healing_balm_red": case "healing_balm_yellow": case "healing_balm_blue":
         $amount = match($cardID) { "healing_balm_red" => 3, "healing_balm_yellow" => 2, default => 1 };

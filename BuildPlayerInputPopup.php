@@ -3,33 +3,27 @@
 if (!function_exists('GetCardEffectLabel')) {
   function GetCardEffectLabel($uniqueID, $currentTurnEffects) {
     if ($uniqueID == "" || $uniqueID == "-") return "";
-    
-    $effectName = "";
-    $effectsCount = count($currentTurnEffects);
-    $effectPieces = CurrentTurnEffectPieces();
-    for ($j = 0; $j < $effectsCount; $j += $effectPieces) {
-      $effect = $currentTurnEffects[$j];
-      $p1 = strpos($effect, "-");
-      if ($p1 === false) continue;
-      $p2 = strpos($effect, "-", $p1 + 1);
-      $effectID = ($p2 !== false) ? substr($effect, $p1 + 1, $p2 - $p1 - 1) : substr($effect, $p1 + 1);
-      if ($effectID == $uniqueID) {
-        $effectName = substr($effect, 0, $p1);
-        break;
-      }
-    }
 
-    if ($effectName === "") return "";
+    global $CurrentTurnEffects;
+    $Effect = $CurrentTurnEffects->FindEffectUID($uniqueID);
+    if ($Effect->Index() == -1) return "";
+
+    $effectName = $Effect->EffectID();
 
     switch ($effectName) {
       case "beseech_the_demigon_red":
       case "beseech_the_demigon_yellow":
       case "beseech_the_demigon_blue":
+      case "painful_passage_red-buff":
         return "Power +" . EffectPowerModifier($effectName);
       case "tear_through_the_portal_red":
       case "tear_through_the_portal_yellow":
       case "tear_through_the_portal_blue":
+      case "painful_passage_red-go_again":
         return "Go Again";
+      case "gate_to_iarathael":
+      case "gate_to_iarathael-CHAOS":
+        return "Gated";
       default:
         return "";
     }
@@ -89,6 +83,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "BUTTONINPUTNOPASS":
     case "CHOOSEARCANE":
     case "CHOOSETRIGGERS":
+    case "ARSENALORHEAVE":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
         $options = explode(",", $turn[2]);
@@ -96,11 +91,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         if ($turnPhase == "CHOOSEARCANE") {
           $vars = explode("-", $dqVars[0]);
           $caption .= "Source: " . CardLink($vars[1], $vars[1]) . "&nbsp | &nbspTotal Damage: " . $vars[0];
-          if(!CanDamageBePrevented($playerID, $vars[0], "ARCANE", $vars[1])) {
-            $caption .= "&nbsp | &nbsp <span style='font-size: 0.8em; color:red;'>**WARNING: THIS DAMAGE IS UNPREVENTABLE**</span><br>";
-          } else {
-            $caption .= "<br>";
-          }
+          $caption .= GetDamagePreventionWarning($playerID, $vars[0], "ARCANE", $vars[1], "&nbsp | &nbsp ");
         }
 
         foreach ($options as $option) {
@@ -111,7 +102,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $playerInputButtons[] = CreateButtonAPI($playerID, "Skip All Runechants", 105, 0, "24px");
         }
 
-        $playerInputPopup->popup = CreatePopupAPI("BUTTONINPUT", [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
+        $popupType = $turnPhase == "ARSENALORHEAVE" ? "ARSENALORHEAVE" : "BUTTONINPUT";
+        $playerInputPopup->popup = CreatePopupAPI($popupType, [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
       }
       break;
 
@@ -132,8 +124,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $myPitchCount = count($myPitch);
         $pitchPieces = PitchPieces();
         for ($i = 0; $i < $myPitchCount; $i += $pitchPieces) {
-          $card = $myPitch[$i];
-          $uniqueID = $myPitch[$i+1];
+          $card = $myPitch[$i] ?? "-";
+          $uniqueID = $myPitch[$i+1] ?? "-";
           $pitchingCards[] = JSONRenderedCard($card, action: 6, actionDataOverride: $card, uniqueID:$uniqueID);
         }
         $playerInputPopup->popup = CreatePopupAPI("PITCH", [], 0, 1, "Choose a card to place on the bottom of your deck, or pass to shortcut", 1, cardsArray: $pitchingCards);
@@ -234,7 +226,16 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $layerParts = explode("|", $layer);
           $ID = $layerParts[0] ?? "-";
           $UID = $layerParts[1] ?? "-";
-          $orderedLayers[] = JSONRenderedCard($ID, uniqueID:$UID, action: 0);
+          $additionalCosts = $layerParts[2] ?? "-";
+          $label = NULL;
+          if ($ID == "USURPED") {
+            $ID = "$additionalCosts-USURPED";
+            $label = "Usurped";
+          }
+          elseif (str_ends_with($ID, "-USURPED")) {
+            $label = "Usurped";
+          }
+          $orderedLayers[] = JSONRenderedCard($ID, uniqueID:$UID, action: 0, label:$label);
         }
 
         $playerInputPopup->popup = CreatePopupAPI("TRIGGERORDER", [], 0, 1, GetPhaseHelptext(), 1, "Order your triggers. The rightmost trigger will resolve first.", topCards: $orderedLayers);
@@ -459,6 +460,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $isMultiChooseSubcards = ($turnPhase === "MULTICHOOSESUBCARDS");
         $isMultiChooseItems    = ($turnPhase === "MULTICHOOSEITEMS");
         $multiZoneRef = null;
+        $uniqueIDOffset = -1;
         if (!$isMultiChooseDiscard && !$isMultiChooseSubcards && !$isMultiChooseItems) {
           $multiZoneRef = match($turnPhase) {
             "MULTICHOOSETHEIRDISCARD" => $theirDiscard,
@@ -467,6 +469,11 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             "MULTICHOOSETHEIRDECK" => $theirDeck,
             "MULTICHOOSEBANISH" => $myBanish,
             default => null,
+          };
+          $uniqueIDOffset = match($turnPhase) {
+            "MULTICHOOSETHEIRDISCARD" => 1,
+            "MULTICHOOSEBANISH" => 2,
+            default => -1,
           };
         }
 
@@ -481,7 +488,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
               $cardsArray[] = JSONRenderedCard($myItems[$options[$i]], overlay:$myItems[$options[$i]+2] != 2 ? 'disabled' : 'none', counters: $myItems[$options[$i]+1], actionDataOverride: $i);
             } else if ($multiZoneRef !== null) {
               $isTheirZone = $turnPhase == "MULTICHOOSETHEIRDISCARD" || $turnPhase == "MULTICHOOSETHEIRDECK";
-              $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone);
+              $uniqueID = $uniqueIDOffset >= 0 ? ($multiZoneRef[$options[$i]+$uniqueIDOffset] ?? "") : "";
+              $label = $uniqueID !== "" && SearchLayersForTargetUniqueID($uniqueID) != -1 ? "Targeted" : "";
+              $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone, label:$label);
             }
           }
         }
@@ -566,11 +575,13 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $turnDataStartsWithMyDeck = (substr($turnData, 0, 6) === "MYDECK");
         $singleMyDeckInTurnData = (substr_count($turnData, "MYDECK") == 1);
         $hasCombatChainLink = $CombatChain->HasCurrentLink();
-        $weaponIndexValue = intval($combatChainState[$CCS_WeaponIndex]);
-        $otherIsMain = ($otherPlayer == $mainPlayer);
+        $weaponIndexValue = intval(GetCombatChainState($CCS_WeaponIndex));
         $layerPieces = LayerPieces();
         $layersActive = ($layerCheckCount > 0 && $layers[0] != "");
         $isMayChooseMultizone = ($turnPhase === "MAYCHOOSEMULTIZONE");
+        $hideTopDeckCard = $isMayChooseMultizone
+          && $singleMyDeckInTurnData
+          && str_contains(GetDQHelpText(), "destroy_from_the_top_of_your_deck");
         for ($i = 0; $i < $optionsCount; ++$i) {
           $option = explode("-", $options[$i], 3);
           $option0 = $option[0]; // cache zone key — accessed 30+ times per iteration
@@ -707,6 +718,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $tapped = false;
           $overlay = 0;
           $holoCounters = null;
+          $bindsOverlay = null;
+          $subcards = null;
           //Add indication for token copies
           if (str_contains($option0, "AURAS")) {
             $Card = MZIndexToObject($playerID, $options[$i]);
@@ -714,7 +727,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
           
           //Add indication for attacking Allies and Auras with an open combat chain
-          if (isset($attackingPermanentsSet[$option0]) && intval($option[1]) == $weaponIndexValue && $hasCombatChainLink && $otherIsMain) {
+          $permanentController = $isTheirPrefix ? $otherPlayer : $playerID;
+          if (isset($attackingPermanentsSet[$option0]) && intval($option[1]) == $weaponIndexValue && $hasCombatChainLink && $permanentController == $mainPlayer) {
             $AttackingCard = $CombatChain->AttackCard();
             $Card = MZIndexToObject($playerID, $options[$i]);
             if ($AttackingCard->OriginUniqueID() == $Card->UniqueID())
@@ -724,7 +738,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           //Add indication for attacking Allies and Auras in the layer step
           if ($layersActive && (DelimStringContains($option0, "ALLY", true) || DelimStringContains($option0, "AURAS", true))) {
             $searchType = str_contains($option0, "ALLY") ? "Ally" : "Aura";
-            $index = explode(",", SearchLayer($otherPlayer, subtype: $searchType));
+            $index = explode(",", SearchLayer($permanentController, subtype: $searchType));
             if (count($index) > 0) {
               $params = explode("|", $layers[intval($index[0]) + 2]);
               $originUID = $params[3] ?? "-";
@@ -777,7 +791,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $mod = explode("-", $theirBanish[$index + 1], 2)[0];
             $action = IsPlayable($card, $turn[0], "BANISH", $index, player:$otherPlayer) ? 14 : 0;
             $borderColor = CardBorderColor($card, "BANISH", $action > 0, $playerID, $mod);
-            if($borderColor == 7) $label = "Playable";
+            $label = GetCardEffectLabel($theirBanish[$index + 2], $currentTurnEffects);
+            if ($label == "" && $borderColor == 7) $label = "Playable";
             if (isFaceDownMod($source[$index + 1])) $card = $TheirCardBack;
           }
           else if ($isMyPrefix) $borderColor = 1;
@@ -832,25 +847,40 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $uniqueID = $allyArr[$index + 5] ?? "-";
             $tapped = ($allyArr[$index + 11] ?? 0) == 1;
             if (SearchCurrentTurnEffectsForUniqueID($uniqueID) != -1) {
-                $powerCounters = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID)) + PowerValue($allyArr[$index], $player, "ALLY");
+              $modifier = EffectPowerModifier(SearchUniqueIDForCurrentTurnEffects($uniqueID));
+              if ($modifier > 0) $powerCounters = $modifier + PowerValue($allyArr[$index], $player, "ALLY");
+              else $label = "Effect Active";
+            }
+            //Show binds overlay and bound auras as subcards on allies in the popups
+            $allyCard = new AllyCard($index, $player);
+            $allyAuras = $isTheirPrefix ? new Auras($otherPlayer) : new Auras($playerID);
+            $boundAuras = $allyAuras->FindBoundAuras($allyCard->UniqueID());
+            $bindsOverlay = count($boundAuras) > 0;
+            $subcards = ($allyArr[$index + 4] ?? "-") != "-" ? $allyArr[$index + 4] : NULL;
+            if ($bindsOverlay) {
+              $boundIDs = [];
+              foreach ($boundAuras as $boundAura)
+                $boundIDs[] = $boundAura->CardID();
+              $boundIDs = implode(",", $boundIDs);
+              $subcards = isset($subcards) ? "$boundIDs,$subcards" : $boundIDs;
             }
           }
 
           if ($option0 == "THEIRAURAS" || $option0 == "MYAURAS") {
-            $AuraCard = $isTheirPrefix ? new AuraCard($index, $otherPlayer) : new AuraCard($index, $playerID);
+            $auraCard = $isTheirPrefix ? new AuraCard($index, $otherPlayer) : new AuraCard($index, $playerID);
             //Show power counters on Auras in the popups
-            $powerCounters = $AuraCard->NumPowerCounters();
+            $powerCounters = $auraCard->NumPowerCounters();
             //Show various counters on Auras in the popups
-            $counters = $AuraCard->NumCounters();
+            $counters = $auraCard->NumCounters();
             //Show holo counters on Auras in the popups
-            $holoCounters = $AuraCard->HoloCounters() > 0 ? true : null;
+            $holoCounters = $auraCard->HoloCounters() > 0 ? true : null;
             //Show "stolen" modifier
-            if ($AuraCard->GetModalities() == "Temporary") $label = "stolen";
+            if ($auraCard->GetModalities() == "Temporary") $label = "stolen";
             //Show if it's been targeted
             $numStackLayers = $Stack->NumLayers();
             for ($j = 0; $j < $numStackLayers; ++$j) {
               $Layer = $Stack->Card($j, true);
-              if (str_contains($Layer->Target(), $AuraCard->UniqueID())) {
+              if (str_contains($Layer->Target(), $auraCard->UniqueID())) {
                 $label = "Targeted";
                 break;
               }
@@ -878,16 +908,16 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $subtitles = "(You can click your deck to see its content during this card resolution)";
           }
 
-          if($option0 == "MYDECK" && $option[1] == "0" && $isMayChooseMultizone && $singleMyDeckInTurnData) {
+          if($option0 == "MYDECK" && $option[1] == "0" && $hideTopDeckCard) {
             $card = $MyCardBack;
           }
           if ($showZoneLabels && $label == "" && $option0 != "MYHAND") {
             $label = $optionCategories[$i];
           }
           if ($maxCount < 2)
-            $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters);
+            $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters, hasBoundAura: $bindsOverlay, subcard: $subcards);
           else
-            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label, isOpponent: $isTheirPrefix);
+            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label, isOpponent: $isTheirPrefix, hasBoundAura: $bindsOverlay, subcard: $subcards);
         }
         if ($maxCount >= 2) {
           $formOptions = new stdClass();

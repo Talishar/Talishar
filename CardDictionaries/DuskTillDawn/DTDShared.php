@@ -17,7 +17,6 @@ function DTDAbilityCost($cardID)
     case "nasreth_the_soul_harrower": return 0;
     case "rugged_roller": return 1;
     case "decimator_great_axe": return 3;
-    case "ironsong_versus": return 1;
     case "scepter_of_pain": return 2;
     case "suraya_archangel_of_erudition": case "themis_archangel_of_judgment": case "aegis_archangel_of_protection": case "sekem_archangel_of_ravages"://Angels
     case "avalon_archangel_of_rebirth": case "metis_archangel_of_tenacity": case "victoria_archangel_of_triumph": case "bellona_archangel_of_war": return 2;
@@ -42,7 +41,6 @@ function DTDAbilityType($cardID, $index = -1)
     case "nasreth_the_soul_harrower": return "AA";
     case "rugged_roller": return "AA";
     case "decimator_great_axe": return "AA";
-    case "ironsong_versus": return "A";
     case "scepter_of_pain": return "A";
     case "suraya_archangel_of_erudition": case "themis_archangel_of_judgment": case "aegis_archangel_of_protection": case "sekem_archangel_of_ravages"://Angels
     case "avalon_archangel_of_rebirth": case "metis_archangel_of_tenacity": case "victoria_archangel_of_triumph": case "bellona_archangel_of_war": return "AA";
@@ -54,7 +52,6 @@ function DTDAbilityHasGoAgain($cardID)
 {
   switch($cardID) {
     case "spoiled_skull": return true;
-    case "ironsong_versus": return true;
     default: return false;
   }
 }
@@ -103,7 +100,6 @@ function DTDEffectPowerModifier($cardID)
     case "chorus_of_ironsong_yellow": return 1;
     case "runic_reckoning_red": return 3;
     case "hack_to_reality_yellow": return 2;
-    case "courage": return 1;//Courage
     case "victoria_archangel_of_triumph": return -1;
     default:
       return 0;
@@ -120,7 +116,6 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "figment_of_triumph_yellow": return CardType($attackID) == "AA";
     case "angelic_descent_red": case "angelic_descent_yellow": case "angelic_descent_blue": return SubtypeContains($attackID, "Angel", $mainPlayer);
     case "angelic_wrath_red": case "angelic_wrath_yellow": case "angelic_wrath_blue": return str_contains(NameOverride($attackID, $mainPlayer), "Herald");
-    case "beckoning_light_red": return CardType($attackID) == "AA";//Beckoning Light
     case "spirit_of_war_red": return CardType($attackID) == "AA";//Spirit of War
     case "prayer_of_bellona_yellow": return true;//Prayer of Bellona
     case "beaming_bravado_red": case "beaming_bravado_yellow": case "beaming_bravado_blue": return true;//Beaming Bravado
@@ -128,7 +123,7 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "glaring_impact_red": case "glaring_impact_yellow": case "glaring_impact_blue": return true;//Glaring Impact
     case "light_the_way_red": case "light_the_way_yellow": case "light_the_way_blue": return true;
     case "resounding_courage_red": case "resounding_courage_yellow": case "resounding_courage_blue": return true;//Resounding Courage
-    case "charge_of_the_light_brigade_red": case "charge_of_the_light_brigade_yellow": case "charge_of_the_light_brigade_blue": return $combatChainState[$CCS_AttackNumCharged] > 0;//Charge of the Light Brigade
+    case "charge_of_the_light_brigade_red": case "charge_of_the_light_brigade_yellow": case "charge_of_the_light_brigade_blue": return GetCombatChainState($CCS_AttackNumCharged) > 0;//Charge of the Light Brigade
     case "lumina_lance_yellow-1": case "lumina_lance_yellow-2": case "lumina_lance_yellow-3": return true;
     case "lay_to_rest_red": case "lay_to_rest_yellow": case "lay_to_rest_blue": return true;
     case "defender_of_daybreak_red": case "defender_of_daybreak_yellow": case "defender_of_daybreak_blue": return true;
@@ -136,16 +131,14 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "shaden_scream_red": case "shaden_scream_yellow": case "shaden_scream_blue": return ClassContains($attackID, "BRUTE", $mainPlayer) || TalentContains($attackID, "SHADOW", $mainPlayer);
     case "tribute_to_demolition_red": case "tribute_to_demolition_yellow": case "tribute_to_demolition_blue": return true;
     case "tribute_to_the_legions_of_doom_red": case "tribute_to_the_legions_of_doom_yellow": case "tribute_to_the_legions_of_doom_blue": return true;
-    case "envelop_in_darkness_red": case "envelop_in_darkness_yellow": case "envelop_in_darkness_blue": return $combatChainState[$CCS_WasRuneGate] == 1;
-    case "putrid_stirrings_red": case "putrid_stirrings_yellow": case "putrid_stirrings_blue": return $combatChainState[$CCS_WasRuneGate] == 1;
+    case "envelop_in_darkness_red": case "envelop_in_darkness_yellow": case "envelop_in_darkness_blue": return GetCombatChainState($CCS_WasRuneGate) == 1;
+    case "putrid_stirrings_red": case "putrid_stirrings_yellow": case "putrid_stirrings_blue": return GetCombatChainState($CCS_WasRuneGate) == 1;
     case "anthem_of_spring_blue": return CardType($attackID) == "AA";//Anthem of Spring
     case "call_down_the_lightning_yellow": return true;//Call Down the Lightning
-    case "ironsong_versus": return SubtypeContains($attackID, "Sword", $mainPlayer);//Ironsong Versus
     case "chorus_of_ironsong_yellow": return CardNameContains($attackID, "Dawnblade", $mainPlayer);
     case "runic_reckoning_red": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "hack_to_reality_yellow": return true;
     case "hack_to_reality_yellow-HIT": return true;
-    case "courage": return true;//Courage
     case $Card_LifeBanner: return true;
     case $Card_ResourceBanner: return true;
     case "metis_archangel_of_tenacity": return true;
@@ -438,9 +431,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         }
       }
       return "";
-    case "ironsong_versus"://Ironsong Versus
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "chorus_of_ironsong_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -450,9 +440,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "scepter_of_pain":
       DealArcane(1, 3, "ABILITY", $cardID, resolvedTarget:$target);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SCEPTEROFPAIN");
-      return "";
-    case "bequest_the_vast_beyond_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "runic_reckoning_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -643,7 +630,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char[6] = 0;
   $char[7] = 0;
   $char[8] = 0;
-  $char[9] = CharacterDefaultActiveState($cardID);
+  $char[9] = ApplyGemsOffDefault(CharacterDefaultActiveState($cardID), $player);
   $char[13] = 0;
   $char[14] = 0;
   AddEvent("HERO_TRANSFORM", $player . ":" . $cardID);
@@ -690,4 +677,9 @@ function CallDownLightning()
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "THEIRCHAR-0");
     AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,ATTACKHIT," . $CombatChain->CurrentAttack());
   }
+}
+function IfChargedYellow($player, $cardID) {
+  Charge();
+  AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
+  AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $cardID, 1);
 }

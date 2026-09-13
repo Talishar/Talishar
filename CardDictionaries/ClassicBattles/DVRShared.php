@@ -21,7 +21,7 @@
     switch($cardID)
     {
       case "blossom_of_spring":
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
         return "";
       case "glistening_steelblade_yellow":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -86,6 +86,6 @@ function DoriQuicksilverProdigyEffect()
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
   $char = &GetPlayerCharacter($mainPlayer);
   $char[1] = 1;
-  $char[$combatChainState[$CCS_WeaponIndex]+1] = 2;
-  ++$char[$combatChainState[$CCS_WeaponIndex]+5];
+  $char[GetCombatChainState($CCS_WeaponIndex)+1] = 2;
+  ++$char[GetCombatChainState($CCS_WeaponIndex)+5];
 }

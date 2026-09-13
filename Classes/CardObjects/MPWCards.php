@@ -46,7 +46,7 @@ class hala extends Card {
 	}
 
 	function PayAbilityAdditionalCosts($index, $from = '-', $zoneIndex = -1) {
-		return $this->baseCard->PayAdditionalCosts($index);
+		return $this->baseCard->PayAbilityAdditionalCosts($index);
 	}
 
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
@@ -74,7 +74,7 @@ class golden_grail extends Card {
 
 	function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
 		global $combatChainState, $CCS_WagersThisLink;
-		return $combatChainState[$CCS_WagersThisLink] > 0 ? 1 : 0;
+		return GetCombatChainState($CCS_WagersThisLink) > 0 ? 1 : 0;
 	}
 
 	function AbilityCost() {
@@ -119,7 +119,8 @@ class sharpening_sparks_red extends Card {
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
 		global $combatChainState, $CCS_WeaponIndex;
-		Sharpen("MYCHAR-$combatChainState[$CCS_WeaponIndex]", $this->controller);
+
+		Sharpen("MYCHAR-" . GetCombatChainState($CCS_WeaponIndex), $this->controller);
 	}
 }
 
@@ -324,11 +325,16 @@ class shove_off_blue extends Card {
   
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		global $defPlayer;
-		$options = GetChainLinkCards($defPlayer, "", "E,C");
-		if($options != "") {
-			AddDecisionQueue("CHOOSECOMBATCHAIN", $this->controller, $options);
-			AddDecisionQueue("ADDHANDOWNER", $defPlayer, "-", 1);
-			AddDecisionQueue("REMOVECOMBATCHAIN", $this->controller, "-", 1);
+		$currentChoices = GetChainLinkCards($defPlayer, "", "E,C", asMZInd: true);
+		$pastChoices = GetPastChainLinkCards($defPlayer, "", "E,C", asMZInd: true);
+		if ($currentChoices == "") $choices = $pastChoices;
+		elseif ($pastChoices == "") $choices = $currentChoices;
+		else $choices = "$pastChoices,$currentChoices";
+		if ($choices != "") {
+			AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
+			AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a defending card to return to its owner's hand", 1);
+			AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+			AddDecisionQueue("SPECIFICCARD", $this->controller, "RETURNCHAINLINKCARDTOHAND", 1);
 		}
     	return "";
 	}
@@ -352,11 +358,12 @@ class squires_bracers extends Card {
 		return 1;
 	}
 
-	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
 		global $CombatChain;
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		if ($CharacterCard->IsActive() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
 			AddLayer("TRIGGER", $this->controller, $this->cardID, $index);
+		return false;
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -398,11 +405,12 @@ class cutting_couriers extends Card {
 		return 1;
 	}
 
-	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked) {
+	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
 		global $CombatChain;
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		if ($CharacterCard->IsActive() && SubtypeContains($CombatChain->AttackCard()->ID(), "Sword"))
 			AddLayer("TRIGGER", $this->controller, $this->cardID, $index);
+		return false;
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -760,16 +768,16 @@ class durendal extends Card {
 }
 
 class raise_blades_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "raise_blades_red";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "raise_blades_red";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		DrawAndPutBack($this->controller, $this->cardID);
 		AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
+    	return "";
+ 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		global $CombatChain;
@@ -810,8 +818,7 @@ class overwhelming_swing_yellow extends Card {
 		return $param;
 	}
 
-	private
-	function GetTargets() {
+	private	function GetTargets() {
 		$attacks = TargetAttack($this->controller);
 		$targets = [];
 		foreach($attacks as $attack) {
@@ -955,7 +962,7 @@ class into_the_muck_red extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain, $combatChainState, $CCS_WagersThisLink;
-		return !$CombatChain->HasCurrentLink() || $combatChainState[$CCS_WagersThisLink] == 0;
+		return !$CombatChain->HasCurrentLink() || GetCombatChainState($CCS_WagersThisLink) == 0;
 	}
 }
 
@@ -995,6 +1002,7 @@ class honed_for_honor_blue extends Card {
 			if ($ind != -1) {
 				$DisCard = new DiscardCard($ind, $this->controller);
 				$Deck = new Deck($this->controller);
+				WriteLog(CardLink($DisCard->CardID()) . " was put back on top!");
 				$Deck->AddTop($DisCard->CardID());
 				$DisCard->Remove();
 			}
@@ -1038,12 +1046,19 @@ class terms_of_combat_red extends Card {
 	}
 
 	function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
-		if (IsActivated($cardID, $from)) {
-			if (GetResolvedAbilityType($cardID, $from) == "DR")
-				AddLayer("TRIGGER", $this->controller, $this->cardID);
+		global $CombatChain;
+		if (!TypeContains($CombatChain->AttackCard()->ID(), "W")) {
+			return;
 		}
-		elseif (TypeContains($cardID, "DR"))
+		$isActivated = IsActivated($cardID, $from);
+
+		$shouldTrigger =
+			($isActivated && GetResolvedAbilityType($cardID, $from) == "DR") ||
+			(!$isActivated && TypeContains($cardID, "DR"));
+
+		if ($shouldTrigger) {
 			AddLayer("TRIGGER", $this->controller, $this->cardID);
+		}
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1305,65 +1320,40 @@ class point_of_escalation_yellow extends Card {
 }
 
 class zane_broadly_beloved extends Card {
-  function __construct($controller) {
-    $this->cardID = "zane_broadly_beloved";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "zane_broadly_beloved";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		// WriteLog("HERE: $additionalCosts");
 		if ($additionalCosts == "CHEER") {
 			Draw($this->controller);
 			Draw($this->controller == 1 ? 2 : 1);
 		}
 		else
 			Cheer($this->controller);
-  }
+  	}
 
-  function CheerTrigger() {
+	function CheerTrigger() {
 		global $CS_CheeredThisTurn;
 		if (GetClassState($this->controller, $CS_CheeredThisTurn) == 1)
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "CHEER");
-  }
-
-  function SpecialName() {
-		return "Zane Broadly Beloved";
-  }
-
-  function SpecialTalent() {
-		return "REVERED";
-  }
-
-  function SpecialClass() {
-		return "WARRIOR";
-  }
-
-  function SpecialType() {
-		return "C";
-  }
-
-	function SpecialSubType() {
-		return "Young";
-	}
-
-	function SpecialBlock() {
-		return -2;
 	}
 }
 
 class killjoy_the_crooked_blade extends Card {
-  function __construct($controller) {
-    $this->cardID = "killjoy_the_crooked_blade";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "killjoy_the_crooked_blade";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
 		if ($additionalCosts == "BOO") {
@@ -1379,30 +1369,6 @@ class killjoy_the_crooked_blade extends Card {
 		global $CS_BooedThisTurn;
 		if (GetClassState($this->controller, $CS_BooedThisTurn) == 1)
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "BOO");
-	}
-
-  function SpecialName() {
-		return "Killjoy the Crooked Blade";
-  }
-
-  function SpecialTalent() {
-		return "REVILED";
-  }
-
-  function SpecialClass() {
-		return "WARRIOR,THIEF";
-  }
-
-  function SpecialType() {
-		return "C";
-  }
-
-	function SpecialSubType() {
-		return "Young";
-	}
-
-	function SpecialBlock() {
-		return -2;
 	}
 }
 
@@ -1425,7 +1391,7 @@ class all_in_red extends Card {
 		global $CombatChain, $CurrentTurnEffects;
 		if ($additionalCosts == "FAILURE") {
 			WriteLog("🎰The house always wins", highlight:true);
-			LoseHealth(GetHealth($this->controller), $this->controller);
+			PlayerLoseHealth(GetHealth($this->controller), $this->controller, true); //Your own gamble, logged as life lost instead of opponent damage
 		}
 		else {
 			if (SubtypeContains($CombatChain->AttackCard()->ID(), "Sword")) {
@@ -1455,7 +1421,7 @@ class all_in_red extends Card {
 
 	function ResolutionStepEffectTriggers($parameter, $index) {
 		global $CCS_DamageDealt, $combatChainState, $CombatChain;
-		if (IsCombatEffectActive($this->cardID) && $combatChainState[$CCS_DamageDealt] == 0)
+		if (IsCombatEffectActive($this->cardID) && GetCombatChainState($CCS_DamageDealt) == 0)
 			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "FAILURE");
 	}
 }
@@ -1614,7 +1580,7 @@ class check_raise extends BaseCard {
 		global $combatChainState, $CCS_WagersThisLink;
 		// technically wrong, it should trigger and create a new effect that's active, but I can't
 		// see any strategic difference
-		return $combatChainState[$CCS_WagersThisLink] > 0;
+		return GetCombatChainState($CCS_WagersThisLink) > 0;
 	}
 }
 
@@ -1803,12 +1769,12 @@ class rest_before_battle_yellow extends Card {
 }
 
 class lessons_learned_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "lessons_learned_blue";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "lessons_learned_blue";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$inds = [];
 		$discard = GetDiscard($this->controller);
 		$discardPieces = DiscardPieces();
@@ -1818,15 +1784,14 @@ class lessons_learned_blue extends Card {
 				$inds[] = $i;
 			}
 		}
-		$maxChoosable = (SearchCurrentTurnEffects("amnesia_red", $this->controller)) ? 1 : 3;
-		$inds = RemoveCardSameNames($this->controller, implode(",", $inds), $discard);
+		$maxChoosable = (SearchCurrentTurnEffects("amnesia_red", $this->controller)) ? 0 : 3;
+		$inds = RemoveDuplicateCards($this->controller, implode(",", $inds), $discard);
 		AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
 		AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "$maxChoosable-", 1);
 		AddDecisionQueue("MULTICHOOSEDISCARD", $this->controller, "<-", 1);
-		AddDecisionQueue("VALIDATEALLDIFFERENTNAME", $this->controller, "DISCARD", 1);
 		Await($this->controller, $this->cardID, final:true);
-    return "";
-  }
+		return "";
+	}
 
 	function SpecificLogic() {
 		global $dqVars;
@@ -1834,19 +1799,19 @@ class lessons_learned_blue extends Card {
 		if ($lastResult != "") {
 			$lastResult = explode(",", $lastResult);
 			$cards = "";
-      $deck = new Deck($this->controller);
-      $discard = new Discard($this->controller);
-      sort($lastResult);
-      for ($i = count($lastResult) - 1; $i >= 0; --$i) {
-        $cardID = $discard->Remove($lastResult[$i]);
-        $deck->AddBottom($cardID, "GY");
-        if ($cards != "")
-          $cards .= ", ";
-        if ($i == 0)
-          $cards .= "and ";
-        $cards .= CardLink($cardID, $cardID);
-      }
-      WriteLog(CardLink($this->cardID) . " shuffled into your deck " . $cards);
+		$deck = new Deck($this->controller);
+		$discard = new Discard($this->controller);
+		sort($lastResult);
+		for ($i = count($lastResult) - 1; $i >= 0; --$i) {
+			$cardID = $discard->Remove($lastResult[$i]);
+			$deck->AddBottom($cardID, "GY");
+			if ($cards != "")
+			$cards .= ", ";
+			if ($i == 0)
+			$cards .= "and ";
+			$cards .= CardLink($cardID, $cardID);
+		}
+		WriteLog(CardLink($this->cardID) . " shuffled into your deck " . $cards);
 			$deck->Shuffle("-");
 		}
 	}
@@ -1889,22 +1854,29 @@ class thwart_yellow extends Card {
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		global $CombatChain, $mainPlayer, $combatChainState, $CCS_NumPowerCounters;
-		$MainCharacter = new PlayerCharacter($mainPlayer);
-		$Auras = new Auras($mainPlayer);
-		$AttackingCard = $CombatChain->AttackCard();
+		global $combatChainState, $CCS_NumPowerCounters;
 		if (IsWeaponAttack()) {
-			if (TypeContains($AttackingCard->ID(), "W"))
-				$Weapon = $MainCharacter->FindCardUID($AttackingCard->OriginUniqueID());
-			elseif (SubtypeContains($AttackingCard->ID(), "Aura")) 
-				$Weapon = $Auras->FindCardUID($AttackingCard->OriginUniqueID());
-			if ($Weapon->NumPowerCounters() > 0)
+			$Weapon = $this->AttackingWeapon();
+			if ($Weapon != null && $Weapon->NumPowerCounters() > 0)
 				$Weapon->AddPowerCounters(-$Weapon->NumPowerCounters());
 		}
 		else {
-			if ($combatChainState[$CCS_NumPowerCounters] > 0)
-				$combatChainState[$CCS_NumPowerCounters] = 0;
+			if (GetCombatChainState($CCS_NumPowerCounters) > 0)
+				SetCombatChainState($CCS_NumPowerCounters, 0);
 		}
+	}
+
+	private
+	function AttackingWeapon() {
+		global $CombatChain, $mainPlayer;
+		$MainCharacter = new PlayerCharacter($mainPlayer);
+		$Auras = new Auras($mainPlayer);
+		$AttackingCard = $CombatChain->AttackCard();
+		if (TypeContains($AttackingCard->ID(), "W"))
+			return $MainCharacter->FindCardUID($AttackingCard->OriginUniqueID());
+		elseif (SubtypeContains($AttackingCard->ID(), "Aura"))
+			return $Auras->FindCardUID($AttackingCard->OriginUniqueID());
+		return null;
 	}
 }
 
@@ -2183,16 +2155,32 @@ class blunt_retort extends Card {
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Weapon = $this->AttackingWeapon();
+		if ($Weapon != null && $Weapon->NumPowerCounters() > 0) {
+			$message = "if_you_want_to_remove_a_counter_from_the_weapon";
+			$context = "Choose if you want to remove a +1 counter from the weapon";
+			Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
+			Await($this->controller, $this->cardID, final:true);
+		}
+	}
+
+	function SpecificLogic() {
+		$Weapon = $this->AttackingWeapon();
+		if ($Weapon != null && $Weapon->NumPowerCounters() > 0)
+			$Weapon->AddPowerCounters(-1);
+	}
+
+	private
+	function AttackingWeapon() {
 		global $CombatChain, $mainPlayer;
 		$MainCharacter = new PlayerCharacter($mainPlayer);
 		$Auras = new Auras($mainPlayer);
 		$AttackingCard = $CombatChain->AttackCard();
 		if (TypeContains($AttackingCard->ID(), "W"))
-			$Weapon = $MainCharacter->FindCardUID($AttackingCard->OriginUniqueID());
-		elseif (SubtypeContains($AttackingCard->ID(), "Aura")) 
-			$Weapon = $Auras->FindCardUID($AttackingCard->OriginUniqueID());
-		if ($Weapon->NumPowerCounters() > 0)
-			$Weapon->AddPowerCounters(-$Weapon->NumPowerCounters());
+			return $MainCharacter->FindCardUID($AttackingCard->OriginUniqueID());
+		elseif (SubtypeContains($AttackingCard->ID(), "Aura"))
+			return $Auras->FindCardUID($AttackingCard->OriginUniqueID());
+		return null;
 	}
 }
 
@@ -2203,7 +2191,7 @@ class edge_laden_plate extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    GainResources($this->controller, 1);
+    GainResources(1, $this->controller);
 		return "";
   }
 
@@ -2381,7 +2369,7 @@ class dealers_grip extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CCS_WagersThisLink, $combatChainState;
-		return $combatChainState[$CCS_WagersThisLink] == 0;
+		return GetCombatChainState($CCS_WagersThisLink) == 0;
 	}
 }
 
@@ -2603,7 +2591,7 @@ class off_beat_blue extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		foreach (["blade_dance", "flurry"] as $token) {
-			Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS:isSameName=$token", subsequent:0);
+			Await($this->controller, "MultiZoneIndices", "indices", search:"MYAURAS:isSameName=$token&THEIRAURAS:isSameName=$token", subsequent:0);
 			Await($this->controller, "ChooseMultiZone", "MZInd", may:true, context:"Destroy a " . CardLink($token) . " to sharpen your sword?");
 			Await($this->controller, "MZDestroy");
 			Await($this->controller, $this->cardID, target:$target, final:true);
@@ -2700,19 +2688,30 @@ class a_moments_peace_blue extends Card {
 	}
 
 	function EffectPlayCardRestricted($cardID, $from, $playIndex, $effectIndex) {
-		if (is_numeric($playIndex)) {
+		if (($from == "CHAR" || $from == "EQUIP") && is_numeric($playIndex) && $playIndex >= 0) {
 			$Weapon = new CharacterCard($playIndex, $this->controller);
 			$Effect = new CurrentEffect($effectIndex);
-			if ($Weapon->UniqueID() == $Effect->AppliestoUniqueID()) return $this->cardID;
+			// the weapon can still attack the allies they control
+			if ($Weapon->UniqueID() == $Effect->AppliestoUniqueID() && !HasNonHeroAttackTarget($this->controller == 1 ? 2 : 1))
+				return $this->cardID;
 		}
 		return "";
 	}
 }
 
 class big_blinder extends BaseCard {
-	function PlayAbility() {
-		AddCurrentTurnEffect($this->cardID, $this->controller);
-		AddOnWagerEffects();
+	function __construct($cardID, $controller) {
+		parent::__construct($cardID, $controller);
+		$this->archetype = new sword_attack_reaction($cardID, $controller);
+	}
+
+	function PlayAbility($target) {
+		if (explode("-", $target, 2)[0] == "COMBATCHAINLINK") {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+			AddOnWagerEffects();
+		}
+		else
+			WriteLog("A past chain link was targeted");
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2720,7 +2719,11 @@ class big_blinder extends BaseCard {
 	}
 
 	function IsPlayRestricted() {
-		return TargetSwordAttack($this->controller) == "";
+		return $this->archetype->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts() {
+		return $this->archetype->PayAdditionalCosts();
 	}
 }
 
@@ -2732,7 +2735,7 @@ class big_blinder_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2746,6 +2749,10 @@ class big_blinder_red extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2765,7 +2772,7 @@ class big_blinder_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2779,6 +2786,10 @@ class big_blinder_yellow extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2798,7 +2809,7 @@ class big_blinder_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2814,6 +2825,10 @@ class big_blinder_blue extends Card {
 		return $this->baseCard->IsPlayRestricted();
 	}
 
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
+	}
+
 	function WonWager($wonWager, $amount) {
 		$this->baseCard->WonWager($wonWager, $amount);
 	}
@@ -2824,9 +2839,18 @@ class big_blinder_blue extends Card {
 }
 
 class small_blinder extends BaseCard {
-	function PlayAbility() {
-		AddCurrentTurnEffect($this->cardID, $this->controller);
-		AddOnWagerEffects();
+	function __construct($cardID, $controller) {
+		parent::__construct($cardID, $controller);
+		$this->archetype = new sword_attack_reaction($cardID, $controller);
+	}
+
+	function PlayAbility($target) {
+		if (explode("-", $target, 2)[0] == "COMBATCHAINLINK") {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+			AddOnWagerEffects();
+		}
+		else
+			WriteLog("A past chain link was targeted");
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2834,7 +2858,11 @@ class small_blinder extends BaseCard {
 	}
 
 	function IsPlayRestricted() {
-		return TargetSwordAttack($this->controller) == "";
+		return $this->archetype->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts() {
+		return $this->archetype->PayAdditionalCosts();
 	}
 }
 
@@ -2846,7 +2874,7 @@ class small_blinder_red extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2860,6 +2888,10 @@ class small_blinder_red extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2879,7 +2911,7 @@ class small_blinder_yellow extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2893,6 +2925,10 @@ class small_blinder_yellow extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2912,7 +2948,7 @@ class small_blinder_blue extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
+		$this->baseCard->PlayAbility($target);
     return "";
   }
 
@@ -2926,6 +2962,10 @@ class small_blinder_blue extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		return $this->baseCard->PayAdditionalCosts();
 	}
 
 	function WonWager($wonWager, $amount) {
@@ -2962,7 +3002,7 @@ class carve_up_yellow extends Card {
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
 		global $CCS_WeaponIndex, $combatChainState;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		if ($Weapon->NumPowerCounters() > 0) {
 			$message = "if_you_want_to_destroy_arsenal";
 			$context = "Choose if you want to remove a counter from your weapon to destroy their arsenal";
@@ -2973,7 +3013,7 @@ class carve_up_yellow extends Card {
 
 	function SpecificLogic() {
 		global $CCS_WeaponIndex, $combatChainState, $dqVars;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		$Weapon->AddPowerCounters(-1);
 		ArsenalChooseAndDestroy($this->controller);
 	}
@@ -3004,7 +3044,7 @@ class dice_up_blue extends Card {
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
 		global $CCS_WeaponIndex, $combatChainState;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		if ($Weapon->NumPowerCounters() > 0) {
 			$message = "if_you_want_to_destroy_an_aura";
 			$context = "Choose if you want to remove a counter from your weapon to destroy an aura they control";
@@ -3018,7 +3058,7 @@ class dice_up_blue extends Card {
 
 	function SpecificLogic() {
 		global $CCS_WeaponIndex, $combatChainState, $dqVars;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		$Weapon->AddPowerCounters(-1);
 	}
 }
@@ -3048,7 +3088,7 @@ class slice_up_red extends Card {
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
 		global $CCS_WeaponIndex, $combatChainState;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		if ($Weapon->NumPowerCounters() > 0) {
 			$message = "if_you_want_to_pummel";
 			$context = "Choose if you want to remove a counter from your weapon to have the defending player discard";
@@ -3059,7 +3099,7 @@ class slice_up_red extends Card {
 
 	function SpecificLogic() {
 		global $CCS_WeaponIndex, $combatChainState, $dqVars, $defPlayer;
-		$Weapon = new CharacterCard($combatChainState[$CCS_WeaponIndex], $this->controller);
+		$Weapon = new CharacterCard(GetCombatChainState($CCS_WeaponIndex), $this->controller);
 		$Weapon->AddPowerCounters(-1);
 		PummelHit($defPlayer);
 	}
@@ -3329,8 +3369,8 @@ class olde_leather_helm extends Card {
   }
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CS_NumTimesAttacked, $mainPlayer;
-		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+		global $CS_NumTimesHeroAttacked;
+		return GetClassState($this->controller, $CS_NumTimesHeroAttacked) >= 2 ? 2 : 0;
 	}
 }
 
@@ -3345,8 +3385,8 @@ class olde_leather_plate extends Card {
   }
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CS_NumTimesAttacked, $mainPlayer;
-		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+		global $CS_NumTimesHeroAttacked;
+		return GetClassState($this->controller, $CS_NumTimesHeroAttacked) >= 2 ? 2 : 0;
 	}
 }
 
@@ -3361,8 +3401,8 @@ class olde_leather_gloves extends Card {
   }
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CS_NumTimesAttacked, $mainPlayer;
-		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+		global $CS_NumTimesHeroAttacked;
+		return GetClassState($this->controller, $CS_NumTimesHeroAttacked) >= 2 ? 2 : 0;
 	}
 }
 
@@ -3377,8 +3417,8 @@ class olde_leather_boots extends Card {
   }
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
-		global $CS_NumTimesAttacked, $mainPlayer;
-		return GetClassState($mainPlayer, $CS_NumTimesAttacked) >= 2 ? 2 : 0;
+		global $CS_NumTimesHeroAttacked;
+		return GetClassState($this->controller, $CS_NumTimesHeroAttacked) >= 2 ? 2 : 0;
 	}
 }
 
@@ -3516,30 +3556,6 @@ class cutpurse_rapier extends Card {
 		AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
 		AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
 	}
-
-	function SpecialName() {
-		return "Cutpurse Rapier";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR,THIEF";
-	}
-
-	function SpecialType() {
-		return "W";
-	}
-
-	function SpecialSubType() {
-		return "Sword";
-	}
-
-	function SpecialPower() {
-		return 3;
-	}
-
-	function SpecialBlock() {
-		return -2;
-	}
 }
 
 class celebrant_broadsword extends Card {
@@ -3563,33 +3579,5 @@ class celebrant_broadsword extends Card {
 	function DoesAttackHaveGoAgain() {
 		global $CS_CheeredThisTurn;
 		return GetClassState($this->controller, $CS_CheeredThisTurn) > 0;
-	}
-
-	function SpecialName() {
-		return "Celebrant Broadsword";
-	}
-
-	function SpecialClass() {
-		return "WARRIOR";
-	}
-
-	function SpecialTalent() {
-		return "REVERED";
-	}
-
-	function SpecialType() {
-		return "W";
-	}
-
-	function SpecialSubType() {
-		return "Sword";
-	}
-
-	function SpecialPower() {
-		return 3;
-	}
-
-	function SpecialBlock() {
-		return -2;
 	}
 }

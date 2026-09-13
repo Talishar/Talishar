@@ -1,55 +1,23 @@
 <?php
 
 class restless_commander_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "restless_commander_red";
-    $this->controller = $controller;
-  }
+	function __construct($controller) {
+		$this->cardID = "restless_commander_red";
+		$this->controller = $controller;
+	}
   
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
-
-  function HasDecay() {
-    return true;
-  }
-
-  function SpecialSubType() {
-    return "Zombie,Ally";
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialHealth() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialName() {
-    return "Restless Commander";
-  }
-
-  function SpecialClass() {
-    return "NECROMANCER";
-  }
-
-  function SpecialTalent() {
-    return "SHADOW";
-  }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function PermanentPowerModifier(&$powerModifiers) {
 		global $CombatChain;
 		if (SubTypeContains($CombatChain->AttackCard()->ID(), "Zombie")) {
-      $powerModifiers[] = $this->cardID;
-      $powerModifiers[] = 1;
-      return 1;
-    }
-    return 0;
+		$powerModifiers[] = $this->cardID;
+		$powerModifiers[] = 1;
+		return 1;
+		}
+		return 0;
 	}
 }
 
@@ -83,38 +51,18 @@ class corrupted_crown extends Card {
 		MZRemove($this->controller, $choice);
 		$ChainCard->ModifyDefense(1);
 	}
-
-	function SpecialName() {
-		return "Corrupted Crown";
-	}
-
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialTalent() {
-		return "SHADOW";
-	}
-
-	function SpecialSubType() {
-		return "Head";
-	}
-
-	function SpecialBlock() {
-		return 1;
-	}
 }
 
 class undead_grasp extends Card {
-  function __construct($controller) {
-    $this->cardID = "undead_grasp";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	function __construct($controller) {
+		$this->cardID = "undead_grasp";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
+		return "";
+	}
 
 	function AbilityCost() {
 		return 1;
@@ -132,14 +80,8 @@ class undead_grasp extends Card {
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		$CharacterCard->Destroy();
 		$inds = SearchMultizone($this->controller, "MYHAND:subtype=Zombie");
-		if ($inds == "") {
-			WriteLog("No zombie to discard, reverting gamestate", highlight:true);
-			RevertGamestate();
-		}
-		else {
-			Await($this->controller, "ChooseMultiZone", "MZIndex", indices:$inds, context: "Discard a Zombie", subsequent:0);
-			Await($this->controller, "Discard", effectController:$this->controller, final:true);
-		}
+		Await($this->controller, "ChooseMultiZone", "MZIndex", indices:$inds, context: "Discard a zombie", subsequent:0);
+		Await($this->controller, "Discard", effectController:$this->controller, final:true);
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
@@ -166,30 +108,6 @@ class undead_grasp extends Card {
 		$Ally = $Allies->FindCardUID($CombatChain->AttackCard()->OriginUniqueID());
 		$Ally->Destroy();
 	}
-
-	function SpecialName() {
-		return "Undead Grasp";
-	}
-
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialTalent() {
-		return "SHADOW";
-	}
-
-	function SpecialClass() {
-		return "NECROMANCER";
-	}
-
-	function SpecialSubType() {
-		return "Arms";
-	}
-
-	function SpecialBlock() {
-		return 1;
-	}
 }
 
 class dig_for_souls_red extends Card {
@@ -200,32 +118,42 @@ class dig_for_souls_red extends Card {
   
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$Deck = new Deck($this->controller);
-		$cards = $Deck->Top(true, $resourcesPaid);
-		$inds = [];
-		$allInds = [];
-		foreach (explode(",", $cards) as $card) {
-			if (SubtypeContains($card, "Zombie")) $inds[] = "CARDID-$card";
-			$allInds[] = "CARDID-$card";
-		}
-		$inds = implode(",", $inds);
-		$allInds = implode(",", $allInds);
-		if ($inds != "") {
-			Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a Zombie to put in the graveyard", subsequent:0);
-			Await($this->controller, $this->cardID, inds:$allInds);
-			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
-			Await($this->controller, final:true);
+		if ($resourcesPaid > 0) {
+			$cards = $Deck->Top(true, $resourcesPaid);
+			$inds = [];
+			$allInds = [];
+			foreach (explode(",", $cards) as $card) {
+				if (SubtypeContains($card, "Zombie")) $inds[] = "CARDID-$card";
+				$allInds[] = "CARDID-$card";
+			}
+			$inds = implode(",", $inds);
+			$allInds = implode(",", $allInds);
+			if ($inds != "") {
+				Await($this->controller, "ChooseMultiZone", "choice", may:1, indices:$inds, context:"Choose a zombie to put in the graveyard", subsequent:0);
+				Await($this->controller, $this->cardID, inds:$allInds);
+				// avoid creating a call to CHOOSEBOTTOM with no choices
+				if (count(explode(",", $allInds)) > 1) AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
 
-			AddDecisionQueue("ELSE", $this->controller, "-");
-			Await($this->controller, $this->cardID, else:true, inds:$allInds);
-			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+				AddDecisionQueue("ELSE", $this->controller, "-");
+				Await($this->controller, $this->cardID, else:true, inds:$allInds);
+				AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+			}
+			else {
+				if (SearchCount($allInds) == 1) {
+					$cardID = explode("-", $allInds)[1];
+					AddBottomDeck($cardID, $this->controller, "DECK");
+					AddDecisionQueue("PASSPARAMETER", $this->controller, $cardID, 1);
+					AddDecisionQueue("SETDQVAR", $this->controller, "1", 1);
+					AddDecisionQueue("SETDQCONTEXT", $this->controller, "The top card was <1> and it was placed on the bottom", 1);
+					AddDecisionQueue("OK", $this->controller, "-", 1);
+				}
+				else {
+					Await($this->controller, $this->cardID, else:true, inds:$allInds);
+					AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
+				}
+			}
 			Await($this->controller, final:true);
 		}
-		else {
-			Await($this->controller, $this->cardID, else:true, inds:$allInds);
-			AddDecisionQueue("CHOOSEBOTTOM", $this->controller, "<-", 1);
-			Await($this->controller, final:true);
-		}
-
 		AddCurrentTurnEffect($this->cardID, $this->controller);
     	return "";
   	}
@@ -242,8 +170,12 @@ class dig_for_souls_red extends Card {
 			}
 		}
 		$newInds = [];
+		$found = false;
 		foreach($inds as $ind) {
-			if ($ind === $choice) continue;
+			if ($ind === $choice && !$found) {
+				$found = true; // only exclude the first copy of the chosen card
+				continue;
+			}
 			$indParts = explode("-", $ind, 2);
 			if (isset($indParts[1]) && $indParts[1] !== "") $newInds[] = $indParts[1];
 		}
@@ -251,8 +183,8 @@ class dig_for_souls_red extends Card {
 	}
 
 	function DynamicCost() {
-    return implode(",", range(0, 20, 1));
-  }
+		return implode(",", range(0, 20, 1));
+	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
 		global $CombatChain;
@@ -273,13 +205,120 @@ class dig_for_souls_red extends Card {
 		$Ally = $Allies->FindCardUID($CombatChain->AttackCard()->OriginUniqueID());
 		$Ally->Destroy();
 	}
+}
+
+class drop_dead_bodice extends Card {
+	function __construct($controller) {
+		$this->cardID = "drop_dead_bodice";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "I";
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->Destroy();
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		GainResources(1, $this->controller);
+	}
+
+	function DefaultActiveState() {
+		return 1;
+	}
 
 	function SpecialName() {
-		return "Dig for Souls";
+		return "Drop Dead Bodice";
+	}
+
+	function SpecialType() {
+		return "E";
 	}
 
 	function SpecialBlock() {
+		return 0;
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
+	}
+
+	function SpecialSubType() {
+		return "Chest";
+	}
+
+	function ArcaneBarrier($index) {
+		return 1;
+	}
+}
+
+class clambering_corpses_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "clambering_corpses_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+		return "";
+	}
+	
+	function ProcessAttackTrigger($target, $uniqueID) {
+		Await($this->controller, "MultiZoneIndices", search:"MYHAND:subtype=Ally", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", may:true, context:"Discard an Ally to get +3 and go again?");
+		Await($this->controller, "Discard");
+		Await($this->controller, "AddCurrentTurnEffect", effectID:$this->cardID, final:true);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		if ($parameter == "SWARM") return SubtypeContains($CombatChain->AttackCard()->ID(), "Zombie");
+		else return true;
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return $mode == "SWARM";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param != "SWARM" ? 3 : 0;
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		// Could an AI fix this so that when the $param is "SWARM" it only gives go again on hit?
+		return true;
+	}
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		AddCurrentTurnEffect("$this->cardID-SWARM", $this->controller);
+	}
+
+	function SpecialName() {
+		return "Clambering Corpses";
+	}
+
+	function SpecialPitch() {
 		return 3;
+	}
+
+	function SpecialPower() {
+		return 1;
 	}
 
 	function SpecialClass() {
@@ -289,6 +328,30 @@ class dig_for_souls_red extends Card {
 	function SpecialTalent() {
 		return "SHADOW";
 	}
+}
+
+class otherworldly_ossuary_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "otherworldly_ossuary_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		BanishCardForPlayer("corrupted_corpse", $this->controller, "-", created:true);
+		return "";
+	}
+
+	function SpecialName() {
+		return "Otherworldly Ossuary";
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
 
 	function SpecialType() {
 		return "A";
@@ -296,5 +359,13 @@ class dig_for_souls_red extends Card {
 
 	function HasGoAgain($from) {
 		return true;
+	}
+
+	function SpecialTalent() {
+		return "SHADOW";
+	}
+
+	function SpecialClass() {
+		return "NECROMANCER";
 	}
 }

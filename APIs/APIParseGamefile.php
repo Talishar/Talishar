@@ -1,14 +1,6 @@
 <?php
 
-if (!function_exists("GetArray")) {
-  function GetArray($handler)
-  {
-    if (!$handler) return false;
-    $line = trim(fgets($handler));
-    if ($line == "") return [];
-    return explode(" ", $line);
-  }
-}
+include_once __DIR__ . "/../Libraries/IOLibraries.php";
 
 $gameName = isset($gameName) ? trim((string) $gameName) : '';
 $filename = "../Games/" . $gameName . "/GameFile.txt";
@@ -53,7 +45,7 @@ $p1Matchups = json_decode(trim(fgets($gameFileHandler)));
 $p2Matchups = json_decode(trim(fgets($gameFileHandler)));
 $p1deckbuilderID = trim(fgets($gameFileHandler));
 $p2deckbuilderID = trim(fgets($gameFileHandler));
-$roguelikeGameID = trim(fgets($gameFileHandler));
+fgets($gameFileHandler); // Reserved for backward-compatible field alignment
 $p1StartingHealth = trim(fgets($gameFileHandler));
 $p1ContentCreatorID = trim(fgets($gameFileHandler));
 $p2ContentCreatorID = trim(fgets($gameFileHandler));
@@ -95,11 +87,3 @@ $FORMAT_CompCC = 1;
 $FORMAT_CompBlitz = 3;
 $FORMAT_CompLL = 13;
 $FORMAT_CompSage = 15;
-
-if (!function_exists("UnlockGamefile")) {
-  function UnlockGamefile()
-  {
-    global $gameFileHandler;
-    fclose($gameFileHandler);
-  }
-}

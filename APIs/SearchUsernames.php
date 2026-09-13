@@ -6,26 +6,14 @@ SetHeaders();
 
 include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
+include_once '../includes/ModeratorList.inc.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
 header('Content-Type: application/json');
 
-if (!isset($_SESSION["useruid"])) {
-  http_response_code(401);
-  echo json_encode(["error" => "Not logged in"]);
-  exit;
-}
-
-$useruid = $_SESSION["useruid"];
-
-include_once '../includes/ModeratorList.inc.php';
-if (!IsUserModerator($useruid)) {
-  http_response_code(403);
-  echo json_encode(["error" => "Not authorized"]);
-  exit;
-}
+$useruid = RequireModeratorSession();
 
 // Get search query from GET parameter
 $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';

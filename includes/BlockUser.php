@@ -1,5 +1,7 @@
 <?php
-$body = json_decode(file_get_contents('php://input'), true);
+require_once __DIR__ . '/../Libraries/HTTPLibraries.php';
+
+$body = ReadJsonBody();
 
 if (isset($body['block-user-submit'])) {
     session_start();

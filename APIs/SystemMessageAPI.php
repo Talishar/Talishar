@@ -29,7 +29,7 @@ if (!isset($_SESSION["useruid"])) {
 
 $useruid = $_SESSION["useruid"];
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = ReadJsonBody();
 
 if (!$input || !isset($input['action'])) {
   http_response_code(400);

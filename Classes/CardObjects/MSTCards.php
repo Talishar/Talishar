@@ -858,17 +858,57 @@
 // }
 
 
-// class evo_shortcircuit_blue extends Card {
+class evo_shortcircuit_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_shortcircuit_blue";
+		$this->controller = $controller;
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "evo_shortcircuit_blue";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function EquipAbilities() {
+		SetArcaneTarget($this->controller, $this->cardID, "any");
+		Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, final:true);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$toCardID = "$this->cardID " . "_equip";
+		$target = CleanTargetToIndex($this->controller, $target);
+		AddDecisionQueue("PASSPARAMETER", $this->controller, $target);
+		AddDecisionQueue("MZDAMAGE", $this->controller, "1,DAMAGE,$toCardID", 1);
+	}
+
+	function ArcaneBarrier($index) {
+		return 1;
+	}
+}
+
+class evo_shortcircuit_blue_equip extends Card {
+	private $origCard;
+	function __construct($controller) {
+		$this->cardID = "evo_shortcircuit_blue";
+		$this->controller = $controller;
+		$this->origCard = new evo_shortcircuit_blue($this->controller);
+	}
+
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function EquipAbilities() {
+		$this->origCard->EquipAbilities();
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$this->origCard->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
+	}
+
+	function ArcaneBarrier($index) {
+		return $this->origCard->ArcaneBarrier($index);
+	}
+}
 
 
 // class evo_speedslip_blue extends Card {
@@ -1690,17 +1730,44 @@
 // }
 
 
-// class prismatic_leyline_yellow extends Card {
+class prismatic_leyline_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "prismatic_leyline_yellow";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "prismatic_leyline_yellow";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect("$this->cardID-RED", $this->controller);
+		AddCurrentTurnEffect("$this->cardID-YELLOW", $this->controller);
+		AddCurrentTurnEffect("$this->cardID-BLUE", $this->controller);
+		return "";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return match($param) {
+			"RED" => 1,
+			"YELLOW" => 2,
+			"BLUE" => 3,
+			default => 0
+		};
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$color = match($parameter) {
+			"RED" => 1,
+			"YELLOW" => 2,
+			"BLUE" => 3,
+			default => 0
+		};
+		return ColorContains($CombatChain->AttackCard()->ID(), $color, $this->controller);
+	}
+
+	function IsLayerContinuousBuff() {
+		return true;
+	}
+}
 
 
 // class rage_specter_blue extends Card {

@@ -135,7 +135,6 @@ function HNTEffectPowerModifier($cardID, $attached=False): int
     "sworn_vengeance_yellow" => 2,
     "sworn_vengeance_blue" => 1,
     "hand_of_vengeance" => 1,
-    "rake_over_the_coals_red" => 1,
     "tooth_of_the_dragon_red" => 3,
     "blessing_of_vynserakai_red" => 3,
     "up_sticks_and_run_red" => $attached ? 4 : 0,
@@ -178,7 +177,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     if (DelimStringContains($dashArr[1], "MARK", true)) {
       $id = str_contains($dashArr[1], ",") ? explode(",", $dashArr[1])[1] : -1;
       $character = &GetPlayerCharacter($mainPlayer);
-      return $character[$combatChainState[$CCS_WeaponIndex] + 11] == $id;
+      return $character[GetCombatChainState($CCS_WeaponIndex) + 11] == $id;
     }
   }
   if ($cardID == "arakni_black_widow" && $hasSuffix && $dashArr[1] == "HIT") return HasStealth($attackID);
@@ -217,7 +216,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "wrath_of_retribution_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "art_of_the_dragon_blood_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "art_of_the_dragon_claw_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
-    "art_of_the_dragon_fire_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "art_of_the_dragon_scale_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "dragon_power_red" => true,
     "dragon_power_yellow" => true,
@@ -260,7 +258,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "vow_of_vengeance" => true,
     "hand_of_vengeance" => true,
     "path_of_vengeance" => true,
-    "rake_over_the_coals_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "blessing_of_vynserakai_red" => true,
     "tooth_of_the_dragon_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "up_sticks_and_run_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
@@ -452,14 +449,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;
-    case "art_of_the_dragon_fire_red":
-      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=C&THEIRALLY&MYCHAR:type=C&MY&MYALLY", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target to deal 2 damage");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZDAMAGE", $currentPlayer, "2,DAMAGE," . $cardID, 1);
-      }
-      break;
     case "art_of_the_dragon_scale_red":
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -596,7 +585,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "coat_of_allegiance":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "oath_of_loyalty_red":
@@ -616,12 +605,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       break;
     case "drop_of_dragon_blood_red":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       Draw($currentPlayer, effectSource:$cardID);
-      break;
-    case "rake_over_the_coals_red":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      AddCurrentTurnEffect($cardID, $otherPlayer);
       break;
     case "for_the_dracai_red": case "for_the_emperor_red": case "for_the_realm_red":
       if(IsHeroAttackTarget() && CheckMarked($otherPlayer)) {
@@ -640,7 +625,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $otherChar = &GetPlayerCharacter($otherPlayer);
       MarkHero($otherPlayer);
       if (CardNameContains($otherChar[0], "Arakni")) {
-        GainResources($currentPlayer, 1);
+        GainResources(1, $currentPlayer);
       }
       break;
     case "tooth_of_the_dragon_red":
@@ -946,6 +931,8 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
       AddDecisionQueue("HUNTSMANMARK", $mainPlayer, $uniqueID);
       break;
     case "kiss_of_death_red":
+      // For an AI working on this, this effect should also add a copy of cracked bauble to the top of the turn player's deck
+      // but I'm not sure the best way to implement this
       $target = $target == "-" ? $defPlayer : $target;
       WriteLog("Player $target loses 1 life.");
       LoseHealth(1, $target);
@@ -978,7 +965,7 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
       break;
     case "devotion_never_dies_red":
       if(isPreviousLinkDraconic()) {
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         BanishCardForPlayer("devotion_never_dies_red", $mainPlayer, "COMBATCHAIN", "TT", $mainPlayer); # throw Devotion Never Dies to banish. it can be played this turn (TT)
       }
       break;
@@ -1060,7 +1047,7 @@ function ListDracDaggersGraveyard($player) {
   }
   $weapons = implode(",", $weaponsArr);
   if ($weapons == "") {
-    WriteLog("Player " . $player . " doesn't have any dagger in their graveyard");
+    WriteLog("Player " . $player . " doesn't have any daggers in their graveyard.");
   }
   return $weapons;
 }
@@ -1129,13 +1116,16 @@ function AddedOnHit($cardID) //tracks whether a card adds an on-hit to its appli
     "scar_tissue_red" => true,
     "scar_tissue_yellow" => true,
     "scar_tissue_blue" => true,
+    "exorcism_red" => true,
     default => false
   };
 }
 
 function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves to a card, even if it transforms
-  //for now only tracking dagger buffs, ideally we'd want to track all static buffs
+  // ideally we'd want to track all layer continuous buffs like this
   $cardID = explode(",", $cardID, 2)[0];
+  $card = GetClass($cardID,0);
+  if ($card != "-" && $card->IsLayerContinuousBuff()) return true;
   return match($cardID) {
     "plunge_red" => true,
     "plunge_yellow" => true,
@@ -1148,9 +1138,6 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "cut_from_the_same_cloth_red" => true,
     "cut_from_the_same_cloth_yellow" => true,
     "cut_from_the_same_cloth_blue" => true,
-    "prismatic_leyline_yellow-RED" => true,
-    "prismatic_leyline_yellow-YELLOW" => true,
-    "prismatic_leyline_yellow-BLUE" => true,
     "minnowism_red" => true,
     "minnowism__yellow" => true,
     "minnowism_blue" => true,
@@ -1170,6 +1157,8 @@ function IsLayerContinuousBuff($cardID) {//tracks buffs that attach themselves t
     "leech_memory_red" => true,
     "leech_renown_red" => true,
     "arc_lightning_yellow-GOAGAIN" => true,
+    "chane" => true,
+    "chane_bound_by_shadow" => true,
     default => false
   };
 }

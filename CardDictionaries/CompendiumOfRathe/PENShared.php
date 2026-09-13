@@ -64,8 +64,9 @@ function PENHitEffect($cardID): void
 
 function DoSolrayPlating($targetPlayer, $damage)
 {
+  global $CS_PreventionCache;
   if ($damage > 0) {
-    PrependDecisionQueue("ADDTOLASTRESULT", $targetPlayer, "{0}", 1);
+    PrependDecisionQueue("INCREMENTCLASSSTATEBY", $targetPlayer, $CS_PreventionCache, 1);
     PrependDecisionQueue("PASSPARAMETER", $targetPlayer, 1, 1); //prevent 1 damage
     if (!SearchCurrentTurnEffects("solray_plating", $targetPlayer))
       PrependDecisionQueue("CHARFLAGDESTROY", $targetPlayer, FindCharacterIndex($targetPlayer, "solray_plating"), 1);
@@ -116,13 +117,13 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
       $Character = new PlayerCharacter($player);
       $Scales = $Character->FindCardID($cardID);
       $scaleIndex = $Scales != "" ? $Scales->Index() : -1;
-      if (!SearchCharacterActive($player, $cardID) || SearchCurrentTurnEffects($cardID, $player))
+      if (!SearchCharacterActive($player, $cardID) || SearchCurrentTurnEffects("$cardID-SMOLDER", $player))
         return false;
       break;
     case "smoldering_steel_red":
       $steelIndex = SearchDiscardForCard($player, $cardID);
       $index = explode(",", $steelIndex, 2)[0];
-      if ($steelIndex == "" || SearchCurrentTurnEffects("smoldering_steel_red", $player))
+      if ($steelIndex == "" || SearchCurrentTurnEffects("smoldering_steel_red-SMOLDER", $player))
         return false;
       break;
     default:
@@ -142,7 +143,7 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
       AddDecisionQueue("MZREMOVE", $player, "-", 1);
       //need to remove this if its there, always call smoldering steel replacement last
       //add more REMOVECURRENTTURNEFFECT if we get more smoldering effects
-      AddDecisionQueue("REMOVECURRENTTURNEFFECT", $player, "smoldering_scales", 1);
+      AddDecisionQueue("REMOVECURRENTTURNEFFECT", $player, "smoldering_scales-SMOLDER", 1);
       break;
     default:
       break;
@@ -150,7 +151,7 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
   AddDecisionQueue("WRITELOG", $player, $message, 1);
   AddDecisionQueue("ELSE", $player, "-");
   // track whether to skip this check next time
-  AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $cardID, 1);
+  AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "$cardID-SMOLDER", 1);
   if ($zone == "AURAS")
     AddDecisionQueue("PLAYAURA", $player, "frostbite-$number-$effectSource-$effectController", 1);
   elseif ($zone == "EQUIP") {
@@ -160,4 +161,21 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
       AddDecisionQueue("EQUIPCARD", $effectAgent, "frostbite-$slot-THEIR", 1);
   }
   return true;
+}
+
+function TargetTokenAuras($player="-") {
+  global $currentPlayer;
+  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $players = $player == "-" ? [$currentPlayer, $otherPlayer] : [$player];
+  $ret = [];
+  foreach ($players as $player) {
+    $prefix = $player == $currentPlayer ? "MYAURAS" : "THEIRAURAS";
+    $Auras = new Auras($player);
+    for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+      $AuraCard = $Auras->Card($i, true);
+      if ($AuraCard->IsToken() || TypeContains($AuraCard->CardID(), "T"))
+        $ret[] = "$prefix-" . $AuraCard->Index();
+    }
+  }
+  return implode(",", $ret);
 }

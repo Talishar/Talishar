@@ -11,7 +11,7 @@ function GetUserCosmeticsEntitlements($userName)
   $response->playmats = [];
 
   // Define default playmat IDs (kept in sync with frontend PLAYER_PLAYMATS)
-  $defaultPlaymatIds = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 30, 31, 32, 33, 34, 35, 36, 42, 44, 46];
+  $defaultPlaymatIds = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 30, 31, 32, 33, 34, 35, 36, 42, 44, 46, 47];
 
   //Add default card back
   $cardBack = new stdClass();
@@ -156,10 +156,11 @@ function GetUserCosmeticsEntitlements($userName)
 function GetUserAltArtEntitlements($userName)
 {
   $altArtMap = [];
+  $altArtSet = [];
 
   if (empty($userName)) return $altArtMap;
 
-  $addAltArtString = function ($altArtsString) use (&$altArtMap) {
+  $addAltArtString = function ($altArtsString) use (&$altArtMap, &$altArtSet) {
     if (empty($altArtsString)) return;
     foreach (explode(",", $altArtsString) as $entry) {
       $entry = trim($entry);
@@ -169,8 +170,9 @@ function GetUserAltArtEntitlements($userName)
       $cardId = trim($parts[0]);
       $altPath = trim($parts[1]);
       if ($cardId === "" || $altPath === "") continue;
-      if (!isset($altArtMap[$cardId])) $altArtMap[$cardId] = [];
-      if (!in_array($altPath, $altArtMap[$cardId])) $altArtMap[$cardId][] = $altPath;
+      if (isset($altArtSet[$cardId][$altPath])) continue;
+      $altArtSet[$cardId][$altPath] = true;
+      $altArtMap[$cardId][] = $altPath;
     }
   };
 
@@ -368,6 +370,8 @@ function GetPlaymatName($id)
       return "Talishar, The Lost Prince";
     case 46:
       return "Coax A Commotion";
+    case 47:
+      return "Hammerhead";
     default:
       return "N/A";
   }

@@ -32,9 +32,7 @@ header('Content-Type: application/json');
 
 function DeckCosmeticsError($message, $code = 400)
 {
-  http_response_code($code);
-  echo json_encode(["success" => false, "message" => $message]);
-  exit;
+  ExitJsonResponse(["success" => false, "message" => $message], $code);
 }
 
 if (!IsUserLoggedIn()) {
@@ -44,7 +42,7 @@ if (!IsUserLoggedIn()) {
 $userID = LoggedInUser();
 $userName = LoggedInUserName();
 
-$_POST = json_decode(file_get_contents('php://input'), true) ?? [];
+$_POST = ReadJsonBody() ?? [];
 $decklink = TryPOST("decklink", "");
 $cardBackId = strval(TryPOST("cardBackId", "0"));
 $playmatId = strval(TryPOST("playmatId", "0"));
@@ -55,7 +53,7 @@ if (empty($decklink)) {
   DeckCosmeticsError("Deck link is required.");
 }
 if ($hasAltArts && !is_array($altArts)) {
-  DeckCosmeticsError("Invalid alt art selection.");
+  DeckCosmeticsError("Invalid alternate art selection.");
 }
 
 $conn = GetDBConnection(DBL_SAVE_DECK_COSMETICS);
@@ -90,11 +88,11 @@ foreach (($altArts ?? []) as $entry) {
   $altPath = strval($entry['altPath'] ?? '');
   if ($cardId === '' || $altPath === '') {
     mysqli_close($conn);
-    DeckCosmeticsError("Invalid alt art selection.");
+    DeckCosmeticsError("Invalid alternate art selection.");
   }
   if (!isset($altArtEntitlements[$cardId]) || !in_array($altPath, $altArtEntitlements[$cardId], true)) {
     mysqli_close($conn);
-    DeckCosmeticsError("You have not unlocked that alt art for " . $cardId . ".", 403);
+    DeckCosmeticsError("You have not unlocked that alternate art for " . $cardId . ".", 403);
   }
   $validatedAltArts[] = [$cardId, $altPath];
 }

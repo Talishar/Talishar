@@ -5,6 +5,7 @@ class Auras {
   // Properties
   private $auras = [];
   private $player = 0;
+  private $boundIndex = null;
 
   // Constructor
   function __construct($player) {
@@ -54,6 +55,31 @@ class Auras {
     // return a null object AuraCard that has all the methods, but they do nothing
     return new AuraCard(-1, $this->player);
   }
+
+  function BuildBoundIndex() {
+    $this->boundIndex = [];
+    $count = count($this->auras);
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
+      if (isset($this->auras[$i+14])) $this->boundIndex[$this->auras[$i+14]][] = $i;
+    }
+  }
+
+  function FindBoundAuras($uid, $zone="MYALLY") {
+    $ret = [];
+    $count = count($this->auras);
+    if ($count == 0) return [];
+    if ($this->boundIndex !== null) {
+      foreach ($this->boundIndex["$zone-$uid"] ?? [] as $i) $ret[] = new AuraCard($i, $this->player);
+      return $ret;
+    }
+    $auraPieces = AuraPieces();
+    for ($i = 0; $i < $count; $i += $auraPieces) {
+      if (!isset($this->auras[$i + 14])) continue;
+      if ($this->auras[$i+14] == "$zone-$uid") $ret[] = new AuraCard($i, $this->player);
+    }
+    return $ret;
+  }
 }
 
 class AuraCard {
@@ -99,6 +125,7 @@ class AuraCard {
   }
 
 	function AddCounters($n=1) {
+    if ($this->index == -1) return;
 		if (isset($this->pieces[$this->index+2])) $this->pieces[$this->index+2] += $n;
 		return $this->NumCounters();
 	}
@@ -159,9 +186,9 @@ class AuraCard {
       return RemoveAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase, $destinationUID);
 	}
 
-	function Destroy($skipTrigger = false, $skipClose = false, $mainPhase = true) { //don't call this for removing auras in the equipment
+	function Destroy($skipTrigger = false, $skipClose = false, $mainPhase = true, $destroyedBy = -1) { //don't call this for removing auras in the equipment
     if ($this->index != -1)
-      return DestroyAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase);
+      return DestroyAura($this->controller, $this->index, $this->UniqueID(), "AURAS", $skipTrigger, $skipClose, $mainPhase, $destroyedBy);
 	}
 
   function Banish($mod="-", $banishedBy="", $banisher="-") {
@@ -173,6 +200,16 @@ class AuraCard {
       else return BanishCardForPlayer($cardID, $this->controller, "PLAY", $mod, $banishedBy, $banisher);
     }
     return -1;
+  }
+
+  function Bounce() {
+    $cardID = $this->CardID();
+    $targetedPlayer = $this->Player();
+    $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
+    $cardOwner = substr($this->From(), 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
+    if (!$this->IsToken() && $this->Index() != -1)
+      AddPlayerHand($cardID, $cardOwner, "-");
+    return $this->Remove();
   }
 
   function GetModalities() {
@@ -222,5 +259,14 @@ class AuraCard {
   function AddHoloCounter($n=1) {
     if ($this->index != -1)
       $this->pieces[$this->index + 13] += $n;
+  }
+
+  function Bind($val) {
+    if ($this->index != -1 && isset($this->pieces[$this->index + 14]))
+      $this->pieces[$this->index + 14] = $val;
+  }
+
+  function BoundTo() {
+    return $this->pieces[$this->index + 14] ?? "-";
   }
 }

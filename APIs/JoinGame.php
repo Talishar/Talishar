@@ -2,6 +2,7 @@
 
 include_once "../WriteLog.php";
 include_once "../Libraries/HTTPLibraries.php";
+include_once "../Libraries/CoreLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/BlockedUserLibraries.php";
 include_once "../APIKeys/APIKeys.php";
@@ -15,27 +16,16 @@ include_once "../Assets/MetafyDictionary.php";
 
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
-include_once "../Classes/CardObjects/MPWCards.php";
-include_once "../Classes/CardObjects/AHACards.php"; // needed for a bit since I added some MPW cards here
-include_once "../Classes/CardObjects/AOLCards.php";
-// include_once "../Classes/CardObjects/DDDCards.php"; this file hasn't been made yet
 include_once "../Classes/CardObjects/IARCards.php";
 include_once "../Classes/CardObjects/AMACards.php";
+include_once "../Classes/CardObjects/AMOCards.php";
+include_once "../Classes/CardObjects/MPWCards.php"; // for now just for the smash palace cards
+include_once "../Classes/CardObjects/MPACards.php";
 // promos for special formats
 include_once "../Classes/CardObjects/LGSCards.php";
 
 
 // GetMetafyTiersFromDatabase is defined in includes/MetafyHelper.php (included above)
-
-if (!function_exists("DelimStringContains")) {
-  function DelimStringContains($str, $find, $partial=false)
-  {
-    foreach (explode(",", $str) as $item) {
-      if ($partial ? str_contains($item, $find) : $item == $find) return true;
-    }
-    return false;
-  }
-}
 
 if (!function_exists("SubtypeContains")) {
   function SubtypeContains($cardID, $subtype, $player = "")
@@ -142,7 +132,7 @@ $response = new stdClass();
 
 session_start();
 if (!isset($gameName)) {
-  $_POST = json_decode(file_get_contents('php://input'), true);
+  $_POST = ReadJsonBody();
   if($_POST == NULL) {
     $response->error = "Parameters were not passed";
     echo json_encode($response);
@@ -213,6 +203,7 @@ $preconDecklinks = [
   "https://fabrary.net/decks/01KNHHE1MY39BC4PXYXMTJVT1M", //hala
   "https://fabrary.net/decks/01KREWW7RJS0GZ2PCCD4BM47QY", //zyggy
   "https://fabrary.net/decks/01KP7ZJNFZZD8YNGP438FT8SFG", //olympia
+  "https://fabrary.net/decks/01KXQF1YZHCHP2KAMDBS5WC5Q9", //malice
 ];
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
@@ -290,6 +281,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $isFaBDB = str_contains($decklink, "fabdb");
    $isFaBMeta = str_contains($decklink, "fabmeta");
    $isFaBTCGMeta = str_contains($decklink, "fabtcgmeta");
+   $isFaBBazaar = IsFaBBazaarHostLink($decklink);
    if ($isFaBDB) {
      $decklinkArr = explode("/", $decklink);
      $slug = $decklinkArr[count($decklinkArr) - 1];
@@ -301,14 +293,13 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
      $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
    }
-   else if (str_contains($decklink, "fabbazaar.app")) {
-     preg_match('/fabbazaar\.app\/decks\/([a-zA-Z0-9_-]+)/', $decklink, $matches);
-     if (!isset($matches[1])) {
+   else if ($isFaBBazaar) {
+     $deckId = ExtractFaBBazaarDeckId($decklink);
+     if ($deckId === '') {
        $response->error = "Invalid FaB Bazaar deck URL format. Expected: https://fabbazaar.app/decks/DECK_ID";
        echo (json_encode($response));
        exit;
      }
-     $deckId = $matches[1];
      $headers = array(
        "x-api-key: " . $FaBBazaarKey,
        "Content-Type: application/json",
@@ -353,15 +344,15 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      exit;
    }
    $deckObj = json_decode($apiDeck);
-   if ($apiInfo['http_code'] == 401 && str_contains($decklink, "fabbazaar.app")) {
+   if ($apiInfo['http_code'] == 401 && $isFaBBazaar) {
      $response->error = "API UNAUTHORIZED! FaB Bazaar API key is missing. Contact site administrator.";
      echo (json_encode($response));
      die();
-   } elseif ($apiInfo['http_code'] == 404 && str_contains($decklink, "fabbazaar.app")) {
+   } elseif ($apiInfo['http_code'] == 404 && $isFaBBazaar) {
      $response->error = "Deck not found on FaB Bazaar. The deck may be private, deleted, or the URL is incorrect.";
      echo (json_encode($response));
      die();
-   } elseif ($apiInfo['http_code'] == 429 && str_contains($decklink, "fabbazaar.app")) {
+   } elseif ($apiInfo['http_code'] == 429 && $isFaBBazaar) {
      $response->error = "FaB Bazaar rate limit exceeded. Please wait a minute and try again.";
      echo (json_encode($response));
      die();
@@ -421,7 +412,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $orderedSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DTD", "TCC", "EVO", "HVY",
                    "MST", "AKO", "ASB", "ROS", "AAZ", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX",
                    "HER", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP", "SUP", "APS", "PEN", "AHA",
-                   "OMN", "AZS", "MPW", "AOL"];
+                   "OMN", "AZS", "MPW", "DDD", "AOL"];
 
    if (is_countable($cards)) {
      $cardCount = count($cards);
@@ -690,10 +681,10 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
        WriteLog("⚠️ This lobby was hidden due to inactivity. If you have connection issues, try creating a new game.", path: "../");
      }
 
-    if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron) && $p2IsAI !== "1") {
+    if (ShouldSkipRustCountersForSupporterGame($p1IsPatron, $p2IsPatron)) {
       WriteLog("No rust counters were accrued because this game includes a Talishar supporter ❤️", highlight:true, path: "../", highlightColor: "green");
     }
-    elseif (ShouldSkipRustCountersForContributors() && $p2IsAI !== "1") {
+    elseif (ShouldSkipRustCountersForContributors()) {
       WriteLog("No rust counters were accrued because this game includes a Talishar contributor ❤️", highlight:true, path: "../", highlightColor: "green");
     }
 
@@ -917,8 +908,14 @@ function IsCardBanned($cardID, $format, $character)
       if (in_array($cardID, $benched)) return false;
       switch($cardID) {
         case "prism_advent_of_thrones":
-        case "dorinthea_quicksilver_prodigy":
-        case "dawnblade_resplendent":
+        case "runechant_of_envy_yellow":
+        case "runechant_of_gluttony_yellow":
+        case "runechant_of_pride_yellow":
+        case "runechant_of_wrath_yellow":
+        case "runechant_of_lust_yellow":
+        case "runechant_of_sloth_yellow":
+        case "the_hand_that_pulls_the_strings":
+        case "minerva_themis":
           return false;
         default:
           break;
@@ -967,7 +964,7 @@ function isSpecialUsePromo($cardID) {
       "runechant_of_pride_yellow", "runechant_of_wrath_yellow", "runechant_of_lust_yellow",
       "runechant_of_sloth_yellow", "runic_reaving_red"
     ]);
-    $unreleasedSetNames = array_flip(["DDD", "IAR", "AMA", "SPW", "SAT", "SBW", ""]);
+    $unreleasedSetNames = array_flip(["IAR", "AMA", "SPW", "SAT", "SBW", "MPA", "AMO", ""]);
   }
   if (isset($releaseSet[$cardID])) return false;
   return isset($promoSet[$cardID]) || isset($unreleasedSetNames[CardSet($cardID)]);
@@ -976,9 +973,9 @@ function isSpecialUsePromo($cardID) {
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
-    case "DDD":
     case "IAR":
     case "AMA":
+    case "SPW":
     case "": // cards that don't have a set id yet
       $card = GetClass($cardID, 0);
       return $card == "-";
@@ -1118,6 +1115,8 @@ function ProcessCard($id, $count, $numSideboard, $isFaBDB, &$totalCards, &$modul
   
   // uncomment on 4/1
   // $id = $id == "titanium_bauble_blue" && !str_contains($format, "comp") ? "fangs_a_lot_blue" : $id;
+  if (HasIncarnate($id)) return;
+
   $cardName = CardName($id);
   if ($cardName == "" || isUnimplemented($id)) {
       echo "$id - $cardName";

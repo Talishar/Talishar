@@ -90,10 +90,15 @@ class BanishCard {
       return $this->banish[$this->index] ?? "-";
     }
 
+    function CardID() //alias for ID
+    {
+      return $this->ID();
+    }
+
     function Modifier()
     {
-        $key = $this->index + 1;
-        return $this->banish[$key] ?? null;
+      $key = $this->index + 1;
+      return $this->banish[$key] ?? null;
     }
 
     function Modify($mod) {
@@ -107,7 +112,7 @@ class BanishCard {
 
     function SetModifier($newModifier)
     {
-      if (isset($this->banish[$this->index+1])) $this->banish[$this->index+1] = $newModifier;
+      $this->Modify($newModifier);
     }
 
     function ClearModifier()

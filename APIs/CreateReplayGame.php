@@ -6,6 +6,7 @@ include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
+include_once "../Libraries/ReplayLibraries.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once '../includes/functions.inc.php';
 
@@ -19,7 +20,7 @@ if ($userId == "") {
 }
 $response = new stdClass();
 
-$_POST = json_decode(file_get_contents('php://input'), true);
+$_POST = ReadJsonBody();
 
 $replayNumber = $_POST["replayNumber"] ?? null;
 
@@ -97,12 +98,6 @@ if (!empty($missingFiles)) {
   exit;
 }
 
-// if (!file_exists("./Replays/" . $userId . "/" . $replayNumber . "/")) {
-//   echo ("That replay file does not exist.");
-//   exit;
-// }
-
-
 $gameName = GetGameCounter("../");
 
 if (!file_exists("../Games/$gameName") && !mkdir("../Games/$gameName", 0700, true)) {
@@ -163,12 +158,21 @@ $p1uid = "-";
 $p2uid = "-";
 $p1DisplayName = "";
 $p2DisplayName = "";
+$replayPlayerID = 1;
 $metadataPath = $replayPath . "replayMetadata.json";
 if (file_exists($metadataPath)) {
   $replayMetadata = json_decode(file_get_contents($metadataPath), true);
   if (is_array($replayMetadata)) {
     $p1DisplayName = trim((string)($replayMetadata["p1DisplayName"] ?? ""));
     $p2DisplayName = trim((string)($replayMetadata["p2DisplayName"] ?? ""));
+    $savedByPlayerID = (int)($replayMetadata["savedByPlayerID"] ?? 0);
+    if ($savedByPlayerID === 1 || $savedByPlayerID === 2) {
+      $replayPlayerID = $savedByPlayerID;
+    }
+    elseif ($p2DisplayName !== "" && strcasecmp($p2DisplayName, $userId) === 0) {
+      // Replays saved before savedByPlayerID was added can often be matched by name.
+      $replayPlayerID = 2;
+    }
   }
 }
 $p1id = "-";
@@ -226,6 +230,9 @@ file_put_contents(
 if (!@copy($commandFileSource, $commandFileDest)) {
   $copyErrors[] = "Failed to copy command file from $commandFileSource to $commandFileDest";
 }
+if (ReadReplayFormat($replayPath) !== null && !CopyReplayStateFiles($replayPath, "../Games/$gameName/")) {
+  $copyErrors[] = "Failed to copy or verify replay state snapshots";
+}
 
 for ($player = 1; $player < 3; ++$player) {
   $turn = 1;
@@ -282,13 +289,12 @@ if ($gamestate === false) {
 
 WriteGamestateCache($gameName, $gamestate);
 
-$response->playerID = 1;
+$response->playerID = $replayPlayerID;
 $response->gameName = $gameName;
-$response->authKey = $p1Key;
-$response->message = "Replay game created successfully!";
+$response->authKey = $replayPlayerID === 2 ? $p2Key : $p1Key;
+$response->message = "Replay game created.";
 $response->success = true;
 
 echo json_encode($response);
 
-// // header("Location: NextTurn4.php?gameName=$gameName&playerID=1&authKey=$p1Key");
 // header("Location: http://127.0.0.1/:5173/game/play?gameName=$gameName&playerID=1&authKey=$p1Key");

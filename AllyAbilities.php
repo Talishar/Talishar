@@ -16,6 +16,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     $number -= $numMinusTokens;
     if ($number <= 0) {
       WriteLog(CardLink("ripple_away_blue") . " prevented the creation of a " . CardLink($cardID) . " token");
+      return;
     } else {
       WriteLog(CardLink("ripple_away_blue") . " reduced by 1 the creation of " . CardLink($cardID) . " tokens");
     }
@@ -29,7 +30,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   $hasCrank = HasCrank($cardID, $player);
   $isOuvia = ($cardID == "ouvia");
   $index = count($allies);
-  if (($from == "GY" || $from == "BANISH") && SearchCharacterAlive($player, "vox_necropolis"))
+  if (($from == "GY" || $from == "BANISH" || $from == "THEIRBANISH") && SearchCharacterAlive($player, "vox_necropolis"))
     $tapped = true;
   for ($i = 0; $i < $number; ++$i) {
     $allies[] = $cardID;
@@ -59,16 +60,14 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $number);
   }
   $index = count($allies) - $allyPieces;
-  if ($from == "GY" || $from == "BANISH") {
-    if (SearchCharacterAlive($player, "vox_necropolis")) {
-      $AllyCard = new AllyCard($index, $player);
-      AddDecisionQueue("GETTARGETOFATTACK", $player, $AllyCard->CardID() . ",PLAY,1");
-      Await($player, "AQTargeting", "target", lastResultName:"target");
-      Await($player, "AddTrigger", uniqueID:$AllyCard->UniqueID(), cardID:"vox_necropolis", final:true);
-    }
+  $Character = new PlayerCharacter($player);
+  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $CharacterCard = $Character->Card($i, true);
+    $card = GetClass($CharacterCard->ID(), $player);
+    if ($card != "-") $card->PermanentAllyPlayAbility($index, $CharacterCard->Index(), $from);
   }
   $card = GetClass($cardID, $player);
-  if ($card != "-") $card->EntersArenaAbility();
+  if ($card != "-") $card->EntersArenaAbility($index);
   CheckUnique($player);
   return $index;
 }
@@ -83,35 +82,54 @@ function CheckAllyDeath($player)
   }
 }
 
-function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false)
+function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false, $skipClose = false, $mod = "-")
 {
   if ($index < 0) return "";
   $allies = &GetAllies($player);
   $allyPieces = AllyPieces();
+  if ($index % $allyPieces != 0 || !isset($allies[$index + $allyPieces - 1])) return "";
   $otherPlayer = 3 - $player;
   $owner = (($allies[$index+14] ?? "") == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   $cardID = $allies[$index];
   RemoveAllyEffects($player, $cardID, $uniqueID);
-  if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep()) {
+  if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep() && !$skipClose) {
     CloseCombatChain();
   }
-  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished);
-  AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished);
+  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished, mod:$mod, index:$index);
+  AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished, mod:$mod);
+  RemoveAllyBoundAuras($player, $index);
   array_splice($allies, $index, $allyPieces);
   return $cardID;
 }
 
 function RemoveAllyEffects($player, $cardID, $uniqueID)
 {
+  global $CurrentTurnEffects;
   $otherPlayer = 3 - $player;
-  if ($cardID == "blasmophet_the_insatiable_hunger") SearchCurrentTurnEffects($cardID, $player, true);
+  if ($cardID == "blasmophet_the_insatiable_hunger") {
+    $Effect = $CurrentTurnEffects->FindSpecificEffect($cardID, $uniqueID);
+    $Effect->Remove();
+  }
   if ($uniqueID == SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, returnUniqueID: true)) SearchCurrentTurnEffects("chum_friendly_first_mate_yellow", $otherPlayer, true);
 }
 
-function AllyAddGraveyard($player, $cardID, $toBanished=false)
+function RemoveAllyBoundAuras($player, $index) {
+  $AllyCard = new AllyCard($index, $player);
+  $Auras = new Auras($player);
+  $uid = "MYALLY-" . $AllyCard->UniqueID();
+  for ($i = $Auras->NumAuras() - 1; $i >=0 ; --$i) {
+    $AuraCard = $Auras->Card($i, true);
+    if ($AuraCard->BoundTo() == $uid)
+      $AuraCard->Destroy(skipTrigger:true);
+  }
+}
+
+function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-", $index=-1)
 {
   if ($cardID == "-") return;
+  $AllyCard = new AllyCard($index, $player);
+  $uid = $AllyCard->Index() != -1 ? $AllyCard->UniqueID() : "-";
   if (!TypeContains($cardID, "T")) {
     if (SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
     $card = GetClass($cardID, $player);
@@ -142,8 +160,8 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false)
       "sticky_fingers_ally" => "sticky_fingers",
       default => $cardID
     };
-    if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player);
-    else BanishCardForPlayer($id, $player, "PLAY");
+    if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player, uniqueID:$uid);
+    else BanishCardForPlayer($id, $player, "PLAY", $mod);
   }
 }
 
@@ -321,7 +339,7 @@ function SpecificAllyAttackAbilities($attackID)
 {
   global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_ArcaneTargetsSelected;
   $allies = &GetAllies($mainPlayer);
-  $i = $combatChainState[$CCS_WeaponIndex];
+  $i = GetCombatChainState($CCS_WeaponIndex);
   if (isset($allies[$i]) && $attackID == $allies[$i]) {
     switch ($allies[$i]) {
       case "dracona_optimai":
@@ -619,7 +637,7 @@ function StealAlly($srcPlayer, $index, $destPlayer, $from, $mod=0, $tapState=0)
   $srcAlly = array_values($srcAlly);
 }
 
-function DamageAlly($targetPlayer, $targetInd, $damage, $type) {
+function DamageAlly($targetPlayer, $targetInd, $damage, $type, $countAsDamageDealtBy = 0) {
   $allies = &GetAllies($targetPlayer);
   if ($allies[$targetInd + 6] > 0) {
     $damage -= 3;
@@ -627,9 +645,11 @@ function DamageAlly($targetPlayer, $targetInd, $damage, $type) {
     --$allies[$targetInd + 6];
   }
   $damage = AllyDamagePrevention($targetPlayer, $targetInd, $damage, $type);
+  $healthBefore = max(0, intval($allies[$targetInd + 2]));
   $allies[$targetInd + 2] -= $damage;
   if ($damage > 0) {
-    LogDamagePreventedStats($targetPlayer, $damage);
+    if ($countAsDamageDealtBy == 0) LogDamagePreventedStats($targetPlayer, $damage);
+    elseif ($countAsDamageDealtBy != $targetPlayer) LogDamageStats($targetPlayer, $damage, min($damage, $healthBefore));
     AllyDamageTakenAbilities($targetPlayer, $targetInd);
   }
   if ($allies[$targetInd + 2] <= 0) DestroyAlly($targetPlayer, $targetInd, uniqueID: $allies[$targetInd + 5]);
@@ -639,6 +659,8 @@ function DamageAlly($targetPlayer, $targetInd, $damage, $type) {
 function AllyAttackCosts($player, $cardID) {
   if (SearchCharacterAlive($player, "vox_necropolis") && SubtypeContains($cardID, "Zombie"))
     return 1;
+  if ((SearchCurrentTurnEffects("consuming_appetite_yellow", $player) || SearchCurrentTurnEffects("consuming_command_blue", $player)) && NameOverride($cardID, $player) == "Blasmophet, the Insatiable Hunger")
+    return 0;
   return -1;
 }
 
@@ -647,9 +669,11 @@ function PayAllyAbilityAdditionalCosts($cardID, $index, $from) {
   if (GetResolvedAbilityType($cardID, $from) == "AA") {
     if (SearchCharacterAlive($currentPlayer, "vox_necropolis") && SubtypeContains($cardID, "Zombie")) {
       $AllyCard = new AllyCard($index, $currentPlayer);
-      $AllyCard->SetStatus(2);
-      $AllyCard->AddUses(1);
-      $AllyCard->Tap();
+      $AllyCard->TapForCost();
+    }
+    if (SearchCurrentTurnEffects("consuming_appetite_yellow", $currentPlayer) || SearchCurrentTurnEffects("consuming_command_blue", $currentPlayer)) {
+      $AllyCard = new AllyCard($index, $currentPlayer);
+      $AllyCard->TapForCost();
     }
   }
 }
@@ -661,6 +685,10 @@ function AllyAbilityRestricted($cardID, $index, $from) {
       $AllyCard = new AllyCard($index, $currentPlayer);
       return $AllyCard->Tapped();
     }
+    if (SearchCurrentTurnEffects("consuming_appetite_yellow", $currentPlayer) || SearchCurrentTurnEffects("consuming_command_blue", $currentPlayer)) {
+      $AllyCard = new AllyCard($index, $currentPlayer);
+      return $AllyCard->Tapped();
+    }
   }
   return false;
 }
@@ -669,6 +697,7 @@ function AllyPowerModifiers(&$powerModifiers, $index = -1)
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain, $CS_NumCharged, $CS_NumAttacks;
   $modifier = 0;
+  if (!is_numeric($mainPlayer)) return $modifier;
   $Allies = new Allies($mainPlayer);
   for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
     $AllyCard = $Allies->Card($i, true);

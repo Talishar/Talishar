@@ -60,6 +60,8 @@ function TypeToPlay($phase)
       return "a button";
     case "BUTTONINPUTNOPASS":
       return "a button";
+    case "ARSENALORHEAVE":
+      return "whether to heave or arsenal a card";
     case "MAYCHOOSEDISCARD":
       return "cards from the graveyard";
     case "CHOOSEDISCARDCANCEL":
@@ -135,6 +137,8 @@ function WaitingMessage($phase)
     case "BUTTONINPUTNOPASS":
     case "NUMBERINPUT":
       return "Waiting for opponent to make a choice";
+    case "ARSENALORHEAVE":
+      return "Waiting for other player to choose a card to arsenal";
     case "CHOOSEFIRSTPLAYER":
       return "Waiting for opponent to choose who goes first";
     default:

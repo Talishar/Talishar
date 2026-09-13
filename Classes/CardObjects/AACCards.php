@@ -45,7 +45,7 @@ class meet_madness_red extends Card {
 				AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
 				AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
 				//including $cardID as the third param makes it count for contracts
-				AddDecisionQueue("BANISHCARD", $defPlayer, "THEIRHAND,-,$cardID", 1);
+				AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-,$cardID", 1);
 				break;
 			case 2:
 				//including $cardID as the third param makes it count for contracts
@@ -158,7 +158,7 @@ class creep_red extends Card {
 		return HasStealth($attackID) && TypeContains($attackID, "AA", $this->controller);
 	}
 
-	function RemoveEffectFromCombatChain() {
+	function RemoveEffectFromCombatChain($effectIndex) {
 		return true;
 	}
 }
@@ -320,6 +320,6 @@ class inverters_nightcowl extends Card {
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		GainResources($this->controller, 1);
+		GainResources(1, $this->controller);
 	}
 }

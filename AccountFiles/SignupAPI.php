@@ -2,7 +2,7 @@
 
   require_once "../Libraries/HTTPLibraries.php";
 
-  $_POST = json_decode(file_get_contents('php://input'), true);
+  $_POST = ReadJsonBody();
 
   $username = isset($_POST["userId"]) ? $_POST["userId"] : null;
   $email = isset($_POST["email"]) ? $_POST["email"] : null;

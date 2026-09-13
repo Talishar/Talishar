@@ -181,35 +181,3 @@ function UnblockUser($userId, $blockedUserId) {
  * @param array $userIds
  * @return array List of blocked user IDs
  */
-function GetBlockedUserIds($userId, $userIds = []) {
-  global $conn;
-  
-  if (!is_numeric($userId) || empty($userIds)) {
-    return [];
-  }
-  
-  // Build IN clause for user IDs
-  $placeholders = implode(',', array_fill(0, count($userIds), '?'));
-  $query = "SELECT blockedUserId FROM blocked_users WHERE userId = ? AND blockedUserId IN ($placeholders)";
-  
-  $stmt = $conn->prepare($query);
-  if (!$stmt) {
-    return [];
-  }
-  
-  // Bind parameters
-  $types = 'i' . str_repeat('i', count($userIds));
-  $bindParams = array_merge([$types, $userId], $userIds);
-  
-  call_user_func_array([$stmt, 'bind_param'], $bindParams);
-  $stmt->execute();
-  $result = $stmt->get_result();
-  
-  $blockedIds = [];
-  while ($row = $result->fetch_assoc()) {
-    $blockedIds[] = $row['blockedUserId'];
-  }
-  
-  $stmt->close();
-  return $blockedIds;
-}

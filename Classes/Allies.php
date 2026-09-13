@@ -77,9 +77,9 @@ class AllyCard {
     return $this->pieces[$this->index + 2] ?? 0;
   }
 
-  public function Damage(int $damage, string $type = "DAMAGE"): int {
+  public function Damage(int $damage, string $type = "DAMAGE", int $countAsDamageDealtBy = 0): int {
     if (isset($this->pieces[$this->index + 2]))
-      return DamageAlly($this->controller, $this->index, $damage, $type);
+      return DamageAlly($this->controller, $this->index, $damage, $type, $countAsDamageDealtBy);
     return 0;
   }
 
@@ -143,6 +143,13 @@ class AllyCard {
       $this->pieces[$this->index + 11] = $tapState;
   }
 
+  public function TapForCost(int $tapState = 1): void {
+    if (isset($this->pieces[$this->index + 11]))
+      $this->pieces[$this->index + 11] = $tapState;
+    $this->AddUses(1);
+    $this->SetStatus(2);
+  }
+
   public function SteamCounters(): int {
     return $this->pieces[$this->index + 12] ?? 0;
   }
@@ -155,7 +162,8 @@ class AllyCard {
     return $this->pieces[$this->index + 14] ?? "-";
   }
 
-  public function Destroy(bool $skipDestroy = false, bool $fromCombat = false, string $uniqueID = "", bool $toBanished = false): void {
-    DestroyAlly($this->controller, $this->index, $skipDestroy, $fromCombat, $uniqueID, $toBanished);
+  public function Destroy(bool $skipDestroy = false, bool $fromCombat = false, string $uniqueID = "", bool $toBanished = false, $skipClose = false, $mod = "-"): void {
+    if ($uniqueID == "") $uniqueID = $this->UniqueID();
+    DestroyAlly($this->controller, $this->index, $skipDestroy, $fromCombat, $uniqueID, $toBanished, $skipClose, $mod);
   }
 }

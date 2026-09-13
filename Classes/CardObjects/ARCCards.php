@@ -266,17 +266,34 @@ class aether_sink_yellow extends Card {
 // }
 
 
-// class arknight_ascendancy_red extends Card {
+class arknight_ascendancy_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "arknight_ascendancy_red";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "arknight_ascendancy_red";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function HasDominate() {
+		return true;
+	}
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function SelfCostModifier($from) {
+		return -1 * NumRunechants($this->controller);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		global $CCS_DamageDealt;
+		$damageDone = GetCombatChainState($CCS_DamageDealt);
+        PlayAura("runechant", $this->controller, $damageDone);
+	}
+}
 
 
 // class art_of_war_yellow extends Card {
@@ -546,8 +563,8 @@ class cognition_nodes_blue extends Card {
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
 		global $CCS_GoesWhereAfterLinkResolves, $combatChainState, $CombatChain;
 		$otherPlayer = $this->controller == 1 ? 2 : 1;
-		if ($combatChainState[$CCS_GoesWhereAfterLinkResolves] != "-") {
-			$combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-";
+		if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-") {
+			SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
 			$destPlayer = (substr($from, 0, 5) == "THEIR") ? $otherPlayer : $this->controller;
 			AddBottomDeck($CombatChain->AttackCard()->ID(), $destPlayer, "CC");
 			WriteLog("⬇️ Adding " . CardLink($CombatChain->AttackCard()->ID()) . " to the bottom of the deck");
@@ -2456,43 +2473,86 @@ class ravenous_rabble_blue extends Card {
 // }
 
 
-// class stir_the_aetherwinds_red extends Card {
+class stir_the_aetherwinds extends BaseCard {
+	function PlayAbility() {
+		global $CS_NextWizardNAAInstant;
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		SetClassState($this->controller, $CS_NextWizardNAAInstant, 1);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "stir_the_aetherwinds_red";
-//     $this->controller = $controller;
-//     }
+	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		global $Stack;
+		$Effect = new CurrentEffect($effectIndex);
+		$TopLayer = $Stack->TopLayer($cardID);
+		if ($TopLayer->PlayerID() != $this->controller) return;
+		if (IsActivated($cardID, $from)) return;
+		if (ClassContains($TopLayer->ID(), "WIZARD", $this->controller) && TypeContains($TopLayer->ID(), "A"))
+			$Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class stir_the_aetherwinds_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "stir_the_aetherwinds_red";
+		$this->controller = $controller;
+		$this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+	}
+  
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	$this->baseCard->PlayAbility();
+		return "";
+  	}
 
+  	function CardEffectArcaneBonus() {
+		return 3;
+  	}
 
-// class stir_the_aetherwinds_yellow extends Card {
+  	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
+  	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "stir_the_aetherwinds_yellow";
-//     $this->controller = $controller;
-//     }
+class stir_the_aetherwinds_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "stir_the_aetherwinds_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+	}
+  
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+		return "";
+  	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function CardEffectArcaneBonus() {
+			return 2;
+	}
 
+  	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
+  	}
+}
 
-// class stir_the_aetherwinds_blue extends Card {
+class stir_the_aetherwinds_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "stir_the_aetherwinds_blue";
+		$this->controller = $controller;
+		$this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+	}
+  
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$this->baseCard->PlayAbility();
+		return "";
+  	}
 
-//   function __construct($controller) {
-//     $this->cardID = "stir_the_aetherwinds_blue";
-//     $this->controller = $controller;
-//     }
+ 	function CardEffectArcaneBonus() {
+		return 1;
+  	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
+  	}
+}
 
 
 // class storm_striders extends Card {

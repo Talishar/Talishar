@@ -28,7 +28,7 @@ function RVDPlayAbility($cardID)
   $rv = "";
   switch($cardID) {
     case "blossom_of_spring":
-      GainResources($currentPlayer, 1);
+      GainResources(1, $currentPlayer);
       return "";
     case "wrecking_ball_red":
       Draw($currentPlayer);

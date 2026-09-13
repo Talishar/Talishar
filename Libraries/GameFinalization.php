@@ -2,6 +2,7 @@
 
 // Shared processing for ProcessInput.php and ProcessInputAPI.php
 include_once "Libraries/CacheLibraries.php";
+include_once "Libraries/RematchLibraries.php";
 
 ProcessMacros();
 
@@ -12,6 +13,10 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
 
   $p1OrigPath = "./Games/{$gameName}/p1DeckOrig.txt";
   $p2OrigPath = "./Games/{$gameName}/p2DeckOrig.txt";
+
+  if ($isSwapRematch && $p2IsAI == "1" && !file_exists($p2OrigPath) && file_exists("./Games/{$gameName}/p2Deck.txt")) {
+    copy("./Games/{$gameName}/p2Deck.txt", $p2OrigPath);
+  }
 
   if ($isSwapRematch && file_exists($p1OrigPath) && file_exists($p2OrigPath)) {
     $tempPath = "./Games/{$gameName}/p_swap_temp.txt";
@@ -34,11 +39,12 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
     [$p1MetafyCommunities, $p2MetafyCommunities] = [$p2MetafyCommunities, $p1MetafyCommunities];
   }
 
+  $gameGUID = ResetGameGUIDForRematch(); // Required for distinct hero mastery awards.
   $p2IsAILocal = $p2IsAI == "1";
-  $gameStatus = ($p2IsAILocal ? $MGS_ReadyToStart : $MGS_ChooseFirstPlayer);
+  $gameStatus = $MGS_ChooseFirstPlayer;
   SetCachePiece($gameName, 14, $gameStatus);
   $firstPlayer = 1;
-  $firstPlayerChooser = ($winner == 1 ? 2 : 1);
+  $firstPlayerChooser = ($p2IsAILocal ? 1 : ($winner == 1 ? 2 : 1));
   $p1SideboardSubmitted = "0";
   $p2SideboardSubmitted = ($p2IsAILocal ? "1" : "0");
 
@@ -47,7 +53,8 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
     WriteLog("🔁 Heroes swapped! Player $firstPlayerChooser will choose who goes first.", highlight: true, highlightColor: "darkblue");
   } else {
     TruncateLogAboveMarker(["sent a rematch invitation."]);
-    WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
+    if ($p2IsAILocal) WriteLog("You get to choose who goes first for the rematch.");
+    else WriteLog("Player $firstPlayerChooser lost and will choose first player for the rematch.");
   }
 
   WriteGameFile();
@@ -94,6 +101,15 @@ if (!$skipWriteGamestate) {
   }
   DoGamestateUpdate();
   include "WriteGamestate.php";
+}
+
+if (!IsReplay() && isset($replayCommandCountBefore)) {
+  $replayCommandCountAfter = ReplayCommandCount($filepath . "commandfile.txt");
+  if ($replayCommandCountAfter > $replayCommandCountBefore) {
+    if (SaveReplayStateSnapshot($filepath) === null) {
+      WriteLog("Replay state capture failed for input $replayCommandCountAfter.", highlight: true);
+    }
+  }
 }
 
 if ($makeCheckpoint) MakeGamestateBackup();

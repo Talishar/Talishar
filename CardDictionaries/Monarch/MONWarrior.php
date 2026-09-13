@@ -31,10 +31,10 @@
         }
         return "";
       case "hatchet_of_body":
-        if(CardNameContains(GetClassState($currentPlayer, $CS_LastAttack), "Hatchet of Mind", $currentPlayer)) AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
+        if(CardNameContains(GetClassState($currentPlayer, $CS_LastAttack), "Hatchet of Mind", $currentPlayer)) AddCharacterEffect($currentPlayer, GetCombatChainState($CCS_WeaponIndex), $cardID);
         return "";
       case "hatchet_of_mind":
-        if(CardNameContains(GetClassState($currentPlayer, $CS_LastAttack), "Hatchet of Body", $currentPlayer)) AddCharacterEffect($currentPlayer, $combatChainState[$CCS_WeaponIndex], $cardID);
+        if(CardNameContains(GetClassState($currentPlayer, $CS_LastAttack), "Hatchet of Body", $currentPlayer)) AddCharacterEffect($currentPlayer, GetCombatChainState($CCS_WeaponIndex), $cardID);
         return "";
       case "gallantry_gold":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -68,7 +68,7 @@
         Draw($mainPlayer);
         break;
       case "engulfing_light_red": case "engulfing_light_yellow": case "engulfing_light_blue":
-        $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "SOUL");
         break;
       default: break;
     }
@@ -78,9 +78,9 @@
   {
     global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
     $mainCharacter = &GetPlayerCharacter($mainPlayer);
-    if($mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] == 0) return;
-    $mainCharacter[$combatChainState[$CCS_WeaponIndex]+1] = 2;
-    ++$mainCharacter[$combatChainState[$CCS_WeaponIndex]+5];
+    if($mainCharacter[GetCombatChainState($CCS_WeaponIndex)+1] == 0) return;
+    $mainCharacter[GetCombatChainState($CCS_WeaponIndex)+1] = 2;
+    ++$mainCharacter[GetCombatChainState($CCS_WeaponIndex)+5];
   }
 
   function Charge($may=true, $player="", $mod="-")

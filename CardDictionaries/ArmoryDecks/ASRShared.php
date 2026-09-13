@@ -77,7 +77,7 @@ function ASRHitEffect($cardID)
       DestroyArsenal($defPlayer, effectController:$mainPlayer);      
       break;
     case "vengeance_never_rests_blue":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "-"; 
+      SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
       BanishCardForPlayer($cardID, $mainPlayer, "COMBATCHAIN", "TT", $mainPlayer);
       break;
     case "bittering_thorns_blue":

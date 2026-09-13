@@ -6,7 +6,7 @@
   $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "TCC", "EVO", "HVY",
                    "MST", "AKO", "ASB", "AAZ", "ROS", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "LGS", "HER",
                    "FAB", "JDG", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP", "SUP", "APS", "ARR", "AAC", "AHA", 
-                   "PEN", "OMN", "AZS", "MPW", "AOL", "DDD", "IAR", "AMA", "SAT", "SBW", "TNP"];
+                   "PEN", "OMN", "AZS", "MPW", "AOL", "DDD", "IAR", "AMA", "SAT", "SBW", "MPA", "AMO", "TNP"];
 
   // Main branch FAB Cube
   // $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
@@ -21,6 +21,13 @@
   $cardData = curl_exec($curl);
 
   $cardArray = json_decode($cardData);
+
+  $manualPrintings = [
+    "rise_to_the_challenge_red" => ["id" => "IAR050", "rarity" => "C"],
+    "rise_to_the_challenge_yellow" => ["id" => "IAR051", "rarity" => "C"],
+    "rise_to_the_challenge_blue" => ["id" => "IAR052", "rarity" => "C"]
+  ];
+  PatchMissingPrintings($cardArray, $manualPrintings);
 
   if(!is_dir(__DIR__ . "/GeneratedCode")) mkdir(__DIR__ . "/GeneratedCode", 777, true);
 
@@ -72,6 +79,7 @@
     GenerateKeywordFunction($cardArray, $handler, "Has" . $functionName, $keyword, false);
     if (in_array($keyword, $hasKeywordAmount)) GenerateKeywordFunction($cardArray, $handler, $functionName . "Amount", $keyword, true);
   }
+  GenerateKeywordFunction($cardArray, $handler, "IsAndOrFuse", "and/or", false);
 
   GenerateCardTokensFunction($cardArray, $handler);
 
@@ -102,6 +110,27 @@
       default => ""
     };
     return $cardID . $suffix;
+  }
+
+  function PatchMissingPrintings(&$cardArray, $manualPrintings)
+  {
+    for($i=0; $i<count($cardArray); ++$i)
+    {
+      if(count($cardArray[$i]->printings) > 0) continue;
+      $cardID = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
+      if(!isset($manualPrintings[$cardID])) continue;
+      $setID = $manualPrintings[$cardID]["id"];
+      $cardArray[$i]->printings[] = (object)[
+        "id" => $setID,
+        "set_id" => substr($setID, 0, 3),
+        "rarity" => $manualPrintings[$cardID]["rarity"],
+        "edition" => "N",
+        "foiling" => "S",
+        "art_variations" => [],
+        "image_url" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/" . $setID . ".webp"
+      ];
+      echo "Patched missing printing " . $setID . " onto " . $cardID . "<BR>";
+    }
   }
 
   function ValidSet($setID)

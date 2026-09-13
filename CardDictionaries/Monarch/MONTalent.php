@@ -178,11 +178,11 @@ function MONTalentHitEffect($cardID)
     case "illuminate_red":
     case "illuminate_yellow":
     case "illuminate_blue":
-      $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL";
+      SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "SOUL");
       break;
     case "rising_solartide_red":
     case "rising_solartide_yellow":
-    case "rising_solartide_blue": $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "SOUL"; break;
+    case "rising_solartide_blue": SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "SOUL"); break;
       case "soul_harvest_blue":
         if(IsHeroAttackTarget()) {
           $numSoul = count(GetSoul($defPlayer));
@@ -204,7 +204,7 @@ function MONTalentHitEffect($cardID)
       case "lunartide_plunderer_red": case "lunartide_plunderer_yellow": case "lunartide_plunderer_blue":
         if(IsHeroAttackTarget()) {
           BanishFromSoul($defPlayer);
-          $combatChainState[$CCS_GoesWhereAfterLinkResolves] = "BANISH";
+          SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BANISH");
         }
         break;
       default: break;
