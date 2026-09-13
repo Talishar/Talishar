@@ -1887,7 +1887,7 @@ class grasp_of_the_darknight extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     Opt($this->cardID, 1);
-    Await($this->controller, "PlayAura", cardID:"runechant");
+    Await($this->controller, "PlayAura", cardID:"runechant", subsequent:0);
     return "";
   }
 
