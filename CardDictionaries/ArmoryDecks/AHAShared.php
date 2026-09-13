@@ -46,6 +46,7 @@ function Sharpen($MZIndex, $player, $num=1) {
 function Rerebrace($MZIndex, $player, $num) {
 	if (SearchCurrentTurnEffects("reverent_rerebrace", $player)) // the replacement effect has already been applied and declined
 		return false;
+	if (!CanPayResources($player)) return false;
   $message = "if_you_want_to_sharpen_an_additional_time";
 	$context = "Choose if you want to destroy " . CardLink("reverent_rerebrace") . " to sharpen an additional time";
   $Sword = MZIndexToObject($player, $MZIndex);

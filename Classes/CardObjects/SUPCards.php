@@ -203,7 +203,7 @@ class bully_tactics_red extends Card {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
-    AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
+    AddPayPrompt("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
     AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
     AddDecisionQueue("SPECIFICCARD", $this->controller, "BULLY", 1);
     return;
@@ -622,7 +622,7 @@ class toby_jugs extends Card {
     $defCard = $CombatChain->FindCardUID($target);
     if ($defCard != "") {
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose how much to pay for " . CardLink($this->cardID, $this->cardID));
-      AddDecisionQueue("BUTTONINPUT", $this->controller, "0,1");
+      AddPayPrompt("BUTTONINPUT", $this->controller, "0,1");
       AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $this->controller, "1", 1);
       AddDecisionQueue("PASSPARAMETER", $this->controller, 2, 1);
@@ -4159,7 +4159,7 @@ class boots_to_the_boards extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a number of resources to pay");
-    AddDecisionQueue("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
+    AddPayPrompt("CHOOSENUMBER", $this->controller, "0,1,2,3", 1);
     AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
     AddDecisionQueue("SPECIFICCARD", $this->controller, "DIGIN,$this->cardID", 1);
   }

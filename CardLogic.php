@@ -2283,21 +2283,21 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "tripwire_trap_red":
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
+        AddPayPrompt("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_allow_hit_effects_this_chain_link", 1, 1);
         AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
         AddDecisionQueue("ELSE", $mainPlayer, "-");
         AddDecisionQueue("TRIPWIRETRAP", $mainPlayer, "-", 1);
         break;
       case "pitfall_trap_yellow":
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
+        AddPayPrompt("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_taking_2_damage", 1, 1);
         AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
         AddDecisionQueue("ELSE", $mainPlayer, "-");
         Await($player, "DealDamage", source:$parameter, damage:2, final:true);
         break;
       case "rockslide_trap_blue":
-        AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
+        AddPayPrompt("YESNO", $mainPlayer, "if_you_want_to_pay_1_to_avoid_your_attack_getting_-2", 1, 1);
         AddDecisionQueue("NOPASS", $mainPlayer, $parameter, 1);
         AddDecisionQueue("PAYRESOURCES", $mainPlayer, "1", 1);
         AddDecisionQueue("ELSE", $mainPlayer, "-");
@@ -2308,7 +2308,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) PlayAura("runechant", $player);
         break;
       case "metacarpus_node":
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
+        AddPayPrompt("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
         AddDecisionQueue("NOPASS", $player, "-", 1, 1);
         AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
         AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
@@ -2389,7 +2389,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "ironhide_gauntlet":
       case "ironhide_legs":
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-        AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+        AddPayPrompt("BUTTONINPUT", $player, "0,1");
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter, 1);
@@ -2442,7 +2442,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           ChannelTalent($target, "LIGHTNING");
         }
         else {
-          AddDecisionQueue("YESNO", $player, "do_you_want_to_pay_1_to_give_your_action_go_again", 0, 1);
+          AddPayPrompt("YESNO", $player, "do_you_want_to_pay_1_to_give_your_action_go_again", 0, 1);
           AddDecisionQueue("NOPASS", $player, "-", 1);
           AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
           AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
@@ -2451,7 +2451,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "rampart_of_the_rams_head":
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-        AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+        AddPayPrompt("BUTTONINPUT", $player, "0,1");
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "rampart_of_the_rams_head", 1);
@@ -2864,7 +2864,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "crows_nest":
         $arsenal = &GetArsenal($player);
-        AddDecisionQueue("YESNO", $player, "if you want to pay 1 to put an aim counter on the arrow");
+        AddPayPrompt("YESNO", $player, "if you want to pay 1 to put an aim counter on the arrow");
         AddDecisionQueue("NOPASS", $player, "-");
         AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
         AddDecisionQueue("PASSPARAMETER", $player, count($arsenal) - ArsenalPieces(), 1);
@@ -2931,7 +2931,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "vambrace_of_determination":
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-        AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+        AddPayPrompt("BUTTONINPUT", $player, "0,1");
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter . "-BB", 1);
@@ -2944,7 +2944,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "spark_spray_red":
       case "spark_spray_yellow":
       case "spark_spray_blue":
-        AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_1_to_buff_".CardLink($parameter, $parameter), 0, 1);
+        AddPayPrompt("YESNO", $player, "if_you_want_to_pay_1_to_buff_".CardLink($parameter, $parameter), 0, 1);
         AddDecisionQueue("NOPASS", $player, "-", 1);
         AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
@@ -3664,7 +3664,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "heavy_industry_ram_stop":
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose how much to pay for " . CardLink($parameter, $parameter));
-        AddDecisionQueue("BUTTONINPUT", $player, "0,1");
+        AddPayPrompt("BUTTONINPUT", $player, "0,1");
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("LESSTHANPASS", $player, "1", 1);
         AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $parameter, 1);
@@ -4066,7 +4066,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "dig_in_yellow":
       case "dig_in_blue":
         AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
-        AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
+        AddPayPrompt("CHOOSENUMBER", $player, "0,1,2,3", 1);
         AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
         AddDecisionQueue("SPECIFICCARD", $player, "DIGIN,$parameter", 1);
         break;
@@ -4275,7 +4275,7 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
     case "bask_in_your_own_greatness_yellow":
     case "bask_in_your_own_greatness_blue":
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a number of resources to pay");
-      AddDecisionQueue("CHOOSENUMBER", $player, "0,1,2,3", 1);
+      AddPayPrompt("CHOOSENUMBER", $player, "0,1,2,3", 1);
       AddDecisionQueue("PAYRESOURCES", $player, "<-", 1);
       AddDecisionQueue("SPECIFICCARD", $player, "BASK,$cardID", 1);
       break;

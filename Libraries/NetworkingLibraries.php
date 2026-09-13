@@ -4233,7 +4233,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "hurl_yellow":
     case "hurl_blue":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much to pay for " . CardLink($cardID, $cardID));
-      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "0,1");
+      AddPayPrompt("BUTTONINPUT", $currentPlayer, "0,1");
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
       AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
       AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PAY1", 1);
@@ -4547,7 +4547,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       break;
     case "barbed_barrage_red":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Do you want to pay 3 to choose an additional attack target?");
-      AddDecisionQueue("YESNO", $currentPlayer, "", 1);
+      AddPayPrompt("YESNO", $currentPlayer, "", 1);
       AddDecisionQueue("NOPASS", $currentPlayer, "-");
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, 3, 1);
       AddDecisionQueue("PAYRESOURCES", $currentPlayer, "", 1);
