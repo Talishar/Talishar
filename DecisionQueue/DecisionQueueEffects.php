@@ -1246,6 +1246,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return "";
     case "BREAKSTATURE":
       $id = NameOverride($lastResult, $otherPlayer) == "" ? "" : $lastResult;
+      AddCurrentTurnEffect("break_stature_yellow", $otherPlayer, uniqueID: $id);
       AddNextTurnEffect("break_stature_yellow", $otherPlayer, uniqueID: $id);
       return "";
     case "MOUNTAINBASE":

@@ -2165,7 +2165,7 @@ function CurrentEffectEndTurnAbilities()
         $remove = true;
         break;
       case "annexation_of_all_things_known_yellow":
-        if (str_contains($currentTurnEffects[$i], "-MAIN") && $currentTurnEffects[$i+1] == $defPlayer) {
+        if ($currentTurnEffects[$i+1] == $defPlayer) {
           AddNextTurnEffect($currentTurnEffects[$i], $defPlayer);
         }
         break;
