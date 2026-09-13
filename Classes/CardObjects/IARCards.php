@@ -5314,6 +5314,8 @@ class restless_looter_red extends Card {
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if (GetResolvedAbilityType($this->cardID, $from, $this->controller) == "I" && $from == "PLAY") {
+      $Hand = new Hand($this->controller);
+      if ($Hand->NumCards() == 0) return "";
       PummelHit($this->controller);
       Await($this->controller, "Draw", effectSource: $this->cardID, final:true);
     }
