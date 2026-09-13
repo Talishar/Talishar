@@ -1050,185 +1050,199 @@ function CurrentEffectCostModifiers($cardID, $from, $index=-1)
 
 function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type, $source, $preventable=true)
 {
-  global $currentTurnEffects;
+  global $currentTurnEffects, $CCS_AttackTargetUID;
   $otherPlayer = 3 - $player;
   $effects = explode("-", $currentTurnEffects[$index], 2);
   $Effect = new CurrentEffect($index);
   $source = explode("|", $source, 2)[0] ?? $source;
   $card = GetClass($effects[0], $player);
-  if ($card != "-") {
-    $remove = false;
-    return $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, true);
-  }
-  switch ($effects[0]) {
-    case "blessing_of_serenity_red":
-    case "peace_of_mind_yellow":
-      if ($type == "COMBAT") {
-        return 3;
-      }
-      break;
-    case "blessing_of_serenity_yellow":
-    case "peace_of_mind_blue":
-      if ($type == "COMBAT") {
-        return 2;
-      }
-      break;
-    case "blessing_of_serenity_blue":
-      if ($type == "COMBAT") {
-        return 1;
-      }
-      break;
-    case "steadfast_red":
-    case "steadfast_yellow":
-    case "steadfast_blue":
-      return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
-    case "amulet_of_intervention_blue":
-    case "seekers_hood":
-    case "seekers_gilet":
-    case "seekers_mitts":
-    case "seekers_leggings":
-    case "interlude_blue":
-    case "sigil_of_shelter_blue":
-    case "sawbones_dock_hand_yellow":
-    case "dissolving_shield_red":
-    case "dissolving_shield_yellow":
-    case "dissolving_shield_blue":
-    case "battlefront_bastion_red":
-    case "battlefront_bastion_yellow":
-    case "battlefront_bastion_blue":
-    case "skycrest_keikoi":
-    case "skybody_keikoi":
-    case "skyhold_keikoi":
-    case "skywalker_keikoi":
-    case "runaways":
-    case "hood_of_second_thoughts":
-    case "bruised_leather":
-    case "four_finger_gloves":
-    case "crown_of_seeds":
-      return 1;
-    case "helios_mitre":
-      if ($source == $currentTurnEffects[$index + 2]) {
+  if ($type == "COMBAT" && IsHeroAttackTarget()) { // prevention to players
+    if ($card != "-") {
+      $remove = false;
+      return $card->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, true);
+    }
+    switch ($effects[0]) {
+      case "blessing_of_serenity_red":
+      case "peace_of_mind_yellow":
+        if ($type == "COMBAT") {
+          return 3;
+        }
+        break;
+      case "blessing_of_serenity_yellow":
+      case "peace_of_mind_blue":
+        if ($type == "COMBAT") {
+          return 2;
+        }
+        break;
+      case "blessing_of_serenity_blue":
+        if ($type == "COMBAT") {
           return 1;
         }
-      break;
-    case "brush_off_red":
-      if ($damage <= 3) {
-        return $damage;
-      }
-      break;
-    case "brush_off_yellow":
-      if ($damage <= 2) {
-        return $damage;
-      }
-      break;
-    case "brush_off_blue":
-      if ($damage == 1) {
-        return $damage;
-      }
-      break;
-    case "peace_of_mind_red":
-      if ($type == "COMBAT") {
-        return 4;
-      }
-      break;
-    case "break_of_dawn_red":
-    case "break_of_dawn_yellow":
-    case "break_of_dawn_blue":
-      $prevention = match ($effects[0]) {
-        "break_of_dawn_red" => 4,
-        "break_of_dawn_yellow" => 3,
-        "break_of_dawn_blue" => 2,
-      };
-      if (TalentContains($source, "SHADOW", $otherPlayer)) {
-        return $prevention;
-      }
-      break;
-    case "interlude_red":
-      return 3;
-    case "evo_circuit_breaker_red":
-    case "evo_atom_breaker_red":
-    case "evo_face_breaker_red":
-    case "evo_mach_breaker_red": //Card
-    case "evo_circuit_breaker_red_equip":
-    case "evo_atom_breaker_red_equip":
-    case "evo_face_breaker_red_equip":
-    case "evo_mach_breaker_red_equip": //Equipment
-      if (!isset($effects[1]) || $effects[1] != "BUFF") {
+        break;
+      case "steadfast_red":
+      case "steadfast_yellow":
+      case "steadfast_blue":
+        return $source == $currentTurnEffects[$index + 2] && $preventable ? $currentTurnEffects[$index + 3] : 0;
+      case "amulet_of_intervention_blue":
+      case "seekers_hood":
+      case "seekers_gilet":
+      case "seekers_mitts":
+      case "seekers_leggings":
+      case "interlude_blue":
+      case "sigil_of_shelter_blue":
+      case "dissolving_shield_red":
+      case "dissolving_shield_yellow":
+      case "dissolving_shield_blue":
+      case "battlefront_bastion_red":
+      case "battlefront_bastion_yellow":
+      case "battlefront_bastion_blue":
+      case "skycrest_keikoi":
+      case "skybody_keikoi":
+      case "skyhold_keikoi":
+      case "skywalker_keikoi":
+      case "runaways":
+      case "hood_of_second_thoughts":
+      case "bruised_leather":
+      case "four_finger_gloves":
+      case "crown_of_seeds":
+        return 1;
+      case "sawbones_dock_hand_yellow":
+        $DefHero = new CharacterCard(0, $player);
+        return ClassContains($DefHero->CardID(), "PIRATE", $player);
+      case "helios_mitre":
+        if ($source == $currentTurnEffects[$index + 2]) {
+            return 1;
+          }
+        break;
+      case "brush_off_red":
+        if ($damage <= 3) {
+          return $damage;
+        }
+        break;
+      case "brush_off_yellow":
+        if ($damage <= 2) {
+          return $damage;
+        }
+        break;
+      case "brush_off_blue":
+        if ($damage == 1) {
+          return $damage;
+        }
+        break;
+      case "peace_of_mind_red":
+        if ($type == "COMBAT") {
+          return 4;
+        }
+        break;
+      case "break_of_dawn_red":
+      case "break_of_dawn_yellow":
+      case "break_of_dawn_blue":
+        $prevention = match ($effects[0]) {
+          "break_of_dawn_red" => 4,
+          "break_of_dawn_yellow" => 3,
+          "break_of_dawn_blue" => 2,
+        };
+        if (TalentContains($source, "SHADOW", $otherPlayer)) {
+          return $prevention;
+        }
+        break;
+      case "interlude_red":
+        return 3;
+      case "evo_circuit_breaker_red":
+      case "evo_atom_breaker_red":
+      case "evo_face_breaker_red":
+      case "evo_mach_breaker_red": //Card
+      case "evo_circuit_breaker_red_equip":
+      case "evo_atom_breaker_red_equip":
+      case "evo_face_breaker_red_equip":
+      case "evo_mach_breaker_red_equip": //Equipment
+        if (!isset($effects[1]) || $effects[1] != "BUFF") {
+          return intval($effects[1]);
+        }
+        break;
+      case "dissipation_shield_yellow":
+      case "throw_caution_to_the_wind_blue":
+      case "no_fear_red":
+      case "seeds_of_tomorrow_blue":
+      case "hold_the_line_blue":
+      case "trip_the_light_fantastic_red":
+      case "trip_the_light_fantastic_yellow":
+      case "trip_the_light_fantastic_blue":
+      case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow":
+      case "twinkle_toes":
+      case "well_grounded":
+      case "oldhim_grandfather_of_eternity": case "oldhim":
+      case "bone_head_barrier_yellow":
         return intval($effects[1]);
-      }
-      break;
-    case "dissipation_shield_yellow":
-    case "throw_caution_to_the_wind_blue":
-    case "no_fear_red":
-    case "seeds_of_tomorrow_blue":
-    case "hold_the_line_blue":
-    case "trip_the_light_fantastic_red":
-    case "trip_the_light_fantastic_yellow":
-    case "trip_the_light_fantastic_blue":
-    case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow":
-    case "twinkle_toes":
-    case "well_grounded":
-    case "oldhim_grandfather_of_eternity": case "oldhim":
-    case "bone_head_barrier_yellow":
-      return intval($effects[1]);
-    case "haunting_rendition_red":
-    case "mental_block_blue":
-      if (!$preventable) return 0;
-      return intval($effects[1]);
-    case "interlude_yellow":
-    case "battered_not_broken_red":
-    case "take_it_on_the_chin_red":
-    case "slap_happy_red":
-    case "sheltered_cove":
-    case "sigil_of_shelter_yellow":
-      return 2;
-    case "shelter_from_the_storm_red":
-    case "calming_breeze_red":
-      return $Effect->NumUses() == $effects[1] ? 1 : 0;
-    case "moon_chakra_red":
-      return match ($currentTurnEffects[$index]) {
-        "moon_chakra_red-1" => 3,
-        default => 5,
-      };
-    case "moon_chakra_yellow":
-      return match ($currentTurnEffects[$index]) {
-        "moon_chakra_yellow-1" => 2,
-        default => 4,
-      };
-    case "moon_chakra_blue":
-      return match ($currentTurnEffects[$index]) {
-        "moon_chakra_blue-1" => 1,
-        default => 3,
-      };
-    case "essence_of_ancestry_body_red":
-      if (ColorContains($source, 1, $otherPlayer)) {
-        return $damage;
-      }
-      break;
-    case "essence_of_ancestry_soul_yellow":
-      if (ColorContains($source, 2, $otherPlayer)) {
-        return $damage;
-      }
-      break;
-    case "essence_of_ancestry_mind_blue":
-      if (ColorContains($source, 3, $otherPlayer)) {
-        return $damage;
-      }
-      break;
-    case "sanctuary_of_aria":
-      if ($source == $currentTurnEffects[$index + 2]) {
-        return $damage;
-      }
-      break;
-    case "misfire_dampener":
-      return $type == "ARCANE" ? intval($effects[1]) : 0;
-    case "light_up_the_leaves_red":
-      if ($source == $currentTurnEffects[$index + 2] && $type == "ARCANE") {
-        return $damage;
-      }
-      break;
-    default:
-      break;
+      case "haunting_rendition_red":
+      case "mental_block_blue":
+        if (!$preventable) return 0;
+        return intval($effects[1]);
+      case "interlude_yellow":
+      case "battered_not_broken_red":
+      case "take_it_on_the_chin_red":
+      case "slap_happy_red":
+      case "sheltered_cove":
+      case "sigil_of_shelter_yellow":
+        return 2;
+      case "shelter_from_the_storm_red":
+      case "calming_breeze_red":
+        return $Effect->NumUses() == $effects[1] ? 1 : 0;
+      case "moon_chakra_red":
+        return match ($currentTurnEffects[$index]) {
+          "moon_chakra_red-1" => 3,
+          default => 5,
+        };
+      case "moon_chakra_yellow":
+        return match ($currentTurnEffects[$index]) {
+          "moon_chakra_yellow-1" => 2,
+          default => 4,
+        };
+      case "moon_chakra_blue":
+        return match ($currentTurnEffects[$index]) {
+          "moon_chakra_blue-1" => 1,
+          default => 3,
+        };
+      case "essence_of_ancestry_body_red":
+        if (ColorContains($source, 1, $otherPlayer)) {
+          return $damage;
+        }
+        break;
+      case "essence_of_ancestry_soul_yellow":
+        if (ColorContains($source, 2, $otherPlayer)) {
+          return $damage;
+        }
+        break;
+      case "essence_of_ancestry_mind_blue":
+        if (ColorContains($source, 3, $otherPlayer)) {
+          return $damage;
+        }
+        break;
+      case "sanctuary_of_aria":
+        if ($source == $currentTurnEffects[$index + 2]) {
+          return $damage;
+        }
+        break;
+      case "misfire_dampener":
+        return $type == "ARCANE" ? intval($effects[1]) : 0;
+      case "light_up_the_leaves_red":
+        if ($source == $currentTurnEffects[$index + 2] && $type == "ARCANE") {
+          return $damage;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  elseif ($type == "COMBAT") { // prevention to allies
+    $Allies = new Allies($player);
+    $TargetAlly = $Allies->FindCardUID(GetCombatChainState($CCS_AttackTargetUID));
+    switch ($effects[0]) {
+      case "sawbones_dock_hand_yellow":
+        return ClassContains($TargetAlly->CardID(), "PIRATE", $player) ? 1 : 0;
+      default:
+        return 0;
+    }
   }
   return 0;
 }
