@@ -5137,7 +5137,7 @@ class mark_of_neverest_blue extends Card {
   function AuraPowerModifiers($index, &$powerModifiers, $auraIndex) {
     global $CombatChain;
     $AuraCard = new AuraCard($auraIndex, $this->controller);
-    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
+    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) {
       $powerModifiers[] = $this->cardID;
       $powerModifiers[] = 1;
       return 1;
@@ -5192,7 +5192,7 @@ class mark_of_pathstone_blue extends Card {
   function AuraPowerModifiers($index, &$powerModifiers, $auraIndex) {
     global $CombatChain;
     $AuraCard = new AuraCard($auraIndex, $this->controller);
-    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->UniqueID()) {
+    if ($AuraCard->BoundTo() == "MYALLY-" . $CombatChain->AttackCard()->OriginUniqueID()) {
       $powerModifiers[] = $this->cardID;
       $powerModifiers[] = 1;
       return 1;
