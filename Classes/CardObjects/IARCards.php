@@ -8400,6 +8400,10 @@ class permanent_interment extends BaseCard {
   function EffectPowerModifier($param, $attached = false) {
     return 1;
   }
+
+  function SpecialPower() { //database error
+    return 2;
+  }
 }
 
 class permanent_interment_red extends Card {
