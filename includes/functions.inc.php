@@ -869,9 +869,14 @@ function PrepareUserWebhookRequest($webhookUrl, $gameID, $detailedResult1Json, $
 	$ch = curl_init($webhookUrl);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+	// Only the status line matters. Buffering the body would let the remote host push as much
+	// data into this worker as it likes, so abort at the first body byte; by then the status
+	// code has already been parsed from the headers.
+	curl_setopt($ch, CURLOPT_WRITEFUNCTION, fn($handle, $chunk) => 0);
+	// Keep these tight: this runs in the request that finalises the match, so a host that hangs
+	// on purpose holds a web server worker for as long as we let it.
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 1000);
+	curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1500);
 	curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
 	// Never chase a redirect: it would be resolved and connected to without passing
 	// through the SSRF checks below. PHP defaults this off; set it explicitly so the
@@ -907,13 +912,23 @@ function executeWebhookRequests(array $handles): array
 		}
 	} while ($running > 0 && $status === CURLM_OK);
 
+	// curl_error() stays empty for handles driven by curl_multi; each transfer's result code
+	// is only reported here.
+	$errors = [];
+	while ($info = curl_multi_info_read($mh)) {
+		if ($info['result'] !== CURLE_OK) {
+			$errors[spl_object_id($info['handle'])] = curl_strerror($info['result']);
+		}
+	}
+
 	foreach ($handles as $playerID => $ch) {
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$curlError = curl_error($ch);
 		$results[$playerID] = [
-			'success' => ($httpCode === 200 && empty($curlError)),
+			// Any 2xx: many receivers answer 201/202/204 (Discord sends 204). A curl error does
+			// not mean failure here, since a response body is aborted on purpose.
+			'success' => $httpCode >= 200 && $httpCode < 300,
 			'code'    => $httpCode,
-			'error'   => $curlError,
+			'error'   => $errors[spl_object_id($ch)] ?? "",
 		];
 		curl_multi_remove_handle($mh, $ch);
 		curl_close($ch);
@@ -951,8 +966,8 @@ function SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2J
 			$handles[$playerID] = $ch;
 		} else {
 			// Rejected by the send-time SSRF re-check rather than by the remote host.
-			error_log("User webhook for player $playerID in game $gameResultID blocked: URL no longer resolves to a public address");
-			WriteLog("⚠️ Match result webhook for Player $playerID was blocked (URL no longer resolves to a public address)", highlight:true, highlightColor:"red");
+			error_log("User webhook for player $playerID in game $gameResultID blocked: URL failed the send-time safety check");
+			WriteLog("⚠️ Match result webhook for Player $playerID was blocked (URL failed the safety check)", highlight:true, highlightColor:"red");
 		}
 	}
 
@@ -963,9 +978,12 @@ function SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2J
 		if ($result['success']) {
 			WriteLog("🔗 Match result sent to Player $playerID's webhook", highlight:true, highlightColor:"green");
 		} else {
-			$detail = !empty($result['error']) ? $result['error'] : "HTTP {$result['code']}";
+			// Players see only the status, never curl's error text: "connection refused" versus
+			// "timed out" would tell them whether a port is open on the target host.
+			$shown = $result['code'] > 0 ? "HTTP {$result['code']}" : "no response";
+			$detail = $result['code'] > 0 ? $shown : $result['error'];
 			error_log("User webhook failed for player $playerID in game $gameResultID: $detail");
-			WriteLog("⚠️ Match result webhook failed for Player $playerID ($detail)", highlight:true, highlightColor:"red");
+			WriteLog("⚠️ Match result webhook failed for Player $playerID ($shown)", highlight:true, highlightColor:"red");
 		}
 	}
 }

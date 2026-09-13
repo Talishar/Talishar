@@ -132,6 +132,13 @@ if (!function_exists('ValidateWebhookUrl')) {
             return "Webhook URL must use http or https.";
         }
 
+        // Standard web ports only. Anything else would let a user aim our server at arbitrary
+        // services on public hosts, with the delivery result revealing whether the port is open.
+        $port = parse_url($url, PHP_URL_PORT);
+        if ($port !== null && !in_array($port, [80, 443], true)) {
+            return "Webhook URL must use port 80 or 443.";
+        }
+
         $host = parse_url($url, PHP_URL_HOST);
         if (empty($host)) {
             return "Webhook URL has no host.";
