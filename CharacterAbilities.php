@@ -707,7 +707,7 @@ function CharacterCostModifier($cardID, $from, $cost)
   $char = &GetPlayerCharacter($currentPlayer);
   $characterPieces = CharacterPieces();
   $charCount = count($char);
-  for ($i = 0; $i < $charCount; $i += $characterPieces) {
+  for ($i = 0; $i + 1 < $charCount; $i += $characterPieces) {
     if ($char[$i + 1] >= 3 || $char[$i + 1] == 0) continue;
     $thisChar = ShiyanaCharacter($char[$i]);
     $card = GetClass($thisChar, $currentPlayer);
@@ -1051,7 +1051,7 @@ function EquipPayAdditionalCosts($cardIndex)
 {
   global $currentPlayer, $CS_TunicTicks, $mainPlayer, $chainLinkSummary, $CS_AdditionalCosts, $Stack;
   $character = &GetPlayerCharacter($currentPlayer);
-  $cardID = $character[$cardIndex];
+  $cardID = $character[$cardIndex] ?? "";
   $cardID = ShiyanaCharacter($cardID);
   $card = $cardID ? GetClass($cardID, $currentPlayer) : "-";
   if ($card != "-") {
@@ -1663,7 +1663,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
   $character = &GetPlayerCharacter($currentPlayer);
   $charCount = count($character);
   $characterPieces = CharacterPieces();
-  for ($i = 0; $i < $charCount; $i += $characterPieces) {
+  for ($i = 0; $i + 1 < $charCount; $i += $characterPieces) {
     if ($character[$i + 1] != 2) {
       if ($character[$i] == "briar" || $character[$i] == "briar_warden_of_thorns") {
         if ($character[$i+1] != 1) continue; //Briar is destroyed, sleeeping, dishonered, etc.

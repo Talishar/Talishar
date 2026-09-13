@@ -1213,7 +1213,7 @@ class exposed_to_the_elements_blue extends Card {
     private
     function ExposedToTheElementsEarth($targetEquip) {
         $CharacterCard = CleanTargetToObject($this->controller, $targetEquip);
-        $CharacterCard->AddDefCounters(-1);
+        if ($CharacterCard != "") $CharacterCard->AddDefCounters(-1);
     }
 
     private

@@ -1576,7 +1576,7 @@ function AddCharacterPlayCardTrigger($cardID, $playType, $from)
   $charPieces = CharacterPieces();
   $mainChar = GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainChar);
-  for ($i = 0; $i < $mainCharCount; $i += $charPieces) {
+  for ($i = 0; $i < $mainCharCount && isset($mainChar[$i]); $i += $charPieces) {
     switch ($mainChar[$i]) {
       default:
         break;
@@ -1584,7 +1584,7 @@ function AddCharacterPlayCardTrigger($cardID, $playType, $from)
   }
   $otherChar = GetPlayerCharacter($otherPlayer);
   $otherCharCount = count($otherChar);
-  for ($i = 0; $i < $otherCharCount; $i += $charPieces) {
+  for ($i = 0; $i < $otherCharCount && isset($otherChar[$i]); $i += $charPieces) {
     switch ($otherChar[$i]) {
       case "leap_frog_vocal_sac":
       case "leap_frog_slime_skin":
