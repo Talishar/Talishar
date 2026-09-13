@@ -559,16 +559,16 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $deckSize = count($deck) / DeckPieces();
       $maxCards = min(2, $deckSize);
       for ($i = 0; $i < $maxCards; ++$i) {
-        $cardID = $deck[$i];
-        $val = CardLink($cardID, $cardID);
+        $topCardID = $deck[$i];
+        $val = CardLink($topCardID, $topCardID);
         $topTwo[] = $val;
-        if (ColorContains($cardID, 3, $currentPlayer)) $foundBlues[] = $val;
+        if (ColorContains($topCardID, 3, $currentPlayer)) $foundBlues[] = $val;
       }
       $foundBlues = implode(" and ", $foundBlues);
       $topTwo = implode(" and ", $topTwo);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, CardName($cardID) . " shows the top two cards of your deck are $topTwo", 1);
       AddDecisionQueue("OK", $currentPlayer, "-", 1);
-      if ($foundBlues > 0){
+      if ($foundBlues != ""){
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "would you like to pitch a blue card from among $foundBlues?");
         AddDecisionQueue("YESNO", $currentPlayer, "");
         AddDecisionQueue("NOPASS", $currentPlayer, "-", 1);
