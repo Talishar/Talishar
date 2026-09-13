@@ -280,7 +280,7 @@ function SearchInner(
     if ($is1h && !Is1H($cardID)) continue;
     if ($hasStealth && !hasStealth($cardID)) continue;
     if ($hasWateryGrave && !HasWateryGrave($cardID)) continue;
-    if ($hasCrush && !HasCrush($cardID)) continue;
+    if ($hasCrush && !HasCrush($cardID, $player)) continue;
     if ($hasSuspense && !HasSuspense($cardID)) continue;
     if ($comboOnly && !HasCombo($cardID)) continue;
     if ($hasCloaked && HasCloaked($cardID, $player) != "DOWN") continue;
