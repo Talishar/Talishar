@@ -527,7 +527,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $combatChainAttacks = GetCombatChainAttacks();
       if (!isset($combatChainAttacks[$index])) break;
       $cardID = $combatChainAttacks[$index];
-      WriteLog("HERE! $cardID, $index");
       if (AbilityPlayableFromCombatChain($cardID) && IsPlayable($cardID, $turn[0], "COMBATCHAINATTACKS", intdiv($index, ChainLinksPieces()))) {
         SetClassState($playerID, $CS_PlayIndex, $index);
         PlayCard($cardID, "COMBATCHAINATTACKS", -1, $index, "-", zone: "COMBATCHAINATTACKS");
