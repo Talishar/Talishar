@@ -736,7 +736,7 @@ class fight_fair_red extends Card {
   }
 
   function GoesWhereAfterResolving($from, $playedFrom, $stillOnCombatChain, $additionalCosts) {
-    if (SearchCurrentTurnEffects($this->cardID, $this->controller)) return "BOTDECK";
+    if (SearchCurrentTurnEffects($this->cardID, $this->controller, true)) return "BOTDECK";
     else return "GY";
   }
 
