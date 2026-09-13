@@ -1271,7 +1271,7 @@ function Tap($MZindex, $player, $tapState=1, $endStepUntap=false)
   $index = intval($MZparts[1]);
   //Untap
   if($tapState == 0 && !isUntappedPrevented($MZindex, $zoneName, $targetPlayer, $endStepUntap)) {
-    if($endStepUntap && $zone[$index] == "gold_baited_hook" && GetClassState($player, piece: $CS_NumGoldCreated) <= 0 && $zone[$index + 14] == 1 && SearchCharacterAlive($player, $zone[$index])) DestroyCharacter($player, $index);
+    if($endStepUntap && $zone[$index] == "gold_baited_hook" && GetClassState($player, piece: $CS_NumGoldCreated) <= 0 && SearchCharacterAlive($player, $zone[$index])) DestroyCharacter($player, $index);
     elseif (str_contains($zoneName, "CHAR")) $zone[$index + 14] = $tapState;
     elseif (str_contains($zoneName, "ALLY")) $zone[$index + 11] = $tapState;
     elseif (str_contains($zoneName, "ITEM")) $zone[$index + 10] = $tapState;
