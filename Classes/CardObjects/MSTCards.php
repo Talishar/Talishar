@@ -1730,17 +1730,44 @@ class evo_shortcircuit_blue_equip extends Card {
 // }
 
 
-// class prismatic_leyline_yellow extends Card {
+class prismatic_leyline_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "prismatic_leyline_yellow";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "prismatic_leyline_yellow";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect("$this->cardID-RED", $this->controller);
+		AddCurrentTurnEffect("$this->cardID-YELLOW", $this->controller);
+		AddCurrentTurnEffect("$this->cardID-BLUE", $this->controller);
+		return "";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return match($param) {
+			"RED" => 1,
+			"YELLOW" => 2,
+			"BLUE" => 3,
+			default => 0
+		};
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$color = match($parameter) {
+			"RED" => 1,
+			"YELLOW" => 2,
+			"BLUE" => 3,
+			default => 0
+		};
+		return ColorContains($CombatChain->AttackCard()->ID(), $color, $this->controller);
+	}
+
+	function IsLayerContinuousBuff() {
+		return true;
+	}
+}
 
 
 // class rage_specter_blue extends Card {

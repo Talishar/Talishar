@@ -1024,7 +1024,6 @@ function HasGoAgain($cardID, $from="-"): bool|int
     "tiger_taming_khakkara" => 1,
     "biting_breeze_red" => 1, "biting_breeze_yellow" => 1, "biting_breeze_blue" => 1,
     "untamed_red" => 1, "untamed_yellow" => 1, "untamed_blue" => 1,
-    "prismatic_leyline_yellow" => 1,
     "water_the_seeds_red" => 1, "water_the_seeds_yellow" => 1, "water_the_seeds_blue" => 1,
     "line_it_up_yellow" => 1, "arcane_seeds__life_red" => 1, "burn_up__shock_red" => 1,
     "heartbeat_of_candlehold_blue" => 1, "channel_the_millennium_tree_red" => 1, "earths_embrace_blue" => 1,
