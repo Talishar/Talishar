@@ -8411,10 +8411,6 @@ class permanent_interment extends BaseCard {
   function EffectPowerModifier($param, $attached = false) {
     return 1;
   }
-
-  function SpecialPower() { //database error
-    return 2;
-  }
 }
 
 class permanent_interment_red extends Card {
@@ -8438,6 +8434,10 @@ class permanent_interment_blue extends Card {
     $this->cardID = "permanent_interment_blue";
     $this->controller = $controller;
     $this->baseCard = new permanent_interment($this->cardID, $this->controller);
+  }
+
+  function SpecialPower() { //database error
+    return 2;
   }
 }
 
