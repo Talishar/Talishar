@@ -24,13 +24,14 @@ class CurrentTurnEffects {
   function FindEffect($effectID, $player="-") {
     $effects = $this->effects;
     $count = count($effects);
+    $effectPieces = CurrentTurnEffectPieces();
     if ($player === "-") {
-      for ($i = 0; $i < $count; $i += CurrentTurnEffectPieces()) {
+      for ($i = 0; $i < $count; $i += $effectPieces) {
         if ($effects[$i] == $effectID) return new CurrentEffect($i);
       }
       return new CurrentEffect(-1);
     }
-    for ($i = 0; $i < $count; $i += CurrentTurnEffectPieces()) {
+    for ($i = 0; $i < $count; $i += $effectPieces) {
       if ($player != $effects[$i + 1]) continue;
       if ($effects[$i] == $effectID) return new CurrentEffect($i);
     }
@@ -40,7 +41,8 @@ class CurrentTurnEffects {
   function FindPartialEffect($effectID) {
     $effects = $this->effects;
     $count = count($effects);
-    for ($i = 0; $i < $count; $i += CurrentTurnEffectPieces()) {
+    $effectPieces = CurrentTurnEffectPieces();
+    for ($i = 0; $i < $count; $i += $effectPieces) {
       if (ExtractCardID($effects[$i]) == $effectID) return new CurrentEffect($i);
     }
     return new CurrentEffect(-1);
@@ -49,7 +51,8 @@ class CurrentTurnEffects {
   function FindEffectUID($uid) {
     $effects = $this->effects;
     $count = count($effects);
-    for ($i = 2; $i < $count; $i += CurrentTurnEffectPieces()) {
+    $effectPieces = CurrentTurnEffectPieces();
+    for ($i = 2; $i < $count; $i += $effectPieces) {
       if ($effects[$i] == $uid) return new CurrentEffect($i - 2);
     }
     return new CurrentEffect(-1);
@@ -58,7 +61,8 @@ class CurrentTurnEffects {
   function FindSpecificEffect($cardID, $uid, $player=-1) {
     $effects = $this->effects;
     $count = count($effects);
-    for ($i = 0; $i < $count; $i += CurrentTurnEffectPieces()) {
+    $effectPieces = CurrentTurnEffectPieces();
+    for ($i = 0; $i < $count; $i += $effectPieces) {
       if ($effects[$i] != $cardID) continue;
       if ($player != -1 && ($effects[$i + 1] ?? -1) != $player) continue;
       if (isset($effects[$i + 2]) && $effects[$i + 2] == $uid) return new CurrentEffect($i);
@@ -69,7 +73,8 @@ class CurrentTurnEffects {
   function HasAnySpecificEffect($cardIDSet, $uid, $player=-1) {
     $effects = $this->effects;
     $count = count($effects);
-    for ($i = 0; $i < $count; $i += CurrentTurnEffectPieces()) {
+    $effectPieces = CurrentTurnEffectPieces();
+    for ($i = 0; $i < $count; $i += $effectPieces) {
       if (!isset($cardIDSet[$effects[$i]])) continue;
       if ($player != -1 && ($effects[$i + 1] ?? -1) != $player) continue;
       if (isset($effects[$i + 2]) && $effects[$i + 2] == $uid) return true;
@@ -80,7 +85,8 @@ class CurrentTurnEffects {
   function HasAnyEffectID($cardIDSet) {
     $effects = $this->effects;
     $count = count($effects);
-    for ($i = 0; $i < $count; $i += CurrentTurnEffectPieces()) {
+    $effectPieces = CurrentTurnEffectPieces();
+    for ($i = 0; $i < $count; $i += $effectPieces) {
       if (isset($cardIDSet[$effects[$i]])) return true;
     }
     return false;
@@ -90,7 +96,8 @@ class CurrentTurnEffects {
     $effects = $this->effects;
     $count = count($effects);
     $ret = 0;
-    for ($i = 0; $i < $count; $i += CurrentTurnEffectPieces()) {
+    $effectPieces = CurrentTurnEffectPieces();
+    for ($i = 0; $i < $count; $i += $effectPieces) {
       if ($effects[$i] != $cardID) continue;
       if ($player != -1 && ($effects[$i + 1] ?? -1) != $player) continue;
       if (isset($effects[$i + 2]) && $effects[$i + 2] == $uid) ++$ret;

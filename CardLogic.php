@@ -275,7 +275,8 @@ function ResolveAttackQueue() {
         AddCurrentTurnEffect($buff, $player);
     }
     $abilityTypes = explode(",", GetAbilityTypes($cardID, from: "PLAY"));
-    for ($i = 0; $i < count($abilityTypes); ++$i) {
+    $abilityTypeCount = count($abilityTypes);
+    for ($i = 0; $i < $abilityTypeCount; ++$i) {
       if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
     PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
@@ -502,7 +503,8 @@ function ContinueDecisionQueue($lastResult = "")
               AddCurrentTurnEffectNextAttack($buff, $player);
           }
           $abilityTypes = explode(",", GetAbilityTypes($cardID, from: "PLAY"));
-          for ($i = 0; $i < count($abilityTypes); ++$i) {
+          $abilityTypeCount = count($abilityTypes);
+          for ($i = 0; $i < $abilityTypeCount; ++$i) {
             if ($abilityTypes[$i] == "AA") $params[2] = $i;
           }
           SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");

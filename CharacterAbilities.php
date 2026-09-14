@@ -456,7 +456,8 @@ function ManuallyRefreshValiantDynamo($player, $index): bool
   ++$character[$index + 4];
   if ($player == $mainPlayer && ($turn[0] ?? "") == "ENDPHASE") {
     $pieces = NextTurnPieces();
-    for ($i = 0; $i < count($nextTurnEffects); $i += $pieces) {
+    $nextTurnEffectsCount = count($nextTurnEffects);
+    for ($i = 0; $i < $nextTurnEffectsCount; $i += $pieces) {
       if ($nextTurnEffects[$i] == "valiant_dynamo-MANUALREFRESH" && $nextTurnEffects[$i + 1] == $player) {
         array_splice($nextTurnEffects, $i, $pieces);
         break;

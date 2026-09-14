@@ -2107,7 +2107,8 @@ function FinalizeChainLink($chainClosed = false)
         AddCurrentTurnEffectNextAttack($buff, $player);
     }
     $abilityTypes = explode(",", GetAbilityTypes($cardID, from: "PLAY"));
-    for ($i = 0; $i < count($abilityTypes); ++$i) {
+    $abilityTypeCount = count($abilityTypes);
+    for ($i = 0; $i < $abilityTypeCount; ++$i) {
       if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
     SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");

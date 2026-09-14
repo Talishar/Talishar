@@ -5,23 +5,29 @@ include_once __DIR__ . "/includes/ModeratorList.inc.php";
 function GetChainCardSubcards($controller, ...$uniqueIDs) {
   if ($controller != 1 && $controller != 2) return NULL;
   $Auras = new Auras($controller);
+  $Allies = NULL;
+  $Character = NULL;
+  $Items = NULL;
   foreach ($uniqueIDs as $uniqueID) {
     if ($uniqueID === NULL || $uniqueID === "" || $uniqueID === "-" || $uniqueID == -1) continue;
     $subcards = NULL;
-    $AllyCard = (new Allies($controller))->FindCardUID($uniqueID);
+    $Allies ??= new Allies($controller);
+    $AllyCard = $Allies->FindCardUID($uniqueID);
     if ($AllyCard->Index() != -1) $subcards = $AllyCard->Subcards();
     else {
-      $CharacterCard = (new PlayerCharacter($controller))->FindCardUID($uniqueID);
+      $Character ??= new PlayerCharacter($controller);
+      $CharacterCard = $Character->FindCardUID($uniqueID);
       if ($CharacterCard->Index() != -1) $subcards = $CharacterCard->Subcards();
       else {
-        $ItemCard = (new Items($controller))->FindCardUID($uniqueID);
+        $Items ??= new Items($controller);
+        $ItemCard = $Items->FindCardUID($uniqueID);
         if ($ItemCard->Index() != -1) $subcards = $ItemCard->SubCards();
       }
     }
     if ($subcards === "-" || $subcards === "") $subcards = NULL;
     $boundIDs = [];
     foreach ($Auras->FindBoundAuras($uniqueID) as $boundAura) $boundIDs[] = $boundAura->CardID();
-    if (count($boundIDs) > 0) {
+    if ($boundIDs !== []) {
       $boundIDs = implode(",", $boundIDs);
       $subcards = $subcards !== NULL ? "$boundIDs,$subcards" : $boundIDs;
     }
