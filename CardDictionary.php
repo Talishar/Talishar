@@ -794,7 +794,7 @@ function PitchValue($cardID)
 
 function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 {
-  global $defPlayer, $combatChain, $CS_Num6PowBan;
+  global $defPlayer, $combatChain, $CS_Num6PowPutIntoBanish;
   $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
@@ -847,7 +847,7 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
       $block = $blockVal;
       break;
     case "diabolic_offering_blue":
-      $block = GetClassState($player, $CS_Num6PowBan) > 0 ? 6 : 0;
+      $block = GetClassState($player, $CS_Num6PowPutIntoBanish) > 0 ? 6 : 0;
     default:
       break;
   }
@@ -909,7 +909,7 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 
 function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $attacking=false)
 {
-  global $mainPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn, $CS_Num6PowBan;
+  global $mainPlayer, $CS_NumNonAttackCards, $CS_Num6PowDisc, $CS_NumAuras, $CS_NumCardsDrawn, $CS_Num6PowPutIntoBanish;
   global $practiceDummyWeaponPower;
   if (!$cardID) return 0;
   $set = CardSet($cardID);
@@ -967,7 +967,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
       $basePower = CountAura("spectral_shield", $mainPlayer);
       break;
     case "diabolic_offering_blue":
-      $basePower = GetClassState($mainPlayer, $CS_Num6PowBan) > 0 ? 6 : 0;
+      $basePower = GetClassState($mainPlayer, $CS_Num6PowPutIntoBanish) > 0 ? 6 : 0;
       break;
     case "tough_as_a_rok_blue":
       $basePower = PlayerHasLessHealth($player) ? 6 : 0;
