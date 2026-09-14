@@ -278,7 +278,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "mask_of_perdition":
       $deck = new Deck($defPlayer);
       if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-      $deck->BanishTop("Source-" . $attackID, banishedBy:$attackID);
+      $deck->BanishTop("Source-" . $attackID, banishedBy:$attackID, banisher:$mainPlayer);
       break;
     case "runic_reaping_red-HIT":
     case "runic_reaping_yellow-HIT":

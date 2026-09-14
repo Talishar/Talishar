@@ -126,7 +126,7 @@ function EVOHitEffect($cardID)
           WriteLog("The opponent deck is already... depleted.");
           break;
         }
-        $deck->BanishTop(banishedBy: $cardID);
+        $deck->BanishTop(banishedBy: $cardID, banisher:$mainPlayer);
         AddDecisionQueue("SEARCHCOMBATCHAIN", $mainPlayer, "-");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card to banish");
         AddDecisionQueue("CHOOSECARDID", $mainPlayer, "<-", 1);
