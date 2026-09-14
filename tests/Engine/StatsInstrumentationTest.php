@@ -483,6 +483,47 @@ class StatsInstrumentationTest extends TestCase
         $this->assertSame(0, $this->stat(1, 'CardsPlayedOffense'));
     }
 
+    // ------------------------------------------------------------ hero transforms
+
+    /**
+     * Heroes like Arakni, Marionette and Viserai, Usurper can change back and
+     * forth, and the end of the game only shows their last form. Each transform
+     * is logged in order with the cards played around it, so the whole history
+     * can be rebuilt from the turn log.
+     */
+    public function testHeroTransformsAreLoggedInOrderWithCardsPlayed(): void
+    {
+        $this->startGame(1);
+        LogPlayCardStats(1, 'snatch_red', 'HAND');
+        LogHeroTransformStats(1, 'arakni_redback');
+        $this->passTurn();
+        $this->passTurn();
+        LogPlayCardStats(1, 'sink_below_red', 'HAND');
+        LogHeroTransformStats(1, 'arakni_marionette');
+
+        $this->assertSame([
+            [0, 'snatch_red', 'M'],
+            [0, 'arakni_redback', 'TRANSFORM'],
+            [1, 'sink_below_red', 'M'],
+            [1, 'arakni_marionette', 'TRANSFORM'],
+        ], $GLOBALS['p1CardTurnLog']);
+        $this->assertSame([], $GLOBALS['p2CardTurnLog'], 'a transform belongs to the player who transformed');
+    }
+
+    /** A transform is not a card being used, so no counter may move. */
+    public function testAHeroTransformTouchesNoCounters(): void
+    {
+        $this->startGame(1);
+        LogHeroTransformStats(1, 'viserai_usurper');
+
+        $this->assertSame(0, $this->cardStat(1, 'viserai_usurper', 'TimesPlayed'));
+        $this->assertSame([], $GLOBALS['p1CardStats']);
+        $turnStats = &GetTurnStats(1);
+        foreach ($turnStats as $slot => $value) {
+            $this->assertSame(0, (int)$value, "turn stat slot $slot moved on a transform");
+        }
+    }
+
     // ------------------------------------------------------------ turn placement
 
     /**
