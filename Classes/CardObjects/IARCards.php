@@ -7759,7 +7759,7 @@ class rally_the_shadow_horde extends BaseCard {
       if (isset($combatChain[$index + 7])) return SearchCurrentTurnEffects($this->cardID, $this->controller, false, true) == $combatChain[$index + 7];
       return false;
     }
-    return $from == "COMBATCHAINATTACKS";
+    return $from == "PASTCHAINLINK";
   }
 
   function PayAdditionalCosts($from, $index = '-') {
