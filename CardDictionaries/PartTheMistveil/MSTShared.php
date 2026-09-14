@@ -27,7 +27,7 @@ function MSTCombatEffectActive($cardID, $attackID): bool
   if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
     "mistcloak_gully" => IsHeroAttackTarget(),
-    "beckoning_mistblade", "first_tenet_of_chi_moon_blue", "first_tenet_of_chi_tide_blue",
+    "beckoning_mistblade", "first_tenet_of_chi_moon_blue", "first_tenet_of_chi_tide_blue" => ColorContains($attackID, 3, $mainPlayer),
     "wind_chakra_red-1", "wind_chakra_yellow-1", "wind_chakra_blue-1", "wind_chakra_red-2", "wind_chakra_yellow-2", "wind_chakra_blue-2", "sacred_art_jade_tiger_domain_blue", "tiger_form_incantation_red", "tiger_form_incantation_yellow", "tiger_form_incantation_blue",
     "tiger_taming_khakkara", "chase_the_tail_red", "untamed_red", "untamed_yellow", "untamed_blue" => CardNameContains($attackID, "Crouching Tiger", $mainPlayer),
     "first_tenet_of_chi_wind_blue" => $from != "PLAY" && ColorContains($attackID, 3, $mainPlayer) && (TypeContains($attackID, "AA", $mainPlayer) || TypeContains($attackID, "A", $mainPlayer)),
