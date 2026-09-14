@@ -1,16 +1,51 @@
 <?php
 
-// class breakwater_undertow extends Card {
+class breakwater_undertow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "breakwater_undertow";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "breakwater_undertow";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CombatChain;
+		$AttackCard = $CombatChain->AttackCard();
+		AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:"breakwater_undertow-" . $AttackCard->OriginUniqueID());
+        AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
+		return "";
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		return !ClassContains($CombatChain->CurrentAttack(), "PIRATE", $this->controller) || !SubtypeContains($CombatChain->CurrentAttack(), "Ally", $this->controller);
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->Destroy();
+	}
+
+	function EffectChainClosedEffect($i) {
+		$Effect = new CurrentEffect($i);
+		$Allies = new Allies($this->controller);
+		$uniqueID = explode("-", $Effect->AppliestoUniqueID(), 2)[1];
+		$AllyCard = $Allies->FindCardUID($uniqueID);
+		if ($AllyCard->Index() != -1) $AllyCard->Destroy();
+        $Effect->Remove();
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return $param == "GOAGAIN";
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AR";
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
 
 
 // class graven_justaucorpse extends Card {

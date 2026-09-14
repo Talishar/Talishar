@@ -1942,7 +1942,6 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
     case "swift_shot_red":
     case "mutiny_on_the_swiftwater_blue":
     case "quick_clicks":
-    case "breakwater_undertow-GOAGAIN":
     case "man_overboard_red":
     case "man_overboard_yellow":
     case "man_overboard_blue":

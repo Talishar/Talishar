@@ -1296,7 +1296,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "captains_coat":
     case "quartermasters_boots":
     case "graven_justaucorpse":
-    case "breakwater_undertow":
     case "punching_gloves":
     case "richter_scale":
     case "gauntlet_of_boulderhold":

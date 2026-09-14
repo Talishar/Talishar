@@ -3253,9 +3253,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "PLAY" && NumCardsBlocking() < 1;
     case "arcane_compliance_blue":
       return SearchLayersCardType("A") == "" && SearchLayersCardType("AA") == "";
-    case "breakwater_undertow":
-      if (!$CombatChain->HasCurrentLink()) return true;
-      return !ClassContains($CombatChain->CurrentAttack(), "PIRATE", $mainPlayer) || !SubtypeContains($CombatChain->CurrentAttack(), "Ally", $mainPlayer);
     case "iris_of_the_blossom":
       $hand = GetHand($currentPlayer);
       if (GetClassState($player, $CS_HitCounter) == 0) return true;
