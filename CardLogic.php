@@ -543,7 +543,7 @@ function ContinueDecisionQueue($lastResult = "")
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           $EffectContextUID = $layerUniqueID;
           SetClassState($mainPlayer, $CS_LayerResolved, 1); // lets the game know to give priority back to mainPlayer
-          PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
+          PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, $player);
           ClearDieRoll($player);
         } else {
           switch ($cardID) {

@@ -1724,17 +1724,62 @@ class goldfin_harpoon_yellow extends Card {
 // }
 
 
-// class midas_touch_yellow extends Card {
+class midas_touch_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "midas_touch_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "midas_touch_yellow";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  private
+  function GetTargets() {
+    return SearchMultizone($this->controller, "MYALLY&THEIRALLY&MYCHAR:subtype=Ally&THEIRCHAR:subtype=Ally");
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $targetPlayer = str_contains($target, "MY") ? $this->controller : $otherPlayer;
+    $uid = explode("-", $target, 2)[1];
+    $indexAlly = SearchAlliesForUniqueID($uid, $targetPlayer);
+    if ($indexAlly != -1) {
+      $allies = GetAllies($targetPlayer);
+      $allyCost = CardCost($allies[$indexAlly]);
+      PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$allyCost, isToken:true, effectController:$this->controller);
+      $token = $allyCost > 1 ? " tokens" : " token";
+      $allyName = CardLink($allies[$indexAlly], $allies[$indexAlly]);
+      WriteLog("Player $targetPlayer's $allyName turned into $allyCost " . CardLink("gold", "gold") . " $token!");
+      DestroyAlly($targetPlayer, $indexAlly);
+      return "";
+    }
+    $indexChar = SearchCharacterForUniqueID($uid, $targetPlayer);
+    if ($indexChar != -1) {
+      $char = GetPlayerCharacter($targetPlayer);
+      $charCostRaw = CardCost($char[$indexChar]);
+      $charCost = $charCostRaw >= 0 ? $charCostRaw : 0;
+      PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$charCost, isToken:true, effectController:$this->controller);
+      $token = $charCost > 1 ? " tokens" : " token";
+      $CharName = CardLink($char[$indexChar], $char[$indexChar]);
+      WriteLog("Player $targetPlayer's $CharName turned into $charCost " . CardLink("gold", "gold") . " $token!");
+      DestroyCharacter($targetPlayer, $indexChar);
+      return "";
+    }
+    else {
+      return "";
+    }
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return $this->GetTargets() == "";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRALLY&MYALLY");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an ally to destroy");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);  
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+}
 
 
 // class money_or_your_life_red extends Card {

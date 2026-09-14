@@ -893,36 +893,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect("$cardID-$pitchValue", $currentPlayer);
       WriteLog(CardLink($cardID, $cardID) . " prevents the next <b>$pitchValue damage</b>");
       break;
-    case "midas_touch_yellow":
-      $targetPlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
-      $uid = explode("-", $target, 2)[1];
-      $indexAlly = SearchAlliesForUniqueID($uid, $targetPlayer);
-      if ($indexAlly != -1) {
-        $allies = GetAllies($targetPlayer);
-        $allyCost = CardCost($allies[$indexAlly]);
-        PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$allyCost, isToken:true, effectController:$currentPlayer);
-        $token = $allyCost > 1 ? " tokens" : " token";
-        $allyName = CardLink($allies[$indexAlly], $allies[$indexAlly]);
-        WriteLog("Player $targetPlayer's $allyName turned into $allyCost " . CardLink("gold", "gold") . " $token!");
-        DestroyAlly($targetPlayer, $indexAlly);
-        return "";
-      }
-      $indexChar = SearchCharacterForUniqueID($uid, $targetPlayer);
-      if ($indexChar != -1) {
-        $char = GetPlayerCharacter($targetPlayer);
-        $charCostRaw = CardCost($char[$indexChar]);
-        $charCost = $charCostRaw >= 0 ? $charCostRaw : 0;
-        PutItemIntoPlayForPlayer("gold", $targetPlayer, number:$charCost, isToken:true, effectController:$currentPlayer);
-        $token = $charCost > 1 ? " tokens" : " token";
-        $CharName = CardLink($char[$indexChar], $char[$indexChar]);
-        WriteLog("Player $targetPlayer's $CharName turned into $charCost " . CardLink("gold", "gold") . " $token!");
-        DestroyCharacter($targetPlayer, $indexChar);
-        return "";
-      }
-      else {
-        WriteLog(CardLink($cardID, $cardID) . " fizzles due to missing target");
-        return "";
-      }
     case "chart_a_course_red":
     case "chart_a_course_yellow":
     case "chart_a_course_blue":
