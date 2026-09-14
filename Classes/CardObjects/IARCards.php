@@ -8345,6 +8345,17 @@ class wind_slicer_blue extends Card {
   function HasGoAgain($from) {
     return false; //mistake in generated
   }
+
+  function CurrentEffectBeginningActionPhaseAbility($i) {
+    $HeroCard = new CharacterCard(0, $this->controller);
+    $HeroCard->Sleep();
+  }
+
+  function CurrentEffectBeginEndPhaseAbility($i) {
+    $HeroCard = new CharacterCard(0, $this->controller);
+    $HeroCard->Sleep(wake:true);
+    $remove = true;
+  }
 }
 
 class permanent_interment extends BaseCard {
