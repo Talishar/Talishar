@@ -69,7 +69,7 @@ function CardIsPlayable($storedPriorityNode, $hand, $resources)
       return false;
   }
   if(!IsPlayable($storedPriorityNode[0], $turn[0], $from, $storedPriorityNode[2])) return false;
-  $finalCost = $baseCost;
+  $finalCost = BotEffectiveCost($storedPriorityNode[0], $from, $storedPriorityNode[2], $baseCost);
   $totalPitch = $resources[0];
   $handCount = count($hand);
   for($i = 0; $i < $handCount; ++$i)

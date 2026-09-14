@@ -212,7 +212,7 @@ function EncounterAI()
           PassInput();
         }
       }
-      else if($turn[0] == "P" && $mainPlayer == $currentPlayer)//pitch phase
+      else if($turn[0] == "P")//pitch phase - the AI also pays here while defending, e.g. for a taxed defense reaction
       {
         if($AIDebug) WriteLog("AI Branch - Pitch");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Pitch");

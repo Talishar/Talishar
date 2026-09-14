@@ -24,12 +24,28 @@ function PracticeDummyAI()
       $weaponIndex = FindCharacterIndex(2, "wrenchtastic");
       if ($weaponIndex >= 0) ProcessInput($currentPlayer, 3, "", $weaponIndex, 0, "");
       else PassInput();
+    } else if ($turn[0] == "P") {
+      $pitchIndex = PracticeDummyPitchIndex();
+      if ($pitchIndex >= 0) ProcessInput($currentPlayer, 27, "", $pitchIndex, 0, "");
+      else PassInput();
     } else {
       PassInput();
     }
     ProcessMacros();
     $currentPlayerIsAI = ($currentPlayer == 2);
   }
+}
+
+function PracticeDummyPitchIndex()
+{
+  global $currentPlayer;
+  $hand = &GetHand($currentPlayer);
+  $best = -1;
+  for ($index = 0, $count = count($hand); $index < $count; ++$index) {
+    if ($hand[$index] === "") continue;
+    if ($best < 0 || PitchValue($hand[$index]) > PitchValue($hand[$best])) $best = $index;
+  }
+  return $best;
 }
 
 //A zone choice needs a real multizone target, so "0" makes the swing fizzle as soon as the opponent has an ally or a spectra aura alongside their hero.

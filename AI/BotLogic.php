@@ -120,6 +120,20 @@ function BotCardRolesFromStats($cardType, $pitch, $defense, $attack, $hasPrevent
   ];
 }
 
+function BotEffectiveCost($cardID, $from, $index, $baseCost)
+{
+  global $currentTurnEffects, $layers;
+  $effectsSnapshot = $currentTurnEffects;
+  $layersSnapshot = $layers;
+  $cost = BotNumericCost($baseCost)
+    + CurrentEffectCostModifiers($cardID, $from, $index)
+    + AuraCostModifier($cardID, $from)
+    + CharacterCostModifier($cardID, $from, BotNumericCost($baseCost));
+  $currentTurnEffects = $effectsSnapshot;
+  $layers = $layersSnapshot;
+  return max(0, $cost);
+}
+
 function BotNumericCost($cost)
 {
   if (is_numeric($cost)) return max(0, intval($cost));
