@@ -76,6 +76,7 @@ class CharacterCard {
     if ($this->index == 0 && GetClassState($this->controller, $CS_OriginalHero) == "-") {
       SetClassState($this->controller, $CS_OriginalHero, $cardID);
     }
+    if ($this->index == 0 && $this->CardID() != $cardID) LogHeroTransformStats($this->controller, $cardID);
     $this->pieces[$this->index] = $cardID;
   }
 

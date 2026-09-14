@@ -622,6 +622,7 @@ function ResolveTransformHero($player, $cardID, $parameter)
   $char = &GetPlayerCharacter($player);
   AddSoul($char[0], $player, "PLAY");
   $char[0] = $cardID;
+  LogHeroTransformStats($player, $cardID);
   $char[1] = 2; //When you transform, You are no longer that hero, therefore you are not dishonored and reset your stats 🐝
   $char[2] = CharacterCounters($cardID);
   $char[3] = 0;

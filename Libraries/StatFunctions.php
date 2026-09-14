@@ -155,6 +155,15 @@ function LogPlayCardStats($player, $cardID, $from, $type = "")
   }
 }
 
+// Transforms go in the card turn log rather than the card stats, so they stay
+// in order with the cards played before and after them.
+function LogHeroTransformStats($player, $heroID)
+{
+  global $currentTurn;
+  $cardTurnLog   = &GetCardTurnLog($player);
+  $cardTurnLog[] = [intval($currentTurn), $heroID, "TRANSFORM"];
+}
+
 function LogResourcesUsedStats($player, $resourcesUsed)
 {
   global $TurnStats_ResourcesUsed;

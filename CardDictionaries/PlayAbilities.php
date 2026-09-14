@@ -514,6 +514,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         SetClassState($currentPlayer, $CS_OriginalHero, $char[0]);
       }
       $char[0] = "teklovossen_the_mechropotent";
+      LogHeroTransformStats($currentPlayer, "teklovossen_the_mechropotent");
       $char[1] = 2;
       $char[2] = 0;
       $char[3] = 0;
