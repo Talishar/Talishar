@@ -391,7 +391,7 @@ enum PatreonCampaign : string
       "28" => ["Snow"],
       //Red Line
       "29" => ["Aegisworn", "CornOnJacob", "jonam33", "Scribnibble", "Yuriiko", "Sharp", "MXBloom", "Lazaeus",
-        "bloodbit", "hurricanewes", "Aljo", "Flempa", "redprairiedawn"],
+        "bloodbit", "hurricanewes", "Aljo", "Flempa", "redprairiedawn", "OneAutumnLeaf"],
       //Skill Issue
       "30" => ["Vaxildan", "kk96", "Skoupakas69", "BreakingChaos", "TheCouncillor", "JaxC", "Cubacash", "kungfoukios",
         "sudogreeko", "katsubina", "NikolasG", "LegenProMax", "sadonEmsi", "DioReformed", "AggroBlazeNo1Fan", "kenobi",
