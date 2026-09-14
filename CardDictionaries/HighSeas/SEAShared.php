@@ -856,7 +856,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYITEMS:type=T;cardID=gold", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $otherPlayer, "GAINCONTROL", 1);
-        AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",MYBOTDECK", 1);
+        AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",MYBOTDECK");
       }
       else AddDecisionQueue("GOESWHERE", $currentPlayer, $cardID.",".$from.",DISCARD");
       break;
