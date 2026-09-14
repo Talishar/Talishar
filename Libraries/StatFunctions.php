@@ -50,6 +50,14 @@ function IncrementTurnCount($player)
   $count = intval($count) + 1;
 }
 
+function InitializeTurnCounts($firstPlayer)
+{
+  global $p1TurnCount, $p2TurnCount;
+  $p1TurnCount = 0;
+  $p2TurnCount = 0;
+  IncrementTurnCount($firstPlayer);
+}
+
 function GetStatTurnIndex($player)
 {
   global $mainPlayer, $firstPlayer;

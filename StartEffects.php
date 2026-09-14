@@ -32,6 +32,7 @@ if (file_exists($fullLog)) {
 $mainPlayer = $firstPlayer;
 $currentPlayer = $firstPlayer;
 $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+InitializeTurnCounts($firstPlayer);
 StatsStartTurn();
 
 $MakeStartTurnBackup = false;

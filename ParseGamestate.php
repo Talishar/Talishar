@@ -188,6 +188,8 @@ function ParseGamestate($parseHistoricalStats = true)
 
   $p1TurnCount = is_numeric(trim($gamestateContent[85+$numChainLinks] ?? "")) ? intval($gamestateContent[85+$numChainLinks]) : $legacyTurnCount(1);
   $p2TurnCount = is_numeric(trim($gamestateContent[86+$numChainLinks] ?? "")) ? intval($gamestateContent[86+$numChainLinks]) : $legacyTurnCount(2);
+  if ($firstPlayer == 1) { if ($p1TurnCount < 1) $p1TurnCount = 1; }
+  else if ($firstPlayer == 2) { if ($p2TurnCount < 1) $p2TurnCount = 1; }
   BuildMyGamestate($playerID);
 }
 
