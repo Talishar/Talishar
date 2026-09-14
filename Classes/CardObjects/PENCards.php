@@ -4878,7 +4878,7 @@ class excessive_bloodloss extends BaseCard {
     $numBanishes = 1;
     if (ColorContains($defDeck->Top(), 1, $defPlayer)) ++$numBanishes;
     for ($i = 0; $i < $numBanishes; ++$i) {
-      $defDeck->BanishTop();
+      $defDeck->BanishTop(banisher:$this->controller);
     }
   }
 }
