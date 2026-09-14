@@ -493,14 +493,14 @@ function DYNHitEffect($cardID, $from, $attackID)
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
         if($deck->RemainingCards() < GetCombatChainState($CCS_DamageDealt)) $deck->BanishTop(banishedBy:$cardID, amount:$deck->RemainingCards());
-        else $deck->BanishTop(banishedBy:$cardID, amount:GetCombatChainState($CCS_DamageDealt));
+        else $deck->BanishTop(banishedBy:$cardID, amount:GetCombatChainState($CCS_DamageDealt), banisher:$mainPlayer);
       }
       break;
     case "leave_no_witnesses_red":
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
-        else $deck->BanishTop(banishedBy:$cardID);
+        else $deck->BanishTop(banishedBy:$cardID, banisher:$mainPlayer);
         // where: to,from,mod,banishSource,banisher
         MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-,$cardID,$mainPlayer", true);
       }
@@ -515,7 +515,7 @@ function DYNHitEffect($cardID, $from, $attackID)
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
-        else $deck->BanishTop(banishedBy:$cardID);
+        else $deck->BanishTop(banishedBy:$cardID, banisher:$mainPlayer);
         MZMoveCard($mainPlayer, "THEIRHAND", "THEIRBANISH,HAND,-,$cardID,$mainPlayer");
       }
       break;
@@ -526,7 +526,7 @@ function DYNHitEffect($cardID, $from, $attackID)
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        $deck->BanishTop(banishedBy:$cardID);
+        $deck->BanishTop(banishedBy:$cardID, banisher:$mainPlayer);
       }
       break;
     case "heat_seeker_red": AddCurrentTurnEffectFromCombat($cardID, $mainPlayer); break;

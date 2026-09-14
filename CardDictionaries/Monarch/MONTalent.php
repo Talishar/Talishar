@@ -228,10 +228,10 @@ function MONTalentHitEffect($cardID)
 
   function IsImmuneToBloodDebt($player)
   {
-    global $CS_Num6PowBan;
+    global $CS_Num6PowPutIntoBanish;
     $character = &GetPlayerCharacter($player);
     $characterID = ShiyanaCharacter($character[0]);
     if($character[1] == 2 && $characterID == "levia_redeemed") return true;
-    if($character[1] == 2 && ($characterID == "levia_shadowborn_abomination" || $characterID == "levia") && GetClassState($player, $CS_Num6PowBan) > 0) return true;
+    if($character[1] == 2 && ($characterID == "levia_shadowborn_abomination" || $characterID == "levia") && GetClassState($player, $CS_Num6PowPutIntoBanish) > 0) return true;
     return false;
   }
