@@ -225,16 +225,22 @@ function MZAddZone($player, $parameter, $lastResult)
     }
   }
   $cardCount = count($cardIDs);
+  $paramsCount = count($params);
   for ($i = 0; $i < $cardCount; ++$i) {
     switch ($params[0]) {
       case "MYBANISH":
-        if (count($params) < 4) $params[] = $player;
+        if ($paramsCount < 4) {
+          $params[] = $player;
+          ++$paramsCount;
+        }
         BanishCardForPlayer($cardIDs[$i], $player, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "-");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;
       case "THEIRBANISH":
-        if (count($params) < 4)
+        if ($paramsCount < 4) {
           $params[] = $player;
+          ++$paramsCount;
+        }
         BanishCardForPlayer($cardIDs[$i], $otherPlayer, $params[1], $params[2] ?? "-", $params[3] ?? "", $params[4] ?? "");
         WriteLog(CardLink($cardIDs[$i], $cardIDs[$i]) . " was banished.");
         break;

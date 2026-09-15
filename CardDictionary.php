@@ -1785,10 +1785,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   global $CombatChain, $combatChain, $layers, $CCS_CachedTotalPower;
   if ($phase != "P" && $cardType == "DR" && !IsHeroAttackTarget() && $abilityTypes == "") return false;
   if ($phase == "D" && $cardType == "DR" && !IsHeroAttackTarget() && $currentPlayer != $mainPlayer) return false;
-  if ($CombatChain->HasCurrentLink() && ($phase == "B" || ($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) {
+  $hasCurrentLink = $CombatChain->HasCurrentLink();
+  $attackID = $hasCurrentLink ? ($combatChain[0] ?? "-") : "";
+  if ($hasCurrentLink && ($phase == "B" || ($phase == "D" || $phase == "INSTANT") && $cardType == "DR")) {
     if ($from == "HAND") {
       if (!DelimStringContains($abilityTypes, "I", true) && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) return false;
-      $benjiActive = CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($CombatChain->AttackCard()->ID()) == "AA";
+      $benjiActive = CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($attackID) == "AA";
       if ((!DelimStringContains($abilityTypes, "I", true) || $phase == "B") && $benjiActive) return false;
     }
     if (CachedOverpowerActive() && CachedNumActionBlocked() >= 1) {
@@ -1807,7 +1809,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       $baseAttackMax = GetCombatChainState($CCS_BaseAttackDefenseMax);
       if ($baseAttackMax > -1 && PowerValue($cardID, $mainPlayer, "LAYER") > $baseAttackMax) return false;
     }
-    if ($CombatChain->AttackCard()->ID() == "regicide_blue" && $phase == "B" && SearchBanishForCardName($player, $cardID) > -1) return false;
+    if ($attackID == "regicide_blue" && $phase == "B" && SearchBanishForCardName($player, $cardID) > -1) return false;
     $resourceMin = GetCombatChainState($CCS_ResourceCostDefenseMin);
     if ($phase == "B") {
       if ($resourceMin > -1 && CardCost($cardID, $from) < $resourceMin && $cardType != "E") return false;
@@ -1816,7 +1818,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (GetCombatChainState($CCS_CardTypeDefenseRequirement) == "Attack_Action" && $cardType != "AA") return false;
     if (GetCombatChainState($CCS_CardTypeDefenseRequirement) == "Non-attack_Action" && $cardType != "A") return false;
   }
-  if ($CombatChain->AttackCard()->ID() == "regicide_blue" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
+  if ($attackID == "regicide_blue" && $cardType == "DR") return SearchBanishForCardName($player, $cardID) == -1;
   if ($phase == "B" && $cardID == "nitro_mechanoidc") {
     $ItemCard = new ItemCard($index, $defPlayer);
     return !$ItemCard->OnChain();
@@ -1857,8 +1859,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if (SearchCurrentTurnEffects("immobilizing_shot_red", $player) && !$isStaticType && DelimStringContains($cardType, "A") && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
   if (SearchCurrentTurnEffects("immobilizing_shot_red", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
-  if ($CombatChain->HasCurrentLink()
-    && $CombatChain->AttackCard()->ID() == "exude_confidence_red"
+  if ($hasCurrentLink
+    && $attackID == "exude_confidence_red"
     && $player == $defPlayer
     && (($abilityType ??= GetAbilityType($cardID, $index, $from)) == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
     $restriction = "Exude Confidance";
@@ -1943,16 +1945,18 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
   global $defPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   if ($attackID == "evasive_nageboshi_blue") {
-    if (TypeContains($cardID, "E") || TypeContains($cardID, "AR") || TypeContains($cardID, "DR")) {
+    $extendedType = CardTypeExtended($cardID);
+    if (DelimStringContains($extendedType, "E") || DelimStringContains($extendedType, "AR") || DelimStringContains($extendedType, "DR")) {
       $restriction = "This attack disallows blocking with equipment and reactions";
       return true;
     }
   }
-  if (IsEquipment($cardID, $player) && !CanBlockWithEquipment()) {
+  $isEquipment = IsEquipment($cardID, $player);
+  if ($isEquipment && !CanBlockWithEquipment()) {
     $restriction = "This attack disallows blocking with equipment";
     return true;
   }
-  if (IsEquipment($cardID, $player)) {
+  if ($isEquipment) {
     $char = GetPlayerCharacter($player);
     if ($char[FindCharacterIndex($player, $cardID) + 12] == "DOWN") {
       return true;
@@ -1977,7 +1981,8 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
   //modal cards dominate and overpower restriction
   if ($from == "HAND" && IsDominateActive() && NumDefendedFromHand() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") return true;
   if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") {
-    if (CardTypeExtended($cardID) == "A" || CardTypeExtended($cardID) == "AA") return true;
+    $extendedType = CardTypeExtended($cardID);
+    if ($extendedType == "A" || $extendedType == "AA") return true;
   }
   if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
     if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B")) return true;
@@ -2310,7 +2315,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $currentPlayer;
   $character = &GetPlayerCharacter($player);
-  $type = CardType($cardID);
+  $printedType = CardType($cardID);
+  $type = $printedType;
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if (!$resolutionCheck) { //when running a resoulution check, only check for targets
     if (SearchAurasForCard("bait", $player) != "" && $cardID != "bait" && !str_contains($from, "THEIR")) {
@@ -2329,7 +2335,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $restriction = "light_it_up_yellow";
       return true;
     }
-    if (SearchCurrentTurnEffects("frost_lock_blue-3", $player) && CardCost($cardID, $from) == 0 && !IsStaticType(CardType($cardID), $from, $cardID)) {
+    if (SearchCurrentTurnEffects("frost_lock_blue-3", $player) && CardCost($cardID, $from) == 0 && !IsStaticType($printedType, $from, $cardID)) {
       $restriction = "frost_lock_blue";
       return true;
     }
@@ -2344,11 +2350,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $restriction = "stasis_cell_blue";
       return true;
     } //Can't be activated
-    if (CardType($cardID) == "A" 
-      && $from != "PLAY" 
-      && GetClassState($player, $CS_NumNonAttackCards) >= 1 
-      && (SearchItemsForCard("signal_jammer_blue", 1) != "" || SearchItemsForCard("signal_jammer_blue", 2) != "") 
-      && (GetAbilityTypes($cardID, from:$from) == "" || !DelimStringContains(GetAbilityTypes($cardID, from:$from), "I"))
+    if ($printedType == "A"
+      && $from != "PLAY"
+      && GetClassState($player, $CS_NumNonAttackCards) >= 1
+      && (SearchItemsForCard("signal_jammer_blue", 1) != "" || SearchItemsForCard("signal_jammer_blue", 2) != "")
+      && (($signalAbilityTypes = GetAbilityTypes($cardID, from:$from)) == "" || !DelimStringContains($signalAbilityTypes, "I"))
       ){
       $restriction = "signal_jammer_blue";
       return true;
@@ -3951,9 +3957,10 @@ function ComboActive($cardID = "")
   $card = GetClass($cardID, $mainPlayer);
   $lastAttackNames = explode(",", $chainLinkSummary[count($chainLinkSummary) - ChainLinkSummaryPieces() + 4]);
   $countLastAttacks = count($lastAttackNames);
+  $amnesiaActive = SearchCurrentTurnEffects("amnesia_red", $mainPlayer);
   for ($i = 0; $i < $countLastAttacks; ++$i) {
     $lastAttackName = GamestateUnsanitize($lastAttackNames[$i]);
-    if (SearchCurrentTurnEffects("amnesia_red", $mainPlayer)) $lastAttackName = "";
+    if ($amnesiaActive) $lastAttackName = "";
     if ($card != "-") {
       if ($card->ComboActive($lastAttackName)) return true;
     }

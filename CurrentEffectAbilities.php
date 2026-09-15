@@ -2115,7 +2115,8 @@ function CurrentEffectStartTurnAbilities() {
 
 function CurrentEffectBeginningActionPhaseAbilities() {
   global $CurrentTurnEffects, $mainPlayer;
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $effectCount = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $effectCount; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $mainPlayer) continue;
     $card = GetClass($Effect->EffectID(), $mainPlayer);
@@ -2128,6 +2129,7 @@ function CurrentEffectEndTurnAbilities()
   global $currentTurnEffects, $mainPlayer, $defPlayer;
   $underSet = [];
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $characterPieces = CharacterPieces();
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
     $raw = $currentTurnEffects[$j];
@@ -2151,8 +2153,7 @@ function CurrentEffectEndTurnAbilities()
         if ($mainPlayer == $currentTurnEffects[$i + 1]) {
           $char = &GetPlayerCharacter($currentTurnEffects[$i + 1]);
           $charCount = count($char);
-          $charPieces = CharacterPieces();
-          for ($j = 0; $j < $charCount; $j += $charPieces) {
+          for ($j = 0; $j < $charCount; $j += $characterPieces) {
             if (TypeContains($char[$j], "W", $mainPlayer)) $char[$j + 3] = 0;
           }
           $remove = true;

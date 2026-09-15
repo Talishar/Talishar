@@ -2825,9 +2825,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "cyclone_roundhouse_yellow":
         $cardsToBanish = [];
         $chainLinksCount = count($chainLinks);
+        $chainLinksPieces = ChainLinksPieces();
         for ($i = 0; $i < $chainLinksCount; $i++) {
           $Link = $ChainLinks->GetLink($i);
-          if (count($chainLinks[$i]) == ChainLinksPieces()) continue;
+          if (count($chainLinks[$i]) == $chainLinksPieces) continue;
           $defendingCardIndices = GetDefendingCardsFromCombatChainLink($chainLinks[$i], $defPlayer);
           if (count($defendingCardIndices) > 0) {
             $randKeys = array_rand($defendingCardIndices, 1);

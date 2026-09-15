@@ -61,7 +61,8 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
   }
   $index = count($allies) - $allyPieces;
   $Character = new PlayerCharacter($player);
-  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+  $characterCount = $Character->NumCards();
+  for ($i = 0; $i < $characterCount; ++$i) {
     $CharacterCard = $Character->Card($i, true);
     $card = GetClass($CharacterCard->ID(), $player);
     if ($card != "-") $card->PermanentAllyPlayAbility($index, $CharacterCard->Index(), $from);
@@ -468,7 +469,8 @@ function AllyTakeDamageAbilities($player, $index, $damage, $preventable)
 function AllyBeginEndPhaseTriggers() {
   global $mainPlayer, $defPlayer;
   $Allies = new Allies($mainPlayer);
-  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+  $allyCount = $Allies->NumAllies();
+  for ($i = 0; $i < $allyCount; ++$i) {
     $AllyCard = $Allies->Card($i, true);
     $card = GetClass($AllyCard->CardID(), $mainPlayer);
     if ($card != "-") {
@@ -479,7 +481,8 @@ function AllyBeginEndPhaseTriggers() {
   }
 
   $Allies = new Allies($defPlayer);
-  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+  $allyCount = $Allies->NumAllies();
+  for ($i = 0; $i < $allyCount; ++$i) {
     $AllyCard = $Allies->Card($i, true);
     $card = GetClass($AllyCard->CardID(), $defPlayer);
     if ($card != "-") {

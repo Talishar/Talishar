@@ -675,10 +675,10 @@
         }
         break;
       case "fault_line_red":
+        $arsenalPieces = ArsenalPieces();
         for ($player = 1; $player < 3; ++$player) {
           $arsenal = GetArsenal($player);
           $arsenalCount = count($arsenal);
-          $arsenalPieces = ArsenalPieces();
           for ($i = $arsenalCount - $arsenalPieces; $i >= 0; $i -= $arsenalPieces) {
             AddBottomDeck($arsenal[$i], $player, "ARS");
             RemoveArsenal($player, $i);

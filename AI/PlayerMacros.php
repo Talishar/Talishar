@@ -10,6 +10,7 @@ function ProcessMacros()
     PassInput();
   }
   if (!IsGameOver()) {
+    $layerPieces = LayerPieces();
     for ($i = 0; $i < 10 && $somethingChanged; ++$i) {
       if ($lastPhase != $turn[0]) $i = 0;
       $lastPhase = $turn[0];
@@ -20,7 +21,6 @@ function ProcessMacros()
 
       // Cache expensive function calls and counts
       $layerCount = count($layers);
-      $layerPieces = LayerPieces();
       $decisionQueueCount = count($decisionQueue);
       $holdPrioritySetting = HoldPrioritySetting($currentPlayer);
       $firstLayer = $layerCount >= $layerPieces ? $layers[0] : null;

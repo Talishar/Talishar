@@ -91,6 +91,9 @@ function PowerModifier($attackCardID, $from = "", $resourcesPaid = 0, $repriseAc
   }
   else $textBoxes = [$attackCardID];
   $power = 0;
+  $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+  $auraPieces = AuraPieces();
+  $charPieces = CharacterPieces();
   foreach($textBoxes as $cardID) {
     if (HasPiercing($cardID, $from)) $power += NumEquipBlock() > 0 ? 1 : 0;
     if (HasHighTide($cardID) && HighTideConditionMet($mainPlayer)) {
@@ -181,7 +184,7 @@ function PowerModifier($attackCardID, $from = "", $resourcesPaid = 0, $repriseAc
       case "push_the_point_red":
       case "push_the_point_yellow":
       case "push_the_point_blue":
-        $idx = count($chainLinkSummary) - ChainLinkSummaryPieces();
+        $idx = count($chainLinkSummary) - $chainLinkSummaryPieces;
         if (isset($chainLinkSummary[$idx]) && $chainLinkSummary[$idx] > 0) $power += 2;
         break;
       case "flying_kick_red":
@@ -412,10 +415,9 @@ function PowerModifier($attackCardID, $from = "", $resourcesPaid = 0, $repriseAc
       case "cut_through_yellow":
       case "cut_through_blue":
         $numDaggerHits = 0;
-        $chainLinksSummaryPieces = ChainLinkSummaryPieces();
         $chainLinksCount = count($chainLinks);
         for ($i = 0; $i < $chainLinksCount; ++$i) {
-          if (SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i * $chainLinksSummaryPieces] > 0) ++$numDaggerHits;
+          if (SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i * $chainLinkSummaryPieces] > 0) ++$numDaggerHits;
         }
         $numDaggerHits += GetCombatChainState($CCS_FlickedDamage);
         $power += $numDaggerHits > 0 ? 1 : 0;
@@ -475,7 +477,6 @@ function PowerModifier($attackCardID, $from = "", $resourcesPaid = 0, $repriseAc
       case "renounce_grandeur_red":
         $auras = GetAuras($defPlayer);
         $foundAura = false;
-        $auraPieces = AuraPieces();
         $auraCount = count($auras);
         for ($i = 0; $i < $auraCount; $i += $auraPieces) {
           if (TypeContains($auras[$i], "T", $defPlayer) || $auras[$i+4] == 1) {
@@ -485,7 +486,6 @@ function PowerModifier($attackCardID, $from = "", $resourcesPaid = 0, $repriseAc
           }
         }
         $char = GetPlayerCharacter($defPlayer);
-        $charPieces = CharacterPieces();
         $charCount = count($char);
         for ($i = 0; $i < $charCount; $i += $charPieces) {
           if (!$foundAura && TypeContains($char[$i], "T", $defPlayer) && SubtypeContains($char[$i], "Aura")) {
@@ -946,6 +946,7 @@ function OnBlockResolveEffects($cardID = "")
     }
   }
   $blockingCards = [];
+  $characterPieces = CharacterPieces();
   for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
     if ($combatChain[$i + 1] == $defPlayer) {
       $defendingCard = $combatChain[$i];
@@ -1141,8 +1142,7 @@ function OnBlockResolveEffects($cardID = "")
         case "quickdodge_flexors":
           $char = &GetPlayerCharacter($defPlayer);
           $charCount = count($char);
-          $charPieces = CharacterPieces();
-          for ($j = 0; $j < $charCount; $j += $charPieces) {
+          for ($j = 0; $j < $charCount; $j += $characterPieces) {
             if ($char[$j] == $defendingCard) $char[$j+7] = "1";
           }
           break;

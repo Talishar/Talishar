@@ -632,7 +632,8 @@ function AssignEffectToCard($cardID, $player, $from) {
   for ($i = 0; $i < $numEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
-    if ($Effect->AppliestoUniqueID() != -1 && $Effect->AppliestoUniqueID() != "MISSED") continue;
+    $appliesToUniqueID = $Effect->AppliestoUniqueID();
+    if ($appliesToUniqueID != -1 && $appliesToUniqueID != "MISSED") continue;
     $card = GetClass($Effect->EffectID(), $player);
     if ($card != "-") $card->AssignEffectToCard($cardID, $Effect->Index(), $from);
   }
@@ -647,6 +648,7 @@ function AssignArcaneBonus($playerID, $layerIndex=0)
   if ($ind != -1) $currentTurnEffects[$ind + 2] = $Layer->UniqueID();
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $layerPieces = LayerPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] == $playerID && EffectArcaneBonus($currentTurnEffects[$i]) > 0) {
       $skip = intval($currentTurnEffects[$i + 2]) != -1;
@@ -664,7 +666,6 @@ function AssignArcaneBonus($playerID, $layerIndex=0)
           break;
       }
       if (!$skip) {
-        $layerPieces = LayerPieces();
         while ($layers[$layerIndex] == "TRIGGER" || $layers[$layerIndex] == "PRETRIGGER") {
           $layerIndex += $layerPieces;
         }

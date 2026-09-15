@@ -115,6 +115,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "thespian_charm_yellow":
       $params = explode(",", $additionalCosts);
       $paramsCount = count($params);
+      $chainLinksummaryPieces = ChainLinkSummaryPieces();
       for($i = 0; $i < $paramsCount; ++$i) {
         switch($params[$i]) {
           case "Destroy_a_Might_or_Vigor":
@@ -187,7 +188,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             if ($currentPlayer == $mainPlayer) {
               if (CachedTotalPower() >= 6) $condition = true;
               $chainLinksummaryCount = count($chainLinkSummary);
-              $chainLinksummaryPieces = ChainLinkSummaryPieces();
               for ($j = 0; $j < $chainLinksummaryCount; $j += $chainLinksummaryPieces) {
                 if ($chainLinkSummary[$j + 1] >= 6) { $condition = true; break; }
               }

@@ -1012,6 +1012,7 @@ function EquipWeapon($player, $cardID, $source = "-", $num=1)
       return;
     }
   }
+  $characterPieces = CharacterPieces();
   for ($weaponNum = 0; $weaponNum < $num; ++$weaponNum) {
     $char = &GetPlayerCharacter($player);
     $lastWeapon = 0;
@@ -1019,16 +1020,16 @@ function EquipWeapon($player, $cardID, $source = "-", $num=1)
     $numHands = NumOccupiedHands($player);
     $uniqueID = GetUniqueId($cardID, $player);
     $charCount = count($char);
-    $characterPieces = CharacterPieces();
     $is1H = Is1H($cardID);
     $occupied_slots = [];
     $Character = new PlayerCharacter($player);
     $characterCount = $Character->NumCards();
     for ($characterIndex = 0; $characterIndex < $characterCount; ++$characterIndex) {
       $CharacterCard = $Character->Card($characterIndex, true);
-      if ($CharacterCard->Slot() == "LWep")
+      $characterSlot = $CharacterCard->Slot();
+      if ($characterSlot == "LWep")
         $occupied_slots[] = "LWep";
-      elseif ($CharacterCard->Slot() == "RWep" || $CharacterCard->Slot() == "Off-Hand")
+      elseif ($characterSlot == "RWep" || $characterSlot == "Off-Hand")
         $occupied_slots[] = "RWep";
     }
     $slot = "-";

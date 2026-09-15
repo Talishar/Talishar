@@ -1039,7 +1039,8 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
 {
   global $currentTurnEffects, $EffectContext, $CombatChain, $CS_ResolvingLayerUniqueID, $mainPlayer;
   $otherPlayer = ($target == 1 ? 2 : 1);
-  if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
+  $sourceType = CardType($source);
+  if ($sourceType == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
   $AttackCard = $CombatChain->AttackCard();
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $attackCardID = $AttackCard->ID();

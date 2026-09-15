@@ -600,6 +600,7 @@ function AuraStartTurnAbilities()
   $toRemove = [];
   $countAuras = count($auras);
   $aurasPieces = AuraPieces();
+  $characterPieces = CharacterPieces();
   $mightCount = 0;
   $vigorCount = 0;
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
@@ -796,9 +797,8 @@ function AuraStartTurnAbilities()
         break;
       case "flurry_stance_red":
         $character = &GetPlayerCharacter($mainPlayer);
-        $charPieces = CharacterPieces();
-        $weaponIndex1 = $charPieces;
-        $weaponIndex2 = $charPieces * 2;
+        $weaponIndex1 = $characterPieces;
+        $weaponIndex2 = $characterPieces * 2;
         if(SubtypeContains($character[$weaponIndex1], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex1, 1);
         if(SubtypeContains($character[$weaponIndex2], "Dagger")) AddCharacterUses($mainPlayer, $weaponIndex2, 1);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);

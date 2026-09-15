@@ -3642,6 +3642,7 @@ function GetTargetOfAttack($cardID = "", $attackQueue=false)
     $allies = &GetAllies($defPlayer);
     $countAllies = count($allies);
     $allyPieces = AllyPieces();
+    $currentTurnEffectPieces = CurrentTurnEffectPieces();
     for ($i = 0; $i < $countAllies; $i += $allyPieces) {
       $targIndex = "THEIRALLY-$i";
       if (!str_contains($currentTargets, $targIndex)) {
@@ -3649,7 +3650,6 @@ function GetTargetOfAttack($cardID = "", $attackQueue=false)
         ++$numTargets;
         if ($allies[$i] == "chum_friendly_first_mate_yellow") {
           $countCurrentTurnEffects = count($currentTurnEffects);
-          $currentTurnEffectPieces = CurrentTurnEffectPieces();
           for ($j = 0; $j < $countCurrentTurnEffects; $j += $currentTurnEffectPieces) {
             if ($currentTurnEffects[$j+1] == $mainPlayer && $currentTurnEffects[$j] == "chum_friendly_first_mate_yellow") {
               if ($currentTurnEffects[$j+2] == $allies[$i+5]) {

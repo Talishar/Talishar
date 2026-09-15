@@ -31,6 +31,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
   $theirHoldState = ItemDefaultHoldTriggerState($cardID, $otherPlayer);
   if ($theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   $theirHoldState = ApplyGemsOffDefault($theirHoldState, $otherPlayer);
+  $itemPieces = ItemPieces();
   for ($i = 0; $i < $number; ++$i) {
     $uniqueID = GetUniqueId($cardID, $player);
     $steamCounters = SteamCounterLogic($cardID, $player, $uniqueID) + $steamCounterModifier;
@@ -52,7 +53,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     if (HasCrank($cardID, $player)) Crank($player, $index, $mainPhase);
     if ($cardID == "hyper_driver" && $steamCounters == 0) {
       WriteLog("A hyper driver with no counters is immediately destroyed");
-      DestroyItemForPlayer($player, count($items) - ItemPieces());
+      DestroyItemForPlayer($player, count($items) - $itemPieces);
     }
   }
   $char = &GetPlayerCharacter($player);

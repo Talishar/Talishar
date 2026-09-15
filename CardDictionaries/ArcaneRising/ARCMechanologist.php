@@ -130,6 +130,8 @@ function DoBoost($player, $cardID, $boostCount=1)
   global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted, $Stack;
   $deck = new Deck($player);
   $isGoAgainGranted = false;
+  $banishPieces = BanishPieces();
+  $charPieces = CharacterPieces();
   for ($i = 0; $i < $boostCount; $i++) {
     if($deck->Empty()) { WriteLog("⚠️ Cannot boost!"); return; }
     GainActionPoints(CountCurrentTurnEffects("high_octane_red", $player), $player);
@@ -141,7 +143,7 @@ function DoBoost($player, $cardID, $boostCount=1)
     OnBoostedEffects($player, $boostedCardID);
     BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
     $banish = GetBanish($player);
-    $topInd = count($banish) - BanishPieces(); // index of card that just got banished
+    $topInd = count($banish) - $banishPieces; // index of card that just got banished
     if (SubtypeContains($boostedCardID, "Evo")) {
       IncrementClassState($player, $CS_EvosBoosted);
     }
@@ -158,7 +160,6 @@ function DoBoost($player, $cardID, $boostCount=1)
     }
     $char = GetPlayerCharacter($player);
     $charCount = count($char);
-    $charPieces = CharacterPieces();
     for ($j = 0; $j < $charCount; $j += $charPieces) {
       if ($char[$j + 1] == 2) {
         switch ($char[$j]) {
