@@ -79,7 +79,7 @@ class CombatChain {
   }
 
   function HasCurrentLink() {
-    return count($this->chain) > 0;
+    return $this->chain !== [];
   }
 
   function HasCurrentAttack() {
@@ -131,7 +131,7 @@ class ChainCard {
     }
 
     function PlayerID() {
-      return isset($this->chain[$this->index+1]) ? $this->chain[$this->index+1] : null;
+      return $this->chain[$this->index+1] ?? null;
     }
 
     function From() {
@@ -143,11 +143,11 @@ class ChainCard {
     }
 
     function RepriseActive() {
-      return isset($this->chain[$this->index+4]) ? $this->chain[$this->index+4] : 0;
+      return $this->chain[$this->index+4] ?? 0;
     }
 
     function PowerValue() {
-      return isset($this->chain[$this->index+5]) ? $this->chain[$this->index+5] : 0;
+      return $this->chain[$this->index+5] ?? 0;
     }
 
     function TotalPower() {
@@ -186,11 +186,11 @@ class ChainCard {
     }
 
     function UniqueID() {
-      return isset($this->chain[$this->index+7]) ? $this->chain[$this->index+7] : null;
+      return $this->chain[$this->index+7] ?? null;
     }
 
     function OriginUniqueID() {
-      return isset($this->chain[$this->index+8]) ? $this->chain[$this->index+8] : null;
+      return $this->chain[$this->index+8] ?? null;
     }
 
     function UpdateSource($uid) {
@@ -201,7 +201,7 @@ class ChainCard {
     }
 
     function StaticBuffs() {
-      return isset($this->chain[$this->index+10]) ? $this->chain[$this->index+10] : "";
+      return $this->chain[$this->index+10] ?? "";
     }
 
     function AddBuff($effectID) {

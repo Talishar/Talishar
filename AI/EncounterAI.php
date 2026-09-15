@@ -90,9 +90,8 @@ function EncounterAI()
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
         //LogPriorityArray($priortyArray);
         $found = false;
-        while (count($priortyArray) > 0 && !$found) { //Grabs items from the array until it finds one it can play.
-          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
-          array_pop($priortyArray); //grabs the last item in the array (highest priority), and removes it from the array, storing it in $storedPriorityNode
+        while ($priortyArray !== [] && !$found) { //Grabs items from the array until it finds one it can play.
+          $storedPriorityNode = array_pop($priortyArray); //grabs the last item in the array (highest priority), and removes it from the array, storing it in $storedPriorityNode
           //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
           if(CardIsBlockable($storedPriorityNode)) $found = true; //If the card can be played/blocked with/activated. Found in EncounterPlayLogic.php
         }
@@ -121,9 +120,8 @@ function EncounterAI()
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Action");
         //LogPriorityArray($priortyArray);
         $found = false;
-        while (count($priortyArray) > 0 && !$found) {
-          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
-          array_pop($priortyArray);
+        while ($priortyArray !== [] && !$found) {
+          $storedPriorityNode = array_pop($priortyArray);
           if(CardIsPlayable($storedPriorityNode, $hand, $resources))
           {
             //Only attempt to play the card if you have excess resources compared to what needs to be saved
@@ -149,9 +147,8 @@ function EncounterAI()
         if($AIDebug) WriteLog("AI Branch - End of Turn Hero Ability");
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Action");
         $found = false;
-        while (count($priortyArray) > 0 && !$found) {
-          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
-          array_pop($priortyArray);
+        while ($priortyArray !== [] && !$found) {
+          $storedPriorityNode = array_pop($priortyArray);
           if($storedPriorityNode[1] != "Character" || $storedPriorityNode[2] != 0) continue;
           if($storedPriorityNode[3] <= BotEndOfTurnAbilityThreshold()) continue;
           if(CardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
@@ -172,9 +169,8 @@ function EncounterAI()
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Reaction");
         //LogPriorityArray($priortyArray);
         $found = false;
-        while (count($priortyArray) > 0 && !$found) {
-          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
-          array_pop($priortyArray);
+        while ($priortyArray !== [] && !$found) {
+          $storedPriorityNode = array_pop($priortyArray);
           if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
           //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
         }
@@ -194,9 +190,8 @@ function EncounterAI()
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Reaction");
         //LogPriorityArray($priortyArray);
         $found = false;
-        while (count($priortyArray) > 0 && !$found) {
-          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
-          array_pop($priortyArray);
+        while ($priortyArray !== [] && !$found) {
+          $storedPriorityNode = array_pop($priortyArray);
           if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
           //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
         }
@@ -218,9 +213,8 @@ function EncounterAI()
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Pitch");
         //LogPriorityArray($priortyArray);
         $found = false;
-        while (count($priortyArray) > 0 && !$found) {
-          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
-          array_pop($priortyArray);
+        while ($priortyArray !== [] && !$found) {
+          $storedPriorityNode = array_pop($priortyArray);
           //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
           if(CardIsPitchable($storedPriorityNode)) $found = true;
         }
@@ -246,9 +240,8 @@ function EncounterAI()
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "ToArsenal");
         //LogPriorityArray($priortyArray);
         $found = false;
-        while (count($priortyArray) > 0 && !$found) {
-          $storedPriorityNode = $priortyArray[count($priortyArray)-1];
-          array_pop($priortyArray);
+        while ($priortyArray !== [] && !$found) {
+          $storedPriorityNode = array_pop($priortyArray);
           //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
           if(CardIsArsenalable($storedPriorityNode)) $found = true;
         }

@@ -1148,7 +1148,8 @@ class scorpio_comet_tail extends Card {
     global $ChainLinks;
     $Weapon = new CharacterCard($index, $this->controller);
     if ($Weapon->Tapped()) return true;
-    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $chainLinkCount = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $chainLinkCount; ++$i) {
       $AttackCard = $ChainLinks->GetLink($i)->AttackCard();
       if ($AttackCard->StillOnChain() && TalentContains($AttackCard->ID(), "LIGHTNING", $this->controller))
         return false;
@@ -4246,16 +4247,19 @@ class fortitude_of_anvilheim extends Card {
     global $CombatChain, $ChainLinks;
     $choices = [];
     if (TypeContains($CombatChain->AttackCard()->ID(), "W")) {
-      for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+      $activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+      for ($i = 1; $i < $activeLinkCardCount; ++$i) {
         $blockingCard = $CombatChain->Card($i, true);
         if (TypeContains($blockingCard->ID(), "A") || TypeContains($blockingCard->ID(), "AA"))
           $choices[] = "COMBATCHAINLINK-" . $blockingCard->Index();
       }
     }
-    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $chainLinkCount = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $chainLinkCount; ++$i) {
       $Link = $ChainLinks->GetLink($i);
       if (TypeContains($Link->AttackCard()->ID(), "W")) {
-        for ($j = 1; $j < $Link->NumCards(); ++$j) {
+        $linkCardCount = $Link->NumCards();
+        for ($j = 1; $j < $linkCardCount; ++$j) {
           $blockingCard = $Link->GetLinkCard($j, true);
           if ($blockingCard->StillOnChain() && (TypeContains($blockingCard->ID(), "A") || TypeContains($blockingCard->ID(), "AA")))
             $choices[] = "PASTCHAINLINK-" . $blockingCard->Index() . "-$i";
@@ -4904,9 +4908,11 @@ class snap_fingers extends Card {
   function GetTargets() {
     global $CombatChain;
     $rv = [];
-    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+    for ($i = 0; $i < $activeLinkCardCount; ++$i) {
       $ChainCard = $CombatChain->Card($i, true);
-      if ($ChainCard->PlayerID() == $this->controller && TypeContains($ChainCard->ID(), "AA") && TalentContains($ChainCard->ID(), "LIGHTNING"))
+      $cardID = $ChainCard->ID();
+      if ($ChainCard->PlayerID() == $this->controller && TypeContains($cardID, "AA") && TalentContains($cardID, "LIGHTNING"))
         $rv[] = "COMBATCHAINLINK-" . $ChainCard->Index();
     }
     return $rv;

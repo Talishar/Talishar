@@ -143,7 +143,7 @@ class Layer {
 	}
 
 	function PlayerID() {
-		return isset($this->layers[$this->index+1]) ? $this->layers[$this->index+1] : 0;
+		return $this->layers[$this->index+1] ?? 0;
 	}
 
   function SetPlayerID($player) {
@@ -151,7 +151,7 @@ class Layer {
   }
 
 	function Parameter() {
-		return isset($this->layers[$this->index+2]) ? $this->layers[$this->index+2] : "-";
+		return $this->layers[$this->index+2] ?? "-";
 	}
 
   function From() {
@@ -168,7 +168,7 @@ class Layer {
   }
 
 	function Target() {
-		return isset($this->layers[$this->index+3]) ? $this->layers[$this->index+3] : "-";
+		return $this->layers[$this->index+3] ?? "-";
 	}
 
   function AddTarget($target) {
@@ -182,7 +182,7 @@ class Layer {
   }
 
 	function AdditionalCosts() {
-		return isset($this->layers[$this->index+4]) ? $this->layers[$this->index+4] : "-";
+		return $this->layers[$this->index+4] ?? "-";
 	}
 
   function SetAdditionalCosts($costs) {
@@ -287,11 +287,11 @@ class AttackLayer {
 	}
 
 	function PlayerID() {
-		return isset($this->attackQueue[$this->index+1]) ? $this->attackQueue[$this->index+1] : 0;
+		return $this->attackQueue[$this->index+1] ?? 0;
 	}
 
 	function Parameter() {
-		return isset($this->attackQueue[$this->index+2]) ? $this->attackQueue[$this->index+2] : "-";
+		return $this->attackQueue[$this->index+2] ?? "-";
 	}
 
   function DynCost() {

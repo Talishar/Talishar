@@ -1608,7 +1608,8 @@ function CombatChainClosedItemEffects() {
           $blockingItem = $defItems->FindCardUID($chainLinks[$i][$linkIndex + 8] ?? "");
           $blockingItem->AddDefCounters(-1);
           $blockingItem->ToggleOnChain(0);
-          if (ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + ($chainLinks[$i][$linkIndex + 5] ?? 0) <= 0) {
+          $blockingItemID = $blockingItem->CardID();
+          if (ModifiedBlockValue($blockingItemID, $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItemID, "CC", 0, "$i,$j") + ($chainLinks[$i][$linkIndex + 5] ?? 0) <= 0) {
             $blockingItem->Destroy();
           }
         }
@@ -1657,7 +1658,8 @@ function CombatChainClosedCharacterEffects()
             $blockingItem = $defItems->FindCardUID($chainLinks[$i][$j + 8]);
             $blockingItem->AddDefCounters(-1);
             $blockingItem->ToggleOnChain(0);
-            if (ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5] <= 0) {
+            $blockingItemID = $blockingItem->CardID();
+            if (ModifiedBlockValue($blockingItemID, $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItemID, "CC", 0, "$i,$j") + $chainLinks[$i][$j + 5] <= 0) {
               $blockingItem->Destroy();
             }
           }
@@ -2692,7 +2694,8 @@ function CloseCombatChain($chainClosed = true)
   }
   for ($i = 0; $i < $Stack->NumLayers(); $i++) { //7.7.3
     $Layer = $Stack->Card($i, true);
-    if (TypeContains($Layer->ID(), "DR") || TypeContains($Layer->ID(), "AR")) {
+    $layerID = $Layer->ID();
+    if (TypeContains($layerID, "DR") || TypeContains($layerID, "AR")) {
       $Layer->Negate("GY");
     }
   }
@@ -3013,7 +3016,7 @@ function EndTurnPitchHandling($player)
       if ($pitch[$i] !== $firstCard) { $allSame = false; break; }
     }
     if ($allSame) {
-      while (count($pitch) > 0) PitchDeck($player, 0);
+      while ($pitch !== []) PitchDeck($player, 0);
       return true;
     }
     $currentPlayer = $player;

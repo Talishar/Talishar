@@ -2717,7 +2717,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $Items = new Items($player);
         $targetItem = $Items->FindCardUID($target);
         if ($targetItem != "") {
-          AddDecisionQueue("YESNO", $player, "if_you_want_to_move_a_steam_counter_to_" . CardLink($targetItem->CardID(), $targetItem->CardID()));
+          AddDecisionQueue("YESNO", $player, "if_you_want_to_move_a_steam_counter_to_" . CardLink($targetItem->CardID()));
           AddDecisionQueue("NOPASS", $player, "-");
           AddDecisionQueue("PASSPARAMETER", $player, $uniqueID . "," . $target, 1);
           AddDecisionQueue("SPECIFICCARD", $player, "PLASMAMAINLINE", 1);

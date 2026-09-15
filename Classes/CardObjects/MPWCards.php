@@ -704,7 +704,8 @@ class and_again_blue extends Card {
 		global $CurrentTurnEffects, $CS_WeaponsAttackedWith;
 		$targets = [];
 		$Character = new PlayerCharacter($this->controller);
-		for ($i = 0; $i < $Character->NumCards(); ++$i) {
+		$characterCount = $Character->NumCards();
+		for ($i = 0; $i < $characterCount; ++$i) {
 			$CharacterCard = $Character->Card($i, true);
 			if (!SubtypeContains($CharacterCard->CardID(), "Sword")) continue;
 			$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $CharacterCard->UniqueID());
@@ -939,7 +940,8 @@ class into_the_muck_red extends Card {
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		global $CombatChain;
 		$inds = [];
-		for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+		$activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+		for ($i = 1; $i < $activeLinkCardCount; ++$i) {
 			$LinkCard = $CombatChain->Card($i, true);
 			if (!TypeContains($LinkCard->ID(), "E")) $inds[] = "COMBATCHAINLINK-" . $LinkCard->Index();
 		}
@@ -2208,7 +2210,8 @@ class edge_laden_plate extends Card {
 		global $CurrentTurnEffects;
 		$targets = [];
 		$Character = new PlayerCharacter($this->controller);
-		for ($i = 0; $i < $Character->NumCards(); ++$i) {
+		$characterCount = $Character->NumCards();
+		for ($i = 0; $i < $characterCount; ++$i) {
 			$CharacterCard = $Character->Card($i, true);
 			if (!SubtypeContains($CharacterCard->CardID(), "Sword")) continue;
 			$foundSharpen = $CurrentTurnEffects->FindSpecificEffect("SHARPEN", $CharacterCard->UniqueID());
@@ -2654,11 +2657,14 @@ class shatter_the_weakpoint_red extends Card {
 		global $defPlayer;
 		$inds = [];
 		$defChar = new PlayerCharacter($defPlayer);
-		for ($i = 0; $i < $defChar->NumCards(); ++$i) {
+		$characterCount = $defChar->NumCards();
+		for ($i = 0; $i < $characterCount; ++$i) {
 			$CharCard = $defChar->Card($i, true);
-			$defVal = BlockValue($CharCard->CardID()) + $CharCard->NumDefenseCounters();
+			$cardID = $CharCard->CardID();
+			$baseBlock = BlockValue($cardID);
+			$defVal = $baseBlock + $CharCard->NumDefenseCounters();
 			// technically should also check for any effects like shred applying
-			if ($defVal <= 0 && BlockValue($CharCard->CardID()) > -1)
+			if ($defVal <= 0 && $baseBlock > -1)
 				$inds[] = "THEIRCHAR-" . $CharCard->Index();
 		}
 		Await($this->controller, "ChooseMultiZone", "MZInd", indices:implode(",", $inds), context:"Destroy an equipment");
@@ -3455,9 +3461,11 @@ class engage_steel extends BaseCard {
 	function EffectPowerModifier($val) {
 		global $CombatChain;
 		$defByWarriorCard = false;
-		for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+		$activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+		for ($i = 1; $i < $activeLinkCardCount; ++$i) {
 			$LinkCard = $CombatChain->Card($i, true);
-			if (ClassContains($LinkCard->ID(), "WARRIOR", $LinkCard->PlayerID())) {
+			$cardID = $LinkCard->ID();
+			if (ClassContains($cardID, "WARRIOR", $LinkCard->PlayerID())) {
 				$defByWarriorCard = true;
 				break;
 			}
