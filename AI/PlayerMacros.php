@@ -476,9 +476,11 @@ function HasPlayableCard($player, $phase)
     }
   }
 
-  for ($linkNum = 0; $linkNum < $ChainLinks->NumLinks(); ++$linkNum) {
+  $chainLinkCount = $ChainLinks->NumLinks();
+  for ($linkNum = 0; $linkNum < $chainLinkCount; ++$linkNum) {
     $Link = $ChainLinks->GetLink($linkNum);
-    for ($i = 0; $i < $Link->NumCards(); ++$i) {
+    $linkCardCount = $Link->NumCards();
+    for ($i = 0; $i < $linkCardCount; ++$i) {
       if(IsPlayable($Link->GetLinkCard($i, true)->ID(), $phase, "PASTCHAINLINK", "$i-$linkNum", $restriction, $player)) return true;
     }
   }

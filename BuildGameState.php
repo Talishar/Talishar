@@ -25,10 +25,11 @@ function GetChainCardSubcards($controller, ...$uniqueIDs) {
       }
     }
     if ($subcards === "-" || $subcards === "") $subcards = NULL;
-    $boundIDs = [];
     $Auras ??= new Auras($controller);
-    foreach ($Auras->FindBoundAuras($uniqueID) as $boundAura) $boundIDs[] = $boundAura->CardID();
-    if ($boundIDs !== []) {
+    $boundAuras = $Auras->FindBoundAuras($uniqueID);
+    if ($boundAuras !== []) {
+      $boundIDs = [];
+      foreach ($boundAuras as $boundAura) $boundIDs[] = $boundAura->CardID();
       $boundIDs = implode(",", $boundIDs);
       $subcards = $subcards !== NULL ? "$boundIDs,$subcards" : $boundIDs;
     }
@@ -443,15 +444,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   $activeChainLink->totalDefense = $blockVal;
   $activeChainLink->reactions = $combatChainReactions;
-  $activeChainLink->attackTarget = GetAttackTargetNames($mainPlayer);
+  $attackTargetNames = GetAttackTargetNames($mainPlayer);
+  $activeChainLink->attackTarget = $attackTargetNames;
   $activeChainLink->damagePrevention = ($combatChainCount > 0 && CanDamageBePrevented($mainPlayer, 0, "COMBAT", $combatChain[0])) ? GetDamagePrevention($defPlayer, $totalPower) : 0;
   $activeChainLink->goAgain = CachedAttackHasGoAgain();
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
   $activeChainLink->confidence = SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence");
   $activeChainLink->activeOnHits = ActiveOnHits();
-  if (GetCombatChainState($CCS_RequiredEquipmentBlock) > NumEquipBlock("EQUIP")) $activeChainLink->numRequiredEquipBlock = GetCombatChainState($CCS_RequiredEquipmentBlock);
-  elseif (GetCombatChainState($CCS_RequiredNegCounterEquipmentBlock) > NumNegCounterEquipBlock()) $activeChainLink->numRequiredEquipBlock = GetCombatChainState($CCS_RequiredNegCounterEquipmentBlock);
+  $requiredEquipmentBlock = GetCombatChainState($CCS_RequiredEquipmentBlock);
+  $requiredNegCounterEquipmentBlock = GetCombatChainState($CCS_RequiredNegCounterEquipmentBlock);
+  if ($requiredEquipmentBlock > NumEquipBlock("EQUIP")) $activeChainLink->numRequiredEquipBlock = $requiredEquipmentBlock;
+  elseif ($requiredNegCounterEquipmentBlock > NumNegCounterEquipBlock()) $activeChainLink->numRequiredEquipBlock = $requiredNegCounterEquipmentBlock;
   $activeChainLink->wager = CachedWagerActive();
   $activeChainLink->phantasm = CachedPhantasmActive();
   $activeChainLink->fusion = CachedFusionActive();
@@ -505,7 +509,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $layer->isReorderable = false;
     $reorderableLayers[] = $layer;
   }
-  $layerObject->target = GetAttackTargetNames($mainPlayer);
+  $layerObject->target = $attackTargetNames;
   $layerObject->layerContents = $layerContents;
   $layerObject->reorderableLayers = $reorderableLayers;
   $response->layerDisplay = $layerObject;
@@ -870,6 +874,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $playerBanishArr[] = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
   }
   $response->playerBanish = $playerBanishArr;
+  unset($playerBanishArr);
 
   $myBloodDebtCount = SearchCount(SearchBanish($playerID == 3 ? $bottomPlayer : $playerID, "", "", -1, -1, "", "", true));
   if ($myBloodDebtCount > 0) {
@@ -973,7 +978,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerEquipment = $myCharData;
 
   //Now display any previous chain links that can be activated
-  $playablePastLinks = [];
   // attacker's cards
   $attacks = GetCombatChainAttacks();
   $attacksCount = count($attacks);
@@ -985,13 +989,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $action = $currentPlayer == $playerID && IsPlayable($attacks[$i], $turnPhase, "COMBATCHAINATTACKS", $linkNum) ? 38 : 0;
     $border = CardBorderColor($attacks[$i], "BANISH", $action > 0, $playerID);
     $cardID = $attacks[$i];
-    if ($action != 0) $playablePastLinks[] = JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: strval($i), label: $label);
+    if ($action != 0) $response->playerBanish[] = JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: strval($i), label: $label);
   }
   // defender's cards
-  for ($linkNum = 0; $linkNum < $ChainLinks->NumLinks(); ++$linkNum) {
+  for ($linkNum = 0; $linkNum < $chainLinksCount; ++$linkNum) {
     $label = "Chain Link " . $linkNum + 1;
     $Link = $ChainLinks->GetLink($linkNum);
-    for ($i = 1; $i < $Link->NumCards(); ++$i) {
+    $linkCardCount = $Link->NumCards();
+    for ($i = 1; $i < $linkCardCount; ++$i) {
       $LinkCard = $Link->GetLinkCard($i, true);
       if ($LinkCard->PlayerID() != $currentPlayer || $currentPlayer != $playerID) continue;
       if (!$LinkCard->StillOnChain()) continue;
@@ -1002,11 +1007,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $action = IsPlayable($linkCardID, $turnPhase, $zone, $index) ? 39 : 0;
       $border = CardBorderColor($linkCardID, "BANISH", $action > 0, $playerID);
       $cardID = $linkCardID;
-      if ($action != 0) $playablePastLinks[] = JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: $index, label: $label);
+      if ($action != 0) $response->playerBanish[] = JSONRenderedCard($cardID, $action, borderColor: $border, actionDataOverride: $index, label: $label);
     }
-  }
-  if (!empty($playablePastLinks)) {
-    $response->playerBanish = [...$response->playerBanish, ...$playablePastLinks];
   }
 
   //Their Arsenal
@@ -1134,13 +1136,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   for ($ei = 0; $ei < $effectScanCount; $ei += $effectScanPieces) {
     if (isset($currentTurnEffects[$ei + 2])) $effectUIDSet[(string)$currentTurnEffects[$ei + 2]] = true;
   }
+  $attackTargetUID = GetCombatChainState($CCS_AttackTargetUID);
 
   for ($i = 0; $i + $allyPieces - 1 < $theirAlliesCount; $i += $allyPieces) {
     $label = "";
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
-    if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
+    if($attackTargetUID == $uniqueID) $label = "Targeted";
     else {
       $isTargeted = $layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID);
       $hasActiveEffect = isset($effectUIDSet[(string)$uniqueID]);
@@ -1269,7 +1272,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $border = CardBorderColor($myAllies[$i], "PLAY", $playable, $playerID);
     $actionDataOverride = $actionType == 24 ? strval($i) : "";
     $uniqueID = $myAllies[$i+5];
-    if(GetCombatChainState($CCS_AttackTargetUID) == $uniqueID) $label = "Targeted";
+    if($attackTargetUID == $uniqueID) $label = "Targeted";
     elseif($layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID)) $label = "Targeted";
     elseif(isset($effectUIDSet[(string)$uniqueID])) $label = "Effect Active";
     $subcards = $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL;
@@ -1622,15 +1625,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $eventsCount = count($events);
     $eventPieces = EventPieces();
     for ($i = 0; $i < $eventsCount; $i += $eventPieces) {
-      $thisEvent = new stdClass();
-      $thisEvent->eventType = $events[$i];
-      $thisEvent->eventValue = $events[$i + 1] ?? null;
+      $eventType = $events[$i];
+      $eventValue = $events[$i + 1] ?? null;
       // CLASHDASH: Dash's own deck reveal skip animation for Dash IO since they already see the top of their decks.
-      if ($thisEvent->eventType == "CLASHDASH") {
-        $clashParts = explode(":", $thisEvent->eventValue ?? "");
+      if ($eventType == "CLASHDASH") {
+        $clashParts = explode(":", $eventValue ?? "");
         if (intval($clashParts[0]) == intval($playerID)) continue;
-        $thisEvent->eventType = "CLASH";
+        $eventType = "CLASH";
       }
+      $thisEvent = new stdClass();
+      $thisEvent->eventType = $eventType;
+      $thisEvent->eventValue = $eventValue;
       $newEvents->eventArray[] = $thisEvent;
     }
   }

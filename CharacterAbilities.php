@@ -685,7 +685,8 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
     }
   }
   $defCharacter = new PlayerCharacter($otherPlayer);
-  for ($i = 0; $i < $defCharacter->NumCards(); ++$i) {
+  $defCharacterCount = $defCharacter->NumCards();
+  for ($i = 0; $i < $defCharacterCount; ++$i) {
     $CharacterCard = $defCharacter->Card($i);
     if (!$CharacterCard->IsActive()) continue;
     $card = GetClass($CharacterCard->CardID(), $mainPlayer);
@@ -842,7 +843,8 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
     else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
     else if (SubtypeContains($cardID, "Quiver") || SubtypeContains($cardID, "Off-Hand") || SubtypeContains($cardID, "Companion")) $slot = "Off-Hand";
     else if (TypeContains($cardID, "W")) {
-      for ($i = 0; $i < $Character->NumCards(); ++$i) {
+      $characterCount = $Character->NumCards();
+      for ($i = 0; $i < $characterCount; ++$i) {
         $CharCard = $Character->Card($i, true);
         if ($CharCard->Slot() == "LWep") $slot = "RWep";
       }
@@ -1021,7 +1023,8 @@ function EquipWeapon($player, $cardID, $source = "-", $num=1)
     $is1H = Is1H($cardID);
     $occupied_slots = [];
     $Character = new PlayerCharacter($player);
-    for ($characterIndex = 0; $characterIndex < $Character->NumCards(); ++$characterIndex) {
+    $characterCount = $Character->NumCards();
+    for ($characterIndex = 0; $characterIndex < $characterCount; ++$characterIndex) {
       $CharacterCard = $Character->Card($characterIndex, true);
       if ($CharacterCard->Slot() == "LWep")
         $occupied_slots[] = "LWep";
@@ -1850,7 +1853,8 @@ function ListExposedEquipSlots($player)
 {
   $Character = new PlayerCharacter($player);
   $exposedSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
-  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+  $characterCount = $Character->NumCards();
+  for ($i = 0; $i < $characterCount; ++$i) {
     $CharacterCard = $Character->Card($i, true);
     if ($CharacterCard->Status() == 0) continue;
     $slot = $CharacterCard->Slot();

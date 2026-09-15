@@ -4716,7 +4716,8 @@ function CanGainAttack($cardID)
 function CanGainBlock($cardID, $index=-1) {
   global $CombatChain, $mainPlayer, $CurrentTurnEffects, $ChainLinks;
   if ($CombatChain->AttackCard()->ID() == "smash_with_big_rock_yellow") return false;
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $effectCount = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $effectCount; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->EffectID() == "beat_of_the_ironsong_blue-BLOCK") {
       $linkNum = -1;

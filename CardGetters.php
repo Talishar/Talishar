@@ -440,13 +440,13 @@ function GetPreLayers() {
 
 function GetCombatChainAttacks()
 {
-  global $chainLinks, $ChainLinks;
+  global $chainLinks;
   $chainLinksPieces = ChainLinksPieces();
-  $chainLinksCount = $ChainLinks->NumLinks();
+  $chainLinksCount = count($chainLinks);
   $attacks = array_fill(0, $chainLinksCount * $chainLinksPieces, "-");
   $idx = 0;
   for ($i = 0; $i < $chainLinksCount; ++$i) {
-    if ($ChainLinks->GetLink($i)->AttackCard()->StillOnChain()) {
+    if (($chainLinks[$i][2] ?? 0)) {
       $link = $chainLinks[$i];
       for ($j = 0; $j < $chainLinksPieces; ++$j) $attacks[$idx + $j] = $link[$j];
     }
@@ -489,7 +489,7 @@ function ArsenalHasArrowCardFacing($player, $facing)
   $arsenalPieces = ArsenalPieces();
   $arsenalCount = count($arsenal);
   for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
-    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == $facing) return true;
+    if ($arsenal[$i + 1] == $facing && CardSubType($arsenal[$i]) == "Arrow") return true;
   }
   return false;
 }
@@ -500,7 +500,7 @@ function ArsenalHasArrowFacingColor($player, $facing, $color)
   $arsenalPieces = ArsenalPieces();
   $arsenalCount = count($arsenal);
   for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
-    if (CardSubType($arsenal[$i]) == "Arrow" && $arsenal[$i + 1] == $facing && ColorContains($arsenal[$i], $color, $player)) return true;
+    if ($arsenal[$i + 1] == $facing && CardSubType($arsenal[$i]) == "Arrow" && ColorContains($arsenal[$i], $color, $player)) return true;
   }
   return false;
 }
@@ -526,7 +526,7 @@ function NumEquipment($player)
   $characterPieces = CharacterPieces();
   $characterCount = count($character);
   for ($i = 0; $i < $characterCount; $i += $characterPieces) {
-    if (CardType($character[$i]) == "E" && $character[$i + 1] != 0) ++$numEquip;
+    if ($character[$i + 1] != 0 && CardType($character[$i]) == "E") ++$numEquip;
   }
   return $numEquip;
 }

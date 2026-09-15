@@ -2040,7 +2040,10 @@ function FinalizeChainLink($chainClosed = false)
     if ($cardType != "W" && $cardType != "E" && $cardType != "C") {
       $params = explode(",", GoesWhereAfterResolving($chainCard, "COMBATCHAIN", $combatChain[$i]));
       $goesWhere = $params[0];
-      if ($i == 1 && GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "GY") $goesWhere = GetCombatChainState($CCS_GoesWhereAfterLinkResolves);
+      if ($i == 1) {
+        $attackDestination = GetCombatChainState($CCS_GoesWhereAfterLinkResolves);
+        if ($attackDestination != "GY") $goesWhere = $attackDestination;
+      }
       ResolveGoesWhere($goesWhere, $chainCard, $combatChain[$i], "CC", "", count($params) > 1 ? $params[1] : "NA");
     }
     $originUID = $combatChain[$i + 7];
