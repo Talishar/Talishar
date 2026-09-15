@@ -512,12 +512,13 @@ function PowerModifier($attackCardID, $from = "", $resourcesPaid = 0, $repriseAc
 }
 
 function CombatChainBlockModifiers($cardID, $from, $index) {
-  global $CombatChain;
+  global $CombatChain, $combatChain;
   $block = 0;
   $numCardsActiveLink = $CombatChain->NumCardsActiveLink();
+  $combatChainPieces = CombatChainPieces();
   for ($i = 0; $i < $numCardsActiveLink; ++$i) {
-    $LinkCard = $CombatChain->Card($i, true);
-    $card = GetClass($LinkCard->ID(), $LinkCard->PlayerID());
+    $chainIndex = $i * $combatChainPieces;
+    $card = GetClass($combatChain[$chainIndex] ?? "-", $combatChain[$chainIndex + 1] ?? null);
     if ($card != "-") $block += $card->CombatChainBlockModifier($cardID, $from, $index, $i);
   }
   return $block;
@@ -559,10 +560,11 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1, $player="-")
     }
   }
   $numActiveLink = $CombatChain->NumCardsActiveLink();
+  $combatChainPieces = CombatChainPieces();
   for ($i = 0; $i < $numActiveLink; ++$i) {
-    $ChainCard = $CombatChain->Card($i, true);
-    if ($ChainCard->PlayerID() == $defPlayer) {
-      switch ($ChainCard->ID()) {
+    $chainIndex = $i * $combatChainPieces;
+    if (($combatChain[$chainIndex + 1] ?? null) == $defPlayer) {
+      switch ($combatChain[$chainIndex] ?? "-") {
           case "captain_of_the_guard_blue":
             if ($blockCard != "-" && $blockCard->TotalPower() > $totalPower) {
               if (!$noGain) ++$blockModifier;
@@ -1430,7 +1432,7 @@ function NumNonEquipmentDefended()
 
 function NumCardsDefended($linkNum=-1)
 {
-  global $combatChain, $defPlayer;
+  global $combatChain, $defPlayer, $chainLinks;
   $number = 0;
   if ($linkNum == -1) {
     $combatChainPieces = CombatChainPieces();
@@ -1440,11 +1442,11 @@ function NumCardsDefended($linkNum=-1)
     }
   }
   else {
-    $Link = new ChainLink($linkNum);
-    $numCards = $Link->NumCards();
-    for ($i = 0; $i < $numCards; ++$i) {
-      $LinkCard = $Link->GetLinkCard($i, true);
-      if ($LinkCard->PlayerID() == $defPlayer) ++$number;
+    $link = $chainLinks[$linkNum] ?? [];
+    $linkCount = count($link);
+    $chainLinkPieces = ChainLinksPieces();
+    for ($i = 0; $i + $chainLinkPieces - 1 < $linkCount; $i += $chainLinkPieces) {
+      if (($link[$i + 1] ?? "-") == $defPlayer) ++$number;
     }
   }
   return $number;
@@ -1657,10 +1659,9 @@ function ClearCombatChainAwait($player) {
         if($cardType == "T" || $cardType == "Macro") continue;//Don't need to add to anywhere if it's a token
         if ($j == 0 && !TypeContains($linkID, "AA", $player)) continue; //Don't do anything with attack proxies
         // $j + 7 instead of just $j to grab the "original CardID" in case the card became a copy
-        $LinkCard = new LinkCard($i, $j);
         $origLinkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j+7], true, true) : $chainLinks[$i][$j+7];
         $goesWhere = GoesWhereAfterResolving($origLinkID, "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
-        ResolveGoesWhere($goesWhere, $origLinkID, $chainLinks[$i][$j + 1], "CHAINCLOSING", effectController:$LinkCard->PlayerID());
+        ResolveGoesWhere($goesWhere, $origLinkID, $chainLinks[$i][$j + 1], "CHAINCLOSING", effectController:$chainLinks[$i][$j + 1] ?? "-");
       }
     }
   }
@@ -1674,11 +1675,11 @@ function CloseCombatChainAwait($player) {
   for ($i = 0; $i < $defCharCount; $i += $charPieces) {
     $defCharacter[$i + 6] = 0;
   }
-  $defItems = new Items($defPlayer);
-  $numItems = $defItems->NumItems();
-  for ($i = 0; $i < $numItems; ++$i) {
-    $ItemCard = $defItems->Card($i, true);
-    $ItemCard->ToggleOnChain(0);
+  $defItems = &GetItems($defPlayer);
+  $defItemsCount = count($defItems);
+  $itemPieces = ItemPieces();
+  for ($i = 0; $i + $itemPieces - 1 < $defItemsCount; $i += $itemPieces) {
+    if (isset($defItems[$i + 13])) $defItems[$i + 13] = 0;
   }
   $chainLinks = [];
   $chainLinkSummary = [];
@@ -1696,12 +1697,11 @@ function CombatChainClosedTriggers()
       continue;
     }
     $chainLinkICount = count($chainLinks[$i]);
-    $ChainLink = new ChainLink($i);
     for ($j = 0; $j < $chainLinkICount; $j += $chainLinkPieces) {
-      $LinkCard = $ChainLink->GetLinkCard($j);
-      $cardType = CardType($LinkCard->ID());
-      if ($LinkCard->PlayerID() != $mainPlayer || ($LinkCard->StillOnChain() == 0 && !IsStaticType($cardType))) continue;
-      switch ($LinkCard->ID()) {
+      $linkCardID = $chainLinks[$i][$j] ?? "-";
+      $cardType = CardType($linkCardID);
+      if (($chainLinks[$i][$j + 1] ?? "-") != $mainPlayer || (($chainLinks[$i][$j + 2] ?? 0) == 0 && !IsStaticType($cardType))) continue;
+      switch ($linkCardID) {
         case "hell_hammer":
           $index = FindCharacterIndex($mainPlayer, "hell_hammer");
           if ($index > -1 && SearchCurrentTurnEffects("hell_hammer", $mainPlayer, true)) {
@@ -2202,7 +2202,7 @@ function CombatChainHitEffect($cardID, $sourceID="-", $targetPlayer="-") {
 }
 
 function CombatChainHitEffects($sourceID="-", $targetPlayer="-") {
-  global $CombatChain, $ChainLinks;
+  global $CombatChain, $ChainLinks, $chainLinks;
 
   if ($CombatChain->HasCurrentLink()) {
     CombatChainHitEffect($CombatChain->AttackCard()->ID(), $sourceID, $targetPlayer);
@@ -2210,7 +2210,7 @@ function CombatChainHitEffects($sourceID="-", $targetPlayer="-") {
 
   $numLinks = $ChainLinks->NumLinks();
   for ($i = 0; $i < $numLinks; ++$i) {
-    $attackCard = $ChainLinks->GetLink($i)->GetLinkCard(0)->ID();
+    $attackCard = $chainLinks[$i][0] ?? "-";
     CombatChainHitEffect($attackCard, $sourceID, $targetPlayer);
   }
 }
@@ -2237,29 +2237,30 @@ function LayerStepPower($player="") { //calculates the modified power of an atta
 }
 
 function CombatChainTakeDamageAbilities($player, $damage, $type, $source) {
-  global $CombatChain, $ChainLinks;
+  global $CombatChain, $ChainLinks, $combatChain, $chainLinks;
   $vambraceAvailable = SearchCurrentTurnEffects("vambrace_of_determination", $player) != "";
   $vambraceRemove = false;
   $preventedDamage = 0;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   $numActiveLink = $CombatChain->NumCardsActiveLink();
+  $combatChainPieces = CombatChainPieces();
   for ($i = 0; $i < $numActiveLink; ++$i) {
-    $ChainCard = $CombatChain->Card($i, true);
-    if ($player != $ChainCard->PlayerID()) continue;
-    $card = GetClass($ChainCard->ID(), $player);
+    $chainIndex = $i * $combatChainPieces;
+    if ($player != ($combatChain[$chainIndex + 1] ?? null)) continue;
+    $card = GetClass($combatChain[$chainIndex] ?? "-", $player);
     if ($card != "-") {
       $prevention = $card->CombatChainTakeDamageAbility(-1, $i, $damage, $type, $source, $preventable);
       if ($preventable) $preventedDamage += $prevention;
     }
   }
   $numLinks = $ChainLinks->NumLinks();
+  $chainLinkPieces = ChainLinksPieces();
   for ($i = 0; $i < $numLinks; ++$i) {
-    $Link = $ChainLinks->GetLink($i);
-    $numLinkCards = $Link->NumCards();
+    $numLinkCards = intdiv(count($chainLinks[$i] ?? []), $chainLinkPieces);
     for ($j = 0; $j < $numLinkCards; ++$j) {
-      $ChainCard = $Link->GetLinkCard($j, true);
-      if ($player != $ChainCard->PlayerID()) continue;
-      $card = GetClass($ChainCard->ID(), $player);
+      $linkIndex = $j * $chainLinkPieces;
+      if ($player != ($chainLinks[$i][$linkIndex + 1] ?? "-")) continue;
+      $card = GetClass($chainLinks[$i][$linkIndex] ?? "-", $player);
       if ($card != "-") {
         $prevention = $card->CombatChainTakeDamageAbility($i, $j, $damage, $type, $source, $preventable);
         if ($preventable) $preventedDamage += $prevention;
@@ -2277,16 +2278,17 @@ function CombatChainTakeDamageAbilities($player, $damage, $type, $source) {
 }
 
 function StackTakeDamageAbilities($player, $damage, $type, $source) {
-  global $Stack;
+  global $Stack, $layers;
   $vambraceAvailable = SearchCurrentTurnEffects("vambrace_of_determination", $player) != "";
   $vambraceRemove = false;
   $preventedDamage = 0;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   $numLayers = $Stack->NumLayers();
+  $layerPieces = LayerPieces();
   for ($i = 0; $i < $numLayers; ++$i) {
-    $Layer = $Stack->Card($i, true);
-    if ($Layer->PlayerID() != $player) continue;
-    $card = GetClass($Layer->ID(), $player);
+    $layerIndex = $i * $layerPieces;
+    if (($layers[$layerIndex + 1] ?? 0) != $player) continue;
+    $card = GetClass($layers[$layerIndex] ?? "", $player);
     if ($card != "-") {
       $prevention = $card->LayerTakeDamageAbility($i, $damage, $type, $source, $preventable);
       if ($preventable) $preventedDamage += $prevention;

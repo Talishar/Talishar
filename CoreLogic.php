@@ -17,24 +17,29 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   $numCardsActiveLink = $CombatChain->NumCardsActiveLink();
 
   for ($i = 0; $i < $numCardsActiveLink; ++$i) {
-    $chainCard = $CombatChain->Card($i, true);
-    if ($chainCard->PlayerID() == $mainPlayer) {
+    $chainIndex = $i * $combatChainPieces;
+    if (($combatChain[$chainIndex + 1] ?? null) == $mainPlayer) {
       if ($i == 0 && $attackType != "W") $power = LinkBasePower();
-      else $power = $canGainAttack ? PowerValue($chainCard->ID(), $mainPlayer, "CC") : PowerValue($chainCard->ID(), $mainPlayer, "CC", base: true);
+      else $power = $canGainAttack ? PowerValue($combatChain[$chainIndex] ?? "-", $mainPlayer, "CC") : PowerValue($combatChain[$chainIndex] ?? "-", $mainPlayer, "CC", base: true);
       if ($canGainAttack || $i == 0 || $power < 0) {
-        $powerModifiers[] = $chainCard->ID();
+        $powerModifiers[] = $combatChain[$chainIndex] ?? "-";
         $powerModifiers[] = $power;
         if ($i == 0) $totalPower += $power;
         else AddPower($totalPower, $power);
       }
-      $power = PowerModifier($chainCard->ID(), $chainCard->From(), $chainCard->ResourcesPaid(), $chainCard->RepriseActive()) + $chainCard->PowerValue();
+      $power = PowerModifier(
+        $combatChain[$chainIndex] ?? "-",
+        isset($combatChain[$chainIndex + 1]) ? $combatChain[$chainIndex + 2] : null,
+        $combatChain[$chainIndex + 3] ?? 0,
+        $combatChain[$chainIndex + 4] ?? 0
+      ) + ($combatChain[$chainIndex + 5] ?? 0);
       if ($canGainAttack && !$snagActive || $power < 0) {
-        $powerModifiers[] = $chainCard->ID();
+        $powerModifiers[] = $combatChain[$chainIndex] ?? "-";
         $powerModifiers[] = $power;
         AddPower($totalPower, $power);
       }
     } else {
-      $totalDefense += BlockingCardDefense($i * $combatChainPieces);
+      $totalDefense += BlockingCardDefense($chainIndex);
     }
   }
   // check +1 counters
@@ -412,9 +417,8 @@ function StartTurnAbilities()
   $defAuraCount = count($defAuras);
   $auraPieces = AuraPieces();
   for ($i = 0; $i < $defAuraCount; $i += $auraPieces) {
-    $defAura = new AuraCard($i, $defPlayer);
-    if ($defAura->IsFrozen() == "1" && !SuperFrozen($mainPlayer, "THEIRAURAS-$i") && !SuperFrozen($defPlayer, "MYAURAS-$i"))
-      $defAura->FreezeState(0);//Reset Frozen
+    if (($defAuras[$i + 11] ?? 0) == "1" && !SuperFrozen($mainPlayer, "THEIRAURAS-$i") && !SuperFrozen($defPlayer, "MYAURAS-$i"))
+      $defAuras[$i + 11] = 0;//Reset Frozen
   }
   $defArsenal = &GetArsenal($defPlayer);
   $defArsenalCount = count($defArsenal);
@@ -471,15 +475,16 @@ function MZStartTurnIndices()
 
 function FindEmptyEquipmentSlots($player)
 {
-  $character = new PlayerCharacter($player);
+  $character = &GetPlayerCharacter($player);
   $slots = ["Head", "Chest", "Arms", "Legs"];
   $occupied = [];
   $occupiedCount = 0;
-  for ($i = 0; $i < $character->NumCards() && $occupiedCount < 4; ++$i) {
-    $CharacterCard = $character->Card($i, true);
-    if ($CharacterCard->Status() == 0) continue; // destroyed cards don't occupy a slot
+  $characterCount = count($character);
+  $characterPieces = CharacterPieces();
+  for ($i = 0; $i + $characterPieces - 1 < $characterCount && $occupiedCount < 4; $i += $characterPieces) {
+    if (($character[$i + 1] ?? 0) == 0) continue; // destroyed cards don't occupy a slot
     foreach ($slots as $slot) {
-      if (!isset($occupied[$slot]) && $CharacterCard->Slot() == $slot) {
+      if (!isset($occupied[$slot]) && ($character[$i + 15] ?? "-") == $slot) {
         $occupied[$slot] = true;
         ++$occupiedCount;
         break;
@@ -1538,12 +1543,13 @@ function ResolutionStepAttackTriggers()
 }
 
 function ResolutionStepBlockTriggers() {
-  global $defPlayer, $CombatChain;
+  global $defPlayer, $CombatChain, $combatChain;
   if ($CombatChain->HasCurrentLink()) {
-    for ($i = $CombatChain->NumCardsActiveLink() - 1; $i > 0 ; --$i) {
-      $ChainCard = $CombatChain->Card($i, true);
-      if ($ChainCard->PlayerID() != $defPlayer) continue;
-      $card = GetClass($ChainCard->ID(), $defPlayer);
+    $combatChainPieces = CombatChainPieces();
+    for ($i = intdiv(count($combatChain), $combatChainPieces) - 1; $i > 0 ; --$i) {
+      $chainIndex = $i * $combatChainPieces;
+      if (($combatChain[$chainIndex + 1] ?? null) != $defPlayer) continue;
+      $card = GetClass($combatChain[$chainIndex] ?? "-", $defPlayer);
       if ($card != "-") $card->ResolutionStepBlockTrigger($i);
     }
   }
@@ -1575,24 +1581,25 @@ function CombatChainClosedMainCharacterEffects()
 }
 
 function CombatChainClosedItemEffects() {
-  global $ChainLinks, $defPlayer;
-  
+  global $ChainLinks, $defPlayer, $chainLinks;
+
   $numLinks = $ChainLinks->NumLinks();
+  $chainLinkPieces = ChainLinksPieces();
   for ($i = 0; $i < $numLinks; ++$i) {
     $Link = $ChainLinks->GetLink($i);
     $nervesOfSteelActive = $Link->TotalAttack() <= 2 && SearchAuras("nerves_of_steel_blue", $defPlayer);
     $numCards = $Link->NumCards();
     for ($j = 0; $j < $numCards; ++$j) {
-      $LinkCard = $Link->GetLinkCard($j, true);
-      if ($LinkCard->PlayerID() != $defPlayer) continue;
+      $linkIndex = $j * $chainLinkPieces;
+      if (($chainLinks[$i][$linkIndex + 1] ?? "-") != $defPlayer) continue;
       if (!$nervesOfSteelActive) {
-        if (HasTemper($LinkCard->ID())) {
+        if (HasTemper($chainLinks[$i][$linkIndex] ?? "-")) {
           // there will be issues if nitro mechanoid is blocking on the combat chain and gets stolen
           $defItems = new Items($defPlayer);
-          $blockingItem = $defItems->FindCardUID($LinkCard->OriginUniqueID());
+          $blockingItem = $defItems->FindCardUID($chainLinks[$i][$linkIndex + 8] ?? "");
           $blockingItem->AddDefCounters(-1);
           $blockingItem->ToggleOnChain(0);
-          if (ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + $LinkCard->DefenseModifier() <= 0) {
+          if (ModifiedBlockValue($blockingItem->CardID(), $defPlayer, "CC", "", $blockingItem->UniqueID()) + $blockingItem->NumDefCounters() + BlockModifier($blockingItem->CardID(), "CC", 0, "$i,$j") + ($chainLinks[$i][$linkIndex + 5] ?? 0) <= 0) {
             $blockingItem->Destroy();
           }
         }
@@ -2886,8 +2893,7 @@ function NumEquipBlock($from="-")
   $combatChainPieces = CombatChainPieces();
   $combatChainCount = count($combatChain);
   for ($i = $combatChainPieces; $i < $combatChainCount; $i += $combatChainPieces) {
-    $Card = new ChainCard($i);
-    if ($from != "-" && $Card->From() != $from) continue;
+    if ($from != "-" && (!isset($combatChain[$i + 1]) || $combatChain[$i + 2] != $from)) continue;
     if (DelimStringContains(CardSubType($combatChain[$i]), "Evo") && $combatChain[$i + 1] == $defPlayer && GetCombatChainState($CCS_RequiredEquipmentBlock) < 1) ++$numEquipBlock; // Working, but technically wrong until we get CardTypeContains
     else if (TypeContains($combatChain[$i], "E", $defPlayer) && $combatChain[$i + 1] == $defPlayer) ++$numEquipBlock;
   }
@@ -3248,13 +3254,13 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   }
   $mzIndices = CombineSearches($mzIndices, SearchMultizoneFormat(implode(",", $indicesArr), "MYITEMS"));
 
-  $Allies = new Allies($player);
+  $allies = &GetAllies($player);
   $indices = [];
-  $numAllies = $Allies->NumAllies();
-  for ($i = 0; $i < $numAllies; ++$i) {
-    $Ally = $Allies->Card($i, true);
-    if ($Ally->Status() != 0 && WardAmount($Ally->CardID(), $player) > 0)
-      $indices[] = $Ally->Index();
+  $alliesCount = count($allies);
+  $allyPieces = AllyPieces();
+  for ($i = 0; $i + $allyPieces - 1 < $alliesCount; $i += $allyPieces) {
+    if (($allies[$i + 1] ?? 0) != 0 && WardAmount($allies[$i] ?? "-", $player) > 0)
+      $indices[] = $i;
   }
   $indices = SearchMultiZoneFormat(implode(",", $indices), "MYALLY");
   $mzIndices = CombineSearches($mzIndices, $indices);
@@ -3276,7 +3282,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
 
 function GetDamagePreventionTargetIndices()
 {
-  global $combatChain, $currentPlayer, $Stack, $ChainLinks;
+  global $combatChain, $currentPlayer, $Stack, $ChainLinks, $chainLinks;
   $otherPlayer = 3 - $currentPlayer;
   $rv = [];
   $numLayers = $Stack->NumLayers();
@@ -3298,8 +3304,7 @@ function GetDamagePreventionTargetIndices()
   if (ArsenalHasFaceUpCard($otherPlayer)) $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS"));
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "C"), "THEIRCHAR"));
   for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
-    $LinkAttack = $ChainLinks->GetLink($i)->AttackCard();
-    if ($LinkAttack->StillOnChain())
+    if (($chainLinks[$i][2] ?? 0))
       $rv = CombineSearches($rv, "PASTCHAINLINK-0-$i");
   }
   return $rv;

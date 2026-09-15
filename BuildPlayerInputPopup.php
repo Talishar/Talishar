@@ -72,7 +72,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $combatChainState, $CCS_AttackTargetUID, $CCS_WeaponIndex;
   global $CombatChain, $chainLinks, $landmarks, $currentTurnEffects;
   global $theirHand, $myPermanents, $theirPermanents, $myPitch, $theirPitch;
-  global $theirAllies, $myAllies, $attackQueue, $Stack;
+  global $theirAllies, $myAllies, $attackQueue;
 
   $playerInputPopup = new stdClass();
   $playerInputButtons = [];
@@ -577,6 +577,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $hasCombatChainLink = $CombatChain->HasCurrentLink();
         $weaponIndexValue = intval(GetCombatChainState($CCS_WeaponIndex));
         $layerPieces = LayerPieces();
+        $auraPieces = AuraPieces();
         $layersActive = ($layerCheckCount > 0 && $layers[0] != "");
         $isMayChooseMultizone = ($turnPhase === "MAYCHOOSEMULTIZONE");
         $hideTopDeckCard = $isMayChooseMultizone
@@ -586,6 +587,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $option = explode("-", $options[$i], 3);
           $option0 = $option[0]; // cache zone key — accessed 30+ times per iteration
           $isMyPrefix = str_starts_with($option0, "MY");
+          $optionIndex = intval($option[1] ?? 0);
           $isTheirPrefix = str_starts_with($option0, "THEIR");
           switch($option0) {
             case "MYAURAS":
@@ -707,6 +709,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
               // WriteLog("An unexpected input $option0 was sent to CHOOSEMULTIZONE, please submit a bug report", highlight:true);
               break;
           }
+          $objectSource = $optionIndex == -1 ? [] : $source;
           $counters = 0;
           $lifeCounters = 0;
           $enduranceCounters = 0;
@@ -722,16 +725,15 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $subcards = null;
           //Add indication for token copies
           if (str_contains($option0, "AURAS")) {
-            $Card = MZIndexToObject($playerID, $options[$i]);
-            if ($Card->IsToken() && !TypeContains($Card->CardID(), "T")) $label = "Token Copy";
+            if (($objectSource[$optionIndex + 4] ?? 0) && !TypeContains($objectSource[$optionIndex] ?? "-", "T")) $label = "Token Copy";
           }
           
           //Add indication for attacking Allies and Auras with an open combat chain
           $permanentController = $isTheirPrefix ? $otherPlayer : $playerID;
-          if (isset($attackingPermanentsSet[$option0]) && intval($option[1]) == $weaponIndexValue && $hasCombatChainLink && $permanentController == $mainPlayer) {
+          if (isset($attackingPermanentsSet[$option0]) && $optionIndex == $weaponIndexValue && $hasCombatChainLink && $permanentController == $mainPlayer) {
             $AttackingCard = $CombatChain->AttackCard();
-            $Card = MZIndexToObject($playerID, $options[$i]);
-            if ($AttackingCard->OriginUniqueID() == $Card->UniqueID())
+            $uniqueIDOffset = str_contains($option0, "ALLY") ? 5 : 6;
+            if ($AttackingCard->OriginUniqueID() == ($objectSource[$optionIndex + $uniqueIDOffset] ?? "-"))
               $label = "Attacking";
           }
 
@@ -742,8 +744,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             if (count($index) > 0) {
               $params = explode("|", $layers[intval($index[0]) + 2]);
               $originUID = $params[3] ?? "-";
-              $Card = MZIndexToObject($playerID, $options[$i]);
-              if ($originUID == $Card->UniqueID()) {
+              $uniqueIDOffset = str_contains($option0, "ALLY") ? 5 : 6;
+              if ($originUID == ($objectSource[$optionIndex + $uniqueIDOffset] ?? "-")) {
                 $label = "Attacking";
               }
             }
@@ -783,7 +785,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             if ($mzCardID == "nitro_mechanoida" || $mzCardID == "teklovossen_the_mechropotenta") $label = "Attacking";
           }
 
-          $index = intval($option[1] ?? 0);
+          $index = $optionIndex;
           $card = ($option0 != "CARDID" && isset($source[$index])) ? $source[$index] : ($option[1] ?? 0);
           if (($option0 == "LAYER" || $option0 == "PRELAYERS") && ($card == "TRIGGER" || $card == "MELD" || $card == "PRETRIGGER" || $card == "ABILITY" || $card == "ATTACK")) $card = $source[$index + 2];
 
@@ -852,35 +854,37 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
               else $label = "Effect Active";
             }
             //Show binds overlay and bound auras as subcards on allies in the popups
-            $allyCard = new AllyCard($index, $player);
-            $allyAuras = $isTheirPrefix ? new Auras($otherPlayer) : new Auras($playerID);
-            $boundAuras = $allyAuras->FindBoundAuras($allyCard->UniqueID());
-            $bindsOverlay = count($boundAuras) > 0;
+            $allyAuraArr = $isTheirPrefix ? $theirAuras : $myAuras;
+            $allyAuraCount = count($allyAuraArr);
+            $boundIDs = [];
+            $boundTarget = "MYALLY-" . ($objectSource[$index + 5] ?? "-");
+            for ($j = 0; $j < $allyAuraCount; $j += $auraPieces) {
+              if (isset($allyAuraArr[$j + 14]) && $allyAuraArr[$j + 14] == $boundTarget) {
+                $boundIDs[] = $allyAuraArr[$j] ?? "-";
+              }
+            }
+            $bindsOverlay = $boundIDs !== [];
             $subcards = ($allyArr[$index + 4] ?? "-") != "-" ? $allyArr[$index + 4] : NULL;
             if ($bindsOverlay) {
-              $boundIDs = [];
-              foreach ($boundAuras as $boundAura)
-                $boundIDs[] = $boundAura->CardID();
               $boundIDs = implode(",", $boundIDs);
               $subcards = isset($subcards) ? "$boundIDs,$subcards" : $boundIDs;
             }
           }
 
           if ($option0 == "THEIRAURAS" || $option0 == "MYAURAS") {
-            $auraCard = $isTheirPrefix ? new AuraCard($index, $otherPlayer) : new AuraCard($index, $playerID);
+            $auraArr = $isTheirPrefix ? $theirAuras : $myAuras;
+            $auraData = $index == -1 ? [] : $auraArr;
             //Show power counters on Auras in the popups
-            $powerCounters = $auraCard->NumPowerCounters();
+            $powerCounters = $auraData[$index + 3] ?? 0;
             //Show various counters on Auras in the popups
-            $counters = $auraCard->NumCounters();
+            $counters = $auraData[$index + 2] ?? 0;
             //Show holo counters on Auras in the popups
-            $holoCounters = $auraCard->HoloCounters() > 0 ? true : null;
+            $holoCounters = ($auraData[$index + 13] ?? 0) > 0 ? true : null;
             //Show "stolen" modifier
-            if ($auraCard->GetModalities() == "Temporary") $label = "stolen";
+            if (($auraData[$index + 10] ?? "-") == "Temporary") $label = "stolen";
             //Show if it's been targeted
-            $numStackLayers = $Stack->NumLayers();
-            for ($j = 0; $j < $numStackLayers; ++$j) {
-              $Layer = $Stack->Card($j, true);
-              if (str_contains($Layer->Target(), $auraCard->UniqueID())) {
+            for ($j = 3; $j < $layerCheckCount; $j += $layerPieces) {
+              if (str_contains($layers[$j] ?? "-", $auraData[$index + 6] ?? "-")) {
                 $label = "Targeted";
                 break;
               }

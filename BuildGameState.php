@@ -4,7 +4,7 @@ include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
 function GetChainCardSubcards($controller, ...$uniqueIDs) {
   if ($controller != 1 && $controller != 2) return NULL;
-  $Auras = new Auras($controller);
+  $Auras = NULL;
   $Allies = NULL;
   $Character = NULL;
   $Items = NULL;
@@ -26,6 +26,7 @@ function GetChainCardSubcards($controller, ...$uniqueIDs) {
     }
     if ($subcards === "-" || $subcards === "") $subcards = NULL;
     $boundIDs = [];
+    $Auras ??= new Auras($controller);
     foreach ($Auras->FindBoundAuras($uniqueID) as $boundAura) $boundIDs[] = $boundAura->CardID();
     if ($boundIDs !== []) {
       $boundIDs = implode(",", $boundIDs);
@@ -386,9 +387,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $combatChainPieceCount = CombatChainPieces();
   $turnPhase = $turn[0];
   $isGoldPaymentChoice = $turnPhase == "PAYGOLDORPITCH" || $turnPhase == "CHOOSEGOLDTOPAY";
-  $goldOrPitchChoices = $isGoldPaymentChoice
-    ? array_fill_keys(array_filter(explode(",", $turn[2] ?? "")), true)
-    : [];
+  $goldOrPitchChoices = [];
+  if ($isGoldPaymentChoice) {
+    foreach (explode(",", $turn[2] ?? "") as $goldOrPitchChoice) {
+      if ($goldOrPitchChoice) $goldOrPitchChoices[$goldOrPitchChoice] = true;
+    }
+  }
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieceCount) {
     $action = $currentPlayer == $playerID && $turnPhase != "P" &&
       $currentPlayer == $combatChain[$i + 1] &&
@@ -398,8 +402,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $borderColor = $action == 21 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2);
     if($playerID == 3) $borderColor = $combatChain[$i + 1] == $otherPlayer ? 2 : 1;
 
-    $countersMap = new stdClass();
-    if ($i == 0 && HasAimCounter()) $countersMap->aim = 1;
+    $countersMap = null;
+    if ($i == 0 && HasAimCounter()) {
+      $countersMap = new stdClass();
+      $countersMap->aim = 1;
+    }
 
     if ($i == 0) {
       $activeChainLink->attackingCard = JSONRenderedCard(
@@ -633,23 +640,22 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $characterPieces = CharacterPieces();
   $hideOpponentEquipment = $theirCharacterCount > $characterPieces && SearchCurrentTurnEffects("HIDEOPEQUIP", $playerID);
   for ($i = 0; $i < $theirCharacterCount; $i += $characterPieces) {
-    $CharacterCard = new CharacterCard($i, $otherPlayer);
     $label = "";
     $border = 0;
-    $theirChar = $CharacterCard->CardID();
-    if ($CharacterCard->Status() == 4) $theirChar = "DUMMYDISHONORED";
+    $theirChar = $theirCharacter[$i] ?? "-";
+    if (($theirCharacter[$i + 1] ?? 0) == 4) $theirChar = "DUMMYDISHONORED";
     $powerCounters = 0;
     $counters = 0;
     $type = CardType($theirChar);
     if (TypeContains($theirChar, "D")) $type = "C";
-    $sTypeArr = explode(",", CardSubType($theirChar, $CharacterCard->UniqueID()));
+    $sTypeArr = explode(",", CardSubType($theirChar, $theirCharacter[$i + 11] ?? "-"));
     $sType = $sTypeArr[0];
     static $equipSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
     foreach ($sTypeArr as $st) {
       if (isset($equipSlots[$st])) { $sType = $st; break; }
     }
     $border = CardBorderColor($theirChar, "THEIRCHAR", true, $otherPlayer);
-    if (TypeContains($CharacterCard->CardID(), "W", $playerID)) {
+    if (TypeContains($theirCharacter[$i] ?? "-", "W", $playerID)) {
       ++$numWeapons;
       if ($numWeapons > 1) {
         $type = "E";
@@ -657,61 +663,64 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       $label = WeaponHasGoAgainLabel($i, $otherPlayer) ? "Go Again" : "";
       $weaponPowerModifiers = [];
-      $powerCounters = $CharacterCard->NumPowerCounters();
+      $powerCounters = $theirCharacter[$i + 3] ?? 0;
       if(MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $otherPlayer) > 0 ||
-        CurrentTurnEffectHasUniqueID($CharacterCard->UniqueID() ?? "-")) $border = 5;
+        CurrentTurnEffectHasUniqueID($theirCharacter[$i + 11] ?? "-")) $border = 5;
     }
     if($i == 0 && $otherPlayer == $mainPlayer) {
-      $heroCard = $CharacterCard->CardID();
+      $heroCard = $theirCharacter[$i] ?? "-";
       if (($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai") && GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 1) {
         $border = 5;
       }
     }
-    if ($CharacterCard->NumCounters() > 0) $counters = $CharacterCard->NumCounters();
-    $counters = $CharacterCard->Status() != 0 ? $counters : 0;
+    $numCounters = intval($theirCharacter[$i + 2] ?? 0);
+    if ($numCounters > 0) $counters = $numCounters;
+    $counters = ($theirCharacter[$i + 1] ?? 0) != 0 ? $counters : 0;
     // hide opponent's equipment while deciding on adaptive stuff
-    $facing = ($i != 0 && $hideOpponentEquipment) ? "DOWN" : $CharacterCard->Facing();
-    if($isGameOver) $CharacterCard->Flip("UP");
-    if ($CharacterCard->Facing() == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
-      if($CharacterCard->Status() > 0) {
+    $facing = ($i != 0 && $hideOpponentEquipment) ? "DOWN" : ($theirCharacter[$i + 12] ?? "-");
+    if($isGameOver && isset($theirCharacter[$i + 12])) {
+      $theirCharacter[$i + 12] = "UP";
+    }
+    if (($theirCharacter[$i + 12] ?? "-") == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
+      if(($theirCharacter[$i + 1] ?? 0) > 0) {
       $characterContents[] = JSONRenderedCard(
         $theirChar,
         borderColor: $border,
-        overlay: $CharacterCard->Status() != 2 && $theirChar != "DUMMYDISHONORED" ? 1 : 0,
+        overlay: ($theirCharacter[$i + 1] ?? 0) != 2 && $theirChar != "DUMMYDISHONORED" ? 1 : 0,
         counters: $counters,
-        defCounters: $CharacterCard->NumDefenseCounters(),
+        defCounters: $theirCharacter[$i + 4] ?? 0,
         powerCounters: $powerCounters,
         controller: $otherPlayer,
         type: $type,
         sType: $sType,
         isFrozen: IsFrozenMZ($theirCharacter, "CHAR", $i, $otherPlayer),
-        onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) && SearchCombatChainForIndex($CharacterCard->CardID(), $otherPlayer) != -1 ? 0 : $CharacterCard->OnChain() == 1,
-        isBroken: $CharacterCard->Status() == 0,
+        onChain: $turnPhase == "B" && ($playerID == $mainPlayer || $playerID == 3) && SearchCombatChainForIndex($theirCharacter[$i] ?? "-", $otherPlayer) != -1 ? 0 : ($theirCharacter[$i + 6] ?? 0) == 1,
+        isBroken: ($theirCharacter[$i + 1] ?? 0) == 0,
         label: $label,
         facing: $facing,
-        numUses: $CharacterCard->NumUses(),
-        subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $CharacterCard->Subcards(),
-        marked: $CharacterCard->Marked() == 1,
-        tapped: $CharacterCard->Tapped() == 1,
-        slot: $CharacterCard->Slot() ?? "-"
+        numUses: $theirCharacter[$i + 5] ?? 0,
+        subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : ($theirCharacter[$i + 10] ?? "-"),
+        marked: ($theirCharacter[$i + 13] ?? 0) == 1,
+        tapped: ($theirCharacter[$i + 14] ?? 0) == 1,
+        slot: $theirCharacter[$i + 15] ?? "-"
         );
       }
     } else {
       $characterContents[] = JSONRenderedCard(
           $TheirCardBack,
-          overlay: $CharacterCard->Status() != 2 ? 1 : 0,
+          overlay: ($theirCharacter[$i + 1] ?? 0) != 2 ? 1 : 0,
           counters: $counters,
-          defCounters: $CharacterCard->NumDefenseCounters(),
+          defCounters: $theirCharacter[$i + 4] ?? 0,
           powerCounters: $powerCounters,
           controller: $otherPlayer,
           type: $type,
           sType: $sType,
           label: $label,
-          facing: $CharacterCard->Facing(),
-          subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : $CharacterCard->Subcards(),
-          marked: $CharacterCard->Marked() == 1,
-          tapped: $CharacterCard->Tapped() == 1,
-          slot: $CharacterCard->Slot() ?? "-"
+          facing: $theirCharacter[$i + 12] ?? "-",
+          subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : ($theirCharacter[$i + 10] ?? "-"),
+          marked: ($theirCharacter[$i + 13] ?? 0) == 1,
+          tapped: ($theirCharacter[$i + 14] ?? 0) == 1,
+          slot: $theirCharacter[$i + 15] ?? "-"
           );
     }
   }
@@ -965,7 +974,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Now display any previous chain links that can be activated
   $playablePastLinks = [];
-  $chainLinksPieces = ChainLinksPieces();
   // attacker's cards
   $attacks = GetCombatChainAttacks();
   $attacksCount = count($attacks);
@@ -1128,7 +1136,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   for ($i = 0; $i + $allyPieces - 1 < $theirAlliesCount; $i += $allyPieces) {
-    $AllyCard = new AllyCard($i, $playerID == 1 ? 2 : 1);
     $label = "";
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
@@ -1142,8 +1149,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       elseif ($isTargeted) $label = "Targeted";
     }
     $subcards = $theirAllies[$i+4] != "-" ? $theirAllies[$i+4] : NULL;
-    $boundAuras = $theirAurasObj->FindBoundAuras($AllyCard->UniqueID());
-    $hasBoundAura = count($boundAuras) > 0;
+    $boundAuras = $theirAurasObj->FindBoundAuras($uniqueID);
+    $hasBoundAura = $boundAuras !== [];
     if ($hasBoundAura) {
       $boundIDs = [];
       foreach ($boundAuras as $boundAura)
@@ -1175,8 +1182,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $auraPieces = AuraPieces();
   static $labeledAurasSet = ["blessing_of_themis_yellow" => true, "leave_em_speechless_blue" => true];
   for ($i = 0; $i + $auraPieces - 1 < $theirAurasCount; $i += $auraPieces) {
-    $AuraCard = new AuraCard($i, $playerID == 1 ? 2 : 1);
-    if ($AuraCard->BoundTo() != "-") continue; //display bound auras elsewhere
+    if ($theirAuras[$i + 14] != "-") continue; //display bound auras elsewhere
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
     $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
@@ -1255,7 +1261,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myAurasObj = new Auras($playerID);
   $myAurasObj->BuildBoundIndex();
   for ($i = 0; $i + $allyPieces - 1 < $myAlliesCount; $i += $allyPieces) {
-    $AllyCard = new AllyCard($i, $playerID);
     $label = "";
     $type = CardType($myAllies[$i]);
     $sType = CardSubType($myAllies[$i]);
@@ -1268,8 +1273,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     elseif($layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID)) $label = "Targeted";
     elseif(isset($effectUIDSet[(string)$uniqueID])) $label = "Effect Active";
     $subcards = $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL;
-    $boundAuras = $myAurasObj->FindBoundAuras($AllyCard->UniqueID());
-    $hasBoundAura = count($boundAuras) > 0;
+    $boundAuras = $myAurasObj->FindBoundAuras($uniqueID);
+    $hasBoundAura = $boundAuras !== [];
     if ($hasBoundAura) {
       $boundIDs = [];
       foreach ($boundAuras as $boundAura)
@@ -1303,8 +1308,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myAurasOutput = [];
   $myAurasCount = count($myAuras);
   for ($i = 0; $i + $auraPieces - 1 < $myAurasCount; $i += $auraPieces) {
-    $AuraCard = new AuraCard($i, $playerID);
-    if ($AuraCard->BoundTo() != "-") continue; //display bound auras elsewhere
+    if ($myAuras[$i + 14] != "-") continue; //display bound auras elsewhere
     $playable = $currentPlayer == $playerID ? $myAuras[$i + 1] == 2 && IsPlayable($myAuras[$i], $turnPhase, "PLAY", $i, $restriction) : false;
     if($myAuras[$i] == "restless_coalescence_yellow" && $currentPlayer == $playerID && IsPlayable($myAuras[$i], $turnPhase, "PLAY", $i, $restriction)) $playable = true;
     $border = CardBorderColor($myAuras[$i], "PLAY", $playable, $playerID);
