@@ -12,9 +12,10 @@ class meet_madness_red extends Card {
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
 		global $mainPlayer;
-    if(IsHeroAttackTarget()) {
+    	if(IsHeroAttackTarget()) {
 			if (!$check) {
 				$roll = GetRandom(1,3);
+				$roll = 3;
 				switch ($roll) {
 					case 1:
 						WriteLog("🌪️ The madness says <b>\"Banish a card from hand!\"</b>");
@@ -40,21 +41,19 @@ class meet_madness_red extends Card {
 		$roll = $target;
 		switch ($roll) {
 			case 1:
-				AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-				AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose a card to banish", 1);
-				AddDecisionQueue("CHOOSEHAND", $defPlayer, "<-", 1);
-				AddDecisionQueue("MULTIREMOVEHAND", $defPlayer, "-", 1);
-				//including $cardID as the third param makes it count for contracts
-				AddDecisionQueue("BANISHCARD", $defPlayer, "HAND,-,$cardID", 1);
+				Await($defPlayer, "MultiZoneIndices", search:"MYHAND", subsequent:0);
+				Await($defPlayer, "ChooseMultiZone", context:"Choose a card to be banished from your hand!");
+				Await($defPlayer, "MZRemoveAndBanish", banishedBy:$this->cardID, banisher:$this->controller, from:"HAND", final:true);
 				break;
 			case 2:
-				//including $cardID as the third param makes it count for contracts
-				MZMoveCard($defPlayer, "MYARS", "MYBANISH,ARS,$cardID," . $defPlayer, false);
+				Await($defPlayer, "MultiZoneIndices", search:"MYARS", subsequent:0);
+				Await($defPlayer, "ChooseMultiZone", context:"Choose a card to be banished from your arsenal!");
+				Await($defPlayer, "MZRemoveAndBanish", banishedBy:$this->cardID, banisher:$this->controller, from:"ARS", final:true);
 				break;
 			case 3:
 				$deck = new Deck($defPlayer);
 				if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-				$deck->BanishTop(banishedBy:$cardID);
+				$deck->BanishTop(banishedBy:$cardID, banisher:$this->controller);
 				break;
 		}
 	}
