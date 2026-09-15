@@ -728,6 +728,7 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
 {
   global $currentTurnEffects;
   $count = count($currentTurnEffects);
+  if ($count === 0) return $returnUniqueID ? -1 : false;
   $pieces = CurrentTurnEffectPieces();
   if ($stripParams) {
     for ($i = 0; $i < $count; $i += $pieces) {

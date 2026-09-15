@@ -1704,7 +1704,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   $otherPlayer = 3 - $player;
   $character = &GetPlayerCharacter($player);
   $cardType = CardType($cardID, $from, $currentPlayer);
-  $subtype = CardSubType($cardID);
+  $subtype = null;
 
   // Get type and name only below when needed
   $abilityType = null;
@@ -1744,7 +1744,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     return false;
   }
   if ($from == "PLAY" && $phase != "B") {
-    if (DelimStringContains($subtype, "Ally")) {
+    if (DelimStringContains($subtype ??= CardSubType($cardID), "Ally")) {
       $myAllies = &GetAllies($player);
       if (IsFrozenMZ($myAllies, "ALLY", $index, $player)) {
         $restriction = "Frozen";
@@ -1761,7 +1761,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
         }
       }
     }
-    if (DelimStringContains($subtype, "Aura")) {
+    if (DelimStringContains($subtype ??= CardSubType($cardID), "Aura")) {
       $myAuras = &GetAuras($player);
       if (isset($myAuras[$index + 11]) && $myAuras[$index + 11] == "1") {
         $restriction = "Frozen";
@@ -1848,17 +1848,19 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   }
   if (EffectPlayCardConstantRestriction($cardID, $restriction, $phase, from:$from)) return false;
   if ($phase != "B" && $phase != "P" && !str_contains($phase, "CHOOSE") && IsPlayRestricted($cardID, $restriction, $from, $index, $player)) return false;
-  if ($phase == "M" && $subtype == "Arrow") {
+  if ($phase == "M" && ($subtype ??= CardSubType($cardID)) == "Arrow") {
     if ($from != "ARS") return false;
     if (!SearchCharacterAliveSubtype($player, "Bow")) return false;
   }
-  if (SearchCurrentTurnEffects("three_of_a_kind_red", $player) && !$isStaticType && $from != "ARS") return false;
+  if (!$isStaticType && $from != "ARS" && SearchCurrentTurnEffects("three_of_a_kind_red", $player)) return false;
   if (SearchCurrentTurnEffects("red_in_the_ledger_red", $player)) {
     if (!HasMeld($cardID) && (DelimStringContains($cardType, "A") || $cardType == "AA") && !str_contains($abilityTypes, "I") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
     if (str_contains($abilityTypes, "I") && ($from == "BANISH" || $from == "THEIRBANISH")) return false;
   }
-  if (SearchCurrentTurnEffects("immobilizing_shot_red", $player) && !$isStaticType && DelimStringContains($cardType, "A") && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
-  if (SearchCurrentTurnEffects("immobilizing_shot_red", $player) && !$isStaticType && $cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
+  if (!$isStaticType && SearchCurrentTurnEffects("immobilizing_shot_red", $player)) {
+    if (DelimStringContains($cardType, "A") && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
+    if ($cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
+  }
   if ($hasCurrentLink
     && $attackID == "exude_confidence_red"
     && $player == $defPlayer
@@ -1877,7 +1879,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     }
     if ($restriction == "Exude Confidance") return false;
   }
-  if (SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer) && $player == $defPlayer && (($abilityType ??= GetAbilityType($cardID, $index, $from)) == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I")) && !str_contains($phase, "CHOOSE")) {
+  if ($player == $defPlayer && !str_contains($phase, "CHOOSE") && SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer) && (($abilityType ??= GetAbilityType($cardID, $index, $from)) == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
     $restriction = "Exude Confidance";
     return false;
   }
