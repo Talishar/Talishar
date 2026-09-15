@@ -48,4 +48,5 @@ if (file_put_contents($sharedDir . $token . ".json", $tokenData) === false) {
 
 $response->success = true;
 $response->token = $token;
+$response->url = SharedReplayPreviewUrl($token);
 WriteJsonResponse($response);

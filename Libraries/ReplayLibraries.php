@@ -289,3 +289,61 @@ function ShouldProcessReplayUndo(
 {
   return !$isReplay || ($isReplayAdvance && !$hasRecordedResponse);
 }
+
+function SharedReplayDisplayName($rawName, int $playerNumber): string
+{
+  $name = trim((string)$rawName);
+  return $name === "" ? "Player $playerNumber" : $name;
+}
+
+function SharedReplayHeroCardId($rawCardId): string
+{
+  $cardId = trim((string)$rawCardId);
+  return preg_match('/^[A-Za-z0-9_-]+$/', $cardId) === 1 ? $cardId : "";
+}
+
+function SharedReplayTokenPath(string $token): ?string
+{
+  if (strlen($token) !== 64 || !ctype_xdigit($token)) return null;
+  return "../Replays/shared/$token.json";
+}
+
+function SharedReplayMetadata(string $token): ?array
+{
+  $tokenFile = SharedReplayTokenPath($token);
+  if ($tokenFile === null || !file_exists($tokenFile)) return null;
+
+  $tokenData = json_decode((string)file_get_contents($tokenFile), true);
+  if (!is_array($tokenData) || !isset($tokenData["userId"], $tokenData["replayNumber"])) return null;
+
+  $userId = (string)$tokenData["userId"];
+  $replayNumber = ParsePositiveReplayNumber($tokenData["replayNumber"]);
+  if (!IsValidReplayUserId($userId) || $replayNumber === null) return null;
+
+  $metadataPath = UserReplayPath($userId, $replayNumber) . "replayMetadata.json";
+  $metadata = file_exists($metadataPath)
+    ? json_decode((string)file_get_contents($metadataPath), true)
+    : null;
+  if (!is_array($metadata)) $metadata = [];
+
+  return [
+    "userId" => $userId,
+    "replayNumber" => $replayNumber,
+    "p1DisplayName" => SharedReplayDisplayName($metadata["p1DisplayName"] ?? "", 1),
+    "p2DisplayName" => SharedReplayDisplayName($metadata["p2DisplayName"] ?? "", 2),
+    "p1HeroCardId" => SharedReplayHeroCardId($metadata["p1HeroCardId"] ?? ""),
+    "p2HeroCardId" => SharedReplayHeroCardId($metadata["p2HeroCardId"] ?? ""),
+    "p1HeroName" => trim((string)($metadata["p1HeroName"] ?? "")),
+    "p2HeroName" => trim((string)($metadata["p2HeroName"] ?? ""))
+  ];
+}
+
+function SharedReplayPreviewUrl(string $token): string
+{
+  $scheme = (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off") ? "https" : "http";
+  $host = (string)($_SERVER["HTTP_HOST"] ?? "");
+  $directory = rtrim(dirname((string)($_SERVER["SCRIPT_NAME"] ?? "")), "/");
+  if (substr($directory, -5) !== "/APIs") $directory .= "/APIs";
+
+  return "$scheme://$host$directory/SharedReplayPreview.php?token=" . rawurlencode($token);
+}
