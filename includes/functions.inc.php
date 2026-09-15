@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../Assets/patreon-php-master/src/PatreonLibraries.php';
 require_once __DIR__ . '/DeckProviderHelpers.php';
+require_once __DIR__ . '/WebhookSecurity.php';
 
 use SendGrid\Mail\Mail;
 
@@ -676,6 +677,8 @@ function logCompletedGameStats($conceded = false)
 		WriteLog("📊 Sending game stats to $otherSites", highlight:true, highlightColor:"green");
 	else
 		WriteLog("No game stats sent as both players have disabled stats", highlight:true);
+
+	SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2Json, $winner, $format, $gameGUID, $conceded, $countWinnerDeck, $countLoserDeck, $isPublic, $p1StatsDisabled, $p2StatsDisabled);
 }
 
 function PrepareFabraryRequest($gameID, $p1Decklink, $p1Deck, $p1Hero, $p1deckbuilderID, $p2Decklink, $p2Deck, $p2Hero, $p2deckbuilderID, $format, $gameGUID = "", $conceded = false, $isPublic = true)
@@ -818,6 +821,181 @@ function executeParallelCurlRequests($handles)
 	}
 	curl_multi_close($mh);
 }
+
+// Returns "" for anyone not entitled to the feature, so an ineligible player's URL never
+// reaches the game file and no webhook is sent. Gating here rather than at match end keeps
+// the entitlement check on the join path, where a DB query is already expected, and means a
+// lapsed subscription simply stops delivering. The saved row is left untouched so it starts
+// working again if they resubscribe.
+function GetWebhookUrlForUser(string $uid, $metafyTiers = null): string
+{
+	if (empty($uid) || $uid === "-") return "";
+	if (!IsMatchResultWebhookEligible($uid, $metafyTiers)) return "";
+	$conn = GetDBConnection(DBL_GET_USER_WEBHOOK_URLS);
+	if (!$conn) {
+		error_log("GetWebhookUrlForUser: DB connection failed");
+		return "";
+	}
+	$sql = "SELECT matchResultWebhookUrl FROM users WHERE usersUid = ?";
+	$stmt = mysqli_stmt_init($conn);
+	$url = "";
+	if (mysqli_stmt_prepare($stmt, $sql)) {
+		mysqli_stmt_bind_param($stmt, 's', $uid);
+		mysqli_stmt_execute($stmt);
+		$result = mysqli_stmt_get_result($stmt);
+		$row = mysqli_fetch_assoc($result);
+		$url = $row['matchResultWebhookUrl'] ?? "";
+		mysqli_stmt_close($stmt);
+	} else {
+		error_log("GetWebhookUrlForUser: query prepare failed");
+	}
+	mysqli_close($conn);
+	return $url ?? "";
+}
+
+// Deliberately untyped, matching PrepareFaBInsightsRequest: this runs while a match is
+// being finalised, and a TypeError here would abort completion for both players.
+function PrepareUserWebhookRequest($webhookUrl, $gameID, $detailedResult1Json, $detailedResult2Json, $player1Name, $player2Name, $winner, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0, $isPublic = true)
+{
+	global $gameName;
+
+	$payloadArr = [];
+	$payloadArr['gameID'] = $gameID;
+	$payloadArr['gameName'] = $gameName;
+	$payloadArr['player1Name'] = $player1Name;
+	$payloadArr['player2Name'] = $player2Name;
+	$payloadArr['deck1'] = json_decode((string)$detailedResult1Json);
+	$payloadArr['deck2'] = json_decode((string)$detailedResult2Json);
+	$payloadArr['format'] = $format;
+	$payloadArr['gameGUID'] = $gameGUID;
+	$payloadArr['conceded'] = (bool)$conceded;
+	$payloadArr['winner'] = intval($winner);
+	$payloadArr['countWinnerDeck'] = intval($countWinnerDeck);
+	$payloadArr['countLoserDeck'] = intval($countLoserDeck);
+	$payloadArr['isPublic'] = (bool)$isPublic;
+
+	$ch = curl_init($webhookUrl);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payloadArr));
+	// Only the status line matters. Buffering the body would let the remote host push as much
+	// data into this worker as it likes, so abort at the first body byte; by then the status
+	// code has already been parsed from the headers.
+	curl_setopt($ch, CURLOPT_WRITEFUNCTION, fn($handle, $chunk) => 0);
+	// Keep these tight: this runs in the request that finalises the match, so a host that hangs
+	// on purpose holds a web server worker for as long as we let it.
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 1000);
+	curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1500);
+	curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+	// Never chase a redirect: it would be resolved and connected to without passing
+	// through the SSRF checks below. PHP defaults this off; set it explicitly so the
+	// guarantee does not depend on the default.
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+
+	// The URL was vetted when it was saved, but DNS can have changed since. Re-check
+	// every address the host resolves to now and pin the vetted one onto the handle.
+	if (!ApplyWebhookConnectionPinning($ch, $webhookUrl)) {
+		curl_close($ch);
+		return null;
+	}
+
+	return $ch;
+}
+
+function executeWebhookRequests(array $handles): array
+{
+	$results = [];
+	if (empty($handles)) return $results;
+
+	$mh = curl_multi_init();
+	foreach ($handles as $playerID => $ch) {
+		curl_multi_add_handle($mh, $ch);
+	}
+
+	$running = null;
+	do {
+		$status = curl_multi_exec($mh, $running);
+		if ($running > 0) {
+			curl_multi_select($mh, 1.0);
+		}
+	} while ($running > 0 && $status === CURLM_OK);
+
+	// curl_error() stays empty for handles driven by curl_multi; each transfer's result code
+	// is only reported here.
+	$errors = [];
+	while ($info = curl_multi_info_read($mh)) {
+		if ($info['result'] !== CURLE_OK) {
+			$errors[spl_object_id($info['handle'])] = curl_strerror($info['result']);
+		}
+	}
+
+	foreach ($handles as $playerID => $ch) {
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$results[$playerID] = [
+			// Any 2xx: many receivers answer 201/202/204 (Discord sends 204). A curl error does
+			// not mean failure here, since a response body is aborted on purpose.
+			'success' => $httpCode >= 200 && $httpCode < 300,
+			'code'    => $httpCode,
+			'error'   => $errors[spl_object_id($ch)] ?? "",
+		];
+		curl_multi_remove_handle($mh, $ch);
+		curl_close($ch);
+	}
+	curl_multi_close($mh);
+	return $results;
+}
+
+function SendUserWebhooks($gameResultID, $detailedResult1Json, $detailedResult2Json, $winner, $format, $gameGUID = "", $conceded = false, $countWinnerDeck = 0, $countLoserDeck = 0, $isPublic = true, $p1StatsDisabled = false, $p2StatsDisabled = false)
+{
+	global $p1uid, $p2uid, $p1WebhookUrl, $p2WebhookUrl, $playerHashSalt;
+
+	// The recipient's own name is sent in the clear — it is their own data. The opponent
+	// never agreed to have their handle posted to a third-party endpoint, so honour the
+	// same stats opt-out that already redacts their deck from $detailedResultNJson.
+	$opponentName = function ($uid, $statsDisabled) use ($playerHashSalt) {
+		return $statsDisabled ? HashPlayerName($uid, $playerHashSalt) : $uid;
+	};
+
+	$recipients = [
+		1 => [$p1WebhookUrl ?? "", $p1uid, $opponentName($p2uid, $p2StatsDisabled)],
+		2 => [$p2WebhookUrl ?? "", $opponentName($p1uid, $p1StatsDisabled), $p2uid],
+	];
+
+	$handles = [];
+	foreach ($recipients as $playerID => [$url, $name1, $name2]) {
+		if (empty($url)) continue;
+		$ch = PrepareUserWebhookRequest(
+			$url, $gameResultID,
+			$detailedResult1Json, $detailedResult2Json,
+			$name1, $name2, $winner, $format, $gameGUID,
+			$conceded, $countWinnerDeck, $countLoserDeck, $isPublic
+		);
+		if ($ch) {
+			$handles[$playerID] = $ch;
+		} else {
+			// Rejected by the send-time SSRF re-check rather than by the remote host.
+			error_log("User webhook for player $playerID in game $gameResultID blocked: URL failed the send-time safety check");
+			WriteLog("⚠️ Match result webhook for Player $playerID was blocked (URL failed the safety check)", highlight:true, highlightColor:"red");
+		}
+	}
+
+	if (empty($handles)) return;
+
+	$results = executeWebhookRequests($handles);
+	foreach ($results as $playerID => $result) {
+		if ($result['success']) {
+			WriteLog("🔗 Match result sent to Player $playerID's webhook", highlight:true, highlightColor:"green");
+		} else {
+			// Players see only the status, never curl's error text: "connection refused" versus
+			// "timed out" would tell them whether a port is open on the target host.
+			$shown = $result['code'] > 0 ? "HTTP {$result['code']}" : "no response";
+			$detail = $result['code'] > 0 ? $shown : $result['error'];
+			error_log("User webhook failed for player $playerID in game $gameResultID: $detail");
+			WriteLog("⚠️ Match result webhook failed for Player $playerID ($shown)", highlight:true, highlightColor:"red");
+		}
+	}
+}
+
 
 function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnStats, $player, $useIntval = false)
 {
