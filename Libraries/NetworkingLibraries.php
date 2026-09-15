@@ -1305,7 +1305,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $shareToken = bin2hex(random_bytes(32));
           $tokenData = json_encode(["userId" => $pid, "replayNumber" => (int)$counter]);
           if (file_put_contents($sharedDir . $shareToken . ".json", $tokenData, LOCK_EX) !== false) {
-            $shareUrl = SharedReplayPreviewUrl($shareToken);
+            $shareUrl = "/replay/shared?token=$shareToken";
             WriteLog("Share replay #$counter: <a href=\"$shareUrl\" target=\"_blank\" rel=\"noopener noreferrer\">Click to open shareable link</a>");
           }
         }
