@@ -128,7 +128,7 @@ function GetAllAltArtVariations(): array
     "frankie_make_ends_meat=LSS021-T", "frost_spike_blue=GEM130-T", "frosthaven_sheath_red=FAB427-T", "fruits_of_the_forest_blue=LGS344-T",
     "fruits_of_the_forest_red=LGS342-T", "fruits_of_the_forest_yellow=LGS343-T", "fry_red=LGS368-T", "future_sight_red=GEM124-T",
     "fyendals_fighting_spirit_red=FAB261-T", "fyendals_spring_tunic=ANQ006-T", "fyendals_spring_tunic=FAB002-T", "fyendals_spring_tunic=PEN311-T",
-    "galaxxi_black=MON155-T", "galaxxi_black=MON555-T", "gallow_end_of_the_line_yellow=SUP267-T", "garland_of_spring=LGS415-T",
+    "galaxxi_black=MON155-T", "gallow_end_of_the_line_yellow=SUP267-T", "garland_of_spring=LGS415-T",
     "gas_up_blue=LGS204-T", "gas_up_red=LGS202-T", "gas_up_yellow=LGS203-T", "gate_to_iarathael=IAR222-T",
     "gear_turner_red=OMN235-T", "gentle_breeze_red=PEN034-T", "germinate_blue=FAB267-T",
     "gesture_of_goodwill_blue=LGS361-T", "ghost_protocol_architect_red=LGS444-T", "ghost_protocol_mainframe_blue=LGS443-T",

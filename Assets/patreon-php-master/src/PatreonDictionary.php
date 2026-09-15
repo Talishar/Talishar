@@ -503,11 +503,10 @@ enum PatreonCampaign : string
     }
 
     $campaignAltArts = $this->getCampaignAltArtsList();
-    if ($campaignAltArts) {
-      foreach ($campaignAltArts as $entry) $altArts[] = $entry;
-    }
+    if (!$campaignAltArts) return $altArts;
+    if (!$altArts) return $campaignAltArts;
 
-    return $altArts;
+    return array_merge($altArts, $campaignAltArts);
   }
 
   public function AltArts($heroCardNumber = ""): string
