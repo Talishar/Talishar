@@ -480,7 +480,8 @@ class enflame_the_firebrand_red extends Card {
     if ($numDrac > 1) GiveAttackGoAgain();
     if ($numDrac > 2) {
       AddCurrentTurnEffect($this->cardID, $this->controller);
-      for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $chainLinkCount = $ChainLinks->NumLinks();
+      for ($i = 0; $i < $chainLinkCount; ++$i) {
         $Link = $ChainLinks->GetLink($i);
         $Link->AddTalent("DRACONIC");
       }
@@ -732,28 +733,33 @@ class predatory_plating extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     global $CombatChain, $ChainLinks, $mainPlayer;
     if (LayerStepPower($this->controller) >= 6 && $this->controller == $mainPlayer) return false;
-    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+    for ($i = 0; $i < $activeLinkCardCount; ++$i) {
       $Card = $CombatChain->Card($i, true);
       if ($Card->PlayerID() == $this->controller && TypeContains($Card->ID(), "AA")) {
         if ($i == 0 && CachedTotalPower() >= 6) return false;
         if ($Card->TotalPower() >= 6) return false;
       }
     }
-    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $chainLinkCount = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $chainLinkCount; ++$i) {
       $ChainLink = $ChainLinks->GetLink($i);
-      for ($j = 0; $j < $ChainLink->NumCards(); ++$j) {
+      $power = $ChainLink->TotalAttack();
+      $linkCardCount = $ChainLink->NumCards();
+      for ($j = 0; $j < $linkCardCount; ++$j) {
         $Card = $ChainLink->GetLinkCard($j, true);
-        $power = $ChainLink->TotalAttack();
         if ($Card->PlayerID() == $this->controller && $power >= 6) return false;
       }
     }
     $Character = new PlayerCharacter($this->controller);
-    for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $characterCount = $Character->NumCards();
+    for ($i = 0; $i < $characterCount; ++$i) {
       $powerValue = PowerValue($Character->Card($i, true)->CardID(), $this->controller, "EQUIP");
       if ($powerValue >= 6) return false;
     }
     $Allies = new Allies($this->controller);
-    for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+    $allyCount = $Allies->NumAllies();
+    for ($i = 0; $i < $allyCount; ++$i) {
       if (PowerValue($Allies->Card($i, true)->CardID(), $this->controller, "ALLIES") >= 6) return false;
     }
     return true;
@@ -3775,13 +3781,16 @@ class become_the_bottle extends BaseCard {
   function ProcessAttackTrigger() {
     global $ChainLinks, $CombatChain;
     $choices = [];
-    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+    for ($i = 0; $i < $activeLinkCardCount; ++$i) {
       $LinkCard = $CombatChain->Card($i, true);
       if (!TypeContains($LinkCard->ID(), "AR")) $choices[] = "COMBATCHAINLINK-" . $LinkCard->Index();
     }
-    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $chainLinkCount = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $chainLinkCount; ++$i) {
       $Link = $ChainLinks->GetLink($i);
-      for ($j = 0; $j < $Link->NumCards(); ++$j) {
+      $linkCardCount = $Link->NumCards();
+      for ($j = 0; $j < $linkCardCount; ++$j) {
         $LinkCard = $Link->GetLinkCard($j, true);
         $ind = $LinkCard->Index();
         if (!TypeContains($LinkCard->ID(), "AR")) $choices[] = "PASTCHAINLINK-$ind-$i";
@@ -5638,7 +5647,8 @@ class shattering_grasp extends Card {
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     foreach ([1,2] as $player) {
       $Allies = new Allies($player);
-      for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+      $allyCount = $Allies->NumAllies();
+      for ($i = 0; $i < $allyCount; ++$i) {
         if ($Allies->Card($i, true)->Frozen()) return false;
       }
     }
@@ -6466,12 +6476,14 @@ class destructive_tendencies_blue extends Card {
     $otherPlayer = $this->controller == 2 ? 1 : 2;
     foreach ([$otherPlayer, $this->controller] as $player) {
       $Items = new Items($player);
-      for ($i = 0; $i < $Items->NumItems(); ++$i) {
+      $itemCount = $Items->NumItems();
+      for ($i = 0; $i < $itemCount; ++$i) {
         $Item = $Items->Card($i, true);
         if (TypeContains($Item->CardID(), "T")) return False;
       }
       $Auras = new Auras($player);
-      for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+      $auraCount = $Auras->NumAuras();
+      for ($i = 0; $i < $auraCount; ++$i) {
         $Aura = $Auras->Card($i, true);
         if (TypeContains($Aura->CardID(), "T") || $Aura->IsToken()) return False;
       }
@@ -6485,13 +6497,15 @@ class destructive_tendencies_blue extends Card {
     $otherPlayer = $this->controller == 2 ? 1 : 2;
     foreach ([$otherPlayer, $this->controller] as $player) {
       $Items = new Items($player);
-      for ($i = 0; $i < $Items->NumItems(); ++$i) {
+      $itemCount = $Items->NumItems();
+      for ($i = 0; $i < $itemCount; ++$i) {
         $Item = $Items->Card($i, true);
         if (TypeContains($Item->CardID(), "T") && !in_array("Remove_from_item", $modalities))
           $modalities[] = "Remove_from_item";
       }
       $Auras = new Auras($player);
-      for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+      $auraCount = $Auras->NumAuras();
+      for ($i = 0; $i < $auraCount; ++$i) {
         $Aura = $Auras->Card($i, true);
         if ((TypeContains($Aura->CardID(), "T") || $Aura->IsToken()) && !in_array("Remove_from_aura", $modalities))
           $modalities[] = "Remove_from_aura";
@@ -6536,10 +6550,12 @@ class pilfer_the_tomb_blue extends Card {
     $otherPlayer = $this->controller == 2 ? 1 : 2;
     foreach ([$otherPlayer] as $player) {
       $Graveyard = new Discard($player);
-      if ($Graveyard->NumCards() == 0) return False;
-      for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+      $graveyardCount = $Graveyard->NumCards();
+      if ($graveyardCount == 0) return False;
+      for ($i = 0; $i < $graveyardCount; ++$i) {
         $Card = $Graveyard->Card($i, true);
-        if (TypeContains($Card->ID(), "I", $otherPlayer) || ColorContains($Card->ID(), "2", $otherPlayer)) return False;
+        $cardID = $Card->ID();
+        if (TypeContains($cardID, "I", $otherPlayer) || ColorContains($cardID, "2", $otherPlayer)) return False;
       }
     }
     return true;
@@ -6552,12 +6568,14 @@ class pilfer_the_tomb_blue extends Card {
 
     foreach ([$otherPlayer] as $player) {
       $Graveyard = new Discard($player);
-      if ($Graveyard->NumCards() == 0) return False;
-      for ($i = 0; $i < $Graveyard->NumCards(); ++$i) {
+      $graveyardCount = $Graveyard->NumCards();
+      if ($graveyardCount == 0) return False;
+      for ($i = 0; $i < $graveyardCount; ++$i) {
         $Card = $Graveyard->Card($i, true);
-        if (TypeContains($Card->ID(), "I", $player) && !in_array("Banish_Instant", $modalities))
+        $cardID = $Card->ID();
+        if (TypeContains($cardID, "I", $player) && !in_array("Banish_Instant", $modalities))
           $modalities[] = "Banish_Instant";
-        if (ColorContains($Card->ID(), "2", $player) && !in_array("Banish_Yellow", $modalities))
+        if (ColorContains($cardID, "2", $player) && !in_array("Banish_Yellow", $modalities))
           $modalities[] = "Banish_Yellow";
       }
     }
@@ -6604,7 +6622,8 @@ class shatter_sorcery_blue extends Card {
     $otherPlayer = $this->controller == 2 ? 1 : 2;
     foreach ([$otherPlayer, $this->controller] as $player) {
       $Auras = new Auras($player);
-      for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+      $auraCount = $Auras->NumAuras();
+      for ($i = 0; $i < $auraCount; ++$i) {
         $Aura = $Auras->Card($i, true);
         if (CardNameContains($Aura->CardID(), "Sigil", $player, true) && !in_array("Destroy_Sigil", $modalities))
           $modalities[] = "Destroy_Sigil";
@@ -7634,7 +7653,8 @@ class tiger_trap_red extends Card{
   function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
     global $ChainLinks, $CombatChain;
     $numBuffedLinks = 0;
-    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $chainLinkCount = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $chainLinkCount; ++$i) {
       $Link = $ChainLinks->GetLink($i);
       if ($Link->TotalAttack() > $Link->ModifiedBaseAttack()) ++$numBuffedLinks;
     }

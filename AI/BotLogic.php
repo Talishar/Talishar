@@ -476,6 +476,23 @@ function BotEquipmentBlockAllowed($playerID, $block, $incoming)
   return $incoming - $block <= 0 && BotStopHitValue() > 0;
 }
 
+function BotDefenderPowerBacklash($cardID, $playerID, $isEquipment)
+{
+  global $mainPlayer, $CS_NumCharged;
+  if ($isEquipment || $mainPlayer == $playerID) return 0;
+  if (CardType($cardID) != "AA") return 0;
+  if (!isset($CS_NumCharged) || intval(GetClassState($mainPlayer, $CS_NumCharged)) <= 0) return 0;
+  if (NumAttacksBlocking() > 0) return 0;
+  $character = &GetPlayerCharacter($mainPlayer);
+  $pieces = CharacterPieces();
+  for ($index = 0, $count = count($character); $index < $count; $index += $pieces) {
+    if (!IsCharacterAbilityActive($mainPlayer, $index)) continue;
+    $characterID = ShiyanaCharacter($character[$index], $mainPlayer);
+    if ($characterID == "ser_boltyn_breaker_of_dawn" || $characterID == "boltyn") return 1;
+  }
+  return 0;
+}
+
 function BotScoreDefenseCandidate(
   $incoming,
   $life,
@@ -528,6 +545,8 @@ function BotDefensePriority($cardID, $playerID, $zone)
   if ($block == 0) return 0.0;
   $incoming = max(0, intval(CachedTotalPower()) - intval(CachedTotalBlock()));
   if ($incoming == 0) return 0.0;
+  $block = max(0, $block - BotDefenderPowerBacklash($cardID, $playerID, $isEquipment));
+  if ($block == 0) return 0.0;
 
   if ($isEquipment) {
     if (BotEquipmentBlockRequired()) return 100000.0 + $block;

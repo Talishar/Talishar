@@ -278,7 +278,8 @@ class paragon_plate extends Card {
 		if (SubTypeContains($CombatChain->AttackCard()->ID(), "Sword", $this->controller) && $Weapon->NumPowerCounters() > 0) return false;
 		//past chain links
 		$Character = new PlayerCharacter($this->controller);
-		for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+		$chainLinkCount = $ChainLinks->NumLinks();
+		for ($i = 0; $i < $chainLinkCount; ++$i) {
 			$AttackCard = $ChainLinks->GetLink($i)->AttackCard();
 			if (SubtypeContains($AttackCard->ID(), "Sword")) {
 				$Weapon = $Character->FindCardUID($AttackCard->OriginUniqueID());

@@ -85,25 +85,35 @@ function CheckUnique($player) {
 	$Allies = new Allies($player);
 	$Char = new PlayerCharacter($player);
 	$uniqueCards = [];
-	for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+	$allyCount = $Allies->NumAllies();
+	for ($i = 0; $i < $allyCount; ++$i) {
 		$AllyCard = $Allies->Card($i, true);
-		if (IsUnique($AllyCard->CardID())) $uniqueCards[] = Moniker($AllyCard->CardID());
+		$cardID = $AllyCard->CardID();
+		if (IsUnique($cardID)) $uniqueCards[] = Moniker($cardID);
 	}
-	for ($i = 0; $i < $Char->NumCards(); ++$i) {
+	$characterCount = $Char->NumCards();
+	for ($i = 0; $i < $characterCount; ++$i) {
 		$CharCard = $Char->Card($i, true);
-		if (IsUnique($CharCard->CardID())) $uniqueCards[] = Moniker($CharCard->CardID());
+		$cardID = $CharCard->CardID();
+		if (IsUnique($cardID)) $uniqueCards[] = Moniker($cardID);
+	}
+	if ($uniqueCards === []) return;
+
+	$uniqueCardSet = array_fill_keys($uniqueCards, true);
+	$conflictsByUnique = [];
+	for ($i = 0; $i < $allyCount; ++$i) {
+		$AllyCard = $Allies->Card($i, true);
+		$uniqueCard = Moniker($AllyCard->CardID());
+		if (isset($uniqueCardSet[$uniqueCard])) $conflictsByUnique[$uniqueCard][] = "MYALLY-" . $AllyCard->Index();
+	}
+	for ($i = 0; $i < $characterCount; ++$i) {
+		$CharCard = $Char->Card($i, true);
+		$uniqueCard = Moniker($CharCard->CardID());
+		if (isset($uniqueCardSet[$uniqueCard])) $conflictsByUnique[$uniqueCard][] = "MYCHAR-" . $CharCard->Index();
 	}
 
 	foreach ($uniqueCards as $uniqueCard) {
-		$conflicts = [];
-		for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
-			$AllyCard = $Allies->Card($i, true);
-			if (Moniker($AllyCard->CardID()) == $uniqueCard) $conflicts[] = "MYALLY-" . $AllyCard->Index();
-		}
-		for ($i = 0; $i < $Char->NumCards(); ++$i) {
-			$CharCard = $Char->Card($i, true);
-			if (Moniker($CharCard->CardID()) == $uniqueCard) $conflicts[] = "MYCHAR-" . $CharCard->Index();
-		}
+		$conflicts = $conflictsByUnique[$uniqueCard];
 		if (count($conflicts) > 1) {
 			// for now don't let people kill themselves on accident
 			if (($key = array_search('MYCHAR-0', $conflicts)) !== false)
@@ -134,7 +144,8 @@ function ControlsBlasmo($player) {
 	if (CardNameContains($Character->Card(0)->ID(), "Blasmophet", $player))
 		return true;
 	$Allies = new Allies($player);
-	for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+	$allyCount = $Allies->NumAllies();
+	for ($i = 0; $i < $allyCount; ++$i) {
 		$AllyCard = $Allies->Card($i, true);
 		if (CardNameContains($AllyCard->CardID(), "Blasmophet", $player))
 			return true;
@@ -229,7 +240,8 @@ function SearchShadowResistAwait($player) {
 function SearchShadowResistIndices($player, $damage) {
 	$inds = [];
 	$Character = new PlayerCharacter($player);
-	for ($i = 0; $i < $Character->NumCards(); ++$i) {
+	$characterCount = $Character->NumCards();
+	for ($i = 0; $i < $characterCount; ++$i) {
 		$CharacterCard = $Character->Card($i, true);
 		if (!$CharacterCard->IsActive()) continue;
 		$index = $CharacterCard->Index();
@@ -237,7 +249,8 @@ function SearchShadowResistIndices($player, $damage) {
 			$inds[] = "MYCHAR-$index";
 	}
 	$Allies = new Allies($player);
-	for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+	$allyCount = $Allies->NumAllies();
+	for ($i = 0; $i < $allyCount; ++$i) {
 		$AllyCard = $Allies->Card($i, true);
 		$index = $AllyCard->Index();
 		if (ShadowResistAmount($AllyCard->CardID(), $player, $index) > 0)

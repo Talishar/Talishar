@@ -1852,7 +1852,8 @@ class appalling_bearers extends Card {
   function GetInds() {
     $Hand = new Hand($this->controller);
     $inds = [];
-    for($i = 0; $i < $Hand->NumCards(); ++$i) {
+    $handCount = $Hand->NumCards();
+    for($i = 0; $i < $handCount; ++$i) {
       if (SubtypeContains($Hand->Card($i, true), "Zombie"))
         $inds[] = $i;
     }
@@ -2398,7 +2399,8 @@ class usurp_the_shadow_throne_blue extends Card {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     $Banish = new Banish($otherPlayer);
     $num = 0;
-    for ($i = 0; $i < $Banish->NumCards(); ++$i) {
+    $banishCount = $Banish->NumCards();
+    for ($i = 0; $i < $banishCount; ++$i) {
       $BanishCard = $Banish->Card($i, true);
       if (!isFaceDownMod($BanishCard->Modifier())) {
         $BanishCard->Modify("DOWN");
@@ -3294,7 +3296,8 @@ class apex_buster_yellow extends Card {
     if ($this->controller != $mainPlayer) return $targets;
     if ($CombatChain->HasCurrentLink()) {
       if (LinkBasePower() >= 6) {
-        for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+        $activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+        for ($i = 1; $i < $activeLinkCardCount; ++$i) {
           $ChainCard = $CombatChain->Card($i, true);
           $targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
         }
@@ -3304,7 +3307,8 @@ class apex_buster_yellow extends Card {
     for ($i = 0; $i < $numLinks; ++$i) {
       $Link = $ChainLinks->GetLink($i);
       if (ModifiedPowerValue($Link->AttackCard()->ID(), $mainPlayer, "CC", $i, true, true) >= 6) {
-        for ($j = 0; $j < $Link->NumCards(); ++$j) {
+        $linkCardCount = $Link->NumCards();
+        for ($j = 0; $j < $linkCardCount; ++$j) {
           $ChainCard = $Link->GetLinkCard($j, true);
           $targets[] = "PASTCHAINLINK-" . $ChainCard->Index() . "-$i";
         }
@@ -4983,7 +4987,8 @@ class exorcism_red extends Card {
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
     $defPlayer = $this->controller == 1 ? 2 : 1;
     $Banish = new Banish($defPlayer);
-    for ($i = 0; $i < $Banish->NumCards(); ++$i) {
+    $banishCount = $Banish->NumCards();
+    for ($i = 0; $i < $banishCount; ++$i) {
       $BanishCard = $Banish->Card($i, true);
       if (!isFaceDownMod($BanishCard->Modifier()))
         $BanishCard->Modify("DOWN");

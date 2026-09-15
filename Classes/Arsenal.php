@@ -95,15 +95,17 @@ class ArsenalCard {
 
 	function Destroy($effectController=0) {
 		$slotIndex = intdiv($this->index, ArsenalPieces());
-		AddEvent("ARSENALDESTROY", $this->controller . ":" . $this->CardID() . ":" . $slotIndex);
-		WriteLog(CardLink($this->CardID(), $this->CardID()) . " was destroyed from the arsenal");
-		AddGraveyard($this->CardID(), $this->controller, "ARS", $effectController);
+		$cardID = $this->CardID();
+		AddEvent("ARSENALDESTROY", $this->controller . ":" . $cardID . ":" . $slotIndex);
+		WriteLog(CardLink($cardID) . " was destroyed from the arsenal");
+		AddGraveyard($cardID, $this->controller, "ARS", $effectController);
 		$this->Remove();
 	}
 
 	function Banish($effectController=0) {
-		WriteLog(CardLink($this->CardID(), $this->CardID()) . " was banished from the arsenal");
-		BanishCardForPlayer($this->CardID(), $this->controller, "ARS", banisher:$effectController);
+		$cardID = $this->CardID();
+		WriteLog(CardLink($cardID) . " was banished from the arsenal");
+		BanishCardForPlayer($cardID, $this->controller, "ARS", banisher:$effectController);
 		$this->Remove();
 	}
 }

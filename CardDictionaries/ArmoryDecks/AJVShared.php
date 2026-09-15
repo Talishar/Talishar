@@ -143,7 +143,8 @@ function CheckHeavy($player) {
 function MountIsenTrigger($player) {
   $character = new PlayerCharacter($player);
   $eqFrostbiteCount = 0;
-  for ($k = 0; $k < $character->NumCards(); $k += 1) {
+  $characterCount = $character->NumCards();
+  for ($k = 0; $k < $characterCount; $k += 1) {
     $CharCard = $character->Card($k, true);
     if ($CharCard->CardID() == "frostbite") {
       $slot = $CharCard->Slot();

@@ -934,16 +934,19 @@ function GetDamagePrevention($player, $damage)
     }
   }
 
-  for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+  $activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+  for ($i = 0; $i < $activeLinkCardCount; ++$i) {
     $ChainCard = $CombatChain->Card($i, true);
     if ($player != $ChainCard->PlayerID()) continue;
     $card = GetClass($ChainCard->ID(), $player, "CC", $ChainCard->UniqueID());
     if ($card != "-") $preventionLeft += $card->CombatChainTakeDamageAbility(-1, $ChainCard->Index(), $damage, "COMBAT", true, true);
   }
 
-  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+  $chainLinkCount = $ChainLinks->NumLinks();
+  for ($i = 0; $i < $chainLinkCount; ++$i) {
     $Link = $ChainLinks->GetLink($i);
-    for ($j = 0; $j < $Link->NumCards(); ++$j) {
+    $linkCardCount = $Link->NumCards();
+    for ($j = 0; $j < $linkCardCount; ++$j) {
       $ChainCard = $Link->GetLinkCard($j, true);
       $card = GetClass($ChainCard->ID(), $player, "CC");
       if ($card != "-") $preventionLeft += $card->CombatChainTakeDamageAbility($i, $ChainCard->Index(), $damage, "COMBAT", true, true);

@@ -171,7 +171,8 @@ function TargetTokenAuras($player="-") {
   foreach ($players as $player) {
     $prefix = $player == $currentPlayer ? "MYAURAS" : "THEIRAURAS";
     $Auras = new Auras($player);
-    for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+    $auraCount = $Auras->NumAuras();
+    for ($i = 0; $i < $auraCount; ++$i) {
       $AuraCard = $Auras->Card($i, true);
       if ($AuraCard->IsToken() || TypeContains($AuraCard->CardID(), "T"))
         $ret[] = "$prefix-" . $AuraCard->Index();
