@@ -213,6 +213,7 @@ function CheckShadowResist($player, $damage, $source = "-", $type="-", $preventa
 function ProcessShadowResistAwait($player) {
 	global $dqVars, $CS_PreventionCache;
 	$damage = $dqVars["damage"] ?? 0;
+	if (!is_numeric($damage)) $damage = 0;
 	$preventable = $dqVars["preventable"] ?? true;
 	$source = $dqVars["source"] ?? "-";
 	$type = $dqVars["type"] ?? "-";
@@ -221,6 +222,7 @@ function ProcessShadowResistAwait($player) {
 	if ($choice != "PASS") {
 		$permanentObject = MZIndexToObject($player, $choice);
 		$prevented = ShadowResistAmount($permanentObject->CardID(), $player, $permanentObject->Index());
+		if (!is_numeric($prevented)) $prevented = 0;
 		$permanentObject->Destroy();
 		if($prevented > 0) LogDamagePreventedStats($player, min($damage, $prevented));
 		if ($preventable) $damage -= $prevented;
