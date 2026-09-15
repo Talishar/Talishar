@@ -1848,7 +1848,8 @@ function CacheCombatResult()
   if (is_a($card, "SUPDwarfCard") && GetCombatChainState($CCS_CachedTotalPower) > LinkBasePower()) {
     IncrementCombatChainState($CCS_CachedTotalPower);
   }
-  if (GetCombatChainState($CCS_CachedTotalPower) > $oldPower && GetCombatChainState($CCS_CachedTotalPower) >= 6)
+  $currentTotalPower = GetCombatChainState($CCS_CachedTotalPower);
+  if ($currentTotalPower > $oldPower && $currentTotalPower >= 6)
     ProcessAllMirage();
   SetCombatChainState($CCS_CachedDominateActive, (IsDominateActive() ? "1" : "0"));
   SetCombatChainState($CCS_CachedOverpowerActive, (IsOverpowerActive() ? "1" : "0"));
@@ -2037,7 +2038,8 @@ function LayerStepBasePower() {
   if (!IsLayerStep()) return 0;
   $Attack = $Stack->BottomLayer();
   $basePower = PowerValue($Attack->ID(), $Attack->PlayerID(), "STACK", $Attack->Index(), true);
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $currentTurnEffectCount = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $currentTurnEffectCount; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
     if ($card != "-") $basePower = $card->EffectSetBasePower($basePower);

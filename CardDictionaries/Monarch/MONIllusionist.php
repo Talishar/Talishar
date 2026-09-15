@@ -110,17 +110,20 @@
     if(SearchCurrentTurnEffectsForCycle("veiled_intentions_red", "veiled_intentions_yellow", "veiled_intentions_blue", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("phantasmify_red", "phantasmify_yellow", "phantasmify_blue", $mainPlayer)) return true;
     if(SearchCurrentTurnEffectsForCycle("transmogrify_red", "transmogrify_yellow", "transmogrify_blue", $mainPlayer)) return true;
-    if(GetCombatChainState($CCS_WeaponIndex) != "-1" && DelimStringContains(CardSubType($attackID), "Ally"))
+    $weaponIndex = GetCombatChainState($CCS_WeaponIndex);
+    if($weaponIndex != "-1" && DelimStringContains(CardSubType($attackID), "Ally"))
     {
       $allies = &GetAllies($mainPlayer);
-      if(isset($allies[GetCombatChainState($CCS_WeaponIndex) + 4])){
-        if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "ash")) return true;
-        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_golden_plains_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Themai")) return true;
-        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_red_desert_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Vynserakai")) return true;
-        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_shadow_crypts_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Nekria")) return true;
-        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_chrome_caverns_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Cromai")) return true;
-        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_stillwater_shrine_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Miragai")) return true;  
-        else if(DelimStringContains($allies[GetCombatChainState($CCS_WeaponIndex) + 4], "dust_from_the_fertile_fields_red") && !CardNameContains($allies[GetCombatChainState($CCS_WeaponIndex)], "Ouvia")) return true;
+      if(isset($allies[$weaponIndex + 4])){
+        $subcards = $allies[$weaponIndex + 4];
+        $allyID = $allies[$weaponIndex];
+        if(DelimStringContains($subcards, "ash")) return true;
+        else if(DelimStringContains($subcards, "dust_from_the_golden_plains_red") && !CardNameContains($allyID, "Themai")) return true;
+        else if(DelimStringContains($subcards, "dust_from_the_red_desert_red") && !CardNameContains($allyID, "Vynserakai")) return true;
+        else if(DelimStringContains($subcards, "dust_from_the_shadow_crypts_red") && !CardNameContains($allyID, "Nekria")) return true;
+        else if(DelimStringContains($subcards, "dust_from_the_chrome_caverns_red") && !CardNameContains($allyID, "Cromai")) return true;
+        else if(DelimStringContains($subcards, "dust_from_stillwater_shrine_red") && !CardNameContains($allyID, "Miragai")) return true;
+        else if(DelimStringContains($subcards, "dust_from_the_fertile_fields_red") && !CardNameContains($allyID, "Ouvia")) return true;
       }
     }
     return HasPhantasm($attackID);

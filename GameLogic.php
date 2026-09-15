@@ -3803,7 +3803,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character = new PlayerCharacter($player);
       $filledSlots = [];
       $equipmentSlots = ["Head" => true, "Chest" => true, "Arms" => true, "Legs" => true];
-      for ($i = 0; $i < $character->NumCards(); ++$i) {
+      $characterCount = $character->NumCards();
+      for ($i = 0; $i < $characterCount; ++$i) {
         $CharacterCard = $character->Card($i, true);
         $slot = $CharacterCard->Slot();
         if ($slot == "-") continue;

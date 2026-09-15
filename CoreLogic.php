@@ -1376,7 +1376,6 @@ function GetChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = "", 
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
     if ($color != "" && !ColorContains($combatChain[$i], $color, $combatChain[$i+1])) continue;
     if ($playerID != "" && $combatChain[$i + 1] != $playerID) continue;
-    $thisType = CardType($combatChain[$i]);
     if ($cardType != "" && !TypeContains($combatChain[$i], $cardType, $playerID)) continue;
     if ($subType != "" && !SubtypeContains($combatChain[$i], $subType)) continue;
     if ($nameContains != "" && !CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true)) continue;
@@ -1401,6 +1400,8 @@ function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = 
   $exclCardSubTypeCount = count($exclCardSubTypeArray);
   $chainLinksCount = count($chainLinks);
   $chainLinksPieces = ChainLinksPieces();
+  $needsType = $cardType !== "" || $exclTypeSet !== [];
+  $needsSubType = $subType !== "" || $exclCardSubTypeCount > 0;
   for ($i = 0; $i < $chainLinksCount; ++$i) {
     if ($blockingClass != "" && !ClassContains($chainLinks[$i][0], $blockingClass, $mainPlayer)) continue;
     $chainLinkICount = count($chainLinks[$i]);
@@ -1408,20 +1409,22 @@ function GetPastChainLinkCards($playerID = "", $cardType = "", $exclCardTypes = 
       $cardID = $chainLinks[$i][$j];
       if ($color != "" && !ColorContains($cardID, $color, $chainLinks[$i][$j + 1])) continue;
       if ($subType != "" && !SubtypeContains($cardID, $subType)) continue;
-      $thisType = CardType($cardID);
-      $thisSubType = CardSubType($cardID);
-      if (($playerID == "" || $chainLinks[$i][$j + 1] == $playerID) && ($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($cardID, $nameContains, $playerID, partial: true))) {
-        if (isset($exclTypeSet[$thisType])) continue;
-        $excluded = false;
-        if ($thisSubType !== "") {
-          for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
-            if (DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
-          }
+      $thisType = $needsType ? CardType($cardID) : "";
+      $thisSubType = $needsSubType ? CardSubType($cardID) : "";
+      if ($playerID != "" && $chainLinks[$i][$j + 1] != $playerID) continue;
+      if ($cardType != "" && $thisType != $cardType) continue;
+      if ($subType != "" && $thisSubType != $subType) continue;
+      if ($nameContains != "" && !CardNameContains($cardID, $nameContains, $playerID, partial: true)) continue;
+      if (isset($exclTypeSet[$thisType])) continue;
+      $excluded = false;
+      if ($thisSubType !== "") {
+        for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
+          if (DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
         }
-        if ($excluded) continue;
-        if (!$asMZInd) $ret[] = "$j-$i";
-        else $ret[] = "PASTCHAINLINK-$j-$i";
       }
+      if ($excluded) continue;
+      if (!$asMZInd) $ret[] = "$j-$i";
+      else $ret[] = "PASTCHAINLINK-$j-$i";
     }
   }
   return implode(",", $ret);
@@ -1436,21 +1439,24 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
   $exclCardSubTypeCount = count($exclCardSubTypeArray);
   $combatChainCount = count($combatChain);
   $combatChainPieces = CombatChainPieces();
+  $needsType = $cardType !== "" || $exclTypeSet !== [];
+  $needsSubType = $subType !== "" || $exclCardSubTypeCount > 0;
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
     if ($playerID != "" && $combatChain[$i + 1] != $playerID) continue;
-    $thisType = CardType($combatChain[$i]);
-    $thisSubType = CardSubType($combatChain[$i]);
-    if (($cardType == "" || $thisType == $cardType) && ($subType == "" || $thisSubType == $subType) && ($nameContains == "" || CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true))) {
-      if (isset($exclTypeSet[$thisType])) continue;
-      $excluded = false;
-      if ($thisSubType !== "") {
-        for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
-          if (DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
-        }
+    $thisType = $needsType ? CardType($combatChain[$i]) : "";
+    $thisSubType = $needsSubType ? CardSubType($combatChain[$i]) : "";
+    if ($cardType != "" && $thisType != $cardType) continue;
+    if ($subType != "" && $thisSubType != $subType) continue;
+    if ($nameContains != "" && !CardNameContains($combatChain[$i], $nameContains, $playerID, partial: true)) continue;
+    if (isset($exclTypeSet[$thisType])) continue;
+    $excluded = false;
+    if ($thisSubType !== "") {
+      for ($k = 0; $k < $exclCardSubTypeCount; ++$k) {
+        if (DelimStringContains($thisSubType, $exclCardSubTypeArray[$k])) { $excluded = true; break; }
       }
-      if ($excluded) continue;
-      $cardIDsArr[] = $combatChain[$i];
     }
+    if ($excluded) continue;
+    $cardIDsArr[] = $combatChain[$i];
   }
   return implode(",", $cardIDsArr);
 }
@@ -1462,8 +1468,11 @@ function ChainLinkResolvedEffects()
   if ($CombatChain->HasCurrentLink()) {
     if ($combatChain[0] == "exude_confidence_red" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
   }
-  if (IsAllyAttacking() && isset($allies[GetCombatChainState($CCS_WeaponIndex) + 2]) && $allies[GetCombatChainState($CCS_WeaponIndex) + 2] <= 0) {
-    DestroyAlly($mainPlayer, GetCombatChainState($CCS_WeaponIndex));
+  if (IsAllyAttacking()) {
+    $weaponIndex = GetCombatChainState($CCS_WeaponIndex);
+    if (isset($allies[$weaponIndex + 2]) && $allies[$weaponIndex + 2] <= 0) {
+      DestroyAlly($mainPlayer, $weaponIndex);
+    }
   }
 }
 
@@ -3303,7 +3312,8 @@ function GetDamagePreventionTargetIndices()
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchItems($otherPlayer), "THEIRITEMS"));
   if (ArsenalHasFaceUpCard($otherPlayer)) $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchArsenal($otherPlayer), "THEIRARS"));
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "C"), "THEIRCHAR"));
-  for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+  $chainLinksCount = $ChainLinks->NumLinks();
+  for ($i = 0; $i < $chainLinksCount; ++$i) {
     if (($chainLinks[$i][2] ?? 0))
       $rv = CombineSearches($rv, "PASTCHAINLINK-0-$i");
   }
@@ -4323,11 +4333,13 @@ function CheckIfConstructNitroMechanoidConditionsAreMet($currentPlayer)
   $hasLegs = false;
   $hasWeapon = false;
   $char = new PlayerCharacter($currentPlayer);
-  for ($i = 0; $i < $char->NumCards(); $i += 1) {
+  $characterCount = $char->NumCards();
+  for ($i = 0; $i < $characterCount; $i += 1) {
     $characterCard = $char->Card($i, true);
     if ($characterCard->Status() == 0) continue;
-    if (!ClassContains($characterCard->CardID(), "MECHANOLOGIST", $currentPlayer)) continue;
-    if (CardType($characterCard->CardID()) == "W") $hasWeapon = true;
+    $cardID = $characterCard->CardID();
+    if (!ClassContains($cardID, "MECHANOLOGIST", $currentPlayer)) continue;
+    if (CardType($cardID) == "W") $hasWeapon = true;
     else {
       if ($characterCard->Slot() == "Head") $hasHead = true;
       if ($characterCard->Slot() == "Chest") $hasChest = true;

@@ -699,7 +699,8 @@ function AllyPowerModifiers(&$powerModifiers, $index = -1)
   $modifier = 0;
   if (!is_numeric($mainPlayer)) return $modifier;
   $Allies = new Allies($mainPlayer);
-  for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+  $allyCount = $Allies->NumAllies();
+  for ($i = 0; $i < $allyCount; ++$i) {
     $AllyCard = $Allies->Card($i, true);
     $card = GetClass($AllyCard->CardID(), $mainPlayer);
     if ($card != "-") $modifier += $card->PermanentPowerModifier($powerModifiers);

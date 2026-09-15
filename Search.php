@@ -1284,7 +1284,8 @@ function SearchArsenalForUniqueID($uniqueID, $player)
 function SearchCharacterForUniqueID($uniqueID, $player)
 {
   $char = new PlayerCharacter($player);
-  for ($i = 0; $i < $char->NumCards(); $i += 1) {
+  $characterCount = $char->NumCards();
+  for ($i = 0; $i < $characterCount; $i += 1) {
     $CharCard = $char->Card($i, true);
     if ($CharCard->UniqueID() == $uniqueID && $CharCard->Status() != 0) return $CharCard->Index();
   }

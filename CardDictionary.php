@@ -2441,7 +2441,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "razor_reflex_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
       $subtype = CardSubtype($attackID);
-      $attackCost = GetCombatChainState($CCS_AttackCost) == -1 ? CardCost($attackID, "CC") : GetCombatChainState($CCS_AttackCost);
+      $attackCost = GetCombatChainState($CCS_AttackCost);
+      if ($attackCost == -1) $attackCost = CardCost($attackID, "CC");
       if ($subtype == "Sword" || $subtype == "Dagger" || CardType($attackID) == "AA" && $attackCost <= 1) return false;
       return true;
     case "teklo_plasma_pistol":

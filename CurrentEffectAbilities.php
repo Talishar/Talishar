@@ -2783,7 +2783,8 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
   }
 
   $blockCardID = $blockCard != "-" ? $blockCard->ID() : "";
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $currentTurnEffectCount = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $currentTurnEffectCount; ++$i) {
     $blockModifier = 0;
     $Effect = $CurrentTurnEffects->Effect($i, true);
     $effectID = $Effect->EffectID();
