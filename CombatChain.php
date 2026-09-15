@@ -1696,10 +1696,12 @@ function CombatChainClosedTriggers()
       continue;
     }
     $chainLinkICount = count($chainLinks[$i]);
+    $ChainLink = new ChainLink($i);
     for ($j = 0; $j < $chainLinkICount; $j += $chainLinkPieces) {
-      $cardType = CardType($chainLinks[$i][$j]);
-      if ($chainLinks[$i][$j + 1] != $mainPlayer || ($chainLinks[$i][$j + 2] == 0 && !IsStaticType($cardType))) continue;
-      switch ($chainLinks[$i][$j]) {
+      $LinkCard = $ChainLink->GetLinkCard($j);
+      $cardType = CardType($LinkCard->ID());
+      if ($LinkCard->PlayerID() != $mainPlayer || ($LinkCard->StillOnChain() == 0 && !IsStaticType($cardType))) continue;
+      switch ($LinkCard->ID()) {
         case "hell_hammer":
           $index = FindCharacterIndex($mainPlayer, "hell_hammer");
           if ($index > -1 && SearchCurrentTurnEffects("hell_hammer", $mainPlayer, true)) {

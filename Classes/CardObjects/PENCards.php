@@ -6776,8 +6776,9 @@ class solforge_gauntlet extends Card {
   }
 
   function CombatChainCloseAbility($chainLink) {
-    global $CombatChain;
-    $ChainCard = $CombatChain->Card($chainLink, true);
+    global $ChainLinks;
+    $Link = $ChainLinks->GetLink($chainLink);
+    $ChainCard = $Link->FindCardID($this->cardID);
     $Character = new PlayerCharacter($this->controller);
     $CharacterCard = $Character->FindCardID($this->cardID);
     $ChainCard->Remove();
