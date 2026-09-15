@@ -4008,15 +4008,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("ALLCARDTALENTORPASS", $currentPlayer, "SHADOW", 1);
       AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, $cardID, 1);
       break;
-    case "soul_harvest_blue":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "GY");
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "6-", 1);
-      AddDecisionQueue("MULTICHOOSEDISCARD", $currentPlayer, "<-", 1, 1);
-      AddDecisionQueue("VALIDATECOUNT", $currentPlayer, "6", 1);
-      AddDecisionQueue("SOULHARVEST", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIREMOVEDISCARD", $currentPlayer, "-", 1);
-      AddDecisionQueue("MULTIBANISH", $currentPlayer, "GY,-", 1);
-      break;
     case "rouse_the_ancients_blue":
       if (CanRevealCards($currentPlayer)) {
         AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIHANDAA");

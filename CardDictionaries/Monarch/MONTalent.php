@@ -183,31 +183,13 @@ function MONTalentHitEffect($cardID)
     case "rising_solartide_red":
     case "rising_solartide_yellow":
     case "rising_solartide_blue": SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "SOUL"); break;
-      case "soul_harvest_blue":
-        if(IsHeroAttackTarget()) {
-          $numSoul = count(GetSoul($defPlayer));
-          if($numSoul > 0) {
-            LoseHealth($numSoul, $defPlayer);
-            $char = &GetPlayerCharacter($defPlayer);
-            switch ($char[0]) {
-                case "blasmophet_levia_consumed":
-                    WriteLog("<span style='color:red;'>I find your lack of faith disturbing.</span>");
-                    break;
-                case "levia_redeemed":
-                    WriteLog("<span style='color:red;'>When I left you, I was but the learner. Now I am the master.</span>");
-                    break;
-            }
-          }
-          for($i=0; $i<$numSoul; ++$i) BanishFromSoul($defPlayer);
-        }
-        break;
-      case "lunartide_plunderer_red": case "lunartide_plunderer_yellow": case "lunartide_plunderer_blue":
-        if(IsHeroAttackTarget()) {
-          BanishFromSoul($defPlayer);
-          SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BANISH");
-        }
-        break;
-      default: break;
+    case "lunartide_plunderer_red": case "lunartide_plunderer_yellow": case "lunartide_plunderer_blue":
+      if(IsHeroAttackTarget()) {
+        BanishFromSoul($defPlayer);
+        SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BANISH");
+      }
+      break;
+    default: break;
     }
   }
 

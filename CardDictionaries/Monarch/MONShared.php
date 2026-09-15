@@ -114,7 +114,6 @@
       case "seeping_shadows_red": case "seeping_shadows_yellow": case "seeping_shadows_blue": return 1;
       case "rift_bind_red": case "rift_bind_yellow": case "rift_bind_blue": return GetClassState($mainPlayer, $CS_NumNonAttackCards);
       case "shadow_puppetry_red": return 1;
-      case "soul_harvest_blue": return $suffix;
       case "howl_from_beyond_red": return 3;
       case "howl_from_beyond_yellow": return 2;
       case "howl_from_beyond_blue": return 1;
@@ -166,7 +165,6 @@
       case "rift_bind_red": case "rift_bind_yellow": case "rift_bind_blue": return true;
       case "shadow_puppetry_red": return CardType($attackID) == "AA";
       case "consuming_aftermath_red": case "consuming_aftermath_yellow": case "consuming_aftermath_blue": return true;
-      case "soul_harvest_blue": return true;
       case "howl_from_beyond_red": case "howl_from_beyond_yellow": case "howl_from_beyond_blue": return CardType($attackID) == "AA";
       case "spew_shadow_red": return true;
       case "eclipse_existence_blue": return true;

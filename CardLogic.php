@@ -830,7 +830,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "overload_red"=>true,"overload_yellow"=>true,"overload_blue"=>true,
     "illuminate_red"=>true,"illuminate_yellow"=>true,"illuminate_blue"=>true,
     "rising_solartide_red"=>true,"rising_solartide_yellow"=>true,"rising_solartide_blue"=>true,
-    "soul_harvest_blue"=>true,
     "lunartide_plunderer_red"=>true,"lunartide_plunderer_yellow"=>true,"lunartide_plunderer_blue"=>true,
     "oldhim_grandfather_of_eternity"=>true,"oldhim"=>true,"endless_winter_red"=>true,
     "awakening_blue"=>true,"tear_asunder_blue"=>true,

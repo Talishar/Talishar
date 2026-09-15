@@ -3494,17 +3494,74 @@ class sonata_arcanix_red extends Card {
 // }
 
 
-// class soul_harvest_blue extends Card {
+class soul_harvest_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "soul_harvest_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "soul_harvest_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return (new Discard($this->controller))->NumCards() < 6;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    AddDecisionQueue("FINDINDICES", $this->controller, "GY");
+    AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "6-", 1);
+    AddDecisionQueue("APPENDLASTRESULT", $this->controller, "-6", 1);
+    AddDecisionQueue("MULTICHOOSEDISCARD", $this->controller, "<-", 1, 1);
+    AddDecisionQueue("VALIDATECOUNT", $this->controller, "6", 1);
+    Await($this->controller, $this->cardID);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $lastResult = array_reverse(explode(",", $dqVars["LASTRESULT"]) ?? []);
+    $numBD = 0;
+    $Discard = new Discard($this->controller);
+    foreach ($lastResult as $idx) {
+      $DisCard = $Discard->Card($idx);
+      if (HasBloodDebt($DisCard->ID())) ++$numBD;
+      $DisCard->Banish();
+    }
+    if ($numBD > 0) AddCurrentTurnEffect("$this->cardID-$numBD", $this->controller);
+    return $lastResult;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;;
+    $numSoul = count(GetSoul($defPlayer));
+    if($numSoul > 0) {
+      LoseHealth($numSoul, $defPlayer);
+      $char = &GetPlayerCharacter($defPlayer);
+      switch ($char[0]) {
+          case "blasmophet_levia_consumed":
+              WriteLog("<span style='color:red;'>I find your lack of faith disturbing.</span>");
+              break;
+          case "levia_redeemed":
+              WriteLog("<span style='color:red;'>When I left you, I was but the learner. Now I am the master.</span>");
+              break;
+      }
+    }
+    for($i=0; $i<$numSoul; ++$i) BanishFromSoul($defPlayer);
+  }
+}
 
 
 // class soul_reaping_red extends Card {

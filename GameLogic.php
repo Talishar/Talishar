@@ -2379,14 +2379,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return "PASS";
       }
       return $lastResult;
-    case "SOULHARVEST":
-      $numBD = 0;
-      $discard = GetDiscard($player);
-      foreach ($lastResult as $idx) {
-        if (HasBloodDebt($discard[$idx])) ++$numBD;
-      }
-      if ($numBD > 0) AddCurrentTurnEffect("soul_harvest_blue,$numBD", $player);
-      return $lastResult;
     case "ADDPOWERCOUNTERS":
       global $CombatChain;
       $lastResultArr = explode("-", $lastResult, 2);

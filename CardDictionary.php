@@ -2547,8 +2547,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return SearchCount(SearchBanish($player, "", "", -1, -1, "", "", true)) < 6;
     case "eclipse_blue":
       return GetClassState($player, $CS_NumBloodDebtPlayed) < 6;
-    case "soul_harvest_blue":
-      return (new Discard($player))->NumCards() < 6;
     case "aether_ironweave":
       return GetClassState($player, $CS_NumAttackCards) == 0 || GetClassState($player, $CS_NumNonAttackCards) == 0;
     case "blood_drop_brocade":
