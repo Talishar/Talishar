@@ -577,15 +577,19 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 103: //Toggle my permanent Active
       $input = explode("-", $buttonInput, 3);
-      $index = $input[1];
-      $Card = GetPermanent($input[0], $index, $playerID);
-      $Card->ToggleGem();
+      foreach (explode(",", $input[1]) as $index) {
+        if ($index === "") continue;
+        $Card = GetPermanent($input[0], $index, $playerID);
+        $Card->ToggleGem();
+      }
       break;
     case 104: //Toggle other player permanent Active
       $input = explode("-", $buttonInput, 3);
-      $index = $input[1];
-      $Card = GetPermanent($input[0], $index, $playerID == 1 ? 2 : 1);
-      $Card->ToggleGem($playerID);
+      foreach (explode(",", $input[1]) as $index) {
+        if ($index === "") continue;
+        $Card = GetPermanent($input[0], $index, $playerID == 1 ? 2 : 1);
+        $Card->ToggleGem($playerID);
+      }
       break;
     case 105: //Skip all runechants
       SetClassState($playerID, $CS_SkipAllRunechants, 1);
