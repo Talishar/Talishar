@@ -149,7 +149,9 @@ class boltn_boots extends Card
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false)
   {
     global $CombatChain;
-    return !$CombatChain->HasCurrentLink() || CachedTotalPower() <= PowerValue($CombatChain->AttackCard()->ID(), $this->controller, "CC") || CardSubType($CombatChain->AttackCard()->ID()) != "Arrow";
+    if (!$CombatChain->HasCurrentLink()) return true;
+    $attackCardID = $CombatChain->AttackCard()->ID();
+    return CachedTotalPower() <= PowerValue($attackCardID, $this->controller, "CC") || CardSubType($attackCardID) != "Arrow";
   }
 }
 
@@ -3512,7 +3514,8 @@ class rites_of_earthlore extends BaseCard {
 
   function CombatEffectActive() {
     global $CombatChain;
-    return ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $this->controller) && CardType($CombatChain->AttackCard()->ID()) == "AA";
+    $attackCardID = $CombatChain->AttackCard()->ID();
+    return ClassContains($attackCardID, "GUARDIAN", $this->controller) && CardType($attackCardID) == "AA";
   }
 }
 
@@ -3760,7 +3763,8 @@ class feign_vengeance_blue extends Card {
 
   function ResolutionStepAttackTriggers() {
     global $CombatChain, $defPlayer;
-    for ($i = 0; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+    for ($i = 0; $i < $activeLinkCardCount; ++$i) {
       if ($CombatChain->Card($i, true)->PlayerID() == $defPlayer) {
         AddLayer("TRIGGER", $this->controller, $this->cardID);
         return;
@@ -4856,7 +4860,8 @@ class mist_hunter_red extends Card {
     global $defPlayer;
     $search = SearchDeckByName($defPlayer, "Inner Chi");
     $defDeck = new Deck($defPlayer);
-    for ($i = 0; $i < SearchCount($search); ++$i) {
+    $searchCount = SearchCount($search);
+    for ($i = 0; $i < $searchCount; ++$i) {
       AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRDECK:isSameName=MST000_inner_chi_blue", 1);
       AddDecisionQueue("SETDQCONTEXT", $this->controller, "Hunt the mists", 1);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
@@ -5486,7 +5491,9 @@ class ion_charged_yellow extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    return CachedAttackHasGoAgain() && (TalentContains($CombatChain->AttackCard()->ID(), "LIGHTNING", $this->controller) || TalentContains($CombatChain->AttackCard()->ID(), "ELEMENTAL", $this->controller));
+    if (!CachedAttackHasGoAgain()) return false;
+    $attackCardID = $CombatChain->AttackCard()->ID();
+    return TalentContains($attackCardID, "LIGHTNING", $this->controller) || TalentContains($attackCardID, "ELEMENTAL", $this->controller);
   }
 
   function IsCombatEffectPersistent($mode) {
@@ -6350,10 +6357,11 @@ class haboob_red extends Card {
     $AuraCard->AddCounters(1);
     $uid = $AuraCard->UniqueID();
     $search = SearchPermanents($this->controller, subtype:"Ash");
-    if (SearchCount($search) < $AuraCard->NumCounters()) $AuraCard->Destroy();
+    $counterCount = $AuraCard->NumCounters();
+    if (SearchCount($search) < $counterCount) $AuraCard->Destroy();
     else {
-      for ($i = 0; $i < $AuraCard->NumCounters(); ++$i) {
-        $message = "Destroy " . ($AuraCard->NumCounters() - $i) . " ash you control to keep " . CardLink($this->cardID);
+      for ($i = 0; $i < $counterCount; ++$i) {
+        $message = "Destroy " . ($counterCount - $i) . " ash you control to keep " . CardLink($this->cardID);
         if ($i == 0) $message .= " or pass to destroy it";
         AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYPERM:subtype=Ash", 1);
         AddDecisionQueue("SETDQCONTEXT", $this->controller, $message, 1);
@@ -6429,7 +6437,8 @@ class ransack_and_raze_blue extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     global $Landmarks;
-    for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
+    $landmarkCount = $Landmarks->NumLandmarks();
+    for ($i = 0; $i < $landmarkCount; ++$i) {
       $LandmarkTarget = $Landmarks->Card($i, true);
       if (CardCost($LandmarkTarget->CardID()) != -1) return false;
     }
@@ -6439,7 +6448,8 @@ class ransack_and_raze_blue extends Card {
   function DynamicCost() {
     global $Landmarks;
     $costs = [];
-    for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
+    $landmarkCount = $Landmarks->NumLandmarks();
+    for ($i = 0; $i < $landmarkCount; ++$i) {
       $LandmarkTarget = $Landmarks->Card($i, true);
       $landmarkCost = CardCost($LandmarkTarget->CardID());
       if ($landmarkCost != -1) $costs[] = $landmarkCost;
@@ -7844,7 +7854,8 @@ class whispering_mist_blue extends Card {
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     global $CombatChain;
-    return HasEphemeral($CombatChain->AttackCard()->ID()) || ColorContains($CombatChain->AttackCard()->ID(), 3, $this->controller);
+    $attackCardID = $CombatChain->AttackCard()->ID();
+    return HasEphemeral($attackCardID) || ColorContains($attackCardID, 3, $this->controller);
   }
 
   function IsCombatEffectPersistent($mode) {

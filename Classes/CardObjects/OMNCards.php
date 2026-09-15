@@ -1969,8 +1969,9 @@ class mercurial_skies extends BaseCard {
     $Auras = new Auras($this->controller);
     $Flow = $Auras->FindCardID("lightning_flow");
     $Flow->Destroy(destroyedBy: $this->controller);
-    SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
-    DealArcane($damage, 0, source:$CombatChain->AttackCard()->ID());
+    $AttackCard = $CombatChain->AttackCard();
+    SetDamageSourceUID($AttackCard->UniqueID());
+    DealArcane($damage, 0, source:$AttackCard->ID());
   }
 
   function CombatEffectActive() {
@@ -3127,8 +3128,9 @@ class gauntlet_of_sword_and_sorcery extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     global $CombatChain;
-    SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
-    DealArcane(1, 1, source:$CombatChain->AttackCard()->ID(), resolvedTarget:$target);
+    $AttackCard = $CombatChain->AttackCard();
+    SetDamageSourceUID($AttackCard->UniqueID());
+    DealArcane(1, 1, source:$AttackCard->ID(), resolvedTarget:$target);
     Await($this->controller, $this->cardID, final:true);
   }
 
@@ -3202,8 +3204,9 @@ class livewire_press extends BaseCard {
   function EffectHitEffect($damage) {
     global $CombatChain;
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    SetDamageSourceUID($CombatChain->AttackCard()->UniqueID());
-    DamageTrigger($otherPlayer, $damage, "DAMAGE", $CombatChain->AttackCard()->ID(), $this->controller);
+    $AttackCard = $CombatChain->AttackCard();
+    SetDamageSourceUID($AttackCard->UniqueID());
+    DamageTrigger($otherPlayer, $damage, "DAMAGE", $AttackCard->ID(), $this->controller);
   }
 }
 
@@ -3398,7 +3401,8 @@ class settle_the_bill_red extends Card {
     global $dqVars;
     $loadedArrow = $dqVars["LASTRESULT"];
     $Arsenal = new Arsenal($this->controller);
-    for ($i = 0; $i < $Arsenal->NumCards(); ++$i) {
+    $arsenalCount = $Arsenal->NumCards();
+    for ($i = 0; $i < $arsenalCount; ++$i) {
       $ArsenalCard = $Arsenal->Card($i, true);
       if ($ArsenalCard->Facing() == "UP" && $ArsenalCard->CardID() == $loadedArrow) {
         AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$ArsenalCard->UniqueID());
@@ -3694,9 +3698,10 @@ class draco_fire_red extends Card {
   function SpecificLogic() {
     $Discard = new Discard($this->controller);
     $num = 0;
+    $targetName = CardName($this->cardID);
     for ($i = $Discard->NumTotalCards() - 1; $i >= 0; --$i) {
       $Card = $Discard->Card($i, true);
-      if (CardName($Card->CardID()) == CardName($this->cardID)) {
+      if (CardName($Card->CardID()) == $targetName) {
         $Card->Banish();
         ++$num;
         if ($num == 2) {

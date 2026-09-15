@@ -739,7 +739,8 @@ class visit_the_dawnsmith_blue extends Card {
 		$Aura = $Auras->FindCardUID($target);
 		$Aura->Destroy();
 		$Character = new PlayerCharacter($this->controller);
-		for ($i = 0; $i < $Character->NumCards(); ++$i) {
+		$characterCount = $Character->NumCards();
+		for ($i = 0; $i < $characterCount; ++$i) {
 			$CharacterCard = $Character->Card($i, true);
 			if (SubtypeContains($CharacterCard->CardID(), "Sword"))
 				Sharpen("MYCHAR-" . $CharacterCard->Index(), $this->controller);

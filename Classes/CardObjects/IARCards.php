@@ -4388,14 +4388,17 @@ class chains_of_consecration_yellow extends Card {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     $Effect = new CurrentEffect($index);
     if (!$preventable) return 0;
-    if ($amount && $CombatChain->HasCurrentLink() && $source == $CombatChain->AttackCard()->ID() && $type == "COMBAT") { //this block is mostly for displaying prevention
-      if ($CombatChain->AttackCard()->UniqueID() == $Effect->AppliestoUniqueID() || $CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID())
-        return $damage;
+    $appliesToUniqueID = $Effect->AppliestoUniqueID();
+    if ($amount && $CombatChain->HasCurrentLink()) {
+      $AttackCard = $CombatChain->AttackCard();
+      if ($source == $AttackCard->ID() && $type == "COMBAT" && ($AttackCard->UniqueID() == $appliesToUniqueID || $AttackCard->OriginUniqueID() == $appliesToUniqueID)) {
+        return $damage; //this block is mostly for displaying prevention
+      }
     }
-    if (GetClassState(1, $CS_ResolvingLayerUniqueID) == $Effect->AppliestoUniqueID()) {
+    if (GetClassState(1, $CS_ResolvingLayerUniqueID) == $appliesToUniqueID) {
       if (!$amount) {
         $TheirAllies = new Allies($otherPlayer);
-        $AllyCard = $TheirAllies->FindCardUID($Effect->AppliestoUniqueID());
+        $AllyCard = $TheirAllies->FindCardUID($appliesToUniqueID);
         // potential issue here if this destroys an ally before the damage step
         if (TalentContains($AllyCard->CardID(), "SHADOW", $otherPlayer)) {
           WriteLog(CardLink($AllyCard->CardID()) . " was consecrated!");
@@ -5385,7 +5388,8 @@ class devouring_doomwake_red extends Card {
       $LinkCard = $CombatChain->Card($i, true);
       $LinkCard->Destroy(banish:true);
     }
-    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $chainLinkCount = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $chainLinkCount; ++$i) {
       $Link = $ChainLinks->GetLink($i);
       for ($j = $Link->NumCards() -1; $j >= 1; --$j) {
         $LinkCard = $Link->GetLinkCard($j, true);

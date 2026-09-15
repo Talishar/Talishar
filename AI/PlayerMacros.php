@@ -244,7 +244,8 @@ function ProcessSpecificCardMacros()
     // If a mandatory multi-select requires every available option, there is no choice to make we can skip the player popup.
     $minimumCount = null;
     $limitOffset = 0;
-    while ($limitOffset < count($choices)) {
+    $choicesCount = count($choices);
+    while ($limitOffset < $choicesCount) {
       $limit = explode("-", $choices[$limitOffset], 2);
       if ($limit[0] == "MINCOUNT") {
         $minimumCount = intval($limit[1] ?? 0);
@@ -256,8 +257,9 @@ function ProcessSpecificCardMacros()
       else break;
     }
     if ($limitOffset > 0) {
-      $selectableChoices = array_slice($choices, $limitOffset);
-      if ($minimumCount !== null && $minimumCount > 0 && count($selectableChoices) == $minimumCount) {
+      $selectableCount = $choicesCount - $limitOffset;
+      if ($minimumCount !== null && $minimumCount > 0 && $selectableCount == $minimumCount) {
+        $selectableChoices = array_slice($choices, $limitOffset);
         ContinueDecisionQueue(implode(",", $selectableChoices));
         return true;
       }

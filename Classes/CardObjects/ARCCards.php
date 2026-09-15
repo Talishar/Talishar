@@ -566,8 +566,9 @@ class cognition_nodes_blue extends Card {
 		if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-") {
 			SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
 			$destPlayer = (substr($from, 0, 5) == "THEIR") ? $otherPlayer : $this->controller;
-			AddBottomDeck($CombatChain->AttackCard()->ID(), $destPlayer, "CC");
-			WriteLog("⬇️ Adding " . CardLink($CombatChain->AttackCard()->ID()) . " to the bottom of the deck");
+			$attackCardID = $CombatChain->AttackCard()->ID();
+			AddBottomDeck($attackCardID, $destPlayer, "CC");
+			WriteLog("⬇️ Adding " . CardLink($attackCardID) . " to the bottom of the deck");
 		}
 	}
 

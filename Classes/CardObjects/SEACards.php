@@ -10,7 +10,8 @@ class GoFishCard extends Card {
         AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
         $doubleTriggers = CountCurrentTurnEffects("catch_of_the_day_blue-DOUBLETRIGGER", $this->controller);
         if ($doubleTriggers > 0) {
-          for ($i = 1; $i < pow(2, $doubleTriggers); ++$i) {
+          $triggerCount = pow(2, $doubleTriggers);
+          for ($i = 1; $i < $triggerCount; ++$i) {
             AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
           }
         }

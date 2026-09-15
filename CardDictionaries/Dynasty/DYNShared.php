@@ -717,7 +717,7 @@ function CheckContract($contractType, $cardBanished, $player)
     case "AA": return CardType($cardBanished) == "AA";
     case "GOAGAIN": return HasGoAgain($cardBanished);
     case "NAA": return TypeContains($cardBanished, "A");
-    case "BLOCK2ORLESS": return BlockValue($cardBanished) <= 2 && BlockValue($cardBanished) >= 0;
+    case "BLOCK2ORLESS": $block = BlockValue($cardBanished); return $block <= 2 && $block >= 0;
     case "REACTIONS": $cardType = CardType($cardBanished); return $cardType == "AR" || $cardType == "DR";
     case "NONACTION": return !IsActionCard($cardBanished);
     case "NAMEDCARD":

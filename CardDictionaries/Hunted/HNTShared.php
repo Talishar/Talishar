@@ -334,7 +334,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else AddCurrentTurnEffect("$cardID", $currentPlayer);
       break;
     case "tarantula_toxin_red":
-      if (HasStealth($CombatChain->AttackCard()->ID()) || SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) {
+      $attackCardID = $CombatChain->AttackCard()->ID();
+      if (HasStealth($attackCardID) || SubtypeContains($attackCardID, "Dagger")) {
         if ($additionalCosts == "Buff_Power" || $additionalCosts == "Both") {
           AddCurrentTurnEffect("tarantula_toxin_red", $currentPlayer);
         }
@@ -886,7 +887,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       }
       else {
-        for ($i = 0; $i < GetClassState($currentPlayer, piece: $CS_AdditionalCosts); $i++) {
+        $additionalCostCount = GetClassState($currentPlayer, piece: $CS_AdditionalCosts);
+        for ($i = 0; $i < $additionalCostCount; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH&MYBANISH");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to turn face-down");
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);

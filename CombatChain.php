@@ -677,7 +677,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1, $player="-")
       $combatChainCount = count($combatChain);
       $chainLinkPieces = ChainLinksPieces();
       for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
-        if (CardCost($combatChain[$i]) >= 3 && $combatChain[$i + 1] == $defPlayer && $combatChain[$i + 2] != "PLAY" && CardType($combatChain[$i]) != "DR") ++$blockModifier;
+        if ($combatChain[$i + 1] == $defPlayer && $combatChain[$i + 2] != "PLAY" && CardType($combatChain[$i]) != "DR" && CardCost($combatChain[$i]) >= 3) ++$blockModifier;
       }
       foreach ($chainLinks as $link) {
         $linkCount = count($link);

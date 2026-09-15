@@ -2692,7 +2692,8 @@ function CloseCombatChain($chainClosed = true)
     $Step = $Stack->FindCardID($step);
     if ($Step != "") $Step->Negate();
   }
-  for ($i = 0; $i < $Stack->NumLayers(); $i++) { //7.7.3
+  $layerCount = $Stack->NumLayers();
+  for ($i = 0; $i < $layerCount; $i++) { //7.7.3
     $Layer = $Stack->Card($i, true);
     $layerID = $Layer->ID();
     if (TypeContains($layerID, "DR") || TypeContains($layerID, "AR")) {
@@ -3523,7 +3524,9 @@ function GetCurrentAttackNames()
 
 function SerializeCurrentAttackNames()
 {
-  return implode(",", array_map('GamestateSanitize', GetCurrentAttackNames()));
+  $names = GetCurrentAttackNames();
+  foreach ($names as $index => $name) $names[$index] = GamestateSanitize($name);
+  return implode(",", $names);
 }
 
 function HasAttackName($name)

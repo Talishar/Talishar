@@ -625,9 +625,11 @@ class chane_base extends BaseCard {
 
   function CombatEffectActive() {
     global $CombatChain;
+    $AttackCard = $CombatChain->AttackCard();
     // need to check if it's attached
-    if (!IsAttackStep() && !DelimStringContains($CombatChain->AttackCard()->StaticBuffs(), SetID($this->cardID))) return false;
-    return ClassContains($CombatChain->AttackCard()->ID(), "RUNEBLADE", $this->controller) || TalentContains($CombatChain->AttackCard()->ID(), "SHADOW", $this->controller);
+    if (!IsAttackStep() && !DelimStringContains($AttackCard->StaticBuffs(), SetID($this->cardID))) return false;
+    $attackCardID = $AttackCard->ID();
+    return ClassContains($attackCardID, "RUNEBLADE", $this->controller) || TalentContains($attackCardID, "SHADOW", $this->controller);
   }
 
   function CurrentEffectGrantsGoAgain() {

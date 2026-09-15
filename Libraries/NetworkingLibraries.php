@@ -748,8 +748,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           }
         }
         $count = max(1, intval($num));
-        if (SetIDtoCardID(strtoupper($cardID)) != "")
-          $cardID = SetIDtoCardID(strtoupper($cardID));
+        $resolvedCardID = SetIDtoCardID(strtoupper($cardID));
+        if ($resolvedCardID != "") $cardID = $resolvedCardID;
         if (str_contains($cardID, ' ')) $cardID = str_replace(' ', '_', $cardID);
         $splitCard = explode("_", $cardID);
         $color = end($splitCard);
@@ -790,7 +790,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           $char = &GetPlayerCharacter($playerID);
           $char[0] = $cardID;
         }
-        elseif (CardType($cardID) == "E" || CardType($cardID) == "W") {
+        elseif (($cardType = CardType($cardID)) == "E" || $cardType == "W") {
           $countSuffix = $count > 1 ? " x" . $count : "";
           if ($destination == "inv" || $destination == "inventory") {
             WriteLog("Player " . $playerID . " manually added " . CardLink($cardID) . $countSuffix . " to their inventory", highlight: true, highlightColor: "darkblue");
@@ -2731,17 +2731,20 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if (TypeContains($cardID, "DR")) SetCombatChainState($CCS_DefenseReactionsPlayed, (GetCombatChainState($CCS_DefenseReactionsPlayed) ?? 0) + 1);
     }
     if ($CombatChain->HasCurrentLink()) {
-      $activeLinkID = $CombatChain->AttackCard()->ID();
-      $attackcard = GetClass($activeLinkID, $mainPlayer, "CC", $CombatChain->AttackCard()->UniqueID());
+      $activeAttackCard = $CombatChain->AttackCard();
+      $activeLinkID = $activeAttackCard->ID();
+      $attackcard = GetClass($activeLinkID, $mainPlayer, "CC", $activeAttackCard->UniqueID());
       $stillThere = GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-";
       if ($attackcard != "-" && $stillThere) $attackcard->ActiveLinkPlayTrigger($cardID, $currentPlayer, $from);
-      for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+      $activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+      for ($i = 1; $i < $activeLinkCardCount; ++$i) {
         $Card = $CombatChain->Card($i, true);
         $blockcard = GetClass($Card->ID(), $Card->PlayerID());
         if ($blockcard != "-") $blockcard->WhileBlockPlayTrigger($Card->Index(), $cardID, $from);
       }
     }
-    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+    $chainLinkCount = $ChainLinks->NumLinks();
+    for ($i = 0; $i < $chainLinkCount; ++$i) {
       $pastLinkCard = $ChainLinks->GetLink($i)->AttackCard();
       $stillThere = $pastLinkCard->StillOnChain();
       $card = GetClass($pastLinkCard->ID(), $mainPlayer, "CC", $pastLinkCard->OriginUniqueID());
@@ -3955,8 +3958,9 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       BanishFromSoul($currentPlayer);
       break;
     case "just_a_nick_red":
-      if (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA" && HasStealth($combatChain[0])) $modalities = "Buff_Power,Gain_On-Hit,Both";
-      elseif (LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA") $modalities = "Buff_Power";
+      $isSmallAttackAction = LinkBasePower() <= 1 && CardType($CombatChain->AttackCard()->ID()) == "AA";
+      if ($isSmallAttackAction && HasStealth($combatChain[0])) $modalities = "Buff_Power,Gain_On-Hit,Both";
+      elseif ($isSmallAttackAction) $modalities = "Buff_Power";
       else $modalities = "Gain_On-Hit";
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
