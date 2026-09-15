@@ -6914,10 +6914,6 @@ class commit_to_corruption extends BaseCard {
 	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
 		return AnyHitTrigger($this->controller, $this->cardID, $check, true);
 	}
-  
-  function SpecialBlock() {
-    return 3;
-  }
 }
 
 class commit_to_corruption_red extends Card {
@@ -8441,10 +8437,6 @@ class permanent_interment_blue extends Card {
     $this->cardID = "permanent_interment_blue";
     $this->controller = $controller;
     $this->baseCard = new permanent_interment($this->cardID, $this->controller);
-  }
-
-  function SpecialPower() { //database error
-    return 2;
   }
 }
 
