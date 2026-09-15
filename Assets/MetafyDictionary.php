@@ -70,7 +70,7 @@ enum MetafyCommunity : string
   public function Playmats(): string
   {
     return match($this) {
-      self::Talishar => "16,17,18,19,20,21,37,38,39,40,41,45",
+      self::Talishar => "16,17,18,19,20,21,45",
       default => "",
     };
   }

@@ -48,6 +48,14 @@ $SET_HideGamesFromFriends = 35; //Hide your games from your friends in the open 
 $SET_AutoPassTurn = 36; //Pass button held down: auto-pass this player's windows for the rest of the turn
 $SET_DisableHoldToAutoPass = 37; //Accessibility: turn off the hold space/PASS gesture that arms auto-pass
 $SET_ManualDynamo = 38; //Do you want to manually refresh Valiant Dynamo
+$SET_DisableParticles = 39;
+$SET_DisableCardTilt = 40;
+$SET_TapToPreviewPlay = 41;
+$SET_DisableEquipmentGemButtons = 42;
+$SET_CardSize = 43;
+$SET_HoverImageSize = 44;
+$SET_TransparencyIntensity = 45;
+$SET_PlaymatIntensity = 46;
 
 // Deliberately absent from SaveSettingInDatabase: this is an in-game state
 // StartTurnAbilities clears it, so it can never outlive the turn it was set in.
@@ -634,6 +642,14 @@ function ParseSettingsStringValueToIdInt(string $value)
     "AutoPassTurn" => 36,
     "DisableHoldToAutoPass" => 37,
     "ManualDynamo" => 38,
+    "DisableParticles" => 39,
+    "DisableCardTilt" => 40,
+    "TapToPreviewPlay" => 41,
+    "DisableEquipmentGemButtons" => 42,
+    "CardSize" => 43,
+    "HoverImageSize" => 44,
+    "TransparencyIntensity" => 45,
+    "PlaymatIntensity" => 46,
   ];
   return $settingsToId[$value];
 }
@@ -684,6 +700,8 @@ function SaveSettingInDatabase($setting)
     global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
     global $SET_HideGamesFromFriends;
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
+    global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
+    global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -691,6 +709,8 @@ function SaveSettingInDatabase($setting)
       $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro,
       $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_AlwaysShowCounters, $SET_HideHandFromFriends,
       $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
+      $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
+      $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
     ], true);
   }
   return isset($persistable[$setting]);

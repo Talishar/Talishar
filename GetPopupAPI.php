@@ -162,6 +162,8 @@ switch ($popupType) {
     global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     global $SET_HideGamesFromFriends;
+    global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
+    global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
     
     $response->Settings = [];
     
@@ -210,6 +212,14 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "HideGamesFromFriends", 35, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableHoldToAutoPass", 37, $dbSettings);
       AddSettingFromDB($response->Settings, "ManualDynamo", 38, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableParticles", 39, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableCardTilt", 40, $dbSettings);
+      AddSettingFromDB($response->Settings, "TapToPreviewPlay", 41, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableEquipmentGemButtons", 42, $dbSettings);
+      AddSettingFromDB($response->Settings, "CardSize", 43, $dbSettings);
+      AddSettingFromDB($response->Settings, "HoverImageSize", 44, $dbSettings);
+      AddSettingFromDB($response->Settings, "TransparencyIntensity", 45, $dbSettings);
+      AddSettingFromDB($response->Settings, "PlaymatIntensity", 46, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -244,6 +254,14 @@ switch ($popupType) {
       AddSetting($response->Settings, "GemsOffByDefault", $SET_GemsOffByDefault, $playerSettings);
       AddSetting($response->Settings, "HideGamesFromFriends", $SET_HideGamesFromFriends, $playerSettings);
       $response->Settings[] = ["name" => "DisableHoldToAutoPass", "value" => (($playerSettings[$SET_DisableHoldToAutoPass] ?? "1") == "1") ? "1" : "0"];
+      AddUnsetAwareSetting($response->Settings, "DisableParticles", $SET_DisableParticles, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "DisableCardTilt", $SET_DisableCardTilt, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "TapToPreviewPlay", $SET_TapToPreviewPlay, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "DisableEquipmentGemButtons", $SET_DisableEquipmentGemButtons, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "CardSize", $SET_CardSize, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "HoverImageSize", $SET_HoverImageSize, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "TransparencyIntensity", $SET_TransparencyIntensity, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "PlaymatIntensity", $SET_PlaymatIntensity, $playerSettings);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;
@@ -257,6 +275,14 @@ function AddSettingFromDB(&$response, $name, $settingID, $dbSettings)
 {
   $value = $dbSettings[$settingID] ?? null;
   $response[] = ["name" => $name, "value" => $value === null ? null : (string)$value];
+}
+
+function AddUnsetAwareSetting(&$response, $name, $setting, $preloadedSettings = null)
+{
+  global $playerID;
+  $mySettings = ($preloadedSettings !== null) ? $preloadedSettings : GetSettings($playerID);
+  $value = $mySettings[$setting] ?? null;
+  $response[] = ["name" => $name, "value" => ($value === null || $value === "") ? null : (string)$value];
 }
 
 function AddSetting(&$response, $name, $setting, $preloadedSettings = null)
