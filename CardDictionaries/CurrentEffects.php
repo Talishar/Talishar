@@ -3,10 +3,7 @@
 function TCCEffectPowerModifier($cardID, $attached): int|string
 {
   $suffix = '';
-  if (($pos = strpos($cardID, ",")) !== false) {
-    $suffix = substr($cardID, $pos + 1);
-    $cardID = substr($cardID, 0, $pos);
-  }
+  $cardID = StripCardIDSuffix($cardID, $suffix);
   return match ($cardID) {
     "crash_down_red" => 6,
     "earthlore_empowerment_red", "crash_down_yellow" => 5,
@@ -21,7 +18,7 @@ function TCCEffectPowerModifier($cardID, $attached): int|string
 function TCCCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer;
-  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $cardID = StripCardIDSuffix($cardID);
   return match ($cardID) {
     "crash_down_red", "earthlore_empowerment_red", "crash_down_yellow", "earthlore_empowerment_yellow" => ClassContains($attackID, "GUARDIAN", $mainPlayer) && CardType($attackID) == "AA",
     "growl_red", "growl_yellow" => CardNameContains($attackID, "Crouching Tiger", $mainPlayer) && TypeContains($attackID, "AA"),
@@ -33,10 +30,7 @@ function TCCCombatEffectActive($cardID, $attackID): bool
 function EVOEffectPowerModifier($cardID): int|string
 {
   $suffix = '';
-  if (($pos = strpos($cardID, ",")) !== false) {
-    $suffix = substr($cardID, $pos + 1);
-    $cardID = substr($cardID, 0, $pos);
-  }
+  $cardID = StripCardIDSuffix($cardID, $suffix);
   return match ($cardID) {
     "hadron_collider_red", "hadron_collider_yellow", "hadron_collider_blue" => $suffix,
     "gigawatt_red", "gas_up_red", "quickfire_red", "re_charge_red" => 4,
@@ -51,7 +45,7 @@ function EVOEffectPowerModifier($cardID): int|string
 function EVOCombatEffectActive($cardID, $attackID)
 {
   global $mainPlayer, $CCS_IsBoosted;
-  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $cardID = StripCardIDSuffix($cardID);
   return match ($cardID) {
     "cogwerx_base_arms", "gigawatt_red", "gigawatt_yellow", "gigawatt_blue" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),
     "gas_up_red", "gas_up_yellow", "gas_up_blue", "quickfire_red", "quickfire_yellow", "quickfire_blue", "re_charge_red", "re_charge_yellow", "re_charge_blue" => GetCombatChainState($CCS_IsBoosted),
@@ -66,10 +60,7 @@ function EVOCombatEffectActive($cardID, $attackID)
 function HVYEffectPowerModifier($cardID): int|string
 {
   $suffix = '';
-  if (($pos = strpos($cardID, ",")) !== false) {
-    $suffix = substr($cardID, $pos + 1);
-    $cardID = substr($cardID, 0, $pos);
-  }
+  $cardID = StripCardIDSuffix($cardID, $suffix);
   return match ($cardID) {
     "bonebreaker_bellow_red", "bonebreaker_bellow_yellow", "bonebreaker_bellow_blue", "tenacity_yellow" => $suffix,
     "gauntlets_of_iron_will" => $suffix == "ACTIVE" ? -1 : 0,
@@ -88,7 +79,7 @@ function HVYEffectPowerModifier($cardID): int|string
 function HVYCombatEffectActive($cardID, $attackID)
 {
   global $mainPlayer, $CombatChain;
-  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $cardID = StripCardIDSuffix($cardID);
   return match ($cardID) {
     "bonebreaker_bellow_red", "bonebreaker_bellow_yellow", "bonebreaker_bellow_blue" => ClassContains($CombatChain->AttackCard()->ID(), "BRUTE", $mainPlayer),
     "big_bop_red-BUFF", "big_bop_yellow-BUFF", "big_bop_blue-BUFF", "bigger_than_big_red-BUFF", "bigger_than_big_yellow-BUFF", "bigger_than_big_blue-BUFF" => ClassContains($CombatChain->AttackCard()->ID(), "GUARDIAN", $mainPlayer),

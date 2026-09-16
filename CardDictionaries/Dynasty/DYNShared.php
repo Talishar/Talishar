@@ -61,7 +61,7 @@ function DYNAbilityHasGoAgain($cardID)
 
 function DYNEffectPowerModifier($cardID)
 {
-  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $cardID = StripCardIDSuffix($cardID);
   switch($cardID) {
     case "savage_beatdown_red": return 6;
     case "blessing_of_savagery_red": return 3;
@@ -112,7 +112,7 @@ function DYNEffectPowerModifier($cardID)
 function DYNCombatEffectActive($cardID, $attackID)
 {
   global $CCS_IsBoosted, $mainPlayer;
-  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $cardID = StripCardIDSuffix($cardID);
   // Blessing of savagery needs to be reworked so it only checks when the attack is played
   switch($cardID) {
     case "savage_beatdown_red": return true;

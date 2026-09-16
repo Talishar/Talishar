@@ -1,5 +1,13 @@
 <?php
 
+function StripCardIDSuffix($cardID, &$suffix = null)
+{
+  $pos = strpos($cardID, ",");
+  if ($pos === false) return $cardID;
+  $suffix = substr($cardID, $pos + 1);
+  return substr($cardID, 0, $pos);
+}
+
 include "Constants.php";
 include "CardDictionaries/WelcomeToRathe/WTRShared.php";
 include "CardDictionaries/ArcaneRising/ARCShared.php";
@@ -1995,11 +2003,11 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
   for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] != $defPlayer) continue;
     $effectStr = $currentTurnEffects[$i];
-    $commaPos = strpos($effectStr, ",");
-    $effectID = $commaPos !== false ? substr($effectStr, 0, $commaPos) : $effectStr;
+    $effectSuffix = null;
+    $effectID = StripCardIDSuffix($effectStr, $effectSuffix);
     switch ($effectID) {
       case "chains_of_eminence_red":
-        if ($commaPos !== false && GamestateSanitize(NameOverride($cardID)) == substr($effectStr, $commaPos + 1)) return true;
+        if ($effectSuffix !== null && GamestateSanitize(NameOverride($cardID)) == $effectSuffix) return true;
         break;
       default:
         break;
@@ -2271,11 +2279,11 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
   for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] !== $playerID) continue;
     $effectStr = $currentTurnEffects[$i];
-    $commaPos = strpos($effectStr, ",");
-    $effectID = $commaPos !== false ? substr($effectStr, 0, $commaPos) : $effectStr;
+    $effectSuffix = null;
+    $effectID = StripCardIDSuffix($effectStr, $effectSuffix);
     switch ($effectID) {
       case "chains_of_eminence_red":
-        if ($commaPos !== false && GamestateSanitize(NameOverride($cardID)) == substr($effectStr, $commaPos + 1)) {
+        if ($effectSuffix !== null && GamestateSanitize(NameOverride($cardID)) == $effectSuffix) {
           $restrictedBy = "chains_of_eminence_red";
           return true;
         }

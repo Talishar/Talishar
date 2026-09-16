@@ -75,7 +75,7 @@ function OUTAbilityCost($cardID)
       $dashSuffix = substr($cardID, $dashPos + 1);
       $cardID = substr($cardID, 0, $dashPos);
     }
-    if (($commaPos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $commaPos);
+    $cardID = StripCardIDSuffix($cardID);
     if ($cardID == "premeditate_red" && $dashSuffix === "2") return 3;
     if ($cardID == "silken_gi" && $dashSuffix === "2") return -1;
     switch($cardID)

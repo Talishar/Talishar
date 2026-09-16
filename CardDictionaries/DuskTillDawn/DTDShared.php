@@ -59,10 +59,7 @@ function DTDAbilityHasGoAgain($cardID)
 function DTDEffectPowerModifier($cardID)
 {
   $parameter = '';
-  if (($pos = strpos($cardID, ",")) !== false) {
-    $parameter = substr($cardID, $pos + 1);
-    $cardID = substr($cardID, 0, $pos);
-  }
+  $cardID = StripCardIDSuffix($cardID, $parameter);
   switch($cardID) {
     case "figment_of_triumph_yellow": return -1;
     case "angelic_descent_red": return 3;
@@ -110,7 +107,7 @@ function DTDCombatEffectActive($cardID, $attackID)
 {
   global $mainPlayer, $CCS_AttackNumCharged;
   global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate;
-  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $cardID = StripCardIDSuffix($cardID);
   switch($cardID) {
     case "figment_of_tenacity_yellow": return true;
     case "figment_of_triumph_yellow": return CardType($attackID) == "AA";
