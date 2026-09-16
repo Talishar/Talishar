@@ -503,7 +503,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $label = "Usurped";
     }
     $isPlayedCardLayer = !isset($specialLayersSet[$layers[$i]]);
-    $layerGoAgain = ($isPlayedCardLayer && $layers[$i + 1] == $mainPlayer && LayerCardHasGoAgain($layers[$i], $layers[$i + 2])) ? true : NULL;
+    $layerFrom = explode("|", $layers[$i + 2])[0];
+    $layerGoAgain = ($isPlayedCardLayer && $layers[$i + 1] == $mainPlayer && LayerCardHasGoAgain($layers[$i], $layerFrom)) ? true : NULL;
     $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label, goAgain:$layerGoAgain);
 
     $layer = new stdClass();
@@ -627,7 +628,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $overlay = 1;
         $label = "Intimidated";
     }
-    else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $playerID, $mod);
+    else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $otherPlayer, $mod);
 
     $opponentBanishArr[] = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
   }
@@ -855,6 +856,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerCardBack = JSONRenderedCard($MyCardBack);
 
   $bottomPlayer = $otherPlayer == 1 ? 2 : 1;
+  $myPlayerID = $playerID == 3 ? $bottomPlayer : $playerID;
   //My Banish
   $playerBanishArr = [];
   for ($i = 0; $i < $myBanishCount; $i += $banishPieces) {
@@ -862,7 +864,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $overlay = 0;
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turnPhase, "BANISH", $i) ? 14 : 0;
     $mod = strstr($myBanish[$i + 1], '-', true) ?: $myBanish[$i + 1];
-    $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $playerID, $mod);
+    $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $myPlayerID, $mod);
     $cardID = $myBanish[$i];
     if($mod == "DOWN") {
       $overlay = 1;
@@ -881,10 +883,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerBanish = $playerBanishArr;
   unset($playerBanishArr);
 
-  $myBloodDebtCount = SearchCount(SearchBanish($playerID == 3 ? $bottomPlayer : $playerID, "", "", -1, -1, "", "", true));
+  $myBloodDebtCount = SearchCount(SearchBanish($myPlayerID, "", "", -1, -1, "", "", true));
   if ($myBloodDebtCount > 0) {
     $response->myBloodDebtCount = $myBloodDebtCount;
-    $response->amIBloodDebtImmune = IsImmuneToBloodDebt($playerID);
+    $response->amIBloodDebtImmune = IsImmuneToBloodDebt($myPlayerID);
   }
   if (GeneratedHasEssenceOfEarth($myCharacter[0])) {
     $response->myEarthCount = SearchCount(SearchBanish($playerID, talent:"EARTH"));
