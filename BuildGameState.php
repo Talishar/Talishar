@@ -447,7 +447,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $attackTargetNames = GetAttackTargetNames($mainPlayer);
   $activeChainLink->attackTarget = $attackTargetNames;
   $activeChainLink->damagePrevention = ($combatChainCount > 0 && CanDamageBePrevented($mainPlayer, 0, "COMBAT", $combatChain[0])) ? GetDamagePrevention($defPlayer, $totalPower) : 0;
-  $activeChainLink->goAgain = CachedAttackHasGoAgain();
+  $activeChainLink->goAgain = CachedAttackHasGoAgain()
+    || ($combatChainCount > 0
+      && !CurrentEffectPreventsGoAgain($combatChain[0], $combatChain[2] ?? "CC")
+      && CurrentEffectGrantsGoAgain());
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
   $activeChainLink->confidence = SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence");
@@ -499,12 +502,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $layerName = $layers[$i + 4] . "-USURPED";
       $label = "Usurped";
     }
-    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label);
+    $isPlayedCardLayer = !isset($specialLayersSet[$layers[$i]]);
+    $layerGoAgain = ($isPlayedCardLayer && $layers[$i + 1] == $mainPlayer && LayerCardHasGoAgain($layers[$i], $layers[$i + 2])) ? true : NULL;
+    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label, goAgain:$layerGoAgain);
 
     $layer = new stdClass();
     $borderColor = null;
     if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 9;
-    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor, label:$label);
+    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor, label:$label, goAgain:$layerGoAgain);
     $layer->layerID = $i;
     $layer->isReorderable = false;
     $reorderableLayers[] = $layer;

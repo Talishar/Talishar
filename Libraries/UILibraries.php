@@ -71,7 +71,8 @@ function JSONRenderedCard(
   $isOpponent = NULL,
   $holoCounters = NULL,
   $slot = NULL,
-  $hasBoundAura = NULL
+  $hasBoundAura = NULL,
+  $goAgain = NULL
 ) {
   $cardNumber = BlindCard($cardNumber, true);
   global $playerID, $CS_NumLightningPlayed, $isReplay;
@@ -388,6 +389,7 @@ function JSONRenderedCard(
   if($isOpponent !== NULL) $card->isOpponent = $isOpponent;
   if($slot !== NULL) $card->slot = $slot;
   if($hasBoundAura !== NULL) $card->hasBoundAura = $hasBoundAura;
+  if($goAgain !== NULL) $card->goAgain = $goAgain;
   return $card;
 }
 

@@ -2344,7 +2344,7 @@ function RevealHand($player) {
   return RevealCards(implode(",", $cardsArr), $player);
 }
 
-function DoesAttackHaveGoAgain()
+function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
 {
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
@@ -2352,8 +2352,9 @@ function DoesAttackHaveGoAgain()
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks, $combatChain;
   global $CS_ArcaneDamageDealt, $CurrentTurnEffects, $CS_NumBloodDebtAttacksPlayed;
-  $attackID = $CombatChain->AttackCard()->ID();
-  $from = $combatChain[2] ?? "CC";
+  $isPreview = $attackIDOverride !== "";
+  $attackID = $isPreview ? $attackIDOverride : $CombatChain->AttackCard()->ID();
+  $from = $isPreview ? $fromOverride : ($combatChain[2] ?? "CC");
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
   $isAura = DelimStringContains($attackSubtype, "Aura");
@@ -2375,14 +2376,15 @@ function DoesAttackHaveGoAgain()
     if (SearchCharacterForCard($mainPlayer, "luminaris") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if ($isAura && SearchCharacterForCard($mainPlayer, "iris_of_reality")) return true;
   }
-  if ($isAura && SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
+  if (!$isPreview && $isAura && SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
     // $cosmoIndex = GetCombatChainState($CCS_WeaponIndex) + 3;
     $attack = $CombatChain->AttackCard();
     $AuraCard = $Auras->FindCardUID($attack->OriginUniqueID());
     if ($AuraCard->NumPowerCounters() > 0) return true;
   }
-  if (GetCombatChainState($CCS_CurrentAttackGainedGoAgain) == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) {
-    SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 1);
+  if ((!$isPreview && GetCombatChainState($CCS_CurrentAttackGainedGoAgain) == 1)
+    || CurrentEffectGrantsGoAgain($isPreview ? $attackID : "") || MainCharacterGrantsGoAgain()) {
+    if (!$isPreview) SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 1);
     return true;
   }
 
@@ -2613,6 +2615,13 @@ function DoesAttackHaveGoAgain()
     default:
       return false;
   }
+}
+
+function LayerCardHasGoAgain($cardID, $from)
+{
+  global $mainPlayer;
+  if (!TypeContains($cardID, "AA", $mainPlayer) && !HasGoAgain($cardID, $from)) return false;
+  return DoesAttackHaveGoAgain($cardID, $from) ? true : false;
 }
 
 function DestroyCurrentWeapon()
