@@ -6325,7 +6325,7 @@ class cleave_the_heavens extends BaseCard {
   }
 
   function ProcessAbility() {
-    PlayAura("gate_to_iarathael", $this->controller);
+    PlayAura("gate_to_iarathael", $this->controller, effectSource:$this->cardID);
   }
 }
 
