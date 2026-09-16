@@ -491,6 +491,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Display Layer
   $layerObject = new stdClass;
+  $showLayerGoAgain = ShowLayerGoAgain($playerID);
   $layerContents = [];
   $layerPieces = LayerPieces();
   static $specialLayersSet = ["LAYER" => true, "TRIGGER" => true, "MELD" => true, "PRETRIGGER" => true, "ABILITY" => true, "ATTACK" => true];
@@ -504,7 +505,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
     $isPlayedCardLayer = !isset($specialLayersSet[$layers[$i]]);
     $layerFrom = explode("|", $layers[$i + 2])[0];
-    $layerGoAgain = ($isPlayedCardLayer && $layers[$i + 1] == $mainPlayer && LayerCardHasGoAgain($layers[$i], $layerFrom)) ? true : NULL;
+    $layerGoAgain = ($showLayerGoAgain && $isPlayedCardLayer && $layers[$i + 1] == $mainPlayer && LayerCardHasGoAgain($layers[$i], $layerFrom)) ? true : NULL;
     $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label, goAgain:$layerGoAgain);
 
     $layer = new stdClass();

@@ -56,6 +56,7 @@ $SET_CardSize = 43;
 $SET_HoverImageSize = 44;
 $SET_TransparencyIntensity = 45;
 $SET_PlaymatIntensity = 46;
+$SET_HideLayerGoAgain = 47; //Hide the go again icon on cards in the active layers window
 
 function SettingsPieces()
 {
@@ -630,6 +631,15 @@ function AltArtsDisabled($player)
   return $settings[$SET_DisableAltArts] == "1";
 }
 
+function ShowLayerGoAgain($player)
+{
+  global $SET_HideLayerGoAgain;
+  if ($player != 1 && $player != 2) return true; //spectators keep the icon
+  $settings = GetSettings($player);
+  if ($settings == null) return true;
+  return ($settings[$SET_HideLayerGoAgain] ?? "0") != "1";
+}
+
 function SettingsIdMap()
 {
   static $settingsToId = [
@@ -672,6 +682,7 @@ function SettingsIdMap()
     "HoverImageSize" => 44,
     "TransparencyIntensity" => 45,
     "PlaymatIntensity" => 46,
+    "HideLayerGoAgain" => 47,
   ];
   return $settingsToId;
 }
@@ -729,6 +740,7 @@ function SaveSettingInDatabase($setting)
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
+    global $SET_HideLayerGoAgain;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -738,6 +750,7 @@ function SaveSettingInDatabase($setting)
       $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
+      $SET_HideLayerGoAgain,
     ], true);
   }
   return isset($persistable[$setting]);
