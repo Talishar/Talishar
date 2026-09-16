@@ -261,7 +261,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         }
         $indices = implode(",", $filtIndices);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $indices);
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target to deal " . GetCombatChainState($CCS_DamageDealt) . " damage.");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an ally to deal " . GetCombatChainState($CCS_DamageDealt) . " damage.");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDAMAGE", $mainPlayer, GetCombatChainState($CCS_DamageDealt) . ",DAMAGE," . $cardID, 1);
       }

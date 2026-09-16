@@ -4223,18 +4223,14 @@ class deep_recesses_of_existence_blue extends Card {
     BanishCardForPlayer($LinkCard->OriginalCardID(), $destPlayer, "CC", mod:"DOWN");
     $LinkCard->Remove();
     if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
-      PrependDecisionQueue("MZREMOVE", $this->controller, "-", 1);
-      PrependDecisionQueue("MZBANISH", $this->controller, "GY,-," . $this->controller, 1);
-      PrependDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-      PrependDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRDISCARD", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card in your opponent's Graveyard to banish", 1);
+      Await($this->controller, "MZRemoveAndBanish", from:"GY", banishedBy:$this->cardID, banisher:$this->controller, prepend:true, final:true);
+      Await($this->controller, "ChooseMultiZone", context: "Choose a card in their Graveyard to banish", prepend:true);
+      Await($this->controller, "MultiZoneIndices", search:"THEIRDISCARD", prepend:true, subsequent:0);
     }
     if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
-      PrependDecisionQueue("MZREMOVE", $this->controller, "-", 1);
-      PrependDecisionQueue("MZBANISH", $this->controller, "GY,-," . $this->controller, 1);
-      PrependDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-      PrependDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD", 1);
-      PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card in your Graveyard to banish", 1);
+      Await($this->controller, "MZRemoveAndBanish", from:"GY", banishedBy:$this->cardID, banisher:$this->controller, prepend:true, final:true);
+      Await($this->controller, "ChooseMultiZone", context: "Choose a card in your Graveyard to banish", prepend:true);
+      Await($this->controller, "MultiZoneIndices", search:"MYDISCARD", prepend:true, subsequent:0);
     }
   }
 }
