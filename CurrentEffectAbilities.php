@@ -2147,9 +2147,6 @@ function CurrentEffectEndTurnAbilities()
     $card = GetClass($cardID, $currentTurnEffects[$i + 1]);
     if ($card != "-") $card->CurrentEffectEndTurnAbilities($i, $remove);
     switch ($cardID) {
-      case "glisten_red":
-      case "glisten_yellow":
-      case "glisten_blue":
       case "oath_of_steel_red":
         if ($mainPlayer == $currentTurnEffects[$i + 1]) {
           $char = &GetPlayerCharacter($currentTurnEffects[$i + 1]);

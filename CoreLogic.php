@@ -3896,11 +3896,15 @@ function UnityEffect($cardID)
   }
 }
 
+function IsActionPhase() {
+  return SearchLayersForPhase("STARTTURN") == -1 && SearchLayersForPhase("ENDPHASE") == -1;
+}
+
 function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource = "-", $num=1)
 {
   global $EffectContext, $mainPlayer, $CS_NumCardsDrawn, $currentTurnEffects;
   //main phase argument is deprecated
-  if ($mainPhase == true) $mainPhase = SearchLayersForPhase("STARTTURN") == -1 && SearchLayersForPhase("ENDPHASE") == -1;
+  if ($mainPhase == true) $mainPhase = IsActionPhase();
   $otherPlayer = 3 - $player;
   if ($mainPhase && $player != $mainPlayer) {
     $talismanOfTithes = SearchItemsForCard("talisman_of_tithes_blue", $otherPlayer);

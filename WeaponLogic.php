@@ -1,11 +1,17 @@
 <?php
 
-function IsWeapon($cardID, $from)
+function IsWeapon($cardID, $from, $player="-")
 {
   global $currentPlayer, $mainPlayer;
-  if ($from == "PLAY" && DelimStringContains(CardSubType($cardID), "Aura") && ClassContains($cardID, "ILLUSIONIST", $mainPlayer) && (
-      SearchCharacterForCard($mainPlayer, "luminaris") || SearchCharacterForCard($mainPlayer, "iris_of_reality") || SearchCharacterForCard($mainPlayer, "reality_refractor") || SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry"))) {
-    return true;
+  if ($player == "-")
+    $player = $currentPlayer;
+  if (SubtypeContains($cardID, "Aura") && $from == "PLAY") {
+    if (SearchCharacterForCard($player, "luminaris") || SearchCharacterForCard($player, "iris_of_reality"))
+      return ClassContains($cardID, "ILLUSIONIST", $player) && $player == $mainPlayer && IsActionPhase();
+    if (SearchCharacterForCard($player, "reality_refractor"))
+      return ClassContains($cardID, "ILLUSIONIST", $player);
+    if (SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry"))
+      return HasWard($cardID, $player);
   }
   return TypeContains($cardID, "W", $currentPlayer);
 }
@@ -65,29 +71,12 @@ function WeaponIndices($chooser, $player, $subtype = "")
       $weaponsList[] = $charPrefix . $i;
     }
   }
-  if ($player == $mainPlayer) {
-    $hasIris = SearchCharacterForCard($player, "iris_of_reality");
-    $hasRefractor = SearchCharacterForCard($player, "reality_refractor");
-    // LL weapons are less played so we don't need to check for them if players have either of the more popular weapons
-    $hasOtherAuraWeapon = !$hasIris && !$hasRefractor && (
-      SearchCharacterForCard($player, "luminaris") ||
-      SearchCharacterForCard($player, "cosmo_scroll_of_ancestral_tapestry")
-    );
-    if ($hasIris || $hasRefractor || $hasOtherAuraWeapon) {
-      $auras = GetAuras($player);
-      $countAuras = count($auras);
-      $auraPieces = AuraPieces();
-      $auraPrefix = $whoPrefix . "AURAS-";
-      for ($i = 0; $i < $countAuras; $i += $auraPieces) {
-        if ($hasIris || $hasRefractor) {
-          if (HasWard($auras[$i], $player)) {
-            $weaponsList[] = $auraPrefix . $i;
-          }
-        } else if (ClassContains($auras[$i], "ILLUSIONIST", $player)) {
-          $weaponsList[] = $auraPrefix . $i;
-        }
-      }
-    }
+  $Auras = new Auras($player);
+  $auraPrefix = $whoPrefix . "AURAS-";
+  for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+    $AuraCard = $Auras->Card($i, true);
+    if (IsWeapon($AuraCard->CardID(), "PLAY"))
+      $weaponsList[] = $auraPrefix . $AuraCard->Index();
   }
   return implode(",", $weaponsList);
 }

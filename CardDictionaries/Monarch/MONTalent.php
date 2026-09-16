@@ -29,32 +29,6 @@
       case "invigorating_light_red": case "invigorating_light_yellow": case "invigorating_light_blue":
         if(count(GetSoul($currentPlayer)) == 0) AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "glisten_red": case "glisten_yellow": case "glisten_blue":
-      switch ($cardID) {
-        case "glisten_red":
-          $count = 4;
-          break;
-        case "glisten_yellow":
-          $count = 3;
-          break;
-        default:
-          $count = 2;
-          break;
-      }
-      for ($i = 0; $i < $count; ++$i) {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("ADDPOWERCOUNTERS", $currentPlayer, "1", 1);
-      }
-      switch ($currentPlayer) {
-        case $mainPlayer:
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-          break;
-        default:
-          AddNextTurnEffect($cardID, $currentPlayer);
-          break;
-      }
-      return "";
     case "seek_enlightenment_red":
     case "seek_enlightenment_yellow":
     case "seek_enlightenment_blue":

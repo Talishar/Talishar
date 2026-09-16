@@ -1473,44 +1473,83 @@ class courageous_steelhand_blue extends Card {
 //   }
 // }
 
+class glisten extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $mainPlayer;
+    $count = match ($this->cardID) {
+      "glisten_red" => 4,
+      "glisten_yellow" => 3,
+      default => 2
+    };
+    $indices = WeaponIndices($this->controller, $this->controller);
+    for ($i = 0; $i < $count; ++$i) {
+      Await($this->controller, "ChooseMultiZone", may:true, indices:$indices, context:"Put a counter on a weapon you control", subsequent:$i > 0);
+      Await($this->controller, $this->cardID, final:$i == $count - 1);
+    }
+    if ($this->controller == $mainPlayer)
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    else
+      AddNextTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
 
-// class glisten_red extends Card {
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $object = MZIndexToObject($this->controller, $choice);
+    if ($object != "") {
+      $object->AddPowerCounters(1);
+    }
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "glisten_red";
-//     $this->controller = $controller;
-//     }
+  function CurrentEffectBeginEndPhaseAbility($i) {
+    global $mainPlayer;
+    $Effect = new CurrentEffect($i);
+    if ($mainPlayer == $Effect->PlayerID()) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Character = new PlayerCharacter($this->controller);
+    for ($j = 0; $j < $Character->NumCards(); $j += 1) {
+      $CharacterCard = $Character->Card($j, true);
+      if (TypeContains($CharacterCard->CardID(), "W", $this->controller))
+        $CharacterCard->AddPowerCounters(-$CharacterCard->NumPowerCounters());
+    }
+    $Auras = new Auras($this->controller);
+    for ($j = 0; $j < $Auras->NumAuras(); ++$j) {
+      $AuraCard = $Auras->Card($j, true);
+      if (IsWeapon($AuraCard->CardID(), "PLAY", $this->controller))
+        $AuraCard->AddPowerCounters(-$AuraCard->NumPowerCounters());
+    }
+    SearchCurrentTurnEffects($this->cardID, $this->controller, true);
+  }
+}
 
+class glisten_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "glisten_red";
+    $this->controller = $controller;
+    $this->baseCard = new glisten($this->cardID, $this->controller);
+  }
+}
 
-// class glisten_yellow extends Card {
+class glisten_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "glisten_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new glisten($this->cardID, $this->controller);
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "glisten_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class glisten_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "glisten_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class glisten_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "glisten_blue";
+    $this->controller = $controller;
+    $this->baseCard = new glisten($this->cardID, $this->controller);
+  }
+}
 
 
 // class graveling_growl_red extends Card {
