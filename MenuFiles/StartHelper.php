@@ -64,7 +64,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron) ?: "0";
   $mute = 0;
   $settingArray = [];
-  for($i=0; $i<=37; ++$i) // Settings: This need to go up when we put a new settings
+  for($i=0; $i<SettingsPieces(); ++$i)
   {
     $settingArray[] = SettingDefaultValue($i, $charEquip[0]);
   }
@@ -75,6 +75,7 @@ function initializePlayerState($handler, $deckHandler, $player)
   {
     $settingArray[$savedSettings[$i]] = $savedSettings[$i+1]; 
   }
+  ksort($settingArray);
   fwrite($handler, implode(" ", $settingArray) . "\r\n"); //Settings
 }
 
