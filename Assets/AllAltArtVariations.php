@@ -132,7 +132,7 @@ function GetAllAltArtVariations(): array
     "gas_up_blue=LGS204-T", "gas_up_red=LGS202-T", "gas_up_yellow=LGS203-T", "gate_to_iarathael=IAR222-T",
     "gear_turner_red=OMN235-T", "gentle_breeze_red=PEN034-T", "germinate_blue=FAB267-T",
     "gesture_of_goodwill_blue=LGS361-T", "ghost_protocol_architect_red=LGS444-T", "ghost_protocol_mainframe_blue=LGS443-T",
-   "ghostly_visit_blue=FAB040-T", "ghostly_visit_red=FAB038-T", "ghostly_visit_yellow=FAB039-T",
+    "ghostly_visit_blue=FAB040-T", "ghostly_visit_red=FAB038-T", "ghostly_visit_yellow=FAB039-T",
     "give_no_quarter_blue=SEA049-T", "glide_through_starlight_red=LGS451-T", "glyph_overlay_red=FAB277-T", "goblet_of_bloodrun_wine_blue=LGS247-T",
     "gold=FAB279-T", "gold=FAB346-T", "gold=SEA244-T", "gold_hunter_ketch_yellow=SEA165-T",
     "gold_hunter_lightsail_yellow=SEA162-T", "gold_hunter_longboat_yellow=SEA163-T", "gold_hunter_marauder_yellow=SEA164-T", "golden_cog=FAB353-T",

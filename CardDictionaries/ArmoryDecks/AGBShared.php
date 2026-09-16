@@ -45,7 +45,7 @@ function AGBAbilityCost($cardID): int
 
 function AGBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $combatChain;
+  global $currentPlayer;
   $otherPlayer = 3 - $currentPlayer;
     switch ($cardID) {
       case "loot_the_hold_blue":

@@ -216,7 +216,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CCS_RequiredEquipmentBlock, $combatChain, $CombatChain, $landmarks;
   global $CS_PlayIndex, $CS_NextNAACardGoAgain, $defPlayer, $layers;
-  global $CS_ArcaneTargetsSelected, $chainLinks, $combatChainState;
+  global $CS_ArcaneTargetsSelected, $chainLinks;
   $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
     // Generic cards
@@ -1009,7 +1009,7 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function SEAHitEffect($cardID): void
 {
-  global $CS_NumCannonsActivated, $mainPlayer, $defPlayer, $combatChain;
+  global $mainPlayer, $defPlayer;
   switch ($cardID) {
     //puffin cards
     case "cloud_city_steamboat_red":
@@ -1347,7 +1347,6 @@ function hasUnlimited($cardID)
 
 function PitchTopCard($player)
 {
-  global $mainPlayer, $defPlayer;
   $deck = new Deck($player);
   $top = $deck->Top(true);
   if ($top != "") {

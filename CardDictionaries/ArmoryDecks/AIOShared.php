@@ -35,7 +35,7 @@ function AIOAbilityCost($cardID): int
 
 function AIOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_PlayIndex;
+  global $currentPlayer;
   switch ($cardID) {
     case "heavy_industry_gear_shift":
       $deck = new Deck($currentPlayer);

@@ -22,7 +22,6 @@ function ProcessMacros()
       // Cache expensive function calls and counts
       $layerCount = count($layers);
       $decisionQueueCount = count($decisionQueue);
-      $holdPrioritySetting = HoldPrioritySetting($currentPlayer);
       $firstLayer = $layerCount >= $layerPieces ? $layers[0] : null;
       $lastLayer = $layerCount >= $layerPieces ? $layers[$layerCount - $layerPieces] : null;
 
@@ -81,6 +80,7 @@ function ProcessMacros()
         case "INSTANT":
         case "M":
           if ($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer))) {
+            $holdPrioritySetting = HoldPrioritySetting($currentPlayer);
             if (AutoPassTurnSetting($currentPlayer)) {
               $somethingChanged = true;
               PassInput();

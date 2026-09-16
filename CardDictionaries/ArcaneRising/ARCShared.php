@@ -103,7 +103,7 @@
 
 function ARCCombatEffectActive($cardID, $attackID)
 {
-  global $combatChainState, $CCS_AttackPlayedFrom, $mainPlayer;
+  global $CCS_AttackPlayedFrom, $mainPlayer;
   switch($cardID) {
     case "pedal_to_the_metal_red": case "pedal_to_the_metal_yellow": case "pedal_to_the_metal_blue": return true;
     case "convection_amplifier_red": return CardType($attackID) == "AA";

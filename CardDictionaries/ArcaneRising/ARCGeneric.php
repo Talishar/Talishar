@@ -3,7 +3,7 @@
 
 function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention, $CombatChain;
+  global $currentPlayer, $CS_NextNAACardGoAgain, $CS_ArcaneDamagePrevention;
   $rv = "";
   switch($cardID) {
     case "talismanic_lens":

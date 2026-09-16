@@ -83,7 +83,7 @@ function HalaGoldenhelmAbility($player, $index)
 
 function DoriQuicksilverProdigyEffect()
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  global $mainPlayer, $CCS_WeaponIndex;
   $char = &GetPlayerCharacter($mainPlayer);
   $char[1] = 1;
   $char[GetCombatChainState($CCS_WeaponIndex)+1] = 2;

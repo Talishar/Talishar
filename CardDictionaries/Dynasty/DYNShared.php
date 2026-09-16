@@ -61,7 +61,6 @@ function DYNAbilityHasGoAgain($cardID)
 
 function DYNEffectPowerModifier($cardID)
 {
-  global $mainPlayer;
   if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   switch($cardID) {
     case "savage_beatdown_red": return 6;
@@ -112,7 +111,7 @@ function DYNEffectPowerModifier($cardID)
 
 function DYNCombatEffectActive($cardID, $attackID)
 {
-  global $combatChainState, $CCS_IsBoosted, $mainPlayer;
+  global $CCS_IsBoosted, $mainPlayer;
   if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   // Blessing of savagery needs to be reworked so it only checks when the attack is played
   switch($cardID) {
@@ -153,8 +152,8 @@ function DYNCombatEffectActive($cardID, $attackID)
 
 function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $combatChainState, $CCS_NumBoosted, $CS_NumCrouchingTigerPlayedThisTurn;
-  global $combatChain, $chainLinks, $CombatChain, $ChainLinks;
+  global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $CCS_NumBoosted;
+  global $CombatChain, $ChainLinks;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   $rv = "";
   switch($cardID) {
@@ -328,7 +327,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "dead_eye_yellow": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "long_shot_red": case "long_shot_yellow": case "long_shot_blue": if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "point_the_tip_red": case "point_the_tip_yellow": case "point_the_tip_blue":
-      $arsenal = &GetArsenal($currentPlayer);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:faceUp=true", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to buff and a aim counter on", 1);
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -474,7 +472,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function DYNHitEffect($cardID, $from, $attackID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt, $CCS_NumBoosted, $combatChain;
+  global $mainPlayer, $defPlayer, $CCS_DamageDealt, $CCS_NumBoosted;
   switch($cardID) {
     case "tiger_swipe_red":
       if(ComboActive()) {
@@ -565,7 +563,6 @@ function HasSurge($cardID)
 
 function ContractType($cardID, $chosenName="-")
 {
-  global $mainPlayer, $CombatChain;
   $card = GetClass($cardID, 1);
   if ($card != "-") return $card->ContractType($chosenName);
   switch($cardID)

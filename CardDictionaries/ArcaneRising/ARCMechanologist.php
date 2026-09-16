@@ -2,7 +2,7 @@
 
 function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $CS_NumBoosted, $actionPoints, $CS_PlayIndex;
+  global $currentPlayer, $CS_NumBoosted, $CS_PlayIndex;
   global $CombatChain, $CS_LastDynCost;
   $rv = "";
   switch($cardID) {
@@ -90,7 +90,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
 
 function ARCMechanologistHitEffect($cardID, $from)
 {
-  global $mainPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  global $mainPlayer, $CCS_GoesWhereAfterLinkResolves;
   switch ($cardID) {
     case "pedal_to_the_metal_red": case "pedal_to_the_metal_yellow": case "pedal_to_the_metal_blue":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
@@ -127,7 +127,7 @@ function Boost($cardID)
 
 function DoBoost($player, $cardID, $boostCount=1)
 {
-  global $combatChainState, $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted, $Stack;
+  global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted;
   $deck = new Deck($player);
   $isGoAgainGranted = false;
   $banishPieces = BanishPieces();

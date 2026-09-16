@@ -29,9 +29,8 @@ function ASBPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function HVYPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $defPlayer, $CS_HighestRoll, $CombatChain, $CS_NumMightDestroyed;
+  global $currentPlayer, $defPlayer, $CS_HighestRoll, $CS_NumMightDestroyed;
   $otherPlayer = 3 - $currentPlayer;
-  $rv = "";
   switch ($cardID) {
     case "mini_meataxe":
       Draw($currentPlayer);
@@ -483,7 +482,7 @@ function TCCPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $mainPlayer, $currentPlayer, $defPlayer, $combatChain, $CCS_RequiredNegCounterEquipmentBlock, $combatChainState;
+  global $mainPlayer, $currentPlayer, $defPlayer, $combatChain, $CCS_RequiredNegCounterEquipmentBlock;
   global $CS_NamesOfCardsPlayed, $CS_NumBoosted, $CS_NumItemsDestroyed, $currentTurnEffects, $CombatChain;
   global $CS_OriginalHero;
   $otherPlayer = 3 - $currentPlayer;

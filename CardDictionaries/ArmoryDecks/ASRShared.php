@@ -71,7 +71,7 @@ function ASRPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function ASRHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves;
   switch ($cardID) {
     case "enact_vengeance_red":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);      

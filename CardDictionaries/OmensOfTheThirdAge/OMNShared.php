@@ -105,7 +105,7 @@ function DoesBlockTriggerFragment($index) {
 }
 
 function FragmentLayer($blockingCardUID) {
-	global $mainPlayer, $CombatChain, $mainPlayer, $CS_NumFragmented;
+	global $mainPlayer, $CombatChain, $CS_NumFragmented;
 	if (IsFragmentStillActive($blockingCardUID)) {
 		AddCurrentTurnEffect("FRAGMENT", $mainPlayer);
 		$attackCard = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer, "CC", $CombatChain->AttackCard()->UniqueID());
@@ -158,7 +158,7 @@ function HoloFlicker($player, $MZIndex) {
 }
 
 function FirstDamageTrigger($target, $cardID, $player, $effectID="-") {
-	global $CombatChain, $combatChainState, $CCS_AttackDamageDealtToHero;
+	global $CombatChain, $CCS_AttackDamageDealtToHero;
 	$triggeringCard = $effectID == "-" ? $cardID : $effectID;
 	if ($CombatChain->AttackCard()->ID() != $cardID) return; // for now only make this work when it's the active link
 	if (IsHeroDamageTarget($target) && GetCombatChainState($CCS_AttackDamageDealtToHero) == 0) {
@@ -169,7 +169,7 @@ function FirstDamageTrigger($target, $cardID, $player, $effectID="-") {
 // returns a list of all attack action cards that could be targeted
 // past chain links are excluded: nothing that uses this can apply an effect to a link that has already resolved
 function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
-	global $Stack, $CombatChain, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+	global $Stack, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
 	$targets = [];
 	if (IsLayerStep()) {
 		$botLayer = $Stack->BottomLayer();
@@ -194,7 +194,7 @@ function TargetAttackActionCard($player="", $talent="", $maxCost=-1) {
 
 // returns a list of any attack that can be targeted
 function TargetAttack($player) {
-	global $Stack, $CombatChain, $ChainLinks, $combatChainState, $CCS_GoesWhereAfterLinkResolves, $AttackQueue;
+	global $Stack, $CombatChain, $ChainLinks, $CCS_GoesWhereAfterLinkResolves, $AttackQueue;
 	$targets = [];
 	if (IsLayerStep()) {
 		$botLayer = $Stack->BottomLayer();

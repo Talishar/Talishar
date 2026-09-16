@@ -60,9 +60,8 @@ function DoCapQuickThinking($targetPlayer, $damage)
 
 function ASTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
-  global $currentPlayer, $CS_PlayIndex, $CS_ArcaneDamageDealt;
+  global $currentPlayer, $CS_ArcaneDamageDealt;
 
-  $otherPlayer = $currentPlayer == 1 ? 0 : 1;
   switch ($cardID) {
     case "skyward_serenade_yellow":
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);

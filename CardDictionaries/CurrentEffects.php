@@ -50,7 +50,7 @@ function EVOEffectPowerModifier($cardID): int|string
 
 function EVOCombatEffectActive($cardID, $attackID)
 {
-  global $mainPlayer, $combatChainState, $CCS_IsBoosted;
+  global $mainPlayer, $CCS_IsBoosted;
   if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
   return match ($cardID) {
     "cogwerx_base_arms", "gigawatt_red", "gigawatt_yellow", "gigawatt_blue" => ClassContains($attackID, "MECHANOLOGIST", $mainPlayer),

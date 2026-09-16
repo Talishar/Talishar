@@ -2,7 +2,6 @@
 
 function MPGAbilityType($cardID, $index = -1, $from = "-"): string
 {
-  global $currentPlayer;
   return match ($cardID) {
     "richter_scale" => "A",
     "gauntlet_of_boulderhold" => "A",

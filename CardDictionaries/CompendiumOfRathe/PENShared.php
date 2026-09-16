@@ -9,7 +9,6 @@ function PENAbilityType($cardID, $index = -1, $from = "-"): string
 
 function PENAbilityCost($cardID): int
 {
-  global $currentPlayer;
   switch ($cardID) {
     default:
       return 0;
@@ -34,7 +33,6 @@ function PENEffectPowerModifier($cardID): int
 
 function PENCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer;
   switch ($cardID) {
     default:
       return false;
@@ -44,9 +42,7 @@ function PENCombatEffectActive($cardID, $attackID): bool
 
 function PENPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
-  global $currentPlayer, $mainPlayer, $combatChainState, $combatChain, $chainLinkSummary, $chainLinks, $defPlayer;
-  global $CombatChain;
-  $otherPlayer = 3 - $currentPlayer;
+  global $currentPlayer;
   switch ($cardID) {
     default:
       return "";
@@ -55,7 +51,6 @@ function PENPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function PENHitEffect($cardID): void
 {
-  global $mainPlayer;
   switch ($cardID) {
     default:
       break;

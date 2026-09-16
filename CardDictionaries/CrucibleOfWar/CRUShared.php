@@ -147,7 +147,7 @@
   }
 
 function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts) {
-  global $mainPlayer, $CS_NumBoosted, $combatChainState, $currentPlayer, $defPlayer, $CombatChain;
+  global $mainPlayer, $CS_NumBoosted, $currentPlayer, $defPlayer, $CombatChain;
   global $CS_AttacksWithWeapon, $CS_Num6PowDisc, $CCS_WeaponIndex, $CS_NextDamagePrevented, $CS_PlayIndex, $CS_NextWizardNAAInstant, $CS_NumWizardNonAttack;
   global $CCS_BaseAttackDefenseMax, $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $CCS_RequiredEquipmentBlock, $CCS_NumBoosted;
   $rv = "";
@@ -472,7 +472,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 
 function CRUHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CS_ArcaneDamageTaken;
+  global $mainPlayer, $defPlayer, $CS_ArcaneDamageTaken;
   switch($cardID) {
     case "find_center_blue": PlayAura("zen_state", $mainPlayer); break;
     case "rushing_river_red": case "rushing_river_yellow": case "rushing_river_blue":
@@ -548,7 +548,7 @@ function CRUHitEffect($cardID)
 
 function KayoStaticAbility($cardId)
 {
-  global $combatChainState, $mainPlayer;
+  global $mainPlayer;
   $roll = GetDieRoll($mainPlayer);
   if(PowerCantBeModified($cardId)) return;
   if($roll >= 5) {

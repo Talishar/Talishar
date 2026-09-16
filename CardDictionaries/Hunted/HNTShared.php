@@ -168,7 +168,7 @@ function HNTEffectPowerModifier($cardID, $attached=False): int
 
 function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $mainPlayer, $CCS_WeaponIndex, $defPlayer;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   $hasSuffix = count($dashArr) > 1;
@@ -917,7 +917,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
 {
-  global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves, $combatChainState;
+  global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   switch ($cardID) {
@@ -1025,7 +1025,6 @@ function RemoveMark($player)
 
 function RecurDagger($player) //$mode == 0 for left, and 1 for right
 {
-  $char = &GetPlayerCharacter($player);
   AddDecisionQueue("LISTDRACDAGGERGRAVEYARD", $player, "-");
   AddDecisionQueue("NULLPASS", $player, "-", 1);
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
@@ -1035,7 +1034,6 @@ function RecurDagger($player) //$mode == 0 for left, and 1 for right
 
 function ListDracDaggersGraveyard($player) {
   $weaponsArr = [];
-  $char = &GetPlayerCharacter($player);
   $graveyard = &GetDiscard($player);
   $graveyardCount = count($graveyard);
   $discardPieces = DiscardPieces();
