@@ -703,19 +703,9 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "ratchet_up_blue":
       if (GetClassState($currentPlayer, $CS_NumItemsDestroyed) > 0) AddCurrentTurnEffect($cardID, $defPlayer);
       return "";
-    case "scrap_hopper_red":
-    case "scrap_hopper_yellow":
-    case "scrap_hopper_blue":
-      if (DelimStringContains($additionalCosts, "SCRAP", true)) PlayAura("quicken", $currentPlayer);
-      return "";
     case "junkyard_dogg_red":
     case "junkyard_dogg_yellow":
     case "junkyard_dogg_blue":
-      if (DelimStringContains($additionalCosts, "SCRAP", true)) AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "scrap_compactor_red":
-    case "scrap_compactor_yellow":
-    case "scrap_compactor_blue":
       if (DelimStringContains($additionalCosts, "SCRAP", true)) AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "scrap_harvester_red":
@@ -870,9 +860,6 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       return "";
     case "slay_red":
       MZChooseAndDestroy($currentPlayer, "THEIRALLY:subtype=Angel");
-      return "";
-    case "teklovossen_the_mechropotent":
-      if (IsHeroAttackTarget()) PummelHit();
       return "";
     case "evo_command_center_yellow_equip":
       AddCurrentTurnEffect($cardID, $currentPlayer);

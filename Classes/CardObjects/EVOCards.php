@@ -2066,44 +2066,41 @@
 //   }
 // }
 
+class scrap_compactor extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if (DelimStringContains($additionalCosts, "SCRAP", true))
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+		return "";
+	}
 
-// class scrap_compactor_red extends Card {
+	function ProcessAttackTrigger($target, $uniqueID) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "scrap_compactor_red";
-//     $this->controller = $controller;
-//     }
+class scrap_compactor_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "scrap_compactor_red";
+		$this->controller = $controller;
+		$this->baseCard = new scrap_compactor($this->cardID, $this->controller);
+    }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class scrap_compactor_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "scrap_compactor_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new scrap_compactor($this->cardID, $this->controller);
+    }
+}
 
-
-// class scrap_compactor_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "scrap_compactor_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class scrap_compactor_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "scrap_compactor_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class scrap_compactor_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "scrap_compactor_blue";
+		$this->controller = $controller;
+		$this->baseCard = new scrap_compactor($this->cardID, $this->controller);
+    }
+}
 
 
 // class scrap_harvester_red extends Card {
@@ -2144,44 +2141,43 @@
 //   }
 // }
 
+class scrap_hopper extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if (DelimStringContains($additionalCosts, "SCRAP", true))
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+		return "";
+	}
 
-// class scrap_hopper_red extends Card {
+	function ProcessAttackTrigger($target, $uniqueID) {
+		PlayAura("quicken", $this->controller);
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "scrap_hopper_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class scrap_hopper_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "scrap_hopper_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class scrap_hopper_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "scrap_hopper_red";
+		$this->controller = $controller;
+		$this->baseCard = new scrap_hopper($this->cardID, $this->controller);
+    }
+}
 
 
-// class scrap_hopper_blue extends Card {
+class scrap_hopper_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "scrap_hopper_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new scrap_hopper($this->cardID, $this->controller);
+    }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "scrap_hopper_blue";
-//     $this->controller = $controller;
-//     }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class scrap_hopper_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "scrap_hopper_blue";
+		$this->controller = $controller;
+		$this->baseCard = new scrap_hopper($this->cardID, $this->controller);
+    }
+}
 
 
 // class scrap_prospector_red extends Card {
@@ -2736,17 +2732,31 @@ class stasis_cell_blue extends Card {
 // }
 
 
-// class teklovossen_the_mechropotent extends Card {
+class teklovossen_the_mechropotent extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "teklovossen_the_mechropotent";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "teklovossen_the_mechropotent";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if (IsHeroAttackTarget())
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+		return "";
+	}
+
+	function ProcessAttackTrigger($target, $uniqueID) {
+		PummelHit();
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AA";
+	}
+
+	function AbilityCost() {
+		return 3;
+	}
+}
 
 
 // class terminator_tank_red extends Card {
