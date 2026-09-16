@@ -57,13 +57,6 @@ $SET_HoverImageSize = 44;
 $SET_TransparencyIntensity = 45;
 $SET_PlaymatIntensity = 46;
 
-function SettingsPieces()
-{
-  static $pieces = null;
-  if ($pieces === null) $pieces = max(SettingsIdMap()) + 1;
-  return $pieces;
-}
-
 // Deliberately absent from SaveSettingInDatabase: this is an in-game state
 // StartTurnAbilities clears it, so it can never outlive the turn it was set in.
 function AutoPassTurnSetting($player)
@@ -615,7 +608,7 @@ function AltArtsDisabled($player)
   return $settings[$SET_DisableAltArts] == "1";
 }
 
-function SettingsIdMap()
+function ParseSettingsStringValueToIdInt(string $value)
 {
   static $settingsToId = [
     "HoldPrioritySetting" => 0,
@@ -658,12 +651,7 @@ function SettingsIdMap()
     "TransparencyIntensity" => 45,
     "PlaymatIntensity" => 46,
   ];
-  return $settingsToId;
-}
-
-function ParseSettingsStringValueToIdInt(string $value)
-{
-  return SettingsIdMap()[$value];
+  return $settingsToId[$value];
 }
 
 function ChangeSetting($player, $setting, $value, $playerId = "")
