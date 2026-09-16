@@ -2620,7 +2620,9 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
 function LayerCardHasGoAgain($cardID, $from)
 {
   global $mainPlayer;
-  if (!TypeContains($cardID, "AA", $mainPlayer) && !HasGoAgain($cardID, $from)) return false;
+  $isAttack = TypeContains($cardID, "AA", $mainPlayer, from: $from)
+    || GetResolvedAbilityType($cardID, $from, $mainPlayer) == "AA";
+  if (!$isAttack) return false;
   return DoesAttackHaveGoAgain($cardID, $from) ? true : false;
 }
 

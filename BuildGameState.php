@@ -503,7 +503,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $label = "Usurped";
     }
     $isPlayedCardLayer = !isset($specialLayersSet[$layers[$i]]);
-    $layerGoAgain = ($isPlayedCardLayer && $layers[$i + 1] == $mainPlayer && LayerCardHasGoAgain($layers[$i], $layers[$i + 2])) ? true : NULL;
+    $layerFrom = explode("|", $layers[$i + 2])[0];
+    $layerGoAgain = ($isPlayedCardLayer && $layers[$i + 1] == $mainPlayer && LayerCardHasGoAgain($layers[$i], $layerFrom)) ? true : NULL;
     $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label, goAgain:$layerGoAgain);
 
     $layer = new stdClass();
