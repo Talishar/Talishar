@@ -181,13 +181,10 @@ function ParseGamestate($parseHistoricalStats = true)
     : 4;
 
   // for replays and current games as of this push
-  $legacyTurnCount = function($player) use ($currentTurn, $mainPlayer, $firstPlayer) {
-    if ($player == $firstPlayer) return intval($currentTurn) + ($mainPlayer == $firstPlayer ? 1 : 0);
-    return intval($currentTurn);
-  };
-
-  $p1TurnCount = is_numeric(trim($gamestateContent[85+$numChainLinks] ?? "")) ? intval($gamestateContent[85+$numChainLinks]) : $legacyTurnCount(1);
-  $p2TurnCount = is_numeric(trim($gamestateContent[86+$numChainLinks] ?? "")) ? intval($gamestateContent[86+$numChainLinks]) : $legacyTurnCount(2);
+  $p1TurnCount = is_numeric(trim($gamestateContent[85+$numChainLinks] ?? "")) ? intval($gamestateContent[85+$numChainLinks])
+    : intval($currentTurn) + ($firstPlayer == 1 && $mainPlayer == $firstPlayer ? 1 : 0);
+  $p2TurnCount = is_numeric(trim($gamestateContent[86+$numChainLinks] ?? "")) ? intval($gamestateContent[86+$numChainLinks])
+    : intval($currentTurn) + ($firstPlayer == 2 && $mainPlayer == $firstPlayer ? 1 : 0);
   if ($firstPlayer == 1) { if ($p1TurnCount < 1) $p1TurnCount = 1; }
   else if ($firstPlayer == 2) { if ($p2TurnCount < 1) $p2TurnCount = 1; }
   BuildMyGamestate($playerID);

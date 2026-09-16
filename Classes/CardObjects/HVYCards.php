@@ -2614,7 +2614,9 @@ class shift_the_tide_of_battle_yellow extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     global $CombatChain, $mainPlayer;
-    return !$CombatChain->HasCurrentLink() || !ClassContains($CombatChain->AttackCard()->ID(), "WARRIOR", $mainPlayer) || CachedTotalPower() <= PowerValue($CombatChain->AttackCard()->ID(), $mainPlayer, "CC");
+    if (!$CombatChain->HasCurrentLink()) return true;
+    $attackCardID = $CombatChain->AttackCard()->ID();
+    return !ClassContains($attackCardID, "WARRIOR", $mainPlayer) || CachedTotalPower() <= PowerValue($attackCardID, $mainPlayer, "CC");
   }
 
   function CurrentEffectDamageEffect($target, $source, $type, $damage, &$remove, $attached=false) {

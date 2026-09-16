@@ -952,7 +952,6 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
 
 function CheckSpellvoid($player, $damage, $source = "-")
 {
-  global $dqVars;
   $caption = "Choose a card with Spellvoid to prevent damage (or pass)";
   $caption .= GetDamagePreventionWarning($player, $damage, "ARCANE", $source, " ");
   PrependDecisionQueue("SPELLVOIDCHOICES", $player, $damage, 1);
@@ -964,7 +963,7 @@ function CheckSpellvoid($player, $damage, $source = "-")
 
 function ArcaneHitEffect($player, $source, $target, $damage)
 {
-  global $CS_ArcaneDamageDealt, $layers;
+  global $CS_ArcaneDamageDealt;
   $cardID = explode("|", $source, 2)[0] ?? $source;
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->ArcaneHitEffect($source, $target, $damage);
@@ -1029,7 +1028,6 @@ function ArcaneHitEffect($player, $source, $target, $damage)
 
 function ProcessSurge($cardID, $player, $target)
 {
-  global $mainPlayer;
   $targetPlayer = MZPlayerID($player, $target);
   switch ($cardID) {
     case "mind_warp_yellow":

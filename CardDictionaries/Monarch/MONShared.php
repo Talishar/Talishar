@@ -77,10 +77,7 @@
   {
     global $mainPlayer, $CS_NumNonAttackCards, $CombatChain;
     $suffix = '';
-    if (($pos = strpos($cardID, ",")) !== false) {
-      $suffix = substr($cardID, $pos + 1);
-      $cardID = substr($cardID, 0, $pos);
-    }
+    $cardID = StripCardIDSuffix($cardID, $suffix);
     switch($cardID)
     {
       case "herald_of_triumph_red": case "herald_of_triumph_yellow": case "herald_of_triumph_blue": return -1;
@@ -138,7 +135,7 @@
   function MONCombatEffectActive($cardID, $attackID)
   {
     global $defPlayer, $mainPlayer;
-    if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+    $cardID = StripCardIDSuffix($cardID);
     switch($cardID)
     {
       case "herald_of_triumph_red": case "herald_of_triumph_yellow": case "herald_of_triumph_blue": return CardType($attackID) == "AA";

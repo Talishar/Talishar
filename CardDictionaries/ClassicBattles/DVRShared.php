@@ -47,7 +47,7 @@
 
 function DVREffectPowerModifier($cardID)
 {
-  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $cardID = StripCardIDSuffix($cardID);
   switch($cardID) {
     case "en_garde_red": return 3;
     case "thrust_red": return 3;
@@ -59,7 +59,7 @@ function DVREffectPowerModifier($cardID)
 function DVRCombatEffectActive($cardID, $attackID)
 {
   global $mainPlayer;
-  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $cardID = StripCardIDSuffix($cardID);
   switch($cardID) {
     case "glistening_steelblade_yellow": case "glistening_steelblade_yellow-1": return CardNameContains($attackID, "Dawnblade", $mainPlayer, true); 
     case "en_garde_red": return TypeContains($attackID, "W", $mainPlayer);
@@ -83,7 +83,7 @@ function HalaGoldenhelmAbility($player, $index)
 
 function DoriQuicksilverProdigyEffect()
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  global $mainPlayer, $CCS_WeaponIndex;
   $char = &GetPlayerCharacter($mainPlayer);
   $char[1] = 1;
   $char[GetCombatChainState($CCS_WeaponIndex)+1] = 2;

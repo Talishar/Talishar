@@ -65,7 +65,7 @@ function ROSCombatEffectActive($cardID, $attackID): bool
 function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = ""): string
 {
   global $currentPlayer, $CS_NumLightningPlayed, $CS_ArcaneDamageTaken;
-  global $mainPlayer, $CCS_EclecticMag, $combatChainState, $CS_ActionsPlayed, $CS_ResolvingLayerUniqueID;
+  global $mainPlayer, $CCS_EclecticMag, $CS_ActionsPlayed;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
   switch ($cardID) {
     case "germinate_blue":

@@ -55,7 +55,7 @@ switch($cardID) {
 }
 
 function AJVHitEffect($cardID) {
-  global $currentPlayer, $defPlayer, $EffectContext;
+  global $currentPlayer, $defPlayer;
   switch($cardID)
   {
     case "summit_the_unforgiving":

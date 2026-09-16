@@ -16,7 +16,6 @@ function ARRAbilityHasGoAgain($cardID): bool
 
 function ARREffectPowerModifier($cardID): int
 {
-  global $currentPlayer, $defPlayer;
   return match ($cardID) {
     default => 0
   };
@@ -24,7 +23,6 @@ function ARREffectPowerModifier($cardID): int
 
 function ARRHitEffect($cardID): void
 {
-  global $mainPlayer;
   switch ($cardID) {
     default:
       break;
@@ -33,7 +31,6 @@ function ARRHitEffect($cardID): void
 
 function ARRCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer;
   return match($cardID) {
     default => false
   };

@@ -2260,7 +2260,8 @@ class duelist_gauntlets extends Card {
 		global $CombatChain;
 		if (is_numeric($index)) {
 			$BlockingCard = $CombatChain->Card($index);
-			return TypeContains($BlockingCard->ID(), "AR") || TypeContains($BlockingCard->ID(), "DR") ? -1 : 0;
+			$blockingCardID = $BlockingCard->ID();
+			return TypeContains($blockingCardID, "AR") || TypeContains($blockingCardID, "DR") ? -1 : 0;
 		}
 		return 0;
 	}
@@ -2400,7 +2401,8 @@ class display_of_artistry extends BaseCard {
 		if ($Effect->EffectID() != "$this->cardID-SHARP") return 0;
 		if (is_numeric($index)) {
 			$BlockingCard = $CombatChain->Card($index);
-			return TypeContains($BlockingCard->ID(), "AR") || TypeContains($BlockingCard->ID(), "DR") ? -1 : 0;
+			$blockingCardID = $BlockingCard->ID();
+			return TypeContains($blockingCardID, "AR") || TypeContains($blockingCardID, "DR") ? -1 : 0;
 		}
 		return 0;
 	}

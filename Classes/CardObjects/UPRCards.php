@@ -553,7 +553,9 @@ class combustion_point_red extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     global $CombatChain;
-    return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || !ClassContains($CombatChain->AttackCard()->ID(), "NINJA", $this->controller) && !TalentContains($CombatChain->AttackCard()->ID(), "DRACONIC", $this->controller);
+    if (!$CombatChain->HasCurrentLink()) return true;
+    $attackCardID = $CombatChain->AttackCard()->ID();
+    return CardType($attackCardID) != "AA" || !ClassContains($attackCardID, "NINJA", $this->controller) && !TalentContains($attackCardID, "DRACONIC", $this->controller);
   }
 }
 
@@ -1859,11 +1861,14 @@ class oasis_respite extends BaseCard {
     $Effect = new CurrentEffect($index);
     $prevAmount = $Effect->NumUses();
     if (!$preventable) return 0;
-    if ($amount && $CombatChain->HasCurrentLink() && $source == $CombatChain->AttackCard()->ID() && $type == "COMBAT") { //this block is mostly for displaying prevention
-      if ($CombatChain->AttackCard()->UniqueID() == $Effect->AppliestoUniqueID() || $CombatChain->AttackCard()->OriginUniqueID() == $Effect->AppliestoUniqueID())
-        return min($damage, $prevAmount);
+    $appliesToUniqueID = $Effect->AppliestoUniqueID();
+    if ($amount && $CombatChain->HasCurrentLink()) {
+      $AttackCard = $CombatChain->AttackCard();
+      if ($source == $AttackCard->ID() && $type == "COMBAT" && ($AttackCard->UniqueID() == $appliesToUniqueID || $AttackCard->OriginUniqueID() == $appliesToUniqueID)) {
+        return min($damage, $prevAmount); //this block is mostly for displaying prevention
+      }
     }
-    if (GetClassState(1, $CS_ResolvingLayerUniqueID) == $Effect->AppliestoUniqueID()) {
+    if (GetClassState(1, $CS_ResolvingLayerUniqueID) == $appliesToUniqueID) {
       if (!$amount) {
         $Effect->AddUses(-$damage);
         if ($Effect->NumUses() <= 0) $remove = true;
@@ -2175,7 +2180,9 @@ class rapid_reflex extends BaseCard {
 
   function IsPlayRestricted() {
     global $CombatChain;
-    return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA" || CardCost($CombatChain->AttackCard()->ID()) > 0;
+    if (!$CombatChain->HasCurrentLink()) return true;
+    $attackCardID = $CombatChain->AttackCard()->ID();
+    return CardType($attackCardID) != "AA" || CardCost($attackCardID) > 0;
   }
 }
 

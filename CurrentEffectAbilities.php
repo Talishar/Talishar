@@ -1829,14 +1829,14 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
   return $hasGoAgain;
 }
 
-function CurrentEffectGrantsGoAgain()
+function CurrentEffectGrantsGoAgain($cardToCheck = "")
 {
   global $currentTurnEffects, $mainPlayer, $CombatChain;
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardToCheck) && !IsCombatEffectLimited($i)) {
       $commaPos = strpos($currentTurnEffects[$i], ',');
       $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
       $card = GetClass($effectBase, $mainPlayer);
@@ -1848,6 +1848,7 @@ function CurrentEffectGrantsGoAgain()
       if (DoesCurrentTurnEffectGrantGoAgain($effectBase)) return true;
     }
   }
+  if (!$CombatChain->HasCurrentLink()) return false;
   $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
   foreach ($activeEffects as $effectSetID) {
     $effect = ConvertToCardID($effectSetID);
@@ -2115,7 +2116,8 @@ function CurrentEffectStartTurnAbilities() {
 
 function CurrentEffectBeginningActionPhaseAbilities() {
   global $CurrentTurnEffects, $mainPlayer;
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  $effectCount = $CurrentTurnEffects->NumEffects();
+  for ($i = 0; $i < $effectCount; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $mainPlayer) continue;
     $card = GetClass($Effect->EffectID(), $mainPlayer);
@@ -2128,6 +2130,7 @@ function CurrentEffectEndTurnAbilities()
   global $currentTurnEffects, $mainPlayer, $defPlayer;
   $underSet = [];
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
+  $characterPieces = CharacterPieces();
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
     $raw = $currentTurnEffects[$j];
@@ -2151,8 +2154,7 @@ function CurrentEffectEndTurnAbilities()
         if ($mainPlayer == $currentTurnEffects[$i + 1]) {
           $char = &GetPlayerCharacter($currentTurnEffects[$i + 1]);
           $charCount = count($char);
-          $charPieces = CharacterPieces();
-          for ($j = 0; $j < $charCount; $j += $charPieces) {
+          for ($j = 0; $j < $charCount; $j += $characterPieces) {
             if (TypeContains($char[$j], "W", $mainPlayer)) $char[$j + 3] = 0;
           }
           $remove = true;

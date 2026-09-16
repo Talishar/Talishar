@@ -2063,7 +2063,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "DRAWTOINTELLECT":
       global $CS_NumCardsDrawn;
       $char = &GetPlayerCharacter($player);
-      for ($i = 0; $i < CharacterIntellect($char[0]); ++$i) Draw($player, mainPhase: false, fromCardEffect: false);
+      $intellect = CharacterIntellect($char[0]);
+      for ($i = 0; $i < $intellect; ++$i) Draw($player, mainPhase: false, fromCardEffect: false);
       SetClassState($player, $CS_NumCardsDrawn, 0);//Don't make initial draw count for Hold the Line
       return 1;
     case "ROLLDIE":

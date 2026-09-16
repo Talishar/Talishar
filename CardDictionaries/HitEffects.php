@@ -2,7 +2,7 @@
 
 function AKOHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_DamageDealt;
+  global $mainPlayer, $defPlayer, $CCS_DamageDealt;
   switch ($cardID) {
     case "strength_rules_all_red":
       if (IsHeroAttackTarget()) {
@@ -21,7 +21,7 @@ function AKOHitEffect($cardID)
 
 function TCCHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves;
   switch ($cardID) {
     case "mauling_qi_red":
       if (ComboActive()) DamageTrigger($defPlayer, damage: 1, type: "DAMAGE", source: $cardID, playerSource:$mainPlayer);
@@ -43,7 +43,7 @@ function TCCHitEffect($cardID)
 
 function EVOHitEffect($cardID)
 {
-  global $mainPlayer, $defPlayer, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
+  global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves;
   switch ($cardID) {
     case "banksy":
       if (IsHeroAttackTarget()) {

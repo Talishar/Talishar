@@ -16,7 +16,6 @@ function APSAbilityHasGoAgain($cardID): bool
 
 function APSEffectPowerModifier($cardID): int
 {
-  global $currentPlayer, $defPlayer;
   return match ($cardID) {
     default => 0
   };

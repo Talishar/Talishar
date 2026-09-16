@@ -171,12 +171,12 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
     case "ARTOFWAR":
       $params = explode(",", $lastResult);
       $countParams = count($params);
+      $combatChainPieces = CombatChainPieces();
       for($i = 0; $i < $countParams; ++$i) {
         switch($params[$i]) {
           case "Buff_your_attack_action_cards_this_turn":
             AddCurrentTurnEffect("art_of_war_yellow-1", $player);
             if($player == $defPlayer) {
-              $combatChainPieces = CombatChainPieces();
               $combatChainCount = count($combatChain);
               for($j = $combatChainPieces; $j < $combatChainCount; $j += $combatChainPieces) {
                 if(CardType($combatChain[$j]) == "AA") CombatChainPowerModifier($j, 1);

@@ -454,7 +454,8 @@
     if ($winningHero->CardID() == "zane_broadly_beloved")
       AddLayer("TRIGGER", $wonWager, $winningHero->CardID());
     $WinnerCharacter = new PlayerCharacter($wonWager);
-    for ($i = 0; $i < $WinnerCharacter->NumCards(); ++$i) {
+    $winnerCharacterCount = $WinnerCharacter->NumCards();
+    for ($i = 0; $i < $winnerCharacterCount; ++$i) {
       $CharCard = $WinnerCharacter->Card($i, true);
       $card = GetClass($CharCard->CardID(), $wonWager);
       if ($card != "-") $card->WinWagerTrigger();

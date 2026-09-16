@@ -82,10 +82,7 @@
   function EVREffectPowerModifier($cardID)
   {
     $parameter = '';
-    if (($pos = strpos($cardID, ",")) !== false) {
-      $parameter = substr($cardID, $pos + 1);
-      $cardID = substr($cardID, 0, $pos);
-    }
+    $cardID = StripCardIDSuffix($cardID, $parameter);
     switch($cardID)
     {
       case "skull_crushers": return 1;
@@ -135,7 +132,7 @@
   function EVRCombatEffectActive($cardID, $attackID)
   {
     global $CS_AttacksWithWeapon, $mainPlayer;
-    if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+    $cardID = StripCardIDSuffix($cardID);
     switch($cardID)
     {
       case "skull_crushers": return ClassContains($attackID, "BRUTE", $mainPlayer);

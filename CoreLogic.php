@@ -1039,7 +1039,8 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
 {
   global $currentTurnEffects, $EffectContext, $CombatChain, $CS_ResolvingLayerUniqueID, $mainPlayer;
   $otherPlayer = ($target == 1 ? 2 : 1);
-  if (CardType($source) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
+  $sourceType = CardType($source);
+  if ($sourceType == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
   $AttackCard = $CombatChain->AttackCard();
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $attackCardID = $AttackCard->ID();
@@ -1899,12 +1900,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers, $CombatChain;
   global $CCS_EclecticMag, $CS_ArcaneDamageDealt, $currentTurnEffects;
   $otherPlayer = 3 - $currentPlayer;
-  $cardType = CardType($cardID);
-  $subtype = CardSubType($cardID);
-  $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  $cardTypeIsAction = DelimStringContains($cardType, "A");
-  $subtypeIsAura = DelimStringContains($subtype, "Aura");
-  $isStaticType = IsStaticType($cardType, $from, $cardID);
 
   // cards whose ability lets you play them at instant speed
   $card = GetClass($cardID, $currentPlayer);
@@ -1955,6 +1950,12 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   }
 
   if (CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("spirit_of_eirina_yellow", $currentPlayer) != "") return true;
+  $cardType = CardType($cardID);
+  $subtype = CardSubType($cardID);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
+  $cardTypeIsAction = DelimStringContains($cardType, "A");
+  $subtypeIsAura = DelimStringContains($subtype, "Aura");
+  $isStaticType = IsStaticType($cardType, $from, $cardID);
   if ($cardTypeIsAction && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
   if (!$isStaticType && $cardTypeIsAction && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
   if ($cardTypeIsAction && $currentPlayer == $mainPlayer && GetCombatChainState($CCS_EclecticMag)) return true;
@@ -2343,7 +2344,7 @@ function RevealHand($player) {
   return RevealCards(implode(",", $cardsArr), $player);
 }
 
-function DoesAttackHaveGoAgain()
+function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
 {
   global $CombatChain, $combatChainState, $CCS_CurrentAttackGainedGoAgain, $mainPlayer, $defPlayer, $CS_Num6PowDisc;
   global $CS_NumAuras, $CS_ArcaneDamageTaken, $CS_AnotherWeaponGainedGoAgain, $CS_NumRedPlayed, $CS_NumNonAttackCards;
@@ -2351,8 +2352,9 @@ function DoesAttackHaveGoAgain()
   global $CS_NumLightningPlayed, $CCS_NumInstantsPlayedByAttackingPlayer, $CS_ActionsPlayed, $CS_FealtyCreated;
   global $chainLinks, $chainLinkSummary, $CCS_FlickedDamage, $defPlayer, $CS_NumStealthAttacks, $combatChain;
   global $CS_ArcaneDamageDealt, $CurrentTurnEffects, $CS_NumBloodDebtAttacksPlayed;
-  $attackID = $CombatChain->AttackCard()->ID();
-  $from = $combatChain[2] ?? "CC";
+  $isPreview = $attackIDOverride !== "";
+  $attackID = $isPreview ? $attackIDOverride : $CombatChain->AttackCard()->ID();
+  $from = $isPreview ? $fromOverride : ($combatChain[2] ?? "CC");
   $attackType = CardType($attackID);
   $attackSubtype = CardSubType($attackID);
   $isAura = DelimStringContains($attackSubtype, "Aura");
@@ -2374,14 +2376,15 @@ function DoesAttackHaveGoAgain()
     if (SearchCharacterForCard($mainPlayer, "luminaris") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
     if ($isAura && SearchCharacterForCard($mainPlayer, "iris_of_reality")) return true;
   }
-  if ($isAura && SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
+  if (!$isPreview && $isAura && SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
     // $cosmoIndex = GetCombatChainState($CCS_WeaponIndex) + 3;
     $attack = $CombatChain->AttackCard();
     $AuraCard = $Auras->FindCardUID($attack->OriginUniqueID());
     if ($AuraCard->NumPowerCounters() > 0) return true;
   }
-  if (GetCombatChainState($CCS_CurrentAttackGainedGoAgain) == 1 || CurrentEffectGrantsGoAgain() || MainCharacterGrantsGoAgain()) {
-    SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 1);
+  if ((!$isPreview && GetCombatChainState($CCS_CurrentAttackGainedGoAgain) == 1)
+    || CurrentEffectGrantsGoAgain($isPreview ? $attackID : "") || MainCharacterGrantsGoAgain()) {
+    if (!$isPreview) SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 1);
     return true;
   }
 
@@ -2614,6 +2617,13 @@ function DoesAttackHaveGoAgain()
   }
 }
 
+function LayerCardHasGoAgain($cardID, $from)
+{
+  global $mainPlayer;
+  if (!TypeContains($cardID, "AA", $mainPlayer) && !HasGoAgain($cardID, $from)) return false;
+  return DoesAttackHaveGoAgain($cardID, $from) ? true : false;
+}
+
 function DestroyCurrentWeapon()
 {
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer;
@@ -2692,7 +2702,8 @@ function CloseCombatChain($chainClosed = true)
     $Step = $Stack->FindCardID($step);
     if ($Step != "") $Step->Negate();
   }
-  for ($i = 0; $i < $Stack->NumLayers(); $i++) { //7.7.3
+  $layerCount = $Stack->NumLayers();
+  for ($i = 0; $i < $layerCount; $i++) { //7.7.3
     $Layer = $Stack->Card($i, true);
     $layerID = $Layer->ID();
     if (TypeContains($layerID, "DR") || TypeContains($layerID, "AR")) {
@@ -3523,7 +3534,9 @@ function GetCurrentAttackNames()
 
 function SerializeCurrentAttackNames()
 {
-  return implode(",", array_map('GamestateSanitize', GetCurrentAttackNames()));
+  $names = GetCurrentAttackNames();
+  foreach ($names as $index => $name) $names[$index] = GamestateSanitize($name);
+  return implode(",", $names);
 }
 
 function HasAttackName($name)

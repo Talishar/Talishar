@@ -35,7 +35,10 @@
         break;
       case "engulfing_flamewave_red": case "engulfing_flamewave_yellow": case "engulfing_flamewave_blue":
         $deck = new Deck($mainPlayer);
-        if($deck->Reveal() && CardType($deck->Top()) == "AA" && CardCost($deck->Top()) < NumDraconicChainLinks()) $deck->BanishTop("TT", $mainPlayer);
+        if ($deck->Reveal()) {
+          $topCard = $deck->Top();
+          if (CardType($topCard) == "AA" && CardCost($topCard) < NumDraconicChainLinks()) $deck->BanishTop("TT", $mainPlayer);
+        }
         break;
       case "mounting_anger_red": case "mounting_anger_yellow": case "mounting_anger_blue":
       case "rising_resentment_red": case "rising_resentment_yellow": case "rising_resentment_blue":

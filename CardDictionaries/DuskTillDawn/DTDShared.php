@@ -59,10 +59,7 @@ function DTDAbilityHasGoAgain($cardID)
 function DTDEffectPowerModifier($cardID)
 {
   $parameter = '';
-  if (($pos = strpos($cardID, ",")) !== false) {
-    $parameter = substr($cardID, $pos + 1);
-    $cardID = substr($cardID, 0, $pos);
-  }
+  $cardID = StripCardIDSuffix($cardID, $parameter);
   switch($cardID) {
     case "figment_of_triumph_yellow": return -1;
     case "angelic_descent_red": return 3;
@@ -108,9 +105,9 @@ function DTDEffectPowerModifier($cardID)
 
 function DTDCombatEffectActive($cardID, $attackID)
 {
-  global $combatChainState, $mainPlayer, $combatChainState, $CCS_AttackNumCharged, $CombatChain;
+  global $mainPlayer, $CCS_AttackNumCharged;
   global $Card_LifeBanner, $Card_ResourceBanner, $CCS_WasRuneGate;
-  if (($pos = strpos($cardID, ",")) !== false) $cardID = substr($cardID, 0, $pos);
+  $cardID = StripCardIDSuffix($cardID);
   switch($cardID) {
     case "figment_of_tenacity_yellow": return true;
     case "figment_of_triumph_yellow": return CardType($attackID) == "AA";
@@ -152,7 +149,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 {
   global $currentPlayer, $defPlayer, $CS_NumCharged, $CS_NumCardsDrawn, $combatChain, $CombatChain;
   $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-  $rv = "";
   switch($cardID) {
     case "prism_awakener_of_sol": case "prism_advent_of_thrones":
       $uniqueID = explode("-", $target, 2)[1];
@@ -596,7 +592,6 @@ function MirageLayer($target)
   }
   else { //Aegisworn: I don't understand this block
     $turn[0] = "A";
-    $currentPlayer = $mainPlayer;
     $layerPieces = LayerPieces();
     for($i=count($layers)-$layerPieces; $i >= 0; $i-=$layerPieces)
     {

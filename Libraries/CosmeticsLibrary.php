@@ -160,9 +160,8 @@ function GetUserAltArtEntitlements($userName)
 
   if (empty($userName)) return $altArtMap;
 
-  $addAltArtString = function ($altArtsString) use (&$altArtMap, &$altArtSet) {
-    if (empty($altArtsString)) return;
-    foreach (explode(",", $altArtsString) as $entry) {
+  $addAltArtEntries = function ($entries) use (&$altArtMap, &$altArtSet) {
+    foreach ($entries as $entry) {
       $entry = trim($entry);
       if ($entry === "") continue;
       $parts = explode("=", $entry, 2);
@@ -178,15 +177,15 @@ function GetUserAltArtEntitlements($userName)
 
   foreach (PatreonCampaign::cases() as $campaign) {
     if (isset($_SESSION[$campaign->SessionID()]) || $campaign->IsTeamMember($userName)) {
-      // PatreonCampaign::AltArts() takes the active hero's card number to resolve
+      // PatreonCampaign::AltArtsList() takes the active hero's card number to resolve
       // a couple of hero-conditional bonus alt arts (via GeneratedHasEssenceOf*(),
       // only guaranteed loaded when GeneratedCode/GeneratedCardDictionaries.php is
       // included). This is account-wide entitlement listing, outside any specific
       // game/hero context, so pass no hero and let it skip straight to the
       // campaign-wide alt art list. The try/catch stays as a safety net for any
-      // other caller-context surprises inside AltArts().
+      // other caller-context surprises inside AltArtsList().
       try {
-        $addAltArtString($campaign->AltArts());
+        $addAltArtEntries($campaign->AltArtsList());
       } catch (\Throwable $e) {
         // Ignored: see note above.
       }
@@ -212,9 +211,7 @@ function GetUserAltArtEntitlements($userName)
         $seenCommunityIds[$cid] = true;
         foreach (MetafyCommunity::cases() as $metafyCommunity) {
           if ($metafyCommunity->value === $cid) {
-            foreach ($metafyCommunity->AltArts() as $entry) {
-              $addAltArtString($entry);
-            }
+            $addAltArtEntries($metafyCommunity->AltArts());
             break;
           }
         }
@@ -251,9 +248,9 @@ function GetOwnAltArtList($userName, $heroCardId, $metafyCommunities)
     }
     if (!$isEntitled) continue;
 
-    $campaignAltArts = $campaign->AltArts($heroCardId);
-    if ($campaignAltArts === "") continue;
-    $addEntries(explode(",", $campaignAltArts), $campaign->CampaignName());
+    $campaignAltArts = $campaign->AltArtsList($heroCardId);
+    if (!$campaignAltArts) continue;
+    $addEntries($campaignAltArts, $campaign->CampaignName());
   }
 
   $metafyCommunityMap = [];

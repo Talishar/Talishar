@@ -106,7 +106,7 @@
 
 function UPRIllusionistDealDamageEffect($cardID)
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex;
+  global $mainPlayer, $CCS_WeaponIndex;
   switch ($cardID) {
     case "nekria":
       $index = GetCombatChainState($CCS_WeaponIndex);

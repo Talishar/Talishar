@@ -16,7 +16,6 @@ function AACAbilityHasGoAgain($cardID): bool
 
 function AACEffectPowerModifier($cardID): int
 {
-  global $currentPlayer, $defPlayer;
   return match ($cardID) {
     default => 0
   };
@@ -24,7 +23,6 @@ function AACEffectPowerModifier($cardID): int
 
 function AACHitEffect($cardID, $target): void
 {
-  global $mainPlayer, $defPlayer;
   switch ($cardID) {
     default:
       break;
@@ -33,7 +31,6 @@ function AACHitEffect($cardID, $target): void
 
 function AACCombatEffectActive($cardID, $attackID): bool
 {
-  global $mainPlayer;
   return match($cardID) {
     default => false
   };

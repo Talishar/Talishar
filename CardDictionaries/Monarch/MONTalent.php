@@ -173,7 +173,7 @@
 
 function MONTalentHitEffect($cardID)
 {
-  global $combatChainState, $CCS_GoesWhereAfterLinkResolves, $defPlayer;
+  global $CCS_GoesWhereAfterLinkResolves, $defPlayer;
   switch ($cardID) {
     case "illuminate_red":
     case "illuminate_yellow":

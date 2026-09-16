@@ -168,7 +168,7 @@ function HNTEffectPowerModifier($cardID, $attached=False): int
 
 function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
 {
-  global $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer;
+  global $mainPlayer, $CCS_WeaponIndex, $defPlayer;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   $hasSuffix = count($dashArr) > 1;
@@ -334,7 +334,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else AddCurrentTurnEffect("$cardID", $currentPlayer);
       break;
     case "tarantula_toxin_red":
-      if (HasStealth($CombatChain->AttackCard()->ID()) || SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) {
+      $attackCardID = $CombatChain->AttackCard()->ID();
+      if (HasStealth($attackCardID) || SubtypeContains($attackCardID, "Dagger")) {
         if ($additionalCosts == "Buff_Power" || $additionalCosts == "Both") {
           AddCurrentTurnEffect("tarantula_toxin_red", $currentPlayer);
         }
@@ -886,7 +887,8 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
       }
       else {
-        for ($i = 0; $i < GetClassState($currentPlayer, piece: $CS_AdditionalCosts); $i++) {
+        $additionalCostCount = GetClassState($currentPlayer, piece: $CS_AdditionalCosts);
+        for ($i = 0; $i < $additionalCostCount; $i++) {
           AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRBANISH&MYBANISH");
           AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to turn face-down");
           AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -915,7 +917,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 
 function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
 {
-  global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves, $combatChainState;
+  global $mainPlayer, $defPlayer, $CCS_GoesWhereAfterLinkResolves;
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   switch ($cardID) {
@@ -1023,7 +1025,6 @@ function RemoveMark($player)
 
 function RecurDagger($player) //$mode == 0 for left, and 1 for right
 {
-  $char = &GetPlayerCharacter($player);
   AddDecisionQueue("LISTDRACDAGGERGRAVEYARD", $player, "-");
   AddDecisionQueue("NULLPASS", $player, "-", 1);
   AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to equip", 1);
@@ -1033,7 +1034,6 @@ function RecurDagger($player) //$mode == 0 for left, and 1 for right
 
 function ListDracDaggersGraveyard($player) {
   $weaponsArr = [];
-  $char = &GetPlayerCharacter($player);
   $graveyard = &GetDiscard($player);
   $graveyardCount = count($graveyard);
   $discardPieces = DiscardPieces();

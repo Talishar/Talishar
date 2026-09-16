@@ -233,20 +233,26 @@ function SearchInner(
       } else {
         $checkTalent = $eraseFaceActive ? "" : CardTalent($cardID, $zone);
         if ($hasTalentMods) {
+          $needsTypeChecks = $talentMod_conditional || $talentMod_fealty || $talentMod_fealtyAtk;
+          if ($needsTypeChecks) {
+            $extendedType = CardTypeExtended($cardID);
+            $isAttackActionType = DelimStringContains($extendedType, "AA");
+            $isWeaponType = DelimStringContains($extendedType, "W");
+          }
           if ($talentMod_always) {
             $checkTalent .= ($checkTalent !== "" ? "," : "") . "DRACONIC";
           }
           if ($talentMod_conditional
-            && (TypeContains($cardID, "AA") || TypeContains($cardID, "W") || SubtypeContains($cardID, "Ally"))) {
+            && ($isAttackActionType || $isWeaponType || SubtypeContains($cardID, "Ally"))) {
             $checkTalent .= ($checkTalent !== "" ? "," : "") . "DRACONIC";
           }
           if ($talentMod_fealty) {
             $_t = CardType($cardID);
-            if (!TypeContains($cardID, "W") && !TypeContains($cardID, "AA") && !IsStaticType($_t)) {
+            if (!$isWeaponType && !$isAttackActionType && !IsStaticType($_t)) {
               $checkTalent .= ($checkTalent !== "" ? "," : "") . "DRACONIC";
             }
           }
-          if ($talentMod_fealtyAtk && !TypeContains($cardID, "W") && TypeContains($cardID, "AA")) {
+          if ($talentMod_fealtyAtk && !$isWeaponType && $isAttackActionType) {
             $checkTalent .= ($checkTalent !== "" ? "," : "") . "DRACONIC";
           }
         }
@@ -722,6 +728,7 @@ function SearchCurrentTurnEffects($cardID, $player, $remove = false, $returnUniq
 {
   global $currentTurnEffects;
   $count = count($currentTurnEffects);
+  if ($count === 0) return $returnUniqueID ? -1 : false;
   $pieces = CurrentTurnEffectPieces();
   if ($stripParams) {
     for ($i = 0; $i < $count; $i += $pieces) {
@@ -1132,6 +1139,7 @@ function SearchAurasForCard($cardID, $player, $selfReferential = true)
       $indices[] = $i;
     }
   }
+  if (!$indices) return "";
   return implode(",", $indices);
 }
 

@@ -28,7 +28,7 @@ function AMXEffectPowerModifier($cardID): int
 
 function AMXCombatEffectActive($cardID, $attackID): bool
 {
-  global $combatChainState, $CCS_IsBoosted;
+  global $CCS_IsBoosted;
   return match($cardID) {
     "bank_breaker" => true,
     "twintek_charging_station_red" => GetCombatChainState($CCS_IsBoosted),

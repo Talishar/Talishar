@@ -13,6 +13,7 @@ function EncounterAI()
   if(!IsGameOver() && $currentPlayerIsAI)
   {
     $isBowActive = false;
+    $deckPieces = DeckPieces();
     for($logicCount=0; $logicCount<=30 && $currentPlayerIsAI; ++$logicCount)
     {
       global $turn;
@@ -79,7 +80,7 @@ function EncounterAI()
           //Some things automatically adjust the data
           if($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") {
             $deck = &GetDeck($currentPlayer);
-            $choice = $deck[$choice*DeckPieces()];
+            $choice = $deck[$choice * $deckPieces];
           }
           ContinueDecisionQueue($choice);
         }
