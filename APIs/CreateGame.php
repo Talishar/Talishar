@@ -137,6 +137,8 @@ $p1DisplayName = "";
 $p2DisplayName = "";
 $p1id = "-";
 $p2id = "-";
+$p1WebhookUrl = "";
+$p2WebhookUrl = "";
 $hostIP = GetClientIP();
 $gameGUID = GenerateGameGUID();
 

@@ -51,6 +51,8 @@ if ($conn === false) {
   $response->metafyCommunities = [];
   $response->isMetafySupporter = false;
   $response->metafyNeedsReauth = false;
+  $response->matchResultWebhookUrl = null;
+  $response->canUseMatchResultWebhook = false;
   header('Content-Type: application/json');
   echo json_encode($response);
   exit;
@@ -60,7 +62,7 @@ $sql = "SELECT metafyAccessToken, metafyCommunities, metafyID, usersId, rust_cou
                  rust_counters_last_played IS NULL OR
                  rust_counters_last_played <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)
                )) AS rust_counters_expired,
-               displayName, lastNameChange
+               displayName, lastNameChange, matchResultWebhookUrl
         FROM users WHERE usersUid=?";
 $stmt = mysqli_stmt_init($conn);
 
@@ -96,6 +98,8 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
   }
   $response->isMetafyLinked = !empty($metafyAccessToken);
   $response->metafyInfo = MetafyLink();
+  $response->matchResultWebhookUrl = $row['matchResultWebhookUrl'] ?? null;
+  $response->canUseMatchResultWebhook = IsMatchResultWebhookEligible($userName);
   $response->metafyCommunities = isset($row['metafyCommunities']) ? json_decode($row['metafyCommunities'], true) : [];
   if (!is_array($response->metafyCommunities)) $response->metafyCommunities = [];
   $response->metafyNeedsReauth = false;
@@ -132,6 +136,8 @@ else {
   $response->metafyCommunities = [];
   $response->isMetafySupporter = false;
   $response->metafyNeedsReauth = false;
+  $response->matchResultWebhookUrl = null;
+  $response->canUseMatchResultWebhook = false;
 }
 
 mysqli_close($conn);
