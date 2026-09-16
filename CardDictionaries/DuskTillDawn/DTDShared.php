@@ -605,7 +605,6 @@ function MirageLayer($target)
   }
 }
 
-
 function ResolveTransformHero($player, $cardID, $parameter)
 {
   global $CS_OriginalHero;

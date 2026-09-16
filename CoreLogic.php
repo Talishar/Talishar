@@ -1900,12 +1900,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers, $CombatChain;
   global $CCS_EclecticMag, $CS_ArcaneDamageDealt, $currentTurnEffects;
   $otherPlayer = 3 - $currentPlayer;
-  $cardType = CardType($cardID);
-  $subtype = CardSubType($cardID);
-  $otherCharacter = &GetPlayerCharacter($otherPlayer);
-  $cardTypeIsAction = DelimStringContains($cardType, "A");
-  $subtypeIsAura = DelimStringContains($subtype, "Aura");
-  $isStaticType = IsStaticType($cardType, $from, $cardID);
 
   // cards whose ability lets you play them at instant speed
   $card = GetClass($cardID, $currentPlayer);
@@ -1956,6 +1950,12 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   }
 
   if (CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("spirit_of_eirina_yellow", $currentPlayer) != "") return true;
+  $cardType = CardType($cardID);
+  $subtype = CardSubType($cardID);
+  $otherCharacter = &GetPlayerCharacter($otherPlayer);
+  $cardTypeIsAction = DelimStringContains($cardType, "A");
+  $subtypeIsAura = DelimStringContains($subtype, "Aura");
+  $isStaticType = IsStaticType($cardType, $from, $cardID);
   if ($cardTypeIsAction && GetClassState($currentPlayer, $CS_NextWizardNAAInstant) && ClassContains($cardID, "WIZARD", $currentPlayer)) return true;
   if (!$isStaticType && $cardTypeIsAction && GetClassState($currentPlayer, $CS_NextNAAInstant)) return true;
   if ($cardTypeIsAction && $currentPlayer == $mainPlayer && GetCombatChainState($CCS_EclecticMag)) return true;

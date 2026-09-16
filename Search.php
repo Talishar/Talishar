@@ -1139,6 +1139,7 @@ function SearchAurasForCard($cardID, $player, $selfReferential = true)
       $indices[] = $i;
     }
   }
+  if (!$indices) return "";
   return implode(",", $indices);
 }
 
