@@ -212,7 +212,7 @@ function MONTalentHitEffect($cardID)
   {
     global $CS_Num6PowPutIntoBanish;
     $character = &GetPlayerCharacter($player);
-    $characterID = ShiyanaCharacter($character[0]);
+    $characterID = ShiyanaCharacter($character[0], $player);
     if($character[1] == 2 && $characterID == "levia_redeemed") return true;
     if($character[1] == 2 && ($characterID == "levia_shadowborn_abomination" || $characterID == "levia") && GetClassState($player, $CS_Num6PowPutIntoBanish) > 0) return true;
     return false;

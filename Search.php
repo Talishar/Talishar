@@ -275,7 +275,7 @@ function SearchInner(
     if ($maxDef !== -1 && BlockValue($cardID) > $maxDef) continue;
     if ($arcaneDamage !== -1 && !ArcaneDamageMatch($cardID, $arcaneDamage)) continue;
 
-    if ($bloodDebtOnly && !HasBloodDebt($cardID)) continue;
+    if ($bloodDebtOnly && !HasBloodDebt($cardID, $player)) continue;
     if ($phantasmOnly && !HasPhantasm($cardID, $zone)) continue;
     if ($specOnly && !HasSpecialization($cardID)) continue;
     if ($getDistinctCardNames) {
