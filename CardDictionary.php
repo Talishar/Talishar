@@ -420,6 +420,7 @@ function CardSet($cardID)
     case "clambering_corpses_blue":
     case "otherworldly_ossuary_blue":
     case "drop_dead_bodice":
+    case "shadowrealm_strength_blue":
       return $setCache[$cardID] = "AMA";
     case "figment_of_hope_yellow":
     case "herald_of_hope_red":
