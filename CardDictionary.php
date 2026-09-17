@@ -967,7 +967,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   }
   $cardID = BlindCard($cardID, true);
   $basePower = -1;
-  if (ClassContains($cardID, "ILLUSIONIST", $player) && DelimStringContains($subtype, "Aura") && ($from == "CC" || $from == "LAYER")) {
+  if (ClassContains($cardID, "ILLUSIONIST", $player) && DelimStringContains($subtype, "Aura") && ($from == "CC" || $from == "PLAY" || $from == "LAYER")) {
     if (SearchCharacterForCard($mainPlayer, "luminaris")) $basePower = 1;
     if (SearchCharacterForCard($mainPlayer, "iris_of_reality")) $basePower = 4;
     if (SearchCharacterForCard($mainPlayer, "reality_refractor")) $basePower = 5;

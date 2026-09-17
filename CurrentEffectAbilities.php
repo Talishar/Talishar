@@ -2557,7 +2557,8 @@ function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $i
   // Matches the loop below falling through without ever setting $restrictedBy.
   if (!$hasRestrictingEffect) return "";
 
-  $powerValue = PowerValue($cardID, $mainPlayer, "LAYER", $index, base:true);
+  $from = IsActivated($cardID, $from) ? "PLAY" : "LAYER";
+  $powerValue = PowerValue($cardID, $mainPlayer, $from, $index, base:true);
   $hasNoAbilityTypes = GetAbilityTypes($cardID, from: $from) == "";
   $resolvedAbilityType = $overrideType == "-" ? GetResolvedAbilityType($cardID) : $overrideType;
   $abilityType = GetAbilityType($cardID, from: $from);
