@@ -96,9 +96,9 @@ class ChainLink {
 		$chainLinksPieces = ChainLinksPieces();
 		for ($i = 0; $i < $count; $i += $chainLinksPieces) {
 			if ($this->link[$i + 2] == 0) continue;
-      if ($this->link[$i + 8] == $uid) return new LinkCard($this->linkNum, $i);
-    }
-    return new LinkCard($this->linkNum, -1);
+      		if ($this->link[$i + 8] == $uid) return new LinkCard($this->linkNum, $i);
+		}
+    	return new LinkCard($this->linkNum, -1);
 	}
 
 	function FindCardID($id, $player="-") {

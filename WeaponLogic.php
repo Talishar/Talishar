@@ -20,7 +20,7 @@ function IsWeaponAttack()
 {
   global $combatChain, $mainPlayer;
   if (empty($combatChain)) return false;
-  return TypeContains($combatChain[0], "W", $mainPlayer) || (SubtypeContains($combatChain[0], "Aura") && IsWeapon($combatChain[0], "PLAY"));
+  return IsWeapon($combatChain[0], "PLAY", $mainPlayer);
 }
 
 function WeaponWithNonAttack($cardID, $from)
