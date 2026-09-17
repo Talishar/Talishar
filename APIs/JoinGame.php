@@ -568,6 +568,16 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $filename = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
    $origFilename = "../Games/" . $gameName . "/p" . $playerID . "DeckOrig.txt";
 
+   $arenaLocked = ($p1EquipmentSubmitted == "1" && $p2EquipmentSubmitted == "1");
+   $lockedCharString = "";
+   if ($arenaLocked && file_exists($filename)) {
+     $lockedHandler = @fopen($filename, "r");
+     if ($lockedHandler !== false) {
+       $lockedCharString = trim((string)fgets($lockedHandler));
+       fclose($lockedHandler);
+     }
+   }
+
    // Ensure any old deck files are removed before writing new ones
    if (file_exists($filename))
      unlink($filename);
@@ -592,6 +602,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $charString .= " " . $arms;
    if ($legs != "")
      $charString .= " " . $legs;
+   if ($lockedCharString !== "") $charString = $lockedCharString;
    fwrite($deckFile, $charString . "\r\n");
    fwrite($deckFile, $deckCards . "\r\n");
    fwrite($deckFile, $headSideboard . "\r\n");

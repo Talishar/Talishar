@@ -155,19 +155,20 @@ if ($playerID == 2 && !$equipmentLocked) {
 
 $playerDeck = $submission->deck;
 $deckCount = count($playerDeck);
-if($deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "gage")) {
+if($phase == "equipment") $deckCount = -1;
+if($deckCount >= 0 && $deckCount < 60 && ($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "gage")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
   echo json_encode($response);
   exit;
 }
-if($deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz" || $format == "sage" || $format == "compsage")) {
+if($deckCount >= 0 && $deckCount < 40 && ($format == "blitz" || $format == "compblitz" || $format == "commoner" || $format == "llblitz" || $format == "sage" || $format == "compsage")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is below the minimum.";
   echo json_encode($response);
   exit;
 }
-if($deckCount > 40 && ($format == "blitz" || $format == "compblitz" || $format == "llblitz" || $format == "sage" || $format == "compsage")) {
+if($deckCount >= 0 && $deckCount > 40 && ($format == "blitz" || $format == "compblitz" || $format == "llblitz" || $format == "sage" || $format == "compsage")) {
   $response->status = "FAIL";
   $response->deckError = "Unable to submit player " . $playerID . "'s deck. " . $deckCount . " cards selected is above the maximum.";
   echo json_encode($response);
