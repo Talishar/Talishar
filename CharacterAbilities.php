@@ -633,14 +633,6 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
           $powerModifiers[] = $mainCharacterEffects[$i + 1];
           $powerModifiers[] = 1;
           break;
-        case "cintari_saber":
-        case "cintari_saber_r":
-          if($CombatChain->CurrentAttack() == $mainCharacterEffects[$i + 1]) {
-            $modifier += 1;
-            $powerModifiers[] = $mainCharacterEffects[$i + 1];
-            $powerModifiers[] = 1;
-          }
-          break;
         default:
           break;
       }

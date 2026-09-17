@@ -94,10 +94,13 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
     AddCurrentTurnEffectFromCombat($cardID, $player, $uniqueID);
     return;
   }
+  $ind = count($currentTurnEffects);
   $currentTurnEffects[] = $cardID;
   $currentTurnEffects[] = $player;
   $currentTurnEffects[] = $uniqueID;
   $currentTurnEffects[] = CurrentTurnEffectUses($cardID);
+  if (!IsCombatEffectLimited($ind) && IsCombatEffectActive($cardID))
+    ReEvalCombatChain();
 }
 
 function AddEffectToCurrentAttack($cardID) {
@@ -2002,12 +2005,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     switch ($parameter) {
       case "staff_of_verdant_shoots":
         PlayAura("embodiment_of_earth", $player, 1);
-        break;
-      case "cintari_saber":
-      case "cintari_saber_r":
-        $attackID = $CombatChain->AttackCard()->ID();
-        AddCharacterEffect($player, GetCombatChainState($CCS_WeaponIndex), $attackID);
-        WriteLog(CardLink($attackID) . " got +1 for the rest of the turn.");
         break;
       case "evo_steel_soul_memory_blue":
         AddCurrentTurnEffect($parameter, $player);

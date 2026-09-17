@@ -350,18 +350,61 @@
 //   }
 // }
 
+class saber_base extends BaseCard {
+    function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+        global $CombatChain;
+        WriteLog(CardLink($this->cardID) . " got +1 for the rest of the turn.");
+        AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$CombatChain->AttackCard()->OriginUniqueID());
+    }
 
-// class cintari_saber extends Card {
+    function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+        return true;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "cintari_saber";
-//     $this->controller = $controller;
-//     }
+    function IsCombatEffectPersistent($mode) {
+        return true;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function EffectPowerModifier($param, $attached = false) {
+        return 1;
+    }
+
+    function AttackGetsBlockedEffect($start) {
+        global $combatChain;
+        $combatChainCount = count($combatChain);
+        $combatChainPieces = CombatChainPieces();
+        for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
+            if (TypeContains($combatChain[$i], "AA")) {
+                AddLayer("TRIGGER", $this->controller, $combatChain[0]);
+                return;
+            }
+        }
+    }
+
+    function AbilityCost() {
+        return 1;
+    }
+
+    function AbilityType($index = -1, $from = '-') {
+        return "AA";
+    }
+}
+
+class cintari_saber extends Card {
+    function __construct($controller) {
+        $this->cardID = "cintari_saber";
+        $this->controller = $controller;
+        $this->baseCard = new saber_base($this->cardID, $this->controller);
+    }
+}
+
+class cintari_saber_r extends Card {
+    function __construct($controller) {
+        $this->cardID = "cintari_saber";
+        $this->controller = $controller;
+        $this->baseCard = new saber_base($this->cardID, $this->controller);
+    }
+}
 
 
 // class coax_a_commotion_red extends Card {

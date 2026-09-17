@@ -867,15 +867,6 @@ function OnBlockResolveEffects($cardID = "")
     $card = GetClass($combatChain[0], $mainPlayer);
     if ($card != "-") $card->AttackGetsBlockedEffect($start);
     switch ($combatChain[0]) {
-      case "cintari_saber":
-      case "cintari_saber_r":
-        for ($i = $start; $i < $combatChainCount; $i += $combatChainPieces) {
-          if (TypeContains($combatChain[$i], "AA")) {
-            AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
-            break;
-          }
-        }
-        break;
       case "zephyr_needle":
       case "zephyr_needle_r":
         EvaluateCombatChain($totalPower, $totalBlock);

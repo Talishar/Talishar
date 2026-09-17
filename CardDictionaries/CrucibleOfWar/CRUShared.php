@@ -8,7 +8,6 @@
       case "crater_fist": return 3;
       case "harmonized_kodachi_r": return 1;
       case "edge_of_autumn": case "zephyr_needle": case "zephyr_needle_r": return 1;
-      case "cintari_saber": case "cintari_saber_r": return 1;
       case "plasma_barrel_shot": return GetResolvedAbilityType($cardID) == "A" ? 2 : 0;
       case "plasma_purifier_red": 
         $items = &GetItems($currentPlayer); 
@@ -33,7 +32,6 @@
       case "crater_fist": return "A";
       case "harmonized_kodachi_r": return "AA";
       case "edge_of_autumn": case "zephyr_needle": case "zephyr_needle_r": return "AA";
-      case "cintari_saber": case "cintari_saber_r": return "AA";
       case "courage_of_bladehold": return "A";
       case "plasma_barrel_shot": return "A";
       case "viziertronic_model_i": return "A";
