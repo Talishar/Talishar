@@ -69,6 +69,10 @@ $p1DisplayName = trim(fgets($gameFileHandler) ?: '');
 $p2DisplayName = trim(fgets($gameFileHandler) ?: '');
 if ($p1DisplayName === '') $p1DisplayName = $p1uid;
 if ($p2DisplayName === '') $p2DisplayName = $p2uid;
+$p1EquipmentSubmitted = trim(fgets($gameFileHandler) ?: '');
+$p2EquipmentSubmitted = trim(fgets($gameFileHandler) ?: '');
+if ($p1EquipmentSubmitted === '') $p1EquipmentSubmitted = ($p1SideboardSubmitted == "1" ? "1" : "0");
+if ($p2EquipmentSubmitted === '') $p2EquipmentSubmitted = ($p2SideboardSubmitted == "1" ? "1" : "0");
 
 $MGS_Initial = 0;
 $MGS_Player2Joined = 1;

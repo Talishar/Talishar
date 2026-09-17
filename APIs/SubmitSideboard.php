@@ -51,6 +51,51 @@ if ($submissionString === null) {
   exit;
 }
 
+$phase = $_POST["phase"] ?? "deck";
+if ($phase !== "equipment") $phase = "deck";
+
+function ReadDeckCharacterLine($gameName, $playerID)
+{
+  $path = "../Games/" . $gameName . "/p" . $playerID . "Deck.txt";
+  if (!file_exists($path)) return "";
+  $handler = @fopen($path, "r");
+  if ($handler === false) return "";
+  $firstLine = trim((string)fgets($handler));
+  fclose($handler);
+  return $firstLine;
+}
+
+function JoinCardList($items)
+{
+  $count = count($items);
+  if ($count === 0) return "no arena cards";
+  if ($count === 1) return $items[0];
+  $last = array_pop($items);
+  return implode(", ", $items) . " and " . $last;
+}
+
+function LogArenaReveal($gameName)
+{
+  global $isReactFE;
+  $previousIsReactFE = $isReactFE;
+  $isReactFE = true;
+
+  WriteLog("Both players have locked in their arena cards.", path: "../");
+  for ($p = 1; $p <= 2; ++$p) {
+    $character = ReadDeckCharacterLine($gameName, $p);
+    $cards = ($character === "" ? [] : preg_split('/\s+/', $character));
+    array_shift($cards); // hero
+    $links = [];
+    foreach ($cards as $cardID) {
+      if ($cardID === "" || $cardID === "NONE00") continue;
+      $links[] = CardLink($cardID);
+    }
+    WriteLog("Player " . $p . " revealed: " . JoinCardList($links), $p, path: "../");
+  }
+
+  $isReactFE = $previousIsReactFE;
+}
+
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
@@ -76,6 +121,13 @@ if(isset($submission->chest) && $submission->chest != "") $character .= " " . $s
 if(isset($submission->arms) && $submission->arms != "") $character .= " " . $submission->arms;
 if(isset($submission->legs) && $submission->legs != "") $character .= " " . $submission->legs;
 if(isset($submission->offhand) && $submission->offhand != "") $character .= " " . $submission->offhand;
+$arenaRevealed = ($p1EquipmentSubmitted == "1" && $p2EquipmentSubmitted == "1");
+$equipmentLocked = $arenaRevealed;
+if ($equipmentLocked) {
+  $lockedCharacter = ReadDeckCharacterLine($gameName, $playerID);
+  if ($lockedCharacter !== "") $character = $lockedCharacter;
+}
+
 if (isset($submission->deck))
   $submission->deck = array_values(array_filter($submission->deck, fn($card) => !HasIncarnate($card)));
 if (isset($submission->inventory))
@@ -83,7 +135,7 @@ if (isset($submission->inventory))
 
 $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 
-if ($playerID == 1) {
+if ($playerID == 1 && !$equipmentLocked) {
   $p1StartingEquipment = (object)[
     'head'  => $submission->head,
     'chest' => $submission->chest,
@@ -92,7 +144,7 @@ if ($playerID == 1) {
   ];
 }
 
-if ($playerID == 2) {
+if ($playerID == 2 && !$equipmentLocked) {
   $p2StartingEquipment = (object)[
     'head'  => $submission->head,
     'chest' => $submission->chest,
@@ -176,8 +228,17 @@ fwrite($deckFile, implode(" ", $modularSB) . "\r\n");
 fwrite($deckFile, implode(" ", $inventory));
 fclose($deckFile);
 
-if($playerID == 1) $p1SideboardSubmitted = "1";
-else if($playerID == 2) $p2SideboardSubmitted = "1";
+if($playerID == 1) $p1EquipmentSubmitted = "1";
+else if($playerID == 2) $p2EquipmentSubmitted = "1";
+
+if($phase == "deck") {
+  if($playerID == 1) $p1SideboardSubmitted = "1";
+  else if($playerID == 2) $p2SideboardSubmitted = "1";
+}
+
+if(!$arenaRevealed && $p1EquipmentSubmitted == "1" && $p2EquipmentSubmitted == "1") {
+  LogArenaReveal($gameName);
+}
 
 if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus < $MGS_GameStarted) {
   $gameStatus = $MGS_ReadyToStart;

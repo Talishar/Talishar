@@ -47,6 +47,8 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
   $firstPlayerChooser = ($p2IsAILocal ? 1 : ($winner == 1 ? 2 : 1));
   $p1SideboardSubmitted = "0";
   $p2SideboardSubmitted = ($p2IsAILocal ? "1" : "0");
+  $p1EquipmentSubmitted = "0";
+  $p2EquipmentSubmitted = ($p2IsAILocal ? "1" : "0");
 
   if ($isSwapRematch) {
     TruncateLogAboveMarker(["offered to swap heroes and rematch."]);

@@ -85,6 +85,31 @@ if($action == "Request Chat")
   exit;
 }
 
+if ($action == "Unready Equipment") {
+  $arenaRevealed = ($p1EquipmentSubmitted == "1" && $p2EquipmentSubmitted == "1");
+  $didChangeEquipmentState = false;
+
+  if (!$arenaRevealed) {
+    if ($playerID == 1 && $p1EquipmentSubmitted == "1") {
+      $p1EquipmentSubmitted = "0";
+      $didChangeEquipmentState = true;
+    } else if ($playerID == 2 && $p2EquipmentSubmitted == "1") {
+      $p2EquipmentSubmitted = "0";
+      $didChangeEquipmentState = true;
+    }
+  }
+
+  if ($didChangeEquipmentState) {
+    if (function_exists('FlushLogBuffer')) FlushLogBuffer();
+    $cacheArr = ReadCacheArray($gameName);
+    if ($cacheArr !== null) {
+      $cacheArr[0] = (int)($cacheArr[0]) + 1;
+      $cacheArr[5] = round(microtime(true) * 1000);
+      WriteCache($gameName, implode("!", $cacheArr));
+    }
+  }
+}
+
 if ($action == "Unready Sideboard") {
   $didChangeSideboardState = false;
 

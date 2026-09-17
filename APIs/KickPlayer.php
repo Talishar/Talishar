@@ -89,6 +89,8 @@ $p2DisplayName = "";
 $p2id = "";
 $p2SideboardSubmitted = "0";
 $p1SideboardSubmitted = "0";
+$p1EquipmentSubmitted = "0";
+$p2EquipmentSubmitted = "0";
 
 WriteGameFile();
 

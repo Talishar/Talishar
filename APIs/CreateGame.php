@@ -97,6 +97,7 @@ if($isShadowBanned) {
 $p1Data = [1];
 $p2Data = [2];
 $p1SideboardSubmitted = "0";
+$p1EquipmentSubmitted = "0";
 $p1IsAI = "0";
 if ($deckTestMode != "") {
   $gameStatus = 2; //Choose first player - the human always wins the roll against a bot
@@ -120,10 +121,12 @@ if ($deckTestMode != "") {
   $opponentDeck = "../Assets/" . $selectedSoloDeck[0];
   copy($opponentDeck, "../Games/" . $gameName . "/p2Deck.txt");
   $p2SideboardSubmitted = "1";
+  $p2EquipmentSubmitted = "1";
   $p2IsAI = "1";
 } else {
   $gameStatus = 0; //Initial
   $p2SideboardSubmitted = "0";
+  $p2EquipmentSubmitted = "0";
   $p2IsAI = "0";
 }
 $firstPlayerChooser = ($deckTestMode != "" ? "1" : "");

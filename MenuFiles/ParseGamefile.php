@@ -73,6 +73,10 @@
   $p2DisplayName        = $lines[$li++] ?? '';
   if ($p1DisplayName === '') $p1DisplayName = $p1uid;
   if ($p2DisplayName === '') $p2DisplayName = $p2uid;
+  $p1EquipmentSubmitted = $lines[$li++] ?? '';
+  $p2EquipmentSubmitted = $lines[$li++] ?? '';
+  if ($p1EquipmentSubmitted === '') $p1EquipmentSubmitted = ($p1SideboardSubmitted == "1" ? "1" : "0");
+  if ($p2EquipmentSubmitted === '') $p2EquipmentSubmitted = ($p2SideboardSubmitted == "1" ? "1" : "0");
   unset($lines, $li, $line);
 
   $MGS_Initial = 0;

@@ -537,7 +537,7 @@ function CardLink($caption, $cardNumber="-", $recordMenu = false)
   global $darkMode, $playerID, $isReactFE;
   $cardNumber = $cardNumber == "-" ? $caption : $cardNumber;
   if ($isReactFE) {
-    return "{{" . $cardNumber . "|" . CardName($cardNumber) . "|" . PitchValue($cardNumber) . "}}";
+    return "{{" . $cardNumber . "|" . CardName($cardNumber) . "|" . (int)PitchValue($cardNumber) . "}}";
   }
 
   $name = CardName($cardNumber);

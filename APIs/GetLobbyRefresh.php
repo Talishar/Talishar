@@ -219,6 +219,8 @@ if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
     $p2id = "";
     $p2SideboardSubmitted = "0";
     $p1SideboardSubmitted = "0";
+    $p1EquipmentSubmitted = "0";
+    $p2EquipmentSubmitted = "0";
   } else {
     SetCachePiece($gameName, 7, "");
     $p1uid = "-";
@@ -226,6 +228,8 @@ if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
     $p1id = "";
     $p1SideboardSubmitted = "0";
     $p2SideboardSubmitted = "0";
+    $p1EquipmentSubmitted = "0";
+    $p2EquipmentSubmitted = "0";
   }
 
   WriteGameFile();
@@ -247,6 +251,11 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->isSideboarding = false;
   $response->mySideboardSubmitted = true;
   $response->opponentSideboardSubmitted = true;
+  $response->isEquipmentPhase = false;
+  $response->myEquipmentSubmitted = true;
+  $response->opponentEquipmentSubmitted = true;
+  $response->canSubmitEquipment = false;
+  $response->canUnreadyEquipment = false;
   if(IsUserLoggedIn() && ($lastAuthKey == null || $lastAuthKey !== $authKey)) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
   echo json_encode($response);
   exit;
@@ -342,11 +351,24 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->opponentSideboardSubmitted = ($playerID == 1 ? $p2SideboardSubmitted == "1" : $p1SideboardSubmitted == "1");
   $opponentIsAI = ($playerID == 1 ? $p2IsAI == "1" : $p1IsAI == "1");
   $response->isOpponentAI = $opponentIsAI;
+
+  $myEquipmentSubmitted = ($playerID == 1 ? $p1EquipmentSubmitted == "1" : $p2EquipmentSubmitted == "1");
+  $opponentEquipmentSubmitted = ($playerID == 1 ? $p2EquipmentSubmitted == "1" : $p1EquipmentSubmitted == "1");
+  $arenaRevealed = ($p1EquipmentSubmitted == "1" && $p2EquipmentSubmitted == "1");
+  $inPreGame = ($gameStatus > $MGS_ChooseFirstPlayer && $gameStatus < $MGS_GameStarted);
+  $response->myEquipmentSubmitted = $myEquipmentSubmitted;
+  $response->opponentEquipmentSubmitted = $opponentEquipmentSubmitted;
+  $response->isEquipmentPhase = ($response->isSideboarding && !$arenaRevealed);
+  $response->canSubmitEquipment = ($inPreGame && !$arenaRevealed && !$myEquipmentSubmitted);
+  $response->canUnreadyEquipment = ($inPreGame && !$arenaRevealed && $myEquipmentSubmitted);
+
   if($p1IsAI || $p2IsAI) {
     $response->canSubmitSideboard =($gameStatus > $MGS_ChooseFirstPlayer && ($playerID == 1 ? $p1SideboardSubmitted == "0" : $p2SideboardSubmitted == "0"));
   }
   else $response->canSubmitSideboard = ($gameStatus > $MGS_ChooseFirstPlayer && $gameStatus != $MGS_ReadyToStart);
+  $response->canSubmitSideboard = ($response->canSubmitSideboard && $arenaRevealed);
   $response->canUnreadySideboard = (
+    $arenaRevealed &&
     $gameStatus > $MGS_ChooseFirstPlayer &&
     $gameStatus < $MGS_ReadyToStart &&
     ($playerID == 1 ? $p1SideboardSubmitted == "1" : $p2SideboardSubmitted == "1")
