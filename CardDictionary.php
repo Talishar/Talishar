@@ -1338,13 +1338,13 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
   switch ($cardID) {
     case "teklo_plasma_pistol":
       if ($allNames) return "Add_a_steam_counter,Attack";
-      if ($index == -1) return "";
+      if (!is_numeric($index) || $index == -1) return "";
       $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
       if ($character[$index + 2] > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer)) $rv .= ",Attack";
       return $rv;
     case "plasma_barrel_shot":
       if ($allNames) return "Add_a_steam_counter,Attack";
-      if ($index == -1) return "";
+      if (!is_numeric($index) || $index == -1) return "";
       $CharacterCard = new CharacterCard($index, $currentPlayer);
       $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
       if ($CharacterCard->NumCounters() > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer) && $CharacterCard->NumUses() > 0) $rv .= ",Attack";
