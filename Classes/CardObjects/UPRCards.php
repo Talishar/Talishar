@@ -3164,14 +3164,9 @@ class tiger_stripe_shuko extends Card {
     return "";
   }
 
-  function PlayCardAbility($cardID, $from) {
-    if (TypeContains($cardID, "AA", $this->controller) && ShukoActive()) {
-      LogPlayCardStats($this->controller, $this->cardID, "EQUIP", "PASSIVE");
-    }
-  }
-
   function PermanentPowerModifier(&$powerModifiers) {
     if (ShukoActive()) {
+      if (!ShukoLoggedThisTurn($this->controller)) LogPlayCardStats($this->controller, $this->cardID, "EQUIP", "PASSIVE");
       $powerModifiers[] = $this->cardID;
       $powerModifiers[] = 1;
       return 1;

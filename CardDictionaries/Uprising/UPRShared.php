@@ -190,6 +190,18 @@ function ShukoActive() {
   $Character = new PlayerCharacter($mainPlayer);
   if ($Character->FindCardID("tiger_stripe_shuko")->Index() == -1) return false;
   $cardID = $CombatChain->AttackCard()->ID();
-  return TypeContains($cardID, "AA") && GetClassState($mainPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID, $mainPlayer, base:true, attacking:true) <= 2;
+  if (!TypeContains($cardID, "AA") || GetClassState($mainPlayer, $CS_NumLess3PowAAPlayed) != 2) return false;
+  $basePower = $CombatChain->HasCurrentLink() ? LinkBasePower() : PowerValue($cardID, $mainPlayer, base:true, attacking:true);
+  return $basePower <= 2;
+}
+
+function ShukoLoggedThisTurn($player) {
+  global $currentTurn;
+  $cardTurnLog = &GetCardTurnLog($player);
+  for ($i = count($cardTurnLog) - 1; $i >= 0; --$i) {
+    if (($cardTurnLog[$i][0] ?? -1) != $currentTurn) return false;
+    if (($cardTurnLog[$i][1] ?? "") == "tiger_stripe_shuko" && ($cardTurnLog[$i][2] ?? "") == "PASSIVE") return true;
+  }
+  return false;
 }
 ?>
