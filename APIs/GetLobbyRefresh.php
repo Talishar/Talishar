@@ -361,7 +361,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $inPreGame = ($gameStatus > $MGS_ChooseFirstPlayer && $gameStatus < $MGS_GameStarted);
   $response->myEquipmentSubmitted = $myEquipmentSubmitted;
   $response->opponentEquipmentSubmitted = $opponentEquipmentSubmitted;
-  $response->isEquipmentPhase = ($response->isSideboarding && !$arenaRevealed);
+  $response->isEquipmentPhase = ($gameStatus < $MGS_GameStarted && !$arenaRevealed);
   $response->canSubmitEquipment = ($inPreGame && !$arenaRevealed && !$myEquipmentSubmitted);
   $response->canUnreadyEquipment = ($inPreGame && !$arenaRevealed && $myEquipmentSubmitted);
 
