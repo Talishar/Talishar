@@ -90,7 +90,8 @@ function LogArenaReveal($gameName)
       if ($cardID === "" || $cardID === "NONE00") continue;
       $links[] = CardLink($cardID);
     }
-    WriteLog("Player " . $p . " revealed: " . JoinCardList($links), $p, path: "../");
+    $name = "<span style='color:<PLAYER" . $p . "COLOR>;'>Player " . $p . "</span>";
+    WriteLog($name . " revealed: " . JoinCardList($links), path: "../");
   }
 
   $isReactFE = $previousIsReactFE;
