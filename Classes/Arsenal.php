@@ -7,24 +7,24 @@ class Arsenal {
   private $player;
 
   // Constructor
-  function __construct($playerID) {
-    $this->arsenal = &GetArsenal($playerID);
-    $this->player = $playerID;
-  }
+	function __construct($playerID) {
+		$this->arsenal = &GetArsenal($playerID);
+		$this->player = $playerID;
+	}
 
-  // Methods
-  function Empty() {
-    return count($this->arsenal) == 0;
-  }
+	// Methods
+	function Empty() {
+		return count($this->arsenal) == 0;
+	}
 
 	function NumCards() {
 		return intdiv(count($this->arsenal), ArsenalPieces());
 	}
 
 	function Card($index, $cardNumber=false) {
-    if($cardNumber) $index *= ArsenalPieces();
-    return new ArsenalCard($index, $this->player);
-  }
+		if($cardNumber) $index *= ArsenalPieces();
+		return new ArsenalCard($index, $this->player);
+	}
 
 	function DestroyAll($effectController=0) {
 		$cardIDs = [];
@@ -55,11 +55,11 @@ class ArsenalCard {
 	private $index;
 
   // Constructor
-  function __construct($index, $playerID) {
-    $this->pieces = &GetArsenal($playerID);
-    $this->controller = $playerID;
+	function __construct($index, $playerID) {
+		$this->pieces = &GetArsenal($playerID);
+		$this->controller = $playerID;
 		$this->index = $index;
-  }
+  	}
 
 	function CardID() {
 		return $this->pieces[$this->index] ?? "-";
@@ -72,11 +72,16 @@ class ArsenalCard {
 	// Nothing for offset of 2 for some reason
 
 	function Counters() {
-		return $this->pieces[$this->index + 2] ?? 0;
+		return $this->pieces[$this->index + 3] ?? 0;
+	}
+
+	function AddCounters($n=1) {
+		if ($this->index != -1 && isset($this->pieces[$this->index + 3]))
+			$this->pieces[$this->index + 3] += $n;
 	}
 
 	function Frozen() {
-		return $this->pieces[$this->index + 3] ?? 0;
+		return $this->pieces[$this->index + 4] ?? 0;
 	}
 
 	function UniqueID() {

@@ -614,11 +614,13 @@ function ArsenalHitEffects($check = false): bool
           if ($check) return true;
           MinervaThemisAbility($mainPlayer, $i);
         }
+        break;
       case "hala_goldenhelm":
         if ($arsenal[$i + 1] == "UP" && TypeContains($attackID, "W", $mainPlayer) && CardSubType($attackID) == "Sword") {
           if ($check) return true;
           HalaGoldenhelmAbility($mainPlayer, $i);
         }
+        break;
       default:
         break;
     }

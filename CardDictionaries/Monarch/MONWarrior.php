@@ -113,7 +113,7 @@
 
   function MinervaThemisAbility($player, $index)
   {
-    $arsenal = &GetArsenal($player);
-    ++$arsenal[$index+3];
-    if($arsenal[$index+3] == 3) MentorTrigger($player, $index);
+    $ArsenalCard = new ArsenalCard($index, $player);
+    $ArsenalCard->AddCounters();
+    if($ArsenalCard->Counters() >= 3) MentorTrigger($player, $index);
   }
