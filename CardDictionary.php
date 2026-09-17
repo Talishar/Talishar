@@ -417,6 +417,15 @@ function CardSet($cardID)
       return $setCache[$cardID] = "SEA";
     case "okana_scar_wraps": case "iris_of_the_blossom":
       return $setCache[$cardID] = "ASR";
+    case "clambering_corpses_blue":
+    case "otherworldly_ossuary_blue":
+    case "drop_dead_bodice":
+      return $setCache[$cardID] = "AMA";
+    case "figment_of_hope_yellow":
+    case "herald_of_hope_red":
+    case "herald_of_hope_yellow":
+    case "herald_of_hope_blue":
+      return $setCache[$cardID]= "SAT";
     default:
       $setID = SetID(ExtractCardID($cardID));
       return $setCache[$cardID] = substr($setID, 0, 3);
@@ -4582,12 +4591,9 @@ function Rarity($cardID)
   static $rarityCache = [];
   if (isset($rarityCache[$cardID])) return $rarityCache[$cardID];
   $set = CardSet($cardID);
-  if ($cardID == "baalghor_omen_of_the_end") return $rarityCache[$cardID] = "R";
-  if ($cardID == "raydn_duskbane") return $rarityCache[$cardID] = "R"; //downshift
-  if ($cardID == "blaze_firemind") return $rarityCache[$cardID] = "R"; //downshift
-  if ($cardID == "runic_reaving_red") return $rarityCache[$cardID] = "R"; //downshift
-  if ($cardID == "embrace_sin_yellow") return $rarityCache[$cardID] = "R"; //database mistake
-  if ($cardID == "restless_cleric_red") return $rarityCache[$cardID] = "R"; //database not up to date yet
+  if ($cardID == "prism_advent_of_thrones") return $rarityCache[$cardID] = "R"; //downshift
+  if ($cardID = "the_hand_that_pulls_the_strings") return $rarityCache[$cardID] = "R"; //downshift
+  if ($cardID == "minerva_themis") return $rarityCache[$cardID] = "R"; //downshift
   if ($set != "DUM") {
     return $rarityCache[$cardID] = GeneratedRarity($cardID);
   }
