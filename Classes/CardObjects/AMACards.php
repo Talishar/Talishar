@@ -13,9 +13,9 @@ class restless_commander_red extends Card {
 	function PermanentPowerModifier(&$powerModifiers) {
 		global $CombatChain;
 		if (SubTypeContains($CombatChain->AttackCard()->ID(), "Zombie")) {
-		$powerModifiers[] = $this->cardID;
-		$powerModifiers[] = 1;
-		return 1;
+			$powerModifiers[] = $this->cardID;
+			$powerModifiers[] = 1;
+			return 1;
 		}
 		return 0;
 	}

@@ -71,7 +71,6 @@
       case "uprising_red": return 1;
       case "rise_up_red": return NumChainLinksWithName("Phoenix Flame")*2;
       case "burn_away_red": return 2;
-      case "tiger_stripe_shuko": return 1;
       case "flex_red": case "flex_yellow": case "flex_blue": return 2;
       default: return 0;
     }
@@ -95,7 +94,6 @@
       case "ghostly_touch": return $attackID == "UPR551";
       case "semblance_blue": return ClassContains($attackID, "ILLUSIONIST", $mainPlayer);
       case "transmogrify_red": case "transmogrify_yellow": case "transmogrify_blue": return CardType($attackID) == "AA";
-      case "tiger_stripe_shuko": return true;
       case "flex_red": case "flex_yellow": case "flex_blue": return true;
       case "miragai": return true;
       default: return false;
@@ -187,4 +185,11 @@ function UPRDealDamageEffect($cardID)
     return implode(",", $indicesArr);
   }
 
+function ShukoActive() {
+  global $mainPlayer, $CombatChain, $CS_NumLess3PowAAPlayed;;
+  $Character = new PlayerCharacter($mainPlayer);
+  if ($Character->FindCardID("tiger_stripe_shuko")->Index() == -1) return false;
+  $cardID = $CombatChain->AttackCard()->ID();
+  return TypeContains($cardID, "AA") && GetClassState($mainPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID, $mainPlayer, base:true, attacking:true) <= 2;
+}
 ?>

@@ -1757,13 +1757,6 @@ function CharacterPlayCardAbilities($cardID, $from)
     $card = GetClass($characterID, $currentPlayer);
     if ($card != "-") $card->PlayCardAbility($cardID, $from);
     switch ($characterID) {
-      case "tiger_stripe_shuko":
-        if (GetClassState($currentPlayer, $CS_NumLess3PowAAPlayed) == 2 && PowerValue($cardID, $currentPlayer, "CC") <= 2) {
-          AddCurrentTurnEffect($characterID, $currentPlayer);
-          $CharacterCard->SetUsed();
-          LogPlayCardStats($currentPlayer, "tiger_stripe_shuko", "EQUIP", "PASSIVE");
-        }
-        break;
       case "melody_sing_along":
         if (SubtypeContains($cardID, "Song", $currentPlayer)) PutItemIntoPlayForPlayer("copper", $currentPlayer);
         break;

@@ -691,7 +691,7 @@ function CanDamageBePrevented($player, $damage, $type, $source = "-")
   }
   if ($source == "runechant" && SearchCurrentTurnEffectsAny(["vynnset", "vynnset_iron_maiden"], $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("beat_of_the_ironsong_blue-PREVENT", $mainPlayer)) return false;
-  if (SearchCurrentTurnEffects("tiger_stripe_shuko", $mainPlayer) && $source == $CombatChain->AttackCard()->ID()) return false;
+  if (ShukoActive() && $source == $CombatChain->AttackCard()->ID()) return false;
   if ($type == "COMBAT" && SearchCurrentTurnEffectsAny(["chorus_of_ironsong_yellow", "jagged_edge_red"], $mainPlayer)) return false;
   static $unpreventable = ["rok" => true, "malign_red" => true, "malign_yellow" => true, "malign_blue" => true, "murkmire_grapnel_red" => true, "murkmire_grapnel_yellow" => true, "murkmire_grapnel_blue" => true];
   if (isset($unpreventable[$source]) || isset($unpreventable[$extraText])) return false;

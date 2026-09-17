@@ -3154,17 +3154,25 @@ class spreading_flames_red extends Card {
 // }
 
 
-// class tiger_stripe_shuko extends Card {
+class tiger_stripe_shuko extends Card {
+  function __construct($controller) {
+    $this->cardID = "tiger_stripe_shuko";
+    $this->controller = $controller;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "tiger_stripe_shuko";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PermanentPowerModifier(&$powerModifiers) {
+    if (ShukoActive()) {
+      $powerModifier[] = $this->cardID;
+      $powerModifier[] = 1;
+      return 1;
+    }
+    return 0;
+  }
+}
 
 
 class tome_of_duplicity_blue extends Card {
