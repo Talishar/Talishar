@@ -913,6 +913,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $border = CardBorderColor($myChar, "CHAR", $playable, $playerID);
     if ($myChar == "fyendals_spring_tunic" && ManualTunicSetting($playerID)) $border = 0;
     $manualDynamoRefresh = CanManuallyRefreshValiantDynamo($playerID, $i);
+    $manualValdaToken = CanManuallyCreateValdaToken($playerID, $i);
+    if ($manualValdaToken) $border = 0;
     $type = CardType($myChar);
     if (TypeContains($myChar, "D")) $type = "C";
     $sTypeArr = explode(",", CardSubType($myChar, $myCharacter[$i+11] ?? ""));
@@ -956,7 +958,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if(($myCharacter[$i + 1] ?? 0) > 0) {
         $myCharData[] = JSONRenderedCard(
           $myChar,
-          $manualDynamoRefresh ? 40 : ($currentPlayer == $playerID && $playable ? ($goldOrPitchChoice ? 16 : 3) : 0),
+          $manualDynamoRefresh ? 40 : ($manualValdaToken ? 41 : ($currentPlayer == $playerID && $playable ? ($goldOrPitchChoice ? 16 : 3) : 0)),
           ($myCharacter[$i + 1] ?? 0) != 2 && $myChar != "DUMMYDISHONORED"? 1 : 0,
           $border,
           ($myCharacter[$i + 1] ?? 0) != 0 ? $counters : 0,

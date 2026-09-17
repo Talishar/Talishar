@@ -151,6 +151,7 @@ function CharacterStartTurnAbility($index)
       break;
     case "valda_brightaxe":
     case "valda_seismic_impact":
+      ResolvePendingValdaTokens($mainPlayer, $cardID);
       AddLayer("TRIGGER", $mainPlayer, $cardID, "-", "STARTTURN");
       break;
     case "blasmophet_levia_consumed":
@@ -383,6 +384,10 @@ function MainCharacterBeginEndPhaseTriggers()
       case "terra":
         AddLayer("TRIGGER", $defPlayer, $characterID);
         break;
+      case "valda_brightaxe":
+      case "valda_seismic_impact":
+        CarryOverPendingValdaTokens($defPlayer, $characterID);
+        break;
       default:
         break;
     }
@@ -468,6 +473,74 @@ function ManuallyRefreshValiantDynamo($player, $index): bool
     if ($effectIndex != -1) RemoveCurrentTurnEffect($effectIndex);
   }
   LogPlayCardStats($player, "valiant_dynamo", "EQUIP", "PASSIVE");
+  return true;
+}
+
+function QueueValdaSeismicSurge($player, $cardID, $num)
+{
+  if ($num <= 0) return;
+  if (!ManualValdaSetting($player)) {
+    AddLayer("TRIGGER", $player, $cardID, additionalCosts:$num);
+    return;
+  }
+  for ($i = 0; $i < $num; ++$i) AddCurrentTurnEffect($cardID . "-MANUALTOKEN", $player);
+}
+
+function CreateValdaSeismicSurges($player, $cardID, $num)
+{
+  global $EffectContext;
+  if ($num <= 0) return;
+  $priorContext = $EffectContext;
+  $EffectContext = $cardID;
+  $before = CountAura("seismic_surge", $player);
+  PlayAura("seismic_surge", $player, $num, effectSource:$cardID);
+  $created = CountAura("seismic_surge", $player) - $before;
+  if ($created > 0) {
+    WriteLog(CardLink($cardID, $cardID) . " created " . $created . " " . CardLink("seismic_surge", "seismic_surge") . ($created == 1 ? " token" : " tokens"));
+  }
+  $EffectContext = $priorContext;
+}
+
+function ResolvePendingValdaTokens($player, $cardID)
+{
+  CreateValdaSeismicSurges($player, $cardID, CountCurrentTurnEffects($cardID . "-MANUALTOKEN", $player, true));
+}
+
+function CarryOverPendingValdaTokens($player, $cardID)
+{
+  $num = CountCurrentTurnEffects($cardID . "-MANUALTOKEN", $player, true);
+  for ($i = 0; $i < $num; ++$i) AddNextTurnEffect($cardID . "-MANUALTOKEN", $player);
+}
+
+function PendingValdaTokenIndex($player): int
+{
+  global $currentTurnEffects;
+  $pieces = CurrentTurnEffectPieces();
+  $count = count($currentTurnEffects);
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if ($currentTurnEffects[$i + 1] != $player) continue;
+    if ($currentTurnEffects[$i] == "valda_brightaxe-MANUALTOKEN"
+      || $currentTurnEffects[$i] == "valda_seismic_impact-MANUALTOKEN") return $i;
+  }
+  return -1;
+}
+
+function CanManuallyCreateValdaToken($player, $index): bool
+{
+  if ($index != 0 || !ManualValdaSetting($player)) return false;
+  $character = &GetPlayerCharacter($player);
+  if (($character[$index + 1] ?? 0) < 2) return false;
+  return PendingValdaTokenIndex($player) != -1;
+}
+
+function ManuallyCreateValdaToken($player, $index): bool
+{
+  global $currentTurnEffects;
+  if (!CanManuallyCreateValdaToken($player, $index)) return false;
+  $effectIndex = PendingValdaTokenIndex($player);
+  $cardID = substr($currentTurnEffects[$effectIndex], 0, strpos($currentTurnEffects[$effectIndex], "-"));
+  RemoveCurrentTurnEffect($effectIndex);
+  CreateValdaSeismicSurges($player, $cardID, 1);
   return true;
 }
 
