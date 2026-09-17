@@ -277,6 +277,9 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   if ($gameStatus == $MGS_ChooseFirstPlayer) {
     $response->amIChoosingFirstPlayer = ($playerID == $firstPlayerChooser);
   }
+  if ($gameStatus > $MGS_ChooseFirstPlayer && $firstPlayer !== "") {
+    $response->firstPlayer = intval($firstPlayer);
+  }
 
   $response->visibility = $visibility;
   $response->isPrivateLobby = ($visibility != "public");
