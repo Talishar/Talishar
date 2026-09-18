@@ -779,6 +779,11 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
 
           //Add indication for past chain links
           if ($option0 == "PASTCHAINLINK") $label = "Chain link " . ($option[2] + 1);
+          //Add indication for equipped cards defending on the current chain link
+          if ($option0 == "COMBATCHAINLINK") {
+            $Object = new ChainCard($optionIndex);
+            if ($Object->From() == "EQUIP") $label = "EQUIPPED";
+          }
           //Add indication for Attacking Mechanoid
           if ($option0 == "CC" || $option0 == "LAYER") {
             $mzCardID = GetMZCard($currentPlayer, $options[$i]);
