@@ -50,22 +50,16 @@ if ($gameName !== "" && ctype_digit($gameName)) {
     $lines = preg_split('/\r\n|\r|\n/', (string)file_get_contents($gameFile));
     $p1GameUser = intval($lines[11] ?? 0);
     $p2GameUser = intval($lines[12] ?? 0);
-    if ($userId === $p1GameUser || $userId === $p2GameUser) {
-      include_once "../CardDictionary.php";
-      $response["gamePlayers"] = [];
-      $gamePlayers = [];
-      foreach ([1 => $p1GameUser, 2 => $p2GameUser] as $slot => $gameUserId) {
-        $deckFile = "../Games/" . $gameName . "/p" . $slot . "Deck.txt";
-        $firstLine = is_file($deckFile) ? strtok((string)file_get_contents($deckFile), "\r\n") : "";
-        // Deck files name the hero by card ID (ira_crimson_haze) while
-        // hero_mastery keys by set ID (CRU046), so the lookup has to convert.
-        // SetID returns "" for the AI and unrevealed heroes, which simply
-        // matches no row and leaves the frame unornamented.
-        $deckHero = explode(" ", trim((string)$firstLine))[0] ?? "";
-        $heroId = $deckHero !== "" ? SetID($deckHero) : "";
-        $gamePlayers[$slot] = ["userId" => $gameUserId, "heroId" => $heroId];
-        $response["gamePlayers"][(string)$slot] = ["heroId" => $heroId, "level" => 0];
-      }
+    include_once "../CardDictionary.php";
+    $response["gamePlayers"] = [];
+    $gamePlayers = [];
+    foreach ([1 => $p1GameUser, 2 => $p2GameUser] as $slot => $gameUserId) {
+      $deckFile = "../Games/" . $gameName . "/p" . $slot . "Deck.txt";
+      $firstLine = is_file($deckFile) ? strtok((string)file_get_contents($deckFile), "\r\n") : "";
+      $deckHero = explode(" ", trim((string)$firstLine))[0] ?? "";
+      $heroId = $deckHero !== "" ? SetID($deckHero) : "";
+      $gamePlayers[$slot] = ["userId" => $gameUserId, "heroId" => $heroId];
+      $response["gamePlayers"][(string)$slot] = ["heroId" => $heroId, "level" => 0];
     }
   }
 }

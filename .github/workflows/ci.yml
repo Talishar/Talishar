@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, mysqli, curl, json, shmop
+          coverage: none
+          tools: composer:v2
+
+      # Fails if composer.lock has drifted from composer.json, which is how
+      # phpunit ended up missing from the lock in the first place.
+      - name: Validate composer files
+        run: composer validate --no-check-publish --no-check-all
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-php${{ matrix.php }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Syntax check
+        run: |
+          status=0
+          while IFS= read -r file; do
+            php -l "$file" > /dev/null || status=1
+          done < <(git ls-files '*.php' | grep -v '^vendor/')
+          exit "$status"
+
+      - name: PHPUnit
+        run: vendor/bin/phpunit --no-coverage
