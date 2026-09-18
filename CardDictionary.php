@@ -2353,6 +2353,24 @@ function AshWardTargetCards(): array
   return ["sand_cover_red", "sand_cover_yellow", "sand_cover_blue"];
 }
 
+//Cards that can only be played targeting a weapon attack.
+function WeaponAttackTargetCards(): array
+{
+  return [
+    "rout_red",
+    "singing_steelblade_yellow",
+    "overpower_red",
+    "overpower_yellow",
+    "overpower_blue",
+    "biting_blade_red",
+    "biting_blade_yellow",
+    "biting_blade_blue",
+    "stroke_of_foresight_red",
+    "stroke_of_foresight_yellow",
+    "stroke_of_foresight_blue"
+  ];
+}
+
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "", $resolutionCheck = false)
 {
   global $CS_NumBoosted, $combatChain, $CombatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
@@ -2441,24 +2459,15 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if (in_array($cardID, AshTransformTargetCards(), true) || in_array($cardID, AshWardTargetCards(), true)) {
     return SearchCount(SearchPermanents($player, "", "Ash")) < 1;
   }
+  if (in_array($cardID, WeaponAttackTargetCards(), true)) {
+    if (!$CombatChain->HasCurrentLink()) return true;
+    if (SearchCombatChainAttacks($mainPlayer, type:"W") != "") return false;
+    if (TypeContains($attackID, "W", $mainPlayer)) return false;
+    return true;
+  }
   switch ($cardID) {
     case "braveforge_bracers":
       return GetClassState($player, $CS_HitsWithWeapon) == 0;
-    case "rout_red":
-    case "singing_steelblade_yellow":
-    case "overpower_red":
-    case "overpower_yellow":
-    case "overpower_blue":
-    case "biting_blade_red":
-    case "biting_blade_yellow":
-    case "biting_blade_blue":
-    case "stroke_of_foresight_red":
-    case "stroke_of_foresight_yellow":
-    case "stroke_of_foresight_blue":
-      if (!$CombatChain->HasCurrentLink()) return true;
-      if (SearchCombatChainAttacks($mainPlayer, type:"W") != "") return false;
-      if (TypeContains($attackID, "W", $mainPlayer)) return false;
-      return true;
     case "ironsong_response_red":
     case "ironsong_response_yellow":
     case "ironsong_response_blue":
