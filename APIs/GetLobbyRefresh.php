@@ -377,15 +377,18 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     foreach ($otherCards as $cardID) {
       if ($cardID === "" || $cardID === "NONE00") continue;
       $subtype = CardSubtype($cardID);
-      if (DelimStringContains($subtype, "Head")) { $theirArena->head = $cardID; $nextModularZone = max($nextModularZone, 1); }
-      elseif (DelimStringContains($subtype, "Chest")) { $theirArena->chest = $cardID; $nextModularZone = max($nextModularZone, 2); }
-      elseif (DelimStringContains($subtype, "Arms")) { $theirArena->arms = $cardID; $nextModularZone = max($nextModularZone, 3); }
-      elseif (DelimStringContains($subtype, "Legs")) { $theirArena->legs = $cardID; $nextModularZone = 4; }
+      $isCloaked = GeneratedHasCloaked($cardID)
+        || ($otherHero === "enigma_new_moon" && DelimStringContains(CardType($cardID), "E"));
+      $displayID = $isCloaked ? "CardBack" : $cardID;
+      if (DelimStringContains($subtype, "Head")) { $theirArena->head = $displayID; $nextModularZone = max($nextModularZone, 1); }
+      elseif (DelimStringContains($subtype, "Chest")) { $theirArena->chest = $displayID; $nextModularZone = max($nextModularZone, 2); }
+      elseif (DelimStringContains($subtype, "Arms")) { $theirArena->arms = $displayID; $nextModularZone = max($nextModularZone, 3); }
+      elseif (DelimStringContains($subtype, "Legs")) { $theirArena->legs = $displayID; $nextModularZone = 4; }
       elseif (IsModular($cardID) && $nextModularZone < 4) {
         $zone = $modularZones[$nextModularZone++];
-        $theirArena->{$zone} = $cardID;
+        $theirArena->{$zone} = $displayID;
       }
-      else $theirArena->weapons[] = $cardID;
+      else $theirArena->weapons[] = $displayID;
     }
     $response->theirArena = $theirArena;
   }
