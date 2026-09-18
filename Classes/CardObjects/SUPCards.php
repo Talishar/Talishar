@@ -6164,7 +6164,7 @@ class liars_charm_yellow extends Card {
           $targetPlayer = str_contains($target, "MY") ? $this->controller : $otherPlayer;
           $hand = GetHand($targetPlayer);
           if (count($hand) > 0) {
-            Await($targetPlayer, "MultiZoneIndices", search:"MYHAND");
+            Await($targetPlayer, "MultiZoneIndices", search:"MYHAND", subsequent:0);
             Await($targetPlayer, "ChooseMultiZone", may:true, context:"Discard a card or lose your hero abilities this action phase");
             Await($targetPlayer, "Discard");
             AddDecisionQueue("ELSE", $targetPlayer, "-");
