@@ -219,17 +219,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($mod == "spew_shadow_red" && TalentContains($theirChar[0], "LIGHT", $currentPlayer)) AddCurrentTurnEffect("spew_shadow_red", $currentPlayer);
       SetClassState($currentPlayer, $CS_PlayIndex, $index);
       if (CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
-      if (!PlayableFromBanish($cardID, $mod, true, index:$index)) {
-        $found = SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
-        if (!$found)
-          SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $currentPlayer, true);
-      }
-      if (str_contains($mod, "shadowrealm_horror_red")) {
-        $currentPlayerBanish = new Banish($currentPlayer);
-        $currentPlayerBanish->UnsetBanishModifier($mod);
-        $effectIndex = SearchCurrentTurnEffectsForUniqueID($mod);
-        if ($effectIndex != -1) RemoveCurrentTurnEffect($effectIndex);
-      }
+      
       if($mod == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
       // clean up the effect now that it's been used
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$mod);
@@ -2556,10 +2546,21 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
     }
   }
-  if ($from == "BANISH") {
+  if ($from == "BANISH") { // reset effects giving permission to play from banish
     $Effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $currentPlayer);
     if ($Effect->Index() != -1) SetClassState($currentPlayer, $CS_PlayedFromGateUID, $uniqueID);
     $Effect->Remove();
+    if (!PlayableFromBanish($cardID, $mod, true, index:$index)) {
+      $found = SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
+      if (!$found)
+        SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $currentPlayer, true);
+    }
+    if (str_contains($mod, "shadowrealm_horror_red")) {
+      $currentPlayerBanish = new Banish($currentPlayer);
+      $currentPlayerBanish->UnsetBanishModifier($mod);
+      $effectIndex = SearchCurrentTurnEffectsForUniqueID($mod);
+      if ($effectIndex != -1) RemoveCurrentTurnEffect($effectIndex);
+    }
   }
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
