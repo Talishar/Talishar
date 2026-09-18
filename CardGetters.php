@@ -70,22 +70,8 @@ function GetMZZoneUIDIndex($zone)
 
 function &GetRelativeMZZone($player, $zone)
 {
-  global $layers, $combatChain;
-  $rv = "";
   if (substr($zone, 0, 5) == "THEIR") $player = $player == 1 ? 2 : 1;
-  if ($zone == "MYCHAR" || $zone == "THEIRCHAR") $rv = &GetPlayerCharacter($player);
-  else if ($zone == "MYAURAS" || $zone == "THEIRAURAS") $rv = &GetAuras($player);
-  else if ($zone == "ALLY" || $zone == "MYALLY" || $zone == "THEIRALLY") $rv = &GetAllies($player);
-  else if ($zone == "MYARS" || $zone == "THEIRARS" || $zone == "MYARSENAL" || $zone == "THEIRARSENAL") $rv = &GetArsenal($player);
-  else if ($zone == "MYHAND" || $zone == "THEIRHAND") $rv = &GetHand($player);
-  else if ($zone == "MYPITCH" || $zone == "THEIRPITCH") $rv = &GetPitch($player);
-  else if ($zone == "MYDISCARD" || $zone == "THEIRDISCARD") $rv = &GetDiscard($player);
-  else if ($zone == "PERM" || $zone == "MYPERM" || $zone == "THEIRPERM") $rv = &GetPermanents($player);
-  else if ($zone == "BANISH" || $zone == "MYBANISH" || $zone == "THEIRBANISH") $rv = &GetBanish($player);
-  else if ($zone == "DECK" || $zone == "MYDECK" || $zone == "THEIRDECK") $rv = &GetDeck($player);
-  else if ($zone == "SOUL" || $zone == "MYSOUL" || $zone == "THEIRSOUL") $rv = &GetSoul($player);
-  else if ($zone == "LAYER") return $layers;
-  else if ($zone == "CC") return $combatChain;
+  $rv = &GetMZZone($player, $zone);
   return $rv;
 }
 
