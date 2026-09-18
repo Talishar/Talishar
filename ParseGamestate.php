@@ -197,359 +197,79 @@ function DoGamestateUpdate()
   else if ($myStateBuiltFor != -1) UpdateGameStateInner();
 }
 
+function GamestateViewFields()
+{
+  static $fields = [
+    "Hand" => "Hand",
+    "Deck" => "Deck",
+    "Resources" => "Resources",
+    "Character" => "CharEquip",
+    "Arsenal" => "Arsenal",
+    "Items" => "Items",
+    "Auras" => "Auras",
+    "Discard" => "Discard",
+    "Pitch" => "Pitch",
+    "Banish" => "Banish",
+    "ClassState" => "ClassState",
+    "CharacterEffects" => "CharacterEffects",
+    "Soul" => "Soul",
+    "CardStats" => "CardStats",
+    "TurnStats" => "TurnStats",
+    "CardTurnLog" => "CardTurnLog"
+  ];
+  return $fields;
+}
+
+function CopyPlayerStateToView($player, $viewPrefix)
+{
+  global $playerHealths;
+  foreach (GamestateViewFields() as $viewField => $playerField) {
+    $GLOBALS[$viewPrefix . $viewField] = $GLOBALS["p" . $player . $playerField] ?? null;
+  }
+  $GLOBALS[$viewPrefix . "Health"] = $playerHealths[$player - 1];
+}
+
+function CopyViewStateToPlayer($viewPrefix, $player)
+{
+  global $playerHealths;
+  foreach (GamestateViewFields() as $viewField => $playerField) {
+    $GLOBALS["p" . $player . $playerField] = $GLOBALS[$viewPrefix . $viewField] ?? null;
+  }
+  $playerHealths[$player - 1] = $GLOBALS[$viewPrefix . "Health"] ?? null;
+}
+
 function BuildMyGamestate($playerID)
 {
-  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
-  global $p1CharacterEffects, $p1Discard, $p1CardStats, $p1TurnStats;
-  global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
-  global $p2CharacterEffects, $p2Discard, $p2CardStats, $p2TurnStats;
-  global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myHealth, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
-  global $myCharacterEffects, $myDiscard, $myCardStats, $myTurnStats;
-  global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
-  global $theirCharacterEffects, $theirDiscard, $theirCardStats, $theirTurnStats;
-  global $p1Soul, $p2Soul, $mySoul, $theirSoul;
-  global $p1CardTurnLog, $p2CardTurnLog, $myCardTurnLog, $theirCardTurnLog;
   global $myStateBuiltFor, $mainPlayerGamestateStillBuilt;
   DoGamestateUpdate();
   $mainPlayerGamestateStillBuilt = 0;
   $myStateBuiltFor = $playerID == 1 ? 1 : 2;
-  if ($playerID == 1) {
-    $myHand = $p1Hand;
-    $myDeck = $p1Deck;
-    $myResources = $p1Resources;
-    $myCharacter = $p1CharEquip;
-    $myArsenal = $p1Arsenal;
-    $myHealth = $playerHealths[0];
-    $myItems = $p1Items;
-    $myAuras = $p1Auras;
-    $myDiscard = $p1Discard;
-    $myPitch = $p1Pitch;
-    $myBanish = $p1Banish;
-    $myClassState = $p1ClassState;
-    $myCharacterEffects = $p1CharacterEffects;
-    $mySoul = $p1Soul;
-    $myCardStats = $p1CardStats;
-    $myTurnStats = $p1TurnStats;
-    $myCardTurnLog = $p1CardTurnLog;
-    $theirHand = $p2Hand;
-    $theirDeck = $p2Deck;
-    $theirResources = $p2Resources;
-    $theirCharacter = $p2CharEquip;
-    $theirArsenal = $p2Arsenal;
-    $theirHealth = $playerHealths[1];
-    $theirItems = $p2Items;
-    $theirAuras = $p2Auras;
-    $theirDiscard = $p2Discard;
-    $theirPitch = $p2Pitch;
-    $theirBanish = $p2Banish;
-    $theirClassState = $p2ClassState;
-    $theirCharacterEffects = $p2CharacterEffects;
-    $theirSoul = $p2Soul;
-    $theirCardStats = $p2CardStats;
-    $theirTurnStats = $p2TurnStats;
-    $theirCardTurnLog = $p2CardTurnLog;
-  } else {
-    $myHand = $p2Hand;
-    $myDeck = $p2Deck;
-    $myResources = $p2Resources;
-    $myCharacter = $p2CharEquip;
-    $myArsenal = $p2Arsenal;
-    $myHealth = $playerHealths[1];
-    $myItems = $p2Items;
-    $myAuras = $p2Auras;
-    $myDiscard = $p2Discard;
-    $myPitch = $p2Pitch;
-    $myBanish = $p2Banish;
-    $myClassState = $p2ClassState;
-    $myCharacterEffects = $p2CharacterEffects;
-    $mySoul = $p2Soul;
-    $myCardStats = $p2CardStats;
-    $myTurnStats = $p2TurnStats;
-    $myCardTurnLog = $p2CardTurnLog;
-    $theirHand = $p1Hand;
-    $theirDeck = $p1Deck;
-    $theirResources = $p1Resources;
-    $theirCharacter = $p1CharEquip;
-    $theirArsenal = $p1Arsenal;
-    $theirHealth = $playerHealths[0];
-    $theirItems = $p1Items;
-    $theirAuras = $p1Auras;
-    $theirDiscard = $p1Discard;
-    $theirPitch = $p1Pitch;
-    $theirBanish = $p1Banish;
-    $theirClassState = $p1ClassState;
-    $theirCharacterEffects = $p1CharacterEffects;
-    $theirSoul = $p1Soul;
-    $theirCardStats = $p1CardStats;
-    $theirTurnStats = $p1TurnStats;
-    $theirCardTurnLog = $p1CardTurnLog;
-  }
+  CopyPlayerStateToView($myStateBuiltFor, "my");
+  CopyPlayerStateToView($myStateBuiltFor == 1 ? 2 : 1, "their");
 }
 
 function BuildMainPlayerGameState()
 {
-  global $mainPlayer, $mainPlayerGamestateStillBuilt, $playerHealths, $mpgBuiltFor, $defPlayer;
-  global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
-  global $mainCharacterEffects, $mainDiscard;
-  global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defHealth, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
-  global $defCharacterEffects, $defDiscard;
-  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items, $p1CharacterEffects, $p1Discard;
-  global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items, $p2CharacterEffects, $p2Discard;
-  global $p1Soul, $p2Soul, $mainSoul, $defSoul;
-  global $p1CardStats, $p2CardStats, $mainCardStats, $defCardStats;
-  global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
-  global $p1CardTurnLog, $p2CardTurnLog, $mainCardTurnLog, $defCardTurnLog;
+  global $mainPlayer, $mainPlayerGamestateStillBuilt, $mpgBuiltFor;
   DoGamestateUpdate();
   $mpgBuiltFor = $mainPlayer;
-  if ($mainPlayer == 1) {
-    $mainHand = $p1Hand;
-    $mainDeck = $p1Deck;
-    $mainResources = $p1Resources;
-    $mainCharacter = $p1CharEquip;
-    $mainArsenal = $p1Arsenal;
-    $mainHealth = $playerHealths[0];
-    $mainItems = $p1Items;
-    $mainAuras = $p1Auras;
-    $mainPitch = $p1Pitch;
-    $mainBanish = $p1Banish;
-    $mainClassState = $p1ClassState;
-    $mainCharacterEffects = $p1CharacterEffects;
-    $mainDiscard = $p1Discard;
-    $mainSoul = $p1Soul;
-    $mainCardStats = $p1CardStats;
-    $mainTurnStats = $p1TurnStats;
-    $mainCardTurnLog = $p1CardTurnLog;
-    $defHand = $p2Hand;
-    $defDeck = $p2Deck;
-    $defResources = $p2Resources;
-    $defCharacter = $p2CharEquip;
-    $defArsenal = $p2Arsenal;
-    $defHealth = $playerHealths[1];
-    $defItems = $p2Items;
-    $defAuras = $p2Auras;
-    $defPitch = $p2Pitch;
-    $defBanish = $p2Banish;
-    $defClassState = $p2ClassState;
-    $defCharacterEffects = $p2CharacterEffects;
-    $defDiscard = $p2Discard;
-    $defSoul = $p2Soul;
-    $defCardStats = $p2CardStats;
-    $defTurnStats = $p2TurnStats;
-    $defCardTurnLog = $p2CardTurnLog;
-  } else {
-    $mainHand = $p2Hand;
-    $mainDeck = $p2Deck;
-    $mainResources = $p2Resources;
-    $mainCharacter = $p2CharEquip;
-    $mainArsenal = $p2Arsenal;
-    $mainHealth = $playerHealths[1];
-    $mainItems = $p2Items;
-    $mainAuras = $p2Auras;
-    $mainPitch = $p2Pitch;
-    $mainBanish = $p2Banish;
-    $mainClassState = $p2ClassState;
-    $mainCharacterEffects = $p2CharacterEffects;
-    $mainDiscard = $p2Discard;
-    $mainSoul = $p2Soul;
-    $mainCardStats = $p2CardStats;
-    $mainTurnStats = $p2TurnStats;
-    $mainCardTurnLog = $p2CardTurnLog;
-    $defHand = $p1Hand;
-    $defDeck = $p1Deck;
-    $defResources = $p1Resources;
-    $defCharacter = $p1CharEquip;
-    $defArsenal = $p1Arsenal;
-    $defHealth = $playerHealths[0];
-    $defItems = $p1Items;
-    $defAuras = $p1Auras;
-    $defPitch = $p1Pitch;
-    $defBanish = $p1Banish;
-    $defClassState = $p1ClassState;
-    $defCharacterEffects = $p1CharacterEffects;
-    $defDiscard = $p1Discard;
-    $defSoul = $p1Soul;
-    $defCardStats = $p1CardStats;
-    $defTurnStats = $p1TurnStats;
-    $defCardTurnLog = $p1CardTurnLog;
-  }
-
+  CopyPlayerStateToView($mainPlayer == 1 ? 1 : 2, "main");
+  CopyPlayerStateToView($mainPlayer == 1 ? 2 : 1, "def");
   $mainPlayerGamestateStillBuilt = 1;
 }
 
 function UpdateGameStateInner()
 {
   global $myStateBuiltFor;
-  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
-  global $p1CharacterEffects, $p1Discard, $p1CardStats, $p1TurnStats;
-  global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
-  global $p2CharacterEffects, $p2Discard, $p2CardStats, $p2TurnStats;
-  global $myDeck, $myHand, $myResources, $myCharacter, $myArsenal, $myHealth, $myAuras, $myPitch, $myBanish, $myClassState, $myItems;
-  global $myCharacterEffects, $myDiscard, $myCardStats, $myTurnStats;
-  global $theirDeck, $theirHand, $theirResources, $theirCharacter, $theirArsenal, $theirHealth, $theirAuras, $theirPitch, $theirBanish, $theirClassState, $theirItems;
-  global $theirCharacterEffects, $theirDiscard, $theirCardStats, $theirTurnStats;
-  global $p1Soul, $p2Soul, $mySoul, $theirSoul;
-  global $p1CardTurnLog, $p2CardTurnLog, $myCardTurnLog, $theirCardTurnLog;
-  $activePlayer = $myStateBuiltFor;
-  if ($activePlayer == 1) {
-    $p1Deck = $myDeck;
-    $p1Hand = $myHand;
-    $p1Resources = $myResources;
-    $p1CharEquip = $myCharacter;
-    $p1Arsenal = $myArsenal;
-    $playerHealths[0] = $myHealth;
-    $p1Items = $myItems;
-    $p1Auras = $myAuras;
-    $p1Pitch = $myPitch;
-    $p1Banish = $myBanish;
-    $p1ClassState = $myClassState;
-    $p1CharacterEffects = $myCharacterEffects;
-    $p1Discard = $myDiscard;
-    $p1Soul = $mySoul;
-    $p1CardStats = $myCardStats;
-    $p1TurnStats = $myTurnStats;
-    $p1CardTurnLog = $myCardTurnLog;
-    $p2Deck = $theirDeck;
-    $p2Hand = $theirHand;
-    $p2Resources = $theirResources;
-    $p2CharEquip = $theirCharacter;
-    $p2Arsenal = $theirArsenal;
-    $playerHealths[1] = $theirHealth;
-    $p2Items = $theirItems;
-    $p2Auras = $theirAuras;
-    $p2Pitch = $theirPitch;
-    $p2Banish = $theirBanish;
-    $p2ClassState = $theirClassState;
-    $p2CharacterEffects = $theirCharacterEffects;
-    $p2Discard = $theirDiscard;
-    $p2Soul = $theirSoul;
-    $p2CardStats = $theirCardStats;
-    $p2TurnStats = $theirTurnStats;
-    $p2CardTurnLog = $theirCardTurnLog;
-  } else {
-    $p2Deck = $myDeck;
-    $p2Hand = $myHand;
-    $p2Resources = $myResources;
-    $p2CharEquip = $myCharacter;
-    $p2Arsenal = $myArsenal;
-    $playerHealths[1] = $myHealth;
-    $p2Items = $myItems;
-    $p2Auras = $myAuras;
-    $p2Pitch = $myPitch;
-    $p2Banish = $myBanish;
-    $p2ClassState = $myClassState;
-    $p2CharacterEffects = $myCharacterEffects;
-    $p2Discard = $myDiscard;
-    $p2Soul = $mySoul;
-    $p2CardStats = $myCardStats;
-    $p2TurnStats = $myTurnStats;
-    $p2CardTurnLog = $myCardTurnLog;
-    $p1Deck = $theirDeck;
-    $p1Hand = $theirHand;
-    $p1Resources = $theirResources;
-    $p1CharEquip = $theirCharacter;
-    $p1Arsenal = $theirArsenal;
-    $playerHealths[0] = $theirHealth;
-    $p1Items = $theirItems;
-    $p1Auras = $theirAuras;
-    $p1Pitch = $theirPitch;
-    $p1Banish = $theirBanish;
-    $p1ClassState = $theirClassState;
-    $p1CharacterEffects = $theirCharacterEffects;
-    $p1Discard = $theirDiscard;
-    $p1Soul = $theirSoul;
-    $p1CardStats = $theirCardStats;
-    $p1TurnStats = $theirTurnStats;
-    $p1CardTurnLog = $theirCardTurnLog;
-  }
+  CopyViewStateToPlayer("my", $myStateBuiltFor == 1 ? 1 : 2);
+  CopyViewStateToPlayer("their", $myStateBuiltFor == 1 ? 2 : 1);
 }
 
 function UpdateMainPlayerGameStateInner()
 {
-  global $mainPlayerGamestateStillBuilt, $mpgBuiltFor;
-  global $mainHand, $mainDeck, $mainResources, $mainCharacter, $mainArsenal, $mainHealth, $mainAuras, $mainPitch, $mainBanish, $mainClassState, $mainItems;
-  global $mainCharacterEffects, $mainDiscard;
-  global $defHand, $defDeck, $defResources, $defCharacter, $defArsenal, $defHealth, $defAuras, $defPitch, $defBanish, $defClassState, $defItems;
-  global $defCharacterEffects, $defDiscard;
-  global $p1Deck, $p1Hand, $p1Resources, $p1CharEquip, $p1Arsenal, $playerHealths, $p1Auras, $p1Pitch, $p1Banish, $p1ClassState, $p1Items;
-  global $p1CharacterEffects, $p1Discard;
-  global $p2Deck, $p2Hand, $p2Resources, $p2CharEquip, $p2Arsenal, $p2Auras, $p2Pitch, $p2Banish, $p2ClassState, $p2Items;
-  global $p2CharacterEffects, $p2Discard;
-  global $p1Soul, $p2Soul, $mainSoul, $defSoul;
-  global $p1CardStats, $p2CardStats, $mainCardStats, $defCardStats;
-  global $p1TurnStats, $p2TurnStats, $mainTurnStats, $defTurnStats;
-  global $p1CardTurnLog, $p2CardTurnLog, $mainCardTurnLog, $defCardTurnLog;
-
-  if ($mpgBuiltFor == 1) {
-    $p1Deck = $mainDeck;
-    $p1Hand = $mainHand;
-    $p1Resources = $mainResources;
-    $p1CharEquip = $mainCharacter;
-    $p1Arsenal = $mainArsenal;
-    $playerHealths[0] = $mainHealth;
-    $p1Items = $mainItems;
-    $p1Auras = $mainAuras;
-    $p1Pitch = $mainPitch;
-    $p1Banish = $mainBanish;
-    $p1ClassState = $mainClassState;
-    $p1CharacterEffects = $mainCharacterEffects;
-    $p1Discard = $mainDiscard;
-    $p1Soul = $mainSoul;
-    $p1CardStats = $mainCardStats;
-    $p1TurnStats = $mainTurnStats;
-    $p1CardTurnLog = $mainCardTurnLog;
-    $p2Deck = $defDeck;
-    $p2Hand = $defHand;
-    $p2Resources = $defResources;
-    $p2CharEquip = $defCharacter;
-    $p2Arsenal = $defArsenal;
-    $playerHealths[1] = $defHealth;
-    $p2Items = $defItems;
-    $p2Auras = $defAuras;
-    $p2Pitch = $defPitch;
-    $p2Banish = $defBanish;
-    $p2ClassState = $defClassState;
-    $p2CharacterEffects = $defCharacterEffects;
-    $p2Discard = $defDiscard;
-    $p2Soul = $defSoul;
-    $p2CardStats = $defCardStats;
-    $p2TurnStats = $defTurnStats;
-    $p2CardTurnLog = $defCardTurnLog;
-  } else {
-    $p1Deck = $defDeck;
-    $p1Hand = $defHand;
-    $p1Resources = $defResources;
-    $p1CharEquip = $defCharacter;
-    $p1Arsenal = $defArsenal;
-    $playerHealths[0] = $defHealth;
-    $p1Items = $defItems;
-    $p1Auras = $defAuras;
-    $p1Pitch = $defPitch;
-    $p1Banish = $defBanish;
-    $p1ClassState = $defClassState;
-    $p1CharacterEffects = $defCharacterEffects;
-    $p1Discard = $defDiscard;
-    $p1Soul = $defSoul;
-    $p1CardStats = $defCardStats;
-    $p1TurnStats = $defTurnStats;
-    $p1CardTurnLog = $defCardTurnLog;
-    $p2Deck = $mainDeck;
-    $p2Hand = $mainHand;
-    $p2Resources = $mainResources;
-    $p2CharEquip = $mainCharacter;
-    $p2Arsenal = $mainArsenal;
-    $playerHealths[1] = $mainHealth;
-    $p2Items = $mainItems;
-    $p2Auras = $mainAuras;
-    $p2Pitch = $mainPitch;
-    $p2Banish = $mainBanish;
-    $p2ClassState = $mainClassState;
-    $p2CharacterEffects = $mainCharacterEffects;
-    $p2Discard = $mainDiscard;
-    $p2Soul = $mainSoul;
-    $p2CardStats = $mainCardStats;
-    $p2TurnStats = $mainTurnStats;
-    $p2CardTurnLog = $mainCardTurnLog;
-  }
+  global $mpgBuiltFor;
+  CopyViewStateToPlayer("main", $mpgBuiltFor == 1 ? 1 : 2);
+  CopyViewStateToPlayer("def", $mpgBuiltFor == 1 ? 2 : 1);
 }
 
 function SaveGamestateSnapshot($destination)

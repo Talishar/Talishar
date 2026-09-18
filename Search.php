@@ -1654,7 +1654,7 @@ function GetRelativeMZCardLink($player, $MZ)
   if (count($params) < 2 || $params[0] == "" || $params[1] == "") return "";
   $zoneDS = &GetRelativeMZZone($player, $params[0]);
   $index = $params[1];
-  if ($index == "" || !isset($zoneDS[$index])) return "";
+  if ($index == "" || !isset($zoneDS[$index]) || !is_string($zoneDS[$index])) return "";
   return CardLink($zoneDS[$index], $zoneDS[$index]);
 }
 

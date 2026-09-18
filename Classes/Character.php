@@ -103,6 +103,11 @@ class CharacterCard {
     return intval($this->pieces[$this->index+2] ?? 0);
   }
 
+  function SetCounters($num) {
+    if (isset($this->pieces[$this->index + 2]))
+      $this->pieces[$this->index + 2] = intval($num);
+  }
+
   function AddCounters($num) {
     if (isset($this->pieces[$this->index + 2]))
       $this->pieces[$this->index + 2] = intval($this->pieces[$this->index + 2]) + intval($num);

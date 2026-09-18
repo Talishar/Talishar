@@ -2990,24 +2990,25 @@ function GetLayerTarget($cardID, $from)
   global $currentPlayer, $defPlayer, $CombatChain, $mainPlayer, $Stack;
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") return $card->GetLayerTarget($from);
+  if (in_array($cardID, AshTransformTargetCards(), true)) {
+    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Ash");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Ash to transform");
+    AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+  } elseif (in_array($cardID, AshWardTargetCards(), true)) {
+    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Ash");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Ash to grant ward");
+    AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+  } elseif (in_array($cardID, WeaponAttackTargetCards(), true)) {
+    AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:type=W&ACTIVEATTACK:type=W");
+    AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon attack");
+    AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+  }
   switch ($cardID) {
-    case "rout_red":
-    case "singing_steelblade_yellow":
-    case "overpower_red":
-    case "overpower_yellow":
-    case "overpower_blue":
-    case "biting_blade_red":
-    case "biting_blade_yellow":
-    case "biting_blade_blue":
-    case "stroke_of_foresight_red":
-    case "stroke_of_foresight_yellow":
-    case "stroke_of_foresight_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:type=W&ACTIVEATTACK:type=W");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a weapon attack");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
     case "rattle_bones_red":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:type=AA;class=RUNEBLADE");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target Runeblade attack action card");
@@ -3075,36 +3076,6 @@ function GetLayerTarget($cardID, $from)
       break;
     case "rewind_blue":
       AddDecisionQueue("FINDINDICES", $currentPlayer, "NAACARDLAYER");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
-    case "silken_form": // Must target Ash
-    case "invoke_dracona_optimai_red":
-    case "invoke_tomeltai_red":
-    case "invoke_dominia_red":
-    case "invoke_azvolai_red":
-    case "invoke_cromai_red":
-    case "invoke_kyloria_red":
-    case "invoke_miragai_red":
-    case "invoke_nekria_red":
-    case "invoke_ouvia_red":
-    case "invoke_themai_red":
-    case "invoke_vynserakai_red":
-    case "invoke_yendurai_red":
-    case "skittering_sands_red":
-    case "skittering_sands_yellow":
-    case "skittering_sands_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Ash");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Ash to transform");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
-    case "sand_cover_red":
-    case "sand_cover_yellow":
-    case "sand_cover_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYPERM:subtype=Ash");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an Ash to grant ward");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
