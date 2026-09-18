@@ -1,6 +1,7 @@
 <?php
 
 include_once __DIR__ . "/../Libraries/IOLibraries.php";
+include_once __DIR__ . "/../Libraries/PlayerSettings.php";
 
 function initializePlayerState($handler, $deckHandler, $player)
 {
@@ -62,13 +63,12 @@ function initializePlayerState($handler, $deckHandler, $player)
   );
   $holdPriority = "0"; //Auto-pass layers
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron) ?: "0";
-  $mute = 0;
   $settingArray = [];
   for($i=0; $i<SettingsPieces(); ++$i)
   {
     $settingArray[] = SettingDefaultValue($i, $charEquip[0]);
   }
-  $settingArray[$SET_Mute] = $mute;
+  $settingArray[$SET_Mute] = 0;
   $settingArray[$SET_IsPatron] = $isPatron;
   $savedSettingsCount = count($savedSettings);
   for($i=0; $i<$savedSettingsCount; $i+=2)
@@ -77,15 +77,6 @@ function initializePlayerState($handler, $deckHandler, $player)
   }
   ksort($settingArray);
   fwrite($handler, implode(" ", $settingArray) . "\r\n"); //Settings
-}
-
-function SavedSettingValue($savedSettings, $setting)
-{
-  $count = count($savedSettings);
-  for ($i = 0; $i < $count; $i += 2) {
-    if ($savedSettings[$i] == $setting) return $savedSettings[$i + 1];
-  }
-  return "";
 }
 
 function SettingDefaultValue($setting, $hero)

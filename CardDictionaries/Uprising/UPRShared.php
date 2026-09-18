@@ -195,6 +195,12 @@ function ShukoActive() {
   return $basePower <= 2;
 }
 
+function SetShukoUsed($player) {
+  $Character = new PlayerCharacter($player);
+  $Shuko = $Character->FindCardID("tiger_stripe_shuko");
+  if ($Shuko->Index() != -1 && $Shuko->Status() == 2) $Shuko->SetUsed();
+}
+
 function ShukoLoggedThisTurn($player) {
   global $currentTurn;
   $cardTurnLog = &GetCardTurnLog($player);
@@ -204,4 +210,3 @@ function ShukoLoggedThisTurn($player) {
   }
   return false;
 }
-?>
