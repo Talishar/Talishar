@@ -2324,6 +2324,35 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
   return false;
 }
 
+//Cards that transform an Ash, so they can only be played with an Ash to target.
+function AshTransformTargetCards(): array
+{
+  return [
+    "silken_form",
+    "invoke_dracona_optimai_red",
+    "invoke_tomeltai_red",
+    "invoke_dominia_red",
+    "invoke_azvolai_red",
+    "invoke_cromai_red",
+    "invoke_kyloria_red",
+    "invoke_miragai_red",
+    "invoke_nekria_red",
+    "invoke_ouvia_red",
+    "invoke_themai_red",
+    "invoke_vynserakai_red",
+    "invoke_yendurai_red",
+    "skittering_sands_red",
+    "skittering_sands_yellow",
+    "skittering_sands_blue"
+  ];
+}
+
+//Cards that grant an Ash ward, so they can only be played with an Ash to target.
+function AshWardTargetCards(): array
+{
+  return ["sand_cover_red", "sand_cover_yellow", "sand_cover_blue"];
+}
+
 function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $player = "", $resolutionCheck = false)
 {
   global $CS_NumBoosted, $combatChain, $CombatChain, $currentPlayer, $mainPlayer, $CS_Num6PowBan;
@@ -2409,6 +2438,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $mySoul = &GetSoul($player);
   $otherPlayerDiscard = &GetDiscard($otherPlayer);
   $attackID = $CombatChain->AttackCard()->ID();
+  if (in_array($cardID, AshTransformTargetCards(), true) || in_array($cardID, AshWardTargetCards(), true)) {
+    return SearchCount(SearchPermanents($player, "", "Ash")) < 1;
+  }
   switch ($cardID) {
     case "braveforge_bracers":
       return GetClassState($player, $CS_HitsWithWeapon) == 0;
@@ -2699,27 +2731,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $player == $mainPlayer;
     case "rewind_blue":
       return SearchLayersForNAACard() == "";
-    //Invocations must target Ash
-    case "silken_form":
-    case "invoke_dracona_optimai_red":
-    case "invoke_tomeltai_red":
-    case "invoke_dominia_red":
-    case "invoke_azvolai_red":
-    case "invoke_cromai_red":
-    case "invoke_kyloria_red":
-    case "invoke_miragai_red":
-    case "invoke_nekria_red":
-    case "invoke_ouvia_red":
-    case "invoke_themai_red":
-    case "invoke_vynserakai_red":
-    case "invoke_yendurai_red":
-    case "skittering_sands_red":
-    case "skittering_sands_yellow":
-    case "skittering_sands_blue":
-    case "sand_cover_red":
-    case "sand_cover_yellow":
-    case "sand_cover_blue":
-      return SearchCount(SearchPermanents($player, "", "Ash")) < 1;
     case "rok":
       return count(GetHand($player)) != 0;
     case "savage_beatdown_red":
@@ -4472,14 +4483,11 @@ function HasArcaneShelter($cardID): bool
   return GeneratedHasArcaneShelter($cardID);
 }
 
-function HasDominate($cardID)
+//Returns true or false when a card has the possibility to have dominate
+function CanHaveDominate($cardID)
 {
   global $mainPlayer, $combatChainState, $CombatChainState;
   global $CS_NumAuras, $CCS_NumBoosted;
-  static $generatedDominateCache = [];
-  if (isset($generatedDominateCache[$cardID])) return $generatedDominateCache[$cardID];
-  $card = GetClass($cardID, 0);
-  if ($card != "-" && $card->HasDominate()) return true;
   switch ($cardID) {
     case "open_the_center_red":
     case "open_the_center_yellow":
@@ -4517,6 +4525,20 @@ function HasDominate($cardID)
     case "drowning_dire_yellow":
     case "drowning_dire_blue":
       return GetClassState($mainPlayer, $CS_NumAuras) > 0;
+    default:
+      return null;
+  }
+}
+
+function HasDominate($cardID)
+{
+  static $generatedDominateCache = [];
+  if (isset($generatedDominateCache[$cardID])) return $generatedDominateCache[$cardID];
+  $card = GetClass($cardID, 0);
+  if ($card != "-" && $card->HasDominate()) return true;
+  $hasDominate = CanHaveDominate($cardID);
+  if ($hasDominate !== null) return $hasDominate;
+  switch ($cardID) {
     case "elemental_strike":
     case "ice_aged_oak_blue":
       return false; //error in GeneratedFunction

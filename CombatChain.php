@@ -1491,46 +1491,8 @@ function IsDominateActive()
   $extraText = GetHorrorsBuff();
   $textBoxes = $extraText !== "-" ? [$attackCardID, $extraText] : [$attackCardID];
   foreach ($textBoxes as $box) {
-    switch ($box) {
-      case "open_the_center_red":
-      case "open_the_center_yellow":
-      case "open_the_center_blue":
-      case "break_tide_yellow":
-        return ComboActive();
-      case "demolition_crew_red":
-      case "demolition_crew_yellow":
-      case "demolition_crew_blue":
-      case "herald_of_erudition_yellow":
-      case "herald_of_tenacity_red":
-      case "herald_of_tenacity_yellow":
-      case "herald_of_tenacity_blue":
-      case "overload_red":
-      case "overload_yellow":
-      case "overload_blue":
-      case "macho_grande_red":
-      case "macho_grande_yellow":
-      case "macho_grande_blue":
-      case "isolate_red":
-      case "isolate_yellow":
-      case "isolate_blue":
-        return true;
-      case "nourishing_emptiness_red":
-        return SearchDiscard($mainPlayer, "AA") == "";
-      case "thump_red":
-      case "thump_yellow":
-      case "thump_blue":
-        return HasIncreasedAttack();
-      case "payload_red":
-      case "payload_yellow":
-      case "payload_blue":
-        return GetCombatChainState($CCS_NumBoosted) > 0;
-      case "drowning_dire_red":
-      case "drowning_dire_yellow":
-      case "drowning_dire_blue":
-        return GetClassState($mainPlayer, $CS_NumAuras) > 0;
-      default:
-        break;
-    }
+    $hasDominate = CanHaveDominate($box);
+    if ($hasDominate !== null) return $hasDominate;
   }
   if (GetCombatChainState($CCS_CachedDominateActive) == 1)
     return true;
