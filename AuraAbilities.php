@@ -1478,15 +1478,6 @@ function AuraPlayAbilities($cardID, $from = "")
       $remove = $card->PermanentPlayAbility($cardID, $from, $i);
     }
     switch ($auras[$i]) {
-      case "quicken":
-        if (($cardType == "AA" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA"))
-          || (DelimStringContains($cardSubType, "Aura") && $from == "PLAY" && ($resolvedAbilityType == "" || $resolvedAbilityType == "AA") && IsWeapon($cardID, $from))
-          || (TypeContains($cardID, "W") && $resolvedAbilityType == "AA" && ($from == "EQUIP" || $from == "PLAY"))) {
-          WriteLog(CardLink($auras[$i], $auras[$i]) . " gives the attack go again");
-          GiveAttackGoAgain();
-          $remove = 1;
-        }
-        break;
       case "dimenxxional_crossroads_yellow":
         DimenxxionalCrossroadsPassive($cardID, $from);
         break;
