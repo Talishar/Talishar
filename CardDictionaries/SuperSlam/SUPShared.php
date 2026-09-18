@@ -188,6 +188,7 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
             if ($currentPlayer == $mainPlayer) {
               if (CachedTotalPower() >= 6) $condition = true;
               $chainLinksummaryCount = count($chainLinkSummary);
+              $chainLinksummaryPieces = ChainLinkSummaryPieces();
               for ($j = 0; $j < $chainLinksummaryCount; $j += $chainLinksummaryPieces) {
                 if ($chainLinkSummary[$j + 1] >= 6) { $condition = true; break; }
               }
@@ -241,11 +242,9 @@ function Deal2OrDiscard($targetPlayer, $effectSource="-")
 {
   $hand = GetHand($targetPlayer);
   if (count($hand) > 0) {
-    AddDecisionQueue("FINDINDICES", $targetPlayer, "HAND");
-    AddDecisionQueue("SETDQCONTEXT", $targetPlayer, "Discard a card or else take 2 damage", 1);
-    AddDecisionQueue("MAYCHOOSEHAND", $targetPlayer, "<-", 1);
-    AddDecisionQueue("MULTIREMOVEHAND", $targetPlayer, "-", 1);
-    AddDecisionQueue("DISCARDCARD", $targetPlayer, "HAND", 1);
+    Await($targetPlayer, "MultiZoneIndices", search:"MYHAND", subsequent:0);
+    Await($targetPlayer, "ChooseMultiZone", may:true, context:"Discard a card or take 2 damage");
+    Await($targetPlayer, "Discard");
     AddDecisionQueue("ELSE", $targetPlayer, "-");
   }
   AddDecisionQueue("TAKEDAMAGE", $targetPlayer, "2-$effectSource", 1);
