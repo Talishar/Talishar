@@ -353,18 +353,24 @@ if ($handle = opendir($path)) {
   }
   $response->gameInProgressCount = $gameInProgressCount;
 
-  // The pick is shared server-wide, so confirm it survived this viewer's own
-  // ban, block and friend filtering before pinning it.
-  $featured = SelectFeaturedGame($featuredCandidates);
-  if($featured !== null) {
-    foreach($response->gamesInProgress as $game) {
-      if((string)$game->gameName === $featured['gameName']) {
-        $response->featuredGame = $featured['gameName'];
-        $response->featuredMasteryLevel = $featured['masteryLevel'];
-        $response->featuredSpectators = $featured['spectators'];
-        break;
-      }
-    }
+  // The picks are shared server-wide, so confirm each one survived this
+  // viewer's own ban, block and friend filtering before pinning it.
+  $visibleGames = [];
+  foreach($response->gamesInProgress as $game) $visibleGames[(string)$game->gameName] = true;
+  $response->featuredGames = [];
+  foreach(SelectFeaturedGames($featuredCandidates) as $featured) {
+    if(!isset($visibleGames[$featured['gameName']])) continue;
+    $featuredGame = new stdClass();
+    $featuredGame->gameName = $featured['gameName'];
+    $featuredGame->masteryLevel = $featured['masteryLevel'];
+    $featuredGame->spectators = $featured['spectators'];
+    $response->featuredGames[] = $featuredGame;
+  }
+  // Kept for frontends that still read the single pinned match
+  if(!empty($response->featuredGames)) {
+    $response->featuredGame = $response->featuredGames[0]->gameName;
+    $response->featuredMasteryLevel = $response->featuredGames[0]->masteryLevel;
+    $response->featuredSpectators = $response->featuredGames[0]->spectators;
   }
 
   closedir($handle);
