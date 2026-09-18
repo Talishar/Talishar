@@ -486,22 +486,26 @@ function CardBorderColor($cardID, $from, $isPlayable, $playerID, $mod = "-", $in
       break;
   }
   if ($from == "HAND" && $isPlayable) {
-    if (
-      $dqState[4] == "Choose_a_card_to_charge" ||
-      $dqState[4] == "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" ||
-      $dqState[4] == "Choose_a_card_to_sink" ||
-      $dqState[4] == "Choose_a_card_to_sink_(or_Pass)" ||
-      $turn[0] == "ARS" ||
-      $turn[0] == "P" ||
-      $turn[0] == "PAYGOLDORPITCH" ||
-      $turn[0] == "CHOOSEHANDCANCEL"
-    ) return 8;
-    if (
-      $dqState[4] == "Choose_a_card_to_discard_(or_pass_and_lose_2_health)" ||
-      $dqState[4] == "Choose_a_card_from_your_hand_to_discard." ||
-      $dqState[4] == "Choose_a_card_to_discard" ||
-      $dqState[4] == "Choose_a_card_to_banish"
-    ) return 9;
+    static $handHighlightStates = [
+      "Choose_a_card_to_charge" => true,
+      "Choose_which_cards_to_put_on_top_of_your_deck_(or_pass)" => true,
+      "Choose_a_card_to_sink" => true,
+      "Choose_a_card_to_sink_(or_Pass)" => true,
+    ];
+    static $handHighlightTurns = [
+      "ARS" => true,
+      "P" => true,
+      "PAYGOLDORPITCH" => true,
+      "CHOOSEHANDCANCEL" => true,
+    ];
+    static $handDiscardStates = [
+      "Choose_a_card_to_discard_(or_pass_and_lose_2_health)" => true,
+      "Choose_a_card_from_your_hand_to_discard." => true,
+      "Choose_a_card_to_discard" => true,
+      "Choose_a_card_to_banish" => true,
+    ];
+    if (isset($handHighlightStates[$dqState[4]]) || isset($handHighlightTurns[$turn[0]])) return 8;
+    if (isset($handDiscardStates[$dqState[4]])) return 9;
   }
   if ($turn[0] == "B" && $isPlayable && $from != "THEIRCHAR") return $isPlayable ? 8 : 0;
 
