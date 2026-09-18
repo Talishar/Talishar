@@ -206,17 +206,41 @@ class art_of_the_dragon_fire_red extends Card {
 }
 
 
-// class art_of_the_dragon_scale_red extends Card {
+class art_of_the_dragon_scale_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "art_of_the_dragon_scale_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "art_of_the_dragon_scale_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if(TalentContains($this->cardID, "DRACONIC", $this->controller)) {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+		}
+		return "";
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		Await($this->controller, "MultiZoneIndices", search:"THEIRCHAR:type=E", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", may:true, context:"Add a -1 counter to an equipment (or pass)");
+		Await($this->controller, $this->cardID);
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$Object = MZIndexToObject($this->controller, $dqVars["MZIndex"] ?? "-");
+		if ($Object != "")
+			$Object->AddDefCounters(-1);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
 
 
 // class bite_red extends Card {

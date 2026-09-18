@@ -1168,13 +1168,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
-    case "art_of_the_dragon_claw_red":
-    case "art_of_the_dragon_scale_red":
-      if (IsHeroAttackTarget() && SearchCurrentTurnEffects($cardID, $mainPlayer)) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
-        return true;
-      }
-      break;
     case "walk_the_plank_red":
     case "walk_the_plank_yellow":
     case "walk_the_plank_blue":

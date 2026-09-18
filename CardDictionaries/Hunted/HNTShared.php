@@ -216,7 +216,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "wrath_of_retribution_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "art_of_the_dragon_blood_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "art_of_the_dragon_claw_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
-    "art_of_the_dragon_scale_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "dragon_power_red" => true,
     "dragon_power_yellow" => true,
     "dragon_power_blue" => true,
@@ -446,11 +445,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       break;
     case "art_of_the_dragon_claw_red":
-      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      break;
-    case "art_of_the_dragon_scale_red":
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
       }
@@ -973,12 +967,6 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
       break;
     case "art_of_the_dragon_claw_red":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
-      break;
-    case "art_of_the_dragon_scale_red":
-      AddDecisionQueue("FINDINDICES", $defPlayer, "EQUIP");
-      AddDecisionQueue("CHOOSETHEIRCHARACTER", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MODDEFCOUNTER", $defPlayer, "-1", 1);
-      AddDecisionQueue("DESTROYEQUIPDEF0", $mainPlayer, "-", 1);
       break;
     case "tag_the_target_red":
     case "tag_the_target_yellow":
