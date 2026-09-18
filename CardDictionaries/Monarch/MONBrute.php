@@ -8,8 +8,10 @@
       case "hexagore_the_death_hydra":
         $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
         $damage = 6 - $numBD;
-        WriteLog("Player " . $currentPlayer . " lost " . $damage . " life");
-        DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID, $currentPlayer);
+        if($damage > 0) {
+          WriteLog("Player " . $currentPlayer . " lost " . $damage . " life");
+          DamageTrigger($currentPlayer, $damage, "PLAYCARD", $cardID, $currentPlayer);
+        }
         return "";
       case "shadow_of_blasmophet_red":
         Draw($currentPlayer);
