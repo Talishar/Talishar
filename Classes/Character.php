@@ -71,6 +71,10 @@ class CharacterCard {
     return $this->CardID();
   }
 
+  function PlayerID() {
+    return $this->controller;
+  }
+
   function Become($cardID) {
     global $CS_OriginalHero;
     if ($this->index == 0 && GetClassState($this->controller, $CS_OriginalHero) == "-") {
@@ -111,6 +115,10 @@ class CharacterCard {
   function AddPowerCounters($num) {
     if (isset($this->pieces[$this->index + 3]))
       $this->pieces[$this->index + 3] = intval($this->pieces[$this->index + 3]) + intval($num);
+  }
+
+  function NumDefCounters() { //alias
+    return $this->NumDefenseCounters();
   }
 
   function NumDefenseCounters() { //also tracks damage dealt to perched allies

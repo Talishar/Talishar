@@ -67,6 +67,10 @@ class ItemCard {
     return $this->pieces[$this->index] ?? "-";
   }
 
+  function PlayerID() {
+    return $this->controller;
+  }
+
   function NumCounters() {
     return $this->pieces[$this->index+1] ?? 0;
   }
