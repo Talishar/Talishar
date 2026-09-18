@@ -716,8 +716,11 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   $characterPieces = CharacterPieces();
   $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
   for ($i = 0; $i < $mainCharCount; $i += $characterPieces) {
-    if (!IsCharacterAbilityActive($mainPlayer, $i)) continue;
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
+    if ($characterID == "tiger_stripe_shuko") {
+      if (($mainCharacter[$i + 12] ?? "DOWN") == "DOWN" || ($mainCharacter[$i + 1] ?? 0) == 0) continue;
+    }
+    elseif (!IsCharacterAbilityActive($mainPlayer, $i)) continue;
     $card = GetClass($characterID, $mainPlayer);
     if ($card != "-") $modifier += $card->PermanentPowerModifier($powerModifiers);
     switch ($characterID) {
