@@ -806,7 +806,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "pursuit_of_knowledge_blue"=>true,
     "cadaverous_contraband_red"=>true,"cadaverous_contraband_yellow"=>true,"cadaverous_contraband_blue"=>true,
     "fervent_forerunner_red"=>true,"fervent_forerunner_yellow"=>true,"fervent_forerunner_blue"=>true,
-    "moon_wish_red"=>true,"moon_wish_yellow"=>true,"moon_wish_blue"=>true,
     "rifting_red"=>true,"rifting_yellow"=>true,"rifting_blue"=>true,
     "soulbead_strike_red"=>true,"soulbead_strike_yellow"=>true,"soulbead_strike_blue"=>true,
     "torrent_of_tempo_red"=>true,"torrent_of_tempo_yellow"=>true,"torrent_of_tempo_blue"=>true,

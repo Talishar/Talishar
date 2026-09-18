@@ -1359,44 +1359,68 @@ class cognition_nodes_blue extends Card {
 //   }
 // }
 
+class moon_wish extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect("moon_wish_red-GA", $this->controller);
+		return "";
+	}
 
-// class moon_wish_red extends Card {
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return AnyHitTrigger($this->controller, $this->cardID, $check);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "moon_wish_red";
-//     $this->controller = $controller;
-//     }
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		MZMoveCard($this->controller, "MYDECK:isSameName=sun_kiss_red", "MYHAND", may:true, isReveal:true);
+      	AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+		$Effect = new CurrentEffect($index);
+		if ($Effect->EffectID() == $this->cardID) {
+			$remove = true;
+			return true;
+		}
+		else
+			return false;
+	}
+
+	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+		HandToTopDeck($this->controller);
+      	AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
+	}
+
+	function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+		if (str_contains($cardID, "sun_kiss") && $parameter == "GA") {
+			return true;
+		}
+		return false;
+	}
+}
+
+class moon_wish_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "moon_wish_red";
+		$this->controller = $controller;
+		$this->baseCard = new moon_wish($this->cardID, $this->controller);
+    }
+}
 
 
-// class moon_wish_yellow extends Card {
+class moon_wish_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "moon_wish_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new moon_wish($this->cardID, $this->controller);
+    }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "moon_wish_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class moon_wish_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "moon_wish_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class moon_wish_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "moon_wish_blue";
+		$this->controller = $controller;
+		$this->baseCard = new moon_wish($this->cardID, $this->controller);
+    }
+}
 
 
 // class mordred_tide_red extends Card {
