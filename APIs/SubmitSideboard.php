@@ -65,15 +65,6 @@ function ReadDeckCharacterLine($gameName, $playerID)
   return $firstLine;
 }
 
-function JoinCardList($items)
-{
-  $count = count($items);
-  if ($count === 0) return "no arena cards";
-  if ($count === 1) return $items[0];
-  $last = array_pop($items);
-  return implode(", ", $items) . " and " . $last;
-}
-
 function LogArenaReveal($gameName)
 {
   global $isReactFE;
@@ -81,18 +72,6 @@ function LogArenaReveal($gameName)
   $isReactFE = true;
 
   WriteLog("Both players have locked in their arena cards.", path: "../");
-  for ($p = 1; $p <= 2; ++$p) {
-    $character = ReadDeckCharacterLine($gameName, $p);
-    $cards = ($character === "" ? [] : preg_split('/\s+/', $character));
-    array_shift($cards); // hero
-    $links = [];
-    foreach ($cards as $cardID) {
-      if ($cardID === "" || $cardID === "NONE00") continue;
-      $links[] = CardLink($cardID);
-    }
-    $name = "<span style='color:<PLAYER" . $p . "COLOR>;'>Player " . $p . "</span>";
-    WriteLog($name . " revealed: " . JoinCardList($links), path: "../");
-  }
 
   $isReactFE = $previousIsReactFE;
 }

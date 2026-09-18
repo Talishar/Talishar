@@ -306,11 +306,13 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $otherUid = ($playerID == 1 ? $p2uid : $p1uid);
   $otherSeatOccupied = ($otherUid !== "" && $otherUid !== "-");
   $deckFile = "../Games/" . $gameName . "/p" . $otherPlayer . "Deck.txt";
+  $otherCharacterLine = "";
   if ($otherSeatOccupied && file_exists($deckFile)) {
     $handler = fopen($deckFile, "r");
     $firstLine = trim(fgets($handler));
     fclose($handler);
     if ($firstLine !== '') {
+      $otherCharacterLine = $firstLine;
       $spacePos = strpos($firstLine, ' ');
       $otherHero = $spacePos !== false ? substr($firstLine, 0, $spacePos) : $firstLine;
     }
@@ -364,6 +366,29 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->isEquipmentPhase = ($gameStatus < $MGS_GameStarted && !$arenaRevealed);
   $response->canSubmitEquipment = ($inPreGame && !$arenaRevealed && !$myEquipmentSubmitted);
   $response->canUnreadyEquipment = ($inPreGame && !$arenaRevealed && $myEquipmentSubmitted);
+
+  if ($arenaRevealed && $otherCharacterLine !== "") {
+    $otherCards = preg_split('/\s+/', $otherCharacterLine);
+    array_shift($otherCards); // hero
+    $theirArena = new stdClass();
+    $theirArena->weapons = [];
+    $modularZones = ["head", "chest", "arms", "legs"];
+    $nextModularZone = 0;
+    foreach ($otherCards as $cardID) {
+      if ($cardID === "" || $cardID === "NONE00") continue;
+      $subtype = CardSubtype($cardID);
+      if (DelimStringContains($subtype, "Head")) { $theirArena->head = $cardID; $nextModularZone = max($nextModularZone, 1); }
+      elseif (DelimStringContains($subtype, "Chest")) { $theirArena->chest = $cardID; $nextModularZone = max($nextModularZone, 2); }
+      elseif (DelimStringContains($subtype, "Arms")) { $theirArena->arms = $cardID; $nextModularZone = max($nextModularZone, 3); }
+      elseif (DelimStringContains($subtype, "Legs")) { $theirArena->legs = $cardID; $nextModularZone = 4; }
+      elseif (IsModular($cardID) && $nextModularZone < 4) {
+        $zone = $modularZones[$nextModularZone++];
+        $theirArena->{$zone} = $cardID;
+      }
+      else $theirArena->weapons[] = $cardID;
+    }
+    $response->theirArena = $theirArena;
+  }
 
   if($p1IsAI || $p2IsAI) {
     $response->canSubmitSideboard =($gameStatus > $MGS_ChooseFirstPlayer && ($playerID == 1 ? $p1SideboardSubmitted == "0" : $p2SideboardSubmitted == "0"));
