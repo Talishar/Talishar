@@ -114,8 +114,13 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if(TalentContains($cardID, "EARTH", $player)) {
     ++$classState[$CS_NumEarthBanished];
   }
-  if (HasBloodDebt($cardID) && ($banisher == $player || $banisher == "-"))
-    IncrementClassState($player, $CS_NumBloodDebtBanished);
+  if (HasBloodDebt($cardID)) {
+    IncrementClassState($banisher, $CS_NumBloodDebtBanished);
+    $Allies = new Allies($banisher);
+    $Blasmo = $Allies->FindCardID("blasmophet_the_insatiable_hunger");
+    if ($Blasmo->Index() != -1 && GetClassState($banisher, $CS_NumBloodDebtBanished) == 1)
+      WriteLog(CardLink("blasmophet_the_insatiable_hunger") . " has been fed and will stay around this turn. 🥩");
+  }
   if (TypeContains($cardID, "E", $player) && ($from == "EQUIP" || $from == "CC")) {
     $charIndex = FindCharacterIndex($player, $cardID);
     if ($charIndex == -1) {
