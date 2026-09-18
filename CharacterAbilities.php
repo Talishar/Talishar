@@ -1,87 +1,5 @@
 <?php
 
-//0 - Card ID
-//1 - Status (2=ready, 1=unavailable, 0=destroyed)
-//2 - Num counters
-//3 - Num power counters
-//4 - Num defense counters
-//5 - Num uses
-//6 - On chain (1 = yes, 0 = no)
-//7 - Flagged for destruction (1 = yes, 0 = no)
-//8 - Frozen (1 = yes, 0 = no)
-//9 - Is Active (2 = always active, 1 = yes, 0 = no)
-//10 - Subcards , delimited
-//11 - Unique ID
-//12 - Face Up/Down
-class Character {
-  // property declaration
-  public $cardID = "";
-  public $status = 2;
-  public $numCounters = 0;
-  public $numPowerCounters = 0;
-  public $numDefenseCounters = 0;
-  public $numUses = 0;
-  public $onChain = 0;
-  public $flaggedForDestruction = 0;
-  public $frozen = 0;
-  public $isActive = 2;
-  public $subCards = "";
-  public $uniqueID = 0;
-  public $facing = "UP";
-  public $marked = 0;
-  public $tapped = 0;
-  public $slot = "-";
-
-
-  private $player = null;
-  private $arrIndex = -1;
-
-  public function __construct($player, $index)
-  {
-    $this->player = $player;
-    $this->arrIndex = $index;
-    $array = &GetPlayerCharacter($player);
-
-    $this->cardID = $array[$index];
-    $this->status = $array[$index + 1];
-    $this->numCounters = $array[$index + 2];
-    $this->numPowerCounters = $array[$index + 3];
-    $this->numDefenseCounters = $array[$index + 4];
-    $this->numUses = $array[$index + 5];
-    $this->onChain = $array[$index + 6];
-    $this->flaggedForDestruction = $array[$index + 7];
-    $this->frozen = $array[$index + 8];
-    $this->isActive = $array[$index + 9];
-    $this->subCards = $array[$index + 10];
-    $this->uniqueID = $array[$index + 11];
-    $this->facing = $array[$index + 12];
-    $this->marked = $array[$index + 13];
-    $this->tapped = $array[$index + 14];
-    $this->slot = $array[$index + 15];
-  }
-
-  public function Finished()
-  {
-    $array = &GetPlayerCharacter($this->player);
-    $array[$this->arrIndex] = $this->cardID;
-    $array[$this->arrIndex + 1] = $this->status;
-    $array[$this->arrIndex + 2] = $this->numCounters;
-    $array[$this->arrIndex + 3] = $this->numPowerCounters;
-    $array[$this->arrIndex + 4] = $this->numDefenseCounters;
-    $array[$this->arrIndex + 5] = $this->numUses;
-    $array[$this->arrIndex + 6] = $this->onChain;
-    $array[$this->arrIndex + 7] = $this->flaggedForDestruction;
-    $array[$this->arrIndex + 8] = $this->frozen;
-    $array[$this->arrIndex + 9] = $this->isActive;
-    $array[$this->arrIndex + 10] = $this->subCards;
-    $array[$this->arrIndex + 11] = $this->uniqueID;
-    $array[$this->arrIndex + 12] = $this->facing;
-    $array[$this->arrIndex + 13] = $this->marked;
-    $array[$this->arrIndex + 14] = $this->tapped;
-    $array[$this->arrIndex + 15] = $this->slot;
-  }
-}
-
 function PutCharacterIntoPlayForPlayer($cardID, $player, $slot="-")
 {
   $char = &GetPlayerCharacter($player);
@@ -118,29 +36,28 @@ function CharacterStartTurnAbility($index)
   global $mainPlayer, $CS_TunicTicks;
   $character = &GetPlayerCharacter($mainPlayer);
   if ($character[$index + 1] != 2) return;
-  $char = new Character($mainPlayer, $index);
-  $cardID = $char->cardID;
+  $char = new CharacterCard($index, $mainPlayer);
+  $cardID = $char->CardID();
   if ($index == 0) $cardID = ShiyanaCharacter($cardID);
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") $card->StartTurnAbility($index);
   switch ($cardID) {
     case "fyendals_spring_tunic":
       if (!ManualTunicSetting($mainPlayer)) {
-        if ($char->numCounters < 3) {
-          ++$char->numCounters;
+        if ($char->NumCounters() < 3) {
+          $char->AddCounters(1);
           IncrementClassState($mainPlayer, $CS_TunicTicks);
         }
-        $char->Finished();
       }
       break;
     case "shiyana_diamond_gemini":
-      AddLayer("TRIGGER", $mainPlayer, $char->cardID);
+      AddLayer("TRIGGER", $mainPlayer, $char->CardID());
       break;
     case "carrion_husk":
       if (GetHealth($mainPlayer) <= 13) {
-        $char->status = 0;
-        BanishCardForPlayer($char->cardID, $mainPlayer, "EQUIP", "NA");
-        WriteLog(CardLink($char->cardID, $char->cardID) . " got banished for having 13 or less life");
+        $charID = $char->CardID();
+        BanishCardForPlayer($charID, $mainPlayer, "EQUIP", "NA");
+        WriteLog(CardLink($charID, $charID) . " got banished for having 13 or less life");
       }
       break;
     case "bravo_star_of_the_show":
@@ -1387,15 +1304,11 @@ function EquipPayAdditionalCosts($cardIndex)
     case "radiant_raiment":
     case "radiant_touch":
     case "radiant_flow":
-      $char = new Character($currentPlayer, $cardIndex);
-      $char->status = 0;
-      BanishCardForPlayer($char->cardID, $currentPlayer, "EQUIP", "NA");
+      BanishCardForPlayer((new CharacterCard($cardIndex, $currentPlayer))->CardID(), $currentPlayer, "EQUIP", "NA");
       BanishFromSoul($currentPlayer);
       break;
     case "spoiled_skull":
-      $char = new Character($currentPlayer, $cardIndex);
-      $char->status = 0;
-      BanishCardForPlayer($char->cardID, $currentPlayer, "EQUIP", "NA");
+      BanishCardForPlayer((new CharacterCard($cardIndex, $currentPlayer))->CardID(), $currentPlayer, "EQUIP", "NA");
       break;
     case "flail_of_agony":
       PlayerLoseHealth(1, $currentPlayer, true);

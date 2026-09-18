@@ -11,9 +11,8 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       if($abilityType == "A")
       {
         $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        $character = new Character($currentPlayer, $index);
-        $character->numCounters = 1;
-        $character->Finished();
+        $character = new CharacterCard($index, $currentPlayer);
+        $character->SetCounters(1);
       }
       return "";
     case "teklo_foundry_heart":
