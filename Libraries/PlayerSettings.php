@@ -1,6 +1,7 @@
 <?php
 
 include_once __DIR__ . '/../Assets/AllAltArtVariations.php';
+include_once __DIR__ . '/FormatCodes.php';
 
 $SET_AlwaysHoldPriority = 0;
 $SET_TryUI2 = 1;
@@ -764,62 +765,6 @@ function SaveSettingInDatabase($setting)
     ], true);
   }
   return isset($persistable[$setting]);
-}
-
-function FormatCode($format)
-{
-  static $formatMap = [
-    "cc" => 0,
-    "compcc" => 1,
-    "blitz" => 2,
-    "compblitz" => 3,     //Currently not used
-    "futurecc" => 4,
-    "commoner" => 5,
-    "sealed" => 6,
-    "draft" => 7,
-    "llcc" => 8,
-    "llblitz" => 9,       //Currently not used
-    "openformatblitz" => 10, //Currently not used
-    "clash" => -1,
-    "futurell" => 11,     //Currently not used
-    "openformatllblitz" => 12, //Currently not used
-    "compllcc" => 13,
-    "sage" => 14,
-    "compsage" => 15,
-    "futuresage" => 16,
-    "open" => 17,
-    "gage" => 18,
-    "precon" => -2,
-  ];
-  return $formatMap[$format] ?? -1;
-}
-
-function FormatName($formatCode)
-{
-  static $nameMap = [
-    0 => "cc",
-    1 => "compcc",
-    2 => "blitz",
-    3 => "compblitz",     //Currently not used
-    4 => "futurecc",
-    5 => "commoner",
-    6 => "sealed",
-    7 => "draft",
-    8 => "llcc",
-    9 => "llblitz",       //Currently not used
-    10 => "openformatblitz",
-    -1 => "clash",
-    11 => "futurell",
-    12 => "openformatllblitz", //Currently not used
-    13 => "compllcc",
-    14 => "sage",
-    15 => "compsage",
-    16 => "futuresage",
-    17 => "open",
-    18 => "gage",
-    -2 => "precon",
-  ];
-  return $nameMap[$formatCode] ?? "-";
 }
 
 //Campaign supporter rosters live in PatreonDictionary.php

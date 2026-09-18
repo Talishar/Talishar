@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . '/Libraries/FormatCodes.php';
+
 $Card_CourageBanner = "banneret_of_courage_yellow";
 $Card_QuickenBanner = "banneret_of_gallantry_yellow";
 $Card_SpellbaneBanner = "banneret_of_protection_yellow";
@@ -15,10 +17,10 @@ $GameStatus_SwapRematch = 4;
 // Multi-level undo configuration - Maximum number of undo backups to maintain
 define("MAX_UNDO_BACKUPS", 10);
 
-// Game format codes (must match FormatCode() in PlayerSettings.php)
-define("FORMAT_SEALED", 6);
-define("FORMAT_DRAFT", 7);
-define("FORMAT_OPEN", 17);
+// Game format codes
+define("FORMAT_SEALED", FormatCode("sealed"));
+define("FORMAT_DRAFT", FormatCode("draft"));
+define("FORMAT_OPEN", FormatCode("open"));
 
 function DeckPieces()
 {
