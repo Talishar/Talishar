@@ -145,13 +145,7 @@ if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== 
 
     $snapshotName = "replayStep_$currentPointer.txt";
     if (SaveGamestateSnapshot($filepath . $snapshotName)) {
-      $historyFilename = $filepath . "replayStepHistory.json";
-      $history = file_exists($historyFilename)
-        ? json_decode(file_get_contents($historyFilename), true)
-        : [];
-      if (!is_array($history)) $history = [];
-      $history[(string)$pointer] = $currentPointer;
-      file_put_contents($historyFilename, json_encode($history), LOCK_EX);
+      RecordReplayStep($filepath, $pointer, $currentPointer);
     }
     $commands[0] = "$pointer\r\n";
     file_put_contents($filename, $commands, LOCK_EX);
@@ -160,11 +154,8 @@ if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== 
   }
 
   if ((int)$mode === 10023) {
-    $historyFilename = $filepath . "replayStepHistory.json";
-    $history = file_exists($historyFilename)
-      ? json_decode(file_get_contents($historyFilename), true)
-      : [];
-    $previousPointer = is_array($history) ? ($history[(string)$currentPointer] ?? null) : null;
+    $history = ReadReplayStepHistory($filepath);
+    $previousPointer = $history[(string)$currentPointer] ?? null;
     if (!is_int($previousPointer) && !ctype_digit((string)$previousPointer)) exit;
     $previousPointer = (int)$previousPointer;
     $gamestate = @file_get_contents($filepath . "replayStep_$previousPointer.txt");
@@ -234,13 +225,7 @@ if (IsReplay() && $mode == 99) {
   }
   $snapshotName = "replayStep_$currentPointer.txt";
   if (SaveGamestateSnapshot($filepath . $snapshotName)) {
-    $historyFilename = $filepath . "replayStepHistory.json";
-    $history = file_exists($historyFilename)
-      ? json_decode(file_get_contents($historyFilename), true)
-      : [];
-    if (!is_array($history)) $history = [];
-    $history[(string)$pointer] = $currentPointer;
-    file_put_contents($historyFilename, json_encode($history), LOCK_EX);
+    RecordReplayStep($filepath, $pointer, $currentPointer);
   }
   $commands[0] = "$pointer\r\n";
   file_put_contents($filename, $commands);

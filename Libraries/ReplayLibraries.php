@@ -34,6 +34,26 @@ function ReplayStateFilename(string $directory, int $pointer): string
   return rtrim($directory, "/\\") . "/replayState_$pointer.txt.gz";
 }
 
+function ReplayStepHistoryFilename(string $directory): string
+{
+  return rtrim($directory, "/\\") . "/replayStepHistory.json";
+}
+
+function ReadReplayStepHistory(string $directory): array
+{
+  $filename = ReplayStepHistoryFilename($directory);
+  if (!file_exists($filename)) return [];
+  $history = json_decode((string)@file_get_contents($filename), true);
+  return is_array($history) ? $history : [];
+}
+
+function RecordReplayStep(string $directory, int $pointer, int $previousPointer): void
+{
+  $history = ReadReplayStepHistory($directory);
+  $history[(string)$pointer] = $previousPointer;
+  file_put_contents(ReplayStepHistoryFilename($directory), json_encode($history), LOCK_EX);
+}
+
 function ReplayCommandCount(string $commandFilename): int
 {
   if (!file_exists($commandFilename)) return 0;
