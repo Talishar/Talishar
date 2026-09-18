@@ -2833,7 +2833,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
           LoseHealth($remorselessCount, $playerID);
         }
       }
-      if (CardNameContains($cardID, "Moon Wish", $currentPlayer)) AddCurrentTurnEffect("moon_wish_red-GA", $currentPlayer);
 
       // Cache values for Illusionist checks
       $classContainsIllusionist = ClassContains($cardID, "ILLUSIONIST", $currentPlayer);
@@ -3434,12 +3433,6 @@ function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
         AddDecisionQueue("LORDOFWIND", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-", 1);
       }
-      break;
-    case "moon_wish_red":
-    case "moon_wish_yellow":
-    case "moon_wish_blue":
-      HandToTopDeck($currentPlayer);
-      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "moon_wish_red", 1);
       break;
     case "cash_in_yellow":
       if (CountItem("copper", $currentPlayer) >= 4) //Copper

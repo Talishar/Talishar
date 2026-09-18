@@ -3454,7 +3454,6 @@ function IsAlternativeCostPaid($cardID, $from)
     if ($card != "-") $isAlternativeCostPaid = $isAlternativeCostPaid || $card->CurrentTurnEffectPaid($cardID, $from, $remove, $i);
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
-        case "moon_wish_red":
         case "cash_in_yellow":
         case "soul_reaping_red":
         case "rise_above_red":
