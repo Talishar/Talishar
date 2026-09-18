@@ -81,15 +81,23 @@ if($handler) {
   $response->deck->demiHero = [];
   $response->deck->modular = [];
   $charCount = count($character);
+  $modularZones = ["head", "chest", "arms", "legs"];
+  $nextModularZone = 0;
   for($i = 1; $i < $charCount; ++$i) {
     if (!isset($character[$i])) continue;
     $cardID = $character[$i];
     $subtype = CardSubtype($cardID); // compute once; reused for all slot checks
-    if (DelimStringContains($subtype, "Head")) $response->deck->head[] = $cardID;
-    else if (DelimStringContains($subtype, "Chest")) $response->deck->chest[] = $cardID;
-    else if (DelimStringContains($subtype, "Arms")) $response->deck->arms[] = $cardID;
-    else if (DelimStringContains($subtype, "Legs")) $response->deck->legs[] = $cardID;
-    else if (IsModular($cardID)) $response->deck->modular[] = $cardID;
+    if (DelimStringContains($subtype, "Head")) { $response->deck->head[] = $cardID; $nextModularZone = max($nextModularZone, 1); }
+    else if (DelimStringContains($subtype, "Chest")) { $response->deck->chest[] = $cardID; $nextModularZone = max($nextModularZone, 2); }
+    else if (DelimStringContains($subtype, "Arms")) { $response->deck->arms[] = $cardID; $nextModularZone = max($nextModularZone, 3); }
+    else if (DelimStringContains($subtype, "Legs")) { $response->deck->legs[] = $cardID; $nextModularZone = 4; }
+    else if (IsModular($cardID)) {
+      if ($nextModularZone < 4) {
+        $zone = $modularZones[$nextModularZone++];
+        $response->deck->{$zone}[] = $cardID;
+      }
+      else $response->deck->modular[] = $cardID;
+    }
     else {
       $handItem = new stdClass();
       $handItem->id = $cardID;
@@ -182,7 +190,7 @@ if($handler) {
     $response->deck->handsSB[] = $handItem;
   }
 
-  $response->deck->modular = GetArray($handler);
+  $response->deck->modular = array_merge($response->deck->modular, GetArray($handler));
 
   $cardIndex = [];
   $response->deck->cardDictionary = [];
