@@ -89,16 +89,14 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   $allies = &GetAllies($player);
   $allyPieces = AllyPieces();
   if ($index % $allyPieces != 0 || !isset($allies[$index + $allyPieces - 1])) return "";
-  $otherPlayer = 3 - $player;
-  $owner = (($allies[$index+14] ?? "") == "Temporary") ? $otherPlayer : $player;
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   $cardID = $allies[$index];
   RemoveAllyEffects($player, $cardID, $uniqueID);
   if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep() && !$skipClose) {
     CloseCombatChain();
   }
-  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished, mod:$mod, index:$index);
-  AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished, mod:$mod);
+  AllyAddGraveyard($player, $cardID, toBanished:$toBanished, mod:$mod, index:$index);
+  AllyAddGraveyard($player, $allies[$index + 4], toBanished:$toBanished, mod:$mod);
   RemoveAllyBoundAuras($player, $index);
   array_splice($allies, $index, $allyPieces);
   return $cardID;
@@ -130,9 +128,15 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-", $index=
 {
   if ($cardID == "-") return;
   $AllyCard = new AllyCard($index, $player);
+  $owner = $player;
+  if ($AllyCard->Modifier() == "Temporary")
+    $owner = $owner == 1 ? 2 : 1;
+  if (str_contains($AllyCard->From(), "THEIR"))
+    $owner = $owner == 1 ? 2 : 1;
+  $from = $owner == $player ? "PLAY" : "THEIRPLAY";
   $uid = $AllyCard->Index() != -1 ? $AllyCard->UniqueID() : "-";
   if (!TypeContains($cardID, "T")) {
-    if (SubtypeContains($cardID, "Ash", $player)) AddGraveyard($cardID, $player, "PLAY", $player);
+    if (SubtypeContains($cardID, "Ash", $owner)) AddGraveyard($cardID, $owner, $from, $player);
     $card = GetClass($cardID, $player);
     if ($card != "-" && $id = $card->Frontside());
     else $id = match($cardID) {
@@ -161,8 +165,8 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-", $index=
       "sticky_fingers_ally" => "sticky_fingers",
       default => $cardID
     };
-    if (!$toBanished) AddGraveyard($id, $player, "PLAY", $player, uniqueID:$uid);
-    else BanishCardForPlayer($id, $player, "PLAY", $mod);
+    if (!$toBanished) AddGraveyard($id, $owner, $from, $player, uniqueID:$uid);
+    else BanishCardForPlayer($id, $owner, $from, $mod);
   }
 }
 
