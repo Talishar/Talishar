@@ -782,7 +782,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           //Add indication for equipped cards defending on the current chain link
           if ($option0 == "COMBATCHAINLINK") {
             $Object = new ChainCard($optionIndex);
-            if ($Object->From() == "EQUIP") $label = "EQUIPPED";
+            if ($Object->From() == "EQUIP") $label = "Equipped";
           }
           //Add indication for Attacking Mechanoid
           if ($option0 == "CC" || $option0 == "LAYER") {
