@@ -1857,6 +1857,7 @@ function CharacterPitchCardAbilities($player, $index) {
   $numCards = $Character->NumCards();
   for ($i = 0; $i < $numCards; ++$i) {
     $CharacterCard = $Character->Card($i, true);
+    if ($CharacterCard->Status() != 2) continue;
     $card = GetClass($CharacterCard->CardID(), $player);
     if ($card != "-") $card->PermanentPitchCardAbility($index);
   }
