@@ -15,7 +15,6 @@ class meet_madness_red extends Card {
     	if(IsHeroAttackTarget()) {
 			if (!$check) {
 				$roll = GetRandom(1,3);
-				$roll = 3;
 				switch ($roll) {
 					case 1:
 						WriteLog("🌪️ The madness says <b>\"Banish a card from hand!\"</b>");
