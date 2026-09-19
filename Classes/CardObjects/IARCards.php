@@ -6206,7 +6206,7 @@ class headstrong extends BaseCard {
 
   function ProcessAttackTrigger() {
     $deck = new Deck($this->controller);
-    if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $this->controller, "DECK", source: $this->cardID) >= 6)
+    if ($deck->Reveal() && ModifiedPowerValue($deck->Top(), $this->controller, "DECK", source: $this->cardID, base:true) >= 6)
       AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 }
