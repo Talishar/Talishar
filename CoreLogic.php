@@ -2370,7 +2370,6 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
 
   //Prevention Grant Go Again
   if (SearchAuras("hypothermia_blue", $mainPlayer)) return false;
-
   //Grant go Again
   $auras = &GetAuras($mainPlayer);
   $Auras = new Auras($mainPlayer);

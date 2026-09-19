@@ -1385,15 +1385,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
         return true;
       }
       return false;
-    case "razor_reflex_red":
-    case "razor_reflex_yellow":
-    case "razor_reflex_blue":
-      if ($sourceIsAA)
-      {
-        if(!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-        return true;
-      }
-      return false;
     case "warriors_valor_red":
     case "warriors_valor_yellow":
     case "warriors_valor_blue":

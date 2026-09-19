@@ -28,9 +28,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "warriors_valor_red":
     case "warriors_valor_yellow":
     case "warriors_valor_blue":
-    case "razor_reflex_red":
-    case "razor_reflex_yellow":
-    case "razor_reflex_blue":
     case "light_the_way_red":
     case "light_the_way_yellow":
     case "light_the_way_blue":

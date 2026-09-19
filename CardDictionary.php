@@ -2503,15 +2503,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       $isHammer = SubtypeContains($attackID, "Hammer");
       if ($isClub || $isHammer || CardType($attackID) == "AA" && CardCost($attackID, "CC") >= 2 || GetCombatChainState($CCS_AttackCost) >= 2) return false;
       return true;
-    case "razor_reflex_red":
-    case "razor_reflex_yellow":
-    case "razor_reflex_blue":
-      if (!$CombatChain->HasCurrentLink()) return true;
-      $subtype = CardSubtype($attackID);
-      $attackCost = GetCombatChainState($CCS_AttackCost);
-      if ($attackCost == -1) $attackCost = CardCost($attackID, "CC");
-      if ($subtype == "Sword" || $subtype == "Dagger" || CardType($attackID) == "AA" && $attackCost <= 1) return false;
-      return true;
     case "teklo_plasma_pistol":
     case "plasma_barrel_shot":
       return GetAbilityNames($cardID, $index, $from) == "-";

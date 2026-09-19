@@ -2038,44 +2038,83 @@ class quicken extends Card {
 //   }
 // }
 
+class razor_reflex extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect("$this->cardID-BUFF", $this->controller);
+    return "";
+  }
 
-// class razor_reflex_red extends Card {
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain, $CCS_AttackCost;
+    $attackID = $CombatChain->AttackCard()->ID();
+    if (!$CombatChain->HasCurrentLink()) return true;
+    $subtype = CardSubtype($attackID);
+    $attackCost = GetCombatChainState($CCS_AttackCost);
+    if ($attackCost == -1) $attackCost = CardCost($attackID, "CC");
+    if ($subtype == "Sword" || $subtype == "Dagger" || CardType($attackID) == "AA" && $attackCost <= 1) return false;
+    return true;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "razor_reflex_red";
-//     $this->controller = $controller;
-//     }
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    $sourceIsAA = CardType($source) == "AA";
+    if ($sourceIsAA && $fromCombat)
+      AnyHitTrigger($this->controller, $this->cardID, $check, true);
+    return false;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return $param == "GOAGAIN";
+  }
+}
+
+class razor_reflex_red extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "razor_reflex_red";
+    $this->controller = $controller;
+    $this->baseCard = new razor_reflex($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 3 : 0;
+  }
+}
 
 
-// class razor_reflex_yellow extends Card {
+class razor_reflex_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "razor_reflex_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "razor_reflex_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new razor_reflex($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 2 : 0;
+  }
+}
 
 
-// class razor_reflex_blue extends Card {
+class razor_reflex_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "razor_reflex_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "razor_reflex_blue";
+    $this->controller = $controller;
+    $this->baseCard = new razor_reflex($this->cardID, $this->controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "BUFF" ? 1 : 0;
+  }
+}
 
 
 // class reckless_swing_blue extends Card {
