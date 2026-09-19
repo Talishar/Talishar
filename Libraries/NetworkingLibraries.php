@@ -1803,7 +1803,7 @@ function ResolveChainLink()
     $target = explode("-", $reorderedTargets[$i], 2);
     if ($target[0] == "THEIRALLY") {
       $index = intval($target[1]);
-      if ($target[1] != "") { //check to make sure target is still there
+      if (substr($target[1], 0, 2) != "-1") { //check to make sure target is still there
         $allies = &GetAllies($defPlayer);
         $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
         if ($totalPower > 0)
