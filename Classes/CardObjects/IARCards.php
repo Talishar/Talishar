@@ -1819,6 +1819,10 @@ class hex_gauntlet extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     BanishCardForPlayer($this->cardID, $this->controller, "EQUIP");
   }
+
+  function DefaultActiveState() {
+    return 1;
+  }
 }
 
 class appalling_bearers extends Card {
