@@ -5395,7 +5395,7 @@ class peak_power extends BaseCard {
       $Deck = new Deck($this->controller);
       $cardID = $Deck->Top();
       $Deck->Reveal(1);
-      if (ModifiedPowerValue($cardID, $this->controller, "DECK") >= 6)
+      if (ModifiedPowerValue($cardID, $this->controller, "DECK", base:true) >= 6)
         AddCurrentTurnEffect($this->cardID, $this->controller);
     }
   }
