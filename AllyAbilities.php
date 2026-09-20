@@ -474,11 +474,21 @@ function AllyBeginEndPhaseTriggers() {
   global $mainPlayer, $defPlayer;
   $Allies = new Allies($mainPlayer);
   $allyCount = $Allies->NumAllies();
+  // check for restless templar first
+  for ($i = 0; $i < $allyCount; ++$i) {
+    $AllyCard = $Allies->Card($i, true);
+    if ($AllyCard->CardID() == "restless_templar_red")  {
+      $card = GetClass($AllyCard->CardID(), $mainPlayer);
+      if ($card != "-")
+        AddLayer("TRIGGER", $mainPlayer, "DECAY", $AllyCard->UniqueID());
+    }
+  }
+
   for ($i = 0; $i < $allyCount; ++$i) {
     $AllyCard = $Allies->Card($i, true);
     $card = GetClass($AllyCard->CardID(), $mainPlayer);
     if ($card != "-") {
-      if ($card->HasDecay())
+      if ($card->HasDecay() && $AllyCard->CardID() != "restless_templar_red")
         AddLayer("TRIGGER", $mainPlayer, "DECAY", $AllyCard->UniqueID());
       $card->PermanentEndPhaseAbility($i);
     }
