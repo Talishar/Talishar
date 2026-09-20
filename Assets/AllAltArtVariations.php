@@ -443,5 +443,8 @@ function GetAllAltArtVariations(): array
     "restless_steed_red=IAR089-T",
     "outed_red=HNT235-T",
     "levia_shadowborn_abomination=MON119-T",
+    "soul_harvest_blue=MON198-T",
+    "blood_harvest=IAR005-T",
+    "cleave_the_heavens_red=IAR020-T",
   ];
 }
