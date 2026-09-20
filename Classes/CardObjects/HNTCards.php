@@ -169,17 +169,32 @@
 // }
 
 
-// class art_of_the_dragon_claw_red extends Card {
+class art_of_the_dragon_claw_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "art_of_the_dragon_claw_red";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "art_of_the_dragon_claw_red";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if(TalentContains($this->cardID, "DRACONIC", $this->controller)) {
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+		}
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $defPlayer;
+		DestroyArsenal($defPlayer, effectController:$this->controller);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
 
 
 class art_of_the_dragon_fire_red extends Card {

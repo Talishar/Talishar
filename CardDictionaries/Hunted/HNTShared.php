@@ -215,7 +215,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "two_sides_to_the_blade_red" => true,
     "wrath_of_retribution_red" => SubtypeContains($attackID, "Dagger", $mainPlayer),
     "art_of_the_dragon_blood_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
-    "art_of_the_dragon_claw_red" => TalentContains($attackID, "DRACONIC", $mainPlayer),
     "dragon_power_red" => true,
     "dragon_power_yellow" => true,
     "dragon_power_blue" => true,
@@ -442,11 +441,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       $uniqueID = $CombatChain->AttackCard()->UniqueID();
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
         AddCurrentTurnEffect("$cardID-$uniqueID", $currentPlayer);
-      }
-      break;
-    case "art_of_the_dragon_claw_red":
-      if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
       }
       break;
     case "dragon_power_red":
@@ -964,9 +958,6 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
         SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-"); 
         BanishCardForPlayer("devotion_never_dies_red", $mainPlayer, "COMBATCHAIN", "TT", $mainPlayer); # throw Devotion Never Dies to banish. it can be played this turn (TT)
       }
-      break;
-    case "art_of_the_dragon_claw_red":
-      DestroyArsenal($defPlayer, effectController:$mainPlayer);
       break;
     case "tag_the_target_red":
     case "tag_the_target_yellow":
