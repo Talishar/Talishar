@@ -1,14 +1,6 @@
 <?php
 
-include "../HostFiles/Redirector.php";
-include "../Libraries/HTTPLibraries.php";
-SetHeaders();
-
-// Handle CORS preflight requests
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-  http_response_code(200);
-  exit;
-}
+include_once __DIR__ . '/../includes/ApiBootstrap.php';
 
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../CardDictionary.php";

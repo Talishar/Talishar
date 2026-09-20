@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . '/../includes/MetafyCommunitiesQuery.php';
+
 // Shared cosmetic-entitlement computation, used by GetCosmetics.php (in-game options)
 // and by the per-deck cosmetic save/read endpoints, so both derive the same
 // "what has this user actually unlocked" answer from a single implementation.
@@ -56,70 +58,41 @@ function GetUserCosmeticsEntitlements($userName)
     }
 
     // Add Metafy community benefits
-    $conn = GetDBConnection(DBL_GET_COSMETICS);
-    $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
-    $stmt = mysqli_stmt_init($conn);
-    if (mysqli_stmt_prepare($stmt, $sql)) {
-      mysqli_stmt_bind_param($stmt, 's', $userName);
-      mysqli_stmt_execute($stmt);
-      $result = mysqli_stmt_get_result($stmt);
-      $row = mysqli_fetch_assoc($result);
-      mysqli_stmt_close($stmt);
-
-      if ($row && !empty($row['metafyCommunities'])) {
-        $communities = json_decode($row['metafyCommunities'], true);
-        // Deduplicate by community ID before processing
-        $seenCommunityIds = [];
-        $uniqueCommunities = [];
-        foreach ($communities as $c) {
-          $cid = $c['id'] ?? null;
-          if ($cid && !isset($seenCommunityIds[$cid])) {
-            $seenCommunityIds[$cid] = true;
-            $uniqueCommunities[] = $c;
-          }
-        }
-        if (is_array($uniqueCommunities)) {
-          foreach ($uniqueCommunities as $community) {
-            $communityId = $community['id'] ?? null;
-            if ($communityId) {
-              // Check if this community ID matches any Metafy community
-              foreach (MetafyCommunity::cases() as $metafyCommunity) {
-                if ($metafyCommunity->value === $communityId) {
-                  // Add card backs
-                  $cardBacks = $metafyCommunity->CardBacks();
-                  if (!empty($cardBacks)) {
-                    $cardBackIds = explode(",", $cardBacks);
-                    $cbCount = count($cardBackIds);
-                    $communityName = $metafyCommunity->CommunityName();
-                    $showSuffix = $cbCount > 1;
-                    for ($i = 0; $i < $cbCount; ++$i) {
-                      $cardBack = new stdClass();
-                      $cardBack->name = $communityName . ($showSuffix ? " " . ($i + 1) : "");
-                      $cardBack->id = trim($cardBackIds[$i]);
-                      $response->cardBacks[] = $cardBack;
-                    }
-                  }
-                  // Add playmats
-                  $playmats = $metafyCommunity->Playmats();
-                  if (!empty($playmats)) {
-                    $playmatIds = explode(",", $playmats);
-                    $pmCount = count($playmatIds);
-                    for ($i = 0; $i < $pmCount; ++$i) {
-                      $playmat = new stdClass();
-                      $playmat->id = trim($playmatIds[$i]);
-                      $playmat->name = GetPlaymatName($playmat->id);
-                      $response->playmats[] = $playmat;
-                    }
-                  }
-                  break;
-                }
-              }
+    foreach (GetUniqueMetafyCommunities($userName, DBL_GET_COSMETICS) as $community) {
+      $communityId = $community['id'];
+      // Check if this community ID matches any Metafy community
+      foreach (MetafyCommunity::cases() as $metafyCommunity) {
+        if ($metafyCommunity->value === $communityId) {
+          // Add card backs
+          $cardBacks = $metafyCommunity->CardBacks();
+          if (!empty($cardBacks)) {
+            $cardBackIds = explode(",", $cardBacks);
+            $cbCount = count($cardBackIds);
+            $communityName = $metafyCommunity->CommunityName();
+            $showSuffix = $cbCount > 1;
+            for ($i = 0; $i < $cbCount; ++$i) {
+              $cardBack = new stdClass();
+              $cardBack->name = $communityName . ($showSuffix ? " " . ($i + 1) : "");
+              $cardBack->id = trim($cardBackIds[$i]);
+              $response->cardBacks[] = $cardBack;
             }
           }
+          // Add playmats
+          $playmats = $metafyCommunity->Playmats();
+          if (!empty($playmats)) {
+            $playmatIds = explode(",", $playmats);
+            $pmCount = count($playmatIds);
+            for ($i = 0; $i < $pmCount; ++$i) {
+              $playmat = new stdClass();
+              $playmat->id = trim($playmatIds[$i]);
+              $playmat->name = GetPlaymatName($playmat->id);
+              $response->playmats[] = $playmat;
+            }
+          }
+          break;
         }
       }
     }
-    mysqli_close($conn);
   }
 
   // Sort playmats: Plain (Default) first, then alphabetically
@@ -192,33 +165,14 @@ function GetUserAltArtEntitlements($userName)
     }
   }
 
-  $conn = GetDBConnection(DBL_GET_COSMETICS);
-  $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
-  $stmt = mysqli_stmt_init($conn);
-  if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, 's', $userName);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $row = mysqli_fetch_assoc($result);
-    mysqli_stmt_close($stmt);
-
-    if ($row && !empty($row['metafyCommunities'])) {
-      $communities = json_decode($row['metafyCommunities'], true);
-      $seenCommunityIds = [];
-      foreach ((array)$communities as $c) {
-        $cid = $c['id'] ?? null;
-        if (!$cid || isset($seenCommunityIds[$cid])) continue;
-        $seenCommunityIds[$cid] = true;
-        foreach (MetafyCommunity::cases() as $metafyCommunity) {
-          if ($metafyCommunity->value === $cid) {
-            $addAltArtEntries($metafyCommunity->AltArts());
-            break;
-          }
-        }
+  foreach (GetUniqueMetafyCommunities($userName, DBL_GET_COSMETICS) as $community) {
+    foreach (MetafyCommunity::cases() as $metafyCommunity) {
+      if ($metafyCommunity->value === $community['id']) {
+        $addAltArtEntries($metafyCommunity->AltArts());
+        break;
       }
     }
   }
-  mysqli_close($conn);
 
   return $altArtMap;
 }

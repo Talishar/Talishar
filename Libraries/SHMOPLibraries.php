@@ -187,6 +187,16 @@ function ReadCacheArray($name)
   return explode("!", $cacheVal);
 }
 
+function ReadCacheArrayCached($name, &$lastRaw, &$lastArray)
+{
+  $raw = $name == 0 ? "" : ShmopReadCache($name);
+  if ($raw === $lastRaw) return $lastArray;
+  $lastRaw = $raw;
+  if (empty($raw)) return $lastArray = null;
+  $cacheVal = @unserialize($raw);
+  return $lastArray = empty($cacheVal) ? null : explode("!", $cacheVal);
+}
+
 function IncrementCachePiece($gameName, $piece)
 {
   $idx = $piece - 1;

@@ -1,4 +1,7 @@
 <?php
+
+  include_once __DIR__ . '/../includes/MetafyCommunitiesQuery.php';
+
   function IsUserLoggedIn()
   {
     CheckSession();
@@ -65,29 +68,11 @@
     
     // Check if user is a Metafy Talishar supporter
     if(isset($_SESSION["useruid"])) {
-      $userName = $_SESSION["useruid"];
-      $conn = GetDBConnection(DBL_ACCOUNT_SESSION_API);
-      if ($conn && $conn instanceof \mysqli) {
-        $sql = "SELECT metafyCommunities FROM users WHERE usersUid=?";
-        $stmt = mysqli_stmt_init($conn);
-        if (mysqli_stmt_prepare($stmt, $sql)) {
-          mysqli_stmt_bind_param($stmt, 's', $userName);
-          mysqli_stmt_execute($stmt);
-          $result = mysqli_stmt_get_result($stmt);
-          $row = mysqli_fetch_assoc($result);
-          mysqli_stmt_close($stmt);
-          
-          if ($row && !empty($row['metafyCommunities'])) {
-            $communities = json_decode($row['metafyCommunities'], true);
-            if (is_array($communities)) {
-              // Check if Talishar community (UUID: be5e01c0-02d1-4080-b601-c056d69b03f6) is in the list
-              foreach($communities as $community) {
-                if(isset($community['id']) && $community['id'] === 'be5e01c0-02d1-4080-b601-c056d69b03f6') {
-                  return "1";
-                }
-              }
-            }
-          }
+      $communities = FetchMetafyCommunities($_SESSION["useruid"], DBL_ACCOUNT_SESSION_API);
+      // Check if Talishar community (UUID: be5e01c0-02d1-4080-b601-c056d69b03f6) is in the list
+      foreach($communities as $community) {
+        if(isset($community['id']) && $community['id'] === 'be5e01c0-02d1-4080-b601-c056d69b03f6') {
+          return "1";
         }
       }
     }
