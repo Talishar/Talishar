@@ -661,8 +661,8 @@ class StatsInstrumentationTest extends TestCase
         PopulateAggregateStats($deck, $turnStats, 1);
 
         // one contributing row: 6 threatened + 0 blocked + 3 gained - 4 lost + 2 prevented
-        $this->assertEqualsWithDelta(6.0, $deck['averageCombatValuePerTurn'], 0.001);
-        $this->assertEqualsWithDelta(7.0, $deck['averageValuePerTurn'], 0.001);
+        $this->assertEqualsWithDelta(6.0, $deck['averageCombatValuePerTurn_NoFirst'], 0.001);
+        $this->assertEqualsWithDelta(7.0, $deck['averageValuePerTurn_NoFirst'], 0.001);
     }
 
     /** A card in the decklist keeps every one of its counters. */

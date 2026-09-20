@@ -257,14 +257,14 @@ class StatsAggregationTest extends TestCase
             $blocked = $this->sumStatForBlocks($player, $this->averageBlocksFor($player), $GLOBALS['TurnStats_DamageBlocked']);
 
             $this->assertEqualsWithDelta(round($threatened / $rows, 2),
-                $stats['averageDamageThreatenedPerTurn'], 0.001,
-                "P$player: averageDamageThreatenedPerTurn did not omit turn 0");
+                $stats['averageDamageThreatenedPerTurn_NoFirst'], 0.001,
+                "P$player: averageDamageThreatenedPerTurn_NoFirst did not omit turn 0");
             $this->assertEqualsWithDelta(round(($threatened + $blocked) / $rows, 2),
-                $stats['averageCombatValuePerTurn'], 0.001,
-                "P$player: averageCombatValuePerTurn did not omit turn 0");
+                $stats['averageCombatValuePerTurn_NoFirst'], 0.001,
+                "P$player: averageCombatValuePerTurn_NoFirst did not omit turn 0");
             $this->assertEqualsWithDelta(round(($threatened + $blocked) / $rows, 2),
-                $stats['averageValuePerTurn'], 0.001,
-                "P$player: averageValuePerTurn did not omit turn 0");
+                $stats['averageValuePerTurn_NoFirst'], 0.001,
+                "P$player: averageValuePerTurn_NoFirst did not omit turn 0");
         }
     }
 
@@ -286,7 +286,7 @@ class StatsAggregationTest extends TestCase
                     + $this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageBlocked'])) / $rows,
                     2
                 );
-                $this->assertEqualsWithDelta($expected, $stats['averageValuePerTurn'], 0.001,
+                $this->assertEqualsWithDelta($expected, $stats['averageValuePerTurn_NoFirst'], 0.001,
                     "P$player: seat-specific average did not omit turn 0");
             }
         }
@@ -304,7 +304,7 @@ class StatsAggregationTest extends TestCase
                 ($this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageThreatened'])
                 + $this->sumStatForBlocks($player, $blocks, $GLOBALS['TurnStats_DamageBlocked'])) / $rows,
                 2);
-            $this->assertEqualsWithDelta($expected, $stats['averageValuePerTurn'], 0.001,
+            $this->assertEqualsWithDelta($expected, $stats['averageValuePerTurn_NoFirst'], 0.001,
                 "P$player: short game average is wrong");
         }
     }
@@ -381,7 +381,7 @@ class StatsAggregationTest extends TestCase
             'excluding the last turn should remove exactly one turn of damage');
         $this->assertEqualsWithDelta(
             round($expectedThreat / count($averageBlocks), 2),
-            $stats['averageDamageThreatenedPerTurn_NoLast'], 0.001,
+            $stats['averageDamageThreatenedPerTurn_NoFirst_NoLast'], 0.001,
             'excluding the last turn should also drop one turn from the denominator');
     }
 
@@ -404,10 +404,10 @@ class StatsAggregationTest extends TestCase
         $this->assertSame(2, count(UsedTurnStatBlocks($p2Stats)));
         $this->assertSame(10, (int)$stats['totalDamageThreatened']);
         $this->assertSame(10, (int)$stats['totalDamageBlocked']);
-        $this->assertEqualsWithDelta(15.0, $stats['averageValuePerTurn'], 0.001,
+        $this->assertEqualsWithDelta(15.0, $stats['averageValuePerTurn_NoFirst'], 0.001,
             'turn 0 must be omitted, leaving P2 one row holding its attack and both of its blocks');
-        $this->assertEqualsWithDelta(0.0, $stats['averageValuePerTurn_NoLast'], 0.001,
-            'dropping that row leaves only turn 0, which averages omit');
+        $this->assertEqualsWithDelta(0.0, $stats['averageValuePerTurn_NoFirst_NoLast'], 0.001,
+            'dropping that row leaves only turn 0, which the _NoFirst variants omit');
     }
 
     public function testTurnZeroIsExcludedFromAveragesButRetainedInTotals(): void
@@ -420,9 +420,11 @@ class StatsAggregationTest extends TestCase
         $stats = $this->aggregatesFor(1);
         $this->assertSame(10, (int)$stats['totalDamageThreatened']);
         $this->assertSame(5, (int)$stats['totalDamageBlocked']);
-        $this->assertEqualsWithDelta(0.0, $stats['averageDamageThreatenedPerTurn'], 0.001);
-        $this->assertEqualsWithDelta(5.0, $stats['averageValuePerTurn'], 0.001,
-            'turn 0 must not contribute to averages for the starting player');
+        $this->assertSame(0, (int)$stats['totalDamageThreatened_NoFirst'],
+            'excluding turn 0 must drop it from the totals as well');
+        $this->assertEqualsWithDelta(0.0, $stats['averageDamageThreatenedPerTurn_NoFirst'], 0.001);
+        $this->assertEqualsWithDelta(5.0, $stats['averageValuePerTurn_NoFirst'], 0.001,
+            'turn 0 must not contribute to the _NoFirst averages for the starting player');
     }
 
     // ---------------------------------------------------------------- guards
@@ -452,6 +454,8 @@ class StatsAggregationTest extends TestCase
                 "P$player: damage threatened per card went negative");
             $this->assertGreaterThanOrEqual(0, $stats['averageDamageThreatenedPerCard_NoLast'],
                 "P$player: damage threatened per card (excluding last turn) went negative");
+            $this->assertGreaterThanOrEqual(0, $stats['averageDamageThreatenedPerCard_NoFirst'],
+                "P$player: damage threatened per card (excluding turn 0) went negative");
         }
     }
 
@@ -470,7 +474,7 @@ class StatsAggregationTest extends TestCase
 
         $stats = $this->aggregatesFor(1);
         $this->assertSame(self::THREAT, (int)$stats['totalDamageThreatened']);
-        $this->assertEqualsWithDelta(0.0, $stats['averageDamageThreatenedPerTurn'], 0.001);
+        $this->assertEqualsWithDelta(0.0, $stats['averageDamageThreatenedPerTurn_NoFirst'], 0.001);
     }
 
     // ---------------------------------------------------------------- model canary

@@ -963,18 +963,18 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 		return $t;
 	};
 
-	// $suffix is "" for the full game and "_NoLast" for the same figures with
-	// the player's final turn dropped (the frontend's "exclude last turn" toggle).
-	$write = function($suffix, $totalBlocks, $averageBlocks) use (&$deck, $totals, $handSize) {
-		$t = $totals($totalBlocks);
-		$average = $totals($averageBlocks);
-		$numTurns = count($averageBlocks);
+	// One variant per combination of the frontend's "exclude turn 0" and
+	// "exclude last turn" toggles: "" keeps every turn, "_NoFirst" drops turn 0,
+	// "_NoLast" drops the player's final turn, "_NoFirst_NoLast" drops both.
+	$write = function($suffix, $blocks) use (&$deck, $totals, $handSize) {
+		$t = $totals($blocks);
+		$numTurns = count($blocks);
 		if ($numTurns < 1) $numTurns = 1;
-		$offensiveCards = $handSize * $numTurns - $average["defensiveCards"];
+		$offensiveCards = $handSize * $numTurns - $t["defensiveCards"];
 		if ($offensiveCards < 1) $offensiveCards = 1;
 		// $lifeLost is stored negative, so adding it subtracts the life you spent.
-		$combatValue = $average["threatened"] + $average["blocked"];
-		$value = $combatValue + $average["lifeGained"] + $average["lifeLost"] + $average["lifePrevented"];
+		$combatValue = $t["threatened"] + $t["blocked"];
+		$value = $combatValue + $t["lifeGained"] + $t["lifeLost"] + $t["lifePrevented"];
 
 		$deck["totalDamageThreatened$suffix"] = $t["threatened"];
 		$deck["totalDamageDealt$suffix"] = $t["dealt"];
@@ -982,20 +982,21 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 		$deck["totalDamageBlocked$suffix"] = $t["blocked"];
 		$deck["totalDamagePrevented$suffix"] = $t["lifePrevented"];
 		$deck["totalLifeLost$suffix"] = $t["lifeLost"];
-		$deck["averageDamageThreatenedPerTurn$suffix"] = round($average["threatened"] / $numTurns, 2);
-		$deck["averageDamageDealtPerTurn$suffix"] = round($average["dealt"] / $numTurns, 2);
-		$deck["averageDamageThreatenedPerCard$suffix"] = round($average["threatened"] / $offensiveCards, 2);
-		$deck["averageResourcesUsedPerTurn$suffix"] = round($average["resourcesUsed"] / $numTurns, 2);
-		$deck["averageCardsLeftOverPerTurn$suffix"] = round($average["cardsLeft"] / $numTurns, 2);
+		$deck["averageDamageThreatenedPerTurn$suffix"] = round($t["threatened"] / $numTurns, 2);
+		$deck["averageDamageDealtPerTurn$suffix"] = round($t["dealt"] / $numTurns, 2);
+		$deck["averageDamageThreatenedPerCard$suffix"] = round($t["threatened"] / $offensiveCards, 2);
+		$deck["averageResourcesUsedPerTurn$suffix"] = round($t["resourcesUsed"] / $numTurns, 2);
+		$deck["averageCardsLeftOverPerTurn$suffix"] = round($t["cardsLeft"] / $numTurns, 2);
 		$deck["averageCombatValuePerTurn$suffix"] = round($combatValue / $numTurns, 2);
 		$deck["averageValuePerTurn$suffix"] = round($value / $numTurns, 2);
 	};
-	$averageBlocks = array_values(array_filter($usedBlocks, fn($block) => $block != 0));
-	$write("", $usedBlocks, $averageBlocks);
 	$blocksNoLast = $usedBlocks;
 	if (count($blocksNoLast) > 0) array_pop($blocksNoLast);
-	$averageBlocksNoLast = array_values(array_filter($blocksNoLast, fn($block) => $block != 0));
-	$write("_NoLast", $blocksNoLast, $averageBlocksNoLast);
+	$dropTurnZero = fn($blocks) => array_values(array_filter($blocks, fn($block) => $block != 0));
+	$write("", $usedBlocks);
+	$write("_NoLast", $blocksNoLast);
+	$write("_NoFirst", $dropTurnZero($usedBlocks));
+	$write("_NoFirst_NoLast", $dropTurnZero($blocksNoLast));
 }
 
 function BuildCharacterEntries($characterString)
@@ -1191,6 +1192,23 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	PopulateTurnStatsAndAggregates($deck, $turnStats, $otherPlayerTurnStats, $player, true);
 	PopulateAggregateStats($deck, $turnStats, $player);
 
+	// FaB Insights and FaB Bazaar consume this payload, so it keeps the two
+	// variants it has always had, with the averages still omitting turn 0. The
+	// extra variants behind the end game screen's toggles stay out of it.
+	$averageStats = ["averageDamageThreatenedPerTurn", "averageDamageDealtPerTurn", "averageDamageThreatenedPerCard",
+		"averageResourcesUsedPerTurn", "averageCardsLeftOverPerTurn", "averageCombatValuePerTurn", "averageValuePerTurn"];
+	foreach (["" => "_NoFirst", "_NoLast" => "_NoFirst_NoLast"] as $suffix => $source) {
+		foreach ($averageStats as $stat) {
+			if (isset($deck["$stat$source"])) $deck["$stat$suffix"] = $deck["$stat$source"];
+		}
+	}
+	foreach (["_NoFirst", "_NoFirst_NoLast"] as $suffix) {
+		foreach (array_merge($averageStats, ["totalDamageThreatened", "totalDamageDealt", "totalLifeGained",
+			"totalDamageBlocked", "totalDamagePrevented", "totalLifeLost"]) as $stat) {
+			unset($deck["$stat$suffix"]);
+		}
+	}
+
 	// Exclude private fields if stats are disabled
 	if ($excludePrivateFields) {
 		unset($deck["deckbuilderID"]);
@@ -1198,32 +1216,14 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		unset($deck["character"]);
 		unset($deck["yourTime"]);
 		unset($deck["turnResults"]);
-		unset($deck["totalDamageThreatened"]);
-		unset($deck["totalDamageDealt"]);
-		unset($deck["totalLifeGained"]);
-		unset($deck["totalDamageBlocked"]);
-		unset($deck["totalDamagePrevented"]);
-		unset($deck["totalLifeLost"]);
-		unset($deck["averageDamageThreatenedPerTurn"]);
-		unset($deck["averageDamageDealtPerTurn"]);
-		unset($deck["averageDamageThreatenedPerCard"]);
-		unset($deck["averageResourcesUsedPerTurn"]);
-		unset($deck["averageCardsLeftOverPerTurn"]);
-		unset($deck["averageCombatValuePerTurn"]);
-		unset($deck["averageValuePerTurn"]);
-		unset($deck["totalDamageThreatened_NoLast"]);
-		unset($deck["totalDamageDealt_NoLast"]);
-		unset($deck["totalLifeGained_NoLast"]);
-		unset($deck["totalDamageBlocked_NoLast"]);
-		unset($deck["totalDamagePrevented_NoLast"]);
-		unset($deck["totalLifeLost_NoLast"]);
-		unset($deck["averageDamageThreatenedPerTurn_NoLast"]);
-		unset($deck["averageDamageDealtPerTurn_NoLast"]);
-		unset($deck["averageDamageThreatenedPerCard_NoLast"]);
-		unset($deck["averageResourcesUsedPerTurn_NoLast"]);
-		unset($deck["averageCardsLeftOverPerTurn_NoLast"]);
-		unset($deck["averageCombatValuePerTurn_NoLast"]);
-		unset($deck["averageValuePerTurn_NoLast"]);
+		foreach (["", "_NoLast"] as $suffix) {
+			foreach (["totalDamageThreatened", "totalDamageDealt", "totalLifeGained", "totalDamageBlocked",
+				"totalDamagePrevented", "totalLifeLost", "averageDamageThreatenedPerTurn", "averageDamageDealtPerTurn",
+				"averageDamageThreatenedPerCard", "averageResourcesUsedPerTurn", "averageCardsLeftOverPerTurn",
+				"averageCombatValuePerTurn", "averageValuePerTurn"] as $stat) {
+				unset($deck["$stat$suffix"]);
+			}
+		}
 	}
 
 	return json_encode($deck);
