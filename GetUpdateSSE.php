@@ -127,7 +127,9 @@ $lastTypingState = false;
 $lastPresenceState = null;
 
 // Send initial full game state
-$initialCacheArr = ReadCacheArray($gameName);
+$lastCacheRaw = null;
+$cacheArr = null;
+$initialCacheArr = ReadCacheArrayCached($gameName, $lastCacheRaw, $cacheArr);
 $cacheVal = intval($initialCacheArr[0] ?? ""); // piece 1
 $lastUpdate = $cacheVal;
 $inactivityTimeoutMs = InactivityTimeoutMs($initialCacheArr);
@@ -182,7 +184,7 @@ while (true) {
     $lastSpectatorRefresh = $currentRealTime;
   }
 
-  $cacheArr = ReadCacheArray($gameName);
+  $cacheArr = ReadCacheArrayCached($gameName, $lastCacheRaw, $cacheArr);
   $cacheStr = $cacheArr[0] ?? "";
   $lastUpdateTime = $cacheArr[5] ?? "";
   // Check if game file still exists
