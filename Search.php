@@ -184,7 +184,7 @@ function SearchInner(
     $currentTurnEffectsCount  = count($currentTurnEffects);
     $currentTurnEffectsPieces = CurrentTurnEffectPieces();
     for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
-      if (!isset($currentTurnEffects[$j + 1]) || $currentTurnEffects[$j + 1] !== $player) continue;
+      if (!isset($currentTurnEffects[$j + 1]) || $currentTurnEffects[$j + 1] != $player) continue;
       switch ($currentTurnEffects[$j]) {
         case "brand_with_cinderclaw_red":
         case "brand_with_cinderclaw_yellow":
@@ -869,7 +869,7 @@ function ActivateCurrentTurnEffectsMulti(array $cardIDs, $player): void
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   $remaining = count($cardIDs);
   for ($i = 0; $i < $currentTurnEffectsCount && $remaining > 0; $i += $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] !== $player) continue;
+    if ($currentTurnEffects[$i + 1] != $player) continue;
     $effect = $currentTurnEffects[$i];
     if (isset($lookup[$effect])) {
       $currentTurnEffects[$i] = ExtractCardID($effect);

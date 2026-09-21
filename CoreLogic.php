@@ -49,7 +49,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   $currentTurnEffectsCount = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] !== $mainPlayer) continue;
+    if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
     $effectID = $currentTurnEffects[$i];
     if (IsCombatEffectActive($effectID) && !IsCombatEffectLimited($i)) {
       $power = EffectPowerModifier($effectID);
@@ -1984,7 +1984,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     $currentTurnEffectsCount = count($currentTurnEffects);
     $chainReactionUIDs = [];
     for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
-      if ($currentTurnEffects[$j + 1] === $currentPlayer) {
+      if ($currentTurnEffects[$j + 1] == $currentPlayer) {
         $eff = $currentTurnEffects[$j];
         if (str_starts_with($eff, "chain_reaction_yellow-")) {
           $chainReactionUIDs[substr($eff, 22)] = true;
@@ -2007,7 +2007,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
     $currentTurnEffectsCount = count($currentTurnEffects);
     for ($j = 0; $j < $currentTurnEffectsCount; $j += $currentTurnEffectsPieces) {
-      if ($currentTurnEffects[$j + 1] !== $currentPlayer) continue;
+      if ($currentTurnEffects[$j + 1] != $currentPlayer) continue;
       $effect = $currentTurnEffects[$j];
       if ($effect === "vengeful_apparition_red-INST" && $cardCost <= 2) return true;
       if ($effect === "vengeful_apparition_yellow-INST" && $cardCost <= 1) return true;

@@ -2066,7 +2066,7 @@ function FinalizeChainLink($chainClosed = false)
   for ($k = 0; $k < $builtCount; $k += $builtPieces) {
     $cid = $builtLink[$k];
     $owner = $builtLink[$k + 1];
-    if ($owner === $mainPlayer) {
+    if ($owner == $mainPlayer) {
       $resolvedValues[] = CardType($cid) !== "AR"
         ? PowerValue($cid, $mainPlayer, "CC") + $builtLink[$k + 4]
         : PowerModifier($cid);

@@ -330,13 +330,13 @@ function ChainLinkObject($link)
     $cardOwner = $linkCards[$i + 1];
     if ($resolved !== null && isset($resolved[$cardPos])) {
       $modifier = intval($resolved[$cardPos]);
-    } elseif ($cardOwner === $mainPlayer) {
+    } elseif ($cardOwner == $mainPlayer) {
       $modifier = CardType($cardId) !== "AR"
         ? PowerValue($cardId, $mainPlayer, "CC") + $linkCards[$i + 4]
         : PowerModifier($cardId);
     } else {
       $uid = $linkCards[$i + 8];
-      $modifier = ($cardOwner === $defPlayer)
+      $modifier = ($cardOwner == $defPlayer)
         ? ModifiedBlockValue($cardId, $defPlayer, "CC", "", $uid) + $linkCards[$i + 5]
         : 0;
     }
