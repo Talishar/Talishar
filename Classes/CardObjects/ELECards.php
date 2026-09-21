@@ -324,44 +324,76 @@
 //   }
 // }
 
+class bramble_spark extends BaseCard {
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+        return "";
+    }
 
-// class bramble_spark_red extends Card {
+    function FuseAbility($element) {
+        AddCurrentTurnEffect($this->cardID . "-FUSE", $this->controller);
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "bramble_spark_red";
-//     $this->controller = $controller;
-//     }
+    function OnAttackEffect($cardID, $i) {
+        $Effect = new CurrentEffect($i);
+        if ($Effect->EffectID() == "$this->cardID-FUSE") return false;
+        if (TypeContains($cardID, "AA")) {
+            SetArcaneTarget($this->controller, $cardID, "any_hero", context:"Choose a target for " . CardLink($this->cardID));
+            AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
+            return true;
+        }
+        return false;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+        global $CombatChain;
+        $AttackCard = $CombatChain->AttackCard();
+        SetDamageSourceUID($AttackCard->UniqueID());
+        DealArcane(1, 1, source:$AttackCard->ID(), resolvedTarget:$target);
+    }
 
+    function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+        global $CombatChain;
+        if ($parameter != "FUSE") return false;
+        return TypeContains($CombatChain->AttackCard()->ID(), "AA");
+    }
+}
 
-// class bramble_spark_yellow extends Card {
+class bramble_spark_red extends Card {
+    function __construct($controller) {
+        $this->cardID = "bramble_spark_red";
+        $this->controller = $controller;
+        $this->baseCard = new bramble_spark($this->cardID, $this->controller);
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "bramble_spark_yellow";
-//     $this->controller = $controller;
-//     }
+    function EffectPowerModifier($param, $attached = false) {
+        return $param == "FUSE" ? 3 : 0;
+    }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class bramble_spark_yellow extends Card {
+    function __construct($controller) {
+        $this->cardID = "bramble_spark_yellow";
+        $this->controller = $controller;
+        $this->baseCard = new bramble_spark($this->cardID, $this->controller);
+    }
 
+    function EffectPowerModifier($param, $attached = false) {
+        return $param == "FUSE" ? 2 : 0;
+    }
+}
 
-// class bramble_spark_blue extends Card {
+class bramble_spark_blue extends Card {
+    function __construct($controller) {
+        $this->cardID = "bramble_spark_blue";
+        $this->controller = $controller;
+        $this->baseCard = new bramble_spark($this->cardID, $this->controller);
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "bramble_spark_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function EffectPowerModifier($param, $attached = false) {
+        return $param == "FUSE" ? 1 : 0;
+    }
+}
 
 
 // class break_ground_red extends Card {

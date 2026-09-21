@@ -125,6 +125,8 @@
     global $CS_NextNAAInstant, $CS_PlayCCIndex, $CombatChain;
     $otherPlayer = ($player == 2 ? 1 : 2);
     $set = CardSet($cardID);
+    $card = GetClass($cardID, $player);
+    if ($card != "-") $card->FuseAbility($element);
     switch($cardID)
     {
       case "endless_winter_red": AddCurrentTurnEffect($cardID, $otherPlayer); break;
@@ -161,7 +163,6 @@
         AddLayer("TRIGGER", $player, $cardID, "-", "FUSE");
         break;
       case "stir_the_wildwood_red": case "stir_the_wildwood_yellow": case "stir_the_wildwood_blue": AddCurrentTurnEffect($cardID, $player); break;
-      case "bramble_spark_red": case "bramble_spark_yellow": case "bramble_spark_blue": AddCurrentTurnEffect($cardID . "-FUSE", $player); break;
       case "inspire_lightning_red": DealArcane(3, 0, "PLAYCARD", $cardID); break;
       case "inspire_lightning_yellow": DealArcane(2, 0, "PLAYCARD", $cardID); break;
       case "inspire_lightning_blue": DealArcane(1, 0, "PLAYCARD", $cardID); break;

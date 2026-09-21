@@ -767,16 +767,6 @@ function OnAttackEffects($cardID)
     if ($card != "-") $remove = $card->OnAttackEffect($cardID, $i);
     if (($currentTurnEffects[$i + 1] ?? "") == $mainPlayer) {
       switch ($currentTurnEffects[$i]) {
-        case "bramble_spark_red":
-        case "bramble_spark_yellow":
-        case "bramble_spark_blue":
-          if ($attackType == "AA") {
-            SetArcaneTarget($mainPlayer, $currentTurnEffects[$i], 0, 1);
-            AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
-            AddDecisionQueue("ADDTRIGGER", $mainPlayer, $currentTurnEffects[$i], 1);
-            $remove = true;
-          }
-          break;
         case "flashfreeze_red-DOM":
           AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Do you want to pay 2 to prevent this attack from getting dominate?", 1);
           AddPayPrompt("BUTTONINPUT", $defPlayer, "0,2", 0, 1);

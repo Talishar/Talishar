@@ -1336,4 +1336,10 @@ class Card {
       return $this->baseCard->DefPermanentPowerModifier($powerModifiers);
     return 0;
   }
+
+  function FuseAbility($element) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "FuseAbility"))
+      return $this->baseCard->FuseAbility($element);
+    return;
+  }
 }

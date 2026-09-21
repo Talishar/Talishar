@@ -2395,11 +2395,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($additionalCosts == "DAMAGE") PlayAura("embodiment_of_earth", $player);
         else PlayAura("embodiment_of_lightning", $player);
         break;
-      case "bramble_spark_red":
-      case "bramble_spark_yellow":
-      case "bramble_spark_blue":
-        DealArcane(1, 0, "PLAYCARD", $CombatChain->AttackCard()->ID(), true, resolvedTarget:$target);
-        break;
       case "embodiment_of_lightning":
         WriteLog(CardLink($parameter, $parameter) . " grants go again");
         GiveAttackGoAgain();

@@ -88,9 +88,6 @@
       case "force_of_nature_blue": return 1;
       case "explosive_growth_red": case "explosive_growth_yellow": case "explosive_growth_blue": return 1;
       case "stir_the_wildwood_red": case "stir_the_wildwood_yellow": case "stir_the_wildwood_blue": return 2;
-      case "bramble_spark_red-FUSE": return 3;
-      case "bramble_spark_yellow-FUSE": return 2;
-      case "bramble_spark_blue-FUSE": return 1;
       case "fulminate_yellow-BUFF": return 3;
       case "invigorate_red": return 4;
       case "invigorate_yellow": return 3;
@@ -159,7 +156,6 @@
       case "force_of_nature_blue-HIT": return cardType($attackID) == "AA";
       case "explosive_growth_red": case "explosive_growth_yellow": case "explosive_growth_blue": return true;
       case "stir_the_wildwood_red": case "stir_the_wildwood_yellow": case "stir_the_wildwood_blue": return true;
-      case "bramble_spark_red-FUSE": case "bramble_spark_yellow-FUSE": case "bramble_spark_blue-FUSE": return CardType($attackID) == "AA";
       case "fulminate_yellow-BUFF": case "fulminate_yellow-GA": return CardType($attackID) == "AA";
       case "flashfreeze_red-DOM": case "flashfreeze_red-DOMATK": case "flashfreeze_red-BUFF": return true;
       case "entwine_ice_red": case "entwine_ice_yellow": case "entwine_ice_blue": return true;

@@ -28,9 +28,6 @@
       case "rites_of_replenishment_red": case "rites_of_replenishment_yellow": case "rites_of_replenishment_blue":
         AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         return "";
-      case "bramble_spark_red": case "bramble_spark_yellow": case "bramble_spark_blue":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "rosetta_thorn":
         if(GetClassState($currentPlayer, $CS_NumNonAttackCards) > 0 && GetClassState($currentPlayer, $CS_NumAttackCards) > 0)
         {
