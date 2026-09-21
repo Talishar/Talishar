@@ -489,14 +489,14 @@ function PlayerTargetedAbility($player, $card, $lastResult)
   }
 }
 
-function filterIndices($indices, $zone, $dqVars, $condition)
+function filterIndices($indices, $zone, $dqVars, $condition, $player)
 {
   $filteredIndices = [];
   foreach ($indices as $index) {
     if (!isset($zone[$index])) {
       continue; // skip this index if it doesn't exist in $zone
     }
-    $block = BlockValue($zone[$index]);
+    $block = BlockValue($zone[$index], $player, blocking:false);
     if ($block <= -1 || !$condition($block, $dqVars)) continue;
     $type = CardType($zone[$index]);
     if (DelimStringContains($type, "A") || $type == "AA") $filteredIndices[] = $index;
@@ -553,12 +553,12 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       if (empty($hand))
         return "PASS";
       return filterIndices($indices, $hand, $dqVars, function ($block, $dqVars) {
-        return $block <= $dqVars[0]; });
+        return $block <= $dqVars[0]; }, $player);
     case "PULSEWAVEPROTOCOLFILTER":
       $indices = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
       $hand = GetHand($player);
       return filterIndices($indices, $hand, $dqVars, function ($block, $dqVars) {
-        return $block < $dqVars[0]; });
+        return $block < $dqVars[0]; }, $player);
     case "SIFT":
       $numCards = SearchCount($lastResult);
       WriteLog("⬇️ <b>$numCards cards</b> were put on the bottom of the deck.");
