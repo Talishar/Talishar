@@ -2319,6 +2319,7 @@ class turn_to_mindfire extends BaseCard {
   }
 
   function ArcaneHitEffect() {
+    if (IsGameOverPending()) return;
     $Hero = new CharacterCard(0, $this->controller);
     if ($Hero->Tapped() == 0) {
       $message = "if_you_want_to_tap_to_ponder";
@@ -3901,6 +3902,7 @@ class aethersling_red extends Card {
   }
 
   function ArcaneHitEffect($source, $target, $damage) {
+    if (IsGameOverPending()) return;
     $Hero = new CharacterCard(0, $this->controller);
     if ($Hero->Tapped() == 0) {
       Await($this->controller, $this->cardID, prepend:true, final:true);

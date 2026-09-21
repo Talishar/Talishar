@@ -1217,6 +1217,11 @@ function IsGameOver()
   return $inGameStatus == $GameStatus_Over;
 }
 
+function IsGameOverPending()
+{
+  return IsGameOver() || GetHealth(1) <= 0 || GetHealth(2) <= 0;
+}
+
 function PlayerWon($playerID, $conceded = false)
 {
   //NOTE: These globals might appear to be unused. It's because they're written by ParseGamefile.
