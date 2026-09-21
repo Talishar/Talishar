@@ -676,6 +676,6 @@ function CallDownLightning()
 }
 function IfChargedYellow($player, $cardID) {
   Charge();
-  AddDecisionQueue("ALLCARDPITCHORPASS", $player, "2", 1);
+  AddDecisionQueue("ALLCARDCOLORORPASS", $player, "2", 1);
   AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, $cardID, 1);
 }
