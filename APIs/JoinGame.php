@@ -874,7 +874,7 @@ function isClashLegal($cardID, $character) {
     case "brutus_summa_rudis": case "proclamation_of_combat": case "magrar":
       return true;
     case "drone_of_brutality_red": case "drone_of_brutality_yellow": case "drone_of_brutality_blue": //banned cards
-    case "amulet_of_ice": case "ball_lightning_red": case "ball_lightning_yellow": case "ball_lightning_blue":
+    case "amulet_of_ice_blue": case "ball_lightning_red": case "ball_lightning_yellow": case "ball_lightning_blue":
     case "belittle_red": case "belittle_yellow": case "belittle_blue":
     case "stubby_hammerers": case "duskblade": case "zephyr_needle":
       return false;
