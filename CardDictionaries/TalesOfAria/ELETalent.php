@@ -9,15 +9,6 @@
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
     switch($cardID)
     {
-      case "korshem_crossroad_of_elements":
-        $rv = "Korshem is a partially manual card. Use the instant ability to destroy it when appropriate. Use Undo if necessary.";
-        if($from == "PLAY")
-        {
-          DestroyLandmark(GetClassState($currentPlayer, $CS_PlayIndex));
-          $rv = "Korshem was destroyed";
-        }
-        WriteLog($rv, highlight:true, highlightColor:"Tomato");
-        return "";
       case "invigorate_red": case "invigorate_yellow": case "invigorate_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -239,9 +230,6 @@
 
   function KorshemRevealAbility($player)
   {
-    WriteLog("Korshem triggered by revealing a card");
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a bonus", 1);
-    AddDecisionQueue("BUTTONINPUT", $player, "Gain_a_resource,Gain_a_life,1_Attack,1_Defense");
-    AddDecisionQueue("MODAL", $player, "KORSHEM", 1);
+    AddLayer("TRIGGER", $player, "korshem_crossroad_of_elements", additionalCosts: "KORSHEM_REVEAL");
   }
   

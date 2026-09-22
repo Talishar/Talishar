@@ -182,8 +182,10 @@ class ItemCard {
   }
 
   function AddDefCounters($n) {
-    if (isset($this->pieces[$this->index + 12]))
+    if (isset($this->pieces[$this->index + 12])) {
       $this->pieces[$this->index + 12] += $n;
+      if ($n > 0) PropertyModifierApplied($this->UniqueID(), "DEFENSE", $n, "COUNTER", $this->controller, EffectiveGamePhase());
+    }
   }
 
   function OnChain() {

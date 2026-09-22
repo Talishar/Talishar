@@ -4,7 +4,6 @@
   {
     switch($cardID)
     {
-      case "korshem_crossroad_of_elements": return 0;
       case "oldhim_grandfather_of_eternity": case "oldhim": return 3;
       case "winters_wail": return 3;
       case "lexi_livewire": case "lexi": return 0;
@@ -25,7 +24,6 @@
   {
     switch($cardID)
     {
-      case "korshem_crossroad_of_elements": return "I";
       case "oldhim_grandfather_of_eternity": case "oldhim": return "DR";
       case "winters_wail": return "AA";
       case "lexi_livewire": case "lexi": return "A";
@@ -75,7 +73,6 @@
     global $combatChainState, $CCS_AttackFused;
     switch($cardID)
     {
-      case "korshem_crossroad_of_elements-1": return 1;
       case "oaken_old_red": return 2;
       case "entangle_red": case "entangle_yellow": case "entangle_blue": return -2;
       case "emerging_avalanche_red": case "strength_of_sequoia_red": return 3;
@@ -130,8 +127,6 @@
     global $combatChainState, $CCS_AttackFused, $mainPlayer;
     switch($cardID)
     {
-      case "korshem_crossroad_of_elements-1": return true;
-      case "korshem_crossroad_of_elements-2": return true;
       case "winters_wail": return true;
       case "endless_winter_red": return true;
       case "oaken_old_red": return true;

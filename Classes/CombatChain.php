@@ -186,7 +186,7 @@ class ChainCard {
       if (isset($this->chain[$this->index+6])) {
         $this->chain[$this->index+6] += $amount;
         if ($amount != 0) {
-          EmitPropertyModifierApplied(
+          PropertyModifierApplied(
             $this->UniqueID(),
             "DEFENSE",
             $amount,

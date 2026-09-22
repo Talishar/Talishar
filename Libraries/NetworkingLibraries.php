@@ -2130,7 +2130,7 @@ function FinalizeChainLink($chainClosed = false)
 
 function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
 {
-  global $currentTurnEffects, $combatChainState, $CCS_DamageDealt, $combatChain, $chainLinks;
+  global $currentTurnEffects, $combatChainState, $CCS_DamageDealt, $combatChain, $chainLinks, $mainPlayer;
   $effectsToRemove = [];
   $chainLinkIndex = count($chainLinks) - 1;
   $addedEffects = $combatChain[10] ?? "-";
@@ -2138,6 +2138,10 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $effectArr = explode(",", $currentTurnEffects[$i], 2);
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && EffectPowerModifier($currentTurnEffects[$i]) > 0
+      && IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i)) {
+      MarkKorshemTurnCondition($mainPlayer);
+    }
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0]) && !IsLayerContinuousBuff($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
@@ -2199,6 +2203,7 @@ function EndStep()
   AllyBeginEndPhaseTriggers();
   OpponentsAuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
+  LandmarkBeginEndPhaseTriggers();
   // Heave is offered later as part of the concealed arsenal decision.
   SnapshotEndPhaseHeaveCards();
   UndoIntimidate(1);
@@ -2215,7 +2220,7 @@ function UndoShiyanaBaseLife() // Technically not a End Step Trigger but it's th
   if ($defChar[0] == "shiyana_diamond_gemini" && SearchCurrentTurnEffects($mainChar[0] . "-SHIYANA", $defPlayer)) {
     $lifeDifference = GeneratedCharacterHealth($mainChar[0]) - GeneratedCharacterHealth("shiyana_diamond_gemini");
     if ($lifeDifference > 0) PlayerLoseHealth($lifeDifference, $defPlayer);
-    elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $defPlayer, true, false);
+    elseif ($lifeDifference < 0) GainHealth(abs($lifeDifference), $defPlayer, true, false, false);
   }
 }
 

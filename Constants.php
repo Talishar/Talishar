@@ -446,6 +446,7 @@ $CS_NumTimesHeroAttacked = 136; //number of attacks this turn that targeted this
 $CS_NumLightningFlowsIDestroyed = 137; //number of Lightning Flow tokens this player destroyed this turn, whoever controlled them, distinct from $CS_NumLightningFlowDestroyed
 $CS_DeferredLeyLineUIDs = 138; // Ley Line triggers waiting for the concealed end-phase Heave choice
 $CS_Num6PowPutIntoBanish = 139; // used for Levia
+$CS_KorshemConditionMet = 140; // a hero gained resources/health from an effect, or a controlled object gained power/defense this turn
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -670,7 +671,7 @@ function ResetMainClassState()
   global $CS_LayerResolved, $CS_PreventionCache, $CS_NumUndoesThisTurn, $CS_NumRunechantsCreated, $CS_NumBloodDebtAttacksPlayed;
   global $CS_IARGatesMadeorUsed, $CS_NumBloodDebtBanished, $CS_UsurpedThisTurn, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
   global $CS_HeaveEligibleAtEndPhase, $CS_PlayedFromGateUID, $CS_NumTimesHeroAttacked, $CS_NumLightningFlowsIDestroyed, $CS_DeferredLeyLineUIDs;
-  global $CS_Num6PowPutIntoBanish;
+  global $CS_Num6PowPutIntoBanish, $CS_KorshemConditionMet;
 
   $mainClassState[$CS_Num6PowDisc] = 0;
   $mainClassState[$CS_NumBoosted] = 0;
@@ -810,6 +811,7 @@ function ResetMainClassState()
   $mainClassState[$CS_NumLightningFlowsIDestroyed] = 0;
   $mainClassState[$CS_DeferredLeyLineUIDs] = "-";
   $mainClassState[$CS_Num6PowPutIntoBanish] = 0;
+  $mainClassState[$CS_KorshemConditionMet] = 0;
 }
 
 function ResetCardPlayed($cardID, $from="-")
