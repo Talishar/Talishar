@@ -221,7 +221,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (CanPlayAsInstant($cardID, $index, "BANISH")) SetClassState($currentPlayer, $CS_PlayedAsInstant, "1");
       
       if($mod == "blossoming_spellblade_red") AddCurrentTurnEffect("blossoming_spellblade_red", $currentPlayer, uniqueID:$cardID);
-      // clean up the effect now that it's been used
       PlayCard($cardID, "BANISH", -1, $index, $banish[$index + 2], zone: "MYBANISH", mod:$mod);
       break;
     case 15: // Their Banish
@@ -2443,7 +2442,7 @@ function FinalizeTurn()
   ProcessDecisionQueue();
 }
 
-function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1, $zone=-1, $facing=0, $mod="-")
+function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1, $zone=-1, $facing=0, $mod="-", $firstPass=true)
 {
   // CR 5.1 - Play a Card (includes cost declaration, targeting, and resolution setup)
   global $playerID, $turn, $currentPlayer, $actionPoints, $layers, $CombatChain;
@@ -2546,20 +2545,24 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
     }
   }
-  if ($from == "BANISH") { // reset effects giving permission to play from banish
-    $Effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $currentPlayer);
-    if ($Effect->Index() != -1) SetClassState($currentPlayer, $CS_PlayedFromGateUID, $uniqueID);
-    $Effect->Remove();
-    if (!PlayableFromBanish($cardID, $mod, true, index:$index)) {
+  if ($from == "BANISH" && $firstPass) { // reset effects giving permission to play from banish
+    $Gate = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $currentPlayer);
+    $Horror = $CurrentTurnEffects->FindSpecificEffect("shadowrealm_horror_red-PLAY", $uniqueID, $currentPlayer);
+    if ($Gate->Index() != -1) {
+      SetClassState($currentPlayer, $CS_PlayedFromGateUID, $uniqueID);
+      $Gate->Remove();
+    }
+    elseif ($Horror->Index() != -1) {
+      $horrorUID = explode(",", $Horror->AppliestoUniqueID())[0];
+      for ($i = 0; $i < 3; ++$i) {
+        $otherHorror = $CurrentTurnEffects->FindSpecificEffect("shadowrealm_horror_red-PLAY", $horrorUID, $currentPlayer);
+        $otherHorror->Remove();
+      }
+    }
+    elseif (!PlayableFromBanish($cardID, $mod, true, index:$index)) {
       $found = SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
       if (!$found)
         SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $currentPlayer, true);
-    }
-    if (str_contains($mod, "shadowrealm_horror_red")) {
-      $currentPlayerBanish = new Banish($currentPlayer);
-      $currentPlayerBanish->UnsetBanishModifier($mod);
-      $effectIndex = SearchCurrentTurnEffectsForUniqueID($mod);
-      if ($effectIndex != -1) RemoveCurrentTurnEffect($effectIndex);
     }
   }
   if ($dynCostResolved == -1) {
@@ -4380,13 +4383,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SETDQVAR", $currentPlayer, 0, 1);
       AddDecisionQueue("WRITELOG", $currentPlayer, CardLink($cardID) . " was played with a cost of {0}", 1);
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "GOLDENANVIL", 1);
-      break;
-    case "shadowrealm_horror_red":
-      $uid = $layers[count($layers) - LayerPieces() + 6];
-      $num6Banished = RandomBanish3GY($cardID, $cardID);
-      if ($num6Banished > 0) AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
-      if ($num6Banished > 1) AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
-      if ($num6Banished > 2) AddCurrentTurnEffect($cardID . "-3", $currentPlayer, uniqueID:$uid);
       break;
     case "saving_grace_yellow":
       Charge();

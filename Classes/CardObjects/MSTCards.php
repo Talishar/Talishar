@@ -2031,6 +2031,24 @@ class shadowrealm_horror_red extends Card {
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return (new Discard($this->controller))->NumCards() < 3;
 	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$num6Banished = RandomBanish3GY($this->cardID, $this->cardID);
+		if ($num6Banished > 0) AddCurrentTurnEffect("$this->cardID-BUFF", $this->controller);
+		if ($num6Banished > 1) AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $parameter == "BUFF" || $parameter == "GOAGAIN";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "BUFF" ? 1 : 0;
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return $param == "GOAGAIN";
+	}
 }
 
 

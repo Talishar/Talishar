@@ -53,7 +53,7 @@
 
   function RandomBanish3GY($cardID, $modifier = "NA")
   {
-    global $currentPlayer, $layers;
+    global $currentPlayer, $layers, $Stack;
     $hand = &GetHand($currentPlayer);
     $discard = &GetDiscard($currentPlayer);
     if(count($discard) < 3) return;
@@ -84,13 +84,18 @@
       }
     }
     if($BanishedIncludes6 > 0) $BanishedIncludes6 += $diabolicOfferingCount;
-    if ($modifier == "shadowrealm_horror_red" && $BanishedIncludes6 >= 3) {
-      
-    }
     $banishMod = ($modifier != "shadowrealm_horror_red" || $BanishedIncludes6 >= 3) ? $modifier : "-";
     // set the banishmod to track which shadowrealm horror banished it
-    if ($banishMod == "shadowrealm_horror_red") $banishMod = $layers[count($layers) - LayerPieces() + 6];
-    foreach ($toBanish as $cardID) BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $banishMod);
+    foreach ($toBanish as $cardID) {
+      $ind = BanishCardForPlayer($cardID, $currentPlayer, "DISCARD", $banishMod);
+      if ($banishMod == "shadowrealm_horror_red") {
+        $Layer = $Stack->FindCardID($modifier);
+        $uid = $Layer->LayerUniqueID();
+        $BanishedCard = new BanishCard($currentPlayer, $ind);
+        $banishUID = $BanishedCard->UniqueID();
+        AddCurrentTurnEffect("shadowrealm_horror_red-PLAY", $currentPlayer, uniqueID:"$uid,$banishUID");
+      }
+    }
     WriteLog(implode(", ", array_map(fn($cardID) => CardLink($cardID, $cardID), $toBanish)) . " were banished.");
     return $BanishedIncludes6 > 3 ? 3 : $BanishedIncludes6;
   }
