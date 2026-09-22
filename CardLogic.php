@@ -975,7 +975,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "minds_desire_red"=>true,"minds_desire_yellow"=>true,"minds_desire_blue"=>true,
     "rowdy_locals_blue"=>true,"the_weakest_link_red"=>true,
     "blanch_red"=>true,"blanch_yellow"=>true,"blanch_blue"=>true,
-    "factfinding_mission_red"=>true,"factfinding_mission_yellow"=>true,"factfinding_mission_blue"=>true,
+    "fact_finding_mission_red"=>true,"fact_finding_mission_yellow"=>true,"fact_finding_mission_blue"=>true,
     "static_shock_red"=>true,"static_shock_yellow"=>true,
     "snuff_out_red"=>true,"cut_through_the_facade_red"=>true,"hand_behind_the_pen_red"=>true,
     "smash_up_red"=>true,"tongue_tied_red"=>true,"splatter_skull_red"=>true,
