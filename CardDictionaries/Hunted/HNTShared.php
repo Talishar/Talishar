@@ -939,7 +939,7 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
     case "mark_of_the_funnel_web_red":
     case "mark_of_the_funnel_web_yellow":
     case "mark_of_the_funnel_web_blue":
-      MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-," . $mainPlayer, false);
+      MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-,$cardID,$mainPlayer", false);
       break;
     case "mark_the_prey_red":
     case "mark_the_prey_yellow":

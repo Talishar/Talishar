@@ -164,7 +164,7 @@ switch ($popupType) {
     global $SET_HideGamesFromFriends;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
-    global $SET_HideLayerGoAgain, $SET_ManualValda;
+    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced;
     
     $response->Settings = [];
     
@@ -223,6 +223,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "PlaymatIntensity", 46, $dbSettings);
       AddSettingFromDB($response->Settings, "HideLayerGoAgain", 47, $dbSettings);
       AddSettingFromDB($response->Settings, "ManualValda", 48, $dbSettings);
+      AddSettingFromDB($response->Settings, "AutoPitchForced", 49, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -267,6 +268,7 @@ switch ($popupType) {
       AddUnsetAwareSetting($response->Settings, "PlaymatIntensity", $SET_PlaymatIntensity, $playerSettings);
       AddSetting($response->Settings, "HideLayerGoAgain", $SET_HideLayerGoAgain, $playerSettings);
       AddSetting($response->Settings, "ManualValda", $SET_ManualValda, $playerSettings);
+      AddSetting($response->Settings, "AutoPitchForced", $SET_AutoPitchForced, $playerSettings);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;

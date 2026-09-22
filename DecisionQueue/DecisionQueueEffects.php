@@ -158,13 +158,8 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
       switch($lastResult) {
           case "Gain_a_resource": GainResources(1, $player); return 1;
           case "Gain_a_life": GainHealth(1, $player); return 2;
-          case "1_Attack":
-            if ($CombatChain->HasCurrentLink() || IsLayerStep())
-              AddCurrentTurnEffectFromCombat("korshem_crossroad_of_elements-1", $player);
-            else
-              AddCurrentTurnEffect("korshem_crossroad_of_elements-1", $player);
-            return 3;
-          case "1_Defense": AddCurrentTurnEffect("korshem_crossroad_of_elements-2", $player); return 4;
+          case "1_Attack": AddCurrentTurnEffectNextAttack("korshem_crossroad_of_elements-1", $player, "PLAY"); return 3;
+          case "1_Defense": AddCurrentTurnEffect("korshem_crossroad_of_elements-2", $player, "PLAY"); return 4;
           default: break;
         }
       return $lastResult;

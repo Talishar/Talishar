@@ -53,7 +53,7 @@ function initializePlayerState($handler, $deckHandler, $player)
     "\r\n" .        //Discard
     "\r\n" .        //Pitch
     "\r\n" .        //Banish
-    "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 -1 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0 -1 0 - 0 0 - 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 - - 0 0 0 0 0 0 0 0 0 0 0 - - 0 0 0 0\r\n" .  //Class State
+    "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 -1 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0 -1 0 - 0 0 - 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 - - 0 0 0 0 0 0 0 0 0 0 0 - - 0 0 0 0 0\r\n" .  //Class State
     "\r\n" .        //Character effects
     "\r\n" .        //Soul
     "\r\n" .        //Card Stats
@@ -82,11 +82,12 @@ function initializePlayerState($handler, $deckHandler, $player)
 function SettingDefaultValue($setting, $hero)
 {
   global $SET_TryUI2, $SET_AutotargetArcane, $SET_Playmat, $SET_MirroredBoardLayout;
-  global $SET_DisableHoldToAutoPass;
+  global $SET_DisableHoldToAutoPass, $SET_AutoPitchForced;
   switch($setting)
   {
     case $SET_TryUI2: return "1";
     case $SET_DisableHoldToAutoPass: return "1";
+    case $SET_AutoPitchForced: return "1";
     case $SET_AutotargetArcane: return "1";
     case $SET_Playmat: return $hero == "DUMMY" ? 2 : 0;
     case $SET_MirroredBoardLayout: return "1";

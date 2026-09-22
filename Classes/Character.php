@@ -118,8 +118,10 @@ class CharacterCard {
   }
 
   function AddPowerCounters($num) {
-    if (isset($this->pieces[$this->index + 3]))
+    if (isset($this->pieces[$this->index + 3])) {
       $this->pieces[$this->index + 3] = intval($this->pieces[$this->index + 3]) + intval($num);
+      if (intval($num) > 0) PropertyModifierApplied($this->UniqueID(), "POWER", $num, "COUNTER", $this->controller, EffectiveGamePhase());
+    }
   }
 
   function NumDefCounters() { //alias
@@ -131,8 +133,10 @@ class CharacterCard {
   }
 
   function AddDefenseCounters($num) {
-    if (isset($this->pieces[$this->index + 4]))
+    if (isset($this->pieces[$this->index + 4])) {
       $this->pieces[$this->index + 4] = intval($this->pieces[$this->index + 4]) + intval($num);
+      if ($num > 0) PropertyModifierApplied($this->UniqueID(), "DEFENSE", $num, "COUNTER", $this->controller, EffectiveGamePhase());
+    }
   }
 
   function AddDefCounters($num) { //alias

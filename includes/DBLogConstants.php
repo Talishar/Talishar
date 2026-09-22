@@ -64,9 +64,11 @@ const DBL_SAVE_DECK_COSMETICS          = 58;
 const DBL_GET_LAST_GAME_INFO           = 59;
 const DBL_RESET_ALL_RUST_COUNTERS      = 60;
 const DBL_SAVE_HERO_MASTERY_FRAME      = 61;
+const DBL_FLUSH_PROMPT_LOG             = 62;
+const DBL_GET_PROMPT_STATS             = 63;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 61;
+const DBL_MAX_KEY = 63;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -131,4 +133,6 @@ const DBL_LABELS = [
     59 => 'includes/functions.inc.php::GetLastGameInfo',
     60 => 'APIs/ResetAllRustCounters.php',
     61 => 'APIs/SaveHeroMasteryFrame.php',
+    62 => 'Libraries/PromptLog.php::FlushPromptLog',
+    63 => 'APIs/GetPromptStats.php',
 ];

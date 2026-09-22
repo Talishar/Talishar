@@ -1789,17 +1789,38 @@ class exposed_to_the_elements_blue extends Card {
 // }
 
 
-// class korshem_crossroad_of_elements extends Card {
+class korshem_crossroad_of_elements extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "korshem_crossroad_of_elements";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "korshem_crossroad_of_elements";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function EffectPowerModifier($parameter, $attached = false) {
+    return $parameter == "1" ? 1 : 0;
+  }
+
+  function CombatEffectActive($parameter = "-", $defendingCard = "", $flicked = false) {
+    return $parameter == "1" || $parameter == "2";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "KORSHEM_REVEAL") {
+      WriteLog(CardLink($this->cardID, $this->cardID) . " triggered by revealing a card");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a bonus", 1);
+      AddDecisionQueue("BUTTONINPUT", $this->controller, "Gain_a_resource,Gain_a_life,1_Attack,1_Defense");
+      AddDecisionQueue("MODAL", $this->controller, "KORSHEM", 1);
+      return;
+    }
+    if ($additionalCosts != "KORSHEM_END_PHASE" || KorshemTurnConditionMet()) return;
+
+    $index = SearchLandmarksForID($this->cardID);
+    if ($index != -1) {
+      WriteLog(CardLink($this->cardID, $this->cardID) . " was destroyed because its end phase condition was not met.");
+      DestroyLandmark($index);
+    }
+  }
+}
 
 
 // class lexi extends Card {

@@ -59,6 +59,7 @@ $SET_TransparencyIntensity = 45;
 $SET_PlaymatIntensity = 46;
 $SET_HideLayerGoAgain = 47; //Hide the go again icon on cards in the active layers window
 $SET_ManualValda = 48; //Do you want to manually create Valda's Seismic Surge tokens
+$SET_AutoPitchForced = 49; //Automatically pitch a sole hand card when it pays the remaining cost
 
 function SettingsPieces()
 {
@@ -148,6 +149,12 @@ function ManualValdaSetting($player)
 {
   global $SET_ManualValda;
   return SettingValue($player, $SET_ManualValda, 0, 0);
+}
+
+function AutoPitchForcedSetting($player)
+{
+  global $SET_AutoPitchForced;
+  return SettingValue($player, $SET_AutoPitchForced, "1", false) == "1";
 }
 
 function IsPatron($player)
@@ -670,6 +677,7 @@ function SettingsIdMap()
     "PlaymatIntensity" => 46,
     "HideLayerGoAgain" => 47,
     "ManualValda" => 48,
+    "AutoPitchForced" => 49,
   ];
   return $settingsToId;
 }
@@ -727,7 +735,7 @@ function SaveSettingInDatabase($setting)
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
-    global $SET_HideLayerGoAgain, $SET_ManualValda;
+    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -737,7 +745,7 @@ function SaveSettingInDatabase($setting)
       $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
-      $SET_HideLayerGoAgain, $SET_ManualValda,
+      $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced,
     ], true);
   }
   return isset($persistable[$setting]);

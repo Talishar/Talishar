@@ -126,8 +126,10 @@ class AllyCard {
   }
 
   public function AddPowerCounters(int $num = 1): void {
-    if (isset($this->pieces[$this->index + 9]))
+    if (isset($this->pieces[$this->index + 9])) {
       $this->pieces[$this->index + 9] += $num;
+      if ($num > 0) PropertyModifierApplied($this->UniqueID(), "POWER", $num, "COUNTER", $this->controller, EffectiveGamePhase());
+    }
   }
 
   public function DamageDealtToOpponent(): int {

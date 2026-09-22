@@ -1131,7 +1131,7 @@ function LoseHealth($amount, $player)
   PlayerLoseHealth($amount, $player);
 }
 
-function GainHealth($amount, $player, $silent = false, $preventable = true)
+function GainHealth($amount, $player, $silent = false, $preventable = true, $fromCardEffect = true)
 {
   global $mainPlayer, $CS_HealthGained;
   $otherPlayer = 3 - $player;
@@ -1168,6 +1168,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
   if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
   if($p2Char[0] != "DUMMY" || $player == 1) $health += $amount;
+  if ($fromCardEffect && $amount > 0) MarkKorshemTurnCondition($player);
   LogLifeGainedStats($player, $amount);
 
   if ($player == $mainPlayer) {
@@ -1237,6 +1238,12 @@ function PlayerWon($playerID, $conceded = false)
     WriteLog("The game is a draw! no match stats reported");
   }
   else WriteLog("Player " . $winner . " won! 🎉");
+  try {
+    include_once "./Libraries/PromptLog.php";
+    FlushPromptLog($gameName);
+  } catch (Throwable $e) {
+    error_log("PlayerWon: FlushPromptLog threw: " . $e->getMessage());
+  }
   if (isPlayerAI(2)) return;
   try {
     include_once "./Libraries/HeroMastery.php";

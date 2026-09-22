@@ -466,9 +466,7 @@
   function KatsuHit($context="")
   {
     global $mainPlayer;
-    $hand = &GetHand($mainPlayer);
-    $handCount = count($hand);
-    if($handCount == 0) return;
+    if(SearchMultizone($mainPlayer, "MYHAND:maxCost=0;minCost=0") == "") return;
     $char = &GetPlayerCharacter($mainPlayer);
     if($context == "") $context = "if you want to use ".CardLink($char[0], $char[0])." ability";
     AddDecisionQueue("YESNO", $mainPlayer, $context);
