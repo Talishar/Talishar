@@ -1238,6 +1238,12 @@ function PlayerWon($playerID, $conceded = false)
     WriteLog("The game is a draw! no match stats reported");
   }
   else WriteLog("Player " . $winner . " won! 🎉");
+  try {
+    include_once "./Libraries/PromptLog.php";
+    FlushPromptLog($gameName);
+  } catch (Throwable $e) {
+    error_log("PlayerWon: FlushPromptLog threw: " . $e->getMessage());
+  }
   if (isPlayerAI(2)) return;
   try {
     include_once "./Libraries/HeroMastery.php";
