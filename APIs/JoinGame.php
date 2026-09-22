@@ -1023,11 +1023,11 @@ function isBannedInFormat($cardID, $format) {
           "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots",
           "electromagnetic_somersault_red", "electromagnetic_somersault_yellow",
           "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade",
-          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow", "millers_grindstone"
+          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow", "millers_grindstone", "zephyr_needle"
       ], $livingLegends)),
       "commoner" => array_flip([
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
-          "waning_moon", "zephyr_needle", "reality_refractor"
+          "waning_moon", "zephyr_needle", "reality_refractor", "stubby_hammerers"
       ]),
       "llcc" => array_flip([
           "krakens_aethervein", "crown_of_seeds", "carrion_husk", "zephyr_needle", "rosetta_thorn"
