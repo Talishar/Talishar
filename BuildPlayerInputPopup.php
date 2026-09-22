@@ -24,6 +24,8 @@ if (!function_exists('GetCardEffectLabel')) {
       case "gate_to_iarathael":
       case "gate_to_iarathael-CHAOS":
         return "Gated";
+      case "shadowrealm_horror_red-PLAY":
+        return "Horror";
       default:
         return "";
     }

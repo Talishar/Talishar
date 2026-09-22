@@ -1908,7 +1908,6 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
     case "beckoning_mistblade":
     case "slither":
     case "first_tenet_of_chi_wind_blue":
-    case "shadowrealm_horror_red-2":
     case "flight_path":
     case "agility_stance_yellow":
     case "dragonscaler_flight_path":

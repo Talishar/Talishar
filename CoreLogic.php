@@ -1296,7 +1296,6 @@ function UnsetTurnBanish()
   $p1Banish->UnsetBanishModifier("sonic_boom_yellow");
   $p1Banish->UnsetBanishModifier("blossoming_spellblade_red");
   $p1Banish->UnsetBanishModifier("TTFromOtherPlayer");
-  $p1Banish->UnsetBanishModifier("shadowrealm_horror_red");
   $p1Banish->UnsetBanishModifier("REMOVEGRAVEYARD");
   $p1Banish->UnsetBanishModifier("BOOST");
   $p2Banish = new Banish(2);
@@ -1305,7 +1304,6 @@ function UnsetTurnBanish()
   $p2Banish->UnsetBanishModifier("sonic_boom_yellow");
   $p2Banish->UnsetBanishModifier("blossoming_spellblade_red");
   $p2Banish->UnsetBanishModifier("TTFromOtherPlayer");
-  $p2Banish->UnsetBanishModifier("shadowrealm_horror_red");
   $p2Banish->UnsetBanishModifier("REMOVEGRAVEYARD");
   $p2Banish->UnsetBanishModifier("BOOST");
   UnsetCombatChainBanish();
@@ -1975,7 +1973,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   }
   if ($from == "BANISH") {
     $mod = GetBanishModifier($index);
-    if (DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red" || str_contains($mod, "shadowrealm_horror_red")) || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
+    if (DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red") || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
   }
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if (SearchCurrentTurnEffects("meridian_pathway", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
