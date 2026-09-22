@@ -60,6 +60,12 @@ class Card {
     return "";
   } 
 
+  function PropertyModifierApplied($objectUID, $property, $amount, $source, $controller, $phase, $uniqueID) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "PropertyModifierApplied"))
+      return $this->baseCard->PropertyModifierApplied($objectUID, $property, $amount, $source, $controller, $phase, $uniqueID);
+    return;
+  }
+
   function CardType($from="", $additionalCosts="-") {
     if (isset($this->baseCard) && method_exists($this->baseCard, "CardType"))
       return $this->baseCard->CardType($from, $additionalCosts);

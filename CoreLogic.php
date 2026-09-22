@@ -304,7 +304,7 @@ function DefendingTerm($term)
   }
 }
 
-function CombatChainPowerModifier($index, $amount)
+function CombatChainPowerModifier($index, $amount, $source="-")
 {
   global $combatChain;
   if (str_contains($index, "COMBATCHAINLINK")) $index = (int)substr($index, 16);
@@ -319,16 +319,17 @@ function CombatChainPowerModifier($index, $amount)
     return;
   }
   $combatChain[$powerIndex] = (int)$combatChain[$powerIndex] + (int)$amount;
+  if ($index == 0) NotifyCurrentAttackPowerModifierApplied($amount, $source);
   ProcessPhantasmOnBlock($index);
   ProcessAllMirage();
 }
 
-function CombatChainDefenseModifier($index, $amount, $skipLog = "-")
+function CombatChainDefenseModifier($index, $amount, $skipLog = "-", $source = "-")
 {
   global $combatChain, $CombatChain;
   if (str_contains($index, "COMBATCHAINLINK")) $index = (int)substr($index, 16);
   if (isset($combatChain[$index])) {
-    $CombatChain->Card($index)->ModifyDefense($amount);
+    $CombatChain->Card($index)->ModifyDefense($amount, $source);
     switch ($combatChain[0]) {
       case "zephyr_needle":
       case "zephyr_needle_r":

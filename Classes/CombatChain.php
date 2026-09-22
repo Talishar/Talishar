@@ -166,9 +166,10 @@ class ChainCard {
       return BlockingCardDefense($this->index);
     }
 
-    function ModifyPower($amount) {
+    function ModifyPower($amount, $source="-") {
       if (!isset($this->chain[$this->index+5])) return;
       $this->chain[$this->index+5] += $amount;
+      if ($this->index == 0) NotifyCurrentAttackPowerModifierApplied($amount, $source);
       CurrentEffectAfterPlayOrActivateAbility();
     }
 
@@ -179,10 +180,22 @@ class ChainCard {
         return 0;
     }
 
-    function ModifyDefense($amount) {
+    function ModifyDefense($amount, $source="-") {
       global $CombatChain, $ChainLinks;
       if (!isset($this->chain[$this->index+6]) || !CanGainBlock($this->chain[$this->index+6], -1)) $amount = 0;
-      if (isset($this->chain[$this->index+6])) $this->chain[$this->index+6] += $amount;
+      if (isset($this->chain[$this->index+6])) {
+        $this->chain[$this->index+6] += $amount;
+        if ($amount != 0) {
+          EmitPropertyModifierApplied(
+            $this->UniqueID(),
+            "DEFENSE",
+            $amount,
+            $source,
+            $this->PlayerID(),
+            EffectiveGamePhase()
+          );
+        }
+      }
     }
 
     function UniqueID() {

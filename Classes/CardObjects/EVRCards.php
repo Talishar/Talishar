@@ -2342,17 +2342,36 @@ class rain_razors_yellow extends Card {
 // }
 
 
-// class talisman_of_featherfoot_yellow extends Card {
+class talisman_of_featherfoot_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "talisman_of_featherfoot_yellow";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "talisman_of_featherfoot_yellow";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PropertyModifierApplied($objectUID, $property, $amount, $source, $controller, $phase, $uniqueID) {
+    global $CombatChain;
+    if ($property != "POWER" || floatval($amount) != 1) return;
+    if ($phase != "A" && $phase != "D") return;
+
+    $Attack = $CombatChain->AttackCard();
+    if ($Attack->UniqueID() != $objectUID || $Attack->PlayerID() != $this->controller) return;
+    if (!TypeContains($Attack->ID(), "AA", $this->controller)) return;
+
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $objectUID, "PROPERTYMODIFIER", $uniqueID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    if ($additionalCosts != "PROPERTYMODIFIER") return;
+    $Items = new Items($this->controller);
+    $Item = $Items->FindCardUID($uniqueID);
+    if ($Item->CardID() == $this->cardID) $Item->Destroy();
+
+    $Attack = $CombatChain->FindCardUID($target);
+    if ($Attack->Index() == 0) GiveAttackGoAgain();
+  }
+}
 
 
 // class talisman_of_recompense_yellow extends Card {

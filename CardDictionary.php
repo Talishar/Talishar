@@ -8,7 +8,7 @@ function StripCardIDSuffix($cardID, &$suffix = null)
   return substr($cardID, 0, $pos);
 }
 
-include "Constants.php";
+include_once "Constants.php";
 include "CardDictionaries/WelcomeToRathe/WTRShared.php";
 include "CardDictionaries/ArcaneRising/ARCShared.php";
 include "CardDictionaries/ArcaneRising/ARCGeneric.php";

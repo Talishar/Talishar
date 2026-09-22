@@ -99,14 +99,63 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
   $currentTurnEffects[] = $player;
   $currentTurnEffects[] = $uniqueID;
   $currentTurnEffects[] = CurrentTurnEffectUses($cardID);
-  if (!IsCombatEffectLimited($ind) && IsCombatEffectActive($cardID))
+  if (!IsCombatEffectLimited($ind) && IsCombatEffectActive($cardID)) {
+    NotifyCurrentAttackPowerModifierApplied(EffectPowerModifier($cardID), $cardID);
     ReEvalCombatChain();
+  }
 }
 
 function AddEffectToCurrentAttack($cardID) {
   global $combatChain;
   if ($combatChain[10] == "-") $combatChain[10] = ConvertToSetID($cardID); //saving them as set ids saves space
   else $combatChain[10] .= "," . ConvertToSetID($cardID);
+  NotifyCurrentAttackPowerModifierApplied(EffectPowerModifier($cardID, attached: true), $cardID, attached: true);
+}
+
+function EffectiveGamePhase()
+{
+  global $turn, $dqState;
+  if (($turn[0] ?? "") == "B" && ($dqState[0] ?? "0") == "1" && isset($dqState[1])) return $dqState[1];
+  return $turn[0] ?? "";
+}
+
+function EmitPropertyModifierApplied($objectUID, $property, $amount, $source, $controller, $phase)
+{
+  $Items = new Items($controller);
+  $numItems = $Items->NumItems();
+  for ($i = 0; $i < $numItems; ++$i) {
+    $Item = $Items->Card($i, true);
+    $card = GetClass($Item->CardID(), $controller);
+    if ($card != "-") {
+      $card->PropertyModifierApplied($objectUID, $property, $amount, $source, $controller, $phase, $Item->UniqueID());
+    }
+  }
+}
+
+function NotifyCurrentAttackPowerModifierApplied($amount, $source = "-", $attached = false)
+{
+  global $CombatChain, $mainPlayer, $EffectContext;
+  if (!is_numeric($amount) || floatval($amount) == 0 || !$CombatChain->HasCurrentAttack()) return;
+
+  $Attack = $CombatChain->AttackCard();
+  $attackID = $Attack->ID();
+  if (PowerCantBeModified($attackID)) return;
+  if (floatval($amount) > 0 && !CanGainAttack($attackID)) return;
+
+  if ($source == "-" && isset($EffectContext) && $EffectContext != "") $source = $EffectContext;
+  if (floatval($amount) > 0 && SearchCurrentTurnEffects("snag_blue", $mainPlayer)) {
+    $fromCurrentAttack = $source == $attackID || (!$attached && IsGrantedBuff($source));
+    if ($fromCurrentAttack || CardType(EffectCardID($source)) == "AR") return;
+  }
+
+  EmitPropertyModifierApplied(
+    $Attack->UniqueID(),
+    "POWER",
+    $amount,
+    $source,
+    $Attack->PlayerID(),
+    EffectiveGamePhase()
+  );
 }
 
 function AddEffectToPastAttack($index, $cardID) {

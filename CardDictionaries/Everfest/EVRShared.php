@@ -21,7 +21,6 @@
       case "amulet_of_oblation_blue": return 0;
       case "clarity_potion_blue": case "healing_potion_blue": case "potion_of_seeing_blue": case "potion_of_deja_vu_blue": case "potion_of_ironhide_blue": return 0;
       case "potion_of_luck_blue": return 0;
-      case "talisman_of_featherfoot_yellow": return 0;
       case "silver": return 3;
       default: return 0;
     }
@@ -61,7 +60,6 @@
         if($from == "PLAY") return "I";
         else return "A";
       case "silver": return "A";
-      case "talisman_of_featherfoot_yellow": return "AR";
       default: return "";
     }
   }
@@ -553,12 +551,6 @@
           AddDecisionQueue("DRAW", $currentPlayer, "$cardID,$numToDraw", 1);
         }
         return "";
-      case "talisman_of_featherfoot_yellow":
-        if($from == "PLAY"){
-          DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
-          GiveAttackGoAgain();
-        }
-        return "Partially manual card: Activate the instant ability if you met the criteria";
       case "silver":
         if($from == "PLAY"){
           DestroyItemForPlayer($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
