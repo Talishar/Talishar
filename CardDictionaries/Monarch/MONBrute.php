@@ -21,17 +21,6 @@
           AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
         }
         return "";
-      case "deadwood_rumbler_red": case "deadwood_rumbler_yellow": case "deadwood_rumbler_blue":
-        Draw($currentPlayer);
-        $card = DiscardRandom();
-        if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD&THEIRDISCARD");
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to banish with " . CardLink($cardID, $cardID), 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $currentPlayer, "GY,-," . $currentPlayer, 1);
-          AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-        }
-        return "";
       case "unworldly_bellow_red": case "unworldly_bellow_yellow": case "unworldly_bellow_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";

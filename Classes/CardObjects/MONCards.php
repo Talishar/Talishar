@@ -927,44 +927,48 @@ class courageous_steelhand_blue extends Card {
 //   }
 // }
 
+class deadwood_rumbler extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
 
-// class deadwood_rumbler_red extends Card {
+  function ProcessAttackTrigger($target, $uniqueID) {
+    Draw($this->controller);
+    $card = DiscardRandom();
+    if(ModifiedPowerValue($card, $this->controller, "HAND", source:$this->cardID) >= 6) {
+      AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYDISCARD&THEIRDISCARD");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a card to banish with " . CardLink($this->cardID), 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("MZBANISH", $this->controller, "GY,-," . $this->controller, 1);
+      AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+    }
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "deadwood_rumbler_red";
-//     $this->controller = $controller;
-//     }
+class deadwood_rumbler_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "deadwood_rumbler_red";
+    $this->controller = $controller;
+    $this->baseCard = new deadwood_rumbler($this->cardID, $this->controller);
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class deadwood_rumbler_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "deadwood_rumbler_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new deadwood_rumbler($this->cardID, $this->controller);
+  }
+}
 
-
-// class deadwood_rumbler_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "deadwood_rumbler_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class deadwood_rumbler_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "deadwood_rumbler_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class deadwood_rumbler_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "deadwood_rumbler_blue";
+    $this->controller = $controller;
+    $this->baseCard = new deadwood_rumbler($this->cardID, $this->controller);
+  }
+}
 
 
 // class deep_rooted_evil_yellow extends Card {
