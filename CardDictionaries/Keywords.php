@@ -340,6 +340,13 @@
     return ($char[9] ?? 0) == 1;
   }
 
+  function AlwaysPayLifeActive($player) {
+    $char = &GetPlayerCharacter($player);
+    if (!isset($char[0])) return false;
+    if ($char[0] != "vynnset" && $char[0] != "vynnset_iron_maiden") return false;
+    return ($char[9] ?? 0) == 1;
+  }
+
   function AskWager($cardID) {
     global $currentPlayer;
     if (AlwaysWagerActive($currentPlayer)) {

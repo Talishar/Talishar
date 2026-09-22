@@ -2798,8 +2798,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "vynnset_iron_maiden":
       case "vynnset":
-        AddDecisionQueue("YESNO", $player, "if you want to pay 1 life for " . CardLink($parameter, $parameter), 1);
-        AddDecisionQueue("NOPASS", $player, "-", 1);
+        if (!AlwaysPayLifeActive($player)) {
+          AddDecisionQueue("YESNO", $player, "if you want to pay 1 life for " . CardLink($parameter, $parameter), 1);
+          AddDecisionQueue("NOPASS", $player, "-", 1);
+        }
         AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
         AddDecisionQueue("OP", $player, "PLAYERLOSEHEALTH", 1);
         if (!SearchCurrentTurnEffects($parameter, $player)) { //The effect only apply to one event of damage. Anti-duplicate.
