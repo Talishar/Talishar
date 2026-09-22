@@ -271,3 +271,18 @@ function StatsStartTurn()
   EnsureTurnStatBlock(1);
   EnsureTurnStatBlock(2);
 }
+
+// Contracts completed over the whole game
+function LogContractCompletedStats($player, $cardID)
+{
+  global $p1ContractsCompleted, $p2ContractsCompleted;
+  if ($cardID == "" || $cardID == "-") return;
+  if ($player == 1) $p1ContractsCompleted = intval($p1ContractsCompleted ?? 0) + 1;
+  else $p2ContractsCompleted = intval($p2ContractsCompleted ?? 0) + 1;
+}
+
+function GetContractsCompleted($player)
+{
+  global $p1ContractsCompleted, $p2ContractsCompleted;
+  return intval(($player == 1 ? $p1ContractsCompleted : $p2ContractsCompleted) ?? 0);
+}
