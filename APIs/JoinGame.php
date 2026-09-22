@@ -874,7 +874,7 @@ function isClashLegal($cardID, $character) {
     case "brutus_summa_rudis": case "proclamation_of_combat": case "magrar":
       return true;
     case "drone_of_brutality_red": case "drone_of_brutality_yellow": case "drone_of_brutality_blue": //banned cards
-    case "amulet_of_ice": case "ball_lightning_red": case "ball_lightning_yellow": case "ball_lightning_blue":
+    case "amulet_of_ice_blue": case "ball_lightning_red": case "ball_lightning_yellow": case "ball_lightning_blue":
     case "belittle_red": case "belittle_yellow": case "belittle_blue":
     case "stubby_hammerers": case "duskblade": case "zephyr_needle":
       return false;
@@ -961,9 +961,9 @@ function isSpecialUsePromo($cardID) {
     $promoSet = array_flip([
       "taipanis_dracai_of_judgement", "proclamation_of_requisition", "gavel_of_natural_order",
       "theryon_magister_of_justice", "proclamation_of_abundance", "proclamation_of_production",
-      "brutus_summa_rudis", "proclamation_of_combat", "magrar", "ruu'di_gem_keeper",
+      "brutus_summa_rudis", "proclamation_of_combat", "magrar", "ruudi_gem_keeper",
       "go_bananas_yellow", "taylor", "yorick_weaver_of_tales", "tales_of_adventure_blue",
-      "good_deeds_don't_go_unnoticed_yellow", "pink_visor", "diamond_hands",
+      "good_deeds_dont_go_unnoticed_yellow", "pink_visor", "diamond_hands",
       "hummingbird_call_of_adventure", "shitty_xmas_present_yellow", "squizzy_&_floof",
       "fabric_of_spring_yellow", "venomback_fabric_yellow", "silversheen_needle", "bank_breaker"
     ]);
@@ -1013,8 +1013,8 @@ function isBannedInFormat($cardID, $format) {
           "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
           "bloodsheath_skeleta", "cash_in_yellow", "prism_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "galaxxi_black", "stubby_hammerers", "belittle_red",
           "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lexi_livewire",
-          "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winter's_wail", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
-          "iyslander_stormbind", "kraken's_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
+          "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winters_wail", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
+          "iyslander_stormbind", "krakens_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
           "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
           "count_your_blessings_red", "count_your_blessings_yellow", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
           "azalea_ace_in_the_hole", "death_dealer", "bonds_of_agony_blue", "golden_tipple_red", "golden_tipple_yellow",
@@ -1023,14 +1023,14 @@ function isBannedInFormat($cardID, $format) {
           "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots",
           "electromagnetic_somersault_red", "electromagnetic_somersault_yellow",
           "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade",
-          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow", "millers_grindstone"
+          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow", "millers_grindstone", "zephyr_needle"
       ], $livingLegends)),
       "commoner" => array_flip([
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
-          "waning_moon", "zephyr_needle", "reality_refractor"
+          "waning_moon", "zephyr_needle", "reality_refractor", "stubby_hammerers"
       ]),
       "llcc" => array_flip([
-          "kraken's_aethervein", "crown_of_seeds", "carrion_husk", "zephyr_needle", "rosetta_thorn"
+          "krakens_aethervein", "crown_of_seeds", "carrion_husk", "zephyr_needle", "rosetta_thorn"
       ]),
       "sage" => array_flip(array_merge([
         "fiddlers_green_red", "fiddlers_green_yellow", "fiddlers_green_blue",
@@ -1040,7 +1040,7 @@ function isBannedInFormat($cardID, $format) {
         "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue",
         "belittle_red", "belittle_yellow", "belittle_blue",
         "bonds_of_ancestry_red", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue",
-        "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessing_blue",
+        "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue",
         "deadwood_dirge_red", "deadwood_dirge_yellow", "deadwood_dirge_blue",
         "drone_of_brutality_red", "drone_of_brutality_blue", "drone_of_brutality_yellow",
         "electromagnetic_somersault_red", "electromagnetic_somersault_yellow", "electromagnetic_somersault_blue",
@@ -1052,7 +1052,7 @@ function isBannedInFormat($cardID, $format) {
         "rosetta_thorn",
         "sigil_of_solace_red", "sigil_of_solace_yellow", "sigil_of_solace_blue",
         "sink_below_red", "sink_below_yellow", "sink_below_blue",
-        "snapdragon_scalers", "stubby_hammers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle",
+        "snapdragon_scalers", "stubby_hammerers", "vest_of_the_first_fist", "waning_moon", "zephyr_needle",
         "bracers_of_belief", "ebon_fold", "reaping_blade", "volzar_the_lightning_rod",
         "absorb_in_aether_red", "absorb_in_aether_yellow", "absorb_in_aether_blue",
         "beaten_trackers",
@@ -1063,10 +1063,10 @@ function isBannedInFormat($cardID, $format) {
         "sigil_of_suffering_red", "sigil_of_suffering_yellow", "sigil_of_suffering_blue",
         "snapback_red", "snapback_yellow", "snapback_blue"
       ], $benched)),
-      "gage" => array_flip(["bravo_star_of_the_show", "bloodsheath_skeleta", "heavy_industry_power_plant", "kraken_aethervein", "stubby_hammerers",
+      "gage" => array_flip(["bravo_star_of_the_show", "bloodsheath_skeleta", "heavy_industry_power_plant", "krakens_aethervein", "stubby_hammerers",
         "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue", "chane_bound_by_shadow",
         "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "zephyr_needle",
-        "open_the_floodgates_red", "open_the_floodgates_yellow", "open_the_floodgates_blue",
+        "open_the_flood_gates_red", "open_the_flood_gates_yellow", "open_the_flood_gates_blue",
         "tome_of_firebrand_red", "art_of_war_yellow", "berserk_yellow", "cash_in_yellow", "remembrance_yellow",
         "tome_of_divinity_yellow", "tome_of_fyendal_yellow", "awakening_blue", "orihon_of_mystic_tenets_blue",
         "channel_lightning_valley_yellow",

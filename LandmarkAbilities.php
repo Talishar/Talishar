@@ -90,3 +90,20 @@ function SearchLandmarksForID($cardID)
   if (!isset($landmarks[0])) return -1;
   return $landmarks[0] == $cardID ? 0 : -1;
 }
+
+function KorshemTurnConditionMet()
+{
+  global $mainPlayer, $defPlayer, $CS_KorshemConditionMet;
+  return GetClassState($mainPlayer, $CS_KorshemConditionMet) > 0
+    || GetClassState($defPlayer, $CS_KorshemConditionMet) > 0;
+}
+
+function LandmarkBeginEndPhaseTriggers()
+{
+  global $landmarks;
+  $index = SearchLandmarksForID("korshem_crossroad_of_elements");
+  if ($index == -1 || KorshemTurnConditionMet()) return;
+
+  $owner = $landmarks[$index + 1];
+  AddLayer("TRIGGER", $owner, "korshem_crossroad_of_elements", additionalCosts: "KORSHEM_END_PHASE");
+}

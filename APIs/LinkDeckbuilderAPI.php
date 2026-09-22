@@ -23,7 +23,7 @@ $response = new stdClass();
 if(IsUserLoggedIn()) {
   if(str_contains($deckbuilderType, "fabrary"))
   {
-     if($apiKey == $fabraryOutgoingKey)
+     if($apiKey === $fabraryOutgoingKey)
      {
        storeFabraryId(LoggedInUser(), $deckbuilderID);
        $response->message = "Linked to Talishar account: " . LoggedInUser();

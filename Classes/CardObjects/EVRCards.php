@@ -2351,7 +2351,7 @@ class talisman_of_featherfoot_yellow extends Card {
 
   function PropertyModifierApplied($objectUID, $property, $amount, $source, $controller, $phase, $uniqueID) {
     global $CombatChain;
-    if ($property != "POWER" || floatval($amount) != 1) return;
+    if ($property != "POWER" || $amount != 1) return;
     if ($phase != "A" && $phase != "D") return;
 
     $Attack = $CombatChain->AttackCard();

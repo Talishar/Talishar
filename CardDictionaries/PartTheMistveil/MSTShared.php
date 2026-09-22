@@ -710,9 +710,9 @@ function MSTHitEffect($cardID, $from): void
       AddCurrentTurnEffect($cardID, $defPlayer);
       AddNextTurnEffect($cardID, $defPlayer);
       break;
-    case "factfinding_mission_red":
-    case "factfinding_mission_yellow":
-    case "factfinding_mission_blue":
+    case "fact_finding_mission_red":
+    case "fact_finding_mission_yellow":
+    case "fact_finding_mission_blue":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRCHAR:type=E;faceDown=true&THEIRARS:faceDown=true");
       AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
       AddDecisionQueue("MZREVEAL", $mainPlayer, "-", 1);

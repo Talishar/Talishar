@@ -81,7 +81,7 @@ function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID 
 
 function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
-  global $currentTurnEffects, $combatChain;
+  global $currentTurnEffects, $combatChain, $CombatChain;
   if ($cardID == "BEATCHEST") {
     CharacterBeatChestTrigger($player);
     if (SearchCurrentTurnEffects("BEATCHEST", $player)) { // don't duplicate the icon
@@ -99,8 +99,15 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
   $currentTurnEffects[] = $player;
   $currentTurnEffects[] = $uniqueID;
   $currentTurnEffects[] = CurrentTurnEffectUses($cardID);
+  $powerModifier = EffectPowerModifier($cardID);
+  if ($uniqueID != -1 && $uniqueID != "ATTACK" && $powerModifier != 0) {
+    $isCurrentAttack = isset($CombatChain) && $CombatChain->HasCurrentAttack() && $CombatChain->AttackCard()->UniqueID() == $uniqueID;
+    if (!$isCurrentAttack) {
+      PropertyModifierApplied($uniqueID, "POWER", $powerModifier, $cardID, $player, EffectiveGamePhase());
+    }
+  }
   if (!IsCombatEffectLimited($ind) && IsCombatEffectActive($cardID)) {
-    NotifyCurrentAttackPowerModifierApplied(EffectPowerModifier($cardID), $cardID);
+    NotifyCurrentAttackPowerModifierApplied($powerModifier, $cardID);
     ReEvalCombatChain();
   }
 }
@@ -119,8 +126,12 @@ function EffectiveGamePhase()
   return $turn[0] ?? "";
 }
 
-function EmitPropertyModifierApplied($objectUID, $property, $amount, $source, $controller, $phase)
+function PropertyModifierApplied($objectUID, $property, $amount, $source, $controller, $phase)
 {
+  if ($amount > 0 && ($property == "POWER" || $property == "DEFENSE")) {
+    MarkKorshemTurnCondition($controller);
+  }
+
   $Items = new Items($controller);
   $numItems = $Items->NumItems();
   for ($i = 0; $i < $numItems; ++$i) {
@@ -135,20 +146,20 @@ function EmitPropertyModifierApplied($objectUID, $property, $amount, $source, $c
 function NotifyCurrentAttackPowerModifierApplied($amount, $source = "-", $attached = false)
 {
   global $CombatChain, $mainPlayer, $EffectContext;
-  if (!is_numeric($amount) || floatval($amount) == 0 || !$CombatChain->HasCurrentAttack()) return;
+  if ($amount == 0 || !$CombatChain->HasCurrentAttack()) return;
 
   $Attack = $CombatChain->AttackCard();
   $attackID = $Attack->ID();
   if (PowerCantBeModified($attackID)) return;
-  if (floatval($amount) > 0 && !CanGainAttack($attackID)) return;
+  if ($amount > 0 && !CanGainAttack($attackID)) return;
 
   if ($source == "-" && isset($EffectContext) && $EffectContext != "") $source = $EffectContext;
-  if (floatval($amount) > 0 && SearchCurrentTurnEffects("snag_blue", $mainPlayer)) {
+  if ($amount > 0 && SearchCurrentTurnEffects("snag_blue", $mainPlayer)) {
     $fromCurrentAttack = $source == $attackID || (!$attached && IsGrantedBuff($source));
     if ($fromCurrentAttack || CardType(EffectCardID($source)) == "AR") return;
   }
 
-  EmitPropertyModifierApplied(
+  PropertyModifierApplied(
     $Attack->UniqueID(),
     "POWER",
     $amount,
@@ -964,7 +975,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "minds_desire_red"=>true,"minds_desire_yellow"=>true,"minds_desire_blue"=>true,
     "rowdy_locals_blue"=>true,"the_weakest_link_red"=>true,
     "blanch_red"=>true,"blanch_yellow"=>true,"blanch_blue"=>true,
-    "factfinding_mission_red"=>true,"factfinding_mission_yellow"=>true,"factfinding_mission_blue"=>true,
+    "fact_finding_mission_red"=>true,"fact_finding_mission_yellow"=>true,"fact_finding_mission_blue"=>true,
     "static_shock_red"=>true,"static_shock_yellow"=>true,
     "snuff_out_red"=>true,"cut_through_the_facade_red"=>true,"hand_behind_the_pen_red"=>true,
     "smash_up_red"=>true,"tongue_tied_red"=>true,"splatter_skull_red"=>true,
