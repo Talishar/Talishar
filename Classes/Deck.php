@@ -110,8 +110,17 @@ class Deck {
     return $cardID;
   }
 
+  // 'T' type indicates the card is a token, and a token that leaves the arena ceases to exist.
+  private function TokenCeasesToExist($cardID, $destination)
+  {
+    if (!TypeContains($cardID, "T", $this->playerID)) return false;
+    WriteLog(CardLink($cardID) . " is a token. So instead of going on " . $destination . " of the deck, it ceases to exist.");
+    return true;
+  }
+
   function AddTop($cardID, $from="GY", $deckIndexModifier=0)
   {
+    if ($this->TokenCeasesToExist($cardID, "the top")) return $cardID;
     if ($deckIndexModifier > 0) {
       array_splice($this->deck, $deckIndexModifier, 0, $cardID);
     }
@@ -127,6 +136,7 @@ class Deck {
 
   function AddBottom($cardID, $from="GY")
   {
+    if ($this->TokenCeasesToExist($cardID, "the bottom")) return $cardID;
     $this->deck[] = $cardID;
     return $cardID;
   }

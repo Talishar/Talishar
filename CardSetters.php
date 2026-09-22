@@ -243,13 +243,8 @@ function TurnDiscardFaceDown($player, $index)
 
 function AddBottomDeck($cardID, $player, $from)
 {
-  if(TypeContains($cardID, "T", $player)) { // 'T' type indicates the card is a token
-    WriteLog(CardLink($cardID, $cardID) . " is a token. So instead of going on the bottom of the deck, it ceases to exist.");
-  }
-  else {
-  $deck = &GetDeck($player);
-  $deck[] = $cardID;
-  }
+  $Deck = new Deck($player);
+  $Deck->AddBottom($cardID, $from);
 }
 
 function AddTopDeck($cardID, $player, $from, $deckIndexModifier = 0)
