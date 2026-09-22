@@ -2599,7 +2599,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "unworldly_bellow_red":
     case "unworldly_bellow_yellow":
     case "unworldly_bellow_blue":
-    case "shadowrealm_horror_red":
       return (new Discard($player))->NumCards() < 3;
     case "doomsday_blue":
       return SearchCount(SearchBanish($player, "", "", -1, -1, "", "", true)) < 6;

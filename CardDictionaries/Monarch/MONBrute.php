@@ -84,6 +84,9 @@
       }
     }
     if($BanishedIncludes6 > 0) $BanishedIncludes6 += $diabolicOfferingCount;
+    if ($modifier == "shadowrealm_horror_red" && $BanishedIncludes6 >= 3) {
+      
+    }
     $banishMod = ($modifier != "shadowrealm_horror_red" || $BanishedIncludes6 >= 3) ? $modifier : "-";
     // set the banishmod to track which shadowrealm horror banished it
     if ($banishMod == "shadowrealm_horror_red") $banishMod = $layers[count($layers) - LayerPieces() + 6];
