@@ -2553,11 +2553,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       $Gate->Remove();
     }
     elseif ($Horror->Index() != -1) {
-      $horrorUID = explode(",", $Horror->AppliestoUniqueID())[0];
-      for ($i = 0; $i < 3; ++$i) {
-        $otherHorror = $CurrentTurnEffects->FindSpecificEffect("shadowrealm_horror_red-PLAY", $horrorUID, $currentPlayer);
-        $otherHorror->Remove();
-      }
+      $Horror->Remove();
     }
     elseif (!PlayableFromBanish($cardID, $mod, true, index:$index)) {
       $found = SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
