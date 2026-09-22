@@ -1143,7 +1143,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	PopulateTurnStatsAndAggregates($deck, $turnStats, $otherPlayerTurnStats, $player, false);
 	PopulateAggregateStats($deck, $turnStats, $player);
 
-	$contractsCompleted = GetContractsCompleted($player);
+	$contractsCompleted = 0;// GetContractsCompleted($player);
 	if ($contractsCompleted > 0) $deck["contractsCompleted"] = $contractsCompleted;
 
 	if($includeFullLog) { $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", @file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : ""; }
@@ -1195,7 +1195,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	PopulateTurnStatsAndAggregates($deck, $turnStats, $otherPlayerTurnStats, $player, true);
 	PopulateAggregateStats($deck, $turnStats, $player);
 
-	$contractsCompleted = GetContractsCompleted($player);
+	$contractsCompleted = 0;// GetContractsCompleted($player);
 	if ($contractsCompleted > 0) $deck["contractsCompleted"] = $contractsCompleted;
 
 	// FaB Insights and FaB Bazaar consume this payload, so it keeps the two
