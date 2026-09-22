@@ -3908,7 +3908,12 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         break;
       case "escalate_bloodshed_red":
-        Draw($player, effectSource:$parameter);
+        if (str_starts_with($uniqueID, "MYAURAS-") || str_starts_with($uniqueID, "THEIRAURAS-")) {
+          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
+          if (str_starts_with($uniqueID, "MYAURAS-")) PlayerLoseHealth($additionalCosts, $player, true);
+          else LoseHealth($additionalCosts, $player);
+        }
+        else Draw($player, effectSource:$parameter);
         break;
       case "return_fire_red":
         MZMoveCard($player, "MYHAND:subtype=Arrow", "MYBANISH,HAND,RETURNFIRE", may:true, DQContext:"Choose an arrow to banish (or pass)", passSearch:false);

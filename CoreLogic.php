@@ -4003,11 +4003,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   for ($i = count($myAuras) - $auraPieces; $i >= 0; $i -= $auraPieces) {
     switch ($myAuras[$i]) {
       case "escalate_bloodshed_red":
-        if ($mainPhase) {
-          //TODO rework this to be a respondable trigger
-          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
-          PlayerLoseHealth($num, $player, true);
-        }
+        if ($mainPhase) AddLayer("TRIGGER", $player, $myAuras[$i], "-", $num, "MYAURAS-" . $myAuras[$i + 6]);
         break;
       default:
         break;
@@ -4017,11 +4013,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
   for ($i = count($theirAuras) - $auraPieces; $i >= 0; $i -= $auraPieces) {
     switch ($theirAuras[$i]) {
       case "escalate_bloodshed_red":
-        if ($mainPhase) {
-          //TODO rework this to be a respondable trigger
-          WriteLog("🩸 You bleed from " . CardLink("escalate_bloodshed_red", "escalate_bloodshed_red"));
-          LoseHealth($num, $player);
-        }
+        if ($mainPhase) AddLayer("TRIGGER", $player, $theirAuras[$i], "-", $num, "THEIRAURAS-" . $theirAuras[$i + 6]);
         break;
       default:
         break;
