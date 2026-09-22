@@ -34,6 +34,7 @@ function ParseGamestate($parseHistoricalStats = true)
   global $p2Hand, $p2Deck, $p2CharEquip, $p2Resources, $p2Arsenal, $p2Items, $p2Auras, $p2Discard, $p2Pitch, $p2Banish;
   global $p2ClassState, $p2CharacterEffects, $p2Soul, $p2CardStats, $p2TurnStats, $p2Allies, $p2Permanents, $p2Settings;
   global $p1CardTurnLog, $p2CardTurnLog, $p1LifeHistory, $p2LifeHistory, $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
+  global $p1ContractsCompleted, $p2ContractsCompleted;
   global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
@@ -187,6 +188,11 @@ function ParseGamestate($parseHistoricalStats = true)
     : intval($currentTurn) + ($firstPlayer == 2 && $mainPlayer == $firstPlayer ? 1 : 0);
   if ($firstPlayer == 1) { if ($p1TurnCount < 1) $p1TurnCount = 1; }
   else if ($firstPlayer == 2) { if ($p2TurnCount < 1) $p2TurnCount = 1; }
+
+  // Parsed regardless of $parseHistoricalStats: these accumulate during play, so
+  // dropping them on a read would wipe them on the next write.
+  $p1ContractsCompleted = intval(trim($gamestateContent[87+$numChainLinks] ?? ""));
+  $p2ContractsCompleted = intval(trim($gamestateContent[88+$numChainLinks] ?? ""));
   BuildMyGamestate($playerID);
 }
 

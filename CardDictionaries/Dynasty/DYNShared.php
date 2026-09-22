@@ -589,6 +589,7 @@ function ContractCompleted($player, $cardID)
   global $CS_NumContractsCompleted, $EffectContext;
   WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID));
   IncrementClassState($player, $CS_NumContractsCompleted);
+  LogContractCompletedStats($player, $cardID);
   if($EffectContext == "coercive_tendency_blue") AddCurrentTurnEffect("coercive_tendency_blue", $player);
   $card = GetClass($cardID, $player);
   if ($card != "-") {
