@@ -77,6 +77,15 @@ function ProcessMacros()
         case "DYNPITCH":
           if ($turn[2] == "0") { $somethingChanged = true; ContinueDecisionQueue($turn[2]); }
           break;
+        case "P":
+          if (AutoPitchForcedSetting($currentPlayer)) {
+            $pitchIndex = ForcedPitchIndex($currentPlayer);
+            if ($pitchIndex >= 0) {
+              $somethingChanged = true;
+              ProcessInput($currentPlayer, 27, "", $pitchIndex, 0, "");
+            }
+          }
+          break;
         case "INSTANT":
         case "M":
           if ($turn[0] == "INSTANT" || ($turn[0] == "M" && ($actionPoints == 0 || $currentPlayer != $mainPlayer))) {
@@ -171,6 +180,24 @@ function ProcessMacros()
       }
     }
   }
+}
+
+function ForcedPitchIndex($player)
+{
+  global $turn;
+  if (($turn[0] ?? "") != "P") return -1;
+
+  $hand = &GetHand($player);
+  $handPieces = HandPieces();
+  if (count($hand) != $handPieces) return -1;
+
+  $restriction = "";
+  if (!IsPlayable($hand[0], "P", "HAND", 0, $restriction, $player, $turn[3] ?? "")) return -1;
+
+  $resources = &GetResources($player);
+  $available = intval($resources[0] ?? 0);
+  $required = intval($resources[1] ?? 0);
+  return $available + PitchValue($hand[0]) >= $required ? 0 : -1;
 }
 
 function NormalizeWeaponCard($cardName)
