@@ -121,7 +121,7 @@ function CheckUnique($player) {
 			$conflicts = array_values($conflicts);
 
 			$conflicts = implode(",", $conflicts);
-			Await($player, "ChooseMultiZone", "choice", indices:$conflicts, context:"Sacrifice a $uniqueCard to the Unique Rule", subsequent:0);
+			Await($player, "ChooseMultiZone", "choice", may:false, indices:$conflicts, context:"Sacrifice a $uniqueCard to the Unique Rule", subsequent:0);
 			Await($player, "ProcessUnique", final:true);
 			return;
 		}
