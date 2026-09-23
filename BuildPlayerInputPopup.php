@@ -64,6 +64,19 @@ function MZZoneCategory($zoneKey, $index) {
   }
 }
 
+function AddPromptCardContext($popup, $turnPhase, $playerID) {
+  global $dqState, $myDeck, $theirDeck;
+  include_once "./Libraries/PromptLog.php";
+  $sourceCard = explode("-", PromptLogContext($turnPhase), 2)[0];
+  $popup->sourceCard = CardName($sourceCard) != "" ? $sourceCard : "";
+  [$deckPlayer, $deckTopCard] = array_pad(explode("-", $dqState[9] ?? "", 2), 2, "");
+  $deck = $deckPlayer == $playerID ? $myDeck : $theirDeck;
+  if ($deckTopCard !== "" && ($deck[0] ?? "") === $deckTopCard) {
+    $popup->deckTopCard = $deckTopCard;
+    $popup->deckTopIsOpponent = $deckPlayer != $playerID;
+  }
+}
+
 function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $myHand, $myPitch, $myDeck, $theirDeck, $myDiscard, $theirDiscard;
   global $myBanish, $theirBanish, $myArsenal, $theirArsenal;
@@ -106,6 +119,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
 
         $popupType = $turnPhase == "ARSENALORHEAVE" ? "ARSENALORHEAVE" : "BUTTONINPUT";
         $playerInputPopup->popup = CreatePopupAPI($popupType, [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
+        AddPromptCardContext($playerInputPopup->popup, $turnPhase, $playerID);
       }
       break;
 
@@ -116,6 +130,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputButtons[] = CreateButtonAPI($playerID, "Yes", 20, "YES", "20px");
         $playerInputButtons[] = CreateButtonAPI($playerID, "No", 20, "NO", "20px");
         $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, GetPhaseHelptext(), 1, "");
+        AddPromptCardContext($playerInputPopup->popup, $turnPhase, $playerID);
       }
       break;
 
@@ -162,6 +177,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $playerInputButtons[] = CreateButtonAPI($playerID, "Ok", 99, "OK", "20px");
         $playerInputPopup->popup = CreatePopupAPI("OK", [], 0, 1, GetPhaseHelptext(), 1, "");
+        AddPromptCardContext($playerInputPopup->popup, $turnPhase, $playerID);
       }
       break;
 

@@ -439,11 +439,20 @@ function CloseDecisionQueue($skip=false)
   $dqState[6] = "0"; //Damage dealt
   $dqState[7] = "0"; //Target
   if(!$skip) $dqState[8] = "-1"; //Orderable index (what layer after which triggers can be reordered)
+  if (isset($dqState[9])) $dqState[9] = "-"; //Top deck card read by DECKCARDS
   $decisionQueue = [];
   if (($turn[0] == "D" || $turn[0] == "A") && count($combatChain) == 0) {
     $currentPlayer = $mainPlayer;
     $turn[0] = "M";
   }
+}
+
+function SetDQDeckTopCard($player, $cardID)
+{
+  global $dqState;
+  static $defaults = ["0", "-", "-", "-", "-", "-", "0", "0", "-1"];
+  for ($i = count($dqState); $i < 9; ++$i) $dqState[$i] = $defaults[$i];
+  $dqState[9] = $player . "-" . $cardID;
 }
 
 function ShouldHoldPriorityNow($player)
