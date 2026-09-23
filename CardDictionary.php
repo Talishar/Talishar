@@ -4128,8 +4128,8 @@ function HasBloodDebt($cardID, $player="-")
 {
   global $currentPlayer;
   $player = $player == "-" ? $currentPlayer : $player;
-  $char = GetPlayerCharacter($player);
-  if ($char[0] == "levia_redeemed") return false;
+  $Hero = new CharacterCard(0, $player);
+  if ($Hero->CardID() == "levia_redeemed" && $Hero->Status() == 2) return false;
   static $generatedBloodDebtCache = [];
   if (isset($generatedBloodDebtCache[$cardID])) return $generatedBloodDebtCache[$cardID];
   $card = GetClass($cardID, 0);
