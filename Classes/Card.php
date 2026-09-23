@@ -557,6 +557,12 @@ class Card {
     return 2;
   }
 
+  function DefaultMultiChooseIndices($options) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "DefaultMultiChooseIndices"))
+      return $this->baseCard->DefaultMultiChooseIndices($options);
+    return [];
+  }
+
   function HasWateryGrave() {
     if (isset($this->baseCard) && method_exists($this->baseCard, "HasWateryGrave"))
       return $this->baseCard->HasWateryGrave();

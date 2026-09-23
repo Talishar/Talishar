@@ -3563,6 +3563,17 @@ class soul_harvest_blue extends Card {
     Await($this->controller, $this->cardID);
   }
 
+  function DefaultMultiChooseIndices($options) {
+    $optionsCount = count($options);
+    if ($optionsCount <= 6) return array_keys($options);
+    $Discard = new Discard($this->controller);
+    $bloodDebt = [];
+    for ($i = 0; $i < $optionsCount; ++$i) {
+      if (HasBloodDebt($Discard->Card($options[$i])->ID(), $this->controller)) $bloodDebt[] = $i;
+    }
+    return count($bloodDebt) <= 6 ? $bloodDebt : [];
+  }
+
   function SpecificLogic() {
     global $dqVars;
     $lastResult = array_reverse(explode(",", $dqVars["LASTRESULT"]) ?? []);
