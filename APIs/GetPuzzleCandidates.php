@@ -6,7 +6,7 @@ include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
 include_once '../includes/ModeratorList.inc.php';
 include_once '../Libraries/PuzzleHarvest.php';
-include_once '../GeneratedCode/GeneratedCardDictionaries.php';
+include_once '../Libraries/PuzzleAnalysis.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -33,25 +33,24 @@ try {
   $result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM puzzle_candidates");
   $response["total"] = (int)(mysqli_fetch_assoc($result)["total"] ?? 0);
 
-  $sql = "SELECT id, created_at, format, turn_number, player, hero, opponent_hero, opponent_life, hand_count, opponent_hand_count, status
+  $sql = "SELECT id, created_at, format, turn_number, player, hero, opponent_hero, status, meta, gamestate
     FROM puzzle_candidates ORDER BY id DESC LIMIT 300";
   $result = mysqli_query($conn, $sql);
   while ($row = mysqli_fetch_assoc($result)) {
+    $content = @gzuncompress($row["gamestate"]);
+    if ($content === false) continue;
+    $meta = json_decode($row["meta"] ?? "", true);
     $response["candidates"][] = [
       "id" => (int)$row["id"],
       "createdAt" => $row["created_at"],
       "format" => $row["format"],
       "turn" => (int)$row["turn_number"],
-      "player" => (int)$row["player"],
       "hero" => $row["hero"],
       "heroName" => GeneratedCardName($row["hero"]),
       "opponentHero" => $row["opponent_hero"],
       "opponentHeroName" => GeneratedCardName($row["opponent_hero"]),
-      "opponentLife" => (int)$row["opponent_life"],
-      "handCount" => (int)$row["hand_count"],
-      "opponentHandCount" => (int)$row["opponent_hand_count"],
       "status" => (int)$row["status"]
-    ];
+    ] + AnalyzePuzzlePosition($content, (int)$row["player"], $meta);
   }
 } catch (Throwable $e) {
   error_log("GetPuzzleCandidates failed: " . $e->getMessage());

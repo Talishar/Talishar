@@ -77,7 +77,7 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
 }
 
 CombatDummyAI(); //Only does anything if applicable
-if ($p2IsAI == "1") {
+if ($p1IsAI == "1" || $p2IsAI == "1") {
   EncounterAI();
 }
 CacheCombatResult();

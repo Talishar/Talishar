@@ -63,7 +63,6 @@ if (file_exists("../Games/$gameName") || !mkdir("../Games/$gameName", 0700, true
 }
 
 $player = intval($candidate["player"]);
-$opponent = $player == 1 ? 2 : 1;
 $p1Key = bin2hex(random_bytes(32));
 $p2Key = bin2hex(random_bytes(32));
 $gamestate = PreparePuzzleGamestate($content, $player, $p1Key, $p2Key, $emptyOpponentHand, $removeDecks);
@@ -78,8 +77,8 @@ $format = FormatName(intval($candidate["format"]));
 $visibility = "private";
 $firstPlayerChooser = "";
 $firstPlayer = trim($lines[39]);
-$p1uid = $player == 1 ? $useruid : "Puzzle Opponent";
-$p2uid = $player == 2 ? $useruid : "Puzzle Opponent";
+$p1uid = $player == 1 ? $useruid : "Puzzle Bot";
+$p2uid = $player == 2 ? $useruid : "Puzzle Bot";
 $p1id = "-";
 $p2id = "-";
 $gameDescription = "Puzzle #$candidateID";
@@ -102,8 +101,8 @@ $p1SideboardSubmitted = "1";
 $p2SideboardSubmitted = "1";
 $p1StartingEquipment = [];
 $p2StartingEquipment = [];
-$p1IsAI = "0";
-$p2IsAI = "0";
+$p1IsAI = $player == 1 ? "0" : "1";
+$p2IsAI = $player == 2 ? "0" : "1";
 $gameGUID = GenerateGameGUID();
 $p1DisplayName = $p1uid;
 $p2DisplayName = $p2uid;
@@ -135,7 +134,5 @@ GamestateUpdated($gameName);
 echo json_encode([
   "gameName" => $gameName,
   "playerID" => $player,
-  "authKey" => $player == 1 ? $p1Key : $p2Key,
-  "opponentPlayerID" => $opponent,
-  "opponentAuthKey" => $opponent == 1 ? $p1Key : $p2Key
+  "authKey" => $player == 1 ? $p1Key : $p2Key
 ]);

@@ -6,10 +6,10 @@ include_once "PlayerMacros.php";
 
 function EncounterAI()
 {
-  global $currentPlayer, $p2CharEquip, $decisionQueue, $mainPlayer, $mainPlayerGamestateStillBuilt, $actionPoints;
+  global $currentPlayer, $decisionQueue, $mainPlayer, $mainPlayerGamestateStillBuilt, $actionPoints;
   $AIDebug = false;
   //$AIDebug = true;
-  $currentPlayerIsAI = ($currentPlayer == 2 && IsEncounterAI($p2CharEquip[0])) ? true : false;
+  $currentPlayerIsAI = IsPlayerAI($currentPlayer);
   if(!IsGameOver() && $currentPlayerIsAI)
   {
     $isBowActive = false;
@@ -115,7 +115,7 @@ function EncounterAI()
         if (BotShouldPreserveOpeningHandForPlayer($currentPlayer)) {
           PassInput();
           ProcessMacros();
-          $currentPlayerIsAI = ($currentPlayer == 2);
+          $currentPlayerIsAI = IsPlayerAI($currentPlayer);
           continue;
         }
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Action");
@@ -280,23 +280,17 @@ function EncounterAI()
         PassInput();
       }
       ProcessMacros();
-      $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
+      $currentPlayerIsAI = IsPlayerAI($currentPlayer);
       if($logicCount == 30 && $currentPlayerIsAI)
       {
         for($i=0; $i<=30 && $currentPlayerIsAI; ++$i)
         {
           PassInput();
-          $currentPlayerIsAI = ($currentPlayer == 2 ? true : false);
+          $currentPlayerIsAI = IsPlayerAI($currentPlayer);
         }
       }
     }
   }
-}
-
-function IsEncounterAI($enemyHero)
-{
-  global $p2IsAI;
-  return $p2IsAI == "1";
 }
 
 function ShouldBlock($found, $storedPriorityNode)

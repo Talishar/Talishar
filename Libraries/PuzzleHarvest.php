@@ -20,6 +20,7 @@ function EnsurePuzzleCandidatesTable($conn)
     opponent_hand_count TINYINT UNSIGNED NOT NULL,
     status TINYINT UNSIGNED NOT NULL DEFAULT 0,
     note VARCHAR(255) NOT NULL DEFAULT '',
+    meta VARCHAR(512) NOT NULL DEFAULT '',
     gamestate MEDIUMBLOB NOT NULL,
     PRIMARY KEY (id),
     KEY status_created (status, created_at)
@@ -27,6 +28,30 @@ function EnsurePuzzleCandidatesTable($conn)
   if (!mysqli_query($conn, $sql)) {
     error_log("Failed to create puzzle_candidates table: " . mysqli_error($conn));
   }
+  $columns = mysqli_query($conn, "SHOW COLUMNS FROM puzzle_candidates LIKE 'meta'");
+  if ($columns && mysqli_num_rows($columns) == 0) {
+    mysqli_query($conn, "ALTER TABLE puzzle_candidates ADD COLUMN meta VARCHAR(512) NOT NULL DEFAULT '' AFTER note");
+  }
+}
+
+function PuzzleTurnMeta($winner, $loser)
+{
+  global $TurnStats_DamageThreatened, $TurnStats_DamageDealt, $TurnStats_CardsPlayedOffense, $TurnStats_CardsPitched;
+  global $TurnStats_ResourcesUsed, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked;
+  $winnerStats = &GetTurnStats($winner);
+  $winnerBase = GetStatTurnIndex($winner) * TurnStatPieces();
+  $loserStats = &GetTurnStats($loser);
+  $loserBase = GetStatTurnIndex($loser) * TurnStatPieces();
+  return [
+    "threatened" => intval($winnerStats[$winnerBase + $TurnStats_DamageThreatened] ?? 0),
+    "dealt" => intval($winnerStats[$winnerBase + $TurnStats_DamageDealt] ?? 0),
+    "cardsPlayed" => intval($winnerStats[$winnerBase + $TurnStats_CardsPlayedOffense] ?? 0),
+    "pitched" => intval($winnerStats[$winnerBase + $TurnStats_CardsPitched] ?? 0),
+    "resourcesUsed" => intval($winnerStats[$winnerBase + $TurnStats_ResourcesUsed] ?? 0),
+    "blocked" => intval($loserStats[$loserBase + $TurnStats_DamageBlocked] ?? 0),
+    "cardsBlocked" => intval($loserStats[$loserBase + $TurnStats_CardsBlocked] ?? 0),
+    "overkill" => max(0, -intval(GetHealth($loser)))
+  ];
 }
 
 function PuzzleZoneCount($line)
@@ -63,16 +88,17 @@ function HarvestPuzzleCandidate($winner, $conceded)
   try {
     EnsurePuzzleCandidatesTable($conn);
     $sql = "INSERT INTO puzzle_candidates (game_name, format, turn_number, player, hero, opponent_hero, opponent_life,
-      hand_count, opponent_hand_count, gamestate) VALUES (?,?,?,?,?,?,?,?,?,?)";
+      hand_count, opponent_hand_count, meta, gamestate) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
     $stmt = mysqli_prepare($conn, $sql);
     $gameNumber = intval($gameName);
     $turnNumber = intval($currentTurn);
     $opponentLife = intval($healths[$loser - 1] ?? 0);
     $handCount = PuzzleZoneCount($lines[1 + $offset]);
     $opponentHandCount = PuzzleZoneCount($lines[1 + $opponentOffset]);
+    $meta = json_encode(PuzzleTurnMeta($winner, $loser));
     $compressed = gzcompress($content, 6);
-    mysqli_stmt_bind_param($stmt, "isiissiiis", $gameNumber, $format, $turnNumber, $winner, $hero, $opponentHero,
-      $opponentLife, $handCount, $opponentHandCount, $compressed);
+    mysqli_stmt_bind_param($stmt, "isiissiiiss", $gameNumber, $format, $turnNumber, $winner, $hero, $opponentHero,
+      $opponentLife, $handCount, $opponentHandCount, $meta, $compressed);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
   } catch (Throwable $e) {

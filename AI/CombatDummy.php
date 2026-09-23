@@ -69,8 +69,9 @@ function PracticeDummyDecision()
 
 if (!function_exists('IsPlayerAI')) {
 	function IsPlayerAI($playerID) {
-		global $p2IsAI;
+		global $p1IsAI, $p2IsAI;
 		if($playerID == 2 && ($p2IsAI == "1" || !isset($p2IsAI))) return true;
+		if($playerID == 1 && ($p1IsAI ?? "0") == "1") return true;
 		return false;
 	}
 }

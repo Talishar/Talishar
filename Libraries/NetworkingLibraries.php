@@ -2327,7 +2327,13 @@ function FinalizeTurn()
   global $currentPlayer, $currentTurn, $turn, $combatChain, $actionPoints, $mainPlayer, $defPlayer, $currentTurnEffects, $nextTurnEffects;
   global $mainHand, $defHand, $currentTurnEffectsFromCombat, $mainCharacter, $defCharacter, $mainResources, $defResources;
   global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority, $EffectContext;
-  global $MakeStartTurnBackup;
+  global $MakeStartTurnBackup, $gameName;
+  include_once "./Libraries/PuzzleGame.php";
+  if (IsPuzzleGame($gameName)) {
+    WriteLog("🧩 Puzzle failed: your opponent survived the turn.", highlight: true);
+    PlayerWon($defPlayer);
+    return;
+  }
   $extraTurn = SearchCurrentTurnEffects("standing_ovation_blue", $mainPlayer);
   $EffectContext = "-";
   ResetStolenCards();

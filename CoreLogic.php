@@ -1239,7 +1239,11 @@ function PlayerWon($playerID, $conceded = false)
   }
   else WriteLog("Player " . $winner . " won! 🎉");
   include_once "./Libraries/PuzzleGame.php";
-  if (IsPuzzleGame($gameName)) return;
+  if (IsPuzzleGame($gameName)) {
+    global $mainPlayer;
+    if ($playerID == $mainPlayer) WriteLog("🧩 Puzzle solved!", highlight: true, highlightColor: "darkgreen");
+    return;
+  }
   try {
     include_once "./Libraries/PromptLog.php";
     FlushPromptLog($gameName);
