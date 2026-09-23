@@ -880,9 +880,14 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $resources[0] -= $manualCount;
       break;
     case 10016:
-      WriteLog("Player " . $playerID . " manually removed their arsenal", highlight: true, highlightColor: "darkblue");
-      $cardID = RemoveArsenal($playerID, 0);
-      AddGraveyard($cardID, $playerID, "ARS");
+    case 10017:
+      $arsenalPlayer = $mode == 10016 ? $playerID : ($playerID == 1 ? 2 : 1);
+      if (ArsenalEmpty($arsenalPlayer)) break;
+
+      $whoseArsenal = $arsenalPlayer == $playerID ? "their arsenal" : "their opponent's arsenal";
+      WriteLog("Player " . $playerID . " manually removed " . $whoseArsenal, highlight: true, highlightColor: "darkblue");
+      $cardID = RemoveArsenal($arsenalPlayer, 0);
+      AddGraveyard($cardID, $arsenalPlayer, "ARS");
       break;
     case 10018:
       if (!IsReplay()) {

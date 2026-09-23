@@ -1246,6 +1246,12 @@ function PlayerWon($playerID, $conceded = false)
   }
   if (isPlayerAI(2)) return;
   try {
+    include_once "./Libraries/PuzzleHarvest.php";
+    HarvestPuzzleCandidate($playerID, $conceded);
+  } catch (Throwable $e) {
+    error_log("PlayerWon: HarvestPuzzleCandidate threw: " . $e->getMessage());
+  }
+  try {
     include_once "./Libraries/HeroMastery.php";
     AwardHeroMastery($conceded);
   } catch (Throwable $e) {

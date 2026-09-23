@@ -1743,7 +1743,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "vynnset_iron_maiden":
       case "vynnset":
-        if (CardType($cardID) == "A" && TalentContains($cardID, "SHADOW", $currentPlayer)) {
+        if (CardType($cardID) == "A" && TalentContains($cardID, "SHADOW", $currentPlayer) && GetHealth($currentPlayer) > 1) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;

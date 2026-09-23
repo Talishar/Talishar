@@ -2798,6 +2798,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "vynnset_iron_maiden":
       case "vynnset":
+        if (GetHealth($player) <= 1) break;
         if (!AlwaysPayLifeActive($player)) {
           AddDecisionQueue("YESNO", $player, "if you want to pay 1 life for " . CardLink($parameter, $parameter), 1);
           AddDecisionQueue("NOPASS", $player, "-", 1);

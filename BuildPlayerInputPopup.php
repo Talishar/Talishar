@@ -74,7 +74,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $combatChainState, $CCS_AttackTargetUID, $CCS_WeaponIndex;
   global $CombatChain, $chainLinks, $landmarks, $currentTurnEffects;
   global $theirHand, $myPermanents, $theirPermanents, $myPitch, $theirPitch;
-  global $theirAllies, $myAllies, $attackQueue;
+  global $theirAllies, $myAllies, $attackQueue, $EffectContext;
 
   $playerInputPopup = new stdClass();
   $playerInputButtons = [];
@@ -495,6 +495,11 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
               $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone, label:$label);
             }
           }
+        }
+        $contextCard = GetClass($EffectContext, $playerID);
+        if ($contextCard != "-") {
+          $defaultChecked = $contextCard->DefaultMultiChooseIndices($options);
+          if (count($defaultChecked) > 0) $formOptions->defaultChecked = $defaultChecked;
         }
         $playerInputPopup->popup = CreatePopupAPI("MULTICHOOSE", [], 0, 1, $caption, 1, additionalComments: $subtitles, cardsArray: $cardsArray);
       }
