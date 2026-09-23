@@ -731,7 +731,7 @@ function ContinueDecisionQueue($lastResult = "")
         $otherPlayer = 3 - $currentPlayer;
         BuildMyGamestate($currentPlayer);
       }
-      PlayCard($params[0], $params[1], $lastResult, $params[2], isset($params[3]) ? $params[3] : -1, isset($params[4]) ? $params[4] : -1);
+      PlayCard($params[0], $params[1], $lastResult, $params[2], isset($params[3]) ? $params[3] : -1, isset($params[4]) ? $params[4] : -1, firstPass:false);
     } else if ($dqCount > 0 && $decisionQueue[0] == "RESOLVECHAINLINK") {
       CloseDecisionQueue();
       ResolveChainLink();

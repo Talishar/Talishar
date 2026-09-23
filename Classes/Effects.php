@@ -53,7 +53,11 @@ class CurrentTurnEffects {
     $count = count($effects);
     $effectPieces = CurrentTurnEffectPieces();
     for ($i = 2; $i < $count; $i += $effectPieces) {
-      if ($effects[$i] == $uid) return new CurrentEffect($i - 2);
+      $effectUids = explode(",", $effects[$i]);
+      foreach ($effectUids as $effectUid) {
+        if ($effectUid == $uid)
+          return new CurrentEffect($i - 2);
+      }
     }
     return new CurrentEffect(-1);
   }
@@ -65,7 +69,11 @@ class CurrentTurnEffects {
     for ($i = 0; $i < $count; $i += $effectPieces) {
       if ($effects[$i] != $cardID) continue;
       if ($player != -1 && ($effects[$i + 1] ?? -1) != $player) continue;
-      if (isset($effects[$i + 2]) && $effects[$i + 2] == $uid) return new CurrentEffect($i);
+      $effectUids = explode(",", $effects[$i + 2]);
+      foreach ($effectUids as $effectUid) {
+        if (isset($effects[$i + 2]) && $effectUid == $uid)
+          return new CurrentEffect($i);
+      }
     }
     return new CurrentEffect(-1);
   }
