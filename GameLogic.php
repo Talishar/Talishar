@@ -166,7 +166,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = GetArcaneTargetIndices($player, $subparam);
           break;
         case "DAMAGEPREVENTION":
-          $rv = GetDamagePreventionIndices($player, $subparam, $subparam2, $subparam3, $subparam4);
+          $rv = GetDamagePreventionIndices($player, $subparam, $subparam2, $subparam3, $subparam4, ($parameters[5] ?? 0) == 1);
           break;
         case "DAMAGEPREVENTIONTARGET":
           $rv = GetDamagePreventionTargetIndices();
@@ -1636,8 +1636,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         return DamageAlly($targetPlayer, $target[1], $damage, $type);
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
-        $sourceHero = new CharacterCard(0, $playerSource);
-        if (TalentContains($sourceHero->CardID(), "SHADOW", $playerSource)) CheckShadowResist($targetPlayer, $damage, $source, $type, $preventable);
         if (SearchCurrentTurnEffects("cap_of_quick_thinking", $targetPlayer)) DoCapQuickThinking($targetPlayer, $damage);
         $Character = new PlayerCharacter($targetPlayer);
         $Solray = $Character->FindCardID("solray_plating");
@@ -1786,8 +1784,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $target = $targetPlayer;
         $arcaneBarrier = ArcaneBarrierChoices($target, $damage);
         PrependDecisionQueue("TAKEARCANE", $target, "$damage-$source-$player");
-        $sourceHero = new CharacterCard(0, $player);
-        if (TalentContains($sourceHero->CardID(), "SHADOW", $player)) CheckShadowResist($target, $damage, $source, "ARCANE", $preventable);
         CheckSpellvoid($target, $damage, $source);
         $Character = new PlayerCharacter($targetPlayer);
         if (SearchCharacterActive($targetPlayer, "mbrio_base_vizier", checkGem:true) && SearchCount(SearchMultizone($targetPlayer, "MYITEMS:isSameName=hyper_driver_red")) > 0) {
@@ -3168,7 +3164,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $mzIndex = explode("-", $lastResult, 2);
       $params = explode("-", $parameter);
       $originDamage = intval($params[0]);
-      switch ($mzIndex[0]) {
+      $shadowResist = ($params[4] ?? 0) == 1;
+      $damage = $shadowResist ? ShadowResistPrevention($player, $mzIndex, $originDamage, $params[1]) : -1;
+      if ($damage == -1) switch ($mzIndex[0]) {
         case "MYAURAS":
           $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1], $params[2]);
           break;
@@ -3194,7 +3192,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($damage < 0) $damage = 0;
       $dqVars[0] = $damage;
       $dqState[6] = $damage;
-      if ($damage > 0) AddDamagePreventionSelection($player, $damage, $params[2], $params[1], $params[3]);
+      if ($damage > 0) AddDamagePreventionSelection($player, $damage, $params[2], $params[1], $params[3], $shadowResist);
       if ($damage < $originDamage) LogDamagePreventedStats($player, $originDamage - $damage);
       return $damage;
     case "EQUIPCARDINVENTORY":

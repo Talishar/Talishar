@@ -201,64 +201,23 @@ function DiscardAllyInstead($player, $cardID, $may=true) {
 	}
 }
 
-function CheckShadowResist($player, $damage, $source = "-", $type="-", $preventable=true) {
-	$caption = "Choose a card with Shadow Resist to prevent damage (or pass)";
-	if (!$preventable)
-		$caption .= GetDamagePreventionWarning($player, $damage, $type, $source, " ");
-	Await($player, "ProcessShadowResist", damage:$damage, source:$source, type:$type, preventable:$preventable, prepend:true);
-	Await($player, "ChooseMultiZone", may:true, context:$caption, prepend:true);
-	Await($player, "SearchShadowResist", "indices", damage:$damage, subsequent:0, prepend:true);
+function IsShadowDamageSource($playerSource) {
+	if ($playerSource != 1 && $playerSource != 2) return false;
+	$sourceHero = new CharacterCard(0, $playerSource);
+	return TalentContains($sourceHero->CardID(), "SHADOW", $playerSource);
 }
 
-function ProcessShadowResistAwait($player) {
-	global $dqVars, $CS_PreventionCache;
-	$damage = $dqVars["damage"] ?? 0;
-	if (!is_numeric($damage)) $damage = 0;
-	$preventable = $dqVars["preventable"] ?? true;
-	$source = $dqVars["source"] ?? "-";
-	$type = $dqVars["type"] ?? "-";
-	$prevented = 0;
-	$choice = $dqVars["MZIndex"] ?? "PASS";
-	if ($choice != "PASS") {
-		$permanentObject = MZIndexToObject($player, $choice);
-		$prevented = ShadowResistAmount($permanentObject->CardID(), $player, $permanentObject->Index());
-		if (!is_numeric($prevented)) $prevented = 0;
-		$permanentObject->Destroy();
-		if($prevented > 0) LogDamagePreventedStats($player, min($damage, $prevented));
-		if ($preventable) $damage -= $prevented;
-		if ($damage < 0) $damage = 0;
-		if ($damage > 0) CheckShadowResist($player, $damage, $source, $type, $preventable);
-		PrependDecisionQueue("INCREMENTCLASSSTATEBY", $player, $CS_PreventionCache, 1);
-		PrependDecisionQueue("PASSPARAMETER", $player, $prevented, 1);
-	}
-}
-
-function SearchShadowResistAwait($player) {
-	global $dqVars;
-	$damage = $dqVars["damage"] ?? 0;
-	return SearchShadowResistIndices($player, $damage);
-}
-
-function SearchShadowResistIndices($player, $damage) {
-	$inds = [];
-	$Character = new PlayerCharacter($player);
-	$characterCount = $Character->NumCards();
-	for ($i = 0; $i < $characterCount; ++$i) {
-		$CharacterCard = $Character->Card($i, true);
-		if (!$CharacterCard->IsActive()) continue;
-		$index = $CharacterCard->Index();
-		if (ShadowResistAmount($CharacterCard->CardID(), $player, $index) > 0)
-			$inds[] = "MYCHAR-$index";
-	}
-	$Allies = new Allies($player);
-	$allyCount = $Allies->NumAllies();
-	for ($i = 0; $i < $allyCount; ++$i) {
-		$AllyCard = $Allies->Card($i, true);
-		$index = $AllyCard->Index();
-		if (ShadowResistAmount($AllyCard->CardID(), $player, $index) > 0)
-			$inds[] = "MYALLY-$index";
-	}
-	return implode(",", $inds);
+function ShadowResistPrevention($player, $mzIndex, $damage, $preventable) {
+	$zone = $mzIndex[0];
+	$index = intval($mzIndex[1]);
+	if ($zone == "MYCHAR") $card = new CharacterCard($index, $player);
+	else if ($zone == "MYALLY") $card = new AllyCard($index, $player);
+	else return -1;
+	$prevented = ShadowResistAmount($card->CardID(), $player, $index);
+	if (!is_numeric($prevented) || $prevented <= 0) return -1;
+	$card->Destroy();
+	if ($preventable) $damage -= $prevented;
+	return max(0, $damage);
 }
 
 function ShadowResistAmount($cardID, $player, $index) {
