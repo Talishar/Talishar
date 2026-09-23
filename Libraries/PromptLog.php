@@ -49,7 +49,11 @@ function PromptOptionsIdentical($player, $phase, $options)
   if (count($options) < 2 || $phase == "YESNO" || str_starts_with($phase, "BUTTONINPUT")) return 0;
   $cardIDs = [];
   foreach ($options as $option) {
-    if (preg_match('/^(MY|THEIR)[A-Z]+-\d/', $option)) $cardIDs[GetMZCard($player, $option)] = true;
+    if ($phase == "ORDERTRIGGERS") {
+      $parts = explode("|", $option);
+      $cardIDs[$parts[0] . "|" . ($parts[2] ?? "-")] = true;
+    }
+    else if (preg_match('/^(MY|THEIR)[A-Z]+-\d/', $option)) $cardIDs[GetMZCard($player, $option)] = true;
     else if (is_numeric($option)) {
       if (!str_contains($phase, "HAND") || str_contains($phase, "THEIRHAND")) return 0;
       $cardIDs[GetMZCard($player, "MYHAND-$option")] = true;
@@ -88,21 +92,61 @@ function PromptAnswerLabel($mode, $buttonInput, $cardID, $chkInput, $optionCount
   }
 }
 
+function PromptAnswerFitsPhase($mode, $phase, $parameter, $buttonInput, $cardID)
+{
+  switch ($mode) {
+    case 4: return $phase == "ARS";
+    case 7: return $phase == "DYNPITCH" || $phase == "CHOOSENUMBER" || $phase == "NUMBERINPUT";
+    case 8: case 9: return $phase == "CHOOSETOP" || $phase == "CHOOSEBOTTOM";
+    case 11: return $phase == "CHOOSEDECK" || $phase == "MAYCHOOSEDECK" || $phase == "CHOOSETHEIRDECK";
+    case 12: case 13: return $phase == "HANDTOPBOTTOM";
+    case 16: return in_array((string)$cardID, explode(",", $parameter), true);
+    case 17:
+      if ($phase == "BUTTONINPUT" || $phase == "BUTTONINPUTNOPASS") return in_array((string)$buttonInput, explode(",", $parameter), true);
+      return $phase == "CHOOSEARCANE" || $phase == "CHOOSETRIGGERS" || $phase == "ARSENALORHEAVE";
+    case 19:
+      return $phase == "CHOOSEMULTIZONE" || $phase == "MAYCHOOSEMULTIZONE"
+        || str_starts_with($phase, "MULTICHOOSE") || str_starts_with($phase, "MAYMULTICHOOSE");
+    case 20: return $phase == "YESNO" || $phase == "DOCRANK";
+    case 23: return ($phase == "CHOOSECARD" || $phase == "MAYCHOOSECARD") && in_array((string)$buttonInput, explode(",", $parameter), true);
+    case 29: return $phase == "CHOOSETOPOPPONENT";
+    case 30: return $phase == "INPUTCARDNAME";
+    case 99: return CanPassPhase($phase);
+    case 107: return $phase == "OPT";
+    case 109: case 110: return $phase == "ORDERTRIGGERS";
+    default: return false;
+  }
+}
+
+function PromptLogContext($phase)
+{
+  global $EffectContext, $decisionQueue;
+  if ($phase == "ARS") return "-";
+  if (GetDQHelpText() == "Choose_a_target_for_the_attack") return "ATTACKTARGET";
+  $dqCount = count($decisionQueue ?? []);
+  $dqPieces = DecisionQueuePieces();
+  for ($i = 0; $i < $dqCount; $i += $dqPieces) {
+    if ($decisionQueue[$i] == "RESUMEPAYING") return explode("-", (string)($decisionQueue[$i + 2] ?? ""), 2)[0] ?: "-";
+  }
+  $context = trim((string)$EffectContext);
+  return $context === "" ? "-" : $context;
+}
+
 function LogPromptAnswer($player, $mode, $buttonInput = "", $cardID = "", $chkInput = [], $submission = null)
 {
-  global $turn, $EffectContext, $gameName, $SET_DisableFabInsights;
+  global $turn, $gameName, $SET_DisableFabInsights;
   if (($player != 1 && $player != 2) || !isset(PromptAnswerModes()[(int)$mode]) || IsReplay()) return;
   $phase = $turn[0] ?? "";
   if (!IsLoggedPromptPhase($phase)) return;
-  if ($mode == 99 && !CanPassPhase($phase)) return;
+  $parameter = (string)($turn[2] ?? "");
+  if (!PromptAnswerFitsPhase((int)$mode, $phase, $parameter, $buttonInput, $cardID)) return;
   if (SettingValue($player, $SET_DisableFabInsights, "0") == "1") return;
 
-  $options = PromptOptions($phase, (string)($turn[2] ?? ""));
+  $options = PromptOptions($phase, $parameter);
   $optionCount = count($options);
   $identical = PromptOptionsIdentical($player, $phase, $options);
   $answer = PromptAnswerLabel((int)$mode, $buttonInput, $cardID, $chkInput, $optionCount, $submission);
-  $context = $phase == "ARS" ? "-" : trim((string)$EffectContext);
-  if ($context === "") $context = "-";
+  $context = PromptLogContext($phase);
 
   $shownAt = intval(GetCachePiece($gameName, 6));
   $elapsed = $shownAt > 0 ? (int)(microtime(true) * 1000) - $shownAt : 0;

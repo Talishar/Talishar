@@ -52,7 +52,8 @@ try {
       $prompts[$key] = [
         "phase" => $row["phase"],
         "context" => $row["context"],
-        "contextName" => $name != "" ? $name : $row["context"],
+        "contextName" => $name != "" ? $name : ($row["context"] == "ATTACKTARGET" ? "Attack target" : $row["context"]),
+        "isCard" => $name != "",
         "count" => 0,
         "forced" => 0,
         "identical" => 0,
