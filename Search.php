@@ -1129,15 +1129,17 @@ function SearchAurasForIndex($cardID, $player)
 
 function SearchAurasForCard($cardID, $player, $selfReferential = true)
 {
-  if (!$selfReferential && SearchCurrentTurnEffects("amnesia_red", $player)) return "";
   $auras = &GetAuras($player);
   $count = count($auras);
   $pieces = AuraPieces();
   $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($auras[$i] == $cardID || $cardID == "runechant" && IsRunechant($auras[$i])) {
+    if ($cardID == "runechant" && IsRunechant($auras[$i]))
       $indices[] = $i;
-    }
+    elseif (!$selfReferential && SearchCurrentTurnEffects("amnesia_red", $player))
+      continue;
+    elseif ($auras[$i] == $cardID)
+      $indices[] = $i;
   }
   if (!$indices) return "";
   return implode(",", $indices);
