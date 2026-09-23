@@ -1238,6 +1238,8 @@ function PlayerWon($playerID, $conceded = false)
     WriteLog("The game is a draw! no match stats reported");
   }
   else WriteLog("Player " . $winner . " won! 🎉");
+  include_once "./Libraries/PuzzleGame.php";
+  if (IsPuzzleGame($gameName)) return;
   try {
     include_once "./Libraries/PromptLog.php";
     FlushPromptLog($gameName);

@@ -67,9 +67,11 @@ const DBL_SAVE_HERO_MASTERY_FRAME      = 61;
 const DBL_FLUSH_PROMPT_LOG             = 62;
 const DBL_GET_PROMPT_STATS             = 63;
 const DBL_HARVEST_PUZZLE_CANDIDATE     = 64;
+const DBL_GET_PUZZLE_CANDIDATES        = 65;
+const DBL_CREATE_PUZZLE_GAME           = 66;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 64;
+const DBL_MAX_KEY = 66;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -137,4 +139,6 @@ const DBL_LABELS = [
     62 => 'Libraries/PromptLog.php::FlushPromptLog',
     63 => 'APIs/GetPromptStats.php',
     64 => 'Libraries/PuzzleHarvest.php::HarvestPuzzleCandidate',
+    65 => 'APIs/GetPuzzleCandidates.php',
+    66 => 'APIs/CreatePuzzleGame.php',
 ];

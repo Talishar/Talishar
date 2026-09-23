@@ -1246,7 +1246,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if ($deckCount <= $i) continue;
         $rvArr[] = $deck[$i];
       }
-      return $rvArr === [] ? "PASS" : implode(",", $rvArr);
+      if ($rvArr === []) return "PASS";
+      SetDQDeckTopCard($player, $rvArr[0]);
+      return implode(",", $rvArr);
     case "DECKCARDNAMES":
       $indicesCount = substr_count($parameter, ",") + 1;
       $deck = &GetDeck($player);
