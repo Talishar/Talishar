@@ -756,8 +756,7 @@ function DealDamageAsync($player, $damage, $type, $source, $playerSource)
   }
   PrependDecisionQueue("FINALIZEDAMAGE", $player, "$damage,$type,$source,$playerSource");
   //Prevention happens with user selection
-  $shadowResist = $type != "COMBAT" && IsShadowDamageSource($playerSource);
-  if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable, $source, $shadowResist);
+  if ($damage > 0) AddDamagePreventionSelection($player, $damage, $type, $preventable, $source);
   if ($source == "runechant") {
     SearchCurrentTurnEffects("vynnset", $otherPlayer, true);
     SearchCurrentTurnEffects("vynnset_iron_maiden", $otherPlayer, true);
@@ -788,13 +787,12 @@ function ResetAuraStatus($player)
   }
 }
 
-function AddDamagePreventionSelection($player, $damage, $type, $preventable, $source, $shadowResist = false)
+function AddDamagePreventionSelection($player, $damage, $type, $preventable, $source)
 {
-  $shadowResist = $shadowResist ? 1 : 0;
-  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable . "-" . $type . "-" . $source . "-" . $shadowResist, 1);
+  PrependDecisionQueue("PROCESSDAMAGEPREVENTION", $player, $damage . "-" . $preventable . "-" . $type . "-" . $source, 1);
   PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to prevent damage: " . $damage . " damage left", 1);
-  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION,$type,$damage,$preventable,$source,$shadowResist");
+  PrependDecisionQueue("FINDINDICES", $player, "DAMAGEPREVENTION,$type,$damage,$preventable,$source");
 }
 
 function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $playerSource)
@@ -3250,7 +3248,7 @@ function CanRevealCards($player)
   return true;
 }
 
-function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, $source = "", $shadowResist = false)
+function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, $source = "")
 {
   global $currentTurnEffects, $CombatChain, $ChainLinks, $Stack;
   $rv = "";
@@ -3283,7 +3281,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $charCount = count($char);
   $charPieces = CharacterPieces();
   for ($i = 0; $i < $charCount; $i += $charPieces) {
-    if ($char[$i + 1] != 0 && (WardAmount($char[$i], $player) > 0 || CharacterDamagePreventionAmount($player, $i, $damage, $preventable) > 0 || ($shadowResist && ShadowResistAmount($char[$i], $player, $i) > 0)) && $char[$i + 12] == "UP") {
+    if ($char[$i + 1] != 0 && (WardAmount($char[$i], $player) > 0 || CharacterDamagePreventionAmount($player, $i, $damage, $preventable) > 0) && $char[$i + 12] == "UP") {
       $indicesArr[] = $i;
     }
   }
@@ -3305,7 +3303,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $alliesCount = count($allies);
   $allyPieces = AllyPieces();
   for ($i = 0; $i + $allyPieces - 1 < $alliesCount; $i += $allyPieces) {
-    if (($allies[$i + 1] ?? 0) != 0 && (WardAmount($allies[$i] ?? "-", $player) > 0 || ($shadowResist && ShadowResistAmount($allies[$i], $player, $i) > 0)))
+    if (($allies[$i + 1] ?? 0) != 0 && WardAmount($allies[$i] ?? "-", $player) > 0)
       $indices[] = $i;
   }
   $indices = SearchMultiZoneFormat(implode(",", $indices), "MYALLY");
