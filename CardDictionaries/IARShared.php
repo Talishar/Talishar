@@ -202,6 +202,7 @@ function DiscardAllyInstead($player, $cardID, $may=true) {
 }
 
 function CheckShadowResist($player, $damage, $source = "-", $type="-", $preventable=true) {
+	if ($damage <= 0) return;
 	$caption = "Choose a card with Shadow Resist to prevent damage (or pass)";
 	if (!$preventable)
 		$caption .= GetDamagePreventionWarning($player, $damage, $type, $source, " ");
