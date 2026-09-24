@@ -1035,7 +1035,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $theirArsenalCount = count($theirArsenal);
     for ($i = 0; $i < $theirArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $theirArsenal[$i + 1] = "UP";
-      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends)) {
+      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends)) {
         $overlay = 0;
         $border = 0;
         $cardID = $theirArsenal[$i];
@@ -1086,7 +1086,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $myArsenalCount = count($myArsenal);
     for ($i = 0; $i < $myArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $myArsenal[$i + 1] = "UP";
-      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver && !($spectatorIsFriendOfP2 && !$hideP2HandFromFriends)) {
+      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver && !$isReplay && !($spectatorIsFriendOfP2 && !$hideP2HandFromFriends)) {
         $myArse[] = JSONRenderedCard(
           cardNumber: $MyCardBack,
           controller: 2,
