@@ -400,7 +400,7 @@ class viserai_usurper extends Card {
     global $CS_IARGatesMadeorUsed;
     if (GetClassState($this->controller, $CS_IARGatesMadeorUsed) >= 1) {
       $message = "if_you_want_to_forsake_your_throne";
-      $context = "Choose if you want to forsake your throne";
+      $context = "Do you wish to forsake your throne?";
       Await($this->controller, "YesNo", message: $message, context: $context, subsequent:0);
       Await($this->controller, $this->cardID, final:true);
     }
