@@ -7,6 +7,7 @@ include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include_once "../Libraries/PlayerSettings.php";
 include_once "../Libraries/ReplayLibraries.php";
+include_once "../Libraries/SnapshotLibraries.php";
 include_once '../Assets/patreon-php-master/src/PatreonDictionary.php';
 include_once '../includes/functions.inc.php';
 
@@ -42,6 +43,12 @@ if (!is_numeric($replayNumber)) {
 }
 
 $replayPath = "../Replays/$userId/$replayNumber/";
+if (is_dir($replayPath) && IsSnapshotDirectory($replayPath)) {
+  $response->error = "This is a snapshot. Start it from the Snapshots section.";
+  http_response_code(400);
+  echo json_encode($response);
+  exit;
+}
 
 // Validation: Replay directory exists
 if (!file_exists($replayPath)) {

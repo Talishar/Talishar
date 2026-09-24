@@ -5,6 +5,7 @@ session_start();
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/ReplayLibraries.php";
+include_once "../Libraries/SnapshotLibraries.php";
 
 SetHeaders();
 
@@ -26,7 +27,7 @@ if (!is_numeric($replayNumber) || !is_bool($favorite)) {
 }
 
 $replayPath = UserReplayPath($userId, (int)$replayNumber);
-if (!is_dir($replayPath) || !file_exists($replayPath . "origGamestate.txt")) {
+if (!is_dir($replayPath) || !(file_exists($replayPath . "origGamestate.txt") || (IsSnapshotDirectory($replayPath) && file_exists($replayPath . "gamestate.txt")))) {
   $response->error = "Replay not found.";
   ExitJsonResponse($response, 404);
 }

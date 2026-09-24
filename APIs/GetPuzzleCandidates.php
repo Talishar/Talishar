@@ -16,6 +16,9 @@ header('Content-Type: application/json');
 RequireModeratorSession();
 session_write_close();
 
+$emptyOpponentHand = ($_GET["emptyOpponentHand"] ?? "0") === "1";
+$raiseLife = ($_GET["raiseLife"] ?? "0") === "1";
+
 $response = [
   "total" => 0,
   "candidates" => []
@@ -50,7 +53,7 @@ try {
       "opponentHero" => $row["opponent_hero"],
       "opponentHeroName" => GeneratedCardName($row["opponent_hero"]),
       "status" => (int)$row["status"]
-    ] + AnalyzePuzzlePosition($content, (int)$row["player"], $meta);
+    ] + AnalyzePuzzlePosition($content, (int)$row["player"], $meta, $emptyOpponentHand, $raiseLife);
   }
 } catch (Throwable $e) {
   error_log("GetPuzzleCandidates failed: " . $e->getMessage());

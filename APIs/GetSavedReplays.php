@@ -49,23 +49,23 @@ foreach (scandir($replayRoot) ?: [] as $entry) {
   if (!ctype_digit($entry)) continue;
 
   $replayPath = $replayRoot . $entry . "/";
-  if (!is_dir($replayPath) || !file_exists($replayPath . "origGamestate.txt") || !file_exists($replayPath . "commandfile.txt")) {
-    continue;
-  }
-
   $metadata = [];
   $metadataPath = $replayPath . "replayMetadata.json";
   if (file_exists($metadataPath)) {
     $decoded = json_decode(file_get_contents($metadataPath), true);
     if (is_array($decoded)) $metadata = $decoded;
   }
+  $isSnapshot = ($metadata["type"] ?? "") === "snapshot";
+  $stateFile = $isSnapshot ? "gamestate.txt" : "origGamestate.txt";
+  if (!is_dir($replayPath) || !file_exists($replayPath . $stateFile) || (!$isSnapshot && !file_exists($replayPath . "commandfile.txt"))) continue;
 
   $replay = new stdClass();
   $replay->replayNumber = (int)$entry;
+  $replay->type = $isSnapshot ? "snapshot" : "replay";
   $metadataSavedAt = $metadata["savedAt"] ?? null;
   $replay->savedAt = is_numeric($metadataSavedAt)
     ? (int)$metadataSavedAt
-    : (filemtime($replayPath . "origGamestate.txt") ?: 0);
+    : (filemtime($replayPath . $stateFile) ?: 0);
   $replay->p1DisplayName = trim((string)($metadata["p1DisplayName"] ?? ""));
   $replay->p2DisplayName = trim((string)($metadata["p2DisplayName"] ?? ""));
   $replay->p1HeroCardId = trim((string)($metadata["p1HeroCardId"] ?? ""));

@@ -5,6 +5,7 @@ session_start();
 include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/ReplayLibraries.php";
+include_once "../Libraries/SnapshotLibraries.php";
 
 SetHeaders();
 
@@ -28,6 +29,10 @@ if ($replayNumber === null) {
 }
 
 $replayPath = UserReplayPath($userId, $replayNumber);
+if (IsSnapshotDirectory($replayPath)) {
+    $response->error = "This is a snapshot, not a replay.";
+    ExitJsonResponse($response, 400);
+}
 if (!file_exists($replayPath . "origGamestate.txt") || !file_exists($replayPath . "commandfile.txt")) {
     $response->error = "Replay not found or missing required files.";
     ExitJsonResponse($response, 404);

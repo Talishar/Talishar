@@ -456,6 +456,14 @@ function BotIsOpeningTurnDefense($playerID)
   return intval($currentTurn) == 0 && $mainPlayer != $playerID;
 }
 
+function BotIsPuzzleDefense()
+{
+  global $gameName;
+  static $cache = [];
+  include_once __DIR__ . "/../Libraries/PuzzleGame.php";
+  return $cache[$gameName ?? ""] ??= IsPuzzleGame($gameName ?? "");
+}
+
 function BotStopHitValue()
 {
   return function_exists("ActiveOnHits") && ActiveOnHits() ? 3.0 : 0.0;
@@ -548,14 +556,15 @@ function BotDefensePriority($cardID, $playerID, $zone)
   $block = max(0, $block - BotDefenderPowerBacklash($cardID, $playerID, $isEquipment));
   if ($block == 0) return 0.0;
 
+  $isPuzzle = BotIsPuzzleDefense();
   if ($isEquipment) {
     if (BotEquipmentBlockRequired()) return 100000.0 + $block;
-    if (!BotEquipmentBlockAllowed($playerID, $block, $incoming)) return -1000000.0;
+    if (!$isPuzzle && !BotEquipmentBlockAllowed($playerID, $block, $incoming)) return -1000000.0;
   }
 
   $offenseLoss = 0.0;
   $opportunity = 0.0;
-  if (!$isEquipment) {
+  if (!$isEquipment && !$isPuzzle) {
     $offense = BotOffensiveCards($playerID);
     $offenseLoss = max(0.0, BotProjectedDamage($offense, $playerID)
       - BotProjectedDamage(BotWithoutCard($offense, $cardID), $playerID));
@@ -571,7 +580,7 @@ function BotDefensePriority($cardID, $playerID, $zone)
     BotIsOpeningTurnDefense($playerID),
     BotStopHitValue(),
     $offenseLoss,
-    $isEquipment ? BotEquipmentWearCost($cardID, $block) : 0.0
+    $isEquipment && !$isPuzzle ? BotEquipmentWearCost($cardID, $block) : 0.0
   );
 }
 

@@ -29,12 +29,6 @@ function PuzzleZoneCards($line, $pieces)
   return $cards;
 }
 
-function PuzzleZoneSize($line, $pieces)
-{
-  $line = trim($line);
-  return $line === "" ? 0 : intdiv(count(explode(" ", $line)), $pieces);
-}
-
 function PuzzleCharacterCards($line, $type)
 {
   $character = NormalizeLegacyCharacterState(trim($line) === "" ? [] : explode(" ", trim($line)));
@@ -49,37 +43,75 @@ function PuzzleCharacterCards($line, $type)
   return $cards;
 }
 
-function PuzzleBestAttackLine($hand, $arsenal, $weapons, $floating, $actionPoints)
+function PuzzleBlockers($equipment, $hand, $arsenal)
+{
+  $blockers = array_column($equipment, "defense");
+  foreach ($hand as $card) $blockers[] = $card["defense"];
+  foreach ($arsenal as $card) if ($card["type"] == "DR") $blockers[] = $card["defense"];
+  $blockers = array_values(array_filter($blockers, fn($defense) => $defense > 0));
+  rsort($blockers);
+  return $blockers;
+}
+
+function PuzzlePrevented($powers, $blockers)
+{
+  $prevented = 0;
+  foreach ($blockers as $defense) {
+    $link = array_keys($powers, max($powers))[0];
+    if ($powers[$link] <= 0) break;
+    $blocked = min($defense, $powers[$link]);
+    $powers[$link] -= $blocked;
+    $prevented += $blocked;
+  }
+  return $prevented;
+}
+
+function PuzzleAttackLines($hand, $arsenal, $weapons, $floating, $actionPoints, $life, $blockers)
 {
   $attacks = [];
-  foreach ($hand as $card) if ($card["type"] == "AA") $attacks[] = $card + ["fromHand" => true];
-  foreach ($arsenal as $card) if ($card["type"] == "AA") $attacks[] = $card + ["fromHand" => false];
-  foreach ($weapons as $card) $attacks[] = ["cost" => PUZZLE_WEAPON_COST, "fromHand" => false] + $card;
+  foreach ($hand as $index => $card) if ($card["type"] == "AA") $attacks[] = $card + ["handIndex" => $index, "isCard" => true];
+  foreach ($arsenal as $card) if ($card["type"] == "AA") $attacks[] = $card + ["handIndex" => -1, "isCard" => true];
+  foreach ($weapons as $card) $attacks[] = ["cost" => PUZZLE_WEAPON_COST, "handIndex" => -1, "isCard" => false] + $card;
   usort($attacks, fn($a, $b) => $b["power"] <=> $a["power"]);
   $attacks = array_slice($attacks, 0, PUZZLE_MAX_ATTACKS_SEARCHED);
-  $handPitch = array_sum(array_column($hand, "pitch"));
-  $best = ["damage" => 0, "attacks" => 0, "totalCost" => array_sum(array_column($attacks, "cost"))];
+  $best = ["damage" => 0, "through" => -1, "attacks" => 0, "killCards" => null, "killAttacks" => 0];
   $count = count($attacks);
   for ($mask = 1; $mask < (1 << $count); ++$mask) {
-    $damage = 0;
+    $powers = [];
     $cost = 0;
-    $used = 0;
-    $goAgain = 0;
-    $pitchLost = 0;
+    $withoutGoAgain = 0;
+    $cardsPlayed = 0;
+    $played = [];
     for ($i = 0; $i < $count; ++$i) {
       if (!($mask & (1 << $i))) continue;
-      $damage += $attacks[$i]["power"];
+      $powers[] = $attacks[$i]["power"];
       $cost += $attacks[$i]["cost"];
-      ++$used;
-      if ($attacks[$i]["goAgain"]) ++$goAgain;
-      if ($attacks[$i]["fromHand"]) $pitchLost += $attacks[$i]["pitch"];
+      if (!$attacks[$i]["goAgain"]) ++$withoutGoAgain;
+      if ($attacks[$i]["isCard"]) ++$cardsPlayed;
+      if ($attacks[$i]["handIndex"] >= 0) $played[$attacks[$i]["handIndex"]] = true;
     }
-    if ($used - $goAgain > $actionPoints || $cost > $floating + $handPitch - $pitchLost) continue;
-    if ($damage > $best["damage"] || ($damage == $best["damage"] && $used < $best["attacks"])) {
+    if ($withoutGoAgain > $actionPoints) continue;
+    $pitches = [];
+    foreach ($hand as $index => $card) if (!isset($played[$index]) && $card["pitch"] > 0) $pitches[] = $card["pitch"];
+    rsort($pitches);
+    $deficit = $cost - $floating;
+    $pitched = 0;
+    while ($deficit > 0 && $pitched < count($pitches)) $deficit -= $pitches[$pitched++];
+    if ($deficit > 0) continue;
+    $damage = array_sum($powers);
+    $through = $damage - PuzzlePrevented($powers, $blockers);
+    if ($through > $best["through"] || ($through == $best["through"] && count($powers) < $best["attacks"])) {
       $best["damage"] = $damage;
-      $best["attacks"] = $used;
+      $best["through"] = $through;
+      $best["attacks"] = count($powers);
+    }
+    $cardsUsed = $cardsPlayed + $pitched;
+    if ($through >= $life && ($best["killCards"] === null || $cardsUsed < $best["killCards"])) {
+      $best["killCards"] = $cardsUsed;
+      $best["killAttacks"] = count($powers);
     }
   }
+  $best["through"] = max(0, $best["through"]);
   return $best;
 }
 
@@ -89,7 +121,7 @@ function PuzzleBand($value, $bands)
   return end($bands)[1];
 }
 
-function AnalyzePuzzlePosition($content, $player, $meta)
+function AnalyzePuzzlePosition($content, $player, $meta, $emptyOpponentHand = false, $raiseLife = false)
 {
   $lines = explode("\r\n", $content);
   $opponent = $player == 1 ? 2 : 1;
@@ -102,74 +134,86 @@ function AnalyzePuzzlePosition($content, $player, $meta)
   $arsenal = PuzzleZoneCards($lines[5 + $offset], ArsenalPieces());
   $weapons = PuzzleCharacterCards($lines[3 + $offset], "W");
   $opponentEquipment = PuzzleCharacterCards($lines[3 + $opponentOffset], "E");
+  $opponentHand = $emptyOpponentHand ? [] : PuzzleZoneCards($lines[1 + $opponentOffset], HandPieces());
+  $opponentArsenal = $emptyOpponentHand ? [] : PuzzleZoneCards($lines[5 + $opponentOffset], ArsenalPieces());
   $floating = intval($resources[0] ?? 0);
   $actionPoints = max(1, intval(trim($lines[43])));
-  $life = intval($healths[$opponent - 1] ?? 0);
-  $defense = array_sum(array_column($opponentEquipment, "defense"));
-  $handPitch = array_sum(array_column($hand, "pitch"));
-  $line = PuzzleBestAttackLine($hand, $arsenal, $weapons, $floating, $actionPoints);
-  $options = count($hand) + count($arsenal) + count($weapons);
-  $margin = $line["damage"] - $defense - $life;
-  $available = $floating + $handPitch;
+  $originalLife = intval($healths[$opponent - 1] ?? 0);
+
+  $equipmentBlock = array_sum(array_column($opponentEquipment, "defense"));
+  $blockers = PuzzleBlockers($opponentEquipment, $opponentHand, $opponentArsenal);
+  $block = array_sum($blockers);
+  $provenSlack = is_array($meta) ? intval($meta["overkill"] ?? 0) + intval($meta["blocked"] ?? 0) - $block : null;
+  $lifeBonus = $raiseLife && $provenSlack > 0 ? $provenSlack : 0;
+  $life = $originalLife + $lifeBonus;
+  $needed = $life + $block;
+  $cards = count($hand) + count($arsenal);
+  $options = $cards + count($weapons);
+  $line = PuzzleAttackLines($hand, $arsenal, $weapons, $floating, $actionPoints, $life, $blockers);
+  $killsByPower = $line["killCards"] !== null;
+  $margin = $killsByPower ? $line["through"] - $life : null;
+  if ($provenSlack !== null && $provenSlack >= $lifeBonus) $margin = max($margin ?? 0, $provenSlack - $lifeBonus);
+
+  $realPlayed = is_array($meta) ? intval($meta["cardsPlayed"] ?? 0) : null;
+  $spare = $killsByPower ? $cards - $line["killCards"] : null;
+  if ($realPlayed !== null) $spare = max($spare ?? 0, $cards - $realPlayed - intval($meta["pitched"] ?? 0));
+  $killLength = $killsByPower ? $line["killAttacks"] : null;
+  if ($realPlayed > 0) $killLength = min($killLength ?? $realPlayed, $realPlayed);
 
   $flags = [];
-  $lifeScore = PuzzleBand($life, [[2, 0.1], [4, 0.5], [12, 1.0], [20, 0.8], [PHP_INT_MAX, 0.4]]);
-  if ($life <= 2) $flags[] = ["code" => "LOW_LIFE", "value" => $life];
-  else if ($life > 20) $flags[] = ["code" => "HIGH_LIFE", "value" => $life];
+  $pressureScore = PuzzleBand($needed, [[4, 0.0], [7, 0.25], [10, 0.45], [14, 0.65], [18, 0.8], [23, 0.9], [PHP_INT_MAX, 1.0]]);
+  if ($needed <= 7) $flags[] = ["code" => "LOW_PRESSURE", "value" => $needed];
+  else if ($needed >= 20) $flags[] = ["code" => "HIGH_PRESSURE", "value" => $needed];
+  $spareScore = $spare === null ? 0.6 : PuzzleBand($spare, [[0, 1.0], [1, 0.6], [2, 0.2], [PHP_INT_MAX, 0.0]]);
+  if ($spare === 0) $flags[] = ["code" => "ALL_CARDS", "value" => $cards];
+  else if ($spare !== null && $spare >= 2) $flags[] = ["code" => "SPARE_CARDS", "value" => $spare];
+  $marginScore = $margin === null ? 0.9 : PuzzleBand($margin, [[0, 1.0], [2, 0.7], [5, 0.35], [PHP_INT_MAX, 0.1]]);
+  if ($margin === null) $flags[] = ["code" => "UNPROVEN", "value" => $provenSlack === null ? 0 : -$provenSlack];
+  else if ($margin == 0) $flags[] = ["code" => "EXACT_LETHAL", "value" => 0];
+  else if ($margin >= 6) $flags[] = ["code" => "RAW_POWER", "value" => $margin];
+  if ($lifeBonus > 0) $flags[] = ["code" => "LIFE_RAISED", "value" => $lifeBonus];
   $optionScore = PuzzleBand($options, [[1, 0.0], [2, 0.4], [3, 0.7], [PHP_INT_MAX, 1.0]]);
   if ($options <= 2) $flags[] = ["code" => "FEW_OPTIONS", "value" => $options];
-  $resourceRatio = $available > 0 ? $line["totalCost"] / $available : 0;
-  $resourceScore = $resourceRatio > 1 ? 1.0 : ($resourceRatio >= 0.6 ? 0.7 : 0.4);
-  if ($resourceRatio > 1) $flags[] = ["code" => "RESOURCE_TIGHT", "value" => $available];
+  $lengthScore = $killLength === null ? 0.7 : PuzzleBand($killLength, [[1, 0.1], [2, 0.5], [3, 0.8], [PHP_INT_MAX, 1.0]]);
+  if ($killLength !== null && $killLength <= 1) $flags[] = ["code" => "ONE_CARD", "value" => $killLength];
+  if ($realPlayed >= 5) $flags[] = ["code" => "BIG_TURN", "value" => $realPlayed];
+  if ($realPlayed === null) $flags[] = ["code" => "NO_TURN_DATA", "value" => 0];
 
-  if (is_array($meta)) {
-    $overkill = intval($meta["overkill"] ?? 0);
-    $cardsPlayed = intval($meta["cardsPlayed"] ?? 0);
-    $tightScore = PuzzleBand($overkill, [[0, 1.0], [2, 0.8], [5, 0.4], [PHP_INT_MAX, 0.1]]);
-    $complexityScore = PuzzleBand($cardsPlayed, [[1, 0.1], [2, 0.5], [4, 0.9], [PHP_INT_MAX, 1.0]]);
-    if ($overkill == 0) $flags[] = ["code" => "EXACT_LETHAL", "value" => 0];
-    else if ($overkill >= 5) $flags[] = ["code" => "OVERKILL", "value" => $overkill];
-    if ($cardsPlayed <= 1) $flags[] = ["code" => "ONE_CARD", "value" => $cardsPlayed];
-    else if ($cardsPlayed >= 5) $flags[] = ["code" => "BIG_TURN", "value" => $cardsPlayed];
-    $emptiedOverkill = intval($meta["threatened"] ?? 0) - $defense - $life;
-    if (intval($meta["blocked"] ?? 0) > $defense && $emptiedOverkill >= 3) {
-      $flags[] = ["code" => "EASY_WITHOUT_HAND", "value" => $emptiedOverkill];
-    }
-  } else {
-    $tightScore = PuzzleBand($margin, [[-3, 0.6], [1, 1.0], [5, 0.5], [PHP_INT_MAX, 0.2]]);
-    $complexityScore = PuzzleBand($line["attacks"], [[1, 0.3], [2, 0.6], [PHP_INT_MAX, 0.9]]);
-    $flags[] = ["code" => "NO_TURN_DATA", "value" => 0];
-  }
-  if ($margin < 0) $flags[] = ["code" => "NEEDS_EFFECTS", "value" => -$margin];
-  else if ($margin >= 6) $flags[] = ["code" => "RAW_POWER", "value" => $margin];
-
-  $score = 100 * (0.2 * $lifeScore + 0.2 * $optionScore + 0.3 * $tightScore
-    + 0.2 * $complexityScore + 0.1 * $resourceScore);
-  $penalties = ["LOW_LIFE" => 0.5, "ONE_CARD" => 0.5, "FEW_OPTIONS" => 0.6, "OVERKILL" => 0.6, "RAW_POWER" => 0.6, "HIGH_LIFE" => 0.7];
+  $score = 100 * (0.3 * $pressureScore + 0.3 * $spareScore + 0.15 * $marginScore
+    + 0.1 * $optionScore + 0.15 * $lengthScore);
+  $penalties = ["LOW_PRESSURE" => 0.5, "ONE_CARD" => 0.5, "SPARE_CARDS" => 0.6, "RAW_POWER" => 0.6, "FEW_OPTIONS" => 0.6];
   $trivial = false;
   foreach ($flags as $flag) {
-    $score *= $penalties[$flag["code"]] ?? 1.0;
-    if (in_array($flag["code"], ["LOW_LIFE", "ONE_CARD", "OVERKILL", "RAW_POWER"], true)) $trivial = true;
+    if (!isset($penalties[$flag["code"]])) continue;
+    $score *= $penalties[$flag["code"]];
+    $trivial = true;
   }
-  if ($trivial || $optionScore == 0.0) $difficulty = "easy";
-  else if ($tightScore >= 0.8 && $complexityScore >= 0.9 && $optionScore >= 0.7) $difficulty = "hard";
-  else $difficulty = "medium";
   $score = (int)round($score);
+  if ($trivial) $difficulty = "easy";
+  else if ($score >= 70 && $margin !== null && $spare !== null && $spare <= 1 && $needed >= 14) $difficulty = "hard";
+  else if ($score >= 45) $difficulty = "medium";
+  else $difficulty = "easy";
 
   return [
     "life" => intval($healths[$player - 1] ?? 0),
     "opponentLife" => $life,
+    "lifeBonus" => $lifeBonus,
     "hand" => $hand,
     "arsenal" => $arsenal,
     "weapons" => $weapons,
     "floating" => $floating,
     "actionPoints" => $actionPoints,
-    "handPitch" => $handPitch,
+    "handPitch" => array_sum(array_column($hand, "pitch")),
     "opponentEquipment" => $opponentEquipment,
-    "opponentDefense" => $defense,
-    "opponentHandCount" => PuzzleZoneSize($lines[1 + $opponentOffset], HandPieces()),
-    "opponentArsenalCount" => PuzzleZoneSize($lines[5 + $opponentOffset], ArsenalPieces()),
+    "opponentHand" => $opponentHand,
+    "opponentEquipmentBlock" => $equipmentBlock,
+    "opponentHandBlock" => $block - $equipmentBlock,
+    "opponentBlock" => $block,
+    "needed" => $needed,
+    "spareCards" => $spare,
+    "provenSlack" => $provenSlack,
     "estimatedDamage" => $line["damage"],
+    "estimatedThrough" => $line["through"],
     "estimatedAttacks" => $line["attacks"],
     "realTurn" => is_array($meta) ? $meta : null,
     "score" => $score,

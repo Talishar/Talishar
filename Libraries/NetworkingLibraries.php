@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ . "/ReplayLibraries.php";
+include_once __DIR__ . "/SnapshotLibraries.php";
 include_once __DIR__ . "/RematchLibraries.php";
 
 const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
@@ -34,7 +35,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
   global $p1MetafyTiers, $p2MetafyTiers;
   global $CS_OriginalHero;
-  global $replaySaveResult;
+  global $replaySaveResult, $snapshotSaveResult;
   global $isReplayAdvance, $replayUndoHasRecordedResponse;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
@@ -1314,6 +1315,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         error_log("Failed to create replay share token: " . $exception->getMessage());
       }
       break;
+    case 100023: // Save a playable snapshot of the current state
+      $snapshotSaveResult = SavePlayableSnapshot($gameName, (int)$playerID);
+      break;
+    case 100024: //Restart puzzle
+      include_once "./Libraries/PuzzleGame.php";
+      RestartPuzzleGame($playerID);
+      break;
     case 100013: //Enable Spectate
       SetCachePiece($gameName, 9, "1");
       break;
@@ -1493,8 +1501,8 @@ function IsModeAsync($mode)
   26 => true, 40 => true, 41 => true, 102 => true, 103 => true, 104 => true, 111 => true, 112 => true, 10000 => true,
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
-  100012 => true, 100015 => true, 100016 => true, 100017 => true,
-  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true
+  100012 => true, 100015 => true, 100016 => true, 100017 => true, 100023 => true,
+  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true
   ];
   return isset($asyncModes[$mode]);
 }

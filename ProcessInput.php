@@ -288,6 +288,12 @@ if ((int)$mode === 100012) {
     "message" => "Replay could not be saved. Please try again."
   ]);
 }
+if ((int)$mode === 100023) {
+  echo json_encode($snapshotSaveResult ?? [
+    "success" => false,
+    "message" => "Snapshot could not be saved. Please try again."
+  ]);
+}
 
 // Rematch handling, AI turns, clock accumulation, persistence and backups.
 include "Libraries/GameFinalization.php";

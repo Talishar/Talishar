@@ -9,6 +9,7 @@ include_once "../includes/dbh.inc.php";
 include_once '../includes/ModeratorList.inc.php';
 include_once '../Libraries/PuzzleHarvest.php';
 include_once '../Libraries/PuzzleGame.php';
+include_once '../Libraries/PuzzleAnalysis.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -28,6 +29,7 @@ $request = ReadJsonBody() ?? [];
 $candidateID = intval($request["candidateId"] ?? 0);
 $emptyOpponentHand = ($request["emptyOpponentHand"] ?? true) == true;
 $removeDecks = ($request["removeDecks"] ?? true) == true;
+$raiseLife = ($request["raiseLife"] ?? false) == true;
 
 $conn = GetDBConnection(DBL_CREATE_PUZZLE_GAME);
 if (!$conn) {
@@ -38,7 +40,7 @@ if (!$conn) {
 $candidate = null;
 try {
   EnsurePuzzleCandidatesTable($conn);
-  $stmt = mysqli_prepare($conn, "SELECT player, format, opponent_life, gamestate FROM puzzle_candidates WHERE id = ?");
+  $stmt = mysqli_prepare($conn, "SELECT player, format, meta, gamestate FROM puzzle_candidates WHERE id = ?");
   mysqli_stmt_bind_param($stmt, "i", $candidateID);
   mysqli_stmt_execute($stmt);
   $candidate = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -65,7 +67,9 @@ if (file_exists("../Games/$gameName") || !mkdir("../Games/$gameName", 0700, true
 $player = intval($candidate["player"]);
 $p1Key = bin2hex(random_bytes(32));
 $p2Key = bin2hex(random_bytes(32));
-$gamestate = PreparePuzzleGamestate($content, $player, $p1Key, $p2Key, $emptyOpponentHand, $removeDecks);
+$analysis = AnalyzePuzzlePosition($content, $player, json_decode($candidate["meta"] ?? "", true), $emptyOpponentHand, $raiseLife);
+$opponentLife = $analysis["opponentLife"];
+$gamestate = PreparePuzzleGamestate($content, $player, $p1Key, $p2Key, $emptyOpponentHand, $removeDecks, $opponentLife);
 $lines = explode("\r\n", $gamestate);
 $p1Hero = explode(" ", trim($lines[3]))[0];
 $p2Hero = explode(" ", trim($lines[21]))[0];
@@ -118,12 +122,10 @@ if ($gameFileHandler === false) {
 include "../MenuFiles/WriteGamefile.php";
 WriteGameFile();
 
-$opponentLife = intval($candidate["opponent_life"]);
-$intro = "<p style='background: #005900;font-size: max(1em, 14px);margin-bottom:0px;'><span style='color:azure;'>"
-  . "🧩 Puzzle #$candidateID: win this turn. Your opponent is at $opponentLife life.</span></p>\r\n";
 file_put_contents("../Games/$gameName/gamestate.txt", $gamestate);
 file_put_contents("../Games/$gameName/beginTurnGamestate.txt", $gamestate);
-file_put_contents("../Games/$gameName/gamelog.txt", $intro);
+file_put_contents("../Games/$gameName/" . PUZZLE_START_FILE, $gamestate);
+file_put_contents("../Games/$gameName/gamelog.txt", PuzzleIntroLog($candidateID, $opponentLife));
 file_put_contents("../Games/$gameName/" . PUZZLE_MARKER_FILE, (string)$candidateID);
 
 $currentTime = round(microtime(true) * 1000);
