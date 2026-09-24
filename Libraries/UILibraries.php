@@ -74,7 +74,7 @@ function JSONRenderedCard(
   $hasBoundAura = NULL,
   $goAgain = NULL
 ) {
-  $cardNumber = BlindCard($cardNumber, true);
+  if ($cardNumber === null) $cardNumber = ""; elseif (str_contains($cardNumber, "BLIND")) $cardNumber = substr($cardNumber, 0, -6);
   global $playerID, $CS_NumLightningPlayed, $isReplay;
 
   // Null coalescing avoids a long comparison chain on the common no-counter

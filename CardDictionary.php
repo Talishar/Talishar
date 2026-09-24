@@ -80,7 +80,7 @@ $CID_TekloLegs = "teklo_base_legs";
 
 function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $index=-1)
 {
-  $cardID = BlindCard($cardID, true);
+  if ($cardID === null) $cardID = ""; elseif (str_contains($cardID, "BLIND")) $cardID = substr($cardID, 0, -6);
 
   static $adminCards = [
     "TRIGGER" => 1, "-" => 1, "FINALIZECHAINLINK" => 1, "RESOLUTIONSTEP" => 1,
@@ -174,7 +174,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
 
 function CardTypeExtended($cardID, $from="", $index=-1) // used to handle evos
 {
-  $cardID = BlindCard($cardID, true);
+  if ($cardID === null) $cardID = ""; elseif (str_contains($cardID, "BLIND")) $cardID = substr($cardID, 0, -6);
   static $evoTypes = [
     "evo_steel_soul_memory_blue" => "A,E",
     "evo_steel_soul_processor_blue" => "A,E",
@@ -300,7 +300,7 @@ function ConvertToCardID($setID) {
 
 function CardSubType($cardID, $uniqueID = -1)
 {
-  $cardID = BlindCard($cardID, true);
+  if ($cardID === null) $cardID = ""; elseif (str_contains($cardID, "BLIND")) $cardID = substr($cardID, 0, -6);
   if (!$cardID) return "";
   switch ($cardID) {
     case "sanctuary_of_aria"://Technically false, but helps with Rosetta Limited
@@ -396,9 +396,9 @@ function CharacterIntellect($cardID)
 
 function CardSet($cardID)
 {
-  $cardID = BlindCard($cardID, true);
+  if ($cardID === null) $cardID = ""; elseif (str_contains($cardID, "BLIND")) $cardID = substr($cardID, 0, -6);
   if (!$cardID) return "";
-  if (substr($cardID, 0, 3) == "DUM") return "DUM";
+  if (str_starts_with($cardID, "DUM")) return "DUM";
   static $setCache = [];
   if (isset($setCache[$cardID])) return $setCache[$cardID];
   switch ($cardID) {
@@ -1250,7 +1250,8 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
 
 function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
   global $mainPlayer, $defPlayer;
-  if (!$pitch && SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $mainPlayer)) return true;
+  if (!$pitch && SearchCurrentTurnEffectsForIndex("imperial_edict_red", $mainPlayer) != -1
+    && SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $mainPlayer)) return true;
   $fromHand = $from == "HAND";
   if (!$fromHand && !$pitch) return false;
 
@@ -1920,7 +1921,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     else return false;
   }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
-  if ((DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from)) && CanPlayInstant($phase)) return true;
+  if (CanPlayInstant($phase) && (DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from))) return true;
   if (($from == "PLAY" || $from == "COMBATCHAINATTACKS" || $from == "PASTCHAINLINK") && AbilityPlayableFromCombatChain($cardID, $index) && CanPlayInstant($phase)) {
     return true;
   }
@@ -3470,12 +3471,18 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
 function IsStaticType($cardType, $from = "", $cardID = "")
 {
   if ($from === "PLAY" || $from === "COMBATCHAINATTACKS") return true;
-  if (DelimStringContains($cardType, "C") ||
-      DelimStringContains($cardType, "E") ||
-      DelimStringContains($cardType, "W") ||
-      DelimStringContains($cardType, "D") ||
-      DelimStringContains($cardType, "Companion")) return true;
-  if ($from === "ARS" && DelimStringContains($cardType, "M")) return true;
+  if ($cardType != null) {
+    if (strpos($cardType, ",") === false) {
+      if ($cardType == "C" || $cardType == "E" || $cardType == "W" || $cardType == "D" || $cardType == "Companion") return true;
+      if ($from === "ARS" && $cardType == "M") return true;
+    } else {
+      $types = explode(",", $cardType);
+      foreach ($types as $type) {
+        if ($type == "C" || $type == "E" || $type == "W" || $type == "D" || $type == "Companion") return true;
+      }
+      if ($from === "ARS" && in_array("M", $types)) return true;
+    }
+  }
   if ($cardID !== "" && $from === "BANISH" && AbilityPlayableFromBanish($cardID)) return true;
   return false;
 }

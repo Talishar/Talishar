@@ -1969,7 +1969,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
       break;
   }
 
-  if (CardNameContains($cardID, "Lumina Ascension", $currentPlayer) && SearchItemsForCard("spirit_of_eirina_yellow", $currentPlayer) != "") return true;
+  if (SearchItemsForCard("spirit_of_eirina_yellow", $currentPlayer) != "" && CardNameContains($cardID, "Lumina Ascension", $currentPlayer)) return true;
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
   $otherCharacter = &GetPlayerCharacter($otherPlayer);

@@ -2,7 +2,7 @@
 
 function CardName($cardID)
 {
-    $cardID = BlindCard($cardID, true);
+    if ($cardID === null) $cardID = ""; elseif (str_contains($cardID, "BLIND")) $cardID = substr($cardID, 0, -6);
     if($cardID == NULL) return "";
     if($cardID == "POWERCOUNTER") return "+1 Power Counter";
     static $nameCache = [];
