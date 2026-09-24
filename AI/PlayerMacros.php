@@ -81,8 +81,11 @@ function ProcessMacros()
           if (AutoPitchForcedSetting($currentPlayer)) {
             $pitchIndex = ForcedPitchIndex($currentPlayer);
             if ($pitchIndex >= 0) {
+              $hand = &GetHand($currentPlayer);
+              $pitchCard = $hand[$pitchIndex];
+              array_splice($hand, $pitchIndex, 1);
               $somethingChanged = true;
-              ProcessInput($currentPlayer, 27, "", $pitchIndex, 0, "");
+              PlayCard($pitchCard, "HAND", zone: "MYHAND", index: $pitchIndex);
             }
           }
           break;
@@ -191,13 +194,13 @@ function ForcedPitchIndex($player)
   $handPieces = HandPieces();
   if (count($hand) != $handPieces) return -1;
 
-  $restriction = "";
-  if (!IsPlayable($hand[0], "P", "HAND", 0, $restriction, $player, $turn[3] ?? "")) return -1;
-
   $resources = &GetResources($player);
   $available = intval($resources[0] ?? 0);
   $required = intval($resources[1] ?? 0);
-  return $available + PitchValue($hand[0]) >= $required ? 0 : -1;
+  if ($available + PitchValue($hand[0]) < $required) return -1;
+
+  $restriction = "";
+  return IsPlayable($hand[0], "P", "HAND", 0, $restriction, $player, $turn[3] ?? "") ? 0 : -1;
 }
 
 function NormalizeWeaponCard($cardName)
