@@ -266,20 +266,7 @@ try {
           fwrite($commandFile, "$playerID OPT $top $bot 0\r\n");
           fclose($commandFile);
         }
-        $deck->Opt($cardListTop, $cardListBottom);
-        $topCount = count($cardListTop);
-        $bottomCount = count($cardListBottom);
-        $message = "";
-        if ($topCount > 0) {
-          $message .= $topCount . " card" . ($topCount > 1 ? "s" : "") . " on top";
-        }
-        if ($bottomCount > 0) {
-          if ($message !== "") {
-            $message .= " and ";
-          }
-          $message .= $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
-        }
-        WriteLog("Player " . $playerID . " has put " . $message . " of their deck.");
+        OptAndLog($deck, $playerID, $cardListTop, $cardListBottom);
       }
       else {
         WriteLog("Something funny happened while opting. I attempted to catch the behavior, but it may have caused issues. If you believe the opt resolved incorrectly, please submit a bug report.", highlight:true);

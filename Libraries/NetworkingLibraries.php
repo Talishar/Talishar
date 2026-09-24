@@ -1554,7 +1554,7 @@ function OptAndLog($deck, $player, $cardListTop, $cardListBottom)
     if ($message !== "") $message .= " and ";
     $message .= $bottomCount . " card" . ($bottomCount > 1 ? "s" : "") . " on the bottom";
   }
-  WriteLog("Player " . $player . " has put " . $message . " of their deck.");
+  WriteLog("🔮 Player " . $player . " has put " . $message . " of their deck.");
 }
 
 function PassInput($autopass = true, $doublePass = false, $resolutionStepRetry = false)
