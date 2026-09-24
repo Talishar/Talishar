@@ -3,8 +3,8 @@
 function CardName($cardID)
 {
     if ($cardID === null) $cardID = ""; elseif (str_contains($cardID, "BLIND")) $cardID = substr($cardID, 0, -6);
-    if($cardID == NULL) return "";
-    if($cardID == "POWERCOUNTER") return "+1 Power Counter";
+    if ($cardID == NULL) return "";
+    if ($cardID == "POWERCOUNTER") return "+1 Power Counter";
     static $nameCache = [];
     if (isset($nameCache[$cardID])) return $nameCache[$cardID];
     switch ($cardID) {

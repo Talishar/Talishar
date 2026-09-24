@@ -172,7 +172,7 @@ function SearchInner(
   $isArsZone        = $zone === "ARS";
   $hasTalents       = !empty($talents);
   $talentsCount     = count($talents);
-  $negCounterOffset = DefCounterOffsetMZ($zone);
+  $negCounterOffset = $hasNegCounters ? DefCounterOffsetMZ($zone) : -1;
   $seenNames        = [];
 
   $talentMod_conditional = false; // brand_with_cinderclaw / enflame: DRACONIC if AA, W, or Ally
@@ -198,6 +198,7 @@ function SearchInner(
     }
   }
   $hasTalentMods = $talentMod_conditional || $talentMod_always || $talentMod_fealty || $talentMod_fealtyAtk;
+  $needsTypeChecks = $talentMod_conditional || $talentMod_fealty || $talentMod_fealtyAtk;
 
   static $skipSteps = [
     "ENDTURN" => 1, "RESUMETURN" => 1, "FINALIZECHAINLINK" => 1, "DEFENDSTEP" => 1,
@@ -233,7 +234,6 @@ function SearchInner(
       } else {
         $checkTalent = $eraseFaceActive ? "" : CardTalent($cardID, $zone);
         if ($hasTalentMods) {
-          $needsTypeChecks = $talentMod_conditional || $talentMod_fealty || $talentMod_fealtyAtk;
           if ($needsTypeChecks) {
             $extendedType = CardTypeExtended($cardID);
             $isAttackActionType = DelimStringContains($extendedType, "AA");
@@ -515,9 +515,10 @@ function SearchBanishByName($player, $name)
 
 function SearchDiscardForCard($player, ...$cards)
 {
+  $discard = &GetDiscard($player);
+  if (!$discard) return "";
   $cardSet = CardIDSet($cards);
   if (!$cardSet) return "";
-  $discard = &GetDiscard($player);
   $count = count($discard);
   $pieces = DiscardPieces();
   $cardList = [];
@@ -531,9 +532,10 @@ function SearchDiscardForCard($player, ...$cards)
 
 function SearchAlliesActive($player, ...$cards)
 {
+  $allies = &GetAllies($player);
+  if (!$allies) return false;
   $cardSet = CardIDSet($cards);
   if (!$cardSet) return false;
-  $allies = &GetAllies($player);
   $countAllies = count($allies);
   $allyPieces = AllyPieces();
   for ($i = 0; $i < $countAllies; $i += $allyPieces) {

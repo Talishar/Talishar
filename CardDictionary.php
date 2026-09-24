@@ -1254,6 +1254,9 @@ function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
     && SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $mainPlayer)) return true;
   $fromHand = $from == "HAND";
   if (!$fromHand && !$pitch) return false;
+  $checkAuras = $fromHand && !$pitch;
+  if (SearchItemsForCard("null_time_zone_blue", $mainPlayer) === "" && SearchItemsForCard("null_time_zone_blue", $defPlayer) === ""
+    && (!$checkAuras || (SearchAurasForCard("leave_em_speechless_blue", $mainPlayer) === "" && SearchAurasForCard("leave_em_speechless_blue", $defPlayer) === ""))) return false;
 
   $cardName = $nameGiven ? $cardID : NameOverride($cardID);
   $sanitizedName = GamestateSanitize($cardName);
@@ -1261,7 +1264,7 @@ function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
   if (SearchItemForModalities($sanitizedName, $mainPlayer, "null_time_zone_blue") != -1) return true;
   if (SearchItemForModalities($sanitizedName, $defPlayer, "null_time_zone_blue") != -1) return true;
 
-  if ($fromHand && !$pitch) {
+  if ($checkAuras) {
     if (SearchAuraForModalities($sanitizedName, $mainPlayer, "leave_em_speechless_blue") != -1) return true;
     if (SearchAuraForModalities($sanitizedName, $defPlayer, "leave_em_speechless_blue") != -1) return true;
   }
@@ -2456,7 +2459,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $myItems = &GetItems($player);
   $mySoul = &GetSoul($player);
   $otherPlayerDiscard = &GetDiscard($otherPlayer);
-  $attackID = $CombatChain->AttackCard()->ID();
+  $attackID = $combatChain === [] ? "" : ($combatChain[0] ?? "-");
   if (in_array($cardID, AshTransformTargetCards(), true) || in_array($cardID, AshWardTargetCards(), true)) {
     return SearchCount(SearchPermanents($player, "", "Ash")) < 1;
   }

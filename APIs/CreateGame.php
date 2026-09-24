@@ -112,7 +112,7 @@ if ($deckTestMode != "") {
     "IraSAGE" => ["Ira.txt", true],
     "Ira" => ["IraCC.txt", false],
   ];
-  $isSmallDeckFormat = str_contains($format, "sage") || str_contains($format, "blitz") || $format == "commoner";
+  $isSmallDeckFormat = str_contains($format, "sage") || str_contains($format, "blitz") || in_array($format, ["commoner", "clash", "draft", "sealed"]);
   $isOpenFormat = $format == "open";
   $selectedSoloDeck = $soloDecks[$deckTestDeck] ?? null;
   if ($selectedSoloDeck === null || ($selectedSoloDeck[1] !== null && !$isOpenFormat && $selectedSoloDeck[1] != $isSmallDeckFormat)) {

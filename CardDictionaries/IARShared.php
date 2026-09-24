@@ -9,9 +9,9 @@ function RunechantIndicesAwait($player) {
 		foreach ($inds as $ind) {
 			$Aura = new AuraCard($ind, $player);
 			$choiceKey = "$player-" . $Aura->CardID();
-			if (!in_array($choiceKey, $includedRunechants)) {
+			if (!isset($includedRunechants[$choiceKey])) {
 				$MZInds[] = "MYAURAS-$ind";
-				$includedRunechants[] = $choiceKey;
+				$includedRunechants[$choiceKey] = true;
 			}
 		}
 		return implode(",", $MZInds);
@@ -31,18 +31,18 @@ function Usurp($cardID, $player, $from) {
 			foreach ($inds as $ind) {
 				$Aura = new AuraCard($ind, $player);
 				$choiceKey = "$player-" . $Aura->CardID();//$Aura->CardID() == "runechant" ? "runechant" : $player . "-" . $Aura->CardID();
-				if (!in_array($choiceKey, $includedRunechants)) {
+				if (!isset($includedRunechants[$choiceKey])) {
 					$MZInds[] = "MYAURAS-$ind";
-					$includedRunechants[] = $choiceKey;
+					$includedRunechants[$choiceKey] = true;
 				}
 			}
 			$theirInds = $theirInds != "" ? explode(",", $theirInds) : [];
 			foreach ($theirInds as $ind) {
 				$Aura = new AuraCard($ind, $otherPlayer);
 				$choiceKey = "$otherPlayer-" . $Aura->CardID();
-				if (!in_array($choiceKey, $includedRunechants)) {
+				if (!isset($includedRunechants[$choiceKey])) {
 					$MZInds[] = "THEIRAURAS-$ind";
-					$includedRunechants[] = $choiceKey;
+					$includedRunechants[$choiceKey] = true;
 				}
 			}
 			if (count($MZInds) == 1) {
