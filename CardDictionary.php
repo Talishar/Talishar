@@ -1724,17 +1724,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   elseif ($phase == "B" && ($from == "BANISH" || $from == "THEIRBANISH")) return false;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
-  $character = &GetPlayerCharacter($player);
-  $cardType = CardType($cardID, $from, $currentPlayer);
-  $subtype = null;
-
-  // Get type and name only below when needed
-  $abilityType = null;
-  $abilityNames = null;
-
-  $abilityTypes = GetAbilityTypes($cardID, $index, $from);
-  // modal card where none of the modes are live
-  if ($abilityTypes != "" && $phase != "P" && $phase != "B" && ($abilityNames ??= GetAbilityNames($cardID, $index, $from)) == "-") return false;
   if ($from == "BANISH") {
     $banish = new Banish($player);
     $banishCard = $banish->Card($index);
@@ -1753,6 +1742,17 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     $discard = new Discard($currentPlayer);
     if (!PlayableFromGraveyard($cardID, $discard->Card($index)->Facing(), $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
   } elseif (($from == "COMBATCHAINATTACKS" || $from == "PASTCHAINLINK") && (!AbilityPlayableFromCombatChain($cardID, "-") || !CanPlayInstant($phase))) return false;
+  $character = &GetPlayerCharacter($player);
+  $cardType = CardType($cardID, $from, $currentPlayer);
+  $subtype = null;
+
+  // Get type and name only below when needed
+  $abilityType = null;
+  $abilityNames = null;
+
+  $abilityTypes = GetAbilityTypes($cardID, $index, $from);
+  // modal card where none of the modes are live
+  if ($abilityTypes != "" && $phase != "P" && $phase != "B" && ($abilityNames ??= GetAbilityNames($cardID, $index, $from)) == "-") return false;
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && isset($character[$index + 12]) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {

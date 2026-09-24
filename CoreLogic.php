@@ -2033,10 +2033,11 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     }
   }
   if ($subtypeIsAura && SearchCurrentTurnEffects("fluttersteps", $currentPlayer)) return true;
+  $isReactionPhase = IsReactionPhase();
   $abilityType = "-";
-  if ($isStaticType) $abilityType = GetAbilityType($cardID, $index, $from);
-  if (($cardType == "AR" || $abilityType == "AR" && $isStaticType) && IsReactionPhase() && $currentPlayer == $mainPlayer) return true;
-  if (($cardType == "DR" || $abilityType == "DR" && $isStaticType) && IsReactionPhase() && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
+  if ($isStaticType && $isReactionPhase) $abilityType = GetAbilityType($cardID, $index, $from);
+  if (($cardType == "AR" || $abilityType == "AR" && $isStaticType) && $isReactionPhase && $currentPlayer == $mainPlayer) return true;
+  if (($cardType == "DR" || $abilityType == "DR" && $isStaticType) && $isReactionPhase && $currentPlayer != $mainPlayer && IsDefenseReactionPlayable($cardID, $from)) return true;
   if ($from == "DECK" && (SearchCharacterActive($currentPlayer, "dash_io") || SearchCharacterActive($currentPlayer, "dash_database"))) return true;
 
   if (!$secondCheck || ($layers[0] ?? "-") == "ABILITY") { // when checking if something *was* played at instant speed, this check only makes sense if the ability was used

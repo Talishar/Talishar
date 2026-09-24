@@ -603,7 +603,7 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   if ($index == -1) $index = GetCombatChainState($CCS_WeaponIndex);
   $mainCharacterEffectsCount = count($mainCharacterEffects);
   $characterEffectPieces = CharacterEffectPieces();
-  $attackIsWeapon = TypeContains($CombatChain->AttackCard()->ID(), "W");
+  $attackIsWeapon = $mainCharacterEffectsCount > 0 && TypeContains($CombatChain->AttackCard()->ID(), "W");
   for ($i = 0; $i < $mainCharacterEffectsCount; $i += $characterEffectPieces) {
     if (!isset($mainCharacterEffects[$i + 1])) continue;
     if ($player != -1 && !SearchCurrentTurnEffects(ExtractCardID($mainCharacterEffects[$i + 1]), $player)) return false;
