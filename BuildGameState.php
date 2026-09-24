@@ -1206,7 +1206,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if(isset($labeledAurasSet[$theirAuras[$i]])) {
       $label = GamestateUnsanitize($theirAuras[$i + 10]);
     }
-    elseif (!TypeContains($theirAuras[$i], "T") && $theirAuras[$i + 4] == 1) {
+    elseif ($theirAuras[$i + 4] == 1 && !TypeContains($theirAuras[$i], "T")) {
       $label = "Token Copy";
     }
     else $label = "";
@@ -1338,7 +1338,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if(isset($labeledAurasSet[$myAuras[$i]])) {
       $label = GamestateUnsanitize($myAuras[$i + 10]);
     }
-    elseif (!TypeContains($myAuras[$i], "T") && $myAuras[$i + 4] == 1) {
+    elseif ($myAuras[$i + 4] == 1 && !TypeContains($myAuras[$i], "T")) {
       $label = "Token Copy";
     }
     else $label = "";

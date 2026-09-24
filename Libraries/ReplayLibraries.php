@@ -57,8 +57,9 @@ function RecordReplayStep(string $directory, int $pointer, int $previousPointer)
 function ReplayCommandCount(string $commandFilename): int
 {
   if (!file_exists($commandFilename)) return 0;
-  $commands = file($commandFilename);
-  return is_array($commands) ? count($commands) : 0;
+  $commands = file_get_contents($commandFilename);
+  if (!is_string($commands)) return 0;
+  return substr_count($commands, "\n") + ($commands !== "" && $commands[-1] !== "\n" ? 1 : 0);
 }
 
 function SaveReplayStateSnapshot(string $gameDirectory, ?string $gamestate = null): ?int
@@ -75,7 +76,7 @@ function SaveReplayStateSnapshot(string $gameDirectory, ?string $gamestate = nul
   }
   if (!is_string($gamestate)) return null;
 
-  $compressed = gzencode($gamestate, 6);
+  $compressed = gzencode($gamestate, 3);
   if ($compressed === false) return null;
 
   return file_put_contents(

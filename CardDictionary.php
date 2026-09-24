@@ -2306,13 +2306,13 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
     $restrictedBy = "frost_lock_blue";
     return true;
   }
-  if (ColorContains($cardID, 1, $playerID) && SearchCurrentTurnEffects("barbed_undertow_red-1", $playerID)) {
+  if (SearchCurrentTurnEffects("barbed_undertow_red-1", $playerID) && ColorContains($cardID, 1, $playerID)) {
     $restrictedBy = "barbed_undertow_red";
     return true;
-  } else if (ColorContains($cardID, 2, $playerID) && SearchCurrentTurnEffects("barbed_undertow_red-2", $playerID)) {
+  } else if (SearchCurrentTurnEffects("barbed_undertow_red-2", $playerID) && ColorContains($cardID, 2, $playerID)) {
     $restrictedBy = "barbed_undertow_red";
     return true;
-  } else if (ColorContains($cardID, 3, $playerID) && SearchCurrentTurnEffects("barbed_undertow_red-3", $playerID)) {
+  } else if (SearchCurrentTurnEffects("barbed_undertow_red-3", $playerID) && ColorContains($cardID, 3, $playerID)) {
     $restrictedBy = "barbed_undertow_red";
     return true;
   }
