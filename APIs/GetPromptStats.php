@@ -37,8 +37,8 @@ if (!$conn) {
 try {
   EnsurePromptStatsTable($conn);
   $sql = "SELECT phase, context, answer, SUM(count) AS answered, SUM(total_ms) AS totalMs,
-      SUM(IF(options = 1, count, 0)) AS forced, SUM(IF(identical = 1, count, 0)) AS identical
-    FROM prompt_stats WHERE day >= ? GROUP BY phase, context, answer";
+      SUM(IF(identical = 1, count, 0)) AS identical
+    FROM prompt_stats WHERE day >= ? AND context NOT IN ('-', 'ATTACKTARGET') GROUP BY phase, context, answer";
   $stmt = mysqli_prepare($conn, $sql);
   mysqli_stmt_bind_param($stmt, "s", $since);
   mysqli_stmt_execute($stmt);
@@ -52,10 +52,9 @@ try {
       $prompts[$key] = [
         "phase" => $row["phase"],
         "context" => $row["context"],
-        "contextName" => $name != "" ? $name : ($row["context"] == "ATTACKTARGET" ? "Attack target" : $row["context"]),
+        "contextName" => $name != "" ? $name : $row["context"],
         "isCard" => $name != "",
         "count" => 0,
-        "forced" => 0,
         "identical" => 0,
         "totalMs" => 0,
         "answers" => []
@@ -63,7 +62,6 @@ try {
     }
     $answered = (int)$row["answered"];
     $prompts[$key]["count"] += $answered;
-    if (IsMandatoryChoicePhase($row["phase"])) $prompts[$key]["forced"] += (int)$row["forced"];
     $prompts[$key]["identical"] += (int)$row["identical"];
     $prompts[$key]["totalMs"] += (int)$row["totalMs"];
     $prompts[$key]["answers"][] = ["answer" => $row["answer"], "count" => $answered];

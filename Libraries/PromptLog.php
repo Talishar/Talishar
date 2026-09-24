@@ -22,14 +22,6 @@ function PromptAnswerModes()
   return $modes;
 }
 
-function IsMandatoryChoicePhase($phase)
-{
-  static $notMandatory = ["CHOOSETOP" => true, "CHOOSEBOTTOM" => true, "CHOOSETOPOPPONENT" => true, "CHOOSEARSENALCANCEL" => true,
-    "CHOOSEHANDCANCEL" => true, "CHOOSEDISCARDCANCEL" => true];
-  if (isset($notMandatory[$phase])) return false;
-  return str_starts_with($phase, "CHOOSE") || str_starts_with($phase, "BUTTONINPUT") || $phase == "CHOOSENUMBER" || $phase == "NUMBERINPUT";
-}
-
 function PromptOptions($phase, $parameter)
 {
   if ($phase == "YESNO") return ["YES", "NO"];
