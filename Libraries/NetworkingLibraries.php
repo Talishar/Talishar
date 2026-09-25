@@ -1820,7 +1820,10 @@ function ResolveChainLink()
         $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
         if ($totalPower > 0)
           $totalPower += CombatChainDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
-        $allyDamageThreatened = max(0, $totalPower);
+        if ($reorderedCount == 1) // if there is only one target, it's possible for cards to end up blocking for allies
+          $allyDamageThreatened = max(0, $totalPower - $totalDefense);
+        else //if there are multiple targets, any blocking cards would be blocking for the hero
+          $allyDamageThreatened = max(0, $totalPower);
         $allyDamageThreatened = AllyDamagePrevention($defPlayer, $index, $allyDamageThreatened, "COMBAT", $combatChain[0]);
         if ($allyDamageThreatened < 0)
           $allyDamageThreatened = 0;
