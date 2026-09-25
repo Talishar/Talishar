@@ -1820,7 +1820,7 @@ function ResolveChainLink()
         $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
         if ($totalPower > 0)
           $totalPower += CombatChainDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
-        $allyDamageThreatened = max(0, $totalPower - $totalDefense);
+        $allyDamageThreatened = max(0, $totalPower);
         $allyDamageThreatened = AllyDamagePrevention($defPlayer, $index, $allyDamageThreatened, "COMBAT", $combatChain[0]);
         if ($allyDamageThreatened < 0)
           $allyDamageThreatened = 0;

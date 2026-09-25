@@ -1160,7 +1160,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($theirAllies[$i]);
     $sType = CardSubType($theirAllies[$i]);
     $uniqueID = $theirAllies[$i+5];
-    if($attackTargetUID == $uniqueID) $label = "Targeted";
+    if(DelimStringContains($attackTargetUID, $uniqueID)) $label = "Targeted";
     else {
       $isTargeted = $layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID);
       $hasActiveEffect = isset($effectUIDSet[(string)$uniqueID]);
@@ -1289,7 +1289,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $border = CardBorderColor($myAllies[$i], "PLAY", $playable, $playerID);
     $actionDataOverride = $actionType == 24 ? strval($i) : "";
     $uniqueID = $myAllies[$i+5];
-    if($attackTargetUID == $uniqueID) $label = "Targeted";
+    if(DelimStringContains($attackTargetUID, $uniqueID)) $label = "Targeted";
     elseif($layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID)) $label = "Targeted";
     elseif(isset($effectUIDSet[(string)$uniqueID])) $label = "Effect Active";
     $subcards = $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL;
