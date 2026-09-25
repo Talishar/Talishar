@@ -1958,10 +1958,9 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
       break;
   }
 
-  if (SearchItemsForCard("spirit_of_eirina_yellow", $currentPlayer) != "" && CardNameContains($cardID, "Lumina Ascension", $currentPlayer)) return true;
+  if (SearchItemForIndex("spirit_of_eirina_yellow", $currentPlayer) != -1 && CardNameContains($cardID, "Lumina Ascension", $currentPlayer)) return true;
   $cardType = CardType($cardID);
   $subtype = CardSubType($cardID);
-  $otherCharacter = &GetPlayerCharacter($otherPlayer);
   $cardTypeIsAction = DelimStringContains($cardType, "A");
   $subtypeIsAura = DelimStringContains($subtype, "Aura");
   $isStaticType = IsStaticType($cardType, $from, $cardID);
@@ -1983,6 +1982,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     if (SearchCurrentTurnEffectsForCycle("scrap_compactor_red", "scrap_compactor_yellow", "scrap_compactor_blue", $currentPlayer)) return true;
   }
   if ($from == "ARS" && $cardTypeIsAction && $currentPlayer != $mainPlayer) {
+    $otherCharacter = &GetPlayerCharacter($otherPlayer);
     if (ColorContains($cardID, 3, $currentPlayer) && (SearchCharacterActive($currentPlayer, "iyslander") || SearchCharacterActive($currentPlayer, "iyslander_stormbind") || SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer) && IsIyslander($otherCharacter[0]))) return true;
     $arsenal = &GetArsenal($currentPlayer);
     $arsenalCount = count($arsenal);

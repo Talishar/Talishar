@@ -813,7 +813,6 @@ function PitchValue($cardID)
 function BlockValue($cardID, $player="-", $from="-", $blocking=true)
 {
   global $defPlayer, $combatChain, $CS_Num6PowPutIntoBanish;
-  $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
   static $skipLyathFroms = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true,"GY"=>true];
@@ -821,7 +820,7 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant")
       || SearchCharacterActive($player, "lyath_goldmane")
       || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player)
-      || (SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) && SearchCharacterActive($player, $char[0]));
+      || (SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) && SearchCharacterActive($player, GetPlayerCharacter($player)[0]));
     $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA");
   }
   $block = -2;
@@ -934,7 +933,6 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   $subtype = CardSubtype($cardID);
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $player = $player == "-" ? $mainPlayer : $player;
-  $char = GetPlayerCharacter($player);
   $lyathActive = false;
   $lyathShoes = false;
   static $skipLyathFromsPow = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true,"GY"=>true];
@@ -942,7 +940,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant")
       || SearchCharacterActive($player, "lyath_goldmane")
       || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player)
-      || (SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) && SearchCharacterActive($player, $char[0]));
+      || (SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) && SearchCharacterActive($player, GetPlayerCharacter($player)[0]));
     $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA");
   }
   //Only weapon that gains power, NOT on their attack
@@ -1255,8 +1253,8 @@ function NameBlocked($cardID, $index, $from, $pitch=false, $nameGiven=false) {
   $fromHand = $from == "HAND";
   if (!$fromHand && !$pitch) return false;
   $checkAuras = $fromHand && !$pitch;
-  if (SearchItemsForCard("null_time_zone_blue", $mainPlayer) === "" && SearchItemsForCard("null_time_zone_blue", $defPlayer) === ""
-    && (!$checkAuras || (SearchAurasForCard("leave_em_speechless_blue", $mainPlayer) === "" && SearchAurasForCard("leave_em_speechless_blue", $defPlayer) === ""))) return false;
+  if (SearchItemForIndex("null_time_zone_blue", $mainPlayer) == -1 && SearchItemForIndex("null_time_zone_blue", $defPlayer) == -1
+    && (!$checkAuras || (!SearchAuras("leave_em_speechless_blue", $mainPlayer) && !SearchAuras("leave_em_speechless_blue", $defPlayer)))) return false;
 
   $cardName = $nameGiven ? $cardID : NameOverride($cardID);
   $sanitizedName = GamestateSanitize($cardName);
@@ -1322,7 +1320,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
 {
   global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant, $combatChainState, $CCS_EclecticMag;
   global $defPlayer, $CombatChain, $Stack;
-  $character = &GetPlayerCharacter($currentPlayer);
   $auras = &GetAuras($currentPlayer);
   $names = "";
   $nameBlocked = NameBlocked($cardID, $index, $from);
@@ -1345,7 +1342,7 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       if ($allNames) return "Add_a_steam_counter,Attack";
       if (!is_numeric($index) || $index == -1) return "";
       $rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
-      if ($character[$index + 2] > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer)) $rv .= ",Attack";
+      if (GetPlayerCharacter($currentPlayer)[$index + 2] > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $mainPlayer)) $rv .= ",Attack";
       return $rv;
     case "plasma_barrel_shot":
       if ($allNames) return "Add_a_steam_counter,Attack";
@@ -2279,7 +2276,6 @@ function IsCardSpecificPitchRestricted($cardID, $player, $from, &$restrictedBy):
 function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pitchRestriction = "", $phase = "P")
 {
   global $playerID, $currentTurnEffects;
-  $resources = &GetResources($playerID);
   if(PitchValue($cardID) <= 0) return true; //Can't pitch mentors or landmarks
   if (IsCardSpecificPitchRestricted($cardID, $playerID, $from, $restrictedBy)) return true;
   $countCurrentTurnEffects = count($currentTurnEffects);
@@ -2313,7 +2309,7 @@ function IsPitchRestricted($cardID, &$restrictedBy, $from = "", $index = -1, $pi
     $restrictedBy = "barbed_undertow_red";
     return true;
   }
-  if (CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && $resources[0] < 3) return true;
+  if (CardCareAboutChiPitch($pitchRestriction) && !SubtypeContains($cardID, "Chi") && GetResources($playerID)[0] < 3) return true;
   $nameBlocked = NameBlocked($cardID, 0, $from, true);
   if(($phase == "P" || $phase == "CHOOSEHANDCANCEL") && $nameBlocked){
     $restrictedBy = "Name Blocked";
@@ -2384,7 +2380,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   $type = $printedType;
   if (IsStaticType($type, $from, $cardID)) $type = GetResolvedAbilityType($cardID, $from);
   if (!$resolutionCheck) { //when running a resoulution check, only check for targets
-    if (SearchAurasForCard("bait", $player) != "" && $cardID != "bait" && !str_contains($from, "THEIR")) {
+    if (SearchAuras("bait", $player) && $cardID != "bait" && !str_contains($from, "THEIR")) {
       //exception for manual tunic mode
       if ($cardID == "fyendals_spring_tunic" && $currentPlayer == $mainPlayer && ManualTunicSetting($player) && GetClassState($player, piece: $CS_TunicTicks) == 0) {
         if (GetClassState($player, $CS_NumCardsPlayed) == 0 && $character[$index + 2] < 3) return false;
@@ -2448,11 +2444,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   if ($card != "-") {
     return $card->IsPlayRestricted($restriction, $from, $index, $resolutionCheck);
   }
-  $myHand = &GetHand($player);
-  $myArsenal = &GetArsenal($player);
-  $myItems = &GetItems($player);
-  $mySoul = &GetSoul($player);
-  $otherPlayerDiscard = &GetDiscard($otherPlayer);
   $attackID = $combatChain === [] ? "" : ($combatChain[0] ?? "-");
   if (in_array($cardID, AshTransformTargetCards(), true) || in_array($cardID, AshWardTargetCards(), true)) {
     return SearchCount(SearchPermanents($player, "", "Ash")) < 1;
@@ -2513,9 +2504,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $CombatChain->HasCurrentLink()
         && $from == "PLAY"
         && (!ClassContains($attackID, "MECHANOLOGIST", $player)
-          || $myItems[$index + 1] == 0
+          || GetItems($player)[$index + 1] == 0
           || CardSubtype($attackID) != "Pistol"
-          || $myItems[$index + 2] != 2);
+          || GetItems($player)[$index + 2] != 2);
     case "skullbone_crosswrap":
     case "lexi_livewire":
     case "lexi":
@@ -2559,19 +2550,19 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "PLAY" && SearchCount(SearchHand($player, "", "", -1, -1, "", "", false, false, 2)) < 2;
     case "prism_sculptor_of_arc_light":
     case "prism":
-      return count($mySoul) == 0 || $character[$index + 5] == 0;
+      return count(GetSoul($player)) == 0 || $character[$index + 5] == 0;
     case "ser_boltyn_breaker_of_dawn":
     case "boltyn":
-      return count($mySoul) == 0 || !HasIncreasedAttack();
+      return count(GetSoul($player)) == 0 || !HasIncreasedAttack();
     case "beacon_of_victory_yellow":
     case "radiant_view":
     case "radiant_raiment":
     case "radiant_touch":
     case "radiant_flow":
     case "solar_plexus":
-      return count($mySoul) == 0;
+      return count(GetSoul($player)) == 0;
     case "celestial_cataclysm_yellow":
-      return count($mySoul) < 3;
+      return count(GetSoul($player)) < 3;
     case "graveling_growl_red":
     case "graveling_growl_yellow":
     case "graveling_growl_blue":
@@ -2671,9 +2662,9 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "sutcliffes_suede_hides":
       return !$CombatChain->HasCurrentLink() || CardType($attackID) != "AA" || GetClassState($currentPlayer, $CS_NumNonAttackCards) == 0;
     case "ragamuffins_hat":
-      return count($myHand) != 1;
+      return count(GetHand($player)) != 1;
     case "deep_blue":
-      return count($myHand) == 0;
+      return count(GetHand($player)) == 0;
     case "shatter_yellow":
       return !$CombatChain->HasCurrentLink() || !TypeContains($attackID, "W", $mainPlayer) || Is1H($attackID);
     case "blade_runner_red":
@@ -2690,11 +2681,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "even_bigger_than_that_blue":
       return GetClassState($player, piece: $CS_PowDamageDealt) == 0;
     case "amulet_of_assertiveness_yellow":
-      return $from == "PLAY" && count($myHand) < 4;
+      return $from == "PLAY" && count(GetHand($player)) < 4;
     case "amulet_of_echoes_blue":
       return $from == "PLAY" && IsAmuletOfEchoesRestricted($from);
     case "amulet_of_havencall_blue":
-      return $from == "PLAY" && count($myHand) > 0;
+      return $from == "PLAY" && count(GetHand($player)) > 0;
     case "amulet_of_ignition_yellow":
       return $from == "PLAY" && GetClassState($player, $CS_NumCardsPlayed) >= 1;
     case "helm_of_sharp_eye":
@@ -2773,7 +2764,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CountAura("spectral_shield", $currentPlayer) < 1;
     case "uzuri_switchblade":
     case "uzuri":
-      return !$CombatChain->HasCurrentLink() || !HasStealth($attackID) || count($myHand) == 0;
+      return !$CombatChain->HasCurrentLink() || !HasStealth($attackID) || count(GetHand($player)) == 0;
     case "spike_with_bloodrot_red":
     case "spike_with_frailty_red":
     case "spike_with_inertia_red":
@@ -2800,7 +2791,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if ($subtype == "Dagger" || CardType($attackID) == "AA" && PowerValue($attackID, $mainPlayer, "CC") <= 2) return false;
       return true;
     case "mask_of_malicious_manifestations":
-      return count($myHand) + count($myArsenal) < 1;
+      return count(GetHand($player)) + count(GetArsenal($player)) < 1;
     case "death_touch_red":
     case "death_touch_yellow":
     case "death_touch_blue":
@@ -2809,12 +2800,12 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "virulent_touch_blue":
       return $from == "HAND";
     case "threadbare_tunic":
-      return count($myHand) > 0;
+      return count(GetHand($player)) > 0;
     case "fleet_foot_sandals":
       return !$CombatChain->HasCurrentLink() || CardType($attackID) != "AA" && !TypeContains($attackID, "W", $mainPlayer) || PowerValue($attackID, $mainPlayer, "CC", base:true) > 1;
     case "prism_awakener_of_sol":
     case "prism_advent_of_thrones":
-      return count($mySoul) == 0 || $character[5] == 0 || SearchPermanents($player, subtype: "Figment") == "";
+      return count(GetSoul($player)) == 0 || $character[5] == 0 || SearchPermanents($player, subtype: "Figment") == "";
     case "luminaris_celestial_fury":
       return !$CombatChain->HasCurrentLink() || !str_contains(NameOverride($attackID, $mainPlayer), "Herald") && !SubtypeContains($attackID, "Angel", $mainPlayer);
     case "angelic_descent_red":
@@ -2881,11 +2872,11 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "prismatic_lens_yellow":
     case "quantum_processor_yellow":
     case "cerebellum_processor_blue":
-      if ($from == "PLAY") return $myItems[$index + 2] != 2; else return false;
+      if ($from == "PLAY") return GetItems($player)[$index + 2] != 2; else return false;
     case "dissolving_shield_red":
     case "dissolving_shield_yellow":
     case "dissolving_shield_blue":
-      if ($from == "PLAY") return $myItems[$index + 1] == 0; else return false;
+      if ($from == "PLAY") return GetItems($player)[$index + 1] == 0; else return false;
     case "moonshot_yellow":
       return GetClassState($player, $CS_NumBoosted) <= 0;
     case "shriek_razors":
@@ -2940,7 +2931,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (!$CombatChain->HasCurrentLink()) return true;
       return false;
     case "pass_over_blue":
-      return count($otherPlayerDiscard) <= 0;
+      return count(GetDiscard($otherPlayer)) <= 0;
     case "preserve_tradition_blue":
       return CombineSearches(SearchDiscard($player, "A"), SearchDiscard($player, "AA")) == "";
     case "tide_chakra_red":
@@ -2996,7 +2987,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (LinkBasePower() <= 1 && CardType($attackID) == "AA") return false;
       return true;
     case "longdraw_half_glove":
-      return count($myHand) + count($myArsenal) < 2;
+      return count(GetHand($player)) + count(GetArsenal($player)) < 2;
     case "enigma_new_moon":
       return GetPlayerNumEquipment($player, "DOWN") <= 0;
     case "aurora_shooting_star":

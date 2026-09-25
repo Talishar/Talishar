@@ -599,7 +599,6 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   global $combatChainState, $CCS_WeaponIndex, $mainPlayer, $CombatChain, $CS_NumCharged, $CS_NumAttacks;
   $modifier = 0;
   $mainCharacterEffects = &GetMainCharacterEffects($mainPlayer);
-  $mainCharacter = &GetPlayerCharacter($mainPlayer);
   if ($index == -1) $index = GetCombatChainState($CCS_WeaponIndex);
   $mainCharacterEffectsCount = count($mainCharacterEffects);
   $characterEffectPieces = CharacterEffectPieces();
@@ -629,6 +628,7 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
     }
   }
   if ($onlyBuffs) return $modifier;
+  $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainCharacter);
   $characterPieces = CharacterPieces();
   $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
