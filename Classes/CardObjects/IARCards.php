@@ -5572,6 +5572,11 @@ class rise_to_the_challenge extends BaseCard {
     return $Effect->AppliestoUniqueID() == $ChainCard->UniqueID() ? 2 : 0;
   }
 
+  function RemoveEffectFromCombatChain($effectIndex) {
+    $Effect = new CurrentEffect($effectIndex);
+    return str_contains($Effect->EffectID(), "DEFENSE");
+  }
+
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     AddCurrentTurnEffectNextAttack($this->cardID . "-BUFF", $this->controller);
   }
