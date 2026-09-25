@@ -754,6 +754,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myHandContents = [];
   $myHandCount = count($myHand);
   $handPieces = HandPieces();
+  $handChoiceIndices = "," . $turn[2] . ",";
   $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay);
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     $label = "";
@@ -763,7 +764,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     } else {
       $goldOrPitchChoice = isset($goldOrPitchChoices["MYHAND-$i"]);
       if ($isGoldPaymentChoice) $playable = $playerID == $currentPlayer && $goldOrPitchChoice;
-      else $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || $actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos("," . $turn[2] . ",", "," . $i . ",") !== false && $restriction == "" : false;
+      else $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || $actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos($handChoiceIndices, "," . $i . ",") !== false && $restriction == "" : false;
       if ($restriction == "" && str_contains(GetAbilityTypes($myHand[$i], -1, "HAND"), "I") && InstantRestricted($myHand[$i], "HAND", -1) && !$playable) {
         $restriction = "Instant cannot be played.";
       }

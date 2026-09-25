@@ -203,45 +203,39 @@ function DoGamestateUpdate()
   else if ($myStateBuiltFor != -1) UpdateGameStateInner();
 }
 
-function GamestateViewFields()
+function GamestateViewKeys()
 {
-  static $fields = [
-    "Hand" => "Hand",
-    "Deck" => "Deck",
-    "Resources" => "Resources",
-    "Character" => "CharEquip",
-    "Arsenal" => "Arsenal",
-    "Items" => "Items",
-    "Auras" => "Auras",
-    "Discard" => "Discard",
-    "Pitch" => "Pitch",
-    "Banish" => "Banish",
-    "ClassState" => "ClassState",
-    "CharacterEffects" => "CharacterEffects",
-    "Soul" => "Soul",
-    "CardStats" => "CardStats",
-    "TurnStats" => "TurnStats",
-    "CardTurnLog" => "CardTurnLog"
+  static $keys = [
+    "my" => ["myHand", "myDeck", "myResources", "myCharacter", "myArsenal", "myItems", "myAuras", "myDiscard", "myPitch", "myBanish", "myClassState", "myCharacterEffects", "mySoul", "myCardStats", "myTurnStats", "myCardTurnLog", "myHealth"],
+    "their" => ["theirHand", "theirDeck", "theirResources", "theirCharacter", "theirArsenal", "theirItems", "theirAuras", "theirDiscard", "theirPitch", "theirBanish", "theirClassState", "theirCharacterEffects", "theirSoul", "theirCardStats", "theirTurnStats", "theirCardTurnLog", "theirHealth"],
+    "main" => ["mainHand", "mainDeck", "mainResources", "mainCharacter", "mainArsenal", "mainItems", "mainAuras", "mainDiscard", "mainPitch", "mainBanish", "mainClassState", "mainCharacterEffects", "mainSoul", "mainCardStats", "mainTurnStats", "mainCardTurnLog", "mainHealth"],
+    "def" => ["defHand", "defDeck", "defResources", "defCharacter", "defArsenal", "defItems", "defAuras", "defDiscard", "defPitch", "defBanish", "defClassState", "defCharacterEffects", "defSoul", "defCardStats", "defTurnStats", "defCardTurnLog", "defHealth"],
+    1 => ["p1Hand", "p1Deck", "p1Resources", "p1CharEquip", "p1Arsenal", "p1Items", "p1Auras", "p1Discard", "p1Pitch", "p1Banish", "p1ClassState", "p1CharacterEffects", "p1Soul", "p1CardStats", "p1TurnStats", "p1CardTurnLog"],
+    2 => ["p2Hand", "p2Deck", "p2Resources", "p2CharEquip", "p2Arsenal", "p2Items", "p2Auras", "p2Discard", "p2Pitch", "p2Banish", "p2ClassState", "p2CharacterEffects", "p2Soul", "p2CardStats", "p2TurnStats", "p2CardTurnLog"],
   ];
-  return $fields;
+  return $keys;
 }
 
 function CopyPlayerStateToView($player, $viewPrefix)
 {
   global $playerHealths;
-  foreach (GamestateViewFields() as $viewField => $playerField) {
-    $GLOBALS[$viewPrefix . $viewField] = $GLOBALS["p" . $player . $playerField] ?? null;
+  $keys = GamestateViewKeys();
+  $viewKeys = $keys[$viewPrefix];
+  foreach ($keys[$player] as $i => $playerKey) {
+    $GLOBALS[$viewKeys[$i]] = $GLOBALS[$playerKey] ?? null;
   }
-  $GLOBALS[$viewPrefix . "Health"] = $playerHealths[$player - 1];
+  $GLOBALS[$viewKeys[16]] = $playerHealths[$player - 1];
 }
 
 function CopyViewStateToPlayer($viewPrefix, $player)
 {
   global $playerHealths;
-  foreach (GamestateViewFields() as $viewField => $playerField) {
-    $GLOBALS["p" . $player . $playerField] = $GLOBALS[$viewPrefix . $viewField] ?? null;
+  $keys = GamestateViewKeys();
+  $viewKeys = $keys[$viewPrefix];
+  foreach ($keys[$player] as $i => $playerKey) {
+    $GLOBALS[$playerKey] = $GLOBALS[$viewKeys[$i]] ?? null;
   }
-  $playerHealths[$player - 1] = $GLOBALS[$viewPrefix . "Health"] ?? null;
+  $playerHealths[$player - 1] = $GLOBALS[$viewKeys[16]] ?? null;
 }
 
 function BuildMyGamestate($playerID)

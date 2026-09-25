@@ -58,6 +58,18 @@ class Banish {
     }
   }
 
+  function UnsetBanishModifiers($modifiers) {
+    $count = count($this->banish);
+    $banishPieces = BanishPieces();
+    $unsetSource = isset($modifiers["TCL"]);
+    for($i=0; $i<$count; $i+=$banishPieces) {
+      $mod = $this->banish[$i+1];
+      $dashPos = strpos($mod, "-");
+      $cardModifier = $dashPos !== false ? substr($mod, 0, $dashPos) : $mod;
+      if (isset($modifiers[$cardModifier]) || ($unsetSource && $cardModifier == "Source")) $this->banish[$i+1] = "-";
+    }
+  }
+
   function FindCardUID($uid) {
     $count = count($this->banish);
     if ($count == 0) return "";

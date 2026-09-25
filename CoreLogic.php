@@ -1280,14 +1280,11 @@ function UnsetChainLinkBanish()
 
 function UnsetCombatChainBanish()
 {
+  static $combatChainModifiers = ["TCL" => true, "TCC" => true, "TCCGorgonsGaze" => true];
   $p1Banish = new Banish(1);
-  $p1Banish->UnsetBanishModifier("TCL");
-  $p1Banish->UnsetBanishModifier("TCC");
-  $p1Banish->UnsetBanishModifier("TCCGorgonsGaze");
+  $p1Banish->UnsetBanishModifiers($combatChainModifiers);
   $p2Banish = new Banish(2);
-  $p2Banish->UnsetBanishModifier("TCL");
-  $p2Banish->UnsetBanishModifier("TCC");
-  $p2Banish->UnsetBanishModifier("TCCGorgonsGaze");
+  $p2Banish->UnsetBanishModifiers($combatChainModifiers);
 }
 
 function ReplaceBanishModifier($player, $oldMod, $newMod)
@@ -1302,23 +1299,15 @@ function ReplaceBanishModifier($player, $oldMod, $newMod)
 function UnsetTurnBanish()
 {
   global $defPlayer, $mainPlayer;
+  static $turnModifiers = [
+    "TT" => true, "INST" => true, "sonic_boom_yellow" => true, "blossoming_spellblade_red" => true,
+    "TTFromOtherPlayer" => true, "REMOVEGRAVEYARD" => true, "BOOST" => true,
+    "TCL" => true, "TCC" => true, "TCCGorgonsGaze" => true,
+  ];
   $p1Banish = new Banish(1);
-  $p1Banish->UnsetBanishModifier("TT");
-  $p1Banish->UnsetBanishModifier("INST");
-  $p1Banish->UnsetBanishModifier("sonic_boom_yellow");
-  $p1Banish->UnsetBanishModifier("blossoming_spellblade_red");
-  $p1Banish->UnsetBanishModifier("TTFromOtherPlayer");
-  $p1Banish->UnsetBanishModifier("REMOVEGRAVEYARD");
-  $p1Banish->UnsetBanishModifier("BOOST");
+  $p1Banish->UnsetBanishModifiers($turnModifiers);
   $p2Banish = new Banish(2);
-  $p2Banish->UnsetBanishModifier("TT");
-  $p2Banish->UnsetBanishModifier("INST");
-  $p2Banish->UnsetBanishModifier("sonic_boom_yellow");
-  $p2Banish->UnsetBanishModifier("blossoming_spellblade_red");
-  $p2Banish->UnsetBanishModifier("TTFromOtherPlayer");
-  $p2Banish->UnsetBanishModifier("REMOVEGRAVEYARD");
-  $p2Banish->UnsetBanishModifier("BOOST");
-  UnsetCombatChainBanish();
+  $p2Banish->UnsetBanishModifiers($turnModifiers);
   ReplaceBanishModifier($defPlayer, "NT", "TT");
   ReplaceBanishModifier($defPlayer, "NTSTONERAIN", "STONERAIN");
   ReplaceBanishModifier($defPlayer, "TRAPDOOR", "DOWN");

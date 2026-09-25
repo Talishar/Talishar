@@ -1549,14 +1549,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
 
 function InstantRestricted($cardID, $from, $index, $zone="-", $type="-") {
   global $Stack, $CombatChain, $ChainLinks, $currentPlayer, $defPlayer;
-  if (IsLayerStep()) {
-    $BottomLayer = $Stack->BottomLayer();
-    switch ($BottomLayer->ID()) {
-      case "step_between_red":
-        return $currentPlayer == $defPlayer;
-      default:
-        break;
-    }
+  if ($Stack->BottomLayer()->ID() == "step_between_red" && IsLayerStep()) {
+    return $currentPlayer == $defPlayer;
   }
 
   switch ($CombatChain->AttackCard()->ID()) {
