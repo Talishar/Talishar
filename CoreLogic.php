@@ -1165,7 +1165,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true, $fro
     PlayAura("vigor", $otherPlayer, $amount);
     return false;
   }
-  if (!$silent) WriteLog("Player " . $player . " gained " . $amount . " life");
+  if (!$silent) WriteLog("💚 Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
   if($p2Char[0] != "DUMMY" || $player == 1) $health += $amount;
   if ($fromCardEffect && $amount > 0) MarkKorshemTurnCondition($player);

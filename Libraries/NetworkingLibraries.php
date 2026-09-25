@@ -1078,7 +1078,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       include_once "./includes/functions.inc.php";
       $conceded = true;
       if (!IsGameOver()) {
-        WriteLog("Player $playerID conceded the game.");
+        WriteLog("🏳️ Player $playerID conceded the game.");
         PlayerWon($playerID == 1 ? 2 : 1, true);
       }
       break;
