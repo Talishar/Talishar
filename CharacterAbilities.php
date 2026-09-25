@@ -1701,7 +1701,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
     switch ($characterID) {
       case "viserai_rune_blood":
       case "viserai":
-        if (!IsStaticType(CardType($cardID), $from, $cardID) && ClassContains($cardID, "RUNEBLADE", $currentPlayer) && !TypeContains($cardID, "B", $currentPlayer)) {
+        if (!IsActivated($cardID, $from) && ClassContains($cardID, "RUNEBLADE", $currentPlayer) && !TypeContains($cardID, "B", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
         break;
