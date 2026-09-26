@@ -300,9 +300,82 @@ function BotFaiHeroAdjustment($cardID, $playerID)
   return -100.0;
 }
 
+function BotAvailablePitch($playerID)
+{
+  $resources = &GetResources($playerID);
+  $total = max(0, intval($resources[0] ?? 0));
+  $hand = &GetHand($playerID);
+  foreach ($hand as $cardID) {
+    if ($cardID !== "") $total += max(0, intval(PitchValue($cardID)));
+  }
+  return $total;
+}
+
+function BotBestCrouchingTigerPriority($heroID, $playerID)
+{
+  global $turn;
+  $best = null;
+  $consider = function ($cardID, $from, $index, $type, $zone) use ($heroID, $playerID, $turn, &$best) {
+    if ($cardID === "" || !CardNameContains($cardID, "Crouching Tiger", $playerID)) return;
+    if (!IsPlayable($cardID, $turn[0], $from, $index)) return;
+    $priority = BotPriority($cardID, $heroID, $type, $playerID, $zone);
+    if ($priority > 0 && ($best === null || $priority > $best)) $best = $priority;
+  };
+  $hand = &GetHand($playerID);
+  foreach ($hand as $index => $cardID) $consider($cardID, "HAND", $index, 1, "Hand");
+  $arsenal = &GetArsenal($playerID);
+  for ($index = 0, $count = count($arsenal); $index < $count; $index += ArsenalPieces()) {
+    if (($arsenal[$index + 4] ?? 0) == 1) continue;
+    $consider($arsenal[$index], "ARS", $index, 2, "Arsenal");
+  }
+  $banish = &GetBanish($playerID);
+  for ($index = 0, $count = count($banish); $index < $count; $index += BanishPieces()) {
+    $consider($banish[$index], "BANISH", $index, 5, "Banish");
+  }
+  return $best;
+}
+
+function BotTearingShukoPriority($heroID, $playerID)
+{
+  if (SearchCurrentTurnEffects("tearing_shuko", $playerID)) return 0.0;
+  $tigerPriority = BotBestCrouchingTigerPriority($heroID, $playerID);
+  return $tigerPriority === null ? 0.0 : $tigerPriority + 0.5;
+}
+
+function BotBravoAbilityPriority($cardID, $heroID, $playerID)
+{
+  global $actionPoints;
+  if (intval($actionPoints) < 1) return 0.0;
+  $arsenal = &GetArsenal($playerID);
+  for ($index = 0, $count = count($arsenal); $index < $count; $index += ArsenalPieces()) {
+    if (($arsenal[$index + 1] ?? "") != "DOWN") continue;
+    $arsenalCardID = $arsenal[$index];
+    if (($arsenal[$index + 4] ?? 0) == 1 || CardType($arsenalCardID) != "AA" || !HasCrush($arsenalCardID)) return 0.0;
+    $abilityCost = BotEffectiveCost($cardID, "CHAR", 0, AbilityCost($cardID));
+    $attackCost = BotEffectiveCost($arsenalCardID, "ARS", -1, CardCost($arsenalCardID, "ARS"));
+    if ($abilityCost + $attackCost > BotAvailablePitch($playerID)) return 0.0;
+    $attackPriority = BotPriority($arsenalCardID, $heroID, 2, $playerID, "Arsenal");
+    return $attackPriority > 0 ? $attackPriority + 0.5 : 0.0;
+  }
+  return 0.0;
+}
+
+function BotCharacterEnablerPriority($cardID, $heroID, $playerID)
+{
+  return match ($cardID) {
+    "tearing_shuko" => BotTearingShukoPriority($heroID, $playerID),
+    "bravo_flattering_showman" => BotBravoAbilityPriority($cardID, $heroID, $playerID),
+    default => null,
+  };
+}
+
 function BotActionPriority($cardID, $heroID, $playerID, $zone = "Hand")
 {
   global $currentTurn;
+  if ($zone == "Character") {
+    $enablerPriority = BotCharacterEnablerPriority($cardID, $heroID, $playerID);
+    if ($enablerPriority !== null) return $enablerPriority;
+  }
   $type = CardType($cardID);
   $roles = BotCardRoles($cardID, $playerID);
   $isActivatedPermanent = in_array($zone, ["Character", "Item", "Ally"], true);
