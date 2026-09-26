@@ -4611,7 +4611,7 @@ function Rarity($cardID)
   if (isset($rarityCache[$cardID])) return $rarityCache[$cardID];
   $set = CardSet($cardID);
   if ($cardID == "prism_advent_of_thrones") return $rarityCache[$cardID] = "R"; //downshift
-  if ($cardID = "the_hand_that_pulls_the_strings") return $rarityCache[$cardID] = "R"; //downshift
+  if ($cardID == "the_hand_that_pulls_the_strings") return $rarityCache[$cardID] = "R"; //downshift
   if ($cardID == "minerva_themis") return $rarityCache[$cardID] = "R"; //downshift
   if ($set != "DUM") {
     return $rarityCache[$cardID] = GeneratedRarity($cardID);
