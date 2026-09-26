@@ -126,7 +126,8 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
 
     case "Banish":
       $zoneCount = count($zoneArr);
-      for ($i = 0; $i < $zoneCount; ++$i) {
+      $banishPieces = BanishPieces();
+      for ($i = 0; $i < $zoneCount; $i += $banishPieces) {
         $priorityArray[] = [$zoneArr[$i], "Banish", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex, "Banish")];
       }
       return $priorityArray;
