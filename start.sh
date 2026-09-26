@@ -15,4 +15,4 @@ mkdir -p Games
 # Set permissions for the folder so anyone can update
 chmod 777 Games
 
-docker compose up -d
+docker-compose up -d
