@@ -27,8 +27,10 @@ function Await($player, $function="",  $returnName="LASTRESULT", $lastResultName
       AddDecisionQueue("CLEARDQVARS", $player, "-");
     }
     else AddDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
+    AddDecisionQueue("EQUALPASS", $player, "CARDID-PASS", $subsequent);
   }
   else {
+    PrependDecisionQueue("EQUALPASS", $player, "CARDID-PASS", $subsequent);
     if ($final) {
       PrependDecisionQueue("CLEARDQVARS", $player, "-");
       PrependDecisionQueue("ELSE", $player, "-");
@@ -158,14 +160,18 @@ function MultiZoneIndicesAwait($player) {
 function ChooseMultiZoneAwait($player) {
   global $dqVars;
   $may = $dqVars["may"] ?? false;
+  $exp_may = $dqVars["exp_may"] ?? false;
   $indices = $dqVars["indices"] ?? "";
   if ($indices == "" || $indices == "PASS") return "PASS";
   $notSubsequent = $dqVars["notSubsequent"] ?? false;
   PrependDecisionQueue("SETDQVAR", $player, "MZIndex", 1); //set a default place to save the last result
   if ($may)
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
-  else
+  else {
+    if ($exp_may)
+      $indices .= ",CARDID-PASS";
     PrependDecisionQueue("CHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
+    }
   PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose a card", !$notSubsequent);
 }
 
@@ -198,6 +204,13 @@ function MZBanishAwait($player) {
   global $dqVars;
   $MZIndex = $dqVars["MZIndex"];
   $parameter = $dqVars["parameter"] ?? "-";
+  if ($parameter == "-") {
+    $from = $dqVars["from"] ?? explode("-", $MZIndex)[0];
+    $modifier = $dqVars["modifier"] ?? "-";
+    $banishedBy = $dqVars["banishedBy"] ?? "-";
+    $banisher = $dqVars["banisher"] ?? $player;
+    $parameter = "$from,$modifier,$banishedBy,$banisher";
+  }
   return MZBanish($player, $parameter, $MZIndex);
 }
 

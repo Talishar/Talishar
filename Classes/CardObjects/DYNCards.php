@@ -1387,17 +1387,39 @@ class nitro_mechanoidc extends Card {
 // }
 
 
-// class leave_no_witnesses_red extends Card {
+class leave_no_witnesses_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "leave_no_witnesses_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "leave_no_witnesses_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		global $defPlayer;
+        $deck = new Deck($defPlayer);
+        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
+        else $deck->BanishTop(banishedBy:$cardID, banisher:$this->controller);
+		Await($this->controller, "MultiZoneIndices", search:"THEIRARS", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", may:true);
+		Await($this->controller, "MZRemoveAndBanish", banishedBy:$this->cardID, banisher:$this->controller, final:true);
+	}
+
+	function ContractType($chosenName = '') {
+		return "REDPITCH";
+	}
+
+	function ContractCompleted() {
+		PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+	}
+}
 
 
 // class long_shot_red extends Card {

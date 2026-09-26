@@ -1005,7 +1005,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "send_packing_yellow"=>true,"stab_wound_blue"=>true,"old_leather_and_vim_red"=>true,
     "uplifting_performance_blue"=>true,"offensive_behavior_blue"=>true,
     "spew_obscenities_yellow"=>true,"eradicate_yellow"=>true,"regicide_blue"=>true,
-    "leave_no_witnesses_red"=>true,"surgical_extraction_blue"=>true,
+    "surgical_extraction_blue"=>true,
     "plunder_the_poor_red"=>true,"plunder_the_poor_yellow"=>true,"plunder_the_poor_blue"=>true,
     "rob_the_rich_red"=>true,"rob_the_rich_yellow"=>true,"rob_the_rich_blue"=>true,
     "annihilate_the_armed_red"=>true,"annihilate_the_armed_yellow"=>true,"annihilate_the_armed_blue"=>true,

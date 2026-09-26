@@ -494,15 +494,6 @@ function DYNHitEffect($cardID, $from, $attackID)
         else $deck->BanishTop(banishedBy:$cardID, amount:GetCombatChainState($CCS_DamageDealt), banisher:$mainPlayer);
       }
       break;
-    case "leave_no_witnesses_red":
-      if(IsHeroAttackTarget()) {
-        $deck = new Deck($defPlayer);
-        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
-        else $deck->BanishTop(banishedBy:$cardID, banisher:$mainPlayer);
-        // where: to,from,mod,banishSource,banisher
-        MZMoveCard($mainPlayer, "THEIRARS", "THEIRBANISH,ARS,-,$cardID,$mainPlayer", true);
-      }
-      break;
     case "regicide_blue": if(IsHeroAttackTarget() && IsRoyal($defPlayer))
       {
         Writelog("💀 The emperor is dead, long live the emperor");
@@ -568,7 +559,6 @@ function ContractType($cardID, $chosenName="-")
   switch($cardID)
   {
     case "eradicate_yellow": return "YELLOWPITCH";
-    case "leave_no_witnesses_red": return "REDPITCH";
     case "surgical_extraction_blue": return "BLUEPITCH";
     case "plunder_the_poor_red": case "plunder_the_poor_yellow": case "plunder_the_poor_blue": return "COST1ORLESS";
     case "rob_the_rich_red": case "rob_the_rich_yellow": case "rob_the_rich_blue": return "COST2ORMORE";
@@ -597,7 +587,7 @@ function ContractCompleted($player, $cardID)
   }
   switch($cardID)
   {
-    case "eradicate_yellow": case "leave_no_witnesses_red": case "surgical_extraction_blue":
+    case "eradicate_yellow": case "surgical_extraction_blue":
     case "plunder_the_poor_red": case "plunder_the_poor_yellow": case "plunder_the_poor_blue":
     case "rob_the_rich_red": case "rob_the_rich_yellow": case "rob_the_rich_blue":
     case "annihilate_the_armed_red": case "annihilate_the_armed_yellow": case "annihilate_the_armed_blue":
