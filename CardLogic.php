@@ -172,7 +172,7 @@ function NotifyCurrentAttackPowerModifierApplied($amount, $source = "-", $attach
 function AddEffectToPastAttack($index, $cardID) {
   global $chainLinks;
   if ($chainLinks[$index][6] == "-") $chainLinks[$index][6] = ConvertToSetID($cardID);
-  else $chainLinks[$index][6] .= ConvertToSetID($cardID);
+  else $chainLinks[$index][6] .= "," . ConvertToSetID($cardID);
 }
 
 function AddAfterResolveEffect($cardID, $player, $from = "", $uniqueID = -1)

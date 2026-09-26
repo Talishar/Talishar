@@ -3205,7 +3205,19 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:talent=DRACONIC&ACTIVEATTACK:talent=DRACONIC");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a draconic attack");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);  
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
+    case "affirm_loyalty_red":
+    case "endear_devotion_red":
+    case "blistering_blade_red":
+    case "dynastic_dedication_red":
+    case "imperial_intent_red":
+      if (ShouldAutotargetOpponent($currentPlayer) && SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) break;
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:subtype=Dagger&ACTIVEATTACK:subtype=Dagger");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a dagger attack");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
     case "a_drop_in_the_ocean_blue":
