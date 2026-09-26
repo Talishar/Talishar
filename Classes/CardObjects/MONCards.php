@@ -1088,17 +1088,41 @@ class deadwood_rumbler_blue extends Card {
 // }
 
 
-// class dread_scythe extends Card {
+class dread_scythe extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "dread_scythe";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "dread_scythe";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    DealArcane(1, 1, "PLAYCARD", $this->cardID);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
+
+  function AbilityCost() {
+    return 3;
+  }
+
+  function DamageDealtAbilities($target, $damage, $type) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $defPlayer;
+    WriteLog("The " . CardLink($this->cardID) . " has disabled Player $defPlayer's lifegain next turn!");
+    AddNextTurnEffect($this->cardID, $defPlayer);
+  }
+}
 
 
 // class dream_weavers extends Card {

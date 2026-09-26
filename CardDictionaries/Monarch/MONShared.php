@@ -18,7 +18,6 @@
       case "blasmophet_the_soul_harvester": return 0;
       case "ursur_the_soul_reaper": return 0;
       case "ravenous_meataxe": return 2;
-      case "dread_scythe": return 3;
       case "blood_drop_brocade": case "stubby_hammerers": return 0;
       case "time_skippers": return 3;
       case "exude_confidence_red": return 3;
@@ -46,7 +45,6 @@
       case "blasmophet_the_soul_harvester": return "AA";
       case "ursur_the_soul_reaper": return "AA";
       case "ravenous_meataxe": return "AA";
-      case "dread_scythe": return "AA";
       case "aether_ironweave": return "A";
       case "blood_drop_brocade": return "I";
       case "stubby_hammerers": case "time_skippers": return "A";

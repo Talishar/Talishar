@@ -807,7 +807,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       $characterID = ShiyanaCharacter($otherCharacter[0]);
       DamageDealtAbilities($player, $damage, $type, $source);
-      if ($source == "dread_scythe" && !SearchNextTurnEffects("dread_scythe", $player)) AddNextTurnEffect("dread_scythe", $player);
       if (($characterID == "briar_warden_of_thorns" || $characterID == "briar") && $otherCharacter[1] == "2" && CardType($source) == "AA") {
         $otherCharacter[1] = 1;
         if ($type != "COMBAT" || !HitEffectsArePrevented($source))
@@ -1139,7 +1138,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true, $fro
   $otherHealth = &GetHealth($otherPlayer);
   $p2Char = &GetPlayerCharacter($otherPlayer);
   if ($preventable && SearchCurrentTurnEffects("dread_scythe", $player)) {
-    WriteLog(CardLink("dread_scythe", "dread_scythe") . " prevented you from gaining life");
+    WriteLog(CardLink("dread_scythe") . " prevented you from gaining life");
     return false;
   }
   if ($preventable && SearchCurrentTurnEffectsEitherPlayer("deny_redemption_red")) {
