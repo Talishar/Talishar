@@ -889,7 +889,7 @@ function isClashLegal($cardID, $character) {
     default: break;
   }
   if(HasSpecialization($cardID)) return true;
-  if(Rarity($cardID) == "C" || Rarity($cardID) == "T" || Rarity($cardID) == "R") return true;
+  if(Rarity($cardID) == "C" || Rarity($cardID) == "T" || Rarity($cardID) == "B" || Rarity($cardID) == "R") return true;
   if(($character == "emperor_dracai_of_aesir" || $character == "") && $cardID == "command_and_conquer_red") return true; //C&C is legal for Emperor in Clash
   if(($character == "prism_advent_of_thrones" || $character == "") && $set == "DTD" && $number >= 5 && $number <= 12) return true; //Figments are legal for Prism in Clash
   return false;
