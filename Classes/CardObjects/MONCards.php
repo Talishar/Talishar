@@ -1114,7 +1114,8 @@ class dread_scythe extends Card {
   }
 
   function DamageDealtAbilities($target, $damage, $type) {
-    AddLayer("TRIGGER", $this->controller, $this->cardID);
+    if (IsHeroDamageTarget($target))
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
