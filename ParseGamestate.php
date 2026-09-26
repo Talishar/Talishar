@@ -299,7 +299,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
   // Don't burn an undo slot on a state identical to the newest backup (would make undo a no-op)
   $currentGamestate = $lastWrittenGamestate ?? @file_get_contents($filepath . "gamestate.txt");
   if ($currentGamestate !== false && $currentGamestate !== null
-    && file_exists($backupPrefix . "0.txt") && @file_get_contents($backupPrefix . "0.txt") === $currentGamestate) {
+    && @file_get_contents($backupPrefix . "0.txt") === $currentGamestate) {
     return;
   }
   for ($i = MAX_UNDO_BACKUPS - 1; $i > 0; $i--) {

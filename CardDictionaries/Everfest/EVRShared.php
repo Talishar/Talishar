@@ -683,22 +683,28 @@
     $handCount = count($hand);
     $handPieces = HandPieces();
     $auraPieces = AuraPieces();
-    for($i=0; $i<$handCount; $i+= $handPieces) {
-      $pv = PitchValue($hand[$i]);
-      if (is_numeric($pv)) $totalResources += $pv;
+    if ($resourceCounting) {
+      for($i=0; $i<$handCount; $i+= $handPieces) {
+        $pv = PitchValue($hand[$i]);
+        if (is_numeric($pv)) $totalResources += $pv;
+      }
     }
     $auras = GetAuras($mainPlayer);
-    $aurasCount = count($auras);
-    for($i = 0; $i < $aurasCount; $i += $auraPieces) {
-      if ($auras[$i] == "ponder") $totalResources += 3;
+    if ($resourceCounting) {
+      $aurasCount = count($auras);
+      for($i = 0; $i < $aurasCount; $i += $auraPieces) {
+        if ($auras[$i] == "ponder") $totalResources += 3;
+      }
     }
     for($i=0; $i<$handCount; $i+= $handPieces) {
-      $pv = PitchValue($hand[$i]);
-      $availableResources = is_numeric($pv) ? $totalResources - $pv : $totalResources;
       $heaveVal = HeaveValue($hand[$i]);
-      if($heaveVal > 0 && ($availableResources >= $heaveVal || !$resourceCounting)) {
-        $heaveIndicesArr[] = $i;
+      if ($heaveVal <= 0) continue;
+      if ($resourceCounting) {
+        $pv = PitchValue($hand[$i]);
+        $availableResources = is_numeric($pv) ? $totalResources - $pv : $totalResources;
+        if ($availableResources < $heaveVal) continue;
       }
+      $heaveIndicesArr[] = $i;
     }
     return implode(",", $heaveIndicesArr);
   }

@@ -255,7 +255,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
               || ($viewerOwnsPlayerSlot && ($sessionUserName == "PvtVoid" || ($sessionPatreonCampaigns[$sessionID] ?? false)));
           }
 
-          if($isPatronOfCampaign || ($altArtsSessionName !== '' && $campaign->IsTeamMember($altArtsSessionName)) || $campaign->IsTeamMember($altArtsPlayerName)) {
+          if($isPatronOfCampaign || ($altArtsSessionName !== '' && $altArtsSessionName !== $altArtsPlayerName && $campaign->IsTeamMember($altArtsSessionName)) || $campaign->IsTeamMember($altArtsPlayerName)) {
             $altArtsHero = $altArtsPlayerID == 1 ? ($p1CharEquip[0] ?? "") : ($p2CharEquip[0] ?? "");
             $altArts = $campaign->AltArtsList($altArtsHero);
             $altArtsCount = count($altArts);
@@ -765,7 +765,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $goldOrPitchChoice = isset($goldOrPitchChoices["MYHAND-$i"]);
       if ($isGoldPaymentChoice) $playable = $playerID == $currentPlayer && $goldOrPitchChoice;
       else $playable = ($playerID == $currentPlayer) ? $turnPhase == "ARS" || IsPlayable($myHand[$i], $turnPhase, "HAND", -1, $restriction, pitchRestriction:$resourceRestrictedCard) || $actionType == 16 && $turnPhase != "MULTICHOOSEHAND" && strpos($handChoiceIndices, "," . $i . ",") !== false && $restriction == "" : false;
-      if ($restriction == "" && str_contains(GetAbilityTypes($myHand[$i], -1, "HAND"), "I") && InstantRestricted($myHand[$i], "HAND", -1) && !$playable) {
+      if ($restriction == "" && !$playable && str_contains(GetAbilityTypes($myHand[$i], -1, "HAND"), "I") && InstantRestricted($myHand[$i], "HAND", -1)) {
         $restriction = "Instant cannot be played.";
       }
       $border = CardBorderColor($myHand[$i], "HAND", $playable, $playerID);

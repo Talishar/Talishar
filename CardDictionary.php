@@ -1131,13 +1131,12 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
   global $currentPlayer, $mainPlayer;
   $player = $player == "-" ? $currentPlayer : $player;
   $cardID = ShiyanaCharacter($cardID);
-  $set = CardSet($cardID);
-  $subtype = CardSubtype($cardID);
   $card = GetClass($cardID, $currentPlayer);
   if ($card != "-") {
     $abilityType = $card->AbilityType($index, $from);
     if ($abilityType != "") return $abilityType;
   }
+  $subtype = CardSubtype($cardID);
   if ($from == "PLAY" && ClassContains($cardID, "ILLUSIONIST", $player) && DelimStringContains($subtype, "Aura")) {
     if (SearchCharacterForCard($currentPlayer, "luminaris") || SearchCharacterForCard($player, "iris_of_reality") || SearchCharacterForCard($player, "reality_refractor")) return "AA";
   }
@@ -1149,7 +1148,7 @@ function GetAbilityType($cardID, $index = -1, $from = "-", $player="-")
   if ($from == "PLAY" && (SearchCurrentTurnEffects("consuming_appetite_yellow", $player ) || SearchCurrentTurnEffects("consuming_command_blue", $player )) && NameOverride($cardID, $player) == "Blasmophet, the Insatiable Hunger") {
     return "AA";
   }
-  $setResult = match($set) {
+  $setResult = match(CardSet($cardID)) {
     "WTR" => WTRAbilityType($cardID, $index, $from),
     "ARC" => ARCAbilityType($cardID, $index),
     "CRU" => CRUAbilityType($cardID, $index),
@@ -1318,7 +1317,7 @@ function GetEasyAbilityNames($cardID, $index, $from, $allNames=false) {
 
 function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allNames = false): string
 {
-  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed, $CS_NextWizardNAAInstant, $combatChainState, $CCS_EclecticMag;
+  global $currentPlayer, $mainPlayer, $combatChain, $layers, $actionPoints, $CS_PlayIndex, $CS_NumActionsPlayed;
   global $defPlayer, $CombatChain, $Stack;
   $auras = &GetAuras($currentPlayer);
   $names = "";
@@ -1716,22 +1715,24 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
   if ($from == "BANISH") {
-    $banish = new Banish($player);
-    $banishCard = $banish->Card($index);
-    $banishCardID  = $banishCard->ID();
-    $banishCardMod = $banishCard->Modifier();
+    $banish = &GetBanish($player);
+    $banishCardID  = $banish[$index] ?? "-";
+    $banishCardMod = $banish[$index + 1] ?? null;
     if (!(PlayableFromBanish($banishCardID, $banishCardMod, index:$index) || AbilityPlayableFromBanish($banishCardID, $banishCardMod))) return false;
   }
   if ($from == "THEIRBANISH") {
-    $theirBanish = new Banish($otherPlayer);
-    $banishCard = $theirBanish->Card($index);
-    if (!(PlayableFromOtherPlayerBanish($banishCard->ID(), $banishCard->Modifier(), $player, $index))) return false;
+    $theirBanish = &GetBanish($otherPlayer);
+    if (!(PlayableFromOtherPlayerBanish($theirBanish[$index] ?? "-", $theirBanish[$index + 1] ?? null, $player, $index))) return false;
   } else if ($from == "THEIRARS") {
     $theirArs = GetArsenal($otherPlayer);
     if (!(PlayableFromOtherPlayerArsenal($theirArs[$index], $theirArs[$index + 1]))) return false;
   } else if ($from == "GY") {
-    $discard = new Discard($currentPlayer);
-    if (!PlayableFromGraveyard($cardID, $discard->Card($index)->Facing(), $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
+    $gyFacing = "UP";
+    if ($index != -1) {
+      $gyDiscard = &GetDiscard($currentPlayer);
+      $gyFacing = $gyDiscard[$index + 2] ?? "UP";
+    }
+    if (!PlayableFromGraveyard($cardID, $gyFacing, $player, $index) && !AbilityPlayableFromGraveyard($cardID, $index)) return false;
   } elseif (($from == "COMBATCHAINATTACKS" || $from == "PASTCHAINLINK") && (!AbilityPlayableFromCombatChain($cardID, "-") || !CanPlayInstant($phase))) return false;
   $character = &GetPlayerCharacter($player);
   $cardType = CardType($cardID, $from, $currentPlayer);
@@ -1793,8 +1794,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
       return false;
     }
   }
-  global $CS_NumActionsPlayed, $combatChainState, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
-  global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer, $CCS_NumUsedInReactions;
+  global $CS_NumActionsPlayed, $CCS_BaseAttackDefenseMax, $CS_NumNonAttackCards, $CS_NumAttackCards;
+  global $CCS_ResourceCostDefenseMin, $CCS_CardTypeDefenseRequirement, $actionPoints, $mainPlayer, $defPlayer;
   global $CombatChain, $combatChain, $layers, $CCS_CachedTotalPower;
   if ($phase != "P" && $cardType == "DR" && !IsHeroAttackTarget() && $abilityTypes == "") return false;
   if ($phase == "D" && $cardType == "DR" && !IsHeroAttackTarget() && $currentPlayer != $mainPlayer) return false;
@@ -2372,7 +2373,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
-  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter, $ChainLinks;
+  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $currentPlayer;
   $character = &GetPlayerCharacter($player);
@@ -4269,7 +4270,7 @@ function PlayableFromOtherPlayerArsenal($cardID, $face="DOWN", $player ="")
 
 function PlayableFromGraveyard($cardID, $mod="-", $player = "", $index = -1)
 {
-  global $currentPlayer, $mainPlayer, $CurrentTurnEffects;
+  global $currentPlayer, $CurrentTurnEffects;
   if ($player == "") $player = $currentPlayer;
   if (isFaceDownMod($mod)) return false;
   if ($player == $currentPlayer && HasWateryGrave($cardID)) {

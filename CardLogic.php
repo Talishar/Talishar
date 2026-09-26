@@ -429,7 +429,7 @@ function ProcessDecisionQueue()
 
 function CloseDecisionQueue($skip=false)
 {
-  global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $mainPlayer, $Stack;
+  global $turn, $decisionQueue, $dqState, $combatChain, $currentPlayer, $mainPlayer;
   $dqState[0] = "0";
   $turn[0] = $dqState[1];
   $turn[1] = $dqState[2];
@@ -504,13 +504,13 @@ function AddTriggersToStack($preLayers = null)
 //Must be called with the my/their context
 function ContinueDecisionQueue($lastResult = "")
 {
-  global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $otherPlayer, $combatChainState;
-  global $layers, $layerPriority, $dqVars, $dqState, $CS_AbilityIndex, $CS_AdditionalCosts, $mainPlayer, $CS_LayerPlayIndex;
-  global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
-  global $CCS_CachedPreBlockValue, $CS_LayerResolved, $CombatChain;
+  global $decisionQueue, $turn, $currentPlayer, $makeCheckpoint, $layers, $dqVars, $dqState, $mainPlayer;
 
   $dqCount = count($decisionQueue);
   if ($dqCount == 0 || IsGamePhase($decisionQueue[0])) {
+    global $otherPlayer, $layerPriority, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_LayerPlayIndex;
+    global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
+    global $CS_LayerResolved, $CombatChain;
     $p1Health = GetHealth(1);
     $p2Health = GetHealth(2);
     if ($p1Health <= 0 && $p2Health > 0)

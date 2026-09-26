@@ -3,7 +3,7 @@
 function ProcessMacros()
 {
   global $currentPlayer, $turn, $actionPoints, $mainPlayer, $defPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
-  global $combatChainState, $CCS_RequiredEquipmentBlock, $EffectContext, $CS_PendingNAACard;
+  global $CCS_RequiredEquipmentBlock, $CS_PendingNAACard;
   $somethingChanged = true;
   $lastPhase = $turn[0];
   for ($i = 0; $i < $numPass; ++$i) {
