@@ -1276,11 +1276,13 @@ function isUntappedPrevented($MZindex, $zoneName, $player, $endStepUntap=false):
   $zoneName = $MZparts[0];
   $index = intval($MZparts[1]);
   $zone = &GetMZZone($player, $zoneName);
-  if(SearchCurrentTurnEffects("goldkiss_rum-PREVENTION", $player) && $MZindex == "MYCHAR-0" && !ClassContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
-    return true;
-  }
-  if(SearchCurrentTurnEffects("turn_heads_blue", $player) && $MZindex == "MYCHAR-0") {
-    return true;
+  if($MZindex == "MYCHAR-0") {
+    if(SearchCurrentTurnEffects("goldkiss_rum-PREVENTION", $player) && !ClassContains(GetMZCard($player, $MZindex), "PIRATE", $player)) {
+      return true;
+    }
+    if(SearchCurrentTurnEffects("turn_heads_blue", $player)) {
+      return true;
+    }
   }
   if (str_contains($zoneName, "CHAR")) {
     $uid = $zone[$index + 11] ?? "-";

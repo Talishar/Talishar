@@ -228,7 +228,12 @@ function FindFavoriteDeckRow($conn, $userId, $deckLink, $columns = [])
 
 function DeckCosmeticCacheKey($userId, $deckLink)
 {
-  return 'deck_cosmetics_' . hash('sha256', intval($userId) . '|' . NormalizeDeckLinkForMatch($deckLink));
+  return DeckCosmeticSharedKey(intval($userId) . '|' . NormalizeDeckLinkForMatch($deckLink));
+}
+
+function DeckCosmeticSharedKey($requestKey)
+{
+  return 'deck_cosmetics_' . hash('sha256', $requestKey);
 }
 
 function IsDeckCosmeticCacheAvailable()
@@ -264,7 +269,7 @@ function GetDeckCosmeticData($userId, $deckLink)
     return $deckCosmeticDataCache[$requestKey] = null;
   }
 
-  $sharedKey = DeckCosmeticCacheKey($userId, $deckLink);
+  $sharedKey = DeckCosmeticSharedKey($requestKey);
   if (IsDeckCosmeticCacheAvailable()) {
     $cacheHit = false;
     $cached = @apcu_fetch($sharedKey, $cacheHit);
