@@ -27,10 +27,8 @@ function Await($player, $function="",  $returnName="LASTRESULT", $lastResultName
       AddDecisionQueue("CLEARDQVARS", $player, "-");
     }
     else AddDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
-    // AddDecisionQueue("EQUALPASS", $player, "CARDID-PASS", $subsequent);
   }
   else {
-    // PrependDecisionQueue("EQUALPASS", $player, "CARDID-PASS", $subsequent);
     if ($final) {
       PrependDecisionQueue("CLEARDQVARS", $player, "-");
       PrependDecisionQueue("ELSE", $player, "-");
@@ -164,6 +162,8 @@ function ChooseMultiZoneAwait($player) {
   $indices = $dqVars["indices"] ?? "";
   if ($indices == "" || $indices == "PASS") return "PASS";
   $notSubsequent = $dqVars["notSubsequent"] ?? false;
+  if ($exp_may)
+    PrependDecisionQueue("EQUALPASS", $player, "CARDID-PASS", 1);
   PrependDecisionQueue("SETDQVAR", $player, "MZIndex", 1); //set a default place to save the last result
   if ($may)
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
