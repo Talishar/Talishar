@@ -27,10 +27,10 @@ function Await($player, $function="",  $returnName="LASTRESULT", $lastResultName
       AddDecisionQueue("CLEARDQVARS", $player, "-");
     }
     else AddDecisionQueue("SETDQVAR", $player, $returnName, $subsequent);
-    AddDecisionQueue("EQUALPASS", $player, "CARDID-PASS", $subsequent);
+    // AddDecisionQueue("EQUALPASS", $player, "CARDID-PASS", $subsequent);
   }
   else {
-    PrependDecisionQueue("EQUALPASS", $player, "CARDID-PASS", $subsequent);
+    // PrependDecisionQueue("EQUALPASS", $player, "CARDID-PASS", $subsequent);
     if ($final) {
       PrependDecisionQueue("CLEARDQVARS", $player, "-");
       PrependDecisionQueue("ELSE", $player, "-");
