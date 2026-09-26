@@ -3078,16 +3078,20 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       }
       // you can play it, but it won't do anything
       return false;
-    case "brothers_of_flame_red":
-      if (NumDraconicChainLinks() < 2) return true;
-      if (!$CombatChain->HasCurrentLink()) return true;
-      if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
-      return false;
     case "affirm_loyalty_red":
     case "endear_devotion_red":
     case "blistering_blade_red":
     case "dynastic_dedication_red":
     case "imperial_intent_red":
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (SearchCombatChainAttacks($currentPlayer, subtype:"Dagger") != "") return false;
+      if (SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return false;
+      return true;
+    case "brothers_of_flame_red":
+      if (NumDraconicChainLinks() < 2) return true;
+      if (!$CombatChain->HasCurrentLink()) return true;
+      if (!SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
+      return false;
     case "scalding_iron_red":
     case "searing_gaze_red":
     case "sizzling_steel_red":

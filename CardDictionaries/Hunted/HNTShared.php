@@ -468,7 +468,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       break;
     case "affirm_loyalty_red":
     case "endear_devotion_red":
-      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
+      $targetArr = explode("-", $target, 2);
+      if ($targetArr[0] == "COMBATCHAINATTACKS") {
+        if (SubtypeContains(GetMZCard($currentPlayer, $target), "Dagger", $currentPlayer)) AddEffectToPastAttack(intdiv((int)$targetArr[1], ChainLinksPieces()), $cardID);
+      }
+      else if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
       if (NumDraconicChainLinks() >=2) PlayAura("fealty", $currentPlayer);
       break;
     case "fire_and_brimstone_red":
@@ -489,7 +493,11 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "sisters_of_fire_red":
     case "sizzling_steel_red":
     case "stabbing_pain_red":
-      if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
+      $targetArr = explode("-", $target, 2);
+      if ($targetArr[0] == "COMBATCHAINATTACKS") {
+        if (SubtypeContains(GetMZCard($currentPlayer, $target), "Dagger", $currentPlayer)) AddEffectToPastAttack(intdiv((int)$targetArr[1], ChainLinksPieces()), $cardID);
+      }
+      else if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "provoke_blue":
       $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
