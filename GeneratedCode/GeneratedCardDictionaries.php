@@ -46694,7 +46694,6 @@ return match($cardID) {
 "blessing_of_spirits_blue" => true,
 "celestial_kimono" => true,
 "circular_flowtide_yellow" => true,
-"cosmo_scroll_of_ancestral_tapestry" => true,
 "crackle_from_afar_blue" => true,
 "diadem_of_dreamstate" => true,
 "elliptical_conflux_yellow" => true,
