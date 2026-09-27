@@ -937,34 +937,6 @@ class figment_of_hope_yellow extends Card {
   function Backside() {
     return "suraya_archangel_of_endless_hope";
   }
-
-  function SpecialSubType() {
-    return "Figment";
-  }
-
-  function SpecialCost() {
-    return 4;
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialName() {
-    return "Figment of Hope";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialTalent() {
-    return "LIGHT";
-  }
 }
 
 class suraya_archangel_of_endless_hope extends Card {
@@ -995,38 +967,6 @@ class suraya_archangel_of_endless_hope extends Card {
 
   function Frontside() {
     return "figment_of_hope_yellow";
-  }
-
-  function SpecialType() {
-    return "-"; //this seems to be required for backside allies?
-  }
-
-  function SpecialSubType() {
-    return "Angel,Ally"; // may be required even after fabcube update
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialName() {
-    return "Suraya, Archangel of Endless Hope";
-  }
-
-  function SpecialHealth() {
-    return 4;
-  }
-
-  function WardAmount($index) {
-    return 4;
-  }
-
-  function HasWard() {
-    return true;
-  }
-
-  function SpecialTalent() {
-    return "LIGHT";
   }
 }
 
@@ -2002,30 +1942,6 @@ class herald_of_hope_red extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect();
   }
- 
-  function SpecialName() {
-    return "Herald of Hope";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialClass() {
-    return "ILLUSIONIST";
-  }
-
-  function SpecialTalent() {
-    return "LIGHT";
-  }
-
-  function HasPhantasm() {
-    return true;
-  }
 }
 
 class herald_of_hope_yellow extends Card {
@@ -2046,34 +1962,6 @@ class herald_of_hope_yellow extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect();
   }
- 
-  function SpecialName() {
-    return "Herald of Hope";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
-
-  function SpecialClass() {
-    return "ILLUSIONIST";
-  }
-
-  function SpecialTalent() {
-    return "LIGHT";
-  }
-
-  function HasPhantasm() {
-    return true;
-  }
 }
 
 class herald_of_hope_blue extends Card {
@@ -2093,34 +1981,6 @@ class herald_of_hope_blue extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     $this->baseCard->HitEffect();
-  }
- 
-  function SpecialName() {
-    return "Herald of Hope";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialClass() {
-    return "ILLUSIONIST";
-  }
-
-  function SpecialTalent() {
-    return "LIGHT";
-  }
-
-  function HasPhantasm() {
-    return true;
   }
 }
 
