@@ -114,12 +114,11 @@ Zone, then `:` for conditions, `;` separates AND conditions, `&` combines search
 
 To track per-turn game events (e.g., "if you've destroyed X this turn"), use **ClassState** variables:
 
-1. **`Constants.php`** — Define constant (next sequential number after `$CS_NumWeaponsActivated = 115`), add to `global` declaration in `ResetMainClassState()`, and initialize to 0 in the same function.
-2. **`MenuFiles/StartHelper.php`** — Append ` 0` to the class state string on line 35 (one value per constant).
-3. **Trigger location** — Call `IncrementClassState($player, $CS_YourConstant)` where the event occurs (e.g., `AuraAbilities.php:DestroyAura()` for aura destruction).
-4. **Check** — `GetClassState($player, $CS_YourConstant) > 0` in card logic.
+1. **`Constants.php`** — Add `"YourState" => 0,` (with its starting value) to the **end** of `$classStateDefaults`. That's the only definition needed: it sets the starting value, the per-turn reset, and a matching `$CS_YourState` variable. Values are saved to the gamestate in this order, so never reorder or remove entries. If the state should survive past the end of the turn, also add it to `$persistentClassStates`.
+2. **Trigger location** — Call `IncrementClassState($player, "YourState")` where the event occurs (e.g., `AuraAbilities.php:DestroyAura()` for aura destruction).
+3. **Check** — `GetClassState($player, "YourState") > 0` in card logic.
 
-Existing examples: `$CS_NumSeismicSurgeDestroyed`, `$CS_NumRedPlayed`, `$CS_NumWeaponsActivated`.
+Class states are keyed by their name, so `"YourState"` and `$CS_YourState` (declared `global`) are interchangeable. Existing examples: `NumSeismicSurgeDestroyed`, `NumRedPlayed`, `NumWeaponsActivated`.
 
 ## Modal Choose-1 Pattern (BUTTONINPUT + Await + Trigger Layer)
 

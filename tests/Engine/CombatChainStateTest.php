@@ -130,38 +130,44 @@ class CombatChainStateTest extends TestCase
 
     public function testNumActionsPlayedIsAtIndexSeven(): void
     {
-        global $CS_NumActionsPlayed;
-        $this->assertSame(7, $CS_NumActionsPlayed);
+        global $CS_NumActionsPlayed, $classStateDefaults;
+        $this->assertSame("NumActionsPlayed", $CS_NumActionsPlayed);
+        $this->assertSame(7, array_search($CS_NumActionsPlayed, array_keys($classStateDefaults)));
     }
 
     public function testDamageTakenIsAtIndexSix(): void
     {
-        global $CS_DamageTaken;
-        $this->assertSame(6, $CS_DamageTaken);
+        global $CS_DamageTaken, $classStateDefaults;
+        $this->assertSame("DamageTaken", $CS_DamageTaken);
+        $this->assertSame(6, array_search($CS_DamageTaken, array_keys($classStateDefaults)));
     }
 
     public function testNumCardsDrawnIsAtIndexTwelve(): void
     {
-        global $CS_NumCardsDrawn;
-        $this->assertSame(12, $CS_NumCardsDrawn);
+        global $CS_NumCardsDrawn, $classStateDefaults;
+        $this->assertSame("NumCardsDrawn", $CS_NumCardsDrawn);
+        $this->assertSame(12, array_search($CS_NumCardsDrawn, array_keys($classStateDefaults)));
     }
 
     public function testNumAttacksIsAtIndexThirty(): void
     {
-        global $CS_NumAttacks;
-        $this->assertSame(30, $CS_NumAttacks);
+        global $CS_NumAttacks, $classStateDefaults;
+        $this->assertSame("NumAttacks", $CS_NumAttacks);
+        $this->assertSame(30, array_search($CS_NumAttacks, array_keys($classStateDefaults)));
     }
 
     public function testDamageDealtIsAtIndexFiftyOne(): void
     {
-        global $CS_DamageDealt;
-        $this->assertSame(51, $CS_DamageDealt);
+        global $CS_DamageDealt, $classStateDefaults;
+        $this->assertSame("DamageDealt", $CS_DamageDealt);
+        $this->assertSame(51, array_search($CS_DamageDealt, array_keys($classStateDefaults)));
     }
 
     public function testDamageDealtToOpponentIsAtIndexNinetyFour(): void
     {
-        global $CS_DamageDealtToOpponent;
-        $this->assertSame(94, $CS_DamageDealtToOpponent);
+        global $CS_DamageDealtToOpponent, $classStateDefaults;
+        $this->assertSame("DamageDealtToOpponent", $CS_DamageDealtToOpponent);
+        $this->assertSame(94, array_search($CS_DamageDealtToOpponent, array_keys($classStateDefaults)));
     }
 
     public function testWeaponIndexSentinelIsNegativeOne(): void
