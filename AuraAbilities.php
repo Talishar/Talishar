@@ -822,11 +822,6 @@ function AuraStartTurnAbilities()
         }
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
-      case "confidence":
-        AddCurrentTurnEffect($auras[$i], $mainPlayer, "PLAY");
-        DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
-        IncrementClassState($mainPlayer, $CS_NumConfidenceDestroyed, 1);
-        break;
       default:
         break;
       }

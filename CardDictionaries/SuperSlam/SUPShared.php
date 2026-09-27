@@ -48,7 +48,6 @@ function SUPCombatEffectActive($cardID, $attackID): bool
 {
   global $mainPlayer;
   return match ($cardID) {
-    "confidence" => TypeContains($attackID, "AA", $mainPlayer),
     "punching_gloves" => TypeContains($attackID, "AA", $mainPlayer),
     "kayo_underhanded_cheat", "kayo_strong_arm" => true,
     default => false,

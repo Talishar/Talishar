@@ -6199,4 +6199,23 @@ class liars_charm_yellow extends Card {
     ReEvalCombatChain();
   }
 }
+
+class confidence extends Card {
+  function __construct($controller) {
+    $this->cardID = "confidence";
+    $this->controller = $controller;
+  }
+
+  function StartTurnAbility($index) {
+    global $CS_NumConfidenceDestroyed;
+    AddCurrentTurnEffect($this->cardID, $this->controller, "PLAY");
+    IncrementClassState($this->controller, $CS_NumConfidenceDestroyed, 1);
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    return TypeContains($CombatChain->AttackCard()->ID(), "AA");
+  }
+}
 ?>
