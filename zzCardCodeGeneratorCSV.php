@@ -982,6 +982,8 @@
       }
       // Granted keywords are often lowercase (e.g. "this gets **dominate**")
       $keyword = str_replace([" Of ", " And ", " And/or "], [" of ", " and ", " and/or "], ucwords(trim($keyword)));
+      // A card only has ward with an amount (e.g. "**Ward 3**"); a bare "**ward**" refers to other cards' ward
+      if($keyword == "Ward") continue;
       if(preg_match('/^Legendary (.+)$/', $keyword, $parts)) array_push($keywords, "Legendary", $parts[1]);
       else if(preg_match('/^Legend of the (.+)$/i', $keyword, $parts)) array_push($keywords, "Legendary", $parts[1]);
       else {
