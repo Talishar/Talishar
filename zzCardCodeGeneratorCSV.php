@@ -980,8 +980,11 @@
           if(!preg_match('/\b(this|it) $/i', substr($sentence, 0, $verbOffset))) continue;
         }
       }
+      // A card's own combo always starts an ability ("**Combo** - ..."); a lowercase "**combo**" only refers to it,
+      // e.g. "If it has **combo**, you may play it this turn"
+      if(strcasecmp(trim($keyword), "combo") == 0 && trim($keyword) != "Combo") continue;
       // Granted keywords are often lowercase (e.g. "this gets **dominate**")
-      $keyword = str_replace([" Of ", " And ", " And/or "], [" of ", " and ", " and/or "], ucwords(trim($keyword)));
+      $keyword =str_replace([" Of ", " And ", " And/or "], [" of ", " and ", " and/or "], ucwords(trim($keyword)));
       // A card only has ward with an amount (e.g. "**Ward 3**"); a bare "**ward**" refers to other cards' ward
       if($keyword == "Ward") continue;
       if(preg_match('/^Legendary (.+)$/', $keyword, $parts)) array_push($keywords, "Legendary", $parts[1]);
