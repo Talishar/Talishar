@@ -6,7 +6,7 @@
   $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "TCC", "EVO", "HVY",
                    "MST", "AKO", "ASB", "AAZ", "ROS", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "LGS", "HER",
                    "FAB", "JDG", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP", "SUP", "APS", "ARR", "AAC", "AHA", 
-                   "PEN", "OMN", "AZS", "MPW", "AOL", "DDD", "IAR", "AMA", "SAT", "SBW", "MPA", "AMO", "TNP"];
+                   "PEN", "OMN", "AZS", "MPW", "AOL", "DDD", "IAR", "AMA", "SAT", "SBW", "MPA", "AMO", "TNP", "SPW"];
 
   // Main branch FAB Cube
   // $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
@@ -32,26 +32,24 @@
   if(!is_dir(__DIR__ . "/GeneratedCode")) mkdir(__DIR__ . "/GeneratedCode", 777, true);
 
   $filename = __DIR__ . "/GeneratedCode/GeneratedCardDictionaries.php";
-  $handler = fopen($filename, "w");
 
-  fwrite($handler, "<?php\r\n");
-
-  GenerateFunction($cardArray, $handler, "CardType", "type", "AA");
-  GenerateFunction($cardArray, $handler, "PowerValue", "attack", "0");
-  GenerateFunction($cardArray, $handler, "BlockValue", "block", "3");
-  GenerateFunction($cardArray, $handler, "CardName", "name");
-  GenerateFunction($cardArray, $handler, "PitchValue", "pitch", "1");
-  GenerateFunction($cardArray, $handler, "CardCost", "cost", "0");
-  GenerateFunction($cardArray, $handler, "CardSubtype", "subtype", "");
-  GenerateFunction($cardArray, $handler, "CharacterHealth", "health", "20");//Also images
-  GenerateFunction($cardArray, $handler, "CharacterIntellect", "intelligence", "4");
-  GenerateFunction($cardArray, $handler, "Rarity", "rarity", "C");
-  GenerateFunction($cardArray, $handler, "Is1H", "1H", "false");
-  GenerateFunction($cardArray, $handler, "CardClass", "cardClass", "NONE");
-  GenerateFunction($cardArray, $handler, "CardTalent", "cardTalent", "NONE");
-  GenerateFunction($cardArray, $handler, "SetID", "setID", "");
-  GenerateFunction($cardArray, $handler, "SetIDtoCardID", "SIDtoCID", "");
-  GenerateFunction($cardArray, $handler, "GoAgain", "goAgain", "false");
+  $generatedFunctions = [];
+  $generatedFunctions[] = GenerateFunction($cardArray, "CardType", "type", "AA");
+  $generatedFunctions[] = GenerateFunction($cardArray, "PowerValue", "attack", "0");
+  $generatedFunctions[] = GenerateFunction($cardArray, "BlockValue", "block", "3");
+  $generatedFunctions[] = GenerateFunction($cardArray, "CardName", "name");
+  $generatedFunctions[] = GenerateFunction($cardArray, "PitchValue", "pitch", "1");
+  $generatedFunctions[] = GenerateFunction($cardArray, "CardCost", "cost", "0");
+  $generatedFunctions[] = GenerateFunction($cardArray, "CardSubtype", "subtype", "");
+  $generatedFunctions[] = GenerateFunction($cardArray, "CharacterHealth", "health", "20");//Also images
+  $generatedFunctions[] = GenerateFunction($cardArray, "CharacterIntellect", "intelligence", "4");
+  $generatedFunctions[] = GenerateFunction($cardArray, "Rarity", "rarity", "C");
+  $generatedFunctions[] = GenerateFunction($cardArray, "Is1H", "1H", "false");
+  $generatedFunctions[] = GenerateFunction($cardArray, "CardClass", "cardClass", "NONE");
+  $generatedFunctions[] = GenerateFunction($cardArray, "CardTalent", "cardTalent", "NONE");
+  $generatedFunctions[] = GenerateFunction($cardArray, "SetID", "setID", "");
+  $generatedFunctions[] = GenerateFunction($cardArray, "SetIDtoCardID", "SIDtoCID", "");
+  $generatedFunctions[] = GenerateFunction($cardArray, "GoAgain", "goAgain", "false");
 
   // Generate keyword functions
   $keywordList = [
@@ -76,16 +74,14 @@
 
   foreach ($keywordList as $keyword) {
     $functionName = str_replace(" ", "", $keyword); // Remove spaces for function names
-    GenerateKeywordFunction($cardArray, $handler, "Has" . $functionName, $keyword, false);
-    if (in_array($keyword, $hasKeywordAmount)) GenerateKeywordFunction($cardArray, $handler, $functionName . "Amount", $keyword, true);
+    $generatedFunctions[] = GenerateKeywordFunction($cardArray, "Has" . $functionName, $keyword, false);
+    if (in_array($keyword, $hasKeywordAmount)) $generatedFunctions[] = GenerateKeywordFunction($cardArray, $functionName . "Amount", $keyword, true);
   }
-  GenerateKeywordFunction($cardArray, $handler, "IsAndOrFuse", "and/or", false);
+  $generatedFunctions[] = GenerateKeywordFunction($cardArray, "IsAndOrFuse", "and/or", false);
 
-  GenerateCardTokensFunction($cardArray, $handler);
+  $generatedFunctions[] = GenerateCardTokensFunction($cardArray);
 
-  fwrite($handler, "?>");
-
-  fclose($handler);
+  WriteGeneratedDictionaries($filename, $generatedFunctions);
 
   function GetCardIdentifier($name, $pitch, $delimiter="_")
   {
@@ -133,13 +129,36 @@
     }
   }
 
-  function ValidSet($setID)
+  // Returns the earliest valid printing, for backwards compatability. Other LGS promos are only used when a card has
+  // no other printing (e.g. batter_to_a_pulp_red), so reprinted cards keep their original set ID.
+  function EarliestSetID($card)
+  {
+    global $originalSets;
+    foreach ([false, true] as $allowAnyLGS) {
+      $setID = "";
+      $earliestSetIndex = count($originalSets) + 1;
+      for ($j = 0; $j < count($card->printings); $j++) {
+        $tempSetID = $card->printings[$j]->id;
+        if (!ValidSet($tempSetID, $allowAnyLGS)) continue;
+        $ind = array_search(substr($tempSetID, 0, 3), $originalSets);
+        if ($ind < $earliestSetIndex) {
+          $setID = $tempSetID;
+          $earliestSetIndex = $ind;
+        }
+      }
+      if ($setID != "") return $setID;
+    }
+    return "";
+  }
+
+  function ValidSet($setID, $allowAnyLGS = false)
   {
     global $originalSets;
     $set = substr($setID, 0, 3);
     $cardNumber = $cardNumber = substr($setID, 3, 3);
     if(!in_array($set, $originalSets)) return false;
     if($set == "LSS" && $cardNumber != 004) return false;
+    if($set == "LGS" && $allowAnyLGS) return true;
     if($set == "LGS" && $cardNumber < 176) return false;
     if($set == "LGS" && $cardNumber == 406) return true;
     if($set == "LGS" && $cardNumber > 178) return false;
@@ -150,35 +169,21 @@
     return true;
   }
 
-  function GenerateFunction(&$cardArray, $handler, $functionName, $propertyName, $defaultValue="")
+  // Returns the function's entries (key => PHP literal) and defaults instead of writing them, so zzCardCodeGeneratorCSV.php can merge in more
+  function GenerateFunction(&$cardArray, $functionName, $propertyName, $defaultValue="")
   {
-    global $originalSets;
     $rarityDict = ["T"=>0, "B"=>0, "C"=>1, "R"=>2, "M"=>3, "L"=>4, "F"=>5, "V"=>6, "P"=>7, "S"=>8, "-"=>9];
     echo "<BR>" . $functionName . "<BR>";
-    fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
     $isString = true;
     $isBool = false;
     if($propertyName == "attack" || $propertyName == "block" || $propertyName == "pitch" || $propertyName == "cost" || $propertyName == "health" || $propertyName == "intelligence" || $propertyName == "1H" || $propertyName == "goAgain") $isString = false;
     if($propertyName == "1H" || $propertyName == "specialization" || $propertyName == "legendary" || $propertyName == "goAgain") $isBool = true;
-    fwrite($handler, "if(is_int(\$cardID)) return " . ($isString ? "\"\"" : "0") . ";\r\n");
-    fwrite($handler, "return match(\$cardID) {\r\n");
     $associativeArray = [];
     for($i=0; $i<count($cardArray); ++$i)
     {
       $cardRarity = "-";
       $cardID = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
-      $setID = "";
-      $earliestSetIndex = count($originalSets) + 1;
-      // get the earliest printing, for backwards compatability
-      for ($j = 0; $j < count($cardArray[$i]->printings); $j++) {
-        $tempSetID = $cardArray[$i]->printings[$j]->id;
-        if (!ValidSet($tempSetID)) continue;
-        $ind = array_search(substr($tempSetID, 0, 3), $originalSets);
-        if ($ind < $earliestSetIndex) {
-          $setID = $tempSetID;
-          $earliestSetIndex = $ind;
-        }
-      }
+      $setID = EarliestSetID($cardArray[$i]);
       switch ($cardID) {
         case "minerva_themis":
           $setID = "MON405";
@@ -239,36 +244,21 @@
         }
       }
     }
-    TraverseAssociativeArray($associativeArray, $handler, $isString, $defaultValue);
-    fwrite($handler, "};\r\n}\r\n");
+    $entries = [];
+    foreach ($associativeArray as $key => $data) $entries[$key] = $isString ? "\"$data\"" : $data;
+    return GeneratedFunction($functionName, $entries, $isString ? "\"$defaultValue\"" : $defaultValue, $isString ? "\"\"" : "0");
   }
 
-  function GenerateKeywordFunction(&$cardArray, $handler, $functionName, $keyword, $isAmountFunction)
+  function GenerateKeywordFunction(&$cardArray, $functionName, $keyword, $isAmountFunction)
   {
-    global $originalSets;
     echo "<BR>" . $functionName . "<BR>";
-    fwrite($handler, "function Generated" . $functionName . "(\$cardID) {\r\n");
-    fwrite($handler, "if(is_int(\$cardID)) return " . ($isAmountFunction ? "0" : "false") . ";\r\n");
-    fwrite($handler, "return match(\$cardID) {\r\n");
     $associativeArray = [];
     
     for($i=0; $i<count($cardArray); ++$i)
     {
       $cardID = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
-      $setID = "";
-      $earliestSetIndex = count($originalSets) + 1;
-      
-      // get the earliest printing, for backwards compatability
-      for ($j = 0; $j < count($cardArray[$i]->printings); $j++) {
-        $tempSetID = $cardArray[$i]->printings[$j]->id;
-        if (!ValidSet($tempSetID)) continue;
-        $ind = array_search(substr($tempSetID, 0, 3), $originalSets);
-        if ($ind < $earliestSetIndex) {
-          $setID = $tempSetID;
-          $earliestSetIndex = $ind;
-        }
-      }
-      
+      $setID = EarliestSetID($cardArray[$i]);
+
       switch ($cardID) {
         case "minerva_themis":
           $setID = "MON405";
@@ -351,29 +341,15 @@
       }
     }
     
-    if ($isAmountFunction) {
-      foreach ($associativeArray as $cID => $amount) {
-        fwrite($handler, "\"$cID\" => $amount,\r\n");
-      }
-      fwrite($handler, "default => 0\r\n");
-    }
-    else {
-      foreach ($associativeArray as $cID => $value) {
-        fwrite($handler, "\"$cID\" => true,\r\n");
-      }
-      fwrite($handler, "default => false\r\n");
-    }
-    
-    fwrite($handler, "};\r\n}\r\n");
+    $default = $isAmountFunction ? "0" : "false";
+    $entries = [];
+    foreach ($associativeArray as $cID => $value) $entries[$cID] = $isAmountFunction ? $value : "true";
+    return GeneratedFunction($functionName, $entries, $default, $default);
   }
 
-  function GenerateCardTokensFunction(&$cardArray, $handler)
+  function GenerateCardTokensFunction(&$cardArray)
   {
     echo "<BR>CardTokens<BR>";
-    fwrite($handler, "function GeneratedCardTokens(\$cardID) {\r\n");
-    fwrite($handler, "if(is_int(\$cardID)) return \"\";\r\n");
-    fwrite($handler, "return match(\$cardID) {\r\n");
-
     $tokens = [];
     for ($i = 0; $i < count($cardArray); ++$i) {
       if (!in_array("Token", $cardArray[$i]->types)) continue;
@@ -400,11 +376,48 @@
       $associativeArray[$cardID] = implode(",", $matched);
     }
 
-    foreach ($associativeArray as $cID => $tokenList) {
-      fwrite($handler, "\"$cID\" => \"$tokenList\",\r\n");
-    }
-    fwrite($handler, "default => \"\"\r\n");
+    $entries = [];
+    foreach ($associativeArray as $cID => $tokenList) $entries[$cID] = "\"$tokenList\"";
+    return GeneratedFunction("CardTokens", $entries, "\"\"", "\"\"");
+  }
+
+  // $entries maps each card (or set ID) to the PHP literal it returns; $intReturn is what it returns for an int card ID
+  function GeneratedFunction($name, $entries, $default, $intReturn)
+  {
+    return ["name" => $name, "entries" => $entries, "default" => $default, "intReturn" => $intReturn];
+  }
+
+  function WriteMatchFunction($handler, $functionName, $entries, $default, $intReturn = null)
+  {
+    fwrite($handler, "function " . $functionName . "(\$cardID) {\r\n");
+    if ($intReturn !== null) fwrite($handler, "if(is_int(\$cardID)) return " . $intReturn . ";\r\n");
+    fwrite($handler, "return match(\$cardID) {\r\n");
+    foreach ($entries as $key => $literal) fwrite($handler, "\"$key\" => $literal,\r\n");
+    fwrite($handler, "default => $default\r\n");
     fwrite($handler, "};\r\n}\r\n");
+  }
+
+  // Writes each function to GeneratedFunctions/Generated{Name}.php next to $filename, and $filename to include them all
+  function WriteGeneratedDictionaries($filename, $generatedFunctions)
+  {
+    $functionDirectory = dirname($filename) . "/GeneratedFunctions";
+    if (!is_dir($functionDirectory)) mkdir($functionDirectory, 0777, true);
+    foreach (glob($functionDirectory . "/*.php") as $oldFile) unlink($oldFile); // So functions no longer generated don't linger
+
+    $handler = fopen($filename, "w");
+    fwrite($handler, "<?php\r\n");
+    fwrite($handler, "// Each generated function is in its own file in GeneratedFunctions\r\n");
+    foreach ($generatedFunctions as $function) {
+      $functionFile = "Generated" . $function["name"] . ".php";
+      fwrite($handler, "include_once __DIR__ . \"/GeneratedFunctions/" . $functionFile . "\";\r\n");
+      $functionHandler = fopen($functionDirectory . "/" . $functionFile, "w");
+      fwrite($functionHandler, "<?php\r\n");
+      WriteMatchFunction($functionHandler, "Generated" . $function["name"], $function["entries"], $function["default"], $function["intReturn"]);
+      fwrite($functionHandler, "?>");
+      fclose($functionHandler);
+    }
+    fwrite($handler, "?>");
+    fclose($handler);
   }
 
   function ExtractKeywordMatch($cardKeyword, $keyword, &$amount)
@@ -570,21 +583,6 @@
         if ($propertyName != "SIDtoCID") $AA[$cardID] = $data;
         else $AA[$setID] = $cardID;
       }
-    }
-  }
-
-  function TraverseAssociativeArray($AA, $handler, $isString, $defaultValue) {
-    if ($isString) {
-      foreach ($AA as $cardID => $data) {
-        fwrite($handler, "\"$cardID\" => \"$data\",\r\n");
-      }
-      fwrite($handler, "default => \"$defaultValue\"\r\n");
-    }
-    else {
-      foreach ($AA as $cardID => $data) {
-        fwrite($handler, "\"$cardID\" => $data,\r\n");
-      }
-      fwrite($handler, "default => $defaultValue\r\n");
     }
   }
 

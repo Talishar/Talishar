@@ -1,0 +1,48 @@
+<?php
+function GeneratedHasClash($cardID) {
+if(is_int($cardID)) return false;
+return match($cardID) {
+"big_hits_big_applause" => true,
+"clash_of_agility_red" => true,
+"clash_of_agility_yellow" => true,
+"clash_of_agility_blue" => true,
+"clash_of_arms_yellow" => true,
+"clash_of_bravado_yellow" => true,
+"clash_of_chests_yellow" => true,
+"clash_of_heads_yellow" => true,
+"clash_of_legs_yellow" => true,
+"clash_of_might_red" => true,
+"clash_of_might_yellow" => true,
+"clash_of_might_blue" => true,
+"clash_of_mountains_red" => true,
+"clash_of_mountains_yellow" => true,
+"clash_of_mountains_blue" => true,
+"clash_of_shields_yellow" => true,
+"clash_of_vigor_red" => true,
+"clash_of_vigor_yellow" => true,
+"clash_of_vigor_blue" => true,
+"fix_the_match_yellow" => true,
+"groundbreaker_crix" => true,
+"millers_grindstone" => true,
+"no_hero_stands_alone_yellow" => true,
+"pec_perfect_red" => true,
+"reckless_stampede_red" => true,
+"stonewall_impasse" => true,
+"test_of_agility_red" => true,
+"test_of_iron_grip_red" => true,
+"test_of_might_red" => true,
+"test_of_strength_red" => true,
+"test_of_vigor_red" => true,
+"tough_smashup_red" => true,
+"tough_smashup_yellow" => true,
+"tough_smashup_blue" => true,
+"trounce_red" => true,
+"victor_goldmane" => true,
+"victor_goldmane_high_and_mighty" => true,
+"vigorous_smashup_red" => true,
+"vigorous_smashup_yellow" => true,
+"vigorous_smashup_blue" => true,
+default => false
+};
+}
+?>
