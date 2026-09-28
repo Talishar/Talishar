@@ -632,13 +632,6 @@ function MSTHitEffect($cardID, $from): void
         AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
       }
       break;
-    case "art_of_desire_body_red":
-    case "art_of_desire_soul_yellow":
-    case "art_of_desire_mind_blue":
-      if (IsHeroAttackTarget()) {
-        $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
-      }
-      break;
     case "bonds_of_attraction_red":
     case "bonds_of_attraction_yellow":
     case "bonds_of_attraction_blue":

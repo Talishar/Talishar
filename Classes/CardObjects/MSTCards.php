@@ -64,44 +64,66 @@
 //   }
 // }
 
+class art_of_desire extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-// class art_of_desire_body_red extends Card {
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "art_of_desire_body_red";
-//     $this->controller = $controller;
-//     }
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		global $defPlayer;
+		$deck = new Deck($defPlayer);
+		$deck->BanishTop("Source-" . $this->cardID, banishedBy: $this->cardID);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		Draw($this->controller);
+		GainHealth(1, $this->controller);
+	}
+}
+
+class art_of_desire_body_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "art_of_desire_body_red";
+		$this->controller = $controller;
+		$this->baseCard = new art_of_desire($this->cardID, $this->controller);
+    }
+
+	function BanishByEffect($cardID, $player) {
+		if (ColorContains($cardID, 1, $player))
+			AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+}
 
 
-// class art_of_desire_mind_blue extends Card {
+class art_of_desire_mind_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "art_of_desire_mind_blue";
+		$this->controller = $controller;
+		$this->baseCard = new art_of_desire($this->cardID, $this->controller);
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "art_of_desire_mind_blue";
-//     $this->controller = $controller;
-//     }
+	function BanishByEffect($cardID, $player) {
+		if (ColorContains($cardID, 3, $player))
+			AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class art_of_desire_soul_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "art_of_desire_soul_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new art_of_desire($this->cardID, $this->controller);
+    }
 
-
-// class art_of_desire_soul_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "art_of_desire_soul_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function BanishByEffect($cardID, $player) {
+		if (ColorContains($cardID, 2, $player))
+			AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+}
 
 
 // class aspect_of_tiger_body_red extends Card {
