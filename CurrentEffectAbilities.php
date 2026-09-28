@@ -518,7 +518,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       break;
     case "big_game_trophy_shot_yellow":
       PutItemIntoPlayForPlayer("gold", $mainPlayer);
-      return 1;
+      break;
     case "regain_composure_blue":
       $inds = GetTapped($mainPlayer, "MYCHAR", "type=C");
       if(empty($inds)) return 1;
