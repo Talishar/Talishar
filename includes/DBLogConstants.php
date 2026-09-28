@@ -69,9 +69,10 @@ const DBL_GET_PROMPT_STATS             = 63;
 const DBL_HARVEST_PUZZLE_CANDIDATE     = 64;
 const DBL_GET_PUZZLE_CANDIDATES        = 65;
 const DBL_CREATE_PUZZLE_GAME           = 66;
+const DBL_CLEAR_PROMPT_STATS           = 67;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 66;
+const DBL_MAX_KEY = 67;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -141,4 +142,5 @@ const DBL_LABELS = [
     64 => 'Libraries/PuzzleHarvest.php::HarvestPuzzleCandidate',
     65 => 'APIs/GetPuzzleCandidates.php',
     66 => 'APIs/CreatePuzzleGame.php',
+    67 => 'APIs/ClearPromptStats.php',
 ];
