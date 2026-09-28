@@ -107,7 +107,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     IncrementClassState($banisher, $CS_Num6PowBan);
     IncrementClassState($player, $CS_Num6PowPutIntoBanish);
     $index = FindCharacterIndex($player, "hooves_of_the_shadowbeast");
-    if ($index >= 0 && IsCharacterAbilityActive($player, $index, checkGem: true) && SearchLayersForCardID("hooves_of_the_shadowbeast") == -1) {
+    if ($index >= 0 && $player == $mainPlayer && IsCharacterAbilityActive($player, $index, checkGem: true) && SearchLayersForCardID("hooves_of_the_shadowbeast") == -1) {
       AddLayer("TRIGGER", $player, $character[$index]);
     }
   }
