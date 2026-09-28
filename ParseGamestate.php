@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/Libraries/GamestateCompatibility.php';
+require_once __DIR__ . '/Constants.php'; // ClassStateFromString
 
 global $gameName;
 function GetStringArray($line)
