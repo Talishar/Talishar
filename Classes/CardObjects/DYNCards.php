@@ -1408,7 +1408,7 @@ class leave_no_witnesses_red extends Card {
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
         else $deck->BanishTop(banishedBy:$cardID, banisher:$this->controller);
 		Await($this->controller, "MultiZoneIndices", search:"THEIRARS", subsequent:0);
-		Await($this->controller, "ChooseMultiZone", may:true);
+		Await($this->controller, "ChooseMultiZone", exp_may:true);
 		Await($this->controller, "MZRemoveAndBanish", banishedBy:$this->cardID, banisher:$this->controller, final:true);
 	}
 

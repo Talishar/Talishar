@@ -163,13 +163,13 @@ function ChooseMultiZoneAwait($player) {
   if ($indices == "" || $indices == "PASS") return "PASS";
   $notSubsequent = $dqVars["notSubsequent"] ?? false;
   if ($exp_may)
-    PrependDecisionQueue("EQUALPASS", $player, "CARDID-PASS", 1);
+    PrependDecisionQueue("EQUALPASS", $player, "CARDID-SKIP", 1);
   PrependDecisionQueue("SETDQVAR", $player, "MZIndex", 1); //set a default place to save the last result
   if ($may)
     PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
   else {
     if ($exp_may)
-      $indices .= ",CARDID-PASS";
+      $indices .= ",CARDID-SKIP";
     PrependDecisionQueue("CHOOSEMULTIZONE", $player, $indices, !$notSubsequent);
     }
   PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose a card", !$notSubsequent);
