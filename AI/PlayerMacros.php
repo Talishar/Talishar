@@ -2,7 +2,7 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $defPlayer, $layers, $decisionQueue, $numPass, $CS_SkipAllRunechants;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $defPlayer, $layers, $decisionQueue, $numPass;
   global $CCS_RequiredEquipmentBlock, $CS_PendingNAACard;
   $somethingChanged = true;
   $lastPhase = $turn[0];
@@ -142,19 +142,10 @@ function ProcessMacros()
         }
       }
       if (!IsGameOver()) {
-        $skipAllRunechants = GetClassState($currentPlayer, $CS_SkipAllRunechants);
-        if ($skipAllRunechants == 1) {
-          if ($turn[0] == "CHOOSEMULTIZONE" || $turn[0] == "MAYCHOOSEMULTIZONE") {
-            $somethingChanged = true;
-            SetClassState($currentPlayer, $CS_SkipAllRunechants, 0);
-          } else if (($layers[2] ?? "-") == "runechant") {
-            $somethingChanged = true;
-            ContinueDecisionQueue("0");
-          } else {
-            SetClassState($currentPlayer, $CS_SkipAllRunechants, 0);
-            $somethingChanged = true;
-            ContinueDecisionQueue("0");
-          }
+        $barrierAnswer = RunechantBarrierPlanAnswer($currentPlayer);
+        if ($barrierAnswer !== "") {
+          $somethingChanged = true;
+          ContinueDecisionQueue($barrierAnswer);
         }
       }
 

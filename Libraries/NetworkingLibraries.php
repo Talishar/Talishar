@@ -32,7 +32,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $gameName, $currentPlayer, $mainPlayer, $turn, $CS_CharacterIndex, $CS_PlayIndex, $decisionQueue, $CS_NextNAAInstant, $skipWriteGamestate, $combatChain, $landmarks;
   global $SET_PassDRStep, $actionPoints, $currentPlayerActivity, $redirectPath, $CS_PlayedAsInstant;
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
-  global $CS_SkipAllRunechants, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
+  global $CS_SkipAllRunechants, $CS_RunechantPreventPlan, $dqVars, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
   global $p1MetafyTiers, $p2MetafyTiers;
   global $CS_OriginalHero;
   global $replaySaveResult, $snapshotSaveResult;
@@ -590,6 +590,26 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 105: //Skip all runechants
       SetClassState($playerID, $CS_SkipAllRunechants, 1);
+      SetClassState($playerID, $CS_RunechantPreventPlan, 0);
+      break;
+    case 113: //Prevent the next X runechants
+      if ($turn[0] != "CHOOSEARCANE") break;
+      [$damage, $source] = array_pad(explode("-", (string)($dqVars[0] ?? ""), 2), 2, "");
+      $amount = RunechantBarrierAmount($turn[2], $damage);
+      $count = min(intval($buttonInput), PendingRunechantDamage($playerID) + 1);
+      if ($source != "runechant" || $amount == 0 || $count < 1) break;
+      SetClassState($playerID, $CS_SkipAllRunechants, 0);
+      SetClassState($playerID, $CS_RunechantPreventPlan, $count - 1);
+      ContinueDecisionQueue(strval($amount));
+      break;
+    case 115: //YESNO: No, and turn off the source's gem until the next turn
+      $index = PromptGemSourceIndex($playerID);
+      if ($index < 0 || !is_numeric($buttonInput) || $index != intval($buttonInput)) break;
+      $character = &GetPlayerCharacter($playerID);
+      $character[$index + 9] = 0;
+      AddCurrentTurnEffect("GEMSNOOZE", $playerID, "-", $character[$index + 11]);
+      AddEvent("GEMOFF", "$playerID:" . $character[$index]);
+      ContinueDecisionQueue("NO");
       break;
     case 106: //Use floating resources instead of the Gold alternative payment
       if ($turn[0] == "PAYGOLDORPITCH") {
@@ -2489,7 +2509,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   $resources = &GetResources($currentPlayer);
   $pitch = &GetPitch($currentPlayer);
   $dynCostResolved = intval($dynCostResolved);
-  
+  ClearRunechantBarrierPlan(1);
+  ClearRunechantBarrierPlan(2);
+
   // Track priority for both players
   $layerPriority[0] = ShouldHoldPriority(1);
   $layerPriority[1] = ShouldHoldPriority(2);

@@ -2149,6 +2149,13 @@ function CurrentEffectEndTurnAbilities()
           AddNextTurnEffect($currentTurnEffects[$i], $defPlayer);
         }
         break;
+      case "GEMSNOOZE":
+        $snoozePlayer = $currentTurnEffects[$i + 1];
+        $index = SearchCharacterForUniqueID($currentTurnEffects[$i + 2], $snoozePlayer);
+        $character = &GetPlayerCharacter($snoozePlayer);
+        if ($index > -1 && ($character[$index + 9] ?? 2) == 0) $character[$index + 9] = 1;
+        $remove = true;
+        break;
       default:
         break;
     }
@@ -2742,6 +2749,7 @@ function AdministrativeEffect($effectID)
     case "adaptive_alpha_mold":
     case "marked":
     case "HIDEOPEQUIP":
+    case "GEMSNOOZE":
     case "valiant_dynamo":
       return true;
     default:

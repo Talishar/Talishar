@@ -103,22 +103,38 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $options = explode(",", $turn[2]);
         $caption = "";
+        $runechantsLeft = 0;
+        $runechantPrompt = false;
         if ($turnPhase == "CHOOSEARCANE") {
           $vars = explode("-", $dqVars[0]);
+          $runechantsLeft = $vars[1] == "runechant" ? PendingRunechantDamage($playerID) + 1 : 0;
+          $runechantPrompt = $runechantsLeft > 0 && RunechantBarrierAmount($turn[2], $vars[0]) > 0;
           $caption .= "Source: " . CardLink($vars[1], $vars[1]) . "&nbsp | &nbspTotal Damage: " . $vars[0];
+          if ($runechantPrompt && $runechantsLeft > 1) $caption .= "&nbsp | &nbspRunechants&nbsp;left:&nbsp;$runechantsLeft";
           $caption .= GetDamagePreventionWarning($playerID, $vars[0], "ARCANE", $vars[1], "&nbsp | &nbsp ");
         }
 
-        foreach ($options as $option) {
-          $playerInputButtons[] = CreateButtonAPI($playerID, str_replace("_", " ", $option), 17, strval($option), "24px");
+        if ($runechantPrompt) {
+          $playerInputButtons[] = CreateButtonAPI($playerID, "Don't prevent", 17, "0", "24px");
+          foreach (RunechantPreventCounts($runechantsLeft) as $count) {
+            $label = "Pitch $count";
+            $button = CreateButtonAPI($playerID, $label, 113, strval($count), "24px", tooltip: "Pitch to prevent Runechants. You get asked again if anything else happens in between.");
+            $button->group = "RUNECHANTPREVENT";
+            $playerInputButtons[] = $button;
+          }
+          if ($runechantsLeft > 1) $playerInputButtons[] = CreateButtonAPI($playerID, "Skip all Runechants", 105, 0, "24px");
         }
-
-        if(isset($vars[1]) && $vars[1] == "runechant") {
-          $playerInputButtons[] = CreateButtonAPI($playerID, "Skip All Runechants", 105, 0, "24px");
+        else {
+          foreach ($options as $option) {
+            $playerInputButtons[] = CreateButtonAPI($playerID, str_replace("_", " ", $option), 17, strval($option), "24px");
+          }
+          if (($vars[1] ?? "") == "runechant") {
+            $playerInputButtons[] = CreateButtonAPI($playerID, "Skip All Runechants", 105, 0, "24px");
+          }
         }
 
         $popupType = $turnPhase == "ARSENALORHEAVE" ? "ARSENALORHEAVE" : "BUTTONINPUT";
-        $playerInputPopup->popup = CreatePopupAPI($popupType, [], 0, 1, $caption . GetPhaseHelptext(), 1, "");
+        $playerInputPopup->popup = CreatePopupAPI($popupType, [], 0, 1, $caption . ($caption != "" && !str_ends_with($caption, "<br>") ? "<br>" : "") . GetPhaseHelptext(), 1, "");
         AddPromptCardContext($playerInputPopup->popup, $turnPhase, $playerID);
       }
       break;
@@ -129,6 +145,11 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $playerInputButtons[] = CreateButtonAPI($playerID, "Yes", 20, "YES", "20px");
         $playerInputButtons[] = CreateButtonAPI($playerID, "No", 20, "NO", "20px");
+        $gemIndex = PromptGemSourceIndex($playerID);
+        if ($gemIndex >= 0) {
+          $gemCardName = CardName($myCharacter[$gemIndex]);
+          $playerInputButtons[] = CreateButtonAPI($playerID, "No, not this turn", 115, strval($gemIndex), "20px", tooltip: "Answer No. $gemCardName won't ask again until the next turn.");
+        }
         $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, GetPhaseHelptext(), 1, "");
         AddPromptCardContext($playerInputPopup->popup, $turnPhase, $playerID);
       }

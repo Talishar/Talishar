@@ -452,6 +452,7 @@ $classStateDefaults = [
   "DeferredLeyLineUIDs" => "-",                  // Ley Line triggers waiting for the concealed end-phase Heave choice
   "Num6PowPutIntoBanish" => 0,                   // used for Levia
   "KorshemConditionMet" => 0,                    // a hero gained resources/health from an effect, or a controlled object gained power/defense this turn
+  "RunechantPreventPlan" => 0,
 ];
 $persistentClassStates = ["ArsenalFacing", "OriginalHero"];
 foreach ($classStateDefaults as $classStateName => $classStateDefault) ${"CS_" . $classStateName} = $classStateName;

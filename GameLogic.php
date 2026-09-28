@@ -1249,6 +1249,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($rvArr === []) return "PASS";
       SetDQDeckTopCard($player, $rvArr[0]);
       return implode(",", $rvArr);
+    case "PEEKTOPCARD":
+      AddEvent("PEEK", "$player:$lastResult");
+      return $lastResult;
     case "DECKCARDNAMES":
       $indicesCount = substr_count($parameter, ",") + 1;
       $deck = &GetDeck($player);

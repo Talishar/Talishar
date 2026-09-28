@@ -950,6 +950,80 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
   return implode(",", $choiceArray);
 }
 
+function PendingRunechantDamage($player)
+{
+  global $layers;
+  $count = 0;
+  $layerPieces = LayerPieces();
+  $layerCount = count($layers);
+  for ($i = 0; $i < $layerCount; $i += $layerPieces) {
+    if (($layers[$i] != "TRIGGER" && $layers[$i] != "PRETRIGGER") || $layers[$i + 1] == $player) continue;
+    if ($layers[$i + 2] == "runechant") ++$count;
+    elseif ($layers[$i + 2] == "runechant_batch") $count += count(explode(",", $layers[$i + 5]));
+  }
+  return $count;
+}
+
+function RunechantBarrierAmount($options, $damage)
+{
+  if (intval($damage) != 1) return 0;
+  $amount = 0;
+  foreach (explode(",", $options) as $option) {
+    $option = intval($option);
+    if ($option > 0 && ($amount == 0 || $option < $amount)) $amount = $option;
+  }
+  return $amount;
+}
+
+function RunechantPreventCounts($total)
+{
+  $counts = range(1, max(1, min($total, 10)));
+  if ($total > 10) $counts[] = $total;
+  return $counts;
+}
+
+function ClearRunechantBarrierPlan($player)
+{
+  global $CS_SkipAllRunechants, $CS_RunechantPreventPlan;
+  if (intval(GetClassState($player, $CS_SkipAllRunechants)) != 0) SetClassState($player, $CS_SkipAllRunechants, 0);
+  if (intval(GetClassState($player, $CS_RunechantPreventPlan)) != 0) SetClassState($player, $CS_RunechantPreventPlan, 0);
+}
+
+function CanPayArcaneBarrier($player, $amount)
+{
+  $resources = &GetResources($player);
+  if (intval($resources[0] ?? 0) >= $amount) return true;
+  $hand = &GetHand($player);
+  $handCount = count($hand);
+  $handPieces = HandPieces();
+  for ($i = 0; $i < $handCount; $i += $handPieces) {
+    if (PitchValue($hand[$i]) > 0) return true;
+  }
+  return false;
+}
+
+function RunechantBarrierPlanAnswer($player)
+{
+  global $turn, $dqVars, $CS_SkipAllRunechants, $CS_RunechantPreventPlan;
+  if (($turn[0] ?? "") != "CHOOSEARCANE" || ($turn[1] ?? 0) != $player) return "";
+  $skip = intval(GetClassState($player, $CS_SkipAllRunechants)) == 1;
+  $remaining = intval(GetClassState($player, $CS_RunechantPreventPlan));
+  if (!$skip && $remaining <= 0) return "";
+  [$damage, $source] = array_pad(explode("-", (string)($dqVars[0] ?? ""), 2), 2, "");
+  if ($source != "runechant") {
+    ClearRunechantBarrierPlan($player);
+    return "";
+  }
+  if ($skip) return "0";
+  $amount = RunechantBarrierAmount($turn[2] ?? "", $damage);
+  if ($amount == 0 || !CanDamageBePrevented($player, $damage, "ARCANE", $source) || !CanPayArcaneBarrier($player, $amount)) {
+    ClearRunechantBarrierPlan($player);
+    return "";
+  }
+  SetClassState($player, $CS_RunechantPreventPlan, $remaining - 1);
+  return strval($amount);
+}
+
 function CheckSpellvoid($player, $damage, $source = "-")
 {
   $caption = "Choose a card with Spellvoid to prevent damage (or pass)";

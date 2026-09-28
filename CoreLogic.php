@@ -1877,6 +1877,21 @@ function IsCharacterAbilityActive($player, $index, $checkGem = false)
   return $character[$index + 1] == 2;
 }
 
+function PromptGemSourceIndex($player)
+{
+  global $turn, $EffectContext, $decisionQueue;
+  if (($turn[0] ?? "") != "YESNO" || ($turn[1] ?? 0) != $player) return -1;
+  $source = trim((string)$EffectContext);
+  if ($source == "" || $source == "-" || in_array("RESUMEPAYING", $decisionQueue ?? [], true)) return -1;
+  $character = &GetPlayerCharacter($player);
+  $characterCount = count($character);
+  $characterPieces = CharacterPieces();
+  for ($i = 0; $i < $characterCount; $i += $characterPieces) {
+    if ($character[$i] == $source && ($character[$i + 1] ?? 0) != 0 && ($character[$i + 9] ?? 2) == 1) return $i;
+  }
+  return -1;
+}
+
 function GetDieRoll($player)
 {
   global $CS_DieRoll;

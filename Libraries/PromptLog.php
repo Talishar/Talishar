@@ -17,7 +17,8 @@ function PromptAnswerModes()
 {
   static $modes = [
     4 => true, 7 => true, 8 => true, 9 => true, 11 => true, 12 => true, 13 => true, 16 => true, 17 => true,
-    19 => true, 20 => true, 23 => true, 29 => true, 30 => true, 99 => true, 107 => true, 109 => true, 110 => true
+    19 => true, 20 => true, 23 => true, 29 => true, 30 => true, 99 => true, 105 => true, 107 => true, 109 => true, 110 => true,
+    113 => true, 115 => true
   ];
   return $modes;
 }
@@ -74,6 +75,9 @@ function PromptAnswerLabel($mode, $buttonInput, $cardID, $chkInput, $optionCount
     case 20: return $buttonInput == "YES" ? "YES" : "NO";
     case 30: return "NAMED";
     case 99: return "PASS";
+    case 105: return "SKIP ALL";
+    case 113: return "PREVENT " . intval($buttonInput);
+    case 115: return "NO, THIS TURN";
     case 107:
       $top = count($submission->cardListTop ?? []);
       $bottom = count($submission->cardListBottom ?? []);
@@ -104,6 +108,8 @@ function PromptAnswerFitsPhase($mode, $phase, $parameter, $buttonInput, $cardID)
     case 29: return $phase == "CHOOSETOPOPPONENT";
     case 30: return $phase == "INPUTCARDNAME";
     case 99: return CanPassPhase($phase);
+    case 105: case 113: return $phase == "CHOOSEARCANE";
+    case 115: return $phase == "YESNO";
     case 107: return $phase == "OPT";
     case 109: case 110: return $phase == "ORDERTRIGGERS";
     default: return false;
