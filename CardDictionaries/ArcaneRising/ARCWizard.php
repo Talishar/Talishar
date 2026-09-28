@@ -947,7 +947,21 @@ function ArcaneBarrierChoices($playerID, $max, $returnBarrierArray = false)
   for ($i = 4; $i <= $max; ++$i) {
     if ($i <= $total) $choiceArray[] = $i;
   }
-  return implode(",", $choiceArray);
+  $payable = ArcaneBarrierPayableAmount($playerID);
+  return implode(",", array_filter($choiceArray, fn($choice) => $choice <= $payable));
+}
+
+function ArcaneBarrierPayableAmount($player)
+{
+  $resources = &GetResources($player);
+  $amount = intval($resources[0] ?? 0);
+  $hand = &GetHand($player);
+  $handCount = count($hand);
+  $handPieces = HandPieces();
+  for ($i = 0; $i < $handCount; $i += $handPieces) {
+    $amount += PitchValue($hand[$i]);
+  }
+  return $amount;
 }
 
 function PendingRunechantDamage($player)
@@ -989,19 +1003,6 @@ function ClearRunechantBarrierPlan($player)
   if (intval(GetClassState($player, $CS_RunechantPreventPlan)) != 0) SetClassState($player, $CS_RunechantPreventPlan, 0);
 }
 
-function CanPayArcaneBarrier($player, $amount)
-{
-  $resources = &GetResources($player);
-  if (intval($resources[0] ?? 0) >= $amount) return true;
-  $hand = &GetHand($player);
-  $handCount = count($hand);
-  $handPieces = HandPieces();
-  for ($i = 0; $i < $handCount; $i += $handPieces) {
-    if (PitchValue($hand[$i]) > 0) return true;
-  }
-  return false;
-}
-
 function RunechantBarrierPlanAnswer($player)
 {
   global $turn, $dqVars, $CS_SkipAllRunechants, $CS_RunechantPreventPlan;
@@ -1016,7 +1017,7 @@ function RunechantBarrierPlanAnswer($player)
   }
   if ($skip) return "0";
   $amount = RunechantBarrierAmount($turn[2] ?? "", $damage);
-  if ($amount == 0 || !CanDamageBePrevented($player, $damage, "ARCANE", $source) || !CanPayArcaneBarrier($player, $amount)) {
+  if ($amount == 0 || !CanDamageBePrevented($player, $damage, "ARCANE", $source)) {
     ClearRunechantBarrierPlan($player);
     return "";
   }
