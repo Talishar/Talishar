@@ -1024,7 +1024,11 @@ class Card {
   function HasFusion() {
     if (isset($this->baseCard) && method_exists($this->baseCard, "HasFusion"))
       return $this->baseCard->HasFusion();
-    return "";
+    $elements = "";
+    if (GeneratedHasEarthFusion($this->cardID)) $elements .= "EARTH";
+    if (GeneratedHasIceFusion($this->cardID)) $elements .= ($elements != "" ? ",ICE" : "ICE");
+    if (GeneratedHasLightningFusion($this->cardID)) $elements .= ($elements != "" ? ",LIGHTNING" : "LIGHTNING");
+    return $elements;
   }
 
   function IsWagerEffect($index) {
