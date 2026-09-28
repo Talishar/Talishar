@@ -134,10 +134,12 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $uniqueID = "-"; // reset the unique ID
   }
   if ($holoCounters > 0) IncrementClassState($player, $CS_HoloAurasEntered, $number);
-  if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
-  else if (DelimStringContains(CardSubType($EffectContext), "Trap") || CardType($EffectContext) == "DR") IncrementClassState($defPlayer, $CS_NumAuras, $number);
-  else if (CreatesAuraForOpponent($EffectContext)) IncrementClassState($effectController, $CS_NumAuras, $number);
-  else if ($cardID != "frostbite") IncrementClassState($player, $CS_NumAuras, $number);
+  if ($isToken) {
+    if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
+    else if (DelimStringContains(CardSubType($EffectContext), "Trap") || CardType($EffectContext) == "DR") IncrementClassState($defPlayer, $CS_NumAuras, $number);
+    else if (CreatesAuraForOpponent($EffectContext)) IncrementClassState($effectController, $CS_NumAuras, $number);
+    else if ($cardID != "frostbite") IncrementClassState($player, $CS_NumAuras, $number);
+  }
   if ($cardID == "fealty") IncrementClassState($player, $CS_FealtyCreated, $number);
   if ($cardID == "seismic_surge") IncrementClassState($player, $CS_SeismicSurgesCreated, $number);
   $Hero = new CharacterCard(0, $effectAgent);
