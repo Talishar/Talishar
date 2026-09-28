@@ -13,7 +13,8 @@ function GetModeratorList() {
     "Tower",
     "PvtVoid",
     "Aegisworn",
-    "Bluffkin"
+    "Bluffkin",
+    "Fablazing"
   ];
 }
 
