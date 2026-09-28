@@ -2481,7 +2481,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
   global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack, $CS_NumBloodDebtAttacksPlayed, $CS_IARGatesMadeorUsed;
-  global $CS_PlayedFromGateUID;
+  global $CS_PlayedFromGateUID, $CS_NumAuras;
   global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
   global $ChainLinks;
 
@@ -2896,6 +2896,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         IncrementClassState($currentPlayer, piece: $CS_NumStealthAttacks);
       }
     }
+    if (SubtypeContains($cardID, "Aura", $currentPlayer) && !IsActivated($cardID, $from))
+      IncrementClassState($currentPlayer, $CS_NumAuras);
     if (SubtypeContains($cardID, "Cannon", $currentPlayer) && $isStaticType) {
       IncrementClassState($currentPlayer, piece: $CS_NumCannonsActivated);
     }

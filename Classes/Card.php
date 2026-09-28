@@ -1354,4 +1354,10 @@ class Card {
       return $this->baseCard->FuseAbility($element);
     return;
   }
+
+  function BanishByEffect($cardID, $player) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "BanishByEffect"))
+      return $this->baseCard->BanishByEffect($cardID);
+    return;
+  }
 }

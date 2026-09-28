@@ -976,7 +976,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "command_and_conquer_red"=>true,
     "searing_shot_red"=>true,"searing_shot_yellow"=>true,"searing_shot_blue"=>true,
     "persuasive_prognosis_blue"=>true,
-    "art_of_desire_body_red"=>true,"art_of_desire_soul_yellow"=>true,"art_of_desire_mind_blue"=>true,
     "bonds_of_attraction_red"=>true,"bonds_of_attraction_yellow"=>true,"bonds_of_attraction_blue"=>true,
     "bonds_of_memory_red"=>true,"bonds_of_memory_yellow"=>true,"bonds_of_memory_blue"=>true,
     "desires_of_flesh_red"=>true,"desires_of_flesh_yellow"=>true,"desires_of_flesh_blue"=>true,
