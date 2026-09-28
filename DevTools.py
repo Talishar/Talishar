@@ -19,10 +19,10 @@ for i, line in enumerate(constants):
             print(f"problem parsing {piece_name}, {line}")
     if line[:len("$CCS_")] == "$CCS_" or line[:len("$CCS_")] == "$CSS_":
         all_pieces["ccs"].append(line.split("=")[0].strip()[len("$CCS_"):])
-    if line[:len("$CS_")] == "$CS_":
-        all_pieces["cs"].append(line.split("=")[0].strip()[len("$CS_"):])
 all_pieces["ccs"] = all_pieces["ccs"][::-1]
-all_pieces["cs"] = all_pieces["cs"][::-1]
+# Class state names are the keys of $classStateDefaults, in gamestate order
+cs_block = re.search(r"\$classStateDefaults\s*=\s*\[(.*?)\];", "".join(constants[::-1]), re.DOTALL).group(1)
+all_pieces["cs"] = re.findall(r'^\s*"(\w+)"\s*=>', cs_block, re.MULTILINE)
 all_pieces['TurnStats'] = ["DamageThreatened", "DamageDealt", "CardsPlayedOffense",
                            "CardsPlayedDefense", "CardsPitched", "CardsBlocked",
                            "ResourcesUsed", "ResourcesLeft", "CardsLeft", "DamageBlocked",
