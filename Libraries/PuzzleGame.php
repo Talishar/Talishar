@@ -5,7 +5,7 @@ const PUZZLE_START_FILE = "puzzleStart.txt";
 
 function IsPuzzleGame($gameName)
 {
-  return file_exists("./Games/$gameName/" . PUZZLE_MARKER_FILE);
+  return file_exists(__DIR__ . "/../Games/$gameName/" . PUZZLE_MARKER_FILE);
 }
 
 function PuzzleIntroLog($candidateID, $opponentLife)

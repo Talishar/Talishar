@@ -2,7 +2,7 @@
 
   include_once __DIR__ . "/../Libraries/IOLibraries.php";
 
-  $filename = "./Games/" . $gameName . "/GameFile.txt";
+  $filename = __DIR__ . "/../Games/" . $gameName . "/GameFile.txt";
   if(!file_exists($filename)) exit;
   $gameFileHandler = fopen($filename, "r+");
 
@@ -97,7 +97,7 @@
     $ipTarget = ($playerID == 1 ? $hostIP : $joinerIP);
     if($ipTarget != "" && $_SERVER['REMOTE_ADDR'] != $ipTarget)
     {
-      $hackFileName = "./BugReports/PossibleHackAttempts.txt";
+      $hackFileName = __DIR__ . "/../BugReports/PossibleHackAttempts.txt";
       $hackHandler = fopen($hackFileName, "a");
       date_default_timezone_set('America/Chicago');
       $errorDate = date('m/d/Y h:i:s a');

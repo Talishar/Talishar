@@ -403,9 +403,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 26: //Change setting
       $userID = "";
       if (!$isSimulation) {
-        include "MenuFiles/ParseGamefile.php";
-        include_once "./includes/dbh.inc.php";
-        include_once "./includes/functions.inc.php";
+        include __DIR__ . "/../MenuFiles/ParseGamefile.php";
+        include_once __DIR__ . "/../includes/dbh.inc.php";
+        include_once __DIR__ . "/../includes/functions.inc.php";
         $userID = ($playerID == 1) ? $p1id : $p2id;
       }
       $params = explode("-", $buttonInput);
@@ -1074,8 +1074,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100002: //Concede
       if ($isSimulation)
         return;
-      include_once "./includes/dbh.inc.php";
-      include_once "./includes/functions.inc.php";
+      include_once __DIR__ . "/../includes/dbh.inc.php";
+      include_once __DIR__ . "/../includes/functions.inc.php";
       $conceded = true;
       if (!IsGameOver()) {
         WriteLog("🏳️ Player $playerID conceded the game.");
@@ -1120,8 +1120,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100007: //Claim Victory when opponent is inactive
       if ($isSimulation)
         return;
-      include_once "./includes/dbh.inc.php";
-      include_once "./includes/functions.inc.php";
+      include_once __DIR__ . "/../includes/dbh.inc.php";
+      include_once __DIR__ . "/../includes/functions.inc.php";
       $otherPlayer = $playerID == 1 ? 2 : 1;
       if (!IsGameOver())
         PlayerWon($playerID);
@@ -1319,7 +1319,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $snapshotSaveResult = SavePlayableSnapshot($gameName, (int)$playerID);
       break;
     case 100024: //Restart puzzle
-      include_once "./Libraries/PuzzleGame.php";
+      include_once __DIR__ . "/PuzzleGame.php";
       RestartPuzzleGame($playerID);
       break;
     case 100013: //Enable Spectate
@@ -1348,7 +1348,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       WriteLog("🚨Thank you for reporting a player. The chat log has been saved on the server. Please report it to a mod on Discord with the game number for reference ($gameName).", highlight: true);
       break;
     case 100015: //Request to enable chat
-      include "MenuFiles/ParseGamefile.php";
+      include __DIR__ . "/../MenuFiles/ParseGamefile.php";
       switch ($playerID) {
         case 1:
           SetCachePiece($gameName, 15, 1);
@@ -2339,7 +2339,7 @@ function FinalizeTurn()
   global $mainHand, $defHand, $currentTurnEffectsFromCombat, $mainCharacter, $defCharacter, $mainResources, $defResources;
   global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority, $EffectContext;
   global $MakeStartTurnBackup, $gameName;
-  include_once "./Libraries/PuzzleGame.php";
+  include_once __DIR__ . "/PuzzleGame.php";
   if (IsPuzzleGame($gameName)) {
     WriteLog("🧩 Puzzle failed: your opponent survived the turn.", highlight: true);
     PlayerWon($defPlayer);
