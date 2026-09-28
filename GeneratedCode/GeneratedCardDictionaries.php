@@ -44481,7 +44481,6 @@ default => false
 function GeneratedHasCombo($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
-"ancestral_harmony_blue" => true,
 "aspect_of_tiger_body_red" => true,
 "aspect_of_tiger_mind_blue" => true,
 "aspect_of_tiger_soul_yellow" => true,
