@@ -7,6 +7,7 @@ function initializePlayerState($handler, $deckHandler, $player)
 {
   global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive, $p1id, $p2id;
   global $SET_Mute, $SET_IsPatron, $SET_GemsOffByDefault, $p1Inventory, $p2Inventory;
+  global $classStateDefaults;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
   // Lines 3-11 are sideboard slots (headSB, chestSB, armsSB, legsSB, offhandSB,
@@ -53,7 +54,7 @@ function initializePlayerState($handler, $deckHandler, $player)
     "\r\n" .        //Discard
     "\r\n" .        //Pitch
     "\r\n" .        //Banish
-    "0 0 0 0 0 0 0 0 DOWN 0 -1 0 0 0 0 0 0 -1 0 0 0 0 NA 0 0 0 - -1 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - - 0 -1 0 0 0 0 0 - 0 0 0 0 0 -1 0 - 0 0 - 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 0 - 0 0 0 0 0 0 0 0 0 0 0 0 0 - - 0 0 0 0 0 0 0 0 0 0 0 - - 0 0 0 0 0\r\n" .  //Class State
+    ClassStateToString($classStateDefaults) . "\r\n" . //Class State
     "\r\n" .        //Character effects
     "\r\n" .        //Soul
     "\r\n" .        //Card Stats

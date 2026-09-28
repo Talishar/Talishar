@@ -305,148 +305,157 @@ function EventPieces()
 $SHMOP_CURRENTPLAYER = 9;
 $SHMOP_ISREPLAY = 10;//0 = not replay, 1 = replay
 
-//Class State (one for each player)
-$CS_Num6PowDisc = 0;
-$CS_NumBoosted = 1;
-$CS_AttacksWithWeapon = 2;
-$CS_HitsWDawnblade = 3;
-$CS_DamagePrevention = 4; //Deprecated
-$CS_CardsBanished = 5;
-$CS_DamageTaken = 6;
-$CS_NumActionsPlayed = 7;
-$CS_ArsenalFacing = 8;
-$CS_CharacterIndex = 9;
-$CS_PlayIndex = 10;
-$CS_NumNonAttackCards = 11;
-$CS_NumCardsDrawn = 12;
-$CS_NumAddedToSoul = 13;
-$CS_NextNAACardGoAgain = 14;
-$CS_NumCharged = 15;
-$CS_Num6PowBan = 16; // used to track which player puts a 6 into banish
-$CS_ResolvingLayerUniqueID = 17;
-$CS_NextWizardNAAInstant = 18;
-$CS_ArcaneDamageTaken = 19;
-$CS_NextNAAInstant = 20;
-$CS_NextDamagePrevented = 21;
-$CS_LastAttack = 22;
-$CS_NumFusedEarth = 23;
-$CS_NumFusedIce = 24;
-$CS_NumFusedLightning = 25;
-$CS_PitchedForThisCard = 26;
-$CS_PlayCCIndex = 27;
-$CS_NumAttackCards = 28; //Played or blocked
-$CS_NumPlayedFromBanish = 29;
-$CS_NumAttacks = 30;
-$CS_DieRoll = 31;
-$CS_NumBloodDebtPlayed = 32;
-$CS_NumWizardNonAttack = 33;
-$CS_LayerTarget = 34;
-$CS_NumSwordAttacks = 35;
-$CS_HitsWithWeapon = 36;
-$CS_ArcaneDamagePrevention = 37;
-$CS_DynCostResolved = 38;
-$CS_CardsEnteredGY = 39;
-$CS_HighestRoll = 40;
-$CS_NumYellowPutSoul = 41;
-$CS_NumAuras = 42; // Number of auras played or created this turn
-$CS_AbilityIndex = 43;
-$CS_AdditionalCosts = 44;
-$CS_NumRedPlayed = 45;
-$CS_PlayUniqueID = 46;
-$CS_NumPhantasmAADestroyed = 47;
-$CS_NumLess3PowAAPlayed = 48;
-$CS_AlluvionUsed = 49;
-$CS_MaxQuellUsed = 50;
-$CS_DamageDealt = 51; //Only includes damage dealt by the hero to Allies + Hero. CR 2.1 8.2.8f If an ally deals damage, the controlling player and their hero are not considered to have dealt damage.
-$CS_ArcaneTargetsSelected = 52;
-$CS_NumDragonAttacks = 53;
-$CS_NumIllusionistAttacks = 54;
-$CS_LastDynCost = 55;
-$CS_NumIllusionistActionCardAttacks = 56;
-$CS_ArcaneDamageDealt = 57;
-$CS_LayerPlayIndex = 58;
-$CS_NumCardsPlayed = 59; //Amulet of Ignition
-$CS_NamesOfCardsPlayed = 60; //Amulet of Echoes
-$CS_NumBoostPlayed = 61; //Hanabi Blaster
-$CS_PlayedAsInstant = 62; //If the card was played as an instant -- some things like banish we lose memory of as soon as it is removed from the zone
-$CS_AnotherWeaponGainedGoAgain = 63;
-$CS_NumContractsCompleted = 64;
-$CS_HitsWithSword = 65;
-$CS_HealthLost = 66;
-$CS_NumCranked = 67;
-$CS_NumItemsDestroyed = 68;
-$CS_NumCrouchingTigerPlayedThisTurn = 69;
-$CS_NumClashesWon = 70;
-$CS_NumVigorDestroyed = 71;
-$CS_NumMightDestroyed = 72;
-$CS_NumAgilityDestroyed = 73;
-$CS_HaveIntimidated = 74;
-$CS_ModalAbilityChoosen = 75;
-$CS_NumSpectralShieldAttacks = 76;
-$CS_NumBluePlayed = 77;
-$CS_Transcended = 78;
-$CS_NumCrouchingTigerCreatedThisTurn = 79;
-$CS_NumBlueDefended = 80;
-$CS_NumLightningPlayed = 81;
-$CS_NumInstantPlayed = 82;
-$CS_ActionsPlayed = 83;
-$CS_NumEarthBanished = 84;
-$CS_HealthGained = 85;
-$CS_SkipAllRunechants = 86;
-$CS_FealtyCreated = 87;
-$CS_NumDraconicPlayed = 88;
-$CS_NumSeismicSurgeDestroyed = 89;
-$CS_PowDamageDealt = 90;
-$CS_TunicTicks = 91;
-$CS_OriginalHero = 92;
-$CS_NumTimesAttacked = 93; //number of attacks that reached the attack step, distinct from $CS_NumAttacks
-$CS_DamageDealtToOpponent = 94; //Damage dealt specifically to the opposing hero (for anaphylactic shock)
-$CS_NumStealthAttacks = 95; //for slippy
-$CS_NumWateryGrave = 96;
-$CS_NumCannonsActivated = 97;
-$CS_NumGoldCreated = 98; //for gold token creation/stolen
-$CS_NumAllyPutInGraveyard = 99;
-$CS_PlayedNimblism = 100;
-$CS_NumAttackCardsAttacked = 101;
-$CS_NumAttackCardsBlocked = 102;
-$CS_CheeredThisTurn = 103;
-$CS_BooedThisTurn = 104;
-$CS_SuspensePoppedThisTurn = 105;
-$CS_SeismicSurgesCreated = 106;
-$CS_CardsInDeckBeforeOpt = 107; //to be set as a player starts opting, used to validate the result of the opt
-$CS_NumToughnessDestroyed = 108;
-$CS_NumConfidenceDestroyed = 109;
-$CS_NumCostedCardsPlayed = 110; //number of cards that cost more than 0 played
-$CS_HitCounter = 111;
-$CS_CreatedCardsThisTurn = 112;
-$CS_ArcaneDamageDealtToOpponent = 113;
-$CS_EvosBoosted = 114;
-$CS_NumWeaponsActivated = 115;
-$CS_NumLightningFlowDestroyed = 116;
-$CS_HoloAurasEntered = 117;
-$CS_NumInstantsPutInGrave = 118;
-$CS_NumControlledAurasDestroyed = 119;
-$CS_NumFragmented = 120;
-$CS_WeaponsAttackedWith = 121;
-$CS_PendingNAACard = 122; // Card ID of a NAA queued to auto-play after chain closes (or "-" if none)
-$CS_HaveIntimidatedOpponent = 123;
-$CS_LayerResolved = 124;
-$CS_PreventionCache = 125;
-$CS_NumUndoesThisTurn = 126;
-$CS_NumRunechantsCreated = 127;
-$CS_NumBloodDebtAttacksPlayed = 128;
-$CS_IARGatesMadeorUsed = 129;
-$CS_NumBloodDebtBanished = 130;
-$CS_UsurpedThisTurn = 131;
-$CS_GuardianAACThisTurn = 132;
-$CS_ReveredAACThisTurn = 133;
-$CS_HeaveEligibleAtEndPhase = 134; // Heave card IDs in hand at the beginning of the end phase
-$CS_PlayedFromGateUID = 135; // Unique ID of the banished card most recently played by using a Gate to i'Arathael
-$CS_NumTimesHeroAttacked = 136; //number of attacks this turn that targeted this player's hero, distinct from $CS_NumTimesAttacked
-$CS_NumLightningFlowsIDestroyed = 137; //number of Lightning Flow tokens this player destroyed this turn, whoever controlled them, distinct from $CS_NumLightningFlowDestroyed
-$CS_DeferredLeyLineUIDs = 138; // Ley Line triggers waiting for the concealed end-phase Heave choice
-$CS_Num6PowPutIntoBanish = 139; // used for Levia
-$CS_KorshemConditionMet = 140; // a hero gained resources/health from an effect, or a controlled object gained power/defense this turn
+//Class State (one for each player, tracking what has happened during the current turn)
+//To add a class state, add it to the end of this list with its starting value, then use it with
+//GetClassState($player, "Name") or the matching $CS_Name variable. The values are saved to the gamestate
+//in this order, so only ever add to the end. Each is reset to its starting value at the start of a turn
+//unless it's listed in $persistentClassStates.
+$classStateDefaults = [
+  "Num6PowDisc" => 0,
+  "NumBoosted" => 0,
+  "AttacksWithWeapon" => 0,
+  "HitsWDawnblade" => 0,
+  "DamagePrevention" => 0,                       // Deprecated
+  "CardsBanished" => 0,
+  "DamageTaken" => 0,
+  "NumActionsPlayed" => 0,
+  "ArsenalFacing" => "DOWN",
+  "CharacterIndex" => 0,
+  "PlayIndex" => -1,
+  "NumNonAttackCards" => 0,
+  "NumCardsDrawn" => 0,
+  "NumAddedToSoul" => 0,
+  "NextNAACardGoAgain" => 0,
+  "NumCharged" => 0,
+  "Num6PowBan" => 0,                             // used to track which player puts a 6 into banish
+  "ResolvingLayerUniqueID" => -1,
+  "NextWizardNAAInstant" => 0,
+  "ArcaneDamageTaken" => 0,
+  "NextNAAInstant" => 0,
+  "NextDamagePrevented" => 0,
+  "LastAttack" => "NA",
+  "NumFusedEarth" => 0,
+  "NumFusedIce" => 0,
+  "NumFusedLightning" => 0,
+  "PitchedForThisCard" => "-",
+  "PlayCCIndex" => -1,
+  "NumAttackCards" => 0,                         // Played or blocked
+  "NumPlayedFromBanish" => 0,
+  "NumAttacks" => 0,
+  "DieRoll" => 0,
+  "NumBloodDebtPlayed" => 0,
+  "NumWizardNonAttack" => 0,
+  "LayerTarget" => "-",
+  "NumSwordAttacks" => 0,
+  "HitsWithWeapon" => 0,
+  "ArcaneDamagePrevention" => 0,
+  "DynCostResolved" => 0,
+  "CardsEnteredGY" => 0,
+  "HighestRoll" => 0,
+  "NumYellowPutSoul" => 0,
+  "NumAuras" => 0,                               // Number of auras played or created this turn
+  "AbilityIndex" => "-",
+  "AdditionalCosts" => "-",
+  "NumRedPlayed" => 0,
+  "PlayUniqueID" => -1,
+  "NumPhantasmAADestroyed" => 0,
+  "NumLess3PowAAPlayed" => 0,
+  "AlluvionUsed" => 0,
+  "MaxQuellUsed" => 0,
+  "DamageDealt" => 0,                            // Only includes damage dealt by the hero to Allies + Hero. CR 2.1 8.2.8f If an ally deals damage, the controlling player and their hero are not considered to have dealt damage.
+  "ArcaneTargetsSelected" => "-",
+  "NumDragonAttacks" => 0,
+  "NumIllusionistAttacks" => 0,
+  "LastDynCost" => 0,
+  "NumIllusionistActionCardAttacks" => 0,
+  "ArcaneDamageDealt" => 0,
+  "LayerPlayIndex" => -1,
+  "NumCardsPlayed" => 0,                         // Amulet of Ignition
+  "NamesOfCardsPlayed" => "-",                   // Amulet of Echoes
+  "NumBoostPlayed" => 0,                         // Hanabi Blaster
+  "PlayedAsInstant" => 0,                        // If the card was played as an instant -- some things like banish we lose memory of as soon as it is removed from the zone
+  "AnotherWeaponGainedGoAgain" => "-",
+  "NumContractsCompleted" => 0,
+  "HitsWithSword" => 0,
+  "HealthLost" => 0,
+  "NumCranked" => 0,
+  "NumItemsDestroyed" => 0,
+  "NumCrouchingTigerPlayedThisTurn" => 0,
+  "NumClashesWon" => 0,
+  "NumVigorDestroyed" => 0,
+  "NumMightDestroyed" => 0,
+  "NumAgilityDestroyed" => 0,
+  "HaveIntimidated" => 0,
+  "ModalAbilityChoosen" => "-",
+  "NumSpectralShieldAttacks" => 0,
+  "NumBluePlayed" => 0,
+  "Transcended" => 0,
+  "NumCrouchingTigerCreatedThisTurn" => 0,
+  "NumBlueDefended" => 0,
+  "NumLightningPlayed" => 0,
+  "NumInstantPlayed" => 0,
+  "ActionsPlayed" => "-",
+  "NumEarthBanished" => 0,
+  "HealthGained" => 0,
+  "SkipAllRunechants" => 0,
+  "FealtyCreated" => 0,
+  "NumDraconicPlayed" => 0,
+  "NumSeismicSurgeDestroyed" => 0,
+  "PowDamageDealt" => 0,
+  "TunicTicks" => 0,
+  "OriginalHero" => "-",
+  "NumTimesAttacked" => 0,                       // number of attacks that reached the attack step, distinct from $CS_NumAttacks
+  "DamageDealtToOpponent" => 0,                  // Damage dealt specifically to the opposing hero (for anaphylactic shock)
+  "NumStealthAttacks" => 0,                      // for slippy
+  "NumWateryGrave" => 0,
+  "NumCannonsActivated" => 0,
+  "NumGoldCreated" => 0,                         // for gold token creation/stolen
+  "NumAllyPutInGraveyard" => 0,
+  "PlayedNimblism" => 0,
+  "NumAttackCardsAttacked" => 0,
+  "NumAttackCardsBlocked" => 0,
+  "CheeredThisTurn" => 0,
+  "BooedThisTurn" => 0,
+  "SuspensePoppedThisTurn" => 0,
+  "SeismicSurgesCreated" => 0,
+  "CardsInDeckBeforeOpt" => "-",                 // to be set as a player starts opting, used to validate the result of the opt
+  "NumToughnessDestroyed" => 0,
+  "NumConfidenceDestroyed" => 0,
+  "NumCostedCardsPlayed" => 0,                   // number of cards that cost more than 0 played
+  "HitCounter" => 0,
+  "CreatedCardsThisTurn" => 0,
+  "ArcaneDamageDealtToOpponent" => 0,
+  "EvosBoosted" => 0,
+  "NumWeaponsActivated" => 0,
+  "NumLightningFlowDestroyed" => 0,
+  "HoloAurasEntered" => 0,
+  "NumInstantsPutInGrave" => 0,
+  "NumControlledAurasDestroyed" => 0,
+  "NumFragmented" => 0,
+  "WeaponsAttackedWith" => "-",
+  "PendingNAACard" => "-",                       // Card ID of a NAA queued to auto-play after chain closes (or "-" if none)
+  "HaveIntimidatedOpponent" => 0,
+  "LayerResolved" => 0,
+  "PreventionCache" => 0,
+  "NumUndoesThisTurn" => 0,
+  "NumRunechantsCreated" => 0,
+  "NumBloodDebtAttacksPlayed" => 0,
+  "IARGatesMadeorUsed" => 0,
+  "NumBloodDebtBanished" => 0,
+  "UsurpedThisTurn" => 0,
+  "GuardianAACThisTurn" => 0,
+  "ReveredAACThisTurn" => 0,
+  "HeaveEligibleAtEndPhase" => "-",              // Heave card IDs in hand at the beginning of the end phase
+  "PlayedFromGateUID" => "-",                    // Unique ID of the banished card most recently played by using a Gate to i'Arathael
+  "NumTimesHeroAttacked" => 0,                   // number of attacks this turn that targeted this player's hero, distinct from $CS_NumTimesAttacked
+  "NumLightningFlowsIDestroyed" => 0,            // number of Lightning Flow tokens this player destroyed this turn, whoever controlled them, distinct from $CS_NumLightningFlowDestroyed
+  "DeferredLeyLineUIDs" => "-",                  // Ley Line triggers waiting for the concealed end-phase Heave choice
+  "Num6PowPutIntoBanish" => 0,                   // used for Levia
+  "KorshemConditionMet" => 0,                    // a hero gained resources/health from an effect, or a controlled object gained power/defense this turn
+];
+$persistentClassStates = ["ArsenalFacing", "OriginalHero"];
+foreach ($classStateDefaults as $classStateName => $classStateDefault) ${"CS_" . $classStateName} = $classStateName;
+unset($classStateName, $classStateDefault);
 
 //Combat Chain State (State for the current combat chain)
 $CCS_CurrentAttackGainedGoAgain = 0;
@@ -648,170 +657,32 @@ function ResetChainLinkState()
 
 function ResetMainClassState()
 {
-  global $mainClassState, $CS_Num6PowDisc, $CS_NumBoosted, $CS_AttacksWithWeapon, $CS_HitsWDawnblade, $CS_DamagePrevention, $CS_CardsBanished;
-  global $CS_DamageTaken, $CS_NumActionsPlayed, $CS_CharacterIndex, $CS_PlayIndex, $CS_NumNonAttackCards, $CS_NumCrouchingTigerCreatedThisTurn;
-  global $CS_NumAddedToSoul, $CS_NextNAACardGoAgain, $CS_NumCharged, $CS_Num6PowBan, $CS_ResolvingLayerUniqueID, $CS_NextWizardNAAInstant;
-  global $CS_ArcaneDamageTaken, $CS_NextNAAInstant, $CS_NextDamagePrevented, $CS_LastAttack, $CS_PlayCCIndex;
-  global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning, $CS_PitchedForThisCard, $CS_NumAttackCards, $CS_NumPlayedFromBanish;
-  global $CS_NumAttacks, $CS_DieRoll, $CS_NumBloodDebtPlayed, $CS_NumWizardNonAttack, $CS_LayerTarget, $CS_NumSwordAttacks;
-  global $CS_HitsWithWeapon, $CS_ArcaneDamagePrevention, $CS_DynCostResolved, $CS_CardsEnteredGY, $CS_Transcended, $CS_NumBlueDefended;
-  global $CS_HighestRoll, $CS_NumAuras, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_NumRedPlayed, $CS_PlayUniqueID, $CS_AlluvionUsed, $CS_NumBluePlayed, $CS_NumLightningPlayed;
-  global $CS_NumPhantasmAADestroyed, $CS_NumLess3PowAAPlayed, $CS_MaxQuellUsed, $CS_DamageDealt, $CS_ArcaneTargetsSelected, $CS_NumDragonAttacks, $CS_NumIllusionistAttacks;
-  global $CS_LastDynCost, $CS_NumIllusionistActionCardAttacks, $CS_ArcaneDamageDealt, $CS_LayerPlayIndex, $CS_NumCardsPlayed, $CS_NamesOfCardsPlayed, $CS_NumBoostPlayed;
-  global $CS_PlayedAsInstant, $CS_AnotherWeaponGainedGoAgain, $CS_NumContractsCompleted, $CS_HitsWithSword, $CS_NumCardsDrawn;
-  global $CS_HealthLost, $CS_NumYellowPutSoul, $CS_NumCranked, $CS_NumItemsDestroyed, $CS_NumCrouchingTigerPlayedThisTurn, $CS_NumClashesWon;
-  global $CS_NumVigorDestroyed, $CS_NumMightDestroyed, $CS_NumAgilityDestroyed, $CS_HaveIntimidated, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CS_NumInstantPlayed;
-  global $CS_ActionsPlayed, $CS_NumEarthBanished, $CS_HealthGained, $CS_SkipAllRunechants, $CS_FealtyCreated, $CS_NumDraconicPlayed, $CS_NumSeismicSurgeDestroyed;
-  global $CS_PowDamageDealt, $CS_NumTimesAttacked, $CS_NumAllyPutInGraveyard, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
-  global $CS_TunicTicks, $CS_NumGoldCreated, $CS_NumStealthAttacks, $CS_DamageDealtToOpponent, $CS_NumWateryGrave, $CS_NumCannonsActivated;
-  global $CS_CheeredThisTurn, $CS_BooedThisTurn, $CS_SuspensePoppedThisTurn, $CS_SeismicSurgesCreated, $CS_CardsInDeckBeforeOpt;
-  global $CS_NumToughnessDestroyed, $CS_NumConfidenceDestroyed, $CS_NumCostedCardsPlayed, $CS_HitCounter, $CS_CreatedCardsThisTurn;
-  global $CS_ArcaneDamageDealtToOpponent, $CS_EvosBoosted, $CS_NumWeaponsActivated, $CS_NumLightningFlowDestroyed, $CS_HoloAurasEntered;
-  global $CS_NumInstantsPutInGrave, $CS_NumControlledAurasDestroyed, $CS_NumFragmented, $CS_WeaponsAttackedWith, $CS_PendingNAACard, $CS_HaveIntimidatedOpponent;
-  global $CS_LayerResolved, $CS_PreventionCache, $CS_NumUndoesThisTurn, $CS_NumRunechantsCreated, $CS_NumBloodDebtAttacksPlayed;
-  global $CS_IARGatesMadeorUsed, $CS_NumBloodDebtBanished, $CS_UsurpedThisTurn, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
-  global $CS_HeaveEligibleAtEndPhase, $CS_PlayedFromGateUID, $CS_NumTimesHeroAttacked, $CS_NumLightningFlowsIDestroyed, $CS_DeferredLeyLineUIDs;
-  global $CS_Num6PowPutIntoBanish, $CS_KorshemConditionMet;
+  global $mainClassState, $classStateDefaults, $persistentClassStates;
+  foreach ($classStateDefaults as $name => $default) {
+    if (!in_array($name, $persistentClassStates)) $mainClassState[$name] = $default;
+  }
+}
 
-  $mainClassState[$CS_Num6PowDisc] = 0;
-  $mainClassState[$CS_NumBoosted] = 0;
-  $mainClassState[$CS_AttacksWithWeapon] = 0;
-  $mainClassState[$CS_HitsWDawnblade] = 0;
-  $mainClassState[$CS_DamagePrevention] = 0; //Deprecated
-  $mainClassState[$CS_CardsBanished] = 0;
-  $mainClassState[$CS_DamageTaken] = 0;
-  $mainClassState[$CS_NumActionsPlayed] = 0;
-  $mainClassState[$CS_CharacterIndex] = 0;
-  $mainClassState[$CS_PlayIndex] = -1;
-  $mainClassState[$CS_NumNonAttackCards] = 0;
-  $mainClassState[$CS_NumAddedToSoul] = 0;
-  $mainClassState[$CS_NextNAACardGoAgain] = 0;
-  $mainClassState[$CS_NumCharged] = 0;
-  $mainClassState[$CS_Num6PowBan] = 0;
-  $mainClassState[$CS_ResolvingLayerUniqueID] = -1;
-  $mainClassState[$CS_NextWizardNAAInstant] = 0;
-  $mainClassState[$CS_ArcaneDamageTaken] = 0;
-  $mainClassState[$CS_NextNAAInstant] = 0;
-  $mainClassState[$CS_NextDamagePrevented] = 0;
-  $mainClassState[$CS_LastAttack] = "NA";
-  $mainClassState[$CS_NumFusedEarth] = 0;
-  $mainClassState[$CS_NumFusedIce] = 0;
-  $mainClassState[$CS_NumFusedLightning] = 0;
-  $mainClassState[$CS_PitchedForThisCard] = "-";
-  $mainClassState[$CS_PlayCCIndex] = -1;
-  $mainClassState[$CS_NumAttackCards] = 0;
-  $mainClassState[$CS_NumPlayedFromBanish] = 0;
-  $mainClassState[$CS_NumAttacks] = 0;
-  $mainClassState[$CS_DieRoll] = 0;
-  $mainClassState[$CS_NumBloodDebtPlayed] = 0;
-  $mainClassState[$CS_NumWizardNonAttack] = 0;
-  $mainClassState[$CS_LayerTarget] = "-";
-  $mainClassState[$CS_NumSwordAttacks] = 0;
-  $mainClassState[$CS_HitsWithWeapon] = 0;
-  $mainClassState[$CS_ArcaneDamagePrevention] = 0;
-  $mainClassState[$CS_DynCostResolved] = 0;
-  $mainClassState[$CS_CardsEnteredGY] = 0;
-  $mainClassState[$CS_HighestRoll] = 0;
-  $mainClassState[$CS_NumYellowPutSoul] = 0;
-  $mainClassState[$CS_NumAuras] = 0;
-  $mainClassState[$CS_AbilityIndex] = "-";
-  $mainClassState[$CS_AdditionalCosts] = "-";
-  $mainClassState[$CS_NumRedPlayed] = 0;
-  $mainClassState[$CS_PlayUniqueID] = -1;
-  $mainClassState[$CS_NumPhantasmAADestroyed] = 0;
-  $mainClassState[$CS_NumLess3PowAAPlayed] = 0;
-  $mainClassState[$CS_AlluvionUsed] = 0;
-  $mainClassState[$CS_MaxQuellUsed] = 0;
-  $mainClassState[$CS_DamageDealt] = 0;
-  $mainClassState[$CS_ArcaneTargetsSelected] = "-";
-  $mainClassState[$CS_NumDragonAttacks] = 0;
-  $mainClassState[$CS_NumIllusionistAttacks] = 0;
-  $mainClassState[$CS_LastDynCost] = 0;
-  $mainClassState[$CS_NumIllusionistActionCardAttacks] = 0;
-  $mainClassState[$CS_ArcaneDamageDealt] = 0;
-  $mainClassState[$CS_LayerPlayIndex] = -1;
-  $mainClassState[$CS_NumCardsPlayed] = 0;
-  $mainClassState[$CS_NamesOfCardsPlayed] = "-";
-  $mainClassState[$CS_NumBoostPlayed] = 0;
-  $mainClassState[$CS_PlayedAsInstant] = 0;
-  $mainClassState[$CS_AnotherWeaponGainedGoAgain] = "-";
-  $mainClassState[$CS_NumContractsCompleted] = 0;
-  $mainClassState[$CS_HitsWithSword] = 0;
-  $mainClassState[$CS_NumCardsDrawn] = 0;
-  $mainClassState[$CS_HealthLost] = 0;
-  $mainClassState[$CS_NumCranked] = 0;
-  $mainClassState[$CS_NumItemsDestroyed] = 0;
-  $mainClassState[$CS_NumCrouchingTigerPlayedThisTurn] = 0;
-  $mainClassState[$CS_NumClashesWon] = 0;
-  $mainClassState[$CS_NumVigorDestroyed] = 0;
-  $mainClassState[$CS_NumMightDestroyed] = 0;
-  $mainClassState[$CS_NumAgilityDestroyed] = 0;
-  $mainClassState[$CS_HaveIntimidated] = 0;
-  $mainClassState[$CS_ModalAbilityChoosen] = "-";
-  $mainClassState[$CS_NumSpectralShieldAttacks] = 0;
-  $mainClassState[$CS_NumBluePlayed] = 0;
-  $mainClassState[$CS_Transcended] = 0;
-  $mainClassState[$CS_NumCrouchingTigerCreatedThisTurn] = 0;
-  $mainClassState[$CS_NumBlueDefended] = 0;
-  $mainClassState[$CS_NumLightningPlayed] = 0;
-  $mainClassState[$CS_NumInstantPlayed] = 0;
-  $mainClassState[$CS_ActionsPlayed] = "-";
-  $mainClassState[$CS_NumEarthBanished] = 0;
-  $mainClassState[$CS_HealthGained] = 0;
-  $mainClassState[$CS_SkipAllRunechants] = 0;
-  $mainClassState[$CS_FealtyCreated] = 0;
-  $mainClassState[$CS_NumDraconicPlayed] = 0;
-  $mainClassState[$CS_NumSeismicSurgeDestroyed] = 0;
-  $mainClassState[$CS_PowDamageDealt] = 0;
-  $mainClassState[$CS_TunicTicks] = 0;
-  $mainClassState[$CS_NumTimesAttacked] = 0;
-  $mainClassState[$CS_NumStealthAttacks] = 0;
-  $mainClassState[$CS_NumWateryGrave] = 0;
-  $mainClassState[$CS_DamageDealtToOpponent] = 0;
-  $mainClassState[$CS_NumCannonsActivated] = 0;
-  $mainClassState[$CS_NumGoldCreated] = 0;
-  $mainClassState[$CS_NumAllyPutInGraveyard] = 0;
-  $mainClassState[$CS_PlayedNimblism] = 0;
-  $mainClassState[$CS_NumAttackCardsAttacked] = 0;
-  $mainClassState[$CS_NumAttackCardsBlocked] = 0;
-  $mainClassState[$CS_CheeredThisTurn] = 0;
-  $mainClassState[$CS_BooedThisTurn] = 0;
-  $mainClassState[$CS_SuspensePoppedThisTurn] = 0;
-  $mainClassState[$CS_SeismicSurgesCreated] = 0;
-  $mainClassState[$CS_CardsInDeckBeforeOpt] = "-";
-  $mainClassState[$CS_NumToughnessDestroyed] = 0;
-  $mainClassState[$CS_NumConfidenceDestroyed] = 0;
-  $mainClassState[$CS_NumCostedCardsPlayed] = 0;
-  $mainClassState[$CS_HitCounter] = 0;
-  $mainClassState[$CS_CreatedCardsThisTurn] = 0;
-  $mainClassState[$CS_ArcaneDamageDealtToOpponent] = 0;
-  $mainClassState[$CS_EvosBoosted] = 0;
-  $mainClassState[$CS_NumWeaponsActivated] = 0;
-  $mainClassState[$CS_NumLightningFlowDestroyed] = 0;
-  $mainClassState[$CS_HoloAurasEntered] = 0;
-  $mainClassState[$CS_NumInstantsPutInGrave] = 0;
-  $mainClassState[$CS_NumControlledAurasDestroyed] = 0;
-  $mainClassState[$CS_NumFragmented] = 0;
-  $mainClassState[$CS_WeaponsAttackedWith] = "-";
-  $mainClassState[$CS_PendingNAACard] = "-";
-  $mainClassState[$CS_HaveIntimidatedOpponent] = 0;
-  $mainClassState[$CS_LayerResolved] = 0;
-  $mainClassState[$CS_PreventionCache] = 0;
-  $mainClassState[$CS_NumUndoesThisTurn] = 0;
-  $mainClassState[$CS_NumRunechantsCreated] = 0;
-  $mainClassState[$CS_NumBloodDebtAttacksPlayed] = 0;
-  $mainClassState[$CS_IARGatesMadeorUsed] = 0;
-  $mainClassState[$CS_NumBloodDebtBanished] = 0;
-  $mainClassState[$CS_UsurpedThisTurn] = 0;
-  $mainClassState[$CS_GuardianAACThisTurn] = 0;
-  $mainClassState[$CS_ReveredAACThisTurn] = 0;
-  $mainClassState[$CS_HeaveEligibleAtEndPhase] = "-";
-  $mainClassState[$CS_PlayedFromGateUID] = "-";
-  $mainClassState[$CS_NumTimesHeroAttacked] = 0;
-  $mainClassState[$CS_NumLightningFlowsIDestroyed] = 0;
-  $mainClassState[$CS_DeferredLeyLineUIDs] = "-";
-  $mainClassState[$CS_Num6PowPutIntoBanish] = 0;
-  $mainClassState[$CS_KorshemConditionMet] = 0;
+//The gamestate stores a class state as its values in $classStateDefaults order, separated by spaces
+function ClassStateFromString($line)
+{
+  global $classStateDefaults;
+  $line = trim($line);
+  $values = $line == "" ? [] : explode(" ", $line);
+  $classState = [];
+  $i = 0;
+  foreach ($classStateDefaults as $name => $default) {
+    $classState[$name] = $values[$i++] ?? $default; //Games started before a class state was added won't have it yet
+  }
+  return $classState;
+}
+
+function ClassStateToString($classState)
+{
+  global $classStateDefaults;
+  $values = [];
+  foreach ($classStateDefaults as $name => $default) $values[] = $classState[$name] ?? $default;
+  return implode(" ", $values);
 }
 
 function ResetCardPlayed($cardID, $from="-")

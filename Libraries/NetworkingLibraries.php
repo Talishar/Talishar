@@ -4916,7 +4916,7 @@ function WriteGamestate()
   $output[] = implode(" ", $p1Discard);
   $output[] = implode(" ", $p1Pitch);
   $output[] = implode(" ", $p1Banish);
-  $output[] = implode(" ", $p1ClassState);
+  $output[] = ClassStateToString($p1ClassState);
   $output[] = implode(" ", $p1CharacterEffects);
   $output[] = implode(" ", $p1Soul);
   $output[] = implode(" ", $p1CardStats);
@@ -4936,7 +4936,7 @@ function WriteGamestate()
   $output[] = implode(" ", $p2Discard);
   $output[] = implode(" ", $p2Pitch);
   $output[] = implode(" ", $p2Banish);
-  $output[] = implode(" ", $p2ClassState);
+  $output[] = ClassStateToString($p2ClassState);
   $output[] = implode(" ", $p2CharacterEffects);
   $output[] = implode(" ", $p2Soul);
   $output[] = implode(" ", $p2CardStats);

@@ -15,13 +15,13 @@ class KorshemTest extends TestCase
         require_once ROOT_PATH . '/Libraries/CoreLibraries.php';
         require_once ROOT_PATH . '/GameLogic.php';
 
-        global $CS_KorshemConditionMet;
+        global $classStateDefaults;
         $GLOBALS['mainPlayerGamestateStillBuilt'] = true;
         $GLOBALS['mainPlayer'] = 1;
         $GLOBALS['defPlayer'] = 2;
         $GLOBALS['currentPlayer'] = 1;
-        $GLOBALS['mainClassState'] = array_fill(0, $CS_KorshemConditionMet + 1, 0);
-        $GLOBALS['defClassState'] = array_fill(0, $CS_KorshemConditionMet + 1, 0);
+        $GLOBALS['mainClassState'] = array_fill_keys(array_keys($classStateDefaults), 0);
+        $GLOBALS['defClassState'] = array_fill_keys(array_keys($classStateDefaults), 0);
         $GLOBALS['mainResources'] = [0, 0];
         $GLOBALS['defResources'] = [0, 0];
         $GLOBALS['mainItems'] = [];

@@ -80,7 +80,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $p1Discard = GetStringArray($gamestateContent[8]); // 9
   $p1Pitch = GetStringArray($gamestateContent[9]); // 10
   $p1Banish = GetStringArray($gamestateContent[10]); // 11
-  $p1ClassState = GetStringArray($gamestateContent[11]); // 12
+  $p1ClassState = ClassStateFromString($gamestateContent[11]); // 12
   $p1CharacterEffects = GetStringArray($gamestateContent[12]); // 13
   $p1Soul = GetStringArray($gamestateContent[13]); // 14
   $p1CardStats = GetStringArray($gamestateContent[14]); // 15
@@ -101,7 +101,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $p2Discard = GetStringArray($gamestateContent[26]); // 27
   $p2Pitch = GetStringArray($gamestateContent[27]); // 28
   $p2Banish = GetStringArray($gamestateContent[28]); // 29
-  $p2ClassState = GetStringArray($gamestateContent[29]); // 30
+  $p2ClassState = ClassStateFromString($gamestateContent[29]); // 30
   $p2CharacterEffects = GetStringArray($gamestateContent[30]); // 31
   $p2Soul = GetStringArray($gamestateContent[31]); // 32
   $p2CardStats = GetStringArray($gamestateContent[32]); // 33
@@ -313,7 +313,7 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 
 function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
 {
-  global $gameName, $skipWriteGamestate, $filepath, $p1Settings, $p2Settings, $CS_NumUndoesThisTurn;
+  global $gameName, $skipWriteGamestate, $filepath, $p1Settings, $p2Settings, $CS_NumUndoesThisTurn, $CS_PendingNAACard;
   
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
   if ($filename != "gamestateBackup.txt") {
@@ -343,21 +343,15 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
   $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
   // don't reset the number of undoes used
-  $p1ClassState = explode(" ", substr($gamestateBackup[11] ?? "", 0, -2));
-  $p2ClassState = explode(" ", substr($gamestateBackup[29] ?? "", 0, -2));
+  $p1ClassState = ClassStateFromString($gamestateBackup[11] ?? "");
+  $p2ClassState = ClassStateFromString($gamestateBackup[29] ?? "");
   $p1ClassState[$CS_NumUndoesThisTurn] = GetClassState(1, $CS_NumUndoesThisTurn);
   $p2ClassState[$CS_NumUndoesThisTurn] = GetClassState(2, $CS_NumUndoesThisTurn);
-  $gamestateBackup[11] = implode(" ", $p1ClassState) . "\r\n";
-  $gamestateBackup[29] = implode(" ", $p2ClassState) . "\r\n";
   // Clear pending NAA from both players on undo
-  // p1ClassState = line 11, p2ClassState = line 29, CS_PendingNAACard = index 122.
-  foreach ([11, 29] as $csLine) {
-    if (isset($gamestateBackup[$csLine])) {
-      $csParts = explode(" ", trim($gamestateBackup[$csLine]));
-      if (isset($csParts[122])) $csParts[122] = "-";
-      $gamestateBackup[$csLine] = implode(" ", $csParts) . "\r\n";
-    }
-  }
+  $p1ClassState[$CS_PendingNAACard] = "-";
+  $p2ClassState[$CS_PendingNAACard] = "-";
+  $gamestateBackup[11] = ClassStateToString($p1ClassState) . "\r\n";
+  $gamestateBackup[29] = ClassStateToString($p2ClassState) . "\r\n";
   $gamestate = implode('', $gamestateBackup);
   if (!file_exists($backupFile)) {
     WriteLog("Cannot undo further: the game session was cleaned up before the undo could complete.");
