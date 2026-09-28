@@ -1049,44 +1049,43 @@ class evo_shortcircuit_blue_equip extends Card {
 //   }
 // }
 
+class gravekeeping extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if (IsHeroAttackTarget())
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+		return "";
+	}
 
-// class gravekeeping_red extends Card {
+	function ProcessAttackTrigger($target, $uniqueID) {
+		Await($this->controller, "MultiZoneIndices", search:"THEIRDISCARD", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", may:true, context:"Banish a card from your opponent's graveyard");
+		Await($this->controller, "MZRemoveAndBanish", banisher:$this->controller, final:true);
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "gravekeeping_red";
-//     $this->controller = $controller;
-//     }
+class gravekeeping_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "gravekeeping_red";
+		$this->controller = $controller;
+		$this->baseCard = new gravekeeping($this->cardID, $this->controller);
+    }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class gravekeeping_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "gravekeeping_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new gravekeeping($this->cardID, $this->controller);
+    }
+}
 
-
-// class gravekeeping_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "gravekeeping_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class gravekeeping_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "gravekeeping_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class gravekeeping_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "gravekeeping_blue";
+		$this->controller = $controller;
+		$this->baseCard = new gravekeeping($this->cardID, $this->controller);
+    }
+}
 
 
 // class harmony_of_the_hunt_red extends Card {
