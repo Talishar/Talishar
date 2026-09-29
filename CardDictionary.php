@@ -4613,6 +4613,7 @@ function Rarity($cardID)
   if ($cardID == "prism_advent_of_thrones") return $rarityCache[$cardID] = "R"; //downshift
   if ($cardID == "the_hand_that_pulls_the_strings") return $rarityCache[$cardID] = "R"; //downshift
   if ($cardID == "minerva_themis") return $rarityCache[$cardID] = "R"; //downshift
+  if ($cardID == "embrace_sin_yellow") return $rarityCache[$cardID] = "R"; //fabcube error
   if ($set != "DUM") {
     return $rarityCache[$cardID] = GeneratedRarity($cardID);
   }
