@@ -59,7 +59,9 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     if(SearchCurrentTurnEffects("spreading_mist_blue", $player, true) || SearchCurrentTurnEffects("billowing_mist_blue", $player, true)){
       ++$amount;
     }
-  } 
+  }
+  if (HasIncarnate($cardID) && $from == "PLAY") // this counts as dying
+    return count($banish);
   if (!TypeContains($cardID, "T", $player)) { //If you banish a token, the token ceases to exist.
     if ($cardID == "fangs_a_lot_blue" && $from == "DISCARD") {
       AddPlayerHand($cardID, $player, $from);
