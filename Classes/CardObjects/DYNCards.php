@@ -622,6 +622,7 @@ class celestial_kimono extends Card {
 	}
 
 	function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID = '-') {
+		if ($from != "PLAY" && $from != "CHAR") return;
 		$DisCard = new DiscardCard($discardIndex, $this->controller);
 		$CharacterCard = new CharacterCard($permIndex, $this->controller);
 		$isToken = TypeContains($DisCard->CardID(), "T");
