@@ -826,9 +826,10 @@ function OUTAbilityCost($cardID)
     }
     else AddDecisionQueue("PASSPARAMETER", $player, $setPlayer);
     AddDecisionQueue("WRITELOG", $player, CardLink($source, $source) . " shows your top deck", 1);
-    AddDecisionQueue("DECKCARDS", $player, "0", 1);
+    AddDecisionQueue("PASSPARAMETER", $player, "SELF", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
-    AddDecisionQueue("PEEKTOPCARD", $player, $source, 1);
+    AddDecisionQueue("DECKCARDS", $player, "0", 1);
+    AddDecisionQueue("PEEKTOPCARD", $player, $player, 1);
     AddDecisionQueue("PASSPARAMETER", $player, "{1}");
     AddDecisionQueue("NOTEQUALPASS", $player, "ELSE");
     if($showHand) {
@@ -837,9 +838,7 @@ function OUTAbilityCost($cardID)
     }
     else AddDecisionQueue("WRITELOG", $otherPlayer, "Shows opponent's top deck", 1);
     AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
-    AddDecisionQueue("SETDQVAR", $otherPlayer, "1", 1);
-    AddDecisionQueue("SETDQCONTEXT", $otherPlayer, CardLink($source, $source) . " shows the top of their deck is <1>", 1);
-    AddDecisionQueue("OK", $player, "-", 1);
+    AddDecisionQueue("PEEKTOPCARD", $player, $otherPlayer, 1);
     AddDecisionQueue("SETDQCONTEXT", $player, "-");
   }
 

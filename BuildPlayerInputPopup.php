@@ -87,7 +87,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $combatChainState, $CCS_AttackTargetUID, $CCS_WeaponIndex;
   global $CombatChain, $chainLinks, $landmarks, $currentTurnEffects;
   global $theirHand, $myPermanents, $theirPermanents, $myPitch, $theirPitch;
-  global $theirAllies, $myAllies, $attackQueue, $EffectContext;
+  global $theirAllies, $myAllies, $attackQueue, $EffectContext, $decisionQueue;
 
   $playerInputPopup = new stdClass();
   $playerInputButtons = [];
@@ -125,8 +125,10 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           if ($runechantsLeft > 1) $playerInputButtons[] = CreateButtonAPI($playerID, "Skip all Runechants", 105, 0, "24px");
         }
         else {
+          $passDefault = $turnPhase == "BUTTONINPUT" ? AbilityModePassDefault() : "";
           foreach ($options as $option) {
-            $playerInputButtons[] = CreateButtonAPI($playerID, str_replace("_", " ", $option), 17, strval($option), "24px");
+            $tooltip = $option === $passDefault ? "Pass (Space) plays " . GamestateUnsanitize($option) : null;
+            $playerInputButtons[] = CreateButtonAPI($playerID, str_replace("_", " ", $option), 17, strval($option), "24px", tooltip: $tooltip);
           }
           if (($vars[1] ?? "") == "runechant") {
             $playerInputButtons[] = CreateButtonAPI($playerID, "Skip All Runechants", 105, 0, "24px");
@@ -627,6 +629,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $hideTopDeckCard = $isMayChooseMultizone
           && $singleMyDeckInTurnData
           && str_contains(GetDQHelpText(), "destroy_from_the_top_of_your_deck");
+        $decomposeCandidates = $isMayChooseMultizone && ($decisionQueue[0] ?? "") == "DECOMPOSEBANISH" ? DecomposeCandidates($playerID) : null;
         for ($i = 0; $i < $optionsCount; ++$i) {
           $option = explode("-", $options[$i], 3);
           $option0 = $option[0]; // cache zone key — accessed 30+ times per iteration
@@ -971,8 +974,17 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
           if ($maxCount < 2)
             $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters, hasBoundAura: $bindsOverlay, subcard: $subcards);
-          else
-            $cardsMultiZone[] = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label, isOpponent: $isTheirPrefix, hasBoundAura: $bindsOverlay, subcard: $subcards);
+          else {
+            $cardJSON = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label, isOpponent: $isTheirPrefix, hasBoundAura: $bindsOverlay, subcard: $subcards);
+            if ($decomposeCandidates !== null) {
+              [$earthCards, $actionCards] = $decomposeCandidates;
+              $isEarth = isset($earthCards[$options[$i]]);
+              $cardJSON->section = $isEarth ? "Earth" : "Non-Earth actions";
+              if (!$isEarth) $cardJSON->limitGroup = "nonEarth";
+              elseif (!isset($actionCards[$options[$i]])) $cardJSON->limitGroup = "nonAction";
+            }
+            $cardsMultiZone[] = $cardJSON;
+          }
         }
         if ($maxCount >= 2) {
           $formOptions = new stdClass();
@@ -980,6 +992,11 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $formOptions->caption = "Submit";
           $formOptions->mode = 19;
           $formOptions->maxNo = count($options);
+          if ($decomposeCandidates !== null) {
+            $formOptions->minNo = 3;
+            $formOptions->maxNo = 3;
+            $formOptions->groupLimits = ["nonEarth" => 1, "nonAction" => 2];
+          }
           $playerInputPopup->formOptions = $formOptions;
           $choiceOptions = "checkbox";
           $playerInputPopup->choiceOptions = $choiceOptions;

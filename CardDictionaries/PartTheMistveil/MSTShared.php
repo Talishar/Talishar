@@ -520,11 +520,6 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "emissary_of_wind_red":
       AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
       break;    
-    case "gravekeeping_red":
-    case "gravekeeping_yellow":
-    case "gravekeeping_blue":
-      if (IsHeroAttackTarget()) MZMoveCard($currentPlayer, "THEIRDISCARD", "THEIRBANISH,DISCARD,-,$mainPlayer", true, DQContext: "Choose a card to banish from their graveyard.");
-      return "";
     case "water_the_seeds_red":
     case "water_the_seeds_yellow":
     case "longdraw_half_glove":

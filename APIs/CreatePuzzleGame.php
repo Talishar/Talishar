@@ -9,7 +9,7 @@ include_once "../includes/dbh.inc.php";
 include_once '../includes/ModeratorList.inc.php';
 include_once '../Libraries/PuzzleHarvest.php';
 include_once '../Libraries/PuzzleGame.php';
-include_once '../Libraries/PuzzleAnalysis.php';
+include_once '../Libraries/PuzzleVerify.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -27,9 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $request = ReadJsonBody() ?? [];
 $candidateID = intval($request["candidateId"] ?? 0);
-$emptyOpponentHand = ($request["emptyOpponentHand"] ?? true) == true;
-$removeDecks = ($request["removeDecks"] ?? true) == true;
-$raiseLife = ($request["raiseLife"] ?? false) == true;
 
 $conn = GetDBConnection(DBL_CREATE_PUZZLE_GAME);
 if (!$conn) {
@@ -40,7 +37,7 @@ if (!$conn) {
 $candidate = null;
 try {
   EnsurePuzzleCandidatesTable($conn);
-  $stmt = mysqli_prepare($conn, "SELECT player, format, meta, gamestate FROM puzzle_candidates WHERE id = ?");
+  $stmt = mysqli_prepare($conn, "SELECT player, format, proof, gamestate FROM puzzle_candidates WHERE id = ?");
   mysqli_stmt_bind_param($stmt, "i", $candidateID);
   mysqli_stmt_execute($stmt);
   $candidate = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -57,6 +54,13 @@ if ($content === false) {
   exit;
 }
 
+$proof = json_decode($candidate["proof"] ?? "", true);
+if (!is_array($proof) || ($proof["v"] ?? 0) != PUZZLE_PROOF_VERSION || ($proof["status"] ?? "") !== "proven") {
+  http_response_code(409);
+  echo json_encode(["error" => "This candidate has no proven winning line."]);
+  exit;
+}
+
 $gameName = GetGameCounter("../");
 if (file_exists("../Games/$gameName") || !mkdir("../Games/$gameName", 0700, true)) {
   http_response_code(500);
@@ -67,9 +71,8 @@ if (file_exists("../Games/$gameName") || !mkdir("../Games/$gameName", 0700, true
 $player = intval($candidate["player"]);
 $p1Key = bin2hex(random_bytes(32));
 $p2Key = bin2hex(random_bytes(32));
-$analysis = AnalyzePuzzlePosition($content, $player, json_decode($candidate["meta"] ?? "", true), $emptyOpponentHand, $raiseLife);
-$opponentLife = $analysis["opponentLife"];
-$gamestate = PreparePuzzleGamestate($content, $player, $p1Key, $p2Key, $emptyOpponentHand, $removeDecks, $opponentLife);
+$opponentLife = intval($proof["life"]);
+$gamestate = PreparePuzzleGamestate($content, $player, $opponentLife, $p1Key, $p2Key);
 $lines = explode("\r\n", $gamestate);
 $p1Hero = explode(" ", trim($lines[3]))[0];
 $p2Hero = explode(" ", trim($lines[21]))[0];

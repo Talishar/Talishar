@@ -49,10 +49,14 @@ try {
     $key = $row["phase"] . "|" . $row["context"];
     if (!isset($prompts[$key])) {
       $name = GeneratedCardName($row["context"]);
+      $contextName = $name;
+      if ($name == "" && str_contains($row["context"], "+")) {
+        $contextName = implode(" + ", array_map(fn($cardID) => GeneratedCardName($cardID) ?: $cardID, explode("+", $row["context"])));
+      }
       $prompts[$key] = [
         "phase" => $row["phase"],
         "context" => $row["context"],
-        "contextName" => $name != "" ? $name : $row["context"],
+        "contextName" => $contextName != "" ? $contextName : $row["context"],
         "isCard" => $name != "",
         "count" => 0,
         "identical" => 0,

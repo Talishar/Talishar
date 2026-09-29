@@ -21,6 +21,8 @@ function EnsurePuzzleCandidatesTable($conn)
     status TINYINT UNSIGNED NOT NULL DEFAULT 0,
     note VARCHAR(255) NOT NULL DEFAULT '',
     meta VARCHAR(512) NOT NULL DEFAULT '',
+    proof VARCHAR(1024) NOT NULL DEFAULT '',
+    winning_line MEDIUMBLOB NULL,
     gamestate MEDIUMBLOB NOT NULL,
     PRIMARY KEY (id),
     KEY status_created (status, created_at)
@@ -28,9 +30,16 @@ function EnsurePuzzleCandidatesTable($conn)
   if (!mysqli_query($conn, $sql)) {
     error_log("Failed to create puzzle_candidates table: " . mysqli_error($conn));
   }
-  $columns = mysqli_query($conn, "SHOW COLUMNS FROM puzzle_candidates LIKE 'meta'");
-  if ($columns && mysqli_num_rows($columns) == 0) {
-    mysqli_query($conn, "ALTER TABLE puzzle_candidates ADD COLUMN meta VARCHAR(512) NOT NULL DEFAULT '' AFTER note");
+  $columns = mysqli_query($conn, "SHOW COLUMNS FROM puzzle_candidates");
+  $existing = [];
+  while ($columns && ($column = mysqli_fetch_assoc($columns))) $existing[$column["Field"]] = true;
+  $missing = [
+    "meta" => "ADD COLUMN meta VARCHAR(512) NOT NULL DEFAULT '' AFTER note",
+    "proof" => "ADD COLUMN proof VARCHAR(1024) NOT NULL DEFAULT '' AFTER meta",
+    "winning_line" => "ADD COLUMN winning_line MEDIUMBLOB NULL AFTER proof"
+  ];
+  foreach ($missing as $name => $definition) {
+    if (!isset($existing[$name])) mysqli_query($conn, "ALTER TABLE puzzle_candidates $definition");
   }
 }
 
@@ -82,13 +91,17 @@ function HarvestPuzzleCandidate($winner, $conceded)
   $gameCache = ReadCacheArray(intval($gameName));
   $format = (string)($gameCache[12] ?? "");
 
+  include_once __DIR__ . "/PuzzleVerify.php";
+  $line = ExtractPuzzleLine("./Games/$gameName/", $winner, $currentTurn);
+  $winningLine = $line === null ? null : gzcompress(json_encode($line), 6);
+
   include_once __DIR__ . "/../includes/dbh.inc.php";
   $conn = GetDBConnection(DBL_HARVEST_PUZZLE_CANDIDATE);
   if (!$conn) return;
   try {
     EnsurePuzzleCandidatesTable($conn);
     $sql = "INSERT INTO puzzle_candidates (game_name, format, turn_number, player, hero, opponent_hero, opponent_life,
-      hand_count, opponent_hand_count, meta, gamestate) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+      hand_count, opponent_hand_count, meta, winning_line, gamestate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
     $stmt = mysqli_prepare($conn, $sql);
     $gameNumber = intval($gameName);
     $turnNumber = intval($currentTurn);
@@ -97,8 +110,8 @@ function HarvestPuzzleCandidate($winner, $conceded)
     $opponentHandCount = PuzzleZoneCount($lines[1 + $opponentOffset]);
     $meta = json_encode(PuzzleTurnMeta($winner, $loser));
     $compressed = gzcompress($content, 6);
-    mysqli_stmt_bind_param($stmt, "isiissiiiss", $gameNumber, $format, $turnNumber, $winner, $hero, $opponentHero,
-      $opponentLife, $handCount, $opponentHandCount, $meta, $compressed);
+    mysqli_stmt_bind_param($stmt, "isiissiiisss", $gameNumber, $format, $turnNumber, $winner, $hero, $opponentHero,
+      $opponentLife, $handCount, $opponentHandCount, $meta, $winningLine, $compressed);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
   } catch (Throwable $e) {

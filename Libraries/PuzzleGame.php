@@ -14,26 +14,21 @@ function PuzzleIntroLog($candidateID, $opponentLife)
     . "🧩 Puzzle #$candidateID: win this turn. Your opponent is at $opponentLife life.</span></p>\r\n";
 }
 
-function PreparePuzzleGamestate($content, $player, $p1Key, $p2Key, $emptyOpponentHand, $removeDecks, $opponentLife)
+// Without keys this is the state the proof runs on: the solver keeps the recorded player's settings,
+// because their inputs were given under them.
+function PreparePuzzleGamestate($content, $player, $opponentLife, $p1Key = null, $p2Key = null)
 {
   $lines = explode("\r\n", $content);
   $healths = explode(" ", trim($lines[0]));
   $healths[$player == 1 ? 1 : 0] = $opponentLife;
   $lines[0] = implode(" ", $healths);
   $numChainLinks = intval(trim($lines[56] ?? "0"));
-  $opponentOffset = $player == 1 ? 18 : 0;
-  if ($emptyOpponentHand) {
-    $lines[1 + $opponentOffset] = "";
-    $lines[5 + $opponentOffset] = "";
+  $lines[$player == 1 ? 36 : 18] = "";
+  if ($p1Key !== null) {
+    $lines[$player == 1 ? 18 : 36] = "";
+    $lines[58 + $numChainLinks] = $p1Key;
+    $lines[59 + $numChainLinks] = $p2Key;
   }
-  if ($removeDecks) {
-    $lines[2] = "";
-    $lines[20] = "";
-  }
-  $lines[18] = "";
-  $lines[36] = "";
-  $lines[58 + $numChainLinks] = $p1Key;
-  $lines[59 + $numChainLinks] = $p2Key;
   $lines[74 + $numChainLinks] = $player == 1 ? "0" : "1";
   $lines[75 + $numChainLinks] = $player == 2 ? "0" : "1";
   $lines[76 + $numChainLinks] = "0";
