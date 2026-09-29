@@ -3000,6 +3000,7 @@ function CanPassPhase($phase)
 {
   global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer, $CCS_RequiredNegCounterEquipmentBlock;
   if ($phase == "BUTTONINPUT") return AbilityModePassDefault() !== "" ? 1 : 0;
+  if ($phase == "YESNO" && RequireYesNoAnswerSetting($currentPlayer)) return 0;
   if ($phase == "PAYGOLDORPITCH") {
     $resources = &GetResources($currentPlayer);
     return ($resources[0] ?? 0) >= 2;

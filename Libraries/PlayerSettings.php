@@ -60,6 +60,7 @@ $SET_PlaymatIntensity = 46;
 $SET_HideLayerGoAgain = 47; //Hide the go again icon on cards in the active layers window
 $SET_ManualValda = 48; //Do you want to manually create Valda's Seismic Surge tokens
 $SET_AutoPitchForced = 49; //Automatically pitch a sole hand card when it pays the remaining cost
+$SET_RequireYesNoAnswer = 50; //Passing does not answer No on Yes/No prompts
 
 function SettingsPieces()
 {
@@ -155,6 +156,12 @@ function AutoPitchForcedSetting($player)
 {
   global $SET_AutoPitchForced;
   return SettingValue($player, $SET_AutoPitchForced, "1", false) == "1";
+}
+
+function RequireYesNoAnswerSetting($player)
+{
+  global $SET_RequireYesNoAnswer;
+  return SettingValue($player, $SET_RequireYesNoAnswer, "0", false) == "1";
 }
 
 function IsPatron($player)
@@ -683,6 +690,7 @@ function SettingsIdMap()
     "HideLayerGoAgain" => 47,
     "ManualValda" => 48,
     "AutoPitchForced" => 49,
+    "RequireYesNoAnswer" => 50,
   ];
   return $settingsToId;
 }
@@ -740,7 +748,7 @@ function SaveSettingInDatabase($setting)
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
-    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced;
+    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -750,7 +758,7 @@ function SaveSettingInDatabase($setting)
       $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
-      $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced,
+      $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer,
     ], true);
   }
   return isset($persistable[$setting]);
