@@ -7,6 +7,7 @@ include_once "../includes/dbh.inc.php";
 include_once '../includes/ModeratorList.inc.php';
 include_once '../Libraries/PuzzleHarvest.php';
 include_once '../Libraries/PuzzleAnalysis.php';
+include_once '../Libraries/PuzzleVerify.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -16,11 +17,9 @@ header('Content-Type: application/json');
 RequireModeratorSession();
 session_write_close();
 
-$emptyOpponentHand = ($_GET["emptyOpponentHand"] ?? "0") === "1";
-$raiseLife = ($_GET["raiseLife"] ?? "0") === "1";
-
 $response = [
   "total" => 0,
+  "pending" => 0,
   "candidates" => []
 ];
 
@@ -35,14 +34,18 @@ try {
   EnsurePuzzleCandidatesTable($conn);
   $result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM puzzle_candidates");
   $response["total"] = (int)(mysqli_fetch_assoc($result)["total"] ?? 0);
+  $result = mysqli_query($conn, "SELECT COUNT(*) AS pending FROM puzzle_candidates WHERE " . PuzzleProofPendingSql());
+  $response["pending"] = (int)(mysqli_fetch_assoc($result)["pending"] ?? 0);
 
-  $sql = "SELECT id, created_at, format, turn_number, player, hero, opponent_hero, status, meta, gamestate
-    FROM puzzle_candidates ORDER BY id DESC LIMIT 300";
+  $sql = "SELECT id, created_at, format, turn_number, player, hero, opponent_hero, status, meta, proof,
+    winning_line IS NOT NULL AS has_line, gamestate FROM puzzle_candidates ORDER BY id DESC LIMIT 300";
   $result = mysqli_query($conn, $sql);
   while ($row = mysqli_fetch_assoc($result)) {
     $content = @gzuncompress($row["gamestate"]);
     if ($content === false) continue;
     $meta = json_decode($row["meta"] ?? "", true);
+    $proof = json_decode($row["proof"] ?? "", true);
+    if (!is_array($proof) || ($proof["v"] ?? 0) != PUZZLE_PROOF_VERSION) $proof = null;
     $response["candidates"][] = [
       "id" => (int)$row["id"],
       "createdAt" => $row["created_at"],
@@ -52,8 +55,9 @@ try {
       "heroName" => GeneratedCardName($row["hero"]),
       "opponentHero" => $row["opponent_hero"],
       "opponentHeroName" => GeneratedCardName($row["opponent_hero"]),
-      "status" => (int)$row["status"]
-    ] + AnalyzePuzzlePosition($content, (int)$row["player"], $meta, $emptyOpponentHand, $raiseLife);
+      "status" => (int)$row["status"],
+      "hasLine" => (bool)$row["has_line"]
+    ] + AnalyzePuzzlePosition($content, (int)$row["player"], $meta, $proof);
   }
 } catch (Throwable $e) {
   error_log("GetPuzzleCandidates failed: " . $e->getMessage());
