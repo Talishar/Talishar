@@ -384,6 +384,10 @@ class helm_of_hindsight extends Card {
   function AbilityCost() {
     return 3;
   }
+
+  function DefaultActiveState() {
+    return 1;
+  }
 }
 
 
