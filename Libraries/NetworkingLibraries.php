@@ -311,6 +311,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
           }
           $inputParts[] = $options[$index + $limitOffset];
         }
+        if (!$skipWriteGamestate && ($decisionQueue[0] ?? "") == "DECOMPOSEBANISH" && !IsValidDecomposeSelection($playerID, implode(",", $inputParts))) {
+          WriteLog("Decompose needs 2 Earth cards and an action card.", highlight: true);
+          $skipWriteGamestate = true;
+        }
         if (!$skipWriteGamestate) {
           ContinueDecisionQueue(implode(",", $inputParts));
         }
@@ -1628,6 +1632,9 @@ function PassInput($autopass = true, $doublePass = false, $resolutionStepRetry =
   }
   elseif ($turn[0] == "CHOOSETRIGGERS") {
     ContinueDecisionQueue("Mine");
+  }
+  elseif ($turn[0] == "BUTTONINPUT" && ($modeDefault = AbilityModePassDefault()) !== "") {
+    ContinueDecisionQueue($modeDefault);
   }
   elseif ($turn[0] == "ORDERTRIGGERS") {
     $layersCount = count($layers);

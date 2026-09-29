@@ -3852,9 +3852,20 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $param = explode(",", $parameter);
       GainHealth($param[0], $player);
       return $lastResult;
-    case "GETCARDSFORDECOMPOSE":
-      $rv = SearchMultizone($player, $parameter); // I want multizone to return a blank string if no results so I built this
-      return $rv;
+    case "DECOMPOSECHOICES":
+      $choices = DecomposeChoices($player);
+      if ($choices == "") WriteLog("Insufficient cards to <b>decompose</b>");
+      return $choices == "" ? "PASS" : $choices;
+    case "DECOMPOSEBANISH":
+      if (!IsValidDecomposeSelection($player, $lastResult)) return "PASS";
+      $indices = array_map(fn($choice) => intval(explode("-", $choice, 2)[1]), explode(",", $lastResult));
+      sort($indices);
+      $selection = implode(",", array_map(fn($index) => "MYDISCARD-$index", $indices));
+      $cardLinks = array_map(fn($index) => CardLink(GetMZCard($player, "MYDISCARD-$index")), $indices);
+      MZBanish($player, "GY,-,,-", $selection);
+      MZRemove($player, $selection);
+      WriteLog(implode(", ", $cardLinks) . " were banished.");
+      return $lastResult;
     case "REMOVEPREVIOUSCHOICES":
       $remainingChoices = [];
       foreach (explode(",", $lastResult) as $choice) {

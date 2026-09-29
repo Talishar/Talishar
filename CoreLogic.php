@@ -2982,9 +2982,24 @@ function NumNegCounterEquipBlock()
   return $numNegCounterEquipBlock;
 }
 
+// Pass on a play-mode choice plays the reaction when one is offered, otherwise the ability.
+function AbilityModePassDefault()
+{
+  global $turn, $decisionQueue;
+  if (($turn[0] ?? "") != "BUTTONINPUT" || ($decisionQueue[0] ?? "") != "SETABILITYTYPE") return "";
+  $options = explode(",", (string)($turn[2] ?? ""));
+  foreach (["Defense Reaction", "Attack Reaction", "Ability"] as $mode) {
+    foreach ($options as $option) {
+      if (GamestateUnsanitize($option) == $mode) return $option;
+    }
+  }
+  return "";
+}
+
 function CanPassPhase($phase)
 {
   global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer, $CCS_RequiredNegCounterEquipmentBlock;
+  if ($phase == "BUTTONINPUT") return AbilityModePassDefault() !== "" ? 1 : 0;
   if ($phase == "PAYGOLDORPITCH") {
     $resources = &GetResources($currentPlayer);
     return ($resources[0] ?? 0) >= 2;
@@ -3023,7 +3038,6 @@ function CanPassPhase($phase)
     case "CHOOSECARD":
     case "CHOOSECARDID":
     case "OVER":
-    case "BUTTONINPUT":
     case "NUMBERINPUT":
     case "INPUTCARDNAME":
     case "MULTICHOOSETHEIRDISCARD":

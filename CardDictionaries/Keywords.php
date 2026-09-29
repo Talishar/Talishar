@@ -546,54 +546,56 @@
    * The result of "NOPASS" should be used to add the bonus effects. SPECIFICCARD dq events can be added right after calling decompose to run if the decompose succeeded.
    */
   function Decompose($player, $specificCardDQ, $target = "") {
-    $actionBanishes = 1;
-    $earthBanishes = 2;
-    $totalBanishes = 3;
-    // Only perform the action if we have the minimum # of cards that meet the requirement for total banishes.
-    $earthDiscard = SearchDiscard($player, talent: "EARTH");
-    $countInDiscard = SearchCount(
-      SearchRemoveDuplicates(
-        CombineSearches(
-          $earthDiscard,
-          CombineSearches(
-            SearchDiscard($player, "A"),
-            SearchDiscard($player, "AA"))
-          )
-        )
-      );
-      // Must have the minimum # of earth cards too.
-      $earthCountInDiscard = SearchCount($earthDiscard);
-      if($countInDiscard >= $totalBanishes && $earthCountInDiscard >= $earthBanishes) {
-        $earthColorCode = GetElementColorCode("EARTH");
-        // Earth Banishes
-        for($i = 0; $i < $earthBanishes; $i++) {
-          AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:talent=EARTH", 1);
-      switch ($earthBanishes - $i) {
-        case 1:
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose 1 {{element|Earth|" . $earthColorCode . "}} card to banish", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-          break;
-        default:
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $earthBanishes . " {{element|Earth|" . $earthColorCode . "}} cards to banish (or pass)", 1);
-          AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-          break;
-      }
-          AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
-          AddDecisionQueue("MZREMOVE", $player, "-", 1);
-        }
-
-        // Action banishes.
-        for($i = 0; $i < $actionBanishes; $i++) {
-          AddDecisionQueue("GETCARDSFORDECOMPOSE", $player, "MYDISCARD:type=A&MYDISCARD:type=AA", 1); // Modified MULTIZONEINDICES so if there are no actions it can be sent to the next dq and it will revert gamestate. Can't use "PASS" because YESNO "PASS" result is already present.
-          AddDecisionQueue("REVERTGAMESTATEIFNULL", $player, "There aren't any more action cards! Try selecting different {{element|Earth|" . $earthColorCode . "}} cards.", 1);
-          AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . ($actionBanishes - $i) . " action card(s) to banish", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-          AddDecisionQueue("MZBANISH", $player, "GY,-", 1);
-          AddDecisionQueue("MZREMOVE", $player, "-", 1);
-        }
-        if ($specificCardDQ == "SOWINGTHORNS") AddDecisionQueue("BUTTONINPUT", $player, "Search,No_search", 1);
-        AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ . "-" . $target, 1);
-      }
-      else WriteLog("Insufficient cards to <b>decompose</b>");
+    if (DecomposeChoices($player) == "") {
+      WriteLog("Insufficient cards to <b>decompose</b>");
       return "";
+    }
+    AddDecisionQueue("DECOMPOSECHOICES", $player, "-", 1);
+    AddDecisionQueue("SETDQCONTEXT", $player, "Choose 2 {{element|Earth|" . GetElementColorCode("EARTH") . "}} cards and an action card to banish (or pass)", 1);
+    AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+    AddDecisionQueue("DECOMPOSEBANISH", $player, "-", 1);
+    if ($specificCardDQ == "SOWINGTHORNS") AddDecisionQueue("BUTTONINPUT", $player, "Search,No_search", 1);
+    AddDecisionQueue("SPECIFICCARD", $player, $specificCardDQ . "-" . $target, 1);
+    return "";
+  }
+
+  // Graveyard cards Decompose can use, keyed by MZ index: [Earth cards, action cards]
+  function DecomposeCandidates($player) {
+    $earth = array_flip(array_filter(explode(",", SearchMultizone($player, "MYDISCARD:talent=EARTH"))));
+    $actions = array_flip(array_filter(explode(",", SearchMultizone($player, "MYDISCARD:type=A&MYDISCARD:type=AA"))));
+    return [$earth, $actions];
+  }
+
+  // One 3-card pick: Earth cards first, then the non-Earth actions. "" when no legal set exists.
+  function DecomposeChoices($player) {
+    [$earth, $actions] = DecomposeCandidates($player);
+    $otherActions = array_diff_key($actions, $earth);
+    $earthActions = count(array_intersect_key($earth, $actions));
+    if ((count($earth) < 2 || count($otherActions) < 1) && (count($earth) < 3 || $earthActions < 1)) return "";
+    $choices = array_merge(DecomposeSortChoices($player, array_keys($earth)), DecomposeSortChoices($player, array_keys($otherActions)));
+    return "MAXCOUNT-3,MINCOUNT-3," . implode(",", $choices);
+  }
+
+  function DecomposeSortChoices($player, $choices) {
+    usort($choices, function ($a, $b) use ($player) {
+      $cardA = GetMZCard($player, $a);
+      $cardB = GetMZCard($player, $b);
+      return (strcmp(CardName($cardA), CardName($cardB)) ?: (PitchValue($cardA) <=> PitchValue($cardB))) ?: strnatcmp($a, $b);
+    });
+    return $choices;
+  }
+
+  function IsValidDecomposeSelection($player, $selection) {
+    $picked = array_values(array_unique(array_filter(explode(",", $selection))));
+    if (count($picked) != 3) return false;
+    [$earth, $actions] = DecomposeCandidates($player);
+    foreach ($picked as $action) {
+      if (!isset($actions[$action])) continue;
+      $earthCount = 0;
+      foreach ($picked as $card) {
+        if ($card !== $action && isset($earth[$card])) ++$earthCount;
+      }
+      if ($earthCount == 2) return true;
+    }
+    return false;
   }
