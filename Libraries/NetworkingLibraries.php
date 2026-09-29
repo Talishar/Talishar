@@ -1986,8 +1986,6 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
 
       $count = count($currentTurnEffects);
       for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-        if ($currentTurnEffects[$i] == "celestial_kimono")
-          AddLayer("TRIGGER", $currentTurnEffects[$i + 1], "celestial_kimono");
         if (!$hitEffectsPrevented && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
           AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
         }

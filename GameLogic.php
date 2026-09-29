@@ -3111,7 +3111,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for ($i = count($currentTurnEffects) - $ctePieces; $i >= 0; $i -= $ctePieces) {
           $currentTurnEffectID = $currentTurnEffects[$i];
           $currentTurnEffectsPlayer = $currentTurnEffects[$i + 1];
-          if ($currentTurnEffectID == "celestial_kimono") AddLayer("TRIGGER", $currentTurnEffectsPlayer, "celestial_kimono");
           if ($currentTurnEffectsPlayer == $mainPlayer && IsCombatEffectActive($currentTurnEffectID, flicked: true)) {
             AddCardEffectHitTrigger($currentTurnEffectID, $cardID, $targetPlayer); // Effects that do not gives it's effect to the attack
           }

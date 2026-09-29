@@ -611,17 +611,36 @@
 // }
 
 
-// class celestial_kimono extends Card {
+class celestial_kimono extends Card {
+	function __construct($controller) {
+		$this->cardID = "celestial_kimono";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "celestial_kimono";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID = '-') {
+		$DisCard = new DiscardCard($discardIndex, $this->controller);
+		$CharacterCard = new CharacterCard($permIndex, $this->controller);
+		$isToken = TypeContains($DisCard->CardID(), "T");
+		if (!$isToken && SubtypeContains($DisCard->CardID(), "Aura")) { // check if it was a token copy
+			$Auras = new Auras($this->controller);
+			$AuraCard = $Auras->FindCardUID($uniqueID);
+			if ($AuraCard->IsToken())
+				$isToken = true;
+		}
+		if (HasWard($DisCard->CardID(), $this->controller) && $CharacterCard->NumUses() > 0 && !$isToken) {
+			AddLayer("TRIGGER", $this->controller, $this->cardID);
+			$CharacterCard->AddUse(-1);
+		}
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		GainResources(1, $this->controller);
+	}
+}
 
 
 // class cleave_red extends Card {

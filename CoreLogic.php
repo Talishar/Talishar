@@ -4104,10 +4104,6 @@ function ChooseToPay($player, $cardID, $amounts)
 
 function WardPoppedAbility($player, $cardID)
 {
-  if (SearchCharacterActive($player, "celestial_kimono", setInactive: true)) {
-    GainResources(1, $player);
-    WriteLog("Player " . $player . " gained 1 resource from " . CardLink("celestial_kimono", "celestial_kimono"));
-  }
   if (SearchCharacterActive($player, "diadem_of_dreamstate", setInactive: true) || $cardID == "diadem_of_dreamstate") {
     AddPayPrompt("YESNO", $player, "if_you_want_to_pay_1_to_create_a_".CardLink("ponder", "ponder"));
     AddDecisionQueue("NOPASS", $player, "-");
