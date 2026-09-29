@@ -116,10 +116,24 @@ function PromptAnswerFitsPhase($mode, $phase, $parameter, $buttonInput, $cardID)
   }
 }
 
+function PromptTriggerSetContext($parameter)
+{
+  $cardIDs = [];
+  foreach (explode(",", $parameter) as $layer) {
+    $parts = explode("|", $layer);
+    $cardID = $parts[0] == "USURPED" ? ($parts[2] ?? "") : $parts[0];
+    if ($cardID !== "" && $cardID !== "-") $cardIDs[$cardID] = true;
+  }
+  $cardIDs = array_keys($cardIDs);
+  sort($cardIDs);
+  return count($cardIDs) > 0 ? implode("+", $cardIDs) : "-";
+}
+
 function PromptLogContext($phase)
 {
-  global $EffectContext, $decisionQueue;
+  global $EffectContext, $decisionQueue, $turn;
   if ($phase == "ARS") return "-";
+  if ($phase == "ORDERTRIGGERS") return PromptTriggerSetContext((string)($turn[2] ?? ""));
   if (GetDQHelpText() == "Choose_a_target_for_the_attack") return "ATTACKTARGET";
   $dqCount = count($decisionQueue ?? []);
   $dqPieces = DecisionQueuePieces();

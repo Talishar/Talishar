@@ -253,6 +253,40 @@ function GetLayerGemStatus($cardID, $uid, $layerController, $viewingPlayer)
   return strval($viewingPlayer == $layerController ? $card->MyGemStatus() : $card->TheirGemStatus());
 }
 
+// Mandatory picks between copies in the same state are no choice at all. A copy whose unique ID
+// something else points at (Gate to i'Arathael, a layer target, a class state) still prompts.
+function InterchangeableChoices($player, $choices)
+{
+  global $layers, $currentTurnEffects, $combatChain;
+  static $zones = ["MYHAND" => true, "MYDISCARD" => true, "MYBANISH" => true, "MYSOUL" => true,
+    "MYAURAS" => true, "MYITEMS" => true, "MYALLY" => true];
+  if (count($choices) < 2) return false;
+  $zoneName = explode("-", $choices[0], 2)[0];
+  if (!isset($zones[$zoneName])) return false;
+  $zone = &GetMZZone($player, $zoneName);
+  $pieces = GetMZZonePieces($zoneName);
+  $uidIndex = GetMZZoneUIDIndex($zoneName);
+  $references = null;
+  $first = null;
+  foreach ($choices as $choice) {
+    $parts = explode("-", $choice);
+    if (count($parts) != 2 || $parts[0] != $zoneName || !IsValidZoneIndex($zone, $parts[1], $pieces)) return false;
+    $state = array_slice($zone, intval($parts[1]), $pieces);
+    if ($uidIndex >= 0) {
+      $uid = (string)($state[$uidIndex] ?? "-");
+      if ($uid !== "-" && $uid !== "") {
+        $references ??= implode("|", array_merge($layers ?? [], $currentTurnEffects ?? [], $combatChain ?? [],
+          GetPlayerClassState(1), GetPlayerClassState(2)));
+        if (str_contains($references, $uid)) return false;
+      }
+      unset($state[$uidIndex]);
+    }
+    if ($first === null) $first = $state;
+    elseif ($state != $first) return false;
+  }
+  return true;
+}
+
 function ProcessSpecificCardMacros()
 {
   global $currentPlayer, $turn, $EffectContext;
@@ -371,6 +405,17 @@ function ProcessSpecificCardMacros()
         }
         if ($allSameCog) { ContinueDecisionQueue($firstChoice); return true; }
       }
+    }
+    if (InterchangeableChoices($currentPlayer, $choices)) {
+      ContinueDecisionQueue($firstChoice);
+      return true;
+    }
+  }
+  if ($turn[0] == "CHOOSEHAND") {
+    $choices = explode(",", $turn[2]);
+    if (InterchangeableChoices($currentPlayer, array_map(fn($index) => "MYHAND-$index", $choices))) {
+      ContinueDecisionQueue($choices[0]);
+      return true;
     }
   }
   if (str_starts_with($turn[0], "MULTICHOOSE") && !str_starts_with($turn[0], "MAYMULTICHOOSE")) {
