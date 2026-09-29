@@ -166,7 +166,7 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-", $index=
       default => $cardID
     };
     if (!$toBanished) AddGraveyard($id, $owner, $from, $player, uniqueID:$uid);
-    else BanishCardForPlayer($id, $owner, $from, $mod);
+    else BanishCardForPlayer($id, $owner, $from, $mod, uniqueID:$uid);
   }
 }
 

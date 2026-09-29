@@ -1,6 +1,6 @@
 <?php
 
-function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = "", $banisher = "-", $created = false)
+function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = "", $banisher = "-", $created = false, $uniqueID = "-")
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $myBanish, $theirBanish, $mainBanish, $defBanish;
   global $myClassState, $theirClassState, $mainClassState, $defClassState;
@@ -12,15 +12,15 @@ function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = 
   $player = intval($player);
   if (CardNameContains($cardID, "Crouching Tiger", $player) && $from == "-") IncrementClassState($player, $CS_NumCrouchingTigerCreatedThisTurn);
   if ($mainPlayerGamestateStillBuilt) {
-    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created);
-    else return BanishCard($defBanish, $defClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created);
+    if ($player == $mainPlayer) return BanishCard($mainBanish, $mainClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created, $uniqueID);
+    else return BanishCard($defBanish, $defClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created, $uniqueID);
   } else {
-    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created);
-    else return BanishCard($theirBanish, $theirClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created);
+    if ($player == $myStateBuiltFor) return BanishCard($myBanish, $myClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created, $uniqueID);
+    else return BanishCard($theirBanish, $theirClassState, $cardID, $mod, $player, $from, $banishedBy, $banisher, $created, $uniqueID);
   }
 }
 
-function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from = "", $banishedBy = "", $banisher = "-", $created = false)
+function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from = "", $banishedBy = "", $banisher = "-", $created = false, $uniqueID = "-")
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext, $CS_NumBloodDebtBanished;
   global $CS_Num6PowPutIntoBanish;
@@ -83,7 +83,28 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if ($created) {
       $ClassState = new ClassState($player);
       $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $amount);
+  }
+  if (SubtypeContains($cardID, "Ally") && $from == "PLAY") { // this counts as dying
+    $BanCard = new BanishCard($player, count($banish) - BanishPieces());
+    $Character = new PlayerCharacter($player);
+    for ($i = 0; $i < $Character->NumCards(); ++$i) {
+      $CharacterCard = $Character->Card($i, true);
+      $card = GetClass($CharacterCard->CardID(), $player);
+      if ($card != "-") $card->PermanentAddBanishAbility($BanCard->Index(), $CharacterCard->Index(), $from, $uniqueID);
     }
+    $Allies = new Allies($player);
+    for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
+      $AllyCard = $Allies->Card($i, true);
+      $card = GetClass($AllyCard->CardID(), $player);
+      if ($card != "-") $card->PermanentAddBanishAbility($BanCard->Index(), $AllyCard->Index(), $from, $uniqueID);
+    }
+    $Auras = new Auras($player);
+    for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+      $AuraCard = $Auras->Card($i, true);
+      $card = GetClass($AuraCard->CardID(), $player);
+      if ($card != "-") $card->PermanentAddBanishAbility($BanCard->Index(), $AuraCard->Index(), $from, $uniqueID);
+    }
+  }
   if ($isFaceDown) return $rv;
   //Do additional effects
   $card = GetClass($cardID, $player);

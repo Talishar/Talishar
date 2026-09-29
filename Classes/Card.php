@@ -1335,6 +1335,12 @@ class Card {
     return;
   }
 
+  function PermanentAddBanishAbility($banishIndex, $permIndex, $from, $uniqueID="-") {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "PermanentAddBanishAbility"))
+      return $this->baseCard->PermanentAddBanishAbility($banishIndex, $permIndex, $from, $uniqueID);
+    return;
+  }
+
   function Binding($index) {
     if (isset($this->baseCard) && method_exists($this->baseCard, "Binding"))
       return $this->baseCard->Binding($index);
