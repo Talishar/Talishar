@@ -3219,8 +3219,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return true;
     case "dead_threads":
       return CheckTapped("MYCHAR-$index", $currentPlayer) || GetClassState($currentPlayer, $CS_NumAllyPutInGraveyard) == 0;
-    case "sealace_sarong":
-      return CheckTapped("MYCHAR-$index", $currentPlayer) || !ArsenalHasArrowFacingColor($player, "DOWN", 3);
     case "riggermortis_yellow":
     case "swabbie_yellow":
     case "limpit_hop_a_long_yellow":
@@ -3821,7 +3819,7 @@ function CharacterNumUsesPerTurn($cardID)
     "seerstone" => 1, "nitro_mechanoida" => 1, "teklovossen_the_mechropotent" => 1,
     "nuu_alluring_desire" => 1, "nuu" => 1, "enigma_new_moon" => 1, "sanctuary_of_aria" => 1,
     "quickdodge_flexors" => 1, "bravo_flattering_showman" => 1, "redspine_manta" => 1,
-    "sealace_sarong" => 1, "cogwerx_blunderbuss" => 1, "dead_threads" => 1, "puffin" => 1,
+    "cogwerx_blunderbuss" => 1, "dead_threads" => 1, "puffin" => 1,
     "puffin_hightail" => 1, "hammerhead_harpoon_cannon" => 1, "spitfire" => 1,
     "compass_of_sunken_depths" => 1, "gravy_bones" => 1, "gravy_bones_shipwrecked_looter" => 1,
     "marlynn" => 1, "marlynn_treasure_hunter" => 1, "gold_baited_hook" => 1, "scurv_stowaway" => 1,
@@ -3871,7 +3869,7 @@ function CharacterDefaultActiveState($cardID)
     "tiara_of_suspense" => 1, "aether_bindings_of_the_third_age" => 1, "mask_of_many_faces" => 1,
     "ornate_tessen" => 1, "radiant_flow" => 1, "radiant_raiment" => 1,
     "radiant_touch" => 1, "radiant_view" => 1, "tremorshield_sabatons" => 1,
-    "sealace_sarong" => 1, "talismanic_lense" => 1, "gravy_bones" => 1,
+    "talismanic_lense" => 1, "gravy_bones" => 1,
     "gravy_bones_shipwrecked_looter" => 1, "dead_threads" => 1, "achilles_accelerator" => 1,
     "lyath_goldmane" => 1, "lyath_goldmane_vile_savant" => 1, "teklovossen" => 1,
     "teklovossen_esteemed_magnate" => 1, "fai" => 1, "fai_rising_rebellion" => 1,

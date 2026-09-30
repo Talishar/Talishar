@@ -1917,7 +1917,6 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
     case "bank_breaker":
     case "flying_high_red": case "flying_high_yellow": case "flying_high_blue":
     case "peg_leg": case "goldkiss_rum":
-    case "sealace_sarong":
     case "cogwerx_blunderbuss":
     case "avast_ye_blue":
     case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":

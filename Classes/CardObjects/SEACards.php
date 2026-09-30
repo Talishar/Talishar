@@ -2641,17 +2641,48 @@ class midas_touch_yellow extends Card {
 // }
 
 
-// class sealace_sarong extends Card {
+class sealace_sarong extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "sealace_sarong";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "sealace_sarong";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller, "", $target);
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $Stack;
+    $CharCard = new CharacterCard($index, $this->controller);
+    $CharCard->TapForCost();
+    SetArsenalFacing("UP", $this->controller);
+    $Layer = $Stack->FindCardID($this->cardID);
+    $arsenal = GetArsenal($this->controller);
+    $Layer->AddTarget($arsenal[count($arsenal) - ArsenalPieces() + 5]);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return CheckTapped("MYCHAR-$index", $this->controller) || !ArsenalHasArrowFacingColor($this->controller, "DOWN", 3);
+  }
+}
 
 
 // class shelly_hardened_traveler_yellow extends Card {
