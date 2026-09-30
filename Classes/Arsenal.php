@@ -47,6 +47,17 @@ class Arsenal {
 		$this->arsenal = [];
 		return implode(",", $cardIDs);
 	}
+
+	public function FindCardUID($uid): ArsenalCard {
+		$count = count($this->arsenal);
+		if ($count === 0) return new ArsenalCard(-1, $this->player);
+		$arsenalPieces = ArsenalPieces();
+		$arsenal = $this->arsenal;
+		for ($i = 0; $i < $count; $i += $arsenalPieces) {
+			if (($arsenal[$i + 5] ?? "-") == $uid) return new ArsenalCard($i, $this->player);
+		}
+		return new ArsenalCard(-1, $this->player);
+	}
 }
 
 class ArsenalCard {
