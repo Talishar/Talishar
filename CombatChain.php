@@ -535,7 +535,7 @@ function BlockModifier($cardID, $from, $resourcesPaid, $index=-1, $player="-")
 
   $blockModifier += AuraBlockModifier($cardID, $from, $index);
   $blockModifier += ItemBlockModifier($cardID, $index);
-  $blockModifier += CurrentEffectBlockModifiers($cardID, $from, $index);
+  $blockModifier += CurrentEffectBlockModifiers($cardID, $from, $index, $player);
   $blockModifier += CombatChainBlockModifiers($cardID, $from, $index);
   $totalPower = GetCombatChainState($CCS_CachedTotalPower);
 

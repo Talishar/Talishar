@@ -2757,7 +2757,7 @@ function AdministrativeEffect($effectID)
   }
 }
 
-function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
+function CurrentEffectBlockModifiers($cardID, $from, $index=-1, $player="-") {
   global $CurrentTurnEffects, $defPlayer, $CombatChain, $chainLinks, $mainPlayer, $ChainLinks;
   $noGain = !CanGainBlock($cardID, $index);
   $totalBlockModifier = 0;
@@ -2810,7 +2810,8 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           $blockModifier += $isAction && $talentCheck ? 1 : 0;
           break;
         case "fabricate_red":
-          $blockModifier += SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC") ? 1 : 0;
+          if ($player == "-" || $player == $defPlayer)
+            $blockModifier += SubtypeContains($cardID, "Evo", $defPlayer) && ($from == "EQUIP" || $from == "CC") ? 1 : 0;
           break;
         case "phantasmal_footsteps":
           if ($blockCardID == $effectID) $blockModifier += 1;
@@ -2864,7 +2865,8 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1) {
           $blockModifier -= TypeContains($cardID, "E", $defPlayer) || SubtypeContains($cardID, "Evo", $defPlayer) ? 1 : 0;
           break;
         case "fabricate_red":
-          $blockModifier += SubtypeContains($cardID, "Evo", $mainPlayer) && $from == "EQUIP" ? 1 : 0;
+          if ($player == "-" || $player == $mainPlayer)
+            $blockModifier += SubtypeContains($cardID, "Evo", $mainPlayer) && $from == "EQUIP" ? 1 : 0;
           break;
         default:
           break;
