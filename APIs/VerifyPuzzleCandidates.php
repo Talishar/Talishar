@@ -43,9 +43,7 @@ include_once "Libraries/ValidationLibraries.php";
 include_once "Libraries/PuzzleHarvest.php";
 include_once "Libraries/PuzzleVerify.php";
 
-const PUZZLE_VERIFY_BUDGET_SECONDS = 20;
-
-function VerifyPuzzleCandidatesResponse()
+function VerifyPuzzleCandidatesResponse($candidateID)
 {
   $conn = GetDBConnection(DBL_VERIFY_PUZZLE_CANDIDATES);
   if (!$conn) {
@@ -54,15 +52,20 @@ function VerifyPuzzleCandidatesResponse()
   }
   try {
     EnsurePuzzleCandidatesTable($conn);
-    return VerifyPendingPuzzleCandidates($conn, PUZZLE_VERIFY_BUDGET_SECONDS);
+    $proof = VerifyPuzzleCandidate($conn, $candidateID);
+    if ($proof === null) {
+      http_response_code(404);
+      return ["error" => "This candidate has no recorded winning line."];
+    }
+    return ["proof" => $proof];
   } catch (Throwable $e) {
     error_log("VerifyPuzzleCandidates failed: " . $e->getMessage());
     http_response_code(500);
-    return ["error" => "Failed to verify puzzle candidates"];
+    return ["error" => "Failed to verify the puzzle candidate"];
   } finally {
     mysqli_close($conn);
   }
 }
 
-@set_time_limit(90);
-echo json_encode(VerifyPuzzleCandidatesResponse());
+@set_time_limit(60);
+echo json_encode(VerifyPuzzleCandidatesResponse(intval((ReadJsonBody() ?? [])["candidateId"] ?? 0)));

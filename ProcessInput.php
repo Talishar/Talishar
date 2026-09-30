@@ -125,8 +125,9 @@ if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== 
   }
   $currentPointer = intval(trim($commands[0] ?? "0"));
 
-  $finishReplayStateLoad = static function (string $gamestate) use ($filepath, $filename, &$commands, $gameName): void {
+  $finishReplayStateLoad = static function (string $gamestate, int $pointer) use ($filepath, $filename, &$commands, $gameName): void {
     file_put_contents($filepath . "gamestate.txt", $gamestate, LOCK_EX);
+    WriteReplayGameLog($filepath, $pointer);
     WriteGamestateCache($gameName, $gamestate);
     $currentTime = (int)(microtime(true) * 1000);
     SetCachePieces($gameName, [2 => $currentTime, 3 => $currentTime]);
@@ -150,7 +151,7 @@ if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== 
     }
     $commands[0] = "$pointer\r\n";
     file_put_contents($filename, $commands, LOCK_EX);
-    $finishReplayStateLoad($gamestate);
+    $finishReplayStateLoad($gamestate, $pointer);
     exit;
   }
 
@@ -163,7 +164,7 @@ if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== 
     if (!is_string($gamestate)) exit;
     $commands[0] = "$previousPointer\r\n";
     file_put_contents($filename, $commands, LOCK_EX);
-    $finishReplayStateLoad($gamestate);
+    $finishReplayStateLoad($gamestate, $previousPointer);
     exit;
   }
 
@@ -204,7 +205,7 @@ if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== 
   $commands[0] = "$pointer\r\n";
   file_put_contents($filename, $commands, LOCK_EX);
   file_put_contents($filepath . "replayStepHistory.json", "{}", LOCK_EX);
-  $finishReplayStateLoad($gamestate);
+  $finishReplayStateLoad($gamestate, $pointer);
   exit;
 }
 

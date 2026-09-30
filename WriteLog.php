@@ -90,6 +90,7 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./", $highli
   }
   $line = "$output\r\n";
   $basePath = "{$path}Games/$gameName/";
+  $GLOBALS['replayLogLines'] = ($GLOBALS['replayLogLines'] ?? "") . $line;
   LogBufferAppend("{$basePath}gamelog.txt", $line, true);
   if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
     LogBufferAppend("{$basePath}fullGamelog.txt", $line, false);
@@ -178,6 +179,7 @@ function WriteSystemMessage($text, $path="./")
   global $gameName;
   $line = "$text\r\n";
   $basePath = "{$path}Games/$gameName/";
+  $GLOBALS['replayLogLines'] = ($GLOBALS['replayLogLines'] ?? "") . $line;
   LogBufferAppend("{$basePath}gamelog.txt", $line, true);
   if(function_exists("GetSettings") && (IsPatron(1) || IsPatron(2))) {
     LogBufferAppend("{$basePath}fullGamelog.txt", $line, false);

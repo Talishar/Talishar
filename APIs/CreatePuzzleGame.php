@@ -54,8 +54,8 @@ if ($content === false) {
   exit;
 }
 
-$proof = json_decode($candidate["proof"] ?? "", true);
-if (!is_array($proof) || ($proof["v"] ?? 0) != PUZZLE_PROOF_VERSION || ($proof["status"] ?? "") !== "proven") {
+$proof = CurrentPuzzleProof($candidate["proof"]);
+if (($proof["status"] ?? "") !== "proven") {
   http_response_code(409);
   echo json_encode(["error" => "This candidate has no proven winning line."]);
   exit;

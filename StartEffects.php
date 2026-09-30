@@ -93,7 +93,11 @@ DoGamestateUpdate();
 include "WriteGamestate.php";
 
 if ($MakeStartTurnBackup) MakeStartTurnBackup();
-if ($MakeStartGameBackup) MakeGamestateBackup("origGamestate.txt");
+if ($MakeStartGameBackup) {
+  MakeGamestateBackup("origGamestate.txt");
+  RecordReplayLogPosition($filepath, "start");
+}
+AppendReplayLog($filepath, $replayLogLines ?? "");
 
 function handleCharacterStartAbilities()
 {

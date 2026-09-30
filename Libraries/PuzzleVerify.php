@@ -352,33 +352,32 @@ function ProvePuzzleCandidate($content, $player, $line, $format)
   return ["v" => PUZZLE_PROOF_VERSION, "status" => "proven", "life" => $won, "realLife" => $realLife] + $results[$won]["stats"];
 }
 
-function PuzzleProofPendingSql()
+function CurrentPuzzleProof($encoded)
 {
-  return "winning_line IS NOT NULL AND proof NOT LIKE '{\"v\":" . PUZZLE_PROOF_VERSION . ",%'";
+  $proof = json_decode($encoded ?? "", true);
+  return is_array($proof) && ($proof["v"] ?? 0) == PUZZLE_PROOF_VERSION ? $proof : null;
 }
 
-function VerifyPendingPuzzleCandidates($conn, $budgetSeconds)
+function VerifyPuzzleCandidate($conn, $candidateID)
 {
-  $started = microtime(true);
-  $pending = PuzzleProofPendingSql();
-  $result = mysqli_query($conn, "SELECT id, player, format, winning_line, gamestate FROM puzzle_candidates
-    WHERE $pending ORDER BY id DESC LIMIT 25");
-  $rows = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
-  $verified = 0;
-  foreach ($rows as $row) {
-    if ($verified > 0 && microtime(true) - $started > $budgetSeconds) break;
-    $content = @gzuncompress($row["gamestate"]);
-    $line = json_decode((string)@gzuncompress($row["winning_line"]), true);
-    $proof = $content === false || !is_array($line)
-      ? ["v" => PUZZLE_PROOF_VERSION, "status" => "failed", "reason" => "unreadable candidate"]
-      : ProvePuzzleCandidate($content, intval($row["player"]), $line, $row["format"]);
-    $encoded = json_encode($proof);
-    $stmt = mysqli_prepare($conn, "UPDATE puzzle_candidates SET proof = ? WHERE id = ?");
-    mysqli_stmt_bind_param($stmt, "si", $encoded, $row["id"]);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-    ++$verified;
-  }
-  $result = mysqli_query($conn, "SELECT COUNT(*) AS remaining FROM puzzle_candidates WHERE $pending");
-  return ["verified" => $verified, "remaining" => intval(mysqli_fetch_assoc($result)["remaining"] ?? 0)];
+  $stmt = mysqli_prepare($conn, "SELECT player, format, proof, winning_line, gamestate FROM puzzle_candidates WHERE id = ?");
+  mysqli_stmt_bind_param($stmt, "i", $candidateID);
+  mysqli_stmt_execute($stmt);
+  $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+  mysqli_stmt_close($stmt);
+  if (!$row || $row["winning_line"] === null) return null;
+  $proof = CurrentPuzzleProof($row["proof"]);
+  if ($proof !== null) return $proof;
+
+  $content = @gzuncompress($row["gamestate"]);
+  $line = json_decode((string)@gzuncompress($row["winning_line"]), true);
+  $proof = $content === false || !is_array($line)
+    ? ["v" => PUZZLE_PROOF_VERSION, "status" => "failed", "reason" => "unreadable candidate"]
+    : ProvePuzzleCandidate($content, intval($row["player"]), $line, $row["format"]);
+  $encoded = json_encode($proof);
+  $stmt = mysqli_prepare($conn, "UPDATE puzzle_candidates SET proof = ? WHERE id = ?");
+  mysqli_stmt_bind_param($stmt, "si", $encoded, $candidateID);
+  mysqli_stmt_execute($stmt);
+  mysqli_stmt_close($stmt);
+  return $proof;
 }
