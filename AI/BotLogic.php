@@ -638,9 +638,7 @@ function BotDefensePriority($cardID, $playerID, $zone)
   $offenseLoss = 0.0;
   $opportunity = 0.0;
   if (!$isEquipment && !$isPuzzle) {
-    $offense = BotOffensiveCards($playerID);
-    $offenseLoss = max(0.0, BotProjectedDamage($offense, $playerID)
-      - BotProjectedDamage(BotWithoutCard($offense, $cardID), $playerID));
+    $offenseLoss = BotBlockOffenseLoss($cardID, $playerID);
     $opportunity = BotCardOpportunity($cardID, $playerID);
   }
 
@@ -657,21 +655,42 @@ function BotDefensePriority($cardID, $playerID, $zone)
   );
 }
 
+function BotBlockOffenseLoss($cardID, $playerID)
+{
+  $offense = BotOffensiveCards($playerID);
+  return max(0.0, BotProjectedDamage($offense, $playerID)
+    - BotProjectedDamage(BotWithoutCard($offense, $cardID), $playerID));
+}
+
+function BotDefenseReactionPriority($cardID, $playerID)
+{
+  $incoming = max(0, intval(CachedTotalPower()) - intval(CachedTotalBlock()));
+  $defense = max(0, intval(BlockValue($cardID, $playerID, "HAND", false)));
+  if ($incoming == 0 || $defense == 0) return 0.0;
+  $life = intval(GetHealth($playerID));
+  if (BotIsPuzzleDefense()) {
+    $overblock = max(0, $defense - $incoming);
+    $score = 20 + min($incoming, $defense) * 4 - $overblock * 1.5;
+    if ($incoming >= $life && $defense >= $incoming - $life + 1) $score += 100000;
+    return $score;
+  }
+  return BotScoreDefenseCandidate(
+    $incoming,
+    $life,
+    $defense,
+    BotCardOpportunity($cardID, $playerID),
+    false,
+    BotIsOpeningTurnDefense($playerID),
+    BotStopHitValue(),
+    BotBlockOffenseLoss($cardID, $playerID)
+  );
+}
+
 function BotReactionPriority($cardID, $playerID, $zone = "Hand")
 {
   $type = CardType($cardID);
   $roles = BotCardRoles($cardID, $playerID);
-  if ($type == "DR") {
-    $incoming = max(0, intval(CachedTotalPower()) - intval(CachedTotalBlock()));
-    $defense = max(0, intval(BlockValue($cardID, $playerID, "HAND", false)));
-    if ($incoming == 0 || $defense == 0) return 0.0;
-    $overblock = max(0, $defense - $incoming);
-    $score = 20 + min($incoming, $defense) * 4 - $overblock * 1.5;
-    if ($incoming >= intval(GetHealth($playerID)) && $defense >= $incoming - intval(GetHealth($playerID)) + 1) {
-      $score += 100000;
-    }
-    return $score;
-  }
+  if ($type == "DR") return BotDefenseReactionPriority($cardID, $playerID);
   if ($type == "AR") {
     if (str_starts_with($cardID, "razor_reflex_")) return 32;
     if ($cardID == "legacy_of_ikaru_blue") {
