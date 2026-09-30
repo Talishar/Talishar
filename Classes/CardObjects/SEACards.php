@@ -2661,10 +2661,9 @@ class sealace_sarong extends Card {
     global $Stack;
     $CharCard = new CharacterCard($index, $this->controller);
     $CharCard->TapForCost();
-    SetArsenalFacing("UP", $this->controller);
+    $uniqueID = SetArsenalFacing("UP", $this->controller);
     $Layer = $Stack->FindCardID($this->cardID);
-    $arsenal = GetArsenal($this->controller);
-    $Layer->AddTarget($arsenal[count($arsenal) - ArsenalPieces() + 5]);
+    $Layer->AddTarget($uniqueID);
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {

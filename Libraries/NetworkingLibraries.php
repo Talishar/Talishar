@@ -4110,7 +4110,10 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "lexi_livewire":
     case "lexi":
       if (ArsenalHasFaceDownCard($currentPlayer)) {
-        $cardFlipped = SetArsenalFacing("UP", $currentPlayer);
+        $cardFlippedUID = SetArsenalFacing("UP", $currentPlayer);
+        $Arsenal = new Arsenal($currentPlayer);
+        $ArsenalCard = $Arsenal->FindCardUID($cardFlippedUID);
+        $cardFlipped = $ArsenalCard->CardID();
         AddAdditionalCost($currentPlayer, TalentOverride($cardFlipped, $currentPlayer));
         WriteLog(CardLink($cardID, $cardID) . " turns " . CardLink($cardFlipped, $cardFlipped) . " face up.");
       }

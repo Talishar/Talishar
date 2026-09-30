@@ -465,7 +465,8 @@ function SetArsenalFacing($facing, $player)
       $cardID = $arsenal[$i];
       AddEvent("TURNARSENALFACEUP", $player . ":" . $cardID);
       ArsenalTurnFaceUpAbility($cardID, $player);
-      return $cardID;
+      $uniqueID = $arsenal[$i + 5];
+      return $uniqueID;
     }
   }
   return "";
