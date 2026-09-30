@@ -3803,10 +3803,10 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         }
         return "";
       case "bravo_flattering_showman":
-        $arsenalCardID = "";
-        $arsenal = &GetArsenal($currentPlayer);
+        $Arsenal = new Arsenal($currentPlayer);
         if(ArsenalHasFaceDownCard($currentPlayer)) $arsenalCardUID = SetArsenalFacing("UP", $currentPlayer);
-        if(HasCrush($arsenalCardID)) {
+        $ArsenalCard = $Arsenal->FindCardUID($arsenalCardUID);
+        if(HasCrush($ArsenalCard->CardID())) {
           AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$arsenalCardUID);
         }
         return "";
