@@ -24,6 +24,7 @@ function EnsurePuzzleCandidatesTable($conn)
     proof VARCHAR(1024) NOT NULL DEFAULT '',
     winning_line MEDIUMBLOB NULL,
     gamestate MEDIUMBLOB NOT NULL,
+    solution TEXT NULL,
     PRIMARY KEY (id),
     KEY status_created (status, created_at)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
@@ -36,7 +37,8 @@ function EnsurePuzzleCandidatesTable($conn)
   $missing = [
     "meta" => "ADD COLUMN meta VARCHAR(512) NOT NULL DEFAULT '' AFTER note",
     "proof" => "ADD COLUMN proof VARCHAR(1024) NOT NULL DEFAULT '' AFTER meta",
-    "winning_line" => "ADD COLUMN winning_line MEDIUMBLOB NULL AFTER proof"
+    "winning_line" => "ADD COLUMN winning_line MEDIUMBLOB NULL AFTER proof",
+    "solution" => "ADD COLUMN solution TEXT NULL"
   ];
   foreach ($missing as $name => $definition) {
     if (!isset($existing[$name])) mysqli_query($conn, "ALTER TABLE puzzle_candidates $definition");
@@ -69,6 +71,19 @@ function PuzzleZoneCount($line)
   return $line === "" ? 0 : count(explode(" ", $line));
 }
 
+// Concede (100002) or a win claimed over an inactive opponent (100007) by either player during this turn.
+function PuzzleTurnConceded($gameDirectory, $winner, $turn)
+{
+  $commands = @file($gameDirectory . "commandfile.txt", FILE_IGNORE_NEW_LINES);
+  $conceded = false;
+  foreach (is_array($commands) ? $commands : [] as $command) {
+    $mode = explode(" ", $command)[1] ?? "";
+    if (rtrim($command) === "$winner StartTurn $turn 0") $conceded = false;
+    else if ($mode === "100002" || $mode === "100007") $conceded = true;
+  }
+  return $conceded;
+}
+
 function HarvestPuzzleCandidate($winner, $conceded)
 {
   global $gameName, $mainPlayer, $currentTurn;
@@ -76,6 +91,7 @@ function HarvestPuzzleCandidate($winner, $conceded)
   $loser = $winner == 1 ? 2 : 1;
   if (GetHealth($loser) > 0) return;
   if (AreGlobalStatsDisabled(1) || AreGlobalStatsDisabled(2)) return;
+  if (PuzzleTurnConceded("./Games/$gameName/", $winner, $currentTurn)) return;
 
   $content = @file_get_contents("./Games/$gameName/beginTurnGamestate.txt");
   if ($content === false) return;

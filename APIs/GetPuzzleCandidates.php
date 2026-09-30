@@ -34,7 +34,7 @@ try {
   $result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM puzzle_candidates");
   $response["total"] = (int)(mysqli_fetch_assoc($result)["total"] ?? 0);
 
-  $sql = "SELECT id, created_at, format, turn_number, player, hero, opponent_hero, status, meta, proof,
+  $sql = "SELECT id, created_at, format, turn_number, player, hero, opponent_hero, status, meta, proof, solution,
     winning_line IS NOT NULL AS has_line, gamestate FROM puzzle_candidates ORDER BY id DESC LIMIT 300";
   $result = mysqli_query($conn, $sql);
   while ($row = mysqli_fetch_assoc($result)) {
@@ -52,7 +52,8 @@ try {
       "opponentHero" => $row["opponent_hero"],
       "opponentHeroName" => GeneratedCardName($row["opponent_hero"]),
       "status" => (int)$row["status"],
-      "hasLine" => (bool)$row["has_line"]
+      "hasLine" => (bool)$row["has_line"],
+      "solution" => ($proof["status"] ?? "") === "proven" ? PuzzleSolution($row["solution"]) : null
     ] + AnalyzePuzzlePosition($content, (int)$row["player"], $meta, $proof);
   }
 } catch (Throwable $e) {

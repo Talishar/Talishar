@@ -55,13 +55,6 @@ if ($content === false) {
   exit;
 }
 
-$proof = CurrentPuzzleProof($candidate["proof"]);
-if (($proof["status"] ?? "") !== "proven") {
-  http_response_code(409);
-  echo json_encode(["error" => "This candidate has no proven winning line."]);
-  exit;
-}
-
 $gameName = GetGameCounter("../");
 if (file_exists("../Games/$gameName") || !mkdir("../Games/$gameName", 0700, true)) {
   http_response_code(500);
@@ -72,7 +65,9 @@ if (file_exists("../Games/$gameName") || !mkdir("../Games/$gameName", 0700, true
 $player = intval($candidate["player"]);
 $p1Key = bin2hex(random_bytes(32));
 $p2Key = bin2hex(random_bytes(32));
-$opponentLife = intval($proof["life"]);
+$proof = CurrentPuzzleProof($candidate["proof"]);
+$opponentLife = ($proof["status"] ?? "") === "proven" ? intval($proof["life"])
+  : intval(explode(" ", trim(explode("\r\n", $content)[0]))[2 - $player] ?? 0);
 $gamestate = PreparePuzzleGamestate($content, $player, $opponentLife, $p1Key, $p2Key);
 $lines = explode("\r\n", $gamestate);
 $p1Hero = explode(" ", trim($lines[3]))[0];
