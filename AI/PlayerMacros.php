@@ -178,20 +178,34 @@ function ProcessMacros()
 
 function ForcedPitchIndex($player)
 {
-  global $turn;
+  global $turn, $CS_NumAddedToSoul;
   if (($turn[0] ?? "") != "P") return -1;
 
   $hand = &GetHand($player);
-  $handPieces = HandPieces();
-  if (count($hand) != $handPieces) return -1;
+  $handCount = count($hand);
+  if ($handCount == 0) return -1;
+
+  // Pitch-time resource bonuses make the pitch order matter, so let the player choose
+  if (GetItemIndex("talisman_of_recompense_yellow", $player) > -1) return -1;
+  if (GetClassState($player, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($player, "vestige_of_sol")) return -1;
 
   $resources = &GetResources($player);
   $available = intval($resources[0] ?? 0);
   $required = intval($resources[1] ?? 0);
-  if ($available + PitchValue($hand[0]) < $required) return -1;
 
+  $handPieces = HandPieces();
   $restriction = "";
-  return IsPlayable($hand[0], "P", "HAND", 0, $restriction, $player, $turn[3] ?? "") ? 0 : -1;
+  $total = 0;
+  $minPitch = PHP_INT_MAX;
+  for ($i = 0; $i < $handCount; $i += $handPieces) {
+    $pitch = intval(PitchValue($hand[$i]));
+    if ($pitch <= 0 || !IsPlayable($hand[$i], "P", "HAND", $i, $restriction, $player, $turn[3] ?? "")) return -1;
+    $total += $pitch;
+    $minPitch = min($minPitch, $pitch);
+  }
+  if ($available + $total < $required) return -1;
+  if ($available + $total - $minPitch >= $required) return -1;
+  return 0;
 }
 
 function NormalizeWeaponCard($cardName)

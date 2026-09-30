@@ -305,6 +305,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $otherPlayer = $otherP; // $otherP already computed above
   $otherUid = ($playerID == 1 ? $p2uid : $p1uid);
   $otherSeatOccupied = ($otherUid !== "" && $otherUid !== "-");
+  $response->opponentSeatOccupied = $otherSeatOccupied;
   $deckFile = "../Games/" . $gameName . "/p" . $otherPlayer . "Deck.txt";
   $otherCharacterLine = "";
   if ($otherSeatOccupied && file_exists($deckFile)) {

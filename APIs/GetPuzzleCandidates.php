@@ -19,7 +19,6 @@ session_write_close();
 
 $response = [
   "total" => 0,
-  "pending" => 0,
   "candidates" => []
 ];
 
@@ -34,8 +33,6 @@ try {
   EnsurePuzzleCandidatesTable($conn);
   $result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM puzzle_candidates");
   $response["total"] = (int)(mysqli_fetch_assoc($result)["total"] ?? 0);
-  $result = mysqli_query($conn, "SELECT COUNT(*) AS pending FROM puzzle_candidates WHERE " . PuzzleProofPendingSql());
-  $response["pending"] = (int)(mysqli_fetch_assoc($result)["pending"] ?? 0);
 
   $sql = "SELECT id, created_at, format, turn_number, player, hero, opponent_hero, status, meta, proof,
     winning_line IS NOT NULL AS has_line, gamestate FROM puzzle_candidates ORDER BY id DESC LIMIT 300";
@@ -44,8 +41,7 @@ try {
     $content = @gzuncompress($row["gamestate"]);
     if ($content === false) continue;
     $meta = json_decode($row["meta"] ?? "", true);
-    $proof = json_decode($row["proof"] ?? "", true);
-    if (!is_array($proof) || ($proof["v"] ?? 0) != PUZZLE_PROOF_VERSION) $proof = null;
+    $proof = CurrentPuzzleProof($row["proof"]);
     $response["candidates"][] = [
       "id" => (int)$row["id"],
       "createdAt" => $row["created_at"],

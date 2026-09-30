@@ -10,6 +10,7 @@ include_once '../includes/ModeratorList.inc.php';
 include_once '../Libraries/PuzzleHarvest.php';
 include_once '../Libraries/PuzzleGame.php';
 include_once '../Libraries/PuzzleVerify.php';
+include_once '../GeneratedCode/GeneratedCardDictionaries.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -54,8 +55,8 @@ if ($content === false) {
   exit;
 }
 
-$proof = json_decode($candidate["proof"] ?? "", true);
-if (!is_array($proof) || ($proof["v"] ?? 0) != PUZZLE_PROOF_VERSION || ($proof["status"] ?? "") !== "proven") {
+$proof = CurrentPuzzleProof($candidate["proof"]);
+if (($proof["status"] ?? "") !== "proven") {
   http_response_code(409);
   echo json_encode(["error" => "This candidate has no proven winning line."]);
   exit;
@@ -132,7 +133,7 @@ file_put_contents("../Games/$gameName/gamelog.txt", PuzzleIntroLog($candidateID,
 file_put_contents("../Games/$gameName/" . PUZZLE_MARKER_FILE, (string)$candidateID);
 
 $currentTime = round(microtime(true) * 1000);
-WriteCache($gameName, "1!$currentTime!$currentTime!-1!-1!$currentTime!$p1Hero!$p2Hero!0!0!0!0!" . FormatCode($format) . "!$gameStatus!0!0");
+WriteCache($gameName, "1!$currentTime!$currentTime!-1!-1!$currentTime!" . GeneratedSetID($p1Hero) . "!" . GeneratedSetID($p2Hero) . "!0!0!0!0!" . FormatCode($format) . "!$gameStatus!0!0");
 WriteGamestateCache($gameName, $gamestate);
 GamestateUpdated($gameName);
 

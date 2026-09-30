@@ -2,6 +2,9 @@
 
 const REPLAY_FORMAT_VERSION = 2;
 const REPLAY_FORMAT_FILENAME = "replayFormat.json";
+const REPLAY_LOG_FILENAME = "replayLog.txt";
+const REPLAY_LOG_INDEX_FILENAME = "replayLogIndex.txt";
+const REPLAY_LOG_TAIL_BYTES = 131072;
 
 function ReplaySessionUserId(): string
 {
@@ -138,6 +141,12 @@ function WriteReplayFormat(string $gameDirectory, string $replayDirectory): bool
     "initialStateHash" => hash("sha256", $initialState)
   ];
 
+  $replayLog = BuildReplayLog($gameDirectory, $pointers);
+  if ($replayLog !== null && file_put_contents($replayDirectory . REPLAY_LOG_FILENAME, $replayLog["content"], LOCK_EX) !== false) {
+    $format["logOffsets"] = (object)$replayLog["offsets"];
+    $format["logHash"] = hash("sha256", $replayLog["content"]);
+  }
+
   return file_put_contents(
     $replayDirectory . REPLAY_FORMAT_FILENAME,
     json_encode($format, JSON_UNESCAPED_SLASHES),
@@ -215,6 +224,10 @@ function CopyReplayStateFiles(string $sourceDirectory, string $destinationDirect
       $destinationDirectory . $basename
     )) return false;
   }
+  $replayLog = @file_get_contents(rtrim($sourceDirectory, "/\\") . "/" . REPLAY_LOG_FILENAME);
+  if (is_string($replayLog) && is_string($format["logHash"] ?? null) && hash_equals($format["logHash"], hash("sha256", $replayLog))) {
+    @file_put_contents($destinationDirectory . REPLAY_LOG_FILENAME, $replayLog, LOCK_EX);
+  }
   return @copy(
     rtrim($sourceDirectory, "/\\") . "/" . REPLAY_FORMAT_FILENAME,
     $destinationDirectory . REPLAY_FORMAT_FILENAME
@@ -266,6 +279,71 @@ function ReadReplayInitialStateSnapshot(string $directory): ?string
   $gamestate = @file_get_contents(rtrim($directory, "/\\") . "/replayStartGamestate.txt");
   if (!is_string($gamestate) || !hash_equals($expectedHash, hash("sha256", $gamestate))) return null;
   return $gamestate;
+}
+
+// The live gamelog is trimmed every turn, so replays keep their own
+// append-only copy of the lines each input wrote, indexed by step.
+function AppendReplayLog(string $gameDirectory, string $lines): void
+{
+  if ($lines === "") return;
+  @file_put_contents(rtrim($gameDirectory, "/\\") . "/" . REPLAY_LOG_FILENAME, $lines, FILE_APPEND | LOCK_EX);
+}
+
+function RecordReplayLogPosition(string $gameDirectory, string $key): void
+{
+  $gameDirectory = rtrim($gameDirectory, "/\\") . "/";
+  clearstatcache(true, $gameDirectory . REPLAY_LOG_FILENAME);
+  $size = (int)@filesize($gameDirectory . REPLAY_LOG_FILENAME);
+  @file_put_contents($gameDirectory . REPLAY_LOG_INDEX_FILENAME, "$key $size\n", FILE_APPEND | LOCK_EX);
+}
+
+function BuildReplayLog(string $gameDirectory, array $pointers): ?array
+{
+  $gameDirectory = rtrim($gameDirectory, "/\\") . "/";
+  $index = @file($gameDirectory . REPLAY_LOG_INDEX_FILENAME, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+  if (!is_array($index)) return null;
+
+  // A rematch reuses the game directory, so start from the latest game.
+  $start = 0;
+  $positions = [];
+  foreach ($index as $entry) {
+    [$key, $size] = array_pad(explode(" ", trim($entry), 2), 2, "");
+    if (!ctype_digit($size)) continue;
+    if ($key === "start") $start = (int)$size;
+    elseif (ctype_digit($key)) $positions[(int)$key] = (int)$size;
+  }
+
+  $offsets = [];
+  $end = 0;
+  foreach ($pointers as $pointer) {
+    if (!isset($positions[$pointer])) continue;
+    $offset = max(0, $positions[$pointer] - $start);
+    $offsets[(string)$pointer] = $offset;
+    $end = max($end, $offset);
+  }
+  if (count($offsets) === 0) return null;
+
+  $content = $end > 0 ? @file_get_contents($gameDirectory . REPLAY_LOG_FILENAME, false, null, $start, $end) : "";
+  if (!is_string($content) || strlen($content) !== $end) return null;
+  return ["content" => $content, "offsets" => $offsets];
+}
+
+function WriteReplayGameLog(string $directory, int $pointer): void
+{
+  $directory = rtrim($directory, "/\\") . "/";
+  $format = ReadReplayFormat($directory);
+  $offsets = $format["logOffsets"] ?? null;
+  if (!is_array($offsets) || !file_exists($directory . REPLAY_LOG_FILENAME)) return;
+
+  $end = 0;
+  foreach ($offsets as $step => $offset) {
+    if ((int)$step <= $pointer) $end = max($end, (int)$offset);
+  }
+  $start = max(0, $end - REPLAY_LOG_TAIL_BYTES);
+  $log = $end > $start ? @file_get_contents($directory . REPLAY_LOG_FILENAME, false, null, $start, $end - $start) : "";
+  if (!is_string($log)) return;
+  if ($start > 0 && ($newline = strpos($log, "\n")) !== false) $log = substr($log, $newline + 1);
+  file_put_contents($directory . "gamelog.txt", $log, LOCK_EX);
 }
 
 function IsReplayControlMode($mode): bool

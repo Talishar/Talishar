@@ -106,10 +106,15 @@ if (!$skipWriteGamestate) {
 }
 
 if (!IsReplay() && isset($replayCommandCountBefore)) {
+  if ($MakeStartGameBackup) RecordReplayLogPosition($filepath, "start");
+  AppendReplayLog($filepath, $replayLogLines ?? "");
   $replayCommandCountAfter = ReplayCommandCount($filepath . "commandfile.txt");
   if ($replayCommandCountAfter > $replayCommandCountBefore) {
-    if (SaveReplayStateSnapshot($filepath) === null) {
+    $replayStatePointer = SaveReplayStateSnapshot($filepath);
+    if ($replayStatePointer === null) {
       WriteLog("Replay state capture failed for input $replayCommandCountAfter.", highlight: true);
+    } else {
+      RecordReplayLogPosition($filepath, (string)$replayStatePointer);
     }
   }
 }
