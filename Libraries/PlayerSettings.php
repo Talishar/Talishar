@@ -59,7 +59,7 @@ $SET_TransparencyIntensity = 45;
 $SET_PlaymatIntensity = 46;
 $SET_HideLayerGoAgain = 47; //Hide the go again icon on cards in the active layers window
 $SET_ManualValda = 48; //Do you want to manually create Valda's Seismic Surge tokens
-$SET_AutoPitchForced = 49; //Automatically pitch a sole hand card when it pays the remaining cost
+$SET_AutoPitchForced = 49; //Automatically pitch the whole hand when every card in it is needed to pay the remaining cost
 $SET_RequireYesNoAnswer = 50; //Passing does not answer No on Yes/No prompts
 
 function SettingsPieces()
