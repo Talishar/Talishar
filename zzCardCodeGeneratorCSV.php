@@ -1,4 +1,5 @@
 <?php
+if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
 
   // Parallel version of zzCardCodeGenerator.php that sources card data from the public card data CSV
   // instead of the-fab-cube JSON, for when the CSV is more up to date. The CSV has one row per printing
