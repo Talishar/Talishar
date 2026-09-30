@@ -509,10 +509,8 @@ function ItemStartTurnAbility($index)
       if ($mainItems[$index + 1] > 0) --$mainItems[$index + 1];
       else {
         DestroyItemForPlayer($mainPlayer, $index);
-        if (isset($mainItems[$index])) {
-          DealDamageAsync($mainPlayer, 1, "DAMAGE", $mainItems[$index], $mainPlayer);
-          WriteLog(CardLink("tick_tock_clock_red", "tick_tock_clock_red") . " deals 1 damage to Player " . $mainPlayer . ".");
-        }
+        DealDamageAsync($mainPlayer, 1, "DAMAGE", "tick_tock_clock_red", $mainPlayer);
+        WriteLog(CardLink("tick_tock_clock_red", "tick_tock_clock_red") . " deals 1 damage to Player " . $mainPlayer . ".");
       }
       break;
     case "clap_em_in_irons_blue":
