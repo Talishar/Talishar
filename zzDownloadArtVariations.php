@@ -1,4 +1,5 @@
 <?php
+if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
 
 include __DIR__ . '/zzImageConverter.php';
 include_once __DIR__ . '/Assets/AllAltArtVariations.php';

@@ -1,4 +1,5 @@
 <?php
+if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
 $lang = "jp";
 $langName = "japanese";
 $filename = "../{$lang}_image_locs.json";

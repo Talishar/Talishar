@@ -282,6 +282,30 @@ function SaveGamestateSnapshot($destination)
   return copy($filepath . "gamestate.txt", $destination);
 }
 
+function WriteGamestateFileAtomic($filename, $content)
+{
+  $lockHandler = fopen(dirname($filename) . "/gamestate.lock", "c");
+  if ($lockHandler === false || !flock($lockHandler, LOCK_EX)) {
+    if ($lockHandler !== false) fclose($lockHandler);
+    error_log("ERROR: Could not lock gamestate for atomic write: " . $filename);
+    return false;
+  }
+  $tempPath = $filename . "." . getmypid() . "." . uniqid("", true) . ".tmp";
+  $writeSucceeded = false;
+  $handler = fopen($tempPath, "wb");
+  if ($handler !== false) {
+    $bytesWritten = fwrite($handler, $content);
+    $flushed = fflush($handler);
+    fclose($handler);
+    $writeSucceeded = $bytesWritten === strlen($content) && $flushed && rename($tempPath, $filename);
+    if (!$writeSucceeded && file_exists($tempPath)) @unlink($tempPath);
+  }
+  flock($lockHandler, LOCK_UN);
+  fclose($lockHandler);
+  if (!$writeSucceeded) error_log("ERROR: Atomic gamestate write failed: " . $filename);
+  return $writeSucceeded;
+}
+
 function MakeGamestateBackup($filename = "gamestateBackup.txt")
 {
   global $filepath, $lastWrittenGamestate;
@@ -324,7 +348,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     if (isset($gamestateBackup[18])) $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
     if (isset($gamestateBackup[36])) $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
     $gamestate = implode('', $gamestateBackup);
-    file_put_contents($filepath . "gamestate.txt", $gamestate);
+    WriteGamestateFileAtomic($filepath . "gamestate.txt", $gamestate);
     $skipWriteGamestate = true;
     WriteGamestateCache($gameName, $gamestate);
     $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
@@ -359,7 +383,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     return;
   }
   // Restore the target backup as current gamestate
-  file_put_contents($filepath . "gamestate.txt", $gamestate);
+  WriteGamestateFileAtomic($filepath . "gamestate.txt", $gamestate);
   $skipWriteGamestate = true;
   WriteGamestateCache($gameName, $gamestate);
   $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
