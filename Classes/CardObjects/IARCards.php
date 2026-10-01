@@ -7884,7 +7884,7 @@ class cogwerx_prong_bot_yellow extends Card {
   }
 
   function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PutItemIntoPlayForPlayer("golden_cog", $this->controller, isToken: true);
+    PutItemIntoPlayForPlayer("golden_cog", $this->controller, isToken: true, effectSource:$this->cardID);
   }
 
   function CardCost($from = '-') {
