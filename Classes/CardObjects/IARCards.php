@@ -71,7 +71,6 @@ class malice_base extends BaseCard {
     $BanCard = new BanishCard($this->controller, $banishIndex);
     $Hero = new CharacterCard($permIndex, $this->controller);
     $cardID = $BanCard->CardID();
-    WriteLog("HERE checking $cardID for $this->cardID!");
     if (SubtypeContains($cardID, "Zombie") && $from == "PLAY" && $Hero->Status() == 2)
       AddLayer("TRIGGER", $this->controller, $this->cardID, $BanCard->UniqueID());
   }
