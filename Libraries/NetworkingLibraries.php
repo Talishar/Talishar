@@ -4464,7 +4464,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("ADDBOTDECK", $currentPlayer, "-", 1);
       break;
     case "tarantula_toxin_red":
-      if (SubtypeContains($combatChain[0], "Dagger") && HasStealth($combatChain[0]) && NumCardsBlocking() > 0) $modalities = "Buff_Power,Reduce_Block,Both";
+      if (SubtypeContains($combatChain[0], "Dagger") && HasStealth($combatChain[0]) && NumCardsBlocking() > 0) $modalities = "Both";
       elseif (SubtypeContains($combatChain[0], "Dagger")) $modalities = "Buff_Power";
       elseif (HasStealth($combatChain[0]) && NumCardsBlocking() > 0) $modalities = "Reduce_Block";
       else {
