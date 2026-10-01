@@ -88,6 +88,7 @@ class StatsAggregationTest extends TestCase
             $GLOBALS["p{$p}Health"] = 40;
             $GLOBALS["p{$p}LifeHistory"] = [];
             $GLOBALS["p{$p}ArcaneDamageDealt"] = [];
+            $GLOBALS["p{$p}CardsDisrupted"] = [];
             $GLOBALS["p{$p}TotalTime"] = 0;
         }
         $GLOBALS['currentTurn'] = 0;
@@ -425,6 +426,19 @@ class StatsAggregationTest extends TestCase
         $this->assertEqualsWithDelta(0.0, $stats['averageDamageThreatenedPerTurn_NoFirst'], 0.001);
         $this->assertEqualsWithDelta(5.0, $stats['averageValuePerTurn_NoFirst'], 0.001,
             'turn 0 must not contribute to the _NoFirst averages for the starting player');
+    }
+
+    public function testDisruptionOnlyTurnAppearsInTotalsAndTurnResults(): void
+    {
+        $this->startGame(1);
+        $GLOBALS['p1CardsDisrupted'][0] = 1;
+
+        $stats = $this->aggregatesFor(1);
+
+        $this->assertSame(1, $stats['totalCardsDisrupted']);
+        $this->assertSame(1, $stats['turnResults']['turn_0']['cardsDisrupted']);
+        $this->assertSame(3.0, $stats['averageValueWithDisruptionPerTurn']);
+        $this->assertSame(0, $stats['totalCardsDisrupted_NoFirst']);
     }
 
     // ---------------------------------------------------------------- guards

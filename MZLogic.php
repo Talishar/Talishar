@@ -9,8 +9,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
   $chainLinksPieces = ChainLinksPieces();
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i], 2);
-    if (IsDisruptablePermanentZone($mzIndex[0]))
-      LogDisruptionStats(str_starts_with($mzIndex[0], "THEIR") ? $otherPlayer : $player, GetMZCard($player, $lastResultArr[$i]), $destroyer);
+    $destroyedCardID = "";
     switch ($mzIndex[0]) {
       case "MYHAND":
         $lastResult = DiscardCard($player, $mzIndex[1], effectController: $effectController);
@@ -20,27 +19,35 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         break;
       case "MYCHAR":
         $lastResult = DestroyCharacter($player, $mzIndex[1]);
+        $destroyedCardID = $lastResult;
         break;
       case "THEIRCHAR":
         $lastResult = DestroyCharacter($otherPlayer, $mzIndex[1], animateDestroy: true);
+        $destroyedCardID = $lastResult;
         break;
       case "MYALLY":
         $lastResult = DestroyAlly($player, $mzIndex[1]);
+        $destroyedCardID = $lastResult;
         break;
       case "THEIRALLY":
         $lastResult = DestroyAlly($otherPlayer, $mzIndex[1]);
+        $destroyedCardID = $lastResult;
         break;
       case "MYAURAS":
         $lastResult = DestroyAura($player, $mzIndex[1], destroyedBy: $destroyer);
+        $destroyedCardID = $lastResult;
         break;
       case "THEIRAURAS":
         $lastResult = DestroyAura($otherPlayer, $mzIndex[1], destroyedBy: $destroyer);
+        $destroyedCardID = $lastResult;
         break;
       case "MYITEMS":
         $lastResult = DestroyItemForPlayer($player, $mzIndex[1]);
+        $destroyedCardID = $lastResult;
         break;
       case "THEIRITEMS":
         $lastResult = DestroyItemForPlayer($otherPlayer, $mzIndex[1]);
+        $destroyedCardID = $lastResult;
         break;
       case "MYARS":
         $lastResult = DestroyArsenal($player, $mzIndex[1], $effectController, $allArsenal);
@@ -66,6 +73,7 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
         break;
       case "MYPERM":
         $Perm = new PermanentCard($mzIndex[1], $player);
+        $destroyedCardID = $Perm->CardID();
         $Perm->Destroy();
         break;
       case "PASTCHAINLINK":
@@ -80,6 +88,8 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
       default:
         break;
     }
+    if (is_string($destroyedCardID) && $destroyedCardID !== "" && $destroyedCardID !== "-")
+      LogDisruptionStats(str_starts_with($mzIndex[0], "THEIR") ? $otherPlayer : $player, $destroyedCardID, $destroyer);
   }
   return $lastResult;
 }
