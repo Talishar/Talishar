@@ -120,6 +120,12 @@ if ($playerID == 3) {
     !empty($sessionData['viewerColorblindMode']),
   ]));
 }
+$responseCacheVariant .= ':nolog';
+$logDelta = TryGet("logDelta", "") === "1";
+$logViewerID = filter_var($playerID, FILTER_VALIDATE_INT);
+$sentLogStart = 0;
+$sentLogRaw = "";
+$sentLogSeq = 0;
 // Ephemeral activity state pushed via named SSE events.
 $lastActivityCheckTime = 0.0;
 $activityCheckInterval = 1.5; // seconds between APCu checks
@@ -137,7 +143,7 @@ $lastUpdateTime = $initialCacheArr[5] ?? "";
 $previouslyInactive = $inactivityTimeoutMs > 0 && $lastUpdateTime !== ""
   && 1000 * microtime(true) - intval($lastUpdateTime) > $inactivityTimeoutMs;
 
-$initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, $previouslyInactive, $initialCacheArr);
+$initialState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, true, $previouslyInactive, $initialCacheArr, false);
 if (is_string($initialState)) {
   // Error occurred
   echo ("data: " . json_encode(["error" => $initialState]) . "\n\n");
@@ -145,7 +151,7 @@ if (is_string($initialState)) {
   flush();
   exit;
 }
-echo ("data: " . json_encode($initialState) . "\n\n");
+echo ("data: " . WithChatLog(json_encode($initialState)) . "\n\n");
 ob_flush();
 flush();
 unset($initialState);
@@ -205,7 +211,7 @@ while (true) {
     $gameStatePayload = GetCachedGameStateResponse($gameName, $cacheVal, $responseCacheVariant, $inactive);
     if ($gameStatePayload === false) {
       $buildStartedAt = microtime(true);
-      $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive, $cacheArr);
+      $gameState = BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData, false, $inactive, $cacheArr, false);
       RecordPerformanceMetric('build-game-state', (microtime(true) - $buildStartedAt) * 1000, [
         'playerID' => (int)$playerID,
         'final' => false,
@@ -242,7 +248,7 @@ while (true) {
     $buildFailureStreak = 0;
     $lastUpdate = $cacheVal;
     $previouslyInactive = $inactive;
-    SendContent($gameStatePayload, true);
+    SendContent(WithChatLog($gameStatePayload), true);
     unset($gameStatePayload);
     if (++$buildsSinceCycleCollection >= 25) {
       gc_collect_cycles();
@@ -295,6 +301,39 @@ while (true) {
   $msSinceLastChange = 1000 * $currentRealTime - intval($lastUpdateTime);
   $sleepMs = $msSinceLastChange > 5000 ? 150 : 50;
   usleep(intval($sleepMs * 1000));
+}
+
+// Appends the chat log to an encoded payload; with logDelta=1, only what changed since this connection's last send
+function WithChatLog($payload)
+{
+  global $gameName, $logDelta, $logViewerID, $sentLogStart, $sentLogRaw, $sentLogSeq;
+  if (!is_string($payload) || !str_ends_with($payload, "}")) return $payload;
+  [$start, $raw] = ReadLogWindow($gameName);
+  $raw = (string)$raw;
+  $skip = $start - $sentLogStart;
+  $kept = strlen($sentLogRaw) - $skip;
+  $part = false;
+  if ($logDelta && $sentLogSeq > 0 && $skip >= 0 && $kept > 0 && strlen($raw) >= $kept
+    && str_ends_with($sentLogRaw, "\r\n")
+    && ($skip == 0 || substr_compare($sentLogRaw, "\r\n", $skip - 2, 2) === 0)
+    && substr_compare($sentLogRaw, $raw, $skip, $kept) === 0) {
+    $part = json_encode([
+      "base" => $sentLogSeq,
+      "seq" => $sentLogSeq + 1,
+      "drop" => $skip > 0 ? substr_count(LogForViewer(substr($sentLogRaw, 0, $skip), $logViewerID), "<br>") : 0,
+      "append" => LogForViewer(substr($raw, $kept), $logViewerID),
+    ]);
+    if ($part !== false) $part = '"chatLogDelta":' . $part;
+  }
+  if ($part === false) {
+    $fullLog = json_encode(LogForViewer($raw, $logViewerID));
+    if ($fullLog === false) return false;
+    $part = '"chatLog":' . $fullLog . ($logDelta ? ',"chatLogSeq":' . ($sentLogSeq + 1) : '');
+  }
+  $sentLogStart = $start;
+  $sentLogRaw = $raw;
+  ++$sentLogSeq;
+  return $payload === "{}" ? "{" . $part . "}" : substr($payload, 0, -1) . "," . $part . "}";
 }
 
 function SendContent($jsonContent, $alreadyEncoded = false) {

@@ -35,7 +35,7 @@ function ParseGamestate($parseHistoricalStats = true)
   global $p2Hand, $p2Deck, $p2CharEquip, $p2Resources, $p2Arsenal, $p2Items, $p2Auras, $p2Discard, $p2Pitch, $p2Banish;
   global $p2ClassState, $p2CharacterEffects, $p2Soul, $p2CardStats, $p2TurnStats, $p2Allies, $p2Permanents, $p2Settings;
   global $p1CardTurnLog, $p2CardTurnLog, $p1LifeHistory, $p2LifeHistory, $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
-  global $p1ContractsCompleted, $p2ContractsCompleted;
+  global $p1ContractsCompleted, $p2ContractsCompleted, $p1CardsDisrupted, $p2CardsDisrupted;
   global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
@@ -194,6 +194,8 @@ function ParseGamestate($parseHistoricalStats = true)
   // dropping them on a read would wipe them on the next write.
   $p1ContractsCompleted = intval(trim($gamestateContent[87+$numChainLinks] ?? ""));
   $p2ContractsCompleted = intval(trim($gamestateContent[88+$numChainLinks] ?? ""));
+  $p1CardsDisrupted = json_decode(trim($gamestateContent[89+$numChainLinks] ?? ""), true) ?? [];
+  $p2CardsDisrupted = json_decode(trim($gamestateContent[90+$numChainLinks] ?? ""), true) ?? [];
   BuildMyGamestate($playerID);
 }
 

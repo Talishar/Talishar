@@ -3604,12 +3604,15 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $secondUniquePreLayers = [];
       $firstUniqueSet = [];
       $secondUniqueSet = [];
+      $firstPreLayerIDs = [];
+      $secondPreLayerIDs = [];
       $preLayersCount = count($preLayers);
       $layerPiecesSize = LayerPieces();
       for ($i = 0; $i < $preLayersCount; $i += $layerPiecesSize) {
         $cardID = $preLayers[$i+2];
         if ($preLayers[$i+1] == $firstPlayer) {
           ++$firstPreLayers;
+          $firstPreLayerIDs[] = $cardID;
           if (!isset($firstUniqueSet[$cardID])) {
             $firstUniqueSet[$cardID] = true;
             $firstUniquePreLayers[] = $cardID;
@@ -3617,6 +3620,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         else {
           ++$secondPreLayers;
+          $secondPreLayerIDs[] = $cardID;
           if (!isset($secondUniqueSet[$cardID])) {
             $secondUniqueSet[$cardID] = true;
             $secondUniquePreLayers[] = $cardID;
@@ -3625,7 +3629,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       PrependDecisionQueue("TRIGGERTRIGGERS", $mainPlayer, $firstPreLayers + $secondPreLayers, 1);
       PrependDecisionQueue("TRIGGERTRIGGERS", $defPlayer, $firstPreLayers + $secondPreLayers, 1);
-      if (count($secondUniquePreLayers) > 1 && HoldPrioritySetting($secondPlayer) != 4 && !IsPlayerAI($secondPlayer)) {
+      if (count($secondUniquePreLayers) > 1 && !TriggerOrderIrrelevant($secondPreLayerIDs) && HoldPrioritySetting($secondPlayer) != 4 && !IsPlayerAI($secondPlayer)) {
         PrependDecisionQueue("ORDERTRIGGERS", $secondPlayer, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $secondPlayer, "PRELAYERIDS", 1);
       }
@@ -3635,7 +3639,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           PrependDecisionQueue("PASSPARAMETER", $secondPlayer, "PRELAYERS-FIRST", 1);
         }
       }
-      if (count($firstUniquePreLayers) > 1 && HoldPrioritySetting($firstPlayer) != 4 && !IsPlayerAI($firstPlayer)) {
+      if (count($firstUniquePreLayers) > 1 && !TriggerOrderIrrelevant($firstPreLayerIDs) && HoldPrioritySetting($firstPlayer) != 4 && !IsPlayerAI($firstPlayer)) {
         PrependDecisionQueue("ORDERTRIGGERS", $firstPlayer, "<-", 1);
         PrependDecisionQueue("FINDINDICES", $firstPlayer, "PRELAYERIDS", 1);
       }

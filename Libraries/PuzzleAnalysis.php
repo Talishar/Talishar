@@ -115,6 +115,28 @@ function PuzzleAttackLines($hand, $arsenal, $weapons, $floating, $actionPoints, 
   return $best;
 }
 
+function PuzzleStepCard($cardID)
+{
+  $name = GeneratedCardName($cardID);
+  if ($name === "") $name = $cardID;
+  foreach (["red", "yellow", "blue"] as $color) {
+    if (str_ends_with($cardID, "_$color")) return ["id" => $cardID, "name" => "$name ($color)"];
+  }
+  return ["id" => $cardID, "name" => $name];
+}
+
+function PuzzleSolution($encoded)
+{
+  $steps = json_decode($encoded ?? "", true);
+  if (!is_array($steps)) return null;
+  foreach ($steps as &$step) {
+    foreach (["cards", "top", "bottom"] as $key) {
+      if (isset($step[$key])) $step[$key] = array_map("PuzzleStepCard", $step[$key]);
+    }
+  }
+  return $steps;
+}
+
 function PuzzleBand($value, $bands)
 {
   foreach ($bands as [$limit, $score]) if ($value <= $limit) return $score;
@@ -171,7 +193,7 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof)
   if (!$proven) $flags[] = ["code" => "UNPROVEN", "value" => 0];
   if ($margin === 0) $flags[] = ["code" => "EXACT_LETHAL", "value" => 0];
   else if ($margin >= 6) $flags[] = ["code" => "RAW_POWER", "value" => $margin];
-  if ($proven && $life != $realLife) $flags[] = ["code" => $life > $realLife ? "LIFE_RAISED" : "LIFE_LOWERED", "value" => abs($life - $realLife)];
+  if ($proven && $life > $realLife) $flags[] = ["code" => "LIFE_RAISED", "value" => $life - $realLife];
   $optionScore = PuzzleBand($options, [[1, 0.0], [2, 0.4], [3, 0.7], [PHP_INT_MAX, 1.0]]);
   if ($options <= 2) $flags[] = ["code" => "FEW_OPTIONS", "value" => $options];
   $lengthScore = $killLength === null ? 0.7 : PuzzleBand($killLength, [[1, 0.1], [2, 0.5], [3, 0.8], [PHP_INT_MAX, 1.0]]);
@@ -182,17 +204,9 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof)
   $score = 100 * (0.3 * $pressureScore + 0.3 * $spareScore + 0.15 * $marginScore
     + 0.1 * $optionScore + 0.15 * $lengthScore);
   $penalties = ["LOW_PRESSURE" => 0.5, "ONE_CARD" => 0.5, "SPARE_CARDS" => 0.6, "RAW_POWER" => 0.6, "FEW_OPTIONS" => 0.6];
-  $trivial = false;
-  foreach ($flags as $flag) {
-    if (!isset($penalties[$flag["code"]])) continue;
-    $score *= $penalties[$flag["code"]];
-    $trivial = true;
-  }
+  foreach ($flags as $flag) $score *= $penalties[$flag["code"]] ?? 1;
   $score = (int)round($score);
-  if ($trivial) $difficulty = "easy";
-  else if ($score >= 70 && $proven && $spare !== null && $spare <= 1 && $needed >= 14) $difficulty = "hard";
-  else if ($score >= 45) $difficulty = "medium";
-  else $difficulty = "easy";
+  $difficulty = $score >= 70 ? "hard" : ($score >= 45 ? "medium" : "easy");
 
   return [
     "life" => intval($healths[$player - 1] ?? 0),

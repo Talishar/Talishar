@@ -455,6 +455,7 @@ $classStateDefaults = [
   "RunechantPreventPlan" => 0,
 ];
 $persistentClassStates = ["ArsenalFacing", "OriginalHero"];
+$classStateNames = array_keys($classStateDefaults);
 foreach ($classStateDefaults as $classStateName => $classStateDefault) ${"CS_" . $classStateName} = $classStateName;
 unset($classStateName, $classStateDefault);
 
@@ -667,20 +668,20 @@ function ResetMainClassState()
 //The gamestate stores a class state as its values in $classStateDefaults order, separated by spaces
 function ClassStateFromString($line)
 {
-  global $classStateDefaults;
+  global $classStateDefaults, $classStateNames;
   $line = trim($line);
   $values = $line == "" ? [] : explode(" ", $line);
-  $classState = [];
-  $i = 0;
-  foreach ($classStateDefaults as $name => $default) {
-    $classState[$name] = $values[$i++] ?? $default; //Games started before a class state was added won't have it yet
-  }
-  return $classState;
+  $count = count($values);
+  $nameCount = count($classStateNames);
+  if ($count == $nameCount) return array_combine($classStateNames, $values);
+  if ($count > $nameCount) return array_combine($classStateNames, array_slice($values, 0, $nameCount));
+  return array_combine(array_slice($classStateNames, 0, $count), $values) + $classStateDefaults; //Games started before a class state was added won't have it yet
 }
 
 function ClassStateToString($classState)
 {
-  global $classStateDefaults;
+  global $classStateDefaults, $classStateNames;
+  if (array_keys($classState) === $classStateNames && !in_array(null, $classState, true)) return implode(" ", $classState);
   $values = [];
   foreach ($classStateDefaults as $name => $default) $values[] = $classState[$name] ?? $default;
   return implode(" ", $values);

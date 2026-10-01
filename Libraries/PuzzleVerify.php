@@ -4,7 +4,7 @@ include_once __DIR__ . "/ReplayLibraries.php";
 include_once __DIR__ . "/PuzzleGame.php";
 include_once __DIR__ . "/FormatCodes.php";
 
-const PUZZLE_PROOF_VERSION = 1;
+const PUZZLE_PROOF_VERSION = 2;
 const PUZZLE_PROOF_MAX_RUNS = 6;
 const PUZZLE_EXTRA_PASSES = 12;
 const PUZZLE_SAFE_PASS_PHASES = ["A" => true, "D" => true, "INSTANT" => true];
@@ -29,6 +29,11 @@ function PuzzleStateSignature($lines)
 const PUZZLE_ZONE_LINES = ["HAND" => 1, "DECK" => 2, "ARS" => 5, "ARSENAL" => 5, "ITEMS" => 6, "AURAS" => 7,
   "DISCARD" => 8, "PITCH" => 9, "BANISH" => 10, "SOUL" => 13, "ALLY" => 16, "PERM" => 17];
 const PUZZLE_HAND_PROMPTS = ["CHOOSEHAND" => true, "MAYCHOOSEHAND" => true];
+const PUZZLE_PLAY_ZONES = ["27" => "MYHAND", "5" => "MYARS", "14" => "MYBANISH", "15" => "THEIRBANISH", "35" => "MYDECK",
+  "36" => "MYDISCARD", "37" => "THEIRARS"];
+const PUZZLE_ABILITY_ZONES = ["3" => "MYCHAR", "10" => "MYITEMS", "21" => "CC", "22" => "MYAURAS", "24" => "MYALLY",
+  "34" => "MYPERM", "38" => "COMBATCHAINATTACKS"];
+const PUZZLE_CARD_ANSWER_MODES = ["8" => true, "9" => true, "12" => true, "13" => true, "23" => true, "29" => true];
 
 // Positional answers ("MYHAND-2", or a bare hand index) with the zone name and the card they pointed at.
 function PuzzleAnswerRefs($lines, $player, $card, $phase)
@@ -220,9 +225,97 @@ function PuzzleFinishStep()
   }
 }
 
-function PuzzleStep($player, $command = null)
+function PuzzleResolveAnswer($player, $answer, $phase)
+{
+  if (preg_match('/^(MY|THEIR)[A-Z]+-\d+$/', $answer)) return GetMZCard($player, $answer);
+  if (ctype_digit($answer) && isset(PUZZLE_HAND_PROMPTS[$phase])) return GetHand($player)[intval($answer)] ?? $answer;
+  return $answer;
+}
+
+function PuzzlePromptStep($step)
+{
+  global $dqState;
+  $prompt = trim(strip_tags(GamestateUnsanitize($dqState[4] ?? "-")));
+  if ($prompt !== "" && $prompt !== "-") $step["prompt"] = $prompt;
+  return $step;
+}
+
+function PuzzleChoiceStep($player, $answers, $phase)
+{
+  $answers = array_map(fn($answer) => PuzzleResolveAnswer($player, trim((string)$answer), $phase), $answers);
+  $answers = array_values(array_filter($answers, fn($answer) => $answer !== ""));
+  $cards = array_filter($answers, fn($answer) => GeneratedCardName($answer) !== "");
+  return PuzzlePromptStep(count($answers) > 0 && count($cards) == count($answers)
+    ? ["kind" => "CHOOSE", "cards" => $answers]
+    : ["kind" => "CHOOSE", "text" => GamestateUnsanitize(implode(", ", $answers))]);
+}
+
+function PuzzleCardList($list)
+{
+  return array_values(array_filter(explode(",", $list), fn($cardID) => $cardID !== ""));
+}
+
+// What the solver did with one input, in terms a player can follow, or null when it is not a decision.
+function PuzzleDescribeInput($player, $mode, $button, $card, $chk)
+{
+  global $turn;
+  $phase = $turn[0] ?? "";
+  $mode = (string)$mode;
+  if (isset(PUZZLE_PLAY_ZONES[$mode])) {
+    $zone = PUZZLE_PLAY_ZONES[$mode];
+    $cards = [GetMZCard($player, "$zone-" . intval($card))];
+    if ($phase === "P") return ["kind" => "PITCH", "cards" => $cards];
+    if ($phase === "B") return ["kind" => "BLOCK", "cards" => $cards];
+    return $zone === "MYHAND" ? ["kind" => "PLAY", "cards" => $cards] : ["kind" => "PLAY", "cards" => $cards, "from" => $zone];
+  }
+  if (isset(PUZZLE_ABILITY_ZONES[$mode]) || $mode === "25") {
+    $cardID = $mode === "25" ? ($GLOBALS["landmarks"][intval($card)] ?? "")
+      : GetMZCard($player, PUZZLE_ABILITY_ZONES[$mode] . "-" . intval($card));
+    return ["kind" => $phase === "B" ? "BLOCK" : "ACTIVATE", "cards" => [$cardID]];
+  }
+  if (isset(PUZZLE_CARD_ANSWER_MODES[$mode])) return PuzzleChoiceStep($player, [$button], $phase);
+  switch ($mode) {
+    case "99":
+      return isset(PUZZLE_FLOW_PHASES[$phase]) || $phase === "P" ? null : PuzzlePromptStep(["kind" => "DECLINE"]);
+    case "7":
+    case "17":
+      return PuzzleChoiceStep($player, [$button], $phase);
+    case "16":
+      return PuzzleChoiceStep($player, [$card], $phase);
+    case "11":
+      return PuzzleChoiceStep($player, [($phase === "CHOOSETHEIRDECK" ? "THEIRDECK-" : "MYDECK-") . intval($card)], $phase);
+    case "19":
+      if ($phase === "CHOOSEMULTIZONE" || $phase === "MAYCHOOSEMULTIZONE") {
+        $options = explode(",", $turn[2] ?? "");
+        $offset = count(array_filter(array_slice($options, 0, 2), fn($option) => preg_match('/^(MAXCOUNT|MINCOUNT)-/', $option)));
+      } else {
+        $options = explode(",", explode("-", $turn[2] ?? "")[1] ?? "");
+        $offset = 0;
+      }
+      return PuzzleChoiceStep($player, array_map(fn($index) => $options[intval($index) + $offset] ?? "", $chk), $phase);
+    case "20":
+    case "115":
+      return PuzzlePromptStep(["kind" => "CHOOSE", "text" => $mode === "20" && $button === "YES" ? "Yes" : "No"]);
+    case "OPT":
+      return ["kind" => "OPT", "top" => PuzzleCardList($button), "bottom" => PuzzleCardList($card)];
+    case "REORDER":
+      return ["kind" => "ORDER", "cards" => PuzzleCardList($button)];
+  }
+  return null;
+}
+
+function PuzzleAddStep(&$steps, $step)
+{
+  $last = count($steps) - 1;
+  if ($step["kind"] === "PITCH" && $last >= 0 && $steps[$last]["kind"] === "PITCH") {
+    $steps[$last]["cards"] = array_merge($steps[$last]["cards"], $step["cards"]);
+  } else $steps[] = $step;
+}
+
+function PuzzleStep($player, $command = null, &$steps = null)
 {
   PuzzleBeginStep($player);
+  $step = null;
   if ($command !== null) {
     [$mode, $button, $card, $chkCount, $chk] = $command;
     $card = RemapPuzzleAnswers($player, $card, $command[6] ?? []);
@@ -237,21 +330,38 @@ function PuzzleStep($player, $command = null)
     }
     if ($mode === "OPT" && ($GLOBALS["turn"][0] ?? "") !== "OPT") $mode = null;
     if ($mode === "REORDER" && !in_array("PRETRIGGER", $GLOBALS["layers"] ?? [], true)) $mode = null;
-    if ($mode !== null) ProcessInput($player, $mode, $button, $card, $chkCount, $chk, false, "");
+    if ($mode !== null) {
+      if ($steps !== null) {
+        try {
+          $step = PuzzleDescribeInput($player, $mode, $button, $card, $chk);
+        } catch (Throwable $e) {
+          $step = null;
+        }
+      }
+      $before = PuzzleStateKey(explode("\r\n", (string)($GLOBALS["lastWrittenGamestate"] ?? "")));
+      ProcessInput($player, $mode, $button, $card, $chkCount, $chk, false, "");
+    }
   }
   PuzzleFinishStep();
-  return explode("\r\n", (string)($GLOBALS["lastWrittenGamestate"] ?? ""));
+  $state = explode("\r\n", (string)($GLOBALS["lastWrittenGamestate"] ?? ""));
+  if ($step !== null && PuzzleStateKey($state) !== $before) PuzzleAddStep($steps, $step);
+  return $state;
 }
 
 function PuzzleDriveLine($player, $line)
 {
   $state = PuzzleStep($player);
   $outcome = null;
+  $steps = [];
+  $unused = 0;
   foreach ($line as $index => $command) {
-    if (IsGameOver()) break;
+    if (IsGameOver()) {
+      $unused = count(array_filter(array_slice($line, $index), fn($remaining) => $remaining[0] != 99));
+      break;
+    }
     $mode = $command[0];
     if ($mode === "SETTINGS" || $mode === "OPT" || $mode === "REORDER") {
-      $state = PuzzleStep($player, $command);
+      $state = PuzzleStep($player, $command, $steps);
       continue;
     }
     for ($passes = 0; ; ++$passes) {
@@ -262,7 +372,7 @@ function PuzzleDriveLine($player, $line)
       }
       $signature = PuzzleStateSignature($state);
       if ($command[5] === "" || $command[5] === $signature) {
-        $state = PuzzleStep($player, $command);
+        $state = PuzzleStep($player, $command, $steps);
         break;
       }
       if ($mode == 99 || !isset(PUZZLE_FLOW_PHASES[explode("|", $command[5])[0]])) break;
@@ -289,7 +399,9 @@ function PuzzleDriveLine($player, $line)
     "diverged" => $outcome !== null,
     "reason" => $outcome ?? ($won ? "" : "$health life left"),
     "health" => $health,
-    "stats" => PuzzleTurnMeta($player, $opponent)
+    "unused" => $unused,
+    "stats" => PuzzleTurnMeta($player, $opponent),
+    "steps" => $steps
   ];
 }
 
@@ -315,41 +427,34 @@ function RunPuzzleLine($gamestate, $player, $line, $format)
   }
 }
 
-// Finds the highest opponent life at which the recorded line still kills the puzzle bot.
+// The line must kill the puzzle bot at the life they really had. When it deals more than that, the puzzle life
+// is raised to the highest life it still kills at; it is never lowered.
 function ProvePuzzleCandidate($content, $player, $line, $format)
 {
   $opponent = 3 - $player;
   $healths = explode(" ", trim(explode("\r\n", $content)[0]));
   $realLife = intval($healths[$opponent - 1] ?? 0);
   $results = [];
-  $run = function ($life) use (&$results, $content, $player, $line, $format) {
-    return $results[$life] ??= RunPuzzleLine(PreparePuzzleGamestate($content, $player, $life), $player, $line, $format);
-  };
-
   $won = null;
   $lost = null;
-  $reason = "";
   $life = max(1, $realLife);
-  while (count($results) < PUZZLE_PROOF_MAX_RUNS && $life >= 1 && !isset($results[$life])) {
-    $result = $run($life);
-    if ($result["won"]) {
-      $won = $life;
-      $overkill = -$result["health"];
-      if ($overkill <= 0) break;
-      $life = $lost === null ? $life + $overkill : intdiv($won + $lost, 2);
-    } else {
-      $reason = $result["reason"];
-      if ($result["diverged"]) break;
+  while (count($results) < PUZZLE_PROOF_MAX_RUNS && !isset($results[$life])) {
+    $result = $results[$life] = RunPuzzleLine(PreparePuzzleGamestate($content, $player, $life), $player, $line, $format);
+    if (!$result["won"]) {
+      if ($won === null) {
+        $proof = ["v" => PUZZLE_PROOF_VERSION, "status" => "failed", "reason" => substr($result["reason"], 0, 300), "realLife" => $realLife];
+        return ["proof" => $proof, "solution" => null];
+      }
       $lost = $life;
-      $life = $won === null ? $life - max(1, $result["health"]) : intdiv($won + $lost, 2);
+    } else {
+      $won = $life;
+      if ($result["health"] >= 0 && $result["unused"] == 0) break;
     }
-    if ($won !== null && $lost !== null && $lost - $won <= 1) break;
+    if ($lost !== null && $lost - $won <= 1) break;
+    $life = $lost === null ? $won + max(1, -$result["health"]) : intdiv($won + $lost, 2);
   }
-
-  if ($won === null) {
-    return ["v" => PUZZLE_PROOF_VERSION, "status" => "failed", "reason" => substr($reason, 0, 300), "realLife" => $realLife];
-  }
-  return ["v" => PUZZLE_PROOF_VERSION, "status" => "proven", "life" => $won, "realLife" => $realLife] + $results[$won]["stats"];
+  $proof = ["v" => PUZZLE_PROOF_VERSION, "status" => "proven", "life" => $won, "realLife" => $realLife] + $results[$won]["stats"];
+  return ["proof" => $proof, "solution" => $results[$won]["steps"]];
 }
 
 function CurrentPuzzleProof($encoded)
@@ -371,13 +476,14 @@ function VerifyPuzzleCandidate($conn, $candidateID)
 
   $content = @gzuncompress($row["gamestate"]);
   $line = json_decode((string)@gzuncompress($row["winning_line"]), true);
-  $proof = $content === false || !is_array($line)
-    ? ["v" => PUZZLE_PROOF_VERSION, "status" => "failed", "reason" => "unreadable candidate"]
+  $result = $content === false || !is_array($line)
+    ? ["proof" => ["v" => PUZZLE_PROOF_VERSION, "status" => "failed", "reason" => "unreadable candidate"], "solution" => null]
     : ProvePuzzleCandidate($content, intval($row["player"]), $line, $row["format"]);
-  $encoded = json_encode($proof);
-  $stmt = mysqli_prepare($conn, "UPDATE puzzle_candidates SET proof = ? WHERE id = ?");
-  mysqli_stmt_bind_param($stmt, "si", $encoded, $candidateID);
+  $encoded = json_encode($result["proof"]);
+  $solution = $result["solution"] === null ? null : json_encode($result["solution"]);
+  $stmt = mysqli_prepare($conn, "UPDATE puzzle_candidates SET proof = ?, solution = ? WHERE id = ?");
+  mysqli_stmt_bind_param($stmt, "ssi", $encoded, $solution, $candidateID);
   mysqli_stmt_execute($stmt);
   mysqli_stmt_close($stmt);
-  return $proof;
+  return $result["proof"];
 }

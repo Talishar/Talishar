@@ -71,7 +71,6 @@ class malice_base extends BaseCard {
     $BanCard = new BanishCard($this->controller, $banishIndex);
     $Hero = new CharacterCard($permIndex, $this->controller);
     $cardID = $BanCard->CardID();
-    WriteLog("HERE checking $cardID for $this->cardID!");
     if (SubtypeContains($cardID, "Zombie") && $from == "PLAY" && $Hero->Status() == 2)
       AddLayer("TRIGGER", $this->controller, $this->cardID, $BanCard->UniqueID());
   }
@@ -5354,6 +5353,11 @@ class rise_to_the_challenge extends BaseCard {
     $this->cardID = $cardID;
     $this->controller = $controller;
     $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function CardCost($from = '-') {
+    if ($from == "HAND" && GetResolvedAbilityType($this->cardID, $from) == "I") return 0;
+    return GeneratedCardCost($this->cardID);
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {

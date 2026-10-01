@@ -39,7 +39,7 @@ function GetChainCardSubcards($controller, ...$uniqueIDs) {
   return NULL;
 }
 
-function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false, $cacheSnapshot = null) {
+function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false, $cacheSnapshot = null, $includeChatLog = true) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $p1CharEquip, $p2CharEquip;
   global $myAuras, $myItems, $mySoul, $myAllies, $myPermanents, $myResources;
@@ -1463,7 +1463,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   $response->landmarks = $landmarksOutput;
   // if ($inactive) WriteLog("The current player may be inactive", highlight:true);
-  $response->chatLog = JSONLog($gameName, $playerID);
+  if ($includeChatLog) $response->chatLog = JSONLog($gameName, $playerID);
 
   // Current turn effects
   $playerEffects = [];

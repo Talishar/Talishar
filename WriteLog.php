@@ -188,27 +188,39 @@ function WriteSystemMessage($text, $path="./")
 
 function JSONLog($gameName, $playerID, $path="./")
 {
+  return LogForViewer(ReadLogWindow($gameName, $path)[1], $playerID);
+}
+
+// The tail of the log that JSONLog sends, as [file offset it starts at, raw bytes]
+function ReadLogWindow($gameName, $path="./")
+{
   global $logWriteBuffer;
   $filename = "{$path}Games/$gameName/gamelog.txt";
   if (!empty($logWriteBuffer)) FlushLogBuffer();
 
   $maxRead = 131072; // 128 KB cap — prevents OOM when log file grows large
   $handler = @fopen($filename, "rb");
-  if ($handler === false) return "";
+  if ($handler === false) return [0, ""];
   fseek($handler, 0, SEEK_END);
   $filesize = ftell($handler);
   if ($filesize <= 0) {
     fclose($handler);
-    return "";
+    return [0, ""];
   }
   $truncated = $filesize > $maxRead;
-  fseek($handler, $truncated ? $filesize - $maxRead : 0, SEEK_SET);
+  $start = $truncated ? $filesize - $maxRead : 0;
+  fseek($handler, $start, SEEK_SET);
   $line = fread($handler, $truncated ? $maxRead : $filesize);
   fclose($handler);
   if ($truncated && ($nl = strpos($line, "\n")) !== false) {
     $line = substr($line, $nl + 1);
+    $start += $nl + 1;
   }
+  return [$start, $line];
+}
 
+function LogForViewer($line, $playerID)
+{
   $red = "#cb0202";
   $blue = "#128ee5";
   $player1Color = ($playerID === 1 || $playerID === 3) ? $blue : $red;
