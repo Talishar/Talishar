@@ -2996,6 +2996,40 @@ function AbilityModePassDefault()
   return "";
 }
 
+// Triggers whose resolution order cannot change the outcome go on the stack without the ordering prompt.
+function TriggerOrderIrrelevant($cardIDs)
+{
+  static $commuting = null;
+  if ($commuting === null) {
+    $commuting = [];
+    $pairs = [
+      ["BLOODDEBT", "DECAY"], ["BLOODDEBT", "frailty"], ["BLOODDEBT", "frostbite"], ["BLOODDEBT", "INTIMIDATE"],
+      ["danse_macabre", "vox_necropolis"], ["danse_macabre", "DECAY"],
+      ["malice_domina_of_the_dead", "restless_templar_red"], ["malice_domina_of_the_dead", "mark_of_ushering_blue"],
+      ["malice_domina_of_the_dead", "restless_outlaw_red"], ["mark_of_ushering_blue", "restless_templar_red"],
+      ["mark_of_ushering_blue", "restless_outlaw_red"], ["restless_outlaw_red", "restless_templar_red"],
+      ["courage", "flurry"], ["courage", "quicken"], ["banneret_of_swordsmanship_yellow", "courage"],
+    ];
+    foreach ($pairs as [$a, $b]) {
+      $commuting["$a|$b"] = true;
+      $commuting["$b|$a"] = true;
+    }
+    $repeatable = ["BLOODDEBT", "DECAY", "frailty", "frostbite", "INTIMIDATE", "malice_domina_of_the_dead", "restless_templar_red",
+      "mark_of_ushering_blue", "restless_outlaw_red", "courage", "flurry", "quicken"];
+    foreach ($repeatable as $cardID) $commuting["$cardID|$cardID"] = true;
+  }
+  $counts = array_count_values($cardIDs);
+  $uniqueIDs = array_keys($counts);
+  $uniqueCount = count($uniqueIDs);
+  for ($i = 0; $i < $uniqueCount; ++$i) {
+    if ($counts[$uniqueIDs[$i]] > 1 && !isset($commuting["$uniqueIDs[$i]|$uniqueIDs[$i]"])) return false;
+    for ($j = $i + 1; $j < $uniqueCount; ++$j) {
+      if (!isset($commuting["$uniqueIDs[$i]|$uniqueIDs[$j]"])) return false;
+    }
+  }
+  return true;
+}
+
 function CanPassPhase($phase)
 {
   global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer, $CCS_RequiredNegCounterEquipmentBlock;
