@@ -2,6 +2,7 @@
 
 define('CARD_STAT_PIECES', 10);
 define('TURN_STAT_PIECES', 15);
+define('DISRUPTION_VALUE_PER_CARD', 3);
 
 function CardStatPieces() { return CARD_STAT_PIECES; }
 function TurnStatPieces()  { return TURN_STAT_PIECES; }
@@ -196,6 +197,55 @@ function LogArcaneDamageStats($player, $damageDealt)
   } else {
     AddTurnStat($p2ArcaneDamageDealt, $turnIndex, $damageDealt);
   }
+}
+
+function SetDisruptionSource($player)
+{
+  global $dqState;
+  static $defaults = ["0", "-", "-", "-", "-", "-", "0", "0", "-1", "-"];
+  for ($i = count($dqState); $i < 10; ++$i) $dqState[$i] = $defaults[$i];
+  $dqState[10] = $player;
+}
+
+function ClearDisruptionSource()
+{
+  global $dqState;
+  if (isset($dqState[10])) $dqState[10] = "-";
+}
+
+function LogDisruptionStats($owner, $cardID, $source = "")
+{
+  global $dqState, $p1CardsDisrupted, $p2CardsDisrupted;
+  $owner = intval($owner);
+  if ($owner != 1 && $owner != 2) return;
+  $opponent = 3 - $owner;
+  if (intval($source) != $opponent && intval($dqState[10] ?? 0) != $opponent) return;
+  if ($cardID == "" || $cardID == "-" || TypeContains($cardID, "T", $owner)) return;
+  $turnIndex = GetStatTurnIndex($opponent);
+  if ($opponent == 1) AddTurnStat($p1CardsDisrupted, $turnIndex, 1);
+  else AddTurnStat($p2CardsDisrupted, $turnIndex, 1);
+}
+
+function GetCardsDisrupted($player)
+{
+  global $p1CardsDisrupted, $p2CardsDisrupted;
+  return ($player == 1 ? $p1CardsDisrupted : $p2CardsDisrupted) ?? [];
+}
+
+// Permanents only count through MZDestroy/MZBanish: wards and Blade Break
+// remove them through other paths while the opponent's effect resolves.
+function IsDisruptablePermanentZone($mzZone)
+{
+  static $zones = ["CHAR" => true, "ALLY" => true, "AURAS" => true, "ITEMS" => true, "PERM" => true];
+  return isset($zones[preg_replace('/^(MY|THEIR)/', '', strval($mzZone))]);
+}
+
+// Intimidate, No Fear and Stone Rain hand the card back at end of turn.
+function IsDisruptiveBanish($from, $mod)
+{
+  static $temporaryMods = ["INT" => true, "NOFEAR" => true, "NTSTONERAIN" => true, "STONERAIN" => true];
+  $zone = preg_replace('/^(MY|THEIR)/', '', strval($from));
+  return ($zone == "HAND" || $zone == "ARS") && !isset($temporaryMods[$mod]);
 }
 
 function LogLifeGainedStats($player, $healthGained)

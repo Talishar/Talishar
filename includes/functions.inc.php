@@ -831,6 +831,7 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	$opponentLifeHistory = $player == 1 ? $p2LifeHistory : $p1LifeHistory;
 	$arcaneDealt = ($player == 1 ? $p1ArcaneDamageDealt : $p2ArcaneDamageDealt) ?? [];
 	$arcaneTaken = ($player == 1 ? $p2ArcaneDamageDealt : $p1ArcaneDamageDealt) ?? [];
+	$cardsDisrupted = GetCardsDisrupted($player);
 
 	$countTurnStats = count($turnStats);
 	$tsp = TurnStatPieces();
@@ -890,6 +891,7 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 		$entry["damageTaken"] = $damageTaken;
 		$entry["arcaneDamageDealt"] = isset($arcaneDealt[$turnNo]) ? (int)$arcaneDealt[$turnNo] : 0;
 		$entry["arcaneDamageTaken"] = isset($arcaneTaken[$turnNo]) ? (int)$arcaneTaken[$turnNo] : 0;
+		$entry["cardsDisrupted"] = isset($cardsDisrupted[$turnNo]) ? (int)$cardsDisrupted[$turnNo] : 0;
 		$entry["lifeGained"] = $lifeGained;
 		$entry["lifeLost"] = $lifeLost;
 		$entry["lifeAtTurnEnd"] = isset($lifeHistory[$turnNo]) ? (int)$lifeHistory[$turnNo] : null;
@@ -944,11 +946,13 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 		}
 	}
 
+	$cardsDisrupted = $player != 0 ? GetCardsDisrupted($player) : [];
+
 	$totals = function($blocks) use (&$turnStats, $TurnStats_DamageThreatened, $TurnStats_DamageDealt,
 		$TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked, $TurnStats_ResourcesUsed,
-		$TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented) {
+		$TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented, $cardsDisrupted, $tsp) {
 		$t = ["threatened" => 0, "dealt" => 0, "resourcesUsed" => 0, "cardsLeft" => 0, "defensiveCards" => 0,
-			  "blocked" => 0, "lifeGained" => 0, "lifePrevented" => 0, "lifeLost" => 0];
+			  "blocked" => 0, "lifeGained" => 0, "lifePrevented" => 0, "lifeLost" => 0, "disrupted" => 0];
 		foreach($blocks as $i) {
 			$t["threatened"]     += $turnStats[$i + $TurnStats_DamageThreatened];
 			$t["dealt"]          += $turnStats[$i + $TurnStats_DamageDealt];
@@ -959,6 +963,7 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 			$t["lifeGained"]     += $turnStats[$i + $TurnStats_LifeGained];
 			$t["lifePrevented"]  += $turnStats[$i + $TurnStats_DamagePrevented];
 			$t["lifeLost"]       += $turnStats[$i + $TurnStats_LifeLost];
+			$t["disrupted"]      += intval($cardsDisrupted[intdiv($i, $tsp)] ?? 0);
 		}
 		return $t;
 	};
@@ -989,6 +994,8 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 		$deck["averageCardsLeftOverPerTurn$suffix"] = round($t["cardsLeft"] / $numTurns, 2);
 		$deck["averageCombatValuePerTurn$suffix"] = round($combatValue / $numTurns, 2);
 		$deck["averageValuePerTurn$suffix"] = round($value / $numTurns, 2);
+		$deck["totalCardsDisrupted$suffix"] = $t["disrupted"];
+		$deck["averageValueWithDisruptionPerTurn$suffix"] = round(($value + DISRUPTION_VALUE_PER_CARD * $t["disrupted"]) / $numTurns, 2);
 	};
 	$blocksNoLast = $usedBlocks;
 	if (count($blocksNoLast) > 0) array_pop($blocksNoLast);
@@ -1142,6 +1149,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	// Use helper function to populate turn stats and aggregates (useIntval=false for SerializeGameResult)
 	PopulateTurnStatsAndAggregates($deck, $turnStats, $otherPlayerTurnStats, $player, false);
 	PopulateAggregateStats($deck, $turnStats, $player);
+	$deck["disruptionValuePerCard"] = DISRUPTION_VALUE_PER_CARD;
 
 	$contractsCompleted = GetContractsCompleted($player);
 	if ($contractsCompleted > 0) $deck["contractsCompleted"] = $contractsCompleted;
@@ -1213,6 +1221,9 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 			"totalDamageBlocked", "totalDamagePrevented", "totalLifeLost"]) as $stat) {
 			unset($deck["$stat$suffix"]);
 		}
+	}
+	foreach (["", "_NoLast", "_NoFirst", "_NoFirst_NoLast"] as $suffix) {
+		unset($deck["totalCardsDisrupted$suffix"], $deck["averageValueWithDisruptionPerTurn$suffix"]);
 	}
 
 	// Exclude private fields if stats are disabled

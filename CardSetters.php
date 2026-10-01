@@ -27,6 +27,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
+  if (!$created && IsDisruptiveBanish($from, $mod)) LogDisruptionStats($player, $cardID, $banisher);
   $banisher = $banisher == "-" ? $player : $banisher;
   $character = &GetPlayerCharacter($player);
   $characterID = ShiyanaCharacter($character[0]);
@@ -502,6 +503,7 @@ function DestroyArsenal($player, $index = -1, $effectController = "", $allArsena
   for ($i = count($arsenal) - $arsenalPieces; $i >= 0; $i -= $arsenalPieces) {
     if ($index > -1 && $index != $i) continue;
     $cardIDArr[] = $arsenal[$i];
+    LogDisruptionStats($player, $arsenal[$i], $effectController);
     WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal");
     AddGraveyard($arsenal[$i], $player, "ARS", $effectController);
     RemoveArsenal($player, $i);

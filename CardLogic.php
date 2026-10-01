@@ -511,6 +511,7 @@ function ContinueDecisionQueue($lastResult = "")
     global $otherPlayer, $layerPriority, $CS_AbilityIndex, $CS_AdditionalCosts, $CS_LayerPlayIndex;
     global $CS_ResolvingLayerUniqueID, $makeBlockBackup, $defPlayer, $Stack, $attackQueue, $CCS_AttackTargetUID, $CCS_AttackTarget;
     global $CS_LayerResolved, $CombatChain;
+    ClearDisruptionSource();
     $p1Health = GetHealth(1);
     $p2Health = GetHealth(2);
     if ($p1Health <= 0 && $p2Health > 0)
@@ -617,6 +618,7 @@ function ContinueDecisionQueue($lastResult = "")
           SetClassState($player, $CS_AbilityIndex, isset($params[2]) ? $params[2] : "-"); //This is like a parameter to PlayCardEffect and other functions
           $EffectContextUID = $layerUniqueID;
           SetClassState($mainPlayer, $CS_LayerResolved, 1); // lets the game know to give priority back to mainPlayer
+          SetDisruptionSource($player);
           PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, $player);
           ClearDieRoll($player);
         } else {
@@ -662,6 +664,7 @@ function ContinueDecisionQueue($lastResult = "")
               ProcessDecisionQueue();
               break;
             case "TRIGGER":
+              SetDisruptionSource($player);
               ProcessTrigger($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
               if (count($layers) == 0 && !$CombatChain->HasCurrentLink())
                 Await($mainPlayer, "CheckAttackQueue");
@@ -673,10 +676,12 @@ function ContinueDecisionQueue($lastResult = "")
               ProcessDecisionQueue();
               break;
             case "MELD":
+              SetDisruptionSource($player);
               ProcessMeld($player, $parameter, $cardID, target:$target, from:$uniqueID);
               ProcessDecisionQueue();
               break;
             case "ABILITY":
+              SetDisruptionSource($player);
               ProcessAbility($player, $parameter, $uniqueID, $target, $additionalCosts, $params[0]);
               ProcessDecisionQueue();
               break;
@@ -4615,6 +4620,7 @@ function CardDiscarded($player, $discarded, $source = "", $mainPhase = true)
       break;
   }
   LogPlayCardStats($player, $discarded, "HAND", "DISCARD");
+  LogDisruptionStats($player, $discarded, $source);
   WriteLog(CardLink($discarded, $discarded) . " was discarded");
 }
 

@@ -112,7 +112,9 @@ array_push($gamestateLines,
   isset($p1TurnCount) ? intval($p1TurnCount) : "", // Turns player 1 has begun
   isset($p2TurnCount) ? intval($p2TurnCount) : "", // Turns player 2 has begun
   intval($p1ContractsCompleted ?? 0), // Contracts player 1 completed
-  intval($p2ContractsCompleted ?? 0)  // Contracts player 2 completed
+  intval($p2ContractsCompleted ?? 0), // Contracts player 2 completed
+  json_encode($p1CardsDisrupted ?? []), // Opponent cards player 1 disrupted, per turn
+  json_encode($p2CardsDisrupted ?? [])  // Opponent cards player 2 disrupted, per turn
 );
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";

@@ -9,6 +9,8 @@ function MZDestroy($player, $lastResult, $effectController = "", $allArsenal = t
   $chainLinksPieces = ChainLinksPieces();
   for ($i = count($lastResultArr) - 1; $i >= 0; $i--) {
     $mzIndex = explode("-", $lastResultArr[$i], 2);
+    if (IsDisruptablePermanentZone($mzIndex[0]))
+      LogDisruptionStats(str_starts_with($mzIndex[0], "THEIR") ? $otherPlayer : $player, GetMZCard($player, $lastResultArr[$i]), $destroyer);
     switch ($mzIndex[0]) {
       case "MYHAND":
         $lastResult = DiscardCard($player, $mzIndex[1], effectController: $effectController);
@@ -176,7 +178,10 @@ function MZDiscard($player, $parameter, $lastResult)
     $cardID = $zone[$mzIndex[1]];
     AddGraveyard($cardID, $cardOwner, $params[0], $effectController);
     if ($player == $cardOwner) CardDiscarded($player, $cardID);
-    else WriteLog(CardLink($cardID, $cardID) . " was discarded");
+    else {
+      if ($mzIndex[0] == "THEIRHAND" || $mzIndex[0] == "THEIRARS") LogDisruptionStats($cardOwner, $cardID, $player);
+      WriteLog(CardLink($cardID, $cardID) . " was discarded");
+    }
   }
   return $lastResult;
 }
@@ -356,6 +361,8 @@ function MZBanish($player, $parameter, $lastResult)
     }
     $cardID = $zone[$index];
     $banishedCards[] = $cardID;
+    if (IsDisruptablePermanentZone($mzIndex[0]))
+      LogDisruptionStats($cardOwner, $cardID, str_starts_with($mzIndex[0], "THEIR") ? $player : $banisher);
     BanishCardForPlayer($cardID, $cardOwner, $params[0], $modifier, $banishedBy, $banisher);
   }
   if ($paramCount <= 3 && count($banishedCards) > 0) {
