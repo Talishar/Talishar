@@ -49,6 +49,15 @@ function EnsureAdStatsTables($conn)
       wins INT UNSIGNED NOT NULL DEFAULT 0,
       win_micros BIGINT UNSIGNED NOT NULL DEFAULT 0,
       PRIMARY KEY (day, bidder, device)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+    "CREATE TABLE IF NOT EXISTS ad_event_stats (
+      day DATE NOT NULL,
+      page VARCHAR(24) NOT NULL,
+      placement VARCHAR(40) NOT NULL,
+      device VARCHAR(8) NOT NULL,
+      event VARCHAR(16) NOT NULL,
+      count INT UNSIGNED NOT NULL DEFAULT 0,
+      PRIMARY KEY (day, page, placement, device, event)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
   ];
   foreach ($tables as $sql) {
@@ -86,10 +95,15 @@ function AdStatsBidder($value)
   return preg_match('/^[a-z0-9][a-z0-9_.-]{0,31}$/', $value) ? $value : null;
 }
 
+function AdStatsEvent($value)
+{
+  return is_string($value) && preg_match('/^[a-z][a-z-]{0,15}$/', $value) ? $value : null;
+}
+
 function ParseAdStatsPayload($payload)
 {
   if (!is_array($payload)) return null;
-  $parsed = ["pages" => [], "slots" => [], "bidders" => []];
+  $parsed = ["pages" => [], "slots" => [], "bidders" => [], "events" => []];
 
   foreach (array_slice(is_array($payload["p"] ?? null) ? $payload["p"] : [], 0, AD_STATS_MAX_ROWS) as $row) {
     if (!is_array($row) || count($row) != 5) continue;
@@ -134,6 +148,16 @@ function ParseAdStatsPayload($payload)
     $parsed["bidders"][] = [$bidder, $device, AdStatsInt($row[2], 5000), $wins, AdStatsInt($row[4], $wins * AD_STATS_MAX_CPM_MICROS)];
   }
 
+  foreach (array_slice(is_array($payload["e"] ?? null) ? $payload["e"] : [], 0, AD_STATS_MAX_ROWS) as $row) {
+    if (!is_array($row) || count($row) != 5) continue;
+    $page = AdStatsPage($row[0]);
+    $placement = AdStatsPlacement($row[1]);
+    $device = AdStatsDevice($row[2]);
+    $event = AdStatsEvent($row[3]);
+    if ($page === null || $placement === null || $device === null || $event === null) continue;
+    $parsed["events"][] = [$page, $placement, $device, $event, AdStatsInt($row[4], 100)];
+  }
+
   return $parsed;
 }
 
@@ -160,7 +184,8 @@ function RecordAdStats($conn, $parsed)
   $writes = [
     ["ad_page_stats", ["page", "device"], ["views", "visible_ms", "adblock_views"], $parsed["pages"], "ssiii"],
     ["ad_slot_stats", ["page", "placement", "device"], AD_STATS_SLOT_FIELDS, $parsed["slots"], "sss" . str_repeat("i", count(AD_STATS_SLOT_FIELDS))],
-    ["ad_bidder_stats", ["bidder", "device"], ["bids", "wins", "win_micros"], $parsed["bidders"], "ssiii"]
+    ["ad_bidder_stats", ["bidder", "device"], ["bids", "wins", "win_micros"], $parsed["bidders"], "ssiii"],
+    ["ad_event_stats", ["page", "placement", "device", "event"], ["count"], $parsed["events"], "ssssi"]
   ];
   foreach ($writes as $write) {
     try {

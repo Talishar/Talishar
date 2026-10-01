@@ -22,7 +22,7 @@ if ($parsed === null) {
   http_response_code(400);
   exit;
 }
-if (count($parsed["pages"]) + count($parsed["slots"]) + count($parsed["bidders"]) == 0) {
+if (count($parsed["pages"]) + count($parsed["slots"]) + count($parsed["bidders"]) + count($parsed["events"]) == 0) {
   http_response_code(204);
   exit;
 }

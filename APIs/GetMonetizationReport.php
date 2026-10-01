@@ -25,6 +25,7 @@ $response = [
   "slots" => [],
   "pages" => [],
   "bidders" => [],
+  "events" => [],
   "daily" => []
 ];
 
@@ -69,21 +70,26 @@ try {
       SUM(win_micros) AS winMicros
     FROM ad_bidder_stats WHERE day >= ? GROUP BY bidder, device", $since);
 
+  $response["events"] = AdReportRows($conn, "SELECT page, placement, device, event, SUM(count) AS count
+    FROM ad_event_stats WHERE day >= ? GROUP BY page, placement, device, event", $since);
+
   $daily = [];
-  foreach (AdReportRows($conn, "SELECT day, device, SUM(views) AS views FROM ad_page_stats
-    WHERE day >= ? GROUP BY day, device", $since) as $row) {
-    $daily[$row["day"] . "|" . $row["device"]] = [
-      "day" => $row["day"], "device" => $row["device"], "views" => $row["views"], "estMicros" => 0, "filled" => 0
-    ];
-  }
-  foreach (AdReportRows($conn, "SELECT day, device, SUM(GREATEST(prebid_micros, fill_bid_micros)) AS estMicros,
-      SUM(filled) AS filled
-    FROM ad_slot_stats WHERE day >= ? GROUP BY day, device", $since) as $row) {
-    $key = $row["day"] . "|" . $row["device"];
-    $daily[$key] ??= ["day" => $row["day"], "device" => $row["device"], "views" => 0];
-    $daily[$key]["estMicros"] = $row["estMicros"];
-    $daily[$key]["filled"] = $row["filled"];
-  }
+  $emptyDay = ["views" => 0, "estMicros" => 0, "unpricedFills" => 0, "videoImpressions" => 0, "rewardedShows" => 0];
+  $mergeDaily = function ($rows) use (&$daily, $emptyDay) {
+    foreach ($rows as $row) {
+      $key = $row["day"] . "|" . $row["device"];
+      $daily[$key] = array_merge($daily[$key] ?? $emptyDay, $row);
+    }
+  };
+  $mergeDaily(AdReportRows($conn, "SELECT day, device, SUM(views) AS views FROM ad_page_stats
+    WHERE day >= ? GROUP BY day, device", $since));
+  $mergeDaily(AdReportRows($conn, "SELECT day, device,
+      SUM(IF(placement = 'video' OR placement LIKE '%reward%', 0, GREATEST(prebid_micros, fill_bid_micros))) AS estMicros,
+      SUM(IF(placement = 'video' OR placement LIKE '%reward%', 0, GREATEST(0, CAST(filled AS SIGNED) - CAST(priced_fills AS SIGNED)))) AS unpricedFills,
+      SUM(IF(placement = 'video', filled, 0)) AS videoImpressions
+    FROM ad_slot_stats WHERE day >= ? GROUP BY day, device", $since));
+  $mergeDaily(AdReportRows($conn, "SELECT day, device, SUM(count) AS rewardedShows FROM ad_event_stats
+    WHERE day >= ? AND event = 'shown' GROUP BY day, device", $since));
   ksort($daily);
   $response["daily"] = array_values($daily);
 } catch (Throwable $e) {
