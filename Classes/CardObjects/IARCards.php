@@ -5355,6 +5355,11 @@ class rise_to_the_challenge extends BaseCard {
     $this->archetype = new windup($this->cardID, $this->controller);
   }
 
+  function CardCost($from = '-') {
+    if ($from == "HAND" && GetResolvedAbilityType($this->cardID, $from) == "I") return 0;
+    return GeneratedCardCost($this->cardID);
+  }
+
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
