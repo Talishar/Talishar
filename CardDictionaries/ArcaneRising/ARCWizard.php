@@ -959,7 +959,9 @@ function ArcaneBarrierPayableAmount($player)
   $handCount = count($hand);
   $handPieces = HandPieces();
   for ($i = 0; $i < $handCount; $i += $handPieces) {
-    $amount += PitchValue($hand[$i]);
+    $pitch = PitchValue($hand[$i]);
+    if ($pitch > 0)
+      $amount += $pitch;
   }
   return $amount;
 }
