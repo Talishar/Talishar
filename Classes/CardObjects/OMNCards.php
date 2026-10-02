@@ -2893,7 +2893,7 @@ class glide_through_starlight_red extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($amount, $preventable, $remove);
+    return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, $amount);
   }
 
   function GoesOnCombatChain($phase, $from) {
@@ -2937,7 +2937,7 @@ class glide_through_starlight_yellow extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($amount, $preventable, $remove);
+    return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, $amount);
   }
 
   function GoesOnCombatChain($phase, $from) {
@@ -2981,7 +2981,7 @@ class glide_through_starlight_blue extends Card {
   }
 
   function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
-    return $this->baseCard->CurrentEffectDamagePrevention($amount, $preventable, $remove);
+    return $this->baseCard->CurrentEffectDamagePrevention($type, $damage, $source, $index, $remove, $preventable, $amount);
   }
 
   function GoesOnCombatChain($phase, $from) {

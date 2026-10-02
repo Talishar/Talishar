@@ -1236,7 +1236,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog($replaySaveResult["message"], highlight: true);
         break;
       }
-      if (!WriteReplayFormat($gamePath, $replayPath)) {
+      $previousTimeLimit = ini_get('max_execution_time');
+      @set_time_limit(0);
+      $replayWritten = WriteReplayFormat($gamePath, $replayPath);
+      if ($previousTimeLimit !== false) @set_time_limit((int)$previousTimeLimit);
+      if (!$replayWritten) {
         deleteDir($replayPath . "/");
         $replaySaveResult["message"] = "Replay could not be saved because its state history is incomplete.";
         WriteLog($replaySaveResult["message"], highlight: true);

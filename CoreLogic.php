@@ -1224,7 +1224,7 @@ function PlayerWon($playerID, $conceded = false)
   global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $currentTurn;
   global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID, $CS_SkipAllRunechants, $gameGUID;
   if (IsGameOver()) return;
-  include_once "./MenuFiles/ParseGamefile.php";
+  include_once __DIR__ . "/MenuFiles/ParseGamefile.php";
   SetClassState(1, $CS_SkipAllRunechants, 0);
   SetClassState(2, $CS_SkipAllRunechants, 0);
   SetCachePiece($gameName, 14, 99);//$MGS_GameOver
@@ -1237,27 +1237,27 @@ function PlayerWon($playerID, $conceded = false)
     WriteLog("The game is a draw! no match stats reported");
   }
   else WriteLog("Player " . $winner . " won! 🎉");
-  include_once "./Libraries/PuzzleGame.php";
+  include_once __DIR__ . "/Libraries/PuzzleGame.php";
   if (IsPuzzleGame($gameName)) {
     global $mainPlayer;
     if ($playerID == $mainPlayer) WriteLog("🧩 Puzzle solved!", highlight: true, highlightColor: "darkgreen");
     return;
   }
   try {
-    include_once "./Libraries/PromptLog.php";
+    include_once __DIR__ . "/Libraries/PromptLog.php";
     FlushPromptLog($gameName);
   } catch (Throwable $e) {
     error_log("PlayerWon: FlushPromptLog threw: " . $e->getMessage());
   }
   if (isPlayerAI(2)) return;
   try {
-    include_once "./Libraries/PuzzleHarvest.php";
+    include_once __DIR__ . "/Libraries/PuzzleHarvest.php";
     HarvestPuzzleCandidate($playerID, $conceded);
   } catch (Throwable $e) {
     error_log("PlayerWon: HarvestPuzzleCandidate threw: " . $e->getMessage());
   }
   try {
-    include_once "./Libraries/HeroMastery.php";
+    include_once __DIR__ . "/Libraries/HeroMastery.php";
     AwardHeroMastery($conceded);
   } catch (Throwable $e) {
     error_log("PlayerWon: AwardHeroMastery threw: " . $e->getMessage());
@@ -3874,7 +3874,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         return "";
       case "bravo_flattering_showman":
         $Arsenal = new Arsenal($currentPlayer);
-        if(ArsenalHasFaceDownCard($currentPlayer)) $arsenalCardUID = SetArsenalFacing("UP", $currentPlayer);
+        if (!ArsenalHasFaceDownCard($currentPlayer)) return "";
+        $arsenalCardUID = SetArsenalFacing("UP", $currentPlayer);
         $ArsenalCard = $Arsenal->FindCardUID($arsenalCardUID);
         if(HasCrush($ArsenalCard->CardID())) {
           AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$arsenalCardUID);

@@ -184,6 +184,7 @@ function loginFromCookie()
 function storeFabraryId($uid, $fabraryId)
 {
 	$conn = GetDBConnection(DBL_STORE_FABRARY_ID);
+	if (!$conn) return;
 	$sql = "UPDATE users SET fabraryId=? WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -434,6 +435,7 @@ function GetDeckBuilderId($uid, $decklink)
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format = "")
 {
 	$conn = GetDBConnection(DBL_ADD_FAVORITE_DECK);
+	if (!$conn) return;
 	$deckName = str_replace(['"', "'"], '', $deckName);
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "','" . $format . "'";
 	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero, format) VALUES (?, ?, ?, ?, ?);";

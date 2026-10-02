@@ -288,9 +288,9 @@ function OUTAbilityCost($cardID)
               $deck->Top(remove:true);
             }
             $char = GetPlayerCharacter($currentPlayer);
-            if ($char[GetClassState($currentPlayer, $CS_PlayIndex)] == $cardID) {
-              DestroyCharacter($currentPlayer, GetClassState($currentPlayer, $CS_PlayIndex));
-            }
+            $quiverIndex = GetClassState($currentPlayer, $CS_PlayIndex);
+            if (($char[$quiverIndex] ?? "-") != $cardID) $quiverIndex = FindCharacterIndex($currentPlayer, $cardID);
+            if ($quiverIndex >= 0) DestroyCharacter($currentPlayer, $quiverIndex);
           }
         }
         return "";

@@ -28,7 +28,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
   if (!$created && IsDisruptiveBanish($from, $mod)) LogDisruptionStats($player, $cardID, $banisher);
-  $banisher = $banisher == "-" ? $player : $banisher;
+  $banisher = in_array($banisher, [1, 2, "1", "2"], true) ? intval($banisher) : $player;
   $character = &GetPlayerCharacter($player);
   $characterID = ShiyanaCharacter($character[0]);
   $amount = 1;

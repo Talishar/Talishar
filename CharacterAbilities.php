@@ -197,8 +197,8 @@ function CharacterDestroyEffect($cardID, $player)
     case "teklovossen_the_mechropotentb":
       #Easter egg here when Teklovessen lore drops
       WriteLog("🕳️ Teklovessen lost his humanity for the greater good however as the machine shuts down he can no longer breathe.");
-      include_once "./includes/dbh.inc.php";
-      include_once "./includes/functions.inc.php";
+      include_once __DIR__ . "/includes/dbh.inc.php";
+      include_once __DIR__ . "/includes/functions.inc.php";
       $conceded = true;
       if (!IsGameOver()) PlayerLoseHealth(GetHealth($player), $player);
       break;
