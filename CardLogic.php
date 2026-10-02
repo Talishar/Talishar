@@ -1860,9 +1860,6 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
     case "vigorous_windup_blue":
       PlayAura("vigor", $player, isToken:true, effectController:$player, effectSource:$parameter);
       break;
-    case "ripple_away_blue":
-      AddCurrentTurnEffect($parameter, $player, $from);
-      break;
     case "fruits_of_the_forest_red":
     case "fruits_of_the_forest_yellow":
     case "fruits_of_the_forest_blue":

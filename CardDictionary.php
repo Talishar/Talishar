@@ -600,9 +600,6 @@ function CardCost($cardID, $from="-", $index=-1)
     case "light_up_the_leaves_red":
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 3;
-    case "ripple_away_blue":
-      if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
-      return 2;
     case "MST000_inner_chi_blue":
     case "MST010_inner_chi_blue":
     case "MST032_inner_chi_blue":
@@ -1213,7 +1210,7 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue", 
     "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue", 
     "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue", 
-    "ripple_away_blue", "under_the_trap_door_blue", 
+    "under_the_trap_door_blue", 
     "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
     "tip_off_red", "tip_off_yellow", "tip_off_blue", 
     "outside_interference_blue", "fearless_confrontation_blue" => "I,AA",
@@ -1286,7 +1283,16 @@ function GetEasyAbilityNames($cardID, $index, $from, $allNames=false) {
       
       if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && ($layerCount <= LayerPieces() || IsResolutionStep()) && $actionPoints > 0){
         if (!$nameBlocked && CanAttack($cardID, $from, $index, type:"AA")) {
-          if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) || SearchCurrentTurnEffects("fealty", $currentPlayer)) $names[1] = "Attack";
+          // there has to be a better way to handle this
+          if (SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) && !SearchCurrentTurnEffects("fealty", $currentPlayer)) {
+            $names[1] = "-";
+          }
+          elseif ($from != "ARS" && $from != "-" && SearchCurrentTurnEffects("three_of_a_kind_red", $currentPlayer)) {
+            $names[1] = "-";
+          }
+          else {
+            $names[1] = "Attack";
+          }
         }
       }
       $names = $names[1] == "-" ? $names[0] : implode(",", $names);
@@ -1369,7 +1375,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
     case "fruits_of_the_forest_red":
     case "fruits_of_the_forest_yellow":
     case "fruits_of_the_forest_blue":
-    case "ripple_away_blue":
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":
@@ -1866,7 +1871,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if ($from != "ARS") return false;
     if (!SearchCharacterAliveSubtype($player, "Bow")) return false;
   }
-  if (!$isStaticType && $from != "ARS" && SearchCurrentTurnEffects("three_of_a_kind_red", $player)) return false;
+  if (!$isStaticType && $from != "ARS" && SearchCurrentTurnEffects("three_of_a_kind_red", $player) && GetAbilityTypes($cardID, $index, $from) == "") return false;
   if (SearchCurrentTurnEffects("red_in_the_ledger_red", $player)) {
     if (!HasMeld($cardID) && (DelimStringContains($cardType, "A") || $cardType == "AA") && !str_contains($abilityTypes, "I") && GetClassState($player, $CS_NumActionsPlayed) >= 1) return false;
     if (str_contains($abilityTypes, "I") && ($from == "BANISH" || $from == "THEIRBANISH")) return false;
@@ -3400,7 +3405,6 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "fruits_of_the_forest_blue":
     case "fruits_of_the_forest_yellow":
     case "fruits_of_the_forest_red":
-    case "ripple_away_blue":
     case "under_the_trap_door_blue":
     case "reapers_call_red":
     case "reapers_call_yellow":
