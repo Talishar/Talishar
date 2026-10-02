@@ -295,6 +295,9 @@ if ((int)$mode === 100023) {
     "message" => "Snapshot could not be saved. Please try again."
   ]);
 }
+if ((int)$mode === 100025) {
+  echo json_encode($puzzleHintResult ?? ["hint" => null, "index" => 0, "total" => 0]);
+}
 
 // Rematch handling, AI turns, clock accumulation, persistence and backups.
 include "Libraries/GameFinalization.php";

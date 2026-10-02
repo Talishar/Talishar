@@ -14,9 +14,23 @@ function EncounterAI()
   {
     $isBowActive = false;
     $deckPieces = DeckPieces();
-    for($logicCount=0; $logicCount<=30 && $currentPlayerIsAI; ++$logicCount)
+    $scriptPlayer = 0;
+    if (BotIsPuzzle()) {
+      include_once __DIR__ . "/../Libraries/PuzzleScript.php";
+      $scriptPlayer = PuzzleScriptPlayer();
+    }
+    $puzzleVerify = BotIsPuzzleVerify();
+    $logicLimit = $puzzleVerify ? 400 : 30;
+    for($logicCount=0; $logicCount<=$logicLimit && $currentPlayerIsAI; ++$logicCount)
     {
       global $turn;
+      if($scriptPlayer == $currentPlayer)
+      {
+        PuzzleScriptAct();
+        ProcessMacros();
+        $currentPlayerIsAI = IsPlayerAI($currentPlayer) && !IsGameOver();
+        continue;
+      }
       FixHand($currentPlayer);
       $hand = &GetHand($currentPlayer);
       $character = &GetPlayerCharacter($currentPlayer);
@@ -126,7 +140,7 @@ function EncounterAI()
           if(CardIsPlayable($storedPriorityNode, $hand, $resources))
           {
             //Only attempt to play the card if you have excess resources compared to what needs to be saved
-            if($storedPriorityNode[0] != "Hand" || count($hand) > 1)
+            if($storedPriorityNode[0] != "Hand" || count($hand) > 1 || BotIsPuzzle())
             {
               $found = true;
             }
@@ -281,7 +295,7 @@ function EncounterAI()
       }
       ProcessMacros();
       $currentPlayerIsAI = IsPlayerAI($currentPlayer);
-      if($logicCount == 30 && $currentPlayerIsAI)
+      if($logicCount == $logicLimit && $currentPlayerIsAI && $scriptPlayer == 0 && !$puzzleVerify)
       {
         for($i=0; $i<=30 && $currentPlayerIsAI; ++$i)
         {

@@ -73,9 +73,15 @@ const DBL_CLEAR_PROMPT_STATS           = 67;
 const DBL_VERIFY_PUZZLE_CANDIDATES     = 68;
 const DBL_SITE_METRICS                 = 69;
 const DBL_GET_MONETIZATION_REPORT      = 70;
+const DBL_HARVEST_SURVIVE_PUZZLE       = 71;
+const DBL_SCHEDULE_PUZZLE              = 72;
+const DBL_GET_DAILY_PUZZLE             = 73;
+const DBL_START_DAILY_PUZZLE           = 74;
+const DBL_RATE_DAILY_PUZZLE            = 75;
+const DBL_DAILY_PUZZLE_PROGRESS        = 76;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 70;
+const DBL_MAX_KEY = 76;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -149,4 +155,10 @@ const DBL_LABELS = [
     68 => 'APIs/VerifyPuzzleCandidates.php',
     69 => 'APIs/SiteMetrics.php',
     70 => 'APIs/GetMonetizationReport.php',
+    71 => 'Libraries/PuzzleHarvest.php::HarvestSurvivePuzzleCandidate',
+    72 => 'APIs/SchedulePuzzle.php',
+    73 => 'APIs/GetDailyPuzzle.php',
+    74 => 'APIs/StartDailyPuzzle.php',
+    75 => 'APIs/RateDailyPuzzle.php',
+    76 => 'Libraries/PuzzleDaily.php',
 ];

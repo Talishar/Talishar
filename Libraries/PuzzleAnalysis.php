@@ -3,6 +3,7 @@
 include_once __DIR__ . "/../Constants.php";
 include_once __DIR__ . "/../GeneratedCode/GeneratedCardDictionaries.php";
 require_once __DIR__ . "/GamestateCompatibility.php";
+include_once __DIR__ . "/PuzzleLesson.php";
 
 const PUZZLE_WEAPON_COST = 1;
 const PUZZLE_MAX_ATTACKS_SEARCHED = 10;
@@ -133,6 +134,8 @@ function PuzzleSolution($encoded)
     foreach (["cards", "top", "bottom"] as $key) {
       if (isset($step[$key])) $step[$key] = array_map("PuzzleStepCard", $step[$key]);
     }
+    if (!empty($step["target"])) $step["target"] = PuzzleStepCard($step["target"]);
+    else unset($step["target"]);
   }
   return $steps;
 }
@@ -143,8 +146,36 @@ function PuzzleBand($value, $bands)
   return end($bands)[1];
 }
 
-function AnalyzePuzzlePosition($content, $player, $meta, $proof)
+function PuzzleBotSummary($baseline)
 {
+  $bot = $baseline["bot"] ?? null;
+  if (!is_array($bot)) return null;
+  return [
+    "won" => !empty($bot["won"]),
+    "damage" => intval($bot["damage"] ?? 0),
+    "played" => array_map("PuzzleStepCard", $bot["played"] ?? []),
+    "pitched" => array_map("PuzzleStepCard", $bot["pitched"] ?? []),
+    "blocked" => array_map("PuzzleStepCard", $bot["blocked"] ?? [])
+  ];
+}
+
+function PuzzleLessonView($lesson)
+{
+  if ($lesson === null) return null;
+  $lesson["keyCards"] = array_map("PuzzleStepCard", $lesson["keyCards"]);
+  return $lesson;
+}
+
+function PuzzleDifficulty($score)
+{
+  return $score >= 70 ? "hard" : ($score >= 45 ? "medium" : "easy");
+}
+
+// Puzzles a player could solve by reading only the numbers on the cards, or that the bot solves, teach nothing:
+// they are flagged and filtered. The rest rank by how much of the damage has to come from card text.
+function AnalyzePuzzlePosition($content, $player, $meta, $proof, $baseline = null, $kind = PUZZLE_KIND_LETHAL, $steps = null)
+{
+  if ($kind == PUZZLE_KIND_SURVIVE) return AnalyzeSurvivePosition($content, $player, $meta, $proof, $baseline, $steps);
   $lines = explode("\r\n", $content);
   $opponent = $player == 1 ? 2 : 1;
   $offset = ($player - 1) * 18;
@@ -155,6 +186,7 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof)
   $hand = PuzzleZoneCards($lines[1 + $offset], HandPieces());
   $arsenal = PuzzleZoneCards($lines[5 + $offset], ArsenalPieces());
   $weapons = PuzzleCharacterCards($lines[3 + $offset], "W");
+  $equipment = PuzzleCharacterCards($lines[3 + $offset], "E");
   $opponentEquipment = PuzzleCharacterCards($lines[3 + $opponentOffset], "E");
   $opponentHand = PuzzleZoneCards($lines[1 + $opponentOffset], HandPieces());
   $opponentArsenal = PuzzleZoneCards($lines[5 + $opponentOffset], ArsenalPieces());
@@ -182,39 +214,46 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof)
   $killLength = $killsByPower ? $line["killAttacks"] : null;
   if ($realPlayed > 0) $killLength = min($killLength ?? $realPlayed, $realPlayed);
 
+  // Before the proof an overkill means the life will be raised, so judge the plain line against that.
+  $checkLife = $proven ? $life : $realLife + max(0, intval($meta["overkill"] ?? 0));
+  $gap = $checkLife - $line["through"];
+  $bot = PuzzleBotSummary($baseline);
+
   $flags = [];
-  $pressureScore = PuzzleBand($needed, [[4, 0.0], [7, 0.25], [10, 0.45], [14, 0.65], [18, 0.8], [23, 0.9], [PHP_INT_MAX, 1.0]]);
+  if ($gap <= 0) $flags[] = ["code" => "PLAIN_STATS", "value" => $line["through"]];
+  else $flags[] = ["code" => "NEEDS_TEXT", "value" => $gap];
+  if ($bot !== null) $flags[] = ["code" => $bot["won"] ? "BOT_SOLVES" : "BOT_FAILS", "value" => $bot["damage"]];
   if ($needed <= 7) $flags[] = ["code" => "LOW_PRESSURE", "value" => $needed];
   else if ($needed >= 20) $flags[] = ["code" => "HIGH_PRESSURE", "value" => $needed];
-  $spareScore = $spare === null ? 0.6 : PuzzleBand($spare, [[0, 1.0], [1, 0.6], [2, 0.2], [PHP_INT_MAX, 0.0]]);
   if ($spare === 0) $flags[] = ["code" => "ALL_CARDS", "value" => $cards];
   else if ($spare !== null && $spare >= 2) $flags[] = ["code" => "SPARE_CARDS", "value" => $spare];
-  $marginScore = $margin === null ? 0.9 : PuzzleBand($margin, [[0, 1.0], [2, 0.7], [5, 0.35], [PHP_INT_MAX, 0.1]]);
   if (!$proven) $flags[] = ["code" => "UNPROVEN", "value" => 0];
   if ($margin === 0) $flags[] = ["code" => "EXACT_LETHAL", "value" => 0];
-  else if ($margin >= 6) $flags[] = ["code" => "RAW_POWER", "value" => $margin];
   if ($proven && $life > $realLife) $flags[] = ["code" => "LIFE_RAISED", "value" => $life - $realLife];
-  $optionScore = PuzzleBand($options, [[1, 0.0], [2, 0.4], [3, 0.7], [PHP_INT_MAX, 1.0]]);
   if ($options <= 2) $flags[] = ["code" => "FEW_OPTIONS", "value" => $options];
-  $lengthScore = $killLength === null ? 0.7 : PuzzleBand($killLength, [[1, 0.1], [2, 0.5], [3, 0.8], [PHP_INT_MAX, 1.0]]);
   if ($killLength !== null && $killLength <= 1) $flags[] = ["code" => "ONE_CARD", "value" => $killLength];
   if ($realPlayed >= 5) $flags[] = ["code" => "BIG_TURN", "value" => $realPlayed];
   if ($realPlayed === null) $flags[] = ["code" => "NO_TURN_DATA", "value" => 0];
 
-  $score = 100 * (0.3 * $pressureScore + 0.3 * $spareScore + 0.15 * $marginScore
-    + 0.1 * $optionScore + 0.15 * $lengthScore);
-  $penalties = ["LOW_PRESSURE" => 0.5, "ONE_CARD" => 0.5, "SPARE_CARDS" => 0.6, "RAW_POWER" => 0.6, "FEW_OPTIONS" => 0.6];
+  $gapScore = PuzzleBand($gap, [[0, 0.0], [1, 0.35], [2, 0.55], [3, 0.7], [5, 0.85], [PHP_INT_MAX, 1.0]]);
+  $botScore = $bot === null ? 0.5 : ($bot["won"] ? 0.0 : PuzzleBand($life - $bot["damage"], [[1, 0.5], [3, 0.8], [PHP_INT_MAX, 1.0]]));
+  $marginScore = $margin === null ? 0.9 : PuzzleBand($margin, [[0, 1.0], [2, 0.7], [5, 0.35], [PHP_INT_MAX, 0.1]]);
+  $optionScore = PuzzleBand($options, [[1, 0.0], [2, 0.4], [3, 0.7], [PHP_INT_MAX, 1.0]]);
+  $lengthScore = $killLength === null ? 0.7 : PuzzleBand($killLength, [[1, 0.1], [2, 0.5], [3, 0.8], [PHP_INT_MAX, 1.0]]);
+  $score = 100 * (0.4 * $gapScore + 0.3 * $botScore + 0.1 * $marginScore + 0.1 * $optionScore + 0.1 * $lengthScore);
+  $penalties = ["LOW_PRESSURE" => 0.8, "ONE_CARD" => 0.5, "FEW_OPTIONS" => 0.6];
   foreach ($flags as $flag) $score *= $penalties[$flag["code"]] ?? 1;
   $score = (int)round($score);
-  $difficulty = $score >= 70 ? "hard" : ($score >= 45 ? "medium" : "easy");
 
   return [
+    "kind" => "lethal",
     "life" => intval($healths[$player - 1] ?? 0),
     "opponentLife" => $life,
     "realLife" => $realLife,
     "hand" => $hand,
     "arsenal" => $arsenal,
     "weapons" => $weapons,
+    "equipment" => $equipment,
     "floating" => $floating,
     "actionPoints" => $actionPoints,
     "handPitch" => array_sum(array_column($hand, "pitch")),
@@ -229,9 +268,82 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof)
     "estimatedDamage" => $line["damage"],
     "estimatedThrough" => $line["through"],
     "estimatedAttacks" => $line["attacks"],
+    "gap" => $gap,
+    "bot" => $bot,
+    "filtered" => $gap <= 0 || ($bot["won"] ?? false),
+    "lesson" => PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_LETHAL, $steps, $baseline, $proof)),
     "realTurn" => is_array($meta) ? $meta : null,
     "score" => $score,
-    "difficulty" => $difficulty,
+    "difficulty" => PuzzleDifficulty($score),
+    "flags" => $flags
+  ];
+}
+
+// Blocking by the numbers is exactly what the bot does, so for a survive puzzle the bot is the plain-stats test:
+// if it lives through the attack by blocking greedily, the puzzle teaches nothing. The defense margin only ranks.
+function AnalyzeSurvivePosition($content, $player, $meta, $proof, $baseline, $steps)
+{
+  $lines = explode("\r\n", $content);
+  $opponent = 3 - $player;
+  $offset = ($player - 1) * 18;
+  $opponentOffset = ($opponent - 1) * 18;
+  $healths = explode(" ", trim($lines[0]));
+  $hand = PuzzleZoneCards($lines[1 + $offset], HandPieces());
+  $arsenal = PuzzleZoneCards($lines[5 + $offset], ArsenalPieces());
+  $equipment = PuzzleCharacterCards($lines[3 + $offset], "E");
+  $realLife = intval($healths[$player - 1] ?? 0);
+  $proven = is_array($proof) && ($proof["status"] ?? "") === "proven";
+  $life = $proven ? intval($proof["life"]) : $realLife;
+  $incoming = intval(($proven ? $proof : $meta)["threatened"] ?? 0);
+  $defense = array_sum(PuzzleBlockers($equipment, $hand, $arsenal));
+  $gap = $incoming - $defense - $life + 1;
+  $bot = PuzzleBotSummary($baseline);
+  $options = count($hand) + count($arsenal) + count($equipment);
+
+  $flags = [];
+  if ($bot !== null) $flags[] = ["code" => $bot["won"] ? "BOT_SOLVES" : "BOT_FAILS", "value" => $bot["damage"]];
+  if (!$proven) $flags[] = ["code" => "UNPROVEN", "value" => 0];
+  if ($proven && $life < $realLife) $flags[] = ["code" => "LIFE_LOWERED", "value" => $realLife - $life];
+  if ($options <= 2) $flags[] = ["code" => "FEW_OPTIONS", "value" => $options];
+  if (($meta["cardsPlayed"] ?? 0) >= 4) $flags[] = ["code" => "BIG_TURN", "value" => intval($meta["cardsPlayed"])];
+
+  $botScore = $bot === null ? 0.5 : ($bot["won"] ? 0.0 : 1.0);
+  $gapScore = PuzzleBand($gap, [[-3, 0.0], [0, 0.3], [2, 0.6], [4, 0.8], [PHP_INT_MAX, 1.0]]);
+  $optionScore = PuzzleBand($options, [[1, 0.0], [2, 0.4], [3, 0.7], [PHP_INT_MAX, 1.0]]);
+  $score = 100 * (0.6 * $botScore + 0.25 * $gapScore + 0.15 * $optionScore);
+  if ($options <= 2) $score *= 0.6;
+  $score = (int)round($score);
+
+  return [
+    "kind" => "survive",
+    "life" => $life,
+    "opponentLife" => $life,
+    "realLife" => $realLife,
+    "hand" => $hand,
+    "arsenal" => $arsenal,
+    "weapons" => [],
+    "equipment" => $equipment,
+    "floating" => 0,
+    "actionPoints" => 0,
+    "handPitch" => array_sum(array_column($hand, "pitch")),
+    "opponentEquipment" => PuzzleCharacterCards($lines[3 + $opponentOffset], "E"),
+    "opponentHand" => [],
+    "opponentEquipmentBlock" => 0,
+    "opponentHandBlock" => 0,
+    "opponentBlock" => 0,
+    "needed" => $incoming,
+    "spareCards" => null,
+    "proof" => is_array($proof) ? $proof : null,
+    "estimatedDamage" => $incoming,
+    "estimatedThrough" => max(0, $incoming - $defense),
+    "estimatedAttacks" => intval($meta["cardsPlayed"] ?? 0),
+    "gap" => $gap,
+    "bot" => $bot,
+    "filtered" => $bot["won"] ?? false,
+    "lesson" => PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_SURVIVE, $steps, $baseline, $proof)),
+    "realTurn" => is_array($meta) ? $meta : null,
+    "score" => $score,
+    "difficulty" => PuzzleDifficulty($score),
     "flags" => $flags
   ];
 }

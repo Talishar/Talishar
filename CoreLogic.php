@@ -1239,8 +1239,7 @@ function PlayerWon($playerID, $conceded = false)
   else WriteLog("Player " . $winner . " won! 🎉");
   include_once __DIR__ . "/Libraries/PuzzleGame.php";
   if (IsPuzzleGame($gameName)) {
-    global $mainPlayer;
-    if ($playerID == $mainPlayer) WriteLog("🧩 Puzzle solved!", highlight: true, highlightColor: "darkgreen");
+    PuzzleGameOver($playerID);
     return;
   }
   try {

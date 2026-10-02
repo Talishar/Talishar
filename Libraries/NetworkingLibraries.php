@@ -35,7 +35,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $CS_SkipAllRunechants, $CS_RunechantPreventPlan, $dqVars, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
   global $p1MetafyTiers, $p2MetafyTiers;
   global $CS_OriginalHero;
-  global $replaySaveResult, $snapshotSaveResult;
+  global $replaySaveResult, $snapshotSaveResult, $puzzleHintResult;
   global $isReplayAdvance, $replayUndoHasRecordedResponse;
   $otherPlayer = $playerID == 1 ? 2 : 1;
   switch ($mode) {
@@ -1352,6 +1352,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       include_once __DIR__ . "/PuzzleGame.php";
       RestartPuzzleGame($playerID);
       break;
+    case 100025: //Puzzle hint
+      include_once __DIR__ . "/PuzzleGame.php";
+      $puzzleHintResult = PuzzleHint($playerID);
+      break;
     case 100013: //Enable Spectate
       SetCachePiece($gameName, 9, "1");
       break;
@@ -1532,7 +1536,7 @@ function IsModeAsync($mode)
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true, 100023 => true,
-  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true
+  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true
   ];
   return isset($asyncModes[$mode]);
 }
@@ -2372,9 +2376,14 @@ function FinalizeTurn()
   global $MakeStartTurnBackup, $gameName;
   include_once __DIR__ . "/PuzzleGame.php";
   if (IsPuzzleGame($gameName)) {
-    WriteLog("🧩 Puzzle failed: your opponent survived the turn.", highlight: true);
-    PlayerWon($defPlayer);
+    PuzzleTurnEnded();
     return;
+  }
+  try {
+    include_once __DIR__ . "/PuzzleHarvest.php";
+    HarvestSurvivePuzzleCandidate();
+  } catch (Throwable $e) {
+    error_log("FinalizeTurn: HarvestSurvivePuzzleCandidate threw: " . $e->getMessage());
   }
   $extraTurn = SearchCurrentTurnEffects("standing_ovation_blue", $mainPlayer);
   $EffectContext = "-";
