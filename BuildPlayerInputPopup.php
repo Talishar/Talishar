@@ -631,6 +631,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           $option = explode("-", $options[$i], 3);
           $option0 = $option[0]; // cache zone key — accessed 30+ times per iteration
           $isMyPrefix = str_starts_with($option0, "MY");
+          $cardController = $isMyPrefix ? $playerID : $otherPlayer;
           $optionIndex = intval($option[1] ?? 0);
           $isTheirPrefix = str_starts_with($option0, "THEIR");
           switch($option0) {
@@ -793,6 +794,12 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
                 $label = "Attacking";
               }
             }
+          }
+          //Add indication for allies that are the attack target
+          if (DelimStringContains($option0, "ALLY", true)) {
+            $AllyCard = new AllyCard($optionIndex, $cardController);
+            if ($AllyCard->UniqueID() == GetCombatChainState($CCS_AttackTargetUID))
+              $label = "Attack Target";
           }
           //Add indication for layers targets
           if ($layersActive && ($option0 == "MYDISCARD" || $option0 == "THEIRDISCARD")) {
