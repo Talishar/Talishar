@@ -3424,8 +3424,8 @@ function GetDamagePreventionTargetIndices()
     if ($Layer->IsCardLayer()) $rv[] = "LAYER-" . $Layer->Index();
   }
   $rv = implode(",", $rv);
-  if (count($combatChain) > 0 && CardType($combatChain[0]) != "W") {
-    //don't find weapons here, they're handled in SearchCharacter
+  if (count($combatChain) > 0 && CardType($combatChain[0]) != "W" && !SubtypeContains($combatChain[0], "Ally")) {
+    //don't find weapons and allies here, they're handled elsewhere
     $rv = CombineSearches($rv, "CC-0");
   }
   $rv = CombineSearches($rv, SearchMultiZoneFormat(SearchCharacter($otherPlayer, type: "W"), "THEIRCHAR"));
