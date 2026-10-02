@@ -1670,11 +1670,17 @@ function CombatChainClosedTriggers()
           break;
         case "widespread_annihilation_blue":
           if (GetClassState($mainPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($mainPlayer, "MYHAND", "HAND,-");
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($defPlayer, "MYHAND", "HAND,-");
+          if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
+            SetDisruptionSource($mainPlayer);
+            MZChooseAndBanish($defPlayer, "MYHAND", "HAND,-");
+          }
           break;
         case "widespread_destruction_yellow":
           if (GetClassState($mainPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($mainPlayer, "MYARS", "ARS,-");
-          if (GetClassState($defPlayer, $CS_HealthLost) > 0) MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
+          if (GetClassState($defPlayer, $CS_HealthLost) > 0) {
+            SetDisruptionSource($mainPlayer);
+            MZChooseAndBanish($defPlayer, "MYARS", "ARS,-");
+          }
           break;
         case "widespread_ruin_red":
           if (GetClassState($mainPlayer, $CS_HealthLost) > 0) {
