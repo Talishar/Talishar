@@ -3157,6 +3157,7 @@ class apex_buster_yellow extends Card {
   }
 
   function CanActivateAsInstant($index = -1, $from = '') {
+    if (count($this->GetTargets()) == 0) return false;
     return $this->archetype->CanActivateAsInstant($index, $from);
   }
 
