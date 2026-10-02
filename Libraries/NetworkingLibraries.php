@@ -613,7 +613,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (IsPromptGemSnoozable($playerID, $index)) {
         $character[$index + 9] = 0;
         AddCurrentTurnEffect("GEMSNOOZE", $playerID, "-", $character[$index + 11]);
-        AddEvent("GEMOFF", "$playerID:" . $character[$index]);
       }
       else AddCurrentTurnEffect("PROMPTSNOOZE", $playerID, "-", $character[$index + 11]);
       ContinueDecisionQueue("NO");
