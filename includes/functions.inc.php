@@ -184,6 +184,7 @@ function loginFromCookie()
 function storeFabraryId($uid, $fabraryId)
 {
 	$conn = GetDBConnection(DBL_STORE_FABRARY_ID);
+	if (!$conn) return;
 	$sql = "UPDATE users SET fabraryId=? WHERE usersId=?";
 	$stmt = mysqli_stmt_init($conn);
 	if (mysqli_stmt_prepare($stmt, $sql)) {
@@ -434,6 +435,7 @@ function GetDeckBuilderId($uid, $decklink)
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format = "")
 {
 	$conn = GetDBConnection(DBL_ADD_FAVORITE_DECK);
+	if (!$conn) return;
 	$deckName = str_replace(['"', "'"], '', $deckName);
 	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "','" . $format . "'";
 	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero, format) VALUES (?, ?, ?, ?, ?);";
@@ -837,7 +839,7 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	$tsp = TurnStatPieces();
 
 	// Populate turn results - every block up to and including the last one that holds data
-	$usedBlocks = UsedTurnStatBlocks($turnStats);
+	$usedBlocks = UsedTurnStatBlocks($turnStats, $cardsDisrupted);
 	$lastUsedBlock = empty($usedBlocks) ? -1 : $usedBlocks[count($usedBlocks) - 1];
 
 	$turnNo = 0;
@@ -911,15 +913,17 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	$deck["totalTime"] = $totalTime;
 }
 // Returns the offsets of every stat block that holds data for this player.
-function UsedTurnStatBlocks(&$turnStats)
+function UsedTurnStatBlocks(&$turnStats, $cardsDisrupted = [])
 {
 	$tsp = TurnStatPieces();
 	$countTurnStats = count($turnStats);
 	$used = [];
 	for($i = 0; $i + $tsp <= $countTurnStats; $i += $tsp) {
+		$hasTurnStat = false;
 		for($j = 0; $j < $tsp; ++$j) {
-			if($turnStats[$i + $j] != 0) { $used[] = $i; break; }
+			if($turnStats[$i + $j] != 0) { $hasTurnStat = true; break; }
 		}
+		if ($hasTurnStat || intval($cardsDisrupted[intdiv($i, $tsp)] ?? 0) > 0) $used[] = $i;
 	}
 	return $used;
 }
@@ -933,7 +937,8 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 	$countTurnStats = count($turnStats);
 	if (empty($turnStats) || $countTurnStats < $tsp) return;
 
-	$usedBlocks = UsedTurnStatBlocks($turnStats);
+	$cardsDisrupted = $player != 0 ? GetCardsDisrupted($player) : [];
+	$usedBlocks = UsedTurnStatBlocks($turnStats, $cardsDisrupted);
 
 	// Hand size drives how many cards were available to attack with. Falls back
 	// to 4 when the hero is unknown (unit tests, replays of deleted games).
@@ -945,8 +950,6 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 			if ($intellect > 0) $handSize = $intellect;
 		}
 	}
-
-	$cardsDisrupted = $player != 0 ? GetCardsDisrupted($player) : [];
 
 	$totals = function($blocks) use (&$turnStats, $TurnStats_DamageThreatened, $TurnStats_DamageDealt,
 		$TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked, $TurnStats_ResourcesUsed,

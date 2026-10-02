@@ -2786,6 +2786,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         else {
           $allies = &GetAllies($target);
+          if (!is_numeric($mzIndex[1] ?? null) || !isset($allies[$mzIndex[1] + 2])) continue;
           $allyDamage = AllyDamagePrevention($target, $mzIndex[1], $damage);
           $allyHealthBefore = max(0, intval($allies[$mzIndex[1] + 2]));
           $allies[$mzIndex[1] + 2] = $allyHealthBefore - $allyDamage;

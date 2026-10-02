@@ -1224,7 +1224,7 @@ function PlayerWon($playerID, $conceded = false)
   global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $currentTurn;
   global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID, $CS_SkipAllRunechants, $gameGUID;
   if (IsGameOver()) return;
-  include_once "./MenuFiles/ParseGamefile.php";
+  include_once __DIR__ . "/MenuFiles/ParseGamefile.php";
   SetClassState(1, $CS_SkipAllRunechants, 0);
   SetClassState(2, $CS_SkipAllRunechants, 0);
   SetCachePiece($gameName, 14, 99);//$MGS_GameOver
@@ -1237,27 +1237,27 @@ function PlayerWon($playerID, $conceded = false)
     WriteLog("The game is a draw! no match stats reported");
   }
   else WriteLog("Player " . $winner . " won! 🎉");
-  include_once "./Libraries/PuzzleGame.php";
+  include_once __DIR__ . "/Libraries/PuzzleGame.php";
   if (IsPuzzleGame($gameName)) {
     global $mainPlayer;
     if ($playerID == $mainPlayer) WriteLog("🧩 Puzzle solved!", highlight: true, highlightColor: "darkgreen");
     return;
   }
   try {
-    include_once "./Libraries/PromptLog.php";
+    include_once __DIR__ . "/Libraries/PromptLog.php";
     FlushPromptLog($gameName);
   } catch (Throwable $e) {
     error_log("PlayerWon: FlushPromptLog threw: " . $e->getMessage());
   }
   if (isPlayerAI(2)) return;
   try {
-    include_once "./Libraries/PuzzleHarvest.php";
+    include_once __DIR__ . "/Libraries/PuzzleHarvest.php";
     HarvestPuzzleCandidate($playerID, $conceded);
   } catch (Throwable $e) {
     error_log("PlayerWon: HarvestPuzzleCandidate threw: " . $e->getMessage());
   }
   try {
-    include_once "./Libraries/HeroMastery.php";
+    include_once __DIR__ . "/Libraries/HeroMastery.php";
     AwardHeroMastery($conceded);
   } catch (Throwable $e) {
     error_log("PlayerWon: AwardHeroMastery threw: " . $e->getMessage());
@@ -1877,19 +1877,55 @@ function IsCharacterAbilityActive($player, $index, $checkGem = false)
   return $character[$index + 1] == 2;
 }
 
-function PromptGemSourceIndex($player)
+function PromptSnoozeSourceIndex($player)
 {
   global $turn, $EffectContext, $decisionQueue;
   if (($turn[0] ?? "") != "YESNO" || ($turn[1] ?? 0) != $player) return -1;
-  $source = trim((string)$EffectContext);
-  if ($source == "" || $source == "-" || in_array("RESUMEPAYING", $decisionQueue ?? [], true)) return -1;
   $character = &GetPlayerCharacter($player);
   $characterCount = count($character);
   $characterPieces = CharacterPieces();
-  for ($i = 0; $i < $characterCount; $i += $characterPieces) {
-    if ($character[$i] == $source && ($character[$i + 1] ?? 0) != 0 && ($character[$i + 9] ?? 2) == 1) return $i;
+  $source = trim((string)$EffectContext);
+  if ($source != "" && $source != "-" && !in_array("RESUMEPAYING", $decisionQueue ?? [], true)) {
+    for ($i = 0; $i < $characterCount; $i += $characterPieces) {
+      if ($character[$i] != $source || ($character[$i + 1] ?? 0) == 0) continue;
+      if (($character[$i + 9] ?? 2) == 1 || TypeContains($source, "E", $player)) return $i;
+    }
   }
-  return -1;
+  $text = (string)($turn[2] ?? "") . " " . (string)GetDQHelpText();
+  preg_match_all("/WebpImages\/([^.'\"]+)\.webp|\{\{([^|}]+)\|/", $text, $matches);
+  $linked = [];
+  foreach (array_merge($matches[1], $matches[2]) as $cardID) {
+    if ($cardID !== "") $linked[str_replace(" ", "_", $cardID)] = true;
+  }
+  $found = -1;
+  for ($i = 0; $i < $characterCount; $i += $characterPieces) {
+    if (!isset($linked[$character[$i]]) || ($character[$i + 1] ?? 0) == 0 || !TypeContains($character[$i], "E", $player)) continue;
+    if ($found >= 0) return -1;
+    $found = $i;
+  }
+  return $found;
+}
+
+function IsPromptGemSnoozable($player, $index)
+{
+  $character = &GetPlayerCharacter($player);
+  return ($character[$index + 9] ?? 2) == 1 && CharacterDefaultActiveState($character[$index]) == 1;
+}
+
+function IsPromptSnoozed($player)
+{
+  global $currentTurnEffects;
+  $index = PromptSnoozeSourceIndex($player);
+  if ($index < 0) return false;
+  $character = &GetPlayerCharacter($player);
+  $uniqueID = $character[$index + 11] ?? "-";
+  $effectCount = count($currentTurnEffects);
+  $effectPieces = CurrentTurnEffectsPieces();
+  for ($i = 0; $i < $effectCount; $i += $effectPieces) {
+    if (($currentTurnEffects[$i] == "GEMSNOOZE" || $currentTurnEffects[$i] == "PROMPTSNOOZE")
+      && $currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i + 2] == $uniqueID) return true;
+  }
+  return false;
 }
 
 function GetDieRoll($player)
@@ -3838,7 +3874,8 @@ function PlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalC
         return "";
       case "bravo_flattering_showman":
         $Arsenal = new Arsenal($currentPlayer);
-        if(ArsenalHasFaceDownCard($currentPlayer)) $arsenalCardUID = SetArsenalFacing("UP", $currentPlayer);
+        if (!ArsenalHasFaceDownCard($currentPlayer)) return "";
+        $arsenalCardUID = SetArsenalFacing("UP", $currentPlayer);
         $ArsenalCard = $Arsenal->FindCardUID($arsenalCardUID);
         if(HasCrush($ArsenalCard->CardID())) {
           AddCurrentTurnEffect($cardID, $currentPlayer, uniqueID:$arsenalCardUID);

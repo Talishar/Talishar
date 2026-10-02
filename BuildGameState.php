@@ -1650,7 +1650,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         if (intval($clashParts[0]) == intval($playerID)) continue;
         $eventType = "CLASH";
       }
-      if (($eventType == "PEEK" || $eventType == "GEMOFF") && intval(explode(":", $eventValue ?? "", 2)[0]) != intval($playerID)) continue;
+      if ($eventType == "PEEK" &&intval(explode(":", $eventValue ?? "", 2)[0]) != intval($playerID)) continue;
       $thisEvent = new stdClass();
       $thisEvent->eventType = $eventType;
       $thisEvent->eventValue = $eventValue;

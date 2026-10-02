@@ -3965,7 +3965,7 @@ class concealed_pathogen extends Card {
       $Character = new PlayerCharacter($this->controller);
       $CharCard = $Character->FindCardID($this->cardID);
       if ($CharCard != "" && $CharCard->IsActive() && NumAttackReactionsPlayed() > 0 && $CharCard->Facing() == "DOWN") {
-        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the pathogen?");
+        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the pathogen from " . CardLink($this->cardID) . "?");
         AddDecisionQueue("NOPASS", $this->controller, "-", 1);
         AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
       }
@@ -3996,7 +3996,7 @@ class concealed_sedative extends Card {
       $Character = new PlayerCharacter($this->controller);
       $CharCard = $Character->FindCardID($this->cardID);
       if ($CharCard != "" && $CharCard->IsActive() && HasIncreasedAttack() && $CharCard->Facing() == "DOWN") {
-        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the sedative?");
+        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the sedative from " . CardLink($this->cardID) . "?");
         AddDecisionQueue("NOPASS", $this->controller, "-", 1);
         AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
       }
@@ -4027,7 +4027,7 @@ class concealed_nerve_gas extends Card {
       $Character = new PlayerCharacter($this->controller);
       $CharCard = $Character->FindCardID($this->cardID);
       if ($CharCard != "" && $CharCard->IsActive() && DoesAttackHaveGoAgain() && $CharCard->Facing() == "DOWN") {
-        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the nerve gas?");
+        AddDecisionQueue("YESNO", $this->controller, "Do you want to release the nerve gas from " . CardLink($this->cardID) . "?");
         AddDecisionQueue("NOPASS", $this->controller, "-", 1);
         AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID, 1);
       }

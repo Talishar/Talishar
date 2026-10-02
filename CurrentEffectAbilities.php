@@ -2749,6 +2749,7 @@ function AdministrativeEffect($effectID)
     case "marked":
     case "HIDEOPEQUIP":
     case "GEMSNOOZE":
+    case "PROMPTSNOOZE":
     case "valiant_dynamo":
       return true;
     default:

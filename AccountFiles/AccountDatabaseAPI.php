@@ -4,6 +4,7 @@ function LoadUserData($username) {
 	$conn = null;
 	try {
 		$conn = GetLocalMySQLConnection();
+		if (!$conn) return null;
 	  $sql = "SELECT * FROM users WHERE usersUid = ?";
 		$stmt = mysqli_stmt_init($conn);
 		if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -17,7 +18,7 @@ function LoadUserData($username) {
 	}
 	catch (\Exception $e) { error_log("LoadUserData: query failed for user lookup: " . $e->getMessage()); }
 	finally {
-		if ($conn !== null) mysqli_close($conn);
+		if ($conn) mysqli_close($conn);
 	}
 
   return $row ?? null;
@@ -80,6 +81,7 @@ function IsBanned($username)
 function ApplyRememberMeCookie($usersId)
 {
   $conn = GetLocalMySQLConnection();
+  if (!$conn) return;
   $sql = "SELECT rememberMeToken FROM users WHERE usersId=?";
   $stmt = mysqli_stmt_init($conn);
   $cookie = null;

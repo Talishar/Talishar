@@ -147,11 +147,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $playerInputButtons[] = CreateButtonAPI($playerID, "Yes", 20, "YES", "20px");
         $playerInputButtons[] = CreateButtonAPI($playerID, "No", 20, "NO", "20px");
-        $gemIndex = PromptGemSourceIndex($playerID);
-        if ($gemIndex >= 0) {
-          $gemCardName = CardName($myCharacter[$gemIndex]);
-          $playerInputButtons[] = CreateButtonAPI($playerID, "No, not this turn", 115, strval($gemIndex), "20px", tooltip: "Answer No. $gemCardName won't ask again until the next turn.");
-        }
+        $snoozeIndex = PromptSnoozeSourceIndex($playerID);
+        if ($snoozeIndex >= 0) $playerInputButtons[] = CreateButtonAPI($playerID, "Not this turn", 115, strval($snoozeIndex), "20px");
         $playerInputPopup->popup = CreatePopupAPI("YESNO", [], 0, 1, GetPhaseHelptext(), 1, "");
         AddPromptCardContext($playerInputPopup->popup, $turnPhase, $playerID);
       }

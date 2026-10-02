@@ -5005,7 +5005,7 @@ class violent_gusto_red extends Card {
     global $dqVars, $CombatChain;
     $choice = $dqVars["MZIndex"] ?? "-";
     $AuraCard = MZIndexToObject($this->controller, $choice);
-    if ($AuraCard != "") {
+    if ($AuraCard instanceof AuraCard) {
       $name = CardName($AuraCard->CardID());
       WriteLog("<b>📣$name</b> was named!");
       $AuraCard->Bounce();
