@@ -1877,19 +1877,55 @@ function IsCharacterAbilityActive($player, $index, $checkGem = false)
   return $character[$index + 1] == 2;
 }
 
-function PromptGemSourceIndex($player)
+function PromptSnoozeSourceIndex($player)
 {
   global $turn, $EffectContext, $decisionQueue;
   if (($turn[0] ?? "") != "YESNO" || ($turn[1] ?? 0) != $player) return -1;
-  $source = trim((string)$EffectContext);
-  if ($source == "" || $source == "-" || in_array("RESUMEPAYING", $decisionQueue ?? [], true)) return -1;
   $character = &GetPlayerCharacter($player);
   $characterCount = count($character);
   $characterPieces = CharacterPieces();
-  for ($i = 0; $i < $characterCount; $i += $characterPieces) {
-    if ($character[$i] == $source && ($character[$i + 1] ?? 0) != 0 && ($character[$i + 9] ?? 2) == 1) return $i;
+  $source = trim((string)$EffectContext);
+  if ($source != "" && $source != "-" && !in_array("RESUMEPAYING", $decisionQueue ?? [], true)) {
+    for ($i = 0; $i < $characterCount; $i += $characterPieces) {
+      if ($character[$i] != $source || ($character[$i + 1] ?? 0) == 0) continue;
+      if (($character[$i + 9] ?? 2) == 1 || TypeContains($source, "E", $player)) return $i;
+    }
   }
-  return -1;
+  $text = (string)($turn[2] ?? "") . " " . (string)GetDQHelpText();
+  preg_match_all("/WebpImages\/([^.'\"]+)\.webp|\{\{([^|}]+)\|/", $text, $matches);
+  $linked = [];
+  foreach (array_merge($matches[1], $matches[2]) as $cardID) {
+    if ($cardID !== "") $linked[str_replace(" ", "_", $cardID)] = true;
+  }
+  $found = -1;
+  for ($i = 0; $i < $characterCount; $i += $characterPieces) {
+    if (!isset($linked[$character[$i]]) || ($character[$i + 1] ?? 0) == 0 || !TypeContains($character[$i], "E", $player)) continue;
+    if ($found >= 0) return -1;
+    $found = $i;
+  }
+  return $found;
+}
+
+function IsPromptGemSnoozable($player, $index)
+{
+  $character = &GetPlayerCharacter($player);
+  return ($character[$index + 9] ?? 2) == 1 && CharacterDefaultActiveState($character[$index]) == 1;
+}
+
+function IsPromptSnoozed($player)
+{
+  global $currentTurnEffects;
+  $index = PromptSnoozeSourceIndex($player);
+  if ($index < 0) return false;
+  $character = &GetPlayerCharacter($player);
+  $uniqueID = $character[$index + 11] ?? "-";
+  $effectCount = count($currentTurnEffects);
+  $effectPieces = CurrentTurnEffectsPieces();
+  for ($i = 0; $i < $effectCount; $i += $effectPieces) {
+    if (($currentTurnEffects[$i] == "GEMSNOOZE" || $currentTurnEffects[$i] == "PROMPTSNOOZE")
+      && $currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i + 2] == $uniqueID) return true;
+  }
+  return false;
 }
 
 function GetDieRoll($player)

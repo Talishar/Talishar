@@ -2394,7 +2394,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           }
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numBloodDebt, 1);
           AddDecisionQueue("OP", $mainPlayer, "PLAYERLOSEHEALTH", 1);
-          AddDecisionQueue("WRITELOG", $mainPlayer, "Player $mainPlayer lost $totalBloodDebt life due to Blood Debt ", 1);
+          AddDecisionQueue("WRITELOG", $mainPlayer, "🩸Player $mainPlayer lost $totalBloodDebt life due to Blood Debt ", 1);
         }
         break;
       case "merciful_retribution_yellow":

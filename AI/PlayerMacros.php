@@ -305,6 +305,10 @@ function ProcessSpecificCardMacros()
 {
   global $currentPlayer, $turn, $EffectContext;
 
+  if (($turn[0] ?? "") == "YESNO" && IsPromptSnoozed($currentPlayer)) {
+    ContinueDecisionQueue("NO");
+    return true;
+  }
   if (!isset($turn[2]) || $turn[2] === "" || $turn[2] === "PASS") return false;
 
   if ($turn[0] == "CHOOSEMULTIZONE") {

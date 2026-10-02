@@ -606,13 +606,16 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       SetClassState($playerID, $CS_RunechantPreventPlan, $count - 1);
       ContinueDecisionQueue(strval($amount));
       break;
-    case 115: //YESNO: No, and turn off the source's gem until the next turn
-      $index = PromptGemSourceIndex($playerID);
+    case 115: //YESNO: No, and stop asking from the source until the next turn
+      $index = PromptSnoozeSourceIndex($playerID);
       if ($index < 0 || !is_numeric($buttonInput) || $index != intval($buttonInput)) break;
       $character = &GetPlayerCharacter($playerID);
-      $character[$index + 9] = 0;
-      AddCurrentTurnEffect("GEMSNOOZE", $playerID, "-", $character[$index + 11]);
-      AddEvent("GEMOFF", "$playerID:" . $character[$index]);
+      if (IsPromptGemSnoozable($playerID, $index)) {
+        $character[$index + 9] = 0;
+        AddCurrentTurnEffect("GEMSNOOZE", $playerID, "-", $character[$index + 11]);
+        AddEvent("GEMOFF", "$playerID:" . $character[$index]);
+      }
+      else AddCurrentTurnEffect("PROMPTSNOOZE", $playerID, "-", $character[$index + 11]);
       ContinueDecisionQueue("NO");
       break;
     case 106: //Use floating resources instead of the Gold alternative payment
