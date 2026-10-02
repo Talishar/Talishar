@@ -4020,10 +4020,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "unworldly_bellow_blue":
       RandomBanish3GY($cardID);
       break;
-    case "shadow_of_ursur_blue":
-      MZMoveCard($currentPlayer, "MYHAND:bloodDebtOnly=true", "MYBANISH,HAND,-", may: true);
-      AddDecisionQueue("OP", $currentPlayer, "GIVEATTACKGOAGAIN", 1);
-      break;
     case "maul_yellow":
       if (LinkBasePower() <= 1 && CardNameContains($combatChain[0], "Crouching Tiger", $currentPlayer)) $modalities = "Buff_Power,Gain_On-Hit,Both";
       elseif (LinkBasePower() <= 1 && CardType($combatChain[0]) == "AA") $modalities = "Buff_Power";

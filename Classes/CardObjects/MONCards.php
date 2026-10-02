@@ -3420,17 +3420,45 @@ class seeds_of_agony_blue extends Card {
 // }
 
 
-// class shadow_of_ursur_blue extends Card {
+class shadow_of_ursur_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "shadow_of_ursur_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "shadow_of_ursur_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PlayableFromBanish($mod, $nonLimitedOnly) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND:bloodDebtOnly=1", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", exp_may:true, context:"Banish a card with blood debt to give this attack go again?");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $index = explode("-", $dqVars["MZIndex"] ?? "")[1] ?? -1;
+    if ($index != -1) {
+      $cardID = RemoveHand($this->controller, $index);
+      BanishCardForPlayer($cardID, $this->controller, "HAND");
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+}
 
 
 // class smash_with_big_tree_red extends Card {

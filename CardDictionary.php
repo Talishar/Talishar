@@ -4166,7 +4166,6 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
     case "unhallowed_rites_yellow":
     case "unhallowed_rites_blue":
       return GetClassState($player, $CS_NumNonAttackCards) > 0;
-    case "shadow_of_ursur_blue":
     case "invert_existence_blue":
     case "seeping_shadows_red":
     case "seeping_shadows_yellow":
