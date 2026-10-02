@@ -226,6 +226,13 @@ function LogDisruptionStats($owner, $cardID, $source = "")
   else AddTurnStat($p2CardsDisrupted, $turnIndex, 1);
 }
 
+// A card its owner can still play from banish was not really taken away.
+function LogBanishDisruptionStats($owner, $cardID, $source, $banish, $index)
+{
+  if ($index >= 0 && isset($banish[$index + 1]) && PlayableFromBanish($cardID, $banish[$index + 1], false, $owner, $index)) return;
+  LogDisruptionStats($owner, $cardID, $source);
+}
+
 function GetCardsDisrupted($player)
 {
   global $p1CardsDisrupted, $p2CardsDisrupted;

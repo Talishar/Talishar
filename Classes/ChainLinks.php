@@ -253,6 +253,7 @@ class LinkCard {
 		global $currentPlayer;
 		if ($agent == "-") $agent = $currentPlayer;
 		if ($this->ID() == "-" || !$this->StillOnChain()) return;
+		LogDisruptionStats($this->PlayerID(), $this->ID(), $agent);
 		if (TypeContains($this->ID(), "E")) {
 			if (SubtypeContains($this->ID(), "Item")) {
 				$uid = $this->OriginUniqueID();

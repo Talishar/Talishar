@@ -1157,6 +1157,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         if ($ind != -1) {
           $TargetCard = $CombatChain->Card($ind);
           $targetCard = $TargetCard->ID();
+          LogDisruptionStats($defPlayer, $targetCard, $player);
           if (TypeContains($targetCard, "E") && $TargetCard->From() == "EQUIP") {
             $defChar = GetPlayerCharacter($defPlayer);
             $defCharPieces = CharacterPieces();
@@ -1191,6 +1192,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
         $targetInd2 = $lastResultParts[2] ?? "-";
         $card = $ChainLinks->GetLink($targetInd2)->GetLinkCard($targetInd);
         if ($card->ID() == "-" || !$card->StillOnChain()) return $lastResult;
+        LogDisruptionStats($defPlayer, $card->ID(), $player);
         if (TypeContains($card->ID(), "E")) {
           if (SubtypeContains($card->ID(), "Item")) {
             $uid = $card->OriginUniqueID();

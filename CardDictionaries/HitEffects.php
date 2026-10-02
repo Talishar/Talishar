@@ -63,6 +63,7 @@ function EVOHitEffect($cardID)
           for ($i = count($defendingCardsArr) - 1; $i >= 0; --$i) {
             $defendingCard = $defendingCardsArr[$i];
             $cardVal = $combatChain[$defendingCard];
+            LogDisruptionStats($defPlayer, $cardVal, $mainPlayer);
             WriteLog($cardLink . " destroyed " . CardLink($cardVal, $cardVal) . ".");
             if (CardType($cardVal) == "E") {
               DestroyCharacter($defPlayer, FindCharacterIndex($defPlayer, $cardVal), animateDestroy: true);

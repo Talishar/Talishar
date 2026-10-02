@@ -263,6 +263,7 @@ class ChainCard {
       if ($agent == "-") $agent = $currentPlayer;
       if (!isset($this->chain[$this->index])) return;
       $targetCard = $this->ID();
+      LogDisruptionStats($this->PlayerID(), $targetCard, $agent);
       if (TypeContains($targetCard, "E") && $this->From() == "EQUIP") {
         $DefChar = new PlayerCharacter($this->PlayerID());
         $DefCard = $DefChar->FindCardUID($this->OriginUniqueID());

@@ -27,7 +27,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
-  if (!$created && IsDisruptiveBanish($from, $mod)) LogDisruptionStats($player, $cardID, $banisher);
+  $disruptive = !$created && IsDisruptiveBanish($from, $mod);
   $banisher = in_array($banisher, [1, 2, "1", "2"], true) ? intval($banisher) : $player;
   $character = &GetPlayerCharacter($player);
   $characterID = ShiyanaCharacter($character[0]);
@@ -108,11 +108,15 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
       if ($card != "-") $card->PermanentAddBanishAbility($BanCard->Index(), $AuraCard->Index(), $from, $uniqueID);
     }
   }
-  if ($isFaceDown) return $rv;
+  if ($isFaceDown) {
+    if ($disruptive) LogBanishDisruptionStats($player, $cardID, $banisher, $banish, $rv);
+    return $rv;
+  }
   //Do additional effects
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->GetBanishedEffect($from, $banisher, $banishedBy);
   if ($cardID == "slithering_shadowpede_red" && ($from == "HAND" || $from == "MYHAND") && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
+  if ($disruptive) LogBanishDisruptionStats($player, $cardID, $banisher, $banish, $rv);
   if (($mod == "BOOST" || $from == "DECK")
   && str_starts_with($cardID, 'back_alley_breakline_')
   && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetAbilityType($EffectContext) != "")
