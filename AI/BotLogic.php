@@ -529,12 +529,20 @@ function BotIsOpeningTurnDefense($playerID)
   return intval($currentTurn) == 0 && $mainPlayer != $playerID;
 }
 
-function BotIsPuzzleDefense()
+function BotIsPuzzle()
 {
   global $gameName;
   static $cache = [];
   include_once __DIR__ . "/../Libraries/PuzzleGame.php";
   return $cache[$gameName ?? ""] ??= IsPuzzleGame($gameName ?? "");
+}
+
+// A puzzle check where both seats can be bots and a whole turn runs in one call.
+function BotIsPuzzleVerify()
+{
+  global $gameName;
+  static $cache = [];
+  return $cache[$gameName ?? ""] ??= BotIsPuzzle() && IsPuzzleVerifyGame($gameName ?? "");
 }
 
 function BotStopHitValue()
@@ -629,7 +637,7 @@ function BotDefensePriority($cardID, $playerID, $zone)
   $block = max(0, $block - BotDefenderPowerBacklash($cardID, $playerID, $isEquipment));
   if ($block == 0) return 0.0;
 
-  $isPuzzle = BotIsPuzzleDefense();
+  $isPuzzle = BotIsPuzzle();
   if ($isEquipment) {
     if (BotEquipmentBlockRequired()) return 100000.0 + $block;
     if (!$isPuzzle && !BotEquipmentBlockAllowed($playerID, $block, $incoming)) return -1000000.0;
@@ -668,7 +676,7 @@ function BotDefenseReactionPriority($cardID, $playerID)
   $defense = max(0, intval(BlockValue($cardID, $playerID, "HAND", false)));
   if ($incoming == 0 || $defense == 0) return 0.0;
   $life = intval(GetHealth($playerID));
-  if (BotIsPuzzleDefense()) {
+  if (BotIsPuzzle()) {
     $overblock = max(0, $defense - $incoming);
     $score = 20 + min($incoming, $defense) * 4 - $overblock * 1.5;
     if ($incoming >= $life && $defense >= $incoming - $life + 1) $score += 100000;

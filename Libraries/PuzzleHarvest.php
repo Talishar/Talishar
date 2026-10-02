@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . "/PuzzleGame.php";
+
 const PUZZLE_CANDIDATE_NEW = 0;
 const PUZZLE_CANDIDATE_USED = 1;
 const PUZZLE_CANDIDATE_REJECTED = 2;
@@ -11,6 +13,7 @@ function EnsurePuzzleCandidatesTable($conn)
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     game_name INT UNSIGNED NOT NULL,
     format VARCHAR(16) NOT NULL,
+    kind TINYINT UNSIGNED NOT NULL DEFAULT 0,
     turn_number SMALLINT UNSIGNED NOT NULL,
     player TINYINT UNSIGNED NOT NULL,
     hero VARCHAR(64) NOT NULL,
@@ -25,6 +28,7 @@ function EnsurePuzzleCandidatesTable($conn)
     winning_line MEDIUMBLOB NULL,
     gamestate MEDIUMBLOB NOT NULL,
     solution TEXT NULL,
+    baseline TEXT NULL,
     PRIMARY KEY (id),
     KEY status_created (status, created_at)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
@@ -38,7 +42,9 @@ function EnsurePuzzleCandidatesTable($conn)
     "meta" => "ADD COLUMN meta VARCHAR(512) NOT NULL DEFAULT '' AFTER note",
     "proof" => "ADD COLUMN proof VARCHAR(1024) NOT NULL DEFAULT '' AFTER meta",
     "winning_line" => "ADD COLUMN winning_line MEDIUMBLOB NULL AFTER proof",
-    "solution" => "ADD COLUMN solution TEXT NULL"
+    "solution" => "ADD COLUMN solution TEXT NULL",
+    "kind" => "ADD COLUMN kind TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER format",
+    "baseline" => "ADD COLUMN baseline TEXT NULL"
   ];
   foreach ($missing as $name => $definition) {
     if (!isset($existing[$name])) mysqli_query($conn, "ALTER TABLE puzzle_candidates $definition");
@@ -84,6 +90,55 @@ function PuzzleTurnConceded($gameDirectory, $winner, $turn)
   return $conceded;
 }
 
+function PuzzleTurnStartState($turnPlayer)
+{
+  global $gameName, $currentTurn;
+  $content = @file_get_contents("./Games/$gameName/beginTurnGamestate.txt");
+  if ($content === false) return null;
+  $lines = explode("\r\n", $content);
+  if (count($lines) < 60) return null;
+  if (trim($lines[54]) != $turnPlayer || trim($lines[41]) != $currentTurn) return null;
+  return $content;
+}
+
+// $player is the seat the solver plays; $life is the life the puzzle is about (the opponent's for lethal,
+// the solver's own for survive).
+function InsertPuzzleCandidate($logKey, $kind, $content, $player, $life, $meta, $winningLine)
+{
+  global $gameName, $currentTurn;
+  $lines = explode("\r\n", $content);
+  $offset = ($player - 1) * 18;
+  $opponentOffset = (2 - $player) * 18;
+  $hero = explode(" ", trim($lines[3 + $offset]))[0];
+  $opponentHero = explode(" ", trim($lines[3 + $opponentOffset]))[0];
+  $gameCache = ReadCacheArray(intval($gameName));
+  $format = (string)($gameCache[12] ?? "");
+
+  include_once __DIR__ . "/../includes/dbh.inc.php";
+  $conn = GetDBConnection($logKey);
+  if (!$conn) return;
+  try {
+    EnsurePuzzleCandidatesTable($conn);
+    $sql = "INSERT INTO puzzle_candidates (game_name, format, kind, turn_number, player, hero, opponent_hero, opponent_life,
+      hand_count, opponent_hand_count, meta, winning_line, gamestate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    $stmt = mysqli_prepare($conn, $sql);
+    $gameNumber = intval($gameName);
+    $turnNumber = intval($currentTurn);
+    $handCount = PuzzleZoneCount($lines[1 + $offset]);
+    $opponentHandCount = PuzzleZoneCount($lines[1 + $opponentOffset]);
+    $meta = json_encode($meta);
+    $winningLine = $winningLine === null ? null : gzcompress(json_encode($winningLine), 6);
+    $compressed = gzcompress($content, 6);
+    mysqli_stmt_bind_param($stmt, "isiiissiiisss", $gameNumber, $format, $kind, $turnNumber, $player, $hero, $opponentHero,
+      $life, $handCount, $opponentHandCount, $meta, $winningLine, $compressed);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+  } catch (Throwable $e) {
+    error_log("InsertPuzzleCandidate failed: " . $e->getMessage());
+  }
+  mysqli_close($conn);
+}
+
 function HarvestPuzzleCandidate($winner, $conceded)
 {
   global $gameName, $mainPlayer, $currentTurn;
@@ -92,46 +147,39 @@ function HarvestPuzzleCandidate($winner, $conceded)
   if (GetHealth($loser) > 0) return;
   if (AreGlobalStatsDisabled(1) || AreGlobalStatsDisabled(2)) return;
   if (PuzzleTurnConceded("./Games/$gameName/", $winner, $currentTurn)) return;
-
-  $content = @file_get_contents("./Games/$gameName/beginTurnGamestate.txt");
-  if ($content === false) return;
-  $lines = explode("\r\n", $content);
-  if (count($lines) < 60) return;
-  if (trim($lines[54]) != $winner || trim($lines[41]) != $currentTurn) return;
-
-  $offset = ($winner - 1) * 18;
-  $opponentOffset = ($loser - 1) * 18;
-  $healths = explode(" ", trim($lines[0]));
-  $hero = explode(" ", trim($lines[3 + $offset]))[0];
-  $opponentHero = explode(" ", trim($lines[3 + $opponentOffset]))[0];
-  $gameCache = ReadCacheArray(intval($gameName));
-  $format = (string)($gameCache[12] ?? "");
+  $content = PuzzleTurnStartState($winner);
+  if ($content === null) return;
+  $healths = explode(" ", trim(explode("\r\n", $content)[0]));
 
   include_once __DIR__ . "/PuzzleVerify.php";
   $line = ExtractPuzzleLine("./Games/$gameName/", $winner, $currentTurn);
-  $winningLine = $line === null ? null : gzcompress(json_encode($line), 6);
+  InsertPuzzleCandidate(DBL_HARVEST_PUZZLE_CANDIDATE, PUZZLE_KIND_LETHAL, $content, $winner,
+    intval($healths[$loser - 1] ?? 0), PuzzleTurnMeta($winner, $loser), $line);
+}
 
-  include_once __DIR__ . "/../includes/dbh.inc.php";
-  $conn = GetDBConnection(DBL_HARVEST_PUZZLE_CANDIDATE);
-  if (!$conn) return;
-  try {
-    EnsurePuzzleCandidatesTable($conn);
-    $sql = "INSERT INTO puzzle_candidates (game_name, format, turn_number, player, hero, opponent_hero, opponent_life,
-      hand_count, opponent_hand_count, meta, winning_line, gamestate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-    $stmt = mysqli_prepare($conn, $sql);
-    $gameNumber = intval($gameName);
-    $turnNumber = intval($currentTurn);
-    $opponentLife = intval($healths[$loser - 1] ?? 0);
-    $handCount = PuzzleZoneCount($lines[1 + $offset]);
-    $opponentHandCount = PuzzleZoneCount($lines[1 + $opponentOffset]);
-    $meta = json_encode(PuzzleTurnMeta($winner, $loser));
-    $compressed = gzcompress($content, 6);
-    mysqli_stmt_bind_param($stmt, "isiissiiisss", $gameNumber, $format, $turnNumber, $winner, $hero, $opponentHero,
-      $opponentLife, $handCount, $opponentHandCount, $meta, $winningLine, $compressed);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-  } catch (Throwable $e) {
-    error_log("HarvestPuzzleCandidate failed: " . $e->getMessage());
-  }
-  mysqli_close($conn);
+const PUZZLE_SURVIVE_MAX_LIFE = 4;
+
+// A turn the defender only just lived through: undefended the attack was lethal, they blocked, and they ended on
+// very little life. This runs at the end of every turn, so the cheap checks come first.
+function HarvestSurvivePuzzleCandidate()
+{
+  global $gameName, $mainPlayer, $defPlayer, $currentTurn, $p1IsAI, $p2IsAI;
+  if ($p1IsAI == "1" || $p2IsAI == "1" || IsGameOver()) return;
+  $life = intval(GetHealth($defPlayer));
+  if ($life < 1 || $life > PUZZLE_SURVIVE_MAX_LIFE) return;
+  $meta = PuzzleTurnMeta($mainPlayer, $defPlayer);
+  if ($meta["cardsPlayed"] < 2 || $meta["blocked"] < 1 || $meta["threatened"] < $life + $meta["dealt"]) return;
+  if (AreGlobalStatsDisabled(1) || AreGlobalStatsDisabled(2)) return;
+  if (PuzzleTurnConceded("./Games/$gameName/", $mainPlayer, $currentTurn)) return;
+  $content = PuzzleTurnStartState($mainPlayer);
+  if ($content === null) return;
+  $startLife = intval(explode(" ", trim(explode("\r\n", $content)[0]))[$defPlayer - 1] ?? 0);
+  if ($startLife <= $life || $meta["threatened"] < $startLife) return;
+
+  include_once __DIR__ . "/PuzzleVerify.php";
+  $script = ExtractPuzzleLine("./Games/$gameName/", $mainPlayer, $currentTurn);
+  $line = ExtractPuzzleLine("./Games/$gameName/", $defPlayer, $currentTurn, $mainPlayer);
+  if ($script === null || $line === null || count($line) == 0) return;
+  InsertPuzzleCandidate(DBL_HARVEST_SURVIVE_PUZZLE, PUZZLE_KIND_SURVIVE, $content, $defPlayer, $startLife, $meta,
+    ["line" => $line, "script" => $script]);
 }

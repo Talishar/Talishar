@@ -31,17 +31,22 @@ if (!$conn) {
 
 try {
   EnsurePuzzleCandidatesTable($conn);
-  $result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM puzzle_candidates");
+  $kinds = ["lethal" => PUZZLE_KIND_LETHAL, "survive" => PUZZLE_KIND_SURVIVE];
+  $kind = $kinds[(string)($_GET["kind"] ?? "")] ?? null;
+  $where = $kind === null ? "" : " WHERE kind = " . $kind;
+  $result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM puzzle_candidates" . $where);
   $response["total"] = (int)(mysqli_fetch_assoc($result)["total"] ?? 0);
 
-  $sql = "SELECT id, created_at, format, turn_number, player, hero, opponent_hero, status, meta, proof, solution,
-    winning_line IS NOT NULL AS has_line, gamestate FROM puzzle_candidates ORDER BY id DESC LIMIT 300";
+  $sql = "SELECT id, created_at, format, kind, turn_number, player, hero, opponent_hero, status, meta, proof, baseline, solution,
+    winning_line IS NOT NULL AS has_line, gamestate FROM puzzle_candidates" . $where . " ORDER BY id DESC LIMIT 300";
   $result = mysqli_query($conn, $sql);
   while ($row = mysqli_fetch_assoc($result)) {
     $content = @gzuncompress($row["gamestate"]);
     if ($content === false) continue;
     $meta = json_decode($row["meta"] ?? "", true);
     $proof = CurrentPuzzleProof($row["proof"]);
+    $proven = ($proof["status"] ?? "") === "proven";
+    $steps = $proven ? json_decode($row["solution"] ?? "", true) : null;
     $response["candidates"][] = [
       "id" => (int)$row["id"],
       "createdAt" => $row["created_at"],
@@ -53,8 +58,9 @@ try {
       "opponentHeroName" => GeneratedCardName($row["opponent_hero"]),
       "status" => (int)$row["status"],
       "hasLine" => (bool)$row["has_line"],
-      "solution" => ($proof["status"] ?? "") === "proven" ? PuzzleSolution($row["solution"]) : null
-    ] + AnalyzePuzzlePosition($content, (int)$row["player"], $meta, $proof);
+      "solution" => $proven ? PuzzleSolution($row["solution"]) : null
+    ] + AnalyzePuzzlePosition($content, (int)$row["player"], $meta, $proof, CurrentPuzzleBaseline($row["baseline"]),
+      (int)$row["kind"], $steps);
   }
 } catch (Throwable $e) {
   error_log("GetPuzzleCandidates failed: " . $e->getMessage());

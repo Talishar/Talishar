@@ -199,6 +199,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid";
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
     $initialLoad->isPuzzle = IsPuzzleGame($gameName);
+    $initialLoad->puzzle = $initialLoad->isPuzzle ? PuzzleClientInfo($gameName) : null;
     $initialLoad->gameFormat = $format;
 
     if ($playerID == 1 || $playerID == 2) {
