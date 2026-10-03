@@ -304,3 +304,70 @@ class mutually_assured_destruction_red extends Card {
 		}
 	}
 }
+
+class seed extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$disease = match($this->cardID) {
+			"seed_bloodrot_blue" => "bloodrot_pox",
+			"seed_frailty_blue" => "frailty",
+			"seed_inertia_blue" => "inertia",
+			default => ""
+		};
+		$otherPlayer = $this->controller == 1 ? 2 : 1;
+		PlayAura($disease, $this->controller);
+		PlayAura($disease, $otherPlayer);
+		return "";
+	}
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialType() {
+		return "I";
+	}
+
+	function SpecialClass() {
+		return "ASSASSIN";
+	}
+
+	function SpecialBlock() {
+		return -2;
+	}
+}
+
+class seed_bloodrot_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "seed_bloodrot_blue";
+		$this->controller = $controller;
+		$this->baseCard = new seed($this->cardID, $this->controller);
+	}
+
+	// function SpecialName() {
+	// 	return "Seed Bloodrot";
+	// }
+}
+
+class seed_frailty_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "seed_frailty_blue";
+		$this->controller = $controller;
+		$this->baseCard = new seed($this->cardID, $this->controller);
+	}
+
+	// function SpecialName() {
+	// 	return "Seed Frailty";
+	// }
+}
+
+class seed_inertia_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "seed_inertia_blue";
+		$this->controller = $controller;
+		$this->baseCard = new seed($this->cardID, $this->controller);
+	}
+
+	// function SpecialName() {
+	// 	return "Seed Inertia";
+	// }
+}
