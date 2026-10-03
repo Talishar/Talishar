@@ -5585,6 +5585,7 @@ class arknight_descendancy_blue extends Card {
     global $dqVars;
     $life = intval($dqVars["buttonChoice"] ?? 0);
     if ($life <= 0) return;
+    WriteLog("Player $this->controller paid $life life to create $life " . CardLink("runechant") . "s!");
     PlayerLoseHealth($life, $this->controller, true); //Life paid as a cost, logged as life lost instead of opponent damage
     PlayAura("runechant", $this->controller, $life, effectSource:$this->cardID);
   }
