@@ -2117,17 +2117,40 @@ class razor_reflex_blue extends Card {
 }
 
 
-// class reckless_swing_blue extends Card {
+class reckless_swing_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "reckless_swing_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "reckless_swing_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $mainPlayer, $defPlayer;
+    if (ModifiedPowerValue($additionalCosts, $this->controller, "HAND", source:$this->cardID) >= 6) {
+      WriteLog(CardLink($this->cardID) . " deals 2 damage");
+      DamageTrigger($mainPlayer, 2, "DAMAGE", $this->cardID, $defPlayer);
+    }
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
+    $myHand = GetHand($this->controller);
+    if ($from == "HAND" && count($myHand) < 2) return true;
+    else if (count($myHand) < 1) return true;
+    return false;
+  }
+
+  function PayAdditionalCosts($from, $index="-") {
+    global $CS_AdditionalCosts;
+    $discarded = DiscardRandom($this->controller, $this->cardID);
+    if ($discarded == "") {
+      WriteLog("You do not have a card to discard. Reverting gamestate.", highlight: true);
+      RevertGamestate();
+      return;
+    }
+    SetClassState($this->controller, $CS_AdditionalCosts, $discarded);
+  }
+}
 
 
 // class refraction_bolters extends Card {
