@@ -650,10 +650,12 @@ function OUTAbilityCost($cardID)
       case "humble_red": case "humble_yellow": case "humble_blue":
         if(IsHeroAttackTarget())
         {
-          AddCurrentTurnEffect($cardID, $defPlayer);
-          AddNextTurnEffect($cardID, $defPlayer);
-          $char = &GetPlayerCharacter($defPlayer);
-          $char[1] = 3;
+          $defHero = new CharacterCard(0, $defPlayer);
+          if ($defHero->Status() != 4) {
+            AddCurrentTurnEffect($cardID, $defPlayer);
+            AddNextTurnEffect($cardID, $defPlayer);
+            $defHero->SetUsed(3);
+          }
         }
         break;
       case "wreck_havoc_red": case "wreck_havoc_yellow": case "wreck_havoc_blue":
