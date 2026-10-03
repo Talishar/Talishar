@@ -1080,7 +1080,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $otherPlayer = $playerID == 1 ? 2 : 1;
       $char = &GetPlayerCharacter($otherPlayer);
       if (!IsPlayerAI($otherPlayer)) {
-        AddDecisionQueue("YESNO", $otherPlayer, "if you want a <b>Quick Rematch</b>?");
+        QueueRematchPrompt($otherPlayer, "if you want a <b>Quick Rematch</b>?");
         AddDecisionQueue("NOPASS", $otherPlayer, "-", 1);
         AddDecisionQueue("QUICKREMATCH", $otherPlayer, "-", 1);
         AddDecisionQueue("OVER", $playerID, "-");
@@ -1124,7 +1124,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         StartRematch();
         break;
       }
-      AddDecisionQueue("YESNO", $otherPlayer, "if you want a <b>Rematch</b>?");
+      QueueRematchPrompt($otherPlayer, "if you want a <b>Rematch</b>?");
       AddDecisionQueue("REMATCH", $otherPlayer, "-");
       ProcessDecisionQueue();
       break;
@@ -1139,7 +1139,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         StartRematch(true);
         break;
       }
-      AddDecisionQueue("YESNO", $otherPlayer, "if you want to <b>Swap Heroes</b> and rematch?");
+      QueueRematchPrompt($otherPlayer, "if you want to <b>Swap Heroes</b> and rematch?");
       AddDecisionQueue("SWAPREMATCH", $otherPlayer, "-");
       ProcessDecisionQueue();
       break;
