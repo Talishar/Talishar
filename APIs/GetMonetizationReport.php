@@ -75,7 +75,7 @@ try {
 
   $daily = [];
   $emptyDay = ["views" => 0, "estMicros" => 0, "unpricedFills" => 0, "displayImpressions" => 0,
-    "videoImpressions" => 0, "videoStarts" => 0, "videoCompletes" => 0, "rewardedShows" => 0];
+    "videoImpressions" => 0, "videoViewable" => 0, "videoStarts" => 0, "videoCompletes" => 0, "rewardedShows" => 0];
   $mergeDaily = function ($rows) use (&$daily, $emptyDay) {
     foreach ($rows as $row) {
       $key = $row["day"] . "|" . $row["device"];
@@ -88,7 +88,8 @@ try {
       SUM(IF(placement = 'video' OR placement LIKE '%reward%', 0, GREATEST(prebid_micros, fill_bid_micros))) AS estMicros,
       SUM(IF(placement = 'video' OR placement LIKE '%reward%', 0, GREATEST(0, CAST(filled AS SIGNED) - CAST(priced_fills AS SIGNED)))) AS unpricedFills,
       SUM(IF(placement = 'video' OR placement LIKE '%reward%', 0, filled)) AS displayImpressions,
-      SUM(IF(placement = 'video', filled, 0)) AS videoImpressions
+      SUM(IF(placement = 'video', filled, 0)) AS videoImpressions,
+      SUM(IF(placement = 'video', viewable, 0)) AS videoViewable
     FROM ad_slot_stats WHERE day >= ? GROUP BY day, device", $since));
   $mergeDaily(AdReportRows($conn, "SELECT day, device,
       SUM(IF(placement = 'video' AND event = 'started', count, 0)) AS videoStarts,

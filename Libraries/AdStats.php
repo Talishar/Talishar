@@ -123,10 +123,12 @@ function ParseAdStatsPayload($payload)
     $requests = AdStatsInt($row[6], 500);
     $filled = AdStatsInt($row[7], $requests);
     $prebidWins = AdStatsInt($row[10], 500);
+    // A slot is often scrolled into view in a later batch than the one that
+    // counted its mount, so seen is not capped by this batch's mounts.
     $parsed["slots"][] = [
       $page, $placement, $device,
       $mounts,
-      AdStatsInt($row[4], $mounts),
+      AdStatsInt($row[4], 50),
       AdStatsInt($row[5], AD_STATS_MAX_VISIBLE_MS),
       $requests,
       $filled,
