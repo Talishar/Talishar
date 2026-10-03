@@ -3603,7 +3603,7 @@ function HasTower($cardID)
 function RequiresDiscard($cardID)
 {
   static $cards = [
-    "bloodrush_bellow_yellow" => 1, "reckless_swing_blue" => 1,
+    "bloodrush_bellow_yellow" => 1,
     "breakneck_battery_red" => 1, "breakneck_battery_yellow" => 1, "breakneck_battery_blue" => 1,
     "savage_feast_red" => 1, "savage_feast_yellow" => 1, "savage_feast_blue" => 1,
     "savage_swing_red" => 1, "savage_swing_yellow" => 1, "savage_swing_blue" => 1,

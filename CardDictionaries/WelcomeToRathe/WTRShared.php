@@ -180,11 +180,6 @@
           $rv = "Draws 2 cards and gains go again";
         }
         return $rv;
-      case "reckless_swing_blue":
-        if(ModifiedPowerValue($additionalCosts, $currentPlayer, "HAND", source:$cardID) >= 6) {
-          WriteLog(Cardlink($cardID, $cardID) . " deals 2 damage"); DamageTrigger($mainPlayer, 2, "DAMAGE", $cardID, $defPlayer);
-        }
-        return "";
       case "sand_sketched_plan_blue":
         AddDecisionQueue("FINDINDICES", $currentPlayer, "DECK");
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
