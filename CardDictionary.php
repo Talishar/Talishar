@@ -2845,10 +2845,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "resounding_courage_yellow":
     case "resounding_courage_blue":
       return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "WARRIOR", $mainPlayer) || !TalentContains($attackID, "LIGHT", $mainPlayer);
-    case "spoiled_skull":
-      $index = CombineSearches(SearchBanish($player, "AA"), SearchBanish($player, "A"));
-      $cleanIndexes = RemoveCardSameNames($player, $index, GetBanish($player));
-      return SearchCount($cleanIndexes) < 3;
     case "oblivion_blue":
       return NumRunechants($player) != 6;
     case "levia_redeemed":

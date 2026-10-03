@@ -2460,17 +2460,78 @@ class ironsong_versus extends Card {
 // }
 
 
-// class spoiled_skull extends Card {
+class spoiled_skull extends Card {
+	function __construct($controller) {
+		$this->cardID = "spoiled_skull";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "spoiled_skull";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$targets = explode(",", $target);
+		$rand = GetRandom(0, count($targets) - 1);
+		$Banish = new Banish($this->controller);
+		$chosenTarget = $Banish->FindCardUID(explode("-", $targets[$rand])[1] ?? "-");
+		if ($chosenTarget->Index() != -1) {
+			$chosenTarget->SetModifier("TT");
+			WriteLog("You may play " . CardLink($chosenTarget->ID()) . " this turn");
+		}
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	private
+	function GetTargets() {
+		if (SearchCurrentTurnEffects("amnesia_red", $this->controller)) return "";
+		$index = CombineSearches(SearchBanish($this->controller, "AA"), SearchBanish($this->controller, "A"));
+		$cleanIndexes = RemoveCardSameNames($this->controller, $index, GetBanish($this->controller));
+		return $cleanIndexes;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return SearchCount($this->GetTargets()) < 3;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->Banish();
+		AddDecisionQueue("FINDINDICES", $this->controller, "MULTIACTIONSBANISH");
+		AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "3-", 1);
+		AddDecisionQueue("APPENDLASTRESULT", $this->controller, "-3", 1);
+		AddDecisionQueue("MULTICHOOSEBANISH", $this->controller, "<-", 1);
+		Await($this->controller, $this->cardID, final:true);
+	}
+
+	function SpecificLogic() {
+		global $dqVars, $Stack;
+		$choices = $dqVars["LASTRESULT"];
+		$names = [];
+		$Layer = $Stack->TopLayer($this->cardID);
+		foreach(explode(",", $choices) as $choice) {
+			$BanishCard = new BanishCard($this->controller, $choice);
+			$name = CardName($BanishCard->CardID());
+			$cardLinks = [];
+			if (in_array($name, $names)) {
+				WriteLog("Two cards with the same name chosen, reverting gamestate!", highlight:true);
+				RevertGamestate();
+				return;
+			}
+			$names[] = $name;
+			WriteLog(CardLink($BanishCard->CardID()) . " targeted by " . CardLink($this->cardID));
+			$Layer->AddTarget("MYBANISH-" . $BanishCard->UniqueID());
+		}
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "A";
+	}
+
+	function AbilityCost() {
+		return 1;
+	}
+
+	function AbilityHasGoAgain($from) {
+		return true;
+	}
+}
 
 
 // class star_struck_yellow extends Card {

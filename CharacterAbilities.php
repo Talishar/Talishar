@@ -1307,9 +1307,6 @@ function EquipPayAdditionalCosts($cardIndex)
       BanishCardForPlayer((new CharacterCard($cardIndex, $currentPlayer))->CardID(), $currentPlayer, "EQUIP", "NA");
       BanishFromSoul($currentPlayer);
       break;
-    case "spoiled_skull":
-      BanishCardForPlayer((new CharacterCard($cardIndex, $currentPlayer))->CardID(), $currentPlayer, "EQUIP", "NA");
-      break;
     case "flail_of_agony":
       PlayerLoseHealth(1, $currentPlayer, true);
       --$character[$cardIndex + 5];

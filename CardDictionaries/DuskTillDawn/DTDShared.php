@@ -10,7 +10,6 @@ function DTDAbilityCost($cardID)
     case "v_for_valor_red": case "v_for_valor_yellow": case "v_for_valor_blue": return 1;
     case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow": return 0;
     case "hell_hammer": return 2;
-    case "spoiled_skull": return 1;
     case "flail_of_agony": return 0;
     case "grimoire_of_the_haunt": return 1;
     case "levia_redeemed": return 0;
@@ -34,7 +33,6 @@ function DTDAbilityType($cardID, $index = -1)
     case "v_for_valor_red": case "v_for_valor_yellow": case "v_for_valor_blue": return "AR";
     case "radiant_view": case "radiant_raiment": case "radiant_touch": case "radiant_flow": return "I";
     case "hell_hammer": return "AA";
-    case "spoiled_skull": return "A";
     case "flail_of_agony": return "AA";
     case "grimoire_of_the_haunt": return "I";
     case "levia_redeemed": return "A";
@@ -51,7 +49,6 @@ function DTDAbilityType($cardID, $index = -1)
 function DTDAbilityHasGoAgain($cardID)
 {
   switch($cardID) {
-    case "spoiled_skull": return true;
     default: return false;
   }
 }
@@ -290,13 +287,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "hell_hammer":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
-    case "spoiled_skull":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "MULTIACTIONSBANISH");
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "3-", 1);
-      AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-3", 1);
-      AddDecisionQueue("MULTICHOOSEBANISH", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SPOILEDSKULL", 1);
       return "";
     case "shaden_death_hydra_yellow":
       $numBD = SearchCount(SearchBanish($currentPlayer, "", "", -1, -1, "", "", true));
