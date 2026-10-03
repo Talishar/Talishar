@@ -565,6 +565,15 @@ function BotEquipmentBlockAllowed($playerID, $block, $incoming)
   return $incoming - $block <= 0 && BotStopHitValue() > 0;
 }
 
+function BotEquipmentDefenseCounters($cardID, $playerID)
+{
+  if (BlockCantBeModified($cardID)) return 0;
+  $index = FindCharacterIndex($playerID, $cardID);
+  if ($index == -1) return 0;
+  $character = &GetPlayerCharacter($playerID);
+  return min(0, intval($character[$index + 4] ?? 0));
+}
+
 function BotDefenderPowerBacklash($cardID, $playerID, $isEquipment)
 {
   global $mainPlayer, $CS_NumCharged;
@@ -635,13 +644,12 @@ function BotDefensePriority($cardID, $playerID, $zone)
   $incoming = max(0, intval(CachedTotalPower()) - intval(CachedTotalBlock()));
   if ($incoming == 0) return 0.0;
   $block = max(0, $block - BotDefenderPowerBacklash($cardID, $playerID, $isEquipment));
-  if ($block == 0) return 0.0;
 
   $isPuzzle = BotIsPuzzle();
-  if ($isEquipment) {
-    if (BotEquipmentBlockRequired()) return 100000.0 + $block;
-    if (!$isPuzzle && !BotEquipmentBlockAllowed($playerID, $block, $incoming)) return -1000000.0;
-  }
+  if ($isEquipment && !$isPuzzle) $block = max(0, $block + BotEquipmentDefenseCounters($cardID, $playerID));
+  if ($isEquipment && BotEquipmentBlockRequired()) return 100000.0 + $block;
+  if ($block == 0) return 0.0;
+  if ($isEquipment && !$isPuzzle && !BotEquipmentBlockAllowed($playerID, $block, $incoming)) return -1000000.0;
 
   $offenseLoss = 0.0;
   $opportunity = 0.0;
@@ -821,6 +829,9 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
 {
   $options = array_values(array_filter($options, fn($option) => $option !== ""));
   if (count($options) == 0) return "PASS";
+
+  $modeDefault = BotIsPuzzle() ? "" : AbilityModePassDefault();
+  if ($modeDefault !== "" && GamestateUnsanitize($modeDefault) != "Ability") return $modeDefault;
 
   $context = strtolower(str_replace("_", " ", strval($context)));
   $normalized = array_map(fn($option) => strtolower(trim(strval($option))), $options);
