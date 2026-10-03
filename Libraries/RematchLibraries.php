@@ -5,6 +5,13 @@ function ResetGameGUIDForRematch(): string
   return GenerateGameGUID();
 }
 
+function QueueRematchPrompt(int $player, string $question): void
+{
+  global $EffectContext;
+  $EffectContext = "-";
+  AddDecisionQueue("YESNO", $player, $question);
+}
+
 function StartRematch(bool $isSwapRematch = false): void
 {
   global $gameName, $inGameStatus, $GameStatus_Rematch, $GameStatus_SwapRematch;

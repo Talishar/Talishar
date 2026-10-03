@@ -1879,7 +1879,7 @@ function IsCharacterAbilityActive($player, $index, $checkGem = false)
 function PromptSnoozeSourceIndex($player)
 {
   global $turn, $EffectContext, $decisionQueue;
-  if (($turn[0] ?? "") != "YESNO" || ($turn[1] ?? 0) != $player || IsGameOver()) return -1;
+  if (($turn[0] ?? "") != "YESNO" || ($turn[1] ?? 0) != $player) return -1;
   $character = &GetPlayerCharacter($player);
   $characterCount = count($character);
   $characterPieces = CharacterPieces();
