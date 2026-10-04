@@ -343,9 +343,9 @@ class seed_bloodrot_blue extends Card {
 		$this->baseCard = new seed($this->cardID, $this->controller);
 	}
 
-	// function SpecialName() {
-	// 	return "Seed Bloodrot";
-	// }
+	function SpecialName() {
+		return "Seed Bloodrot";
+	}
 }
 
 class seed_frailty_blue extends Card {
@@ -355,9 +355,9 @@ class seed_frailty_blue extends Card {
 		$this->baseCard = new seed($this->cardID, $this->controller);
 	}
 
-	// function SpecialName() {
-	// 	return "Seed Frailty";
-	// }
+	function SpecialName() {
+		return "Seed Frailty";
+	}
 }
 
 class seed_inertia_blue extends Card {
@@ -367,7 +367,7 @@ class seed_inertia_blue extends Card {
 		$this->baseCard = new seed($this->cardID, $this->controller);
 	}
 
-	// function SpecialName() {
-	// 	return "Seed Inertia";
-	// }
+	function SpecialName() {
+		return "Seed Inertia";
+	}
 }

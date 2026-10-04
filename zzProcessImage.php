@@ -1,7 +1,8 @@
 <?php
-if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
 
-ProcessImage("valda_seismic_impact");
+ProcessImage("seed_bloodrot_blue");
+ProcessImage("seed_frailty_blue");
+ProcessImage("seed_inertia_blue");
 function ProcessImage($cardID)
 {
   $filename = "../WebpImages/en/" . $cardID . ".webp";
