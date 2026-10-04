@@ -371,3 +371,51 @@ class seed_inertia_blue extends Card {
 		return "Seed Inertia";
 	}
 }
+
+class prolonged_illness_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "prolonged_illness_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
+
+	function EffectDestroyedEffect($cardID, $controller, $effectIndex, $permIndex, $from) {
+		$Effect = new CurrentEffect($effectIndex);
+		$Disease = new AuraCard($permIndex, $controller);
+		if (!SubtypeContains($Disease->CardID(), "Disease")) return;
+		$diseaseName = GamestateSanitize(NameOverride($Disease->CardID(), $controller));
+		if ($diseaseName != "" && !DelimStringContains($Effect->AppliestoUniqueID(), $diseaseName)) {
+			$Effect->ApplyToUniqueID($diseaseName);
+			AddLayer("TRIGGER", $this->controller, $this->cardID, $controller, $Disease->CardID());
+		}
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		PlayAura($additionalCosts, $target, effectSource:$this->cardID);
+		WriteLog(CardLink($additionalCosts) . " has been prolonged!");
+	}
+
+	// function SpecialName() {
+	// 	return "Prolonged Disease";
+	// }
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialType() {
+		return "I";
+	}
+
+	function SpecialBlock() {
+		return 3;
+	}
+
+	function SpecialClass() {
+		return "ASSASSIN";
+	}
+}

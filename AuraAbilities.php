@@ -503,7 +503,7 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
 
 function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
 {
-  global $EffectContext;
+  global $EffectContext, $CurrentTurnEffects;
   $AuraCard = GetAuraObject($player, $location, $index);
   $cardID = $AuraCard->CardID();
   $card = GetClass($cardID, $player);
@@ -518,6 +518,12 @@ function AuraDestroyAbility($player, $index, $isToken, $location = "AURAS")
       break;
     default:
       break;
+  }
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
+    if ($card != "-")
+      $card->EffectDestroyedEffect($cardID, $player, $Effect->Index(), $index, $location);
   }
 }
 

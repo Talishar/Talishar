@@ -1370,4 +1370,10 @@ class Card {
       return $this->baseCard->BanishByEffect($cardID);
     return;
   }
+
+  function EffectDestroyedEffect($cardID, $controller, $effectIndex, $permIndex, $from) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "EffectDestroyedEffect"))
+      return $this->baseCard->EffectDestroyedEffect($cardID, $controller, $effectIndex, $permIndex, $from);
+    return;
+  }
 }
