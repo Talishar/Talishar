@@ -399,9 +399,9 @@ class prolonged_illness_blue extends Card {
 		WriteLog(CardLink($additionalCosts) . " has been prolonged!");
 	}
 
-	// function SpecialName() {
-	// 	return "Prolonged Disease";
-	// }
+	function SpecialName() {
+		return "Prolonged Disease";
+	}
 
 	function SpecialPitch() {
 		return 3;
