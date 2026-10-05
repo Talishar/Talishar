@@ -2385,17 +2385,46 @@ class gone_in_a_flash_red extends Card {
 // }
 
 
-// class sigil_of_aether_blue extends Card {
+class sigil_of_aether_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "sigil_of_aether_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "sigil_of_aether_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    SetArcaneTarget($this->controller, $this->cardID, 2);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "<-", 1);
+    Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, uniqueID:$uniqueID, final:true);
+  }
+
+  function BeginningActionPhaseAbility($index) {
+    $AuraCard = new AuraCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", $AuraCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    if ($additionalCosts == "DESTROY")
+      DestroyAuraUniqueID($this->controller, $uniqueID); //destroy sigils at start of action phase
+    else {
+      SetDamageSourceUID($uniqueID);
+      DealArcane(1, 2, "STATIC", "sigil_of_aether_blue", false, $this->controller, resolvedTarget:$target);
+    }
+  }
+
+  function ArcaneModifier(&$remove, $player, $index, $amount = false) {
+    return Amp(1, $remove, $player, $this->controller, $amount);
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    AddCurrentTurnEffect($source, $this->controller);
+    WriteLog(CardLink($source) . " Amps 1");
+  }
+}
 
 
 // class sigil_of_brilliance_yellow extends Card {

@@ -363,12 +363,6 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
     case "sigil_of_deadwood_blue":
       PlayAura("runechant", $player);
       break;
-    case "sigil_of_aether_blue":
-      SetArcaneTarget($player, $cardID, 2);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
-      AddDecisionQueue("ADDTRIGGER", $player, $cardID, 1);
-      // AddLayer("TRIGGER", $player, $cardID, "-", "Arcane", $uniqueID);
-      break;
     case "sigil_of_forethought_blue":
       PlayAura("ponder", $player);
       break;
@@ -941,7 +935,6 @@ function AuraBeginningActionPhaseAbilities(){
       case "sigil_of_lightning_blue":
       case "sigil_of_the_arknight_blue":
       case "sigil_of_deadwood_blue":
-      case "sigil_of_aether_blue":
       case "sigil_of_temporal_manipulation_blue":
       case "sigil_of_forethought_blue":
       case "sigil_of_cycles_blue":
