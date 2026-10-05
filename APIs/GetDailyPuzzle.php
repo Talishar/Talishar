@@ -16,7 +16,7 @@ $userId = IsUserLoggedIn() ? intval(LoggedInUser()) : 0;
 session_write_close();
 header('Content-Type: application/json');
 
-// Today's puzzle, the player's result, and, once their result is locked, the solution and the lesson behind it.
+// Today's puzzle, the player's result, and, once they have finished it, a solution and the hints.
 function DailyPuzzleResponse($userId, $autoSchedule)
 {
   $date = DailyPuzzleToday();
@@ -80,12 +80,8 @@ function DailyPuzzleResponse($userId, $autoSchedule)
       "rating" => intval($result["rating"])
     ];
     if ($result !== null && intval($result["finished"]) == 1) {
-      $response["lesson"] = [
-        "theme" => $info["theme"] ?? null,
-        "themeText" => $info["themeText"] ?? null,
-        "keyCards" => array_map("PuzzleStepCard", $info["keyCards"] ?? []),
+      $response["review"] = [
         "hints" => $info["hints"] ?? [],
-        "trick" => $info["trick"] ?? "",
         "solution" => PuzzleSolution(json_encode($info["solution"] ?? [])) ?? []
       ];
     }

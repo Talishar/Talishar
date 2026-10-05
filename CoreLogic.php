@@ -1927,6 +1927,15 @@ function IsPromptSnoozed($player)
   return false;
 }
 
+function ClearGemSnooze($player, $uniqueID)
+{
+  global $currentTurnEffects;
+  $effectPieces = CurrentTurnEffectsPieces();
+  for ($i = count($currentTurnEffects) - $effectPieces; $i >= 0; $i -= $effectPieces) {
+    if ($currentTurnEffects[$i] == "GEMSNOOZE" && $currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i + 2] == $uniqueID) RemoveCurrentTurnEffect($i);
+  }
+}
+
 function GetDieRoll($player)
 {
   global $CS_DieRoll;

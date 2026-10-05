@@ -193,10 +193,10 @@ function DailyPuzzleSchedule($conn, $from, $to)
       "heroName" => $info["heroName"] ?? "",
       "opponentHeroName" => $info["opponentHeroName"] ?? "",
       "life" => intval($info["life"] ?? 0),
+      "provenLife" => isset($info["provenLife"]) ? intval($info["provenLife"]) : null,
       "difficulty" => $info["difficulty"] ?? "",
       "interest" => isset($info["interest"]) ? intval($info["interest"]) : null,
       "auto" => !empty($info["auto"]),
-      "theme" => $info["theme"] ?? null,
       "bars" => $info["bars"] ?? null,
       "stats" => DailyPuzzleStats($conn, $row["puzzle_date"])
     ];

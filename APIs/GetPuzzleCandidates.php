@@ -44,7 +44,7 @@ try {
     $content = @gzuncompress($row["gamestate"]);
     if ($content === false) continue;
     $meta = json_decode($row["meta"] ?? "", true);
-    $proof = CurrentPuzzleProof($row["proof"]);
+    $proof = CurrentPuzzleProof($row["proof"], $row["kind"]);
     $proven = ($proof["status"] ?? "") === "proven";
     $steps = $proven ? json_decode($row["solution"] ?? "", true) : null;
     $response["candidates"][] = [

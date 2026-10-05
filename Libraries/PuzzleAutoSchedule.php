@@ -13,7 +13,7 @@ function PuzzleAutoAnalysis($row)
 {
   $content = @gzuncompress($row["gamestate"]);
   if ($content === false) return null;
-  $proof = CurrentPuzzleProof($row["proof"]);
+  $proof = CurrentPuzzleProof($row["proof"], $row["kind"]);
   $baseline = CurrentPuzzleBaseline($row["baseline"]);
   $proven = ($proof["status"] ?? "") === "proven";
   $steps = $proven ? json_decode($row["solution"] ?? "", true) : null;

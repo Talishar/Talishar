@@ -18,23 +18,19 @@ function BuildPuzzleSetup($conn, $candidateID, $mode)
   if ($kind == PUZZLE_KIND_SURVIVE) $mode = "survive";
   else if (!isset(PUZZLE_MODES[$mode]) || $mode === "survive") $mode = "lethal";
   $player = intval($row["player"]);
-  $proof = $verified["proof"] ?? CurrentPuzzleProof($row["proof"]);
+  $proof = $verified["proof"] ?? CurrentPuzzleProof($row["proof"], $row["kind"]);
   $baseline = $verified["baseline"] ?? CurrentPuzzleBaseline($row["baseline"]);
   $proven = ($proof["status"] ?? "") === "proven";
   $healths = explode(" ", trim(explode("\r\n", $content)[0]));
   $realLife = intval($healths[($kind == PUZZLE_KIND_SURVIVE ? $player : 3 - $player) - 1] ?? 0);
   $steps = $proven ? json_decode($row["solution"] ?? "", true) : null;
-  $lesson = $proven ? PuzzleLesson($kind, $steps, $baseline, $proof) : null;
+  $lesson = $proven ? PuzzleLesson($kind, $steps, $baseline) : null;
   $analysis = AnalyzePuzzlePosition($content, $player, json_decode($row["meta"] ?? "", true), $proof, $baseline, $kind, $steps);
 
   $bars = null;
   if ($mode === "damage") {
     [$line] = PuzzleCandidateLines($row);
     if ($line !== null) $bars = PuzzleDamageBars($content, $player, $line, $row["format"], $proof ?? []);
-    if ($lesson !== null) {
-      $lesson["trick"] = $lesson["themeText"];
-      if (count($lesson["keyCards"]) > 0) $lesson["trick"] .= " The key: " . PuzzleCardTokens($lesson["keyCards"]) . ".";
-    }
   }
   return [
     "candidateId" => intval($candidateID),
@@ -52,10 +48,8 @@ function BuildPuzzleSetup($conn, $candidateID, $mode)
     "score" => $analysis["score"],
     "interest" => $analysis["rubric"]["percent"],
     "theme" => $lesson["theme"] ?? null,
-    "themeText" => $lesson["themeText"] ?? null,
     "keyCards" => $lesson["keyCards"] ?? [],
     "hints" => $lesson["hints"] ?? [],
-    "trick" => $lesson["trick"] ?? "",
     "solution" => is_array($steps) ? $steps : [],
     "bars" => $bars
   ];
@@ -156,7 +150,6 @@ function CreatePuzzleGameFromSetup($setup, $row, $useruid, $userId, $daily = nul
     "player" => $player,
     "life" => intval($setup["life"]),
     "hints" => $setup["hints"] ?? [],
-    "trick" => $setup["trick"] ?? "",
     "bars" => $setup["bars"] ?? null,
     "hintsUsed" => min(count($setup["hints"] ?? []), intval($hintsUsed)),
     "tries" => 1
