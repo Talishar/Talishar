@@ -404,7 +404,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "just_a_nick_red-HIT":
       if (IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
-        $deck->BanishTop("Source-" . $attackID, banishedBy: $attackID);
+        $deck->BanishTop("Source-" . $attackID, banishedBy: $attackID, banisher:$mainPlayer);
       }
       break;
     case "maul_yellow-HIT":

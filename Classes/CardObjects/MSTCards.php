@@ -76,7 +76,7 @@ class art_of_desire extends BaseCard {
 	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
 		global $defPlayer;
 		$deck = new Deck($defPlayer);
-		$deck->BanishTop("Source-" . $this->cardID, banishedBy: $this->cardID);
+		$deck->BanishTop("Source-" . $this->cardID, banishedBy: $this->cardID, banisher:$this->controller);
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
