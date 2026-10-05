@@ -575,6 +575,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $index = $buttonInput;
       $charCard = new CharacterCard($index, $playerID);
       $charCard->ToggleGem();
+      if ($charCard->IsActive() == 1) ClearGemSnooze($playerID, $charCard->UniqueID());
       break;
     case 103: //Toggle my permanent Active
       $input = explode("-", $buttonInput, 3);
