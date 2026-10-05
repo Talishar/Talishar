@@ -200,6 +200,22 @@ class CharacterCard {
     return $cardID;
   }
 
+  function RemoveSubcard($cardID) {
+    if (!isset($this->pieces[$this->index + 10])) return;
+    $newSubCards = [];
+    foreach (explode(",", $this->Subcards()) as $subCard) {
+      if ($subCard == $cardID)
+        $cardID = "-";
+      else
+        $newSubCards[] = $subCard;
+    }
+    if (count($newSubCards) == 0)
+      $newSubCards = "-";
+    else
+      $newSubCards = implode(",", $newSubCards);
+    $this->pieces[$this->index+10] = $newSubCards;
+  }
+
   function UniqueID() {
     return $this->pieces[$this->index+11] ?? "-";
   }

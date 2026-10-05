@@ -4280,12 +4280,12 @@ function CharacterChooseSubcard($player, $index, $fromDQ = false, $count = 1, $i
       else AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, $chooseMultizoneData, $isSubsequent);
       AddDecisionQueue("MZOP", $player, "GETCARDINDEX", 1);
       if ($character[0] == "teklovossen_the_mechropotent") AddDecisionQueue("REMOVESOUL", $player, $index, 1);
-      AddDecisionQueue("REMOVESUBCARD", $player, $index, 1);
+      else AddDecisionQueue("REMOVESUBCARD", $player, $index, 1);
     } else {
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose " . $count . " subcards to $actionName from " . CardName($character[$index]));
       AddDecisionQueue("MULTICHOOSESUBCARDS", $player, $count . "-" . str_replace("CARDID-", "", $chooseMultizoneData) . "-" . $count);
       if ($character[0] == "teklovossen_the_mechropotent") AddDecisionQueue("REMOVESOUL", $player, $index);
-      AddDecisionQueue("REMOVESUBCARD", $player, $index);
+      else AddDecisionQueue("REMOVESUBCARD", $player, $index);
     }
   }
 }

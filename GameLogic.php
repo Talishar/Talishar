@@ -3300,7 +3300,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $selectedCards = array_values(array_filter($selectedCards, fn($cardID) => $cardID !== "" && $cardID !== "PASS"));
       for ($i = count($selectedCards) - 1; $i >= 0; $i--) {
         $soulIndex = SearchSoulForIndex($selectedCards[$i], $player);
-        if ($soulIndex != -1) RemoveSoul($player, $soulIndex);
+        if ($soulIndex != -1) $lastResult = RemoveSoul($player, $soulIndex);
       }
       return $lastResult;
     case "REMOVECOUNTERAURAORDESTROY":

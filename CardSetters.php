@@ -587,8 +587,7 @@ function BanishFromSoul($player, $index = 0)
 function BanishFromSpecificSoul(&$soul, $player, $index = 0)
 {
   if (count($soul) == 0) return;
-  $cardID = $soul[$index];
-  array_splice($soul, $index, 1);
+  $cardID = RemoveSoul($player, $index);
   BanishCardForPlayer($cardID, $player, "SOUL", "SOUL");
 }
 
@@ -598,6 +597,11 @@ function RemoveSoul($player, $index)
     $soul = &GetSoul($player);
     $cardID = $soul[$index];
     array_splice($soul, $index, 1);
+    $Hero = new CharacterCard(0, $player);
+    if ($Hero->CardID() == "teklovossen_the_mechropotent") {
+      // teklo's soul is also tracked as subcards
+      $Hero->RemoveSubcard($cardID);
+    }
     return $cardID;
   }
   else {

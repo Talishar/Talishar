@@ -694,6 +694,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $numCounters = intval($theirCharacter[$i + 2] ?? 0);
     if ($numCounters > 0) $counters = $numCounters;
     $counters = ($theirCharacter[$i + 1] ?? 0) != 0 ? $counters : 0;
+    if ($theirCharacter[$i] == "teklovossen_the_mechropotent") {
+      // overwrite the counters on teklo to just track the number of cards in his soul
+      $Hero = new CharacterCard($i, $otherPlayer);
+      $counters = count(explode(",", $Hero->Subcards()));
+    }
     // hide opponent's equipment while deciding on adaptive stuff
     $facing = ($i != 0 && $hideOpponentEquipment) ? "DOWN" : ($theirCharacter[$i + 12] ?? "-");
     if($isGameOver && isset($theirCharacter[$i + 12])) {
@@ -915,6 +920,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $myChar = $myCharacter[$i] ?? "-";
     if (($myCharacter[$i + 1] ?? 0) == 4) $myChar = "DUMMYDISHONORED";
     if (($myCharacter[$i + 2] ?? 0) > 0) $counters = $myCharacter[$i + 2];
+    if ($myCharacter[$i] == "teklovossen_the_mechropotent") {
+      // overwrite the counters on teklo to just track the number of cards in his soul
+      $Hero = new CharacterCard($i, $playerID);
+      $counters = count(explode(",", $Hero->Subcards()));
+    }
     $goldOrPitchChoice = isset($goldOrPitchChoices["MYCHAR-$i"]);
     $playable = $playerID == $currentPlayer && ($myCharacter[$i + 1] ?? 0) > 0
       && ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myChar, $turnPhase, "CHAR", $i, $restriction));
