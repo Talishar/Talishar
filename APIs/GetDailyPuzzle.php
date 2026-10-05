@@ -17,7 +17,7 @@ session_write_close();
 header('Content-Type: application/json');
 
 // Today's puzzle, the player's result, and, once their result is locked, the solution and the lesson behind it.
-function DailyPuzzleResponse($userId)
+function DailyPuzzleResponse($userId, $autoSchedule)
 {
   $date = DailyPuzzleToday();
   $tomorrow = (new DateTimeImmutable($date, new DateTimeZone("UTC")))->modify("+1 day");
@@ -35,6 +35,10 @@ function DailyPuzzleResponse($userId)
   try {
     EnsureDailyPuzzleTables($conn);
     $daily = LoadDailyPuzzle($conn, $date);
+    if ($daily === null && $autoSchedule) {
+      AutoScheduleDailyPuzzle($conn, $date);
+      $daily = LoadDailyPuzzle($conn, $date);
+    }
     if ($daily === null) return $response;
     $info = $daily["info"];
     $stats = DailyPuzzleStats($conn, $date);
@@ -96,4 +100,11 @@ function DailyPuzzleResponse($userId)
   }
 }
 
-echo json_encode(DailyPuzzleResponse($userId));
+// Nobody scheduled today's puzzle: the first request of the day picks one, which needs the engine.
+$autoSchedule = DailyPuzzleMissing(DailyPuzzleToday());
+if ($autoSchedule) {
+  @set_time_limit(60);
+  include_once __DIR__ . '/../Libraries/PuzzleEngine.php';
+  include_once __DIR__ . '/../Libraries/PuzzleAutoSchedule.php';
+}
+echo json_encode(DailyPuzzleResponse($userId, $autoSchedule));

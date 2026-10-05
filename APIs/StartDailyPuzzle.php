@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 include_once __DIR__ . '/../Libraries/PuzzleEngine.php';
 include_once __DIR__ . '/../Libraries/PuzzleDaily.php';
+include_once __DIR__ . '/../Libraries/PuzzleAutoSchedule.php';
 
 // The player's unfinished official game for the day, if it is still there.
 function DailyPuzzleResumeGame($gameName, $userId)
@@ -54,6 +55,10 @@ function StartDailyPuzzleResponse($userId, $useruid)
     EnsureDailyPuzzleTables($conn);
     $date = DailyPuzzleToday();
     $daily = LoadDailyPuzzle($conn, $date);
+    if ($daily === null) {
+      AutoScheduleDailyPuzzle($conn, $date);
+      $daily = LoadDailyPuzzle($conn, $date);
+    }
     if ($daily === null) {
       http_response_code(404);
       return ["error" => "There is no puzzle today."];

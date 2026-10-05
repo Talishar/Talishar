@@ -50,6 +50,7 @@ function BuildPuzzleSetup($conn, $candidateID, $mode)
     "proven" => $proven,
     "difficulty" => $analysis["difficulty"],
     "score" => $analysis["score"],
+    "interest" => $analysis["rubric"]["percent"],
     "theme" => $lesson["theme"] ?? null,
     "themeText" => $lesson["themeText"] ?? null,
     "keyCards" => $lesson["keyCards"] ?? [],

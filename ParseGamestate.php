@@ -455,6 +455,24 @@ function GetAvailableUndoSteps()
   return $availableSteps;
 }
 
+function UndoComparableGamestate($gamestate)
+{
+  $lines = explode("\r\n", $gamestate);
+  $links = intval($lines[56] ?? 0);
+  foreach ([11, 18, 29, 36, 63 + $links, 66 + $links, 67 + $links, 68 + $links, 70 + $links] as $index) unset($lines[$index]);
+  return implode("\r\n", $lines);
+}
+
+function UndoStepsBack()
+{
+  global $filepath;
+  $newest = @file_get_contents($filepath . "gamestateBackup_0.txt");
+  $current = @file_get_contents($filepath . "gamestate.txt");
+  if ($newest === false || $current === false) return 1;
+  if (UndoComparableGamestate($newest) !== UndoComparableGamestate($current)) return 1;
+  return file_exists($filepath . "gamestateBackup_1.txt") ? 2 : 0;
+}
+
 function ResetUndoBackupsForRematch()
 {
   global $filepath;

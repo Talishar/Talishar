@@ -15,7 +15,7 @@ RequireModeratorSession();
 session_write_close();
 
 include_once __DIR__ . '/../Libraries/PuzzleEngine.php';
-include_once __DIR__ . '/../Libraries/PuzzleDaily.php';
+include_once __DIR__ . '/../Libraries/PuzzleAutoSchedule.php';
 
 const PUZZLE_SCHEDULE_PAST_DAYS = 14;
 const PUZZLE_SCHEDULE_FUTURE_DAYS = 60;
@@ -41,6 +41,7 @@ function SchedulePuzzleResponse($request)
     EnsurePuzzleCandidatesTable($conn);
     EnsureDailyPuzzleTables($conn);
     $action = $_SERVER['REQUEST_METHOD'] === 'POST' ? (string)($request["action"] ?? "") : "list";
+    if ($action === "list" && LoadDailyPuzzle($conn, DailyPuzzleToday()) === null) AutoScheduleDailyPuzzle($conn, DailyPuzzleToday());
     if ($action === "schedule") {
       $date = (string)($request["date"] ?? "");
       if ($date === "") $date = NextFreeDailyPuzzleDate($conn, DailyPuzzleToday());
@@ -69,7 +70,8 @@ function SchedulePuzzleResponse($request)
         DailyPuzzleQuery($conn, "DELETE FROM puzzle_daily WHERE puzzle_date = ?", "s", $date);
         $stillUsed = DailyPuzzleQuery($conn, "SELECT 1 FROM puzzle_daily WHERE candidate_id = ? LIMIT 1", "i", $daily["candidate_id"]);
         if (count($stillUsed) == 0) {
-          DailyPuzzleQuery($conn, "UPDATE puzzle_candidates SET status = ? WHERE id = ?", "ii", PUZZLE_CANDIDATE_NEW, $daily["candidate_id"]);
+          $status = empty($daily["info"]["auto"]) ? PUZZLE_CANDIDATE_NEW : PUZZLE_CANDIDATE_REJECTED;
+          DailyPuzzleQuery($conn, "UPDATE puzzle_candidates SET status = ? WHERE id = ?", "ii", $status, $daily["candidate_id"]);
         }
       }
     } else if ($action !== "list") {
