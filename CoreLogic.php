@@ -3039,7 +3039,7 @@ function TriggerOrderIrrelevant($cardIDs)
     $commuting = [];
     $pairs = [
       ["BLOODDEBT", "DECAY"], ["BLOODDEBT", "frailty"], ["BLOODDEBT", "frostbite"], ["BLOODDEBT", "INTIMIDATE"],
-      ["danse_macabre", "vox_necropolis"], ["danse_macabre", "DECAY"],
+      ["danse_macabre", "vox_necropolis"],
       ["malice_domina_of_the_dead", "restless_templar_red"], ["malice_domina_of_the_dead", "mark_of_ushering_blue"],
       ["malice_domina_of_the_dead", "restless_outlaw_red"], ["mark_of_ushering_blue", "restless_templar_red"],
       ["mark_of_ushering_blue", "restless_outlaw_red"], ["restless_outlaw_red", "restless_templar_red"],
