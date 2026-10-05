@@ -63,6 +63,21 @@ function LoadDailyPuzzle($conn, $date)
   return $rows[0];
 }
 
+function DailyPuzzleMissing($date)
+{
+  $conn = GetDBConnection(DBL_GET_DAILY_PUZZLE);
+  if (!$conn) return false;
+  try {
+    EnsureDailyPuzzleTables($conn);
+    return LoadDailyPuzzle($conn, $date) === null;
+  } catch (Throwable $e) {
+    error_log("DailyPuzzleMissing failed: " . $e->getMessage());
+    return false;
+  } finally {
+    mysqli_close($conn);
+  }
+}
+
 function DailyPuzzleNumber($conn, $date)
 {
   return intval(DailyPuzzleQuery($conn, "SELECT COUNT(*) AS number FROM puzzle_daily WHERE puzzle_date <= ?", "s", $date)[0]["number"] ?? 0);
@@ -179,6 +194,8 @@ function DailyPuzzleSchedule($conn, $from, $to)
       "opponentHeroName" => $info["opponentHeroName"] ?? "",
       "life" => intval($info["life"] ?? 0),
       "difficulty" => $info["difficulty"] ?? "",
+      "interest" => isset($info["interest"]) ? intval($info["interest"]) : null,
+      "auto" => !empty($info["auto"]),
       "theme" => $info["theme"] ?? null,
       "bars" => $info["bars"] ?? null,
       "stats" => DailyPuzzleStats($conn, $row["puzzle_date"])

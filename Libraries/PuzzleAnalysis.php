@@ -4,6 +4,7 @@ include_once __DIR__ . "/../Constants.php";
 include_once __DIR__ . "/../GeneratedCode/GeneratedCardDictionaries.php";
 require_once __DIR__ . "/GamestateCompatibility.php";
 include_once __DIR__ . "/PuzzleLesson.php";
+include_once __DIR__ . "/PuzzleRubric.php";
 
 const PUZZLE_WEAPON_COST = 1;
 const PUZZLE_MAX_ATTACKS_SEARCHED = 10;
@@ -244,6 +245,9 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof, $baseline = nul
   $penalties = ["LOW_PRESSURE" => 0.8, "ONE_CARD" => 0.5, "FEW_OPTIONS" => 0.6];
   foreach ($flags as $flag) $score *= $penalties[$flag["code"]] ?? 1;
   $score = (int)round($score);
+  $lesson = PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_LETHAL, $steps, $baseline, $proof));
+  $filtered = $gap <= 0 || ($bot["won"] ?? false);
+  $interest = PuzzleLethalInterest($proven, $gap, $bot, $life, $margin, $spare, $killLength, $options, $needed, $lesson, $steps, $filtered);
 
   return [
     "kind" => "lethal",
@@ -270,10 +274,12 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof, $baseline = nul
     "estimatedAttacks" => $line["attacks"],
     "gap" => $gap,
     "bot" => $bot,
-    "filtered" => $gap <= 0 || ($bot["won"] ?? false),
-    "lesson" => PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_LETHAL, $steps, $baseline, $proof)),
+    "filtered" => $filtered,
+    "lesson" => $lesson,
     "realTurn" => is_array($meta) ? $meta : null,
     "score" => $score,
+    "interest" => $interest["percent"],
+    "rubric" => $interest,
     "difficulty" => PuzzleDifficulty($score),
     "flags" => $flags
   ];
@@ -313,6 +319,9 @@ function AnalyzeSurvivePosition($content, $player, $meta, $proof, $baseline, $st
   $score = 100 * (0.6 * $botScore + 0.25 * $gapScore + 0.15 * $optionScore);
   if ($options <= 2) $score *= 0.6;
   $score = (int)round($score);
+  $lesson = PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_SURVIVE, $steps, $baseline, $proof));
+  $filtered = $bot["won"] ?? false;
+  $interest = PuzzleSurviveInterest($proven, $gap, $bot, $options, $incoming, $lesson, $steps, $filtered);
 
   return [
     "kind" => "survive",
@@ -339,10 +348,12 @@ function AnalyzeSurvivePosition($content, $player, $meta, $proof, $baseline, $st
     "estimatedAttacks" => intval($meta["cardsPlayed"] ?? 0),
     "gap" => $gap,
     "bot" => $bot,
-    "filtered" => $bot["won"] ?? false,
-    "lesson" => PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_SURVIVE, $steps, $baseline, $proof)),
+    "filtered" => $filtered,
+    "lesson" => $lesson,
     "realTurn" => is_array($meta) ? $meta : null,
     "score" => $score,
+    "interest" => $interest["percent"],
+    "rubric" => $interest,
     "difficulty" => PuzzleDifficulty($score),
     "flags" => $flags
   ];
