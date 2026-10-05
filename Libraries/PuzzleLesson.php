@@ -98,21 +98,20 @@ function PuzzleFirstMove($steps, $defending)
   return null;
 }
 
-// Theme, key cards, three hints of growing strength and the explanation shown once the puzzle is over.
+// Theme, key cards and three hints of growing strength.
 // The key cards are what the real line used that the bot did not.
-function PuzzleLesson($kind, $steps, $baseline, $proof)
+function PuzzleLesson($kind, $steps, $baseline)
 {
   $steps = is_array($steps) ? $steps : [];
   if (count($steps) == 0) return null;
   $real = $baseline["real"] ?? null;
   $bot = $baseline["bot"] ?? null;
-  $life = intval($proof["life"] ?? ($baseline["life"] ?? 0));
   return $kind == PUZZLE_KIND_SURVIVE
-    ? PuzzleSurviveLesson($steps, $real, $bot, $life)
-    : PuzzleLethalLesson($steps, $real, $bot, $life);
+    ? PuzzleSurviveLesson($steps, $real, $bot)
+    : PuzzleLethalLesson($steps, $real, $bot);
 }
 
-function PuzzleLethalLesson($steps, $real, $bot, $life)
+function PuzzleLethalLesson($steps, $real, $bot)
 {
   $played = $real["played"] ?? PuzzleStepCards($steps, ["PLAY", "ACTIVATE"]);
   $botPlayed = $bot["played"] ?? [];
@@ -153,13 +152,10 @@ function PuzzleLethalLesson($steps, $real, $bot, $life)
   }
 
   $hints = array_values(array_filter([PUZZLE_THEMES[$theme], $keyHint, PuzzleFirstMove($steps, false)]));
-  $trick = PUZZLE_THEMES[$theme];
-  if (count($themeCards) > 0) $trick .= " The key: " . PuzzleCardTokens($themeCards) . ".";
-  if ($bot !== null && empty($bot["won"])) $trick .= " The bot only dealt " . intval($bot["damage"] ?? 0) . " of the $life you needed.";
-  return ["theme" => $theme, "themeText" => PUZZLE_THEMES[$theme], "keyCards" => $themeCards, "hints" => $hints, "trick" => $trick];
+  return ["theme" => $theme, "themeText" => PUZZLE_THEMES[$theme], "keyCards" => $themeCards, "hints" => $hints];
 }
 
-function PuzzleSurviveLesson($steps, $real, $bot, $life)
+function PuzzleSurviveLesson($steps, $real, $bot)
 {
   $defense = array_merge($real["blocked"] ?? PuzzleStepCards($steps, ["BLOCK"]), $real["played"] ?? PuzzleStepCards($steps, ["PLAY", "ACTIVATE"]));
   $botDefense = array_merge($bot["blocked"] ?? [], $bot["played"] ?? []);
@@ -192,8 +188,5 @@ function PuzzleSurviveLesson($steps, $real, $bot, $life)
     $keyHint = (count($themeCards) == 1 ? "The key card is " : "The key cards are ") . PuzzleCardTokens($themeCards) . ".";
   }
   $hints = array_values(array_filter([PUZZLE_THEMES[$theme], $keyHint, PuzzleFirstMove($steps, true)]));
-  $trick = PUZZLE_THEMES[$theme];
-  if (count($themeCards) > 0) $trick .= " The key: " . PuzzleCardTokens($themeCards) . ".";
-  if ($bot !== null && empty($bot["won"])) $trick .= " Blocking greedily, the bot took " . intval($bot["damage"] ?? 0) . " damage at $life life and died.";
-  return ["theme" => $theme, "themeText" => PUZZLE_THEMES[$theme], "keyCards" => $themeCards, "hints" => $hints, "trick" => $trick];
+  return ["theme" => $theme, "themeText" => PUZZLE_THEMES[$theme], "keyCards" => $themeCards, "hints" => $hints];
 }

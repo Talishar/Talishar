@@ -167,6 +167,14 @@ function PuzzleLessonView($lesson)
   return $lesson;
 }
 
+function PuzzleProofView($proof)
+{
+  if (!is_array($proof)) return null;
+  if (isset($proof["blocks"])) $proof["spare"] = array_map("PuzzleStepCard", array_merge(...array_values($proof["blocks"])));
+  unset($proof["blocks"]);
+  return $proof;
+}
+
 function PuzzleDifficulty($score)
 {
   return $score >= 70 ? "hard" : ($score >= 45 ? "medium" : "easy");
@@ -245,7 +253,7 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof, $baseline = nul
   $penalties = ["LOW_PRESSURE" => 0.8, "ONE_CARD" => 0.5, "FEW_OPTIONS" => 0.6];
   foreach ($flags as $flag) $score *= $penalties[$flag["code"]] ?? 1;
   $score = (int)round($score);
-  $lesson = PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_LETHAL, $steps, $baseline, $proof));
+  $lesson = PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_LETHAL, $steps, $baseline));
   $filtered = $gap <= 0 || ($bot["won"] ?? false);
   $interest = PuzzleLethalInterest($proven, $gap, $bot, $life, $margin, $spare, $killLength, $options, $needed, $lesson, $steps, $filtered);
 
@@ -268,7 +276,7 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof, $baseline = nul
     "opponentBlock" => $block,
     "needed" => $needed,
     "spareCards" => $spare,
-    "proof" => is_array($proof) ? $proof : null,
+    "proof" => PuzzleProofView($proof),
     "estimatedDamage" => $line["damage"],
     "estimatedThrough" => $line["through"],
     "estimatedAttacks" => $line["attacks"],
@@ -319,7 +327,7 @@ function AnalyzeSurvivePosition($content, $player, $meta, $proof, $baseline, $st
   $score = 100 * (0.6 * $botScore + 0.25 * $gapScore + 0.15 * $optionScore);
   if ($options <= 2) $score *= 0.6;
   $score = (int)round($score);
-  $lesson = PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_SURVIVE, $steps, $baseline, $proof));
+  $lesson = PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_SURVIVE, $steps, $baseline));
   $filtered = $bot["won"] ?? false;
   $interest = PuzzleSurviveInterest($proven, $gap, $bot, $options, $incoming, $lesson, $steps, $filtered);
 
@@ -342,7 +350,7 @@ function AnalyzeSurvivePosition($content, $player, $meta, $proof, $baseline, $st
     "opponentBlock" => 0,
     "needed" => $incoming,
     "spareCards" => null,
-    "proof" => is_array($proof) ? $proof : null,
+    "proof" => PuzzleProofView($proof),
     "estimatedDamage" => $incoming,
     "estimatedThrough" => max(0, $incoming - $defense),
     "estimatedAttacks" => intval($meta["cardsPlayed"] ?? 0),

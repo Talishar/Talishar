@@ -59,7 +59,7 @@ function PuzzleGoal($info)
       }
       return $goal;
     case "survive":
-      return "survive this turn. You are at $life life, and your opponent attacks exactly like they did in the real game.";
+      return "survive this turn. You are at $life life.";
     default:
       return "win this turn. Your opponent is at $life life.";
   }
@@ -216,7 +216,6 @@ function PuzzleGameOver($winner)
     if ($info["mode"] === "lethal" && $solved) WriteLog("🧩 Puzzle solved!", highlight: true, highlightColor: "darkgreen");
     if ($info["mode"] === "survive" && !$solved) WriteLog("🧩 Puzzle failed: you did not survive the turn.", highlight: true);
   }
-  if (!empty($info["trick"])) WriteLog("🧩 The trick: " . $info["trick"], highlight: true, highlightColor: "#2a3f5a");
   if (!empty($info["finished"])) return;
   $info["finished"] = true;
   WritePuzzleInfo($gameName, $info);

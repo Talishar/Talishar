@@ -5,7 +5,9 @@ include_once __DIR__ . "/PuzzleGame.php";
 include_once __DIR__ . "/FormatCodes.php";
 
 const PUZZLE_PROOF_VERSION = 2;
+const PUZZLE_SURVIVE_PROOF_VERSION = 3;
 const PUZZLE_PROOF_MAX_RUNS = 6;
+const PUZZLE_SPARE_RUNS = 8;
 const PUZZLE_EXTRA_PASSES = 12;
 const PUZZLE_SAFE_PASS_PHASES = ["A" => true, "D" => true, "INSTANT" => true];
 const PUZZLE_FLOW_PHASES = ["M" => true, "A" => true, "D" => true, "B" => true, "INSTANT" => true];
@@ -387,7 +389,7 @@ function PuzzleTurnCards($cardLogCounts)
   return $cards;
 }
 
-function PuzzleRunResult($player, $outcome, $unused, $steps, $cardLogCounts)
+function PuzzleRunResult($player, $outcome, $unused, $steps, $cardLogCounts, $blockSteps = [])
 {
   global $mainPlayer;
   ParseGamestate();
@@ -404,17 +406,97 @@ function PuzzleRunResult($player, $outcome, $unused, $steps, $cardLogCounts)
     "unused" => $unused,
     "stats" => PuzzleTurnMeta($mainPlayer, 3 - $mainPlayer),
     "steps" => $steps,
-    "cards" => PuzzleTurnCards($cardLogCounts)
+    "cards" => PuzzleTurnCards($cardLogCounts),
+    "spare" => PuzzleSpareBlockers($player, $blockSteps, intval(GetHealth($player)))
   ];
 }
 
-function PuzzleDriveLine($player, $line, $cardLogCounts = [])
+function PuzzleLegalBlockers($player)
+{
+  $blockers = [];
+  foreach (GetHand($player) as $cardID) {
+    if (IsPlayable($cardID, "B", "HAND", -1, $restriction, $player)) $blockers[] = [$cardID, intval(BlockValue($cardID, $player, "HAND", false))];
+  }
+  $character = GetPlayerCharacter($player);
+  for ($i = CharacterPieces(), $count = count($character); $i < $count; $i += CharacterPieces()) {
+    if (intval($character[$i + 1]) == 0 || !TypeContains($character[$i], "E", $player)) continue;
+    if (IsPlayable($character[$i], "B", "CHAR", $i, $restriction, $player)) {
+      $blockers[] = [$character[$i], intval(BlockValue($character[$i], $player, "EQUIP", false))];
+    }
+  }
+  return array_values(array_filter($blockers, fn($blocker) => $blocker[1] > 0));
+}
+
+function PuzzleBlockCommand($player, $cardID)
+{
+  $index = array_search($cardID, GetHand($player), true);
+  if ($index !== false) return ["27", $cardID, (string)$index, 0, []];
+  $character = GetPlayerCharacter($player);
+  for ($i = CharacterPieces(), $count = count($character); $i < $count; $i += CharacterPieces()) {
+    if ($character[$i] === $cardID) return ["3", "", (string)$i, 0, []];
+  }
+  return null;
+}
+
+function PuzzleSpareBlockers($player, $blockSteps, $finalHealth)
+{
+  $log = GetCardTurnLog($player);
+  $spare = [];
+  foreach ($blockSteps as $step => $blockStep) {
+    $damage = $blockStep["health"] - ($blockSteps[$step + 1]["health"] ?? $finalHealth);
+    if ($damage <= 0) continue;
+    $used = [];
+    foreach (array_slice($log, $blockStep["log"]) as $entry) {
+      $type = (string)($entry[2] ?? "");
+      if ($type === "P" || $type === "B" || !isset(PUZZLE_UNPLAYED_LOG_TYPES[$type])) $used[$entry[1]] = ($used[$entry[1]] ?? 0) + 1;
+    }
+    foreach ($blockStep["blockers"] as [$cardID, $value]) {
+      if (($used[$cardID] ?? 0) > 0) --$used[$cardID];
+      else $spare[] = [$step, $cardID, min($value, $damage)];
+    }
+  }
+  return $spare;
+}
+
+function PuzzleIsPrompt($phase)
+{
+  return $phase !== "" && $phase !== "P" && $phase !== "OVER" && !isset(PUZZLE_FLOW_PHASES[$phase]);
+}
+
+function PuzzleBotAnswer($player)
+{
+  include_once __DIR__ . "/PuzzleScript.php";
+  PuzzleBeginStep($player);
+  PuzzleScriptFallback($player);
+  PuzzleFinishStep();
+  return explode("\r\n", (string)($GLOBALS["lastWrittenGamestate"] ?? ""));
+}
+
+function PuzzleDriveLine($player, $line, $cardLogCounts = [], $blocks = [])
 {
   $state = PuzzleStep($player);
   $passPhases = PUZZLE_SAFE_PASS_PHASES + ($GLOBALS["mainPlayer"] != $player ? ["B" => true] : []);
   $outcome = null;
   $steps = [];
   $unused = 0;
+  $blockSteps = [];
+  $lastSignature = null;
+  $answerPrompts = count($blocks) > 0;
+  $atDecision = function () use ($player, $blocks, &$state, &$steps, &$blockSteps, &$lastSignature) {
+    if (IsGameOver() || intval($GLOBALS["currentPlayer"]) != $player) return;
+    $signature = PuzzleStateSignature($state);
+    $phase = explode("|", $signature)[0];
+    if (PuzzleIsPrompt($phase) || $phase === "P") return;
+    $newStep = $phase === "B" && $signature !== $lastSignature;
+    $lastSignature = $signature;
+    if (!$newStep) return;
+    $blockSteps[] = ["health" => intval(explode(" ", trim($state[0] ?? ""))[$player - 1] ?? 0),
+      "log" => count(GetCardTurnLog($player)), "blockers" => PuzzleLegalBlockers($player)];
+    foreach ($blocks[count($blockSteps) - 1] ?? [] as $cardID) {
+      $command = PuzzleBlockCommand($player, $cardID);
+      if ($command !== null) $state = PuzzleStep($player, $command, $steps);
+    }
+  };
   foreach ($line as $index => $command) {
     if (IsGameOver()) {
       $unused = count(array_filter(array_slice($line, $index), fn($remaining) => $remaining[0] != 99));
@@ -427,6 +509,8 @@ function PuzzleDriveLine($player, $line, $cardLogCounts = [])
     }
     for ($passes = 0; ; ++$passes) {
       if (IsGameOver()) break;
+      $atDecision();
+      if (IsGameOver()) break;
       if (intval($GLOBALS["currentPlayer"]) != $player) {
         $outcome = "stuck at input " . ($index + 1);
         break 2;
@@ -436,8 +520,12 @@ function PuzzleDriveLine($player, $line, $cardLogCounts = [])
         $state = PuzzleStep($player, $command, $steps);
         break;
       }
-      if ($mode == 99 || !isset(PUZZLE_FLOW_PHASES[explode("|", $command[5])[0]])) break;
       $phase = explode("|", $signature)[0];
+      if ($answerPrompts && PuzzleIsPrompt($phase) && $passes < PUZZLE_EXTRA_PASSES) {
+        $state = PuzzleBotAnswer($player);
+        continue;
+      }
+      if ($mode == 99 || !isset(PUZZLE_FLOW_PHASES[explode("|", $command[5])[0]])) break;
       if (!isset($passPhases[$phase]) || $passes >= PUZZLE_EXTRA_PASSES) {
         $outcome = "diverged at input " . ($index + 1) . " ($signature, expected " . $command[5] . ")";
         break 2;
@@ -446,11 +534,14 @@ function PuzzleDriveLine($player, $line, $cardLogCounts = [])
     }
   }
   for ($passes = 0; $outcome === null && $passes < PUZZLE_EXTRA_PASSES && !IsGameOver(); ++$passes) {
-    if (intval($GLOBALS["currentPlayer"]) != $player) break;
-    if (!isset($passPhases[explode(" ", trim($state[42] ?? ""))[0]])) break;
-    $state = PuzzleStep($player, ["99", "", "", 0, []]);
+    $atDecision();
+    if (IsGameOver() || intval($GLOBALS["currentPlayer"]) != $player) break;
+    $phase = explode(" ", trim($state[42] ?? ""))[0];
+    if (isset($passPhases[$phase])) $state = PuzzleStep($player, ["99", "", "", 0, []]);
+    else if ($answerPrompts && PuzzleIsPrompt($phase)) $state = PuzzleBotAnswer($player);
+    else break;
   }
-  return PuzzleRunResult($player, $outcome, $unused, $steps, $cardLogCounts);
+  return PuzzleRunResult($player, $outcome, $unused, $steps, $cardLogCounts, $blockSteps);
 }
 
 const PUZZLE_BOT_STEPS = 40;
@@ -468,7 +559,7 @@ function PuzzleDriveBots($player, $cardLogCounts)
 }
 
 // $line null lets the bots play the turn. $player is the side the result is about.
-function RunPuzzleLine($gamestate, $player, $line, $format, $mode = "lethal", $script = null)
+function RunPuzzleLine($gamestate, $player, $line, $format, $mode = "lethal", $script = null, $blocks = [])
 {
   $gameName = PuzzleCreateVerifyGame($gamestate, $format, $mode, $script);
   if ($gameName === null) return ["won" => false, "diverged" => true, "reason" => "could not create a test game"];
@@ -481,7 +572,7 @@ function RunPuzzleLine($gamestate, $player, $line, $format, $mode = "lethal", $s
   ob_start();
   try {
     $cardLogCounts = PuzzleCardLogCounts($gamestate);
-    return $line === null ? PuzzleDriveBots($player, $cardLogCounts) : PuzzleDriveLine($player, $line, $cardLogCounts);
+    return $line === null ? PuzzleDriveBots($player, $cardLogCounts) : PuzzleDriveLine($player, $line, $cardLogCounts, $blocks);
   } catch (Throwable $e) {
     return ["won" => false, "diverged" => true, "reason" => "engine error: " . $e->getMessage()];
   } finally {
@@ -521,25 +612,54 @@ function ProvePuzzleCandidate($content, $player, $line, $format)
   return ["proof" => $proof, "solution" => $results[$won]["steps"]];
 }
 
-// The recorded defense must survive the recorded attack at the life the defender really had. The puzzle life is
-// then lowered to the least the defense still survives at, so the defense has to be exact.
+// The recorded defender kept cards for a next turn that a puzzle does not have. Each card they never used is tried as
+// an extra block where it can save the most, and kept when the defense ends the turn with more life.
+function PuzzleAddSpareBlocks($run, $base)
+{
+  $blocks = [];
+  $best = $base;
+  $tried = [];
+  for ($runs = 0; $runs < PUZZLE_SPARE_RUNS;) {
+    $spare = $best["spare"] ?? [];
+    usort($spare, fn($a, $b) => $b[2] <=> $a[2]);
+    $improved = false;
+    foreach ($spare as [$step, $cardID]) {
+      $key = "$step|$cardID|" . count(array_keys($blocks[$step] ?? [], $cardID, true));
+      if (isset($tried[$key])) continue;
+      if ($runs >= PUZZLE_SPARE_RUNS) break;
+      $tried[$key] = true;
+      $try = $blocks;
+      $try[$step][] = $cardID;
+      $result = $run($try);
+      ++$runs;
+      if ($result["won"] && $result["ownHealth"] > $best["ownHealth"]) {
+        [$blocks, $best, $improved] = [$try, $result, true];
+        break;
+      }
+    }
+    if (!$improved) break;
+  }
+  return [$blocks, $best];
+}
+
 function ProveSurvivePuzzle($content, $player, $line, $script, $format)
 {
   $healths = explode(" ", trim(explode("\r\n", $content)[0]));
   $realLife = intval($healths[$player - 1] ?? 0);
-  $run = fn($life) => RunPuzzleLine(PreparePuzzleGamestate($content, $player, $life, null, null, "survive"),
-    $player, $line, $format, "survive", $script);
+  $run = fn($life, $blocks = []) => RunPuzzleLine(PreparePuzzleGamestate($content, $player, $life, null, null, "survive"),
+    $player, $line, $format, "survive", $script, $blocks);
   $results = [$realLife => $run($realLife)];
   if (!$results[$realLife]["won"]) {
-    $proof = ["v" => PUZZLE_PROOF_VERSION, "status" => "failed", "reason" => substr($results[$realLife]["reason"], 0, 300),
+    $proof = ["v" => PUZZLE_SURVIVE_PROOF_VERSION, "status" => "failed", "reason" => substr($results[$realLife]["reason"], 0, 300),
       "realLife" => $realLife];
     return ["proof" => $proof, "solution" => null];
   }
+  [$blocks, $results[$realLife]] = PuzzleAddSpareBlocks(fn($try) => $run($realLife, $try), $results[$realLife]);
   $survived = $realLife;
   $died = null;
   $life = max(1, $realLife - max(0, $results[$realLife]["ownHealth"] - 1));
   while (count($results) < PUZZLE_PROOF_MAX_RUNS && !isset($results[$life]) && $life < $survived) {
-    $result = $results[$life] = $run($life);
+    $result = $results[$life] = $run($life, $blocks);
     $next = $life;
     if ($result["won"]) {
       $survived = $life;
@@ -552,8 +672,8 @@ function ProveSurvivePuzzle($content, $player, $line, $script, $format)
     }
     $life = $next;
   }
-  $proof = ["v" => PUZZLE_PROOF_VERSION, "status" => "proven", "life" => $survived, "realLife" => $realLife]
-    + $results[$survived]["stats"];
+  $proof = ["v" => PUZZLE_SURVIVE_PROOF_VERSION, "status" => "proven", "life" => $survived, "realLife" => $realLife]
+    + (count($blocks) > 0 ? ["blocks" => $blocks] : []) + $results[$survived]["stats"];
   return ["proof" => $proof, "solution" => $results[$survived]["steps"]];
 }
 
@@ -561,11 +681,12 @@ const PUZZLE_BASELINE_VERSION = 1;
 
 // The bot plays the solver's side at the puzzle life. A bot kill (or a bot survival) means the puzzle needs no
 // insight. The real line runs again to record which cards it used, so the two can be compared.
-function PuzzleBaseline($content, $kind, $player, $life, $line, $script, $format)
+function PuzzleBaseline($content, $kind, $player, $life, $line, $script, $format, $blocks = [])
 {
   $survive = $kind == PUZZLE_KIND_SURVIVE;
   $mode = $survive ? "survive" : "lethal";
-  $real = RunPuzzleLine(PreparePuzzleGamestate($content, $player, $life, null, null, $mode), $player, $line, $format, $mode, $script);
+  $real = RunPuzzleLine(PreparePuzzleGamestate($content, $player, $life, null, null, $mode), $player, $line, $format, $mode, $script,
+    $blocks);
   $bot = RunPuzzleLine(PreparePuzzleGamestate($content, $player, $life, null, null, $mode, true), $player, null, $format, $mode, $script);
   $empty = ["played" => [], "pitched" => [], "blocked" => []];
   $damage = $survive ? $life - intval($bot["ownHealth"] ?? $life) : $life - intval($bot["health"] ?? $life);
@@ -589,10 +710,11 @@ function PuzzleDamageBars($content, $player, $line, $format, $proof)
   return ["bot" => max(0, PUZZLE_DAMAGE_LIFE - intval($bot["health"] ?? PUZZLE_DAMAGE_LIFE)), "real" => $realDamage];
 }
 
-function CurrentPuzzleProof($encoded)
+function CurrentPuzzleProof($encoded, $kind = PUZZLE_KIND_LETHAL)
 {
   $proof = json_decode($encoded ?? "", true);
-  return is_array($proof) && ($proof["v"] ?? 0) == PUZZLE_PROOF_VERSION ? $proof : null;
+  $version = intval($kind) == PUZZLE_KIND_SURVIVE ? PUZZLE_SURVIVE_PROOF_VERSION : PUZZLE_PROOF_VERSION;
+  return is_array($proof) && ($proof["v"] ?? 0) == $version ? $proof : null;
 }
 
 function CurrentPuzzleBaseline($encoded)
@@ -627,16 +749,17 @@ function VerifyPuzzleCandidate($conn, $candidateID)
 {
   $row = LoadPuzzleCandidate($conn, $candidateID);
   if (!$row || $row["winning_line"] === null) return null;
-  $proof = CurrentPuzzleProof($row["proof"]);
+  $kind = intval($row["kind"]);
+  $proof = CurrentPuzzleProof($row["proof"], $kind);
   $baseline = CurrentPuzzleBaseline($row["baseline"]);
   if ($proof !== null && ($baseline !== null || $proof["status"] !== "proven")) return ["proof" => $proof, "baseline" => $baseline];
 
-  $kind = intval($row["kind"]);
   $player = intval($row["player"]);
   $content = @gzuncompress($row["gamestate"]);
   [$line, $script] = PuzzleCandidateLines($row);
   if ($content === false || $line === null) {
-    $proof = ["v" => PUZZLE_PROOF_VERSION, "status" => "failed", "reason" => "unreadable candidate"];
+    $proof = ["v" => $kind == PUZZLE_KIND_SURVIVE ? PUZZLE_SURVIVE_PROOF_VERSION : PUZZLE_PROOF_VERSION, "status" => "failed",
+      "reason" => "unreadable candidate"];
   } else if ($proof === null) {
     $result = $kind == PUZZLE_KIND_SURVIVE
       ? ProveSurvivePuzzle($content, $player, $line, $script, $row["format"])
@@ -646,7 +769,8 @@ function VerifyPuzzleCandidate($conn, $candidateID)
     PuzzleUpdateCandidate($conn, $candidateID, ["proof" => json_encode($proof), "solution" => $solution]);
   }
   if (($proof["status"] ?? "") === "proven") {
-    $baseline = PuzzleBaseline($content, $kind, $player, intval($proof["life"]), $line, $script, $row["format"]);
+    $baseline = PuzzleBaseline($content, $kind, $player, intval($proof["life"]), $line, $script, $row["format"],
+      $proof["blocks"] ?? []);
     PuzzleUpdateCandidate($conn, $candidateID, ["baseline" => json_encode($baseline)]);
   } else if ($content === false || $line === null) {
     PuzzleUpdateCandidate($conn, $candidateID, ["proof" => json_encode($proof)]);
