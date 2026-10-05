@@ -120,20 +120,6 @@ function EVOHitEffect($cardID)
     case "under_loop_blue":
       SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "BOTDECK");
       break;
-    case "already_dead_red":
-      if (IsHeroAttackTarget()) {
-        $deck = new Deck($defPlayer);
-        if ($deck->Empty()) {
-          WriteLog("The opponent deck is already... depleted.");
-          break;
-        }
-        $deck->BanishTop(banishedBy: $cardID, banisher:$mainPlayer);
-        AddDecisionQueue("SEARCHCOMBATCHAIN", $mainPlayer, "-");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card to banish");
-        AddDecisionQueue("CHOOSECARDID", $mainPlayer, "<-", 1);
-        AddDecisionQueue("ALREADYDEAD", $mainPlayer, "-", 1);
-      }
-      break;
     case "intoxicating_shot_blue":
       if (IsHeroAttackTarget()) {
         PlayAura("courage", $defPlayer);

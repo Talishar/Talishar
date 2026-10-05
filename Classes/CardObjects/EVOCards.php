@@ -13,17 +13,73 @@
 // }
 
 
-// class already_dead_red extends Card {
+class already_dead_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "already_dead_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "already_dead_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		global $defPlayer;
+		if (IsHeroAttackTarget()) {
+			$deck = new Deck($defPlayer);
+			if ($deck->Empty()) {
+				WriteLog("The opponent deck is already... depleted.");
+				return ;
+			}
+			$deck->BanishTop(banishedBy: $cardID, banisher:$this->controller);
+			AddDecisionQueue("SEARCHCOMBATCHAIN", $this->controller, "-");
+			AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose which card to banish");
+			AddDecisionQueue("CHOOSECARDID", $this->controller, "<-", 1);
+			Await($this->controller, $this->cardID, final:true);
+		}
+	}
+
+	function SpecificLogic() {
+		global $dqVars, $defPlayer, $CombatChain, $chainLinks;
+		$lastResult = $dqVars["LASTRESULT"] ?? "-";
+		$type = CardType($lastResult);
+		switch ($type) {
+			case "E":
+				BanishCardForPlayer($lastResult, $defPlayer, "CC", "-", $this->cardID, $this->controller);
+				$index = FindCharacterIndex($defPlayer, $lastResult);
+				DestroyCharacter($defPlayer, $index, wasBanished: true);
+				break;
+			default:
+				BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $this->cardID, $this->controller);
+				$index = GetCombatChainIndex($lastResult, $defPlayer);
+				if ($CombatChain->Remove($index) == "") {
+					$chainLinkPieces = ChainLinksPieces();
+					$chainLinksCount = count($chainLinks);
+					for ($i = 0; $i < $chainLinksCount; ++$i) {
+					$chainLinksICount = count($chainLinks[$i]);
+					for ($j = 0; $j < $chainLinksICount; $j += $chainLinkPieces) {
+						if ($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j + 2] = 0;
+					}
+					}
+				}
+				break;
+		}
+		WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
+	}
+
+	function ContractType($chosenName = '') {
+		return "NONACTION";
+	}
+
+	function ContractCompleted() {
+		PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+	}
+}
 
 
 // class annihilator_engine_red extends Card {

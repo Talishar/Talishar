@@ -963,7 +963,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "expedite_red"=>true,"expedite_yellow"=>true,"expedite_blue"=>true,
     "metex_red"=>true,"metex_yellow"=>true,"metex_blue"=>true,
     "under_loop_yellow"=>true,"under_loop_blue"=>true,
-    "already_dead_red"=>true,"intoxicating_shot_blue"=>true,"millers_grindstone"=>true,
+    "intoxicating_shot_blue"=>true,"millers_grindstone"=>true,
     "pay_up_red"=>true,
     "performance_bonus_red"=>true,"performance_bonus_yellow"=>true,"performance_bonus_blue"=>true,
     "judge_jury_executioner_red"=>true,"strength_rules_all_red"=>true,"beckoning_mistblade"=>true,

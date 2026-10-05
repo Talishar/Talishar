@@ -3403,31 +3403,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         AddCurrentTurnEffect("$otherChar[0]-1", $mainPlayer);
       }
       return $lastResult;
-    case "ALREADYDEAD":
-      $type = CardType($lastResult);
-      switch ($type) {
-        case "E":
-          BanishCardForPlayer($lastResult, $defPlayer, "CC", "-", $mainPlayer);
-          $index = FindCharacterIndex($defPlayer, $lastResult);
-          DestroyCharacter($defPlayer, $index, wasBanished: true);
-          break;
-        default:
-          BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $mainPlayer);
-          $index = GetCombatChainIndex($lastResult, $defPlayer);
-          if ($CombatChain->Remove($index) == "") {
-            $chainLinkPieces = ChainLinksPieces();
-            $chainLinksCount = count($chainLinks);
-            for ($i = 0; $i < $chainLinksCount; ++$i) {
-              $chainLinksICount = count($chainLinks[$i]);
-              for ($j = 0; $j < $chainLinksICount; $j += $chainLinkPieces) {
-                if ($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j + 2] = 0;
-              }
-            }
-          }
-          break;
-      }
-      WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
-      return $lastResult;
     case "POWDERKEG":
       $index = FindCharacterIndex($defPlayer, $lastResult);
       DestroyCharacter($defPlayer, $index);
