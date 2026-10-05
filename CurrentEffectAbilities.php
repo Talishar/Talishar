@@ -263,15 +263,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         AddDecisionQueue("MZDAMAGE", $mainPlayer, GetCombatChainState($CCS_DamageDealt) . ",DAMAGE," . $cardID, 1);
       }
       break;
-    case "dead_eye_yellow":
-      if (IsHeroAttackTarget() && HasAimCounter()) {
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND");
-        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want your opponent to discard", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-        AddDecisionQueue("MZDISCARD", $mainPlayer, "HAND," . $mainPlayer, 1);
-        AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-      }
-      break;
     case "mask_of_perdition":
       $deck = new Deck($defPlayer);
       if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }

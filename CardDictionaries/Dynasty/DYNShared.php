@@ -97,7 +97,6 @@ function DYNEffectPowerModifier($cardID)
     case "cut_to_the_chase_red": return 3;
     case "cut_to_the_chase_yellow": return 2;
     case "cut_to_the_chase_blue": return 1;
-    case "dead_eye_yellow": return 3;
     case "long_shot_red": case "long_shot_yellow": case "long_shot_blue": return 2;
     case "point_the_tip_red": return 3;
     case "point_the_tip_yellow": return 2;
@@ -136,7 +135,6 @@ function DYNCombatEffectActive($cardID, $attackID)
     case "bios_update_red-1": return GetCombatChainState($CCS_IsBoosted);
     case "cut_to_the_chase_red": case "cut_to_the_chase_yellow": case "cut_to_the_chase_blue": return true;
     case "immobilizing_shot_red": return true;
-    case "dead_eye_yellow": return CardSubType($attackID) == "Arrow";
     case "long_shot_red": case "long_shot_yellow": case "long_shot_blue": return true;
     case "point_the_tip_red": case "point_the_tip_yellow": case "point_the_tip_blue": return CardSubType($attackID) == "Arrow";
     case "cryptic_crossing_yellow": return true;
@@ -324,7 +322,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SANDSCOURGREATBOW");
       return "";
-    case "dead_eye_yellow": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "long_shot_red": case "long_shot_yellow": case "long_shot_blue": if(HasAimCounter()) AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "point_the_tip_red": case "point_the_tip_yellow": case "point_the_tip_blue":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYARS:faceUp=true", 1);

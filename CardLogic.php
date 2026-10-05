@@ -1507,7 +1507,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "high_striker_blue":
     case "buckle_blue":
     case "cleave_red":
-    case "dead_eye_yellow":
     case "runic_reaping_red-HIT":
     case "runic_reaping_yellow-HIT":
     case "runic_reaping_blue-HIT":

@@ -861,17 +861,41 @@ class nitro_mechanoidc extends Card {
 // }
 
 
-// class dead_eye_yellow extends Card {
+class dead_eye_yellow extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "dead_eye_yellow";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "dead_eye_yellow";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$attackID = $CombatChain->AttackCard()->ID();
+		return CardSubType($attackID) == "Arrow";
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		if (!HasAimCounter()) return false;
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRHAND");
+        AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose which card you want your opponent to discard", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+        AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->controller, 1);
+        AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+	}
+}
 
 
 // class deathly_duet_red extends Card {
