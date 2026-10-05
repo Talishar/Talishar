@@ -3669,10 +3669,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $currentTurnEffects[$index] = "aether_bindings_of_the_third_age,$num";
         }
         break;
-      case "sigil_of_aether_blue":
-        if($target != "-") DealArcane(1, 2, "STATIC", "sigil_of_aether_blue", false, $player, resolvedTarget:$target);
-        else DestroyAuraUniqueID($player, $uniqueID); //destroy sigils at start of action phase
-        break;
       case "truce_blue":
         if($target == "truce_blue-1") {
         WriteLog("🤝 Congrats! You didn't kill each other!");

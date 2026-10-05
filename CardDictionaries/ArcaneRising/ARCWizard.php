@@ -551,7 +551,6 @@ function ArcaneModifierAmount($source, $player, $index)
       case "rampant_growth__life_yellow":
         return $effectArr[1];
       case "staff_of_verdant_shoots-AMP":
-      case "sigil_of_aether_blue":
       case "high_voltage_blue":
       case "arcane_twining_red":
       case "arcane_twining_yellow":
@@ -617,7 +616,6 @@ function CurrentEffectArcaneModifier($source, $player, $meldState = "-", $skipRe
         $remove = true;
         break;
       case "staff_of_verdant_shoots-AMP":
-      case "sigil_of_aether_blue"://sigil of aether
       case "high_voltage_blue":
       case "arcane_twining_red":
       case "arcane_twining_yellow":
@@ -1071,10 +1069,6 @@ function ArcaneHitEffect($player, $source, $target, $damage)
       if (MZIsPlayer($target) && $damage > 0) {
         AddDecisionQueue("PLAYAURA", MZPlayerID($player, $target), "frostbite-1", 1);
       }
-      break;
-    case "sigil_of_aether_blue":
-      AddCurrentTurnEffect($source, $player);
-      WriteLog(CardLink($source, $source) . " Amp 1");
       break;
     default:
       break;
