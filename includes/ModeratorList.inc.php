@@ -14,7 +14,8 @@ function GetModeratorList() {
     "PvtVoid",
     "Aegisworn",
     "Bluffkin",
-    "Fablazing"
+    "Fablazing",
+    "Bluffkin1"
   ];
 }
 
