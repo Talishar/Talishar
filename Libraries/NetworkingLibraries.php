@@ -631,6 +631,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       )) {
         break;
       }
+      $undoSteps = UndoStepsBack();
+      if ($undoSteps == 0) {
+        break;
+      }
       $isBotGame = IsPlayerAI(1) || IsPlayerAI(2);
       if (GetClassState($playerID, $CS_NumUndoesThisTurn) >= UNDO_PER_TURN_LIMIT && !IsDevEnvironment() &&!$isBotGame) {
         WriteLog("Player $playerID has reverted the gamestate too many times this turn. Proceed with the game", highlight:true);
@@ -641,7 +645,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || $turn[0] == "PAYGOLDORPITCH" || $turn[0] == "CHOOSEGOLDTOPAY" || AlwaysAllowUndo($otherPlayer)) {
-        RevertGamestate();
+        RevertGamestate(stepsBack: $undoSteps);
         $skipWriteGamestate = true;
         WriteLog("Player " . $playerID . " undid their last action");
       }
@@ -1401,7 +1405,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 100016://Confirm Undo
-      RevertGamestate();
+      $undoSteps = UndoStepsBack();
+      if ($undoSteps > 0) RevertGamestate(stepsBack: $undoSteps);
       WriteLog("Player " . $playerID . " allowed undoing the last action");
       ConsumeUndoRequestEvents();
       break;
