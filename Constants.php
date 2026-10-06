@@ -660,8 +660,15 @@ function ResetChainLinkState()
 function ResetMainClassState()
 {
   global $mainClassState, $classStateDefaults, $persistentClassStates;
-  foreach ($classStateDefaults as $name => $default) {
-    if (!in_array($name, $persistentClassStates)) $mainClassState[$name] = $default;
+  $mainClassState ??= [];
+  $kept = [];
+  foreach ($persistentClassStates as $name) {
+    if (array_key_exists($name, $mainClassState)) $kept[$name] = $mainClassState[$name];
+  }
+  $mainClassState = array_replace($mainClassState, $classStateDefaults);
+  foreach ($persistentClassStates as $name) {
+    if (array_key_exists($name, $kept)) $mainClassState[$name] = $kept[$name];
+    else unset($mainClassState[$name]);
   }
 }
 

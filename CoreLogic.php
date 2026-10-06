@@ -2202,6 +2202,9 @@ function ColorOverride($cardID, $player = "")
     }
   }
   if ($blanched) $pitch = 0;
+
+  // Skip a big loop if there is no Become the Cup in play since right now it's the only effect that care about that, but it's checked non-stop.
+  if ($cardID != "become_the_cup_red" && $cardID != "become_the_cup_yellow" && $cardID != "become_the_cup_blue") return $pitch;
   $numCurrentTurnEffects = $CurrentTurnEffects->NumEffects();
   for ($i = 0; $i < $numCurrentTurnEffects; ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);

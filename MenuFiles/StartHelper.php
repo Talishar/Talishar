@@ -65,7 +65,8 @@ function initializePlayerState($handler, $deckHandler, $player)
   $holdPriority = "0"; //Auto-pass layers
   $isPatron = ($player == 1 ? $p1IsPatron : $p2IsPatron) ?: "0";
   $settingArray = [];
-  for($i=0; $i<SettingsPieces(); ++$i)
+  $settingsPieces = SettingsPieces();
+  for($i=0; $i<$settingsPieces; ++$i)
   {
     $settingArray[] = SettingDefaultValue($i, $charEquip[0]);
   }

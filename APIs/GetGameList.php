@@ -177,18 +177,16 @@ if ($handle = opendir($path)) {
         $p2AccountId = 0;
         $p1ShownName = "";
         $p2ShownName = "";
-        $fh = @fopen($gameFilePath, "r");
-        if ($fh) {
-          for ($i = 0; $i < 9; $i++) { if (fgets($fh) === false) break; }
-          $gameCreator = trim((string)fgets($fh));  // line 10: p1uid
-          $p2Username  = trim((string)fgets($fh));  // line 11: p2uid
-          $p1AccountId = intval(trim((string)fgets($fh)));  // line 12: p1id
-          $p2AccountId = intval(trim((string)fgets($fh)));  // line 13: p2id
-          // Skip to the trailing display-name lines (43-44); missing on older game files
-          for ($i = 0; $i < 29; $i++) { if (fgets($fh) === false) break; }
-          $p1ShownName = trim((string)fgets($fh));  // line 43: p1DisplayName
-          $p2ShownName = trim((string)fgets($fh));  // line 44: p2DisplayName
-          fclose($fh);
+        $gameFileContent = @file_get_contents($gameFilePath);
+        if ($gameFileContent !== false) {
+          $gameFileLines = explode("\n", $gameFileContent, 45);
+          $gameCreator = trim($gameFileLines[9] ?? "");  // line 10: p1uid
+          $p2Username  = trim($gameFileLines[10] ?? "");  // line 11: p2uid
+          $p1AccountId = intval(trim($gameFileLines[11] ?? ""));  // line 12: p1id
+          $p2AccountId = intval(trim($gameFileLines[12] ?? ""));  // line 13: p2id
+          // Trailing display-name lines (43-44); missing on older game files
+          $p1ShownName = trim($gameFileLines[42] ?? "");  // line 43: p1DisplayName
+          $p2ShownName = trim($gameFileLines[43] ?? "");  // line 44: p2DisplayName
         }
         if ($p1ShownName === "") $p1ShownName = $gameCreator;
         if ($p2ShownName === "") $p2ShownName = $p2Username;

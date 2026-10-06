@@ -4246,7 +4246,7 @@ function PlayableFromOtherPlayerBanish($cardID, $mod = "", $player = "", $index 
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
   if (isFaceDownMod($mod)) return false;
-  if (ColorContains($cardID, 3, $otherPlayer) && SearchCurrentTurnEffectsAny(["nuu_alluring_desire", "nuu"], $player)) return true;
+  if (SearchCurrentTurnEffectsAny(["nuu_alluring_desire", "nuu"], $player) && ColorContains($cardID, 3, $otherPlayer)) return true;
   if ($mod == "NTFromOtherPlayer" || $mod == "TTFromOtherPlayer" || $mod == "TCCGorgonsGaze") return true;
   static $gateToIarathael = ["gate_to_iarathael-CHAOS" => true];
   if ($CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
