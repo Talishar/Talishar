@@ -3,7 +3,6 @@
 include_once "../Libraries/SHMOPLibraries.php";
 include "../Libraries/HTTPLibraries.php";
 include "../HostFiles/Redirector.php";
-include "../CardDictionary.php";
 include "../AccountFiles/AccountSessionAPI.php";
 require_once '../Assets/patreon-php-master/src/PatreonLibraries.php';
 include_once '../Assets/patreon-php-master/src/API.php';
@@ -134,11 +133,105 @@ if(IsUserLoggedIn()) {
   }
 }
 
-$gameInProgressCount = 0;
-$featuredCandidates = [];
-if ($handle = opendir($path)) {
+const GAME_LIST_SCAN_KEY = "game_list_scan_v1";
+const GAME_LIST_SCAN_TTL_MS = 2000;
+
+$currentTime = round(microtime(true) * 1000);
+$scan = GetGameListScan($path, $currentTime);
+if ($scan !== null) {
+  $featuredCandidates = [];
+  foreach ($scan['inProgress'] as [$gameToken, $lastGamestateUpdate, $visibility, $p1Hero, $p2Hero, $gameFormat, $gameCreator, $p2Username, $p1ShownName, $p2ShownName, $p1AccountId, $p2AccountId, $spectatorCount]) {
+    if ($visibility == "2" && !($canSeeQueue && (isset($friendUserSet[$gameCreator]) || isset($friendUserSet[$p2Username])))) continue;
+    if (isset($bannedPlayers[strtolower($gameCreator)]) || isset($bannedPlayers[strtolower($p2Username)])) continue;
+    if (isset($blockedUserSet[$gameCreator]) || isset($blockedUserSet[$p2Username])) continue;
+    if (isset($hiddenByFriendSet[$gameCreator]) || isset($hiddenByFriendSet[$p2Username])) continue;
+
+    $gameInProgress = new stdClass();
+    $gameInProgress->p1Hero = $p1Hero;
+    $gameInProgress->p2Hero = $p2Hero;
+    $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
+    $gameInProgress->gameName = $gameToken;
+    $gameInProgress->format = $gameFormat;
+    $gameInProgress->gameCreator = $p1ShownName;
+    $gameInProgress->p2Username = $p2ShownName;
+    $gameInProgress->visibility = $visibility;
+    $gameInProgress->spectatorCount = $spectatorCount;
+    $response->gamesInProgress[] = $gameInProgress;
+    if ($visibility == "1") {
+      $featuredCandidates[] = [
+        'gameName' => $gameToken,
+        'spectators' => $spectatorCount,
+        'secondsIdle' => $gameInProgress->secondsSinceLastUpdate,
+        'p1id' => $p1AccountId,
+        'p2id' => $p2AccountId,
+        'p1Hero' => $p1Hero,
+        'p2Hero' => $p2Hero,
+      ];
+    }
+  }
+
+  foreach ($scan['open'] as [$gameToken, $visibility, $p1uid, $hasHero, $p1Hero, $openFormat, $formatName, $description, $creatorName]) {
+    if ($visibility == "2" && !($canSeeQueue && isset($friendUserSet[$p1uid]))) continue;
+    if (isset($bannedPlayers[strtolower($p1uid)])) continue;
+    if (isset($blockedUserSet[$p1uid])) continue;
+    if (isset($hiddenByFriendSet[$p1uid])) continue;
+
+    $openGame = new stdClass();
+    if ($hasHero) $openGame->p1Hero = $p1Hero;
+    $openGame->format = $openFormat;
+    $openGame->formatName = $formatName;
+    $openGame->description = $description;
+    $openGame->gameName = $gameToken;
+    $openGame->gameCreator = $creatorName;
+    $openGame->visibility = $visibility;
+    if ($isShadowBanned) {
+      if ($openFormat == "shadowblitz" || $openFormat == "shadowcc") $response->openGames[] = $openGame;
+    } else {
+      if ($openFormat != "shadowblitz" && $openFormat != "shadowcc") $response->openGames[] = $openGame;
+    }
+  }
+  $response->gameInProgressCount = $scan['inProgressCount'];
+
+  $visibleGames = [];
+  foreach($response->gamesInProgress as $game) $visibleGames[(string)$game->gameName] = true;
+  $response->featuredGames = [];
+  foreach(SelectFeaturedGames($featuredCandidates) as $featured) {
+    if(!isset($visibleGames[$featured['gameName']])) continue;
+    $featuredGame = new stdClass();
+    $featuredGame->gameName = $featured['gameName'];
+    $featuredGame->masteryLevel = $featured['masteryLevel'];
+    $featuredGame->spectators = $featured['spectators'];
+    $response->featuredGames[] = $featuredGame;
+  }
+  if(!empty($response->featuredGames)) {
+    $response->featuredGame = $response->featuredGames[0]->gameName;
+    $response->featuredMasteryLevel = $response->featuredGames[0]->masteryLevel;
+    $response->featuredSpectators = $response->featuredGames[0]->spectators;
+  }
+
+  echo json_encode($response);
+}
+
+function GetGameListScan($path, $currentTime)
+{
+  if (!_apcuAvailable()) return ScanGameList($path, $currentTime);
+  $cached = @apcu_fetch(GAME_LIST_SCAN_KEY);
+  $usable = is_array($cached) && isset($cached['at'], $cached['inProgress'], $cached['open'], $cached['inProgressCount']);
+  if ($usable && $currentTime - $cached['at'] < GAME_LIST_SCAN_TTL_MS) return $cached;
+  if (!@apcu_add(GAME_LIST_SCAN_KEY . "_lock", 1, 5) && $usable) return $cached;
+  $scan = ScanGameList($path, $currentTime);
+  if ($scan !== null) @apcu_store(GAME_LIST_SCAN_KEY, $scan, 10);
+  @apcu_delete(GAME_LIST_SCAN_KEY . "_lock");
+  return $scan;
+}
+
+function ScanGameList($path, $currentTime)
+{
+  global $autoDeleteGames, $gameFileHandler;
+  $handle = opendir($path);
+  if (!$handle) return null;
+  $scan = ['at' => $currentTime, 'inProgressCount' => 0, 'inProgress' => [], 'open' => []];
   $checkFileCreationTime = random_int(1, 1000) == 42;
-  $currentTime = round(microtime(true) * 1000);
   while (false !== ($folder = readdir($handle))) {
     if ('.' === $folder) continue;
     if ('..' === $folder) continue;
@@ -150,14 +243,14 @@ if ($handle = opendir($path)) {
       if ($dirPath && is_dir($dirPath)) {
         $lastModified = filemtime($dirPath);
         $ageInSeconds = time() - $lastModified;
-        if($ageInSeconds > 18000) { 
+        if($ageInSeconds > 18000) {
           if (deleteDirectory($dirPath)) {
             DeleteCache($gameToken);
             continue;
           } else {
             error_log("Failed to delete directory: " . $dirPath);
           }
-      }
+        }
       }
     }
     if (file_exists($gs)) {
@@ -166,7 +259,7 @@ if ($handle = opendir($path)) {
       $lastGamestateUpdate = ($cacheArr !== null) ? intval($cacheArr[5] ?? 0) : 0;
       if ($currentTime - $lastGamestateUpdate < 30000) {
         $visibility = $cacheArr[8] ?? "";  // piece 9
-        $gameInProgressCount += 1;
+        $scan['inProgressCount'] += 1;
         if ($visibility != "1" && $visibility != "2") continue;
 
         // Get both player usernames from the GameFile.txt
@@ -190,64 +283,15 @@ if ($handle = opendir($path)) {
         }
         if ($p1ShownName === "") $p1ShownName = $gameCreator;
         if ($p2ShownName === "") $p2ShownName = $p2Username;
-        
-        // Determine if this game should be shown
-        $showGame = false;
-        if($visibility == "1") {
-          // Public game
-          $showGame = true;
-        } else if($visibility == "2") {
-          // Friends-only game - show if user is a friend of either player
-          $showGame = IsUserLoggedIn() && (isset($friendUserSet[$gameCreator]) || isset($friendUserSet[$p2Username]));
-        }
 
-        // Don't show if not visible
-        if(!$showGame) {
-          continue;
-        }
-
-        // Don't show games from banned users
-        if(isset($bannedPlayers[strtolower($gameCreator)]) || isset($bannedPlayers[strtolower($p2Username)])) {
-          continue;
-        }
-
-        // Don't show games from blocked users
-        if(isset($blockedUserSet[$gameCreator]) || isset($blockedUserSet[$p2Username])) {
-          continue;
-        }
-
-        // Don't show games belonging to a friend who hides their games from friends
-        if(isset($hiddenByFriendSet[$gameCreator]) || isset($hiddenByFriendSet[$p2Username])) {
-          continue;
-        }
-
-        $gameInProgress = new stdClass();
-        $gameInProgress->p1Hero = $cacheArr[6] ?? "";
-        $gameInProgress->p2Hero = $cacheArr[7] ?? "";
-        $gameInProgress->secondsSinceLastUpdate = intval(($currentTime - $lastGamestateUpdate) / 1000);
-        $gameInProgress->gameName = $gameToken;
-        $gameInProgress->format = $cacheArr[12] ?? "";
-        // Display names for the UI; the friend/ban/block checks above key off the handles
-        $gameInProgress->gameCreator = $p1ShownName;
-        $gameInProgress->p2Username = $p2ShownName;
-        $gameInProgress->visibility = $visibility;
-        $gameInProgress->spectatorCount = GetActiveSpectators($gameToken)['count'];
-
-        if($gameInProgress->p1Hero != "" && $gameInProgress->p2Hero != "DUMMY" && $gameInProgress->p2Hero != "") {
-          $response->gamesInProgress[] = $gameInProgress;
-          // Only public games can be pinned; a friends-only match is invisible
-          // to most of the people the featured slot is meant to reach.
-          if($visibility == "1") {
-            $featuredCandidates[] = [
-              'gameName' => $gameToken,
-              'spectators' => $gameInProgress->spectatorCount,
-              'secondsIdle' => $gameInProgress->secondsSinceLastUpdate,
-              'p1id' => $p1AccountId,
-              'p2id' => $p2AccountId,
-              'p1Hero' => $gameInProgress->p1Hero,
-              'p2Hero' => $gameInProgress->p2Hero,
-            ];
-          }
+        $p1Hero = $cacheArr[6] ?? "";
+        $p2Hero = $cacheArr[7] ?? "";
+        if($p1Hero != "" && $p2Hero != "DUMMY" && $p2Hero != "") {
+          $scan['inProgress'][] = [
+            $gameToken, $lastGamestateUpdate, $visibility, $p1Hero, $p2Hero, $cacheArr[12] ?? "",
+            $gameCreator, $p2Username, $p1ShownName, $p2ShownName, $p1AccountId, $p2AccountId,
+            GetActiveSpectators($gameToken)['count'],
+          ];
         }
       }
       else if ($currentTime - $lastGamestateUpdate > GAME_DELETE_TIMEOUT_MS)
@@ -285,39 +329,8 @@ if ($handle = opendir($path)) {
       }
       if($status == 0 && intval($openCacheArr[10] ?? "") < 3) {
         $visibility = $openCacheArr[8] ?? "";
+        if ($visibility != "1" && $visibility != "2") continue;
 
-        // Determine if this game should be shown
-        $showGame = false;
-        if($visibility == "1") {
-          // Public game
-          $showGame = true;
-        } else if($visibility == "2") {
-          // Friends-only game - show if user is a friend of the creator
-          $showGame = IsUserLoggedIn() && isset($friendUserSet[$p1uid]);
-        }
-
-        // Don't show if not visible
-        if(!$showGame) {
-          continue;
-        }
-
-        // Don't show open games from banned users
-        if(isset($bannedPlayers[strtolower($p1uid)])) {
-          continue;
-        }
-
-        // Don't show open games from blocked users
-        if(isset($blockedUserSet[$p1uid])) {
-          continue;
-        }
-
-        // Don't show open games from a friend who hides their games from friends
-        if(isset($hiddenByFriendSet[$p1uid])) {
-          continue;
-        }
-
-        $openGame = new stdClass();
-        if($format != "compcc" && $format != "compblitz" && $format != "compllcc" && $format != "compsage") $openGame->p1Hero = $openCacheArr[6] ?? "";
         $formatName = "";
         if($format == "commoner") $formatName = "Commoner";
         else if($format == "futurecc") $formatName = "Future CC";
@@ -333,46 +346,18 @@ if ($handle = opendir($path)) {
         else if($format == "sage") $formatName = "Silver Age";
         else if($format == "open") $formatName = "Open";
         else if($format == "gage") $formatName = "Golden Age";
-        
-        $description = ($gameDescription == "" ? "Game #" . $gameName : $gameDescription);
-        $openGame->format = $format;
-        $openGame->formatName = $formatName;
-        $openGame->description = $description;
-        $openGame->gameName = $gameToken;
-        $openGame->gameCreator = $p1DisplayName !== "" ? $p1DisplayName : $p1uid;
-        $openGame->visibility = $visibility;
-        if($isShadowBanned) {
-          if($format == "shadowblitz" || $format == "shadowcc") $response->openGames[] = $openGame;
-        } else {
-          if($format != "shadowblitz" && $format != "shadowcc") $response->openGames[] = $openGame;
-        }
+
+        $hasHero = $format != "compcc" && $format != "compblitz" && $format != "compllcc" && $format != "compsage";
+        $scan['open'][] = [
+          $gameToken, $visibility, $p1uid, $hasHero, $hasHero ? ($openCacheArr[6] ?? "") : "",
+          $format, $formatName, ($gameDescription == "" ? "Game #" . $gameName : $gameDescription),
+          $p1DisplayName !== "" ? $p1DisplayName : $p1uid,
+        ];
       }
     }
   }
-  $response->gameInProgressCount = $gameInProgressCount;
-
-  // The picks are shared server-wide, so confirm each one survived this
-  // viewer's own ban, block and friend filtering before pinning it.
-  $visibleGames = [];
-  foreach($response->gamesInProgress as $game) $visibleGames[(string)$game->gameName] = true;
-  $response->featuredGames = [];
-  foreach(SelectFeaturedGames($featuredCandidates) as $featured) {
-    if(!isset($visibleGames[$featured['gameName']])) continue;
-    $featuredGame = new stdClass();
-    $featuredGame->gameName = $featured['gameName'];
-    $featuredGame->masteryLevel = $featured['masteryLevel'];
-    $featuredGame->spectators = $featured['spectators'];
-    $response->featuredGames[] = $featuredGame;
-  }
-  // Kept for frontends that still read the single pinned match
-  if(!empty($response->featuredGames)) {
-    $response->featuredGame = $response->featuredGames[0]->gameName;
-    $response->featuredMasteryLevel = $response->featuredGames[0]->masteryLevel;
-    $response->featuredSpectators = $response->featuredGames[0]->spectators;
-  }
-
   closedir($handle);
-  echo json_encode($response);
+  return $scan;
 }
 
 function deleteDirectory($dir) {

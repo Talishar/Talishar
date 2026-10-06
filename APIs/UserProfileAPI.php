@@ -3,7 +3,6 @@
 include_once __DIR__ . '/../includes/ApiBootstrap.php';
 
 include_once "../AccountFiles/AccountSessionAPI.php";
-include_once "../CardDictionary.php";
 include_once "../Libraries/UILibraries.php";
 include_once "../APIKeys/APIKeys.php";
 include_once '../includes/functions.inc.php';

@@ -3,7 +3,6 @@
 include_once "../Libraries/SHMOPLibraries.php";
 include "../Libraries/HTTPLibraries.php";
 include "../HostFiles/Redirector.php";
-include "../CardDictionary.php";
 
 SetHeaders();
 
