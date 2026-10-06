@@ -734,7 +734,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10007:
       $targetPlayer = $playerID == 1 ? 2 : 1;
-      if (IsPlayerAI($targetPlayer)) {
+      if (IsPlayerAI($targetPlayer) || IsDevEnvironment()) {
         $manualCount = ManualModeCount($buttonInput);
         WriteLog("Manually subtracting " . $manualCount . " life from AI opponent", highlight: true, highlightColor: "darkblue");
         $health = &GetHealth($targetPlayer);
