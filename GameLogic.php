@@ -308,8 +308,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = SearchDeck($player, subtype: "Trap");
           break;
         case "GY":
-          $discard = &GetDiscard($player);
-          $rv = GetIndices(count($discard), 0, DiscardPieces());
+          $inds = [];
+          $Discard = new Discard($player);
+          for ($i = 0; $i < $Discard->NumCards(); ++$i) {
+            $DiscardCard = $Discard->Card($i, true);
+            if (!isFaceDownMod($DiscardCard->Facing()))
+              $inds[] = $DiscardCard->Index();
+          }
+          $rv = implode(",", $inds);
           break;
         case "WEAPON":
           $rv = WeaponIndices($player, $player, $subparam);
