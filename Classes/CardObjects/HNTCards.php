@@ -763,16 +763,16 @@ class diced extends BaseCard {
 
 class diced_red extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "diced_red";
-    $this->controller = $controller;
+	function __construct($controller) {
+		$this->cardID = "diced_red";
+		$this->controller = $controller;
 		$this->baseCard = new diced($this->cardID, $this->controller);
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$this->baseCard->PlayAbility(3);
-    return "";
-  }
+		return "";
+	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain;
@@ -795,16 +795,16 @@ class diced_red extends Card {
 
 class diced_yellow extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "diced_yellow";
-    $this->controller = $controller;
-    $this->baseCard = new diced($this->cardID, $this->controller);
+	function __construct($controller) {
+		$this->cardID = "diced_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new diced($this->cardID, $this->controller);
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$this->baseCard->PlayAbility(2);
-    return "";
-  }
+		return "";
+	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain;
@@ -827,16 +827,16 @@ class diced_yellow extends Card {
 
 class diced_blue extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "diced_blue";
-    $this->controller = $controller;
-    $this->baseCard = new diced($this->cardID, $this->controller);
+	function __construct($controller) {
+		$this->cardID = "diced_blue";
+		$this->controller = $controller;
+		$this->baseCard = new diced($this->cardID, $this->controller);
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$this->baseCard->PlayAbility(1);
-    return "";
-  }
+		return "";
+	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain;
@@ -1366,15 +1366,15 @@ class diced_blue extends Card {
 
 class hunts_end_red extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "hunts_end_red";
-    $this->controller = $controller;
+	function __construct($controller) {
+		$this->cardID = "hunts_end_red";
+		$this->controller = $controller;
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
+		return "";
+	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain;
@@ -1533,16 +1533,16 @@ class incision_yellow extends Card {
 
 class incision_blue extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "incision_blue";
-    $this->controller = $controller;
-    $this->baseCard = new incision($this->cardID, $this->controller);
+	function __construct($controller) {
+		$this->cardID = "incision_blue";
+		$this->controller = $controller;
+		$this->baseCard = new incision($this->cardID, $this->controller);
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		$this->baseCard->PlayAbility();
-    return "";
-  }
+		return "";
+	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		return $this->baseCard->IsPlayRestricted();
@@ -1560,15 +1560,15 @@ class incision_blue extends Card {
 
 class jagged_edge_red extends Card {
 
-  function __construct($controller) {
-    $this->cardID = "jagged_edge_red";
-    $this->controller = $controller;
+	function __construct($controller) {
+		$this->cardID = "jagged_edge_red";
+		$this->controller = $controller;
 	}
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
-  }
+		return "";
+	}
 
 	function EffectPowerModifier($param, $attached = false) {
 		return 3;
@@ -1846,7 +1846,6 @@ class long_whisker_loyalty_red extends Card {
 			foreach ($choices as $choice) {
 				switch ($choice) {
 					case "Buff_Power":
-						// for now assume you're attacking the current chain link
 						$daggerAttacks = TargetDaggerAttack($this->controller);
 						SetTargetsChoices($this->controller, $this->cardID, $daggerAttacks, "Target a dagger attack for the buff");
 						break;
