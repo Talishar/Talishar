@@ -306,6 +306,7 @@ function AddPlayerHand($cardID, $player, $from, $amount = 1, $index=-1, $created
       for ($i = 0; $i < $amount; ++$i) {
         array_splice($hand, $index, 0, $cardID);
       }
+      ClearHandCardRemovedNote($player, $index, $cardID);
     }
     if ($from == "CC") {
       $card = GetClass($cardID, $player);
@@ -320,6 +321,7 @@ function RemoveHand($player, $index)
   if (empty($hand)) return "";
   $cardID = $hand[$index];
   array_splice($hand, $index, HandPieces());
+  NoteHandCardRemoved($player, $index, $cardID);
   return $cardID;
 }
 

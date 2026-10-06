@@ -76,8 +76,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 4: //Add something to your arsenal
       $found = HasCard($cardID);
       if ($turn[0] == "ARS" && $found >= 0) {
-        $hand = &GetHand($playerID);
-        array_splice($hand, $found, 1);
+        RemoveHand($playerID, $found);
         AddArsenal($cardID, $currentPlayer, "HAND", "DOWN");
         PassTurn();
       } else {
@@ -424,7 +423,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         if ($found >= count($hand)) break;
         $cardID = $hand[$found];
         if (!IsPlayable($cardID, $turn[0], "HAND", $found)) break;
-        array_splice($hand, $found, 1);
+        RemoveHand($playerID, $found);
         PlayCard($cardID, "HAND", zone: "MYHAND", index: $found);
       }
       break;
