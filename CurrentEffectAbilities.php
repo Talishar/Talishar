@@ -438,13 +438,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "sworn_vengeance_blue":
       if (IsHeroAttackTarget()) MarkHero($defPlayer);
       break;
-    case "long_whisker_loyalty_red-MARK":
-      $character = &GetPlayerCharacter($mainPlayer);
-      if (IsHeroAttackTarget() && $character[GetCombatChainState($CCS_WeaponIndex) + 11] == $effectArr[1]) {
-        MarkHero($defPlayer);
-        return 1;
-      }
-      break;
     case "searing_gaze_red":
     case "stabbing_pain_red":
       MarkHero($defPlayer);

@@ -1741,17 +1741,130 @@ class jagged_edge_red extends Card {
 // }
 
 
-// class long_whisker_loyalty_red extends Card {
+class long_whisker_loyalty_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "long_whisker_loyalty_red";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "long_whisker_loyalty_red";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$targets = explode(",", $target);
+		$modes = explode(",", $additionalCosts);
+		for ($i = 0; $i < count($modes); ++$i) {
+			switch($modes[$i]) {
+				case "Buff_Power":
+					if (explode("-", $targets[$i])[0] == "COMBATCHAINLINK")
+						AddCurrentTurnEffect("$this->cardID-BUFF", $this->controller);
+					break;
+				case "Additional_Attack":
+					$targetDagger = CleanTargetToObject($this->controller, $targets[$i]);
+					if ($targetDagger != "") {
+						$targetDagger->AddUse();
+						$targetDagger->SetUsed(2);
+					}
+					break;
+				case "Mark":
+					$targetDagger = CleanTargetToObject($this->controller, $targets[$i]);
+					if ($targetDagger != "")
+						AddCurrentTurnEffect("$this->cardID-MARK", $this->controller, uniqueID:$targetDagger->UniqueID());
+					break;
+				default:
+					break;
+			}
+		}
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "BUFF" ? 2 : 0;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return $mode == "MARK";
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		if ($parameter == "$this->cardID-BUFF") return false;
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $defPlayer;
+		MarkHero($defPlayer);
+		return true;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		if (!$CombatChain->HasCurrentLink()) return true;
+		// This next line is based on my interpretation of the card. It seems to require you to pick all 3 modes
+		// if you have 3 draconic chain links, and you can't pick the first mode without a dagger attack
+		// this could change with release notes
+		if (NumDraconicChainLinks() > 2 && !SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $this->controller)) return true;
+		if (NumDraconicChainLinks() > 0) {
+			// make sure you have at least one dagger equipped
+			$mainCharacter = &GetPlayerCharacter($this->controller);
+			$countMainCharacter = count($mainCharacter);
+			$characterPieces = CharacterPieces();
+			for ($i = 0; $i < $countMainCharacter; $i += $characterPieces) {
+				if (SubtypeContains($mainCharacter[$i], "Dagger", $this->controller)) return false;
+			}
+			return true;
+		}
+		// you can play it, but it won't do anything
+		return false;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		global $CombatChain, $CS_AdditionalCosts;
+		$modalities = (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger")) ? "Buff_Power,Additional_Attack,Mark" : "Additional_Attack,Mark";
+		$numModes = min(substr_count($modalities, ",") + 1, NumDraconicChainLinks());
+		if ($numModes > 0) {
+			if ($numModes < 3) {
+				AddDecisionQueue("SETDQCONTEXT", $this->controller, $numModes == 1 ? "Choose 1 mode" : "Choose " . $numModes . " modes");
+				AddDecisionQueue("MULTICHOOSETEXT", $this->controller, $numModes . "-" . $modalities . "-" . $numModes);
+				AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
+				AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+			} else {
+				AddDecisionQueue("PASSPARAMETER", $this->controller, $modalities);
+				AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts);
+				AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID);
+			}
+			Await($this->controller, $this->cardID, final:true);
+		}
+	}
+
+	function SpecificLogic() {
+		global $dqVars, $Stack;
+		$lastResult = $dqVars["LASTRESULT"] ?? "-";
+		if ($lastResult != "-") {
+			$choices = explode(",", $lastResult);
+			foreach ($choices as $choice) {
+				switch ($choice) {
+					case "Buff_Power":
+						// for now assume you're attacking the current chain link
+						$daggerAttacks = TargetDaggerAttack($this->controller);
+						SetTargetsChoices($this->controller, $this->cardID, $daggerAttacks, "Target a dagger attack for the buff");
+						break;
+					case "Additional_Attack":
+						$context = "Target a dagger to give an additional attack";
+						SetTargets($this->controller, $this->cardID, "MYCHAR:subtype=Dagger", context:$context);
+						break;
+					case "Mark":
+						$context = "Target a dagger to give a on-hit mark";
+						SetTargets($this->controller, $this->cardID, "MYCHAR:subtype=Dagger", context:$context);
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
+}
 
 
 // class loyalty_beyond_the_grave_red extends Card {

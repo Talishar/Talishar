@@ -63,33 +63,6 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
         case "Buff_Stealth": AddEffectToCurrentAttack("two_sides_to_the_blade_red-ATTACK"); break;
       }
       return $lastResult;
-    case "LONGWHISKER":
-      if(!is_array($lastResult)) $lastResult = explode(",", $lastResult);
-      $countLastResult = count($lastResult);
-      for($i = 0; $i < $countLastResult; ++$i) {
-        $mode = $lastResult[$i];
-        switch($mode) {
-          case "Buff_Power": {
-            AddCurrentTurnEffect("long_whisker_loyalty_red-BUFF", $player);
-            break;
-          }
-          case "Additional_Attack": {
-            AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:subtype=Dagger", 1);
-            AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to attack an additional time", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-            AddDecisionQueue("EXTRAATTACK", $player, "<-", 1);
-            break;
-          }
-          case "Mark": {
-            AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:subtype=Dagger", 1);
-            AddDecisionQueue("SETDQCONTEXT", $player, "Choose a dagger to add an on-hit mark effect to", 1);
-            AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-            AddDecisionQueue("ADDONHITMARK", $player, "<-", 1);
-            break;
-          }
-        }
-      }
-      return $lastResult;
     case "MICROPROCESSOR":
       $deck = new Deck($player);
       $items = &GetItems($player);

@@ -3063,24 +3063,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (HasStealth($attackID)) return false;
       if (SubtypeContains($attackID, "Dagger", $currentPlayer)) return false;
       return true;
-    case "long_whisker_loyalty_red":
-      if (!$CombatChain->HasCurrentLink()) return true;
-      // This next line is based on my interpretation of the card. It seems to require you to pick all 3 modes
-      // if you have 3 draconic chain links, and you can't pick the first mode without a dagger attack
-      // this could change with release notes
-      if (NumDraconicChainLinks() > 2 && !SubtypeContains($CombatChain->CurrentAttack(), "Dagger", $currentPlayer)) return true;
-      if (NumDraconicChainLinks() > 0) {
-        // make sure you have at least one dagger equipped
-        $mainCharacter = &GetPlayerCharacter($mainPlayer);
-        $countMainCharacter = count($mainCharacter);
-        $characterPieces = CharacterPieces();
-        for ($i = 0; $i < $countMainCharacter; $i += $characterPieces) {
-          if (SubtypeContains($mainCharacter[$i], "Dagger", $mainPlayer)) return false;
-        }
-        return true;
-      }
-      // you can play it, but it won't do anything
-      return false;
     case "affirm_loyalty_red":
     case "endear_devotion_red":
     case "blistering_blade_red":

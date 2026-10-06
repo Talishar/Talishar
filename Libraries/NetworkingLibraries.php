@@ -4515,22 +4515,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
-    case "long_whisker_loyalty_red":
-      $modalities = (SubtypeContains($combatChain[0], "Dagger")) ? "Buff_Power,Additional_Attack,Mark" : "Additional_Attack,Mark";
-      $numModes = min(substr_count($modalities, ",") + 1, NumDraconicChainLinks());
-      if ($numModes > 0) {
-        if ($numModes < 3) {
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, $numModes == 1 ? "Choose 1 mode" : "Choose " . $numModes . " modes");
-          AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, $numModes . "-" . $modalities . "-" . $numModes);
-          AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-          AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
-        } else {
-          AddDecisionQueue("PASSPARAMETER", $currentPlayer, $modalities);
-          AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts);
-          AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID);
-        }
-      }
-      break;
     case "danger_digits":
     case "throw_dagger_blue":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA");

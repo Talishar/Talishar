@@ -4737,8 +4737,9 @@ function SetTargets($player, $cardID, $search, $N=1, $may=false, $playCard=true,
   }
 }
 
-function SetTargetsChoices($player, $cardID, $choices) {
+function SetTargetsChoices($player, $cardID, $choices, $context="") {
   AddDecisionQueue("PASSPARAMETER", $player, $choices);
+  if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
   AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
   AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);

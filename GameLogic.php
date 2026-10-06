@@ -3924,12 +3924,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $char = &GetPlayerCharacter($player);
       AddCurrentTurnEffect("perforate_yellow", $player,"", $char[$ind+11]);
       return $lastResult;
-    case "ADDONHITMARK":
-      $ind = explode("-", $parameter, 2)[1] ?? -1;
-      if ($ind == -1) return $lastResult;
-      $char = &GetPlayerCharacter($player);
-      AddCurrentTurnEffect("long_whisker_loyalty_red-MARK," . $char[$ind+11], $player,"", $char[$ind+11]);
-      return $lastResult;
     case "PROVOKE":
       $handInd = explode("-", $lastResult, 2)[1] ?? -1;
       if ($handInd == -1) return $lastResult;

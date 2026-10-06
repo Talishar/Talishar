@@ -99,7 +99,6 @@ function HNTEffectPowerModifier($cardID, $attached=False): int
     "fire_tenet_strike_first_blue" => 1,
     "obsidian_fire_vein" => 1,
     "obsidian_fire_vein_r" => 1,
-    "long_whisker_loyalty_red-BUFF" => 2,
     "affirm_loyalty_red" => 2,
     "endear_devotion_red" => 3,
     "fire_and_brimstone_red" => 1,
@@ -172,14 +171,6 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
   $dashArr = explode("-", $cardID);
   $cardID = $dashArr[0];
   $hasSuffix = count($dashArr) > 1;
-  if ($cardID == "long_whisker_loyalty_red" & $hasSuffix) {
-    if ($dashArr[1] == "BUFF") return SubtypeContains($attackID, "Dagger", $mainPlayer);
-    if (DelimStringContains($dashArr[1], "MARK", true)) {
-      $id = str_contains($dashArr[1], ",") ? explode(",", $dashArr[1])[1] : -1;
-      $character = &GetPlayerCharacter($mainPlayer);
-      return $character[GetCombatChainState($CCS_WeaponIndex) + 11] == $id;
-    }
-  }
   if ($cardID == "arakni_black_widow" && $hasSuffix && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "arakni_funnel_web" && $hasSuffix && $dashArr[1] == "HIT") return HasStealth($attackID);
   if ($cardID == "fealty" && $hasSuffix && $dashArr[1] == "ATTACK") return DelimStringContains(CardType($attackID), "AA");
@@ -461,10 +452,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "fire_tenet_strike_first_yellow":
     case "fire_tenet_strike_first_blue":
       AddCurrentTurnEffectNextAttack($cardID, $currentPlayer);
-      break;
-    case "long_whisker_loyalty_red":
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-      AddDecisionQueue("MODAL", $currentPlayer, "LONGWHISKER", 1);
       break;
     case "affirm_loyalty_red":
     case "endear_devotion_red":
@@ -1190,3 +1177,14 @@ function BubbleToTheSurface()
       AddDecisionQueue("EQUIPCARDGRAVEYARD", $player, "<-", 1);
     }
   }
+
+function TargetDaggerAttack($player) {
+  $attacks = TargetAttack($player);
+  $choices = [];
+  foreach($attacks as $attack) {
+    $cardID = GetMZCard($player, $attack);
+    if (SubtypeContains($cardID, "Dagger", $player))
+      $choices[] = $attack;
+  }
+  return implode(",", $choices);
+}

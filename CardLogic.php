@@ -1547,7 +1547,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "just_a_nick_red-HIT":
     case "maul_yellow-HIT":
     case "two_sides_to_the_blade_red-ATTACK":
-    case "long_whisker_loyalty_red-MARK":
     case "twist_and_turn_red":
     case "twist_and_turn_yellow":
     case "twist_and_turn_blue":
