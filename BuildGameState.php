@@ -761,7 +761,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myHandCount = count($myHand);
   $handPieces = HandPieces();
   $handChoiceIndices = "," . $turn[2] . ",";
-  $myHandIDs = $playerID == 3 ? [] : HandInstanceIDsFor($playerID);
+  $myHandIDs = HandInstanceIDsFor($playerID);
   $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay);
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     $label = "";

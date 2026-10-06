@@ -108,9 +108,10 @@ class HandInstanceIDsTest extends TestCase
 
         $GLOBALS["handInstanceIDs"] = DecodeHandInstanceIDs(json_encode($first));
         NoteHandCardRemoved(1, 1, "b");
-        ClearHandCardRemovedNote(1, "x");
+        ClearHandCardRemovedNote(1, 1, "x");
+        ClearHandCardRemovedNote(1, 0, "b");
         $this->assertSame(["index" => 1, "card" => "b"], $GLOBALS["handInstanceRemovedIndex"][1]);
-        ClearHandCardRemovedNote(1, "b");
+        ClearHandCardRemovedNote(1, 1, "b");
         $this->assertArrayNotHasKey(1, $GLOBALS["handInstanceRemovedIndex"]);
         $second = UpdateHandInstanceIDs();
         $this->assertSame(["h1", "h2", "h3"], $second[1]["i"]);

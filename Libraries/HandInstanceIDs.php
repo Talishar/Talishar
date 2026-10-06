@@ -68,15 +68,11 @@ function ReconcileHandInstanceIDs($prevHand, $prevIDs, $hand, &$counter, $remove
 
 function UpdateHandInstanceIDs()
 {
-  $state = DecodeHandInstanceIDs(null);
-  if (isset($GLOBALS["handInstanceIDs"]) && is_array($GLOBALS["handInstanceIDs"])) {
-    $state = array_replace($state, $GLOBALS["handInstanceIDs"]);
-  }
+  $state = $GLOBALS["handInstanceIDs"] ?? DecodeHandInstanceIDs(null);
   $removed = $GLOBALS["handInstanceRemovedIndex"] ?? [];
-  $counter = intval($state["n"]);
+  $counter = $state["n"];
   foreach ([1, 2] as $player) {
     $hand = $GLOBALS["p" . $player . "Hand"] ?? [];
-    $hand = is_array($hand) ? array_values($hand) : [];
     $hint = $removed[$player] ?? null;
     $state[$player] = [
       "h" => $hand,
@@ -91,28 +87,18 @@ function UpdateHandInstanceIDs()
 
 function NoteHandCardRemoved($player, $index, $cardID = null)
 {
-  if (!isset($GLOBALS["handInstanceRemovedIndex"]) || !is_array($GLOBALS["handInstanceRemovedIndex"])) {
-    $GLOBALS["handInstanceRemovedIndex"] = [];
-  }
-  if (!isset($GLOBALS["handInstanceRemovedIndex"][$player])) {
-    $GLOBALS["handInstanceRemovedIndex"][$player] = ["index" => intval($index), "card" => $cardID];
-  }
+  $GLOBALS["handInstanceRemovedIndex"][$player] ??= ["index" => intval($index), "card" => $cardID];
 }
 
-function ClearHandCardRemovedNote($player, $cardID)
+function ClearHandCardRemovedNote($player, $index, $cardID)
 {
-  $note = $GLOBALS["handInstanceRemovedIndex"][$player] ?? null;
-  if (is_array($note) && ($note["card"] ?? null) === $cardID) {
+  if (($GLOBALS["handInstanceRemovedIndex"][$player] ?? null) === ["index" => intval($index), "card" => $cardID]) {
     unset($GLOBALS["handInstanceRemovedIndex"][$player]);
   }
 }
 
 function HandInstanceIDsFor($player)
 {
-  $state = $GLOBALS["handInstanceIDs"] ?? null;
-  if (!is_array($state)) return [];
-  $hand = $GLOBALS["p" . $player . "Hand"] ?? [];
-  $entry = $state[$player] ?? null;
-  if (!is_array($entry) || ($entry["h"] ?? null) !== array_values(is_array($hand) ? $hand : [])) return [];
-  return $entry["i"] ?? [];
+  $entry = $GLOBALS["handInstanceIDs"][$player] ?? null;
+  return $entry !== null && $entry["h"] === ($GLOBALS["p" . $player . "Hand"] ?? []) ? $entry["i"] : [];
 }
