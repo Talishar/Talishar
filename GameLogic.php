@@ -642,7 +642,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       PlayAbility($lastResult, "-", 0);
       return $lastResult;
     case "DRAW":
-      $params = explode(",", $parameter);
+      if (is_array($parameter))
+        $params = $parameter;
+      else
+        $params = explode(",", $parameter);
       $effectSource = $params[0] ?? "-";
       $num = $params[1] ?? 1;
       $mainPhase = $params[2] ?? true;
