@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . "/Libraries/HandInstanceIDs.php";
+
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 $dir = dirname($filename);
 if (!is_dir($dir)) mkdir($dir, 0700, true);
@@ -114,7 +116,8 @@ array_push($gamestateLines,
   intval($p1ContractsCompleted ?? 0), // Contracts player 1 completed
   intval($p2ContractsCompleted ?? 0), // Contracts player 2 completed
   json_encode($p1CardsDisrupted ?? []), // Opponent cards player 1 disrupted, per turn
-  json_encode($p2CardsDisrupted ?? [])  // Opponent cards player 2 disrupted, per turn
+  json_encode($p2CardsDisrupted ?? []), // Opponent cards player 2 disrupted, per turn
+  json_encode(UpdateHandInstanceIDs())
 );
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";

@@ -78,6 +78,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($turn[0] == "ARS" && $found >= 0) {
         $hand = &GetHand($playerID);
         array_splice($hand, $found, 1);
+        NoteHandCardRemoved($playerID, $found, $cardID);
         AddArsenal($cardID, $currentPlayer, "HAND", "DOWN");
         PassTurn();
       } else {
@@ -425,6 +426,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $cardID = $hand[$found];
         if (!IsPlayable($cardID, $turn[0], "HAND", $found)) break;
         array_splice($hand, $found, 1);
+        NoteHandCardRemoved($playerID, $found, $cardID);
         PlayCard($cardID, "HAND", zone: "MYHAND", index: $found);
       }
       break;
@@ -2588,6 +2590,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         switch ($from) {
           case "HAND":
             AddPlayerHand($cardID, $currentPlayer, "HAND", index: ($index >= 0 ? $index : -1));
+            ClearHandCardRemovedNote($currentPlayer, $cardID);
             StorePendingNAA($cardID, $currentPlayer);
             break;
           case "ARS":
@@ -2601,6 +2604,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       elseif (GetResolvedAbilityType($cardID, $from) == "A" && !$blockShortcut) {
         if ($from == "HAND") {
           AddPlayerHand($cardID, $currentPlayer, "HAND", index: ($index >= 0 ? $index : -1));
+          ClearHandCardRemovedNote($currentPlayer, $cardID);
           StorePendingNAA($cardID, $currentPlayer);
         }
         if ($from == "PLAY") {

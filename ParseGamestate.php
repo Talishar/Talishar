@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/Libraries/GamestateCompatibility.php';
 require_once __DIR__ . '/Constants.php'; // ClassStateFromString
+require_once __DIR__ . '/Libraries/HandInstanceIDs.php';
 
 global $gameName;
 function GetStringArray($line)
@@ -43,7 +44,7 @@ function ParseGamestate($parseHistoricalStats = true)
   global $p1TotalTime, $p2TotalTime, $lastUpdateTime, $events, $EffectContext;
   global $mainPlayerGamestateStillBuilt, $mpgBuiltFor, $myStateBuiltFor, $playerID;
   global $p1Inventory, $p2Inventory, $p1IsAI, $p2IsAI, $AIHasInfiniteHP, $attackQueue, $practiceDummyWeaponPower;
-  global $p1TurnCount, $p2TurnCount;
+  global $p1TurnCount, $p2TurnCount, $handInstanceIDs;
 
   $mainPlayerGamestateStillBuilt = 0;
   $mpgBuiltFor = -1;
@@ -196,6 +197,7 @@ function ParseGamestate($parseHistoricalStats = true)
   $p2ContractsCompleted = intval(trim($gamestateContent[88+$numChainLinks] ?? ""));
   $p1CardsDisrupted = json_decode(trim($gamestateContent[89+$numChainLinks] ?? ""), true) ?? [];
   $p2CardsDisrupted = json_decode(trim($gamestateContent[90+$numChainLinks] ?? ""), true) ?? [];
+  $handInstanceIDs = DecodeHandInstanceIDs($gamestateContent[91+$numChainLinks] ?? "");
   BuildMyGamestate($playerID);
 }
 

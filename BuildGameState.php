@@ -761,6 +761,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myHandCount = count($myHand);
   $handPieces = HandPieces();
   $handChoiceIndices = "," . $turn[2] . ",";
+  $myHandIDs = $playerID == 3 ? [] : HandInstanceIDsFor($playerID);
   $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay);
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     $label = "";
@@ -783,7 +784,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $label = GetCardEffectLabel($myHand[$i + $handPieces - 1], $currentTurnEffects);
       }
       
-      $myHandContents[] = JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction, label: $label);
+      $myHandContents[] = JSONRenderedCard(cardNumber: $myHand[$i], action: $actionTypeOut, borderColor: $border, actionDataOverride: $actionDataOverride, controller: $playerID, restriction: $restriction, label: $label, uniqueID: $myHandIDs[$i] ?? NULL);
     }
   }
   $response->playerHand = $myHandContents;
