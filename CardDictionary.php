@@ -1429,7 +1429,8 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
       if ($from == "HAND" && !$instantRestricted) $names[0] = "Ability";
       $dominateRestricted = $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1;
       $restriction = "";
-      $effectRestricted = !CanBlock($cardID, $from) || !IsDefenseReactionPlayable($cardID, $from) || EffectPlayCardConstantRestriction($cardID, $restriction, "", true);
+      $effectRestricted = !CanBlock($cardID, $from) || !IsDefenseReactionPlayable($cardID, $from, played:true) || EffectPlayCardConstantRestriction($cardID, $restriction, "", true);
+      
       if ($currentPlayer == $defPlayer && count($combatChain) > 0 && !$dominateRestricted && !$effectRestricted && IsReactionPhase() && IsHeroAttackTarget() && !$nameBlocked) {
         $names[1] = "Defense Reaction";
       }
@@ -3334,9 +3335,10 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   }
 }
 
-function IsDefenseReactionPlayable($cardID, $from)
+function IsDefenseReactionPlayable($cardID, $from, $played=Null)
 {
   global $CombatChain, $mainPlayer;
+  if (!isset($played)) $played = !IsActivated($cardID, $from);
   $attackID = $CombatChain->AttackCard()->ID();
   $extraText = GetHorrorsBuff();
   static $blocksDreacts = [
@@ -3350,7 +3352,7 @@ function IsDefenseReactionPlayable($cardID, $from)
   if ($from == "HAND" && CardSubType($attackID) == "Arrow" && SearchCharacterForCard($mainPlayer, "dreadbore")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
   if (SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer)) return false;
-  if (SearchCurrentTurnEffects("corrupt_and_conquer_red", $mainPlayer) && !IsActivated($cardID, $from)) return false;
+  if (SearchCurrentTurnEffects("corrupt_and_conquer_red", $mainPlayer) && $played) return false;
   if (SearchCurrentTurnEffects("imperial_seal_of_command_red", $mainPlayer) && CardType($cardID) == "DR") return false;
   if ($from == "HAND" && CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($attackID) == "AA") return false;
   return true;
