@@ -470,9 +470,9 @@ class outbreak_blue extends Card {
 			PlayAura($disease, $defPlayer, effectSource:$CombatChain->AttackCard()->ID(), effectAgent:$this->controller);
 	}
 
-	// function SpecialName() {
-	// 	return "Outbreak";
-	// }
+	function SpecialName() {
+		return "Outbreak";
+	}
 
 	function SpecialPitch() {
 		return 3;
