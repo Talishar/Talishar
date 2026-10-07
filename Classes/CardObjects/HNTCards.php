@@ -1795,7 +1795,9 @@ class long_whisker_loyalty_red extends Card {
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
 		global $defPlayer;
 		MarkHero($defPlayer);
-		return true;
+		$index = FindCurrentTurnEffectIndex($this->controller, "$this->cardID-MARK");
+        if ($index != -1) RemoveCurrentTurnEffect($index);
+		return 0;
 	}
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
