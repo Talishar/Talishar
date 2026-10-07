@@ -158,7 +158,7 @@ function CreatePuzzleGameFromSetup($setup, $row, $useruid, $userId, $daily = nul
   file_put_contents($directory . "gamestate.txt", $gamestate);
   file_put_contents($directory . "beginTurnGamestate.txt", $gamestate);
   file_put_contents($directory . PUZZLE_START_FILE, $gamestate);
-  file_put_contents($directory . "gamelog.txt", PuzzleIntroLog($info));
+  ReplaceLiveGameLog($directory, PuzzleIntroLog($info));
   file_put_contents($directory . PUZZLE_MARKER_FILE, (string)intval($setup["candidateId"]));
   WritePuzzleInfo($gameName, $info);
   if ($mode === "survive") {

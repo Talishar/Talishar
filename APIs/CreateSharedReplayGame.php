@@ -129,9 +129,7 @@ if ($gameFileHandler === false) {
 include "../MenuFiles/WriteGamefile.php";
 WriteGameFile();
 
-$filename = "../Games/$gameName/gamelog.txt";
-$handler = fopen($filename, "w");
-if ($handler !== false) fclose($handler);
+ReplaceLiveGameLog("../Games/$gameName");
 
 $currentTime = round(microtime(true) * 1000);
 $isReplay = "1";

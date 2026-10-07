@@ -173,7 +173,7 @@ function PuzzleCreateVerifyGame($gamestate, $format, $mode = "lethal", $script =
   $firstPlayer = trim(explode("\r\n", $gamestate)[39] ?? "1");
   file_put_contents($directory . "GameFile.txt", "1\r\n2\r\n5\r\n" . FormatName(intval($format)) . "\r\nprivate\r\n\r\n$firstPlayer\r\n");
   file_put_contents($directory . "gamestate.txt", $gamestate);
-  file_put_contents($directory . "gamelog.txt", "");
+  ReplaceLiveGameLog($directory);
   file_put_contents($directory . PUZZLE_MARKER_FILE, PUZZLE_VERIFY_MARKER);
   WritePuzzleInfo($gameName, ["mode" => $mode]);
   if ($script !== null) {

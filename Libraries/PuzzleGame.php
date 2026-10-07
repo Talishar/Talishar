@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . '/LiveGameLog.php';
+
 const PUZZLE_MARKER_FILE = "puzzle.txt";
 const PUZZLE_START_FILE = "puzzleStart.txt";
 const PUZZLE_INFO_FILE = "puzzleInfo.json";
@@ -124,7 +126,7 @@ function RestartPuzzleGame($playerID)
     }
   }
   FlushLogBuffer();
-  file_put_contents($filepath . "gamelog.txt", PuzzleIntroLog($info));
+  ReplaceLiveGameLog($filepath, PuzzleIntroLog($info));
   WriteLog("🧩 Puzzle restarted.");
   if ($info["mode"] === "survive") {
     include_once __DIR__ . "/PuzzleScript.php";

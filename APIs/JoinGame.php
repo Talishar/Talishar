@@ -684,8 +684,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $tries = 10;
 
      // Create a fresh gamelog file to clear old messages
-     $gamelogPath = "../Games/" . $gameName . "/gamelog.txt";
-     file_put_contents($gamelogPath, "");
+     ReplaceLiveGameLog("../Games/" . $gameName);
 
      if (intval(GetCachePiece($gameName, 11)) >= 3) {
        WriteLog("⚠️ This lobby was hidden due to inactivity. If you have connection issues, try creating a new game.", path: "../");

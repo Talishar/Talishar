@@ -198,15 +198,12 @@ if ($gameFileHandler === false) {
 include "../MenuFiles/WriteGamefile.php";
 WriteGameFile();
 
-$filename = "../Games/$gameName/gamelog.txt";
-$handler = fopen($filename, "w");
-if ($handler === false) {
-  $response->error = "Failed to create gamelog.txt in game directory: ../Games/$gameName/";
+if (!ReplaceLiveGameLog("../Games/$gameName")) {
+  $response->error = "Failed to initialize game log.";
   http_response_code(500);
   echo json_encode($response);
   exit;
 }
-fclose($handler);
 
 
 $currentTime = round(microtime(true) * 1000);
