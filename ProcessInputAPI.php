@@ -21,7 +21,6 @@ include "Libraries/StatFunctions.php";
 include "Libraries/UILibraries.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
-include_once "Libraries/PromptLog.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
 require_once "Libraries/CoreLibraries.php";
@@ -167,8 +166,6 @@ function ValidateLayerReorder($submittedLayers, $layerPieces, $maxLayerID)
   }
   return null;
 }
-
-LogPromptAnswer($playerID, $mode, submission: $submission);
 
 //Now we can process the command
 try {

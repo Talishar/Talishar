@@ -6,6 +6,7 @@ include_once __DIR__ . "/PuzzleDaily.php";
 
 const PUZZLE_AUTO_POOL = 500;
 const PUZZLE_AUTO_CHECKS = 6;
+const PUZZLE_AUTO_MIN_INTEREST = 65;
 const PUZZLE_AUTO_LOCK = "talishar_daily_puzzle";
 const PUZZLE_AUTO_LOCK_WAIT = 20;
 
@@ -22,7 +23,8 @@ function PuzzleAutoAnalysis($row)
   return [
     "id" => intval($row["id"]),
     "kind" => intval($row["kind"]),
-    "checked" => $proof !== null && (!$proven || $baseline !== null),
+    "checked" => $proof !== null && (!$proven || ($baseline !== null &&
+      (intval($row["kind"]) != PUZZLE_KIND_SURVIVE || isset($baseline["plain"])))),
     "proven" => $proven,
     "filtered" => $analysis["filtered"],
     "interest" => $analysis["rubric"]["percent"],
@@ -38,13 +40,13 @@ function PuzzleAutoRows($conn, $where, $types = "", ...$values)
 
 function PuzzleAutoBetter($a, $b)
 {
+  if ($a["filtered"] || $a["interest"] < PUZZLE_AUTO_MIN_INTEREST) return false;
   if ($b === null) return true;
-  if ($a["filtered"] != $b["filtered"]) return !$a["filtered"];
   return $a["interest"] > $b["interest"];
 }
 
-// The most interesting proven position among the latest ones. Unchecked positions are checked in order of what they
-// could reach, and only while one of them could still beat the best checked one, at most a few per day.
+// Only proven, unfiltered positions above the quality floor can fill a day. Unchecked positions are checked in
+// order of potential, at most a few per day; an easy fallback would turn a bad position into a daily puzzle.
 function PickDailyPuzzleCandidate($conn)
 {
   $ranked = [];
@@ -53,12 +55,13 @@ function PickDailyPuzzleCandidate($conn)
     if ($entry !== null && (!$entry["checked"] || $entry["proven"])) $ranked[] = $entry;
   }
   $best = null;
-  foreach ($ranked as $entry) if ($entry["checked"] && PuzzleAutoBetter($entry, $best)) $best = $entry;
+  foreach ($ranked as $entry) if ($entry["checked"] && $entry["proven"] && PuzzleAutoBetter($entry, $best)) $best = $entry;
 
-  $unchecked = array_values(array_filter($ranked, fn($entry) => !$entry["checked"]));
+  $unchecked = array_values(array_filter($ranked, fn($entry) => !$entry["checked"] &&
+    $entry["potential"] >= PUZZLE_AUTO_MIN_INTEREST));
   usort($unchecked, fn($a, $b) => $b["potential"] <=> $a["potential"] ?: $b["id"] <=> $a["id"]);
   foreach (array_slice($unchecked, 0, PUZZLE_AUTO_CHECKS) as $entry) {
-    if ($best !== null && !$best["filtered"] && $entry["potential"] <= $best["interest"]) break;
+    if ($best !== null && $entry["potential"] <= $best["interest"]) break;
     VerifyPuzzleCandidate($conn, $entry["id"]);
     $row = PuzzleAutoRows($conn, "AND id = ?", "i", $entry["id"])[0] ?? null;
     $entry = $row === null ? null : PuzzleAutoAnalysis($row);

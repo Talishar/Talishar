@@ -278,7 +278,6 @@ if (SaveReplay() && !IsReplay()) {
   fwrite($commandFile, "$playerID $mode $buttonInput $cardID $chkCount " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);
 }
-LogPromptAnswer($playerID, $mode, $buttonInput, $cardID, $chkInput);
 
 //Now we can process the command
 ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, false, $inputText);

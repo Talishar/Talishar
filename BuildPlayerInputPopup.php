@@ -66,8 +66,33 @@ function MZZoneCategory($zoneKey, $index) {
 
 function AddPromptCardContext($popup, $turnPhase, $playerID) {
   global $dqState, $myDeck, $theirDeck;
-  include_once "./Libraries/PromptLog.php";
-  $sourceCard = explode("-", PromptLogContext($turnPhase), 2)[0];
+  global $EffectContext, $decisionQueue, $turn;
+  $context = trim((string)$EffectContext);
+  if ($turnPhase == "ORDERTRIGGERS") {
+    $cardIDs = [];
+    foreach (explode(",", (string)($turn[2] ?? "")) as $layer) {
+      $parts = explode("|", $layer);
+      $cardID = $parts[0] == "USURPED" ? ($parts[2] ?? "") : $parts[0];
+      if ($cardID !== "" && $cardID !== "-") $cardIDs[$cardID] = true;
+    }
+    $cardIDs = array_keys($cardIDs);
+    sort($cardIDs);
+    $context = count($cardIDs) > 0 ? implode("+", $cardIDs) : "-";
+  } else if ($turnPhase == "ARS") {
+    $context = "-";
+  } else if (GetDQHelpText() == "Choose_a_target_for_the_attack") {
+    $context = "ATTACKTARGET";
+  } else {
+    $dqCount = count($decisionQueue ?? []);
+    $dqPieces = DecisionQueuePieces();
+    for ($i = 0; $i < $dqCount; $i += $dqPieces) {
+      if ($decisionQueue[$i] == "RESUMEPAYING") {
+        $context = explode("-", (string)($decisionQueue[$i + 2] ?? ""), 2)[0] ?: "-";
+        break;
+      }
+    }
+  }
+  $sourceCard = explode("-", $context, 2)[0];
   $popup->sourceCard = CardName($sourceCard) != "" ? $sourceCard : "";
   [$deckPlayer, $deckTopCard] = array_pad(explode("-", $dqState[9] ?? "", 2), 2, "");
   $deck = $deckPlayer == $playerID ? $myDeck : $theirDeck;
