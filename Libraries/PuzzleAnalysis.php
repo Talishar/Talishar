@@ -153,6 +153,7 @@ function PuzzleBotSummary($baseline)
   if (!is_array($bot)) return null;
   return [
     "won" => !empty($bot["won"]),
+    "completed" => !empty($bot["completed"]),
     "damage" => intval($bot["damage"] ?? 0),
     "played" => array_map("PuzzleStepCard", $bot["played"] ?? []),
     "pitched" => array_map("PuzzleStepCard", $bot["pitched"] ?? []),
@@ -293,8 +294,8 @@ function AnalyzePuzzlePosition($content, $player, $meta, $proof, $baseline = nul
   ];
 }
 
-// Blocking by the numbers is exactly what the bot does, so for a survive puzzle the bot is the plain-stats test:
-// if it lives through the attack by blocking greedily, the puzzle teaches nothing. The defense margin only ranks.
+// A failed bot is not enough to make a defense interesting: the bot may pass its block window. A separate
+// plain-block replay and the proven line's decisions decide whether the position needs an actual idea.
 function AnalyzeSurvivePosition($content, $player, $meta, $proof, $baseline, $steps)
 {
   $lines = explode("\r\n", $content);
@@ -313,9 +314,20 @@ function AnalyzeSurvivePosition($content, $player, $meta, $proof, $baseline, $st
   $gap = $incoming - $defense - $life + 1;
   $bot = PuzzleBotSummary($baseline);
   $options = count($hand) + count($arsenal) + count($equipment);
+  $plainWon = !empty($baseline["plain"]["won"]);
+  $baselineStalled = (isset($baseline["bot"]["completed"]) && !$baseline["bot"]["completed"])
+    || (isset($baseline["plain"]["completed"]) && !$baseline["plain"]["completed"]);
+  $lesson = PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_SURVIVE, $steps, $baseline));
+  $theme = $lesson["theme"] ?? null;
+  $hasTactic = $steps === null || in_array($theme, ["DEFENSE_REACTION", "INSTANT_DEFENSE", "SAVE_BLOCKS"], true)
+    || PuzzleDecisions($steps, ["PLAY", "ACTIVATE", "CHOOSE", "ORDER", "OPT"]) > 0;
+  $filtered = ($bot["won"] ?? false) || $plainWon || $baselineStalled || !$hasTactic;
 
   $flags = [];
   if ($bot !== null) $flags[] = ["code" => $bot["won"] ? "BOT_SOLVES" : "BOT_FAILS", "value" => $bot["damage"]];
+  if ($plainWon) $flags[] = ["code" => "PLAIN_BLOCKS", "value" => 0];
+  if ($baselineStalled) $flags[] = ["code" => "BASELINE_STALLED", "value" => 0];
+  if (!$hasTactic) $flags[] = ["code" => "NO_TACTIC", "value" => 0];
   if (!$proven) $flags[] = ["code" => "UNPROVEN", "value" => 0];
   if ($proven && $life < $realLife) $flags[] = ["code" => "LIFE_LOWERED", "value" => $realLife - $life];
   if ($options <= 2) $flags[] = ["code" => "FEW_OPTIONS", "value" => $options];
@@ -326,9 +338,8 @@ function AnalyzeSurvivePosition($content, $player, $meta, $proof, $baseline, $st
   $optionScore = PuzzleBand($options, [[1, 0.0], [2, 0.4], [3, 0.7], [PHP_INT_MAX, 1.0]]);
   $score = 100 * (0.6 * $botScore + 0.25 * $gapScore + 0.15 * $optionScore);
   if ($options <= 2) $score *= 0.6;
+  if ($filtered) $score = min($score, PUZZLE_TOO_EASY_CAP);
   $score = (int)round($score);
-  $lesson = PuzzleLessonView(PuzzleLesson(PUZZLE_KIND_SURVIVE, $steps, $baseline));
-  $filtered = $bot["won"] ?? false;
   $interest = PuzzleSurviveInterest($proven, $gap, $bot, $options, $incoming, $lesson, $steps, $filtered);
 
   return [
