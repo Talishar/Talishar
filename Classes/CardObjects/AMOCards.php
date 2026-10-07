@@ -55,9 +55,8 @@ class viral_diffusion_red extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    global $mainPlayer;
-    PlayAura("bloodrot_pox", $mainPlayer);
-    PlayAura("frailty", $mainPlayer);
-    PlayAura("inertia", $mainPlayer);
+    global $mainPlayer, $Diseases;
+    foreach($Diseases as $disease)
+			PlayAura($disease, $mainPlayer, effectSource:$this->cardID, effectAgent:$this->controller);
   }
 }
