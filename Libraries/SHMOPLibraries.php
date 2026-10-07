@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . '/GameCacheSentinel.php';
+
 /*
 1 - Update Number
 2 - P1 Last Connection Time
@@ -36,6 +38,7 @@ function WriteCache($name, $data)
   } else {
     $serData = str_pad($serData, 128, "\0");
     $rv = shmop_write($id, $serData, 0);
+    if ($rv === strlen($serData)) PublishGameCacheSentinel($name);
   }
 }
 
@@ -132,6 +135,7 @@ function ShmopReadCache($name)
 
 function DeleteCache($name)
 {
+  DeleteGameCacheSentinel($name);
   //Always try to delete shmop
   $id = @shmop_open($name, "w", 0666, 128);
   if($id) {
