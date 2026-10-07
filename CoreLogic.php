@@ -1242,12 +1242,6 @@ function PlayerWon($playerID, $conceded = false)
     PuzzleGameOver($playerID);
     return;
   }
-  try {
-    include_once __DIR__ . "/Libraries/PromptLog.php";
-    FlushPromptLog($gameName);
-  } catch (Throwable $e) {
-    error_log("PlayerWon: FlushPromptLog threw: " . $e->getMessage());
-  }
   if (isPlayerAI(2)) return;
   try {
     include_once __DIR__ . "/Libraries/PuzzleHarvest.php";
