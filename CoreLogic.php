@@ -4590,7 +4590,7 @@ function ResolvePermanent($cardID, $from, $additionalCosts) {
 //handles moving a card to where it's supposed to go *after* it resolves
 function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
   global $currentPlayer, $turn;
-  if (!GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "COMBATCHAINATTACKS" && $cardID != "quickdodge_flexors") {
+  if (!GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "COMBATCHAINATTACKS" && $from != "PASTCHAINLINK" && $cardID != "quickdodge_flexors") {
     $cardSubtype = CardSubType($cardID);
     if (DelimStringContains($cardSubtype, "Aura")); //permanents handled elsewhere
     else if (DelimStringContains($cardSubtype, "Ally"));
