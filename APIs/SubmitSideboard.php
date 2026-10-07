@@ -4,7 +4,7 @@ include "../HostFiles/Redirector.php";
 include "../Libraries/HTTPLibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
 include "../Libraries/NetworkingLibraries.php";
-include "../Libraries/CacheLibraries.php";
+include_once "../Libraries/CacheLibraries.php";
 include "../GameLogic.php";
 include "../GameTerms.php";
 include "../Libraries/StatFunctions.php";
@@ -296,21 +296,18 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   }
   WriteGamestateCache($gameName, $gamestate);
 
-  //Set up log file
-  $filename = "../Games/" . $gameName . "/gamelog.txt";
+  // Initialize the live log for the main game.
   $filepath = "../Games/" . $gameName . "/";
   if (!is_dir($filepath)) {
     $response->error = "Game files not found; the game may have been closed due to inactivity";
     echo json_encode($response);
     exit;
   }
-  $handler = @fopen($filename, "w");
-  if ($handler === false) {
+  if (!ReplaceLiveGameLog($filepath)) {
     $response->error = "Unable to initialize the game log";
     echo json_encode($response);
     exit;
   }
-  fclose($handler);
 
   $currentTime = strval(round(microtime(true) * 1000));
   $cacheArr = ReadCacheArray($gameName); // one shmop read

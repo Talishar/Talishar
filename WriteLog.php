@@ -1,9 +1,10 @@
 <?php
 
-// Log lines are buffered in memory and written with one append per file instead
-// of an open/write/flush/close cycle per line (game actions emit many lines).
+include_once __DIR__ . '/Libraries/LiveGameLog.php';
+
+// Log lines are buffered per request and flushed once per destination.
 // FlushLogBuffer() runs before GamestateUpdated() bumps the change counter, so
-// logs are always on disk before any SSE/polling process rebuilds the game state.
+// the live APCu log is published before SSE/polling rebuilds the game state.
 // Per-file content is hard-capped at LOG_BUFFER_FLUSH_THRESHOLD
 if (!defined('LOG_BUFFER_FLUSH_THRESHOLD')) {
   define('LOG_BUFFER_FLUSH_THRESHOLD', 65536); // bytes, per filename
@@ -49,12 +50,19 @@ function FlushLogBufferEntry($filename)
   if (!isset($logWriteBuffer[$filename])) return;
   $entry = &$logWriteBuffer[$filename];
   if ($entry["content"] === "") return;
-  if ($entry["requireExists"] && !file_exists($filename)) {
+  $isLiveLog = basename($filename) === 'gamelog.txt';
+  if (!$isLiveLog && $entry["requireExists"] && !file_exists($filename)) {
     $entry["content"] = "";
     $entry["size"] = 0;
     return;
   }
-  @file_put_contents($filename, $entry["content"], FILE_APPEND);
+  if ($isLiveLog) {
+    if (!AppendLiveGameLog(dirname($filename), $entry["content"])) {
+      error_log('Could not append live game log: ' . $filename);
+    }
+  } else {
+    @file_put_contents($filename, $entry["content"], FILE_APPEND);
+  }
   $entry["content"] = "";
   $entry["size"] = 0;
 }
@@ -99,79 +107,17 @@ function WriteLog($text, $playerColor = 0, $highlight=false, $path="./", $highli
 
 function ClearLog($n=500)
 {
-  global $gameName, $logWriteBuffer;
-
-  if (!empty($logWriteBuffer)) FlushLogBuffer();
-  $filename = "./Games/$gameName/gamelog.txt";
-  $handle = @fopen($filename, "rb");
-  if ($handle === false) return;
-
-  fseek($handle, 0, SEEK_END);
-  $filesize = ftell($handle);
-  if ($filesize <= 0) {
-    fclose($handle);
-    return;
-  }
-
-  $chunkSize = 65536;
-  $offset = $filesize;
-  $newlines = 0;
-  $tailChunks = [];
-  while ($offset > 0 && $newlines <= $n) {
-    $readLen = (int)min($chunkSize, $offset);
-    $offset -= $readLen;
-    fseek($handle, $offset, SEEK_SET);
-    $chunk = fread($handle, $readLen);
-    if ($chunk === false) {
-      fclose($handle);
-      return;
-    }
-    $newlines += substr_count($chunk, "\n");
-    $tailChunks[] = $chunk;
-  }
-  fclose($handle);
-
-  // Whole file scanned and still at or under the cap: nothing to trim.
-  if ($offset === 0 && $newlines <= $n) return;
-
-  $tail = count($tailChunks) === 1 ? $tailChunks[0] : implode("", array_reverse($tailChunks));
-  $excess = $newlines - $n;
-  $cut = 0;
-  for ($i = 0; $i < $excess; ++$i) {
-    $nl = strpos($tail, "\n", $cut);
-    if ($nl === false) break;
-    $cut = $nl + 1;
-  }
-  if ($cut > 0) $tail = substr($tail, $cut);
-
-  $handle = @fopen($filename, "wb");
-  if ($handle === false) return;
-  fwrite($handle, $tail);
-  fclose($handle);
+  global $gameName;
+  FlushLogBuffer();
+  TrimLiveGameLog("./Games/$gameName", $n);
 }
 
-// Used when people rematch and start a new lobby
+// Used when people rematch and start a new lobby.
 function TruncateLogAboveMarker($markers)
 {
   global $gameName;
-
-  FlushLogBuffer(); // buffered lines must be in the file before we slice it
-  $filename = "./Games/$gameName/gamelog.txt";
-  if (!file_exists($filename)) return;
-  $lines = file($filename);
-  if ($lines === false) return;
-
-  $keepFrom = count($lines); // no marker found -> keep nothing
-  for ($i = count($lines) - 1; $i >= 0; --$i) {
-    foreach ($markers as $marker) {
-      if (strpos($lines[$i], $marker) !== false) {
-        $keepFrom = $i;
-        break 2;
-      }
-    }
-  }
-
-  file_put_contents($filename, implode("", array_slice($lines, $keepFrom)));
+  FlushLogBuffer();
+  TruncateLiveGameLogAboveMarker("./Games/$gameName", $markers);
 }
 
 function WriteSystemMessage($text, $path="./")
@@ -191,32 +137,11 @@ function JSONLog($gameName, $playerID, $path="./")
   return LogForViewer(ReadLogWindow($gameName, $path)[1], $playerID);
 }
 
-// The tail of the log that JSONLog sends, as [file offset it starts at, raw bytes]
+// The log tail and its logical byte offset, used by SSE delta delivery.
 function ReadLogWindow($gameName, $path="./")
 {
-  global $logWriteBuffer;
-  $filename = "{$path}Games/$gameName/gamelog.txt";
-  if (!empty($logWriteBuffer)) FlushLogBuffer();
-
-  $maxRead = 131072; // 128 KB cap — prevents OOM when log file grows large
-  $handler = @fopen($filename, "rb");
-  if ($handler === false) return [0, ""];
-  fseek($handler, 0, SEEK_END);
-  $filesize = ftell($handler);
-  if ($filesize <= 0) {
-    fclose($handler);
-    return [0, ""];
-  }
-  $truncated = $filesize > $maxRead;
-  $start = $truncated ? $filesize - $maxRead : 0;
-  fseek($handler, $start, SEEK_SET);
-  $line = fread($handler, $truncated ? $maxRead : $filesize);
-  fclose($handler);
-  if ($truncated && ($nl = strpos($line, "\n")) !== false) {
-    $line = substr($line, $nl + 1);
-    $start += $nl + 1;
-  }
-  return [$start, $line];
+  FlushLogBuffer();
+  return LiveGameLogWindow("{$path}Games/$gameName");
 }
 
 function LogForViewer($line, $playerID)

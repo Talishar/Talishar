@@ -72,7 +72,6 @@ $writes = [
   "lastTurnGamestate.txt" => $gamestate,
   "startChainLinkGamestate.txt" => $gamestate,
   "gamestateBackup.txt" => $gamestate,
-  "gamelog.txt" => "",
   "commandfile.txt" => "",
   "snapshotInviteHash.txt" => hash("sha256", $invite),
   "snapshotOwnerSeat.txt" => (string)$ownerSeat
@@ -85,6 +84,10 @@ foreach ($writes as $filename => $content) {
     @rmdir($gamePath);
     ExitJsonResponse(["error" => "Could not initialize the snapshot game."], 500);
   }
+}
+
+if (!ReplaceLiveGameLog($gamePath)) {
+  ExitJsonResponse(["error" => "Could not initialize the snapshot game log."], 500);
 }
 
 $currentTime = round(microtime(true) * 1000);

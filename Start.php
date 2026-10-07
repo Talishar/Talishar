@@ -116,7 +116,7 @@ file_put_contents($gameDir . "gamestate.txt", $gamestate);
 WriteGamestateCache($gameName, $gamestate);
 
 // Create empty log file
-file_put_contents($gameDir . "gamelog.txt", "");
+ReplaceLiveGameLog($gameDir);
 
 $currentTime = strval(round(microtime(true) * 1000));
 $cacheArr = ReadCacheArray($gameName); 
