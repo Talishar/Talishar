@@ -450,7 +450,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $activeChainLink->reactions = $combatChainReactions;
   $attackTargetNames = GetAttackTargetNames($mainPlayer);
   $activeChainLink->attackTarget = $attackTargetNames;
-  $activeChainLink->damagePrevention = ($combatChainCount > 0 && CanDamageBePrevented($mainPlayer, 0, "COMBAT", $combatChain[0])) ? GetDamagePrevention($defPlayer, $totalPower) : 0;
+  $pendingDamage = max(0, $totalPower - $totalDefense);
+  $damagePreventable = $combatChainCount > 0 && CanDamageBePrevented($defPlayer, $pendingDamage, "COMBAT", $combatChain[0]);
+  $activeChainLink->unpreventable = $combatChainCount > 0 && !$damagePreventable;
+  $activeChainLink->damagePrevention = $damagePreventable ? GetDamagePrevention($defPlayer, $totalPower) : 0;
   $activeChainLink->goAgain = CachedAttackHasGoAgain();
     // || ($combatChainCount > 0 // This looks like it was trying to catch an edge case, but I don't know what edge case that would be
     //   && !CurrentEffectPreventsGoAgain($combatChain[0], $combatChain[2] ?? "CC")
