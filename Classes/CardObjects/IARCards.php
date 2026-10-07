@@ -7621,7 +7621,11 @@ class corpse_cover extends BaseCard {
   }
 
   function AbilityType($index = -1, $from = '-') {
-    return $from == "PLAY" ? "I" : "B";
+    return $from == "PLAY" || $from == "PASTCHAINLINK" ? "I" : "B";
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "I,B";
   }
 
   function AbilityPlayableFromCombatChain($index = '-') {
