@@ -419,3 +419,74 @@ class prolonged_illness_blue extends Card {
 		return "ASSASSIN";
 	}
 }
+
+class outbreak_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "outbreak_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddEffectToAttack($this->controller, $this->cardID, $target, true);
+		return "";
+	}
+
+	private
+	function GetTargets() {
+		$choices = [];
+		$attacks = TargetAttack($this->controller);
+		foreach($attacks as $attack) {
+			$cardID = GetMZCard($this->controller, $attack);
+			if (ClassContains($cardID, "ASSASSIN", $this->controller) && TypeContains($cardID, "AA"))
+				$choices[] = $attack;
+		}
+		return $choices;
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		return count($this->GetTargets()) == 0;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$choices = implode(",", $this->GetTargets());
+		SetTargetsChoices($this->controller, $this->cardID, $choices, "Target an Assassin attack action card");
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $defPlayer, $CombatChain, $Diseases;
+		foreach($Diseases as $disease)
+			PlayAura($disease, $defPlayer, effectSource:$CombatChain->AttackCard()->ID(), effectAgent:$this->controller);
+	}
+
+	// function SpecialName() {
+	// 	return "Outbreak";
+	// }
+
+	function SpecialPitch() {
+		return 3;
+	}
+
+	function SpecialCost() {
+		return 3;
+	}
+
+	function SpecialType() {
+		return "AR";
+	}
+
+	function SpecialClass() {
+		return "ASSASSIN";
+	}
+}

@@ -699,8 +699,13 @@
     }
   }
 
-function AddEffectToAttack($player, $effectID, $target) {
-  if ($target == "COMBATCHAINLINK-0") AddCurrentTurnEffect($effectID, $player);
+function AddEffectToAttack($player, $effectID, $target, $attach=false) {
+  if ($target == "COMBATCHAINLINK-0") {
+    if ($attach)
+      AddEffectToCurrentAttack($effectID);
+    else
+      AddCurrentTurnEffect($effectID, $player);
+  }
   elseif (explode("-", $target)[0] == "ATTACKQUEUE") {
     $ind = intval(explode("-", $target)[1] ?? 0);
     $QueueCard = new AttackLayer($ind);

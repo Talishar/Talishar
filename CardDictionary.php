@@ -268,6 +268,7 @@ function SetID($cardID)
       "zane_broadly_beloved" => "SPW003", //temporary while waiting on fabcube
       "killjoy_the_crooked_blade" => "SPW001",
       "battle_clearing_bellow_blue" => "IAR040",
+      "outbreak_blue" => "MPA031",
     ];
   }
 
@@ -286,6 +287,7 @@ function SetIDtoCardID($setID)
 {
   return match($setID) {
     "IAR040" => "battle_clearing_bellow_blue",
+    "MPA031" => "outbreak_blue",
     default => GeneratedSetIDtoCardID($setID)
   };
 }
