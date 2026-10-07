@@ -370,7 +370,6 @@ function ProcessSpecificCardMacros()
       "dr_mortimer", "dr_mortimer_blight_of_the_pits",
       "break_stature_yellow",
       "liars_charm_yellow", "numbskull_charm_yellow", "cheaters_charm_yellow",
-      "gang_robbery_yellow", "steal_victory_blue", "tempt_over_yellow",
       "destructive_fleetfoot_red", "destructive_fleetfoot_yellow", "destructive_fleetfoot_blue",
       "bash_guardian_red", "bash_brute_red",
       "clash_of_bravado_yellow",
