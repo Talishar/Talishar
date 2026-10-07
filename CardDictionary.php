@@ -2082,7 +2082,6 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $CS_NumBluePlayed, $CS_NumAttacks;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
-  if (IsActivated($cardID, $from)) return "-";
   if (HasMeld($cardID) && $additionalCosts == "Both" && $from != "MELD") return "-";
   if ($from == "THEIRBANISH" || $playedFrom == "THEIRBANISH") {
     switch ($cardID) {
