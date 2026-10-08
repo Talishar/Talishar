@@ -449,6 +449,6 @@ function GetAllAltArtVariations(): array
     "corrupted_corpse=FAB514-MVA", "corrupted_corpse=FAB514-MVB", "corrupted_corpse=FAB514-MVC", "corrupted_corpse=FAB514-MVD",
     "corrupted_corpse=FAB514-MVE", "corrupted_corpse=FAB514-MVF", "corrupted_corpse=FAB514-MVG", "corrupted_corpse=FAB514-MVH",
     "corrupted_corpse=FAB514-MVI", "corrupted_corpse=FAB514-MVJ",
-    "malice_domina_of_the_dead=GEM184-MV",
+    "malice_domina_of_the_dead=GEM184-MV", "sink_below_red=WTR215-T",
   ];
 }
