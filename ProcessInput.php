@@ -160,7 +160,7 @@ if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== 
     $previousPointer = $history[(string)$currentPointer] ?? null;
     if (!is_int($previousPointer) && !ctype_digit((string)$previousPointer)) exit;
     $previousPointer = (int)$previousPointer;
-    $gamestate = @file_get_contents($filepath . "replayStep_$previousPointer.txt");
+    $gamestate = ReadRollbackSnapshot($filepath . "replayStep_$previousPointer.txt");
     if (!is_string($gamestate)) exit;
     $commands[0] = "$previousPointer\r\n";
     file_put_contents($filename, $commands, LOCK_EX);

@@ -1,6 +1,7 @@
 <?php
 
 include_once __DIR__ . '/LiveGameLog.php';
+include_once __DIR__ . '/RollbackStates.php';
 
 const PUZZLE_MARKER_FILE = "puzzle.txt";
 const PUZZLE_START_FILE = "puzzleStart.txt";
@@ -105,15 +106,13 @@ function RestartPuzzleGame($playerID)
   global $gameName, $filepath, $skipWriteGamestate;
   if (!IsPuzzleGame($gameName) || IsPlayerAI($playerID)) return;
   $startFile = file_exists($filepath . PUZZLE_START_FILE) ? PUZZLE_START_FILE : "beginTurnGamestate.txt";
-  if (!file_exists($filepath . $startFile)) return;
+  if (!RollbackSnapshotExists($filepath . $startFile)) return;
   RevertGamestate($startFile);
   SetCachePiece($gameName, 14, 5); //MGS_GameStarted
-  foreach (glob($filepath . "gamestateBackup_*.txt") ?: [] as $backup) @unlink($backup);
-  @unlink($filepath . "preBlockBackup.txt");
-  @unlink($filepath . "startChainLinkGamestate.txt");
+  ResetUndoStates($filepath);
   $info = ReadPuzzleInfo($gameName);
   if (!isset($info["life"])) {
-    $healths = explode(" ", trim(explode("\r\n", (string)@file_get_contents($filepath . $startFile))[0]));
+    $healths = explode(" ", trim(explode("\r\n", (string)ReadRollbackSnapshot($filepath . $startFile))[0]));
     $info["life"] = intval($healths[$playerID == 1 ? 1 : 0] ?? 0);
     $info["candidateId"] = intval(@file_get_contents($filepath . PUZZLE_MARKER_FILE));
   }

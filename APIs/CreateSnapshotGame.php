@@ -77,11 +77,12 @@ $writes = [
   "snapshotOwnerSeat.txt" => (string)$ownerSeat
 ];
 foreach ($writes as $filename => $content) {
-  if (file_put_contents($gamePath . $filename, $content, LOCK_EX) === false) {
+  if (!WriteRollbackSnapshot($gamePath . $filename, $content)) {
     foreach (array_keys($writes) as $writtenFile) {
       if (is_file($gamePath . $writtenFile)) @unlink($gamePath . $writtenFile);
     }
     @rmdir($gamePath);
+    DeleteRollbackStates($gameName);
     ExitJsonResponse(["error" => "Could not initialize the snapshot game."], 500);
   }
 }

@@ -93,7 +93,7 @@ function PuzzleTurnConceded($gameDirectory, $winner, $turn)
 function PuzzleTurnStartState($turnPlayer)
 {
   global $gameName, $currentTurn;
-  $content = @file_get_contents("./Games/$gameName/beginTurnGamestate.txt");
+  $content = ReadRollbackSnapshot("./Games/$gameName/beginTurnGamestate.txt");
   if ($content === false) return null;
   $lines = explode("\r\n", $content);
   if (count($lines) < 60) return null;
