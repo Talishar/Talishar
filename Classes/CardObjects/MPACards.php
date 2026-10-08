@@ -389,7 +389,7 @@ class prolonged_illness_blue extends Card {
 		if (!SubtypeContains($Disease->CardID(), "Disease")) return;
 		$diseaseName = GamestateSanitize(NameOverride($Disease->CardID(), $controller));
 		if ($diseaseName != "" && !DelimStringContains($Effect->AppliestoUniqueID(), $diseaseName)) {
-			$Effect->ApplyToUniqueID($diseaseName);
+			$Effect->AddApplicationToUniqueID($diseaseName);
 			AddLayer("TRIGGER", $this->controller, $this->cardID, $controller, $Disease->CardID());
 		}
 	}

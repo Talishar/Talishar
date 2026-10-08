@@ -165,6 +165,15 @@ class CurrentEffect {
       $this->pieces[$this->index+2] = $uid;
   }
 
+  function AddApplicationToUniqueID($uid) {
+    if (isset($this->pieces[$this->index+2])) {
+      if ($this->AppliestoUniqueID() == -1)
+        $this->pieces[$this->index+2] = $uid;
+      else
+        $this->pieces[$this->index+2] .= ",$uid";
+    }
+  }
+
   function NumUses() {
     return $this->pieces[$this->index+3] ?? 0;
   }
