@@ -1379,7 +1379,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (!is_dir($folderName)) mkdir($folderName, 0700, true);
       copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
       if (file_exists("./Games/$gameName/gamestateBackup.txt")) copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
-      ExportLiveGameLog("./Games/$gameName", $folderName . "/gamelog.txt");
+      if (file_exists("./Games/$gameName/gamelog.txt")) copy("./Games/$gameName/gamelog.txt", $folderName . "/gamelog.txt");
       if (file_exists("./Games/$gameName/beginTurnGamestate.txt")) copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
       if (file_exists("./Games/$gameName/lastTurnGamestate.txt")) copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
       if (file_exists("./Games/$gameName/startChainLinkGamestate.txt")) copy("./Games/$gameName/startChainLinkGamestate.txt", $folderName . "/startChainLinkGamestate.txt");
@@ -4950,6 +4950,7 @@ function ReportBug()
   $filesToCopy = [
     "gamestate.txt",
     "gamestateBackup.txt",
+    "gamelog.txt",
     "beginTurnGamestate.txt",
     "lastTurnGamestate.txt"
   ];
@@ -4960,7 +4961,6 @@ function ReportBug()
       copy($sourcePath, "$folderName/$file");
     }
   }
-  ExportLiveGameLog("./Games/$gameName", "$folderName/gamelog.txt");
   
   // Copy numbered backup files
   for ($i = 0; $i <= 4; $i++) {

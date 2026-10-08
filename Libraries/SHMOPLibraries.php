@@ -1,7 +1,6 @@
 <?php
 
 include_once __DIR__ . '/GameCacheSentinel.php';
-include_once __DIR__ . '/LiveGameLog.php';
 
 /*
 1 - Update Number
@@ -137,7 +136,6 @@ function ShmopReadCache($name)
 function DeleteCache($name)
 {
   DeleteGameCacheSentinel($name);
-  DeleteLiveGameLog($name);
   //Always try to delete shmop
   $id = @shmop_open($name, "w", 0666, 128);
   if($id) {

@@ -52,7 +52,9 @@ $gameFileHandler = fopen($filename, "w");
 include "MenuFiles/WriteGamefile.php";
 WriteGameFile();
 
-ReplaceLiveGameLog("./Games/" . $gameName);
+$filename = "./Games/" . $gameName . "/gamelog.txt";
+$handler = fopen($filename, "w");
+fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
 $isReplay = "1";

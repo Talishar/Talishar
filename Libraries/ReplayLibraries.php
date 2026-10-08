@@ -1,7 +1,5 @@
 <?php
 
-include_once __DIR__ . '/LiveGameLog.php';
-
 const REPLAY_FORMAT_VERSION = 2;
 const REPLAY_FORMAT_FILENAME = "replayFormat.json";
 const REPLAY_LOG_FILENAME = "replayLog.txt";
@@ -345,7 +343,7 @@ function WriteReplayGameLog(string $directory, int $pointer): void
   $log = $end > $start ? @file_get_contents($directory . REPLAY_LOG_FILENAME, false, null, $start, $end - $start) : "";
   if (!is_string($log)) return;
   if ($start > 0 && ($newline = strpos($log, "\n")) !== false) $log = substr($log, $newline + 1);
-  ReplaceLiveGameLog($directory, $log);
+  file_put_contents($directory . "gamelog.txt", $log, LOCK_EX);
 }
 
 function IsReplayControlMode($mode): bool

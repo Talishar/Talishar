@@ -153,11 +153,14 @@ if ($gameFileHandler === false) {
 include "../MenuFiles/WriteGamefile.php";
 WriteGameFile();
 
-if (!ReplaceLiveGameLog("../Games/" . $gameName)) {
+$filename = "../Games/" . $gameName . "/gamelog.txt";
+$handler = @fopen($filename, "w");
+if ($handler === false) {
   $response->error = "Game log could not be initialized.";
   echo json_encode($response);
   exit;
 }
+fclose($handler);
 
 $currentTime = round(microtime(true) * 1000);
 $cacheVisibility = ($visibility == "public" ? "1" : ($visibility == "friends-only" ? "2" : "0"));

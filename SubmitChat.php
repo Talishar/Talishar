@@ -22,7 +22,6 @@ session_write_close();
 
 include "Libraries/HTTPLibraries.php";
 include_once "Libraries/SHMOPLibraries.php";
-include_once "Libraries/LiveGameLog.php";
 include_once "includes/dbh.inc.php";
 include_once "includes/MetafyHelper.php";
 SetHeaders();
@@ -140,14 +139,15 @@ if(IsUserContributor($sessionUserUid)) {
   $displayName = "<a href='https://metafy.gg/@talishar/members' target='_blank' rel='noopener noreferrer'><img title='I am a developer of Talishar!' style='margin-bottom:3px; height:16px;' src='./images/copper.webp' /></a>" . $displayName;
 }
 
+$filename = "./Games/" . $gameName . "/gamelog.txt";
+$handler = fopen($filename, "a");
 // Use gold color for mods (including mods spectating), otherwise use player color
 $chatColor = $isMod ? "#a58703ff" : "<PLAYER" . $playerID . "COLOR>";
 $output = "<span style='font-weight:bold; color:" . $chatColor . ";'>" . $displayName . ": </span>" . $chatText;
-$chatLines = $output . "\r\n";
-if (GetCachePiece($gameName, 11) >= 3) $chatLines .= "The lobby is reactivated.\r\n";
-if (!AppendLiveGameLog("./Games/" . $gameName, $chatLines)) {
-  http_response_code(503);
-  die("Unable to store chat message.");
+if ($handler) {
+  fwrite($handler, $output . "\r\n");
+  if (GetCachePiece($gameName, 11) >= 3) fwrite($handler, "The lobby is reactivated.\r\n");
+  fclose($handler);
 }
 
 $resetTimer = true;
