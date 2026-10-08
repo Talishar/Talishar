@@ -156,7 +156,7 @@ function CreatePuzzleGameFromSetup($setup, $row, $useruid, $userId, $daily = nul
   ];
   if ($daily !== null) $info["daily"] = $daily;
   file_put_contents($directory . "gamestate.txt", $gamestate);
-  WriteRollbackSnapshot($directory . "beginTurnGamestate.txt", $gamestate);
+  file_put_contents($directory . "beginTurnGamestate.txt", $gamestate);
   file_put_contents($directory . PUZZLE_START_FILE, $gamestate);
   ReplaceLiveGameLog($directory, PuzzleIntroLog($info));
   file_put_contents($directory . PUZZLE_MARKER_FILE, (string)intval($setup["candidateId"]));

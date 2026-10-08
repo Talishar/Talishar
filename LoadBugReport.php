@@ -3,7 +3,6 @@
 include './APIKeys/APIKeys.php';
 include './Libraries/HTTPLibraries.php';
 include_once './Libraries/SHMOPLibraries.php';
-include_once './Constants.php';
 include_once './HostFiles/Redirector.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -44,15 +43,13 @@ if ($http_code != 200) {
 }
 
 SaveFile($source, $target, "gamestate.txt");
-DeleteRollbackStates($target);
 SaveFile($source, $target, "gamestateBackup.txt");
 SaveFile($source, $target, "beginTurnGamestate.txt");
 SaveFile($source, $target, "lastTurnGamestate.txt");
 SaveFile($source, $target, "startChainLinkGamestate.txt");
-SaveFile($source, $target, "preBlockBackup.txt");
 
 // Load undo gamestate backups
-for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
+for ($i = 0; $i <= 4; $i++) {
   SaveFile($source, $target, "gamestateBackup_{$i}.txt");
 }
 
@@ -90,12 +87,7 @@ function SaveFile($source, $target, $file)
   if (curl_errno($ch)) {
       echo 'cURL error: ' . curl_error($ch);
   }
-  $sourceStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   curl_close($ch);
-  if ($source_file_contents === false || $sourceStatus !== 200) {
-    fclose($gs_file);
-    return;
-  }
 
   $gs_file_contents = stream_get_contents($gs_file);
 
@@ -132,6 +124,6 @@ function SaveFile($source, $target, $file)
   
   fclose($gs_file);
 
-  WriteRollbackSnapshot($target_realpath, $target_file_contents);
+  file_put_contents("{$target_realpath}", $target_file_contents);
 }
 

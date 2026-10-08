@@ -1052,7 +1052,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       $previousPointer = intval($previousPointer);
       $snapshotName = "replayStep_$previousPointer.txt";
-      if (!RollbackSnapshotExists($filepath . $snapshotName)) {
+      if (!file_exists($filepath . $snapshotName)) {
         $skipWriteGamestate = true;
         break;
       }
@@ -1378,11 +1378,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       if (!is_dir($folderName)) mkdir($folderName, 0700, true);
       copy("./Games/$gameName/gamestate.txt", $folderName . "/gamestate.txt");
-      ExportRollbackSnapshot("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
+      if (file_exists("./Games/$gameName/gamestateBackup.txt")) copy("./Games/$gameName/gamestateBackup.txt", $folderName . "/gamestateBackup.txt");
       ExportLiveGameLog("./Games/$gameName", $folderName . "/gamelog.txt");
-      ExportRollbackSnapshot("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
-      ExportRollbackSnapshot("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
-      ExportRollbackSnapshot("./Games/$gameName/startChainLinkGamestate.txt", $folderName . "/startChainLinkGamestate.txt");
+      if (file_exists("./Games/$gameName/beginTurnGamestate.txt")) copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
+      if (file_exists("./Games/$gameName/lastTurnGamestate.txt")) copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
+      if (file_exists("./Games/$gameName/startChainLinkGamestate.txt")) copy("./Games/$gameName/startChainLinkGamestate.txt", $folderName . "/startChainLinkGamestate.txt");
       WriteLog("🚨Thank you for reporting a player. The chat log has been saved on the server. Please report it to a mod on Discord with the game number for reference ($gameName).", highlight: true);
       break;
     case 100015: //Request to enable chat
@@ -4951,21 +4951,23 @@ function ReportBug()
     "gamestate.txt",
     "gamestateBackup.txt",
     "beginTurnGamestate.txt",
-    "lastTurnGamestate.txt",
-    "preBlockBackup.txt",
-    "startChainLinkGamestate.txt"
+    "lastTurnGamestate.txt"
   ];
   
   foreach ($filesToCopy as $file) {
     $sourcePath = "./Games/$gameName/$file";
-    ExportRollbackSnapshot($sourcePath, "$folderName/$file");
+    if (file_exists($sourcePath)) {
+      copy($sourcePath, "$folderName/$file");
+    }
   }
   ExportLiveGameLog("./Games/$gameName", "$folderName/gamelog.txt");
   
   // Copy numbered backup files
-  for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
+  for ($i = 0; $i <= 4; $i++) {
     $sourcePath = "./Games/$gameName/gamestateBackup_{$i}.txt";
-    ExportRollbackSnapshot($sourcePath, "$folderName/gamestateBackup_{$i}.txt");
+    if (file_exists($sourcePath)) {
+      copy($sourcePath, "$folderName/gamestateBackup_{$i}.txt");
+    }
   }
   
   WriteLog("🐛 Thank you for reporting a bug. Please report it on Discord with the game number as reference ($gameName).");

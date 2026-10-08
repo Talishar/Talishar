@@ -3,7 +3,6 @@
 require_once __DIR__ . '/Libraries/GamestateCompatibility.php';
 require_once __DIR__ . '/Constants.php'; // ClassStateFromString
 require_once __DIR__ . '/Libraries/HandInstanceIDs.php';
-require_once __DIR__ . '/Libraries/RollbackStates.php';
 
 global $gameName;
 function GetStringArray($line)
@@ -281,10 +280,6 @@ function UpdateMainPlayerGameStateInner()
 function SaveGamestateSnapshot($destination)
 {
   global $filepath, $lastWrittenGamestate;
-  if (IsRollbackSnapshot($destination)) {
-    $content = $lastWrittenGamestate ?? @file_get_contents($filepath . "gamestate.txt");
-    return $content !== false && WriteRollbackSnapshot($destination, $content);
-  }
   if (isset($lastWrittenGamestate)) {
     return file_put_contents($destination, $lastWrittenGamestate) !== false;
   }
@@ -327,9 +322,21 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
     return;
   }
   
-  // Rotate the bounded undo history in a single APCu entry.
+  // Multi-level undo: Rotate backups
+  // Shift all existing backups: 0->1, 1->2, 2->3, 3->4, delete 4
+  $backupPrefix = $filepath . "gamestateBackup_";
+  // Don't burn an undo slot on a state identical to the newest backup (would make undo a no-op)
   $currentGamestate = $lastWrittenGamestate ?? @file_get_contents($filepath . "gamestate.txt");
-  $result = $currentGamestate !== false && PushUndoState($filepath, $currentGamestate);
+  if ($currentGamestate !== false && $currentGamestate !== null
+    && @file_get_contents($backupPrefix . "0.txt") === $currentGamestate) {
+    return;
+  }
+  for ($i = MAX_UNDO_BACKUPS - 1; $i > 0; $i--) {
+    @rename($backupPrefix . ($i - 1) . ".txt", $backupPrefix . $i . ".txt");
+  }
+  
+  // Save current state as backup 0 (most recent)
+  $result = SaveGamestateSnapshot($filepath . "gamestateBackup_0.txt");
   if(!$result) WriteLog("Copy of gamestate into gamestateBackup_0.txt failed.");
 }
 
@@ -339,14 +346,13 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
   if ($filename != "gamestateBackup.txt") {
-    $snapshot = ReadRollbackSnapshot($filepath . $filename);
-    if ($snapshot === false) return;
+    if(!file_exists($filepath . $filename)) return;
     // apply current settings to the backup, they are preferences and not game state
-    $gamestateBackup = preg_split('/(?<=\n)/', $snapshot, -1, PREG_SPLIT_NO_EMPTY);
+    $gamestateBackup = file($filepath . $filename);
     if (isset($gamestateBackup[18])) $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
     if (isset($gamestateBackup[36])) $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
     $gamestate = implode('', $gamestateBackup);
-    if (!WriteGamestateFileAtomic($filepath . "gamestate.txt", $gamestate)) return;
+    WriteGamestateFileAtomic($filepath . "gamestate.txt", $gamestate);
     $skipWriteGamestate = true;
     WriteGamestateCache($gameName, $gamestate);
     $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
@@ -354,18 +360,15 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   }
   
   // Multi-level undo: Revert to backup N steps back
-  $stepsBack = (int)$stepsBack;
-  if ($stepsBack < 1 || $stepsBack > MAX_UNDO_BACKUPS) return;
   $targetBackup = $stepsBack - 1; // stepsBack=1 means backup_0, stepsBack=2 means backup_1, etc.
   $backupFile = $filepath . "gamestateBackup_" . $targetBackup . ".txt";
   
-  $snapshot = ReadRollbackSnapshot($backupFile);
-  if ($snapshot === false) {
+  if(!file_exists($backupFile)) {
     WriteLog("Cannot undo further: Please revert to start of this/previous turn instead.");
     return;
   }
   // apply current settings to the backup
-  $gamestateBackup = preg_split('/(?<=\n)/', $snapshot, -1, PREG_SPLIT_NO_EMPTY);
+  $gamestateBackup = file($backupFile);
   $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
   $gamestateBackup[36] = implode(" ", $p2Settings) . "\r\n";
   // don't reset the number of undoes used
@@ -379,17 +382,30 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $gamestateBackup[11] = ClassStateToString($p1ClassState) . "\r\n";
   $gamestateBackup[29] = ClassStateToString($p2ClassState) . "\r\n";
   $gamestate = implode('', $gamestateBackup);
-  if (!is_dir($filepath)) {
+  if (!file_exists($backupFile)) {
     WriteLog("Cannot undo further: the game session was cleaned up before the undo could complete.");
     return;
   }
   // Restore the target backup as current gamestate
-  if (!WriteGamestateFileAtomic($filepath . "gamestate.txt", $gamestate)) return;
+  WriteGamestateFileAtomic($filepath . "gamestate.txt", $gamestate);
   $skipWriteGamestate = true;
   WriteGamestateCache($gameName, $gamestate);
   $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
   
-  $result = ConsumeUndoStates($filepath, $stepsBack, $gamestate);
+  // Shift backups: Remove the reverted backups and shift remaining ones
+  // If we reverted 2 steps, backups 0 and 1 are gone, backup 2 becomes 0, backup 3 becomes 1, etc.
+  for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
+    $sourceIndex = $i + $stepsBack;
+    $sourceFile = $filepath . "gamestateBackup_" . $sourceIndex . ".txt";
+    $targetFile = $filepath . "gamestateBackup_" . $i . ".txt";
+
+    $renamed = $sourceIndex < MAX_UNDO_BACKUPS && @rename($sourceFile, $targetFile);
+    if (!$renamed) {
+      // No more backups to shift, delete this slot
+      @unlink($targetFile);
+    }
+  }
+  $result = SaveGamestateSnapshot($filepath . $filename);
   if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
 }
 
@@ -406,8 +422,9 @@ function MakeStartChainLinkBackup()
 function MakeStartTurnBackup()
 {
   global $mainPlayer, $currentTurn, $filepath;
+  $lastTurnFN = $filepath . "lastTurnGamestate.txt";
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
-  RotateTurnRollbackState($filepath);
+  @rename($thisTurnFN, $lastTurnFN);
   SaveGamestateSnapshot($thisTurnFN);
   MakeGamestateBackup();
   $startGameFN = $filepath . "startGamestate.txt";
@@ -430,7 +447,7 @@ function GetAvailableUndoSteps()
   
   for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
     $backupFile = $filepath . "gamestateBackup_" . $i . ".txt";
-    if (RollbackSnapshotExists($backupFile)) {
+    if (file_exists($backupFile)) {
       $availableSteps++;
     } else {
       break; // No more consecutive backups
@@ -451,17 +468,22 @@ function UndoComparableGamestate($gamestate)
 function UndoStepsBack()
 {
   global $filepath;
-  $newest = ReadRollbackSnapshot($filepath . "gamestateBackup_0.txt");
+  $newest = @file_get_contents($filepath . "gamestateBackup_0.txt");
   $current = @file_get_contents($filepath . "gamestate.txt");
   if ($newest === false || $current === false) return 1;
   if (UndoComparableGamestate($newest) !== UndoComparableGamestate($current)) return 1;
-  return RollbackSnapshotExists($filepath . "gamestateBackup_1.txt") ? 2 : 0;
+  return file_exists($filepath . "gamestateBackup_1.txt") ? 2 : 0;
 }
 
 function ResetUndoBackupsForRematch()
 {
   global $filepath;
   
-  // Clear all checkpoints so undoing cannot reach the previous game.
-  DeleteRollbackStates(basename(rtrim($filepath, '/\\')));
+  // Delete all undo backup slots so undoing cannot reach the previous game.
+  for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
+    $backupFile = $filepath . "gamestateBackup_" . $i . ".txt";
+    if (file_exists($backupFile)) {
+      unlink($backupFile);
+    }
+  }
 }

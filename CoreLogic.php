@@ -3734,7 +3734,11 @@ function ClearGameFiles($gameName, $isRematch = false)
     include_once "ParseGamestate.php";
     ResetUndoBackupsForRematch();
   } else {
-    DeleteRollbackStates($gameName);
+    // For normal cleanup, just unlink the files
+    @unlink("./Games/" . $gameName . "/gamestateBackup.txt");
+    @unlink("./Games/" . $gameName . "/beginTurnGamestate.txt");
+    @unlink("./Games/" . $gameName . "/lastTurnGamestate.txt");
+    @unlink("./Games/" . $gameName . "/startChainLinkGamestate.txt");
   }
 }
 
