@@ -7,6 +7,7 @@ include_once __DIR__ . '/CacheLibraries.php';
 if (!defined('LIVE_GAME_LOG_TTL')) define('LIVE_GAME_LOG_TTL', 5 * 60);
 if (!defined('LIVE_GAME_LOG_MAX_BYTES')) define('LIVE_GAME_LOG_MAX_BYTES', 1024 * 1024);
 if (!defined('LIVE_GAME_LOG_READ_BYTES')) define('LIVE_GAME_LOG_READ_BYTES', 131072);
+if (!defined('LIVE_GAME_LOG_LOCK_WAIT')) define('LIVE_GAME_LOG_LOCK_WAIT', 1);
 
 function LiveGameLogKey($directory)
 {
@@ -37,11 +38,27 @@ function BoundLiveGameLog($record)
 
 function UpdateLiveGameLog($directory, $update)
 {
-  // Priority serializes game actions. Log updates deliberately use a simple
-  // fetch/store; concurrent chat can overwrite another update.
   if (!_apcuAvailable() || !is_dir($directory)) return false;
-  $record = BoundLiveGameLog($update(ReadLiveGameLog($directory)));
-  return @apcu_store(LiveGameLogKey($directory), $record, LIVE_GAME_LOG_TTL);
+  $lock = @fopen(rtrim($directory, '/\\') . '/log.lock', 'c');
+  $locked = $lock !== false && AcquireLiveGameLogLock($lock);
+  if (!$locked) error_log('Live game log updated without lock: ' . $directory);
+  try {
+    $record = BoundLiveGameLog($update(ReadLiveGameLog($directory)));
+    return @apcu_store(LiveGameLogKey($directory), $record, LIVE_GAME_LOG_TTL);
+  } finally {
+    if ($locked) flock($lock, LOCK_UN);
+    if ($lock !== false) fclose($lock);
+  }
+}
+
+function AcquireLiveGameLogLock($lock)
+{
+  $deadline = hrtime(true) + (int)(LIVE_GAME_LOG_LOCK_WAIT * 1e9);
+  while (!flock($lock, LOCK_EX | LOCK_NB, $wouldBlock)) {
+    if (!$wouldBlock || hrtime(true) >= $deadline) return false;
+    usleep(2000);
+  }
+  return true;
 }
 
 function AppendLiveGameLog($directory, $content)
