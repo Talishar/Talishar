@@ -5,8 +5,8 @@ include_once __DIR__ . '/CacheLibraries.php';
 // A separate entry from the game-discovery sentinel. Limits are configurable
 // before including this library. Only writes refresh TTL; missing logs are empty.
 if (!defined('LIVE_GAME_LOG_TTL')) define('LIVE_GAME_LOG_TTL', 5 * 60);
-if (!defined('LIVE_GAME_LOG_MAX_BYTES')) define('LIVE_GAME_LOG_MAX_BYTES', 32 * 1024);
-if (!defined('LIVE_GAME_LOG_READ_BYTES')) define('LIVE_GAME_LOG_READ_BYTES', 32 * 1024);
+if (!defined('LIVE_GAME_LOG_MAX_BYTES')) define('LIVE_GAME_LOG_MAX_BYTES', 1024 * 1024);
+if (!defined('LIVE_GAME_LOG_READ_BYTES')) define('LIVE_GAME_LOG_READ_BYTES', 131072);
 
 function LiveGameLogKey($directory)
 {
