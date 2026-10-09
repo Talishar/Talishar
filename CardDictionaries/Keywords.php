@@ -255,7 +255,8 @@
         PutItemIntoPlayForPlayer("gold", $playerID, effectController:$effectController, effectAgent:$playerID);
         break;
       case "clash_of_bravado_yellow":
-        AddDecisionQueue("MULTIZONEINDICES", $playerID, "THEIRAURAS&COMBATCHAINLINK:subtype=Aura&LAYER:subtype=Aura");
+        $search = $playerID == $mainPlayer ? "THEIRAURAS&COMBATCHAINLINK:subtype=Aura" : "THEIRAURAS";
+        AddDecisionQueue("MULTIZONEINDICES", $playerID, $search);
         AddDecisionQueue("CHOOSEMULTIZONE", $playerID, "<-", 1);
         AddDecisionQueue("SHOWCHOSENCARD", $playerID, "<-", 1);
         AddDecisionQueue("MZDESTROY", $playerID, "<-", 1);
