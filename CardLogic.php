@@ -2295,16 +2295,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         RemoveBanish($player, $index);
         break;
       case "viziertronic_model_i":
-        AddDecisionQueue("DRAW", $player, "-", 1);
-        MZMoveCard($player, "MYHAND", "MYTOPDECK", silent:true);
-        $hand = GetHand($player);
-        if (count($hand) == 0) {
-          AddDecisionQueue("DECKCARDS", $player, "0", 1);
-          AddDecisionQueue("SETDQVAR", $player, "1", 1);
-          AddDecisionQueue("SETDQCONTEXT", $player, "you drew <1> and placed it back on top", 1);
-          AddDecisionQueue("OK", $player, "-", 1);
-          AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "-");
-        }
+        DrawAndPutBack($player, $parameter);
         break;
       case "hyper_x3":
         $banish = GetBanish($player);
