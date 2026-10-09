@@ -96,7 +96,7 @@ $deckCardIds = ResolveDeckCardIds($deckObj, $isFaBDB, $isFaBMeta);
 
 foreach ($deckCardIds as $cardID) {
   // Use GeneratedCardType to reliably identify hero (Character) cards
-  if (str_contains(GeneratedCardType($cardID), "C")) {
+  if (DelimStringContains(GeneratedCardType($cardID), "C")) {
     $heroID = GeneratedSetID($cardID);
     break;
   }

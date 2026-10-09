@@ -40,6 +40,11 @@ if (IsUserLoggedIn()) {
       $deck->name = $favoriteDecks[$i + 1];
       $deck->hero = $favoriteDecks[$i + 2];
       $deck->format = $favoriteDecks[$i + 3];
+      // Older imports could save Puffin's Companion (SEA003) as the hero.
+      if ($deck->hero === "SEA003") {
+        $adultFormats = ["cc", "compcc", "futurecc", "llcc", "compllcc", "classic constructed", "competitive classic constructed", "living legend"];
+        $deck->hero = in_array(strtolower(trim((string)$deck->format)), $adultFormats, true) ? "SEA001" : "SEA002";
+      }
       $deck->cardBack = $favoriteDecks[$i + 4];
       $deck->playmat = $favoriteDecks[$i + 5];
       $deck->altArtsCustomized = boolval($favoriteDecks[$i + 6]);
