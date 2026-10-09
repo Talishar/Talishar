@@ -3906,9 +3906,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SCOOBASALTYSEADOG":
       AddDecisionQueue("ADDTRIGGER", $currentPlayer, $parameter);
       return $lastResult;
-    case "UNDERTRAPDOOR":
-      AddCurrentTurnEffect("under_the_trap_door_blue", $currentPlayer, "", $parameter);
-      return $lastResult;
     case "CURRENTATTACKBECOMES":
       WriteLog(CardLink($combatChain[0], $combatChain[0]) . " was copied and became " . CardLink($lastResult, $lastResult) . ".");
       $combatChain[0] = $lastResult;

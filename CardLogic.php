@@ -1884,13 +1884,6 @@ function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $addition
     case "mental_block_blue":
       AddCurrentTurnEffect($parameter."-2", $player);
       break;
-    case "under_the_trap_door_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:subtype=Trap");
-      AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
-      AddDecisionQueue("MZREMOVE", $player, "-", 1);
-      AddDecisionQueue("BANISHCARD", $player, "DISCARD,TT", 1);
-      AddDecisionQueue("UNDERTRAPDOOR", $player, "<-", 1);
-      break;
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":

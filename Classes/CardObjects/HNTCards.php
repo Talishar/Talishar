@@ -3459,17 +3459,70 @@ class rake_over_the_coals_red extends Card {
 // }
 
 
-// class under_the_trap_door_blue extends Card {
+class under_the_trap_door_blue extends Card {
+	public $archetype;
+	function __construct($controller) {
+		$this->cardID = "under_the_trap_door_blue";
+		$this->controller = $controller;
+		$this->archetype = new windup($this->cardID, $this->controller);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "under_the_trap_door_blue";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$uid = explode("-", $target)[1] ?? "-";
+		$Discard = new Discard($this->controller);
+		$TargetCard = $Discard->FindCardUID($uid);
+		if ($TargetCard->Index() != -1) {
+			$banishInd = $TargetCard->Banish("TT");
+			$banishCard = new BanishCard($this->controller, $banishInd);
+			AddCurrentTurnEffect("$this->cardID", $this->controller, "", $banishCard->CardID());
+		}
+	}
+
+	function CardCost($from = '-') {
+		return 0;
+	}
+
+	function GetAbilityTypes($index = -1, $from = '-') {
+		return $this->archetype->GetAbilityTypes($index, $from);
+	}
+
+	private
+	function GetTargets() {
+		$rv = SearchMultizone($this->controller, "MYDISCARD:subtype=Trap");
+		return $rv;
+	}
+
+	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
+		$names = explode(",", GetEasyAbilityNames($this->cardID, $index, $from));
+		if ($this->GetTargets() == "") {
+			$rv = [];
+			foreach($names as $name)
+				if ($name != "Ability") $rv[] = $name;
+			return implode(",", $rv);
+		}
+		else
+			return implode(",", $names);
+	}
+
+	function GoesOnCombatChain($phase, $from) {
+		return $this->archetype->GoesOnCombatChain($phase, $from);
+	}
+
+	function CanActivateAsInstant($index = -1, $from = '') {
+		return $this->archetype->CanActivateAsInstant($index, $from) && $this->GetTargets() != "";
+	}
+
+	function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+		$this->archetype->AddPrePitchDecisionQueue($from, $index);
+		Await($this->controller, "MultiZoneIndices", search:"MYDISCARD:subtype=Trap");
+		Await($this->controller, "ChooseMultiZone", "index", context:"Target a trap in your graveyard");
+		Await($this->controller, "SetLayerTarget", layerID:"ABILITY", final:true);
+	}
+}
 
 
 // class up_sticks_and_run_red extends Card {

@@ -132,7 +132,8 @@ class DiscardCard {
   }
 
   function Banish($mod="-", $banishedBy="", $banisher="-") {
-    BanishCardForPlayer($this->ID(), $this->controller, "DISCARD", $mod, $banishedBy, $banisher);
+    $ind = BanishCardForPlayer($this->ID(), $this->controller, "DISCARD", $mod, $banishedBy, $banisher);
     RemoveDiscard($this->controller, $this->index);
+    return $ind;
   }
 }

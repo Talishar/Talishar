@@ -1212,7 +1212,6 @@ function GetAbilityTypes($cardID, $index = -1, $from = "-"): string
     "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue", 
     "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue", 
     "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue", 
-    "under_the_trap_door_blue", 
     "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
     "tip_off_red", "tip_off_yellow", "tip_off_blue", 
     "outside_interference_blue", "fearless_confrontation_blue" => "I,AA",
@@ -1397,19 +1396,6 @@ function GetAbilityNames($cardID, $index = -1, $from = "-", $facing = "-", $allN
     case "photon_splicing_blue":
     case "war_cry_of_themis_yellow":
       return GetEasyAbilityNames($cardID, $index, $from, $allNames);
-    case "under_the_trap_door_blue":
-      if ($allNames) return "Ability,Attack";
-      // can't use the ability if there are no traps in graveyard
-      $names = (SearchDiscard($currentPlayer, subtype: "Trap") != "" && !$instantRestricted) ? "Ability" : "-";
-      if($nameBlocked) return $names;
-      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && $layerCount <= LayerPieces() && $actionPoints > 0){
-        $warmongersPeace = SearchCurrentTurnEffects("WarmongersPeace", $currentPlayer);
-        $underEdict = SearchCurrentTurnEffects("imperial_edict_red-" . GamestateSanitize(CardName($cardID)), $currentPlayer);
-        if (!$warmongersPeace && !$underEdict) {
-          if (!SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) || SearchCurrentTurnEffects("fealty", $currentPlayer)) $names .= ",Attack";
-        }
-      }
-      return $names;
     case "haunting_rendition_red": case "mental_block_blue":
       if ($allNames) return "Block,Ability";
       if ($instantRestricted) return "-";
@@ -3387,7 +3373,6 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
     case "fruits_of_the_forest_blue":
     case "fruits_of_the_forest_yellow":
     case "fruits_of_the_forest_red":
-    case "under_the_trap_door_blue":
     case "reapers_call_red":
     case "reapers_call_yellow":
     case "reapers_call_blue":

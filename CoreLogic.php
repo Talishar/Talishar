@@ -2086,8 +2086,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     // cards that can be *activated* at instant speed
     if (in_array($cardID, WINDUP_STYLE_CARDS, true) || in_array($cardID, ARCANE_ABILITY_ACTION_CARDS, true)) {
       switch ($cardID) { // group members with extra activation conditions
-        case "under_the_trap_door_blue":
-          return $from == "HAND" && SearchDiscard($currentPlayer, subtype: "Trap") != "";
         case "burn_bare":
           if ($from != "HAND") return false;
           return IsPhantasmActive();

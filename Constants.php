@@ -874,7 +874,6 @@ const WINDUP_STYLE_CARDS = [
   "vigorous_windup_red", "vigorous_windup_yellow", "vigorous_windup_blue",
   "fruits_of_the_forest_red", "fruits_of_the_forest_yellow", "fruits_of_the_forest_blue",
   "trip_the_light_fantastic_red", "trip_the_light_fantastic_yellow", "trip_the_light_fantastic_blue",
-  "under_the_trap_door_blue",
   "reapers_call_red", "reapers_call_yellow", "reapers_call_blue",
   "tip_off_red", "tip_off_yellow", "tip_off_blue",
   "deny_redemption_red", "bam_bam_yellow", "outside_interference_blue",
