@@ -150,9 +150,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           if ($runechantsLeft > 1) $playerInputButtons[] = CreateButtonAPI($playerID, "Skip all Runechants", 105, 0, "24px");
         }
         else {
-          $passDefault = $turnPhase == "BUTTONINPUT" ? AbilityModePassDefault() : "";
+          $passDefault = $turnPhase == "BUTTONINPUT" ? ButtonInputPassDefault() : "";
           foreach ($options as $option) {
-            $tooltip = $option === $passDefault ? "Pass (Space) plays " . GamestateUnsanitize($option) : null;
+            $tooltip = $option === $passDefault ? ($option === "0" ? "Pass (Space) pays 0" : "Pass (Space) plays " . GamestateUnsanitize($option)) : null;
             $playerInputButtons[] = CreateButtonAPI($playerID, str_replace("_", " ", $option), 17, strval($option), "24px", tooltip: $tooltip);
           }
           if (($vars[1] ?? "") == "runechant") {

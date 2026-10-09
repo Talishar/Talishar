@@ -3035,6 +3035,15 @@ function AbilityModePassDefault()
   return "";
 }
 
+function ButtonInputPassDefault()
+{
+  global $turn, $EffectContext;
+  if (($turn[0] ?? "") != "BUTTONINPUT") return "";
+  if ($EffectContext == "blizzard_blue" && GetDQHelpText() == "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again"
+      && in_array("0", explode(",", (string)($turn[2] ?? "")), true)) return "0";
+  return AbilityModePassDefault();
+}
+
 // Triggers whose resolution order cannot change the outcome go on the stack without the ordering prompt.
 function TriggerOrderIrrelevant($cardIDs)
 {
@@ -3072,7 +3081,7 @@ function TriggerOrderIrrelevant($cardIDs)
 function CanPassPhase($phase)
 {
   global $combatChainState, $CCS_RequiredEquipmentBlock, $currentPlayer, $CCS_RequiredNegCounterEquipmentBlock;
-  if ($phase == "BUTTONINPUT") return AbilityModePassDefault() !== "" ? 1 : 0;
+  if ($phase == "BUTTONINPUT") return ButtonInputPassDefault() !== "" ? 1 : 0;
   if ($phase == "YESNO" && RequireYesNoAnswerSetting($currentPlayer)) return 0;
   if ($phase == "PAYGOLDORPITCH") {
     $resources = &GetResources($currentPlayer);

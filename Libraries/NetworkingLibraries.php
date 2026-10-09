@@ -1648,8 +1648,8 @@ function PassInput($autopass = true, $doublePass = false, $resolutionStepRetry =
   elseif ($turn[0] == "CHOOSETRIGGERS") {
     ContinueDecisionQueue("Mine");
   }
-  elseif ($turn[0] == "BUTTONINPUT" && ($modeDefault = AbilityModePassDefault()) !== "") {
-    ContinueDecisionQueue($modeDefault);
+  elseif ($turn[0] == "BUTTONINPUT" && ($passDefault = ButtonInputPassDefault()) !== "") {
+    ContinueDecisionQueue($passDefault);
   }
   elseif ($turn[0] == "ORDERTRIGGERS") {
     $layersCount = count($layers);
