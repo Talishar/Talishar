@@ -112,7 +112,12 @@ function DrawAndPutBack($player, $cardID) {
   Await($player, "ChooseMultiZone", "MZIndex", context:"Put a card from hand back on top");
   Await($player, "MZRemove", "cardID");
   Await($player, "AddTopDeck", final:true);
-  if (count($hand) == 1) { //handle case where the game automates putting a card back
+  $unique = [];
+  for ($i = 0; $i < count($hand); $i += HandPieces()) {
+    if (!in_array($hand[$i], $unique))
+      $unique[] = $hand[$i];
+  }
+  if (count($unique) == 1) { //handle case where the game automates putting a card back
     AddDecisionQueue("DECKCARDS", $player, "0", 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, "You drew <1> and placed it back on top", 1);
