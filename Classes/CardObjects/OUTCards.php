@@ -348,17 +348,36 @@ class barbed_castaway extends Card {
 // }
 
 
-// class boulder_trap_yellow extends Card {
+class boulder_trap_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "boulder_trap_yellow";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "boulder_trap_yellow";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+		if (HasIncreasedAttack()) AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		Await($this->controller, "MultiZoneIndices", search:"THEIRCHAR:type=E");
+		Await($this->controller, "ChooseMultiZone", context:"Put a -1 def counter on an equipment");
+		Await($this->controller, $this->cardID, final:true);
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$choice = $dqVars["MZIndex"] ?? "-";
+		$chosenEquipment = MZIndexToObject($this->controller, $choice);
+		if ($chosenEquipment != "") {
+			$chosenEquipment->AddDefCounters(-1);
+			WriteLog(CardLink($this->cardID) . " triggered and puts a -1 counter on an equipment");
+		}
+	}
+}
 
 
 // class brush_off_red extends Card {

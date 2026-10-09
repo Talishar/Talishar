@@ -2938,12 +2938,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         }
         else WriteLog("No card from the deck could be put into the graveyard.");
         break;
-      case "boulder_trap_yellow":
-        AddDecisionQueue("FINDINDICES", $mainPlayer, "EQUIP");
-        AddDecisionQueue("CHOOSETHEIRCHARACTER", $player, "<-", 1);
-        AddDecisionQueue("MODDEFCOUNTER", $mainPlayer, "-1", 1);
-        WriteLog(CardLink($parameter, $parameter) . " triggered and puts a -1 counter on an equipment");
-        break;
       case "pendulum_trap_yellow":
         $deck = new Deck($mainPlayer);
         $rv = "put  ";

@@ -772,7 +772,6 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "buzzsaw_trap_blue":
-    case "boulder_trap_yellow":
     case "inertia_trap_red":
     case "den_of_the_spider_red":
       if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
