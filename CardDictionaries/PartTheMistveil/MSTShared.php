@@ -635,12 +635,6 @@ function MSTHitEffect($cardID, $from): void
         if ($discard->NumCards() > 0) MZMoveCard($mainPlayer, "THEIRDISCARD", "THEIRBANISH,GY,Source-$attackCard,$attackCard,$mainPlayer", silent: true);
       }
       break;
-    case "double_trouble_red":
-    case "double_trouble_yellow":
-    case "double_trouble_blue":
-      $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
-      $deck->BanishTop("Source-" . $attackCard, banishedBy: $attackCard);
-      break;
     case "bonds_of_memory_red":
     case "bonds_of_memory_yellow":
     case "bonds_of_memory_blue":

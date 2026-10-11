@@ -620,43 +620,53 @@ class art_of_desire_soul_yellow extends Card {
 // }
 
 
-// class double_trouble_red extends Card {
+class double_trouble extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "double_trouble_red";
-//     $this->controller = $controller;
-//     }
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		if (NumAttackReactionsPlayed() <= 1)
+			return false;
+		return HeroHitTrigger($this->controller, $this->cardID, $check);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+		return NumAttackReactionsPlayed() > 1 ? 2 : 0;
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		global $defPlayer;
+		$deck = new Deck($defPlayer);
+		$deck->BanishTop("Source-$this->cardID", banishedBy: $this->cardID, banisher:$this->controller);
+      	$deck->BanishTop("Source-$this->cardID", banishedBy: $this->cardID, banisher:$this->controller);
+	}
+}
+
+class double_trouble_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "double_trouble_red";
+		$this->controller = $controller;
+		$this->baseCard = new double_trouble($this->cardID, $this->controller);
+    }
+}
 
 
-// class double_trouble_yellow extends Card {
+class double_trouble_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "double_trouble_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new double_trouble($this->controller, $this->cardID);
+    }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "double_trouble_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class double_trouble_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "double_trouble_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class double_trouble_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "double_trouble_blue";
+		$this->controller = $controller;
+		$this->baseCard = new double_trouble($this->controller, $this->cardID);
+    }
+}
 
 
 // class droplet_blue extends Card {

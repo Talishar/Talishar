@@ -365,11 +365,6 @@ function PowerModifier($attackCardID, $from = "", $resourcesPaid = 0, $repriseAc
       case "bonds_of_agony_blue":
         $power += NumAttackReactionsPlayed() > 2 ? 3 : 0;
         break;
-      case "double_trouble_red":
-      case "double_trouble_yellow":
-      case "double_trouble_blue":
-        $power += NumAttackReactionsPlayed() > 1 ? 2 : 0;
-        break;
       case "pick_to_pieces_red":
       case "pick_to_pieces_yellow":
       case "pick_to_pieces_blue":
