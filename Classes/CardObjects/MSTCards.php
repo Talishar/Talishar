@@ -656,7 +656,7 @@ class double_trouble_yellow extends Card {
 	function __construct($controller) {
 		$this->cardID = "double_trouble_yellow";
 		$this->controller = $controller;
-		$this->baseCard = new double_trouble($this->controller, $this->cardID);
+		$this->baseCard = new double_trouble($this->cardID, $this->controller);
     }
 }
 
@@ -664,7 +664,7 @@ class double_trouble_blue extends Card {
 	function __construct($controller) {
 		$this->cardID = "double_trouble_blue";
 		$this->controller = $controller;
-		$this->baseCard = new double_trouble($this->controller, $this->cardID);
+		$this->baseCard = new double_trouble($this->cardID, $this->controller);
     }
 }
 
