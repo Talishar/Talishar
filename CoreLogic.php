@@ -3953,9 +3953,6 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     case "master_cog_yellow":
       AddLayer("TRIGGER", $currentPlayer, $cardID);
       break;
-    case "grandeur_of_valahai_blue":
-      PlayAura("seismic_surge", $currentPlayer);
-      break;
     case "blood_of_the_dracai_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;

@@ -770,17 +770,25 @@ class fractal_replication_red extends Card {
 // }
 
 
-// class grandeur_of_valahai_blue extends Card {
+class grandeur_of_valahai_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "grandeur_of_valahai_blue";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "grandeur_of_valahai_blue";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function PitchAbility($from) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		PlayAura("seismic_surge", $this->controller, effectSource:$this->cardID);
+	}
+}
 
 
 // class haze_bending_blue extends Card {
