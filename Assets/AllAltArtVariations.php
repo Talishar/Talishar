@@ -121,7 +121,7 @@ function GetAllAltArtVariations(): array
     "flamecall_awakening_red=UPR096-T", "fleeing_starbreeze_blue=OMN037-T", "flex_strength_blue=GEM099-T", "flic_flak_blue=TNP024-T",
     "flic_flak_red=FAB241-T", "flic_flak_red=TNP022-T", "flic_flak_yellow=TNP023-T", "flick_knives=SUP244-T",
     "flittering_charge_blue=LGS339-T", "flittering_charge_red=LGS337-T", "flittering_charge_yellow=LGS338-T", "flittering_forcefield_red=GEM173-T",
-    "florian_rotwood_harbinger=HER158-T", "flourish_blue=GEM169-T", "flowing_stormstrike_red=FAB471-T", "flowshard_elemental_red=GEM172-T",
+    "florian_rotwood_harbinger=HER158-T", "flowing_stormstrike_red=FAB471-T", "flowshard_elemental_red=GEM172-T",
     "flowstate_embodiment_red=FAB476-T", "flurry_stance_red=FAB312-T", "flying_high_blue=LGS413-T", "flying_high_red=LGS411-T",
     "flying_high_yellow=LGS412-T", "fools_gold_yellow=FAB350-T", "for_the_dracai_red=FAB318-T", "for_the_emperor_red=FAB319-T",
     "for_the_realm_red=FAB320-T", "fortitude_of_anvilheim=OMN242-T", "fractal_creation_blue=OMN040-T", "frailty=FAB134-T",
