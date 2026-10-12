@@ -250,7 +250,8 @@ class art_of_the_dragon_scale_red extends Card {
 		$Object = MZIndexToObject($this->controller, $dqVars["MZIndex"] ?? "-");
 		if ($Object != "") {
 			$Object->AddDefCounters(-1);
-			if (ModifiedBlockValue($Object->CardID(), $Object->PlayerID(), "EQUIP", "", $Object->UniqueID()) + $Object->NumDefCounters() <= 0)
+			$baseDef = ModifiedBlockValue($Object->CardID(), $Object->PlayerID(), "EQUIP", "", $Object->UniqueID());
+			if ($baseDef != -1 && $baseDef + $Object->NumDefCounters() <= 0)
               $Object->Destroy();
 		}
 	}
