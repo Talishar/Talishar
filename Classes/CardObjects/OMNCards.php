@@ -3119,7 +3119,7 @@ class gauntlet_of_sword_and_sorcery extends Card {
 
   function OnAttackEffect($cardID, $i) {
     if (TypeContains($cardID, "AA")) {
-      SetArcaneTarget($this->controller, $cardID, "their");
+      SetArcaneTarget($this->controller, $cardID, "their", context:"Choose a target for " . CardLink($cardID) . "'s arcane ping");
       AddDecisionQueue("ADDTRIGGER", $this->controller, $this->cardID);
       return true;
     }
