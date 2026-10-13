@@ -5082,6 +5082,10 @@ class scuttle_toes extends Card {
     $this->controller = $controller;
   }
 
+  function DefaultActiveState() {
+    return 1;
+  }
+
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     $Allies = new Allies($this->controller);
     return $Allies->NumAllies() == 0;

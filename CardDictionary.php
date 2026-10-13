@@ -3876,6 +3876,7 @@ function AuraDefaultHoldTriggerState($cardID): int
 //Active (2 = Always Active, 1 = Yes, 0 = No)
 function AuraDefaultActiveState($cardID): int
 {
+  if ($cardID == "fealty") return 1;
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->DefaultActiveState();
   return 2;
@@ -3884,6 +3885,7 @@ function AuraDefaultActiveState($cardID): int
 function AuraActiveStateTracked($cardID) {
   return match($cardID) {
     "gate_to_iarathael" => true,
+    "fealty" => true,
     default => false,
   };
 }
