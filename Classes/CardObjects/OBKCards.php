@@ -192,7 +192,8 @@ class huxley_base extends BaseCard {
     return "";
   }
 
-	function PermanentBoostAbility($index, $banishInd) {
+	function PermanentBoostAbility($index, $banishInd, $owner) {
+		if ($owner != $this->controller) return;
 		$boostedCard = new BanishCard($this->controller, $banishInd);
 		$heroCard = new CharacterCard($index, $this->controller);
 		$boostedCardID = $boostedCard->CardID();
@@ -532,14 +533,14 @@ class one_click_pinpointer extends Card {
 }
 
 class extinction_level_event_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "extinction_level_event_red";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "extinction_level_event_red";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function EntersArenaAbility($index = -1) {
 		$AuraCard = new AuraCard($index, $this->controller);
@@ -602,3 +603,4 @@ class extinction_level_event_red extends Card {
 		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "EXTINCT");
 	}
 }
+

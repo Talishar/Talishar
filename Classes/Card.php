@@ -1377,9 +1377,9 @@ class Card {
     return;
   }
 
-  function PermanentBoostAbility($index, $banishInd) {
+  function PermanentBoostAbility($index, $banishInd, $owner) {
     if (isset($this->baseCard) && method_exists($this->baseCard, "PermanentBoostAbility"))
-      return $this->baseCard->PermanentBoostAbility($index, $banishInd);
+      return $this->baseCard->PermanentBoostAbility($index, $banishInd, $owner);
     return;
   }
 
@@ -1392,6 +1392,12 @@ class Card {
   function AddArsenalEffect($index) {
     if (isset($this->baseCard) && method_exists($this->baseCard, "AddArsenalEffect"))
       return $this->baseCard->AddArsenalEffect($index);
+    return;
+  }
+
+  function OnBoostedEffect($owner, $cardID) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "OnBoostedEffect"))
+      return $this->baseCard->OnBoostedEffect($owner, $cardID);
     return;
   }
 }

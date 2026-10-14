@@ -124,10 +124,12 @@ function Boost($cardID)
   }
 }
 
-function DoBoost($player, $cardID, $boostCount=1)
+function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
 {
   global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted;
-  $deck = new Deck($player);
+  $otherPlayer = $player == 1 ? 2 : 1;
+  $owner = $boostOpp ? $otherPlayer : $player;
+  $deck = new Deck($owner);
   $isGoAgainGranted = false;
   $banishPieces = BanishPieces();
   $charPieces = CharacterPieces();
@@ -138,10 +140,10 @@ function DoBoost($player, $cardID, $boostCount=1)
     $boostedCardID = $deck->Top(remove:true);
     ItemBoostEffects();
     SelfBoostEffects($player, $boostedCardID, $cardID);
-    OnBoostedEffects($player, $boostedCardID);
-    $banishInd = BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
-    CharacterBoostAbilities($player, $banishInd);
-    $banish = GetBanish($player);
+    OnBoostedEffects($player, $boostedCardID, $owner, $cardID);
+    $banishInd = BanishCardForPlayer($boostedCardID, $owner, "DECK", "BOOST", banisher:$player);
+    CharacterBoostAbilities($player, $banishInd, $owner);
+    $banish = GetBanish($owner);
     $topInd = count($banish) - $banishPieces; // index of card that just got banished
     if (SubtypeContains($boostedCardID, "Evo")) {
       IncrementClassState($player, $CS_EvosBoosted);
@@ -194,15 +196,17 @@ function DoBoost($player, $cardID, $boostCount=1)
   return $isGoAgainGranted;
 }
 
-function OnBoostedEffects($player, $boosted)
+function OnBoostedEffects($player, $boosted, $owner, $cardID)
 {
+  $card = GetClass($boosted, $player);
+  if ($card != "-") $card->OnBoostedEffect($owner, $cardID);
   switch($boosted)
   {
     case "big_bertha_red": case "big_bertha_yellow": case "big_bertha_blue":
-      AddLayer("TRIGGER", $player, $boosted);
+      AddLayer("TRIGGER", $owner, $boosted);
       break;
     case "fast_and_furious_red":
-      AddLayer("TRIGGER", $player, $boosted);
+      AddLayer("TRIGGER", $owner, $boosted);
       break;
     default: break;
   }

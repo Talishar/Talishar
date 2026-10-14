@@ -1799,14 +1799,14 @@ function GetCharacterGemState($player, $cardID)
   return 0;
 }
 
-function CharacterBoostAbilities($player, $banishInd)
+function CharacterBoostAbilities($player, $banishInd, $owner)
 {
   $char = &GetPlayerCharacter($player);
   $charCount = count($char);
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $charCount; $i += $characterPieces) {
     $card = GetClass($char[$i], $player);
-    if ($card != "-") $card->PermanentBoostAbility($i, $banishInd);
+    if ($card != "-") $card->PermanentBoostAbility($i, $banishInd, $owner);
     if (intval($char[$i + 1]) < 2) continue;
     switch ($char[$i]) {
       case "evo_circuit_breaker_red_equip":
