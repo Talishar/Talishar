@@ -1648,8 +1648,9 @@ class remorseless_red extends Card {
     }
 
     function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
+        global $currentPlayer;
         $Effect = new CurrentEffect($index);
-        if ($Effect->EffectID() ==  "$this->cardID-DMG") {
+        if ($Effect->EffectID() ==  "$this->cardID-DMG" && $currentPlayer == $Effect->PlayerID()) {
             $otherPlayer = $this->controller == 1 ? 2 : 1;
             if (!IsActivated($cardID, $from) && IsAction($cardID, $from))
                 AddLayer("TRIGGER", $otherPlayer, $this->cardID, "", "DMG");
