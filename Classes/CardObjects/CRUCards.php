@@ -1638,7 +1638,7 @@ class remorseless_red extends Card {
     }
 
     function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-        return true;
+        return $parameter != "DMG";
     }
 
     function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
