@@ -3009,7 +3009,7 @@ class ancient_earth_oak_red extends Card {
     SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
     $origCardID = $CombatChain->AttackCard()->OriginalID();
     $destPlayer = str_contains($CombatChain->AttackCard()->From(), "THEIR") ? $defPlayer : $mainPlayer;
-    WriteLog(CardLink($origCardID) . " was put on the bottom of player $destPlayer's deck");
+    WriteLog(CardLink($origCardID) . " was put on the bottom of Player $destPlayer's deck");
     AddBottomDeck($origCardID, $destPlayer, "CC");
   }
 
