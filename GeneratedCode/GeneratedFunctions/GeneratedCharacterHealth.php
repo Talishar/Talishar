@@ -2,6 +2,14 @@
 function GeneratedCharacterHealth($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"min_genius" => 40,
+"min_mad" => 40,
+"vyle_catalyst_of_collapse" => 40,
+"huxley_racketeer" => 38,
+"huxley" => 19,
+"azalea_ace_of_spades" => 38,
+"azalea_lone_vigilante" => 19,
+"" => 19,
 "aegis_archangel_of_protection" => 4,
 "aether_ashwing" => 1,
 "anka_drag_under_yellow" => 3,

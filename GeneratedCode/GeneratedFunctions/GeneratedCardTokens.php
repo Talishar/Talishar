@@ -2,6 +2,8 @@
 function GeneratedCardTokens($cardID) {
 if(is_int($cardID)) return "";
 return match($cardID) {
+"mortimers_lab" => "bloodrot_pox,exertion,inertia",
+"exertion_bloom_yellow" => "exertion",
 "aegis_archangel_of_protection" => "spectral_shield",
 "aether_arc_blue" => "ponder",
 "affirm_loyalty_red" => "fealty",
@@ -1210,7 +1212,17 @@ return match($cardID) {
 "zyggy_starlight" => "lightning_flow",
 "mbrio_base_cortex" => "hyper_driver",
 "mbrio_base_vizier" => "hyper_driver",
+"back_alley_bilebank_yellow" => "exertion",
+"back_alley_bloodbank_red" => "bloodrot_pox",
+"back_alley_plasmabank_blue" => "inertia",
+"bloodrot_courier_red" => "bloodrot_pox",
+"exertion_courier_yellow" => "exertion",
+"inertia_courier_blue" => "inertia",
+"outbreak_blue" => "bloodrot_pox,frailty,inertia",
 "sale_at_the_golden_anvil" => "gold",
+"seed_bloodrot_blue" => "bloodrot_pox",
+"seed_frailty_blue" => "frailty",
+"seed_inertia_blue" => "inertia",
 "start_swinging" => "blade_dance,flurry",
 default => ""
 };

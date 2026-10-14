@@ -2,6 +2,9 @@
 function GeneratedHasStealth($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
+"patient_zero_red" => true,
+"patient_zero_yellow" => true,
+"patient_zero_blue" => true,
 "art_of_desire_body_red" => true,
 "art_of_desire_mind_blue" => true,
 "art_of_desire_soul_yellow" => true,

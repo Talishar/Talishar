@@ -2,6 +2,12 @@
 function GeneratedGoAgain($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"incite_aggression_red" => true,
+"incite_resolve_blue" => true,
+"paupers_knife" => true,
+"cogwerx_dueling_pistol" => true,
+"one_click_pinpointer" => true,
+"cure_all_elixir" => true,
 "a_bit_off_the_side_red" => true,
 "abyssal_bite_blue" => true,
 "abyssal_force_blue" => true,
@@ -1230,6 +1236,9 @@ return match($cardID) {
 "yo_ho_ho_blue" => true,
 "zephyr_needle" => true,
 "zephyr_needle_r" => true,
+"bloodrot_courier_red" => true,
+"exertion_courier_yellow" => true,
+"inertia_courier_blue" => true,
 "otherworldly_ossuary_blue" => true,
 "shadowrealm_strength_blue" => true,
 default => false
