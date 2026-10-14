@@ -300,8 +300,10 @@ class a_01_first_cogwarden extends Card {
 		if ($mode == "load") {
 			$choice = $dqVars["MZIndex"] ?? "-";
 			$banishCard = MZIndexToObject($this->controller, $choice);
-			if ($banishCard != "")
+			if ($banishCard != "") {
 				AddArsenal($banishCard->CardID(), $this->controller, "BANISH", "UP", powerCounters:2);
+				$banishCard->Remove();
+			}
 		}
 		else {
 			$Layer = $Stack->TopLayer($this->cardID);
