@@ -330,9 +330,9 @@ class huxley extends Card {
 		return 19;
 	}
 
-	// function SpecialName() {
-	// 	return "Huxley";
-	// }
+	function SpecialName() {
+		return "Huxley";
+	}
 }
 
 class huxley_racketeer extends Card {
@@ -346,9 +346,9 @@ class huxley_racketeer extends Card {
 		return 38;
 	}
 
-	// function SpecialName() {
-	// 	return "Huxley Racketeer";
-	// }
+	function SpecialName() {
+		return "Huxley Racketeer";
+	}
 }
 
 class alpha_01_first_cogwarden extends Card {

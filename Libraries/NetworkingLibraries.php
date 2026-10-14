@@ -2170,10 +2170,7 @@ function FinalizeChainLink($chainClosed = false)
     for ($i = 0; $i < $abilityTypeCount; ++$i) {
       if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
-    SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");
-    $MZIndex = CleanTargetToIndex($currentPlayer, $target);
-    SetCombatChainState($CCS_AttackTarget, $MZIndex);
-    PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
+    PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, fromAttackQueue:true);
     return;
   }
   //when on always pass priority, ENDTURN will be added to the stack before the resolution step finishes
@@ -2725,7 +2722,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       //CR 5.1.4a Declare targets for resolution abilities
       if ($turn[0] != "B" || ($layersCount > 0 && $layers[0] != "")) GetLayerTarget($cardID, $from);
       //CR 5.1.4b Declare target of attack
-      if ($turn[0] == "M" && $actionPoints > 0) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from);
+      if ($turn[0] == "M" && $actionPoints > 0) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from . ",0,LAYER");
       // Alternative Gold payment is chosen after targets
       if ($playingCard) AddPostTargetDecisionQueue($cardID, $from, $index, $facing);
       if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
@@ -3657,12 +3654,96 @@ function AddAttackLayer($cardID, $from, $uniqueID="-", $zone="-")
   Await($currentPlayer, "AddAttackQueue", lastResultName:"targets", cardID:$cardID, from:$from, uniqueID:$uniqueID, zone:$zone, final:true);
 }
 
-function GetTargetOfAttack($cardID = "", $attackQueue=false)
+// Attack targets are stored on the attack's layer / attack queue entry as "AT:ZONE-UID" entries (the hero is "AT:THEIRCHAR-0")
+// so they can share the target field with resolution ability targets. They're only copied into $CCS_AttackTarget
+// once the attack resolves (ApplyAttackTargets), so an attack on the stack can't overwrite the current chain link's target.
+function AttackTargetEntry($defPlayer, $mzIndex)
 {
-  global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects, $CS_PlayIndex;
+  global $mainPlayer;
+  $zone = explode("-", $mzIndex)[0];
+  $object = MZIndexToObject($mainPlayer, $mzIndex);
+  $uid = $object != "" ? $object->UniqueID() : "-";
+  return "AT:" . ($uid == "-" ? $mzIndex : "$zone-$uid");
+}
+
+// returns [attack targets (without the "AT:" marker), remaining resolution ability targets]
+function SplitAttackTargets($target)
+{
+  $attackTargets = [];
+  $otherTargets = [];
+  foreach (explode(",", $target) as $targ) {
+    if (str_starts_with($targ, "AT:")) $attackTargets[] = substr($targ, 3);
+    else $otherTargets[] = $targ;
+  }
+  return [$attackTargets, count($otherTargets) > 0 ? implode(",", $otherTargets) : "-"];
+}
+
+// converts attack queue targets given as mzindexes (from GETATTACKQUEUETARGET) into attack target entries
+function NormalizeAttackTargets($player, $targets)
+{
+  if ($targets == "-" || $targets == "") return "AT:THEIRCHAR-0";
+  if (str_contains($targets, "AT:")) return $targets;
+  $entries = [];
+  foreach (explode(",", $targets) as $targ) $entries[] = AttackTargetEntry($player, $targ);
+  return implode(",", $entries);
+}
+
+// called when the attack resolves: this is the only point the attack's targets should be written to combat chain state
+function ApplyAttackTargets($player, $attackTargets)
+{
+  global $CCS_AttackTarget, $CCS_AttackTargetUID;
+  $mzTargets = [];
+  $uids = [];
+  foreach ($attackTargets as $targ) {
+    [$zone, $id] = array_pad(explode("-", $targ, 2), 2, "");
+    if (is_numeric($id)) { // the hero
+      $mzTargets[] = $targ;
+      $uids[] = "-";
+      continue;
+    }
+    $Zone = GetZoneObject($player, $zone);
+    if ($Zone == "") continue;
+    $Card = $Zone->FindCardUID($id);
+    if ($Card == "" || $Card->Index() < 0) continue; // the target left play before the attack resolved
+    $mzTargets[] = "$zone-" . $Card->Index();
+    $uids[] = $id;
+  }
+  SetCombatChainState($CCS_AttackTarget, count($mzTargets) > 0 ? implode(",", $mzTargets) : "NA");
+  SetCombatChainState($CCS_AttackTargetUID, count($uids) > 0 ? implode(",", $uids) : "-");
+}
+
+// names of the targets of the topmost attack on the stack, for display
+function GetLayerAttackTargetNames($player)
+{
+  global $layers;
+  $layersCount = count($layers);
+  $layerPieces = LayerPieces();
+  for ($i = 0; $i < $layersCount; $i += $layerPieces) {
+    [$attackTargets] = SplitAttackTargets($layers[$i + 3]);
+    if (count($attackTargets) == 0) continue;
+    $names = [];
+    foreach ($attackTargets as $targ) {
+      [$zone, $id] = array_pad(explode("-", $targ, 2), 2, "");
+      if (is_numeric($id)) $names[] = CardName(GetMZCard($player, $targ));
+      else {
+        $Zone = GetZoneObject($player, $zone);
+        $Card = $Zone == "" ? "" : $Zone->FindCardUID($id);
+        if ($Card != "" && $Card->Index() >= 0) $names[] = CardName(GetMZCard($player, "$zone-" . $Card->Index()));
+      }
+    }
+    return implode("|", $names);
+  }
+  return "";
+}
+
+function GetTargetOfAttack($cardID = "", $attackQueue=false, $forLayer=false)
+{
+  global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects, $CS_PlayIndex, $Stack;
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $numTargets = 0;
-  $currentTargets = $attackQueue ? "-" : GetCombatChainState($CCS_AttackTarget);
+  // a new attack (on the stack or in the attack queue) doesn't share targets with the current chain link
+  $currentTargets = $attackQueue || $forLayer ? "-" : GetCombatChainState($CCS_AttackTarget);
+  $processParam = $forLayer ? $cardID : "-";
   $heroRestricted = MomentsPeaceStopsWeapon(GetClassState($mainPlayer, $CS_PlayIndex), $mainPlayer, $cardID);
   if (!$heroRestricted && !str_contains($currentTargets, "THEIRCHAR-0")) {
     $targets = "THEIRCHAR-0";
@@ -3673,7 +3754,12 @@ function GetTargetOfAttack($cardID = "", $attackQueue=false)
   }
   if (CanOnlyTargetHeroes($cardID)) {
     if ($targets == "") WriteLog("Something weird happened, please submit a bug report", highlight:true);
-    SetCombatChainState($CCS_AttackTarget, $targets);
+    if ($forLayer) {
+      $Layer = $Stack->TopLayer($cardID);
+      $Layer->AddTarget("AT:$targets");
+    }
+    else if ($attackQueue) PrependDecisionQueue("PASSPARAMETER", $mainPlayer, $targets);
+    else SetCombatChainState($CCS_AttackTarget, $targets);
   } else {
     $auras = &GetAuras($defPlayer);
     $mandatoryTargets = [];
@@ -3712,11 +3798,11 @@ function GetTargetOfAttack($cardID = "", $attackQueue=false)
       $targets = implode(",", $mandatoryTargets);
     }
     if ($numTargets > 1) {
-      if (!$attackQueue) PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
+      if (!$attackQueue) PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, $processParam);
       PrependDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, $targets);
       PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
     } elseif ($numTargets == 1) {
-      if (!$attackQueue) PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, "-");
+      if (!$attackQueue) PrependDecisionQueue("PROCESSATTACKTARGET", $mainPlayer, $processParam);
       PrependDecisionQueue("PASSPARAMETER", $mainPlayer, $targets);
       PrependDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target for the attack");
     }
@@ -4612,7 +4698,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
   }
 }
 
-function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1, $player = "")
+function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-", $uniqueID = "-1", $layerIndex = -1, $player = "", $fromAttackQueue = false)
 {
   global $turn, $combatChain, $currentPlayer, $mainPlayer, $defPlayer, $combatChainState, $CCS_AttackPlayedFrom, $CS_PlayIndex;
   global $CS_CharacterIndex, $CS_PlayCCIndex;
@@ -4620,7 +4706,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_NumDragonAttacks, $CS_NumAttackCardsAttacked, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked, $CS_NumTimesHeroAttacked;
   global $currentTurnEffects, $CCS_AttackTarget, $CCS_AttackTargetUID;
-  global $landmarks, $CS_WeaponsAttackedWith;
+  global $landmarks, $CS_WeaponsAttackedWith, $Stack, $AttackQueue;
   if ($player == "") $player = $currentPlayer;
   $cardType = CardType($cardID);
   if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {
@@ -4646,6 +4732,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $openedChain = false;
   $chainClosed = false;
   $skipDRResolution = false;
+  // attack targets ride on the layer/attack queue target until the attack actually resolves
+  $layerTarget = $target;
+  [$attackTargets, $target] = SplitAttackTargets($target);
+  $goesOnChain = GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer);
+  $resolvingNow = $fromAttackQueue || ($Stack->NumLayers() == 0 && $AttackQueue->NumAttacks() == 0);
+  if ($goesOnChain && $resolvingNow && count($attackTargets) > 0) ApplyAttackTargets($mainPlayer, $attackTargets);
   $targetArr = explode(",", GetCombatChainState($CCS_AttackTarget));
   $uidArr = explode(",", GetCombatChainState($CCS_AttackTargetUID));
   if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
@@ -4670,172 +4762,186 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   }
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
   //put onto combat chain if that's where it needs to go
-  if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
-    if (($from == "PLAY" || $from == "EQUIP") && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains($definedCardSubType, "Item")) {
-      WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
-      return;
-    }
-    if ((in_array("FINALIZECHAINLINK", $layers) || count($combatChain) == 0) && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR"))) {
-      WriteLog(CardLink($cardID, $cardID) . " does not resolve because the combat chain closed.");
-      AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
-      ContinueDecisionQueue();
-      return;
-    }
-    if ($definedCardType == "DR" && $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) {
-      $discard = new Discard($currentPlayer);
-      $discard->Add($cardID, "LAYER");
-      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because dominate is active and there is already a card defending from hand.");
-      $skipDRResolution = true;
-    }
-    if ($definedCardType == "DR" && NumDefendedMatchingColor($cardID) >= 1 && CachedVeilActive()) {
-      $discard = new Discard($currentPlayer);
-      $discard->Add($cardID, "LAYER");
-      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because veil is active and there is already a card matching the color of " . CardLink($cardID) . ".");
-      $skipDRResolution = true;
-    }
-    if (($definedCardType == "DR" || ($definedCardType == "E" && GetAbilityType($cardID) == "DR")) && SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2 && IsCombatEffectActive("confidence")) {
-      $discard = new Discard($currentPlayer);
-      $discard->Add($cardID, "LAYER");
-      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because " . CardLink("confidence") . " is active and there are already 2 non-block cards defending.");
-      $skipDRResolution = true;
-    }
-    // dreacts that can only defend specific things
-    switch ($cardID) {
-      case "put_in_context_blue":
-        if (LinkBasePower() > 3) {
-          $discard = new Discard($currentPlayer);
-          $discard->Add($cardID, "LAYER");
-          $skipDRResolution = true;
+  if($goesOnChain) {
+    if ($resolvingNow) {
+      if (($from == "PLAY" || $from == "EQUIP") && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains($definedCardSubType, "Item")) {
+        WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
+        return;
+      }
+      if ((in_array("FINALIZECHAINLINK", $layers) || count($combatChain) == 0) && (DelimStringContains($definedCardType, "DR") || DelimStringContains($definedCardType, "AR"))) {
+        WriteLog(CardLink($cardID, $cardID) . " does not resolve because the combat chain closed.");
+        AddGraveyard($cardID, $currentPlayer, $from, $currentPlayer);
+        ContinueDecisionQueue();
+        return;
+      }
+      if ($definedCardType == "DR" && $from == "HAND" && CachedDominateActive() && CachedNumDefendedFromHand() >= 1 && NumDefendedFromHand() >= 1) {
+        $discard = new Discard($currentPlayer);
+        $discard->Add($cardID, "LAYER");
+        WriteLog(CardLink($cardID, $cardID) . " fails to resolve because dominate is active and there is already a card defending from hand.");
+        $skipDRResolution = true;
+      }
+      if ($definedCardType == "DR" && NumDefendedMatchingColor($cardID) >= 1 && CachedVeilActive()) {
+        $discard = new Discard($currentPlayer);
+        $discard->Add($cardID, "LAYER");
+        WriteLog(CardLink($cardID, $cardID) . " fails to resolve because veil is active and there is already a card matching the color of " . CardLink($cardID) . ".");
+        $skipDRResolution = true;
+      }
+      if (($definedCardType == "DR" || ($definedCardType == "E" && GetAbilityType($cardID) == "DR")) && SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2 && IsCombatEffectActive("confidence")) {
+        $discard = new Discard($currentPlayer);
+        $discard->Add($cardID, "LAYER");
+        WriteLog(CardLink($cardID, $cardID) . " fails to resolve because " . CardLink("confidence") . " is active and there are already 2 non-block cards defending.");
+        $skipDRResolution = true;
+      }
+      // dreacts that can only defend specific things
+      switch ($cardID) {
+        case "put_in_context_blue":
+          if (LinkBasePower() > 3) {
+            $discard = new Discard($currentPlayer);
+            $discard->Add($cardID, "LAYER");
+            $skipDRResolution = true;
+          }
+          break;
+        default:
+          break;
+      }
+      if (!$isBlock && $definedCardType == "AR") {
+        $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
+        ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
+        if ($target != "-") {
+          $missingTarget = false;
+          switch ($cardID) {
+            case "just_a_nick_red":
+              $targetUID = explode("-", $target, 2)[1];
+              if ($CombatChain->AttackCard()->UniqueID() != $targetUID) $missingTarget = true;
+              break;
+            default:
+              break;
+          }
         }
-        break;
-      default:
-        break;
-    }
-    if (!$isBlock && $definedCardType == "AR") {
-      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
-      ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, $from);
-      if ($target != "-") {
-        $missingTarget = false;
+      }
+      if ($resourcesPaid != "Skipped") {
         switch ($cardID) {
-          case "just_a_nick_red":
-            $targetUID = explode("-", $target, 2)[1];
-            if ($CombatChain->AttackCard()->UniqueID() != $targetUID) $missingTarget = true;
+          case "flick_knives": //cards that go on the combat chain but need to keep track of targets
+          case "danger_digits":
+          case "throw_dagger_blue":
+          case "shred_red":
+          case "shred_yellow":
+          case "shred_blue":
+          case "tarantula_toxin_red":
+          case "platinum_amulet_blue":
+          case "rage_baiters":
+          case "weeping_battleground_red":
+          case "weeping_battleground_yellow":
+          case "weeping_battleground_blue":
+          case "display_of_craftsmanship_red":
+          case "display_of_craftsmanship_yellow":
+          case "display_of_craftsmanship_blue":
+            break;
+          default:
+            WriteLog("HERE checking targets: " . GetCombatChainState($CCS_AttackTarget));
+            $target = (GetCombatChainState($CCS_AttackTarget) == "" || GetCombatChainState($CCS_AttackTarget) == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());
+            
+            if ($target == "") $target = "MISSINGTARGET";
+            break;
+        }
+      }
+      if ($target == "MISSINGTARGET") { //if only spectra was targeted
+        $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
+        if($definedCardType != "T" && $definedCardType != "Macro" && !IsActivated($cardID, $from)) //Don't need to add to anywhere if it's a token
+          ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, "LAYER");
+        // remove any buff associated with the played attack
+        $ctePieces = CurrentTurnEffectPieces();
+        for ($i = count($currentTurnEffects) - $ctePieces; $i >= 0; $i -= $ctePieces) {
+          if (IsCombatEffectActive($currentTurnEffects[$i], $cardID) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i])) {
+            RemoveCurrentTurnEffect($i);
+          }
+        }
+      }
+      $index = -1;
+      WriteLog("HERE about to add $cardID to combat chain! $target");
+      if (!$skipDRResolution && $target != "" && $target != "MISSINGTARGET") {
+        $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
+      }
+      if ($index <= 0 && !$skipDRResolution) {
+        ChangeSetting($defPlayer, $SET_PassDRStep, 0);
+        SetCombatChainState($CCS_AttackPlayedFrom, $from);
+        $chainClosed = $target == "MISSINGTARGET";
+        if ($chainClosed) CloseCombatChain();
+        $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID, $mainPlayer, "CC", $index);
+        // I believe this should be accounted for elsewhere, right now this is false flagging attack queue attacks
+        // if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
+        SetCombatChainState($CCS_AttackUniqueID, $uniqueID);
+        if ($definedCardType == "AA" && $powerValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
+        $resolvedAbilityTypeNoFrom = GetResolvedAbilityType($cardID);
+        if ($definedCardType == "AA" && ($resolvedAbilityTypeNoFrom == "" || $resolvedAbilityTypeNoFrom == "AA") && (SearchCharacterActive($currentPlayer, "kayo_berserker_runt") || (SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $currentPlayer))) && $powerValue >= 6) KayoStaticAbility($cardID);
+        $openedChain = true;
+        if ($definedCardType != "AA") SetCombatChainState($CCS_WeaponIndex, GetClassState($currentPlayer, $CS_PlayIndex));
+        if ($additionalCosts != "-" && HasFusion($cardID)) SetCombatChainState($CCS_AttackFused, 1);
+        //Add attack step layer prior to anything that triggers in the attack step
+        $cardType = $resolvedAbilityType != "" ? $resolvedAbilityType : $definedCardType;
+        if (!$chainClosed && $cardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
+        // If you attacked an aura with Spectra
+        if (!$chainClosed && (DelimStringContains($definedCardType, "AA") || DelimStringContains($definedCardType, "W") || DelimStringContains($definedCardSubType, "Ally") || DelimStringContains($definedCardSubType, "Aura"))) {
+          ArsenalAttackAbilities();
+          OnAttackEffects($cardID);
+        }
+        if (!$chainClosed && ($definedCardType == "AA" || $resolvedAbilityType == "AA")) {
+          if (TypeContains($cardID, "W")) {
+            $weaponsAttacked = GetClassState($currentPlayer, $CS_WeaponsAttackedWith);
+            if ($weaponsAttacked == "-") $weaponsAttacked = $uniqueID;
+            else $weaponsAttacked .= ",$uniqueID";
+            SetClassState($currentPlayer, $CS_WeaponsAttackedWith, $weaponsAttacked);
+          }
+          IncrementClassState($currentPlayer, $CS_NumTimesAttacked);
+          if (IsHeroAttackTarget()) IncrementClassState($defPlayer, $CS_NumTimesHeroAttacked);
+          if (DelimStringContains($definedCardSubType, "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
+          $isIllusionist = ClassContains($cardID, "ILLUSIONIST", $currentPlayer);
+          if ($isIllusionist) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
+          if ($isIllusionist && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
+          AuraAttackAbilities($cardID);
+          CharacterAttackAbilities($cardID);
+        }
+        if ($index == 0) {//if adding an attacking card
+          $count = count($currentTurnEffects);
+          $pieces = CurrentTurnEffectPieces();
+          for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
+            if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+              if (IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
+                $CombatChain->AttackCard()->AddBuff(ConvertToSetID($currentTurnEffects[$i]));
+                RemoveCurrentTurnEffect($i);
+              }
+            }
+          }
+        }
+      } else { //On chain, but not index 0
+        if ($definedCardType == "DR" && !$skipDRResolution) {
+          OnDefenseReactionResolveEffects($from, $cardID);
+          if (ColorContains($cardID, 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
+        }
+      }
+      if (!$skipDRResolution) {
+        switch ($cardID) { //cards that add themselves as blocking
+          case "quickdodge_flexors":
+            if ($turn[0] != "B") {
+              OnBlockEffects($index, "EQUIP");
+              OnBlockResolveEffects($cardID);
+            }
             break;
           default:
             break;
         }
       }
+      SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
     }
-    if ($resourcesPaid != "Skipped") {
-      switch ($cardID) {
-        case "flick_knives": //cards that go on the combat chain but need to keep track of targets
-        case "danger_digits":
-        case "throw_dagger_blue":
-        case "shred_red":
-        case "shred_yellow":
-        case "shred_blue":
-        case "tarantula_toxin_red":
-        case "platinum_amulet_blue":
-        case "rage_baiters":
-        case "weeping_battleground_red":
-        case "weeping_battleground_yellow":
-        case "weeping_battleground_blue":
-        case "display_of_craftsmanship_red":
-        case "display_of_craftsmanship_yellow":
-        case "display_of_craftsmanship_blue":
-          break;
-        default:
-          $target = (GetCombatChainState($CCS_AttackTarget) == "" || GetCombatChainState($CCS_AttackTarget) == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());
-          if ($target == "") $target = "MISSINGTARGET";
-          break;
-      }
+    else {
+      // keep the attack targets (and any resolution ability targets) with the queued attack
+      $queueParameter = "$from|$resourcesPaid|$layerIndex|$uniqueID";
+      AddAttackQueue($cardID, $currentPlayer, $layerTarget, $queueParameter, $uniqueID, additionalCosts:$additionalCosts);
+      if (count($layers) == 0 && !$CombatChain->HasCurrentLink())
+        Await($mainPlayer, "CheckAttackQueue");
+      ProcessDecisionQueue();
+      return;
     }
-    if ($target == "MISSINGTARGET") { //if only spectra was targeted
-      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
-      if($definedCardType != "T" && $definedCardType != "Macro" && !IsActivated($cardID, $from)) //Don't need to add to anywhere if it's a token
-        ResolveGoesWhere($goesWhere, $cardID, $currentPlayer, "LAYER");
-      // remove any buff associated with the played attack
-      $ctePieces = CurrentTurnEffectPieces();
-      for ($i = count($currentTurnEffects) - $ctePieces; $i >= 0; $i -= $ctePieces) {
-        if (IsCombatEffectActive($currentTurnEffects[$i], $cardID) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i])) {
-          RemoveCurrentTurnEffect($i);
-        }
-      }
-    }
-    $index = -1;
-    if (!$skipDRResolution && $target != "" && $target != "MISSINGTARGET") {
-      $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
-    }
-    if ($index <= 0 && !$skipDRResolution) {
-      ChangeSetting($defPlayer, $SET_PassDRStep, 0);
-      SetCombatChainState($CCS_AttackPlayedFrom, $from);
-      $chainClosed = $target == "MISSINGTARGET";
-      if ($chainClosed) CloseCombatChain();
-      $powerValue = (TypeContains( $cardID, "W", $currentPlayer)) ? GeneratedPowerValue($cardID) : PowerValue($cardID, $mainPlayer, "CC", $index);
-      // I believe this should be accounted for elsewhere, right now this is false flagging attack queue attacks
-      // if (EffectAttackRestricted($cardID, $definedCardType, $from, true)) return;
-      SetCombatChainState($CCS_AttackUniqueID, $uniqueID);
-      if ($definedCardType == "AA" && $powerValue < 3) IncrementClassState($currentPlayer, $CS_NumLess3PowAAPlayed);
-      $resolvedAbilityTypeNoFrom = GetResolvedAbilityType($cardID);
-      if ($definedCardType == "AA" && ($resolvedAbilityTypeNoFrom == "" || $resolvedAbilityTypeNoFrom == "AA") && (SearchCharacterActive($currentPlayer, "kayo_berserker_runt") || (SearchCharacterActive($currentPlayer, "shiyana_diamond_gemini") && SearchCurrentTurnEffects("kayo_berserker_runt-SHIYANA", $currentPlayer))) && $powerValue >= 6) KayoStaticAbility($cardID);
-      $openedChain = true;
-      if ($definedCardType != "AA") SetCombatChainState($CCS_WeaponIndex, GetClassState($currentPlayer, $CS_PlayIndex));
-      if ($additionalCosts != "-" && HasFusion($cardID)) SetCombatChainState($CCS_AttackFused, 1);
-      //Add attack step layer prior to anything that triggers in the attack step
-      $cardType = $resolvedAbilityType != "" ? $resolvedAbilityType : $definedCardType;
-      if (!$chainClosed && $cardType == "AA") AddLayer("ATTACKSTEP", $mainPlayer, "-"); //I haven't added this for weapon. I don't think it's needed yet.
-      // If you attacked an aura with Spectra
-      if (!$chainClosed && (DelimStringContains($definedCardType, "AA") || DelimStringContains($definedCardType, "W") || DelimStringContains($definedCardSubType, "Ally") || DelimStringContains($definedCardSubType, "Aura"))) {
-        ArsenalAttackAbilities();
-        OnAttackEffects($cardID);
-      }
-      if (!$chainClosed && ($definedCardType == "AA" || $resolvedAbilityType == "AA")) {
-        if (TypeContains($cardID, "W")) {
-          $weaponsAttacked = GetClassState($currentPlayer, $CS_WeaponsAttackedWith);
-          if ($weaponsAttacked == "-") $weaponsAttacked = $uniqueID;
-          else $weaponsAttacked .= ",$uniqueID";
-          SetClassState($currentPlayer, $CS_WeaponsAttackedWith, $weaponsAttacked);
-        }
-        IncrementClassState($currentPlayer, $CS_NumTimesAttacked);
-        if (IsHeroAttackTarget()) IncrementClassState($defPlayer, $CS_NumTimesHeroAttacked);
-        if (DelimStringContains($definedCardSubType, "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
-        $isIllusionist = ClassContains($cardID, "ILLUSIONIST", $currentPlayer);
-        if ($isIllusionist) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
-        if ($isIllusionist && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
-        AuraAttackAbilities($cardID);
-        CharacterAttackAbilities($cardID);
-      }
-      if ($index == 0) {//if adding an attacking card
-        $count = count($currentTurnEffects);
-        $pieces = CurrentTurnEffectPieces();
-        for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
-            if (IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
-              $CombatChain->AttackCard()->AddBuff(ConvertToSetID($currentTurnEffects[$i]));
-              RemoveCurrentTurnEffect($i);
-            }
-          }
-        }
-      }
-    } else { //On chain, but not index 0
-      if ($definedCardType == "DR" && !$skipDRResolution) {
-        OnDefenseReactionResolveEffects($from, $cardID);
-        if (ColorContains($cardID, 3, $defPlayer)) IncrementClassState($defPlayer, $CS_NumBlueDefended);
-      }
-    }
-    if (!$skipDRResolution) {
-      switch ($cardID) { //cards that add themselves as blocking
-        case "quickdodge_flexors":
-          if ($turn[0] != "B") {
-            OnBlockEffects($index, "EQUIP");
-            OnBlockResolveEffects($cardID);
-          }
-          break;
-        default:
-          break;
-      }
-    }
-    SetClassState($currentPlayer, $CS_PlayCCIndex, $index);
   } else if ($cardID == "quickdodge_flexors") {
     if ($CombatChain->FindCardID($cardID)->Index() == -1)
       // helpful log message

@@ -2036,14 +2036,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       else if ($parameter == "AA") GiveAttackGoAgain();
       return 1;
     case "PROCESSATTACKTARGET":
-      if (GetCombatChainState($CCS_AttackTarget) == "NA") {
-        $additionalTarget = false;
-        SetCombatChainState($CCS_AttackTarget, $lastResult);
-      }
-      else {
-        $additionalTarget = true;
-        AppendCombatChainState($CCS_AttackTarget, ",$lastResult");
-      }
       $mzArr = explode("-", $lastResult, 2);
       $zone = &GetMZZone($defPlayer, $mzArr[0]);
       $uid = "-";
@@ -2059,10 +2051,17 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         default:
           break;
       }
-      if (!$additionalTarget) {
+      if ($parameter != "-" && $parameter != "") {
+        // the attack is still on the stack, so the target is stored on its layer until it resolves
+        $Layer = $Stack->TopLayer($parameter);
+        $Layer->AddTarget(AttackTargetEntry($mainPlayer, $lastResult));
+      }
+      else if (GetCombatChainState($CCS_AttackTarget) == "NA") {
+        SetCombatChainState($CCS_AttackTarget, $lastResult);
         SetCombatChainState($CCS_AttackTargetUID, $uid);
       }
       else {
+        AppendCombatChainState($CCS_AttackTarget, ",$lastResult");
         AppendCombatChainState($CCS_AttackTargetUID, ",$uid");
       }
       WriteLog("🎯" . GetMZCardLink($defPlayer, $lastResult) . " was chosen as the target.");
@@ -3268,7 +3267,8 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "GETTARGETOFATTACK":
       $params = explode(",", $parameter);
       $attackQueue = $params[2] ?? 0;
-      if (CardType($params[0]) == "AA" && GetResolvedAbilityType($params[0], $params[1]) == "" || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack($params[0], $attackQueue);
+      $forLayer = ($params[3] ?? "") == "LAYER";
+      if (CardType($params[0]) == "AA" && GetResolvedAbilityType($params[0], $params[1]) == "" || GetResolvedAbilityType($params[0], $params[1]) == "AA") GetTargetOfAttack($params[0], $attackQueue, $forLayer);
       return $lastResult;
     case "GETATTACKQUEUETARGET":
       $params = explode(",", $parameter);
