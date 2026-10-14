@@ -356,12 +356,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "toxicity_blue":
       LoseHealth(3, $defPlayer);
       break;
-    case "premeditate_red-1":
-      if (IsHeroAttackTarget()) {
-        PlayAura("ponder", $mainPlayer);
-        return 1;
-      }
-      break;
     case "spirit_of_war_red":
       PlayAura("courage", $mainPlayer);
       break;
@@ -2303,7 +2297,6 @@ function IsCombatEffectPersistent($cardID)
     case "mask_of_shifting_perspectives":
     case "blade_cuff":
     case "knives_out_blue":
-    case "premeditate_red-1":
     case "figment_of_triumph_yellow":
     case "spirit_of_war_red":
     case "blood_dripping_frenzy_blue":

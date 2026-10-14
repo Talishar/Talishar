@@ -1364,7 +1364,6 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
     case "smashing_good_time_yellow-1":
     case "smashing_good_time_blue-1":
     case "glistening_steelblade_yellow-1":
-    case "premeditate_red-1":
     case "target_totalizer":
     case "hack_to_reality_yellow-HIT":
     case "regain_composure_blue":

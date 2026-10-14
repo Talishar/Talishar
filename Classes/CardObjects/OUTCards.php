@@ -1720,17 +1720,47 @@ class fisticuffs extends Card {
 // }
 
 
-// class premeditate_red extends Card {
+class premeditate_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "premeditate_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "premeditate_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddCurrentTurnEffect("$this->cardID-1", $this->controller);
+        AddCurrentTurnEffect("$this->cardID-2", $this->controller);
+		return "";
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $CombatChain;
+		$attackID = $CombatChain->AttackCard()->ID();
+		if ($parameter === "1") return CardType($attackID) == "AA";
+        else if ($parameter === "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
+        else return false;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "2" ? 3 : 0;
+	}
+
+	function IsCombatEffectPersistent($mode) {
+		return $mode == "1";
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		if (($source == "-" || TypeContains($source, "AA")) && $parameter == "$this->cardID-1")
+			return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+		else
+			return false;
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		PlayAura("ponder", $this->controller);
+        return 1;
+	}
+}
 
 
 // class prowl_red extends Card {

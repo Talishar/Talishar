@@ -76,7 +76,6 @@ function OUTAbilityCost($cardID)
       $cardID = substr($cardID, 0, $dashPos);
     }
     $cardID = StripCardIDSuffix($cardID);
-    if ($cardID == "premeditate_red" && $dashSuffix === "2") return 3;
     if ($cardID == "silken_gi" && $dashSuffix === "2") return -1;
     switch($cardID)
     {
@@ -164,10 +163,6 @@ function OUTAbilityCost($cardID)
       case "silken_gi":
         return $dashSuffix === "2" && CardType($attackID) == "AA";
       case "gore_belching_red": return true;
-      case "premeditate_red":
-        if ($dashSuffix === "1") return CardType($attackID) == "AA";
-        else if ($dashSuffix === "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
-        else return false;
       case "looking_for_a_scrap_red": case "looking_for_a_scrap_yellow": case "looking_for_a_scrap_blue": return true;
       case "spring_load_red": case "spring_load_yellow": case "spring_load_blue": return true;
       case "scout_the_periphery_red": case "scout_the_periphery_yellow": case "scout_the_periphery_blue": return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
@@ -454,10 +449,6 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
           AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "BURDENSOFTHEPAST", 1);
         }
-        return "";
-      case "premeditate_red":
-        AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
-        AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
         return "";
       case "infectious_host_red": case "infectious_host_yellow": case "infectious_host_blue":
         if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer, effectController: $currentPlayer);
