@@ -276,7 +276,7 @@ function SetID($cardID)
       "azalea_lone_vigilante" => "OBK081",
       "vyle_catalyst_of_collapse" => "OBK012",
       "vyle" => "OBK013",
-      "alpha_01_first_cogwarden" => "OBK089",
+      "a_01_first_cogwarden" => "OBK089",
       "huxley_racketeer" => "OBK071",
       "huxley" => "OBK072"
     ];
@@ -341,7 +341,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "mortimer_living_virus":
     case "min_half_genius":
     case "azalea_lone_vigilante":
-    case "alpha_01_first_cogwarden":
+    case "a_01_first_cogwarden":
     case "huxley":
       return "Young";
     default:

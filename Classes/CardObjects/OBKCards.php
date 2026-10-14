@@ -235,9 +235,9 @@ class huxley_racketeer extends Card {
   }
 }
 
-class alpha_01_first_cogwarden extends Card {
+class a_01_first_cogwarden extends Card {
 	function __construct($controller) {
-    $this->cardID = "alpha_01_first_cogwarden";
+    $this->cardID = "a_01_first_cogwarden";
     $this->controller = $controller;
   }
 
@@ -311,6 +311,18 @@ class alpha_01_first_cogwarden extends Card {
 
 	function DefaultActiveState() {
 		return 1;
+	}
+
+	function SpecialType() {
+		return "C";
+	}
+
+	function SpecialName() {
+		return "α-01 First Cogwarden";
+	}
+
+	function SpecialHealth() {
+		return 19;
 	}
 }
 

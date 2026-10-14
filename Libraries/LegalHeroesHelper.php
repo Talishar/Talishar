@@ -155,7 +155,7 @@ $ALL_HEROES_OF_RATHE = [
   ['heroId' => 'min_half_mad', 'name' => 'Min, Half Mad', 'young' => true],
   ['heroId' => 'huxley_racketeer', 'name' => 'Huxley, Racketeer', 'young' => false],
   ['heroId' => 'huxley', 'name' => 'Huxley', 'young' => true],
-  ['heroId' => 'alpha_01_first_cogwarden', 'name' => 'α-01, First Cogwarden', 'young' => true],
+  ['heroId' => 'a_01_first_cogwarden', 'name' => 'α-01, First Cogwarden', 'young' => true],
   ['heroId' => 'azalea_ace_of_spades', 'name' => 'Azalea, Ace of Spades', 'young' => false],
   ['heroId' => 'azalea_lone_vigilante', 'name' => 'Azalea, Lone Vigilante', 'young' => true],
 ];
