@@ -11,3 +11,4 @@ function IsInfected($player) {
 }
 
 static $Diseases = ["frailty", "inertia", "bloodrot_pox"];
+static $AllDiseases = ["frailty", "inertia", "bloodrot_pox", "exertion"];

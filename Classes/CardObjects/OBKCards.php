@@ -540,3 +540,75 @@ class one_click_pinpointer extends Card {
 		return $CharacterCard->Tapped();
 	}
 }
+
+class extinction_level_event_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "extinction_level_event_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function EntersArenaAbility($index = -1) {
+		$AuraCard = new AuraCard($index, $this->controller);
+		AddLayer("TRIGGER", $this->controller, $this->cardID, $AuraCard->UniqueID(), "ENTERS");
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $AllDiseases;
+		switch($additionalCosts) {
+			case "ENTERS":
+				$Auras = new Auras($this->controller);
+				$AuraCard = $Auras->FindCardUID($target);
+				if ($AuraCard->Index() != -1) {
+					$choices = [];
+					foreach ($AllDiseases as $disease) {
+						$choices[] = "CARDID-$disease";
+					}
+					$choices = implode(",", $choices);
+					Await($this->controller, "ChooseMultiZone", indices:$choices, context:"Choose a disease to propagate", subsequent:0);
+					Await($this->controller, $this->cardID, uniqueID:$target);
+				}
+				break;
+			case "EXTINCT":
+				$count = 0;
+				foreach ([1, 2] as $player) {
+					$Auras = new Auras($player);
+					for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+						$AuraCard = $Auras->Card($i, true);
+						if (SubtypeContains($AuraCard->CardID(), "Disease"))
+							++$count;
+					}
+				}
+				if ($count >= 33) {
+					WriteLog("And all was still", highlight:true);
+					$otherPlayer = $this->controller == 1 ? 2 : 1;
+					LoseHealth(GetHealth($otherPlayer), $otherPlayer);
+				}
+				else {
+					WriteLog(33 - $count . " diseases left until extinction");
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$uniqueID = $dqVars["uniqueID"] ?? "-";
+		$choice = explode("-", $dqVars["MZIndex"] ?? "-")[1];
+		$Auras = new Auras($this->controller);
+		$AuraCard = $Auras->FindCardUID($uniqueID);
+		if ($AuraCard->Index() != -1 && $choice != "") {
+			WriteLog(CardLink($choice) . " will spread!", highlight:true, highlightColor:"g");
+			$AuraCard->AddModality(GamestateSanitize(CardName($choice)));
+		}
+	}
+
+	function StartTurnAbility($index) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "EXTINCT");
+	}
+}

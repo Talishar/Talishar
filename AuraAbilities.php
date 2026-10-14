@@ -154,7 +154,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $card = GetClass($cardID, $player);
   if ($card != "-") {
     $card->Binding($auraIndex);
-    $card->EntersArenaAbility();
+    $card->EntersArenaAbility($auraIndex);
   }
   if ($isToken)
     IncrementClassState($effectController, $CS_CreatedCardsThisTurn, $number);
@@ -970,6 +970,11 @@ function AuraBeginEndPhaseTriggers()
   $countAuras = count($auras);
   $aurasPieces = AuraPieces();
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
+    $name = GamestateSanitize(NameOverride($auras[$i], $mainPlayer));
+    if (SearchAuraForModalities($name, $mainPlayer, "extinction_level_event_red") != -1)
+      continue;
+    if (SearchAuraForModalities($name, $defPlayer, "extinction_level_event_red") != -1)
+      continue;
     $card = GetClass($auras[$i], $mainPlayer);
     if ($card != "-") $card->BeginEndTurnAbilities($i);
     switch ($auras[$i]) {
