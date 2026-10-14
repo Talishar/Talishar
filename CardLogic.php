@@ -308,7 +308,6 @@ function PopLayer()
 function AddAttackQueue($cardID, $player, $targets, $parameter="-", $uniqueID="-", $layerUID="-", $additionalCosts="-") {
   global $attackQueue;
   $layerUID = $layerUID == "-" ? GetUniqueId($cardID, $player) : $layerUID;
-  $targets = NormalizeAttackTargets($player, $targets);
   $attackQueue[] = $cardID;
   $attackQueue[] = $player;
   $attackQueue[] = $parameter;
@@ -322,7 +321,7 @@ function AddAttackQueue($cardID, $player, $targets, $parameter="-", $uniqueID="-
 
 function ResolveAttackQueue() {
   // resolving AttackQueue
-  global $attackQueue, $CS_AbilityIndex, $turn;
+  global $attackQueue, $combatChainState, $CCS_AttackTargetUID, $CCS_AttackTarget, $CS_AbilityIndex, $turn;
   if (count($attackQueue) > 0) {
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $params = explode("|", $parameter);
@@ -330,6 +329,9 @@ function ResolveAttackQueue() {
       WriteLog("Attack Prevented!", highlight:true);
       return;
     }
+    SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");
+    $MZIndex = CleanTargetToIndex($player, $target);
+    SetCombatChainState($CCS_AttackTarget, $MZIndex);
     $turn[0] = "M";
     if ($buffs != "-") {
       foreach(explode(",", $buffs) as $buff)
@@ -340,7 +342,7 @@ function ResolveAttackQueue() {
     for ($i = 0; $i < $abilityTypeCount; ++$i) {
       if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
-    PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, fromAttackQueue:true);
+    PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1);
   }
 }
 
@@ -578,13 +580,14 @@ function ContinueDecisionQueue($lastResult = "")
           for ($i = 0; $i < $abilityTypeCount; ++$i) {
             if ($abilityTypes[$i] == "AA") $params[2] = $i;
           }
+          SetCombatChainState($CCS_AttackTargetUID, explode("-", $target, 2)[1] ?? "-");
+          $MZIndex = CleanTargetToIndex($currentPlayer, $target);
+          SetCombatChainState($CCS_AttackTarget, $MZIndex);
           EndResolutionStep();
-          $fromAttackQueue = true;
         }
         else {
           [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUniqueID] = array_splice($layers, 0, LayerPieces());
           $params = explode("|", $parameter);
-          $fromAttackQueue = false;
         }
         $from = $params[0];
         if ($cardID == "TRIGGER" || IsStaticType(CardType($cardID), $from)) {
@@ -616,7 +619,7 @@ function ContinueDecisionQueue($lastResult = "")
           $EffectContextUID = $layerUniqueID;
           SetClassState($mainPlayer, $CS_LayerResolved, 1); // lets the game know to give priority back to mainPlayer
           SetDisruptionSource($player);
-          PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, $player, $fromAttackQueue);
+          PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, $player);
           ClearDieRoll($player);
         } else {
           switch ($cardID) {
