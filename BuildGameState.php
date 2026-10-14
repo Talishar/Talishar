@@ -460,6 +460,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     //   && CurrentEffectGrantsGoAgain());
   $activeChainLink->dominate = CachedDominateActive();
   $activeChainLink->overpower = CachedOverpowerActive();
+  $activeChainLink->veil = CachedVeilActive();
   $activeChainLink->confidence = SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence");
   $activeChainLink->activeOnHits = ActiveOnHits();
   $requiredEquipmentBlock = GetCombatChainState($CCS_RequiredEquipmentBlock);
