@@ -1468,7 +1468,7 @@ function IsVeilActive() {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($Effect->EffectID()) && !IsCombatEffectLimited($Effect->Index())) {
       $card = GetClass($Effect->EffectID(), $mainPlayer);
-      if ($card->DoesEffectGrantVeil($Effect->Index())) return true;
+      if ($card != "-" && $card->DoesEffectGrantVeil($Effect->Index())) return true;
     }
   }
   if (GetCombatChainState($CCS_CachedVeilActive) == 1)
