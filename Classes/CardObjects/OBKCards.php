@@ -646,3 +646,57 @@ class bootlegger_bust_up_blue extends Card {
     $this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
   }
 }
+
+class exertion extends Card {
+  function __construct($controller) {
+    $this->cardID = "exertion";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function PermanentPlayAbility($cardID, $from, $i) {
+		if ($from == "HAND" && !IsActivated($cardID, $from))
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "EXERT");
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		switch($additionalCosts) {
+			case "EXERT":
+				LoseHealth(1, $this->controller);
+				break;
+			case "DESTROY":
+				DestroyAuraUniqueID($this->controller, $uniqueID, mainPhase:false);
+				break;
+			default:
+				break;
+		}
+	}
+
+	function BeginEndTurnAbilities($index) {
+		$AuraCard = new AuraCard($index, $this->controller);
+		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY", uniqueID:$AuraCard->UniqueID());
+	}
+}
+
+class exertion_bloom_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "exertion_bloom_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+		foreach ([$this->controller, $otherPlayer] as $player) {
+			PlayAura("exertion", $player, effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller);
+		}
+		return "";
+  }
+
+	function SelfCostModifier($from) {
+		global $mainPlayer;
+		return $this->controller == $mainPlayer ? -3 : 0;
+	}
+}
