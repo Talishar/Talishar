@@ -507,7 +507,7 @@ function OUTAbilityCost($cardID)
           $attackCard = $CombatChain->AttackCard()->ID();
           $deck = new Deck($defPlayer);
           $deckCard = $deck->Top(true);
-          if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "THEIRDECK", "NTFromOtherPlayer", $attackCard);
+          if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "DECK", "NTFromOtherPlayer", $attackCard, $mainPlayer);
         }
         break;
       case "shake_down_red":
