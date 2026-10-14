@@ -8,7 +8,7 @@ class vyle_base extends BaseCard {
 				$deck = new Deck($player);
 				if (!$deck->Empty()) {
 					$topCard = $deck->Top(true);
-					AddArsenal($topCard, $player, $from, "UP");
+					AddArsenal($topCard, $player, "DECK", "UP");
 				}
 			}
 		}
