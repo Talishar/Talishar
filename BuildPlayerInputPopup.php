@@ -113,6 +113,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
   global $CombatChain, $chainLinks, $landmarks, $currentTurnEffects;
   global $theirHand, $myPermanents, $theirPermanents, $myPitch, $theirPitch;
   global $theirAllies, $myAllies, $attackQueue, $EffectContext, $decisionQueue;
+  global $Stack;
 
   $playerInputPopup = new stdClass();
   $playerInputButtons = [];
@@ -823,7 +824,12 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           //Add indication for allies that are the attack target
           if (DelimStringContains($option0, "ALLY", true)) {
             $AllyCard = new AllyCard($optionIndex, $cardController);
-            if ($AllyCard->UniqueID() == GetCombatChainState($CCS_AttackTargetUID))
+            $attackTarget = "-";
+            if (IsLayerStep())
+              $attackTarget = explode("-", $Stack->BottomLayer()->Target())[1] ?? "-";
+            else
+              $attackTarget = GetCombatChainState($CCS_AttackTargetUID);
+            if ($AllyCard->UniqueID() == $attackTarget)
               $label = "Attack Target";
           }
           //Add indication for layers targets
