@@ -485,7 +485,7 @@ function OUTAbilityCost($cardID)
     }
   }
 
-  function OUTHitEffect($cardID, $from)
+  function OUTHitEffect($cardID, $from, $target)
   {
     global $mainPlayer, $defPlayer, $chainLinks, $chainLinkSummary;
     global $CID_BloodRotPox, $CID_Frailty, $CID_Inertia;
@@ -493,13 +493,10 @@ function OUTAbilityCost($cardID)
     switch ($cardID)
     {
       case "nerve_scalpel": case "nerve_scalpel_r":
-        AddCurrentTurnEffect($cardID, $defPlayer);
-        break;
       case "orbitoclast": case "orbitoclast_r":
-        AddCurrentTurnEffect($cardID, $defPlayer);
-        break;
       case "scale_peeler": case "scale_peeler_r":
-        AddCurrentTurnEffect($cardID, $defPlayer);
+        if ($target == "-") $target = $defPlayer;
+        AddCurrentTurnEffect($cardID, $target);
         break;
       case "infiltrate_red":
         if(IsHeroAttackTarget())

@@ -53,7 +53,7 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
     case "EVR": return EVRHitEffect($cardID, $target);
     case "UPR": return UPRHitEffect($cardID);
     case "DYN": return DYNHitEffect($cardID, $from, $CombatChain->AttackCard()->ID());
-    case "OUT": return OUTHitEffect($cardID, $from);
+    case "OUT": return OUTHitEffect($cardID, $from, $target);
     case "DTD": return DTDHitEffect($cardID);
     case "TCC": return TCCHitEffect($cardID);
     case "EVO": return EVOHitEffect($cardID);
