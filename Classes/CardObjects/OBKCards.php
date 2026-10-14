@@ -390,3 +390,141 @@ class azalea_ace_of_spades extends Card {
 		$this->baseCard = new azalea_assassin_base($this->cardID, $this->controller);
   }
 }
+
+class paupers_knife extends Card {
+  function __construct($controller) {
+    $this->cardID = "paupers_knife";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AA";
+	}
+
+	function AbilityCost() {
+		return 2;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->TapForCost();
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		return $CharacterCard->Tapped();
+	}
+}
+
+class cogwerx_dueling_pistol extends Card {
+  function __construct($controller) {
+    $this->cardID = "cogwerx_dueling_pistol";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		global $CS_PlayIndex;
+		$abilityType = GetResolvedAbilityType($this->cardID);
+		if($abilityType == "A")
+		{
+			$index = GetClassState($this->controller, $CS_PlayIndex);
+			$character = new CharacterCard($index, $this->controller);
+			$character->SetCounters(1);
+		}
+    return "";
+  }
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->TapForCost();
+		$abilityType = GetResolvedAbilityType($this->cardID);
+		if ($abilityType == "AA")
+			$CharacterCard->AddCounters(-1);
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		return $CharacterCard->Tapped() || GetAbilityNames($this->cardID, $index, $from) == "-";;
+	}
+
+	function HasGoAgain($from) {
+		return false;
+	}
+
+	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+		if ($allNames) return "Add_a_steam_counter,Attack";
+		if (!is_numeric($index) || $index == -1) return "";
+		$rv = SearchLayersForPhase("RESOLUTIONSTEP") == -1 ? "Add_a_steam_counter" : "-";
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		if ($CharacterCard->NumCounters() > 0 && !SearchCurrentTurnEffects("kabuto_of_imperial_authority", $this->controller)) $rv .= ",Attack";
+		return $rv;
+	}
+
+	function GetAbilityTypes($index = -1, $from = '-') {
+		return "A,AA";
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "A";
+	}
+
+	function AbilityCost() {
+		$abilityType = GetResolvedAbilityType($this->cardID);
+		return ($abilityType == "A" ? 1 : 0);
+	}
+
+	function AbilityHasGoAgain($from) {
+		$abilityType = GetResolvedAbilityType($this->cardID);
+		return $abilityType == "A";
+	}
+}
+
+class one_click_pinpointer extends Card {
+  function __construct($controller) {
+    $this->cardID = "one_click_pinpointer";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$Arsenal = new Arsenal($this->controller);
+		for ($i = $Arsenal->NumCards() - 1; $i >= 0; --$i) {
+			$ArsenalCard = $Arsenal->Card($i, true);
+			AddBottomDeck($ArsenalCard->CardID(), $this->controller, "ARS");
+			$ArsenalCard->Remove();
+		}
+		LoadArrow($this->controller);
+    return "";
+  }
+
+	function AbilityType($index = -1, $from = '-') {
+		return "A";
+	}
+
+	function AbilityHasGoAgain($from) {
+		return true;
+	}
+
+	function AbilityCost() {
+		$Character = new PlayerCharacter($this->controller);
+		for ($i = 0; $i < $Character->NumCards(); ++$i) {
+			$CharacterCard = $Character->Card($i, true);
+			if (SubtypeContains($CharacterCard->CardID(), "Bow") && $CharacterCard->Tapped())
+				return 1;
+		}
+		return 0;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->TapForCost();
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		return $CharacterCard->Tapped();
+	}
+}

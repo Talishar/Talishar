@@ -2571,7 +2571,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($resolutionIndex != -1 && !$canPlayAsInstant) {
       //block the shortcut if they can't attack
       $blockShortcut = match ($cardID) {
-        "teklo_plasma_pistol", "plasma_barrel_shot" => str_contains(GetAbilityNames($cardID, $index, $from), "Attack"),
+        "teklo_plasma_pistol", "plasma_barrel_shot", "cogwerx_dueling_pistol" => str_contains(GetAbilityNames($cardID, $index, $from), "Attack"),
         default => false,
       };
       
