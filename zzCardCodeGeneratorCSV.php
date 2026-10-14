@@ -1,5 +1,5 @@
 <?php
-if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
+// if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
 
   // Parallel version of zzCardCodeGenerator.php that sources card data from the public card data CSV
   // instead of the-fab-cube JSON, for when the CSV is more up to date. The CSV has one row per printing
@@ -15,7 +15,8 @@ if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
   $originalSets = ["WTR", "ARC", "CRU", "MON", "ELE", "EVR", "UPR", "DYN", "OUT", "DVR", "RVD", "DTD", "TCC", "EVO", "HVY",
                    "MST", "AKO", "ASB", "AAZ", "ROS", "TER", "AUR", "AIO", "AJV", "HNT", "ARK", "AST", "AMX", "LGS", "HER",
                    "FAB", "JDG", "SEA", "AGB", "MPG", "ASR", "APR", "AVS", "BDD", "SMP", "SUP", "APS", "ARR", "AAC", "AHA", 
-                   "PEN", "OMN", "AZS", "MPW", "AOL", "DDD", "IAR", "AMA", "SAT", "SBW", "MPA", "AMO", "TNP", "SPW"];
+                   "PEN", "OMN", "AZS", "MPW", "AOL", "DDD", "IAR", "AMA", "SAT", "SBW", "MPA", "AMO", "TNP", "SPW", "OBK",
+                   "AMG"];
 
   $csvUrl = "https://d1pn9y8e99aays.cloudfront.net/public_card_data.csv";
 

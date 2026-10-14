@@ -2,6 +2,9 @@
 function GeneratedIs1H($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"paupers_knife" => true,
+"cogwerx_dueling_pistol" => true,
+"one_click_pinpointer" => true,
 "ball_breaker" => true,
 "beckoning_mistblade" => true,
 "brush_of_heavenly_rites" => true,

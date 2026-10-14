@@ -16,11 +16,12 @@ include_once "../Assets/MetafyDictionary.php";
 
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
-include_once "../Classes/CardObjects/IARCards.php";
-include_once "../Classes/CardObjects/AMACards.php";
+
 include_once "../Classes/CardObjects/AMOCards.php";
 include_once "../Classes/CardObjects/MPWCards.php"; // for now just for the smash palace cards
 include_once "../Classes/CardObjects/MPACards.php";
+include_once "../Classes/CardObjects/OBKCards.php";
+include_once "../Classes/CardObjects/AMGCards.php";
 // promos for special formats
 include_once "../Classes/CardObjects/LGSCards.php";
 
@@ -985,6 +986,8 @@ function isUnimplemented($cardID) {
     case "SPW":
     case "MPA":
     case "AMO":
+    case "OBK":
+    case "AMG":
     case "": // cards that don't have a set id yet
       $card = GetClass($cardID, 0);
       return $card == "-";

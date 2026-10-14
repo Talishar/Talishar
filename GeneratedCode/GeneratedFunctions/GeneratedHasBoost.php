@@ -2,6 +2,10 @@
 function GeneratedHasBoost($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
+"madness_spiral_blue" => true,
+"bootlegger_bust_up_red" => true,
+"bootlegger_bust_up_yellow" => true,
+"bootlegger_bust_up_blue" => true,
 "big_bertha_red" => true,
 "big_bertha_yellow" => true,
 "big_bertha_blue" => true,

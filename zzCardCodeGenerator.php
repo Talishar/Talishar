@@ -1,5 +1,5 @@
 <?php
-if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
+// if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
 
   include __DIR__ . '/zzImageConverter.php';
   include __DIR__ . '/Libraries/Trie.php';
@@ -13,7 +13,7 @@ if (PHP_SAPI !== "cli") { http_response_code(404); exit; }
   // Main branch FAB Cube
   // $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
   // Feature branch FAB Cube
-  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/usurp-the-shadow-throne/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/outbreak/json/english/card.json";
 
   $curl = curl_init();
   $headers = [ "Content-Type: application/json" ];
