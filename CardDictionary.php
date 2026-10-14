@@ -3415,8 +3415,6 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       return GetResolvedAbilityType($cardID, $from) == "AA";
     case "shelter_from_the_storm_red":
       return GetResolvedAbilityType($cardID, $from) == "DR";
-    case "war_cry_of_bellona_yellow":
-      return $phase == "B" || GetResolvedAbilityType($cardID, $from) == "AR";
     case "quickdodge_flexors":
       if (!CanBlockWithEquipment()) return false;
       if (!CanBlock($cardID, "EQUIP")) return false;
