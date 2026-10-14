@@ -401,8 +401,10 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0, $powerCount
 
     $arsenalCount = count($arsenal);
     $arsenalPieces = ArsenalPieces();
-    $uniqueID = $arsenal[$arsenalCount - $arsenalPieces + 5];
-    
+    $index = $arsenalCount - $arsenalPieces;
+    $uniqueID = $arsenal[$index + 5];
+    $card = GetClass($cardID, $player);
+    if ($card != "-") $card->AddArsenalEffect($index);
     switch ($cardID) {
       case "head_shot_red":
       case "head_shot_yellow":
@@ -413,9 +415,6 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0, $powerCount
       case "ridge_rider_shot_yellow":
       case "ridge_rider_shot_blue":
         AddLayer("TRIGGER", $player, $cardID);
-        break;
-      case "remorseless_red":
-        AddCurrentTurnEffect($cardID, $otherPlayer, "", $uniqueID);
         break;
       case "spire_sniping_red":
       case "spire_sniping_yellow":

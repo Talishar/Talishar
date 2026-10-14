@@ -1603,17 +1603,59 @@ class cintari_saber_r extends Card {
 // }
 
 
-// class remorseless_red extends Card {
+class remorseless_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "remorseless_red";
-//     $this->controller = $controller;
-//     }
+    function __construct($controller) {
+        $this->cardID = "remorseless_red";
+        $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        return "";
+    }
+
+    function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+        return HeroHitTrigger($this->controller, $this->cardID, $check);
+    }
+
+    function AddArsenalEffect($index) {
+        $ArsenalCard = new ArsenalCard($index, $this->controller);
+        AddLayer("TRIGGER", $this->controller, $this->cardID, $ArsenalCard->UniqueID(), "ARS");
+    }
+
+    function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+        $otherPlayer = $this->controller == 1 ? 2 : 1;
+        switch ($additionalCosts) {
+            case "ARS":
+                AddCurrentTurnEffect($this->cardID, $otherPlayer, "", $target);
+                break;
+            case "DMG":
+                LoseHealth(1, $otherPlayer);
+                break;
+            default:
+                break;
+        }
+    }
+
+    function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+        return true;
+    }
+
+    function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+        global $defPlayer;
+        AddCurrentTurnEffect("$this->cardID-DMG", $defPlayer);
+        AddNextTurnEffect("$this->cardID-DMG", $defPlayer);
+    }
+
+    function PlayCardEffectAbility($cardID, $from, &$remove, $index = -1) {
+        $Effect = new CurrentEffect($index);
+        if ($Effect->EffectID() ==  "$this->cardID-DMG") {
+            $otherPlayer = $this->controller == 1 ? 2 : 1;
+            if (!IsActivated($cardID, $from) && IsAction($cardID, $from))
+                AddLayer("TRIGGER", $otherPlayer, $this->cardID, "", "DMG");
+        }
+    }
+}
 
 
 // class righteous_cleansing_yellow extends Card {

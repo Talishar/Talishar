@@ -1388,4 +1388,10 @@ class Card {
       return $this->baseCard->DoesEffectGrantVeil($effectIndex);
     return;
   }
+
+  function AddArsenalEffect($index) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "AddArsenalEffect"))
+      return $this->baseCard->AddArsenalEffect($index);
+    return;
+  }
 }

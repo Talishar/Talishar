@@ -130,7 +130,6 @@
       case "high_speed_impact_red": case "high_speed_impact_yellow": case "high_speed_impact_blue": return GetCombatChainState($CCS_IsBoosted) == "1";
       case "combustible_courier_red": case "combustible_courier_yellow": case "combustible_courier_blue": return GetCombatChainState($CCS_IsBoosted) == "1";
       case "perch_grapplers": return $CombatChain->AttackCard()->From() == "ARS" && GetClassState($mainPlayer, $CS_ArsenalFacing) == "UP" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
-      case "remorseless_red": return $attackID == "remorseless_red";
       case "poison_the_tips_yellow": return CardSubtype($attackID) == "Arrow";
       case "feign_death_yellow": return true;
       case "tripwire_trap_red": return true;
@@ -504,12 +503,6 @@ function CRUHitEffect($cardID)
       break;
     case "combustible_courier_red": case "combustible_courier_yellow": case "combustible_courier_blue":
       AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
-      break;
-    case "remorseless_red":
-      if(IsHeroAttackTarget()) {
-        AddCurrentTurnEffect("remorseless_red-DMG", $defPlayer);
-        AddNextTurnEffect("remorseless_red-DMG", $defPlayer);
-      }
       break;
     case "pathing_helix_red": case "pathing_helix_yellow": case "pathing_helix_blue":
       if(!ArsenalEmpty($mainPlayer)) return "There is already a card in your arsenal, so you cannot put an arrow in your arsenal";

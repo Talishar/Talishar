@@ -2893,17 +2893,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
           SetClassState($currentPlayer, $CS_LayerPlayIndex, $cachedLayerPlayIndex);
         }
       }
-      $remorselessCount = CountCurrentTurnEffects("remorseless_red-DMG", $playerID);
-      if ($isActionType && $remorselessCount > 0 && GetAbilityTypes($cardID, from: $from) == "") {
-        WriteLog("Player " . $playerID . " lost " . $remorselessCount . " life to " . CardLink("remorseless_red", "remorseless_red"));
-        LoseHealth($remorselessCount, $playerID);
-      } elseif ($isActionType && $remorselessCount > 0) {
-        $remorselessAbilityType = $resolvedAbilityType;
-        if ($remorselessAbilityType == "" || $remorselessAbilityType == "AA" || $remorselessAbilityType == "A") {
-          WriteLog("Player " . $playerID . " lost " . $remorselessCount . " life to " . CardLink("remorseless_red", "remorseless_red"));
-          LoseHealth($remorselessCount, $playerID);
-        }
-      }
 
       // Cache values for Illusionist checks
       $classContainsIllusionist = ClassContains($cardID, "ILLUSIONIST", $currentPlayer);

@@ -883,7 +883,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "bittering_thorns_yellow"=>true,"whirling_mist_blossom_yellow"=>true,
     "high_speed_impact_red"=>true,"high_speed_impact_yellow"=>true,"high_speed_impact_blue"=>true,
     "combustible_courier_red"=>true,"combustible_courier_yellow"=>true,"combustible_courier_blue"=>true,
-    "remorseless_red"=>true,
     "pathing_helix_red"=>true,"pathing_helix_yellow"=>true,"pathing_helix_blue"=>true,
     "sleep_dart_red"=>true,"sleep_dart_yellow"=>true,"sleep_dart_blue"=>true,
     "dread_triptych_blue"=>true,
