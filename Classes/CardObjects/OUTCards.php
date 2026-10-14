@@ -1757,7 +1757,10 @@ class premeditate_red extends Card {
 	}
 
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $CurrentTurnEffects;
 		PlayAura("ponder", $this->controller);
+		$Effect = $CurrentTurnEffects->FindEffect("$this->cardID-1");
+		$Effect->Remove();
         return 1;
 	}
 }
