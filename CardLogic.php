@@ -325,7 +325,6 @@ function ResolveAttackQueue() {
   global $attackQueue, $CS_AbilityIndex, $turn;
   if (count($attackQueue) > 0) {
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
-    WriteLog("HERE resolving attack queue for $cardID with target: $target");
     $params = explode("|", $parameter);
     if (!CanAttack($cardID, $params[0], isWeapon:IsWeapon($cardID, $params[0]), AQCheck:true)) {
       WriteLog("Attack Prevented!", highlight:true);

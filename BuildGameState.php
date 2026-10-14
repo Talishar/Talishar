@@ -527,8 +527,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $reorderableLayers[] = $layer;
   }
   // an attack on the stack keeps its targets on its layer until it resolves
-  $layerAttackTargetNames = GetLayerAttackTargetNames($mainPlayer);
-  $layerObject->target = $layerAttackTargetNames != "" ? $layerAttackTargetNames : $attackTargetNames;
+  // $layerAttackTargetNames = GetLayerAttackTargetNames($mainPlayer);
+  // $layerObject->target = $layerAttackTargetNames != "" ? $layerAttackTargetNames : $attackTargetNames;
   $layerObject->layerContents = $layerContents;
   $layerObject->reorderableLayers = $reorderableLayers;
   $response->layerDisplay = $layerObject;

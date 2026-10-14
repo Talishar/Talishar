@@ -3654,7 +3654,7 @@ function AddAttackLayer($cardID, $from, $uniqueID="-", $zone="-")
   Await($currentPlayer, "AddAttackQueue", lastResultName:"targets", cardID:$cardID, from:$from, uniqueID:$uniqueID, zone:$zone, final:true);
 }
 
-// Attack targets are stored on the attack's layer / attack queue entry as "AT:ZONE-UID" entries (the hero is "AT:THEIRCHAR-0")
+// Attack targets are stored on the attack's layer / attack queue entry as "ZONE-UID" entries (the hero is "THEIRCHAR-0")
 // so they can share the target field with resolution ability targets. They're only copied into $CCS_AttackTarget
 // once the attack resolves (ApplyAttackTargets), so an attack on the stack can't overwrite the current chain link's target.
 function AttackTargetEntry($defPlayer, $mzIndex)
@@ -3663,28 +3663,16 @@ function AttackTargetEntry($defPlayer, $mzIndex)
   $zone = explode("-", $mzIndex)[0];
   $object = MZIndexToObject($mainPlayer, $mzIndex);
   $uid = $object != "" ? $object->UniqueID() : "-";
-  return "AT:" . ($uid == "-" ? $mzIndex : "$zone-$uid");
-}
-
-// returns [attack targets (without the "AT:" marker), remaining resolution ability targets]
-function SplitAttackTargets($target)
-{
-  $attackTargets = [];
-  $otherTargets = [];
-  foreach (explode(",", $target) as $targ) {
-    if (str_starts_with($targ, "AT:")) $attackTargets[] = substr($targ, 3);
-    else $otherTargets[] = $targ;
-  }
-  return [$attackTargets, count($otherTargets) > 0 ? implode(",", $otherTargets) : "-"];
+  return ($uid == "-" ? $mzIndex : "$zone-$uid");
 }
 
 // converts attack queue targets given as mzindexes (from GETATTACKQUEUETARGET) into attack target entries
 function NormalizeAttackTargets($player, $targets)
 {
-  if ($targets == "-" || $targets == "") return "AT:THEIRCHAR-0";
-  if (str_contains($targets, "AT:")) return $targets;
+  if ($targets == "-" || $targets == "") return "THEIRCHAR-0";
   $entries = [];
-  foreach (explode(",", $targets) as $targ) $entries[] = AttackTargetEntry($player, $targ);
+  foreach (explode(",", $targets) as $targ)
+    $entries[] = AttackTargetEntry($player, $targ);
   return implode(",", $entries);
 }
 
@@ -3712,30 +3700,6 @@ function ApplyAttackTargets($player, $attackTargets)
   SetCombatChainState($CCS_AttackTargetUID, count($uids) > 0 ? implode(",", $uids) : "-");
 }
 
-// names of the targets of the topmost attack on the stack, for display
-function GetLayerAttackTargetNames($player)
-{
-  global $layers;
-  $layersCount = count($layers);
-  $layerPieces = LayerPieces();
-  for ($i = 0; $i < $layersCount; $i += $layerPieces) {
-    [$attackTargets] = SplitAttackTargets($layers[$i + 3]);
-    if (count($attackTargets) == 0) continue;
-    $names = [];
-    foreach ($attackTargets as $targ) {
-      [$zone, $id] = array_pad(explode("-", $targ, 2), 2, "");
-      if (is_numeric($id)) $names[] = CardName(GetMZCard($player, $targ));
-      else {
-        $Zone = GetZoneObject($player, $zone);
-        $Card = $Zone == "" ? "" : $Zone->FindCardUID($id);
-        if ($Card != "" && $Card->Index() >= 0) $names[] = CardName(GetMZCard($player, "$zone-" . $Card->Index()));
-      }
-    }
-    return implode("|", $names);
-  }
-  return "";
-}
-
 function GetTargetOfAttack($cardID = "", $attackQueue=false, $forLayer=false)
 {
   global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects, $CS_PlayIndex, $Stack;
@@ -3756,7 +3720,7 @@ function GetTargetOfAttack($cardID = "", $attackQueue=false, $forLayer=false)
     if ($targets == "") WriteLog("Something weird happened, please submit a bug report", highlight:true);
     if ($forLayer) {
       $Layer = $Stack->TopLayer($cardID);
-      $Layer->AddTarget("AT:$targets");
+      $Layer->AddTarget($targets);
     }
     else if ($attackQueue) PrependDecisionQueue("PASSPARAMETER", $mainPlayer, $targets);
     else SetCombatChainState($CCS_AttackTarget, $targets);
@@ -4706,7 +4670,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_NumDragonAttacks, $CS_NumAttackCardsAttacked, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked, $CS_NumTimesHeroAttacked;
   global $currentTurnEffects, $CCS_AttackTarget, $CCS_AttackTargetUID;
-  global $landmarks, $CS_WeaponsAttackedWith, $Stack, $AttackQueue;
+  global $landmarks, $CS_WeaponsAttackedWith, $Stack, $AttackQueue, $CombatChain;
   if ($player == "") $player = $currentPlayer;
   $cardType = CardType($cardID);
   if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {
@@ -4734,26 +4698,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   $skipDRResolution = false;
   // attack targets ride on the layer/attack queue target until the attack actually resolves
   $layerTarget = $target;
-  [$attackTargets, $target] = SplitAttackTargets($target);
   $goesOnChain = GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer);
-  $resolvingNow = $fromAttackQueue || ($Stack->NumLayers() == 0 && $AttackQueue->NumAttacks() == 0);
-  if ($goesOnChain && $resolvingNow && count($attackTargets) > 0) ApplyAttackTargets($mainPlayer, $attackTargets);
-  $targetArr = explode(",", GetCombatChainState($CCS_AttackTarget));
-  $uidArr = explode(",", GetCombatChainState($CCS_AttackTargetUID));
-  if(GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer)) {
-    for ($i = count($targetArr) - 1; $i >= 0; --$i) {
-      if (explode("-", $targetArr[$i], 2)[0] == "THEIRAURAS") {
-        // remove spectra cards from target
-        $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
-        if ($ind == -1) {
-          array_splice($targetArr, $i, 1);
-          array_splice($uidArr, $i, 1);
-        }
-      }
-    }
-    SetCombatChainState($CCS_AttackTarget, count($targetArr) > 0 ? implode(",", $targetArr) : "NA");
-    SetCombatChainState($CCS_AttackTargetUID, count($uidArr) > 0 ? implode(",", $uidArr) : "-");
-  }
   $isBlock = ($turn[0] == "B" && count($layers) == 0); //This can change over the course of the function; for example if a phantasm gets popped
   if ($isBlock && $cardID == "nitro_mechanoidc") {
     $Items = new Items($currentPlayer);
@@ -4763,6 +4708,27 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
   //put onto combat chain if that's where it needs to go
   if($goesOnChain) {
+    $resolvingNow = $fromAttackQueue || ($Stack->NumLayers() == 0 && $AttackQueue->NumAttacks() == 0 && (IsResolutionStep() || !$CombatChain->HasCurrentLink())) || $isBlock;
+    
+    if (!$isBlock) {
+      $attackTargets = explode(",", $target);
+      if ($goesOnChain && $resolvingNow && count($attackTargets) > 0)
+        ApplyAttackTargets($mainPlayer, $attackTargets);
+      $targetArr = explode(",", GetCombatChainState($CCS_AttackTarget));
+      $uidArr = explode(",", GetCombatChainState($CCS_AttackTargetUID));
+      for ($i = count($targetArr) - 1; $i >= 0; --$i) {
+        if (explode("-", $targetArr[$i], 2)[0] == "THEIRAURAS") {
+          // remove spectra cards from target
+          $ind = SearchAurasForUniqueID($uidArr[$i], $defPlayer);
+          if ($ind == -1) {
+            array_splice($targetArr, $i, 1);
+            array_splice($uidArr, $i, 1);
+          }
+        }
+      }
+      SetCombatChainState($CCS_AttackTarget, count($targetArr) > 0 ? implode(",", $targetArr) : "NA");
+      SetCombatChainState($CCS_AttackTargetUID, count($uidArr) > 0 ? implode(",", $uidArr) : "-");
+    }
     if ($resolvingNow) {
       if (($from == "PLAY" || $from == "EQUIP") && $uniqueID != "-1" && $index == -1 && count($combatChain) == 0 && !DelimStringContains($definedCardSubType, "Item")) {
         WriteLog(CardLink($cardID, $cardID) . " does not resolve because it is no longer in play.");
@@ -4838,7 +4804,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           case "display_of_craftsmanship_blue":
             break;
           default:
-            WriteLog("HERE checking targets: " . GetCombatChainState($CCS_AttackTarget));
             $target = (GetCombatChainState($CCS_AttackTarget) == "" || GetCombatChainState($CCS_AttackTarget) == "NA") ? "MISSINGTARGET" : GetMZCards($currentPlayer, GetAttackTarget());
             
             if ($target == "") $target = "MISSINGTARGET";
@@ -4858,7 +4823,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         }
       }
       $index = -1;
-      WriteLog("HERE about to add $cardID to combat chain! $target");
       if (!$skipDRResolution && $target != "" && $target != "MISSINGTARGET") {
         $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
       }
