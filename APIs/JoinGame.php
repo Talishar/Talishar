@@ -18,6 +18,7 @@ include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
 
 include_once "../Classes/CardObjects/AMOCards.php";
+include_once "../Classes/CardObjects/HVYCards.php"; //needed for windups
 include_once "../Classes/CardObjects/MPWCards.php"; // for now just for the smash palace cards
 include_once "../Classes/CardObjects/MPACards.php";
 include_once "../Classes/CardObjects/OBKCards.php";
