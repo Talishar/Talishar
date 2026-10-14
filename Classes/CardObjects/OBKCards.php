@@ -50,18 +50,6 @@ class vyle_base extends BaseCard {
 		}
 		return 0;
 	}
-
-	function SpecialType() {
-		return "C";
-	}
-
-	function SpecialClass() {
-		return "RANGER";
-	}
-
-	function SpecialTalent() {
-		return "CHAOS";
-	}
 }
 
 class vyle extends Card {
@@ -70,18 +58,6 @@ class vyle extends Card {
     $this->controller = $controller;
 		$this->baseCard = new vyle_base($this->cardID, $this->controller);
   }
-
-	function SpecialName() {
-		return "Vyle";
-	}
-
-	function SpecialSubType() {
-		return "Young";
-	}
-
-	function SpecialHealth() {
-		return 20;
-	}
 }
 
 class vyle_catalyst_of_collapse extends Card {
@@ -90,14 +66,6 @@ class vyle_catalyst_of_collapse extends Card {
     $this->controller = $controller;
 		$this->baseCard = new vyle_base($this->cardID, $this->controller);
   }
-
-	function SpecialName() {
-		return "Vyle, Catalyst of Collapse";
-	}
-
-	function SpecialHealth() {
-		return 40;
-	}
 }
 
 class mortimer_living_virus extends Card {
@@ -141,26 +109,6 @@ class mortimer_living_virus extends Card {
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		return $CharacterCard->Tapped() || $mainPlayer != $this->controller;
 	}
-
-	function SpecialName() {
-		return "Mortimer Living Virus";
-	}
-
-	function SpecialType() {
-		return "C";
-	}
-
-	function SpecialClass() {
-		return "ASSASSIN";
-	}
-
-	function SpecialTalent() {
-		return "CHAOS";
-	}
-
-	function SpecialHealth() {
-		return 20;
-	}
 }
 
 class min_front extends BaseCard {
@@ -183,18 +131,6 @@ class min_front extends BaseCard {
 			"min_genius" => "min_mad"
 		};
 	}
-
-	function SpecialType() {
-		return "C";
-	}
-
-	function SpecialClass() {
-		return "MECHANOLOGIST";
-	}
-
-	function SpecialTalent() {
-		return "CHAOS";
-	}
 }
 
 class min_half_genius extends Card {
@@ -203,10 +139,6 @@ class min_half_genius extends Card {
     $this->controller = $controller;
 		$this->baseCard = new min_front($this->cardID, $this->controller);
   }
-
-	function SpecialHealth() {
-		return 20;
-	}
 }
 
 class min_genius extends Card {
@@ -215,10 +147,6 @@ class min_genius extends Card {
     $this->controller = $controller;
 		$this->baseCard = new min_front($this->cardID, $this->controller);
   }
-
-	function SpecialHealth() {
-		return 40;
-	}
 }
 
 class min_back extends BaseCard {
@@ -241,18 +169,6 @@ class min_back extends BaseCard {
 			"min_mad" => "min_genius"
 		};
 	}
-
-	function SpecialType() {
-		return "C";
-	}
-
-	function SpecialClass() {
-		return "MECHANOLOGIST";
-	}
-
-	function SpecialTalent() {
-		return "CHAOS";
-	}
 }
 
 class min_half_mad extends Card {
@@ -261,10 +177,6 @@ class min_half_mad extends Card {
     $this->controller = $controller;
 		$this->baseCard = new min_back($this->cardID, $this->controller);
   }
-
-	function SpecialHealth() {
-		return 20;
-	}
 }
 
 class min_mad extends Card {
@@ -273,21 +185,9 @@ class min_mad extends Card {
     $this->controller = $controller;
 		$this->baseCard = new min_back($this->cardID, $this->controller);
   }
-
-	function SpecialHealth() {
-		return 40;
-	}
 }
 
 class huxley_base extends BaseCard {
-	function SpecialType() {
-		return "C";
-	}
-
-	function SpecialClass() {
-		return "ASSASSIN,MECHANOLOGIST";
-	}
-
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
@@ -325,14 +225,6 @@ class huxley extends Card {
     $this->controller = $controller;
 		$this->baseCard = new huxley_base($this->cardID, $this->controller);
   }
-
-	function SpecialHealth() {
-		return 19;
-	}
-
-	// function SpecialName() {
-	// 	return "Huxley";
-	// }
 }
 
 class huxley_racketeer extends Card {
@@ -341,14 +233,6 @@ class huxley_racketeer extends Card {
     $this->controller = $controller;
 		$this->baseCard = new huxley_base($this->cardID, $this->controller);
   }
-
-	function SpecialHealth() {
-		return 38;
-	}
-
-	// function SpecialName() {
-	// 	return "Huxley Racketeer";
-	// }
 }
 
 class alpha_01_first_cogwarden extends Card {
@@ -428,22 +312,6 @@ class alpha_01_first_cogwarden extends Card {
 	function DefaultActiveState() {
 		return 1;
 	}
-
-	function SpecialName() {
-		return "α-01, First Cogwarden";
-	}
-
-	function SpecialClass() {
-		return "MECHANOLOGIST,RANGER";
-	}
-
-	function SpecialHealth() {
-		return 19;
-	}
-
-	function SpecialType() {
-		return "C";
-	}
 }
 
 class azalea_assassin_base extends baseCard {
@@ -505,14 +373,6 @@ class azalea_assassin_base extends baseCard {
 	function DefaultActiveState() {
 		return 1;
 	}
-
-	function SpecialType() {
-		return "C";
-	}
-
-	function SpecialClass() {
-		return "ASSASSIN,RANGER";
-	}
 }
 
 class azalea_lone_vigilante extends Card {
@@ -521,14 +381,6 @@ class azalea_lone_vigilante extends Card {
     $this->controller = $controller;
 		$this->baseCard = new azalea_assassin_base($this->cardID, $this->controller);
   }
-
-	function SpecialName() {
-		return "Azalea Lone Vigilante";
-	}
-
-	function SpecialHealth() {
-		return 20;
-	}
 }
 
 class azalea_ace_of_spades extends Card {
@@ -537,12 +389,4 @@ class azalea_ace_of_spades extends Card {
     $this->controller = $controller;
 		$this->baseCard = new azalea_assassin_base($this->cardID, $this->controller);
   }
-
-	function SpecialName() {
-		return "Azalea Ace of Spades";
-	}
-
-	function SpecialHealth() {
-		return 40;
-	}
 }
