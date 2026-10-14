@@ -1001,7 +1001,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $backupFname = "turn_$turnPlayer-$turnNumber" . "_Gamestate.txt";
         $backupLoc = $filepath . $backupFname;
         if (!file_exists($backupLoc)) {
-          WriteLog("Cannot find turn backup for player $turnPlayer's turn $turnNumber", highlight: true);
+          WriteLog("Cannot find turn backup for Player $turnPlayer's turn $turnNumber", highlight: true);
           break;
         }
         //update the command pointer
