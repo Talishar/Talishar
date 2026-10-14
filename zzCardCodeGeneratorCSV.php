@@ -184,7 +184,7 @@
     if ($name == "Goldfin Harpoon") return "goldfin_harpoon_yellow";
     $cardID = strtolower($name);
     $cardID = str_replace("//", $delimiter, $cardID);
-    $cardID = str_replace(["ā", "ä", "ö", "ü", "ß", "ṣ"], ["a", "a", "o", "u", "s", "s"], $cardID);
+    $cardID = str_replace(["ā", "ä", "ö", "ü", "ß", "ṣ", "α"], ["a", "a", "o", "u", "s", "s", "a"], $cardID);
     $cardID = iconv('UTF-8', 'US-ASCII//TRANSLIT', $cardID);
     $cardID = str_replace(" ", $delimiter, $cardID);
     $cardID = str_replace("-", $delimiter, $cardID);

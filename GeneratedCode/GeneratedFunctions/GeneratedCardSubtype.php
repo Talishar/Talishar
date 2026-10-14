@@ -12,7 +12,7 @@ return match($cardID) {
 "extinction_level_event_red" => "Aura",
 "huxley" => "Young",
 "azalea_lone_vigilante" => "Young",
-"" => "Young",
+"a_01_first_cogwarden" => "Young",
 "paupers_knife" => "Dagger",
 "cogwerx_dueling_pistol" => "Pistol",
 "one_click_pinpointer" => "Bow",

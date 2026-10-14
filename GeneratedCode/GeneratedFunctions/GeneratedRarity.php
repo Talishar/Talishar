@@ -25,7 +25,7 @@ return match($cardID) {
 "huxley" => "B",
 "azalea_ace_of_spades" => "B",
 "azalea_lone_vigilante" => "B",
-"" => "B",
+"a_01_first_cogwarden" => "B",
 "paupers_knife" => "B",
 "cogwerx_dueling_pistol" => "B",
 "one_click_pinpointer" => "B",

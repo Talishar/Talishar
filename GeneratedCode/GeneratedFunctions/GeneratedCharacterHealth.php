@@ -9,7 +9,7 @@ return match($cardID) {
 "huxley" => 19,
 "azalea_ace_of_spades" => 38,
 "azalea_lone_vigilante" => 19,
-"" => 19,
+"a_01_first_cogwarden" => 19,
 "aegis_archangel_of_protection" => 4,
 "aether_ashwing" => 1,
 "anka_drag_under_yellow" => 3,

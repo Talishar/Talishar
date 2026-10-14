@@ -27,7 +27,7 @@ return match($cardID) {
 "huxley" => "OBK072",
 "azalea_ace_of_spades" => "OBK080",
 "azalea_lone_vigilante" => "OBK081",
-"" => "OBK089",
+"a_01_first_cogwarden" => "OBK089",
 "paupers_knife" => "OBK097",
 "patient_zero_red" => "OBK126",
 "patient_zero_yellow" => "OBK127",

@@ -17,7 +17,7 @@ return match($cardID) {
 "huxley" => "ASSASSIN,MECHANOLOGIST",
 "azalea_ace_of_spades" => "ASSASSIN,RANGER",
 "azalea_lone_vigilante" => "ASSASSIN,RANGER",
-"" => "MECHANOLOGIST,RANGER",
+"a_01_first_cogwarden" => "MECHANOLOGIST,RANGER",
 "paupers_knife" => "ASSASSIN",
 "patient_zero_red" => "ASSASSIN",
 "patient_zero_yellow" => "ASSASSIN",

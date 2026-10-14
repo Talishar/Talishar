@@ -312,18 +312,6 @@ class a_01_first_cogwarden extends Card {
 	function DefaultActiveState() {
 		return 1;
 	}
-
-	function SpecialType() {
-		return "C";
-	}
-
-	function SpecialName() {
-		return "α-01 First Cogwarden";
-	}
-
-	function SpecialHealth() {
-		return 19;
-	}
 }
 
 class azalea_assassin_base extends baseCard {

@@ -20,7 +20,7 @@ return match($cardID) {
 "huxley" => -1,
 "azalea_ace_of_spades" => -1,
 "azalea_lone_vigilante" => -1,
-"" => -1,
+"a_01_first_cogwarden" => -1,
 "paupers_knife" => -1,
 "cogwerx_dueling_pistol" => -1,
 "bootlegger_bust_up_red" => 3,
