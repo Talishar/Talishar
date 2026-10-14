@@ -3435,7 +3435,8 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
       break;
   }
   if (canBeAddedToChainDuringDR($cardID) && $phase == "D") return true;
-  if ($phase != "B" && ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS")) $cardType = GetResolvedAbilityType($cardID, $from, $currentPlayer);
+  if ($phase != "B" && ($from == "EQUIP" || $from == "PLAY" || $from == "COMBATCHAINATTACKS"))
+    $cardType = GetResolvedAbilityType($cardID, $from, $currentPlayer);
   else if ($phase == "M" && $cardID == "guardian_of_the_shadowrealm_red" && $from == "BANISH") $cardType = GetResolvedAbilityType($cardID, $from, $currentPlayer);
   else $cardType = CardType($cardID);
   if ($phase == "B" && count($layers) == 0) return true; //Anything you play during these combat phases would go on the chain
@@ -3443,7 +3444,7 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
   if (($phase == "A" || $phase == "D") && DelimStringContains($cardType, "A")) return false; //Non-attacks played as instants never go on combat chain
   if ($cardType == "AR") return false; // AR goes to the graveyard instead of remaining on the active chain link. CR 2.4.0 - 8.1.2b
   if ($cardType == "DR") return true;
-  if ($cardType == "AA") return true; //If it's an attack action, it goes on the chain
+  if ($cardType == "AA" && !IsActivated($cardID, $from)) return true; //If it's an attack action, it goes on the chain
   return false;
 }
 
