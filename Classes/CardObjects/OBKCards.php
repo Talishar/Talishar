@@ -604,3 +604,45 @@ class extinction_level_event_red extends Card {
 	}
 }
 
+class bootlegger_bust_up extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function SelfBoostEffect($boostedCardID, $owner) {
+		if (!ClassContains($boostedCardID, "MECHANOLOGIST", $owner))
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class bootlegger_bust_up_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bootlegger_bust_up_red";
+    $this->controller = $controller;
+    $this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
+  }
+}
+
+class bootlegger_bust_up_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "bootlegger_bust_up_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
+  }
+}
+
+class bootlegger_bust_up_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "bootlegger_bust_up_blue";
+    $this->controller = $controller;
+    $this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
+  }
+}

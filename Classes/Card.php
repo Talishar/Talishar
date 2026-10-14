@@ -1400,4 +1400,10 @@ class Card {
       return $this->baseCard->OnBoostedEffect($owner, $cardID);
     return;
   }
+
+  function SelfBoostEffect($boostedCardID, $owner) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "SelfBoostEffect"))
+      return $this->baseCard->SelfBoostEffect($boostedCardID, $owner);
+    return;
+  }
 }

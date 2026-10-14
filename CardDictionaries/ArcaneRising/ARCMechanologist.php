@@ -139,7 +139,7 @@ function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
     GainResources(CountCurrentTurnEffects("heavy_industry_power_plant", $player), $player);
     $boostedCardID = $deck->Top(remove:true);
     ItemBoostEffects();
-    SelfBoostEffects($player, $boostedCardID, $cardID);
+    SelfBoostEffects($player, $boostedCardID, $cardID, $owner);
     OnBoostedEffects($player, $boostedCardID, $owner, $cardID);
     $banishInd = BanishCardForPlayer($boostedCardID, $owner, "DECK", "BOOST", banisher:$player);
     CharacterBoostAbilities($player, $banishInd, $owner);
@@ -212,8 +212,10 @@ function OnBoostedEffects($player, $boosted, $owner, $cardID)
   }
 }
 
-function SelfBoostEffects($player, $boosted, $cardID)
+function SelfBoostEffects($player, $boosted, $cardID, $owner)
 {
+  $card = GetClass($cardID, $player);
+  if ($card != "-") $card->SelfBoostEffect($boosted, $owner);
   switch($cardID) {
     case "sprocket_rocket_red": case "sprocket_rocket_yellow": case "sprocket_rocket_blue":
     case "dumpster_dive_red": case "dumpster_dive_yellow": case "dumpster_dive_blue":
