@@ -4708,9 +4708,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   if(canBeAddedToChainDuringDR($cardID) && $turn[0] == "D") $isBlock = true;
   //put onto combat chain if that's where it needs to go
   if($goesOnChain) {
-    $resolvingNow = $fromAttackQueue || ($Stack->NumLayers() == 0 && $AttackQueue->NumAttacks() == 0 && (IsResolutionStep() || !$CombatChain->HasCurrentLink())) || $isBlock;
-    
-    if (!$isBlock) {
+    $resolvingNow = $fromAttackQueue ||
+                    ($Stack->NumLayers() == 0 && $AttackQueue->NumAttacks() == 0 && (IsResolutionStep() || !$CombatChain->HasCurrentLink())) ||
+                    $isBlock ||
+                    $definedCardType == "DR" ||
+                    $cardID == "quickdodge_flexors";
+    if (!$isBlock && $definedCardType != "DR" && $cardID != "quickdodge_flexors") {
       $attackTargets = explode(",", $target);
       if ($goesOnChain && $resolvingNow && count($attackTargets) > 0)
         ApplyAttackTargets($mainPlayer, $attackTargets);
