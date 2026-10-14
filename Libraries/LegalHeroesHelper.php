@@ -145,7 +145,19 @@ $ALL_HEROES_OF_RATHE = [
   ['heroId' => 'killjoy_the_crooked_blade', 'name' => 'Killjoy, the Crooked Blade', 'young' => true],
   ['heroId' => 'zane_broadly_beloved', 'name' => 'Zane, Broadly Beloved', 'young' => true],
   ['heroId' => 'dr_mortimer_blight_of_the_pits', 'name' => 'Dr. Mortimer, Blight of the Pits', 'young' => false],
-  ['heroId' => 'dr_mortimer', 'name' => 'Dr. Mortimer', 'young' => true]
+  ['heroId' => 'dr_mortimer', 'name' => 'Dr. Mortimer', 'young' => true],
+  ['heroId' => 'vyle_catalyst_of_collapse', 'name' => 'Vyle, Catalyst of Collapse', 'young' => false],
+  ['heroId' => 'vyle', 'name' => 'Vyle', 'young' => true],
+  ['heroId' => 'mortimer_living_virus', 'name' => 'Mortimer, Living Virus', 'young' => true],
+  ['heroId' => 'min_genius', 'name' => 'Min, Genius', 'young' => false],
+  ['heroId' => 'min_half_genius', 'name' => 'Min, Half Genius', 'young' => true],
+  ['heroId' => 'min_mad', 'name' => 'Min, Mad', 'young' => false],
+  ['heroId' => 'min_half_mad', 'name' => 'Min, Half Mad', 'young' => true],
+  ['heroId' => 'huxley_racketeer', 'name' => 'Huxley, Racketeer', 'young' => false],
+  ['heroId' => 'huxley', 'name' => 'Huxley', 'young' => true],
+  ['heroId' => 'alpha_01_first_cogwarden', 'name' => 'α-01, First Cogwarden', 'young' => true],
+  ['heroId' => 'azalea_ace_of_spades', 'name' => 'Azalea, Ace of Spades', 'young' => false],
+  ['heroId' => 'azalea_lone_vigilante', 'name' => 'Azalea, Lone Vigilante', 'young' => true],
 ];
 
 // Hero-specific ban check.

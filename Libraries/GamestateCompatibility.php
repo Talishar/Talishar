@@ -26,16 +26,20 @@ function NormalizeLegacyCharacterState(array $characters): array
 
 function NormalizeCombatChainState(array $state): array
 {
-  global $CCS_DefenseReactionsPlayed, $CCS_AttackReactionsPlayed;
+  global $CCS_DefenseReactionsPlayed, $CCS_AttackReactionsPlayed, $CCS_CachedVeilActive;
 
   $defenseReactionsIndex = $CCS_DefenseReactionsPlayed ?? 52;
   $attackReactionsIndex = $CCS_AttackReactionsPlayed ?? 53;
+  $cachedVeilIndex = $CCS_CachedVeilActive ?? 54;
 
   if (!array_key_exists($defenseReactionsIndex, $state)) {
     $state[$defenseReactionsIndex] = 0;
   }
   if (!array_key_exists($attackReactionsIndex, $state)) {
     $state[$attackReactionsIndex] = 0;
+  }
+  if (!array_key_exists($cachedVeilIndex, $state)) {
+    $state[$cachedVeilIndex] = 0;
   }
 
   return $state;

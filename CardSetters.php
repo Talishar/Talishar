@@ -371,7 +371,7 @@ function RemovePitch($player, $index)
   return $cardID;
 }
 
-function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
+function AddArsenal($cardID, $player, $from, $facing, $counters = 0, $powerCounters=0)
 {
   global $mainPlayer, $EffectContext;
   $arsenal = &GetArsenal($player);
@@ -386,7 +386,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
   $arsenal[] = $counters;
   $arsenal[] = "0";
   $arsenal[] = GetUniqueId($cardID, $player);
-  $arsenal[] = 0;
+  $arsenal[] = $powerCounters;
 
   $otherPlayer = 3 - $player;
   if ($facing == "UP") {
@@ -448,7 +448,9 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0)
       default:
         break;
     }
+    return $uniqueID;
   }
+  return "-";
 }
 
 function ArsenalEndTurn($player)

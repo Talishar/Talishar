@@ -514,6 +514,7 @@ $CCS_NumInstantsPlayedByDefendingPlayer = 50;
 $CCS_CachedPreBlockValue = 51;
 $CCS_DefenseReactionsPlayed = 52;
 $CCS_AttackReactionsPlayed = 53;
+$CCS_CachedVeilActive = 54;
 
 //Deprecated
 //$CCS_ChainAttackBuff -- Use persistent combat effect with RemoveEffectsFromCombatChain instead
@@ -527,10 +528,11 @@ function ResetChainLinkCombatChainState()
   global $CCS_IsBoosted, $CCS_AttackTargetUID, $CCS_CachedOverpowerActive, $CCS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_HitThisLink;
   global $CCS_PhantasmThisLink, $CCS_RequiredNegCounterEquipmentBlock, $CCS_NumInstantsPlayedByAttackingPlayer, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CCS_NumCardsBlocking;
   global $CCS_NumPowerCounters, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero, $CCS_NumInstantsPlayedByDefendingPlayer, $CCS_CachedPreBlockValue;
-  global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed;
+  global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed, $CCS_CachedVeilActive;
 
   SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 0);
   SetCombatChainState($CCS_CachedDominateActive, 0);
+  SetCombatChainState($CCS_CachedVeilActive, 0);
   SetCombatChainState($CCS_WeaponIndex, -1);
   SetCombatChainState($CCS_HasAimCounter, 0);
   SetCombatChainState($CCS_AttackNumCharged, 0);
@@ -620,9 +622,10 @@ function AttackReplaced($cardID, $player, $from)
 {
   global $combatChainState, $currentTurnEffects, $mainPlayer;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_CachedDominateActive, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBasePower, $combatChain;
-  global $CS_NumStealthAttacks, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero;
+  global $CS_NumStealthAttacks, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero, $CCS_CachedVeilActive;
   SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 0);
   SetCombatChainState($CCS_CachedDominateActive, 0);
+  SetCombatChainState($CCS_CachedVeilActive, 0);
   SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "GY");
   SetCombatChainState($CCS_AttackPlayedFrom, "BANISH");//Right now only Uzuri can do this
   SetCombatChainState($CCS_LinkBasePower, 0);

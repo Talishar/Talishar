@@ -4687,6 +4687,12 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       WriteLog(CardLink($cardID, $cardID) . " fails to resolve because dominate is active and there is already a card defending from hand.");
       $skipDRResolution = true;
     }
+    if ($definedCardType == "DR" && NumDefendedMatchingColor($cardID) >= 1 && CachedVeilActive()) {
+      $discard = new Discard($currentPlayer);
+      $discard->Add($cardID, "LAYER");
+      WriteLog(CardLink($cardID, $cardID) . " fails to resolve because veil is active and there is already a card matching the color of " . CardLink($cardID) . ".");
+      $skipDRResolution = true;
+    }
     if (($definedCardType == "DR" || ($definedCardType == "E" && GetAbilityType($cardID) == "DR")) && SearchCurrentTurnEffects("confidence", $mainPlayer) && NumNonBlocksDefending() >= 2 && IsCombatEffectActive("confidence")) {
       $discard = new Discard($currentPlayer);
       $discard->Add($cardID, "LAYER");

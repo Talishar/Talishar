@@ -269,6 +269,16 @@ function SetID($cardID)
       "killjoy_the_crooked_blade" => "SPW001",
       "battle_clearing_bellow_blue" => "IAR040",
       "outbreak_blue" => "MPA031",
+      "mortimer_living_virus" => "OBK001",
+      "min_genius" => "OBK006",
+      "min_half_genius" => "OBK007",
+      "azalea_ace_of_spades" => "OBK080",
+      "azalea_lone_vigilante" => "OBK081",
+      "vyle_catalyst_of_collapse" => "OBK012",
+      "vyle" => "OBK013",
+      "alpha_01_first_cogwarden" => "OBK089",
+      "huxley_racketeer" => "OBK071",
+      "huxley" => "OBK072"
     ];
   }
 
@@ -327,6 +337,13 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Angel,Ally";
     case "drop_dead_bodice":
       return "Chest"; // temporary
+    case "vyle":
+    case "mortimer_living_virus":
+    case "min_half_genius":
+    case "azalea_lone_vigilante":
+    case "alpha_01_first_cogwarden":
+    case "huxley":
+      return "Young";
     default:
       break;
   }
@@ -1648,9 +1665,11 @@ function CanBlock($cardID, $from)
   $dominateRestricted = IsDominateActive() && NumDefendedFromHand() >= 1;
   $overpowerRestricted = IsOverpowerActive() && NumActionsBlocking() >= 1;
   $confidenceRestricted = SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence") &&  NumNonBlocksDefending() >= 2;
+  $veilRestricted = IsVeilActive() && NumDefendedMatchingColor($cardID) >= 1;
   if ($from == "HAND" && $dominateRestricted) return false;
   if ((TypeContains($cardID, "A") || TypeContains($cardID, "AA")) && $overpowerRestricted) return false;
   if (!TypeContains($cardID, "B") && $confidenceRestricted) return false;
+  if ($veilRestricted) return false;
   return true;
 }
 
@@ -1810,6 +1829,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
       if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B") && !str_contains($abilityTypes, "I")) return false;
     }
+    if (CachedVeilActive() && NumDefendedMatchingColor($cardID) >= 1)
+      return false;
   }
   if ($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player) || $cardID == "down_and_dirty_red" || HasAmbush($cardID, $defPlayer))) return false;
   if ($phase == "B" || $phase == "D") {
@@ -1997,6 +2018,8 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
   if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
     if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B")) return true;
   }
+  if (IsVeilActive() && NumDefendedMatchingColor($cardID) >= 1)
+    return true;
   //current turn effects
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
@@ -4124,7 +4147,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   $banishHero = $char[0] ?? "";
   if (($banishHero == "professor_teklovossen" || $banishHero == "teklovossen_esteemed_magnate" || $banishHero == "teklovossen") && $char[1] < 3 && SubtypeContains($cardID, "Evo")) return true;
   if (!$nonLimitedOnly && $banishHero == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
-  static $gateToIarathael = ["gate_to_iarathael" => true];
+  static $gateToIarathael = ["gate_to_iarathael" => true, "huxley" => true, "huxley_racketeer" => true];
   if ($CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
     if ($CurrentTurnEffects->HasAnySpecificEffect($gateToIarathael, $banishCard->UniqueID(), $player)) return true;
   }

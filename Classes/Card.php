@@ -1376,4 +1376,16 @@ class Card {
       return $this->baseCard->EffectDestroyedEffect($cardID, $controller, $effectIndex, $permIndex, $from);
     return;
   }
+
+  function PermanentBoostAbility($index, $banishInd) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "PermanentBoostAbility"))
+      return $this->baseCard->PermanentBoostAbility($index, $banishInd);
+    return;
+  }
+
+  function DoesEffectGrantVeil($effectIndex) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "DoesEffectGrantVeil"))
+      return $this->baseCard->DoesEffectGrantVeil($effectIndex);
+    return;
+  }
 }

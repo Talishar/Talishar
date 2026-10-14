@@ -1462,6 +1462,20 @@ function CombatChainPlayAbility($cardID)
   }
 }
 
+function IsVeilActive() {
+  global $CurrentTurnEffects, $mainPlayer, $CCS_CachedVeilActive;
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($Effect->EffectID()) && !IsCombatEffectLimited($Effect->Index())) {
+      $card = GetClass($Effect->EffectID(), $mainPlayer);
+      if ($card->DoesEffectGrantVeil($Effect->Index())) return true;
+    }
+  }
+  if (GetCombatChainState($CCS_CachedVeilActive) == 1)
+    return true;
+  return false;
+}
+
 function IsDominateActive()
 {
   global $currentTurnEffects, $mainPlayer, $CCS_WeaponIndex, $combatChain, $CCS_CachedDominateActive, $combatChainState;
@@ -1791,7 +1805,7 @@ function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
   global $CCS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
-  global $CombatChain, $CCS_CachedGoAgain;
+  global $CombatChain, $CCS_CachedGoAgain, $CCS_CachedVeilActive;
   if (count($combatChain) == 0) return;
   SetCombatChainState($CCS_CachedGoAgain, (DoesAttackHaveGoAgain() ? "1" : "0"));
   $oldPower = GetCombatChainState($CCS_CachedTotalPower);
@@ -1812,6 +1826,7 @@ function CacheCombatResult()
     ProcessAllMirage();
   SetCombatChainState($CCS_CachedDominateActive, (IsDominateActive() ? "1" : "0"));
   SetCombatChainState($CCS_CachedOverpowerActive, (IsOverpowerActive() ? "1" : "0"));
+  SetCombatChainState($CCS_CachedVeilActive, (IsVeilActive() ? "1" : "0"));
   SetCombatChainState($CCS_CachedNumActionBlocked, NumActionsBlocking());
   if (GetCombatChainState($CCS_CachedNumDefendedFromHand) == 0) SetCombatChainState($CCS_CachedNumDefendedFromHand, NumDefendedFromHand());
   SetCombatChainState($CCS_WagersThisLink, (IsWagerActive() ? intval(GetCombatChainState($CCS_WagersThisLink)) : "0"));
@@ -1841,6 +1856,12 @@ function CachedDominateActive()
 {
   global $combatChainState, $CCS_CachedDominateActive;
   return (GetCombatChainState($CCS_CachedDominateActive) ?? "0") == "1";
+}
+
+function CachedVeilActive()
+{
+  global $combatChainState, $CCS_CachedVeilActive;
+  return (GetCombatChainState($CCS_CachedVeilActive) ?? "0") == "1";
 }
 
 function CachedOverpowerActive()

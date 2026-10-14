@@ -1771,6 +1771,17 @@ function NumActionsBlocking()
   });
 }
 
+function NumDefendedMatchingColor($cardID) {
+  global $CombatChain, $defPlayer;
+  $count = 0;
+  for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+    $ChainCard = $CombatChain->Card($i, true);
+    if (ColorContains($ChainCard->ID(), ColorOverride($cardID, $defPlayer), $defPlayer))
+      ++$count;
+  }
+  return $count;
+}
+
 function NumNonBlocksDefending()
 {
   return CountDefendingCards(fn($chainCard) => !TypeContains($chainCard->ID(), "B"));
@@ -1959,7 +1970,7 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CS_CharacterIndex, $CS_ArcaneDamageTaken, $CS_NumWizardNonAttack;
   global $mainPlayer, $CS_PlayedAsInstant, $CS_HealthLost, $CS_NumAddedToSoul, $layers, $CombatChain;
-  global $CCS_EclecticMag, $CS_ArcaneDamageDealt, $currentTurnEffects;
+  global $CCS_EclecticMag, $CS_ArcaneDamageDealt, $currentTurnEffects, $CurrentTurnEffects;
   $otherPlayer = 3 - $currentPlayer;
 
   // cards whose ability lets you play them at instant speed
@@ -2026,6 +2037,11 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   if ($from == "BANISH") {
     $mod = GetBanishModifier($index);
     if (DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red") || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
+    static $huxley = ["huxley" => true, "huxley_racketeer" => true];
+    $banishCard = new BanishCard($currentPlayer, $index);
+    if ($CurrentTurnEffects->HasAnyEffectID($huxley)) {
+      if ($CurrentTurnEffects->HasAnySpecificEffect($huxley, $banishCard->UniqueID(), $currentPlayer)) return true;
+    }
   }
   if (GetClassState($currentPlayer, $CS_PlayedAsInstant) == "1") return true;
   if (SearchCurrentTurnEffects("meridian_pathway", $currentPlayer) && SubtypeContains($cardID, "Aura", $currentPlayer) && $from != "PLAY") return true;
@@ -2115,18 +2131,23 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
   return false;
 }
 
-function ClassOverride($cardID, $player)
+function ClassOverride($cardID, $player, $owner="-")
 {
   global $currentTurnEffects;
   if (!is_numeric($player) || (int)$player < 1 || (int)$player > 2) return CardClass($cardID);
   $player = (int)$player;
-
+  $owner = $owner == "-" ? $player : $owner;
+  $Hero = new CharacterCard(0, $owner);
+  if ($Hero->CardID() == "min_mad" || $Hero->CardID() == "min_half_mad")
+    return "";
   $prefix = "";
   // With the rules as of today it's correct. HVY Release Notes Disclaimer. CR2.6 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not removeproperties, or parts of properties, that were added by another effect.
   if (HasUniversal($cardID)) { //Universal
     $mainCharacter = GetPlayerCharacter($player);
     $prefix = CardClass($mainCharacter[0]) . ",";
   }
+  if ($Hero->CardID() == "min_genius" || $Hero->CardID() == "min_half_genius")
+    $prefix = "MECHANOLOGIST,";
   if (SearchCurrentTurnEffectsForIndex("phantasmal_symbiosis_yellow", $player) != -1
     && SearchCurrentTurnEffects("phantasmal_symbiosis_yellow-" . GamestateSanitize(CardName($cardID)), $player)) { //Phantasmal Symbiosis
     $prefix .= "ILLUSIONIST,";
@@ -2304,10 +2325,14 @@ function CardNameContains($cardID, $name, $player = "", $partial = false)
   return StringContainsWholeWords($cardName, $name);
 }
 
-function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false, $from="-")
+function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false, $from="-", $owner="-")
 {
   global $currentTurnEffects;
 
+  $owner = $owner == "-" ? $player : $owner;
+  $Hero = new CharacterCard(0, $owner);
+  if ($Hero->CardID() == "min_mad" || $Hero->CardID() == "min_half_mad")
+    return "";
   if ($cardID === "colors_of_aria_red" && ($zone === "HAND" || $zone === "DECK")) return "ELEMENTAL";
 
   $count = count($currentTurnEffects);

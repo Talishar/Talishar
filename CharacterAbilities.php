@@ -229,6 +229,8 @@ function MainCharacterBeginEndPhaseAbilities()
   $characterPieces = CharacterPieces();
   for ($i = $mainCharCount - $characterPieces; $i >= 0; $i -= $characterPieces) {
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
+    $card = GetClass($characterID, $mainPlayer);
+    if ($card != "-") $card->BeginEndTurnAbilities($i);
     switch ($characterID) {
       case "arakni_marionette":
       case "arakni_web_of_deceit":
@@ -1797,12 +1799,14 @@ function GetCharacterGemState($player, $cardID)
   return 0;
 }
 
-function CharacterBoostAbilities($player)
+function CharacterBoostAbilities($player, $banishInd)
 {
   $char = &GetPlayerCharacter($player);
   $charCount = count($char);
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $charCount; $i += $characterPieces) {
+    $card = GetClass($char[$i], $player);
+    if ($card != "-") $card->PermanentBoostAbility($i, $banishInd);
     if (intval($char[$i + 1]) < 2) continue;
     switch ($char[$i]) {
       case "evo_circuit_breaker_red_equip":

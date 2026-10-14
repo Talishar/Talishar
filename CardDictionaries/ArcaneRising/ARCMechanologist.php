@@ -138,9 +138,9 @@ function DoBoost($player, $cardID, $boostCount=1)
     $boostedCardID = $deck->Top(remove:true);
     ItemBoostEffects();
     SelfBoostEffects($player, $boostedCardID, $cardID);
-    CharacterBoostAbilities($player);
     OnBoostedEffects($player, $boostedCardID);
-    BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
+    $banishInd = BanishCardForPlayer($boostedCardID, $player, "DECK", "BOOST");
+    CharacterBoostAbilities($player, $banishInd);
     $banish = GetBanish($player);
     $topInd = count($banish) - $banishPieces; // index of card that just got banished
     if (SubtypeContains($boostedCardID, "Evo")) {
