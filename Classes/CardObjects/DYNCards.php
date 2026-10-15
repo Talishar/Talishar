@@ -679,8 +679,13 @@ class construct_nitro_mechanoid_yellow extends Card {
 		$Mechanoid = $Items->Card($mechanoidIndex, true);
 		//Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
 		$Character = new PlayerCharacter($this->controller);
+		$addedWeapon = false;
 		for ($i = $Character->NumCards() - 1; $i >= 0; $i -= 1) {
 			$CharCard = $Character->Card($i, true);
+			if (TypeContains($CharCard->CardID(), "W")) {
+				if ($addedWeapon) continue;
+				else $addedWeapon = true;
+			}
 			$charCardType = CardType($CharCard->CardID());
 			if($charCardType != "C" && $charCardType != "Companion") {
 				$Mechanoid->AddSubcard($CharCard->CardID());
