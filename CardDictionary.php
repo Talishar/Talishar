@@ -1299,7 +1299,7 @@ function GetEasyAbilityNames($cardID, $index, $from, $allNames=false) {
         $names[0] = "Ability"; //don't let it target itself
       // can it attack?
       $actionAttack = count($combatChain) == 0 && ($layerCount <= LayerPieces() || IsResolutionStep()) && $actionPoints > 0;
-      $instantAttack = CanPlayAsInstant($cardID, $index, $from);
+      $instantAttack = CanPlayAsInstant($cardID, $index, $from, skipAbilities:true);
       if ($currentPlayer == $mainPlayer && ($actionAttack || $instantAttack)) {
         if (!$nameBlocked && CanAttack($cardID, $from, $index, type:"AA", AQCheck:$instantAttack)) {
           // there has to be a better way to handle this
