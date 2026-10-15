@@ -324,12 +324,14 @@ function BotBestCrouchingTigerPriority($heroID, $playerID)
   $hand = &GetHand($playerID);
   foreach ($hand as $index => $cardID) $consider($cardID, "HAND", $index, 1, "Hand");
   $arsenal = &GetArsenal($playerID);
-  for ($index = 0, $count = count($arsenal); $index < $count; $index += ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  for ($index = 0, $count = count($arsenal); $index < $count; $index += $arsenalPieces) {
     if (($arsenal[$index + 4] ?? 0) == 1) continue;
     $consider($arsenal[$index], "ARS", $index, 2, "Arsenal");
   }
   $banish = &GetBanish($playerID);
-  for ($index = 0, $count = count($banish); $index < $count; $index += BanishPieces()) {
+  $banishPieces = BanishPieces();
+  for ($index = 0, $count = count($banish); $index < $count; $index += $banishPieces) {
     $consider($banish[$index], "BANISH", $index, 5, "Banish");
   }
   return $best;
@@ -347,7 +349,8 @@ function BotBravoAbilityPriority($cardID, $heroID, $playerID)
   global $actionPoints;
   if (intval($actionPoints) < 1) return 0.0;
   $arsenal = &GetArsenal($playerID);
-  for ($index = 0, $count = count($arsenal); $index < $count; $index += ArsenalPieces()) {
+  $arsenalPieces = ArsenalPieces();
+  for ($index = 0, $count = count($arsenal); $index < $count; $index += $arsenalPieces) {
     if (($arsenal[$index + 1] ?? "") != "DOWN") continue;
     $arsenalCardID = $arsenal[$index];
     if (($arsenal[$index + 4] ?? 0) == 1 || CardType($arsenalCardID) != "AA" || !HasCrush($arsenalCardID)) return 0.0;

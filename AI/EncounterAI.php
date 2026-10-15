@@ -21,7 +21,7 @@ function EncounterAI()
     }
     $puzzleVerify = BotIsPuzzleVerify();
     $logicLimit = $puzzleVerify ? 400 : 30;
-    for($logicCount=0; $logicCount<=$logicLimit && $currentPlayerIsAI; ++$logicCount)
+    for($logicCount=0; $logicCount<=$logicLimit && IsPlayerAI($currentPlayer) && !IsGameOver(); ++$logicCount)
     {
       global $turn;
       if($scriptPlayer == $currentPlayer)
@@ -49,15 +49,14 @@ function EncounterAI()
         {
           if($AIDebug) WriteLog("AI Branch - Bloodrot");
           ContinueDecisionQueue("NO");
-          continue;
         }
-        if($decisionQueue[0] == "SHIVER")
+        else if($decisionQueue[0] == "SHIVER")
         {
           if($AIDebug) WriteLog("AI Branch - Shiver");
           $options = explode(",", $turn[2]);
           ContinueDecisionQueue($options[1]);
         }
-        if($isBowActive)//was the last action a bow action?
+        else if($isBowActive)//was the last action a bow action?
         {
           if($AIDebug) WriteLog("AI Branch - Bow Active");
           $optionIndex = 0;
@@ -295,9 +294,9 @@ function EncounterAI()
       }
       ProcessMacros();
       $currentPlayerIsAI = IsPlayerAI($currentPlayer);
-      if($logicCount == $logicLimit && $currentPlayerIsAI && $scriptPlayer == 0 && !$puzzleVerify)
+      if($logicCount == $logicLimit && $currentPlayerIsAI && !IsGameOver() && $scriptPlayer == 0 && !$puzzleVerify)
       {
-        for($i=0; $i<=30 && $currentPlayerIsAI; ++$i)
+        for($i=0; $i<=30 && IsPlayerAI($currentPlayer) && !IsGameOver(); ++$i)
         {
           PassInput();
           $currentPlayerIsAI = IsPlayerAI($currentPlayer);

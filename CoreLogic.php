@@ -2322,7 +2322,8 @@ function CardNameContains($cardID, $name, $player = "", $partial = false)
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
     if ($modName != "" && StringContainsWholeWords($modName, $name)) return true;
   }
-  return StringContainsWholeWords($cardName, $name);
+  // The unmodified card name was already checked before the effect loop.
+  return false;
 }
 
 function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false, $from="-", $owner="-")
