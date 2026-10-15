@@ -989,6 +989,7 @@ function isUnimplemented($cardID) {
     case "AMO":
     case "OBK":
     case "AMG":
+    case "FAB":
     case "": // cards that don't have a set id yet
       $card = GetClass($cardID, 0);
       return $card == "-";
