@@ -118,8 +118,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if ($cardID == "slithering_shadowpede_red" && ($from == "HAND" || $from == "MYHAND") && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
   if ($disruptive) LogBanishDisruptionStats($player, $cardID, $banisher, $banish, $rv);
   if (($mod == "BOOST" || $from == "DECK")
-  && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetAbilityType($EffectContext) != "")
-  && $player == $mainPlayer) {
+  && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetAbilityType($EffectContext) != "")) {
     $card = GetClass($cardID, $player);
     if ($card != "-") $card->BackAlleyTrigger();
   }
