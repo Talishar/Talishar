@@ -140,8 +140,8 @@ function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
     $boostedCardID = $deck->Top(remove:true);
     ItemBoostEffects();
     SelfBoostEffects($player, $boostedCardID, $cardID, $owner);
-    OnBoostedEffects($player, $boostedCardID, $owner, $cardID);
     $banishInd = BanishCardForPlayer($boostedCardID, $owner, "DECK", "BOOST", banisher:$player);
+    OnBoostedEffects($player, $boostedCardID, $owner, $cardID);
     CharacterBoostAbilities($player, $banishInd, $owner);
     $banish = GetBanish($owner);
     $topInd = count($banish) - $banishPieces; // index of card that just got banished

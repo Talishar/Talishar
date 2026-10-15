@@ -1203,3 +1203,72 @@ class quiet_streets_yellow extends Card {
 		return "";
   }
 }
+
+class revere_the_copper_idol_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "revere_the_copper_idol_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $inds = [];
+		$foundCards = [];
+		$Banish = new Banish($this->controller);
+		for ($i = 0; $i < $Banish->NumCards(); ++$i) {
+			$BanishCard = $Banish->Card($i, true);
+			if (in_array($BanishCard->ID(), $foundCards)) continue;
+			if (!isFaceDownMod($BanishCard->Modifier()) && IsAction($BanishCard->ID()) && ClassContains($BanishCard->ID(), "MECHANOLOGIST", $this->controller)) {
+				$inds[] = $BanishCard->Index();
+				$foundCards[] = $BanishCard->ID();
+			}
+		}
+		$maxChoosable = (SearchCurrentTurnEffects("amnesia_red", $this->controller)) ? 0 : 3;
+		$inds = implode(",", $inds);
+		AddDecisionQueue("PASSPARAMETER", $this->controller, $inds);
+		AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "$maxChoosable-", 1);
+		AddDecisionQueue("MULTICHOOSEBANISH", $this->controller, "<-", 1);
+		Await($this->controller, $this->cardID, final:true);
+		return "";
+  }
+
+	function SpecificLogic() {
+		global $dqVars;
+		$lastResult = $dqVars["LASTRESULT"] ?? "";
+		if ($lastResult != "") {
+			$lastResult = explode(",", $lastResult);
+			$cards = "";
+		$deck = new Deck($this->controller);
+		$discard = new Banish($this->controller);
+		sort($lastResult);
+		for ($i = count($lastResult) - 1; $i >= 0; --$i) {
+			$cardID = $discard->Remove($lastResult[$i]);
+			$deck->AddBottom($cardID, "BANISH");
+			if ($cards != "")
+			$cards .= ", ";
+			if ($i == 0)
+			$cards .= "and ";
+			$cards .= CardLink($cardID, $cardID);
+		}
+		WriteLog(CardLink($this->cardID) . " shuffled into your deck " . $cards);
+			$deck->Shuffle("-");
+		}
+	}
+
+	function OnBoostedEffect($owner, $cardID) {
+		$Banish = new Banish($this->controller);
+		$BanishedCard = $Banish->Card($Banish->NumCards() - 1, true);
+		if ($BanishedCard->ID() == $this->cardID)
+			AddLayer("TRIGGER", $this->controller, $this->cardID, uniqueID:$BanishedCard->UniqueID());
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Banish = new Banish($this->controller);
+		$BanishCard = $Banish->FindCardUID($uniqueID);
+		$Deck = new Deck($this->controller);
+		if ($BanishCard->Index() != -1) {
+			$Deck->AddBottom($this->cardID);
+			$BanishCard->Remove();
+		}
+		$Deck->Shuffle("-");
+	}
+}
