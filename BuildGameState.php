@@ -1218,7 +1218,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $theirAurasOutput = [];
   $theirAurasCount = count($theirAuras);
   $auraPieces = AuraPieces();
-  static $labeledAurasSet = ["blessing_of_themis_yellow" => true, "leave_em_speechless_blue" => true];
+  static $labeledAurasSet = ["blessing_of_themis_yellow" => true, "leave_em_speechless_blue" => true, "extinction_level_event_red" => true];
   for ($i = 0; $i + $auraPieces - 1 < $theirAurasCount; $i += $auraPieces) {
     if ($theirAuras[$i + 14] != "-") continue; //display bound auras elsewhere
     $type = CardType($theirAuras[$i]);
