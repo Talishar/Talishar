@@ -1147,3 +1147,27 @@ class swap_spit_blue extends Card {
     $this->baseCard = new swap_spit($this->cardID, $this->controller);
   }
 }
+
+class cure_all_elixir extends Card {
+  function __construct($controller) {
+    $this->cardID = "cure_all_elixir";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+		Await($this->controller, "MultiZoneIndices", search:"MYAURAS:substype=Disease", subsequent:0);
+		Await($this->controller, "ChooseMultiZone", context:"Cure a disease?", may:true);
+		Await($this->controller, "MZDestroy");
+		Await($this->controller, "GainHealth", final:true);
+		return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 3;
+	}
+}

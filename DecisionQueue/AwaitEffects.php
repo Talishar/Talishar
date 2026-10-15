@@ -534,3 +534,12 @@ function ButtonInputAwait($player) {
   PrependDecisionQueue("BUTTONINPUT", $player, $dqVars["buttons"] ?? "-", !$notSubsequent);
   PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose", !$notSubsequent);
 }
+
+function GainHealthAwait($player) {
+  global $dqVars;
+  $amount = $dqVars["amount"] ?? 1;
+  $silent = $dqVars["silent"] ?? false;
+  $preventable = $dqVars["preventable"] ?? true;
+  $fromCardEffect = $dqVars["fromCardEffect"] ?? true;
+  GainHealth($amount, $player, $silent, $preventable, $fromCardEffect);
+}
