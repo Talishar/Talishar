@@ -946,3 +946,53 @@ class back_alley_plasmabank_blue extends Card {
 		$this->baseCard = new back_alley($this->cardID, $this->controller);
   }
 }
+
+class courier extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	private
+	function Disease() {
+		return match($this->cardID) {
+			"bloodrot_courier_red" => "bloodrot_pox",
+			"exertion_courier_yellow" => "exertion",
+			"inertia_courier_blue" => "inertia",
+			default => ""
+		};
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		global $mainPlayer, $defPlayer;
+		foreach ([$mainPlayer, $defPlayer] as $player)
+			PlayAura($this->Disease(), $player, effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller);
+	}
+}
+
+class bloodrot_courier_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "bloodrot_courier_red";
+    $this->controller = $controller;
+		$this->baseCard = new courier($this->cardID, $this->controller);
+  }
+}
+
+class exertion_courier_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "exertion_courier_yellow";
+    $this->controller = $controller;
+		$this->baseCard = new courier($this->cardID, $this->controller);
+  }
+}
+
+class inertia_courier_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "inertia_courier_blue";
+    $this->controller = $controller;
+		$this->baseCard = new courier($this->cardID, $this->controller);
+  }
+}
