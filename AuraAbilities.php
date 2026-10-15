@@ -1464,7 +1464,7 @@ function AuraLoseHealthAbilities($player, $amount)
 
 function AuraPlayAbilities($cardID, $from = "")
 {
-  global $currentPlayer, $CS_NumIllusionistActionCardAttacks, $defPlayer, $layers;
+  global $currentPlayer, $CS_NumIllusionistActionCardAttacks, $defPlayer, $layers, $mainPlayer;
   $auras = &GetAuras($currentPlayer);
   $cardType = CardType($cardID);
   $cardSubType = CardSubType($cardID);
@@ -1473,6 +1473,11 @@ function AuraPlayAbilities($cardID, $from = "")
   $aurasPieces = AuraPieces();
   $resolvedAbilityType = GetResolvedAbilityType($cardID, $from);
   for ($i = $countAuras - $aurasPieces; $i >= 0; $i -= $aurasPieces) {
+    $name = GamestateSanitize(NameOverride($auras[$i], $currentPlayer));
+    if (SearchAuraForModalities($name, $mainPlayer, "extinction_level_event_red") != -1)
+      continue;
+    if (SearchAuraForModalities($name, $defPlayer, "extinction_level_event_red") != -1)
+      continue;
     $remove = 0;
     $card = GetClass($auras[$i], $currentPlayer);
     if ($card != "-") {
@@ -1622,7 +1627,7 @@ function AuraHitEffects($attackID, $check = false): bool
 function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
 {
   global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom;
-  global $CID_Frailty;
+  global $CID_Frailty, $mainPlayer, $defPlayer;
   $chainCard = $CombatChain->Card($index);
   $modifier = 0;
   $player = $chainCard->PlayerID();
@@ -1632,6 +1637,11 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
   $attackIsAA = (CardType($chainCard->ID()) === "AA");
   if (!$onBlock) {//This codeblock was counting CMH twice on block
     for ($i = 0; $i < $countAuras; $i += $aurasPieces) {
+      $name = GamestateSanitize(NameOverride($myAuras[$i], $player));
+      if (SearchAuraForModalities($name, $mainPlayer, "extinction_level_event_red") != -1)
+        continue;
+      if (SearchAuraForModalities($name, $defPlayer, "extinction_level_event_red") != -1)
+        continue;
       $card = GetClass($myAuras[$i], $player);
       if ($card != "-") $modifier += $card->AuraPowerModifiers($index, $powerModifiers, $i);
       switch ($myAuras[$i]) {
