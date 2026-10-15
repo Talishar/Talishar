@@ -700,3 +700,62 @@ class exertion_bloom_yellow extends Card {
 		return $this->controller == $mainPlayer ? -3 : 0;
 	}
 }
+
+class curative_ceremony_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "curative_ceremony_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$modes = explode(",", $additionalCosts);
+		foreach ($modes as $mode) {
+			$suffix = match($mode) {
+				"Buff_Power" => "BUFF", "Go_again" => "GOAGAIN", "Veil" => "VEIL",
+				default => "BUFF"
+			};
+			AddCurrentTurnEffect("$this->cardID-$suffix", $this->controller);
+		}
+    return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "BUFF" ? 2 : 0;
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return $param == "GOAGAIN";
+	}
+
+	function DoesEffectGrantVeil($effectIndex) {
+		$Effect = new CurrentEffect($effectIndex);
+		return $Effect->EffectID() == "$this->cardID-VEIL";
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		global $CS_AdditionalCosts;
+		$otherPlayer = $this->controller == 1 ? 2 : 1;
+		Await($this->controller, "SetClassState", piece:$CS_AdditionalCosts, value:0);
+		foreach ([$this->controller, $otherPlayer] as $player) {
+			Await($player, "MultiZoneIndices", search:"MYAURAS:subtype=Disease", subsequent:0);
+			Await($player, "ChooseMultiZone", context:"Offer a disease to the " . CardLink($this->cardID));
+			Await($player, "MZDestroy");
+			Await($this->controller, "IncrementClassState", piece:$CS_AdditionalCosts);
+		}
+		Await($this->controller, $this->cardID, subsequent:0, final:true);
+	}
+
+	function SpecificLogic() {
+		global $CS_AdditionalCosts;
+		$numModes = GetClassState($this->controller, $CS_AdditionalCosts);
+		$modalities = "Buff_Power,Go_again,Veil";
+		Await($this->controller, "SetClassState", lastResultName:"value", piece:$CS_AdditionalCosts, prepend:"true");
+		PrependDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+		PrependDecisionQueue("MULTICHOOSETEXT", $this->controller, "$numModes-$modalities-$numModes");
+		PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode for " . CardLink($this->cardID));
+	}
+}

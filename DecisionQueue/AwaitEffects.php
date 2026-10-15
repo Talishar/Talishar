@@ -175,6 +175,22 @@ function ChooseMultiZoneAwait($player) {
   PrependDecisionQueue("SETDQCONTEXT", $player, $dqVars["context"] ?? "Choose a card", !$notSubsequent);
 }
 
+function IncrementClassStateAwait($player) {
+  global $dqVars;
+  $piece = $dqVars["piece"] ?? "-";
+  $amount = $dqVars["amount"] ?? 1;
+  if ($piece != "-")
+    IncrementClassState($player, $piece, $amount);
+}
+
+function SetClassStateAwait($player) {
+  global $dqVars;
+  $piece = $dqVars["piece"] ?? "-";
+  $value = $dqVars["value"] ?? "-";
+  if ($piece != "-")
+    SetClassState($player, $piece, $value);
+}
+
 function DiscardAwait($player) {
   global $dqVars;
   $MZIndex = $dqVars["MZIndex"] ?? "-";
