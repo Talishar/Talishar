@@ -1177,6 +1177,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $deck->AddBottom($card);
         AddEvent("ADDBOTDECK", $player);
       }
+      WriteLog(($loc == "Top" ? "⤴️" : "⤵️") . " " . CardLink($card, $card) . " was put on the " . ($loc == "Top" ? "top" : "bottom") . " of the deck.");
       return $card;
     case "REMOVEDECK":
       $deck = new Deck($player);
