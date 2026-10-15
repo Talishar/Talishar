@@ -183,12 +183,6 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
         $items[$index + 2] = 1;
       }
       break;
-    case "plasma_purifier_red":
-      if ($from == "PLAY" && $items[$index + 1] > 0 && $items[$index + 2] == 2) {
-        $items[$index + 1] -= 1;
-        AddAdditionalCost($currentPlayer, "PAID");
-      }
-      break;
     case "prismatic_lens_yellow":
     case "quantum_processor_yellow":
       if ($from == "PLAY") {

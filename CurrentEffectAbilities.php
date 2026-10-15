@@ -2227,7 +2227,6 @@ function IsCombatEffectPersistent($cardID)
     case "crater_fist":
     case "breeze_rider_boots":
     case "spoils_of_war_red-2":
-    case "plasma_purifier_red":
     case "perch_grapplers":
     case "poison_the_tips_yellow":
     case "cash_in_yellow":

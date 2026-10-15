@@ -1382,17 +1382,68 @@ class cintari_saber_r extends Card {
 // }
 
 
-// class plasma_purifier_red extends Card {
+class plasma_purifier_red extends Card {
+    function __construct($controller) {
+        $this->cardID = "plasma_purifier_red";
+        $this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "plasma_purifier_red";
-//     $this->controller = $controller;
-//     }
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        global $CS_PlayIndex;
+        if($from == "PLAY") {
+            $index = GetClassState($this->controller, $CS_PlayIndex);
+            $ItemCard = new ItemCard($index, $this->controller);
+            $Pistol = CleanTargetToObject($this->controller, $target);
+            if(ClassContains($ItemCard->CardID(), "MECHANOLOGIST", $this->controller) && $ItemCard->Status() == 2 && $additionalCosts == "PAID" && $Pistol != "") {
+                $ItemCard->SetStatus(1);
+                AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$Pistol->UniqueID());
+            } elseif ($ItemCard->NumCounters() == 0)
+                $ItemCard->AddCounters(1);
+        }
+        return "";
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function HasGoAgain($from) {
+        return $from == "PLAY";
+    }
+
+    function IsCombatEffectPersistent($mode) {
+        return true;
+    }
+
+    function PayAdditionalCosts($from, $index = '-') {
+        $ItemCard = new ItemCard($index, $this->controller);
+        if ($from == "PLAY" && $ItemCard->NumCounters() > 0 && $ItemCard->Status() == 2) {
+            $ItemCard->AddCounters(-1);
+            AddAdditionalCost($this->controller, "PAID");
+            SetTargets($this->controller, $this->cardID, "MYCHAR:class=MECHANOLOGIST;subtype=Pistol", context:"Target a pistol to purify the plasma");
+        }
+    }
+
+    function AbilityCost() {
+        global $CS_PlayIndex;
+        $items = &GetItems($this->controller); 
+        if ($items[GetClassState($this->controller, $CS_PlayIndex) + 2] < 2) return 1;
+        if ($items[GetClassState($this->controller, $CS_PlayIndex) + 1] > 0) return 0;
+        return 1;
+    }
+
+    function AbilityType($index = -1, $from = '-') {
+        return "A";
+    }
+
+    function AbilityHasGoAgain($from) {
+        return true;
+    }
+
+    function EffectPowerModifier($param, $attached = false) {
+        return 1;
+    }
+
+    function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+        return true;
+    }
+}
 
 
 // class poison_the_tips_yellow extends Card {

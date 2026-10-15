@@ -9,11 +9,6 @@
       case "harmonized_kodachi_r": return 1;
       case "edge_of_autumn": case "zephyr_needle": case "zephyr_needle_r": return 1;
       case "plasma_barrel_shot": return GetResolvedAbilityType($cardID) == "A" ? 2 : 0;
-      case "plasma_purifier_red": 
-        $items = &GetItems($currentPlayer); 
-        if ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 2] < 2) return 1;
-        if ($items[GetClassState($currentPlayer, $CS_PlayIndex) + 1] > 0) return 0;
-        return 1;
       case "kavdaen_trader_of_skins": return 3;
       case "perch_grapplers": return 2;
       case "reaping_blade": return 1;
@@ -35,7 +30,6 @@
       case "courage_of_bladehold": return "A";
       case "plasma_barrel_shot": return "A";
       case "viziertronic_model_i": return "A";
-      case "plasma_purifier_red": return "A";
       case "kavdaen_trader_of_skins": return "A";
       case "red_liner": return "A";
       case "perch_grapplers": return "A";
@@ -55,7 +49,6 @@
       case "courage_of_bladehold": return true;
       case "plasma_barrel_shot": return GetResolvedAbilityType($cardID) == "A";
       case "viziertronic_model_i": return true;
-      case "plasma_purifier_red": return true;
       case "kavdaen_trader_of_skins": return true;
       case "red_liner": case "perch_grapplers": return true;
       case "copper": return true;
@@ -93,7 +86,6 @@
       case "push_forward_red-1": return 3;
       case "push_forward_yellow-1": return 2;
       case "push_forward_blue-1": return 1;
-      case "plasma_purifier_red": return 1;
       case "combustible_courier_red": case "combustible_courier_yellow": case "combustible_courier_blue": return 3;
       case "increase_the_tension_red": return 3;
       case "increase_the_tension_yellow": return 2;
@@ -126,7 +118,6 @@
       case "hit_and_run_red-2": case "hit_and_run_yellow-2": case "hit_and_run_blue-2": return true;
       case "push_forward_red-1": case "push_forward_yellow-1": case "push_forward_blue-1": return TypeContains($attackID, "W", $mainPlayer);
       case "push_forward_red-2": case "push_forward_yellow-2": case "push_forward_blue-2": return true;
-      case "plasma_purifier_red": return TypeContains($attackID, "W", $mainPlayer) && CardSubtype($attackID) == "Pistol" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "high_speed_impact_red": case "high_speed_impact_yellow": case "high_speed_impact_blue": return GetCombatChainState($CCS_IsBoosted) == "1";
       case "combustible_courier_red": case "combustible_courier_yellow": case "combustible_courier_blue": return GetCombatChainState($CCS_IsBoosted) == "1";
       case "perch_grapplers": return $CombatChain->AttackCard()->From() == "ARS" && GetClassState($mainPlayer, $CS_ArsenalFacing) == "UP" && CardSubtype($attackID) == "Arrow"; //The card being played from ARS and being an Arrow implies that the card is UP.
@@ -301,18 +292,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         $rv .= "Requires you to block with " . GetCombatChainState($CCS_NumBoosted) . " equipment if able";
       }
       return $rv;
-    case "plasma_purifier_red":
-      if($from == "PLAY") {
-        $items = &GetItems($currentPlayer);
-        $index = GetClassState($currentPlayer, $CS_PlayIndex);
-        if(ClassContains($items[$index], "MECHANOLOGIST", $currentPlayer) && $items[$index + 2] == 2 && $additionalCosts == "PAID") {
-          $items[$index + 2] = 1;
-          AddCurrentTurnEffect($cardID, $currentPlayer);
-        } else {
-          $items[$index + 1] = 1;
-        }
-      }
-      return "";
     case "teklovossens_workshop_red": case "teklovossens_workshop_yellow": case "teklovossens_workshop_blue":
       $maxCost = match($cardID) { "teklovossens_workshop_red" => 2, "teklovossens_workshop_yellow" => 1, default => 0 };
       Opt($cardID, GetClassState($currentPlayer, $CS_NumBoosted));
