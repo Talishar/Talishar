@@ -1298,9 +1298,10 @@ function GetEasyAbilityNames($cardID, $index, $from, $allNames=false) {
       if ($from == "HAND" && !$instantRestricted)
         $names[0] = "Ability"; //don't let it target itself
       // can it attack?
-      
-      if ($currentPlayer == $mainPlayer && count($combatChain) == 0 && ($layerCount <= LayerPieces() || IsResolutionStep()) && $actionPoints > 0){
-        if (!$nameBlocked && CanAttack($cardID, $from, $index, type:"AA")) {
+      $actionAttack = count($combatChain) == 0 && ($layerCount <= LayerPieces() || IsResolutionStep()) && $actionPoints > 0;
+      $instantAttack = CanPlayAsInstant($cardID, $index, $from);
+      if ($currentPlayer == $mainPlayer && ($actionAttack || $instantAttack)) {
+        if (!$nameBlocked && CanAttack($cardID, $from, $index, type:"AA", AQCheck:$instantAttack)) {
           // there has to be a better way to handle this
           if (SearchCurrentTurnEffects("oath_of_loyalty_red", $currentPlayer) && !SearchCurrentTurnEffects("fealty", $currentPlayer)) {
             $names[1] = "-";
@@ -1590,9 +1591,11 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
   $type = $type == "-" ? CardType($cardID, $from) : $type;
   if (!$AQCheck && EffectAttackRestricted($cardID, $type, $from, index:$index, overrideType:$type) != "") return false;
   if (!$AQCheck && ($currentPlayer != $mainPlayer || count($combatChain) > 0 || $actionPoints == 0)) return false;
-  $layerCount = count($layers);
-  if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
-  if ($layerCount > LayerPieces()) return false;
+  if (!$AQCheck) {
+    $layerCount = count($layers);
+    if (SearchLayersForPhase("RESOLUTIONSTEP") != -1) $layerCount -= LayerPieces();
+    if ($layerCount > LayerPieces()) return false;
+  }
   // kabuto stops attacking in general, so it can stop activated or queued attacks
   if ($isWeapon && SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) return false;
   if (SubtypeContains($cardID, "Sword") && $index != -1 && MomentsPeaceStopsWeapon($index, $mainPlayer, $cardID)) {
