@@ -183,7 +183,7 @@ function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
         }
       }
     }
-    $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $player);
+    $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $owner);
     WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " <b>go again</b>.");
     IncrementClassState($player, $CS_NumBoosted);
     IncrementCombatChainState($CCS_NumBoosted);
