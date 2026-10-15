@@ -624,38 +624,38 @@ class bootlegger_bust_up extends BaseCard {
 }
 
 class bootlegger_bust_up_red extends Card {
-  function __construct($controller) {
-    $this->cardID = "bootlegger_bust_up_red";
-    $this->controller = $controller;
-    $this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
-  }
+	function __construct($controller) {
+		$this->cardID = "bootlegger_bust_up_red";
+		$this->controller = $controller;
+		$this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
+	}
 }
 
 class bootlegger_bust_up_yellow extends Card {
-  function __construct($controller) {
-    $this->cardID = "bootlegger_bust_up_yellow";
-    $this->controller = $controller;
-    $this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
-  }
+	function __construct($controller) {
+		$this->cardID = "bootlegger_bust_up_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
+	}
 }
 
 class bootlegger_bust_up_blue extends Card {
-  function __construct($controller) {
-    $this->cardID = "bootlegger_bust_up_blue";
-    $this->controller = $controller;
-    $this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
-  }
+	function __construct($controller) {
+		$this->cardID = "bootlegger_bust_up_blue";
+		$this->controller = $controller;
+		$this->baseCard = new bootlegger_bust_up($this->cardID, $this->controller);
+	}
 }
 
 class exertion extends Card {
-  function __construct($controller) {
-    $this->cardID = "exertion";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "exertion";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function PermanentPlayAbility($cardID, $from, $i) {
 		if ($from == "HAND" && !IsActivated($cardID, $from))
@@ -757,5 +757,99 @@ class curative_ceremony_red extends Card {
 		PrependDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
 		PrependDecisionQueue("MULTICHOOSETEXT", $this->controller, "$numModes-$modalities-$numModes");
 		PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode for " . CardLink($this->cardID));
+	}
+}
+
+class incubator_implanter_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "incubator_implanter_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+		if (IsHeroAttackTarget()) {
+			$defAuras = new Auras($defPlayer);
+			if ($defAuras->FindCardID("bloodrot_pox")->Index() != -1)
+				AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+		}
+		return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return $parameter != "BLEED";
+	}
+
+	function ProcessAttackTrigger($target, $uniqueID) {
+		AddCurrentTurnEffect($this->cardID, $this->controller);
+	}
+
+	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $defPlayer;
+		WriteLog("🩸 Player $defPlayer has begun bleeding out! 🩸");
+		AddCurrentTurnEffect("$this->cardID-BLEED", $defPlayer);
+	}
+
+	function CurrentEffectEndTurnAbilities($i, &$remove) {
+		global $mainPlayer;
+		$Effect = new CurrentEffect($i);
+		if ($Effect->EffectID() == "$this->cardID-BLEED") {
+			if ($Effect->PlayerID() == $mainPlayer)
+				PlayAura("bloodrot_pox", $this->controller);
+			AddNextTurnEffect("$this->cardID-BLEED", $this->controller);
+		}
+	}
+
+	function SpecialName() {
+		return "Incubator Implanter";
+	}
+
+	function SpecialClass() {
+		return "RANGER";
+	}
+
+	function SpecialCost() {
+		return 1;
+	}
+
+	function SpecialSubType() {
+		return "Arrow";
+	}
+
+	function SpecialPower() {
+		return 3;
+	}
+}
+
+class max_tension_shot_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "max_tension_shot_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+	function ProcessAttackTrigger($target, $uniqueID) {
+		$Deck = new Deck($this->controller);
+		if ($Deck->Reveal()) {
+			$topCard = $Deck->Top();
+			if (ColorContains($topCard, 1, $this->controller))
+				AddCurrentTurnEffect($this->cardID, $this->controller);
+		}
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return true;
 	}
 }
