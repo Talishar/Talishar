@@ -203,6 +203,8 @@ class huxley_base extends BaseCard {
 	}
 
 	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$Hero = new CharacterCard(0, $this->controller);
+		if ($Hero->Tapped()) return;
 		$Banish = new Banish($this->controller);
 		$BanishCard = $Banish->FindCardUID($target);
 		$context = "Would you like to tap your hero to be able to play " . CardLink($BanishCard->CardID()) . " at instant speed?";
