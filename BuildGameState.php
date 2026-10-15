@@ -1218,14 +1218,18 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $theirAurasOutput = [];
   $theirAurasCount = count($theirAuras);
   $auraPieces = AuraPieces();
-  static $labeledAurasSet = ["blessing_of_themis_yellow" => true, "leave_em_speechless_blue" => true, "extinction_level_event_red" => true];
+  static $labeledAurasSet = ["blessing_of_themis_yellow" => true, "leave_em_speechless_blue" => true];
   for ($i = 0; $i + $auraPieces - 1 < $theirAurasCount; $i += $auraPieces) {
     if ($theirAuras[$i + 14] != "-") continue; //display bound auras elsewhere
     $type = CardType($theirAuras[$i]);
     $sType = CardSubType($theirAuras[$i]);
     $gem = $theirAuras[$i + 8] != 2 ? $theirAuras[$i + 8] : NULL;
     $holoCounters = $theirAuras[$i + 13];
-    if(isset($labeledAurasSet[$theirAuras[$i]])) {
+    if ($theirAuras[$i] == "extinction_level_event_red") {
+      $namedDisease = GamestateUnsanitize($theirAuras[$i + 10]);
+      $label = $namedDisease != "-" ? "Named: " . $namedDisease : "";
+    }
+    elseif(isset($labeledAurasSet[$theirAuras[$i]])) {
       $label = GamestateUnsanitize($theirAuras[$i + 10]);
     }
     elseif ($theirAuras[$i + 4] == 1 && !TypeContains($theirAuras[$i], "T")) {
@@ -1357,7 +1361,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $sType = CardSubType($myAuras[$i]);
     $gem = $myAuras[$i + 7] != 2 ? $myAuras[$i + 7] : NULL;
     $holoCounters = $myAuras[$i + 13];
-    if(isset($labeledAurasSet[$myAuras[$i]])) {
+    if ($myAuras[$i] == "extinction_level_event_red") {
+      $namedDisease = GamestateUnsanitize($myAuras[$i + 10]);
+      $label = $namedDisease != "-" ? "Named: " . $namedDisease : "";
+    }
+    elseif(isset($labeledAurasSet[$myAuras[$i]])) {
       $label = GamestateUnsanitize($myAuras[$i + 10]);
     }
     elseif ($myAuras[$i + 4] == 1 && !TypeContains($myAuras[$i], "T")) {
