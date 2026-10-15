@@ -126,7 +126,7 @@ function Boost($cardID)
 
 function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
 {
-  global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted;
+  global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted, $CS_AdditionalCosts;
   $otherPlayer = $player == 1 ? 2 : 1;
   $owner = $boostOpp ? $otherPlayer : $player;
   $deck = new Deck($owner);
@@ -189,7 +189,7 @@ function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
     IncrementCombatChainState($CCS_NumBoosted);
     SetCombatChainState($CCS_IsBoosted, 1);
     if($grantsGA) {
-      GiveAttackGoAgain();
+      SetClassState($player, $CS_AdditionalCosts, "BOOSTED");
       $isGoAgainGranted = true;
     }
   }

@@ -4819,6 +4819,8 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
       }
       if ($index <= 0 && !$skipDRResolution) {
+        if (DelimStringContains($additionalCosts, "BOOSTED"))
+          GiveAttackGoAgain();
         ChangeSetting($defPlayer, $SET_PassDRStep, 0);
         SetCombatChainState($CCS_AttackPlayedFrom, $from);
         $chainClosed = $target == "MISSINGTARGET";
