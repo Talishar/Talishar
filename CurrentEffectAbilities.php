@@ -1976,7 +1976,8 @@ function CurrentEffectPreventsDefenseReaction($from)
         case "release_the_tension_red-1":
         case "release_the_tension_yellow-1":
         case "release_the_tension_blue-1":
-          if ($from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i])) $reactionPrevented = true;
+          if ($from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i))
+            $reactionPrevented = true;
           break;
         case "increase_the_tension_red-1":
         case "increase_the_tension_yellow-1":
