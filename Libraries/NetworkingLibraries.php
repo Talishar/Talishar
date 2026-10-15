@@ -4659,7 +4659,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $CS_NumDragonAttacks, $CS_NumAttackCardsAttacked, $CS_NumIllusionistAttacks, $CS_NumIllusionistActionCardAttacks;
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked, $CS_NumTimesHeroAttacked;
   global $currentTurnEffects, $CCS_AttackTarget, $CCS_AttackTargetUID;
-  global $landmarks, $CS_WeaponsAttackedWith, $Stack, $AttackQueue, $CombatChain;
+  global $landmarks, $CS_WeaponsAttackedWith, $Stack, $AttackQueue, $CombatChain, $CCS_IsBoosted;
   if ($player == "") $player = $currentPlayer;
   $cardType = CardType($cardID);
   if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {
@@ -4819,8 +4819,13 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         $index = AddCombatChain($cardID, $currentPlayer, $from, $resourcesPaid, $uniqueID);
       }
       if ($index <= 0 && !$skipDRResolution) {
-        if (DelimStringContains($additionalCosts, "BOOSTED"))
+        if (DelimStringContains($additionalCosts, "BOOSTED")) {
           GiveAttackGoAgain();
+          SetCombatChainState($CCS_IsBoosted, 1);
+        }
+        elseif (DelimStringContains($additionalCosts, "MISSBOOSTED")) {
+          SetCombatChainState($CCS_IsBoosted, 1);
+        }
         ChangeSetting($defPlayer, $SET_PassDRStep, 0);
         SetCombatChainState($CCS_AttackPlayedFrom, $from);
         $chainClosed = $target == "MISSINGTARGET";

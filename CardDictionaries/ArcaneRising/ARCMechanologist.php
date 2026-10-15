@@ -187,10 +187,12 @@ function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
     WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " <b>go again</b>.");
     IncrementClassState($player, $CS_NumBoosted);
     IncrementCombatChainState($CCS_NumBoosted);
-    SetCombatChainState($CCS_IsBoosted, 1);
     if($grantsGA) {
       SetClassState($player, $CS_AdditionalCosts, "BOOSTED");
       $isGoAgainGranted = true;
+    }
+    elseif(GetClassState($player, $CS_AdditionalCosts) != "BOOSTED") {
+      SetClassState($player, $CS_AdditionalCosts, "MISSBOOSTED");
     }
   }
   return $isGoAgainGranted;

@@ -199,8 +199,13 @@ class horrors_of_the_past_yellow extends Card {
 	}
 
 	function EffectPowerModifier($param, $attached = false) {
-		$copiedText = SearchCurrentTurnEffects($this->cardID, $this->controller, returnUniqueID:true);
+		$copiedText = GetHorrorsBuff();
 		return PowerModifier($copiedText, "CC");
+	}
+
+	function DoesAttackHaveGoAgain() {
+		$copiedText = GetHorrorsBuff();
+		return DoesAttackHaveGoAgain($copiedText);
 	}
 }
 

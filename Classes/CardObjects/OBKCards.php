@@ -619,7 +619,8 @@ class bootlegger_bust_up extends BaseCard {
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
+		global $CombatChain;
+		return $CombatChain->AttackCard()->ID() == $this->cardID;
 	}
 }
 
