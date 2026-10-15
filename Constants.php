@@ -453,6 +453,7 @@ $classStateDefaults = [
   "Num6PowPutIntoBanish" => 0,                   // used for Levia
   "KorshemConditionMet" => 0,                    // a hero gained resources/health from an effect, or a controlled object gained power/defense this turn
   "RunechantPreventPlan" => 0,
+  "OppCardsBoosted" => 0,
 ];
 $persistentClassStates = ["ArsenalFacing", "OriginalHero"];
 $classStateNames = array_keys($classStateDefaults);

@@ -126,7 +126,7 @@ function Boost($cardID)
 
 function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
 {
-  global $CS_NumBoosted, $CCS_NumBoosted, $CCS_IsBoosted, $CS_EvosBoosted, $CS_AdditionalCosts;
+  global $CS_NumBoosted, $CCS_NumBoosted, $CS_OppCardsBoosted, $CS_EvosBoosted, $CS_AdditionalCosts;
   $otherPlayer = $player == 1 ? 2 : 1;
   $owner = $boostOpp ? $otherPlayer : $player;
   $deck = new Deck($owner);
@@ -185,6 +185,8 @@ function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
     }
     $grantsGA = ClassContains($boostedCardID, "MECHANOLOGIST", $owner);
     WriteLog("Boost banished " . CardLink($boostedCardID, $boostedCardID) . " and " . ($grantsGA ? "gets" : "doesn't get") . " <b>go again</b>.");
+    if ($player != $owner)
+      IncrementClassState($player, $CS_OppCardsBoosted);
     IncrementClassState($player, $CS_NumBoosted);
     IncrementCombatChainState($CCS_NumBoosted);
     if($grantsGA) {
