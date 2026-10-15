@@ -10,9 +10,10 @@ class madness_spiral_blue extends Card {
   }
 
 	function OnBoostedEffect($owner, $cardID) {
+    global $CS_NumBoosted;
 		if ($owner == $this->controller) {
-      // Does this count as a second boost?
 			DoBoost($this->controller, $cardID, boostOpp:true);
+      IncrementClassState($this->controller, $CS_NumBoosted, -1);
 		}
 	}
 }
