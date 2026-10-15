@@ -1045,3 +1045,103 @@ class incite_resolve_blue extends Card {
 		return 2;
 	}
 }
+
+class patient_zero extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check);
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		GiveDisease($this->controller);
+	}
+}
+
+class patient_zero_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "patient_zero_red";
+    $this->controller = $controller;
+    $this->baseCard = new patient_zero($this->cardID, $this->controller);
+  }
+}
+
+class patient_zero_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "patient_zero_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new patient_zero($this->cardID, $this->controller);
+  }
+}
+
+class patient_zero_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "patient_zero_blue";
+    $this->controller = $controller;
+    $this->baseCard = new patient_zero($this->cardID, $this->controller);
+  }
+}
+
+class swap_spit extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$otherPlayer = $this->controller == 1 ? 2 : 1;
+		$myDiseases = SearchMultizone($this->controller, "MYAURAS:subtype=Disease");
+		$theirDiseases = SearchMultizone($this->controller, "THEIRAURAS:subtype=Disease");
+		$chosenMyDisease = "-";
+		$chosenTheirDisease = "-";
+		// I need to do something silly like this to make sure you don't swap the same disease twice
+		if (SearchCount($myDiseases) > 0) { 
+			$myDiseases = explode(",", $myDiseases);
+			$chosenMyDisease = $myDiseases[GetRandom(0, count($myDiseases) - 1)];
+			$chosenMyDisease = CleanTarget($this->controller, $chosenMyDisease);
+		}
+		if (SearchCount($theirDiseases) > 0) {
+			$theirDiseases = explode(",", $theirDiseases);
+			$chosenTheirDisease = $theirDiseases[GetRandom(0, count($theirDiseases) - 1)];
+			$chosenTheirDisease = CleanTarget($this->controller, $chosenTheirDisease);
+		}
+		foreach ([$chosenMyDisease, $chosenTheirDisease] as $chosenDisease) {
+			$obj = CleanTargetToObject($this->controller, $chosenDisease);
+			if ($obj != "") {
+				$srcPlayer = str_contains($chosenDisease, "MY") ? $this->controller : $otherPlayer;
+				$destPlayer = $srcPlayer == 1 ? 2 : 1;
+				WriteLog("Player $srcPlayer gave their " . CardLink($obj->CardID()) . " to Player $destPlayer!");
+				StealAura($srcPlayer, $obj->Index(), $destPlayer, "-", realSteal:false);
+			}
+		}
+	}
+}
+
+class swap_spit_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "swap_spit_red";
+    $this->controller = $controller;
+    $this->baseCard = new swap_spit($this->cardID, $this->controller);
+  }
+}
+
+class swap_spit_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "swap_spit_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new swap_spit($this->cardID, $this->controller);
+  }
+}
+
+class swap_spit_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "swap_spit_blue";
+    $this->controller = $controller;
+    $this->baseCard = new swap_spit($this->cardID, $this->controller);
+  }
+}

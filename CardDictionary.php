@@ -67,6 +67,7 @@ include "CardDictionaries/OmensOfTheThirdAge/OMNShared.php";
 include "CardDictionaries/IARShared.php";
 include "CardDictionaries/MasteryPacks/MPWShared.php";
 include "CardDictionaries/MasteryPacks/MPAShared.php";
+include "CardDictionaries/OBKShared.php";
 
 
 $CID_BloodRotPox = "bloodrot_pox";

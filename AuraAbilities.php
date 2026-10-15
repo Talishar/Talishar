@@ -160,7 +160,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     IncrementClassState($effectController, $CS_CreatedCardsThisTurn, $number);
 }
 
-function StealAura($srcPlayer, $index, $destPlayer, $from, $mod=0)
+function StealAura($srcPlayer, $index, $destPlayer, $from, $mod=0, $realSteal=true)
 {
   $srcAuras = &GetAuras($srcPlayer);
   $destAuras = &GetAuras($destPlayer);
