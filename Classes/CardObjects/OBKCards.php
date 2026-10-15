@@ -853,3 +853,96 @@ class max_tension_shot_red extends Card {
 		return true;
 	}
 }
+
+class back_alley extends BaseCard {
+	private
+	function Disease() {
+		return match($this->cardID) {
+			"back_alley_bloodbank_red" => "bloodrot_pox",
+			"back_alley_bilebank_yellow" => "exertion",
+			"back_alley_plasmabank_blue" => "inertia",
+			default => ""
+		};
+	}
+
+	function BackAlleyTrigger() {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		switch($this->cardID) {
+			case "back_alley_breakline_red": case "back_alley_breakline_yellow": case "back_alley_breakline_blue":
+				WriteLog("Player $this->controller gained 1 action point from " . CardLink($this->cardID).".");
+				GainActionPoints(1, $this->controller);
+				break;
+			case "back_alley_bloodbank_red":
+			case "back_alley_bilebank_yellow":
+			case "back_alley_plasmabank_blue":
+				$indices = "THEIRCHAR-0";
+				if (!ShouldAutotargetOpponent($this->controller))
+					$indices .= ",MYCHAR-0";
+				$context = "Give a player " . CardLink($this->Disease());
+				Await($this->controller, "ChooseMultiZone", indices:$indices, context:$context, subsequent:0);
+				Await($this->controller, $this->cardID, final:true);
+				break;
+			default:
+				break;
+		}
+	}
+
+	function SpecificLogic() {
+		global $dqVars;
+		$targetHero = $dqVars["MZIndex"] ?? "THEIRCHAR-0";
+		$otherPlayer = $this->controller == 1 ? 2 : 1;
+		$targetPlayer = $targetHero == "THEIRCHAR-0" ? $otherPlayer : $this->controller;
+		PlayAura($this->Disease(), $targetPlayer, effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller);
+	}
+}
+
+class back_alley_breakline_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "back_alley_breakline_red";
+    $this->controller = $controller;
+    $this->baseCard = new back_alley($this->cardID, $this->controller);
+  }
+}
+
+class back_alley_breakline_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "back_alley_breakline_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new back_alley($this->cardID, $this->controller);
+  }
+}
+
+class back_alley_breakline_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "back_alley_breakline_blue";
+    $this->controller = $controller;
+    $this->baseCard = new back_alley($this->cardID, $this->controller);
+  }
+}
+
+class back_alley_bloodbank_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "back_alley_bloodbank_red";
+    $this->controller = $controller;
+		$this->baseCard = new back_alley($this->cardID, $this->controller);
+  }
+}
+
+class back_alley_bilebank_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "back_alley_bilebank_yellow";
+    $this->controller = $controller;
+		$this->baseCard = new back_alley($this->cardID, $this->controller);
+  }
+}
+
+class back_alley_plasmabank_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "back_alley_plasmabank_blue";
+    $this->controller = $controller;
+		$this->baseCard = new back_alley($this->cardID, $this->controller);
+  }
+}

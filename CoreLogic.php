@@ -3966,7 +3966,10 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     AddLayer("TRIGGER", $currentPlayer, "meridian_pathway");
   }
   $card = GetClass($cardID, $currentPlayer);
-  if ($card != "-") $card->PitchAbility($from);
+  if ($card != "-") {
+    $card->PitchAbility($from);
+    if ($from == "DECK") $card->BackAlleyTrigger();
+  }
   switch ($cardID) {
     case "heart_of_fyendal_blue":
     case "eye_of_ophidia_blue":
@@ -3980,14 +3983,6 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
       break;
     case "blood_of_the_dracai_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
-    case "back_alley_breakline_red":
-    case "back_alley_breakline_yellow":
-    case "back_alley_breakline_blue":
-      if ($from == "DECK" && $currentPlayer == $mainPlayer) {
-        WriteLog("Player ". $currentPlayer ." gained 1 action point from " . CardLink($cardID, $cardID).".");
-        ++$actionPoints;
-      }
       break;
     default:
       break;

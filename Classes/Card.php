@@ -1406,4 +1406,10 @@ class Card {
       return $this->baseCard->SelfBoostEffect($boostedCardID, $owner);
     return;
   }
+
+  function BackAlleyTrigger() {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "BackAlleyTrigger"))
+      return $this->baseCard->BackAlleyTrigger();
+    return;
+  }
 }

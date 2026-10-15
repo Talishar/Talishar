@@ -118,11 +118,10 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if ($cardID == "slithering_shadowpede_red" && ($from == "HAND" || $from == "MYHAND") && $mod != "blasmophet_levia_consumed" && ($mod != "NOFEAR" || $player == $mainPlayer)) $banish[count($banish) - 2] = "TT";
   if ($disruptive) LogBanishDisruptionStats($player, $cardID, $banisher, $banish, $rv);
   if (($mod == "BOOST" || $from == "DECK")
-  && str_starts_with($cardID, 'back_alley_breakline_')
   && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetAbilityType($EffectContext) != "")
   && $player == $mainPlayer) {
-    WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
-    ++$actionPoints;
+    $card = GetClass($cardID, $player);
+    if ($card != "-") $card->BackAlleyTrigger();
   }
   if (($mod == "BOOST" && $from == "DECK") && str_starts_with($cardID, 'crankshaft_')) {
     WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
@@ -390,11 +389,10 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0, $powerCount
 
   $otherPlayer = 3 - $player;
   if ($facing == "UP") {
-    if ($from == "DECK" && str_starts_with($cardID, 'back_alley_breakline_') && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A")) {
-      if ($player == $mainPlayer) {
-        WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
-        GainActionPoints(1);
-      }    }
+    if ($from == "DECK" && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A")) {
+      $card = GetClass($cardID, $player);
+      if ($card != "-") $card->BackAlleyTrigger();
+    }
     if ($from == "DECK" && $cardSubType == "Arrow" && SearchCharacterActive($player, "crows_nest")) {
       AddLayer("TRIGGER", $player, "crows_nest", "-", "-", -1);
     }
@@ -857,11 +855,9 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $CS_NumAllyPutInGraveyard;
   global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
   global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext, $CS_NumInstantsPutInGrave, $Stack;
-  if (str_contains($from, "DECK") && str_starts_with($cardID, 'back_alley_breakline_') && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "E", $player))) {
-    if ($player == $mainPlayer) {
-      WriteLog("Player ". $player ." gained 1 action point from " . CardLink($cardID, $cardID).".");
-      GainActionPoints(1);
-    }
+  if (str_contains($from, "DECK") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "E", $player))) {
+    $card = GetClass($cardID, $player);
+    if ($card != "-") $card->BackAlleyTrigger();
   }
   $char = GetPlayerCharacter($player);
   $hero = $char[0];
