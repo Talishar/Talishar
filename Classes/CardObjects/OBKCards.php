@@ -997,3 +997,50 @@ class inertia_courier_blue extends Card {
 		$this->baseCard = new courier($this->cardID, $this->controller);
   }
 }
+
+class incite extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+		$foundColor = false;
+		foreach ([$this->controller, $otherPlayer] as $player) {
+			$Deck = new Deck($player);
+			if (!ArsenalFull($player) && !$Deck->Empty()) {
+				$Top = $Deck->Top(true);
+				AddArsenal($Top, $player, "DECK", "UP");
+				if (ColorContains($Top, PitchValue($this->cardID), $player))
+					$foundColor = true;
+			}
+		}
+		if ($foundColor)
+			AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+  }
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		return true;
+	}
+}
+
+class incite_aggression_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "incite_aggression_red";
+    $this->controller = $controller;
+		$this->baseCard = new incite($this->cardID, $this->controller);
+  }
+
+	function CurrentEffectGrantsGoAgain($param) {
+		return true;
+	}
+}
+
+class incite_resolve_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "incite_resolve_blue";
+    $this->controller = $controller;
+		$this->baseCard = new incite($this->cardID, $this->controller);
+  }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+}
