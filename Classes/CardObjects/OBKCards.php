@@ -196,6 +196,7 @@ class huxley_base extends BaseCard {
 		if ($owner != $this->controller) return;
 		$boostedCard = new BanishCard($this->controller, $banishInd);
 		$heroCard = new CharacterCard($index, $this->controller);
+		if ($heroCard->Status() >= 3) return;
 		$boostedCardID = $boostedCard->CardID();
 		if (!$heroCard->Tapped() && HasStealth($boostedCardID) && (TypeContains($boostedCardID, "A") || TypeContains($boostedCardID, "AA")))
 			AddLayer("TRIGGER", $this->controller, $this->cardID, $boostedCard->UniqueID());
