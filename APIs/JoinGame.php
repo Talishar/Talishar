@@ -1016,19 +1016,20 @@ function isBannedInFormat($cardID, $format) {
       "blitz" => [], // no cards banned in singleton blitz
       "cc" => array_flip(array_merge([
           "tome_of_fyendal_yellow", "drone_of_brutality_red", "drone_of_brutality_yellow", "drone_of_brutality_blue", "tome_of_aetherwind_red", "art_of_war_yellow", "plunder_run_red", "plunder_run_yellow", "plunder_run_blue",
-          "bloodsheath_skeleta", "cash_in_yellow", "prism_sculptor_of_arc_light", "luminaris", "tome_of_divinity_yellow", "galaxxi_black", "stubby_hammerers", "belittle_red",
-          "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds", "lexi_livewire",
-          "voltaire_strike_twice", "briar_warden_of_thorns", "rosetta_thorn", "oldhim_grandfather_of_eternity", "winters_wail", "dromai_ash_artist", "storm_of_sandikai", "tome_of_firebrand_red",
-          "iyslander_stormbind", "krakens_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
-          "viserai_rune_blood", "nebula_blade", "enigma_ledger_of_ancestry", "cosmo_scroll_of_ancestral_tapestry", "zen_tamer_of_purpose", "tiger_taming_khakkara", "aurora_shooting_star", "star_fall",
-          "count_your_blessings_red", "count_your_blessings_yellow", "nuu_alluring_desire", "beckoning_mistblade", "dash_inventor_extraordinaire", "teklo_plasma_pistol",
-          "azalea_ace_in_the_hole", "death_dealer", "bonds_of_agony_blue", "golden_tipple_red", "golden_tipple_yellow",
+          "bloodsheath_skeleta", "cash_in_yellow", "luminaris", "tome_of_divinity_yellow", "galaxxi_black", "stubby_hammerers", "belittle_red",
+          "belittle_yellow", "belittle_blue", "awakening_blue", "ball_lightning_red", "ball_lightning_yellow", "ball_lightning_blue", "duskblade", "crown_of_seeds",
+          "voltaire_strike_twice", "rosetta_thorn", "winters_wail", "storm_of_sandikai", "tome_of_firebrand_red",
+          "krakens_aethervein", "berserk_yellow", "bonds_of_ancestry_yellow", "bonds_of_ancestry_blue", "orihon_of_mystic_tenets_blue", "high_octane_red", "count_your_blessings_blue",
+          "nebula_blade", "cosmo_scroll_of_ancestral_tapestry", "tiger_taming_khakkara", "star_fall",
+          "count_your_blessings_red", "count_your_blessings_yellow", "beckoning_mistblade", "teklo_plasma_pistol",
+          "death_dealer", "bonds_of_agony_blue", "golden_tipple_red", "golden_tipple_yellow",
           "plume_of_evergrowth", "orb_weaver_spinneret_yellow", "orb_weaver_spinneret_blue",
           "chart_the_high_seas_blue", "wrath_of_retribution_red", "entwine_lightning_red", "entwine_lightning_yellow", "entwine_lightning_blue",
           "crucible_of_aetherweave", "rotwood_reaper", "mandible_claw", "staff_of_verdant_shoots",
           "electromagnetic_somersault_red", "electromagnetic_somersault_yellow",
           "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade",
-          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow", "millers_grindstone", "zephyr_needle"
+          "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow", "millers_grindstone", "zephyr_needle",
+          "symbiosis_shot", "cintari_saber", "cintari_saber_r"
       ], $livingLegends)),
       "commoner" => array_flip([
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
