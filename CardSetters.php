@@ -388,8 +388,9 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0, $powerCount
   $arsenal[] = $powerCounters;
 
   $otherPlayer = 3 - $player;
+  $effectType = CardType($EffectContext);
   if ($facing == "UP") {
-    if ($from == "DECK" && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A")) {
+    if ($from == "DECK" && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || GetResolvedAbilityType($EffectContext, $from) == "A") || IsStaticType($effectType)) {
       $card = GetClass($cardID, $player);
       if ($card != "-") $card->BackAlleyTrigger();
     }
