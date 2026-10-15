@@ -2138,7 +2138,7 @@ function ClassOverride($cardID, $player, $owner="-")
   $player = (int)$player;
   $owner = $owner == "-" ? $player : $owner;
   $Hero = new CharacterCard(0, $owner);
-  if ($Hero->CardID() == "min_mad" || $Hero->CardID() == "min_half_mad")
+  if (($Hero->CardID() == "min_mad" || $Hero->CardID() == "min_half_mad") && $Hero->Status() < 3)
     return "";
   $prefix = "";
   // With the rules as of today it's correct. HVY Release Notes Disclaimer. CR2.6 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not removeproperties, or parts of properties, that were added by another effect.
@@ -2146,7 +2146,7 @@ function ClassOverride($cardID, $player, $owner="-")
     $mainCharacter = GetPlayerCharacter($player);
     $prefix = CardClass($mainCharacter[0]) . ",";
   }
-  if ($Hero->CardID() == "min_genius" || $Hero->CardID() == "min_half_genius")
+  if ($Hero->CardID() == "min_genius" || $Hero->CardID() == "min_half_genius" && $Hero->Status() < 3)
     $prefix = "MECHANOLOGIST,";
   if (SearchCurrentTurnEffectsForIndex("phantasmal_symbiosis_yellow", $player) != -1
     && SearchCurrentTurnEffects("phantasmal_symbiosis_yellow-" . GamestateSanitize(CardName($cardID)), $player)) { //Phantasmal Symbiosis
@@ -2332,7 +2332,7 @@ function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false, $from
 
   $owner = $owner == "-" ? $player : $owner;
   $Hero = new CharacterCard(0, $owner);
-  if ($Hero->CardID() == "min_mad" || $Hero->CardID() == "min_half_mad")
+  if (($Hero->CardID() == "min_mad" || $Hero->CardID() == "min_half_mad") && $Hero->Status() < 3)
     return "";
   if ($cardID === "colors_of_aria_red" && ($zone === "HAND" || $zone === "DECK")) return "ELEMENTAL";
 
