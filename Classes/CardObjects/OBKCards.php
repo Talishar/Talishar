@@ -1171,3 +1171,35 @@ class cure_all_elixir extends Card {
 		return 3;
 	}
 }
+
+class raging_streets_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "raging_streets_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $choice = RandomNonEquipOnLink();
+		if ($choice != -1) {
+			CombatChainPowerModifier($choice, 3, $this->cardID);
+			CombatChainDefenseModifier($choice, 3, $this->cardID);
+		}
+		return "";
+  }
+}
+
+class quiet_streets_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "quiet_streets_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $choice = RandomNonEquipOnLink();
+		if ($choice != -1) {
+			CombatChainPowerModifier($choice, -3, $this->cardID);
+			CombatChainDefenseModifier($choice, -3, $this->cardID);
+		}
+		return "";
+  }
+}
