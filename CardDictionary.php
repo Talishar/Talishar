@@ -319,6 +319,7 @@ function CardSubType($cardID, $uniqueID = -1)
     case "sanctuary_of_aria"://Technically false, but helps with Rosetta Limited
       return "Item";
     case "omens_of_arcana":
+    case "mortimers_lab":
       return "Landmark"; //Technically false, but helps with OMN Limited
     case "UPR439":
     case "UPR440":

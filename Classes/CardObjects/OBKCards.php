@@ -1272,3 +1272,39 @@ class revere_the_copper_idol_blue extends Card {
 		$Deck->Shuffle("-");
 	}
 }
+
+class mortimers_lab extends Card {
+  function __construct($controller) {
+    $this->cardID = "mortimers_lab";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+	function PermanentHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+		global $CS_HitCounter, $mainPlayer;
+		// This technically counts ally hits, won't matter for limited (probably)
+		if (IsHeroAttackTarget() && GetClassState($mainPlayer, $CS_HitCounter) == 1)
+			AddLayer("TRIGGER", $mainPlayer, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $defPlayer, $mainPlayer;
+		$deck = new Deck($defPlayer);
+		if ($deck->Reveal()) {
+			$top = $deck->Top();
+			if (ColorContains($top, 1, $defPlayer))
+				$disease = "bloodrot_pox";
+			elseif (ColorContains($top, 2, $defPlayer))
+				$disease = "exertion";
+			elseif (ColorContains($top, 3, $defPlayer))
+				$disease = "inertia";
+			else
+				$disease = "-";
+			if ($disease != "-")
+				PlayAura($disease, $defPlayer, effectAgent:$mainPlayer, effectSource:$this->cardID);
+		}
+	}
+}

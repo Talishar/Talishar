@@ -1902,7 +1902,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CS_PowDamageDealt;
   global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer, $CS_HitsWDawnblade;
-  global $CS_HitCounter, $CS_ResolvingLayerUniqueID, $CombatChain;
+  global $CS_HitCounter, $CS_ResolvingLayerUniqueID, $CombatChain, $Landmarks;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $wasHit = $damageDone > 0;
   $cardID = $combatChain[0];
@@ -2011,6 +2011,12 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
         if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
           AddLateEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget);
         }
+      }
+      
+      for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
+        $Landmark = $Landmarks->Card($i, true);
+        $card = GetClass($Landmark->CardID(), 0);
+        if ($card != "-") $card->PermanentHitEffect($Landmark->Index(), $cardID, $targetPlayer, false, false);
       }
     }
     
