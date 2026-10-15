@@ -191,7 +191,7 @@ function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
       SetClassState($player, $CS_AdditionalCosts, "BOOSTED");
       $isGoAgainGranted = true;
     }
-    else {
+    elseif(GetClassState($player, $CS_AdditionalCosts) != "BOOSTED") {
       SetClassState($player, $CS_AdditionalCosts, "MISSBOOSTED");
     }
   }
