@@ -454,6 +454,7 @@ $classStateDefaults = [
   "KorshemConditionMet" => 0,                    // a hero gained resources/health from an effect, or a controlled object gained power/defense this turn
   "RunechantPreventPlan" => 0,
   "OppCardsBoosted" => 0,
+  "BanishPlayMode" => "-",                    // Permission or alternative cost chosen for the current card played from banish
 ];
 $persistentClassStates = ["ArsenalFacing", "OriginalHero"];
 $classStateNames = array_keys($classStateDefaults);

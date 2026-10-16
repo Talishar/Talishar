@@ -3587,7 +3587,7 @@ function SelfCostModifier($cardID, $from)
 
 function IsAlternativeCostPaid($cardID, $from)
 {
-  global $currentTurnEffects, $currentPlayer, $combatChainState, $CCS_WasRuneGate;
+  global $currentTurnEffects, $currentPlayer, $combatChainState, $CCS_WasRuneGate, $CS_BanishPlayMode;
   $isAlternativeCostPaid = false;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
@@ -3613,7 +3613,8 @@ function IsAlternativeCostPaid($cardID, $from)
       if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
-  if ($from == "BANISH" && HasRunegate($cardID) && NumRunechants($currentPlayer) >= CardCost($cardID, $from)) {
+  if ($from == "BANISH" && GetClassState($currentPlayer, $CS_BanishPlayMode) == "Runegate"
+      && HasRunegate($cardID) && NumRunechants($currentPlayer) >= CardCost($cardID, $from)) {
     SetCombatChainState($CCS_WasRuneGate, 1);
     return true;
   }
