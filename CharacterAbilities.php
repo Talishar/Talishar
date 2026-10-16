@@ -1266,7 +1266,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "hand_of_vengeance":
     case "path_of_vengeance":
     case "coat_of_allegiance":
-    case "danger_digits":
     case "starting_point":
     case "bunker_beard":
     case "tremorshield_sabatons":

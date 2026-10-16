@@ -142,6 +142,10 @@ class Layer {
 		return $this->layers[$this->index] ?? "";
 	}
 
+  function CardID() {
+    return $this->ID();
+  }
+
 	function PlayerID() {
 		return $this->layers[$this->index+1] ?? 0;
 	}
@@ -213,6 +217,10 @@ class Layer {
       }
     }
 	}
+
+  function Destroy() {
+    $this->Negate("GY");
+  }
 
   function IsCardLayer() {
     if (isAdministrativeStep($this->ID())) return false;

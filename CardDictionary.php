@@ -1097,11 +1097,9 @@ function HasGoAgain($cardID, $from="-"): bool|int
     "point_of_engagement_red" => 1, "point_of_engagement_yellow" => 1, "point_of_engagement_blue" => 1,
     "sworn_vengeance_red" => 1, "sworn_vengeance_yellow" => 1, "sworn_vengeance_blue" => 1,
     "coat_of_allegiance" => 1, "oath_of_loyalty_red" => 1, "hunt_to_the_ends_of_rathe_red" => 1,
-    "pain_in_the_backside_red" => 1,
     "up_sticks_and_run_red" => 1, "up_sticks_and_run_yellow" => 1, "up_sticks_and_run_blue" => 1,
     "pick_up_the_point_red" => 1, "pick_up_the_point_yellow" => 1, "pick_up_the_point_blue" => 1,
     "poisoned_blade_red" => 1, "poisoned_blade_yellow" => 1, "poisoned_blade_blue" => 1,
-    "throw_yourself_at_them_red" => 1, "throw_yourself_at_them_yellow" => 1, "throw_yourself_at_them_blue" => 1,
     "savor_bloodshed_red" => 1,
     "cut_from_the_same_cloth_red" => 1, "cut_from_the_same_cloth_yellow" => 1, "cut_from_the_same_cloth_blue" => 1,
     "dual_threat_yellow" => 1, "relentless_pursuit_blue" => 1, "outed_red" => 1, "trot_along_blue" => 1,
@@ -2797,13 +2795,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return !$CombatChain->HasCurrentLink() || !HasStealth($attackID) || CardType($attackID) != "AA";
     case "silverwind_shuriken_blue":
       return $from == "PLAY" ? !$CombatChain->HasCurrentLink() || !HasCombo($attackID) : false;
-    case "flick_knives":
-      if (!$CombatChain->HasCurrentLink()) return true;
-      if (!SearchCharacterAliveSubtype($player, "Dagger", true) && SearchCombatChainAttacks($player, subtype:"Dagger", type:"AA") == "") {
-        $restriction = "No dagger to throw";
-        return true;
-      }
-      return false;
     case "concealed_blade_blue":
       return !$CombatChain->HasCurrentLink() || CardType($attackID) != "AA" || !ClassContains($attackID, "ASSASSIN", $mainPlayer) && !ClassContains($attackID, "NINJA", $mainPlayer);
     case "short_and_sharp_red":
@@ -3122,14 +3113,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       break;
     case "oath_of_loyalty_red":
       return GetClassState($currentPlayer, piece: $CS_NumActionsPlayed) > 0;
-    case "danger_digits":
-    case "throw_dagger_blue":
-      if (!$CombatChain->HasCurrentLink()) return true;
-      if (!SearchCharacterAliveSubtype($player, "Dagger", true) && SearchCombatChainAttacks($player, "AA", "Dagger") == "") {
-        $restriction = "No dagger to throw";
-        return true;
-      }
-      return false;
     case "starting_point":
       return GetCombatChainState($CCS_NumUsedInReactions) == 0;
     case "perforate_yellow":
